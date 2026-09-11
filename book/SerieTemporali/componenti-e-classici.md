@@ -17,8 +17,8 @@ storie separatamente prima di provare a prevederle.
 
 La prima mossa, più vecchia dei calcolatori, è la **decomposizione**: separare
 una serie nei suoi ingredienti. Ce ne sono tre, e la
-{numref}`fig-serie-decomposizione` li mostra impilati uno sotto l'altro sullo
-stesso asse del tempo.
+{numref}`fig-serie-decomposizione` li mostra impilati sotto la serie di
+partenza, sullo stesso asse del tempo.
 
 ```{figure} ../figures/serie-decomposizione.svg
 :name: fig-serie-decomposizione
@@ -30,7 +30,8 @@ La serie osservata (in alto) come somma di tre parti: una **tendenza** di fondo
 **stagionalità** che si ripete a intervalli regolari e un **residuo**
 irregolare, che oscilla attorno allo zero. I tre pannelli in basso sono
 disegnati ciascuno alla propria scala, per far vedere la forma di ognuno: nella
-serie in alto la stagione pesa circa tre volte e mezzo il residuo.
+serie in alto l'onda della stagione è alta circa tre volte e mezzo le
+barrette del residuo.
 ```
 
 `````{tab} Elementare
@@ -49,13 +50,25 @@ e 5 sono capitati così». Una volta separati i tre pezzi, ciascuno diventa più
 facile da capire e da prevedere: il canone lo estrapoli, la stagione la ripeti,
 e sull'imprevisto puoi solo dire quanto è grande di solito.
 
+Separarli è un lavoro da medie. Il canone di un certo mese si trova facendo la
+media di un anno intero attorno a quel mese: i sei prima, i sei dopo, e i due
+agli estremi contati per metà, così che i mesi pesati facciano esattamente
+dodici. La stagione, che in dodici mesi sale e scende, in quella media si
+annulla, e l'imprevisto pure. Tolto il canone resta la stagione più
+l'imprevisto, e la stagione si riconosce perché è la parte che torna uguale
+ogni anno: se ne fa la media su tutti i gennai, poi su tutti i febbrai, e così
+via. Quello che avanza
+dopo aver tolto anche quella è l'imprevisto.
+
 `````
 
 `````{tab} Superiore
 
 Si assume che la serie osservata $x_t$ sia composta da tre componenti latenti:
 un trend-ciclo $T_t$, una stagionalità $S_t$ di periodo $m$ (12 per dati
-mensili, 4 per trimestrali) e un residuo $R_t$. Le due forme canoniche sono
+mensili, 4 per trimestrali) e un residuo $R_t$. Attenzione alla lettera: questa
+$T$ con il pedice è il trend, mentre la $T$ senza pedice, che compare fra poco e
+in tutto il capitolo, è l'ultimo istante osservato. Le due forme canoniche sono
 il modello additivo e quello moltiplicativo:
 
 $$
@@ -93,9 +106,21 @@ Le tre parti si possono rimettere insieme in due modi, e la differenza conta. O
 la stagione aggiunge sempre la stessa cifra, d'estate tanti euro in più e
 sempre quelli, che il giro d'affari sia grande o piccolo: è la forma
 **additiva**. Oppure la stagione moltiplica, cioè aggiunge una percentuale,
-e allora cresce insieme al resto: è la forma **moltiplicativa**, ed è quella dei
-passeggeri delle linee aeree con cui si è aperta la sezione, dove i picchi
-estivi si alzavano man mano che si volava di più.
+e allora cresce insieme al resto: è la forma **moltiplicativa**, ed è quella
+dei passeggeri delle linee aeree di Box e Jenkins, dove i picchi estivi si
+alzavano man mano che si volava di più. {numref}`fig-stagione-due-forme` mette
+le due a confronto, e aggiunge il terzo disegno che le riconcilia.
+
+```{figure} ../figures/stagione-additiva-e-moltiplicativa.svg
+:name: fig-stagione-due-forme
+:alt: Tre grafici affiancati, ciascuno con quattro anni di dati mensili, la linea di tendenza tratteggiata e una freccia verticale che misura l'altezza del picco estivo sopra la tendenza, nel primo anno e nell'ultimo. Nel primo grafico la stagione è additiva e le due frecce misurano tutte e due ventidue: la stessa cifra ogni anno. Nel secondo la stagione è moltiplicativa e le due frecce misurano venticinque virgola sei e quarantaquattro virgola tre: l'oscillazione cresce insieme al livello. Nel terzo si disegna il logaritmo della seconda serie, e le due frecce tornano lunghe uguali. In fondo: portare la serie sui logaritmi riporta una stagione moltiplicativa al caso additivo.
+:width: 100%
+
+La freccia misura quanto il picco estivo sta sopra la tendenza, nel primo anno
+e nell'ultimo. Additiva, le due misure coincidono; moltiplicativa, la seconda
+vale $1{,}7$ volte la prima; sul logaritmo della stessa serie tornano di nuovo
+uguali.
+```
 
 Un esempio minuscolo rende concreta la differenza. Prendiamo le vendite di
 gelato di una gelateria in quattro trimestri (in migliaia di euro):
@@ -146,6 +171,16 @@ tolto il livello e la stagione: se questa estate avesse fruttato $82$, mentre
 il livello ($45$) e lo scarto estivo ($+35$) restano quelli stimati sugli anni
 scorsi, il residuo di quel trimestre sarebbe $82 - (45 + 35) = 2$.
 
+Le due forme sono poi la stessa scomposizione misurata su due scale, e a
+passare dall'una all'altra basta cambiare unità: contare in percentuali invece
+che in euro trasforma una moltiplicazione in una somma, ed è esattamente
+quello che fa il logaritmo. Portata sui logaritmi, la stagione della gelateria
+smette di moltiplicare per $1{,}78$ e torna ad aggiungere sempre la stessa
+cifra. È la strada che Box e Jenkins presero sui passeggeri aerei, ed è il
+motivo per cui i modelli che lavorano su somme se la cavano anche con una
+stagione che moltiplica: basta portarli sulla scala dove quella stagione
+aggiunge.
+
 ## Stazionarietà e differenziazione
 
 L’{doc}`apertura del capitolo </SerieTemporali/overview>` ha presentato la
@@ -183,32 +218,56 @@ $$
 Due parole sui simboli, perché tornano per tutto il capitolo. $x_t$ si legge «il
 valore al tempo $t$»: la letterina in basso dice *quando*, non moltiplica
 niente. E il triangolino rovesciato $\nabla$ è solo un'abbreviazione per «la
-differenza fra un valore e quello prima».
+differenza fra un valore e quello prima»: nel resto del libro la stessa
+letterina indica il gradiente, e qui non c'entra niente con quello, nemmeno
+quando più avanti si porta dietro un pedice.
 
 Sulla serie $100, 110, 120, 130$, che cresce di $10$ a ogni passo, la
 differenziata è $10, 10, 10$: la salita è sparita, resta una costante. Il
-meccanismo si vede benissimo, ed è per questo che l'esempio è utile. Ma è anche,
-esattamente, il caso in cui differenziare non è la mossa giusta, e conviene
-capire subito perché.
+meccanismo si vede benissimo, ed è per questo che l'esempio è utile. Su una
+serie liscia come quella, però, il meccanismo è tutto quello che si vede: le
+serie vere hanno degli scossoni, e sono gli scossoni a decidere se
+differenziare sia la mossa giusta o quella sbagliata.
 
-Le tendenze sono di due tipi, e chiedono due cure diverse. Una tendenza è
-**deterministica** quando la serie oscilla attorno a una retta: la retta c'è
-davvero, le scosse la fanno sbandare ma non la spostano, e domani si torna sulla
-riga di prima. È il caso della serie $100, 110, 120, 130$ di poco fa: la regola
-c'è, e uno scarto casuale non la cambia. Una tendenza è invece **stocastica**
-(la parola vuol dire «governata dal caso») quando la retta
-non c'è: la serie cammina alla cieca, e ogni scossa le sposta il livello per
-sempre, come il prezzo di un'azione in borsa che dopo un crollo riparte da
-dove è arrivato e non da dove sarebbe dovuto essere.
+Una serie che ha una tendenza ce l'ha di uno di due tipi, e i due chiedono due
+cure diverse. Una tendenza è **deterministica** (la parola vuol dire che la
+regola è scritta una volta per tutte, e il caso non la tocca) quando la scossa
+si riassorbe: la serie sbanda e il passo dopo è di nuovo dove la regola la
+voleva, come se non fosse successo niente. Una tendenza è invece **stocastica**
+(la parola vuol dire «governata dal caso») quando la scossa entra nel livello e
+ci resta: da lì in poi la serie cammina più in alto o più in basso di dove
+sarebbe andata, per sempre, come il prezzo di un'azione in borsa che dopo un
+crollo riparte da dove è arrivato e non da dove sarebbe dovuto essere.
+
+A distinguerle non è la salita, ed è l'errore da non fare: anche una serie che
+cammina alla cieca può avere una spinta di fondo che la porta su, e in media
+seguire una retta. Quello che cambia è che cosa succede a una scossa, e
+{numref}`fig-scossa-che-resta` lo fa vedere sulla stessa scossa, data alle due
+serie nello stesso istante.
+
+```{figure} ../figures/scossa-che-resta.svg
+:name: fig-scossa-che-resta
+:alt: "Due grafici affiancati, stesso asse verticale, con il tempo in orizzontale. Le due serie partono dallo stesso valore, salgono con la stessa spinta e ricevono le stesse scosse, fra cui una grossa, di più 18, al settimo istante, segnata in tutti e due i grafici da una freccia verticale. A sinistra, «tendenza deterministica», la serie oscilla attorno a una retta tratteggiata: nell'istante della scossa schizza sopra la retta, e già il punto dopo, cerchiato, è tornato ad appoggiarsi alla retta come tutti gli altri. A destra, «tendenza stocastica», il tratteggio è il cammino che la serie avrebbe fatto senza quella scossa: dall'istante della scossa in poi le due linee corrono parallele, e la distanza fra loro all'ultimo istante è segnata «ancora più 18», la stessa di quando la scossa è arrivata."
+:width: 100%
+
+Le due serie partono uguali, salgono con la stessa spinta e ricevono le stesse
+scosse. A sinistra la scossa si somma alla retta, quindi il passo dopo è già
+sparita; a destra si somma al valore precedente, cioè al livello, e da lì in
+poi la serie corre diciotto sopra il cammino che avrebbe fatto senza. Salgono
+tutte e due, e a separarle è che cosa resta di una scossa, non la pendenza.
+```
 
 Il camminare alla cieca ha un nome, e conviene saperlo perché è quello che si
 trova nei manuali e nel codice: la **passeggiata aleatoria** (*random walk*),
 cioè il processo $x_t = x_{t-1} + \varepsilon_t$, dove ogni valore è il
-precedente più una scossa e nient'altro. Riconoscerla è la stessa prova della
-differenziazione, letta all'incontrario: se la serie non è stazionaria ma la
-sua differenza prima lo è e non ha più nessuna autocorrelazione, allora
-quello che resta dopo aver tolto il livello è puro rumore, e la serie era una
-passeggiata aleatoria.
+precedente più una scossa e nient'altro. Per riconoscerla si differenzia e si
+guarda che cosa resta. Si prende la serie differenziata (le
+differenze fra un valore e quello prima si chiamano *differenze prime*, perché
+la mossa si può ripetere) e le si chiede due cose: che sia stazionaria, e che
+nessun giorno somigli più a quello prima di quanto somigli a uno qualunque,
+cioè che sia rimasto puro rumore. Se le dà tutte e due, quello che resta dopo
+aver tolto il livello non ha più niente dentro, e la serie era una passeggiata
+aleatoria.
 
 Sapere di averne una davanti serve soprattutto a non farsi ingannare da un
 grafico. La previsione a un passo di una passeggiata aleatoria è, per
@@ -218,11 +277,14 @@ imparato niente, e la prova sta nel fatto che quella previsione è la linea
 di base «ripeti l'ultimo valore» della
 {doc}`sezione sulla validazione </SerieTemporali/validazione-e-feature>`,
 scritta con altre parole. Su una serie del genere l'unica previsione onesta a
-orizzonte lungo è una retta orizzontale all'ultimo valore, con una banda
-d'incertezza che si allarga come la radice di quanti passi si guarda avanti.
+orizzonte lungo è una retta che parte dall'ultimo valore osservato, piatta se
+la serie non ha una spinta di fondo e inclinata di quella spinta se ce l'ha, con
+una banda d'incertezza che si allarga come la radice di quanti passi si guarda
+avanti.
 
-La differenziazione è la cura del secondo caso, e lì è insostituibile. Sul primo
-fa un danno, e il danno si vede a mano, senza far girare niente.
+La differenziazione è la cura della tendenza stocastica, e sulla strada dei
+modelli ARIMA non ha sostituti. Sulla deterministica fa invece un danno, e il
+danno si vede a mano, senza far girare niente.
 
 Prendi una serie che è davvero una retta più uno scossone casuale al giorno: il
 valore di oggi è il punto della retta di oggi, più lo scossone di oggi. Adesso
@@ -239,24 +301,69 @@ regolarmente uno basso. Quella è una regolarità, e nella serie di partenza non
 c'era: l'abbiamo fabbricata noi differenziando. Un modello che la guardi si
 metterà a spiegarla.
 
-Fatta la prova al computer (trecento punti di retta più rumore, ripetuta su
-venti serie fatte allo stesso modo), i due numeri escono in media sempre
-quelli. Il primo: fra un giorno e il successivo la somiglianza vale $-0{,}50$
-(le singole serie ballano fra $-0{,}41$ e $-0{,}59$), cioè fortemente negativa,
-ed è precisamente l'effetto appena descritto. Il secondo: gli scarti della
-differenziata, elevati al quadrato e mediati, sono il doppio di quelli del
-rumore che c'era dentro. Il doppio esatto, e non una quantità a caso, perché
-ogni giorno adesso si porta dentro due scossoni invece di uno, e quando si
-sommano due cose che non hanno niente a che vedere fra loro a sommarsi sono i
-loro quadrati.
+L'altra cura si chiama **detrendizzazione**: si tira la retta che segue la
+salita e si tengono, di ogni punto, gli scarti da quella retta. È precisamente
+ciò che faceva il codice dell'introduzione al capitolo con `polyfit` e
+`polyval`. Il conto le mette a confronto tutte e due su venti serie fatte
+allo stesso modo, trecento punti ciascuna, una retta con sopra uno scossone al
+giorno.
 
-La cura del primo caso si chiama **detrendizzazione**: si tira la retta che
-segue la salita e si tengono, di ogni punto, gli scarti da quella retta. È
-precisamente ciò che faceva il codice dell'introduzione al capitolo con
-`polyfit` e `polyval`, e sulla stessa serie di prova la detrendizzata esce con
-una somiglianza fra giorni vicini di un paio di centesimi, cioè nulla, e con la
-stessa irregolarità che c'era prima. Le due operazioni non sono
-intercambiabili: ciascuna guasta il caso che l'altra risolve.
+```python
+import numpy as np
+
+def somiglianza(v):
+    """Quanto un valore somiglia al precedente: un numero fra -1 e +1."""
+    v = v - v.mean()
+    return float(v[1:] @ v[:-1] / (v @ v))
+
+t = np.arange(300)
+dopo_diff, dopo_retta, rapporti = [], [], []
+for seme in range(20):
+    rng = np.random.default_rng(seme)
+    # Scossoni senza memoria propria, su una retta: e' il primo dei due casi.
+    scossoni = rng.normal(0, 1, 300)
+    serie = 0.5 * t + scossoni
+    retta = np.polyval(np.polyfit(t, serie, 1), t)
+    differenziata = np.diff(serie)
+    dopo_diff.append(somiglianza(differenziata))
+    dopo_retta.append(somiglianza(serie - retta))
+    rapporti.append(differenziata.var() / scossoni.var())
+
+for cura, v in (("differenziata", dopo_diff), ("tolta la retta", dopo_retta)):
+    v = np.array(v)
+    print(f"somiglianza fra giorni vicini, {cura:14s} {v.mean():+.2f}"
+          f"   (le venti serie da {v.min():+.2f} a {v.max():+.2f})")
+print(f"scarti al quadrato della differenziata, in volte quelli"
+      f" degli scossoni   {np.mean(rapporti):.2f}")
+```
+
+```text
+somiglianza fra giorni vicini, differenziata  -0.50   (le venti serie da -0.59 a -0.41)
+somiglianza fra giorni vicini, tolta la retta -0.01   (le venti serie da -0.17 a +0.13)
+scarti al quadrato della differenziata, in volte quelli degli scossoni   2.02
+```
+
+La prima riga è l'effetto appena descritto, messo in cifre. Quella misura sta
+fra $-1$ e $+1$, dove $+1$ vuol dire che i due giorni si muovono sempre
+insieme, $0$ che non c'entrano niente l'uno con l'altro e $-1$ che uno sale
+ogni volta che l'altro scende: mezzo punto sotto zero è quindi molto. La
+seconda riga dice che togliendo la retta, invece, non resta niente. La terza
+dice che gli scarti della differenziata, elevati al quadrato e mediati, sono
+il doppio di quelli degli scossoni che c'erano dentro: il doppio perché ogni
+giorno adesso se ne porta dentro due invece di uno, e quando si mettono
+insieme due cose che non hanno niente a che vedere fra loro ad addizionarsi
+sono i loro quadrati, come i cateti di un triangolo rettangolo, dove
+l'ipotenusa vale la radice della somma dei quadrati dei due lati, e non la
+loro somma. Il $2$ è esatto sulle varianze del processo; sulle venti serie
+misurate è il $2{,}02$ della terza riga.
+
+E c'è un'ipotesi, senza la quale il $-0{,}50$ non è quel numero: che intorno
+alla retta ci sia rumore *senza memoria propria*, cioè che uno scossone non
+tiri l'altro. Se invece gli scossoni si somigliano già fra loro, differenziare
+ne cancella una parte e il numero sale verso lo zero.
+
+Le due operazioni non sono intercambiabili: ciascuna guasta il caso che
+l'altra risolve.
 
 Per la stagionalità si usa la **differenziazione stagionale**
 $\nabla_m x_t = x_t - x_{t-m}$, dove $m$ è la lunghezza del ciclo (12 per dati
@@ -325,17 +432,38 @@ convivono, cioè su un ARMA, nessuna delle due funzioni si annulla e la lettura
 non decide niente, ed è la ragione per cui in pratica gli ordini si scelgono
 stimando una griglia di modelli invece che guardando un grafico.
 
-«Nel rumore» ha una definizione precisa: dentro la banda
-$\pm z_{1-\alpha/2}/\sqrt{n}$, cioè $\pm 1{,}96/\sqrt{n}$ al 95%, che è
-l'intervallo in cui cadrebbe un'autocorrelazione campionaria se quella vera
-fosse zero ($n$ è il numero di osservazioni). Va letta sapendo che è una banda
-puntuale, valida un ritardo per volta: su venti ritardi di rumore bianco
+«Nel rumore» ha una definizione precisa: dentro la banda $\pm
+z_{1-\alpha/2}/\sqrt{n}$, cioè $\pm 1{,}96/\sqrt{n}$ al 95%, che è l'intervallo
+in cui cadrebbe un'autocorrelazione campionaria se il processo fosse rumore
+bianco ($n$ è il numero di osservazioni). L'ipotesi non è «se quella vera
+fosse zero», ed è una differenza che morde proprio dove l'identificazione manda
+a guardare: su un MA($q$), oltre il ritardo $q$ la varianza campionaria è $\big(1
++ 2\sum_{j=1}^{q}\rho_j^2\big)/n$, cioè più larga, e chi usa la banda stretta
+vede uscire barre che non escono e sovrastima l'ordine (la banda giusta è
+quella di Bartlett, e le librerie la offrono). Va letta anche sapendo che è una
+banda puntuale, valida un ritardo per volta: su venti ritardi di rumore bianco
 puro, la probabilità che almeno una barra esca dalla banda per puro caso supera
 il 50%. Una barra fuori non è la firma di niente, ed è esattamente la ragione
 per cui il test di Ljung-Box, più avanti, giudica tutte le autocorrelazioni
 insieme invece che una per una.
 
 `````
+
+Le due firme, sui due casi da manuale, stanno nella
+{numref}`fig-acf-pacf-due-firme`.
+
+```{figure} ../figures/acf-pacf-due-firme.svg
+:name: fig-acf-pacf-due-firme
+:alt: "Quattro grafici a barre, due righe per due colonne, con il ritardo in ascissa da uno a dodici e l’autocorrelazione in ordinata. Ogni pannello ha una fascia chiara attorno allo zero, dentro cui una barra non è distinguibile dal caso. Riga di sopra, una serie AR(1) di 400 giorni: nella sua ACF la prima barra vale 0,64 e le seguenti scendono gradualmente restando fuori dalla fascia per parecchi ritardi; nella sua PACF sporge la sola prima barra, 0,64, e tutte le altre stanno dentro la fascia. Riga di sotto, una serie MA(1): nella sua ACF sporge la prima barra, 0,42, e poi soltanto quella al ritardo 7, che vale 0,15 e sporge per puro caso; nella sua PACF le barre si alternano di segno e scendono gradualmente. Le due firme sono specularmente scambiate."
+:width: 100%
+
+Quattrocento giorni simulati da una regola nota, e le due firme scambiate: chi
+si ricorda i valori passati schiaccia la PACF, chi si ricorda gli urti passati
+schiaccia l'ACF. La fascia chiara è dove una barra non dice niente, e in basso a
+sinistra una barra ci esce comunque, al settimo ritardo, dove non c'è niente da
+ricordare: è la ragione per cui si guarda la forma dell'insieme e non la singola
+barra.
+```
 
 ## Autoregressione: AR($p$)
 
@@ -422,9 +550,11 @@ La serie scivola $20 \to 16 \to 13{,}6 \to 12{,}16$, avvicinandosi a $10$ a ogni
 passo: è il **rientro verso la media** (in inglese *mean reversion*). Succede
 finché la frazione $\phi$ sta fra $-1$ e $+1$, che è quello che dice la
 scrittura $|\phi| < 1$: le due sbarrette vogliono dire «guarda il numero senza
-il segno». Se valesse $1$ o più, ogni giorno
-ricomincerebbe da dove era arrivato o più in là, e la serie non tornerebbe mai
-indietro: è la tendenza stocastica di poco fa. Il rumore, nella realtà,
+il segno». Se valesse esattamente $1$, ogni giorno ricomincerebbe da dove era
+arrivato e la serie non tornerebbe mai indietro: è la tendenza stocastica di
+poco fa. Oltre $1$ è un caso diverso ancora, e più violento: ogni scossa viene
+moltiplicata a ogni passo, la serie parte per la tangente e non c'è
+differenziazione che la riporti a posto. Il rumore, nella realtà,
 scompiglia continuamente la discesa, ma la spinta di fondo resta sempre quella
 verso $\mu$.
 
@@ -484,8 +614,8 @@ giorno normale senza mai arrivarci. Siccome poi le serie vere quasi mai stanno
 ferme attorno a un valore, prima si raddrizza la serie e poi si modella ciò che
 resta. Raddrizzare, qui, vuol dire il trucco già incontrato per le serie che
 camminano alla cieca: sostituire ogni valore con la variazione rispetto al
-giorno prima. (Quando invece la serie oscilla attorno a una retta, la retta si
-toglie prima, fuori dal modello.) Il tutto insieme si chiama **ARIMA**, il
+giorno prima. (Quando invece la tendenza è deterministica, la retta si toglie
+prima, fuori dal modello.) Il tutto insieme si chiama **ARIMA**, il
 modello di punta di Box e Jenkins, e la sigla è la somma dei tre pezzi: **AR**
 la memoria dei valori, **I** (*integrated*) il raddrizzamento, **MA** la memoria
 degli urti. Dietro non ci sono che tre conteggi, quanti valori passati guardare,
@@ -581,8 +711,16 @@ originale. Quando la serie ha una stagionalità marcata, si aggiunge un secondo
 blocco di termini che agiscono al ritardo stagionale $m$: è il
 SARIMA($p,d,q$)($P,D,Q$)$_m$, dove le lettere maiuscole $P,D,Q$ sono gli
 ordini AR, di differenziazione e MA *stagionali*, e $m$ è la lunghezza del ciclo.
-Un SARIMA$(1,1,1)(1,1,1)_{12}$ è, ancora oggi, un ottimo punto di partenza per
-una serie mensile con trend e stagionalità annuale.
+Su una serie mensile con trend e stagionalità annuale il punto di partenza
+canonico ha un nome e una storia: è il SARIMA$(0,1,1)(0,1,1)_{12}$ sul
+logaritmo, che Box e Jenkins montarono proprio sui passeggeri aerei del 1949-60,
+e che da allora si chiama *modello airline*. Sono quattro pezzi già visti uno
+per uno: il logaritmo per le oscillazioni che crescono col livello, la
+differenza fra un mese e il precedente per la salita di fondo, quella fra un
+mese e lo stesso mese dell'anno prima per il ciclo, e un solo termine di
+memoria degli urti su ciascuna delle due scale.
+Partire da lì, e aggiungere termini solo se servono, costa meno che partire da
+un modello pieno e toglierli.
 
 `````
 
@@ -674,22 +812,27 @@ semplicemente piccolo: il formato `.0e` stamperebbe `2e-17` se ci fosse un
 arrotondamento, e stampa `0e+00`.
 
 Il confronto interessante, però, è quello sotto, e la prima riga da leggere è
-la seconda. Chiedere all'MA(2) tutti e quaranta i passi in un colpo solo costa
-$2{,}45$; rispondere sempre il livello medio, cioè non usare affatto il
-modello, costa $2{,}49$. Sono la stessa cosa, e i quattro centesimi che le
-separano hanno un nome preciso: sono i due passi utili, spalmati su quaranta.
-A parametri noti il conto li mette a $0{,}045$, ed è quello che il confronto
-appaiato misura ($-0{,}04$, più basso in dieci serie su dodici). Chi consegna
-quaranta passi di previsione da un MA(2) sta consegnando, per il novantacinque
-per cento, la linea di base.
+la seconda. Il costo è l'errore quadratico medio, cioè la media degli errori
+elevati al quadrato, e al quadrato ci si va perché sbagliare in su e sbagliare
+in giù pesino uguale: più basso è meglio, e il numero si legge solo per
+confronto con un altro numero. Chiedere all'MA(2) tutti e quaranta i passi in
+un colpo solo costa $2{,}45$; rispondere sempre il livello medio, cioè non
+usare affatto il modello, costa $2{,}49$. Sono la stessa cosa, e i quattro
+centesimi che le separano hanno un nome preciso: sono i due passi utili,
+spalmati su quaranta. A parametri noti il conto li mette a $0{,}045$, ed è
+quello che il confronto appaiato misura ($-0{,}04$, più basso in dieci serie su
+dodici). Chi consegna quaranta passi di previsione da un MA(2) sta consegnando,
+per il novantacinque per cento, la linea di base.
 
 Chiederli due per volta cambia registro: $1{,}49$, cioè due quinti in meno
 della linea piatta, con uno scarto di $-0{,}99$ che è più basso in tutte e
-dodici le serie. I due margini d'errore accanto alle medie sono la ragione per
-cui questi due confronti si leggono in modo diverso: la differenza fra $2{,}45$
-e $2{,}49$ è piccola ma sistematica, quella fra $2{,}45$ e $1{,}49$ è grossa e
-sistematica, e nessuna delle due si sarebbe potuta chiamare così guardando una
-serie sola.
+dodici le serie. I due numeri dopo il `+/-` sono la ragione per cui questi due
+confronti si leggono in modo diverso: dicono di quanto lo scarto medio
+ballerebbe rifacendo la prova con altre dodici serie, quindi uno scarto vale
+solo se è più grande del suo margine. La differenza fra $2{,}45$ e $2{,}49$ è
+piccola ma sistematica ($-0{,}04$ contro un margine di $0{,}01$), quella fra
+$2{,}45$ e $1{,}49$ è grossa e sistematica, e nessuna delle due si sarebbe
+potuta chiamare così guardando una serie sola.
 
 ## Scegliere l'ordine, e poi verificare i residui
 
@@ -706,10 +849,12 @@ più piccolo al SARIMA più carico di lettere.
 **Primo tempo: raddrizzare la serie.** Si toglie la retta se una retta c'è,
 oppure si sostituisce ogni valore con la variazione rispetto al giorno prima se
 la serie cammina alla cieca. Per decidere se la serie è già a posto ci sono due
-esami, e vanno letti insieme: partono da sospetti opposti, e lo stesso responso
-che nell'uno vuol dire «è a posto», nell'altro vuol dire il contrario. Da qui
-esce già uno dei tre conteggi, quello di mezzo, che dice quante volte si è
-raddrizzato.
+esami, che si chiamano ADF e KPSS e vanno letti insieme. Partono da sospetti
+opposti: l'ADF parte dal sospetto che la serie *non* sia a posto e chiede alla
+serie di smentirlo, il KPSS parte dal sospetto contrario. Quindi lo stesso
+responso, nei due, vuol dire cose opposte, e il modo di leggerli è guardare se
+concordano. Da qui esce già uno dei tre conteggi, quello di mezzo, che dice
+quante volte si è raddrizzato.
 
 **Secondo tempo: scegliere gli altri due.** La ricetta dei manuali dice di
 leggere i due grafici a barre, l'ACF e la PACF, e dedurli da lì.
@@ -750,12 +895,15 @@ tempi.
 **1. Rendere stazionaria la serie.** Si testa, si toglie il necessario, si fissa
 $d$ (e $D$ per la parte stagionale). Sovradifferenziare è un errore reale e
 riconoscibile: introduce autocorrelazione negativa artificiale al ritardo 1
-(esattamente $-0{,}5$ nel caso limite) e gonfia la varianza, e si vede anche dal
+(esattamente $-0{,}5$ quando ciò che resta era rumore bianco) e gonfia la
+varianza, e si vede anche dal
 $\theta$ stimato, che finisce sul bordo della regione di invertibilità.
 
 Sui test conviene spendere quattro righe, perché sono due e vanno usati
-insieme. L’**ADF** (Dickey-Fuller aumentato) ha per ipotesi nulla «c'è una
+insieme. L’**ADF** (Dickey-Fuller aumentato, dal test di Dickey e Fuller del
+1979 {cite}`dickey1979distribution`) ha per ipotesi nulla «c'è una
 radice unitaria», quindi un $p$-value basso dice *stazionaria*; il **KPSS**
+(Kwiatkowski, Phillips, Schmidt e Shin, 1992 {cite}`kwiatkowski1992testing`)
 ha per ipotesi nulla «la serie è stazionaria», quindi un $p$-value basso
 dice *non stazionaria*. Il KPSS ha dunque lo stesso verso del Ljung-Box del
 passo 3 (si spera di non rifiutare), l'ADF ha il verso contrario, e portare la
@@ -779,7 +927,7 @@ diverse.
 
 **2. Scegliere gli ordini con un criterio di informazione.** Si stimano tutte
 le combinazioni di $(p,q)$ entro una griglia e si prende quella che minimizza
-l’AIC:
+l’AIC, il criterio di Akaike del 1974 {cite}`akaike1974new`:
 
 $$
 \mathrm{AIC} = 2k - 2\ln \hat{L},
@@ -789,7 +937,8 @@ dove $\hat{L}$ è la verosimiglianza massimizzata e $k$ il numero di parametri.
 Il primo termine penalizza la complessità, il secondo premia l'aderenza: è lo
 stesso compromesso bias-varianza del capitolo sul Machine Learning, espresso in
 valuta di verosimiglianza invece che di errore su un set di validazione. Il
-BIC ($k\ln n - 2\ln\hat L$, con $n$ il numero di osservazioni) penalizza
+BIC di Schwarz {cite}`schwarz1978estimating` ($k\ln n - 2\ln\hat L$, con $n$ il
+numero di osservazioni) penalizza
 di più al crescere delle osservazioni e tende a scegliere modelli più piccoli.
 
 Due dettagli che cambiano il numero, e che quindi non sono dettagli. Il primo:
@@ -893,7 +1042,8 @@ scarti più piccoli si ottengono anche solo cambiando una manciata di
 osservazioni, quindi non sono prova di niente.
 
 Il test che guarda quello che resta si chiama **Ljung-Box**, dai due statistici
-che lo misero a punto, e risponde a una domanda sola: negli errori del modello
+che lo misero a punto nel 1978 {cite}`ljung1978measure`, e risponde a una
+domanda sola: negli errori del modello
 si vede ancora una regolarità, o sembrano capitati a caso? Un mucchio di numeri
 senza nessuna regolarità dentro si chiama **rumore bianco**, ed è il
 complimento più alto che si possa fare agli errori di un modello: vuol dire che
@@ -964,6 +1114,25 @@ for n in (600, 2000):
 # e su un modello deliberatamente troppo povero? (nessun parametro: model_df=0)
 pv = ljung_box(ARIMA(serie, order=(0, 0, 0)).fit().resid, 0, 0)
 print(f"\nLjung-Box su un modello vuoto (0,0,0): p = {pv:.1e}  ->  resta struttura")
+```
+
+```text
+
+con 600 osservazioni (il vero modello è ARMA(2,1)):
+   ARMA(1,1)   AIC =   1707.9   (+0.0)
+   ARMA(2,0)   AIC =   1708.3   (+0.4)
+   ARMA(3,0)   AIC =   1709.4   (+1.5)
+   il VERO ARMA(2,1) è 5° a +1.8
+   Ljung-Box sul modello scelto: p = 0.514  ->  nessuna traccia di struttura residua
+
+con 2000 osservazioni (il vero modello è ARMA(2,1)):
+   ARMA(2,1)   AIC =   5687.9   (+0.0)
+   ARMA(1,2)   AIC =   5688.4   (+0.6)
+   ARMA(3,2)   AIC =   5688.8   (+1.0)
+   il VERO ARMA(2,1) è 1° a +0.0
+   Ljung-Box sul modello scelto: p = 0.407  ->  nessuna traccia di struttura residua
+
+Ljung-Box su un modello vuoto (0,0,0): p = 0.0e+00  ->  resta struttura
 ```
 
 Il risultato è più istruttivo di quello che ci si aspetterebbe.
@@ -1061,7 +1230,8 @@ darla, cioè quanto le serie possono sbagliare *insieme*; quello che non compra
 sono previsioni migliori, e quei parametri, che crescono col quadrato del
 numero di serie, li paghi lo stesso.
 
-Esiste un test per verificarlo, e prende il nome dall'economista Clive Granger.
+Esiste un test per verificarlo, e prende il nome dall'economista Clive Granger,
+che lo propose nel 1969 {cite}`granger1969investigating`.
 Il nome, però, è la cosa più sbagliata che ha: si dice «causalità di Granger»,
 e non dice affatto che una serie fa succedere l'altra. Dice solo che il suo
 passato aiuta a indovinarla. Se il gelato e i condizionatori salgono
@@ -1115,7 +1285,11 @@ Il **test di causalità di Granger** verifica se i ritardi di una serie
 migliorano significativamente la previsione di un'altra rispetto ai soli
 ritardi di quest'ultima: è un test $F$ fra due regressioni annidate, l'ipotesi
 nulla è che i coefficienti aggiuntivi siano tutti nulli, e richiede serie
-stazionarie. Va fatto in entrambe le direzioni, perché è asimmetrico. E va letto
+stazionarie. Il verso è quello dell'ADF del passo 1, non quello del KPSS: si
+spera di rifiutare, perché rifiutare vuol dire che i ritardi dell'altra
+serie servono. Un $p$-value basso dice quindi «Granger-causa», un $p$ alto dice
+che il VAR non compra niente. Va fatto in entrambe le direzioni, perché è
+asimmetrico. E va letto
 sapendo che il verdetto dipende da che cos'altro c'è nella regressione: una
 Granger-causalità fra due serie può sparire appena se ne aggiunge una terza, ed
 è il caso più frequente sui dati veri. Dipende anche dal numero di ritardi che
@@ -1517,10 +1691,13 @@ rmse = lambda a: float(np.sqrt(np.mean((a - livello) ** 2)))
 print(round(rmse(misura), 4), round(rmse(stima), 4),      # -> 0.9752 0.4171
       round(np.sqrt((1 - alfa) * v), 4))                  # -> 0.4472
 
-# e i due modi di sbagliare le due larghezze dichiarate
-print(round(rmse(filtro(misura, var_livello, var_misura / 25)[0]), 4),
-      round(rmse(filtro(misura, var_livello, var_misura * 25)[0]), 4))
-# -> 0.6608 0.6819
+# e i due modi di sbagliare le due larghezze dichiarate, di 25 volte e di 1000
+for fattore in (25, 1000):
+    print(fattore,
+          round(rmse(filtro(misura, var_livello, var_misura / fattore)[0]), 4),
+          round(rmse(filtro(misura, var_livello, var_misura * fattore)[0]), 4))
+# -> 25 0.6608 0.6819
+# -> 1000 0.9551 1.1446
 ```
 
 La proporzione parte da $1$, scende in fretta ($0{,}51$, $0{,}36$, $0{,}29$,
@@ -1546,9 +1723,9 @@ di ascoltarla. Quale dei due sia peggiore dipende dalla serie e non si decide
 su un esempio solo; quello che si decide è che a sbagliare di venticinque volte
 si perde metà del guadagno e si resta comunque sotto lo $0{,}9752$ della misura
 grezza. È il verso sordo a peggiorare per primo, e a sbagliare di mille supera
-la misura grezza ($1{,}14$ contro $0{,}98$) mentre l'altro le si limita ad
-avvicinarsi da sotto; ed è anche il più insidioso, perché produce una curva
-liscia e convincente che si allontana dalla realtà con calma.
+la misura grezza ($1{,}1446$ contro $0{,}9752$) mentre l'altro le si limita ad
+avvicinarsi da sotto ($0{,}9551$); ed è anche il più insidioso, perché produce
+una curva liscia e convincente che si allontana dalla realtà con calma.
 
 Il giro vale ben oltre il lisciamento esponenziale, ed è la ragione per cui
 questa ricetta sta in mezzo ai modelli classici. Scritti in questa forma, con
@@ -1639,7 +1816,8 @@ previsione   x_(T+1)    = 8.315
 Il $\phi$ stimato cade a $0{,}635$ e la costante a $3{,}636$, uno un po’ alto e
 l’altra un po’ bassa, e i due scarti vanno insieme: frazione e quota fissa
 entrano tutte e due nella media di lungo periodo $c/(1-\phi)$, ed è quella che
-con cinquecento osservazioni i minimi quadrati ricostruiscono bene. La
+con cinquecento osservazioni i minimi quadrati ricostruiscono bene: i numeri
+stimati danno $3{,}636/(1-0{,}635) = 9{,}96$, contro il $10$ vero. La
 previsione a un passo è semplicemente la formula del modello applicata
 all'ultimo valore osservato. Da qui in avanti si può ripetere il conto in
 avanti per prevedere più giorni (quanto lontano si guarda si chiama
@@ -1671,10 +1849,17 @@ questa volta.
 È ripetendo l'esperimento tante volte che salta fuori il difetto vero, e il
 difetto vero punta dalla parte opposta: la media delle stime cade sotto il
 valore vero, e ci cade tanto più quanto la serie è corta. Il colpevole è il modo
-stesso di fare il conto: il valore di ieri, quello che facciamo da guida, porta
-già dentro la scossa di ieri. Guida e scossa non sono estranee, e la retta che
-ne esce viene un filo più piatta di quella vera. Molte serie reali sono corte, e
-chi legge quel numero deve saperlo.
+stesso di fare il conto, e ha due gambe. La prima: il valore di ieri, quello
+che facciamo da guida, porta già dentro la scossa di ieri, quindi guida ed
+errore non sono estranei come una regressione ordinaria pretende. La seconda, e
+qui pesa di più: anche il livello attorno a cui la serie balla si stima dagli
+stessi dati, e quella media insegue la serie. Dove la serie sta alta la media
+stimata sta alta con lei, gli scarti da quella media escono più corti di quelli
+veri, e una somiglianza misurata su scarti accorciati esce più debole: la retta
+viene un filo più piatta di quella vera. Quanto? Con cinquecento osservazioni sei
+millesimi, che non si vedono; con cinquanta, sei centesimi, cioè un decimo del
+valore vero. Molte serie reali sono corte, e chi legge quel numero deve
+saperlo.
 
 `````
 
@@ -1724,16 +1909,23 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning
   stagione può aggiungere sempre la stessa cifra (caso additivo) oppure una
   percentuale, e allora cresce insieme al giro d'affari (caso
   moltiplicativo): in gelateria, «d'estate 35 mila euro in più» contro
-  «d'estate il $78\%$ in più».
+  «d'estate il $78\%$ in più». Le due sono la stessa scomposizione su due
+  scale, e a passare dall'una all'altra basta contare in percentuali, che è
+  quello che fa il logaritmo.
 - Quasi tutti i modelli classici pretendono una serie stazionaria, che balli
   sempre allo stesso modo, cioè attorno alla stessa media, con la stessa
   ampiezza, e in cui due giorni si somiglino in base a quanto distano e non
   a quando cadono. Per arrivarci ci sono due strade, e non sono
-  intercambiabili: se la serie oscilla attorno a una retta si stima la retta
-  e si tengono gli scarti; se invece cammina alla cieca, e ogni scossa le sposta
-  il livello per sempre, si sostituisce ogni valore con la variazione
-  rispetto al precedente. Differenziare dove serviva togliere la retta lascia
-  dentro la serie una regolarità che non c'era.
+  intercambiabili, e a sceglierle non è la salita ma che cosa resta di una
+  scossa: se la scossa si riassorbe si stima la retta e si tengono gli scarti;
+  se invece entra nel livello e ci resta, si sostituisce ogni valore con la
+  variazione rispetto al precedente. Differenziare dove serviva togliere la
+  retta lascia dentro la serie una regolarità che non c'era; e togliere la
+  retta dove serviva differenziare non raddrizza niente, perché la serie resta
+  storta com'era. A decidere quale delle due servisse sono due esami, ADF e
+  KPSS, che partono da sospetti opposti: l'ADF sospetta che la serie non sia a
+  posto, il KPSS che lo sia, e quindi lo stesso responso, nei due, vuol dire
+  cose contrarie.
 - Ci sono due memorie. Quella dei valori passati (l'autoregressione: domani
   somiglia a oggi, con un rientro verso la media) e quella degli urti
   passati (la media mobile: lo sciopero si fa sentire ancora domani, meno
@@ -1864,11 +2056,12 @@ tabellari già incontrati nel {doc}`capitolo sul Machine Learning
 `````
 
 [^senso-debole]: Quella del testo è la stazionarietà detta *in senso debole*, e si chiama così perché
-    guarda solo la media, l'ampiezza delle oscillazioni e le somiglianze a due
-    a due (e perché abbia senso chiederlo serve che quelle quantità esistano,
-    cioè $\mathbb{E}[X_t^2] < \infty$). La versione forte chiede di più: che
-    presa una qualunque manciata di istanti, la loro distribuzione congiunta
-    non cambi se si sposta tutta in avanti nel tempo. Nella pratica non si usa
+    guarda solo la media, l'ampiezza delle oscillazioni e le somiglianze
+    *lineari* a due a due (e perché abbia senso chiederlo serve che quelle
+    quantità esistano, cioè $\mathbb{E}[X_t^2] < \infty$). La versione forte
+    chiede di più: che presa una qualunque manciata di istanti, la loro
+    distribuzione congiunta non cambi se si sposta tutta in avanti nel tempo.
+    Nella pratica non si usa
     quasi mai, e non contiene l'altra: un processo a code pesantissime può
     essere stazionario in senso forte senza avere una varianza da tenere
     costante.

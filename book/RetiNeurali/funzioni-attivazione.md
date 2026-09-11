@@ -124,10 +124,12 @@ perché è il metro con cui una funzione di attivazione si giudica.
 
 Per correggersi, una rete deve sapere in che direzione muovere ciascun peso, e
 lo scopre chiedendosi: *se muovessi questo peso di pochissimo, di quanto
-cambierebbe il risultato?* Quel «di quanto cambierebbe» si chiama **pendenza**,
-ed è la stessa pendenza di una strada in salita: quanto sali per ogni passo che
-fai in avanti. Dove è ripida, un passo cambia molto; dove è pianeggiante, un
-passo non cambia niente.
+cambierebbe il risultato?* Quel «di quanto cambierebbe» è la derivata,
+incontrata come pendenza istante per istante nella {doc}`sezione su analisi e
+ottimizzazione </Matematica/analisi-ottimizzazione>`, e qui torna comoda la
+parola di tutti i giorni: la pendenza di una strada in salita, quanto sali per
+ogni passo che fai in avanti. Dove è ripida, un passo cambia molto; dove è
+pianeggiante, un passo non cambia niente.
 
 Adesso il punto che riguarda noi. Quella domanda non se la pone un peso alla
 volta e in un posto solo: parte dall'uscita della rete, dove l'errore si vede,
@@ -138,7 +140,9 @@ una funzione di attivazione, quel messaggio viene moltiplicato per la pendenza
 di quella funzione, presa nel punto in cui il neurone stava lavorando. Se
 lì la funzione è ripida, il messaggio passa; se lì la funzione è piatta, la
 sua pendenza vale quasi zero, e moltiplicare per quasi zero spegne il
-messaggio.
+messaggio. (E i pesi entrano nel viaggio di ritorno esattamente come nel
+viaggio di andata: tornando indietro attraverso uno strato, il messaggio viene
+moltiplicato anche per i pesi di quello strato.)
 
 Una buona funzione di attivazione è una che non spegne il messaggio mentre lo
 lascia passare.
@@ -263,11 +267,15 @@ sta a cavallo dello zero invece che tutta sopra.
 Un numero molto negativo esce quasi $-1$, uno molto positivo quasi $+1$, e lo
 zero resta zero. La differenza con la sigmoide è che ora l'uscita può essere
 anche negativa: in media i valori si bilanciano attorno allo zero, e questo
-aiuta la rete a imparare un po’ più in fretta. Il motivo, in breve: con la sigmoide tutte le
-uscite sono positive, e allora le correzioni dei pesi di uno stesso neurone
-tendono ad andare tutte nella stessa direzione insieme, il che fa zigzagare la
-discesa invece di farla andare dritta. Con lo zero al centro le uscite si
-bilanciano, e la strada si raddrizza.
+aiuta la rete a imparare un po’ più in fretta. Il motivo, in breve. I numeri
+che entrano in un neurone sono le uscite dello strato precedente, e con la
+sigmoide sono tutti positivi; la correzione che tocca a ciascun peso di quel
+neurone è quel numero moltiplicato per il messaggio che arriva dall'alto, che
+per tutto il neurone è uno solo. Quindi o salgono tutti i pesi insieme o
+scendono tutti insieme. Se la direzione buona chiedeva un peso su e un altro
+giù, in linea retta non ci si arriva, e la discesa del gradiente ci arriva a
+zig-zag, un passo per verso. Con lo zero al centro le uscite si
+bilanciano, i segni si mescolano, e la strada si raddrizza.
 
 C'è un secondo guadagno, e si misura come prima. Spostandosi di uno, da $0$ a
 $1$, l'uscita sale da $0$ a $0{,}76$: settantasei centesimi, contro i ventitré
@@ -292,7 +300,9 @@ segno sistematico: la convergenza è più regolare che con la sigmoide
 {cite}`lecun1998efficient`. La derivata arriva fino a $1$ nell'origine, contro
 il $0{,}25$ della sigmoide, ma satura comunque agli estremi. Per anni la `tanh`
 è stata lo standard negli strati nascosti e sopravvive tuttora nelle celle
-ricorrenti LSTM e GRU.
+ricorrenti LSTM e GRU, che la {doc}`sezione sui modelli di sequenza
+</NaturalLanguageProcessing/modelli-sequenza>` costruisce cancello per
+cancello.
 
 `````
 
@@ -318,7 +328,15 @@ messaggio che risale la rete, moltiplicato per $1$, resta quello di prima; non
 si smorza a ogni passaggio come faceva con la sigmoide, e arriva quindi fino ai
 primi strati anche in una rete che ne ha decine, lungo gli sportelli aperti:
 dove lo sportello è chiuso non passa niente. Ed è velocissima da calcolare: un
-confronto con lo zero. Lo sportello chiuso si fa sentire anche più avanti: in
+confronto con lo zero.
+
+Che anche la ReLU spenga dei messaggi sembra rimetterla nei guai della
+sigmoide, e la differenza sta tutta in dove e in quando. La sigmoide smorzava
+ogni messaggio, sempre e dappertutto, un quarto per strato nel caso migliore.
+Lo sportello invece o lascia passare tutto o non lascia passare niente, e
+quali sportelli siano chiusi cambia da un esempio all'altro: il messaggio che
+si ferma qui passa da un'altra parte, e ai primi strati ci arriva. Lo
+sportello chiuso si fa sentire più in là nella rete: in
 qualunque momento buona parte dei numeri esce a zero, e lo strato successivo
 riceve poche voci accese invece di tutte.
 
@@ -361,9 +379,9 @@ innocua: i punti in cui la pre-attivazione è esattamente zero sono un
 insieme trascurabile, e qualunque valore fra $0$ e $1$ è un sotto-gradiente
 legittimo. C'è però una conseguenza pratica che vale un pomeriggio a chi
 controlla i conti a mano: verificando il gradiente con le differenze finite
-proprio in zero si trova $0{,}5$, cioè la media dei due lati, mentre autograd
-dà $0$. I due numeri non coincidono e nessuno dei due è sbagliato: è il punto in
-cui la derivata non c'è, non un errore nel codice.
+proprio in zero si trova $0{,}5$, cioè la media dei due lati, e non lo $0$ che
+la libreria restituisce. I due numeri non coincidono e nessuno dei due è
+sbagliato: è il punto in cui la derivata non c'è, non un errore nel codice.
 
 Per $x>0$ il gradiente è esattamente $1$: niente saturazione, niente *vanishing*
 lungo i cammini attivi. Ciò ha reso addestrabili reti molto profonde
@@ -505,6 +523,9 @@ print(softmax(np.array([2.0, 1.0, 0.1])))
 ```text
 [0.65900114 0.24243297 0.09856589]
 ```
+
+Sono le tre percentuali del conto fra gatto, cane e volpe, $66$, $24$ e $10$,
+con i decimali che a mano, fermandosi a due cifre, si erano persi per strada.
 
 In PyTorch (il framework che incontreremo nel prossimo capitolo) non serve
 implementarle a mano: esistono come funzioni (`torch.relu`, `torch.tanh`,

@@ -8,8 +8,8 @@ consuma, si scalda, si stara, e va sorvegliato con una sala di controllo
 piena di spie e manometri. Lì l'immagine era servita a dire *perché* serve
 monitorare. Restava tutto il seguito: quali strumenti montare su
 quell'impianto, dove piazzare le spie, a che soglia farle scattare e cosa
-fare quando una si accende. È il mestiere di questa sezione: il lato
-operativo di quel problema, che là era posto in termini statistici.
+fare quando una si accende: il lato operativo di quel problema, che là era
+posto in termini statistici.
 
 Il guaio dei modelli, rispetto a un impianto industriale, è che quando si
 guastano non fanno rumore. Una pompa che si rompe fischia, perde, si ferma; un
@@ -61,8 +61,9 @@ qualcosa.
 
 `````{tab} Superiore
 
-I tre livelli corrispondono a due famiglie di metriche molto diverse per natura
-e per latenza {cite}`breck2017ml`.
+I tre livelli danno tre famiglie di metriche, diverse per natura e soprattutto
+per latenza: le prime due si leggono sul traffico così com'è, la terza aspetta
+le etichette vere.
 
 1. **Metriche di sistema** (salute del servizio). Sono le stesse dell'ingegneria
    dei sistemi distribuiti: latenza (di norma i percentili, $p_{50}$ e
@@ -130,11 +131,14 @@ perché a caso, fra un dato di ieri e uno di oggi, quale sia quale lo si azzecca
 una volta su due.
 
 Un'AUC vicina a $0{,}5$ dice quindi che i due periodi sono indistinguibili *per
-lui*. È una rassicurazione, non una prova: uno scostamento piccolo, o
-distribuito su molte colonne senza spiccare su nessuna, resta sotto il rumore
-di quel classificatore e non gli fa alzare l'AUC di un centesimo. (Le colonne
-dei dati, nel gergo di questo capitolo, sono le feature: è la parola che il
-codice più avanti userà, e vuol dire esattamente quello.)
+lui*. È una rassicurazione, non una prova: uno scostamento piccolo e
+concentrato in poche colonne fra tante resta sotto il rumore di quel
+classificatore e non gli sposta l'AUC, perso com'è in mezzo a decine di colonne
+che non sono cambiate. Uno scostamento altrettanto piccolo, ma che tocca molte
+colonne insieme, il detective lo trova, e lo trova mentre ciascuna colonna,
+presa da sola, si è mossa di pochissimo: sommare indizi piccoli è il mestiere
+per cui esiste. (Le colonne dei dati, nel gergo del mestiere, sono le
+*feature*, ed è il nome che portano anche nel codice.)
 
 Nel capitolo di Machine Learning il detective era una diagnosi fatta una volta
 sola. Per un impianto acceso va invece trasformato in una sorveglianza
@@ -182,15 +186,17 @@ cambia). Le tre decisioni operative sono:
 - **Finestre temporali**. Si fissa una **finestra di riferimento** (un periodo
   in cui il modello era sano, spesso i dati di addestramento o un mese
   «buono») e la si confronta con una **finestra corrente** che scorre: le
-  ultime $N$ richieste, o le richieste dell'ultimo giorno. Finestre corte
+  ultime $n$ richieste, o le richieste dell'ultimo giorno. Finestre corte
   reagiscono in fretta ma sono rumorose; finestre lunghe sono stabili ma
   lente.
 - **Soglia sull'indicatore**. L'AUC del detective va da circa $0{,}5$
   (finestre che quel classificatore non distingue) a $1$ (perfettamente
   separabili); per rumore campionario, senza alcuno shift, oscilla attorno a
-  $0{,}5$, anche sotto. Si sceglie quindi una soglia (per esempio $0{,}65$)
-  oltre la quale scatta l'allarme, calibrata sul tasso di falsi allarmi
-  accettabile.
+  $0{,}5$, anche sotto. Si sceglie quindi una soglia oltre la quale scatta
+  l'allarme, e una soglia come $0{,}65$ da quell'oscillazione è lontanissima:
+  non la si tara sui falsi allarmi, che a quella distanza non arrivano, ma
+  sull'errore opposto, cioè su quanto scostamento si è disposti a lasciar
+  passare senza accorgersene.
 - **Test per singola *feature***. Il detective è un test *multivariato*: dice
   *se* qualcosa è cambiato, non *cosa*. Per localizzare si affianca un test
   *univariato* colonna per colonna, tipicamente il test di
@@ -211,10 +217,14 @@ cambia). Le tre decisioni operative sono:
   scostamenti che nessun modello sente: uno spostamento di due decimi di
   deviazione standard, su $n = 2000$ per finestra, dà tipicamente
   $p \sim 10^{-7}$, e il rifiuto arriva su ogni finestra simulata. Il problema
-  non è la molteplicità dei test ma la
-  taglia del campione, e correggere per Bonferroni non lo tocca, perché i
-  $p$-value stanno molti ordini di grandezza sotto
-  qualunque soglia, altro che al limite. L'allarme va quindi fondato
+  non è la molteplicità dei test ma la taglia del campione, e correggere per
+  Bonferroni non lo risolve: davanti a scostamenti così i $p$-value stanno
+  molti ordini di grandezza sotto qualunque soglia, corretta o no. Su
+  scostamenti appena più piccoli la correzione morde eccome, e fa rifiutare
+  meno spesso, che è perfino il verso in cui qui si vorrebbe andare; ma agisce
+  sull'asse sbagliato, perché protegge dai rifiuti *falsi*, mentre qui i
+  rifiuti sono veri e riguardano differenze che nessun modello sente.
+  L'allarme va quindi fondato
   sull’**ampiezza** ($D$, o una
   distanza normalizzata, o il PSI) con una soglia decisa sul significato
   pratico, tenendo il $p$-value al più come filtro contro il rumore delle
@@ -234,10 +244,14 @@ cambia). Le tre decisioni operative sono:
   dove $r_i$ e $q_i$ sono le quote di riferimento e correnti nella fascia
   $i$: una divergenza simmetrica fra le due ripartizioni, che la pratica
   legge con soglie di mestiere (sotto $0{,}1$ quiete, oltre $0{,}25$ deriva
-  da guardare). E copre anche il caso a cui la KS non si applica, le colonne
-  categoriche: lì la stessa somma si fa con le categorie al posto delle
-  fasce, oppure si usa un test chi-quadro sulle frequenze, con la stessa
-  avvertenza di prima sull'eccesso di potenza.
+  da guardare). Una fascia vuota da una parte manda il logaritmo
+  all'infinito, quindi nelle implementazioni si fondono le fasce troppo magre
+  oppure si aggiunge a ciascuna una quota minima prima di dividere. E copre
+  anche il caso a cui la KS non si applica, le colonne categoriche, dove la
+  categoria assente da una parte è la norma e non l'eccezione: lì la stessa
+  somma si fa con le categorie al posto delle fasce, oppure si usa un test
+  chi-quadro sulle frequenze, con la stessa avvertenza di prima sull'eccesso
+  di potenza.
 
 `````
 
@@ -254,11 +268,12 @@ dati scivolano verso destra la curva scivola con loro. Il numero che misura la
 deriva è allora il più semplice possibile: quanto le due curve si allontanano
 nel punto in cui sono più lontane, che nel disegno è il segmento verticale.
 Si chiama $D$, e il controllo che lo calcola porta il nome dei due statistici
-che l'hanno inventato, Kolmogorov e Smirnov, in sigla **KS**.
+che l'hanno costruito, Kolmogorov per la versione a un campione e Smirnov per
+quella a due campioni che serve qui, in sigla **KS**.
 
 ```{figure} ../figures/deriva-ks.svg
 :name: fig-deriva-ks
-:alt: "Una curva cumulativa color teal sta ferma; una curva terracotta, che all'inizio le sta sopra esattamente, scivola verso destra mese dopo mese. Un segmento verticale ocra unisce le due curve nel punto in cui sono più distanti, e la scritta sotto dice di quanto: si parte da zero e si arriva a 0,40, ben oltre la soglia di 0,10."
+:alt: "Una curva cumulativa teal sta ferma; una curva terracotta, che all'inizio le sta sopra esattamente, scivola verso destra mese dopo mese. Un segmento verticale ocra unisce le due curve nel punto in cui sono più distanti, e la scritta sotto dice di quanto: si parte da zero e si arriva a 0,40, ben oltre la soglia di 0,10."
 :width: 92%
 
 Le due finestre in cumulata, mese per mese. Il segmento verticale è la
@@ -328,11 +343,13 @@ scostamento: è cambiata la taglia del campione, e con essa la potenza del test.
 `````
 
 Le finestre le diamo per scelte, e mettiamo in poche righe eseguibili le altre
-due decisioni, la soglia e la localizzazione. Il codice confronta
-una finestra di riferimento con una corrente, in cui iniettiamo di proposito uno
-shift su una sola *feature*: calcola l'AUC del detective come indicatore globale,
-stampa un allarme se supera la soglia, e in caso di allarme usa un KS per colonna
-per dire *quale* *feature* è cambiata.
+due decisioni, la soglia e la localizzazione. Il codice confronta una finestra
+di riferimento con una corrente, in cui iniettiamo di proposito una deriva su
+una sola *feature*: calcola l'AUC del detective come indicatore globale, stampa
+un allarme se supera la soglia, e in caso di allarme usa un KS per colonna per
+dire *quale* *feature* è cambiata. In coda ci sono due prove su una tavola più
+larga, quaranta colonne, che servono a vedere dove il detective arriva e dove
+no.
 
 ```python
 import numpy as np
@@ -365,10 +382,40 @@ if auc > SOGLIA:
     # Localizziamo: un test di Kolmogorov-Smirnov per ogni feature.
     for j in range(d):
         stat, p = ks_2samp(riferimento[:, j], corrente[:, j])
-        sospetta = "  <-- sospetta" if p < 0.01 else ""
+        # si segnala sull'ampiezza, non sul p-value: a questa taglia di
+        # finestra il p e' minuscolo anche su scostamenti che nessuno sente
+        sospetta = "  <-- sospetta" if stat > 0.10 else ""
         print(f"  feature {j}: KS={stat:.3f}  p={p:.1e}{sospetta}")
 else:
     print("Nessun drift rilevabile: il detective non distingue le finestre.")
+
+# Dove il detective arriva e dove no: quaranta colonne, e lo stesso
+# scostamento per colonna (0,15 deviazioni standard) prima su una colonna
+# sola, poi su tutte e quaranta. Il KS si legge sulle colonne DERIVATE, non sul
+# massimo delle quaranta: il massimo cresce con quante colonne guardi, quindi
+# confrontarlo fra i due casi misurerebbe la selezione e non la deriva.
+n_colonne = 40
+rif40 = rng.normal(0.0, 1.0, size=(n, n_colonne))
+for etichetta, derivate in [("su una colonna sola", [1]),
+                            ("su tutte e quaranta", list(range(n_colonne)))]:
+    cur40 = rng.normal(0.0, 1.0, size=(n, n_colonne))
+    cur40[:, derivate] += 0.15
+    ks = [ks_2samp(rif40[:, j], cur40[:, j]).statistic for j in range(n_colonne)]
+    tipico = sorted(ks[j] for j in derivate)[len(derivate) // 2]
+    print(f"deriva {etichetta:19}: AUC = {punteggio_drift(rif40, cur40):.3f}, "
+          f"KS tipico delle derivate = {tipico:.3f}, "
+          f"colonne oltre la soglia: {sum(v > 0.10 for v in ks)}")
+```
+
+```text
+AUC detective = 0.775
+ALLARME: drift rilevato (AUC 0.775 > 0.65)
+  feature 0: KS=0.028  p=4.1e-01
+  feature 1: KS=0.447  p=3.2e-180  <-- sospetta
+  feature 2: KS=0.020  p=7.9e-01
+  feature 3: KS=0.022  p=7.2e-01
+deriva su una colonna sola: AUC = 0.502, KS tipico delle derivate = 0.079, colonne oltre la soglia: 0
+deriva su tutte e quaranta: AUC = 0.698, KS tipico delle derivate = 0.074, colonne oltre la soglia: 1
 ```
 
 L'output stampa `AUC detective = 0.775`, ben oltre la soglia di $0{,}65$:
@@ -380,6 +427,26 @@ solo. (Il $0{,}45$ è più grande del $0{,}40$ della figura perché qui lo
 scostamento non è cresciuto per sei mesi: gliel'abbiamo iniettato tutto in una
 volta, e più grande.)
 
+Le due prove su quaranta colonne dicono dove il detective arriva e dove no, con
+uno scostamento piccolo, quindici centesimi di deviazione standard, cioè un
+movimento minuscolo rispetto a quanto quei numeri ballano già da soli. Le
+colonne toccate si spostano della stessa quantità nei due casi, e infatti il KS
+tipico è quasi identico, `0.079` contro `0.074`: il controllo colonna per
+colonna vede la stessa cosa tutt'e due le volte, e tutt'e due le volte non
+arriva a dire niente di utile. Nel primo caso nessuna colonna supera lo
+$0{,}10$ dell'allarme; nel secondo ne supera una sola, e chi guardasse quella
+andrebbe a cercare il guasto in una colonna mentre a muoversi sono tutte e
+quaranta. A cambiare è il detective, che passa da `AUC = 0.502` con lo
+scostamento su una colonna sola, cioè il livello del caso, a `AUC = 0.698`
+quando lo stesso scostamento tocca tutte e quaranta, e lì l'allarme scatta.
+Sommare quaranta indizi piccoli gli dà quello che nessuno dei quaranta, da
+solo, poteva dargli. Con un'avvertenza sul conto: nella seconda prova a
+muoversi sono quaranta colonne invece di una, quindi il mondo si è spostato
+molto di più, e non è la stessa deriva spalmata. È proprio il caso che
+interessa, perché una deriva vera si presenta così, un po' dappertutto; il
+merito del detective sta nel raccoglierla mentre il controllo colonna per
+colonna, davanti allo stesso identico movimento, non vede niente.
+
 È lo scheletro di un sistema di monitoraggio reale, e la stessa funzione,
 girata a ogni ora sulla finestra scorrevole, produce una serie storica
 dell'indicatore di drift su cui si possono appendere gli allarmi. Ha però due
@@ -388,12 +455,12 @@ nominarle proprio perché il codice è breve e viene copiato.
 
 La prima è il cancello: qui i test per singola *feature* girano solo se
 l'indicatore globale ha superato la soglia. Comodo da leggere, pericoloso da
-copiare. Un cambiamento concentrato su una colonna sola fra molte può lasciare
-l'indicatore globale appena sotto soglia, e allora il programma non guarda
-nessuna colonna e stampa che va tutto bene: il silenzio più costoso possibile,
-perché è un silenzio *dichiarato*. Un impianto vero calcola sempre i test per
-colonna e tratta l'indicatore globale come uno fra gli indizi, non come
-l'interruttore che decide se guardare.
+copiare. Un cambiamento piccolo, concentrato su una colonna sola fra molte, può
+lasciare l'indicatore globale al livello del caso, e allora il programma non
+guarda nessuna colonna e stampa che va tutto bene: il silenzio più costoso
+possibile, perché è un silenzio *dichiarato*. Un impianto vero calcola sempre i
+test per colonna e tratta l'indicatore globale come uno fra gli indizi, non
+come l'interruttore che decide se guardare.
 
 La seconda è che il controllo colonna per colonna è necessario ma non
 sufficiente. Guarda una colonna alla volta, quindi è cieco ai cambiamenti che
@@ -409,10 +476,16 @@ si racconta di solito. Il detective è addestrato sui soli ingressi: quello
 che rileva è che è cambiato il tipo di richieste che arrivano, e nient'altro.
 Non distingue un cambiamento innocuo da uno che rovina le predizioni; e non
 distingue nemmeno le tre famiglie fra loro. Anche un puro cambio di proporzioni
-fra le risposte giuste (il *label shift*) lo fa suonare, e la ragione è
+fra le risposte giuste (il *label shift*) lo sposta, e la ragione è
 semplice: se le frodi passano da una su cento a una su dieci, in mezzo alle
 richieste in arrivo ce ne sono dieci volte tante che *assomigliano* a una
 frode. Il detective non vede le risposte, ma vede quelle richieste, e le nota.
+Di quanto le noti, però, è un'altra faccenda, e la risposta è: poco. Se la
+proporzione passa da una su cento a una su dieci, la parte di richieste in
+arrivo che è cambiata è nove su cento, e con uno scarto così l'indicatore
+globale non arriva a $0{,}55$ nemmeno se frodi e richieste oneste fossero
+distinguibili a colpo d'occhio. Resta sotto qualunque soglia che qualcuno
+metterebbe davvero: il label shift lo sposta, e non basta a farlo suonare.
 Del concept shift puro, poi, non vede
 niente: lì gli ingressi restano identici ed è la regola giusta a essere
 cambiata sotto. Per separare i tre casi non c'è scorciatoia: servono le
@@ -422,9 +495,12 @@ monitoraggio statistico è un allarme precoce, non un verdetto.
 ## Rispondere al drift
 
 Una spia che si accende non è ancora una decisione. La risposta al drift si
-organizza come una **piramide**, dal gesto più economico e automatico al più
-costoso e delicato, e la regola d'oro è che la risposta sia *proporzionata* alla
-prova: la maggior parte degli allarmi non deve arrivare in cima.
+organizza come una piramide, e la forma dice due cose insieme. Salendo, il
+gesto è più drastico: non più lento, più invasivo, perché tocca sempre più a
+fondo il servizio che sta girando. E salendo la piramide si stringe, perché i
+casi che arrivano fin lassù sono pochi. La regola d'oro è che la risposta sia
+*proporzionata* alla prova: la maggior parte degli allarmi non deve arrivare in
+cima.
 
 Alla base c'è l’allarme: automatico, a costo quasi nullo, tanto abbondante
 quanto lo consente una buona soglia. Sopra c'è l’indagine: un umano guarda
@@ -444,8 +520,11 @@ primo lampeggio: prima *guardi* (l'allarme), poi ti fermi a *controllare* il
 livello (l'indagine), poi semmai *rabbocchi o cambi l'olio* (il retraining), e
 solo se il motore comincia a battere in testa (e cambiare l'olio non è
 bastato) lo *spegni e chiami il carro attrezzi* (il rollback al modello
-vecchio). Rispondere sempre col gesto più drastico è come cambiare il motore
-ogni volta che si accende una spia: costoso, e spesso inutile.
+vecchio). Rispondere sempre col gesto più drastico è come chiamare il carro
+attrezzi ogni volta che si accende una spia: costoso, e spesso inutile. In
+un'officina che lavora bene i quattro gesti non si fanno tante volte quante:
+le spie sono tante, i controlli meno, i cambi d'olio pochi e il carro attrezzi
+quasi mai. È quel restringersi a dare alla scala la forma di una piramide.
 
 C'è poi una scelta di fondo su *quando* rimettere mano al modello. Un'officina
 può fare due cose: il tagliando a scadenza fissa (ogni diecimila chilometri,
@@ -514,7 +593,8 @@ davanti agli utenti veri: su richieste mai viste, con tempi di risposta
 diversi, con effetti che nessuna prova fatta a tavolino cattura. Rimpiazzarlo
 di colpo per tutti gli utenti è una
 scommessa che non conviene fare mai. I tre modi per introdurlo in sicurezza
-sono quelli già nominati in fondo a «Servire un modello»: qui si vede a che cosa
+sono quelli già nominati in fondo alla {doc}`sezione sul servire un modello
+</MLOps/deployment-e-serving>`: qui si vede a che cosa
 serve ciascuno, perché non rispondono alla stessa domanda.
 
 `````{tab} Elementare
@@ -540,13 +620,15 @@ alla finestra con quelli vicino alla cucina. E se il piatto nuovo torna
 indietro sei volte su cento invece di sette, una serata sola non basta a
 distinguere sei da sette. È il test *A/B*.
 
-E *quando* si usa quale? I primi due rispondono a una domanda sola, «il piatto
-nuovo fa danni?»: l'ombra quando non ci si fida affatto, i pochi tavoli quando
-ci si fida abbastanza da servirlo ma si vuole poter tornare indietro subito. Il
-terzo risponde a un'altra domanda, «il piatto nuovo è *migliore*?», ed è
-l'unico che può rispondere,
-perché solo lì due gruppi di persone vere mangiano due piatti diversi nello
-stesso momento. Di solito si fanno tutti e tre in fila, in quest'ordine.
+E *quando* si usa quale? I primi due rispondono soprattutto a una domanda, «il
+piatto nuovo fa danni?»: l'ombra quando non ci si fida affatto, i pochi tavoli
+quando ci si fida abbastanza da servirlo ma si vuole poter tornare indietro
+subito. Il terzo risponde a un'altra domanda, «il piatto nuovo è *migliore*?»,
+e quando quella domanda si può decidere soltanto servendolo davvero è l'unico
+che può rispondere: nel piatto in ombra nessuno lo assaggia, quindi di chi
+l'avrebbe finito non si sa niente. Dove invece il giudizio non dipende
+dall'averlo servito, l'ombra risponde anche a questa. Di solito si fanno tutti
+e tre in fila, in quest'ordine.
 
 `````
 
@@ -583,9 +665,9 @@ Con questo l'anello si chiude e ricomincia. Il monitoraggio è l'occhio che,
 accorgendosi del drift, fa ripartire il ciclo (indagine, retraining, rilascio
 graduale) e riporta all'inizio. Un
 modello in produzione, l'abbiamo detto, non è un risultato da archiviare ma un
-processo da tenere in vita {cite}`shankar2022operationalizing`; questa sezione
-è il turno di guardia che quel processo richiede, ogni giorno, finché il
-modello serve.
+processo da tenere in vita {cite}`shankar2022operationalizing`, e il
+monitoraggio è il turno di guardia che quel processo richiede, ogni giorno,
+finché il modello serve.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -602,9 +684,10 @@ modello serve.
 - Per accorgersi che il mondo è cambiato si mette al lavoro un
   classificatore-detective, che funziona come il metal detector
   dell'aeroporto: prova a distinguere i dati di ieri da quelli di oggi, e se ci
-  riesce vuol dire che qualcosa è cambiato; se tira a indovinare, no. Va
-  tarato: troppo sensibile suona per tutti, e dopo il decimo falso allarme
-  nessuno gli dà più retta.
+  riesce vuol dire che qualcosa è cambiato; se tira a indovinare vuol dire
+  che lui non lo vede, che è una rassicurazione e non una prova. Va tarato:
+  troppo sensibile suona per tutti, e dopo il decimo falso allarme nessuno
+  gli dà più retta.
 - Il detective dice *che* qualcosa è cambiato, non *cosa* e nemmeno *se è
   grave*. Soprattutto, non vede il caso peggiore: quello in cui le richieste
   sembrano identiche a quelle di ieri ma è cambiata la risposta giusta.
@@ -627,22 +710,25 @@ modello serve.
   servizio (latenza, errori, uptime), (2) proprietà statistiche di input e
   output (distribuzioni, tasso di ciascuna classe predetta), (3) qualità vera,
   che richiede le etichette e soffre di label delay (arriva tardi o mai
-  {cite}`breck2017ml`).
+  {cite}`huyen2022designing`).
 - I proxy statistici del livello 2 sono un allarme anticipato: si accendono
   *prima* che il degrado sia misurabile con le etichette vere.
 - Il detective della sezione «Quando i dati cambiano» diventa sorveglianza
   continua con tre scelte operative: finestre (riferimento vs corrente
-  scorrevole), soglia sull'AUC (tarata sui falsi allarmi) e test per
+  scorrevole), soglia sull'AUC (che decide quale scostamento passa
+  inosservato, non il tasso di falsi allarmi) e test per
   *feature* per localizzare il drift: Kolmogorov–Smirnov sulle colonne
   numeriche, e sulle categoriche, a cui non si applica, il PSI o un chi
   quadro. Essendo addestrato
-  sui soli ingressi, rileva un cambiamento della marginale $P(X)$, che
-  covariate shift e label shift condividono, ed è cieco al *concept shift*
-  puro.
+  sui soli ingressi, rileva un cambiamento della marginale $P(X)$: il
+  covariate shift lo fa suonare, il label shift lo sposta appena e quasi mai
+  abbastanza, e del *concept shift* puro non vede niente.
 - L'allarme si fonda sull’ampiezza dello scostamento, non sul $p$-value: a
   taglie di produzione il KS rifiuta su differenze che nessun modello sente. E
-  il test per colonna è necessario ma non sufficiente: uno shift che vive nella
-  struttura congiunta lascia tutte le marginali intatte.
+  il test per colonna è necessario ma non sufficiente, per due ragioni: uno
+  shift che vive nella struttura congiunta lascia tutte le marginali intatte, e
+  uno shift diffuso le muove tutte di un'inezia, ciascuna sotto la propria
+  soglia, mentre l'indicatore globale che le somma suona.
 - La risposta è una piramide proporzionata: allarme → indagine → retraining →
   rollback. Retraining periodico (a cadenza fissa) o innescato (a
   soglia); i sistemi reali fanno entrambi.

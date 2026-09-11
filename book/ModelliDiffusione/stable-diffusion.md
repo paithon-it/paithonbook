@@ -32,9 +32,11 @@ da elaborare, meno conti, meno attesa.
 
 Il traslocatore è una rete a sé, diversa da quella che toglie il rumore, e la
 conosciamo già: è il *variational autoencoder* del {doc}`capitolo sui modelli
-latenti </ModelliLatenti/overview>`, dove è stato derivato per intero. Qui lo riprendiamo solo per quello
-che serve al trasloco, cioè per il mestiere che gli si chiede in questa
-catena di montaggio, che non è quello per cui di solito lo si costruisce.
+latenti </ModelliLatenti/overview>`, che la {doc}`sezione sull'ELBO
+</ModelliLatenti/il-salto-probabilistico>` deriva per intero. Qui lo
+riprendiamo solo per quello che serve al trasloco, cioè per il mestiere che gli
+si chiede in questa catena di montaggio, che non è quello per cui di solito lo
+si costruisce.
 
 ## Il prezzo dei pixel
 
@@ -103,10 +105,9 @@ un posto dove la diffusione può lavorare.
 La rete che comprime non restituisce una scheda sola, ma una scheda e un
 margine di tolleranza: «all'incirca questo, più o meno tanto». È quel margine
 la trovata, ed è ciò che costringe schede vicine a ridiventare immagini simili.
-(Le lettere greche del disegno sono i nomi tecnici delle stesse cose:
-$\mu$ il valore scritto sulla scheda, $\sigma$ il margine di tolleranza, e il
-pallino nero il punto sorteggiato dentro quel margine. La scheda, quindi, è la
-coppia: il valore *e* il margine.)
+(Sulla scheda il disegno mette i nomi tecnici: $\mu$ è il valore scritto,
+$\sigma$ il margine di tolleranza, e il pallino nero il punto sorteggiato
+dentro quel margine. La scheda, quindi, è la coppia: il valore *e* il margine.)
 ```
 
 La {numref}`fig-vae` dà per scontata una cosa da fissare. Una scheda è una
@@ -122,8 +123,9 @@ latenti ha misurato. Un archivista senza margine di tolleranza comprime e
 ricostruisce benissimo, e a inventare non serve, perché nessuno ha mai chiesto
 alle sue schede di stare in una zona precisa: si sistemano dove capita, e in
 mezzo restano dei vuoti in cui il copista non ha mai messo piede. I due tratti
-che danno il nome a questa rete rimediano uno per volta. Il sorteggio dentro il
-margine (è il pallino in mezzo alla figura) fa sì che in addestramento il
+che il VAE aggiunge alla clessidra rimediano uno per volta. Il sorteggio
+dentro il margine (è il pallino in mezzo alla figura) fa sì che in
+addestramento il
 copista veda ogni volta una scheda leggermente spostata, quindi lo costringe a
 funzionare su tutta una zona invece che su un punto, e toglie i vuoti; la regola
 che tiene le schede raccolte attorno a uno stesso centro dice dove pescare.
@@ -201,15 +203,17 @@ $$
 
 dove il primo termine premia la fedeltà della ricostruzione e il secondo (la
 divergenza di Kullback–Leibler vista nei richiami di matematica) penalizza gli
-encoder che si allontanano dal prior. È questo secondo termine a rendere lo
-spazio latente continuo (input simili, codici vicini) e campionabile,
-cioè a fornire una distribuzione da cui pescare $\mathbf{z}$ senza doverla
-stimare: l'obiettivo è che ogni regione con probabilità apprezzabile sotto il
-prior decodifichi in un dato plausibile, e quanto ci si riesca davvero ha un
-limite noto. Nella convenzione del libro, dove $\mathcal{L}$ si minimizza, la
-loss corrispondente è $\mathcal{L} = -\mathrm{ELBO}$. La derivazione, come
-limite inferiore della log-verosimiglianza, sta nel capitolo sui modelli
-latenti; qui ci basta il ruolo funzionale dei due termini.
+encoder che si allontanano dal prior. Quel termine tiene aperto il margine
+$\boldsymbol{\sigma}_\phi$, senza il quale il campionamento degenererebbe in un
+punto, e raccoglie le $q_\phi$ attorno al prior. Dal margine viene la
+continuità (input simili, codici vicini); dal raccoglierle, il fatto che si
+sappia dove pescare $\mathbf{z}$ senza doverne stimare la distribuzione.
+L'obiettivo è che ogni regione con probabilità apprezzabile sotto il prior
+decodifichi in un dato plausibile. Nella convenzione del libro, dove
+$\mathcal{L}$ si minimizza, la loss corrispondente è
+$\mathcal{L} = -\mathrm{ELBO}$. La derivazione, come limite inferiore della
+log-verosimiglianza, sta nella sezione sull'ELBO; qui ci basta il ruolo
+funzionale dei due termini.
 
 Di quel capitolo va richiamato anche il limite, perché in Stable Diffusion
 determina una scelta di progetto. Il termine KL agisce su un esempio alla
@@ -255,7 +259,10 @@ cui questi modelli si addestrano non arrivano nude, arrivano con una didascalia
 accanto («un gatto nero seduto su un muro»), raccolta insieme all'immagine dal
 sito da cui è stata presa. È così che il modello impara ad associare le parole
 alle cose, ed è il motivo per cui alla fine gli si potrà scrivere che cosa
-disegnare.
+disegnare. Le parole, però, una rete non le legge: legge numeri. A tradurle
+pensa una rete a parte, CLIP, quella della {doc}`sezione su come si allineano
+due spazi </VisioneLinguaggio/allineare-due-spazi>`, che qui viene riusata
+com'è.
 
 La {numref}`fig-latent-diffusion` mette allora in fila tutto: la rete che
 comprime, lo spazio delle schede dove avviene la diffusione, il testo che entra
@@ -285,16 +292,18 @@ di addestramento nella sua scheda; d'ora in poi si lavora solo su schede.
 Seconda: il restauratore fa esattamente il suo solito mestiere (sporca di
 rumore, impara a indicare il disturbo) ma su schede da 16.384 numeri invece che
 su quadri da 786.432, come restaurare cartoline anziché affreschi. Ogni giro di
-domanda e risposta costa decine di volte meno, non proprio quarantotto, perché
-la rete delle schede è progettata apposta e non è quella dei quadri
-rimpicciolita.
+domanda e risposta costa decine di volte meno. Non proprio quarantotto:
+quarantotto dice quanti numeri in meno ci sono, non quanti conti in meno si
+fanno, e la rete delle schede è disegnata apposta per loro invece di essere
+quella dei quadri rimpicciolita.
 
 Le schede, però, vanno convertite prima di finire sul tavolo del restauratore:
 si moltiplicano tutte per uno stesso numero fisso, 0,18215, poco meno di un
-quinto. Il restauratore dosa lo sporco su fogli di una certa ampiezza, e
-dall'archivio le schede escono con numeri cinque volte e mezzo più grandi: chi
-salta la conversione gli dà fogli su cui quella stessa dose si vede appena, e
-lo manda ad allenarsi su un problema più facile del vero.
+quinto. Il restauratore dosa lo sporco su numeri di una certa taglia, e
+dall'archivio le schede escono con numeri cinque volte e mezzo più grandi di
+quella (cinque volte e mezzo è proprio 1 diviso 0,18215): chi salta la
+conversione gli dà schede su cui quella stessa dose si vede appena, e lo manda
+ad allenarsi su un problema più facile del vero.
 
 Terza: mentre pulisce, il restauratore tiene sul tavolo la commissione
 scritta dal cliente («un gatto nero che salta sul muro, in acquerello») e a
@@ -305,13 +314,14 @@ automatica, ritrovata poi nei Transformer: lì collegava due lingue, qui
 collega parole e immagine. (Quella commissione si chiama prompt: è la frase
 che si scrive nella casella di un generatore di immagini, e le due parole
 valgono l'una per l'altra.)
-Quarta: finita la pulitura, la scheda passa al copista, che ridipinge il
-quadro a piena risoluzione.
+Quarta: finita la pulitura si disfa la conversione di prima, e la scheda passa
+al copista, che ridipinge il quadro a piena risoluzione.
 
 Per generare un'immagine nuova si parte, come sempre, dalla fine: una
-scheda di puro rumore sorteggiato, mai appartenuta a nessun quadro. Il
-restauratore la pulisce passo dopo passo con la commissione sotto gli
-occhi, e il copista trasforma il risultato in pixel. Il gatto in
+scheda di puro rumore sorteggiato, mai appartenuta a nessun quadro. Non è
+ancora una scheda buona, e nessuno pretende che lo sia: lo diventa strada
+facendo. Il restauratore la pulisce passo dopo passo con la commissione sotto
+gli occhi, e il copista trasforma il risultato in pixel. Il gatto in
 acquerello che compare non esisteva da nessuna parte: né il quadro, né la
 sua scheda.
 
@@ -349,15 +359,18 @@ $$
 \big\rVert^2 \,\right],
 $$
 
-dove $\mathbf{z}_t$ è il latente rumoroso al passo $t$, $\boldsymbol{\epsilon}$ il rumore
-iniettato e $\tau$ il text encoder. Ogni valutazione della rete lavora su
-$16\,384$ valori invece di $786\,432$: è qui che si paga l'affitto ridotto
-dello spazio latente.
+dove $\mathbf{z}_t$ è il latente rumoroso al passo $t$, $\boldsymbol{\epsilon}$
+il rumore iniettato e $\tau$ il text encoder. Ogni valutazione della rete
+lavora su $16\,384$ valori invece di $786\,432$: è qui che si paga l'affitto
+ridotto dello spazio latente. Il 48 resta però il rapporto fra i valori, non
+fra le operazioni: la U-Net del latente è dimensionata per il latente, non è
+quella dei pixel rimpicciolita.
 
 **3. Condizionamento testuale.** $\tau$ è il text encoder di CLIP
 {cite}`radford2021learning`, il modello contrastivo della {doc}`sezione su come
 si allineano due spazi </VisioneLinguaggio/allineare-due-spazi>`: congelato,
-trasforma il prompt in una sequenza di 77 embedding da 768 dimensioni. Questi
+trasforma il prompt in una sequenza di 77 embedding da 768 dimensioni: 77 è la
+finestra fissa di CLIP, e i prompt più corti vengono riempiti fino a lì. Questi
 entrano nella U-Net tramite strati di cross-attention inseriti a più
 risoluzioni, la stessa identica formula del capitolo sui Transformer:
 
@@ -380,8 +393,10 @@ del Transformer originale, le
 query vengono da chi genera e le key/value dalla sorgente da consultare:
 solo che qui chi genera è un'immagine e la sorgente è una frase.
 
-**4. Decodifica.** Al termine della catena inversa, il decoder riporta il
-latente ripulito ai pixel: $\hat{\mathbf{x}} = \mathcal{D}(\mathbf{z}_0)$.
+**4. Decodifica.** Al termine della catena inversa la riscalatura del punto 2
+va disfatta, perché il decoder è stato addestrato sui latenti grezzi; poi
+riporta ai pixel:
+$\hat{\mathbf{x}} = \mathcal{D}(\mathbf{z}_0 / 0{,}18215)$.
 
 Gli ordini di grandezza di Stable Diffusion v1: U-Net da circa 860 milioni di
 parametri, text encoder da 123 milioni (congelato), addestramento su
@@ -391,9 +406,9 @@ raccolte dal web).
 
 `````
 
-Conviene fissare l'asimmetria che ne risulta, e riguarda il lavoro da fare,
-non il prezzo da pagare a qualcuno. *Addestrare* Stable Diffusion è rimasto un
-mestiere da data center: la documentazione del modello dichiara
+L'asimmetria che ne risulta si misura in lavoro da fare, non in denaro.
+*Addestrare* Stable Diffusion è rimasto un mestiere da data center: la
+documentazione del modello dichiara
 centocinquantamila ore di calcolo su GPU professionali, cioè una macchina sola
 accesa per diciassette anni. *Usarlo*, grazie al trasloco nelle schede
 compresse, chiede alla GPU quattro gigabyte di memoria e qualche secondo di
@@ -412,7 +427,22 @@ strada. Il correttivo standard, usato da Stable Diffusion e da praticamente
 tutti i modelli che disegnano su richiesta, si chiama **classifier-free
 guidance** (letteralmente «guida senza classificatore»: fra poco si capirà da
 dove viene il nome), è di Jonathan Ho e Tim Salimans {cite}`ho2022classifier`,
-ed è di una semplicità che spiazza.
+ed è di una semplicità che spiazza. La {numref}`fig-guida-due-direzioni` la
+mostra per intero.
+
+```{figure} ../figures/guida-due-direzioni.svg
+:name: fig-guida-due-direzioni
+:alt: Da uno stesso punto partono tre frecce. La grigia, verticale, è la direzione che la rete indica quando la richiesta scritta non c'è, cioè il caso con peso zero. La verde è la direzione con la richiesta, il caso con peso uno: è lunga uguale e spostata di appena sette gradi, tanto che le due quasi si sovrappongono, e la distanza fra le due punte, marcata da una graffa, è tutto il contributo del testo. Quel contributo viene ripetuto lungo una linea tratteggiata, dove sette pallini segnano le prime sette ripetizioni e la punta cade mezzo passo più in là. Lì arriva la terza freccia, spessa e color terracotta, che parte dallo stesso punto ed è la direzione seguita davvero con peso sette e mezzo: è molto più inclinata delle prime due.
+:width: 100%
+
+Le due direzioni che la rete indica nello stesso punto: quella che ha in mente
+solo «una figura credibile» e quella che ha in mente anche la richiesta
+scritta. Sono quasi la stessa, e la piccola differenza fra le due è tutto
+quello che il testo ha da dire. La direzione che si segue davvero è la prima
+più quella differenza ripetuta sette volte e mezzo, che è il peso con cui
+Stable Diffusion esce di serie. Il disegno fissa un divario qualunque fra le
+due direzioni: quanto valga sul serio dipende dal modello e dal punto.
+```
 
 `````{tab} Elementare
 
@@ -437,20 +467,22 @@ l'indicazione del testo nel totale pesa pochissimo. La rete tira soprattutto
 verso «un'immagine credibile», e «acquerello» è una spintarella dentro quella
 spinta grossa, che si perde per strada: il gatto viene a olio. Il colpo di
 genio è prendere quel pelo verso est e moltiplicarlo: non un passo, ma sette
-passi e mezzo verso est, e poi camminare verso nord-est-est. Sette e mezzo è il
+passi e mezzo verso est, e poi camminare verso nord-est. Sette e mezzo è il
 numero che Stable Diffusion usa di serie, e si chiama il **peso della guida**,
 $w$.
 
-A $w = 1$ non si esagera niente, ed è il gatto a olio di prima. Scendendo verso
-quel valore il modello va più a briglia sciolta, con immagini varie e richiesta
-presa alla leggera; salendo, ubbidisce di più e inventa di meno. Esagerando
-davvero, ben oltre il 7 e mezzo, l'immagine viene «sovracotta»: colori saturi,
-contrasti duri, composizioni tutte uguali.
+A $w = 1$ non si esagera niente, ed è il gatto a olio di prima. Sotto l'uno il
+modello va a briglia sciolta, con immagini varie e richiesta presa alla
+leggera, fino a $w = 0$ dove la richiesta viene ignorata del tutto e si segue
+la prima bussola e basta; sopra l'uno ubbidisce di più e inventa di meno.
+Esagerando davvero, ben oltre il 7 e mezzo, l'immagine viene «sovracotta»:
+colori saturi, contrasti duri, composizioni tutte uguali.
 
-E il sette e mezzo da dove viene? Da quanto le immagini piacciono a chi le
-guarda. Chi misura invece quanto somigliano alle fotografie vere trova il punto
-migliore molto più in basso: già a sette e mezzo la somiglianza è peggiorata, e
-lo scambio si accetta perché il risultato piace di più.
+E il sette e mezzo? Chi misura quanto le immagini somigliano alle fotografie
+vere trova il punto migliore molto più in basso, e a sette e mezzo la
+somiglianza è già peggiorata. Sette e mezzo resta il valore di serie, e quello
+che si guadagna a stare così in alto si vede con gli occhi più che nelle
+misure.
 
 Resta il nome. Un classificatore è una rete che guarda un'immagine e dice
 che cosa contiene («questo è un gatto»), e il metodo di prima ne addestrava uno
@@ -480,12 +512,27 @@ $$
 + w \big( \boldsymbol{\epsilon}_\theta(\mathbf{z}_t, c) - \boldsymbol{\epsilon}_\theta(\mathbf{z}_t, \varnothing) \big),
 $$
 
-dove $\tilde{\boldsymbol{\epsilon}}_\theta$ è la predizione di rumore effettivamente usata
-dal campionatore, $c$ il prompt e $w$ il **peso di guidance**: con $w = 1$ si
-recupera la predizione condizionata, con $w > 1$ ci si spinge *oltre*, nella
-direzione che separa il condizionato dal non condizionato (nella
-parametrizzazione originale di Ho e Salimans il coefficiente è scritto
-$1 + w$; la sostanza non cambia).
+dove $\tilde{\boldsymbol{\epsilon}}_\theta$ è la predizione di rumore
+effettivamente usata dal campionatore, $c$ il prompt e $w$ il **peso di
+guidance**: con $w = 1$ si recupera la predizione condizionata, con $w > 1$ ci
+si spinge *oltre*, nella direzione che separa il condizionato dal non
+condizionato (nella parametrizzazione originale di Ho e Salimans il
+coefficiente è scritto $1 + w$, quindi la formula è la stessa e il numero no:
+il $7{,}5$ di qui è $w = 6{,}5$ nel loro paper).
+
+Raccogliendo per peso, la stessa combinazione si scrive
+
+$$
+\tilde{\boldsymbol{\epsilon}}_\theta(\mathbf{z}_t, c) =
+w\, \boldsymbol{\epsilon}_\theta(\mathbf{z}_t, c)
++ (1 - w)\, \boldsymbol{\epsilon}_\theta(\mathbf{z}_t, \varnothing),
+$$
+
+ed è la forma che rende visibile tutto l'intervallo: fra $0$ e $1$ è una media
+pesata delle due predizioni, con $w = 0$ che ignora il prompt del tutto e
+$w = 1$ che usa la sola condizionata; sopra l'uno il peso della non
+condizionata diventa negativo, cioè non ci si limita a dar retta al testo, ci
+si allontana da «un'immagine plausibile qualunque».
 
 L'ispirazione, ed è bene chiamarla così e non «l'interpretazione»: la
 differenza tra le due predizioni approssima
@@ -502,7 +549,7 @@ autori del metodo negano esplicitamente: il classificatore implicito non c'è.
 Essendo $\boldsymbol{\epsilon}_\theta$ una rete non vincolata, il campo
 $\tilde{\boldsymbol{\epsilon}}_\theta$ non è in generale conservativo, quindi
 non esiste alcun potenziale (nessuna log-verosimiglianza di classificatore) di
-cui sia il gradiente; sono parole di Ho e Salimans nel paper già citato, che
+cui sia il gradiente; è l'argomento di Ho e Salimans nel paper già citato, che
 aggiungono che il passo lungo $\tilde{\boldsymbol{\epsilon}}_\theta$ non può
 essere letto come un attacco avversario a un classificatore di immagini. Il
 «classificatore implicito» è una guida al ragionamento, non un oggetto che
@@ -510,18 +557,19 @@ esiste da qualche parte.
 
 E c'è una seconda conseguenza, che le interfacce non dichiarano mai:
 per $w > 1$ il campionatore non campiona più da $p(\mathbf{x} \mid c)$, e
-nemmeno da $p(\mathbf{x})\,p(c \mid \mathbf{x})^w$, la distribuzione
-«inclinata» che di solito si cita per giustificarlo. Bradley e Nakkiran
-{cite}`bradley2024classifier` lo mostrano per costruzione, e aggiungono che la
-guida interagisce in modo diverso con i due campionatori in uso, che quindi non
-producono nemmeno la stessa distribuzione fra loro. Su che cosa la guida sia,
-danno una risposta parziale: nel limite continuo si comporta come un metodo
-predittore-correttore, che alterna un passo di denoising e uno di affilatura.
-Il $w = 7{,}5$ di default sta in un regime scelto per il giudizio umano,
-ben oltre il punto in cui la somiglianza statistica con i dati veri comincia a
-peggiorare: non è una manopola della qualità, è una manopola della preferenza,
-e la distinzione conta ogni volta che si valuta un modello con una metrica
-invece che con gli occhi.
+nemmeno da
+$p(\mathbf{x})\,p(c \mid \mathbf{x})^w$, la distribuzione «inclinata» che di
+solito si cita per giustificarlo. Bradley e Nakkiran
+{cite}`bradley2024classifier` lo mostrano con un controesempio, e aggiungono
+che la guida interagisce in modo diverso con i due campionatori in uso, che
+quindi non producono nemmeno la stessa distribuzione fra loro. Su che cosa la
+guida sia, danno una risposta parziale: nel limite continuo la variante DDPM
+della guida è un metodo predittore-correttore, che alterna un passo di
+denoising e uno di affilatura. Il $w = 7{,}5$ di default sta ben oltre il punto
+in cui la somiglianza statistica con i dati veri comincia a peggiorare: non è
+una manopola della qualità, è una manopola della preferenza, e la distinzione
+conta ogni volta che si valuta un modello con una metrica invece che con gli
+occhi.
 
 Il prezzo è dunque triplice. Computazionale: due valutazioni della U-Net per
 ogni passo (in pratica, un batch di due). Statistico: al crescere di $w$
@@ -543,9 +591,11 @@ PyTorch e impacchetta in un blocco solo l'archivista, il copista, il
 restauratore, la rete che legge la commissione scritta e la procedura che
 scende la scala
 (`pip install diffusers transformers accelerate`). Al primo avvio scarica i
-pesi (qualche gigabyte) e serve una GPU NVIDIA con circa quattro gigabyte di
-memoria. Senza una GPU così il blocco non gira, e non è un problema: si legge,
-perché quello che c'è da capire sta nei nomi delle opzioni.
+pesi (qualche gigabyte); così com'è scritto vuole una GPU NVIDIA con circa
+quattro gigabyte di memoria, perché la riga `pipe.to("cuda")` la nomina.
+Cambiando quella riga la stessa pipeline gira anche sulla CPU, molto più
+lentamente. Chi non ha una GPU così legge il blocco invece di lanciarlo, perché
+quello che c'è da capire sta nei nomi delle opzioni.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -573,7 +623,7 @@ immagine.save("gatto_acquerello.png")
 Due note pratiche. Il prompt è in inglese perché i modelli della famiglia
 SD v1 sono addestrati su didascalie in inglese: con altre lingue i
 risultati peggiorano sensibilmente. E se la memoria non basta,
-`pipe.enable_model_cpu_offload()` tiene sulla scheda un pezzo di modello per
+`pipe.enable_model_cpu_offload()` tiene sulla GPU un pezzo di modello per
 volta e lascia gli altri nella memoria del computer: si paga in secondi e il
 picco scende di molto.
 
@@ -662,9 +712,10 @@ tecnica.
 - Per decidere quanto dare retta alla richiesta si interroga la rete due
   volte, una senza dirle niente e una dandole la richiesta, e si guarda di
   quanto le due risposte differiscono: quella differenza è il contributo del
-  testo, ed è piccola. Si cammina moltiplicandola, di solito per sette e mezzo.
-  Più si moltiplica, più il modello ubbidisce e meno inventa; esagerando,
-  l'immagine viene «sovracotta».
+  testo, ed è piccola. Si cammina lungo la prima risposta più quella
+  differenza moltiplicata, di solito per sette e mezzo. Più si moltiplica, più
+  il modello ubbidisce e meno inventa; esagerando, l'immagine viene
+  «sovracotta».
 - I pesi aperti hanno generato una comunità e non solo un'utenza: sono nate
   tecniche per specializzare il modello con file da pochi megabyte, o per
   costringerlo a seguire uno schizzo.
@@ -687,12 +738,15 @@ tecnica.
   compresso ($64 \times 64 \times 4$: 48 volte meno).
 - Il traslocatore è il variational autoencoder {cite}`kingma2014auto`:
   encoder $q_\phi(\mathbf{z} \mid \mathbf{x})$ e decoder $p_\psi(\mathbf{x} \mid \mathbf{z})$ addestrati
-  sull'ELBO, che rende il latente continuo e campionabile. In Stable
-  Diffusion è addestrato prima e poi congelato, e la sua capacità di
-  ricostruzione è un limite superiore sulla qualità del sistema.
+  sull'ELBO, il cui termine KL tiene aperto il margine e raccoglie i codici
+  attorno al prior. In Stable Diffusion quel termine pesa pochissimo e si
+  aggiungono una loss percettiva e una avversaria; il VAE è addestrato prima e
+  poi congelato, e la sua capacità di ricostruzione è un limite superiore sulla
+  qualità del sistema.
 - Il latente va riscalato prima di diffonderci sopra (in SD 1.x per la
-  costante $0{,}18215$): lo schedule *variance-preserving* presuppone varianza
-  unitaria, che il latente del VAE non ha.
+  costante $0{,}18215$), e la riscalatura va disfatta prima di decodificare: lo
+  schedule *variance-preserving* presuppone varianza unitaria, che il latente
+  del VAE non ha.
 - La ricetta: encoder → diffusione con U-Net nel latente → decoder; il prompt,
   trasformato dal text encoder di CLIP {cite}`radford2021learning`, entra
   nella U-Net via cross-attention (la stessa formula dei Transformer, con

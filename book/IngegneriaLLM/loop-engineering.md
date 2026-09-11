@@ -526,7 +526,7 @@ scaglioni, e le chiavi consegnate il primo giorno sono un disastro rimandato.
 
 `````{tab} Superiore
 
-Il rollout maturo procede per livelli, allargando il raggio d'azione solo
+L'autonomia matura si concede per livelli, allargando il raggio d'azione solo
 quando le metriche lo giustificano:
 
 - **L1, solo report.** Il loop osserva e *propone*: apre una segnalazione,
@@ -635,7 +635,7 @@ va sorvegliato mentre lavora.
 - Gli errori si moltiplicano lungo il ciclo: *se* i passi sono
   indipendenti $(1-p)^n$ decade in fretta, e dove l'avvelenamento del contesto
   li correla la formula dà l'ordine di grandezza invece della cifra. In un
-  verso o nell'altro il gate resta essenziale. Rollout a fasi: L1 solo
+  verso o nell'altro il gate resta essenziale. Autonomia a scaglioni: L1 solo
   report → L2 fix assistiti con cancello umano → L3 non presidiato
   entro allow-list.
 - Onestà sui limiti: il comprehension debt {cite}`osmani2026comprehension`

@@ -43,9 +43,10 @@ domanda e passaggi in punti su una mappa del significato, prendeva i pochi
 passaggi più vicini alla domanda (quanti, lo decidiamo noi: diciamo i primi
 cinque) e li incollava nel foglietto di istruzioni che si dà al modello, il
 *prompt*, prima di fargli scrivere la risposta. Il cercatore è quello di DPR
-{cite}`karpukhin2020dense`; la catena intera, con il generatore in fondo, è
-quella di Lewis e colleghi. È un ottimo punto di partenza e un pessimo punto di
-arrivo.
+{cite}`karpukhin2020dense`; la catena intera, con il generatore in fondo,
+discende da quella di Lewis e colleghi, che però le risposte le sommava
+invece di incollare i passaggi in un prompt solo. È un ottimo punto di
+partenza e un pessimo punto di arrivo.
 
 Questa sezione raccoglie le tecniche che spingono quel tetto più in alto. Sono
 tre, e si distinguono per dove intervengono lungo la pipeline, la catena di
@@ -390,6 +391,14 @@ centinaia, $k$ pochi; $N$ resta la dimensione dell'archivio, che è un'altra
 cosa e di parecchi ordini di grandezza più grande). Il costo del reranking è
 $k_1$ inferenze di cross-encoder per query: accettabile con quei valori di
 $k_1$, proibitivo sull'intero archivio.
+
+Questa disposizione a stadi ha una sua letteratura, e conviene sapere dove
+guardare: Nogueira, Yang, Cho e Lin la montano con un cross-encoder BERT (il
+nome con cui si trova citata è *monoBERT*) e misurano che $k_1$ è la manopola
+con cui si sceglie il punto di equilibrio fra qualità e latenza
+{cite}`nogueira2019multistage`. Da qui l'indicazione pratica su come si fissa:
+alzare $k_1$ compra recall e costa attesa, quindi il valore giusto dipende da
+quanto l'attesa pesa nel sistema che si sta costruendo.
 
 Tra i due estremi esiste una via di mezzo elegante: l’interazione tardiva
 di ColBERT {cite}`khattab2020colbert`. Invece di collassare ogni testo in

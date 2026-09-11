@@ -7,17 +7,20 @@ in un ricordo fantasma) e da lì non esce più.
 E c'è un limite più profondo: la rete *ricorda*, ma non *inventa*. Le sue
 venticinque caselle coincidono una a una con le venticinque caselle del
 disegno da ricordare, e non gliene resta nessuna libera per annotarsi qualcosa
-di suo, per esempio che nelle tre lettere ricorre spesso una riga verticale al
-centro. Di una rete che non ha caselle libere per queste annotazioni si dice
-che non ha **rappresentazioni interne**.
+di suo, per esempio che nelle tre lettere le caselle accese sono sempre nove
+su venticinque. Di una rete che non ha caselle libere per queste annotazioni
+si dice che non ha **rappresentazioni interne**.
 
 La risposta a tutti e due i limiti si chiama **macchina di Boltzmann**, e
 aggiunge alla rete di Hopfield esattamente due ingredienti: la temperatura
 (la scossa di cui si diceva in apertura di capitolo) e i **neuroni nascosti**,
-che sono quelle caselle libere per gli appunti. Il nome compare già nel 1983,
-in un lavoro di Scott Fahlman, Geoffrey Hinton e Terrence Sejnowski;
-l'articolo che ne fissa l'algoritmo di apprendimento, quello di cui si parla
-qui, è del 1985 e porta la firma di David Ackley, Hinton e Sejnowski
+che sono quelle caselle libere per gli appunti: nascosti perché non si vedono
+né in entrata né in uscita, come i neuroni degli strati intermedi di una rete,
+mentre le caselle su cui si posano i dati si chiamano per contrasto visibili.
+Il nome compare già nel 1983, in un lavoro di Scott Fahlman, Geoffrey Hinton e
+Terrence Sejnowski; l'articolo che ne fissa l'algoritmo di apprendimento,
+quello di cui si parla qui, è del 1985 e porta la firma di David Ackley,
+Hinton e Sejnowski
 {cite}`ackley1985learning`.
 
 Il nome è un omaggio a Ludwig Boltzmann, uno dei padri della meccanica
@@ -32,8 +35,9 @@ caldo. Sono le stesse proporzioni, con la stessa formula.
 E quel tempo *è* la probabilità che la rete assegna a una configurazione: se
 la guardi un milione di volte e la trovi in fondo a una certa valle in
 trentamila occasioni, quella valle vale il 3%. È la porta da cui un'altezza
-diventa una percentuale, e il pedaggio da pagare per attraversarla è il
-personaggio della sezione successiva.
+diventa una percentuale, e il pedaggio da pagare per attraversarla è la
+funzione di partizione, a cui è intitolata
+{doc}`Oltre la partizione </ModelliEnergia/oltre-la-partizione>`.
 
 `````{tab} Elementare
 
@@ -52,8 +56,11 @@ nessuna casella del dato e servono alla rete per annotare regolarità sue
 Imparare diventa un confronto fra due modi di stare al mondo. Nella *veglia* la
 macchina guarda i dati veri e segna quali coppie di caselle si accendono
 insieme. Le coppie, e non altro: i suoi legami collegano due caselle per volta,
-e quali coppie vanno d'accordo è tutto quello che può imparare. Nel *sogno* la
-si lascia inventare configurazioni per conto suo, e si segna la stessa cosa.
+e non sa segnare altro. Le coppie però non sono soltanto quelle del disegno, ed
+è qui che i taccuini si guadagnano il posto: ogni taccuino ha un legame con
+ciascuna casella, quindi una regolarità che ne riguarda parecchie insieme la
+macchina la impara appoggiandola lì. Nel *sogno* la si lascia inventare
+configurazioni per conto suo, e si segna la stessa cosa.
 
 Poi si ritoccano i legami, e ritoccare un legame vuol dire deformare il
 paesaggio: sono i legami a decidere l'altezza di ogni punto. Rinforzare quello
@@ -67,9 +74,11 @@ Il guaio è il tempo. Sognare per bene vuol dire lasciarla scuotere finché le
 proporzioni non smettono di cambiare, cioè finché altre mille occhiate non
 spostano più i conteggi: è il momento in cui si è fotografato il paesaggio e
 non un pezzo di passeggiata, e arriva tardissimo. Nella macchina originale
-costava carissima anche la veglia: con i dati veri sotto gli occhi i taccuini
-dovevano assestarsi allo stesso modo, e quell'attesa andava rifatta da capo
-per ogni singolo dato dell'archivio.
+costava carissima anche la veglia, e la ragione è che i taccuini sono collegati
+anche fra loro: nessuno può decidere se accendersi finché non sa che cosa
+stanno facendo gli altri. Anche con i dati veri sotto gli occhi, quindi,
+bisognava aspettare che si mettessero d'accordo, e quell'attesa andava rifatta
+da capo per ogni singolo dato dell'archivio.
 
 `````
 
@@ -83,12 +92,13 @@ P(s_i = +1) = \sigma\!\left(\frac{2 h_i}{T}\right)
 = \frac{1}{1 + e^{-2 h_i / T}},
 $$
 
-dove $h_i = \sum_j w_{ij} s_j$ è il campo locale, $\sigma$ la
-{doc}`sigmoide </RetiNeurali/funzioni-attivazione>` e $T > 0$ la
-temperatura. Il
-fattore 2 non è un refuso e non è universale: viene dalla convenzione
-$s_i \in \{-1,+1\}$ ereditata da Hopfield. Il conto è il rapporto di Gibbs fra
-i due stati possibili del neurone, che per la sezione precedente valgono
+dove $h_i = \sum_{j \neq i} w_{ij} s_j$ è il campo locale, $\sigma$ la
+{doc}`sigmoide </RetiNeurali/funzioni-attivazione>` e $T > 0$ la temperatura.
+Il fattore 2 non è un refuso e non è universale: viene dalla convenzione
+$s_i \in \{-1,+1\}$ degli spin, quella con cui la sezione precedente ha
+scritto l'energia; Hopfield, nel 1982, usava $\{0,1\}$. Il conto è il rapporto
+di Gibbs fra i due stati possibili del neurone, che per la sezione precedente
+valgono
 $E(s_i = \pm 1) = \mp h_i + \text{cost}$, e quindi distano $\Delta E = 2h_i$:
 
 $$
@@ -197,10 +207,11 @@ gratis. Di solito, quando una macchina impara, c'è un numero che dice quanto st
 sbagliando. Non è l'energia: l'energia è il voto dato a una singola risposta,
 questo è un voto dato all'intera macchina, e lo si guarda una volta ogni
 tanto. Imparare vuol dire farlo calare: finché cala si è sulla strada giusta,
-e quando smette si è arrivati. Con il sogno abbreviato quel numero
-non c'è, e non perché sia difficile da calcolare o perché nessuno l'abbia
-ancora trovato: un numero del genere qui non esiste, e i ritocchi che la
-macchina fa non stanno calando verso niente. Nessuno può garantire che stia
+e quando smette si è arrivati. Quel numero, qui, resta fuori portata:
+calcolarlo vorrebbe dire misurare il paesaggio intero, ed è il conto a cui è
+intitolata la sezione dopo. I ritocchi del sogno abbreviato gli somigliano ma
+non sono i suoi, e nel caso più studiato si è dimostrato che non sono nemmeno
+la discesa di nessun altro numero. Nessuno può garantire che la macchina stia
 andando verso qualcosa invece che in tondo. In pratica, sulle reti di allora,
 funzionava benissimo.
 
@@ -218,23 +229,31 @@ ha forma chiusa e ogni strato si campiona in blocco, in parallelo. È l'RBM a
 riparare la metà cara di cui sopra; la contrastive divergence accorcia
 l'altra.
 
-Sulla natura di quell'aggiornamento conviene essere precisi, perché la formula
-abbreviata non è «il gradiente giusto, con un errore». Sutskever e Tieleman ne
-danno due dimostrazioni, e attribuiscono il risultato a Tieleman (2007):
-l'aggiornamento CD1 *noiseless* (cioè con le
-attese calcolate esattamente, non stimate) per RBM binarie non è il
-gradiente di alcuna funzione {cite}`sutskever2010convergence`. Non esiste
-cioè un obiettivo di cui sia una stima, nemmeno distorta; e si può costruire
-un termine di penalità (artificioso, ma legittimo) che lo fa ciclare
-all'infinito invece di fermarsi, mentre con la penalità $L^2$ di tutti i
-giorni gli stessi autori dimostrano che un punto fisso esiste.
+Sulla natura di quell'aggiornamento conviene essere precisi, perché due cose
+diverse si confondono con facilità. Una stima *distorta* del gradiente della
+log-verosimiglianza l'aggiornamento lo è per costruzione: la fase negativa
+esatta viene sostituita da una catena fermata dopo un passo, e la sostituzione
+introduce una distorsione. Quello che non è, è il gradiente *esatto* di
+qualche funzione. Sutskever e Tieleman ne danno due dimostrazioni, attribuendo
+il risultato a Tieleman (2007), per l'aggiornamento CD1 *noiseless* (cioè con
+le attese calcolate esattamente, non stimate) su RBM binarie
+{cite}`sutskever2010convergence`. Il perimetro finisce lì, e sono loro a
+dirlo: non sono riusciti a escludere che CD stia comunque minimizzando
+qualcosa per altra via, e chiudono scrivendo che dimostrare la convergenza di
+CD resta un problema aperto. Si può poi costruire un termine di penalità
+(artificioso, ma legittimo) che lo fa ciclare all'infinito invece di fermarsi,
+mentre con la penalità $L^2$ di tutti i giorni gli stessi autori dimostrano
+che un punto fisso esiste per le macchine di Boltzmann completamente visibili;
+per le RBM esiste in modo banale, e lo fanno notare.
 
 Il perimetro dell'enunciato è stretto e istruttivo, e i due autori lo tracciano
 richiamando risultati anteriori di Aapo Hyvärinen (2007): se la catena è di
-Langevin lo stesso aggiornamento *diventa* il gradiente dello score matching
-(la prossima sezione), e se campiona una componente a caso dalla condizionale
-diventa quello della pseudo-verosimiglianza. È proprio nel caso comune, Gibbs
-su RBM binarie, che non è il gradiente di niente. In pratica funzionava lo
+Langevin, al limite di rumore infinitesimo, lo stesso aggiornamento *diventa*
+il gradiente dello score matching, che
+{doc}`Oltre la partizione </ModelliEnergia/oltre-la-partizione>` prende come
+seconda via; e se campiona una componente a caso dalla condizionale diventa
+quello della pseudo-verosimiglianza. È proprio nel caso comune, Gibbs su RBM
+binarie, che non è il gradiente esatto di niente. In pratica funzionava lo
 stesso: è uno di quei casi in cui un campo ha usato per anni uno strumento
 senza la proprietà che gli attribuiva.
 
@@ -251,16 +270,31 @@ energia sulle immagini di una decina d'anni dopo.
 
 `````
 
-La macchina che ha lasciato il segno, però, non è quella piena di Ackley,
-Hinton e Sejnowski: è una sua versione sfoltita, in cui i collegamenti restano
-soltanto fra le caselle dei dati e i taccuini interni, e nessuno più fra un
-taccuino e l'altro. Si chiama **macchina di Boltzmann ristretta**, e tutti la
-chiamano con la sigla inglese, **RBM**.
+La macchina che ha lasciato il segno, però, non è quella di Ackley, Hinton e
+Sejnowski, dove ogni casella è collegata a tutte le altre: è una sua versione
+sfoltita, in cui i collegamenti restano soltanto fra le caselle dei dati e i
+taccuini interni, e nessuno più fra un taccuino e l'altro
+({numref}`fig-neuroni-nascosti`). Si chiama
+**macchina di Boltzmann ristretta**, e tutti la chiamano con la sigla inglese,
+**RBM**, da *restricted Boltzmann machine*. È del 1986, cioè di sedici anni
+prima della contrastive divergence che l'ha resa praticabile: la propose Paul
+Smolensky, che la chiamava *harmonium*.
 
-È quella potatura a far cadere il primo dei due costi, la veglia. Il motivo si
-dice in una riga: se i taccuini non sono collegati fra loro, con i dati veri
-davanti agli occhi ogni taccuino dipende soltanto dai dati, e nessuno deve
-aspettare la decisione del vicino per prendere la sua. Non c'è niente da
+```{figure} ../figures/neuroni-nascosti.svg
+:name: fig-neuroni-nascosti
+:alt: "Due schemi affiancati, con le stesse otto caselle: tre in alto in teal, i taccuini interni, cioè i neuroni nascosti, e cinque in basso in terracotta, le caselle dei dati. A sinistra, «macchina di Boltzmann», sono collegate tutte con tutte: i tredici legami dentro un gruppo, in ocra, si aggiungono ai quindici che uniscono i due gruppi. A destra, «macchina di Boltzmann ristretta», i legami in ocra non ci sono più e restano soltanto i quindici fra un gruppo e l'altro, cioè uno schema a due file in cui nessun taccuino tocca un altro taccuino."
+:width: 100%
+
+Che cosa toglie la potatura. A sinistra ogni casella è collegata a tutte le
+altre; a destra restano soltanto i legami fra le due file, e i tredici in ocra
+spariscono. È quel taglio a far sì che, con i dati veri davanti, ogni taccuino
+possa decidere da sé invece di aspettare i vicini.
+```
+
+È quella potatura a far cadere il costo della veglia. Il motivo si dice in una
+riga: se i taccuini non sono collegati fra loro, con i dati veri davanti agli
+occhi ogni taccuino dipende soltanto dai dati, e nessuno deve aspettare la
+decisione del vicino per prendere la sua. Non c'è niente da
 assestare: si calcola tutto in un colpo solo. Il secondo costo, il sogno, è
 quello che la contrastive divergence di poco fa ha già accorciato. Insieme, le
 due mosse rendono praticabile ciò che nel 1985 non lo era.
@@ -300,8 +334,8 @@ paesaggio intero, cioè il gesto che trasforma un'altezza in una percentuale.
   sistema la veglia; la contrastive divergence bara sul sogno, concedendo
   alla macchina un istante solo di fantasia a partire da una cosa vera.
   Funziona, ma è una scorciatoia, non una soluzione: il numero che dice quanto
-  la macchina sta sbagliando, qui, non esiste, e i suoi ritocchi non stanno
-  calando verso niente.
+  la macchina sta sbagliando resta fuori portata, e i ritocchi che fa non sono
+  la discesa di nessun numero.
 - Da qui in avanti l'altezza del paesaggio diventa una percentuale, e per
   trasformarla bisognerebbe aver misurato il paesaggio intero, valle per
   valle. È il conto che l'apertura del capitolo chiamava funzione di
@@ -326,9 +360,11 @@ paesaggio intero, cioè il gesto che trasforma un'altezza in una percentuale.
 - La contrastive divergence {cite}`hinton2002training` accorcia la catena
   a uno o pochi passi partendo dai dati; la persistent CD
   {cite}`tieleman2008training` la fa proseguire fra un aggiornamento e
-  l'altro. L'aggiornamento CD1 non è il gradiente di nessuna funzione
-  {cite}`sutskever2010convergence`: funziona in pratica, ma non esiste un
-  obiettivo che stia massimizzando. RBM e CD hanno avuto un ruolo storico nel
+  l'altro. È una stima distorta del gradiente della log-verosimiglianza, e
+  l'aggiornamento CD1 *noiseless* su RBM binarie non è il gradiente esatto di
+  nessuna funzione {cite}`sutskever2010convergence`: se stia minimizzando
+  qualcosa per altra via resta un problema aperto. RBM e CD hanno avuto un
+  ruolo storico nel
   far ripartire il deep learning, e oggi sono quasi solo storia; il linguaggio
   dell'energia no.
 ```

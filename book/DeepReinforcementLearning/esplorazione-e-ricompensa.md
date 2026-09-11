@@ -538,12 +538,21 @@ sbattere e prendendo fuoco, incassando in media il 20% di punti in più dei
 giocatori umani senza mai finire la gara. Aveva "vinto" secondo la lettera
 della ricompensa, perdendo secondo ogni ragionevole intento.
 
+Il punto di divergenza si può anche mettere in cifre, e la {doc}`sezione su
+allineamento e governance </AIResponsabile/allineamento-e-governance>` lo fa
+con un esempio giocattolo: un modello che fa da giudice sceglie, fra un
+numero crescente di risposte scritte, quella che gli piace di più. Il giudice
+guarda due cose, il merito e la lunghezza, e sbaglia anche un po' a caso; le
+due che guarda salgono a ogni giro, e il suo voto con loro, mentre la qualità
+vera delle risposte scelte sale invece fino a un massimo e poi scende sotto il
+valore da cui era partita.
+
 `````{tab} Elementare
 
-È la stessa cosa che succede quando si paga un idraulico a numero di tubi
-sostituiti: qualcuno inizierà a sostituire tubi che andavano benissimo. Il
-metro con cui misuri diventa l'obiettivo, e l'obiettivo vero (l'impianto che
-funziona) passa in secondo piano.
+La barca che gira in tondo è la stessa cosa che succede quando si paga un
+idraulico a numero di tubi sostituiti: qualcuno inizierà a sostituire tubi che
+andavano benissimo. Il metro con cui misuri diventa l'obiettivo, e l'obiettivo
+vero (l'impianto che funziona) passa in secondo piano.
 
 Con gli agenti è identico, e più insidioso, perché un ottimizzatore
 instancabile cercherà *ogni* scorciatoia possibile. Il problema non è che

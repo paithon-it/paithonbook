@@ -3,15 +3,17 @@
 Nel 1958 uno psicologo di Cornell, Frank Rosenblatt, presenta alla stampa il
 *percettrone* {cite}`rosenblatt1958perceptron`, un modello di neurone
 artificiale che impara a riconoscere forme dagli esempi. Il *New York Times*
-scrive che è l'embrione di un computer elettronico che un giorno saprà
-camminare, parlare, vedere, scrivere, riprodursi e avere coscienza di sé. Due
+riporta l'attesa della Marina: è l'embrione di un computer elettronico che un
+giorno saprà camminare, parlare, vedere, scrivere, riprodursi e avere coscienza
+di sé. Due
 anni dopo l'idea prende corpo in una
 macchina grande come un armadio, il *Mark I Perceptron*. Davanti c'è una
-griglia di quattrocento fotocellule, che è l'occhio. Dietro non ci sono
-quattrocento manopole ma cinquecentododici: le fotocellule sono collegate a
-caso, con fili fissi, a un banco di unità intermedie, e regolabili sono le
-manopole di quelle. Girarne una vuol dire cambiare quanto conta il verdetto di
-un'unità, non di un singolo puntino di luce. A girarle, ogni volta
+griglia di quattrocento fotocellule, che è l'occhio. Le manopole, però, non
+stanno lì: le fotocellule sono collegate a caso, con fili fissi, a un banco di
+cinquecentododici scatolette intermedie, ognuna delle quali guarda un pugno di
+fotocellule e dà il suo verdetto, e regolabili sono le manopole che pesano
+quei verdetti. Girarne una vuol dire cambiare quanto conta il verdetto di una
+scatoletta, non di un singolo puntino di luce. A girarle, ogni volta
 che la macchina sbaglia, è un motorino: l'apprendimento, lì, era fatto di
 ferro. Il clamore era smisurato, e lo pagheremo caro. Ma sotto c'è un'idea
 sobria e duratura, che ancora oggi è il
@@ -28,8 +30,9 @@ Ogni ingresso arriva con un peso che ne misura l'importanza: il primo
 ingresso lo chiamiamo $x_1$ e il suo peso $w_1$, il secondo $x_2$ e $w_2$, e
 avanti così (scrivere $x_i$ e $w_i$, con una lettera al posto del numero, è il
 modo di dire «uno qualunque di loro»). Il neurone li combina in una somma
-pesata e vi aggiunge un termine costante, il bias $b$, che è la sua
-inclinazione di partenza. Poi il totale passa a un ultimo gesto, che decide sì
+pesata e vi aggiunge un termine costante, il bias $b$, che è la sua indole di
+partenza, quanto pende verso il sì prima ancora di guardare gli ingressi. Poi
+il totale passa a un ultimo gesto, che decide sì
 o no, e quel gesto si chiama **funzione di attivazione**
 ({numref}`fig-neurone`).
 
@@ -49,7 +52,7 @@ Stai per uscire di casa e devi decidere se prendere l'ombrello. Guardi due
 indizi: quanto è nuvoloso e cosa dice l'app del meteo. Dai a ciascun indizio un
 peso (l'app conta più del colore del cielo) e fai una somma: indizio per il suo
 peso, il tutto sommato. Il bias è la tua indole di partenza: un pessimista
-parte già orientato verso il "sì, prendilo". Se il totale supera una soglia,
+parte già orientato verso il "sì, prendilo". Se il totale arriva a una soglia,
 esci con l'ombrello.
 
 Con due ingressi la somma è semplicemente
@@ -90,7 +93,19 @@ ingressi in due regioni.
 La somma pesata $z$ è un numero qualsiasi. Per trasformarla in una decisione
 serve un ultimo passo, la funzione di attivazione. Nel percettrone classico
 è la più netta possibile: la funzione a **gradino** (detta anche di Heaviside,
-dal nome del fisico inglese che la mise in uso).
+dal nome del fisico inglese che la mise in uso), e la
+{numref}`fig-funzione-gradino` è tutto il suo grafico.
+
+```{figure} ../figures/funzione-a-gradino.svg
+:name: fig-funzione-gradino
+:alt: "Grafico della funzione a gradino. In orizzontale la somma pesata z, in verticale l'uscita, che vale soltanto 0 oppure 1. A sinistra dello zero il tratto corre basso sulla riga dello 0, sullo zero salta di netto in verticale, e da lì in poi corre alto sulla riga dell'1. Sul salto una pallina piena marca il valore 1 nello zero e un cerchietto vuoto marca lo 0 lasciato: lo zero conta come sì. Non c'è nessuna pendenza da nessuna parte, il tratto è piatto prima e dopo."
+:width: 70%
+
+Il gradino da cui la funzione prende il nome. La somma pesata può valere
+qualunque numero, la risposta soltanto $0$ o $1$, e il passaggio dall'una
+all'altra avviene tutto in un punto. La pallina piena dice dove finisce lo
+zero: la soglia lo zero lo raggiunge, quindi la risposta lì è sì.
+```
 
 `````{tab} Elementare
 
@@ -141,7 +156,15 @@ $$
 g(z) = \begin{cases} 1 & \text{se } z \ge 0, \\ 0 & \text{altrimenti.}\end{cases}
 $$
 
-La decisione è dunque binaria: $\hat{y}\in\{0,1\}$. Il neurone assegna la
+Lo zero sta con l'uno, ed è una convenzione: la funzione di Heaviside in zero
+si definisce anche $1/2$, e il libro sceglie $1$ perché le mosse dell'esempio
+della porta AND contino quelle che contano. Due proprietà di $g$ contano più della
+convenzione. La prima: la decisione è binaria, $\hat{y}\in\{0,1\}$. La seconda,
+che si paga cara più avanti: $g'(z)=0$ per ogni $z\neq 0$ e in $0$ la derivata
+non esiste, quindi un metodo che corregga i pesi seguendo la pendenza qui
+moltiplica per zero e non si muove.
+
+Il neurone assegna la
 classe $1$ ai punti da un lato dell'iperpiano $\mathbf{w}^\top\mathbf{x}+b=0$ e
 la classe $0$ a quelli dall'altro. È un **classificatore lineare**: sposta il
 bias $b$ e trasli la frontiera; ruota $\mathbf{w}$ e la inclini.
@@ -223,7 +246,8 @@ ed è la prima cosa che dovrà disimparare. Esci con l'ombrello e c'è il sole:
 doveva dire $0$. Il peso della nuvolosità scende di $0{,}1 \cdot 1 = 0{,}1$,
 quello dell'app di $0{,}1 \cdot 0 = 0$, cioè non si muove affatto. Le due
 manopole segnano $-0{,}1$ e $0$: l'app valeva zero, non ha detto niente, e non
-paga niente.
+paga niente. Anche il bias scende di $0{,}1$, e da $0$ passa a $-0{,}1$, perché
+lui parla tutte le mattine.
 
 E il bias? È una manopola anche lui, e si corregge con la stessa regola: si
 comporta come un indizio che vale sempre $1$, quindi parla tutte le mattine e
@@ -243,14 +267,17 @@ dimezza, quelle che possono servire diventano quattro volte tante.
 
 Largo in proporzione al disegno, non in centimetri. Fotocopia il foglio al
 doppio e non cambia niente: corridoio doppio, puntini due volte più lontani,
-stesse correzioni di prima. E mille giornate in più segnate sul foglio, con lo
-stesso corridoio, non aggiungono una correzione a quelle che possono servire.
+stesse correzioni di prima. E mille giornate in più segnate sul foglio non
+aggiungono una correzione a quelle che possono servire, purché stiano dentro
+allo spazio già occupato: a contare non è quante sono, ma quanto è largo il
+corridoio rispetto alla distanza del puntino più lontano.
 
 La riga prudente, però, la macchina non la promette. Si ferma appena nessun
 puntino resta dalla parte sbagliata, e la riga può restare lì, appiccicata a un
 puntino; una giornata nuova appena diversa finirebbe dal lato sbagliato. Cercare
 la riga che passa in mezzo al corridoio, il più lontano possibile da tutti i
-puntini, è un altro mestiere.
+puntini, è un altro mestiere, ed è quello delle
+{doc}`macchine a vettori di supporto </MachineLearning/svm>`.
 
 `````
 
@@ -270,7 +297,11 @@ cosmetico: partendo da $\mathbf{w}=\mathbf{0}$ e $b=0$ ogni aggiornamento è
 proporzionale a $\eta$, quindi cambiarlo riscala $\mathbf{w}$ e $b$ dello stesso
 fattore, e la decisione dipende solo dal segno di
 $\mathbf{w}^\top\mathbf{x}+b$, che un riscalamento positivo non tocca. Con
-$\eta=0{,}1$, $\eta=1$ o $\eta=7{,}3$ non cambia nemmeno una predizione.
+$\eta=0{,}1$, $\eta=1$ o $\eta=7{,}3$ la porta AND dell'esempio esce identica. Il
+riscalamento esatto vale però in aritmetica esatta: basta un totale che cada
+proprio su zero, dove l'arrotondamento decide da che parte sta, perché le due
+esecuzioni si separino e finiscano su due rette diverse, tutte e due
+separatrici.
 Diventerà una scelta vera nella sezione sulla backpropagation, dove la
 correzione non sarà più proporzionale all'errore ma al gradiente di una loss.
 
@@ -283,9 +314,9 @@ forma che si deve a Novikoff {cite}`novikoff1962convergence`: il numero di
 correzioni, partendo da $\mathbf{w}=\mathbf{0}$, è al più $(R/\gamma)^2$, dove
 $R = \max_i \lVert\mathbf{x}_i\rVert$ è
 la norma massima degli esempi e $\gamma$ il margine geometrico del miglior
-separatore, cioè quanto è largo il corridoio vuoto fra le due classi (la
-distanza dall'iperpiano al punto più vicino, misurata nello stesso spazio in
-cui si vive dopo aver assorbito il bias)
+separatore, cioè la distanza dall'iperpiano al punto più vicino, che è metà
+del corridoio vuoto fra le due classi, misurata nello stesso spazio in cui si
+vive dopo aver assorbito il bias
 ($\gamma = \min_i |\mathbf{w}^{*\top}\mathbf{x}_i|$ con
 $\lVert\mathbf{w}^*\rVert = 1$: senza quel vincolo il rapporto non sarebbe
 nemmeno un numero puro, perché basterebbe raddoppiare $\mathbf{w}^*$ per
@@ -306,7 +337,8 @@ differenziabili verrà dopo.
 
 `````
 
-Tradotta in NumPy (la libreria di calcolo del {doc}`capitolo su Python </Python/overview>`), la ricetta è
+Tradotta in NumPy (la libreria di calcolo della
+{doc}`sezione che porta il suo nome </Python/numpy>`), la ricetta è
 quasi identica a come l'abbiamo raccontata:
 
 ```python
@@ -553,7 +585,8 @@ prima, cioè una riga dritta, e lo XOR resterebbe fuori portata. Quel qualcosa
 da mettere in mezzo si chiama **non linearità**, e sono funzioni come la ReLU o
 la sigmoide: sono loro, insieme al percettrone multistrato (MLP) e
 all'algoritmo che lo addestra, la *backpropagation*, il tema delle sezioni
-sulle funzioni di attivazione e sulla backpropagation.
+{doc}`sulle funzioni di attivazione </RetiNeurali/funzioni-attivazione>` e
+{doc}`sulla backpropagation </RetiNeurali/backpropagation>`.
 
 La {numref}`fig-xor-si-piega` fa vedere il passaggio per intero, ed è la
 risposta che aspettavamo: lo XOR risolto. Conviene capire il
@@ -642,13 +675,14 @@ XOR, per intero.
 - Un neurone artificiale calcola una somma pesata degli ingressi più un
   bias, $\mathbf{w}^\top\mathbf{x}+b$, e la fa passare in una funzione di
   attivazione.
-- Il percettrone impara correggendo i pesi in proporzione all'errore:
+- Il percettrone impara correggendo i pesi in proporzione all'ingresso, perché
+  con il gradino l'errore vale sempre $0$, $+1$ o $-1$:
   $w_i \leftarrow w_i + \eta\,(y-\hat{y})\,x_i$. Se i dati sono separabili e si
   parte da $\mathbf{w}=\mathbf{0}$ con il bias assorbito, converge in al più
   $(R/\gamma)^2$ correzioni, un limite che non dipende dal numero di esempi
   ma dal rapporto fra la norma massima e il margine; l'iperpiano che trova però
   è uno qualunque fra quelli che separano, senza garanzia di margine. Se non lo
-  sono, i pesi non divergono: entrano in un ciclo.
+  sono, i pesi restano comunque limitati.
 - Un solo neurone è un classificatore lineare: separa lo spazio con un
   iperpiano e fallisce su problemi non separabili come lo XOR. Quel che
   *Perceptrons* dimostra però è sull’ordine dei predicati (la parità su $n$

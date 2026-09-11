@@ -327,6 +327,62 @@ quando si sostituisce un pezzo con uno che anticipa il seguito. Il markdown
 resta valido e nessuno se ne accorge, quindi c'è un controllo:
 `python3 scripts/coerenza.py --solo doppioni`.
 
+## Le regole che gli script controllano
+
+Buona parte di quello che sta qui sopra la controlla una macchina, e i
+validatori girano anche in locale, prima di aprire una pull request. Questa è
+la mappa fra il comando e la regola che fa rispettare.
+
+| comando | che cosa segnala |
+|---|---|
+| `python3 scripts/coerenza.py` | tutti gli assi insieme; `--solo <asse>` ne sceglie uno |
+| `coerenza.py --solo cite` | citazioni senza voce in `book/references.bib`, che spariscono dalla pagina senza nessun avviso |
+| `coerenza.py --solo numref,ref,figure,toc` | target rotti, `:name:` duplicati, figure mai richiamate, file fuori dal `_toc.yml` |
+| `coerenza.py --solo lineette` | i due travestimenti in ASCII della lineetta, la doppia `--` e il trattino singolo spaziato |
+| `coerenza.py --solo enfasi` | il tetto di cinque marcature ogni mille parole di prosa, capitolo per capitolo, e i termini marcati in più di un capitolo |
+| `coerenza.py --solo contrapposizioni` | i «non è X, è Y» oltre le due per capitolo |
+| `coerenza.py --solo simboli` | una lettera che riceve due glosse diverse nello stesso capitolo |
+| `coerenza.py --solo doppioni` | la stessa frase due volte nello stesso capoverso |
+| `coerenza.py --solo schede` | due blocchi di schede contigui, che la build fonde in un gruppo da quattro linguette, e la coppia spezzata da un capoverso in mezzo |
+| `coerenza.py --solo landing` | schede della griglia di apertura mancanti, di troppo o fuori ordine |
+| `python3 scripts/rimandi.py --verifica` | rimandi a un capitolo scritti in prosa invece che come link |
+| `python3 scripts/verifica-uscite.py <Capitolo>` | i numeri stampati nel libro sono ancora quelli che il codice produce |
+| `python3 scripts/genera-notebook.py --verifica --esistenti <Capitolo>` | il codice della pagina gira davvero |
+| `python3 scripts/genera-figure-scure.py --verifica` | rese scure rimaste indietro rispetto alla figura chiara |
+
+Tre regole che quei comandi danno per note, e che qui non erano ancora scritte
+per esteso.
+
+**Una lettera fa un mestiere solo per capitolo.** La medicina per un simbolo
+che ne fa due è rinominare, non avvertire: un avviso lo legge metà dei lettori,
+un simbolo diverso lo vedono tutti. Si rinomina finché si può, e dove non si
+può si avverte sul posto, nella stessa parentesi in cui il simbolo compare,
+dicendo tutti e due i mestieri e quale vale lì. Tre casi rendono il rinomino
+peggiore del male: quando la lettera sta *dentro il nome* della cosa (la
+$\varepsilon$ di $\varepsilon$-DP), quando è il nome che quel numero ha nel
+codice che il lettore scriverà (il $\tau$ del Polyak averaging si chiama `tau`
+in ogni implementazione di DDPG), e quando le due sono notazioni consolidate di
+due campi diversi, ciascuna glossata nella propria sezione e lontane fra loro.
+Il difetto che la regola colpisce è la **vicinanza**: due mestieri sulla stessa
+pagina, o una formula e il riquadro che la riassume. Fra due sezioni distanti
+non c'è nessun inciampo, e rinominare allontanerebbe soltanto il lettore dalla
+letteratura.
+
+**`pt-lento` è una dichiarazione, non un permesso di non funzionare.** Quella
+marcatura toglie un blocco dal notebook, dalla CI e dalla verifica delle
+uscite, cioè da tutto, e dichiara una scelta: un modello da scaricare, un
+addestramento lungo. Prima di scriverla si cronometra, e chi ci ripassa
+rimisura, perché nel frattempo le librerie sono cambiate. Quei blocchi si
+eseguono a mano, e il comando c'è:
+`python3 scripts/verifica-uscite.py --anche-lenti <Capitolo>`.
+
+**Prima di dichiarare rotto qualcosa, guarda il carico della macchina.** Un
+tempo misurato mentre gira dell'altro non è sbagliato, è solo un numero di cui
+non ci si può fidare; e lo stesso vale per il TIMEOUT di un controllo, che è un
+cronometro e non un verdetto, quindi si rilancia da solo, a macchina scarica,
+prima di credergli. `verifica-uscite.py` e `genera-notebook.py` il carico lo
+stampano da sé, in cima all'uscita.
+
 ## Vedere le proprie modifiche
 
 Il libro è un [Jupyter Book](https://jupyterbook.org), costruito con la

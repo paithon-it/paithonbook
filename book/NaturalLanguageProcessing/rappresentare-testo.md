@@ -722,9 +722,11 @@ Temperatura, margine e regolarizzazione servono a governare quel compromesso.
 Infine una nota che chiude il cerchio con la sezione su RAG: la similarità del
 coseno misura «si somigliano», non «questo risponde a quella». Una
 domanda e la sua risposta spesso non si somigliano affatto, e infatti si
-addestrano due torri distinte, $E_q$ ed $E_p$, con positivi che sono coppie
-domanda-passaggio e non coppie di parafrasi. Cambia il compito, cambiano i
-positivi, cambia lo spazio.
+addestrano due reti separate, una per le domande e una per i passaggi ($E_q$
+ed $E_p$), che si incontrano solo alla fine, nel prodotto scalare. Ciascuna
+delle due si chiama una *torre*. I positivi diventano coppie domanda-passaggio
+e non coppie di parafrasi. Cambia il compito, cambiano i positivi, cambia lo
+spazio.
 
 `````
 

@@ -468,18 +468,19 @@ per cui il segmento sta *sulla* curva). Per una funzione convessa ogni minimo
 locale è anche globale: nessuna conca secondaria in cui restare intrappolati.
 
 La convergenza della discesa del gradiente, però, richiede due ipotesi in più,
-e senza di esse l'affermazione è falsa. La
-prima è che il gradiente sia lipschitziano di costante $L$ (cioè che la
-curvatura sia limitata da $L$), e allora ogni passo fisso $\eta < 2/L$ va
-bene. La seconda è che il minimo esista. Nessuna delle due è gratis:
-$f(x)=x^4$ è convessa e liscia, ma $f''(x)=12x^2$ è illimitata, e per *ogni*
-$\eta$ fissato la discesa diverge se si parte abbastanza lontano (la soglia è
-$|x_0| > 1/\sqrt{2\eta}$: con $\eta=10^{-9}$ basta partire da $x_0 = 23\,000$);
-e $f(x)=e^x$ è convessa con gradiente sempre positivo e nessun minimo, quindi
-la discesa scende per sempre senza convergere a niente. Anche restando dentro
-le ipotesi, un passo troppo lungo diverge in una scodella perfetta: su
-$\mathcal{L}(\theta)=(\theta-3)^2$ basta $\eta > 1$ perché ogni passo
-allontani dal minimo, oscillando da un fianco all'altro.
+e senza di esse l'affermazione è falsa. La prima è che il gradiente sia
+lipschitziano di costante $L$ (cioè che la curvatura sia limitata da $L$), e
+allora ogni passo fisso $\eta < 2/L$ va bene. La seconda è che il minimo
+esista. Nessuna delle due è gratis: $f(x)=x^4$ è convessa e liscia (derivabile
+quante volte si vuole, senza spigoli), eppure $f''(x)=12x^2$ è illimitata,
+nessun $L$ le fa da tetto, e per *ogni* $\eta$ fissato la discesa diverge se si
+parte abbastanza lontano (la soglia è $|x_0| > 1/\sqrt{2\eta}$: con
+$\eta=10^{-9}$ basta partire da $x_0 = 23\,000$); e $f(x)=e^x$ è convessa con
+gradiente sempre positivo e nessun minimo, quindi la discesa scende per sempre
+senza convergere a niente. Anche restando dentro le ipotesi, un passo troppo
+lungo diverge in una scodella perfetta: su $\mathcal{L}(\theta)=(\theta-3)^2$
+basta $\eta > 1$ perché ogni passo allontani dal minimo, oscillando da un
+fianco all'altro.
 
 Le loss del deep learning, poi, sono quasi sempre non convesse: nessuna
 garanzia. La buona

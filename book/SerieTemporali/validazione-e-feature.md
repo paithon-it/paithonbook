@@ -8,8 +8,12 @@ sulla media dell'intero periodo: futuro compreso. Il modello, in fase di
 prova, «sapeva» dove sarebbe andato il prezzo. Sul passato era un veggente;
 sul futuro, un ciarlatano.
 
-Questa è la trappola numero uno di chi lavora con le serie temporali, e ha un
-nome: **leakage**, la fuga di informazione dal futuro verso il passato.
+Questa è la trappola numero uno di chi lavora con le serie temporali, e il nome
+ce l'ha già: è il *data leakage* della {doc}`sezione su overfitting e
+validazione </MachineLearning/overfitting-validazione>`, la fuga di
+informazione dai dati su cui il modello sarà giudicato verso quelli su cui
+impara. Qui la fuga ha una direzione sua, dal futuro verso il passato, e per
+questo si dice *leakage temporale*.
 
 Trend, stagionalità e autocorrelazione dicono che cos'è una serie; a decidere
 se una previsione vale qualcosa sono altre due domande: come le si dà un voto
@@ -25,8 +29,7 @@ quello che è successo davvero; poi si sposta in avanti quel giorno, e si rifà.
 
 ## Perché mescolare i dati è un errore
 
-La {doc}`sezione su overfitting e validazione
-</MachineLearning/overfitting-validazione>` ha costruito la validazione come un
+Per i modelli tabellari la validazione è un
 rito. Gli esempi si dividono in tre mucchi: uno su cui il modello impara, uno
 su cui lo si mette a punto, uno su cui lo si esamina alla fine e che non si
 tocca mai prima. E prima di dividerli si mescolano, perché se arrivassero già in
@@ -169,7 +172,11 @@ serie diverse.
 
 Il primo tentativo è misurare l'errore in percentuale: sbagliare di 500 su
 50 000 è l'1%, su 500 è il 100%. Questa è la **MAPE**, l'errore percentuale
-medio. Comoda da spiegare, ma con due difetti seri. Se il valore vero è
+medio. Comoda da spiegare, ma con tre difetti seri, e il primo si vede
+proprio sulla temperatura di poco fa: una percentuale ha senso solo dove lo
+zero della scala è uno zero vero, e in gradi Celsius non lo è, sicché lo
+stesso errore di un grado vale il 5% a venti gradi e il 50% a due. Gli altri
+due riguardano il conto. Se il valore vero è
 zero (un giorno senza vendite), si divide per zero e la metrica esplode.
 Ed è asimmetrica: prevedere troppo alto o troppo basso non costa uguale.
 Col valore vero a 100, se prevedi 0 hai sbagliato del 100%, ed è il massimo che
@@ -185,8 +192,8 @@ copiare il giorno prima ne sbaglia 8, il tuo numero è $4/8 = 0{,}5$. È la
 dire proprio questo: diviso per il metro di qualcun altro. Se viene 1 sbagli
 quanto lui, se viene $0{,}5$ sbagli la metà, se viene 2 il doppio: un numero
 solo, senza unità di misura. Perché ci sia un metro, però, la serie deve
-muoversi: su una che si ripete sempre identica chi copia non sbaglia mai, e non
-resta più niente per cui dividere.
+muoversi: su una che si ripete sempre identica chi copia non sbaglia mai, il
+suo errore è zero, e per zero non si divide.
 
 Due modi di sbagliarla. Uno è tacere quale pigrizia si è messa al paragone: chi
 copia può copiare ieri, oppure lo stesso giorno della settimana scorsa se la
@@ -195,10 +202,16 @@ serie ha un ritmo settimanale, e il numero che ne esce è diverso.
 L'altro è credere che sia una gara alla pari. Chi copia corre su un altro
 tratto: lo si fa girare sulla strada già percorsa, quella su cui ti sei
 allenato, e ogni volta gli si chiede solo il giorno dopo, mentre tu magari ne
-stai prevedendo dodici. Sbagliare quanto lui, allora, non vuol dire
-pareggiare: su dodici giorni avanti è un ottimo risultato, su un giorno solo
-sarebbe mediocre. Quel numero sotto la linea di frazione serve a togliere di
-mezzo l'unità di misura, non a fare da avversario.
+stai prevedendo dodici ({numref}`fig-mase-non-duello`). Il suo errore medio si
+misura una volta sola, lì, prima che la prova cominci, e da quel momento non si
+tocca più. E lo si fa apposta, per la ragione che ne dànno gli autori: un
+avversario fatto correre sul blocco di prova si può calcolare solo se le
+previsioni da confrontare sono parecchie, mentre un metro preso sulla storia
+esiste anche quando avanti si guarda una volta sola. Sbagliare
+quanto lui, allora, non vuol dire pareggiare: su dodici giorni avanti è un
+ottimo risultato, su un giorno solo sarebbe mediocre. Quel numero sotto la
+linea di frazione serve a togliere di mezzo l'unità di misura, non a fare da
+avversario.
 
 `````
 
@@ -230,14 +243,21 @@ La sMAPE mette la somma dei due valori al denominatore, e con il nome promette
 di aver corretto l'asimmetria. In realtà la rovescia: a parità di errore
 assoluto penalizza di più chi sottoprevede. Con $y=100$ e uno scarto di $50$
 costa il $66{,}7\%$ per difetto contro il $40\%$ per eccesso, e il divario
-cresce con l'errore. In più ha un tetto del $200\%$ che la MAPE non ha, e
-resta indefinita quando $y_t = \hat y_t = 0$, cioè proprio sulle serie
-intermittenti per cui la si andava cercando. Hyndman e Koehler, gli stessi della
-MASE, ne sconsigliano l'uso {cite}`hyndman2006another`.
+cresce con l'errore. Nella forma qui scritta, con i valori assoluti al
+denominatore, ha in più un tetto del $200\%$ che la MAPE non ha, e resta
+indefinita quando $y_t = \hat y_t = 0$, cioè proprio sulle serie
+intermittenti per cui la si andava cercando. Hyndman e Koehler la definiscono
+invece senza quei valori assoluti, e annotano che metterceli sarebbe più
+naturale ma non è l'uso corrente: la loro versione perde il tetto e in cambio
+può uscire negativa, cioè smette di essere un errore percentuale. In tutte e
+due le forme, gli stessi della MASE ne sconsigliano l'uso
+{cite}`hyndman2006another`.
 
 La MASE (*Mean Absolute Scaled Error*), proposta da Rob Hyndman e Anne
-Koehler nel 2006 {cite}`hyndman2006another`, scala l'errore del modello
-sull'errore *in-sample* del naive calcolato sul training:
+Koehler nel 2006 {cite}`hyndman2006another` con il passo fisso a uno e
+generalizzata al passo stagionale da Hyndman e Athanasopoulos
+{cite}`hyndman2021forecasting`, scala l'errore del modello sull'errore
+*in-sample* del naive calcolato sul training:
 
 $$
 \text{MASE} =
@@ -256,17 +276,20 @@ esce lusingato.
 
 Poiché è un rapporto tra errori nella stessa unità, la MASE è
 adimensionale e confrontabile tra serie, e non ha problemi con gli zeri
-purché la serie di training non sia costante. La lettura, però, va data per
+purché la serie di training non si ripeta identica a passo $m$: non basta che
+non sia costante, perché su una serie perfettamente periodica di periodo $m$
+il denominatore è zero comunque, e la MASE stagionale si usa proprio sulle
+serie che un periodo ce l'hanno. La lettura, però, va data per
 esteso, perché la versione corta («sotto 1 batte il naive») è la fonte di
 un equivoco: un valore sotto $1$ vuol dire che il modello sbaglia meno di quanto
 sbaglia, a un passo di stagione e sui dati di addestramento, il predittore
 che copia il ciclo precedente. È una scala e non un duello: il denominatore
 serve a togliere l'unità di misura della serie, non a fare da avversario. Un
-modello con MASE $0{,}9$ su un orizzonte a dodici passi non ha battuto nessuno,
-ha sbagliato il 90% di quanto sbaglia a un passo chi copia; il che su dodici
-passi è ottimo e su un passo sarebbe mediocre. Se si vuole davvero il duello, il
-naive va fatto correre sullo stesso test e sullo stesso orizzonte, ed è
-quello che si fa con le linee di base ingenue.
+modello con MASE $0{,}9$ su un orizzonte a dodici passi non ha battuto nessuno
+alla pari: ha sbagliato il 90% di quanto sbaglia a un passo chi copia, il che
+su dodici passi è ottimo e su un passo sarebbe mediocre. Se si vuole davvero
+il duello, il naive va fatto correre sullo stesso test e sullo stesso
+orizzonte, ed è quello che si fa con le linee di base ingenue.
 
 Quando la previsione non è un singolo numero ma una distribuzione (un
 intervallo, o un insieme di quantili), si usa la
@@ -274,7 +297,7 @@ intervallo, o un insieme di quantili), si usa la
 $\tau\in(0,1)$, con previsione $\hat{y}_\tau$ e valore vero $y$:
 
 $$
-\mathcal{L}_\tau(y,\hat{y}_\tau) =
+\ell_\tau(y,\hat{y}_\tau) =
 \begin{cases}
 \tau\,(y-\hat{y}_\tau) & \text{se } y \ge \hat{y}_\tau,\\[4pt]
 (1-\tau)\,(\hat{y}_\tau-y) & \text{se } y < \hat{y}_\tau.
@@ -287,26 +310,91 @@ sotto, tanto da spingere $\hat{y}_\tau$ verso il vero quantile $\tau$-esimo dell
 distribuzione. Mediata su più livelli, approssima un punteggio proprio per
 l'intera previsione probabilistica {cite}`hyndman2021forecasting`.
 
+Il fattore due che in molte scritture moltiplica i due rami qui non c'è, ed è
+una convenzione e non un pezzo della definizione: Hyndman e Athanasopoulos lo
+tengono, e annotano che spesso si omette. Raddoppiare ogni perdita non sposta
+il minimo né l'ordine fra due modelli, ma raddoppia le cifre, e due punteggi si
+confrontano solo se vengono dalla stessa forma.
+
 Attenzione però a cosa misura, perché non è la calibrazione. Essere un punteggio
 proprio significa che è minimizzata in media dalla distribuzione vera, e
 quindi che serve benissimo come funzione di costo in addestramento e come
 criterio di confronto complessivo. Ma premia insieme la calibrazione (la
 banda copre davvero quello che dichiara) e la **finezza** (la banda è stretta),
-e non sa dire quale delle due manca. Il conto, su dati gaussiani veri e mediando
-su nove livelli di quantile: un modello che azzecca la mediana ma dichiara
-metà dell'incertezza vera prende $0{,}329$, e la sua banda «all'80%» ne copre
-in realtà il 48%; un modello prudente, che dichiara il doppio
-dell'incertezza, ne copre il 99% e prende $0{,}356$, cioè peggio. Il numero li
-ordina, ma non dice che il primo sta mentendo sull'incertezza e il secondo la sta
-sprecando (il minimo, $0{,}309$, ce l'ha il modello calibrato: è esattamente
-questo che vuol dire «punteggio proprio»).
+e non sa dire quale delle due manca. Il conto si fa contro una gaussiana vera,
+con tre previsori che azzeccano tutti la mediana e sbagliano solo la larghezza,
+e mediando i nove decili.
 
-La formulazione canonica della materia è «massimizzare la finezza sotto
-vincolo di calibrazione», e la calibrazione si controlla a parte, ed è facile:
+```python
+import numpy as np
+from scipy.integrate import quad
+from scipy.stats import norm
+
+# La pinball loss è scritta qui senza il fattore due davanti ai due rami.
+def pinball(y, q, tau):
+    return tau * (y - q) if y >= q else (1 - tau) * (q - y)
+
+livelli = np.round(np.arange(0.1, 0.91, 0.1), 2)   # i nove decili
+
+def punteggio(larghezza):
+    """Pinball media contro una N(0,1) vera, per chi dichiara quella larghezza."""
+    perdite = []
+    for tau in livelli:
+        q = larghezza * norm.ppf(tau)       # il quantile che il modello dichiara
+        peso = lambda y: pinball(y, q, tau) * norm.pdf(y)
+        perdite.append(quad(peso, -12, q)[0] + quad(peso, q, 12)[0])
+    return np.mean(perdite)
+
+def copertura(larghezza):
+    """Quanto copre davvero la banda fra il decimo e il novantesimo dichiarati."""
+    z = larghezza * norm.ppf(0.9)
+    return norm.cdf(z) - norm.cdf(-z)
+
+print("larghezza dichiarata   pinball (nove decili)   banda «all'80%»")
+for larghezza, come in [(0.5, "metà di quella vera"),
+                        (1.0, "quella vera        "),
+                        (2.0, "il doppio          ")]:
+    print(f"  {come}          {punteggio(larghezza):.3f}"
+          f"                {copertura(larghezza):.0%}")
+```
+
+```text
+larghezza dichiarata   pinball (nove decili)   banda «all'80%»
+  metà di quella vera          0.329                48%
+  quella vera                  0.309                80%
+  il doppio                    0.356                99%
+```
+
+Il punteggio li ordina, ma non dice che chi dichiara metà della larghezza
+vera sta mentendo sull'incertezza e chi la dichiara doppia la sta sprecando:
+il minimo ce l'ha il modello calibrato, ed è quello che ci si aspetta da un
+punteggio proprio.
+
+La formulazione canonica della materia, dovuta a Gneiting, Balabdaoui e
+Raftery {cite}`gneiting2007probabilistic`, è «massimizzare la finezza sotto
+vincolo di calibrazione», e la calibrazione si controlla a parte:
 si conta quante volte il valore osservato cade dentro la banda all'80% e si
 guarda se fa l'80%. La macchina per farlo è il walk-forward.
 
 `````
+
+Le due corse, messe sulla stessa linea del tempo, si guardano in un colpo
+solo ({numref}`fig-mase-non-duello`): il modello parte dove finisce la storia e
+copre tutto l'orizzonte in una volta, chi copia resta di qua dal confine e
+avanza di un passo per volta.
+
+```{figure} ../figures/mase-non-e-un-duello.svg
+:name: fig-mase-non-duello
+:alt: "Schema di che cosa mette a confronto la MASE. Una linea del tempo è divisa da una riga verticale tratteggiata: a sinistra la storia su cui il modello si è addestrato, a destra il blocco di prova. Sopra, il modello: una sola freccia lunga parte dalla riga e attraversa tutto il blocco di prova, dodici passi in un colpo solo, e i suoi errori formano il numeratore. Sotto, chi copia: una fila fitta di frecce cortissime, una per ogni giorno della storia già percorsa, tutte a sinistra della riga: sono 18, contro i dodici passi del modello, e i loro errori formano il denominatore. I due non corrono né sullo stesso tratto né sullo stesso orizzonte, e chi copia ne percorre molti di più."
+:width: 92%
+
+Che cosa mette a confronto la MASE. Sopra il numeratore, gli errori del
+modello sul blocco di prova e sull'orizzonte intero; sotto il denominatore,
+gli errori di chi copia sulla storia già percorsa, un passo alla volta e per
+tutta la sua lunghezza, quindi molte più volte. Sono due corse su tratti
+diversi, a orizzonti diversi e per un numero diverso di passi, ed è per questo
+che il loro rapporto è un righello e non un verdetto.
+```
 
 ## Le linee di base che bisogna sempre battere
 
@@ -318,8 +406,10 @@ semplice che un modello più elaborato deve battere; una serie storica ha i
 suoi.
 
 Le classiche sono quattro {cite}`hyndman2021forecasting`, e la prima è già in
-mano: rispondere sempre la media di tutto quello che si è osservato, che è la
-linea piatta contro cui la sezione precedente ha misurato i modelli classici.
+mano: rispondere sempre la media di tutto quello che si è osservato, parente
+stretta della linea piatta contro cui la sezione precedente ha misurato i
+modelli classici (là era la costante che l'ARIMA si stima da sé, qui è la
+media dei dati osservati e basta).
 Le altre tre si scrivono con quattro simboli, e il naive stagionale ne aggiunge
 un quinto che definisce sul posto: $y_t$ è il valore osservato all'istante $t$,
 e in tutte e tre $t$ è l'ultimo istante osservato, l'origine da cui si guarda
@@ -330,13 +420,15 @@ mesi).
 
 - **Naive**, cioè ingenuo: la previsione per ogni istante futuro è l’ultimo
   valore osservato, $\hat{y}_{t+h}=y_t$. Sembra una resa, e invece è
-  durissimo da battere sulle passeggiate aleatorie (i prezzi finanziari, per
-  dire), quelle che camminano alla cieca: se ogni scossa sposta il livello per
-  sempre, tutto ciò che è successo prima è già dentro il valore di oggi e
-  quello che verrà è ancora da estrarre, sicché il punto in cui la serie sta
-  adesso *è* la migliore informazione che si ha su domani. Vale finché non c'è
-  anche una deriva a tirare la serie da una parte: se c'è, il metodo giusto è
-  il drift, che chiude l'elenco.
+  durissimo da battere sulle passeggiate aleatorie, quelle che a ogni passo
+  fanno un salto sorteggiato: i prezzi finanziari, per dire. Lì ogni scossa
+  sposta il livello e ce lo lascia, perché il passo dopo riparte da dove la
+  scossa ha portato, non da dove si era prima. Tutto quello che è successo fin
+  lì è dunque già dentro il valore di oggi, e quello che verrà è un sorteggio
+  non ancora fatto: il punto in cui la serie sta adesso *è* la migliore
+  informazione che si ha su domani. Vale finché non c'è anche una deriva a
+  tirare la serie da una parte: se c'è, il metodo giusto è il drift, che chiude
+  l'elenco.
 - **Naive stagionale**: si ripete il valore dello stesso istante del periodo
   precedente. Le vendite di questo dicembre sono quelle dello scorso
   dicembre. Quando l'orizzonte supera un ciclo intero, però, «lo stesso
@@ -392,46 +484,87 @@ riga di codice farebbe da sola.
 
 Una previsione che dichiara una forbice («domani fra 22 e 26 gradi») quasi
 sempre la dichiara più stretta di quanto sarebbe onesto. Vale per quasi
-tutti i metodi del capitolo, ed è la parentesi che il filo rosso ha lasciato
-aperta nell'introduzione: qui ci sono gli attrezzi per chiuderla.
+tutti i metodi del capitolo, ed è la parentesi che
+l’{doc}`apertura del capitolo </SerieTemporali/overview>` ha lasciato aperta,
+là dove dice che una previsione seria porta con sé la propria incertezza: qui
+ci sono gli attrezzi per chiuderla.
 
 Prima però va detto per bene che cosa promette una forbice, perché è una
 promessa precisa e si può controllare. Quando un modello dice «fra 22 e 26,
 all'80%» sta dicendo: se ripetessi questa previsione mille volte, il valore vero
 mi cadrebbe dentro ottocento volte. È un conto che il modello ha fatto, non una
-speranza, ed è un conto che poggia su due comodità.
+speranza, e poggia su due ipotesi: che i suoi parametri siano noti invece che
+stimati, e che gli scarti si distribuiscano secondo la gaussiana della
+{doc}`sezione su probabilità e statistica </Matematica/probabilita-statistica>`.
+Nessuna delle due è vera, e non sbagliano nello stesso verso.
 
-La prima: i numeri del modello (la frazione con cui ieri pesa su oggi,
-l'ampiezza tipica degli scarti) vengono trattati come se li conoscessimo, mentre
-li abbiamo ricavati da quella stessa storia e potevano venire diversi. È questa
-a stringere le bande sempre, perché fa finta che un'incertezza non ci sia,
-mentre c'è: un intervallo dichiarato all'80% ne copre meno dell'80%
-{cite}`hyndman2021forecasting`.
+`````{tab} Elementare
 
-La seconda comodità è che si dà per buono che gli scarti si dispongano secondo
-la campana della statistica classica (la gaussiana della {doc}`sezione su
-probabilità e statistica </Matematica/probabilita-statistica>`), mentre le
-serie vere di sorprese davvero grosse ne hanno di più.
-Questa seconda, a differenza della prima, non stringe le bande: le allarga o
-le stringe a seconda di quanto larghe le si chiede, e conviene vedere da dove
-viene, perché è controintuitivo.
+La prima si racconta in una riga. Per dire «fra 22 e 26» il modello usa due
+numeri suoi, quanto ieri pesa su oggi e quanto di solito le giornate si
+discostano, e quei due numeri non glieli ha dati nessuno: se li è ricavati
+dalla stessa storia che sta guardando, e poteva ricavarli un po' diversi. Il
+conto della forbice fa finta di no. È un'incertezza che c'è e che nessuno
+conta, e siccome nessuno la conta la forbice esce più stretta del dovuto:
+sempre, e tanto più quanto la storia è corta e quanto più in là si guarda.
 
-Prendi due fenomeni che nel complesso si agitano uguale, ma uno dei due ogni
-tanto fa un salto enorme. Quei pochi salti enormi, nel bilancio
-dell'agitazione, pesano tantissimo; e siccome il bilancio totale deve restare
-lo stesso, tutti gli altri giorni devono essere più tranquilli. I valori, cioè,
-si accalcano attorno al centro, qualcuno finisce lontanissimo, e a diradarsi
-sono le vie di mezzo. Il risultato è che una forbice stretta, quella all'80%,
-di valori ne raccoglie più dell'80% (su una $t$ di Student a quattro gradi di
-libertà, che è la forma con cui si modellano di solito i rendimenti finanziari,
-l'85,6%), mentre una forbice larghissima, quella al 99%, ne raccoglie meno del
-99% (attorno al 98%), perché i pochi mostri le passano oltre.
+La seconda è più curiosa, perché non sbaglia sempre nello stesso verso. Prendi
+due fenomeni che nel complesso si agitano uguale, ma uno dei due ogni tanto fa
+un salto enorme. Quei pochi salti enormi, nel bilancio dell'agitazione, pesano
+tantissimo, e per la ragione già vista con l'RMSE: il bilancio somma i
+quadrati, e il quadrato di otto è sessantaquattro. Siccome il bilancio totale
+deve restare lo stesso, tutti gli altri giorni devono essere più tranquilli. I
+valori, cioè, si accalcano attorno al centro, qualcuno finisce lontanissimo, e
+a diradarsi sono le vie di mezzo.
 
-Le due comodità, quindi, non tirano dalla stessa parte, e che le forbici escano
-troppo strette resta vero per merito della prima: sulle forbici strette, quelle
-che si usano tutti i giorni, la seconda lavora perfino a favore, e ciò che
-rimane è lo sconto della prima. A dover stare in guardia su tutte e due è chi
-promette di coprire quasi tutto.
+Adesso contali, e il conto viene al contrario di come sembra. Una forbice
+stretta, quella che promette otto casi su dieci, sta proprio lì dove i valori
+si sono accalcati, e ne raccoglie più di otto: la promessa è mantenuta e
+avanza. Una forbice larghissima, quella che promette novantanove casi su
+cento, arriva fin quasi in fondo alla coda, e i pochi mostri gliela passano
+oltre: i casi raccolti sono meno di novantanove.
+
+Messe insieme, allora. Sulle forbici strette, quelle che si usano tutti i
+giorni, il secondo errore lavora a tuo favore e il primo resta, quindi la
+forbice esce comunque un po' troppo stretta. Chi promette di coprire quasi
+tutto se li trova tutti e due contro.
+
+`````
+
+`````{tab} Superiore
+
+La prima ipotesi è che i parametri, stimati, vengano trattati come noti.
+L'intervallo si
+costruisce con $\hat\phi$ e $\hat\sigma$ al posto di $\phi$ e $\sigma$, e da
+lì in poi si ragiona come se fossero i valori veri. L'incertezza sulla stima
+non entra nella varianza di previsione, che esce quindi più piccola di quella
+giusta, e la copertura effettiva sta sotto il livello dichiarato
+{cite}`hyndman2021forecasting`. Il verso è uno solo, e lo sconto cresce al
+calare della lunghezza della storia e al crescere dell'orizzonte, perché
+l'errore sui parametri si compone a ogni passo.
+
+La seconda è che i residui siano gaussiani. Quelli delle serie vere sono di solito
+leptocurtici: a parità di varianza hanno più massa al centro *e* più massa
+nelle code, e a diradarsi sono le zone intermedie. La conseguenza sui quantili
+non ha un verso unico. Su una $t$ di Student a quattro gradi di libertà,
+riscalata alla stessa deviazione standard della gaussiana (è la forma con cui
+si modellano di solito i rendimenti finanziari), la banda gaussiana dichiarata
+all'80% copre l'85,6% e quella dichiarata al 99% copre il 97,8%:
+sovracopertura sulle bande strette, sottocopertura su quelle larghe, e il
+pareggio attorno al 95%.
+
+Messe insieme: sulle bande di uso quotidiano le due tirano in versi
+opposti, la seconda a favore, e resta netto lo sconto della prima: le forbici
+escono comunque più strette di quanto dichiarano. Sulle bande molto larghe si
+sommano, ed è lì che la sottostima è peggiore. È anche la ragione per cui
+allargare a forfait non basta: ripara il livello su cui lo si è tarato e
+sposta l'errore su tutti gli altri.
+
+`````
+
+Le due ipotesi, quindi, non tirano dalla stessa parte, e che le forbici escano
+troppo strette resta vero per merito della prima. A dover stare in guardia su
+tutte e due è chi promette di coprire quasi tutto.
 
 La buona notizia è che tutto questo si misura, e la misura ha un nome,
 **copertura empirica**: si prende il walk-forward di poche righe fa, si conta
@@ -444,15 +577,64 @@ I due numeri del modello (il 60% e il quattro) si ricavano dalla storia con la
 retta dei minimi quadrati, esattamente come là, e la prova si ripete ventimila
 volte.
 
-Se al modello i due numeri si regalano già giusti, la banda all'80% copre l'80%
-esatto: la promessa è mantenuta. Appena invece glieli si fa ricavare dalla
-storia, la copertura cede: a un passo scende al 77% con trenta osservazioni
-di storia, e risale al 79% con cento. E cede di più via via che l'orizzonte si
-allunga, perché l'errore sui due numeri si compone a ogni passo (a parametri
-regalati la banda a cinque passi copre l'80% come a uno): a cinque passi,
-sempre con trenta osservazioni, resta sotto il 74%. È la
-diagnostica più semplice della previsione probabilistica, costa poche righe più
-del walk-forward che c'è già, e quasi nessuno la fa.
+```python
+import numpy as np
+
+def copertura(n_storia, orizzonte, stima, prove=20_000, seme=0):
+    """Quante volte il valore vero cade nella banda all'80% dichiarata."""
+    c, phi, sigma, z = 4.0, 0.6, 1.0, 1.2816
+    rng = np.random.default_rng(seme)
+    # una riga per prova: la stessa storia dell'AR(1), rigenerata da capo
+    y = np.empty((prove, n_storia))
+    y[:, 0] = c / (1 - phi) + rng.normal(0, sigma / np.sqrt(1 - phi**2), prove)
+    for t in range(1, n_storia):
+        y[:, t] = c + phi * y[:, t - 1] + rng.normal(0, sigma, prove)
+    vero = y[:, -1].copy()
+    for _ in range(orizzonte):
+        vero = c + phi * vero + rng.normal(0, sigma, prove)
+
+    if stima:      # i due numeri si ricavano dalla storia, come nella realtà
+        x, b = y[:, :-1], y[:, 1:]
+        mx, mb = x.mean(1, keepdims=True), b.mean(1, keepdims=True)
+        p = ((x - mx) * (b - mb)).sum(1) / ((x - mx) ** 2).sum(1)
+        cc = mb[:, 0] - p * mx[:, 0]
+        res = b - (cc[:, None] + p[:, None] * x)
+        s = np.sqrt((res ** 2).sum(1) / (n_storia - 3))
+    else:          # regalati già giusti: il caso che non esiste in natura
+        p, cc, s = (np.full(prove, v) for v in (phi, c, sigma))
+
+    prev = y[:, -1].copy()
+    for _ in range(orizzonte):
+        prev = cc + p * prev
+    var = s ** 2 * sum(p ** (2 * k) for k in range(orizzonte))
+    return np.mean(np.abs(vero - prev) <= z * np.sqrt(var))
+
+print("copertura di una banda dichiarata all'80%, su 20.000 prove")
+for n_storia, orizzonte, stima in [(30, 1, False), (30, 5, False),
+                                   (30, 1, True), (100, 1, True), (30, 5, True)]:
+    come = "stimati " if stima else "regalati"
+    avanti = "un passo" if orizzonte == 1 else f"{orizzonte} passi"
+    print(f"  parametri {come}, {n_storia:3d} di storia, {avanti:8s}: "
+          f"{copertura(n_storia, orizzonte, stima):.1%}")
+```
+
+```text
+copertura di una banda dichiarata all'80%, su 20.000 prove
+  parametri regalati,  30 di storia, un passo: 80.2%
+  parametri regalati,  30 di storia, 5 passi : 79.9%
+  parametri stimati ,  30 di storia, un passo: 77.7%
+  parametri stimati , 100 di storia, un passo: 79.5%
+  parametri stimati ,  30 di storia, 5 passi : 73.8%
+```
+
+Su ventimila prove il margine di questi numeri è di circa mezzo punto, quindi
+solo gli scarti più grandi di un punto contano. Se al modello i due numeri si
+regalano già giusti, la banda all'80% copre l'80%, e lo copre anche a cinque
+passi: la promessa è mantenuta. Appena invece glieli si fa ricavare dalla
+storia, la copertura cede, e cede di più via via che l'orizzonte si allunga,
+perché l'errore sui due numeri si compone a ogni passo. È la
+diagnostica più semplice della previsione probabilistica, e costa poche righe
+più del walk-forward che c'è già.
 
 ## Trasformare il tempo in una tabella
 
@@ -504,10 +686,14 @@ liscia.
 Un guaio resta sul confine fra i giorni d'allenamento e quelli di prova. Le
 ultime righe d'allenamento chiedono di una settimana che cade già di là; e la
 prima riga di prova, per fare le sue medie, guarda indietro a giorni di qua. Si
-buttano via le ultime righe d'allenamento, tante quanti i giorni d'anticipo più
-la lunghezza della finestra: con una settimana d'anticipo e medie a sette
-giorni, quattordici righe, un pugno di esempi in cambio di un confine pulito.
-L'operazione si chiama **purga**.
+buttano via le ultime righe d'allenamento, tante quanti i giorni d'anticipo
+più il tratto più lungo che una riga guarda indietro, cioè la finestra delle
+medie o il valore più vecchio che si porta dietro, quello dei due che arriva
+più lontano: con una settimana d'anticipo e medie a sette giorni, quattordici
+righe, un pugno di esempi in cambio di un confine pulito.
+L'operazione si chiama **purga**, e il nome viene dalla finanza: lo usa
+Marcos López de Prado nel capitolo sulla cross-validation di *Advances in
+Financial Machine Learning* {cite}`lopezdeprado2018advances`.
 
 `````
 
@@ -545,16 +731,21 @@ temporale si viola da sé, al bordo. Se si divide train e test
 guardando l'istante $t$ delle feature, le ultime $h$ righe di training
 hanno un bersaglio $y_{t+h}$ che sta già dentro il periodo di test, e le
 finestre mobili di ampiezza $w$ allungano la sovrapposizione di altri $w$ passi.
-Si tagliano via quelle righe, ed è un'operazione che ha un nome, la purga.
-Quante siano si conta senza formule da ricordare: una riga di training
-all'istante $t$ tocca le osservazioni da $y_{t-w}$ a $y_{t-1}$ e in più il suo
-bersaglio $y_{t+h}$; la prima riga di test, all'istante $t_0+1$, legge
-all'indietro fino a $y_{t_0+1-w}$. Perché le due non si sfiorino serve
-$t + h < t_0 + 1 - w$, e le righe da togliere in fondo al training sono
-$h + w$. La tentazione naturale è togliere solo quelle il cui bersaglio
-sfora, cioè $h$, e ci si dimentica delle finestre mobili, che allungano
-all'indietro la parte di serie che ogni riga di test si porta dentro. Il costo è
-un pugno di esempi; il guadagno è che la regola torna vera anche al bordo.
+Si tagliano via quelle righe, ed è un'operazione che ha un nome, la purga,
+preso dal capitolo settimo di *Advances in Financial Machine Learning* di
+Marcos López de Prado {cite}`lopezdeprado2018advances`, intitolato appunto
+alla cross-validation in finanza. Quante siano si conta senza formule da
+ricordare. Ogni riga guarda all'indietro fino a un certo passo, e quel passo è
+il maggiore fra i ritardi $p$ e l'ampiezza $w$ delle finestre mobili:
+chiamiamolo $r$. Una riga di training all'istante $t$ tocca allora le
+osservazioni da $y_{t-r}$ a $y_{t-1}$ e in più il suo bersaglio $y_{t+h}$; la
+prima riga di test, all'istante $t_0+1$, legge all'indietro fino a
+$y_{t_0+1-r}$. Perché le due non si sfiorino serve $t + h < t_0 + 1 - r$, e le
+righe da togliere in fondo al training sono $h + r$. La tentazione naturale è
+togliere solo quelle il cui bersaglio sfora, cioè $h$, e ci si dimentica
+delle finestre mobili, che allungano all'indietro la parte di serie che ogni
+riga di test si porta dentro. Il costo è un pugno di esempi; il guadagno è che
+la regola torna vera anche al bordo.
 
 Quanto costa tenersele, quelle righe, dipende da quanto è lungo il training. Su
 una serie fortemente autocorrelata ($\phi = 0{,}9$) con $p=5$ ritardi, $w=10$ e
@@ -566,16 +757,15 @@ e una purgata; quanto esattamente dipende dalla lunghezza del blocco di test e
 da quale errore si guarda, quello quadratico o la sua radice). Il guasto si
 vede quando i dati sono pochi, cioè proprio quando si è più tentati di tenersele.
 
-L’**embargo**, che nella letteratura sul machine learning finanziario accompagna
-sempre la purga, qui invece non serve: i due viaggiano in coppia, e chi li
-importa entrambi butta via dati per difendersi da una minaccia che non c'è.
-L'embargo mette una zona morta anche *dopo* il blocco
-di test, e serve quando un blocco di addestramento viene dopo un blocco di prova
-nel tempo, come nelle validazioni incrociate combinatorie in cui i fold si
+L’**embargo**, che quel capitolo affianca alla purga, qui invece non serve, e
+chi li importa tutti e due butta via dati per difendersi da una minaccia che
+non c'è. L'embargo mette una zona morta anche *dopo* il blocco di test, e
+serve quando un blocco di addestramento viene dopo un blocco di prova nel
+tempo, come nelle validazioni incrociate combinatorie in cui i fold si
 alternano lungo la serie. Nella validazione a origine mobile il training è
-sempre un prefisso e il test sempre il blocco immediatamente successivo: nessun
-dato di addestramento segue mai un dato di prova, e la zona morta a destra non
-avrebbe niente da proteggere.
+sempre un prefisso e il test sempre il blocco immediatamente successivo:
+nessun dato di addestramento segue mai un dato di prova, e la zona morta a
+destra non avrebbe niente da proteggere.
 
 `````
 
@@ -593,10 +783,10 @@ dopodomani, e così via. Semplice, ma ogni previsione poggia sulle precedenti: s
 sbagli il primo passo, l'errore si trascina e si accumula lungo la catena.
 
 La strategia **diretta** allena un modello *diverso* per ogni orizzonte: uno per
-«tra un giorno», uno per «tra sette giorni». Ogni previsione è indipendente e non
-eredita gli errori altrui, ma addestrare tanti modelli costa, e nessuno di loro
-sa che cosa hanno risposto gli altri: le previsioni, messe in fila, possono
-raccontare storie che non stanno insieme.
+«tra un giorno», uno per «tra sette giorni». Nessuna previsione poggia su
+un'altra, e quindi nessuna eredita gli errori delle altre; ma addestrare tanti
+modelli costa, e nessuno di loro sa che cosa hanno risposto gli altri: le
+previsioni, messe in fila, possono raccontare storie che non stanno insieme.
 
 La strategia **multi-output** usa un unico modello che sputa fuori tutti i passi
 futuri in un colpo solo, tutti i trenta giorni insieme invece che uno per volta,
@@ -741,7 +931,9 @@ vale più della pigrizia, purché si dichiari quale pigrizia.
   {numref}`fig-walk-forward-validazione`.
 - Le misure d'errore che dipendono dall'unità della serie (500 è ottimo per il
   PIL e disastroso per la temperatura) non si possono confrontare fra serie
-  diverse. Quella che si può è la MASE: dice di quanto sbagli rispetto a chi
+  diverse. La percentuale toglie l'unità di misura ma ha guai suoi, a partire
+  dalle scale il cui zero non è uno zero vero. Quella che funziona è la MASE:
+  dice di quanto sbagli rispetto a chi
   copia e basta, e se viene 1 sbagli quanto lui, se viene $0{,}5$ la metà. Non è
   però un duello alla pari, perché chi copia corre a un passo solo e sulla
   strada già percorsa: sbagliare quanto lui su dodici giorni avanti è tutt'altra
@@ -764,7 +956,10 @@ vale più della pigrizia, purché si dichiari quale pigrizia.
   modello solo che li sputa fuori tutti insieme (multi-output).
 - Una previsione che dichiara una forbice («fra 22 e 26 gradi») quasi sempre la
   dichiara più stretta di quanto sarebbe onesto. Si controlla contando quante
-  volte il valore vero cade davvero dentro.
+  volte il valore vero cade davvero dentro: e qui, a differenza di ogni altro
+  numero della pagina, non si punta al più alto né al più basso. Deve venire
+  proprio quello promesso, perché una forbice larga il doppio copre quasi
+  sempre e non dice più niente.
 ```
 
 `````
@@ -777,7 +972,8 @@ vale più della pigrizia, purché si dichiari quale pigrizia.
   mescolare mette futuro e passato nello stesso mucchio e produce *leakage*, con
   stime dell'errore troppo ottimiste. Ogni dato di training deve precedere nel
   tempo ogni dato di validazione, e al confine la regola va difesa con la
-  purga ($h+w$ righe), non con l'embargo, che qui non ha nulla da
+  purga ($h$ righe più il passo più lontano che una riga guarda
+  all'indietro), non con l'embargo, che qui non ha nulla da
   proteggere.
 - Si valida col walk-forward (backtesting): split cronologici ripetuti col
   test sempre nel futuro, a finestra espansa (tutto il passato) o
@@ -807,7 +1003,7 @@ vale più della pigrizia, purché si dichiari quale pigrizia.
   nell'altro verso e dipende dal livello: con code pesanti una banda nominale
   all'80% ne copre di più e una al 99% di meno. Su un AR(1) con trenta
   osservazioni di storia e parametri stimati ai minimi quadrati, un intervallo
-  nominale all'80% ne copre il 77% a un passo e meno del 74% a cinque.
+  nominale all'80% ne copre il 77,7% a un passo e il 73,8% a cinque.
 ```
 
 `````

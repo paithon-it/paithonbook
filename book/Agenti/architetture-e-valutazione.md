@@ -342,6 +342,12 @@ alla fine poco più di una volta su tre. Qualche intoppo si recupera, come la
 salsa rifatta; ma l'ultimo passaggio pesa quanto il primo, e chi rovescia il
 vassoio sulla soglia della sala aveva fatto tutto bene fino a lì.
 
+E una serata sola non dice niente. La stessa sera ripetuta non esce mai
+uguale: fornitori diversi, sala più piena, un aiuto in meno. Per questo si
+torna, e accanto al voto si scrive di quanto le serate ballano fra loro: un
+cuoco che azzecca tre sere su cinque, giudicato da una sera sola, non si
+distingue da uno che non sbaglia mai.
+
 `````
 
 `````{tab} Superiore
@@ -382,7 +388,10 @@ ragione strutturale per cui i tassi di successo sui compiti lunghi restano
 modesti. Alla misura del *cosa* si
 affianca poi quella del *quanto*: token consumati, latenza, numero di chiamate
 a strumenti; perché un agente sostenibile non è solo quello che riesce, ma
-quello che riesce a un costo accettabile.
+quello che riesce a un costo accettabile. E ognuna di queste misure va presa
+più volte sullo stesso compito, perché l'ambiente non sta fermo: accanto alla
+media si riporta la dispersione fra le ripetizioni, senza la quale non si sa
+se una differenza fra due agenti esista davvero.
 
 `````
 
@@ -601,8 +610,8 @@ dispersione.
   c'è una risposta unica, il compito è fatto di molti passi e l'ambiente cambia
   sotto i piedi. Servono il tasso di successo, uno sguardo alla strada
   che ha fatto (non solo al risultato) e il conto di quanto è costato in tempo
-  e denaro. E una prova sola non basta: cinque tentativi non distinguono chi
-  riesce sempre da chi riesce a metà.
+  e denaro. E una prova sola non basta: chi riesce tre volte su cinque,
+  provato una volta, non si distingue da chi riesce sempre.
 - I banchi di prova AgentBench {cite}`liu2023agentbench` (otto ambienti
   diversi) e SWE-bench {cite}`jimenez2024swebench` (segnalazioni di errore
   vere) mostrano risultati inizialmente modesti: un promemoria di onestà. Ma un

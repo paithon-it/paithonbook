@@ -1,0 +1,60 @@
+<svg viewBox="0 0 700 430" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un grafico Matplotlib annotato con i nomi delle sue parti. Il grafico disegna il fatturato dei primi sei mesi, da gennaio a giugno, con una linea che sale, scende a marzo e risale fino a maggio. Un riquadro tratteggiato che racchiude tutto &#232; la Figure, cio&#232; il foglio; il riquadro pieno delimitato dai due assi sono gli Axes, cio&#232; l'area di disegno. Cinque didascalie collegate da tratteggi indicano il titolo (ax.set_title), la legenda (ax.legend), la linea dei dati (ax.plot), le tacche degli assi con i loro numeri, e le etichette degli assi (ax.set_xlabel e ax.set_ylabel). In fondo: una Figure pu&#242; contenere pi&#249; Axes, e quasi tutti i metodi appartengono agli Axes.">
+  <rect x="0" y="0" width="700" height="430" fill="#F8F5EE"/>
+  <text x="350.0" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" font-weight="bold">I nomi delle parti di un grafico</text>
+  <rect x="40" y="54" width="430" height="300" rx="6" fill="none" stroke="#B5532C" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="48" y="72" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#B5532C" font-weight="bold">Figure: il foglio (fig)</text>
+  <rect x="118" y="100" width="320" height="200" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="432" y="290" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#2D5A5C" font-weight="bold">Axes: il riquadro (ax)</text>
+  <text x="278.0" y="86" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" font-weight="bold">Fatturato dei primi sei mesi</text>
+  <line x1="113" y1="300.0" x2="118" y2="300.0" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="109" y="304.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">10k</text>
+  <line x1="113" y1="250.0" x2="118" y2="250.0" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="109" y="254.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">12k</text>
+  <line x1="113" y1="200.0" x2="118" y2="200.0" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="109" y="204.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">14k</text>
+  <line x1="113" y1="150.0" x2="118" y2="150.0" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="109" y="154.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">16k</text>
+  <line x1="113" y1="100.0" x2="118" y2="100.0" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="109" y="104.0" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">18k</text>
+  <line x1="118.0" y1="300" x2="118.0" y2="305" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="118.0" y="318" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">gen</text>
+  <line x1="182.0" y1="300" x2="182.0" y2="305" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="182.0" y="318" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">feb</text>
+  <line x1="246.0" y1="300" x2="246.0" y2="305" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="246.0" y="318" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">mar</text>
+  <line x1="310.0" y1="300" x2="310.0" y2="305" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="310.0" y="318" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">apr</text>
+  <line x1="374.0" y1="300" x2="374.0" y2="305" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="374.0" y="318" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">mag</text>
+  <line x1="438.0" y1="300" x2="438.0" y2="305" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="438.0" y="318" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="9.5" fill="#5E5852">giu</text>
+  <polyline points="118.0,250.0 182.0,212.5 246.0,255.0 310.0,170.0 374.0,140.0 438.0,152.5" fill="none" stroke="#B5532C" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle cx="118.0" cy="250.0" r="3.2" fill="#B5532C"/>
+  <circle cx="182.0" cy="212.5" r="3.2" fill="#B5532C"/>
+  <circle cx="246.0" cy="255.0" r="3.2" fill="#B5532C"/>
+  <circle cx="310.0" cy="170.0" r="3.2" fill="#B5532C"/>
+  <circle cx="374.0" cy="140.0" r="3.2" fill="#B5532C"/>
+  <circle cx="438.0" cy="152.5" r="3.2" fill="#B5532C"/>
+  <rect x="130" y="112" width="96" height="26" rx="4" fill="#F8F5EE" stroke="#C5BEAA" stroke-width="1"/>
+  <line x1="138" y1="125" x2="160" y2="125" stroke="#B5532C" stroke-width="2.4"/>
+  <text x="166" y="129" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#1A1A1A">fatturato</text>
+  <text x="438" y="340" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A">mese</text>
+  <text x="56" y="200.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#1A1A1A" transform="rotate(-90 56 200.0)">euro</text>
+  <text x="490" y="96" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" font-weight="bold">Titolo</text>
+  <text x="490" y="111" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">ax.set_title()</text>
+  <line x1="482" y1="92" x2="366.0" y2="82.0" stroke="#C9A961" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text x="490" y="150" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" font-weight="bold">Legenda</text>
+  <text x="490" y="165" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">ax.legend()</text>
+  <line x1="482" y1="146" x2="228.0" y2="126.0" stroke="#C9A961" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text x="490" y="204" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" font-weight="bold">Linea dati</text>
+  <text x="490" y="219" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">ax.plot(x, y)</text>
+  <line x1="482" y1="200" x2="374.0" y2="140.0" stroke="#C9A961" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text x="490" y="258" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" font-weight="bold">Tacche e valori</text>
+  <text x="490" y="273" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">gli assi, con i numeri</text>
+  <line x1="482" y1="254" x2="438.0" y2="310.0" stroke="#C9A961" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text x="490" y="312" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A" font-weight="bold">Etichette degli assi</text>
+  <text x="490" y="327" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">ax.set_xlabel(), set_ylabel()</text>
+  <line x1="482" y1="308" x2="418.0" y2="336.0" stroke="#C9A961" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <line x1="40" y1="396" x2="660" y2="396" stroke="#C5BEAA" stroke-width="1"/>
+  <text x="350.0" y="416" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">Una Figure pu&#242; contenere pi&#249; Axes; quasi tutti i metodi appartengono agli Axes.</text>
+</svg>

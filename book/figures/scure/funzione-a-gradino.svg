@@ -1,0 +1,28 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../funzione-a-gradino.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 216" role="img" aria-label="Grafico della funzione a gradino. In orizzontale la somma pesata z, in verticale l'uscita, che vale soltanto 0 oppure 1. A sinistra dello zero il tratto corre basso sulla riga dello 0, sullo zero salta di netto in verticale, e da l&#236; in poi corre alto sulla riga dell'1. Sul salto una pallina piena marca il valore 1 nello zero e un cerchietto vuoto marca lo 0 lasciato: lo zero conta come s&#236;. Non c'&#232; nessuna pendenza da nessuna parte, il tratto &#232; piatto prima e dopo.">
+  <line x1="56" y1="150" x2="404" y2="150" stroke="#BCB3A1" stroke-width="1"/>
+  <line x1="200" y1="176" x2="200" y2="44" stroke="#BCB3A1" stroke-width="1"/>
+
+  <line x1="56" y1="70" x2="200" y2="70" stroke="#BCB3A1" stroke-width="0.7" stroke-dasharray="3 3" stroke-opacity="0.45"/>
+
+  <path d="M60,150 H200 V70 H400" fill="none" stroke="#E27B52" stroke-width="2.2" stroke-linejoin="miter"/>
+  <circle cx="200" cy="70" r="4.5" fill="#E27B52"/>
+  <circle cx="200" cy="150" r="4.5" fill="#0E0C0A" stroke="#E27B52" stroke-width="1.6"/>
+
+  <text x="190" y="74" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">1</text>
+  <text x="190" y="164" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">0</text>
+
+  <text x="404" y="168" text-anchor="end" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">somma pesata z</text>
+  <text x="200" y="36" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">uscita del neurone</text>
+
+  <text x="128" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5BA39C">no</text>
+  <text x="300" y="52" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5BA39C">sì</text>
+
+  <text x="56" y="200" font-family="Inter, sans-serif" font-size="11" fill="#E27B52">sullo zero la pallina è piena: lo zero conta come sì</text>
+</svg>

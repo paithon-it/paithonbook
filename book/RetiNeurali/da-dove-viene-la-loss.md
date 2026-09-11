@@ -331,6 +331,42 @@ ricetta ne ha appena percorso il terzo.
 
 `````
 
+### Le risposte di altra forma: il dominio è un catalogo
+
+Errore quadratico e cross-entropia sono due voci di un elenco più lungo, e chi
+ha la ricetta può leggerlo tutto. A cambiare da una voce all'altra è una cosa
+sola: l'insieme in cui la risposta ha il permesso di cadere. Una durata non è
+mai negativa, una proporzione sta fra zero e uno, una direzione torna su sé
+stessa dopo un giro, un conteggio salta di uno in uno. Ognuna di quelle forme
+ha almeno una distribuzione che ci vive sopra, e sceglierla è tutta la mossa;
+il resto della procedura non cambia di una riga.
+
+```{figure} ../figures/il-dominio-sceglie-la-distribuzione.svg
+:name: fig-dominio-distribuzione
+:alt: Otto riquadri, in ciascuno la forma dell'insieme in cui vive la risposta disegnata a sinistra e a destra il nome della distribuzione che ci vive e che cosa si predice. Tutta la retta: gaussiana, un numero qualsiasi. I numeri positivi, cioè una semiretta che parte da zero: esponenziale o gamma, una durata o una grandezza. Un segmento fra zero e uno: beta, una proporzione. Un cerchio: von Mises, una direzione. Due caselle: Bernoulli, sì o no. K caselle: categorica, una classe fra K. I numeri interi a partire da zero, disegnati come punti staccati: Poisson, quante volte. Tre rette parallele: normale multivariata, più risposte insieme. In fondo, la riga che chiude: il dominio del parametro sceglie la funzione dell'ultimo strato, nessuna sulla retta, la sigmoide sul segmento, la softmax sulle caselle.
+:width: 90%
+
+Le due loss di sempre sono due voci di questo elenco, quella della retta
+intera e quella delle caselle. Le altre si ricavano con la stessa procedura,
+cambiando la sola riga in cui si sceglie la famiglia.
+```
+
+Il catalogo di {numref}`fig-dominio-distribuzione`, dominio per dominio, è di
+Prince {cite}`prince2023understanding`, e va letto con una cautela: dice quali
+distribuzioni *possono* stare su quel dominio, e fra quelle non sceglie. Sulla
+retta intera ci vive anche la Laplace, che dà l'errore assoluto invece del
+quadrato, e ci vive una mistura di gaussiane; a decidere fra le tre sono i
+dati che si hanno.
+
+Lo stesso gesto, senza reti, è quello dei {doc}`modelli lineari generalizzati
+</MachineLearning/apprendimento-supervisionato>`: scelgono anche loro una
+distribuzione, e un punteggio lineare gliene fornisce il parametro passando per
+una funzione di legame. Qui il punteggio lineare
+diventa una rete, e la funzione dell'ultimo strato fa il mestiere del legame
+percorso all'incontrario, dal punteggio grezzo al parametro. Lineare,
+logistica e Poisson erano già la stessa macchina con tre impostazioni: il
+resto della ricetta non è cambiato.
+
 ## Quando l'incertezza cambia da punto a punto
 
 Fin qui la larghezza della gaussiana è rimasta una costante, ed è

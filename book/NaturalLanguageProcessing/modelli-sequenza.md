@@ -33,17 +33,19 @@ letto finora». Nascosto perché non è la risposta della rete, non si vede da
 fuori: è un appunto che la rete tiene per sé.
 
 Prima del disegno, due parole che ricorrono da qui in avanti. Il blocchetto di
-conti che si ripete si chiama **cella**, ed è l'unico pezzo di rete che esiste
-davvero. Dentro la cella ci sono dei numeri regolabili, ed è con quelli che si
+conti che si ripete, quello che legge una parola e aggiorna l'appunto, si chiama
+**cella**. Dentro la cella ci sono dei numeri regolabili, ed è con quelli che si
 moltiplica tutto ciò che entra: si chiamano pesi, e sono ciò che la rete
 impara. Sono anche tutto ciò che la rete possiede: quando si dice che un
 modello «ha sette miliardi di parametri» si sta contando quei numeri lì.
 
-Ecco allora perché una rete ricorrente resta piccola anche su testi
-lunghissimi: la cella è una sola, e i suoi pesi sono sempre gli stessi al passo
-3 e al passo tremila. Il modo migliore per vederlo è «srotolarla», come nel
-disegno qui sotto: si disegna una copia della cella per ogni istante e si
-guarda lo stato passare di mano in mano.
+La cella è anche l'unico pezzo di rete che esiste davvero, e per vederlo il modo
+migliore è «srotolarla», come nel disegno che segue: si disegna una copia della
+cella per ogni istante e si guarda lo stato passare di mano in mano. Le copie
+sono un disegno, non delle reti: ce n'è una sola, riusata a ogni parola, con gli
+stessi pesi al passo 3 e al passo tremila. Ecco perché una rete ricorrente resta
+piccola anche su testi lunghissimi: allungare il testo allunga il disegno, non
+la rete.
 
 ```{figure} ../figures/rnn-srotolata.svg
 :name: fig-rnn-srotolata
@@ -81,9 +83,10 @@ sul tavolo non ci stanno. Allora si lavora a blocchi di trenta righe. Correggi
 la mano guardando quelle trenta, poi riparti dal foglietto così com'è, senza
 più tornare su come ci sei arrivato.
 
-Il prezzo di questa scorciatoia è chiaro, ed è meglio saperlo. Il foglietto
-continua a viaggiare in avanti e si porta dietro tutto quello che c'è scritto;
-è la correzione a fermarsi al confine fra un blocco e il successivo. Così la
+Il prezzo di questa scorciatoia è chiaro, ed è meglio saperlo. Il foglietto non
+viene azzerato al confine fra un blocco e il successivo: passa di là com'è, e
+in avanti la lettura non si interrompe mai. A fermarsi al confine è la
+correzione. Così la
 mano non impara mai a legare una cosa di riga cinque con una di riga sessanta,
 perché quando c'è da correggere quel legame riga cinque non è più sul tavolo.
 
@@ -93,17 +96,26 @@ perché quando c'è da correggere quel legame riga cinque non è più sul tavolo
 
 A ogni passo temporale $t$ la cella combina l'input corrente $\mathbf{x}_t$ con
 lo stato precedente $\mathbf{h}_{t-1}$ tramite una trasformazione lineare
-seguita da una non linearità:
+seguita da una non linearità. È lo schema che Jeffrey Elman descrive nel 1990
+{cite}`elman1990finding`, e che da allora si chiama **rete ricorrente
+semplice**, scritto nella forma di oggi:
 
 $$
 \mathbf{h}_t = \tanh\!\left(\mathbf{W}_{hh}\,\mathbf{h}_{t-1} + \mathbf{W}_{xh}\,\mathbf{x}_t + \mathbf{b}_h\right),
 \qquad
-\hat{\mathbf{y}}_t = \mathbf{W}_{hy}\,\mathbf{h}_t .
+\hat{\mathbf{y}}_t = \mathrm{softmax}\!\left(\mathbf{W}_{hy}\,\mathbf{h}_t +
+\mathbf{b}_y\right).
 $$
 
-Qui $\mathbf{h}_t \in \mathbb{R}^d$ è lo stato nascosto, $\mathbf{x}_t$ l'input
-al passo $t$, mentre $\mathbf{W}_{hh}, \mathbf{W}_{xh}, \mathbf{W}_{hy}$ sono
-matrici di pesi e $\mathbf{b}_h$ il bias. Il punto cruciale è che queste
+Qui $\mathbf{h}_t \in \mathbb{R}^d$ è lo stato nascosto, con $d$ scelto da chi
+costruisce la rete, $\mathbf{x}_t$ è l'input
+al passo $t$ e $\hat{\mathbf{y}}_t$ la distribuzione sul vocabolario, mentre
+$\mathbf{W}_{hh}, \mathbf{W}_{xh}, \mathbf{W}_{hy}$ sono
+matrici di pesi e $\mathbf{b}_h, \mathbf{b}_y$ i bias. Senza la softmax quello
+che esce sono i *logit*, i punteggi grezzi: è la forma che le librerie chiedono
+in ingresso alla cross-entropia, ed è per questo che in PyTorch l'ultimo strato
+di un classificatore si ferma un passo prima e la softmax non si scrive.
+Il punto cruciale è che queste
 matrici non dipendono da $t$: sono *condivise* su tutta la sequenza (*weight
 sharing*). L'addestramento avviene con la *backpropagation through time*, cioè
 la retropropagazione applicata alla rete srotolata.
@@ -116,7 +128,8 @@ troncato**: si spezza la sequenza in blocchi di lunghezza fissa (tipicamente
 qualche decina di passi), si retropropaga dentro un blocco e si stacca lo
 stato nascosto al confine, passandolo al blocco successivo come un valore
 qualunque, senza la sua storia. In PyTorch è letteralmente una chiamata,
-`h = h.detach()`.
+`h = h.detach()`, e per la LSTM, il cui stato è una coppia, la stessa cosa
+scritta su tutti e due i pezzi: `h = tuple(s.detach() for s in h)`.
 
 Il prezzo è dichiarato: il gradiente non attraversa mai il confine, quindi la
 rete non può imparare dipendenze più lunghe del blocco. Lo stato in avanti
@@ -170,18 +183,24 @@ critico ha la forma
 
 $$
 \frac{\partial \mathbf{h}_t}{\partial \mathbf{h}_{t-k}}
-= \prod_{i=t-k+1}^{t} \frac{\partial \mathbf{h}_i}{\partial \mathbf{h}_{i-1}} ,
+= \frac{\partial \mathbf{h}_t}{\partial \mathbf{h}_{t-1}}
+\cdot \frac{\partial \mathbf{h}_{t-1}}{\partial \mathbf{h}_{t-2}}
+\cdots \frac{\partial \mathbf{h}_{t-k+1}}{\partial \mathbf{h}_{t-k}} ,
 $$
 
-un prodotto di $k$ fattori. Se questi fattori hanno norma tipicamente minore di
+un prodotto di $k$ fattori, e l'ordine conta perché le jacobiane non commutano.
+Se questi fattori hanno norma tipicamente minore di
 1, il prodotto tende a $0$ in modo esponenziale (gradiente che svanisce,
 *vanishing gradient*); se maggiore di 1, il gradiente *può* crescere fino a
 esplodere. La norma dei fattori, infatti, dà solo un maggiorante del prodotto:
 che sia maggiore di 1 è condizione necessaria perché il gradiente esploda, non
-sufficiente {cite}`pascanu2013difficulty`. Che le RNN «semplici» non riescano
-ad apprendere dipendenze su molti passi è un risultato dimostrato formalmente
-già nel 1994 da Yoshua Bengio, Patrice Simard e Paolo Frasconi
-{cite}`bengio1994learning`.
+sufficiente {cite}`pascanu2013difficulty`. Che una rete ricorrente «semplice»
+faccia fatica su molti passi è un risultato del 1994 di Yoshua Bengio, Patrice
+Simard e Paolo Frasconi {cite}`bengio1994learning`, e va enunciato per quello
+che è: un compromesso, non un divieto. Se la rete conserva l'informazione in
+modo robusto, cioè in modo che un disturbo non la cancelli, allora il gradiente
+svanisce in modo esponenziale; e quindi è la discesa del gradiente a non
+riuscire a trovare quei legami, non la rete a non poterli rappresentare.
 
 `````
 
@@ -198,14 +217,21 @@ taccuino protetto, che a ogni passo non viene riscritto: viene ritoccato,
 con piccole aggiunte e piccole cancellature. Quello che ci si scrive resta lì
 finché qualcuno non decide di toglierlo, e proprio per questo un'informazione
 può sopravvivere a cento parole di distanza. A decidere che cosa scriverci e
-che cosa leggerne sono due **cancelli**, cioè due manopole che la rete impara
-ad aprire e chiudere da sé.
+che cosa leggerne sono due **cancelli**. Un cancello è un numero fra zero e uno
+per cui si moltiplica ciò che passa: a uno lascia passare tutto, a zero niente,
+nel mezzo una parte. Quel numero non è fissato una volta per tutte: lo calcola
+la rete a ogni passo, dalla parola nuova e dallo stato precedente, con pesi che
+si correggono come tutti gli altri.
 
 Il terzo cancello, quello che decide che cosa cancellare, nel lavoro del
 1997 non c'era: arriva tre anni dopo, con Felix Gers, Jürgen Schmidhuber e Fred
 Cummins {cite}`gers2000learning`, e nasce da un difetto scoperto all'uso. Se il
-taccuino si può solo scrivere e mai cancellare, prima o poi si riempie, e da
-quel momento nessuna informazione nuova ci trova più posto. Su un testo che
+taccuino non si azzera mai, su una sequenza che non finisce i numeri che ci
+stanno scritti crescono senza fermarsi. Il guaio non è la carta che si esaurisce
+ma la lettura: il valore che si legge dal taccuino passa per una funzione che
+schiaccia i numeri grandi verso il suo estremo, e a quel punto non distingue più
+un contenuto dall'altro. La cella smette di ricordare e torna a comportarsi come
+una ricorrente qualunque. Su un testo che
 finisce va bene lo stesso; su un flusso che non finisce mai (una trasmissione,
 un sensore, una conversazione senza fine) è fatale. La forma con tre cancelli è
 quella che oggi si chiama LSTM senz'altra specificazione, ed è quella che
@@ -229,7 +255,8 @@ Primo: che cosa vuol dire «riscrivere il riassunto». Fin qui l'abbiamo
 detto a parole, ma dentro il computer quel riassunto è una fila di numeri. E
 anche la parola nuova è una fila di numeri: prima di entrare nella rete, ogni
 parola viene sostituita dalle sue coordinate sulla mappa dei significati,
-quelle della sezione su come si rappresenta il testo. Riscrivere il riassunto
+quelle della {doc}`sezione su come si rappresenta il testo
+<rappresentare-testo>`. Riscrivere il riassunto
 vuol dire allora moltiplicarlo per i pesi della cella e sommarci la fila di
 numeri della parola nuova. Non è una metafora: a ogni passo i numeri del
 riassunto vengono letteralmente moltiplicati per gli stessi numeri, quelli
@@ -373,6 +400,14 @@ class ClassificatoreSentiment(nn.Module):
         h, _ = self.rnn(e)         # stato nascosto a ogni passo
         return self.out(h[:, -1])  # ultimo passo -> logit per CrossEntropyLoss
 ```
+
+Una cosa il blocco la dà per buona, e in un programma vero non lo è: `h[:, -1]`
+prende l'ultimo posto della fila. Quando le frasi di un lotto hanno lunghezze
+diverse le si allunga tutte alla stessa misura con dei riempitivi, e allora
+l'ultimo posto è l'ultimo riempitivo, non l'ultima parola: lo stato che si
+legge dipende da quanti se ne sono aggiunti. Con il riempimento si passa per
+`pack_padded_sequence`, oppure si va a prendere lo stato all'indice della
+lunghezza vera di ciascuna frase.
 
 Il ciclo di addestramento è quello che conosciamo dal {doc}`capitolo su PyTorch
 </PyTorch/overview>`. E provare, come si è detto, costa una parola: si scambia

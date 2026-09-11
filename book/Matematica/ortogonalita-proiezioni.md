@@ -590,7 +590,7 @@ stesso $\mathbf{A}_k$ minimizza qualunque norma invariante per trasformazioni
 ortogonali {cite}`mirsky1960symmetric`, cioè che il troncamento non è una
 risposta tarata su un modo particolare di misurare l'errore.
 
-L'unicità invece dipende dalla norma, e vale la pena non confonderle. In
+L'unicità invece dipende dalla norma, e le due non vanno confuse. In
 norma di Frobenius il minimo è unico se e solo se $\sigma_k > \sigma_{k+1}$: a
 valori singolari pari il sottospazio da tenere non è determinato. In norma
 spettrale di minimi ce ne sono quasi sempre infiniti, perché conta solo il
@@ -599,8 +599,8 @@ $\mathbf{B} = \operatorname{diag}(c,0)$ con $c\in[1,3]$ ha rango uno e lascia
 $\lVert\mathbf{A}-\mathbf{B}\rVert_2 = 1 = \sigma_2$, mentre in Frobenius solo
 $c=2$ è ottimo.
 
-Per la norma spettrale la dimostrazione è un conteggio di dimensioni, e vale la
-pena vederla perché mostra da dove venga $\sigma_{k+1}$. Se
+Per la norma spettrale la dimostrazione è un conteggio di dimensioni, e
+mostra da dove venga $\sigma_{k+1}$. Se
 $\operatorname{rank}(\mathbf{B})\le k$ allora $\dim\ker(\mathbf{B})\ge n-k$;
 lo span di $\mathbf{v}_1,\dots,\mathbf{v}_{k+1}$ ha dimensione $k+1$; siccome
 $(n-k)+(k+1)>n$, la formula di Grassmann
@@ -642,24 +642,36 @@ significa sostituire $\mathbf{A}$ con il troncamento che dista da essa meno di
 $\tau$ in norma spettrale (in Frobenius la distanza è
 $\sqrt{\sum_{i>k}\sigma_i^2}$ e può superare $\tau$ quanto si vuole). E un
 collo di bottiglia lineare addestrato su un errore quadratico ha in
-$\mathbf{A}_k$ il proprio ottimo globale; che la discesa del gradiente ci
-arrivi è un fatto in più, dovuto a Baldi e Hornik, che mostrano come su questa
-superficie non esistano minimi locali spuri, e come la soluzione sia
-determinata solo a meno di un cambio di base nel latente
-($\mathbf{W}_2 = \mathbf{U}_k\mathbf{C}$ e
-$\mathbf{W}_1 = \mathbf{C}^{-1}\mathbf{U}_k^\top$, con $\mathbf{C}$
-invertibile qualunque): un autoencoder lineare ritrova il sottospazio della
-PCA, non i suoi assi {cite}`baldi1989neural`.
+$\mathbf{A}_k$ il proprio ottimo globale.
 
-I due limiti sono precisi, e il secondo è quello che si dimentica. Se lo
-spettro non decade il teorema resta vero e diventa inutile: con tutti i
-$\sigma_i$ uguali l'errore relativo del troncamento è $\sqrt{(r-k)/r}$,
-cioè quasi tutto. E il teorema vale per la norma di Frobenius su tutte le
-celle: se la somma corre su un sottoinsieme di celle (le sole osservate) o pesa
-le celle in modo diverso, il minimo smette di essere il troncamento e il
-problema perde la soluzione in forma chiusa. È esattamente la ragione per cui
-la fattorizzazione delle matrici di valutazioni si stima per discesa del
-gradiente invece che con una decomposizione, come racconta la
+La forma della superficie attorno a quell'ottimo è un fatto in più, e si deve a
+Baldi e Hornik {cite}`baldi1989neural`. Su quella superficie non ci sono minimi
+locali spuri, perché ogni altro punto critico è una sella, cioè un punto da cui
+si scende in una direzione e si sale in un'altra. E la soluzione è determinata
+solo a meno di un cambio di base nello spazio compresso di mezzo, il
+*latente*, $\mathbf{W}_2 =
+\mathbf{V}_k\mathbf{C}$ e $\mathbf{W}_1 = \mathbf{C}^{-1}\mathbf{V}_k^\top$ con
+$\mathbf{C}$ invertibile qualunque, quindi un autoencoder lineare ritrova il
+sottospazio della PCA e non i suoi assi. Che la discesa del gradiente ci arrivi
+non segue, e gli autori lo scrivono: una superficie senza minimi locali lascia
+comunque il modo di incagliarsi in una sella. Aggiungono però che in pratica
+non capita quasi mai, perché la direzione calcolata su pochi campioni non è il
+gradiente vero. Le due ipotesi sono la covarianza di rango pieno e i suoi
+autovalori tutti distinti. Gli autori le danno per poco restrittive, e nel 1989
+lo erano; oggi la prima cade spesso, ogni volta che i casi sono meno delle
+caratteristiche, e cade anche quando i casi bastano ma le direzioni vere sono
+poche, come sul catalogo di quaranta tinte e dodici pigmenti, che di pesi non
+nulli ne ha cinque.
+
+I due limiti del troncamento sono precisi, e il secondo è quello che si
+dimentica. Se lo spettro non decade il teorema resta vero e diventa inutile:
+con tutti i $\sigma_i$ uguali l'errore relativo del troncamento è
+$\sqrt{(r-k)/r}$, cioè quasi tutto. E il teorema vale per la norma di Frobenius
+su tutte le celle: se la somma corre su un sottoinsieme di celle (le sole
+osservate) o pesa le celle in modo diverso, il minimo smette di essere il
+troncamento e il problema perde la soluzione in forma chiusa. È esattamente la
+ragione per cui la fattorizzazione delle matrici di valutazioni si stima per
+discesa del gradiente invece che con una decomposizione, come racconta la
 {doc}`sezione sul filtraggio collaborativo
 </SistemiRaccomandazione/filtraggio-collaborativo>`.
 
@@ -762,8 +774,8 @@ non cambia, e allora la si lascia fuori dalla ricetta. Se poi i barattoli sono
 tutti diversi la ricetta buona è una sola, e questa procedura restituisce
 quella, senza cambiare niente di quello che si sapeva già.
 
-C'è anche una seconda strada, e vale la pena conoscerla perché mostra che la
-regola di poco fa non è arbitraria. Si chiede al conto di non esagerare con le
+C'è anche una seconda strada, e mostra che la regola di poco fa non è
+arbitraria. Si chiede al conto di non esagerare con le
 dosi, mettendo una penale sui litri usati, e poi si allenta la penale un po'
 alla volta. Man mano che si alleggerisce, la ricetta si avvicina proprio a
 quella spalmata, e continuando ad alleggerirla ci arriva.
@@ -1022,10 +1034,11 @@ e se serve la proiezione la si ottiene come `A @ coefficienti`.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Due direzioni sono perpendicolari quando il loro prodotto scalare fa
-  zero, e allora sapere quanto vale l'una non dice niente sull'altra. Con
-  direzioni perpendicolari e lunghe uno ogni coefficiente si legge con un
-  prodotto scalare, senza risolvere nessun sistema.
+- Due direzioni sono perpendicolari quando il loro prodotto scalare fa zero,
+  e allora spostarsi lungo una non ti sposta di un millimetro lungo l'altra:
+  il che non vuol dire che le due grandezze misurate lungo di esse non abbiano
+  niente da dirsi. Con direzioni perpendicolari e lunghe uno ogni coefficiente
+  si legge con un prodotto scalare, senza risolvere nessun sistema.
 - La proiezione è l'ombra a picco: ogni vettore si spacca in modo unico
   nella parte che sta nella direzione scelta più la parte perpendicolare. La
   media aritmetica è esattamente l'ombra delle misure sulla direzione in

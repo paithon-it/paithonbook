@@ -532,9 +532,11 @@ limite sta in una frase: il generatore l'immagine non l'ha mai vista. Quello che
 didascalie e riquadri non dicono non finisce nei dati, e quello che il
 generatore inventa dentro un ragionamento plausibile ci finisce come se fosse
 vero. Chi studia quel materiale ne eredita lo stile, e con lo stile anche la
-sicurezza con cui il generatore afferma cose che non poteva sapere. La sezione
-sull'allucinazione visiva ci tornerà sopra; qui basti annotare che una parte del
-difetto nasce in addestramento, e non nel momento in cui il modello risponde.
+sicurezza con cui il generatore afferma cose che non poteva sapere. La
+{doc}`sezione sull'allucinazione visiva
+</VisioneLinguaggio/vedere-quel-che-non-ce>` ci tornerà sopra; qui basti
+annotare che una parte del difetto nasce in addestramento, e non nel momento in
+cui il modello risponde.
 
 ## Il connettore in dieci righe
 

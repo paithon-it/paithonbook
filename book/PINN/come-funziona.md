@@ -35,11 +35,13 @@ l'istante e $\theta$, «theta», sta per tutti i pesi della rete messi insieme),
 la pendenza è $u_\theta'(t)$ e la curvatura $u_\theta''(t)$.
 
 La rete allora smette di essere soltanto una scatola addestrabile e diventa
-qualcosa di più: una curva **liscia** (che vuol dire una cosa precisa, senza
-spigoli, senza punti in cui cambia direzione di colpo) di cui si sa dire, in
+qualcosa di più: una curva **liscia** (che vuol dire una cosa precisa: niente
+spigoli, e una curvatura che esiste in ogni punto) di cui si sa dire, in
 ogni punto, quanto è alta, quanto sale e quanto piega. Ed è esattamente ciò
 che serve per chiederle di rispettare un'equazione differenziale, che di
-quelle tre cose parla e non d'altro.
+quelle tre cose parla e non d'altro. Liscia, però, non lo è per forza: dipende
+da come la rete è fatta dentro, e quale pezzo lo decida lo racconta la sezione
+sulla scelta fra tanh e ReLU.
 
 Tutto il metodo delle PINN sta in questa mossa, chiedere le derivate rispetto
 all'ingresso invece che ai pesi. Vediamola all'opera.
@@ -227,8 +229,9 @@ Lo schema è disegnato nel caso generale, quello di un'equazione con una
 coordinata di spazio e una di tempo; nel resto della sezione lavoreremo sul
 caso più semplice, con il solo tempo in ingresso. Conviene fissare il ramo in
 alto, quello giallo-bruno (color ocra): quelle derivate *rispetto all'input*
-non compaiono in nessun'altra architettura di questo libro. È il pezzo nuovo,
-ed è tutto qui.
+altrove sono un accessorio (il {doc}`gradient penalty delle GAN
+</GAN/come-funziona>` deriva rispetto all'ingresso del critico, e così faranno
+le mappe di salienza dell'interpretabilità), qui sono il motore.
 
 ## Una molla come banco di prova
 
@@ -348,14 +351,30 @@ funzione di attivazione, ed è lei a decidere che forma possono avere le
 curve che la rete sa disegnare. Dalla {doc}`sezione sulle funzioni di
 attivazione </RetiNeurali/funzioni-attivazione>` in poi abbiamo usato quasi
 sempre la stessa, la ReLU, che è la scelta giusta praticamente ovunque. Qui è
-squalificata in partenza, e il motivo è istruttivo.
+squalificata in partenza, e {numref}`fig-curva-liscia-e-spezzata` mostra il
+motivo.
+
+```{figure} ../figures/curva-liscia-e-spezzata.svg
+:name: fig-curva-liscia-e-spezzata
+:alt: "Due colonne a confronto, con il tempo in ascissa e la stessa oscillazione smorzata di una molla. A sinistra, sotto il titolo «rete di sole ReLU», la curva è una spezzata di otto segmenti dritti incollati fra loro, e uno dei vertici è cerchiato; nel riquadro sotto, la curvatura è una riga piatta appoggiata sullo zero, interrotta da un cerchietto vuoto in corrispondenza di ogni vertice, dove non esiste. A destra, sotto il titolo «rete con tanh», la stessa oscillazione è una curva continua senza spigoli; nel riquadro sotto, la sua curvatura è a sua volta una curva continua che oscilla attorno allo zero e parte da meno quattro. La curvatura è il termine principale della regola della molla: a sinistra non c'è niente da misurare, a destra sì."
+:width: 100%
+
+Sopra, la stessa oscillazione disegnata da due reti diverse; sotto, la
+curvatura di ciascuna. Una rete di sole ReLU sa solo incollare tratti dritti,
+e un tratto dritto non piega: la riga in basso a sinistra resta appoggiata
+sullo zero, con un buco in ogni vertice. La tanh piega dappertutto, e la sua
+curvatura è a sua volta una curva.
+```
 
 `````{tab} Elementare
 
 La curva dev'essere liscia, e la ReLU non sa disegnare curve lisce. La
 ReLU è fatta di due tratti dritti attaccati in un angolo, e una rete di sole
 ReLU produce curve fatte così: segmenti dritti incollati uno dopo l'altro,
-come una spezzata. Una spezzata però non ha curvatura da nessuna parte,
+come una spezzata. Il motivo è che la ReLU non piega mai: taglia in un punto e
+per il resto lascia dritto. E sommando tratti dritti si ottengono ancora
+tratti dritti, quindi con tanti neuroni i pezzi diventano tantissimi, ma
+restano pezzi dritti. Una spezzata però non ha curvatura da nessuna parte,
 perché un tratto dritto non piega, e negli angoli, dove piegherebbe, la
 curvatura non si riesce nemmeno a calcolare. Ma la regola della molla parla
 proprio di curvatura, che ne è anzi il termine principale: con una curva a
@@ -376,20 +395,23 @@ in pensione; qui si prende la rivincita.
 La ReLU è fatta di due semirette: una rete di sole ReLU calcola una funzione
 *lineare a tratti*, la cui derivata prima è a gradini e la cui derivata
 seconda è zero quasi ovunque ("quasi" perché nei punti di piega non esiste
-affatto, e sono un insieme di misura nulla). Ma nel nostro residuo compare
-$u''$: per una rete ReLU sarebbe identicamente nullo, e il termine principale
-dell'equazione diventerebbe invisibile alla loss. E il
-modo in cui fallisce merita una riga: chiedendo a autograd la derivata seconda
-di una rete ReLU non si ottiene un errore né un `None`, si ottengono zeri, e
-insieme a essi è nullo anche il gradiente di $(u'')^2$ rispetto a *tutti* i
-pesi. Il termine c'è, costa il suo tempo di calcolo e non muove nulla: un
-guasto perfettamente silenzioso. La `tanh`, al contrario, è liscia (derivabile
-infinite volte, con derivate continue a ogni ordine) e infatti è la scelta
-standard delle PINN; funzionano anche il seno e la softplus (una versione
-arrotondata della ReLU), perché il requisito, qui, è la regolarità. Il che non
-vuol dire che siano intercambiabili: le attivazioni periodiche cambiano quali
-frequenze la rete impara in fretta, ed è un effetto di cui la prossima sezione
-si serve come rimedio.
+affatto, e sono un insieme di misura nulla, quindi in pratica la si legge come
+zero dappertutto). Quante siano quelle regioni, e
+come crescano con la profondità, lo conta la sezione «Quante regioni taglia
+una rete» del {doc}`capitolo sul deep learning </DeepLearning/overview>`. Ma
+nel nostro residuo compare $u''$: per una rete ReLU verrebbe zero ovunque
+autograd riesca a calcolarlo, e il termine principale dell'equazione
+diventerebbe invisibile alla loss. E il modo in cui fallisce merita una riga:
+chiedendo a autograd la derivata seconda di una rete ReLU non si ottiene un
+errore né un `None`, si ottengono zeri, e da quegli zeri nessun peso riceve
+più una spinta. Il termine c'è, costa il suo tempo di calcolo e non muove
+nulla: un guasto perfettamente silenzioso. La `tanh`, al contrario, è
+liscia (derivabile infinite volte, con derivate continue a ogni ordine) e
+infatti è la scelta standard delle PINN; funzionano anche il seno e la
+softplus (una versione arrotondata della ReLU), perché il requisito, qui, è la
+regolarità. Il che non vuol dire che siano intercambiabili: le attivazioni
+periodiche cambiano quali frequenze la rete impara in fretta, ed è un effetto
+di cui la prossima sezione si serve come rimedio.
 
 `````
 
@@ -438,7 +460,9 @@ nei commenti, è la forma della tabella di numeri: qui 200 righe per una
 colonna.
 
 Il cuore del metodo sono due chiamate a `torch.autograd.grad`, con due
-argomenti che non avevamo mai usato. Il ciclo che le contiene ripete
+argomenti che finora non erano serviti (`create_graph` era comparso una volta
+sola, nel meta-apprendimento, per la stessa ragione: tenere derivabile la
+catena). Il ciclo che le contiene ripete
 trentamila volte lo stesso giro di correzione, e ciascuno di quei giri si
 chiama epoca:
 
@@ -576,11 +600,10 @@ print(f"errore massimo                       : {errore.max():.3f}")
 print(f"  sui primi 5 secondi                : {errore[t_test <= 5.0].max():.3f}")
 print(f"  sugli ultimi 5 secondi             : {errore[t_test > 5.0].max():.3f}")
 
-# Il numero che il testo commenta e' una promessa: tanto vale verificarla qui.
+# La promessa si verifica sul posto.
 assert errore.max() < 0.45, (
     f"errore massimo {errore.max():.3f}: la rete non sta ricostruendo "
-    "l'oscillazione, e' collassata sulla curva piatta ferma sullo zero. "
-    "Succede: si veda la parte sui semi sfortunati."
+    "l'oscillazione, e' collassata sulla curva piatta ferma sullo zero."
 )
 ```
 
@@ -642,16 +665,15 @@ un tratto dove la molla vera si muove ormai di così poco vuol dire che lì, di
 fatto, la rete l'oscillazione non la sta più seguendo. Sui primi cinque
 secondi è brava; nella coda ha smesso.
 
-Si noti infine il terzo numero, ed è quello che dice di più: sulla griglia
-fitta di istanti che la
-rete non ha mai visto il residuo è $3 \cdot 10^{-2}$, quattro volte più alto
-che nei punti controllati. La rete va un po’ meglio dove la si guarda che dove
-non la si guarda. Qui è uno scarto modesto, e fra poche righe vedremo quanto
-può diventare grande. Un ultimo dettaglio da non lasciarsi sfuggire nel crollo
-della loss: quasi tutta quella caduta è il termine sulle condizioni iniziali,
-che si esaurisce entro le prime mille epoche; il termine di fisica, quello che
-dovrebbe fare il lavoro, in tutto si divide soltanto per una trentina, da 0,26
-a 0,0078.
+Si noti infine il residuo sulla griglia fitta, ed è quello che dice di più:
+sugli istanti che la rete non ha mai visto vale $3 \cdot 10^{-2}$, quattro
+volte più alto che nei punti controllati. La rete va un po’ meglio dove la si
+guarda che dove non la si guarda. Qui è uno scarto modesto, e fra poche righe
+vedremo quanto può diventare grande. Un ultimo dettaglio da non lasciarsi
+sfuggire nel crollo della loss: quasi tutta quella caduta è il termine sulle
+condizioni iniziali, che si esaurisce entro le prime mille epoche; il termine
+di fisica, quello che dovrebbe fare il lavoro, in tutto si divide soltanto per
+una trentina, da 0,26 a 0,0078.
 
 ```{figure} ../figures/pinn-residuo.svg
 :name: fig-pinn-residuo
@@ -738,18 +760,15 @@ print(f"{'residuo sui suoi punti':<24}{res_punti:>10.2e}{res_punti_7:>12.2e}")
 print(f"{'residuo sulla griglia':<24}{res_griglia:>10.2e}{res_griglia_7:>12.2e}")
 print(f"{'errore vero':<24}{errore.max():>10.3f}{errore_7.max():>12.3f}")
 
-# La lezione della pagina, resa verificabile. Tre affermazioni distinte:
+# Le tre affermazioni che i numeri qui sopra devono reggere:
 assert res_punti_7 < res_punti, (
-    "il seme 7 non ha piu' il residuo piu' basso dei due: la tabella qui "
-    "sotto va rifatta con i numeri di questa esecuzione."
+    "il seme 7 non ha piu' il residuo piu' basso dei due."
 )
 assert errore_7.max() > errore.max(), (
-    "il seme 7 non collassa piu' su questa versione di PyTorch: serve un "
-    "altro seme che collassi (se ne trovano provando)."
+    "il seme 7 non collassa piu' su questa versione di PyTorch."
 )
 assert res_griglia_7 > res_griglia, (
-    "il residuo fuori dai punti di collocazione non e' piu' quello alto: "
-    "il paragrafo sui due residui va rifatto."
+    "il residuo fuori dai punti di collocazione non e' piu' quello alto."
 )
 ```
 
@@ -1169,10 +1188,10 @@ PINN» non vuol dire «meglio di tutti».
   approssimazioni. La rete diventa una curva liscia, alla quale si può
   chiedere di rispettare una regola.
 - Il punteggio da abbassare somma due voci: le violazioni della regola negli
-  istanti di controllo scelti a caso, i punti di collocazione, e gli
-  scarti sulla partenza, cioè il punto da cui si parte e la pendenza con cui
-  si parte (dove conta anche lo spazio, come nella sbarra che si scalda, entra
-  qui pure quello che succede ai bordi). Alla partenza si dà più peso, perché
+  istanti di controllo scelti a caso (i punti di collocazione) e gli scarti
+  sulla partenza, cioè il punto da cui si parte e la pendenza con cui si parte
+  (dove conta anche lo spazio, come nella sbarra che si scalda, entra qui pure
+  quello che succede ai bordi). Alla partenza si dà più peso, perché
   quando altro non c'è è l'unico ancoraggio.
 - La curva dev'essere liscia: se è fatta di segmenti dritti incollati uno
   dopo l'altro, come quelli che escono dalla ReLU, non ha curvatura da nessuna

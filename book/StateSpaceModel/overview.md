@@ -15,22 +15,23 @@ Là, per capire una frase, ogni parola guarda tutte le altre: raddoppiare la
 lunghezza del testo quadruplica il lavoro, e su un testo molto lungo il
 conto diventa proibitivo. Serve una macchina che legga lungo restando veloce,
 cioè che quando il testo raddoppia raddoppi il lavoro e basta. È questo che si
-intende, in tutto il capitolo, con **costo lineare** (o «a tempo lineare»): il
-lavoro cresce di pari passo con la lunghezza, non più in fretta di lei.
+intende con **costo lineare** (o «a tempo lineare»): il lavoro cresce di pari
+passo con la lunghezza, non più in fretta di lei.
 
-La risposta arriva nel 2021, quando Albert Gu, Karan Goel e Christopher Ré
-prendono quelle equazioni vecchie di sessant'anni, le impacchettano in uno
-strato di rete neurale e le mettono alla prova sul *Long Range Arena*, il
-banco di prova delle dipendenze a lunghissimo raggio: i legami fra parti
-lontane di una sequenza (in un giallo, per capire l'ultima pagina bisogna
-ricordare il nome che compariva alla prima). Il loro modello, **S4**
-{cite}`gu2022s4`, riesce là dove Transformer e reti ricorrenti si arrendevano:
-riconosce strutture che si estendono per sedicimila passi, dove un «passo»
-è un elemento della sequenza (una parola, un campione audio, un pixel). È
-l'atto di nascita di una seconda strada verso il modello di sequenze a costo
-lineare: non quella dell'attenzione resa economica del capitolo precedente, ma
-quella, apparentemente lontana, dei sistemi dinamici. Alla fine, scopriremo,
-le due strade portano allo stesso posto.
+La risposta arriva nell'autunno del 2021, quando Albert Gu, Karan Goel e
+Christopher Ré trovano il modo di far girare quelle equazioni vecchie di
+sessant'anni dentro uno strato di rete neurale a un costo sostenibile, e le
+mettono alla prova sul *Long Range Arena*, il banco di prova delle dipendenze
+a lunghissimo raggio: i legami fra parti lontane di una sequenza (in un
+giallo, per capire l'ultima pagina bisogna ricordare il nome che compariva
+alla prima). Il loro modello, **S4** {cite}`gu2022s4`, riesce là dove
+Transformer e reti ricorrenti si arrendevano, ed è il primo a risolvere il
+compito di quel banco in cui il legame da riconoscere è lungo sedicimila
+passi, dove un «passo» è un elemento della sequenza (una parola, un campione
+audio, un pixel). È l'atto di nascita di una seconda strada verso il modello
+di sequenze a costo lineare: non quella dell'attenzione resa economica del
+capitolo precedente, ma quella, apparentemente lontana, dei sistemi dinamici.
+Alla fine, scopriremo, le due strade portano allo stesso posto.
 
 ## Un sistema che riassume il passato
 
@@ -55,16 +56,19 @@ intanto sbiadisce, e di quello entrato cinque minuti fa resta un
 trentaduesimo, di quello di mezz'ora fa meno di un miliardesimo.
 
 Resta da scegliere ogni quanto guardare. L'acqua scorre senza interruzione, tu
-l'ago lo segni una volta al minuto, e fra una segnatura e l'altra ricostruisci
-quel che è successo. Segnando spesso cambia poco, e la ricostruzione è quasi
-esatta. Segnando di rado può passare in mezzo un getto intero che non hai
-visto, e quello che ricostruisci esce grossolano.
+l'ago lo segni una volta al minuto, e di quel che è successo fra una segnatura
+e l'altra hai soltanto quello che riesci a ricostruire. Segnando fitto ti
+sfugge poco di ciò che è entrato. Segnando di rado può passare in mezzo un
+getto intero che non hai visto, e quello che ricostruisci esce grossolano.
 
 Uno *state space model* fa questo con una sequenza. Dove la vasca ha un
-livello solo, il modello ne tiene qualche decina, vasche affiancate che salgono
-e calano insieme a ogni parola in arrivo; quante siano si decide prima di
-aprire il rubinetto e non cambia più, per lungo che sia il testo. È lo stesso
-spirito della {doc}`rete ricorrente </NaturalLanguageProcessing/modelli-sequenza>`,
+livello solo, il modello ne tiene molte, ciascuna con il suo rubinetto e il
+suo scarico, e a ogni parola in arrivo si aggiornano tutte insieme, ognuna al
+ritmo che le tocca (e la parola, nel modello, è una fila di numeri, non una
+parola scritta); quante siano
+si decide prima di aprire il rubinetto e non cambia più, per lungo che sia il
+testo. È lo stesso spirito della
+{doc}`rete ricorrente </NaturalLanguageProcessing/modelli-sequenza>`,
 con rubinetto, scarico e ago presi dai sistemi che evolvono nel tempo.
 
 Proprio perché la regola non cambia mai, a quel 3,875 ci si arriva per due
@@ -80,7 +84,9 @@ perché a ogni parola gli basta il riassunto di prima.
 Tutto questo sta in piedi finché nessuno tocca il rubinetto e lo scarico. Se
 qualcuno stesse alla vasca a girarli minuto per minuto, regolandoli in base
 all'acqua in arrivo, non ci sarebbe più una sola fila di sbiadimenti buona per
-l'intera storia, e resterebbe il passo dopo passo.
+l'intera storia, e quella non si potrebbe più far scorrere in un colpo solo.
+Modi di fare i conti tutti insieme ne restano, ma vanno ritrovati da capo, ed
+è metà del lavoro che il capitolo racconta.
 
 `````
 
@@ -101,9 +107,11 @@ campionato al passo $t$ e $\bar{\mathbf{A}}, \bar{\mathbf{B}}$ sono le versioni 
 e $\mathbf{B}$. E qui sta la ricchezza:
 finché i parametri sono costanti nel tempo, questa ricorrenza ha una doppia
 natura; si può calcolare passo per passo come una RNN (inferenza a costo
-costante) oppure tutta in una volta come una convoluzione (addestramento
-parallelo). È la stessa dualità parallelo/ricorrente che muove il capitolo
-sull'attenzione lineare, raggiunta però dalla teoria dei segnali.
+costante *per token*) oppure, a stato iniziale nullo, tutta in una volta come
+una convoluzione (addestramento parallelo). È la stessa doppia natura
+parallelo/ricorrente che muove il
+{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`,
+raggiunta però dalla teoria dei segnali.
 
 `````
 
@@ -117,9 +125,13 @@ vecchio, un po’ sbiadito, più ciò che entra adesso. Si addestra lavorando su
 tutta la sequenza in una volta sola, e poi genera una parola alla volta senza
 che la memoria cresca mai.
 
-Il nome per esteso di quella macchina è **ricorrenza lineare a stato fisso**:
-«ricorrenza» perché ogni passo riparte dal risultato del passo precedente, «a
-stato fisso» perché il riassunto non si allarga mai. L'attenzione lineare ci
+Il nome per esteso di quella macchina è **rete ricorrente lineare a stato di
+dimensione fissa**, ed è quello con cui il capitolo precedente l'ha già
+chiamata: «ricorrente» perché ogni passo riparte dal risultato del passo
+precedente, «lineare» perché il riassunto nuovo si ricava dal vecchio con
+sole moltiplicazioni e somme (è un altro mestiere della stessa parola: qui non
+dice quanto costa il conto, dice come è fatto), «a stato di dimensione fissa»
+perché il riassunto non si allarga mai. L'attenzione lineare ci
 arriva dal meccanismo di attenzione, gli *state space model* dai sistemi
 dinamici; la macchina, alla fine, è la stessa.
 
@@ -143,19 +155,22 @@ allarga. Il tetto di un riassunto di taglia fissa resta, ed è l'argomento di
 {doc}`Panorama e limiti </StateSpaceModel/panorama-e-limiti>`.
 
 Il secondo filo è una parentela. Alla fine, con Mamba-2
-{cite}`dao2024mamba2`, vedremo che non è una somiglianza vaga: un *state space
+{cite}`dao2024mamba2` (che nel capitolo precedente era una riga della tabella
+delle ricorrenze), vedremo che non è una somiglianza vaga: un *state space
 model* di forma opportuna *è* un’attenzione mascherata, cioè
 un'attenzione che guarda solo all'indietro, in cui il confronto fra due parole
 è pesato da quanto della prima è sopravvissuto nel frattempo. Le due famiglie
 che raccontiamo in due capitoli sono, in fondo, due viste dello stesso
 disegno.
 
-Ma prima c'è una tensione da sciogliere. La doppia natura «passo dopo passo» /
-«tutto insieme» vale solo se il sistema è invariante nel tempo: le stesse
-regole a ogni passo. Ed è proprio questa rigidità che Mamba romperà,
-rendendo il sistema *selettivo*, per dargli qualcosa che a S4 mancava: la
-capacità di scegliere, in base al contenuto, cosa ricordare e cosa dimenticare
-{cite}`gu2023mamba`.
+Ma prima c'è una tensione da sciogliere. La forma a convoluzione, cioè il
+filtro unico che si fa scorrere sull'intera sequenza, vale solo se il sistema
+è invariante nel tempo: le stesse regole a ogni passo. Ed è proprio questa
+rigidità che rompe Mamba, il modello con cui Albert Gu e Tri Dao chiudono il
+2023 {cite}`gu2023mamba`. Mamba rende il sistema *selettivo*, cioè capace di
+decidere in base al contenuto che cosa ricordare e che cosa dimenticare, e in
+cambio perde il filtro unico. Il modo «tutto insieme» non se ne va con lui, ma
+va ricostruito su un'altra strada.
 
 ## Dai sistemi dinamici a Mamba
 
@@ -165,39 +180,44 @@ Quattro tappe, dall'idea di base alla frontiera.
 in un pugno di numeri, come si adatta a una sequenza fatta di passi separati, e
 come si fa a darle una memoria lunga (sono HiPPO e S4).
 
-**Mamba**: come si insegna alla macchina a scegliere, invece di trattare tutte
-le parole allo stesso modo; che cosa costa quella scelta (si perde il modo
-«tutto insieme»), e con quale trucco si recupera la velocità perduta,
-tenendo conto di com'è fatta davvero una scheda grafica.
+**Mamba**: come si insegna alla macchina a scegliere, invece di trattare
+tutte le parole allo stesso modo; che cosa costa quella scelta (si
+perde la convoluzione), e con quali due mosse si recupera la velocità perduta:
+una proprietà della ricorrenza che permette di raggruppare i passi a piacere,
+e la forma di una scheda grafica.
 
 **La dualità**: la scoperta che questa macchina, scritta in un altro modo, *è*
-l'attenzione dei Transformer, e che riscriverla così la fa girare molto più in
-fretta. Poi le tre messe a punto più recenti, con Mamba-3.
+un'attenzione mascherata, cioè la formula dei Transformer con la softmax tolta
+di mezzo, e che riscriverla così la fa girare molto più in fretta. Poi le tre
+messe a punto di Mamba-3.
 
 **Panorama e limiti**: una mappa che tiene insieme questo capitolo e il
-precedente, che cosa un riassunto di taglia fissa non potrà mai fare, e le
-architetture ibride che oggi mettono insieme il meglio delle due strade.
+precedente, dove un riassunto di taglia fissa diventa un collo di bottiglia, e
+le architetture ibride che mettono insieme il meglio delle due strade.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
 - Un modello a spazio degli stati (in sigla SSM) riassume tutto quello
-  che ha letto in una specie di foglio di dimensione sempre uguale, e a
-  ogni parola lo aggiorna. Sono le stesse equazioni con cui l'ingegneria
-  descrive un termostato o la traiettoria di un razzo; S4 {cite}`gu2022s4`
-  le porta dentro una rete neurale, ed è il primo a riconoscere legami fra
-  parti di una sequenza distanti sedicimila passi.
+  che ha letto in un riassunto di dimensione sempre uguale, e a ogni parola
+  lo aggiorna. Sono le stesse equazioni con cui l'ingegneria descrive un
+  termostato o la traiettoria di un razzo; S4 {cite}`gu2022s4` trova il modo
+  di farle girare dentro una rete neurale a un costo sostenibile, ed è il
+  primo a risolvere il compito del *Long Range Arena* in cui il legame da
+  riconoscere è lungo sedicimila passi.
 - Il problema che vengono a risolvere: far guardare ogni parola a tutte le
   altre costa al quadrato (testo doppio, lavoro quadruplo). Qui il costo
   cresce di pari passo con la lunghezza, ed è ciò che nel libro si chiama
   costo lineare.
 - Finché le regole non cambiano da un passo all'altro, lo stesso calcolo si può
-  fare in due modi: passo dopo passo (economico per generare) oppure
-  tutto insieme (parallelo, veloce per addestrare). È la doppia natura,
-  la stessa già vista con l'attenzione lineare.
-- Mamba {cite}`gu2023mamba` rompe quella regola fissa: lascia decidere alla
-  parola in arrivo quanto scrivere e quanto dimenticare (è la selettività).
+  fare in due modi: passo dopo passo (economico per generare) oppure con un
+  filtro solo, fatto scorrere sull'intera sequenza (veloce per addestrare). È
+  la doppia natura, la stessa già vista con l'attenzione lineare.
+- Mamba {cite}`gu2023mamba`, il modello che Albert Gu e Tri Dao presentano
+  alla fine del 2023, rompe quella regola fissa: lascia decidere alla parola
+  in arrivo quanto scrivere e quanto dimenticare (è la selettività), e in
+  cambio rinuncia al filtro unico.
   Mamba-2 {cite}`dao2024mamba2` mostra poi che, nella sua versione più
   semplice, questa macchina è un'attenzione che guarda solo all'indietro:
   le due famiglie si incontrano su quel gradino.
@@ -213,15 +233,18 @@ architetture ibride che oggi mettono insieme il meglio delle due strade.
 :class: important
 - Uno state space model riassume il passato in uno stato di dimensione
   fissa, con equazioni che l'ingegneria usa da decenni per i sistemi dinamici;
-  S4 {cite}`gu2022s4` le porta nel deep learning e conquista le dipendenze a
-  lunghissimo raggio (fino a $16\,384$ passi sul *Long Range Arena*).
+  S4 {cite}`gu2022s4` ne trova la parametrizzazione che le rende calcolabili,
+  e con essa risolve per primo Path-X, il compito del *Long Range Arena* a
+  $16\,384$ passi su cui tutti i lavori precedenti fallivano.
 - Discretizzato, un SSM invariante nel tempo ha una doppia natura:
-  ricorrente (inferenza a costo costante) e convoluzionale (addestramento
-  parallelo) (la stessa dualità dell'attenzione lineare, da un'altra strada).
+  ricorrente (inferenza a costo costante per token) e convoluzionale, a stato
+  iniziale nullo (addestramento parallelo). È la stessa doppia natura
+  dell'attenzione lineare, da un'altra strada.
 - Mamba {cite}`gu2023mamba` rompe l'invarianza temporale con la
-  selettività; Mamba-2 {cite}`dao2024mamba2` mostra che un SSM di forma
-  opportuna *è* un'attenzione mascherata: le due famiglie si incontrano su quel
-  gradino.
+  selettività, e con essa la forma convoluzionale; il parallelismo si
+  riconquista per un'altra via, lo scan. Mamba-2 {cite}`dao2024mamba2` mostra
+  che un SSM di forma opportuna *è* un'attenzione mascherata: le due famiglie
+  si incontrano su quel gradino.
 - Il percorso: dai sistemi dinamici a S4 → Mamba (selezione e scan) → la dualità
   (Mamba-2 e Mamba-3) → panorama, limiti e ibridi.
 ```

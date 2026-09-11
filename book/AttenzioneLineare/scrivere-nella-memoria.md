@@ -486,7 +486,8 @@ La {numref}`fig-famiglia-ricorrenze-lineari` mette in fila lo «zoo» delle
 memorie di questo capitolo e del prossimo: si parte da quella che tiene tutto e
 si sale un gradino alla volta, fino all'ultima, che tiene insieme le due mosse.
 (Nella figura compaiono due nomi che appartengono al seguito: RWKV-6, che è
-un'architettura della prossima sezione e sbiadisce zona per zona come GLA, e
+la sesta versione dell'architettura della prossima sezione e sbiadisce zona per
+zona come GLA, e
 Mamba-2, che vedremo da vicino nel prossimo capitolo.)
 
 ```{figure} ../figures/famiglia-ricorrenze-lineari.svg

@@ -319,8 +319,9 @@ $$
 
 e componendo $K$ trasformazioni i termini si sommano, perché il determinante di
 un prodotto è il prodotto dei determinanti. È l'ossatura dei flussi
-normalizzanti, che il {doc}`capitolo sulla verosimiglianza esatta
-</VerosimiglianzaEsatta/overview>` sviluppa per intero.
+normalizzanti, i modelli generativi fatti di trasformazioni invertibili messe
+in fila, che la {doc}`sezione sul flusso che si può invertire
+</VerosimiglianzaEsatta/flussi>` costruisce proprio su questa formula.
 
 Il vincolo di progetto discende dal costo. Un determinante generico costa
 $\Theta(n^3)$ per passo, insostenibile per $n$ dell'ordine di $10^5$. Le
@@ -414,8 +415,9 @@ parallelepipedo, e i lati sono $n$.
   centinaia di righe.
 - Cambio di variabile: $\log p_Y(\mathbf{y}) = \log p_X(\mathbf{x}) -
   \log|\det\mathbf{J}_{\mathbf{f}}(\mathbf{x})|$, e componendo trasformazioni i
-  termini si sommano. È l'ossatura dei flussi normalizzanti, e la ragione per
-  cui le loro jacobiane si costruiscono triangolari, portando il costo da
+  termini si sommano. È l'ossatura dei flussi normalizzanti, i modelli
+  generativi fatti di trasformazioni invertibili in fila, e la ragione per cui
+  le loro jacobiane si costruiscono triangolari, portando il costo da
   $\Theta(n^3)$ a $\Theta(n)$.
 - Lo stesso $\log\det$ compare nella normalizzazione della gaussiana
   multivariata e nella verosimiglianza dei processi gaussiani, dove è il

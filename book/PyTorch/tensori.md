@@ -15,8 +15,10 @@ Scalari, vettori e matrici li abbiamo già incontrati nella {doc}`sezione di
 algebra lineare </Matematica/algebra-lineare>`: un numero solo, una fila di
 numeri, una tabella di numeri. Il tensore è semplicemente il passo
 successivo, la stessa idea portata avanti finché si vuole: si continua ad
-aggiungere direzioni lungo cui i numeri si estendono, e
-ciascuna di quelle direzioni si chiama **asse**.
+aggiungere direzioni lungo cui i numeri si dispongono, e ciascuna di quelle
+direzioni si chiama **asse**. La parola qui fa un mestiere
+diverso da quello che faceva nei grafici: sull'asse di un grafico si legge un
+valore, lungo l'asse di un tensore si conta una posizione.
 
 ```{figure} ../figures/tensori-scala.svg
 :name: fig-tensori-scala
@@ -30,7 +32,8 @@ fila, a una griglia, a una pila di griglie.
 `````{tab} Elementare
 
 Un tensore è un contenitore di numeri con un certo numero di "assi", cioè di
-direzioni lungo cui si estende ({numref}`fig-tensori-scala`):
+coordinate da dare per pescare uno dei numeri che ci sono dentro
+({numref}`fig-tensori-scala`):
 
 - un numero solo (per esempio la temperatura, $23{,}5$) è un tensore a zero
   assi: uno *scalare*;
@@ -106,7 +109,7 @@ M.dtype        # torch.float32
 
 torch.zeros(2, 3)        # matrice 2x3 di zeri
 torch.ones(5)            # vettore di uno
-torch.randn(3, 3)        # numeri a caso, quasi tutti fra -2 e 2, centrati sullo zero
+torch.randn(3, 3)        # sorteggiati da una campana centrata sullo zero, larga uno
 torch.arange(0, 10, 2)   # da 0 a 10 di 2 in 2, 10 escluso: tensor([0, 2, 4, 6, 8])
 ```
 
@@ -147,9 +150,12 @@ numeri, come un insegnante che aggiunge lo stesso bonus a tutti i compiti della
 classe senza riscrivere la regola una volta per studente: il risultato è
 `tensor([6., 7., 8.])`. Vale anche fra due tensori, purché le forme si possano
 affiancare: una tabella di tre righe per quattro colonne più una fila di quattro
-numeri va bene, e la fila si ripete su ciascuna delle tre righe. Tre numeri più
-quattro numeri invece no: PyTorch si ferma con un errore, ed è giusto così,
-perché non esiste un modo sensato di appaiare tre voti con quattro.
+numeri va bene, e la fila si ripete su ciascuna delle tre righe. L'appaiamento
+si fa a partire dall'ultimo asse, quello delle colonne, e va all'indietro:
+quindi alla stessa tabella una fila di *tre* numeri non si somma, anche se le
+righe sono tre, perché le colonne sono quattro e la fila si affianca a quelle.
+E tre numeri più quattro numeri, di nuovo, no: PyTorch si ferma con un
+errore.
 
 Resta la cosa che si vede meno e che spiega di più. I numeri di un tensore
 stanno in fila uno dopo l'altro, come le lettere di un testo scritto su una
@@ -244,7 +250,7 @@ passaggio fra la memoria del computer e quella della scheda è stretto rispetto
 alla velocità con cui la scheda macina i conti, quindi chi porta i numeri
 avanti e indietro a ogni riga consuma nel viaggio più di quanto guadagni nel
 calcolo, come attraversare la cucina con una cassa per ogni singolo
-ingrediente. Ecco perché PyTorch non sposta mai niente per conto suo e
+ingrediente. Ecco perché PyTorch i dati non li trasloca per conto suo e
 preferisce fermarsi con un errore: il viaggio deve deciderlo tu, e devi poterlo
 vedere scritto.
 
@@ -255,8 +261,12 @@ vedere scritto.
 Il pattern idiomatico è definire `device` una volta all'inizio e spostare
 modello e batch con `.to(device)`; su Apple Silicon il device si chiama
 `"mps"`. Operazioni tra tensori su device diversi sollevano un errore
-esplicito (nessun trasferimento implicito, che nasconderebbe costi: il
-passaggio CPU↔GPU attraversa il bus PCIe ed è lento rispetto al calcolo). Le
+esplicito (nessun trasferimento implicito, che nasconderebbe costi: su una
+scheda discreta il passaggio attraversa il bus PCIe ed è lento rispetto al
+calcolo, mentre su Apple Silicon la memoria è unificata e il problema è un
+altro). L'eccezione sono i tensori a zero assi: un numero solo viene
+promosso in silenzio sull'altro device, mentre lo stesso numero dentro un
+tensore a un asse solleva. Le
 stesse moltiplicazioni tra matrici che scriviamo qui sono, sull'hardware,
 migliaia di prodotti scalari eseguiti in parallelo dai kernel CUDA/cuDNN: è il
 motivo per cui le GPU (nate per la grafica) sono diventate lo strumento del
@@ -310,11 +320,30 @@ e chiedono la strada del ritorno.
 
 ```python
 x = torch.tensor(3.0, requires_grad=True)   # "osserva questo tensore"
+                                            # il .0 serve: su un intero PyTorch
+                                            # si rifiuta di tenere le derivate
 
 y = x**2 + 2*x            # y = x² + 2x: il grafo si costruisce da solo
 y.backward()              # passata all'indietro
 
 x.grad                    # la derivata di y in x=3  ->  tensor(8.)
+```
+
+In quel conto `x` compare in due punti, una volta al quadrato e una volta
+moltiplicata per due, e i due punti sono due strade separate che partono e
+arrivano nello stesso posto: la {numref}`fig-nastro-autograd` le percorre nei
+due sensi.
+
+```{figure} ../figures/nastro-si-riavvolge.svg
+:name: fig-nastro-autograd
+:alt: "Il grafo del conto y uguale a x al quadrato più due x, con x che vale 3. A sinistra il riquadro di x, da cui partono due frecce verso due stazioni: quella in alto moltiplica x per x, quella in basso moltiplica x per 2; le due si ritrovano nel riquadro di y a destra. All'andata lungo le frecce compaiono i valori 3 e 3, poi 9 e 6, e y vale 15; sotto ciascuna stazione compare un appunto tratteggiato, 3 per il quadrato e 2 per il ramo lineare. Al ritorno le frecce si percorrono al contrario partendo da 1 dal fondo, e ogni appunto lascia il posto al proprio conto: uno per due per tre uguale sei nel ramo del quadrato, uno per due uguale due in quello lineare. In basso a sinistra il contatore x.grad si riempie in due tempi, prima 6 e poi 6 più 2 uguale 8. Una riga in fondo ricorda che gli appunti dell'andata li consuma il ritorno, e che per riavvolgere una seconda volta bisogna rifare l'andata oppure chiedere prima che restino."
+:width: 100%
+
+Lo stesso conto percorso nei due sensi. All'andata ogni stazione si segna il
+numero che al ritorno le servirà; al ritorno quel numero viene riletto e
+consumato, e `x`, che comanda in due punti, riceve un contributo per ciascuno:
+$6$ dalla strada del quadrato e $2$ da quella lineare, e la loro somma è l’$8$
+che `x.grad` restituisce.
 ```
 
 `````{tab} Elementare
@@ -328,16 +357,22 @@ quell'ingresso.
 Il riavvolgimento riesce perché sul nastro non c'è mai un conto difficile, solo
 una fila di gesti elementari: un'elevazione al quadrato, una moltiplicazione,
 una somma. Di ognuno la derivata si sa a memoria, come una tabellina. Il
-registratore prende allora il numero che arriva dal gesto successivo, lo
-moltiplica per la tabellina del gesto che sta rileggendo e lo passa a quello
-prima. All'inizio del nastro ha in mano la derivata del conto intero, senza aver
+registratore parte dalla fine con un $1$ in mano (il risultato, rispetto a sé
+stesso, cambia esattamente quanto sé stesso), e a ogni gesto che rilegge
+moltiplica il numero che ha per la derivata di quel gesto e passa il prodotto
+al gesto prima. All'inizio del nastro ha in mano la derivata del conto intero,
+senza aver
 mai compilato la tabella di tutte le combinazioni possibili: rilegge soltanto i
-gesti fatti davvero. È il mestiere di autograd.
+gesti fatti davvero. È il mestiere di autograd, e la fila dei gesti annotati,
+nel gergo, si chiama *grafo*.
 
 Nel conto $y = x^2 + 2x$ con $x$ che vale $3$, dal nastro esce $8$. Lo stesso
 numero che viene a mano spostando $x$ da $3$ a $3{,}01$: $y$ sale da $15$ a
 $15{,}0801$, cioè di $0{,}0801$ per uno spostamento di $0{,}01$, otto volte
-tanto. Nessuno ha scritto la formula della derivata.
+tanto e un centesimo. Quel centesimo di troppo è lo spostamento che non era
+abbastanza piccolo: partendo da $3{,}001$ scende a un millesimo, e più corto lo
+si fa più il rapporto si avvicina a otto tondo. Nessuno ha scritto la formula
+della derivata.
 
 Il verso del riavvolgimento decide il costo. Il nastro si riavvolge una volta
 sola, e da quel giro esce l'effetto di tutte le manopole insieme: mille manopole
@@ -390,15 +425,20 @@ dove $\mathbf{z}$ raccoglie le $m$ quantità intermedie che dipendono da
 $\theta$, $\partial \mathbf{z} / \partial \theta$ è la matrice delle loro
 derivate (la Jacobiana) e $\nabla_{\mathbf{z}} \mathcal{L}$ è il gradiente
 già calcolato a valle. Composta lungo tutto il grafo, questa regola è
-precisamente l'algoritmo di backpropagation del capitolo precedente.
+precisamente l'algoritmo di {doc}`backpropagation
+</RetiNeurali/backpropagation>`.
 
 Nella forma vettoriale ci sono due cose che una catena a un solo cammino non
 direbbe, e sono esattamente le due che contano nella pratica. La prima è la
 trasposta: la modalità reverse non costruisce mai la Jacobiana, calcola
 direttamente il prodotto fra la sua trasposta e il vettore che arriva da valle
-(un *vector-Jacobian product*, uno per nodo), ed è da lì che viene il costo di
-una sola passata, quale che sia il numero di parametri. Materializzare la
-Jacobiana costerebbe una passata per ciascuna uscita. La seconda è la
+(un *vector-Jacobian product*, uno per nodo), quale che sia il numero di
+parametri. Materializzare la Jacobiana costerebbe una passata per ciascuna
+uscita, e il costo di una passata viene proprio da lì: di uscita ce n'è
+una sola, perché $\mathcal{L}$ è uno scalare. Non è una comodità di
+scrittura, è la condizione: su un tensore non scalare `backward()` si rifiuta
+di partire («*grad can be implicitly created only for scalar outputs*») finché
+non gli si dice con quale peso combinare le uscite. La seconda è la
 sommatoria: un parametro che alimenta più rami riceve un contributo per
 ramo, e i contributi si sommano. È la ragione strutturale per cui `.grad` è un
 `+=` e non un `=`, e il punto in cui il grafo smette di essere una catena.
@@ -456,6 +496,10 @@ capitolo: dalla prossima sezione non si farà che comporli.
 - Autograd è il registratore: `requires_grad=True` lo accende su un
   tensore, `.backward()` riavvolge il nastro e deposita la derivata. Nessuna
   formula scritta a mano.
+- Due cose che il registratore fa e che sorprendono: quello che deposita si
+  somma a quello che c'era già, quindi prima di ogni passo va azzerato; e il
+  nastro si consuma riavvolgendolo, quindi lo stesso giro non si riavvolge due
+  volte.
 ```
 `````
 

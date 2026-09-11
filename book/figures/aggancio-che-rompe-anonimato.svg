@@ -1,0 +1,73 @@
+<svg viewBox="0 0 760 470" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Due tabelle affiancate. A sinistra la tabella pubblicata dalla gara, dove al posto della persona c'è il codice 4231 e le colonne sono film, voto e data: Fargo 4 il 3 marzo, Rain Man 5 l'11 marzo, Lebowski 3 il 2 aprile; l'ultima riga dice che ci sono altri 180 film votati e mai resi pubblici. A destra i voti firmati e pubblici di Anna Rossi sugli stessi tre film, con voti uguali e date che differiscono di pochi giorni: Rain Man 5 il 9 marzo, Fargo 4 il 5 marzo, Lebowski 3 il 4 aprile. Tre linee, due delle quali incrociate, uniscono le righe che combaciano. In basso la conclusione: il codice 4231 è Anna Rossi, e con lei i 180 film che non aveva mai messo sotto il proprio nome.">
+  <rect x="0" y="0" width="760" height="470" fill="#F8F5EE"/>
+  <text x="380" y="28" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A">Due tabelle innocue, e la cerniera fra loro</text>
+
+  <rect x="30" y="52" width="300" height="30" fill="#2D5A5C"/>
+  <text x="180" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F8F5EE">pubblicata dalla gara: nessun nome</text>
+  <rect x="30" y="82" width="300" height="170" fill="none" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="42" y="102" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">utente</text>
+  <text x="112" y="102" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">film</text>
+  <text x="240" y="102" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">voto</text>
+  <text x="275" y="102" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">data</text>
+  <line x1="30" y1="110" x2="330" y2="110" stroke="#1A1A1A" stroke-width="1"/>
+
+  <text x="42" y="132" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">#4231</text>
+  <text x="112" y="132" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Fargo</text>
+  <text x="240" y="132" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">4</text>
+  <text x="275" y="132" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">3 mar</text>
+
+  <text x="42" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">#4231</text>
+  <text x="112" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Rain Man</text>
+  <text x="240" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">5</text>
+  <text x="275" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">11 mar</text>
+
+  <text x="42" y="188" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">#4231</text>
+  <text x="112" y="188" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Lebowski</text>
+  <text x="240" y="188" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">3</text>
+  <text x="275" y="188" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">2 apr</text>
+
+  <line x1="42" y1="204" x2="318" y2="204" stroke="#C9C2B4" stroke-width="1"/>
+  <text x="42" y="226" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">#4231</text>
+  <text x="112" y="226" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">e altri 180 film votati</text>
+  <text x="112" y="243" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">mai resi pubblici da nessuno</text>
+
+  <rect x="430" y="52" width="300" height="30" fill="#B5532C"/>
+  <text x="580" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F8F5EE">voti firmati, pubblici su IMDb</text>
+  <rect x="430" y="82" width="300" height="170" fill="none" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="442" y="102" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">nome</text>
+  <text x="530" y="102" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">film</text>
+  <text x="645" y="102" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">voto</text>
+  <text x="685" y="102" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">data</text>
+  <line x1="430" y1="110" x2="730" y2="110" stroke="#1A1A1A" stroke-width="1"/>
+
+  <text x="442" y="132" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Anna Rossi</text>
+  <text x="530" y="132" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Rain Man</text>
+  <text x="645" y="132" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">5</text>
+  <text x="685" y="132" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">9 mar</text>
+
+  <text x="442" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Anna Rossi</text>
+  <text x="530" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Fargo</text>
+  <text x="645" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">4</text>
+  <text x="685" y="160" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">5 mar</text>
+
+  <text x="442" y="188" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Anna Rossi</text>
+  <text x="530" y="188" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Lebowski</text>
+  <text x="645" y="188" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">3</text>
+  <text x="685" y="188" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">4 apr</text>
+
+  <line x1="336" y1="128" x2="424" y2="156" stroke="#C9A961" stroke-width="2"/>
+  <line x1="336" y1="156" x2="424" y2="128" stroke="#C9A961" stroke-width="2"/>
+  <line x1="336" y1="184" x2="424" y2="184" stroke="#C9A961" stroke-width="2"/>
+  <text x="380" y="276" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">le tre righe combaciano su film e voto, e le date distano pochi giorni</text>
+
+  <line x1="380" y1="288" x2="380" y2="300" stroke="#1A1A1A" stroke-width="1.5"/>
+  <polygon points="380,308 374,297 386,297" fill="#1A1A1A"/>
+
+  <rect x="150" y="312" width="460" height="46" fill="none" stroke="#B5532C" stroke-width="2"/>
+  <text x="380" y="341" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#B5532C">#4231 è Anna Rossi</text>
+
+  <text x="380" y="390" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">e adesso si legge tutto il resto della sua riga:</text>
+  <text x="380" y="410" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">i 180 film che non aveva mai messo sotto il proprio nome</text>
+
+  <text x="380" y="448" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">Le tre coincidenze sono la cerniera; il guadagno di chi guarda è quello che alla cerniera resta attaccato.</text>
+</svg>

@@ -1,0 +1,72 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../tabella-dei-voti.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 300" role="img" aria-label="A sinistra il labirinto di tre righe per quattro colonne: in alto a destra la meta che paga pi&#249; uno, sotto di lei la trappola che ne toglie uno, un muro al centro, e quattro quadretti liberi marcati con le lettere A, B, C e D. A destra la tabella dei voti: una riga per quadretto, una colonna per ciascuna delle quattro mosse, su, gi&#249;, sinistra e destra. La riga A porta 0,90 0,81 0,81 1,00; la riga B, evidenziata come il suo quadretto, porta 0,90 0,73 0,81 e meno 1,00, e il voto pi&#249; alto della riga, lo 0,90 della mossa su, &#232; cerchiato; la riga C porta 0,81 0,73 0,66 0,66; la riga D porta meno 1,00 0,66 0,73 0,66. Sotto, la riga che spiega: si guarda la riga del quadretto in cui si &#232;, e si prende il voto pi&#249; alto.">
+  <text x="24" y="30" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">il labirinto</text>
+  <text x="330" y="30" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">la tabella dei voti</text>
+
+  <rect x="24" y="56" width="60" height="60" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <rect x="84" y="56" width="60" height="60" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <rect x="144" y="56" width="60" height="60" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <rect x="204" y="56" width="60" height="60" fill="none" stroke="#5BA39C" stroke-width="1.6"/>
+  <rect x="24" y="116" width="60" height="60" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <rect x="84" y="116" width="60" height="60" fill="#BCB3A1" fill-opacity="0.28" stroke="#BCB3A1" stroke-width="1"/>
+  <rect x="144" y="116" width="60" height="60" fill="none" stroke="#E27B52" stroke-width="1.8"/>
+  <rect x="204" y="116" width="60" height="60" fill="none" stroke="#E27B52" stroke-width="1.6"/>
+  <rect x="24" y="176" width="60" height="60" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <rect x="84" y="176" width="60" height="60" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <rect x="144" y="176" width="60" height="60" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <rect x="204" y="176" width="60" height="60" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+
+  <text x="174" y="92" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">A</text>
+  <text x="234" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5BA39C">meta</text>
+  <text x="234" y="102" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5BA39C">+1</text>
+  <text x="114" y="152" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">muro</text>
+  <text x="174" y="152" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#E27B52">B</text>
+  <text x="234" y="148" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#E27B52">trappola</text>
+  <text x="234" y="162" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#E27B52">−1</text>
+  <text x="174" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">C</text>
+  <text x="234" y="212" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#F4ECDD">D</text>
+
+  <text x="352" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">mossa</text>
+  <text x="424" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#BCB3A1">↑</text>
+  <text x="486" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#BCB3A1">↓</text>
+  <text x="548" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#BCB3A1">←</text>
+  <text x="610" y="68" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#BCB3A1">→</text>
+  <line x1="330" y1="78" x2="646" y2="78" stroke="#BCB3A1" stroke-width="0.8"/>
+
+  <text x="352" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#F4ECDD">A</text>
+  <text x="424" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,90</text>
+  <text x="486" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,81</text>
+  <text x="548" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,81</text>
+  <text x="610" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">1,00</text>
+
+  <rect x="330" y="118" width="316" height="30" fill="#E27B52" fill-opacity="0.10"/>
+  <text x="352" y="138" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#E27B52">B</text>
+  <circle cx="424" cy="133" r="15" fill="none" stroke="#E27B52" stroke-width="1.4"/>
+  <text x="424" y="138" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,90</text>
+  <text x="486" y="138" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,73</text>
+  <text x="548" y="138" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,81</text>
+  <text x="610" y="138" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">−1,00</text>
+
+  <text x="352" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#F4ECDD">C</text>
+  <text x="424" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,81</text>
+  <text x="486" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,73</text>
+  <text x="548" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,66</text>
+  <text x="610" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,66</text>
+
+  <text x="352" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#F4ECDD">D</text>
+  <text x="424" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">−1,00</text>
+  <text x="486" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,66</text>
+  <text x="548" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,73</text>
+  <text x="610" y="206" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#F4ECDD">0,66</text>
+
+  <text x="352" y="234" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#BCB3A1">…</text>
+
+  <text x="24" y="266" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">Un quadretto è una riga, una mossa è una colonna.</text>
+  <text x="24" y="284" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">Per decidere si guarda la riga in cui si è e si prende il voto più alto.</text>
+</svg>

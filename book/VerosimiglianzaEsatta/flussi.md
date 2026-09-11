@@ -14,17 +14,23 @@ tornare indietro, e quello che esce è una fotografia. Per valutare: si
 manda avanti la fotografia, si legge quanto è probabile il punto in cui è
 finita, e si corregge di un fattore che diremo fra poco.
 
-Questa famiglia si chiama dei **flussi normalizzanti**. Il nome dice il mestiere
-in due parole: una successione di trasformazioni che porta i dati verso la
-normale, cioè la gaussiana. Nella forma in cui si trova nell'apprendimento
-automatico la definizione è quella di Danilo Rezende e Shakir Mohamed
-{cite}`rezende2015variational`, «una densità iniziale semplice trasformata in
-una più complessa applicando una successione di trasformazioni invertibili
-finché non si raggiunge la complessità desiderata». Il nome e il principio però
+Questa famiglia si chiama dei **flussi normalizzanti**, e le due parole vanno
+prese una per volta. «Normalizzante» qui non vuol dire «che fa venire uno»:
+vuol dire «che porta verso la normale», cioè verso la gaussiana. «Flusso» è il
+paragone con un fluido, perché la nuvola dei dati non salta da una forma
+all'altra, si sposta un poco alla volta, una trasformazione dopo l'altra.
+
+Resta da fissare un verso, perché i due sensi hanno nomi diversi e si
+confondono con facilità. La definizione è quella di Danilo Rezende e Shakir
+Mohamed {cite}`rezende2015variational`, «una densità iniziale semplice
+trasformata in una più complessa applicando una successione di trasformazioni
+invertibili finché non si raggiunge la complessità desiderata», ed è scritta
+nel senso della generazione: dalla gaussiana ai dati. A dare il nome è il senso
+opposto, quello che si percorre per calcolare la probabilità, dove sono le
+trasformazioni inverse a portare i dati verso la normale. L'idea e la parola
 vengono da prima, dai lavori di Esteban Tabak e colleghi sulla stima di densità
 {cite}`tabak2010density,tabak2013family`, che sono esattamente quelli che
-Rezende e Mohamed citano nel
-momento in cui l'idea entra nelle reti neurali.
+Rezende e Mohamed citano quando introducono il principio.
 
 E qui va detta subito la cosa che chiude un debito col capitolo precedente:
 quel «flusso» è la stessa parola del *rectified flow* di Stable Diffusion 3.
@@ -37,16 +43,20 @@ Prima della macchina, la matematica, che è tutta qui e sta in una riga.
 
 Prendiamo una cosa semplicissima: una grandezza che sta fra 0 e 1, distribuita
 in modo uniforme. La sua densità vale 1 dappertutto lì dentro, e l'area sotto
-la curva fa 1, come dev'essere. Adesso la stiriamo: la moltiplichiamo per tre e
-le aggiungiamo uno, così finisce fra 1 e 4. È la stessa grandezza, non abbiamo
-buttato via niente e non abbiamo aggiunto niente. Ma il tavolo su cui è stesa è
-diventato tre volte più largo, e la stessa quantità d'acqua su un tavolo tre
-volte più largo sta tre volte più bassa. La densità di arrivo non vale 1: vale
-un terzo.
+la curva fa 1, come dev'essere. Densità e probabilità non sono sinonimi, e
+conviene tenerle separate da subito. La densità è quanto è alta la curva in un
+punto, la probabilità è l'area che sta sotto la curva in un tratto. Adesso la
+stiriamo: la moltiplichiamo per tre e le aggiungiamo uno, così finisce fra 1 e
+4. È la stessa grandezza, non abbiamo buttato via niente e non abbiamo aggiunto
+niente. Ma il tavolo su cui è stesa è diventato tre volte più largo, e la
+stessa quantità d'acqua su un tavolo tre volte più largo sta tre volte più
+bassa. La densità di arrivo non vale 1: vale un terzo.
 
 Questo è il punto che rende i flussi diversi da tutto il resto del capitolo.
 Senza quel fattore l'area sotto la curva non fa più uno, e un numero la cui
-area non fa uno non è una probabilità.
+area non fa uno non è una probabilità. Ed è qui che l'imbroglio si
+scioglie: la probabilità esatta senza spezzare niente si ottiene davvero, a
+patto di pagare questo fattore.
 Verifichiamolo, perché è il genere di cosa che si capisce meglio vedendola.
 
 ```python
@@ -61,17 +71,21 @@ rng = np.random.default_rng(0)
 x = rng.random(2_000_000)
 y = 3 * x + 1
 
+bordi_x = np.linspace(0, 1, 61)                    # 60 caselle su [0, 1]
+prima, _ = np.histogram(x, bins=bordi_x, density=True)
 bordi = np.linspace(1, 4, 61)                      # 60 caselle su [1, 4]
-misurata, _ = np.histogram(y, bins=bordi, density=True)
+dopo, _ = np.histogram(y, bins=bordi, density=True)
 
-print(f"densita' di x (uniforme su [0,1]), misurata: {1.0:.3f}")
-print(f"densita' di y (uniforme su [1,4]), misurata: {misurata.mean():.3f}")
-print(f"rapporto fra le due: {1 / misurata.mean():.2f}  <- e' lo stiramento, 3")
+print(f"densita' di x (uniforme su [0,1]), misurata: {prima.mean():.3f}")
+print(f"densita' di y (uniforme su [1,4]), misurata: {dopo.mean():.3f}")
+print(f"rapporto fra le due: {prima.mean() / dopo.mean():.2f}"
+      f"  <- e' lo stiramento, 3")
 print()
 print(f"area sotto la densita' di y, col fattore:   "
-      f"{(misurata * np.diff(bordi)).sum():.3f}")
+      f"{(dopo * np.diff(bordi)).sum():.3f}")
 print(f"area sotto la densita' di y, senza fattore: "
-      f"{(1.0 * np.diff(bordi)).sum():.3f}  <- non e' una probabilita'")
+      f"{(prima.mean() * np.diff(bordi)).sum():.3f}"
+      f"  <- non e' una probabilita'")
 ```
 
 ```text
@@ -84,13 +98,15 @@ area sotto la densita' di y, senza fattore: 3.000  <- non e' una probabilita'
 ```
 
 In una dimensione il fattore è lo stiramento, cioè di quanto la trasformazione
-allunga o accorcia. Attenzione al verso, perché è la trappola: stirando i dati
-sul tavolo la densità è scesa, mentre la macchina di cui parliamo stira verso
-la gaussiana, e allora quel fattore va moltiplicato. In molte dimensioni la
-trasformazione può allungare in una direzione, accorciare in un'altra e ruotare
-il tutto, e allora il fattore giusto è quello che dice di quante volte è
-cambiato il volume: il determinante della tabella delle derivate, la
-*jacobiana*.
+allunga o accorcia. Attenzione al verso, perché è la trappola, e la trappola
+non sta nello stiramento: sta in quale delle due densità si sta chiedendo. Sul
+tavolo abbiamo chiesto la densità di ciò che esce, e stirando è scesa; qui si
+chiede quella di ciò che entra, cioè della fotografia, mentre la macchina la
+stira verso la gaussiana, e allora quel fattore va moltiplicato. In molte
+dimensioni la trasformazione può allungare in una direzione, accorciare in
+un'altra e ruotare il tutto, e allora il fattore giusto è quello che dice di
+quante volte è cambiato il volume: il determinante della tabella delle
+derivate, la *jacobiana*.
 
 `````{tab} Elementare
 
@@ -107,9 +123,9 @@ stiramento era lo stesso dappertutto. Una macchina che raddrizza le fotografie
 non è così: schiaccia in un punto e allarga in quello a fianco. Il numero è
 quello del punto in cui si sta guardando, e cambia se ci si sposta.
 
-La regola dei flussi si legge allora in italiano, senza formule: *la
-probabilità di una fotografia è la probabilità del punto dove la fotografia
-finisce, moltiplicata per quanto la macchina ha stirato lo spazio lì attorno*.
+La regola dei flussi si legge allora in italiano, senza formule: *la densità di
+una fotografia è la densità del punto dove la fotografia finisce, moltiplicata
+per quanto la macchina ha stirato lo spazio lì attorno*.
 
 Il «moltiplicata» sorprende, ed è il punto in cui tutti si sbagliano. La
 macchina lavora nel verso che porta le fotografie sulla gaussiana. Se prende un
@@ -127,11 +143,14 @@ all'andata lasciasse per strada anche un solo numero, al ritorno dovrebbe
 inventarselo, e quella che esce non sarebbe più la fotografia che era entrata.
 Per questo un flusso esce con esattamente tanti numeri quanti ne sono entrati.
 
-E adesso il guaio. Calcolare un determinante costa, e costa tantissimo: per una
-tabella di mille righe per mille colonne il conto generale richiede all'incirca
-un miliardo di operazioni, e va rifatto per ogni immagine e a ogni passo
-dell'addestramento. Mille righe per mille colonne è una figurina di 32 pixel
-per lato in bianco e nero. Su una fotografia vera non se ne parla nemmeno.
+E adesso il guaio. Calcolare un determinante costa, e costa tantissimo: il
+conto generale vuole all'incirca tante operazioni quanto è il cubo del lato
+della tabella, quindi per mille righe per mille colonne siamo a mille per mille
+per mille, cioè un miliardo di operazioni, da rifare per ogni immagine e a ogni
+passo dell'addestramento. E mille si raggiunge subito, perché la tabella ha una
+riga e una colonna per ogni numero dell'immagine: mille numeri sono una
+figurina di 32 pixel per lato in bianco e nero. Su una fotografia vera non se
+ne parla nemmeno.
 
 `````
 
@@ -148,13 +167,24 @@ p_X(\mathbf{x}) = p_Z\big(f(\mathbf{x})\big)\,
 + \log \left\lvert \det \mathbf{J}_f(\mathbf{x}) \right\rvert .
 $$
 
+Qui $\mathbf{J}_f(\mathbf{x})$ è la jacobiana di $f$ in $\mathbf{x}$, cioè la
+tabella delle derivate parziali $(\mathbf{J}_f)_{ij} = \partial f_i/\partial
+x_j$, e $p_Z$ è la densità di base, che nel seguito è una gaussiana standard.
 Il valore assoluto serve perché il determinante è con segno (dice anche se
 la trasformazione ribalta l'orientamento) mentre a noi interessa solo il
 rapporto fra i volumi. Componendo più trasformazioni i logaritmi si sommano,
 ed è la ragione per cui in pratica si scrive tutto in scala logaritmica: una
-successione $f = f_L \circ \dots \circ f_1$ dà
-$\log\lvert\det \mathbf{J}_f\rvert = \sum_\ell \log\lvert\det
-\mathbf{J}_{f_\ell}\rvert$.
+successione $f = f_K \circ \dots \circ f_1$ dà
+
+$$
+\log\lvert\det \mathbf{J}_f(\mathbf{x})\rvert
+= \sum_{k=1}^{K} \log\lvert\det \mathbf{J}_{f_k}(\mathbf{h}_{k-1})\rvert,
+\qquad \mathbf{h}_0 = \mathbf{x}, \quad \mathbf{h}_k = f_k(\mathbf{h}_{k-1}),
+$$
+
+dove ogni jacobiana si valuta nel punto in cui quel passo lavora, e non in
+$\mathbf{x}$: è la stessa dipendenza dal punto che ha la formula a un passo
+solo, scritta per una composizione.
 
 Due vincoli cadono da qui, ed entrambi pesano.
 
@@ -198,12 +228,13 @@ serve invertire nessuna rete.
 Il determinante è gratis. La prima metà non cambia, quindi la parte
 corrispondente della tabella delle derivate è l'identità; la seconda metà
 dipende dalla prima in un modo complicatissimo, ma quel blocco della tabella
-sta sotto la diagonale e il determinante di una tabella triangolare è
-semplicemente il prodotto di quello che sta *sulla* diagonale. Cioè: il
-determinante è il prodotto delle scale, che sono numeri che abbiamo già in
+sta tutto da una parte della diagonale, e dall'altra parte ci sono soltanto
+zeri. Una tabella fatta così si chiama *triangolare*, e il suo determinante è
+il prodotto di quello che sta *sulla* diagonale, senza nessun altro conto. Cioè:
+il determinante è il prodotto delle scale, che sono numeri che abbiamo già in
 mano. Da un miliardo di operazioni a una moltiplicazione per ogni coordinata
-scalata: sulla figurina di 32 pixel per lato di poco fa, cinquecento invece di
-un miliardo.
+scalata, e le coordinate scalate sono metà: sulla figurina di 32 pixel per lato
+di poco fa, cinquecentododici invece di un miliardo.
 
 La rete che decide non ha vincoli. Ed è il punto più bello, quello che
 sfugge a una prima lettura: la rete che, guardando la prima metà, produce scala
@@ -212,14 +243,14 @@ qualunque cosa, profonda quanto si vuole, con le funzioni di attivazione che si
 vogliono. L'invertibilità del flusso non sta nel pezzo che impara: sta nel modo
 in cui i pezzi sono montati.
 
-## Un flusso vero, in venti righe
+## Un flusso vero, sulle due lune
 
-Mettiamolo alla prova su due lune, il banco di prova che il libro ha già usato
-per le SVM a kernel: due archi intrecciati, una forma che nessuna retta separa
-e nessuna gaussiana descrive. Addestriamo un flusso a raddrizzarli, con una
-loss sola, la verosimiglianza. Poi facciamo le tre domande che contano: si
-inverte davvero? È davvero una densità? E sa distinguere le lune dal resto del
-piano?
+Mettiamolo alla prova su due lune, il banco di prova della {doc}`sezione sulle
+SVM a kernel </MachineLearning/svm-kernel>`: due archi intrecciati, una forma
+che nessuna retta separa e nessuna gaussiana descrive. Addestriamo un flusso a
+raddrizzarli, con una loss sola, la verosimiglianza. Poi facciamo le tre
+domande che contano: si inverte davvero? È davvero una densità? E sa
+distinguere le lune dal resto del piano?
 
 ```python
 import math
@@ -343,23 +374,42 @@ log-densita' media a caso:      -169.04
 
 Le cinque righe vanno lette una per una, perché nessuna è scontata.
 
-La prima è la prova che la
-macchina si usa nei due sensi: andata e ritorno riportano al punto di partenza
-con un errore di poco più di un milionesimo, che è il rumore dei numeri a
-trentadue bit e non un'approssimazione del metodo. La seconda e la terza sono
-quelle che importano a questo capitolo, e vanno lette insieme: la densità del
-modello, integrata numericamente su una griglia che la copre tutta, fa uno,
-e non perché qualcuno l'abbia normalizzata a mano. Fa uno perché il cambio di
-variabile lo garantisce, e la riga dopo lo mostra togliendo il fattore dagli
-stessi identici pesi: senza, l'area scende a un quarto, e un numero la cui area
-non fa uno non è una probabilità. È esattamente la
-differenza fra questa famiglia e quella del {doc}`capitolo sui modelli a
-energia </ModelliEnergia/overview>`, dove quel conto non si può fare e tutto il
-capitolo gira attorno a come evitarlo. Le ultime due dicono che il modello ha
-imparato dov'è la roba: sulle lune assegna circa
-$-1{,}3$, su punti presi a caso nel quadrato circa $-169$. Fra i due ci sono
-quasi centosessantotto nat, e siccome quei numeri sono logaritmi, in scala
-normale vuol dire un rapporto di più di sessanta ordini di grandezza.
+La prima è la prova che la macchina si usa nei due sensi: andata e ritorno
+riportano al punto di partenza con un errore di poco più di un milionesimo, che
+è il rumore dei numeri a trentadue bit e non un'approssimazione del metodo. La
+seconda e la terza sono quelle che importano alla verosimiglianza esatta, e
+vanno lette insieme: la densità del modello, integrata numericamente su una
+griglia che la copre tutta, fa uno, e non perché qualcuno l'abbia normalizzata
+a mano. Fa uno perché il cambio di variabile lo garantisce, e la riga dopo lo
+mostra togliendo il fattore dagli stessi identici pesi: senza, l'area scende a
+0,24, e un numero la cui area non fa uno non è una probabilità. In quel numero
+non c'è niente da leggere, dipende dal flusso che è uscito da questo
+addestramento; l'unica cosa che conta è che non faccia uno. Fare uno è
+esattamente la differenza fra questa famiglia e quella del {doc}`capitolo sui
+modelli a energia </ModelliEnergia/overview>`, dove quel conto non si può fare
+e tutto il capitolo gira attorno a come evitarlo. Le ultime due dicono che il
+modello ha imparato dov'è la roba: sulle lune assegna circa $-1{,}3$, su punti
+presi a caso nel quadrato circa $-169$. Fra i due ci sono quasi
+centosessantotto nat, e sono logaritmi: in scala normale vuol dire che la
+densità tipica sulle lune sta più di settanta ordini di grandezza sopra quella
+di un punto pescato a caso.
+
+Quello che le cinque righe dicono con i numeri si può anche guardare. La
+{numref}`fig-flusso-lune` segue gli stessi punti mentre attraversano i sei
+accoppiamenti, e fa vedere la cosa che nessun numero stampato mostra. A ogni
+passo si muove una sola delle due coordinate, e l'altra resta esattamente
+dov'è, che è il vincolo da cui il determinante viene gratis. Nel mezzo la
+nuvola si allarga a più del doppio, e poi si richiude sulla gaussiana.
+
+```{figure} ../figures/lune-si-raddrizzano.svg
+:name: fig-flusso-lune
+:alt: Una nuvola di punti dentro un riquadro con un reticolo di riferimento. All'inizio i punti disegnano due archi intrecciati, le due lune, uno in un colore e uno nell'altro. A ogni passo l'intera nuvola si deforma, ma si sposta lungo una sola direzione per volta: prima solo in verticale, poi solo in orizzontale, e così alternando per sei passi. A metà strada la nuvola si allarga fino a occupare quasi tutto il riquadro, poi si richiude. Alla fine gli archi non ci sono più e i punti formano una macchia tonda centrata sull'origine, con i due colori mescolati. Due righe di testo sotto il riquadro dicono, a ogni passo, quale delle due direzioni si sta muovendo e quanto è larga la nuvola nei due sensi.
+:width: 95%
+
+Le due lune diventano una gaussiana in sei accoppiamenti. A ogni passo si muove
+una sola coordinata, e la larghezza di quella ferma non cambia; l'altra
+intanto si allarga, si stringe, e alla fine vale uno su tutti e due gli assi.
+```
 
 ## Glow, e il limite che non si toglie
 
@@ -370,21 +420,23 @@ progetta, e con tante coordinate le scelte fisse costano. Glow la sostituisce
 con una **convoluzione invertibile $1 \times 1$**, che è il modo elegante di
 dire «una permutazione appresa, anzi qualcosa di più generale di una
 permutazione, e comunque una tabella che si sa invertire e di cui si sa
-calcolare il determinante». Il guadagno lo misurano gli autori: su CIFAR-10 il
-costo passa dai $3{,}49$ bit per dimensione di RealNVP a $3{,}35$, e con la
-stessa ricetta escono i volti a $256 \times 256$ del 2018, quelli che si
-trasformano l'uno nell'altro tirando una riga nello spazio latente.
+calcolare il determinante». Il guadagno lo misurano gli autori confrontando i
+due modelli interi: su CIFAR-10 il costo passa dai $3{,}49$ bit per dimensione
+di RealNVP ai $3{,}35$ di Glow, che oltre alla convoluzione cambia anche la
+normalizzazione interna e il modo di dividere le coordinate. Con la stessa
+ricetta escono i volti a $256 \times 256$ del 2018, quelli che si trasformano
+l'uno nell'altro tirando una riga nello spazio latente.
 
-E qui il capitolo deve essere onesto su come è andata a finire. I flussi, sulle
+E qui va detto come è andata a finire. I flussi, sulle
 immagini, hanno perso, e non per un dettaglio di ingegneria: per il vincolo di
 partenza. Una trasformazione invertibile conserva la dimensione, quindi un
-flusso su fotografie di $512 \times 512$ a colori deve muovere 786.432 numeri
-dall'inizio alla fine, senza mai poterne buttare via uno. Confrontalo con la
-diffusione latente del capitolo precedente, che sulla stessa fotografia di
-numeri ne muove 16.384 perché ha il permesso di comprimere prima: quarantotto
-volte meno, ed è lo stesso fattore 48 che quel capitolo aveva già contato.
-Quel permesso i flussi non ce l'hanno per costruzione. È il prezzo dell'esattezza,
-scritto nella definizione stessa della famiglia.
+flusso su fotografie di $512 \times 512$ a colori deve finire con 786.432
+numeri, tanti quanti ne sono entrati, senza poterne buttare via uno.
+Confrontalo con la diffusione latente del capitolo precedente, che sulla stessa
+fotografia di numeri ne muove 16.384 perché ha il permesso di comprimere prima:
+quarantotto volte meno, ed è lo stesso fattore 48 che quel capitolo aveva già
+contato. Quel permesso i flussi non ce l'hanno per costruzione. È il prezzo
+dell'esattezza, scritto nella definizione stessa della famiglia.
 
 `````{tab} Elementare
 
@@ -417,18 +469,21 @@ scritto nella definizione stessa della famiglia.
 ```{admonition} Da ricordare
 :class: important
 - Cambio di variabile: $\log p_X(\mathbf{x}) = \log p_Z(f(\mathbf{x})) +
-  \log\lvert\det \mathbf{J}_f(\mathbf{x})\rvert$, con $f$ diffeomorfa. I
-  logaritmi dei determinanti si sommano lungo la composizione.
+  \log\lvert\det \mathbf{J}_f(\mathbf{x})\rvert$, con $f$ diffeomorfa e
+  scritta nel verso che porta i dati al latente; scritta nel verso opposto lo
+  stesso termine cambia segno. I logaritmi dei determinanti si sommano lungo
+  la composizione, ciascuno valutato nel punto in cui il suo passo lavora.
 - Due vincoli: $f$ conserva la dimensione, e $\det \mathbf{J}$ costa
   $\mathcal{O}(D^3)$ in generale.
 - Strato di accoppiamento: partizione $\mathbf{x} = (\mathbf{x}_a,
   \mathbf{x}_b)$, con $\mathbf{z}_a = \mathbf{x}_a$ e $\mathbf{z}_b =
-  \mathbf{x}_b \odot \exp(s(\mathbf{x}_a)) + t(\mathbf{x}_a)$. La forma
+  \mathbf{x}_b \odot \exp(s(\mathbf{x}_a)) + t(\mathbf{x}_a)$, con $\exp$
+  elemento per elemento. La forma
   additiva ($s \equiv 0$) è di NICE {cite}`dinh2015nice` ed è a volume
   costante, $\det \mathbf{J} = 1$; la scala è di RealNVP
   {cite}`dinh2017density`. La jacobiana è triangolare a blocchi con identità in
-  alto a sinistra, quindi $\log\lvert\det\rvert = \sum_i s_i(\mathbf{x}_a)$:
-  costo lineare. L'inversa è esplicita, e $s, t$ possono essere reti arbitrarie
+  alto a sinistra, quindi $\log\lvert\det\rvert = \sum_{i \in b}
+  s_i(\mathbf{x}_a)$, perché $s$ è il *logaritmo* della scala: costo lineare. L'inversa è esplicita, e $s, t$ possono essere reti arbitrarie
   e non invertibili.
 - Glow {cite}`kingma2018glow` sostituisce la permutazione fissa fra i due
   blocchi con una convoluzione $1\times1$ invertibile, il cui determinante
@@ -436,8 +491,8 @@ scritto nella definizione stessa della famiglia.
   parametrizzazione LU).
 - Il limite strutturale è la conservazione della dimensione: nessun
   collo di bottiglia, quindi nessuna compressione. Su $512\times512\times3$
-  sono $786.432$ dimensioni da trasportare, contro le $16.384$ del latente di
-  Stable Diffusion (il fattore 48 già contato nel capitolo precedente). È la
+  sono $786.432$ dimensioni anche in uscita, contro le $16.384$ del latente
+  di Stable Diffusion (il fattore 48 già contato nel capitolo precedente). È la
   ragione per cui la famiglia è marginale nella
   generazione di immagini e resta viva nella stima di densità, nell'inferenza
   variazionale e come base teorica dei metodi continui.

@@ -13,16 +13,16 @@ fisici dei sistemi complessi (CNR-INFM, Sapienza, Istituto Superiore di Sanità)
 dentro il progetto europeo **StarFlag**. Il lavoro sul campo lo guidava Andrea
 Cavagna; l'algoritmo con cui gli uccelli vennero riconosciuti da un'immagine
 all'altra lo disegnarono lui e Irene Giardina, e a scriverne il codice fu
-Massimiliano Viale; fra i dodici autori dell'articolo
+Massimiliano Viale; fra i dodici che firmarono il risultato
 compaiono anche Nicola Cabibbo e Giorgio Parisi, che nel 2021 avrebbe ricevuto
-il Nobel per la fisica per i suoi contributi alla comprensione dei sistemi
-fisici complessi.
+metà del Nobel per la fisica per avere scoperto come disordine e fluttuazioni
+si intreccino nei sistemi fisici, dalla scala atomica a quella planetaria.
 
 Il laboratorio era la terrazza di Palazzo Massimo, al Museo Nazionale Romano,
 che guarda gli alberi del posatoio nella piazza davanti alla stazione Termini.
 Lassù, trenta metri sopra la strada, montarono tre postazioni fotografiche che
 scattavano tutte nello stesso istante: due lontane venticinque metri l'una
-dall'altra, la terza a soli due metri e mezzo da una delle prime due. Servivano
+dall'altra, la terza a soli due metri e mezzo da una delle prime due. Volevano
 dieci fotogrammi al secondo, e sopra i cinque le loro macchine perdevano il
 tempo, cioè smettevano di partire tutte nello stesso istante: su ogni postazione
 ne misero due, ciascuna a cinque scatti al secondo e sfasata di mezzo tempo
@@ -30,27 +30,30 @@ rispetto alla compagna, così che gli scatti si incastrassero.
 
 Due fotografie scattate nello stesso istante bastano a dire dove sta un uccello
 nello spazio, con la stessa geometria con cui due occhi ricavano la profondità.
-La terza postazione serve ad altro, e serve alla cosa che finora aveva reso
-lo spettacolo impossibile da misurare: capire quale puntino di una foto sia lo
+La terza postazione serve ad altro, e serve alla cosa che finora aveva reso lo
+spettacolo impossibile da misurare: capire quale puntino di una foto sia lo
 stesso uccello di quale puntino dell'altra, quando i puntini sono migliaia e si
-somigliano tutti. Con due punti di vista le coppie plausibili sono troppe; il
-terzo le taglia, perché una coppia sbagliata cade nel posto sbagliato sulla
-terza immagine. Vengono così ricostruiti in tre dimensioni dieci stormi,
-ciascuno ripreso per qualche secondo, e il più numeroso arrivava a 2600
-individui.
+somigliano tutti. Fra le due macchine lontane l'algoritmo appaiava un uccello
+su cinque, troppo pochi; fra due macchine vicine, che vedono quasi la stessa
+scena, ne appaiava nove su dieci. Ecco a che cosa serve la terza a due metri e
+mezzo: si fanno gli appaiamenti facili con lei, e poi la geometria delle tre
+viste insieme li riporta sulla coppia difficile, che è quella che dà la
+profondità. Vengono così ricostruiti in tre dimensioni dieci stormi, ciascuno
+ripreso per qualche secondo, e il più numeroso arrivava a 2600 individui.
 
 Il risultato, pubblicato su *PNAS* nel 2008 {cite}`ballerini2008interaction`, è
 di quelli che cambiano la domanda. Quasi tutti i modelli davano per scontato che
 ogni uccello reagisse ai compagni entro un certo raggio, mettiamo due metri: chi
 sta dentro conta, chi sta fuori no. È una regola **metrica**, cioè fatta di
-metri. Chi fissava il numero dei vicini, e qualcuno lo faceva, continuava
-comunque a pesarli per quanto erano lontani.
+metri. Qualche modello i vicini li contava invece di misurarli, ma continuava
+a dare più voce a quelli vicini e meno a quelli lontani, e quindi la distanza
+in metri rientrava dalla finestra.
 I dati di Roma dicono altro. Ogni storno tiene d'occhio un numero circa
 fisso di vicini più prossimi, sei o sette (la media sui dieci stormi è sei
 e mezzo), e quanto quei vicini siano lontani non conta. La differenza fra le due
-regole non è sottile, e si vede confrontando gli stormi fra loro: a parità di
-raggio, nel più fitto dei dieci ci stanno dieci volte gli uccelli che ci
-stanno nel più rado (nel confronto che fanno gli autori, dieci contro uno).
+regole non è sottile, e si vede confrontando gli stormi fra loro: nel
+confronto che fanno gli autori, dentro uno stesso raggio il più fitto dei dieci
+stormi tiene dieci volte gli uccelli del più rado.
 Eppure la regola che ciascuno segue è la stessa. La distanza che governa lo
 stormo, insomma, non si misura in metri ma in *posizioni in classifica*, e per
 dirlo si usa la parola **topologica**, che qui vuol dire soltanto questo: conta
@@ -67,7 +70,22 @@ La differenza fra le due regole sembra un dettaglio da pignoli, e invece è
 tutto. Finché lo stormo resta fitto sempre allo stesso modo le due danno lo
 stesso risultato, e nessuno saprebbe distinguerle. Si separano quando lo stormo
 si allarga, cioè quando si dirada per sfuggire a un falco: proprio il momento in
-cui restare insieme conta di più.
+cui restare insieme conta di più, e la
+{numref}`fig-regola-metrica-topologica` mette le due regole una accanto
+all'altra sullo stesso stormo.
+
+```{figure} ../figures/regola-metrica-e-topologica.svg
+:name: fig-regola-metrica-topologica
+:alt: "Quattro riquadri, due colonne per due righe, con lo stesso stormo di novanta uccelli disegnato su un piano. In alto lo stormo è fitto, in basso lo stesso stormo diradato fino a occupare una superficie doppia, disegnato con lo stesso metro. La colonna di sinistra applica la regola metrica: un cerchio pieno di raggio fisso attorno all'uccello in ocra al centro, con un segmento verso ogni compagno che ci sta dentro. Da fitto i compagni collegati sono 7, da rado sono 3: il cerchio è lo stesso e dentro ne restano meno della metà. La colonna di destra applica la regola topologica: un cerchio tratteggiato che arriva fino al settimo compagno più vicino. Da fitto i compagni collegati sono 7, da rado sono ancora 7, e sono gli stessi uccelli: a cambiare è solo il raggio del cerchio, che si allarga del 41 per cento."
+:width: 88%
+
+Lo stesso stormo, disegnato su un piano per poterlo guardare, prima fitto e poi
+diradato fino a occupare una superficie doppia. Il raggio fisso è sempre quello
+e dentro restano tre compagni invece di sette; i sette più vicini sono ancora
+quei sette, e a cambiare è soltanto quanto sta lontano il settimo, qui del 41
+per cento. Nell'aria, dove lo stormo vive davvero, si allarga meno, perché c'è
+una dimensione in più su cui distribuirsi.
+```
 
 `````{tab} Elementare
 
@@ -83,25 +101,29 @@ peggiore.
 Con la regola topologica ogni storno guarda i suoi sette vicini più
 prossimi, dovunque siano, e sette restano: stanno solo un po’ più lontano.
 
-Quanto più lontano? Meno di quanto verrebbe da dire. Una scatola larga due
-metri, per due, per due contiene otto metri cubi. Per contenerne il doppio,
-sedici, non serve una scatola larga il doppio: quella ne conterrebbe
-sessantaquattro, cioè otto volte tanto, perché allargando il lato
+Quanto più lontano? Meno di quanto verrebbe da dire. Il conto su una palla è
+scomodo e su una scatola no, e di quanto vada allargato lo sguardo viene
+identico, quindi facciamolo lì. Una
+scatola larga due metri, per due, per due contiene otto metri cubi. Per
+contenerne il doppio, sedici, non serve una scatola larga il doppio: quella ne
+conterrebbe sessantaquattro, cioè otto volte tanto, perché allargando il lato
 si allargano insieme le tre direzioni. Proviamo allora ad allargare di poco.
 Portiamo il lato da due metri a due e mezzo, un quarto in più: due e mezzo per
-due e mezzo per due e mezzo fa quindici metri cubi e sei, e i sedici che
+due e mezzo per due e mezzo fa quindici metri cubi e sei decimi, e i sedici che
 cercavamo sono lì a un soffio. Ecco perché per ritrovare i suoi sette compagni
 in uno spazio doppio a uno storno basta allargare lo sguardo di un quarto: lo
 spazio cresce molto più in fretta della distanza.
 
-Il legame regge perché la regola non parla di metri: parla di *quanti*, e
+Lo stormo resta unito perché la regola non parla di metri: parla di *quanti*, e
 quanti restano quanti anche quando il gruppo si allarga.
 
 `````
 
 `````{tab} Superiore
 
-Sia $\rho$ la densità locale (uccelli per unità di volume). Con una regola
+Sia $\rho$ la densità locale (uccelli per unità di volume; nel capitolo questa
+lettera farà altri due mestieri, la correlazione fra votanti e l'evaporazione
+del feromone, e ognuno è la convenzione del proprio campo). Con una regola
 metrica di raggio $r$ il numero di vicini con cui un individuo interagisce è
 $n(r) = \tfrac{4}{3}\pi r^{3} \rho$, proporzionale a $\rho$: il grado di
 interazione collassa quando lo stormo si dirada. Con una regola topologica si
@@ -113,8 +135,12 @@ $$
 
 che dipende dalla densità solo come l'inverso della sua radice cubica:
 dimezzare $\rho$ allunga $r_c$ di $2^{1/3} \approx 1{,}26$, il 26%. Il grado
-resta costante per costruzione, ed è questa invarianza a garantire la coesione
-sotto grandi variazioni di densità.
+resta costante per costruzione, ed è questa invarianza a sostenere la coesione
+sotto grandi variazioni di densità: gli autori la argomentano e la mostrano su
+un modello a particelle auto-propulse in due dimensioni, non la dimostrano.
+Le due formule valgono in un intorno abbastanza omogeneo e lontano dal bordo
+dello stormo, dove il conteggio dei vicini va corretto e senza correzione dà
+risultati sbagliati.
 
 Il test empirico usa proprio questa differenza. Su dieci stormi di rarefazione
 molto diversa ($r_1$, la distanza media dal primo vicino, va da $0{,}68$ a
@@ -123,10 +149,10 @@ $1{,}51$ m) il raggio di interazione $r_c$ cresce con $r_1$ in modo netto
 correlazione con la rarefazione ($n_c^{-1/3}$ contro $r_1$: $R^2 = 0{,}00021$).
 Il raggio segue la densità, il grado no: in media
 $n_c = 6{,}5 \pm 0{,}9$ (errore standard) {cite}`ballerini2008interaction`. Nel
-linguaggio dei grafi, che il capitolo sulle Graph Neural Network riprenderà per
-esteso, la regola metrica costruisce un grafo a
-raggio fisso e la topologica il grafo diretto dei $k$ vicini più prossimi,
-in cui ogni nodo sceglie i propri $k$ archi uscenti: il grado uscente è
+linguaggio dei grafi, quello dei {doc}`dati a grafo
+</GraphNeuralNetwork/dati-a-grafo>`, la regola metrica costruisce un grafo a
+raggio fisso e la topologica il grafo diretto degli $n_c$ vicini più prossimi,
+in cui ogni nodo sceglie i propri $n_c$ archi uscenti: il grado uscente è
 costante per costruzione (quello entrante no, perché la scelta non va
 ricambiata: io guardo te senza che tu debba guardare me, che è la natura stessa
 dell'interazione fra storni) e il grafo non cambia affatto se tutte le distanze
@@ -165,18 +191,22 @@ diversi, e la squadra è in piedi.
 Conviene fissare subito un esempio, perché nelle prossime pagine si parlerà a
 lungo di quanto costa una squadra e di che forma darle, e il prezzo di una cosa
 non dice niente finché non si sa che cosa sia. Prendiamo la richiesta: «apri
-questo file di vendite e dimmi quali negozi stanno peggiorando». Un agente la
-riceve e tiene le fila. Un secondo scrive il programma che apre il file e fa i
-conti. Un terzo lo legge e dice soltanto una cosa: se è sicuro eseguirlo, cioè
-se non cancella niente e non combina danni. A quel punto tocca di nuovo al
-primo, perché è l'unico dei tre che può toccare la macchina vera: gli altri due
-scrivono e leggono testo, lui esegue. Il risultato torna al secondo, che lo
-interpreta e scrive la risposta. È il sistema di programmazione presentato
-insieme ad AutoGen {cite}`wu2024autogen`, uno dei programmi con cui queste
-squadre si mettono in piedi, ed è la squadra a cui pensare ogni volta che in
-questo capitolo si parla di agenti che si passano messaggi. Il capitolo sugli
-Agenti ha già descritto quei ruoli uno per uno (un pianificatore, un esecutore,
-un critico); qui si studia che cosa succede quando sono insieme.
+questo file di vendite e dimmi quali negozi stanno peggiorando». Il
+coordinatore la riceve e tiene le fila. Il programmatore scrive il codice che
+apre il file e fa i conti. Il revisore lo legge e dice soltanto una cosa: se è
+sicuro eseguirlo, cioè se non cancella niente e non combina danni. A quel punto
+tocca di nuovo al coordinatore, perché è l'unico dei tre che può toccare la
+macchina vera: gli altri due scrivono e leggono testo, lui esegue. Il risultato
+torna al programmatore, che lo interpreta, e la risposta al mittente la consegna
+di nuovo il coordinatore. È il sistema di
+programmazione presentato insieme ad AutoGen {cite}`wu2024autogen`, uno dei
+programmi con cui queste squadre si mettono in piedi, ed è la squadra a cui
+pensare ogni volta che in questo capitolo si parla di agenti che si passano
+messaggi. La {doc}`sezione sulle architetture degli agenti
+</Agenti/architetture-e-valutazione>` ha già descritto ruoli come questi uno
+per uno, il pianificatore, l'esecutore e il critico; qui il coordinatore ne fa due,
+perché pianifica ed esegue, e quello che si studia è che cosa succede quando i
+tre sono insieme.
 
 Ma se creare i partecipanti è gratis, tutta la difficoltà si sposta altrove: su
 chi parla con chi, su chi decide quando le proposte sono in
@@ -185,12 +215,15 @@ accorge che il gruppo nel suo insieme ha sbagliato.
 
 L'ultima è la meno ovvia. Quando sbaglia un gruppo ogni singolo pezzo sembra a
 posto: ciascuno ha fatto il proprio turno, i messaggi sono ben scritti, e il
-risultato è sbagliato per una di due ragioni. O la richiesta di partenza si è
-deformata passando di mano in mano, e l'ultimo ha risposto benissimo a una
-domanda diversa da quella iniziale; oppure qualcuno ha detto una cosa falsa
-detta bene, e nessuno l'ha contestata. Il guasto sta nella conversazione, non
-nei singoli turni, e su come misurarlo si è ancora scritto poco
-{cite}`xi2023rise`.
+risultato è sbagliato lo stesso. Due modi fra i più frequenti: la richiesta di
+partenza si è deformata passando di mano in mano, e l'ultimo ha risposto
+benissimo a una domanda diversa da quella iniziale; oppure qualcuno ha detto una
+cosa falsa detta bene, e nessuno l'ha contestata. Il guasto sta nella
+conversazione, non nei singoli turni {cite}`xi2023rise`, e catalogarne le forme
+è un lavoro cominciato da poco {cite}`cemri2025why`: la
+{doc}`sezione sul costo del coordinamento
+</SistemiMultiAgente/costo-del-coordinamento>` riprende quel catalogo, dove i
+modi sono quattordici e la famiglia più numerosa non è nessuna di queste due.
 
 ## Molti battono uno solo se sbagliano in modo diverso
 
@@ -223,8 +256,9 @@ dieci invece che da sette.)
 `````{tab} Superiore
 
 È il **teorema della giuria di Condorcet** (1785). Con $n$ votanti indipendenti
-che scelgono fra due alternative, ciascuno corretto con probabilità $p$, e
-decisione a maggioranza semplice, la probabilità che il gruppo abbia ragione è
+che scelgono fra due alternative, ciascuno corretto con la stessa probabilità
+$p$, e decisione a maggioranza semplice, la probabilità che il gruppo abbia
+ragione è (con $n$ dispari, così che un pareggio non si possa dare)
 
 $$
 P_n = \sum_{k=\lfloor n/2 \rfloor + 1}^{n} \binom{n}{k}\, p^{k} (1-p)^{\,n-k},
@@ -300,8 +334,9 @@ $P(s' \mid s, a)$ che dipende dall'azione **congiunta**
 $a = (a^1, \dots, a^N)$ e una ricompensa $r^i$ per ciascun agente. Se
 $r^i = r$ per ogni $i$ il gioco è cooperativo; se $N = 2$ e $r^1 + r^2 = 0$ si
 ricade nel caso a somma zero, che è la forma minimax della GAN (con la
-*loss* non-saturante che si usa in pratica la somma non è più zero, e il
-capitolo sulle GAN spiega perché), dove l'obiettivo non è un minimo di
+*loss* non-saturante che si usa in pratica la somma non è più zero, e la
+{doc}`sezione su come funziona una GAN </GAN/come-funziona>` spiega perché),
+dove l'obiettivo non è un minimo di
 $\mathcal{L}$ ma un **equilibrio di Nash**: un profilo $(\pi^1, \dots, \pi^N)$
 in cui nessun agente migliora il proprio ritorno atteso cambiando policy da
 solo. Ne segue che il caso multi-agente non è quello singolo ripetuto $N$
@@ -345,21 +380,23 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
   topologica: ogni uccello tiene d'occhio un numero fisso di vicini, i sei o
   sette più prossimi, e non tutti quelli che gli stanno entro due metri.
 - È questo che tiene insieme lo stormo quando si dirada. Con una regola a metri
-  i compagni dentro il raggio si dimezzano appena lo spazio raddoppia; contando
-  i vicini invece che misurandoli, sette restano sette, e per ritrovarli basta
-  allargare lo sguardo di un quarto. Le regole a metri, come quella dei boids
-  {cite}`reynolds1987flocks`, tengono molto meno.
+  i compagni dentro il raggio si diradano insieme allo stormo; contando
+  i vicini invece che misurandoli, sette restano sette, e sono gli stessi sette,
+  che si trovano soltanto un quarto più in là. Le regole a metri, come quella
+  dei boids {cite}`reynolds1987flocks`, tengono molto meno.
 - La tesi del capitolo: il comportamento del gruppo è una proprietà della
   regola di interazione, non della bravura dei singoli. Stessi individui,
   regola diversa, collettivo diverso.
-- Far nascere dieci agenti costa una riga di codice: stesso modello, dieci fogli
-  di istruzioni diversi {cite}`wu2024autogen`. Il difficile viene dopo: chi parla
-  con chi, chi decide quando le risposte non coincidono, e come ci si accorge che
-  a sbagliare è stato il *gruppo* e non un singolo turno {cite}`xi2023rise`.
+- Far nascere dieci agenti non costa quasi niente: stesso modello, dieci fogli
+  di istruzioni diversi {cite}`wu2024autogen`. La squadra da tenere in mente per
+  tutto il capitolo ne ha tre: chi tiene le fila ed esegue, chi scrive il
+  codice, chi controlla che si possa eseguire. Il difficile viene dopo: chi
+  parla con chi, chi decide quando le risposte non coincidono, e come ci si
+  accorge che a sbagliare è il *gruppo* e non un turno {cite}`xi2023rise`.
 - «Più teste» aiuta solo se sbagliano in modo diverso. Tre persone che ci
   prendono sette volte su dieci, votando, ci prendono quasi otto volte su dieci;
-  ma se hanno studiato sugli stessi appunti sbagliati sbagliano insieme, e dieci
-  agenti valgono quanto uno, al costo di dieci.
+  ma se hanno studiato sugli stessi appunti sbagliati sbagliano insieme, e tre
+  agenti valgono quanto uno, al costo di tre.
 - Il caso con molti agenti non è quello singolo ripetuto tante volte: per
   ciascuno il mondo contiene gli altri, che nel frattempo cambiano. Il traguardo
   non è più il fondo di una valle ma un pareggio: la situazione in cui a
@@ -377,10 +414,12 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
   topologica: ogni uccello guarda un numero fisso di vicini più prossimi
   ($n_c = 6{,}5 \pm 0{,}9$), non tutti quelli entro un raggio in metri.
 - Così lo stormo resta unito anche quando si dirada, perché il grado di
-  interazione non dipende dalla densità ($r_c \propto \rho^{-1/3}$); una regola
+  interazione non dipende dalla densità ($n_c$ è fissato, e a seguire la densità
+  è semmai il raggio implicito, $r_c \propto \rho^{-1/3}$); una regola
   metrica, come quella dei boids {cite}`reynolds1987flocks`, tiene molto
-  meno, e lo mostrano le simulazioni dello stesso lavoro, dove uno stormo a
-  regola metrica si spezza in più tronconi molto più spesso di uno topologico.
+  meno, e lo mostrano le simulazioni dello stesso lavoro, fatte su un modello a
+  particelle auto-propulse in due dimensioni, dove uno stormo a regola metrica
+  si spezza in più tronconi molto più spesso di uno topologico.
 - La tesi del capitolo: il comportamento del gruppo è una proprietà della
   regola di interazione, non della bravura dei singoli. Stessi individui,
   regola diversa, collettivo diverso.

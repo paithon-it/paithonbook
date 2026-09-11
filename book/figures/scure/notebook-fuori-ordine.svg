@@ -1,0 +1,56 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../notebook-fuori-ordine.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 300" role="img" aria-label="A sinistra un notebook: cinque celle in colonna, ciascuna con fra parentesi quadre il numero della sua ultima esecuzione. Dall'alto in basso i numeri sono 3, poi una cella cancellata che portava x uguale a 3, poi 7, poi 43 che assegna y, poi una cella mai eseguita con le parentesi vuote. Tre frecce ricurve a lato collegano le celle nell'ordine in cui sono state davvero eseguite, 3, 7, 12, 43, e quell'ordine sale e scende invece di seguire la pagina. La cella 43 usa x, e una linea sottile la collega alla cella cancellata, dove x nasceva e dove adesso non c'&#232; pi&#249; niente. A destra lo stesso programma come script: le cinque righe in fila, x uguale a 3 al suo posto, e una sola freccia dritta che le percorre dall'alto in basso una volta sola.">
+  <defs>
+    <marker id="fr-nb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker>
+    <marker id="fr-sc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5BA39C"/></marker>
+  </defs>
+
+  <text x="24" y="22" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">notebook</text>
+  <text x="24" y="40" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">l’ordine è quello dei clic</text>
+
+  <rect x="104" y="58" width="216" height="34" rx="4" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <text x="114" y="79" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#BCB3A1">[3]</text>
+  <text x="152" y="79" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD">import numpy as np</text>
+
+  <rect x="104" y="102" width="216" height="34" rx="4" fill="none" stroke="#E27B52" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="114" y="123" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#E27B52" opacity="0.6">[12]</text>
+  <text x="152" y="123" font-family="Inter, sans-serif" font-size="11.5" fill="#E27B52">cancellata: qui nasceva <tspan font-family="JetBrains Mono, ui-monospace, monospace">x</tspan></text>
+
+  <rect x="104" y="146" width="216" height="34" rx="4" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <text x="114" y="167" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#BCB3A1">[7]</text>
+  <text x="152" y="167" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD">dati = carica(...)</text>
+
+  <rect x="104" y="190" width="216" height="34" rx="4" fill="none" stroke="#BCB3A1" stroke-width="1"/>
+  <text x="114" y="211" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#BCB3A1">[43]</text>
+  <text x="152" y="211" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD">y = fit(dati, x)</text>
+
+  <rect x="104" y="234" width="216" height="34" rx="4" fill="none" stroke="#BCB3A1" stroke-width="1" opacity="0.55"/>
+  <text x="114" y="255" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#BCB3A1" opacity="0.55">[ ]</text>
+  <text x="152" y="255" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD" opacity="0.55">stampa(y)</text>
+
+  <path d="M96,75 Q40,118 96,161" fill="none" stroke="#E27B52" stroke-width="1.4" marker-end="url(#fr-nb)"/>
+  <path d="M96,163 Q62,141 96,119" fill="none" stroke="#E27B52" stroke-width="1.4" marker-end="url(#fr-nb)"/>
+  <path d="M96,121 Q26,163 96,205" fill="none" stroke="#E27B52" stroke-width="1.4" marker-end="url(#fr-nb)"/>
+
+  <path d="M320,119 H344 V207 H322" fill="none" stroke="#DDB874" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="24" y="292" font-family="Inter, sans-serif" font-size="11" fill="#E27B52">la cella <tspan font-family="JetBrains Mono, ui-monospace, monospace">[43]</tspan> usa una <tspan font-family="JetBrains Mono, ui-monospace, monospace">x</tspan> che nella pagina non c’è più</text>
+
+  <text x="396" y="22" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#F4ECDD">script</text>
+  <text x="396" y="40" font-family="Inter, sans-serif" font-size="11" fill="#BCB3A1">l’ordine è quello delle righe</text>
+
+  <rect x="420" y="58" width="212" height="210" rx="4" fill="none" stroke="#5BA39C" stroke-width="1"/>
+  <text x="438" y="88" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD">import numpy as np</text>
+  <text x="438" y="120" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD">x = 3</text>
+  <text x="438" y="152" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD">dati = carica(...)</text>
+  <text x="438" y="184" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD">y = fit(dati, x)</text>
+  <text x="438" y="216" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11.5" fill="#F4ECDD">stampa(y)</text>
+
+  <path d="M402,66 L402,250" fill="none" stroke="#5BA39C" stroke-width="1.4" marker-end="url(#fr-sc)"/>
+  <text x="396" y="292" font-family="Inter, sans-serif" font-size="11" fill="#5BA39C">una volta sola, dall’alto in basso</text>
+</svg>

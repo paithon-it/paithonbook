@@ -56,9 +56,10 @@ sfocatura. Si ottengono due *viste* della stessa scena, e al modello si chiede
 una cosa sola: che le due viste della stessa immagine vengano descritte in modo
 simile fra loro, e diverso da come descrive le viste di tutte le altre immagini
 del gruppo che sta guardando in quel momento (il batch, cioè la manciata di
-esempi che si elaborano insieme). Quelle altre viste, i rivali da cui il gemello
-va distinto, hanno un nome che tornerà spesso: si chiamano i **negativi**. È la
-ricetta di SimCLR {cite}`chen2020simple`, il lavoro che nel 2020 ha mostrato
+esempi che si elaborano insieme). I due nomi che tornano spesso vengono da qui:
+la vista gemella, la risposta giusta, è il *positivo*; tutte le altre, le
+risposte sbagliate da cui va distinta, sono i **negativi**. È la ricetta di
+SimCLR {cite}`chen2020simple`, il lavoro che nel 2020 ha mostrato
 che per far funzionare l'idea non serve nessuna macchineria in più: bastano un
 encoder normale, due trasformazioni scelte bene e batch abbastanza grandi
 ({numref}`fig-ritagli-gemelli`).
@@ -92,9 +93,9 @@ servire.
 
 Resta da decidere quanto sei severo nel dire «questi due si somigliano». Se
 accetti solo somiglianze quasi perfette, gli unici rivali che contano davvero
-sono i due o tre che al gemello assomigliano moltissimo, e la partita si gioca
-contro di loro. Se sei di manica larga, tutti gli altri ritagli pesano un
-pochino e nessuno pesa davvero.
+sono i due o tre che assomigliano moltissimo al ritaglio che hai in mano, e la
+partita si gioca contro di loro. Se sei di manica larga, tutti gli altri
+ritagli pesano un pochino e nessuno pesa davvero.
 
 Nessuno ha dovuto dire che nella foto c'era un gatto: la risposta giusta la
 conosciamo per costruzione, perché i due ritagli li abbiamo fatti noi. Eppure
@@ -139,10 +140,11 @@ $$
 
 dove $\mathbf{z}_i$ e $\mathbf{z}_j$ sono le proiezioni delle due viste della stessa immagine,
 $\mathrm{sim}$ è la similarità coseno e $\tau > 0$ la temperatura, che regola
-quanto il denominatore sia dominato dai termini più simili all'ancora: al
-calare di $\tau$ pesano quasi soltanto i rivali che al gemello assomigliano di
-più. La somma corre sulle altre $2N-1$ viste del batch, cioè la gemella
-$\mathbf{z}_j$ e le $2N-2$ che fanno da negativi. La perdita totale è la
+quanto il denominatore sia dominato dai suoi termini più grandi: al calare di
+$\tau$ pesano quasi soltanto i rivali che assomigliano di più all'ancora
+$\mathbf{z}_i$, cioè quelli che alla gemella contendono il posto. La somma
+corre sulle altre $2N-1$ viste del batch, cioè la gemella $\mathbf{z}_j$ e le
+$2N-2$ che fanno da negativi. La perdita totale è la
 media di $\ell_{i,j}$ su tutte le $2N$ coppie ordinate. È la stessa InfoNCE che
 il libro usa per allineare immagini e didascalie, con una differenza
 sostanziale: là il positivo è la didascalia
@@ -153,9 +155,10 @@ La supervisione non viene dal linguaggio, viene dalla trasformazione.
 
 In PyTorch tutto questo sta in una decina di righe, e la parte da guardare è
 da dove esce la risposta giusta: non la scrive nessuno, viene fuori
-soltanto dall'ordine in cui abbiamo impilato le viste. Se le prime $N$ righe
-sono le viste A e le seconde $N$ sono le viste B nello stesso ordine, la
-gemella della riga $i$ è la riga $i+N$, e questo il computer lo sa fare da sé.
+soltanto dall'ordine in cui abbiamo impilato le viste. Chiamiamo $N$ il numero
+di immagini del gruppo: se le prime $N$ righe sono le viste A e le seconde $N$
+sono le viste B nello stesso ordine, la gemella della riga $i$ è la riga
+$i+N$, e questo il computer lo sa fare da sé.
 
 ```python
 import torch
@@ -305,11 +308,13 @@ Fin qui i negativi sono i compagni di batch: i rivali del gemello sono le altre
 viste che stanno sul tavolo in quel preciso momento. È una scelta comoda, e
 diventa subito il vincolo che comanda su tutto. Con pochi rivali il gioco è
 facile e si impara poco: ritrovare il gemello fra tre è quasi ovvio, fra
-quattromila no. Servono quindi batch enormi, e un batch enorme va tenuto tutto
-insieme nella memoria degli acceleratori mentre si calcolano le correzioni:
-SimCLR arriva a batch da $4096$ immagini e per reggerli lavora su $128$
-acceleratori in parallelo, il che taglia fuori chiunque non abbia un centro di
-calcolo.
+quattromila no. Servono allora batch grandi, o molto più tempo: gli autori
+misurano che a cento epoche i batch grandi vincono nettamente, e che
+allungando l'addestramento il distacco si assottiglia fino a sparire. Un batch
+grande però va tenuto tutto insieme nella memoria degli acceleratori mentre si
+calcolano le correzioni, e SimCLR prova fino a $8192$ immagini per volta: per
+reggerne $4096$ lavora su $128$ acceleratori in parallelo, il che taglia fuori
+chiunque non abbia un centro di calcolo.
 
 Da qui la mossa che scioglie il nodo, e conviene dire subito che è arrivata
 prima: MoCo è di qualche mese anteriore a SimCLR, e non nasce come sua
@@ -330,9 +335,10 @@ C'è però un guaio. Chi giudica la somiglianza sei tu, e tu impari in
 continuazione: i ritagli descritti mezz'ora fa lo sono stati con criteri diversi
 da quelli di adesso, e confrontarli con i nuovi è come paragonare misure prese
 con due righelli diversi. La soluzione è affidare le descrizioni a una copia di
-te stesso che cambia idea molto lentamente, aggiornandosi di un millesimo alla
-volta: abbastanza aggiornata da essere sensata, abbastanza lenta perché tutta la
-scatola resti confrontabile.
+te stesso che cambia idea molto lentamente: a ogni passo la copia tiene
+novecentonovantanove millesimi di com'era e prende un millesimo dei criteri che
+hai adesso. Abbastanza aggiornata da essere sensata, abbastanza lenta perché
+tutta la scatola resti confrontabile.
 
 `````
 
@@ -344,7 +350,7 @@ quello di SimCLR del febbraio 2020: il termine di paragone di allora erano i
 *memory bank* della generazione precedente. La vista-ancora passa in un encoder
 $f_{\theta_q}$ che produce la *query* $\mathbf{q}$; le altre viste passano in un secondo
 encoder $f_{\theta_k}$ che produce le *chiavi*, accumulate in una coda FIFO
-di dimensione fissa (nel lavoro originale $K = 65\,536$ elementi): a ogni passo
+di dimensione fissa (nel lavoro originale $65\,536$ elementi): a ogni passo
 si accodano le chiavi del mini-batch corrente e si scartano le più vecchie. La
 perdita è una InfoNCE il cui denominatore somma sulla coda, non sul batch: il
 numero di negativi non dipende più dalla dimensione del batch.
@@ -363,17 +369,17 @@ dove $m \in [0, 1)$ è il coefficiente di momento, vicinissimo a uno (nel paper
 $m = 0{,}999$) e $\theta_q$ sono i parametri aggiornati dal gradiente. Con $m$
 piccolo il metodo peggiora nettamente, e senza momento non converge affatto: è
 proprio la lentezza a rendere confrontabili chiavi entrate in coda centinaia di
-passi prima di quelle con cui vengono confrontate (con $K = 65\,536$ e
-mini-batch da $256$, la coda copre esattamente $256$ passi di addestramento).
+passi prima di quelle con cui vengono confrontate (con una coda da $65\,536$ e
+mini-batch da $256$, copre esattamente $256$ passi di addestramento).
 
 `````
 
 La copia lenta, quella che si aggiorna di un millesimo alla volta (si chiama
 **media mobile**) e che fa da riferimento senza mai prendere punteggio, è la
-stessa costruzione che il libro incontra nel {doc}`capitolo sui world
-model </WorldModels/overview>`, dove una macchina si costruisce un simulatore
-interno di come va il mondo. Qui tiene coerente un dizionario di negativi; fra
-poco servirà a farne del tutto a meno.
+stessa costruzione che regge le {doc}`architetture JEPA </WorldModels/jepa>`,
+dove una macchina si costruisce un simulatore interno di come va il mondo. Qui
+tiene coerente la coda dei negativi; fra poco servirà a farne del tutto a
+meno.
 
 ## Toglierli del tutto
 
@@ -466,8 +472,9 @@ l'altro e si limita a inseguirlo in ritardo. La seconda: la testa $q_\theta$ è
 presente da un lato solo, quindi l'obiettivo effettivo dell'encoder online è
 produrre qualcosa da cui $q_\theta$ *possa predire* $\mathbf{z}'_\xi$, e non
 $\mathbf{z}'_\xi$ stesso, che è un vincolo più debole. Un lavoro successivo, SimSiam
-{cite}`chen2021exploring`, ha isolato il pezzo indispensabile, lo stop-gradient,
-mostrando che la media mobile è utile ma non necessaria; e una prima spiegazione
+{cite}`chen2021exploring`, ha tolto la media mobile dall'elenco delle cose
+necessarie, tenendo le altre due: senza stop-gradient, o senza la testa di
+predizione, la soluzione collassa; e una prima spiegazione
 molto discussa, che attribuiva l'anti-collasso alla batch normalization
 (statistiche calcolate sul batch, quindi un contrasto implicito fra immagini), è
 stata smentita dagli autori stessi di BYOL, riaddestrandolo con una
@@ -511,10 +518,11 @@ conto si segue a mente.
 Il primo trucco è segnare sempre la stessa casella. Con «100% la prima» su
 qualunque foto l'allievo indovina a occhi chiusi, e nessuno dei due ha guardato
 niente. La guardia è un registro di quanto l'insegnante ha usato ciascuna
-casella finora, e quella media gli si toglie dal modulo prima che il foglio
-passi all'allievo: dove aveva scritto $(0{,}9,\ 0{,}05,\ 0{,}05)$, tolta la
-media $(0{,}9,\ 0{,}05,\ 0{,}05)$ resta $(0,\ 0,\ 0)$, un foglio che non dice
-niente, e la scorciatoia smette di pagare.
+casella finora, e quella media gli si toglie dai punteggi prima che diventino
+percentuali. Se scriveva sempre $(0{,}9,\ 0{,}05,\ 0{,}05)$, il registro dice
+esattamente quello, e togliendoglielo il modulo che arriva all'allievo diventa
+$(0{,}33,\ 0{,}33,\ 0{,}33)$: un foglio che non dice niente, e la scorciatoia
+smette di pagare.
 
 Il secondo trucco nasce dalla guardia stessa: spalmare la fiducia in parti
 uguali, «33% ciascuna», dove nessuna casella dice più delle altre. Contro questo
@@ -557,8 +565,9 @@ globali (oltre metà dell'area) a entrambe le reti e alcuni ritagli locali
 piccoli solo allo studente, che deve dunque predire dalla parte il tutto.
 
 L'anti-collasso è affidato a due operazioni sull'uscita dell'insegnante che si
-oppongono l'una all'altra. Il **centering** sottrae un vettore $\mathbf{c}$,
-aggiornato come media mobile della media del batch,
+oppongono l'una all'altra. Il **centering** sottrae un vettore $\mathbf{c}$ ai
+punteggi grezzi, prima che la softmax li trasformi in distribuzione; il vettore
+è aggiornato come media mobile della media del batch,
 
 $$
 \mathbf{c} \;\leftarrow\; m_c\, \mathbf{c} + (1 - m_c)\,
@@ -660,12 +669,12 @@ più $4 N_{\text{tok}}^2 d$ (parte quadratica), per un ViT-B/16 con
 $N_{\text{tok}} = 196$ patch e $d = 768$ il termine quadratico è circa il 4% del
 totale, per un ViT-L ($d = 1024$) il 3%: scendendo a $N_{\text{tok}} = 49$ il
 blocco arriva al 24% del costo iniziale, cioè poco meno di un quarto, non a un
-sedicesimo. Gli autori
-misurano un
-pretraining complessivamente tre o più volte più rapido a parità di
-architettura, e il fattore è minore di quattro per una ragione precisa: il
-numero misurato è il tempo di addestramento nel suo complesso, e il decoder, che
-la sequenza la riceve completa, dal mascheramento non guadagna nulla. Resta il
+sedicesimo. Gli autori misurano un pretraining da $2{,}8$ a $4{,}1$ volte più
+rapido, e il termine di paragone va detto: è la stessa rete in cui però
+l'encoder riceve anche i segnaposto delle patch coperte. Il guadagno resta
+comunque lontano dal taglio della sequenza per una ragione precisa: il numero
+è il tempo di addestramento nel suo complesso, e il decoder, che la sequenza
+la riceve completa, dal mascheramento non guadagna nulla. Resta il
 punto: il compito diventa più difficile e insieme più economico.
 
 La differenza di fondo rispetto ai metodi contrastivi è dove finisce la
@@ -841,9 +850,10 @@ qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
 - I negativi costano batch enormi. MoCo {cite}`he2020momentum` li mette in
   una coda alimentata da un encoder aggiornato per media mobile, così
   restano numerosi e coerenti nel tempo; BYOL {cite}`grill2020bootstrap` li
-  elimina e non collassa grazie all’asimmetria fra le due reti (testa di
-  predizione da un lato, media mobile e stop-gradient dall'altro), un fatto
-  robusto la cui spiegazione è arrivata dopo il risultato.
+  elimina e non collassa, e a tenerlo lontano dal collasso sono le due
+  asimmetrie fra le reti, la testa di predizione da un lato e lo stop-gradient
+  dall'altro (la media mobile aiuta, ma SimSiam mostra che non serve). Il
+  risultato è solido; una spiegazione per il caso generale non c'è ancora.
 - DINO {cite}`caron2021emerging` distilla lo studente da una copia lenta di
   sé, con centering e sharpening che si bilanciano contro le due forme
   di collasso; nelle mappe di attenzione del ViT emergono i contorni degli
@@ -853,7 +863,8 @@ qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
   il compito si risolve per interpolazione) e ricostruisce i pixel con un
   encoder che vede solo le patch visibili e un decoder leggero, poi buttato via.
 - La valutazione canonica è il sondaggio lineare sull'encoder congelato: se
-  una retta separa le classi, l'informazione era già nella rappresentazione.
+  basta un iperpiano a separare le classi, l'informazione era già nella
+  rappresentazione.
   Misura la separabilità lineare, non tutto; la prova più severa è il
   trasferimento a rilevamento e segmentazione.
 ```

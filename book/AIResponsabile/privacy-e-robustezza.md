@@ -98,23 +98,78 @@ passata una volta sola per restare impressa.
 
 I due attacchi hanno nomi precisi. Il **membership inference attack**,
 formalizzato da Shokri e colleghi {cite}`shokri2017membership`, decide se un
-dato campione $\mathbf{x}$
-apparteneva o meno all'insieme di addestramento, sfruttando il divario di
-comportamento del modello tra ciò che ha visto e ciò che non ha visto:
-tipicamente una loss più bassa, o una confidenza più alta, sugli esempi di
-training. È l'evidenza empirica dell’*overfitting* discusso nel capitolo di
-Machine Learning, qui riletto come vulnerabilità: più un modello si adatta ai
-singoli esempi, più li lascia riconoscere. L’**estrazione di dati di
-addestramento** è più aggressiva: Carlini e colleghi
-{cite}`carlini2021extracting` mostrarono che da
-GPT-2 si potevano recuperare *verbatim* sequenze memorizzate (nomi, recapiti,
-frammenti di codice) presenti anche in un solo documento del corpus. La
-memorizzazione cresce con la dimensione del modello e con la ripetizione del
-dato: un problema strutturale dei grandi modelli linguistici, non un bug
-isolato. Serve quindi una nozione di privacy che sia una *garanzia
-matematica*, non un rammendo a posteriori.
+dato campione $\mathbf{x}$ apparteneva o meno all'insieme di addestramento,
+sfruttando il divario di comportamento del modello tra ciò che ha visto e ciò
+che non ha visto: una loss più bassa, o una confidenza più alta, sugli esempi
+di training. Nel loro lavoro quel divario non si legge con una soglia: si
+addestrano modelli-ombra su dati di cui si conosce l'appartenenza, e sulle loro
+uscite si addestra il classificatore che poi decide. La causa più comune del
+divario è l’*overfitting* della {doc}`sezione su sovradattamento e validazione
+</MachineLearning/overfitting-validazione>`, qui
+riletto come vulnerabilità (più un modello si adatta ai singoli esempi, più li
+lascia riconoscere), e gli autori avvertono che è la più comune e non l'unica.
+L’**estrazione di dati di addestramento** è più aggressiva: Carlini e colleghi
+{cite}`carlini2021extracting` mostrarono che da GPT-2 si potevano recuperare
+*verbatim* sequenze memorizzate (nomi, recapiti, frammenti di codice) presenti
+anche in un solo documento del corpus. La memorizzazione cresce con la
+dimensione del modello e con la ripetizione del dato: un problema strutturale
+dei grandi modelli linguistici, non un bug isolato. Serve quindi una nozione di
+privacy che sia una *garanzia matematica*, non un rammendo a posteriori.
 
 `````
+
+## Togliere il nome non basta
+
+Prima di una garanzia matematica viene in mente qualcosa di molto più
+semplice, e proprio per questo va guardato bene: se il guaio è che i dati sono
+di qualcuno, si tolgono i nomi. Il GDPR ha una parola per questa mossa,
+*pseudonimizzazione*: al posto del nome e del codice fiscale si mette un
+codice, e la tabella si può passare a chi deve studiarla. Chi vuole fare di
+più smussa anche il resto, perché una data di nascita esatta e un indirizzo
+esatto indicano una persona quasi quanto il nome: la data diventa una fascia
+d'età, l'indirizzo diventa la città. La forma rigorosa di quello smusso è del
+2002 e si chiama **$k$-anonimato** {cite}`sweeney2002kanonymity`: si ingrossano
+le caselle finché ogni riga non risulta indistinguibile da almeno altre
+$k-1$, così che nessuna resti da sola a farsi riconoscere.
+
+Regge finché chi guarda ha davanti quella tabella e nient'altro. Il guasto
+arriva quando le tabelle sono due, e il caso che lo ha reso evidente è la gara
+del {doc}`Netflix Prize </SistemiRaccomandazione/overview>`. I voti pubblicati
+per la gara erano di circa 480.000 utenti senza nome: un codice al posto della
+persona, poi il film, il voto e la data. Nel 2008 Arvind Narayanan e Vitaly
+Shmatikov si chiesero quanto poco bisognasse sapere di una persona per
+ritrovare la sua riga là dentro {cite}`narayanan2008robust`. La risposta,
+misurata sulla tabella della gara: con otto voti, dei quali due potevano
+perfino essere sbagliati, e le date approssimate a quattordici giorni, il
+$99\%$ delle righe si individuava in modo univoco; con due voti soltanto e le
+date approssimate a tre giorni, il $68\%$.
+
+Quel poco lo si trova in giro. Su Internet Movie Database la gente i film li
+vota firmando con il proprio nome, e gli autori provarono ad appaiare le due
+tabelle: dei pochi utenti che poterono guardare (il regolamento del sito
+limitava la raccolta, e loro lo rispettarono, cosa che un malintenzionato non
+farebbe) due si appaiarono a una riga della gara con un margine enorme sulla
+seconda candidata. Loro stessi avvertono che da un campione così non si ricava
+nessuna percentuale, ed è un'avvertenza che va tenuta: quel pezzo dimostra che
+la strada si percorre, non quanti la percorrerebbero.
+
+```{figure} ../figures/aggancio-che-rompe-anonimato.svg
+:name: fig-aggancio-anonimato
+:alt: "Due tabelle affiancate. A sinistra la tabella pubblicata dalla gara, dove al posto della persona c'è il codice 4231 e le colonne sono film, voto e data: Fargo 4 il 3 marzo, Rain Man 5 l'11 marzo, Lebowski 3 il 2 aprile; l'ultima riga dice che ci sono altri 180 film votati e mai resi pubblici. A destra i voti firmati e pubblici di Anna Rossi sugli stessi tre film, con voti uguali e date che differiscono di pochi giorni: Rain Man 5 il 9 marzo, Fargo 4 il 5 marzo, Lebowski 3 il 4 aprile. Tre linee, due delle quali incrociate, uniscono le righe che combaciano. In basso la conclusione: il codice 4231 è Anna Rossi, e con lei i 180 film che non aveva mai messo sotto il proprio nome."
+:width: 92%
+
+Nessuna delle due tabelle, da sola, dice chi è. Le righe che combaciano su
+poche caselle fanno da cerniera, e con quella cerniera viene via tutto il resto
+della riga rimasta senza nome.
+```
+
+Il punto che {numref}`fig-aggancio-anonimato` rende difficile da aggirare non
+è che la gara avesse pubblicato troppo. È che l'identità non sta nel nome: sta
+nella combinazione di ciò che resta quando il nome è tolto, e quanto quella
+combinazione sia rara non dipende dalla tabella, dipende da che cosa sa chi la
+guarda. Smussare le caselle è perciò una difesa che non si sa di quanto
+dimensionare, perché per saperlo bisognerebbe conoscere in anticipo tutto
+quello che un giorno qualcuno saprà.
 
 ## Privacy differenziale: rumore calibrato al singolo
 
@@ -145,7 +200,10 @@ cioè duecentocinquanta. Se i «sì» totali sono quattrocento, quelli sinceri s
 $400 - 250 = 150$: centocinquanta su cinquecento persone sincere, cioè il
 $30\%$. E quel $30\%$ vale per tutti e mille, perché a decidere chi sarebbe
 stato sincero è stata la moneta e non la persona: i cinquecento sinceri sono un
-campione a caso di tutto il gruppo. Il rumore si sottrae proprio perché
+campione a caso di tutto il gruppo. Quel caso aggiunto apposta ha un nome che
+tornerà a ogni riga da qui in avanti, ed è *rumore*: si chiama così perché
+copre il segnale senza cancellarlo, come le voci di fondo di una stanza
+affollata. Il rumore si sottrae proprio perché
 sappiamo *quanto* ne abbiamo messo, mentre non sappiamo a chi sia toccato. Ogni
 individuo ha la sua *negabilità plausibile*; la statistica collettiva
 sopravvive.
@@ -207,9 +265,10 @@ va aggiunto. Il risultato garantisce esattamente $\varepsilon$-DP.
 Un esempio concreto vale la definizione, e si parte da *perché* un conteggio
 esatto sia già un problema. Vogliamo pubblicare quanti dipendenti di
 un'azienda guadagnano oltre una certa soglia. Se pubblichiamo il numero
-esatto, $42$, e il mese dopo una persona se ne va e il numero pubblicato
-diventa $41$, abbiamo appena detto a chiunque tenesse il conto quanto
-guadagnava quella persona. Nessuno ha diffuso il suo stipendio: è bastato
+esatto, $42$, e il mese dopo una persona se ne va (e in un'azienda si sa chi)
+e il numero pubblicato diventa $41$, abbiamo appena detto a chiunque tenesse
+il conto che quella persona stava sopra la soglia. Di quella cifra è uscita la
+sola parte che si voleva tenere riservata, e per farla uscire è bastato
 pubblicare due volte una statistica che sembrava innocua.
 
 Il rimedio è pubblicare il conteggio *sporcato*, e quanto sporco serve lo dice
@@ -252,6 +311,15 @@ infatti tre di questi cinque tiri sono lì attorno. Gli altri due no: uno
 sbaglia di cinque unità e l'altro pubblica $35{,}2$ dove il vero è $42$. È il
 prezzo di $\varepsilon = 0{,}5$ su un conteggio piccolo, e si vede a occhio.
 
+Resta il conto che l'esempio aveva aperto, perché il guaio nasceva dal
+pubblicare due volte e la garanzia appena comprata copre una pubblicazione
+sola. La regola è la più semplice possibile e la più scomoda: i budget si
+sommano. Due rilasci a $\varepsilon = 0{,}5$ l'uno lasciano chi guarda nella
+stessa posizione di un rilascio solo a $\varepsilon = 1$, dieci lo lasciano a
+$5$, e a quel punto la protezione è quella che è. La manopola, insomma, è una
+scorta più che una proprietà del calcolo, e ogni volta che si pubblica se ne
+spende un pezzo.
+
 Resta da dire con precisione che cosa si è comprato, perché la formula
 rassicurante («adesso nessuno può sapere se quella persona c'era») è più forte
 del vero, e non è quello che la privacy differenziale promette. Anzi: quella
@@ -262,8 +330,11 @@ si compra è un limite a quanto si può dedurre, non un divieto di dedurre. Il
 patto, detto per esteso, è questo: qualunque numero esca, doveva poter uscire
 quasi altrettanto facilmente anche se quella persona non fosse stata
 nell'elenco. Quanto «quasi» lo decide la manopola, ed è l'altra faccia della
-stessa scelta: un conto fisso la trasforma in un fattore, e a
-$\varepsilon = 0{,}5$ quel fattore vale $1{,}65$. Vuol dire che togliendo
+stessa scelta: a trasformarla in un fattore è sempre lo stesso conto, si eleva
+alla manopola il numero $e \approx 2{,}718$ degli interessi che maturano in
+ogni istante ({doc}`sezione su derivate e discesa del gradiente
+</Matematica/analisi-ottimizzazione>`), e a $\varepsilon = 0{,}5$ quel fattore
+vale $e^{0{,}5} \approx 1{,}65$. Vuol dire che togliendo
 quella persona quel numero sarebbe uscito al più $1{,}65$ volte meno
 facilmente. Chi guarda il numero pubblicato può quindi farsi un'idea sulla
 presenza di quella persona, e quell'idea può spostarsi: ma di tanto così, il
@@ -405,8 +476,8 @@ $$
 
 Il vantaggio è duplice: i dati grezzi restano sul dispositivo e comunicare i
 pesi ogni tanto costa molto meno che spedire i dati ad ogni passo. Ma
-attenzione a non dichiarare vittoria troppo presto: i gradienti perdono
-informazione. Zhu e colleghi {cite}`zhu2019deep` hanno mostrato che da
+attenzione a non dichiarare vittoria troppo presto: dai gradienti
+l'informazione trapela. Zhu e colleghi {cite}`zhu2019deep` hanno mostrato che da
 un aggiornamento condiviso si possono talvolta *ricostruire* gli esempi che
 l'hanno prodotto. Il federated learning va perciò combinato con la privacy
 differenziale (rumore sugli aggiornamenti) e con l'aggregazione sicura, che
@@ -493,19 +564,21 @@ $$
 
 Qui $\mathbf{x}$ è l'input, $y$ l'etichetta vera, $\mathcal{L}$ la loss,
 $\theta$ i pesi (congelati), e $\nabla_{\mathbf{x}} \mathcal{L}$ il gradiente
-della loss *rispetto all'input*; $\operatorname{sign}(\cdot)$ ne prende il segno
-componente per componente e $\rho$ è il budget di perturbazione, cioè la
+della loss *rispetto all'input*; $\operatorname{sign}(\cdot)$ ne prende il
+segno componente per componente e $\rho$ è il budget di perturbazione, cioè la
 massima variazione ammessa per singola componente (una norma $\ell_\infty$).
 Prendere il solo segno assegna a ogni componente lo stesso spostamento
 $\pm\rho$: la perturbazione è impercettibile per pixel, ma allineata al
-gradiente e quindi massimamente dannosa. Nell'esempio originale bastava
-$\rho = 0{,}007$ per far passare il panda ($57{,}7\%$) a gibbone ($99{,}3\%$), e gli autori annotano che quel valore
-corrisponde al bit meno significativo di una codifica a 8 bit *dopo la
-conversione in numeri reali operata dalla rete* (la precisazione conta, perché
-sul solo intervallo unitario il bit varrebbe $1/255 \approx 0{,}004$). Il
-dettaglio non è pedanteria: una perturbazione più piccola non sopravvivrebbe al
-salvataggio del file, quindi $0{,}007$ è il minimo che possa esistere, non un
-valore scelto sotto una soglia.
+gradiente e quindi massimamente dannosa. Nell'esempio originale bastava $\rho =
+0{,}007$ per far passare il panda ($57{,}7\%$) a gibbone ($99{,}3\%$), e gli
+autori annotano che quel valore corrisponde al bit meno significativo di una
+codifica a 8 bit *dopo la conversione in numeri reali operata dalla rete* (la
+precisazione conta, perché sul solo intervallo unitario il bit varrebbe $1/255
+\approx 0{,}004$). Il dettaglio non è pedanteria: $0{,}007$ è il passo più
+piccolo rappresentabile *su quella scala*, non un valore scelto sotto una
+soglia. Su un'altra scala il passo è un altro (sull'intervallo unitario,
+appunto, $0{,}004$), e infatti in letteratura gli attacchi si tarano in
+multipli di $1/255$.
 
 FGSM è un unico passo, ed è per questo un attacco *debole*. La sua versione
 iterativa è la **Projected Gradient Descent** (PGD) di Madry e colleghi
@@ -927,7 +1000,9 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
   nota. Una manopola decide quanto: più caso, più protezione e meno precisione.
   Ma non promette che di te non si sappia più nulla, promette che la *tua
   presenza* cambi poco le idee di chi guarda; e non ti protegge dalle
-  conclusioni sulla popolazione a cui appartieni.
+  conclusioni sulla popolazione a cui appartieni. Per questo «qui c'è la
+  privacy differenziale» dice poco finché non si dice dove la manopola è stata
+  girata.
 - Un'altra strada è non raccogliere i dati affatto: si manda il modello a
   casa di chi li ha, ognuno lo allena un po’ sui propri e rimanda indietro solo
   quello che ha imparato. Riduce il rischio, non lo azzera.
@@ -965,8 +1040,8 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
   DP-SGD {cite}`abadi2016deep` la porta nel deep learning con clipping
   per-esempio + rumore gaussiano, a circa un punto di accuratezza su MNIST.
 - Il federated learning {cite}`mcmahan2017communication` porta il modello ai
-  dati invece del contrario (FedAvg); ma i gradienti condivisi perdono
-  informazione, e vanno protetti con DP e aggregazione sicura.
+  dati invece del contrario (FedAvg); ma dai gradienti condivisi
+  l'informazione trapela, e vanno protetti con DP e aggregazione sicura.
 - Gli esempi avversari {cite}`goodfellow2015explaining` ingannano una rete
   con perturbazioni impercettibili: FGSM somma $\rho$ per il segno del
   gradiente della loss rispetto all'input; PGD {cite}`madry2018towards` ne è

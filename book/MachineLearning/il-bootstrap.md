@@ -4,7 +4,7 @@ Il nome più famoso della statistica al calcolatore è stato dato in una riga
 sola, e con la più svagata delle motivazioni. Bradley Efron, nel 1979, annuncia
 un metodo *più elementare* del jackknife (l'attrezzo che allora si usava), e lo
 battezza *bootstrap* «*for reasons which will become obvious*», per ragioni che
-diventeranno ovvie {cite}`efron1979bootstrap`. Le ventisei pagine che seguono su
+diventeranno ovvie {cite}`efron1979bootstrap`. Le venticinque pagine che seguono su
 quelle ragioni non ci tornano più sopra: il lettore se le deve dedurre da solo.
 
 Il senso però si indovina, ed è una vanteria: *to pull oneself up by one's
@@ -50,11 +50,11 @@ Un attrezzo prima del 1979 c'era, e si chiama jackknife: togli un dato dal
 mucchio, rifai il conto senza di lui, rimettilo a posto e passa al successivo,
 fino all'ultimo. Quanto i risultati si allontanano fra loro dice quanto la stima
 balla, e sulla media va bene. Sulla mediana no, e la ragione si vede a occhio:
-sessanta stipendi in fila hanno la mediana al centro, togliendone uno il centro
-scivola di un posto e mai di più, così il risultato è sempre uno dei due numeri
-che stavano in mezzo. Sessanta prove che ridanno due soli valori fanno sembrare
-la mediana molto più ferma di quanto sia, ed è proprio la mediana quella su cui
-si voleva una risposta.
+sessanta stipendi in fila sono un numero pari, quindi al centro non ce n'è uno
+ma due, e la mediana sta fra loro; togliendone uno il centro scivola di un
+posto e mai di più, così il risultato è sempre uno di quei due numeri. Sessanta
+prove che ridanno due soli valori fanno sembrare la mediana molto più ferma di
+quanto sia, ed è proprio la mediana quella su cui si voleva una risposta.
 
 Per lei, e per le altre quantità scoperte, la risposta onesta era: se vuoi
 sapere quanto balla, rifai l'indagine venti volte e guarda. Cioè, quasi sempre:
@@ -117,10 +117,12 @@ calcolatore.
 Alla fine hai un mucchio di mediane. Non vengono da indagini vere, ma il modo in
 cui si sparpagliano è una stima onesta di come si sparpaglierebbero quelle vere.
 Dal mucchio esce anche l'intervallo, cioè i due estremi da scrivere accanto alla
-stima: metti le mille mediane in fila dalla più piccola alla più grande, scarta
-le venticinque più basse e le venticinque più alte, e i due valori rimasti ai
-bordi sono l'intervallo che promette di contenere la mediana vera novantacinque
-volte su cento. E questo lo puoi fare stasera, con i dati che hai già.
+stima: metti le mediane in fila dalla più piccola alla più grande, scarta il due
+e mezzo per cento più basso e il due e mezzo per cento più alto (su mille, sono
+venticinque per parte), e i due valori rimasti ai bordi sono l'intervallo che
+promette di contenere la mediana vera novantacinque volte su cento. Siccome i
+due estremi sono due percentili del mucchio, si chiama *intervallo percentile*.
+E questo lo puoi fare stasera, con i dati che hai già.
 
 Il punto in cui l'analogia si rompe, e va detto perché è il punto in cui il
 metodo si rompe davvero: la fotografia non può mostrare quello che non
@@ -185,9 +187,10 @@ terzo tornerà, a rovescio, a dire dove il bootstrap non arriva.
 Su sessanta stipendi fabbricati apposta (con la coda a destra che hanno i
 redditi veri), ricampionati diecimila volte, quelle diecimila mediane danno
 due numeri: l’**errore standard**, che è quanto la stima balla in media,
-e l’**intervallo** dentro cui cade nel $95\%$ dei casi. Poi fa la stessa cosa
-sulla media, dove esiste anche la formula di due secoli fa, per avere qualcosa
-contro cui controllarlo.
+e l’**intervallo**, i due estremi che promettono di contenere la mediana vera
+nel $95\%$ dei casi. Il programma poi rifà lo stesso lavoro sulla media, dove
+esiste anche la formula di due secoli fa, per avere qualcosa contro cui
+controllarlo.
 
 ```python
 import numpy as np
@@ -224,8 +227,13 @@ formula per la media: errore standard 1666, intervallo [28159, 34691]
 Conviene leggere per prime le ultime due righe, perché sono il collaudo di
 tutto il resto. Sulla media, dove la risposta si sa da due secoli, il
 bootstrap dice $1675$ e la formula dice $1666$: differiscono di nove unità su
-milleseicento, cioè di mezzo punto percentuale, che è il rumore delle diecimila
-simulazioni. Il metodo non sta inventando niente dove qualcuno può controllarlo,
+milleseicento, cioè di mezzo punto percentuale. Che siano proprio nove è in
+parte fortuna, perché i due non puntano allo stesso identico bersaglio: il
+bootstrap alla deviazione standard con divisore $m$ ($1652$), la formula a
+quella con $m-1$ ($1666$), e sopra ci sta il sorteggio delle diecimila
+simulazioni, che con un altro seme sposta la cifra di qualche decina. Mezzo
+punto percentuale, comunque lo si legga.
+Il metodo non sta inventando niente dove qualcuno può controllarlo,
 ed è per questo che ci si può fidare anche dove nessuno può: per la mediana
 una formula non c'è, e il bootstrap risponde lo stesso, $2061$.
 
@@ -245,9 +253,9 @@ aggiunge alle precedenti, e la pila che ne viene fuori è la risposta: da un
 campione solo, una distribuzione.
 ```
 
-Quello che {numref}`fig-bootstrap-accumula` fa vedere e la tabella no è che il
-campione non si tocca: la variabilità che si vede a destra non viene da dati
-nuovi, viene tutta dal sorteggio di quali dei sessanta guardare. È il punto in
+Quello che {numref}`fig-bootstrap-accumula` fa vedere e le righe stampate no è
+che il campione non si tocca: la variabilità che si vede a destra non viene da
+dati nuovi, viene tutta dal sorteggio di quali dei sessanta guardare. È il punto in
 cui il metodo sembra un imbroglio, e a togliere il sospetto è il collaudo
 dell'intervallo.
 
@@ -296,9 +304,12 @@ punto dal bersaglio.
 Alla seconda («è esatto?») risponde di no, ma la risposta va letta con la terza
 riga in mano, ed è per averla che quel numero è stampato con due decimali
 invece di uno. Anche il $94{,}27\%$ è una stima, ottenuta da quattromila prove
-e non da infinite, quindi balla pure lui, fra $93{,}56\%$ e $94{,}99\%$. Il
-$95\%$ promesso resta fuori da quell'intervallo, e ci resta per un centesimo
-di punto: l'esperimento rileva la sotto-copertura, e la rileva di misura.
+e non da infinite, quindi balla pure lui, fra $93{,}56\%$ e $94{,}99\%$: è
+l'intervallo di Wald della {doc}`sezione sugli intervalli di confidenza
+</Matematica/probabilita-statistica>`, applicato a $3771$ successi su $4000$. Il
+$95\%$ promesso resta fuori da quell'intervallo, e ci resta per mezzo
+centesimo di punto ($94{,}995$ contro $95{,}000$): l'esperimento rileva la
+sotto-copertura, e la rileva di strettissima misura.
 
 Un decimale in meno avrebbe capovolto la conclusione senza cambiare un dato:
 $94{,}3\%$ più $0{,}7$ fa esattamente $95{,}0$, e chi legge così crede che il
@@ -307,8 +318,10 @@ seconda cifra, la seconda cifra si stampa.
 
 La sotto-copertura è comunque un fatto documentato dell'intervallo
 percentile, il più semplice dei tre che Efron e i suoi successori hanno
-costruito: con campioni piccoli e distribuzioni storte sotto-copre di poco e
-sistematicamente. Chi ha bisogno del numero preciso usa il $\mathrm{BCa}$; chi
+costruito (gli altri due sono il $\mathrm{BCa}$ e il $t$-bootstrap): con campioni
+piccoli e distribuzioni storte sotto-copre di poco e sistematicamente. Chi ha
+bisogno del numero preciso usa il $\mathrm{BCa}$, che corregge la distorsione al
+prezzo di più conti; chi
 ha bisogno di sapere se una differenza è solida usa questo, che costa quattro
 righe.
 
@@ -348,8 +361,8 @@ quota di ricampionamenti che ridanno esattamente quel valore: 0.631
 ```
 
 Diecimila ricampionamenti e nove risposte diverse: la distribuzione bootstrap
-del massimo si riduce a un mucchietto di nove valori, e nei due
-terzi dei casi è sempre lo stesso. La ragione è ovvia una volta detta: il massimo
+del massimo si riduce a un mucchietto di nove valori, e in poco meno di due
+casi su tre è sempre lo stesso. La ragione è ovvia una volta detta: il massimo
 di un ricampionamento non può superare il massimo del campione, quindi da quel
 lato l'intervallo è murato, e dall'altro può solo saltare al secondo, al terzo, al
 quarto valore più grande. Non c'è niente da guardare, perché la statistica
@@ -361,11 +374,11 @@ $m = 60$ sono lo stesso numero, ed è il conto di
 {doc}`Alberi e metodi ensemble <alberi-ensemble>`
 letto al contrario. Là si contavano gli esempi che restano fuori da un
 campione bootstrap, poco più di un terzo, e la notizia era buona: su quel
-terzo si misura l'errore gratis. Qui si contano gli altri, i due terzi che
-restano dentro, e la stessa notizia diventa la condanna del metodo, perché
-due ricampionamenti su tre contengono il massimo e quindi ridanno la stessa
-identica risposta. È la stessa proprietà, letta dai due lati: un numero non è
-mai buono o cattivo per conto suo, dipende da che cosa gli si chiede di
+terzo si misura l'errore gratis. Qui si contano gli altri, i quasi due terzi
+che restano dentro, e la stessa notizia diventa la condanna del metodo, perché
+in poco meno di due ricampionamenti su tre il massimo c'è, e quindi ridanno la
+stessa identica risposta. È la stessa proprietà, letta dai due lati: un numero
+non è mai buono o cattivo per conto suo, dipende da che cosa gli si chiede di
 reggere.
 
 Da qui la regola pratica: il bootstrap funziona per le statistiche che dipendono
@@ -395,12 +408,16 @@ Il posto in cui questo attrezzo torna utile subito è la valutazione dei modelli
 Un'accuratezza dell’$87\%$ misurata su duecento esempi di test e una misurata su
 ventimila sono due numeri scritti uguale che valgono in modo diverso, e il
 bootstrap sul test set dice quanto: si ricampionano gli esempi di test con
-reimmissione, si ricalcola la metrica ogni volta, e si guardano i percentili. Se
-l'intervallo del modello A e quello del modello B si accavallano per metà, la
-classifica fra i due non c'è, per quanto le due cifre siano diverse.
+reimmissione, si ricalcola la metrica ogni volta, e si guardano i percentili.
+Per confrontarne due, però, i due intervalli separati non bastano, e la
+{doc}`sezione sugli intervalli di confidenza </Matematica/probabilita-statistica>`
+lo dice già: due margini messi a fianco sono prudenti per costruzione e
+nascondono differenze vere. La mossa che decide costa una riga in più, ed è
+ricampionare gli *stessi* esempi per tutti e due i modelli e guardare la
+distribuzione della *differenza*: se lo zero sta fuori, la classifica c'è.
 
-È anche il modo giusto di leggere le classifiche pubblicate: due sistemi separati
-da mezzo punto su un test da mille esempi sono, quasi sempre, la stessa cosa.
+Vale anche per le classifiche pubblicate: due sistemi separati da mezzo punto su
+un test da mille esempi sono, quasi sempre, la stessa cosa.
 
 `````{tab} Elementare
 
@@ -411,7 +428,8 @@ da mezzo punto su un test da mille esempi sono, quasi sempre, la stessa cosa.
   un modello, per un rapporto, no.
 - Il bootstrap ricampiona i dati che hai, con reimmissione e nella
   stessa quantità, mille volte, e guarda quanto la stima si sparpaglia fra i
-  mille. È l'unica cosa che si può fare senza raccogliere altri dati.
+  mille. Dei modi di rispondere senza raccogliere altri dati è quello che
+  funziona anche dove il jackknife si arrende.
 - Si controlla dove la risposta si sa già: sulla media il bootstrap dà $1675$ e
   la formula $1666$. Ed è per questo che ci si fida di lui sulla mediana, dove
   la formula non c'è.
@@ -456,7 +474,9 @@ da mezzo punto su un test da mille esempi sono, quasi sempre, la stessa cosa.
   bagging produce il terzo di esempi *out-of-bag*, e qui è la ragione per cui
   il bootstrap del massimo non funziona.
 - Uso in ML: intervalli attorno a una metrica misurata su un test set finito, e
-  confronto fra due modelli. Intervalli accavallati vuol dire nessuna classifica.
+  confronto fra due modelli. Il confronto si fa sul bootstrap **appaiato** della
+  differenza (stessi indici per i due modelli), non accostando due intervalli
+  marginali, che è prudente per costruzione.
 ```
 
 `````

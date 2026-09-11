@@ -151,8 +151,9 @@ per cento del totale. Non stiamo facendo una media, stiamo aspettando un colpo
 di fortuna.
 
 E la scheda delle nostre cifre ha otto numeri soltanto. Quella che permette a
-Stable Diffusion, il generatore di immagini che il libro racconta più
-avanti, di girare su un computer di casa, ne ha sedicimila.
+{doc}`Stable Diffusion </ModelliDiffusione/stable-diffusion>`, il modello che
+disegna un'immagine a partire da una frase scritta, di girare su un computer
+di casa, ne ha sedicimila.
 
 ## Chiedere a chi sa dove guardare
 
@@ -204,6 +205,13 @@ dell’altro, è quasi sempre vero e non sempre.)
 `````
 
 `````{tab} Superiore
+
+La via più battuta per arrivare all’ELBO passa dalla disuguaglianza di Jensen.
+Qui si segue quella di Kingma e Welling {cite}`kingma2019introduction`, che di
+disuguaglianze non ne usa nessuna: scrive un’identità esatta e legge il limite
+fra i suoi addendi. Costa un passaggio in più e restituisce ciò che l’altra
+strada perde per via, cioè non soltanto che il limite sta sotto, ma *di
+quanto*.
 
 Si introduce una distribuzione ausiliaria $q_\phi(\mathbf{z} \mid \mathbf{x})$,
 detta **modello di inferenza** o posterior approssimata, con parametri $\phi$,
@@ -405,6 +413,23 @@ bisogno, a ogni pezzo, di una domanda a cui si sappia rispondere: «se sposto un
 pochino questo, di quanto cambia quello?». Davanti a un sorteggio la domanda
 non ha risposta, perché il numero uscito è uscito a caso, e la risalita si
 ferma lì.
+
+Il rimedio non toglie il sorteggio: lo sposta di lato, fuori dalla strada che
+la correzione deve percorrere ({numref}`fig-riparametrizzazione`).
+
+```{figure} ../figures/riparametrizzazione-il-caso-di-lato.svg
+:name: fig-riparametrizzazione
+:alt: "Due volte lo stesso grafo, prima e dopo il trucco della riparametrizzazione. In tutti e due i pannelli la catena scende dal dato x all’encoder di parametri phi, alle sue uscite mu e sigma che dicono dove sta la zona e quanto è larga, alla causa nascosta z, al decoder di parametri theta e infine al costo; una corsia di frecce scende, ed è l’andata, e una corsia accanto risale, ed è la correzione. Nel pannello di sinistra, senza il trucco, z è disegnata con il bordo tratteggiato perché viene pescata dalla zona: la corsia che risale parte dal costo, attraversa il decoder e si ferma davanti a z contro un segno di divieto, perché z è uscita a caso. Nel pannello di destra, con il trucco, z è scritta come mu più sigma per epsilon, ed epsilon arriva da un riquadro esterno: è lo scarto, deciso prima, e di phi non sa niente. Lì la corsia che risale non incontra più nessun ostacolo e arriva fino all’encoder. In fondo, la legenda delle due corsie: l’andata e il ritorno, cioè la correzione."
+:width: 96%
+
+Lo stesso grafo, prima e dopo. A sinistra la causa nascosta si pesca dalla zona
+che l’encoder propone, e la correzione, risalendo dal costo, si ferma lì:
+davanti a un numero uscito a caso la domanda «se sposto un pochino questo, di
+quanto cambia quello?» non ha risposta. A destra il caso è stato spostato di
+lato, e si sorteggia a parte: la causa nascosta diventa il centro della zona
+più uno scarto allargato quanto la zona è larga. Da lì in poi sono tutti conti
+derivabili, e la correzione arriva fino ai numeri dell’encoder.
+```
 
 `````{tab} Elementare
 

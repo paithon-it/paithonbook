@@ -115,6 +115,7 @@ sphinx:
       - DeepReinforcementLearning
       - Efficienza
       - GraphNeuralNetwork
+      - IngegneriaLLM
       - Interpretabilita
       - MLOps
       - MachineLearning

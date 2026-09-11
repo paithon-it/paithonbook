@@ -129,12 +129,17 @@ $$
 V(s_L) = (1-\lambda)\, v_\theta(s_L) + \lambda\, z_L ,
 $$
 
-dove $z_L$ è l'esito di un rollout giocato fino in fondo con una policy veloce e
-$\lambda = 0{,}5$ (è il simbolo del paper, e non ha niente a che vedere con il
+dove $z_L$ è l'esito della simulazione, giocata fino in fondo con una policy
+veloce, e $\lambda = 0{,}5$ (è il simbolo del paper, e non ha niente a che
+vedere con il
 $\lambda$ della *generalized advantage estimation* incontrata col
 [gradiente di policy](policy-gradient.md): qui è
-soltanto il peso con cui si mescolano due giudizi). Rete di valore
-e partita giocata a caso pesano quindi identico. La simulazione
+soltanto il peso con cui si mescolano due giudizi). In gergo quella partita
+tirata via si chiama *rollout*, e la parola viene dal backgammon, dove per
+valutare una posizione la si giocava fino alla fine molte volte con i dadi
+tirati a caso {cite}`sutton2018reinforcement`; la strategia svelta che la guida
+è la *rollout policy*. Rete di valore
+e partita tirata via pesano quindi identico. La simulazione
 casuale sparisce del tutto solo con AlphaGo Zero (2017), dove la rete di
 valore basta da sola: è la stessa tappa in cui spariscono le partite umane, e
 non è una coincidenza, perché entrambe le cose diventano superflue quando la

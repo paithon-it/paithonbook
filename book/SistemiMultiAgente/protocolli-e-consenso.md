@@ -544,18 +544,37 @@ misurato invece che sperato: è quello, e non l'intuito, a dire quando fermarsi.
 ## Dibattere invece di votare
 
 Se contare le teste non basta, si può cambiare gioco: invece di aggregare
-risposte, farle scontrare. Nel **dibattito** due agenti sostengono posizioni
-opposte sulla stessa domanda, si contestano a vicenda, e un terzo (un umano, o
-un altro modello) decide chi ha argomentato meglio. L'idea la propongono nel 2018
+risposte, farle scontrare. Nel **dibattito** due agenti rispondono alla stessa
+domanda, si contestano a vicenda a turno, e un terzo (un umano, o un altro
+modello) dichiara chi dei due ha dato l'informazione più vera e più utile.
+L'idea la propongono nel 2018
 Geoffrey Irving, Paul Christiano e Dario Amodei {cite}`irving2018ai`, non come
 un prodotto ma come una linea di ricerca su un problema aperto: come si fa a
 controllare un sistema che su una certa questione ne sa più di chi lo controlla.
+Le regole del gioco non impongono che le due risposte siano diverse: se
+coincidono non c'è niente da dibattere, e negli esperimenti i due ruoli si
+assegnano in anticipo.
 
 Il meccanismo interessante è lo squilibrio fra inventare e
 controllare. Comporre un cruciverba richiede giorni; verificare che una griglia
-compilata sia giusta richiede minuti, e non serve saperlo comporre. Il dibattito
-vive di questo squilibrio: trasforma una domanda a cui il giudice non saprebbe
-rispondere in un controllo che il giudice sa fare.
+compilata sia giusta richiede minuti, e non serve saperlo comporre. Il
+dibattito però nasce per il gradino sopra, quello in cui nemmeno la griglia
+compilata è alla portata del giudice: se lo fosse, basterebbe farsi dare la
+risposta e controllarla, e due agenti non servirebbero. Quello che i turni
+comprano è la riduzione di scala. A ogni turno chi afferma scompone la propria
+tesi, chi contesta indica la parte che ritiene falsa, e il giro dopo si
+ricomincia lì dentro: alla fine il giudice non ha davanti la griglia, ha una
+casella sola ({numref}`fig-ramo-contestato`).
+
+```{figure} ../figures/ramo-contestato.svg
+:name: fig-ramo-contestato
+:alt: "Un albero di affermazioni che si apre un ramo per volta. In cima un nodo con un punto interrogativo, la domanda e la risposta che il primo contendente sostiene. Sotto compaiono tre nodi, la sua scomposizione in tre parti; il secondo contendente ne cerchia uno, quello centrale, e gli altri due restano grigi e non vengono più aperti. Sotto il nodo cerchiato compaiono altri tre nodi, e il secondo ne cerchia uno diverso, il terzo da sinistra; gli altri due restano grigi. Da quel nodo scende un tratto fino alla scritta «il giudice controlla questa, e basta». In basso i due conti: catene di ragionamento possibili nove, affermazioni messe per iscritto sei, controllate dal giudice una."
+:width: 92%
+
+Il dibattito non percorre l'albero delle affermazioni: ne apre un ramo per
+volta. Il ramo lo sceglie il contendente che vuole vincere, mai il giudice:
+per vincere gli conviene indicare il punto dove crede ci sia la falla.
+```
 
 `````{tab} Elementare
 
@@ -567,10 +586,21 @@ sono due parti che hanno interesse opposto, e ciascuna ha tutte le ragioni per
 mettere in evidenza la falla dell'altra.
 
 Ecco il punto che rende il meccanismo forte: se uno dei due mente, all'altro
-conviene puntare il dito esattamente sul punto della bugia. E controllare
-un solo punto è alla portata di chiunque, anche di chi non avrebbe saputo
-ricostruire l'intera storia. Il giudice non deve essere più bravo dei
-dibattenti: deve solo saper valutare l'ultimo passaggio contestato.
+conviene puntare il dito esattamente sul punto della bugia. Non deve conoscere
+tutta la verità per farlo, e ci riesce per una ragione precisa: è bravo
+quanto chi mente, ha davanti la stessa ricostruzione, e gli basta trovare un
+anello che non regge. Se ne lasciasse passare uno buono perderebbe, quindi
+contesta quello che gli sembra il più debole.
+
+E il processo non si esaurisce in un'udienza. Chi ha parlato per primo, messo
+sotto accusa su un punto, quel punto lo spiega più minutamente; l'altro guarda
+la spiegazione e di nuovo indica il pezzo che non gli torna; e si va avanti
+così, restringendo ogni volta. Alla fine il disaccordo si è stretto a un
+dettaglio solo, e controllare un dettaglio è alla portata di
+chiunque, anche di chi non avrebbe saputo ricostruire l'intera storia. Il
+giudice non deve essere più bravo dei dibattenti: deve solo saper valutare
+l'ultimo passaggio contestato. Quante udienze servano lo decide il caso: più
+è intricato, più giri ci vogliono per arrivare a quel dettaglio.
 
 E qui sta anche il limite, che è bene guardare in faccia. Tutto regge finché
 il giudice riconosce un argomento fallace da uno valido. Se si lascia
@@ -581,7 +611,9 @@ persuasivo, che è una qualità diversa e a volte opposta.
 Il guaio peggiore però non riguarda il giudice. Se accusa e difesa hanno
 studiato sugli stessi libri e credono tutte e due alla stessa cosa falsa, quella
 cosa in aula non la nomina nessuno: non viene contestata, il giudice non la
-sente mai, e il verdetto si gioca su tutto il resto. Il processo porta alla luce
+sente mai, e il verdetto si gioca su tutto il resto. Ed è il caso normale, non
+quello raro: due contendenti presi dallo stesso modello hanno studiato sugli
+stessi libri per forza. Il processo porta alla luce
 i disaccordi che ci sono; quelli che non ci sono non li inventa.
 
 `````
@@ -591,39 +623,60 @@ i disaccordi che ci sono; quelli che non ci sono non li inventa.
 Il dibattito si formalizza come un **gioco a somma zero** a due giocatori: dati
 una domanda e un limite di lunghezza degli interventi, i due agenti si
 alternano e alla fine un giudice, con risorse di calcolo limitate, dichiara chi
-ha dato l'informazione più vera e utile. L'addestramento avviene per *self-play*
-sullo stesso gioco, con la stessa struttura vista nel Reinforcement Learning e
-ripresa nella sezione «Imparare insieme».
+ha dato l'informazione più vera e utile. L'addestramento che gli autori
+propongono è per *self-play* sullo stesso gioco, con la stessa struttura del
+self-play dietro AlphaGo, nella {doc}`sezione sulla ricerca ad albero Monte
+Carlo </DeepReinforcementLearning/mcts-alphago>`, e che
+{doc}`Imparare insieme <imparare-insieme>` riprende per esteso.
 
 L'argomento teorico che gli autori portano è un'analogia con la teoria della
 complessità, e chiarisce esattamente che cosa il dibattito compri
 {cite}`irving2018ai`. Un giudice che valuta direttamente una risposta esibita
 da un solo agente può decidere, con gioco ottimale, le domande in **NP**:
 quelle per cui esiste un certificato breve, verificabile in tempo polinomiale.
-Il gioco del dibattito, con due agenti in competizione, arriva a **PSPACE**:
-una classe molto più ampia, perché l'alternanza fra i due giocatori corrisponde
-all'alternanza dei quantificatori in un gioco a informazione perfetta. Le
-ipotesi però contano, e sono tre: i dibattenti hanno potenza di calcolo
-illimitata (è un limite superiore, non una promessa pratica), il giudice è
-polinomiale ma scelto in funzione del problema, e il numero di turni cresce con
-il problema; a numero di turni fissato non si arriva a PSPACE ma solo a un
-gradino della gerarchia polinomiale. Il guadagno non viene dal fatto che i
-dibattenti siano più bravi, ma dal fatto che il giudice non deve esaminare
+Il gioco del dibattito, con due agenti in competizione, arriva a **PSPACE**,
+che contiene NP e tutta la gerarchia polinomiale, perché l'alternanza fra i due
+giocatori corrisponde all'alternanza dei quantificatori di una formula
+booleana quantificata, ed è quella corrispondenza (la PSPACE-completezza di
+TQBF) a reggere il risultato. Le ipotesi però contano, e sono tre: i dibattenti
+hanno potenza di calcolo illimitata, e il dibattente onesto deve poterla usare
+tutta, perché per vincere gli tocca simulare per intero un calcolo
+esponenziale; il giudice è polinomiale ma scelto in funzione del problema; e il
+numero di turni cresce con il problema, perché a $n$ turni fissati la classe
+raggiunta è $\Sigma_n^P$, un gradino della gerarchia polinomiale per ogni
+turno. Il guadagno non viene dal fatto che i dibattenti siano più bravi, ma dal
+fatto che il giudice non deve esaminare
 l'intero albero degli argomenti: gli basta seguire il ramo che i due, con
 interessi opposti, hanno scelto di contestare.
 
-Due avvertenze, e sono sostanziali. La prima: il risultato vale con gioco
+Tre avvertenze, e sono sostanziali. La prima: il risultato vale con gioco
 ottimale e giudice affidabile, cioè capace di valutare correttamente l'ultimo
 passaggio conteso. Un giudice sensibile alla posizione dell'intervento, alla
 sua lunghezza o alla somiglianza con il proprio stile (sono esattamente i tre
 bias dell’*LLM-as-a-judge*, *position*, *verbosity* e *self-enhancement*, che
-il capitolo su MLOps misurerà più avanti) rompe l'ipotesi, e il gioco premia la
+la {doc}`sezione su LLMOps </MLOps/llmops>` riprende con i numeri: i primi due
+misurati, il terzo osservato senza poter essere dimostrato) rompe l'ipotesi, e
+il gioco premia la
 persuasione invece della verità. La seconda riguarda proprio questo capitolo:
 due dibattenti istanziati dallo stesso modello ereditano la correlazione appena
 descritta. Se entrambi condividono lo stesso errore sistematico, nessuno dei
 due lo contesta, l'errore non entra mai nel dibattito e il giudice non ha nulla
 su cui esercitare la propria verifica. Il dibattito rende *ispezionabile* il
 disaccordo che c'è, non crea quello che manca.
+
+La terza avvertenza è la più grave, perché non riguarda il giudice né la
+somiglianza fra i due: attacca l'asimmetria stessa da cui tutto discende. Chi
+mente può scomporre la propria tesi in moltissimi pezzi sapendo che uno è falso
+senza sapere quale, e a quel punto smascherarlo costa all'onesto un lavoro
+computazionalmente intrattabile, mentre a lui l'imbroglio non è costato quasi
+niente. È il problema degli **argomenti offuscati**, e sotto di esso non è più
+vero che mentire sia più difficile che confutare una menzogna. I protocolli
+successivi nascono per aggirarlo: il *doubly-efficient debate* toglie l'ipotesi
+che l'onesto debba simulare un calcolo esponenziale
+{cite}`browncohen2023doubly`, e la variante *prover-estimator*, di cui Irving è
+coautore, arriva a garantire la vittoria dell'onesto con uno sforzo
+paragonabile a quello dell'avversario, ma solo sotto ipotesi di stabilità
+{cite}`browncohen2025obfuscation`.
 
 `````
 
@@ -865,18 +918,22 @@ converge in silenzio sulla risposta sbagliata.
   {cite}`wang2023selfconsistency` funziona; il guadagno però resta sempre sotto
   a quello promesso, e il modo di scoprire quanti agenti servono è provare con
   tre, cinque, nove, ventuno e guardare quando i risultati smettono di salire.
-- Il dibattito {cite}`irving2018ai` sfrutta il fatto che controllare è più
-  facile che trovare: il giudice non deve essere più bravo dei due contendenti,
-  deve solo saper valutare l'ultimo passaggio contestato. Regge finché il
-  giudice riconosce un argomento fallace da uno valido, e due contendenti nati
-  dallo stesso modello si portano dietro gli stessi punti ciechi: il dibattito
-  rende visibile il disaccordo che c'è, non crea quello che manca.
+- Il dibattito {cite}`irving2018ai` restringe invece di aggregare: a ogni
+  turno chi afferma scompone e chi contesta indica il pezzo che ritiene falso,
+  finché il disaccordo sta in un dettaglio solo. Il giudice non deve essere più
+  bravo dei due contendenti, deve solo saper valutare quel dettaglio. Regge
+  finché il giudice riconosce un argomento fallace da uno valido, e due
+  contendenti nati dallo stesso modello si portano dietro gli stessi punti
+  ciechi: il dibattito rende visibile il disaccordo che c'è, non crea quello
+  che manca. E chi mente ha una scappatoia: scomporre in tanti pezzi da rendere
+  la caccia all'errore più cara della bugia {cite}`browncohen2025obfuscation`.
 - I generali bizantini {cite}`lamport1982byzantine`: se qualcuno può dire cose
   diverse a persone diverse, per tollerare un bugiardo servono almeno quattro
   partecipanti, per due sette, per tre dieci, ed è dimostrato che con meno non
   si può. (È un teorema su traditori che possono anche mettersi d'accordo fra
   loro, quindi il conto non si trasferisce così com'è a una squadra di agenti;
-  quello che si trasferisce è la distinzione qui sotto.) Un agente guasto tace
+  quello che si trasferisce è la distinzione fra il guasto e il bugiardo.) Un
+  agente guasto tace
   e lo si becca aspettando; uno bugiardo risponde in tempo, con garbo, e dice
   il falso, come un modello che produce una citazione inesistente con la stessa
   disinvoltura di quelle vere. Contro di lui aggiungere copie non serve a
@@ -922,10 +979,14 @@ converge in silenzio sulla risposta sbagliata.
   motivo per cui la self-consistency {cite}`wang2023selfconsistency`
   funziona, ma decorrela solo parzialmente: il guadagno reale è sempre
   minore di quello che Condorcet promette.
-- Il dibattito {cite}`irving2018ai` sfrutta l'asimmetria fra produrre e
-  verificare (con giudice polinomiale: da NP a PSPACE), ma regge solo se il
-  giudice riconosce un argomento fallace, e due dibattenti dello stesso modello
-  ereditano la stessa correlazione.
+- Il dibattito {cite}`irving2018ai` riduce la questione a un ramo solo
+  dell'albero degli argomenti: con gioco ottimale, dibattenti illimitati e
+  giudice polinomiale scelto in funzione del problema si passa da NP a
+  PSPACE, e a turni fissati a $\Sigma_n^P$. Ma regge solo se il
+  giudice riconosce un argomento fallace, due dibattenti dello stesso modello
+  ereditano la stessa correlazione, e l'asimmetria stessa cade sugli argomenti
+  offuscati, dove smascherare costa all'onesto più che mentire al disonesto
+  {cite}`browncohen2023doubly, browncohen2025obfuscation`.
 - I generali bizantini {cite}`lamport1982byzantine`: con soli messaggi
   orali servono $n \ge 3f+1$ partecipanti per tollerarne $f$ che mentono (con
   firme il vincolo cade a $n \ge f+2$). Un agente guasto tace e lo becca un

@@ -108,13 +108,14 @@ INSTABILI = {
 def avvisa_se_carica() -> None:
     """Dice quanto e' carica la macchina, prima di misurare qualsiasi cosa.
 
-    CLAUDE.md lo raccomanda da un pezzo («`uptime` prima di aprire
-    un'indagine») e non basta averlo scritto: la regola si legge come un gesto
-    da fare all'inizio, mentre il carico che falsa una misura e' quasi sempre
-    quello che si e' lanciato **da soli** un momento prima. E' successo il 18
-    agosto 2026: lo stesso notebook ha dato 223 secondi con altri controlli in
-    parallelo e 28 con la macchina libera, cioe' un fattore otto, e per un
-    momento quel 223 e' stato preso per il costo vero di un blocco.
+    CONTRIBUTING.md lo raccomanda («guarda il carico della macchina prima di
+    dichiarare rotto qualcosa») e non basta averlo scritto: la regola si legge
+    come un gesto da fare all'inizio, mentre il carico che falsa una misura e'
+    quasi sempre quello che si e' lanciato **da soli** un momento prima. E'
+    successo il 18 agosto 2026: lo stesso notebook ha dato 223 secondi con
+    altri controlli in parallelo e 28 con la macchina libera, cioe' un fattore
+    otto, e per un momento quel 223 e' stato preso per il costo vero di un
+    blocco.
 
     Non ferma niente: stampa, perche' un numero misurato sotto carico non e'
     sbagliato, e' solo un numero di cui non ci si puo' fidare.
@@ -165,7 +166,7 @@ def blocchi_di(pagina: pathlib.Path, anche_lenti: bool = False):
     Con `anche_lenti` entrano anche i blocchi marcati `pt-lento`, che di norma
     restano fuori da tutto: dal notebook, dalla CI e da qui. Quella marcatura
     e' una decisione (un modello da scaricare, un addestramento lungo), non un
-    permesso di non funzionare, e CLAUDE.md dice che quei blocchi vanno
+    permesso di non funzionare, e CONTRIBUTING.md dice che quei blocchi vanno
     eseguiti a mano. Questo e' il comando per farlo, invece di un'esortazione.
     """
     testo = pagina.read_text(encoding="utf-8")

@@ -345,10 +345,10 @@ A $T=0{,}5$ «muro» passa da 0,657 a 0,867 e «pigiama» praticamente scompare;
 $T=2$ la distribuzione si appiattisce e «pigiama» sale a 0,064: un errore ogni
 sedici parole, in media.
 
-Il **top-k** limita il campionamento ai $k$ token con probabilità maggiore,
+Il *top-k* limita il campionamento ai $k$ token con probabilità maggiore,
 rinormalizzando: con $k=2$ restano muro e tetto con
 $0{,}657/0{,}899 \approx 0{,}731$ e $0{,}242/0{,}899 \approx 0{,}269$. Il
-**top-p** (*nucleus sampling* {cite}`holtzman2020curious`) sceglie invece il
+*top-p* (*nucleus sampling* {cite}`holtzman2020curious`) sceglie invece il
 più piccolo insieme di token (il *nucleo*) la cui probabilità cumulata
 raggiunge la soglia $p$:
 

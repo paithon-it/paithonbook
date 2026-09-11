@@ -9,13 +9,13 @@ davanti al modello prima di premere invio, cioè quali istruzioni, quali
 esempi, quali documenti e in quale ordine. Il modello è lo stesso motore;
 cambia il carburante che gli versi nel serbatoio.
 
-Quello «davanti al modello» ha un nome preciso ed è il perno di questa
-sezione. Un modello legge tutto in un colpo solo, e quanto testo riesca a
+Quello «davanti al modello» ha un nome preciso. Un modello legge tutto in un
+colpo solo, e quanto testo riesca a
 tenere davanti agli occhi in una volta è un numero fisso, deciso da chi l'ha
 costruito. Quello spazio si chiama finestra di contesto, e ciò che ci
 scrivi dentro si chiama contesto. Larga quanto vuoi, resta finita.
 
-È il cuore di questo capitolo: con un modello di oggi non si programma
+Ed è lì che sta il mestiere: con un modello di oggi non si programma
 scrivendo codice, si programma scrivendo il contesto. Il modello non si tocca
 e non si modifica; l'unica cosa su cui hai davvero le mani è il testo che gli
 metti davanti. Nella sezione {doc}`sui grandi modelli linguistici
@@ -121,9 +121,11 @@ esiste il prompt *provato*.
 
 La finestra di contesto ha una misura, e la misura è un numero preciso. Non si
 conta in parole né in pagine, ma in token: i pezzetti in cui una frase
-viene tagliata prima di entrare nel modello, ciascuno grande all'incirca una
-parola, spesso un po’ meno. Ogni modello dichiara quanti token riesce a
-leggere in una volta, e oltre quel numero non si va.
+viene tagliata prima di entrare nel modello. Quanto sia grande un pezzetto
+dipende dalla lingua e dal modello: in inglese vale grosso modo una parola, in
+italiano vale meno, e una parola sola ne consuma spesso più di uno. Ogni
+modello dichiara quanti token riesce a leggere in una volta, e oltre quel
+numero non si va.
 
 Riempirli, poi, non è gratis, e da qui in avanti «quanto costa» vorrà sempre
 dire «quanti token».
@@ -139,8 +141,8 @@ MLOps. Un prompt gonfio è una bolletta più salata e una risposta più lenta, e
 riempire la finestra fino all'orlo «per sicurezza» è quasi sempre un cattivo
 affare.
 
-Il disegno che segue mostra come una finestra si riempie in una giornata di
-lavoro vera. Due delle voci hanno un nome che non abbiamo ancora dato. La
+La {numref}`fig-context-window` mostra come la finestra si riempie in una
+giornata di lavoro vera, e due delle sue voci vanno chiamate per nome. La
 prima è il *system prompt*: il foglio di istruzioni di fondo che il programma
 antepone sempre, uguale a ogni richiesta, e che l'utente non vede né scrive. La
 seconda sono le *definizioni tool*, cioè il catalogo degli strumenti della
@@ -157,18 +159,18 @@ e l'ultimo (lo spazio per la risposta) è quello che si dimentica di contare
 finché il modello non la tronca a metà.
 ```
 
-Messa così, come in {numref}`fig-context-window`, la finestra smette di
-sembrare un limite tecnico e diventa quello che è davvero: un **budget**. I
-centoventottomila token in cima al disegno sono grosso modo un romanzo, e
-sembrano tantissimi finché non si guarda quanti se ne prende ciascun
-commensale. E come ogni budget si può spendere bene o male, perché le voci
-competono fra loro: una descrizione di strumento scritta larga, una cronologia
-che nessuno accorcia mai, dieci documenti recuperati dove ne bastavano tre.
-Nessuna di queste è un errore in sé, ma insieme mangiano lo spazio della
-risposta, che è l'ultimo segmento e l'unico che nessuno pensa a contare.
+Messa così, la finestra smette di sembrare un limite tecnico e diventa quello
+che è davvero: un **budget**. I centoventottomila token in cima al disegno sono
+grosso modo un romanzo, e sembrano tantissimi finché non si guarda quanti se ne
+prende ciascun commensale. E come ogni budget si può spendere bene o male,
+perché le voci competono fra loro: una descrizione di strumento scritta larga,
+una cronologia che nessuno accorcia mai, dieci documenti recuperati dove ne
+bastavano tre. Nessuna di queste è un errore in sé, ma insieme mangiano lo
+spazio della risposta, che è l'ultimo segmento e l'unico che nessuno pensa a
+contare.
 
 C'è di peggio, e va contro l'intuizione: anche quando lo spazio ci sarebbe,
-riempirlo può danneggiare la risposta. Nel 2023 Nelson Liu e colleghi lo
+riempirlo può danneggiare la risposta. Nelson Liu e colleghi lo
 hanno misurato in un lavoro dal titolo eloquente, *Lost in the Middle*
 {cite}`liu2024lost`: i modelli usano bene l'informazione che sta
 all’inizio e alla fine del contesto, e trascurano quella sepolta in
@@ -182,7 +184,7 @@ sottile, che chiunque abbia studiato conosce: di una pila di
 fogli, l'occhio cade sul primo e sull’ultimo. Quelli in mezzo li
 sfogli distrattamente, e più la pila cresce più quel centro si allarga. Se
 metti l'informazione che conta proprio lì, rischi di non «vederla» nemmeno se
-ce l'hai sotto il naso: rispondi come se quel foglio non l'avessi mai avuto, e
+ce l'hai sotto il naso: rispondi come se la pila non l'avessi mai avuta, e
 certe volte peggio, come se le carte scorse in fretta ti avessero confuso
 invece di aiutarti. Vale per te alla scrivania e, sorprendentemente, vale
 anche per il modello: il posto peggiore dove mettere la cosa importante è il
@@ -194,12 +196,14 @@ centro di un contesto lungo.
 
 Liu e colleghi variano la posizione del documento che contiene la risposta
 dentro un contesto di molti documenti, e misurano l'accuratezza al variare di
-quella posizione. La curva non è piatta: ha una forma a U. Detta $j$ la
-posizione del passaggio rilevante su $n$ passaggi totali, l'accuratezza è
-massima agli estremi ($j = 1$ e $j = n$) e cala vistosamente verso il centro
-($j \approx n/2$): in alcuni casi il modello con l'informazione a metà
-contesto fa *peggio* dello stesso modello a cui quell'informazione non viene
-data affatto. Il calo si accentua man mano che il contesto si allunga. Due
+quella posizione; lo stesso andamento lo ritrovano su un secondo compito,
+sintetico, dove si chiede di recuperare il valore associato a una chiave. La
+curva non è piatta: ha una forma a U. Detta $j$ la posizione del passaggio
+rilevante su $n$ passaggi totali, l'accuratezza è massima agli estremi ($j = 1$
+e $j = n$) e cala vistosamente verso il centro ($j \approx n/2$): con
+l'informazione a metà contesto GPT-3.5-Turbo scende sotto il proprio risultato
+a libro chiuso, cioè senza nessun documento in ingresso, che su quella prova
+vale il $56{,}1\%$. Il calo si accentua man mano che il contesto si allunga. Due
 implicazioni operative dirette. Primo: allungare il contesto non è un pasto
 gratis; più passaggi si infilano, più è probabile seppellire quello giusto in
 una zona cieca. Secondo: l'ordine conta. Se recuperiamo dei passaggi (per
@@ -428,18 +432,18 @@ print(f"\nToken usati: {usati}/{BUDGET}")
 
 # quanto pesa il montaggio: anche i marcatori [fonte 0.95] sono testo
 righe = [r for r in prompt.split("\n") if r.startswith("[fonte")]
-pezzi = (conta_token(system_prompt) + conta_token(f"Domanda: {domanda}")
+testo = (conta_token(system_prompt) + conta_token(f"Domanda: {domanda}")
          + sum(conta_token(r.split("] ", 1)[1]) for r in righe))
-print(f"i soli pezzi scelti: {pezzi} token; i marcatori: {usati - pezzi}, "
-      f"cioe' il {(usati - pezzi) / pezzi:.0%} in piu'")
+print(f"il testo, senza i marcatori: {testo} token; i marcatori: {usati - testo}, "
+      f"cioe' il {(usati - testo) / testo:.0%} in piu'")
 ```
 
 L'esecuzione mostra le decisioni prese: dei cinque passaggi, i due più
 rilevanti entrano interi, il terzo viene troncato per riempire l'ultimo
 spazio, i due meno rilevanti restano fuori. E la disposizione finale ha la
-forma di una **V**: molto ai due estremi, poco nel mezzo. È la U della pila di
-fogli presa alla lettera, il modello legge bene l'inizio e la fine e trascura
-il centro. Il passaggio decisivo, quello che contiene il
+forma di una V: molto ai due estremi, poco nel mezzo. È il ricalco della
+curva di Liu e colleghi, che agli estremi sale e nel mezzo scende. Il
+passaggio decisivo, quello che contiene il
 2017, finisce in fondo, a ridosso della domanda; il secondo apre; il frammento
 troncato, che è la parte meno utile perché tagliato a metà non afferma niente,
 finisce nel mezzo, dove perderlo costa meno.
@@ -454,11 +458,11 @@ Sei un assistente che risponde citando solo i passaggi forniti. Se l'informazion
 Domanda: In che anno e' stato pubblicato il paper sui Transformer?
 
 Token usati: 58/58
-i soli pezzi scelti: 51 token; i marcatori: 7, cioe' il 14% in piu'
+il testo, senza i marcatori: 51 token; i marcatori: 7, cioe' il 14% in piu'
 ```
 
 Le due righe in fondo sono il punto. Il prompt davvero montato costa
-cinquantotto token; i pezzi che abbiamo scelto, contati a parte, ne pesano
+cinquantotto token; il testo che ci abbiamo messo, marcatori esclusi, ne pesa
 cinquantuno. I sette che mancano all'appello sono i `[fonte 0.95]` e simili,
 cioè un quattordici per cento in più di quanto sembrava di aver speso. È
 esattamente il tipo di sforamento che si scopre tardi, quando il modello tronca
@@ -467,9 +471,33 @@ la risposta a metà.
 Alla selezione per sola rilevanza manca però un occhio: i passaggi più
 rilevanti per la stessa domanda tendono a somigliarsi fra loro, e un budget
 speso su due passaggi quasi uguali è mezzo budget. Il correttivo classico si
-chiama **maximal marginal relevance** (MMR) {cite}`carbonell1998use`: invece
-di prendere i passaggi in ordine di rilevanza, a ogni giro si sceglie quello
-che massimizza
+chiama **maximal marginal relevance** (MMR) {cite}`carbonell1998use`, e a ogni
+giro non prende il passaggio più rilevante: prende quello che offre il miglior
+compromesso fra rilevanza e novità rispetto a ciò che è già entrato.
+
+`````{tab} Elementare
+
+Stai preparando una relazione e hai cinque articoli fra cui scegliere, ma nella
+pagina ce ne stanno tre. Il primo lo prendi per la sola pertinenza, perché non
+c'è ancora niente accanto a cui confrontarlo. Dal secondo in poi la pertinenza
+non basta: un articolo che dice quasi le stesse cose di quello già scelto non
+insegna niente di nuovo a chi legge, e quel pezzo di pagina è buttato.
+
+Allora a ogni articolo si danno due voti, quanto c'entra con la domanda e
+quanto assomiglia a quelli già presi, e si tiene quello che ha il primo alto e
+il secondo basso. Pesando i due voti a metà: un articolo che c'entra $0{,}9$ ma
+assomiglia $0{,}9$ a uno già dentro vale $0$; uno che c'entra $0{,}6$ e non
+assomiglia a niente vale $0{,}3$, e passa avanti al primo.
+
+Quanto pesare i due voti è una manopola. Tutta dalla parte della pertinenza e
+si torna a scegliere come prima, con il rischio che i tre articoli dicano la
+stessa cosa tre volte.
+
+`````
+
+`````{tab} Superiore
+
+A ogni giro si sceglie il passaggio che massimizza
 
 $$
 \lambda \,\mathrm{sim}(d, q) \;-\; (1-\lambda) \max_{d' \in S} \mathrm{sim}(d, d'),
@@ -481,14 +509,20 @@ vicino fra i già scelti, pesate da un $\lambda$ fra zero e uno (al primo giro
 $S$ è vuoto e quel massimo vale zero).
 Il secondo termine compra la novità: un passaggio rilevantissimo ma fotocopia
 di uno già dentro perde il posto a favore di uno un po’ meno rilevante che
-aggiunge qualcosa. Con $\lambda = 1$ si torna alla pura rilevanza.
+aggiunge qualcosa. Con $\lambda = 1$ si torna alla pura rilevanza. La
+somiglianza è quella dell'archivio vettoriale, cioè il coseno fra due vettori
+di rappresentazione, e nella formula originale i due $\mathrm{sim}$ possono
+essere metriche diverse.
+
+`````
 
 Sono poche decine di righe che non «capiscono» nulla, eppure incarnano tre
 scelte di progetto: cosa è obbligatorio, cosa entra per priorità, dove va il
 pezzo più importante. In un sistema reale la rilevanza non è un numero scritto
 a mano ma esce dalla ricerca nell'archivio della sezione precedente; il
 conteggio dei token non si fa a parole ma con lo stesso programma che li taglia
-davvero per quel modello, il tokenizzatore; e le politiche sono più ricche.
+davvero per quel modello, il tokenizzatore, e su un testo italiano contare le
+parole sta parecchio sotto al conto vero; e le politiche sono più ricche.
 Ma l'ossatura è questa, ed è questa a fare la differenza tra le due squadre da
 cui siamo partiti.
 
@@ -497,8 +531,8 @@ cui siamo partiti.
 Un'ultima osservazione chiude il cerchio. Nelle sezioni precedenti abbiamo
 fatto «ragionare ad alta voce» l'agente prima di agire, cioè scrivere i
 passaggi intermedi nel contesto prima della conclusione: è la catena di
-ragionamento, la chain-of-thought {cite}`wei2022chain`. Vista con gli occhi
-di questa sezione, quella catena è *anch'essa* ingegneria del contesto: si
+ragionamento, la chain-of-thought {cite}`wei2022chain`. Guardata dal lato del
+budget, quella catena è *anch'essa* ingegneria del contesto: si
 spende deliberatamente una parte del budget in token di «pensiero» per
 comprarne qualità di risposta. Il ragionamento non è gratis, perché occupa
 finestra e fa aspettare, ma spesso rende più di quanto costa.
@@ -548,8 +582,9 @@ messa dove rende di più.
   finestra adesso: ogni riga spesa a ricordare è una riga in meno per ragionare.
 - Assemblare il contesto è come fare la valigia con un limite di peso:
   prima l'indispensabile, poi il resto per priorità finché entra, e quel che
-  quasi ci sta lo porti a metà. La cosa più importante va messa dove la
-  ritrovi, cioè in fondo, appena prima della domanda.
+  quasi ci sta lo porti a metà. La cosa più importante va messa a un estremo e
+  mai nel mezzo: qui va in fondo, appena prima della domanda, e la seconda
+  apre.
 - Anche pensare costa: far ragionare il modello a voce alta prima di
   rispondere {cite}`wei2022chain`, o fargli provare più strade e tornare
   indietro da quelle che non promettono (Tree of Thoughts
@@ -579,9 +614,11 @@ messa dove rende di più.
   strutturati). Il problema difficile sta a valle: che cosa di quel materiale
   merita la finestra a questo passo.
 - Assemblare il contesto è un problema di budget (uno zaino, e per giunta
-  frazionario una volta ammessa la troncatura): obbligatori fissi, passaggi per
-  rilevanza finché entrano, e disposizione a V, il più rilevante in fondo e
-  il secondo in testa, perché la curva del *lost in the middle* è a U.
+  frazionario una volta ammessa la troncatura): obbligatori fissi, passaggi
+  finché entrano, e disposizione a V, il più rilevante in fondo e
+  il secondo in testa, perché la curva del *lost in the middle* è a U. L'ordine
+  d'uso è per rilevanza $r_i$; quello che lo zaino frazionario richiederebbe è
+  per densità $r_i/c_i$.
 - Anche il ragionamento è context engineering: chain-of-thought
   {cite}`wei2022chain` e la sua estensione ad albero, il Tree of Thoughts
   {cite}`yao2023tree`, comprano qualità spendendo token di «pensiero».

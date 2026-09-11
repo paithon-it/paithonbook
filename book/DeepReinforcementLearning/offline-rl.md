@@ -121,10 +121,11 @@ azioni fuori dal supporto dei dati.
 
 Prima di vedere i rimedi, tocchiamo con mano il fenomeno, e in miniatura. La
 mossa è un numero solo, che va da $-1$ a $+1$: immagina lo sterzo. Il voto vero
-di ogni posizione dello sterzo lo conosciamo noi: la posizione perfetta è
-$+0{,}3$, e lì il voto vale $0$; tutte le altre valgono meno di zero, tanto meno
-quanto più ci si allontana da quel punto. Zero è il massimo, insomma, e i voti
-sono numeri negativi.
+di ogni posizione dello sterzo lo conosciamo noi, ed è costruito come una multa:
+misura quanto ci si allontana dalla posizione perfetta, col segno cambiato. La
+posizione perfetta è $+0{,}3$, e lì la multa è nulla e il voto vale $0$; ogni
+altra posizione paga qualcosa, tanto più quanto più è lontana. Zero è il
+massimo, insomma, e tutti gli altri voti sono numeri negativi.
 
 Chi ha raccolto i dati, però, è stato prudente: ha provato soltanto la fetta fra
 $-1{,}0$ e $-0{,}2$, quaranta volte in tutto. La mossa migliore, nell'archivio,
@@ -161,26 +162,56 @@ in_supp = (azioni >= a_dati.min()) & (azioni <= a_dati.max())
 a_vinc = azioni[in_supp][np.argmax(Q_stima(azioni[in_supp]))]
 print(f"vincolato : a*={a_vinc:+.2f}  Q_stimato={Q_stima(a_vinc):+.2f}  "
       f"Q_vero={Q_vero(a_vinc):+.2f}")
+
+# (3) e con una retta al posto della curva flessibile, senza vincolo
+Q_retta = np.poly1d(np.polyfit(a_dati, q_dati, deg=1))
+a_retta = azioni[np.argmax(Q_retta(azioni))]
+print(f"retta     : a*={a_retta:+.2f}  Q_stimato={Q_retta(a_retta):+.2f}  "
+      f"Q_vero={Q_vero(a_retta):+.2f}")
+```
+
+```text
+naive     : a*=+1.00  Q_stimato=+30.11  Q_vero=-0.49
+vincolato : a*=-0.21  Q_stimato=-0.25  Q_vero=-0.26
+retta     : a*=+1.00  Q_stimato=+2.06  Q_vero=-0.49
 ```
 
 Il voto più alto cade sullo sterzo tutto a destra, dove nessuno ha mai messo
 piede: lì la curva promette $+30{,}1$, e il valore vero è $-0{,}49$. Trenta,
 quando il voto migliore che esista vale zero.
 
-Non c'è niente di misterioso, ed è la ragione per cui l'esempio usa una curva
-molto flessibile invece di una retta. Una curva del genere passa docilmente in
-mezzo ai quaranta punti che ha, e fuori da quel tratto prosegue come le pare:
-non ha più nessun dato che la trattenga, e le basta una piccola pendenza
-sbagliata al bordo per schizzare in alto nel giro di un intervallo. Più la curva
-è flessibile, più forte è lo schizzo.
+```{figure} ../figures/supporto-dei-dati.svg
+:name: fig-supporto-dei-dati
+:alt: "Grafico del voto in funzione della posizione dello sterzo, da meno uno a più uno. Una fascia ocra copre il tratto da −1,00 a −0,20, il supporto dei dati, e dentro ci sono i quaranta punti osservati. La curva teal del voto vero è una parabola che ha il suo massimo, zero, in +0,30, cerchiato perché quella mossa nell’archivio non c’è. La curva terracotta stimata sui quaranta punti li segue dentro la fascia, e appena ne esce impenna e lascia il riquadro, salendo fino a +30,1 in più uno, dove il voto vero è −0,49. Cercando il massimo dentro la fascia si sceglie invece −0,21, dove stima −0,25 e valore vero −0,26 coincidono."
+:width: 92%
+
+Dentro la fascia ocra, dove i quaranta punti stanno, la curva stimata e quella
+vera si sovrappongono; appena fuori la stimata impenna e lascia il riquadro.
+Cercare il voto più alto su tutto l'asse porta allo sterzo tutto a destra, con
+una promessa di $+30{,}1$ a fronte di un valore vero di $-0{,}49$; cercarlo
+dentro la fascia porta a $-0{,}21$, dove promessa e valore coincidono.
+```
+
+Non c'è niente di misterioso, e {numref}`fig-supporto-dei-dati` fa vedere dove
+succede. Una curva passa docilmente in mezzo ai quaranta punti che ha, e fuori
+da quel tratto prosegue come le pare: non ha più nessun dato che la trattenga,
+e le basta una piccola pendenza sbagliata al bordo per schizzare in alto nel
+giro di un intervallo. La flessibilità decide quanto forte è lo schizzo, non se
+ci sarà: rifacendo lo stesso conto con una retta al posto della curva, il voto
+più alto cade di nuovo sullo sterzo tutto a destra, con una promessa di
+$+2{,}06$ dove il migliore possibile vale zero. Al riparo si sarebbe soltanto
+scegliendo esattamente la forma giusta, che qui è la parabola; ma la forma
+giusta è quella che non si conosce, perché è ciò che si sta cercando.
 
 Vincolando invece la ricerca alla zona che i dati coprono davvero (il loro
-**supporto**, che in statistica è appunto l'insieme dei valori effettivamente
-presenti) si sceglie $-0{,}21$, e stima ($-0{,}25$) e realtà ($-0{,}26$) tornano
-a coincidere. È, in miniatura, la prima famiglia di soluzioni, e mostra anche
-che cosa costa: la mossa perfetta, $+0{,}3$, resta irraggiungibile, perché
-nell'archivio non c'è. Si è rinunciato al meglio in cambio di non prendere
-lucciole per lanterne, ed è un baratto che l'RL offline fa continuamente.
+**supporto**: in statistica è la parte dello spazio in cui una distribuzione
+mette massa, e con quaranta punti la si approssima con il tratto che li
+racchiude) si sceglie $-0{,}21$, e stima ($-0{,}25$) e realtà ($-0{,}26$)
+tornano a coincidere. È, in miniatura, la prima famiglia di soluzioni, e mostra
+anche che cosa costa: la mossa perfetta, $+0{,}3$, resta irraggiungibile,
+perché nell'archivio non c'è. Si è rinunciato al meglio in cambio di non
+prendere lucciole per lanterne, ed è un baratto che l'RL offline fa
+continuamente.
 
 ## BCQ: restare vicini a ciò che è stato visto
 
@@ -189,7 +220,8 @@ guaio nasce dal dare un voto a mosse mai provate, allora non diamoglielo. Si
 cercherà il voto più alto soltanto fra le mosse che nell'archivio compaiono
 davvero.
 
-Il primo algoritmo a farlo, pensato apposta per il RL offline con le reti
+Il primo algoritmo a farlo nel controllo continuo, pensato apposta per il RL
+offline con le reti
 profonde, è **BCQ** (*Batch-Constrained deep Q-learning*), di Scott Fujimoto,
 David Meger e Doina Precup {cite}`fujimoto2019off`, presentato nel 2019.
 
@@ -209,8 +241,11 @@ stato dato.
 E allora BCQ non può fare altro che ripetere la nonna? No, e per due motivi. Il
 primo è che fra le ricette plausibili può scegliere la *migliore*, mentre la
 nonna a volte sbagliava; già questo basta a fare meglio di lei. Il secondo è che
-a ciascuna ricetta proposta è concesso un ritocco piccolo, di cui BCQ impara la
-misura. Il ritocco è un rischio, certo, ma di taglia controllata: si resta
+a ciascuna ricetta proposta è concesso un ritocco piccolo: quanto ritoccare lo
+impara una rete, ma fin dove le sia concesso spingersi è un numero che si
+sceglie a mano, prima di cominciare, e alzarlo o abbassarlo sposta BCQ fra il
+copiare la nonna e il fidarsi dei voti.
+Il ritocco è un rischio, certo, ma di taglia controllata: si resta
 accanto a qualcosa che è stato davvero cucinato, e non si inventa un piatto in
 mezzo al nulla.
 
@@ -271,17 +306,20 @@ una serata e i piatti che il critico ordinerebbe: la media dei voti che dà a
 quei piatti non supera mai quello che la serata renderà davvero, se si ordina
 come dice lui. Un singolo piatto dentro il gruppo può ancora essere
 sopravvalutato, e può ancora battere un piatto documentato. La garanzia è sulla
-media, non su ogni riga della lista.
+media, non su ogni riga della lista, e vale su una serata come quelle che i
+quaderni raccontano: su una serata che nei quaderni non c'è non è promesso
+niente.
 
 E vale a due condizioni. La prima è che la manopola sia girata abbastanza, e
 quanto basti dipende da quanto ciascun piatto è documentato: uno cucinato una
 volta sola dà un voto malfermo e chiede una spinta all'ingiù più robusta di uno
-cucinato cento volte. La seconda è che il critico tenga un rigo separato per
-ogni piatto e lo giudichi per conto suo. Un critico vero non fa così: giudica
-per somiglianza, e allora la spinta che abbassa un piatto immaginato scivola
-addosso a tutti quelli che gli somigliano, compresi quelli scritti nei
-quaderni. La prudenza continua a funzionare in pratica; la dimostrazione, lì,
-non la segue più.
+cucinato cento volte. La seconda è sulle somiglianze. Se il critico tiene un rigo
+separato per ogni piatto, o se le somiglianze fra i piatti se le è fissate una
+volta per tutte prima di cominciare, la promessa regge ancora. Un critico vero
+impara strada facendo che cosa somiglia a che cosa, e allora la spinta che
+abbassa un piatto immaginato scivola addosso a tutti quelli che gli somigliano,
+compresi quelli scritti nei quaderni: la prudenza continua a funzionare in
+pratica, la dimostrazione lì non la segue più.
 
 `````
 
@@ -303,21 +341,27 @@ $$
 
 Qui $\mu(\cdot\mid s)$ è una distribuzione *ampia* di azioni candidate (nella
 pratica una softmax sui $Q$ stessi, o l'uniforme), $\hat{\mathcal{B}}Q$ è il
-target di Bellman e $\alpha>0$ dosa la conservatività. Il primo termine tira
+target di Bellman calcolato sull'iterata precedente e $\alpha>0$ dosa la
+conservatività. Il primo termine tira
 *giù* i $Q$ delle azioni pescate da $\mu$ (tipicamente OOD), mentre il secondo
 li tira *su* sulle azioni realmente presenti in $\mathcal{D}$. Kumar e
 colleghi dimostrano che, per $\alpha$ abbastanza grande e con $\mu$ agganciata
 alla policy che si sta valutando, il valore atteso delle azioni sotto la
-$Q$ così ottenuta minora in ogni stato il vero valore della policy: un limite
+$Q$ così ottenuta minora il vero valore della policy in ogni stato del
+dataset: un limite
 inferiore *in valore*, non punto per punto (la singola stima $Q(s,a)$ può
-ancora eccedere quella vera).
+ancora eccedere quella vera), e su uno stato mai visto non promesso affatto.
 
 La prudenza sull'ignoto resta quindi una garanzia formale e non un'euristica,
-ma conviene dire dove la garanzia vive: nel caso tabellare, e per un
+ma conviene dire dove la garanzia vive. L'enunciato principale è nel caso
+tabellare, e vale per un
 $\alpha$ abbastanza grande rispetto all'errore di campionamento, che dipende da
-quante volte la coppia $(s,a)$ compare nel dataset. Con una rete al posto della
-tabella la dimostrazione non si trasferisce, perché l'errore di approssimazione
-non è controllato da nessuna delle ipotesi. Quello che resta è una buona
+quante volte la coppia $(s,a)$ compare nel dataset. In appendice gli autori lo
+estendono agli approssimatori lineari e alle reti nel regime del *neural tangent
+kernel*, cioè con le caratteristiche di fatto congelate: due ipotesi che una
+rete addestrata normalmente non soddisfa, e infatti l'analisi della CQL con le
+reti profonde vere gli autori la lasciano scritta come lavoro da fare. Quello
+che resta è una buona
 euristica con un teorema alle spalle, il che nel RL offline è comunque parecchio
 più di quanto offra la concorrenza.
 
@@ -400,8 +444,11 @@ esatto in cui una reimplementazione di IQL smette di funzionare. Il target di
 $\mathcal{L}_Q$
 usa $V(s')$, non un massimo su azioni arbitrarie: ecco perché nessuna azione
 OOD viene mai valutata. La policy si estrae infine per *advantage-weighted
-regression*, imitando le azioni del dataset pesate per il loro vantaggio
-$Q(s,a)-V(s)$.
+regression*, imitando le azioni del dataset con peso
+$\exp\!\big(\beta\,(Q(s,a)-V(s))\big)$: l'esponenziale tiene i pesi positivi
+anche sui vantaggi negativi, e $\beta$ decide quanto la policy assomigli a chi
+ha raccolto i dati ($\beta \to 0$) o a chi insegue il vantaggio massimo
+($\beta$ grande).
 
 `````
 
@@ -415,8 +462,9 @@ alto: si posa vicino ai voti migliori fra quelli osservati, invece che nel mezzo
 import torch
 
 def expectile_loss(q, v, tau=0.8):
-    # regressione expectile: residui positivi pesati di piu (tau > 0.5)
-    diff = q - v
+    # regressione expectile: residui positivi pesati di piu (tau > 0.5).
+    # detach(): q e' la copia ferma, l'aggiornamento tocca solo v.
+    diff = q.detach() - v
     peso = torch.where(diff > 0, tau, 1.0 - tau)
     return (peso * diff.pow(2)).mean()
 ```
@@ -495,11 +543,17 @@ capisce bene: se nell'archivio non c'è una sola partita andata a finire bene,
 lui non ha niente da recitare, perché sa soltanto ripetere partite che ha visto.
 
 CQL e IQL invece i voti li stimano, e questo dà loro un potere in più: sanno
-«ricucire». Un voto dice quanto vale *una situazione*, non una partita intera;
+«ricucire». Un voto sta attaccato a una singola mossa in una singola
+situazione, non a una partita intera;
 quindi se due partite mediocri passano tutte e due per la stessa situazione,
 l'inizio buono della prima si può attaccare al finale buono della seconda, e ne
 esce un percorso migliore di entrambe, che nel diario non c'è. Il Decision
-Transformer, che le partite le racconta intere, questa cucitura non la sa fare.
+Transformer, che le partite le racconta intere, di quella cucitura non ha un
+meccanismo: gli autori la osservano succedere lo stesso su un problema piccolo
+di cammini minimi, dove circa un sesto dei percorsi prodotti non compare in
+nessuna partita del diario {cite}`chen2021decision`, ma è un effetto che nel
+metodo non ha nulla che lo garantisca, mentre nei metodi a valori discende dalla
+forma stessa del voto.
 Ha però aperto una linea feconda, mostrando che una parte del reinforcement
 learning si può riformulare come apprendimento supervisionato di sequenze.
 
@@ -515,7 +569,7 @@ al posto loro.
 
 Quei confronti formano un archivio, e come ogni archivio resta fermo mentre
 l'addestramento va avanti. Fermo però non vuol dire chiuso
-per sempre: il lavoro che ha introdotto la ricetta dice che i due passi
+per sempre: Ouyang e colleghi scrivono che i due passi
 (raccogliere confronti e ottimizzare) si possono iterare di continuo,
 tornando dalle persone a chiedere nuovi giudizi sulle risposte della versione
 migliore del momento. Si raccoglie a tornate. Ma fra una tornata e l'altra il
@@ -554,7 +608,8 @@ possiamo fidarci di ciò che non abbiamo mai visto?
   nulla, insegna prudenza: abbassa i voti di ciò che non è mai stato provato e
   alza quelli di ciò che è documentato. La garanzia che se ne ricava è sulla
   media delle mosse che poi sceglierà, non su ogni singolo voto: uno gonfiato
-  può ancora scapparci. IQL toglie proprio l'occasione di sbagliare: chiede
+  può ancora scapparci, e nelle situazioni che l'archivio non contiene non è
+  promesso niente. IQL toglie proprio l'occasione di sbagliare: chiede
   solo quanto hanno reso, in situazioni come questa, le mosse migliori fra
   quelle davvero fatte, e non nomina mai un'azione fuori dal diario.
 - Il Decision Transformer cambia domanda: tratta la partita come una frase
@@ -582,7 +637,8 @@ possiamo fidarci di ciò che non abbiamo mai visto?
 - BCQ vincola le azioni valutate a quelle plausibili secondo un modello
   generativo del dataset; CQL aggiunge un termine conservativo che abbassa i
   $Q$ delle azioni OOD e alza quelli nel dataset, ottenendo un limite inferiore
-  del valore {cite}`kumar2020conservative`; IQL stima $V$ per regressione
+  del valore negli stati del dataset, non punto per punto
+  {cite}`kumar2020conservative`; IQL stima $V$ per regressione
   expectile e non interroga mai azioni fuori dai dati
   {cite}`kostrikov2022offline`.
 - Il Decision Transformer riformula l'RL come modellazione di sequenze:

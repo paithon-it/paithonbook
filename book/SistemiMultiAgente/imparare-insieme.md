@@ -8,19 +8,22 @@ predatori (squali, razze) sul totale del pescato era
 cresciuta parecchio, e finita la guerra era tornata a scendere. Meno pesca per
 tutti, e a guadagnarci erano stati solo quelli che mangiano gli altri.
 
-D'Ancona portò il problema a Vito Volterra, di cui nel luglio del 1926 sarebbe
-diventato genero. Volterra rispose quello stesso anno, nelle memorie
-dell'Accademia dei Lincei, con *Variazioni e fluttuazioni del numero
-d'individui in specie animali conviventi*. La risposta erano due formule, una
-per le prede e una per i predatori, che dicono di quanto cambia ciascuna
-popolazione da un istante al successivo; e in ciascuna delle due compare
-l'altra, perché i predatori crescono se ci sono molte prede e le prede calano se
-ci sono molti predatori.
+D'Ancona portò il problema a Vito Volterra, di cui nel 1926 sarebbe diventato
+genero. Volterra rispose quello stesso anno, nelle memorie dell'Accademia dei
+Lincei, con *Variazioni e fluttuazioni del numero d'individui in specie
+animali conviventi*. La risposta erano due formule, una per le prede e una per
+i predatori, che dicono con che velocità cresce o cala ciascuna popolazione; e
+in ciascuna delle due compare l'altra, perché i predatori crescono se ci sono
+molte prede e le prede calano se ci sono molti predatori. Oggi si chiamano
+equazioni di Lotka-Volterra, perché alle stesse era arrivato l'anno prima
+Alfred Lotka, studiando le reazioni chimiche che oscillano.
 
 La risposta al quesito di D'Ancona c'era, ma la cosa da tenere è un'altra:
 quelle due popolazioni non si fermano mai su un valore di equilibrio, ci
-girano attorno all'infinito. Ognuna insegue l'altra, e l'altra nel frattempo
-si è spostata.
+girano attorno all'infinito. Segnatele su un piano, le prede in orizzontale e
+i predatori in verticale, e gli anni disegnano un anello chiuso che ripassa
+sempre da dove era partito. Ognuna insegue l'altra, e l'altra nel frattempo si
+è spostata.
 
 Tenete a mente quelle orbite, perché torneranno alla fine della sezione con
 altri nomi. Le sezioni precedenti hanno *progettato* il coordinamento:
@@ -126,20 +129,22 @@ fare per ciascuna delle due cose che può aver visto: due casi. Al terzo, per
 ciascuna delle combinazioni di due osservazioni di fila, cioè le due del primo
 passo per le due del secondo: quattro casi. Uno più due più quattro fa sette
 decisioni da prendere, e ognuna è fra due azioni: bisogna quindi moltiplicare
-fra loro sette due, e viene centoventotto piani diversi. Per due persone insieme
-le coppie di piani sono centoventotto per centoventotto, cioè
+il due per sé stesso sette volte, e viene centoventotto piani diversi. Per due
+persone insieme le coppie di piani sono centoventotto per centoventotto, cioè
 sedicimilatrecentottantaquattro.
 
 Sembra poco. Portiamo i passi da tre a cinque, e le decisioni per persona
-diventano uno più due più quattro più otto più sedici, cioè trentuno: adesso i
-due da moltiplicare fra loro sono trentuno, e fanno poco più di due miliardi di
-piani per una persona sola. Le coppie da confrontare sono due miliardi per due
-miliardi, cioè oltre quattro miliardi di miliardi. E siamo ancora a due
-soccorritori, due cose da vedere, due da fare, cinque passi. Non c'è nessun
-computer che ce la faccia, e non ci sarà: si è dimostrato che di questo
-problema non esiste una soluzione esatta in tempo utile, e che non basta nemmeno
-accontentarsi di una risposta approssimata, perché anche quella resta fuori
-portata.
+diventano uno più due più quattro più otto più sedici, cioè trentuno: adesso il
+due va moltiplicato per sé stesso trentuno volte, e fa poco più di due miliardi
+di piani per una persona sola. Le coppie da confrontare sono due miliardi per
+due miliardi, cioè oltre quattro miliardi di miliardi. E siamo ancora a due
+soccorritori, due cose da vedere, due da fare, cinque passi. Provarli tutti,
+dunque, non si può. E non è che serva un computer più bravo: si è dimostrato
+che di questo problema non esiste una soluzione esatta in tempo utile, e che
+non basta nemmeno accontentarsi di una risposta approssimata con la garanzia
+di sbagliare poco, perché anche quella resta fuori portata. Restano le
+risposte approssimate senza garanzia, che è quello che si fa, ed è il resto
+della sezione.
 
 `````
 
@@ -298,9 +303,12 @@ andata se quel membro, al posto della mossa che ha fatto, ne avesse fatta una a
 caso fra quelle che di solito fa, e tutti gli altri avessero giocato
 esattamente come hanno giocato. Sulla relazione di gruppo, è chiedersi che voto
 avrebbe preso lo stesso lavoro se uno dei cinque avesse scritto la sua parte
-come gli capitava, e gli altri quattro no. Il rumore dei compagni si abbassa;
-il merito del singolo, però, non viene isolato, perché come è andata dipende
-comunque anche da quello che hanno fatto loro.
+come gli capitava, mentre gli altri quattro scrivevano la loro esattamente
+come l'hanno scritta. L'idea non nasce qui: si chiamano *difference rewards*,
+li propongono David Wolpert e Kagan Tumer, e COMA li porta dentro
+l'attore-critico. Il rumore dei compagni si abbassa; il merito del singolo,
+però, non viene isolato, perché come è andata dipende comunque anche da quello
+che hanno fatto loro.
 
 La seconda impara a **scomporre il risultato**, cioè a stimare quanto ciascuno
 ha contribuito partendo dal solo voto di squadra: è la via che il resto della
@@ -315,7 +323,7 @@ nessuno di questi metodi vi si trasferisce.
 ## Barare in allenamento, non in partita
 
 L'asimmetria che salva è questa. Agenti come questi non imparano nel mondo vero,
-imparano dentro un **simulatore**: un mondo finto costruito al computer, in cui
+imparano dentro un simulatore: un mondo finto costruito al computer, in cui
 si può rigiocare la stessa situazione mille volte senza rompere niente. E quel
 simulatore è nostro, quindi in allenamento possiamo guardarci dentro quanto ci
 pare: la situazione completa, le mosse di tutti, perfino cose che nessun agente
@@ -362,10 +370,12 @@ tutte.
 La seconda ricetta serve quando la ricompensa è una sola per tutta la squadra.
 Si impara un voto per ogni giocatore e una regola per comporli nel voto di
 squadra, con un vincolo che sembra innocuo: se un giocatore alza il proprio
-voto, il voto di squadra non può scendere. È quel vincolo, e solo quello, a
-permettere a ciascuno di scegliere da solo la mossa migliore: se il tuo voto
-sale e quello di squadra non può scendere, allora fare del proprio meglio è
-fare il meglio per tutti, e nessuno ha bisogno di consultarsi.
+voto, il voto di squadra non può scendere. Quel vincolo basta a permettere
+a ciascuno di scegliere da solo la mossa migliore: se il tuo voto sale e quello
+di squadra non può scendere, allora fare del proprio meglio è fare il meglio
+per tutti, e nessuno ha bisogno di consultarsi. Basta, non serve: di regole che
+reggono la scelta da soli ce ne sono anche altre, e questa è quella che si sa
+imparare senza fatica.
 
 Il vincolo però costa, e il conto si vede su quattro numeri. Due agenti, due
 mosse a testa (A e B), e questo punteggio di squadra:
@@ -386,10 +396,13 @@ segue che la casella «io A, l'altro B» dovrebbe valere almeno quanto la casell
 «io B, l'altro B». La tabella dice zero contro uno. Non torna, e non tornerà mai
 con nessun voto individuale, per quanto lo si scelga bene.
 
-Le situazioni che questa ricetta perde sono proprio quelle in cui bisogna
-accordarsi su una **convenzione arbitraria**, come guidare tutti a destra o
-tutti a sinistra: lì la mossa giusta per me dipende da quella dell'altro, e
-nessun voto dato a me da solo può dirmelo.
+Quello che la tabella dice è preciso, e conviene non chiedergli di più: quel
+punteggio di squadra, con questa ricetta, non si può riprodurre esatto. Sono le
+situazioni in cui bisogna accordarsi su una convenzione arbitraria, come
+guidare tutti a destra o tutti a sinistra, dove la mossa giusta per me dipende
+da quella dell'altro. La ricetta può ancora avvicinarsi, e in pratica su questi
+giochi è dove inciampa; ma il conto appena fatto dimostra l'impossibilità di
+riprodurre, non quella di scegliere bene.
 
 `````
 
@@ -464,8 +477,11 @@ $$
 cioè $Q_{tot}$ è monotona non decrescente in ciascuna utilità individuale;
 in pratica i pesi della rete di miscelazione sono vincolati a essere non
 negativi, e li produce una *hypernetwork* che riceve lo stato globale $s$,
-disponibile solo in addestramento. La monotonia è esattamente ciò che serve per
-decentralizzare l'esecuzione, perché implica
+disponibile solo in addestramento. La monotonia è sufficiente e non
+necessaria per decentralizzare l'esecuzione, ed è il lavoro stesso a dirlo:
+la classe delle $Q_{tot}$ il cui argmax si decompone è più larga, e altri
+metodi la coprono meglio al prezzo di essere più difficili da addestrare.
+Sufficiente lo è perché implica
 
 $$
 \arg\max_{a} Q_{tot}(\bar{o}, a) \;=\;
@@ -478,18 +494,24 @@ individualmente equivale a massimizzare globalmente, e il $\max$ sull'azione
 congiunta, che costerebbe $|\mathcal{A}|^N$, si calcola in $N|\mathcal{A}|$
 operazioni. In esecuzione nessuno consulta nessuno.
 
-Ciò di cui il vincolo priva è altrettanto preciso, e per dimostrarlo basta un
-gioco a due agenti con due azioni a testa. Poniamo $Q_{tot}(A,A)=2$,
+Ciò di cui il vincolo priva è altrettanto preciso, e va enunciato per quello
+che è: una rappresentazione esatta, non una scelta. Per dimostrarlo basta
+un gioco a due agenti con due azioni a testa. Poniamo $Q_{tot}(A,A)=2$,
 $Q_{tot}(A,B)=Q_{tot}(B,A)=0$, $Q_{tot}(B,B)=1$, e supponiamo esista una $f$
 monotona con $Q_{tot}(a^1,a^2) = f\big(Q^1(a^1), Q^2(a^2)\big)$. Se
 $Q^1(A) \ge Q^1(B)$, la monotonia nel primo argomento dà
 $Q_{tot}(A,B) \ge Q_{tot}(B,B)$, cioè $0 \ge 1$: falso, quindi
 $Q^1(A) < Q^1(B)$. Per simmetria $Q^2(A) < Q^2(B)$. Ma allora la monotonia nei
 due argomenti insieme dà $Q_{tot}(A,A) \le Q_{tot}(B,B)$, cioè $2 \le 1$: falso
-di nuovo. Nessuna $f$ monotona rappresenta quella matrice. La classe di giochi
-che le sfugge è quella in cui la mossa migliore per uno dipende in modo non
-monotono da ciò che fanno gli altri, e il coordinamento su una convenzione
-arbitraria ne è il caso da manuale.
+di nuovo. Nessuna $f$ monotona rappresenta quella matrice, ed è la stessa
+frase del lavoro originale: una funzione valore in cui la mossa migliore di un
+agente dipende dalle mosse degli altri allo stesso passo «non si fattorizza, e
+quindi non può essere rappresentata *perfettamente* da QMIX». Il coordinamento
+su una convenzione arbitraria ne è il caso da manuale. Il teorema si ferma
+qui: dice che la miscelazione monotona non riproduce quel valore, non che
+l'argmax decomposto scelga male. A far fallire QMIX su quei giochi è la
+dinamica dell'apprendimento, e la distinzione conta: è la ragione per cui
+avvicinarsi di più a quel valore, pur senza riprodurlo, serve a qualcosa.
 
 `````
 
@@ -555,7 +577,8 @@ Progettare quella scala a mano, per un gioco complesso, è fuori portata:
 nessuno sa scrivere l'esercizio giusto per un giocatore di Go di livello
 intermedio. Nel self-play la scala non si progetta, si ottiene per costruzione,
 perché l'avversario è forte quanto te, sempre, essendo te. Nessuno dei due vince
-troppo spesso, e le partite restano informative.
+troppo spesso, e le partite restano informative. Almeno, finché «più bravo»
+vuol dire qualcosa.
 
 È la linea che porta ad AlphaGo {cite}`silver2016mastering`, già raccontato
 nella sezione {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>`:
@@ -715,11 +738,13 @@ popolazione si assesta su un terzo di sasso, un terzo di carta e un terzo di
 forbici: è l'equilibrio, il pareggio di cui parlava l'apertura del capitolo, e
 la sua sfruttabilità scende quasi a zero. Notate però il soggetto della frase,
 perché è tutta la differenza: a essere imbattibile è la
-popolazione. Il campione da schierare è il mucchio, non l'ultimo nato.
+popolazione. Il campione da schierare è il mucchio, non l'ultimo nato: si
+scende in campo sorteggiando ogni volta una delle versioni, e a essere difficile
+da battere è quella miscela, non un singolo giocatore.
 
 Su scala industriale, questa è la *league* di AlphaStar
-{cite}`vinyals2019grandmaster`, cioè una lega in cui convivono tre tipi di
-partecipanti.
+{cite}`vinyals2019grandmaster`, il programma di DeepMind che gioca a
+StarCraft II: una lega in cui convivono tre tipi di partecipanti.
 
 Ci sono gli agenti principali, quelli che devono battere tutti: si allenano
 contro la lega intera, ma non pescando gli avversari a caso, bensì incontrando
@@ -736,19 +761,32 @@ dell'addestramento.
 
 E torniamo ai pesci dell'Adriatico. Le orbite chiuse che Volterra trovò nelle
 sue due formule non sono una curiosità zoologica, e il legame è più stretto di
-un'analogia. Nel programma qui sopra la popolazione salta di colpo da una
-strategia pura all'altra, tutta sasso e poi tutta carta; ma si può anche
-lasciarla scivolare con continuità, facendo crescere a poco a poco la quota di
-chi rende di più (è la **dinamica del replicatore**, il modo standard di
-descrivere l'evoluzione di una popolazione di strategie). Fatto così,
-sasso-carta-forbici dà esattamente formule della stessa famiglia di quelle di
-Volterra, con le stesse orbite chiuse attorno all'equilibrio e nessuna che ci
-cada dentro.
+un'analogia. Nel programma delle generazioni la popolazione salta di colpo da
+una *strategia pura* all'altra, cioè da un modo di giocare che è sempre lo
+stesso a un altro che è sempre lo stesso: tutta sasso e poi tutta carta. Ma si
+può anche lasciarla scivolare con continuità, facendo crescere a poco a poco
+la quota di chi rende di più (è la **dinamica del replicatore**, il modo
+standard di descrivere l'evoluzione di una popolazione di strategie). Fatto
+così, sasso-carta-forbici dà esattamente formule della stessa famiglia di
+quelle di Volterra, con le stesse orbite chiuse attorno all'equilibrio e
+nessuna che ci cada dentro ({numref}`fig-orbite-chiuse`).
+
+```{figure} ../figures/orbite-che-non-cadono.svg
+:name: fig-orbite-chiuse
+:alt: "Due scene affiancate, e in ciascuna un punto percorre all'infinito un anello chiuso attorno a una crocetta, senza finirci mai dentro. A sinistra il piano di Volterra: in orizzontale quante prede ci sono, in verticale quanti predatori, e due anelli annidati girano in senso antiorario attorno alla crocetta dell'equilibrio, così che dove i predatori sono tanti le prede calano e viceversa. A destra un triangolo con i vertici «tutti sasso», «tutti carta» e «tutti forbici»: ogni punto dentro il triangolo dice quanta parte della popolazione gioca ciascuna mossa, la crocetta al centro è un terzo ciascuno, e anche qui i due anelli girano attorno al centro senza cadervi dentro. Su ciascun anello esterno una punta di freccia dice da che parte si gira."
+:width: 100%
+
+Le due orbite, disegnate sui due piani in cui vivono. A sinistra le prede in
+orizzontale e i predatori in verticale; a destra ogni punto del triangolo è
+una popolazione di giocatori, e dice quanta parte di essa gioca sasso, quanta
+carta e quanta forbici. In tutti e due i casi il punto gira e non cade nel
+centro: l'equilibrio c'è, e nessuno ci arriva.
+```
 
 Prede e predatori, sasso e carta: quando ciascuno insegue l'altro e l'altro nel
 frattempo si sposta, il sistema non si ferma, gira. Il salto da una strategia
-all'altra del programma qui sopra è la versione a scatti della stessa storia, e
-allenarsi contro tutto il passato è quello che rompe l'orbita.
+all'altra del programma delle generazioni è la versione a scatti della stessa
+storia, e allenarsi contro tutto il passato è quello che rompe l'orbita.
 
 ## Una GAN è un sistema multi-agente a due
 
@@ -900,10 +938,10 @@ print(azioni[0].shape)             # torch.Size([4, 2])
 print(critici[0](oss, azioni).shape)  # torch.Size([4, 1])
 ```
 
-Due righe raccontano tutta l'architettura. La penultima è l'esecuzione:
+Due righe raccontano tutta l'architettura. La prima è l'esecuzione:
 `attori[i](oss[i])`, ogni agente con la propria osservazione e nient'altro, ed è
-ciò che girerà sul robot, o dentro il programma vero, a lavoro finito. L'ultima
-è l'addestramento:
+ciò che girerà sul robot, o dentro il programma vero, a lavoro finito. La
+seconda è l'addestramento:
 `critici[0](oss, azioni)`, dove il primo argomento è la lista di tutte le
 osservazioni e il secondo la lista di tutte le azioni. Quel critico non esiste
 la domenica.
@@ -944,9 +982,10 @@ la domenica.
   {cite}`lowe2017multi`; e se la ricompensa è una sola, si impara un voto per
   giocatore più una regola per comporli, con il vincolo che alzare il proprio
   voto non possa far scendere quello di squadra {cite}`rashid2018qmix`, così
-  ciascuno sceglie da solo la mossa migliore. Il prezzo è che restano fuori le
-  situazioni in cui bisogna accordarsi su una convenzione arbitraria (tutti a
-  destra o tutti a sinistra). Un metodo semplice, regolato con cura, va misurato
+  ciascuno sceglie da solo la mossa migliore. Il prezzo è che il voto di squadra
+  non si riproduce più esatto là dove bisogna accordarsi su una convenzione
+  arbitraria (tutti a destra o tutti a sinistra), ed è lì che il metodo
+  inciampa. Un metodo semplice, regolato con cura, va misurato
   prima di sostituirlo con uno complicato {cite}`yu2022surprising`.
 - Il self-play vale perché l'esercizio giusto se lo costruisce da solo:
   l'avversario è forte quanto te, sempre, essendo te. È la linea che va da

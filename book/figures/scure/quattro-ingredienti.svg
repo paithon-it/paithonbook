@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../quattro-ingredienti.svg
+-->
+<!--
+  Paithon Book, figura animata: i quattro ingredienti, sul rettangolo spazio-tempo
+  Generata da animazioni/svg/quattro-ingredienti.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420"
+     role="img" aria-label="Un rettangolo: in orizzontale la posizione lungo la sbarra, in verticale il tempo, che sale. Il rettangolo intero è etichettato «il dominio». Il suo lato di sotto, marcato in ocra, è «la condizione iniziale: com'era calda prima che tutto cominciasse». I due fianchi, marcati in terracotta, sono le «condizioni al contorno», e portano l'uno l'etichetta «la fiamma», l'altro «il ghiaccio». Dentro il rettangolo otto crocette in teal, sparse e mai appoggiate a un bordo, sono «la sorgente: che cosa la scalda da dentro, in ogni punto e in ogni istante». Il lato di sopra è l'unico lasciato con il tratto sottile del bordo, e sopra di lui c'è scritto che lì non si impone niente, perché il tempo finale non è un dato del problema ma il punto in cui il conto arriva.">
+  <style>
+    svg  { --d: 8.0s; }
+    .ax  { stroke:#34302A; stroke-width:2; fill:none; }
+    .axc { stroke:#221F1A; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
+    .dom  { fill:#5BA39C; fill-opacity:0.06; stroke:none; }
+    .nudo { stroke:#34302A; stroke-width:1.4; stroke-dasharray:5 4; }
+    .cont { stroke:#E27B52; stroke-width:5; stroke-linecap:round; }
+    .iniz { stroke:#DDB874; stroke-width:5; stroke-linecap:round; }
+    .src  { stroke:#5BA39C; stroke-width:2; stroke-linecap:round; fill:none; }
+    .ass  { stroke:#BCB3A1; stroke-width:1.4; }
+    .et   { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#F4ECDD; }
+    .etc  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700;
+            fill:#E27B52; }
+    .eti  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700;
+            fill:#F4ECDD; }
+    .etd  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#5BA39C; }
+    .ets  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
+    
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
+  </style>
+  <defs><marker id="qas" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 z" fill="#BCB3A1"/></marker></defs><rect class="dom" x="250.0" y="110.0" width="310.0" height="200.0"/><path class="src" d="M 293.6 138.0 h 12.0 M 299.6 132.0 v 12.0"/><path class="src" d="M 368.0 146.0 h 12.0 M 374.0 140.0 v 12.0"/><path class="src" d="M 442.4 134.0 h 12.0 M 448.4 128.0 v 12.0"/><path class="src" d="M 510.6 144.0 h 12.0 M 516.6 138.0 v 12.0"/><path class="src" d="M 287.4 282.0 h 12.0 M 293.4 276.0 v 12.0"/><path class="src" d="M 361.8 274.0 h 12.0 M 367.8 268.0 v 12.0"/><path class="src" d="M 436.2 286.0 h 12.0 M 442.2 280.0 v 12.0"/><path class="src" d="M 516.8 278.0 h 12.0 M 522.8 272.0 v 12.0"/><line class="cont" x1="250.0" y1="310.0" x2="250.0" y2="110.0"/><line class="cont" x1="560.0" y1="310.0" x2="560.0" y2="110.0"/><line class="iniz" x1="250.0" y1="310.0" x2="560.0" y2="310.0"/><line class="nudo" x1="250.0" y1="110.0" x2="560.0" y2="110.0"/><line class="ass" x1="146.0" y1="310.0" x2="146.0" y2="110.0" marker-end="url(#qas)"/><text class="lbs" x="146.0" y="98.0" text-anchor="middle">il tempo</text><line class="ass" x1="250.0" y1="358.0" x2="560.0" y2="358.0" marker-end="url(#qas)"/><text class="lbs" x="405.0" y="378.0" text-anchor="middle">lungo la sbarra</text><text class="et" x="405.0" y="74.0" text-anchor="middle">in cima non si impone niente</text><text class="ets" x="405.0" y="92.0" text-anchor="middle">il tempo finale non è un dato: è dove il conto arriva</text><text class="etc" x="236.0" y="156.0" text-anchor="end">la fiamma</text><text class="etc" x="574.0" y="156.0">il ghiaccio</text><text class="ets" x="236.0" y="175.0" text-anchor="end">condizione</text><text class="ets" x="236.0" y="191.0" text-anchor="end">al contorno</text><text class="ets" x="574.0" y="175.0">condizione</text><text class="ets" x="574.0" y="191.0">al contorno</text><text class="etd" x="405.0" y="196.0" text-anchor="middle">la sorgente</text><text class="ets" x="405.0" y="216.0" text-anchor="middle" fill="#5BA39C">che cosa la scalda da dentro,</text><text class="ets" x="405.0" y="234.0" text-anchor="middle" fill="#5BA39C">in ogni punto e in ogni istante</text><text class="eti" x="405.0" y="336.0" text-anchor="middle">la condizione iniziale: com'era calda prima che tutto cominciasse</text><text class="et" x="574.0" y="288.0">il dominio</text><text class="ets" x="574.0" y="306.0">tutto il rettangolo</text>
+</svg>

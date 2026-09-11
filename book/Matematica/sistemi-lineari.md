@@ -461,9 +461,10 @@ $$
 $$
 
 con $n$ il numero di colonne, cioè di incognite. La dimostrazione è
-l'eliminazione stessa: le colonne con pivot danno una base dell'immagine, le
-colonne senza pivot danno una variabile libera ciascuna, e ogni colonna è
-dell'uno o dell'altro tipo.
+l'eliminazione stessa: le colonne di $\mathbf{A}$ nelle posizioni dei pivot
+danno una base dell'immagine (non quelle della forma ridotta, che l'immagine
+non la conservano), le colonne senza pivot danno una variabile libera ciascuna,
+e ogni colonna è dell'uno o dell'altro tipo.
 
 La conseguenza modellistica ha un nome: **non identificabilità**. Se
 $\ker(\mathbf{A})\neq\{\mathbf{0}\}$, due insiemi di parametri che

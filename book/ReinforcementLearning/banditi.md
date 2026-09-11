@@ -142,7 +142,8 @@ esattamente ciò che serve quando il problema è non stazionario, cioè quando
 $q_*(a)$ cambia nel tempo. Il caso stazionario è l'eccezione, non la regola.
 
 Il criterio che distingue i due casi è lo stesso che tornerà a chiedere la
-garanzia di convergenza del Q-learning. Una successione di passi $\alpha_n$
+garanzia di convergenza del {doc}`Q-learning <q-learning>`, l'algoritmo con cui
+il capitolo si chiude. Una successione di passi $\alpha_n$
 porta la stima al valore vero se soddisfa le **condizioni di Robbins-Monro**
 
 $$

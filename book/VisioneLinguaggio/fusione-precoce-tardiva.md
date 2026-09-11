@@ -556,8 +556,8 @@ poco senso e invecchia in fretta: è che la condivisione dei parametri
 disegnare un gatto dovrebbe aiutare a riconoscerlo, perché per generarlo
 bisogna sapere com'è fatto, mentre per descriverlo spesso basta indovinare
 quello che di solito si scrive sotto una foto del genere, cioè parlare della
-fotografia senza averla guardata: il problema che l'apertura del capitolo ha
-chiamato allucinazione visiva.
+fotografia senza averla guardata: il problema che l’{doc}`apertura del capitolo
+</VisioneLinguaggio/overview>` ha chiamato allucinazione visiva.
 
 La prova che deciderebbe la questione ha allora questa forma: a parità di
 parametri, di dati e di calcolo, la capacità di *capire* di un modello a

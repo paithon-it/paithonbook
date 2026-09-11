@@ -12,10 +12,12 @@ quadrato, così una cantonata da tre stelle pesa nove volte un errore da una
 stella ($3^2 = 9$ contro $1^2 = 1$); poi si fa la media di quei quadrati; e
 solo alla fine se ne prende la radice, che non annulla i quadrati, perché in
 mezzo c'è la media, e serve a riportare il risultato sulla scala delle stelle.
-Con due sole previsioni, sbagliate di 1 e di 3 stelle, il conto fa
-$(1 + 9) / 2 = 5$ e poi $\sqrt{5} \approx 2{,}24$: più della media semplice,
-che sarebbe 2, ed è proprio quello che si voleva. Questo metro ha un nome che
-ritroverai ovunque, RMSE, e la
+Con due sole previsioni, sbagliate di 1 e di 3 stelle, il conto fa $(1^2 + 3^2)
+/ 2 = 5$ e poi $\sqrt{5} \approx 2{,}24$: più della media semplice, che sarebbe
+2, ed è quello che si voleva, perché il metro deve pesare le cantonate più di
+quanto pesi le sbavature. Questo metro ha un nome che ritroverai ovunque, RMSE,
+e sono le iniziali delle tre operazioni lette all'incontrario: *root mean
+square error*, la radice della media dei quadrati degli errori. La
 {doc}`sezione sulle metriche </MachineLearning/metriche>` lo definisce per
 esteso. Misurato così, l'errore di Cinematch valeva $0{,}9525$ stelle: togliere
 il 10% vuol dire scendere sotto $0{,}8572$, ed è quella la soglia dell'assegno.
@@ -24,7 +26,12 @@ Per partecipare basta scaricare un dataset che all'epoca sembra sterminato:
 poco più di 100 milioni di voti, da una a cinque stelle, dati da circa 480.000
 utenti anonimi a 17.770 film. La gara diventa un caso mondiale: migliaia di
 squadre, forum incandescenti, ricercatori universitari e ingegneri che di
-notte inseguono decimali. E dura molto più del previsto, quasi tre anni. Solo
+notte inseguono decimali. Il regolamento non dava una scadenza: la gara
+sarebbe durata almeno fino al 2 ottobre 2011, e prima di allora poteva
+chiuderla soltanto qualcuno che superasse la soglia. Ci vogliono quasi tre
+anni, e la chiusura è a orologeria: chi supera la soglia apre a tutti una
+finestra di trenta giorni per consegnare ancora, e a parità di risultato vince
+chi ha consegnato per primo. Solo
 il 21 settembre 2009 Netflix consegna l'assegno al team BellKor's Pragmatic
 Chaos, che chiude a $0{,}8567$ stelle: il 10,06% meglio di Cinematch, cioè
 la soglia superata per un soffio. E sul filo di lana anche in gara: i rivali di
@@ -33,17 +40,20 @@ venti minuti più tardi.
 
 L'ironia arriva dopo, e vale come lezione per tutto il capitolo. Quella
 soluzione da un milione di dollari non fu mai adottata per intero. Era un
-mosaico di oltre cento modelli combinati, e portarlo in produzione (cioè farlo
-girare davvero, tutti i giorni, per i clienti veri) costava più di quanto
-promettesse di rendere. Nel frattempo il business stava migrando dai DVD allo
+mosaico di oltre cento modelli combinati, e Netflix scrisse che il guadagno di
+precisione misurato non sembrava giustificare il lavoro di ingegneria che
+serviva a portarlo in produzione, cioè a farlo girare davvero, tutti i giorni,
+per i clienti veri. Nel frattempo il business stava migrando dai DVD allo
 streaming, dove prevedere il voto in stelle conta meno di prevedere che cosa
-guarderai stasera. Due ingredienti emersi durante la gara, invece, in
-produzione ci finirono davvero. Uno è una rete che impara a riconoscere le
-combinazioni di gusti che ricorrono fra gli spettatori, e si chiama macchina di
-Boltzmann ristretta: la
-{doc}`sezione sulle macchine di Boltzmann </ModelliEnergia/boltzmann>` la
-racconta per intero. L'altro è la **fattorizzazione di matrici**, che è la
-protagonista di questo capitolo {cite}`koren2009matrix`.
+guarderai stasera. Due ingredienti che la gara portò in primo piano, invece, in
+produzione ci finirono davvero, e nessuno dei due era nato per l'occasione. Uno
+è una rete degli anni Ottanta che la gara mise al lavoro su un problema nuovo,
+i gusti del pubblico: impara a riconoscere le combinazioni di gusti che
+ricorrono fra gli spettatori, e si chiama macchina di Boltzmann ristretta, di
+cui la {doc}`sezione sulle macchine di Boltzmann </ModelliEnergia/boltzmann>`
+racconta com'è fatta. All'altro la gara diede invece la ricetta di
+addestramento con cui è arrivato fino a oggi: è la **fattorizzazione di
+matrici**, la protagonista di questo capitolo {cite}`koren2009matrix`.
 Fattorizzare vuol dire scomporre in fattori, come si fa da sempre con i numeri
 ($12 = 3 \times 4$): qui si scompone una tabella, che in matematica si chiama
 matrice, e i fattori sono due tabelle strette al posto di una larghissima.
@@ -74,7 +84,9 @@ maggioranza e non entusiasma nessuno. Un buon libraio non ti indica il libro
 più venduto: ti guarda, ricorda cosa hai comprato l'ultima volta, e ti mette
 in mano un titolo che *a te* probabilmente piacerà. Un sistema di
 raccomandazione prova a fare il libraio su scala industriale: milioni di
-clienti, milioni di scaffali, un consiglio diverso per ciascuno.
+clienti, milioni di scaffali, un consiglio diverso per ciascuno. Con una
+differenza che decide tutto il resto: di quasi tutti i clienti ha visto due
+acquisti in croce, e di quasi tutti i libri non sa niente.
 
 `````
 
@@ -133,14 +145,17 @@ $r_{ui}$ su scala ordinale (ad esempio $1$–$5$): segnale ad alta qualità ma
 estremamente scarso, e per di più **non mancante a caso**
 {cite}`marlin2009collaborative`; gli utenti votano soprattutto ciò che hanno
 scelto di consumare, quindi le celle osservate sono un campione distorto. Il
-feedback implicito produce eventi unari o conteggi (click, acquisti, tempo
-di visione): copertura enormemente maggiore, ma niente segnale negativo
-esplicito. L'assenza di interazione confonde due casi indistinguibili («non gli
-piace» e «non l'ha mai visto») e questo cambia la formulazione del problema: non
-più regressione sul voto, ma *ranking* da osservazioni positive e
-non-osservazioni, come vedremo con BPR {cite}`rendle2009bpr`. Nei sistemi
-industriali l'implicito domina per volume (ordini di grandezza di differenza) e
-perché misura il comportamento effettivo, non quello dichiarato.
+feedback implicito produce eventi che hanno un verso solo (c'è stata
+interazione, e basta), conteggi o durate: click, acquisti, minuti di visione.
+Copertura enormemente maggiore, ma niente segnale negativo esplicito. L'assenza
+di interazione confonde due casi indistinguibili («non gli piace» e «non l'ha
+mai visto») e questo cambia la formulazione del problema: non più regressione
+sul voto, ma *ranking* da osservazioni positive e non-osservazioni, come
+vedremo con BPR {cite}`rendle2009bpr`. Nei sistemi industriali l'implicito
+domina per volume (ordini di grandezza di differenza) e perché misura il
+comportamento effettivo, non quello dichiarato; resta però il segnale più
+ambiguo dei due, e la cautela che l'ambiguità impone non si compra con la
+quantità.
 
 `````
 
@@ -151,7 +166,7 @@ in ingresso, una predizione in uscita. Visto da vicino, tre cose lo rendono
 un animale a parte.
 
 La prima si vede guardando la materia prima, che è una tabella: una riga per
-ogni persona iscritta (nel gergo del settore, un **utente**), una colonna per
+ogni persona iscritta (nel gergo del settore, un utente), una colonna per
 ogni film, i voti nelle celle, come in
 {numref}`fig-matrice-utenti-film`. Il punto è quante celle sono vuote. Nel
 Netflix Prize i 100 milioni di voti sembrano tanti, ma la tabella completa
@@ -181,8 +196,10 @@ stragrande maggioranza delle coppie utente-film non avrà mai una risposta
 osservata. Per giudicare un modello bisogna allora arrangiarsi con un ripiego:
 si nasconde una parte delle interazioni che si conoscono, e si guarda se il
 modello le ritrova. *Quale* parte si nasconde sposta i risultati più di quasi
-ogni scelta di modello, e ci torneremo quando parleremo di come si misura una
-classifica.
+ogni scelta di modello: nascondere l'ultimo titolo che ciascuno ha visto,
+oppure delle interazioni prese a caso, può ribaltare la graduatoria fra due
+metodi. Ci torna sopra la sezione sul misurare una classifica, nella
+{doc}`raccomandazione neurale </SistemiRaccomandazione/raccomandazione-neurale>`.
 
 La terza è la più insidiosa: il sistema influenza i dati che raccoglie.
 
@@ -199,10 +216,17 @@ viene cliccato determina ciò che mostrerai.
 
 Uscirne si può, ma ogni strada ha un prezzo. Per sapere com'è il quarto piatto
 bisogna portarlo a qualcuno che non l'ha chiesto, e quel qualcuno cenerà peggio
-perché il locale aveva bisogno di saperlo. Oppure si aggiustano i conti a
-tavolino, contando di più le ordinazioni dei piatti che il cameriere proponeva
-di rado: al tavolo non cambia niente, ma bisogna sapere quante volte ciascun
-piatto è stato proposto, e quel registro nessuno lo tiene da sé.
+perché il locale aveva bisogno di saperlo. Oppure si correggono i conteggi a
+tavolino. Un piatto proposto due volte e ordinato una volta è piaciuto a metà
+di chi se l'è sentito nominare; uno proposto duecento volte e ordinato
+cinquanta è piaciuto a un quarto, e in classifica sta comunque davanti perché
+di ordinazioni ne ha cinquanta. Il rimedio è pesare ogni ordinazione al
+contrario di quanto spesso quel piatto veniva proposto: le poche ordinazioni di
+un piatto quasi mai proposto contano tanto, le tante di un piatto proposto
+sempre contano poco, e quello che ne esce è il ristorante che si sarebbe visto
+se il cameriere li avesse proposti tutti allo stesso modo. Al tavolo non cambia
+niente, ma bisogna sapere quante volte ciascun piatto è stato proposto, e quel
+registro nessuno lo tiene da solo.
 
 `````
 
@@ -234,16 +258,17 @@ arena sul vuoto della tabella, e come se ne esce: riassumendo ogni persona e
 ogni film in una scheda di pochi numeri. È l'idea che ha vinto il Netflix
 Prize, e la scriveremo in PyTorch in una ventina di righe.
 
-La seconda porta le reti neurali dentro il problema. La domanda è ovvia (una
-rete farà meglio del confronto fra due schede?) e la risposta non è quella che
-ci si aspetta. Proveremo a sostituire il confronto fra le schede con una
-rete, e vedremo che non conviene. Ridisegneremo poi la tabella come un disegno
-di pallini e linee, dove consigliare vuol dire indovinare le linee che mancano.
-Cambieremo infine obiettivo: quando non ci sono voti non si prevede un numero,
-si mette in ordine una vetrina, e per una vetrina serve anche un altro modo di
-misurare se è buona. Chiuderemo con il funzionamento vero della macchina che ti
-consiglia i video, e con la domanda che le sta sotto: quando un consiglio
-smette di essere un consiglio.
+La seconda porta le reti neurali dentro il problema. Il confronto fra due
+schede è un conto elementare, moltiplicare e sommare; la domanda è ovvia (una
+rete farà meglio?) e la risposta non è quella che ci si aspetta. Vedremo che
+cosa è successo quando ci hanno provato, e perché di solito non conviene.
+Ridisegneremo poi la tabella come un disegno di pallini e linee, dove
+consigliare vuol dire indovinare le linee che mancano. Cambieremo infine
+obiettivo: quando non ci sono voti non si prevede un numero, si mette in ordine
+una vetrina, e per una vetrina serve anche un altro modo di misurare se è
+buona. Chiuderemo con il funzionamento vero della macchina che ti consiglia i
+video, e con la domanda che le sta sotto: quando un consiglio smette di essere
+un consiglio.
 
 `````{tab} Elementare
 
@@ -253,9 +278,10 @@ smette di essere un consiglio.
   e lo stesso sistema deve mettere le cose in un ordine diverso per ogni
   persona.
 - Il carburante sono le interazioni: o dichiarate (le stelle, il pollice in
-  su: chiare ma rarissime) o lasciate senza pensarci (click, acquisti, minuti
-  di visione: abbondanti ma ambigue, perché un titolo ignorato non è una
-  bocciatura). Nei sistemi veri dominano le seconde.
+  su: chiare ma rarissime, e per giunta date quasi solo da chi il film l'aveva
+  scelto perché pensava gli sarebbe piaciuto) o lasciate senza pensarci
+  (click, acquisti, minuti di visione: abbondanti ma ambigue, perché un titolo
+  ignorato non è una bocciatura). Nei sistemi veri dominano le seconde.
 - Il dato di partenza è una tabella quasi tutta vuota: nel Netflix Prize
   era piena all'1,2%, nei cataloghi di oggi si scende sotto lo 0,1% di celle
   piene. Consigliare vuol dire riempire quei buchi in modo sensato.
@@ -282,10 +308,12 @@ smette di essere un consiglio.
   dello 0,1%. Quel vuoto ha un nome, sparsità, ed è il vincolo che detta
   quasi tutte le scelte che seguono.
 - Il segnale è di due specie. Esplicito: voti su una scala, cioè un target
-  continuo o ordinale su una matrice incompleta, e raro. Implicito: click,
-  acquisti, minuti di visione, cioè dati binari o di conteggio, abbondanti ma
-  senza negativi certi, perché un oggetto mai mostrato non è un oggetto
-  rifiutato.
+  continuo o ordinale su una matrice incompleta, raro e non mancante a caso
+  {cite}`marlin2009collaborative`, perché si vota soprattutto ciò che si è
+  scelto di consumare. Implicito: click, acquisti, minuti di visione, cioè dati
+  binari, di conteggio o di durata, abbondanti ma senza negativi certi, perché
+  un oggetto mai mostrato non è un oggetto rifiutato. E l'abbondanza non toglie
+  l'ambiguità: va maneggiato con più cautela, non con meno.
 - La verità di riferimento è controfattuale e per la gran parte delle
   coppie non esisterà mai. Si valuta per ripiego: si nascondono interazioni
   note e si guarda se il modello le ritrova. *Quale* parte si nasconde sposta

@@ -274,7 +274,8 @@ il runtime *dispone*; l'esecuzione vera (con i suoi permessi, i suoi limiti, i
 suoi controlli di sicurezza) resta fuori dal modello, ed è lì che si mette il
 freno alle azioni pericolose. Secondo: ogni chiamata è del testo che entra e
 del testo che esce, e quindi consuma finestra di contesto; un loop lungo la
-riempie in fretta, come vedremo parlando di context engineering.
+riempie in fretta, ed è il problema da cui parte la {doc}`sezione sul contesto
+</Agenti/context-engineering>`.
 
 `````
 

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 344" role="img" aria-label="Griglia di quattro righe per dodici colonne. Nella riga in basso, la partenza a sinistra e la meta a destra; fra le due, dieci caselle nere sono il burrone. Due cammini uniscono la partenza alla meta. Quello del Q-learning, in terracotta, sale di una casella e corre lungo il bordo del burrone: è il più corto. Quello del SARSA, in teal, sale fino alla riga più alta, corre di là e ridiscende: quattro passi in più, e nessuna casella affacciata sul vuoto.">
+  <rect x="0" y="0" width="700" height="344" fill="#F8F5EE"/>
+  <rect x="70" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="114" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="158" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="202" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="246" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="290" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="334" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="378" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="422" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="466" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="510" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="554" y="92" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="70" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="114" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="158" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="202" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="246" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="290" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="334" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="378" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="422" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="466" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="510" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="554" y="136" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="70" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="114" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="158" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="202" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="246" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="290" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="334" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="378" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="422" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="466" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="510" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="554" y="180" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="70" y="224" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+  <rect x="114" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="158" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="202" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="246" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="290" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="334" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="378" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="422" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="466" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="510" y="224" width="44" height="44" fill="#1A1A1A" stroke="#8B847C" stroke-width="1"/>
+  <rect x="554" y="224" width="44" height="44" fill="#F8F5EE" stroke="#8B847C" stroke-width="1"/>
+
+  <text x="334" y="251" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#F8F5EE">il burrone</text>
+  <text x="92" y="251" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">S</text>
+  <text x="576" y="251" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">M</text>
+
+  <polyline points="92,246 92,114 576,114 576,246" fill="none" stroke="#2D5A5C" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="92,246 92,202 576,202 576,246" fill="none" stroke="#B5532C" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="9 5"/>
+
+  <text x="334" y="78" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#2D5A5C">SARSA: la via alta, quattro passi in più</text>
+  <rect x="206" y="175" width="256" height="20" fill="#F8F5EE"/>
+  <text x="334" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#B5532C">Q-learning: la via corta, sull&#8217;orlo</text>
+
+  <text x="70" y="308" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">Chi cade paga cento punti e si ritrova a S, con la partita che continua.</text>
+  <text x="70" y="326" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5E5852">Il dado si tira ogni tanto, e sull&#8217;orlo un passo storto basta.</text>
+</svg>

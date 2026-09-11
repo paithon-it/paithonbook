@@ -54,11 +54,10 @@ bivio soltanto, e se l’uscita non salta fuori torni all’inizio e rifai tutto
 con due, poi con tre. Rifare ogni volta i primi corridoi sembra uno spreco, e
 non lo è, perché i bivi vicini all’inizio sono pochissimi rispetto a quelli
 lontani: se da ogni bivio ne partono dieci, ogni giro costa dieci volte quello
-prima, e tutti i giri già fatti messi insieme valgono poco più di un decimo
-dell’ultimo. Rifarli, in tutto, costa circa l’undici per cento di lavoro in
-più. In cambio ti tieni la memoria del filo e la garanzia dell’acqua: l’uscita
-che trovi è la più vicina, perché il giro prima, con un bivio in meno, era
-andato a vuoto.
+prima, e tutti i giri già fatti messi insieme valgono un nono dell’ultimo.
+Rifarli, in tutto, costa circa l’undici per cento di lavoro in più. In cambio
+ti tieni la memoria del filo e la garanzia dell’acqua: l’uscita che trovi è la
+più vicina, perché il giro prima, con un bivio in meno, era andato a vuoto.
 
 Nessuna di queste sa niente di dove sia l’uscita. E il difetto vero è quello,
 non la memoria: cercano dappertutto con lo stesso impegno, anche nella
@@ -96,11 +95,13 @@ soluzione. Sembra uno spreco, perché i livelli alti si rigenerano ogni volta;
 non lo è, e il conto lo spiega. In un albero che si moltiplica per $b$ a ogni
 livello, i nodi dell’ultimo livello sono la maggioranza schiacciante di tutti:
 i figli della radice si rigenerano $d$ volte, i loro figli $d-1$, e quelli
-dell’ultimo livello una volta sola. In tutto si paga un fattore $b/(b-1)$
-rispetto a generarli una volta sola. Con $b = 10$ vuol dire l’undici per cento in più di lavoro, in
-cambio della memoria della profondità e della garanzia dell’ampiezza. Quando lo
-spazio degli stati non entra in memoria e non si sa quanto sia lontana la
-soluzione, è la scelta di riferimento.
+dell’ultimo livello una volta sola. In tutto si paga al più un fattore
+$b/(b-1)$ rispetto a generarli una volta sola: la somma si avvicina a quel
+valore dal basso al crescere di $d$, e non lo raggiunge mai. Con $b = 10$ vuol
+dire l’undici per cento in più di lavoro, in cambio della memoria della
+profondità e della garanzia dell’ampiezza. Quando lo spazio degli stati non
+entra in memoria e non si sa quanto sia lontana la soluzione, è la scelta di
+riferimento.
 
 `````
 
@@ -115,19 +116,25 @@ che gli stanno accanto. I modi di disporre nove cose in nove caselle sono
 $9! = 362\,880$ (il punto esclamativo si legge «fattoriale» e vuol dire
 $9 \times 8 \times 7 \times \ldots \times 1$: nove scelte per la prima casella,
 otto per la seconda, e così via). Di quelle disposizioni, però, solo la metà si
-può raggiungere facendo scorrere le tessere: 181.440. La ragione è graziosa
-e si controlla su un foglio. Ogni mossa scambia il buco con una tessera, cioè
-scambia due cose fra loro, e a ogni scambio una proprietà della disposizione
-che i matematici chiamano parità si inverte, come un interruttore: pari,
-dispari, pari, dispari. Ma ogni mossa sposta anche il buco di una casella, e
-su una scacchiera colorata come quella della dama il buco cambierebbe colore a
-ogni passo: bianco, nero, bianco, nero. I due interruttori scattano insieme.
-Per riportare il buco dove stava (sul suo colore) servono quindi mosse in
-numero pari, cioè scambi in numero pari, e le disposizioni col buco al suo
-posto che chiederebbero un numero dispari di scambi non si raggiungono mai:
-sono esattamente la metà. Le altre, quelle raggiungibili, sono poche abbastanza
-da poterle guardare tutte e tante abbastanza da far vedere la differenza fra
-guardarle tutte e non guardarle.
+può raggiungere facendo scorrere le tessere: 181.440. La ragione è graziosa e
+si controlla su un foglio, con due interruttori. Il primo è la parità della
+disposizione: si conta quanti scambi servono a rimetterla in ordine.
+Quel numero cambia a seconda di come si procede, ma è sempre pari, oppure
+sempre dispari, e quel pari-o-dispari è una proprietà della disposizione. Il
+secondo interruttore è il colore della casella dove sta il buco, su una
+scacchiera colorata come quella della dama. Ogni mossa scambia il buco con una
+tessera, cioè fa un solo scambio, e gira il primo interruttore; e sposta il
+buco di una casella, quindi gira anche il secondo. Si prova in due mosse: da
+quella ordinata se ne fa una sola, e adesso serve uno scambio per rimettere
+tutto a posto (dispari) mentre il buco ha cambiato colore; si torna indietro, e
+tornano insieme il pari e il colore di prima. I due interruttori partono
+accoppiati e restano accoppiati per sempre, quindi ogni disposizione in cui la
+coppia è sbagliata è irraggiungibile. E sono esattamente la metà: tenendo il
+buco fermo su una casella, le disposizioni delle otto tessere che chiedono un
+numero pari di scambi sono tante quante quelle che ne chiedono un numero
+dispari. Le altre, quelle raggiungibili, sono poche abbastanza da poterle
+guardare tutte e tante abbastanza da far vedere la differenza fra guardarle
+tutte e non guardarle.
 
 Il programma del rompicapo lo esplora aprendo gli stati uno alla volta:
 «aprire» uno stato vuol dire guardare quali mosse ci sono e generare le
@@ -162,6 +169,8 @@ def cerca(stima):
     """Apre sempre lo stato con (passi fatti + stima di quelli che restano)
     piu' piccolo. Restituisce la lunghezza della soluzione e quanti stati
     ha dovuto guardare per trovarla."""
+    # a somma pari esce per primo chi ha fatto meno passi: lo dice la tupla,
+    # ed e' una scelta: cambiarla cambia quanti stati si aprono
     coda = [(stima(PARTENZA), 0, PARTENZA)]
     costo = {PARTENZA: 0}
     guardati = 0
@@ -219,11 +228,11 @@ giro più lungo del necessario; quando va male finisci davanti a un muro, con la
 torre dall’altra parte, e le altre strade le hai lasciate al primo bivio.
 
 Allora tiri fuori un foglio e tieni aperte più strade insieme. Accanto a ogni
-punto raggiunto scrivi i passi che ti è costato arrivarci e i metri che restano
-in linea d’aria. Poi allunghi di un passo la strada con la somma più
-piccola, e solo quella.
+punto raggiunto scrivi due numeri, tutti e due in metri: quelli che hai già
+camminato per arrivarci, e quelli che restano in linea d’aria. Poi allunghi di
+un isolato la strada con la somma più piccola, e solo quella.
 
-La somma, non uno dei due numeri. Coi soli passi fatti ti allargheresti in
+La somma, non uno dei due numeri. Coi soli metri camminati ti allargheresti in
 tondo come l’acqua del labirinto; coi soli metri che restano ricadresti nel
 muro di prima. Con la somma i quartieri dalla parte opposta restano bianchi sul
 foglio, e la strada corta che partiva male non ti sfugge.
@@ -233,18 +242,24 @@ venga il suo turno, cioè che sia la sua somma la più piccola. Chi si ferma all
 prima strada che arriva porta a casa quella, e più giù nel foglio ce n’era una
 più corta.
 
-Certe volte capiti su un incrocio già scritto, con meno passi della volta
-prima. Cancelli il numero vecchio, e quell’incrocio torna in gioco. Su uno già
-allungato non succede mai, perché un passo camminato accorcia la linea d’aria
-al massimo di un passo, mai di colpo. Quando tocca a un incrocio, ci sei già
-arrivato per la strada più corta.
+Certe volte capiti su un incrocio già scritto, con meno metri camminati della
+volta prima. Cancelli il numero vecchio, e quell’incrocio torna in gioco. Su
+uno già allungato, invece, non capita: camminando cento metri la linea d’aria
+si accorcia al massimo di cento, quindi lungo una strada la somma non scende
+mai. E se ci fosse una via più corta per arrivare a quell’incrocio, dovrebbe
+passare per un punto ancora sul foglio e non ancora allungato, con una somma
+più piccola, e il turno sarebbe toccato prima a lui. Quando tocca a un
+incrocio, ci sei già arrivato per la strada più corta.
 
 Il conto lo paga il foglio, dove ogni incrocio aperto finisce e non esce più.
 Per una città basta, per le strade di un paese intero servirebbe un magazzino.
-Allora lasci il foglio, riprendi il filo del labirinto e ti dai un tetto di
-venti chilometri: torni indietro appena la somma lo supera, e se la casa non
-salta fuori alzi il tetto e riparti da capo. La strada che trovi resta la più
-corta.
+Allora lasci il foglio, riprendi il filo del labirinto e ti dai un tetto sulla
+somma: torni indietro appena la supera, segnandoti di quanto. Se la casa non
+salta fuori, il tetto nuovo è la più piccola delle somme che l’hanno sforato, e
+si riparte da capo. Alzarlo di più farebbe passare per buona la prima casa che
+capita dentro il tetto, che corta non è; alzandolo così, invece, la strada che
+trovi resta la più corta, per la stessa ragione del labirinto: il giro prima,
+col tetto più basso, era andato a vuoto.
 
 Quei metri in linea d’aria sono la stima, e non sono mai più dei metri
 veri. Le strade girano, la linea d’aria no, e non capita che dica «due
@@ -254,7 +269,9 @@ Adesso uno al bar ti dice dieci chilometri dove ce ne sono due. La somma di
 quella strada diventa pessima, non la allunghi più, e all’amico ci arrivi da
 un’altra parte. Nemmeno te ne accorgi: sei arrivato, la strada c’era, ed era
 più lunga del necessario. Sbagliare per difetto costa tempo, sbagliare per
-eccesso costa la strada giusta.
+eccesso costa la strada giusta. E cade anche l’altra cosa: con una stima che
+salta di dieci chilometri in un incrocio, un punto già allungato può tornare in
+gioco davvero, e chi lo dà per chiuso porta a casa una strada più lunga.
 
 `````
 
@@ -271,7 +288,8 @@ dove $g(n)$ è il costo del cammino trovato finora dalla partenza a $n$ e $f(n)$
 è quindi la stima del costo totale del miglior cammino che passa per $n$.
 Espandere sempre il nodo con $f$ minimo è l’algoritmo A\*, di Hart, Nilsson
 e Raphael {cite}`hart1968formal`. Con $h \equiv 0$ si riduce alla ricerca a
-costo uniforme, cioè al caso con la stima a zero.
+costo uniforme, cioè al caso con la stima a zero, che è poi l’algoritmo di
+Dijkstra con in più un test di arrivo.
 
 Il prezzo, che la tabella di ampiezza e profondità non dice, è scomodo: A\*
 tiene in memoria tutti i nodi generati, esattamente come la ricerca in
@@ -279,8 +297,11 @@ ampiezza. Riduce enormemente quanti ne genera, e questo è tutto il guadagno, ma
 la memoria resta il vincolo che morde per primo. Sul rompicapo delle otto
 tessere non si vede; su quello delle quindici, che di posizioni ne ha diecimila
 miliardi, sì, e la via d’uscita è sposare A\* con l’approfondimento iterativo,
-tenendo un tetto sul valore di $f$ invece che sulla profondità. È l’**IDA\***
-di Richard Korf {cite}`korf1985depth`, ed è stato il primo metodo di uso
+tenendo un tetto sul valore di $f$ invece che sulla profondità. Il tetto non si
+alza a piacere: il successivo è il più piccolo $f$ che ha sforato il
+precedente, e senza quella regola la visita restituisce la prima soluzione che
+sta sotto il tetto, che ottima non è. È l’**IDA\*** di Richard Korf
+{cite}`korf1985depth`, ed è stato il primo metodo di uso
 corrente a trovare, dentro limiti di tempo e di memoria praticabili, soluzioni
 ottime di istanze del quindici generate a caso, con una memoria che cresce come
 la profondità e non come il numero di nodi.
@@ -298,9 +319,10 @@ bastasse generarlo, restituirebbe la prima soluzione che incontra, che non è la
 più corta. Detto questo, supponiamo che stia per restituire una soluzione
 peggiore di quella ottima. Sulla frontiera ci sarebbe allora il primo nodo
 $n$ non ancora espanso lungo il cammino ottimo; il suo predecessore lungo quel
-cammino è già stato espanso, e lo ha generato con $g(n) = g^*(n)$, cioè col
-costo giusto. Per quel nodo vale quindi $f(n) = g^*(n) + h(n) \le g^*(n) +
-h^*(n) = C^*$, un valore non superiore al costo ottimo e quindi inferiore a
+cammino è già stato espanso, e lo ha generato con $g(n) = g^*(n)$, dove
+$g^*(n)$ è il costo del cammino ottimo dalla partenza a $n$. Per quel nodo vale
+quindi $f(n) = g^*(n) + h(n) \le g^*(n) + h^*(n) = C^*$, dove $C^*$ è il costo
+della soluzione ottima: un valore non superiore a $C^*$, e quindi inferiore a
 quello della soluzione peggiore che stiamo per restituire. Ma allora A\*
 avrebbe estratto $n$ prima, perché estrae sempre il minimo. È la contraddizione
 che dimostra il risultato.
@@ -380,7 +402,12 @@ perché tutto quello che si poteva fare prima si può fare ancora, e magari
 qualcosa in più. Quindi un problema alleggerito, risolto esattamente, dà
 sempre un numero che sta sotto (o al più pari) a quello vero: è cioè
 un’euristica ammissibile per costruzione, e non c’è bisogno di verificarlo caso
-per caso.
+per caso. Lo stesso argomento dà anche la consistenza: un numero che è il costo
+*esatto* di un problema obbedisce, in quel problema, alla disuguaglianza
+triangolare, perché arrivare in due tappe non può costare meno che andarci
+diritti; e siccome ogni mossa del problema vero è anche una mossa di quello
+alleggerito, e non costa di meno, la disuguaglianza si trasporta ai passi
+veri.
 
 ```python
 def fuori_posto(s):
@@ -443,16 +470,19 @@ ci mette piede, ed è proprio la garanzia che A\* dà.
 
 E qui c’è la cosa che i tre numeri da soli non facevano vedere. La stima non fa
 guardare *un po’ meno dappertutto*: impedisce alla ricerca di salire sopra
-quella riga. Con la stima a zero la somma dei due numeri è sempre uguale ai soli
-passi fatti, quindi non c’è nessuna riga da non superare, e ogni posizione vale
-quanto un’altra alla stessa distanza dalla partenza.
+quella riga. Il secondo numero, quello in verticale, il disegno lo mostra
+sempre; ma con la stima a zero l’algoritmo non lo guarda, e quello che confronta
+sono i soli passi fatti: non c’è nessuna riga da non superare, e ogni posizione
+vale quanto un’altra alla stessa distanza dalla partenza.
 
 E il confronto fra le due stime ha una regola sola, che si legge nella loro
 definizione: contare i passi è sempre almeno quanto contare le tessere
 fuori posto, perché una tessera fuori posto dista almeno un passo. E chi apre
 di meno, fra le due, è chi stima di più: gli stati che si è costretti ad aprire
 sono quelli per cui i passi fatti più la stima stanno sotto il costo della
-soluzione, e alzare la stima quell'insieme lo restringe. Cercare una buona
+soluzione. Costretti, perché finché quella somma sta sotto non c'è modo di
+escludere che di là passi una strada più corta, e l'algoritmo deve andarci a
+guardare; alzare la stima quell'insieme lo restringe. Cercare una buona
 euristica vuol dire cercare la stima più alta che non superi mai il vero.
 
 `````{tab} Elementare
@@ -499,7 +529,8 @@ euristica vuol dire cercare la stima più alta che non superi mai il vero.
   unisce pagando solo un fattore $b/(b-1)$ di lavoro in più.
 - A\* {cite}`hart1968formal` espande il nodo di $f(n) = g(n) + h(n)$
   minimo. Con $h$ ammissibile ($h \le h^*$, cioè ottimista) restituisce una
-  soluzione di costo minimo; con $h$ consistente
+  soluzione di costo minimo, purché si possa tornare su uno stato già aperto
+  quando salta fuori una strada più corta per arrivarci; con $h$ consistente
   ($h(n) \le c(n,a,n') + h(n')$, disuguaglianza triangolare) i valori di $f$
   non decrescono lungo un cammino e ogni stato viene estratto dalla
   frontiera in modo ottimo la prima volta (estratto, non generato: per una

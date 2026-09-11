@@ -93,11 +93,15 @@ def verifica(costo, senza, con) -> None:
     sopra = [c for c in set(con) if sum(c) > costo]
     assert not sopra, \
         f"con la stima la ricerca esce dalla diagonale in {len(sopra)} celle"
-    fuori = [c for c in set(senza) if sum(c) > costo]
-    assert len(fuori) > len(set(senza)) / 2, \
+    # La didascalia parla di *posizioni aperte*, non delle celle distinte del
+    # piano: contare le seconde difendeva molto meno di quanto la figura
+    # promette (109 celle su 144, il 76%, contro il 99,4% delle posizioni), e
+    # sarebbe restato verde il giorno in cui la quota vera fosse scesa al 51%.
+    fuori = [c for c in senza if sum(c) > costo]
+    assert len(fuori) > 0.9 * len(senza), \
         (f"l'`:alt:` promette che senza stima la ricerca finisca *in "
-         f"maggioranza* sopra la diagonale: sono {len(fuori)} celle su "
-         f"{len(set(senza))}")
+         f"maggioranza* sopra la diagonale: sono {len(fuori)} posizioni su "
+         f"{len(senza)}")
 
 
 # --------------------------------------------------------------------------

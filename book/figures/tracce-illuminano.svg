@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: un passo alla volta contro le tracce: chi si rinforza
+  Generata da animazioni/svg/tracce-illuminano.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330"
+     role="img" aria-label="Due griglie identiche di tre righe per quattro colonne, con la partenza in basso a sinistra, la meta che paga più uno in alto a destra, la trappola sotto di lei e un muro al centro. In tutte e due, cinque frecce disegnano lo stesso cammino dalla partenza alla meta. Nella griglia di sinistra, «un passo alla volta», una sola freccia è colorata, l'ultima, quella che entra nella meta, con peso 1,00; le altre quattro sono grigie. Nella griglia di destra, «con le tracce», sono colorate tutte e cinque, e il loro peso sfuma all'indietro: 1,00, 0,81, 0,66, 0,53 e 0,43 per la prima mossa del cammino, che resta comunque accesa.">
+  <style>
+    svg  { --d: 8.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .cel  { fill:none; stroke:#C5BEAA; stroke-width:1.4; }
+    .mur  { fill:#C5BEAA; stroke:#C5BEAA; stroke-width:1.4; }
+    .prem { fill:#C9A961; fill-opacity:0.45; stroke:#C9A961; stroke-width:1.8; }
+    .pena { fill:#B5532C; fill-opacity:0.28; stroke:#B5532C;
+            stroke-width:1.8; }
+    .trg  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#1A1A1A; }
+    .seg  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700;
+            fill:#5A524A; }
+    .acc  { stroke:#B5532C; stroke-width:3; stroke-linecap:round; }
+    .spe  { stroke:#C5BEAA; stroke-width:1.6; stroke-linecap:round; }
+    .pes  { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700;
+            fill:#B5532C; }
+    .pan  { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700;
+            fill:#1A1A1A; }
+    
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
+  </style>
+  <defs><marker id="ap" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 z" fill="#B5532C" fill-opacity="1.0"/></marker><marker id="as" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 z" fill="#C5BEAA" fill-opacity="1.0"/></marker><marker id="bp" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 z" fill="#B5532C" fill-opacity="1.0"/></marker><marker id="bs" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 z" fill="#C5BEAA" fill-opacity="1.0"/></marker></defs><text class="pan" x="164.0" y="60.0" text-anchor="middle">un passo alla volta</text><rect class="cel" x="40.0" y="76.0" width="62.0" height="62.0"/><rect class="cel" x="102.0" y="76.0" width="62.0" height="62.0"/><rect class="cel" x="164.0" y="76.0" width="62.0" height="62.0"/><rect class="prem" x="226.0" y="76.0" width="62.0" height="62.0"/><rect class="cel" x="40.0" y="138.0" width="62.0" height="62.0"/><rect class="mur" x="102.0" y="138.0" width="62.0" height="62.0"/><rect class="cel" x="164.0" y="138.0" width="62.0" height="62.0"/><rect class="pena" x="226.0" y="138.0" width="62.0" height="62.0"/><rect class="cel" x="40.0" y="200.0" width="62.0" height="62.0"/><rect class="cel" x="102.0" y="200.0" width="62.0" height="62.0"/><rect class="cel" x="164.0" y="200.0" width="62.0" height="62.0"/><rect class="cel" x="226.0" y="200.0" width="62.0" height="62.0"/><text class="trg" x="257.0" y="113.0" text-anchor="middle">+1</text><text class="trg" x="257.0" y="175.0" text-anchor="middle">−1</text><text class="seg" x="71.0" y="237.0" text-anchor="middle">S</text><line class="spe" x1="71.0" y1="215.0" x2="71.0" y2="189.0" marker-end="url(#as)"/><line class="spe" x1="71.0" y1="153.0" x2="71.0" y2="127.0" marker-end="url(#as)"/><line class="spe" x1="87.0" y1="107.0" x2="113.0" y2="107.0" marker-end="url(#as)"/><line class="spe" x1="149.0" y1="107.0" x2="175.0" y2="107.0" marker-end="url(#as)"/><line class="acc" x1="211.0" y1="107.0" x2="237.0" y2="107.0" stroke-opacity="1.000" marker-end="url(#ap)"/><text class="pes" x="226.0" y="94.0" text-anchor="middle">1,00</text><text class="pan" x="486.0" y="60.0" text-anchor="middle">con le tracce</text><rect class="cel" x="362.0" y="76.0" width="62.0" height="62.0"/><rect class="cel" x="424.0" y="76.0" width="62.0" height="62.0"/><rect class="cel" x="486.0" y="76.0" width="62.0" height="62.0"/><rect class="prem" x="548.0" y="76.0" width="62.0" height="62.0"/><rect class="cel" x="362.0" y="138.0" width="62.0" height="62.0"/><rect class="mur" x="424.0" y="138.0" width="62.0" height="62.0"/><rect class="cel" x="486.0" y="138.0" width="62.0" height="62.0"/><rect class="pena" x="548.0" y="138.0" width="62.0" height="62.0"/><rect class="cel" x="362.0" y="200.0" width="62.0" height="62.0"/><rect class="cel" x="424.0" y="200.0" width="62.0" height="62.0"/><rect class="cel" x="486.0" y="200.0" width="62.0" height="62.0"/><rect class="cel" x="548.0" y="200.0" width="62.0" height="62.0"/><text class="trg" x="579.0" y="113.0" text-anchor="middle">+1</text><text class="trg" x="579.0" y="175.0" text-anchor="middle">−1</text><text class="seg" x="393.0" y="237.0" text-anchor="middle">S</text><line class="acc" x1="393.0" y1="215.0" x2="393.0" y2="189.0" stroke-opacity="0.573" marker-end="url(#bp)"/><text class="pes" x="407.0" y="204.0">0,43</text><line class="acc" x1="393.0" y1="153.0" x2="393.0" y2="127.0" stroke-opacity="0.649" marker-end="url(#bp)"/><text class="pes" x="407.0" y="142.0">0,53</text><line class="acc" x1="409.0" y1="107.0" x2="435.0" y2="107.0" stroke-opacity="0.742" marker-end="url(#bp)"/><text class="pes" x="424.0" y="94.0" text-anchor="middle">0,66</text><line class="acc" x1="471.0" y1="107.0" x2="497.0" y2="107.0" stroke-opacity="0.858" marker-end="url(#bp)"/><text class="pes" x="486.0" y="94.0" text-anchor="middle">0,81</text><line class="acc" x1="533.0" y1="107.0" x2="559.0" y2="107.0" stroke-opacity="1.000" marker-end="url(#bp)"/><text class="pes" x="548.0" y="94.0" text-anchor="middle">1,00</text><text class="lbs" x="40.0" y="290.0">lo stesso episodio, con la tabella dei voti tutta a zero: accanto a ogni mossa rinforzata, di quanto</text>
+</svg>

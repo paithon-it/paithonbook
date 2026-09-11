@@ -1,0 +1,86 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../tre-famiglie-dialogo.svg
+-->
+<svg viewBox="0 0 760 486" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La stessa battuta del cliente, &#171;un tavolo per quattro domani alle otto&#187;, entra in tre macchine diverse. La prima, a regole, aggancia uno schema nelle parole e rigira la frase: risponde &#171;mi dica di pi&#249; su un tavolo per quattro&#187;, e sotto &#232; scritto che non tiene niente da parte, perch&#233; ogni battuta riparte da zero. La seconda, a moduli, riempie tre caselle su cinque (quanti quattro, che giorno domani, a che ora le venti; restano vuote dove e a che nome) e chiede la prima casella vuota, &#171;all'aperto o dentro?&#187;; sotto &#232; scritto che quello che tiene da parte &#232; il modulo mezzo pieno. La terza, generativa, scrive la risposta una parola alla volta, &#171;certo, per quattro persone&#8230;&#187;, e sotto &#232; scritto che quello che tiene da parte &#232; tutto il testo che ha davanti. In fondo, che cosa fa ciascuna quando la battuta esce dal previsto: la prima risponde a vuoto, la seconda non risponde ma non inventa, la terza risponde a tutto e a volte inventa.">
+  <rect x="0" y="0" width="760" height="486" fill="#0E0C0A"/>
+  <text x="380" y="26" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#F4ECDD">Stessa battuta, tre macchine</text>
+
+  <rect x="190" y="42" width="380" height="30" rx="6" fill="none" stroke="#F4ECDD" stroke-width="1.4"/>
+  <text x="380" y="62" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F4ECDD">«Un tavolo per quattro domani alle otto»</text>
+  <line x1="380" y1="72" x2="380" y2="86" stroke="#F4ECDD" stroke-width="1.2"/>
+  <line x1="130" y1="86" x2="630" y2="86" stroke="#F4ECDD" stroke-width="1.2"/>
+  <line x1="130" y1="86" x2="130" y2="100" stroke="#F4ECDD" stroke-width="1.2"/>
+  <line x1="380" y1="86" x2="380" y2="100" stroke="#F4ECDD" stroke-width="1.2"/>
+  <line x1="630" y1="86" x2="630" y2="100" stroke="#F4ECDD" stroke-width="1.2"/>
+  <polygon points="130,108 124,97 136,97" fill="#F4ECDD"/>
+  <polygon points="380,108 374,97 386,97" fill="#F4ECDD"/>
+  <polygon points="630,108 624,97 636,97" fill="#F4ECDD"/>
+
+  <rect x="20" y="114" width="220" height="26" fill="#5BA39C"/>
+  <text x="130" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#0E0C0A">a regole</text>
+  <rect x="20" y="140" width="220" height="150" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
+  <text x="34" y="162" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">aggancia uno schema</text>
+  <rect x="34" y="172" width="192" height="24" rx="4" fill="#221F1A"/>
+  <text x="130" y="188" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#F4ECDD">un tavolo per ___</text>
+  <text x="34" y="216" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">e lo rigira</text>
+  <text x="34" y="236" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">«Mi dica di più su</text>
+  <text x="34" y="252" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">un tavolo per quattro.»</text>
+  <text x="34" y="278" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">tiene da parte: niente</text>
+
+  <rect x="270" y="114" width="220" height="26" fill="#E27B52"/>
+  <text x="380" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#0E0C0A">a moduli</text>
+  <rect x="270" y="140" width="220" height="150" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
+  <text x="284" y="160" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">riempie le caselle</text>
+  <text x="288" y="178" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">quanti</text>
+  <text x="392" y="178" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5BA39C">quattro</text>
+  <text x="288" y="195" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">che giorno</text>
+  <text x="392" y="195" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5BA39C">domani</text>
+  <text x="288" y="212" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">a che ora</text>
+  <text x="392" y="212" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5BA39C">20:00</text>
+  <text x="288" y="229" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">dove</text>
+  <rect x="392" y="220" width="52" height="11" fill="none" stroke="#8E8676" stroke-width="1"/>
+  <text x="288" y="246" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">a che nome</text>
+  <rect x="392" y="237" width="52" height="11" fill="none" stroke="#8E8676" stroke-width="1"/>
+  <text x="284" y="266" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">«All'aperto o dentro?»</text>
+  <text x="284" y="282" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">tiene da parte: il modulo</text>
+
+  <rect x="520" y="114" width="220" height="26" fill="#DDB874"/>
+  <text x="630" y="132" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#F4ECDD">generativi</text>
+  <rect x="520" y="140" width="220" height="150" fill="none" stroke="#F4ECDD" stroke-width="1.2"/>
+  <text x="534" y="162" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">scrive una parola alla volta</text>
+  <rect x="534" y="172" width="40" height="22" rx="3" fill="#221F1A"/>
+  <text x="554" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">Certo</text>
+  <rect x="578" y="172" width="14" height="22" rx="3" fill="#221F1A"/>
+  <text x="585" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">,</text>
+  <rect x="596" y="172" width="26" height="22" rx="3" fill="#221F1A"/>
+  <text x="609" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">per</text>
+  <rect x="626" y="172" width="52" height="22" rx="3" fill="#221F1A"/>
+  <text x="652" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">quattro</text>
+  <text x="686" y="187" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">…</text>
+  <text x="534" y="216" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">ogni parola sceglie</text>
+  <text x="534" y="232" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">la successiva</text>
+  <text x="534" y="252" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">«Certo, per quattro</text>
+  <text x="534" y="268" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">persone…»</text>
+  <text x="534" y="284" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#E27B52">tiene da parte: il testo</text>
+
+  <line x1="20" y1="324" x2="740" y2="324" stroke="#34302A" stroke-width="1"/>
+  <text x="380" y="350" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F4ECDD">Quello che le distingue è dove ciascuna tiene lo stato del dialogo</text>
+
+  <text x="34" y="382" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">fuori dallo schema:</text>
+  <text x="34" y="400" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">risponde lo stesso,</text>
+  <text x="34" y="416" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">e a vuoto</text>
+
+  <text x="284" y="382" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">fuori dalle caselle:</text>
+  <text x="284" y="400" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">non risponde,</text>
+  <text x="284" y="416" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">ma non inventa</text>
+
+  <text x="534" y="382" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">fuori dai dati visti:</text>
+  <text x="534" y="400" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">risponde a tutto,</text>
+  <text x="534" y="416" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F4ECDD">e a volte inventa</text>
+
+  <text x="380" y="452" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">Le tre non si sono succedute: sono vive tutte e tre, spesso dentro lo stesso prodotto.</text>
+</svg>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: Il ramo che i due scelgono di contestare
+  Generata da animazioni/svg/ramo-contestato.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470"
+     role="img" aria-label="Un albero di affermazioni che si apre un ramo per volta. In cima un nodo con un punto interrogativo, la domanda e la risposta che il primo contendente sostiene. Sotto compaiono tre nodi, la sua scomposizione in tre parti; il secondo contendente ne cerchia uno, quello centrale, e gli altri due restano grigi e non vengono più aperti. Sotto il nodo cerchiato compaiono altri tre nodi, e il secondo ne cerchia uno diverso, il terzo da sinistra; gli altri due restano grigi. Da quel nodo scende un tratto fino alla scritta «il giudice controlla questa, e basta». In basso i due conti: catene di ragionamento possibili nove, affermazioni messe per iscritto sei, controllate dal giudice una.">
+  <style>
+    svg  { --d: 10.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .ram      { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .morto    { stroke:#E2DCC9; }
+    .nodo     { stroke-width:2.5; fill:#F8F5EE; }
+    .afferma  { stroke:#B5532C; }
+    .contesta { stroke:#2D5A5C; stroke-width:2.5; fill:none;
+                 stroke-dasharray:6 5; }
+    .tirante  { stroke:#2D5A5C; stroke-width:2; }
+    .val      { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:600;
+                 fill:#1A1A1A; text-anchor:middle; }
+    .fioco    { fill:#5A524A; }
+        @keyframes ram00{0.00%{opacity:0}20.60%{opacity:0}22.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes ram01{0.00%{opacity:0}20.60%{opacity:0}22.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes ram02{0.00%{opacity:0}20.60%{opacity:0}22.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes ram10{0.00%{opacity:0}52.60%{opacity:0}54.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes ram11{0.00%{opacity:0}52.60%{opacity:0}54.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes ram12{0.00%{opacity:0}52.60%{opacity:0}54.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes tesi{0.00%{opacity:0}4.60%{opacity:0}6.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes etesi{0.00%{opacity:0}4.60%{opacity:0}6.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes riga0{0.00%{opacity:0}20.60%{opacity:0}22.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes riga1{0.00%{opacity:0}52.60%{opacity:0}54.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes nodo00{0.00%{opacity:0}20.60%{opacity:0}22.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes nodo01{0.00%{opacity:0}20.60%{opacity:0}22.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes segno0{0.00%{opacity:0}36.60%{opacity:0}38.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes nodo02{0.00%{opacity:0}20.60%{opacity:0}22.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes nodo10{0.00%{opacity:0}52.60%{opacity:0}54.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes nodo11{0.00%{opacity:0}52.60%{opacity:0}54.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes nodo12{0.00%{opacity:0}52.60%{opacity:0}54.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes segno1{0.00%{opacity:0}68.60%{opacity:0}70.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes giudice{0.00%{opacity:0}84.60%{opacity:0}86.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes conto{0.00%{opacity:0}84.60%{opacity:0}86.00%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { g { animation:none !important; } }
+  </style>
+  <g style="animation:ram00 var(--d) linear infinite"><line class="ram morto" x1="380.0" y1="118" x2="148.0" y2="200"/></g><g style="animation:ram01 var(--d) linear infinite"><line class="ram" x1="380.0" y1="118" x2="380.0" y2="200"/></g><g style="animation:ram02 var(--d) linear infinite"><line class="ram morto" x1="380.0" y1="118" x2="612.0" y2="200"/></g><g style="animation:ram10 var(--d) linear infinite"><line class="ram morto" x1="380.0" y1="252" x2="304.0" y2="334"/></g><g style="animation:ram11 var(--d) linear infinite"><line class="ram morto" x1="380.0" y1="252" x2="380.0" y2="334"/></g><g style="animation:ram12 var(--d) linear infinite"><line class="ram" x1="380.0" y1="252" x2="456.0" y2="334"/></g><g style="animation:tesi var(--d) linear infinite"><circle class="nodo afferma" cx="380.0" cy="92" r="26"/><text class="val" x="380.0" y="99">?</text></g><g style="animation:etesi var(--d) linear infinite"><text class="lbl" x="380.0" y="50" text-anchor="middle">la domanda, e la risposta che il primo sostiene</text></g><g style="animation:riga0 var(--d) linear infinite"><text class="lbs" x="26" y="184">primo giro: tre parti</text></g><g style="animation:riga1 var(--d) linear infinite"><text class="lbs" x="26" y="318">secondo giro: altre tre parti</text></g><g style="animation:nodo00 var(--d) linear infinite"><circle class="nodo morto" cx="148.0" cy="226" r="26"/><text class="val fioco" x="148.0" y="233">1</text></g><g style="animation:nodo01 var(--d) linear infinite"><circle class="nodo afferma" cx="380.0" cy="226" r="26"/><text class="val " x="380.0" y="233">2</text></g><g style="animation:segno0 var(--d) linear infinite"><circle class="contesta" cx="380.0" cy="226" r="33"/></g><g style="animation:nodo02 var(--d) linear infinite"><circle class="nodo morto" cx="612.0" cy="226" r="26"/><text class="val fioco" x="612.0" y="233">3</text></g><g style="animation:nodo10 var(--d) linear infinite"><circle class="nodo morto" cx="304.0" cy="360" r="26"/><text class="val fioco" x="304.0" y="367">1</text></g><g style="animation:nodo11 var(--d) linear infinite"><circle class="nodo morto" cx="380.0" cy="360" r="26"/><text class="val fioco" x="380.0" y="367">2</text></g><g style="animation:nodo12 var(--d) linear infinite"><circle class="nodo afferma" cx="456.0" cy="360" r="26"/><text class="val " x="456.0" y="367">3</text></g><g style="animation:segno1 var(--d) linear infinite"><circle class="contesta" cx="456.0" cy="360" r="33"/></g><g style="animation:giudice var(--d) linear infinite"><line class="tirante" x1="456.0" y1="386" x2="456.0" y2="412"/><text class="lbl" x="456.0" y="432" text-anchor="middle">il giudice controlla questa, e basta</text></g><circle class="nodo afferma" cx="34" cy="402" r="8"/><text class="lbs" x="50" y="406">il primo afferma e scompone</text><circle class="nodo contesta" cx="34" cy="424" r="8"/><text class="lbs" x="50" y="428">il secondo sceglie dove attaccare</text><text class="lbs" x="30" y="452">catene di ragionamento possibili: 9</text><g style="animation:conto var(--d) linear infinite"><text class="lbs" x="730" y="452" text-anchor="end">affermazioni messe per iscritto: 6 · controllate dal giudice: 1</text></g>
+</svg>

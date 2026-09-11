@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: la stessa scossa su due tendenze
+  Generata da animazioni/svg/scossa-che-resta.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 352"
+     role="img" aria-label="Due grafici affiancati, stesso asse verticale, con il tempo in orizzontale. Le due serie partono dallo stesso valore, salgono con la stessa spinta e ricevono le stesse scosse, fra cui una grossa, di più 18, al settimo istante, segnata in tutti e due i grafici da una freccia verticale. A sinistra, «tendenza deterministica», la serie oscilla attorno a una retta tratteggiata: nell'istante della scossa schizza sopra la retta, e già il punto dopo, cerchiato, è tornato ad appoggiarsi alla retta come tutti gli altri. A destra, «tendenza stocastica», il tratteggio è il cammino che la serie avrebbe fatto senza quella scossa: dall'istante della scossa in poi le due linee corrono parallele, e la distanza fra loro all'ultimo istante è segnata «ancora più 18», la stessa di quando la scossa è arrivata.">
+  <style>
+    svg  { --d: 8.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .ser  { fill:none; stroke:#B5532C; stroke-width:2.6;
+            stroke-linejoin:round; }
+    .rif  { fill:none; stroke:#5A524A; stroke-width:1.6;
+            stroke-dasharray:6 5; stroke-linejoin:round; }
+    .sco  { stroke:#B5532C; stroke-width:2; }
+    .sca  { stroke:#2D5A5C; stroke-width:2.4; stroke-dasharray:3 3; }
+    .pun  { fill:#F8F5EE; stroke:#2D5A5C; stroke-width:2.4; }
+    .num  { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700;
+            fill:#B5532C; }
+    .pan  { font-family:Inter, system-ui, sans-serif; font-size:16px; font-weight:700;
+            fill:#1A1A1A; }
+    
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
+  </style>
+  <defs><marker id="pta" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 z" fill="#B5532C"/></marker></defs><text class="pan" x="40.0" y="32.0">tendenza deterministica</text><line class="axc" x1="40.0" y1="258.0" x2="320.0" y2="258.0"/><text class="pan" x="376.0" y="32.0">tendenza stocastica</text><line class="axc" x1="376.0" y1="258.0" x2="656.0" y2="258.0"/><polyline class="rif" points="40.0,239.0 61.5,229.9 83.1,220.7 104.6,211.5 126.2,202.4 147.7,193.2 169.2,184.1 190.8,174.9 212.3,165.7 233.8,156.6 255.4,147.4 276.9,138.2 298.5,129.1 320.0,119.9"/><text class="lbs" x="316.0" y="153.9" text-anchor="end">la retta</text><polyline class="ser" points="40.0,239.0 61.5,223.0 83.1,229.9 104.6,207.0 126.2,209.3 147.7,184.1 169.2,142.8 190.8,181.8 212.3,161.1 233.8,165.7 255.4,140.5 276.9,142.8 298.5,119.9 320.0,126.8"/><line class="sco" x1="169.2" y1="184.1" x2="169.2" y2="147.8" marker-end="url(#pta)"/><text class="num" x="156.2" y="167.4" text-anchor="end">+18</text><circle class="pun" cx="190.8" cy="181.8" r="4.5"/><polyline class="rif" points="376.0,239.0 397.5,223.0 419.1,223.0 440.6,209.3 462.2,207.0 483.7,188.6 505.2,179.5 526.8,177.2 548.3,163.4 569.8,163.4 591.4,147.4 612.9,142.8 634.5,124.5 656.0,122.2"/><text class="lbs" x="656.0" y="156.2" text-anchor="end">senza la scossa</text><polyline class="ser" points="376.0,239.0 397.5,223.0 419.1,223.0 440.6,209.3 462.2,207.0 483.7,188.6 505.2,138.2 526.8,135.9 548.3,122.2 569.8,122.2 591.4,106.2 612.9,101.6 634.5,83.3 656.0,81.0"/><line class="sco" x1="505.2" y1="179.5" x2="505.2" y2="143.2" marker-end="url(#pta)"/><text class="num" x="492.2" y="162.9" text-anchor="end">+18</text><line class="sca" x1="656.0" y1="122.2" x2="656.0" y2="81.0"/><text class="num" x="664.0" y="105.6">ancora +18</text><text class="lbs" x="40.0" y="288.0">il passo dopo la serie è già tornata sulla retta</text><text class="lbs" x="376.0" y="288.0">lo scarto non si chiude più, a nessun passo</text>
+</svg>

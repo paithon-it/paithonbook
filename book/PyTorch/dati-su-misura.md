@@ -1,7 +1,8 @@
 # Dati su misura: `Dataset`, `DataLoader` e trasformazioni
 
 Nei manuali il dataset arriva sempre pronto: una riga di codice e MNIST, la
-raccolta di cifre scritte a mano su cui abbiamo addestrato il primo modello, si
+raccolta di cifre scritte a mano su cui il capitolo ha addestrato la sua prima
+rete, si
 scarica da solo, con le immagini già quadrate, già etichettate, già divise in
 addestramento e test. Nella vita reale il primo giorno di un progetto
 assomiglia piuttosto a questo: una cartella con quattromila fotografie, i nomi
@@ -40,8 +41,9 @@ from torchvision import datasets, transforms
 
 preparazione = transforms.Compose([
     transforms.Resize((224, 224)),   # tutte le immagini della stessa misura
-    transforms.ToTensor(),           # da immagine a tensore (canali, altezza,
-                                     # larghezza) con i valori portati fra 0 e 1
+    transforms.ToTensor(),           # da immagine a tensore (un canale per
+                                     # colore, poi altezza e larghezza) con i
+                                     # valori portati fra 0 e 1
 ])
 
 dati_train = datasets.ImageFolder(root="dati/addestramento", transform=preparazione)
@@ -56,8 +58,11 @@ print(immagine.shape, etichetta)  # torch.Size([3, 224, 224]) 0
 
 Un dettaglio che sembra burocratico e non lo è: l'associazione classe → numero
 segue l’ordine alfabetico delle cartelle, non quello in cui le abbiamo in
-testa. Quando poi si legge una predizione, `dati_train.classes[indice]` è
-l'unico modo corretto di tradurla in una parola. Scrivere a mano una lista di
+testa. Alfabetico per il calcolatore, cioè per codice del carattere, che non è
+del tutto quello del vocabolario: le maiuscole vengono prima di tutte le
+minuscole e le accentate vanno in fondo. Quando poi si legge una predizione,
+`dati_train.classes[indice]` è il modo giusto di tradurla in una parola,
+perché è l'unico che non riscrive quell'ordine. Scrivere a mano una lista di
 nomi in un altro ordine è un classico modo di ottenere un modello che sembra
 sbagliare tutto mentre invece funziona benissimo.
 
@@ -68,7 +73,10 @@ database, in file audio con le etichette in un foglio a parte (o appena
 servono più informazioni della sola classe), si scrive la propria classe. È
 meno lavoro di quanto sembri: si scrivono tre metodi, e due soli di quelli
 sono il contratto vero, cioè le domande che PyTorch verrà davvero a farci; il
-terzo è il costruttore, che serve a noi per prepararci.
+terzo è il costruttore, che serve a noi per prepararci. (Nella classe base è
+obbligatorio il solo `__getitem__`; `__len__` è dichiarato facoltativo, ma lo
+pretendono il `DataLoader` con le sue impostazioni normali e quasi tutti i modi
+di pescare, quindi in pratica il contratto è a due.)
 
 ```{figure} ../figures/ereditarieta-polimorfismo.svg
 :name: fig-ereditarieta-dataset
@@ -99,9 +107,14 @@ from torch.utils.data import Dataset
 from PIL import Image
 
 class DatasetImmagini(Dataset):
-    """Legge le immagini da cartelle-classe, come ImageFolder, ma è nostro."""
+    """Legge le immagini da cartelle-classe, come ImageFolder, ma è nostro.
+
+    La `transform` non è davvero facoltativa: senza, `__getitem__` restituisce
+    una PIL.Image, e il collate di default non sa impilarla in un batch.
+    """
 
     def __init__(self, radice: str, transform=None):
+        # solo .jpg: ImageFolder invece accetta tutte le estensioni note
         self.percorsi = sorted(pathlib.Path(radice).glob("*/*.jpg"))
         self.classi = sorted({p.parent.name for p in self.percorsi})
         self.classe_a_indice = {c: i for i, c in enumerate(self.classi)}
@@ -112,7 +125,8 @@ class DatasetImmagini(Dataset):
 
     def __getitem__(self, indice: int):
         percorso = self.percorsi[indice]
-        immagine = Image.open(percorso).convert("RGB")     # anche i PNG a 4 canali
+        immagine = Image.open(percorso).convert("RGB")     # 3 canali sempre, anche
+                                                           # da un bianco e nero
         etichetta = self.classe_a_indice[percorso.parent.name]
         if self.transform is not None:
             immagine = self.transform(immagine)
@@ -138,8 +152,8 @@ Certi dati però non stanno su uno scaffale, arrivano come un nastro che
 scorre, e da un nastro si prende quello che passa: chiedere il 137 non
 significa niente, perché per arrivarci bisogna aver lasciato passare tutti
 quelli davanti. Chi lavora così mescola come può, tenendo da parte un cesto di
-qualche centinaio di pezzi e pescando lì dentro, e l'ordine si rompe almeno
-dentro il cesto.
+qualche centinaio di pezzi e pescando lì dentro, e almeno dentro il cesto
+l'ordine si mescola davvero.
 
 La regola pratica sta tutta in questa divisione del lavoro: in `__init__` le
 cose pesanti, in `__getitem__` le cose leggere. Se in `__init__` carichi in
@@ -150,11 +164,13 @@ ferma a girarsi i pollici.
 
 Una cosa in `__init__` non ci va comunque: un archivio già aperto, o un
 collegamento a una banca dati già stabilito. La preparazione la fa una persona
-sola, e quando le richieste vengono poi smistate a più aiutanti, ognuno si
-ritrova in mano la copia di una chiave che apparteneva a un altro: la porta
-non si apre, e il lavoro muore con un errore che sembra venire da tutt'altra
-parte. Il collegamento si stabilisce alla prima richiesta, e lo stabilisce chi
-quella richiesta la sta servendo.
+sola, e le richieste vengono poi smistate a degli aiutanti, cioè a più processi
+che leggono i dati in parallelo (li accende il `DataLoader`, e la sezione che
+segue dice quanti). Quello che ciascuno si ritrova in mano non è una chiave, che
+copiata funzionerebbe: è il filo di una telefonata cominciata da qualcun altro,
+e parlare in quattro sulla stessa linea non va. Il lavoro muore con un errore
+che sembra venire da tutt'altra parte. Il collegamento si stabilisce alla prima
+richiesta, e lo stabilisce chi quella richiesta la sta servendo.
 `````
 
 `````{tab} Superiore
@@ -202,7 +218,8 @@ train_tf = transforms.Compose([
 
 # VALUTAZIONE: solo prepara. Nessuna casualità.
 test_tf = transforms.Compose([
-    transforms.Resize((256, 256)),
+    transforms.Resize(256),                        # il lato corto a 256, senza
+                                                   # schiacciare le proporzioni
     transforms.CenterCrop(224),                    # ritaglio deterministico
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
@@ -221,7 +238,9 @@ Un professore che racconta com'è andata la verifica non elenca ventidue voti,
 dice «due sopra la media» e «uno sotto». I numeri diventano piccoli, e la
 differenza fra un compagno e l'altro si vede a colpo d'occhio invece di restare
 nascosta dentro cifre che si somigliano tutte. `Normalize` fa lo stesso ai
-colori, e le reti da numeri raccolti attorno allo zero imparano meglio.
+colori, e le reti da numeri raccolti attorno allo zero imparano meglio, perché
+una correzione della stessa misura conta allora uguale su tutti e tre, invece
+di essere enorme per uno e trascurabile per un altro.
 
 La media da sola non basta, e si vede con due materie. In italiano i voti
 stanno quasi tutti fra 5 e 7, in matematica vanno dal 2 al 10, e un 8 nella
@@ -239,18 +258,20 @@ a 2,2 sopra.
 
 La media di classe si fa sui voti, non sui compiti. Finché sono fogli si possono
 ricopiare, accorciare, riscrivere, ma nessuno ne fa la media. Ruotare,
-ritagliare e schiarire sono cose che si fanno a una fotografia; togliere una
-media e dividere per un numero sono cose che si fanno a dei numeri. Prima la
-foto, poi la conversione in numeri, e solo dopo la sottrazione, perché le ultime
-due al contrario non funzionano proprio.
+ritagliare e schiarire si possono fare tanto alla fotografia quanto ai numeri
+che ne escono; togliere una media e dividere per un numero, invece, si fanno
+soltanto ai numeri. Ecco perché l'ordine è quello: prima la foto, poi la
+conversione in numeri, e solo dopo la sottrazione. Scambiando le ultime due il
+programma si ferma.
 
 I sei numeri vengono da **ImageNet**, la grande raccolta pubblica di fotografie
 etichettate su cui, dal 2012 in poi, si è misurata la visione artificiale.
 Perché la scala di ImageNet su delle foto di pizza? Perché quasi nessuno parte
 da zero: si prende un modello che ha già studiato là, e lui quella scala se
-l'aspetta, come uno studente che ha imparato in decimi e si trova davanti i
-giudizi a lettere. Chi parte davvero da zero i sei numeri se li calcola sulle
-proprie foto, la prima volta che le scorre tutte.
+l'aspetta, come uno studente che ha imparato in decimi e a cui conviene
+continuare a dare i voti in decimi, che in giudizi a lettere non saprebbe più
+dire quanto è andato bene. Chi parte davvero da zero i sei numeri se li calcola
+sulle proprie foto, la prima volta che le scorre tutte.
 `````
 
 `````{tab} Superiore
@@ -286,7 +307,8 @@ train_loader = DataLoader(
     dati_train,
     batch_size=32,
     shuffle=True,             # rimescola a ogni epoca: solo in addestramento
-    num_workers=os.cpu_count(),   # processi che preparano i batch in parallelo
+    num_workers=os.cpu_count(),   # processi che preparano i batch in parallelo:
+                                  # è un punto di partenza, poi si misura
     pin_memory=True,          # memoria "bloccata": trasferimento più rapido alla GPU
     drop_last=True,           # scarta l'ultimo batch se incompleto
     persistent_workers=True,  # non li ricrea a ogni epoca
@@ -306,7 +328,8 @@ lo dà alla GPU, aspetta, prepara il prossimo, e la GPU, che è la parte cara
 della macchina, resta ferma metà del tempo. Con quattro o otto aiutanti i
 vassoi successivi sono già pronti quando servono.
 
-Quanti ne tengono pronti ciascuno? Due, se non si dice altro. Con otto
+Quanti ne tengono pronti ciascuno? Due, se non si dice altro, e a dirlo è
+`prefetch_factor`. Con otto
 aiutanti sono sedici vassoi apparecchiati in giro per la cucina, più quello in
 uso: se i vassoi sono grandi, il piano di lavoro si riempie prima che la
 cucina abbia fame, e la macchina resta senza memoria per una ragione che con
@@ -314,12 +337,21 @@ la scheda grafica non c'entra niente.
 
 `pin_memory` è il piano d'appoggio accanto al passavivande: i dati vengono
 messi in una zona di memoria da cui la GPU può prenderli senza passaggi
-intermedi, e mentre li sta prendendo la cucina può già lavorare al resto.
+intermedi. È la premessa perché la cucina possa lavorare al resto mentre la
+scheda ritira, e non basta da sola: la sovrapposizione va chiesta, con una
+seconda manopola, quando i dati si passano alla scheda grafica.
 
-`drop_last` butta via l'ultimo vassoio se è mezzo vuoto: con duemila esempi e
-vassoi da 32, l'ultimo ne ha 16, e ci sono tipi di strato che dai numeri del
-vassoio ricavano delle statistiche, e su un vassoio grande la metà quelle
-statistiche vengono storte. Il capitolo sul deep learning dirà quali.
+`drop_last` butta via l'ultimo vassoio se è rimasto mezzo vuoto: con duemila
+esempi e vassoi da 32, l'ultimo ne ha 16, e ci sono tipi di strato che dai
+numeri del vassoio ricavano delle medie (li nomina la {doc}`sezione
+sull'ottimizzazione e la regolarizzazione
+</DeepLearning/ottimizzazione-regolarizzazione>`). Su metà vassoio quelle medie
+restano giuste e diventano soltanto più ballerine; con 2049 esempi, però,
+l'ultimo vassoio ne avrebbe uno solo, e da un numero solo la media si fa ma la
+misura di quanto i numeri si sparpagliano no. Quando quegli strati dal vassoio
+ricevono un numero per esempio, un vassoio da uno li ferma con un errore; su
+una fotografia no, perché lì i numeri su cui fanno il conto sono i pixel, e
+restano tanti anche con una foto sola.
 
 `persistent_workers` dice di non licenziare gli aiutanti alla fine di ogni
 giro per riassumerli subito dopo: se prepararsi costa loro qualche secondo,
@@ -353,8 +385,11 @@ processo principale preleva. `prefetch_factor` (default 2) regola quanti batch
 ogni worker tiene pronti in anticipo: la memoria occupata cresce come
 $k \times \text{prefetch\_factor} \times \text{dimensione batch}$, e su
 macchine con poca RAM è la prima causa di *out of memory* che non riguarda la
-GPU. `persistent_workers=True` evita il costo di riavviarli a ogni epoca:
-significativo quando `__init__` è pesante.
+GPU. `persistent_workers=True` evita il costo di riavviarli a ogni epoca. Quel
+costo non è `__init__`, che gira una volta sola nel processo principale e ai
+worker arriva già fatto: è l'avvio dei processi e, dove nascono per *spawn*,
+il re-import del modulo e la deserializzazione dell'oggetto `Dataset`, cioè la
+sua dimensione.
 
 `pin_memory=True` alloca i batch in memoria *page-locked*, che consente il
 trasferimento DMA asincrono verso la GPU; combinato con
@@ -365,6 +400,13 @@ calcolo. Su Windows e macOS, dove i worker nascono per *spawn* e non per
 far ripartire il programma, e Python lo ferma sul nascere con un
 `RuntimeError`.
 
+`drop_last=True` scarta l'ultimo batch quando non è pieno. Le statistiche per
+batch della `BatchNorm` su un batch corto restano non distorte e diventano solo
+più disperse; il caso netto è il batch da un elemento, su cui la varianza
+campionaria non esiste e `nn.BatchNorm1d` in `train()` alza `ValueError:
+Expected more than 1 value per channel`. Con $n$ esempi e batch $b$ succede
+quando $n \bmod b = 1$, che capita più spesso di quanto sembri.
+
 Infine `shuffle=True` e l'argomento `sampler` sono mutuamente esclusivi:
 `shuffle` è di fatto una scorciatoia per `RandomSampler`. Chi passa un sampler
 personalizzato deve togliere `shuffle`.
@@ -372,12 +414,13 @@ personalizzato deve togliere `shuffle`.
 
 ## Quando gli esempi non hanno la stessa forma: `collate_fn`
 
-Il pezzo che impila gli esempi in un batch (si chiama *collate*, che in inglese
-vuol dire proprio «mettere in ordine dei fogli sciolti», e nel codice compare
-come `collate_fn`) pretende che abbiano tutti la stessa forma. Con le immagini ridimensionate è vero per costruzione; con il
-testo, l'audio o le serie temporali non lo è quasi mai: una frase è lunga
-sette parole, la successiva quarantatré. La soluzione è sostituire quel
-meccanismo con il proprio.
+Il pezzo che impila gli esempi in un batch pretende che abbiano tutti la stessa
+forma. Si chiama *collate*, che in inglese vuol dire proprio «mettere in ordine
+dei fogli sciolti», e nel codice compare come `collate_fn`. Con le immagini
+ridimensionate la stessa forma è vera per costruzione; con il testo, l'audio o
+le serie temporali non lo è quasi mai, perché una frase è lunga sette parole e
+la successiva quarantatré. La soluzione è sostituire quel meccanismo con il
+proprio.
 
 ```python
 import torch
@@ -435,12 +478,16 @@ Dopo l'imbottitura tutte le frasi del vassoio hanno la stessa larghezza, e gli
 zeri aggiunti in coda sono indistinguibili da parole vere: senza sapere dove
 finisce la frase, il modello imparerebbe che lo zero è una parola come le
 altre, e passerebbe metà del suo tempo a studiare l'imbottitura. Le lunghezze
-sono l'informazione che permette di dire «da qui in poi non guardare». Nei
-capitoli sul [natural language
-processing](../NaturalLanguageProcessing/modelli-sequenza.md) e sui
-[Transformer](../Transformers/architettura.md) quella riga di "fin qui sì, da
-qui no" prenderà un nome (si chiama *maschera*) e diventerà un ingrediente
-dell'architettura; per ora basta averla in mano.
+sono l'informazione che permette di dire «da qui in poi non guardare». Il
+gesto ha due seguiti. La {doc}`sezione sull'etichettare le sequenze
+</NaturalLanguageProcessing/etichettare-sequenze>` marca le caselle di
+imbottitura perché non entrino nel conto dell'errore, che è lo stesso lavoro
+fatto sulle etichette invece che sui dati. Nei
+{doc}`Transformer </Transformers/architettura>` quella stessa riga di «fin qui
+sì, da qui no» diventa un ingrediente dell'architettura e prende un nome, si
+chiama *maschera*, e serve anche a un secondo mestiere: vietare a una parola
+di guardare quelle che vengono dopo. Per ora basta avere in mano le
+lunghezze.
 
 ## Classi sbilanciate: pescare con criterio
 
@@ -526,8 +573,9 @@ esempi i.i.d., ipotesi violata da qualunque struttura gerarchica (paziente,
 sessione, utente, documento). La contromisura è una divisione per gruppi:
 l'equivalente PyTorch di `GroupShuffleSplit` di scikit-learn si scrive
 raccogliendo gli indici per gruppo e passandoli a `torch.utils.data.Subset`.
-Per dati temporali vale l'analogo temporale (*forward chaining*), trattato in
-[serie temporali](../SerieTemporali/validazione-e-feature.md).
+Per dati temporali vale l'analogo temporale, la validazione a
+{doc}`origine mobile </SerieTemporali/validazione-e-feature>` (che si trova
+anche come *walk-forward* e come *forward chaining*).
 
 Un secondo tranello, più sottile: le statistiche di normalizzazione e ogni
 altro parametro di preprocessing vanno calcolati solo sul training set e
@@ -538,7 +586,7 @@ gonfia i risultati di poco, ma abbastanza da falsare un confronto.
 
 ## Il collo di bottiglia è quasi sempre il disco
 
-Un'ultima cosa, la meno intuitiva, ed è forse la più utile della sezione.
+Un'ultima cosa, la meno intuitiva di tutte.
 Quando un addestramento è lento, l'istinto dice che la colpa è del modello.
 Nella maggior parte dei progetti che non riguardano i modelli giganti, la
 colpa è invece del caricamento dei dati: la cucina finisce il vassoio e
@@ -601,11 +649,10 @@ sequenza sposta il lavoro dove l'hardware è veloce.
 `````
 
 C'è poi un secondo motivo per impacchettare i file, che si paga una volta e
-serve per sempre. Mentre si scorre tutta la collezione per riscriverla, la si sta già
-leggendo: costa zero calcolare intanto media e deviazione standard di ogni
-colore, cioè i sei numeri che servono a `Normalize` e che qualche pagina fa
-avevamo preso in prestito da ImageNet. Sui propri dati si calcolano, e vengono
-meglio.
+serve per sempre. Mentre si scorre tutta la collezione per riscriverla, la si
+sta già leggendo: costa zero calcolare intanto media e deviazione standard di
+ogni colore, cioè i sei numeri che servono a `Normalize` e che erano stati
+presi in prestito da ImageNet. Sui propri dati si calcolano, e vengono meglio.
 
 Due avvertenze, e sono le stesse di sempre. La prima: quei sei numeri si
 calcolano solo sulle foto di addestramento, mai su tutte. Calcolarli su
@@ -638,9 +685,12 @@ del calcolo.
 - Le trasformazioni servono a due cose: preparare (stessa misura, stessa
   scala di numeri) e moltiplicare (girare, specchiare, schiarire). Si
   moltiplica solo in addestramento, mai durante l'esame.
-- Il `DataLoader` ha una manopola che conta più delle altre, il numero di
+- Il `DataLoader` si regola con pochi argomenti, e il primo è il numero di
   aiutanti che preparano i vassoi in parallelo; e una regola: o si mescola
   a caso, o si passa un modo di pescare proprio, non tutti e due.
+- I sei numeri di `Normalize` si calcolano sulle sole foto di addestramento,
+  mai su tutte; e se si parte da un modello già addestrato da altri non si
+  calcolano affatto, si prendono i suoi.
 - Se gli esempi hanno lunghezze diverse (frasi, suoni) si allungano tutti alla
   stessa misura con degli zeri, e si restituiscono anche le lunghezze vere,
   altrimenti il modello studia l'imbottitura.
@@ -654,8 +704,9 @@ del calcolo.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Un `Dataset` è un contratto di tre metodi: `__init__` (lavoro pesante,
-  una volta), `__len__`, `__getitem__` (lavoro leggero, milioni di volte).
+- Un `Dataset` sono tre metodi e un contratto a due: `__init__` è per noi
+  (lavoro pesante, una volta), mentre `__len__` e `__getitem__` sono le
+  domande del `DataLoader` (lavoro leggero, milioni di volte).
 - `ImageFolder` copre il caso "una cartella per classe"; l'indice delle classi
   segue l’ordine alfabetico, e va riletto da `.classes`, mai riscritto a
   mano.

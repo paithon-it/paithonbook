@@ -432,9 +432,11 @@ al foglio, e l'occhio cade sul punto che serve in quel momento, come un
 evidenziatore che si sposta man mano che la traduzione avanza. Non c'è nessuna
 regola scritta a mano che dica dove guardare: la rete impara da sola, durante
 l'addestramento, che quando sta per dire *cat* conviene pesare molto «gatto».
-Sorpresa in regalo: disegnando dove cade l'evidenziatore si ottiene, gratis,
-l'allineamento tra le parole delle due lingue («cat» ↔ «gatto», «wall» ↔
-«muro») che nessuno aveva chiesto al modello di imparare.
+Sorpresa in regalo: disegnando dove cade l'evidenziatore si ottiene, quasi
+sempre, l'allineamento tra le parole delle due lingue («cat» ↔ «gatto», «wall»
+↔ «muro») che nessuno aveva chiesto al modello di imparare. Quasi sempre, non
+sempre: c'è almeno una coppia di lingue su cui l'evidenziatore cade altrove e
+il disegno non somiglia a nessun allineamento.
 
 `````
 
@@ -463,8 +465,14 @@ $$
 dove $\alpha_{ij}$ è quanto il passo di decodifica $i$ «guarda» la parola
 sorgente $j$ (i pesi sommano a 1) e $\mathbf{c}_i$ è la media pesata degli
 stati dell'encoder, che entra nel calcolo di $\mathbf{s}_i$ e della parola
-successiva. La matrice dei pesi $\alpha_{ij}$, visualizzata, è una mappa di
-allineamento tra le due frasi: appresa senza alcuna supervisione esplicita.
+successiva. La matrice dei pesi $\alpha_{ij}$, visualizzata, si legge di solito
+come una mappa di allineamento fra le due frasi, appresa senza alcuna
+supervisione esplicita. Di solito e non sempre: misurata contro un allineatore
+automatico su sei coppie di lingue, la sovrapposizione sta fra il $72$ e il
+$78\%$ in cinque casi e crolla al $15\%$ sul tedesco-inglese, che gli autori
+registrano come un caso isolato {cite}`koehn2017six`. Chi vuole l'allineamento,
+e non solo l'intuizione, addestra l'attenzione con l'allineamento come
+bersaglio, cioè con la supervisione che qui non c'è.
 
 `````
 
@@ -747,12 +755,13 @@ per intero, le frasi su cui il modello non si è mai esercitato.
 ## Generare la frase: greedy e beam search
 
 Resta un problema che finora abbiamo dato per scontato. Il decoder, a ogni
-passo, non sceglie una parola: assegna una percentuale a tutte le parole
-che conosce, decine di migliaia di numeri che sommano a uno. Come si passa da
+passo, non sceglie una parola: dà un voto a tutte le parole che conosce, decine
+di migliaia di numeri fra zero e uno che sommano a uno. Come si passa da
 quell'elenco a una parola sola? L'istinto dice: prendi la più alta e vai
-avanti. Si chiama strategia **greedy**, «ingorda», ed è quello che fa chiunque
-abbia fretta. Ma la parola migliore *adesso* non porta sempre alla frase
-migliore *alla fine*.
+avanti. È la strategia *greedy*, la stessa parola avida dell'agente della
+{doc}`sezione sui banditi </ReinforcementLearning/banditi>`, e qui è quello che
+fa chiunque abbia fretta. Ma la parola migliore *adesso* non porta sempre alla
+frase migliore *alla fine*.
 
 (E chi gli dice di smettere? Fra le voci del suo elenco ce n'è una che non è
 una parola, ma il segnale di fine frase, lo stesso `</s>` incontrato con gli
@@ -789,24 +798,32 @@ prosegue di lì fino a «The black cat…». Le strade lasciate cadere per via s
 dicono potate, come i rami di un albero, perché dal tronco parte ogni
 continuazione possibile e a ogni bivio se ne tagliano quasi tutte.
 
-C'è un difetto, e si vede dai numeri dei cartelli. Sono tutti minori di uno,
-quindi ogni moltiplicazione rimpicciolisce il punteggio. Da 0,50 si scende a
-0,15 al secondo bivio e a 0,12 al terzo. Un cammino lungo scende sempre, anche
-quando sta andando benissimo. Chi confronta i totali sceglie allora la strada
-più corta, e la traduzione esce troncata a metà.
+Il confronto finale, però, ha un difetto, e si vede dai numeri dei cartelli.
+Sono tutti minori di uno, quindi ogni moltiplicazione rimpicciolisce il
+punteggio: la strada vincente vale $0{,}40$ al primo bivio, $0{,}24$ al
+secondo, $0{,}19$ al terzo. Un cammino lungo scende sempre, anche quando sta
+andando benissimo. Ed è un guaio perché i cammini da confrontare, alla fine,
+lunghi uguali non sono: un esploratore che scommette sul segnale di fine frase
+si ferma dove è arrivato e va messo da parte, e il suo punteggio, fatto di due
+soli passi, batte quello di chi ha lavorato per dieci. Chi confronta i totali
+nudi sceglie il più corto, e la traduzione esce troncata a metà.
 
-Si rimedia mettendo i cammini sullo stesso metro, e si guarda quanto vale in
-media un singolo passo invece del totale. Un cammino di dieci parole e uno di
-tre diventano così confrontabili. Questa correzione si chiama **penalità di
-lunghezza**, e toglie alle frasi brevi un vantaggio che non si sono
-guadagnate.
+Si rimedia mettendo i cammini sullo stesso metro: si divide il punteggio per la
+lunghezza, così che a contare sia quanto vale un passo e non quanti passi ci
+sono. In pratica si divide per una potenza della lunghezza minore di uno,
+perché dividere per la lunghezza intera corregge troppo e finisce per preferire
+sempre le frasi lunghe. Questa correzione si chiama **penalità di lunghezza**,
+e toglie alle frasi brevi un vantaggio che non si sono guadagnate.
 
 Resta da decidere quanti esploratori mandare. Con uno solo si torna alla fretta
 del primo bivio. Con due, o con dieci, la strada migliore in assoluto può
 restare fuori lo stesso: se parte da un cartello che sembrava mediocre, è stata
 abbandonata lì, e nessuno torna indietro a riprenderla. Ogni esploratore in più
-riduce il rischio e costa, perché è un cammino da seguire fino in fondo. In
-traduzione ne bastano quasi sempre una manciata, e non più di una decina.
+costa, perché è un cammino da seguire fino in fondo, e qui viene la sorpresa:
+oltre una certa quota la traduzione non migliora, peggiora. Con il fascio
+largo il modello trova strade che giudica migliori in assoluto, e quelle strade
+sono più corte del dovuto. In traduzione ne bastano quasi sempre una manciata,
+e non più di qualche decina.
 
 `````
 
@@ -823,9 +840,17 @@ $$
 \mathrm{score}(y_{1:t}) = \sum_{i=1}^{t} \log P(y_i \mid y_{<i}, x)
 $$
 
-e trattiene le migliori $k$ (con $k=1$ si torna alla greedy). Non è una
-ricerca esatta (l'ottimo globale può comunque sfuggire al fascio) ma in
-traduzione valori di $k$ tra 4 e 10 bastano quasi sempre. Un dettaglio
+e trattiene le migliori $k$ (con $k=1$ si torna alla greedy). Il costo è
+quello della greedy moltiplicato per $k$, cioè in mezzo fra la greedy e la
+ricerca esaustiva. Non è una ricerca esatta: l'ottimo globale può sfuggire al
+fascio, e allargare $k$ riduce gli errori di ricerca senza migliorare la
+traduzione oltre un certo punto. Koehn e Knowles misurano che «in quasi tutti i
+casi si trovano traduzioni peggiori oltre un'ampiezza ottima», che sulle otto
+coppie di lingue che provano va da $4$ a circa $30$, e che la causa è che con
+il fascio largo vincono le traduzioni corte {cite}`koehn2017six`; la
+normalizzazione per lunghezza attenua il fenomeno senza toglierlo. È un
+risultato che va letto per quello che dice: a sbagliare è l'obiettivo, non il
+fascio, perché il massimo del modello premia il troppo corto. Un dettaglio
 pratico: essendo una somma di logaritmi negativi, il punteggio penalizza le
 frasi lunghe, e il decoder tenderebbe a traduzioni troppo corte. Si corregge
 con una **length penalty**, per esempio dividendo il punteggio per
@@ -834,8 +859,11 @@ Google {cite}`wu2016google` parte proprio da questa euristica e la sostituisce
 poi con una variante appena più elaborata,
 $lp(y) = \frac{(5+|y|)^{\alpha}}{6^{\alpha}}$, dove l'esponente agisce su
 $(5+|y|)$ e non su $|y|$: per questo il valore che gli autori usano,
-$\alpha = 0{,}2$, non è confrontabile con lo $0{,}65$ dell'euristica di
-partenza, ed è da tenere a mente prima di citare «l’$\alpha$ di GNMT».
+$\alpha = 0{,}2$, non è confrontabile con lo $0{,}6$–$0{,}7$ dell'euristica di
+partenza, ed è da tenere a mente prima di citare «l’$\alpha$ di GNMT». Alla
+correzione di lunghezza affiancano poi un secondo termine, che premia le
+traduzioni i cui pesi di attenzione hanno coperto tutte le parole di
+partenza.
 
 `````
 
@@ -896,7 +924,8 @@ una traduzione fatta da traduttori che conoscono bene tutte e due le lingue,
 che prende il voto più alto di tutti ed è il metro di riferimento. Il
 risultato: della distanza che separava il vecchio sistema dal traduttore
 umano, il nuovo ne recupera fra il 58 e l'87 per cento a seconda della
-coppia di lingue, e in media quasi il settanta. Per la prima volta le reti
+coppia di lingue, che gli autori riassumono in una riduzione media degli errori
+del sessanta per cento. Per la prima volta le reti
 ricorrenti che abbiamo studiato traducono, ogni giorno, per centinaia di
 milioni di persone.
 
@@ -934,8 +963,9 @@ Transformer.
 - L’attenzione di Bahdanau mette il testo sul tavolo dell'interprete: per
   ogni parola che pronuncia, un'occhiata al punto che serve adesso, con
   un'attenzione che si sposta a ogni passo e che nessuno gli ha insegnato dove
-  posare. In regalo si ottiene l'allineamento fra le parole delle due lingue,
-  ed è la stessa idea che nei Transformer diventerà protagonista.
+  posare. Quasi in regalo si ottiene l'allineamento fra le parole delle due
+  lingue (quasi: su qualche coppia di lingue l'attenzione guarda altrove), ed è
+  la stessa idea che nei Transformer diventerà protagonista.
 - Mentre impara, il decoder riparte dopo ogni parola da quella giusta invece
   che dalla propria (*teacher forcing*), e per questo tutte le domande della
   frase sono note in anticipo, il che fa risparmiare molto lavoro. Quando poi
@@ -993,7 +1023,9 @@ Transformer.
   e gradiente di policy invece di sostituirla.
 - In generazione la scelta greedy è miope; la beam search tiene
   aperte le $k$ ipotesi migliori (con una *length penalty* per non penalizzare
-  le frasi lunghe).
+  le frasi lunghe). Allargare il fascio riduce gli errori di ricerca ma oltre
+  un'ampiezza ottima la traduzione peggiora, perché il massimo del modello
+  premia il troppo corto {cite}`koehn2017six`.
 - BLEU {cite}`papineni2002bleu` è precisione di $n$-grammi con *clipping*,
   frenata dalla *brevity penalty*: definito sul corpus, dipendente dal
   protocollo, cieco alla parafrasi. Nel 2014 la rete pura ($34{,}8$) supera il

@@ -10,17 +10,19 @@ prevedibile per loro, e quindi facile. Chiamò la procedura *cloze*, dalla
 chiusura percettiva di cui parlavano gli psicologi della forma: la tendenza a
 completare da sé una figura interrotta.
 
-Taylor voleva misurare i lettori. Sessantasei anni dopo, lo stesso identico
-gioco (coprire una parola e farla indovinare) è diventato il modo in cui si
-addestrano i modelli di linguaggio, e gli autori di BERT lo dicono in chiaro,
-rimandando proprio a Taylor: quel loro esercizio, scrivono, in letteratura si
-chiama *compito cloze* {cite}`devlin2019bert`. Nel mezzo sono cambiati chi lo
-fa e a che scopo, non l'esercizio. Non si misura più il lettore, si
-fabbrica il lettore.
+Taylor misurava i testi, e per farlo metteva alla prova i lettori.
+Sessantasei anni dopo, lo stesso identico gioco (coprire una parola e farla
+indovinare) è diventato il modo in cui si addestrano i modelli di linguaggio,
+e gli autori di BERT lo dicono in chiaro, rimandando proprio a Taylor: quel
+loro esercizio, scrivono, in letteratura si chiama *compito cloze*
+{cite}`devlin2019bert`. Nel mezzo sono cambiati chi lo
+fa e a che scopo, non l'esercizio. Non si mette più alla prova il lettore, lo
+si fabbrica.
 
-Quella mossa è comparsa già cinque volte, con cinque nomi diversi e senza che
-nessuno si fermasse a dire che era una cosa sola, e oggi regge il
-pre-addestramento di quasi tutti i modelli di cui si parla.
+Quella mossa torna in cinque campi diversi, ogni volta con il pretesto
+che serviva lì e ogni volta raccontata come una cosa di quel campo, e oggi
+regge il pre-addestramento di quasi tutti i modelli di cui si parla. Qui si
+guarda che cosa hanno in comune.
 
 ## Un compito la cui risposta è già nei dati
 
@@ -81,8 +83,8 @@ grande quanto la cosa che stai guardando.
 
 La quantità da guardare è l'informazione portata dal **bersaglio**, cioè dalla
 risposta corretta su cui si calcola la perdita. Una scelta fra $K$ possibilità
-porta al più $\log_2 K$ bit, che è l'entropia del caso equiprobabile e il tetto
-di tutti gli altri, e la ricava
+porta *in media* al più $\log_2 K$ bit, che è l'entropia del caso
+equiprobabile e il tetto di tutti gli altri, e la ricava
 {doc}`Teoria dell'informazione </Matematica/teoria-informazione>`.
 
 Da qui tre conti, e sono conti di tetto, non di sostanza:
@@ -92,8 +94,8 @@ Da qui tre conti, e sono conti di tetto, non di sostanza:
 - un token su un vocabolario di $V = 128\,000$ porta al più
   $\log_2 128\,000 \approx 17$ bit, ma li porta per token, e un esempio di
   pre-addestramento è una finestra di migliaia di token;
-- una ricompensa binaria porta 1 bit, e lo porta per episodio, cioè per
-  l'intera traiettoria, comunque lunga sia.
+- una ricompensa binaria porta al più 1 bit, e lo porta per episodio, cioè
+  per l'intera traiettoria, comunque lunga sia.
 
 L'ultima riga è quella che decide tutto, e non per la dimensione del numero ma
 per il denominatore: nel supervisionato e nell'auto-supervisionato il bersaglio
@@ -108,8 +110,8 @@ Il conto lo facciamo fare al calcolatore, così si può rifare e discutere.
 from math import log2
 
 # Quanta informazione porta AL PIU' il bersaglio, cioe' la risposta giusta su
-# cui il modello si corregge. E' il tetto del canale: quanto ci passa davvero
-# e' un'altra domanda.
+# cui il modello si corregge. E' un tetto: quanto ne passa davvero e' un'altra
+# domanda.
 
 def bit_per_scelta(n):
     """Una scelta fra n possibilita' equiprobabili vale log2(n) bit."""
@@ -123,11 +125,12 @@ PASSI = 10000         # passi di una partita prima del verdetto
 etichetta = bit_per_scelta(CLASSI)
 token     = bit_per_scelta(VOCABOLARIO)
 testo     = token * FINESTRA
-rinforzo  = 1.0       # vinto o perso: una risposta binaria per partita
+rinforzo  = bit_per_scelta(2)   # vinto o perso: una risposta binaria
 
-print(f"{'compito':34s} {'bit per esempio':>16s}")
+print(f"{'compito':34s} {'tetto in bit':>16s}")
 print("-" * 51)
-print(f"{'etichetta su ' + str(CLASSI) + ' classi':34s} {etichetta:16.1f}")
+print(f"{'etichetta su ' + str(CLASSI) + ' classi, per foto':34s} "
+      f"{etichetta:16.1f}")
 print(f"{'un token su ' + str(VOCABOLARIO):34s} {token:16.1f}")
 print(f"{'una finestra di ' + str(FINESTRA) + ' token':34s} {testo:16.1f}")
 print(f"{'vinto o perso, a fine partita':34s} {rinforzo:16.1f}")
@@ -139,9 +142,9 @@ print(f"vale {rinforzo/PASSI:.4f} bit per passo")
 ```
 
 ```text
-compito                             bit per esempio
+compito                                tetto in bit
 ---------------------------------------------------
-etichetta su 1000 classi                       10.0
+etichetta su 1000 classi, per foto             10.0
 un token su 128000                             17.0
 una finestra di 8192 token                 138983.7
 vinto o perso, a fine partita                   1.0
@@ -272,9 +275,10 @@ righe sono strada percorsa; l'ultima è quella che viene subito dopo.
 | {doc}`Allineare due spazi </VisioneLinguaggio/allineare-due-spazi>` | riappaiare l'immagine con la sua didascalia | uno spazio comune fra vista e lingua |
 | {doc}`World model </WorldModels/overview>` | prevedere come continua la scena | un simulatore interno |
 
-Cinque pretesti diversi e un meccanismo solo, che occupa sei capitoli perché il
-linguaggio ne prende due. La colonna di mezzo cambia sempre; la colonna di
-destra è sempre la stessa cosa, una rappresentazione, cioè il riassunto
+Cinque pretesti diversi e un meccanismo solo, con il linguaggio che ci arriva
+per due strade, la parola coperta e la parola successiva. La colonna di mezzo
+cambia sempre; quella di destra è sempre la stessa cosa, una
+rappresentazione, cioè il riassunto
 interno che il modello si costruisce e che tutto il resto usa come materia
 prima. Il pezzo di rete che produce quel riassunto si chiama encoder, ed è
 esattamente quello che si tiene quando il pretesto si butta.
@@ -297,13 +301,17 @@ trovato quando le etichette sono finite: è il modo in cui funziona l'unico
 sistema che sappiamo imparare davvero, e che noi abbiamo raggiunto per un'altra
 strada.
 
-Una nota di vocabolario, per non inciampare più avanti. Lo stesso obiettivo, in
-quella letteratura, circola sotto molti nomi: minimizzare la sorpresa,
-l’entropia, l’errore di predizione oppure l’energia libera
-variazionale. Sono quattro modi di dire la stessa cosa, e la scelta
-dipende dal mestiere di chi parla: «errore di predizione» dove si spiegano
-segnali cerebrali, «energia libera variazionale» dove si fa apprendimento
-automatico.
+Una nota di vocabolario, per non inciampare più avanti. Quel bersaglio, cioè
+il divario fra quello che l'organismo si aspetta e quello che gli arriva, in
+quella letteratura circola sotto molti nomi: minimizzare la sorpresa,
+l’entropia, l’errore di predizione oppure l’energia libera variazionale. Non
+sono la stessa quantità, e chi le tratta come sinonimi si perde il pezzo
+centrale di quella teoria: l'energia libera è un limite superiore sulla
+sorpresa, e le altre due ne discendono sotto ipotesi che vanno dette.
+{doc}`Inferenza attiva </WorldModels/inferenza-attiva>` scrive come stanno fra
+loro. Quale nome si usi dipende poi dal mestiere di chi parla: «errore di
+predizione» dove si spiegano segnali cerebrali, «energia libera variazionale»
+dove si fa apprendimento automatico.
 
 Da qui il capitolo prosegue in quattro sezioni. Prima le famiglie: i quattro
 modi di fabbricare un pretesto, letti tutti come risposte diverse a una sola
@@ -377,8 +385,8 @@ gli argomenti si riportano con i loro nomi giusti e basta.
   motivazione è scritta in {cite}`lecun2021darkmatter`: «unsupervised» è
   fuorviante perché l'auto-supervisione «usa molti più segnali di correzione»
   del supervisionato e del rinforzo.
-- Il paradigma è già istanziato in cinque ambiti e sei capitoli (linguaggio,
-  che ne occupa due, visione, audio, visione-linguaggio, e i world model, che
+- Il paradigma è già istanziato in cinque ambiti (linguaggio, che ci arriva
+  per due strade, visione, audio, visione-linguaggio, e i world model, che
   vengono subito dopo): qui non si ripetono, si unificano.
 ```
 

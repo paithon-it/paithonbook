@@ -309,22 +309,24 @@ segmento fra i due valori e si misura la superficie che gli sta sotto. Con una
 correzione che la vasca impone da sé: l'acqua entrata all'inizio del tratto ha
 avuto tutto il tratto per defluire dallo scarico, quindi di quella si conta
 soltanto la parte ancora dentro. E c'è una furbizia in più, la mossa di sempre
-di Mamba: quanto contano i due estremi non è deciso una
-volta per tutte a metà e metà, lo decide il modello a ogni passo, in base a ciò
-che legge (il trapezio della geometria, quello che fa la media, è il caso
-particolare in cui i due estremi pesano uguale). Precisione e libertà, però,
-tirano da parti opposte: il conto è davvero più preciso solo se i due estremi
-pesano quasi uguale, e lasciato libero il modello preferisce sbilanciarli. Gli
-autori hanno provato a obbligarlo a stare vicino alla metà, e i risultati sono
-peggiorati: quello che si guadagna è una regola più ricca, che il modello dosa
-come gli conviene, più che un errore più piccolo. La conseguenza pratica
-è curiosa: Mamba-1 e Mamba-2 avevano
-bisogno, prima del cuore selettivo, di una **piccola convoluzione causale** (un
-mini-filtro che mescola qualche parola vicina) per funzionare bene. Con il
-conto più fine, e con un ritocco in più (un numero fisso aggiunto ai due pezzi
-che scrivono nella memoria e la rileggono), quel filtro diventa opzionale:
-il modello lavora bene anche senza. Una regola migliore per fare i conti, e una
-stampella in meno.
+di Mamba: quanto contano i due estremi non è deciso una volta per tutte a metà
+e metà, lo decide il modello a ogni passo, in base a ciò che legge (il
+trapezio della geometria, quello che fa la media, è il caso particolare in cui
+i due estremi pesano uguale). Precisione e libertà, però, tirano da parti
+opposte: il conto è davvero più preciso solo se i due estremi pesano quasi
+uguale, e niente obbliga il modello a starci. Gli autori hanno provato a
+inchiodarlo lì, e i risultati sono peggiorati di poco, ma sono peggiorati:
+quello che si guadagna è una regola più ricca, che il modello dosa come gli
+conviene, più che un errore più piccolo. C'è poi una conseguenza pratica che
+nasce dalla forma della regola, non da quanto è precisa. Mamba-1 e Mamba-2
+avevano bisogno, prima del cuore selettivo, di una **piccola convoluzione
+causale** (un mini-filtro che mescola qualche parola vicina) per funzionare
+bene. Ma il conto a due estremi guarda già due campioni vicini, quello di
+adesso e quello di prima, cioè fa da sé una parte del mescolamento che il
+filtro forniva: con quello, e con un ritocco in più (un numero fisso aggiunto
+ai due pezzi che scrivono nella memoria e la rileggono), il filtro diventa
+opzionale e il modello lavora bene anche senza. Una regola migliore per fare i
+conti, e una stampella in meno.
 
 `````
 
@@ -351,24 +353,58 @@ $t$, che il paper indicizza per generalità: in Mamba-2 era $a\mathbf{I}$ con
 $a$ fisso, e la dipendenza dal token passava tutta per $\Delta_t$). La regola
 classica del trapezio (la media dei due estremi) è il caso $\lambda_t = 1/2$ e
 la regola di Eulero di Mamba-2 è il caso $\lambda_t = 1$: sono due casi
-particolari di una famiglia, non l'alternativa secca fra due metodi. L'errore
-locale scende a $O(\Delta_t^3)$ a condizione che $\lambda_t$ resti vicino a
-$1/2$ (precisamente $\lambda_t = 1/2 + O(\Delta_t)$), e il paper riporta che
-imporre quella condizione peggiora i risultati empirici: il modello
-preferisce dosare il peso a modo suo, e quello che si guadagna in accuratezza
-formale si perde in qualità. Non è la trasformazione bilineare di S4, che
-approssima l'esponenziale di $\mathbf{A}$: qui il trapezio agisce sul termine
-d'ingresso data-dipendente, mentre la transizione resta esponenziale. La
+particolari di una famiglia, non l'alternativa secca fra due metodi. Sotto le
+ipotesi di regolarità che il paper enuncia (ingresso, $\mathbf{A}$ e
+$\mathbf{B}$ di classe $C^3$ sul passo, e $\lambda_t$ dentro un intervallo
+limitato) l'errore locale scende a $O(\Delta_t^3)$ a condizione che
+$\lambda_t$ resti vicino a $1/2$ (precisamente $\lambda_t = 1/2 +
+O(\Delta_t)$); fuori da quella condizione il metodo resta del prim'ordine, con
+una costante che cresce come $\lvert 1/2 - \lambda_t \rvert$ e che ai due
+estremi $\lambda_t \in \{0, 1\}$ vale quanto quella di Eulero. Il paper
+riporta che imporre quella condizione peggiora i risultati empirici: il
+modello preferisce dosare il peso a modo suo, e il second'ordine, da solo, non
+è quello che paga. Non
+è la trasformazione bilineare di S4, che approssima l'esponenziale di
+$\mathbf{A}$: qui il trapezio agisce sul termine
+d'ingresso data-dipendente, mentre la transizione resta esponenziale. E la
+transizione resta esatta finché $\mathbf{A}$ non dipende dal token: in
+Mamba-3, dove dipende, il paper approssima separatamente i due integrali, e il
+second'ordine riguarda il solo termine d'ingresso. La
 conseguenza riportata nel paper è che la **short causal convolution** posta
 prima dell'SSM (presente in tutti i blocchi Mamba precedenti come
 stabilizzatore) diventa opzionale: insieme a un termine di bias
 esplicito su $\mathbf{B}$ e $\mathbf{C}$, la discretizzazione più fine
-recupera l'effetto di mescolamento locale che quel filtro forniva. Vanno
+recupera l'effetto di mescolamento locale che quel filtro forniva; il paper
+avverte che i due oggetti restano distinti, perché la convoluzione corta agisce
+su $x_t$ fuori dalla ricorrenza e questa sul prodotto $\mathbf{B}_t x_t$
+dentro. Vanno
 insieme, i due ingredienti, e il paper li toglie uno per volta: con la
 discretizzazione nuova ma senza i bias la qualità cala, e senza nessuno dei due
 cala ancora.
 
 `````
+
+Il peso $\lambda_t$ decide quanto contano i due estremi dell'intervallo, ed è
+lui a separare il conto sbrigativo da quello fine. Allontanarsene costa quasi
+uguale dalle due parti: il peso zero, quello che guarda soltanto il campione
+precedente, sbaglia quanto il peso uno di Mamba-2 a meno di un decimo, e la
+stima migliore sta in mezzo ({numref}`fig-trapezio-e-il-peso`).
+
+```{figure} ../figures/trapezio-e-il-peso.svg
+:name: fig-trapezio-e-il-peso
+:alt: "Due grafici affiancati. A sinistra, un passo solo di una curva di prova: una curva che sale, e l'area sotto di lei, tinta, è quello che entra davvero, 0,380. Tre righe orizzontali la attraversano, e ciascuna è l'altezza con cui un peso stima quella stessa area: la riga bassa, in teal, è il peso 0, che guarda solo il campione di prima e dà 0,164; quella di mezzo, in ocra, è il peso un mezzo, il trapezio della geometria, e dà 0,368; quella alta, in terracotta, è il peso 1, cioè il conto di Mamba-2, e dà 0,573. Le due righe estreme stanno una tutta sotto e una tutta sopra la curva; quella di mezzo la taglia, e il pezzo che avanza da una parte compensa quello che manca dall'altra. Un segmento tratteggiato in ocra unisce i due estremi della curva: è il trapezio della geometria, e racchiude la stessa area della riga di mezzo. A destra, lo scarto quadratico medio su 120 punti di partenza al variare del peso fra zero e uno: una conca. Vale 0,146 al peso zero, 0,030 al peso un mezzo e 0,156 al peso uno, e un trattino segna il minimo vero, che cade a 0,48. I due estremi sbagliano quasi uguale, e il fondo della conca sbaglia quasi cinque volte meno di tutti e due."
+:width: 100%
+
+Su una curva di prova, inventata apposta, con un passo tenuto largo perché il
+gesto si veda. A sinistra quanto entra in un passo, e le tre altezze con cui
+tre pesi diversi lo stimano; a destra lo scarto medio per ogni peso fra zero e
+uno. È una conca con il fondo quasi a metà, e i due estremi sbagliano quasi
+uguale. Il fondo, però, non è dove Mamba-3 tiene il peso: inchiodarlo lì, dice
+il paper, peggiora i risultati. E il vantaggio del fondo dipende dal passo:
+qui è di quasi cinque volte, e cresce al ridursi del passo, che nel modello
+non è una costante scelta da fuori ma una manopola che il modello gira da sé,
+token per token.
+```
 
 La seconda novità è la più concettuale, ed è quella che riaggancia questo
 capitolo ai Transformer.
@@ -498,8 +534,10 @@ dell'attenzione. È il punto in cui le due strade di questi due capitoli
 (attenzione lineare e sistemi dinamici) si rivelano una sola.
 
 Infine Mamba-3, che non cambia l'impianto ma ne raffina il funzionamento
-interno: i conti sull'intervallo rifatti a trapezi invece che a rettangoli (e
-il mini-filtro che stava prima del cuore selettivo diventa opzionale), una
+interno: i conti sull'intervallo rifatti guardando tutti e due gli estremi
+invece del solo valore di adesso, con il peso dei due deciso volta per volta
+dal modello (e il mini-filtro che stava prima del cuore selettivo diventa
+opzionale), una
 memoria che oltre a sbiadire sa ruotare come una lancetta su un quadrante
 (utile per contare e tenere il segno, ed è la stessa idea con cui i Transformer
 codificano la posizione), e un foglio condiviso fra più corsie, che spreme
@@ -535,10 +573,13 @@ al costo lineare.
   organizza a gruppi (le teste, come nell'attenzione) e il foglio di ogni
   corsia può diventare molto più capiente.
 - Mamba-3 (Lahoti et al., 2026) non cambia l'impianto, ne raffina la
-  dinamica con tre mosse: i conti sull'intervallo rifatti a trapezi invece
-  che a rettangoli, con il peso dei due estremi deciso volta per volta dal
-  modello (e il mini-filtro che stava prima del cuore selettivo diventa
-  opzionale, purché si aggiunga il numero fisso che l'accompagna); uno
+  dinamica con tre mosse: i conti sull'intervallo rifatti guardando tutti e
+  due gli estremi invece del solo valore di adesso, con il peso dei due
+  deciso volta per volta dal modello, e quello che si guadagna è una regola
+  più ricca più che un errore più piccolo, perché allontanarsi da metà costa
+  quasi uguale dalle due parti (e il mini-filtro che stava prima del cuore
+  selettivo diventa opzionale, perché il conto a due estremi mescola già i
+  campioni vicini, purché si aggiunga il numero fisso che l'accompagna); uno
   stato che oltre a sbiadire sa ruotare, come una lancetta su un quadrante,
   utile per contare e tenere il segno; e un foglio di memoria condiviso
   fra più corsie, che dà più qualità senza rallentare la generazione. Lavoro
@@ -579,7 +620,11 @@ al costo lineare.
 - Mamba-3 (Lahoti et al., ICLR 2026, Oral) raffina la dinamica con tre mosse:
   discretizzazione esponenziale-trapezoidale (combinazione convessa degli
   estremi con peso $\lambda_t$ data-dipendente; il trapezio classico è
-  $\lambda_t=1/2$, Eulero è $\lambda_t=1$), che insieme a un bias esplicito su
+  $\lambda_t=1/2$, Eulero è $\lambda_t=1$), che è una famiglia e non un
+  metodo: il second'ordine vale solo se $\lambda_t$ resta vicino a $1/2$, e
+  fuori di lì si torna al prim'ordine con la costante di Eulero ai due
+  estremi, sicché quello che si guadagna è una regola più ricca più che un
+  errore più piccolo. Insieme a un bias esplicito su
   $\mathbf{B}$ e $\mathbf{C}$ rende opzionale la convoluzione causale corta; stato complesso
   con aggiornamenti rotazionali (migliore *state tracking*, con un legame
   formale al RoPE data-dipendente su $\mathbf{B}$ e $\mathbf{C}$); e formulazione MIMO

@@ -5,7 +5,7 @@ un'applicazione. Un merlo canta, invisibile tra le foglie, e sullo schermo
 compare un nome: *Turdus merula*. L'app si chiama BirdNET, nasce dal
 laboratorio di ornitologia della Cornell University insieme all'università
 tecnica di Chemnitz, e fa una cosa che cinquant'anni fa sarebbe sembrata magia:
-riconosce centinaia di specie di uccelli dal solo canto (un compito che a un
+riconosce migliaia di specie di uccelli dal solo canto (un compito che a un
 umano richiede anni di orecchio allenato). Nessuna parola, nessuna frase: solo
 un fischio modulato, e un modello che sa a chi appartiene.
 
@@ -19,14 +19,16 @@ motore, capisce che un cuscinetto sta per cedere. Tutto questo è audio, ed
 
 Quanto è grande questo mondo? Un'idea la dà **AudioSet**, il catalogo con cui
 Google, nel 2017, ha provato a mettere ordine {cite}`gemmeke2017audioset`.
-Prima hanno fatto l'elenco dei suoni che esistono, e ne sono venute fuori 632
-categorie: dal latrato di un cane al colpo di tosse, dal fruscio della pioggia
-al suono di una chitarra elettrica. Poi hanno riempito quelle caselle
-ritagliando frammenti da dieci secondi da video di YouTube ed etichettandoli a
-mano, e oggi i frammenti raccolti sono oltre due milioni. Di categorie ne
-hanno usate 527 delle 632: settantotto non sono mai state date da etichettare
-(troppo oscure, o ambigue, o semplici caselle intermedie dell'albero), e per le
-ventisette che restano non si sono trovate abbastanza registrazioni.
+Prima hanno fatto l'elenco dei suoni che esistono, ordinandolo ad albero dal
+generale al particolare, e ne sono venute fuori 632 categorie: dal latrato di un
+cane al colpo di tosse, dal fruscio della pioggia al suono di una chitarra
+elettrica. Poi hanno riempito quelle caselle ritagliando frammenti da dieci
+secondi da video di YouTube ed etichettandoli a mano, e oggi i frammenti
+raccolti sono oltre due milioni, distribuiti su 527 categorie delle 632.
+Settantotto non sono mai state date da etichettare: cinquantasei perché troppo
+oscure o troppo facili da confondere, ventidue perché sono caselle intermedie
+dell'albero e non descrivono nessun suono. Per le altre non si sono trovate
+abbastanza registrazioni.
 
 Un elenco così lungo dice una cosa sola: il suono che non è parola non è un
 rumore indistinto. Ha regole sue, riconoscibili, come le ha una lingua. Un
@@ -89,12 +91,13 @@ $\hat{W}$. I compiti dell'audio generale hanno firme diverse:
 - generazione: campionare un $\mathbf{X}$ nuovo da una distribuzione appresa,
   eventualmente condizionata da testo.
 
-La radice comune è che le rappresentazioni tempo–frequenza restano quelle: lo
-spettrogramma e la scala mel funzionano per un colpo di tamburo esattamente
-come per una vocale. Ciò che cambia è a valle (l'obiettivo, la funzione di
-perdita, l'architettura), perché la struttura statistica di musica e suoni
-ambientali non è quella, quasi-periodica e vincolata dal tratto vocale, del
-parlato.
+La radice comune è che le rappresentazioni tempo–frequenza restano quelle: la
+costruzione dello spettrogramma e della scala mel è la stessa per un colpo di
+tamburo e per una vocale, e a cambiare sono i parametri (la finestra standard di
+25 ms è tarata sulla durata di un fonema, e chi lavora sulla musica alza il
+numero di bande). Cambia poi tutto a valle (l'obiettivo, la funzione di perdita,
+l'architettura), perché la struttura statistica di musica e suoni ambientali non
+è quella, quasi-periodica e vincolata dal tratto vocale, del parlato.
 
 `````
 
@@ -119,8 +122,10 @@ partenza anche del capitolo sullo Speech Recognition che segue.
 
 I pezzi del ponte sono questi:
 
-- il campionamento, che trasforma l'onda continua in una sequenza di numeri,
-  con il teorema di Nyquist a dettare quante misure al secondo servono;
+- il campionamento, che trasforma l'onda continua in una sequenza di misure,
+  con il teorema di Nyquist a dettare quante ne servono al secondo, e la
+  quantizzazione, che arrotonda ciascuna misura a uno di un numero finito di
+  livelli;
 - la trasformata di Fourier e, applicata a finestre brevi, lo
   spettrogramma, l'immagine del suono con il tempo su un asse e le frequenze
   sull'altro;
@@ -143,8 +148,12 @@ Prima della strada nuova conviene guardare quella già battuta, che
 {numref}`fig-whisper-pipeline` riassume in quattro passaggi: l'onda diventa
 immagine, e dall'immagine un modello ricava le parole. Le parole escono a
 destra, una per riquadro, e ciascuno di quei riquadri si chiama token. È la
-parola che regge tutto il capitolo, e vuol dire una cosa sola: un simbolo preso
-da un elenco chiuso, deciso in anticipo. Quanto grosso sia il pezzo che un
+parola che regge tutto il capitolo, e qui vuol dire una cosa precisa: un simbolo
+preso da un elenco chiuso, deciso in anticipo. (Nei Transformer la stessa parola
+indica più genericamente un elemento della sequenza in ingresso, che un elenco
+chiuso dietro di sé può anche non averlo: la
+{doc}`sezione sulla classificazione audio </Audio/classificazione-audio>` ne
+incontrerà di quel tipo.) Quanto grosso sia il pezzo che un
 token rappresenta cambia da caso a caso (nel disegno è una parola intera,
 altrove sarà una sillaba o un frammento di suono), ma la sostanza è quella:
 un elenco finito di simboli, e tutto si scrive con quelli.
@@ -159,34 +168,40 @@ l'immagine diventa testo. Nel disegno il Transformer è un blocco solo, ma dentr
 fa due mestieri: la parte che legge (l’*encoder*) riassume lo spettrogramma e la
 parte che scrive (il *decoder*) ne ricava le parole, una alla volta. È la strada
 che il capitolo sullo Speech Recognition, subito dopo questo, percorre per
-intero. Il pezzo su cui interviene l'alfabeto sonoro è il secondo riquadro:
-lo spettrogramma resta una tabella di numeri qualsiasi, e c'è un modo di
-scriverlo con dei simboli.
+intero. Il secondo modo di guardare l'audio, quello che viene dopo, sostituisce
+i primi due riquadri: al posto dell'onda e della sua immagine mette una fila di
+simboli, ricavata dall'onda e non dallo spettrogramma.
 ```
 
 C'è infatti un secondo modo di guardare l'audio, ed è il vero filo conduttore di
-questo capitolo. Poggia su due parole che conviene fissare subito, perché
-torneranno in ogni sezione. Una grandezza è **discreta** quando i valori
-possibili si possono contare a uno a uno: le lettere dell'alfabeto sono ventuno,
-e fra la A e la B non c'è niente in mezzo. È **continua** quando non si può: fra
-$0{,}3$ e $0{,}4$ ci sono infiniti numeri, e fra due sfumature di grigio ce n'è
-sempre una terza.
+questo capitolo. Poggia sulla distinzione fra discreto e continuo, la stessa che
+{doc}`Probabilità e statistica </Matematica/probabilita-statistica>` usa per
+separare le due specie di variabile aleatoria, applicata qui a un segnale. Una
+grandezza è discreta quando dopo un valore c'è il valore successivo e in mezzo
+non c'è niente: le lettere dell'alfabeto sono ventuno, e fra la A e la B non si
+infila nulla. È continua quando fra due valori vicini ce n'è sempre un terzo:
+fra $0{,}3$ e $0{,}4$, o fra due sfumature di grigio.
 
-Un testo nasce discreto, perché è fatto di lettere. Un suono no. Qui c'è un
-piccolo tranello, ed è meglio scioglierlo adesso: la fila dei numeri con cui
-misuriamo un suono si conta benissimo (sono decine di migliaia al secondo), ma
-«continuo» non si riferisce a *quanti* sono, si riferisce a quanto vale
-ciascuno. E ciascuno di quei numeri può valere qualsiasi cosa: fra due valori
-vicini ce n'è sempre un terzo. È lì che sta la differenza con le lettere.
+Un testo nasce discreto, perché è fatto di lettere. Un suono nasce continuo:
+l'onda di pressione che arriva all'orecchio non ha né scalini nel tempo né
+scalini nel valore. Qui però c'è un tranello, e conviene scioglierlo adesso,
+perché dentro un calcolatore quell'onda non c'è più. Quello che c'è è una fila
+di numeri interi presi da un elenco chiuso: con la codifica a sedici bit, che la
+prossima sezione racconta per esteso, ciascuno vale uno fra 65.536 livelli. Un
+alfabeto, dunque, ce l'abbiamo già. Solo che è l'alfabeto sbagliato: le lettere
+sono troppe, e arrivano troppo fitte, sedicimila al secondo di parlato contro le
+poche parole al secondo di chi lo pronuncia.
 
-Lo spettrogramma di {numref}`fig-whisper-pipeline` è dunque una tabella di
-numeri *continui*: ogni sua casella può valere qualunque cosa. Ma se
-riuscissimo a trasformare un suono in una sequenza di simboli discreti
-(come le lettere di un testo, o le parole di una frase), allora tutto
-l'armamentario che abbiamo costruito per il linguaggio diventerebbe di colpo
-applicabile al suono. I Transformer sanno leggere e scrivere sequenze di
-simboli: se l'audio *è* una sequenza di simboli, i Transformer sanno leggere e
-scrivere audio.
+Lo spettrogramma di {numref}`fig-whisper-pipeline` il problema non lo risolve,
+lo sposta: le sue caselle sono numeri con la virgola, e di elenco chiuso non
+resta nemmeno l'ombra. Un modello che legge sa già trattarle così come sono (è
+esattamente ciò che fa l'encoder del disegno). Un modello che *scrive*, no:
+scrivere vuol dire scommettere sul simbolo successivo, e per scommettere serve
+un elenco su cui distribuire la scommessa. La domanda del capitolo è allora
+questa: esiste per il suono un alfabeto abbastanza piccolo da imparare e
+abbastanza lento da arrivare in fondo a un brano? Se esiste, tutto
+l'armamentario costruito per il linguaggio diventa di colpo applicabile al
+suono.
 
 `````{tab} Elementare
 
@@ -200,7 +215,11 @@ sempre a mano: sul taccuino il canto appena sentito diventa «tsii-tsii-tsiuu»,
 perché fra le sillabe che si sanno scrivere si prende ogni volta quella che
 somiglia di più. Il canto vero non era esattamente quello, e la differenza
 resta fuori dal taccuino; con tre sole sillabe a disposizione, tutti gli
-uccelli del bosco finirebbero per cantare uguale.
+uccelli del bosco finirebbero per cantare uguale. Il rimedio ovvio, allargare
+il prontuario delle sillabe e spezzare il canto più fitto, costa dall'altra
+parte: il taccuino si riempie di pagine, e chi deve rileggerlo dall'inizio alla
+fine per indovinare come continua non ci arriva. Fra un alfabeto povero e un
+taccuino illeggibile ci sta tutto il mestiere delle due sezioni che seguono.
 
 Un modello fa lo stesso su qualunque suono, con un «alfabeto sonoro» tutto
 suo, costruito apposta: ritaglia il suono in pezzetti e a ciascuno dà il
@@ -219,10 +238,13 @@ melodie, senza cambiare mestiere.
 Il passaggio chiave è la quantizzazione: sostituire la rappresentazione
 continua dell'audio con una sequenza di indici discreti presi da un
 *vocabolario* appreso (un *codebook* di $K$ vettori prototipo). Un breve
-segmento di segnale viene mappato sul vettore del codebook più vicino, e di
-esso si tiene solo l'indice intero: un token. L'audio diventa così una
+segmento di segnale viene prima compresso da un encoder in un vettore latente,
+e a essere mappato sul prototipo più vicino è quel vettore, non il segnale: di
+esso si tiene solo l'indice intero, ed è il token. L'audio diventa così una
 fila di $L$ interi, $\mathbf{k} = (k_1, \dots, k_L)$ con
-$k_i \in \{1, \dots, K\}$, esattamente la forma di un testo tokenizzato.
+$k_i \in \{1, \dots, K\}$, esattamente la forma di un testo tokenizzato (con
+i codec a più codebook ogni passo porta più di un indice, e la fila diventa un
+fascio di file parallele: è materia della sezione sui codec).
 
 Da lì il collegamento con i modelli linguistici è diretto: un Transformer
 autoregressivo può modellare
@@ -265,8 +287,8 @@ l'alfabeto, e infine scriverci sopra suono nuovo.
   prova.
 - **Rappresentazioni auto-supervisionate**: come un modello impara com'è fatto
   il suono *senza che nessuno gli dica mai cosa sta ascoltando*, sfruttando le
-  montagne di audio che nessuno ha mai trascritto. È la strada che wav2vec e i
-  suoi parenti hanno aperto sulla voce.
+  montagne di audio che nessuno ha mai trascritto. È la strada che wav2vec 2.0 e
+  i suoi parenti hanno percorso sulla voce.
 - **Codec neurali**, l'alfabeto sonoro di cui abbiamo appena parlato: come una
   rete impara a comprimere l'audio in pochi token e a ricostruirlo, fondendo
   compressione e apprendimento.
@@ -297,10 +319,11 @@ sa maneggiare, che sia un'immagine tempo–frequenza o un alfabeto di token).
   seguono, e il
   {doc}`capitolo sul riconoscimento vocale </SpeechRecognition/overview>`
   insieme a loro.
-- Il filo conduttore: se il suono si può scrivere con un alfabeto finito di
-  simboli (i token), allora la stessa macchina che indovina la parola
-  successiva di una frase può indovinare il pezzetto di suono successivo di un
-  brano.
+- Il filo conduttore: se il suono si può scrivere con un alfabeto di poche
+  migliaia di simboli e non troppi al secondo (i token), allora la stessa
+  macchina che indovina la parola successiva di una frase può indovinare il
+  pezzetto di suono successivo di un brano. Un alfabeto ce l'abbiamo già, quello
+  dei livelli con cui si misura l'onda, ma ha troppe lettere e troppo fitte.
 - Le quattro tappe: riconoscere i suoni, imparare dal suono senza
   etichette, costruire l’alfabeto, generare suono nuovo.
 ```
@@ -319,12 +342,15 @@ sa maneggiare, che sia un'immagine tempo–frequenza o un alfabeto di token).
   taggare più eventi insieme, rilevarne l'istante, generare suono
   nuovo. Il segnale di musica e ambiente ha una struttura diversa da quella del
   parlato.
-- Le feature di base (campionamento, spettrogramma, scala mel, MFCC) sono
-  costruite nella prossima sezione, *Dal suono alle feature*, e valgono per
-  qualsiasi suono: sono il punto di partenza comune, e non si ripetono più.
-- Il filo conduttore: trasformare l'audio in una sequenza di token
-  discreti rende applicabile tutto l'armamentario dei Transformer; è il
-  ponte verso i codec neurali e la generazione.
+- Le feature di base (campionamento, quantizzazione, spettrogramma, scala mel,
+  MFCC) sono costruite nella prossima sezione, *Dal suono alle feature*, e
+  valgono per qualsiasi suono: sono il punto di partenza comune, e non si
+  ripetono più.
+- Il filo conduttore: l'audio digitale è già discreto (interi su $2^{16}$
+  livelli, decine di migliaia al secondo), ma con quell'alfabeto non ci si
+  scrive: serve un vocabolario appreso, piccolo e a passo lento, e allora tutto
+  l'armamentario dei Transformer diventa applicabile. È il ponte verso i codec
+  neurali e la generazione.
 - Le quattro sezioni: classificazione, rappresentazioni
   auto-supervisionate, codec neurali, generazione audio e musica.
 ```

@@ -13,6 +13,25 @@
 #     istanti = [0.05, 0.45, 0.95]
 #     # perche': una riga che dica cosa non andava con i default
 
+[posto-che-si-libera]
+istanti = [0.208, 0.292, 0.958]
+# perche': due ragioni, e la prima e' una trappola generale. Le dodici
+# iterazioni dividono il ciclo in fette da 8,33%, quindi il 50% dei default
+# cade *esattamente* sul confine fra la sesta e la settima, e la dissolvenza le
+# tiene accese tutte e due: il fermo usciva con «iterazione 6» stampata dentro
+# «iterazione 7» e, nel pannello statico, «posti-iterazione usati: 20 su 24»
+# dentro «22 su 28». Vale per ogni animazione il cui numero di stati divide
+# cento: il confine si piazza dove il fermo lo va a prendere.
+# La seconda ragione e' che cosa i tre fermi raccontano, visto che in stampa
+# sono tutto quello che resta. Terza e quarta iterazione sono il prima e il
+# dopo dello stesso gesto: alla terza le due sale sono ancora identiche e si
+# vedono tutte e quattro le richieste di partenza (B compresa, che finisce li'
+# e che con i fermi di prima non compariva in nessuno dei tre), alla quarta il
+# posto di B e' fermo a sinistra ed e' gia' di E a destra. La dodicesima e' la
+# sola iterazione in cui si leggono i numeri che la didascalia cita, 28 su 48
+# contro 48 su 48: i fermi di prima si fermavano all'undicesima, e chi leggeva
+# su carta non poteva ricontrollare nessuno dei numeri promessi.
+
 [vetrina-si-ordina]
 istanti = [0.142, 0.392, 0.90]
 # perche': al 10% il primo confronto e' a meta' scatto e il libro che sale sta
@@ -110,3 +129,31 @@ istanti = [0.30, 0.70, 0.95]
 # l'arco fra il marzo osservato e il marzo previsto, cioe' il conto con k che
 # il testo svolge in formula. Adesso i tre sono: la serie con la prima linea di
 # base, il naive stagionale con il suo arco, e le quattro insieme.
+
+[voto-che-retrocede]
+istanti = [0.18, 0.50, 0.90]
+# perche': le sette istantanee durano un settimo di ciclo ciascuna, e il 10%
+# cade nella dissolvenza fra la prima e la seconda: il fermo mostrava la
+# griglia tutta a zero con il primo voto gia' mezzo comparso, cioe' due stati
+# insieme e nessuno dei due leggibile. Al 18% la sosta della seconda e'
+# cominciata e si legge la sola cosa che conta li', il 0,50 della casella
+# accanto alla meta. Gli altri due default cadevano gia' dentro una sosta.
+
+[nastro-si-riavvolge]
+istanti = [0.17, 0.53, 0.92]
+# perche': gli otto stati durano un ottavo di ciclo ciascuno e sostano per il
+# primo 60%, quindi il 10% di default cade nella transizione fra il grafo
+# vuoto e l'andata: il fermo portava la didascalia «il conto, prima di farlo»
+# sopra i valori dell'andata gia' comparsi, cioe' si smentiva da solo. Al 17%
+# la prima sosta e' finita, al 53% si e' dentro quella del ritorno che rilegge
+# gli appunti, e al 92% dentro l'ultima, dove x.grad porta la somma dei due
+# rami.
+
+[somma-pesata-passaggi]
+istanti = [0.45, 0.70, 0.96]
+# perche': la scena ha quattro fette (i pesi, le tre bozze, la somma, la
+# tenuta) e i default cadono tutti e tre nelle attese. Al 10% non c'e' ancora
+# niente, e al 50% le bozze partono proprio in quell'istante, quindi il fermo
+# di mezzo mostrava tre riquadri vuoti accanto a una somma che non c'e'. I tre
+# istanti nuovi cadono uno per stato: i pesi arrivati e le bozze ancora da
+# scrivere, le tre bozze scritte, la somma composta.

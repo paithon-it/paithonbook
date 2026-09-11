@@ -1,0 +1,39 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../anello-hubert.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 892 272" role="img" aria-label="L'anello di HuBERT in cinque riquadri in fila: audio senza etichette; feature, che alla prima passata sono gli MFCC e alla seconda le uscite del sesto strato del modello; k-means, cento gruppi alla prima passata e cinquecento alla seconda; pseudo-etichette, una per frame ogni venti millesimi di secondo; il modello, che indovina quelle coperte. Una freccia curva torna dall'ultimo riquadro al secondo: le rappresentazioni che il modello ha imparato diventano le feature della passata dopo, e i gruppi si rifanno su quelle.">
+  <defs><marker id="fr-hub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/></marker>
+  <marker id="fr-hub-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker></defs>
+  <text x="446.0" y="34" text-anchor="middle" font-family="Inter, sans-serif" font-size="14.5" font-weight="700" fill="#F4ECDD">L&#8217;alfabeto provvisorio si riscrive da s&#233;</text>
+  <rect x="24" y="62" width="148" height="92" rx="8" fill="#BCB3A1" fill-opacity="0.12" stroke="#BCB3A1" stroke-width="2.2"/>
+  <text x="98.0" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">audio</text>
+  <text x="98.0" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">senza etichette</text>
+  <line x1="175" y1="108.0" x2="194" y2="108.0" stroke="#BCB3A1" stroke-width="2" marker-end="url(#fr-hub)"/>
+  <rect x="198" y="62" width="148" height="92" rx="8" fill="#5BA39C" fill-opacity="0.12" stroke="#5BA39C" stroke-width="2.2"/>
+  <text x="272.0" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">feature</text>
+  <text x="272.0" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">1&#170; passata: MFCC</text>
+  <text x="272.0" y="123" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">2&#170;: uscite del</text>
+  <text x="272.0" y="138" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">sesto strato</text>
+  <line x1="349" y1="108.0" x2="368" y2="108.0" stroke="#BCB3A1" stroke-width="2" marker-end="url(#fr-hub)"/>
+  <rect x="372" y="62" width="148" height="92" rx="8" fill="#DDB874" fill-opacity="0.12" stroke="#DDB874" stroke-width="2.2"/>
+  <text x="446.0" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">k-means</text>
+  <text x="446.0" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">1&#170; passata: 100 gruppi</text>
+  <text x="446.0" y="123" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">2&#170;: 500</text>
+  <line x1="523" y1="108.0" x2="542" y2="108.0" stroke="#BCB3A1" stroke-width="2" marker-end="url(#fr-hub)"/>
+  <rect x="546" y="62" width="148" height="92" rx="8" fill="#DDB874" fill-opacity="0.12" stroke="#DDB874" stroke-width="2.2"/>
+  <text x="620.0" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">pseudo-etichette</text>
+  <text x="620.0" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">una per frame,</text>
+  <text x="620.0" y="123" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">una ogni 20 ms</text>
+  <line x1="697" y1="108.0" x2="716" y2="108.0" stroke="#BCB3A1" stroke-width="2" marker-end="url(#fr-hub)"/>
+  <rect x="720" y="62" width="148" height="92" rx="8" fill="#E27B52" fill-opacity="0.12" stroke="#E27B52" stroke-width="2.2"/>
+  <text x="794.0" y="88" text-anchor="middle" font-family="Inter, sans-serif" font-size="13.5" font-weight="700" fill="#F4ECDD">il modello</text>
+  <text x="794.0" y="108" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">indovina quelle</text>
+  <text x="794.0" y="123" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.8" fill="#BCB3A1">sotto la mascherina</text>
+  <path d="M 794.0 157 L 794.0 186 Q 794.0 200 780.0 200 L 286.0 200 Q 272.0 200 272.0 186 L 272.0 160" fill="none" stroke="#E27B52" stroke-width="2.4" marker-end="url(#fr-hub-t)"/>
+  <text x="533.0" y="191" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#E27B52">le rappresentazioni imparate diventano le feature della passata dopo</text>
+  <text x="24" y="250" font-family="Inter, sans-serif" font-size="11.5" fill="#BCB3A1">i gruppi non devono essere giusti, devono essere coerenti: lo stesso suono sotto lo stesso simbolo, ogni volta</text>
+</svg>

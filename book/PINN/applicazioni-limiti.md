@@ -180,6 +180,10 @@ alpha = torch.nn.Parameter(torch.tensor(0.5))          # valore iniziale di como
 ottimizzatore = torch.optim.Adam(                      # ottimizzato insieme ai pesi
     list(rete.parameters()) + [alpha], lr=1e-3
 )
+
+# Stare nella lista non basta: alpha si muove solo se compare nel conto da
+# cui il gradiente parte, cioe' dentro il residuo.
+residuo = u_t - alpha * u_xx
 ```
 
 ## Cosa sanno fare, per davvero
@@ -244,17 +248,20 @@ Il primo motivo è che la loss è un **tiro alla fune**.
 
 `````{tab} Elementare
 
-Nella loss della PINN i termini sono due: uno tira verso la fisica, l'altro
-verso quello che si sa già, cioè le misure e il punto di partenza. Due
-squadre, una per capo della corda. E c'è una manopola che decide quanto è
-forte una delle due squadre: è quel 100 che sulla molla moltiplicava il
-termine della partenza.
+Nella loss della PINN i termini sono almeno due, e su un'equazione che vive
+nello spazio e nel tempo sono tre o quattro: la fisica, il punto di partenza, i
+bordi, e le misure quando ci sono. Da una parte della corda tira la fisica,
+dall'altra tutto quello che si sa già. E c'è una manopola per ogni termine, che
+decide quanto è forte quella squadra: è quel 100 che sulla molla moltiplicava
+il termine della partenza.
 
 Se la giri troppo da una parte, la fisica vince e la rete produce una curva
 liscia che però ignora le misure; se la giri troppo dall'altra, la rete si
 incolla alle misure sporche e se ne infischia della legge. La soluzione buona
-sta dove le due forze si bilanciano, e trovare quel punto è un'arte: si prova
-e si riprova, nessuna ricetta dice il valore giusto. Sulla molla l'abbiamo
+sta dove le due forze si bilanciano, e trovare quel punto è un'arte: nessuna
+formula dà il valore giusto, e si procede provando, oppure lasciando che sia
+l'addestramento a ristimarlo guardando quanto strattona ciascuna squadra. Sulla
+molla l'abbiamo
 fatto: con la manopola su 1 la curva finiva lontana dalla risposta, con 100
 molto più vicina, e il solo modo di saperlo era che lì la risposta la
 conoscevamo.
@@ -284,19 +291,22 @@ poco alla volta al suo valore mentre la curva si sistema.
 
 `````{tab} Superiore
 
-La loss composita
-$\mathcal{L} = \mathcal{L}_{\text{dati}} + \lambda\,\mathcal{L}_{\text{fisica}}$
-è un'ottimizzazione multi-obiettivo camuffata da obiettivo singolo. I
-gradienti dei due termini possono puntare in direzioni discordi: minimizzare
-l'uno peggiora l'altro, e il peso $\lambda$ ne stabilisce a mano il
-compromesso. Peggio: il termine fisico contiene operatori differenziali di
-ordine alto (derivate seconde, a volte quarte) che rendono il problema mal
-condizionato, nel senso preciso dei
-{doc}`richiami di analisi numerica </Matematica/analisi-numerica>`, e la
-discesa rallenta o si blocca. De Ryck e colleghi individuano la radice del
-guasto non nell'ottimizzatore ma in un operatore preciso, che mette insieme il
-**quadrato hermitiano** dell'operatore della PDE e il nucleo tangente del
-modello: se quello è mal condizionato l'addestramento è lento o impraticabile
+La loss composita $\mathcal{L} = \mathcal{L}_{\text{dati}} +
+\lambda\,\mathcal{L}_{\text{fisica}}$ è un'ottimizzazione multi-obiettivo
+camuffata da obiettivo singolo. I gradienti dei due termini possono puntare in
+direzioni discordi: minimizzare l'uno peggiora l'altro, e il peso $\lambda$ ne
+stabilisce il compromesso, dove $\mathcal{L}_{\text{dati}}$ raccoglie gli
+scarti su misure, condizioni iniziali e condizioni al contorno. Una formula
+chiusa per $\lambda$ non c'è: o lo si cerca provando, o lo si fa ristimare
+durante l'addestramento dalle statistiche dei gradienti, che è la proposta di
+Wang, Teng e Perdikaris. Peggio: il termine fisico contiene operatori
+differenziali di ordine alto (derivate seconde, a volte quarte) che rendono il
+problema mal condizionato, nel senso preciso dei {doc}`richiami di analisi
+numerica </Matematica/analisi-numerica>`, e la discesa rallenta o si blocca. De
+Ryck e colleghi individuano la radice del guasto non nell'ottimizzatore ma in
+un operatore preciso, che mette insieme il **quadrato hermitiano**
+dell'operatore della PDE e il nucleo tangente del modello: se quello è mal
+condizionato l'addestramento è lento o impraticabile
 {cite}`deryck2024operator`. Nel regime in cui la rete si comporta come un
 modello lineare quell'operatore ha lo stesso numero di condizionamento
 dell'Hessiano della loss, ed è da questa lettura che gli autori ricavano il
@@ -382,10 +392,11 @@ un problema stiff.
 
 C'è poi un caso che lo spectral bias non copre affatto, ed è il più duro:
 quando la soluzione ha una discontinuità vera, come l'urto di una legge di
-conservazione non viscosa. Lì il residuo puntuale non è nemmeno definito
-sull'urto, perché le derivate non esistono, e la PINN in forma forte non ha a
-che cosa aggrapparsi: non è che impari piano, è che il problema che sta
-minimizzando non è quello giusto. La strada, in quel caso, è riscrivere il
+conservazione non viscosa. Lì l'equazione in forma forte non ha nessuna
+soluzione classica, perché la soluzione vera sull'urto non è derivabile; la
+rete, che è liscia per costruzione, un residuo lo calcola lo stesso, e il guaio
+è tutto qui. Non è che impari piano, è che il problema che sta minimizzando non
+è quello giusto. La strada, in quel caso, è riscrivere il
 vincolo in forma **debole** o integrale, che è un'altra famiglia di metodi.
 
 Sugli orizzonti temporali lunghi agisce invece un guasto tutto suo, da
@@ -430,15 +441,34 @@ direzione più promettente. Una PINN risolve un problema, e uno soltanto: è
 come se, per ogni caffè che parte da una temperatura diversa, si dovesse
 rifare tutta la fatica dal principio.
 
-Quando l'addestramento finisce, infatti, restano fissati per sempre quattro
-ingredienti, e li si capisce tutti e quattro con la sbarra di ferro
-dell'apertura. Dov'è la sbarra e quanto è lunga: è la regione in cui si cerca
-la soluzione, il **dominio**. Com'era calda prima che tutto cominciasse: è la
-**condizione iniziale**. Che cosa le si tiene attaccato ai due capi, una
-fiamma da una parte e un blocco di ghiaccio dall'altra: sono le **condizioni
-al contorno**. E che cosa la scalda dall'interno, se qualcosa la scalda: è la
-**sorgente**. Cambia uno solo dei quattro, sposta la fiamma o accorcia la
-sbarra, e si riaddestra da capo.
+Quando l'addestramento finisce, infatti, restano fissati per sempre cinque
+ingredienti, e li si capisce tutti e cinque con la sbarra di ferro del capitolo.
+Dov'è la sbarra, quanto è lunga e per quanto tempo la si guarda: è la regione in
+cui si cerca la soluzione, il dominio. Com'era calda prima che tutto
+cominciasse: è la condizione iniziale. Che cosa le si tiene attaccato ai due
+capi, una fiamma da una parte e un blocco di ghiaccio dall'altra: sono le
+condizioni al contorno. Che cosa la scalda dall'interno, per esempio una
+resistenza elettrica infilata dentro che la percorre tutta: è la sorgente, e
+dove non scalda niente vale zero, che è pur sempre un valore deciso prima. E di
+che materiale è fatta, cioè quanto in fretta il calore ci corre dentro: sono i
+coefficienti dell'equazione. Cambia uno solo dei cinque, sposta la fiamma o
+passa dal ferro al rame, e si riaddestra da capo.
+
+Messi sul disegno, {numref}`fig-quattro-ingredienti`, quattro dei cinque
+smettono di essere un elenco e diventano posti.
+
+```{figure} ../figures/quattro-ingredienti.svg
+:name: fig-quattro-ingredienti
+:alt: "Un rettangolo: in orizzontale la posizione lungo la sbarra, in verticale il tempo, che sale. Il rettangolo intero è etichettato «il dominio». Il suo lato di sotto, marcato in ocra, è «la condizione iniziale: com'era calda prima che tutto cominciasse». I due fianchi, marcati in terracotta, sono le «condizioni al contorno», e portano l'uno l'etichetta «la fiamma», l'altro «il ghiaccio». Dentro il rettangolo otto crocette in teal, sparse e mai appoggiate a un bordo, sono «la sorgente: che cosa la scalda da dentro, in ogni punto e in ogni istante». Il lato di sopra è l'unico lasciato con il tratto sottile del bordo, e sopra di lui c'è scritto che lì non si impone niente, perché il tempo finale non è un dato del problema ma il punto in cui il conto arriva."
+:width: 100%
+
+Il rettangolo è il dominio: la sbarra da un capo all'altro, e il tempo per cui
+la si guarda. La condizione iniziale sta sul lato di sotto, le condizioni al
+contorno sui due fianchi, la sorgente dappertutto dentro. In cima non c'è
+niente, e non è una dimenticanza: il tempo finale non è un dato del problema
+ma il punto in cui il conto arriva. I coefficienti non hanno un lato perché non
+stanno sul bordo: stanno nell'equazione che vale in ogni punto del rettangolo.
+```
 
 `````{tab} Elementare
 
@@ -449,10 +479,11 @@ volta.
 
 C'è una famiglia di reti che impara il metodo. Invece di imparare *la
 soluzione* di un problema, imparano il procedimento che porta dalla domanda
-alla risposta: dammi una temperatura di partenza qualsiasi, una forma del
-contenitore qualsiasi, e ti restituisco subito la curva, senza riaddestrare
-niente. È un'approssimazione, buona ma non esatta, e arriva in un istante. Hai
-imparato il mestiere, non il singolo compito, ed è riusabile all'infinito.
+alla risposta: dammi una temperatura di partenza qualsiasi, un materiale che
+lascia passare il calore più o meno in fretta, e ti restituisco subito la
+curva, senza riaddestrare niente. È un'approssimazione, buona ma non esatta, e
+arriva in un istante. Hai imparato il mestiere, non il singolo compito, ed è
+riusabile all'infinito.
 
 Il mestiere ha i suoi confini, come li ha quello di una persona. Chi si è
 allenato sulle sbarre di ferro che si scaldano non sa per questo come si
@@ -491,8 +522,9 @@ l'altro, mentre la trasformazione lineare che scorre accanto al ramo spettrale
 porta avanti quello che il taglio lascia fuori.
 Il risultato è
 *invariante alla risoluzione* (addestri su una griglia, valuti su un'altra) e
-su Navier–Stokes gli autori dichiarano un'inferenza fino a circa tre ordini
-di grandezza più rapida di un solutore pseudospettrale.
+su Navier–Stokes il riassunto dell'articolo dichiara un'inferenza fino a circa
+tre ordini di grandezza più rapida dei solutori tradizionali; il cronometro nel
+corpo, sul confronto con il pseudospettrale, dà 440 volte.
 
 Quella cifra però va presa con le stesse pinze che si usano qui sulle PINN, e
 sarebbe scorretto non farlo. Il confronto non è a parità di accuratezza: il
@@ -549,8 +581,8 @@ sapere quale dei due si sta comprando.
 
 ## Congedo: far collaborare conoscenza e dati
 
-Chiudiamo qui il capitolo, e con esso la lunga rassegna di modelli che occupa
-gran parte di questo libro. Le PINN valgono, alla fine, più come *simbolo* che
+Chiudiamo qui il capitolo, e con esso la lunga rassegna di modelli che ci ha
+portati fin qui. Le PINN valgono, alla fine, più come *simbolo* che
 come tecnica, e il simbolo è questo: non hanno chiesto di scegliere fra la
 conoscenza umana e i dati. Per secoli la scienza ha scritto leggi e le ha
 risolte al calcolatore; nel decennio abbondante che va dalla svolta del deep
@@ -558,20 +590,18 @@ learning, attorno al 2012, a oggi, il machine learning ha fatto l'opposto,
 buttando via le leggi e fidandosi solo dei dati. Le PINN, e ancor più gli
 operatori neurali, indicano una terza strada: mettere la legge scritta a mano
 e il dato misurato nella stessa funzione di costo (che è l'altro nome
-della loss, il punteggio da abbassare che ci ha accompagnati per tutto il
-libro), e lasciare che si correggano a vicenda. La fisica riempie i vuoti che
+della loss, il punteggio da abbassare che conosciamo dai primi capitoli), e
+lasciare che si correggano a vicenda. La fisica riempie i vuoti che
 i dati non coprono; i dati piegano la fisica dove il modello è incompleto.
 Non una che sostituisce l'altra: una collaborazione, scritta in una loss.
 
 È l'ultima delle tante idee che abbiamo montato pezzo per pezzo, dai vettori
-dei primi capitoli fino a qui. Da qui in avanti il libro cambia domanda: non
-più che cosa un modello sa fare, ma che cosa succede quando lo si mette
-davanti a delle persone. I capitoli che seguono parlano di metterlo al lavoro
-sul serio, con utenti veri, e di tenercelo negli anni; di farsi spiegare
-perché decide quello che decide; e di che cosa dobbiamo a chi quelle decisioni
-le subisce. Solo alla fine, nelle
-Conclusioni, guarderemo l'intero percorso dall'alto: a cercare il disegno che,
-capitolo per capitolo, era troppo vicino per vedersi.
+dei primi capitoli fino a qui. Quello che viene dopo parla di metterlo al
+lavoro sul serio, con utenti veri, e di tenercelo negli anni; di farsi
+spiegare perché decide quello che decide; e di che cosa dobbiamo a chi quelle
+decisioni le subisce. Solo alla fine, nelle Conclusioni, guarderemo l'intero
+percorso dall'alto: a cercare il disegno che, capitolo per capitolo, era
+troppo vicino per vedersi.
 
 `````{tab} Elementare
 
@@ -592,7 +622,8 @@ capitolo per capitolo, era troppo vicino per vedersi.
   di mappe del tempo passato.
 - Limiti, senza sconti {cite}`krishnapriyan2021characterizing`: il metodo
   fallisce anche su problemi facili; la manopola che bilancia le due squadre
-  del tiro alla fune va trovata a mano provando, e resta un guaio che nessuna
+  del tiro alla fune va cercata provando, o fatta ristimare dai gradienti
+  durante l'addestramento, e resta un guaio che nessuna
   posizione della manopola sistema, perché la squadra della fisica strattona a
   ogni passo (si rimedia partendo da una legge addolcita, da irrigidire poco
   alla volta); la rete impara in fretta le forme d'insieme e arranca sui
@@ -634,7 +665,8 @@ capitolo per capitolo, era troppo vicino per vedersi.
   senza fisica nella loss, e non sono PINN.
 - Limiti onesti {cite}`krishnapriyan2021characterizing`: le PINN falliscono
   anche su PDE semplici; la loss multi-obiettivo è un tiro alla fune da
-  bilanciare a mano; lo spectral bias frena fronti ripidi e strati limite;
+  bilanciare, provando o ristimando i pesi dalle statistiche dei gradienti; lo
+  spectral bias frena fronti ripidi e strati limite;
   le PDE stiff sono ostili per lo squilibrio dei gradienti e il
   condizionamento dell'operatore {cite}`wang2021understanding`,
   {cite}`deryck2024operator`, non per lo spectral bias; sugli orizzonti lunghi

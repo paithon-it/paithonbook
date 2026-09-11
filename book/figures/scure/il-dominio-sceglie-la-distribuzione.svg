@@ -1,0 +1,93 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../il-dominio-sceglie-la-distribuzione.svg
+-->
+<svg viewBox="0 0 760 516" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Otto riquadri, in ciascuno la forma dell'insieme in cui vive la risposta disegnata a sinistra e a destra il nome della distribuzione che ci vive e che cosa si predice. Tutta la retta: gaussiana, un numero qualsiasi. I numeri positivi, cioè una semiretta che parte da zero: esponenziale o gamma, una durata o una grandezza. Un segmento fra zero e uno: beta, una proporzione. Un cerchio: von Mises, una direzione. Due caselle: Bernoulli, sì o no. K caselle: categorica, una classe fra K. I numeri interi a partire da zero, disegnati come punti staccati: Poisson, quante volte. Tre rette parallele: normale multivariata, più risposte insieme. In fondo, la riga che chiude: il dominio del parametro sceglie la funzione dell'ultimo strato, nessuna sulla retta, la sigmoide sul segmento, la softmax sulle caselle.">
+  <rect x="0" y="0" width="760" height="516" fill="#0E0C0A"/>
+  <text x="380" y="26" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD" font-weight="bold">Il dominio della risposta sceglie la distribuzione</text>
+  <text x="380" y="46" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#BCB3A1">la ricetta è sempre la stessa: cambia solo la riga in cui si sceglie la famiglia</text>
+  <rect x="24" y="62" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
+  <line x1="54" y1="102" x2="154" y2="102" stroke="#5BA39C" stroke-width="1.6"/>
+  <polygon points="162,102 152,97 152,107" fill="#5BA39C"/>
+  <polygon points="46,102 56,97 56,107" fill="#5BA39C"/>
+  <line x1="104" y1="96" x2="104" y2="108" stroke="#5BA39C" stroke-width="1.6"/>
+  <text x="104" y="140" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">tutta la retta</text>
+  <line x1="180" y1="78" x2="180" y2="142" stroke="#34302A" stroke-width="1.2"/>
+  <text x="196" y="104" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5BA39C" font-weight="bold">gaussiana</text>
+  <text x="196" y="124" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">un numero qualsiasi</text>
+  <rect x="392" y="62" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
+  <line x1="430" y1="102" x2="522" y2="102" stroke="#5BA39C" stroke-width="1.6"/>
+  <polygon points="530,102 520,97 520,107" fill="#5BA39C"/>
+  <circle cx="430" cy="102" r="4" fill="#5BA39C"/>
+  <text x="430" y="90" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">0</text>
+  <text x="472" y="140" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">i numeri positivi</text>
+  <line x1="548" y1="78" x2="548" y2="142" stroke="#34302A" stroke-width="1.2"/>
+  <text x="564" y="104" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5BA39C" font-weight="bold">esponenziale, gamma</text>
+  <text x="564" y="124" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">una durata, una grandezza</text>
+  <rect x="24" y="166" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
+  <line x1="68" y1="206" x2="140" y2="206" stroke="#5BA39C" stroke-width="1.6"/>
+  <circle cx="68" cy="206" r="4" fill="#5BA39C"/>
+  <circle cx="140" cy="206" r="4" fill="#5BA39C"/>
+  <text x="68" y="194" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">0</text>
+  <text x="140" y="194" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">1</text>
+  <text x="104" y="244" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">un segmento</text>
+  <line x1="180" y1="182" x2="180" y2="246" stroke="#34302A" stroke-width="1.2"/>
+  <text x="196" y="208" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5BA39C" font-weight="bold">beta</text>
+  <text x="196" y="228" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">una proporzione</text>
+  <rect x="392" y="166" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
+  <circle cx="472" cy="206" r="21" fill="none" stroke="#5BA39C" stroke-width="1.6"/>
+  <circle cx="493" cy="206" r="3.5" fill="#5BA39C"/>
+  <text x="472" y="244" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">un cerchio</text>
+  <line x1="548" y1="182" x2="548" y2="246" stroke="#34302A" stroke-width="1.2"/>
+  <text x="564" y="208" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5BA39C" font-weight="bold">von Mises</text>
+  <text x="564" y="228" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">una direzione</text>
+  <rect x="24" y="270" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
+  <rect x="75.0" y="297" width="26" height="26" rx="3" fill="none" stroke="#E27B52" stroke-width="1.6"/>
+  <rect x="107.0" y="297" width="26" height="26" rx="3" fill="none" stroke="#E27B52" stroke-width="1.6"/>
+  <text x="104" y="348" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">due esiti</text>
+  <line x1="180" y1="286" x2="180" y2="350" stroke="#34302A" stroke-width="1.2"/>
+  <text x="196" y="312" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52" font-weight="bold">Bernoulli</text>
+  <text x="196" y="332" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">sì o no</text>
+  <rect x="392" y="270" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
+  <rect x="431.0" y="297" width="16" height="26" rx="3" fill="none" stroke="#E27B52" stroke-width="1.6"/>
+  <rect x="453.0" y="297" width="16" height="26" rx="3" fill="none" stroke="#E27B52" stroke-width="1.6"/>
+  <rect x="475.0" y="297" width="16" height="26" rx="3" fill="none" stroke="#E27B52" stroke-width="1.6"/>
+  <rect x="497.0" y="297" width="16" height="26" rx="3" fill="none" stroke="#E27B52" stroke-width="1.6"/>
+  <text x="525.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#BCB3A1">…</text>
+  <text x="472" y="348" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">K nomi</text>
+  <line x1="548" y1="286" x2="548" y2="350" stroke="#34302A" stroke-width="1.2"/>
+  <text x="564" y="312" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52" font-weight="bold">categorica</text>
+  <text x="564" y="332" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">una classe fra K</text>
+  <rect x="24" y="374" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
+  <line x1="56" y1="414" x2="150" y2="414" stroke="#34302A" stroke-width="1.2"/>
+  <polygon points="160,414 150,409 150,419" fill="#34302A"/>
+  <circle cx="56" cy="414" r="4" fill="#E27B52"/>
+  <circle cx="76" cy="414" r="4" fill="#E27B52"/>
+  <circle cx="96" cy="414" r="4" fill="#E27B52"/>
+  <circle cx="116" cy="414" r="4" fill="#E27B52"/>
+  <circle cx="136" cy="414" r="4" fill="#E27B52"/>
+  <text x="56" y="402" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#BCB3A1">0</text>
+  <text x="104" y="452" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">i conteggi</text>
+  <line x1="180" y1="390" x2="180" y2="454" stroke="#34302A" stroke-width="1.2"/>
+  <text x="196" y="416" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#E27B52" font-weight="bold">Poisson</text>
+  <text x="196" y="436" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">quante volte</text>
+  <rect x="392" y="374" width="344" height="96" rx="6" fill="none" stroke="#34302A" stroke-width="1.2"/>
+  <line x1="432" y1="401" x2="506" y2="401" stroke="#5BA39C" stroke-width="1.4"/>
+  <polygon points="514,401 505,397 505,405" fill="#5BA39C"/>
+  <polygon points="424,401 433,397 433,405" fill="#5BA39C"/>
+  <line x1="432" y1="414" x2="506" y2="414" stroke="#5BA39C" stroke-width="1.4"/>
+  <polygon points="514,414 505,410 505,418" fill="#5BA39C"/>
+  <polygon points="424,414 433,410 433,418" fill="#5BA39C"/>
+  <line x1="432" y1="427" x2="506" y2="427" stroke="#5BA39C" stroke-width="1.4"/>
+  <polygon points="514,427 505,423 505,431" fill="#5BA39C"/>
+  <polygon points="424,427 433,423 433,431" fill="#5BA39C"/>
+  <text x="472" y="452" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#BCB3A1">più numeri insieme</text>
+  <line x1="548" y1="390" x2="548" y2="454" stroke="#34302A" stroke-width="1.2"/>
+  <text x="564" y="416" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5BA39C" font-weight="bold">normale multivariata</text>
+  <text x="564" y="436" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">più risposte insieme</text>
+  <line x1="24" y1="484" x2="736" y2="484" stroke="#34302A" stroke-width="1"/>
+  <text x="380" y="504" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#BCB3A1">E il dominio del parametro sceglie la funzione dell&#8217;ultimo strato: nessuna sulla retta, sigmoide sul segmento, softmax sulle caselle.</text>
+</svg>

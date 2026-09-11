@@ -499,14 +499,23 @@ tiro alla fune contro le altre due mosse, e lo vince di pochissimo.
 
 Il segnale, invece, la riscalatura la incassa e basta: nessuno degli altri due
 termini lo tocca, e $\sqrt{\bar{\alpha}_t} \to \sqrt{\bar{\alpha}_{t-1}}$
-a ogni passo. Dalla coda della catena a $t = 1$ il rapporto segnale/rumore
-passa da $\sqrt{\bar{\alpha}_T / (1-\bar{\alpha}_T)} = 0{,}0064$ a
+a ogni passo. Dalla coda della catena a $t = 1$ il rapporto fra l'ampiezza del
+segnale e quella del rumore passa da
+$\sqrt{\bar{\alpha}_T / (1-\bar{\alpha}_T)} = 0{,}0064$ a
 $\sqrt{\bar{\alpha}_1 / (1-\bar{\alpha}_1)} = 100$, un fattore quindicimila, di
 cui 157 dall'amplificazione del segnale e 100 dalla riduzione del rumore.
 Descrivere il campionamento come «togliere un velo di rumore alla volta»
 racconta quindi metà del guadagno e circa un decimo del gesto (a $t = 500$ la
-correzione vale $0{,}0105$ su uno spostamento complessivo di $0{,}1008$), e
+correzione vale $0{,}0105$ su uno spostamento complessivo di $0{,}1007$), e
 tace la riscalatura, che è l'altra metà.
+
+Quel rapporto è fra le due ampiezze, non fra le due potenze, e conviene dirlo
+perché la letteratura fa l'altra scelta: chi lo definisce come
+$\bar{\alpha}_t/(1-\bar{\alpha}_t)$ trova il quadrato dei numeri appena
+scritti. Qui servono le ampiezze perché è in quelle che si misurano le tre
+mosse, e la {doc}`sezione sui campionatori veloci
+</ModelliDiffusione/campionatori-veloci>` tiene la stessa scelta quando ne
+prende il logaritmo.
 
 Una precisazione su che cosa sia il «segnale» quando si genera, perché la
 scomposizione appena fatta è quella delle marginali $q(\mathbf{x}_t \mid \mathbf{x}_0)$ e
@@ -939,7 +948,7 @@ def campiona(n_campioni=1000):
         t_batch = torch.full((n_campioni,), t)            # (B,), tutti uguali a t
         eps_pred = modello(x, t_batch)                    # rumore stimato
         coeff = beta[t] / (1.0 - alpha_bar[t]).sqrt()     # quanto se ne toglie
-        # mossa 1 (correggi) e mossa 2 (riscala), in una riga: mu_theta(x_t, t)
+        # mossa 1 (correggi) e mossa 2 (alza il volume): mu_theta(x_t, t)
         media = (x - coeff * eps_pred) / alpha[t].sqrt()
         if t > 0:
             # mossa 3 (rimescola): sigma_t * z, con sigma_t = sqrt(beta_t).
@@ -1072,8 +1081,10 @@ carattere per carattere.
   molto più di quanto si sottragga. Il livello di rumore cala lo stesso, ma
   pochissimo per passo (quattro decimillesimi a $t = 500$), perché la
   sottrazione è allineata al rumore mentre l'iniezione si somma in varianza. E
-  metà del guadagno sul rapporto segnale/rumore (fattore $157$ su $15\,000$
-  complessivi) non viene dalla sottrazione ma dalla riscalatura.
+  metà del guadagno sul rapporto fra le ampiezze di segnale e rumore (fattore
+  $157$ su $15\,000$ complessivi) non viene dalla sottrazione ma dalla
+  riscalatura; la letteratura definisce quel rapporto sui quadrati, e allora i
+  numeri vanno al quadrato anche loro.
 - Sotto il cofano: la loss è una versione ripesata di $-\mathrm{ELBO}$
   (il bound variazionale da minimizzare, con i passi ad alto rumore
   favoriti di un fattore ~50, al prezzo di verosimiglianze peggiori), e

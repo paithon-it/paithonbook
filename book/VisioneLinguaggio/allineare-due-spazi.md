@@ -143,10 +143,12 @@ sembra.
 ```
 
 La {numref}`fig-vlm-contrastivo` mostra la struttura che ne esce, ed è tutta la
-sezione in un disegno. Le due reti (si chiamano **torri**, perché ciascuna è
-una pila di strati che lavora per conto suo) non si scambiano niente durante il
-calcolo, e si incontrano solo alla fine, in un prodotto scalare. Le caselle
-fuori dalla diagonale hanno un nome, i negativi: sono gli abbinamenti
+sezione in un disegno. Le due reti (ciascuna è una pila di strati, cioè una
+*torre*) non si scambiano niente durante il calcolo, e si incontrano solo alla
+fine, in un prodotto scalare. Sono due torri separate, come quelle del recupero
+che tengono le domande da una parte e i passaggi dall'altra; nel Transformer che
+traduce, invece, la torre che scrive consulta a ogni piano quella che legge. Le
+caselle fuori dalla diagonale hanno un nome, i negativi: sono gli abbinamenti
 sbagliati che il caso ha messo insieme nello stesso batch.
 
 ## L'esame si fa in due sensi
@@ -243,11 +245,12 @@ concorrenti credibili.
 
 ## Quattro coppie, fatte a mano
 
-Adesso i numeri, perché la temperatura, la manopola che amplifica le
-differenze fra le somiglianze prima di trasformarle in percentuali, fa una
-differenza che a parole
-non si apprezza. Prendiamo un batch minuscolo, $B = 4$: quattro immagini e le
-loro quattro didascalie. Nella tabella delle somiglianze le righe
+Adesso i numeri, perché la temperatura, la manopola che amplifica le differenze
+fra le somiglianze prima di trasformarle in percentuali (e amplifica tanto più
+quanto più è piccola, perché nella formula divide), fa una differenza che a
+parole non si apprezza. Prendiamo un batch
+minuscolo, $B = 4$: quattro immagini e le loro quattro didascalie. Nella
+tabella delle somiglianze le righe
 $\mathbf{I}_1 \dots \mathbf{I}_4$ sono le quattro immagini, le colonne
 $\mathbf{T}_1 \dots \mathbf{T}_4$ le quattro didascalie, e ogni
 cella dice quanto quell'immagine e quella didascalia si somigliano, su una scala
@@ -313,8 +316,9 @@ righe e mediando, la loss in direzione immagine → testo vale $0{,}147$; quella
 sulle colonne $0{,}148$; la loss simmetrica $0{,}148$.
 
 Ora rifacciamo il conto senza cambiare una sola similarità, solo alzando la
-temperatura a $\tau = 0{,}5$. La prima riga diventa $0{,}351$, $0{,}235$,
-$0{,}213$, $0{,}201$: la coppia giusta è ancora in testa, ma di un soffio, e la
+temperatura a $\tau = 0{,}5$. Dividendo per $0{,}5$ ed esponenziando come prima,
+la prima riga diventa $0{,}351$, $0{,}235$, $0{,}213$, $0{,}201$ di fiducia: la
+coppia giusta è ancora in testa, ma di un soffio, e la
 loss simmetrica sale a $1{,}082$. Per confronto, un modello che tirasse a caso
 fra quattro didascalie pagherebbe $\log 4 = 1{,}386$. Con $\tau = 0{,}5$ questa
 matrice, che pure è ordinata correttamente, costa quasi quanto tirare a caso;
@@ -342,9 +346,10 @@ $0{,}15$ con l'esaminatore severo, che quel piccolo vantaggio l'ha visto e
 premiato, e $1{,}08$ con quello mite, che non se n'è nemmeno accorto.
 
 Questa severità non la sceglie chi progetta: è un numero che il modello
-impara insieme a tutto il resto, come i pesi. E siccome abbassarla fa
-scendere il costo da sola, senza che il modello abbia imparato niente, le si
-mette un fondo sotto il quale non può andare. CLIP parte da $0{,}07$ e finisce
+impara insieme a tutto il resto, come i pesi. E siccome, sulle coppie già
+messe in ordine giusto, abbassarla fa scendere il costo da sola, senza che il
+modello abbia imparato niente, le si mette un fondo sotto il quale non può
+andare. CLIP parte da $0{,}07$ e finisce
 l'addestramento appoggiato a quel fondo, a $0{,}01$, sette volte più severo di
 come era partito. Lasciato libero, l'esaminatore diventa il più duro che il
 regolamento gli consente.
@@ -361,9 +366,10 @@ diventano quattro volte tante, e vanno tenute tutte insieme sotto gli occhi,
 perché per dare le percentuali di una riga bisogna avere davanti la riga intera.
 Trentamila coppie in memoria a una macchina sola non ci stanno: il lavoro si
 spezza fra centinaia di schede grafiche, e a ogni passo i pezzi vanno radunati e
-poi ridistribuiti. La difficoltà dell'esame cresce del doppio, l'ingombro per
-prepararlo di quattro volte, ed è questa forbice a rendere cari i mucchi molto
-grandi.
+poi ridistribuiti. E la forbice è brutta: raddoppiando il mucchio l'ingombro
+per prepararlo diventa quattro volte tanto, mentre la difficoltà dell'esame
+cresce pianissimo, come il logaritmo. È per questo che i mucchi molto grandi
+costano tanto e rendono poco.
 
 `````
 
@@ -833,8 +839,9 @@ che sa solo leggere è la prossima sezione.
 - Nessuno prepara le risposte: le didascalie sono già attaccate alle immagini del
   web, e per addestrare CLIP ne sono state raccolte quattrocento milioni.
 - Il gioco si fa in due sensi, per righe e per colonne, e si fa la media. Due
-  numeri decidono quanto è severo: la manopola che amplifica le differenze
-  fra le somiglianze prima di trasformarle in percentuali, e quante didascalie
+  numeri decidono quanto è severo: la manopola che amplifica le differenze fra
+  le somiglianze prima di trasformarle in percentuali, e che amplifica tanto
+  più quanto più è piccola, e quante didascalie
   sbagliate ci sono nel mucchio, perché indovinare fra quattro è facile e
   indovinare fra trentamila no.
 - Il regalo che ne esce: per costruire un classificatore bastano tre frasi
@@ -881,7 +888,9 @@ che sa solo leggere è la prossima sezione.
   embedding fra i dispositivi a ogni passo.
 - Le due modalità restano in due regioni disgiunte dello spazio condiviso, il
   *modality gap* {cite}`liang2022mind`: il contrastivo ottimizza un ordinamento
-  dentro il batch, che è invariante per traslazione di una delle due nuvole.
+  dentro il batch, e di quell'ordinamento la sovrapposizione delle due nuvole
+  non fa parte, tanto che forzarla a mano fa salire la perdita invece di
+  abbassarla.
   Conseguenza operativa: un coseno cross-modale non si confronta con un coseno
   intra-modale.
 - La classificazione zero-shot è una conseguenza, non una funzione in più:

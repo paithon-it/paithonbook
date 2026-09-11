@@ -129,7 +129,10 @@ bonus per le righe in più, e quel bonus
 non smette mai di crescere; è la deformazione che i giudici automatici
 ereditano dalle persone da cui hanno imparato, e gliel'abbiamo data noi. E c'è
 il **tremolio**: il giudice sbaglia anche a caso, di poco, come chiunque dia
-molti voti di fila.
+molti voti di fila. Dei tre è l'unico che gioca a favore, e conviene saperlo
+prima di leggere i numeri: un giudice che sbaglia un po' a caso sceglie meno
+ferocemente il difetto che ha, e con un giudice perfettamente regolare la
+colonna della qualità vera crollerebbe molto più giù.
 
 Quel che l'esperimento misura è un'altra cosa, e non è affatto ovvia: quanto
 danno fa quel difetto al crescere della pressione con cui si ottimizza. La
@@ -159,22 +162,23 @@ def migliore_di(k):
     riga = np.arange(m // k)
     def media(v):
         return v[:m].reshape(-1, k)[riga, scelto].mean()
-    return media(qualita_vera), media(merito), media(lunghezza)
+    return media(qualita_vera), media(proxy), media(merito), media(lunghezza)
 
-print(f"{'candidati':>10} {'qualita vera':>13} {'merito':>8} {'lunghezza':>10}")
+print(f"{'candidati':>10} {'qualita vera':>13} {'voto':>7} {'merito':>8} "
+      f"{'lunghezza':>10}")
 for k in (1, 3, 10, 30, 100, 1000):
-    q, me, l = migliore_di(k)
-    print(f"{k:>10} {q:>13.3f} {me:>8.3f} {l:>10.3f}")
+    q, v, me, l = migliore_di(k)
+    print(f"{k:>10} {q:>13.3f} {v:>7.3f} {me:>8.3f} {l:>10.3f}")
 ```
 
 ```text
- candidati  qualita vera   merito  lunghezza
-         1         0.373    0.499      0.501
-         3         0.495    0.722      0.586
-        10         0.500    0.857      0.686
-        30         0.431    0.907      0.773
-       100         0.361    0.934      0.830
-      1000         0.267    0.953      0.885
+ candidati  qualita vera    voto   merito  lunghezza
+         1         0.373   0.700    0.499      0.501
+         3         0.495   0.981    0.722      0.586
+        10         0.500   1.186    0.857      0.686
+        30         0.431   1.305    0.907      0.773
+       100         0.361   1.399    0.934      0.830
+      1000         0.267   1.518    0.953      0.885
 ```
 
 La colonna della qualità vera è la storia, e non è la storia che ci si
@@ -186,25 +190,35 @@ quasi sempre scegliere quella che vale di più.
 
 Poi la salita si ferma attorno a $0{,}50$, e la colonna scende: a mille
 candidati la qualità vera è $0{,}267$, peggio che non ottimizzare affatto. Il
-motivo si legge nelle altre due colonne, ed è la cosa più istruttiva della
-tabella: salgono tutte e due, ma una sola può salire per sempre. Il merito
-delle risposte scelte va da $0{,}499$ a $0{,}953$ e poi si arena, perché più di
-uno non può valere: fra cento candidati e mille guadagna appena diciannove
-millesimi. La lunghezza invece continua per la sua strada, da $0{,}501$ a
-$0{,}885$, e ogni passo in quella direzione costa più del precedente, perché è
-già molto oltre la misura che a chi legge fa comodo. Da un certo punto in poi,
-quindi, il giudice compra pochissimo merito in più pagandolo con parecchia
-lunghezza in più. E lui questo non lo sa: nel suo voto la lunghezza è sempre e
-soltanto un pregio.
+motivo si legge nelle ultime due colonne, ed è la cosa più istruttiva della
+tabella: salgono tutte e due, e a un certo punto quello che il lettore
+guadagna dall'una non copre più quello che perde dall'altra. Il merito delle
+risposte scelte va da $0{,}499$ a $0{,}953$ e poi si arena, perché più di uno
+non può valere: fra cento candidati e mille guadagna appena diciannove
+millesimi. La lunghezza sale ancora, da $0{,}501$ a $0{,}885$, e lassù ogni
+passo in quella direzione toglie molto più di quanto il merito riesca ad
+aggiungere, perché è già molto oltre la misura che a chi legge fa comodo. Da
+un certo punto in poi, quindi, il giudice compra pochissimo merito in più
+pagandolo con parecchia lunghezza in più. E lui questo non lo sa: nel suo voto
+la lunghezza è sempre e soltanto un pregio.
 
-È la legge di Goodhart in una tabella. Finché la pressione è bassa, il
-surrogato e l'obiettivo vero indicano quasi la stessa direzione. Alzandola, la
-ricerca del massimo si sposta proprio dove il giudice si sbaglia di più, e da
-lì in poi ogni punto guadagnato su di lui è pagato da chi legge. Oltre un certo punto, quindi, il sistema peggiora mentre il suo punteggio
-migliora. Non è vero che ottimizzare di più sia sempre meglio, ed è una cosa
-che vale ben oltre questo giocattolo. Gli stessi conti
-fatti sui giudici automatici veri, quelli addestrati sui giudizi delle persone,
-danno una tabella della stessa forma {cite}`gao2023scaling`.
+È la legge di Goodhart in una tabella. Il voto e la qualità vera sono le due
+curve della {numref}`fig-reward-hacking`, nella {doc}`sezione su
+esplorazione e ricompensa
+</DeepReinforcementLearning/esplorazione-e-ricompensa>`: il voto sale sempre,
+la qualità vera sale, si ferma e scende. La figura ne dà la forma, la tabella
+le cifre, e la pressione a cui succede. Finché la
+pressione è bassa, il surrogato e l'obiettivo vero indicano quasi la stessa
+direzione. Alzandola, la ricerca del massimo si sposta proprio dove il giudice
+si sbaglia di più, e da lì in poi ogni punto guadagnato su di lui è pagato da
+chi legge. Oltre un certo punto, quindi, il sistema peggiora mentre il suo
+punteggio migliora. Non è vero che ottimizzare di più sia sempre meglio, ed è
+una cosa che vale ben oltre questo giocattolo. Gao, Schulman e Hilton la
+misurano su modelli di ricompensa veri {cite}`gao2023scaling`, usando come
+metro non le persone ma un modello grande tenuto per buono, proprio perché
+raccogliere abbastanza giudizi umani costava troppo: la salita, il massimo e
+la discesa ci sono tutti. Quanto in basso si scenda dipende invece da come
+sono tarati il difetto del giudice e la pressione.
 
 ## Allineare gli LLM
 
@@ -606,9 +620,13 @@ Gli altri.
   condizione economica.
 - Fabbricare immagini intime di una persona riconoscibile senza il suo
   consenso, e il materiale di abuso sessuale su minori. È la voce aggiunta al
-  regolamento nel 2026, e si applica dal 2 dicembre di quell'anno; colpisce le
-  applicazioni che «spogliano» una fotografia per quello che producono, non per
-  come sono fatte.
+  regolamento nel 2026, e si applica dal 2 dicembre di quell'anno. Chi mette
+  in circolazione l'applicazione risponde per come l'ha fatta: se fabbricare
+  quelle immagini è lo scopo per cui esiste, oppure se il modo in cui è
+  progettata e addestrata rende quel risultato prevedibile e ripetibile senza
+  doverci mettere mano e senza che niente lo impedisca. Chi l'applicazione la
+  usa risponde invece per il perché: servirsene per fabbricare quelle immagini
+  è vietato, qualunque cosa l'applicazione fosse nata per fare.
 - Dedurre da un volto la razza, le opinioni politiche, la religione o
   l'orientamento sessuale di qualcuno.
 - Riconoscere i volti in tempo reale nei luoghi pubblici, ma attenzione:
@@ -655,11 +673,20 @@ vanno guardate sul testo consolidato, non su un libro.
 - **inaccettabile** (pratiche vietate, art. 5(1)): tecniche manipolative o
   subliminali (a), sfruttamento delle vulnerabilità dovute a età, disabilità o
   condizione socioeconomica (b), generazione o manipolazione di immagini intime
-  di una persona identificabile senza il suo consenso (ba) e di materiale
-  pedopornografico (bb), le due voci inserite dal *digital omnibus* e
-  applicabili dal 2 dicembre 2026, *social scoring* da parte di enti pubblici o
-  privati (c), polizia predittiva basata unicamente sulla profilazione o
-  sui tratti di personalità (d), scraping non mirato di volti da internet o da
+  di una persona identificabile senza il suo consenso (b bis) e di materiale
+  pedopornografico (b ter), le due voci inserite dal *digital omnibus* e
+  applicabili dal 2 dicembre 2026; il divieto della prima è condizionato, e le
+  condizioni corrono su due assi. Per chi immette sul mercato o mette in
+  servizio guardano la costruzione: o quella generazione è la finalità
+  prevista, o progettazione, addestramento, architettura e capacità la rendono
+  ragionevolmente prevedibile e riproducibile senza modifiche tecniche
+  significative, e mancano misure di sicurezza ragionevoli e adeguate a
+  impedirlo. Per chi lo *usa* guardano invece lo scopo: il divieto scatta
+  quando il deployer se ne serve proprio per generare o manipolare quel
+  materiale; *social scoring* da parte di
+  enti pubblici o privati (c), polizia predittiva basata unicamente sulla
+  profilazione o sui tratti di personalità (d), scraping non mirato di volti
+  da internet o da
   telecamere per costruire archivi di riconoscimento (e), riconoscimento delle
   emozioni sul luogo di lavoro e negli istituti di istruzione (f),
   categorizzazione biometrica per dedurre razza, opinioni politiche,
@@ -688,7 +715,7 @@ agli sviluppatori a valle e sintesi pubblica dei dati di addestramento (art.
 adversarial testing, cioè il red-teaming, mitigazione dei
 rischi sistemici, cybersicurezza e segnalazione degli incidenti gravi (art. 55).
 Le sanzioni per le pratiche vietate arrivano fino a 35 milioni di euro o al 7%
-del fatturato mondiale annuo (art. 99(3)).
+del fatturato mondiale annuo, il maggiore dei due (art. 99(3)).
 
 Fermiamoci un attimo su come si stabilisce quel «rischio sistemico»,
 perché è il punto in cui il regolamento cambia asse e contraddice la
@@ -828,8 +855,9 @@ noi.
   di prove non è prova d'assenza.
 - Governance: l’AI Act {cite}`euaiact2024` regola per *rischio*
   (inaccettabile/vietato art. 5, alto art. 6 e allegato III,
-  limitato/trasparenza art. 50, minimo), con obblighi extra per i GPAI
-  (artt. 53 e 55) a rischio sistemico, presunto oltre $10^{25}$ FLOP (art.
+  limitato/trasparenza art. 50, minimo), con obblighi per tutti i GPAI
+  (art. 53) e altri per quelli a rischio sistemico (art. 55), presunto
+  oltre $10^{25}$ FLOP (art.
   51(2)): ed è il punto in cui il regolamento passa da un criterio d'uso a un
   criterio di capacità. Il NIST AI RMF è la controparte federale
   volontaria.

@@ -140,13 +140,15 @@ all'utente, emette una struttura `{"name": "calcola", "arguments":
 {"espressione": "4831 * 7092"}}`; il runtime la valida contro lo schema, esegue
 la funzione, e re-inietta il risultato nel contesto come messaggio di ruolo
 *tool*. Anche qui i nomi esatti cambiano da un fornitore all'altro
-(`tool_use`/`tool_result` per gli uni, come nella figura, `function_call` e
-ruolo `tool` per gli altri, che per giunta passano gli `arguments` come
-stringa JSON invece che come oggetto); il giro è lo stesso. La capacità di
+(`tool_use` e `tool_result` per gli uni, come nella figura; per gli altri la
+chiamata si chiama `function_call` e il risultato arriva come messaggio a sé,
+con gli `arguments` passati come stringa JSON invece che come oggetto); il giro
+è lo stesso. La capacità di
 scegliere lo strumento e compilarne gli argomenti
-nel formato giusto non è innata: emerge dall'instruction tuning visto nel
-capitolo sui Transformer, cioè dall'addestramento su esempi in cui a una
-consegna corrisponde l'azione corretta invece della sua prosecuzione. Il
+nel formato giusto non è innata, e ci si arriva per due strade: addestrando il
+modello su tracce di chiamate già fatte, oppure mostrandogliene una o due nel
+prompt, che è quanto basta allo schema ReAct che il ciclo dell'agente userà.
+L'addestramento la rende affidabile, non la crea. Il
 modello resta un generatore di testo: «chiamare uno strumento» è, sotto il
 cofano, generare una particolare sequenza di token che il sistema ha imparato a
 interpretare come una chiamata.
@@ -213,7 +215,9 @@ chiamata sta dentro la frase, e il suo risultato ($0{,}29$) rientra nel
 testo giusto prima della parola che lo commenta ($29\%$). Ed è questo a rendere
 possibile il trucco con cui Toolformer impara. Se la chiamata sta lì in mezzo,
 il modello può misurare una cosa che sa misurare benissimo: quanto gli riesce
-facile scrivere le parole che vengono subito dopo. Con il numero vero sotto gli
+facile scrivere le parole che vengono subito dopo. «Facile» qui ha un metro
+esatto, ed è la probabilità che il modello assegna alle parole che di fatto
+seguono: alta vuol dire facile. Con il numero vero sotto gli
 occhi, «29%» diventa quasi obbligato; senza, è un tiro a indovinare. La
 differenza fra le due difficoltà è il voto che Toolformer dà alla chiamata.
 
@@ -331,39 +335,43 @@ da cercare. Un sistema che agisse una volta sola resterebbe fermo al primo
 giro, perché non saprebbe ancora cosa chiedere.
 
 Perché conviene far ragionare il modello *ad alta voce* tra un'azione e
-l'altra? La risposta che viene per prima, la catena di ragionamento
-{cite}`wei2022chain`, qui vale poco: i suoi guadagni misurati stanno sui conti
-e sulla logica {cite}`sprague2025cot`, mentre il ciclo di un agente è fatto in
-buona parte di altro, cioè scegliere uno strumento, leggere un risultato e
-decidere se ripetere.
+l'altra? Non per la ragione che viene per prima, cioè far scrivere al modello i
+passaggi prima della risposta, come nel «mostra i passaggi» del compito di
+matematica {cite}`wei2022chain`: quel guadagno lì è misurato sui conti e sulla
+logica {cite}`sprague2025cot`, e il ciclo di un agente è fatto in buona parte
+d'altro, cioè scegliere uno strumento, leggere un risultato e decidere se
+ripetere.
 
 La ragione per cui il pensiero esplicito serve *qui* è un'altra, e più
 prosaica: dà al modello un posto dove scrivere a che punto è del compito prima
 di scegliere l'azione. È la stessa idea che ritroveremo, chiamata foglio di
 brutta, parlando di come si riempie la finestra di contesto.
 
-Ma il guadagno più grosso sta nell’osservazione, più che nel pensiero, e
-per apprezzarlo serve un nome. Quando un modello inventa un fatto e lo dice con la
-faccia di chi lo sa, si parla di allucinazione: il modello genera la
-continuazione più plausibile, e nessuno gli ha mai chiesto di controllare.
-Un'osservazione che arriva da fuori, invece, non se l'è inventata
+Il guadagno dell'osservazione, poi, è di un'altra specie rispetto a quello del
+pensiero, e non si legge nel punteggio: si legge in che cosa smette di
+succedere. Per apprezzarlo serve un nome. Quando un modello inventa un fatto e
+lo dice con la faccia di chi lo sa, si parla di allucinazione: il modello
+genera la continuazione più plausibile, e nessuno gli ha mai chiesto di
+controllare. Un'osservazione che arriva da fuori, invece, non se l'è inventata
 lui: è testo che gli è stato messo davanti dal programma. Il pensiero decide
-*quale* strumento usare e *come* leggere ciò che è tornato, ma è
-l'osservazione a tenerlo attaccato a qualcosa di vero.
+*quale* strumento usare e *come* leggere ciò che è tornato, ma è l'osservazione
+a tenerlo attaccato a qualcosa di vero.
 
 `````{tab} Elementare
 
 Un detective indaga a voce alta. Non spara subito il colpevole: alterna
 ragionamenti e verifiche. «*Penso*: la vittima è stata vista l'ultima
-volta al porto, quindi conviene controllare i registri delle navi. *Controllo*
-i registri… *Scopro* che quella notte è salpato un solo mercantile. *Penso*:
-allora mi interessa chi era a bordo. *Controllo* la lista dell'equipaggio…».
-Ogni «penso» decide la prossima mossa; ogni «controllo» è un'azione nel mondo;
-ogni «scopro» è ciò che la mossa ha rivelato, e riparte il giro.
+volta al porto, quindi mi servono i registri delle navi. *Chiedo* i registri
+alla capitaneria… *Scopro* che quella notte è salpato un solo mercantile.
+*Penso*: allora mi interessa chi era a bordo. *Chiedo* la lista
+dell'equipaggio…». Ogni «penso» decide la prossima mossa; ogni «chiedo» è una
+richiesta che qualcun altro esegue, perché il detective dal suo tavolo non si
+muove; ogni «scopro» è il foglio che gli torna indietro, e riparte il giro.
 
 La forza del metodo sta nell'alternanza. Un detective che ragionasse soltanto,
-senza mai controllare, costruirebbe teorie eleganti e magari sbagliate. Uno che
-controllasse a caso, senza ragionare, si perderebbe tra mille indizi inutili.
+senza mai chiedere niente a nessuno, costruirebbe teorie eleganti e magari
+sbagliate. Uno che chiedesse a caso, senza ragionare, si perderebbe tra mille
+indizi inutili.
 ReAct fa fare al modello tutti e due i mestieri: pensa per decidere dove
 guardare, guarda per correggere ciò che pensa.
 
@@ -473,22 +481,25 @@ auto-riflessione* che, letta la traccia fallita e il suo esito, produce una
 critica verbale: «l'azione X non ha dato il risultato atteso, conviene provare
 Y». Questa critica finisce in una **memoria episodica** che viene anteposta al
 contesto del tentativo successivo. Sui compiti di programmazione gli autori
-misurano il *pass@1*, la quota di problemi risolti al primo tentativo, e
+misurano il *pass@1*, la quota di problemi risolti con l'unica soluzione
+consegnata alla fine (il ciclo interno gira su test che il modello si scrive da
+sé, non sui test veri, ed è questo a dare loro diritto di chiamarlo così), e
 iterare sull'auto-critica senza toccare i pesi lo alza quasi dappertutto: su
 HumanEval in Python da $0{,}80$ a $0{,}91$. Quasi: su MBPP in Python scende da
 $0{,}80$ a $0{,}77$, ed è l'unico banco su cui perde.
 
-La lettera piccola di quel guadagno riguarda chi fa il giudice. Il
-*valutatore* che dice «hai sbagliato» non è, in quegli esperimenti di
-programmazione, un giudice esterno: è una
-batteria di test generata dal modello stesso, e gli autori dichiarano che
-può promuovere una soluzione sbagliata (tutti i test passano su un programma
-errato) o bocciarne una giusta. La prima è la peggiore delle due, perché
-l'agente consegna e smette di cercare, ed è quella che spiega l'unica perdita:
-su MBPP i test auto-prodotti promuovono un programma sbagliato nel $16{,}3\%$
-dei casi contro l’$1{,}4\%$ di HumanEval. È un segnale d'esito, ma
-auto-prodotto: il caso in cui l'auto-critica ha meno di solido su cui
-appoggiarsi.
+La lettera piccola di quel guadagno riguarda chi fa il giudice. Il *valutatore*
+che dice «hai sbagliato» non è, in quegli esperimenti di programmazione, un
+giudice esterno: è una batteria di test generata dal modello stesso, e gli
+autori dichiarano che può promuovere una soluzione sbagliata (tutti i test
+passano su un programma errato) o bocciarne una giusta. La prima è la peggiore
+delle due, perché l'agente consegna e smette di cercare, ed è con questa che
+gli autori spiegano l'unica perdita: su MBPP i test auto-prodotti promuovono un
+programma sbagliato nel $16{,}3\%$ dei casi contro l’$1{,}4\%$ di HumanEval. È
+l'ipotesi con cui la commentano, non una cosa che dimostrano: sullo stesso
+banco in un altro linguaggio i falsi positivi sono altrettanti e lì il metodo
+guadagna. È un segnale d'esito, ma auto-prodotto: il caso in cui l'auto-critica
+ha meno di solido su cui appoggiarsi.
 
 `````
 
@@ -745,11 +756,15 @@ Da portarsi via, prima di passare al recupero dei documenti.
   {cite}`schick2023toolformer` impara *da solo*, con auto-supervisione, dove
   conviene chiamare un'API: tiene le chiamate che riducono la cross-entropia
   pesata sui cinque token a partire dal punto della chiamata. Non sa però
-  comporre gli strumenti in catena: è il salto che ReAct affronta.
+  comporre gli strumenti in catena, e a quel problema risponde ReAct, che però
+  è di quattro mesi prima: due risposte a due domande diverse, non due tappe di
+  una scala.
 - ReAct {cite}`yao2023react` intreccia in un loop Thought → Action →
   Observation: le osservazioni àncorano il ragionamento a fatti reali e le
-  allucinazioni crollano, ma è uno scambio, non un guadagno secco (gli
-  errori di ragionamento quasi triplicano, dal 16% al 47%, e si aggiunge il
+  allucinazioni crollano, ma è uno scambio, non un guadagno secco (fra le
+  traiettorie fallite esaminate a mano, cinquanta per metodo, gli errori di
+  ragionamento passano dal 16% della sola catena di pensiero al 47%, e si
+  aggiunge il
   fallimento della ricerca a vuoto). La traccia è ispezionabile, ma non
   fedele
   {cite}`turpin2023unfaithful, lanham2023faith`: contano le azioni, non i

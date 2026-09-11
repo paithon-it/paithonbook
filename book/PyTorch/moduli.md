@@ -83,6 +83,10 @@ una riga per salvarlo tutto su un file o per spostarlo tutto insieme sulla
 scheda grafica. Un pezzo tenuto da parte in una lista normale invece
 funziona benissimo quando i dati ci passano attraverso, ma nell'inventario non
 compare: nessuno lo addestra, nessuno lo salva, e resta com'era appena creato.
+E il giorno in cui la rete trasloca sulla scheda grafica quel pezzo resta
+indietro, perché a spostare l'inventario ci pensa una riga sola e lui
+nell'inventario non c'è: lì il guasto smette di essere silenzioso e il
+programma si ferma.
 
 In `forward` si dice che strada fanno i dati: entra l'immagine, viene
 srotolata, passa per lo strato nascosto e poi per la ReLU (che è un filtro
@@ -97,8 +101,10 @@ aspetta appiccicato allo strato, e qui deve mettercelo lui.
 Tutto il resto (tenere il conto dei pesi, calcolare i gradienti) lo fa
 `nn.Module`. E siccome `forward` è normale Python, ci si può mettere un
 `print` per sbirciare o un `if` per cambiare strada: il modello è codice che
-gira, non una descrizione da consegnare a qualcun altro. Una cautela sola: per
-far passare i dati si scrive `model(x)`, non `model.forward(x)`. Le due righe
+gira, non una descrizione da consegnare a qualcun altro. `forward` però non lo
+chiama mai nessuno per nome: scrivere `model(x)`, con le parentesi attaccate
+all'oggetto come si farebbe con una funzione, è il modo di farlo partire, e
+non `model.forward(x)`. Le due righe
 sembrano la stessa cosa e danno lo stesso risultato, ma la seconda salta i
 controlli che la libreria aggancia intorno al passaggio; non arriva nessun
 errore, e la differenza si scopre più tardi, quando uno strumento che si
@@ -119,9 +125,14 @@ $$
 \mathbf{h} = \mathbf{W}\mathbf{x} + \mathbf{b},
 $$
 
-con $\mathbf{W} \in \mathbb{R}^{u \times d}$ e $\mathbf{b} \in \mathbb{R}^{u}$
+dove $\mathbf{x}$ sono i $d$ numeri che entrano e $\mathbf{h}$ i $u$ che
+escono, scritti come colonne, con $\mathbf{W} \in \mathbb{R}^{u \times d}$ e
+$\mathbf{b} \in \mathbb{R}^{u}$
 creati con `requires_grad=True`: autograd li traccia senza che si debba fare
-nulla.
+nulla. Su un batch la libreria lavora nell'altra forma, quella con una riga
+per esempio: dato $\mathbf{X} \in \mathbb{R}^{N \times d}$ calcola
+$\mathbf{X}\mathbf{W}^\top + \mathbf{b}$, che è la stessa trasformazione
+trasposta, e `.weight` conserva la forma $u \times d$.
 Si noti che l'attivazione non è "dentro" lo strato, come accade in altre
 librerie: è una funzione (`torch.relu`) o un modulo (`nn.ReLU`) applicato
 esplicitamente in `forward`; coerente con la filosofia "il modello è il
@@ -151,7 +162,9 @@ esce dall'altro capo. `nn.Sequential` descrive la rete esattamente così:
 elenchi i passaggi nell'ordine in cui il dato li attraversa, e i collegamenti
 si fanno da soli. Nota che qui anche la ReLU è un passaggio del tunnel
 (`nn.ReLU()`): l'asciugatura non lava niente, ma sta in fila come tutti gli
-altri passaggi, e senza di lei quello che esce non è la stessa cosa.
+altri passaggi, e senza di lei quello che esce non è la stessa cosa. È la
+stessa ReLU di prima in un'altra veste: `torch.relu` è il verbo, da scrivere
+dentro `forward`, `nn.ReLU()` è il pezzo, da mettere in fila.
 
 Quale delle due scritture usare? Questa, finché la rete è una fila. Si torna
 alla classe il giorno in cui la fila non basta più, cioè quando il dato deve
@@ -176,7 +189,9 @@ Per MNIST la pila lineare basta e avanza.
 
 I parametri sono i numeri che il modello impara, quelli che l'addestramento
 regolerà: pesi e bias tutti insieme, cioè le manopole di cui si è parlato
-nella sezione sui tensori. Contarli è il primo controllo da fare su qualunque
+nella sezione sui tensori. Non tutti i pezzi ne hanno: quello che srotola
+l'immagine sposta i numeri e non li cambia, quindi di manopole non ne porta
+nessuna. Contarli è il primo controllo da fare su qualunque
 modello, prima ancora di addestrarlo: se il numero non è quello che ci si
 aspetta, la rete montata non è quella che si aveva in mente.
 
@@ -212,16 +227,20 @@ nascosto, $128 \cdot 10 + 10 = 1\,290$ per l'uscita.
 Il percettrone multistrato per MNIST: l'immagine viene srotolata in 784
 numeri, compressa a 128, infine proiettata su 10 punteggi grezzi, uno per
 cifra. La trasformazione di quei punteggi in probabilità (si chiama *softmax*)
-non sta nel modello: dove stia lo dicono le prossime righe.
+non sta nel modello: ce l'ha dentro la funzione di perdita, che li riceve
+grezzi.
 ```
 
 ## Misurare l'errore: le funzioni di perdita
 
 Il modello ora esiste, ma è ignorante: i pesi sono numeri casuali. Per
 addestrarlo serve prima di tutto un modo di misurare *quanto sbaglia*: la
-funzione di perdita, o loss. `torch.nn` le offre come moduli pronti, e le
-due che useremo più spesso coprono i due grandi casi: quando la risposta
-giusta è un numero, e quando è una scelta fra categorie.
+funzione di perdita, o loss. Anche queste `torch.nn` le offre come moduli
+pronti, e la parola vale per loro come per gli strati: non perché misurare
+l'errore sia un pezzo di rete, ma perché si costruiscono, si spostano e si
+chiamano allo stesso modo. Le due che useremo più spesso coprono i due grandi
+casi: quando la risposta giusta è un numero, e quando è una scelta fra
+categorie.
 
 ```python
 loss_regressione = nn.MSELoss()            # per predire numeri continui
@@ -236,12 +255,15 @@ print(errore.item())                       # circa 2,3 (con due sole immagini ba
 ```
 
 Quel $2{,}3$ non è un numero qualunque, ed è il metro con cui leggeremo tutte
-le loss di questo capitolo: è quanto vale la cross-entropy per un modello che
-tira a indovinare fra dieci cifre, cioè che dà a ciascuna una probabilità su
-dieci. Un addestramento che funziona parte da lì e scende; uno che resta a
-$2{,}3$ non ha imparato niente. (Il valore esatto dipende dai pesi casuali di
-partenza, e su due sole immagini oscilla fra $1{,}9$ e $2{,}8$: è la media su
-tante immagini che si assesta.)
+le loss di questo capitolo. È il logaritmo naturale di dieci, $\ln 10 =
+2{,}3026$, cioè quanto vale la cross-entropy per chi dà a ciascuna delle dieci
+cifre la stessa probabilità, una su dieci. Un modello appena creato sta un
+pelo più su, perché i pesi sorteggiati gli fanno già preferire qualcuna delle
+cifre, e da dove parte davvero lo misura la {doc}`sezione
+sull'addestramento <addestramento>`. Un addestramento che funziona scende da
+lì; uno che resta lassù non ha imparato niente. (Su due sole immagini il
+numero balla parecchio, fra $1{,}8$ e $2{,}9$, perché a sorteggio non ci sono
+soltanto i pesi: ci sono anche le due immagini.)
 
 `````{tab} Elementare
 Un perito passa la mattina in due appartamenti e su ogni scheda scrive tre
@@ -254,26 +276,30 @@ numero, un prezzo o la temperatura di domani.
 
 Sulle due schede ci sono sei numeri, quindi sei multe. Sbagliati tutti di $2$,
 sono sei multe da $4$ e la media è $4$, perché l'agenzia divide per le multe
-uscite e non per gli appartamenti visitati. Un ufficio che somma le tre multe
-di ogni scheda ($12$) e divide per le due schede arriva a $12$, tre volte
-tanto, tante volte quanti sono i numeri chiesti per appartamento, sugli stessi
-identici errori. Con un numero solo per scheda i due conti coincidono e la
-differenza non si vede. Il perito più bravo resta il più bravo in tutti e due i
-casi; cambia quanto pesa la multa, cioè quanto lo spinge a correggere il tiro.
-Chi aveva tarato quella correzione su un conto e passa all'altro se la ritrova
-tre volte più lunga, o tre volte più corta, secondo il verso in cui ha
+uscite e non per gli appartamenti visitati. Un ufficio che invece somma le tre
+multe di ogni scheda, dodici per scheda, e divide per le due schede, arriva a
+ventiquattro diviso due, cioè a $12$: tre volte tanto, tante volte quanti sono
+i numeri chiesti per appartamento, sugli stessi identici errori. Con un numero
+solo per scheda i due conti coincidono e la differenza non si vede. Il perito
+più bravo resta il più bravo in tutti e due i casi; cambia quanto pesa la
+multa, cioè quanto lo spinge a correggere il tiro. Chi aveva tarato la
+lunghezza del passo dell'addestramento su un conto e passa all'altro se la
+ritrova tre volte più lunga, o tre volte più corta, secondo il verso in cui ha
 cambiato.
 
-Un piano più sotto un'impiegata legge le cifre scritte a mano sui moduli.
+Un piano più sotto un'impiegata legge le cifre scritte a mano sui formulari.
 Invece di scommettere tutto su una cifra sola, distribuisce la fiducia su tutte
 e dieci, e paga secondo quanta ne aveva data a quella vera. Alla cifra vera il
 90%, e la multa è $0{,}11$; il 10%, cioè fiducia in parti uguali su tutte e
 dieci, tirando a indovinare, e la multa è $2{,}3$; l'1%, e la multa è $4{,}6$.
-La penalità non cresce in proporzione, precipita verso l'alto man mano che
-l'impiegata esclude la risposta vera. È la cross-entropy, la misura per
-quando la risposta è una scelta fra categorie, quale cifra o quale animale. Di
-multa ce n'è una per modulo, e con dieci moduli in una volta esce la media di
-quelle dieci.
+Guarda gli ultimi due: dal 10% all'1% la fiducia si divide per dieci e la multa
+raddoppia esatta, e ogni ulteriore divisione per dieci aggiunge sempre quegli
+stessi $2{,}3$. A contare è il rapporto fra le fiducie e non il loro divario, e
+verso il basso la multa non trova fondo: escludere ancora un po' la risposta
+vera costa altri $2{,}3$, e nessuno dice basta. È la cross-entropy, la misura
+per quando la risposta è una scelta fra categorie, quale cifra o quale animale.
+Di multa ce n'è una per formulario, e con dieci formulari in una volta esce la
+media di quelle dieci.
 
 Sul foglio l'impiegata scrive punteggi grezzi, un $3$ marcato e un $8$ debole.
 A farne percentuali ci pensa la cassa, nello stesso momento in cui calcola la
@@ -351,7 +377,8 @@ convinti del contrario, più che sbagliare di poco: la cross-entropy è
 costruita esattamente per questo.
 
 Il modello esiste e sa dire quanto sbaglia. Manca chi usa quel numero per
-correggerlo, ed è l'argomento della sezione seguente.
+correggerlo, ed è l'argomento della {doc}`sezione
+sull'addestramento <addestramento>`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -362,10 +389,10 @@ correggerlo, ed è l'argomento della sezione seguente.
 - `nn.Sequential` è la scorciatoia quando la rete è una catena di
   montaggio; se ci sono rami o scorciatoie, si torna a scrivere `forward` a
   mano.
-- Uno strato che collega $d$ ingressi a $u$ neuroni ha $u \cdot d + u$ numeri
-  da imparare: un peso per collegamento, più un aggiustamento per neurone.
-  Contarli è il primo controllo da fare su qualunque modello, e costa una
-  moltiplicazione per strato.
+- Uno strato che collega ogni ingresso a ogni neurone ha un peso per
+  collegamento più un aggiustamento per neurone: ingressi per neuroni, più i
+  neuroni. Contarli è il primo controllo da fare su qualunque modello, e costa
+  una moltiplicazione per strato.
 - La funzione di perdita misura quanto il modello sbaglia: `nn.MSELoss`
   quando la risposta è un numero, `nn.CrossEntropyLoss` quando è una scelta fra
   categorie. A quest'ultima si danno i punteggi grezzi, non le probabilità: la

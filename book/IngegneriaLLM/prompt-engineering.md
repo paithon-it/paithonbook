@@ -141,7 +141,10 @@ della chiamata, non del testo, e il modello quella frase la legge come legge
 tutte le altre.
 
 Che cosa fanno, in breve. La temperatura cambia quanto contano le
-differenze fra i candidati: a temperatura vicina a zero il modello prende
+differenze fra i candidati, e il nome viene dalla fisica, dove la stessa
+formula dice quanto sono probabili gli stati di un sistema alla temperatura
+data: scaldandolo, gli stati che a freddo non si vedevano mai cominciano a
+capitare. A temperatura vicina a zero il modello prende
 quasi sempre il primo della classifica; a 1 pesca seguendo le percentuali così
 come sono; sopra 1 le appiattisce, e anche i candidati bassi hanno
 la loro speranza (il valore si può di solito girare fra 0 e 2). Il top_p
@@ -149,8 +152,11 @@ invece taglia: si tiene i candidati più probabili finché le loro percentuali,
 sommate una dopo l'altra, non arrivano alla soglia che gli abbiamo dato (la
 *p* sta per probabilità, e 0,9 vuol dire il 90 per cento), e butta via tutti
 gli altri. Il gruppetto che resta è il nucleo, le carte buone rimaste nel
-mazzo, e {numref}`fig-due-manopole` mostra i due gesti sulla stessa classifica
-di partenza.
+mazzo, e il dado si tira fra quelle: le percentuali degli scartati vengono
+spartite fra i superstiti, e la parola esce da lì. A $p$ pari a $1$ non si
+butta via niente, cioè la seconda manopola è spenta. La
+{numref}`fig-due-manopole` mostra i due gesti sulla stessa classifica di
+partenza.
 
 ```{figure} ../figures/temperature-top-p.svg
 :name: fig-due-manopole
@@ -171,7 +177,16 @@ non arrivano più a novanta, così il nucleo diventa di quattro, senza che
 nessuno abbia toccato la soglia. E le superstiti si spartiscono la probabilità
 di quelle buttate via: dopo il taglio la somma torna a cento, sempre.
 
-E più la classifica di partenza è piatta, più lo scarto cresce. Il conto si
+Quell'ordine, però, è una scelta di chi ha scritto la libreria, non una legge
+del campionamento: se il taglio viene prima, cade su una classifica che la
+temperatura non ha ancora toccato, e il nucleo resta lo stesso a ogni
+temperatura. Quale dei due ordini usi la propria libreria decide se il conto
+appena fatto riguarda o no la propria chiamata.
+
+Lo scarto è massimo sulle classifiche di mezzo, e si assottiglia man mano che i
+candidati si appaiano: su una classifica perfettamente piatta la temperatura
+non ha niente da riavvicinare, e il taglio cade dove cadrebbe comunque. Il
+conto si
 rifà in poche righe di Python, e con cinquanta candidati abbastanza appaiati
 (presi a caso, ma sempre gli stessi per tutte le prove) la stessa soglia di 0,9
 ne lascia passare due a temperatura 0,2, sedici a temperatura 1 e trentotto a
@@ -269,9 +284,14 @@ dinamicamente il numero di candidati alla forma della distribuzione, cosa che
 un semplice *top-k* fisso non fa. Si legge spesso che i due parametri agiscono
 «su assi diversi», uno sulla forma della distribuzione e l'altro sul supporto
 ammesso, e la conclusione che se ne trae è che si possano regolare
-indipendentemente. Non è così, e la ragione sta nell'ordine: il nucleo si
-calcola sulla distribuzione *già riscalata*, quindi la sua cardinalità è
-funzione di $T$ a $p$ fissato. È verificabile in poche righe, e il protocollo va
+indipendentemente. Con l'ordine più diffuso non è così, e la ragione sta
+proprio nell'ordine: il nucleo si calcola sulla distribuzione *già riscalata*,
+quindi la sua cardinalità è funzione di $T$ a $p$ fissato. Ma l'ordine è un
+parametro dell'implementazione, non del metodo, e c'è più di una catena in
+circolazione: ce ne sono che applicano la temperatura dopo tutti i tagli,
+e lì il nucleo non dipende da $T$ affatto. Prima di fidarsi del ragionamento
+conviene guardare in che ordine li mette il motore che si sta chiamando. La
+dipendenza è verificabile in poche righe, e il protocollo va
 scritto perché il numero dipende da quanto è appuntita la distribuzione di
 partenza: con cinquanta logit estratti da una gaussiana di deviazione standard
 2 (in NumPy, `default_rng(0).normal(scale=2, size=50)`) e $p = 0{,}9$, il
@@ -859,8 +879,10 @@ il loop, che affrontiamo nelle sezioni seguenti.
   assistant, con priorità (morbida) al system. «Sfondo» e non «contesto»
   perché in questo capitolo il contesto è l'intera finestra.
 - Temperatura e top_p regolano il campionamento: bassa per fatti e
-  codice, alta per creatività; muovi una manopola per volta, perché non sono
-  indipendenti (il nucleo si calcola sulla distribuzione già riscalata). Non
+  codice, alta per creatività; muovi una manopola per volta, perché dove la
+  temperatura si applica prima del taglio non sono indipendenti, e il nucleo si
+  calcola sulla distribuzione già riscalata (l'ordine lo decide la libreria).
+  Non
   sono esposte nelle interfacce di chat. E `T = 0` rende deterministica la
   regola di scelta, non il servizio {cite}`he2025nondeterminism`: un A/B fra
   prompt vuole più di una esecuzione per lato. La matematica del

@@ -5,7 +5,7 @@
   di book/_static/brand/tokens.css.
   fonte: ../world-model-vmc.svg
 -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 410" role="img" aria-label="Pipeline del world model di Ha e Schmidhuber: l'ambiente produce un fotogramma; V, l'encoder variazionale, lo comprime in un codice z di 32 numeri; M, il modello ricorrente, predice la distribuzione del prossimo codice; C, un controller lineare minuscolo, sceglie l'azione che torna all'ambiente. Un anello tratteggiato sopra M mostra il sogno: la predizione di M rientra come suo input al posto dell'ambiente.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 410" role="img" aria-label="Pipeline del world model: l'ambiente produce un fotogramma che V, l'autoencoder variazionale, comprime in un codice z di 32 numeri; M, una rete ricorrente LSTM, predice la distribuzione del prossimo codice; C, un controller lineare da 867 parametri, legge z e h e sceglie l'azione. L'azione torna all'ambiente e, per una diramazione, rientra anche in M, che senza di essa predirebbe lo stesso futuro qualunque cosa l'agente faccia. Un anello tratteggiato sopra M indica il sogno, in cui la predizione di M rientra come suo input al posto dell'ambiente.">
   <defs>
     <marker id="freccia-wm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/>
@@ -76,6 +76,10 @@
   <!-- azione: C -> ambiente -->
   <path d="M 759 240 L 759 336 Q 759 350 745 350 L 108 350 Q 94 350 94 336 L 94 268" fill="none" stroke="#E27B52" stroke-width="2.2" marker-end="url(#freccia-wm-t)"/>
   <text x="426" y="340" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#E27B52">azione: sterzo, acceleratore, freno</text>
+
+  <!-- l'azione entra anche in M -->
+  <path d="M 600 350 L 600 270" fill="none" stroke="#E27B52" stroke-width="2.2" marker-end="url(#freccia-wm-t)"/>
+  <text x="612" y="312" font-family="Inter, sans-serif" font-size="11.5" fill="#E27B52">e rientra in M</text>
 
   <!-- didascalia interna -->
   <text x="440" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#BCB3A1">nel gioco vero il ciclo passa dall'ambiente; nel sogno l'anello tratteggiato lo sostituisce: M fa da mondo a se stesso</text>

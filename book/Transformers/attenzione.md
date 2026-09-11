@@ -135,7 +135,11 @@ obbliga i due a coincidere.
 Un punto di vocabolario, su cui poggia tutto il resto. Chiamare
 $\mathbf{q}$ «la domanda» e $\mathbf{k}_j$ «la risposta» aiuta a ricordare,
 ed è un uso corrente; ma il meccanismo è il
-prodotto scalare fra due proiezioni apprese, non un dialogo.
+prodotto scalare fra due proiezioni apprese, non un dialogo. E il prodotto
+scalare non c'era fin dall'inizio: nel lavoro del 2014 il punteggio lo
+calcolava una piccola rete a sé, e la forma moltiplicativa arriva l'anno dopo
+con Luong, Pham e Manning {cite}`luong2015effective`, che è quella che il
+Transformer adotta.
 `````
 
 ## Il tabellone: quali sono le forme in gioco
@@ -154,12 +158,17 @@ colonna per ogni parola che si offre come risposta. Nella casella dove la riga
 d'accordo. Riempito il tabellone, ogni riga viene guardata per conto suo, e le
 sue caselle diventano le intensità dell'evidenziatore per quella parola lì.
 
-Due cose sulle taglie. Domanda ed etichetta vanno confrontate, quindi devono
-essere scritte con lo stesso numero di caselle; l'informazione consegnata no,
-quella può essere lunga a piacere, perché con nessuno si confronta. E quello
+Due cose sulle taglie, e qui «taglia» è quanti numeri ci sono dentro una
+lista, non quanto è grande il tabellone. Domanda ed etichetta vanno
+confrontate, quindi devono essere scritte con la stessa quantità di numeri;
+l'informazione consegnata no, quella può essere lunga a piacere, perché con
+nessuno si confronta. E quello
 che esce da una riga ha sempre la stessa taglia, che le colonne siano dieci o
 diecimila: il tabellone si allarga, il risultato per ogni parola no. È il
-motivo per cui la stessa macchina digerisce una frase e un romanzo.
+motivo per cui la stessa macchina lavora su una frase e su un capitolo senza
+cambiare forma. Non per cui lo fa a costo uguale: il tabellone cresce con il
+quadrato della lunghezza, ed è da lì che vengono i limiti di lunghezza dei
+modelli.
 
 Il tabellone è quadrato quando le due liste sono la stessa, cioè quando una
 frase interroga sé stessa. Ma non deve esserlo. Un traduttore ha davanti due
@@ -250,9 +259,11 @@ l'addestramento), le tre liste che ne escono sono diverse fra loro.
 
 Attenzione a non prendere le tre versioni per tre etichette appiccicate addosso
 alla parola una volta per tutte. Le tabelle cambiano da un piano all'altro del
-modello e da un lettore all'altro, quindi "gatto" cerca una cosa al primo piano
-e un'altra al ventesimo, si presenta in un modo a un lettore e in un altro modo
-a quello accanto. La prova sta nel guasto che eviti sapendolo: chi si aspetta
+modello, e dentro lo stesso piano ce n'è più di una copia che lavora in
+parallelo sulla stessa frase (fra poco quelle copie prenderanno il nome di
+teste). Quindi "gatto" cerca una cosa al primo piano e un'altra al ventesimo, e
+nello stesso piano si presenta in un modo a una copia e in un altro modo a
+quella accanto. La prova sta nel guasto che eviti sapendolo: chi si aspetta
 un'etichetta fissa si aspetta anche che "gatto" venga scelto sempre dalle stesse
 parole, e poi trova due piani in cui succede il contrario, senza che nessuno dei
 due sia rotto.
@@ -582,9 +593,11 @@ $$
 Questo prodotto è facile da trascurare, e porta con sé una proprietà da
 enunciare per esteso: $\mathbf{o}_i$ vive nello spazio dei valori, mai in
 quello dei punteggi, ed essendo una combinazione convessa dei
-$\mathbf{v}_j$ sta nel loro inviluppo convesso. L'attenzione non può fabbricare
-direzioni che i valori non contengono già; quello che può fare è sceglierne il
-mescolamento in funzione del contenuto, e cambiarlo a ogni posizione. Dati
+$\mathbf{v}_j$ sta nel loro inviluppo convesso. Una singola testa non può
+fabbricare direzioni che i valori non contengono già; quello che può fare è
+sceglierne il mescolamento in funzione del contenuto, e cambiarlo a ogni
+posizione. Il vincolo cade appena si concatenano più teste e si mescolano con
+$\mathbf{W}^O$, che è una proiezione qualsiasi. Dati
 i coefficienti, la combinazione dei valori è lineare: la non-linearità viene
 da come i coefficienti dipendono dall'ingresso, e dal fatto che li si
 moltiplica per valori che dall'ingresso dipendono anche loro.
@@ -660,8 +673,8 @@ uscita è la media esatta dei due valori,
 $\tfrac{1}{2}(1, 0) + \tfrac{1}{2}(0, 2) = (0{,}50,\ 1{,}00)$. La terza è
 l'unica interessante: i punteggi $2$ e $4$ diventano $1{,}414$ e $2{,}828$
 dopo la scala, e la softmax li trasforma in $0{,}19$ e $0{,}77$; il poco che
-resta, cinque centesimi, va a "salta" su sé stessa. "Salta" mette
-tre quarti del suo colore su "gatto", e la sua uscita
+resta, cinque centesimi, va a "salta" su sé stessa. "Salta" mette più di tre
+quarti del suo colore su "gatto", e la sua uscita
 $(0{,}23,\ 1{,}58)$ pende dalla parte del valore di "gatto", che era $(0, 2)$.
 
 Due cose che quel tabellone dice e che sono più facili da vedere qui che in
@@ -752,8 +765,8 @@ intere: attaccandole una in coda all'altra si ottiene di nuovo una lista lunga
 quanto quella di partenza, perché otto ottavi fanno uno. Resta un ultimo
 passaggio, una tabella che la lunghezza non la cambia ma mescola fra loro i
 contributi degli otto, così che quello che ciascuno ha visto arrivi in tutte
-le caselle e non solo nel proprio ottavo. Alla fine il conto costa quanto un
-lettore solo a lista piena.
+le caselle e non solo nel proprio ottavo. Alla fine il conto costa poco più di
+un lettore solo a lista piena: la differenza è quell'ultima tabella.
 
 Ogni lettore si chiama, per ragioni che nessuno ricorda più, una **testa** di
 attenzione, e il Transformer originale ne usa otto. Perché otto e non nove?
@@ -772,16 +785,25 @@ La **Multi-Head Attention** esegue $h$ attenzioni indipendenti in sottospazi
 distinti e ne ricompone gli esiti:
 
 $$
-\text{MultiHead}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) =
+\text{MultiHead}(\mathbf{X}) =
 \text{Concat}(\text{head}_1, \ldots, \text{head}_h)\,\mathbf{W}^O
 $$
 
-dove $\text{head}_i = \text{Attention}(\mathbf{Q}\mathbf{W}_i^Q,
-\mathbf{K}\mathbf{W}_i^K, \mathbf{V}\mathbf{W}_i^V)$ e
-$\mathbf{W}_i^Q, \mathbf{W}_i^K, \mathbf{W}_i^V, \mathbf{W}^O$ sono matrici
-apprese. Nel Transformer originale
-$h = 8$ e, con $d_{\text{model}} = 512$, ogni testa lavora in dimensione
-$d_k = d_{\text{model}}/h = 64$: tenendo $d_{\text{model}}$ fisso, aumentare
+dove $\text{head}_i = \text{Attention}(\mathbf{X}\mathbf{W}_i^Q,
+\mathbf{X}\mathbf{W}_i^K, \mathbf{X}\mathbf{W}_i^V)$. L'argomento sono le
+rappresentazioni in ingresso, e non le $\mathbf{Q}$, $\mathbf{K}$,
+$\mathbf{V}$ già proiettate di poco fa: quelle si proietterebbero due volte e
+le forme non tornerebbero. Nell'attenzione incrociata le query partono da un
+flusso e chiavi e valori dall'altro, cioè $\text{head}_i =
+\text{Attention}(\mathbf{Y}\mathbf{W}_i^Q, \mathbf{X}\mathbf{W}_i^K,
+\mathbf{X}\mathbf{W}_i^V)$, e il resto non cambia. Le matrici apprese sono
+$\mathbf{W}_i^Q, \mathbf{W}_i^K \in \mathbb{R}^{d_{\text{model}} \times d_k}$,
+$\mathbf{W}_i^V \in \mathbb{R}^{d_{\text{model}} \times d_v}$ e
+$\mathbf{W}^O \in \mathbb{R}^{h\,d_v \times d_{\text{model}}}$, che riporta
+l'uscita alla larghezza dell'ingresso qualunque sia $d_v$. Nel Transformer
+originale $h = 8$ e, con $d_{\text{model}} = 512$, ogni testa lavora in
+dimensione $d_k = d_v = d_{\text{model}}/h = 64$, così che la concatenazione
+sia già larga quanto l'ingresso: tenendo $d_{\text{model}}$ fisso, aumentare
 il numero di teste non moltiplica per $h$ il costo di un'attenzione a
 dimensione piena, perché ogni testa è più stretta. Il costo complessivo resta
 paragonabile a quello di una singola attenzione a dimensione piena, e il
@@ -800,8 +822,11 @@ cercare un'etichetta per tutte.
 
 Un fatto che a prima lettura sorprende: nella formula che abbiamo montato non
 compare mai la posizione dei token. Ogni riga di $\mathbf{Q}$ viene confrontata
-con ogni riga di $\mathbf{K}$ senza che nulla dica quale venga prima. La
-conseguenza è precisa, e si dimostra in una riga: rimescolare le righe di
+con ogni riga di $\mathbf{K}$ senza che nulla dica quale venga prima. Per
+l'attenzione, «Il gatto morde il cane» e «Il cane morde il gatto» sono lo
+stesso insieme di parole.
+
+La conseguenza è precisa, e si dimostra in una riga: rimescolare le righe di
 $\mathbf{X}$ con una permutazione $\mathbf{P}$ rimescola allo stesso modo
 quelle di $\mathbf{Q}$, $\mathbf{K}$ e $\mathbf{V}$, quindi i punteggi
 diventano $\mathbf{P}\tilde{\mathbf{S}}\mathbf{P}^\top$; la softmax lavora riga
@@ -810,8 +835,10 @@ riporta fuori tale e quale, perché
 $(\mathbf{P}\mathbf{A}\mathbf{P}^\top)(\mathbf{P}\mathbf{V}) =
 \mathbf{P}\mathbf{A}\mathbf{V}$. Le righe dell'uscita si permutano come quelle
 dell'ingresso e nient'altro cambia: la self-attention senza maschera è
-equivariante rispetto alle permutazioni. Per l'attenzione, «Il gatto morde
-il cane» e «Il cane morde il gatto» sono lo stesso insieme di parole.
+equivariante rispetto alle permutazioni, cioè permutare l'ingresso permuta
+l'uscita e non le cambia i valori. Il passaggio finale vale perché una matrice
+di permutazione è ortogonale, quindi $\mathbf{P}^\top\mathbf{P}$ è
+l'identità.
 
 L'ordine va quindi reintrodotto da fuori, e il Transformer del 2017 lo fa
 sommando alle rappresentazioni un segnale posizionale. Chi lo produce, come

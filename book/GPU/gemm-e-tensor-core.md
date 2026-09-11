@@ -11,13 +11,18 @@ tabella.
 Quell'operazione, nelle librerie di calcolo (le raccolte di pezzi di
 programma già scritti e collaudati, che chiunque richiama invece di
 riscriverseli), porta da decenni una sigla: **GEMM**, *GEneral Matrix
-Multiply*, moltiplicazione generale fra matrici. È
+Multiply*. Il «generale» non riguarda l'operazione ma la *matrice*: nello
+schema con cui le BLAS battezzano le proprie routine dice che le due tabelle
+sono qualunque, mentre altre sigle sono riservate ai casi speciali (simmetrica,
+triangolare, a banda), dove si risparmia: su una triangolare i conti si
+dimezzano, su una simmetrica si dimezza quello che si legge, su una a banda si
+risparmia molto di più. È
 probabilmente il pezzo di codice più ottimizzato della storia
 dell'informatica: a ogni generazione di hardware qualcuno lo riscrive da capo
 per spremerne l'ultima goccia.
 
-E la ragione c'è. Nella sezione «Prestazioni e scala» del {doc}`capitolo su
-PyTorch </PyTorch/overview>` abbiamo detto che una rete neurale, vista
+E la ragione c'è. Nella sezione {doc}`Prestazioni e scala
+</PyTorch/prestazioni>` abbiamo detto che una rete neurale, vista
 dall'hardware, è quasi soltanto una cosa: moltiplicazioni fra matrici. Da
 AlexNet {cite}`krizhevsky2012imagenet` in poi, il grosso dei conti di qualunque
 rete si riduce a quella. E la sezione «La memoria: il vero collo di bottiglia»
@@ -32,8 +37,11 @@ tabella e una colonna della seconda, le si moltiplica numero per numero e si
 somma il tutto. In simboli, $\mathbf{C} = \mathbf{A}\,\mathbf{B}$, con
 $\mathbf{A}$ di forma $(M, K)$ (cioè con $M$ righe e $K$ colonne) e
 $\mathbf{B}$ di forma $(K, N)$, dà una matrice $\mathbf{C}$ di forma $(M, N)$.
-Quanti conti servano si vede a occhio; il problema, come sempre su una GPU, non
-è *quanti conti* fai, ma *quanti byte* muovi per farli.
+I conti da fare si contano: una moltiplicazione e una somma per ogni casella
+del risultato e per ogni passo lungo il lato in comune, e per due tabelle da
+mille caselle di lato fanno due miliardi di operazioni. Il problema, come
+sempre su una GPU, non è *quanti conti* fai, ma *quanti byte* muovi per
+farli.
 
 `````{tab} Elementare
 Una riga per una colonna, moltiplica e somma: facile. Ma immagina di farlo
@@ -94,7 +102,8 @@ spostano montagne di byte per rileggere all'infinito gli stessi numeri.
 
 ## Tiling: portare gli ingredienti sul tavolo una volta sola
 
-La cura è quella già anticipata nella sezione sulla memoria: caricare una
+La cura è quella già anticipata nella {doc}`sezione sulla gerarchia della
+memoria </GPU/gerarchia-memoria>`: caricare una
 volta, riusare in tanti. Invece di calcolare $\mathbf{C}$ una casella alla
 volta, la si spezza in **tessere** (i *tile*); per ogni tessera si portano i
 blocchi corrispondenti di $\mathbf{A}$ e di $\mathbf{B}$ nella shared memory
@@ -125,32 +134,48 @@ essere buttato.
 
 Più grande la cassetta, più piatti escono da ogni viaggio, e sul ripiano ci sta
 una cassetta e poco più. Con una tessera da trentadue caselle di lato ogni
-numero, arrivato una volta, serve trentadue conti; e siccome un numero pesa
-quattro byte, fanno otto conti per ogni byte che ci si è fatti portare. Non
-basta: il pareggio fra magazzino e cuochi, quello stabilito nella sezione sulla
-memoria, sta a dieci, e i cuochi restano un po’ fermi ad aspettare. Qualche
-casella in più colmerebbe il divario, se la soglia stesse ferma. Ma le unità
-costruite apposta per moltiplicare tabelloni la portano oltre il
-centocinquanta, e una cassetta capace di tenere quel passo sul ripiano non ci
-sta: la più grande che ci entra resta sotto di un buon terzo. E allargare il
-ripiano rende meno di quanto prometta, perché per fare il doppio dei conti su
-ogni byte deve diventare quattro volte più grande.
+viaggio porta duemilaquarantotto numeri, due blocchetti da trentadue per
+trentadue, e da quei numeri escono trentaduemilasettecentosessantotto
+moltiplicazioni con altrettante somme: trentadue conti per ogni numero portato,
+e siccome un numero pesa quattro byte, otto conti per ogni byte che ci si è
+fatti portare. Non basta: il pareggio fra magazzino e cuochi, quello stabilito
+nella sezione sulla memoria, sta a dieci, e i cuochi restano un po’ fermi ad
+aspettare. Qualche casella in più colmerebbe il divario, e in effetti la
+cassetta più grande che sul ripiano ci sta, centoquarantaquattro caselle di
+lato, arriva a trentasei, cioè quel pareggio lo supera di tre volte e mezzo.
+
+Solo che la soglia non sta ferma. Le unità costruite apposta per moltiplicare
+tabelloni lavorano con numeri corti, che pesano due byte invece di quattro:
+ogni byte porta allora il doppio dei conti, ma il pareggio da tenere sale oltre
+il centocinquanta. In quella valuta la cassetta da trentadue fa sedici, e la
+più grande che sul ripiano ci sta, duecento caselle di lato, arriva a poco più
+di cento: sotto di un buon terzo, e non c'è cassetta che ci arrivi. Allargare
+il ripiano, poi, rende meno di quanto prometta, perché la cassetta è un
+quadrato: per fare il doppio dei conti su ogni byte deve diventare quattro
+volte più grande.
 
 Come mai, allora, le moltiplicazioni vere volano? Perché in fondo al corridoio
 non ci va quasi nessuno. Le squadre che lavorano fianco a fianco chiedono
 cassette identiche, e la prima che la ordina la lascia nel cassetto comune,
-dove le altre la trovano a due passi. Su una moltiplicazione grande la
-differenza è tutta qui. Contando ogni cassetta come un viaggio fino in
-dispensa, si passerebbe due volte e mezzo più tempo a trasportare che a
-cucinare; contando quello che il cassetto serve da sé, il trasporto scende
-sotto un decimo della cottura. Stesso lavoro, stessi piatti: nel primo conto
-comanda la dispensa, nel secondo i cuochi.
+dove le altre la trovano a due passi. I due risparmi stanno in fila e non si
+fanno concorrenza: la cassetta decide quanta roba esce dalla cucina, il
+cassetto quanta di quella arriva davvero fino in dispensa, e senza la cassetta
+nel cassetto ci sarebbe roba tutta diversa. Su una moltiplicazione grande, di
+quelle da ottomila caselle di lato, la differenza è tutta qui. Contando ogni
+cassetta come un viaggio fino in dispensa, si passerebbe due volte e mezzo più
+tempo a trasportare che a cucinare; contando invece un cassetto così capiente
+da servire tutto da sé, il trasporto scenderebbe sotto un decimo della cottura.
+Il secondo conto è il meglio che si possa sperare e non quello che succede,
+perché in quel cassetto le due tabelle intere non ci stanno: il vero sta in
+mezzo, e quel che conta è da che parte cade. Stesso lavoro, stessi piatti:
+dalla parte del primo conto comanda la dispensa, da quella del secondo i
+cuochi.
 
 Sotto quella mossa i programmi veri ne infilano una seconda, più in piccolo.
 Ogni cuoco prende dal ripiano sedici numeri, otto di una tabella e otto
 dell'altra, e da quegli otto per otto ricava sessantaquattro prodotti senza
 tornare al ripiano nemmeno una volta. Quei sedici numeri non risparmiano un
-solo viaggio in dispensa, che quelli li decide la cassetta grande. Servono
+solo viaggio in dispensa, perché quelli li decide la cassetta grande. Servono
 contro una coda diversa: al ripiano ci vanno tutte le mani della squadra, e se
 ognuna ci torna per ogni singolo prodotto si fa la fila. Stessa mossa, scala
 diversa.
@@ -160,12 +185,13 @@ diversa.
 Spezziamo $\mathbf{C}$ in tessere $T \times T$. Per calcolare una tessera si
 scorre la dimensione $K$ a blocchi: a ogni passo si caricano *una volta* un
 blocco $T \times T$ di $\mathbf{A}$ e uno di $\mathbf{B}$ nella shared memory,
-e si accumulano nella tessera tutti i $T \times T$ prodotti che quei due
-blocchi generano, prima di passare al blocco $K$ successivo. Ogni valore
-caricato serve $T$ moltiplicazioni invece di una: il fattore di riuso (la
-grandezza già incontrata nella sezione sulla memoria) è $T$. Le letture dalla
-HBM scendono da $2 M N K$ a circa $2 M N K / T$ elementi, e l'intensità
-aritmetica sale da $\tfrac14$ a
+e si accumulano nella tessera i $T^3$ prodotti che quei due blocchi generano,
+distribuiti sui $T^2$ accumulatori, prima di passare al blocco $K$ successivo.
+Ogni valore caricato entra in $T$ moltiplicazioni invece che in una: il fattore
+di riuso (la grandezza già incontrata nella sezione sulla memoria) è $T$. Le
+letture dalla HBM scendono da $2 M N K$ a circa $2 M N K / T$ elementi, e
+siccome ogni moltiplicazione consuma due valori caricati, uno per tabella,
+l'intensità aritmetica sale da $\tfrac14$ a
 
 $$
 I_\text{tiled} \approx \frac{T}{4} \ \text{FLOP/byte}.
@@ -175,19 +201,19 @@ Con $T = 32$ sono $8$ FLOP/byte: trentadue volte l'intensità della versione
 ingenua, e sul roofline la tessera scivola di parecchio verso destra.
 
 Il confronto, però, va portato fino in fondo, perché la conclusione non è
-quella che ci si aspetta: otto FLOP/byte non bastano ancora. Il ginocchio
-del roofline sta a $\approx 10$
-con i CUDA core in `float32` e a $\approx 161$ con i tensor core in `float16`
-su A100. I due numeri vanno confrontati a parità di formato: la stessa tessera
-in `float16` fa 16, non 8, e resta a sinistra anche di quello. Da sola è ancora
-memory-bound. E il tiling in shared memory non può cavarsela da sé:
-servirebbe $T \ge 41$ per superare il primo ginocchio e, in `float16` (dove
-$I \approx T/2$), $T \ge 323$ per superare il secondo, cioè una tessera che
-occuperebbe oltre 400 KB contro i 164 KB di shared memory configurabile di una
-A100. E non è questione di scegliere meglio la taglia: la tessera più grande
-che in quei 164 KB ci sta è $204 \times 204$ (due blocchi da $T^2$ elementi a
-2 byte l'uno), e dà $I \approx 102$. Nessuna tessera in shared memory
-arriva a 161, e quella $128 \times 128$ dei GEMM industriali si ferma a 64.
+quella che ci si aspetta: otto FLOP/byte non bastano ancora. Il ginocchio del
+roofline sta a $\approx 10$ con i CUDA core in `float32` e a $\approx 161$ con
+i tensor core in `float16` su A100. I due numeri vanno confrontati a parità di
+formato: la stessa tessera in `float16` fa 16, non 8, e resta a sinistra anche
+di quello. Da sola è ancora memory-bound. Il primo ginocchio il tiling lo
+supera da sé, e senza sforzo: basta $T \ge 41$, che in `float32` occupa
+$13{,}1$ KB dei $164$ configurabili su una A100. Il secondo no: in `float16`
+(dove $I \approx T/2$) servirebbe $T \ge 323$, cioè una tessera da oltre 400
+KB, che in quei 164 non ci sta. E non è questione di scegliere meglio la
+taglia: la tessera più grande che in quei 164 KB ci sta è $204 \times 204$ (due
+blocchi da $T^2$ elementi a 2 byte l'uno), e dà $I \approx 102$. Nessuna
+tessera in shared memory arriva a 161, e quella $128 \times 128$ dei GEMM
+industriali si ferma a 64.
 
 La domanda diventa allora chi li salvi davvero, quei GEMM, dato che veloci lo
 sono. La risposta sta un piano più giù ed è la cache L2. Il modello usato
@@ -198,46 +224,51 @@ $\mathbf{A}$ e di $\mathbf{B}$ che blocchi diversi si portano sul tavolo sono
 GEMM $8192 \times 8192 \times 8192$ in `float16` con tessere $128 \times 128$:
 nel modello crudo dalla HBM escono $2MNK/T$ elementi, cioè circa 17 GB, che
 a $1{,}935$ TB/s valgono $8{,}9$ ms contro i $3{,}5$ ms di calcolo dei tensor
-core; con il riuso in L2 dalla HBM $\mathbf{A}$ e $\mathbf{B}$ escono una volta
-sola e $\mathbf{C}$ ci rientra una volta sola, cioè circa 400 MB e
-$0{,}21$ ms. Stesso kernel, stessi FLOP: nel primo conto è bloccato dalla
-memoria, nel secondo dai tensor core.
+core. All'altro estremo, se dalla HBM $\mathbf{A}$ e $\mathbf{B}$ uscissero una
+volta sola e $\mathbf{C}$ ci rientrasse una volta sola, sarebbero circa 400 MB
+e $0{,}21$ ms. Quel secondo numero è un pavimento e non una misura: perché le
+due matrici escano una volta sola dovrebbero stare tutte on-chip, e in
+`float16` sono 128 MiB l'una contro i 40 MB di L2 di una A100. Il traffico vero
+sta fra i due estremi, ed è la posizione che conta: finché dalla HBM escono più
+dei circa 7 GB che in quei $3{,}5$ ms la banda fa in tempo a portare, il kernel
+è bloccato dalla memoria; sotto quella soglia comandano i tensor core.
 
-E allora a che serve il secondo livello di tessere nei registri che i GEMM
-veri impilano davvero sotto il primo? Non a spostare il punto sul roofline
-della HBM: lì il traffico lo decide soltanto la tessera in shared memory, e la
+E allora a che serve il secondo livello di tessere nei registri che i GEMM veri
+impilano davvero sotto il primo? Non a spostare il punto sul roofline della
+HBM: lì il traffico lo decide soltanto la tessera in shared memory, e la
 micro-tessera nei registri non ne cambia un byte. Serve a un problema diverso e
-altrettanto reale, un piano più su: la banda della shared memory. Ogni SM
-la serve con 32 banchi da 4 byte per colpo di clock, cioè 128 byte per ciclo,
-che su una A100 fanno circa 19 TB/s aggregati (la stessa cifra che il paper di
-FlashAttention attribuisce alla SRAM on-chip). Per alimentare 312 TFLOP/s di
-tensor core servono dunque 16 FLOP per ogni byte letto dalla shared, e un
-thread che vada a prendersi i due operandi di ogni singolo prodotto ne fa
-$0{,}5$: due FLOP ogni quattro byte in `float16`. Con una micro-tessera
-$R \times R$ tenuta nei registri, invece, ogni thread legge $2R$ valori e ne
-ricava $R^2$ prodotti, cioè $R/2$ FLOP per byte. È la stessa aritmetica del
-tiling, con la shared al posto della HBM e i registri al posto della shared: il
-riuso si ricompra un piano più giù, ed è possibile per la ragione vista nella
-sezione sulla memoria, che il register file di un SM è il banco on-chip più
-capiente che ci sia.
+altrettanto reale, un piano più su: la banda della shared memory. Ogni SM la
+serve con 32 banchi da 4 byte per colpo di clock, cioè 128 byte per ciclo, che
+sui 108 SM di una A100, a $1{,}41$ GHz, fanno circa 19 TB/s aggregati (la
+stessa cifra che il paper di FlashAttention attribuisce alla SRAM on-chip). Per
+alimentare 312 TFLOP/s di tensor core servono dunque 16 FLOP per ogni byte
+letto dalla shared, e un thread che vada a prendersi i due operandi di ogni
+singolo prodotto ne fa $0{,}5$: due FLOP ogni quattro byte in `float16`. Con
+una micro-tessera $R \times R$ tenuta nei registri, invece, ogni thread legge
+$2R$ valori e ne ricava $R^2$ prodotti, cioè $R/2$ FLOP per byte. È la stessa
+aritmetica del tiling, con la shared al posto della HBM e i registri al posto
+della shared: il riuso si ricompra un piano più giù, ed è possibile per la
+ragione vista nella sezione sulla memoria, che il register file di un SM è il
+banco on-chip più capiente che ci sia.
 
 Il fatto generale, più della gerarchia in sé, è questo: c'è un roofline per
 ogni livello della piramide, ciascuno con la sua banda e il suo ginocchio, e
 ogni livello di tiling esiste per superare il proprio. Quanto al tetto, l’$n/6$
-del roofline è un *ideale* che richiederebbe $\mathbf{A}$ e $\mathbf{B}$ intere
-on-chip, e per fortuna non serve raggiungerlo: l'intensità realmente
-raggiungibile non cresce con $n$, ma con la radice della memoria veloce
-disponibile (è il risultato classico di Hong e Kung sulla complessità di I/O
-{cite}`hongkung1981io`, che dà $\Omega(n^3/\sqrt{M_\text{chip}})$ trasferimenti
-e quindi $I = O(\sqrt{M_\text{chip}})$, dove $M_\text{chip}$ è la memoria
-veloce disponibile e non va confusa con le $M$ righe di $\mathbf{A}$).
+del roofline (dove $n$ è il lato di due matrici quadrate) è un *ideale* che
+richiederebbe $\mathbf{A}$ e $\mathbf{B}$ intere on-chip, e per fortuna non
+serve raggiungerlo: l'intensità realmente raggiungibile non cresce con $n$, ma
+con la radice della memoria veloce disponibile (è il risultato classico di Hong
+e Kung sulla complessità di I/O {cite}`hongkung1981io`, che dà
+$\Omega(n^3/\sqrt{M_\text{chip}})$ trasferimenti e quindi $I =
+O(\sqrt{M_\text{chip}})$, dove $M_\text{chip}$ è la memoria veloce disponibile
+e non va confusa con le $M$ righe di $\mathbf{A}$).
 `````
 
 La struttura del tiling si scrive per esteso, senza GPU, in puro NumPy. Il
-codice non è veloce (NumPy fa già i suoi prodotti in modo
-ottimizzato) ma rende visibile *il nido di cicli*: tre cicli uno dentro
-l'altro, si scorre il risultato a tessere, e per ogni tessera si sommano i
-contributi dei blocchi lungo $K$. Ogni `a` e `b` è un blocco «caricato in
+codice non è veloce, e non deve esserlo, perché i prodotti veri li fa già NumPy
+meglio di così: serve a rendere visibile *il nido di cicli*, tre cicli uno
+dentro l'altro, si scorre il risultato a tessere, e per ogni tessera si sommano
+i contributi dei blocchi lungo $K$. Ogni `a` e `b` è un blocco «caricato in
 shared memory»; `a @ b` è il lavoro che lo riusa, e alla fine il risultato
 coincide con la moltiplicazione diretta `A @ B`.
 
@@ -270,11 +301,12 @@ print(np.allclose(matmul_a_blocchi(A, B), A @ B))
 True
 ```
 
-Il triplo ciclo su tessere è lo scheletro di *ogni* moltiplicazione fra matrici
-veloce, dalla CPU alla GPU. Quello che cambia da una macchina all'altra sono
-solo due cose: chi esegue i conti di una tessera (su una GPU, i lavoratori di
-una stessa squadra) e dove la tessera viene tenuta mentre la si usa (il ripiano
-condiviso della squadra, la shared memory). La logica è questa.
+Il triplo ciclo su tessere è lo scheletro di base di una moltiplicazione fra
+matrici veloce, dalla CPU alla GPU: le librerie serie ne impilano cinque o sei,
+con l'impacchettamento esplicito dei blocchi. Quello che cambia da una macchina
+all'altra sono solo due cose: chi esegue i conti di una tessera (su una GPU, i
+lavoratori di una stessa squadra) e dove la tessera viene tenuta mentre la si
+usa (il ripiano condiviso della squadra, la shared memory). La logica è questa.
 
 ## I tensor core: un intero prodotto in un colpo
 
@@ -285,13 +317,15 @@ per il prodotto tra matrici: il tensor core.
 
 `````{tab} Elementare
 Un ragioniere compila a mano una tabellina di quattro righe per quattro
-colonne. Cella per cella è un lavoro noioso: sono sedici celle, e ognuna è una
-somma di quattro prodotti, quindi in tutto sessantaquattro moltiplicazioni. Poi
-gli arriva un timbro speciale, che stampa la tabellina intera in un colpo solo:
-lo appoggia, preme, fatto. Il tensor core è quel timbro. Là dove una postazione
-di calcolo normale fa una moltiplicazione per ogni battito del metronomo del
-chip (il clock dell'inizio del capitolo, che batte più di un miliardo di volte
-al secondo), il tensor core ne fa sessantaquattro.
+colonne. Cella per cella è un lavoro noioso: sono sedici
+celle, e ognuna è una somma di quattro prodotti, quindi in tutto
+sessantaquattro moltiplicazioni. Poi gli arriva un timbro speciale, che riempie
+la tabellina intera in un colpo solo: lo appoggia, preme, fatto. E non cancella
+quello che c'era: somma, così che tabellina dopo tabellina il totale cresca. Il
+tensor core è quel timbro. Là dove una postazione di calcolo normale fa una
+moltiplicazione per ogni battito del metronomo del chip (il clock dell'inizio
+del capitolo, che batte più di un miliardo di volte al secondo), il tensor core
+ne fa sessantaquattro.
 
 Il guadagno sull'intera scheda però non è di sessantaquattro volte, ed è un
 conto che si fa in testa. Sulla scheda che li ha introdotti i timbri erano uno
@@ -330,10 +364,12 @@ $$
 
 su tessere $4 \times 4$, cioè 64 moltiplicazioni-accumulo per colpo di clock
 per unità (l'operazione è esposta al programmatore, a livello di warp, su
-tessere $16 \times 16$). Le forme sono quelle di Volta: le generazioni
-successive ne usano di più grandi, e da Hopper l'unità che emette l'istruzione
-non è più il singolo warp ma un gruppo di quattro. Il cuore è la
-precisione mista {cite}`micikevicius2018mixed`: gli ingressi $\mathbf{A}$ e
+tessere $16 \times 16$). Qui $\mathbf{C}$ non è il risultato del prodotto, che è
+$\mathbf{D}$: è il valore già accumulato a cui il prodotto si somma, ed è la
+convenzione con cui NVIDIA espone l'istruzione. Le forme sono quelle di Volta:
+le generazioni successive ne usano di più grandi, e da Hopper l'unità che
+emette l'istruzione non è più il singolo warp ma un gruppo di quattro. Il
+cuore è la precisione mista {cite}`micikevicius2018mixed`: gli ingressi $\mathbf{A}$ e
 $\mathbf{B}$
 sono a 16 bit (`float16` sulla V100; le architetture successive, da Ampere in
 poi, aggiungono anche `bfloat16`), mentre l'accumulo di $\mathbf{C}$ e
@@ -380,7 +416,8 @@ Che cosa resti fermo sul banco è una scelta di chi progetta, e cambia la
 macchina che ne esce. In un altro capannone a restare fermo è il totale che si
 va accumulando, e a passargli davanti sono i numeri di tutt'e due le tabelle.
 Ha avuto più fortuna il primo, quello con il numero fermo sul banco, ed è
-quello che gli acceleratori più noti hanno adottato.
+quello che hanno adottato gli **acceleratori** più noti, cioè i chip costruiti
+per fare una cosa sola invece di tutte.
 
 Il guadagno sta tutto in quel passaggio da un vicino all'altro. Un numero
 prelevato una volta sola dal magazzino attraversa un'intera fila di banchi e li
@@ -392,13 +429,22 @@ anni Settanta, prese il resto del nome dal cuore, perché i dati attraversano la
 scacchiera a ondate regolari come il sangue spinto dalla sistole.
 
 Capannoni del genere si costruiscono davvero, ed è così che sono fatti i chip
-pensati apposta per l'intelligenza artificiale: la **TPU** di Google ha una
-scacchiera di 256 banchi per 256. Il guadagno più grosso si legge sul contatore
-della luce, perché mandare un numero da un capo all'altro del chip costa più
-corrente che moltiplicarlo, e qui i numeri camminano da un banco al vicino.
+pensati apposta per l'intelligenza artificiale: la **TPU** di Google
+(*Tensor Processing Unit*, l'unità che macina tensori) ha una scacchiera di 256
+banchi per 256. Il guadagno più grosso si legge sul contatore
+della luce, perché mandare un numero da un capo all'altro del chip vuol dire
+caricare e scaricare un filo lungo millimetri, e quello costa più corrente che
+moltiplicare; qui invece i numeri camminano da un banco al vicino.
 
-Il prezzo è la rigidità, e si vede appena il lavoro cambia. Se la tabella da
-moltiplicare è più piccola della scacchiera, molti banchi passano il turno a
+C'è una riserva da mettere subito, però, prima di paragonarlo a una GPU: il
+capannone che ha reso famosa l'idea, quello da 256 banchi per lato, lavorava
+con numeri interi corti e serviva soltanto a far rispondere un modello già
+addestrato, non a costruirlo. Le generazioni venute dopo addestrano anche;
+confrontare quel primo capannone con una scheda che addestra resta un confronto
+fra due mestieri.
+
+Il prezzo, poi, è la rigidità, e si vede appena il lavoro cambia. Se la tabella
+da moltiplicare è più piccola della scacchiera, molti banchi passano il turno a
 moltiplicare zeri. E se quello che c'è da fare non è una moltiplicazione fra
 tabelle, il capannone non serve, e bisogna uscirne per farlo altrove. Una GPU è
 più lenta di lei sul suo terreno e sa fare tutto il resto: è la stessa tensione
@@ -432,7 +478,8 @@ da una cache che *spera* di essere colpita, ma dalla geometria.
 La prima TPU di Google {cite}`jouppi2017datacenter` è la realizzazione più nota
 del secondo schema: un array $256 \times 256$, cioè $65\,536$
 moltiplicazioni-accumulo per ciclo di clock in una sola unità (le generazioni
-successive usano più unità $128 \times 128$), con i pesi precaricati dall'alto,
+dalla seconda alla quinta usano più unità $128 \times 128$, e dalla sesta si
+torna a $256 \times 256$), con i pesi precaricati dall'alto,
 i dati che entrano da sinistra e 4 MiB di accumulatori a 32 bit sotto la
 matrice, che raccolgono una somma parziale da 256 elementi per ciclo. Va detto
 che cosa moltiplica: interi a 8 bit, e per la sola inferenza, quindi il
@@ -471,8 +518,9 @@ davvero il cronometro, e che altrimenti sembrerebbero magia:
   come 8, 16 o 64 invece di misure qualsiasi. Se le dimensioni sono multiple
   della tessera (e dei blocchetti che i tensor core divorano) le tessere si
   riempiono senza avanzi, e nessun lavoratore resta a lavorare su un bordo
-  incompleto. È il motivo per cui conviene portare al multiplo di 8 più vicino
-  la *dimensione nascosta* di un modello (quanti numeri usa per rappresentare
+  incompleto. È il motivo per cui conviene portare al multiplo di 8 successivo
+  (per eccesso: per difetto si buttano via delle righe) la *dimensione
+  nascosta* di un modello (quanti numeri usa per rappresentare
   al proprio interno una parola o un'immagine) o la *taglia del vocabolario*
   (quante parole diverse conosce): un guadagno spesso gratuito. Una forma
   «storta» lascia i tensor core mezzi vuoti.
@@ -530,21 +578,22 @@ peggio di taglie vicine, e chi non conosce questo secondo effetto lo attribuisce
 alla tessera, che non c'entra.
 `````
 
-Il tiling, insomma, tiene insieme i due limiti che il grafico della sezione
-precedente (il roofline, quello che dice se sei bloccato dal magazzino o dai
-cuochi) metteva uno di fronte all'altro: taglia i byte da spostare, perché
-riusa quel che ha già sul tavolo, e in cambio dà da lavorare ai tensor core.
-La stessa idea, cioè riorganizzare un calcolo per non tornare mai a rileggere
-dalla memoria lontana ciò che si può tenere vicino, applicata ai confronti fra
-le parole di un testo dà la FlashAttention {cite}`dao2022flashattention`
-della prossima sezione. La moltiplicazione fra matrici è il primo, e più puro,
-esempio di una lezione che tornerà a ogni pagina.
+Il tiling, insomma, tiene insieme i due limiti che il roofline della sezione
+«La memoria: il vero collo di bottiglia» (il grafico che dice se sei bloccato
+dal magazzino o dai cuochi) metteva uno di fronte all'altro: taglia i byte da
+spostare, perché riusa quel che ha già sul tavolo, e in cambio dà da lavorare
+ai tensor core. La stessa idea, cioè riorganizzare un calcolo per non tornare
+mai a rileggere dalla memoria lontana ciò che si può tenere vicino, applicata
+ai confronti fra le parole di un testo dà la {doc}`FlashAttention
+</GPU/flash-attention>` {cite}`dao2022flashattention`. La moltiplicazione fra
+matrici è il primo, e più puro, esempio di una lezione che tornerà a ogni
+pagina.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - Una rete neurale, vista dall'hardware, è quasi soltanto moltiplicazioni fra
-  tabelle di numeri. Quella routine ha un nome che si incontra ovunque,
+  tabelle di numeri. Quell'operazione ha un nome che si incontra ovunque,
   GEMM, ed è probabilmente il pezzo di codice più ottimizzato della storia
   dell'informatica.
 - Farla nel modo ovvio, una casella del risultato alla volta, vuol dire correre
@@ -558,8 +607,10 @@ esempio di una lezione che tornerà a ogni pagina.
   scale: blocchetti grandi sul tavolo, che tagliano i viaggi in dispensa, e
   blocchetti piccolissimi in mano a ciascun lavoratore, che di viaggi non ne
   tolgono nemmeno uno ma sciolgono la fila al tavolo.
-- Il tiling da solo, però, non basta: nemmeno la tessera più grande che stia
-  sul tavolo arriva al pareggio fra magazzino e cuochi. A far volare le
+- Il tiling da solo, però, non basta: la tessera più grande che sul tavolo ci
+  sta supera il pareggio dei calcolatori ordinari, ma a quello molto più alto
+  che pretendono le unità costruite per moltiplicare tabelloni resta sotto di
+  un buon terzo. A far volare le
   moltiplicazioni vere è il cassetto comune fra le squadre (la *cache L2*),
   dove la cassetta che una ordina la ritrovano tutte le altre.
 - I tensor core sono il timbro che stampa un pezzo intero di tabellina in
@@ -571,7 +622,9 @@ esempio di una lezione che tornerà a ogni pagina.
   montaggio, dove il totale scende lungo la colonna raccogliendo un pezzo per
   postazione. Si chiama array sistolico {cite}`kung1982why` ed è la scelta
   della TPU di Google {cite}`jouppi2017datacenter`: bravissima a fare questa
-  cosa, inadatta a tutto il resto.
+  cosa, inadatta a tutto il resto. La riserva da tenere accanto al confronto: il
+  primo di quei capannoni lavorava con numeri interi corti e serviva a far
+  rispondere un modello già addestrato, non a costruirlo.
 - Le due regole pratiche che restano, e che valgono anche per chi non scriverà
   mai un programma per GPU: dare alle tabelle misure tonde (multipli di 8 o
   16) e usare la mezza precisione, i numeri scritti nella metà dello
@@ -597,18 +650,19 @@ esempio di una lezione che tornerà a ogni pagina.
 - Il tiling spezza $\mathbf{C}$ in tessere e carica i blocchi di
   $\mathbf{A}$ e $\mathbf{B}$ in shared memory una volta sola, riusandoli:
   con tessere $T \times T$ l'intensità sale a circa $T/4$ FLOP/byte. Con
-  $T = 32$ fa 8 in `float32` e 16 in `float16` (dove $I \approx T/2$), e sono
-  tutti e due a sinistra di ogni ginocchio (10 con i CUDA core, 161 con i
-  tensor core su A100); nessuna tessera che stia nei 164 KB di shared di una
-  A100 ci arriva, perché la più grande è $204 \times 204$, cioè $I \approx 102$
-  in `float16`. A tenere i GEMM veri lontani dal muro della HBM è la cache
-  L2, che serve le tessere che i blocchi si ripassano (su un GEMM $8192^3$ in
-  `float16` il traffico scende da 17 GB a circa 400 MB, e il tempo da $8{,}9$ a
-  $0{,}21$ ms contro $3{,}5$ ms di calcolo). Il secondo livello di tessere,
-  quello nei registri, risolve un problema diverso: la banda della shared
-  memory, circa 19 TB/s su A100 contro i 16 FLOP/byte che i tensor core
-  pretendono. C'è un roofline per ogni livello della piramide, e ogni tiling
-  supera il proprio. L’$n/6$ è un tetto ideale; il raggiungibile cresce come
+  $T = 32$ fa 8 in `float32` e 16 in `float16` (dove $I \approx T/2$). Il primo
+  ginocchio, 10 con i CUDA core, il tiling lo supera da sé; il secondo, 161 con
+  i tensor core su A100, no: la tessera più grande che stia nei 164 KB di
+  shared è $204 \times 204$, cioè $I \approx 102$ in `float16`. A tenere i GEMM
+  veri lontani dal muro della HBM è la cache L2, che serve le tessere che i
+  blocchi si ripassano (su un GEMM $8192^3$ in `float16` il traffico crudo è 17
+  GB, cioè $8{,}9$ ms contro $3{,}5$ ms di calcolo; il pavimento del riuso
+  perfetto è 400 MB, cioè $0{,}21$ ms, e il traffico vero sta in mezzo). Il
+  secondo livello di tessere, quello nei registri, risolve un problema diverso:
+  alimentare i tensor core dalla shared memory vuole 16 FLOP per byte letto, e
+  un thread che vada a prendersi i due operandi di ogni prodotto ne fa mezzo.
+  C'è un roofline per ogni livello della piramide, e ogni tiling supera il
+  proprio. L’$n/6$ è un tetto ideale; il raggiungibile cresce come
   $\sqrt{M_\text{chip}}$, non come $n$ {cite}`hongkung1981io`.
 - I tensor core (dal 2017, Volta) eseguono un piccolo prodotto-matrice con
   accumulo $\mathbf{D} = \mathbf{A}\mathbf{B} + \mathbf{C}$ per colpo di clock
@@ -622,7 +676,8 @@ esempio di una lezione che tornerà a ogni pagina.
   {cite}`jouppi2017datacenter` usa la variante *weight stationary*: pesi
   precaricati e fermi, attivazioni da sinistra, somme parziali che scendono
   verso gli accumulatori sotto l'array. Massima efficienza sul GEMM, rigidità
-  su tutto il resto.
+  su tutto il resto; e la riserva sul confronto, perché quell'array moltiplica
+  interi a 8 bit e serve la sola inferenza.
 - Raramente scriverai un GEMM a mano, ma capire il tiling spiega perché le
   forme «tonde» (allineamento a 16 byte, più che multipli logici di 8/16) e la
   mezza precisione vanno più veloci; e perché esiste una *wave quantization*

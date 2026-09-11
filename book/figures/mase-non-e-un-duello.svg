@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 360" role="img" aria-label="Schema di che cosa mette a confronto la MASE. Una linea del tempo &#232; divisa da una riga verticale tratteggiata: a sinistra la storia su cui il modello si &#232; addestrato, a destra il blocco di prova. Sopra, il modello: una sola freccia lunga parte dalla riga e attraversa tutto il blocco di prova, dodici passi in un colpo solo, e i suoi errori formano il numeratore. Sotto, chi copia: una fila fitta di frecce cortissime, una per ogni giorno della storia gi&#224; percorsa, tutte a sinistra della riga: sono 18, contro i dodici passi del modello, e i loro errori formano il denominatore. I due non corrono n&#233; sullo stesso tratto n&#233; sullo stesso orizzonte, e chi copia ne percorre molti di pi&#249;.">
+  <defs>
+    <marker id="freccia-mase-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+    <marker id="freccia-mase-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="700" height="360" fill="#F8F5EE"/>
+
+  <!-- il confine fra storia e prova -->
+  <line x1="392" y1="52" x2="392" y2="300" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="7 6"/>
+  <text x="384" y="44" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#5E5852">la storia già percorsa</text>
+  <text x="400" y="44" font-family="Inter, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#5E5852">il blocco di prova</text>
+
+  <!-- sopra: il modello -->
+  <text x="44" y="96" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#2D5A5C">il tuo modello</text>
+  <text x="44" y="114" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">i suoi errori: il numeratore</text>
+  <line x1="392" y1="140" x2="648" y2="140" stroke="#2D5A5C" stroke-width="3" marker-end="url(#freccia-mase-t)"/>
+  <text x="520" y="130" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#2D5A5C">dodici passi in un colpo solo</text>
+
+  <!-- sotto: chi copia -->
+  <text x="44" y="206" font-family="Inter, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#9A7B2E">chi copia</text>
+  <text x="44" y="224" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">i suoi errori: il denominatore</text>
+  <g stroke="#C9A961" stroke-width="2.4">
+    <line x1="60" y1="250" x2="72" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="78" y1="250" x2="90" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="96" y1="250" x2="108" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="114" y1="250" x2="126" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="132" y1="250" x2="144" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="150" y1="250" x2="162" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="168" y1="250" x2="180" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="186" y1="250" x2="198" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="204" y1="250" x2="216" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="222" y1="250" x2="234" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="240" y1="250" x2="252" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="258" y1="250" x2="270" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="276" y1="250" x2="288" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="294" y1="250" x2="306" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="312" y1="250" x2="324" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="330" y1="250" x2="342" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="348" y1="250" x2="360" y2="250" marker-end="url(#freccia-mase-o)"/>
+    <line x1="366" y1="250" x2="378" y2="250" marker-end="url(#freccia-mase-o)"/>
+  </g>
+  <text x="226" y="278" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#9A7B2E">su tutta la storia, un passo per volta</text>
+
+  <!-- la morale -->
+  <line x1="44" y1="300" x2="656" y2="300" stroke="#5E5852" stroke-width="1.4"/>
+  <text x="44" y="320" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">Non corrono sullo stesso tratto, né sullo stesso orizzonte, né per lo stesso numero di passi.</text>
+  <text x="44" y="338" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">Il rapporto fra i due toglie l’unità di misura: non decreta un vincitore.</text>
+</svg>

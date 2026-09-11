@@ -270,7 +270,8 @@ dominante.
 
 C'è un rischio specifico di questi sistemi, e conviene metterlo sul tavolo
 subito: un modello che vede e parla può parlare benissimo *senza* aver
-guardato.
+guardato, e allora la risposta nomina cose che nella fotografia non ci sono.
+Si chiama **allucinazione visiva**.
 
 `````{tab} Elementare
 

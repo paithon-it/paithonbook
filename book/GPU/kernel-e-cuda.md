@@ -25,9 +25,10 @@ migliaia di cuochi in una volta sola.
 
 Facciamo prima un po’ d'ordine sul pezzetto di dato. La fila di numeri su cui
 un kernel lavora, messi in ordine uno dopo l'altro e ciascuno con la sua
-posizione, si chiama **array**: è la forma più semplice di tensore, e nelle
-prossime pagine le due parole si alterneranno. Il thread numero 7 si occuperà
-del numero in posizione 7 dell'array, e così via.
+posizione, è quello che in NumPy si chiama array, nella sua forma più
+semplice, quella a una dimensione sola: è anche la forma più semplice di
+tensore, e nelle prossime pagine le due parole si alterneranno. Il thread
+numero 7 si occuperà del numero in posizione 7 dell'array, e così via.
 
 Il kernel, dunque, si scrive per uno e si lancia su tutti. «Lanciare», qui, è
 il verbo tecnico: si passa alla GPU il programmino e le si dice su quanti

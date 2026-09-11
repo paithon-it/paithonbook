@@ -110,12 +110,13 @@ sbagliato in senso fisico, e va fatto dopo averli riportati in scala lineare
 `````
 
 Prima di fare qualunque conto, insomma, la fotocamera va misurata. Tre cose
-servono. Quanto ingrandisce, cioè di quanti pixel si sposta l'immagine di un
-oggetto quando l'oggetto si sposta di un centimetro: si chiama **focale**, e
-dipende dall'obiettivo. Dove cade il punto in cui l'asse dell'obiettivo buca il
-sensore, che uno immaginerebbe al centro esatto della foto e nella pratica non
-lo è mai, perché sensore e lente vengono incollati da una macchina con una
-tolleranza di qualche pixel. E di quanto quell'obiettivo incurva le linee
+servono. Quanto ingrandisce, cioè quanti pixel occupa nella foto un oggetto
+largo un metro che sta a un metro di distanza: si chiama **focale**, dipende
+dall'obiettivo, e la distanza va detta perché lo stesso oggetto, più lontano,
+occupa meno pixel. Dove cade il punto in cui l'asse dell'obiettivo buca il
+sensore, che uno immaginerebbe al centro esatto della foto e nella pratica quasi
+mai lo è, perché sensore e lente vengono incollati da una macchina con la sua
+tolleranza. E di quanto quell'obiettivo incurva le linee
 rette, cosa che si vede soprattutto ai bordi. Quei numeri, presi insieme,
 descrivono com'è fatta la fotocamera e si chiamano i suoi **parametri
 intrinseci**; ricavarli si chiama **calibrazione**, e si fa mostrando alla
@@ -784,8 +785,13 @@ Ora il caso generale, con la seconda fotocamera ruotata di otto gradi attorno
 alla verticale, come due telecamere puntate un po’ l'una verso l'altra. Qui non
 c'è più nessuna riga comoda, ma la retta esiste ancora: il calcolo qui sotto la
 scrive a partire da come sono messe le due fotocamere (è la matrice `F`), e poi
-verifica, punto per punto, di quanto il pixel della seconda immagine cade
-fuori da quella retta. Quello scarto si chiama **residuo**.
+verifica, punto per punto, se il pixel della seconda immagine cade sulla retta
+o fuori. Quel «quanto fuori» è il residuo, lo stesso nome che nella
+{doc}`sezione su ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`
+porta lo scarto fra un punto e la sua ombra: la parte che il modello non
+spiega. Vale esattamente zero quando il pixel sta sulla retta; in pixel, però,
+non ci si legge ancora, e il conto che lo converte arriva subito dopo il
+programma.
 
 ```python
 ang = np.deg2rad(8.0)
@@ -811,11 +817,14 @@ print("residuo epipolare :", np.abs(residuo).max())
 ```
 
 Il residuo massimo è dell'ordine di $10^{-17}$, cioè ancora una volta zero.
-Attenzione a leggerlo: è un numero algebrico e non una distanza, e per farne
-pixel va diviso per la lunghezza del vettore che definisce la retta, che qui
-vale circa $4 \cdot 10^{-4}$. Un residuo di $0{,}3$ vorrebbe dire settecento
-pixel fuori posto su un sensore largo seicentoquaranta, cioè dall'altra parte
-dell'immagine; questo vale $3 \cdot 10^{-14}$ pixel. Per ognuno degli otto
+Ecco la conversione promessa: è un numero algebrico e non una distanza, e per
+farne pixel va diviso per la lunghezza dei soli due primi coefficienti della
+retta $l = \mathbf{F}\tilde{\mathbf{x}}_L$, cioè per $\sqrt{a^2+b^2}$, che qui
+vale circa $4 \cdot 10^{-4}$; dividerlo per la lunghezza di tutti e tre
+darebbe un numero quasi trecento volte più piccolo e senza significato. Un
+residuo di $0{,}3$ vorrebbe dire settecento pixel fuori posto su un sensore
+largo seicentoquaranta (il centro dell'immagine, nel programma, sta a $320$),
+cioè dall'altra parte dell'immagine; questo vale $3 \cdot 10^{-14}$ pixel. Per ognuno degli otto
 punti il pixel nella seconda immagine sta
 esattamente sulla retta calcolata dalla prima. Nessuna rete, nessun
 dato: è un'identità algebrica che dipende solo da come è fatta la proiezione,

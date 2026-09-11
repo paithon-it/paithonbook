@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 396" role="img" aria-label="Due schemi affiancati, con le stesse otto caselle: tre in alto in teal, i taccuini interni, cioè i neuroni nascosti, e cinque in basso in terracotta, le caselle dei dati. A sinistra, «macchina di Boltzmann», sono collegate tutte con tutte: i tredici legami dentro un gruppo, in ocra, si aggiungono ai quindici che uniscono i due gruppi. A destra, «macchina di Boltzmann ristretta», i legami in ocra non ci sono più e restano soltanto i quindici fra un gruppo e l'altro, cioè uno schema a due file in cui nessun taccuino tocca un altro taccuino.">
+  <circle cx="150" cy="34" r="9" fill="#2D5A5C"/>
+  <text x="168" y="40" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">taccuini interni: i neuroni nascosti</text>
+  <circle cx="472" cy="34" r="9" fill="#B5532C"/>
+  <text x="490" y="40" font-family="Inter, sans-serif" font-size="14" fill="#1A1A1A">caselle dei dati: i neuroni visibili</text>
+  <line x1="60" y1="58" x2="800" y2="58" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="238" y="94" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">macchina di Boltzmann</text>
+  <path d="M146,146 Q192,103 238,146" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M146,146 Q238,87 330,146" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M238,146 Q284,103 330,146" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M110,290 Q142,328 174,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M110,290 Q174,339 238,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M110,290 Q206,351 302,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M110,290 Q238,362 366,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M174,290 Q206,328 238,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M174,290 Q238,339 302,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M174,290 Q270,351 366,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M238,290 Q270,328 302,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M238,290 Q302,339 366,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <path d="M302,290 Q334,328 366,290" fill="none" stroke="#C9A961" stroke-width="1.7"/>
+  <line x1="146" y1="170" x2="110" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="146" y1="170" x2="174" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="146" y1="170" x2="238" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="146" y1="170" x2="302" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="146" y1="170" x2="366" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="238" y1="170" x2="110" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="238" y1="170" x2="174" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="238" y1="170" x2="238" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="238" y1="170" x2="302" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="238" y1="170" x2="366" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="330" y1="170" x2="110" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="330" y1="170" x2="174" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="330" y1="170" x2="238" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="330" y1="170" x2="302" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="330" y1="170" x2="366" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <circle cx="146" cy="158" r="12" fill="#2D5A5C"/>
+  <circle cx="238" cy="158" r="12" fill="#2D5A5C"/>
+  <circle cx="330" cy="158" r="12" fill="#2D5A5C"/>
+  <circle cx="110" cy="278" r="12" fill="#B5532C"/>
+  <circle cx="174" cy="278" r="12" fill="#B5532C"/>
+  <circle cx="238" cy="278" r="12" fill="#B5532C"/>
+  <circle cx="302" cy="278" r="12" fill="#B5532C"/>
+  <circle cx="366" cy="278" r="12" fill="#B5532C"/>
+  <text x="622" y="94" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">macchina di Boltzmann ristretta</text>
+  <line x1="530" y1="170" x2="494" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="530" y1="170" x2="558" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="530" y1="170" x2="622" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="530" y1="170" x2="686" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="530" y1="170" x2="750" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="622" y1="170" x2="494" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="622" y1="170" x2="558" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="622" y1="170" x2="622" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="622" y1="170" x2="686" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="622" y1="170" x2="750" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="714" y1="170" x2="494" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="714" y1="170" x2="558" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="714" y1="170" x2="622" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="714" y1="170" x2="686" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <line x1="714" y1="170" x2="750" y2="266" stroke="#1A1A1A" stroke-width="1" stroke-opacity="0.28"/>
+  <circle cx="530" cy="158" r="12" fill="#2D5A5C"/>
+  <circle cx="622" cy="158" r="12" fill="#2D5A5C"/>
+  <circle cx="714" cy="158" r="12" fill="#2D5A5C"/>
+  <circle cx="494" cy="278" r="12" fill="#B5532C"/>
+  <circle cx="558" cy="278" r="12" fill="#B5532C"/>
+  <circle cx="622" cy="278" r="12" fill="#B5532C"/>
+  <circle cx="686" cy="278" r="12" fill="#B5532C"/>
+  <circle cx="750" cy="278" r="12" fill="#B5532C"/>
+  <text x="238" y="356" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5A524A">tutte con tutte: con i dati veri davanti,</text>
+  <text x="238" y="374" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5A524A">ogni taccuino aspetta i vicini</text>
+  <text x="622" y="356" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5A524A">via i legami in ocra: ogni taccuino</text>
+  <text x="622" y="374" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5A524A">dipende soltanto dai dati</text>
+</svg>

@@ -155,6 +155,16 @@ Due volti dello stesso problema. Nella regressione (sinistra) la retta
 *approssima* i dati; nella classificazione (destra) la retta *separa* le classi.
 ```
 
+Il nome «regressione» non dice quello che il metodo fa, ed è un incidente
+storico. Lo mette in circolazione Francis Galton in un articolo del 1886
+{cite}`galton1886regression`, dove misura la statura di genitori e figli e
+trova che i figli dei genitori alti sono sì più alti della media, ma meno dei
+genitori: la statura *regredisce* verso il centro. Galton chiamò rette di
+regressione quelle che disegnava per mostrarlo, e da lì la parola è rimasta
+attaccata alla tecnica invece che al fenomeno; nomi più onesti sarebbero stati
+«approssimazione di una funzione» o «previsione di un numero»
+{cite}`russell2020artificial`.
+
 ## La regressione lineare: la retta di best fit
 
 Il modello più semplice, e sorprendentemente utile, ipotizza che ogni
@@ -223,7 +233,8 @@ dedicata una sezione intera.
 Nella nebbia ci si ferma nella prima conca, senza sapere mai che dietro il
 crinale ce n'era una più profonda. Con la media degli scarti al quadrato non
 capita, perché quella collina ha la forma di una scodella, con un fondo solo,
-e da qualunque retta si parta si finisce lì. La garanzia riguarda la retta e
+e da qualunque retta si parta si finisce lì, purché i passi non siano troppo
+lunghi. La garanzia riguarda la retta e
 non ogni modello, e le reti neurali camminano su terreni
 molto più accidentati. Per una retta, poi, si può anche non camminare, perché
 un conto diretto dà i pesi migliori in un colpo solo, e finché i dati stanno
@@ -235,7 +246,8 @@ due volte, in metri quadri da una fonte e in centimetri quadrati da un'altra,
 e il fondo della scodella si allunga in un fondovalle piatto. Duemila euro al
 metro quadro e niente all'altra colonna, oppure mille euro al metro quadro e
 dieci centesimi al centimetro quadrato, su ogni casa danno lo stesso identico
-prezzo (su una casa di $80$ m², $160\,000$ € in tutti e due i modi). Chi
+prezzo (su una casa di $80$ m², che sono $800\,000$ cm², la superficie porta
+$160\,000$ € in tutti e due i modi). Chi
 cammina si ferma dove capita lungo quel fondo, due colleghi partiti da punti
 diversi arrivano a due regole diverse, e il conto diretto si inceppa, perché
 gli chiediamo il punto più basso e di punti più bassi ce n'è una fila intera.
@@ -438,14 +450,26 @@ giusta si conosca in anticipo e si possa controllare se il modello la ritrova)
 la retta migliore prevede un numero negativo di clienti in
 duecentoquarantasette casi, il che è una risposta che nessuno può usare; e i
 suoi scarti si aprono a ventaglio, piccoli dove i clienti sono pochi e grandi
-dove sono tanti, mentre tutto l'impianto della retta di prima suppone che siano
-più o meno gli stessi dappertutto.
+dove sono tanti, mentre la media degli scarti al quadrato, che è il metro con
+cui la retta si giudica, li conta tutti allo stesso modo, come se lo sbaglio
+tipico fosse lo stesso dappertutto.
 
 La riparazione non butta via niente di quello che si è imparato: tiene il
 punteggio lineare, cambia il modo di leggerlo, e cambia la regola con cui si
 misura lo scarto. Fatto per la terza volta, il gesto si riconosce come uno
 solo, e il suo nome è **modelli lineari generalizzati**, che gliel'hanno dato
 John Nelder e Robert Wedderburn nel 1972 {cite}`nelder1972generalized`.
+{numref}`fig-tre-letture` mette i tre casi uno accanto all'altro.
+
+```{figure} ../figures/un-punteggio-tre-letture.svg
+:name: fig-tre-letture
+:alt: In alto le colonne di un esempio entrano in un conto solo, moltiplicate per i loro pesi e sommate, e ne esce un punteggio che può valere qualsiasi cosa. Da lì tre rami. Nel primo il punteggio si legge così com'è, il graficino è una retta a quarantacinque gradi, la distribuzione è la gaussiana, la risposta è un prezzo e lo scarto è lo stesso dappertutto. Nel secondo il punteggio viene schiacciato fra zero e uno da una curva a esse, la distribuzione è la Bernoulli, la risposta è un sì o un no con la sua probabilità e lo scarto è massimo a metà strada. Nel terzo il punteggio è il logaritmo della risposta, il graficino è una curva che sale e non scende mai sotto lo zero, la distribuzione è la Poisson, la risposta è un conteggio e lo scarto va come la radice della media. In fondo: quello che cambia da un ramo all'altro sono due cose sole, come si legge il punteggio e con che regola si misura lo scarto.
+:width: 96%
+
+Il punteggio è sempre lo stesso conto: colonne per pesi, sommate. Cambiano la
+funzione che lo legge (così com'è, schiacciato fra zero e uno, oppure preso
+come logaritmo della risposta) e la regola con cui si misura lo scarto.
+```
 
 `````{tab} Elementare
 
@@ -508,8 +532,10 @@ Basta che i clienti arrivino a gruppetti, perché scende un autobus o perché è
 finita la messa, e l'oscillazione diventa il doppio di quella prevista. I pesi
 non se ne vanno lontano dal vero, ma la fiducia che il modello dichiara sì, ed
 è troppa: chi la prende per buona prepara i turni su un'oscillazione che non
-esiste. La cura è una versione con una manopola in più, che regola
-l'irregolarità separatamente dalla media, e si chiama binomiale negativa.
+esiste. La cura più leggera è correggere la fiducia dichiarata, lasciando i
+pesi dove sono; quella che cambia modello è una versione con una manopola in
+più, che regola l'irregolarità separatamente dalla media, e si chiama
+binomiale negativa.
 
 
 `````
@@ -568,10 +594,10 @@ $$
 
 perché $A'(\eta_i) = \mu_i$. Il gradiente ha la stessa forma per tutti e tre i
 modelli: residuo per feature, sommato sugli esempi. All'ottimo si annulla, cioè
-i residui risultano ortogonali a ogni colonna, compresa la colonna di uno
-dell'intercetta, da cui la loro somma nulla (senza intercetta quella condizione
-non c'è). È la stessa condizione del primo ordine dei minimi quadrati vista
-nella {doc}`sezione su ortogonalità e proiezioni
+i residui risultano ortogonali a ogni colonna; e derivando rispetto a $b$ si
+ottiene $\sum_i (y_i - \mu_i) = 0$, cioè la loro somma nulla (senza intercetta
+quella condizione non c'è). È la stessa condizione del primo ordine dei minimi
+quadrati vista nella {doc}`sezione su ortogonalità e proiezioni
 </Matematica/ortogonalita-proiezioni>`, ma non la stessa geometria, perché
 $\mu_i = A'(\eta_i)$ non appartiene allo span delle colonne e non c'è nessun
 teorema di Pitagora da invocare.
@@ -678,8 +704,9 @@ il suo peso si legge come moltiplicatore: un punto in più di stagione
 moltiplica i clienti per $4{,}55$. La riga sugli scarti è un controllo:
 moltiplicandoli per ciascuna colonna e sommandoli si ottiene zero al millesimo
 su quasi ventimila clienti, cioè quello che il modello non è riuscito a
-spiegare non ha più niente in comune con le colonne che ha usato, ed è lo
-stesso segno di «ho finito» della retta di prima.
+spiegare non ha più niente in comune con le colonne che ha usato. Finché ne
+avesse, quei pesi si potrebbero ancora migliorare: è la stessa condizione che
+il conto diretto della retta risolve in un colpo solo.
 
 Le ultime due righe sono il limite, e il conto è questo: si prende ogni scarto,
 lo si divide per la radice del numero atteso, e si guarda quanto quei rapporti
@@ -704,11 +731,13 @@ prima di cominciare.
 
 ```{figure} ../figures/knn-classificare-per-somiglianza.svg
 :name: fig-knn
-:alt: "Un piano con punti di due classi già etichettati. Un punto nuovo, di classe ignota, è al centro di un cerchio che racchiude i suoi cinque vicini più prossimi: tre appartengono a una classe e due all'altra, e il punto nuovo riceve l'etichetta della maggioranza."
+:alt: "Un piano con punti di due classi già etichettati. Un punto nuovo, di classe ignota, è al centro di un cerchio che racchiude i suoi cinque vicini più prossimi: tre appartengono a una classe e due all'altra, e il punto nuovo riceve l'etichetta della maggioranza. Il più vicino di tutti, però, è uno dei due della minoranza, sicché con un vicino solo il verdetto sarebbe l'opposto."
 :width: 80%
 
 Nessun addestramento, solo un conteggio. La classe del punto nuovo è quella
-che vince fra i suoi $k$ vicini, e cambiare $k$ può cambiare il verdetto.
+che vince fra i suoi $k$ vicini, e cambiare $k$ può cambiare il verdetto: con
+cinque vicini vince la classe di sinistra, tre voti a due, ma il vicino più
+prossimo di tutti è dell'altra, e con un vicino solo la risposta si ribalta.
 ```
 
 Il cerchio disegnato in {numref}`fig-knn` è tutta la scelta: allargandolo si
@@ -805,7 +834,7 @@ si compensano a vicenda, e vedere mille sei di fila non capita mai. Allo stesso
 modo, due esempi qualsiasi saranno un po’ diversi su certe colonne e un po’
 simili su altre, e la somma finisce quasi sempre attorno allo stesso valore. Le
 distanze fra tutte le coppie si assomigliano, e lo scarto fra il vicino più
-prossimo e il più lontano si assottiglia fino a sparire. È
+prossimo e il più lontano diventa trascurabile rispetto alle distanze stesse. È
 come chiedere a qualcuno di indicare il migliore amico in una folla dove tutti
 stanno esattamente alla stessa distanza: la domanda perde senso, e il voto dei
 $k$ vicini diventa un voto casuale.
@@ -821,18 +850,21 @@ della sezione su riduzione e clustering.
 C'è un tranello in agguato. Un modello abbastanza flessibile (cioè capace
 di piegarsi a qualsiasi forma: una curva contorta lo è, una retta no) può
 imparare *a memoria* gli esempi di addestramento, rumore compreso, e poi
-fallire su dati nuovi. Attenzione a non confonderlo con lo studente
-dell'apertura del capitolo, quello che studia con le soluzioni a fianco: là
+fallire su dati nuovi. Attenzione a non confonderlo con lo studente con cui la
+panoramica presentava l'apprendimento supervisionato, quello che studia con le
+soluzioni a fianco: là
 guardare le soluzioni era il metodo giusto, qui il guaio è ricopiarle senza
 averle capite, e accorgersene è possibile solo interrogandolo su un esercizio
 che non ha mai visto.
-È l’overfitting, il problema centrale del machine learning applicato: lo
-affrontiamo nella sezione dedicata, insieme all'idea di tenere sempre da parte
-dati che il modello non ha mai visto per misurarne l'onestà.
+È l’overfitting, il problema centrale del machine learning applicato, e lo
+prende di petto la {doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>`, insieme all'idea di tenere sempre
+da parte dati che il modello non ha mai visto per misurarne l'onestà.
 
 ## In pratica, con scikit-learn
 
-In Python i tre modelli sono tre righe, con la stessa interfaccia `fit`/`predict`:
+In Python la retta, la logistica e il k-NN sono tre righe, con la stessa
+interfaccia `fit`/`predict`:
 
 ```python
 from sklearn.linear_model import LinearRegression, LogisticRegression
@@ -864,6 +896,11 @@ per tutto il resto del libro.
 - Supervisionato vuol dire imparare da esempi che portano già con sé la
   risposta giusta: tante coppie *(descrizione, risposta)*, e una regola da
   trovare che leghi le une alle altre.
+- Non tutte le colonne sono della stessa pasta: su alcune i numeri sono numeri
+  veri, su altre sono nomi senza ordine (Milano, Roma) e su altre ancora sono
+  una fila di gradini di cui non si sa la distanza. Quale sia quale non lo
+  decide il modello, lo decide chi prepara i dati: dare $1$ a Milano e $2$ a
+  Roma vuol dire dirgli che Roma è il doppio e che a metà strada c'è qualcosa.
 - Ogni colonna della tabella è una direzione, ogni riga un punto in
   quello spazio. Con due colonne il disegno sta su un foglio; con cento no, ma
   i conti sono gli stessi, e «vicini» continua a voler dire «simili».

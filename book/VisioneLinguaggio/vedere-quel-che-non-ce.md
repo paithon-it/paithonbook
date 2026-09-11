@@ -23,9 +23,10 @@ contenerlo.
 
 ## Un errore che non riguarda gli occhi
 
-L'apertura del capitolo ha già dato un nome al fenomeno, **allucinazione
-visiva**, e ne ha mostrato la radice nella funzione di costo, cioè nel
-punteggio dell'errore che l'addestramento fa scendere. Conviene scavare un
+L’{doc}`apertura del capitolo </VisioneLinguaggio/overview>` ha già dato un
+nome al fenomeno, allucinazione visiva, e ne ha mostrato la radice nella
+funzione di costo, cioè nel punteggio dell'errore che l'addestramento fa
+scendere. Conviene scavare un
 poco più a fondo, perché la forma precisa dell'argomento dice anche dove si
 può intervenire.
 
@@ -492,7 +493,20 @@ invece di sparire.
 
 Le contromisure che hanno un senso meccanico sono tre, e attaccano il fenomeno
 in tre punti diversi: l'addestramento, il momento in cui la risposta si scrive,
-la risposta già scritta.
+la risposta già scritta. Con il rimedio a monte, il secondo encoder, i punti
+diventano quattro, e {numref}`fig-dove-nasce-ripara` li mette sulla stessa
+catena da cui il difetto viene.
+
+```{figure} ../figures/dove-nasce-e-dove-si-ripara.svg
+:name: fig-dove-nasce-ripara
+:alt: Una catena di cinque riquadri in fila: dati di addestramento, encoder visivo, connettore, modello di linguaggio, risposta. Sopra la catena, in terracotta, i tre punti in cui il difetto nasce: nei dati di addestramento, perché le istruzioni le ha scritte un modello che l'immagine non l'ha vista; nell'encoder visivo, il punto cieco, perché quello che le didascalie non nominano non arriva; nel modello di linguaggio, il priore linguistico, perché quello che di solito si scrive batte un indizio debole. Sotto la catena, in teal, i quattro punti in cui si ripara: un secondo encoder addestrato sulle sole immagini, agganciato all'encoder; ancorare la risposta alle coordinate, agganciato all'addestramento; decodificare per differenza, agganciato al momento in cui la parola si sceglie; una seconda passata, agganciata alla risposta già scritta. In fondo: ogni rimedio agisce nel suo punto e non arriva a quello di un altro, perché quello che l'encoder ha perso la decodifica non lo fa tornare.
+:width: 100%
+
+La stessa catena letta due volte. Sopra i tre posti in cui il difetto nasce,
+sotto i quattro in cui si può intervenire. Leggerla serve soprattutto a non
+sbagliare rimedio: una distinzione che l'encoder ha già buttato via non la
+riporta indietro nessuna correzione fatta più a valle.
+```
 
 **Ancorare la risposta a ciò che si vede.** Invece di chiedere al modello *che
 cosa* c'è, gli si chiede anche *dove*: il nome dell'oggetto accompagnato dalle

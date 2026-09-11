@@ -13,7 +13,8 @@ Networks, CNN) sono nate per risolvere. L'idea affonda le radici negli stessi
 esperimenti di Hubel e Wiesel sulla corteccia del gatto: prende forma nel
 *Neocognitron* di Fukushima {cite}`fukushima1980neocognitron`, una rete a strati
 che imita proprio quella catena di rivelatori, e arriva a maturazione nella
-LeNet-5 di Yann LeCun (1998), che leggeva le cifre scritte a mano sugli assegni
+LeNet-5 di Yann LeCun e colleghi ai Bell Labs (1998)
+{cite}`lecun1998gradient`, che leggeva le cifre scritte a mano sugli assegni
 bancari.
 
 ## Perché uno strato denso non basta
@@ -56,12 +57,15 @@ Soprattutto, lo strato denso non è **equivariante alla traslazione**: un
 pattern spostato di un vettore $\boldsymbol{\Delta}$ attiva pesi diversi,
 perché l'indice della componente cambia. Le CNN recuperano l'equivarianza
 grazie alla sola condivisione dei pesi: sposti l'input, e l'attivazione si
-sposta con lui. L'altro vincolo, la connettività locale, dà i pochi parametri e
-non l'equivarianza: uno strato *locally connected*, che guarda una finestra
-piccola ma con pesi diversi in ogni posizione, equivariante non è.
-Attenzione a non chiamarla invarianza, che è un'altra proprietà (la risposta
-non cambia affatto) e la convoluzione non la dà: semmai la porta la testa
-della rete, con il *global average pooling* di Network in Network, che
+sposta con lui. Vale all'interno, e con due riserve che la pagina ritrova più
+avanti: la cornice di zeri rompe l'equivarianza sul bordo, dove il motivo perde
+i contributi che cadono fuori, e con un passo maggiore di uno sopravvivono solo
+gli spostamenti multipli del passo. L'altro vincolo, la connettività locale, dà
+i pochi parametri e non l'equivarianza: uno strato *locally connected*, che
+guarda una finestra piccola ma con pesi diversi in ogni posizione, equivariante
+non è. Attenzione a non chiamarla invarianza, che è un'altra proprietà (la
+risposta non cambia affatto) e la convoluzione non la dà: semmai la porta la
+testa della rete, con il *global average pooling* di Network in Network, che
 incontreremo in {doc}`Architetture storiche <architetture-storiche>`.
 
 `````
@@ -123,16 +127,22 @@ S(i,j) = \sum_{m}\sum_{n} I(i+m,\, j+n)\; K(m,n).
 $$
 
 Qui $S(i,j)$ è il valore in posizione $(i,j)$ della mappa di uscita, mentre
-$m,n$ scorrono sulle celle del kernel. Con più canali in ingresso (es. RGB) e
-un bias $b$, seguiti da una non linearità $\sigma$ (di solito la ReLU):
+$m,n$ scorrono sulle celle del kernel. Il punto da vedere è che $K$ *non
+dipende da $(i,j)$*: è lo stesso filtro in ogni posizione, ed è da lì, e solo
+da lì, che viene l'equivarianza. Con più canali in ingresso (es. RGB), $F$
+filtri, un bias per filtro e una non linearità $\sigma$ (di solito la ReLU),
+gli stessi due oggetti si riscrivono con gli indici:
 
 $$
-a_{i,j} = \sigma\!\left( b + \sum_{c}\sum_{m}\sum_{n}
-K_{c,m,n}\; I_{c,\,i+m,\,j+n} \right).
+a_{f,i,j} = \sigma\!\left( b_f + \sum_{c}\sum_{m}\sum_{n}
+K_{f,c,m,n}\; I_{c,\,i+m,\,j+n} \right).
 $$
 
-I simboli: $c$ indicizza i canali d'ingresso, $K_{c,m,n}$ è il peso del filtro
-per canale $c$ e posizione $(m,n)$, $a_{i,j}$ l'attivazione risultante.
+I simboli: $f$ indicizza i filtri e quindi le mappe che escono, $c$ i canali
+d'ingresso, $K_{f,c,m,n}$ è il peso del filtro $f$ per canale $c$ e posizione
+$(m,n)$, $a_{f,i,j}$ l'attivazione risultante. Il kernel ha dunque quattro
+indici, e il $C$ di uno strato è l’$F$ dello strato sotto: ogni filtro legge
+tutte le mappe che arrivano, non una.
 
 `````
 
@@ -182,12 +192,25 @@ forte debba essere la somiglianza prima che il filtro dica «l'ho trovato»: se
 vale $-2$, una somiglianza da 1 non basta più a produrre un risultato positivo.
 Si chiama *bias*, e fa $27+1 = 28$ numeri da imparare per filtro.
 
-Con 32 filtri diversi sono $28 \times 32 = 896$ pesi, meno di mille, contro i
-milioni dello strato denso. Con così pochi numeri da regolare resta molto meno
-spazio per imparare le foto a memoria. E restano 896 anche su una foto con
-quattro volte i pixel: lo stampino non si allarga, fa solo più giri, mentre lo
-strato denso avrebbe preteso quattro volte i pesi. Pochi pesi, riusati ovunque:
-la rete impara *cosa* cercare, non *dove*.
+Uno stampino solo trova un motivo solo, quindi se ne usano tanti, tutti della
+stessa forma e con dentro numeri diversi: chi ha imparato i bordi verticali,
+chi le macchie chiare, chi una trama. Con 32 stampini sono
+$28 \times 32 = 896$ pesi, meno di mille, contro i milioni dello strato denso.
+Con così pochi numeri da regolare resta molto meno spazio per imparare le foto
+a memoria. E restano 896 anche su una foto con quattro volte i pixel: lo
+stampino non si allarga, fa solo più giri, mentre lo strato denso avrebbe
+preteso quattro volte i pesi.
+
+Da 32 stampini escono 32 fogli, ed è qui che si vede come si impilano gli
+strati. Lo stampino del secondo strato non scorre su un foglio solo: scorre su
+tutti e 32 insieme, e di ogni casella legge i 32 numeri, come quello del primo
+leggeva i tre del colore. Per questo trova cose che il primo non poteva
+trovare: mette insieme un bordo verticale e uno orizzontale, e quello che ne
+esce è un angolo.
+
+E la ragione per cui la rete impara *cosa* cercare e non *dove* non è che i
+pesi siano pochi: è che lo stampino non cambia mai mentre scorre. I pesi pochi
+sono un altro guadagno, e viene dalla finestra piccola.
 
 `````
 
@@ -196,8 +219,13 @@ la rete impara *cosa* cercare, non *dove*.
 Un layer convoluzionale con $F$ filtri, kernel $k\times k$ e $C$ canali in
 ingresso ha $F\,(k^2 C + 1)$ parametri, e nel conto la risoluzione
 dell'immagine non compare: su una foto con quattro volte i pixel il lavoro da
-fare quadruplica, i pesi da imparare restano quelli. È la condivisione dei pesi
-(*weight tying*) che impone l'equivarianza traslazionale come *prior*
+fare quadruplica, i pesi da imparare restano quelli. Attenzione a non
+trasportare il risparmio dai parametri ai conti: le moltiplicazioni sono
+$o^2 F k^2 C$ con $o$ il lato della mappa d'uscita, e la risoluzione lì c'è
+eccome. Il crollo di cinque ordini di grandezza è sui pesi; sul calcolo il
+vantaggio è molto più modesto, ed è per questo che le CNN restano care da
+addestrare. È la condivisione dei pesi
+(*parameter sharing*) che impone l'equivarianza traslazionale come *prior*
 strutturale, riducendo drasticamente
 lo spazio delle ipotesi e quindi il rischio di overfitting.
 
@@ -214,7 +242,9 @@ profondi li combinano in parti sempre più astratte (occhi, ruote, volti).
 Dopo la convoluzione si applica quasi sempre il **pooling**, che rimpicciolisce
 le feature map riassumendo ogni zona in un numero solo. Il più comune è il
 **max pooling**, che di ogni finestra (di solito $2\times2$) conserva il
-massimo; l'altro modo, tenere la media, torna col *global average pooling*.
+massimo; l'altro modo è tenere la media, e nella variante che fa la media di
+una mappa intera invece che di una finestra torna nella sezione
+{doc}`Architetture storiche <architetture-storiche>`.
 Su un quadratino che contiene $1$, $7$, $3$ e $2$, esce $7$, e gli altri tre
 numeri si perdono.
 
@@ -248,16 +278,55 @@ $$
 y_{i,j} = \max_{(m,n)\,\in\,\mathcal{R}_{i,j}} x_{m,n}.
 $$
 
-Non ha parametri da apprendere. Sottocampionando, aumenta il campo recettivo
-effettivo dei layer successivi; e in cambio dell'equivarianza esatta, che con
-finestre prese a passo 2 (lo stride, cioè di quanti pixel avanza la finestra a
-ogni scatto) sopravvive solo per gli spostamenti pari, offre una modesta
-tolleranza alle traslazioni di un pixel. Modesta è la
-parola giusta: su un picco isolato spostato di un pixel la mappa risultante
-resta identica circa una volta su due, su feature map dense di valori diversi
-praticamente mai. È un baratto e non un'aggiunta gratuita.
+Non ha parametri da apprendere. Sottocampionando, allarga il campo recettivo
+dei layer successivi; e in cambio dell'equivarianza esatta, che con finestre
+prese a passo 2 sopravvive solo per gli spostamenti pari, offre una modesta
+tolleranza alle traslazioni di un pixel. Modesta è la parola giusta: su un
+picco isolato spostato di un pixel la mappa risultante resta identica circa una
+volta su due, su feature map dense di valori diversi praticamente mai. È un
+baratto e non un'aggiunta gratuita.
 
 `````
+
+La misura si fa in dieci righe, e conviene farla perché il risultato è più
+magro di come la tolleranza agli spostamenti viene raccontata di solito. Si
+prende una mappa, la si legge due volte sfalsata di un pixel, e si guarda
+quante volte il pooling restituisce esattamente la stessa cosa.
+
+```python
+import torch
+from torch.nn.functional import max_pool2d
+
+def dopo_lo_spostamento(mappa):
+    """La stessa mappa letta due volte, sfalsata di un pixel, dopo il pooling."""
+    return max_pool2d(mappa[..., :-1], 2), max_pool2d(mappa[..., 1:], 2)
+
+lato = 16
+uguali = 0
+for riga in range(lato):                 # un picco isolato, una posizione per volta
+    for colonna in range(lato):
+        m = torch.zeros(1, 1, lato, lato + 1)
+        m[0, 0, riga, colonna] = 1.0
+        a, b = dopo_lo_spostamento(m)
+        uguali += int(torch.equal(a, b))
+print(f"picco isolato: identica {uguali} volte su {lato * lato}")
+
+g = torch.Generator().manual_seed(0)     # una mappa fitta di valori tutti diversi
+uguali = sum(int(torch.equal(*dopo_lo_spostamento(
+                 torch.rand(1, 1, lato, lato + 1, generator=g))))
+             for _ in range(200))
+print(f"mappa densa:   identica {uguali} volte su 200")
+```
+
+```text
+picco isolato: identica 128 volte su 256
+mappa densa:   identica 0 volte su 200
+```
+
+Metà delle volte su un picco isolato, mai su una mappa piena: il picco
+sopravvive quando lo spostamento non gli fa scavalcare il confine fra due
+quadratini, e su una mappa fitta basta che una finestra cambi il proprio
+massimo perché la mappa risultante sia un'altra.
 
 ## L'architettura tipica
 
@@ -290,7 +359,8 @@ porta il passo a 2, la finestra salta una posizione ogni volta e la mappa esce
 dimezzata, $14\times14$.
 
 Col passo a 2 il conto non sempre torna in pieno, e allora tocca scegliere. Su
-una striscia larga 61 quadretti, una finestra da 2 che avanza di 2 ne copre 60
+una striscia larga 61 quadretti, una finestra da 2 come quella del pooling, che
+avanza di 2, ne copre 60
 e ne lascia fuori uno: o si butta via l'ultima colonna, e i risultati sono 30,
 oppure la si tiene con la finestra mezza fuori dal foglio, e sono 31. Due
 persone che scelgono in modo diverso si ritrovano con mappe di dimensione
@@ -312,13 +382,17 @@ $$
 o = \left\lfloor \frac{n + 2p - k}{s} \right\rfloor + 1,
 $$
 
-dove $n$ è la dimensione d'ingresso, $k$ quella del kernel, $p$ il padding, $s$
-lo stride e $\lfloor \cdot \rfloor$ la parte intera inferiore. Un esempio con i
+dove $n$ è la dimensione d'ingresso, $k$ quella del kernel, $p$ il padding
+(uguale sui due lati: dove non lo è, il $2p$ va letto come
+$p_{\text{sx}} + p_{\text{dx}}$), $s$ lo stride e $\lfloor \cdot \rfloor$ la
+parte intera inferiore. Un esempio con i
 numeri di una rete che lavora su immagini $28\times28$: ingresso $n=28$, kernel
 $k=3$, padding $p=1$, stride $s=1$, e
 $o = \lfloor(28 + 2 - 3)/1\rfloor + 1 = 28$, la risoluzione non cambia. Con
-`padding="same"` si sceglie appunto $p$ affinché $o=n$ (a stride 1): l'uscita
-conserva la risoluzione dell'ingresso.
+`padding="same"` si sceglie appunto $p$ affinché $o=n$: vale a stride 1, e con
+uno stride maggiore PyTorch non prova a indovinare, solleva un errore
+(TensorFlow invece prende $o = \lceil n/s \rceil$, che è un'altra
+convenzione).
 
 Due precisazioni, perché la formula così com'è nasconde altrettante ipotesi.
 
@@ -347,19 +421,38 @@ dilatato di due è largo cinque pixel e mangia i bordi come una $5\times5$.
 In PyTorch l'intera architettura sta in poche righe:
 
 ```python
+import torch
 from torch import nn
 
-# in ingresso: N immagini in scala di grigi da 28x28, shape (N, 1, 28, 28)
 model = nn.Sequential(
     # blocco 1: 32 filtri 3x3, mappe grandi come l'input
     nn.Conv2d(1, 32, 3, padding="same"), nn.ReLU(),
-    nn.MaxPool2d(2),               # 28x28 -> 14x14
-    # blocco 2: più filtri man mano che le mappe rimpiccioliscono
+    nn.MaxPool2d(2),
+    # blocco 2: più filtri man mano che le mappe rimpiccioliscono.
+    # Il primo numero è 32: ogni filtro di questo strato legge tutte
+    # e 32 le mappe che escono dal blocco di sopra.
     nn.Conv2d(32, 64, 3, padding="same"), nn.ReLU(),
-    nn.MaxPool2d(2),               # 14x14 -> 7x7
-    nn.Flatten(),                  # srotola in una fila di 64*7*7 = 3136 numeri
+    nn.MaxPool2d(2),
+    nn.Flatten(),                  # srotola la pila in una fila di numeri
     nn.Linear(64 * 7 * 7, 10),     # 10 classi (logit)
 )
+
+# quattro immagini in scala di grigi da 28x28: (immagini, canali, righe, colonne)
+x = torch.zeros(4, 1, 28, 28)
+for strato in model:
+    x = strato(x)
+    print(f"{strato.__class__.__name__:10s} -> {tuple(x.shape)}")
+```
+
+```text
+Conv2d     -> (4, 32, 28, 28)
+ReLU       -> (4, 32, 28, 28)
+MaxPool2d  -> (4, 32, 14, 14)
+Conv2d     -> (4, 64, 14, 14)
+ReLU       -> (4, 64, 14, 14)
+MaxPool2d  -> (4, 64, 7, 7)
+Flatten    -> (4, 3136)
+Linear     -> (4, 10)
 ```
 
 Nota il ritmo ricorrente: le mappe si restringono (28 → 14 → 7), mentre il
@@ -369,22 +462,30 @@ diversi di cose trovate, finché le poche rimaste bastano allo strato denso per
 decidere.
 
 Un dettaglio tutto di PyTorch: `nn.Flatten()` srotola la pila di mappe in
-un'unica fila di numeri, e lo strato `nn.Linear` finale vuole sapere
-esattamente quanti ne riceve (qui $64 \cdot 7 \cdot 7 = 3136$). Quel conto resta
+un'unica fila di numeri, e lo strato denso finale, che in PyTorch si chiama
+`nn.Linear`, vuole sapere esattamente quanti ne riceve (qui
+$64 \cdot 7 \cdot 7 = 3136$, la penultima riga dell'uscita). Quel conto resta
 a chi progetta la rete, non alla libreria.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Uno strato denso sull'immagine intera ha troppi pesi da imparare (quasi
-  200 milioni per una sola foto a colori e mille neuroni), e per di più non ha
-  nessuna idea che *un motivo sia lo stesso ovunque appaia*.
+- Uno strato denso sull'immagine intera ha troppi pesi da imparare: con foto a
+  colori da 256 per 256 e mille neuroni sono quasi 200 milioni, e solo per il
+  primo strato. E per di più non ha nessuna idea che *un motivo sia lo stesso
+  ovunque appaia*.
 - La convoluzione fa scorrere sull'immagine un filtro piccolo e scrive su
   un foglio nuovo, punto per punto, quanto quel motivo c'è: quel foglio si
   chiama *feature map*.
 - Pochi pesi, riusati in ogni punto: la rete impara cosa cercare, non
   dove. Se il motivo si sposta, si sposta con lui anche il segnale che lo
   indica.
+- Quanto viene grande la mappa che esce lo decidono tre manopole: quanto è
+  larga la finestra, di quanto salta a ogni passo (lo stride) e se attorno
+  all'immagine si è messa una cornice (il padding). Col passo a 1 e la cornice
+  da uno, un filtro $3\times3$ lascia la mappa grande quanto l'immagine; col
+  passo a 2 la dimezza, e quando il conto non torna in pieno due persone che
+  scelgono in modo diverso si ritrovano con mappe diverse.
 - Il max pooling tiene, di ogni quadratino, solo il valore più forte:
   rimpicciolisce le mappe e dà un po’ di tolleranza agli spostamenti minimi, in
   cambio della precisione su dove le cose stanno. L'architettura tipica alterna
@@ -404,8 +505,23 @@ a chi progetta la rete, non alla libreria.
   l'attivazione che si sposta insieme a lui. L'invarianza è un'altra proprietà,
   e arriva semmai dalla testa della rete (pooling globale), non dalla
   convoluzione.
+- La dimensione d'uscita è $o = \lfloor (n + 2p - k)/s \rfloor + 1$, e con
+  dilatazione $d$ il kernel copre $d(k-1)+1$ pixel invece di $k$. La parte
+  intera è una convenzione e non l'unica possibile (`ceil_mode=True` arrotonda
+  per eccesso): a $n=61$, $k=s=2$ le due scelte danno 30 e 31.
 - Il max pooling riduce la risoluzione e baratta l'equivarianza esatta con
-  una tolleranza ai piccoli spostamenti; l'architettura tipica alterna conv e
-  pool e chiude con strati densi.
+  una tolleranza modesta ai piccoli spostamenti (su un picco isolato la mappa
+  resta identica metà delle volte, su una mappa fitta di valori diversi mai);
+  l'architettura tipica alterna conv e pool e chiude con strati densi.
 ```
 `````
+
+Da portarsi dietro c'è lo stampino: un pugno di numeri che scorre su tutto e
+non cambia mai, e che per questo trova il motivo dovunque sia finito. È un
+vincolo messo dentro l'architettura invece che sperato dall'addestramento: si
+paga in flessibilità e si riscuote in esempi che non servono più. Restano due
+domande, di mestiere diverso: come si fa a far imparare davvero una rete
+profonda, che è
+{doc}`Far funzionare le reti profonde <ottimizzazione-regolarizzazione>`, e
+quali sono le reti che con questi pezzi hanno vinto, che è
+{doc}`Le architetture che hanno fatto la storia <architetture-storiche>`.

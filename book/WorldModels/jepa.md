@@ -92,8 +92,10 @@ un'immagine sfocata che non corrisponde a *nessun* futuro reale; è la ragione
 per cui la predizione video nei pixel produce fantasmi lattiginosi. La
 proposta di {cite}`lecun2022path` è la JEPA (*Joint-Embedding Predictive
 Architecture*): due encoder mappano contesto e target nello spazio delle
-rappresentazioni, $\mathbf{s}_x = f_\phi(\mathbf{x})$ e $\mathbf{s}_y = \bar{f}_{\bar{\phi}}(\mathbf{y})$, e
-un predictor $g_\theta$ opera interamente lì:
+rappresentazioni, $\mathbf{s}_x = f_\phi(\mathbf{x})$ e
+$\mathbf{s}_y = \bar{f}_{\bar{\phi}}(\mathbf{y})$ (la barra dice che il secondo
+encoder è una copia dell'altro tenuta indietro, e la sezione sul collasso
+spiega perché), e un predictor $g_\theta$ opera interamente lì:
 
 $$
 E(\mathbf{x}, \mathbf{y}, \mathbf{z}) = \big\lVert\, g_\theta(\mathbf{s}_x, \mathbf{z}) - \mathbf{s}_y \,\big\rVert_2^2,
@@ -124,8 +126,10 @@ $E^\star(\mathbf{x}, \mathbf{y}) = E(\mathbf{x}, \mathbf{y})$ e non
 c'è alcun minimo da calcolare, né in addestramento né a inferenza. Quel poco
 di «quale futuro» che serve è passato al predictor come informazione
 esplicita (i token posizionali che dicono *dove* prevedere), non inferito
-come variabile nascosta. Una JEPA con $\mathbf{z}$ vero, capace di produrre più esiti
-plausibili invece di uno solo, resta al momento programma di ricerca.
+come variabile nascosta: nei paper quella grandezza si chiama $\mathbf{z}$
+lo stesso, e la differenza è che gliela si passa invece di cercarla. Una JEPA
+con $\mathbf{z}$ vero, capace di produrre più esiti plausibili invece di uno
+solo, resta al momento programma di ricerca.
 
 La libertà nuova sta nell'encoder del target: poiché $\mathbf{y}$ non va ricostruito
 ma solo *rappresentato*, $\bar{f}$ può legittimamente buttare via
@@ -158,7 +162,7 @@ realizzato.
 
 ```{figure} ../figures/jepa-architettura.svg
 :name: fig-jepa-architettura
-:alt: "Confronto a due pannelli. Sopra, l'architettura generativa: dal contesto un decoder disegna ogni pixel del futuro e la loss confronta pixel per pixel la predizione sfocata con il futuro reale, sprecando capacità sui dettagli imprevedibili. Sotto, la JEPA: un encoder in teal trasforma il contesto in un embedding, un encoder target tratteggiato aggiornato per media mobile esponenziale trasforma il target, un predictor in terracotta predice l'embedding del target e la loss confronta i due embedding nello spazio delle rappresentazioni."
+:alt: "Confronto a due pannelli. Sopra, architettura generativa: dal contesto un decoder generativo disegna ogni pixel del futuro e la loss confronta pixel per pixel la predizione, sfocata, con il futuro reale. Sotto, JEPA: un encoder in teal trasforma il contesto in un embedding, un encoder target tratteggiato e aggiornato per media mobile esponenziale trasforma il target senza ricevere gradiente, e un predictor in terracotta predice l'embedding del target; la loss confronta i due embedding nello spazio delle rappresentazioni."
 :width: 100%
 
 Generativa contro JEPA: la prima predice il futuro nei pixel (e deve
@@ -178,8 +182,9 @@ nello stesso spazio, ed è lì che si possono confrontare.
 
 ## Il ritorno del collasso
 
-La trappola è la stessa del buttafuori pigro, e chi ha letto il {doc}`capitolo
-sui modelli a energia </ModelliEnergia/overview>` sa già dove si nasconde. Quel
+La trappola è la stessa del buttafuori pigro, e chi ha letto la
+{doc}`sezione sull'energia come compatibilità
+</ModelliEnergia/energia-come-compatibilita>` sa già dove si nasconde. Quel
 buttafuori deve dare a ogni coppia un voto di compatibilità: là il voto si
 chiama energia, e più è basso più le due cose stanno bene insieme. E scopre
 presto che il modo più comodo di non sbagliare mai è dire sempre sì.
@@ -224,10 +229,11 @@ e nel frattempo il bersaglio cambia idea solo al ritmo a cui l'allievo migliora
 *davvero*; verso la fine il dosaggio scende a zero, e l'insegnante non cambia
 più idea affatto. Delle due accortezze, quella che impedisce la truffa è
 l'insegnante senza voce in capitolo: su un esercizio in miniatura la lentezza
-si può togliere e la truffa non ricomincia. Sui sistemi veri, però, nessuno la
-toglie, e chi li ha costruiti la dichiara necessaria: la lentezza fa qualcosa
-di più che rendere stabile l'esercizio, e che cosa esattamente è ancora
-oggetto di studio.
+si può togliere e la truffa non ricomincia. Chi ha costruito questi sistemi la
+lentezza non la toglie e la dichiara necessaria; altri, su sistemi altrettanto
+veri, l'hanno tolta e la truffa non è ricominciata nemmeno lì. Quindi la
+lentezza serve a qualcosa, ma che cosa esattamente è ancora oggetto di
+studio.
 
 `````
 
@@ -250,29 +256,38 @@ In I-JEPA $m$ parte da 0,996, quindi a ogni passo il target si sposta di una
 frazione millesimale verso l'encoder corrente, e cresce linearmente fino a 1
 lungo l'addestramento: verso la fine il bersaglio smette del tutto di muoversi.
 All'EMA si accompagna lo stop-gradient: la loss non si propaga
-mai attraverso il ramo del target, che è puro riferimento. Dei due, quello che
-impedisce la discesa coordinata dei due encoder verso la costante è lo
-stop-gradient, perché il bersaglio insegue e non può contrattare: nella
-mini-JEPA in PyTorch, togliere l'EMA e tenere il solo stop-gradient non produce
-alcun collasso (la varietà delle rappresentazioni, anzi, sale da 1,0 a 1,6).
-Da un giocattolo ai sistemi veri, però, il passo non è automatico, e i paper
-non lo fanno: I-JEPA chiama l'EMA «essenziale per addestrare» architetture
-come questa, e la difesa dal collasso la attribuisce all'asimmetria fra i due
-rami nel suo insieme. È
+mai attraverso il ramo del target, che è puro riferimento. E c'è un terzo
+pezzo, che si dimentica volentieri perché sta dalla parte dell'allievo: il
+predictor, che esiste su un ramo solo ed è ciò che rende l'asimmetria
+un'asimmetria vera. I paper della famiglia li nominano tutti e tre insieme.
+
+Dei tre, il candidato a impedire la discesa coordinata dei due encoder verso
+la costante è lo stop-gradient, perché il bersaglio insegue e non può
+contrattare: nella mini-JEPA in PyTorch, togliere l'EMA e tenere il resto non
+produce alcun collasso (la varietà delle rappresentazioni, anzi, sale da 1,0 a
+1,6). Da un giocattolo ai sistemi veri, però, il passo non è automatico:
+I-JEPA chiama l'EMA «essenziale per addestrare» architetture come questa, e la
+difesa dal collasso la attribuisce all'asimmetria fra i due rami nel suo
+insieme. Fuori dalla famiglia JEPA la copia lenta è però già stata tolta senza
+che niente collassasse, ed è SimSiam {cite}`chen2021exploring`, che la
+{doc}`sezione sull'imparare a vedere senza etichette
+</VisioneArtificiale/senza-etichette>` ha già raccontato. È
 comunque la stessa scoperta empirica che aveva sorpreso la comunità con BYOL
 nel 2020 {cite}`grill2020bootstrap`: niente coppie negative, niente termini
 contrastivi, eppure niente collasso. Una comprensione teorica
 completa del *perché* manca ancora, ed è giusto dirlo; il documento del 2022
 {cite}`lecun2022path` discute anche l'alternativa esplicitamente regolarizzata
 (varianza mantenuta sopra una soglia, covarianze fuori diagonale penalizzate,
-alla VICReg), ma I-JEPA e V-JEPA, nei paper, si affidano all'asimmetria EMA.
+alla VICReg {cite}`bardes2022vicreg`), ma I-JEPA e V-JEPA, nei paper, si
+affidano all'asimmetria EMA.
 
 `````
 
 ## I-JEPA: la scommessa alla prova delle immagini
 
 Nel documento del 2022 la JEPA è soprattutto un diagramma. La prima
-incarnazione convincente arriva l'anno dopo, dal gruppo di LeCun a Meta AI:
+incarnazione che ne porta il nome arriva l'anno dopo, dal gruppo di LeCun a
+Meta AI:
 **I-JEPA** (*Image-based JEPA*, la JEPA per le immagini)
 {cite}`assran2023self`, presentata alla conferenza CVPR. I pezzi sono quelli di
 poco fa. L'encoder è un Vision Transformer, la rete che nella
@@ -302,7 +317,7 @@ buchino basta allungare i bordi, senza capire niente. Secondo: al modello non
 servono i trucchi artigianali con cui di solito si addestrano questi sistemi
 (versioni ritagliate, specchiate, ricolorate della stessa foto, scelte a mano
 da chi progetta). Basta l'indovinello. E i risultati danno ragione alla
-scommessa: con appena l'1% delle etichette di ImageNet (una dozzina di foto
+scommessa: con appena l’1% delle etichette di ImageNet (una dozzina di foto
 etichettate per categoria) I-JEPA classifica meglio dei metodi che
 ricostruiscono i pixel: 73 risposte giuste su cento contro poco più di 71. E ci
 arriva con molto meno calcolo. Quel risparmio è facile capirlo al contrario:
@@ -361,17 +376,43 @@ singolo passo, rende necessari molti meno passi.
 Le immagini erano il primo collaudo; il progetto di LeCun, però, parla di
 *futuro*, e il futuro vive nei video. **V-JEPA** {cite}`bardes2024revisiting`
 (2024) trasporta lo schema dalla dimensione spaziale a quella
-spazio-temporale: si copre una regione del video (in gergo si dice
-**mascherare**) e si prevedono le sue rappresentazioni a partire dal resto.
-C'è una finezza che rivela quanto i video siano una bestia diversa: i
-fotogrammi vicini sono quasi identici, quindi se la maschera coprisse zone
-diverse in fotogrammi diversi il modello potrebbe barare copiando dal
-fotogramma accanto. La maschera è perciò un **tubo**: la stessa regione
-spaziale, tenuta ferma lungo *tutta* la durata della clip. Ed è una maschera
-generosa, perché in media copre circa il 90% del video. Addestrato così su due
-milioni di video pubblici, senza etichette, senza testo e senza ricostruzione, V-JEPA
-produce rappresentazioni che a quel punto bisogna misurare, e il modo in cui le
-si misura conta quanto il risultato.
+spazio-temporale, cioè aggiunge il tempo all'altezza e alla larghezza: si copre
+una regione del video (in gergo si dice **mascherare**) e se ne prevedono le
+rappresentazioni a partire dal resto.
+
+C'è una finezza che rivela quanto i video siano una bestia diversa. Un video è
+una pila di fotogrammi, e i vicini si somigliano quasi in tutto: se la maschera
+coprisse zone diverse in fotogrammi diversi, il modello potrebbe barare
+copiando dal fotogramma accanto quello che nel suo manca. La maschera è perciò
+un **tubo**: dentro una stessa clip la regione coperta sta ferma e attraversa
+la pila da parte a parte, come un foro che buca tutte le carte di un mazzo
+nello stesso punto ({numref}`fig-maschera-a-tubo`). Dove cade, quel foro, lo
+si sorteggia a ogni clip. Ed è una maschera generosa, perché in media copre
+circa il 90% del video, e il poco che resta non basta a completare i bordi di
+ciò che manca: per indovinare il resto bisogna aver capito la scena.
+
+Due proprietà, però, non fanno una ricetta, e la differenza si paga cara.
+Coprire il 90% con tanti tubicini sottili sparsi lascia dappertutto un bordo
+da cui completare, e gli autori quella variante l'hanno provata: rende molto
+meno. Quello che funziona sono pochi tubi larghi, ciascuno un pezzo contiguo
+del fotogramma, la cui unione arriva al 90%: è la stessa ragione per
+cui sulle immagini i rettangoli nascosti sono grandi.
+
+```{figure} ../figures/maschera-a-tubo.svg
+:name: fig-maschera-a-tubo
+:alt: "Confronto fra due modi di coprire un video, disegnato come una fila di quattro fotogrammi che scorrono nel tempo. In alto, la maschera che si sposta: il rettangolo coperto cade in un punto diverso in ciascun fotogramma, e una freccia mostra che la regione coperta nel terzo fotogramma è scoperta nel secondo, quindi la si può copiare da lì. In basso, la maschera a tubo: il rettangolo coperto sta nello stesso punto in tutti e quattro i fotogrammi, e la fascia che li attraversa disegna un tubo; nessun fotogramma mostra quello che gli altri nascondono, e non c'è niente da copiare."
+:width: 92%
+
+Perché la maschera non si sposta. Sopra, una regione che cambia posto a ogni
+fotogramma: quello che nasconde in uno sta scoperto in quello accanto, e
+prevederlo è copiare. Sotto, la stessa regione tenuta ferma, che attraversa la
+clip da parte a parte: nessun fotogramma mostra quello che gli altri
+nascondono.
+```
+
+Addestrato così su due milioni di video pubblici, senza etichette, senza testo
+e senza ricostruzione, V-JEPA produce rappresentazioni che a quel punto bisogna
+misurare, e il modo in cui le si misura conta quanto il risultato.
 
 `````{tab} Elementare
 
@@ -409,7 +450,7 @@ dà insieme al nome di chi ha corretto.
 
 `````{tab} Superiore
 
-Con la rete congelata e una sonda addestrata a parte, V-JEPA raggiunge l'81,9%
+Con la rete congelata e una sonda addestrata a parte, V-JEPA raggiunge l’81,9%
 su Kinetics-400 (riconoscere l'azione: chi nuota, chi suona) e il 72,2% su
 Something-Something-v2, un banco di prova che richiede di capire il
 *movimento* («spingere qualcosa da sinistra a destra»), non solo l'aspetto.
@@ -451,8 +492,10 @@ buffo di Something-Something-v2). Poi
 c'è un esame più difficile, l'anticipazione: guardando una cucina ripresa in
 soggettiva, indovinare che cosa farà la persona nel secondo che viene. Lì il
 modello può proporre cinque risposte e il punteggio conta quante volte quella
-giusta è fra le cinque (in gergo *recall@5*): V-JEPA 2 ne azzecca 39,7 su cento, contro le 27,6 del
-miglior sistema precedente, che era grosso otto volte tanto. È un progresso grosso su un
+giusta è fra le cinque, mediando poi fra i tipi di azione così che quelli rari
+pesino quanto i frequenti (in gergo *recall@5*): V-JEPA 2 arriva a 39,7 su
+cento, contro le 27,6 del miglior sistema precedente, che era grosso otto
+volte tanto. È un progresso grosso su un
 compito che resta largamente irrisolto, il che è già un buon motivo per
 diffidare di chi riassume queste cose con «ci riesce».
 
@@ -484,8 +527,8 @@ su come è andata, non l'informazione sui movimenti. Il pezzo che guarda i
 video resta com'era, con quello che aveva imparato da internet: si addestra
 soltanto il pezzo che immagina l'effetto di un comando.
 
-Poi lo si mette in due laboratori che non aveva mai visto, davanti a oggetti che
-non aveva mai visto, senza un solo minuto di pratica lì dentro. Si chiama
+Poi lo si mette in due laboratori che non aveva mai visto, senza un solo
+minuto di pratica lì dentro. Si chiama
 zero-shot, «a colpo zero»: nemmeno un tentativo di prova.
 
 Qui però serve la cifra, non l'aggettivo, perché «riesce» dice troppo.
@@ -525,10 +568,11 @@ migliori, se ne ricalcolano media e varianza e si ripete per dieci giri. Nei
 compiti riportati l'orizzonte è $T = 1$, cioè si ottimizza una sola azione
 per volta: gli autori lo dichiarano sufficiente perché i compiti considerati
 sono ingordi, e osservano che orizzonti più lunghi funzionano anch'essi ma
-costano di più. Il costo è 16 secondi di calcolo su GPU per ogni singola
-azione. E i tassi di successo, medi sui due laboratori, dicono a
-che punto siamo davvero: *reach* 100%, pick-and-place della tazza 80% e della
-scatola 65%, presa della tazza 65%, presa della scatola 25%. Afferrare una
+costano di più. Il costo è 16 secondi di calcolo per ogni singola azione, su
+una sola scheda grafica da gioco. E i tassi di successo, medi sui due
+laboratori, dicono a che punto siamo davvero: *reach* 100%, pick-and-place
+della tazza 80% e della scatola 65%, presa della tazza 65%, presa della
+scatola 25%. Afferrare una
 scatola riesce una volta su quattro. E il pick-and-place, che è il numero più
 alto, non si guida con un'immagine sola: gli autori ne danno tre (oggetto
 afferrato, oggetto vicino alla meta, oggetto posato) e passano dall'una
@@ -545,9 +589,8 @@ letteralmente, il mondo fisico; non è il punto in cui la partita è vinta.
 
 Fermiamoci a mettere ordine, perché a questo punto i tre grandi modi di
 imparare senza annotatori umani li abbiamo incontrati tutti. Una precisazione
-prima di cominciare, perché il libro queste famiglie le conta anche altrove e
-con un altro numero: qui il taglio è dove avviene la previsione, e dà tre
-famiglie; nel
+prima di cominciare, perché queste famiglie si contano anche in un altro modo:
+qui il taglio è dove avviene la previsione, e dà tre famiglie; nel
 {doc}`capitolo sull'auto-supervisione </AutoSupervisione/famiglie>` il taglio
 è che cosa impedisce al modello di rispondere sempre la stessa cosa, e dà
 quattro famiglie. I due elenchi non si contraddicono: sono due assi, e ogni
@@ -757,9 +800,9 @@ ingegneria; la logica è tutta in queste righe.
   per rispondere sempre «boh»: si chiama collasso. A impedirlo è una cosa
   sola, che l'insegnante non riceva mai lamentele sul voto: non potendo
   contrattare, non può accordarsi al ribasso. Che sia anche una copia lenta
-  dell'allievo serve a rendere l'esercizio stabile; su un esercizio in
-  miniatura la lentezza si può togliere senza che la truffa ricominci, ma sui
-  sistemi veri nessuno la toglie.
+  dell'allievo serve a rendere l'esercizio stabile; chi ha costruito questi
+  sistemi non la toglie, ma altrove è stata tolta e la truffa non è
+  ricominciata.
 - La prova sulle immagini è il gioco della cartolina strappata: si coprono
   quattro rettangoli grandi e si chiede di *descriverli*, non di
   ridisegnarli. Funziona, e impara con molto meno calcolo dei metodi che
@@ -795,13 +838,14 @@ ingegneria; la logica è tutta in queste righe.
   delle rappresentazioni: è un'architettura a energia non normalizzata, dove
   l'energia è l'errore di predizione tra embedding.
 - Il pericolo è il solito collasso (embedding costanti, energia bassa
-  ovunque); la difesa dei sistemi reali è l'asimmetria fra i due rami, e il
-  muro è lo stop-gradient: il ramo del target non riceve gradiente e non
-  può colludere. L'EMA aggiunge lentezza e stabilità al bersaglio, non è lei
-  a impedire il collasso.
+  ovunque); la difesa dei sistemi reali è l'asimmetria fra i due rami, fatta
+  di tre pezzi (EMA, stop-gradient, predictor su un ramo solo), e il muro
+  sembra lo stop-gradient: il ramo del target non riceve gradiente e non
+  può colludere. Che a impedire il collasso non sia l'EMA lo dice SimSiam,
+  che la toglie senza conseguenze.
 - I-JEPA {cite}`assran2023self` (CVPR 2023): un ViT predice le
   rappresentazioni di quattro blocchi mascherati dal contesto; niente
-  augmentation artigianali; con l'1% delle etichette di ImageNet batte i
+  augmentation artigianali; con l’1% delle etichette di ImageNet batte i
   metodi a ricostruzione di pixel (73,3% contro 71,5% di MAE) con oltre
   dieci volte meno calcolo. Non per un costo unitario più basso: il singolo
   passo costa il 7% in più, i passi sono cinque volte meno, e il fattore

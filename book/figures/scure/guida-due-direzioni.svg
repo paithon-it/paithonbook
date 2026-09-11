@@ -1,0 +1,75 @@
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../guida-due-direzioni.svg
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 366" role="img" aria-label="Da uno stesso punto partono tre frecce. La grigia, verticale, è la direzione che la rete indica quando la richiesta scritta non c'è, cioè il caso con peso zero. La verde è la direzione con la richiesta, il caso con peso uno: è lunga uguale e spostata di appena sette gradi, tanto che le due quasi si sovrappongono, e la distanza fra le due punte, marcata da una graffa, è tutto il contributo del testo. Quel contributo viene ripetuto lungo una linea tratteggiata, dove sette pallini segnano le prime sette ripetizioni e la punta cade mezzo passo più in là. Lì arriva la terza freccia, spessa e color terracotta, che parte dallo stesso punto ed è la direzione seguita davvero con peso sette e mezzo: è molto più inclinata delle prime due.">
+  <defs>
+    <marker id="p-gd-neutro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#BCB3A1"/>
+    </marker>
+    <marker id="p-gd-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5BA39C"/>
+    </marker>
+    <marker id="p-gd-terra" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/>
+    </marker>
+  </defs>
+  <style>
+    .t  { font-family:Fraunces, Georgia, serif; font-size:17px; font-style:italic; fill:#F4ECDD; }
+    .l  { font-family:Inter, system-ui, sans-serif; font-size:14px; fill:#F4ECDD; }
+    .s  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#BCB3A1; }
+    .g  { stroke:#34302A; stroke-width:1.4; stroke-dasharray:4 4; fill:none; }
+  </style>
+
+  <text class="t" x="36" y="34">Le due direzioni, e quella che si segue</text>
+
+  <!-- legenda -->
+  <rect x="470" y="46" width="14" height="14" fill="#BCB3A1"/>
+  <text class="l" x="492" y="58">senza la richiesta &#183; peso 0</text>
+  <rect x="470" y="72" width="14" height="14" fill="#5BA39C"/>
+  <text class="l" x="492" y="84">con la richiesta &#183; peso 1</text>
+  <rect x="470" y="98" width="14" height="14" fill="#E27B52"/>
+  <text class="l" x="492" y="110">quella che si segue &#183; peso 7,5</text>
+
+  <!-- le tre frecce, dallo stesso punto -->
+  <line x1="250" y1="330" x2="250" y2="150" stroke="#BCB3A1" stroke-width="2.4"
+        marker-end="url(#p-gd-neutro)"/>
+  <line x1="250" y1="330" x2="272.58" y2="151.42" stroke="#5BA39C" stroke-width="2.4"
+        marker-end="url(#p-gd-teal)"/>
+  <line x1="250" y1="330" x2="419.35" y2="160.65" stroke="#E27B52" stroke-width="3.6"
+        marker-end="url(#p-gd-terra)"/>
+
+  <!-- il contributo del testo, ripetuto lungo la stessa retta -->
+  <line class="g" x1="250" y1="150" x2="428" y2="161.19"/>
+  <g fill="#DDB874" stroke="#0E0C0A" stroke-width="1.4">
+    <circle cx="272.58" cy="151.42" r="3.8"/>
+    <circle cx="295.16" cy="152.84" r="3.8"/>
+    <circle cx="317.74" cy="154.26" r="3.8"/>
+    <circle cx="340.32" cy="155.68" r="3.8"/>
+    <circle cx="362.90" cy="157.10" r="3.8"/>
+    <circle cx="385.48" cy="158.52" r="3.8"/>
+    <circle cx="408.06" cy="159.94" r="3.8"/>
+  </g>
+  <text class="s" x="306" y="130">sette pallini, e la punta cade mezzo passo più in là</text>
+
+  <!-- la graffa che marca il contributo, fra le due punte -->
+  <g stroke="#DDB874" stroke-width="2.4" fill="none">
+    <line x1="250" y1="112" x2="272.58" y2="113.42"/>
+    <line x1="250" y1="108" x2="250" y2="122"/>
+    <line x1="272.58" y1="109.42" x2="272.58" y2="123.42"/>
+  </g>
+  <line class="g" x1="261" y1="124" x2="261" y2="146"/>
+  <text class="l" x="240" y="104" text-anchor="end">il contributo del testo</text>
+  <text class="s" x="240" y="121" text-anchor="end">le due direzioni quasi coincidono</text>
+
+  <!-- dove arriva -->
+  <text class="l" x="434" y="156" fill="#E27B52">molto più</text>
+  <text class="l" x="434" y="173" fill="#E27B52">inclinata</text>
+
+  <!-- il punto di partenza -->
+  <circle cx="250" cy="330" r="5" fill="#F4ECDD"/>
+  <text class="s" x="238" y="348" text-anchor="end">il punto in cui siamo</text>
+</svg>

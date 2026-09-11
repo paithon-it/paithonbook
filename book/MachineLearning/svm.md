@@ -4,11 +4,12 @@ Disegna due nuvole di punti su un foglio (pallini blu a sinistra, quadratini
 rossi a destra) e traccia una retta che li separi. Facile. Ora traccia
 *un'altra* retta che li separi lo stesso, e poi un'altra ancora: se le due
 nuvole sono ben distinte, di rette buone ce ne sono infinite. Quale scegliere?
-La regressione logistica della sezione sull'apprendimento supervisionato ne
-sceglie una, e nemmeno si pone la domanda. La **Support Vector Machine** (SVM)
-invece sì, e con una risposta di netta
-eleganza geometrica: tra tutte le rette che separano, scegli la più *prudente*
-(quella che lascia il corridoio più largo possibile tra le due classi).
+La regressione logistica della {doc}`sezione sull'apprendimento supervisionato
+</MachineLearning/apprendimento-supervisionato>` ne sceglie una, e nemmeno si
+pone la domanda. La **Support Vector Machine** (SVM) invece sì, e con una
+risposta di netta eleganza geometrica: tra tutte le rette che separano, scegli
+la più *prudente* (quella che lascia il corridoio più largo possibile tra le
+due classi).
 
 L'idea del margine massimo è vecchia, e non nasce dove si crede: nasce a Mosca,
 all'Istituto di Problemi di Controllo, dove dal 1962 Vladimir Vapnik ne
@@ -28,13 +29,13 @@ oggi una scelta sensata quando gli esempi sono poche migliaia.
 
 ## La retta più prudente
 
-Immagina il confine tra due quartieri di case. Potresti tracciarlo rasente al
-muro dell'ultima villetta di uno dei due, ma basterebbe una casa nuova, un
-metro più in là, per trovarti dalla parte sbagliata. La scelta prudente è
-tirare il confine *nel mezzo del prato*, il più lontano possibile dalle case
-di entrambi i lati. Così hai il massimo respiro: piccole variazioni non ti
-fanno sbagliare. Questo respiro, in gergo, è il **margine**, e la SVM lo rende
-il più largo possibile.
+Il criterio si scrive in una riga. Presa una frontiera che divide le due
+classi, si guarda quanto dista dall'esempio più vicino di ciascuna: quella
+distanza è il **margine**, e fra tutte le frontiere possibili la SVM prende
+quella di margine massimo. Il motivo è la robustezza.
+Una frontiera che passa rasente agli esempi già visti sbaglia il primo esempio
+nuovo che cade poco più in là; una che li tiene tutti lontani ha del gioco
+prima di sbagliare, e quanto gioco lo dice il margine stesso.
 
 ```{figure} ../figures/svm-margine.svg
 :name: fig-svm-margine
@@ -72,6 +73,14 @@ divide: una retta (una dimensione) in un piano (due), un piano (due) in una
 scatola (tre).
 
 `````{tab} Elementare
+
+Un confine fra due quartieri di case si può tirare rasente al muro
+dell'ultima villetta, e allora basta una casa nuova un metro più in là per
+trovarsi dalla parte sbagliata. Tirato invece nel mezzo del prato, il più
+lontano possibile dalle case di tutti e due i lati, le case nuove hanno dove
+arrivare senza scombinare niente. Il corridoio di
+{numref}`fig-svm-margine` è quel prato, e mettere in numeri quel «nel mezzo»
+è tutto il mestiere della SVM.
 
 L'iperpiano è l'insieme dei punti $\mathbf{x}$ che soddisfano l'equazione
 
@@ -255,6 +264,22 @@ mondo reale le classi si sovrappongono quasi sempre. La risposta di Cortes e
 Vapnik {cite}`cortes1995support` è il **margine morbido** (*soft margin*):
 concedere qualche violazione, pagandola.
 
+Quanto paga un punto dipende da un numero solo,
+$y_i(\mathbf{w}^\top\mathbf{x}_i + b)$: vale $1$ per un punto appoggiato al
+bordo del corridoio, cresce allontanandosi dalla parte giusta e diventa
+negativo dalla parte sbagliata.
+
+```{figure} ../figures/tre-perdite-e-il-margine.svg
+:name: fig-tre-perdite
+:alt: Un grafico con in orizzontale il margine del punto, cioè la sua classe moltiplicata per il punteggio del classificatore, da meno due a tre e mezzo, e in verticale la perdita. Tre curve. La perdita zero-uno, tratteggiata, vale uno a sinistra dello zero e cade a zero a destra. La hinge della SVM, in terracotta, scende dritta da tre fino a toccare lo zero esattamente nel punto uno, il bordo del corridoio, e da lì in poi resta appoggiata all'asse. La log-loss della regressione logistica, in teal, scende anche lei ma senza mai toccare l'asse: nel punto uno vale ancora zero virgola quarantacinque e nel punto tre zero virgola zero sette. Una riga verticale tratteggiata segna il punto uno. In basso tre zone: a sinistra dello zero il punto sta dalla parte sbagliata, fra zero e uno sta dentro il corridoio, oltre uno sta fuori e dalla parte giusta. Sotto, la riga che chiude: solo la hinge diventa esattamente zero, ed è da lì che vengono i vettori di supporto.
+:width: 88%
+
+La multa di un punto dipende solo da dove sta rispetto al corridoio. Quella
+della SVM va a zero appena il punto è fuori, e da lì in poi quel punto non
+conta più; quella della regressione logistica si abbassa e basta, e vale
+ancora $0{,}45$ sul bordo e $0{,}07$ tre volte più in là.
+```
+
 `````{tab} Elementare
 
 Torniamo al confine tra i due quartieri. Se una singola villetta isolata sconfina
@@ -264,8 +289,10 @@ manciata di eccezioni. La SVM a margine morbido fa proprio questo, e le
 eccezioni le mette in conto una per una, con una multa proporzionata allo
 sconfinamento: chi si è spinto appena dentro il corridoio paga poco, chi è
 finito dalla parte sbagliata paga molto, e chi è rimasto comodamente fuori non
-paga niente, zero, nemmeno un centesimo. Alla fine il conto da tenere basso è
-uno solo: quanto è stretto il corridoio, più la somma di tutte le multe.
+paga niente, zero, nemmeno un centesimo. È la riga di terracotta di
+{numref}`fig-tre-perdite`: scende, tocca lo zero sul bordo del corridoio e da
+lì in poi ci resta appoggiata. Alla fine il conto da tenere basso è uno solo:
+quanto è stretto il corridoio, più la somma di tutte le multe.
 
 Quanto pesano le multe rispetto alla larghezza lo decide una manopola, chiamata
 $C$:
@@ -323,6 +350,15 @@ letta al contrario; con un'avvertenza di normalizzazione: la loss Ridge era
 *mediata* sugli $m$ esempi, la hinge qui è *sommata*, e a parità di
 convenzione l'identificazione esatta è $\lambda = 1/(2Cm)$, cioè a meno di un
 fattore pari alla taglia del dataset.
+
+E la lettera $C$ non ha lo stesso verso in tutti i testi, il che rende
+ingannevole confrontare due grafici a occhio. Qui, in scikit-learn e in *The
+Elements of Statistical Learning* {cite}`hastie2009elements` è il peso della
+penalità sulle violazioni, quindi $C$ grande stringe il corridoio. In *An
+Introduction to Statistical Learning* {cite}`james2023introduction` la stessa
+lettera è invece il *budget* concesso alle violazioni, e allora $C$ grande
+allarga il corridoio e moltiplica i vettori di supporto. Prima di leggere una
+curva di $C$ conviene guardare quale delle due convenzioni segue.
 
 `````
 
@@ -946,8 +982,9 @@ volta più indietro.
 :class: important
 - La SVM sceglie, tra le infinite frontiere che separano due classi, quella
   a margine massimo: il corridoio $2/\lVert \mathbf{w}\rVert$ più largo.
-  L'idea è di Vapnik e Chervonenkis (1963-64); dai laboratori Bell arrivano
-  trent'anni dopo il kernel trick e il margine morbido.
+  L'idea è di Vapnik, con Lerner nel 1963 e con Chervonenkis nel 1964; dai
+  laboratori Bell arrivano trent'anni dopo il kernel trick e il margine
+  morbido.
 - La derivazione («l'approccio della strada più larga») va dalla regola di
   decisione $\mathbf{w}^\top\mathbf{u}+b\ge 0$ ai vincoli
   $y_i(\mathbf{w}^\top\mathbf{x}_i+b)-1\ge 0$, da lì a

@@ -220,18 +220,26 @@ def costruisci() -> Figura:
                      f'style="animation:ln{i} var(--d) infinite;opacity:1"/>')
 
         if nome == "stagionale":
-            anim.append(keyframes("arco", solo_in(s, n, passo)))
+            # L'arco compare con la sua linea e RESTA, riposo compreso: era
+            # l'unico elemento che si accendeva e si spegneva, e il disegno
+            # fermo (quello che si vede online a ciclo finito, e quello che
+            # va in stampa) non lo conteneva. Il testo e l'`:alt:` lo
+            # descrivono al presente, quindi promettevano una cosa che a
+            # riposo non c'era.
+            anim.append(keyframes("arco", compare(s, n, passo)))
             corpo.append(f'<path class="arc" d="{arco}" '
-                         f'style="animation:arco var(--d) infinite"/>')
+                         f'style="animation:arco var(--d) infinite;'
+                         f'opacity:1"/>')
             for x, yy, testo, anc in (
                     (x_s, y_s, f"il {mese_di(sorgente)} osservato", "middle"),
                     (x_a, y_a, f"il {mese_di(N_OSS + H)} previsto", "end")):
                 corpo.append(f'<circle class="pun" cx="{x:.1f}" cy="{yy:.1f}" '
-                             f'r="4" style="animation:arco var(--d) infinite"/>')
+                             f'r="4" style="animation:arco var(--d) '
+                             f'infinite;opacity:1"/>')
                 corpo.append(f'<text class="arl" x="{x:.1f}" '
                              f'y="{yy - 66:.1f}" text-anchor="{anc}" '
-                             f'style="animation:arco var(--d) infinite">'
-                             f'{testo}</text>')
+                             f'style="animation:arco var(--d) infinite;'
+                             f'opacity:1">{testo}</text>')
 
     # ---- la legenda: ogni voce si accende con la sua linea e resta --------
     for i, nome in enumerate(ORDINE):

@@ -1,67 +1,38 @@
-<svg viewBox="0 0 700 340" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schema di una tabella indicizzata: un DataFrame con l'indice di riga evidenziato a sinistra, i nomi di colonna in alto, e una colonna estratta a destra che mostra come una Series sia indice più valori">
-  <rect x="0" y="0" width="700" height="340" fill="#F8F5EE"/>
-  <text x="200" y="34" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#1A1A1A" text-anchor="middle">DataFrame = tabella indicizzata</text>
-  <!-- intestazioni colonne -->
-  <rect x="130" y="52" width="105" height="34" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <rect x="235" y="52" width="90" height="34" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <rect x="325" y="52" width="105" height="34" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="182" y="74" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">temperatura</text>
-  <text x="280" y="74" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">umidità</text>
-  <text x="377" y="74" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">regione</text>
-  <!-- indice di riga -->
-  <rect x="40" y="86" width="90" height="34" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <rect x="40" y="120" width="90" height="34" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <rect x="40" y="154" width="90" height="34" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <rect x="40" y="188" width="90" height="34" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="85" y="108" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">Milano</text>
-  <text x="85" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">Roma</text>
-  <text x="85" y="176" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">Napoli</text>
-  <text x="85" y="210" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">Torino</text>
-  <!-- celle dati -->
-  <g font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">
-    <rect x="130" y="86" width="105" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="130" y="120" width="105" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="130" y="154" width="105" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="130" y="188" width="105" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="235" y="86" width="90" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="235" y="120" width="90" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="235" y="154" width="90" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="235" y="188" width="90" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="325" y="86" width="105" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="325" y="120" width="105" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="325" y="154" width="105" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="325" y="188" width="105" height="34" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="182" y="108">31.5</text><text x="280" y="108">58</text><text x="377" y="108">Lombardia</text>
-    <text x="182" y="142">34.0</text><text x="280" y="142">45</text><text x="377" y="142">Lazio</text>
-    <text x="182" y="176">33.2</text><text x="280" y="176">62</text><text x="377" y="176">Campania</text>
-    <text x="182" y="210">29.8</text><text x="280" y="210">66</text><text x="377" y="210">Piemonte</text>
-  </g>
-  <!-- freccia estrazione colonna -->
-  <line x1="440" y1="140" x2="510" y2="140" stroke="#1A1A1A" stroke-width="2"/>
-  <polygon points="510,140 498,133 498,147" fill="#1A1A1A"/>
-  <text x="475" y="126" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">df["temperatura"]</text>
-  <!-- Series estratta -->
-  <text x="595" y="66" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C" text-anchor="middle">Series</text>
-  <g font-family="Inter, system-ui, sans-serif" font-size="12.5" text-anchor="middle">
-    <rect x="520" y="80" width="72" height="32" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="592" y="80" width="78" height="32" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="520" y="112" width="72" height="32" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="592" y="112" width="78" height="32" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="520" y="144" width="72" height="32" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="592" y="144" width="78" height="32" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="520" y="176" width="72" height="32" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-    <rect x="592" y="176" width="78" height="32" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-    <text x="556" y="101" fill="#F8F5EE">Milano</text><text x="631" y="101" fill="#1A1A1A">31.5</text>
-    <text x="556" y="133" fill="#F8F5EE">Roma</text><text x="631" y="133" fill="#1A1A1A">34.0</text>
-    <text x="556" y="165" fill="#F8F5EE">Napoli</text><text x="631" y="165" fill="#1A1A1A">33.2</text>
-    <text x="556" y="197" fill="#F8F5EE">Torino</text><text x="631" y="197" fill="#1A1A1A">29.8</text>
-  </g>
-  <!-- legenda -->
-  <rect x="40" y="266" width="18" height="18" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="66" y="280" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">indice (etichette di riga)</text>
-  <rect x="250" y="266" width="18" height="18" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="276" y="280" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">nomi di colonna</text>
-  <rect x="430" y="266" width="18" height="18" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="456" y="280" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">valori della Series estratta</text>
-  <text x="40" y="316" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#1A1A1A">Ogni colonna è una Series; tutte condividono lo stesso indice.</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: un DataFrame, e la Series che se ne stacca
+  Generata da animazioni/svg/pandas-series-dataframe.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 404"
+     role="img" aria-label="A sinistra un DataFrame con sei righe e quattro colonne: nome, eta, citta, spesa, per Ada, Bruno, Carla, Dario, Elena e Furio. Sul fianco sinistro, in terracotta, la fascia delle etichette di riga, 0, 1, 2, 3, 4, 5, che pandas ha messo da sé perché il file non ne portava. Due caselle sono NaN: l'età di Bruno e la spesa di Dario. Le età si leggono 34.0, 41.0, 36.0, 52.0, 23.0, in virgola mobile. La colonna della spesa è tinta di ocra. Una freccia etichettata «si estrae la colonna» e df tra quadre spesa la porta a destra, dove la stessa colonna compare da sola come Series: sei valori, 120.5, 89.0, 240.0, NaN, 310.0, 74.9, e accanto a ciascuno la stessa etichetta di riga che aveva nella tabella, da 0 a 5.">
+  <style>
+    svg  { --d: 8.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .int  { fill:#2D5A5C; stroke:#1A1A1A; stroke-width:1.4; }
+    .idx  { fill:#B5532C; stroke:#1A1A1A; stroke-width:1.4; }
+    .cel  { fill:none; stroke:#C5BEAA; stroke-width:1.4; }
+    .estr { fill:#C9A961; fill-opacity:0.22; stroke:#C5BEAA;
+            stroke-width:1.4; }
+    .val  { fill:#C9A961; fill-opacity:0.38; stroke:#C9A961;
+            stroke-width:1.8; }
+    .tint { font-family:Inter, system-ui, sans-serif; font-size:13.5px; font-weight:700;
+            fill:#F8F5EE; }
+    .tidx { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#F8F5EE; }
+    .tcel { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#1A1A1A; }
+    .tnan { font-family:Inter, system-ui, sans-serif; font-size:13px; font-style:italic;
+            fill:#5A524A; }
+    .frec { stroke:#1A1A1A; stroke-width:2; }
+    .cod  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; fill:#1A1A1A; }
+    .ser  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#2D5A5C; }
+    
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
+  </style>
+  <defs><marker id="psd" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 z" fill="#1A1A1A"/></marker></defs><text class="ttl" x="26.0" y="50.0">DataFrame: sei clienti, quattro colonne, un indice</text><rect class="int" x="68.0" y="74.0" width="78.0" height="32.0"/><text class="tint" x="107.0" y="95.0" text-anchor="middle">nome</text><rect class="int" x="146.0" y="74.0" width="60.0" height="32.0"/><text class="tint" x="176.0" y="95.0" text-anchor="middle">eta</text><rect class="int" x="206.0" y="74.0" width="84.0" height="32.0"/><text class="tint" x="248.0" y="95.0" text-anchor="middle">citta</text><rect class="int" x="290.0" y="74.0" width="76.0" height="32.0"/><text class="tint" x="328.0" y="95.0" text-anchor="middle">spesa</text><rect class="idx" x="26.0" y="106.0" width="42.0" height="30.0"/><text class="tidx" x="47.0" y="126.0" text-anchor="middle">0</text><rect class="cel" x="68.0" y="106.0" width="78.0" height="30.0"/><text class="tcel" x="107.0" y="126.0" text-anchor="middle">Ada</text><rect class="cel" x="146.0" y="106.0" width="60.0" height="30.0"/><text class="tcel" x="176.0" y="126.0" text-anchor="middle">34.0</text><rect class="cel" x="206.0" y="106.0" width="84.0" height="30.0"/><text class="tcel" x="248.0" y="126.0" text-anchor="middle">Milano</text><rect class="estr" x="290.0" y="106.0" width="76.0" height="30.0"/><text class="tcel" x="328.0" y="126.0" text-anchor="middle">120.5</text><rect class="idx" x="26.0" y="136.0" width="42.0" height="30.0"/><text class="tidx" x="47.0" y="156.0" text-anchor="middle">1</text><rect class="cel" x="68.0" y="136.0" width="78.0" height="30.0"/><text class="tcel" x="107.0" y="156.0" text-anchor="middle">Bruno</text><rect class="cel" x="146.0" y="136.0" width="60.0" height="30.0"/><text class="tnan" x="176.0" y="156.0" text-anchor="middle">NaN</text><rect class="cel" x="206.0" y="136.0" width="84.0" height="30.0"/><text class="tcel" x="248.0" y="156.0" text-anchor="middle">Torino</text><rect class="estr" x="290.0" y="136.0" width="76.0" height="30.0"/><text class="tcel" x="328.0" y="156.0" text-anchor="middle">89.0</text><rect class="idx" x="26.0" y="166.0" width="42.0" height="30.0"/><text class="tidx" x="47.0" y="186.0" text-anchor="middle">2</text><rect class="cel" x="68.0" y="166.0" width="78.0" height="30.0"/><text class="tcel" x="107.0" y="186.0" text-anchor="middle">Carla</text><rect class="cel" x="146.0" y="166.0" width="60.0" height="30.0"/><text class="tcel" x="176.0" y="186.0" text-anchor="middle">41.0</text><rect class="cel" x="206.0" y="166.0" width="84.0" height="30.0"/><text class="tcel" x="248.0" y="186.0" text-anchor="middle">Milano</text><rect class="estr" x="290.0" y="166.0" width="76.0" height="30.0"/><text class="tcel" x="328.0" y="186.0" text-anchor="middle">240.0</text><rect class="idx" x="26.0" y="196.0" width="42.0" height="30.0"/><text class="tidx" x="47.0" y="216.0" text-anchor="middle">3</text><rect class="cel" x="68.0" y="196.0" width="78.0" height="30.0"/><text class="tcel" x="107.0" y="216.0" text-anchor="middle">Dario</text><rect class="cel" x="146.0" y="196.0" width="60.0" height="30.0"/><text class="tcel" x="176.0" y="216.0" text-anchor="middle">36.0</text><rect class="cel" x="206.0" y="196.0" width="84.0" height="30.0"/><text class="tcel" x="248.0" y="216.0" text-anchor="middle">Napoli</text><rect class="estr" x="290.0" y="196.0" width="76.0" height="30.0"/><text class="tnan" x="328.0" y="216.0" text-anchor="middle">NaN</text><rect class="idx" x="26.0" y="226.0" width="42.0" height="30.0"/><text class="tidx" x="47.0" y="246.0" text-anchor="middle">4</text><rect class="cel" x="68.0" y="226.0" width="78.0" height="30.0"/><text class="tcel" x="107.0" y="246.0" text-anchor="middle">Elena</text><rect class="cel" x="146.0" y="226.0" width="60.0" height="30.0"/><text class="tcel" x="176.0" y="246.0" text-anchor="middle">52.0</text><rect class="cel" x="206.0" y="226.0" width="84.0" height="30.0"/><text class="tcel" x="248.0" y="246.0" text-anchor="middle">Milano</text><rect class="estr" x="290.0" y="226.0" width="76.0" height="30.0"/><text class="tcel" x="328.0" y="246.0" text-anchor="middle">310.0</text><rect class="idx" x="26.0" y="256.0" width="42.0" height="30.0"/><text class="tidx" x="47.0" y="276.0" text-anchor="middle">5</text><rect class="cel" x="68.0" y="256.0" width="78.0" height="30.0"/><text class="tcel" x="107.0" y="276.0" text-anchor="middle">Furio</text><rect class="cel" x="146.0" y="256.0" width="60.0" height="30.0"/><text class="tcel" x="176.0" y="276.0" text-anchor="middle">23.0</text><rect class="cel" x="206.0" y="256.0" width="84.0" height="30.0"/><text class="tcel" x="248.0" y="276.0" text-anchor="middle">Torino</text><rect class="estr" x="290.0" y="256.0" width="76.0" height="30.0"/><text class="tcel" x="328.0" y="276.0" text-anchor="middle">74.9</text><line class="frec" x1="382.0" y1="196.0" x2="520.0" y2="196.0" marker-end="url(#psd)"/><text class="lbs" x="451.0" y="166.0" text-anchor="middle">si estrae la colonna</text><text class="cod" x="451.0" y="184.0" text-anchor="middle">df[&quot;spesa&quot;]</text><text class="ser" x="536.0" y="95.0">Series</text><rect class="idx" x="536.0" y="106.0" width="46.0" height="30.0"/><text class="tidx" x="559.0" y="126.0" text-anchor="middle">0</text><rect class="val" x="582.0" y="106.0" width="84.0" height="30.0"/><text class="tcel" x="624.0" y="126.0" text-anchor="middle">120.5</text><rect class="idx" x="536.0" y="136.0" width="46.0" height="30.0"/><text class="tidx" x="559.0" y="156.0" text-anchor="middle">1</text><rect class="val" x="582.0" y="136.0" width="84.0" height="30.0"/><text class="tcel" x="624.0" y="156.0" text-anchor="middle">89.0</text><rect class="idx" x="536.0" y="166.0" width="46.0" height="30.0"/><text class="tidx" x="559.0" y="186.0" text-anchor="middle">2</text><rect class="val" x="582.0" y="166.0" width="84.0" height="30.0"/><text class="tcel" x="624.0" y="186.0" text-anchor="middle">240.0</text><rect class="idx" x="536.0" y="196.0" width="46.0" height="30.0"/><text class="tidx" x="559.0" y="216.0" text-anchor="middle">3</text><rect class="val" x="582.0" y="196.0" width="84.0" height="30.0"/><text class="tnan" x="624.0" y="216.0" text-anchor="middle">NaN</text><rect class="idx" x="536.0" y="226.0" width="46.0" height="30.0"/><text class="tidx" x="559.0" y="246.0" text-anchor="middle">4</text><rect class="val" x="582.0" y="226.0" width="84.0" height="30.0"/><text class="tcel" x="624.0" y="246.0" text-anchor="middle">310.0</text><rect class="idx" x="536.0" y="256.0" width="46.0" height="30.0"/><text class="tidx" x="559.0" y="276.0" text-anchor="middle">5</text><rect class="val" x="582.0" y="256.0" width="84.0" height="30.0"/><text class="tcel" x="624.0" y="276.0" text-anchor="middle">74.9</text><text class="lbs" x="536.0" y="306.0">stesso indice, stessi valori</text><rect class="idx" x="26.0" y="330.0" width="17" height="17"/><text class="lbs" x="51.0" y="343.0">indice (etichette di riga)</text><rect class="int" x="252.0" y="330.0" width="17" height="17"/><text class="lbs" x="277.0" y="343.0">nomi di colonna</text><rect class="val" x="426.0" y="330.0" width="17" height="17"/><text class="lbs" x="451.0" y="343.0">valori della Series estratta</text><text class="lbs" x="26.0" y="372.0">Ogni colonna è una Series; tutte condividono lo stesso indice.</text><text class="lbs" x="26.0" y="392.0">Le due caselle vuote si scrivono NaN.</text>
 </svg>

@@ -691,7 +691,7 @@ imparato a mettere.
   osservazioni (le parole):
   $P(t,w) = \prod_i P(t_i \mid t_{i-1}) P(w_i \mid t_i)$; transizioni ed
   emissioni si contano su un corpus annotato. La stessa macchina, con i suoni
-  al posto delle etichette, regge l'ASR storico.
+  al posto delle etichette, regge il riconoscimento vocale storico.
 - L'algoritmo di Viterbi trova la sequenza di stati ottima con la
   programmazione dinamica sul traliccio: $O(n\,T^2)$ invece di $O(T^n)$,
   tenendo in ogni casella solo il miglior cammino in arrivo. I CRF sono

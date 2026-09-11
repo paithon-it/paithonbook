@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 658" role="img" aria-label="La frase «ho visto / un uomo / con il binocolo / nel parco», spezzata in quattro riquadri, ripetuta su sei righe. Sopra ogni riga, delle graffe disegnate a scaletta segnano le scatole. Le prime cinque righe sono le cinque analisi lecite: nelle prime tre «con il binocolo» sta in una scatola insieme a «un uomo», cioè il binocolo è dell'uomo; nelle ultime due sta in una scatola che parte da «ho visto», cioè il binocolo è di chi guarda. In tutte e cinque le graffe o si contengono o restano separate. L'ultima riga, segnata con una croce, ha due graffe tratteggiate che si tagliano a vicenda: è la combinazione che le scatole non permettono.">
+  <text x="440.0" y="34" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">«Ho visto un uomo con il binocolo nel parco»: i cinque modi di inscatolare le stesse parole</text>
+  <text x="440.0" y="56" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#2D5A5C">Ogni parentesi graffa è una scatola. Due scatole o stanno una dentro l'altra, o sono separate.</text>
+  <rect x="150" y="116" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="196.0" y="134" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">ho visto</text>
+  <rect x="252" y="116" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="298.0" y="134" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">un uomo</text>
+  <rect x="354" y="116" width="148" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="428.0" y="134" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">con il binocolo</text>
+  <rect x="512" y="116" width="96" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="560.0" y="134" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">nel parco</text>
+  <path d="M351,114 L351,108 L611,108 L611,114" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M249,114 L249,97 L611,97 L611,114" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M147,114 L147,86 L611,86 L611,114" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <text x="134" y="134" text-anchor="end" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">1.</text>
+  <text x="624" y="134" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">il binocolo è dell'uomo</text>
+  <rect x="150" y="208" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="196.0" y="226" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">ho visto</text>
+  <rect x="252" y="208" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="298.0" y="226" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">un uomo</text>
+  <rect x="354" y="208" width="148" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="428.0" y="226" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">con il binocolo</text>
+  <rect x="512" y="208" width="96" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="560.0" y="226" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">nel parco</text>
+  <path d="M249,206 L249,200 L505,200 L505,206" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M249,206 L249,189 L611,189 L611,206" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M147,206 L147,178 L611,178 L611,206" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <text x="134" y="226" text-anchor="end" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">2.</text>
+  <text x="624" y="226" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">il binocolo è dell'uomo</text>
+  <rect x="150" y="300" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="196.0" y="318" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">ho visto</text>
+  <rect x="252" y="300" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="298.0" y="318" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">un uomo</text>
+  <rect x="354" y="300" width="148" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="428.0" y="318" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">con il binocolo</text>
+  <rect x="512" y="300" width="96" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="560.0" y="318" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">nel parco</text>
+  <path d="M249,298 L249,292 L505,292 L505,298" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M147,298 L147,281 L505,281 L505,298" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M147,298 L147,270 L611,270 L611,298" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <text x="134" y="318" text-anchor="end" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">3.</text>
+  <text x="624" y="318" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">il binocolo è dell'uomo</text>
+  <rect x="150" y="392" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="196.0" y="410" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">ho visto</text>
+  <rect x="252" y="392" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="298.0" y="410" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">un uomo</text>
+  <rect x="354" y="392" width="148" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="428.0" y="410" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">con il binocolo</text>
+  <rect x="512" y="392" width="96" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="560.0" y="410" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">nel parco</text>
+  <path d="M147,390 L147,384 L347,384 L347,390" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M351,390 L351,373 L611,373 L611,390" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M147,390 L147,362 L611,362 L611,390" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <text x="134" y="410" text-anchor="end" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">4.</text>
+  <text x="624" y="410" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">il binocolo è mio</text>
+  <rect x="150" y="484" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="196.0" y="502" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">ho visto</text>
+  <rect x="252" y="484" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="298.0" y="502" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">un uomo</text>
+  <rect x="354" y="484" width="148" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="428.0" y="502" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">con il binocolo</text>
+  <rect x="512" y="484" width="96" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="560.0" y="502" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">nel parco</text>
+  <path d="M147,482 L147,476 L347,476 L347,482" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M147,482 L147,465 L505,465 L505,482" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <path d="M147,482 L147,454 L611,454 L611,482" fill="none" stroke="#B5532C" stroke-width="1.7"/>
+  <text x="134" y="502" text-anchor="end" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">5.</text>
+  <text x="624" y="502" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">il binocolo è mio</text>
+  <line x1="40" y1="542" x2="840" y2="542" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="440.0" y="568" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">E il sesto, che le scatole non permettono:</text>
+  <rect x="150" y="598" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="196.0" y="616" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">ho visto</text>
+  <rect x="252" y="598" width="92" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="298.0" y="616" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">un uomo</text>
+  <rect x="354" y="598" width="148" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="428.0" y="616" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">con il binocolo</text>
+  <rect x="512" y="598" width="96" height="26" rx="4" fill="none" stroke="#C9A961" stroke-width="1.4"/>
+  <text x="560.0" y="616" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">nel parco</text>
+  <path d="M147,596 L147,590 L505,590 L505,596" fill="none" stroke="#1A1A1A" stroke-width="1.7" stroke-dasharray="4 3"/>
+  <path d="M249,596 L249,579 L611,579 L611,596" fill="none" stroke="#1A1A1A" stroke-width="1.7" stroke-dasharray="4 3"/>
+  <text x="134" y="616" text-anchor="end" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#2D5A5C">×</text>
+  <text x="624" y="616" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">le due scatole si tagliano</text>
+</svg>

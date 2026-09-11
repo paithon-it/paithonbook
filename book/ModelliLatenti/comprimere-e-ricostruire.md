@@ -78,7 +78,7 @@ che non venisse da un quadro vero.
 
 Un autoencoder è una coppia di funzioni parametriche,
 $e_\phi: \mathbb{R}^D \to \mathbb{R}^L$ e $d_\theta: \mathbb{R}^L \to
-\mathbb{R}^D$, con $L \ll D$, addestrate insieme a minimizzare l’errore di
+\mathbb{R}^D$, addestrate insieme a minimizzare l’errore di
 ricostruzione
 
 $$
@@ -92,9 +92,17 @@ esempi e $\ell$ una misura di scarto fra dato e ricostruzione, sommata sulle
 $D$ componenti (errore quadratico, oppure cross-entropia per componente come
 nell’addestramento sulle cifre scritte a mano: è la somma sui pixel a fare del
 risultato un costo «per cifra» e non «per pixel»). Il vincolo $L \ll D$ è la
-strozzatura, e senza di essa il problema è vuoto: con $L \ge D$ basta prendere
-$d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per dire) e la loss
-va a zero senza che nessuno abbia imparato niente.
+strozzatura, e senza un vincolo il problema è vuoto: con $L \ge D$ basta
+prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per dire)
+e la loss tocca il suo minimo senza che nessuno abbia imparato niente. La
+strozzatura, però, non è l’unico vincolo possibile, ed è per questo che sta
+fra le condizioni e non nella definizione: il libro ne incontrerà due che di
+strozzatura non ne hanno. Uno chiede che di ogni codice si accendano
+pochissime componenti, e di componenti ne tiene più di quante erano quelle di
+partenza ({doc}`sparse autoencoder
+</Interpretabilita/attribuzione-e-meccanicistica>`); l’altro fa ricostruire il
+dato da una sua copia sporcata di rumore ({doc}`denoising autoencoder
+</ModelliEnergia/oltre-la-partizione>`).
 
 Due osservazioni che tornano utili subito. La prima: in questa scrittura non
 compare nessuna distribuzione. Non c’è un $p(\mathbf{x})$, non c’è un
@@ -107,7 +115,7 @@ discende tutto il resto della sezione.
 
 `````
 
-## La clessidra è la PCA, quando è dritta
+## La clessidra è la PCA, quando non si piega
 
 C’è un fatto da mettere qui, perché lega questa macchina a una che il libro ha
 già. PCA sta per *principal component analysis*, cioè l’analisi delle
@@ -118,26 +126,32 @@ fattoriale, è sua parente stretta.
 
 `````{tab} Elementare
 
-Mettiamo che all’archivista sia vietato essere creativo: le sue schede devono
-essere una combinazione fissa dei pixel, «tanto di questo più tanto di quello»,
-la stessa per tutti, senza nessuna decisione presa caso per caso. In queste
-condizioni non gli resta niente da inventare, e il meglio che può fare è già
-noto: schiacciare i quadri sul piano lungo cui differiscono di più, che è
-la cosa che nella sezione su riduzione e clustering si chiamava analisi delle
-componenti principali. Quale coppia di direzioni scelga dentro quel piano non è
-deciso: conta il piano, non gli assi che ci disegna sopra.
+Mettiamo che a tutti e due sia vietato essere creativi: ogni numero della
+scheda dev’essere una miscela fissa di quello che sta sulla tela, «tanto di
+questo più tanto di quello», la stessa miscela per tutti i quadri, e ogni
+quadro ridipinto dev’essere a sua volta una miscela fissa dei numeri della
+scheda. In queste condizioni non resta niente da inventare, e il meglio che i
+due possono fare è già noto: disporre i quadri su una mappa piatta, tesa lungo
+le poche direzioni in cui differiscono di più, che è la cosa che nella sezione
+su riduzione e clustering si chiamava analisi delle componenti principali.
+Quali direzioni scelgano dentro quella mappa non è deciso: conta la mappa, non
+gli assi che ci disegnano sopra.
 
-Un permesso però gli serve, ed è l’unico: partire dal quadro medio del museo e
-annotare soltanto di quanto il quadro che ha davanti se ne discosta. Senza, il
-piano è costretto a passare per la tela bianca, e quasi mai è quello giusto.
+Dei due divieti, però, quello che decide è il secondo. Se al copista tocca
+comunque una miscela fissa, i quadri che ridipinge cadono sulla mappa piatta
+comunque, e all’archivista si può concedere qualunque libertà senza che cambi
+niente.
+
+Un permesso serve a tutti e due, ed è l’unico: partire dal quadro medio del
+museo e annotare soltanto di quanto il quadro che hanno davanti se ne discosta.
+Senza, la mappa è costretta a passare per il quadro fatto di niente, la tela
+bianca, e quasi mai è quella giusta.
 
 Detto altrimenti: la clessidra è la vecchia macchina a cui è stato tolto il
-divieto di piegarsi. E a doversi piegare è soprattutto il copista: se lui resta
-alle sue somme pesate, i quadri che ridipinge cadono tutti su un piano,
-l’archivista si pieghi quanto vuole. La differenza fra le due macchine spiega
-quando conviene l’una e quando l’altra: se i quadri stanno davvero su un piano,
-piegarsi non serve; se stanno su una superficie curva, un piano la può solo
-approssimare.
+divieto di incurvare la mappa, e a incurvarla è il copista. La differenza fra
+le due macchine spiega quando conviene l’una e quando l’altra: se i quadri
+stanno davvero su una mappa piatta, incurvarla non serve; se stanno su una
+superficie piegata, una mappa piatta la può solo approssimare.
 
 `````
 
@@ -152,28 +166,31 @@ $L$ componenti principali dei dati centrati
 codice ne è un sistema di coordinate.
 E la centratura conta: con mappe puramente lineari e
 dati non centrati il minimo è il sottospazio dei primi $L$ vettori singolari
-della matrice grezza, che passa per l'origine e in generale non coincide con
-quello della PCA. A farsene carico è il termine additivo, ed è la ragione per
-cui le `nn.Linear` della `Clessidra` ce l'hanno. Con una
+destri della matrice grezza, che passa per l'origine e in generale non
+coincide con quello della PCA. A farsene carico è il termine additivo, ed è la
+ragione per cui le `nn.Linear` della `Clessidra` ce l'hanno. Con una
 precisazione che conta: la soluzione è unica solo a meno di un cambio di
 base nel latente, cioè l’autoencoder lineare recupera il *sottospazio* di
 massima varianza, non le singole direzioni principali né il loro ordinamento;
-per ritrovare quelle serve un vincolo in più, che la PCA impone e l’autoencoder
+per ritrovare quelle serve un vincolo in più, l’ortonormalità delle direzioni
+e l’ordinamento per varianza decrescente, che la PCA impone e l’autoencoder
 no.
 
 È lo stesso modello lineare-gaussiano dell’apertura del capitolo, nella
-versione a rumore isotropo: la PCA è la soluzione a massima verosimiglianza
-della PCA probabilistica nel limite di rumore infinitesimo, mentre l’analisi
-fattoriale di Spearman è la stessa famiglia con una varianza di rumore per
-ciascuna componente osservata, e lì una soluzione in forma chiusa non c’è.
+versione a rumore isotropo: la soluzione a massima verosimiglianza della PCA
+probabilistica individua il sottospazio principale per qualunque varianza di
+rumore, e nel limite di rumore infinitesimo la ricostruzione si riduce alla
+proiezione ortogonale, cioè alla PCA. L’analisi fattoriale di Spearman è
+invece la stessa famiglia con una varianza di rumore per ciascuna componente
+osservata, e lì una soluzione in forma chiusa non c’è.
 
 Attenzione poi a dove vanno messe le non linearità, perché il vincolo è
 asimmetrico. Bourlard e Kamp dimostrano la metà negativa della faccenda, ed è
 quella che sorprende: in una rete a tre strati con uscita lineare, mettere una
-non linearità nello strato nascosto non serve a niente, il minimo resta quello
-lineare. La ragione è che le ricostruzioni sono l’immagine del decoder, e con
-un decoder affine quell’immagine è un sottospazio affine comunque sia fatto
-l’encoder. A piegare la superficie è il decoder; la non linearità
+non linearità nello strato nascosto non serve a niente: sotto l’ottimo lineare
+non si scende. La ragione è che le ricostruzioni sono l’immagine del decoder, e
+con un decoder affine quell’immagine è un sottospazio affine comunque sia
+fatto l’encoder. A piegare la superficie è il decoder; la non linearità
 dell’encoder serve ad atterrarci sopra meglio. La `Clessidra` addestrata sulle
 cifre scritte a mano ce l’ha da tutte e due le parti, e tutto il resto (la
 strozzatura, la loss, l’assenza di probabilità) è identico.
@@ -256,8 +273,8 @@ chi non guarda la cifra:  27.1 nat per cifra
 ```
 
 L’errore si misura in nat, l’unità di informazione dei richiami di
-matematica: sono i nat che si sprecano in media su una cifra scommettendo male
-invece di conoscerla già, e più sono, peggio si è scommesso. (Con una riserva:
+matematica: sono i nat che una cifra costa in media a chi la deve indovinare
+un pixel alla volta, e più sono, peggio si è scommesso. (Con una riserva:
 su grigi che non sono zeri e uni questo conto è un surrogato, e i suoi nat
 vanno letti come un metro di confronto fra due macchine, non come una misura
 assoluta.) Da solo il 16,3 non direbbe niente, e per questo c’è la seconda
@@ -266,7 +283,8 @@ facile, ma con chi ha guardato bene tutte le cifre e non guarda quella che
 deve rifare: per ogni pixel dichiara il grigio che quel pixel ha in media, e
 nient’altro. Quello spende 27,1 nat. La clessidra, con otto numeri, ne spende
 16,3: tre quinti, avendo compresso la cifra in un ottavo dello spazio. Quel
-27,1 tornerà, e in un posto che non ci si aspetta.
+27,1 tornerà nella {doc}`sezione sul latente che si usa
+</ModelliLatenti/il-latente-che-si-usa>`, dove sarà il segno di un guasto.
 
 ```python
 LIVELLI = " .:-=+*#%"
@@ -474,17 +492,20 @@ vincolata, non se ne conosce la forma, e soprattutto non ci si sa campionare.
 Ma generare richiede esattamente quello, cioè una distribuzione da cui pescare
 $\mathbf{z}$ prima di decodificare. (Nella sezione seguente lo stesso simbolo
 $q_\phi(\mathbf{z})$ tornerà con l’encoder diventato stocastico: là le delta
-saranno gaussiane, e l’aggregato sarà una loro mistura.) Sostituirla a
+saranno gaussiane, l’aggregato sarà una loro mistura e prenderà il nome con cui
+la letteratura lo chiama, *posterior aggregata*.) Sostituirla a
 posteriori con una gaussiana adattata ai codici è la scorciatoia ovvia, e il
 rapporto $2{,}2$ appena misurato è quanto costa: la gaussiana copre una regione
 che $q_\phi(\mathbf{z})$ non occupa.
 
-E non c’è nemmeno niente che si opponga alla dilatazione del latente, che è
-il modo in cui il difetto si manifesta nella misura delle distanze fra i
-codici. L’argomento è
-euristico: a parità del resto, codici più distanti fra loro si
+E non c’è nemmeno niente che si opponga alla dilatazione del latente.
+L’argomento è euristico: a parità del resto, codici più distanti fra loro si
 ricostruiscono meglio, perché il decoder ha meno occasioni di confonderli, e
-nella loss non compare nessun termine che paghi quella distanza. Si dice, con
+nella loss non compare nessun termine che paghi quella distanza. Il $2{,}2$
+appena misurato, però, quella dilatazione non la può vedere: è un rapporto fra
+due lunghezze del latente, e moltiplicare tutti i codici per una costante le
+moltiplica tutte e due. Quel numero misura il disaccordo di forma di poco
+sopra, non la scala. Si dice, con
 formula spiccia, che il latente non è regolarizzato, e la regolarizzazione
 che manca riguarda la distribuzione dei codici, non i pesi.
 
@@ -537,8 +558,11 @@ gli fa venire.
 
 ```{admonition} Da ricordare
 :class: important
-- Un autoencoder addestra $e_\phi$ e $d_\theta$ sulla sola ricostruzione, con
-  $L \ll D$. Nella sua definizione non compare nessuna distribuzione.
+- Un autoencoder addestra $e_\phi$ e $d_\theta$ sulla sola ricostruzione, e
+  nella sua definizione non compare nessuna distribuzione. La strozzatura
+  $L \ll D$ è uno dei vincoli che gli impediscono di fotocopiare, non la
+  definizione: al suo posto vanno la sparsità del codice o il rumore
+  sull’ingresso.
 - Con $e_\phi$ e $d_\theta$ affini ed errore quadratico ritrova il
   sottospazio affine che passa per la media dei dati ed è generato dalle prime
   $L$ componenti principali {cite}`bourlard1988auto,baldi1989neural`, a meno

@@ -12,16 +12,15 @@ quella che teneva svegli gli ingegneri, era operarlo invece che costruirlo:
 servirlo a milioni di persone, in fretta, in modo affidabile, senza che la
 bolletta della GPU divorasse l'azienda.
 
-È lo stesso salto che questo capitolo racconta dall'inizio (dal notebook alla
-produzione). Ma quando il «modello» è un grande modello linguistico, in sigla
-LLM (*large language model*), da miliardi di parametri, i problemi visti
-finora si ripresentano *amplificati*, e con sfumature nuove. Due
-soprattutto. La prima: il modello, spesso, non lo addestri tu. Lo prendi già
-fatto (pesi aperti da ospitare, o un'API di terzi da interrogare) e il tuo
-lavoro è *adattarlo* e *servirlo*, non allenarlo da zero. La seconda: l'output
-non è più una classe o un numero, ma **testo aperto**, difficile da misurare
-quanto è difficile giudicare un tema di italiano. Quel territorio ha un nome:
-**LLMOps**.
+È lo stesso salto dal notebook alla produzione raccontato fin qui. Ma quando il
+«modello» è un grande modello linguistico, in sigla LLM (*large language
+model*), da miliardi di parametri, i problemi visti finora si ripresentano
+*amplificati*, e con sfumature nuove. Due soprattutto. La prima: il modello,
+spesso, non lo addestri tu. Lo prendi già fatto (pesi aperti da ospitare, o
+un'API di terzi da interrogare) e il tuo lavoro è *adattarlo* e *servirlo*, non
+allenarlo da zero. La seconda: l'output non è più una classe o un numero, ma
+**testo aperto**, difficile da misurare quanto è difficile giudicare un tema di
+italiano. Quel territorio ha un nome: **LLMOps**.
 
 ## Che cosa cambia con gli LLM
 
@@ -63,7 +62,7 @@ diviso mezzo fa 26.
 ```
 
 Il vincolo di {numref}`fig-cosa-entra-in-memoria` viene prima di tutte le
-tecniche di questa sezione, e ne fissa l'ordine. Prima si stabilisce cosa
+tecniche che seguono, e ne fissa l'ordine. Prima si stabilisce cosa
 entra nella memoria che si ha, poi si discute di quanto vada veloce: un
 modello che non ci sta non è lento, semplicemente non parte.
 
@@ -110,7 +109,7 @@ contro questi due limiti.
 
 ## Servire un LLM
 
-Riprendiamo la cosa che si è appena detta, perché tutta questa sezione ne
+Riprendiamo la cosa che si è appena detta, perché tutto quello che segue ne
 discende: a fare da freno è il ricordare. Per scrivere un token il
 modello deve rileggersi tutti i suoi numeri, e quella rilettura costa più del
 calcolo che ci fa sopra.
@@ -119,20 +118,26 @@ Se è così, però, c'è una conseguenza che salva i conti. La rilettura è la
 stessa qualunque cosa il modello stia scrivendo. Farla per servire una persona
 sola, o per servirne cento nello stesso istante, costa quasi uguale: i pesi
 passano una volta e si usano per tutte e cento le risposte in corso. È lo
-stesso mazzo di richieste, il *batch*, che nella sezione «Servire un modello»
-serviva a tenere occupata la scheda; qui quel mazzo è il motivo per cui un LLM
-è economicamente sostenibile, e non un'ottimizzazione fra le altre.
+stesso mazzo di richieste, il *batch*, che la {doc}`sezione sul servire un
+modello </MLOps/deployment-e-serving>` usava per tenere occupata la scheda; qui
+quel mazzo è il motivo per cui un LLM è economicamente sostenibile, e non
+un'ottimizzazione fra le altre.
 
 Solo che formare il mazzo, qui, è molto più difficile, e per due ragioni.
 
-```{figure} ../figures/servire-un-llm-vllm-continuous-batching.svg
+```{figure} ../figures/posto-che-si-libera.svg
 :name: fig-continuous-batching
-:alt: "Confronto fra due modi di riempire la GPU nel tempo. Con il batching statico le richieste partono insieme e il gruppo si libera solo quando la più lunga ha finito: chi termina prima lascia il posto vuoto. Con il continuous batching ogni posto che si libera viene subito riempito da una richiesta in coda, e la GPU resta occupata."
+:alt: "Due sale a confronto sullo stesso orologio, quattro posti ciascuna e una coda di dieci richieste. Nel batching statico le richieste partono insieme e chi finisce lascia il posto vuoto fino alla fine della più lunga: all'ultima iterazione mostrata resta un posto pieno e tre fermi, con la coda ancora intera e tre richieste concluse. Nel continuous batching ogni posto che si libera viene ripreso all'iterazione dopo: i quattro posti sono sempre pieni, la coda si è quasi svuotata e le richieste concluse sono cinque. In fondo il conto dei posti-iterazione occupati, 28 su 48 contro 48 su 48."
 :width: 100%
 
-Lo stesso hardware, due modi di riempirlo. Nel batching statico i riquadri
-tratteggiati e vuoti sono GPU pagata e non usata; nel continuous batching una
-richiesta entra non appena un posto si libera.
+Quattro posti sulla stessa GPU e una coda di dieci richieste, sullo stesso
+orologio. Il batching statico non rinnova il mazzo finché la risposta più lunga
+non ha finito, e alla dodicesima iterazione ha tre richieste concluse, tre posti
+fermi e la coda intatta. Il continuous batching, il mazzo continuo, riprende
+ogni posto all'iterazione dopo che si è liberato: alla stessa iterazione ne ha
+concluse cinque, i quattro posti pieni e la coda quasi finita. Contando i posti
+tenuti per un'iterazione, il primo ne usa 28 su 48 e il secondo tutti e 48,
+senza contare quel che costa far entrare una richiesta nel mazzo.
 ```
 
 La prima è quella che {numref}`fig-continuous-batching` mette in evidenza: le
@@ -206,14 +211,13 @@ L'altra metà è il **continuous batching** (o *in-flight batching*): invece di
 attendere che tutte le sequenze di un batch finiscano (costringendo le più
 brevi ad aspettare la più lunga) lo scheduler lavora a livello di singola
 iterazione, e appena una sequenza emette il suo token di fine, un'altra
-richiesta ne prende il posto nel batch. La sala resta piena. Insieme,
-PagedAttention e continuous batching permettono batch molto più grandi a
-parità di memoria: nella misura riportata dagli autori, contro i sistemi che
-c'erano allora, un throughput da due a quattro volte maggiore a parità di
-latenza. Resta il compromesso di
-fondo, già incontrato in «Servire un modello»: batch più grandi alzano il
-throughput ma allungano la coda della latenza; il punto di equilibrio dipende
-dal prodotto.
+richiesta ne prende il posto nel batch. Finché c'è una coda, la sala resta
+piena. Insieme, PagedAttention e continuous batching permettono batch molto più
+grandi a parità di memoria: nella misura riportata dagli autori, contro i
+sistemi che c'erano allora, un throughput da due a quattro volte maggiore a
+parità di latenza. Resta il compromesso di fondo, già incontrato nella sezione
+sul servire un modello: batch più grandi alzano il throughput ma allungano la
+coda della latenza; il punto di equilibrio dipende dal prodotto.
 
 `````
 
@@ -339,8 +343,8 @@ spinta al throughput del batching visto poco sopra.
 ## Comprimere per servire
 
 Se il vincolo è la memoria (quanta ce n'è, e quanto in fretta la si legge), la
-leva più diretta è far pesare meno i pesi. L'idea l'abbiamo già vista in
-«Servire un modello»: la quantizzazione, cioè riscrivere i decimali
+leva più diretta è far pesare meno i pesi. L'idea l'abbiamo già vista nella
+sezione sul servire un modello: la quantizzazione, cioè riscrivere i decimali
 finissimi dei pesi come interi grossolani, arrotondati ai gradini di una scala;
 passando da sedici a quattro cifre binarie ogni peso occupa quattro volte meno.
 È da qui, per inciso, che veniva il mezzo gigabyte a miliardo della prima
@@ -401,6 +405,15 @@ lei. Scatoloni più piccoli vogliono dire etichette più fitte, quindi meno
 spazio guadagnato e meno roba rotta, e si resta poco sotto le quattro volte.
 All'arrivo le scatole delicate si aprono per controllare.
 
+E perché proprio quattro volte, e non otto? Perché il furgone è quello che è, e
+quello che conta è quanta roba arriva intera a destinazione. Stringendo,
+nel furgone ci sta più roba, e fino a un certo punto ne arriva intera di più;
+stringendo ancora, si rompe più di quanto se ne guadagni, e il furgone arriva
+pieno di cocci. Il punto in cui la bilancia si rovescia è stato cercato, ed è
+lì, alle quattro volte. Con la premessa che si stia imballando a occhio: chi
+guarda prima che cosa sta mettendo in scatola riesce a stringere un po' di
+più.
+
 `````
 
 `````{tab} Superiore
@@ -456,9 +469,26 @@ percentuale di bit in più, speso per comprare qualità.
 Il compromesso è sempre lo stesso (meno bit significano meno memoria e più
 velocità, ma più rischio per la qualità) e vale la regola d'oro della sezione
 sul deployment: la quantizzazione va misurata su dati di validazione, mai
-data per gratuita. I 4 bit sono il punto in cui, per la maggior parte dei
-modelli densi, la convenienza si rovescia: scendendo sotto, il degrado cresce
-più in fretta di quanto si risparmi.
+data per gratuita. E i 4 bit sono il punto in cui la convenienza si rovescia,
+almeno quando si arrotonda e basta. Dettmers e Zettlemoyer lo ricavano
+confrontando, a parità di bit totali occupati, modelli di taglia diversa
+scritti a precisioni diverse: l'accuratezza zero-shot sale mano a mano che si
+scende da 16 a 4 bit, e torna a scendere a 3 {cite}`dettmers2023case`. Vale su
+cinque famiglie di modelli densi, da 19 milioni a 176 miliardi di parametri, e
+quasi dappertutto, con qualche eccezione che gli autori nominano; e i blocchi
+da 128 pesi o meno sono la loro raccomandazione operativa, non la condizione
+che tiene in piedi il verdetto, perché a 3 bit il ribaltamento arriva comunque.
+
+Due riserve, e la prima gliela muovono gli autori a sé stessi: dalla loro
+misura resta fuori tutta la famiglia che si tara su dei dati, e la nominano
+citando GPTQ (AWQ, che è della stessa famiglia, sarebbe arrivato qualche mese
+dopo). Non è una riserva di forma: sulla
+perplessità di WikiText-2 un GPTQ a 2 bit batte un arrotondamento a 3. Sotto i
+4 bit non è chiuso: è chiuso per chi arrotonda senza guardare i dati. La
+seconda: il verdetto è sul compromesso fra memoria e qualità, non sulla
+velocità, e gli autori scrivono che a molte richieste al secondo, cioè proprio
+nel regime della sala piena, quelle leggi di scala con la latenza non c'entrano
+quasi più.
 
 `````
 
@@ -500,10 +530,14 @@ senza riaddestramento e con degrado contenuto; oltre, il conto si fa salato.
 `````
 
 La ragione per cui su un LLM la potatura è più difficile è tutta in quella
-riga: non si può riaddestrare. Il capitolo sull'efficienza mostra che il
-riaddestramento è la parte non opzionale della potatura, quella che riporta la
-rete dov'era; qui non c'è, perché riaddestrare un modello da miliardi di
-parametri non è una cosa che si fa a valle di un deploy. Da qui la regola
+riga: non si può riaddestrare. Su una rete piccola il riaddestramento è il
+passaggio che riporta la rete dov'era, e {doc}`Meno pesi
+</Efficienza/meno-pesi>` lo misura; qui quel passaggio non c'è, perché
+riaddestrare un modello da miliardi di parametri non è una cosa che si fa a
+valle di un deploy. SparseGPT e Wanda esistono proprio per sostituirlo: invece
+di riaddestrare tutto, aggiustano strato per strato i pesi rimasti, guardando
+che cosa ci passa attraverso. È un rimedio locale, e si vede dal traguardo:
+metà dei pesi, non i nove decimi. Da qui la regola
 pratica: a parità di rischio si comincia dalla quantizzazione, che il
 riaddestramento non lo chiede. E vale la regola di sempre, misurare, perché
 il degrado si distribuisce in modo diseguale fra i compiti e una media
@@ -632,7 +666,7 @@ il rischio senza azzerarlo.
 
 ## Il ciclo LLMOps
 
-Tirando le somme di questa sezione: l'anello dell'MLOps torna intatto (dati,
+Tirando le somme: l'anello dell'MLOps torna intatto (dati,
 addestramento, valutazione, consegna, sorveglianza), ma con gli LLM cambia
 quello che ci gira dentro, cioè le cose di cui si conserva ogni versione.
 Spesso non sono i pesi, che arrivano già fatti da qualcun altro: è il
@@ -715,7 +749,10 @@ comporre più passi in un agente. È il
   {cite}`dettmers2022llmint8`, GPTQ ne ricava l'hessiana su un insieme di
   calibrazione e scende a 3–4 bit {cite}`frantar2023gptq`, AWQ le usa per
   scegliere l'1% di pesi da proteggere {cite}`lin2024awq`. Sempre da
-  misurare.
+  misurare. Che i 4 bit siano l'ottimo lo si misura a parità di bit totali
+  occupati e sulla sola accuratezza zero-shot {cite}`dettmers2023case`, e per
+  chi arrotonda senza guardare i dati: i metodi che si tarano su un insieme di
+  calibrazione restano fuori da quella misura, e sotto i 4 bit non è chiuso.
 - Valutare l'invalutabile: la perplessità non basta e i benchmark si
   contaminano; per l'output aperto si usa LLM-as-a-judge, che sui soli voti
   non pari concorda con l’uomo l’85% delle volte contro l’81% fra due

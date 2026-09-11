@@ -16,7 +16,7 @@ erano cose private.
 
 Sessant'anni dopo, milioni di persone conversano ogni giorno con delle
 macchine. In quest'ultima sezione mettiamo insieme gli attrezzi del capitolo e
-li puntiamo sul compito più antico e ambizioso dell'NLP, il dialogo.
+li puntiamo sul compito che l'NLP non ha ancora chiuso, il dialogo.
 Vedremo perché una conversazione è più di una fila di frasi, come sono fatte
 le tre famiglie di sistemi di dialogo, come si dà loro un voto, e perché la
 storia della segretaria non è un aneddoto d'epoca ma una questione ancora
@@ -49,12 +49,13 @@ mai. Eppure ogni telefonata gli chiede quattro lavori insieme.
 
 Il primo è spartirsi la parola, i **turni**. Parlano uno alla volta senza
 pestarsi la voce, e nessuno dice «passo» come alla radio. Fra una battuta e
-l'altra passano circa due decimi di secondo, troppo pochi per pensare una
-risposta da zero. Il ristoratore la prepara mentre il cliente parla ancora, e
-la fa partire appena lo sente arrivare in fondo. Il difficile è capire dov'è il
-fondo. «Quattro», un attimo di silenzio, «Se possibile all'aperto». Quel
-silenzio sta in mezzo al turno del cliente, e chi ci infilasse la sua battuta
-gli parlerebbe sopra, perdendo il tavolo fuori.
+l'altra passa pochissimo, a volte un paio di decimi di secondo e a volte quasi
+niente: troppo poco, comunque, per pensare una risposta da zero. Il ristoratore
+la prepara mentre il cliente parla ancora, e la fa partire appena lo sente
+arrivare in fondo. Il difficile è capire dov'è il fondo. «Quattro», un attimo
+di silenzio, «Se possibile all'aperto». Quel silenzio sta in mezzo al turno del
+cliente, e chi ci infilasse la sua battuta gli parlerebbe sopra, perdendo il
+tavolo fuori.
 
 Il secondo è muovere qualcosa con le parole. «Vorrei prenotare un tavolo per
 domani» cambia il mondo mentre lo dice: prima non c'era nessuna richiesta per
@@ -94,8 +95,10 @@ I quattro fenomeni hanno una letteratura precisa.
 
 **Presa del turno** (*turn-taking*). Sacks, Schegloff e Jefferson (1974) ne
 descrissero la sistematica: i parlanti proiettano il punto di completamento
-del turno altrui e si avvicendano con pause tipiche di circa 0,2 secondi in
-lingue e culture diversissime (Stivers et al., 2009), troppo brevi per
+del turno altrui e si avvicendano con pause brevissime in ogni lingua
+studiata (Stivers et al., 2009: 208 ms sull'insieme di dieci lingue, ma le
+medie per lingua vanno da 7 a 469 ms, e l'universale che il lavoro dimostra è
+la brevità, non un valore fisso), troppo brevi per
 pianificare da zero: pianifichiamo *mentre* l'altro parla. Per un sistema
 vocale è un vincolo concreto: l’*endpointing* deve distinguere una pausa da
 una cessione del turno.
@@ -131,6 +134,20 @@ In sessant'anni i sistemi di dialogo si sono organizzati in tre famiglie:
 quelli che rispondono **per regole**, quelli che compilano **moduli**, quelli
 che **generano** la risposta parola per parola. Non è solo una successione
 storica: tutte e tre sono vive, spesso dentro lo stesso prodotto.
+
+```{figure} ../figures/tre-famiglie-dialogo.svg
+:name: fig-tre-famiglie-dialogo
+:alt: "La stessa battuta del cliente, «un tavolo per quattro domani alle otto», entra in tre macchine diverse. La prima, a regole, aggancia uno schema nelle parole e rigira la frase: risponde «mi dica di più su un tavolo per quattro», e sotto è scritto che non tiene niente da parte, perché ogni battuta riparte da zero. La seconda, a moduli, riempie tre caselle su cinque (quanti quattro, che giorno domani, a che ora le venti; restano vuote dove e a che nome) e chiede la prima casella vuota, «all'aperto o dentro?»; sotto è scritto che quello che tiene da parte è il modulo mezzo pieno. La terza, generativa, scrive la risposta una parola alla volta, «certo, per quattro persone…», e sotto è scritto che quello che tiene da parte è tutto il testo che ha davanti. In fondo, che cosa fa ciascuna quando la battuta esce dal previsto: la prima risponde a vuoto, la seconda non risponde ma non inventa, la terza risponde a tutto e a volte inventa."
+:width: 100%
+
+La stessa battuta in tre macchine. Le tre si distinguono per dove tengono la
+memoria della conversazione, e la riga in fondo dice che cosa fa ciascuna
+quando la battuta esce dal previsto.
+```
+
+Il confronto di {numref}`fig-tre-famiglie-dialogo` conviene tenerlo sott'occhio
+per tutte e tre le sezioni che seguono, perché la domanda che le separa è
+sempre quella: dove finisce quello che è stato detto finora.
 
 ### Lo specchio di regole: dentro ELIZA
 
@@ -217,28 +234,32 @@ ristorante ci ha mostrato essere una conversazione.
 La seconda famiglia nasce nel 1977 allo Xerox PARC, il laboratorio californiano
 in cui in quegli anni si inventava metà dell'informatica che usiamo oggi (la
 scrivania con le finestre sullo schermo, per dire, viene di lì). L'articolo lo
-firmano in sei, e sono sei fra i nomi più noti dell'intelligenza artificiale di
-allora: Bobrow, Kaplan, Kay, Norman, Thompson e Winograd
+firmano in sei, e sono alcuni fra i nomi che avrebbero segnato l'informatica e
+la linguistica computazionale: Bobrow, Kaplan, Kay, Norman, Thompson e Winograd
 {cite}`bobrow1977gus`. Il loro sistema si chiamava GUS, faceva l'agente di
 viaggio e prenotava voli per San Diego.
 
 L'idea che introduce si chiama **frame**, cioè «modulo» nel senso del foglio da
-compilare, ed è di quelle che sopravvivono ai decenni: quasi cinquant'anni
-dopo è ancora l'ossatura degli assistenti vocali.
+compilare. Non è di Bobrow e colleghi, che la prendono da Minsky e lo scrivono;
+loro introducono l'altra metà, cioè il dialogo governato dal riempimento di
+quel modulo. Ed è qui che lo stato del dialogo di poco fa smette di essere una
+parola: il modulo mezzo pieno *è* lo stato, scritto in un posto che si può
+guardare. Da lì viene la longevità, perché quella forma si ritrova, decenni
+dopo, nell'ossatura degli assistenti orientati a un compito.
 
 `````{tab} Elementare
 
 Allo sportello l'impiegato ha davanti un modulo (in inglese *frame*, ed è la
-parola che dà il nome a tutta la famiglia) con delle caselle: *dove*,
-*quando*, *quanti*, *a che nome*. La conversazione gli serve a riempirle, e
-questo spiega tutto il suo comportamento: fa domande solo per le caselle
-ancora vuote, e se in una battuta sola dite «un tavolo per quattro domani alle
-otto» ne riempie tre in un colpo senza richiederle, anche in un ordine diverso
-da quello del foglio. Ogni casella accetta solo certe cose, e questo gli
-semplifica la vita: dove c'è scritto quanti si mette un numero, dove c'è
-scritto quando si mette un giorno, e «domani» è un giorno buono. Il modulo è
-anche la sua memoria: a metà conversazione, quello che gli avete detto sta
-scritto lì. Il ristoratore della telefonata lavorava così, e la penultima
+parola che dà il nome a tutta la famiglia) con delle caselle: *quanti*, *che
+giorno*, *a che ora*, *dove*, *a che nome*. La conversazione gli serve a
+riempirle, e questo spiega tutto il suo comportamento: fa domande solo per le
+caselle ancora vuote, e se in una battuta sola dite «un tavolo per quattro
+domani alle otto» ne riempie tre in un colpo senza richiederle, anche in un
+ordine diverso da quello del foglio. Ogni casella accetta solo certe cose, e
+questo gli semplifica la vita: dove c'è scritto quanti si mette un numero, dove
+c'è scritto che giorno si mette un giorno, e «domani» è un giorno buono. Il
+modulo è anche la sua memoria: a metà conversazione, quello che gli avete detto
+sta scritto lì. Il ristoratore della telefonata lavorava così, e la penultima
 battuta era lui che si rileggeva le caselle a voce alta. Quando l'ultima è
 piena, la pratica parte.
 
@@ -294,7 +315,7 @@ dire.
 
 La terza famiglia rovescia l'approccio: perché scrivere regole e moduli, se
 abbiamo le trascrizioni di milioni di conversazioni? Trattiamo la risposta come
-una *traduzione* del turno precedente, e usiamo la stessa identica macchina
+una *traduzione* di ciò che è stato detto finora, e usiamo la stessa macchina
 della sezione sulla traduzione: una rete che legge la battuta ricevuta e una
 che scrive la risposta. Cambiano solo i dati: al posto delle frasi in italiano
 e in inglese, botte e risposte.
@@ -321,7 +342,8 @@ macchia di vino?», una continuazione plausibilissima trovata su internet è
 un'altra domanda sulle macchie, non la soluzione. Per trasformare un ottimo
 completatore di frasi in un assistente che risponde serve una seconda scuola,
 fatta di esempi di buone risposte e di giudizi umani. Come funzioni questa
-scuola (si chiama *post-training*) lo vedremo nel capitolo sui Transformer.
+scuola lo racconta la {doc}`sezione sul post-addestramento
+</Transformers/post-training>`, che è il suo nome.
 
 `````
 
@@ -346,9 +368,9 @@ risposta scritte da persone) e RLHF (*reinforcement learning from human
 feedback*), dove un modello di ricompensa addestrato sulle preferenze umane
 guida l'ottimizzazione della generazione. È questo passaggio a trasformare un
 modello di linguaggio in un interlocutore; i dettagli (e i limiti, a partire
-dalle risposte fluenti ma false) li rimandiamo al capitolo sui Transformer,
-dove seguiremo il percorso dal pre-addestramento ai modelli con cui oggi si
-conversa.
+dalle risposte fluenti ma false) stanno nella {doc}`sezione sul
+post-addestramento </Transformers/post-training>`, che segue il percorso dal
+pre-addestramento ai modelli con cui oggi si conversa.
 
 `````
 
@@ -416,15 +438,19 @@ documentati (come la preferenza per le risposte lunghe) che impone cautela.
 
 `````
 
-Su tutto questo aleggia la cornice storica che conosciamo dall'Introduzione:
-il gioco dell'imitazione di Turing {cite}`turing1950computing`, la
-conversazione come banco di prova dell'intelligenza. Va maneggiata con
-prudenza, in entrambe le direzioni: ELIZA ha mostrato già nel 1966 che
-ingannare un interlocutore per qualche minuto è un'asticella bassa (il test
-misura anche la nostra propensione a farci ingannare) e, al contrario,
-superare una conversazione non certifica nessuna comprensione. Per questo oggi
-il test di Turing è un esperimento mentale fondativo, e non uno strumento con
-cui misurare davvero qualcosa.
+Su tutto questo aleggia la cornice storica che conosciamo dall'Introduzione: il
+gioco dell'imitazione di Turing {cite}`turing1950computing`, la conversazione
+come banco di prova dell'intelligenza. Va maneggiata con prudenza, e nei due
+versi. Da una parte ELIZA ha mostrato, già nel 1966, quanto poco serva perché
+qualcuno attribuisca comprensione a un programma: la segretaria che chiese a
+Weizenbaum di uscire dalla stanza sapeva benissimo di avere davanti una
+macchina. Superare la prova, quindi, misura anche la nostra propensione a
+concedere, e non certifica nessuna comprensione. Dall'altra parte, e questo si
+dimentica, non certifica niente nemmeno fallirla: quello che il gioco premia è
+somigliare a una persona, che è un'abilità a sé, e un sistema può essere
+bravissimo a rispondere e pessimo a fingersi qualcun altro. Per questo il test
+di Turing regge come esperimento mentale fondativo e non come metro della
+qualità di un sistema di dialogo.
 
 ## La lezione di Weizenbaum
 
@@ -443,7 +469,9 @@ relativamente semplice potessero indurre un pensiero delirante potente in
 persone del tutto normali»; lo scandalizzò, più di tutto, la proposta di
 psichiatri veri di usare programmi come il suo per la psicoterapia su larga
 scala. La sua tesi, spesso semplificata in generico allarme, era invece
-precisa, e sta in due verbi: c'è differenza fra *decidere* e *giudicare*.
+precisa, e sta in due verbi: c'è differenza fra *decidere* e *scegliere*.
+Decidere è calcolo; scegliere è il prodotto di un giudizio, e il giudizio
+nessuno lo ha mai messo in un calcolatore.
 
 Decidere è trovare la risposta giusta secondo un criterio che qualcuno ha già
 fissato: qual è la strada più corta, se questo conto torna, quale di questi
@@ -502,8 +530,9 @@ capitolo intero, ed è quello sui Transformer.
 ```{admonition} Da ricordare
 :class: important
 - Una conversazione non è una fila di frasi. Ci si dà il turno senza
-  accavallarsi; si fanno cose con le parole («sai l'ora?» non è una domanda
-  a cui rispondere sì); ci si conferma di continuo che si sta seguendo (il
+  accavallarsi; si fanno cose con le parole («avete un tavolo per domani
+  sera?» non è una domanda a cui rispondere sì); ci si conferma di continuo
+  che si sta seguendo (il
   «mh-mh» del ristoratore, e la ricevuta riletta ad alta voce); e le parole
   piccole («ne», «lo») pescano il senso nelle battute già dette. Per dialogare
   non basta capire l'ultima frase: bisogna ricordare la partita.
@@ -516,7 +545,8 @@ capitolo intero, ed è quello sui Transformer.
   parola dopo aver letto milioni di dialoghi.
 - Chi impara a *continuare* i testi non sa ancora *rispondere*: serve una
   seconda scuola, fatta di esempi di buone risposte e di giudizi umani, ed è la
-  storia del {doc}`capitolo sui Transformer </Transformers/overview>`.
+  storia della {doc}`sezione sul post-addestramento
+  </Transformers/post-training>`.
 - Il dettato e il tema: un sistema a moduli si corregge come un dettato (la
   prenotazione è andata a buon fine, sì o no?), un chatbot aperto come un tema,
   e per il tema serve un giudice che legga. Costoso e un po’ soggettivo, ma non
@@ -535,14 +565,16 @@ capitolo intero, ed è quello sui Transformer.
   (dire è fare: «sai l'ora?» non chiede un sì/no), grounding (i segnali
   di conferma reciproca) e sottintesi anaforici richiedono uno *stato del
   dialogo*, una memoria della partita.
-- Tre famiglie: sistemi a regole (ELIZA {cite}`weizenbaum1966eliza`:
-  espressioni regolari e riflessione dei pronomi, nessuno stato), a frame
+- Tre famiglie: sistemi a regole (ELIZA {cite}`weizenbaum1966eliza`: parole
+  chiave ordinate per rango, regole di decomposizione e ricomposizione,
+  riflessione dei pronomi; una frase messa da parte per ripescarla, ma nessuno
+  stato del dialogo), a frame
   (GUS {cite}`bobrow1977gus`: slot da riempire con domande mirate; ancora
   l'ossatura degli assistenti vocali), generativi (dal seq2seq agli LLM).
 - Un modello di linguaggio impara a *continuare* i testi; a *rispondere* lo
   si insegna col post-training (instruction tuning e RLHF
-  {cite}`ouyang2022training`), sviluppato nel {doc}`capitolo sui Transformer
-  </Transformers/overview>`.
+  {cite}`ouyang2022training`), sviluppato nella {doc}`sezione dedicata
+  </Transformers/post-training>`.
 - Valutare il dialogo è difficile perché non esiste *la* risposta giusta:
   successo del compito per i sistemi a frame, giudizi umani per i chatbot
   aperti. Le metriche di sovrapposizione (BLEU {cite}`papineni2002bleu`) non

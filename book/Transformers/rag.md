@@ -44,7 +44,7 @@ cerca in milioni di documenti *senza leggerli tutti* a ogni richiesta?
 
 In fondo al manuale di biologia, dopo seicento pagine, c'è l’**indice
 analitico**. Cerchi «fotosintesi» e non sfogli niente: leggi *fotosintesi →
-pp. 214, 380* e salti dritto lì. Qualcuno ha letto tutto una volta sola e ha
+pp. 91, 214, 380* e salti dritto lì. Qualcuno ha letto tutto una volta sola e ha
 annotato dove compare ogni parola, perché tu non debba rifarlo a ogni ricerca.
 
 Lo stesso schedario per un'intera biblioteca è l’**indice invertito** dei
@@ -332,13 +332,21 @@ nell'archivio (aggiornabile), la competenza linguistica nel modello.
 `````{tab} Elementare
 
 È lo studente all'esame a libro aperto, addestrato a usarlo bene. Arriva la
-domanda; lo studente non si fida della memoria: apre l'indice, trova le due
+domanda; lo studente non si fida della memoria: apre l'indice, trova le tre
 pagine giuste, le tiene sotto gli occhi e scrive la risposta *da lì*,
 annotando a margine «pag. 214». Le altre seicento pagine non le apre nemmeno,
-perché l'indice dice che non c'entrano; e fra le due che ha davanti dà più
-retta a quella che l'indice segnalava con più decisione. I vantaggi sono
-concreti. La risposta è controllabile: chi corregge può andare a pagina 214
-e verificare, cosa impossibile con una risposta recitata a memoria. E il sapere
+perché l'indice dice che non c'entrano. Con quelle che ha davanti, nella
+versione originale del metodo, fa un gesto in più: butta giù una risposta per
+pagina, ciascuna guardando quella sola, e poi le mette insieme dando a ognuna
+il peso con cui la ricerca l'aveva messa in cima. Le tre bozze non si
+correggono a vicenda, e quella che pesa di più tira la risposta finale dalla
+sua parte. Nella versione che si usa oggi, quella del programma di fine
+sezione, le tre pagine finiscono invece tutte sullo stesso foglio, e a
+decidere quale conta è lo studente mentre scrive.
+
+I vantaggi sono concreti. La risposta è controllabile: chi corregge può
+andare a pagina 214 e verificare, cosa impossibile con una risposta recitata
+a memoria. E il sapere
 è aggiornabile: se esce l'edizione nuova del libro basta sostituirla sullo
 scaffale, e nessuno deve rimandare lo studente a scuola. Nei sistemi reali è la
 differenza tra aggiornare un archivio stanotte e riaddestrare un modello per
@@ -372,7 +380,10 @@ $p_\eta(z \mid x) \propto \exp\!\big(E_z(z)^\top E_q(x)\big)$. (Due avvisi
 sulle lettere, presi tutti e due dal paper: $\eta$ sono i parametri del
 retriever e non il tasso di apprendimento che $\eta$ indica nel resto del
 libro; e la domanda qui è $x$, la stessa che il bi-encoder chiamava $q$.)
-La risposta marginalizza sui passaggi recuperati:
+La risposta marginalizza sui passaggi recuperati, ed è la variante che il
+paper chiama RAG-Sequence, quella che usa lo stesso passaggio per tutta la
+risposta (nell'altra, RAG-Token, la somma si rifà a ogni token, e parole
+diverse possono venire da passaggi diversi):
 
 $$
 p(y \mid x) \;\approx\; \sum_{z \,\in\, \text{top-}k}
@@ -381,9 +392,13 @@ $$
 
 dove $x$ è la domanda, $y$ la risposta generata, $z$ uno dei $k$ passaggi
 recuperati, $\eta$ i parametri del retriever e $\theta$ quelli del
-generatore. Il segno di «circa» non è una sciatteria: la somma esatta correrebbe
-su tutti i passaggi dell'archivio, e si tronca ai primi $k$ perché per gli
-altri $p_\eta(z \mid x)$ è trascurabile.
+generatore. Il segno di «circa» dice una cosa precisa: la somma esatta correrebbe
+su tutti i passaggi dell'archivio, e qui si ferma ai primi $k$. Il paper la
+chiama approssimazione top-$k$ e non la giustifica: quanto pesi la coda che
+resta fuori dipende dalla scala dei prodotti scalari del retriever, e non è
+detto sia poco. La somma troncata, per giunta, non viene rinormalizzata,
+quindi quello che ne esce non è una distribuzione di probabilità ma la massa
+dei soli $k$ passaggi tenuti.
 
 Il tutto si addestra end-to-end sulle sole coppie
 domanda–risposta: il gradiente attraversa il generatore e l'encoder delle
@@ -393,16 +408,20 @@ duratura: il modello ha una **memoria parametrica** (i pesi) e una **memoria
 non parametrica** (l'indice), e la seconda si può ispezionare, correggere e
 aggiornare senza toccare la prima.
 
-Oggi il termine RAG indica più spesso la variante leggera, senza addestramento
-congiunto: recupero, poi *prompt augmentation* verso un modello già istruito
-col post-training della sezione precedente; è proprio l'instruction tuning a
-rendergli eseguibile una consegna come «rispondi usando solo i passaggi e cita
-le fonti». I limiti però non cambiano. Il tetto di ciò che il sistema può dire
-in modo fondato e citabile è la recall del retriever, cioè la quota dei
-passaggi pertinenti che la ricerca riesce a ripescare: è la stessa domanda
-della recall di un classificatore, quanti dei casi buoni si riescono a
-prendere, con i passaggi pertinenti dell'archivio al posto dei positivi da
-trovare (la
+Oggi il termine RAG indica più spesso la variante leggera, leggera perché non
+addestra insieme il cercatore e il generatore: recupero, poi *prompt
+augmentation* verso un modello già istruito col post-training della sezione
+precedente; è proprio l'instruction tuning a rendergli eseguibile una consegna
+come «rispondi usando solo i passaggi e cita le fonti». In quella variante
+sparisce anche la marginalizzazione: i passaggi finiscono tutti nello stesso
+prompt, il generatore li vede insieme, e a pesarne la pertinenza è lui, dal
+contenuto e non dal punteggio del recupero, che però decide ancora quali
+entrano e in che ordine. I limiti però non cambiano. Il
+tetto di ciò che il sistema può dire in modo fondato e citabile è la recall
+del retriever, cioè la quota dei passaggi pertinenti che la ricerca riesce a
+ripescare: è la stessa domanda della recall di un classificatore, quanti dei
+casi buoni si riescono a prendere, con i passaggi pertinenti dell'archivio al
+posto dei positivi da trovare (la
 {doc}`sezione sulle metriche </MachineLearning/metriche>` la definisce per
 esteso). Quel che non viene recuperato non può entrare nella risposta *a
 partire dai documenti*, e il modello può sempre rispondere di suo, ma allora è
@@ -412,6 +431,29 @@ ignorare i passaggi o contraddirli, tanto che la fedeltà alla fonte
 formalmente corretta non rende vera una risposta che ne travisa il contenuto.
 
 `````
+
+Nel modello originale le due metà si tengono insieme con una somma: ogni
+passaggio recuperato produce la sua risposta per conto proprio, e le risposte
+si sommano contando ciascuna per il peso che il recupero le ha dato
+({numref}`fig-somma-pesata-passaggi`). I passaggi non si vedono fra loro, e il
+peso di ciascuno è deciso prima che il generatore scriva una parola. La
+ricetta leggera di oggi fa diversamente: mette tutti i passaggi nello stesso
+foglio, e lascia al modello il compito di distinguere quello che serve da
+quello che somiglia soltanto.
+
+```{figure} ../figures/somma-pesata-passaggi.svg
+:name: fig-somma-pesata-passaggi
+:alt: "La domanda è «Dove avviene la fotosintesi?». A sinistra tre riquadri, uno per pagina recuperata: pag. 214 in terracotta con peso 0,600, pag. 380 in teal con peso 0,220, pag. 91 in ocra con peso 0,180. Dentro ogni riquadro tre barre, una per risposta possibile: pag. 214 dà 0,700 a «nelle foglie», 0,200 a «nel fusto» e 0,100 a «nelle radici»; pag. 380 dà 0,750 a «nel fusto», 0,150 a «nelle foglie» e 0,100 a «nelle radici»; pag. 91 dà 0,700 a «nel fusto», 0,200 a «nelle radici» e 0,100 a «nelle foglie». Le tre barre di ogni riquadro crescono tutte nello stesso momento, e le barre dei pesi compaiono già fatte. A destra le tre risposte sommate, ciascuna una barra composta di tre segmenti, uno per pagina: «nelle foglie» vale 0,471, «nel fusto» 0,411, «nelle radici» 0,118, e sotto la prima è scritto il conto per esteso, 0,60×0,70 più 0,22×0,15 più 0,18×0,10. Vince «nelle foglie», benché due pagine su tre preferiscano «nel fusto», perché il segmento di pag. 214 è più lungo degli altri due messi insieme; e «nel fusto», che perde, si porta via lo stesso quattro decimi."
+:width: 100%
+
+Tre pagine, tre bozze che nascono insieme e non si correggono a vicenda, e
+una risposta sola che le somma pesandole. Un voto a maggioranza direbbe «nel
+fusto», che due pagine su tre preferiscono; la somma pesata dà «nelle
+foglie»: la prima pagina pesa più delle altre due messe insieme, e la sua
+preferenza vince il tiro alla fune, 0,471 contro 0,411. La risposta che perde
+si porta via lo stesso quattro decimi: pesare non è filtrare. I numeri sono
+inventati apposta, per far vedere il meccanismo.
+```
 
 Conviene fissare il bilancio, senza hype. La RAG mitiga le allucinazioni
 (su ciò che sta nell'archivio, il modello non deve più inventare) ma non le
@@ -447,9 +489,10 @@ numeri scritti a mano: qui le coordinate sono tutte positive e allora il coseno
 sta fra $0$ e $1$, ma in generale scende fino a $-1$, e i valori negativi vanno
 letti come «direzioni opposte», non come un guasto.)
 
-L'uscita merita un momento di attenzione, e conviene guardarla tutta: prima i
-due passaggi trovati con la loro somiglianza, poi il prompt aumentato per
-intero, cioè esattamente quello che il modello si troverà davanti.
+Quello che segue è la ricetta leggera, e l'uscita merita un momento di
+attenzione: prima i due passaggi trovati con la loro somiglianza, poi il
+prompt aumentato per intero, cioè esattamente quello che il modello si
+troverà davanti.
 
 ```python
 import torch
@@ -551,8 +594,11 @@ $k$, si monta il prompt) è esattamente quella che hai appena eseguito.
 - Rispondere avendo il testo sotto gli occhi si fa in due modi:
   l'evidenziatore (la risposta è già scritta, basta sottolinearla) o la penna
   (la risposta si compone con parole proprie, più libera e più rischiosa).
-- La RAG mette in fila le due cose: si cerca, si mettono i passaggi
-  trovati davanti al modello, e il modello risponde da lì, citando. Attenua
+- La RAG mette in fila le due cose: prima si cerca, poi si risponde con i
+  passaggi sotto gli occhi, citando. I modi sono due: quello originale scrive
+  una risposta per passaggio e poi le somma, contando ciascuna per quanto la
+  ricerca l'aveva messa in cima; quello di oggi mette tutti i passaggi nello
+  stesso foglio e lascia scegliere al modello. Attenua
   le risposte inventate ma non le elimina (se si apre la pagina sbagliata, la
   risposta è sbagliata con tanto di fonte in bella vista); in cambio si può
   verificare, e si aggiorna cambiando l'archivio invece del modello.
@@ -576,8 +622,10 @@ $k$, si monta il prompt) è esattamente quella che hai appena eseguito.
 - Il question answering (già tra i compiti del capitolo NLP) è
   estrattivo (evidenziare lo span: SQuAD {cite}`rajpurkar2016squad`) o
   generativo (scrivere la risposta).
-- La RAG {cite}`lewis2020retrieval` incatena recupero, prompt aumentato e
-  generazione con fonti: mitiga le allucinazioni ma non le elimina (la
+- La RAG {cite}`lewis2020retrieval` incatena recupero e generazione, e nella
+  forma originale marginalizza sui passaggi, cioè somma le risposte pesandole
+  con la probabilità di recupero; la variante leggera di oggi salta la somma e
+  monta invece il prompt aumentato. Mitiga le allucinazioni ma non le elimina (la
   recall del retriever è il tetto), e offre citabilità e aggiornabilità;
   l'archivio si cambia, il modello no.
 ```

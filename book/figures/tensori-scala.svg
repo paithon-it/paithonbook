@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" role="img" aria-label="La scala dei tensori da rank 0 a rank 3">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" role="img" aria-label="Quattro oggetti in fila, collegati da frecce, ciascuno con sotto il nome e la sua forma: un singolo quadrato (scalare, rank 0), una riga di quattro celle (vettore, rank 1, forma (4,)), una griglia 3 per 3 (matrice, rank 2, forma (3, 3)) e una pila di tre griglie 3 per 3 (tensore 3D, rank 3, forma (3, 3, 3)).">
   <rect x="0" y="0" width="820" height="250" rx="14" fill="#F8F5EE"/>
 
   <!-- Scalare: rank 0 -->

@@ -1,53 +1,125 @@
-<svg viewBox="0 0 760 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tre strategie per i dati mancanti a confronto: eliminare le righe, imputare un valore fisso, ricostruire dal contesto">
-  <rect x="0" y="0" width="760" height="380" fill="#F8F5EE"/>
-  <text x="380" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#1A1A1A">La stessa tabella bucata, tre strategie</text>
-
-  <!-- Panel 1: elimina -->
-  <text x="140" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#B5532C">1 · Elimina (dropna)</text>
-  <g stroke="#1A1A1A" stroke-width="1.5">
-    <rect x="50" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="110" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="170" y="90" width="60" height="34" fill="#F8F5EE"/>
-    <rect x="50" y="124" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/><rect x="110" y="124" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/><rect x="170" y="124" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/>
-    <rect x="50" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="110" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="170" y="158" width="60" height="34" fill="#F8F5EE"/>
-    <rect x="50" y="192" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/><rect x="110" y="192" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/><rect x="170" y="192" width="60" height="34" fill="#F8F5EE" stroke-dasharray="5 4" stroke="#B5532C"/>
-  </g>
-  <line x1="46" y1="128" x2="234" y2="154" stroke="#B5532C" stroke-width="2"/>
-  <line x1="46" y1="154" x2="234" y2="128" stroke="#B5532C" stroke-width="2"/>
-  <line x1="46" y1="196" x2="234" y2="222" stroke="#B5532C" stroke-width="2"/>
-  <line x1="46" y1="222" x2="234" y2="196" stroke="#B5532C" stroke-width="2"/>
-  <text x="140" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">righe con buchi: via</text>
-  <text x="140" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">semplice, ma perdi dati</text>
-  <text x="140" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">(e rischi un campione distorto)</text>
-
-  <!-- Panel 2: imputa fisso -->
-  <text x="393" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#C9A961">2 · Riempi con un valore fisso</text>
-  <g stroke="#1A1A1A" stroke-width="1.5">
-    <rect x="303" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="363" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="423" y="90" width="60" height="34" fill="#F8F5EE"/>
-    <rect x="303" y="124" width="60" height="34" fill="#F8F5EE"/><rect x="363" y="124" width="60" height="34" fill="#C9A961"/><rect x="423" y="124" width="60" height="34" fill="#F8F5EE"/>
-    <rect x="303" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="363" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="423" y="158" width="60" height="34" fill="#F8F5EE"/>
-    <rect x="303" y="192" width="60" height="34" fill="#C9A961"/><rect x="363" y="192" width="60" height="34" fill="#F8F5EE"/><rect x="423" y="192" width="60" height="34" fill="#F8F5EE"/>
-  </g>
-  <text x="393" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">media</text>
-  <text x="333" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1A1A1A">media</text>
-  <text x="393" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">ogni buco = stesso valore</text>
-  <text x="393" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">veloce e robusto,</text>
-  <text x="393" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#C9A961">ma riduce lo sparpagliamento</text>
-
-  <!-- Panel 3: contesto -->
-  <text x="633" y="72" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#2D5A5C">3 · Ricostruisci dal contesto</text>
-  <g stroke="#1A1A1A" stroke-width="1.5">
-    <rect x="543" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="603" y="90" width="60" height="34" fill="#F8F5EE"/><rect x="663" y="90" width="60" height="34" fill="#F8F5EE"/>
-    <rect x="543" y="124" width="60" height="34" fill="#F8F5EE"/><rect x="603" y="124" width="60" height="34" fill="#2D5A5C"/><rect x="663" y="124" width="60" height="34" fill="#F8F5EE"/>
-    <rect x="543" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="603" y="158" width="60" height="34" fill="#F8F5EE"/><rect x="663" y="158" width="60" height="34" fill="#F8F5EE"/>
-    <rect x="543" y="192" width="60" height="34" fill="#2D5A5C"/><rect x="603" y="192" width="60" height="34" fill="#F8F5EE"/><rect x="663" y="192" width="60" height="34" fill="#F8F5EE"/>
-  </g>
-  <text x="633" y="146" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">simili</text>
-  <text x="573" y="214" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="bold" fill="#F8F5EE">simili</text>
-  <path d="M 633 100 C 620 112, 612 118, 620 130" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <path d="M 573 168 C 566 178, 564 184, 570 196" fill="none" stroke="#2D5A5C" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <text x="633" y="255" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">ogni buco = valore dei simili</text>
-  <text x="633" y="275" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">più fedele ai dati,</text>
-  <text x="633" y="293" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">ma più costoso</text>
-
-  <rect x="50" y="322" width="673" height="40" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="386" y="347" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Regola d'oro: il valore con cui riempi si calcola SOLO sui dati con cui il modello impara</text>
+<svg viewBox="0 0 740 396" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La stessa tabella di cinque righe e tre colonne (eta, acquisti, spesa), con due caselle vuote, gli acquisti della seconda riga e la spesa della terza, trattata in tre modi affiancati. Nel primo le due righe incomplete sono barrate: con loro se ne vanno 4 numeri buoni e restano tre righe su cinque. Nel secondo i due buchi sono riempiti con la media della loro colonna, 4,8 acquisti e 159,2 di spesa, uguale per chiunque. Nel terzo il valore si ricostruisce dalle altre colonne della stessa riga, e due frecce tratteggiate orizzontali entrano in ciascun buco partendo dalle celle che gli stanno accanto: chi ha fatto nove acquisti prende 347 di spesa invece di 159,2, e chi ha speso 240 prende 6,2 acquisti invece di 4,8. In fondo, la regola d'oro: il valore con cui si riempie si calcola solo sui dati con cui il modello impara.">
+  <defs><marker id="ft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/></marker></defs>
+  <rect x="0" y="0" width="740" height="396" fill="#F8F5EE"/>
+  <text x="370.0" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" font-weight="bold">La stessa tabella bucata, tre strategie</text>
+  <text x="370.0" y="50" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">due caselle vuote: gli acquisti della seconda riga e la spesa della terza</text>
+  <text x="118.0" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#B5532C" font-weight="bold">1 &#183; Elimina</text>
+  <text x="118.0" y="93" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">le righe con un buco: via</text>
+  <text x="366.0" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#C9A961" font-weight="bold">2 &#183; Riempi con la media</text>
+  <text x="366.0" y="93" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">della colonna</text>
+  <text x="614.0" y="76" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#2D5A5C" font-weight="bold">3 &#183; Ricostruisci dalla riga</text>
+  <text x="614.0" y="93" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">dalle altre colonne, l&#236; accanto</text>
+  <text x="66.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">eta</text>
+  <text x="118.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">acquisti</text>
+  <text x="170.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">spesa</text>
+  <rect x="40" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="66.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">34</text>
+  <rect x="92" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="118.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">3</text>
+  <rect x="144" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="170.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">118</text>
+  <rect x="40" y="144" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="66.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">41</text>
+  <rect x="92" y="144" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="118.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852"></text>
+  <rect x="144" y="144" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="170.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">240</text>
+  <line x1="34" y1="157.0" x2="202" y2="157.0" stroke="#B5532C" stroke-width="2"/>
+  <rect x="40" y="170" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="66.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">52</text>
+  <rect x="92" y="170" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="118.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">9</text>
+  <rect x="144" y="170" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="170.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852"></text>
+  <line x1="34" y1="183.0" x2="202" y2="183.0" stroke="#B5532C" stroke-width="2"/>
+  <rect x="40" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="66.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">23</text>
+  <rect x="92" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="118.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">2</text>
+  <rect x="144" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="170.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">83</text>
+  <rect x="40" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="66.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">29</text>
+  <rect x="92" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="118.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">5</text>
+  <rect x="144" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="170.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">196</text>
+  <text x="118.0" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#B5532C">se ne vanno anche 4 numeri buoni</text>
+  <text x="118.0" y="286" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">e restano tre righe su cinque</text>
+  <text x="314.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">eta</text>
+  <text x="366.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">acquisti</text>
+  <text x="418.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">spesa</text>
+  <rect x="288" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="314.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">34</text>
+  <rect x="340" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="366.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">3</text>
+  <rect x="392" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="418.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">118</text>
+  <rect x="288" y="144" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="314.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">41</text>
+  <rect x="340" y="144" width="52" height="26" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="366.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F8F5EE" font-weight="bold">4,8</text>
+  <rect x="392" y="144" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="418.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">240</text>
+  <rect x="288" y="170" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="314.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">52</text>
+  <rect x="340" y="170" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="366.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">9</text>
+  <rect x="392" y="170" width="52" height="26" fill="#C9A961" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="418.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F8F5EE" font-weight="bold">159,2</text>
+  <rect x="288" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="314.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">23</text>
+  <rect x="340" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="366.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">2</text>
+  <rect x="392" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="418.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">83</text>
+  <rect x="288" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="314.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">29</text>
+  <rect x="340" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="366.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">5</text>
+  <rect x="392" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="418.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">196</text>
+  <text x="366.0" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#C9A961">ogni buco prende lo stesso valore</text>
+  <text x="366.0" y="286" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">e la colonna si sparpaglia meno di prima</text>
+  <text x="562.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">eta</text>
+  <text x="614.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">acquisti</text>
+  <text x="666.0" y="110" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5E5852">spesa</text>
+  <rect x="536" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="562.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">34</text>
+  <rect x="588" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="614.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">3</text>
+  <rect x="640" y="118" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="666.0" y="135" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">118</text>
+  <rect x="536" y="144" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="562.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">41</text>
+  <rect x="588" y="144" width="52" height="26" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="614.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F8F5EE" font-weight="bold">6,2</text>
+  <rect x="640" y="144" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="666.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">240</text>
+  <rect x="536" y="170" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="562.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">52</text>
+  <rect x="588" y="170" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="614.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">9</text>
+  <rect x="640" y="170" width="52" height="26" fill="#2D5A5C" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="666.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F8F5EE" font-weight="bold">347</text>
+  <rect x="536" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="562.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">23</text>
+  <rect x="588" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="614.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">2</text>
+  <rect x="640" y="196" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="666.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">83</text>
+  <rect x="536" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="562.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">29</text>
+  <rect x="588" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="614.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">5</text>
+  <rect x="640" y="222" width="52" height="26" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.2"/>
+  <text x="666.0" y="239" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#1A1A1A">196</text>
+  <line x1="576.0" y1="165" x2="584" y2="165" stroke="#2D5A5C" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#ft)"/>
+  <line x1="652.0" y1="165" x2="644" y2="165" stroke="#2D5A5C" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#ft)"/>
+  <line x1="576.0" y1="191" x2="636" y2="191" stroke="#2D5A5C" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#ft)"/>
+  <line x1="628.0" y1="191" x2="636" y2="191" stroke="#2D5A5C" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#ft)"/>
+  <text x="614.0" y="270" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#2D5A5C">ogni buco guarda la propria riga</text>
+  <text x="614.0" y="286" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">e prende un valore suo</text>
+  <line x1="40" y1="362" x2="700" y2="362" stroke="#C5BEAA" stroke-width="1"/>
+  <text x="370.0" y="382" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">Regola d&#8217;oro: il valore con cui riempi si calcola SOLO sui dati con cui il modello impara.</text>
 </svg>

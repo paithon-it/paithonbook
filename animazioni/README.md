@@ -191,11 +191,13 @@ nota, e costa meno di un minuto.
 | Sorgente | Figura nel libro | Sezione |
 |---|---|---|
 | `svg/alfabeta-pota.py` | `fig-alfabeta-pota` | `Ricerca/giocare-contro-qualcuno.md` |
+| `svg/anello-somma.py` | `fig-anello-somma` | `GPU/parallelismo-distribuito.md` |
 | `svg/apertura-flusso.py` | `fig-apertura-flusso` | `VisioneArtificiale/geometria-e-profondita.md` |
 | `svg/attacco-epsilon.py` | `fig-attacco-epsilon` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/assi-girati.py` | `fig-assi-girati` | `ModelliLatenti/il-latente-che-si-usa.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
 | `svg/bootstrap-si-accumula.py` | `fig-bootstrap-accumula` | `MachineLearning/il-bootstrap.md` |
+| `svg/boosting-si-somma.py` | `fig-boosting-si-somma` | `MachineLearning/alberi-ensemble.md` |
 | `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
 | `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
 | `svg/cammino-latente.py` | `fig-cammino-latente` | `ModelliLatenti/il-salto-probabilistico.md` |
@@ -204,6 +206,7 @@ nota, e costa meno di un minuto.
 | `svg/cancello-che-respinge.py` | `fig-cancello-che-respinge` | `IngegneriaLLM/loop-engineering.md` |
 | `svg/ciclo-addestramento.py` | `fig-ciclo-addestramento` | `PyTorch/addestramento.md` |
 | `svg/ciclo-agente.py` | `fig-ciclo-agente` | `Agenti/agenti-e-tool-use.md` |
+| `svg/copia-che-scivola.py` | `fig-copia-che-scivola` | `SerieTemporali/overview.md` |
 | `svg/corrimano-e-taratura.py` | `fig-corrimano-taratura` | `Transformers/attenzione.md` |
 | `svg/credito-spalmato.py` | `fig-credito-spalmato` | `AutoSupervisione/dibattito-rl.md` |
 | `svg/ctc-collassa.py` | `fig-ctc-allineamento` | `SpeechRecognition/modelli-asr.md` |
@@ -226,17 +229,32 @@ nota, e costa meno di un minuto.
 | `svg/kmeans-converge.py` | `fig-kmeans-converge` | `MachineLearning/riduzione-clustering.md` |
 | `svg/learning-rate.py` | `fig-learning-rate` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/linee-di-base.py` | `fig-linee-di-base` | `SerieTemporali/validazione-e-feature.md` |
+| `svg/lune-si-raddrizzano.py` | `fig-flusso-lune` | `VerosimiglianzaEsatta/flussi.md` |
+| `svg/nastro-si-riavvolge.py` | `fig-nastro-autograd` | `PyTorch/tensori.md` |
 | `svg/origine-mobile.py` | `fig-walk-forward-validazione` | `SerieTemporali/validazione-e-feature.md` |
+| `svg/orbite-che-non-cadono.py` | `fig-orbite-chiuse` | `SistemiMultiAgente/imparare-insieme.md` |
+| `svg/pandas-selezione-filtri-groupby.py` | `fig-split-apply-combine` | `Python/pandas-matplotlib.md` |
+| `svg/pandas-series-dataframe.py` | `fig-series-dataframe` | `Python/pandas-matplotlib.md` |
+| `svg/passeggiata-bigramma.py` | `fig-passeggiata` | `NaturalLanguageProcessing/modelli-ngram.md` |
 | `svg/percettrone-impara.py` | `fig-percettrone-impara` | `RetiNeurali/percettrone.md` |
 | `svg/pinn-residuo.py` | `fig-pinn-residuo` | `PINN/come-funziona.md` |
+| `svg/plotone-si-divide.py` | `fig-plotone-si-divide` | `GPU/architettura-gpu.md` |
+| `svg/posto-che-si-libera.py` | `fig-continuous-batching` | `MLOps/llmops.md` |
 | `svg/potatura-che-assottiglia.py` | `fig-potatura` | `Efficienza/meno-pesi.md` |
+| `svg/quattro-ingredienti.py` | `fig-quattro-ingredienti` | `PINN/applicazioni-limiti.md` |
 | `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |
+| `svg/scossa-che-resta.py` | `fig-scossa-che-resta` | `SerieTemporali/componenti-e-classici.md` |
+| `svg/somma-pesata-passaggi.py` | `fig-somma-pesata-passaggi` | `Transformers/rag.md` |
 | `svg/spartito-in-fila.py` | `fig-spartito-in-fila` | `Audio/generazione-audio.md` |
 | `svg/temperature-top-p.py` | `fig-due-manopole` | `IngegneriaLLM/prompt-engineering.md` |
+| `svg/tracce-illuminano.py` | `fig-tracce-illuminano` | `ReinforcementLearning/q-learning.md` |
+| `svg/trapezio-e-il-peso.py` | `fig-trapezio-e-il-peso` | `StateSpaceModel/dualita-e-mamba-2-3.md` |
 | `svg/vetrina-si-ordina.py` | `fig-vetrina-si-ordina` | `SistemiRaccomandazione/raccomandazione-neurale.md` |
+| `svg/voto-che-retrocede.py` | `fig-voto-che-retrocede` | `ReinforcementLearning/q-learning.md` |
 | `svg/sogno-diverge.py` | `fig-sogno-diverge` | `WorldModels/mondi-in-miniatura.md` |
 | `svg/xor-non-separabile.py` | `fig-xor-non-separabile` | `RetiNeurali/percettrone.md` |
 | `svg/xor-si-piega.py` | `fig-xor-si-piega` | `RetiNeurali/percettrone.md` |
+| `svg/ramo-contestato.py` | `fig-ramo-contestato` | `SistemiMultiAgente/protocolli-e-consenso.md` |
 | `attenzione-mascherata.py` | `fig-attenzione-mascherata` | `Transformers/architettura.md` |
 | `backpropagation.py` | `fig-backpropagation-animata` | `RetiNeurali/backpropagation.md` |
 | `convoluzione.py` | `fig-convoluzione-animata` | `DeepLearning/reti-convoluzionali.md` |

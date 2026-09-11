@@ -8,10 +8,10 @@ le architetture che, tra il 2023 e il 2025, hanno provato a fare concorrenza al
 Transformer sul suo stesso terreno.
 
 Ne guardiamo tre, scelte perché raccontano tre strade diverse verso la stessa
-meta: **RetNet**, nata in un laboratorio industriale attorno a un'idea di
-decadimento fisso; **RWKV**, cresciuta come progetto aperto di comunità;
-**xLSTM**, in cui uno degli inventori della LSTM torna a rimettere mano alla
-propria creatura.
+meta: **RetNet**, nata fra un laboratorio industriale e un'università attorno a
+un'idea di decadimento fisso; **RWKV**, cresciuta come progetto aperto di
+comunità; **xLSTM**, in cui uno degli inventori della LSTM torna a rimettere
+mano alla propria creatura.
 
 Sotto la carrozzeria, però, il motore è sempre lo stesso, ed è quello delle due
 sezioni precedenti: una memoria di taglia fissa, aggiornata una volta per
@@ -27,19 +27,34 @@ addestrabile su larga scala.
 
 La prima architettura arriva da Microsoft Research e Tsinghua nel luglio 2023,
 con Sun e colleghi {cite}`sun2023retnet`. Il nome del meccanismo è
-**retention**, «ritenzione», e il suo gesto è tra i più semplici possibili: al
-posto della softmax dell'attenzione, che spartisce i pesi fra tutte le parole,
-si mette un **decadimento esponenziale fisso**. Le parole continuano a
-confrontarsi fra loro come nell'attenzione; quello che cambia è che il
-punteggio del confronto non viene più spartito, ma soltanto moltiplicato per un
-peso che dipende da quante parole ci sono in mezzo e svanisce con la distanza.
-Quel peso, ed è il punto, non guarda mai il contenuto: sbiadisce allo stesso
-modo una data e un intercalare.
+**retention**, «ritenzione», e da lì viene il nome della rete; il suo gesto è
+tra i più semplici possibili: al posto della softmax dell'attenzione, che
+spartisce i pesi fra tutte le parole, si mette un **decadimento esponenziale
+fisso**. Nella forma con cui si addestra, che apre tutto il testo insieme, le
+parole continuano a confrontarsi fra loro come nell'attenzione; quello che
+cambia è che il punteggio del confronto non viene più spartito, ma soltanto
+moltiplicato per un peso che dipende da quante parole ci sono in mezzo e
+svanisce con la distanza. Quel peso, ed è il punto, non guarda mai il
+contenuto: sbiadisce allo stesso modo una data e un intercalare.
 
 Il punto interessante di RetNet non è tanto il meccanismo quanto il fatto che
 lo stesso calcolo ammette tre forme equivalenti: tre modi di ottenere
-esattamente lo stesso risultato, ciascuno conveniente in una situazione
-diversa.
+esattamente lo stesso risultato, ciascuno conveniente in una situazione diversa
+({numref}`fig-tre-forme-retention`).
+
+```{figure} ../figures/tre-forme-retention.svg
+:name: fig-tre-forme-retention
+:alt: Tre pannelli affiancati calcolano la stessa somma pesata dei voti 6, 7 e 8, con il passato che si dimezza a ogni passo. A sinistra, «tutto insieme», la forma parallela: un triangolo di sei caselle di pesi, una colonna per voto e una riga per momento, che dà in fila i totali 6, 10 e 13. Al centro, «uno alla volta», la forma ricorrente: tre riquadri in colonna con i soli totali 6, 10 e 13, uniti da frecce che dicono di moltiplicare per 0,5 e di sommare il voto nuovo. A destra, «a blocchi», la forma chunkwise: due riquadri tratteggiati, nel primo un triangolo di tre caselle che dà 6 e 10, nel secondo una casella sola che dà 13, e fra i due una freccia che porta il riporto sbiadito una volta. In fondo, la riga che dice che il totale è 13 in tutti e tre i casi e che per strada tornano gli stessi totali intermedi, 6 e 10.
+:width: 100%
+
+Le tre forme della retention sugli stessi tre voti, con quello che c'è già che
+si dimezza a ogni passo. Tutte e tre arrivano a 13, e per strada danno gli
+stessi totali intermedi, 6 e 10: a cambiare è la forma del lavoro. A sinistra
+il triangolo ha una casella per ogni coppia di momenti, quindi cresce con il
+quadrato della lunghezza; al centro resta un numero solo per volta; a destra il
+triangolo torna, ma soltanto dentro un blocco, e da un blocco all'altro passa
+il riporto.
+```
 
 `````{tab} Elementare
 
@@ -49,12 +64,18 @@ materia; se oggi si parla di storia, l'interrogazione di storia conta più di
 quella di ginnastica, e su questo RetNet non cambia niente. Cambia il peso
 della distanza, che guarda quanto tempo è passato e basta.
 
-I conti si possono chiudere in tre modi, e il totale è sempre lo stesso.
+I conti si possono chiudere in tre modi, e il totale è sempre lo stesso. Un
+totale solo, però, al professore non basta: ne vuole uno dopo ogni
+interrogazione, com'era messo lo studente a ottobre, a novembre, a dicembre.
 
-Tutto insieme, il professore apre le pagine dell'anno sul tavolo, scrive
-accanto a ogni voto il suo peso e somma in un colpo solo. Con un foglio di
-calcolo che macina moltiplicazioni in parallelo è la strada più rapida, ed è
-quella dell'addestramento.
+Tutto insieme, il professore apre le pagine dell'anno sul tavolo e riempie una
+tabella con una riga per ogni momento dell'anno e una colonna per ogni voto,
+scrivendo in ogni casella il peso che quel voto ha in quel momento. Con un
+foglio di calcolo che macina moltiplicazioni in parallelo è la strada più
+rapida finché le pagine ci stanno sul tavolo, ed è quella con cui si addestra.
+Il prezzo è la tabella: raddoppiando la lunghezza dell'anno le sue caselle
+quadruplicano, ed è di nuovo la tabella grande da cui l'attenzione lineare era
+scappata.
 
 Uno alla volta, tiene un numero solo a matita in fondo alla pagina. Finita
 un'interrogazione, sbiadisce un po’ il numero vecchio e ci somma il voto nuovo.
@@ -63,24 +84,27 @@ gesti, che sia la prima o la centesima. È la strada dei voti in diretta, uno
 oggi e uno domani, cioè del modello che scrive una parola per volta.
 
 A blocchi, chiude un mese per volta sul tavolo e passa il totale al mese dopo
-sbiadendolo, come il numero a matita. Serve perché al professore il totale di
-giugno non basta: vuole un totale dopo ogni interrogazione, com'era messo lo
-studente a ottobre, a novembre, a dicembre. Averli tutti con le pagine sul
-tavolo vuol dire una tabella con una riga per ogni momento dell'anno e una
-colonna per ogni voto. Su un anno intero è di nuovo la tabella grande da cui
-l'attenzione lineare era scappata; dentro un mese resta piccola, ed è così che
-reggono i testi lunghissimi.
+sbiadendolo, come il numero a matita. Serve perché su un anno intero le altre
+due hanno ciascuna il suo prezzo: la prima paga la tabella, e la seconda va per
+forza in fila, perché nessuna interrogazione si chiude prima di quella di ieri
+e mille aiutanti resterebbero a guardare. Dentro un mese si lavora con le
+pagine aperte, quindi i totali intermedi si prendono lì e la tabella del mese
+resta piccola, perché il mese è corto; da un mese all'altro passa un numero
+solo. Si tiene la fretta senza pagare la tabella, ed è così che reggono i testi
+lunghissimi.
 
 Che il totale non cambi si controlla con tre numeri. Tre voti in ordine, $6$,
 $7$ e $8$, e a ogni passo quello che c'è già si dimezza.
 
-- Tutto insieme: l'ultimo voto vale pieno, il precedente metà, quello prima
-  ancora un quarto, cioè $8 + 0{,}5\times 7 + 0{,}25\times 6 = 13$.
+- Tutto insieme: una riga di tabella per ogni momento. L'ultima dà
+  $0{,}25\times 6 + 0{,}5\times 7 + 8 = 13$, e le due sopra danno i totali di
+  ottobre e novembre, $6$ e $0{,}5\times 6 + 7 = 10$.
 - Uno alla volta: parto da $6$; arriva il $7$ e faccio $0{,}5\times 6 + 7 = 10$;
-  arriva l’$8$ e faccio $0{,}5\times 10 + 8 = 13$. Per strada mi ritrovo in mano
-  anche i totali intermedi, $6$ e $10$.
-- A blocchi, con blocchi da due: i primi due voti li peso e li sommo in un
-  colpo solo, senza passare per il totale del primo, $7 + 0{,}5\times 6 = 10$;
+  arriva l’$8$ e faccio $0{,}5\times 10 + 8 = 13$. Gli stessi tre totali, ma
+  tenendo in mano un numero solo per volta.
+- A blocchi, con blocchi da due: dentro il primo blocco lavoro con le pagine
+  aperte, quindi i due totali escono in un colpo solo e senza che il secondo
+  debba aspettare il primo, $6$ e $7 + 0{,}5\times 6 = 10$;
   poi il blocco successivo riparte da quel $10$ e ci attacca il terzo,
   $0{,}5\times 10 + 8 = 13$.
 
@@ -123,9 +147,11 @@ Questa è la forma essenziale. Il paper vi affianca due cose che non cambiano il
 discorso ma è onesto nominare: una rotazione di fase (*xPos*) che convive con
 il decadimento e fa da codifica posizionale relativa (il decadimento completo è
 allora un numero complesso: il modulo $\gamma$ dimentica, la fase $\theta$
-codifica la posizione), e tre riscalature dei punteggi che servono solo a
-tenere i conti in un intervallo numerico sicuro, cioè a rendere praticabile
-proprio l'equivalenza fra le tre forme.
+codifica la posizione), e tre riscalature dei punteggi che servono a tenere i
+conti in un intervallo numerico sicuro. Sono gratis perché ogni testa passa poi
+per una normalizzazione di gruppo, che è cieca a un fattore comune: gli autori
+dichiarano che il risultato non cambia, e l'equivalenza fra le tre forme è
+esatta anche senza.
 
 **Ricorrente** (inferenza, costo costante nella lunghezza: $O(d^2)$ per token,
 come per l'attenzione lineare). La stessa funzione, srotolata come
@@ -153,16 +179,17 @@ temporali di durata diversa, dal contesto immediato a quello lontano.
 
 `````
 
+
 Conviene collocare RetNet nella famiglia che abbiamo costruito nella sezione
 precedente: è il primo dei tre gradini dello sbiadimento, quello in cui il
 ritmo con cui la memoria si scolora è deciso una volta per tutte quando il
 modello viene progettato, uguale per ogni parola e per ogni sua parte. È la
-forma più grossolana di oblio: efficace e a costo nullo, ma cieca al
-contenuto. Gli altri due gradini, che abbiamo già incontrato, nascono proprio
-per superare questa cecità: Mamba-2, che il ritmo lo ricalcola a ogni
-parola guardando cosa sta leggendo, e GLA (*gated linear attention*), che
-oltre a ricalcolarlo lo differenzia zona per zona della memoria. Sono i tre
-modi di decidere quanto dimenticare, dal più rigido al più libero.
+forma più grossolana di oblio: efficace e a costo nullo, ma cieca al contenuto.
+Gli altri due gradini, che abbiamo già incontrato, quella cecità la tolgono:
+Mamba-2, che il ritmo lo ricalcola a ogni parola guardando cosa sta leggendo, e
+GLA (*gated linear attention*), che oltre a ricalcolarlo lo differenzia zona
+per zona della memoria. Sono i tre modi di decidere quanto dimenticare, dal più
+rigido al più libero.
 
 ## RWKV: reinventare le RNN
 
@@ -191,7 +218,7 @@ niente e dà alla rete un accesso diretto al passo appena trascorso.
 `````{tab} Elementare
 
 Perché servano tutti e due si vede togliendoli. Senza il mescolamento fra le
-parole la frase resterebbe un elenco di voci che non si parlano; senza quello
+parole la frase resterebbe un elenco di parole che non si parlano; senza quello
 che rimescola i numeri di una parola sola il modello saprebbe chi parla con chi
 ma capirebbe poco di ciascuno. Si alternano per tutta l'altezza della rete, ed è
 la stessa divisione del lavoro dei Transformer. Dei due, quello che ci riguarda
@@ -204,26 +231,37 @@ che sbiadisce, l'etichetta, l'informazione); la *receptance* è un rubinetto
 d'uscita, che decide quanta parte di ciò che la memoria risponde viene
 effettivamente lasciata passare al resto della rete.
 
-Il peso che sbiadisce si vede all'opera tornando ai voti dello studente: il voto
-di ieri conta pieno, quello di prima ancora la metà.
-RWKV però fa due cose in più. Non si ferma alla somma: la divide per il totale
-dei pesi, e quello che esce è una media, cioè ancora un voto e non un mucchio
-che cresce con gli anni. E al voto di oggi non applica la regola dello
-sbiadimento: gli dà un peso deciso a parte, mettiamo il doppio, così che il
+Il peso che sbiadisce si vede all'opera tornando ai voti dello studente: il
+voto di ieri conta pieno, quello di prima ancora la metà. Lo sbiadimento non è
+tutto il peso, però: ogni voto si porta dietro anche quanto contava di suo, un
+compito in classe più di un'interrogazione di recupero, e quel giudizio è
+scritto il giorno in cui il voto è stato preso e non cambia più. Il peso di un
+voto è i due fattori messi insieme, la distanza e l'importanza. Qui però non
+c'è nessuna domanda di oggi da confrontare con i voti di ieri, ed è la
+differenza con il professore di RetNet, che invece rileggeva ogni voto alla
+luce della materia di cui si sta parlando adesso. E altre due cose quel
+professore non le faceva. RWKV non si ferma alla
+somma: la divide per il totale dei pesi, e quello che esce è una media, cioè
+ancora un voto e non un mucchio che cresce con gli anni. E al voto di oggi non
+applica la regola dello sbiadimento, che infatti parte da ieri: gli dà un peso
+deciso a parte, mettiamo il doppio di quello che tocca a ieri, così che il
 presente non finisca trattato come una cosa vecchia. Con i voti $6$, $7$ e $8$
-i pesi diventano allora $0{,}5$, $1$ e $2$: la somma pesata fa
-$0{,}5\times 6 + 1\times 7 + 2\times 8 = 26$, i pesi messi insieme fanno
-$3{,}5$, e il risultato è $26$ diviso $3{,}5$, cioè circa $7{,}43$. Un voto,
-appunto: senza quella divisione resterebbe $26$, che non vuol dire niente.
+i pesi diventano allora $0{,}5$, $1$ e $2$: la somma pesata fa $0{,}5\times 6 +
+1\times 7 + 2\times 8 = 26$, i pesi messi insieme fanno $3{,}5$, e il risultato
+è $26$ diviso $3{,}5$, cioè circa $7{,}43$. Un voto, appunto: senza quella
+divisione resterebbe $26$, che non vuol dire niente.
 
-Un'ultima cosa da sapere, perché il seguito ci conta sopra: RWKV è una famiglia
-che ha cambiato pelle più volte e non un modello solo, e le versioni si
-contano con un numero. Le tappe che ci riguardano sono quattro. La quarta
-(2023) non tiene ancora un foglio a righe e colonne, ma una fila di numeri che
-sbiadiscono con ritmi decisi una volta per tutte. La quinta (2024) sostituisce
-quella fila con il foglio che conosciamo. La sesta quei ritmi li ricalcola a
-ogni parola, zona per zona, come GLA. La settima (2025), prima di scrivere,
-corregge quello che c'è già, come faceva la rubrica di Mario.
+Un'ultima cosa, perché il seguito ci conta sopra: RWKV è una famiglia che ha
+cambiato pelle più volte e non un modello solo, e le versioni si contano con un
+numero. Le tappe che ci riguardano sono quattro. La quarta (2023) non tiene
+ancora un foglio a righe e colonne, ma una fila di numeri che sbiadiscono con
+ritmi decisi una volta per tutte. La quinta (2024) sostituisce quella fila con
+il foglio che conosciamo. La sesta quei ritmi li ricalcola a ogni parola, zona
+per zona, come GLA. La settima (2025), prima di scrivere, corregge quello che
+c'è già, come faceva la rubrica di Mario. E quel gesto le compra una cosa che
+alle altre non riusciva: tenere il conto di una situazione che cambia di
+continuo, come chi ha la palla dopo venti passaggi, dove ogni passaggio non
+aggiunge un'informazione ma sostituisce quella di prima.
 
 `````
 
@@ -240,28 +278,29 @@ $$
 $$
 
 dove $k_i$ e $v_i$ sono chiave e valore alla posizione $i$, $w \ge 0$ è il
-decadimento del canale (il peso di un token svanisce come $e^{-(t-1-i)w}$
-al crescere della distanza, e il caso limite $w = 0$ è il canale che non
-dimentica) e $u$ è un bonus riservato al token corrente,
-che lo esenta dal decadimento così che il presente non venga penalizzato quanto
-il passato. Numeratore e denominatore sono la classica media pesata: il
-denominatore è il normalizzatore, la somma dei pesi, nella stessa impostazione
-di Katharopoulos, che il normalizzatore lo tiene, e diversa dalla famiglia
-senza normalizzatore vista nella sezione precedente. In RWKV-4 il decadimento
-$w$ è appreso ma fisso (uno per canale, non dipende dall'input): la
+decadimento del canale (il peso di un token svanisce come $e^{-(t-1-i)w}$ al
+crescere della distanza, e il caso limite $w = 0$ è il canale che non
+dimentica) e $u$ è un bonus riservato al token corrente, che lo esenta dal
+decadimento così che il presente non venga penalizzato quanto il passato.
+Numeratore e denominatore sono la classica media pesata: il denominatore è il
+normalizzatore, la somma dei pesi. Tenerne uno avvicina RWKV-4 a Katharopoulos
+e lo separa dalla famiglia senza normalizzatore vista nella sezione precedente;
+ma quello di Katharopoulos dipende dalla query, e questo no. In RWKV-4 il
+decadimento $w$ è appreso ma fisso (uno per canale, non dipende dall'input): la
 transizione di stato è dunque un decadimento diagonale data-indipendente.
 
-Da notare, perché conta per il riepilogo di fine sezione: in RWKV-4 lo stato è
-un vettore per canale e la scrittura è elemento per elemento, non un prodotto
-esterno. Nella formula non compare nessuna query, e infatti non c'è: la
-*receptance* $r$ è un gate d'uscita, non un termine di affinità. Il prodotto
-esterno arriva con la v5.
+Un dettaglio che conta: in RWKV-4 lo stato è un vettore per canale e la
+scrittura è elemento per elemento, non un prodotto esterno. Nella formula non
+compare nessuna query, e infatti non c'è: la *receptance* $r$ è un gate
+d'uscita, non un termine di affinità. Il prodotto esterno arriva con la v5.
 
-L'architettura è poi evoluta in due tappe. **RWKV-5/6**, nome in codice
-*Eagle* e *Finch* {cite}`peng2024eagle`, promuove lo stato da vettore a
-matrice (multi-testa, come qui) e rende il decadimento
-**data-dipendente**: in Finch (v6) il fattore di oblio è generato dall'input,
-avvicinando RWKV alla GLA. **RWKV-7**, nome in codice *Goose*
+L'architettura è poi evoluta in due tappe. **RWKV-5/6**, nome in codice *Eagle*
+e *Finch* {cite}`peng2024eagle`, promuove lo stato da vettore a matrice,
+multi-testa come nella convenzione di questo capitolo, e rende il decadimento
+**data-dipendente**: in Finch, cioè RWKV-6, il fattore di oblio è generato
+dall'input, cioè la stessa scelta della GLA, alla quale gli autori dichiarano
+di essere arrivati per conto proprio e nello stesso periodo. **RWKV-7**, nome
+in codice *Goose*
 {cite}`peng2025rwkv7`, compie il salto più netto: adotta una **delta rule
 generalizzata**, con l'evoluzione di stato (nella convenzione del capitolo)
 
@@ -270,30 +309,45 @@ $$
 $$
 
 dove $\mathbf{w}_t$ è un decadimento vettoriale, un valore per canale (l'erede
-del gate diagonale di Finch), $\hat{\boldsymbol{\kappa}}_t$ è una chiave di
-*rimozione* normalizzata e disaccoppiata dalla chiave di scrittura
-$\tilde{\mathbf{k}}_t$, e $\mathbf{a}_t$ è un tasso di apprendimento appreso in
-contesto, anch'esso canale per canale. La transizione di stato è dunque un
-fattore diagonale più una correzione di rango uno: un gated-delta, la stessa
-famiglia dell'ultima riga della tabella unificante. Questo dà a RWKV-7 una
-capacità di *state tracking* che le versioni precedenti non avevano: gli autori
-mostrano che riconosce tutti i linguaggi regolari pur mantenendo
-l'addestramento parallelo, e argomentano che, sotto le congetture standard
-della teoria della complessità, ciò eccede quanto un Transformer a profondità
-fissa può fare (che resta confinato nella classe $\text{TC}^0$, i circuiti a
-profondità costante con porte di soglia).
+del gate diagonale di Finch): qui moltiplica lo stato, quindi si legge al
+rovescio del $w$ della v4, e vicino a $1$ conserva mentre vicino a $0$
+dimentica. Poi $\hat{\boldsymbol{\kappa}}_t$ è una chiave di *rimozione*
+normalizzata e disaccoppiata dalla chiave di scrittura $\tilde{\mathbf{k}}_t$,
+e $\mathbf{a}_t$ è un tasso di apprendimento appreso in contesto, anch'esso
+canale per canale. La transizione di stato è dunque un decadimento diagonale
+più una correzione di rango uno, e quella riga la tabella unificante non ce
+l'ha: il Gated DeltaNet dell'ultima riga sbiadisce con uno *scalare*, mentre
+qui il fattore è un vettore, un valore per canale. RWKV-7 tiene cioè il gating
+per canale della GLA e ci aggiunge la correzione, invece di scambiare l'uno con
+l'altra, ed è la differenza che gli autori sottolineano contro i lavori
+precedenti.
+
+La capacità nuova, però, non viene da lì. Viene dal fattore di rango uno, che
+non è più la riflessione di Householder di DeltaNet, i cui autovalori valgono
+tutti $1$ tranne uno: è una sua approssimazione riscalata, i cui autovalori
+possono cadere in tutto $[-1, 1]$, negativi compresi, ed è quel segno meno a
+permettere allo stato di *tenere il conto* invece di limitarsi a sbiadire. È
+questo che dà a RWKV-7 una capacità di *state tracking* che le versioni
+precedenti non avevano: gli autori mostrano che riconosce tutti i linguaggi
+regolari con un numero costante di strati, pur mantenendo l'addestramento
+parallelo, e argomentano che, sotto la congettura $\text{TC}^0 \neq
+\text{NC}^1$, ciò eccede quanto un Transformer a profondità fissa può fare (che
+resta confinato nella classe $\text{TC}^0$, i circuiti di profondità costante e
+dimensione polinomiale con porte di soglia a ventaglio illimitato).
 
 `````
 
-RWKV ha una particolarità sociologica da notare, in un campo dominato dai
-grandi laboratori: RWKV-4 è stata scalata fino a 14 miliardi di parametri, i
-numeri che il modello impara e che ne misurano la taglia (era la più grande
-rete ricorrente *densa* del suo tempo, cioè fra quelle che usano tutti i
-propri parametri a ogni parola), e il lavoro che presenta RWKV-7 rilascia
-sette modelli, dai 100 milioni ai 2,9 miliardi di parametri, con pesi aperti
-sotto licenza Apache 2.0, cioè scaricabili e riusabili da chiunque. È la
-dimostrazione che un'architettura competitiva può crescere fuori dai recinti
-industriali.
+RWKV ha poi una storia che negli altri due casi non c'è, in un campo dominato
+dai grandi laboratori: RWKV-4 è stata scalata fino a 14 miliardi di parametri,
+i numeri che il modello impara e che ne misurano la taglia (era la più grande
+rete ricorrente *densa* del suo tempo, cioè fra quelle che usano tutti i propri
+parametri a ogni parola), e il lavoro che presenta RWKV-7 rilascia sette
+modelli con i pesi aperti sotto licenza Apache 2.0, cioè scaricabili e
+riusabili da chiunque: i tre addestrati sul Pile vanno da 168 milioni a 1,47
+miliardi di parametri, i quattro su World v3 da 191 milioni a 2,9 miliardi.
+Un'architettura competitiva, dunque, può nascere fuori dai recinti industriali;
+le macchine su cui addestrare le hanno però messe due aziende, come i
+ringraziamenti dell'articolo dichiarano.
 
 ## xLSTM: il ritorno di Hochreiter
 
@@ -346,30 +400,33 @@ oggi.
 Quel giro senza fine si paga in due modi. Con le manopole aperte così i numeri
 che il magazziniere segna crescono in fretta, e diventano troppo grandi perché
 il calcolatore li sappia scrivere: senza una contromisura apposita il conto
-salta. Poi c'è la risposta al cliente. Il magazziniere prende il mucchio che ha
-accumulato sullo scaffale e lo divide per quanto ne ha fatto entrare, come si
-fa con la media dei voti, e quella media è quello che consegna. Così la
-risposta resta della taglia di un articolo anche dopo mille articoli e con le
-manopole spalancate.
+salta. La contromisura è tenere da parte, a ogni passo, il più grande fra i
+pesi con cui contano le voci ancora sullo scaffale, e segnare tutto in rapporto
+a quello: sbiadisce anche lui insieme al resto, i rapporti non cambiano, e le
+cifre restano di una taglia scrivibile. Poi c'è la risposta al cliente. Il
+magazziniere prende il mucchio che ha accumulato sullo scaffale e lo divide per
+quanto ne ha fatto entrare, come si fa con la media dei voti, e quella media è
+quello che consegna. Così la risposta resta della taglia di un articolo anche
+dopo mille articoli e con le manopole spalancate.
 
 La seconda bottega (nei paper si chiama **mLSTM**, e sarà quella che conta)
-butta lo scaffale e mette un archivio a griglia, un cassetto per ogni
-etichetta, e chi arriva chiede l'informazione di un'etichetta invece di
-guardare un ripiano solo. È di nuovo il foglio a righe e colonne delle sezioni
-precedenti. Quanto sbiadire la roba vecchia, poi, il magazziniere lo decide
-articolo per articolo, guardando quello che ha in mano in quel momento, come
-faceva Mamba-2.
+butta lo scaffale e mette un archivio a griglia, ed è di nuovo la rubrica delle
+sezioni precedenti: un numero fisso di caselle, non un cassetto per ogni
+etichetta. Chi arriva chiede l'informazione di un'etichetta invece di guardare
+un ripiano solo, e si sente rispondere un miscuglio in cui pesa soprattutto
+quello che sta scritto sotto l'etichetta più somigliante. Quanto sbiadire la
+roba vecchia, poi, il magazziniere lo decide articolo per articolo, guardando
+quello che ha in mano in quel momento, come faceva Mamba-2.
 
-E la bottega nuova guadagna una cosa che con la capienza non c'entra. Dove va
-un articolo dipende solo dall'articolo, perché l'etichetta dice già in che
-cassetto finisce, e nessuno ha bisogno di sapere com'è messo l'archivio adesso.
-Nessun addetto aspetta che il collega abbia finito, e allora mille addetti
-sistemano mille articoli contemporaneamente. Nella prima bottega non si può.
-Lì, per decidere quanto aprire le manopole, il magazziniere guarda com'è
-ridotto lo scaffale in quel momento; finché non ha sistemato l'articolo di oggi
-non sa come regolarsi con quello di domani, e si va in fila, uno dietro
-l'altro. È la bottega di trent'anni fa, rifatta con la memoria e i muscoli di
-oggi.
+E la bottega nuova guadagna una cosa che con la capienza non c'entra. Quanto
+aprire le manopole dipende solo dall'articolo che si ha in mano, e nessuno ha
+bisogno di sapere com'è messo l'archivio adesso. Nessun addetto aspetta che il
+collega abbia finito, e allora mille addetti sistemano mille articoli
+contemporaneamente. Nella prima bottega non si può. Lì, per decidere quanto
+aprire le manopole, il magazziniere guarda com'è ridotto lo scaffale in quel
+momento; finché non ha sistemato l'articolo di oggi non sa come regolarsi con
+quello di domani, e si va in fila, uno dietro l'altro. È la bottega di
+trent'anni fa, rifatta con la memoria e i muscoli di oggi.
 
 `````
 
@@ -389,7 +446,9 @@ h_t = o_t\, \frac{c_t}{n_t},
 $$
 
 dove $z_t$ è l'input candidato, $f_t, o_t$ i gate di *forget* e *output* e
-$i_t = \exp(\tilde{\imath}_t)$ è il gate di *input* reso esponenziale. Il
+$i_t = \exp(\tilde{\imath}_t)$ è il gate di *input* reso esponenziale, con
+$\tilde{\imath}_t$ la sua pre-attivazione, cioè quello che la rete calcola
+prima di passarlo per l'esponenziale. Il
 denominatore $n_t$ è un normalizzatore che accumula i gate di input, così che la
 lettura $c_t/n_t$ resti una media ben scalata. La sLSTM ha una *memory mixing*
 fra le celle di una stessa testa, e non fra teste diverse: è per questo che i
@@ -399,7 +458,9 @@ per costruzione, ricorrente non parallelizzabile: si valuta con un kernel
 sequenziale, che gli autori hanno però scritto in CUDA e reso veloce.
 
 mLSTM (memoria *matriciale*) è la variante pensata per le GPU. Lo stato
-diventa una matrice $\mathbf{C}_t \in \mathbb{R}^{d\times d}$ aggiornata con una
+diventa una matrice, e qui porta il nome che ha nelle LSTM, $\mathbf{C}_t$ come
+*cell*: è lo stesso $\mathbf{S}_t$ delle formule di prima. Vive in
+$\mathbb{R}^{d\times d}$ e si aggiorna con una
 **regola di covarianza**, un prodotto esterno, esattamente come
 nell'attenzione lineare:
 
@@ -430,17 +491,21 @@ $$
 m_t = \max\!\big(\log f_t + m_{t-1},\; \log i_t\big),
 $$
 
-che tiene il massimo corrente dei logaritmi dei gate e viene sottratto prima di
-esponenziare: è il classico trucco *log-sum-exp*. Perché il risultato resti
-davvero identico, però, va riscalato anche il fondo del denominatore, che
-diventa $\max\big(|\mathbf{n}_t^\top \mathbf{q}_t|,\, e^{-m_t}\big)$: è la forma
+che tiene il logaritmo del peso più grande fra quelli con cui le scritture
+ancora in memoria contano, e viene sottratto prima di esponenziare: è il
+classico trucco *log-sum-exp*. Perché il risultato resti davvero identico,
+però, va riscalato anche il fondo del denominatore, che diventa
+$\max\big(|\mathbf{n}_t^\top \mathbf{q}_t|,\, e^{-m_t}\big)$: è la forma
 stabilizzata che gli autori danno in appendice {cite}`beck2024xlstm`, e la
 ragione è aritmetica. Sottrarre $m_t$ riscala di $e^{-m_t}$ tanto
-$\mathbf{C}_t$ quanto $\mathbf{n}_t$; se anche la soglia porta lo stesso fattore, esso si
-semplifica e le due scritture coincidono per costruzione, mentre la soglia
-fissa $1$ non si riscala con il resto e, appena il massimo entra in gioco,
-l'uscita è un'altra. Nella sLSTM il problema non si pone, perché lì la lettura
-è un rapporto puro.
+$\mathbf{C}_t$ quanto $\mathbf{n}_t$; se anche la soglia porta lo stesso
+fattore, esso si semplifica e le due scritture coincidono per costruzione,
+mentre la soglia fissa $1$ non si riscala con il resto e, appena il massimo
+entra in gioco, l'uscita è un'altra. Lo stabilizzatore, invece, non è
+un'aggiunta della mLSTM: gli autori lo introducono per la sLSTM e qui lo
+riusano tale e quale. Quello che nella sLSTM non si pone è il secondo
+passaggio, la riscalatura della soglia, perché lì la lettura è il rapporto puro
+$c_t/n_t$ e il fattore si semplifica da sé.
 
 `````
 
@@ -453,8 +518,9 @@ costante che una ricorrenza porta con sé.
 
 ## Lo stesso scheletro
 
-Tre architetture, tre storie (un laboratorio industriale, una comunità aperta,
-il ritorno di un pioniere) e tre insiemi di scelte ingegneristiche. Eppure, se
+Tre architetture, tre storie (un laboratorio industriale insieme a
+un'università, una comunità aperta, il ritorno di un pioniere) e tre insiemi
+di scelte ingegneristiche. Eppure, se
 si toglie la carrozzeria, sotto c'è sempre lo stesso telaio: una memoria di
 taglia fissa, che si aggiorna a ogni parola e non cresce mai, riempita
 mentre il modello impara guardando tutto il testo insieme e riletta, quando il
@@ -469,7 +535,8 @@ ogni parola, cioè sta sul gradino di Mamba-2. RWKV ha percorso tutta la scala
 in due anni: dai ritmi fissi della v4 (2023) a quelli ricalcolati a ogni
 parola, zona per zona, della v6 (2024), che è il gradino di GLA, fino alla v7
 (2025), che prima di scrivere cancella la voce che sta per riscrivere, cioè
-corregge invece di sommare alla cieca.
+corregge invece di sommare alla cieca. La v5, in mezzo, su questa scala non fa
+gradino: cambia la forma della memoria, non il ritmo con cui sbiadisce.
 
 Che due modelli stiano sullo stesso gradino non vuol dire che siano lo stesso
 modello: vuol dire che scelgono lo stesso modo di far sopravvivere la memoria,
@@ -495,9 +562,11 @@ la versione 5.
 Con i nomi tecnici: la transizione di stato è un decadimento scalare
 data-indipendente in RetNet ($\gamma \mathbf{I}$), uno scalare data-dipendente con
 gating esponenziale nella mLSTM di xLSTM, e in RWKV passa dal decadimento
-diagonale fisso della v4 a quello data-dipendente della v6 fino alla
-transizione gated-delta della v7, cioè lo stesso gradino di espressività che,
-nella famiglia di Yang, separa la GLA dal Gated DeltaNet.
+diagonale fisso della v4 a quello data-dipendente della v6 fino al
+decadimento diagonale con correzione di rango uno della v7. Attenzione a non
+leggerlo come il gradino che, nella famiglia di Yang, separa la GLA dal Gated
+DeltaNet: quello scambia il decadimento per canale con uno scalare mentre
+aggiunge la correzione, la v7 invece il decadimento per canale se lo tiene.
 
 Una riserva sull'affermazione «tutte tengono una memoria che si scrive per
 prodotto esterno»: vale da RWKV-5 in poi (oltre che per RetNet e per la
@@ -508,17 +577,16 @@ query. Nella tassonomia dei paper è la differenza fra stato *piccolo* e stato
 
 `````
 
-Questa unità apparecchia il prossimo capitolo. Gli State Space Model (S4,
-Mamba e i loro discendenti) arrivano esattamente allo stesso posto, ma da
-tutt'altra strada: non da un'attenzione da rendere economica, bensì dalla
-matematica con cui si descrive un sistema che evolve nel tempo (un pendolo, un
-circuito), presa nella sua forma continua e poi ridotta a passi discreti.
-Vedremo che il punto d'arrivo coincide: anche un SSM è una ricorrenza lineare a
-stato fisso con le sue due forme, parallela e ricorrente. E vedremo che non è
-una
-coincidenza: Mamba-2, con la sua *dualità* tra stato e attenzione, dimostrerà
-che le due famiglie (le attenzioni lineari di questo capitolo e gli SSM del
-prossimo) sono due viste della stessa cosa.
+Gli State Space Model (S4, Mamba e i loro discendenti) arrivano esattamente
+allo stesso posto, ma da tutt'altra strada: non da un'attenzione da rendere
+economica, bensì dalla matematica con cui si descrive un sistema che evolve nel
+tempo (un pendolo, un circuito), presa nella sua forma continua e poi ridotta a
+passi discreti. Vedremo che il punto d'arrivo coincide: anche un SSM è una
+ricorrenza lineare a stato fisso con le sue due forme, parallela e ricorrente.
+E vedremo che non è una coincidenza: Mamba-2, con la sua *dualità* tra stato e
+attenzione, mostrerà quanto strettamente le due famiglie siano imparentate, e
+per una classe precisa di modelli, quella del decadimento scalare, che sono
+proprio la stessa cosa.
 
 Un'ultima onestà, prima di proseguire. Nessuna di queste architetture ha
 «ucciso» il Transformer, e nessuna lo farà a breve. Lo stato di dimensione
@@ -535,7 +603,7 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
 
 ```{admonition} Da ricordare
 :class: important
-- RetNet {cite}`sun2023retnet` toglie alle parole la gara per l'attenzione e
+- RetNet {cite}`sun2023retnet` non spartisce più l'attenzione fra le parole e
   la sostituisce con un peso che sbiadisce con la distanza, sempre lo
   stesso: le parole si confrontano ancora, ma quanto il passato conti dipende
   solo da quanto è lontano. È la somma pesata dei voti di uno studente, con le
@@ -547,7 +615,9 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
 - Quel ritmo di sbiadimento, però, è deciso a priori e uguale per ogni
   parola: la forma più grossolana di oblio, cieca al contenuto, all'opposto
   dello sbiadimento che nella sezione precedente si regolava da sé, parola per
-  parola e zona per zona della lavagna.
+  parola e zona per zona della memoria. Di ritmi, però, ne tiene parecchi
+  affiancati, chi svelto e chi lentissimo, così che l'insieme copra insieme il
+  passato vicino e quello lontano.
 - RWKV {cite}`peng2023rwkv`, progetto aperto di comunità, alterna due
   blocchi: uno mescola l'informazione fra le parole (il mestiere
   dell'attenzione), l'altro rimescola fra loro i numeri con cui è scritta una
@@ -560,13 +630,13 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
   2025 {cite}`peng2025rwkv7`).
 - xLSTM {cite}`beck2024xlstm` riapre la bottega della vecchia LSTM di
   Hochreiter {cite}`hochreiter1997long`, il magazziniere con un solo scaffale e
-  tre interruttori. Rimette interruttori più decisi (che spalancano o chiudono
-  di colpo, tenuti a bada da un accorgimento di calcolo perché non esplodano) e
-  apre due botteghe: quella con l'unico scaffale, che si riempie una casella
-  alla volta, e quella con un archivio a griglia, che si riempie tutto
-  insieme in parallelo. Un modello da sette miliardi di parametri costruito solo
-  su quest'ultima {cite}`beck2025xlstm7b` mostra che la formula regge alla scala
-  dei grandi modelli.
+  tre interruttori. Rimette manopole che si continuano a girare senza fine
+  corsa (tenute a bada da un accorgimento di calcolo perché i numeri non
+  esplodano) e apre due botteghe: quella con l'unico scaffale, che sistema un
+  articolo per volta e in fila, e quella con un archivio a griglia, che ne
+  sistema mille insieme. Un modello da sette miliardi di parametri costruito
+  solo su quest'ultima {cite}`beck2025xlstm7b` va, a quella taglia, alla pari
+  con i modelli confrontabili.
 - Il filo comune: RetNet, RWKV e xLSTM, insieme ai modelli della sezione
   precedente, sono la stessa cosa: un riassunto di taglia fissa aggiornato
   parola per parola. A cambiare è solo il modo in cui la memoria di ieri
@@ -587,14 +657,15 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
   (inferenza a costo costante nella lunghezza, $O(d^2)$ per token), chunkwise
   (contesto lungo, lineare in $n$). È multi-scala: ogni testa usa un $\gamma$
   diverso.
-- Il decadimento di RetNet è scalare, fisso e data-indipendente: la forma più
-  grossolana di oblio, all'opposto dei gate appresi di Mamba-2 e GLA.
+- Il decadimento di RetNet è scalare, deciso una volta per tutte e uguale per
+  ogni parola: la forma più grossolana di oblio, all'opposto dei gate appresi
+  di Mamba-2 e GLA.
 - RWKV {cite}`peng2023rwkv`, progetto aperto di comunità, alterna
   *time-mixing* (attention-like) e *channel-mixing* (FFN-like) con *token-shift*:
   si addestra come un Transformer, si usa come una RNN a stato costante.
 - L'evoluzione di RWKV va dall'operatore WKV a decadimento fisso (v4) allo stato
-  matriciale con decadimento data-dipendente (v5/6 *Eagle/Finch*
-  {cite}`peng2024eagle`) fino alla delta rule generalizzata di v7 *Goose*
+  matriciale della v5 (*Eagle*) e al decadimento data-dipendente della v6
+  (*Finch*) {cite}`peng2024eagle` fino alla delta rule generalizzata di v7 *Goose*
   {cite}`peng2025rwkv7`, capace di *state tracking* e di riconoscere i linguaggi
   regolari.
 - xLSTM {cite}`beck2024xlstm` aggiorna la LSTM di Hochreiter
@@ -608,7 +679,7 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
 - Il filo comune: RetNet, RWKV e xLSTM (con GLA e DeltaNet) sono la stessa
   RNN lineare a stato fisso; cambia solo la transizione di stato. Gli
   State Space Model arrivano allo stesso punto da un'altra strada, e Mamba-2
-  dimostra che sono la stessa cosa.
+  dimostra che sulla riga del decadimento scalare sono lo stesso modello.
 ```
 
 `````
@@ -616,8 +687,9 @@ l'altra metà della famiglia: li riprenderemo alla fine del prossimo capitolo.
 Da portarsi dietro c'è una cosa sola: tutti i modelli che abbiamo incontrato
 sono un riassunto di taglia fissa che si aggiorna parola per parola, e a
 distinguerli è soltanto il modo in cui la memoria di ieri sopravvive a oggi.
-Resta una pagina di verifica, poche righe che rifanno lo stesso conto in due
-modi per vedere se torna lo stesso numero; poi si cambia strada, e non è un
-gradino più su. State Space Model è l'altro ramo della stessa famiglia:
+Restano poche righe di codice che rifanno lo stesso conto nei due modi, tutto
+insieme e una parola alla volta, per vedere se torna lo stesso numero; poi si
+cambia strada, e non è un gradino più su della scala appena percorsa. State
+Space Model è l'altro ramo della stessa famiglia:
 allo stesso motore ci arriva da lontano, senza passare dall'attenzione, e per
 un buon tratto le due strade non sanno di somigliarsi.

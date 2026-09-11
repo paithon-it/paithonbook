@@ -1,9 +1,10 @@
 # La memoria: il vero collo di bottiglia
 
-Nella sezione «Prestazioni e scala» del {doc}`capitolo su PyTorch </PyTorch/overview>` avevamo lasciato
-cadere, quasi di sfuggita, un'osservazione scomoda: «il collo di bottiglia, più
-spesso del calcolo, è il movimento dei dati». È il momento di prenderla sul
-serio, perché è una delle verità meno intuitive di tutto l'hardware moderno.
+Nella sezione {doc}`«Prestazioni e scala» </PyTorch/prestazioni>` avevamo
+lasciato cadere, quasi di sfuggita, un'osservazione scomoda: «il collo di
+bottiglia, più spesso del calcolo, è il movimento dei dati». È il momento di
+prenderla sul serio, perché è una delle verità meno intuitive di tutto
+l'hardware moderno.
 
 L'immagine che viene spontanea è quella di una GPU come un mostro di calcolo
 che divora numeri. La realtà, molto più spesso, è un mostro *affamato* che
@@ -70,13 +71,15 @@ no: la parte che scegli tu si allarga rubando all'altra.
 
 Il cassetto grande sotto il tavolo è la **cache L2**: stesso mestiere un numero
 più in là, più capiente e in comune con gli altri tavoli. In fondo alla stanza
-c'è l'armadio, il magazzino della squadra: ci sta *tutto* il progetto, ma ogni volta ti tocca alzarti e
-attraversare la stanza. È la **memoria globale**, che i tecnici chiamano
-**HBM**, tre lettere per «memoria a banda larga», costruita apposta per
-consegnare tantissimi byte al secondo. E in un altro edificio c'è il deposito,
-la memoria del computer, di là dal cavo che collega CPU e GPU (il cavo si
-chiama **PCIe**): enorme, e andarci è una spedizione, tanto che la roba di là
-la si va a prendere una volta sola, all'inizio.
+c'è l'armadio, il magazzino della squadra: ci sta *tutto* il progetto, ma ogni
+volta ti tocca alzarti e attraversare la stanza. È la **memoria globale**, che
+i tecnici chiamano **HBM**, tre lettere per «memoria a banda larga», costruita
+apposta per consegnare tantissimi byte al secondo. E in un altro edificio c'è
+il deposito, la memoria del computer, di là dal cavo che collega CPU e GPU (il
+cavo si chiama **PCIe**): enorme, e andarci è una spedizione. Per questo, di
+là, ci si va il meno possibile: quello che serve a tutti (i pesi del modello)
+si porta nell'armadio una volta sola e resta lì, e il viaggio si ripete
+soltanto per i dati nuovi, un carico per ogni gruppo di esempi da elaborare.
 
 A quel tavolo lavorano più di mille persone. Le penne sono minuscole una per
 una, ma tutte insieme sono più roba di quanta ne stia sul ripiano: il pugno di
@@ -90,9 +93,20 @@ dita costa un secondo, cercare fra i fogli sul piano ne costa una ventina,
 aprire il cassetto grande un paio di centinaia, attraversare la stanza fino
 all'armadio cinquecento, e mandare qualcuno al deposito dell'altro edificio è
 una gita che dura un'ora. Fra la penna e il deposito ci sono migliaia di volte,
-non il doppio. Chi programma una GPU fa lo stesso mestiere di chi si tiene in
-ordine la scrivania: vicino quello che serve adesso, e in giro per la stanza il
-meno possibile.
+non il doppio. Tutto questo è tempo di attesa, cioè la latenza, e l'attesa si
+può coprire: mentre uno aspetta il foglio che ha chiesto il vicino lavora su
+quello che ha già ricevuto, e il tavolo non si ferma mai.
+
+C'è però una seconda misura, sullo stesso armadio, e quella non si copre. Chi
+torna dall'armadio non porta un foglio solo: porta una bracciata, e quante
+bracciate al minuto l'armadio riesca a consegnare è deciso una volta per
+tutte. Se in un minuto
+arrivano meno fogli di quanti la squadra ne consuma, i mille al tavolo restano
+fermi comunque, bravi quanto si vuole. Quel numero, i fogli che arrivano al
+minuto, è la banda, ed è lui, più spesso di quante persone siedano al tavolo, a
+decidere la velocità del lavoro. Chi programma una GPU fa lo stesso mestiere di
+chi si tiene in ordine la scrivania: vicino quello che serve adesso, e in giro
+per la stanza il meno possibile.
 `````
 
 `````{tab} Superiore
@@ -113,8 +127,10 @@ grandezza (le cifre esatte cambiano con la generazione: qui contano le
   è condivisa dai thread di uno stesso blocco, dell'ordine di un centinaio di
   KB per unità di calcolo, e la sua particolarità è che *non* è una cache
   automatica: la gestisci a mano, decidendo tu cosa metterci. La L1 sì, è
-  automatica. Il punto che la piramide disegnata nasconde è che dal 2017 le due
-  sono lo stesso banco di SRAM, ripartito fra le due funzioni da un pomello
+  automatica. Il punto che la piramide disegnata nasconde è che oggi le due
+  sono lo stesso banco di SRAM (lo erano già nel 2010, poi per due generazioni
+  furono separate, e dal 2017 lo sono di nuovo), ripartito fra le due funzioni
+  da un pomello
   che il programmatore gira (192 KB combinati per SM su A100, di cui fino a 164
   configurabili come shared; 256 KB su H100). Tre conseguenze pratiche:
   chiedere tutta la shared possibile non è gratis, perché toglie cache; il
@@ -130,10 +146,12 @@ grandezza (le cifre esatte cambiano con la generazione: qui contano le
   GB, banda dell'ordine di qualche TB/s, ma latenza di *centinaia* di cicli. È
   dove vivono tensori, pesi e attivazioni.
 - Memoria host, la RAM di sistema, di là dal bus PCIe che separa CPU e
-  GPU: capiente quanto vuoi, ma con banda di appena qualche decina di GB/s
-  (uno o due ordini di grandezza sotto la HBM). È il motivo per cui, come
-  ricordava la sezione «Prestazioni e scala», `.to(device)` va fatto *una
-  volta per batch* e non tensore per tensore.
+  GPU: capiente quanto vuoi, ma raggiungibile solo attraverso quel bus, che
+  consegna qualche decina di GB/s (uno o due ordini di grandezza sotto la
+  HBM). Il collo di bottiglia è il PCIe, non la RAM, che presa da sola è
+  molto più svelta. È il motivo per cui, come ricordava la sezione
+  «Prestazioni e scala», `.to(device)` va fatto *una volta per batch* e non
+  tensore per tensore.
 
 Due parametri descrivono ogni livello: la latenza (quanto aspetti il primo
 byte) e la banda (quanti byte al secondo, a regime). I warp nascondono la
@@ -144,10 +162,12 @@ superiore alla HBM, che a sua volta ne ha uno o due sul PCIe.
 
 Sulla capienza, invece, la forma a piramide va presa con le pinze, perché
 diminuisce *per unità che ne dispone* (per thread, per blocco, per SM, per
-GPU), non in assoluto: come si è visto, il register file di un SM è più
+GPU), non in assoluto: come si è visto, su A100 il register file di un SM è più
 capiente della sua L1 più shared, ed è la punta della piramide a essere il
-banco on-chip più grande. Il triangolo dice bene la scarsità che si affaccia
-al singolo lavoratore, non quanta memoria ci sia a ciascun piano.
+banco on-chip più grande (sulla generazione successiva i due si equivalgono, e
+in nessuno dei due casi il triangolo racconta le capienze totali). Il triangolo
+dice bene la scarsità che si affaccia al singolo lavoratore, non quanta memoria
+ci sia a ciascun piano.
 
 Tenere il lavoro il più in alto possibile nella piramide è, in una frase,
 l'intera arte dell'ottimizzazione su GPU.
@@ -218,12 +238,13 @@ ri-leggere dalla HBM ciò che ti serve più volte. Se un blocco di dati verrà
 usato da molti thread, conviene portarlo *una sola volta* nella shared memory
 (il ripiano condiviso della scrivania) e da lì servirlo a tutti.
 
-Di questo principio l'esempio più puro si chiama FlashAttention, ed è il
-modo in cui oggi si eseguono i confronti fra le parole di un testo dentro un
-modello linguistico; una sezione più avanti lo racconta per esteso. La cosa da
-sapere fin da adesso è una sola: quel metodo non fa *meno* conti di prima. Ne
-fa altrettanti, e in un passaggio addirittura qualcuno in più. Va molte volte
-più veloce soltanto perché muove molti meno byte.
+Di questo principio l'esempio più puro si chiama FlashAttention, ed è il modo
+in cui oggi si eseguono i confronti fra le parole di un testo dentro un modello
+linguistico; lo racconta per esteso la {doc}`sezione sulla FlashAttention
+</GPU/flash-attention>`. La cosa da sapere fin da adesso è una sola: quel
+metodo non fa *meno* conti di prima. Ne fa altrettanti, e in un passaggio
+addirittura qualcuno in più. Va molte volte più veloce soltanto perché muove
+molti meno byte.
 
 `````{tab} Elementare
 Lo stesso manuale, consultato decine di volte da tutta la squadra: i modi di
@@ -420,7 +441,11 @@ $19{,}5/1{,}935 \approx 10$ FLOP/byte, ma i tensor core in `float16` danno
 $312/1{,}935 \approx 161$; su una H100 SXM (banda $3{,}35$ TB/s) si passa da
 $67/3{,}35 = 20$ a $989/3{,}35 \approx 295$. Un calcolo che sta a destra del
 primo ginocchio può stare comodamente a sinistra del secondo, e il secondo è
-quello che conta appena si accende la mezza precisione.
+quello che conta appena si accende la mezza precisione. Il ginocchio però non
+si sposta da solo: passando a `float16` anche i byte da spostare si dimezzano,
+quindi l'intensità del programma raddoppia e gli va incontro. Fra i due
+movimenti il divario che resta è la metà di quello che il rapporto fra i
+ginocchi lascerebbe credere.
 
 Due esempi concreti, con dati in `float32` (4 byte):
 
@@ -436,8 +461,10 @@ Due esempi concreti, con dati in `float32` (4 byte):
   saldamente compute-bound. Attenzione però a che cosa vuol dire «riuso
   perfetto»: leggere ogni elemento di $\mathbf{A}$ e $\mathbf{B}$ *una volta
   sola*, cioè tenerle intere in memoria veloce. Per $n = 4096$ in `float32`
-  sarebbero 134 MB, contro i poco meno di 120 MB che una H100 ha on-chip in
-  tutto (50 di cache L2, 34 di shared e L1, 34 di registri): quell’$n/6$ è un
+  sono 128 MiB, e l'unico banco on-chip che una tessera qualsiasi può
+  attraversare è la cache L2, 50 MB su una H100: shared memory e registri sono
+  ripartiti per SM e per blocco, e sommarli al totale darebbe un numero che
+  nessun calcolo può spendere. Quell’$n/6$ è quindi un
   tetto ideale, non un traguardo. Ci si torna nella sezione sul GEMM, dove si
   vede quanto ci si arriva davvero (e perché non serve arrivarci).
 
@@ -462,10 +489,11 @@ riorganizzare il calcolo per non sprecare banda. Sotto nomi diversi, la domanda
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il collo di bottiglia di una GPU è quasi sempre portare i numeri, non
-  farci i conti. Tenere tanti gruppi al lavoro nasconde le attese, ma non fa
-  arrivare i dati più in fretta: quanti ne consegna la memoria al secondo (la
-  banda) è un tetto che non si alza.
+- Il collo di bottiglia di una GPU, più spesso che i conti, è portare i
+  numeri. Tenere tanti gruppi al lavoro nasconde le attese (la latenza), ma non
+  fa arrivare i dati più in fretta: quanti ne consegna la memoria al secondo
+  (la banda) è un tetto che non si alza. Le due misure vanno tenute distinte,
+  perché una si copre e l'altra no.
 - La memoria è una scrivania: la penna in mano (i *registri*, privatissimi
   e minuscoli), i fogli sul piano (la *shared memory*, il tavolo della
   squadra), il cassetto grande (la *cache L2*), l'armadio dall'altra parte
@@ -503,8 +531,8 @@ riorganizzare il calcolo per non sprecare banda. Sotto nomi diversi, la domanda
   memory e cache L1, lo stesso banco di SRAM ripartito da un pomello
   (per-blocco, on-chip) → cache L2 → memoria globale HBM (decine di GB,
   centinaia di cicli di latenza) → memoria host, oltre il PCIe. Salendo cresce
-  la velocità; la capienza cala *per unità che ne dispone*, non in assoluto (il
-  register file di un SM è più grande della sua L1+shared).
+  la velocità; la capienza cala *per unità che ne dispone*, non in assoluto (su
+  A100 il register file di un SM è più grande della sua L1+shared).
 - La coalescenza conta: se i 32 thread di un warp leggono indirizzi
   contigui, l'hardware fonde gli accessi in poche transazioni piene; sparsi,
   spreca banda (fino a $8\times$ nell'esempio). L'analogo un piano più su sono

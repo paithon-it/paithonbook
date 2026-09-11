@@ -1,49 +1,58 @@
-<svg viewBox="0 0 640 420" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Confronto tra jailbreak (attacco diretto) e prompt injection (attacco iniettato)">
-  <rect x="0" y="0" width="640" height="420" fill="#F8F5EE"/>
-  <line x1="320" y1="40" x2="320" y2="390" stroke="#C9A961" stroke-width="1.5" stroke-dasharray="4 5"/>
-  <text x="160" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Jailbreak</text>
-  <text x="160" y="48" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">attacco diretto</text>
-  <text x="480" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="bold" fill="#1A1A1A">Prompt injection</text>
-  <text x="480" y="48" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C">attacco iniettato</text>
-
-  <!-- LEFT: jailbreak -->
-  <rect x="90" y="80" width="140" height="46" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-  <text x="160" y="102" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Utente =</text>
-  <text x="160" y="118" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#B5532C">attaccante</text>
-  <line x1="160" y1="126" x2="160" y2="252" stroke="#B5532C" stroke-width="2"/>
-  <polygon points="160,262 154,248 166,248" fill="#B5532C"/>
-  <text x="176" y="196" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">prompt</text>
-  <text x="176" y="210" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">manipolato</text>
-  <rect x="90" y="262" width="140" height="60" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="160" y="288" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Modello</text>
-  <text x="160" y="306" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#B5532C">regole aggirate</text>
-  <text x="160" y="360" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">un solo attore,</text>
-  <text x="160" y="375" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">davanti allo schermo</text>
-
-  <!-- RIGHT: prompt injection -->
-  <rect x="356" y="72" width="118" height="44" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="415" y="92" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Utente</text>
-  <text x="415" y="108" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#2D5A5C">(vittima)</text>
-  <rect x="520" y="72" width="100" height="44" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
-  <text x="570" y="98" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#B5532C">Attaccante</text>
-
-  <rect x="470" y="158" width="150" height="56" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
-  <text x="545" y="180" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Contenuto esterno</text>
-  <text x="545" y="200" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#B5532C">istruzione nascosta</text>
-
-  <rect x="400" y="300" width="150" height="60" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
-  <text x="475" y="326" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Modello</text>
-  <text x="475" y="344" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">esegue l'ordine iniettato</text>
-
-  <!-- attacker hides instruction in content -->
-  <line x1="570" y1="116" x2="558" y2="158" stroke="#B5532C" stroke-width="2"/>
-  <polygon points="555,166 551,152 563,155" fill="#B5532C"/>
-  <!-- user asks legit task -->
-  <line x1="415" y1="116" x2="440" y2="300" stroke="#2D5A5C" stroke-width="2"/>
-  <polygon points="441,300 431,296 442,290" fill="#2D5A5C"/>
-  <!-- injected content flows into model -->
-  <line x1="540" y1="214" x2="512" y2="300" stroke="#B5532C" stroke-width="2"/>
-  <polygon points="510,300 512,286 520,296" fill="#B5532C"/>
-  <text x="480" y="378" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">l'attaccante non parla mai col modello:</text>
-  <text x="480" y="393" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">lascia l'ordine nei dati</text>
+<svg viewBox="0 0 720 470" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tre schemi affiancati. A sinistra il jailbreak: una scatola sola, «utente uguale attaccante», con una freccia che scende al modello, e sotto la riga «ci rimette chi offre il modello». In mezzo la prompt injection diretta: lo stesso attore solo, ma fra lui e il modello c'e' una scatola con le istruzioni del programma, «traduci quello che segue», che il suo «ignora quanto sopra» scavalca; ci rimette chi ha scritto il programma. A destra la prompt injection indiretta: due scatole in alto, l'utente vittima e un attaccante distinto; l'attaccante nasconde un'istruzione dentro un documento, l'utente manda al modello una domanda normale, e una freccia a due punte fra documento e modello dice che e' il modello ad andare a leggere e a portarsi il testo in contesto. L'attaccante non parla mai col modello.">
+  <defs><marker id="fB5532C" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/></marker><marker id="f2D5A5C" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/></marker><marker id="fC9A961" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C9A961"/></marker></defs>
+  <rect x="0" y="0" width="720" height="470" fill="#F8F5EE"/>
+  <line x1="242" y1="34" x2="242" y2="418" stroke="#C5BEAA" stroke-width="1.2" stroke-dasharray="4 5"/>
+  <line x1="478" y1="34" x2="478" y2="418" stroke="#C5BEAA" stroke-width="1.2" stroke-dasharray="4 5"/>
+  <text x="124" y="26" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A" font-weight="bold">Jailbreak</text>
+  <text x="124" y="44" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#B5532C">l&#8217;utente scavalca il fornitore</text>
+  <text x="360" y="26" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A" font-weight="bold">Prompt injection diretta</text>
+  <text x="360" y="44" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#C9A961">l&#8217;utente scavalca il programma</text>
+  <text x="596" y="26" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13.5" fill="#1A1A1A" font-weight="bold">Prompt injection indiretta</text>
+  <text x="596" y="44" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#2D5A5C">un terzo scavalca tutti e due</text>
+  <rect x="36.0" y="70" width="176" height="48" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="124" y="98.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Utente = attaccante</text>
+  <line x1="124" y1="118" x2="124" y2="286" stroke="#B5532C" stroke-width="2" marker-end="url(#fB5532C)"/>
+  <text x="132.0" y="196.0" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">chiede finch&#233;</text>
+  <text x="132.0" y="210.0" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">non passa</text>
+  <rect x="36.0" y="286" width="176" height="54" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="124" y="308.3333333333333" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Modello</text>
+  <text x="124" y="325.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#B5532C">regole del fornitore aggirate</text>
+  <text x="124" y="372" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">un attore solo</text>
+  <text x="124" y="390" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">ci rimette chi offre il modello</text>
+  <rect x="272.0" y="70" width="176" height="48" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="360" y="98.0" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A">Utente = attaccante</text>
+  <line x1="360" y1="118" x2="360" y2="178" stroke="#B5532C" stroke-width="2" marker-end="url(#fB5532C)"/>
+  <text x="368.0" y="142.0" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">&#171;ignora quanto sopra&#187;</text>
+  <rect x="260.0" y="178" width="200" height="48" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="360" y="197.83333333333334" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A">Istruzioni del programma</text>
+  <text x="360" y="213.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">&#171;traduci quello che segue&#187;</text>
+  <line x1="360" y1="226" x2="360" y2="286" stroke="#C9A961" stroke-width="2" marker-end="url(#fC9A961)"/>
+  <rect x="272.0" y="286" width="176" height="54" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="360" y="308.3333333333333" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Modello</text>
+  <text x="360" y="325.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#C9A961">esegue l&#8217;ordine dell&#8217;utente</text>
+  <text x="360" y="372" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">un attore solo, come nel jailbreak</text>
+  <text x="360" y="390" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">ci rimette chi ha scritto il programma</text>
+  <rect x="492.0" y="62" width="100" height="44" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="542" y="80.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A">Utente</text>
+  <text x="542" y="94.83333333333333" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#2D5A5C">(vittima)</text>
+  <rect x="606.0" y="62" width="96" height="44" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
+  <text x="654" y="87.83333333333333" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#B5532C">Attaccante</text>
+  <rect x="576.0" y="158" width="132" height="50" rx="8" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
+  <text x="642" y="178.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11.5" fill="#1A1A1A">Documento</text>
+  <text x="642" y="194.83333333333334" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#B5532C">istruzione nascosta</text>
+  <line x1="654" y1="106" x2="646" y2="158" stroke="#B5532C" stroke-width="2" marker-end="url(#fB5532C)"/>
+  <line x1="542" y1="106" x2="574" y2="286" stroke="#2D5A5C" stroke-width="2" marker-end="url(#f2D5A5C)"/>
+  <text x="530" y="196" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">domanda</text>
+  <text x="530" y="210" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">normale</text>
+  <line x1="658" y1="208" x2="618" y2="286" stroke="#C9A961" stroke-width="2" marker-end="url(#fC9A961)" marker-start="url(#fC9A961)"/>
+  <text x="644" y="246" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">il modello</text>
+  <text x="644" y="260" text-anchor="start" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#5E5852">va a leggere</text>
+  <rect x="508.0" y="286" width="176" height="54" rx="8" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="2"/>
+  <text x="596" y="308.3333333333333" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">Modello</text>
+  <text x="596" y="325.5" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#2D5A5C">esegue l&#8217;ordine del terzo</text>
+  <text x="596" y="372" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">due attori, e chi parla col modello</text>
+  <text x="596" y="390" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">&#232; la vittima</text>
+  <line x1="34" y1="418" x2="686" y2="418" stroke="#C5BEAA" stroke-width="1"/>
+  <text x="360.0" y="438" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">Nel jailbreak e nell&#8217;iniezione diretta l&#8217;attore &#232; uno solo, e cambia quale regola salta.</text>
+  <text x="360.0" y="456" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#5E5852">Nell&#8217;indiretta chi attacca non parla mai col modello: lascia l&#8217;ordine dove il modello andr&#224; a leggere.</text>
 </svg>

@@ -113,6 +113,15 @@ una GPU sono migliaia, i thread che ha in carico sono centinaia di migliaia. Ce
 ne sono molti più che postazioni, ed è proprio da lì che verrà il trucco che
 tiene la macchina sempre occupata.
 
+Quella parola, però, ha già fatto un altro mestiere, e conviene fermarsi una
+riga a separare i due. Nelle {doc}`basi di Python </Python/basi>` i thread
+erano i cuochi che si contendono un coltello solo: una manciata, ciascuno con
+la propria fila di istruzioni, e la morale era che per calcolare non servivano
+a niente. Qui sono centinaia di migliaia, la fila di istruzioni la ricevono a
+gruppi di trentadue, e calcolare è l'unica cosa che fanno. Di là resta il nome,
+e cambiano tutti e tre gli altri: quanti sono, come ricevono gli ordini, e a
+che cosa servono.
+
 Fatta questa premessa, ogni SM è una piccola macchina completa, con i suoi
 calcolatori, il suo caposquadra e i suoi ripiani di lavoro. Contiene:
 
@@ -334,6 +343,21 @@ e nessuno resti a mascherare tempo.
 
 `````
 
+Quanto costi, quel bivio, la {numref}`fig-plotone-si-divide` lo fa vedere
+contando le caselle.
+
+```{figure} ../figures/plotone-si-divide.svg
+:name: fig-plotone-si-divide
+:alt: "Due blocchi di caselle, una casella per ciascuno dei trentadue thread di un warp e una riga per ogni passo di esecuzione. Nel blocco di sopra tutti prendono la stessa strada: tre righe piene, trentadue caselle accese ciascuna. In quello di sotto il warp si divide a un bivio: sei righe invece di tre, e in ognuna solo sedici caselle sono accese mentre le altre sedici restano vuote, perché prima si esegue un ramo e poi l'altro. Le caselle accese sono novantasei in tutti e due i blocchi: stesso lavoro, tempo doppio."
+:width: 100%
+
+Una casella per thread, una riga per passo. Il lavoro utile è lo stesso nei
+due casi, novantasei caselle accese, ma sotto ci vogliono sei passi invece di
+tre, perché a ogni passo metà del plotone sta ferma. È tutto qui il costo di
+un ramo condizionale che divide i compagni: non si fa più lavoro, si occupa
+più tempo per farne altrettanto.
+```
+
 ## Nascondere la latenza: l'occupancy
 
 Resta la domanda cruciale. Ogni thread, prima o poi, chiede un dato alla
@@ -444,7 +468,9 @@ prossima sezione.
   lavoro. Insieme tengono al lavoro centinaia di migliaia di lavoratori.
 - I lavoratori si chiamano thread e non sono pezzi di ferro: un thread è un
   *compito*, «occupati tu di questo numero», e ce n'è qualche decina per ogni
-  postazione di lavoro vera. Sono organizzati come in un censimento:
+  postazione di lavoro vera. Non sono i thread di Python, che erano una manciata
+  e lì, per calcolare, non servivano a niente: qui è il contrario. Sono
+  organizzati come in un censimento:
   l'operazione intera (la *griglia*), le squadre di quartiere (i *blocchi*) e,
   dentro ogni squadra, i plotoni da 32 (i *warp*). Il 32 è arbitrario ma
   non cambia da vent'anni: se lo ricordi, ricordi metà del capitolo.

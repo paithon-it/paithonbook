@@ -42,8 +42,8 @@ toglierli di mezzo prima di rileggere:
   palette    colori fuori palette nelle figure scritte a mano (quelle generate
              le rifiuta gia' `scrivi()` in paithon_svg.py)
   ambiente   scene Manim che l'ambiente di oggi non saprebbe piu' rendere
-  lineette   i due travestimenti della lineetta che `CLAUDE.md` vieta: la
-             doppia `--` e il trattino singolo spaziato
+  lineette   i due travestimenti della lineetta che `CONTRIBUTING.md` vieta:
+             la doppia `--` e il trattino singolo spaziato
   stampa     cio' che serve al PDF e puo' restare indietro in silenzio: i tre
              fermi immagine di ogni animazione (mancanti, piu' vecchi
              dell'animazione, orfani) e le figure che dichiarano una famiglia
@@ -369,11 +369,11 @@ def contrapposizioni(testo: str) -> list[tuple[int, str]]:
             for pos in sorted(trovati)]
 
 
-# La marcatura di enfasi, contro cui `CLAUDE.md` e `CONTRIBUTING.md` mettono un
-# tetto. `(?!\s)` e `(?<!\s)` perche' `** ` e ` **` in CommonMark non aprono e
-# non chiudono niente, e `re.S` perche' il libro va a capo a ottanta colonne:
-# meta' delle marcature lunghe sta a cavallo di un a capo, e un pattern che non
-# lo attraversa ne conta la meta'.
+# La marcatura di enfasi, contro cui `CONTRIBUTING.md` mette un tetto. `(?!\s)`
+# e `(?<!\s)` perche' `** ` e ` **` in CommonMark non aprono e non chiudono
+# niente, e `re.S` perche' il libro va a capo a ottanta colonne: meta' delle
+# marcature lunghe sta a cavallo di un a capo, e un pattern che non lo
+# attraversa ne conta la meta'.
 RX_NERETTO = re.compile(r"\*\*(?!\s)(?:(?!\*\*).)+?(?<!\s)\*\*", re.S)
 
 # Il riempitivo con cui questo asse maschera: un carattere pieno, per la
@@ -813,8 +813,8 @@ def main():
         #      con la sua glossa.
         #
         # Nessuna delle ventisette ha richiesto di rinominare. Prima di
-        # ripararne una si legga in `CLAUDE.md` quando una collisione e' un
-        # difetto e quando e' una convenzione: la medicina non e' sempre
+        # ripararne una si legga in `CONTRIBUTING.md` quando una collisione
+        # e' un difetto e quando e' una convenzione: la medicina non e' sempre
         # rinominare, e questo asse non lo sa.
         glossa = re.compile(
             r"\$\\?([A-Za-z]|\\[a-zA-Z]+)(?:_\{?\w+\}?)?\$\s*(?:è|e')\s+"
@@ -975,9 +975,9 @@ def main():
         #
         # Le due cose non pesano uguale, e infatti qui non pesano uguale.
         #
-        # La LINEETTA e' un difetto e basta: `CLAUDE.md` la vieta, non c'e'
-        # nessuna decisione in sospeso, e chi corregge il testo non ha modo di
-        # sapere che quella lineetta e' disegnata anche altrove. Conta.
+        # La LINEETTA e' un difetto e basta: `CONTRIBUTING.md` la vieta, non
+        # c'e' nessuna decisione in sospeso, e chi corregge il testo non ha
+        # modo di sapere che quella lineetta e' disegnata anche altrove. Conta.
         #
         # Il COLORE fuori palette e' un elenco da guardare: `#5E5852` con 927
         # usi e' una convenzione stabilita che pero' esiste solo nei file, e
@@ -1177,13 +1177,13 @@ def main():
                     break
 
     if "lineette" in attivi:
-        # `CLAUDE.md` vieta la lineetta lunga (—) perche' non e' nello stile
-        # dell'autore. Ma la stessa cosa si scrive in altri due modi, e sono i
-        # due che una macchina produce piu' volentieri: la **doppia lineetta**
-        # `--` e il **trattino singolo spaziato** ` - `. Vanno tenuti fuori con
-        # lo stesso rigore: sono la firma piu' riconoscibile di un testo
-        # generato, e a differenza della lineetta lunga non si vedono a colpo
-        # d'occhio scorrendo una pagina.
+        # `CONTRIBUTING.md` vieta la lineetta lunga (—) perche' non e' nello
+        # stile dell'autore. Ma la stessa cosa si scrive in altri due modi, e
+        # sono i due che una macchina produce piu' volentieri: la **doppia
+        # lineetta** `--` e il **trattino singolo spaziato** ` - `. Vanno
+        # tenuti fuori con lo stesso rigore: sono la firma piu' riconoscibile
+        # di un testo generato, e a differenza della lineetta lunga non si
+        # vedono a colpo d'occhio scorrendo una pagina.
         #
         # Il libro oggi e' pulito su tutte e tre le forme (misurato: zero
         # occorrenze in prosa), quindi questo controllo non ripara, impedisce di
@@ -1213,9 +1213,9 @@ def main():
                         f"{f}:{n}  {pulita.strip()[:88]}")
 
     if "contrapposizioni" in attivi:
-        # «non e' X, e' Y». `CLAUDE.md` ne ammette **due per capitolo**, e solo
-        # dove la contrapposizione *e'* l'argomento. Fuori di li' e' la cadenza
-        # da diapositiva: il paragrafo si presenta prima di parlare.
+        # «non e' X, e' Y». `CONTRIBUTING.md` ne ammette **due per capitolo**,
+        # e solo dove la contrapposizione *e'* l'argomento. Fuori di li' e' la
+        # cadenza da diapositiva: il paragrafo si presenta prima di parlare.
         #
         # Questo asse nasce da una campagna, e la campagna ha insegnato tre
         # cose che stanno tutte nel codice qui sotto.
@@ -1284,11 +1284,11 @@ def main():
                 problemi[chiave].append(f"    … e altre {len(righe) - 4}")
 
     if "enfasi" in attivi:
-        # Il tetto e' scritto in `CLAUDE.md` e in `CONTRIBUTING.md`: **cinque
-        # marcature di enfasi ogni mille parole di prosa**. Nasce da un
-        # confronto con testi tecnici di riferimento, che non sono piu'
-        # semplici ne' piu' poveri di analogie: non marcano tipograficamente
-        # il ritmo del proprio ragionamento.
+        # Il tetto e' scritto in `CONTRIBUTING.md`: **cinque marcature di
+        # enfasi ogni mille parole di prosa**. Nasce da un confronto con testi
+        # tecnici di riferimento, che non sono piu' semplici ne' piu' poveri
+        # di analogie: non marcano tipograficamente il ritmo del proprio
+        # ragionamento.
         #
         # Questo asse non giudica **quale** marcatura sia giusta, e non e' una
         # rinuncia: i due assi provati e scartati che stanno in cima a questo

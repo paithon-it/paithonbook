@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../posto-che-si-libera.svg
+-->
+<!--
+  Paithon Book, figura animata: continuous batching: il posto che si libera viene ripreso subito
+  Generata da animazioni/svg/posto-che-si-libera.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 442"
+     role="img" aria-label="Due sale a confronto sullo stesso orologio, quattro posti ciascuna e una coda di dieci richieste. Nel batching statico le richieste partono insieme e chi finisce lascia il posto vuoto fino alla fine della più lunga: all'ultima iterazione mostrata resta un posto pieno e tre fermi, con la coda ancora intera e tre richieste concluse. Nel continuous batching ogni posto che si libera viene ripreso all'iterazione dopo: i quattro posti sono sempre pieni, la coda si è quasi svuotata e le richieste concluse sono cinque. In fondo il conto dei posti-iterazione occupati, 28 su 48 contro 48 su 48.">
+  <style>
+    svg  { --d: 10.8s; }
+    .ax  { stroke:#34302A; stroke-width:2; fill:none; }
+    .axc { stroke:#221F1A; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
+    .sala { fill:none; stroke:#34302A; stroke-width:2; }
+    .pan  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#F4ECDD; }
+    .ite  { font-family:Inter, system-ui, sans-serif; font-size:15px; font-weight:700; fill:#E27B52; }
+    .occ  { fill:#5BA39C; stroke:#F4ECDD; stroke-width:1.5; }
+    .ric  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#0E0C0A; }
+    .fermo { fill:none; stroke:#E27B52; stroke-width:1.5; stroke-dasharray:5 4; }
+    .fer  { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#E27B52; }
+    .pill { fill:#DDB874; stroke:#F4ECDD; stroke-width:1.2; }
+        @keyframes v0{0.00%{opacity:1}8.33%{opacity:1}9.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v1{0.00%{opacity:0}7.23%{opacity:0}8.33%{opacity:1}16.67%{opacity:1}17.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v2{0.00%{opacity:0}15.57%{opacity:0}16.67%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v3{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}33.33%{opacity:1}34.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v4{0.00%{opacity:0}32.23%{opacity:0}33.33%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v5{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}50.00%{opacity:1}51.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v6{0.00%{opacity:0}48.90%{opacity:0}50.00%{opacity:1}58.33%{opacity:1}59.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v7{0.00%{opacity:0}57.23%{opacity:0}58.33%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v8{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v9{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}83.33%{opacity:1}84.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v10{0.00%{opacity:0}82.23%{opacity:0}83.33%{opacity:1}91.67%{opacity:1}92.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v11{0.00%{opacity:0}90.57%{opacity:0}91.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v12{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v13{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v14{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v15{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v16{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v17{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v18{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v19{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v20{0.00%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v21{0.00%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v22{0.00%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v23{0.00%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v24{0.00%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v25{0.00%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v26{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v27{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v28{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v29{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v30{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v31{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v32{0.00%{opacity:1}8.33%{opacity:1}9.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v33{0.00%{opacity:1}8.33%{opacity:1}9.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v34{0.00%{opacity:0}7.23%{opacity:0}8.33%{opacity:1}16.67%{opacity:1}17.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v35{0.00%{opacity:0}7.23%{opacity:0}8.33%{opacity:1}16.67%{opacity:1}17.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v36{0.00%{opacity:0}15.57%{opacity:0}16.67%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v37{0.00%{opacity:0}15.57%{opacity:0}16.67%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v38{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}33.33%{opacity:1}34.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v39{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}33.33%{opacity:1}34.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v40{0.00%{opacity:0}32.23%{opacity:0}33.33%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v41{0.00%{opacity:0}32.23%{opacity:0}33.33%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v42{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}50.00%{opacity:1}51.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v43{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}50.00%{opacity:1}51.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v44{0.00%{opacity:0}48.90%{opacity:0}50.00%{opacity:1}58.33%{opacity:1}59.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v45{0.00%{opacity:0}48.90%{opacity:0}50.00%{opacity:1}58.33%{opacity:1}59.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v46{0.00%{opacity:0}57.23%{opacity:0}58.33%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v47{0.00%{opacity:0}57.23%{opacity:0}58.33%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v48{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v49{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v50{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}83.33%{opacity:1}84.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v51{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}83.33%{opacity:1}84.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v52{0.00%{opacity:0}82.23%{opacity:0}83.33%{opacity:1}91.67%{opacity:1}92.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v53{0.00%{opacity:0}82.23%{opacity:0}83.33%{opacity:1}91.67%{opacity:1}92.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v54{0.00%{opacity:0}90.57%{opacity:0}91.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v55{0.00%{opacity:0}90.57%{opacity:0}91.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v56{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v57{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v58{0.00%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v59{0.00%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v60{0.00%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v61{0.00%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v62{0.00%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v63{0.00%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v64{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v65{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v66{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v67{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v68{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v69{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v70{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v71{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v72{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v73{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v74{0.00%{opacity:1}100.00%{opacity:1}}
+    @keyframes v75{0.00%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v76{0.00%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v77{0.00%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v78{0.00%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v79{0.00%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v80{0.00%{opacity:1}8.33%{opacity:1}9.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v81{0.00%{opacity:1}8.33%{opacity:1}9.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v82{0.00%{opacity:0}7.23%{opacity:0}8.33%{opacity:1}16.67%{opacity:1}17.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v83{0.00%{opacity:0}7.23%{opacity:0}8.33%{opacity:1}16.67%{opacity:1}17.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v84{0.00%{opacity:0}15.57%{opacity:0}16.67%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v85{0.00%{opacity:0}15.57%{opacity:0}16.67%{opacity:1}25.00%{opacity:1}26.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v86{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}33.33%{opacity:1}34.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v87{0.00%{opacity:0}23.90%{opacity:0}25.00%{opacity:1}33.33%{opacity:1}34.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v88{0.00%{opacity:0}32.23%{opacity:0}33.33%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v89{0.00%{opacity:0}32.23%{opacity:0}33.33%{opacity:1}41.67%{opacity:1}42.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v90{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}50.00%{opacity:1}51.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v91{0.00%{opacity:0}40.57%{opacity:0}41.67%{opacity:1}50.00%{opacity:1}51.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v92{0.00%{opacity:0}48.90%{opacity:0}50.00%{opacity:1}58.33%{opacity:1}59.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v93{0.00%{opacity:0}48.90%{opacity:0}50.00%{opacity:1}58.33%{opacity:1}59.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v94{0.00%{opacity:0}57.23%{opacity:0}58.33%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v95{0.00%{opacity:0}57.23%{opacity:0}58.33%{opacity:1}66.67%{opacity:1}67.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v96{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v97{0.00%{opacity:0}65.57%{opacity:0}66.67%{opacity:1}75.00%{opacity:1}76.10%{opacity:0}100.00%{opacity:0}}
+    @keyframes v98{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}83.33%{opacity:1}84.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v99{0.00%{opacity:0}73.90%{opacity:0}75.00%{opacity:1}83.33%{opacity:1}84.43%{opacity:0}100.00%{opacity:0}}
+    @keyframes v100{0.00%{opacity:0}82.23%{opacity:0}83.33%{opacity:1}91.67%{opacity:1}92.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v101{0.00%{opacity:0}82.23%{opacity:0}83.33%{opacity:1}91.67%{opacity:1}92.77%{opacity:0}100.00%{opacity:0}}
+    @keyframes v102{0.00%{opacity:0}90.57%{opacity:0}91.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes v103{0.00%{opacity:0}90.57%{opacity:0}91.67%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { .occ, .ric, .fermo, .fer, .pill, .ite, .lbl { animation:none !important; } }
+  </style>
+  <text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v0 var(--d) infinite">iterazione 1 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v1 var(--d) infinite">iterazione 2 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v2 var(--d) infinite">iterazione 3 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v3 var(--d) infinite">iterazione 4 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v4 var(--d) infinite">iterazione 5 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v5 var(--d) infinite">iterazione 6 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v6 var(--d) infinite">iterazione 7 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v7 var(--d) infinite">iterazione 8 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v8 var(--d) infinite">iterazione 9 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v9 var(--d) infinite">iterazione 10 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="0" style="animation:v10 var(--d) infinite">iterazione 11 di 12</text><text class="ite" x="360" y="26" text-anchor="middle" opacity="1" style="animation:v11 var(--d) infinite">iterazione 12 di 12</text><text class="pan" x="46" y="58">Batching statico</text><rect class="sala" x="46" y="70" width="300" height="182" rx="6"/><rect class="fermo" x="60" y="124" width="272" height="32" rx="4" opacity="1" style="animation:v12 var(--d) infinite"/><text class="fer" x="196" y="145" text-anchor="middle" opacity="1" style="animation:v13 var(--d) infinite">posto fermo</text><rect class="fermo" x="60" y="166" width="272" height="32" rx="4" opacity="1" style="animation:v14 var(--d) infinite"/><text class="fer" x="196" y="187" text-anchor="middle" opacity="1" style="animation:v15 var(--d) infinite">posto fermo</text><rect class="fermo" x="60" y="208" width="272" height="32" rx="4" opacity="1" style="animation:v16 var(--d) infinite"/><text class="fer" x="196" y="229" text-anchor="middle" opacity="1" style="animation:v17 var(--d) infinite">posto fermo</text><rect class="occ" x="60" y="82" width="272" height="32" rx="4" opacity="1" style="animation:v18 var(--d) infinite"/><text class="ric" x="196" y="103" text-anchor="middle" opacity="1" style="animation:v19 var(--d) infinite">richiesta A (12 iterazioni)</text><rect class="occ" x="60" y="124" width="272" height="32" rx="4" opacity="0" style="animation:v20 var(--d) infinite"/><text class="ric" x="196" y="145" text-anchor="middle" opacity="0" style="animation:v21 var(--d) infinite">richiesta B (3 iterazioni)</text><rect class="occ" x="60" y="166" width="272" height="32" rx="4" opacity="0" style="animation:v22 var(--d) infinite"/><text class="ric" x="196" y="187" text-anchor="middle" opacity="0" style="animation:v23 var(--d) infinite">richiesta C (5 iterazioni)</text><rect class="occ" x="60" y="208" width="272" height="32" rx="4" opacity="0" style="animation:v24 var(--d) infinite"/><text class="ric" x="196" y="229" text-anchor="middle" opacity="0" style="animation:v25 var(--d) infinite">richiesta D (8 iterazioni)</text><text class="lbs" x="46" y="301">in coda</text><rect class="pill" x="132" y="288" width="22" height="16" rx="3" opacity="1" style="animation:v26 var(--d) infinite"/><rect class="pill" x="160" y="288" width="22" height="16" rx="3" opacity="1" style="animation:v27 var(--d) infinite"/><rect class="pill" x="188" y="288" width="22" height="16" rx="3" opacity="1" style="animation:v28 var(--d) infinite"/><rect class="pill" x="216" y="288" width="22" height="16" rx="3" opacity="1" style="animation:v29 var(--d) infinite"/><rect class="pill" x="244" y="288" width="22" height="16" rx="3" opacity="1" style="animation:v30 var(--d) infinite"/><rect class="pill" x="272" y="288" width="22" height="16" rx="3" opacity="1" style="animation:v31 var(--d) infinite"/><text class="lbl" x="46" y="322" opacity="0" style="animation:v32 var(--d) infinite">concluse: nessuna</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v33 var(--d) infinite">posti-iterazione usati: 4 su 4</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v34 var(--d) infinite">concluse: nessuna</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v35 var(--d) infinite">posti-iterazione usati: 8 su 8</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v36 var(--d) infinite">concluse: nessuna</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v37 var(--d) infinite">posti-iterazione usati: 12 su 12</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v38 var(--d) infinite">concluse: una</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v39 var(--d) infinite">posti-iterazione usati: 15 su 16</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v40 var(--d) infinite">concluse: una</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v41 var(--d) infinite">posti-iterazione usati: 18 su 20</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v42 var(--d) infinite">concluse: due</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v43 var(--d) infinite">posti-iterazione usati: 20 su 24</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v44 var(--d) infinite">concluse: due</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v45 var(--d) infinite">posti-iterazione usati: 22 su 28</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v46 var(--d) infinite">concluse: due</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v47 var(--d) infinite">posti-iterazione usati: 24 su 32</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v48 var(--d) infinite">concluse: tre</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v49 var(--d) infinite">posti-iterazione usati: 25 su 36</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v50 var(--d) infinite">concluse: tre</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v51 var(--d) infinite">posti-iterazione usati: 26 su 40</text><text class="lbl" x="46" y="322" opacity="0" style="animation:v52 var(--d) infinite">concluse: tre</text><text class="lbl" x="46" y="346" opacity="0" style="animation:v53 var(--d) infinite">posti-iterazione usati: 27 su 44</text><text class="lbl" x="46" y="322" opacity="1" style="animation:v54 var(--d) infinite">concluse: tre</text><text class="lbl" x="46" y="346" opacity="1" style="animation:v55 var(--d) infinite">posti-iterazione usati: 28 su 48</text><text class="pan" x="374" y="58">Continuous batching</text><rect class="sala" x="374" y="70" width="300" height="182" rx="6"/><rect class="occ" x="388" y="82" width="272" height="32" rx="4" opacity="1" style="animation:v56 var(--d) infinite"/><text class="ric" x="524" y="103" text-anchor="middle" opacity="1" style="animation:v57 var(--d) infinite">richiesta A (12 iterazioni)</text><rect class="occ" x="388" y="124" width="272" height="32" rx="4" opacity="0" style="animation:v58 var(--d) infinite"/><text class="ric" x="524" y="145" text-anchor="middle" opacity="0" style="animation:v59 var(--d) infinite">richiesta B (3 iterazioni)</text><rect class="occ" x="388" y="166" width="272" height="32" rx="4" opacity="0" style="animation:v60 var(--d) infinite"/><text class="ric" x="524" y="187" text-anchor="middle" opacity="0" style="animation:v61 var(--d) infinite">richiesta C (5 iterazioni)</text><rect class="occ" x="388" y="208" width="272" height="32" rx="4" opacity="0" style="animation:v62 var(--d) infinite"/><text class="ric" x="524" y="229" text-anchor="middle" opacity="0" style="animation:v63 var(--d) infinite">richiesta D (8 iterazioni)</text><rect class="occ" x="388" y="124" width="272" height="32" rx="4" opacity="0" style="animation:v64 var(--d) infinite"/><text class="ric" x="524" y="145" text-anchor="middle" opacity="0" style="animation:v65 var(--d) infinite">richiesta E (6 iterazioni)</text><rect class="occ" x="388" y="166" width="272" height="32" rx="4" opacity="0" style="animation:v66 var(--d) infinite"/><text class="ric" x="524" y="187" text-anchor="middle" opacity="0" style="animation:v67 var(--d) infinite">richiesta F (4 iterazioni)</text><rect class="occ" x="388" y="208" width="272" height="32" rx="4" opacity="1" style="animation:v68 var(--d) infinite"/><text class="ric" x="524" y="229" text-anchor="middle" opacity="1" style="animation:v69 var(--d) infinite">richiesta G (7 iterazioni)</text><rect class="occ" x="388" y="124" width="272" height="32" rx="4" opacity="1" style="animation:v70 var(--d) infinite"/><text class="ric" x="524" y="145" text-anchor="middle" opacity="1" style="animation:v71 var(--d) infinite">richiesta H (5 iterazioni)</text><rect class="occ" x="388" y="166" width="272" height="32" rx="4" opacity="1" style="animation:v72 var(--d) infinite"/><text class="ric" x="524" y="187" text-anchor="middle" opacity="1" style="animation:v73 var(--d) infinite">richiesta I (9 iterazioni)</text><text class="lbs" x="374" y="301">in coda</text><rect class="pill" x="460" y="288" width="22" height="16" rx="3" opacity="1" style="animation:v74 var(--d) infinite"/><rect class="pill" x="488" y="288" width="22" height="16" rx="3" opacity="0" style="animation:v75 var(--d) infinite"/><rect class="pill" x="516" y="288" width="22" height="16" rx="3" opacity="0" style="animation:v76 var(--d) infinite"/><rect class="pill" x="544" y="288" width="22" height="16" rx="3" opacity="0" style="animation:v77 var(--d) infinite"/><rect class="pill" x="572" y="288" width="22" height="16" rx="3" opacity="0" style="animation:v78 var(--d) infinite"/><rect class="pill" x="600" y="288" width="22" height="16" rx="3" opacity="0" style="animation:v79 var(--d) infinite"/><text class="lbl" x="374" y="322" opacity="0" style="animation:v80 var(--d) infinite">concluse: nessuna</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v81 var(--d) infinite">posti-iterazione usati: 4 su 4</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v82 var(--d) infinite">concluse: nessuna</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v83 var(--d) infinite">posti-iterazione usati: 8 su 8</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v84 var(--d) infinite">concluse: nessuna</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v85 var(--d) infinite">posti-iterazione usati: 12 su 12</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v86 var(--d) infinite">concluse: una</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v87 var(--d) infinite">posti-iterazione usati: 16 su 16</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v88 var(--d) infinite">concluse: una</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v89 var(--d) infinite">posti-iterazione usati: 20 su 20</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v90 var(--d) infinite">concluse: due</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v91 var(--d) infinite">posti-iterazione usati: 24 su 24</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v92 var(--d) infinite">concluse: due</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v93 var(--d) infinite">posti-iterazione usati: 28 su 28</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v94 var(--d) infinite">concluse: due</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v95 var(--d) infinite">posti-iterazione usati: 32 su 32</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v96 var(--d) infinite">concluse: tre</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v97 var(--d) infinite">posti-iterazione usati: 36 su 36</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v98 var(--d) infinite">concluse: cinque</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v99 var(--d) infinite">posti-iterazione usati: 40 su 40</text><text class="lbl" x="374" y="322" opacity="0" style="animation:v100 var(--d) infinite">concluse: cinque</text><text class="lbl" x="374" y="346" opacity="0" style="animation:v101 var(--d) infinite">posti-iterazione usati: 44 su 44</text><text class="lbl" x="374" y="322" opacity="1" style="animation:v102 var(--d) infinite">concluse: cinque</text><text class="lbl" x="374" y="346" opacity="1" style="animation:v103 var(--d) infinite">posti-iterazione usati: 48 su 48</text><text class="lbl" x="46" y="400">Stesso orologio e stessa coda: lo statico rinnova il mazzo solo quando ha finito anche</text><text class="lbl" x="46" y="422">la più lunga; il continuo riprende ogni posto all’iterazione dopo che si è liberato.</text>
+</svg>

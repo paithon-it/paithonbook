@@ -287,15 +287,34 @@ distinguiamo lungo tre assi.
   input→output $f$ e resta valido per qualunque modello, al costo di stimare il
   comportamento per campionamento anziché leggerlo dai parametri.
 
-I tre assi sono largamente indipendenti: LIME, che vedremo, è post-hoc, locale e
-agnostico; i coefficienti di una regressione lineare sono intrinseci, globali e
-specifici.
+I tre assi sono largamente indipendenti, e a mostrarlo serve un esempio che li
+separi, perché i due che vengono in mente per primi non lo fanno: LIME, che
+vedremo, è post-hoc, locale e agnostico, e i coefficienti di una regressione
+lineare sono intrinseci, globali e specifici, cioè stanno ai due capi di tutti
+e tre. L'esempio che separa è la *permutation importance* della {doc}`sezione
+su alberi e metodi ensemble </MachineLearning/alberi-ensemble>`, che mescola a
+caso una colonna e guarda di quanto il modello peggiora: post-hoc come LIME,
+agnostica come LIME, e però globale, perché quel che restituisce vale su tutti
+gli esempi insieme e non su una risposta sola.
 
 `````
 
-Le tre domande dicono *come* lavora un metodo, non che cosa restituisce. E qui
-c'è una trappola, perché sotto la parola «spiegazione» questo
-capitolo mette oggetti di forma diversissima:
+```{figure} ../figures/interpretabilita-tre-assi.svg
+:name: fig-interpretabilita-assi
+:alt: "Tre assi orizzontali sovrapposti, ognuno con un capo a sinistra e uno a destra: si legge da sé (trasparente) contro si spiega dopo (post-hoc); tutto il modello (globale) contro una risposta sola (locale); un tipo di modello (specifico) contro qualunque modello (agnostico). Su ogni asse sono appoggiati tre metodi, ciascuno con il suo colore e una spezzata che unisce le sue tre scelte. I coefficienti di una regressione lineare stanno a sinistra su tutti e tre gli assi e la loro spezzata è diritta; LIME, il metodo che spiega una risposta per volta, sta a destra su tutti e tre e anche la sua è diritta; rimescolare una colonna per vedere quanto peggiora il modello sta a destra sul primo asse, a sinistra sul secondo e a destra sul terzo, e la sua spezzata zigzaga."
+:width: 100%
+
+Le tre domande in fila, con tre metodi appoggiati sopra. Che le tre scelte si
+facciano davvero una per una lo dice la spezzata di mezzo, la sola che cambia
+lato: rimescolare una colonna per vedere quanto il modello peggiora si fa a
+modello già addestrato e va bene su qualunque modello, ma quello che ne esce
+riguarda il modello intero e non una risposta sola.
+```
+
+Le tre domande, e la {numref}`fig-interpretabilita-assi` con loro, dicono
+*come* lavora un metodo, non che cosa restituisce. E qui c'è una trappola,
+perché sotto la parola «spiegazione» questo capitolo mette oggetti di forma
+diversissima:
 
 - una classifica delle colonne, valida per tutti gli esempi insieme: «in
   questo modello il reddito conta più dell'età, e il colore preferito non conta
@@ -310,12 +329,20 @@ capitolo mette oggetti di forma diversissima:
 - un altro caso, quasi identico, in cui la risposta cambia: «con 6 000 euro
   di reddito in più sarebbe stato un sì»;
 - una macchia colorata sopra una fotografia, come quella che ha smascherato
-  la neve.
+  la neve;
+- un pezzo del modello indicato col dito: la soglia su cui un albero si
+  biforca, il gruppetto di neuroni che insieme fanno una cosa riconoscibile. È
+  la sola delle sei che si legge *dentro* il modello invece di ricavarla dalle
+  sue risposte, e per questo vale soltanto per il tipo di modello che si sta
+  aprendo, mai per uno qualsiasi
+  {cite}`molnar2022interpretable`. È la forma che restituisce la
+  {doc}`sezione su attribuzione e meccanicistica
+  </Interpretabilita/attribuzione-e-meccanicistica>`.
 
-Cinque cose che non si assomigliano per niente, e la prima e la seconda si
+Sei cose che non si assomigliano per niente, e la prima e la seconda si
 somigliano solo in apparenza: una classifica non ti dice niente sul tuo caso, e
 un conto sul tuo caso non è una classifica valida per tutti. Quando una sezione
-dice «spiegazione», la prima domanda utile è quale delle cinque.
+dice «spiegazione», la prima domanda utile è quale delle sei.
 
 C'è poi una quarta domanda, che non riguarda il funzionamento di un metodo ma
 decide quale risposta sia quella giusta: si vuole spiegare il modello, o il

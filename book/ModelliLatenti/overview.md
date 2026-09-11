@@ -5,8 +5,9 @@ quattro materie: le materie classiche, il francese, l’inglese e la matematica.
 I voti si somigliano più di quanto dovrebbero. Chi va bene in una tende ad
 andare bene anche nelle altre, e quel «tende» si può misurare: si prendono due
 materie, si guardano le due graduatorie della classe e si chiede quanto vadano
-d’accordo, con un numero che vale 0 se non c’entrano niente l’una con l’altra e
-1 se sono la stessa identica graduatoria. Charles Spearman fa il conto per ogni
+d’accordo, con un numero che vale 0 se non c’entrano niente l’una con l’altra,
+1 se sono la stessa identica graduatoria, e scende sotto zero quando una sale
+mentre l’altra scende. Charles Spearman fa il conto per ogni
 coppia di materie, e poi, per ciascuna materia, la media dei tre confronti con
 le altre tre: gli vengono 0,77 per le materie classiche, 0,72 per il francese,
 0,70 per l’inglese, 0,67 per la matematica {cite}`spearman1904general`. Sono
@@ -66,8 +67,10 @@ probabile; la stessa foto con il muro fatto di puntini colorati a caso non lo
 è. E chi sa rispondere sa anche fabbricare, perché sapere quali immagini sono
 attese è sapere quali produrre.
 
-Il guaio è che quella formula nessuno la sa scrivere. Il dato è enorme
-(un’immagine a colori piccola sono già centinaia di migliaia di numeri) e le
+Il guaio è che quella formula nessuno la sa scrivere. Il dato è enorme (una
+fotografia da $300 \times 300$ puntini, che è piccola, sono novantamila
+puntini, e ognuno vuole tre numeri per il rosso, il verde e il blu:
+duecentosettantamila numeri in tutto) e le
 sue parti sono legate fra loro in modi che sfuggono: due pixel vicini hanno
 quasi sempre lo stesso colore, tranne sui contorni, e dove passano i contorni
 dipende da che cosa c’è nella foto.
@@ -97,12 +100,16 @@ messa nessuno: è comparsa perché una parte della storia, cioè quale sacchetto
 
 Se qualcuno ti dicesse a ogni pescata da quale sacchetto viene la biglia, il
 conto sarebbe una banalità: guardi il sacchetto, sai la sua gobba, hai finito.
-Il conto diventa difficile proprio perché quel dato manca. Tutto quello che
-segue nasce da lì, ed è anche la ragione per cui la mossa paga.
+Siccome quel dato manca, per sapere quanto è probabile una biglia bisogna
+mettere in conto tutti i sacchetti da cui poteva venire. Con due sono due
+conti e si fanno a mente: il capitolo esiste perché fra poco i sacchetti non
+saranno due.
 
-Nei casi che ci interessano i sacchetti sono infiniti e non due: al posto
-delle due scatole c’è un righello, si sorteggia un punto qualunque, e una
-regola dice attorno a che misura stanno le biglie del sacchetto che sta lì.
+Nei casi che ci interessano sono infiniti. Immaginali allineati lungo un
+righello, uno per ogni punto: si sorteggia un punto del righello, e una regola
+dice attorno a che misura stanno le biglie del sacchetto che sta lì. E il
+sorteggio non è alla pari: i punti vicini al centro escono spesso, quelli
+lontani quasi mai, ed è una preferenza che decidiamo noi prima di cominciare.
 
 E i sacchetti nessuno te li ha mostrati. Torna ai due del cassetto e cambiali
 di poco, 12 e 14 millimetri con la stessa variazione: l’istogramma fa una gobba
@@ -130,9 +137,10 @@ sorteggiato, scelta da noi e di solito semplicissima), $p_\theta(\mathbf{x}
 parametri del modello generativo. L’integrale diventa una somma quando
 $\mathbf{z}$ è discreto.
 
-Il caso discreto il libro l’ha già visto e non l’ha chiamato così: nella
+Il caso discreto il libro l’ha già visto, e con questo nome: nella
 mistura di gaussiane della sezione su riduzione e clustering, $z \in \{1,
-\dots, K\}$ è la componente da cui l’esempio proviene, $p(z = k) = \pi_k$ il
+\dots, K\}$, la componente da cui l’esempio proviene, è introdotta lì proprio
+come variabile latente. Là $p(z = k) = \pi_k$ è il
 suo peso e $p(\mathbf{x} \mid z = k) = \mathcal{N}(\mathbf{x};
 \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$ la sua campana, con
 $\boldsymbol{\mu}_k$ il centro della componente $k$ e
@@ -144,7 +152,7 @@ p(\mathbf{x}) = \sum_{k=1}^{K} \pi_k\,
 $$
 
 può essere multimodale pur essendo fatta di soli pezzi unimodali: con $K = 2$ è
-la densità a due gobbe che nasce da due sole campane, una per sacchetto. Le
+la densità a due gobbe che nasce da due sole componenti. Le
 gobbe però non sono garantite, e la soglia si calcola: due componenti di ugual
 peso e ugual larghezza ne danno due soltanto se i centri distano più di due
 deviazioni standard, e sotto quella soglia la densità torna a una gobba sola
@@ -155,11 +163,12 @@ Il caso continuo generalizza la stessa costruzione: se $p(\mathbf{z}) =
 \mathcal{N}\big(\mathbf{x};\, f_\theta(\mathbf{z}),\, \sigma^2
 \mathbf{I}\big)$, dove $f_\theta$ è una rete neurale e $\sigma^2$ la varianza
 del rumore che il decoder aggiunge (da non confondere con la varianza della
-zona proposta dall’encoder, che comparirà nella sezione sull’ELBO), allora
-$p_\theta(\mathbf{x})$ è una mistura infinita di gaussiane sferiche, i cui
-centri sono le uscite della rete e i cui pesi sono dati dal prior. Una rete
-deterministica più due gaussiane elementari bastano quindi a descrivere una
-distribuzione che non si saprebbe scrivere in nessun altro modo.
+zona proposta dall’encoder, che comparirà nella sezione sul salto
+probabilistico), allora $p_\theta(\mathbf{x})$ è una mistura infinita di
+gaussiane sferiche, i cui centri sono le uscite della rete e i cui pesi sono
+dati dal prior. Una rete deterministica più due gaussiane elementari bastano
+quindi a descrivere una distribuzione che in forma chiusa non si saprebbe
+scrivere.
 
 Con $f_\theta$ affine il modello diventa la PCA probabilistica, la cui
 soluzione a massima verosimiglianza individua il sottospazio generato dalle
@@ -172,10 +181,12 @@ ortogonale, cioè alla PCA della sezione su riduzione e clustering, e il codice
 ne è un sistema di coordinate. Cambiando l’ipotesi sul rumore, da una sola
 varianza per tutte le componenti osservate a una varianza per ciascuna, si
 ottiene
-l’**analisi fattoriale**, che è esattamente il modello di Spearman: un fattore
-comune a tutte le prove più uno scarto proprio di ciascuna, e nel lavoro del
-1904 quello scarto è già misurato prova per prova (per le materie classiche
-sta al fattore comune come 1 sta a 99, per la matematica come 26 a 74). Stessa
+l’**analisi fattoriale**, e con un fattore solo è il modello di Spearman: una
+quantità comune a tutte le prove più uno scarto proprio di ciascuna. Nel
+lavoro del 1904 quel rapporto è già stimato prova per prova, sulle
+correlazioni corrette per l’errore di misura e non su quelle grezze
+dell’apertura: per le materie classiche lo scarto sta alla quantità comune
+come 1 sta a 99, per la matematica come 26 a 74. Stessa
 struttura, con una moltiplicazione di matrici al posto della rete. Più tardi
 sono venute la forma a più fattori e la sua stima a massima verosimiglianza,
 non l’idea.
@@ -187,11 +198,13 @@ non l’idea.
 :alt: "Due riquadri affiancati. A sinistra, sotto il titolo «i due sacchetti, uno per volta», due campane distinte sullo stesso asse dei millimetri: una centrata su 12 e intestata «le piccole», una centrata su 20 e intestata «le grandi». Una freccia porta al riquadro di destra, intestato «i due insieme, sacchetto non scritto», dove una curva sola, che è la somma delle due, ha due gobbe della stessa altezza, una su 12 e una su 20, con un avvallamento segnato a 16."
 :width: 100%
 
-Pezzi semplici, risultato complicato. A sinistra le due campane, una per
-sacchetto, ciascuna con la sua unica gobba e ciascuna pesata metà, perché metà
+Pezzi semplici, risultato complicato. A sinistra le due gobbe, una per
+sacchetto, ciascuna pesata metà, perché metà
 delle pescate viene di lì; a destra la loro somma, cioè quello che si misura
 quando il sacchetto non lo si guarda mai. La forma a due gobbe non l’ha
-disegnata nessuno: è comparsa perché una parte della storia è rimasta nascosta.
+disegnata nessuno: è comparsa perché una parte della storia è rimasta
+nascosta. E non è garantita: se i due sacchetti si somigliassero abbastanza,
+la gobba tornerebbe una sola.
 (Le curve sono lisce: è la forma verso cui l’istogramma tende quando le pescate
 sono tantissime.)
 ```
@@ -199,7 +212,8 @@ sono tantissime.)
 Guardando {numref}`fig-due-gobbe` si capisce anche perché conviene: chi volesse
 descrivere la curva di destra senza sapere dei sacchetti dovrebbe inventarsi
 una formula per una cosa a due gobbe, mentre a noi sono bastate due gobbe
-semplici (si chiamano **campane**, che è il loro nome consueto) e
+semplici (in matematica si chiamano gaussiane, e «campana» è il
+soprannome della loro forma) e
 la regola con cui si sceglie il sacchetto.
 
 ## Il prezzo: la somma che non si può fare
@@ -226,9 +240,12 @@ strumenti distinti.
 
 Prima difficoltà: la somma. Per sapere quanto è probabile un dato bisogna
 considerare tutti i valori che la causa nascosta poteva prendere, e sommarli
-pesandoli. Con due sacchetti sono due addendi. Ma la causa nascosta di cui
-parleremo è una fila di numeri (nel capitolo ne useremo otto, che è quanto
-basta a comprimere una cifra scritta a mano) e non la scelta fra due scatole, e
+pesando ciascuno per quanto è probabile che tocchi proprio a lui. Con due
+sacchetti pescati con una monetina sono due addendi, mezzo per uno. Ma la
+causa nascosta di cui
+parleremo è una fila di numeri (nel capitolo ne useremo otto per comprimere
+una cifra scritta a mano, e si vedrà che la rete non li adopera nemmeno
+tutti) e non la scelta fra due scatole, e
 ciascuno può valere qualunque cosa. Gli addendi diventano allora infiniti, il
 che di per sé non sarebbe un guaio, perché somme di infiniti addendi si fanno
 da secoli, purché la cosa da sommare sia semplice.
@@ -239,7 +256,8 @@ messi in fila che si moltiplicano e si sommano, e che nessuno saprebbe
 riassumere in una formula. Con quella in mezzo, la somma non si sa scrivere
 in nessun modo utile; e provare a tentoni, misurandola in tanti punti sparsi,
 chiede un numero di punti che si moltiplica a ogni numero in più della causa
-nascosta.
+nascosta: se con un numero ne bastassero dieci, con due ne servirebbero cento
+e con otto cento milioni.
 
 Seconda difficoltà, ed è quella che sorprende: neanche tirare a sorte
 funziona. La via d’uscita ovvia sarebbe sorteggiare un po’ di valori del
@@ -247,19 +265,25 @@ latente, guardare quanto ciascuno spiega bene il dato, e fare la media. In
 poche dimensioni si fa. In molte no, e la ragione è che quasi tutti i valori
 sorteggiati spiegano il dato in modo pessimo: la media di mille numeri quasi
 nulli e di un numero grande dipende tutta da quell’uno, che quasi mai capita di
-pescare. La sezione sull’ELBO lo misura invece di dirlo.
+pescare. Quando non capita, la media esce ridicolmente bassa; quando capita,
+schizza; e rifacendo il sorteggio il risultato cambia ogni volta, cioè non è
+una misura. La {doc}`sezione sul salto probabilistico
+</ModelliLatenti/il-salto-probabilistico>` lo misura invece di dirlo.
 
 ## La stessa idea, dentro quattro macchine
 
 Questa idea il libro la mette al lavoro in quattro punti, e in nessuno dei
-quattro la spiega fino in fondo. Due sono già passati: quando trasforma il
-suono in simboli per poterlo scrivere come si scrive un testo, nel capitolo
-sull’audio, e quando recinta le mosse che un programma può permettersi di
-provare, in quello sul deep reinforcement learning. Due arriveranno: quando
-comprime un’immagine per poterla generare su un computer di casa, e quando
-spreme un fotogramma di videogioco in pochi numeri. Ogni volta il libro
-rimanda la fattura, dicendo che lo vedrà più avanti o che gli basta il ruolo
-dei due termini. L’ultima sezione la paga, e ripassa i quattro punti uno per
+quattro la spiega fino in fondo. Due sono già passati. Il primo sono i
+{doc}`codec neurali </Audio/codec-neurali>`, che riducono il suono a un
+elenco chiuso di simboli per poterlo scrivere come si scrive un testo. Il
+secondo è il {doc}`reinforcement learning offline
+</DeepReinforcementLearning/offline-rl>`, dove la stessa macchina impara quali
+mosse assomigliano a quelle già viste, così che l’agente non ne provi di
+inventate. Due arriveranno: la generazione di immagini su un computer di casa,
+che comprime la figura prima di generarla, e i modelli del mondo, che spremono
+un fotogramma di videogioco in pochi numeri. Ogni volta il libro rimanda la
+fattura, dicendo che lo vedrà più avanti o che gli basta il ruolo di quel
+codice compresso; l’ultima sezione la paga, e ripassa i quattro punti uno per
 uno adesso che la macchina è nota.
 
 Il {doc}`capitolo sulla verosimiglianza esatta
@@ -268,11 +292,14 @@ famiglia stia rispetto alle altre. «Verosimiglianza» è proprio quel numero di
 poco fa, quanto il modello si aspettava di vedere il dato; e là i modelli
 generativi del libro sono ordinati tutti insieme secondo una cosa sola, che
 cosa ciascuno sa dirne. Quella mappa vive là, e qui non ne facciamo una
-seconda. Basta l’essenziale: i modelli di questo capitolo quel numero lo sanno
-dire **per difetto**, cioè restituiscono un valore che sta di sicuro sotto a
-quello vero. Di che cosa sia fatto il divario si sa benissimo; quanto valga,
-no. Perché ci si debba accontentare, e perché accontentarsi convenga, è la
-storia della sezione sull’ELBO.
+seconda. Basta l’essenziale, e vale per la macchina che il capitolo costruisce,
+non per le sue antenate: dove la causa nascosta passa per una rete neurale quel
+numero si sa dire solo per difetto, cioè si restituisce un valore che sta di
+sicuro sotto a quello vero. La mistura di gaussiane e le sue parenti lineari,
+invece, lo sanno dire esatto, perché lì il conto si chiude. Di che cosa sia
+fatto il divario si sa benissimo; quanto valga, no. Perché ci si debba
+accontentare, e perché accontentarsi convenga, è la storia della sezione sul
+salto probabilistico.
 
 `````{tab} Elementare
 
@@ -290,8 +317,9 @@ storia della sezione sull’ELBO.
   fa. Non si fa nemmeno tirando a sorte, perché quasi tutte le cause
   sorteggiate spiegano il dato malissimo.
 - Il libro monta questa idea in quattro punti senza mai spiegarla fino in
-  fondo, due già letti e due che verranno; l’ultima sezione dice quali. È il
-  buco che questo capitolo riempie.
+  fondo: i codec del suono e le mosse consentite a un agente, che sono già
+  passati, la generazione di immagini e i modelli del mondo, che arrivano. È
+  il buco che questo capitolo riempie.
 ```
 
 `````
@@ -313,10 +341,12 @@ storia della sezione sull’ELBO.
   $\mathbf{z}$ discreto; con $f_\theta$ affine si ottiene la PCA
   probabilistica, e l’analisi fattoriale è la variante con una varianza di
   rumore per ciascuna componente osservata.
-- La marginale è intrattabile: nessuna forma chiusa, e la stima Monte Carlo
-  dal prior ha varianza che esplode con la dimensione di $\mathbf{z}$, perché
-  quasi tutti i campioni cadono dove
-  $p_\theta(\mathbf{x} \mid \mathbf{z})$ è trascurabile.
+- Con $f_\theta$ non lineare la marginale diventa intrattabile: nessuna forma
+  chiusa, e la stima Monte Carlo dal prior ha varianza che esplode con la
+  dimensione di $\mathbf{z}$, perché quasi tutti i campioni cadono dove
+  $p_\theta(\mathbf{x} \mid \mathbf{z})$ è trascurabile. Con $\mathbf{z}$
+  discreto, o con $f_\theta$ affine, il conto si chiude: mistura, PCA
+  probabilistica e analisi fattoriale la marginale la danno esatta.
 - Da qui il programma del capitolo: rinunciare al valore esatto di
   $\log p_\theta(\mathbf{x})$ e ottimizzare un limite inferiore, che si
   paga con un secondo modello (l’encoder) e si guadagna in trattabilità.
@@ -331,12 +361,15 @@ strada più corta, l’autoencoder, cioè una rete che impara a comprimere e a
 ricostruire senza che nessuno le parli di probabilità: funziona benissimo per
 comprimere e fallisce per generare, e il perché di quel fallimento è il modo
 migliore per capire che cosa manchi. La seconda è il cuore: la verosimiglianza
-intrattabile, il limite inferiore che la sostituisce (l’ELBO, dalle iniziali
-inglesi di *evidence lower bound*), i suoi due termini letti come ricostruzione
-e costo di descrizione, e un trucco senza il quale la macchina non si potrebbe
-addestrare in un tempo ragionevole, perché in mezzo c’è un sorteggio e le
-correzioni, da sole, un sorteggio non lo attraversano. La terza guarda che cosa
-si fa con quel riassunto nascosto una volta che c’è: la manopola con cui gli si
+intrattabile e il limite inferiore che la sostituisce, l’ELBO (dalle iniziali
+inglesi di *evidence lower bound*, «limite inferiore sull’evidenza», dove
+l’evidenza è quanto il modello si aspettava di vedere il dato). Quel limite si
+legge come una somma di due pezzi, uno che premia le ricostruzioni fedeli e
+uno che fa pagare le descrizioni stravaganti; e insieme all’ELBO arriva un
+trucco senza il quale la macchina si addestrerebbe molto peggio, perché fra il
+dato e la sua ricostruzione c’è un sorteggio, e le correzioni che aggiustano
+i numeri della rete di là non passano da sole. La terza sezione guarda che
+cosa si fa con la causa nascosta una volta che c’è: la manopola con cui gli si
 può chiedere di tenere separate le cose di cui il dato è fatto (la luce,
 l’inclinazione, il soggetto), il riassunto fatto di simboli invece che di
 numeri, e i quattro punti del libro in cui questa macchina è al lavoro.

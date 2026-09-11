@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 414" role="img" aria-label="Tre pannelli affiancati calcolano la stessa somma pesata dei voti 6, 7 e 8, con il passato che si dimezza a ogni passo. A sinistra, «tutto insieme», la forma parallela: un triangolo di sei caselle di pesi, una colonna per voto e una riga per momento, che dà in fila i totali 6, 10 e 13. Al centro, «uno alla volta», la forma ricorrente: tre riquadri in colonna con i soli totali 6, 10 e 13, uniti da frecce che dicono di moltiplicare per 0,5 e di sommare il voto nuovo. A destra, «a blocchi», la forma chunkwise: due riquadri tratteggiati, nel primo un triangolo di tre caselle che dà 6 e 10, nel secondo una casella sola che dà 13, e fra i due una freccia che porta il riporto sbiadito una volta. In fondo, la riga che dice che il totale è 13 in tutti e tre i casi e che per strada tornano gli stessi totali intermedi, 6 e 10.">
+  <defs><marker id="p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/></marker></defs>
+  <text x="440.0" y="26" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="15" font-weight="400" fill="#1A1A1A">tre voti in ordine: 6, 7, 8. A ogni passo quello che c'è già si dimezza.</text>
+  <line x1="40" y1="42" x2="840" y2="42" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="40" y="74" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">tutto insieme</text>
+  <text x="40" y="94" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#2D5A5C">la forma parallela, per addestrare</text>
+  <text x="350" y="74" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">uno alla volta</text>
+  <text x="350" y="94" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#2D5A5C">la forma ricorrente, per generare</text>
+  <text x="600" y="74" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="17" font-weight="700" fill="#1A1A1A">a blocchi</text>
+  <text x="600" y="94" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#2D5A5C">la forma chunkwise, per i testi lunghi</text>
+  <text x="59" y="126" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#C9A961">voto 6</text>
+  <text x="105" y="126" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#C9A961">voto 7</text>
+  <text x="151" y="126" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#C9A961">voto 8</text>
+  <rect x="40" y="136" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="59" y="154" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">1</text>
+  <text x="184" y="154" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="400" fill="#1A1A1A">→</text>
+  <text x="212" y="154" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">6</text>
+  <rect x="40" y="190" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="59" y="208" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">0,5</text>
+  <rect x="86" y="190" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="105" y="208" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">1</text>
+  <text x="184" y="208" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="400" fill="#1A1A1A">→</text>
+  <text x="212" y="208" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">10</text>
+  <rect x="40" y="244" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="59" y="262" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">0,25</text>
+  <rect x="86" y="244" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="105" y="262" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">0,5</text>
+  <rect x="132" y="244" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="151" y="262" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">1</text>
+  <text x="184" y="262" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="400" fill="#1A1A1A">→</text>
+  <text x="212" y="262" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">13</text>
+  <text x="40" y="334" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#1A1A1A">6 caselle di pesi, e il triangolo</text>
+  <text x="40" y="352" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#1A1A1A">cresce col quadrato della lunghezza</text>
+  <rect x="350" y="136" width="52" height="26" rx="4" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="376" y="154" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">6</text>
+  <line x1="376" y1="166" x2="376" y2="186" stroke="#1A1A1A" stroke-width="1.6" marker-end="url(#p)"/>
+  <text x="386" y="182" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">× 0,5, poi + 7</text>
+  <rect x="350" y="190" width="52" height="26" rx="4" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="376" y="208" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">10</text>
+  <line x1="376" y1="220" x2="376" y2="240" stroke="#1A1A1A" stroke-width="1.6" marker-end="url(#p)"/>
+  <text x="386" y="236" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">× 0,5, poi + 8</text>
+  <rect x="350" y="244" width="52" height="26" rx="4" fill="none" stroke="#2D5A5C" stroke-width="2"/>
+  <text x="376" y="262" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">13</text>
+  <text x="350" y="334" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#1A1A1A">3 passi, un numero solo per volta:</text>
+  <text x="350" y="352" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#1A1A1A">niente pagine da riaprire</text>
+  <rect x="590" y="126" width="200" height="100" rx="6" fill="none" stroke="#C9A961" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <rect x="600" y="136" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="619" y="154" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">1</text>
+  <text x="698" y="154" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="400" fill="#1A1A1A">→</text>
+  <text x="726" y="154" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">6</text>
+  <rect x="600" y="190" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="619" y="208" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">0,5</text>
+  <rect x="646" y="190" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="665" y="208" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">1</text>
+  <text x="698" y="208" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="400" fill="#1A1A1A">→</text>
+  <text x="726" y="208" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">10</text>
+  <line x1="630" y1="236" x2="630" y2="254" stroke="#1A1A1A" stroke-width="1.6" marker-end="url(#p)"/>
+  <text x="642" y="252" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="400" fill="#1A1A1A">il riporto, sbiadito una volta (× 0,5)</text>
+  <rect x="590" y="260" width="200" height="46" rx="6" fill="none" stroke="#C9A961" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <rect x="600" y="270" width="38" height="26" rx="4" fill="none" stroke="#B5532C" stroke-width="1.6"/>
+  <text x="619" y="288" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#B5532C">1</text>
+  <text x="698" y="288" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="14" font-weight="400" fill="#1A1A1A">→</text>
+  <text x="726" y="288" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#2D5A5C">13</text>
+  <text x="600" y="334" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#1A1A1A">4 caselle: nel primo blocco i voti 6 e 7,</text>
+  <text x="600" y="352" text-anchor="start" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="13" font-weight="400" fill="#1A1A1A">nel secondo l'8; fra i due passa il riporto</text>
+  <line x1="40" y1="372" x2="840" y2="372" stroke="#C9A961" stroke-width="1.5"/>
+  <text x="440.0" y="396" text-anchor="middle" font-family="'Inter', -apple-system, Segoe UI, sans-serif" font-size="15" font-weight="700" fill="#1A1A1A">Stesso totale, 13, e per strada gli stessi totali intermedi: 6 e 10.</text>
+</svg>

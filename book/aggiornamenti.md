@@ -38,6 +38,20 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-8)=
+
+## 1.12.8 · 11 settembre 2026
+
+### Pagine ampliate
+
+- **Quarantacinque figure nuove, quattro delle quali animate, e i numeri li calcola il disegno.** Le scene, dove il tempo era il contenuto: il posto che si libera nel continuous batching, con le richieste che entrano ed escono mentre la scheda resta piena contro il batch che aspetta la più lunga; il voto della meta che retrocede casella per casella, partita dopo partita, nel Q-learning; il nastro di autograd, con gli appunti presi all'andata e consumati al ritorno; la risposta della RAG originale, che somma le bozze di ogni pagina pesandole con il recupero. Fra le figure ferme: il peso del trapezio in Mamba-3, con la conca dell'errore fra i due estremi; il plotone di thread che si divide a un bivio; il ventaglio di previsione che si assesta sul suo tetto; le figure di pandas rifatte sui dati che la pagina usa davvero. In tutte, un generatore difende con un'asserzione i numeri che la didascalia promette.
+
+### Correzioni
+
+- **Altri novantacinque termini che il libro usava prima di spiegarli, passati al setaccio.** La passata cominciata nella 1.12.7 è arrivata in fondo all'indice: per ogni parola messa in neretto si è cercato dove il lettore la incontra per la prima volta nell'ordine del libro. Dodici volte arrivava prima della spiegazione (fra le altre «negativi», «rollout», «autograd», «ELBO», «flussi normalizzanti», «context engineering», «allucinazione visiva», e Mamba, Stable Diffusion e l'ASR nominati capitoli prima di essere presentati) e adesso è spiegata dove compare, o rimanda per nome alla sezione che la spiega; per le altre il neretto marcava un omonimo o un'etichetta, e la pagina lo dice. Le pagine di quei termini, ottantanove in tutto, sono state rilette con i due lettori e rifatte sulle fonti, con i numeri dei loro paper e le voci bibliografiche che mancavano.
+- **Tredici punti che i rapporti delle passate avevano lasciato in coda, chiusi alla fonte.** Il neretto tornato unico su quattro coppie di termini; lo scostamento sparso del monitoraggio rimisurato con lo stimatore della pagina (l'AUC che va da 0,502 su una colonna a 0,698 su quaranta); i 4 bit come punto di svolta della quantizzazione con la fonte primaria, Dettmers e Zettlemoyer, e le sue riserve; le ipotesi di Baldi e Hornik rilette sul loro paper; la purga e l'embargo con il loro autore, López de Prado; la pinball loss con la convenzione dichiarata e i tre numeri stampati dal blocco; la curva di Goodhart e la sua tabella, che adesso si rimandano; il notebook del capitolo di ingegneria degli LLM, che entra; e gli script pubblici che rimandano a un file che il lettore trova.
+- **Una rilettura di tutto ciò che è cambiato dalla 1.12.7, con le fonti aperte.** Dodici affermazioni dicevano più, o altro, dei lavori citati e sono state riportate a quello che i lavori dicono: fra le altre, il divieto sulle immagini intime nel regolamento europeo ha tre rami e non due, la scadenza del Netflix Prize era un pavimento e non una data, la macchina di Boltzmann ristretta non nacque per la gara, il vocabolario dei modelli n-gram di riferimento era aperto, l'allineamento dell'attenzione nella traduzione ha un caso isolato e non una scala. Undici punti in cui le due schede si contraddicevano sono stati riconciliati, nove conti rifatti eseguendo i blocchi della pagina, undici testi alternativi delle figure fatti coincidere con il disegno, e le bande di previsione hanno adesso le due schede che mancavano. Sette neretti d'enfasi tolti, compresi tre che la rilettura stessa aveva aggiunto.
+
 (v1-12-7)=
 
 ## 1.12.7 · 10 settembre 2026

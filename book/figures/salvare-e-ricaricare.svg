@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 296" role="img" aria-label="Tre colonne. A sinistra il modello vivo, l'architettura in memoria con i suoi pesi. Una sola freccia, torch.save, porta al centro, dove c'&#232; il file salvato con dentro cinque voci: pesi, stato dell'ottimizzatore, epoca, nomi delle classi e configurazione, e dentro la configurazione anche il seme. Dal file partono invece due frecce verso destra, e vanno a due riquadri numerati: prima la configurazione, che serve a ricostruire il modello vuoto, poi i pesi, che si caricano dentro quel modello. Sotto, la riga che riassume: un gesto per salvare, due per ricaricare.">
+  <defs>
+    <marker id="fr-sv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/></marker>
+    <marker id="fr-ld" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#B5532C"/></marker>
+  </defs>
+
+  <rect x="24" y="86" width="160" height="64" rx="4" fill="none" stroke="#5E5852" stroke-width="1"/>
+  <text x="104" y="112" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">modello vivo</text>
+  <text x="104" y="132" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5E5852">architettura + pesi</text>
+
+  <path d="M188,118 H246" fill="none" stroke="#2D5A5C" stroke-width="1.4" marker-end="url(#fr-sv)"/>
+  <text x="217" y="108" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="10.5" fill="#2D5A5C">torch.save</text>
+
+  <rect x="250" y="44" width="158" height="180" rx="4" fill="none" stroke="#5E5852" stroke-width="1"/>
+  <text x="329" y="66" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#1A1A1A">il file salvato</text>
+  <text x="266" y="96" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11" fill="#1A1A1A">pesi</text>
+  <text x="266" y="120" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11" fill="#1A1A1A">ottimizzatore</text>
+  <text x="266" y="144" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11" fill="#1A1A1A">epoca</text>
+  <text x="266" y="168" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11" fill="#1A1A1A">classi</text>
+  <text x="266" y="192" font-family="JetBrains Mono, ui-monospace, monospace" font-size="11" fill="#1A1A1A">config</text>
+  <text x="266" y="210" font-family="Inter, sans-serif" font-size="10" fill="#5E5852">(dentro c’è anche il seme)</text>
+
+  <path d="M412,90 H470" fill="none" stroke="#B5532C" stroke-width="1.4" marker-end="url(#fr-ld)"/>
+  <text x="441" y="80" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="10.5" fill="#B5532C">config</text>
+  <path d="M412,186 H470" fill="none" stroke="#B5532C" stroke-width="1.4" marker-end="url(#fr-ld)"/>
+  <text x="441" y="176" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, monospace" font-size="10.5" fill="#B5532C">pesi</text>
+
+  <rect x="474" y="62" width="162" height="60" rx="4" fill="none" stroke="#B5532C" stroke-width="1"/>
+  <text x="555" y="86" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">1. si ricostruisce</text>
+  <text x="555" y="104" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">il modello vuoto</text>
+
+  <path d="M555,126 V152" fill="none" stroke="#B5532C" stroke-width="1.4" marker-end="url(#fr-ld)"/>
+
+  <rect x="474" y="158" width="162" height="60" rx="4" fill="none" stroke="#B5532C" stroke-width="1"/>
+  <text x="555" y="182" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">2. gli si caricano</text>
+  <text x="555" y="200" text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#1A1A1A">dentro i pesi</text>
+
+  <text x="24" y="266" font-family="Inter, sans-serif" font-size="11.5" fill="#5E5852">Un gesto per salvare, due per ricaricare: i numeri da soli non sanno in che forma andavano rimessi.</text>
+</svg>

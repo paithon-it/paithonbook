@@ -349,9 +349,10 @@ si stimano minimizzando la cross-entropia
 $\mathcal{L}$ con la discesa del gradiente (non esiste una soluzione in forma
 chiusa) tipicamente con una regolarizzazione L2 che scoraggia pesi estremi su
 parole rare. Un vantaggio pratico: le feature non devono essere solo parole.
-Si possono affiancare bigrammi, la lunghezza del documento, il numero di punti
-esclamativi, i conteggi da un lessico di sentiment: il modello impara il peso
-di ciascuna, qualunque cosa misuri.
+Si possono affiancare le coppie di parole adiacenti (i *bigrammi*), la
+lunghezza del documento, il numero di punti esclamativi, i conteggi da un
+lessico di sentiment: il modello impara il peso di ciascuna, qualunque cosa
+misuri.
 
 `````
 

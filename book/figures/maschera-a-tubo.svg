@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 452" role="img" aria-label="Confronto fra due modi di coprire un video, disegnato come una fila di quattro fotogrammi che scorrono nel tempo. In alto, la maschera che si sposta: il rettangolo coperto cade in un punto diverso in ciascun fotogramma, e una freccia mostra che la regione coperta nel terzo fotogramma è scoperta nel secondo, quindi la si può copiare da lì. In basso, la maschera a tubo: il rettangolo coperto sta nello stesso punto in tutti e quattro i fotogrammi, e la fascia che li attraversa disegna un tubo; nessun fotogramma mostra quello che gli altri nascondono, e non c'è niente da copiare.">
+  <defs>
+    <marker id="freccia-tubo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2D5A5C"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="700" height="452" fill="#F8F5EE"/>
+
+  <!-- ================= pannello di sopra: la maschera che si sposta ========= -->
+  <text x="60" y="34" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">La maschera che si sposta</text>
+  <text x="60" y="52" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">quello che copre qui, il fotogramma accanto lo mostra</text>
+
+  <rect x="60" y="66" width="128" height="92" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <rect x="208" y="66" width="128" height="92" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <rect x="356" y="66" width="128" height="92" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <rect x="504" y="66" width="128" height="92" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+
+  <rect x="74" y="80" width="50" height="38" rx="3" fill="#B5532C"/>
+  <rect x="286" y="108" width="50" height="38" rx="3" fill="#B5532C"/>
+  <rect x="376" y="112" width="50" height="38" rx="3" fill="#B5532C"/>
+  <rect x="566" y="78" width="50" height="38" rx="3" fill="#B5532C"/>
+
+  <!-- la regione coperta nel terzo fotogramma sta scoperta nel secondo -->
+  <rect x="228" y="112" width="50" height="38" rx="3" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-dasharray="5 4"/>
+  <path d="M 376 168 C 340 196, 262 196, 246 156" fill="none" stroke="#2D5A5C" stroke-width="2" marker-end="url(#freccia-tubo)"/>
+  <text x="311" y="212" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#2D5A5C">qui si copia, non si capisce</text>
+
+  <!-- ================= pannello di sotto: la maschera a tubo =============== -->
+  <text x="60" y="268" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" fill="#1A1A1A">La maschera a tubo</text>
+  <text x="60" y="286" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">la stessa regione, ferma per tutta la durata della clip</text>
+
+  <rect x="60" y="300" width="128" height="92" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <rect x="208" y="300" width="128" height="92" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <rect x="356" y="300" width="128" height="92" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+  <rect x="504" y="300" width="128" height="92" rx="4" fill="#F8F5EE" stroke="#1A1A1A" stroke-width="1.8"/>
+
+  <!-- il tubo: la stessa regione attraversa tutti e quattro i fotogrammi -->
+  <rect x="102" y="328" width="514" height="38" fill="#B5532C" fill-opacity="0.16"/>
+  <line x1="102" y1="328" x2="616" y2="328" stroke="#B5532C" stroke-width="1.6" stroke-dasharray="6 5"/>
+  <line x1="102" y1="366" x2="616" y2="366" stroke="#B5532C" stroke-width="1.6" stroke-dasharray="6 5"/>
+
+  <rect x="102" y="328" width="50" height="38" rx="3" fill="#B5532C"/>
+  <rect x="250" y="328" width="50" height="38" rx="3" fill="#B5532C"/>
+  <rect x="398" y="328" width="50" height="38" rx="3" fill="#B5532C"/>
+  <rect x="546" y="328" width="50" height="38" rx="3" fill="#B5532C"/>
+
+  <text x="640" y="351" font-family="Inter, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#B5532C">il tubo</text>
+
+  <!-- ================= l'asse del tempo, comune ai due pannelli ============ -->
+  <line x1="60" y1="420" x2="632" y2="420" stroke="#5E5852" stroke-width="1.8" marker-end="url(#freccia-tubo)"/>
+  <text x="60" y="440" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5E5852">un video è una pila di fotogrammi, e i vicini si somigliano quasi in tutto</text>
+  <text x="632" y="440" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="12" font-style="italic" fill="#5E5852">tempo</text>
+</svg>

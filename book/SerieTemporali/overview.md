@@ -225,6 +225,13 @@ print(f"senza tendenza, a lag 12:   {autocorr(detrend, 12):.3f}")
 # rimescolando l'ordine, la dipendenza temporale svanisce
 mescolata = rng.permutation(serie)
 print(f"lag 1, date rimescolate:    {autocorr(mescolata, 1):.3f}")
+
+# e quanto vale una somiglianza dovuta al solo caso? si rimescola duemila
+# volte e si guarda di quanto oscilla il coefficiente
+caso = np.random.default_rng(1)
+prove = [autocorr(caso.permutation(serie), 1) for _ in range(2000)]
+print(f"oscillazione del caso:      {np.std(prove):.3f}"
+      f"   (1 diviso radice di n: {1 / np.sqrt(n):.3f})")
 ```
 
 ```text
@@ -233,6 +240,7 @@ senza tendenza, a lag 1:    0.778
 senza tendenza, a lag 6:    -0.869
 senza tendenza, a lag 12:   0.826
 lag 1, date rimescolate:    0.143
+oscillazione del caso:      0.070   (1 diviso radice di n: 0.071)
 ```
 
 I numeri vanno letti sapendo che scala hanno. Una correlazione vale al massimo
@@ -261,12 +269,34 @@ passi di ritardo, cioè un ciclo intero, torna alta, $0{,}83$, perché il
 fenomeno è tornato dov'era.
 
 Rimescoliamo adesso le date: teniamo gli stessi duecento numeri e li rimettiamo
-in fila a caso. Il coefficiente crolla a $0{,}14$. Non è esattamente zero,
-e non poteva esserlo: rimescolando duecento numeri qualche somiglianza per puro
-caso ci scappa sempre, di solito di qualche centesimo, e questa volta è
-capitata un po’ più grossa. Ma di quel $0{,}94$ non è rimasto niente. Gli
-stessi identici valori, in un altro ordine, non prevedono più niente: quello
-che rendeva prevedibile la serie non stava nei numeri, stava nel loro ordine.
+in fila a caso. Il coefficiente crolla a $0{,}14$. Non è esattamente zero, e non
+poteva esserlo: rimescolando duecento numeri qualche somiglianza per puro caso
+ci scappa sempre. Quanta, lo dice il rimescolamento rifatto duemila volte
+invece di una: il coefficiente oscilla di sette centesimi, che è uno diviso la
+radice del numero di punti. Ecco allora il metro per leggere qualunque
+coefficiente: sotto il doppio di quell'oscillazione, qui quattordici
+centesimi, un numero non si distingue dal caso, ed è la fascia che i programmi
+di statistica disegnano in grigio attorno allo zero. Il nostro $0{,}14$ cade
+esattamente lì sopra. Ma di quel $0{,}94$ non è rimasto niente.
+Gli stessi identici valori, in un altro ordine, non prevedono più niente:
+quello che rendeva prevedibile la serie non stava nei numeri, stava nel loro
+ordine.
+
+Tre ritardi sono tre assaggi, e il metro del caso vale per tutti: la
+{numref}`fig-copia-che-scivola` li mette in fila dal primo al ventiquattresimo,
+con la fascia disegnata attorno allo zero.
+
+```{figure} ../figures/copia-che-scivola.svg
+:name: fig-copia-che-scivola
+:alt: "In alto una serie temporale ondulata e una sua copia di un altro colore, che scivola verso destra un passo alla volta: quando lo scorrimento è di sei passi le due onde sono capovolte, cresta contro avvallamento, e quando è di dodici tornano a sovrapporsi. In basso un correlogramma si riempie di pari passo, una barra per ogni scorrimento: parte da uno, scende fino a un minimo profondamente negativo a sei, risale a un massimo a dodici e ripete l'onda più smorzata fino a ventiquattro. Una fascia grigia chiara attorno allo zero segna i valori che non si distinguono dal caso."
+:width: 100%
+
+Sopra, la serie e la stessa serie in ritardo: a sei passi le due onde sono
+capovolte, a dodici tornano a sovrapporsi. Sotto, la somiglianza a ogni
+ritardo, che è il modo in cui la stagionalità si presenta quando la si guarda
+così: un'onda che scende, risale e si smorza, con il passo del ciclo. Dentro
+la fascia grigia non resta niente che si distingua dal caso.
+```
 
 Ecco perché nel forecasting futuro e passato non si mescolano mai. La
 regola si dimentica soprattutto dove costa di più, cioè quando si tratta di

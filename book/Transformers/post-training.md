@@ -16,13 +16,16 @@ Tra GPT-3 (2020) e ChatGPT (novembre 2022) il salto che tutti hanno percepito
 non è (o non è solo) questione di taglia. È il **post-training**: una seconda
 fase di addestramento, molto più corta e mirata, che trasforma il completatore
 in un assistente. La prova più eloquente sta nell'articolo su InstructGPT
-{cite}`ouyang2022training`, il fratello maggiore di ChatGPT. Si misura la taglia
-di questi modelli contando i numeri che regolano mentre imparano, i
-parametri: ebbene, davanti a valutatori in carne e ossa, le risposte di un
-modello da 1,3 miliardi di parametri passato per il post-training venivano
-*preferite* a quelle del GPT-3 da 175 miliardi, cioè a un modello più di cento
-volte più grande. Quel che manca al gigante è la disposizione a usare le
-conoscenze per aiutarti, non le conoscenze.
+{cite}`ouyang2022training`, il modello che ha preceduto ChatGPT. La taglia di
+questi modelli si misura contando i numeri che il modello regola mentre impara,
+i parametri: davanti a valutatori in carne e ossa, le risposte di un modello da
+1,3 miliardi di parametri passato per il post-training venivano *preferite* a
+quelle del GPT-3 da 175 miliardi, cioè a un modello più di cento volte più
+grande. Su quali richieste, va detto: quelle che arrivavano davvero alla loro
+interfaccia pubblica, che è la distribuzione su cui il modello piccolo era
+stato rifinito. Su altri banchi il gigante resta avanti. Quel che manca al
+gigante è la disposizione a usare le conoscenze per aiutarti, non le
+conoscenze.
 
 La ricetta, schematizzata in {numref}`fig-post-training-pipeline`, ha due mosse
 principali: prima si insegna il *formato* con esempi svolti (l’instruction
@@ -154,7 +157,7 @@ in questo campo è fra i piccoli, quasi nessuno può permetterselo.
 
 ```{figure} ../figures/lora-fine-tuning-efficiente.svg
 :name: fig-lora
-:alt: "Schema di LoRA: la matrice dei pesi pre-addestrati W resta congelata e riceve l'ingresso; accanto a essa due matrici piccole e addestrabili, A e B, formano un percorso parallelo a basso rango. Le uscite dei due rami si sommano prima di proseguire. Solo A e B ricevono gradiente."
+:alt: "Schema di LoRA: la matrice dei pesi pre-addestrati W con zero resta congelata e riceve l'ingresso; accanto a essa due matrici piccole e addestrabili, A di forma rho per k e B di forma d per rho, formano un percorso parallelo a basso rango, con rho molto minore di d e di k. Le uscite dei due rami si sommano prima di proseguire. Solo A e B ricevono gradiente."
 :width: 78%
 
 LoRA non tocca la tabella dei numeri già imparati: gliene affianca due strette,
@@ -182,11 +185,12 @@ colonne, cioè sedici milioni di caselle. Riscriverle tutte per adattare il
 modello a un compito nuovo è fuori portata, e da qui viene il lucido.
 
 **LoRA** (*Low-Rank Adaptation*) {cite}`hu2022lora` nasce da una cosa che si
-vede controluce. I tratti di un lucido di correzioni si somigliano moltissimo,
-e quasi tutte le righe si ottengono da un pugno di righe di base, ripetute in
-dosi diverse. Un lucido di mille righe in cui ogni riga è una dose di due sole
-righe modello si impara con due righe, più i mille numeri che dicono quanta
-dose metterci.
+vede controluce. Le correzioni da fare sono sempre la stessa manciata, ripetuta
+in punti diversi e con intensità diverse. Metti che un lucido abbia mille righe
+di tratti, e che ognuna di quelle mille righe si ottenga mescolando due sole
+righe di partenza, in dosi diverse. Allora il lucido non ha mille righe da
+imparare: ne ha due, più due numeri per riga che dicono in quale dose
+mescolarle.
 
 Allora il lucido non si disegna casella per casella. Si compone con due strisce
 sottili, una alta quattromila e larga otto, una alta otto e larga quattromila.
@@ -207,10 +211,15 @@ cambiarli in un istante sullo stesso disegno. Quando uno ti convince lo ricalchi
 sulla pianta una volta per tutte, così torni ad avere un foglio solo e
 consultarlo costa quanto prima.
 
-Nello studio i fogli sono tanti e il lucido non va su tutti, e alla fine si
-ridisegna spesso meno dello 0,1% dei numeri dell'intero modello. Quello che
-archivi pesa megabyte invece di gigabyte, e il risultato resta vicino a quello
-di una riscrittura completa.
+Quello $0{,}4\%$ vale per una tabella sola. Nello studio i fogli sono tanti e
+il lucido non va su tutti, e sul modello intero si finisce per ridisegnare
+spesso meno di un numero su mille. Quello che archivi pesa megabyte invece di
+gigabyte, e il risultato resta vicino a quello di una riscrittura completa.
+
+E le quattro copie di poco fa tornano una. Correzioni e medie servono soltanto
+ai numeri che si muovono, e qui a muoversi sono le due strisce: delle quattro
+tabelle resta in piedi la prima, cioè il modello fermo, ventotto gigabyte
+invece di oltre cento. È il conto che sembrava perso, rimesso in scala.
 
 Il confine è quello del lucido, e sopra ci si disegnano le modifiche, non un
 edificio nuovo. Le due strisce sono strette apposta, e in quello stretto ci sta
@@ -248,19 +257,23 @@ $\mathbf{B}$ a zero,
 così $\Delta\mathbf{W} = 0$ e il modello parte esattamente dal comportamento
 pre-addestrato; $\alpha/\rho$ è un fattore di scala che disaccoppia il *learning
 rate* efficace dalla scelta di $\rho$. Su quali matrici si mette il ramo
-laterale è una scelta, non un dato: il lavoro originale lo applica alle sole
-proiezioni $\mathbf{W}^Q$ e $\mathbf{W}^V$ dell'attenzione, ed è da lì che
-viene il conteggio minuscolo sul modello intero.
+laterale è una scelta, non un dato: il lavoro originale limita lo studio ai
+pesi dell'attenzione, e nella maggior parte degli esperimenti alle sole
+proiezioni $\mathbf{W}^Q$ e $\mathbf{W}^V$, ed è da lì che viene il conteggio
+minuscolo sul modello intero.
 
 Tre conseguenze pratiche:
 
 1. Nessuna latenza aggiuntiva in inferenza. A differenza degli adapter
-   inseriti in serie, $\mathbf{B}\mathbf{A}$ si può sommare a $\mathbf{W}_0$
+   inseriti in serie, $\frac{\alpha}{\rho}\mathbf{B}\mathbf{A}$ si può sommare a $\mathbf{W}_0$
    una volta per tutte prima del
    deployment: il grafo di calcolo torna identico all'originale.
 2. Adattatori componibili e leggeri. Si tengono in memoria molti LoRA
    sullo stesso modello di base e si scambiano per richiesta: è il meccanismo
-   dietro il *multi-tenant serving* di modelli specializzati.
+   dietro il *multi-tenant serving* di modelli specializzati. I primi due
+   punti sono però alternativi, e il paper lo dichiara: fusa la matrice, un
+   batch non può più mescolare richieste con adattatori diversi. O si fonde e
+   si serve un compito solo, o si tiene il ramo laterale e lo si paga.
 3. **QLoRA** {cite}`dettmers2023qlora` porta l'idea all'estremo: il modello
    base viene quantizzato a $4$ bit e congelato, gli adattatori restano in
    precisione più alta. Gli autori rifiniscono così un modello da 65 miliardi
@@ -348,11 +361,13 @@ annotatore indica la preferita, $y_w$ (*winner*), contro la scartata, $y_l$
 (*loser*); scriveremo $y_w \succ y_l$ per «la prima è preferita alla
 seconda». Il reward model $r_\phi(x, y)$ (tipicamente lo stesso Transformer
 con una testa scalare al posto della softmax) viene addestrato assumendo il
-modello di **Bradley–Terry** (1952), per cui la probabilità di preferenza
-dipende solo dalla differenza dei punteggi. Sotto quel modello stanno tre
-pretese, e non sono piccole: che esista un solo numero per risposta da cui
-discendono tutte le preferenze, e quindi che i giudizi siano transitivi e
-che gli annotatori siano intercambiabili fra loro. Nessuna delle tre cose è
+modello di **Bradley–Terry** {cite}`bradley1952rank`, per cui la probabilità
+di preferenza dipende solo dalla differenza dei punteggi. Sotto quel modello
+stanno tre pretese, e non sono piccole: che esista un solo numero per risposta
+da cui discendono tutte le preferenze, e quindi che la struttura delle
+preferenze sia transitiva (il singolo giudizio può girare in tondo, e il
+modello lo assorbe come rumore; è la struttura sotto che non può) e che gli
+annotatori siano intercambiabili fra loro. Nessuna delle tre cose è
 ovvia sulle persone vere, ed è la stessa ipotesi su cui poggerà anche
 l'equivalenza fra DPO e RLHF.
 
@@ -380,20 +395,22 @@ $$
 
 dove $\pi_{\text{ref}}$ è il modello di riferimento congelato (di solito il
 modello SFT), $D_{\mathrm{KL}}$ è la divergenza di Kullback–Leibler
-{cite}`kullback1951information` vista nel capitolo sui richiami di matematica e
-$\beta > 0$ regola la forza del vincolo. Si noti che entrambi i termini stanno
-dentro la stessa aspettazione sui prompt: la deriva si penalizza in media
-sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un prompt
-lasciato libero, altrimenti l'espressione non sarebbe funzione dei soli
+{cite}`kullback1951information` vista nella {doc}`sezione sulla teoria
+dell'informazione </Matematica/teoria-informazione>` (là scritta in bit, qui in
+logaritmi naturali, che è la base con cui la forma chiusa di poco più avanti
+torna) e $\beta > 0$ regola la forza del vincolo. Si noti che entrambi i
+termini stanno dentro la stessa aspettazione sui prompt: la deriva si penalizza
+in media sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un
+prompt lasciato libero, altrimenti l'espressione non sarebbe funzione dei soli
 $\theta$ e non ci sarebbe niente da massimizzare. (InstructGPT la scrive in
 forma campionata, con $-\beta\log\frac{\pi_\theta(y\mid
-x)}{\pi_{\text{ref}}(y\mid x)}$ dentro l'unica aspettazione: è la stessa cosa.)
-La penalità KL serve a due cose: impedisce alla policy di derivare verso le
-zone in cui $r_\phi$ (addestrato su dati limitati) estrapola male (il *reward
-hacking* su cui torneremo), e preserva la fluidità linguistica accumulata nel
-pre-addestramento. Questa forma non è soltanto un espediente pratico:
-massimizzare una ricompensa restando vicini a una distribuzione di riferimento
-è formalmente la stessa cosa che fare inferenza bayesiana, con
+x)}{\pi_{\text{ref}}(y\mid x)}$ dentro l'aspettazione del termine di rinforzo:
+è la stessa cosa.) La penalità KL serve a due cose: impedisce alla policy di
+derivare verso le zone in cui $r_\phi$ (addestrato su dati limitati) estrapola
+male (il *reward hacking* su cui torneremo), e preserva la fluidità linguistica
+accumulata nel pre-addestramento. Questa forma non è soltanto un espediente
+pratico: massimizzare una ricompensa restando vicini a una distribuzione di
+riferimento è formalmente la stessa cosa che fare inferenza bayesiana, con
 $\pi_{\text{ref}}$ nel ruolo del priore {cite}`korbak2022rl`. La sezione
 sull'inferenza attiva, nel capitolo sui *world model*, riprende quell'identità
 e ne mostra la conseguenza: il termine che qui trattiene la policy è, letto
@@ -417,7 +434,9 @@ imitare i gusti di valutatori in carne e ossa.
 ## DPO: imparare dalle preferenze senza il giudice
 
 L'RLHF funziona, ma è un cantiere pesante. In memoria, tutte insieme, devono
-starci quattro reti. La prima è quella che sta imparando a rispondere. La
+starci quattro reti, e non sono le quattro copie del conto di poco fa: quelle
+erano quattro tabelle dello stesso modello, queste sono quattro modelli
+diversi. La prima è quella che sta imparando a rispondere. La
 seconda è una copia congelata di com'era prima di cominciare, e serve alla
 regola d'oro appesa in cucina: per sapere di quanto il cuoco si sta allontanando
 dalla ricetta di partenza bisogna avere sotto mano la ricetta di partenza, e
@@ -434,7 +453,9 @@ linguaggio sia notoriamente instabile, nel senso preciso che due addestramenti
 fatti con gli stessi ingredienti possono finire uno bene e uno male. Nel 2023
 Rafailov e colleghi
 {cite}`rafailov2023direct` mostrano che si può arrivare quasi allo stesso punto
-con un normale addestramento a esempi svolti, come il tirocinio di poco fa. Il
+con un normale addestramento supervisionato, senza reinforcement learning: non
+su esempi svolti come il tirocinio di poco fa, ma sulle coppie, alzando la
+preferita e abbassando insieme la scartata. Il
 sottotitolo del loro articolo è già la tesi: *Your Language Model is Secretly a
 Reward Model*, il tuo modello di linguaggio è, a sua insaputa, già un giudice.
 
@@ -443,7 +464,16 @@ questa risposta?» e chiedersi «quanto questo modello la ritiene più probabile
 quanto la ritenesse prima?» risulta, a conti fatti, la stessa domanda: se il
 modello ha imparato dai giudizi, il suo voto è già scritto in quanto si è mosso
 rispetto al punto di partenza. E se il voto è già lì dentro, la rete che lo dà
-non serve. Il metodo si chiama **DPO** (*Direct Preference Optimization*,
+non serve.
+
+Quel «a conti fatti» ha un conto vero dietro. Il problema che l'RLHF risolve,
+quello con il premio da una parte e il guinzaglio verso il punto di partenza
+dall'altra, si sa risolvere anche con carta e penna: la sua soluzione migliore
+si scrive in una formula sola, e invertendo quella formula il premio si legge
+come «di quanto è cresciuta la probabilità rispetto al riferimento», più una
+quantità che dipende dalla domanda e non dalla risposta. Quella quantità,
+confrontando due risposte alla stessa domanda, si cancella, e resta soltanto
+il movimento. Il metodo si chiama **DPO** (*Direct Preference Optimization*,
 ottimizzazione diretta delle preferenze).
 
 `````{tab} Elementare
@@ -452,20 +482,20 @@ Torniamo in cucina. Il metodo classico prevedeva due tempi: prima addestrare un
 giudice artificiale sui confronti degli assaggiatori, poi far cucinare il cuoco
 per il giudice. La DPO si accorge che il giro è più lungo del necessario: il
 cuoco può saltare il giudice e imparare direttamente dai confronti. Per ogni
-coppia già valutata (piatto preferito, piatto scartato), ritocca la ricetta in
-modo da rendere un po’ più probabile il preferito e un po’ meno probabile lo
-scartato. E il ritocco è dosato con intelligenza: se il cuoco *già* favorisce
-il piatto giusto, il confronto non insegna quasi nulla e la correzione è
-minima; se invece è ancora in pareggio, o peggio sta dalla parte sbagliata, la
-correzione è energica. Anche la regola d'oro sopravvive, incorporata nel
-metodo: i ritocchi si misurano sempre *rispetto alla ricetta di partenza*, così
-il cuoco migliora senza stravolgere. Stessa destinazione dell'RLHF sulla carta,
-e senza il cantiere. Nei fatti le due strade non finiscono esattamente nello
-stesso punto, e la ragione è una sola: qui il cuoco impara da un quaderno di
-confronti raccolti una volta per tutte, mentre nel metodo classico il palato
-artificiale è lì, in cucina, e assaggia anche i piatti che il cuoco inventa
-oggi. Un quaderno alle domande nuove non risponde, ed è lì che va cercata la
-differenza fra i risultati dei due metodi.
+coppia già valutata (piatto preferito, piatto scartato), ritocca la propria
+ricetta in modo da spostarla di un passo verso il piatto preferito e di un
+passo via da quello scartato. E il ritocco è dosato con intelligenza: se il
+cuoco *già* favorisce il piatto giusto, il confronto non insegna quasi nulla e
+la correzione è minima; se invece è ancora in pareggio, o peggio sta dalla
+parte sbagliata, la correzione è energica. Anche la regola d'oro sopravvive,
+incorporata nel metodo: i ritocchi si misurano sempre *rispetto alla ricetta di
+partenza*, così il cuoco migliora senza stravolgere. Stessa destinazione
+dell'RLHF sulla carta, e senza il cantiere. Nei fatti le due strade non
+finiscono esattamente nello stesso punto, e la ragione principale è questa: qui
+il cuoco impara da un quaderno di confronti raccolti una volta per tutte,
+mentre nel metodo classico il palato artificiale è lì, in cucina, e assaggia
+anche i piatti che il cuoco inventa oggi. Un quaderno alle domande nuove non
+risponde, ed è lì che va cercata la differenza fra i risultati dei due metodi.
 
 `````
 
@@ -541,14 +571,15 @@ sono tutti negativi e a prima vista sembrano andare al contrario.
 
 Una risposta è fatta di tante parole in fila, e perché esca *quella* risposta
 devono uscire tutte: la sua probabilità è il prodotto delle probabilità delle
-sue parole, una per una. Moltiplicando cinquanta numeri minori di uno si ottiene
-però una cifra come $0{,}000000\ldots$, con decine di zeri: impronunciabile, e
-per un computer indistinguibile da zero. Si passa allora al logaritmo, che è
-un modo di riscrivere i numeri per cui i prodotti diventano somme e le scale
-impossibili diventano maneggevoli: $0{,}001$ diventa $-6{,}9$, e
-$0{,}000001$ diventa $-13{,}8$, cioè il doppio. Siccome le probabilità sono
-sempre minori di uno, il loro logaritmo è sempre negativo, e vale zero solo
-per la certezza assoluta.
+sue parole, ciascuna calcolata sapendo quelle che la precedono. Moltiplicando
+cinquanta numeri minori di uno si ottiene però una cifra come
+$0{,}000000\ldots$, con decine di zeri: impronunciabile, e per un computer
+indistinguibile da zero. Si passa allora al logaritmo, che è un modo di
+riscrivere i numeri per cui i prodotti diventano somme e le scale impossibili
+diventano maneggevoli. Quello che si usa qui è il logaritmo naturale, quello in
+base $e$: $0{,}001$ diventa $-6{,}9$, e $0{,}000001$ diventa $-13{,}8$, cioè il
+doppio. Siccome le probabilità sono sempre minori di uno, il loro logaritmo è
+sempre negativo, e vale zero solo per la certezza assoluta.
 
 La regola di lettura è dunque questa: più il numero è vicino a zero, più il
 modello è convinto. $-11{,}9$ è una risposta che il modello considera più
@@ -696,7 +727,7 @@ spesso incoerenti, non solo sbagliate nel risultato: la discontinuità, se c'è,
 *self-consistency* aggiunge un passo: si campionano più catene indipendenti e
 si sceglie la risposta finale a maggioranza
 {cite}`wang2023selfconsistency`. I modelli
-«ragionanti», o1 di OpenAI (settembre 2024), DeepSeek-R1
+«ragionanti», o1 di OpenAI (in anteprima dal settembre 2024), DeepSeek-R1
 {cite}`guo2025deepseek` a pesi aperti (gennaio 2025), interiorizzano la
 catena: vengono addestrati con reinforcement learning su problemi a risposta
 verificabile (correttezza del risultato matematico, superamento dei test per
