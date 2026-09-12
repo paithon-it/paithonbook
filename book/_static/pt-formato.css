@@ -507,9 +507,10 @@ dialog.pt-lente::backdrop {
    intrinseca da cui il browser possa dedurre il riquadro, e dentro un
    contenitore flex collasserebbero al default di 300px. Con il riquadro pari
    alla scena ci pensa `object-fit: contain` a rispettare le proporzioni.
-   Il tema inverte già le immagini in tema scuro (`image_dark_mode.css`), e
-   questa è un `img` come le altre: la figura nel visore si vede come nella
-   pagina, senza che qui serva ripetere niente. */
+   In tema scuro il tema spegne o inverte ogni `img` senza `only-dark` né
+   `dark-light` (`image_dark_mode.css`), e questa sarebbe una di quelle: la
+   gemella scura uscirebbe invertita, cioè chiara. L'esenzione gliela dà
+   `custom.js` all'apertura, copiandola dalla figura cliccata. */
 .pt-lente__figura {
   width: 100%;
   height: 100%;

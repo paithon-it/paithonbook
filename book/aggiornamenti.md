@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-11)=
+
+## 1.12.11 · 12 settembre 2026
+
+### Correzioni
+
+- **La lente resta nel tema scelto.** Chi legge in tema scuro e apre una figura a schermo intero se la vedeva comparire chiara, con il fondo quasi bianco: la resa scura era quella giusta, ma il visore la trattava come una fotografia qualsiasi e il tema la invertiva. Ora la figura nel visore eredita l'esenzione da quella cliccata, e in scuro resta scura, in chiaro resta chiara. Misurato sulle pagine con una figura SVG e una animata: la luminanza del disegno scende da oltre duecento a poche decine in scuro, e in chiaro non cambia. Segnalato dall'autore sulla figura delle tre leve dell'efficienza.
+
 (v1-12-10)=
 
 ## 1.12.10 · 11 settembre 2026

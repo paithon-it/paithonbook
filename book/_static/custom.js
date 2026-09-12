@@ -544,6 +544,15 @@
       if (!visore) costruisci();
       const dentro = link.querySelector('img');
       img.alt = dentro ? dentro.getAttribute('alt') || '' : '';
+      // In tema scuro il tema spegne ogni `img` che non porti `only-dark` o
+      // `dark-light`, e `image_dark_mode.css` di `jupyterbook_patches` la
+      // inverte del tutto. La resa scura di una figura in pagina e' esente, e
+      // il link cliccato punta gia' a lei; la figura del visore invece non
+      // portava nessuna classe, e la gemella scura usciva invertita, cioe'
+      // chiara. Qui eredita l'esenzione da quella cliccata. `dark-light` e non
+      // `only-dark`, che il tema nasconde appena si torna al chiaro.
+      img.classList.toggle('dark-light',
+        !!dentro && dentro.matches('.only-dark, .dark-light'));
       didascalia.textContent = testoDidascalia(link.closest('figure'));
       document.documentElement.classList.add('pt-lente-aperta');
       visore.showModal();
