@@ -249,7 +249,7 @@ larghezza di un taccuino dice a quanti lettori serve, non quanto occupa.
 
 `````{tab} Elementare
 Torniamo al palazzo del 2017, otto lettori per piano, che con numeri piccoli si
-segue meglio: finora ognuno teneva il proprio taccuino: otto etichette e otto
+segue meglio. Finora ognuno teneva il proprio taccuino: otto etichette e otto
 informazioni per ogni parola, per ogni piano. Nei testi quel modo si trova con
 la sigla MHA. Guardando i taccuini, però, viene un sospetto: i lettori si
 distinguono per le domande che pongono, non per il materiale che consultano. E
@@ -341,10 +341,9 @@ equivale a quella di un GQA con 2,25 gruppi. Il punto da non confondere: MLA
 non è riducibile a un GQA con meno teste, perché cambia l'oggetto conservato e
 l'algebra delle proiezioni usata in inferenza.
 
-MQA e GQA muovono $h_{kv}$, MLA cambia l'oggetto conservato. Quello che
-nessuna delle tre tocca è il numero di teste di query, e con esso la
-molteplicità dei sottospazi in cui il modello calcola le compatibilità: quello
-che si condivide, o si comprime, è la rappresentazione conservata.
+Quello che né MQA né GQA né MLA toccano è il numero di teste di query, e con
+esso la molteplicità dei sottospazi in cui il modello calcola le compatibilità:
+quello che si condivide, o si comprime, è la rappresentazione conservata.
 `````
 
 I numeri rendono l'idea meglio della formula. Il blocco che segue prende un

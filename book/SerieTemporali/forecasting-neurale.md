@@ -262,7 +262,7 @@ strato, o si allarga la finestra di ciascuno.
 Uno strato non riscrive il diario da capo: si tiene accanto la pagina com'era e
 ci annota soltanto quello che ha da aggiungere. Il vantaggio si vede quando si
 corregge: la correzione risale la pila, dall'ultimo strato al primo, che è un
-viaggio dentro la rete e non dentro il calendario. Se gli strati sono tanti per
+viaggio dentro la rete e non dentro il calendario. Se gli strati sono tanti, per
 strada si smorza fino a sparire; se
 ogni strato però conserva la pagina di partenza, la correzione trova sempre una
 scorciatoia per arrivare in fondo, e anche una pila alta resta correggibile. Il
@@ -367,10 +367,10 @@ previsione seria è un numero *con la sua incertezza*.
 A ogni passo la rete emette i parametri $\boldsymbol{\lambda}_t$ di una
 distribuzione di verosimiglianza $p(x_t \mid \boldsymbol{\lambda}_t)$: una
 gaussiana, e allora $\boldsymbol{\lambda}_t=(\mu_t,\sigma_t)$, per dati reali;
-una **binomiale negativa** per conteggi non negativi (come le vendite). È in
-grassetto perché ha più di una componente; la stessa lettera altrove nel libro
-è il coefficiente di penalità, qui no. La loss è la log-verosimiglianza
-cambiata di segno, sommata su tutte le serie,
+una **binomiale negativa** per conteggi non negativi (come le vendite). Il
+$\boldsymbol{\lambda}_t$ è in grassetto perché ha più di una componente; la
+stessa lettera altrove nel libro è il coefficiente di penalità, qui no. La loss
+è la log-verosimiglianza cambiata di segno, sommata su tutte le serie,
 
 $$
 \mathcal{L}(\theta) = -\sum_{i=1}^{N} \sum_{t} \log p\big(x^{(i)}_t \mid
@@ -392,7 +392,7 @@ non averne osservato effetti negativi nel forecasting, a differenza di quanto
 *scheduled sampling* senza guadagni di accuratezza e con una convergenza più
 lenta.
 
-È la ricetta di
+La loss è la ricetta di
 {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`, applicata a
 un passo temporale alla volta.
 
@@ -642,20 +642,20 @@ sofisticati. Ne provarono più d'uno: il più elaborato della famiglia separa
 prima la serie in tendenza e stagionalità e poi tira una retta su ciascuna delle
 due, e lo chiamarono **DLinear**; il più semplice è una retta e basta.
 
-E non si fermarono al risultato. Con la retta più semplice fecero due prove che
-valgono più della classifica. Nella prima mescolarono l'ingresso: presero i
-giorni passati da dare in pasto al modello e li rimisero in ordine sparso. Un
-modello che usa davvero l'ordine del tempo, così, dovrebbe crollare. Sui cambi
-fra valute i Transformer non se ne accorsero per niente, mentre la retta
-peggiorò di un quarto: lì il tempo lo stava usando lei. Su altre serie, invece,
-mescolare fa male quasi a tutti. Che è già una lezione: quanto un modello usi
-l'ordine del tempo non è una sua proprietà fissa, e si scopre misurandola,
-banco di prova per banco di prova.
+E non si fermarono al risultato. Fecero due prove che valgono più della
+classifica. Nella prima, con la retta più semplice, mescolarono l'ingresso:
+presero i giorni passati da dare in pasto al modello e li rimisero in ordine
+sparso. Un modello che usa davvero l'ordine del tempo, così, dovrebbe crollare.
+Sui cambi fra valute i Transformer non se ne accorsero per niente, mentre la
+retta peggiorò di un quarto: lì il tempo lo stava usando lei. Su un'altra serie,
+invece, mescolare fa male quasi a tutti. Che è già una lezione: quanto un
+modello usi l'ordine del tempo non è una sua proprietà fissa, e si scopre
+misurandola, banco di prova per banco di prova.
 
-Nella seconda allungarono il passato da leggere. Chi tira fuori qualcosa da una
-storia lunga dovrebbe prevedere meglio quando gliene si dà di più; i
-Transformer, con la finestra più lunga, restavano fermi o peggioravano, mentre
-la retta migliorava quasi dappertutto.
+Nella seconda, questa volta con tutta la famiglia, allungarono il passato da
+leggere. Chi tira fuori qualcosa da una storia lunga dovrebbe prevedere meglio
+quando gliene si dà di più; i Transformer, con la finestra più lunga, restavano
+fermi o peggioravano, mentre i modelli lineari miglioravano quasi dappertutto.
 
 La morale non è «i Transformer non servono», ma qualcosa di più prezioso: la
 complessità non è mai un vantaggio gratuito. Prima di celebrare un modello
@@ -736,7 +736,7 @@ ispezionabili. Su quest'ultimo punto vale la cautela della {doc}`sezione su
 attribuzione e meccanicistica
 </Interpretabilita/attribuzione-e-meccanicistica>`: i pesi di attenzione sono
 un indizio suggestivo, non una spiegazione affidabile
-{cite}`jain2019attention`, e le prime due leve reggono anche senza di lui.
+{cite}`jain2019attention`, e le prime due leve reggono anche senza quei pesi.
 Resta comunque un promemoria di metodo: sempre una linea di base, sempre
 onesta.
 
@@ -963,15 +963,15 @@ confronto con la linea di base classica.
 - Sui Transformer per le serie, cautela: la famiglia LTSF-Linear di Zeng e
   colleghi (il lineare semplice e la sua variante con decomposizione,
   DLinear) li eguaglia o supera su nove dataset
-  {cite}`zeng2023transformers`, e le due prove che lo spiegano, fatte sul
-  lineare semplice (su una serie mescolare l'ingresso non li scalfisce, e
-  allungare la finestra non li migliora), dicono che su quei banchi l'ordine
-  temporale non era quello che stavano sfruttando. Il TFT
-  {cite}`lim2021temporal` resta utile per covariate multiple e interpretabilità,
-  purché i suoi pesi di attenzione si leggano come indizio e non come prova
-  {cite}`jain2019attention`. I foundation model come Chronos
-  {cite}`ansari2024chronos` promettono forecasting *zero-shot*: campo promettente
-  ma giovane, non risolto.
+  {cite}`zeng2023transformers`, e le due prove che lo spiegano, la prima sul
+  lineare semplice e la seconda su tutta la famiglia (su una serie mescolare
+  l'ingresso non scalfisce i Transformer, e allungare la finestra non li
+  migliora), dicono che su quei banchi l'ordine temporale non era sempre quello
+  che stavano sfruttando. Il TFT {cite}`lim2021temporal` resta utile per
+  covariate multiple e interpretabilità, purché i suoi pesi di attenzione si
+  leggano come indizio e non come prova {cite}`jain2019attention`. I foundation
+  model come Chronos {cite}`ansari2024chronos` promettono forecasting
+  *zero-shot*: campo promettente ma giovane, non risolto.
 ```
 
 `````

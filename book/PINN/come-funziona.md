@@ -36,12 +36,12 @@ la pendenza è $u_\theta'(t)$ e la curvatura $u_\theta''(t)$.
 
 La rete allora smette di essere soltanto una scatola addestrabile e diventa
 qualcosa di più: una curva **liscia** (che vuol dire una cosa precisa: niente
-spigoli, e una curvatura che esiste in ogni punto) di cui si sa dire, in
-ogni punto, quanto è alta, quanto sale e quanto piega. Ed è esattamente ciò
-che serve per chiederle di rispettare un'equazione differenziale, che di
-quelle tre cose parla e non d'altro. Liscia, però, non lo è per forza: dipende
-da come la rete è fatta dentro, e quale pezzo lo decida lo racconta la sezione
-sulla scelta fra tanh e ReLU.
+spigoli, e una curvatura che esiste in ogni punto) di cui si sa dire, in ogni
+punto, quanto è alta, quanto sale e quanto piega. Ed è esattamente ciò che
+serve per chiederle di rispettare un'equazione differenziale, che di quelle tre
+cose parla e non d'altro. Liscia, però, non lo è per forza: dipende da come la
+rete è fatta dentro, e quale pezzo lo decida lo racconta, più avanti, il
+paragrafo sulla scelta fra tanh e ReLU.
 
 Tutto il metodo delle PINN sta in questa mossa, chiedere le derivate rispetto
 all'ingresso invece che ai pesi. Vediamola all'opera.
@@ -669,11 +669,10 @@ Si noti infine il residuo sulla griglia fitta, ed è quello che dice di più:
 sugli istanti che la rete non ha mai visto vale $3 \cdot 10^{-2}$, quattro
 volte più alto che nei punti controllati. La rete va un po’ meglio dove la si
 guarda che dove non la si guarda. Qui è uno scarto modesto, e fra poche righe
-vedremo quanto può diventare grande. Un ultimo dettaglio da non lasciarsi
-sfuggire nel crollo della loss: quasi tutta quella caduta è il termine sulle
-condizioni iniziali, che si esaurisce entro le prime mille epoche; il termine
-di fisica, quello che dovrebbe fare il lavoro, in tutto si divide soltanto per
-una trentina, da 0,26 a 0,0078.
+vedremo quanto può diventare grande. Resta da guardare dentro il crollo della
+loss: il termine sulla partenza si esaurisce entro le prime mille epoche,
+mentre quello di fisica, che dovrebbe fare il lavoro, in tutto si divide
+soltanto per una trentina, da 0,26 a 0,0078.
 
 ```{figure} ../figures/pinn-residuo.svg
 :name: fig-pinn-residuo
@@ -862,18 +861,17 @@ conto. Il professore non controlla dappertutto:
 controlla duecento istanti, sempre gli stessi. Lo studente lo ha capito, e ha
 imparato a stare in riga *esattamente lì*.
 
-E adesso guardiamo che cosa fa in mezzo, perché c'è da restare a bocca
-aperta. Due dei suoi punti di controllo cadono a 1,205 e a 1,415 secondi: fra
-loro corrono due decimi di secondo, quattro volte il passo medio del campione,
-che con duecento punti su dieci secondi è un ventesimo di secondo: quei punti
-sono stati sorteggiati e il caso li ha lasciati radi lì. La curva arriva lì
+E adesso guardiamo che cosa fa in mezzo, perché c'è da restare a bocca aperta.
+Due dei suoi punti di controllo cadono a 1,205 e a 1,415 secondi: fra loro
+corrono due decimi di secondo, quattro volte il passo medio del campione, che
+con duecento punti su dieci secondi è un ventesimo di secondo. Quei punti sono
+stati sorteggiati, e il caso li ha lasciati radi lì. La curva arriva lì
 scendendo, tocca il fondo a $-0{,}57$ e in quei due decimi di secondo risale
-fino a sfiorare lo zero, dove resta per tutto il tempo che avanza: mezzo
-foglio risalito di scatto fra un controllo e l'altro.
-È lo strappo con cui smette di oscillare. Proprio perché è così stretto, lì la
-curva piega in modo mostruoso, e la regola della molla parla soprattutto
-di quanto la curva piega. Se il professore ci mettesse il dito, quel compito
-verrebbe stracciato.
+fino a sfiorare lo zero, dove resta per tutto il tempo che avanza: mezzo foglio
+risalito di scatto fra un controllo e l'altro. È lo strappo con cui smette di
+oscillare. Proprio perché è così stretto, lì la curva piega in modo mostruoso,
+e la regola della molla parla soprattutto di quanto la curva piega. Se il
+professore ci mettesse il dito, quel compito verrebbe stracciato.
 
 Il professore lì non ci mette il dito. Sul suo registro il compito è quasi
 perfetto; il disegno è sbagliato due volte, perché è piatto dove dovrebbe
@@ -1056,33 +1054,32 @@ Dissanayake e Phan-Thien nel 1994 {cite}`dissanayake1994neural`, e reti
 neurali messe a risolvere equazioni differenziali compaiono già in Lee e Kang
 nel 1990, con un impianto però diverso: lì la rete non rappresenta la
 soluzione come funzione delle coordinate, minimizza l'errore di uno schema
-alle differenze finite già discretizzato {cite}`lee1990neural`. Isaac Lagaris,
-Aristidis Likas e Dimitrios
-Fotiadis, nel 1998, pubblicano la variante che di solito viene citata come
-capostipite {cite}`lagaris1998artificial`, ed è utile distinguerla perché non
-è la stessa cosa: Lagaris costruisce la soluzione di prova in modo che
-condizioni iniziali e al contorno siano soddisfatte *esattamente*, per
-costruzione, e resta da minimizzare il solo residuo. Sul nostro problema
-basterebbe cercare la soluzione nella forma
-$\hat{u}(t) = 1 + t^2\,u_\theta(t)$, che dà $\hat{u}(0)=1$ e, derivando,
-$\hat{u}'(t) = 2t\,u_\theta + t^2 u_\theta'$, quindi $\hat{u}'(0) = 0$
-qualunque cosa faccia la rete (purché sia derivabile, e una `tanh` lo è):
-niente $\lambda_0$ da scegliere, e la soluzione banale non è più
-raggiungibile. È il vincolo imposto
-*a priori*; la PINN, come la formulazione del 1994, lo impone invece come
-penalità, una scelta che tiene il metodo generale (una forma così va
-riscritta per ogni geometria e ogni tipo di condizione) ma che, come abbiamo
-appena visto con il seme sfortunato e come vedremo nella prossima sezione, ha
-un costo. Ma nel 1994 le derivate della rete andavano ricavate con
-formule scritte a mano, caso per caso, e l'ottimizzazione girava su CPU
-dell'epoca: l'idea restò di nicchia per un quarto di secolo. Quando Maziar
-Raissi, Paris Perdikaris e George Karniadakis la rilanciano nel 2019
-{cite}`raissi2019physics` (il nome «physics-informed neural networks» lo
-avevano già usato nei due preprint del 2017 da cui quel lavoro nasce), la
-differenza non è concettuale ma
-infrastrutturale: autograd generale e maturo {cite}`paszke2019pytorch`; le due
-chiamate a `torch.autograd.grad` di poco fa, e GPU per l'addestramento. A
-volte, nella ricerca, l'idea giusta deve solo aspettare i suoi attrezzi.
+alle differenze finite già discretizzato {cite}`lee1990neural`. Isaac
+Lagaris, Aristidis Likas e Dimitrios Fotiadis, nel 1998, pubblicano la
+variante che di solito viene citata come capostipite
+{cite}`lagaris1998artificial`, ed è utile distinguerla perché non è la stessa
+cosa: Lagaris costruisce la soluzione di prova in modo che condizioni
+iniziali e al contorno siano soddisfatte *esattamente*, per costruzione, e
+resta da minimizzare il solo residuo. Sul nostro problema basterebbe cercare
+la soluzione nella forma $\hat{u}(t) = 1 + t^2\,u_\theta(t)$, che dà
+$\hat{u}(0)=1$ e, derivando, $\hat{u}'(t) = 2t\,u_\theta + t^2 u_\theta'$,
+quindi $\hat{u}'(0) = 0$ qualunque cosa faccia la rete (purché sia
+derivabile, e una `tanh` lo è): niente $\lambda_0$ da scegliere, e la
+soluzione banale non è più raggiungibile. È il vincolo imposto *a priori*; la
+PINN, come la formulazione del 1994, lo impone invece come penalità, una
+scelta che tiene il metodo generale (una forma così va riscritta per ogni
+geometria e ogni tipo di condizione) ma che, come abbiamo appena visto con il
+seme sfortunato e come vedremo nella prossima sezione, ha un costo. Ma nel
+1994 le derivate della rete andavano ricavate con formule scritte a mano,
+caso per caso, e l'ottimizzazione girava su CPU dell'epoca: l'idea restò di
+nicchia per un quarto di secolo. Quando Maziar Raissi, Paris Perdikaris e
+George Karniadakis la rilanciano nel 2019 {cite}`raissi2019physics` (il nome
+«physics-informed neural networks» lo avevano già usato nei due preprint del
+2017 da cui quel lavoro nasce), la differenza non è concettuale ma
+infrastrutturale: autograd generale e maturo {cite}`paszke2019pytorch` (sono
+le due chiamate a `torch.autograd.grad` di poco fa) e GPU per
+l'addestramento. A volte, nella ricerca, l'idea giusta deve solo aspettare i
+suoi attrezzi.
 
 `````
 

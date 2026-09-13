@@ -12,9 +12,9 @@ mettere le mani.
 
 ## Il rito: i cinque passi
 
-Eccole, le cinque righe. Tutto il resto della sezione non fa che spiegarle e
-metterle al lavoro su un problema vero. Prima, però, due parole che nel codice
-compaiono senza presentazioni.
+Tutto il resto della sezione non fa che spiegare quelle cinque righe e metterle
+al lavoro su un problema vero. Prima di vederle, però, due parole che nel
+codice compaiono senza presentazioni.
 
 L’ottimizzatore è il pezzo che a ogni giro corregge i pesi del modello. Il
 learning rate (in italiano si dice anche, più brevemente, il passo: le
@@ -125,12 +125,12 @@ $$
 
 dove $\eta$ è il *learning rate*. `loss.backward()` calcola
 $\nabla_{\theta}\mathcal{L}$ via autograd e lo deposita in `p.grad` per ogni
-parametro; `optimizer.step()` applica l'aggiornamento, la formula esatta
-dipende dall'ottimizzatore: la discesa semplice per `optim.SGD`, stime
-adattive dei momenti per `optim.Adam` {cite}`kingma2015adam`, il default
-robusto di quasi ogni progetto. `zero_grad()` è necessario perché autograd
-accumula i gradienti a ogni `backward()`: senza, ogni passo userebbe la
-somma di tutti i gradienti precedenti.
+parametro; `optimizer.step()` applica l'aggiornamento, e la formula esatta
+dipende dall'ottimizzatore: la discesa semplice per `optim.SGD`, stime adattive
+dei momenti per `optim.Adam` {cite}`kingma2015adam`, il default robusto di
+quasi ogni progetto. `zero_grad()` è necessario perché autograd accumula i
+gradienti a ogni `backward()`: senza, ogni passo userebbe la somma di tutti i
+gradienti precedenti.
 
 Il nome però dice meno di quello che il metodo fa. Da PyTorch 2.0 il default è
 `set_to_none=True`, quindi `p.grad` non diventa un tensore di zeri: diventa
@@ -232,8 +232,8 @@ loss, dati. Questo è un programma completo che scarica MNIST, addestra il
 percettrone multistrato della sezione precedente e lo valuta su immagini mai
 viste. Ci sono dentro tre chiamate che non abbiamo ancora presentato
 (`model.train()`, `model.eval()` e il blocco `torch.no_grad()`): per ora si
-possono leggere come «adesso studia» e «adesso rispondi e basta», e la sezione
-subito dopo il codice se ne occupa per esteso.
+possono leggere come «adesso studia» e «adesso rispondi e basta», e il
+paragrafo «Studiare e dare l'esame» se ne occupa per esteso.
 
 ```python
 import torch
@@ -374,6 +374,7 @@ ingresso $(1, 3, 5)$, o l'immagine $(1, 3, 4, 4)$ di una `nn.BatchNorm2d`,
 passano senza storie, e su un ingresso costante l'uscita è zero, o un residuo
 minuscolo di arrotondamento, e non `nan`, perché l’$\varepsilon$ che si somma al
 denominatore impedisce che si divida zero per zero.
+
 `torch.no_grad()` è un context manager che sospende la
 costruzione del grafo autograd: non vengono salvati i valori intermedi per un
 `backward()` che non arriverà mai, con un risparmio di memoria che cresce con

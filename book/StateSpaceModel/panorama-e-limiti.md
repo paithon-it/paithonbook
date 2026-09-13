@@ -78,10 +78,10 @@ l'intercalare cade subito: si dimentica in base a quello che si legge. Anche
 questo si paga: la scelta va rifatta a ogni parola, e non si può più
 preparare una volta sola all'inizio.
 
-RetNet, GLA, DeltaNet, Mamba: sono lo stesso apparecchio con le
-manopole in posizioni diverse. Nomi e sigle diversi per un solo schema. E le
-posizioni si combinano: c'è chi gira insieme la manopola dello sbiadire in
-blocco e quella del cancellare di mira, e si chiama Gated DeltaNet.
+RetNet, GLA, DeltaNet, Mamba: sono lo stesso apparecchio con le manopole in
+posizioni diverse. E le posizioni si combinano: c'è chi gira insieme la
+manopola dello sbiadire in blocco e quella del cancellare di mira, e si chiama
+Gated DeltaNet.
 
 `````
 
@@ -382,8 +382,8 @@ Transformer, avevamo messo in guardia dalle profezie: questo campo brucia in
 fretta le previsioni. Già lì, tra le tendenze future, gli *state space model*
 comparivano come la linea di ricerca che rimetteva in gioco idee ricorrenti
 proprio dove l'attenzione costa troppo, ed è la storia che questi due capitoli
-hanno raccontato per esteso. La lezione di fondo, però, è la stessa
-dell'intero libro: nessuna architettura vince per sempre. L'attenzione non ha
+hanno raccontato per esteso. La lezione di fondo, però, è più generale:
+nessuna architettura vince per sempre. L'attenzione non ha
 «ucciso» le RNN, e le RNN lineari non uccideranno l'attenzione. Chi conosce le
 idee semplici che stanno sotto (una memoria in cui ogni parola archivia una
 voce nuova, un modo di sbiadire il passato che decide cosa dimenticare, due

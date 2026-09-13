@@ -254,15 +254,15 @@ lungo una direzione disponibile, e spostandosi un po' in quella direzione si
 farebbe meglio: segno che non si era ancora al minimo. Perpendicolarità
 dell'errore ed essere arrivati al minimo sono la stessa cosa detta in due modi.
 
-Da questa geometria discendono due conseguenze. La prima:
-rifare l'ombra di un'ombra non cambia niente, perché l'ombra sta già distesa
-sul piano e la sua ombra è sé stessa. La seconda riguarda una scelta che finora
-è passata liscia. Prendere la somma dei quadrati degli scarti, invece della
-somma dei loro valori assoluti, è una decisione, e ha un prezzo: un errore
-doppio pesa quattro volte, quindi un solo dato molto sbagliato tira la risposta
-verso di sé molto più di dieci dati sbagliati di poco. In compenso i quadrati
-danno l'ombra, cioè una risposta con una formula chiusa e una geometria
-limpida, mentre i valori assoluti non hanno né l'una né l'altra.
+La stessa geometria ha altre due conseguenze. La prima: rifare l'ombra di
+un'ombra non cambia niente, perché l'ombra sta già distesa sul piano e la sua
+ombra è sé stessa. La seconda riguarda una scelta che finora è passata liscia.
+Prendere la somma dei quadrati degli scarti, invece della somma dei loro valori
+assoluti, è una decisione, e ha un prezzo: un errore doppio pesa quattro volte,
+quindi un solo dato molto sbagliato tira la risposta verso di sé molto più di
+dieci dati sbagliati di poco. In compenso i quadrati danno l'ombra, cioè una
+risposta con una formula chiusa e una geometria limpida, mentre i valori
+assoluti non hanno né l'una né l'altra.
 
 Ed è per questa strada che il problema dell'orbita di Cerere si chiude. Le
 misure di Piazzi sono la freccia che sporge, le orbite possibili sono il piano,

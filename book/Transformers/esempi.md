@@ -204,19 +204,17 @@ domini diversi da quello di addestramento (ironia, sarcasmo, gergo) le
 prestazioni calano sensibilmente.
 `````
 
-Quell'errore sulla terza frase merita di stare nel testo per tutti, perché è la
-cosa più utile che questa pagina abbia da dare. Il modello dà a «non è affatto
-male» due stelle su cinque, cioè lo legge come una recensione scontenta,
-mentre a «non è male», la stessa frase senza l'avverbio, ne dà tre.
+Quell'errore sulla terza frase è la cosa più utile dei due esempi. Il modello
+dà a «non è affatto male» due stelle su cinque, cioè lo legge come una
+recensione scontenta, mentre a «non è male», la stessa frase senza l'avverbio,
+ne dà tre.
 
-Il bello è che il verdetto non è netto come sembra. Il modello non sceglie una
-risposta sola: dà un voto a tutte e cinque, e qui aveva messo le due stelle a
-0,365 e le tre a 0,336, a ventinove millesimi l'una dall'altra. È l'unica delle
-quattro frasi in cui i primi due posti stanno così attaccati, e chi guardasse
-soltanto il vincitore non se ne accorgerebbe mai. Il quasi-pareggio, però, è fra
-due modi di sbagliare e non fra sbagliare e indovinare: le quattro e le cinque
-stelle, che sarebbero la lettura giusta di un complimento, si dividono in tutto
-sette centesimi.
+Il modello non sceglie una risposta sola: dà un voto a ciascuna delle cinque
+stelle. Qui le due stelle stanno a 0,365 e le tre a 0,336, a ventinove
+millesimi l'una dall'altra, e nessuna delle altre tre frasi ha i primi due posti
+così attaccati. Il quasi-pareggio, però, è fra due modi di sbagliare e non fra
+sbagliare e indovinare: le quattro e le cinque stelle, che sarebbero la lettura
+giusta di un complimento, si dividono in tutto sette centesimi.
 
 L'errore viene probabilmente dalla compagnia che
 «affatto» tiene nei testi: compare quasi sempre dentro una stroncatura piena

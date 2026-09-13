@@ -56,11 +56,10 @@ distanze fra tutte le coppie si assomigliano, e i punti finiscono tutti
 lontani gli uni dagli
 altri.
 
-Da qui la conseguenza che tocca ogni algoritmo basato sulle distanze. Se i punti
-finiscono tutti lontani
-fra loro, e per giunta a distanze simili, «il vicino più vicino» smette di voler
-dire qualcosa: la differenza fra il primo e il centesimo vicino si assottiglia
-fino a sparire.
+Da qui la conseguenza che tocca ogni algoritmo basato sulle distanze: «il vicino
+più vicino» smette di voler dire qualcosa, perché la differenza fra il primo e
+il centesimo vicino, in proporzione alla loro distanza, si assottiglia fino a
+sparire.
 
 `````{tab} Elementare
 
@@ -187,8 +186,7 @@ l'irrequietezza di un
 *modello*: quanto cambiano le sue risposte se lo riaddestriamo su un campione
 diverso. Qui è una proprietà dei *dati*, e non c'è nessun modello in giro:
 quanto sono sparpagliati i punti lungo una direzione. Stessa parola perché il
-conto che si fa è lo stesso (quanto le cose si scostano dalla loro media), ma
-la cosa misurata è diversa: là un modello, qui un mucchio di numeri.
+conto che si fa è lo stesso (quanto le cose si scostano dalla loro media).
 
 `````
 
@@ -686,9 +684,9 @@ differenza fra la seconda e la prima e la si divide per la più grande delle
 due, così il risultato sta sempre fra $-1$ e $+1$. Vicino a $+1$ vuol dire che
 il punto è molto più vicino ai suoi che agli altri, cioè è ben piazzato;
 attorno a zero che sta sul confine;
-negativo che i vicini di casa sono nel gruppo sbagliato, cioè che lui è nel
-gruppo sbagliato. La media su tutti i punti dice quanto è «pulita» la
-partizione: si sceglie il $k$ che la rende più alta.
+negativo che in media è più vicino al gruppo accanto che al proprio, cioè che
+probabilmente è nel gruppo sbagliato. La media su tutti i punti dice quanto è
+«pulita» la partizione: si sceglie il $k$ che la rende più alta.
 
 `````
 
@@ -809,7 +807,7 @@ due centroidi, taglia le lune con un confine rettilineo e sbaglia. A destra
 DBSCAN segue la densità, ricostruisce le due forme curve e isola il rumore.
 ```
 
-Come mostra la {numref}`fig-clustering-metodi`, sui «due lune» k-means è
+Come mostra la {numref}`fig-clustering-metodi`, sulle due lune k-means è
 costretto a un confine dritto (impossibile separare due forme così con un
 taglio netto attorno a due centri), mentre DBSCAN segue il filo della densità.
 Non è che un metodo sia sempre migliore: k-means è veloce, scala benissimo e

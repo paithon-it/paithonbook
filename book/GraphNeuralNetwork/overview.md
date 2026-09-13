@@ -12,14 +12,14 @@ non fu camminare di più, ma buttare via la mappa. Le distanze, la forma delle
 isole, la lunghezza dei ponti: niente di tutto questo contava. Contava solo
 *quale lembo di terra fosse collegato a quale*. Euler ridusse allora la città
 a quattro lettere, una per lembo di terra, e a sette ponti fra quelle lettere,
-e su quello scheletro dimostrò che la passeggiata non poteva esistere. Il
-disegno a punti e linee, quelli che oggi chiamiamo **nodi** e **archi**,
-sarebbe arrivato quasi un secolo e mezzo dopo; l'astrazione però è sua. Chi
+e su quello scheletro dimostrò che la passeggiata non poteva esistere. Chi
 entra in un lembo di terra passando su un ponte ne deve prendere un altro per
 uscirne, quindi i ponti di ogni lembo vanno a coppie, salvo quello da cui si
 parte e quello in cui si arriva. I lembi con un numero dispari di ponti
 possono essere al massimo due, allora; a Königsberg erano quattro su quattro.
-Il suo articolo, *Solutio Problematis ad Geometriam Situs Pertinentis*, letto
+Il disegno a punti e linee, quelli che oggi chiamiamo **nodi** e **archi**,
+sarebbe arrivato più di un secolo e mezzo dopo; l'astrazione però è di Euler, e
+il suo articolo, *Solutio Problematis ad Geometriam Situs Pertinentis*, letto
 all'Accademia di San Pietroburgo nel 1735 e stampato sei anni dopo, è
 considerato l'atto di nascita della **teoria dei grafi**: la matematica delle
 cose collegate tra loro.
@@ -35,12 +35,12 @@ segnalata una che nessuno associava agli antibiotici; nei topi ha curato anche
 un'infezione da *Acinetobacter baumannii* resistente a tutti gli antibiotici
 provati. L'hanno chiamata halicin, in omaggio a HAL 9000, il computer di *2001:
 Odissea nello spazio*. Il filo che unisce i sette ponti di Königsberg a un
-antibiotico del XXI secolo è proprio l'oggetto di questo capitolo: le **reti
-neurali su grafo** (*Graph Neural Networks*, GNN).
+antibiotico del XXI secolo ha un nome: le **reti neurali su grafo** (*Graph
+Neural Networks*, GNN).
 
 ## Perché un capitolo dedicato
 
-Fin qui il libro ha lavorato su due forme di dato molto ordinate. Le reti
+Le reti viste finora lavorano su due forme di dato molto ordinate. Le reti
 convoluzionali del {doc}`capitolo sul deep learning </DeepLearning/overview>`
 suppongono una griglia: i pixel di un'immagine hanno vicini fissi,
 sopra-sotto-destra-sinistra, sempre lo stesso numero. Le reti ricorrenti
@@ -145,7 +145,7 @@ ascolto diventa qualcosa di più.
 Il resto è la macchina di sempre. Le operazioni che compongono un giro sono
 tutte di quelle di cui si sa calcolare la derivata, e quindi la rete si
 addestra dall'ingresso all'uscita con la stessa discesa del gradiente di ogni
-altro modello di questo libro. Non serve un modo nuovo di imparare: serve solo
+altro modello visto finora. Non serve un modo nuovo di imparare: serve solo
 un modo di far parlare i nodi fra loro.
 
 `````{tab} Elementare
@@ -206,7 +206,7 @@ Network* (GCN).
 
 `````
 
-L'idea non è nuova, e ha una storia in buona parte italiana da datare bene. La
+L'idea non è nuova, e ha una storia in buona parte italiana. La
 prima forma è di fine anni Novanta, con i lavori di Alessandro Sperduti e
 Antonina Starita (1997) e di Paolo Frasconi, Marco Gori e Sperduti (1998);
 reggevano però soltanto grafi i cui archi hanno un verso e in cui, seguendo le
@@ -331,7 +331,8 @@ l'armamentario delle reti su grafo, portata in produzione da alcuni grandi
 servizi. Non è però la definizione del problema, e la {doc}`sezione sulla
 raccomandazione neurale </SistemiRaccomandazione/raccomandazione-neurale>`
 riprende il filo da vicino, dicendo anche perché i sistemi che girano davvero
-restano organizzati attorno al confronto fra due schede.
+restano organizzati attorno al confronto fra due rappresentazioni, una per
+l'utente e una per il prodotto.
 
 Il terzo filo è il meno ovvio dei tre e il più utile, perché porta a un
 capitolo che sembrava parlare d'altro: quello sui Transformer, i modelli

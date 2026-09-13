@@ -44,9 +44,9 @@ Alla fine nella scatola convivono pezzi di ogni taglia. Le parole comunissime,
 si scrive come `token` + `izzazione`, due pezzi visti tante volte altrove. E una
 parola mai incontrata, un cognome o una sigla, si scrive lo stesso, al peggio
 lettera per lettera, purché quelle lettere fossero nel testo da cui la scatola
-è stata riempita. La condizione sembra scontata e non lo è: basta un alfabeto
-che in quel testo non compariva, il greco o il coreano, perché al posto della
-parola finisca un segnaposto che non vuol dire niente. La {doc}`sezione oltre
+è stata riempita. Condizione che pare scontata, finché non arriva un alfabeto
+che in quel testo non compariva, il greco o il coreano: al posto della parola
+finisce un segnaposto che non vuol dire niente. La {doc}`sezione oltre
 il BPE </NaturalLanguageProcessing/oltre-il-bpe>` racconta come ci si è
 liberati anche di questo limite, scendendo sotto la lettera.
 
@@ -280,25 +280,25 @@ quella rara sale.
 
 `````{tab} Superiore
 
-`scikit-learn` non applica la formula qui sopra alla lettera: usa un idf
+`scikit-learn` non applica alla lettera la formula da manuale: usa un idf
 *lisciato*, $\ln\frac{1+N}{1+\text{df}(t)} + 1$, e normalizza poi in $L^2$ il
 vettore di ogni documento. Il «$+1$» finale ha una conseguenza da tenere a
 mente: un termine presente in tutti i documenti non si annulla, come vorrebbe
-$\log(N/\text{df})$, ma conserva idf pari a $1$. Nel corpus giocattolo qui
-sopra ($N = 2$) non è affatto un residuo trascurabile: nel primo documento
-*il* esce con peso $0{,}318$ contro lo $0{,}447$ di *gatto*, cioè circa il
-71% del peso di un termine che compare in un solo documento. Il divario si
-apre solo al crescere del corpus, perché l'idf del termine onnipresente resta
-fisso a $1$ mentre quello del termine raro cresce come
+$\log(N/\text{df})$, ma conserva idf pari a $1$. Nel corpus giocattolo
+dell'esempio ($N = 2$) non è affatto un residuo trascurabile: nel primo
+documento *il* esce con peso $0{,}318$ contro lo $0{,}447$ di *gatto*, cioè
+circa il 71% del peso di un termine che compare in un solo documento. Il
+divario si apre solo al crescere del corpus, perché l'idf del termine
+onnipresente resta fisso a $1$ mentre quello del termine raro cresce come
 $\ln\frac{1+N}{2} + 1$.
 
 `````
 
 ## Vettori densi: i word embedding
 
-Il salto concettuale arriva nel 2013. L'idea guida è vecchia, il linguista John
-Firth nel 1957 la riassunse così: *"You shall know a word by the company it
-keeps"* {cite}`firth1957synopsis`, conoscerai una parola dalla compagnia che
+Il salto concettuale arriva nel 2013. L'idea guida è vecchia, e il linguista
+John Firth nel 1957 la riassunse così: *"You shall know a word by the company
+it keeps"* {cite}`firth1957synopsis`, conoscerai una parola dalla compagnia che
 frequenta. Parole che appaiono in contesti simili hanno significati simili. Se
 lo facciamo dire ai numeri, otteniamo i **word embedding**: la parola inglese
 vuol dire «immersione», e l'immagine è quella di ogni parola calata dentro uno
@@ -418,11 +418,11 @@ $\mathbb{R}^{d}$ denso: meno dimensioni, ma cariche di struttura semantica.
 
 `````
 
-Quella procedura ha un nome, e conviene impararlo qui perché torna per tutto il
-libro. Nessuno ha preparato gli esercizi su cui word2vec si addestra: la parola
-al centro e le sue vicine stavano già nel testo, e a separarle per farne una
-domanda e una risposta siamo stati noi. Un compito costruito così si chiama
-auto-supervisionato. Sulle immagini l'ha già fatto {doc}`Imparare senza
+La procedura di word2vec ha un nome, e conviene impararlo qui perché torna per
+tutto il libro. Nessuno ha preparato gli esercizi su cui word2vec si addestra:
+la parola al centro e le sue vicine stavano già nel testo, e a separarle per
+farne una domanda e una risposta siamo stati noi. Un compito costruito così si
+chiama auto-supervisionato. Sulle immagini l'ha già fatto {doc}`Imparare senza
 etichette </VisioneArtificiale/senza-etichette>`, coprendo un pezzo di foto e
 chiedendo di indovinarlo; e a raccontarlo per esteso è il capitolo
 sull'auto-supervisione.
@@ -591,8 +591,8 @@ implementazione, mai scritta nelle equazioni.
 
 Non è magia e non è perfetta, quindi, anche al netto dell'esclusione: molte
 analogie falliscono, e questi vettori ereditano i pregiudizi dei testi su
-cui sono addestrati (per esempio associazioni di genere a certi mestieri). Ne
-parleremo, ma il messaggio resta: il significato, ridotto a geometria, si
+cui sono addestrati (per esempio associazioni di genere a certi mestieri). Il
+messaggio però resta: il significato, ridotto a geometria, si
 lascia misurare con un prodotto scalare.
 
 `````
@@ -765,8 +765,8 @@ trentadue, e diamo a ciascuna una fila di sedici numeri tirati a caso. Uno
 spazio così non sa niente degli argomenti: due frasi dello stesso tema sono
 lontane quanto due di temi diversi, ed è esattamente la situazione di una rete
 a cui la somiglianza non è mai stata insegnata. Poi si applica la regola delle
-terne descritta qui sopra (ancora, simile, diverso, e l'ordine da rispettare) e
-si guarda che cosa succede.
+terne (ancora, simile, diverso, e l'ordine da rispettare) e si guarda che cosa
+succede.
 
 ```python
 import torch

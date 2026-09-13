@@ -130,9 +130,9 @@ soprattutto per dove si rompe: il generatore non è addestrato a ingannare
 il discriminatore (è addestrato con la sua verosimiglianza, come un normale
 MLM), non c'è vettore di rumore in ingresso, e quando produce per caso il token
 giusto quello viene etichettato come *originale* e non come falso. È
-un'architettura avversaria nella forma e cooperativa nella sostanza, e chi ha
-letto il {doc}`capitolo sulle GAN </GAN/overview>` riconoscerà quanto di
-quella instabilità venga proprio dal pezzo che qui è stato tolto.
+un'architettura avversaria nella forma e cooperativa nella sostanza, e il
+{doc}`capitolo sulle GAN </GAN/overview>` mostrerà quanto dell'instabilità di
+quelle reti venga proprio dal pezzo che qui è stato tolto.
 `````
 
 Fra i tre, il terzo merita un disegno, perché la sua idea è quella che si è
@@ -227,9 +227,7 @@ dati. Sul fronte multimodale, **CLIP**
 e testi tramite addestramento contrastivo su coppie immagine–didascalia; i
 modelli generativi di immagini come DALL·E e Stable Diffusion usano componenti
 Transformer per condizionare la generazione sul testo; e modelli come GPT-4
-(2023) accettano input misti testo+immagine. Il filo conduttore tecnico:
-qualunque dato riducibile a una sequenza di token (parole, patch,
-frammenti audio) è terreno di gioco per l'attenzione.
+(2023) accettano input misti testo+immagine.
 `````
 
 Qui ci fermiamo al principio, che è il filo di questo capitolo: tutto ciò che si
@@ -237,7 +235,7 @@ riduce a una fila di mattoncini (i *token*: le parole di una frase, le tessere
 di una foto, gli spezzoni di un suono) è terreno dell'attenzione. Come si
 costruisca davvero un modello che vede e parla è un'altra storia, e ha un
 capitolo suo, {doc}`visione e linguaggio </VisioneLinguaggio/overview>`. Le
-strade sono tre, e basta averne il nome in mente:
+strade sono tre, e basta saperle riconoscere:
 tenere immagini e parole ciascuna nella propria mappa e allenarle a mettere le
 cose corrispondenti nello stesso punto; innestare un occhio su un modello di
 linguaggio già fatto, lasciando comandare il linguaggio; oppure dare a tessere e
@@ -261,11 +259,11 @@ risposta è nota solo agli organizzatori, **AlphaFold 2**
 confrontabile con quella delle misure fatte in laboratorio nella maggior
 parte dei casi, e per le proteine formate da una catena sola.
 
-Le due clausole non sono prudenza di maniera. Restano fuori le proteine fatte di
-più catene incastrate, i tratti che una forma stabile non ce l'hanno affatto,
-le proteine che ne assumono più d'una a seconda della situazione, e l'effetto
-delle mutazioni: la formula «problema risolto», che allora circolò molto, va
-letta con quell'elenco accanto.
+Le due riserve, «nella maggior parte dei casi» e «una catena sola», hanno un
+peso preciso. Restano fuori le proteine fatte di più catene incastrate, i tratti
+che una forma stabile non ce l'hanno affatto, le proteine che ne assumono più
+d'una a seconda della situazione, e l'effetto delle mutazioni: la formula
+«problema risolto», che allora circolò molto, va letta con quell'elenco accanto.
 
 ```{figure} ../figures/alphafold-2.svg
 :name: fig-alphafold
@@ -377,7 +375,7 @@ Il quadro va chiuso con la stessa onestà con cui la sezione sul confronto con
 le reti ricorrenti aveva ammesso il costo quadratico. I vantaggi sono reali:
 questi modelli reggono testi lunghi senza dimenticare l'inizio, si addestrano
 spartendo il lavoro fra migliaia di processori, e una sola architettura basta
-per il testo, le immagini e l'audio. Ma le sfide non sono dettagli:
+per il testo, le immagini e l'audio. Ma anche le sfide sono reali:
 
 - Risorse: addestrare un grande modello richiede centinaia di schede
   grafiche che lavorano insieme per mesi, con i consumi elettrici che ne

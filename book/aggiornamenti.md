@@ -38,6 +38,15 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-12)=
+
+## 1.12.12 · 13 settembre 2026
+
+### Correzioni
+
+- {doc}`I flussi normalizzanti </VerosimiglianzaEsatta/flussi>` (Verosimiglianza esatta). **Dove sta la campana nell'animazione delle due lune.** La pagina diceva che la nuvola «si richiude sulla gaussiana», e chi guardava la figura vedeva solo punti attorno all'origine. Ora lo dice: la figura guarda la gaussiana dall'alto e la disegna con i punti che ci cadono dentro, una macchia tonda fitta al centro e rada ai bordi; la campana sta nella dimensione che il disegno non ha, perché è l'altezza della densità sopra il piano. Segnalato dall'autore.
+- **Quarantadue pagine rilette per intero, da cima a fondo.** Le pagine cambiate dalla 1.12.8 alla 1.12.10 erano state controllate sui passaggi toccati, non lette dall'inizio alla fine come le legge chi le studia. Ora lo sono, con i due lettori, e sono state riparate dove non scorrevano: frasi che ripetevano quella prima, soggetti persi dietro un inciso, annunci di ciò che la pagina stava per dire, termini usati prima di essere presentati. Poi i due revisori hanno riletto le riparazioni, e venticinque pagine sono state ritoccate ancora. Fra le cose che erano proprio sbagliate: l'email dell'esempio diventava «cinque numeri» con quattro misure; in `nn.RNN`, `nn.LSTM`, `nn.GRU` e `nn.MultiheadAttention`, che per default vogliono il batch in seconda posizione, la dimensione del batch si aggiunge con `unsqueeze(1)`; nella gara fra naive Bayes e regressione logistica il tetto di 0,866 è l'accuratezza massima che il problema consente, non la minima; e delle due prove di Zeng e colleghi sui modelli lineari per le serie temporali solo la prima è fatta sul lineare semplice, la seconda su tutta la famiglia.
+
 (v1-12-11)=
 
 ## 1.12.11 · 12 settembre 2026

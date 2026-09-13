@@ -33,7 +33,7 @@ e somme tutti uguali fra loro e, soprattutto, tutti indipendenti: nessuno di
 essi ha bisogno del risultato di un altro.
 
 `````{tab} Elementare
-Le squadre a cui affidarlo sono due. La prima è la CPU: otto operai
+Le squadre a cui affidare quel lavoro sono due. La prima è la CPU: otto operai
 straordinariamente qualificati, capaci di qualunque compito complicato
 (decisioni, eccezioni, lavori sempre diversi). La seconda è la GPU: decine di
 migliaia di manovali che sanno fare solo operazioni elementari, ma tutti
@@ -156,10 +156,11 @@ dell'errore: sceglierà lui, operazione per operazione, dove i sedici bit sono
 sicuri. E infine tre righe che prendono il posto delle solite `backward()` e
 `step()`, per ingrandire prima e rimpicciolire dopo.
 
-Una sola avvertenza sulla prima riga: di formati corti ne esistono due,
-`float16` e `bfloat16`, e il codice sceglie il secondo quando gira senza
-scheda grafica. La differenza fra i due la vediamo subito dopo il blocco; per
-ora basta sapere che sono due modi di scrivere un numero in sedici bit.
+Una sola avvertenza, sul formato che `autocast` usa: di formati corti ne
+esistono due, `float16` e `bfloat16`, e il codice sceglie il secondo quando
+gira senza scheda grafica. La differenza fra i due la vediamo subito dopo il
+blocco; per ora basta sapere che sono due modi di scrivere un numero in sedici
+bit.
 
 ```python
 import torch
@@ -592,9 +593,6 @@ della scheda dicono in trenta secondi dove va il tempo. Per la seconda si usa
 gira e che stampa, fra le altre cose, quale percentuale della scheda è
 effettivamente occupata. Ottimizzare senza misurare è potare un albero al buio.
 
-Con questa sezione il capitolo si chiude: dal primo tensore alla macchina
-tenuta a regime.
-
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
@@ -648,7 +646,8 @@ tenuta a regime.
 `````
 
 Una riga, in tutto il capitolo, l'abbiamo usata senza aprirla: quella che
-sposta il modello e i dati sulla scheda grafica. Funziona, cambia i tempi di
-un addestramento, e finora non ha spiegato niente di sé. Il {doc}`capitolo su GPU </GPU/overview>` e
-calcolo parallelo apre quella scatola, e da lì in poi «lento» smette di essere
-un'impressione e diventa qualcosa che si sa dove andare a cercare.
+sposta il modello e i dati sulla scheda grafica. Funziona, cambia i tempi di un
+addestramento, e finora ne abbiamo visto il perché, non il come. Il
+{doc}`capitolo su GPU e calcolo parallelo </GPU/overview>` apre quella scatola,
+e da lì in poi «lento» smette di essere un'impressione e diventa qualcosa che
+si sa dove andare a cercare.

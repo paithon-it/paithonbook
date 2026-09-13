@@ -46,10 +46,9 @@ Qui ne diamo la versione essenziale, quella che serve a un agente: come si
 spende lo spazio, dove il modello legge bene e dove male, e che forme prende
 la memoria. Il tema ha però un capitolo tutto suo più avanti,
 {doc}`Prompt, contesto e loop </IngegneriaLLM/overview>`, che lo allarga oltre
-l'agente. Là si vedrà come si scrive il
-singolo messaggio, in quanti modi un contesto si guasta, e come si costruisce
-il ciclo che quella finestra la ri-riempie a ogni passo. Qui restiamo sul filo
-del ragionamento dell'agente; là si guarda il quadro intero.
+l'agente. Là si vedrà come si scrive il singolo messaggio, in quanti modi un
+contesto si guasta, e come si costruisce il ciclo che quella finestra la
+ri-riempie a ogni passo.
 
 ## Il prompt come artefatto, non come incantesimo
 
@@ -60,7 +59,7 @@ quel programma a comporre il testo che il modello riceve: prende l'ultima cosa
 scritta dall'utente e le cuce attorno tutto il resto, ogni volta da capo.
 
 Il prompt, allora, è un oggetto montato a pezzi e non una frase scritta di
-getto, e i pezzi hanno ruoli diversi. Le istruzioni di fondo, gli esempi che
+getto, e i pezzi hanno ruoli diversi: le istruzioni di fondo, gli esempi che
 mostrano il comportamento voluto, il formato preciso in cui vogliamo la
 risposta, e solo alla fine la richiesta dell'utente.
 
@@ -107,15 +106,14 @@ un umano.
 `````
 
 La conseguenza pratica è netta, e la riprenderemo parlando di {doc}`LLMOps
-</MLOps/llmops>`: il prompt è codice. Quella riga d'istruzione che orienta
-il modello è fragile (una parola diversa cambia la risposta) e quindi va
-trattata come si tratta il software. Se ne tiene la storia, cioè si
-conserva ogni versione con la data e il motivo del cambiamento, invece di
-sovrascriverla; la si prova su una batteria di casi noti; e prima di
-sostituirla si fanno girare le due versioni in parallelo sugli stessi casi, per
-vedere quale risponde meglio. È l'unico modo di sapere se la modifica di ieri
-ha migliorato o peggiorato le risposte di oggi. Il prompt magico non esiste;
-esiste il prompt *provato*.
+</MLOps/llmops>`: il prompt è codice. Il testo che orienta il modello è fragile
+(una parola diversa cambia la risposta), e quindi va trattato come si tratta il
+software. Se ne tiene la storia, cioè si conserva ogni versione con la data e il
+motivo del cambiamento, invece di sovrascriverla; la si prova su una batteria di
+casi noti; e prima di sostituirla si fanno girare le due versioni in parallelo
+sugli stessi casi, per vedere quale risponde meglio. È l'unico modo di sapere se
+la modifica di ieri ha migliorato o peggiorato le risposte di oggi. Il prompt
+magico non esiste; esiste il prompt *provato*.
 
 ## La finestra è piccola e preziosa
 
@@ -260,21 +258,19 @@ progressivo**: quando la cronologia della conversazione si allunga, la si
 comprime in un sunto che ne conserva l'essenziale a costo di token molto
 minore, liberando finestra. La terza sono i **fatti strutturati** (preferenze,
 identità, vincoli dell'utente) tenuti a parte e reiniettati quando pertinenti.
-Il nodo difficile non è però l'archivio, che si allarga quanto si vuole: è la
-**politica di rimozione** (*eviction*), cioè che cosa di tutto quel materiale
-merita la finestra a questo passo. La finestra è il collo di bottiglia, e ogni
-token speso a ricordare è un token in meno per ragionare.
+Il nodo difficile sta a valle dell'archivio, ed è la **politica di rimozione**
+(*eviction*): che cosa di tutto quel materiale merita la finestra a questo
+passo.
 
 `````
 
-Conviene insistere su dove sia la difficoltà, perché non è dove sembra.
-Ricordare è facile: uno schedario si allarga quanto si vuole, e scriverci
-dentro non costa quasi niente. La difficoltà è a ogni singolo passo, quando
-bisogna decidere che cosa di tutto quel materiale merita di occupare la
-finestra *adesso*. Ogni riga che ci metti per ricordare è una riga in meno per
-ragionare, e il conto lo si paga subito. Il problema è di scelta, prima che
-di memoria: la domanda difficile non è cosa tenere, è cosa lasciare
-fuori.
+La difficoltà non sta dove sembra. Ricordare è facile: uno schedario si allarga
+quanto si vuole, e scriverci dentro non costa quasi niente. La difficoltà è a
+ogni singolo passo, quando bisogna decidere che cosa di tutto quel materiale
+merita di occupare la finestra *adesso*. Ogni riga che ci metti per ricordare è
+una riga in meno per ragionare, e il conto lo si paga subito. Il problema è di
+scelta, prima che di memoria: la domanda difficile non è cosa tenere, è cosa
+lasciare fuori.
 
 ## Assemblare il contesto, con un budget
 
@@ -288,10 +284,10 @@ essere opinioni e diventano righe che qualcuno esegue.
 
 `````{tab} Elementare
 
-È come fare la valigia con un limite di peso. Alcune cose non si discutono,
-documenti, biglietti: entrano comunque. Per il resto non provi tutte le
-combinazioni possibili di ciò che entra e ciò che no, sono troppe e il taxi è
-sotto; scendi per ordine finché lo spazio dura, prima l'indispensabile, poi il
+È come fare la valigia con un limite di peso. Alcune cose non si discutono
+(documenti, biglietti) ed entrano comunque. Per il resto non provi tutte le
+combinazioni possibili di ciò che entra e ciò che no (sono troppe, e il taxi è
+sotto): scendi per ordine finché lo spazio dura, prima l'indispensabile, poi il
 molto utile, e fra due cose che servono uguale quella che pesa meno. Ciò che
 resta fuori resta fuori.
 
@@ -315,7 +311,7 @@ il vincolo che la somma dei costi in token $\sum_i c_i$ non superi il budget
 disponibile, con system prompt e domanda pre-allocati come costi fissi. La
 soluzione esatta è combinatoria; in pratica si usa un'euristica greedy
 (passaggi in ordine di rilevanza decrescente, accettati finché entrano) con
-due raffinamenti che vengono diritti dalle sezioni precedenti.
+due raffinamenti.
 
 Il primo: l'ultimo passaggio che sfora viene troncato per riempire lo
 spazio residuo invece di essere buttato del tutto. Il raffinamento è
@@ -328,8 +324,8 @@ ordine crescente di rilevanza. La curva di Liu e colleghi è una U, si legge
 bene all'inizio *e* alla fine, quindi disporre per rilevanza crescente
 ottimizzerebbe un estremo solo e regalerebbe l'altro, quello di apertura, al
 pezzo peggiore. La disposizione che segue la curva è a V: i due passaggi
-migliori ai due estremi, e i meno rilevanti sepolti nel mezzo, dove costano
-meno perderli. Quale dei due estremi meriti il migliore la curva non lo dice, e
+migliori ai due estremi, e i meno rilevanti sepolti nel mezzo, dove perderli
+costa meno. Quale dei due estremi meriti il migliore la curva non lo dice, e
 qui il più rilevante va in fondo, a ridosso della domanda, mentre il secondo va
 in testa. Nelle librerie di RAG questo riordino porta il nome di *long-context
 reorder*.
@@ -341,14 +337,14 @@ quel problema l'ottimo greedy si ottiene ordinando per **densità** $r_i / c_i$
 il troncamento stesso solleva: lo zaino frazionario assume che mezzo oggetto
 valga mezzo valore, e mezza frase non afferma mezza cosa, quindi la garanzia
 di ottimalità vale sul modello, non sul contesto. Sui numeri dell'esempio
-che segue i due criteri scelgono gli stessi passaggi, ma la regola enunciata
+in Python i due criteri scelgono gli stessi passaggi, ma la regola enunciata
 non è quella che il modello dello zaino richiederebbe.
 
 `````
 
 Ecco il context builder in puro Python, nessuna libreria, il conteggio dei
 token approssimato contando le parole, così che il meccanismo resti in piena
-vista. Una cautela che sembra un dettaglio e non lo è: nel budget entrano anche
+vista. Una cautela: nel budget entrano anche
 i marcatori che il montaggio aggiunge (`[fonte 0.95]` e simili). Sono
 testo, il modello li legge, e un budget che non conta ciò che il montaggio
 aggiunge non è un budget.
@@ -516,15 +512,15 @@ essere metriche diverse.
 
 `````
 
-Sono poche decine di righe che non «capiscono» nulla, eppure incarnano tre
-scelte di progetto: cosa è obbligatorio, cosa entra per priorità, dove va il
-pezzo più importante. In un sistema reale la rilevanza non è un numero scritto
-a mano ma esce dalla ricerca nell'archivio della sezione precedente; il
-conteggio dei token non si fa a parole ma con lo stesso programma che li taglia
-davvero per quel modello, il tokenizzatore, e su un testo italiano contare le
-parole sta parecchio sotto al conto vero; e le politiche sono più ricche.
-Ma l'ossatura è questa, ed è questa a fare la differenza tra le due squadre da
-cui siamo partiti.
+Il context builder sta in poche decine di righe che non «capiscono» nulla,
+eppure incarnano tre scelte di progetto: cosa è obbligatorio, cosa entra per
+priorità, dove va il pezzo più importante. In un sistema reale la rilevanza non
+è un numero scritto a mano ma esce dalla ricerca nell'archivio della sezione
+precedente; il conteggio dei token non si fa a parole ma con lo stesso
+programma che li taglia davvero per quel modello, il tokenizzatore, e su un
+testo italiano contare le parole sta parecchio sotto al conto vero; e le
+politiche sono più ricche. Ma l'ossatura è questa, ed è questa a fare la
+differenza tra le due squadre da cui siamo partiti.
 
 ## Pensare costa token: il ragionamento come context engineering
 
@@ -534,7 +530,7 @@ passaggi intermedi nel contesto prima della conclusione: è la catena di
 ragionamento, la chain-of-thought {cite}`wei2022chain`. Guardata dal lato del
 budget, quella catena è *anch'essa* ingegneria del contesto: si
 spende deliberatamente una parte del budget in token di «pensiero» per
-comprarne qualità di risposta. Il ragionamento non è gratis, perché occupa
+comprare qualità di risposta. Il ragionamento non è gratis, perché occupa
 finestra e fa aspettare, ma spesso rende più di quanto costa.
 
 L'idea si può spingere oltre. Invece di seguire un unico filo fino in fondo, si
@@ -600,7 +596,8 @@ messa dove rende di più.
 :class: important
 - Con un LLM istruito non si programma col codice ma col contesto: ciò che
   metti nella finestra prima di chiedere è l'interfaccia. Il context
-  engineering è il mestiere di riempirla bene: più del «prompt magico».
+  engineering è il mestiere di riempirla bene, e conta più del «prompt
+  magico».
 - Il prompt è un artefatto strutturato (system prompt, esempi *few-shot*
   come condizionamento, formato dell'output), non un incantesimo. Ed è codice:
   va versionato, testato e confrontato, come vedremo in LLMOps.

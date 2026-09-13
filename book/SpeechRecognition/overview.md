@@ -135,8 +135,8 @@ Si chiama «modello di Markov nascosto», HMM, ed è la stessa macchina di
 dove gli attori dietro la tenda erano le categorie grammaticali invece dei
 suoni.
 
-La seconda dice che uno stesso suono non è mai due volte identico. La prima
-tappa della catena riduce ogni frammento di suono a una manciata di misure,
+La seconda dice che uno stesso suono non è mai due volte identico. Ogni
+frammento di suono, prima di tutto, viene ridotto a una manciata di misure,
 cioè, se ti aiuta immaginarlo, a un puntino su una mappa; e la «a» di mille
 persone diverse non cade tutte le volte sullo stesso puntino, cade in una
 nuvola di puntini vicini. Descrivere quella nuvola invece del suo centro, e
@@ -171,8 +171,8 @@ come encoder e decoder.
 Dal microfono al testo il suono passa per alcune tappe, sempre le stesse
 ({numref}`fig-asr-pipeline`). Adesso sono finite tutte dentro un'unica rete e
 non si vedono più dall'esterno, ma i nomi sono rimasti quelli e li useremo per
-tutto il capitolo. La catena nel suo insieme è la pipeline del riconoscimento
-vocale, e qui vale quello che da noi si chiamerebbe catena di montaggio.
+tutto il capitolo. La catena nel suo insieme, in inglese, è la *pipeline* del
+riconoscimento vocale.
 
 ```{figure} ../figures/asr-pipeline.svg
 :name: fig-asr-pipeline

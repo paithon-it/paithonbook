@@ -14,7 +14,7 @@ resto, e i conti lunghi li sbaglia come chiunque li faccia a mente.
 
 E però può fare una cosa preziosa: *decidere* di chiedere aiuto. Invece di
 inventare la risposta, può emettere una richiesta («esegui questa
-moltiplicazione», «apri questa pagina», «che ore sono?») lasciare che
+moltiplicazione», «apri questa pagina», «che ore sono?»), lasciare che
 qualcos'altro la esegua, e usare il risultato. È il tool use, l'uso degli
 strumenti: dare le mani a un cervello. Ed è il primo mattone di ciò che
 chiamiamo agente: un modello che non si limita a rispondere, ma *osserva*,
@@ -147,9 +147,9 @@ figura); per gli altri è un elemento `function_call` con i valori sotto
 rientra come elemento a sé, `function_call_output`. Il giro è lo stesso. La
 capacità di scegliere lo strumento e compilarne gli argomenti nel formato
 giusto non è innata, e ci si arriva per due strade: addestrando il modello su
-tracce di chiamate già fatte, oppure mostrandogliene qualcuna nel prompt: allo
+tracce di chiamate già fatte, oppure mostrandogliene qualcuna nel prompt (allo
 schema ReAct che il ciclo dell'agente userà ne bastano da uno a sei, secondo il
-compito. L'addestramento la rende affidabile, non la crea. Il modello resta un
+compito). L'addestramento la rende affidabile, non la crea. Il modello resta un
 generatore di testo: «chiamare uno strumento» è, sotto il cofano, generare una
 particolare sequenza di token che il sistema ha imparato a interpretare come
 una chiamata.
@@ -192,11 +192,11 @@ sistemi che si riescono a collegare senza scrivere codice nuovo ogni volta.
 Cambia anche chi scrive le etichette degli attrezzi: non più chi costruisce
 l'agente, ma chi mette a disposizione il sistema dall'altra parte.
 
-Resta però una domanda che finora abbiamo scavalcato: chi ha insegnato al
-modello *quando* fermarsi e chiamare un attrezzo? Non basta avere il catalogo:
-bisogna anche riconoscere il momento in cui serve. Glielo si insegna
-addestrandolo su tanti esempi di chiamate fatte al punto giusto, esempi che
-finora ha dovuto scrivere qualcuno, uno per uno, a mano.
+Resta però una domanda: chi ha insegnato al modello *quando* fermarsi e
+chiamare un attrezzo? Non basta avere il catalogo: bisogna anche riconoscere il
+momento in cui serve. Glielo si insegna addestrandolo su tanti esempi di
+chiamate fatte al punto giusto, esempi che finora ha dovuto scrivere qualcuno,
+uno per uno, a mano.
 
 Nel 2023, però, un gruppo di Meta AI (il laboratorio di ricerca dell'azienda a
 cui appartiene Facebook) ha mostrato che quegli esempi il modello se li può
@@ -234,13 +234,11 @@ Toolformer si allena così su se stesso, e il compito su cui si corregge è un
 testo già scritto da altri, di cui conosce ogni parola.
 
 Prende quel testo e, qua e là, prova a infilarci dentro la chiamata a uno
-strumento (per scriverla gli basta una manciata di esempi già fatti). Poi si
-copre
+strumento (per scriverla gli basta una manciata di esempi già fatti). Poi copre
 il seguito e prova a indovinarlo due volte: una con il risultato dell'attrezzo
-davanti agli occhi, una senza. Prendi «quattrocento su millequattrocento, cioè
-il 29%»: con «0,29» scritto in mezzo, «29%» viene quasi da sé; senza, è un tiro
-a indovinare. Se il salto di facilità è grosso, l'attrezzo lì serviva; se è
-piccolo, non conta.
+davanti agli occhi, una senza. Il «29%» di prima lo mostra bene: con «0,29»
+scritto in mezzo, viene quasi da sé. Se il salto di facilità è grosso,
+l'attrezzo lì serviva; se è piccolo, non conta.
 
 Due cautele tengono onesta la misura. Prova anche a infilare la chiamata
 lasciando vuoto il posto del risultato: se le parole dopo diventano facili lo
@@ -339,27 +337,28 @@ da cercare. Un sistema che agisse una volta sola resterebbe fermo al primo
 giro, perché non saprebbe ancora cosa chiedere.
 
 Perché conviene far ragionare il modello *ad alta voce* tra un'azione e
-l'altra? Non per la ragione che viene per prima, cioè far scrivere al modello i
-passaggi prima della risposta, come nel «mostra i passaggi» del compito di
-matematica {cite}`wei2022chain`: quel guadagno lì è misurato sui conti e sulla
-logica {cite}`sprague2025cot`, e il ciclo di un agente è fatto in buona parte
-d'altro, cioè scegliere uno strumento, leggere un risultato e decidere se
-ripetere.
+l'altra? Non per la ragione che viene in mente per prima, cioè il guadagno che
+si ha facendo scrivere al modello i passaggi prima della risposta, come nel
+«mostra i passaggi» del compito di matematica {cite}`wei2022chain`: quel
+guadagno lì è misurato sui conti e sulla logica {cite}`sprague2025cot`, e il
+ciclo di un agente è fatto in buona parte d'altro, cioè scegliere uno
+strumento, leggere un risultato e decidere se ripetere.
 
 La ragione per cui il pensiero esplicito serve *qui* è un'altra, e più
 prosaica: dà al modello un posto dove scrivere a che punto è del compito prima
 di scegliere l'azione. È la stessa idea che ritroveremo, chiamata foglio di
-brutta, parlando di come si riempie la finestra di contesto.
+brutta o *scratchpad*, nella {doc}`sezione su come si riempie la finestra di
+contesto </Agenti/context-engineering>`.
 
 Il guadagno dell'osservazione, poi, è di un'altra specie rispetto a quello del
 pensiero, e non si legge nel punteggio: si legge in che cosa smette di
-succedere, e la cosa che smette di succedere è l'allucinazione, cioè il
-fatto inventato e detto con la faccia di chi lo sa: il modello
-genera la continuazione più plausibile, e nessuno gli ha mai chiesto di
-controllare. Un'osservazione che arriva da fuori, invece, non se l'è inventata
-lui: è testo che gli è stato messo davanti dal programma. Il pensiero decide
-*quale* strumento usare e *come* leggere ciò che è tornato, ma è l'osservazione
-a tenerlo attaccato a qualcosa di vero.
+succedere. Smette di succedere l'allucinazione, cioè il fatto inventato e detto
+con la faccia di chi lo sa, che nasce perché il modello genera la continuazione
+più plausibile e nessuno gli ha mai chiesto di controllare. Un'osservazione che
+arriva da fuori, invece, non se l'è inventata lui: è testo che gli è stato
+messo davanti dal programma. Il pensiero decide *quale* strumento usare e
+*come* leggere ciò che è tornato, ma è l'osservazione a tenerlo attaccato a
+qualcosa di vero.
 
 `````{tab} Elementare
 
@@ -505,25 +504,24 @@ gli autori spiegano l'unica perdita: su MBPP i test auto-prodotti promuovono un
 programma sbagliato nel $16{,}3\%$ dei casi contro l’$1{,}4\%$ di HumanEval. È
 l'ipotesi con cui la commentano, non una cosa che dimostrano: sullo stesso
 banco in un altro linguaggio i falsi positivi sono altrettanti e lì il metodo
-guadagna. È un segnale d'esito, ma auto-prodotto: il caso in cui l'auto-critica
-ha meno di solido su cui appoggiarsi.
+guadagna. Una batteria così è un segnale d'esito, ma auto-prodotto: il caso in
+cui l'auto-critica ha meno di solido su cui appoggiarsi.
 
 `````
 
-Detta così, la riflessione sembra magica. Non lo è: l'auto-critica non è
-auto-correzione garantita, e tutto dipende da chi dice all'agente che ha
-sbagliato. La riflessione funziona bene
-quando esiste un segnale d'esito *affidabile ed esterno*: dei test
-scritti da qualcun altro che passano o falliscono (i test di progetto di
-SWE-bench sono l'esempio buono, perché nessuno li ha scritti per far contento
-l'agente), un risultato numerico verificabile, un obiettivo raggiunto o no
-nell'ambiente. Lì la critica ha un appiglio solido su cui
-costruire. Quando invece l'unico giudice è il modello stesso, senza alcun
-riscontro dal mondo, la faccenda si fa scivolosa: un modello convinto di una
-risposta sbagliata tende a produrre auto-critiche che *confermano* l'errore, e
-può perfino peggiorare una risposta che era corretta, «correggendola» verso il
-falso. Riflettere aiuta a patto di avere qualcosa contro cui verificarsi; la
-sola introspezione, da sé, non crea competenza che il modello non aveva.
+In generale, l'auto-critica non è auto-correzione garantita, e tutto dipende da
+chi dice all'agente che ha sbagliato. La riflessione funziona bene quando
+esiste un segnale d'esito *affidabile ed esterno*: dei test scritti da qualcun
+altro che passano o falliscono (i test di progetto di SWE-bench sono l'esempio
+buono, perché nessuno li ha scritti per far contento l'agente), un risultato
+numerico verificabile, un obiettivo raggiunto o no nell'ambiente. Lì la critica
+ha un appiglio solido su cui costruire. Quando invece l'unico giudice è il
+modello stesso, senza alcun riscontro dal mondo, la faccenda si fa scivolosa:
+un modello convinto di una risposta sbagliata tende a produrre auto-critiche
+che *confermano* l'errore, e può perfino peggiorare una risposta che era
+corretta, «correggendola» verso il falso. Riflettere aiuta a patto di avere
+qualcosa contro cui verificarsi; la sola introspezione, da sé, non crea
+competenza che il modello non aveva.
 
 ## Un agente giocattolo, in Python
 
@@ -547,9 +545,9 @@ una stringa (cioè un pezzo di testo) come se fosse codice: comodissima e
 pericolosa, perché eseguirebbe *qualunque* cosa il modello scriva, non solo un
 conto. Al suo posto leggiamo l'espressione, la spezziamo nei suoi pezzi e la
 calcoliamo noi, accettando soltanto gli operatori che abbiamo messo in elenco;
-tutto il resto viene respinto con un messaggio che dice cosa non andava. Non è una precauzione da manuale: quello che il modello scrive va trattato
-come si tratta il testo di uno sconosciuto. Il cuore resta il blocco
-dopo.
+tutto il resto viene respinto con un messaggio che dice cosa non andava. Non è
+uno scrupolo eccessivo: quello che il modello scrive va trattato come si tratta
+il testo di uno sconosciuto.
 
 ```python
 import ast
@@ -737,7 +735,7 @@ Da portarsi via, prima di passare al recupero dei documenti.
   scambiano una pagina web; MCP è quello nato apposta per gli attrezzi di un
   modello. A parlarlo è l'applicazione che ospita il modello, non il modello.
 - ReAct {cite}`yao2023react` è il metodo del detective che ragiona a voce
-  alta: penso → controllo → scopro, e si ricomincia (è lo stesso giro di
+  alta: penso → chiedo → scopro, e si ricomincia (è lo stesso giro di
   prima, raccontato partendo dal pensiero). Le allucinazioni, cioè i fatti
   che il modello si inventa dicendoli con sicurezza, crollano, perché ogni
   passo si appoggia a qualcosa che è stato davvero trovato; in cambio il

@@ -4,11 +4,10 @@ Le prime immagini generate da una GAN, nel 2014, erano cifre sgranate e faccine
 indistinte, appena qualche decina di pixel di lato. Ian Goodfellow le mostrava
 con orgoglio, ma nessuno le avrebbe scambiate per fotografie. Cinque anni dopo
 un sito, *thispersondoesnotexist.com*, sforna a ripetizione volti
-fotorealistici di persone che non esistono. In mezzo ci sono cinque anni e una
-sequenza di idee, quasi una all'anno, che hanno trasformato
-un'intuizione fragile in una delle famiglie di modelli generativi più influenti
-del decennio. Ripercorriamola, seguendo il filo delle idee più che il
-calendario.
+fotorealistici di persone che non esistono. In mezzo c'è una sequenza di idee,
+quasi una all'anno, che hanno trasformato un'intuizione fragile in una delle
+famiglie di modelli generativi più influenti del decennio. Ripercorriamola,
+seguendo il filo delle idee più che il calendario.
 
 I due personaggi restano quelli: un falsario che dipinge e un esperto che
 giudica. Quello che cambia, di variante in variante, è come sono fatti dentro
@@ -710,21 +709,21 @@ Verso il 2021 il primato cambia mano, e a dare il nome al sorpasso è il paper
 *Diffusion Models Beat GANs on Image Synthesis* {cite}`dhariwal2021diffusion`,
 che lo argomenta sulla qualità delle immagini. Ma la ragione per cui il
 passaggio è stato così rapido sta altrove, e sono i due difetti che questo
-capitolo ha già raccontato: i modelli di diffusione si addestrano con la
-stessa tranquillità di una rete a cui si mostra la risposta giusta, e non
-conoscono il *mode collapse*. L'idea è opposta a quella avversaria: si insegna
-alla rete a ripulire un'immagine sporcata da una grana casuale, partendo da
+capitolo ha già raccontato: i modelli di diffusione si addestrano con la stessa
+tranquillità di una rete a cui si mostra la risposta giusta, e non conoscono il
+*mode collapse*. L'idea è opposta a quella avversaria: si insegna alla rete a
+ripulire un'immagine sporcata da una grana casuale, il rumore, partendo da
 un'immagine fatta di sola grana. («Rumore» è la stessa parola usata finora, ma
 qui indica una cosa diversa: non i numeri casuali in ingresso, bensì la
 sporcizia sparsa sopra un'immagine.) Su questa base nascono Stable Diffusion
 {cite}`rombach2022high` e DALL·E 2 (OpenAI, 2022): a entrambi si descrive a
 parole quello che si vuole ("un gatto nero seduto su un muro al tramonto") e
 loro lo disegnano, ed è così che la generazione di immagini su richiesta è
-arrivata al grande pubblico. Stable Diffusion in più fa il lavoro di
-ripulitura non sull'immagine a grandezza naturale ma su una sua versione
-ridotta e compatta, che occupa molta meno memoria: è la ragione per cui gira
-anche su un computer di casa. Del meccanismo parla il
-{doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`.
+arrivata al grande pubblico. Stable Diffusion in più fa il lavoro di ripulitura
+non sull'immagine a grandezza naturale ma su una sua versione ridotta e
+compatta, che occupa molta meno memoria: è la ragione per cui gira anche su un
+computer di casa. Del meccanismo parla il {doc}`capitolo sui modelli di
+diffusione </ModelliDiffusione/overview>`.
 
 Le GAN non sono scomparse, e il motivo è la velocità: una GAN produce
 l'immagine in un colpo solo, un unico passaggio attraverso il generatore,
@@ -736,16 +735,14 @@ rimesso in gioco un discriminatore, cioè proprio l'idea avversaria di questo
 capitolo.
 
 C'è di più, ed è la ragione migliore per aver letto questo capitolo anche
-volendo usare soltanto la diffusione. La sezione su VQ-GAN l'ha anticipato, e
-adesso conviene dirlo per esteso: un discriminatore è servito a costruire
-un pezzo di Stable Diffusion. Alla fine di tutto il lavoro c'è una parte
-che riporta quella versione ridotta e compatta ai pixel veri e propri, e la si
+volendo usare soltanto la diffusione: un discriminatore è servito a costruire
+un pezzo di Stable Diffusion. Alla fine di tutto il lavoro c'è una parte che
+riporta quella versione ridotta e compatta ai pixel veri e propri, e la si
 chiama decodificatore: ecco, è stata addestrata anche con una loss avversaria,
 cioè con un esperto contro. Finito l'addestramento l'esperto se ne va, come nel
-duello di questo capitolo, ed
-è quella parte a tenere nitide le ricostruzioni. Il duello, insomma, è passato
-dal centro della scena a un ruolo di manutenzione, invece di finire in
-soffitta. Ma il centro di gravità si è spostato.
+duello di questo capitolo, ed è quella parte a tenere nitide le ricostruzioni.
+Il duello, insomma, è passato dal centro della scena a un ruolo di
+manutenzione.
 
 ```{admonition} Nota etica: i deepfake
 :class: warning

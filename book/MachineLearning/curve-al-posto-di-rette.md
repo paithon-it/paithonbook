@@ -18,10 +18,10 @@ l'attrezzo viene prima della formula: la curva che il legno disegna e la curva
 che la statistica calcola non si somigliano, sono la stessa curva. Il resto
 non fa che rendere esplicito il cambio di alfabeto.
 
-La domanda di partenza, però, è più banale. Fin qui il libro ha adattato ai dati
+La domanda di partenza, però, è più banale. Fin qui ai dati si sono adattate
 delle rette: una retta che li segue, nella regressione, e una retta che li
 divide, nella classificazione. Quando i dati su una retta non stanno, di strade
-ce ne sono tre. Due il capitolo le percorre subito dopo: gli
+ce ne sono tre. Due il capitolo le percorre nelle sezioni che seguono: gli
 alberi, che invece di piegare la linea la spezzano a gradini, e le macchine a
 vettori di supporto, che curvano lo spazio sotto di essa. La terza è la più
 ovvia di tutte, quella che verrebbe in mente per prima a chiunque abbia disegnato
@@ -189,13 +189,13 @@ listello solo non si piega bene, se ne usano tanti corti, giuntati.
 
 `````{tab} Elementare
 
-Sul tavolo da disegno i listelli corti si appoggiano uno di seguito all'altro, e
-dove finisce il primo e comincia il secondo un peso li tiene fermi. Quel paletto
-fra un tratto e il successivo si chiama **nodo**. Ogni listello si piega come
-una cubica, la curva più semplice capace di avere un massimo, un minimo e un
-punto di flesso, quanto basta per fare una gobba e cambiare idea. Appoggiati e
-basta, però, i pezzi restano indipendenti, e sotto ogni peso si vedrebbe lo
-scalino.
+Sul tavolo da disegno i listelli corti si appoggiano uno di seguito all'altro,
+e dove finisce il primo e comincia il secondo un peso li tiene fermi, piantato
+come un paletto. Quel paletto fra un tratto e il successivo si chiama **nodo**.
+Ogni listello si piega come una cubica, la curva più semplice capace di avere
+un massimo, un minimo e un punto di flesso, quanto basta per fare una gobba e
+cambiare idea. Appoggiati e basta, però, i pezzi restano indipendenti, e sotto
+ogni peso si vedrebbe lo scalino.
 
 La giuntura si collauda col dito. Lo passi sopra il peso e non deve sentire
 niente: nessun gradino, cioè i due pezzi si toccano; nessuno spigolo, cioè
@@ -365,11 +365,11 @@ in un caso in cui i parametri non si contano.
 
 `````
 
-Girando la manopola si vedono i gradi di libertà effettivi
-accanto all'errore rispetto alla curva vera, che in un esperimento fabbricato in
-casa si conosce. Quel numero si ottiene con un conto pigro ma leggibile: si
-guarda, un dato per volta, di quanto la curva si sposta se si muove solo
-quel dato, e si sommano i centoventi spostamenti.
+Girando la manopola si vede quanta flessibilità resta alla curva, accanto
+all'errore rispetto alla curva vera, che in un esperimento fabbricato in
+casa si conosce. La flessibilità si misura con un conto pigro ma leggibile: si
+guarda, un dato per volta, di quanto la curva si sposta se si muove solo quel
+dato, e si sommano i centoventi spostamenti.
 
 ```python
 import numpy as np
@@ -420,13 +420,12 @@ che dice quanto è flessibile la curva che ne esce, e ha un nome, **gradi di
 libertà effettivi**. Ci sono tre cose da leggere.
 
 La prima è l'ultima riga. Con la manopola tutta sul rigido i gradi di libertà
-arrivano a $2{,}0$, che è il conto di una retta: uno per l'altezza, uno per
-la pendenza, come l'analogia prometteva. Le due righe in fondo dicono quanto
-quella promessa sia letterale. Il valore non è esattamente $2$ ma $2{,}0026$,
-perché il limite è asintotico e non si tocca mai; e la curva che ne esce si
-scosta dalla retta dei minimi quadrati, nel punto peggiore, di otto
-decimillesimi dell'ampiezza dei dati, cioè meno del tratto di matita con cui
-la si disegnerebbe.
+arrivano a $2{,}0$, che è il conto di una retta: uno per l'altezza, uno per la
+pendenza. Le due righe in fondo dicono quanto quella retta vada presa alla
+lettera. Il valore non è esattamente $2$ ma $2{,}0026$, perché il limite è
+asintotico e non si tocca mai; e la curva che ne esce si scosta dalla retta dei
+minimi quadrati, nel punto peggiore, di otto decimillesimi dell'ampiezza dei
+dati, cioè meno del tratto di matita con cui la si disegnerebbe.
 
 La seconda è che l'errore rispetto alla curva vera non scende in modo monotono:
 tocca il minimo a $\lambda = 10^{-4}$ e risale da tutte e due le parti. È la U
@@ -711,12 +710,12 @@ altri modelli.
 
 `````
 
-C'è un filo che tiene insieme spline e GAM con le due sezioni che vengono dopo,
-ed è la domanda su quanta struttura mettere nel modello prima di guardare i
-dati. La
-retta ne mette troppa e non si piega; il polinomio ne toglie troppa e si piega
-dove non deve; la spline la rimette al posto giusto, dicendo che la curva deve
-essere dolce ma non dicendo che forma abbia. Il GAM fa lo stesso un gradino più
-su, sulle colonne. È lo stesso mestiere che gli alberi della prossima sezione
-faranno con un attrezzo opposto: invece di piegare una curva, spezzarla a
-gradini.
+C'è un filo che tiene insieme spline e GAM con gli alberi e le macchine a
+vettori di supporto delle sezioni che seguono, ed è la domanda su quanta
+struttura mettere nel modello prima di guardare i dati. La retta ne mette
+troppa e non si piega; il polinomio ne toglie troppa e si piega dove non deve;
+la spline la rimette al posto giusto, dicendo che la curva deve essere dolce ma
+non dicendo che forma abbia. Il GAM fa lo stesso un gradino più su, sulle
+colonne. È lo stesso mestiere che gli alberi della prossima sezione faranno con
+un attrezzo opposto, spezzando la linea a gradini invece di piegarla, e che le
+macchine a vettori di supporto faranno curvando lo spazio sotto di essa.

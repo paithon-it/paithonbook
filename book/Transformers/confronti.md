@@ -26,8 +26,8 @@ riusata a ogni passo, ed è per questo che una RNN funziona su
 sequenze di lunghezza qualsiasi.
 ```
 
-L'equivalenza di {numref}`fig-rnn-srotolamento` è anche la radice del problema
-che questa sezione racconta. Quel «riassunto» che la rete si porta dietro è,
+L'equivalenza di {numref}`fig-rnn-srotolamento` è anche la radice del problema.
+Quel «riassunto» che la rete si porta dietro è,
 come sempre in questo capitolo, una lista di numeri, e la scatola che lo
 aggiorna a ogni parola (nel disegno, la cella) è sempre la stessa, con
 dentro sempre gli stessi numeri: aggiornare il riassunto vuol dire dunque
@@ -64,16 +64,15 @@ ha una regola ferrea, non si sbircia avanti, e guarda solo all'indietro.
 La seconda riguarda la velocità. Il ricordo che non sbiadisce, da solo, non
 spiega la vittoria, perché il taccuino delle LSTM allungava già la memoria:
 quello che nessuna macchina di prima sapeva fare era mettere tante mani sullo
-stesso testo. Se le parole
-si guardano tutte insieme invece che in fila, il lavoro si può spartire fra
-migliaia di processori che macinano in parallelo: sono i «cento amici» di
-prima, quelli che con un libro da leggere in fila non servivano a niente e qui
-invece servono eccome. Attenzione però a quando: succede mentre il modello
-studia, cioè quando ha davanti tutto il
-testo e può lavorarci sopra in una volta sola. Quando poi scrive, le parole
-gli escono comunque una alla volta, perché per scegliere la prossima deve
-sapere quale ha appena scritto: lì i cento amici tornano a girarsi i pollici,
-e infatti generare resta lento.
+stesso testo. Se le parole si guardano tutte insieme invece che in fila, il
+lavoro si può spartire fra migliaia di processori che macinano in parallelo:
+sono i «cento amici» dell'apertura del capitolo, quelli che con un libro da
+leggere in fila non servivano a niente e qui invece servono eccome. Attenzione
+però a quando: succede mentre il modello studia, cioè quando ha davanti tutto il
+testo e può lavorarci sopra in una volta sola. Quando poi scrive, le parole gli
+escono comunque una alla volta, perché per scegliere la prossima deve sapere
+quale ha appena scritto: lì i cento amici tornano a girarsi i pollici, e infatti
+generare resta lento.
 `````
 
 `````{tab} Superiore

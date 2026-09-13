@@ -32,10 +32,10 @@ vengono da prima, dai lavori di Esteban Tabak e colleghi sulla stima di densità
 {cite}`tabak2010density,tabak2013family`, che sono esattamente quelli che
 Rezende e Mohamed citano quando introducono il principio.
 
-E qui va detta subito la cosa che chiude un debito col capitolo precedente:
-quel «flusso» è la stessa parola del *rectified flow* di Stable Diffusion 3.
-È una parentela e non una coincidenza di vocabolario, e in fondo alla prossima
-sezione la ricostruiremo per intero.
+E c'è un debito da chiudere col capitolo precedente: quel «flusso» è la stessa
+parola del *rectified flow* di Stable Diffusion 3. È una parentela e non una
+coincidenza di vocabolario, e in fondo alla prossima sezione la ricostruiremo
+per intero.
 
 ## Il fattore che nessuno si aspetta
 
@@ -45,12 +45,12 @@ Prendiamo una cosa semplicissima: una grandezza che sta fra 0 e 1, distribuita
 in modo uniforme. La sua densità vale 1 dappertutto lì dentro, e l'area sotto
 la curva fa 1, come dev'essere. Densità e probabilità non sono sinonimi, e
 conviene tenerle separate da subito. La densità è quanto è alta la curva in un
-punto, la probabilità è l'area che sta sotto la curva in un tratto. Adesso la
-stiriamo: la moltiplichiamo per tre e le aggiungiamo uno, così finisce fra 1 e
-4. È la stessa grandezza, non abbiamo buttato via niente e non abbiamo aggiunto
-niente. Ma il tavolo su cui è stesa è diventato tre volte più largo, e la
-stessa quantità d'acqua su un tavolo tre volte più largo sta tre volte più
-bassa. La densità di arrivo non vale 1: vale un terzo.
+punto, la probabilità è l'area che sta sotto la curva in un tratto. Adesso
+stiriamo la grandezza: la moltiplichiamo per tre e le aggiungiamo uno, così
+finisce fra 1 e 4. È la stessa grandezza, non abbiamo buttato via niente e non
+abbiamo aggiunto niente. Ma il tavolo su cui è stesa è diventato tre volte più
+largo, e la stessa quantità d'acqua su un tavolo tre volte più largo sta tre
+volte più bassa. La densità di arrivo non vale 1: vale un terzo.
 
 Questo è il punto che rende i flussi diversi da tutto il resto del capitolo.
 Senza quel fattore l'area sotto la curva non fa più uno, e un numero la cui
@@ -401,14 +401,22 @@ passo si muove una sola delle due coordinate, e l'altra resta esattamente
 dov'è, che è il vincolo da cui il determinante viene gratis. Nel mezzo la
 nuvola si allarga a più del doppio, e poi si richiude sulla gaussiana.
 
+Quella gaussiana d'arrivo la figura la guarda dall'alto, e la disegna con i
+punti che ci finiscono dentro: è la macchia tonda attorno all'origine, fitta
+al centro e sempre più rada verso i bordi. La campana che ci si aspetterebbe
+sta nella dimensione che il disegno non ha, perché è l'altezza della densità
+sopra il piano: massima nell'origine, e i punti si affollano proprio dove è
+più alta.
+
 ```{figure} ../figures/lune-si-raddrizzano.svg
 :name: fig-flusso-lune
 :alt: Una nuvola di punti dentro un riquadro con un reticolo di riferimento. All'inizio i punti disegnano due archi intrecciati, le due lune, uno in un colore e uno nell'altro. A ogni passo l'intera nuvola si deforma, ma si sposta lungo una sola direzione per volta: prima solo in verticale, poi solo in orizzontale, e così alternando per sei passi. A metà strada la nuvola si allarga fino a occupare quasi tutto il riquadro, poi si richiude. Alla fine gli archi non ci sono più e i punti formano una macchia tonda centrata sull'origine, con i due colori mescolati. Due righe di testo sotto il riquadro dicono, a ogni passo, quale delle due direzioni si sta muovendo e quanto è larga la nuvola nei due sensi.
 :width: 95%
 
-Le due lune diventano una gaussiana in sei accoppiamenti. A ogni passo si muove
-una sola coordinata, e la larghezza di quella ferma non cambia; l'altra
-intanto si allarga, si stringe, e alla fine vale uno su tutti e due gli assi.
+Le due lune diventano in sei accoppiamenti una gaussiana, vista dall'alto come
+una macchia tonda di punti. A ogni passo si muove una sola coordinata, e la
+larghezza di quella ferma non cambia; l'altra intanto si allarga, si stringe, e
+alla fine torna a uno su tutti e due gli assi.
 ```
 
 ## Glow, e il limite che non si toglie
@@ -427,16 +435,16 @@ normalizzazione interna e il modo di dividere le coordinate. Con la stessa
 ricetta escono i volti a $256 \times 256$ del 2018, quelli che si trasformano
 l'uno nell'altro tirando una riga nello spazio latente.
 
-E qui va detto come è andata a finire. I flussi, sulle
-immagini, hanno perso, e non per un dettaglio di ingegneria: per il vincolo di
-partenza. Una trasformazione invertibile conserva la dimensione, quindi un
-flusso su fotografie di $512 \times 512$ a colori deve finire con 786.432
-numeri, tanti quanti ne sono entrati, senza poterne buttare via uno.
-Confrontalo con la diffusione latente del capitolo precedente, che sulla stessa
-fotografia di numeri ne muove 16.384 perché ha il permesso di comprimere prima:
-quarantotto volte meno, ed è lo stesso fattore 48 che quel capitolo aveva già
-contato. Quel permesso i flussi non ce l'hanno per costruzione. È il prezzo
-dell'esattezza, scritto nella definizione stessa della famiglia.
+Sulle immagini, però, i flussi hanno perso, e non per un dettaglio di
+ingegneria: per il vincolo di partenza. Una trasformazione invertibile conserva
+la dimensione, quindi un flusso su fotografie di $512 \times 512$ a colori deve
+finire con 786.432 numeri, tanti quanti ne sono entrati, senza poterne buttare
+via uno. Confrontalo con la diffusione latente del capitolo precedente, che
+sulla stessa fotografia di numeri ne muove 16.384 perché ha il permesso di
+comprimere prima: quarantotto volte meno, ed è lo stesso fattore 48 che quel
+capitolo aveva già contato. Quel permesso i flussi non ce l'hanno per
+costruzione. È il prezzo dell'esattezza, scritto nella definizione stessa della
+famiglia.
 
 `````{tab} Elementare
 

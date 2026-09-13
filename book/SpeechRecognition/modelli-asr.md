@@ -116,8 +116,8 @@ modello di linguaggio dirà quanto le costa.
 Sette voti moltiplicati fra loro danno un numero piccolo; mettiamo che
 il primo allineamento valga il 3% e il secondo il 2% (sono numeri inventati
 per l'esempio). Tutti e due, ripuliti, danno «PALLA»: quindi finora «PALLA»
-vale il 5%, più di quanto valga ciascuno da solo. Dico
-«finora» perché di modi che danno «PALLA» ce ne sono altri, e vanno sommati
+vale il 5%, più di quanto valga ciascuno da solo.
+«Finora», perché di modi che danno «PALLA» ce ne sono altri, e vanno sommati
 anche quelli. Ecco cosa vuol dire «sommare gli allineamenti».
 
 La CTC non sceglie dunque *un* allineamento giusto e non chiede alla rete di
@@ -208,8 +208,9 @@ dove metterle. Torneremo su questo punto parlando del modello di linguaggio,
 perché è di lì che discende tutto il resto.
 `````
 
-Quella tabella ha una forma, e conviene guardarla:
-{numref}`fig-reticolo-ctc` la disegna sui sette frame della parola d'esempio.
+Il reticolo su cui si fa quella somma, cioè la tabella con una colonna per frame
+e una riga per simbolo, ha una forma, e conviene guardarla:
+{numref}`fig-reticolo-ctc` lo disegna sui sette frame della parola d'esempio.
 
 ```{figure} ../figures/reticolo-ctc.svg
 :name: fig-reticolo-ctc
@@ -651,7 +652,7 @@ non sono solo suoi.
 
 La prima: non è Whisper ad aver mandato in pensione la catena a stadi. Il
 passaggio a una rete sola era cominciato anni prima, con la CTC e con i
-modelli ad attenzione di queste pagine; Whisper ne è la vetrina più visibile,
+modelli ad attenzione; Whisper ne è la vetrina più visibile,
 non l'inizio. E la vecchia catena non è nemmeno sparita: dove le parole da
 riconoscere sono poche e note in anticipo (i comandi di un centralino
 telefonico, i codici letti ad alta voce in un magazzino) i sistemi a stadi
@@ -666,18 +667,18 @@ dettatura che compare sullo schermo mentre parli è un'altra cosa, ed è quella
 dei trasduttori di poco fa, che sono end-to-end come lui ma tengono il passo
 dell'audio frame per frame.
 
-E da lì vengono anche i suoi limiti, che gli autori dichiarano onestamente. Il
-decoder non è obbligato a scorrere l'audio in avanti, e quando il legame fra
-testo e suono si allenta quello che resta è un modello di linguaggio molto
-bravo che continua a scrivere per conto proprio, senza più guardare il suono.
-Sull'audio lungo il guasto si aggrava, perché ogni finestra di trenta secondi
-comincia dove il modello stesso ha deciso che finiva la precedente: se ha
-sbagliato a decidere, l'errore passa alla finestra dopo. Il paper elenca tre
-sintomi: le prime o le ultime parole di un segmento che non vengono
-trascritte, le ripetizioni in loop, e il testo inventato di sana pianta (in
-gergo *allucinato*: il modello scrive parole che nessuno ha detto). È quello
-che si vede nei sottotitoli automatici quando riempiono di frasi un passaggio
-in cui non parla nessuno.
+Dal decoder con attenzione vengono anche i suoi limiti, che gli autori
+dichiarano onestamente. Il decoder non è obbligato a scorrere l'audio in
+avanti, e quando il legame fra testo e suono si allenta quello che resta è un
+modello di linguaggio molto bravo che continua a scrivere per conto proprio,
+senza più guardare il suono. Sull'audio lungo il guasto si aggrava, perché ogni
+finestra di trenta secondi comincia dove il modello stesso ha deciso che finiva
+la precedente: se ha sbagliato a decidere, l'errore passa alla finestra dopo.
+Il paper elenca tre sintomi: le prime o le ultime parole di un segmento che non
+vengono trascritte, le ripetizioni in loop, e il testo inventato di sana pianta
+(in gergo *allucinato*: il modello scrive parole che nessuno ha detto). È
+quello che si vede nei sottotitoli automatici quando riempiono di frasi un
+passaggio in cui non parla nessuno.
 
 Ecco perché prendere sempre il boccone più grosso, cioè il simbolo più votato
 a ogni passo, non basta. In gergo si chiama decodifica *ingorda*, e assomiglia
@@ -735,20 +736,18 @@ che ha già scritto. Un modello di linguaggio esterno gli serve comunque, e
 Kannan e colleghi lo misurano: la fusione superficiale porta un decoder con
 attenzione dal 10,3 al 6,9 per cento di parole sbagliate sul corpus del *Wall
 Street Journal*, dove si legge ad alta voce testo di giornale, e dal 7,7 al 7,0
-sulle ricerche vocali. Ma il guadagno si assottiglia
-man mano che le trascrizioni viste in addestramento aumentano, perché il
-decoder diventa da sé un modello di linguaggio robusto, e quello che resta è
-soprattutto sui termini rari o di dominio (nomi propri, sigle, gergo medico).
-Un modello CTC è tutta un'altra faccenda: decide ogni frame per conto
-suo, guardando il suono e mai le lettere che ha già scritto, ed è
-quell'ignoranza già annunciata. Non è che modelli male il testo
-in uscita: non ha il posto dove metterlo, e un modello di linguaggio interno
-non ce l'ha. Per lui quello
-esterno non è un miglioramento marginale, è il pezzo che gli manca: senza, i
-caratteri escono quasi giusti ma sparpagliati su parole che non esistono. Il
-trasduttore sta in mezzo, e ora si capisce perché: la sua *prediction network*
-(il foglio che lo stenografo si rilegge) è il modello di linguaggio interno
-che alla CTC mancava.
+sulle ricerche vocali. Ma il guadagno si assottiglia man mano che le
+trascrizioni viste in addestramento aumentano, perché il decoder diventa da sé
+un modello di linguaggio robusto, e quello che resta è soprattutto sui termini
+rari o di dominio (nomi propri, sigle, gergo medico). Un modello CTC è tutta
+un'altra faccenda: decide ogni frame per conto suo, guardando il suono e mai le
+lettere che ha già scritto, ed è quell'ignoranza già annunciata. Un modello così
+non ha nemmeno il posto dove mettere un modello di linguaggio interno, e per lui
+quello esterno non è un miglioramento marginale, è il pezzo che gli manca:
+senza, i caratteri escono quasi giusti ma sparpagliati su parole che non
+esistono. Il trasduttore sta in mezzo, e ora si capisce perché: la sua
+*prediction network* (il foglio che lo stenografo si rilegge) è il modello di
+linguaggio interno che alla CTC mancava.
 
 ## Misurare gli errori: il Word Error Rate
 
@@ -777,12 +776,12 @@ vanno. Resta $I > C$: basta che le parole aggiunte siano più di quelle
 azzeccate, e non serve affatto che siano più di quante ne contiene il
 riferimento.
 
-Un conto per intero, sull'esempio di *carta* e *casa* del capitolo
-sul linguaggio naturale. Il riferimento è «il gatto nero salta sul muro», sei
-parole; il sistema ha scritto «il gatto nemo salta muro». Gli errori sono due:
-ha scritto «nemo» al posto di «nero» (una sostituzione) e si è mangiato «sul»
-(una cancellazione). Due errori su sei parole, il WER è $2/6 = 0{,}33$, cioè
-il 33%.
+Un conto per intero, fatto come quello fra *carta* e *casa* nel capitolo sul
+linguaggio naturale, ma sulle parole. Il riferimento è «il gatto nero salta sul
+muro», sei parole; il sistema ha scritto «il gatto nemo salta muro». Gli errori
+sono due: ha scritto «nemo» al posto di «nero» (una sostituzione) e si è
+mangiato «sul» (una cancellazione). Due errori su sei parole, il WER è $2/6 =
+0{,}33$, cioè il 33%.
 
 Trovare quei due errori a occhio è facile su sei parole e impossibile su
 seicento, perché le combinazioni sono tante e ne vogliamo il numero minimo.
@@ -823,8 +822,6 @@ Per questo, accanto al WER, si riporta spesso il *Character Error Rate* (CER),
 che conta gli stessi errori a livello di carattere. Nessuna misura, però,
 cattura del tutto ciò che conta davvero: se la frase trascritta, letta da un
 essere umano, significa ancora la cosa giusta.
-
-Tiriamo le fila.
 
 `````{tab} Elementare
 

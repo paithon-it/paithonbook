@@ -52,7 +52,7 @@ parametri che ci stanno dentro, scritti come si usa nel settore con la B dei
 miliardi (`70B` sono settanta miliardi di parametri: attenzione a non
 confonderla con la G dei gigabyte, che sta dall'altra parte).
 
-I quattro numeri di destra non vanno imparati, escono dalla riga in fondo, che
+I quattro numeri di destra non vanno imparati: escono dalla riga in fondo, che
 è tutta la figura. Si tolgono tre gigabyte, che servono per tenere in memoria
 la conversazione in corso, e si divide il resto per mezzo gigabyte a miliardo,
 che è quanto occupa un miliardo di parametri se ogni peso è scritto con
@@ -291,7 +291,7 @@ Il metodo è dovuto a Leviathan, Kalman e Matias di Google Research
 
 1. il modello bozza $p_{\text{b}}$ genera $\gamma$ token in autoregressione;
 2. il modello target $p_{\text{t}}$ valuta le $\gamma+1$ posizioni in
-   parallelo, in una sola passata, il costo è quello di un forward, non di
+   parallelo, in una sola passata: il costo è quello di un forward, non di
    $\gamma$;
 3. ogni token proposto $x_i$ è accettato con probabilità
    $\min\!\bigl(1,\ p_{\text{t}}(x_i)/p_{\text{b}}(x_i)\bigr)$; al primo
@@ -388,10 +388,9 @@ centimetri di spazio.
 
 Fra i miliardi di numeri di un modello succede lo stesso. Una manciata è
 fragile e portante, e arrotondarla come le altre fa crollare la qualità.
-Riconoscerla è il difficile, perché non si vede dalla stazza: quei pochi
-numeri sono quelli da cui passa tutto, e non i più grossi, come il corridoio
-di casa, che è il pezzo più stretto e ci deve passare tutto quello che entra
-ed esce.
+Riconoscerla è il difficile, perché non si vede dalla stazza: quei pochi numeri
+non sono i più grossi ma quelli da cui passa tutto, come il corridoio di casa,
+che è il pezzo più stretto e ci deve passare tutto quello che entra ed esce.
 
 Poi ognuno ha il suo modo di proteggere i pochi delicati. C'è chi li tiene in
 una scatola a parte, senza schiacciarli. C'è chi li imbottisce prima e poi li
@@ -422,7 +421,7 @@ La mappa affine $r = S\,(q - Z)$ della sezione sul deployment vale qui
 identica, e il principio che la regge, guardare che cosa un peso fa invece di
 quanto vale, lo costruisce {doc}`Meno bit </Efficienza/meno-bit>`: qui
 interessa che cosa cambia quando il modello non si può riaddestrare. Tre metodi
-post-training si sono affermati, e condividono l'intuizione che *non tutti i
+post-training si sono affermati. Condividono l'intuizione che *non tutti i
 numeri contano uguale*, e tutti e tre guardano le attivazioni, cioè i numeri
 che attraversano il modello mentre risponde: si distinguono per che cosa ne
 fanno, ed è la distinzione che di solito si perde.
@@ -482,9 +481,9 @@ che tiene in piedi il verdetto, perché a 3 bit il ribaltamento arriva comunque.
 Due riserve, e la prima gliela muovono gli autori a sé stessi: dalla loro
 misura resta fuori tutta la famiglia che si tara su dei dati, e la nominano
 citando GPTQ (AWQ, che è della stessa famiglia, sarebbe arrivato qualche mese
-dopo). Non è una riserva di forma: sulla
-perplessità di WikiText-2 un GPTQ a 2 bit batte un arrotondamento a 3. Sotto i
-4 bit non è chiuso: è chiuso per chi arrotonda senza guardare i dati. La
+dopo). Non è una riserva di forma: sulla perplessità di WikiText-2 un GPTQ a 2
+bit batte un arrotondamento a 3. Sotto i 4 bit, quindi, la partita resta aperta
+per chi guarda i dati, ed è chiusa solo per chi arrotonda senza guardarli. La
 seconda: il verdetto è sul compromesso fra memoria e qualità, non sulla
 velocità, e gli autori scrivono che a molte richieste al secondo, cioè proprio
 nel regime della sala piena, quelle leggi di scala con la latenza non c'entrano
@@ -529,9 +528,8 @@ senza riaddestramento e con degrado contenuto; oltre, il conto si fa salato.
 
 `````
 
-La ragione per cui su un LLM la potatura è più difficile è una sola: non si può
-riaddestrare. Su una rete piccola il riaddestramento è il passaggio che riporta
-la rete dov'era, e {doc}`Meno pesi </Efficienza/meno-pesi>` lo misura; qui quel
+Su una rete piccola il riaddestramento è il passaggio che riporta la rete
+dov'era, e {doc}`Meno pesi </Efficienza/meno-pesi>` lo misura; su un LLM quel
 passaggio non c'è, perché riaddestrare un modello da miliardi di parametri non
 è una cosa che si fa a valle di un deploy. I metodi che si usano sugli LLM
 esistono proprio per sostituirlo: invece di riaddestrare tutto, aggiustano
@@ -545,8 +543,7 @@ aggregata lo nasconde.
 ## Valutare l'invalutabile
 
 Un modello servito e compresso va poi tenuto d'occhio: funziona ancora bene? E
-qui casca l'asino, perché tutti i modi consueti di dargli un voto qui si
-rompono.
+qui casca l'asino, perché tutti i modi consueti di dargli un voto si rompono.
 
 Il primo è la misura che il modello porta con sé, la perplessità, vista nel
 capitolo sui Transformer: dice quanto il modello è indeciso a ogni token, ed è
@@ -619,24 +616,24 @@ che cosa si insegna.
 
 `````{tab} Superiore
 
-Il pattern, LLM-as-a-judge {cite}`zheng2023judging`, usa un modello
-forte (nel lavoro originale, GPT-4) per assegnare un punteggio o per scegliere
-la migliore fra due risposte. Zheng e colleghi lo validano su due banchi di
-prova (**MT-Bench**, ottanta domande a più turni, e **Chatbot Arena**,
-confronti a coppie raccolti dal pubblico e aggregati con un punteggio Elo) e
-misurano che il giudice-GPT-4 concorda con le preferenze umane oltre l’80%
-delle volte: lo stesso livello di accordo che due esseri umani hanno fra loro.
-Quell’oltre l’80% ha un protocollo, e sta nella tabella: è l’85% sui soli voti
-non pari, dove due giudici a caso concorderebbero già nella metà dei casi (fra
-due umani, 81%); contando anche i pareggi e le incoerenze si scende al 66%,
-quanto due umani fra loro (che stanno al 63% sul primo turno e al 67% sul
-secondo), là dove il caso darebbe 33. Il giudice automatico non è poi neutro, e
-i suoi bias hanno nomi precisi: il **position bias** (tende a preferire la
-risposta presentata per prima) e il **verbosity bias** (favorisce le risposte
-lunghe), misurati tutti e due, il secondo con un attacco che allunga la
-risposta senza aggiungerci niente e a cui GPT-4 resiste molto meglio degli
-altri giudici provati (ci casca nell'8,7% dei casi, contro il 91,3%); il terzo,
-il **self-enhancement bias**, gli autori lo osservano senza poterlo dimostrare,
+Il pattern, LLM-as-a-judge {cite}`zheng2023judging`, usa un modello forte (nel
+lavoro originale, GPT-4) per assegnare un punteggio o per scegliere la migliore
+fra due risposte. Zheng e colleghi lo validano su due banchi di prova
+(**MT-Bench**, ottanta domande a più turni, e **Chatbot Arena**, confronti a
+coppie raccolti dal pubblico e aggregati con un punteggio Elo) e misurano che
+il giudice-GPT-4 concorda con le preferenze umane oltre l’80% delle volte: lo
+stesso livello di accordo che due esseri umani hanno fra loro. Quell’oltre
+l’80% ha un protocollo, e sta nella tabella: è l’85% sui soli voti non pari,
+dove due giudici a caso concorderebbero già nella metà dei casi (fra due umani,
+81%); contando anche i pareggi e le incoerenze si scende al 66%, quanto due
+umani fra loro (che stanno al 63% sul primo turno e al 67% sul secondo), là
+dove il caso darebbe 33. Il giudice automatico non è poi neutro, e i suoi bias
+hanno nomi precisi: il **position bias** (tende a preferire la risposta
+presentata per prima) e il **verbosity bias** (favorisce le risposte lunghe),
+misurati tutti e due, il secondo con un attacco che allunga la risposta senza
+aggiungerci niente e a cui GPT-4 resiste molto meglio degli altri giudici
+provati (ci casca nell'8,7% dei casi, contro il 91,3%). Il terzo, il
+**self-enhancement bias**, gli autori lo osservano senza poterlo dimostrare,
 perché qualche giudice preferisce sé stesso (GPT-4 di dieci punti di *win
 rate*, Claude-v1 di venticinque) ma preferisce anche modelli diversi da sé, e
 GPT-3.5 non preferisce sé stesso. Il position bias si mitiga chiamando il
@@ -648,11 +645,11 @@ un surrogato porta al *reward hacking*.
 
 `````
 
-Alla valutazione si affianca, quando il servizio è acceso, la sicurezza di
-ciò che esce. Al modello, durante l'addestramento, si è già insegnato quali
+Alla valutazione si affianca, quando il servizio è acceso, la sicurezza di ciò
+che esce. Al modello, durante l'addestramento, si è già insegnato quali
 risposte sono preferibili e quali no: sono le due tecniche del capitolo sui
 Transformer che là si chiamano per sigla, RLHF e DPO. Quell'insegnamento lo
-rende meno incline a rispondere in modo dannoso, ma non offre garanzie: restano
+rende meno incline a rispondere in modo dannoso, ma non offre garanzie: resta
 una disposizione appresa, e una disposizione si aggira. Per questo i sistemi
 reali aggiungono dei guardrail, che in italiano sono proprio i guard rail
 dell'autostrada: filtri e classificatori indipendenti dal modello, che
@@ -708,9 +705,9 @@ comporre più passi in un agente. È il
   più veloci, e passa solo quello che il grande avrebbe potuto scrivere lui.
   Serve però quando le richieste sono poche: con la sala piena il grande ha già
   da fare per conto suo.
-- Per farlo entrare si comprime: si arrotondano i numeri, o se ne buttano
-  via una parte. Ma alcuni numeri sono fragili e portanti, come i bicchieri
-  buoni in un trasloco, e vanno trattati a parte.
+- Per far entrare il modello nella memoria si comprime: si arrotondano i
+  numeri, o se ne buttano via una parte. Ma alcuni numeri sono fragili e
+  portanti, come i bicchieri buoni in un trasloco, e vanno trattati a parte.
 - Giudicare un testo aperto non ha una risposta esatta: si usa un altro
   modello come esaminatore, comodo ed economico, sapendo che ha sempre le
   stesse due manie, il tema che ha letto per primo e quello più lungo.
@@ -752,7 +749,8 @@ comporre più passi in un agente. È il
   misurare. Che i 4 bit siano l'ottimo lo si misura a parità di bit totali
   occupati e sulla sola accuratezza zero-shot {cite}`dettmers2023case`, e per
   chi arrotonda senza guardare i dati: i metodi che si tarano su un insieme di
-  calibrazione restano fuori da quella misura, e sotto i 4 bit non è chiuso.
+  calibrazione restano fuori da quella misura, e sotto i 4 bit la partita resta
+  aperta.
 - Valutare l'invalutabile: la perplessità non basta e i benchmark si
   contaminano; per l'output aperto si usa LLM-as-a-judge, che sui soli voti
   non pari concorda con l’uomo l’85% delle volte contro l’81% fra due

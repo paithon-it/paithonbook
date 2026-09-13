@@ -191,7 +191,7 @@ serie. L'ultimo punto è quello che conta, e va detto con precisione: due
 istanti si somigliano in base a quanto distano fra loro, non a quando cadono
 nel calendario.[^senso-debole]
 
-Perché proprio il terzo, e non è pedanteria: i primi due riguardano *dove* sta
+Perché proprio il terzo? I primi due riguardano *dove* sta
 la serie e *quanto* si agita, cose che si vedono a occhio e si aggiustano in
 fretta. Il terzo riguarda la memoria, cioè proprio quello da cui una previsione
 si tira fuori. Se il legame fra un giorno e il successivo è uno a gennaio e un
@@ -350,9 +350,9 @@ ogni volta che l'altro scende: mezzo punto sotto zero è quindi molto. La
 seconda riga dice che togliendo la retta, invece, non resta niente. La terza
 dice che gli scarti della differenziata, elevati al quadrato e mediati, sono
 il doppio di quelli degli scossoni che c'erano dentro: il doppio perché ogni
-giorno adesso se ne porta dentro due invece di uno, e quando si mettono
-insieme due cose che non hanno niente a che vedere fra loro ad addizionarsi
-sono i loro quadrati, come i cateti di un triangolo rettangolo, dove
+giorno adesso se ne porta dentro due invece di uno. Quando si mettono insieme
+due cose che non hanno niente a che vedere fra loro, ad addizionarsi sono i
+loro quadrati: succede lo stesso ai cateti di un triangolo rettangolo, dove
 l'ipotenusa vale la radice della somma dei quadrati dei due lati, e non la
 loro somma. Il $2$ è esatto sulle varianze del processo; sulle venti serie
 misurate è il $2{,}02$ della terza riga.
@@ -402,10 +402,9 @@ ha; e una barra sola che sporge non è la firma di niente, perché su venti barr
 capita più spesso che no che una sporga per caso. Di memorie, fra poco, ne
 incontreremo due, e ciascuna lascia la firma su un grafico diverso: se a
 schiacciarsi di colpo è la PACF, la serie si ricorda i valori passati; se è
-l'ACF, si ricorda gli urti passati. Con una riserva che verrà detta per
-esteso: sulle serie vere le due firme si sovrappongono, e questo modo di
-leggerle funziona molto meno di
-quanto i manuali lascino sperare.
+l'ACF, si ricorda gli urti passati. Con una riserva: sulle serie vere le due
+firme si sovrappongono, e questo modo di leggerle funziona molto meno di quanto
+i manuali lascino sperare.
 
 `````
 
@@ -565,7 +564,7 @@ urti passati: è il modello a **media mobile**, sigla MA. Attenzione, perché
 «media mobile» in questo campo indica due cose diverse. La prima, la più
 comune, è il modo più semplice di lisciare un grafico: si sostituisce ogni
 valore con la media dei suoi vicini, e così il tremolio si attenua e si vede il
-fondo. È anche il modo più semplice di tirar fuori la tendenza di una serie, ed
+fondo. È anche la via più corta per tirar fuori la tendenza di una serie, ed
 è per questo che il nome ricorre in giro. La seconda è questa, il modello MA,
 ed è una media degli imprevisti e non dei valori. Sono due mestieri diversi
 con lo stesso nome, e d'ora in avanti «media mobile», da sola, indica il
@@ -703,7 +702,7 @@ l’ARIMA($p,d,q$) {cite}`box2015time`. Le tre lettere:
 - I($d$), *integrated*, quante volte si differenzia la serie per renderla
   stazionaria ($d=1$ basta per una passeggiata aleatoria, con o senza
   deriva; $d=2$ serve quando a camminare a caso è anche la pendenza);
-- MA($q$): l'ordine a media mobile, quanti errori passati.
+- MA($q$), l'ordine a media mobile, quanti errori passati.
 
 In pratica si differenzia la serie $d$ volte, si adatta un ARMA($p,q$) al
 risultato, e si «re-integra» sommando all'indietro per tornare alla scala
@@ -811,18 +810,18 @@ Dal terzo passo in poi lo scarto dal livello medio è esattamente zero, e non
 semplicemente piccolo: il formato `.0e` stamperebbe `2e-17` se ci fosse un
 arrotondamento, e stampa `0e+00`.
 
-Il confronto interessante, però, è quello sotto, e la prima riga da leggere è
-la seconda. Il costo è l'errore quadratico medio, cioè la media degli errori
+Il confronto interessante, però, è nel secondo gruppo di righe, a partire dalle
+prime due. Il costo è l'errore quadratico medio, cioè la media degli errori
 elevati al quadrato, e al quadrato ci si va perché sbagliare in su e sbagliare
 in giù pesino uguale: più basso è meglio, e il numero si legge solo per
-confronto con un altro numero. Chiedere all'MA(2) tutti e quaranta i passi in
-un colpo solo costa $2{,}45$; rispondere sempre il livello medio, cioè non
-usare affatto il modello, costa $2{,}49$. Sono la stessa cosa, e i quattro
-centesimi che le separano hanno un nome preciso: sono i due passi utili,
-spalmati su quaranta. A parametri noti il conto li mette a $0{,}045$, ed è
-quello che il confronto appaiato misura ($-0{,}04$, più basso in dieci serie su
-dodici). Chi consegna quaranta passi di previsione da un MA(2) sta consegnando,
-per il novantacinque per cento, la linea di base.
+confronto con un altro numero. Chiedere all'MA(2) tutti e quaranta i passi in un
+colpo solo costa $2{,}45$; rispondere sempre il livello medio, cioè non usare
+affatto il modello, costa $2{,}49$. Sono la stessa cosa, e i quattro centesimi
+che le separano hanno un nome preciso: sono i due passi utili, spalmati su
+quaranta. A parametri noti il conto li mette a $0{,}045$, ed è quello che il
+confronto appaiato misura ($-0{,}04$, più basso in dieci serie su dodici). Chi
+consegna quaranta passi di previsione da un MA(2) sta consegnando, per il
+novantacinque per cento, la linea di base.
 
 Chiederli due per volta cambia registro: $1{,}49$, cioè due quinti in meno
 della linea piatta, con uno scarto di $-0{,}99$ che è più basso in tutte e
@@ -941,7 +940,7 @@ BIC di Schwarz {cite}`schwarz1978estimating` ($k\ln n - 2\ln\hat L$, con $n$ il
 numero di osservazioni) penalizza
 di più al crescere delle osservazioni e tende a scegliere modelli più piccoli.
 
-Due dettagli che cambiano il numero, e che quindi non sono dettagli. Il primo:
+Due dettagli cambiano il numero. Il primo:
 in $k$ entra anche la varianza dell'innovazione, non solo i $\phi$, i
 $\theta$ e la costante; `statsmodels` la conta (per un ARMA(1,1) con costante
 $k=4$), e chi rifà il conto a mano con $k=3$ sbaglia di due unità, cioè
@@ -1163,9 +1162,9 @@ osservazioni e cinque volte su venti con duemila. Più dati aiutano, quindi, e s
 vede; ma non bastano affatto, perché anche con duemila osservazioni l'AIC manca
 il modello vero tre volte su quattro.
 
-L'AIC non ha difetti: è fatto per scegliere il modello che prevede meglio, non
-per indovinare quello che ha generato i dati, e quando due modelli spiegano i
-dati quasi ugualmente bene i due obiettivi non coincidono. A puntare
+L'AIC fa il suo mestiere: è fatto per scegliere il modello che prevede meglio,
+non per indovinare quello che ha generato i dati, e quando due modelli spiegano
+i dati quasi ugualmente bene i due obiettivi non coincidono. A puntare
 sull'identificazione è semmai il BIC, un parente stretto che penalizza i
 parametri tanto più severamente quante più osservazioni ci sono. La lezione che
 invece tiene su tutti i semi e a tutte e due le numerosità è un'altra: il
@@ -1722,10 +1721,10 @@ dichiarandola venticinque volte meno precisa sale a $0{,}6819$, perché smette
 di ascoltarla. Quale dei due sia peggiore dipende dalla serie e non si decide
 su un esempio solo; quello che si decide è che a sbagliare di venticinque volte
 si perde metà del guadagno e si resta comunque sotto lo $0{,}9752$ della misura
-grezza. È il verso sordo a peggiorare per primo, e a sbagliare di mille supera
-la misura grezza ($1{,}1446$ contro $0{,}9752$) mentre l'altro le si limita ad
-avvicinarsi da sotto ($0{,}9551$); ed è anche il più insidioso, perché produce
-una curva liscia e convincente che si allontana dalla realtà con calma.
+grezza. È il verso sordo a peggiorare per primo, ed è anche il più insidioso,
+perché produce una curva liscia e convincente che si allontana dalla realtà con
+calma: a sbagliare di mille supera la misura grezza ($1{,}1446$ contro
+$0{,}9752$), mentre l'altro resta appena sotto ($0{,}9551$).
 
 Il giro vale ben oltre il lisciamento esponenziale, ed è la ragione per cui
 questa ricetta sta in mezzo ai modelli classici. Scritti in questa forma, con
@@ -1819,8 +1818,8 @@ entrano tutte e due nella media di lungo periodo $c/(1-\phi)$, ed è quella che
 con cinquecento osservazioni i minimi quadrati ricostruiscono bene: i numeri
 stimati danno $3{,}636/(1-0{,}635) = 9{,}96$, contro il $10$ vero. La
 previsione a un passo è semplicemente la formula del modello applicata
-all'ultimo valore osservato. Da qui in avanti si può ripetere il conto in
-avanti per prevedere più giorni (quanto lontano si guarda si chiama
+all'ultimo valore osservato. Da qui si può ripetere il conto in avanti per
+prevedere più giorni (quanto lontano si guarda si chiama
 orizzonte). Ricadendo, però, in un guaio: dal secondo giorno in poi il
 conto non parte più da un valore osservato, parte da una previsione, cioè da un
 numero che può già essere sbagliato, e quello sbaglio si trascina fino in

@@ -130,8 +130,8 @@ Qui $S(i,j)$ è il valore in posizione $(i,j)$ della mappa di uscita, mentre
 $m,n$ scorrono sulle celle del kernel. Il punto da vedere è che $K$ *non
 dipende da $(i,j)$*: è lo stesso filtro in ogni posizione, ed è da lì, e solo
 da lì, che viene l'equivarianza. Con più canali in ingresso (es. RGB), $F$
-filtri, un bias per filtro e una non linearità $\sigma$ (di solito la ReLU),
-gli stessi due oggetti si riscrivono con gli indici:
+filtri, un bias per filtro e una non linearità $\sigma$ (di solito la ReLU), la
+stessa formula si riscrive con gli indici:
 
 $$
 a_{f,i,j} = \sigma\!\left( b_f + \sum_{c}\sum_{m}\sum_{n}
@@ -141,8 +141,8 @@ $$
 I simboli: $f$ indicizza i filtri e quindi le mappe che escono, $c$ i canali
 d'ingresso, $K_{f,c,m,n}$ è il peso del filtro $f$ per canale $c$ e posizione
 $(m,n)$, $a_{f,i,j}$ l'attivazione risultante. Il kernel ha dunque quattro
-indici, e il $C$ di uno strato è l’$F$ dello strato sotto: ogni filtro legge
-tutte le mappe che arrivano, non una.
+indici, e il numero $C$ dei canali d'ingresso di uno strato è l’$F$ dello
+strato sotto: ogni filtro legge tutte le mappe che arrivano, non una.
 
 `````
 
@@ -258,11 +258,10 @@ trentadue filtri di sopra.
 Dopo la convoluzione si applica quasi sempre il **pooling**, che rimpicciolisce
 le feature map riassumendo ogni zona in un numero solo. Il più comune è il
 **max pooling**, che di ogni finestra (di solito $2\times2$) conserva il
-massimo; l'altro modo è tenere la media, e nella variante che fa la media di
-una mappa intera invece che di una finestra torna nella sezione
+massimo: su un quadratino che contiene $1$, $7$, $3$ e $2$, esce $7$, e gli
+altri tre numeri si perdono. L'altro modo è tenere la media, e la variante che
+fa la media di una mappa intera invece che di una finestra torna nella sezione
 {doc}`Architetture storiche <architetture-storiche>`.
-Su un quadratino che contiene $1$, $7$, $3$ e $2$, esce $7$, e gli altri tre
-numeri si perdono.
 
 `````{tab} Elementare
 

@@ -111,10 +111,9 @@ la potenza di calcolo non c'era, ed è la banda chiara al centro: cinquant'anni
 di attesa.
 ```
 
-Guardando la {numref}`fig-hardware-e-modelli` si nota una cosa sola, ed è il
-motivo per cui questo capitolo esiste in un libro di machine learning: fra
-un'idea e il momento in cui quell'idea funziona possono passare decenni, e ad
-aspettare non è l'idea, è il calcolo. Il percettrone è del 1958, la
+Guardando la {numref}`fig-hardware-e-modelli` si nota una cosa sola: fra
+un'idea e il momento in cui quell'idea funziona possono passare decenni. Il
+percettrone è del 1958, la
 backpropagation si diffonde nel 1986, le reti convoluzionali sono in piedi nel
 1998; il primo risultato che sposta tutto arriva nel 2012, cinque anni dopo
 CUDA. Non è una curiosità da tecnici dei computer: per lunghi tratti della
@@ -245,18 +244,19 @@ roofline {cite}`williams2009roofline`: mette a confronto l’*intensità
 aritmetica* di un calcolo (quanti conti fai per ogni byte spostato) con i due
 tetti dell'hardware, la banda e il picco di calcolo, e dice se un programma è
 *memory-bound* o *compute-bound*. Da qui un filo conduttore che ritroverai in
-ogni sezione, accessi coalescenti, riuso in shared memory (*tiling*), fusione
-dei kernel, fino alla FlashAttention {cite}`dao2022flashattention`:
-variazioni sullo stesso tema, fare più conti per ogni byte e tenere il byte il
-più vicino possibile ai core.
+ogni sezione, in forme diverse (accessi coalescenti, riuso in shared memory o
+*tiling*, fusione dei kernel, fino alla FlashAttention
+{cite}`dao2022flashattention`) che sono variazioni sullo stesso tema: fare più
+conti per ogni byte e tenere il byte il più vicino possibile ai core.
 `````
 
 ## Un gradino alla volta
 
 Le sei sezioni scendono, un gradino alla volta, dal modo in cui una GPU esegue
 il codice fino a come si addestrano le reti che non entrano in una scheda sola.
-I nomi tecnici che seguono non vanno capiti adesso: ciascuno ha accanto, fra
-parentesi, la cosa che significa, ed è quella la promessa della sezione.
+Accanto a ogni nome tecnico, fra parentesi, c'è la cosa che significa; ogni
+voce dell'elenco è una delle sei sezioni, ed è lì che quei nomi si spiegano per
+intero.
 
 - Dentro la GPU: come è fatta e come esegue. La scommessa opposta a quella
   della CPU; gli Streaming Multiprocessor (le officine autonome in cui la
@@ -333,8 +333,8 @@ parentesi, la cosa che significa, ed è quella la promessa della sezione.
   calcolo: la banda di memoria è il muro. Il roofline
   {cite}`williams2009roofline` distingue i carichi *memory-bound* da quelli
   *compute-bound*.
-- Un unico filo conduttore lega tutto il capitolo, coalescenza, tiling,
-  kernel fusion, FlashAttention {cite}`dao2022flashattention`: fare
+- Un unico filo conduttore lega tutto il capitolo (coalescenza, tiling,
+  kernel fusion, FlashAttention {cite}`dao2022flashattention`): fare
   più conti per ogni byte spostato, e tenere il byte vicino ai core.
 - A programmare la GPU ci pensa PyTorch: sapere come funziona resta quello
   che spiega perché un addestramento va veloce o lento.

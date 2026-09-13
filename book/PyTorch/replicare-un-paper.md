@@ -343,11 +343,6 @@ print(f"{n_parametri:,}")                          # 85,797,120
 Il conto torna, e conviene rifarlo a mano una volta, perché è il tipo di
 verifica che smaschera qualunque svista:
 
-Nella prima riga i due $768$ sono i due numeri diversi di cui si diceva poco
-fa: quello di sinistra è quanto entra nella proiezione ($16 \cdot 16 \cdot 3$,
-i valori di una patch), quello di destra quanto ne esce (`d_modello`, la
-scelta degli autori). Che siano uguali resta una coincidenza.
-
 | Pezzo | Formula | Parametri |
 |---|---|---|
 | Proiezione delle patch | $768 \cdot 768 + 768$ | $590\,592$ |
@@ -359,6 +354,11 @@ scelta degli autori). Che siano uguali resta una coincidenza.
 | **Un blocco intero** | $2\,362\,368 + 4\,722\,432 + 3\,072$ | $7\,087\,872$ |
 | **12 blocchi** | $12 \cdot 7\,087\,872$ | $85\,054\,464$ |
 | **Totale** | $590\,592 + 768 + 151\,296 + 85\,054\,464$ | $\mathbf{85\,797\,120}$ |
+
+Nella prima riga i due $768$ sono i due numeri diversi di cui si diceva poco
+fa: quello di sinistra è quanto entra nella proiezione ($16 \cdot 16 \cdot 3$,
+i valori di una patch), quello di destra quanto ne esce (`d_modello`, la
+scelta degli autori). Che siano uguali resta una coincidenza.
 
 Due righe hanno un fattore che sembra piovere dall'alto, e conviene
 scioglierlo perché il testo invita a rifare il conto a mano. Il **4**
@@ -486,7 +486,7 @@ rimettono in scala ogni esempio per conto suo, come la LayerNorm.
 Restano due sviste che, mentre succedono, non danno nessun segnale. Una
 riguarda i freni: quello che tira di continuo i pesi verso lo zero (il *weight
 decay*) va messo sulla gran parte dei pezzi, ma non su quelli che servono
-soltanto a rimettere i numeri in scala, e frenare anche loro non rompe niente,
+soltanto a rimettere i numeri in scala, e frenare anche loro non rompe niente:
 costa qualche punto alla fine. L'altra è il righello: se il paper riporta il
 risultato migliore fra molte prove, o la media di più ritagli della stessa foto
 di prova, e tu riporti l'ultimo numero che ti è uscito, una parte della

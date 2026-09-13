@@ -20,15 +20,15 @@ matura si chiama apprendimento per differenze temporali: il nome torna nella
 pagina sul {doc}`Q-learning </ReinforcementLearning/q-learning>`, ed è lì che
 si vede per intero.
 
-In quell'articolo compare, tra le prime volte nella storia, l'espressione
-*machine learning*: la capacità di un calcolatore di migliorare a un compito
-senza essere riprogrammato a mano.
+Il {doc}`capitolo di matematica </Matematica/overview>` si era chiuso
+sull'ultimo strato di un modello linguistico, cioè su un punto d'arrivo; con
+Samuel siamo al punto di partenza, e la strada fra i due è il resto del libro.
+
+In quell'articolo del 1959 compare, tra le prime volte nella storia,
+l'espressione *machine learning*: la capacità di un calcolatore di migliorare a
+un compito senza essere riprogrammato a mano.
 
 È un'idea che ribalta il modo consueto di pensare al software.
-
-Il {doc}`capitolo di matematica </Matematica/overview>` si era chiuso sull'ultimo strato di un modello
-linguistico, cioè su un punto d'arrivo; con Samuel siamo al punto di partenza,
-e la strada fra i due è il resto del libro.
 
 ## Scrivere le regole, o farle emergere
 
@@ -163,7 +163,7 @@ sempre quello con la media più bassa.
 Le "soluzioni a fianco" sono le etichette: senza di esse non c'è niente contro
 cui misurare lo scarto, e questo tipo di apprendimento non funziona. La
 raccolta, poi, si fa per gli esercizi che ancora non ci sono, quelli senza
-soluzione stampata sotto, dove si vede se qualcuno ha davvero imparato.
+soluzione a fianco, dove si vede se qualcuno ha davvero imparato.
 
 `````
 
@@ -187,15 +187,15 @@ addestramento supervisionato è, in fondo, questo problema di minimizzazione.
 
 `````
 
-**Apprendimento non supervisionato.** Qui le etichette non ci sono: il
-modello riceve solo gli input e deve scoprire da sé una struttura nascosta.
-L'esempio classico è il *clustering*: raggruppare i clienti di un negozio in
-segmenti simili senza sapere in anticipo quali segmenti esistano. Rientrano qui
-anche la riduzione della dimensionalità (le «dimensioni» sono le colonne
-della tabella, una per caratteristica, e la prossima sezione spiega perché si
-chiamino così), cioè descrivere ogni esempio con
-meno numeri senza perderne l'essenza; e i sistemi che rilevano anomalie in una
-transazione.
+**Apprendimento non supervisionato.** Qui le etichette non ci sono: il modello
+riceve solo gli input e deve scoprire da sé una struttura nascosta. L'esempio
+classico è il *clustering*: raggruppare i clienti di un negozio in segmenti
+simili senza sapere in anticipo quali segmenti esistano. Rientrano qui anche la
+riduzione della dimensionalità, cioè descrivere ogni esempio con meno numeri
+senza perderne l'essenza (le «dimensioni» sono le colonne della tabella in cui
+si mettono i dati, una per caratteristica, e la {doc}`sezione sull'apprendimento
+supervisionato </MachineLearning/apprendimento-supervisionato>` spiega perché si
+chiamino così); e i sistemi che rilevano anomalie in una transazione.
 
 **Apprendimento per rinforzo.** Non ci sono etichette, e non c'è nemmeno un
 mucchio di esempi fissato in partenza: c'è un agente (un programma che
@@ -235,9 +235,9 @@ I passaggi, in ordine:
    colonne della tabella) sono i numeri con
    cui descriviamo ogni esempio, e sceglierli è un lavoro nostro. Di un'email
    possiamo prendere quante parole ha, quanti punti esclamativi, quante volte
-   compare la parola «vincita», se il mittente è in rubrica: cinque numeri, e
-   quell'email per il modello è diventata quei cinque numeri. Cambiando i numeri
-   che si prendono cambia la risposta, ed è per questo che si dice che
+   compare la parola «vincita», se il mittente è in rubrica: quattro numeri, e
+   quell'email per il modello è diventata quei quattro numeri. Cambiando i
+   numeri che si prendono cambia la risposta, ed è per questo che si dice che
    rappresentare bene un problema è metà della soluzione.
 3. **Modello**: decidere che *forma* dare al modello (una retta? un albero di
    domande? una rete?) e poi addestrarlo sui dati.

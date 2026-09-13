@@ -5,15 +5,14 @@ una sequenza di simboli discreti (un «alfabeto sonoro»
 finito) potremmo generarne di nuovo esattamente come un modello di linguaggio
 genera testo, un simbolo alla volta. Ma il testo quell'alfabeto ce l'ha già,
 regalato dalla lingua: ventuno lettere e via. L'audio no. È un'onda continua,
-e un alfabeto per il suono in natura non esiste: va costruito. Questa
-sezione racconta chi lo costruisce (i codec neurali) e come. È la chiave
-di volta della generazione audio moderna: senza un buon alfabeto, non c'è
-nulla su cui scrivere.
+e un alfabeto per il suono in natura non esiste: va costruito. A costruirlo
+sono i codec neurali, e quell'alfabeto è la chiave di volta della generazione
+audio moderna: senza un buon alfabeto, non c'è nulla su cui scrivere.
 
 ## Comprimere imparando
 
-La parola *codec* non è nuova. Ogni volta che ascoltate un brano in streaming
-o salvate un vocale, un codec ha ridotto l'audio a una frazione della sua
+La parola *codec* non è nuova. Ogni volta che ascolti un brano in streaming
+o salvi un vocale, un codec ha ridotto l'audio a una frazione della sua
 dimensione. Il più famoso, l’MP3 (il cui progetto fu completato nel 1992 e
 pubblicato come standard ISO l'anno dopo), comprime
 buttando via ciò che l'orecchio non sente: si appoggia a un modello
@@ -28,8 +27,8 @@ da guardare: un encoder che stringe quello che entra fino a farlo diventare
 un pugno di numeri, e un decoder che da quel pugno di numeri cerca di
 ritirare fuori l'originale. I due si addestrano *insieme*, con un'unica regola:
 quello che esce deve somigliare a quello che è entrato. Questa forma vale per
-qualunque cosa si voglia comprimere, non solo per il suono, ed è qui che il
-libro la monta: il {doc}`capitolo sui modelli latenti
+qualunque cosa si voglia comprimere, non solo per il suono, ed è qui che la si
+monta pezzo per pezzo: il {doc}`capitolo sui modelli latenti
 </ModelliLatenti/overview>` la riprenderà per le immagini, e le aggiungerà
 l'unica cosa che le manca per servire anche a *generare*.
 
@@ -49,17 +48,16 @@ collo centrale. Nel disegno le parole sono in inglese, come si trovano nel
 codice: l’*input* è ciò che entra, l’*encoder* la parte che stringe, il
 *bottleneck* la strozzatura, il *decoder* la parte che riapre, l’*output* ciò
 che esce. Il pugno di numeri che sopravvive nella strozzatura si chiama
-**latente**, ed è una parola che da qui in poi torna in ogni pagina: latente
-perché quei numeri non li ha scelti nessuno e non dicono niente a guardarli, ma
-dentro c'è quanto basta per rifare un suono che passi per l'originale. E
-siccome un pugno di numeri si può sempre immaginare come un punto, l'insieme di
-tutti i latenti possibili prende il nome di spazio latente: tutti i riassunti
-che la rete potrebbe scrivere, non soltanto quelli che ha già scritto. È un
-nome che nel libro tornerà ogni volta che un modello preferisce lavorare sulla
-versione compressa dei dati invece che sui dati. Le lettere sono
+**latente**: latente perché quei numeri non li ha scelti nessuno e non dicono
+niente a guardarli, ma dentro c'è quanto basta per rifare un suono che passi
+per l'originale. E siccome un pugno di numeri si può sempre immaginare come un
+punto, l'insieme di tutti i latenti possibili prende il nome di spazio latente:
+tutti i riassunti che la rete potrebbe scrivere, non soltanto quelli che ha già
+scritto. È un nome che nel libro tornerà ogni volta che un modello preferisce
+lavorare sulla versione compressa dei dati invece che sui dati. Le lettere sono
 le abbreviazioni consuete ($\mathbf{x}$ l'ingresso, $\hat{\mathbf{x}}$ la sua
-ricostruzione, $\mathbf{z}$ il latente, *loss* la distanza fra i primi due, cioè
-quanto la rete ha sbagliato).
+ricostruzione, $\mathbf{z}$ il latente, *loss* la distanza fra i primi due,
+cioè quanto la rete ha sbagliato).
 
 I numeri $784 \to 128 \to 32$ sono solo un esempio, e vengono dalle immagini
 perché è lì che questo schema si vede meglio: una cifra scritta a mano di
@@ -82,8 +80,8 @@ sistemi meglio proprio quelle cose. A giudicare, poi, non sei solo tu: chi ti
 aspetta a casa apre la valigia e prova a indovinare se l'hai rifatta tu o se non
 l'hai mai aperta, e tante pieghe piccole sparse ovunque lo insospettiscono meno
 di una piega sola nel posto sbagliato. Dopo mille viaggi hai un tuo metodo, cucito
-sul tuo bagaglio, che nessuno ti ha dettato. Il codec neurale è il secondo
-viaggiatore: nessuno gli dice *cosa* buttare, lo scopre da solo cercando di far
+sul tuo bagaglio, che nessuno ti ha dettato. Il codec neurale fa la valigia nel
+secondo modo: nessuno gli dice *cosa* buttare, lo scopre da solo cercando di far
 tornare a casa la valigia il più intatta possibile.
 
 La vera sorpresa, però, non è la compressione in sé: l'MP3 già comprime bene.
@@ -193,7 +191,7 @@ uno piccolo comprime di più ma perde fedeltà.
 Conviene fare i conti a mano su un esempio minuscolo, perché il meccanismo è
 tutto qui. Prendiamo un codebook di appena quattro prototipi e, per
 poterli scrivere su una riga, immaginiamo che ogni pezzetto di suono sia
-descritto da due soli numeri invece che da centinaia. Una avvertenza prima di
+descritto da due soli numeri invece che da centinaia. Un'avvertenza prima di
 guardarli: dentro le parentesi tonde troverai virgole di due tipi, quelle che
 separano le due caselle e quelle dei decimali. Ogni parentesi contiene sempre
 due numeri, mai quattro.
@@ -383,7 +381,7 @@ viene reinventato in modo credibile. Ecco perché la fedeltà misurata
 campione per campione crolla mentre la qualità che si sente regge. Ed ecco anche
 perché, nella prossima sezione, questo stesso decoder potrà fare da generatore
 senza cambiare una riga: a quel punto la differenza fra un codec e un modello
-che inventa suono sta soltanto in da dove arrivano i token. Ed è proprio quei
+che inventa suono sta soltanto nella provenienza dei token. E sono proprio quei
 token che daremo in pasto a un modello di linguaggio.
 
 ```{figure} ../figures/audio-codec-rvq.svg
@@ -408,7 +406,7 @@ stadio.
 
 Due avvertenze prima di leggerlo, per non inciampare sui numeri. Qui i prototipi
 sono numerati a partire da zero, come conta Python, mentre nella formula
-partivano da uno: è solo un modo di contare. E gli elenchi qui sotto non sono
+partivano da uno: è solo un modo di contare. E gli elenchi del codice non sono
 quelli dell'esempio a mano di poco fa, quindi i token che ne escono non devono
 coincidere con il `2` e il `3` di prima.
 
@@ -482,9 +480,9 @@ si dimezza, da $0{,}1021$ a $0{,}0481$, e ogni pezzetto adesso è descritto da d
 numeri interi invece che da due numeri qualsiasi. È l'intera idea della RVQ, in
 scala di laboratorio: nei codec veri i pezzetti hanno centinaia di numeri, gli
 elenchi migliaia di voci e gli stadi sono otto o più, ma la meccanica è
-precisamente questa, ed è quella che il codice qui sopra esegue.
+precisamente questa.
 
-Gli elenchi qui sopra li abbiamo scritti noi; nei codec veri i prototipi si
+I due elenchi del codice li abbiamo scritti noi; nei codec veri i prototipi si
 imparano insieme all'encoder e al decoder. La regola con cui si imparano è
 semplice: ogni prototipo viene spostato ogni tanto nel mezzo dei pezzetti che
 l'hanno scelto, così da rappresentarli meglio (è lo stesso meccanismo del
@@ -496,18 +494,17 @@ voce che nessun pezzetto sceglie non viene mai spostata, quindi resta dov'è e
 continua a non essere scelta: è morta, e non risuscita. L'elenco che si usa
 davvero si riduce in silenzio a una frazione di quello dichiarato, mentre il
 bitrate resta quello di prima, calcolato sull'elenco intero. Si pagano tutti i
-bit e se ne usa una parte, e si chiama **codebook collapse**. Quanto morda
-dipende da dove si parte: se i prototipi nascono sparsi molto più larghi dei
-pezzetti che dovranno descrivere, ne sopravvivono pochissimi, perché tutti i
-pezzetti finiscono addosso agli stessi due o tre. I rimedi sono di ingegneria e
-stanno nei codec di questa sezione: il primo lo prende SoundStream
-{cite}`zeghidour2021soundstream` da Jukebox, e lo adotta poi anche EnCodec
-{cite}`defossez2023high`, e consiste nel sostituire le voci mai usate con
-pezzetti presi dal mucchietto che si sta processando in quel momento, dandogli
-così un posto dove sono utili (si chiama *restart*); altri arrotondano in uno
-spazio più piccolo e riportano prototipi e pezzetti alla stessa scala. Un
-codebook va sempre misurato per quante voci usa davvero, non per quante ne
-dichiara.
+bit e se ne usa una parte: è il **codebook collapse**. Quanto morda dipende da
+dove si parte: se i prototipi nascono sparsi molto più larghi dei pezzetti che
+dovranno descrivere, ne sopravvivono pochissimi, perché tutti i pezzetti
+finiscono addosso agli stessi due o tre. I rimedi sono di ingegneria e stanno
+dentro i codec. Il primo sostituisce le voci mai usate con pezzetti presi dal
+mucchietto che si sta processando in quel momento, dando loro così un posto dove
+sono utili, e si chiama *restart*: SoundStream lo prende da Jukebox, e lo adotta
+poi anche EnCodec {cite}`zeghidour2021soundstream` {cite}`defossez2023high`.
+Altri arrotondano in uno spazio più piccolo e riportano prototipi e pezzetti
+alla stessa scala. Un codebook va sempre misurato per quante voci usa davvero,
+non per quante ne dichiara.
 
 Sulla misura della qualità serve poi una distinzione che il gergo tende a
 cancellare, e conviene dirla in ordine. Primo: l'errore quadratico medio sui

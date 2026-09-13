@@ -145,9 +145,9 @@ tre specie vengono dalla penisola di Gaspé, in Québec, mentre la terza, *Iris
 virginica*, «differisce dagli altri due campioni per non essere stata raccolta
 nella stessa colonia naturale», il che «potrebbe alterare parecchio sia le
 medie sia le loro variabilità». Fisher cercava la combinazione delle quattro
-che separasse al meglio le specie, e il metodo che ne uscì porta il suo nome.
-È lo stesso `iris` che il capitolo sull'interpretabilità darà in pasto a un
-albero, ed è probabilmente il dataset più riusato della storia della
+misure che separasse al meglio le specie, e il metodo che ne uscì porta il suo
+nome. È lo stesso `iris` che il capitolo sull'interpretabilità darà in pasto a
+un albero, ed è probabilmente il dataset più riusato della storia della
 statistica.[^eugenics]
 
 [^eugenics]: L'articolo esce sugli *Annals of Eugenics*, che è il nome della
@@ -165,22 +165,22 @@ senso che variano allo stesso modo (chi è più pesante è anche un po’ più l
 nella stessa misura per tutte e due), e che a distinguerli sia solo dove sta il
 centro.
 
-In questo caso capire da quale specie viene una moneta nuova è quasi come
+In questo caso capire da quale taglio viene una moneta nuova è quasi come
 chiedersi a quale dei due centri sono più vicino. Il «quasi» sta in due
 accortezze. La prima è misurare la distanza nella forma giusta: se le monete
 variano molto in peso e poco in diametro, un grammo di differenza conta meno di
-un millimetro. La seconda è la solita correzione per quanto sono comuni le due
-specie, che non sparisce nemmeno qui. Il confine che ne esce è una retta, ed è il
-metodo di Fisher, l'analisi discriminante lineare, LDA per gli amici.
+un millimetro. La seconda è la solita correzione per quanto sono comuni i due
+tagli, che non sparisce nemmeno qui. Il confine che ne esce è una retta, ed è
+il metodo di Fisher, l'analisi discriminante lineare, LDA per gli amici.
 
-Se invece le due specie hanno forme diverse (una varia tanto in peso, l'altra
-tanto in diametro) la vicinanza al centro da sola inganna. Una specie molto
-variabile trova poco strano qualunque valore, e a lasciarla fare si prenderebbe
+Se invece i due tagli hanno forme diverse (uno varia tanto in peso, l'altro
+tanto in diametro) la vicinanza al centro da sola inganna. Un taglio molto
+variabile trova poco strano qualunque valore, e a lasciarlo fare si prenderebbe
 tutte le monete dubbie; quindi dal suo giudizio si toglie tanto più quanto più
-quella specie è larga. Con una forma sola quello sconto sarebbe stato identico
-per le due specie e non avrebbe spostato il confine di un millimetro; con due
-forme diverse decide. Impari una forma per ciascuna, e il confine che ne esce si
-incurva. È l'analisi discriminante quadratica, QDA.
+quel taglio è sparpagliato. Con una forma sola quello sconto sarebbe stato
+identico per i due tagli e non avrebbe spostato il confine di un millimetro; con
+due forme diverse decide. Impari una forma per ciascuna, e il confine che ne
+esce si incurva. È l'analisi discriminante quadratica, QDA.
 
 Sembra che convenga sempre la seconda, visto che può fare tutto quello che fa la
 prima. Non è così, ed è il compromesso bias-varianza in una delle sue forme più
@@ -524,18 +524,18 @@ assottigliano fino a coincidere. Il fenomeno del 2001 è reale e si riproduce;
 ma il rimedio che gli si oppone oggi è acceso per impostazione predefinita, e
 chi confronta i due modelli con i default della libreria non lo vede.
 
-Una precisazione onesta su questa tabella, perché è quella che le dà il suo
-limite. I dati qui sono stati fabbricati a feature indipendenti, cioè nel
-mondo in cui l'ipotesi del naive Bayes è vera. Questo rende visibile il primo
-tempo della gara, la partenza rapida del generativo, e rende invisibile il
-secondo: se il modello del naive Bayes è quello giusto, i due metodi hanno lo
-stesso tetto, e quel tetto è il minimo teorico del problema ($0{,}866$, che si
-calcola). Infatti l'ultima riga li dà appaiati a $0{,}860$ e $0{,}859$, e nessuno
-dei due supera mai l'altro: l'asintoto più alto del discriminativo si vede solo
-quando l'ipotesi naive è falsa. Rifacendo tutto con
-feature correlate a $0{,}25$ il naive Bayes resta indietro a ogni numerosità,
-perché al vantaggio di stimare poco si somma il costo di un'ipotesi falsa. Il
-vantaggio dei pochi dati è reale; non è un salvacondotto.
+Una precisazione su questa tabella, che ne dichiara il limite. I dati qui sono
+stati fabbricati a feature indipendenti, cioè nel mondo in cui l'ipotesi del
+naive Bayes è vera. Questo rende visibile il primo tempo della gara, la
+partenza rapida del generativo, e rende invisibile il secondo: se il modello
+del naive Bayes è quello giusto, i due metodi hanno lo stesso tetto, e quel
+tetto è il massimo teorico del problema ($0{,}866$ di accuratezza, che si
+calcola). Infatti l'ultima riga li dà appaiati a $0{,}860$ e $0{,}859$, e lì
+nessuno dei due supera l'altro: l'asintoto più alto del discriminativo si vede
+solo quando l'ipotesi naive è falsa. Rifacendo tutto con feature correlate a
+$0{,}25$ il naive Bayes resta indietro a ogni numerosità, perché al vantaggio
+di stimare poco si somma il costo di un'ipotesi falsa. Il vantaggio dei pochi
+dati è reale; non è un salvacondotto.
 
 ## In pratica
 
@@ -663,9 +663,9 @@ Quando conviene prenderli in considerazione, in concreto:
   proprio asintoto molto prima, ma quello del discriminativo è più alto quando
   l'ipotesi del generativo è falsa. Il confronto a feature indipendenti misura
   solo la prima metà, perché lì i due asintoti coincidono
-  (col tasso di Bayes, $0{,}866$). Il confronto è contro la logistica non
-  regolarizzata; con l’$\ell_2$ di default il divario quasi sparisce, cioè il
-  fenomeno è del 2001 e i default di oggi lo mascherano.
+  (con l'accuratezza di Bayes, $0{,}866$). Il confronto è contro la logistica
+  non regolarizzata; con l’$\ell_2$ di default il divario quasi sparisce, cioè
+  il fenomeno è del 2001 e i default di oggi lo mascherano.
 - La LDA è anche una riduzione di dimensionalità supervisionata su al più
   $K-1$ direzioni, ed è la mistura gaussiana della sezione sul clustering con le
   variabili latenti osservate: resta il solo passo M, eseguito una volta.
@@ -674,9 +674,8 @@ Quando conviene prenderli in considerazione, in concreto:
 `````
 
 Il giro dei classificatori classici si chiude tornando al punto di partenza da
-dietro: la regressione logistica
-con cui tutto era cominciato e la LDA di Fisher tracciano lo stesso confine e non
-sono lo stesso metodo, perché una guarda il confine e l'altra guarda le classi.
-La prossima sezione abbandona del tutto le etichette e chiede ai dati di
-raggrupparsi da soli, che è l'unica domanda a cui nessuno dei modelli visti
-finora sa rispondere.
+dietro: la regressione logistica con cui tutto era cominciato e la LDA di
+Fisher tracciano lo stesso tipo di confine e non sono lo stesso metodo, perché
+una guarda il confine e l'altra guarda le classi. La prossima sezione abbandona
+del tutto le etichette e chiede ai dati di raggrupparsi da soli, che è l'unica
+domanda a cui nessuno dei modelli visti finora sa rispondere.

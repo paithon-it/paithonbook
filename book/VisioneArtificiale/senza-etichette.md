@@ -8,7 +8,7 @@ piattaforme di micro-lavoro e pagate a cottimo. È il lavoro invisibile su cui
 poggia la {doc}`sezione sul transfer learning
 </VisioneArtificiale/classificazione-transfer>`: quando scarichiamo una rete
 «pre-addestrata» stiamo prendendo in prestito il tempo di quegli annotatori. E
-quel lavoro non cresce insieme al problema: le etichette costano, e le costa
+quel lavoro non cresce insieme al problema: le etichette costano, e le scrive
 qualcuno a mano, una per una; l'elenco delle categorie utili cambia da un
 mestiere all'altro, e per moltissimi settori non esiste affatto. Le immagini
 *senza* etichetta, al contrario, sono praticamente infinite.
@@ -155,12 +155,11 @@ La supervisione non viene dal linguaggio, viene dalla trasformazione.
 
 `````
 
-In PyTorch tutto questo sta in una decina di righe, e la parte da guardare è
-da dove esce la risposta giusta: non la scrive nessuno, viene fuori
-soltanto dall'ordine in cui abbiamo impilato le viste. Chiamiamo $N$ il numero
-di immagini del gruppo: se le prime $N$ righe sono le viste A e le seconde $N$
-sono le viste B nello stesso ordine, la gemella della riga $i$ è la riga
-$i+N$, e questo il computer lo sa fare da sé.
+In PyTorch tutto questo sta in una decina di righe, e la parte da guardare è da
+dove esce la risposta giusta. Chiamiamo $N$ il numero di immagini del gruppo, e
+impiliamo le viste una per riga: se le prime $N$ righe sono le viste A e le
+seconde $N$ sono le viste B nello stesso ordine, la gemella della riga $i$ è la
+riga $i+N$, e questo il computer lo sa fare da sé.
 
 ```python
 import torch
@@ -318,12 +317,12 @@ calcolano le correzioni, e SimCLR prova fino a $8192$ immagini per volta: per
 reggerne $4096$ lavora su $128$ acceleratori in parallelo, il che taglia fuori
 chiunque non abbia un centro di calcolo.
 
-Da qui la mossa che scioglie il nodo, e conviene dire subito che è arrivata
-prima: MoCo è di qualche mese anteriore a SimCLR, e non nasce come sua
-risposta ma come attacco allo stesso problema, già noto. La mossa è staccare
-l'una dall'altra due cose che fin qui erano la stessa, quanti rivali il
-modello vede e quante immagini si elaborano insieme. Perché mai i
-negativi devono essere per forza i compagni di batch?
+La mossa che scioglie il nodo, e conviene dirlo subito, è arrivata prima: MoCo
+è di qualche mese anteriore a SimCLR, e non nasce come sua risposta ma come
+attacco allo stesso problema, già noto. La mossa è staccare l'una dall'altra
+due cose che fin qui erano la stessa, quanti rivali il modello vede e quante
+immagini si elaborano insieme. Perché mai i negativi devono essere per forza i
+compagni di batch?
 
 `````{tab} Elementare
 
@@ -411,16 +410,16 @@ Schede identiche, punteggio pieno, e nessuno dei due che abbia mai guardato
 davvero. È il collasso di cui si diceva, e a impedirlo qui non c'è nessuna forza
 che allontani: ci sono due dissimmetrie.
 
-La prima riguarda l'insegnante, che è una copia lenta dell'allievo e non
-una seconda rete assunta a parte, i suoi criteri rimescolati poco alla volta con
+La prima riguarda l'insegnante, che è una copia lenta dell'allievo e non una
+seconda rete assunta a parte, con i criteri rimescolati poco alla volta con
 quelli dell'allievo di oggi. Verrebbe da chiedersi che cosa si possa mai
 imparare da una copia di sé stessi, e la risposta è che l'insegnante non sa di
 più: sa un'altra cosa, perché sta guardando l'altro ritaglio. Il sapere non
 arriva da lui, arriva dal confronto fra due sguardi diversi sulla stessa scena;
 lui serve a tenere fermo il metro mentre l'allievo si muove. E siccome non
-prende punteggio, non ha alcun motivo di semplificarsi la vita: non può mettersi
-d'accordo con l'allievo su una risposta comoda per entrambi, perché non ha voce
-in capitolo.
+prende punteggio, non ha alcun motivo di semplificarsi la vita: non può
+mettersi d'accordo con l'allievo su una risposta comoda per entrambi, perché
+non ha voce in capitolo.
 
 La seconda sta nel percorso della risposta: solo l'allievo ha una **testa di
 predizione**, un passaggio in più con cui rielaborare la propria scheda prima
@@ -654,30 +653,30 @@ definire il compito.
 Le due proprietà si sostengono a vicenda. La ridondanza spaziale del segnale
 implica che con una frazione mascherata bassa il compito sia risolvibile per
 interpolazione locale, senza alcuna rappresentazione semantica; per lo stesso
-motivo il testo, discreto e denso di informazione, si accontenta del 15% di BERT
-{cite}`devlin2019bert`, e il parlato sta nel mezzo (wav2vec 2.0 maschera circa
-la metà dei tratti). E poiché l'encoder elabora solo il 25% dei token, il costo
-del passaggio in avanti scende all'incirca in proporzione, e appena di più.
-Il quadratico dell'attenzione fa spesso dire più di quanto sia vero. Siano
-$N_{\text{tok}}$ il numero di token e $d$ la dimensione delle rappresentazioni
-interne (il batch qui non entra: il conto è per sequenza). In un blocco
-Transformer quasi tutte le moltiplicazioni (proiezioni $\mathbf{Q}$,
+motivo il testo, discreto e denso di informazione, si accontenta del 15% di
+BERT {cite}`devlin2019bert`, e il parlato sta nel mezzo (wav2vec 2.0 maschera
+circa la metà dei tratti). E poiché l'encoder elabora solo il 25% dei token, il
+costo del passaggio in avanti scende all'incirca in proporzione, e appena di
+più. Qui il costo quadratico dell'attenzione fa spesso promettere più del vero.
+Siano $N_{\text{tok}}$ il numero di token e $d$ la dimensione delle
+rappresentazioni interne (il batch qui non entra: il conto è per sequenza). In
+un blocco Transformer quasi tutte le moltiplicazioni (proiezioni $\mathbf{Q}$,
 $\mathbf{K}$, $\mathbf{V}$, proiezione d'uscita, MLP) sono lineari in
 $N_{\text{tok}}$, e solo il prodotto $N_{\text{tok}} \times N_{\text{tok}}$ fra
 query e chiavi è quadratico. È quest'ultimo, e soltanto lui, a scendere a un
 sedicesimo quando i token si riducono a un quarto; ma alle taglie in gioco pesa
 poco. Contando i FLOP di un blocco come $24 N_{\text{tok}} d^2$ (parte lineare)
 più $4 N_{\text{tok}}^2 d$ (parte quadratica), per un ViT-B/16 con
-$N_{\text{tok}} = 196$ patch e $d = 768$ il termine quadratico è circa il 4% del
-totale, per un ViT-L ($d = 1024$) il 3%: scendendo a $N_{\text{tok}} = 49$ il
-blocco arriva al 24% del costo iniziale, cioè poco meno di un quarto, non a un
-sedicesimo. Gli autori misurano un pretraining da $2{,}8$ a $4{,}1$ volte più
-rapido, e il termine di paragone va detto: è la stessa rete in cui però
+$N_{\text{tok}} = 196$ patch e $d = 768$ il termine quadratico è circa il 4%
+del totale, per un ViT-L ($d = 1024$) il 3%: scendendo a $N_{\text{tok}} = 49$
+il blocco arriva al 24% del costo iniziale, cioè poco meno di un quarto, non a
+un sedicesimo. Gli autori misurano un pretraining da $2{,}8$ a $4{,}1$ volte
+più rapido, e il termine di paragone va detto: è la stessa rete in cui però
 l'encoder riceve anche i segnaposto delle patch coperte. Il guadagno resta
-comunque lontano dal taglio della sequenza per una ragione precisa: il numero
-è il tempo di addestramento nel suo complesso, e il decoder, che la sequenza
-la riceve completa, dal mascheramento non guadagna nulla. Resta il
-punto: il compito diventa più difficile e insieme più economico.
+comunque lontano dal taglio della sequenza per una ragione precisa: il numero è
+il tempo di addestramento nel suo complesso, e il decoder, che la sequenza la
+riceve completa, dal mascheramento non guadagna nulla. Resta il punto: il
+compito diventa più difficile e insieme più economico.
 
 La differenza di fondo rispetto ai metodi contrastivi è dove finisce la
 difficoltà. Là stava nelle trasformazioni scelte a mano, cioè nelle invarianze
@@ -824,7 +823,7 @@ qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
   un allievo e un insegnante che è una copia lenta dell'allievo: sorprende che
   non collassi sulla risposta vuota, ma non collassa.
 - L'altra grande famiglia non chiede di riconoscere, chiede di ricostruire:
-  si copre tre quarti dell'immagine e si fa indovinare cosa c'era sotto. Tanto
+  si coprono tre quarti dell'immagine e si fa indovinare cosa c'era sotto. Tanto
   serve, perché un pixel somiglia troppo ai suoi vicini: con pochi buchi basta
   fare una media e non si impara nulla.
 - Per capire se ha funzionato si usa un esame con le mani legate: si blocca

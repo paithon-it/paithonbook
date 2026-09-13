@@ -78,14 +78,14 @@ modello e viene appresa, invece di stare a monte e fissa. È ciò che si chiama
 
 ## Rappresentazioni gerarchiche: dai bordi agli oggetti
 
-Una rete profonda è fatta di strati: gruppi di neuroni messi in fila, dove
-il primo riceve i numeri dell'immagine e ognuno dei successivi riceve quello che
-ha prodotto quello prima di lui. (Un neurone, qui, è un pezzetto di conto e non
-una cellula: prende dei numeri, li somma dopo averli pesati e ne restituisce
-uno.) Quello che uno strato consegna al successivo è a sua volta una lista di
-numeri, ed è la rappresentazione che lo strato si è fatto di ciò che ha
-ricevuto: ce n'è una per piano, ciascuna costruita su quella di sotto, ed è
-questo a renderle gerarchiche. Cosa impara davvero uno strato?
+Una rete profonda è fatta di strati: gruppi di neuroni messi in fila, dove il
+primo riceve i numeri dell'immagine e ognuno dei successivi riceve ciò che ha
+prodotto lo strato prima. (Un neurone, qui, è un pezzetto di conto e non una
+cellula: prende dei numeri, li somma dopo averli pesati e ne restituisce uno.)
+Quello che uno strato consegna al successivo è a sua volta una lista di numeri,
+ed è la rappresentazione che lo strato si è fatto di ciò che ha ricevuto: ce
+n'è una per piano, ciascuna costruita su quella di sotto, ed è questo a
+renderle gerarchiche. Cosa impara davvero uno strato?
 
 Nel 2014 Zeiler e Fergus {cite}`zeiler2014visualizing` trovarono il modo di
 "visualizzarlo", cioè di risalire, per ogni neurone di una rete
@@ -323,21 +323,20 @@ non una matrice di dati), $\mathbf{w}_i \in \mathbb{R}^n$ è il vettore dei
 pesi del neurone $i$-esimo, $b_i$ il suo bias e $v_i$ il peso con cui
 contribuisce all'uscita.
 
-Due avvertenze sul quantificatore, che è dove il teorema promette meno di quanto
-sembri. La prima: è un risultato di **esistenza**, cioè di densità. Dice che la
-rete c'è, non che la discesa del gradiente la trovi, né quanti esempi servano
-per impararla. La seconda: il teorema da solo non dà nessun limite su $N$,
-il numero di neuroni. Quel limite dipende dalla classe di funzioni che si vuole
-approssimare, e conviene non generalizzare la frase che si sente più spesso.
-Per le classi definite dalla sola regolarità (derivate limitate fino a un certo
-ordine) il numero di neuroni cresce esponenzialmente nella dimensione
-dell'ingresso, ed è la maledizione della dimensionalità, che colpisce
-qualunque schema di approssimazione lineare e non le reti in particolare. Ma
-non è una legge universale: Barron {cite}`barron1993universal` individua una
-classe più ristretta, definita da una condizione sulla trasformata di Fourier,
-per cui l'errore quadratico scende come $O(1/N)$ senza dipendere dalla
-dimensione. La crescita esponenziale è una proprietà della classe di funzioni,
-non delle reti a uno strato in quanto tali.
+Due avvertenze sul quantificatore, che è dove il teorema promette meno di
+quanto sembri. La prima: è un risultato di **esistenza**, cioè di densità. Dice
+che la rete c'è, non che la discesa del gradiente la trovi, né quanti esempi
+servano per impararla. La seconda: il teorema da solo non dà nessun limite su
+$N$, il numero di neuroni. Quel limite dipende dalla classe di funzioni che si
+vuole approssimare. Per le classi definite dalla sola regolarità (derivate
+limitate fino a un certo ordine) il numero di neuroni cresce esponenzialmente
+nella dimensione dell'ingresso, ed è la maledizione della dimensionalità, che
+colpisce qualunque schema di approssimazione lineare e non le reti in
+particolare. Ma non è una legge universale: Barron {cite}`barron1993universal`
+individua una classe più ristretta, definita da una condizione sulla
+trasformata di Fourier, per cui l'errore quadratico scende come $O(1/N)$ senza
+dipendere dalla dimensione. La crescita esponenziale è una proprietà della
+classe di funzioni, non delle reti a uno strato in quanto tali.
 
 Sulla profondità, invece, le separazioni sono nette e dimostrate. Esistono
 famiglie di funzioni rappresentabili da reti profonde con un numero di neuroni
@@ -549,12 +548,12 @@ precedente: la stessa scala dai bordi agli oggetti della
   poi pezzi riconoscibili (un occhio, una ruota), infine l'oggetto intero.
 - Non è esplosa prima del 2012 perché servivano tre cose insieme, come la
   legna, l'aria e la scintilla: milioni di fotografie già etichettate,
-  schede grafiche abbastanza veloci e tre accorgimenti precisi (la ReLU
-  al posto delle funzioni che spegnevano il segnale, il dropout contro
-  l'imparare a memoria, il moltiplicare le foto con ritagli e specchiature).
-  Nel 2012 c'erano tutte e tre, e alla gara di ImageNet vinse AlexNet.
-  (La ReLU è la regola più semplice possibile: i numeri positivi passano come
-  sono, i negativi diventano zero.)
+  schede grafiche abbastanza veloci e tre accorgimenti precisi (la ReLU, la
+  regola più semplice possibile, che lascia passare i numeri positivi come
+  sono e azzera i negativi e che prese il posto delle funzioni che spegnevano
+  il segnale; il dropout contro l'imparare a memoria; il moltiplicare le foto
+  con ritagli e specchiature). Nel 2012 c'erano tutte e tre le cose, e alla
+  gara di ImageNet vinse AlexNet.
 - Uno strato solo, se lo si facesse enorme, in teoria basterebbe: il teorema
   però dice che una rete così *esiste*, non che l'addestramento la sappia
   trovare. E la profondità arriva allo stesso risultato con molti meno neuroni,

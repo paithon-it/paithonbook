@@ -132,7 +132,7 @@ la chiave decide il peso, il valore fornisce il contenuto che viene
 mescolato. Sono due mestieri distinti affidati a due spazi distinti, e nulla
 obbliga i due a coincidere.
 
-Un punto di vocabolario, su cui poggia tutto il resto. Chiamare
+Un punto di vocabolario. Chiamare
 $\mathbf{q}$ «la domanda» e $\mathbf{k}_j$ «la risposta» aiuta a ricordare,
 ed è un uso corrente; ma il meccanismo è il
 prodotto scalare fra due proiezioni apprese, non un dialogo. E il prodotto
@@ -158,17 +158,16 @@ colonna per ogni parola che si offre come risposta. Nella casella dove la riga
 d'accordo. Riempito il tabellone, ogni riga viene guardata per conto suo, e le
 sue caselle diventano le intensità dell'evidenziatore per quella parola lì.
 
-Due cose sulle taglie, e qui «taglia» è quanti numeri ci sono dentro una
-lista, non quanto è grande il tabellone. Domanda ed etichetta vanno
-confrontate, quindi devono essere scritte con la stessa quantità di numeri;
-l'informazione consegnata no, quella può essere lunga a piacere, perché con
-nessuno si confronta. E quello
-che esce da una riga ha sempre la stessa taglia, che le colonne siano dieci o
-diecimila: il tabellone si allarga, il risultato per ogni parola no. È il
-motivo per cui la stessa macchina lavora su una frase e su un capitolo senza
-cambiare forma. Non per cui lo fa a costo uguale: il tabellone cresce con il
-quadrato della lunghezza, ed è da lì che vengono i limiti di lunghezza dei
-modelli.
+Due cose sulle taglie, e qui «taglia» è quanti numeri ci sono dentro una lista,
+non quanto è grande il tabellone. Domanda e risposta, cioè la riga e la colonna
+che si incrociano in una casella, vanno confrontate, quindi devono essere
+scritte con la stessa quantità di numeri; l'informazione consegnata no, quella
+può essere lunga a piacere, perché con nessuno si confronta. E quello che esce
+da una riga ha sempre la stessa taglia, che le colonne siano dieci o diecimila:
+il tabellone si allarga, il risultato per ogni parola no. È il motivo per cui la
+stessa macchina lavora su una frase e su un capitolo senza cambiare forma. Non
+per cui lo fa a costo uguale: il tabellone cresce con il quadrato della
+lunghezza, ed è da lì che vengono i limiti di lunghezza dei modelli.
 
 Il tabellone è quadrato quando le due liste sono la stessa, cioè quando una
 frase interroga sé stessa. Ma non deve esserlo. Un traduttore ha davanti due
@@ -256,16 +255,16 @@ tabelle di numeri: una tabella moltiplica una lista e ne restituisce
 un'altra, e siccome i numeri nelle tre tabelle sono diversi (e imparati durante
 l'addestramento), le tre liste che ne escono sono diverse fra loro.
 
-Attenzione a non prendere le tre versioni per tre etichette appiccicate addosso
-alla parola una volta per tutte. Le tabelle cambiano da un piano all'altro del
-modello, e dentro lo stesso piano ce n'è più di una copia che lavora in
-parallelo sulla stessa frase (fra poco quelle copie prenderanno il nome di
-teste). Quindi "gatto" cerca una cosa al primo piano e un'altra al ventesimo, e
-nello stesso piano si presenta in un modo a una copia e in un altro modo a
-quella accanto. La prova sta nel guasto che eviti sapendolo: chi si aspetta
-un'etichetta fissa si aspetta anche che "gatto" venga scelto sempre dalle stesse
-parole, e poi trova due piani in cui succede il contrario, senza che nessuno dei
-due sia rotto.
+Attenzione a non prendere le tre versioni per tre cartellini appiccicati
+addosso alla parola una volta per tutte. Le tabelle cambiano da un piano
+all'altro del modello, e dentro lo stesso piano ce n'è più di una copia che
+lavora in parallelo sulla stessa frase (fra poco quelle copie prenderanno il
+nome di teste). Quindi "gatto" cerca una cosa al primo piano e un'altra al
+ventesimo, e nello stesso piano si presenta in un modo a una copia e in un
+altro modo a quella accanto. La prova sta nel guasto che eviti sapendolo: chi
+si aspetta un cartellino fisso si aspetta anche che "gatto" venga scelto sempre
+dalle stesse parole, e poi trova due piani in cui succede il contrario, senza
+che nessuno dei due sia rotto.
 
 E la separazione dei tre mestieri sembra un lusso, mentre è il punto di tutta
 la faccenda. Se ogni parola avesse una sola versione di sé, cercare ed essere
@@ -758,19 +757,20 @@ nasce la differenza fra un lettore e l'altro, perché su tabelle diverse la
 stessa frase si evidenzia in modo diverso.
 
 Ogni lettore consegna la sua versione arricchita della parola, e a questo punto
-di liste ce ne sono otto invece di una. Come si torna a una sola? Il trucco è
-che ogni lettore lavora fin dall'inizio su liste corte, un ottavo di quelle
-intere: attaccandole una in coda all'altra si ottiene di nuovo una lista lunga
-quanto quella di partenza, perché otto ottavi fanno uno. Resta un ultimo
-passaggio, una tabella che la lunghezza non la cambia ma mescola fra loro i
-contributi degli otto, così che quello che ciascuno ha visto arrivi in tutte
-le caselle e non solo nel proprio ottavo. Alla fine il conto costa poco più di
-un lettore solo a lista piena: la differenza è quell'ultima tabella.
+di liste ce n'è una per lettore: otto, nel Transformer originale, invece di
+una. Come si torna a una sola? Il trucco è che ogni lettore lavora fin
+dall'inizio su liste corte, un ottavo di quelle intere: attaccandole una in
+coda all'altra si ottiene di nuovo una lista lunga quanto quella di partenza,
+perché otto ottavi fanno uno. Resta un ultimo passaggio, una tabella che la
+lunghezza non la cambia ma mescola fra loro i contributi degli otto, così che
+quello che ciascuno ha visto arrivi in tutte le caselle e non solo nel proprio
+ottavo. Alla fine il conto costa poco più di un lettore solo a lista piena: la
+differenza è quell'ultima tabella.
 
 Ogni lettore si chiama, per ragioni che nessuno ricorda più, una **testa** di
-attenzione, e il Transformer originale ne usa otto. Perché otto e non nove?
-Perché funzionava: è una scelta provata sul campo, non una legge di natura, e i
-modelli che sono venuti dopo usano numeri diversi.
+attenzione. Perché otto e non nove? Perché funzionava: è una scelta provata sul
+campo, non una legge di natura, e i modelli che sono venuti dopo usano numeri
+diversi.
 
 Le fissazioni, poi, vengono fuori dall'addestramento come tutto il resto:
 nessuno assegna un compito a un lettore piuttosto che a un altro. Chi è andato
@@ -1030,7 +1030,7 @@ non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nom
 - Per giocare, ogni parola si presenta in tre versioni: la query (la
   domanda che fa), la key (l'etichetta con cui si fa trovare) e il
   value (l'informazione che consegna). Le tre versioni cambiano da un piano
-  all'altro del modello: non sono etichette appiccicate addosso una volta per
+  all'altro del modello: non sono cartellini appiccicati addosso una volta per
   tutte.
 - I conti si tengono su un tabellone, una riga per chi chiede e una colonna per
   chi risponde, e il tabellone non è per forza quadrato: nella traduzione, e

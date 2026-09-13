@@ -253,19 +253,17 @@ code che si assottigliano ai lati. Vale una regola pratica utilissima, la
 ($\mu\pm\sigma$), circa il $95\%$ entro due ($\mu\pm 2\sigma$). Altezze, errori di
 misura, rumore: in natura la campana è dappertutto.
 
-Perché dappertutto? C'è un risultato che lo spiega, e ha un nome
-importante: il **teorema del limite centrale**. Dice una cosa sorprendente:
-ogni volta che una grandezza è la *somma* di tanti contributi casuali e
-indipendenti fra loro, e nessuno dei quali possa da solo essere enormemente
-più grande di tutti gli altri messi insieme, il risultato assomiglia a una
-campana, e questo succede qualunque sia la forma dei singoli
-contributi. L'altezza di una
-persona è la somma di centinaia di piccoli effetti (geni, alimentazione,
-salute da bambino): campana. L'errore di uno strumento è la somma di tante
-imprecisioni minuscole: campana. Il totale di tre dadi è la somma di tre
-numeri che, presi da soli, non hanno niente di campanulare (in un dado tutte
-le facce sono ugualmente probabili, il disegno sarebbe piatto): eppure il
-totale, sì.
+Perché dappertutto? C'è un risultato che lo spiega, e ha un nome importante: il
+**teorema del limite centrale**. Dice una cosa sorprendente: ogni volta che una
+grandezza è la *somma* di tanti contributi casuali e indipendenti fra loro,
+nessuno dei quali possa da solo essere enormemente più grande di tutti gli
+altri messi insieme, il risultato assomiglia a una campana, e questo succede
+qualunque sia la forma dei singoli contributi. L'altezza di una persona è la
+somma di centinaia di piccoli effetti (geni, alimentazione, salute da bambino):
+campana. L'errore di uno strumento è la somma di tante imprecisioni minuscole:
+campana. Il totale di tre dadi è la somma di tre numeri che, presi da soli, non
+hanno niente di campanulare (in un dado tutte le facce sono ugualmente
+probabili, il disegno sarebbe piatto): eppure il totale, sì.
 
 Attenzione a cosa il teorema promette e cosa no. Promette che, sommando
 abbastanza pezzi, la campana arriva. Non promette *quanto in fretta*: con i
@@ -303,19 +301,18 @@ schemi standard derivano la varianza dell'inizializzazione, per conservare
 la scala delle attivazioni fra uno strato e l'altro, e non la famiglia, tanto
 che il default di PyTorch campiona da un'uniforme e non da una normale.)
 
-Il teorema dice che si converge, non quanto in fretta, e la seconda
-domanda ha una risposta separata. Una garanzia grossolana la dà la
-disuguaglianza di Berry–Esseen,
-$\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$, dove $F_n$ è la
-funzione di ripartizione della somma standardizzata, $\Phi$ quella della
-normale standard, $C$ una costante universale minore di mezzo che non dipende
-dalla distribuzione di partenza, e $\rho_3 = \mathbb{E}|X-\mu|^3$. La distanza
-cala dunque come $1/\sqrt{n}$. Davanti, però, c'è un momento terzo
-assoluto, che non sa distinguere una coda lunga da un lato sola da due code
-lunghe simmetriche. A separarle è lo sviluppo di Edgeworth, il cui primo
-termine correttivo è proporzionale all’asimmetria e si annulla quando la
-distribuzione di partenza è simmetrica: è lei, a parità di tutto il resto, a
-governare il termine dominante.
+Il teorema dice che si converge, non quanto in fretta, e la seconda domanda ha
+una risposta separata. Una garanzia grossolana la dà la disuguaglianza di
+Berry–Esseen, $\sup_z |F_n(z)-\Phi(z)| \le C\,\rho_3 / (\sigma^3\sqrt{n})$,
+dove $F_n$ è la funzione di ripartizione della somma standardizzata, $\Phi$
+quella della normale standard, $C$ una costante universale minore di mezzo che
+non dipende dalla distribuzione di partenza, e $\rho_3 = \mathbb{E}|X-\mu|^3$.
+La distanza cala dunque come $1/\sqrt{n}$. Davanti, però, c'è un momento terzo
+assoluto, che non distingue una sola coda lunga da due code lunghe simmetriche.
+A separarle è lo sviluppo di Edgeworth, il cui primo termine correttivo è
+proporzionale all’asimmetria e si annulla quando la distribuzione di partenza è
+simmetrica: è lei, a parità di tutto il resto, a governare il termine
+dominante.
 
 La distanza fra due distribuzioni si misura con la statistica di
 Kolmogorov–Smirnov, applicata qui alla somma standardizzata contro la
@@ -341,7 +338,7 @@ parole sembra una promessa e guardato sembra un trucco.
 Un dado è piatto: nessuna faccia è più probabile di un'altra. Eppure la
 somma di tre dadi, ripetuta seicento volte, si dispone da sé lungo la campana.
 La curva sovrapposta è la campana che il teorema prevede prima ancora di
-tirare i dadi, e non un disegno fatto sopra le barre a cose fatte: quella centrata
+tirare i dadi, e non un disegno fatto sopra le barre a cose fatte: è centrata
 sulla somma media dei tre e larga di conseguenza, e i dadi le danno ragione.
 ```
 
@@ -578,8 +575,8 @@ sono **rumore**, il nome che si dà alla parte di un risultato che viene dal
 caso e non dal merito.
 
 Il conto con la radice vale per i sondaggi normali. In un paesino di poche
-decine di elettori, o quando un candidato è dato al $99\%$ o all’$1\%$,
-sbaglia, e chi fa sondaggi passa a formule fatte apposta.
+decine di elettori, o quando un candidato è dato al $99\%$ o all’$1\%$, quel
+conto sbaglia, e chi fa sondaggi passa a formule fatte apposta.
 
 Anche il $95\%$ stampato accanto al margine parla dell'istituto e non della
 singola tornata di telefonate. Il risultato dell'urna è già deciso, e o sta
@@ -1194,16 +1191,17 @@ sorprendenti possibile*. Lancio una moneta 10 volte e vedo 7 teste: quale
 valore di $p$ (la probabilità che esca testa) spiega meglio quel che ho
 osservato?
 
-Il modo di rispondere è provarli tutti e tenere il migliore. Per ogni valore di $p$ si calcola quanto sarebbe probabile vedere proprio 7
-teste su 10. Il conto ha due pezzi. Il primo: una sequenza precisa, per dire
-TTTTTTTCCC, ha probabilità $p^7(1-p)^3$, cioè sette volte $p$ per tre volte
-$1-p$. Il secondo: di sequenze con sette teste ce ne sono $120$, tutte
-ugualmente probabili, quindi si moltiplica per $120$. Con $p=0{,}5$ viene $120 \cdot 0{,}5^{10} \approx 0{,}12$: possibile, non
-entusiasmante. Se fosse $p=0{,}6$ si salirebbe al $21\%$, con $p=0{,}7$ si
-arriverebbe al $27\%$, con $p=0{,}8$ si ridiscenderebbe al $20\%$. Il massimo
-cade a $0{,}7$, cioè esattamente sulla
-proporzione osservata, ed è questo che si intende quando si dice che $0{,}7$ è
-il valore «che rende l'osservazione più probabile».
+Il modo di rispondere è provarli tutti e tenere il migliore. Per ogni valore di
+$p$ si calcola quanto sarebbe probabile vedere proprio 7 teste su 10. Il conto
+ha due pezzi. Il primo: una sequenza precisa, per dire TTTTTTTCCC, ha
+probabilità $p^7(1-p)^3$, cioè sette volte $p$ per tre volte $1-p$. Il secondo:
+di sequenze con sette teste ce ne sono $120$, tutte ugualmente probabili,
+quindi si moltiplica per $120$. Con $p=0{,}5$ viene $120 \cdot 0{,}5^{10}
+\approx 0{,}12$, cioè il $12\%$: possibile, non entusiasmante. Se fosse
+$p=0{,}6$ si salirebbe al $21\%$, con $p=0{,}7$ si arriverebbe al $27\%$, con
+$p=0{,}8$ si ridiscenderebbe al $20\%$. Il massimo cade a $0{,}7$, cioè
+esattamente sulla proporzione osservata, ed è questo che si intende quando si
+dice che $0{,}7$ è il valore «che rende l'osservazione più probabile».
 
 Quel «quanto è probabile l'osservazione, se il parametro valesse così» ha un
 nome: si chiama **verosimiglianza**. La curva della figura è

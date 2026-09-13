@@ -19,8 +19,6 @@ sull'acquisizione del linguaggio, ha sentito e letto meno di 100 milioni di
 parole; GPT-3 in addestramento ne ha viste circa 300 miliardi contate in
 *token*, cioè nei pezzi in cui il testo viene spezzato, che per l'inglese
 corrispondono a poco più di 200 miliardi di parole: più di duemila volte tanto.
-Questa sezione racconta cosa succede quando la scommessa di Shannon viene
-giocata su quella scala, e con quali regole, trucchi e delusioni.
 
 Il terreno è già preparato. Nella sezione su GPT, BERT e T5 abbiamo visto il
 metodo di studio della famiglia GPT, quello dello studente che copre la pagina
@@ -28,15 +26,15 @@ con la mano e indovina la parola dopo (in gergo: un Transformer
 *decoder-only*, addestrato a predire il token successivo). E abbiamo visto che
 GPT-3, arrivato a quella scala, sapeva eseguire un compito nuovo solo perché
 glielo si descriveva a parole, magari con due o tre esempi svolti, senza
-toccare un solo numero interno: si chiama capacità *few-shot*. Qui apriamo il
-cofano: da dove vengono i dati, perché "più grande" funziona in modo così
-prevedibile da meritarsi delle *leggi*, come si sceglie concretamente la
-parola da scrivere, e quale accorgimento di ingegneria rende la generazione
-sostenibile. Tra il gioco di Shannon e GPT-3 c'è un gradino intermedio da
-nominare: GPT-2 {cite}`radford2019language`, 1,5 miliardi di parametri
-addestrati nel 2019 su pagine web segnalate dagli utenti di Reddit, il cui
-titolo era già un manifesto: *i modelli di linguaggio sono studenti multitask
-senza supervisione*.
+toccare un solo numero interno: si chiama capacità *few-shot*. Tra il gioco di
+Shannon e GPT-3 c'è un gradino intermedio da nominare: GPT-2
+{cite}`radford2019language`, 1,5 miliardi di parametri addestrati nel 2019 su
+pagine web segnalate dagli utenti di Reddit, il cui titolo era già un
+manifesto: *i modelli di linguaggio sono studenti multitask senza
+supervisione*. Qui apriamo il cofano: da dove vengono i dati, perché "più
+grande" funziona in modo così prevedibile da meritarsi delle *leggi*, come si
+sceglie concretamente la parola da scrivere, e quale accorgimento di
+ingegneria rende la generazione sostenibile.
 
 ## Una biblioteca sterminata: il pretraining su scala web
 
@@ -45,9 +43,9 @@ Il pre-addestramento, in inglese *pretraining*, è il primo di due tempi, e il
 mestiere. Qui parliamo del primo.
 
 Trecento miliardi di token non stanno in nessuna enciclopedia, e il grosso
-può venire solo dal web. Ma il web è una soffitta piena di tutto e non
-una biblioteca ordinata, dove i libri buoni stanno accanto allo spam, alle
-pagine duplicate e ai commenti scritti di fretta. Metà del lavoro di chi
+può venire solo dal web. Ma il web è una soffitta piena di tutto, più che una
+biblioteca ordinata: i libri buoni stanno accanto allo spam, alle pagine
+duplicate e ai commenti scritti di fretta. Metà del lavoro di chi
 costruisce un grande modello sta nel preparare la biblioteca, prima ancora di
 addestrarlo.
 
@@ -104,7 +102,7 @@ somma corre sugli $n$ token del corpus, che però è spezzato in sequenze
 indipendenti: il condizionamento si ferma alla finestra di contesto, e dentro
 ciascuna sequenza riparte da capo. Quando servirà la loss per token,
 cioè la stessa quantità divisa per $n$, la scriveremo $\bar{\mathcal{L}} =
-\mathcal{L}/n$: la distinzione sembra pedanteria e non lo è, perché più avanti
+\mathcal{L}/n$: la distinzione conta, perché più avanti
 la perplessità si calcola mettendo all'esponente proprio quella, e chi confonde
 le due sbaglia di un fattore $n$. È la stessa `nn.CrossEntropyLoss` dei
 capitoli precedenti, applicata a un problema di classificazione con decine di
@@ -259,8 +257,7 @@ si portano avanti in parallelo le $k$ continuazioni più promettenti, si vede
 come proseguono, e solo alla fine si tiene la migliore delle $k$ (è la *beam
 search*, «ricerca a fascio»). Piccola nota che vale per tutta la sezione:
 lettere come $k$, $n$, $T$, $p$ stanno per numeri che sceglie chi usa il
-modello, non per costanti di natura; sono manopole, e il libro dice ogni volta
-a che cosa servono.
+modello, non per costanti di natura: sono manopole.
 
 Per la traduzione questi due modi funzionano; per la generazione libera
 (scrivere un racconto, rispondere a una domanda aperta) falliscono in un modo
@@ -288,7 +285,7 @@ fondo e ricomincia da capo.
 
 Nella {numref}`fig-generazione-autoregressiva` la scelta cade ogni volta sul
 candidato più probabile: è la decodifica *greedy*, quella che produce i loop
-di cui sopra. Le manopole che seguono servono esattamente a non far vincere
+appena descritti. Le manopole che seguono servono esattamente a non far vincere
 sempre la barra più lunga.
 
 `````{tab} Elementare
@@ -494,8 +491,8 @@ dopo, su un web che contiene testi e i loro riassunti.
 L'osservazione di {numref}`fig-gpt2-multitask` precede GPT-3 e ne spiega la
 premessa. Se il corpus è abbastanza vasto, contiene già esempi impliciti di
 quasi ogni compito linguistico, e un modello che lo prevede bene ha dovuto,
-per forza, imparare a farli. Conviene soffermarsi su quanto è strano. Per
-tutto il libro, "adattare un modello" ha significato addestrarlo, cioè
+per forza, imparare a farli. Conviene soffermarsi su quanto è strano. Fin
+qui, "adattare un modello" ha significato addestrarlo, cioè
 mostrargli esempi, misurare quanto sbaglia e spostargli i numeri interni
 un'inezia alla volta, per giorni. Qui no: il compito viene *descritto in
 italiano* (o in inglese), e il modello, completando il testo nel modo più
@@ -553,7 +550,7 @@ In formula, con la stessa definizione della
 e di quella {doc}`sui modelli n-gram
 </NaturalLanguageProcessing/modelli-ngram>`, la perplessità è $2^H$, dove $H$
 è la cross-entropia media per token
-espressa in bit. La parola «bit» non è un vezzo, ed è il punto in cui si
+espressa in bit. La parola «bit» è il punto in cui si
 sbaglia: la cross-entropia del pretraining si scrive col logaritmo naturale,
 quindi la loss per token $\bar{\mathcal{L}}$ è in *nat* e non in bit.
 Per passare dagli uni agli altri si moltiplica per $\log_2 e = 1{,}4427$, cioè
@@ -590,7 +587,7 @@ dati. Ed è per questo che è difficile da escludere: per dimostrare che una
 domanda *non* è nel corpus bisognerebbe poterlo ispezionare tutto, e chi
 pubblica un punteggio quasi mai pubblica anche i dati. Se il modello ha
 studiato l'intero web, è probabile che abbia già *visto* le domande del test,
-che quindi misura la memoria, non la competenza. Non è un rischio teorico: gli
+che quindi misura la memoria, non la competenza. Il rischio è concreto: gli
 stessi autori di GPT-3 dedicano al
 problema un'analisi accurata, e ammettono che, per un bug nella procedura di
 pulizia, parte delle sovrapposizioni tra corpus e benchmark non era stata
@@ -620,8 +617,8 @@ non diventa esatta.
 ```
 
 I due grafici di {numref}`fig-capacita-emergenti` sono lo stesso modello,
-misurato in due modi diversi, e la differenza fra loro è tutto quello che
-questa sezione ha da dire.
+misurato in due modi diversi, e la differenza fra loro è il cuore della
+questione.
 
 `````{tab} Elementare
 
@@ -723,7 +720,7 @@ for T in (0.5, 1.0, 2.0):
 ```
 
 E un mini-ciclo di generazione, con un "modello" giocattolo al posto di un
-vero Transformer, la struttura del loop è identica a quella reale:
+vero Transformer: la struttura del loop è identica a quella reale.
 
 ```python
 torch.manual_seed(0)

@@ -26,8 +26,7 @@ print(x.dtype)    # torch.float32                   -> il tipo
 print(x.device)   # cpu                             -> dove abita
 ```
 
-Questa terna è la prima cosa da stampare quando qualcosa non va, ed è anche
-l'indice di quello che segue: una per una, forma, tipo e dispositivo.
+Questa terna è la prima cosa da stampare quando qualcosa non va.
 
 ## 1. La forma non torna
 
@@ -127,10 +126,11 @@ definitivo, meglio fissare il numero.
 *batch-first* $(B, \dots)$, con un'eccezione che costa cara perché non solleva
 niente: `nn.RNN`, `nn.LSTM`, `nn.GRU` e `nn.MultiheadAttention` hanno
 `batch_first=False` di default, cioè si aspettano $(L, B, \dots)$.
-In inferenza su un singolo esempio si aggiunge con
-`unsqueeze(0)`. Attenzione all'inverso: `squeeze()` senza argomento elimina
-tutte le dimensioni unitarie, e su un batch da un elemento cancella anche
-quella del batch; si passi sempre `dim` esplicito.
+In inferenza su un singolo esempio la dimensione di batch si aggiunge con
+`unsqueeze(0)`, e in quei quattro moduli con `unsqueeze(1)`. Attenzione
+all'inverso: `squeeze()` senza argomento elimina tutte le dimensioni unitarie,
+e su un batch da un elemento cancella anche quella del batch; si passi sempre
+`dim` esplicito.
 
 Lo strumento di diagnosi è `torchinfo`:
 `summary(modello, input_size=(32, 3, 224, 224))` stampa la forma in ingresso e
@@ -151,11 +151,10 @@ tensore è scritto: interi (il $3$) oppure decimali (il $3{,}0$). Quando somma
 o moltiplica due tensori numero per numero, PyTorch li porta da sé a un tipo
 comune che li contenga tutti e due, che non è sempre il tipo di uno dei due
 (`int8` con `uint8` dà `int16`); ma nel prodotto fra matrici e dentro gli
-strati `nn` (i casi dei due messaggi qui sopra) il tipo se lo aspetta preciso,
+strati `nn` (i casi dei due messaggi) il tipo se lo aspetta preciso,
 e preferisce fermarsi piuttosto che indovinare quale volevamo.
 
-I due messaggi vanno letti in modi diversi, e conviene saperlo perché è proprio
-la varietà delle formulazioni a disorientare. Nel primo i due tipi sono i
+I due messaggi vanno letti in modi diversi. Nel primo i due tipi sono i
 due operandi, il tensore che abbiamo passato e i pesi del modello,
 nell'ordine, e non "atteso" e "trovato". `Byte` è il nome interno di `uint8`,
 il tipo di un'immagine appena letta da un file, e `Float` è il tipo dei pesi:
@@ -288,7 +287,7 @@ modello sta di là, anche senza scrivere nient'altro. `X.to(device)` invece
 non tocca `X`: fabbrica una copia di `X` che sta di là e la restituisce (a
 meno che `X` non sia già di là, e allora restituisce proprio `X`), e
 se quella copia non la si mette da nessuna parte va persa. Ecco perché nel
-codice sopra c'è `X = X.to(device)` e non `X.to(device)` e basta: la seconda
+codice c'è `X = X.to(device)` e non `X.to(device)` e basta: la seconda
 forma è una riga che sembra funzionare e non fa nulla, e non dà nessun errore
 finché il tensore non arriva al modello.
 
@@ -347,7 +346,7 @@ stacca dal grafo, `cpu` fa il trasloco, `numpy` converte.
 
 ## Un metodo, non un rimedio
 
-I tre errori sopra si risolvono in trenta secondi *se* si legge il messaggio.
+I tre errori si risolvono in trenta secondi *se* si legge il messaggio.
 Conviene rendere esplicito il metodo con cui li si risolve, perché quello
 funziona anche sugli errori che nessun elenco contiene, compresi quelli che
 nasceranno il mese prossimo.
@@ -371,8 +370,8 @@ nasceranno il mese prossimo.
 ## Gli altri classici
 
 I tre grandi errori si annunciano con un messaggio. I prossimi sono peggiori,
-perché non danno nessun errore: il codice gira, la loss scende poco o non
-scende affatto, e non c'è niente di rosso da leggere.
+perché non danno nessun errore: il codice gira, le curve della loss dicono poco
+o dicono il falso, e non c'è niente di rosso da leggere.
 
 ```{figure} ../figures/overfitting-memoria.svg
 :name: fig-curva-nervosa
@@ -383,8 +382,8 @@ La curva che passa per tutti i punti non ha capito meglio: ha memorizzato. Sul
 training set il suo errore è zero, ed è proprio questo a doverci insospettire.
 ```
 
-{numref}`fig-curva-nervosa` mostra da vicino l'errore silenzioso più comune di
-tutti, e ne mostra la causa più che il sintomo: una curva che passa per ogni
+{numref}`fig-curva-nervosa` ritrae l'errore silenzioso più comune di tutti, e
+ne fa vedere la causa più che il sintomo: una curva che passa per ogni
 punto invece di seguire la tendenza. Il sintomo, sulle due loss, è che quella di
 addestramento scende benissimo mentre quella di validazione risale. Il
 codice funziona, non c'è niente da correggere in PyTorch, e proprio per questo
@@ -396,7 +395,7 @@ rimedio, è la {doc}`sezione su quando fermarsi </PyTorch/addestramento>`.
   sommano invece di sostituirsi, e al giro numero $t$ la correzione che il
   modello applica è la somma di tutte quelle dei $t$ giri fatti fino a lì, e non
   quella dell'ultimo errore, cioè grosso modo $t$ volte la correzione media. La
-  parte interessante è che cosa si vede dipende dall'ottimizzatore, e non
+  parte interessante è che ciò che si vede dipende dall'ottimizzatore, e non
   nel verso che ci si aspetta. Con SGD il passo cresce insieme alla somma:
   con un learning rate piccolo la loss resta perfino *migliore* di quella del
   ciclo corretto per tutta la corsa ($0{,}043$ contro $0{,}690$ in una misura

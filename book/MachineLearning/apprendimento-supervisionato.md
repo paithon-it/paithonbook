@@ -5,7 +5,7 @@ spiega nessuna formula: ti mostra centinaia di case già vendute (metri quadri,
 numero di stanze, quartiere) e accanto a ciascuna il prezzo finale. Dopo un
 po’, davanti a un appartamento mai visto, sai già sparare una cifra
 ragionevole. Hai imparato dagli esempi etichettati. È, in una frase, ciò
-che fa l'apprendimento supervisionato: mostragli abbastanza coppie
+che fa l'apprendimento supervisionato: mostra a un modello abbastanza coppie
 *domanda–risposta* e imparerà a rispondere da solo.
 
 ## Imparare una funzione dagli esempi
@@ -34,7 +34,7 @@ che ciascuna ammette. Confonderle è
 l'errore che porta un modello a calcolare la media fra «Milano» e «Roma».
 ```
 
-Decidere di quale dei tre tipi è ciascuna colonna, come in
+Stabilire di quale dei tre tipi sia ciascuna colonna, come in
 {numref}`fig-tipi-di-feature`, è la prima decisione di ogni progetto, e non la
 prende il modello: la
 prende chi prepara i dati. Se al quartiere «Milano» assegniamo il numero 1 e a
@@ -141,7 +141,8 @@ classificazione.
 Ciò che cambia tutto è il *tipo* di risposta. "Quanto costa questa casa?"
 chiede un numero su una scala continua: è **regressione**. "Questa email è
 spam, sì o no?" chiede un'etichetta da un insieme finito: è
-**classificazione**. Stesso impianto, imparare $f$ da coppie
+**classificazione**, e le etichette possibili si chiamano **classi** (spam e non
+spam sono due classi). Stesso impianto, imparare $f$ da coppie
 $(\mathbf{x}, y)$, due
 geometrie diverse, come mostra {numref}`fig-regr-classif`: a sinistra
 cerchiamo una linea che *segua* i punti, a destra una linea che li *separi*.
@@ -225,8 +226,9 @@ piede, qui, si risparmia: l'errore è scritto in una formula, e da una formula
 la pendenza si calcola stando fermi, come l'inclinazione di una rampa dalle
 sue misure. La direzione di massima discesa si chiama gradiente, e la
 camminata che ripete il passo discesa del gradiente. La lunghezza del
-passo la decidiamo noi, e cambia tutto, perché una corta ci mette un'eternità
-e una lunga scavalca il fondovalle e rimbalza da un fianco all'altro. Si
+passo la decidiamo noi, e cambia tutto, perché a passi corti ci si mette
+un'eternità e a passi lunghi si scavalca il fondovalle e si rimbalza da un
+fianco all'altro. Si
 chiama learning rate (il *tasso di apprendimento*), e a come si sceglie è
 dedicata una sezione intera.
 
@@ -375,14 +377,13 @@ zero e uno, e la decisione arriva dopo, quando si sceglie dove tagliare.
 ```
 
 I due gesti che {numref}`fig-sigmoide-soglia` tiene separati (produrre un
-numero, e poi decidere) contano più di quanto sembri, e torneranno nella
-sezione sulle metriche. Il punto in cui si taglia si chiama **soglia**, e
-quel $0{,}5$ è una convenzione, non un risultato: possiamo spostarlo.
-Abbassandolo si segnalano più email come spam, quindi meno spam passa ma più
-messaggi buoni finiscono nel cestino; alzandolo succede l'opposto. Nessuno dei
-due errori sparisce, si scambiano l'uno con l'altro. La cosa notevole è che
-per farlo non serve riaddestrare niente: il modello resta quello, cambia solo
-dove mettiamo il taglio.
+numero, e poi decidere) torneranno nella sezione sulle metriche. Il punto in
+cui si taglia si chiama **soglia**, e quel $0{,}5$ è una convenzione, non un
+risultato: possiamo spostarlo. Abbassandolo si segnalano più email come spam,
+quindi meno spam passa ma più messaggi buoni finiscono nel cestino; alzandolo
+succede l'opposto. Nessuno dei due errori sparisce, si scambiano l'uno con
+l'altro. La cosa notevole è che per farlo non serve riaddestrare niente: il
+modello resta quello, cambia solo dove mettiamo il taglio.
 
 C'è poi una cosa da sapere prima di scrivere la prima riga di codice, perché è
 una piccola sorpresa.
@@ -457,8 +458,8 @@ tipico fosse lo stesso dappertutto.
 La riparazione non butta via niente di quello che si è imparato: tiene il
 punteggio lineare, cambia il modo di leggerlo, e cambia la regola con cui si
 misura lo scarto. Fatto per la terza volta, il gesto si riconosce come uno
-solo, e il suo nome è **modelli lineari generalizzati**, che gliel'hanno dato
-John Nelder e Robert Wedderburn nel 1972 {cite}`nelder1972generalized`.
+solo, e ha un nome, **modelli lineari generalizzati**, che gli hanno dato John
+Nelder e Robert Wedderburn nel 1972 {cite}`nelder1972generalized`.
 {numref}`fig-tre-letture` mette i tre casi uno accanto all'altro.
 
 ```{figure} ../figures/un-punteggio-tre-letture.svg
@@ -505,7 +506,7 @@ finestre non sono tutte uguali, la durata entra nel conto come un ingrediente
 con il peso già deciso e non da imparare, e quello che il modello stima diventa
 il ritmo, cioè i clienti per ora.
 
-Resta il terzo pezzo, quello sull'irregolarità, e cambia la terza cosa: la
+Resta la terza mossa, che riguarda quanto oscillano i conteggi: cambia la
 regola con cui si misura lo scarto. Un conteggio non si sparpaglia come un
 prezzo. Se in media entrano due clienti l'ora, i giorni oscillano fra zero e
 cinque; se ne entrano cento, oscillano fra ottanta e centoventi. In proporzione
@@ -751,9 +752,7 @@ accidente invece che regola. L'errore di chi ha misurato, la casa venduta a
 poco perché il proprietario aveva fretta, la giornata storta: cose che sono
 successe davvero e che non si ripeteranno. Con $k$ pari al numero di esempi,
 all'estremo opposto, votano tutti e il modello risponde sempre la stessa cosa,
-cioè la **classe** più frequente (d'ora in avanti «classe» è il nome tecnico
-di quelle che finora abbiamo chiamato categorie: spam e non spam sono due
-classi).
+cioè la classe più frequente.
 
 `````{tab} Elementare
 

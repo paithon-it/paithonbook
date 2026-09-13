@@ -202,9 +202,9 @@ M[0]        # prima riga intera -> array([0, 1, 2, 3])
 
 Tre convenzioni, in tre righe. Si conta da zero, quindi l'indice `1` è il
 secondo elemento e `M[1, 2]` sta nella seconda riga, terza colonna. Un indice
-negativo conta dalla fine, e `x[-1]` è l'ultimo qualunque sia la lunghezza.
-E in una *slice* il secondo estremo è escluso, `x[1:4]` dà tre elementi:
-vale la stessa regola delle liste, e per la stessa ragione.
+negativo conta dalla fine, e `x[-1]` è l'ultimo qualunque sia la lunghezza. E
+in una *slice* il secondo estremo è escluso (`x[1:4]` dà tre elementi): vale la
+stessa regola delle liste, e per la stessa ragione.
 
 Sulla forma di ciò che viene stampato: `np.int64(10)` non è un numero
 strano, è il modo in cui NumPy 2 *mostra* un suo numero intero quando lo si
@@ -502,7 +502,7 @@ modello, sotto, fa milioni di volte.
   ciclo sparisce.
 - Il segno `@` fa i prodotti fra vettori e matrici e `np.linalg` raccoglie il
   resto dell'algebra lineare: qui basta sapere che esistono e che ognuno di
-  quei conti è una riga sola, il significato arriva con la
+  quei conti è una riga sola; il significato arriva con la
   {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`.
 ```
 

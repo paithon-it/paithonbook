@@ -81,16 +81,15 @@ l'unica che abbiamo finché non mettiamo le mani dentro al modello.
 
 Da qui una tesi semplice da enunciare e ricca di conseguenze. Con un LLM già
 addestrato, cioè uno di quelli che si trovano pronti e che sanno già leggere e
-scrivere, noi non programmiamo più toccando i pesi: quelli sono congelati,
-li ha fissati l'addestramento. «Congelati» non vuol dire immutabili per
-sempre: riaprirli e proseguire l'addestramento sui propri dati si può, si
-chiama fine-tuning, e fra poco vedremo perché è la più cara da mettere in
-piedi fra le strade
-che abbiamo. Vuol dire che nel modo di lavorare di cui parla questo capitolo
-restano fermi. Programmiamo con le
-parole, cioè con il testo che gli mettiamo davanti prima di chiedergli una
-risposta. Cambiare quel testo cambia il comportamento del sistema tanto
-quanto, nel software tradizionale, cambierebbe riscrivere una funzione.
+scrivere, noi non programmiamo più toccando i pesi: quelli sono congelati, li
+ha fissati l'addestramento. «Congelati» non vuol dire immutabili per sempre:
+riaprirli e proseguire l'addestramento sui propri dati si può, si chiama
+fine-tuning, e fra poco vedremo perché è la più cara da mettere in piedi fra le
+strade che abbiamo. Qui vuol dire che nel modo di lavorare di cui parla questo
+capitolo restano fermi. Programmiamo con le parole, cioè con il testo che gli
+mettiamo davanti prima di chiedergli una risposta. Cambiare quel testo cambia
+il comportamento del sistema tanto quanto, nel software tradizionale,
+cambierebbe riscrivere una funzione.
 
 `````{tab} Elementare
 
@@ -130,13 +129,13 @@ dove $P_{\theta}$ è la distribuzione condizionata calcolata dal modello
 congelato, $C$ è tutto il testo che gli forniamo (istruzioni, esempi,
 documenti, cronologia) e $\hat{y}$ la risposta, *campionata* da quella
 distribuzione, eventualmente riscalata e troncata dai parametri di decoding
-(temperatura, top_p) che vedremo nella sezione sul prompt: a temperatura non
-nulla, lo stesso $C$ può dare risposte diverse (e non solo a temperatura non
-nulla, come vedremo lì). Programmare significa progettare $C$. Il meccanismo
-che rende possibile tutto questo è l’**in-context learning**, documentato su
-larga scala da Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`:
-bastano poche coppie richiesta → risposta nel contesto (il *few-shot*), perché
-il modello esegua un compito nuovo *senza alcun aggiornamento dei pesi*. Gli
+(temperatura, top_p) che vedremo nella sezione sul prompt: lo stesso $C$ può
+dare risposte diverse a temperatura non nulla e, come vedremo lì, perfino a
+temperatura zero. Programmare significa progettare $C$. Il meccanismo che rende
+possibile tutto questo è l’**in-context learning**, documentato su larga scala
+da Brown e colleghi nel lavoro su GPT-3 {cite}`brown2020language`: bastano
+poche coppie richiesta → risposta nel contesto (il *few-shot*), perché il
+modello esegua un compito nuovo *senza alcun aggiornamento dei pesi*. Gli
 esempi non addestrano: condizionano. La scoperta è raccontata nella
 {doc}`sezione sui grandi modelli linguistici </Transformers/llm>` e ne abbiamo
 scritto la forma probabilistica nel {doc}`context engineering degli agenti
@@ -148,13 +147,14 @@ avviene nel testo.
 Detto così, sembra che il tutto si riduca a scrivere una buona frase. È
 l'equivoco da cui bisogna liberarsi subito, ed è la ragione per cui la
 terminologia è cambiata. Fra noi e il modello, in un'applicazione vera, c'è
-sempre un programma: il sito, l'assistente, le righe di codice che
-raccolgono la nostra richiesta e la spediscono. Il testo che arriva al modello
-lo scrive quel programma, ed è un carico fatto di parti con ruoli diversi e non
-una frase, montate poco prima di partire. In gergo il carico che il programma
-spedisce si chiama **payload**, e il contesto ne è la parte testuale: dentro ci
-stanno anche le manopole della chiamata. E il carico va costruito, misurato e
-ricostruito a ogni passo. Da qui i tre livelli del capitolo.
+sempre un programma: il sito, l'assistente, le righe di codice che raccolgono la
+nostra richiesta e la spediscono. Il testo che arriva al modello lo scrive quel
+programma, ed è un carico fatto di parti con ruoli diversi, montate poco prima
+di partire, e non una frase. In gergo il carico che il programma spedisce si
+chiama **payload**: dentro ci stanno anche le manopole della chiamata (per
+esempio quanto può essere lunga la risposta), e il contesto ne è la parte
+testuale. E il carico va costruito, misurato e ricostruito a ogni passo. Da qui
+i tre livelli del capitolo.
 
 ## Tre cerchi concentrici
 
@@ -317,23 +317,23 @@ funziona sempre ti sta vendendo qualcosa.
 
 `````{tab} Superiore
 
-Tre proprietà rendono l'attività ingegneristica e non magica. Primo, i
-vincoli sono reali e quantificabili: la finestra ha un tetto di token, e ogni
-token pesa su latenza, memoria (la KV cache vista nel capitolo sui Transformer)
-e denaro, e del costo per token si occupa la {doc}`sezione su LLMOps
+Tre proprietà rendono l'attività ingegneristica e non magica. Primo, i vincoli
+sono reali e quantificabili: la finestra ha un tetto di token, e ogni token
+pesa su latenza, memoria (la KV cache vista nel capitolo sui Transformer) e
+denaro, e del costo per token si occupa la {doc}`sezione su LLMOps
 </MLOps/llmops>`. Non si ottimizza «la qualità» in astratto ma la qualità
-*sotto vincolo di budget*. Secondo, si misura: una versione del prompt o
-della politica di contesto si valuta su una batteria di casi e si confronta
-sugli stessi casi con la precedente prima di sostituirla, senza misura non c'è
-miglioramento, solo opinioni. Terzo, si versiona: come abbiamo anticipato
-nel capitolo sugli agenti, *il prompt è codice*, va messo sotto controllo di
+*sotto vincolo di budget*. Secondo, si misura: una versione del prompt o della
+politica di contesto si valuta su una batteria di casi e si confronta sugli
+stessi casi con la precedente prima di sostituirla; senza misura non c'è
+miglioramento, solo opinioni. Terzo, si versiona: come abbiamo anticipato nel
+capitolo sugli agenti, *il prompt è codice*, va messo sotto controllo di
 versione e trattato come un artefatto del software, tema che ritroveremo in
 MLOps. Con una avvertenza di onestà intellettuale: è un'ingegneria giovane,
 fatta oggi più di euristiche, cioè di regole pratiche che spesso funzionano e
-ogni tanto no, che di garanzie. La terminologia stessa è in
-assestamento, per un buon tratto si è chiamato tutto «prompt engineering»,
-finché non si è capito che il problema vero stava un cerchio più in fuori. Chi
-promette leggi certe, in questo campo, sta vendendo qualcosa.
+ogni tanto no, che di garanzie. La terminologia stessa è in assestamento: per
+un buon tratto si è chiamato tutto «prompt engineering», finché non si è capito
+che il problema vero stava un cerchio più in fuori. Chi promette leggi certe,
+in questo campo, sta vendendo qualcosa.
 
 `````
 
@@ -351,12 +351,11 @@ Il capitolo segue i tre cerchi, dal centro verso l'esterno. Del primo restano
 da vedere le fragilità, e il modo di chiedere esplicitamente il ragionamento
 passo passo, la *chain-of-thought* {cite}`wei2022chain`. Del secondo il
 capitolo sugli agenti ha già smontato la meccanica (come si sceglie cosa
-mettere in uno spazio che non basta per tutto, perché un testo lungo si fa
-trascurare proprio nel mezzo, dove si tengono i ricordi che nella finestra
-non stanno): qui lo riprendiamo dal lato del progetto, e quella costruzione
-non la rifacciamo. Il terzo è il più esterno e il più difficile, ed è quello
-che separa un modello che risponde da un sistema che porta a termine un
-compito.
+mettere in uno spazio che non basta per tutto; perché un testo lungo si fa
+trascurare proprio nel mezzo; dove si tengono i ricordi che nella finestra non
+stanno): qui lo riprendiamo dal lato del progetto, e quella costruzione non la
+rifacciamo. Il terzo è il più esterno e il più difficile, ed è quello che
+separa un modello che risponde da un sistema che porta a termine un compito.
 
 `````{tab} Elementare
 

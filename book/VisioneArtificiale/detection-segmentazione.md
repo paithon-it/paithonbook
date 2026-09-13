@@ -61,18 +61,18 @@ quasi sempre ragione.
 
 `````{tab} Superiore
 
-Per ogni oggetto la rete predice un vettore
-$(x, y, w, h, c, p_{\text{obj}})$: le coordinate del centro e le dimensioni del
-riquadro, la classe $c$ e una confidenza $p_{\text{obj}} \in [0,1]$ che stima
-se nel riquadro c'è davvero un oggetto. L'addestramento minimizza una loss
-composita che somma un
-termine di localizzazione (errore sulle coordinate, tipicamente
-*smooth L1* o una IoU-loss), un termine di classificazione (cross-entropy
-sulla classe) e un termine di **objectness** che supervisiona la confidenza,
-spingendola verso l'alto dove un oggetto c'è e verso zero sullo sfondo (in
-YOLOv1, e ancora in YOLOv2, il bersaglio non è uno ma la IoU stessa fra
-riquadro predetto e riquadro vero, così che il punteggio incorpori già la
-qualità della localizzazione; da YOLOv3 in poi, semplicemente uno):
+Per ogni oggetto la rete predice un vettore $(x, y, w, h, c, p_{\text{obj}})$:
+le coordinate del centro e le dimensioni del riquadro, la classe $c$ e una
+confidenza $p_{\text{obj}} \in [0,1]$ che stima se nel riquadro c'è davvero un
+oggetto. L'addestramento minimizza una loss composita che somma un termine di
+localizzazione (errore sulle coordinate, tipicamente *smooth L1* o una
+IoU-loss), un termine di classificazione (cross-entropy sulla classe) e un
+termine di **objectness** che supervisiona la confidenza, spingendola verso
+l'alto dove un oggetto c'è e verso zero sullo sfondo (in YOLOv1, e ancora in
+YOLOv2, il bersaglio non è uno ma la IoU stessa fra riquadro predetto e
+riquadro vero, cioè l'area in comune divisa per quella coperta in tutto, così
+che il punteggio incorpori già la qualità della localizzazione; da YOLOv3 in
+poi, semplicemente uno):
 
 $$
 \mathcal{L} = \mathcal{L}_{\text{obj}} + \mathcal{L}_{\text{cls}} + \lambda \,\mathcal{L}_{\text{box}} .
@@ -232,21 +232,20 @@ $$
 dove $(x_a, y_a, w_a, h_a)$ sono centro e dimensioni dell'ancora e $(x, y, w,
 h)$ quelli del riquadro da raggiungere; in addestramento ogni oggetto è
 assegnato alle ancore che meglio lo ricoprono (la sovrapposizione si misura con
-la IoU, l'area in comune divisa per quella coperta in tutto). Quel confronto
-appartiene al solo addestramento, quando i riquadri veri ci sono: le ancore che
-ricoprono bene un oggetto diventano positive e imparano classe e offset verso
-di lui, le altre fanno da sfondo. In inferenza non c'è nessun riquadro vero da
-ricoprire: la rete produce punteggi e offset per tutte le ancore, ogni ancora
-corretta diventa un candidato, e la IoU ricompare solo alla fine, misurata fra
-i candidati stessi, per sfoltire i doppioni sullo stesso oggetto. È il
-meccanismo della *Region Proposal Network* di Faster R-CNN
-{cite}`ren2015faster`, che usa $k=9$ ancore per posizione (3 scale × 3
-proporzioni), e di SSD {cite}`liu2016ssd`, che le chiama *default boxes* e le
-distribuisce su mappe di feature a più risoluzioni, per coprire oggetti piccoli
-e grandi. Esistono anche rilevatori *anchor-free*, che predicono direttamente
-centri e distanze dai bordi senza riquadri di partenza; ma le ancore restano il
-modo più chiaro per capire come una griglia fissa possa produrre riquadri di
-ogni forma.
+la IoU). Quel confronto appartiene al solo addestramento, quando i riquadri
+veri ci sono: le ancore che ricoprono bene un oggetto diventano positive e
+imparano classe e offset verso di lui, le altre fanno da sfondo. In inferenza
+non c'è nessun riquadro vero da ricoprire: la rete produce punteggi e offset
+per tutte le ancore, ogni ancora corretta diventa un candidato, e la IoU
+ricompare solo alla fine, misurata fra i candidati stessi, per sfoltire i
+doppioni sullo stesso oggetto. È il meccanismo della *Region Proposal Network*
+di Faster R-CNN {cite}`ren2015faster`, che usa $k=9$ ancore per posizione (3
+scale × 3 proporzioni), e di SSD {cite}`liu2016ssd`, che le chiama *default
+boxes* e le distribuisce su mappe di feature a più risoluzioni, per coprire
+oggetti piccoli e grandi. Esistono anche rilevatori *anchor-free*, che
+predicono direttamente centri e distanze dai bordi senza riquadri di partenza;
+ma le ancore restano il modo più chiaro per capire come una griglia fissa possa
+produrre riquadri di ogni forma.
 
 `````
 

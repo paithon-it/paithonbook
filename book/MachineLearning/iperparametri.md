@@ -11,7 +11,7 @@ e portò tre esempi. Uno era un problemino minuscolo su cui la discesa del
 gradiente si pianta: non perché sia arrivata in fondo alla discesa, ma pur
 avendo ancora sotto i piedi un terreno in pendenza. Un altro era un
 ingrediente che a quel tempo tutti mettevano nelle reti (si chiama *batch
-normalization*, e il libro la incontrerà più avanti) di cui, a suo dire, «come
+normalization*, e la si incontrerà più avanti) di cui, a suo dire, «come
 disciplina non sappiamo quasi niente». Il terzo era la storia di un sistema
 che si era rotto senza che nessuno capisse perché: qualcuno aveva cambiato il
 modo di arrotondare i numeri dentro una libreria, e l'errore era passato da
@@ -26,13 +26,13 @@ tramandate di laboratorio in laboratorio, dosi aggiustate a occhio, risultati
 che arrivano senza che nessuno sappia spiegare fino in fondo perché.
 
 Un iperparametro è una scelta che facciamo noi prima di cominciare e che
-l'addestramento non cambia. Sono le manopole del modello, e nessun
-addestramento le gira da solo. Qualche esempio già incontrato: quanto è lungo
-il passo della discesa del gradiente (il *learning rate* della sezione
-sull'apprendimento supervisionato) e quanto è tirato il freno alla
-memorizzazione (la $\lambda$, la lettera greca *lambda*, della sezione sulla
-regolarizzazione). Qualche esempio che incontreremo: quante domande di fila può
-fare un albero di decisione, quanti strati ha una rete.
+l'addestramento non cambia: sono le manopole del modello. Qualche esempio già
+incontrato: quanto è lungo il passo della discesa del gradiente (il *learning
+rate* della sezione sull'apprendimento supervisionato) e quanto è tirato il
+freno alla memorizzazione (la $\lambda$, la lettera greca *lambda*, della
+regolarizzazione vista insieme all'overfitting). Qualche esempio che
+incontreremo: quante domande di fila può fare un albero di decisione, quanti
+strati ha una rete.
 
 Non vanno confusi con i parametri: quelli sono i numeri interni che
 l'addestramento aggiusta da sé, girando finché il modello sbaglia il meno
@@ -323,9 +323,9 @@ come un problema di apprendimento a sua volta: impara a prevedere *quale
 punteggio darà una combinazione di manopole prima di provarla*, e usa quella
 previsione per decidere dove provare. Si finisce così con due modelli in
 scena, uno dentro l'altro: quello che vogliamo addestrare, e questo secondo che
-studia il primo dall'esterno. Il nome «bayesiana» viene dal modo in cui il
-secondo aggiorna le sue convinzioni ogni volta che arriva una prova nuova, e
-porta il nome del reverendo Thomas Bayes.
+studia il primo dall'esterno. Il nome «bayesiana», dal reverendo Thomas Bayes,
+viene dal modo in cui il secondo aggiorna le sue convinzioni ogni volta che
+arriva una prova nuova.
 
 `````{tab} Elementare
 
@@ -459,13 +459,13 @@ caso: 0.9889 ± 0.0051
 0.9888888888888889
 ```
 
-Qui la griglia vince: $0{,}9896$ con ottanta addestramenti contro $0{,}9889$
-con cento. Lo scarto fra i due punteggi è di sette decimillesimi, meno di
-quanto ciascuno dei due balli passando da un blocco di dati all'altro, ed è
-per questo che il blocco stampa anche quel ballo: senza, un pareggio si legge
-come una vittoria. Ed è il pareggio che ci si deve aspettare: il sorteggio
-guadagna dove le manopole sono tante e quasi tutte ininfluenti, e qui sono
-due, e contano tutte e due.
+Qui la griglia vince, ma di poco: $0{,}9896$ con ottanta addestramenti
+contro $0{,}9889$ con cento. Lo scarto fra i due punteggi è di sette
+decimillesimi, meno di quanto ciascuno dei due balli passando da un blocco di
+dati all'altro, ed è per questo che il blocco stampa anche quel ballo: senza,
+un pareggio si legge come una vittoria. Ed è il pareggio che ci si deve
+aspettare: il sorteggio guadagna dove le manopole sono tante e quasi tutte
+ininfluenti, e qui sono due, e contano tutte e due.
 
 Il trucco di `loguniform` merita una riga, perché tornerà ogni volta che si
 sceglie un learning rate: si sorteggia l'esponente, non il valore. Invece
@@ -520,15 +520,15 @@ si consuma: proprio come il test set che avevamo giurato di non sbirciare. Il
 rimedio è lo stesso di sempre: il numero da raccontare al mondo si misura una
 sola volta, alla fine, sul test rimasto intatto.
 
-Due mosse costano poco. Una è raccontare, accanto al punteggio della
+Due mosse aiutano. Una costa poco, ed è raccontare, accanto al punteggio della
 vincitrice, quanto quel punteggio cambia da un blocco all'altro dei cinque: un
 primo posto vinto per un soffio, con cinque numeri molto diversi fra loro, è un
-primo posto di rumore. L'altra serve quando il giudizio riguarda il modo
-di scegliere e non la singola configurazione: la ricerca si rifà da capo cinque
-volte, su cinque spezzoni diversi di dati, e ogni vincitrice viene misurata
-sullo spezzone che la sua ricerca non ha mai visto. Cinque giri esterni, con
-cinque prove ciascuno, fanno venticinque addestramenti dove prima ne bastavano
-cinque, e sconti non ce ne sono.
+primo posto di rumore. L'altra costa di più, e serve quando il giudizio
+riguarda il modo di scegliere e non la singola configurazione: la ricerca si
+rifà da capo cinque volte, su cinque spezzoni diversi di dati, e ogni
+vincitrice viene misurata sullo spezzone che la sua ricerca non ha mai visto.
+Cinque giri esterni, con cinque prove ciascuno, fanno venticinque addestramenti
+dove prima ne bastavano cinque, e sconti non ce ne sono.
 
 `````
 

@@ -1,6 +1,6 @@
 # Reinforcement learning basato su modello
 
-La prima volta che ti siedi a un tavolo davanti a un gioco da tavolo nuovo,
+La prima volta che ti siedi davanti a un gioco da tavolo nuovo,
 dopo un paio di mani hai già smesso di muovere a caso. Non perché tu abbia
 giocato migliaia di partite: ne bastano due o tre perché la testa cominci a
 fare da sola una cosa preziosa (*provare le mosse prima di farle*). «Se scarto
@@ -11,8 +11,8 @@ oggi imbarazzante, fra un essere umano e un agente come il
 dei mattoncini da abbattere con una pallina), all'agente servono decine di
 milioni di fotogrammi.
 La parola tecnica per questa distanza è **sample efficiency**, l'efficienza nei
-campioni (quanta esperienza serve per imparare) ed è il problema che questa
-sezione affronta di petto.
+campioni (quanta esperienza serve per imparare) ed è il problema che il
+reinforcement learning basato su modello affronta di petto.
 
 Tutti gli algoritmi visti finora (Q-learning, DQN, i metodi a gradiente di
 policy) condividono una scelta implicita: imparano *provando per davvero*.
@@ -159,9 +159,9 @@ Prima però va scelto che cosa guardare. La
 tentazione è guardare la strategia appresa e verificare che dica «vai sempre a
 destra»: solo che il corridoio è così facile che il Q-learning con la tabella,
 senza un solo ripasso, impara la stessa identica strategia. Sarebbe una misura che
-non misura. Ciò che il ripasso cambia davvero è la quantità che il testo ha
-appena promesso, cioè quanto in fretta la ricompensa si propaga all'indietro
-fino allo stato di partenza. Perciò il codice qui sotto esegue lo stesso ciclo
+non misura. Ciò che il ripasso cambia davvero è la quantità appena promessa,
+cioè quanto in fretta la ricompensa si propaga all'indietro fino allo stato di
+partenza. Perciò il codice esegue lo stesso ciclo
 due volte, con e senza ripassi, e a ogni giro stampa quanto vale, per l'agente,
 trovarsi nella casella di partenza: zero vuol dire «di qui non ho ancora
 imparato che si guadagna qualcosa», e più il numero sale più la buona notizia
@@ -227,9 +227,9 @@ laggiù) e dopo trenta si ferma a $0{,}156$. Con venti ripassi per ogni mossa
 vera, dopo tre episodi vale già $0{,}200$, dopo dieci $0{,}808$ e alla
 trentesima $0{,}815$.
 
-Quel $0{,}815$ è la risposta esatta, e la risposta esatta si calcola a mano.
-Lo sconto dei premi lontani è una scelta di chi programma e non una legge di
-natura, e si fa per due motivi. Un
+Quel $0{,}815$ è la risposta esatta, e si calcola a mano, a patto di sapere
+che cosa fa lo sconto dei premi lontani. È una scelta di chi programma e non
+una legge di natura, e si fa per due motivi. Un
 agente che dà lo stesso peso a un guadagno fra tre mosse e a uno fra tremila non
 ha nessun motivo di sbrigarsi; e su una partita che potrebbe non finire mai, la
 somma di tutti i premi futuri sarebbe infinita per chiunque, il che renderebbe
@@ -306,9 +306,9 @@ $$
 $$
 
 e i tre regimi sono diversissimi fra loro. Per $L>1$ la somma esplode
-esponenzialmente in $k$, ed è questo il caso che rende il compounding error un
-problema. Attenzione al verso: un sistema instabile ha per forza $L>1$, ma non
-vale il contrario, e il caso che sfugge è il peggiore di tutti. Una dinamica
+esponenzialmente in $k$, ed è questo il caso che rende l'accumulo dell'errore
+un problema. Attenzione al verso: un sistema instabile ha per forza $L>1$, ma
+non vale il contrario, e il caso che sfugge è il peggiore di tutti. Una dinamica
 che alla lunga si riassorbe può intanto allargare lo scarto di decine di volte,
 cioè proprio nei pochi passi in cui il sogno vive. Per $L=1$ esattamente si ha
 la crescita lineare, $k\epsilon$, che è il caso limite e non il caso tipico. E
@@ -521,11 +521,11 @@ parte c'è la fiducia: sogni lunghi, tutta la strategia allenata
 nell'immaginazione, pochissima esperienza vera spesa, e in cambio si eredita in
 pieno l'errore sistematico del simulatore. Girata dall'altra c'è la prudenza:
 sogni corti che partono da situazioni davvero visitate, e più simulatori
-addestrati in parallelo per vedere dove vanno d'accordo e dove no. Il
-disaccordo, di per sé, non dice quale abbia ragione; dice che i dati visti non
-bastavano a stabilirlo, e quindi che di quel pezzo di mondo nessuno sa
-abbastanza. È il modo più semplice di sapere dove non fidarsi. Si è più
-robusti, e si torna a spendere esperienza vera. I metodi model-free, per
+addestrati in parallelo per vedere dove vanno d'accordo e dove no; si è più
+robusti, e in cambio si torna a spendere esperienza vera. Il disaccordo, di per
+sé, non dice quale abbia ragione; dice che i dati visti non bastavano a
+stabilirlo, e quindi che di quel pezzo di mondo nessuno sa abbastanza, ed è il
+modo più semplice di sapere dove non fidarsi. I metodi model-free, per
 contro, non hanno nessun modello da sfruttare e restano competitivi quando i
 campioni costano poco. Non c'è un vincitore assoluto: c'è quella manopola, e
 sapere dove metterla è oggi materia di ricerca aperta.

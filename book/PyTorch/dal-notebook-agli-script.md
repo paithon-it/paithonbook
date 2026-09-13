@@ -3,8 +3,7 @@
 Un notebook è il quaderno interattivo con cui si lavora quasi sempre
 quando si sperimenta: una pagina divisa in celle, ciascuna con dentro un
 pezzo di codice, che si eseguono una alla volta premendo un tasto e che
-lasciano il risultato stampato lì sotto. È lo stesso oggetto che si apre
-premendo «Esegui il codice» in cima a queste pagine. La comodità è enorme: si
+lasciano il risultato stampato lì sotto. La comodità è enorme: si
 prova una riga, si guarda il numero, si cambia. E il difetto nasce esattamente
 da lì, perché le celle si possono eseguire in qualunque ordine, anche in uno
 diverso da quello in cui sono scritte.
@@ -16,7 +15,7 @@ succede niente di buono. La cella 43 usa una variabile definita nella cella 12,
 che nel frattempo è stata cancellata; la funzione buona è la terza versione,
 ma le prime due sono ancora lì sotto; il modello che ha dato il risultato
 migliore è stato addestrato con un learning rate che nessuno ha annotato, e
-che ora non è più nel codice, e la {numref}`fig-notebook-fuori-ordine` mette i
+che ora non è più nel codice. La {numref}`fig-notebook-fuori-ordine` mette i
 due ordini a confronto, quello dei clic e quello delle righe. Il notebook ha
 fatto il suo mestiere di laboratorio, e a un certo punto il laboratorio va
 trasformato in un prodotto.
@@ -34,14 +33,14 @@ rilegge la pagina non trova più da dove venga. Nello script quella riga c'è,
 ed è la seconda.
 ```
 
-Questa sezione mostra come, restando dentro PyTorch e senza aggiungere alcuno
-strumento: cinque file di Python semplice, e un comando che si lancia dal
-terminale, cioè quella finestra in cui, invece di cliccare, si scrivono
-comandi e il computer risponde. È già la soglia di quello che nel mestiere si
-chiama «mandare un modello in produzione», cioè metterlo al lavoro sul serio
-per qualcuno che non sia chi l'ha scritto: il
-[capitolo sull'MLOps](../MLOps/dal-notebook-alla-produzione.md) riprende il
-discorso da qui in poi.
+Per passare dal laboratorio al prodotto, restando dentro PyTorch e senza
+aggiungere alcuno strumento, bastano cinque file di Python semplice e un
+comando che si lancia dal terminale, cioè quella finestra in cui, invece di
+cliccare, si scrivono comandi e il computer risponde. È già la soglia di quello
+che nel mestiere si chiama «mandare un modello in produzione», cioè metterlo al
+lavoro sul serio per qualcuno che non sia chi l'ha scritto: il [capitolo
+sull'MLOps](../MLOps/dal-notebook-alla-produzione.md) riprende il discorso da
+qui in poi.
 
 ## Il laboratorio e il prodotto
 
@@ -164,8 +163,7 @@ vero, perché conta i due esempi del secondo vassoio come se fossero dieci.
 Moltiplicare ciascuna media per il numero di esempi del suo vassoio, sommare, e
 dividere alla fine per il totale rimette le cose a posto. E capita quasi
 sempre: a meno di chiedere il contrario, il `DataLoader` l'ultimo vassoio lo
-serve anche se è mezzo vuoto, quindi c'è quasi sempre un batch più piccolo
-degli altri.
+serve anche se è mezzo vuoto, quindi resta un batch più piccolo degli altri.
 
 Il secondo dettaglio è la riga `@torch.no_grad()` scritta sopra la seconda
 funzione. Quella chiocciola in Python si chiama decoratore: è una riga che
@@ -173,9 +171,9 @@ avvolge la funzione e ne cambia il comportamento senza toccarne il corpo. Qui
 dice «tutto quello che succede qui dentro succede a registratore spento»: il
 registratore è quello della sezione [sui tensori](tensori.md), che annota i
 conti mentre li fai perché si possano ripercorrere all'indietro, e qui non
-serve, perché in valutazione nessun peso viene corretto. Evita anche di
-ricordarsi a ogni chiamata il blocco `with` che lo spegne a mano. La funzione
-*è* una valutazione, e non può essere altro.
+serve, perché in valutazione nessun peso viene corretto. Il decoratore risparmia
+anche di doversi ricordare, a ogni chiamata, il blocco `with` che lo spegne a
+mano. La funzione *è* una valutazione, e non può essere altro.
 
 ## Il punto d'ingresso
 
@@ -363,8 +361,8 @@ chiama per prima, prima ancora di costruire il modello e i `DataLoader`: se il
 caso lo si fissa dopo che i pesi sono già stati sorteggiati, non si è fissato
 niente.
 
-Prima però conviene sapere che cosa sia un seme, perché il codice qui sotto
-senza quello è indecifrabile. Il caso, in un computer, non esiste: quello che
+Prima però conviene sapere che cosa sia un seme, perché senza quello il codice
+che lo fissa è indecifrabile. Il caso, in un computer, non esiste: quello che
 c'è è una lunghissima sequenza di numeri prestabilita, calcolata con una
 formula, che *sembra* casuale. Il seme è il punto da cui si comincia a
 leggerla. Stesso seme, stesso punto di partenza, stessa sequenza, e quindi
