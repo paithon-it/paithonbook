@@ -454,6 +454,22 @@ quelli che lo precedono sono già piccoli.
 
 `````
 
+L'ordine causale ha anche un rimedio che si vede
+({numref}`fig-pesi-causali`): pesare il residuo di ogni istante con quanto
+bene sono già risolti gli istanti prima.
+
+```{figure} ../figures/pesi-causali.svg
+:name: fig-pesi-causali
+:alt: "Due file di 20 barre, una per istante di collocazione fra t = 0 e t = 10. In alto un residuo di esempio: piccolo negli istanti già risolti, grande in quelli dopo, con un fronte che avanza verso destra. In basso i pesi causali calcolati con la formula: accesi fino al fronte e spenti poco oltre, così che l'addestramento lavori su un istante solo quando quelli prima sono a posto. La figura si ferma con il fronte a metà dell'intervallo."
+:width: 100%
+
+I pesi causali su un residuo di esempio. In alto il residuo, piccolo negli
+istanti già risolti e grande dopo il fronte; in basso i pesi calcolati con la
+formula di Wang, Sankaran e Perdikaris, accesi fino al fronte e spenti poco
+oltre. Man mano che il fronte avanza, i pesi si accendono un istante dopo
+l'altro.
+```
+
 E poi c'è il confronto onesto con i solutori classici, da ripetere senza
 sconti. Prendiamo un problema *standard*: equazione nota, forma regolare,
 nessun dato sperimentale da tenere insieme alla legge. Lì il conto a

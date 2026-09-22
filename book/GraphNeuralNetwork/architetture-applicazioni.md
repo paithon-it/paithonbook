@@ -598,6 +598,20 @@ amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
 
 `````
 
+L'over-squashing ha una forma che si disegna in poche linee
+({numref}`fig-collo-di-bottiglia`): due gruppi fitti e un passaggio solo.
+
+```{figure} ../figures/collo-di-bottiglia.svg
+:name: fig-collo-di-bottiglia
+:alt: "Due gruppi di cinque nodi, ognuno collegato al proprio interno, uniti da un solo arco, il ponte, che ha la curvatura più negativa del grafo (-6). Il nodo u sta a sinistra e v a destra, a 3 passi. Un arco tratteggiato, aggiunto dal rewiring accanto al ponte, apre una seconda strada e fa crescere il limite sulla sensibilità di v a u da 5,6 · 10⁻³ a 1,1 · 10⁻²."
+:width: 100%
+
+Due gruppi di cinque nodi uniti da un ponte. Il ponte ha la curvatura più
+negativa del grafo, e il limite sulla sensibilità di v a u è piccolo; un arco
+aggiunto accanto al ponte, come fa il rewiring, apre una seconda strada e lo
+fa crescere.
+```
+
 ## Graph Transformer: togliere il vincolo del vicinato
 
 Dei limiti appena elencati, l'over-squashing dipende da com'è fatto il grafo: il

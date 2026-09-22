@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../purga-al-confine.svg
+-->
+<!--
+  Paithon Book, figura animata: la purga al confine fra training e test
+  Generata da animazioni/svg/purga-al-confine.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 406"
+     role="img" aria-label="Le ultime dieci righe di training e la prima di test, una per riga. Ogni riga ha a sinistra la finestra di 7 giorni che legge e a destra il bersaglio, 7 giorni dopo. Una linea verticale segna il confine. Le 7 righe più vicine al confine hanno il bersaglio oltre il confine e sono barrate: sono quelle da togliere, esattamente h. La riga di test legge 3 giorni che sono bersagli di righe tenute, e non è una fuga.">
+  <style>
+    svg  { --d: 8.0s; }
+    .ax  { stroke:#34302A; stroke-width:2; fill:none; }
+    .axc { stroke:#221F1A; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
+    .feat { fill:#5BA39C; opacity:.35; }
+    .feat-test { fill:#DDB874; opacity:.7; }
+    .bers { fill:#E27B52; }
+    .tolta { opacity:.45; }
+    .barra { stroke:#F4ECDD; stroke-width:1.5; }
+    .confine { stroke:#F4ECDD; stroke-width:2; stroke-dasharray:5 4; }
+    
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
+  </style>
+  <text class="lbs " x="138" y="72" text-anchor="end">t₀−9</text><g><rect class="feat" x="150.0" y="62" width="117.0" height="14"/><rect class="bers" x="388.0" y="62" width="15.0" height="14"/></g><text class="lbs " x="138" y="94" text-anchor="end">t₀−8</text><g><rect class="feat" x="167.0" y="84" width="117.0" height="14"/><rect class="bers" x="405.0" y="84" width="15.0" height="14"/></g><text class="lbs " x="138" y="116" text-anchor="end">t₀−7</text><g><rect class="feat" x="184.0" y="106" width="117.0" height="14"/><rect class="bers" x="422.0" y="106" width="15.0" height="14"/></g><text class="lbs tolta" x="138" y="138" text-anchor="end">t₀−6</text><g class="tolta"><rect class="feat" x="201.0" y="128" width="117.0" height="14"/><rect class="bers" x="439.0" y="128" width="15.0" height="14"/></g><line class="barra" x1="197.0" y1="135" x2="458.0" y2="135"/><text class="lbs tolta" x="138" y="160" text-anchor="end">t₀−5</text><g class="tolta"><rect class="feat" x="218.0" y="150" width="117.0" height="14"/><rect class="bers" x="456.0" y="150" width="15.0" height="14"/></g><line class="barra" x1="214.0" y1="157" x2="475.0" y2="157"/><text class="lbs tolta" x="138" y="182" text-anchor="end">t₀−4</text><g class="tolta"><rect class="feat" x="235.0" y="172" width="117.0" height="14"/><rect class="bers" x="473.0" y="172" width="15.0" height="14"/></g><line class="barra" x1="231.0" y1="179" x2="492.0" y2="179"/><text class="lbs tolta" x="138" y="204" text-anchor="end">t₀−3</text><g class="tolta"><rect class="feat" x="252.0" y="194" width="117.0" height="14"/><rect class="bers" x="490.0" y="194" width="15.0" height="14"/></g><line class="barra" x1="248.0" y1="201" x2="509.0" y2="201"/><text class="lbs tolta" x="138" y="226" text-anchor="end">t₀−2</text><g class="tolta"><rect class="feat" x="269.0" y="216" width="117.0" height="14"/><rect class="bers" x="507.0" y="216" width="15.0" height="14"/></g><line class="barra" x1="265.0" y1="223" x2="526.0" y2="223"/><text class="lbs tolta" x="138" y="248" text-anchor="end">t₀−1</text><g class="tolta"><rect class="feat" x="286.0" y="238" width="117.0" height="14"/><rect class="bers" x="524.0" y="238" width="15.0" height="14"/></g><line class="barra" x1="282.0" y1="245" x2="543.0" y2="245"/><text class="lbs tolta" x="138" y="270" text-anchor="end">t₀</text><g class="tolta"><rect class="feat" x="303.0" y="260" width="117.0" height="14"/><rect class="bers" x="541.0" y="260" width="15.0" height="14"/></g><line class="barra" x1="299.0" y1="267" x2="560.0" y2="267"/><text class="lbs " x="138" y="302" text-anchor="end">test t₀+1</text><g><rect class="feat feat-test" x="320.0" y="292" width="117.0" height="14"/><rect class="bers" x="558.0" y="292" width="15.0" height="14"/></g><line class="confine" x1="438.0" y1="50" x2="438.0" y2="316"/><text class="lbl" x="438.0" y="42" text-anchor="middle">confine</text><rect class="feat" x="150" y="335" width="13" height="13"/><text class="lbs" x="170" y="346">feature: i giorni che la riga legge</text><rect class="bers" x="400" y="335" width="13" height="13"/><text class="lbs" x="420" y="346">bersaglio, h giorni dopo</text><text class="lbs" x="150" y="370">barrate: le 7 righe tolte, il cui bersaglio cade oltre il confine (h = 7)</text><text class="lbs" x="150" y="390">la riga di test legge 3 bersagli di righe tenute: è lecito, quei giorni sono già passati</text>
+</svg>

@@ -199,6 +199,7 @@ nota, e costa meno di un minuto.
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
 | `svg/bootstrap-si-accumula.py` | `fig-bootstrap-accumula` | `MachineLearning/il-bootstrap.md` |
 | `svg/boosting-si-somma.py` | `fig-boosting-si-somma` | `MachineLearning/alberi-ensemble.md` |
+| `svg/bozza-che-si-corregge.py` | `fig-bozza-che-si-corregge` | `MLOps/llmops.md` |
 | `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
 | `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
 | `svg/cammino-latente.py` | `fig-cammino-latente` | `ModelliLatenti/il-salto-probabilistico.md` |
@@ -207,6 +208,7 @@ nota, e costa meno di un minuto.
 | `svg/cancello-che-respinge.py` | `fig-cancello-che-respinge` | `IngegneriaLLM/loop-engineering.md` |
 | `svg/ciclo-addestramento.py` | `fig-ciclo-addestramento` | `PyTorch/addestramento.md` |
 | `svg/ciclo-agente.py` | `fig-ciclo-agente` | `Agenti/agenti-e-tool-use.md` |
+| `svg/collo-di-bottiglia.py` | `fig-collo-di-bottiglia` | `GraphNeuralNetwork/architetture-applicazioni.md` |
 | `svg/copia-che-scivola.py` | `fig-copia-che-scivola` | `SerieTemporali/overview.md` |
 | `svg/corrimano-e-taratura.py` | `fig-corrimano-taratura` | `Transformers/attenzione.md` |
 | `svg/credito-spalmato.py` | `fig-credito-spalmato` | `AutoSupervisione/dibattito-rl.md` |
@@ -225,11 +227,13 @@ nota, e costa meno di un minuto.
 | `svg/gan-inseguimento.py` | `fig-gan-inseguimento` | `GAN/come-funziona.md` |
 | `svg/gradiente-svanisce.py` | `fig-gradiente-svanisce` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/gradienti-integrati.py` | `fig-gradienti-integrati` | `Interpretabilita/attribuzione-e-meccanicistica.md` |
+| `svg/griglie-di-passi.py` | `fig-griglie-di-passi` | `ModelliDiffusione/campionatori-veloci.md` |
 | `svg/grokking-tarda.py` | `fig-grokking` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/hopfield-ricorda.py` | `fig-hopfield-ricorda` | `ModelliEnergia/memoria-associativa.md` |
 | `svg/i-lettori-restano-otto.py` | `fig-teste-e-taccuini` | `Transformers/attenzione-in-pratica.md` |
 | `svg/il-codice-si-accorcia.py` | `fig-il-codice-si-accorcia` | `AutoSupervisione/capire-e-accorciare.md` |
 | `svg/il-picco-che-schiaccia.py` | `fig-picco-schiaccia` | `GAN/applicazioni-evoluzioni.md` |
+| `svg/jepa-tre-pezzi.py` | `fig-jepa-tre-pezzi` | `WorldModels/jepa.md` |
 | `svg/kmeans-converge.py` | `fig-kmeans-converge` | `MachineLearning/riduzione-clustering.md` |
 | `svg/learning-rate.py` | `fig-learning-rate` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/linee-di-base.py` | `fig-linee-di-base` | `SerieTemporali/validazione-e-feature.md` |
@@ -238,14 +242,17 @@ nota, e costa meno di un minuto.
 | `svg/ogni-turno-costa-uguale.py` | `fig-torneo-costo-piatto` | `MachineLearning/iperparametri.md` |
 | `svg/origine-mobile.py` | `fig-walk-forward-validazione` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/orbite-che-non-cadono.py` | `fig-orbite-chiuse` | `SistemiMultiAgente/imparare-insieme.md` |
+| `svg/palla-certificata.py` | `fig-palla-certificata` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/pandas-selezione-filtri-groupby.py` | `fig-split-apply-combine` | `Python/pandas-matplotlib.md` |
 | `svg/pandas-series-dataframe.py` | `fig-series-dataframe` | `Python/pandas-matplotlib.md` |
 | `svg/passeggiata-bigramma.py` | `fig-passeggiata` | `NaturalLanguageProcessing/modelli-ngram.md` |
 | `svg/percettrone-impara.py` | `fig-percettrone-impara` | `RetiNeurali/percettrone.md` |
+| `svg/pesi-causali.py` | `fig-pesi-causali` | `PINN/applicazioni-limiti.md` |
 | `svg/pinn-residuo.py` | `fig-pinn-residuo` | `PINN/come-funziona.md` |
 | `svg/plotone-si-divide.py` | `fig-plotone-si-divide` | `GPU/architettura-gpu.md` |
 | `svg/posto-che-si-libera.py` | `fig-continuous-batching` | `MLOps/llmops.md` |
 | `svg/potatura-che-assottiglia.py` | `fig-potatura` | `Efficienza/meno-pesi.md` |
+| `svg/purga-al-confine.py` | `fig-purga-al-confine` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/quasi-perpendicolari.py` | `fig-quasi-perpendicolari` | `Matematica/ortogonalita-proiezioni.md` |
 | `svg/quattro-ingredienti.py` | `fig-quattro-ingredienti` | `PINN/applicazioni-limiti.md` |
 | `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../jepa-tre-pezzi.svg
+-->
+<!--
+  Paithon Book, figura animata: i tre pezzi dell'asimmetria in una JEPA
+  Generata da animazioni/svg/jepa-tre-pezzi.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 278"
+     role="img" aria-label="Due rami. In alto il contesto passa per l'encoder e poi per il predictor, che esiste su un ramo solo ed è necessario. In basso il bersaglio passa per una copia dell'encoder aggiornata come media mobile dei pesi, che si può togliere; la sua uscita va alla perdita con uno stop-gradient, anch'esso necessario, segnato da una croce sulla freccia. La perdita misura la distanza fra i due embedding.">
+  <style>
+    svg  { --d: 8.0s; }
+    .ax  { stroke:#34302A; stroke-width:2; fill:none; }
+    .axc { stroke:#221F1A; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
+    .box { fill:#0E0C0A; stroke:#5BA39C; stroke-width:2; }
+    .dato { fill:#0E0C0A; stroke:#34302A; stroke-width:2; }
+    .chiave { fill:#0E0C0A; stroke:#E27B52; stroke-width:3; }
+    .copia { fill:#0E0C0A; stroke:#DDB874; stroke-width:2; stroke-dasharray:6 4; }
+    .perdita { fill:#0E0C0A; stroke:#F4ECDD; stroke-width:2; }
+    .fl { stroke:#BCB3A1; stroke-width:1.8; }
+    .sg { stroke:#E27B52; }
+    .sgt { fill:#E27B52; }
+    .taglio { stroke:#E27B52; stroke-width:2.5; }
+    .pt { fill:#BCB3A1; }
+    .ptsg { fill:#E27B52; }
+    .ema { stroke:#DDB874; stroke-width:2; stroke-dasharray:4 4; }
+    
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
+  </style>
+  <rect class="dato" x="20" y="40" width="120" height="48" rx="8"/><text class="lbl" x="80" y="69" text-anchor="middle">contesto</text><line class="fl" x1="140" y1="64" x2="181" y2="64"/><polygon class="pt" points="180,59 190,64 180,69"/><rect class="box" x="190" y="40" width="120" height="48" rx="8"/><text class="lbl" x="250" y="69" text-anchor="middle">encoder</text><line class="fl" x1="310" y1="64" x2="351" y2="64"/><polygon class="pt" points="350,59 360,64 350,69"/><rect class="chiave" x="360" y="40" width="120" height="48" rx="8"/><text class="lbl" x="420" y="69" text-anchor="middle">predictor</text><text class="lbs" x="420" y="106" text-anchor="middle">su un ramo solo: necessario</text><line class="fl" x1="480" y1="64" x2="600" y2="64"/><rect class="dato" x="20" y="190" width="120" height="48" rx="8"/><text class="lbl" x="80" y="219" text-anchor="middle">bersaglio</text><line class="fl" x1="140" y1="214" x2="181" y2="214"/><polygon class="pt" points="180,209 190,214 180,219"/><rect class="copia" x="190" y="190" width="120" height="48" rx="8"/><text class="lbl" x="250" y="219" text-anchor="middle">encoder EMA</text><text class="lbs" x="250" y="256" text-anchor="middle">copia lenta: si può togliere</text><line class="fl sg" x1="310" y1="214" x2="600" y2="214"/><text class="lbs sgt" x="455" y="204" text-anchor="middle">stop-gradient: necessario</text><line class="taglio" x1="445" y1="206" x2="465" y2="222"/><line class="taglio" x1="465" y1="206" x2="445" y2="222"/><rect class="perdita" x="530" y="111" width="140" height="56" rx="8"/><text class="lbl" x="600" y="144" text-anchor="middle">distanza</text><text class="lbs" x="690" y="143">fra i due</text><text class="lbs" x="690" y="161">embedding</text><line class="fl" x1="600" y1="64" x2="600" y2="101"/><polygon class="pt" points="595,101 605,101 600,111"/><line class="fl sg" x1="600" y1="214" x2="600" y2="177"/><polygon class="ptsg" points="595,177 605,177 600,167"/><line class="ema" x1="250" y1="88" x2="250" y2="186"/><text class="lbs" x="258" y="143">media mobile dei pesi</text>
+</svg>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: i tre pezzi dell'asimmetria in una JEPA
+  Generata da animazioni/svg/jepa-tre-pezzi.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 278"
+     role="img" aria-label="Due rami. In alto il contesto passa per l'encoder e poi per il predictor, che esiste su un ramo solo ed è necessario. In basso il bersaglio passa per una copia dell'encoder aggiornata come media mobile dei pesi, che si può togliere; la sua uscita va alla perdita con uno stop-gradient, anch'esso necessario, segnato da una croce sulla freccia. La perdita misura la distanza fra i due embedding.">
+  <style>
+    svg  { --d: 8.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .box { fill:#F8F5EE; stroke:#2D5A5C; stroke-width:2; }
+    .dato { fill:#F8F5EE; stroke:#C5BEAA; stroke-width:2; }
+    .chiave { fill:#F8F5EE; stroke:#B5532C; stroke-width:3; }
+    .copia { fill:#F8F5EE; stroke:#C9A961; stroke-width:2; stroke-dasharray:6 4; }
+    .perdita { fill:#F8F5EE; stroke:#1A1A1A; stroke-width:2; }
+    .fl { stroke:#5A524A; stroke-width:1.8; }
+    .sg { stroke:#B5532C; }
+    .sgt { fill:#B5532C; }
+    .taglio { stroke:#B5532C; stroke-width:2.5; }
+    .pt { fill:#5A524A; }
+    .ptsg { fill:#B5532C; }
+    .ema { stroke:#C9A961; stroke-width:2; stroke-dasharray:4 4; }
+    
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
+  </style>
+  <rect class="dato" x="20" y="40" width="120" height="48" rx="8"/><text class="lbl" x="80" y="69" text-anchor="middle">contesto</text><line class="fl" x1="140" y1="64" x2="181" y2="64"/><polygon class="pt" points="180,59 190,64 180,69"/><rect class="box" x="190" y="40" width="120" height="48" rx="8"/><text class="lbl" x="250" y="69" text-anchor="middle">encoder</text><line class="fl" x1="310" y1="64" x2="351" y2="64"/><polygon class="pt" points="350,59 360,64 350,69"/><rect class="chiave" x="360" y="40" width="120" height="48" rx="8"/><text class="lbl" x="420" y="69" text-anchor="middle">predictor</text><text class="lbs" x="420" y="106" text-anchor="middle">su un ramo solo: necessario</text><line class="fl" x1="480" y1="64" x2="600" y2="64"/><rect class="dato" x="20" y="190" width="120" height="48" rx="8"/><text class="lbl" x="80" y="219" text-anchor="middle">bersaglio</text><line class="fl" x1="140" y1="214" x2="181" y2="214"/><polygon class="pt" points="180,209 190,214 180,219"/><rect class="copia" x="190" y="190" width="120" height="48" rx="8"/><text class="lbl" x="250" y="219" text-anchor="middle">encoder EMA</text><text class="lbs" x="250" y="256" text-anchor="middle">copia lenta: si può togliere</text><line class="fl sg" x1="310" y1="214" x2="600" y2="214"/><text class="lbs sgt" x="455" y="204" text-anchor="middle">stop-gradient: necessario</text><line class="taglio" x1="445" y1="206" x2="465" y2="222"/><line class="taglio" x1="465" y1="206" x2="445" y2="222"/><rect class="perdita" x="530" y="111" width="140" height="56" rx="8"/><text class="lbl" x="600" y="144" text-anchor="middle">distanza</text><text class="lbs" x="690" y="143">fra i due</text><text class="lbs" x="690" y="161">embedding</text><line class="fl" x1="600" y1="64" x2="600" y2="101"/><polygon class="pt" points="595,101 605,101 600,111"/><line class="fl sg" x1="600" y1="214" x2="600" y2="177"/><polygon class="ptsg" points="595,177 605,177 600,167"/><line class="ema" x1="250" y1="88" x2="250" y2="186"/><text class="lbs" x="258" y="143">media mobile dei pesi</text>
+</svg>

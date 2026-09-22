@@ -360,6 +360,20 @@ ritardo di Eulero viene soprattutto dalla griglia, che in $t$ lascia pochi passi
 proprio dove il termine della rete è più ripido; e quale griglia convenga
 dipende dal metodo e dal programma di rumore.
 
+{numref}`fig-griglie-di-passi` mette le due griglie una sopra l'altra.
+
+```{figure} ../figures/griglie-di-passi.svg
+:name: fig-griglie-di-passi
+:alt: "Due righe con 16 passi ciascuna sull'intervallo che va dal rumore (a sinistra) al dato pulito (a destra). Nella griglia uniforme in t i passi sono equidistanti; in quella uniforme in lambda si infittiscono verso il dato, e nell'ultimo decimo ne cadono 6 invece di 2. Accanto a ogni riga lo scarto dopo 32 valutazioni: sulla griglia in t vince DDIM, e sulla griglia in lambda Eulero migliora di quasi quattro volte, mentre DDIM peggiora."
+:width: 100%
+
+Gli stessi sedici passi, distribuiti in due modi fra il rumore e il dato
+pulito. La griglia uniforme in $\lambda$ si infittisce verso il dato, dove il
+termine della rete è ripido; a trentadue valutazioni Eulero ci guadagna quasi
+quattro volte, DDIM ci perde. Gli scarti sono quelli stampati dal codice della
+sezione.
+```
+
 Il confronto a parità di valutazioni della rete, che è la valuta con cui si
 paga davvero, dice il resto. Per arrivare allo stesso scarto che DDIM ottiene
 con trentadue valutazioni, a Eulero ne servono più di centoventotto; a

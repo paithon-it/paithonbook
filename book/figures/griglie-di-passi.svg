@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: la stessa integrazione su due griglie di passi
+  Generata da animazioni/svg/griglie-di-passi.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 256"
+     role="img" aria-label="Due righe con 16 passi ciascuna sull'intervallo che va dal rumore (a sinistra) al dato pulito (a destra). Nella griglia uniforme in t i passi sono equidistanti; in quella uniforme in lambda si infittiscono verso il dato, e nell'ultimo decimo ne cadono 6 invece di 2. Accanto a ogni riga lo scarto dopo 32 valutazioni: sulla griglia in t vince DDIM, e sulla griglia in lambda Eulero migliora di quasi quattro volte, mentre DDIM peggiora.">
+  <style>
+    svg  { --d: 8.0s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .asse { stroke:#C5BEAA; stroke-width:2; }
+    .passo { stroke:#2D5A5C; stroke-width:2; }
+    .freccia { stroke:#5A524A; stroke-width:1.5; }
+    .punta { fill:#5A524A; }
+    
+    @media (prefers-reduced-motion:reduce) { * { animation:none !important; } }
+  </style>
+  <text class="lbl" x="40" y="44">griglia uniforme in t</text><line class="asse" x1="40" y1="70" x2="440" y2="70"/><line class="passo" x1="40.0" y1="59" x2="40.0" y2="81"/><line class="passo" x1="65.0" y1="59" x2="65.0" y2="81"/><line class="passo" x1="89.9" y1="59" x2="89.9" y2="81"/><line class="passo" x1="114.9" y1="59" x2="114.9" y2="81"/><line class="passo" x1="139.9" y1="59" x2="139.9" y2="81"/><line class="passo" x1="164.9" y1="59" x2="164.9" y2="81"/><line class="passo" x1="189.8" y1="59" x2="189.8" y2="81"/><line class="passo" x1="214.8" y1="59" x2="214.8" y2="81"/><line class="passo" x1="239.8" y1="59" x2="239.8" y2="81"/><line class="passo" x1="264.8" y1="59" x2="264.8" y2="81"/><line class="passo" x1="289.8" y1="59" x2="289.8" y2="81"/><line class="passo" x1="314.7" y1="59" x2="314.7" y2="81"/><line class="passo" x1="339.7" y1="59" x2="339.7" y2="81"/><line class="passo" x1="364.7" y1="59" x2="364.7" y2="81"/><line class="passo" x1="389.7" y1="59" x2="389.7" y2="81"/><line class="passo" x1="414.6" y1="59" x2="414.6" y2="81"/><line class="passo" x1="439.6" y1="59" x2="439.6" y2="81"/><text class="lbs" x="480" y="64">Eulero  1,1 · 10⁻²</text><text class="lbl" x="480" y="84">DDIM  1,1 · 10⁻³</text><text class="lbl" x="40" y="144">griglia uniforme in λ</text><line class="asse" x1="40" y1="170" x2="440" y2="170"/><line class="passo" x1="40.0" y1="159" x2="40.0" y2="181"/><line class="passo" x1="64.7" y1="159" x2="64.7" y2="181"/><line class="passo" x1="91.2" y1="159" x2="91.2" y2="181"/><line class="passo" x1="119.8" y1="159" x2="119.8" y2="181"/><line class="passo" x1="151.1" y1="159" x2="151.1" y2="181"/><line class="passo" x1="185.9" y1="159" x2="185.9" y2="181"/><line class="passo" x1="225.4" y1="159" x2="225.4" y2="181"/><line class="passo" x1="270.1" y1="159" x2="270.1" y2="181"/><line class="passo" x1="318.1" y1="159" x2="318.1" y2="181"/><line class="passo" x1="362.5" y1="159" x2="362.5" y2="181"/><line class="passo" x1="395.2" y1="159" x2="395.2" y2="181"/><line class="passo" x1="415.7" y1="159" x2="415.7" y2="181"/><line class="passo" x1="427.3" y1="159" x2="427.3" y2="181"/><line class="passo" x1="433.8" y1="159" x2="433.8" y2="181"/><line class="passo" x1="437.2" y1="159" x2="437.2" y2="181"/><line class="passo" x1="438.9" y1="159" x2="438.9" y2="181"/><line class="passo" x1="439.6" y1="159" x2="439.6" y2="181"/><text class="lbs" x="480" y="164">Eulero  2,8 · 10⁻³</text><text class="lbl" x="480" y="184">DDIM  2,1 · 10⁻³</text><line class="freccia" x1="40" y1="222" x2="426" y2="222"/><polygon class="punta" points="426,217 440,222 426,227"/><text class="lbs" x="40" y="242">t = 1, rumore</text><text class="lbs" x="440" y="242" text-anchor="end">t ≈ 0, dato pulito</text><text class="lbs" x="480" y="242">scarto a 32 valutazioni</text>
+</svg>

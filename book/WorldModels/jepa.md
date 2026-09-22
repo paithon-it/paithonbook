@@ -205,6 +205,20 @@ stessa di dare a tutto lo stesso riassunto, per esempio obbligandolo a tenerli
 diversi fra loro. Ma nei sistemi JEPA costruiti davvero da Meta la difesa
 concreta è un'altra, più semplice e più sottile.
 
+I suoi pezzi sono tre, e non pesano uguale
+({numref}`fig-jepa-tre-pezzi`).
+
+```{figure} ../figures/jepa-tre-pezzi.svg
+:name: fig-jepa-tre-pezzi
+:alt: "Due rami. In alto il contesto passa per l'encoder e poi per il predictor, che esiste su un ramo solo ed è necessario. In basso il bersaglio passa per una copia dell'encoder aggiornata come media mobile dei pesi, che si può togliere; la sua uscita va alla perdita con uno stop-gradient, anch'esso necessario, segnato da una croce sulla freccia. La perdita misura la distanza fra i due embedding."
+:width: 100%
+
+I tre pezzi dell'asimmetria. Il predictor, che sta su un ramo solo, e lo
+stop-gradient sul ramo del bersaglio servono insieme; la copia lenta
+dell'encoder, aggiornata come media mobile dei pesi, si può togliere senza che
+il sistema collassi.
+```
+
 `````{tab} Elementare
 
 L'allievo guarda la parte visibile della foto e prova a *descrivere* che cosa

@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-15)=
+
+## 1.12.15 · 22 settembre 2026
+
+### Pagine ampliate
+
+- **Sette figure nuove, dove il testo faticava a mostrare il meccanismo.** Le due griglie di passi dei campionatori veloci, la purga al confine fra training e test, la regola di accettazione dello speculative decoding (animata), i pesi causali di una PINN (animati), i tre pezzi che tengono una JEPA lontana dal collasso, il collo di bottiglia dell'over-squashing e la palla certificata del randomized smoothing. I numeri di ogni figura li calcola il suo generatore, e dove la pagina ha un codice sono quelli che il codice stampa.
+
 (v1-12-14)=
 
 ## 1.12.14 · 22 settembre 2026

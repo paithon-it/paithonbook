@@ -762,6 +762,22 @@ destra non avrebbe niente da proteggere.
 
 `````
 
+La regola, messa sugli indici, è quella di {numref}`fig-purga-al-confine`: a
+contare è dove cade il bersaglio di ogni riga, non quanto la riga guarda
+indietro.
+
+```{figure} ../figures/purga-al-confine.svg
+:name: fig-purga-al-confine
+:alt: "Le ultime dieci righe di training e la prima di test, una per riga. Ogni riga ha a sinistra la finestra di 7 giorni che legge e a destra il bersaglio, 7 giorni dopo. Una linea verticale segna il confine. Le 7 righe più vicine al confine hanno il bersaglio oltre il confine e sono barrate: sono quelle da togliere, esattamente h. La riga di test legge 3 giorni che sono bersagli di righe tenute, e non è una fuga."
+:width: 100%
+
+Le ultime dieci righe di training e la prima di test, con un orizzonte di una
+settimana. Si tolgono le sette righe il cui bersaglio cade oltre il confine;
+la riga di test legge fra le sue feature giorni che sono bersagli di righe
+tenute, e non è una fuga, perché quando si prevede quei giorni sono già
+passati.
+```
+
 ## Prevedere più passi avanti
 
 Finora abbiamo parlato di un orizzonte, ma spesso servono molti passi: le vendite

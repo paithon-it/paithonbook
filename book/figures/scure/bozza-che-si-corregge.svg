@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../bozza-che-si-corregge.svg
+-->
+<!--
+  Paithon Book, figura animata: la regola di accettazione dello speculative decoding
+  Generata da animazioni/svg/bozza-che-si-corregge.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 456"
+     role="img" aria-label="Sei parole, ciascuna con una barra. Parte dalla probabilità della bozza; si accorcia alla parte che il modello grande condivide, quella accettata; poi le si aggiunge sopra la parte ricampionata dal residuo. Alla fine ogni barra è alta esattamente quanto la probabilità del modello grande, e le frequenze di 200 mila sorteggi fatti con la regola lo confermano.">
+  <style>
+    svg  { --d: 9.0s; }
+    .ax  { stroke:#34302A; stroke-width:2; fill:none; }
+    .axc { stroke:#221F1A; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#F4ECDD; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#BCB3A1; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#F4ECDD; }
+    .acc { fill:#5BA39C; }
+    .ric { fill:#E27B52; }
+    .bozza { fill:#DDB874; opacity:.8; }
+    .tgt { fill:none; stroke:#F4ECDD; stroke-width:1.5; }
+    .asse { stroke:#34302A; stroke-width:2; }
+        @keyframes sgonfia{0.00%{transform:scaleY(var(--k))}18.33%{transform:scaleY(var(--k))}33.33%{transform:scaleY(1)}100.00%{transform:scaleY(1)}}
+    @keyframes riempie{0.00%{transform:scaleY(0)}51.67%{transform:scaleY(0)}66.67%{transform:scaleY(1)}100.00%{transform:scaleY(1)}}
+    @media (prefers-reduced-motion:reduce) { .acc, .ric { animation:none !important; } }
+  </style>
+  <rect class="bozza" x="104.0" y="44.0" width="10" height="286.0"/><rect class="acc" x="60.0" y="122.0" width="40" height="208.0" style="--k:1.3750;animation:sgonfia var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="tgt" x="60.0" y="122.0" width="40" height="208.0"/><text class="lbl" x="87.0" y="352" text-anchor="middle">il</text><text class="lbs" x="80.0" y="114.0" text-anchor="middle">0,400</text><rect class="bozza" x="200.0" y="278.0" width="10" height="52.0"/><rect class="acc" x="156.0" y="278.0" width="40" height="52.0" style="--k:1.0000;animation:sgonfia var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="ric" x="156.0" y="200.0" width="40" height="78.0" style="animation:riempie var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="tgt" x="156.0" y="200.0" width="40" height="130.0"/><text class="lbl" x="183.0" y="352" text-anchor="middle">la</text><text class="lbs" x="176.0" y="192.0" text-anchor="middle">0,251</text><rect class="bozza" x="296.0" y="226.0" width="10" height="104.0"/><rect class="acc" x="252.0" y="252.0" width="40" height="78.0" style="--k:1.3333;animation:sgonfia var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="tgt" x="252.0" y="252.0" width="40" height="78.0"/><text class="lbl" x="279.0" y="352" text-anchor="middle">un</text><text class="lbs" x="272.0" y="244.0" text-anchor="middle">0,149</text><rect class="bozza" x="392.0" y="304.0" width="10" height="26.0"/><rect class="acc" x="348.0" y="304.0" width="40" height="26.0" style="--k:1.0000;animation:sgonfia var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="ric" x="348.0" y="278.0" width="40" height="26.0" style="animation:riempie var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="tgt" x="348.0" y="278.0" width="40" height="52.0"/><text class="lbl" x="375.0" y="352" text-anchor="middle">questo</text><text class="lbs" x="368.0" y="270.0" text-anchor="middle">0,100</text><rect class="bozza" x="488.0" y="293.6" width="10" height="36.4"/><rect class="acc" x="444.0" y="298.8" width="40" height="31.2" style="--k:1.1667;animation:sgonfia var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="tgt" x="444.0" y="298.8" width="40" height="31.2"/><text class="lbl" x="471.0" y="352" text-anchor="middle">quel</text><text class="lbs" x="464.0" y="290.8" text-anchor="middle">0,060</text><rect class="bozza" x="584.0" y="314.4" width="10" height="15.6"/><rect class="acc" x="540.0" y="314.4" width="40" height="15.6" style="--k:1.0000;animation:sgonfia var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="ric" x="540.0" y="309.2" width="40" height="5.2" style="animation:riempie var(--d) infinite;transform-box:fill-box;transform-origin:50% 100%"/><rect class="tgt" x="540.0" y="309.2" width="40" height="20.8"/><text class="lbl" x="567.0" y="352" text-anchor="middle">molto</text><text class="lbs" x="560.0" y="301.2" text-anchor="middle">0,040</text><line class="asse" x1="50" y1="330" x2="606" y2="330"/><rect class="acc" x="60" y="375" width="13" height="13"/><text class="lbs" x="80" y="386">accettata dalla bozza: min(pᵇ, pᵗ)</text><rect class="ric" x="360" y="375" width="13" height="13"/><text class="lbs" x="380" y="386">ricampionata dal residuo, se scartata</text><rect class="bozza" x="60" y="397" width="13" height="13"/><text class="lbs" x="80" y="408">la bozza pᵇ</text><rect class="tgt" x="360" y="397" width="13" height="13"/><text class="lbs" x="380" y="408">il modello grande pᵗ</text><text class="lbs" x="60" y="438">sopra le barre: frequenze in 200 mila sorteggi con la regola (la bozza passa 79 volte su 100)</text>
+</svg>

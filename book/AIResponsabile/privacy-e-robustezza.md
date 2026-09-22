@@ -800,6 +800,20 @@ campioni avvelenati, e la loro frazione conta poco.
 
 `````
 
+Come funziona una garanzia certificata si vede nel caso più semplice, un
+confine diritto fra due classi ({numref}`fig-palla-certificata`).
+
+```{figure} ../figures/palla-certificata.svg
+:name: fig-palla-certificata
+:alt: "Un piano con un confine diritto fra due classi e un punto x. Attorno a x, 400 copie sporcate di rumore gaussiano, colorate secondo la classe che il classificatore dà loro: la classe di x prende 0,83 dei voti. Un cerchio attorno a x, di raggio 0,47, è la palla certificata: tocca il confine senza superarlo, perché con un confine diritto il raggio certificato è esattamente la distanza dal confine."
+:width: 100%
+
+Il randomized smoothing su un confine diritto. Le copie di x sporcate di
+rumore votano, e la classe di x prende la maggioranza; il raggio certificato che
+ne esce è il cerchio, che tocca il confine senza superarlo: con un confine
+diritto la garanzia è esattamente la distanza dal confine.
+```
+
 ## Marchiare il sintetico: watermarking e provenienza
 
 Fin qui il problema era che cosa *entra* in un modello; adesso guardiamo che

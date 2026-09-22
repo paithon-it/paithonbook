@@ -253,6 +253,20 @@ solo: se davanti a una frase quel modello sceglie sempre la stessa parola, esce
 parola per parola il suo testo; se sorteggia fra più continuazioni, escono le
 stesse continuazioni con le stesse probabilità. Cambia il tempo, non il testo.
 
+{numref}`fig-bozza-che-si-corregge` fa il conto su sei parole.
+
+```{figure} ../figures/bozza-che-si-corregge.svg
+:name: fig-bozza-che-si-corregge
+:alt: "Sei parole, ciascuna con una barra. Parte dalla probabilità della bozza; si accorcia alla parte che il modello grande condivide, quella accettata; poi le si aggiunge sopra la parte ricampionata dal residuo. Alla fine ogni barra è alta esattamente quanto la probabilità del modello grande, e le frequenze di 200 mila sorteggi fatti con la regola lo confermano."
+:width: 100%
+
+La regola di accettazione, parola per parola. Della proposta della bozza resta
+la parte che il modello grande condivide; quando la proposta è scartata si
+sorteggia dal residuo, e il residuo riempie esattamente quello che mancava:
+ogni barra finisce alta quanto la probabilità del modello grande, e le
+frequenze di un sorteggio vero lo confermano.
+```
+
 `````{tab} Elementare
 
 Un revisore esperto non manda in stampa una riga senza aver ricontrollato il
