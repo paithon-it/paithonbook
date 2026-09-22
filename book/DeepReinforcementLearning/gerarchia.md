@@ -391,8 +391,8 @@ usa per aggiustare tre cose alla volta: che cosa fa
 un'opzione, quando finisce, e quale opzione conviene chiamare. Nessuno deve
 scrivere un sotto-obiettivo; bisogna solo dire quante opzioni si vogliono. Il
 gradiente della terminazione si legge da solo,
-$-\,\partial\beta_{\omega,\vartheta}(s')/\partial\vartheta\,\big(Q_\Omega(s',\omega)
-- V_\Omega(s')\big)$: l'opzione si allunga dove continuarla vale più della
+$-\,\partial\beta_{\omega,\vartheta}(s')/\partial\vartheta\,\big(Q_\Omega(s',\omega) -
+V_\Omega(s')\big)$: l'opzione si allunga dove continuarla vale più della
 media delle alternative e si chiude dove vale meno. Lasciate libere, però,
 le terminazioni degenerano in opzioni da un passo o in un'opzione sola che
 fa tutto, e in pratica si aggiunge un costo per ogni cambio di opzione.

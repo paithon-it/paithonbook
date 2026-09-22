@@ -288,8 +288,8 @@ predefiniti di `TfidfVectorizer` (`smooth_idf=True`, `norm="l2"`,
 `sublinear_tf=False`) il peso di $t$ in $d$ è
 $\text{tf}(t,d)\cdot\bigl(\ln\frac{1+N}{1+\text{df}(t)} + 1\bigr)$, con
 $\text{tf}$ il conteggio grezzo, e il vettore di ogni documento viene poi
-diviso per la sua norma $L^2$. Con `sublinear_tf=True` il conteggio diventa $1
-+ \ln \text{tf}$, che smorza le parole ripetute molte volte nello stesso
+diviso per la sua norma $L^2$. Con `sublinear_tf=True` il conteggio diventa
+$1 + \ln \text{tf}$, che smorza le parole ripetute molte volte nello stesso
 documento. Prima di tutto questo c'è la tokenizzazione, che per default
 (`lowercase=True` e `token_pattern=r"(?u)\b\w\w+\b"`) scarta ogni token di un
 solo carattere: in italiano spariscono *e*, *è*, *a*, *o* e l'articolo eliso di

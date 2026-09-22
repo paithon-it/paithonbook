@@ -620,8 +620,8 @@ $\lVert\mathbf{s}_\theta - \nabla\log p_t(\mathbf{x}_t \mid
 \mathbf{x}_0)\rVert^2 = \lVert\hat{\boldsymbol{\epsilon}} -
 \boldsymbol{\epsilon}\rVert^2/\sigma_t^2$
 e, sul percorso VP,
-$\lVert\hat{\mathbf{v}} - \mathbf{v}\rVert^2 = \lVert\hat{\boldsymbol{\epsilon}}
-- \boldsymbol{\epsilon}\rVert^2/\alpha_t^2 = \big(1 +
+$\lVert\hat{\mathbf{v}} - \mathbf{v}\rVert^2 = \lVert\hat{\boldsymbol{\epsilon}} -
+\boldsymbol{\epsilon}\rVert^2/\alpha_t^2 = \big(1 +
 1/\mathrm{SNR}(t)\big)\lVert\hat{\boldsymbol{\epsilon}} -
 \boldsymbol{\epsilon}\rVert^2$.
 La lettura per pesi è di Kingma e colleghi, che nel 2021 scrivono il bound

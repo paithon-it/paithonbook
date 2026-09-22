@@ -160,8 +160,8 @@ $$
 \bigl(\hat\theta^{*}_{b} - \bar{\theta^{*}}\bigr)^2},
 $$
 
-e presa alla lettera, la sostituzione dà l'intervallo *basic*: se $\hat\theta^*
-- \hat\theta$ cade fra $\hat\theta^{*}_{(\alpha)} - \hat\theta$ e
+e presa alla lettera, la sostituzione dà l'intervallo *basic*: se $\hat\theta^* -
+\hat\theta$ cade fra $\hat\theta^{*}_{(\alpha)} - \hat\theta$ e
 $\hat\theta^{*}_{(1-\alpha)} - \hat\theta$, allora $\theta$ cade in
 $[\,2\hat\theta - \hat\theta^{*}_{(1-\alpha)},\ 2\hat\theta -
 \hat\theta^{*}_{(\alpha)}\,]$, con i quantili ribaltati attorno alla stima.

@@ -88,8 +88,8 @@ codifica vero. Conservativo, il che va benissimo, ma non è la stessa cosa.
 Che verosimiglianza e qualità dei campioni si possano separare lo mostrano due
 costruzioni di Theis e colleghi {cite}`theis2016note`. Nella prima si mescola un
 buon modello $p$ con un generatore di rumore $r$, $q = 0{,}01\,p + 0{,}99\,r$:
-poiché $q \ge 0{,}01\,p$ ovunque, $\log_2 q(\mathbf{x}) \ge \log_2 p(\mathbf{x})
--  \log_2 100$, cioè $q$ perde al più $6{,}6$ bit per immagine, $0{,}002$ bit
+poiché $q \ge 0{,}01\,p$ ovunque, $\log_2 q(\mathbf{x}) \ge \log_2 p(\mathbf{x}) -
+\log_2 100$, cioè $q$ perde al più $6{,}6$ bit per immagine, $0{,}002$ bit
   per dimensione su CIFAR-10, mentre novantanove campioni su cento sono rumore.
   Nella seconda, un modello che ripete le immagini di addestramento con un
   nucleo strettissimo attorno a ciascuna dà campioni perfetti e una

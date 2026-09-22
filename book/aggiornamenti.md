@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-14)=
+
+## 1.12.14 · 22 settembre 2026
+
+### Correzioni
+
+- **Sei formule che andavano a capo nel punto sbagliato.** Un segno meno o più finito a inizio riga spezzava una formula in una voce di elenco, e in una pagina la prosa dopo un'equazione finiva dentro la matematica. Riparate nelle pagine sul bootstrap, sulla rappresentazione del testo, sulla gerarchia nel rinforzo, sul limite continuo e sul funzionamento della diffusione, e sulla verosimiglianza esatta.
+
 (v1-12-13)=
 
 ## 1.12.13 · 22 settembre 2026

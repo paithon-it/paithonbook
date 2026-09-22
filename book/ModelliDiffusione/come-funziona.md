@@ -685,7 +685,9 @@ $$
 \mathcal{L}_{t-1} = \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}}\Big[\lambda_t\,\big\lVert \boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\big\rVert^2\Big] + C,
 \qquad
 \lambda_t = \frac{\beta_t^2}{2\sigma_t^2\,\alpha_t\,(1-\bar{\alpha}_t)} .
-$$ La $\mathcal{L}_{\text{semplice}}$
+$$
+
+La $\mathcal{L}_{\text{semplice}}$
 è questo obiettivo con i pesi posti a 1: non più un bound, ma una sua versione
 ripesata che nella pratica produce campioni migliori {cite}`ho2020denoising`.
 
