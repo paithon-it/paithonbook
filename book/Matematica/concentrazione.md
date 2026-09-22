@@ -34,7 +34,7 @@ hanno detto. La regola generale è questa: la frazione di casi che supera una
 certa soglia non può essere più grande della media divisa per la soglia. Qui
 trentamila diviso trecentomila fa un decimo.
 
-Due cose vanno notate, perché dicono che tipo di strumento sia.
+Due cose dicono che tipo di strumento sia.
 
 *Serve che la quantità non possa essere negativa.* Il conto funziona perché
 nessuno guadagna meno di zero, e quindi chi sta sotto la soglia non può tirare
@@ -156,9 +156,14 @@ $$
 \;\xrightarrow[n\to\infty]{}\; 0 .
 $$
 
-La sezione su probabilità e statistica enunciava questo risultato e ne dava la
-velocità; questa è la dimostrazione della forma debole, e mostra che serve
-pochissimo per averla: la sola esistenza della varianza. Si vede anche perché
+La {doc}`sezione su probabilità e statistica <probabilita-statistica>`
+enunciava questo risultato e ne dava la velocità. Questa è la dimostrazione
+della forma debole sotto un'ipotesi in più, l'esistenza della varianza; in
+compenso non chiede nemmeno l'indipendenza piena, perché basta che le $X_i$
+siano scorrelate a due a due, ed è tutto ciò che serve a scrivere
+$\mathrm{Var}(\bar{X}_n)=\sigma^2/n$. La legge debole vale anche con la sola
+media finita (teorema di Khinčin), ma lo si dimostra con altri strumenti, e
+senza varianza si perde la velocità. Si vede anche perché
 l'errore scala come $1/\sqrt{n}$: perché $\varepsilon$ compare al quadrato
 accanto a $n$.
 
@@ -167,7 +172,10 @@ accanto a $n$.
 ## Quando i valori stanno in un intervallo: Hoeffding
 
 La garanzia di Čebyšëv cala come $1/n$, che è lento. Sapendo una cosa in più,
-molto facile da verificare, si guadagna un ordine di grandezza.
+molto facile da verificare, la garanzia cala esponenzialmente in $n$, e il
+risparmio cresce con la sicurezza che si chiede: con una probabilità di errore
+di uno su venti gli esempi necessari si dividono per meno di tre, con uno su
+mille per circa sessantacinque.
 
 `````{tab} Elementare
 
@@ -196,7 +204,7 @@ ipotesi che si è disposti a fare. Il secondo è quello onesto nella maggior
 parte dei casi: non chiede niente che non si possa controllare, e costa meno
 della metà del primo.
 
-Va notato che nessuno dei tre dipende da quanto è grande l'insieme da cui le
+Nessuno dei tre dipende da quanto è grande l'insieme da cui le
 domande vengono estratte. Per misurare l'accuratezza di un modello su un
 miliardo di casi possibili servono le stesse quattromilaseicento domande che
 servirebbero se i casi fossero centomila, purché siano sorteggiate davvero a
@@ -208,17 +216,42 @@ utili.
 `````{tab} Superiore
 
 Siano $X_1,\dots,X_n$ indipendenti con $X_i\in[a,b]$ e media comune $\mu$. La
-**disuguaglianza di Hoeffding** afferma
+**disuguaglianza di Hoeffding** {cite}`hoeffding1963probability` afferma
 
 $$
 \Pr\big[\,|\bar{X}_n - \mu| \ge \varepsilon\,\big]
 \;\le\; 2\exp\!\left(-\frac{2n\varepsilon^2}{(b-a)^2}\right) .
 $$
 
-Il confronto con Čebyšëv è netto: $1/(n\varepsilon^2)$ contro
-$e^{-2n\varepsilon^2}$, cioè decadimento polinomiale contro esponenziale. Il
-prezzo è l'ipotesi di limitatezza, che per una metrica in $[0,1]$ (accuratezza,
-precision, recall) è gratis.
+Il confronto con Čebyšëv è netto:
+$1/(n\varepsilon^2)$ contro $e^{-2n\varepsilon^2}$, cioè decadimento
+polinomiale contro esponenziale. Il prezzo è l'ipotesi di limitatezza, che per
+l'accuratezza è gratis; per precision e recall la media si fa sui soli esempi
+predetti positivi, o davvero positivi, e l’$n$ da mettere nella formula è quel
+numero, spesso molto più piccolo.
+
+La dimostrazione ripete la mossa di Čebyšëv con una funzione più ripida. Per
+ogni $s>0$ la funzione $x\mapsto e^{sx}$ è positiva e crescente, quindi Markov
+dà
+
+$$
+\Pr\big[\bar{X}_n-\mu\ge\varepsilon\big]
+\le e^{-sn\varepsilon}\,\mathbb{E}\Big[e^{s\sum_i (X_i-\mu)}\Big]
+=e^{-sn\varepsilon}\prod_{i=1}^n\mathbb{E}\big[e^{s(X_i-\mu)}\big],
+$$
+
+e il prodotto viene dall'indipendenza: è il solo punto in cui serve, ed è dove
+la garanzia cade se i campioni sono correlati. Il lemma di Hoeffding maggiora
+ciascun fattore con $e^{s^2(b-a)^2/8}$ per ogni variabile a valori in
+$[a,b]$; resta $\exp\!\big(-sn\varepsilon+ns^2(b-a)^2/8\big)$, che
+minimizzato in $s=4\varepsilon/(b-a)^2$ dà
+$\exp\!\big(-2n\varepsilon^2/(b-a)^2\big)$, e il fattore $2$ davanti viene
+dall'altra coda. Il procedimento (Markov su $e^{sX}$, poi il migliore $s$) è il
+metodo di Chernoff, lo stampo dell'intera famiglia. Della variabile Hoeffding
+usa soltanto l'ampiezza dell'intervallo, e ignora la varianza: quando questa è
+molto più piccola di $(b-a)^2/4$ (un'accuratezza vicina al $99\%$, per
+esempio) la disuguaglianza di Bernstein, che la mette in conto, dà intervalli
+molto più stretti.
 
 Invertendo per $n$ si ottiene la formula che serve davvero, cioè quanti esempi
 mettere in un insieme di prova:
@@ -306,7 +339,10 @@ l'asticella si alza di meno del doppio.
 
 Il difetto ha un nome ed è la **maledizione del vincitore** (*winner's
 curse*),
-e il suo controllo è la disuguaglianza dell'unione: per eventi qualsiasi,
+e il suo controllo è la disuguaglianza dell'unione, o di Boole, la stessa che
+nella {doc}`sezione su probabilità e statistica <probabilita-statistica>` regge
+la correzione di Bonferroni: per eventi qualsiasi, dipendenti fra loro quanto
+si vuole,
 
 $$
 \Pr\left[\bigcup_{i=1}^{k} A_i\right] \le \sum_{i=1}^{k}\Pr[A_i] .
@@ -369,9 +405,13 @@ for k in (1, 10, 100, 1000):
 # -> 1000 0.0728
 ```
 
-Il numero $0{,}842$ meritava una riga in più: quattro punti percentuali di
-guadagno apparente, prodotti interamente dal caso, sono più di quanto separi
-molti modelli veri e molti annunci. Chi legge una classifica dovrebbe sempre
+Il numero $0{,}83$ merita una riga in più: tre punti percentuali di guadagno
+apparente nella vincitrice tipica, e oltre quattro in un'estrazione come
+quella da $0{,}842$, prodotti interamente dal caso, sono più di quanto separi
+molti modelli veri e molti annunci. La simulazione fa sbagliare le cento
+varianti in modo indipendente, che è il caso peggiore: varianti simili
+sbagliano spesso sulle stesse domande, e il gonfiamento si riduce, ma non
+sparisce. Chi legge una classifica dovrebbe sempre
 chiedersi quante varianti sono state provate prima di quella pubblicata.
 
 ## In pratica: le stesse garanzie su una distribuzione storta

@@ -107,9 +107,9 @@ media nulla su ciascun esempio. È il regime in cui il lavoro originale la
 ricava, e lì moltiplicare per $T^2$ mantiene il termine morbido sulla scala di
 quello duro, così si può cambiare $T$ senza riaggiustare $\alpha$.
 
-Fuori da quel regime il compenso è approssimativo, e conviene saperlo perché il
-regime buono è più lontano di quanto sembri. Misurato sul maestro che il codice
-qui sotto addestra (logit con scarto tipico intorno a undici), l’esponente
+Fuori da quel regime il compenso è approssimativo, e il regime buono è più
+lontano di quanto sembri. Sul maestro che il codice sulle cifre addestra
+(logit con scarto tipico intorno a undici), l’esponente
 locale $\kappa$ di $\|\nabla\| \propto T^{-\kappa}$ vale $1{,}05$ fra $T=1$ e
 $T=2$, $1{,}09$ fra $2$ e $4$, e arriva a $2$ soltanto oltre $T=16$. A $T=4$,
 cioè alla temperatura che il codice usa, moltiplicare per $T^2$
@@ -252,8 +252,15 @@ anche gli altri settecentosettantotto, che lo studente non può usare perché
 non ne ha l’etichetta, se ne guadagnano altri 3,2.
 
 Quindi la spiegazione bella («il maestro dice dieci cose per esempio invece di
-una») è vera e vale meno della metà del risultato. L’altra metà, la maggiore,
-è più prosaica: il maestro trasforma dati senza etichetta in dati utilizzabili.
+una») è vera e vale meno della metà del risultato. L’altra metà è più
+prosaica: il maestro trasforma esempi di cui lo studente non ha l’etichetta in
+esempi utilizzabili. Con una riserva che l’impianto porta scritta addosso:
+quelle settecentosettantotto etichette il maestro le ha viste, perché è stato
+addestrato su tutte, e i suoi commenti su quegli esempi sono anche un modo
+indiretto di passarle allo studente. Con un maestro che la seconda metà dei
+dati non l’ha mai vista, il guadagno dei dubbi resta quasi dov’è e quello degli
+esempi in più si riduce di molto: la cifra che il conto attribuisce ai dati
+non etichettati, qui, è un tetto.
 Le due cose insieme fanno la distillazione, e chi ne racconta solo la prima
 attribuisce a un meccanismo elegante un guadagno che viene soprattutto da un
 meccanismo banale.
@@ -280,8 +287,9 @@ allora lo stesso esperimento, e le loro etichette vanno lette così.
   studente minuscolo con centoventi etichette sta al 90,2%; con i commenti del
   maestro sugli stessi centoventi esempi sale a 92,6% (sono i dubbi, +2,4);
   con i commenti anche sugli esempi di cui non ha l’etichetta arriva a 95,8%
-  (+3,2 in più). La parte grossa non viene dai dubbi, viene dal poter usare
-  dati che nessuno ha etichettato.
+  (+3,2 in più). In questo esperimento la parte grossa viene dal poter usare
+  esempi di cui lo studente non ha l’etichetta (etichette che però il maestro
+  aveva visto, e che i suoi commenti in parte gli passano).
 - Lo studente eredita anche gli errori del maestro, e li impara meglio di
   quanto imparerebbe la risposta giusta. Un maestro sbagliato è peggio di
   nessun maestro.
@@ -306,7 +314,7 @@ allora lo stesso esperimento, e le loro etichette vanno lette così.
   92,6% col maestro sui soli esempi etichettati, 95,8% col maestro su tutti
   (maestro al 96,9%). La «conoscenza oscura» vale 2,4 punti, l’uso dei dati non
   etichettati 3,2, e il secondo sparirebbe se lo studente avesse già tutte le
-  etichette.
+  etichette; è un tetto, perché quelle etichette il maestro le ha viste.
 - La distillazione è l’unica delle tre leve in cui l’architettura finale si
   sceglie invece di ereditarla: la quantizzazione restituisce la rete che ha
   ricevuto con altri numeri dentro, la potatura la stessa rete con dei buchi, o
@@ -318,5 +326,5 @@ allora lo stesso esperimento, e le loro etichette vanno lette così.
 Le tre leve del capitolo finiscono qui, e hanno una cosa in comune da dire
 adesso: agiscono tutte e tre sul modello. Ma un modello che ci sta in
 memoria non è ancora un modello che risponde in fretta, e la parte che segue
-spiega perché siano due domande diverse, e a quali capitoli il libro affidi la
-seconda.
+spiega perché siano due domande diverse, e a quali capitoli tocchi rispondere
+alla seconda.

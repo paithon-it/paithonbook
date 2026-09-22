@@ -147,26 +147,29 @@ puro (identità, non si dimentica nulla) al decadimento scalare uniforme, a
 quello diagonale per-canale, alla correzione mirata di Householder che
 *cancella* la vecchia associazione prima di scrivere la nuova, fino alla
 combinazione dei due (decadimento globale *più* correzione mirata) del Gated
-DeltaNet {cite}`yang2024gateddelta`. Due precisazioni, perché la fila non è una
-scala regolare. La prima: i primi tre gradini sono nidificati (ciascuno
-contiene il precedente come caso particolare), ma il passo dal decadimento
-diagonale $\mathrm{Diag}(\boldsymbol{\alpha}_t)$ alla delta rule non è
-un'inclusione, perché quel decadimento e la correzione mirata di Householder
-sono capacità complementari e nessuna delle due contiene l'altra. La
-seconda: quello che il Gated DeltaNet unisce non è la coppia appena nominata.
-Il suo $\alpha_t$ è uno scalare, quindi mette insieme il decadimento
-*globale* con la delta rule, e il gating per canale della GLA resta fuori
-anche dall'ultimo gradino. Contiene la delta rule pura ($\alpha_t \to 1$), non
-il decadimento scalare puro: qui $\beta_t$ moltiplica anche la scrittura,
-quindi spegnendo la correzione si spegne pure quella e resta una memoria che
-decade a zero senza registrare più niente. Lungo tutta la catena, però, il
+DeltaNet {cite}`yang2024gateddelta`. La fila però non è una scala regolare: i
+primi tre gradini sono nidificati
+(ciascuno contiene il precedente come caso particolare), mentre il decadimento
+diagonale e la correzione mirata di Householder sono capacità complementari, e
+il Gated DeltaNet unisce la seconda al decadimento *scalare*, lasciando fuori
+quello per canale (i suoi due casi limite sono discussi nella {doc}`sezione
+sulla scrittura in memoria </AttenzioneLineare/scrivere-nella-memoria>`). Lungo
+tutta la catena, però, il
 conto è lo stesso: si paga in complessità della transizione (via via più
 difficile da rendere parallelizzabile) ciò che si guadagna in *recall*
-preciso. Non in *state tracking*: con gli intervalli dichiarati per
-$\alpha_t$ e $\beta_t$ gli
-autovalori della transizione restano tutti positivi, e serve estendere
-$\beta_t$ oltre $1$ perché ne compaia uno negativo e la memoria sappia tenere
-il conto.
+preciso. Non in *state tracking*. Grazzi e colleghi {cite}`grazzi2025unlocking`
+dimostrano che una ricorrenza lineare a precisione finita, le cui transizioni
+hanno autovalori tutti positivi, non risolve nemmeno la parità (dire se in una
+stringa di bit gli uni sono pari o dispari); con gli intervalli dichiarati per
+$\alpha_t$ e $\beta_t$ è il caso di ogni gradino della fila. La cura costa una
+riga: $\beta_t \in (0,2)$ invece di $(0,1)$, così che l'autovalore
+$1-\beta_t\lVert\mathbf{k}_t\rVert^2$ possa scendere fino a $-1$ (e, per
+Mamba, $\bar a_t \in (-1,1)$). Con transizioni che sono prodotti di fattori di
+questo tipo, ciascuno con autovalori in $[-1,1]$, una ricorrenza lineare
+riconosce qualunque linguaggio regolare; per contare modulo $3$, invece, una
+transizione triangolare non basta. È lo stesso segno meno che dà la sua
+capacità a RWKV-7, e la stessa esigenza a cui Mamba-3 risponde con le
+rotazioni.
 
 **3. Il grado di dipendenza dai dati.** La transizione può essere fissa
 (scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
@@ -177,8 +180,15 @@ decidere cosa tenere e cosa lasciar cadere in base a *ciò che si legge*, non
 solo a quanto tempo è passato. È il salto che separa un metal detector
 regolato una volta per tutte da una guardia che valuta caso per caso.
 
-Su questa mappa gli SSM non sono un'isola. La dualità stato-attenzione
-(SSD) di Mamba-2 {cite}`dao2024mamba2`, che abbiamo visto nella sezione su
+Su questa mappa gli SSM non sono un'isola, ma non ci stanno tutti allo stesso
+modo. Mamba-1 nella forma $\mathbf{S}_{t-1}(\text{transizione}_t)$ non entra:
+il suo decadimento $\exp(\Delta_{t,c}\, a_{c,n})$ ha un passo per canale del
+valore e un autovalore per dimensione dello stato, cioè un gate pieno applicato
+elemento per elemento, $\mathbf{S}_t = \mathbf{G}_t \odot \mathbf{S}_{t-1} +
+\dots$, più ricco anche di quello di GLA e che nessun fattore a destra
+riproduce {cite}`yang2024gla`. È la ricchezza a cui Mamba-2 rinuncia per
+tornare ai prodotti di matrici. La dualità stato-attenzione (SSD) di Mamba-2
+{cite}`dao2024mamba2`, che abbiamo visto nella sezione su
 Mamba-2, dimostra che un SSM con transizione scalare per identità
 ($\alpha_t \mathbf{I}$) è *esattamente* un'attenzione lineare mascherata: è la
 riga del decadimento scalare, raggiunta dal versante dei sistemi dinamici
@@ -278,7 +288,13 @@ pagliaio) e si chiede al modello di recuperarlo verbatim. In **MQAR**
 (*Multi-Query Associative Recall*) {cite}`arora2023zoology` si presentano molte
 coppie chiave-valore e
 si interroga il modello su chiavi arbitrarie. Sono proprio i compiti su cui la
-dimensione dello stato diventa il collo di bottiglia. I progressi nella
+dimensione dello stato diventa il collo di bottiglia, e il limite è dimostrato,
+non solo osservato: qualunque modello ricorrente che legga l'ingresso in modo
+causale ha bisogno di uno stato di $\Omega(N)$ bit per risolvere MQAR con $N$
+coppie {cite}`arora2024based`. Uno stato di taglia fissa fallisce quindi oltre
+una certa quantità di coppie, qualunque sia la sua transizione; l'attenzione,
+che tiene $O(N)$ coppie nella cache, lo risolve con un numero costante di
+strati. I progressi nella
 transizione aiutano (la delta rule di DeltaNet, che *riscrive* invece di
 accumulare, sposta in avanti la frontiera proprio perché usa meglio lo spazio
 disponibile) ma non spostano il tetto:
@@ -409,7 +425,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   cancellare di mira la vecchia voce non sono uno il perfezionamento
   dell'altro: fanno cose diverse, e c'è un'architettura che le usa tutt'e due
   insieme, il Gated DeltaNet. È DeltaNet con in più la manopola dello
-  sbiadire, quella che sbiadisce tutto in blocco; lo sbiadire casella per casella, invece, resta fuori anche da lui.
+  sbiadire.
 - La dualità di Mamba-2 {cite}`dao2024mamba2` dimostra che uno *state space
   model* che sbiadisce tutto in blocco è esattamente un'attenzione lineare che
   guarda solo all'indietro e che per giunta sbiadisce man mano che si

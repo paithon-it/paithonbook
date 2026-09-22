@@ -14,21 +14,25 @@ tornare indietro, e quello che esce è una fotografia. Per valutare: si
 manda avanti la fotografia, si legge quanto è probabile il punto in cui è
 finita, e si corregge di un fattore che diremo fra poco.
 
-Questa famiglia si chiama dei **flussi normalizzanti**, e le due parole vanno
-prese una per volta. «Normalizzante» qui non vuol dire «che fa venire uno»:
-vuol dire «che porta verso la normale», cioè verso la gaussiana. «Flusso» è il
+Questa famiglia si chiama dei **flussi normalizzanti**, e il primo aggettivo
+circola con due letture. Rezende e Mohamed, che hanno reso popolare il nome, lo
+spiegano con il risultato: in fondo alla catena di trasformazioni si ottiene
+ancora una distribuzione di probabilità valida, normalizzata, la cui area fa
+uno. Nei lavori di Tabak da cui il principio viene, «normalizzare» vuol dire
+invece portare i dati verso la normale, cioè verso la gaussiana. «Flusso» è il
 paragone con un fluido, perché la nuvola dei dati non salta da una forma
 all'altra, si sposta un poco alla volta, una trasformazione dopo l'altra.
 
-Resta da fissare un verso, perché i due sensi hanno nomi diversi e si
-confondono con facilità. La definizione è quella di Danilo Rezende e Shakir
-Mohamed {cite}`rezende2015variational`, «una densità iniziale semplice
-trasformata in una più complessa applicando una successione di trasformazioni
-invertibili finché non si raggiunge la complessità desiderata», ed è scritta
-nel senso della generazione: dalla gaussiana ai dati. A dare il nome è il senso
-opposto, quello che si percorre per calcolare la probabilità, dove sono le
-trasformazioni inverse a portare i dati verso la normale. L'idea e la parola
-vengono da prima, dai lavori di Esteban Tabak e colleghi sulla stima di densità
+Resta da fissare un verso, perché i due sensi hanno nomi diversi e si confondono
+con facilità. La definizione è quella di Danilo Rezende e Shakir Mohamed
+{cite}`rezende2015variational`, «una densità iniziale semplice trasformata in
+una più complessa applicando una successione di trasformazioni invertibili
+finché non si raggiunge la complessità desiderata», ed è scritta nel senso della
+generazione: dalla gaussiana ai dati. Il senso opposto, quello che si percorre
+per calcolare la probabilità, è quello in cui le trasformazioni inverse portano
+i dati verso la normale, ed è lì che vive la seconda lettura del nome. L'idea e
+la parola vengono da prima, dai lavori di Esteban Tabak e colleghi sulla stima
+di densità
 {cite}`tabak2010density,tabak2013family`, che sono esattamente quelli che
 Rezende e Mohamed citano quando introducono il principio.
 
@@ -98,15 +102,18 @@ area sotto la densita' di y, senza fattore: 3.000  <- non e' una probabilita'
 ```
 
 In una dimensione il fattore è lo stiramento, cioè di quanto la trasformazione
-allunga o accorcia. Attenzione al verso, perché è la trappola, e la trappola
-non sta nello stiramento: sta in quale delle due densità si sta chiedendo. Sul
-tavolo abbiamo chiesto la densità di ciò che esce, e stirando è scesa; qui si
-chiede quella di ciò che entra, cioè della fotografia, mentre la macchina la
-stira verso la gaussiana, e allora quel fattore va moltiplicato. In molte
-dimensioni la trasformazione può allungare in una direzione, accorciare in
-un'altra e ruotare il tutto, e allora il fattore giusto è quello che dice di
-quante volte è cambiato il volume: il determinante della tabella delle
-derivate, la *jacobiana*.
+allunga o accorcia. Attenzione al verso, perché è la trappola: dipende da quale
+delle due densità si sta chiedendo. Sul tavolo abbiamo chiesto quella di ciò che
+esce, e stirando è scesa da 1 a un terzo. Rifacciamo la domanda dall'altra
+parte: di là, sul tavolo largo, la densità la conosciamo, un terzo, e vogliamo
+quella di qua. Il tratto di qua è tre volte più stretto e contiene la stessa
+acqua, quindi l'acqua sta tre volte più alta: un terzo per tre fa 1. Con la
+fotografia siamo in questa seconda situazione: la gaussiana è il di là, di cui
+sappiamo tutto, la fotografia è il di qua, e il fattore di stiramento va
+moltiplicato. In molte dimensioni la trasformazione può allungare in una
+direzione, accorciare in un'altra e ruotare il tutto, e allora il fattore giusto
+è quello che dice di quante volte è cambiato il volume: il determinante della
+tabella delle derivate, la *jacobiana*.
 
 `````{tab} Elementare
 
@@ -236,12 +243,43 @@ mano. Da un miliardo di operazioni a una moltiplicazione per ogni coordinata
 scalata, e le coordinate scalate sono metà: sulla figurina di 32 pixel per lato
 di poco fa, cinquecentododici invece di un miliardo.
 
-La rete che decide non ha vincoli. Ed è il punto più bello, quello che
-sfugge a una prima lettura: la rete che, guardando la prima metà, produce scala
-e traslazione non deve essere invertibile, e infatti non lo è. Può essere
+La rete che decide non ha vincoli. Ed è il punto più bello, quello che sfugge a
+una prima lettura: la rete che, guardando la prima metà, produce scala e
+traslazione non deve essere invertibile, e infatti non lo è. Può essere
 qualunque cosa, profonda quanto si vuole, con le funzioni di attivazione che si
 vogliono. L'invertibilità del flusso non sta nel pezzo che impara: sta nel modo
 in cui i pezzi sono montati.
+
+In formule, con $\mathbf{x} = (\mathbf{x}_a, \mathbf{x}_b)$ e
+$\mathbf{s}, \mathbf{t}$ due reti qualsiasi che leggono $\mathbf{x}_a$:
+
+$$
+\mathbf{z}_a = \mathbf{x}_a, \qquad
+\mathbf{z}_b = \mathbf{x}_b \odot \exp\big(\mathbf{s}(\mathbf{x}_a)\big)
+  + \mathbf{t}(\mathbf{x}_a),
+\qquad
+\mathbf{J} = \begin{pmatrix} \mathbf{I} & \mathbf{0} \\
+  \partial \mathbf{z}_b / \partial \mathbf{x}_a
+  & \operatorname{diag}\big(\exp \mathbf{s}(\mathbf{x}_a)\big) \end{pmatrix},
+$$
+
+dove $\odot$ è il prodotto elemento per elemento e $\mathbf{J}$ la jacobiana,
+triangolare a blocchi. Il blocco in basso a sinistra, l'unico che contiene le
+derivate delle reti, non entra nel determinante, quindi
+$\log\lvert\det\mathbf{J}\rvert = \sum_j s_j(\mathbf{x}_a)$; e l'inversa,
+$\mathbf{x}_b = \big(\mathbf{z}_b - \mathbf{t}(\mathbf{z}_a)\big) \odot \exp\big(-\mathbf{s}(\mathbf{z}_a)\big)$,
+costa quanto l'andata. RealNVP {cite}`dinh2017density` alterna partizioni a
+scacchiera e per canali, e a ogni scala fa uscire metà delle coordinate verso il
+latente (l'architettura *multi-scala*), così che gli strati più profondi
+lavorano su tensori più piccoli. Uno strato di accoppiamento è poi il caso
+estremo di una famiglia più larga, i flussi autoregressivi: se ogni coordinata è
+scalata e traslata in funzione di tutte quelle che la precedono,
+$z_i = x_i\,e^{s_i(\mathbf{x}_{<i})} + t_i(\mathbf{x}_{<i})$, la jacobiana è
+triangolare per intero e il determinante resta il prodotto delle scale. È la
+fattorizzazione della sezione precedente riletta come flusso (il MAF di
+Papamakarios e colleghi {cite}`papamakarios2017masked`): valutare costa un
+passaggio, generare ne costa $D$, e l'IAF {cite}`kingma2016improved` scambia i
+due costi.
 
 ## Un flusso vero, sulle due lune
 
@@ -390,9 +428,11 @@ modelli a energia </ModelliEnergia/overview>`, dove quel conto non si può fare
 e tutto il capitolo gira attorno a come evitarlo. Le ultime due dicono che il
 modello ha imparato dov'è la roba: sulle lune assegna circa $-1{,}3$, su punti
 presi a caso nel quadrato circa $-169$. Fra i due ci sono quasi
-centosessantotto nat, e sono logaritmi: in scala normale vuol dire che la
-densità tipica sulle lune sta più di settanta ordini di grandezza sopra quella
-di un punto pescato a caso.
+centosessantotto unità di logaritmo naturale (si chiamano nat): ognuna vale una
+moltiplicazione per circa 2,7, e centosessantotto di quelle moltiplicazioni
+fanno un numero con più di settanta zeri. In scala normale, cioè, la densità
+tipica sulle lune sta più di settanta ordini di grandezza sopra quella di un
+punto pescato a caso.
 
 Quello che le cinque righe dicono con i numeri si può anche guardare. La
 {numref}`fig-flusso-lune` segue gli stessi punti mentre attraversano i sei
@@ -429,22 +469,30 @@ con una **convoluzione invertibile $1 \times 1$**, che è il modo elegante di
 dire «una permutazione appresa, anzi qualcosa di più generale di una
 permutazione, e comunque una tabella che si sa invertire e di cui si sa
 calcolare il determinante». Il guadagno lo misurano gli autori confrontando i
-due modelli interi: su CIFAR-10 il costo passa dai $3{,}49$ bit per dimensione
-di RealNVP ai $3{,}35$ di Glow, che oltre alla convoluzione cambia anche la
-normalizzazione interna e il modo di dividere le coordinate. Con la stessa
-ricetta escono i volti a $256 \times 256$ del 2018, quelli che si trasformano
-l'uno nell'altro tirando una riga nello spazio latente.
+due modelli interi: su CIFAR-10, una raccolta di piccole fotografie a colori, il
+costo passa dai $3{,}49$ bit per dimensione di RealNVP (quanti bit servono in
+media per scrivere ciascun numero dell'immagine: meno è meglio) ai $3{,}35$ di
+Glow, che oltre alla convoluzione cambia anche la normalizzazione interna e il
+modo di dividere le coordinate. Con la stessa ricetta escono i volti a
+$256 \times 256$ del 2018, quelli che si trasformano l'uno nell'altro tirando
+una riga nello spazio latente.
 
-Sulle immagini, però, i flussi hanno perso, e non per un dettaglio di
-ingegneria: per il vincolo di partenza. Una trasformazione invertibile conserva
-la dimensione, quindi un flusso su fotografie di $512 \times 512$ a colori deve
-finire con 786.432 numeri, tanti quanti ne sono entrati, senza poterne buttare
-via uno. Confrontalo con la diffusione latente del capitolo precedente, che
-sulla stessa fotografia di numeri ne muove 16.384 perché ha il permesso di
-comprimere prima: quarantotto volte meno, ed è lo stesso fattore 48 che quel
-capitolo aveva già contato. Quel permesso i flussi non ce l'hanno per
-costruzione. È il prezzo dell'esattezza, scritto nella definizione stessa della
-famiglia.
+Sulle immagini, però, i flussi hanno perso la corsa, e il vincolo di partenza
+lo spiega meno di quanto sembri. Una trasformazione invertibile conserva la
+dimensione, quindi un flusso sui pixel di una fotografia di $512 \times 512$ a
+colori lavora su 786.432 numeri, senza poterne buttare via uno. La dimensione
+però la conserva anche la diffusione: il latente rumoroso ha la forma di quello
+pulito, e i 16.384 numeri della diffusione latente del capitolo precedente
+(quarantotto volte meno, lo stesso fattore 48 che quel capitolo aveva già
+contato) li ottiene l'autoencoder messo davanti. Lo stesso autoencoder si può
+mettere davanti a un flusso, ed è la strada con cui STARFlow, nel 2025, ha
+portato un flusso vicino alla qualità della diffusione {cite}`gu2025starflow`;
+il prezzo è quello del trasloco sui token della sezione precedente, una
+verosimiglianza che vale per il latente e non più per l'immagine. Il costo vero
+del vincolo è l'espressività di ogni strato: un passo invertibile, con un
+determinante che si legge, deforma poco, e per piegare una gaussiana in una
+distribuzione di fotografie ne servono pile lunghe e costose. È il prezzo
+dell'esattezza, e si paga in profondità più che in dimensione.
 
 `````{tab} Elementare
 

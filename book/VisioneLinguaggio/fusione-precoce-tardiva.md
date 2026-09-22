@@ -96,7 +96,11 @@ rende pensabile trattarle nello stesso Transformer.
 Un catalogo di 8.192 tessere diverse, ognuna con il suo numero: è tutto quello
 che il mosaicista ha in magazzino, e non sono tutti i colori del mondo. Per
 riprodurre una fotografia la divide in quadratini di 16 pixel per lato, e per
-ogni quadratino sceglie dal catalogo la tessera che gli somiglia di più. Alla
+ogni quadratino prima lo descrive con una scheda di pochi numeri, e poi
+sceglie dal catalogo la scheda che somiglia di più alla sua. Il catalogo non
+l'ha comprato: se l'è costruito guardando migliaia di foto, tenendo le schede
+che servivano di più. E per rifare la foto c'è un secondo artigiano, che dal
+numero di catalogo ridisegna il quadratino. Alla
 fine, invece della fotografia, ha una lista di numeri di catalogo: uno per
 quadratino, letti riga per riga come si legge una pagina.
 
@@ -134,10 +138,24 @@ $$
 k^\star = \arg\min_{k \in \{1, \dots, K\}} \lVert \mathbf{z} - \mathbf{e}_k \rVert^2,
 $$
 
-con $k^\star$ token della porzione. L’$\arg\min$ non è differenziabile, e il
-gradiente non attraverserebbe la quantizzazione: lo si aggira con lo
-*straight-through estimator*, cioè copiando il gradiente del decoder tal quale
-sull'uscita dell'encoder, come se l'arrotondamento fosse l'identità. Quel che
+con $k^\star$ token della porzione e $\mathbf{z}_q = \mathbf{e}_{k^\star}$ il
+prototipo che lo sostituisce. L’$\arg\min$ non è differenziabile, e lo si
+aggira con lo *straight-through estimator*: il gradiente del decoder si copia
+tal quale su $\mathbf{z}$, come se l'arrotondamento fosse l'identità. Così
+però ai prototipi non arriva niente, e la perdita del VQ-VAE
+{cite}`oord2017neural` aggiunge due termini,
+
+$$
+\mathcal{L} = -\log p(\mathbf{x} \mid \mathbf{z}_q)
++ \lVert \mathrm{sg}[\mathbf{z}] - \mathbf{e}_{k^\star} \rVert^2
++ \beta\,\lVert \mathbf{z} - \mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2,
+$$
+
+dove $\mathrm{sg}$ blocca il gradiente: il secondo termine porta il prototipo
+verso l'uscita dell'encoder, il terzo (con $\beta = 0{,}25$ nel lavoro
+originale) impedisce all'encoder di allontanarsi dai prototipi. Il guasto
+tipico è il collasso del codebook, con molte voci che non vengono mai scelte.
+Quel che
 cambia rispetto al suono è la forma del dominio: non una
 sequenza monodimensionale di frame, ma un reticolo bidimensionale di patch, che
 va linearizzato (di norma in ordine raster) per diventare una sequenza.
@@ -164,7 +182,10 @@ prossima sezione, sulla risoluzione).
 ## Dove si incontrano i due flussi
 
 Con i token visivi in mano possiamo dare alle due parole del titolo un
-significato preciso. La differenza fra fusione tardiva e fusione
+significato preciso. Delle tre strade dell'apertura del capitolo qui ne bastano
+due: la mappa di CLIP e l'occhio innestato stanno tutti e due dal lato tardivo,
+perché in entrambi due modelli cresciuti separati si incontrano tardi, e quel
+che ne esce è soltanto testo. La differenza fra fusione tardiva e fusione
 precoce non sta in quanta informazione si scambiano immagine e testo, ma in
 quanto presto cominciano a scambiarsela, e se a maneggiarle sia un pezzo solo
 di rete o due pezzi diversi, cresciuti separati.
@@ -259,7 +280,12 @@ A leggerla così, la fusione precoce sembra la cosa ovvia da fare, e viene da
 chiedersi perché la strada battuta sia stata a lungo l'altra. Le ragioni sono
 due, ed entrambe dicono qualcosa sui modelli in generale.
 
-La prima è economica ed è la più banale: la fusione tardiva riusa. Un encoder
+L'idea in sé è vecchia quanto CLIP: DALL·E {cite}`ramesh2021zero`, nel
+2021, metteva già 256 token di testo e 1.024 token d'immagine, da un codebook
+di 8.192 voci, in un unico Transformer, ma solo per generare immagini dal
+testo. Estenderla a un modello che legga e scriva entrambe le cose, in ordine
+qualsiasi, si è scontrato con due ostacoli. Il primo è economico ed è il più
+banale: la fusione tardiva riusa. Un encoder
 visivo pre-addestrato e un modello di linguaggio pre-addestrato esistono già,
 sono costati a qualcun altro, e il connettore che li unisce si addestra con
 risorse alla portata di un laboratorio universitario. La fusione precoce non
@@ -277,8 +303,9 @@ fetta importante del calcolo è già stata spesa.
 `````{tab} Elementare
 
 Due cantanti si dividono un microfono e un amplificatore, con una manopola del
-volume sola. Quel che arriva in fondo alla sala è chi dei due sta sopra
-all'altro: alzarli tutti e due insieme non cambia niente. Il primo canta piano,
+volume sola. Per chi ascolta conta chi dei due sta sopra all'altro: se alzano
+la voce tutti e due insieme la canzone resta la stessa, solo più forte, e in
+sala nessuno protesta. Il primo canta piano,
 il secondo forte. Per farsi sentire, il primo alza un po’ la voce; allora il
 secondo, per non essere coperto, alza la sua; e il primo di nuovo. Nessuno dei
 due sta facendo niente di sbagliato, ciascuno cerca solo di farsi sentire, ma
@@ -527,7 +554,10 @@ le patch, comprese quelle che vengono dopo, e vede tutto il testo che precede.
 Nessuna riga di testo, invece, guarda avanti. In PyTorch questa matrice si
 passa a `nn.MultiheadAttention` come `attn_mask`, con l'avvertenza che lì la
 convenzione è rovesciata (per una maschera booleana, `True` significa
-*vietato*): si passa `torch.from_numpy(~m)`.
+*vietato*): si passa `torch.from_numpy(~m)`. Con
+`F.scaled_dot_product_attention`, invece, `True` significa *consentito*, e si
+passa `m` così com'è: le due funzioni della stessa libreria usano convenzioni
+opposte, e l'errore non dà nessun avviso.
 
 ## Quando serve un vocabolario comune
 

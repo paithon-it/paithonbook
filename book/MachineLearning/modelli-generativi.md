@@ -98,8 +98,8 @@ $$
 
 Il nome «generativo» viene da una proprietà che il discriminativo non ha:
 avendo $p(\mathbf{x} \mid y)$ si possono campionare esempi nuovi di una
-classe. Il modello non riassume i dati, li sa rifare, ed è la stessa parola che
-il libro userà per i modelli di generazione di immagini e testo, dove la
+classe. Il modello non riassume i dati, li sa rifare, ed è la stessa parola
+dei modelli che generano immagini e testo, dove la
 famiglia è la stessa e cambia solo quanto è espressiva la $p(\mathbf{x} \mid y)$.
 
 Le conseguenze pratiche di modellare $p(\mathbf{x}\mid y)$ invece di
@@ -146,7 +146,8 @@ virginica*, «differisce dagli altri due campioni per non essere stata raccolta
 nella stessa colonia naturale», il che «potrebbe alterare parecchio sia le
 medie sia le loro variabilità». Fisher cercava la combinazione delle quattro
 misure che separasse al meglio le specie, e il metodo che ne uscì porta il suo
-nome. È lo stesso `iris` che il capitolo sull'interpretabilità darà in pasto a
+nome. È lo stesso `iris` che il {doc}`capitolo sull'interpretabilità
+</Interpretabilita/overview>` darà in pasto a
 un albero, ed è probabilmente il dataset più riusato della storia della
 statistica.[^eugenics]
 
@@ -155,8 +156,8 @@ statistica.[^eugenics]
     bibliografico e non un dettaglio da nascondere: la statistica inferenziale
     del primo Novecento nasce in buona parte dentro quel programma di ricerca,
     e i metodi che ne uscirono sono validi indipendentemente da esso. Il
-    capitolo sull'AI responsabile torna sul rapporto fra strumenti statistici e
-    usi che se ne fanno.
+    {doc}`capitolo sull'AI responsabile </AIResponsabile/equita-e-bias>` torna
+    sul rapporto fra strumenti statistici e usi che se ne fanno.
 
 `````{tab} Elementare
 
@@ -171,7 +172,7 @@ accortezze. La prima è misurare la distanza nella forma giusta: se le monete
 variano molto in peso e poco in diametro, un grammo di differenza conta meno di
 un millimetro. La seconda è la solita correzione per quanto sono comuni i due
 tagli, che non sparisce nemmeno qui. Il confine che ne esce è una retta, ed è
-il metodo di Fisher, l'analisi discriminante lineare, LDA per gli amici.
+il metodo di Fisher, l'analisi discriminante lineare, o LDA.
 
 Se invece i due tagli hanno forme diverse (uno varia tanto in peso, l'altro
 tanto in diametro) la vicinanza al centro da sola inganna. Un taglio molto
@@ -241,9 +242,24 @@ Tolto quello, quel che resta è affine in $\mathbf{x}$: il confine è un
 iperpiano. È anche l'enunciato che il collaudo numerico verifica, dato che
 `decision_function` restituisce proprio quella differenza.
 
-Da qui il nome: l'analisi discriminante di Fisher si chiama *lineare* perché
-lineare le viene il confine, e la linearità non è un'ipotesi imposta ma una
-conseguenza dell'aver condiviso la covarianza.
+Il nome ha una storia più lunga di questa derivazione. Fisher nel 1936 non
+suppone classi gaussiane: cerca la direzione $\mathbf{a}$ che massimizza il
+rapporto fra la dispersione delle medie di classe e quella dentro le classi,
+
+$$
+J(\mathbf{a}) = \frac{\mathbf{a}^{\!\top}\mathbf{S}_B\,\mathbf{a}}{\mathbf{a}^{\!\top}\mathbf{S}_W\,\mathbf{a}},
+$$
+
+dove $\mathbf{S}_B$ è la covarianza delle medie di classe e $\mathbf{S}_W$ la
+covarianza comune dentro le classi; per due classi il massimo è in
+$\mathbf{a} \propto \mathbf{S}_W^{-1}(\boldsymbol{\mu}_1 - \boldsymbol{\mu}_0)$,
+la stessa direzione che la regola bayesiana dà con
+$\boldsymbol{\Sigma} = \mathbf{S}_W$. Per Fisher la linearità era dunque
+un'ipotesi, perché la regola è una combinazione lineare per costruzione; la
+lettura gaussiana, venuta dopo, la trasforma in una conseguenza dell'aver
+condiviso la covarianza. Con $K$ classi $\mathbf{S}_B$ ha rango al più $K-1$, e
+il quoziente ha al più $K-1$ direzioni con valore non nullo: è da qui che viene
+la riduzione a $K-1$ dimensioni.
 
 Il conto dei parametri spiega il compromesso. Con $d$ feature e $K$ classi, la
 LDA stima $K$ medie più una covarianza, cioè $Kd + d(d+1)/2$ numeri; la QDA
@@ -455,16 +471,22 @@ della famiglia generativa, non come classificatore di documenti.
 Resta la domanda che decide se questa famiglia serve ancora, e ha una risposta
 misurabile. Andrew Ng e Michael Jordan la formulano nel 2001
 {cite}`ng2001discriminative`, e il confronto che scelgono è il più pulito
-possibile: naive Bayes contro regressione logistica, cioè due modelli che
-arrivano alla stessa identica formula per decidere, e differiscono solo su
-come ne ricavano i numeri dai dati.
+possibile: naive Bayes gaussiano contro regressione logistica. Nel loro naive
+Bayes ogni caratteristica ha una media per classe e una varianza sola, comune
+alle due classi, e con questa scelta la posteriore è esattamente una sigmoide
+di una funzione affine: i due modelli arrivano alla stessa formula per
+decidere, e differiscono solo su come ne ricavano i numeri dai dati.
+`GaussianNB` di scikit-learn stima invece una varianza per classe, e il suo
+confine è una quadrica; per rifare il confronto di Ng e Jordan la varianza va
+messa in comune.
 
 Il risultato ha la forma di una gara con due tempi. Il generativo parte meglio:
 con pochi esempi è già vicino al meglio che sa fare. Il discriminativo parte
 peggio, ma il meglio che sa fare è più alto, e con abbastanza esempi ci
 arriva. Su pochi dati vince il primo; su tanti, il secondo.
 
-Rifacendo quel confronto con una colonna in più, le conclusioni cambiano.
+Rifacendo quel confronto con una colonna in più, la logistica come la si usa
+oggi, si vede quanto ne resta.
 
 ```python
 import numpy as np
@@ -480,6 +502,12 @@ def dati(n, r):
     y = r.integers(0, 2, n)
     return r.normal(0, 1, (n, D)) + np.outer(y, MU), y
 
+def nb_condiviso(X, y):
+    """Il naive Bayes di Ng e Jordan: una varianza per colonna, comune alle classi."""
+    nb = GaussianNB().fit(X, y)
+    nb.var_[:] = (X - nb.theta_[y]).var(axis=0)
+    return nb
+
 X_test, y_test = dati(20_000, np.random.default_rng(999))
 
 print(f"{'n':>6} {'naive Bayes':>12} {'logistica (default)':>21} {'logistica nuda':>16}")
@@ -490,7 +518,7 @@ for n in (20, 40, 80, 200, 600, 2000):
         X, y = dati(n, r)
         if len(np.unique(y)) < 2:
             continue
-        a.append(GaussianNB().fit(X, y).score(X_test, y_test))
+        a.append(nb_condiviso(X, y).score(X_test, y_test))
         b.append(LogisticRegression(max_iter=5000).fit(X, y).score(X_test, y_test))
         c.append(LogisticRegression(C=1e6, max_iter=5000).fit(X, y).score(X_test, y_test))
     print(f"{n:6d} {np.mean(a):12.3f} {np.mean(b):21.3f} {np.mean(c):16.3f}")
@@ -498,31 +526,33 @@ for n in (20, 40, 80, 200, 600, 2000):
 
 ```text
      n  naive Bayes   logistica (default)   logistica nuda
-    20        0.640                 0.708            0.663
-    40        0.710                 0.746            0.693
-    80        0.778                 0.771            0.722
-   200        0.828                 0.817            0.796
-   600        0.851                 0.847            0.846
-  2000        0.860                 0.859            0.859
+    20        0.714                 0.708            0.663
+    40        0.762                 0.746            0.693
+    80        0.811                 0.771            0.722
+   200        0.843                 0.817            0.796
+   600        0.857                 0.847            0.846
+  2000        0.862                 0.859            0.859
 ```
 
 La terza colonna è la logistica senza regolarizzazione, che è quella del
 confronto originale, e su di lei il fenomeno si vede intero: a $n = 80$ il naive
-Bayes sta a $0{,}778$ e lei a $0{,}722$, cinque punti e mezzo sotto; a $n = 200$
-sono ancora tre punti; da $n = 600$ in poi si raggiungono e restano insieme. Con
+Bayes sta a $0{,}811$ e lei a $0{,}722$, quasi nove punti sotto; a $n = 200$
+sono ancora quasi cinque; da $n = 600$ in poi si avvicinano fino quasi a
+toccarsi. Con
 quaranta caratteristiche e ottanta esempi la logistica ha due esempi per
 parametro, e con così poco non impara; il naive Bayes ne stima anche di più
-(centosessanta: una media e una varianza per classe e per colonna), ma li stima
+(centoventi: una media per classe e per colonna, e una varianza per colonna),
+ma li stima
 uno alla volta, ciascuno con tutti i dati della sua classe, e se la cava.
 
 La seconda colonna è la logistica come la si usa oggi, cioè col
 `penalty="l2"` che scikit-learn applica per default, ed è il motivo per cui
-questo esperimento conviene rifarlo invece di citarlo. Quel freno rimedia
-quasi tutto lo svantaggio: a $n = 20$ e $n = 40$ la logistica regolarizzata
-sta davanti al naive Bayes, e da $n = 80$ in poi le tre colonne si
-assottigliano fino a coincidere. Il fenomeno del 2001 è reale e si riproduce;
-ma il rimedio che gli si oppone oggi è acceso per impostazione predefinita, e
-chi confronta i due modelli con i default della libreria non lo vede.
+questo esperimento conviene rifarlo invece di citarlo. Quel freno accorcia il
+divario senza chiuderlo: a $n = 80$ il naive Bayes resta quattro punti sopra
+($0{,}811$ contro $0{,}771$), a $n = 200$ due e mezzo, a $n = 600$ uno, e le
+colonne coincidono solo a $n = 2000$. Il fenomeno del 2001 sopravvive ai
+default di oggi; la regolarizzazione ne cambia la misura, e il verso resta
+quello.
 
 Una precisazione su questa tabella, che ne dichiara il limite. I dati qui sono
 stati fabbricati a feature indipendenti, cioè nel mondo in cui l'ipotesi del
@@ -530,12 +560,12 @@ naive Bayes è vera. Questo rende visibile il primo tempo della gara, la
 partenza rapida del generativo, e rende invisibile il secondo: se il modello
 del naive Bayes è quello giusto, i due metodi hanno lo stesso tetto, e quel
 tetto è il massimo teorico del problema ($0{,}866$ di accuratezza, che si
-calcola). Infatti l'ultima riga li dà appaiati a $0{,}860$ e $0{,}859$, e lì
+calcola). Infatti l'ultima riga li dà appaiati a $0{,}862$ e $0{,}859$, e lì
 nessuno dei due supera l'altro: l'asintoto più alto del discriminativo si vede
-solo quando l'ipotesi naive è falsa. Rifacendo tutto con feature correlate a
-$0{,}25$ il naive Bayes resta indietro a ogni numerosità, perché al vantaggio
-di stimare poco si somma il costo di un'ipotesi falsa. Il vantaggio dei pochi
-dati è reale; non è un salvacondotto.
+solo quando l'ipotesi naive è falsa. Con feature correlate l'asintoto del naive
+Bayes scende sotto il massimo teorico, e con abbastanza esempi la logistica lo
+supera: al vantaggio di stimare poco si somma il costo di un'ipotesi falsa. Il
+vantaggio dei pochi dati è reale; non è un salvacondotto.
 
 ## In pratica
 
@@ -626,8 +656,9 @@ Quando conviene prenderli in considerazione, in concreto:
   scegliere la classe basta l’ordine, non il valore esatto. Le sue
   probabilità però non vanno usate come probabilità: sono troppo sicure di sé.
 - Il generativo dà il meglio con pochi dati: a ottanta esempi e quaranta
-  colonne il naive Bayes sta cinque punti e mezzo sopra la logistica non
-  regolarizzata. A seicento esempi il vantaggio è finito.
+  colonne il naive Bayes sta quasi nove punti sopra la logistica non
+  regolarizzata, e quattro sopra quella con i freni di oggi. A seicento esempi
+  il vantaggio è quasi finito.
 ```
 
 `````
@@ -659,13 +690,15 @@ Quando conviene prenderli in considerazione, in concreto:
   ottimalità sotto perdita $0$–$1$ è più ampia di quella in cui l'ipotesi vale
   {cite}`domingos1997optimality`, perché conta l’$\arg\max$ e non il valore; le
   posteriori restano sovrasicure e vanno ricalibrate.
-- Ng e Jordan {cite}`ng2001discriminative`: il generativo converge al
-  proprio asintoto molto prima, ma quello del discriminativo è più alto quando
-  l'ipotesi del generativo è falsa. Il confronto a feature indipendenti misura
-  solo la prima metà, perché lì i due asintoti coincidono
-  (con l'accuratezza di Bayes, $0{,}866$). Il confronto è contro la logistica
-  non regolarizzata; con l’$\ell_2$ di default il divario quasi sparisce, cioè
-  il fenomeno è del 2001 e i default di oggi lo mascherano.
+- Ng e Jordan {cite}`ng2001discriminative`, con un naive Bayes a varianza
+  comune fra le classi (la coppia esatta della logistica): il generativo si
+  avvicina al proprio asintoto con un numero di esempi che cresce come
+  $O(\log d)$ nel numero di feature, il discriminativo ne chiede $O(d)$; in
+  cambio l'asintoto del discriminativo ha errore più basso quando l'ipotesi del
+  generativo è falsa. A feature indipendenti i due asintoti coincidono
+  (accuratezza di Bayes $0{,}866$) e si vede solo la prima metà. L’$\ell_2$ di
+  default riduce il divario senza annullarlo: $0{,}811$ contro $0{,}771$ a
+  $n = 80$.
 - La LDA è anche una riduzione di dimensionalità supervisionata su al più
   $K-1$ direzioni, ed è la mistura gaussiana della sezione sul clustering con le
   variabili latenti osservate: resta il solo passo M, eseguito una volta.

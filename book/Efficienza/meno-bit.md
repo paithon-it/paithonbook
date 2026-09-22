@@ -84,10 +84,32 @@ numero. (Troncare $q$ all’intervallo rappresentabile è una prudenza che con l
 scala presa dal massimo non scatta mai: serve soltanto se la scala viene da
 altro, per esempio da una calibrazione fatta su dati diversi.)
 
-Quello che conta però è l’errore sull’uscita, non quello sul peso. Per un
-prodotto scalare $\sum_i w_i x_i$ l’errore è $\sum_i (\hat{w}_i - w_i) x_i$,
-una somma di $n$ termini che, se gli arrotondamenti sono approssimativamente
-indipendenti e a media nulla, cresce come $\sqrt{n}$.
+Quello che conta però è l’errore sull’uscita, non quello sul peso. Se il
+passo è piccolo rispetto alla dispersione dei pesi, l’errore di arrotondamento
+$e = \hat{w} - w$ si comporta come una variabile uniforme su
+$[-s/2,\, s/2]$, indipendente dal peso, con
+
+$$
+\mathbb{E}[e] = 0, \qquad \operatorname{Var}(e) = \frac{1}{s}\int_{-s/2}^{s/2} u^2\,\mathrm{d}u = \frac{s^2}{12}.
+$$
+
+Per un prodotto scalare $\sum_i w_i x_i$ l’errore è $\sum_i e_i x_i$; se gli
+$e_i$ sono indipendenti fra loro e dagli ingressi, la sua varianza è
+$n\,\frac{s^2}{12}\,\mathbb{E}[x^2]$, e la sua ampiezza cresce come $\sqrt{n}$.
+Se anche pesi e ingressi sono indipendenti e a media nulla, il segnale ha
+varianza $n\,\sigma_w^2\,\mathbb{E}[x^2]$, e l’errore relativo sull’uscita vale
+
+$$
+\frac{s}{\sqrt{12}\,\sigma_w} = \frac{\max_i |w_i|}{\sqrt{12}\,\sigma_w\,(2^{b-1}-1)},
+$$
+
+che non dipende da $n$ e si dimezza a ogni bit in più (i circa sei decibel per
+bit della teoria del segnale). La formula anticipa la tabella degli errori per
+numero di bit: su $256 \times 512$ pesi gaussiani il massimo vale circa
+$4{,}6\,\sigma_w$, e a quattro bit dà $4{,}6/(7\sqrt{12}) \approx 19\%$; con una
+scala ogni sessantaquattro pesi al massimo globale si sostituisce quello tipico
+di un gruppo, circa $2{,}6\,\sigma_w$, e il rapporto fra i due è il fattore
+costante fra le due colonne.
 
 Perché l’errore relativo non si accumuli serve però che anche il segnale
 cresca come $\sqrt{n}$, e questa è un’ipotesi sugli ingressi, non sugli
@@ -100,11 +122,13 @@ migliora; quando invece l’ingresso è quasi ortogonale ai pesi il segnale
 quasi si annulla e l’errore relativo peggiora di molto: fra i due estremi, a
 parità di errore sui pesi, ci sono due ordini di grandezza.
 
-L’ipotesi di media nulla sugli arrotondamenti invece regge, e si può
-controllare: con una scala sola per tutta la matrice, fino a tre bit lo scarto
-medio sta sotto il millesimo del passo e la correlazione fra errore e peso è
-nulla. A due bit crolla (correlazione
-$-0{,}76$), ma a due bit è già crollato tutto.
+L’ipotesi di media nulla sugli arrotondamenti invece regge finché il passo è
+piccolo rispetto alla dispersione dei pesi, e a quattro o tre bit lo è:
+l’errore resta centrato, scorrelato dal peso e con la varianza $s^2/12$ del
+modello uniforme. Cade quando i livelli sono così pochi che l’arrotondamento
+diventa una funzione del peso: a due bit i livelli sono $-s$, $0$ e $s$, quasi
+tutti i pesi finiscono sullo zero e l’errore è in pratica $-w$, fortemente
+anticorrelato con il peso; ma a due bit è già crollato tutto.
 
 Il punto delicato è la definizione della scala, perché $s$ è fissata dal
 massimo in valore assoluto del gruppo di numeri che condividono la scala. Un
@@ -330,8 +354,12 @@ dimensioni) e il metodo qui sotto. Poiché la scala di quantizzazione è fissata
 dal massimo, quelle dimensioni comprimono tutte le altre in pochi livelli.
 
 Il metodo che ne è nato ha due parti. La prima è la stretta sulla granularità:
-si abbandona la scala unica e se ne tiene una per ogni prodotto interno,
-cioè si stringe al massimo il gruppo che condivide il passo. La seconda è la
+si abbandona la scala unica e se ne tiene una per ogni riga di $\mathbf{X}$
+(una per token) e una per ogni colonna di $\mathbf{W}^{\top}$ (una per unità
+d’uscita), e ogni elemento del prodotto si riporta in virgola mobile
+moltiplicando per le due scale dei vettori che l’hanno prodotto: il gruppo che
+condivide il passo diventa un vettore solo, il più piccolo compatibile con un
+prodotto matriciale fra interi. La seconda è la
 decomposizione a precisione mista, che tratta separatamente i due sottospazi:
 
 $$
@@ -349,15 +377,29 @@ scala del resto non è più dettata da loro.
 
 Sotto gli otto bit la decomposizione non basta più, e i metodi che funzionano
 smettono di trattare l’arrotondamento come un’operazione locale. **GPTQ**
-{cite}`frantar2023gptq` quantizza i pesi di uno strato uno alla volta e, dopo
-ogni arrotondamento, corregge i pesi non ancora quantizzati per compensare
-l’errore introdotto sull’uscita, usando l’informazione del secondo ordine
-stimata su un piccolo insieme di dati. **AWQ** {cite}`lin2024awq` parte da
-un’osservazione complementare: non tutti i pesi contano uguale, e quelli che
-moltiplicano le attivazioni grandi vanno protetti riscalando i canali prima di
-arrotondare. In tutti e due i casi la differenza rispetto alla tabella dei bit
-sta nel fatto che si guarda che cosa quel peso fa invece che soltanto
-quanto vale, e non nella formula dell’arrotondamento.
+{cite}`frantar2023gptq` cerca, strato per strato, i pesi quantizzati che
+riproducono meglio l’uscita su un piccolo insieme di dati di calibrazione
+$\mathbf{X}$ (una colonna per esempio), $\arg\min_{\hat{\mathbf{W}}} \lVert
+\mathbf{W}\mathbf{X} - \hat{\mathbf{W}}\mathbf{X}\rVert_2^2$. Il problema si
+separa riga per riga, e tutte le righe hanno la stessa matrice del secondo
+ordine $\mathbf{H} = 2\mathbf{X}\mathbf{X}^\top$. Il metodo quantizza una
+colonna alla volta, nello stesso ordine per tutte le righe, e dopo ogni colonna
+$q$ corregge i pesi $F$ non ancora quantizzati con l’aggiornamento di *Optimal
+Brain Surgeon*,
+
+$$
+\boldsymbol{\delta}_F = -\frac{w_q - \mathrm{quant}(w_q)}{[\mathbf{H}_F^{-1}]_{qq}}\,(\mathbf{H}_F^{-1})_{:,q},
+$$
+
+che sposta il resto della riga in modo da compensare, al secondo ordine,
+l’errore appena commesso sull’uscita. L’ordine fisso è la mossa che lo rende
+praticabile: $\mathbf{H}_F^{-1}$ è la stessa per tutte le righe, e si aggiorna
+una volta per colonna invece che una volta per peso. **AWQ** {cite}`lin2024awq`
+parte da un’osservazione complementare: non tutti i pesi contano uguale, e
+quelli che moltiplicano le attivazioni grandi vanno protetti riscalando i
+canali prima di arrotondare. In tutti e due i casi la differenza rispetto alla
+tabella dei bit sta nel fatto che si guarda che cosa quel peso fa invece che
+soltanto quanto vale, e non nella formula dell’arrotondamento.
 
 `````
 
@@ -463,7 +505,8 @@ due salti.
 ```{admonition} Da ricordare
 :class: important
 - Quantizzazione simmetrica a $b$ bit: $\hat{w} = s\,\mathrm{round}(w/s)$ con
-  $s = \max|w| / (2^{b-1}-1)$. L’errore per elemento è limitato da $s/2$;
+  $s = \max|w| / (2^{b-1}-1)$. L’errore per elemento è limitato da $s/2$,
+  uniforme, di varianza $s^2/12$;
   sull’uscita di un prodotto scalare gli errori indipendenti crescono come
   $\sqrt{n}$. Che l’errore relativo non si accumuli richiede in più che
   cresca così anche il segnale, ed è un’ipotesi sugli ingressi, non sugli

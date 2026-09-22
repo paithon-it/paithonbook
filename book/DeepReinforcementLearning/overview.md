@@ -113,7 +113,8 @@ schermata che compare, la mossa migliore prende 5. Contando quel 5 al novanta
 per cento, il voto giusto era 1 + 4,5 = 5,5, e l'8 era ottimista di due punti e
 mezzo. Quei due punti e mezzo sono l'errore, e l'occhio si corregge per
 ridurlo; gli scarti grossi pesano più che in proporzione, perché contano per il
-loro quadrato, quindi sono i primi a essere sistemati. Uno scarto isolato non
+loro quadrato (fino a un certo punto: oltre, DQN li conta in proporzione),
+quindi sono i primi a essere sistemati. Uno scarto isolato non
 basta a smuoverlo: conta la media su tante mosse giocate.
 
 Il voto sulla schermata successiva, poi, non lo chiede a sé stesso di adesso: lo

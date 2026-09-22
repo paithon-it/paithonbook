@@ -8,7 +8,7 @@ ritocco questo peso, quanto cambia l'errore?* Si chiama autograd, e finora
 ha fatto un mestiere solo: milioni di volte la stessa domanda, per addestrare
 classificatori, traduttori, generatori.
 
-Questa sezione comincia con un colpo di scena: la domanda si può cambiare.
+Il colpo di scena è che la domanda si può cambiare.
 Quel registratore non sa che cosa siano «i pesi», e non gliene importa. Sa
 rispondere a «se muovo *questo*, di quanto cambia *quello*» su qualunque
 coppia di numeri compaia nei suoi conti. Possiamo allora puntarlo altrove.
@@ -37,11 +37,11 @@ la pendenza è $u_\theta'(t)$ e la curvatura $u_\theta''(t)$.
 La rete allora smette di essere soltanto una scatola addestrabile e diventa
 qualcosa di più: una curva **liscia** (che vuol dire una cosa precisa: niente
 spigoli, e una curvatura che esiste in ogni punto) di cui si sa dire, in ogni
-punto, quanto è alta, quanto sale e quanto piega. Ed è esattamente ciò che
-serve per chiederle di rispettare un'equazione differenziale, che di quelle tre
-cose parla e non d'altro. Liscia, però, non lo è per forza: dipende da come la
-rete è fatta dentro, e quale pezzo lo decida lo racconta, più avanti, il
-paragrafo sulla scelta fra tanh e ReLU.
+punto, quanto è alta, quanto sale e quanto piega. Ed è esattamente ciò che serve
+per chiederle di rispettare un'equazione differenziale, che di quelle tre cose
+parla e non d'altro. Liscia, però, non lo è per forza: dipende dalla funzioncina
+che dentro la rete piega i numeri fra uno strato e l'altro, e prima di scrivere
+il codice bisognerà sceglierla con cura.
 
 Tutto il metodo delle PINN sta in questa mossa, chiedere le derivate rispetto
 all'ingresso invece che ai pesi. Vediamola all'opera.
@@ -70,14 +70,17 @@ vincoli:
 
 Il professore corregge in modo semplice e spietato: controlla la partenza, poi
 punta il dito su una manciata di istanti e lì verifica la regola; ogni
-violazione costa punti. La partenza però la pesa a parte, e molto di più, per
-due ragioni: è l'unica cosa che distingue la curva giusta da tutte le altre
-che rispettano la regola, ed è un istante solo contro un foglio intero. Quegli
+violazione costa punti. La partenza la controlla sempre, perché è l'unica cosa
+che distingue la curva giusta da tutte le altre che rispettano la regola; e la
+pesa molto più delle altre voci per una ragione diversa, di strategia. È un
+istante solo contro un foglio intero, e uno studente che ritocca la curva per
+recuperare i punti persi finirebbe per badare quasi soltanto al foglio: il peso
+in più non gli dice dove arrivare, gli dice da che parte cominciare. Quegli
 istanti li ha sorteggiati una volta sola, all'inizio, e da lì in poi controlla
 sempre quelli: sembra un dettaglio da bidello, e sarà la chiave di tutto. Lo
 studente ritocca la curva e riconsegna, ancora e ancora, finché i punti persi
-non si riducono a briciole. E qui sta la stranezza: *nessuno dei due conosce
-la soluzione*. Il professore sa solo verificare la regola. Eppure alla fine la
+non si riducono a briciole. E qui sta la stranezza: *nessuno dei due conosce la
+soluzione*. Il professore sa solo verificare la regola. Eppure alla fine la
 curva giusta salta fuori, perché tra tutte le curve possibili quella vera è
 l'unica che parte così *e* rispetta la regola dappertutto. Una PINN è
 esattamente questo studente: la curva è la rete, i punti persi sono la loss, e
@@ -172,12 +175,20 @@ $\lambda_0$, sui semi da 0 a 19) ha mediana $2{,}4$, e in quattro semi su
 venti è addirittura rovesciato. Su una ODE del secondo ordine con due scalari
 imposti al tempo zero, «ordini di grandezza» sarebbe una parola grossa.
 
-La seconda, ed è quella che qui morde davvero, è la copertura del dominio:
-le condizioni iniziali riguardano un istante soltanto, mentre il residuo tira
-sull'intera curva in tutti i punti di collocazione e finisce per dettare quasi
-da solo come cambiare i pesi. Il punto non sta nel numero dei termini sommati
-(entrambi restano medie, e infittire i punti di collocazione non sposta la
-bilancia) ma in dove i due guardano.
+La seconda, ed è quella che qui morde davvero, riguarda la direzione dei
+gradienti più che la loro ampiezza. Il residuo in un istante tardo, poniamo
+$t_j = 8$, non sa niente della partenza: lo annulla qualunque soluzione
+dell'equazione, compresa $u \equiv 0$, e il gradiente che ne arriva spinge la
+rete verso quella più vicina, che all'inizializzazione è quasi sempre la curva
+piatta. L'informazione di $u(0)=1$ dovrebbe invece propagarsi in avanti
+attraverso il residuo, un tratto dopo l'altro, e la discesa del gradiente non ha
+alcun motivo di rispettare quell'ordine. Wang, Sankaran e Perdikaris lo chiamano
+violazione della causalità, e lo correggono pesando il residuo di ogni istante
+con $w_j = \exp\!\big(-\varepsilon \sum_{t_k < t_j} r_\theta(t_k)^2\big)$, così
+che un istante conti solo quando quelli che lo precedono sono già risolti
+{cite}`wang2024respecting`. Infittire i punti di collocazione non sposta questa
+bilancia (entrambi i termini restano medie); la sposta l'ordine in cui i
+vincoli vengono soddisfatti.
 
 In tutti e due i casi il rimedio è lo stesso, dare voce al termine debole; e
 in tutti e due i casi il valore giusto va scelto a mano, provando. È il primo
@@ -290,15 +301,17 @@ rimbalzo, misurata dalla posizione di riposo) è scesa al 13,5% di quella
 di partenza.
 
 Nessuno dei due valori viene da un laboratorio: escono dai tre numeri della
-molla. La durata di un'oscillazione la decide la rigidezza rispetto alla
-massa: qui il rapporto è 4 e la sua radice è 2, e un giro completo costa sempre
-6,28 diviso quel numero, cioè 3,14 secondi, che l'attrito rallenta appena fino
-a 3,16. Il calo lo decide l'attrito, e sempre allo stesso ritmo:
-l'ampiezza si dimezza ogni 3,47 secondi, e in dieci secondi di dimezzamenti ce
-ne stanno quasi tre, da 1 a poco più di un ottavo, cioè al 13,5% che resta.
-Questa è la curva che lo studente del compito in classe deve disegnare, e che
-la nostra rete dovrà imparare senza vederne neppure un punto, tranne la
-partenza.
+molla. La durata di un'oscillazione la decide la rigidezza rispetto alla massa:
+qui il rapporto è 4 e la sua radice è 2, e un giro completo costa sempre 6,28
+(due volte 3,14, il pi greco del cerchio) diviso quel numero, cioè 3,14 secondi,
+che l'attrito rallenta appena fino a 3,16. Il calo lo decide l'attrito, e sempre
+allo stesso ritmo: ogni secondo l'ampiezza perde poco meno di un quinto di
+quello che ha (il ritmo è 0,2, cioè l'attrito diviso due volte la massa), e a
+forza di perdere quella quota l'ampiezza si dimezza ogni 3,47 secondi, e in
+dieci secondi di dimezzamenti ce ne stanno quasi tre, da 1 a poco più di un
+ottavo, cioè al 13,5% che resta. Questa è la curva che lo studente del compito
+in classe deve disegnare, e che la nostra rete dovrà imparare senza vederne
+neppure un punto, tranne la partenza.
 
 `````
 
@@ -533,8 +546,9 @@ Un moltiplicatore messo lì per bilanciare due termini di una loss si chiama
 conviene tenerle separate a mente.
 
 Che la faccenda sia seria si tocca con mano abbassando quel moltiplicatore a 1.
-In una prova fatta così, e senza cambiare nient'altro, l'addestramento è
-arrivato a un residuo di $2 \cdot 10^{-5}$ sui suoi duecento punti, cioè due
+Lo si fa più avanti, con la funzione del confronto fra semi e `peso=1.0`,
+senza cambiare nient'altro: l'addestramento arriva a un residuo di
+$1{,}9 \cdot 10^{-5}$ sui suoi duecento punti, cioè due
 centomillesimi; con il moltiplicatore a 100, sulla stessa misura e sullo
 stesso seme, il residuo si ferma a $8 \cdot 10^{-3}$, otto millesimi,
 quattrocento volte più alto. Verrebbe da dire che con 1 è andata meglio.
@@ -623,13 +637,8 @@ errore massimo                       : 0.154
   sugli ultimi 5 secondi             : 0.154
 ```
 
-Prima di leggerle, una nota sul modo in cui il computer scrive i numeri
-piccoli, perché tornerà per tutta la sezione. Intanto la virgola: il computer
-la scrive con un punto, quindi `7.77` va letto «sette virgola settantasette».
-Poi la `e`, che sta per «per dieci alla»: il numero che la segue dice di
-quanti posti spostare la virgola, a sinistra se ha il meno davanti, a destra
-se ha il più. Così `7.77e-03` vuol dire $7{,}77 \cdot 10^{-3}$, cioè 0,00777,
-sette millesimi scarsi; e `1.23e+03` vuol dire 1230.
+Nelle stampe `7.77e-03` sta per $7{,}77 \cdot 10^{-3}$, la notazione dei
+{doc}`richiami di analisi numerica </Matematica/analisi-numerica>`.
 
 Le stampe si fermano a 25 000 perché arrivano ogni cinquemila epoche e
 l'ultima cade lì; l'addestramento prosegue fino a 30 000, e le cinque righe
@@ -712,8 +721,9 @@ rilanciare cambiando soltanto quel numero. È lo stesso codice riga per riga,
 con in più la stampa periodica delle due misure che ci interessano.
 
 ```python
-def addestra(seme, epoche=30_000):
-    """Come l'addestramento di sopra: cambia solo il punto di partenza."""
+def addestra(seme, epoche=30_000, peso=100.0, verboso=True):
+    """Come l'addestramento di sopra: cambia solo il punto di partenza
+    (e, se lo si chiede, il moltiplicatore delle condizioni iniziali)."""
     torch.manual_seed(seme)
     rete = nn.Sequential(
         nn.Linear(1, 32), nn.Tanh(),
@@ -740,10 +750,11 @@ def addestra(seme, epoche=30_000):
                                    create_graph=True)[0]
         loss_iniziale = (u_0 - 1.0).pow(2).mean() + u_t0.pow(2).mean()
 
-        (loss_fisica + 100.0 * loss_iniziale).backward()
+        (loss_fisica + peso * loss_iniziale).backward()
         ottimizzatore.step()
 
-        if epoca % 2_500 == 0:      # residuo e errore vero, fianco a fianco
+        # residuo e errore vero, fianco a fianco
+        if verboso and epoca % 2_500 == 0:
             errore_ora = diagnosi(rete, t_c)[2].max()
             print(f"epoca {epoca:6d} | residuo {loss_fisica.item():.2e}"
                   f" | errore vero {errore_ora:.3f}")
@@ -926,16 +937,92 @@ che infittendo i punti la cosa si chiude, non che sia già chiusa.
 Il seme 7 non è nemmeno un caso isolato. Rilanciamo lo stesso programma sei
 volte, cambiando ogni volta soltanto il seme. Di ciascuna corsa prendiamo il
 residuo sui suoi duecento punti, quello della prima riga del confronto qui
-sopra, e mettiamo le sei in fila dal punteggio migliore al peggiore:
+sopra, e mettiamo le sei in fila dal punteggio migliore al peggiore. Lo stesso
+blocco rilancia il seme 42 con il moltiplicatore delle condizioni iniziali a 1,
+e misura sui semi da 0 a 19 il rapporto fra i gradienti dei due termini
+all'avvio: sono i numeri che la discussione del moltiplicatore ha anticipato.
+Sono quattro addestramenti in più, e su CPU chiedono qualche minuto.
 
-| seme | residuo finale | errore massimo | attraversamenti dello zero |
-|---:|---:|---:|---:|
-| 7 | $4{,}8 \cdot 10^{-4}$ | 0,720 | 1 |
-| 3 | $1{,}7 \cdot 10^{-3}$ | 0,629 | 4 |
-| 42 | $7{,}8 \cdot 10^{-3}$ | **0,154** | 6 |
-| 1 | $1{,}7 \cdot 10^{-2}$ | 0,212 | 5 |
-| 0 | $2{,}7 \cdot 10^{-2}$ | 0,259 | 5 |
-| 2 | $3{,}1 \cdot 10^{-2}$ | 0,289 | 5 |
+```{code-block} python
+:class: pt-lento
+
+def attraversamenti(rete):
+    """Quante volte la curva della rete passa per lo zero in dieci secondi."""
+    t = torch.tensor(t_test, dtype=torch.float32).reshape(-1, 1)
+    with torch.no_grad():
+        u = rete(t).squeeze().numpy()
+    return int((np.sign(u[1:]) != np.sign(u[:-1])).sum())
+
+risultati = {42: (rete, t_c), 7: (rete_7, t_c7)}
+for seme in (0, 1, 2, 3):
+    risultati[seme] = addestra(seme, verboso=False)
+
+righe = []
+for seme, (r, tc) in risultati.items():
+    res, _, err = diagnosi(r, tc)
+    righe.append((res, seme, err.max(), attraversamenti(r)))
+print("seme   residuo   errore   zeri")
+for res, seme, err, zeri in sorted(righe):
+    print(f"{seme:4d}   {res:.1e}    {err:.3f}   {zeri:4d}")
+
+# il moltiplicatore a 1, sullo stesso seme 42
+rete_1, t_c1 = addestra(seme=42, peso=1.0, verboso=False)
+res_punti_1, res_griglia_1, errore_1 = diagnosi(rete_1, t_c1)
+with torch.no_grad():
+    u0_1 = rete_1(torch.zeros(1, 1)).item()
+print(f"\npeso 1: residuo sui punti {res_punti_1:.2e}, "
+      f"sulla griglia {res_griglia_1:.2e}")
+print(f"        errore vero {errore_1.max():.3f}, u(0) = {u0_1:.4f}")
+
+def rapporto_gradienti(seme):
+    """Ampiezza media dei gradienti della fisica contro quelli delle
+    condizioni iniziali, sulla rete appena inizializzata."""
+    torch.manual_seed(seme)
+    r = nn.Sequential(
+        nn.Linear(1, 32), nn.Tanh(),
+        nn.Linear(32, 32), nn.Tanh(),
+        nn.Linear(32, 32), nn.Tanh(),
+        nn.Linear(32, 1),
+    )
+    tc = 10.0 * torch.rand(200, 1)
+    tc.requires_grad_(True)
+    t0 = torch.zeros(1, 1, requires_grad=True)
+    u = r(tc)
+    u_t = torch.autograd.grad(u, tc, torch.ones_like(u), create_graph=True)[0]
+    u_tt = torch.autograd.grad(u_t, tc, torch.ones_like(u_t),
+                               create_graph=True)[0]
+    fisica = ((m * u_tt + c * u_t + k * u) ** 2).mean()
+    u0 = r(t0)
+    u_t0 = torch.autograd.grad(u0, t0, torch.ones_like(u0),
+                               create_graph=True)[0]
+    iniziale = (u0 - 1.0).pow(2).mean() + u_t0.pow(2).mean()
+    pesi = list(r.parameters())
+    g_f = torch.autograd.grad(fisica, pesi, retain_graph=True)
+    g_i = torch.autograd.grad(iniziale, pesi)
+    media = lambda gs: torch.cat([g.abs().flatten() for g in gs]).mean()
+    return (media(g_f) / media(g_i)).item()
+
+rapporti = np.array([rapporto_gradienti(s) for s in range(20)])
+print(f"\nrapporto fra i gradienti all'avvio: "
+      f"mediana {np.median(rapporti):.1f}, "
+      f"rovesciato in {(rapporti < 1).sum()} semi su 20")
+```
+
+```text
+seme   residuo   errore   zeri
+   7   4.8e-04    0.720      1
+   3   1.7e-03    0.629      4
+  42   7.8e-03    0.154      6
+   1   1.7e-02    0.212      5
+   0   2.7e-02    0.259      5
+   2   3.1e-02    0.289      5
+
+peso 1: residuo sui punti 1.94e-05, sulla griglia 2.78e+00
+        errore vero 0.729, u(0) = 0.9994
+
+rapporto fra i gradienti all'avvio: mediana 2.4, rovesciato in 4 semi su 20
+seme 42: k stimato 3.95, scarto massimo dalla curva vera 0.064, misura peggiore 0.114
+```
 
 Le due corse con il residuo più basso in assoluto sono le due sbagliate, e
 sono anche quelle che restano più lontane dai sei attraversamenti dello zero
@@ -1012,15 +1099,13 @@ rete fuori dal tratto su cui è stata addestrata si inventa quello che le pare
 e va riaddestrata da capo. Il vantaggio della PINN è altrove, e comincia dove
 dati e legge vanno mescolati, come vedremo tra un attimo.
 
-[^tolleranze]: Quei cinque centomiliardesimi non sono un numero di targa: a un
-    solutore si dice quanta precisione si vuole, e la nostra è questa. Il
-    conto è fatto con `solve_ivp` di SciPy
-    stringendo entrambe le tolleranze, la relativa (`rtol=1e-10`) e
-    l'assoluta (`atol=1e-12`); lasciando l'assoluta al valore di default lo
-    scarto sale a $1{,}7 \cdot 10^{-6}$, più di quattro ordini di grandezza
-    più largo, e resta comunque quasi centomila volte più piccolo del nostro. La
-    tolleranza assoluta è quella che conta nella coda, dove la soluzione è
-    ormai piccola: taciuta, il confronto cambia di ordini di grandezza.
+[^tolleranze]: Quei cinque centomiliardesimi non sono un record del metodo: a un
+    solutore si dice in anticipo quanta precisione si vuole, e qui gliene
+    abbiamo chiesta moltissima. Chiedendone meno, lo scarto sale a quasi due
+    milionesimi, che resta comunque quasi centomila volte più piccolo del
+    nostro 0,15. Chi confronta due metodi deve dire anche quanta precisione ha
+    chiesto a ciascuno: se lo tace, il confronto può cambiare di migliaia di
+    volte.
 
 `````
 
@@ -1118,6 +1203,63 @@ loss = loss_fisica + 100.0 * loss_dati
 ```
 
 dove `t_oss` e `u_oss` sono le colonne di numeri con gli istanti e le misure.
+Il programma completo, con le misure fabbricate e i due semi di cui si parla
+più sotto, è questo (due addestramenti, qualche minuto su CPU):
+
+```{code-block} python
+:class: pt-lento
+
+def problema_inverso(seme, epoche=30_000):
+    """La molla nella scatola chiusa: k si impara insieme alla curva."""
+    torch.manual_seed(seme)
+    rete = nn.Sequential(
+        nn.Linear(1, 32), nn.Tanh(),
+        nn.Linear(32, 32), nn.Tanh(),
+        nn.Linear(32, 32), nn.Tanh(),
+        nn.Linear(32, 1),
+    )
+    t_c = 10.0 * torch.rand(200, 1)
+    t_c.requires_grad_(True)
+    # 25 misure equispaziate: la formula esatta con k = 4, piu' rumore
+    t_oss = torch.linspace(0.0, 10.0, 25).reshape(-1, 1)
+    t_np = t_oss.numpy()
+    u_vera = torch.tensor(np.exp(-gamma * t_np) * (
+        np.cos(omega_d * t_np) + (gamma / omega_d) * np.sin(omega_d * t_np)
+    ), dtype=torch.float32)
+    u_oss = u_vera + 0.05 * torch.randn(25, 1)
+
+    k_appreso = nn.Parameter(torch.tensor(1.0))
+    ottimizzatore = torch.optim.Adam(
+        list(rete.parameters()) + [k_appreso], lr=1e-3
+    )
+    for _ in range(epoche):
+        ottimizzatore.zero_grad()
+        u = rete(t_c)
+        u_t = torch.autograd.grad(u, t_c, torch.ones_like(u),
+                                  create_graph=True)[0]
+        u_tt = torch.autograd.grad(u_t, t_c, torch.ones_like(u_t),
+                                   create_graph=True)[0]
+        loss_fisica = ((m * u_tt + c * u_t + k_appreso * u) ** 2).mean()
+        loss_dati = ((rete(t_oss) - u_oss) ** 2).mean()
+        (loss_fisica + 100.0 * loss_dati).backward()
+        ottimizzatore.step()
+
+    t_griglia = torch.tensor(t_test, dtype=torch.float32).reshape(-1, 1)
+    with torch.no_grad():
+        errore = np.abs(rete(t_griglia).squeeze().numpy() - u_esatta).max()
+    rumore = (u_oss - u_vera).abs().max().item()
+    return k_appreso.item(), errore, rumore
+
+for seme in (42, 7):
+    k_stimato, errore_inv, rumore = problema_inverso(seme)
+    print(f"seme {seme:2d}: k stimato {k_stimato:.2f}, scarto massimo dalla "
+          f"curva vera {errore_inv:.3f}, misura peggiore {rumore:.3f}")
+```
+
+```text
+seme 42: k stimato 3.95, scarto massimo dalla curva vera 0.064, misura peggiore 0.114
+seme  7: k stimato 3.76, scarto massimo dalla curva vera 0.067, misura peggiore 0.122
+```
 E la `loss_iniziale`? Non serve più: l'ancoraggio che prima spettava alle
 condizioni di partenza ora lo danno le 25 misure, e il loro termine ne prende
 il posto, moltiplicatore compreso.
@@ -1135,17 +1277,17 @@ sale e si assesta vicino al valore vero $k = 4$, quello con cui avevamo
 fabbricato le misure: nella prova qui riportata (seme 42; venticinque istanti
 equispaziati da 0 a 10 secondi, estremi compresi; rumore gaussiano di scarto
 tipico 0,05, sorteggiato dopo i punti di collocazione; trentamila epoche) si
-ferma a $3{,}92$, e per
-arrivarci ricostruisce l'intera traiettoria. La rigidezza della molla, che
-nessuno ha misurato, esce come sottoprodotto dello stesso addestramento. Un
-seme diverso la porta a $3{,}75$, che è un buon promemoria di quello che
-abbiamo appena finito di dire: una corsa sola non è una misura.
+ferma a $3{,}95$, e per arrivarci ricostruisce l'intera traiettoria. La
+rigidezza della molla, che nessuno ha misurato, esce come sottoprodotto dello
+stesso addestramento. Un seme diverso la porta a $3{,}76$, che è un buon
+promemoria di quello che abbiamo appena finito di dire: una corsa sola non è
+una misura.
 
 E c'è un dettaglio da raccogliere, dopo la brutta figura di poco fa. Qui la
 traiettoria ricostruita è più accurata di quella che avevamo ottenuto
 conoscendo la legge per intero, pur essendo il problema più difficile dei due:
-lo scarto massimo dalla curva vera è circa $0{,}07$, e circa $0{,}08$
-rilanciando con il seme 7, quello sfortunato, contro lo $0{,}15$ di prima. Il
+lo scarto massimo dalla curva vera è $0{,}064$, e $0{,}067$ rilanciando con il
+seme 7, quello sfortunato, contro lo $0{,}15$ di prima. Il
 motivo è tutto nella disposizione degli ancoraggi: prima la rete aveva un solo
 punto fermo, l'istante zero, e più si andava avanti nel tempo più era libera
 di inventare; qui ha venticinque misure sparse su tutto l'intervallo, che la
@@ -1188,8 +1330,10 @@ PINN» non vuol dire «meglio di tutti».
   istanti di controllo scelti a caso (i punti di collocazione) e gli scarti
   sulla partenza, cioè il punto da cui si parte e la pendenza con cui si parte
   (dove conta anche lo spazio, come nella sbarra che si scalda, entra qui pure
-  quello che succede ai bordi). Alla partenza si dà più peso, perché
-  quando altro non c'è è l'unico ancoraggio.
+  quello che succede ai bordi). Alla partenza si dà più peso non
+  perché altrimenti la si perda (con un peso qualsiasi la curva ci resta
+  attaccata), ma perché senza quel peso l'addestramento imbocca più facilmente
+  la strada sbagliata.
 - La curva dev'essere liscia: se è fatta di segmenti dritti incollati uno
   dopo l'altro, come quelli che escono dalla ReLU, non ha curvatura da nessuna
   parte, e il professore non vedrebbe più il pezzo più importante della
@@ -1222,7 +1366,8 @@ PINN» non vuol dire «meglio di tutti».
 - Problema inverso: se un pezzo della regola manca (quanto è rigida la
   molla), diventa una manopola in più che l'addestramento gira insieme alla
   curva, e bastano poche misure rumorose. Sono loro, allora, a fare da
-  ancoraggio al posto della partenza. È la mossa che rende uniche le PINN.
+  ancoraggio al posto della partenza. È il terreno dove le PINN danno il
+  meglio, anche se non sono le sole a saperci lavorare.
 ```
 
 `````
@@ -1258,9 +1403,9 @@ PINN» non vuol dire «meglio di tutti».
   {cite}`lagaris1998artificial` è la variante a vincolo *hard*. L'esplosione
   del 2019 {cite}`raissi2019physics` arriva quando autograd e GPU la rendono
   praticabile.
-- Problema inverso: basta promuovere un coefficiente a `nn.Parameter`
-  per stimarlo da poche misure rumorose, insieme alla soluzione. È la mossa
-  che rende uniche le PINN.
+-  Problema inverso: basta promuovere un coefficiente a `nn.Parameter` per
+  stimarlo da poche misure rumorose, insieme alla soluzione. È il terreno dove
+  le PINN danno il meglio, anche se non sono l'unico metodo che ci lavora.
 ```
 
 `````

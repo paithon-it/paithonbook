@@ -161,14 +161,15 @@ le domande man mano che arrivano: si chiama **model server**.
 `````{tab} Elementare
 
 È lo sportello di un ufficio. Dietro il vetro c'è l'impiegato (il modello) che
-sa fare una cosa sola ma la sa fare bene. Tu non entri nel retro a rovistare
-tra le pratiche: passi il tuo modulo dalla fessura e ti torna indietro la
-risposta compilata. Lo sportello (l’*endpoint*) nasconde tutto il resto. E c'è
-una regola di buon senso che vale oro: l'impiegato arriva la mattina, si siede
-*una volta sola* e resta lì tutto il giorno. Sarebbe assurdo se andasse a casa
-e tornasse a ogni singolo cliente. Con i modelli è identico: i pesi si
-caricano in memoria una volta all'avvio del servizio, non a ogni richiesta;
-caricarli costa secondi, e a ogni richiesta li si pagherebbe di nuovo.
+sa fare una cosa sola ma la sa fare bene. Tu non entri nel retro a rovistare tra
+le pratiche: passi il tuo modulo dalla fessura e ti torna indietro la risposta
+compilata. Lo sportello (l’API) nasconde tutto il resto, e il numero appeso
+sopra la fessura, quello che serve per trovarlo, è l’*endpoint*. E c'è una
+regola di buon senso che vale oro: l'impiegato arriva la mattina, si siede *una
+volta sola* e resta lì tutto il giorno. Sarebbe assurdo se andasse a casa e
+tornasse a ogni singolo cliente. Con i modelli è identico: i pesi si caricano in
+memoria una volta all'avvio del servizio, non a ogni richiesta; caricarli costa
+secondi, e a ogni richiesta li si pagherebbe di nuovo.
 
 `````
 
@@ -251,11 +252,11 @@ distinto fra addestramento e inferenza: il *dropout*, che in addestramento
 azzera a caso una frazione delle attivazioni e in inferenza deve lasciarle
 passare tutte, e la *BatchNorm*, che in addestramento normalizza sulle
 statistiche del batch corrente e in inferenza deve usare le medie mobili
-accumulate. Dimenticarla, quasi sempre, non solleva nessuna eccezione:
-produce solo predizioni sbagliate. L'unico caso in cui l'errore si fa sentire
-è la `BatchNorm1d` su un batch di uno, dove la statistica del batch non
-descrive più niente e il modulo si rifiuta di calcolarla; il dropout invece
-tace sempre.
+accumulate. Dimenticarla, quasi sempre, non solleva nessuna eccezione: produce
+solo predizioni sbagliate. L'errore si fa sentire solo quando per canale resta
+un valore solo (una `BatchNorm1d` su un batch di uno, o una `BatchNorm2d` su
+mappe $1\times1$ con un batch di uno): lì la statistica del batch non descrive
+più niente e il modulo si rifiuta di calcolarla; il dropout invece tace sempre.
 
 La seconda, `torch.no_grad()`, disattiva la costruzione del grafo delle
 operazioni che l’*autograd* userebbe per la retropropagazione. In inferenza
@@ -300,11 +301,12 @@ lo scorrere dei byte, quasi sempre, il vero collo di bottiglia. Si perde
 qualche cifra dopo la virgola, ed è quasi gratis.
 
 La terza leva spinge oltre, fino agli interi: la quantizzazione a
-`int8` {cite}`jacob2018quantization`. Con la seconda non si somma, perché è la
-stessa manopola girata più in là: si decide quanti bit dare a ogni numero, e il
-conto si fa sempre rispetto ai trentadue di partenza, sedici bit due volte più
-leggeri, otto bit quattro volte. Col batching invece sì, perché mazzetti più
-grandi e numeri più corti sono due guadagni indipendenti.
+`int8` {cite}`jacob2018quantization`. I suoi guadagni non si sommano a quelli
+della seconda leva, perché è la stessa manopola girata più in là: si decide
+quanti bit dare a ogni numero, e il conto si fa sempre rispetto ai trentadue di
+partenza, sedici bit due volte più leggeri, otto bit quattro volte. Col batching
+invece sì, perché mazzetti più grandi e numeri più corti sono due guadagni
+indipendenti.
 
 `````{tab} Elementare
 
@@ -533,14 +535,33 @@ distribuzione, la p99, la p99.9: è ciò che governa l'esperienza reale sotto
 carico, perché in un sistema che compone più servizi anche una piccola
 frazione di richieste lente si propaga e degrada l'insieme. Uno SLO serio si
 scrive sui percentili alti: «p99 sotto i 200 ms», non «latenza media 80 ms»,
-che nasconde la coda.
+che nasconde la coda. Uno SLO del $99{,}9\%$ definisce anche il suo
+complemento, il **budget d'errore**: $1 - 0{,}999$ degli eventi della finestra
+può violare la soglia, cioè una richiesta su mille, o $43{,}2$ minuti di
+indisponibilità su trenta giorni. Il budget si spende: il rapporto fra il
+tasso di violazioni osservato e $1-\text{SLO}$ (il *burn rate*) dice a che
+velocità, e un burn rate di 10 esaurisce il mese in tre giorni. La politica che
+ne discende è la ragione per cui lo SLO si scrive: finché resta budget si
+rilascia, a budget finito si congelano i rilasci e si lavora
+sull'affidabilità.
 
 Il secondo numero da promettere è il throughput sostenibile (richieste al
-secondo), che con la latenza forma il classico compromesso: più batch grandi
-alzano il throughput ma allungano la coda della latenza. Il terzo è economico,
-il **costo per richiesta** (tempo di calcolo moltiplicato per il prezzo orario
-dell'hardware) che spesso è il vero vincolo di progetto: un modello che
-rispetta lo SLO ma costa dieci volte troppo per richiesta non è dispiegabile
+secondo), e lo lega alla latenza la legge di Little, $L = \lambda W$: il numero
+medio di richieste nel sistema è il tasso d'arrivo per il tempo medio di
+permanenza, qualunque sia la distribuzione (è la stessa legge del
+{doc}`capitolo sulle GPU </GPU/overview>`). Con arrivi poissoniani e un
+servente esponenziale di tasso $\mu$ (la coda M/M/1) il tempo di permanenza è
+esponenziale di parametro $\mu-\lambda$, quindi $W = 1/(\mu-\lambda)$ e
+$p_{99} = \ln(100)\,W \approx 4{,}6\,W$, che vale solo se
+$\rho = \lambda/\mu < 1$. A $\mu = 100$ richieste al secondo, $W$ passa da 20 ms
+a $\lambda=50$, a 100 ms a $\lambda=90$, a un secondo a $\lambda=99$: la latenza
+non cresce col carico, esplode vicino a $\rho=1$, e oltre non esiste più. Il
+batching alza $\mu$ e allunga il servizio del singolo: è per questo che batch
+più grandi alzano il throughput ma allungano la coda della latenza. Il terzo è
+economico, il **costo per richiesta** (tempo di calcolo moltiplicato per il
+prezzo orario dell'hardware) che spesso è il vero vincolo di progetto: un
+modello che rispetta lo SLO ma costa dieci volte troppo per richiesta non è
+dispiegabile
 {cite}`huyen2022designing`.
 
 `````
@@ -563,9 +584,10 @@ portavano sottoterra per accorgersi del gas prima degli uomini.
 Il terzo grado espone metà. Un test *A/B* divide gli utenti in due gruppi e
 misura su richieste vere quale delle due versioni funziona meglio.
 
-Le tre tornano in «Sorvegliare un modello vivo», ciascuna con la sua analogia
-e con la domanda a cui risponde. È il lato «serving» della stessa
-prudenza che l'anello MLOps chiede a ogni tappa: misurare prima di fidarsi.
+Le tre tornano in {doc}`Sorvegliare un modello vivo
+</MLOps/monitoring-e-drift>`, dove si vede a quale domanda risponde ciascuna. È
+il lato «serving» della stessa prudenza che l'anello MLOps chiede a ogni tappa:
+misurare prima di fidarsi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

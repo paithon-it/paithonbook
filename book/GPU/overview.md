@@ -161,17 +161,18 @@ il cambio proprio per coprire i tempi morti.
 
 `````{tab} Superiore
 È il contrasto fra un'architettura *latency-oriented* e una
-*throughput-oriented*. La CPU spende il suo silicio in logica di controllo e
-grandi cache per finire in fretta un singolo flusso di istruzioni; la GPU lo
-spende quasi tutto in unità aritmetiche, e nasconde la latenza in modo
-statistico: quando un gruppo di thread si ferma in attesa di un dato, ne fa
-partire un altro già pronto. Non accorcia l'attesa del singolo: la *copre* con
-il lavoro degli altri. È una scommessa che paga solo se il problema offre
-parallelismo a valanga, ed è esattamente il caso delle reti neurali: come
-ricordava la sezione «Prestazioni e scala», il prodotto di due matrici $(M,K)$
-e $(K,N)$ costa circa $2MNK$ operazioni, scomponibili in prodotti scalari
-indipendenti l'uno dall'altro. La sezione sull'architettura scioglie i
-dettagli di questo modello: Streaming Multiprocessor, warp, SIMT, occupancy.
+*throughput-oriented*, e lo misura la legge di Little: per tenere occupata una
+risorsa che consegna $X$ operazioni per ciclo con latenza $\lambda$ cicli
+servono $X \cdot \lambda$ operazioni indipendenti in volo. La CPU spende il
+silicio per abbassare $\lambda$ (cache grandi, predizione dei salti,
+esecuzione fuori ordine) e le bastano poche operazioni in volo; la GPU accetta
+un $\lambda$ di centinaia di cicli verso la memoria e alza il numero di
+operazioni in volo, con decine di warp residenti per SM e centinaia di migliaia
+di thread sul chip. Paga solo se il problema offre quel parallelismo, e le reti
+neurali lo offrono: il prodotto di due matrici $(M,K)$ e $(K,N)$ costa circa
+$2MNK$ operazioni, raccolte in $MN$ prodotti scalari indipendenti. La
+{doc}`sezione sull'architettura <architettura-gpu>` ne scioglie i pezzi:
+Streaming Multiprocessor, warp, SIMT, occupancy.
 `````
 
 La copertura delle attese si legge meglio istante per istante, ed è quello che

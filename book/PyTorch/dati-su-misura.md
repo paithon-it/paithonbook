@@ -400,12 +400,16 @@ calcolo. Su Windows e macOS, dove i worker nascono per *spawn* e non per
 far ripartire il programma, e Python lo ferma sul nascere con un
 `RuntimeError`.
 
-`drop_last=True` scarta l'ultimo batch quando non è pieno. Le statistiche per
-batch della `BatchNorm` su un batch corto restano non distorte e diventano solo
-più disperse; il caso netto è il batch da un elemento, su cui la varianza
-campionaria non esiste e `nn.BatchNorm1d` in `train()` alza `ValueError:
-Expected more than 1 value per channel`. Con $n$ esempi e batch $b$ succede
-quando $n \bmod b = 1$, che capita più spesso di quanto sembri.
+`drop_last=True` scarta l'ultimo batch quando non è pieno. Su un batch corto la
+media per canale della `BatchNorm` resta non distorta e diventa solo più
+dispersa; la varianza no, perché in addestramento la normalizzazione usa lo
+stimatore distorto (divide per $b$, non per $b-1$), il cui valore atteso è
+$\frac{b-1}{b}\sigma^2$: sul $6\%$ basso con $16$ esempi, sul $3\%$ con $32$, e
+l'ultimo batch corto viene normalizzato un po' più forte degli altri; il caso
+netto è il batch da un elemento, su cui la varianza campionaria non esiste e
+`nn.BatchNorm1d` in `train()` alza `ValueError: Expected more than 1 value per
+channel`. Con $n$ esempi e batch $b$ succede quando $n \bmod b = 1$, che capita
+più spesso di quanto sembri.
 
 Infine `shuffle=True` e l'argomento `sampler` sono mutuamente esclusivi:
 `shuffle` è di fatto una scorciatoia per `RandomSampler`. Chi passa un sampler

@@ -150,9 +150,19 @@ giocatore di poker che non vede le carte altrui: tutti POMDP.
 
 Il fatto scomodo è che in un POMDP la policy ottima non può dipendere solo
 dall'osservazione corrente. La soluzione teorica è ragionare su una
-distribuzione di probabilità sugli stati possibili (il *belief state*), che
-però vive in uno spazio continuo anche quando gli stati sono pochi, e rende il
-problema molto più duro. In pratica si fa una di due cose: si impila una
+distribuzione di probabilità sugli stati possibili, il *belief state*
+$\beta(s)$, aggiornata a ogni passo con il filtro bayesiano
+
+$$
+\beta'(s') \propto \Pr(o \mid s') \sum_{s} P(s' \mid s, a)\, \beta(s),
+$$
+
+dove $a$ è l'azione eseguita, $o$ l'osservazione ricevuta subito dopo e la
+costante di proporzionalità normalizza la somma a $1$. Il belief riassume
+tutta la storia senza perdere niente che serva a decidere, quindi il POMDP
+diventa un MDP sui belief; ma quello spazio è continuo anche quando gli stati
+sono pochi (un simplesso di dimensione $|\mathcal{S}|-1$), e il problema
+diventa molto più duro. In pratica si fa una di due cose: si impila una
 finestra di osservazioni recenti, come il DQN con i quattro fotogrammi, oppure
 si dà all'agente una memoria, cioè una rete ricorrente il cui stato nascosto fa
 da riassunto approssimato di tutto ciò che si è visto finora. È la ragione per
@@ -198,7 +208,7 @@ la policy che massimizza la ricompensa accumulata nel tempo.
 ## Quanto vale il futuro: il ritorno scontato
 
 Una ricompensa da sola dice poco: conta la *somma* delle ricompense lungo tutto
-il percorso. Quella somma è il ritorno annunciato nella panoramica: non
+il percorso. Quella somma è il ritorno: non
 quanto si incassa adesso, ma quanto si incasserà in tutto da qui alla fine. Ma
 un premio subito vale più dello stesso premio fra dieci mosse, e quindi nella
 somma i premi lontani entrano ridotti: da qui il nome **ritorno scontato**, che
@@ -432,8 +442,9 @@ di più. Da quali numeri si sia cominciato non conta: partendo da cento
 dappertutto invece che da zero i giri sono molti di più, ma i numeri su cui ci
 si ferma sono gli stessi.
 
-Un dettaglio del "giro" va fissato adesso, perché senza di quello i conti qui
-sotto sembrano sbagliati. Si compila una scheda nuova guardando la vecchia, non
+Un dettaglio del "giro" va fissato adesso, perché senza di quello i conti che
+seguono sembrano sbagliati. Si compila una scheda nuova guardando la vecchia,
+non
 si corregge la vecchia mentre la si legge. Quindi, dentro un giro, i numeri che
 si leggono sono sempre quelli con cui il giro è cominciato: anche quelli di una
 casella che nel frattempo si è già riscritta.
@@ -453,14 +464,33 @@ dove $V_k$ è la stima dei valori al passo $k$: è l'equazione di Bellman con un
 $\max$ sulle azioni al posto della media pesata dalla policy. Il punto fisso è
 l’**equazione di ottimalità di Bellman**,
 $V^*(s) = \max_a \sum_{s'} P(s'\mid s,a)\big[r(s,a) + \gamma\, V^*(s')\big]$,
-dove $V^*$ è il valore della migliore policy possibile. Con $\gamma < 1$ la
-convergenza è garantita: l'operatore di aggiornamento è una **contrazione** di
-fattore $\gamma$ nella norma del massimo, cioè a ogni passo la distanza da
-$V^*$ si riduce almeno di un fattore $\gamma$; quindi il punto fisso è unico e
-l'iterazione vi arriva da qualunque inizializzazione {cite}`bellman1957dynamic`
-{cite}`sutton2018reinforcement`. Nei compiti episodici con $\gamma = 1$ il
-fattore di contrazione sparisce, e la garanzia va ricomprata altrove: serve che
-ogni policy raggiunga con probabilità $1$ uno stato terminale. Estratto $V^*$,
+dove $V^*$ è il valore della migliore policy possibile. Con $\gamma < 1$, stati
+e azioni finiti e ricompense limitate, la convergenza è garantita. Chiamato
+$\mathcal{T}$ l'operatore che porta $V_k$ in $V_{k+1}$, per due funzioni
+qualsiasi $U$ e $W$ vale
+
+$$
+\|\mathcal{T}U - \mathcal{T}W\|_\infty \le \gamma\, \|U - W\|_\infty,
+\qquad \|U\|_\infty = \max_s |U(s)| :
+$$
+
+basta la disuguaglianza $|\max_a x_a - \max_a y_a| \le \max_a |x_a - y_a|$,
+insieme al fatto che le $P(s'\mid s,a)$ sommano a $1$. $\mathcal{T}$ è quindi
+una **contrazione** di fattore $\gamma$ nella norma del massimo, e per il
+teorema di punto fisso di Banach ha un punto fisso unico, $V^*$, a cui
+l'iterazione arriva da qualunque inizializzazione con
+$\|V_k - V^*\|_\infty \le \gamma^k \|V_0 - V^*\|_\infty$
+{cite}`bellman1957dynamic` {cite}`sutton2018reinforcement`. La stessa
+disuguaglianza dà il criterio d'arresto: se
+$\|V_{k+1} - V_k\|_\infty < \kappa(1-\gamma)/(2\gamma)$, la policy greedy
+rispetto a $V_{k+1}$ perde al più $\kappa$ rispetto all'ottima. Ogni passata
+costa $O(|\mathcal{S}|^2 |\mathcal{A}|)$. Nei compiti episodici con $\gamma = 1$
+il
+fattore di contrazione sparisce, e la garanzia va ricomprata altrove: basta che
+ogni policy raggiunga con probabilità $1$ uno stato terminale, e la condizione
+si allenta fino a chiedere che almeno una ci arrivi e che ogni policy che non
+ci arriva accumuli, da qualche stato, ricompensa $-\infty$ (è il quadro dei
+problemi di cammino minimo stocastico). Estratto $V^*$,
 la policy ottima è quella *greedy*: in ogni stato, l'azione che realizza il
 massimo.
 
@@ -665,8 +695,16 @@ lungo.
 `````{tab} Superiore
 
 Si alternano due passi. **Valutazione**: data la policy $\pi$, si calcola
-$V^\pi$ risolvendo il sistema lineare dell'equazione di Bellman (o iterandola,
-stavolta senza $\max$, fino a convergenza). **Miglioramento**: si rende la
+$V^\pi$ risolvendo il sistema lineare dell'equazione di Bellman. In forma
+vettoriale è $\mathbf{v}^\pi = \mathbf{r}^\pi + \gamma\, \mathbf{P}^\pi
+\mathbf{v}^\pi$, dove $\mathbf{v}^\pi$ è il vettore dei valori, $\mathbf{r}^\pi$
+quello delle ricompense attese sotto $\pi$ e $\mathbf{P}^\pi$ la matrice di
+transizione fra stati indotta da $\pi$; quindi
+$\mathbf{v}^\pi = (\mathbf{I} - \gamma\, \mathbf{P}^\pi)^{-1} \mathbf{r}^\pi$, e
+l'inversa esiste perché $\mathbf{P}^\pi$ è stocastica e il raggio spettrale di
+$\gamma\, \mathbf{P}^\pi$ non supera $\gamma < 1$. Per eliminazione costa
+$O(|\mathcal{S}|^3)$, e per questo con molti stati la si itera, stavolta senza
+$\max$, fino a convergenza. **Miglioramento**: si rende la
 policy *greedy* rispetto ai valori appena calcolati,
 
 $$
@@ -677,8 +715,13 @@ $$
 Il *policy improvement theorem* garantisce $V^{\pi'}(s) \ge V^\pi(s)$ in ogni
 stato, con miglioramento stretto da qualche parte finché $\pi$ non è ottima; e
 poiché in un MDP finito le policy deterministiche sono in numero finito,
-l'alternanza termina sulla policy ottima in un numero finito di iterazioni
-{cite}`sutton2018reinforcement`. Il confronto con la value iteration è un
+l'alternanza termina sulla policy ottima in un numero finito di iterazioni,
+al più $|\mathcal{A}|^{|\mathcal{S}|}$ e in pratica pochissime
+{cite}`sutton2018reinforcement`. La terminazione vuole però una cautela: se il
+$\arg\max$ ha azioni pari merito e le sceglie ogni volta in modo diverso,
+l'algoritmo può rimbalzare per sempre fra policy ugualmente buone; si cambia
+azione solo quando la nuova è strettamente migliore, oppure ci si ferma quando
+$V^\pi$ smette di cambiare. Il confronto con la value iteration è un
 compromesso classico: la policy iteration converge in *meno* iterazioni, ma
 ciascuna contiene una valutazione completa (costosa: un sistema di
 $|\mathcal{S}|$ equazioni, o molte passate); la value iteration fa iterazioni

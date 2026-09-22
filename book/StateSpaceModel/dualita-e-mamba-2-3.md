@@ -1,8 +1,8 @@
 # La dualità: Mamba-2 e Mamba-3
 
-Nella sezione precedente abbiamo visto Mamba (che da qui in avanti chiameremo
-**Mamba-1**, per distinguerlo dai suoi successori) pagare un prezzo per la sua
-stessa forza. Lasciando decidere all'ingresso quanto scrivere e quanto
+Mamba (che da qui in avanti chiameremo **Mamba-1**, per distinguerlo dai suoi
+successori) ha pagato un prezzo per la sua stessa forza. Lasciando decidere
+all'ingresso quanto scrivere e quanto
 dimenticare, il sistema è diventato selettivo, ma ha perso la regola fissa,
 e con essa il filtro unico che permetteva di addestrarlo tutto in una volta. Al
 suo posto è rimasto lo scan: la catena svolta a gruppi invece che in fila,
@@ -88,27 +88,27 @@ GPU adorano.
 
 Riprendiamo la convenzione del capitolo: lo stato $\mathbf{S}_t$ è una memoria
 chiave→valore, aggiornata per prodotto esterno e letta con la query. Nel
-capitolo sull'attenzione lineare avevamo messo in fila lo «zoo» delle
-ricorrenze, e la riga di Mamba-2 era il decadimento scalare
+{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>` avevamo
+messo in fila lo «zoo» delle ricorrenze, e la riga di Mamba-2 era il decadimento
+scalare
 
 $$
 \mathbf{S}_t = \alpha_t\, \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top, \qquad \mathbf{o}_t = \mathbf{S}_t\, \mathbf{q}_t,
 $$
 
-con transizione $\alpha_t \mathbf{I}$ (uno scalare per l'identità). Qui, e solo
-qui, il lato da cui la transizione moltiplica lo stato non conta: uno scalare
-commuta, mentre un fattore diagonale o di rango uno andrebbe scritto a destra,
-come vedremo nell'ultima sezione. La SSD mostra che
-questa è *precisamente* la forma cui si riduce un SSM quando si impone
-$\mathbf{A} = a\mathbf{I}$, con $a$ scalare fisso (uno per testa): la discretizzazione fa il
-resto, perché la transizione discreta diventa $\bar{\mathbf{A}}_t = a_t \mathbf{I}$ con
-$a_t = e^{\Delta_t a}$, data-dipendente attraverso $\Delta_t$. Basta
-identificare i ruoli. Lo stato dell'SSM per una testa a dimensione $P$ è la
-matrice $\mathbf{S}_t \in \mathbb{R}^{P\times N}$; la matrice d'ingresso
-$\mathbf{B}_t\in\mathbb{R}^{N}$ fa da chiave $\mathbf{k}_t$, l'ingresso
-$\mathbf{x}_t\in\mathbb{R}^{P}$ fa da valore $\mathbf{v}_t$, la matrice d'uscita
-$\mathbf{C}_t\in\mathbb{R}^{N}$ fa da query $\mathbf{q}_t$, e lo scalare $a_t$ è il gate
-$\alpha_t$. La ricorrenza dell'SSM,
+con transizione $\alpha_t \mathbf{I}$ (uno scalare per l'identità). (Uno
+scalare commuta, quindi qui il lato da cui la transizione moltiplica lo stato
+non conta.) La SSD mostra che questa è *precisamente* la forma cui si riduce un
+SSM quando si impone $\mathbf{A} = a\mathbf{I}$, con $a$ scalare fisso (uno per
+testa): la discretizzazione fa il resto, perché la transizione discreta diventa
+$\bar{\mathbf{A}}_t = a_t \mathbf{I}$ con $a_t = e^{\Delta_t a}$,
+data-dipendente attraverso $\Delta_t$. Basta identificare i ruoli. Lo stato
+dell'SSM per una testa a dimensione $P$ è la matrice $\mathbf{S}_t \in
+\mathbb{R}^{P\times N}$; la matrice d'ingresso $\mathbf{B}_t\in\mathbb{R}^{N}$
+fa da chiave $\mathbf{k}_t$, l'ingresso $\mathbf{x}_t\in\mathbb{R}^{P}$ fa da
+valore $\mathbf{v}_t$, la matrice d'uscita $\mathbf{C}_t\in\mathbb{R}^{N}$ fa
+da query $\mathbf{q}_t$, e lo scalare $a_t$ è il gate $\alpha_t$. La ricorrenza
+dell'SSM,
 
 $$
 \mathbf{S}_t = a_t\, \mathbf{S}_{t-1} + \mathbf{x}_t\, \mathbf{B}_t^\top, \qquad \mathbf{y}_t = \mathbf{S}_t\, \mathbf{C}_t,
@@ -155,9 +155,21 @@ Transformer {cite}`vaswani2017attention`, con la softmax rimpiazzata dalla
 maschera $\mathbf{M}$. La matrice $\mathbf{M}$ ha una struttura particolare,
 detta **1-semiseparabile**: ogni sua sottomatrice interamente contenuta nel
 triangolo inferiore ha rango al più uno, perché ogni elemento si fattorizza nei
-prodotti cumulati degli $a_t$. È questa struttura a fare da ponte: i sistemi a
-spazio di stati con transizione scalare *sono* le attenzioni con maschera
-semiseparabile.
+prodotti cumulati degli $a_t$. È questa struttura a fare da ponte, e il paper la
+dimostra in forma più
+generale: *qualunque* SSM con stato di dimensione $N$, anche con
+$\bar{\mathbf{A}}_t$ diagonale o piena, calcola $\mathbf{Y} =
+\mathbf{T}\mathbf{X}$
+con $T_{ij} = \mathbf{C}_i^\top \bar{\mathbf{A}}_i \cdots
+\bar{\mathbf{A}}_{j+1}\mathbf{B}_j$ per $i \ge j$, e $\mathbf{T}$ è
+$N$-semiseparabile (ogni sottomatrice del triangolo inferiore ha rango al più
+$N$). La transizione scalare è il caso in cui $\mathbf{T}$ si spezza nel
+prodotto elemento per elemento di una maschera $1$-semiseparabile per
+$\mathbf{C}\mathbf{B}^\top$, cioè in un'attenzione mascherata che si calcola a
+prodotti di matrici: i sistemi a spazio di stati con transizione scalare *sono*
+le attenzioni con maschera semiseparabile. Con un decadimento che varia per
+canale e per dimensione dello stato, come in Mamba-1, la matrice resta
+semiseparabile, ma quella fattorizzazione si perde, e con lei i tensor core.
 
 `````
 
@@ -449,24 +461,32 @@ Mamba-3 introduce **transizioni a valori complessi**: la dinamica dello stato
 non è più un semplice decadimento reale, ma una moltiplicazione per un numero
 complesso, che ha un modulo (il decadimento, come prima) e una fase (una
 rotazione). Nel piano complesso, moltiplicare per $e^{i\theta}$ è ruotare di
-un angolo $\theta$; ripetendo il passo, lo stato percorre un cerchio. È
-esattamente ciò che serve per rappresentare fenomeni periodici (parità,
-aritmetica modulare) che un decadimento puramente reale non può codificare, e
-il paper documenta un netto miglioramento sui compiti di state tracking.
+un angolo $\theta$; ripetendo il passo, lo stato percorre un cerchio. Per la
+parità basterebbe un autovalore reale negativo, $-1$, che rovescia il
+segno a ogni passo: Grazzi e colleghi {cite}`grazzi2025unlocking` dimostrano
+che una ricorrenza lineare a precisione finita con autovalori della transizione
+tutti positivi, come l’$e^{\Delta_t a} \in (0,1)$ di Mamba-2, la parità non la
+risolve, e che per contare modulo $3$ serve una transizione non triangolare. La
+rotazione copre il caso generale: con angolo $2\pi/m$ lo stato torna al punto di
+partenza ogni $m$ passi e conta modulo $m$, cosa che un fattore reale, anche
+negativo, sa fare solo per $m = 2$. Il paper documenta un netto miglioramento
+sui compiti di state tracking.
 
-Il legame con i Transformer è preciso. Il paper mostra che l'SSM complesso con
-discretizzazione trapezoidale equivale a un **RoPE data-dipendente** applicato
-alle matrici $\mathbf{B}$ e $\mathbf{C}$. RoPE (la *Rotary Position Embedding*
-della {doc}`struttura del Transformer </Transformers/architettura>`) inietta la
-posizione ruotando query e key
-di un angolo proporzionale all'indice del token, e nel prodotto scalare le due
+Il legame con i Transformer è preciso. Il paper mostra che l'SSM complesso
+equivale a un **RoPE data-dipendente** applicato alle matrici $\mathbf{B}$ e
+$\mathbf{C}$: l'equivalenza vale già con la discretizzazione di Eulero, per cui
+un SSM complesso di stato $N/2$ è un SSM reale di stato $N$ con transizione a
+blocchi di rotazioni $2\times 2$, scalate dal decadimento. RoPE (la *Rotary
+Position Embedding* della {doc}`struttura del Transformer
+</Transformers/architettura>`) inietta la posizione ruotando query e key di un
+angolo proporzionale all'indice del token, e nel prodotto scalare le due
 rotazioni si compongono, così che ai punteggi arrivi solo la distanza fra le
-posizioni. Qui accade lo stesso, con due differenze:
-le rotazioni si applicano alle controparti SSM di key e query ($\mathbf{B}$ e $\mathbf{C}$), e
-l'angolo non dipende solo dalla posizione ma dai dati, perché il passo
-$\Delta$ è selettivo. È l'ennesimo ponte tra le due famiglie: la codifica
-posizionale rotazionale dei Transformer riemerge, spontaneamente, come la fase
-di una dinamica di stato complessa.
+posizioni. Qui accade lo stesso, con due differenze: le rotazioni si applicano
+alle controparti SSM di key e query ($\mathbf{B}$ e $\mathbf{C}$), e l'angolo
+non dipende solo dalla posizione ma dai dati, perché il passo $\Delta$ è
+selettivo. È l'ennesimo ponte tra le due famiglie: la codifica posizionale
+rotazionale dei Transformer riemerge, spontaneamente, come la fase di una
+dinamica di stato complessa.
 
 `````
 

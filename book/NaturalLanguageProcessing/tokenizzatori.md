@@ -6,7 +6,7 @@ parola. Resta però la domanda che conta davvero, ed è una domanda di
 ingegneria: quali pezzi? Nessuno decide a mano che *tokenizzazione* vada
 spezzata in `token` + `izzazione`. Quella decisione è il risultato di un
 algoritmo che ha letto un corpus enorme e ha scelto, uno per uno, i mattoncini
-da tenere. Questa sezione apre quell'algoritmo.
+da tenere.
 
 Il punto di partenza è un vicolo cieco. Immaginate di riempire il vocabolario
 di parole intere, e di dover decidere quante tenerne: cinquantamila, centomila,
@@ -349,7 +349,7 @@ quattro: `ss` si applica (`b a ss e t t o`), `sso` no (dopo la doppia s c'è
 una e), `ro` no, `rosso` no.
 
 Fermarsi a quattro fusioni sarebbe però un vocabolario ridicolo: lasciamo
-correre l'algoritmo fino a dieci, che è quello che fa il programma qui sotto.
+correre l'algoritmo fino a dieci, che è quello che fa il programma sul BPE.
 Le sei che si aggiungono sono, in ordine, `a`+`sso` → `asso`,
 `b`+`asso` → `basso`, `t`+`o` → `to`, `t`+`to` → `tto`, `e`+`tto` → `etto`,
 `ro`+`ss` → `ross`. Con queste in mano, `bassetto` esce così:
@@ -391,7 +391,7 @@ lettere che ci stanno dentro sono sette in tutto, `a b e o r s t`. Un
 tokenizzatore vero, prima di consegnare un pezzo, controlla di averlo nel
 vocabolario; e siccome quelle cinque lettere nel vocabolario non ci sono, al
 posto loro metterebbe cinque `<UNK>`, uno per ciascuna. Sette token, cinque dei
-quali buchi. Il programma qui sotto non lo fa, perché
+quali buchi. Il programma sul BPE non lo fa, perché
 riapplica le fusioni alla cieca, senza mai chiedersi se i simboli rimasti siano
 noti: è un programma didattico, non un tokenizzatore di produzione.
 

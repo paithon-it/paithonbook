@@ -5,10 +5,12 @@ sbloccano il 90% delle capacità nascoste del modello», corsi che promettono di
 farti diventare *prompt engineer* in un weekend, immagini di istruzioni lunghe
 una pagina spacciate come formule alchemiche. È l'equivalente moderno delle
 parole magiche: si crede che esista *la* frase giusta, e che chi la conosce
-comandi la macchina. Conviene sgombrare il campo subito. Il prompt è il
+comandi la macchina. Che quella frase non esista lo diceva già Karpathy;
+smontando il singolo
+messaggio si vede perché. Il prompt è il
 primo livello con cui si programma un modello di
 linguaggio: il più immediato, quello che vedi e scrivi nella casella della
-chat. Sopra di esso, come abbiamo anticipato aprendo questo capitolo, ci sono
+chat. Sopra di esso, come si è anticipato in apertura, ci sono
 il contesto e il loop; ma è da qui che si comincia, perché è qui che nascono
 quasi tutti i malintesi.
 
@@ -49,7 +51,7 @@ Le quattro componenti canoniche sono: **istruzione** (il compito: «riassumi»,
 «classifica», «traduci»); **sfondo** (informazioni e vincoli che
 condizionano la risposta: il tono, il pubblico, regole da rispettare,
 eventuali passaggi recuperati; la guida DAIR.AI chiama questa componente
-*context*, ma in questo capitolo «contesto» è già il nome dell'intera finestra,
+*context*, ma qui «contesto» è già il nome dell'intera finestra,
 e usare la stessa parola per il contenitore e per una delle cose contenute
 sarebbe un modo sicuro di non capirsi più); **dato d'ingresso** (l'input
 specifico su cui operare); **indicatore d'output** (il segnale che innesca e
@@ -59,7 +61,7 @@ solo istruzione e input. Ma la distinzione è operativa, perché ciascuna parte
 si può isolare e migliorare da sola, e perché separare nettamente istruzione
 e dato è una difesa contro un problema concreto, la *prompt injection*
 (istruzioni ostili nascoste dentro il materiale su cui il modello deve
-lavorare), che vedremo in fondo alla sezione.
+lavorare), che chiude il discorso sul prompt.
 
 `````
 
@@ -183,8 +185,9 @@ temperatura non ha ancora toccato, e il nucleo resta lo stesso a ogni
 temperatura. Quale dei due ordini usi la propria libreria decide se il conto
 appena fatto riguarda o no la propria chiamata.
 
-Lo scarto è massimo sulle classifiche di mezzo, e si assottiglia man mano che i
-candidati si appaiano: su una classifica perfettamente piatta la temperatura
+La differenza fra i due ordini pesa di più quando la classifica non è né
+dominata da un favorito né già tutta alla pari, e si assottiglia man mano che i
+candidati si appaiano: se hanno già tutti la stessa percentuale, la temperatura
 non ha niente da riavvicinare, e il taglio cade dove cadrebbe comunque. Il
 conto si
 rifà in poche righe di Python, e con cinquanta candidati abbastanza appaiati
@@ -388,15 +391,30 @@ caveat: quell'argmax sull'intera sequenza è un'idealizzazione che il decoding
 reale al più approssima (il greedy massimizza
 token per token, senza garanzie sulla sequenza; il campionamento non massimizza
 affatto, e restituisce un campione da $P$ soltanto per $T = 1$ e senza
-troncamento: a $T \neq 1$ campiona dalla distribuzione temperata
-$\propto P^{1/T}$, e con il top_p da quella troncata al nucleo). Qui basti
+troncamento: a $T \neq 1$ la temperatura si applica token per token, e la
+sequenza esce con
+probabilità $\prod_t P(y_t \mid y_{<t}, \dots)^{1/T} / Z_t(y_{<t})$, che non è
+proporzionale a $P^{1/T}$ perché il normalizzatore $Z_t$ dipende dal prefisso;
+il top_p aggiunge un troncamento, anch'esso token per token). Qui basti
 ricordare che gli esempi agiscono come
 condizionamento, spostando la distribuzione condizionata del modello verso
 lo stile e il formato mostrati, non come dati d'addestramento. Alcune
-avvertenze empiriche contano nella pratica: la scelta degli esempi, il
-loro ordine e persino il formato dell'etichetta influenzano il
-risultato; gli esempi vanno bilanciati tra le classi per non indurre un *bias*
-verso quella più frequente; e nel regime a pochi esempi il rendimento
+avvertenze empiriche contano nella pratica, e hanno un nome e una misura. Zhao
+e colleghi {cite}`zhao2021calibrate` mostrano che la scelta degli esempi, il
+formato e persino l'ordine portano GPT-3 da un'accuratezza vicina al caso a una
+vicina allo stato dell'arte, e ne trovano la causa in preferenze sistematiche:
+per l'etichetta più frequente fra gli esempi, per quella dell'ultimo esempio e
+per le parole comuni nel pre-addestramento; il loro rimedio, la *calibrazione
+contestuale*, legge l'uscita del modello su un ingresso vuoto come «N/A» e la
+corregge finché lì non è uniforme. Lu e colleghi {cite}`lu2022fantastically`
+trovano che la sensibilità all'ordine resta nei modelli più grandi e che la
+permutazione buona per un modello non lo è per un altro. Min e colleghi
+{cite}`min2022rethinking`, sui compiti di classificazione e a scelta multipla,
+sostituiscono le etichette degli esempi con etichette a caso e perdono
+pochissimo: gli esempi trasmettono soprattutto lo spazio delle etichette, la
+distribuzione degli ingressi e il formato, ed è per questo che condizionano
+invece di insegnare. Da qui la regola di bilanciare le classi e di guardare
+quale etichetta sta per ultima; e nel regime a pochi esempi il rendimento
 marginale cala presto, mentre il costo in token cresce. Quest'ultima
 osservazione va però datata: è quella di GPT-3, legata alle finestre di
 allora, e con le finestre lunghe il quadro cambia. Agarwal e colleghi
@@ -415,9 +433,11 @@ entra la catena di pensiero.
 Chiedi a un modello «Quanto fa 17 × 24?» e potresti ricevere un numero secco,
 spesso sbagliato. Chiedigli di mostrare i passaggi e la musica cambia: se
 scrive «17 × 24 = 17 × 20 + 17 × 4 = 340 + 68 = 408», arriva alla risposta
-giusta molto più spesso. È l'idea della chain-of-thought, la catena di
-pensiero: far scrivere al modello i passaggi intermedi del ragionamento
-*prima* della conclusione. La propongono nel 2022 Wei e colleghi
+giusta molto più spesso. È la chain-of-thought, la catena di pensiero che nel
+capitolo sugli agenti il
+modello scriveva fra un'azione e l'altra: far scrivere al modello i passaggi
+intermedi del ragionamento *prima* della conclusione. La propongono nel 2022 Wei
+e colleghi
 {cite}`wei2022chain`, che la ottengono mostrando esempi già svolti in cui
 accanto alla risposta c'è il ragionamento; che bastasse chiederla, senza
 mostrare niente, lo scoprono nello stesso anno Kojima e colleghi
@@ -555,9 +575,13 @@ ragionamento tenendo la risposta di maggioranza, $\hat{y} = \arg\max_{y}
 \sum_{i=1}^{N} \mathbb{1}[\,a_i = y\,]$, dove $a_i$ è la risposta della
 $i$-esima catena. L'intuizione statistica: le derivazioni corrette tendono a
 convergere sulla stessa risposta, mentre gli errori sono idiosincratici e si
-sparpagliano, così il voto le premia. Il metodo migliora sensibilmente
-l'accuratezza su benchmark di ragionamento aritmetico e di senso comune
-rispetto alla singola catena; il prezzo è lineare nel calcolo: $N$ generazioni
+sparpagliano, così il voto le premia. Rispetto alla singola catena greedy il
+metodo guadagna, nel lavoro originale,
+fino a $17{,}9$ punti su GSM8K, $12{,}2$ su AQuA e $11{,}0$ su SVAMP fra i
+problemi aritmetici, e $6{,}4$ su StrategyQA e $3{,}9$ su ARC-Challenge fra
+quelli di senso comune {cite}`wang2023selfconsistency`: più il compito è di
+calcolo, più rende, in accordo con quanto si misura per la catena da sola; il
+prezzo è lineare nel calcolo: $N$ generazioni
 invece di una, mentre la latenza resta circa quella di una singola generazione
 se le catene, indipendenti per costruzione, si campionano in parallelo. In
 fattura il fattore può scendere sotto $N$, ma non da sé: le catene condividono
@@ -670,10 +694,18 @@ calma, e riportare davanti, nelle caselle, soltanto la conclusione.
 Molte API offrono una modalità *JSON* o uno *schema* imposto, e le due non
 garantiscono la stessa cosa: la prima assicura soltanto che quello che esce
 sia JSON valido, la seconda anche che rispetti lo schema, cioè che i campi ci
-siano e siano del tipo dichiarato. In tutti e due i casi, invece di sperare
-che il modello rispetti il formato, il decoder viene vincolato a generare solo
-sequenze conformi a una grammatica, e il formato diventa una garanzia invece
-che un auspicio.
+siano e siano del tipo dichiarato. Nella forma più rigorosa, il *decoding
+vincolato*, lo schema si traduce in un
+automa (a stati finiti per un'espressione regolare, a pila per una grammatica
+ricorsiva come quella di JSON) e a ogni passo si mettono a $-\infty$, prima
+della
+softmax, i logit dei token che porterebbero il prefisso fuori dalle stringhe
+ammesse {cite}`willard2023efficient`. Il costo per token è una maschera sul
+vocabolario, precalcolabile stato per stato; la difficoltà vera è che un token
+può attraversare più simboli della grammatica, o fermarsi a metà di uno. Così
+il formato diventa una garanzia invece che un auspicio; dove la modalità
+offerta non dichiara di vincolare il decoder, il formato va ricontrollato a
+valle come ogni altra uscita.
 
 Garantisce però meno di quanto la formula «togliere il problema alla radice»
 lascerebbe credere. Intanto cade se la generazione si interrompe a metà, per
@@ -822,8 +854,8 @@ in funzione, giorno dopo giorno, i sistemi costruiti sui modelli.
 Nessuno di questi rischi si risolve con una frase magica, ed è il punto da cui
 siamo partiti. Il prompt è il primo livello, e da solo porta lontano; ma i
 problemi seri (governare ciò che entra nella finestra, orchestrare più
-chiamate in un ciclo che si corregge) vivono ai livelli sopra, il contesto e
-il loop, che affrontiamo nelle sezioni seguenti.
+chiamate in un ciclo che si corregge) vivono ai livelli sopra, il {doc}`contesto
+<context-engineering>` e il {doc}`loop <loop-engineering>`.
 
 `````{tab} Elementare
 
@@ -877,7 +909,7 @@ il loop, che affrontiamo nelle sezioni seguenti.
 - Un prompt ha quattro parti (istruzione, sfondo, dato d'ingresso,
   indicatore d'output) e vive in un formato a ruoli system / user /
   assistant, con priorità (morbida) al system. «Sfondo» e non «contesto»
-  perché in questo capitolo il contesto è l'intera finestra.
+  perché qui il contesto è l'intera finestra.
 - Temperatura e top_p regolano il campionamento: bassa per fatti e
   codice, alta per creatività; muovi una manopola per volta, perché dove la
   temperatura si applica prima del taglio non sono indipendenti, e il nucleo si

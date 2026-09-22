@@ -42,7 +42,7 @@ cronologia, cioè dell'elenco di tutto quel che si è detto e fatto finora, e
 decidere cosa tenere e cosa buttare è ciò che distingue un
 agente che arriva in fondo da uno che si perde.
 
-Qui ne diamo la versione essenziale, quella che serve a un agente: come si
+La versione essenziale, quella che serve a un agente, è questa: come si
 spende lo spazio, dove il modello legge bene e dove male, e che forme prende
 la memoria. Il tema ha però un capitolo tutto suo più avanti,
 {doc}`Prompt, contesto e loop </IngegneriaLLM/overview>`, che lo allarga oltre
@@ -536,13 +536,17 @@ finestra e fa aspettare, ma spesso rende più di quanto costa.
 L'idea si può spingere oltre. Invece di seguire un unico filo fino in fondo, si
 possono aprire più strade di ragionamento, guardare dove portano e tenere
 solo le migliori: è il **Tree of Thoughts** («albero di pensieri»)
-{cite}`yao2023tree`. L'immagine è quella di chi risolve un labirinto: a ogni
-bivio si prova una strada, e se dopo qualche passo non promette niente di
-buono si torna al bivio e si prende l'altra, invece di andare avanti per
-inerzia. Le strade si possono anche tentare tutte insieme, ma la cosa che
-conta è un'altra, ed è quella che il filo unico non permette: poter tornare
-indietro da una strada che non promette. Il guadagno in problemi che richiedono
-pianificazione è reale; il prezzo pure, ed è sempre lo stesso: più token, più
+{cite}`yao2023tree`. Il metodo ha quattro pezzi: si stabilisce che cosa sia un
+«pensiero»
+(un'equazione intermedia, una riga di un piano), il modello ne propone alcuni a
+partire dallo stato corrente, lo stesso modello valuta quanto ciascuno
+prometta, e una ricerca classica, in ampiezza o in profondità, decide quali
+stati espandere e da quali tornare indietro. Gli stati si possono espandere
+anche tutti insieme, ma la cosa che conta è quella che il filo unico non
+permette: abbandonare uno stato che non promette e riprendere da uno
+precedente. Il guadagno in problemi che richiedono pianificazione è reale (nel
+gioco del 24, GPT-4 con la catena di pensiero risolve il 4% dei casi, con
+l'albero il 74%); il prezzo pure, ed è sempre lo stesso: più token, più
 tempo, più costo. È il compromesso di fondo del context engineering, in una
 forma nuova: la finestra è un budget, e ogni cosa che ci metti (istruzioni,
 esempi, memoria recuperata, o il pensiero stesso del modello) la paghi, e va

@@ -1,6 +1,8 @@
 # Una rete, cento lingue
 
-La sezione sulla traduzione neurale si era fermata al 2016, con GNMT (il
+La {doc}`sezione sulla traduzione con le reti
+</NaturalLanguageProcessing/seq2seq-traduzione>` si era fermata al 2016, con
+GNMT (il
 traduttore neurale di Google) che entrava in produzione: un modello per ogni
 coppia di lingue, addestrato sui *corpora paralleli* di quella coppia, cioè
 grandi raccolte di testi già tradotti, frase per frase, da un umano. Pochi mesi
@@ -20,8 +22,8 @@ somiglia a una **interlingua**: una rappresentazione interna dove il
 significato di una frase finisce più o meno nello stesso posto qualunque
 lingua la vesta.
 
-Quella prudenza non è ancora del tutto superata, e vale la pena di capire
-perché, soprattutto se la lingua in cui si lavora non è l'inglese: quasi tutto
+Quella prudenza non è ancora del tutto superata, e capire perché serve
+soprattutto a chi lavora in una lingua che non è l'inglese: quasi tutto
 ciò che fa funzionare un modello in italiano passa da qui.
 
 ## Un vocabolario per tutte
@@ -55,9 +57,11 @@ stesso numero di turni, il curdo quanti l'inglese. Lasciata ferma, ognuna ha i
 turni che le spettano. La si mette in mezzo.
 
 Quanto in mezzo, non c'è accordo. Un pentolone con due sole lingue, cento
-frasi in tutto, novantanove inglesi e una curda. **mBERT**, il primo modello
-costruito così, che legge centoquattro Wikipedia, gira poco la manopola, e i
-turni diventano novantasei e quattro. La lingua piccola sale a galla quasi
+frasi in tutto, novantanove inglesi e una curda. Riportiamo la stessa
+coppia di lingue a **mBERT**, il primo modello costruito così, che legge
+centoquattro Wikipedia in tutto: gira poco la manopola, e il rapporto di
+novantanove a uno diventa novantasei a quattro. La lingua piccola sale a galla
+quasi
 quattro volte più di quanto le spetti. I modelli venuti dopo, che puntavano di
 più sulle lingue rare, la girano molto di più, e si arriva a ottanta e venti,
 venti volte.
@@ -105,16 +109,26 @@ l’$\alpha$ di mBERT si campiona al $96\%$ e al $4\%$, cioè la lingua piccola 
 sovracampionata di quasi quattro volte; con quello di XLM-R si arriva a $80\%$ e
 $20\%$, venti volte. È così che, quando si costruisce il vocabolario condiviso,
 alle lingue a bassa disponibilità toccano pezzi sensati invece di sole lettere
-sciolte, che è esattamente il baratto discusso nella sezione sui tokenizzatori;
-ed è anche la manopola su cui si litiga, perché ogni turno dato a una lingua
-rara è un turno tolto a una comune.
+sciolte, che è esattamente il baratto discusso nella {doc}`sezione sui
+tokenizzatori
+</NaturalLanguageProcessing/tokenizzatori>`; ed è anche la manopola su cui si
+litiga, perché ogni turno dato a una lingua rara è un turno tolto a una comune.
+Il baratto ha un prezzo che si paga a ogni frase: dove il vocabolario condiviso
+riserva meno pezzi, la *fertilità* sale, e lo stesso contenuto occupa più
+token. Su testi paralleli la differenza fra lingue arriva a un ordine di
+grandezza {cite}`petrov2023language`, e ciò significa più calcolo, meno testo
+nella finestra di contesto e, dove l'uso si paga a token, una tariffa più alta
+per dire la stessa cosa. Rust e colleghi {cite}`rust2021good` mostrano che
+sostituire il tokenizzatore multilingue con uno monolingue migliora il modello
+sulla sua lingua anche a parità di dati.
 
 `````
 
 ## L'allineamento che nessuno ha chiesto
 
-Qui viene la parte interessante, ed è bene isolarla, perché è facile darla per
-scontata dopo averla sentita raccontare.
+Nessuno ha mai mostrato al modello una frase accanto alla sua traduzione.
+Eppure, a fine addestramento, succede una cosa che è facile dare per scontata
+dopo averla sentita raccontare.
 
 Nel procedimento appena descritto non c'è nulla che chieda al modello di
 mettere vicine le traduzioni. Nessuno gli mostra mai «il gatto nero salta sul
@@ -130,8 +144,8 @@ cose simili finiscono in indirizzi vicini. Ebbene, «il gatto nero salta sul
 muro» e «the black cat jumps on the wall» finiscono nella stessa regione, pur
 essendo in due lingue di cui al modello nessuno ha mai raccontato l'esistenza.
 
-Conviene essere precisi su *quanto* vicine, perché il modo in cui la cosa si
-misura è più interessante dello slogan. I due quartieri, quello italiano e
+Su *quanto* vicine serve precisione, perché il modo in cui la cosa si misura
+è più interessante dello slogan. I due quartieri, quello italiano e
 quello inglese, sono affiancati e paralleli invece che sovrapposti. Fra l'uno e
 l'altro c'è uno spostamento, e lo si misura nel modo più elementare che ci sia:
 si prendono alcune migliaia di frasi italiane con accanto la loro traduzione
@@ -149,10 +163,13 @@ impara a riconoscere qualcosa guardando dove cadono le frasi inglesi (dire se
 una recensione è arrabbiata, per esempio: impara che gli arrabbiati stanno da
 quella parte del quartiere inglese), lo stesso programma funziona anche sulle
 frasi italiane, pur senza aver mai visto una frase italiana e pur senza che
-nessuno gli tolga di mezzo lo spostamento. Il motivo sta nella direzione di
-quello spostamento: porta tutte le frasi italiane dalla stessa parte, e lo fa
-scivolando lungo il confine fra arrabbiate ed entusiaste invece di
-attraversarlo. Il confine imparato in inglese, se lo si appoggia sul quartiere
+nessuno gli tolga di mezzo lo spostamento. Una spiegazione possibile sta nella
+direzione di quello spostamento: porta tutte le frasi italiane dalla stessa
+parte, e lo fa scivolando lungo il confine fra arrabbiate ed entusiaste invece
+di attraversarlo (per un classificatore lineare basta che lo spostamento medio
+sia quasi parallelo al confine, cioè quasi ortogonale al vettore dei pesi;
+nessuno ha dimostrato che sia sempre così). Il confine imparato in inglese, se
+lo si appoggia sul quartiere
 italiano, cade quindi ancora al posto giusto. Che poi non ci cada
 perfettamente è vero, ed è la ragione per cui il trasferimento funziona bene
 ma non benissimo: quanto si perda dipende da quali sono le due lingue, e si
@@ -247,7 +264,8 @@ testa sola, mentre crolla con pochi strati. Anche il numero totale di parametri
 conta meno del numero di strati.
 
 Capacità. L'argomento più curioso è che mBERT trasferirebbe perché è
-piccolo: la capacità limitata, spartita fra cento lingue, lo costringe a
+piccolo {cite}`dufter2020identifying`: la capacità limitata, spartita fra cento
+lingue, lo costringe a
 condividere strutture invece di tenere cento modelli separati in un modello
 solo. Se fosse vero, l'allineamento non sarebbe una virtù del metodo ma una
 conseguenza della scarsità; e la scarsità ha un rovescio molto concreto, la
@@ -288,8 +306,10 @@ le sole Wikipedia ma quello che si trova in giro per il web. Con abbastanza roba
 da leggere le lingue si mettono vicine da sole, e il vantaggio di mostrargli le
 frasi accoppiate si assottiglia.
 
-La seconda strada lavora su frasi intere, e la sua forma tornerà più avanti in
-un capitolo che parla di tutt'altro. Ogni frase viene letta per conto suo, senza
+La seconda strada lavora su frasi intere, e la sua forma tornerà
+nell’{doc}`allineamento fra immagini e testo
+</VisioneLinguaggio/allineare-due-spazi>`, con immagini e didascalie al posto
+di frasi e traduzioni. Ogni frase viene letta per conto suo, senza
 che chi la legge veda mai l'altra lingua, e ridotta al suo indirizzo sulla
 mappa: il confronto avviene fra gli indirizzi, non fra le frasi. Si dà da una
 parte un mucchietto di frasi italiane e dall'altra il mucchietto mescolato delle
@@ -403,8 +423,10 @@ di prima, 25 volte su cento invece di 26. Riavere l'esercizio non basta a
 riavere l'allineamento, che quindi non ne era un semplice prodotto secondario.
 Quel che funziona è più cauto: si lascia imparare il compito nuovo vietando
 agli errori sul vecchio di crescere, e una parte dell'allineamento resta, 32
-volte su cento. Per riaverne quasi tutto, 64, bisogna chiedere durante la
-rifinitura proprio la cosa che si vuole conservare, cioè appaiare le frasi con
+volte su cento. Per andare oltre il punto di partenza, 64 volte su cento contro
+le 45
+iniziali, bisogna chiedere durante la rifinitura proprio la cosa che si vuole
+conservare, cioè appaiare le frasi con
 le loro traduzioni, e tornano a servire le frasi appaiate che per quasi tutte
 le lingue non ci sono.
 
@@ -489,16 +511,18 @@ ricampionamento: abbassarlo aiuta le lingue rare e sottrae dati a quelle
 comuni, e non esiste un valore giusto in assoluto, solo un valore giusto
 rispetto a quali lingue interessano.
 
-Una via d'uscita parziale è smettere di pretendere un modello solo: distillare
-un modello monolingue robusto dentro quello multilingue recupera parte del
-divario, così come i modelli dedicati a famiglie linguistiche ristrette invece
-che a cento lingue insieme.
+Le vie d'uscita smettono di pretendere che tutti i parametri siano di tutti.
+La più diretta dà a ogni lingua dei moduli propri (piccoli strati inseriti in
+ogni blocco, attivi solo sulla loro lingua) e lascia condiviso il resto: la
+capacità totale cresce con le lingue, quella attiva per token no, e aggiungere
+una lingua non sottrae niente alle altre {cite}`pfeiffer2022lifting`. È la
+stessa separazione fra parametri totali e attivi che torna nei {doc}`modelli a
+esperti <mixture-of-experts>`. Più tradizionali sono i modelli dedicati a
+famiglie linguistiche ristrette, che hanno meno da spartire.
 
 `````
 
 ## Che cosa vuol dire, per l'italiano
-
-Conviene tirare le somme dal punto di vista di chi legge.
 
 L'italiano sta in una posizione comoda ma non privilegiata: c'è in tutti i
 modelli multilingui, ha abbastanza testo perché il vocabolario condiviso gli

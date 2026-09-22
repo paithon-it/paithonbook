@@ -44,14 +44,17 @@ temperatura dell'aria intorno.
 
 La regola parla solo del *cambiamento*, eppure da lì si ricostruisce tutta la
 storia. Caffè a 80 °C, stanza a 20 °C, e ogni minuto il caffè perde un decimo
-della differenza: la differenza è 60, quindi scende di 6 gradi e va a 74 °C;
-poi la differenza è 54, perde 5,4 e arriva a 68,6 °C; poi 63,7 °C, e così via,
-in una curva ripida all'inizio e sempre più piatta. Un'equazione differenziale
-è questo: una regola sul cambiamento che, partendo da una condizione iniziale
-(80 °C al minuto zero), inchioda tutto il futuro. Senza quel numero di
-partenza le curve che obbediscono alla regola sarebbero infinite: l'80 sceglie
-la nostra. Le leggi di Newton che Le Verrier stava applicando sono regole
-così, con la gravità al posto del caffè.
+della differenza: la differenza è 60, quindi scende di 6 gradi e va a 74 °C; poi
+la differenza è 54, perde 5,4 e arriva a 68,6 °C; poi 63,7 °C, e così via, in
+una curva ripida all'inizio e sempre più piatta. Un'equazione differenziale è
+questo: una regola sul cambiamento che, partendo da una condizione iniziale (80
+°C al minuto zero), inchioda tutto il futuro. Senza quel numero di partenza le
+curve che obbediscono alla regola sarebbero infinite: l'80 sceglie la nostra.
+Che una partenza basti a scegliere una storia sola, però, lo si sa dimostrare
+per le regole semplici come quella del caffè, e non per tutte: per le equazioni
+che descrivono un fluido che scorre nessuno ci è ancora riuscito, ed è uno dei
+grandi problemi aperti della matematica. Le leggi di Newton che Le Verrier stava
+applicando sono regole così, con la gravità al posto del caffè.
 
 Quel conto minuto per minuto è il metodo classico: dagli anni Cinquanta i
 calcolatori risolvono così le equazioni differenziali, un passettino alla
@@ -131,10 +134,12 @@ una rete.
 
 A rilanciare questa mossa, nel 2019, sono Maziar Raissi, Paris Perdikaris e
 George Karniadakis {cite}`raissi2019physics`, e il nome che le danno è quello
-in cima al capitolo: **Physics-Informed Neural Networks**, PINN, cioè reti
-neurali informate dalla fisica. L'idea però è più vecchia di loro, e la
-prossima sezione racconta da dove viene e perché ha dovuto aspettare un
-quarto di secolo; è da qui che diventa praticabile.
+nel titolo del capitolo: **Physics-Informed Neural Networks**, PINN, cioè reti
+neurali informate dalla fisica. L'idea però è più vecchia di loro:
+una rete che si corregge sul residuo di un'equazione compare già nel 1994
+{cite}`dissanayake1994neural`, e resta di nicchia per un quarto di secolo perché
+le derivate della rete andavano scritte a mano, caso per caso. Diventa
+praticabile quando le librerie imparano a calcolarle da sole.
 
 `````{tab} Elementare
 
@@ -231,8 +236,8 @@ costruire, e ricoprono aorte e ali tutti i giorni. Costruirle però è un lavoro
 lungo e da specialisti, e la PINN se lo risparmia. È un vantaggio vero, ma di
 comodità, non di possibilità.
 
-Diverso è il caso in cui la risposta dipende da molte grandezze insieme, e qui
-si passa dal risparmio all'impossibilità. Per il caffè ne basta una, il tempo,
+La stessa proprietà, quando la risposta dipende da molte grandezze insieme,
+passa dal risparmio all'impossibilità. Per il caffè ne basta una, il tempo,
 e i puntini stanno in fila; per la sbarra ne servono due, il tempo e il punto
 lungo la sbarra, e i puntini riempiono un rettangolo. Ma ci sono problemi in
 cui le grandezze da cui la risposta dipende sono dieci, e i puntini vanno messi
@@ -314,12 +319,11 @@ prima di partire, non un risultato osservato dopo.
 
 La garanzia ha le sue condizioni, e chi fa il conto le conosce in anticipo. La
 più stretta lega fra loro i due passi: sulla sbarra, accorciare i passettini
-lungo il ferro senza accorciare anche quelli nel tempo fa sprofondare un
-puntino sotto zero e schizzare sopra il vicino, e a ogni passo quello scarto
-si moltiplica, finché il conto sputa temperature che nessun termometro vedrà
-mai.
-E se la storia da ricostruire fa un salto netto invece di scorrere liscia, di
-quel guadagno di precisione resta poco.
+lungo il ferro senza accorciare anche quelli nel tempo fa uscire un puntino
+troppo freddo e il suo vicino troppo caldo; al passo dopo lo sbaglio è più
+grande, e a ogni passo si moltiplica, finché il conto sputa temperature che
+nessun termometro vedrà mai. E se la storia da ricostruire fa un salto netto
+invece di scorrere liscia, di quel guadagno di precisione resta poco.
 
 Di una rete addestrata non si sa dire niente del genere: l'addestramento
 finisce quando smette di migliorare, e nessuno può garantire quanto lontana
@@ -406,10 +410,10 @@ mappa onesta dei limiti: quando convengono, quando no.
   ben educate che risolveremo qui, il caffè e la molla; per certe equazioni
   difficili, come quelle dei fluidi in tre dimensioni, che una soluzione
   unica esista sempre nessuno l'ha ancora dimostrato.
-- I solutori classici discretizzano: differenze finite o elementi finiti
-  su una griglia (accurati, veloci e a loro agio anche su forme complicate;
-  ma la griglia va costruita su misura, e con molte variabili il conto
-  diventa proibitivo).
+-  I solutori classici discretizzano: differenze finite su griglie regolari,
+  elementi e volumi finiti su maglie che seguono anche forme complicate
+  (accurati e veloci; ma la griglia va costruita su misura, e con molte
+  variabili il conto diventa proibitivo).
 - Una PINN usa una rete $u_\theta(x,t)$ come candidata soluzione, con una
   loss doppia: aderenza ai (pochi) dati più penalità sul residuo fisico
   $r_\theta = \partial_t u_\theta - \alpha\,\partial_{xx} u_\theta$ nei punti

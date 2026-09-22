@@ -80,10 +80,10 @@ sul passato, si verifica sul futuro, mai il contrario. Un taglio solo, però, no
 basta, e la ragione è che darebbe un voto solo, misurato su una manciata di
 giorni: se in quei giorni è capitato un fatto strano (una nevicata, uno
 sciopero), il voto racconta la nevicata e non il modello. Meglio tagliare in
-molti punti diversi e fare la media dei voti. È il backtesting di poche righe
-fa, e conviene sapere che gli altri due nomi con cui lo si incontra sono
-**walk-forward** e valutazione «su **origine mobile**»: tre parole, una cosa
-sola {cite}`hyndman2021forecasting`.
+molti punti diversi e fare la media dei voti. È il backtesting dell'apertura, e
+gli altri due nomi con cui lo si incontra sono **walk-forward** e valutazione
+«su **origine mobile**»: tre parole, una cosa sola
+{cite}`hyndman2021forecasting`.
 
 `````{tab} Elementare
 
@@ -148,13 +148,11 @@ Il MAE è la media degli errori presi senza segno: un giorno in cui hai
 previsto tre gradi in più e uno in cui ne hai previsti tre in meno per lui sono
 la stessa cosa, tre gradi di errore.
 
-L’RMSE fa tre cose in fila, e il nome le elenca al contrario. Prima eleva
-al quadrato ogni errore, poi ne fa la media, e infine prende la radice
-quadrata del risultato, che è la R del nome (*root*) e serve solo a riportare
-il numero nell'unità di partenza, perché senza di essa un errore in gradi
-verrebbe fuori in gradi al quadrato. Il pezzo che conta è il primo: siccome il
-quadrato di otto è sessantaquattro mentre il quadrato di due è quattro, un solo
-sbaglio grosso pesa più di tanti sbagli piccoli messi insieme.
+L’RMSE, la radice della media degli errori al quadrato già incontrata con il
+Netflix Prize nel {doc}`capitolo sui sistemi di raccomandazione
+</SistemiRaccomandazione/overview>`, pesa di più gli sbagli grossi: il quadrato
+di otto è sessantaquattro e quello di due è quattro, quindi un solo sbaglio
+grosso pesa più di tanti sbagli piccoli messi insieme.
 
 Due modelli che il MAE giudica identici: uno sbaglia di due gradi tutti e
 quattro i giorni, l'altro ne azzecca tre e sbaglia di otto il quarto. MAE due
@@ -204,14 +202,13 @@ tratto: lo si fa girare sulla strada già percorsa, quella su cui ti sei
 allenato, e ogni volta gli si chiede solo il giorno dopo, mentre tu magari ne
 stai prevedendo dodici ({numref}`fig-mase-non-duello`). Il suo errore medio si
 misura una volta sola, lì, prima che la prova cominci, e da quel momento non si
-tocca più. E lo si fa apposta, per la ragione che ne dànno gli autori: un
-avversario fatto correre sul blocco di prova si può calcolare solo se le
-previsioni da confrontare sono parecchie, mentre un metro preso sulla storia
-esiste anche quando avanti si guarda una volta sola. Sbagliare
-quanto lui, allora, non vuol dire pareggiare: su dodici giorni avanti è un
-ottimo risultato, su un giorno solo sarebbe mediocre. Quel numero sotto la
-linea di frazione serve a togliere di mezzo l'unità di misura, non a fare da
-avversario.
+tocca più. Ed è una scelta voluta da chi la MASE l'ha inventata, Rob Hyndman e
+Anne Koehler: se il paragone si facesse sul blocco di prova, con una previsione
+sola chi copia avrebbe un errore solo, magari zero, e per zero non si divide; la
+storia già percorsa, invece, di giorni ne ha sempre tanti. Sbagliare quanto lui,
+allora, non vuol dire pareggiare: su dodici giorni avanti è un ottimo risultato,
+su un giorno solo sarebbe mediocre. Quel numero sotto la linea di frazione serve
+a togliere di mezzo l'unità di misura, non a fare da avversario.
 
 `````
 
@@ -644,13 +641,12 @@ sanno nulla di «tempo». Vogliono una tabella, come quelle della {doc}`sezione
 sull'apprendimento supervisionato
 </MachineLearning/apprendimento-supervisionato>`: una riga per ogni caso,
 alcune colonne di domanda (le feature) e una colonna di risposta giusta (il
-target), e ogni riga deve poter essere letta da sola, senza sapere che cosa
-c'è nelle righe accanto. Imparare da una tabella così è ciò che si chiama
-apprendimento supervisionato: si chiama così perché per ogni riga qualcuno
-ha già scritto la risposta, e il modello impara confrontandosi con quella.
-Costruire una tabella del genere a partire da una serie si chiama **feature
-engineering temporale**, e serve a questo: una volta fatta, prevedere il futuro
-torna a essere il solito problema tabellare che sappiamo già risolvere.
+target), e ogni riga deve poter essere letta da sola, senza sapere che cosa c'è
+nelle righe accanto. Imparare da una tabella così è il solito apprendimento
+supervisionato, quello in cui per ogni riga la risposta è già scritta. Costruire
+una tabella del genere a partire da una serie si chiama **feature engineering
+temporale**, e serve a questo: una volta fatta, prevedere il futuro torna a
+essere il solito problema tabellare che sappiamo già risolvere.
 
 `````{tab} Elementare
 
@@ -684,16 +680,16 @@ sé stesse, e bastano due o tre coppie per disegnare quasi ogni stagionalità
 liscia.
 
 Un guaio resta sul confine fra i giorni d'allenamento e quelli di prova. Le
-ultime righe d'allenamento chiedono di una settimana che cade già di là; e la
-prima riga di prova, per fare le sue medie, guarda indietro a giorni di qua. Si
-buttano via le ultime righe d'allenamento, tante quanti i giorni d'anticipo
-più il tratto più lungo che una riga guarda indietro, cioè la finestra delle
-medie o il valore più vecchio che si porta dietro, quello dei due che arriva
-più lontano: con una settimana d'anticipo e medie a sette giorni, quattordici
-righe, un pugno di esempi in cambio di un confine pulito.
-L'operazione si chiama **purga**, e il nome viene dalla finanza: lo usa
-Marcos López de Prado nel capitolo sulla cross-validation di *Advances in
-Financial Machine Learning* {cite}`lopezdeprado2018advances`.
+ultime righe d'allenamento chiedono quanto si venderà fra una settimana, e
+quella settimana cade già di là, fra i giorni di prova: sono risposte che il
+giorno della prima previsione vera nessuno conosce ancora. Si buttano via tante
+righe quanti sono i giorni d'anticipo, sette con una settimana: un pugno di
+esempi in cambio di un confine pulito. Che la prima riga di prova, per fare le
+sue medie, guardi indietro a giorni di qua non guasta niente, perché quando si
+prevede quei giorni sono già successi. L'operazione si chiama **purga**, e il
+nome viene dalla finanza: lo usa Marcos López de Prado nel capitolo sulla
+cross-validation di *Advances in Financial Machine Learning*
+{cite}`lopezdeprado2018advances`.
 
 `````
 
@@ -727,35 +723,32 @@ calcolati sull'intera serie. Uno `StandardScaler` messo prima dello split è
 esattamente l'analista con la curva liscia come una pista da sci.
 
 E attenzione a dove cade il taglio, perché la regola «netta» del confine
-temporale si viola da sé, al bordo. Se si divide train e test
-guardando l'istante $t$ delle feature, le ultime $h$ righe di training
-hanno un bersaglio $y_{t+h}$ che sta già dentro il periodo di test, e le
-finestre mobili di ampiezza $w$ allungano la sovrapposizione di altri $w$ passi.
-Si tagliano via quelle righe, ed è un'operazione che ha un nome, la purga,
-preso dal capitolo settimo di *Advances in Financial Machine Learning* di
-Marcos López de Prado {cite}`lopezdeprado2018advances`, intitolato appunto
-alla cross-validation in finanza. Quante siano si conta senza formule da
-ricordare. Ogni riga guarda all'indietro fino a un certo passo, e quel passo è
-il maggiore fra i ritardi $p$ e l'ampiezza $w$ delle finestre mobili:
-chiamiamolo $r$. Una riga di training all'istante $t$ tocca allora le
-osservazioni da $y_{t-r}$ a $y_{t-1}$ e in più il suo bersaglio $y_{t+h}$; la
-prima riga di test, all'istante $t_0+1$, legge all'indietro fino a
-$y_{t_0+1-r}$. Perché le due non si sfiorino serve $t + h < t_0 + 1 - r$, e le
-righe da togliere in fondo al training sono $h + r$. La tentazione naturale è
-togliere solo quelle il cui bersaglio sfora, cioè $h$, e ci si dimentica
-delle finestre mobili, che allungano all'indietro la parte di serie che ogni
-riga di test si porta dentro. Il costo è un pugno di esempi; il guadagno è che
-la regola torna vera anche al bordo.
+temporale si viola da sé, al bordo. Se si divide train e test guardando
+l'istante $t$ delle feature, le ultime $h$ righe di training hanno un bersaglio
+$y_{t+h}$ che cade oltre l'ultimo istante che la prima riga di test conosce. Si
+tagliano via quelle righe, ed è un'operazione che ha un nome, la purga, preso
+dal capitolo settimo di *Advances in Financial Machine Learning* di Marcos López
+de Prado
+{cite}`lopezdeprado2018advances`, intitolato appunto alla cross-validation in
+finanza. Quante siano discende dalla regola stessa. La prima riga di test,
+all'istante $t_0+1$, usa osservazioni fino a $y_{t_0}$, che è quanto il
+previsore sa quando la emette; una riga di training all'istante $t$ è lecita
+se il suo bersaglio era già noto a quel punto, cioè se $t + h \le t_0$, e le
+righe da togliere in fondo al training sono esattamente $h$. Ritardi e
+finestre mobili non allungano il conto: che una riga di training abbia per
+bersaglio un valore che la prima riga di test legge fra le sue feature non è
+una fuga, perché quando si prevede quel valore è già osservato, e in
+produzione il modello lo avrebbe in mano allo stesso modo. Togliere anche
+quelle righe butterebbe via dati leciti e renderebbe la stima pessimista
+invece che onesta. È anche il criterio di López de Prado: si purgano le
+osservazioni il cui *bersaglio* si sovrappone nel tempo a quello di test.
 
-Quanto costa tenersele, quelle righe, dipende da quanto è lungo il training. Su
-una serie fortemente autocorrelata ($\phi = 0{,}9$) con $p=5$ ritardi, $w=10$ e
-$h=7$, cioè diciassette righe da purgare, la stima dell'errore esce ottimista di un
-paio di punti percentuali quando il training è di centoventi righe, e
-l'effetto si riduce a qualche decimo quando è di quattrocento (confrontando, a
-parità di numero di righe, una finestra di addestramento che arriva al confine
-e una purgata; quanto esattamente dipende dalla lunghezza del blocco di test e
-da quale errore si guarda, quello quadratico o la sua radice). Il guasto si
-vede quando i dati sono pochi, cioè proprio quando si è più tentati di tenersele.
+Quanto costa tenersele, quelle righe, dipende da quanto è lungo il training:
+su una serie fortemente autocorrelata e con un orizzonte di una settimana la
+stima dell'errore esce ottimista quando il training è di un centinaio di
+righe, e l'effetto si stempera quando è di qualche centinaio, perché sette
+righe su quattrocento pesano poco. Il guasto si vede quando i dati sono pochi,
+cioè proprio quando si è più tentati di tenersele.
 
 L’**embargo**, che quel capitolo affianca alla purga, qui invece non serve, e
 chi li importa tutti e due butta via dati per difendersi da una minaccia che
@@ -777,10 +770,13 @@ compromessi diversi.
 
 `````{tab} Elementare
 
-La strategia **ricorsiva** allena un solo modello a un passo e poi lo fa girare a
-catena: prevede domani, finge che sia successo davvero, e con quel valore prevede
-dopodomani, e così via. Semplice, ma ogni previsione poggia sulle precedenti: se
-sbagli il primo passo, l'errore si trascina e si accumula lungo la catena.
+Le prime due strade le abbiamo già incontrate nell’{doc}`apertura del capitolo
+</SerieTemporali/overview>`, con la temperatura di domenica, e adesso hanno un
+nome. La strategia **ricorsiva** allena un solo modello a un passo e poi lo fa
+girare a catena: prevede domani, finge che sia successo davvero, e con quel
+valore prevede dopodomani, e così via. Semplice, ma ogni previsione poggia sulle
+precedenti: se sbagli il primo passo, l'errore si trascina e si accumula lungo
+la catena.
 
 La strategia **diretta** allena un modello *diverso* per ogni orizzonte: uno per
 «tra un giorno», uno per «tra sette giorni». Nessuna previsione poggia su
@@ -968,13 +964,12 @@ vale più della pigrizia, purché si dichiari quale pigrizia.
 
 ```{admonition} Da ricordare
 :class: important
-- Con le serie temporali la cross-validation con shuffle è sbagliata:
-  mescolare mette futuro e passato nello stesso mucchio e produce *leakage*, con
-  stime dell'errore troppo ottimiste. Ogni dato di training deve precedere nel
-  tempo ogni dato di validazione, e al confine la regola va difesa con la
-  purga ($h$ righe più il passo più lontano che una riga guarda
-  all'indietro), non con l'embargo, che qui non ha nulla da
-  proteggere.
+-  Con le serie temporali la cross-validation con shuffle è sbagliata: mescolare
+  mette futuro e passato nello stesso mucchio e produce *leakage*, con stime
+  dell'errore troppo ottimiste. Ogni dato di training deve precedere nel tempo
+  ogni dato di validazione, e al confine la regola va difesa con la purga (le
+  $h$ righe il cui bersaglio cade oltre il confine), non con l'embargo, che qui
+  non ha nulla da proteggere.
 - Si valida col walk-forward (backtesting): split cronologici ripetuti col
   test sempre nel futuro, a finestra espansa (tutto il passato) o
   scorrevole (ampiezza fissa) {cite}`hyndman2021forecasting`.

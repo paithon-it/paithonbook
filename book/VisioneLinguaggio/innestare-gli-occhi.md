@@ -7,9 +7,12 @@ gli interessa. Le due parti hanno storie separate e restano quello che sono: il
 mestiere sta tutto nella saldatura, che è la più piccola delle tre cose e l'unica
 che il vivaista fabbrica davvero.
 
-L'architettura che segue è un innesto in senso letterale, e l'immagine
-conviene tenerla fino in fondo: fra le giunzioni che sono state provate ha
-resistito la più semplice, non la più ingegnosa.
+L'architettura che segue è un innesto in senso letterale: il portainnesto è il
+modello di linguaggio, già radicato e capace di parlare; la marza è l'encoder
+visivo, che porta l'occhio; la saldatura è il pezzo in mezzo, l'interprete
+dell'apertura del capitolo, ed è l'unica cosa che si fabbrica davvero. Fra le
+giunzioni che sono state provate ha resistito la più semplice, non la più
+ingegnosa.
 
 ## La domanda che genera l'architettura
 
@@ -74,15 +77,19 @@ qualcuno ha scelto davvero), la sequenza scenderebbe da 596 a 52 pezzi, cioè
 undici volte e mezzo più corta; e siccome i confronti vanno col quadrato,
 undici e mezzo per undici e mezzo fa circa centotrenta volte meno confronti.
 
-Quel centotrenta però vale per i confronti, non per il lavoro. A seicento pezzi
-i confronti sono ancora una briciola del conto, un quarantesimo scarso: il
-grosso lo fa il lavoro che il modello spende su ogni pezzo, uno per uno, e
-quello cala quanto i pezzi, cioè undici volte e mezzo. Il quadrato comanda
-molto più in là, quando i pezzi si contano a decine di migliaia.
+Quel centotrenta però vale per i confronti, e i confronti non sono tutto.
+Dopo aver guardato gli altri, ogni pezzo passa da solo per una lunga catena di
+calcoli tutta sua, quella che rielabora quello che ha raccolto; e quella catena
+cresce quanto i pezzi, non come il loro quadrato. A seicento pezzi pesa una
+quarantina di volte più dei confronti, quindi il conto vero cala di undici volte
+e mezzo, non di centotrenta. Il quadrato comanda molto più in là, quando i pezzi
+si contano a decine di migliaia.
 
 Ecco perché «quanti» pesa lo stesso: ogni tessera occupa un posto, i posti
-sono contati, e a ogni domanda il modello deve tenersi in memoria quello che
-ha già letto di tutti. Quel risparmio si paga in quello che dell'immagine
+sono contati, e mentre scrive la risposta, parola dopo parola, il modello si
+tiene in memoria
+un appunto per ogni pezzo che ha già letto: 576 tessere sono 576 appunti in più.
+Quel risparmio si paga in quello che dell'immagine
 viene buttato via.
 
 `````
@@ -122,9 +129,11 @@ fare, rende praticabile allegare un'immagine a ogni richiesta.
 ## Tre risposte, dalla più elaborata alla più povera
 
 Le soluzioni che hanno lasciato il segno sono tre, e conviene percorrerle in
-ordine di complessità decrescente, che qui coincide con l'ordine
-cronologico: è il rovescio di come di solito vanno queste cose, e ha una
-ragione precisa.
+ordine di complessità decrescente, che per questi tre sistemi coincide con
+l'ordine di uscita. L'idea della proiezione semplice però è più vecchia di
+tutti e tre: un prefisso visivo ottenuto per mappa lineare verso un modello di
+linguaggio congelato esisteva già nel 2021 {cite}`tsimpoukelli2021multimodal`,
+e a imporla è stata la dimostrazione, con LLaVA, che bastava.
 
 ```{figure} ../figures/vlm-connettori.svg
 :name: fig-vlm-connettori
@@ -250,8 +259,11 @@ un normale prefisso di token.
 
 `````{tab} Elementare
 
-Un assistente, davanti a qualunque fotografia, compila sempre lo stesso
-questionario di 32 domande. Le domande non gliele detta nessuno: se le è scritte
+È la stessa idea del modulo prestampato, con due differenze: le righe sono
+32, e il riassunto non entra dentro il modello di linguaggio ma gli viene messo
+davanti, come le prime parole della domanda. Un assistente, davanti a qualunque
+fotografia, compila sempre lo stesso questionario di 32 domande. Le domande non
+gliele detta nessuno: se le è scritte
 da solo in addestramento, tenendo quelle le cui risposte servivano di più a chi
 poi doveva parlare dell'immagine, e guardandole tutte insieme perché non
 finissero a chiedere due volte la stessa cosa. Potrebbero essere «che oggetti ci
@@ -310,7 +322,15 @@ selezionare.
 L'addestramento avviene in due fasi, e la prima serve a decidere che cosa
 selezionare: il Q-Former è collegato al solo encoder visivo e ottimizza tre
 obiettivi congiunti (contrastivo fra immagine e testo, generazione di testo
-condizionata all'immagine, classificazione binaria di appaiamento). Solo nella
+condizionata all'immagine, classificazione binaria di appaiamento). In questa
+fase il Q-Former ha anche una metà testuale, che condivide con le query gli
+strati di self-attention, e i tre obiettivi differiscono soltanto per la
+maschera: nel contrastivo query e testo non si vedono, e la somiglianza è il
+massimo sulle 32 query; nella generazione il testo vede le query e sé stesso in
+modo causale, le query non vedono il testo; nell'appaiamento si vedono tutti.
+Le query sono così costrette a raccogliere dall'immagine ciò che serve a
+scrivere il testo, perché il testo può arrivare all'immagine soltanto
+attraverso di loro. Solo nella
 seconda l'uscita viene proiettata e data al modello di linguaggio congelato, con
 la sola loss di modellazione del linguaggio. Senza la prima fase le query
 imparerebbero a produrre qualcosa che il modello di linguaggio accetta, non
@@ -442,13 +462,21 @@ disponibile il massimo condizionamento; è la stessa logica per cui il collo di
 bottiglia del seq2seq classico è stato sciolto dall'attenzione di Bahdanau
 invece che da un vettore di contesto più grande.
 
-Due onestà, per non trasformare un'osservazione in un dogma. Il prezzo è
+Quattro onestà, per non trasformare un'osservazione in un dogma. La prima: la
+cecità alla domanda non è inevitabile, e InstructBLIP
+{cite}`dai2023instructblip` la toglie passando l'istruzione dentro il Q-Former
+insieme alle query. La seconda: a parità di numero di token, le ablazioni
+sistematiche {cite}`mckinzie2024mm1` trovano che il tipo di connettore conta
+poco, mentre contano l'encoder, la risoluzione e quanti token visivi arrivano;
+la ragione di principio vale quindi soprattutto come argomento contro la
+compressione, più che a favore della matrice. La terza: il prezzo è
 pesante: su immagini ad alta risoluzione, su documenti e sui video il contesto
 e la cache si riempiono per primi, e più in là, oltre i $6 d_t$ token, il
 termine quadratico calcolato sopra prende il sopravvento. Lì il collo di
 bottiglia torna a essere *computazionale* e la compressione torna sensata (è il
-tema della sezione sulla risoluzione, che quella soglia la ricava). E le query
-apprese sono un'idea con un dominio di validità, e riappaiono proprio dove i
+tema della sezione sulla risoluzione, che quella soglia la ricava). E la
+quarta: le query apprese sono un'idea con un dominio di validità, e riappaiono
+proprio dove i
 token visivi sarebbero troppi.
 
 `````
@@ -456,7 +484,12 @@ token visivi sarebbero troppi.
 ## Due tempi, in quest'ordine
 
 Resta da dire come si addestra la saldatura: in due tempi, con due obiettivi
-diversi e due insiemi di pesi congelati diversi. L'ordine non è negoziabile.
+diversi e due insiemi di pesi congelati diversi. È la ricetta del primo
+LLaVA, dove saltare la prima fase costava qualche punto; ma uno studio
+sistematico successivo {cite}`karamcheti2024prismatic` trova che addestrare
+insieme connettore e modello di linguaggio fin dall'inizio rende altrettanto,
+risparmiando un quinto del calcolo, e l'ordine resta una scelta da verificare
+caso per caso.
 
 **Primo tempo, allineamento.** Si congela tutto e si addestra il solo connettore
 su coppie immagine-didascalia, con l'obiettivo di sempre di un modello di
@@ -508,9 +541,12 @@ visive nella regione dello spazio di embedding che il modello di linguaggio sa
 già leggere. Nella seconda $\theta$ include i pesi del modello di linguaggio e i
 dati sono conversazioni multi-turno; la loss è mascherata sui token
 dell'istruzione e su quelli visivi, cioè il modello li legge ma non viene
-penalizzato per non saperli generare. Fondere le due fasi porta il modello di
-linguaggio ad adattarsi a un connettore non ancora allineato, con il rischio
-classico dell'ottimizzazione congiunta di due componenti mal condizionate.
+penalizzato per non saperli generare. Fondere le due fasi espone il modello di
+linguaggio a un connettore non ancora
+allineato, che è il rischio classico dell'ottimizzazione congiunta di due
+componenti mal condizionate; le prove sistematiche dicono però che, con una
+buona ricetta, il rischio non si materializza
+{cite}`karamcheti2024prismatic`.
 
 `````
 
@@ -609,15 +645,18 @@ penalizzato per non saperli generare.
 
 Il connettore risolve il problema che aveva chiuso la sezione precedente: un
 modello che *legge* l'immagine token per token, invece di comprimerla in un
-vettore solo, può parlare delle relazioni fra le cose e non solo del loro
-elenco, e lo fa senza riaddestrare niente di grosso.
+vettore solo, ha almeno i mezzi per parlare delle relazioni fra le cose e
+non solo del loro elenco, e lo fa senza riaddestrare niente di grosso. Che li
+usi davvero è un'altra questione, e l'ultima sezione del capitolo mostra quanto
+spesso non lo faccia.
 
 Restano due domande, e sono le prossime due sezioni. Se l'immagine entra dalla
 stessa porta delle parole, perché non farne davvero delle parole, simboli di un
 vocabolario, così che il modello possa anche *scriverne*? E poi: 576 token
 bastano per riconoscere una scena e non per leggere una tabella stampata dentro
 la fotografia, ma
-moltiplicarli significa pagare il fattore quadratico calcolato all'inizio. Il
+moltiplicarli significa pagare in contesto e in cache, linearmente, e oltre
+qualche decina di migliaia di token anche il fattore quadratico. Il
 conto del dettaglio è il vero limite pratico di tutto quello che abbiamo visto
 qui.
 

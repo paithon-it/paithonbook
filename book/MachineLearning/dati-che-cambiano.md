@@ -342,18 +342,40 @@ $$
 
 dove $w(\mathbf{x})$ è il rapporto tra la densità degli input in produzione e
 quella in addestramento e $m$ è il numero di esempi. In teoria, minimizzare
-$\mathcal{L}_w$ equivale a minimizzare l'errore atteso sotto
-$P_{\text{test}}$. In pratica i limiti sono seri: vale solo se $P(y \mid X)$
-non cambia; richiede che i supporti si sovrappongano, dove
-$p_{\text{train}}(\mathbf{x}) = 0$ ma $p_{\text{test}}(\mathbf{x}) > 0$ nessun
-peso può inventare esempi mai raccolti; e stimare il rapporto di densità in alta
-dimensione è difficile, con pesi enormi su pochi esempi che fanno esplodere la
-varianza. Correzioni analoghe esistono per il *label shift*, ripesando per
-classi. Complementare a tutto questo è l’**out-of-distribution detection**:
-riconoscere gli input troppo lontani dalla distribuzione di addestramento e,
-invece di predire con finta sicurezza, astenersi o segnalare; un problema
-particolarmente delicato per le reti profonde, che su input fuori
-distribuzione tendono a essere *confidenti e sbagliate* insieme.
+$\mathcal{L}_w$ equivale a minimizzare l'errore atteso sotto $P_{\text{test}}$.
+In pratica i limiti sono seri: vale solo se $P(y \mid X)$ non cambia; richiede
+che i supporti si sovrappongano, dove $p_{\text{train}}(\mathbf{x}) = 0$ ma
+$p_{\text{test}}(\mathbf{x}) > 0$ nessun peso può inventare esempi mai
+raccolti; e stimare il rapporto di densità in alta dimensione è difficile, con
+pesi enormi su pochi esempi che fanno esplodere la varianza. Quanti esempi
+contano davvero lo dice la taglia effettiva, $m_{\text{eff}} = \bigl(\sum_i
+w_i\bigr)^2 / \sum_i w_i^2$, che crolla appena pochi pesi dominano. Le due
+densità, però, non vanno stimate una per una: un classificatore che distingue
+addestramento e produzione, addestrato su $m_{\text{tr}}$ e $m_{\text{prod}}$
+esempi, dà $w(\mathbf{x}) =
+\frac{m_{\text{tr}}}{m_{\text{prod}}}\,\frac{P(\text{prod}\mid\mathbf{x})}{1 -
+P(\text{prod}\mid\mathbf{x})}$, ed è lo stesso detective che serve ad
+accorgersi della deriva. Infine il ripeso conta soprattutto quando il modello è
+mal specificato: se la famiglia contiene la vera $P(y \mid X)$, il minimo non
+pesato è già consistente e i pesi aggiungono soltanto varianza
+{cite}`shimodaira2000improving`.
+
+Per il *label shift* il conto è più semplice, perché il rapporto dipende dalla
+sola classe. Con $P(X \mid y)$ invariata, $p_{\text{test}}(y \mid \mathbf{x})
+\propto p_{\text{train}}(y \mid
+\mathbf{x})\;\pi_{\text{test}}(y)/\pi_{\text{train}}(y)$, dove $\pi(y)$ è la
+prevalenza della classe: un classificatore calibrato si corregge senza
+riaddestrarlo, moltiplicando le posteriori per
+$\pi_{\text{test}}(y)/\pi_{\text{train}}(y)$ e rinormalizzando (per la malattia
+passata da uno su mille a uno su cinquanta, $20$ sui positivi e $0{,}98/0{,}999
+\approx 0{,}98$ sui negativi). Resta da stimare $\pi_{\text{test}}$, che senza
+etichette nuove si ricava con un EM sulle posteriori o invertendo la matrice di
+confusione del modello {cite}`lipton2018detecting`. Complementare a tutto
+questo è l’**out-of-distribution detection**: riconoscere gli input troppo
+lontani dalla distribuzione di addestramento e, invece di predire con finta
+sicurezza, astenersi o segnalare; un problema particolarmente delicato per le
+reti profonde, che su input fuori distribuzione tendono a essere *confidenti e
+sbagliate* insieme.
 
 `````
 
@@ -364,7 +386,8 @@ secondo modello a rispondere a una domanda sola: questo esempio viene da ieri
 o da oggi? Se ci riesce, ieri e oggi sono distinguibili, cioè la deriva c'è; e
 il suo punteggio dice pure quanto è grossa.
 
-Il punteggio giusto da guardare qui è l'AUC della sezione sulle metriche, che
+Il punteggio giusto da guardare qui è l'AUC della {doc}`sezione sulle metriche
+<metriche>`, che
 per un detective come questo si legge benissimo: $0{,}5$ vuol dire che sta
 tirando a indovinare, cioè che i due mucchi gli sembrano identici, e $1$ vuol
 dire che li separa senza sbagliare un colpo.
@@ -502,3 +525,9 @@ un effetto collaterale ma la struttura stessa del problema.
 ```
 
 `````
+
+Un modello che invecchia in silenzio ha un difetto in comune con quasi tutti
+quelli incontrati fin qui: risponde con un numero secco, e non dice quanto
+fidarsi. Resta da vedere un modello che accompagna ogni previsione con la
+propria incertezza, larga dove i dati mancano e stretta dove abbondano: sono i
+{doc}`processi gaussiani <processi-gaussiani>`.

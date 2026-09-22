@@ -396,29 +396,42 @@ rimedio, è la {doc}`sezione su quando fermarsi </PyTorch/addestramento>`.
   modello applica è la somma di tutte quelle dei $t$ giri fatti fino a lì, e non
   quella dell'ultimo errore, cioè grosso modo $t$ volte la correzione media. La
   parte interessante è che ciò che si vede dipende dall'ottimizzatore, e non
-  nel verso che ci si aspetta. Con SGD il passo cresce insieme alla somma:
-  con un learning rate piccolo la loss resta perfino *migliore* di quella del
-  ciclo corretto per tutta la corsa ($0{,}043$ contro $0{,}690$ in una misura
-  su una regressione giocattolo), con uno grande esplode (fino a
-  $4{,}5 \cdot 10^{3}$, e su MNIST fino a $177$, contro il $2{,}3$ di chi tira
-  a indovinare, che è il logaritmo di dieci, cioè quanto vale la loss di chi dà
-  la stessa probabilità a tutte e dieci le cifre: molto peggio che non aver
-  imparato niente). Con Adam, al passo che si usa di default, non esplode, e la
+  nel verso che ci si aspetta. Con SGD il bug ha un nome esatto. Se
+  `p.grad` non si svuota, l'aggiornamento diventa
+  $\theta_{t+1} = \theta_t - \eta \sum_{s \le t} \mathbf{g}_s$, cioè la
+  discesa col momento della {doc}`sezione sull'ottimizzazione
+  </Matematica/analisi-ottimizzazione>` con coefficiente $1$ e nessuno
+  smorzamento: cifra per cifra lo stesso cammino di
+  `optim.SGD(params, lr=eta, momentum=1.0)` con il ciclo corretto. Un momento
+  senza attrito all'inizio accelera, e per qualche centinaio di passi la loss
+  può stare perfino *sotto* quella del ciclo corretto; ma non si ferma mai. Su
+  una conca quadratica di curvatura $\lambda$ l'iterazione diventa
+  $\theta_{t+1} = (2 - \eta\lambda)\,\theta_t - \theta_{t-1}$, le cui radici
+  hanno modulo $1$ per $0 < \eta\lambda < 4$: il parametro oscilla attorno al
+  minimo con ampiezza costante, e oltre quella soglia l'ampiezza cresce a ogni
+  giro e la loss esplode. Con Adam, al passo che si usa di default, non esplode,
+  e la
   ragione è strutturale: Adam non usa il
   gradiente così com'è, lo divide per una misura di quanto quel gradiente è
   grande di solito, quindi moltiplicare il gradiente per un fattore *costante*
   si semplifica e il passo resta lungo come sempre. Qui però il fattore non è
-  costante, cresce con $t$: le due medie hanno memorie diverse, quella sopra è
-  corta e insegue, quella sotto è lunga e resta indietro, e il passo effettivo
+  costante, cresce con $t$: le due medie di Adam (quella dei gradienti, al
+  numeratore, e quella dei loro quadrati, al denominatore, come le scrive la
+  {doc}`sezione sul training loop <addestramento>`) hanno memorie diverse, la
+  prima corta e pronta a inseguire, la seconda lunga e in ritardo, e il passo
+  effettivo
   cresce lentamente. A passo grande quella crescita basta a far divergere anche
   Adam, e più di SGD.
-  Al passo di default, invece, il risultato con Adam esce spesso perfino
-  *migliore* di quello del ciclo corretto (su un batch fatto apposta per essere
-  mandato a memoria, loss esattamente $0$ col bug contro $3 \cdot 10^{-3}$
-  senza), ed è proprio questo il pericolo: nessuna divergenza, nessun segnale,
-  niente che denunci il bug.
-  Il caso peggiore è quindi l'ottimizzatore che il capitolo raccomanda come
-  default.
+  Al passo di default l'esito con Adam dipende dal problema, ed è
+  proprio questo il pericolo. La normalizzazione toglie la scala ma non la
+  memoria: la direzione del passo resta quella della somma di tutti i
+  gradienti visti, cioè un momento senza attrito, che vicino al minimo lo
+  scavalca invece di fermarcisi. Su un batch fatto apposta per essere mandato
+  a memoria la loss col bug può arrivare a zero come quella del ciclo
+  corretto; su una regressione con una rete piccola può restare piantata
+  molto più in alto. In nessuno dei due casi arriva una divergenza o un
+  messaggio: la curva, da sola, non denuncia il bug, e il caso peggiore è
+  quindi l'ottimizzatore che il capitolo raccomanda come default.
 - La predizione e il target non hanno la stessa forma. Se le predizioni
   sono una colonna di otto numeri e le etichette una riga di otto, `nn.MSELoss`
   e `nn.L1Loss` non si fermano: allineano le due forme allargandole (è il
@@ -753,3 +766,9 @@ curve dalla prima epoca.
   augmentation penalizzano solo il training.
 ```
 `````
+
+Tutto questo, finora, è stato scritto in un notebook, che per esplorare è lo
+strumento giusto. Quando lo stesso codice deve sopravvivere più di un
+pomeriggio, ed essere rilanciato da altri o da sé stessi fra un mese, la
+forma cambia: è il passaggio {doc}`dal notebook agli script
+<dal-notebook-agli-script>`.

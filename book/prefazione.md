@@ -28,7 +28,8 @@ non era andato. Intanto cambiava il lavoro: prima di ChatGPT chi curava i
 dati, chi addestrava i modelli e chi li portava in produzione facevano
 mestieri distinti, poi il mercato ne ha chiesto uno solo, capace di prendere
 il modello aperto del momento da Hugging Face {cite}`wolf2020transformers`,
-istruirlo con un prompt perfezionato sul caso d'uso e rivenderlo come
+istruirlo con un prompt (le istruzioni scritte che gli si danno) perfezionato
+sul caso d'uso e rivenderlo come
 soluzione propria. Il gesto era lo stesso di chi ripeteva la frase: usare una
 cosa senza sapere che cosa fosse.
 

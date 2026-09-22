@@ -27,9 +27,9 @@ frenano niente: qui l'augmentation è il segnale di addestramento.
 
 ## Un compito la cui risposta è già nei dati
 
-Fin qui, nel libro, una rete imparava perché qualcuno le diceva la risposta:
-si chiama apprendimento supervisionato, come uno studente con l'insegnante
-accanto che corregge. Il meccanismo di questa sezione si chiama invece
+Fin qui una rete imparava perché qualcuno le diceva la risposta: si chiama
+apprendimento supervisionato, come uno studente con l'insegnante accanto che
+corregge. Il meccanismo di cui si parla adesso si chiama invece
 **auto-supervisionato** perché la correzione se la dà da sé, e la definizione
 sta in una riga: si inventa un compito (un **pretesto**, *pretext task*) la cui
 risposta corretta è ricavabile dai dati stessi, senza che nessuno la scriva.
@@ -37,9 +37,10 @@ Risolverlo non interessa a nessuno; interessa quello che il modello è costretto
 a capire per riuscirci, e che resta nell’**encoder** (la parte della rete che
 trasforma l'immagine nella sua lista di numeri, il riassunto interno di cui si
 diceva) quando il pretesto si butta via. È un'idea che il libro ritroverà in
-ogni campo: nel {doc}`capitolo sui Transformer </Transformers/overview>` regge il pre-addestramento dei modelli
-di linguaggio, in quello sull'audio fa imparare a wav2vec 2.0 e a HuBERT la
-struttura del parlato da migliaia di ore mai trascritte.
+ogni campo: nel {doc}`capitolo sui Transformer </Transformers/overview>` regge
+il pre-addestramento dei modelli di linguaggio, in quello {doc}`sull'audio
+</Audio/rappresentazioni-auto-supervisionate>` fa imparare a wav2vec 2.0 e a
+HuBERT la struttura del parlato da migliaia di ore mai trascritte.
 
 Sul testo un buon pretesto si trova subito: si copre una parola e si chiede di
 indovinarla, e la risposta giusta è la parola che si è coperta. Un'immagine non
@@ -140,18 +141,38 @@ $$
 {\lVert \mathbf{u} \rVert \, \lVert \mathbf{v} \rVert},
 $$
 
-dove $\mathbf{z}_i$ e $\mathbf{z}_j$ sono le proiezioni delle due viste della stessa immagine,
-$\mathrm{sim}$ è la similarità coseno e $\tau > 0$ la temperatura, che regola
-quanto il denominatore sia dominato dai suoi termini più grandi: al calare di
-$\tau$ pesano quasi soltanto i rivali che assomigliano di più all'ancora
-$\mathbf{z}_i$, cioè quelli che alla gemella contendono il posto. La somma
-corre sulle altre $2N-1$ viste del batch, cioè la gemella $\mathbf{z}_j$ e le
-$2N-2$ che fanno da negativi. La perdita totale è la
-media di $\ell_{i,j}$ su tutte le $2N$ coppie ordinate. È la stessa InfoNCE che
-il libro usa per allineare immagini e didascalie, con una differenza
-sostanziale: là il positivo è la didascalia
-scritta da una persona, qui è una seconda copia deformata della stessa immagine.
-La supervisione non viene dal linguaggio, viene dalla trasformazione.
+dove $\mathbf{z}_i$ e $\mathbf{z}_j$ sono le proiezioni delle due viste della
+stessa immagine, $\mathrm{sim}$ è la similarità coseno e $\tau > 0$ la
+temperatura, che regola quanto il denominatore sia dominato dai suoi termini
+più grandi: al calare di $\tau$ pesano quasi soltanto i rivali che assomigliano
+di più all'ancora $\mathbf{z}_i$, cioè quelli che alla gemella contendono il
+posto. La somma corre sulle altre $2N-1$ viste del batch, cioè la gemella
+$\mathbf{z}_j$ e le $2N-2$ che fanno da negativi. La perdita totale è la media
+di $\ell_{i,j}$ su tutte le $2N$ coppie ordinate. È la stessa InfoNCE con cui
+il {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>`
+allinea immagini e didascalie, con una differenza sostanziale: là il positivo è
+la didascalia scritta da una persona, qui è una seconda copia deformata della
+stessa immagine. La supervisione non viene dal linguaggio, viene dalla
+trasformazione.
+
+Il ruolo di $\tau$ si legge nel gradiente. Posto
+$s_{ik} = \mathrm{sim}(\mathbf{z}_i, \mathbf{z}_k)$ e detto $p_{ik}$ il peso che
+la softmax del denominatore dà al termine $k$,
+
+$$
+\frac{\partial \ell_{i,j}}{\partial s_{ik}} = \frac{1}{\tau}\big(p_{ik} -
+\mathbb{1}_{[k = j]}\big):
+$$
+
+ogni negativo è respinto con una forza proporzionale a $p_{ik}$, e al calare di
+$\tau$ quella massa si concentra sui negativi più simili all'ancora, i
+*negativi difficili*, mentre il fattore $1/\tau$ amplifica il tutto. La
+InfoNCE ha poi una lettura informativa: con $K$ candidati fra cui riconoscere
+il positivo vale $I(\mathbf{z}; \mathbf{z}') \geq \log K - \mathcal{L}$
+{cite}`oord2018representation`, dove $I$ è l'informazione mutua e qui
+$K = 2N - 1$. Il limite non supera mai $\log K$: con pochi candidati la perdita
+non può certificare molta informazione, ed è una ragione in più per cui i
+negativi contano.
 
 `````
 
@@ -194,7 +215,7 @@ ammesse è la specifica di ciò che il modello considererà «la stessa cosa».
 
 La coppia che conta, negli esperimenti di SimCLR, è ritaglio casuale più
 disturbo del colore, e la ragione per cui il secondo è indispensabile è la
-lezione più generale di questa sezione.
+lezione più generale di quella scelta.
 
 `````{tab} Elementare
 
@@ -490,8 +511,8 @@ degenere; una dimostrazione per il caso generale ancora non c'è.
 
 C'è un terzo modo di formulare la stessa idea, e cambia quello che le due reti
 si scambiano: non più una scheda di numeri da far somigliare, ma una
-ripartizione di fiducia fra molte caselle, da riprodurre com'è (in termini
-tecnici, una *distribuzione di probabilità*). È lo schema della
+ripartizione di fiducia fra molte caselle, da riprodurre com'è (una
+*distribuzione di probabilità*). È lo schema della
 distillazione, cioè un modello che impara imitando le risposte di un altro
 invece delle etichette vere, con la
 particolarità che l'insegnante non è un modello più grande già addestrato, ma di
@@ -660,10 +681,13 @@ costo del passaggio in avanti scende all'incirca in proporzione, e appena di
 più. Qui il costo quadratico dell'attenzione fa spesso promettere più del vero.
 Siano $N_{\text{tok}}$ il numero di token e $d$ la dimensione delle
 rappresentazioni interne (il batch qui non entra: il conto è per sequenza). In
-un blocco Transformer quasi tutte le moltiplicazioni (proiezioni $\mathbf{Q}$,
-$\mathbf{K}$, $\mathbf{V}$, proiezione d'uscita, MLP) sono lineari in
-$N_{\text{tok}}$, e solo il prodotto $N_{\text{tok}} \times N_{\text{tok}}$ fra
-query e chiavi è quadratico. È quest'ultimo, e soltanto lui, a scendere a un
+un blocco Transformer, l'unità che il {doc}`capitolo sui Transformer
+</Transformers/architettura>` costruirà per intero, quasi tutte le
+moltiplicazioni (le proiezioni lineari che da ogni token ricavano query, chiave
+e valore, $\mathbf{Q}$, $\mathbf{K}$, $\mathbf{V}$, la proiezione d'uscita e
+l'MLP) sono lineari in $N_{\text{tok}}$, e solo il prodotto $N_{\text{tok}}
+\times N_{\text{tok}}$ fra query e chiavi, cioè il confronto di ogni token con
+tutti gli altri, è quadratico. È quest'ultimo, e soltanto lui, a scendere a un
 sedicesimo quando i token si riducono a un quarto; ma alle taglie in gioco pesa
 poco. Contando i FLOP di un blocco come $24 N_{\text{tok}} d^2$ (parte lineare)
 più $4 N_{\text{tok}}^2 d$ (parte quadratica), per un ViT-B/16 con
@@ -684,8 +708,8 @@ imposte dal progettista; qui in una sola manopola, la frazione mascherata, e
 nessuna augmentation artigianale è necessaria (il MAE usa poco più del ritaglio
 casuale). Il prezzo è che la perdita vive nello spazio dei pixel, e obbliga il
 modello a spendere capacità anche su dettagli imprevedibili e irrilevanti: è
-l'obiezione che il capitolo sui world model porterà alle architetture
-generative.
+l'obiezione che il {doc}`capitolo sui world model </WorldModels/jepa>` porterà
+alle architetture generative.
 
 `````
 

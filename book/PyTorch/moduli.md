@@ -129,7 +129,15 @@ dove $\mathbf{x}$ sono i $d$ numeri che entrano e $\mathbf{h}$ i $u$ che
 escono, scritti come colonne, con $\mathbf{W} \in \mathbb{R}^{u \times d}$ e
 $\mathbf{b} \in \mathbb{R}^{u}$
 creati con `requires_grad=True`: autograd li traccia senza che si debba fare
-nulla. Su un batch la libreria lavora nell'altra forma, quella con una riga
+nulla. Il loro valore iniziale è un sorteggio uniforme in
+$\left[-1/\sqrt{d},\, 1/\sqrt{d}\right]$, per i pesi come per i bias (nel
+sorgente `kaiming_uniform_` con `a=math.sqrt(5)`, che nonostante il nome è
+un'altra ricetta rispetto a quella di He: la varianza è $1/(3d)$, un sesto
+della sua); `nn.Conv2d` fa lo stesso con $d = C_{\text{in}} k^2$, il numero di
+valori che ogni filtro legge. Perché conti, e che cosa si usa al suo posto, lo
+dice la {doc}`sezione sull'inizializzazione
+</DeepLearning/ottimizzazione-regolarizzazione>`. Su un batch la libreria lavora
+nell'altra forma, quella con una riga
 per esempio: dato $\mathbf{X} \in \mathbb{R}^{N \times d}$ calcola
 $\mathbf{X}\mathbf{W}^\top + \mathbf{b}$, che è la stessa trasformazione
 trasposta, e `.weight` conserva la forma $u \times d$.
@@ -343,10 +351,23 @@ di una predizione, quello che sta dentro la somma. Sul batch il modulo
 restituisce la $\mathcal{L}$, cioè la media di questi termini sugli $N$
 esempi (`reduction='mean'`, il default): è il "numero solo" del codice, e qui
 la media è davvero per esempio, perché di termini ce n'è uno per esempio.
-Applicarla ai logit, e non a probabilità già normalizzate, non è un
-capriccio: il calcolo congiunto del logaritmo e della softmax è numericamente
-più stabile (evita underflow con il *log-sum-exp trick*), e per questo
-l'ultimo strato del modello non deve avere la softmax. Se servono le
+Applicarla ai logit, e non a probabilità già normalizzate, ha due
+ragioni. La prima è numerica: il calcolo congiunto usa
+$\log \sum_j e^{z_j} = z_{\max} + \log \sum_j e^{z_j - z_{\max}}$ (il
+*log-sum-exp trick*), che non trabocca per logit grandi e non passa mai per un
+$\log 0$. La seconda è il gradiente, che rispetto ai logit vale
+
+$$
+\frac{\partial \ell}{\partial z_k} = \hat{y}_k - \mathbb{1}[k = c],
+$$
+
+limitato fra $-1$ e $1$ e nullo soltanto quando la predizione è giusta e
+sicura. Una softmax in più nel modello li rompe tutti e due: la loss riceve
+probabilità in $[0, 1]$ e le tratta come logit, quindi anche la predizione
+perfetta vale $-1 + \log(e + K - 1)$, cioè $1{,}46$ con $K = 10$, e sotto quel
+pavimento non si scende; e il gradiente attraversa la Jacobiana della seconda
+softmax, che si annulla proprio dove il modello è sicuro. Per questo l'ultimo
+strato del modello non deve avere la softmax. Se servono le
 probabilità (per leggere l'output, non per addestrare), si applica
 `torch.softmax(logits, dim=1)` a valle. Con etichette intere il target ha
 shape $(N,)$ e dtype `int64`, non serve il one-hot.

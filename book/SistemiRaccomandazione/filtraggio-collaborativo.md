@@ -70,10 +70,10 @@ conto: una casella vuota dice «non l'ho visto», non «non mi è piaciuto».
 Di gemelli ce n'è più d'uno e non li ascolto tutti: prendo i pochi più
 somiglianti fra quelli che il film l'hanno visto, e faccio la media dei loro
 voti, pesata in modo che i gemelli quasi perfetti contino più dei sosia
-approssimativi. Bruno somiglia a Carla con un peso di $0{,}9$ e ha dato 2,
-Elena le somiglia molto
-meno, peso $0{,}2$, e ha dato 4. La previsione non è la media dei due voti, che
-sarebbe 3: è
+approssimativi. Con pesi scelti per fare i conti tondi (sulla griglia della
+{numref}`fig-matrice-voti` verrebbero diversi), mettiamo che Bruno somigli a
+Carla con un peso di $0{,}9$ e abbia dato 2, ed Elena molto meno, peso $0{,}2$,
+e abbia dato 4. La previsione non è la media dei due voti, che sarebbe 3: è
 $(0{,}9 \cdot 2 + 0{,}2 \cdot 4) / (0{,}9 + 0{,}2) \approx 2{,}4$ (per la
 precisione $2{,}36$), cioè quasi il voto di Bruno.
 
@@ -135,23 +135,23 @@ fattori latenti, che è tutt'altro conteggio.
 C'è un guasto in agguato in questa formula, e non è quello che si direbbe. Con
 $|\mathcal{I}_{uv}| = 0$ la similarità non è definita e i due utenti
 semplicemente non si vedono, cioè un falso negativo, sgradevole ma
-riconoscibile.
-Con $|\mathcal{I}_{uv}| = 1$ la formula restituisce $\mathrm{sim}(u,v) = 1$
-sempre, qualunque siano i due voti: anche se uno ha dato 1 e l'altro 5, il
-numeratore e il denominatore coincidono. Il metodo fabbrica cioè un gemello
-perfetto, con peso massimo nella media, a partire da nessuna evidenza; e
-centrare i voti sposta il guasto di un passo invece di chiuderlo, perché su un
-film solo la correlazione di Pearson non è nemmeno definita, e su due vale
-$\pm 1$ ogni volta che lo è.
-Nel regime di sparsità descritto poco fa le coppie con uno o due film in comune
-sono la maggioranza delle coppie non vuote, quindi questo è il caso tipico, non
-il caso limite. Il correttivo standard è lo **smorzamento per numerosità**
-(*shrinkage*, o *significance weighting*): si moltiplica la similarità per
+riconoscibile. Con $|\mathcal{I}_{uv}| = 1$ la formula restituisce
+$\mathrm{sim}(u,v) = 1$ sempre, qualunque siano i due voti: anche se uno ha dato
+1 e l'altro 5, il numeratore e il denominatore coincidono. Il metodo fabbrica
+cioè un gemello perfetto, con peso massimo nella media, a partire da nessuna
+evidenza; e centrare i voti sposta il guasto di un passo invece di chiuderlo,
+perché su un film solo la correlazione di Pearson non è nemmeno definita, e su
+due vale $\pm 1$ ogni volta che lo è. Nel regime di sparsità descritto poco fa
+le coppie con uno o due film in comune sono la maggioranza delle coppie non
+vuote, quindi questo è il caso tipico, non il caso limite. Il correttivo
+standard è lo **smorzamento per numerosità** (*shrinkage*, nella forma di Koren;
+Herlocker e colleghi, col nome di *significance weighting*, usavano invece
+$\min(|\mathcal{I}_{uv}|, 50)/50$): si moltiplica la similarità per
 $\frac{|\mathcal{I}_{uv}|}{|\mathcal{I}_{uv}| + \beta}$, con $\beta$ da tarare
-sui dati (in letteratura si va da qualche decina al centinaio), così
-una somiglianza vista su due film pesa una frazione di una vista su cinquanta;
-in alternativa si impone una soglia minima su $|\mathcal{I}_{uv}|$ e sotto
-quella soglia si dichiara di non sapere.
+sui dati (in letteratura si va da qualche decina al centinaio), così una
+somiglianza vista su due film pesa una frazione di una vista su cinquanta; in
+alternativa si impone una soglia minima su $|\mathcal{I}_{uv}|$ e sotto quella
+soglia si dichiara di non sapere.
 
 Questa forma media voti grezzi, e i voti grezzi non sono confrontabili da
 persona a persona: c'è chi dà 5 a tutto e chi non supera mai il 3. Sottrarre a
@@ -193,8 +193,11 @@ gusti gemelli che per caso non hanno votato *nessun* film in comune risultano
 perfette estranee: il metodo non le vede. E due persone che hanno visto un film
 solo in comune risultano gemelle perfette, qualunque voto gli abbiano dato. La
 ragione sta in che cosa guarda il conto della somiglianza: non mette a
-confronto i due voti uno con l'altro, guarda in che direzione punta la fila dei
-voti di ciascuno e ignora quanto è lunga. Con un film solo in comune ogni fila
+confronto i due voti uno con l'altro, guarda le proporzioni: chi ha dato 4 e 2
+e chi ha dato 2 e 1 hanno la stessa proporzione (il primo film vale il doppio
+del secondo), e per il conto sono gemelli, anche se uno vota sempre il doppio
+dell'altro. È come trattare la fila dei voti come una freccia e guardare solo
+dove punta, non quanto è lunga. Con un film solo in comune ogni fila
 si riduce a un numero, e due numeri positivi puntano per forza dalla stessa
 parte: non c'è nessuna direzione da confrontare, e il conto risponde
 «identiche» comunque, tanto a chi ha dato 1 quanto a chi ha dato 5. Il metodo,
@@ -205,8 +208,8 @@ da lì.
 
 ## Fattori latenti: la matrice compressa
 
-La mossa vincente del Netflix Prize, la gara raccontata nella prima pagina del
-capitolo, fu cambiare il modo di guardare i dati. Invece di confrontare fra
+La mossa vincente del {doc}`Netflix Prize </SistemiRaccomandazione/overview>`
+fu cambiare il modo di guardare i dati. Invece di confrontare fra
 loro le righe e le colonne della tabella, si parte da un'ipotesi: dietro quella
 tabella gigantesca c'è una struttura piccola, pochi tratti di fondo che bastano
 a spiegare i gusti. È la fattorizzazione di matrici (*matrix
@@ -307,11 +310,21 @@ $$
 \Big] ,
 $$
 
-dove $\lambda$ governa il compromesso tra aderenza ai voti noti e semplicità
-dei fattori. Il vincolo «solo celle osservate» è ciò che distingue questo
-problema dalla SVD classica dell'algebra lineare, che richiederebbe la
-matrice completa: nella fattorizzazione per feedback esplicito i buchi non
-sono zeri, sono incognite, e restano fuori dalla somma.
+dove $\lambda$ governa il compromesso tra aderenza ai voti noti e semplicità dei
+fattori. Il vincolo «solo celle osservate» è ciò che distingue questo problema
+dalla SVD dell'algebra lineare. Su una matrice completa la migliore
+approssimazione di rango $k$ in norma di Frobenius ha forma chiusa, la SVD
+troncata: è il teorema di Eckart e Young della {doc}`sezione su ortogonalità e
+proiezioni
+</Matematica/ortogonalita-proiezioni>`. Con i buchi quella forma chiusa non c'è
+più: minimizzare l'errore sulle sole celle osservate è un'approssimazione di
+rango basso *pesata* (peso $1$ sulle celle note, $0$ sulle altre), non convessa
+e, nel caso generale, NP-difficile. Riempire i buchi di zeri per tornare alla
+SVD vorrebbe dire dichiarare che ogni film non visto vale zero stelle. Nella
+fattorizzazione per feedback esplicito i buchi sono incognite, e restano fuori
+dalla somma; che nel gergo del Netflix Prize il metodo si chiami ancora
+«SVD», dal nome con cui lo rese popolare Simon Funk, è un'eredità del nome e
+non della matematica.
 
 Attenzione a non promuovere questa frase a proprietà generale della
 raccomandazione, perché sull'implicito il metodo canonico fa l'opposto. Hu,
@@ -338,13 +351,34 @@ alternati (ALS) smettono di essere un'alternativa di gusto, grazie
 a una precomputazione che riporta il costo per utente al numero delle sue
 interazioni invece che al numero degli oggetti del catalogo. Il metodo si
 chiama iALS, ha quasi vent'anni ed è tutt'altro che un cimelio: ritarato con
-cura regge il confronto con quasi tutto ciò che è venuto dopo
-{cite}`rendle2022revisiting`.
+cura regge il confronto con i metodi più recenti sui banchi di
+prova su cui quei metodi erano stati presentati {cite}`rendle2022revisiting`.
 
-Sul come si ottimizza, nel caso esplicito, resta la scelta fra discesa del
-gradiente stocastica sulle triple $(u, i, r_{ui})$ e ALS, che risolve in forma
-chiusa alternando $\mathbf{P}$ e $\mathbf{Q}$ (fissato uno dei due, l'altro è
-una regressione ridge, e ha soluzione esatta). Il criterio non è di gusto: SGD è
+Sul come si ottimizza, nel caso esplicito, resta la scelta fra due algoritmi. La
+discesa stocastica passa sulle triple $(u, i, r_{ui})$ una alla volta: calcolato
+l'errore $e_{ui} = r_{ui} - \hat{r}_{ui}$, aggiorna
+$b_u \leftarrow b_u + \eta\,(e_{ui} - \lambda b_u)$,
+$b_i \leftarrow b_i + \eta\,(e_{ui} - \lambda b_i)$,
+$\mathbf{p}_u \leftarrow \mathbf{p}_u + \eta\,(e_{ui}\,\mathbf{q}_i - \lambda\,\mathbf{p}_u)$
+e
+$\mathbf{q}_i \leftarrow \mathbf{q}_i + \eta\,(e_{ui}\,\mathbf{p}_u - \lambda\,\mathbf{q}_i)$,
+al costo di $O(k)$ per voto {cite}`koren2009matrix`. ALS risolve invece in forma
+chiusa alternando $\mathbf{P}$ e $\mathbf{Q}$: fissata $\mathbf{Q}$, ogni
+$\mathbf{p}_u$ è una regressione ridge sui film che $u$ ha votato. Trascurando
+per brevità i bias, dette $\mathbf{Q}_u$ la matrice delle righe
+$\mathbf{q}_i^\top$ di quei film e $\tilde{\mathbf{r}}_u$ il vettore dei voti
+corrispondenti,
+
+$$
+\mathbf{p}_u = \big(\mathbf{Q}_u^\top \mathbf{Q}_u + \lambda\, n_u\, \mathbf{I}\big)^{-1}
+\mathbf{Q}_u^\top \tilde{\mathbf{r}}_u ,
+$$
+
+dove $n_u$ è il numero di voti dell'utente. Quel fattore $n_u$ davanti a
+$\lambda$ discende dall'aver scritto la penalità dentro la somma sulle coppie
+osservate, che penalizza ogni $\mathbf{p}_u$ una volta per ogni suo voto. Il
+costo è $O(n_u k^2 + k^3)$ per utente, e ogni utente si risolve
+indipendentemente dagli altri. Il criterio non è di gusto: SGD è
 più semplice e più veloce sul dato sparso esplicito, ALS si parallelizza meglio
 e diventa obbligato quando ogni cella conta, come appunto sull'implicito. In
 nessuno dei due casi c'è la garanzia di arrivare a un minimo globale: il

@@ -73,7 +73,7 @@ $\theta$.
 
 Il risultato di tutto questo ha un nome, ed è la parola che tornerà da qui alla
 fine: il modello. Non è il
-modellino di un aeroplano né chi sfila in passerella. È il programma *dopo* che
+modellino di un aeroplano né un'indossatrice. È il programma *dopo* che
 ha visto i dati: la regola che quei dati hanno prodotto. Una regola del genere,
 dentro un calcolatore, è fatta di numeri (quanto conta la parola «vincita»,
 quanto conta un mittente sconosciuto), e sono proprio quei numeri a rendere la
@@ -276,10 +276,12 @@ scikit-learn.
 
 `````{tab} Superiore
 
-Il metodo `fit` implementa la minimizzazione della loss vista sopra; `predict`
-applica la $f_{\theta^\star}$ appresa. La separazione tra dati di addestramento
-e dati di test serve a stimare la capacità di generalizzazione, non la mera
-memorizzazione degli esempi già visti.
+Il metodo `fit` risolve, esattamente o in modo approssimato, la minimizzazione
+della loss vista sopra; per l'albero di decisione dell'esempio la risolve in
+modo approssimato, perché sceglie una domanda alla volta senza tornare
+indietro. `predict` applica la $f_{\theta^\star}$ appresa. La separazione tra
+dati di addestramento e dati di test serve a stimare la capacità di
+generalizzazione, non la mera memorizzazione degli esempi già visti.
 
 `````
 
@@ -395,9 +397,14 @@ Le ragioni identificate sono strutturali, non contingenti:
    split assiali approssima bene;
 2. le reti sono sensibili alle feature non informative, di cui una tabella
    reale abbonda, mentre gli alberi le ignorano per costruzione;
-3. le reti sono invarianti per rotazione, cioè indifferenti a una mescolanza
-   lineare delle colonne, e una tabella invece ha una base naturale, la sua:
-   colonne con significati diversi, che una mescolanza cancella.
+3. l'addestramento di un MLP è invariante per rotazione: se le colonne si
+   ruotano con una matrice ortogonale, le previsioni che se ne ottengono
+   restano le stesse in distribuzione, quindi la procedura non può sfruttare
+   la base in cui la tabella è scritta; e una tabella invece ha una base
+   naturale, la sua: colonne con significati diversi, che una mescolanza
+   cancella. È anche il legame con il punto precedente, perché una procedura
+   invariante per rotazione ha bisogno di un numero di esempi che cresce
+   almeno linearmente col numero di feature irrilevanti {cite}`ng2004feature`.
 
 Il corollario pratico riguarda il costo: un gradient boosting si addestra
 in minuti su CPU e si mette in produzione senza GPU. Prima di pagare il conto
@@ -449,8 +456,8 @@ valutare su dati mai visti): cambieranno i modelli, non la grammatica.
   resta aperto.
 - Le ragioni sono strutturali: il bias induttivo delle reti verso funzioni
   regolari, contro target irregolari a tratti; la loro sensibilità alle feature
-  non informative; la loro invarianza per rotazione, dannosa dove mescolare
-  linearmente le colonne cancella il significato di ciascuna.
+  non informative; l'invarianza per rotazione del loro addestramento, dannosa
+  dove mescolare linearmente le colonne cancella il significato di ciascuna.
 - Un programma impara (Mitchell) se la sua performance $P$ su un compito $T$
   migliora con l'esperienza $E$.
 - Tre paradigmi: supervisionato (dati etichettati), non supervisionato

@@ -33,8 +33,7 @@ Questo capitolo è su come si immagina in modo ordinato, che è la prima
 grande idea dell’intelligenza artificiale e ha un nome asciutto: **ricerca**.
 Guardata dal lato di quello che restituisce, cioè una sequenza di mosse da
 eseguire poi nell’ordine, la stessa faccenda si chiama **pianificazione**: è
-la parola che sta nel titolo, e in questo capitolo le due si possono leggere
-come sinonimi.
+la parola che sta nel titolo, e qui le due si possono leggere come sinonimi.
 
 ## Gli stati, le mosse, e l’albero che ne esce
 
@@ -161,7 +160,7 @@ costruire.
 Da qui in avanti una macchina non si limita a riconoscere quello che ha
 davanti: decide che cosa fare. E quello che si può decidere dipende da
 quanto si sa del mondo. I casi sono tre, e conviene averli in testa da adesso,
-perché dicono che cosa fa questo capitolo e che cosa fa quello dopo.
+perché dicono che cosa fa la ricerca e che cosa fa il reinforcement learning.
 
 Il mondo si conosce, ed è piccolo. Si può passare in rassegna ogni
 situazione possibile e calcolare, per ciascuna, quanto vale: se il mondo è un
@@ -173,7 +172,7 @@ possono guardare tutte.
 Il mondo si conosce, ed è enorme. Le situazioni sono più di quante se ne
 possano guardare, e allora non si guardano tutte: si guarda in avanti dalla
 situazione in cui ci si trova adesso, lungo pochi rami scelti bene, e si decide
-solo la mossa da fare subito. È questo capitolo.
+solo la mossa da fare subito. È il campo della ricerca in avanti.
 
 Il mondo non si conosce. Nessuno ci dice dove porta una mossa né quanto
 paga: bisogna provare e vedere come va. È l’apprendimento per rinforzo, cioè il

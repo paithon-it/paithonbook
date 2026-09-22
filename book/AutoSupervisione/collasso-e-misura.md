@@ -15,9 +15,10 @@ punteggio.
 
 La sezione precedente ha chiamato collasso la risposta vuota, cioè
 descrivere tutto allo stesso identico modo. In quella forma è facile da
-riconoscere: se ne accorgerebbe chiunque guardasse due riassunti. Il guaio è che
-esiste una versione più educata dello stesso guasto, che passa inosservata
-proprio perché non è totale.
+riconoscere: se ne accorgerebbe chiunque guardasse due riassunti. C'è però anche
+una versione più educata dello stesso guasto, già intravista
+con la regola della varietà (la scheda che cambia da foto a foto ma dice otto
+volte la stessa cosa), e passa inosservata proprio perché non è totale.
 
 `````{tab} Elementare
 
@@ -63,9 +64,18 @@ in cui vivono {cite}`jing2022understanding`. Si diagnostica sullo spettro della
 matrice di covarianza delle rappresentazioni: se gli autovalori decadono
 bruscamente e solo $r$ di essi sono sensibilmente diversi da zero, le direzioni
 effettivamente usate sono $r$. Una misura riassuntiva comoda è la **dimensione
-effettiva**, per esempio $\big(\sum_i \lambda_i\big)^2 / \sum_i \lambda_i^2$
-con $\lambda_i$ gli autovalori, che vale $D$ se lo spettro è piatto e crolla se
-è concentrato.
+effettiva**, per esempio $\big(\sum_i \lambda_i\big)^2 / \sum_i \lambda_i^2$ con
+$\lambda_i$ gli autovalori, che vale $D$ se lo spettro è piatto e crolla se è
+concentrato. Una variante entropica, il rango effettivo, è diventata uno
+strumento di selezione senza etichette: RankMe calcola
+$\exp\big(-\sum_k p_k \log p_k\big)$ con
+$p_k = \varsigma_k / \sum_l \varsigma_l$, dove $\varsigma_k$ sono i valori
+singolari della matrice delle rappresentazioni, e mostra che il valore segue da
+vicino la prestazione a valle
+{cite}`garrido2023rankme`. Il collasso dimensionale, poi, non risparmia i
+metodi contrastivi: trasformazioni forti e la regolarizzazione implicita della
+discesa del gradiente lo producono anche lì, negativi o no
+{cite}`jing2022understanding`.
 
 Il punto pratico è che la perdita del pretesto non lo vede: un obiettivo
 risolvibile in $r$ direzioni non ha alcun incentivo a usarne $D$. Ed è
@@ -130,7 +140,8 @@ una regola che chiude la strada alla risposta vuota.
 
 La relazione è un limite inferiore: detta $\mathcal{L}_{\text{NCE}}$ la
 perdita calcolata su un gruppo di $N$ candidati, uno solo dei quali è il
-gemello,
+gemello (qui $N$ conta i candidati e non gli esempi del batch, che sotto si
+chiama $B$),
 
 $$
 I(\mathbf{x}; \mathbf{y}) \;\ge\; \log N - \mathcal{L}_{\text{NCE}},
@@ -147,13 +158,20 @@ Ne seguono due conseguenze, da tenere separate. La prima è tecnica: la
 dimensione del batch entra nella *garanzia*, non solo nel costo, il che spiega
 perché in questi metodi $N$ conti tanto. La seconda è di
 interpretazione, ed è la più importante: la massimizzazione dell'informazione
-mutua non può essere la spiegazione del successo di questi metodi. Se lo
-fosse, metodi che l'informazione mutua non la stimano affatto non dovrebbero
-funzionare; e invece la sezione precedente ne ha mostrati due che funzionano
-benissimo, la distillazione asimmetrica e la riduzione di ridondanza, e nessuno
-dei due ha un termine che assomigli a un limite su $I$. Quello che i metodi
-riusciti hanno in comune è una invarianza imposta più un meccanismo che
-vieta la risposta vuota, e non una quantità informativa massimizzata.
+mutua non può essere la spiegazione del successo di questi metodi. Due risultati
+lo mostrano direttamente. Michael Tschannen e colleghi
+prendono encoder invertibili, che per costruzione conservano tutta
+l'informazione mutua, e trovano rappresentazioni di qualità molto diversa al
+variare dell'architettura; e stimatori di $I$ più stretti danno
+rappresentazioni peggiori, non migliori {cite}`tschannen2020mutual`. David
+McAllester e Karl Stratos chiudono il lato teorico: nessun limite inferiore
+sull'informazione mutua che valga senza ipotesi sulla distribuzione, e con
+alta confidenza, può superare l'ordine di $\log N$
+{cite}`mcallester2020formal`. La distillazione asimmetrica e la riduzione di
+ridondanza della sezione precedente, che $I$ non la stimano in nessun modo,
+completano il quadro. Quello che i metodi riusciti hanno in comune è una
+invarianza imposta più un meccanismo che vieta la risposta vuota, e non una
+quantità informativa massimizzata.
 
 `````
 
@@ -265,12 +283,14 @@ spettro della covarianza e la dimensione effettiva, che diagnosticano il
 collasso dimensionale prima che si manifesti come perdita di prestazioni a
 valle.
 
-La terza, e la più severa, è il trasferimento a compiti strutturalmente
-diversi: rilevamento e segmentazione chiedono una rappresentazione che resti
-informativa zona per zona, mentre la classificazione premia un riassunto
-globale. Un encoder può eccellere sotto sonda lineare e cedere come dorsale di
-un rilevatore, e questo scarto è un dato, non un contrattempo: dice che il
-pretesto ha selezionato un tipo di informazione e non un altro.
+La terza, e la più severa, è il trasferimento a compiti strutturalmente diversi:
+rilevamento e segmentazione chiedono una rappresentazione che resti informativa
+zona per zona, mentre la classificazione premia un riassunto globale. Un encoder
+può eccellere sotto sonda lineare e cedere come dorsale di un rilevatore, e
+questo scarto è un dato, non un contrattempo: dice che il pretesto ha
+selezionato un tipo di informazione e non un altro. Le sonde possono perfino
+ordinare gli stessi metodi al contrario: il MAE sta sotto i contrastivi con la
+sonda lineare e sopra di loro dopo la rifinitura completa {cite}`he2022masked`.
 
 Vale infine la disciplina già enunciata dal capitolo sulla visione: nessuna
 singola misura chiude la questione, e un confronto fra metodi condotto su una

@@ -1,7 +1,7 @@
 # NumPy: calcolo numerico vettorizzato
 
 Una griglia di numeri che può essere una fila, una tabella, o una pila di
-tabelle. Si chiama **array N-dimensionale**, `ndarray` per gli amici, ed è
+tabelle. Si chiama **array N-dimensionale**, in breve `ndarray`, ed è
 l'oggetto su cui poggia, direttamente o no, ogni pezzo dell'ecosistema
 scientifico di Python: Pandas, scikit-learn, PyTorch, TensorFlow. È il ponte
 fra la matematica dei vettori e delle matrici e il codice che addestra i
@@ -89,6 +89,22 @@ ogni iterazione; l'algebra lineare vera e propria (i prodotti tra matrici)
 passa invece per librerie BLAS ottimizzate. È la differenza fra un milione di
 numeri ciascuno impacchettato nel proprio oggetto, sparsi dove capita, e un
 array C nudo.
+
+Il `dtype` fisso ha però conseguenze che una lista non ha. Gli interi hanno
+larghezza finita e traboccano in silenzio, in aritmetica modulare:
+
+```python
+import numpy as np
+a = np.array([100, 100, 100], dtype=np.int8)
+a * 2        # -> array([-56, -56, -56], dtype=int8)
+```
+
+I decimali nascono `float64`, mentre PyTorch lavora di norma in `float32`: un
+tensore ricavato con `torch.from_numpy` conserva il `float64`, e dato a uno
+strato in `float32` si ferma con `mat1 and mat2 must have the same dtype`. E
+quando due dtype si incontrano valgono le regole di NumPy 2 (NEP 50): un
+numero Python non allarga il dtype dell'array (`np.float32(1) + 1.0` resta
+`float32`), uno scalare o un array NumPy sì.
 
 `````
 
@@ -266,7 +282,10 @@ Gli operatori con cui le maschere si compongono sono quelli *bitwise* `&`, `|`,
 un solo `True` o `False` da un oggetto che ne contiene molti. Le parentesi
 attorno a ciascun confronto non sono uno scrupolo di stile: `&` lega più
 stretto di `>`, quindi `x > 15 & x < 45` verrebbe letto come
-`x > (15 & x) < 45`, che è un'altra domanda.
+`x > (15 & x) < 45`. È un confronto a catena, che Python scioglie in
+`(x > (15 & x)) and ((15 & x) < 45)`: quell’`and` chiede di nuovo un solo
+valore di verità a un array intero, e l'espressione si ferma sullo stesso
+`ValueError`.
 
 Questa indicizzazione booleana è il pane quotidiano della pulizia dati e
 sostituisce interi cicli con un'unica espressione dichiarativa.
@@ -344,7 +363,16 @@ che `np.broadcast_to` restituisce è in sola lettura: assegnarci dentro
 solleva `ValueError: assignment destination is read-only`, perché
 un'assegnazione non saprebbe quale delle celle sovrapposte debba vincere. È il
 meccanismo che permette, per esempio, di sottrarre la media di colonna da
-un'intera matrice di dati con `X - X.mean(axis=0)`.
+un'intera matrice di dati con `X - X.mean(axis=0)`. L'argomento `axis` dice
+lungo quale asse ridurre, e quell'asse sparisce dalla forma: su `X` di forma
+$(n, d)$, `X.mean(axis=0)` ha forma $(d,)$ e si allinea da destra con
+$(n, d)$. La media di riga, `X.mean(axis=1)`, ha forma $(n,)$, e per
+sottrarla serve `keepdims=True`, che lascia l'asse con lunghezza $1$ e dà
+$(n, 1)$; senza, le forme non combaciano e NumPy si ferma, tranne quando
+$n = d$, dove si allinea in silenzio sull'asse sbagliato. Lo stesso silenzio
+rende cara la regola: una previsione di forma $(n, 1)$ meno un bersaglio di
+forma $(n,)$ dà una matrice $(n, n)$, e l'errore quadratico medio calcolato
+sopra restituisce un numero sbagliato senza nessun avviso.
 
 `````
 
@@ -400,9 +428,9 @@ usa il modulo `timeit` della libreria standard.
 
 Le due misure riguardano la stessa cosa (raddoppiare un milione di numeri) ma
 la seconda strada è tipicamente centinaia di volte più veloce, e la ragione
-sta tutta nel ciclo che sparisce. Il ciclo Python paga un piccolo pedaggio
-a ogni giro, un milione di volte; `2 * x` è una sola richiesta, e a scorrere il
-blocco è il motore in C, che quel pedaggio non lo paga. Che i numeri stiano in
+sta tutta nel ciclo che sparisce. È il pedaggio già incontrato: il ciclo
+Python lo paga un milione di volte, `2 * x` una volta sola, perché a scorrere
+il blocco è il motore in C. Che i numeri stiano in
 fila serve a lui, che li prende a manciate, e non a un ciclo scritto in Python.
 Vale anche il rovescio: se il ciclo lo scrivi comunque, farlo passare su un
 array invece che su una lista lo rallenta, perché a ogni giro l'array deve

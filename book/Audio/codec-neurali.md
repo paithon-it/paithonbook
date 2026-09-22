@@ -4,8 +4,10 @@ Una promessa era rimasta in sospeso: se si riuscisse a trasformare un suono in
 una sequenza di simboli discreti (un «alfabeto sonoro»
 finito) potremmo generarne di nuovo esattamente come un modello di linguaggio
 genera testo, un simbolo alla volta. Ma il testo quell'alfabeto ce l'ha già,
-regalato dalla lingua: ventuno lettere e via. L'audio no. È un'onda continua,
-e un alfabeto per il suono in natura non esiste: va costruito. A costruirlo
+regalato dalla lingua: ventuno
+lettere e via. L'audio, dentro il calcolatore, ne ha uno sbagliato, i 65.536
+livelli con cui si misura l'onda, con troppe lettere e troppo fitte: quello
+buono va costruito. A costruirlo
 sono i codec neurali, e quell'alfabeto è la chiave di volta della generazione
 audio moderna: senza un buon alfabeto, non c'è nulla su cui scrivere.
 
@@ -76,10 +78,14 @@ stampata sul coperchio: «togli sempre il beauty-case, arrotola le magliette,
 lascia a casa il terzo paio di scarpe». Vale per tutti, non cambia
 mai: è l'MP3. Il secondo modo è imparare *facendo*, viaggio dopo viaggio: provi
 a chiudere la valigia, vedi cosa si è sgualcito all'arrivo, e la prossima volta
-sistemi meglio proprio quelle cose. A giudicare, poi, non sei solo tu: chi ti
-aspetta a casa apre la valigia e prova a indovinare se l'hai rifatta tu o se non
-l'hai mai aperta, e tante pieghe piccole sparse ovunque lo insospettiscono meno
-di una piega sola nel posto sbagliato. Dopo mille viaggi hai un tuo metodo, cucito
+sistemi meglio proprio quelle cose. A giudicare, poi, non sei solo tu. A casa
+c'è qualcuno che apre la valigia e
+prova a indovinare se è stata disfatta e rifatta in viaggio o se è arrivata
+intatta: tante pieghe piccole sparse ovunque gli sembrano naturali, una piega
+sola nel posto sbagliato lo insospettisce subito. Così impari a rifarla in modo
+che sembri mai toccata, anche dove non torna identica. Il codec ha accanto un
+giudice uguale: una seconda rete che prova a distinguere il suono rifatto da
+quello vero. Dopo mille viaggi hai un tuo metodo, cucito
 sul tuo bagaglio, che nessuno ti ha dettato. Il codec neurale fa la valigia nel
 secondo modo: nessuno gli dice *cosa* buttare, lo scopre da solo cercando di far
 tornare a casa la valigia il più intatta possibile.
@@ -330,7 +336,18 @@ dove $\log_2 K$ sono i bit per indice. EnCodec a $24$ kHz usa codebook di
 $K = 1024$ voci ($10$ bit) a $f_r = 75$ frame al secondo: con $N = 8$
 quantizzatori si ottengono $8 \cdot 10 \cdot 75 = 6000$ bit/s, cioè 6 kbps.
 Variando $N$ si sceglie il compromesso: da $1{,}5$ kbps ($N=2$) fino a $24$ kbps
-($N=32$).
+($N=32$), e con un modello solo. In addestramento il numero di stadi si estrae a
+caso a ogni batch (SoundStream lo chiama *quantizer dropout*), così i primi
+codebook imparano a bastare da soli e gli ultimi a rifinire, e in uso si tronca
+la cascata dove il canale lo chiede {cite}`zeghidour2021soundstream`. La
+formula dà poi il bitrate *nominale*, quello di un indice scritto sempre con
+$\log_2 K$ bit. Gli indici però non sono equiprobabili, e un codice a lunghezza
+variabile li scrive con un numero medio di bit vicino alla loro entropia:
+EnCodec addestra a questo scopo un piccolo Transformer che predice il token
+successivo, e il suo modello a 48 kHz, a 6 kbps nominali, ne occupa $4{,}2$ una
+volta codificato {cite}`defossez2023high`. Una voce di codebook che nessuno
+sceglie è il caso estremo dello stesso fatto: bit pagati per un simbolo che non
+esce mai.
 
 Due cautele sui numeri, perché è facile ricordarseli storti. La prima riguarda
 il paragone con l'MP3, che si legge dappertutto: la parità a 64 kbps è del
@@ -517,9 +534,11 @@ modello dove andare, non dicono a noi dove è arrivato, e un discriminatore che
 promuove il proprio generatore è metà di una partita, non un verdetto.
 
 Misurare la qualità è un problema diverso, e ancora aperto. Esistono voti che
-una macchina può dare da sola, e vanno letti in due versi opposti: in PESQ,
-STOI e ViSQOL il numero alto è quello buono, mentre la FAD è una distanza,
-quindi lì il numero buono è il basso. Sono tutti approssimazioni, ognuna tarata
+una macchina può dare da sola, confrontando il suono uscito con l'originale o
+con un mucchio di suoni veri (si chiamano PESQ, STOI, ViSQOL e FAD, e i nomi
+contano meno del verso: nei primi tre il numero alto è quello buono, la FAD è
+una distanza e lì il buono è il basso). Sono tutti approssimazioni, ognuna
+tarata
 su un tipo di difetto e nessuna affidabile fuori dal suo. PESQ, per dire, nasce
 per il parlato che passa in una linea telefonica a banda stretta, e lavora
 mettendo a confronto il suono uscito e l'originale fettina per fettina, dopo

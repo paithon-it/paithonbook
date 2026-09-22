@@ -18,8 +18,9 @@ attenzione: il ponte diretto verso il {doc}`capitolo sui Transformer
 ## Scommettere sulla prossima parola
 
 Prima di tradurre, un modello deve saper *parlare* la lingua d'arrivo. Lo
-strumento è il modello di linguaggio che conosciamo dalla sezione sugli
-*n-gram*: un sistema che, data una sequenza di parole, assegna una probabilità
+strumento è il modello di linguaggio che conosciamo dalla {doc}`sezione sugli
+*n-gram* <modelli-ngram>`: un sistema che, data una sequenza di parole, assegna
+una probabilità
 alla parola successiva (la tastiera che dopo «a domani e buona» suggerisce
 «serata» e quasi mai «carburatore»). La novità è *chi* fa la scommessa: non
 più una tabella di conteggi, ma una rete ricorrente con la sua memoria.
@@ -63,7 +64,9 @@ $$
 dove $w_t$ è la parola al passo $t$. Una RNN implementa ciascun fattore in modo
 naturale: lo stato nascosto $\mathbf{h}_{t-1}$ riassume il prefisso letto fin
 lì, e una softmax sul vocabolario produce la distribuzione
-$P(w_t \mid w_{<t}) = \mathrm{softmax}(\mathbf{W}_{hy}\,\mathbf{h}_{t-1})$.
+$P(w_t = v \mid w_{<t}) =
+\big[\mathrm{softmax}(\mathbf{W}_{hy}\,\mathbf{h}_{t-1} + \mathbf{b}_y)\big]_v$,
+cioè la componente $v$ del vettore che esce dalla softmax.
 L'addestramento è la cross-entropia sulla parola successiva, e la qualità si
 misura con la perplessità per parola, vista nella sezione di teoria
 dell'informazione e già usata per valutare i modelli *n-gram*:
@@ -167,11 +170,15 @@ frase di partenza a quel pacchetto di numeri; la seconda si chiama *decoder*,
 dell'altra lingua, una parola per volta. Il pacchetto ha un nome, **vettore di
 contesto**, e non è altro che l'ultimo riassunto scritto dall'encoder: quello
 che gli resta in mano dopo aver letto l'ultima parola. L'architettura si chiama
-**encoder–decoder**, o **seq2seq**, e i due lavori che la propongono nello
-stesso anno sono di Kyunghyun Cho e colleghi a Montréal
-{cite}`cho2014learning`, che è lo stesso articolo in cui nasce la GRU, e di
-Ilya Sutskever, Oriol Vinyals e Quoc Le a Google
-{cite}`sutskever2014sequence`.
+**encoder–decoder**, o **seq2seq**. L'idea di comprimere la frase intera in un
+vettore e di ricavarne la traduzione con una rete ricorrente l'avevano avuta un
+anno prima Nal Kalchbrenner e Phil Blunsom {cite}`kalchbrenner2013recurrent`,
+con una rete convoluzionale come encoder. La forma interamente ricorrente arriva
+nel 2014 con due lavori: quello di Kyunghyun Cho e colleghi a Montréal
+{cite}`cho2014learning`, che è lo stesso articolo in cui nasce la GRU e che la
+usa per dare un voto alle coppie di frasi di un sistema statistico, e quello di
+Ilya Sutskever, Oriol Vinyals e Quoc Le a Google {cite}`sutskever2014sequence`,
+che la usa per tradurre da sola.
 
 Il decoder, mentre scrive, fa esattamente quello che fa un modello di
 linguaggio: scommette sulla parola successiva. Con una differenza: la sua
@@ -189,7 +196,7 @@ decoder cominci a scrivere: fra i due passa solo quel vettore, e nient'altro.
 ```
 
 Il «nient'altro» di {numref}`fig-encoder-decoder` è il fatto da cui discende
-tutto il resto della sezione, e conviene fissarlo bene. Quel vettore di
+tutto il resto della storia. Quel vettore di
 contesto è una fila di numeri di lunghezza decisa in anticipo, mille per
 esempio, e resta di mille numeri sia che la frase da tradurre abbia cinque
 parole sia che ne abbia cinquanta: nessuno spazio in più per le frasi lunghe,
@@ -270,19 +277,24 @@ P(y \mid x) = \prod_{t=1}^{m} P(y_t \mid y_1, \dots, y_{t-1}, \mathbf{c}),
 $$
 
 dove $\mathbf{c}$ è il vettore di contesto (lo stato finale dell'encoder) e
-ogni fattore è calcolato dal decoder, una RNN inizializzata da $\mathbf{c}$ con
-softmax sul vocabolario di arrivo.
+ogni fattore è calcolato dal decoder, una RNN condizionata da $\mathbf{c}$ con
+softmax sul vocabolario di arrivo: in Sutskever $\mathbf{c}$ ne è lo stato
+iniziale, in Cho entra come ingresso a ogni passo,
+$\mathbf{s}_t = f(\mathbf{s}_{t-1}, y_{t-1}, \mathbf{c})$.
 
 I risultati che seguono si misurano in **BLEU** {cite}`papineni2002bleu`, il
-metro con cui la traduzione automatica si è confrontata per vent'anni, e vale
-la pena dire com'è fatto, perché tornerà anche nella sezione sul dialogo. BLEU
+metro con cui la traduzione automatica si è confrontata per vent'anni, e torna
+anche nella {doc}`sezione sul dialogo <dialogo-chatbot>`. BLEU
 confronta la traduzione candidata con uno o più riferimenti umani contando
 quanti $n$-grammi hanno in comune, per $n$ da 1 a 4. Due accorgimenti fanno
 tutto il lavoro. Il primo è il **clipping**: un $n$-gramma del candidato conta
 al massimo il numero di volte che compare nel riferimento, altrimenti «il il il
 il» otterrebbe precisione $1$. Il secondo è la **brevity penalty**,
-$\mathrm{BP} = \min\!\left(1,\, e^{1 - r/c}\right)$ con $c$ e $r$ le lunghezze
-in token del candidato e del riferimento, e serve perché BLEU è fatto di sole
+$\mathrm{BP} = \min\!\left(1,\, e^{1 - r/c}\right)$ con $c$ la lunghezza totale
+in
+token delle traduzioni candidate del corpus e $r$ la *lunghezza di riferimento
+effettiva*, cioè la somma, frase per frase, della lunghezza del riferimento più
+vicina a quella del candidato, e serve perché BLEU è fatto di sole
 precisioni: un termine di *recall* non c'è (non esiste un modo ovvio di
 calcolarlo su più riferimenti insieme) e senza freno la traduzione più corta
 sarebbe sempre la migliore. Il punteggio è
@@ -326,9 +338,12 @@ normale. BLEU taglia il conteggio del candidato sul
 massimo fra i riferimenti; la ROUGE-N originale somma invece numeratore e
 denominatore su tutti i riferimenti, il che dà più peso agli $n$-grammi che
 compaiono in parecchi di loro, e il pacchetto dell'autore usa poi una terza
-ricetta ancora (il massimo delle ROUGE calcolate a coppie). Su un esempio di
-tre parole i numeratori diventano $3$ e $4$: nessuna delle due formule si
-ottiene dall'altra scambiando un denominatore.
+ricetta ancora (il massimo delle ROUGE calcolate a coppie). Con il candidato
+«il gatto dorme» e i due riferimenti «il gatto dorme» e «il cane», BLEU conta
+$3$ unigrammi su $3$ (ciascuno tagliato alla sua occorrenza massima in un
+riferimento), la ROUGE-1 originale ne somma $3 + 1 = 4$ su $5$ parole di
+riferimento, e il massimo a coppie del pacchetto dà $1$: nessuna delle tre
+formule si ottiene dall'altra scambiando un denominatore.
 
 Accanto alla ROUGE-N si riporta quasi sempre la **ROUGE-L**, che al posto degli
 $n$-grammi conta la sottosequenza comune più lunga fra riferimento e candidato.
@@ -465,7 +480,16 @@ $$
 dove $\alpha_{ij}$ è quanto il passo di decodifica $i$ «guarda» la parola
 sorgente $j$ (i pesi sommano a 1) e $\mathbf{c}_i$ è la media pesata degli
 stati dell'encoder, che entra nel calcolo di $\mathbf{s}_i$ e della parola
-successiva. La matrice dei pesi $\alpha_{ij}$, visualizzata, si legge di solito
+successiva. Il costo è di $n$ punteggi per ciascuno degli $m$ passi di
+decodifica, $O(n\,m)$ valutazioni della piccola rete: quadratico nella
+lunghezza quando le due frasi si somigliano, ed è il prezzo del collo di
+bottiglia tolto. L'anno dopo Luong, Pham e Manning {cite}`luong2015effective`
+confrontano forme più economiche del punteggio, il prodotto scalare
+$e_{ij} = \mathbf{s}_i^{\top}\mathbf{h}_j$ e la forma bilineare
+$e_{ij} = \mathbf{s}_i^{\top}\mathbf{W}_a\mathbf{h}_j$, calcolate con lo stato
+corrente $\mathbf{s}_i$ invece che con $\mathbf{s}_{i-1}$: è l'attenzione
+*moltiplicativa*, la famiglia da cui il Transformer prenderà la sua. La matrice
+dei pesi $\alpha_{ij}$, visualizzata, si legge di solito
 come una mappa di allineamento fra le due frasi, appresa senza alcuna
 supervisione esplicita. Di solito e non sempre: misurata contro un allineatore
 automatico su sei coppie di lingue, la sovrapposizione sta fra il $72$ e il
@@ -477,7 +501,8 @@ bersaglio, cioè con la supervisione che qui non c'è.
 `````
 
 Questa è la stessa attenzione dei Transformer, ed è il ponte verso il
-capitolo successivo. Siccome è l'idea che di là diventa tutto, conviene
+{doc}`capitolo che porta il loro nome </Transformers/overview>`. Siccome è
+l'idea che di là diventa tutto, conviene
 guardarla una volta con i numeri sotto gli occhi.
 
 Immaginiamo che i riassunti siano corti, tre numeri l'uno, e che ce ne siano
@@ -558,7 +583,8 @@ scarto fra come si impara e come si lavora ha un nome, **exposure bias**: alla
 lettera «distorsione da esposizione», perché durante l'esercizio si è stati
 esposti solo ai testi giusti.
 
-Il rimedio che viene in mente per primo è ammorbidire il metodo: ogni tanto il
+I rimedi che si usano sono due, e nessuno dei due lo risolve del tutto. Il
+primo, quello che viene in mente subito, è ammorbidire il metodo: ogni tanto il
 professore lasci stare la tua parola invece di correggerla, di rado all'inizio e
 sempre più spesso man mano che migliori. Così ogni tanto ti eserciti anche a
 continuare da un inizio tuo.
@@ -568,8 +594,8 @@ traduzione intera e il professore le dà un voto, con uno dei metri automatici
 già visti, BLEU o ROUGE, con tutti i limiti che quei metri hanno. Il voto arriva
 alla fine e non dice quale parola fosse sbagliata, che è la situazione di chi
 impara per tentativi da una ricompensa, cioè il
-{doc}`reinforcement learning </ReinforcementLearning/overview>` a cui il libro
-dedica una parte intera. Anche questo rimedio, però, parte dal primo metodo e lo
+{doc}`reinforcement learning </ReinforcementLearning/overview>`, che ha un
+capitolo suo. Anche questo rimedio, però, parte dal primo metodo e lo
 tiene: si comincia correggendo parola per parola, e solo dopo si passa al voto
 sul risultato, prima sulla coda della frase e via via su tutta.
 
@@ -897,15 +923,15 @@ apposta, infine un modello che non era stato pensato per questo.
 ```
 
 L'ultimo passaggio di {numref}`fig-paradigmi-traduzione` è il più singolare, e
-il libro lo incontrerà nel {doc}`capitolo sui Transformer
-</Transformers/overview>`: la traduzione ha smesso di essere un compito con
+lo racconta il {doc}`capitolo sui Transformer </Transformers/overview>`: la
+traduzione ha smesso di essere un compito con
 un'architettura propria ed è diventata una delle cose che un modello
 generalista sa fare. Qui però siamo alla terza tappa, ed è quella che ha
 portato la traduzione neurale in produzione.
 
 Questa storia ha una data di consegna. Nel settembre 2016 Google annuncia GNMT
 (*Google Neural Machine Translation*) {cite}`wu2016google`: un encoder–decoder
-con l'attenzione, esattamente la ricetta di questa sezione, ma in grande: otto
+con l'attenzione, esattamente la ricetta appena vista, ma in grande: otto
 strati di celle impilate per l'encoder e altrettanti per il decoder. L'idea
 dell'impilamento è che il primo strato legge le parole, il secondo legge quello
 che ha capito il primo, e così via, ogni piano un po’ più astratto del

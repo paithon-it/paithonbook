@@ -102,7 +102,16 @@ pochissime componenti, e di componenti ne tiene più di quante erano quelle di
 partenza ({doc}`sparse autoencoder
 </Interpretabilita/attribuzione-e-meccanicistica>`); l’altro fa ricostruire il
 dato da una sua copia sporcata di rumore ({doc}`denoising autoencoder
-</ModelliEnergia/oltre-la-partizione>`).
+</ModelliEnergia/oltre-la-partizione>`). Scritti come obiettivi, sono due
+modifiche di $\mathcal{L}$: la sparsità aggiunge un termine
+$\lambda \sum_j \lvert z_{ij} \rvert$, con $L$ anche maggiore di $D$; il
+denoising sostituisce $\ell(\mathbf{x}_i, d_\theta(e_\phi(\mathbf{x}_i)))$ con
+$\mathbb{E}_{\tilde{\mathbf{x}} \sim C(\tilde{\mathbf{x}} \mid \mathbf{x}_i)}\,
+\ell(\mathbf{x}_i, d_\theta(e_\phi(\tilde{\mathbf{x}})))$, dove $C$ è il
+processo
+che sporca (rumore gaussiano, pixel azzerati) {cite}`vincent2008extracting`. In
+tutti e due i casi l’identità smette di essere una soluzione: nel primo perché
+costa, nel secondo perché il rumore lo lascia dov’è.
 
 Due osservazioni che tornano utili subito. La prima: in questa scrittura non
 compare nessuna distribuzione. Non c’è un $p(\mathbf{x})$, non c’è un
@@ -163,7 +172,12 @@ $d_\theta(e_\phi(\mathbf{x}))$ è la proiezione ortogonale di $\mathbf{x}$ sul
 sottospazio affine che passa per la media dei dati ed è generato dalle prime
 $L$ componenti principali dei dati centrati
 {cite}`bourlard1988auto,baldi1989neural`, e il
-codice ne è un sistema di coordinate.
+codice ne è un sistema di coordinate. Baldi e Hornik dimostrano anche la parte
+che interessa a chi addestra: se la covarianza dei dati ha autovalori distinti,
+quel minimo globale è l’unico minimo locale, e ogni altro punto critico (le
+proiezioni sui sottospazi generati da altre $L$ direzioni principali) è una
+sella. Sul caso lineare la discesa del gradiente non ha dove impantanarsi; con
+una non linearità nel decoder questa garanzia non c’è più.
 E la centratura conta: con mappe puramente lineari e
 dati non centrati il minimo è il sottospazio dei primi $L$ vettori singolari
 destri della matrice grezza, che passa per l'origine e in generale non
@@ -272,9 +286,12 @@ errore di ricostruzione:   16.3 nat per cifra
 chi non guarda la cifra:  27.1 nat per cifra
 ```
 
-L’errore si misura in nat, l’unità di informazione dei richiami di
-matematica: sono i nat che una cifra costa in media a chi la deve indovinare
-un pixel alla volta, e più sono, peggio si è scommesso. (Con una riserva:
+L’errore si misura in nat, parenti stretti dei bit dei {doc}`richiami di
+matematica </Matematica/teoria-informazione>`: il bit conta le scelte fra due,
+il nat fa lo stesso conto con il numero 2,718… (quello che i matematici
+chiamano $e$) al posto del 2, e un nat vale circa 1,44 bit. Sono i nat che una
+cifra costa in media a chi la deve indovinare un pixel alla volta, e più sono,
+peggio si è scommesso. (Con una riserva:
 su grigi che non sono zeri e uni questo conto è un surrogato, e i suoi nat
 vanno letti come un metro di confronto fra due macchine, non come una misura
 assoluta.) Da solo il 16,3 non direbbe niente, e per questo c’è la seconda

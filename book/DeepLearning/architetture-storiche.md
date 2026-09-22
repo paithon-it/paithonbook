@@ -80,15 +80,16 @@ arriva nel 2012, quando AlexNet {cite}`krizhevsky2012imagenet` vince la
 sfida ImageNet con un margine imbarazzante: errore top-5 del 15,3%, contro il
 26,2% del secondo classificato, che usava ancora tecniche "artigianali".
 
-Quel 15,3%, però, è il punteggio di ciò che il gruppo ha consegnato alla
-gara, e non è una rete sola. Sono sette reti fatte lavorare insieme: per ogni
+Quel 15,3%, però, è il punteggio di ciò che il gruppo ha consegnato alla gara,
+e non è una rete sola. Sono sette reti fatte lavorare insieme: per ogni
 fotografia ciascuna assegna un punteggio a ciascuna delle mille categorie, i
 sette punteggi si mediano categoria per categoria, e le cinque categorie col
 totale più alto sono la risposta. Due delle sette avevano in più un allenamento
 preliminare su un archivio di immagini dieci volte più grande. La singola rete
-descritta nell'articolo si ferma al 18,2%. Anche così il salto è tale che fu
-il momento in cui il resto del campo capì che il deep learning funzionava. (La
-stessa distinzione fra la rete e la squadra tornerà con ResNet.)
+descritta nell'articolo si ferma al 18,2% sull'insieme di validazione. Anche
+così il salto è tale che fu il momento in cui il resto del campo capì che il
+deep learning funzionava. (La stessa distinzione fra la rete e la squadra
+tornerà con ResNet.)
 
 ```{figure} ../figures/alexnet-2012.svg
 :name: fig-alexnet
@@ -409,13 +410,25 @@ $$
 $$
 
 dove $\mathbf{x}$ è l'input del blocco, $\{\mathbf{W}_i\}$ i suoi pesi e
-$\mathbf{y}$
-l'uscita (a cui si applica poi la non-linearità). Il blocco apprende il
-residuo $\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) - \mathbf{x}$
-rispetto alla mappa desiderata $\mathcal{H}$: azzerare $\mathcal{F}$ per
-ottenere l'identità è facile, ricostruire l'identità da zero no. In più il
-termine additivo $\mathbf{x}$ apre una via diretta al gradiente durante la
-*backpropagation*.
+$\mathbf{y}$ l'uscita (a cui si applica poi la non-linearità). Il blocco
+apprende il residuo $\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) -
+\mathbf{x}$ rispetto alla mappa desiderata $\mathcal{H}$: azzerare
+$\mathcal{F}$ per ottenere l'identità è facile, ricostruire l'identità da zero
+no. In più il termine additivo apre una via diretta al gradiente: lo jacobiano
+del blocco è $\mathbf{I} + \partial\mathcal{F}/\partial\mathbf{x}$, quindi
+$\partial\mathcal{L}/\partial\mathbf{x} =
+\partial\mathcal{L}/\partial\mathbf{y} +
+(\partial\mathcal{F}/\partial\mathbf{x})^{\top}\,\partial\mathcal{L}/\partial\mathbf{y}$,
+e il primo addendo arriva intatto qualunque cosa faccia $\mathcal{F}$. Il conto
+vale se fra una somma e la successiva non c'è altro: la ReLU applicata dopo
+l'addizione, come nella forma originale, interrompe la via diretta. Per questo
+la versione successiva degli stessi autori (*Identity Mappings in Deep Residual
+Networks*, 2016) sposta normalizzazione e attivazione dentro il ramo
+$\mathcal{F}$, la forma *pre-activation*: lungo una pila di blocchi
+$\mathbf{x}_L = \mathbf{x}_\ell +
+\sum_{i=\ell}^{L-1}\mathcal{F}(\mathbf{x}_i)$, e il gradiente in
+$\mathbf{x}_\ell$ contiene sempre $\partial\mathcal{L}/\partial\mathbf{x}_L$
+senza nessun fattore moltiplicativo.
 
 Quella somma ha però una precondizione che l'equazione nasconde:
 $\mathcal{F}(\mathbf{x})$ e $\mathbf{x}$ devono avere la stessa forma.

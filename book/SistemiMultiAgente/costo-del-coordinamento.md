@@ -18,10 +18,11 @@ cui un modello di linguaggio spezza il testo per digerirlo: in italiano un token
 vale grosso modo mezza parola, e una pagina come questa ne contiene sette o
 ottocento. I token sono anche l'unità in cui si paga, perché chi mette a
 disposizione il modello li conta e li fattura, e li conta due volte: quelli
-che il modello scrive e quelli che gli si fanno leggere. Il capitolo sugli
-Agenti ha già detto, a parole, che una squadra costa più di un solista e
-moltiplica i modi di sbagliare. Questa sezione trasforma quell'avvertimento in
-un conto: tre formule che si fanno su un tovagliolo prima di scrivere una riga
+che il modello scrive e quelli che gli si fanno leggere. Il {doc}`capitolo sugli
+Agenti </Agenti/architetture-e-valutazione>` ha già
+detto, a parole, che una squadra costa più di un solista e moltiplica i modi di
+sbagliare. Qui quell'avvertimento diventa un conto: tre formule che si fanno su
+un tovagliolo prima di scrivere una riga
 di codice.
 
 È il metodo di Enrico Fermi. Al test Trinity, il 16 luglio 1945, lasciò cadere
@@ -77,7 +78,12 @@ e in cima alla chat c'è anche un cartello fisso: il regolamento, con scritto ch
 fa che cosa, che ciascuno si rilegge a ogni turno sempre uguale e che non si
 allunga mai. Una parte ferma sommata a una che si gonfia fa crescere il totale
 più lentamente di quanto cresca la parte che si gonfia. Quindici è la crescita
-del pezzo che si gonfia, dieci quella del totale.
+del pezzo che si gonfia, dieci quella del totale. Mettiamo che il cartello sia
+lungo quanto quattro messaggi. Con otto interventi si leggono otto cartelli,
+cioè trentadue messaggi, più i trentasei di prima: sessantotto. Con trentadue
+interventi i cartelli fanno centoventotto messaggi, più i cinquecentoventotto:
+seicentocinquantasei. E seicentocinquantasei diviso sessantotto fa quasi
+dieci.
 
 `````
 
@@ -351,10 +357,15 @@ contrario fa ripetere. Non deve nemmeno essere infallibile. Diciamo che di dieci
 parole cambiate se ne accorge otto: la fila di venti passaggi torna a riuscire
 otto volte su dieci, invece di tre.
 
-Ne basta anche uno solo, messo a metà fila: quello che si è rovinato nei primi
-dieci passaggi lì viene rimesso a posto e non entra negli altri dieci, e la fila
-riesce poco più di cinque volte su dieci invece di tre. Poco più di quattro
-decimi del guadagno, con un arbitro solo.
+Ne basta anche uno solo, messo a metà fila. Dopo dieci passaggi la frase
+è rovinata quattro volte su dieci; l'arbitro se ne accorge in otto casi su
+dieci e fa rifare la prima metà, e supponiamo che la seconda volta venga bene.
+Così la frase rovinata che passa oltre scende a meno di una volta su dieci. La
+seconda metà la rovina ancora quattro volte su dieci, e in fondo la fila
+riesce poco più di cinque volte su dieci invece di tre: poco più di quattro
+decimi del guadagno, con un arbitro solo. Se invece anche la prima metà rifatta
+riesce solo sei volte su dieci, come la prima volta, si scende a meno di cinque:
+un arbitro solo recupera allora circa un quarto del guadagno.
 
 Due cose, però, l'arbitro non le aggiusta. Uno che dicesse «ripeti» a chiunque
 non lascerebbe passare nessun errore e non farebbe arrivare in fondo neanche una
@@ -453,8 +464,11 @@ di affondare man mano che si allunga.
 ## Quando si guadagna davvero
 
 Fatti i tre conti, resta la domanda utile: esiste un caso in cui la squadra
-vince? Sì, ne esistono tre, e conviene diffidare di chiunque ne elenchi un
-quarto.
+vince? Ne esistono almeno tre che i conti appena fatti sanno prezzare. Un quarto
+lo ha già mostrato la squadra dell'apertura del capitolo, dove soltanto il
+coordinatore può eseguire codice sulla macchina vera: separare i permessi fra
+agenti è una ragione di sicurezza per dividere il lavoro, che nessuno dei tre
+conti misura.
 
 Primo: il compito si decompone. Se il lavoro si spezza in parti quasi
 indipendenti (analizzare cinquanta documenti, provare otto ipotesi diverse,

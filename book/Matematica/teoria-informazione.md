@@ -53,10 +53,12 @@ Un dado onesto ha sei facce, e sei sta in mezzo fra quattro e otto: fra $2$ e
 $3$ bit. Il numero esatto è l'esponente che elevando $2$ dà $6$, cioè circa
 $2{,}585$. Attenzione però a che cosa promette. Le domande si contano intere,
 quindi su un tiro solo la strategia migliore ne consuma in media due e due
-terzi, un po’ più di quel numero; il resto si recupera giocando molti tiri
-insieme e facendo domande che ne riguardano parecchi per volta, e allora la
-media per tiro scende fino a $2{,}585$ e sotto non va. Sono i «2,6 bit» del
-dado: non il costo di una partita, ma il fondo a cui si arriva allungandola.
+terzi, un po’ più di quel numero: due facce si isolano con due domande, le
+altre quattro con tre, e $(2+2+3+3+3+3)/6 = 16/6$; il resto si recupera
+giocando molti tiri insieme e facendo domande che ne riguardano parecchi per
+volta, e allora la media per tiro scende fino a $2{,}585$ e sotto non va. Sono
+i «2,6 bit» del dado: non il costo di una partita, ma il fondo a cui si arriva
+allungandola.
 
 Con una moneta sbilanciata il conto è lo stesso, con un'avvertenza: al posto
 del numero di alternative si mette uno diviso la probabilità. Una moneta
@@ -248,7 +250,20 @@ D_{KL}(p\,\|\,q) = H(p,q) - H(p) = \sum_i p_i \log_2 \frac{p_i}{q_i} \;\ge\; 0,
 $$
 
 dove la disuguaglianza (di Gibbs) vale sempre, con uguaglianza se e solo se
-$p=q$. Esempio con le nostre monete: se la realtà è la moneta truccata
+$p=q$. La prova è la disuguaglianza di Jensen applicata al logaritmo, che è
+concavo. Sommando sui soli $i$ con $p_i>0$,
+
+$$
+-D_{KL}(p\,\|\,q)=\sum_i p_i\log_2\frac{q_i}{p_i}
+\le\log_2\sum_i p_i\frac{q_i}{p_i}\le\log_2 1=0 .
+$$
+
+La stessa riga, con $q$ uniforme su $n$ esiti, dà
+$D_{KL}(p\,\|\,u)=\log_2 n-H(p)\ge 0$, cioè il tetto $H(p)\le\log_2 n$. E
+dice anche dove la divergenza smette di essere finita: se per qualche esito
+$p_i>0$ e $q_i=0$, il termine $p_i\log_2(p_i/q_i)$ vale $+\infty$. Un modello
+che dà probabilità zero a un esito che accade paga una sorpresa infinita.
+Esempio con le nostre monete: se la realtà è la moneta truccata
 ($p = (0{,}9;\, 0{,}1)$) e il modello la crede equa, $H(p,q)=1$ bit e
 $D_{KL} = 1 - 0{,}469 \approx 0{,}531$ bit. Nel verso opposto (realtà equa,
 modello convinto del trucco) $H(p,q) \approx 1{,}737$ bit e
@@ -256,6 +271,17 @@ $D_{KL} \approx 0{,}737$ bit. I due valori differiscono: la KL è
 asimmetrica, $D_{KL}(p\,\|\,q) \ne D_{KL}(q\,\|\,p)$ in generale, e non
 soddisfa la disuguaglianza triangolare. Non è una distanza in senso
 matematico, per quanto la si usi come misura di dissimilarità.
+
+Il legame con il codice è un teorema. Per la disuguaglianza di Kraft esiste un
+codice prefisso con lunghezze $\ell_i$ se e solo se $\sum_i 2^{-\ell_i}\le 1$.
+Scegliendo $\ell_i=\lceil-\log_2 q_i\rceil$ la condizione è soddisfatta, e se
+gli esiti escono secondo $p$ la lunghezza media sta fra $H(p,q)$ e
+$H(p,q)+1$ bit. Con $q=p$ è il teorema della codifica di sorgente di Shannon,
+$H(p)\le\mathbb{E}[\ell]<H(p)+1$ per il codice migliore; con $q\ne p$ il
+sovrapprezzo rispetto al codice giusto è $D_{KL}(p\,\|\,q)$, a meno di quel
+bit di arrotondamento, che si diluisce codificando i simboli a blocchi.
+$H(p,q)$ è quindi, alla lettera, la lunghezza media dei messaggi scritti con
+il codice tarato sulla distribuzione sbagliata.
 
 `````
 
@@ -299,13 +325,21 @@ l'entropia dei dati, la loro incertezza irriducibile.
 
 Attenzione però a quale $p$, perché lo stesso simbolo (qui come dappertutto)
 copre due cose diverse. Se $p$ è la distribuzione condizionata vera del
-processo che genera i dati, il pavimento è $H(p) > 0$ e nessun modello scende
-sotto. Se invece $p$ è il bersaglio empirico di un singolo esempio, cioè
-«questa immagine è un gatto» con probabilità $1$ e tutto il resto a zero,
-allora $H(p) = 0$ e il pavimento è zero. Le due affermazioni convivono e
-spiegano una cosa che si osserva addestrando: la loss di *training* può
-scendere quasi a zero, quella di *validazione* no, perché la prima misura la
-distanza da bersagli certi e la seconda da una distribuzione che certa non è.
+processo che genera i dati, il pavimento è la sua entropia media sugli
+ingressi, $\mathbb{E}_{\mathbf{x}}\big[H(p(\cdot\mid\mathbf{x}))\big]$,
+positiva appena l'etichetta non è una funzione deterministica dell'ingresso (la
+foto sfocata), e nessun modello scende sotto. Se invece $p$ è il bersaglio
+empirico di un singolo esempio, cioè «questa immagine è un gatto» con
+probabilità $1$ e tutto il resto a zero, allora $H(p) = 0$ e il pavimento è
+zero. Le due affermazioni convivono, e spiegano una cosa che si osserva
+addestrando. Anche la loss di *validazione* si calcola su bersagli certi,
+un'etichetta per esempio; ma su esempi nuovi la sua media tende a
+$\mathbb{E}_{\mathbf{x}}\big[H(p(\cdot\mid\mathbf{x}))+D_{KL}\big(p(\cdot\mid\mathbf{x})\,\|\,q_\theta(\cdot\mid\mathbf{x})\big)\big]$,
+il pavimento vero più l'errore del modello. Sul *training* set, invece, un
+modello abbastanza ricco può dare probabilità quasi $1$ proprio all'etichetta
+che ogni esempio ha ricevuto, rumore compreso: la loss scende quasi a zero
+perché il modello ha memorizzato quelle estrazioni, non perché il processo sia
+diventato certo.
 
 Inoltre, sulla
 distribuzione empirica del training set la cross-entropia coincide con la
@@ -319,6 +353,141 @@ che useremo nei capitoli sulle reti neurali e su PyTorch. Che quella loss esca
 da una distribuzione categorica sull'uscita, e non sia una scelta a sé, lo
 mostra la sezione
 {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`.
+
+`````
+
+## Due variabili: entropia condizionata e informazione mutua
+
+Fin qui una variabile alla volta. Nel machine learning le variabili sono
+almeno due, l'ingresso $X$ e l'etichetta $Y$, e la domanda che conta è quanto
+conoscere la prima riduca l'incertezza sulla seconda. L'incertezza che resta
+su $Y$ quando si conosce $X$ è l’**entropia condizionata** $H(Y\mid X)$; la
+differenza fra prima e dopo,
+
+$$
+I(X;Y) = H(Y) - H(Y\mid X),
+$$
+
+è l’**informazione mutua**, e torna sotto molti nomi: l’*information gain*
+con cui un {doc}`albero di decisione </MachineLearning/alberi-ensemble>`
+sceglie le domande, l'NMI che confronta due {doc}`raggruppamenti
+</MachineLearning/valutare-un-raggruppamento>`, la quantità che
+l’{doc}`apprendimento auto-supervisionato </AutoSupervisione/collasso-e-misura>`
+dice di massimizzare.
+
+`````{tab} Elementare
+
+Un amico tira un dado e, prima di mostrarlo, ti dice soltanto «è uscito un
+numero pari». Prima della frase le facce possibili erano sei, cioè circa
+$2{,}585$ bit di incertezza; dopo sono tre, $2$, $4$ e $6$, e restano circa
+$1{,}585$ bit. La frase dell'amico valeva esattamente la differenza, un bit:
+è l'informazione mutua fra «pari o dispari» e la faccia del dado.
+
+Le domande si possono anche mettere in fila. Per scoprire la faccia si chiede
+prima se è pari (un bit), poi quale delle tre rimaste (un bit e mezzo abbondante):
+in tutto $2{,}585$, come prima. L'incertezza su tutte e due le cose insieme è
+quella sulla prima più quella che resta sulla seconda, una volta saputa la
+prima. E il conto si può rovesciare: chi vede la faccia sa anche se è pari,
+quindi sapere la faccia toglie tutta l'incertezza sulla parità, che era
+proprio un bit. Quanto l'una dice dell'altra non dipende da quale si guarda
+per prima.
+
+Se invece l'amico ti dice che tempo fa a Roma, non ti dice niente del dado:
+dopo la frase le facce sono ancora sei, e l'informazione mutua è zero.
+Succede sempre così quando le due cose non hanno niente a che fare l'una con
+l'altra, e solo allora.
+
+Il punto di rottura sta in una parola sola, «in media». Un esame per una
+malattia che colpisce una persona su cento: prima dell'esame il dubbio è
+minimo, quasi certamente sei sano (circa $0{,}08$ bit). Se l'esame risulta
+positivo, la probabilità di essere malato sale a una su sei, e il dubbio
+cresce otto volte, a $0{,}65$ bit: quella notizia ti ha confuso le idee invece
+di schiarirle. Ma un positivo capita di rado, e un negativo, che capita quasi
+sempre, azzera il dubbio residuo. Contando tutte e due le risposte con la
+loro frequenza, l'esame dimezza l'incertezza: dopo restano $0{,}04$ bit. Una
+singola notizia può aumentare il dubbio; una fonte di notizie, in media, non
+lo aumenta mai.
+
+E le notizie non si moltiplicano passando di bocca in bocca. Se l'amico
+riferisce la sua frase a un terzo, e il terzo la riferisce a te, del dado puoi
+sapere al massimo quel bit, e spesso meno, se per strada la frase si storpia:
+nessun passaparola aggiunge sul dado qualcosa che la prima frase non
+dicesse.
+
+`````
+
+`````{tab} Superiore
+
+Per due variabili discrete con distribuzione congiunta $p(x,y)$, l'entropia
+congiunta è $H(X,Y)=-\sum_{x,y}p(x,y)\log_2 p(x,y)$ e l'entropia condizionata
+è la media delle entropie delle condizionate,
+
+$$
+H(Y\mid X)=\sum_x p(x)\,H(Y\mid X=x)
+=-\sum_{x,y}p(x,y)\log_2 p(y\mid x).
+$$
+
+Da $p(x,y)=p(x)\,p(y\mid x)$ segue la **regola della catena**
+$H(X,Y)=H(X)+H(Y\mid X)$, e scrivendola nei due versi
+$I(X;Y)=H(Y)-H(Y\mid X)=H(X)-H(X\mid Y)=H(X)+H(Y)-H(X,Y)$: l'informazione
+mutua è simmetrica. Sul dado, con $X$ la parità e $Y$ la faccia,
+$H(Y)=\log_2 6$, $H(Y\mid X)=\log_2 3$, $H(X\mid Y)=0$, e da tutti e due i
+lati $I=1$ bit.
+
+L'informazione mutua è una divergenza KL fra la congiunta e il prodotto delle
+marginali,
+
+$$
+I(X;Y)=D_{KL}\big(p(x,y)\,\|\,p(x)\,p(y)\big)
+=\mathbb{E}_{p(x,y)}\!\left[\log_2\frac{p(x,y)}{p(x)\,p(y)}\right]\ge 0,
+$$
+
+quindi per la disuguaglianza di Gibbs è non negativa, e nulla se e solo se
+$X$ e $Y$ sono indipendenti. Ne segue $H(Y\mid X)\le H(Y)$: condizionare non
+aumenta l'entropia *in media*. Per un singolo valore invece
+$H(Y\mid X=x)>H(Y)$ è possibile, e l'esame lo mostra: con prevalenza $0{,}01$,
+sensibilità $0{,}99$ e falsi positivi al $5\%$, $H(Y)\approx 0{,}081$ bit,
+$H(Y\mid X=+)\approx 0{,}650$, $H(Y\mid X)\approx 0{,}040$ e
+$I(X;Y)\approx 0{,}041$ bit. Allo stesso modo la quantità dentro il valore
+atteso, l’**informazione mutua puntuale**
+$\operatorname{pmi}(x,y)=\log_2\frac{p(x,y)}{p(x)\,p(y)}$, può essere negativa,
+mentre la sua media non lo è mai {cite}`cover2006elements`.
+
+Due proprietà reggono gli usi successivi. La **disuguaglianza
+dell'elaborazione dei dati**: se $X\to Y\to Z$ è una catena di Markov (come
+un dato, la sua rappresentazione e una funzione di quella rappresentazione),
+allora $I(X;Z)\le I(X;Y)$, e nessuna elaborazione di $Y$ crea informazione su
+$X$ che $Y$ non avesse. E la stima: su variabili continue e ad alta
+dimensione l'informazione mutua non si calcola, si maggiora o si minora con
+stimatori variazionali, e l'InfoNCE dell'auto-supervisione ne dà un minorante
+che non supera $\log N$, con $N$ il numero di esempi a confronto.
+
+```python
+import numpy as np
+
+def H(p):
+    p = np.asarray(p, dtype=float).ravel()
+    p = p[p > 0]
+    return float(-(p * np.log2(p)).sum())
+
+def info_mutua(congiunta):
+    """I(X;Y) = H(X) + H(Y) - H(X,Y), dalla tabella della congiunta."""
+    c = np.asarray(congiunta, dtype=float)
+    return H(c.sum(axis=1)) + H(c.sum(axis=0)) - H(c)
+
+# il dado: righe = pari/dispari, colonne = facce 1..6
+dado = np.zeros((2, 6))
+for faccia in range(1, 7):
+    dado[faccia % 2, faccia - 1] = 1 / 6
+print(round(info_mutua(dado), 4))                   # -> 1.0
+
+# l'esame: righe = sano/malato, colonne = negativo/positivo
+prev, sens, fp = 0.01, 0.99, 0.05
+esame = np.array([[(1 - prev) * (1 - fp), (1 - prev) * fp],
+                  [prev * (1 - sens),     prev * sens]])
+print(round(H(esame.sum(axis=1)), 4), round(info_mutua(esame), 4))
+# -> 0.0808 0.0407
+```
 
 `````
 
@@ -381,8 +550,8 @@ $2^{1}=2$ (moneta equa), $2^{\log_2 6}=6$ (dado),
 $2^{0{,}469}\approx 1{,}38$ (moneta truccata). Si minimizza, come l'entropia da
 cui deriva, e il suo pavimento è $1$. Nei modelli di linguaggio si usa
 la perplessità *per parola*, calcolata sulla cross-entropia media del modello
-su un testo di test: la riprenderemo, numeri alla mano, nel capitolo sul
-Natural Language Processing.
+su un testo di test: la riprende, numeri alla mano, la {doc}`sezione sui
+modelli n-gram </NaturalLanguageProcessing/modelli-ngram>`.
 
 `````
 
@@ -515,6 +684,11 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
   sorprendente, avvicinare le credenze del modello alla realtà e scegliere i
   parametri che rendono i dati più plausibili sono tre nomi per la stessa
   operazione.
+- L'informazione mutua è quanto una cosa dice di un'altra: l'incertezza di
+  prima meno quella che resta dopo averla saputa (un bit, per «è pari» sul
+  dado). È la stessa nei due versi, è zero solo fra cose che non hanno niente
+  a che fare l'una con l'altra, e in media una notizia non aumenta mai il
+  dubbio, anche se una notizia singola può farlo.
 - La perplessità traduce l'entropia in facce del dado: quante alternative
   ugualmente probabili darebbero la stessa incertezza (2 per la moneta equa, 6
   per il dado). Meno facce, meno incertezza: è un numero da far scendere, e
@@ -541,6 +715,10 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
   Asimmetrica: non è una distanza.
 - Minimizzare la cross-entropy come loss = minimizzare la KL fra dati e
   modello = massima verosimiglianza: tre nomi per la stessa operazione.
+- $I(X;Y)=H(Y)-H(Y\mid X)=D_{KL}\big(p(x,y)\,\|\,p(x)p(y)\big)\ge 0$:
+  simmetrica, nulla se e solo se $X$ e $Y$ sono indipendenti. Condizionare
+  riduce l'entropia in media, non per ogni valore osservato, e lungo una
+  catena $X\to Y\to Z$ vale $I(X;Z)\le I(X;Y)$.
 - La perplessità $2^{H}$ traduce l'entropia in "facce del dado": si
   minimizza come l'entropia, con pavimento $1$, e la ritroveremo nei modelli di
   linguaggio.
@@ -551,3 +729,9 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
   contraddire Shannon.
 ```
 `````
+
+Tutto questo conta in bit, e i bit sono anche la materia di cui è fatta la
+memoria del calcolatore. Lì il loro numero è fissato una volta per tutte, e un
+numero reale deve starci dentro comunque: che cosa si perde nel farcelo
+entrare, e come si evita che la perdita cresca durante un conto, è l'argomento
+dell’{doc}`analisi numerica <analisi-numerica>`.

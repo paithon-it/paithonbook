@@ -44,10 +44,15 @@ $$
 f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}.
 $$
 
-Misura la pendenza della retta tangente al grafico in $x$. I punti in cui
-$f'(x) = 0$ si dicono stazionari: massimi, minimi o flessi a tangente
-orizzontale (in più variabili, punti di sella). Sono esattamente i candidati
-che cerchiamo quando vogliamo minimizzare una loss.
+Misura la pendenza della retta tangente al grafico in $x$, e presuppone che
+il limite esista: $|x|$ in $0$ non ha derivata. I punti in cui $f'(x) = 0$ si
+dicono stazionari: massimi, minimi o flessi a tangente orizzontale (in più
+variabili, anche punti di sella). Se $f$ è derivabile in un punto interno di
+minimo, lì $f'(x)=0$ (teorema di Fermat); la condizione è necessaria e non
+sufficiente, e i candidati al minimo di una loss sono i punti stazionari più
+quelli in cui la derivata non esiste, come lo zero di una ReLU o di un valore
+assoluto, dove le librerie usano per convenzione una delle due derivate
+laterali.
 
 `````
 
@@ -74,9 +79,10 @@ che si ripete, si chiama *base*. Un libretto che decuplica ogni anno va da
 cento euro a centomila negli stessi tre anni, e $\log_{10} 1000 = 3$ perché
 $1000$ è $10\times10\times10$.
 
-Contare i raddoppi invece dei soldi schiaccia i numeri enormi. Fra un libretto
+Contare i fattori invece dei soldi schiaccia i numeri enormi. Fra un libretto
 da $1000$ euro e uno da $1\,000\,000$ ci sono novecentonovantanovemila euro di
-differenza, fra i loro logaritmi ce ne sono tre. E trasforma le
+differenza, fra i loro logaritmi in base dieci ce ne sono tre (contati in
+raddoppi, una decina). E trasforma le
 moltiplicazioni in somme, perché moltiplicare due potenze vuol dire sommarne
 gli esponenti: tre anni di raddoppio e poi altri quattro moltiplicano il
 capitale per $8$ e per $16$ ($128$ in tutto), mentre i raddoppi si sommano,
@@ -101,8 +107,8 @@ volta, quando la domanda è sì o no e le due risposte si spartiscono da sé
 l'intero; la softmax tutti insieme, quando le alternative sono più di due e le
 loro probabilità devono sommare a uno. Il logaritmo, dal canto suo,
 compare nella cross-entropy, il costo con cui si addestrano i
-classificatori, di cui parla per esteso la sezione sulla teoria
-dell'informazione.
+classificatori, di cui parla per esteso la {doc}`sezione sulla teoria
+dell'informazione <teoria-informazione>`.
 
 Restano le pendenze, che si prendono da una tabella come si prende la formula
 dell'area del cerchio, senza dimostrarle. La pendenza di $x^2$ è $2x$, quindi
@@ -215,12 +221,20 @@ Da qui in avanti vale il layout al denominatore: la derivata di uno
 scalare
 rispetto a un oggetto ha sempre la stessa forma di quell'oggetto. Il
 gradiente rispetto a un vettore è quindi un vettore colonna, e
-$\partial\mathcal{L}/\partial\mathbf{W}$ è una matrice $m\times n$ come
-$\mathbf{W}$. La posta in gioco è la differenza fra
-$\boldsymbol{\delta}\mathbf{a}^\top$ e $\mathbf{a}\boldsymbol{\delta}^\top$,
-cioè fra un aggiornamento dei pesi che ha le dimensioni giuste e uno che non
-si può nemmeno scrivere. Il capitolo sulle reti neurali e quello su PyTorch
-compongono catene di derivate con questa convenzione, e chi le
+per una matrice di pesi $\mathbf{W}\in\mathbb{R}^{m\times n}$ che manda un
+ingresso $\mathbf{a}\in\mathbb{R}^n$ in $\mathbf{z}=\mathbf{W}\mathbf{a}\in
+\mathbb{R}^m$, $\partial\mathcal{L}/\partial\mathbf{W}$ è una matrice
+$m\times n$ come $\mathbf{W}$. Detto
+$\boldsymbol{\delta}=\partial\mathcal{L}/\partial\mathbf{z}\in\mathbb{R}^m$,
+da $z_i=\sum_j W_{ij}a_j$ segue
+$\partial\mathcal{L}/\partial W_{ij}=\delta_i a_j$, cioè
+$\partial\mathcal{L}/\partial\mathbf{W}=\boldsymbol{\delta}\mathbf{a}^\top$.
+La posta in gioco è la differenza fra $\boldsymbol{\delta}\mathbf{a}^\top$
+($m\times n$) e $\mathbf{a}\boldsymbol{\delta}^\top$ ($n\times m$), cioè fra un
+aggiornamento dei pesi che ha le dimensioni giuste e uno che non si può
+nemmeno scrivere. La {doc}`sezione sul backpropagation
+</RetiNeurali/backpropagation>` e quella su {doc}`tensori e autograd
+</PyTorch/tensori>` compongono catene di derivate con questa convenzione, e chi le
 rifà a mano deve poterle attaccare senza trasposte a sorpresa.
 ```
 
@@ -248,6 +262,28 @@ riscalando ogni coordinata, e i metodi del secondo ordine, misurando i passi
 con la curvatura, fanno precisamente questo: adottano un altro metro, e con
 esso un'altra discesa. Il gradiente è la
 direzione migliore secondo il metro euclideo, e secondo quello soltanto.
+
+Il gradiente porta l'informazione del primo ordine; la curvatura sta nella
+**matrice hessiana** $\mathbf{H}(\theta)\in\mathbb{R}^{n\times n}$, con
+$H_{ij}=\partial^2\mathcal{L}/\partial\theta_i\partial\theta_j$, simmetrica
+se $\mathcal{L}$ ha derivate seconde continue (teorema di Schwarz). Insieme
+danno lo sviluppo di Taylor del secondo ordine,
+
+$$
+\mathcal{L}(\theta+\mathbf{d}) = \mathcal{L}(\theta)
++ \nabla\mathcal{L}(\theta)^\top\mathbf{d}
++ \tfrac12\,\mathbf{d}^\top\mathbf{H}(\theta)\,\mathbf{d}
++ o(\lVert\mathbf{d}\rVert^2),
+$$
+
+e da qui la condizione del secondo ordine: in un punto stazionario,
+$\mathbf{H}$ definita positiva (autovalori tutti $>0$) dà un minimo locale
+stretto, definita negativa un massimo, con autovalori di segni opposti una
+sella; con autovalori nulli il test tace. Gli autovalori di $\mathbf{H}$ sono
+le curvature lungo i suoi autovettori, e il loro rapporto
+$\kappa=\lambda_{\max}/\lambda_{\min}$, il numero di condizionamento, misura
+quanto sono schiacciati gli anelli di {numref}`fig-curve-di-livello`: è lui a
+produrre lo zigzag della valle stretta {cite}`goodfellow2016deep`.
 
 `````
 
@@ -312,6 +348,19 @@ ordine inverso (dall'uscita agli ingressi) riutilizzando i fattori condivisi
 tra i cammini. È ciò che permette di calcolare il gradiente rispetto a milioni
 di parametri in un'unica passata all'indietro, invece di derivare ogni peso da
 capo {cite}`rumelhart1986learning`.
+
+In più variabili, per $\mathbf{g}:\mathbb{R}^n\to\mathbb{R}^k$ e
+$\mathbf{f}:\mathbb{R}^k\to\mathbb{R}^m$, la regola si scrive con le jacobiane:
+$\mathbf{J}_{\mathbf{f}\circ\mathbf{g}}(\mathbf{w}) =
+\mathbf{J}_{\mathbf{f}}(\mathbf{g}(\mathbf{w}))\,\mathbf{J}_{\mathbf{g}}(\mathbf{w})$,
+il prodotto di una matrice $m\times k$ per una $k\times n$. Quando in fondo
+alla catena c'è uno scalare, con $\mathbf{u}=\mathbf{g}(\mathbf{w})$ si ha
+$\nabla_{\mathbf{w}}\mathcal{L}=\mathbf{J}_{\mathbf{g}}^\top\nabla_{\mathbf{u}}\mathcal{L}$:
+il backpropagation moltiplica un vettore per una jacobiana trasposta alla
+volta, partendo dall'uscita, e non forma mai le jacobiane intere. Per questo il
+gradiente costa una piccola costante per il costo del passaggio in avanti,
+qualunque sia il numero di parametri, mentre derivare peso per peso costerebbe
+un passaggio in avanti per ogni peso.
 
 `````
 
@@ -399,16 +448,28 @@ $$
 
 Qui $\theta$ sono i parametri, $\nabla\mathcal{L}(\theta)$ il gradiente della
 loss e $\eta > 0$ il **learning rate**, che dosa l'ampiezza del passo. Nella
-pratica il gradiente non si calcola su tutti i dati a ogni passo, ma su un
-piccolo lotto (*mini-batch*) di esempi: è la discesa stocastica del
-gradiente (SGD), più rumorosa ma molto più veloce, e base di ottimizzatori
-moderni come Adam.
+pratica il gradiente non si calcola su tutti gli $m$ esempi a ogni passo, ma
+su un lotto $\mathcal{B}$ di $b$ esempi estratti a caso (*mini-batch*):
+$\mathbf{g}=\frac{1}{b}\sum_{i\in\mathcal{B}}\nabla\ell_i(\theta)$ è uno
+stimatore non distorto di $\nabla\mathcal{L}(\theta)$, con varianza che cala
+come $1/b$. È la discesa stocastica del gradiente (SGD): un passo costa $b/m$
+di un passo pieno, e in cambio, con $\eta$ fisso, il rumore impedisce di
+posarsi esattamente sul minimo, per cui la teoria classica chiede passi
+decrescenti con $\sum_t\eta_t=\infty$ e $\sum_t\eta_t^2<\infty$ (Robbins e
+Monro, 1951). Il momento della valle stretta si scrive
+$\mathbf{v}\leftarrow\beta\mathbf{v}+\mathbf{g}$,
+$\theta\leftarrow\theta-\eta\,\mathbf{v}$, con $\beta\in[0,1)$, tipicamente
+$0{,}9$: $\mathbf{v}$ somma i gradienti passati con pesi $\beta^k$ che decadono
+in progressione geometrica, e sulle componenti che cambiano segno a ogni
+passo i contributi si elidono. Adam aggiunge a tutto questo una scala per
+coordinata.
 
 `````
 
 ## Minimi locali e globali: perché al deep learning basta così
 
-La discesa del gradiente scende sempre. Ma "in fondo a cosa", esattamente?
+Con un passo abbastanza corto la discesa del gradiente scende a ogni
+iterazione. Ma "in fondo a cosa", esattamente?
 
 ```{figure} ../figures/minimi-locali-plateau-sella.svg
 :name: fig-paesaggio-loss
@@ -469,8 +530,14 @@ locale è anche globale: nessuna conca secondaria in cui restare intrappolati.
 
 La convergenza della discesa del gradiente, però, richiede due ipotesi in più,
 e senza di esse l'affermazione è falsa. La prima è che il gradiente sia
-lipschitziano di costante $L$ (cioè che la curvatura sia limitata da $L$), e
-allora ogni passo fisso $\eta < 2/L$ va bene. La seconda è che il minimo
+lipschitziano di costante $L$,
+$\lVert\nabla\mathcal{L}(\theta)-\nabla\mathcal{L}(\theta')\rVert\le
+L\,\lVert\theta-\theta'\rVert$ (per una funzione con derivate seconde
+continue, autovalori dell'hessiana limitati da $L$ in modulo). Ne segue il
+lemma di discesa,
+$\mathcal{L}(\theta-\eta\nabla\mathcal{L})\le\mathcal{L}(\theta)
+-\eta\,(1-L\eta/2)\,\lVert\nabla\mathcal{L}\rVert^2$: ogni passo fisso
+$\eta<2/L$ abbassa il costo a ogni iterazione. La seconda è che il minimo
 esista. Nessuna delle due è gratis: $f(x)=x^4$ è convessa e liscia (derivabile
 quante volte si vuole, senza spigoli), eppure $f''(x)=12x^2$ è illimitata,
 nessun $L$ le fa da tetto, e per *ogni* $\eta$ fissato la discesa diverge se si
@@ -480,7 +547,17 @@ gradiente sempre positivo e nessun minimo, quindi la discesa scende per sempre
 senza convergere a niente. Anche restando dentro le ipotesi, un passo troppo
 lungo diverge in una scodella perfetta: su $\mathcal{L}(\theta)=(\theta-3)^2$
 basta $\eta > 1$ perché ogni passo allontani dal minimo, oscillando da un
-fianco all'altro.
+fianco all'altro: lì $L=2$, e la soglia $2/L=1$ separa le due righe del
+codice che convergono da quella che scappa.
+
+La velocità la decide la curvatura minima. Se $\mathcal{L}$ è anche
+$\mu$-fortemente convessa, con $\eta=2/(L+\mu)$ la distanza dal minimo si
+contrae a ogni passo del fattore $(\kappa-1)/(\kappa+1)$, con $\kappa=L/\mu$:
+per $\kappa=100$ vale $99/101$, e servono circa $350$ passi per ridurre la
+distanza di un fattore mille. Sulle quadratiche il momento porta il fattore a
+$(\sqrt{\kappa}-1)/(\sqrt{\kappa}+1)$, che per lo stesso $\kappa$ vale
+$9/11$: è la ragione quantitativa per cui la traiettoria con il momento, nella
+valle stretta, arriva prima {cite}`goodfellow2016deep`.
 
 Le loss del deep learning, poi, sono quasi sempre non convesse: nessuna
 garanzia. La buona
@@ -564,3 +641,9 @@ di pesi.
   basta quasi sempre.
 ```
 `````
+
+Derivate, gradiente e lunghezza del passo bastano a trovare il fondo di un
+paesaggio che si conosce. Il costo di un modello, però, si calcola su dati che
+sono un campione del mondo, e le sue risposte sono scommesse: per dire quanto
+fidarsi di entrambi serve il linguaggio della {doc}`probabilità
+<probabilita-statistica>`.

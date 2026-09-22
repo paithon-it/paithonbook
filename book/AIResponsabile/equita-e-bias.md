@@ -13,11 +13,11 @@ declassava chi aveva studiato in due college per sole donne. Nessuno aveva
 scritto una regola contro le donne. La regola era stata *appresa*, letta nel
 passato dell'azienda e riproposta come profezia.
 
-**Bias**, qui, vuol dire *pregiudizio*: quello della storia di Amazon, un trattamento sistematicamente
-peggiore riservato a un gruppo di persone. Basta questo per leggere la sezione.
+**Bias**, qui, vuol dire *pregiudizio*: quello della storia di Amazon, un
+trattamento sistematicamente peggiore riservato a un gruppo di persone.
 
-Gli altri due significati riguardano chi ha già letto i capitoli precedenti, e
-restano distinti: non è il bias del neurone (il termine $b$ che nel capitolo
+Nel libro la stessa parola ha già fatto altri due mestieri, e vanno tenuti
+distinti: non è il bias del neurone (il termine $b$ che nel capitolo
 sulle reti neurali si somma ai pesi e sposta la soglia), e non è il bias del
 compromesso bias-varianza (l'errore sistematico di un modello troppo semplice,
 nella {doc}`sezione su overfitting e validazione
@@ -162,7 +162,7 @@ modo diverso a seconda del gruppo.
 
 `````{tab} Elementare
 
-«Sì» vuol dire il modello ha detto la cosa che stavamo
+«Sì» vuol dire che il modello ha detto la cosa che stavamo
 prevedendo, e quella cosa non è per forza bella. Nel prestito il «sì» è «te
 lo diamo»; nel software dei tribunali è «questa persona è ad alto rischio». E
 «l'esito è accaduto» vuol dire che è successo davvero quel che il modello
@@ -177,10 +177,9 @@ richieste distinte.
   uomini, deve approvare il 40% delle donne: a prescindere da tutto il resto. E
   il «a prescindere» va preso alla lettera: la richiesta resta soddisfatta
   anche scegliendo i migliori fra gli uomini e tirando a sorte fra le donne.
-- Stessi errori per tutti, in gergo *equalized odds* (che si potrebbe
-  rendere con «pari probabilità di sbagliare»: gli *odds* sono il modo in cui
-  gli scommettitori dicono una probabilità, il rapporto fra le volte che una
-  cosa capita e quelle che non capita). Sono due condizioni in una: il
+- Stessi errori per tutti, in gergo *equalized odds* (alla lettera
+    «probabilità pareggiate»: sono i due tassi di errore del modello, da
+    rendere uguali nei due gruppi). Sono due condizioni in una: il
   modello deve prendere la stessa quota di persone a cui l'esito è poi capitato
   davvero, e dare la stessa quota di falsi allarmi su chi non c'entrava nulla.
   È la richiesta che la {numref}`fig-equita-tassi` mostra violata: stesso
@@ -249,8 +248,14 @@ P(Y=1 \mid S=s,\, A=a) \;=\; P(Y=1 \mid S=s,\, A=b) \qquad \forall\, s.
 $$
 
 Qui $s$ è il valore del punteggio; la condizione dice che uno stesso $s$
-«significa» la stessa cosa in ogni gruppo. Si noti che è una proprietà di $S$,
-non di $\hat{Y}$: cambiare la soglia non tocca la calibrazione.
+«significa» la stessa cosa in ogni gruppo. A rigore è la *sufficiency*, più
+debole della calibrazione per gruppo in senso proprio, che chiede anche che quel
+significato sia il numero stesso: $P(Y=1 \mid S=s,\, A=a) = s$ per ogni $a$ e
+ogni $s$. Un punteggio calibrato per gruppo è sufficiente; il contrario non
+vale, ma basta ritarare $S$ con una stessa funzione per tutti i gruppi per
+passare dall'uno all'altro. I teoremi che seguono usano la versione forte. Si
+noti che è una proprietà di $S$, non di $\hat{Y}$: cambiare la soglia non tocca
+la calibrazione.
 
 Accanto va tenuta una quarta condizione, che le somiglia e non coincide: la
 **parità del valore predittivo** (*predictive parity*), che riguarda la
@@ -283,9 +288,11 @@ matematicamente incompatibili ogni volta che i gruppi partono da tassi di
 base diversi, cioè ogni volta che l'esito, nei dati, è più frequente in un
 gruppo che nell'altro.
 
-Conviene però dire subito una cosa che si legge di continuo detta male. Non c'è
-un teorema di impossibilità: ce ne sono tre, dimostrati da persone diverse,
-e riguardano combinazioni diverse di criteri. Assomigliano abbastanza da essere
+Conviene però dire subito una cosa che si legge di continuo detta male.
+Di teoremi di impossibilità ce ne sono tre, e non sono tre versioni dello
+stesso: il primo riguarda le decisioni sì o no, il secondo i punteggi, e il
+terzo, che porta la firma di due degli autori del secondo, lo estende e ci
+aggiunge quello che si può comprare. Assomigliano abbastanza da essere
 scambiati l'uno per l'altro, e quando si scambiano si finisce per affermare
 cose false. Cominciamo dal primo, che è quello del caso COMPAS, e prendiamoci
 lo spazio per vederlo succedere invece di annunciarlo.
@@ -342,15 +349,16 @@ davvero e lo trovava uguale nei due gruppi: la riga del settanta per cento.
 Avevano ragione entrambe, ed è proprio questo il punto.
 
 Teoremi di questa famiglia ce ne sono altri due, e nei giornali finiscono
-regolarmente scambiati con questo. Uno guarda i punteggi invece dei sì: la
-calibrazione non convive con il dare lo stesso punteggio medio, di qua e di
-là, a chi l'esito lo ha avuto e a chi non lo ha avuto, salvo che i due gruppi
-partano dalla stessa frequenza o che il modello non sbagli mai. L'altro dice
-che calibrazione ed errori pari
-possono stare insieme, ma pareggiando un errore alla volta: o i falsi allarmi o
-le persone che sfuggono, non tutti e due. Nessuno dei tre dice «non si può
-essere equi»: dicono quali garanzie si possono comprare insieme, e quale
-bisogna lasciare andare.
+regolarmente scambiati con questo. Uno guarda i punteggi invece dei sì. Pretende
+che «70» voglia dire settanta su cento in tutti e due i gruppi e, insieme, che
+le persone a cui l'esito è capitato ricevano in media lo stesso punteggio di qua
+e di là (diciamo 60), e lo stesso per quelle a cui non è capitato (diciamo 30).
+Anche queste tre pretese non stanno insieme, salvo che i due gruppi partano
+dalla stessa frequenza o che il modello non sbagli mai. L'altro dice che
+calibrazione ed errori pari possono stare insieme, ma pareggiando un errore alla
+volta: o i falsi allarmi o le persone che sfuggono, non tutti e due. Nessuno dei
+tre dice «non si può essere equi»: dicono quali garanzie si possono comprare
+insieme, e quale bisogna lasciare andare.
 
 `````
 
@@ -396,30 +404,42 @@ $0{,}30$ contro $0{,}10$. È esattamente la forma del caso COMPAS
 la calibrazione. Il teorema di Chouldechova parla di $\text{VPP}$, che è una
 proprietà della decisione $\hat{Y}$, non di $S$.
 
-Secondo teorema: Kleinberg, Mullainathan e Raghavan (2017), calibrazione.
-Il risultato gemello, indipendente e quasi simultaneo (i due preprint escono a
-un mese di distanza, nel settembre e nell'ottobre del 2016), riguarda i
-punteggi continui {cite}`kleinberg2017inherent`. Le tre condizioni in gioco
-sono la calibrazione e i due **bilanciamenti di classe**: che il punteggio *medio*
+Secondo teorema: Kleinberg, Mullainathan e Raghavan (2017), calibrazione. Il
+risultato gemello, indipendente e quasi simultaneo (i due preprint escono a un
+mese di distanza, nel settembre e nell'ottobre del 2016), riguarda i punteggi
+continui {cite}`kleinberg2017inherent`. Le tre condizioni in gioco sono la
+calibrazione e i due **bilanciamenti di classe**: che il punteggio *medio*
 ricevuto dai positivi sia lo stesso nei due gruppi, e che lo stesso valga per i
 negativi. Coesistono solo nei casi degeneri (prevalenze identiche o predizione
 perfetta). È un enunciato sui punteggi medi, non sui tassi della matrice di
-confusione: il bilanciamento della classe positiva non è l'uguaglianza dei
-TPR, e chiamarlo «bilanciamento dei falsi negativi» significa cambiarlo.
+confusione: il bilanciamento della classe positiva non è l'uguaglianza dei TPR
+delle decisioni sì o no. Chiede che sia uguale fra i gruppi
+$\mathbb{E}[S \mid Y=1, A=a]$, cioè $1$ meno il tasso di falsi negativi
+*generalizzato* $c_{\text{fn}} = \mathbb{E}[1-S \mid Y=1, A=a]$; quello della
+classe negativa chiede l'uguaglianza del tasso di falsi positivi generalizzato
+$c_{\text{fp}} = \mathbb{E}[S \mid Y=0, A=a]$. Su un punteggio che vale solo $0$
+o $1$ i due tassi generalizzati tornano quelli della matrice di confusione.
 
-Terzo teorema: Pleiss e colleghi (2017), calibrazione più equalized odds.
-Resta la domanda che i due precedenti lasciano aperta: calibrazione ed
-equalized odds possono valere insieme? La risposta è nel lavoro di Geoff
-Pleiss e colleghi {cite}`pleiss2017fairness`, e non è né sì né no: stanno
-insieme solo con un vincolo d'errore alla volta, o i falsi positivi o i falsi
-negativi, non entrambi, salvo prevalenze uguali o predittore perfetto.
+Terzo risultato: Pleiss e colleghi (2017), calibrazione più un solo vincolo
+d'errore. Con quei nomi il teorema precedente si rilegge così: calibrazione ed
+equalized odds *generalizzato* non stanno insieme, salvo prevalenze uguali o
+predittore perfetto. Pleiss e colleghi {cite}`pleiss2017fairness` (fra gli
+autori ci sono Kleinberg e Raghavan) lo riconoscono come risultato di Kleinberg
+e lo estendono: due vincoli di costo distinti qualsiasi, insieme alla
+calibrazione, impongono il predittore perfetto. La parte nuova è l'altra metà,
+quella costruttiva. Un vincolo alla volta, o i falsi negativi o i falsi positivi
+generalizzati, si ottiene conservando la calibrazione: nel gruppo che sbaglia
+meno si sostituisce, con una certa probabilità, la predizione con il tasso di
+base $\mu_a$, che è calibrata e non informa. E qualunque algoritmo che rispetti
+quel vincolo, dimostrano, non fa meglio di questa randomizzazione di una quota
+delle predizioni: il prezzo lo paga in accuratezza il gruppo avvantaggiato.
 Sull'ipotesi conviene essere precisi, perché non è quella che verrebbe da
 immaginare: non si chiede affatto che il classificatore sia uno solo, dato che
 nel loro impianto ce n'è già uno per gruppo, e il rimedio che propongono ne
 fabbrica un terzo. Si chiede che il classificatore di cui si pareggiano gli
-errori sia esso stesso calibrato, e che quegli errori siano
-*generalizzati*, cioè medie del punteggio che quel classificatore restituisce e
-non conteggi di decisioni binarie.
+errori sia esso stesso calibrato, e che quegli errori siano *generalizzati*,
+cioè medie del punteggio che quel classificatore restituisce e non conteggi di
+decisioni binarie.
 
 Che peso abbiano quelle ipotesi si vede lasciandole cadere: l'incompatibilità
 sparisce. Si prendano due gruppi con un punteggio calibrato per costruzione in
@@ -549,19 +569,19 @@ prodotte.
 
 `````{tab} Elementare
 
-In una gara di corsa un gruppo parte più indietro. Puoi intervenire
-in tre momenti. Prima della gara, sistemando la linea di partenza: correggi
-i dati, ripesando gli esempi finché nel mucchio pesato l'esito e il gruppo
-smettono di andare insieme, o raccogliendone altri, e la linea sistemata vale
-per tutte le gare che verranno.
-Durante la gara, cambiando le regole: al modello si chiede di sbagliare il
-meno possibile, e gli si aggiunge una penale ogni volta che sbaglia più su un
-gruppo che sull'altro, come un giudice che toglie punti a
-chi taglia la strada; quanti punti togliere lo decidiamo noi, ed è la manopola
-con cui si sceglie quanta accuratezza spendere. Dopo la gara, spostando il
-traguardo: il modello resta com'è, ma il punteggio oltre il quale si dice sì
-viene fissato più in alto per un gruppo e più in basso per l'altro, finché i
-due tassi di errore coincidono.
+In una gara di corsa un gruppo parte più indietro. Puoi intervenire in tre
+momenti. Prima della gara, sistemando la linea di partenza: correggi i dati,
+dando più peso a certi esempi e meno ad altri (uno conta come due, un altro come
+mezzo) finché, nel conto pesato, sapere il gruppo di una persona non dice più
+niente su come le è andata, o raccogliendone altri, e la linea sistemata vale
+per tutte le gare che verranno. Durante la gara, cambiando le regole: al modello
+si chiede di sbagliare il meno possibile, e gli si aggiunge una penale ogni
+volta che sbaglia più su un gruppo che sull'altro, come un giudice che toglie
+punti a chi taglia la strada; quanti punti togliere lo decidiamo noi, ed è la
+manopola con cui si sceglie quanta accuratezza spendere. Dopo la gara, spostando
+il traguardo: il modello resta com'è, ma il punteggio oltre il quale si dice sì
+viene fissato più in alto per un gruppo e più in basso per l'altro, finché i due
+tassi di errore coincidono.
 
 Nessuno dei tre è gratis. Riequilibrare i dati può abbassare l'accuratezza per
 tutti. Spostare il traguardo pareggia gli errori senza toccare il punteggio,
@@ -575,18 +595,31 @@ discriminazione a sua volta, e la discussione è aperta anche fra i giuristi.
 
 `````{tab} Superiore
 
-- **Pre-processing.** Si trasforma il dataset prima dell'addestramento:
-  *reweighting* (pesi $w_i$ per esempio, calcolati così da rendere $Y$
-  indipendente da $A$ nel campione pesato; l'effetto sperato a valle è un
-  classificatore più vicino alla parità demografica), ricampionamento dei gruppi
-  sotto-rappresentati, o rimozione/decorrelazione delle feature che fungono da
-  *proxy* dell'attributo protetto. Vantaggio: agnostico al modello a valle.
+- **Pre-processing.** Si trasforma il dataset prima dell'addestramento. Nel
+    *reweighting* di Kamiran e Calders {cite}`kamiran2012preprocessing` ogni
+    esempio con gruppo $a$ ed esito $y$ riceve il peso
+    $w(a,y) = P(A=a)\,P(Y=y)\,/\,P(A=a,\,Y=y)$, con le probabilità stimate come
+    frequenze sul campione: sotto quei pesi la distribuzione congiunta si
+    fattorizza, cioè $Y$ diventa indipendente da $A$, e l'effetto sperato a
+    valle è un classificatore più vicino alla parità demografica. In
+    alternativa si ricampionano i gruppi sotto-rappresentati, o si apprende una
+    rappresentazione da cui l'attributo protetto non si ricostruisca.
+    Vantaggio: agnostico al modello a valle. Limite: togliere le feature che
+    fanno da *proxy* dell'attributo di rado basta, perché il gruppo si indovina
+    dalla loro combinazione.
 - **In-processing.** Si modifica l'obiettivo di addestramento aggiungendo un
   vincolo o un termine di regolarizzazione di equità, per esempio
   minimizzare $\mathcal{L}_{\text{pred}} + \lambda\,\mathcal{L}_{\text{fair}}$
   dove $\mathcal{L}_{\text{fair}}$ penalizza il divario di TPR/FPR fra i gruppi
-  e $\lambda$ regola il compromesso equità-accuratezza. Adversarial debiasing e
-  ottimizzazione vincolata rientrano qui.
+    e $\lambda$ regola il compromesso equità-accuratezza. I tassi contano
+    decisioni binarie e non sono derivabili, quindi in pratica si penalizza un
+    surrogato continuo, per esempio il divario fra i punteggi medi dei gruppi
+    sui soli positivi. Rientrano qui l’*adversarial debiasing*, in cui un
+    avversario prova a indovinare $A$ dall'uscita del modello (e, per
+    l'equalized odds, anche dall'esito vero) e il modello impara a
+    impedirglielo {cite}`zhang2018mitigating`, e le riduzioni di Agarwal e
+    colleghi, che risolvono il problema vincolato come una sequenza di
+    classificazioni pesate {cite}`agarwal2018reductions`.
 - **Post-processing.** Si lascia intatto il modello e si aggiustano le
   soglie: Hardt, Price e Srebro {cite}`hardt2016equality` mostrano come
   derivare soglie per-gruppo (eventualmente randomizzate) che raggiungono

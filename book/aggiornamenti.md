@@ -38,6 +38,20 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-13)=
+
+## 1.12.13 · 22 settembre 2026
+
+### Pagine ampliate
+
+- **Le schede Superiori vanno più a fondo, in tutto il libro.** Dove nominavano un metodo senza scriverlo, ora c'è la formula con le sue ipotesi: fra gli altri la contrastive divergence delle RBM, VICReg, DreamerV3, GATv2 e l'over-squashing, DistMult, ComplEx e RotatE con MRR e Hits@k, lo stimatore a propensità inversa, ALS, STL, la privacy differenziale $(\varepsilon,\delta)$ con il meccanismo gaussiano e il moments accountant, il randomized smoothing, GCG, la prova che lo speculative decoding è esatto, la legge di Little e il budget d'errore.
+
+### Correzioni
+
+- **Errori di sostanza corretti.** La purga al confine fra training e test toglie $h$ righe, non $h+r$; nella JEPA a impedire il collasso sono stop-gradient e predictor insieme, mentre la copia lenta si può togliere; il terzo teorema di impossibilità sull'equità estende il secondo; una finestra di un solo token rende il watermark più robusto, non più fragile; i control task assegnano un'etichetta fissa per parola; la media mobile 2×12 ha tredici termini; le competizioni M partono nel 1982.
+- {doc}`La legge dentro la loss </PINN/come-funziona>` (PINN: reti e fisica). **I numeri del problema inverso ora li stampa il codice.** Con il programma completo in pagina la rigidezza stimata è 3,95 (3,76 con il seme 7) e lo scarto massimo dalla curva vera 0,064, non 3,92 e 0,07; escono da blocchi in pagina anche la tabella dei sei semi e la prova con il moltiplicatore a 1.
+- **Continuità fra i capitoli.** Concetti già spiegati (il collasso, il caffè dell'inferenza attiva, Dyna, il pilota che ripassa il circuito, la scatola nera) ora si richiamano invece di ripresentarsi come nuovi, e i rimandi a un altro capitolo sono tutti link.
+
 (v1-12-12)=
 
 ## 1.12.12 · 13 settembre 2026

@@ -330,7 +330,13 @@ dove $n_g$ conta i valori presenti nel gruppo, e non le sue righe: con
 prima di dividere. Su un gruppo che non ha nemmeno un valore la somma vale zero
 e il divisore pure, ed è quello zero diviso zero a dare il `NaN` di Napoli.
 Oltre a `mean` sono disponibili `sum`, `count`, `std`, `min`, `max`, `median` e
-funzioni arbitrarie via `agg`/`apply`. Il metodo `agg` con argomenti nominati
+funzioni arbitrarie via `agg`/`apply`. `std` di pandas divide per $n_g - 1$
+(`ddof=1`, come `describe()`), mentre `np.std` divide per $n_g$ (`ddof=0`): le
+due non coincidono sugli stessi dati. E le aggregazioni nominate con una
+stringa (`"mean"`, `"sum"`) girano in codice compilato, mentre una funzione
+Python passata ad `apply` viene chiamata una volta per gruppo, o per riga con
+`axis=1`, e rimette nel ciclo l'interprete che la vettorizzazione aveva
+tolto. Il metodo `agg` con argomenti nominati
 (*named aggregation*) produce colonne dal nome esplicito, rendendo il risultato
 pronto per un report o per un incrocio con un'altra tabella (il `merge`, il
 parente pandas della `JOIN` dei database).
@@ -392,7 +398,8 @@ Il terzo pannello di {numref}`fig-dati-mancanti` mostra una via più raffinata:
 invece di mettere lo stesso valore dappertutto, si *indovina* quello che manca
 guardando le altre colonne della stessa riga (conoscendo età e città di un
 cliente si può stimare quanto avrebbe speso). Costa di più, e si fa con un
-modello: è materia dei capitoli sul machine learning, qui basta sapere che
+modello: è materia dei {doc}`capitoli sul machine learning
+</MachineLearning/overview>`, qui basta sapere che
 esiste.
 
 C'è però una cautela che conviene conoscere fin d'ora, perché riguarda il
@@ -442,8 +449,8 @@ Le misure su cui risultano gemelle sono le stesse che si prendono davanti a
 qualunque tabella nuova, e si guardano una per volta.
 
 La **media** è il valore attorno a cui i numeri si dispongono: si sommano e si
-divide per quanti sono. Nelle quattro raccolte è la stessa, sia per la
-grandezza in orizzontale ($x$) sia per quella in verticale ($y$).
+divide per quanti sono. In orizzontale ($x$) vale $9$ in tutte e quattro;
+in verticale ($y$) vale $7{,}50$, e a separarle è il quarto decimale.
 
 La **varianza** misura lo sparpagliamento attorno a quella media: piccola se i
 valori stanno tutti lì vicino, grande se sono sparsi ai due estremi. In

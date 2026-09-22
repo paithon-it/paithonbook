@@ -63,8 +63,8 @@ dimensioni di un mobile, è solo un conteggio di caselle.
 
 Con più di tre numeri la freccia non la disegniamo più, ma i tre gesti restano
 identici, perché sono conti sulle liste e non sul disegno: si sommano
-ottantaquattro numeri con ottantaquattro numeri esattamente come se ne
-sommavano tre con tre. Prendi una fotografia in bianco e nero di ventotto
+mille numeri con mille numeri esattamente come se ne sommavano tre con
+tre. Prendi una fotografia in bianco e nero di ventotto
 puntini per ventotto: ogni pixel, per il calcolatore, è un numero, e dice
 quanto quel punto è chiaro o scuro. Mettendoli in fila una riga dopo l'altra
 viene una lista di $28 \times 28 = 784$ numeri. Quando si dirà
@@ -106,7 +106,8 @@ di grigi, "srotolata", è un vettore di $\mathbb{R}^{784}$.
 È l'operazione che ritorna più spesso in tutto il machine learning: un
 neurone artificiale, in fondo, non fa altro che calcolare un prodotto
 scalare. Il nome arriva dal
-capitolo sulle reti neurali e qui basta sapere cosa indica: il mattone
+{doc}`capitolo sulle reti neurali </RetiNeurali/percettrone>` e qui basta
+sapere cosa indica: il mattone
 elementare di cui una rete è fatta, un pezzetto di calcolo che riceve una
 lista di numeri, la confronta con una lista di numeri propri e restituisce un
 numero solo.
@@ -217,7 +218,7 @@ termine di bias.
 
 ## Matrici: trasformazioni di interi insiemi di dati
 
-Un vettore descrive un appartamento; ma di appartamenti ce ne sono cento, e
+Un vettore descrive un esempio; ma gli esempi sono cento, o un milione, e
 prima o poi bisogna metterli tutti insieme. Basta impilare le liste una sotto
 l'altra e viene fuori una tabella. Da lì nasce la seconda cosa che si fa con
 una tabella di numeri, meno ovvia della prima e molto più importante: non solo
@@ -332,14 +333,15 @@ quella freccia dà la stessa freccia moltiplicata per un numero», e quel numero
 è il $3$ o l’$1$.
 ```
 
-Il $3$ e l’$1$ sono due conti come quelli dell'appartamento, non numeri da
-prendere per buoni. Nella didascalia la tabella è scritta stretta fra due
+Il $3$ e l’$1$ si verificano a mano con il prodotto matrice-vettore, una riga
+alla volta. Nella didascalia la tabella è scritta stretta fra due
 parentesi, che è il modo consueto di scriverla: la prima riga è $2$ e $1$, la
 seconda è $1$ e $2$. E la diagonale che sale è la freccia $(1,1)$, cioè quella
 che avanza di un passo verso destra e di uno verso l'alto, così che i due
 numeri restino uguali.
 
-Applicarle la tabella vuol dire fare due volte lo scontrino: prima riga,
+Applicarle la tabella vuol dire fare due prodotti scalari, uno per riga:
+prima riga,
 $2\cdot 1 + 1\cdot 1 = 3$; seconda riga, $1\cdot 1 + 2\cdot 1 = 3$. Ne esce
 $(3,3)$, che è la stessa freccia moltiplicata per tre. La diagonale che scende
 è $(1,-1)$, un passo a destra e uno in basso: prima riga,
@@ -389,7 +391,8 @@ enormi da un capo e indistinguibili da zero dall'altro.
 
 Una rete profonda è una pila di cento tavole incollate una sull'altra.
 All'andata il colpo entra dalla prima e attraversa tutta la pila, in fondo si
-guarda quanto il pezzo è venuto storto, e la correzione risale tavola per
+confronta il pezzo finito con quello che si voleva ottenere, e la correzione
+di quello scarto risale tavola per
 tavola dicendo a ognuna come dovrà essere venata la prossima volta. Quel
 messaggio di ritorno si chiama *gradiente*, ed è l'argomento della sezione
 sull'analisi. Moltiplicato a ogni tavola per poco più di uno, alla prima arriva
@@ -489,10 +492,31 @@ $\sigma_{\max}\ge|\lambda|_{\max}$, cioè l'allungamento massimo non è mai
 inferiore al modulo dell'autovalore più grande. È una disuguaglianza che
 può essere larghissima, e proprio in quella distanza sta il fenomeno più
 interessante. Il rapporto $\sigma_{\max}/\sigma_{\min}$ è il numero di
-condizionamento della sezione di analisi numerica; la stessa disuguaglianza
-torna nel capitolo sulle reti neurali, dove misura la "grandezza" di una
-Jacobiana, e in quello sui sistemi di raccomandazione, dove regge
+condizionamento della {doc}`sezione di analisi numerica <analisi-numerica>`; la
+stessa disuguaglianza torna nella {doc}`sezione sul backpropagation
+</RetiNeurali/backpropagation>`, dove misura la "grandezza" di una Jacobiana,
+e in quella sul {doc}`filtraggio collaborativo
+</SistemiRaccomandazione/filtraggio-collaborativo>`, dove regge
 l'approssimazione di rango basso di una matrice di valutazioni.
+
+Il legame fra valori singolari e autovalori è diretto:
+$\mathbf{A}^\top\mathbf{A}=\mathbf{V}\boldsymbol{\Sigma}^\top\boldsymbol{\Sigma}\mathbf{V}^\top$
+e
+$\mathbf{A}\mathbf{A}^\top=\mathbf{U}\boldsymbol{\Sigma}\boldsymbol{\Sigma}^\top\mathbf{U}^\top$,
+quindi le colonne di $\mathbf{V}$ sono autovettori di
+$\mathbf{A}^\top\mathbf{A}$, quelle di $\mathbf{U}$ di
+$\mathbf{A}\mathbf{A}^\top$, e
+$\sigma_i=\sqrt{\lambda_i(\mathbf{A}^\top\mathbf{A})}$. È anche lo schizzo
+dell'esistenza. $\mathbf{A}^\top\mathbf{A}$ è simmetrica e **semidefinita
+positiva**, cioè $\mathbf{x}^\top\mathbf{A}^\top\mathbf{A}\mathbf{x} =
+\lVert\mathbf{A}\mathbf{x}\rVert^2\ge 0$ per ogni $\mathbf{x}$, e per il
+teorema spettrale ha una base ortonormale di autovettori $\mathbf{v}_i$ con
+autovalori $\ge 0$; per $\sigma_i>0$ si pone
+$\mathbf{u}_i=\mathbf{A}\mathbf{v}_i/\sigma_i$, e si verifica che questi
+vettori sono ortonormali. Una matrice simmetrica è semidefinita positiva se e
+solo se i suoi autovalori sono $\ge 0$, e definita positiva se sono $>0$: le
+matrici di covarianza sono della prima specie, e un'hessiana definita positiva
+in un punto stazionario garantisce un minimo locale stretto.
 
 L'iterazione chiarisce il resto: su un autovettore $\mathbf{A}^k\mathbf{v} =
 \lambda^k\mathbf{v}$, quindi il comportamento asintotico di un sistema che
@@ -606,7 +630,21 @@ questo per quel fattore. Il minimo è lo stesso, il valore stampato no.)
 
 Norme e prodotti scalari sono legati da $\lVert\mathbf{x}\rVert_2^2 =
 \mathbf{x}^\top\mathbf{x}$: misurare una lunghezza è fare il prodotto scalare
-di un vettore con sé stesso.
+di un vettore con sé stesso. Ne discende la disuguaglianza di Cauchy–Schwarz,
+$|\mathbf{x}^\top\mathbf{y}|\le\lVert\mathbf{x}\rVert_2\lVert\mathbf{y}\rVert_2$,
+con uguaglianza se e solo se i due vettori sono paralleli: è lei a garantire
+che il coseno stia in $[-1,1]$, e quindi a rendere lecita la definizione di
+angolo in $\mathbb{R}^n$. In generale una norma è una funzione nulla solo in
+$\mathbf{0}$, omogenea
+($\lVert\alpha\mathbf{x}\rVert=|\alpha|\,\lVert\mathbf{x}\rVert$) e subadditiva
+(disuguaglianza triangolare); oltre a $\ell_1$ e $\ell_2$ si usa $\ell_\infty$,
+il modulo massimo. Le matrici hanno le loro: la norma di Frobenius
+$\lVert\mathbf{A}\rVert_F=\big(\sum_{ij}A_{ij}^2\big)^{1/2}$, la $\ell_2$ della
+matrice srotolata, e la norma spettrale
+$\lVert\mathbf{A}\rVert_2=\max_{\lVert\mathbf{x}\rVert_2=1}\lVert\mathbf{A}\mathbf{x}\rVert_2=\sigma_1$,
+che soddisfa
+$\lVert\mathbf{A}\mathbf{B}\rVert_2\le\lVert\mathbf{A}\rVert_2\lVert\mathbf{B}\rVert_2$
+ed è la norma con cui si misurano i gradienti che esplodono.
 
 `````
 

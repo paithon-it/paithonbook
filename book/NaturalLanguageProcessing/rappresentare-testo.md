@@ -259,7 +259,10 @@ La variante serve a due cose. La prima è non trovarsi mai a dividere per zero.
 Nel conto di poco fa si divide il numero dei documenti per quello dei documenti
 che contengono la parola, e se quel secondo numero fosse zero (una parola che
 c'è nel vocabolario ma in nessun testo) la divisione non si potrebbe fare:
-la libreria aggiunge $1$ sopra e sotto e il problema sparisce. La seconda è
+la libreria aggiunge $1$ sopra e sotto e il problema sparisce. Poi, al
+logaritmo già calcolato, aggiunge ancora $1$: è questo secondo regalo a tenere
+in vita le parole che stanno dappertutto, perché con il primo soltanto *il*
+varrebbe ancora zero. La seconda è
 mettere sulla stessa scala documenti di lunghezza diversa, così che un testo
 lungo non risulti più «pesante» solo perché contiene più parole; a conti fatti
 ogni documento viene riportato alla stessa misura complessiva, e a contare sono
@@ -280,29 +283,41 @@ quella rara sale.
 
 `````{tab} Superiore
 
-`scikit-learn` non applica alla lettera la formula da manuale: usa un idf
-*lisciato*, $\ln\frac{1+N}{1+\text{df}(t)} + 1$, e normalizza poi in $L^2$ il
-vettore di ogni documento. Il «$+1$» finale ha una conseguenza da tenere a
-mente: un termine presente in tutti i documenti non si annulla, come vorrebbe
-$\log(N/\text{df})$, ma conserva idf pari a $1$. Nel corpus giocattolo
-dell'esempio ($N = 2$) non è affatto un residuo trascurabile: nel primo
-documento *il* esce con peso $0{,}318$ contro lo $0{,}447$ di *gatto*, cioè
-circa il 71% del peso di un termine che compare in un solo documento. Il
-divario si apre solo al crescere del corpus, perché l'idf del termine
-onnipresente resta fisso a $1$ mentre quello del termine raro cresce come
-$\ln\frac{1+N}{2} + 1$.
+`scikit-learn` non applica alla lettera la formula da manuale. Con i parametri
+predefiniti di `TfidfVectorizer` (`smooth_idf=True`, `norm="l2"`,
+`sublinear_tf=False`) il peso di $t$ in $d$ è
+$\text{tf}(t,d)\cdot\bigl(\ln\frac{1+N}{1+\text{df}(t)} + 1\bigr)$, con
+$\text{tf}$ il conteggio grezzo, e il vettore di ogni documento viene poi
+diviso per la sua norma $L^2$. Con `sublinear_tf=True` il conteggio diventa $1
++ \ln \text{tf}$, che smorza le parole ripetute molte volte nello stesso
+documento. Prima di tutto questo c'è la tokenizzazione, che per default
+(`lowercase=True` e `token_pattern=r"(?u)\b\w\w+\b"`) scarta ogni token di un
+solo carattere: in italiano spariscono *e*, *è*, *a*, *o* e l'articolo eliso di
+*l'uomo*, e in «non è affatto male» sparisce proprio il verbo. Il «$+1$» finale
+ha una conseguenza da tenere a mente: un termine presente in tutti i documenti
+non si annulla, come vorrebbe $\log(N/\text{df})$, ma conserva idf pari a $1$.
+Nel corpus giocattolo dell'esempio ($N = 2$) non è affatto un residuo
+trascurabile: nel primo documento *il* esce con peso $0{,}318$ contro lo
+$0{,}447$ di *gatto*, cioè circa il 71% del peso di un termine che compare in
+un solo documento. Il divario si apre solo al crescere del corpus, perché l'idf
+del termine onnipresente resta fisso a $1$ mentre quello del termine raro
+cresce come $\ln\frac{1+N}{2} + 1$.
 
 `````
 
 ## Vettori densi: i word embedding
 
-Il salto concettuale arriva nel 2013. L'idea guida è vecchia, e il linguista
-John Firth nel 1957 la riassunse così: *"You shall know a word by the company
-it keeps"* {cite}`firth1957synopsis`, conoscerai una parola dalla compagnia che
-frequenta. Parole che appaiono in contesti simili hanno significati simili. Se
-lo facciamo dire ai numeri, otteniamo i **word embedding**: la parola inglese
-vuol dire «immersione», e l'immagine è quella di ogni parola calata dentro uno
-spazio, in un punto suo.
+Il salto che ha reso comuni questi vettori arriva nel 2013, anche se i primi
+vettori densi di parola sono più vecchi: nel 1990 l'analisi semantica latente
+li ricavava comprimendo la tabella dei conteggi parola per documento, e nel
+2003 il modello di linguaggio neurale di Bengio e colleghi li imparava mentre
+scommetteva sulla parola successiva. L'idea guida è più vecchia ancora, e il
+linguista John Firth nel 1957 la riassunse così: *"You shall know a word by the
+company it keeps"* {cite}`firth1957synopsis`, conoscerai una parola dalla
+compagnia che frequenta. Parole che appaiono in contesti simili hanno
+significati simili. Se lo facciamo dire ai numeri, otteniamo i **word
+embedding**: la parola inglese vuol dire «immersione», e l'immagine è quella di
+ogni parola calata dentro uno spazio, in un punto suo.
 
 Come si fa in pratica lo mostra la {numref}`fig-finestra-contesto`. Si prende
 una finestra, cioè un ritaglio di poche parole che scorre lungo il testo,
@@ -400,7 +415,26 @@ $$
 \log \sigma(-\mathbf{u}_{c_i}^\top \mathbf{v}_w),
 $$
 
-con $\sigma$ la sigmoide e $c_1, \dots, c_k$ le intruse pescate. **GloVe**
+con $\sigma$ la sigmoide e $c_1, \dots, c_k$ le intruse pescate. Due
+accorgimenti completano la ricetta. Le parole frequentissime si scartano a caso
+prima di formare le coppie, ciascuna occorrenza di $w$ con probabilità
+$1 - \sqrt{t/f(w)}$, dove $f(w)$ è la frequenza relativa e $t \approx 10^{-5}$
+una soglia. La finestra, poi, ha una larghezza sorteggiata a ogni posizione,
+così che i vicini stretti contino più dei lontani. Che cosa calcoli davvero
+questo obiettivo lo hanno mostrato Levy e Goldberg {cite}`levy2014neural`: se
+$d$ è abbastanza grande da lasciare liberi tutti i prodotti scalari, e il
+rumore segue l'unigramma dei contesti, l'ottimo soddisfa
+
+$$
+\mathbf{u}_c^\top \mathbf{v}_w = \operatorname{pmi}(w, c) - \log k ,
+$$
+
+con $\operatorname{pmi}$ l'informazione mutua puntuale di {doc}`Teoria
+dell'informazione </Matematica/teoria-informazione>`, qui in logaritmo naturale
+e calcolata sulle coppie parola-contesto del corpus. Lo skip-gram con negative
+sampling fattorizza dunque una matrice di PMI traslata di $\log k$. Con $d$
+piccolo la fattorizzazione è approssimata e pesata dalle frequenze delle
+coppie, ed è lì che si separa da una SVD della stessa matrice. **GloVe**
 {cite}`pennington2014glove` fattorizza invece la matrice
 globale di co-occorrenza $\mathbf{X}$, minimizzando
 
@@ -410,22 +444,34 @@ $$
 - \log X_{ij}\big)^2,
 $$
 
-dove $X_{ij}$ conta quante volte la parola $j$ compare vicino alla parola $i$
-e la funzione di pesatura $f$ cresce fino a un tetto e poi resta piatta: così
-le coppie mai viste non contano niente ($f(0)=0$) e quelle frequentissime non
-dominano il conto. Da $\mathbb{R}^{|V|}$ sparso si passa a
+dove $X_{ij}$ conta quante volte la parola $j$ compare nella finestra della
+parola $i$, con ogni co-occorrenza pesata $1/\delta$ e $\delta$ la distanza fra
+le due. La somma corre sulle sole coppie con $X_{ij} > 0$, e la pesatura è
+
+$$
+f(x) = \begin{cases} (x / x_{\max})^{\alpha} & x < x_{\max} \\ 1 & \text{altrimenti,} \end{cases}
+$$
+
+con $x_{\max} = 100$ e $\alpha = 3/4$ nel lavoro originale. Le coppie mai viste
+restano così fuori ($f(0)=0$ rende coerente l'esclusione del $\log 0$), e
+quelle frequentissime non dominano il conto. Il bersaglio $\log X_{ij}$ viene
+da una richiesta sui rapporti: se $\mathbf{v}_i^\top\tilde{\mathbf{v}}_j$
+riproduce $\log P(j \mid i)$ a meno dei bias, le differenze fra vettori
+catturano i rapporti $P(k \mid i)/P(k \mid j)$, che sono ciò che distingue due
+parole. Come embedding finale si usa la somma $\mathbf{v}_i +
+\tilde{\mathbf{v}}_i$ delle due copie. Da $\mathbb{R}^{|V|}$ sparso si passa a
 $\mathbb{R}^{d}$ denso: meno dimensioni, ma cariche di struttura semantica.
 
 `````
 
-La procedura di word2vec ha un nome, e conviene impararlo qui perché torna per
-tutto il libro. Nessuno ha preparato gli esercizi su cui word2vec si addestra:
+La procedura di word2vec ha un nome, e va imparato subito perché torna in molti
+capitoli. Nessuno ha preparato gli esercizi su cui word2vec si addestra:
 la parola al centro e le sue vicine stavano già nel testo, e a separarle per
 farne una domanda e una risposta siamo stati noi. Un compito costruito così si
 chiama auto-supervisionato. Sulle immagini l'ha già fatto {doc}`Imparare senza
 etichette </VisioneArtificiale/senza-etichette>`, coprendo un pezzo di foto e
-chiedendo di indovinarlo; e a raccontarlo per esteso è il capitolo
-sull'auto-supervisione.
+chiedendo di indovinarlo; e a raccontarlo per esteso è il {doc}`capitolo
+sull'auto-supervisione </AutoSupervisione/overview>`.
 
 ## Sotto la parola: fastText
 

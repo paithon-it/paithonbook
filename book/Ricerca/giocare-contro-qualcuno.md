@@ -286,7 +286,7 @@ rapporto: 34.8 volte meno
 
 Stessa risposta, quasi trentacinque volte meno lavoro. E conviene insistere su
 «stessa risposta», perché è la cosa che rende la potatura diversa da tutti gli
-altri risparmi di questo capitolo: non si è rinunciato a niente. I rami
+altri risparmi della ricerca: non si è rinunciato a niente. I rami
 non guardati erano rami di cui si era dimostrato, senza guardarli, che non
 potevano cambiare la conclusione.
 
@@ -447,6 +447,19 @@ pratica è quasi sempre una somma pesata di caratteristiche della posizione, il
 che assume implicitamente che i loro contributi siano indipendenti: un’ipotesi
 falsa (il valore di un alfiere dipende da com’è la struttura pedonale) e utile
 lo stesso.
+
+Nei giochi con il caso (il backgammon, dove muove il dado) fra i livelli dei
+due giocatori si inseriscono i **nodi di caso**, e lì la ricorsione prende il
+valore atteso: $\mathrm{expectiminimax}(s) = \sum_{e} P(e)\,
+\mathrm{expectiminimax}(\mathrm{ris}(s,e))$, dove $e$ corre sugli esiti
+possibili
+del caso e $P(e)$ è la loro probabilità; nei livelli dei giocatori restano il
+massimo e il minimo. Il costo sale a $O(b^m n^m)$, con $n$ il numero di esiti
+distinti, e cambia una cosa sottile sulla valutazione: senza caso conta solo
+l'ordine dei valori di $\mathrm{ev}$, e una trasformazione monotona non cambia
+la mossa scelta; con il caso si fanno medie, contano le distanze, e
+$\mathrm{ev}$ deve essere una trasformazione affine positiva della probabilità
+di vittoria {cite}`russell2020artificial`.
 
 Due complicazioni che i programmi seri devono affrontare, e sono i punti in cui
 la teoria pulita si sporca:

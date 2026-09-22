@@ -144,7 +144,12 @@ manopole: una manciata di numeri che invece di stare tutta all'ingresso arriva
 al singolo livello e decide come quel livello lavorerà. Le manopole non escono
 grezze dai numeri casuali di partenza: fra i due c'è una piccola rete che li
 traduce, e serve a sbrogliarli, perché nel mazzo grezzo posa, età e taglio di
-capelli sono aggrovigliati, e girando una manopola se ne muovono tre.
+capelli sono aggrovigliati, e girando una manopola se ne muovono tre. (Il
+{doc}`capitolo sui modelli latenti </ModelliLatenti/overview>` ha mostrato che
+senza aiuti questa separazione non si ottiene; qui l'aiuto c'è ed è l'impianto
+stesso, perché ogni fila di numeri arriva a un livello diverso. Quello che si
+separa bene è il grossolano dal fine; posa, età e capelli si sbrogliano meglio
+di prima, non del tutto.)
 
 Cambiando le manopole dei primi livelli cambia la posa; cambiando quelle degli
 ultimi cambiano le lentiggini. Per questo si mescolano tratti di volti diversi:
@@ -167,7 +172,20 @@ ciò che non lo sembra. I livelli danno il *controllo*, il duello dà il realism
 `````
 
 `````{tab} Superiore
-L'innovazione è architetturale: una rete di *mapping* trasforma $\mathbf{z}$ in uno spazio latente intermedio $\mathcal{W}$, più disaccoppiato; i vettori di stile $\mathbf{w}$ modulano ogni strato del generatore via *adaptive instance normalization* (AdaIN); rumore stocastico separato controlla i dettagli ad alta frequenza. Il risultato è il controllo *scale-specific*.
+L'innovazione è architetturale: una rete di *mapping* trasforma $\mathbf{z}$ in
+uno spazio latente intermedio $\mathcal{W}$, più disaccoppiato; i vettori di
+stile $\mathbf{w}$ modulano ogni strato del generatore via *adaptive instance
+normalization* (AdaIN); rumore stocastico separato controlla i dettagli ad alta
+frequenza. Il risultato è il controllo *scale-specific*. La rete di mapping è un
+percettrone a 8 strati, con $\mathbf{z}$ e $\mathbf{w}$ a 512 componenti;
+durante l’addestramento una quota delle immagini è generata con due vettori
+$\mathbf{w}$, passando dal primo al secondo a un livello scelto a caso (*style
+mixing*), e questo impedisce agli strati di assumere che stili contigui siano
+correlati. In generazione si usa il *truncation trick* in $\mathcal{W}$:
+$\mathbf{w}' = \bar{\mathbf{w}} + \psi\,(\mathbf{w} - \bar{\mathbf{w}})$, con
+$\bar{\mathbf{w}}$ la media degli stili e $\psi < 1$, che avvicina i campioni
+alle regioni dense e compra fedeltà al prezzo della varietà: è la stessa
+rinuncia che un FID calcolato su campioni troncati nasconde.
 
 La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla
 Progressive GAN dello stesso gruppo {cite}`karras2018progressive`, che
@@ -302,11 +320,13 @@ questo che cambiando lo stile dei primi livelli cambia la posa e cambiando
 quello degli ultimi cambiano le lentiggini, perché nei primi livelli le corsie
 decidono cose grosse e negli ultimi cose fini.
 
-Il meccanismo non nasce qui. Viene dal trasferimento di stile fra immagini,
-dove Xun Huang e Serge Belongie {cite}`huang2017arbitrary` l'avevano proposto
-proprio per prendere il «carattere» di un quadro e appiccicarlo a una
-fotografia: allineare media e ampiezza delle corsie del contenuto a quelle
-dello stile. StyleGAN se lo porta dentro il generatore e lo usa livello per
+Il meccanismo non nasce qui: è l'AdaIN che Xun Huang e Serge Belongie
+{cite}`huang2017arbitrary` avevano proposto per il trasferimento di stile, e che
+la {doc}`sezione sul trasferimento di stile
+</VisioneArtificiale/style-transfer>`
+ha già scritto in formula: allineare media e ampiezza delle corsie del contenuto
+a quelle dello stile. StyleGAN se lo porta dentro il generatore e lo usa livello
+per
 livello, ed è il motivo per cui il controllo esce separato per scala.
 
 ### La goccia
@@ -737,9 +757,11 @@ capitolo.
 C'è di più, ed è la ragione migliore per aver letto questo capitolo anche
 volendo usare soltanto la diffusione: un discriminatore è servito a costruire
 un pezzo di Stable Diffusion. Alla fine di tutto il lavoro c'è una parte che
-riporta quella versione ridotta e compatta ai pixel veri e propri, e la si
-chiama decodificatore: ecco, è stata addestrata anche con una loss avversaria,
-cioè con un esperto contro. Finito l'addestramento l'esperto se ne va, come nel
+riporta quella versione ridotta e compatta ai pixel veri e propri: è il copista
+della clessidra che, nel capitolo sui modelli latenti, rifaceva le immagini
+dopo averle rimpicciolite di quarantotto volte, cioè il decoder. Ecco, è stato
+addestrato anche con una loss avversaria, cioè con un esperto contro. Finito
+l'addestramento l'esperto se ne va, come nel
 duello di questo capitolo, ed è quella parte a tenere nitide le ricostruzioni.
 Il duello, insomma, è passato dal centro della scena a un ruolo di
 manutenzione.
@@ -860,6 +882,6 @@ il lascito: non una famiglia di architetture, ma un modo di addestrare che
 sopravvive dentro sistemi che non si chiamano più GAN. La domanda però resta
 intera, fabbricare dati nuovi e plausibili senza un originale con cui
 confrontarsi, e i capitoli che seguono sono altrettante risposte diverse alla
-stessa domanda. La prima è «Modelli di diffusione», che al posto di due reti
-che si sfidano mette un dato ridotto a rumore e una rete che rifà la strada
-all'indietro.
+stessa domanda. La prima è quella dei {doc}`modelli di diffusione
+</ModelliDiffusione/overview>`, che al posto di due reti che si sfidano mette un
+dato ridotto a rumore e una rete che rifà la strada all'indietro.

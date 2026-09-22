@@ -129,7 +129,24 @@ $$
 Qui $S(i,j)$ è il valore in posizione $(i,j)$ della mappa di uscita, mentre
 $m,n$ scorrono sulle celle del kernel. Il punto da vedere è che $K$ *non
 dipende da $(i,j)$*: è lo stesso filtro in ogni posizione, ed è da lì, e solo
-da lì, che viene l'equivarianza. Con più canali in ingresso (es. RGB), $F$
+da lì, che viene l'equivarianza. La dimostrazione è una riga. Sia
+$T_{\boldsymbol{\Delta}}$ la traslazione di
+$\boldsymbol{\Delta} = (\Delta_1, \Delta_2)$,
+$(T_{\boldsymbol{\Delta}} I)(i,j) = I(i-\Delta_1,\, j-\Delta_2)$; allora
+
+$$
+\sum_{m}\sum_{n} (T_{\boldsymbol{\Delta}} I)(i+m,\, j+n)\,K(m,n)
+= \sum_{m}\sum_{n} I(i-\Delta_1+m,\, j-\Delta_2+n)\,K(m,n)
+= S(i-\Delta_1,\, j-\Delta_2),
+$$
+
+cioè filtrare l'immagine traslata dà la mappa traslata. Il passaggio usa che
+$K$ sia lo stesso in $(i,j)$ e in $(i-\Delta_1, j-\Delta_2)$, e che la somma
+corra su tutto il piano: su un'immagine finita vale lontano dal bordo, e con
+uno stride $s$ solo per spostamenti multipli di $s$. La convoluzione in senso
+stretto, $\sum_m\sum_n I(i-m,\,j-n)\,K(m,n)$, differisce dalla
+cross-correlazione solo per il kernel ribaltato, e siccome $K$ si impara la
+differenza non ha conseguenze. Con più canali in ingresso (es. RGB), $F$
 filtri, un bias per filtro e una non linearità $\sigma$ (di solito la ReLU), la
 stessa formula si riscrive con gli indici:
 

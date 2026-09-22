@@ -7,10 +7,16 @@ termine context engineering a «prompt engineering», e lo ha definito così:
 l'arte e insieme la scienza, delicata, di riempire la finestra di contesto con
 *la giusta informazione per il passo successivo* {cite}`karpathy2025context`.
 
-Due parole di quella frase vanno sciolte subito, perché torneranno in ogni
-pagina del capitolo. Il prompt è il messaggio che scriviamo al modello, la
+Chi arriva dal capitolo sugli agenti queste parole le ha già incontrate nella
+{doc}`sezione sul contesto come interfaccia </Agenti/context-engineering>`, ed è
+da lì che si riparte; vanno però fissate bene, perché tornano dappertutto. Il
+prompt, in senso stretto, è il messaggio che scriviamo al modello, la
 richiesta vera e propria; tutto quello che le mettiamo attorno ha un nome suo,
-ed è il contesto. La finestra di contesto è il tetto di testo che un modello
+ed è il contesto. Nell'uso corrente la parola si allarga spesso a tutto il
+testo montato dal programma, ed è in questo senso largo che la usa il
+{doc}`context engineering degli agenti </Agenti/context-engineering>`; qui,
+dove i due oggetti vanno tenuti distinti, vale il senso stretto. La finestra di
+contesto è il tetto di testo che un modello
 riesce a leggere in una volta sola: la richiesta, e insieme tutto ciò che
 vogliamo che il modello sappia prima di rispondere, deve starci dentro, e
 quando è piena qualcosa va tolto per far posto. È un limite deciso da chi il
@@ -44,10 +50,10 @@ capitolo.
 ## Programmare a parole
 
 Prima di vedere come si programma un modello di linguaggio, conviene guardare
-che cosa fa davvero quando risponde. Un modello linguistico di grandi
-dimensioni (in inglese *large language model*, da cui la sigla **LLM**, che
-useremo d'ora in poi perché è quella che si incontra ovunque) fa una cosa
-sola, e la fa moltissime volte di fila: guarda il testo che ha davanti e stima
+che cosa fa davvero quando risponde. Un LLM, il grande modello di linguaggio
+(*large language model*) che il
+capitolo sugli agenti ha messo al centro di ogni ciclo, fa una cosa sola, e la
+fa moltissime volte di fila: guarda il testo che ha davanti e stima
 quale pezzo di testo verrà dopo.
 
 ```{figure} ../figures/cos-e-davvero-un-llm.svg
@@ -93,8 +99,9 @@ cambierebbe riscrivere una funzione.
 
 `````{tab} Elementare
 
-Un collaboratore bravissimo e velocissimo, che ha letto mezza biblioteca, è
-appena arrivato e non sa nulla del *tuo* lavoro. Puoi anche mandarlo a un corso
+È il collega nuovo del capitolo sugli agenti, quello a cui lasciavi il briefing
+sulla scrivania: bravissimo e velocissimo, ha letto mezza biblioteca, è appena
+arrivato e non sa nulla del *tuo* lavoro. Puoi anche mandarlo a un corso
 di formazione, ma è una faccenda lunga e costosa. Quello che puoi fare subito,
 ogni giorno, senza spedirlo da nessuna parte, è parlargli bene. Se gli dici
 «occupati dei clienti» otterrai una cosa; se gli lasci un foglio con il ruolo,

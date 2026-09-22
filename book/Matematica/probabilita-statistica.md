@@ -208,13 +208,31 @@ $$
 s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2 .
 $$
 
-Il divisore $n$ è quello che esce dalla massima verosimiglianza di
-§«Dalla probabilità all'apprendimento», ed è esattamente il motivo per cui
-quello stimatore è distorto. Le librerie scelgono default diversi, e conviene
-saperlo prima di confrontare due numeri: `np.var` e `StandardScaler` di
-scikit-learn dividono per $n$ (`ddof=0`), `torch.var` divide per $n-1$
-(`correction=1`). Su otto osservazioni la differenza è del $14\%$; su
-diecimila è invisibile.
+Il linguaggio è quello degli **stimatori**: una funzione $\hat\theta$ del
+campione che serve a indovinare un parametro $\theta$ della distribuzione. La
+sua distorsione è
+$\operatorname{bias}(\hat\theta)=\mathbb{E}[\hat\theta]-\theta$, la sua
+varianza dice quanto cambia da un campione all'altro, e l'errore quadratico
+medio si spezza nelle due,
+$\mathbb{E}[(\hat\theta-\theta)^2]=\operatorname{bias}(\hat\theta)^2+\mathrm{Var}(\hat\theta)$.
+Per campioni i.i.d. il conto di Bessel sta in una riga: da $\sum_i(x_i-\bar
+x)^2=\sum_i(x_i-\mu)^2-n(\bar x-\mu)^2$ segue $\mathbb{E}\big[\sum_i(x_i-\bar
+x)^2\big]=n\sigma^2-n\,\mathrm{Var}(\bar x)=(n-1)\sigma^2$. Due avvertenze. Non
+distorto non vuol dire migliore: su dati gaussiani il divisore $n$ ha errore
+quadratico medio più piccolo di $n-1$, e $n+1$ più piccolo ancora. E la non
+distorsione non attraversa le funzioni non lineari: $s=\sqrt{s^2}$ sottostima
+$\sigma$, per la disuguaglianza di Jensen.
+
+Il divisore $n$ è quello della massima verosimiglianza gaussiana (il criterio
+che sceglie i parametri che rendono i dati più probabili): annullando le
+derivate di
+$-\frac{n}{2}\log(2\pi\sigma^2)-\frac{1}{2\sigma^2}\sum_i(x_i-\mu)^2$ si
+trovano $\hat\mu=\bar x$ e $\hat\sigma^2=\frac1n\sum_i(x_i-\bar x)^2$. La
+massima verosimiglianza, dunque, non promette stimatori non distorti. Le
+librerie scelgono default diversi, e conviene saperlo prima di confrontare due
+numeri: `np.var` e `StandardScaler` di scikit-learn dividono per $n$
+(`ddof=0`), `torch.var` divide per $n-1$ (`correction=1`). Su otto osservazioni
+la differenza è del $14\%$; su diecimila è invisibile.
 
 `````
 
@@ -398,7 +416,16 @@ allarmi.
 
 `````{tab} Superiore
 
-Il teorema lega la probabilità condizionata nei due versi:
+Per $P(B)>0$ la probabilità di $A$ dato $B$ è $P(A\mid B)=P(A\cap B)/P(B)$,
+la probabilità ricalcolata dentro il mondo ristretto a $B$. Due eventi sono
+**indipendenti** se $P(A\cap B)=P(A)\,P(B)$, cioè se sapere che $B$ è
+successo non sposta $A$; per le variabili aleatorie si chiede la stessa
+fattorizzazione per ogni coppia di valori, e «i.i.d.» vuol dire indipendenti
+e con la stessa distribuzione. Se $B_1,\dots,B_k$ partizionano lo spazio degli
+esiti, vale la legge della probabilità totale
+$P(A)=\sum_j P(A\mid B_j)\,P(B_j)$. Scrivendo $P(A\cap B)$ nei due modi si
+ottiene il teorema di Bayes, che lega la probabilità condizionata nei due
+versi:
 
 $$
 P(A\mid B)=\frac{P(B\mid A)\,P(A)}{P(B)} .
@@ -511,9 +538,12 @@ $$
 $$
 
 L'errore cala come $1/\sqrt{n}$, non come $1/n$: per dimezzare l'incertezza
-servono quattro volte i dati. È la ragione strutturale per cui i guadagni di
-prestazione diventano sempre più costosi, e per cui raddoppiare un dataset
-raramente raddoppia la qualità.
+servono quattro volte i dati. Vale per qualunque grandezza che si stimi come
+media di osservazioni indipendenti, e quindi per ogni metrica misurata su un
+test set. L'errore di un modello addestrato segue invece curve di
+apprendimento proprie, con esponenti che dipendono dal compito e in genere
+differiscono da $1/2$, anche se la tendenza ai rendimenti decrescenti è la
+stessa.
 
 L'ipotesi i.i.d. è quella che si rompe più spesso nella pratica: dati correlati
 nel tempo, esempi duplicati, campioni raccolti da una sola fonte. Quando salta,
@@ -562,11 +592,12 @@ balla di più, e dà circa $100/\sqrt{n}$ punti percentuali con $n$ intervistati
 $\sqrt{500}$ è poco più di $22$, quindi circa $4{,}5$ punti. La seconda
 accorcia quel numero, perché un candidato lontano dal $50\%$ fa ballare meno la
 stima (quando quasi tutti la pensano allo stesso modo, due campioni diversi si
-somigliano). Si moltiplica la quota per la quota opposta, si fa la radice e si
-divide per $0{,}5$, che è quanto lo stesso conto dà al $50\%$. All’$87\%$:
-$0{,}87 \times 0{,}13 = 0{,}113$, la cui radice è $0{,}34$, e $0{,}34$ diviso
-$0{,}5$ fa circa due terzi. All’$80\%$ viene $0{,}8$, al $93\%$ circa la metà.
-Quindi $4{,}5$ punti moltiplicati per due terzi, e il margine è di tre punti.
+somigliano). Il conto si fa in tre passi, con la quota dell’$87\%$. Si
+moltiplica la quota per la quota opposta: $0{,}87 \times 0{,}13 = 0{,}113$. Se
+ne fa la radice: $0{,}34$. Si divide per $0{,}5$, che è quanto lo stesso conto
+dà al $50\%$: $0{,}34$ diviso $0{,}5$ fa circa due terzi. All’$80\%$ viene
+$0{,}8$, al $93\%$ circa la metà. Quindi $4{,}5$ punti moltiplicati per due
+terzi, e il margine è di tre punti.
 
 Ecco la stima onesta del modello nuovo, fra l’$84\%$ e il $90\%$. Quella del
 modello vecchio va dall’$83{,}8\%$ all’$89{,}8\%$. I due intervalli si
@@ -1050,6 +1081,28 @@ dove $\mathrm{Cov}(X,Y)=\mathbb{E}\big[(X-\mu_X)(Y-\mu_Y)\big]$ è la
 centro, negativa se da parti opposte), e $\sigma_X,\sigma_Y$ sono le due
 deviazioni standard, che servono a togliere di mezzo le unità di misura.
 
+Con più variabili le covarianze si raccolgono in una matrice. Per un vettore
+aleatorio $\mathbf{x}\in\mathbb{R}^d$ con media
+$\boldsymbol{\mu}=\mathbb{E}[\mathbf{x}]$, la **matrice di covarianza** è
+$\boldsymbol{\Sigma}=\mathbb{E}\big[(\mathbf{x}-\boldsymbol{\mu})(\mathbf{x}-\boldsymbol{\mu})^\top\big]\in\mathbb{R}^{d\times
+d}$, con $\Sigma_{ij}=\mathrm{Cov}(x_i,x_j)$ e le varianze sulla diagonale. È
+simmetrica e semidefinita positiva, perché
+$\mathbf{v}^\top\boldsymbol{\Sigma}\mathbf{v}=\mathrm{Var}(\mathbf{v}^\top\mathbf{x})\ge
+0$ per ogni $\mathbf{v}$: la varianza lungo una direzione unitaria è una forma
+quadratica, e massimizzarla porta all'autovettore dominante di
+$\boldsymbol{\Sigma}$, cioè alla PCA della {doc}`sezione sull'algebra lineare
+<algebra-lineare>`. Se $\boldsymbol{\Sigma}$ è definita positiva, la normale
+multivariata ha densità
+
+$$
+f(\mathbf{x})=\frac{1}{(2\pi)^{d/2}(\det\boldsymbol{\Sigma})^{1/2}}
+\exp\!\Big(-\tfrac12(\mathbf{x}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu})\Big),
+$$
+
+e il suo $(\det\boldsymbol{\Sigma})^{1/2}$ è proporzionale al volume
+dell'ellissoide di covarianza della {doc}`sezione sul determinante
+<determinante-e-volume>`.
+
 Il coefficiente misura la sola dipendenza lineare: $\rho=0$ non implica
 indipendenza; se $X$ è distribuita in modo simmetrico attorno allo zero,
 $Y=X^2$ ha correlazione nulla con $X$ e dipendenza perfetta. (La simmetria è
@@ -1065,7 +1118,13 @@ Le strutture da tenere distinte:
   correlazione fra $X$ e $Y$ che non esisteva. È il meccanismo dietro molti
   paradossi di selezione del campione.
 
-Dai soli dati osservativi le tre sono indistinguibili: servono un intervento
+Dai soli dati osservativi la catena e il confondente sono indistinguibili:
+tutti e due rendono $X$ e $Y$ dipendenti, e tutti e due le rendono
+indipendenti dato $Z$. Il collider lascia invece un'impronta propria, $X$ e
+$Y$ indipendenti finché non si condiziona su $Z$, ed è questa struttura a v
+che gli algoritmi di scoperta causale riescono a orientare dai dati, sotto
+l'ipotesi che ogni indipendenza osservata venga dal grafo (fedeltà). Il verso
+di una catena e un confondente non osservato chiedono invece un intervento
 (esperimento randomizzato) o assunzioni causali esplicite. Nel machine
 learning la conseguenza ha un nome, *shortcut learning*: il modello aggancia
 la correlazione più comoda del dataset (lo sfondo invece dell'animale, il
@@ -1363,3 +1422,8 @@ print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
   minimizzare MSE o cross-entropy è massimizzare una verosimiglianza.
 ```
 `````
+
+La media di un campione è la stima che torna più spesso in tutto quello che
+segue, e il limite centrale ne dice l'errore tipico quando gli esempi sono
+tanti. Quanto possa sbagliare con un numero finito di esempi, e con quale
+probabilità, lo dice la {doc}`sezione sulla concentrazione <concentrazione>`.

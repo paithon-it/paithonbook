@@ -5,10 +5,10 @@ memoria, e questo era il problema del conto in apertura. Ma «ci sta» e
 «risponde in fretta» sono due domande diverse, e la seconda non si risolve
 rimpicciolendo.
 
-Questa sezione non spiega come si risolve: lo spiegano altri tre punti del
-libro, ciascuno per una ragione sua. Qui si dice perché siano due domande
-diverse, e dove stiano le risposte, perché è materia che si va a cercare nel
-posto sbagliato.
+Le risposte alla seconda domanda non toccano il modello, e stanno nel
+{doc}`capitolo sui Transformer </Transformers/overview>` e in quello su
+{doc}`MLOps </MLOps/overview>`, ciascuno per una ragione sua. Prima serve
+vedere perché le due domande siano diverse.
 
 ## Perché rispondere è un problema di traffico
 
@@ -55,8 +55,8 @@ prometta. Il conto tiene finché i coperti sono pochi rispetto a quanto pesano
 le casse.
 
 Quindi la domanda che decide tutto è quanti conti si riescono a fare per ogni
-viaggio in cantina, più che quanti conti ci siano da fare. La tabella qui
-sotto è quella domanda, messa in numeri.
+viaggio in cantina, più che quanti conti ci siano da fare. La tabella che
+segue è quella domanda, messa in numeri.
 
 `````
 
@@ -83,7 +83,7 @@ calcolo) lo decide il confronto fra $I$ e il rapporto fra prestazione di picco
 e banda della macchina. Con pesi in sedici bit si semplifica in $I = k$, che è
 la colonna di destra della tabella dei conti per byte.
 
-Due cose che $n$ semplificandosi nasconde, e che vale la pena dire. La prima:
+Semplificandosi, $n$ nasconde due cose. La prima:
 $I$ non dipende dalla larghezza dello strato, ma solo perché si stanno contando
 i byte dei pesi e non quelli di ingressi e uscite, che sono $n k b / 8$
 ciascuno; l’approssimazione vale per $k \ll n$ e all’ultima riga della tabella
@@ -144,8 +144,7 @@ dimensione del modello.
 
 ## Le tre risposte, e dove stanno
 
-Da qui nascono tre idee, tutte e tre nel libro, e nessuna delle tre tocca il
-modello.
+Da qui nascono tre idee, e nessuna delle tre tocca il modello.
 
 Non rifare due volte lo stesso lavoro. I modelli che scrivono testo, per
 scegliere la parola numero cinquecento, rimettono in conto tutte le
@@ -153,11 +152,11 @@ quattrocentonovantanove di prima. Ma di ciascuna di quelle parole serve un
 riassunto che era già stato calcolato quando è stata scritta, quindi invece di
 rifarlo lo si tiene da parte, come si tiene un segnalibro invece di rileggere
 il libro da capo a ogni pagina. Quel deposito di riassunti si chiama cache
-delle chiavi e dei valori, e il libro lo costruisce nel capitolo sui
-Transformer (l’architettura di cui quei modelli sono fatti), perché è lì che si
-capisce che cosa siano chiavi e valori. Non risolve il problema della tabella
-dei conti per byte: sposta il traffico dai pesi al deposito, che cresce a ogni
-parola scritta.
+delle chiavi e dei valori, e lo costruisce il {doc}`capitolo sui Transformer
+</Transformers/overview>`, l’architettura di cui quei modelli sono fatti,
+perché è lì che si capisce che cosa siano chiavi e valori. Non risolve il
+problema della tabella dei conti per byte: sposta il traffico dai pesi al
+deposito, che cresce a ogni parola scritta.
 
 Riempire la riga. Se scrivere una parola per un solo utente sta nella prima
 riga, scriverla per duecentocinquantasei utenti insieme sta nell’ultima: i pesi si
@@ -213,12 +212,17 @@ in cui il modello grande la taglia.
   ha $k$ pari alla lunghezza della sequenza ed è legata al calcolo. Sono lo
   stesso modello nei due regimi opposti, ed è la ragione per cui le due fasi si
   misurano con due grandezze separate.
-- Le tre mosse a modello invariato agiscono tutte sullo stesso denominatore: la
-  cache delle chiavi e dei valori elimina il ricalcolo (e sposta il costo
-  sulla memoria della cache, che cresce con il contesto), il raggruppamento
-  delle richieste alza $k$ ammortizzando la lettura dei pesi, la decodifica
-  speculativa alza $k$ verificando in parallelo una bozza prodotta da un
-  modello più economico, senza cambiare la distribuzione di uscita.
+- Le tre mosse a modello invariato abbassano il costo di ogni parola
+  scritta, ma da lati diversi del rapporto $I$. Il raggruppamento delle
+  richieste e la decodifica speculativa alzano $k$ a parità di byte dei pesi
+  letti; la seconda lo fa verificando in parallelo una bozza prodotta da un
+  modello più economico, e con la regola di accettazione e rifiuto non cambia
+  la distribuzione di uscita. La cache delle chiavi e dei valori fa il
+  contrario: toglie i conti del ricalcolo e aggiunge i byte della cache, che
+  cresce con il contesto, quindi abbassa l'intensità aritmetica del passo di
+  decodifica invece di alzarla. Resta un affare perché per ogni posizione del
+  contesto toglie proiezioni dell'ordine di $d^2$ operazioni e aggiunge la
+  lettura di due vettori dell'ordine di $d$ numeri.
 - Nessuna delle tre appartiene a questo capitolo, perché nessuna cambia il
   modello. La cache la costruisce la {doc}`sezione sui grandi modelli
   linguistici </Transformers/llm>`; il raggruppamento delle richieste e la
@@ -236,3 +240,7 @@ che quasi tutti eseguono, non regala un millisecondo; imitare un maestro costa
 tutti gli errori del maestro. Il
 prezzo cambia da un modello all'altro, e chi ne adotta una senza misurarlo sul
 proprio sta scegliendo alla cieca.
+
+Tutto questo presuppone di sapere già com'è fatta una rete profonda, e perché
+molti strati sottili valgano più di uno solo largo: è la domanda da cui
+riparte il {doc}`capitolo sul deep learning </DeepLearning/overview>`.

@@ -8,9 +8,10 @@ continuazione, valuta dove porta, sceglie.
 Quel pensare ha un algoritmo, e si chiama ricerca ad albero Monte Carlo
 (MCTS, dalle iniziali inglesi; e «Monte Carlo», come al casinò, è il nome che
 i matematici danno ai metodi che fanno i conti tirando a sorte). Torna in
-AlphaGo, in AlphaZero, in MuZero, e nei modelli linguistici (i programmi che
-scrivono testo, come quelli dietro agli assistenti conversazionali) quando
-esplorano più ragionamenti prima di rispondere. Lo si vede qui una volta per
+AlphaGo, in AlphaZero, in MuZero, e in alcuni esperimenti sui modelli
+linguistici (i programmi che scrivono testo, come quelli dietro agli
+assistenti conversazionali) che esplorano più ragionamenti prima di
+rispondere. Lo si vede qui una volta per
 bene, anche perché è un vecchio amico travestito.
 
 La {doc}`sezione sulle tre cose che la ricerca dava per scontate
@@ -133,7 +134,7 @@ dove $z_L$ è l'esito della simulazione, giocata fino in fondo con una policy
 veloce, e $\lambda = 0{,}5$ (è il simbolo del paper, e non ha niente a che
 vedere con il
 $\lambda$ della *generalized advantage estimation* incontrata col
-[gradiente di policy](policy-gradient.md): qui è
+{doc}`gradiente di policy <policy-gradient>`: qui è
 soltanto il peso con cui si mescolano due giudizi). In gergo quella partita
 tirata via si chiama *rollout*, e la parola viene dal backgammon, dove per
 valutare una posizione la si giocava fino alla fine molte volte con i dadi
@@ -145,9 +146,24 @@ valore basta da sola: è la stessa tappa in cui spariscono le partite umane, e
 non è una coincidenza, perché entrambe le cose diventano superflue quando la
 rete è abbastanza buona da giudicare da sé.
 
-La distribuzione delle visite alla
-radice, normalizzata, è una policy migliorata rispetto a $P(s,\cdot)$, e
-diventa il bersaglio su cui la rete si addestra. MCTS, in questa lettura, è un
+Da AlphaGo Zero {cite}`silver2017mastering` in poi la ricerca entra
+anche nell'addestramento. La distribuzione delle visite alla radice,
+normalizzata (così com'è nelle prime trenta mosse della partita, poi
+concentrata sulla più visitata), è una policy $\boldsymbol{\pi}$ migliorata
+rispetto a $P(s,\cdot)$, e diventa il bersaglio della rete
+$(\mathbf{p}, v) = f_\theta(s)$, addestrata su
+
+$$
+\mathcal{L}(\theta) = (z - v)^2 - \boldsymbol{\pi}^\top \log \mathbf{p} +
+c\,\lVert\theta\rVert^2 ,
+$$
+
+dove $z \in \{-1, +1\}$ è l'esito della partita di self-play e $c$ il peso
+della regolarizzazione. Alla radice il prior riceve del rumore di Dirichlet,
+senza il quale la ricerca tornerebbe sempre sulle mosse che la rete preferisce
+già. Il termine PUCT, a differenza di UCB1, non ha il logaritmo e non eredita
+la garanzia di UCT: è un'euristica tarata sui dati. MCTS, in questa lettura, è
+un
 operatore di miglioramento della policy: lo stesso ruolo che nella
 programmazione dinamica ha il passo di *policy improvement*, ottenuto con la
 ricerca invece che con un massimo esatto.
@@ -160,9 +176,11 @@ MuZero, per esempio, la usa senza nemmeno conoscere le regole del gioco: se le
 costruisce da solo, guardando le partite. E il modello che si costruisce non
 ridisegna la scacchiera pezzo per pezzo, ne tiene solo un riassunto interno, il
 minimo che serve per pianificarci dentro. La {doc}`sezione sul RL basato su
-modello <model-based>` ci torna sopra. Anche i modelli linguistici che
-esplorano più catene di ragionamento prima di rispondere fanno, con altri nomi,
-la stessa cosa.
+modello <model-based>` ci torna sopra. Ai modelli linguistici l'idea è
+stata applicata anche alla lettera, con una ricerca ad albero sulle catene di
+ragionamento guidata da un giudice appreso; i modelli che ragionano a lungo e
+di cui si conosce la ricetta, però, si addestrano per lo più con il gradiente
+di policy su catene generate una dopo l'altra, senza albero.
 
 ## In pratica: le visite si concentrano
 
@@ -179,13 +197,13 @@ finali.
 Una precauzione, prima di leggere i numeri, e vale per tutto il resto del
 capitolo. Se lancio un dado una volta e fa sei, non posso dire che quel dado fa
 sempre sei: ho misurato quel lancio, non il dado. Lo stesso vale per un
-algoritmo che a ogni passo tira a sorte. Quindi la ricerca qui sotto si lancia
-sessanta volte, cambiando ogni volta il *seme*, cioè il numero da cui parte
-il sorteggio (dentro un computer il caso è una sequenza calcolata e non vero
-caso, che dipende tutta da quel numero iniziale, e cambiarlo è il modo di
-rifare l'esperimento daccapo). Di ciò che ne esce non si guarda un risultato: si
-guardano il valore di mezzo (la mediana: la metà delle sessanta prove sta
-sotto, l'altra metà sopra) e gli estremi.
+algoritmo che a ogni passo tira a sorte. Quindi l'esperimento sull'albero
+giocattolo si lancia sessanta volte, cambiando ogni volta il *seme*, cioè il
+numero da cui parte il sorteggio (dentro un computer il caso è una sequenza
+calcolata e non vero caso, che dipende tutta da quel numero iniziale, e
+cambiarlo è il modo di rifare l'esperimento daccapo). Di ciò che ne esce non si
+guarda un risultato: si guardano il valore di mezzo (la mediana: la metà delle
+sessanta prove sta sotto, l'altra metà sopra) e gli estremi.
 
 ```python
 import math
@@ -344,8 +362,12 @@ la rete avrebbe scelto da sola, ed è un esempio su cui la rete può allenarsi.
 
 Ecco la fonte di supervisione interna: non serve un maestro, basta giocare
 contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo
-questo giro lo faceva solo a metà: le sue due reti erano state prima addestrate
-su partite umane, e solo dopo affinate giocando contro se stesse.
+questo giro lo faceva solo a metà: la rete di policy aveva imparato prima a
+imitare le partite umane e poi si era affinata giocando contro sé stessa; la
+rete di valore invece si era allenata soltanto su posizioni prese da quelle
+partite contro sé stessa, perché sulle partite umane, dove posizioni
+consecutive quasi identiche condividono lo stesso esito, imparava a memoria i
+risultati invece di stimarli.
 
 Un anno dopo, **AlphaGo Zero** {cite}`silver2017mastering` elimina persino le
 partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
@@ -387,9 +409,13 @@ un voto da uno a dieci molto meno, e su scale diverse. Nell’**RLHF**
 (*Reinforcement Learning from Human Feedback*, cioè apprendimento per rinforzo
 dal giudizio umano; {cite}`christiano2017deep`, {cite}`ouyang2022training`) le
 risposte del modello sono l’"azione", dei valutatori umani indicano quali
-preferiscono, e le loro preferenze addestrano un *modello di ricompensa* che
-fa da critico. Con PPO si ritocca poi la policy del modello (la sua tendenza a
-produrre certe risposte), verso ciò che gli umani apprezzano. La stessa idea
+preferiscono, e le loro preferenze addestrano un *modello di ricompensa*, che
+da lì in poi assegna il premio a ogni risposta. Con PPO si ritocca poi la
+policy del modello (la sua tendenza a produrre certe risposte), verso ciò che
+gli umani apprezzano: il critico di PPO resta una rete a parte, e una penalità
+in divergenza di Kullback-Leibler tiene la policy vicina al modello di
+partenza, che la {doc}`sezione sul post-addestramento
+</Transformers/post-training>` scrive per intero. La stessa idea
 che ha portato una macchina a giocare la mossa 37 aiuta oggi un assistente a
 rispondere in modo utile e onesto.
 

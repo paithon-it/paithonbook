@@ -366,7 +366,7 @@ partenza.
 
 ```{figure} ../figures/immagine-e-nucleo.svg
 :name: fig-immagine-nucleo
-:alt: "Una lampada a sinistra, al centro un cubo di filo che rappresenta lo spazio di partenza con le sue tre direzioni, a destra il muro dello spazio di arrivo. Un raggio di luce attraversa il cubo: due punti distinti che stanno sullo stesso raggio cadono in un unico punto del muro, e la freccia che li unisce porta l'etichetta «nucleo». Sul muro una regione ovale in verde petrolio è marcata «immagine, le ombre che si possono fare», mentre più in basso una crocetta segna una sagoma fuori portata. In fondo il conto: tre direzioni di partenza uguale due che arrivano sul muro più una che si perde nel nucleo."
+:alt: "Il sole in alto a sinistra, con i suoi raggi paralleli; al centro un cubo di filo che rappresenta lo spazio di partenza con le sue tre direzioni, a destra il muro dello spazio di arrivo. Un raggio di luce attraversa il cubo: due punti distinti che stanno sullo stesso raggio cadono in un unico punto del muro, e la freccia che li unisce porta l'etichetta «nucleo». Sul muro una regione ovale in verde petrolio è marcata «immagine, le ombre che si possono fare», mentre più in basso una crocetta segna una sagoma fuori portata. In fondo il conto: tre direzioni di partenza uguale due che arrivano sul muro più una che si perde nel nucleo."
 :width: 88%
 
 L'immagine e il nucleo di una trasformazione, disegnati come l'ombra di un
@@ -377,26 +377,30 @@ cui ci si può spostare senza che l'ombra cambi di un millimetro.
 
 `````{tab} Elementare
 
-Accendi una lampada e metti un oggetto fra la lampada e il muro: sul muro
-compare un'ombra. La trasformazione che una matrice compie assomiglia molto a
-questo, e {numref}`fig-immagine-nucleo` la disegna così.
+Al sole, metti un oggetto davanti a un muro: sul muro compare un'ombra. La
+trasformazione che una matrice compie assomiglia molto a questo, e
+{numref}`fig-immagine-nucleo` la disegna così.
 
 Che cosa si può ottenere sul muro. Muovendo l'oggetto in tutti i modi
 possibili si ottengono tante ombre diverse, ma non tutte le sagome
-immaginabili: la lampada e la forma dell'oggetto decidono un repertorio, e
+immaginabili: la direzione dei raggi e la forma dell'oggetto decidono un
+repertorio, e
 fuori da quello non si va. Se il cliente porta una sagoma che nel repertorio
 non c'è, non esiste posizione dell'oggetto che la produca. Questo repertorio
 è l’**immagine** della trasformazione, ed è la risposta alla prima domanda:
 il sistema ha soluzione soltanto se il termine noto sta lì dentro.
 
 Che cosa il muro non registra. Fissa un punto dell'oggetto e fallo scorrere
-lungo il raggio che lo illumina, avvicinandolo o allontanandolo dalla lampada:
-la sua ombra resta inchiodata dov'era. Quello spostamento il muro non lo vede.
+lungo il raggio di sole che lo illumina: la sua ombra resta inchiodata
+dov'era. Quello spostamento il muro non lo vede, e siccome i raggi del sole
+arrivano tutti paralleli, è lo stesso spostamento per ogni punto dell'oggetto.
 L'insieme degli spostamenti invisibili si chiama **nucleo**, e risponde alla
 seconda domanda: se esiste uno spostamento invisibile diverso dallo stare
 fermi, allora ogni ombra ottenibile si ottiene in infiniti modi, perché a una
-posizione buona se ne possono sempre aggiungere altre scorrendo lungo quel
-raggio.
+posizione buona se ne possono sempre aggiungere altre scorrendo lungo quella
+direzione. Con una lampada al posto del sole i raggi divergerebbero, ogni
+punto avrebbe la sua direzione invisibile, e l'ombra smetterebbe di essere una
+trasformazione di questo tipo.
 
 Le due cose stanno in un rapporto stretto, e il conto è il seguente. Un punto
 può scorrere in tre direzioni indipendenti (avanti, di lato, in alto); se una
@@ -607,7 +611,7 @@ Rinunciare sarebbe assurdo, e la domanda si cambia: se non si può azzerare
 l'errore, si cerca la scelta che lo rende più piccolo possibile. La
 {doc}`sezione su ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`
 risponde a questa domanda, e la risposta ha una forma geometrica sorprendente,
-che è poi la stessa ombra della lampada e del muro.
+che è poi la stessa ombra del sole sul muro.
 
 ## In pratica, con NumPy
 

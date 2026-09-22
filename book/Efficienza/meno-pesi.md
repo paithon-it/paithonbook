@@ -17,10 +17,11 @@ più sbrigativa che ci sia.
 
 `````{tab} Elementare
 
-Un club vince il campionato e a giugno il presidente deve mandare via nove
-giocatori su dieci. Chiunque mandi via, la squadra ci rimette, e la domanda è
-solo chi costa meno perdere. Quanto valga davvero ciascuno non lo sa nessuno, e
-allora si guardano i minuti giocati e si manda via chi ne ha di meno.
+Un club deve tagliare il budget e a giugno il presidente deve mandare via nove
+giocatori su dieci, anche se la squadra ha appena vinto il campionato. Chiunque
+mandi via, la squadra ci rimette, e la domanda è solo chi costa meno perdere.
+Quanto valga davvero ciascuno non lo sa nessuno, e allora si guardano i minuti
+giocati e si manda via chi ne ha di meno.
 
 In una rete quella cifra c'è già, e sono i pesi. Il peso di un collegamento
 dice quanto quel collegamento conta, e uno vicino a zero non sposta quasi
@@ -55,7 +56,7 @@ allenare, tagliarne altri pochi: ogni volta si chiede alla squadra un
 aggiustamento piccolo, e lo regge.
 
 E a un certo punto nemmeno il ritiro basta. Con la metà dei pesi tolti la rete
-non perde niente; con nove su dieci resta indietro di meno di un punto; con
+non perde niente; con nove su dieci resta indietro di circa un punto; con
 diciannove su venti di quasi cinque. Il ritiro insegna a coprire i buchi, non
 a essere in due dove ne servono undici, e sotto un certo numero di giocatori
 non c'è allenamento che tenga.
@@ -197,8 +198,11 @@ rete intera: 97.8%
 La colonna di mezzo e quella di destra dicono due cose diverse, e la seconda è
 quella che conta. Tolti nove pesi su dieci la rete non sa più leggere una
 cifra, e dopo trecento passi di riaddestramento è tornata a 96,9 contro il 97,8
-di partenza: ha perso meno di un punto avendo dentro un decimo dei
-collegamenti. A metà strada, con la metà dei pesi, è perfino salita di due
+di partenza: ha perso circa un punto avendo dentro un decimo dei
+collegamenti. Il decimale va preso con le molle: l’ordinamento dei pesi con
+`kthvalue` e trecento passi di Adam amplificano l’ultimo bit dei conti, e su
+un altro processore la stessa esecuzione, con lo stesso seme, si sposta di
+qualche decimo. A metà strada, con la metà dei pesi, è perfino salita di due
 decimi, e qui bisogna resistere alla tentazione di dedurne qualcosa. Il
 riaddestramento dà alla rete potata trecento passi in più e un ottimizzatore
 nuovo, che la rete intera non riceve. Fatto il controllo (stesso seme, stessi
@@ -322,8 +326,8 @@ veloce, la regolarità dell’accesso e la possibilità di riempire le unità
 vettoriali. Passare a un **formato rado** (CSR e simili, cioè la matrice
 scritta come l'elenco delle sole posizioni non nulle, riga per riga) vuol dire
 quindi cambiare kernel, non aggiustare quello di prima, e se convenga è una
-domanda empirica, non di principio. Misurato sulla matrice rada del conto qui
-sopra, su CPU e a tempo di processore: il CSR pareggia il denso intorno al
+domanda empirica, non di principio. Sulla matrice rada dell'esperimento
+precedente, su CPU e a tempo di processore: il CSR pareggia il denso intorno al
 venti per cento di densità, e al cinque per cento (cioè con i novantacinque
 zeri su cento di quell’esperimento) va dalle cinque alle sette volte più
 veloce, a seconda della macchina. Su GPU la soglia si sposta molto più in

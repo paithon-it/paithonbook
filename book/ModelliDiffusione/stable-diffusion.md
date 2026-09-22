@@ -1,10 +1,10 @@
 # Lo spazio latente: Stable Diffusion
 
 Il 22 agosto 2022 compare online un file da circa quattro gigabyte. Dentro ci
-sono i pesi di **Stable Diffusion**, un modello che disegna un'immagine a
-partire da una frase scritta: i pesi sono i milioni di numeri che una rete si
-ritrova dentro dopo l'addestramento, cioè tutto quello che ha imparato, e
-averli vuol dire avere il modello. È nato dai *latent
+sono i pesi di **Stable Diffusion**, quel rilascio «a pesi aperti»
+del 2022 da cui la generazione di immagini è diventata un fenomeno pubblico:
+tutto quello che la rete ha imparato, e averli vuol dire avere il modello. È
+nato dai *latent
 diffusion models* del gruppo di Björn Ommer all'Università Ludwig Maximilian
 di Monaco {cite}`rombach2022high`, sviluppato con Runway e addestrato con la
 potenza di calcolo di Stability AI. La novità non è la qualità delle immagini
@@ -25,8 +25,8 @@ La domanda è: che cosa lo rende possibile *tecnicamente*?
 Non un modello più grande: al contrario, uno più piccolo. Il segreto è un
 trasloco: la diffusione che conosciamo fa le valigie, lascia i pixel e si
 trasferisce in uno spazio compresso, decine di volte più piccolo, dove ogni
-passo di pulitura costa una frazione. Conviene dire subito in che moneta si
-paga, perché in tutta la sezione parleremo di costi: si paga in conti da
+passo di pulitura costa una frazione. Si paga in una moneta precisa, e di costi
+si parlerà a lungo: si paga in conti da
 fare, cioè in secondi di attesa e in memoria occupata sulla GPU. Meno numeri
 da elaborare, meno conti, meno attesa.
 
@@ -68,11 +68,12 @@ compatta che conserva il contenuto e scarta il dettaglio ricostruibile. La
 diffusione, poi, impara la **composizione** dentro quello spazio compatto, dove
 ogni passo costa decine di volte meno.
 
-Quello spazio compatto ha un nome, ed è già comparso nella {doc}`sezione sui
-codec neurali </Audio/codec-neurali>`: si chiama spazio latente, cioè l'insieme
-dei riassunti che una rete si costruisce da sola, «latenti» perché nessuno le
-ha insegnato come farli e a guardarli non dicono niente. Là dentro c'era del
-suono, qui ci sono immagini; e cambia soprattutto che cosa ci si fa. Per un
+Quello spazio compatto è lo spazio latente del {doc}`capitolo sui modelli
+latenti </ModelliLatenti/overview>`: l'insieme dei valori che può prendere
+$\mathbf{z}$, la variabile che non si osserva (latente da *latere*, stare
+nascosto) e che la rete si costruisce da sola. Lo si era incontrato anche nei
+{doc}`codec neurali </Audio/codec-neurali>`, dove dentro c'era del suono; qui
+ci sono immagini; e cambia soprattutto che cosa ci si fa. Per un
 codec quello spazio è un corridoio: ci si entra da una parte per comprimere e
 si esce dall'altra. Qui invece ci si va ad abitare, perché è lì che avverrà
 tutta la diffusione. La ricetta si chiama infatti dei *latent diffusion
@@ -110,28 +111,15 @@ $\sigma$ il margine di tolleranza, e il pallino nero il punto sorteggiato
 dentro quel margine. La scheda, quindi, è la coppia: il valore *e* il margine.)
 ```
 
-La {numref}`fig-vae` dà per scontata una cosa da fissare. Una scheda è una
-lista di numeri, e come tale si può immaginare come un punto su una mappa.
-Non più la mappa delle immagini possibili, dove ogni punto era una fotografia
-intera: quella delle schede, fatta allo stesso modo e con molte meno direzioni.
-Schede simili sono punti vicini, e fra due punti c'è sempre tutto lo spazio in
-mezzo. È quello che permette di dire frasi come «una scheda a metà strada fra
-due che esistono», che con dei foglietti di carta non vorrebbero dire niente.
-
-Sulla mappa si rivede in un colpo d'occhio quello che il capitolo sui modelli
-latenti ha misurato. Un archivista senza margine di tolleranza comprime e
-ricostruisce benissimo, e a inventare non serve, perché nessuno ha mai chiesto
-alle sue schede di stare in una zona precisa: si sistemano dove capita, e in
-mezzo restano dei vuoti in cui il copista non ha mai messo piede. I due tratti
-che il VAE aggiunge alla clessidra rimediano uno per volta. Il sorteggio
-dentro il margine (è il pallino in mezzo alla figura) fa sì che in
-addestramento il
-copista veda ogni volta una scheda leggermente spostata, quindi lo costringe a
-funzionare su tutta una zona invece che su un punto, e toglie i vuoti; la regola
-che tiene le schede raccolte attorno a uno stesso centro dice dove pescare.
-Insieme fanno di quello spazio un posto in cui la diffusione può abitare, dato
-che la diffusione, di suo, passa il tempo a mettere piede in posti sorteggiati a
-caso.
+La {numref}`fig-vae` riassume i due tratti che il VAE aggiunge
+all'autoencoder, ed entrambi servono qui. Il sorteggio del codice dentro il
+margine $\boldsymbol{\sigma}_\phi$ fa vedere al decoder, in addestramento, una
+zona attorno a ogni codice invece di un punto, e rende lo spazio latente
+continuo: codici vicini, immagini simili. È quello che serve alla diffusione,
+che si muove in quello spazio a piccoli spostamenti e deve poter decodificare
+anche i punti intermedi. Il termine KL, con il peso minimo che gli si dà qui,
+impedisce soltanto al latente di prendere una scala arbitrariamente grande: non
+lo porta a varianza unitaria, e per questo servirà una riscalatura.
 
 `````{tab} Elementare
 
@@ -216,12 +204,9 @@ log-verosimiglianza, sta nella sezione sull'ELBO; qui ci basta il ruolo
 funzionale dei due termini.
 
 Di quel capitolo va richiamato anche il limite, perché in Stable Diffusion
-determina una scelta di progetto. Il termine KL agisce su un esempio alla
-volta, quindi vincola ciascuna $q_\phi(\mathbf{z} \mid \mathbf{x})$ e non
-l'aggregato $q_\phi(\mathbf{z}) =
-\mathbb{E}_{p_{\text{dati}}}\!\big[q_\phi(\mathbf{z} \mid \mathbf{x})\big]$; i
-due non coincidono, e nello scarto restano regioni con massa apprezzabile sotto
-il prior che il decoder ha visto poco
+determina una scelta di progetto: lo {doc}`scarto fra prior e posterior
+aggregata </ModelliLatenti/il-salto-probabilistico>`, per cui un $\mathbf{z}$
+campionato dal prior finisce anche in regioni che il decoder ha visto poco
 {cite}`hoffman2016elbo,rosca2018distribution`. Qui il problema si aggira non
 risolvendolo: al VAE non si chiede affatto di generare, il peso KL è tenuto
 molto piccolo (la fedeltà della ricostruzione conta più della somiglianza al
@@ -231,10 +216,18 @@ decoder da solo.
 Il VAE di Stable Diffusion è convoluzionale e riduce ogni lato di un fattore
 $f = 8$, con 4 canali latenti: da $512 \times 512 \times 3$ a
 $64 \times 64 \times 4$, cioè da $786\,432$ a $16\,384$ valori, un fattore 48.
-Rispetto al VAE da manuale è addestrato con un peso KL molto piccolo, più una
-loss percettiva e una avversaria (un discriminatore in stile GAN, come nel
-capitolo precedente) che tengono nitide le ricostruzioni
-{cite}`rombach2022high`.
+Il fattore $f$ è il primo parametro che Rombach e colleghi esplorano, su
+$f \in \{1, 2, 4, 8, 16, 32\}$: con $f$ piccolo la diffusione resta quasi nei
+pixel e ne paga il costo, con $f = 32$ la compressione distrugge troppo; la
+fascia utile va da 4 a 16, e Stable Diffusion prende 8. Per non lasciare al
+latente una scala arbitraria il paper prova due regolarizzazioni: *KL-reg*,
+una penalità KL verso $\mathcal{N}(\mathbf{0}, \mathbf{I})$ con peso dell'ordine
+di $10^{-6}$, che del VAE conserva poco più del nome e non porta il latente a
+varianza unitaria; e *VQ-reg*, uno strato di quantizzazione vettoriale come nel
+{doc}`VQ-VAE </ModelliLatenti/il-latente-che-si-usa>`. Stable Diffusion usa la
+prima. In tutti e due i casi l'autoencoder è addestrato anche con una loss
+percettiva e una avversaria (un discriminatore in stile GAN, come nel capitolo
+precedente) che tengono nitide le ricostruzioni {cite}`rombach2022high`.
 
 Sarebbe però un errore liquidarlo come un dettaglio di efficienza: la
 compressione è distruttiva, e il danno è misurabile e definitivo. Tutto ciò
@@ -339,8 +332,16 @@ si campiona, $\mathbf{z} \sim q_\phi(\cdot \mid \mathbf{x})$, con $\mathbf{z}
 ricordando che sotto c'è un campionamento).
 
 **2. Diffusione nel latente.** Il processo diretto e quello inverso hanno la
-stessa forma di quelli di DDPM, applicati a $\mathbf{z}$ anziché a $\mathbf{x}$,
-con un'avvertenza che il paragrafo sul processo diretto aveva già
+stessa forma di quelli di DDPM,
+applicati a $\mathbf{z}$ anziché a $\mathbf{x}$, ma lo schedule è un altro: in
+Stable Diffusion 1.x $\sqrt{\beta_t}$ cresce linearmente da $\sqrt{0{,}00085}$ a
+$\sqrt{0{,}012}$ su $T = 1000$ passi, molto più dolce del lineare di DDPM, e ne
+segue $\bar{\alpha}_T \approx 0{,}0047$ invece di $4 \cdot 10^{-5}$. All'ultimo
+passo sopravvive quasi il 7% dell'ampiezza del latente, e il rumore puro da cui
+parte la generazione non è la marginale su cui la rete si è addestrata: è il
+rapporto segnale-rumore terminale non nullo di cui parla la {doc}`sezione sul
+flow matching </ModelliDiffusione/flow-matching>`. Serve poi l'avvertenza che
+la {doc}`spirale in miniatura </ModelliDiffusione/come-funziona>` aveva già
 anticipato: lo schedule *variance-preserving* presuppone dati a varianza
 unitaria, e il latente del VAE non ce l'ha. LDM lo riscala quindi per la
 deviazione standard misurata sui latenti, che è un solo numero e non uno per
@@ -409,8 +410,9 @@ raccolte dal web).
 L'asimmetria che ne risulta si misura in lavoro da fare, non in denaro.
 *Addestrare* Stable Diffusion è rimasto un mestiere da data center: la
 documentazione del modello dichiara
-centocinquantamila ore di calcolo su GPU professionali, cioè una macchina sola
-accesa per diciassette anni. *Usarlo*, grazie al trasloco nelle schede
+centocinquantamila ore di calcolo su GPU professionali, cioè una GPU sola
+accesa per diciassette anni (nella realtà erano 256, in 32 macchine da otto,
+per poco più di tre settimane). *Usarlo*, grazie al trasloco nelle schede
 compresse, chiede alla GPU quattro gigabyte di memoria e qualche secondo di
 attesa. (Che siano quattro come i quattro del file scaricato è quasi un caso:
 quel file, caricato in memoria con numeri a metà precisione, di gigabyte ne
@@ -485,8 +487,10 @@ che si guadagna a stare così in alto si vede con gli occhi più che nelle
 misure.
 
 Resta il nome. Un classificatore è una rete che guarda un'immagine e dice
-che cosa contiene («questo è un gatto»), e il metodo di prima ne addestrava uno
-a parte per tirare la generazione verso la categoria voluta: costoso, e un
+che cosa contiene («questo è un gatto»), e il metodo che c'era prima, del
+2021 (lo stesso lavoro che aveva visto la diffusione battere le GAN), ne
+addestrava uno a parte per tirare la generazione verso la categoria voluta:
+costoso, e un
 pezzo in più da mantenere. Ho e Salimans ottengono lo stesso effetto con due
 risposte della rete che c'è già, da qui *classifier-free*, «senza
 classificatore».
@@ -555,17 +559,13 @@ essere letto come un attacco avversario a un classificatore di immagini. Il
 «classificatore implicito» è una guida al ragionamento, non un oggetto che
 esiste da qualche parte.
 
-E c'è una seconda conseguenza, che le interfacce non dichiarano mai:
-per $w > 1$ il campionatore non campiona più da $p(\mathbf{x} \mid c)$, e
-nemmeno da
-$p(\mathbf{x})\,p(c \mid \mathbf{x})^w$, la distribuzione «inclinata» che di
-solito si cita per giustificarlo. Bradley e Nakkiran
-{cite}`bradley2024classifier` lo mostrano con un controesempio, e aggiungono
-che la guida interagisce in modo diverso con i due campionatori in uso, che
-quindi non producono nemmeno la stessa distribuzione fra loro. Su che cosa la
-guida sia, danno una risposta parziale: nel limite continuo la variante DDPM
-della guida è un metodo predittore-correttore, che alterna un passo di
-denoising e uno di affilatura. Il $w = 7{,}5$ di default sta ben oltre il punto
+E c'è una seconda conseguenza, che le interfacce non dichiarano mai: per
+$w > 1$ il campionatore non campiona più da $p(\mathbf{x} \mid c)$, e nemmeno
+dalla distribuzione «inclinata» $p(\mathbf{x})\,p(c \mid \mathbf{x})^w$ che di
+solito si cita per giustificarlo {cite}`bradley2024classifier`; che cosa faccia
+davvero alla distribuzione, misurato su un caso in cui tutto si calcola a mano,
+lo racconta la {doc}`sezione sulla guida </ModelliDiffusione/guida>`. Il $w =
+7{,}5$ di default sta ben oltre il punto
 in cui la somiglianza statistica con i dati veri comincia a peggiorare: non è
 una manopola della qualità, è una manopola della preferenza, e la distinzione
 conta ogni volta che si valuta un modello con una metrica invece che con gli
@@ -689,8 +689,8 @@ tecnica.
 ```{admonition} Da ricordare
 :class: important
 - Lavorare sui pixel è uno spreco: quasi tutti i 786.432 numeri di una
-  fotografia servono a descrivere la grana, non il gatto. L'idea di questa
-  sezione è spostare tutto il lavoro su una versione compressa della
+  fotografia servono a descrivere la grana, non il gatto. L'idea di Stable
+  Diffusion è spostare tutto il lavoro su una versione compressa della
   fotografia, quarantotto volte più piccola, e tornare ai pixel solo alla fine.
 - Chi comprime è l’archivista: per ogni quadro scrive una scheda molto più
   piccola, e chi la legge per ridipingere il quadro è il copista. I due si
@@ -770,3 +770,9 @@ tecnica.
 ```
 
 `````
+
+Dalla ricetta di Stable Diffusion ci portiamo dietro l'archivista, la
+commissione scritta e il peso della guida. Resta da vedere che cosa succede
+quando al posto del restauratore, la U-Net, si mette il Transformer dei modelli
+di linguaggio: è la storia dei {doc}`Diffusion Transformer
+</ModelliDiffusione/diffusion-transformer>`.

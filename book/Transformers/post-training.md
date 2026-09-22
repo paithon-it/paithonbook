@@ -145,8 +145,9 @@ Per farlo imparare, però, servono altre tre tabelle grandi uguali. La prima dic
 per ogni numero, di quanto e in che direzione andrebbe corretto. Le altre due
 servono all'algoritmo che poi lo sposta, che per non sobbalzare a ogni singolo
 esempio non guarda solo la correzione di adesso ma la media delle ultime: una
-tabella tiene la media di quelle correzioni, l'altra la media di quanto erano
-grandi, che gli serve per capire quali numeri sono agitati e vanno mossi con
+tabella tiene il verso in cui si sta andando (la media delle ultime
+correzioni), l'altra quanto il terreno è sconnesso lì (la media di quanto erano
+grandi), e insieme dicono quali numeri muovere con decisione e quali con
 prudenza. Quattro copie della stessa tabella, dunque, oltre cento gigabyte.
 
 E la parola che manca è dove devono starci. Non nel disco del computer, dove
@@ -378,7 +379,18 @@ $$
 dove $\sigma$ è la sigmoide e $\phi$ sono i parametri del reward model. Se ad
 esempio la differenza di punteggio è $1{,}1$, il modello assegna alla
 preferenza osservata probabilità $\sigma(1{,}1) \approx 0{,}75$. La loss è la
-log-verosimiglianza negativa dei confronti raccolti.
+log-verosimiglianza negativa dei confronti raccolti,
+
+$$
+\mathcal{L}_{\text{RM}}(\phi) = -\mathbb{E}_{(x,y_w,y_l)\sim\mathcal{D}}\big[\log\sigma\big(r_\phi(x,y_w) - r_\phi(x,y_l)\big)\big].
+$$
+
+In InstructGPT ogni annotatore ordina da 4 a 9 risposte allo stesso prompt, e
+i $\binom{K}{2}$ confronti che ne escono entrano insieme nello stesso batch,
+pesati $1/\binom{K}{2}$ per non sovra-adattarsi. La loss vede solo differenze:
+sommare a $r_\phi$ una qualunque funzione del solo prompt non la cambia, e per
+questo il punteggio va tarato a parte prima del rinforzo. Tornerà utile nella
+DPO.
 
 Fase 2: la policy. Il modello di linguaggio diventa una *policy*
 $\pi_\theta$ nel senso del reinforcement learning (il prompt è lo stato, la
@@ -404,8 +416,12 @@ in media sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un
 prompt lasciato libero, altrimenti l'espressione non sarebbe funzione dei soli
 $\theta$ e non ci sarebbe niente da massimizzare. (InstructGPT la scrive in
 forma campionata, con $-\beta\log\frac{\pi_\theta(y\mid
-x)}{\pi_{\text{ref}}(y\mid x)}$ dentro l'aspettazione del termine di rinforzo:
-è la stessa cosa.) La penalità KL serve a due cose: impedisce alla policy di
+x)}{\pi_{\text{ref}}(y\mid x)}$ dentro l'aspettazione del termine di rinforzo,
+e le aggiunge un terzo termine,
+$\gamma\,\mathbb{E}_{x\sim\mathcal{D}_{\text{pretrain}}}[\log\pi_\theta(x)]$,
+che rimescola nel gradiente un po' di pre-addestramento per non perdere
+prestazioni sui compiti classici; la variante si chiama PPO-ptx.) La penalità KL
+serve a due cose: impedisce alla policy di
 derivare verso le zone in cui $r_\phi$ (addestrato su dati limitati) estrapola
 male (il *reward hacking* su cui torneremo), e preserva la fluidità linguistica
 accumulata nel pre-addestramento. Questa forma non è soltanto un espediente
@@ -512,7 +528,18 @@ $$
 $$
 
 dove $Z(x) = \sum_y \pi_{\text{ref}}(y \mid x)\exp(r(x,y)/\beta)$ normalizza la
-distribuzione. Invertendo la relazione, la
+distribuzione. Il conto è breve. Per un prompt fissato, raccogliendo i due
+termini sotto la stessa aspettazione,
+
+$$
+\mathbb{E}_{y\sim\pi}[r(x,y)] - \beta D_{\mathrm{KL}}(\pi\|\pi_{\text{ref}})
+= -\beta\,\mathbb{E}_{y\sim\pi}\Big[\log\frac{\pi(y\mid x)}{\pi_{\text{ref}}(y\mid x)\,e^{r(x,y)/\beta}/Z(x)}\Big] + \beta\log Z(x)
+= -\beta D_{\mathrm{KL}}(\pi\|\pi^*) + \beta\log Z(x).
+$$
+
+Il secondo addendo non dipende da $\pi$, e la KL è nulla se e solo se
+$\pi = \pi^*$ (disuguaglianza di Gibbs): il massimo sta in $\pi^*$. Invertendo
+la relazione, la
 ricompensa si può scrivere in funzione della policy ottima:
 $r(x,y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} +
 \beta \log Z(x)$.
@@ -545,17 +572,27 @@ $$
 
 dove $\mathcal{D}_{\text{pref}}$ è il dataset di terne (prompt, risposta
 preferita, risposta scartata); $x$ è il prompt, $y_w$ la risposta preferita e
-$y_l$
-quella scartata; $\pi_\theta$ è la policy in addestramento (l'unica di cui si
-aggiornano i parametri $\theta$); $\pi_{\text{ref}}$ è il riferimento
+$y_l$ quella scartata; $\pi_\theta$ è la policy in addestramento (l'unica di
+cui si aggiornano i parametri $\theta$); $\pi_{\text{ref}}$ è il riferimento
 congelato, di norma il modello SFT; $\beta > 0$ (valori tipici tra $0{,}1$ e
-$0{,}5$) controlla la forza del vincolo implicito verso il riferimento, come
-la penalità KL dell'RLHF; $\sigma$ è la sigmoide. La quantità
-$\hat{r}_\theta(x,y) = \beta \log \frac{\pi_\theta(y \mid x)}{\pi_{\text{ref}}(y \mid x)}$
-è la **ricompensa implicita**: la loss è una regressione logistica che chiede
-alla ricompensa implicita della risposta preferita di superare quella della
-scartata. Il gradiente pesa ogni coppia per quanto il modello la sbaglia
-ancora: i confronti già «vinti» contribuiscono poco, quelli persi molto.
+$0{,}5$) controlla la forza del vincolo implicito verso il riferimento, come la
+penalità KL dell'RLHF; $\sigma$ è la sigmoide. La quantità $\hat{r}_\theta(x,y)
+= \beta \log \frac{\pi_\theta(y \mid x)}{\pi_{\text{ref}}(y \mid x)}$ è la
+**ricompensa implicita**: la loss è una regressione logistica che chiede alla
+ricompensa implicita della risposta preferita di superare quella della
+scartata. Il gradiente lo dice in formula:
+
+$$
+\nabla_\theta\mathcal{L}_{\text{DPO}} = -\beta\,\mathbb{E}\big[\sigma\big(\hat{r}_\theta(x,y_l) - \hat{r}_\theta(x,y_w)\big)\,\big(\nabla_\theta\log\pi_\theta(y_w\mid x) - \nabla_\theta\log\pi_\theta(y_l\mid x)\big)\big]:
+$$
+
+ogni coppia pesa quanto la ricompensa implicita la ordina male, e i confronti
+già «vinti» contribuiscono poco. La loss chiede solo che il margine cresca, non
+che la preferita diventi più probabile: in pratica possono scendere tutte e
+due, la scartata di più. E se le preferenze sono quasi deterministiche, il
+margine ottimo è infinito qualunque sia $\beta$, e il vincolo verso il
+riferimento smette di trattenere; è il difetto da cui parte IPO
+{cite}`azar2023general`.
 Niente reward model esplicito, niente campionamento, niente PPO: un normale
 addestramento supervisionato su coppie. L'equivalenza con l'RLHF è esatta
 solo in quel limite non parametrico, e sulla distribuzione delle coppie
@@ -574,9 +611,11 @@ devono uscire tutte: la sua probabilità è il prodotto delle probabilità delle
 sue parole, ciascuna calcolata sapendo quelle che la precedono. Moltiplicando
 cinquanta numeri minori di uno si ottiene però una cifra come
 $0{,}000000\ldots$, con decine di zeri: impronunciabile, e per un computer
-indistinguibile da zero. Si passa allora al logaritmo, che è un modo di
-riscrivere i numeri per cui i prodotti diventano somme e le scale impossibili
-diventano maneggevoli. Quello che si usa qui è il logaritmo naturale, quello in
+indistinguibile da zero. Si passa allora al logaritmo, già incontrato
+nella {doc}`teoria dell'informazione </Matematica/teoria-informazione>`: un modo
+di riscrivere i numeri per cui i prodotti diventano somme e le scale impossibili
+diventano maneggevoli, lo stesso dei decibel per il suono e della scala Richter
+per i terremoti. Quello che si usa qui è il logaritmo naturale, quello in
 base $e$: $0{,}001$ diventa $-6{,}9$, e $0{,}000001$ diventa $-13{,}8$, cioè il
 doppio. Siccome le probabilità sono sempre minori di uno, il loro logaritmo è
 sempre negativo, e vale zero solo per la certezza assoluta.
@@ -586,7 +625,7 @@ modello è convinto. $-11{,}9$ è una risposta che il modello considera più
 probabile di una da $-12{,}3$, esattamente come $-3$ gradi è più caldo di $-8$.
 Basta questa regola per leggere i numeri che seguono.
 
-La funzione qui sotto riceve quattro liste di questi numeri: quanto il modello
+La funzione `dpo_loss` riceve quattro liste di questi numeri: quanto il modello
 che sta imparando (il cuoco) ritiene probabile la risposta preferita e quella
 scartata, e quanto le riteneva probabili la copia congelata di partenza (la
 ricetta).
@@ -731,7 +770,17 @@ si sceglie la risposta finale a maggioranza
 {cite}`guo2025deepseek` a pesi aperti (gennaio 2025), interiorizzano la
 catena: vengono addestrati con reinforcement learning su problemi a risposta
 verificabile (correttezza del risultato matematico, superamento dei test per
-il codice), dove la ricompensa non richiede giudizi umani. DeepSeek-R1-Zero
+il codice), dove la ricompensa non richiede giudizi umani. L'algoritmo è GRPO
+{cite}`shao2024deepseekmath`, un PPO senza critico: per
+ogni prompt si campiona un gruppo di $G$ risposte, se ne calcolano le
+ricompense $r_1,\dots,r_G$, e il vantaggio di ciascuna è la sua ricompensa
+standardizzata dentro il gruppo,
+$\hat{A}_i = (r_i -
+\operatorname{media}(\mathbf{r}))/\operatorname{dev.std}(\mathbf{r})$,
+lo stesso per tutti i token della risposta. L'obiettivo resta quello di PPO
+con il rapporto tagliato e la penalità KL verso il riferimento; quello che
+sparisce è la rete che stimava in anticipo il voto, sostituita dalla media del
+gruppo, cioè una copia intera del modello in meno. DeepSeek-R1-Zero
 mostra che il solo RL, senza SFT preliminare, fa emergere comportamenti di
 auto-verifica e ripensamento dei propri passaggi. Il quadro consolidato, senza
 estrapolazioni: i guadagni sono concentrati nei domini verificabili; il costo

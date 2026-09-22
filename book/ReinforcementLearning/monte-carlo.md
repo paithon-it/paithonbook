@@ -74,7 +74,12 @@ V(s) \;=\; \frac{1}{|\mathcal{T}(s)|} \sum_{t \in \mathcal{T}(s)} G_t ,
 $$
 
 dove $\mathcal{T}(s)$ è l'insieme degli istanti in cui $s$ è stato visitato
-(solo le prime visite, nella variante a prima visita).
+(solo le prime visite, nella variante a prima visita). Come sui bandit, la
+media si tiene in forma incrementale, e con un passo costante $\alpha$ al posto
+di $1/n$ diventa $V(S_t) \leftarrow V(S_t) + \alpha\,[\,G_t - V(S_t)\,]$,
+applicata a fine episodio per ogni visita contata: è il *constant-α MC*, cioè
+la stessa forma dell'aggiornamento TD con il ritorno intero $G_t$ come
+bersaglio.
 
 La versione a prima visita ha una giustificazione immediata: i ritorni raccolti
 sono variabili aleatorie indipendenti e identicamente distribuite con media
@@ -308,7 +313,7 @@ della sezione precedente: si misura, poi in ogni situazione si tiene la mossa
 che secondo quelle misure rende di più (si dice che la strategia si rende
 *greedy*, cioè avida: prende sempre quello che al momento sembra il meglio), e
 si ricomincia da capo con la strategia nuova. Con una differenza che sembra un
-dettaglio tecnico e invece è il tema di tutto il capitolo.
+dettaglio tecnico e invece cambia tutto quello che viene dopo.
 
 `````{tab} Elementare
 
@@ -352,7 +357,12 @@ Ci sono due rimedi classici.
 Il primo è l'ipotesi degli inizi esplorativi: ogni episodio comincia da una
 coppia $(s,a)$ estratta a caso, con probabilità non nulla per tutte. È comoda
 nella teoria e quasi sempre inapplicabile, perché richiede di poter piazzare
-l'agente dove si vuole.
+l'agente dove si vuole. E anche dove si può, la teoria è meno solida di quanto
+sembri: che l'alternanza valuta-migliora, fatta episodio per episodio, non
+possa fermarsi su una policy subottima si vede in una riga; che arrivi davvero
+a quella ottima Sutton e Barto lo indicano come una delle questioni teoriche
+aperte più importanti della materia, risolta solo in parte
+{cite}`sutton2018reinforcement`.
 
 Il secondo, praticabile, è restare su policy **$\varepsilon$-soft**, cioè con
 $\pi(a\mid s) \ge \varepsilon/|\mathcal{A}|$ per ogni azione: la

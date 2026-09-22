@@ -264,9 +264,12 @@ modello e batch con `.to(device)`; su Apple Silicon il device si chiama
 esplicito (nessun trasferimento implicito, che nasconderebbe costi: su una
 scheda discreta il passaggio attraversa il bus PCIe ed è lento rispetto al
 calcolo, mentre su Apple Silicon la memoria è unificata e il problema è un
-altro). L'eccezione sono i tensori a zero assi: un numero solo viene
-promosso in silenzio sull'altro device, mentre lo stesso numero dentro un
-tensore a un asse solleva. Le
+altro). L'eccezione sono i tensori a zero assi
+che stanno sulla CPU: un numero solo, lì, viene trattato come uno scalare e
+combinato in silenzio con un tensore che sta altrove, mentre lo stesso numero
+dentro un tensore a un asse solleva. Il contrario non vale: uno scalare a zero
+assi che sta sulla scheda grafica, sommato a un tensore sulla CPU, solleva
+anche lui. Le
 stesse moltiplicazioni tra matrici che scriviamo qui sono, sull'hardware,
 migliaia di prodotti scalari eseguiti in parallelo dai kernel CUDA/cuDNN: è il
 motivo per cui le GPU (nate per la grafica) sono diventate lo strumento del
@@ -421,24 +424,30 @@ $$
   \nabla_{\mathbf{z}} \mathcal{L},
 $$
 
-dove $\mathbf{z}$ raccoglie le $m$ quantità intermedie che dipendono da
-$\theta$, $\partial \mathbf{z} / \partial \theta$ è la matrice delle loro
-derivate (la Jacobiana) e $\nabla_{\mathbf{z}} \mathcal{L}$ è il gradiente
-già calcolato a valle. Composta lungo tutto il grafo, questa regola è
-precisamente l'algoritmo di {doc}`backpropagation
-</RetiNeurali/backpropagation>`.
+dove $\mathbf{z} \in \mathbb{R}^m$ raccoglie le $m$ quantità intermedie che
+dipendono dai $p$ parametri raccolti in $\theta$, $\partial \mathbf{z} /
+\partial \theta \in \mathbb{R}^{m \times p}$ è la matrice delle loro derivate
+(la Jacobiana) e $\nabla_{\mathbf{z}} \mathcal{L}$ è il gradiente già calcolato
+a valle. Composta lungo tutto il grafo, questa regola è precisamente
+l'algoritmo di {doc}`backpropagation </RetiNeurali/backpropagation>`.
 
 Nella forma vettoriale ci sono due cose che una catena a un solo cammino non
 direbbe, e sono esattamente le due che contano nella pratica. La prima è la
 trasposta: la modalità reverse non costruisce mai la Jacobiana, calcola
 direttamente il prodotto fra la sua trasposta e il vettore che arriva da valle
-(un *vector-Jacobian product*, uno per nodo), quale che sia il numero di
-parametri. Materializzare la Jacobiana costerebbe una passata per ciascuna
-uscita, e il costo di una passata viene proprio da lì: di uscita ce n'è
-una sola, perché $\mathcal{L}$ è uno scalare. Non è una comodità di
-scrittura, è la condizione: su un tensore non scalare `backward()` si rifiuta
-di partire («*grad can be implicitly created only for scalar outputs*») finché
-non gli si dice con quale peso combinare le uscite. La seconda è la
+(un *vector-Jacobian product*, uno per nodo). Una passata all'indietro dà
+quindi un prodotto $\mathbf{v}^\top \mathbf{J}$, una combinazione delle righe
+della Jacobiana per ogni vettore $\mathbf{v}$ scelto in partenza: con $m$
+uscite ne servirebbero $m$ per averla tutta, e con la loss $m = 1$, quindi ne
+basta una, al costo di un piccolo multiplo della passata in avanti, qualunque
+sia il numero $p$ dei parametri. La modalità diretta fa il conto simmetrico,
+un prodotto $\mathbf{J}\mathbf{u}$ per passata (un *Jacobian-vector product*,
+`torch.func.jvp`), e per il gradiente ne vorrebbe $p$, una per parametro. Il
+vettore di partenza, con la loss, è $\partial \mathcal{L}/\partial
+\mathcal{L} = 1$, e `backward()` lo mette da sé; su un tensore $\mathbf{y}$
+non scalare si rifiuta di partire («*grad can be implicitly created only for
+scalar outputs*») finché non glielo si passa: `y.backward(gradient=v)` calcola
+$\mathbf{v}^\top\, \partial \mathbf{y}/\partial \mathbf{x}$. La seconda è la
 sommatoria: un parametro che alimenta più rami riceve un contributo per
 ramo, e i contributi si sommano. È la ragione strutturale per cui `.grad` è un
 `+=` e non un `=`, e il punto in cui il grafo smette di essere una catena.
@@ -463,7 +472,22 @@ resta `None` con tanto di avviso: per leggerlo a metà strada si chiama
 valutazione, quando i gradienti non servono e il grafo sarebbe solo memoria
 sprecata. Infine `t.detach()` restituisce una vista del tensore staccata dal
 grafo, e le operazioni in-place sui tensori tracciati vanno evitate perché
-possono invalidare i valori salvati per la passata a ritroso.
+possono invalidare i valori salvati per la passata a ritroso. PyTorch se ne
+accorge: ogni tensore porta un *version counter*, e se un valore salvato è
+stato modificato dopo il salvataggio la `backward()` solleva invece di
+consegnare un gradiente sbagliato.
+
+Quei valori salvati sono anche il prezzo in memoria della modalità reverse: la
+passata in avanti trattiene le attivazioni che servono alle derivate locali, e
+la loro quantità cresce con la profondità e con la dimensione del batch, fino
+a superare quella dei pesi (il conto sta nella {doc}`sezione sulla
+backpropagation </RetiNeurali/backpropagation>`). Il baratto opposto, memoria
+contro calcolo, è il *gradient checkpointing*:
+`torch.utils.checkpoint.checkpoint(blocco, x, use_reentrant=False)` non
+conserva le attivazioni interne del blocco e le ricalcola durante il ritorno,
+al prezzo di una passata in avanti in più per quel blocco. L'argomento
+`use_reentrant` va scritto: la libreria avvisa a ogni chiamata che lo si passi
+esplicito, e la variante consigliata è `False`.
 
 `````
 

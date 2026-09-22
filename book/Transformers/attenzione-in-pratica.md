@@ -139,7 +139,7 @@ matrici che crescono per righe:
 
 $$
 \mathbf{K}^{(\ell)} \in \mathbb{R}^{T \times d_k}, \qquad
-\mathbf{V}^{(\ell)} \in \mathbb{R}^{T \times d_k} .
+\mathbf{V}^{(\ell)} \in \mathbb{R}^{T \times d_v} .
 $$
 
 Al passo $t$ lo strato calcola $\mathbf{q}_t, \mathbf{k}_t, \mathbf{v}_t$ per
@@ -456,30 +456,37 @@ somma per riga, normalizzando sulle query:  tensor([0.7525, 0.9791, 1.2684])
 ```
 
 `````{tab} Elementare
-Gli errori si raccontano tutti sul tabellone e sui taccuini.
+Gli errori si raccontano tutti sul tabellone e sui taccuini, e i primi stanno
+sul tabellone.
 
-Il conto fatto per colonna invece che per riga. Invece di dare a ogni parola
+Il primo è il conto fatto per colonna invece che per riga. Invece di dare a ogni
+parola
 che chiede una sua unità di colore da spartire, si dà una unità a ogni parola
 che risponde, da spartire fra chi la cerca. Le righe smettono di sommare a
 uno, e il colore che ogni parola riceve dipende da quante altre la cercano.
 
-La divisione dimenticata prima di colorare. Il modello impara lo stesso e va un
+Il secondo è la divisione dimenticata prima di colorare: il modello impara lo
+stesso e va un
 po’ peggio, tanto più quanto più le liste sono lunghe, e non se ne accorge
 nessuno perché niente si rompe.
 
-Colorare prima e cancellare dopo. La riga resta con meno di un'unità di colore,
+Il terzo sbaglia anch'esso l'ordine dei gesti, e consiste nel colorare prima
+e cancellare dopo: la riga resta con meno di un'unità di colore,
 e il miscuglio esce sbiadito.
 
-Il tabellone dato per quadrato. Quando chi chiede e chi risponde sono due liste
+Il quarto è il tabellone dato per quadrato. Quando chi chiede e chi risponde
+sono due liste
 di lunghezza diversa, la regola «cancella tutto quello che sta sopra la
 diagonale» va riscritta dicendo da che parte le due liste sono allineate.
 
-I lettori contati al posto dei taccuini. Da quando i lettori condividono gli
+Gli ultimi due stanno nei taccuini e in quello che se ne consegna. Il primo è
+contare i lettori al posto dei taccuini: da quando i lettori condividono gli
 appunti i due numeri sono diversi, e una stima di quanta carta serve fatta
 contando i lettori sbaglia in eccesso, cioè nella direzione che non fa mai
 suonare nessun allarme.
 
-Le intensità del colore consegnate al posto del miscuglio. Le intensità servono
+L'altro è consegnare le intensità del colore al posto del miscuglio. Le
+intensità servono
 a decidere le proporzioni e poi escono di scena; quello che si consegna al
 piano dopo è la miscela delle informazioni, che ha tutt'altra forma e tutt'altro
 significato.
@@ -548,7 +555,11 @@ assottiglia: con $d_{\text{model}} = 512$, otto teste lavorano in dimensione
 64 e trentadue in dimensione 16. Oltre un certo punto ogni testa ha uno spazio
 troppo stretto perché la compatibilità che calcola dica qualcosa, e il guadagno
 di varietà si mangia quello di risoluzione. Il numero di teste è un compromesso
-che si taglia sul modello, non una quantità da massimizzare.
+che si taglia sul modello, non una quantità da massimizzare. L'articolo del
+2017 lo misura a calcolo costante (Tabella 3, righe A): con una testa sola il
+BLEU scende da 25,8 a 24,9, con sedici resta 25,8, con trentadue ridiscende a
+25,4. E su un modello già addestrato molte teste si tolgono con perdite
+trascurabili {cite}`michel2019sixteen`.
 
 «I pesi di attenzione sono la spiegazione.» È la più diffusa e la più
 delicata, perché quei pesi si disegnano bene: sono distribuzioni sulle

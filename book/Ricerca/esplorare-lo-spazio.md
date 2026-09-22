@@ -289,7 +289,22 @@ dove $g(n)$ è il costo del cammino trovato finora dalla partenza a $n$ e $f(n)$
 Espandere sempre il nodo con $f$ minimo è l’algoritmo A\*, di Hart, Nilsson
 e Raphael {cite}`hart1968formal`. Con $h \equiv 0$ si riduce alla ricerca a
 costo uniforme, cioè al caso con la stima a zero, che è poi l’algoritmo di
-Dijkstra con in più un test di arrivo.
+Dijkstra con in più un test di arrivo. È lei, e non l'ampiezza, a restituire il
+cammino più economico quando i passi costano diversamente: è completa e ottima
+se ogni passo costa almeno un $\varepsilon > 0$ (con passi a costo nullo può
+girare per sempre su un ciclo gratuito), e costa
+$O(b^{1+\lfloor C^*/\varepsilon \rfloor})$ in tempo e in memoria, dove $C^*$ è
+il costo della soluzione ottima: con passi piccoli rispetto a $C^*$ è molto più
+di $b^d$ {cite}`russell2020artificial`. Quanto A\* faccia meglio si misura col
+**fattore di ramificazione effettivo** $b^*$, quello di un albero uniforme
+profondo $d$ con tanti nodi quanti la ricerca ne ha aperti: sul rompicapo delle
+otto tessere, con $d = 20$ e i conteggi stampati dal blocco sul rompicapo, vale
+circa $1{,}64$ senza stima, $1{,}42$ con le tessere fuori posto e $1{,}22$ con
+la distanza a isolati. Con un'euristica consistente A\* è anche *ottimamente
+efficiente*: ogni algoritmo che estende cammini dalla radice con la stessa
+euristica deve aprire tutti i nodi con $f(n) < C^*$, che sono quelli che A\*
+apre; e non per questo smette di essere esponenziale, perché quei nodi possono
+essere esponenzialmente tanti.
 
 Il prezzo, che la tabella di ampiezza e profondità non dice, è scomodo: A\*
 tiene in memoria tutti i nodi generati, esattamente come la ricerca in
@@ -363,11 +378,19 @@ $h \equiv 0$, che è consistente ed è l’euristica della ricerca a costo
 uniforme), e chiudere uno stato alla prima *generazione* può restituire
 soluzioni peggiori dell'ottimo, e basta che succeda una volta perché la
 garanzia non ci sia più. La riga che riscrive `costo[t]` esiste esattamente per
-questo. Sul rompicapo non scatta mai, perché lì ogni mossa costa uno e la prima
-generazione è già la migliore; a farla scattare sono i passi che costano
-diversamente, ed è il caso generale che la riga difende.
+questo. Sul rompicapo non scatta mai, ma non basta che ogni mossa costi uno: su
+un
+grafo qualunque a costi unitari, anche con un'euristica consistente, uno stato
+si può generare prima da un predecessore con $g$ più alto e poi da uno con $g$
+più basso, quando i due differiscono di un passo in $g$ e di due nella stima.
+Sul rompicapo lo impedisce la parità del paragrafo sui due interruttori: ogni
+mossa porta il buco su una casella dell'altro colore, quindi due strade verso
+lo stesso stato differiscono di un numero pari di passi, e a parità di $f$ la
+tupla fa uscire per primo chi ne ha fatti meno. A far scattare la riga sono i
+passi che costano diversamente e i grafi con cicli dispari: è il caso generale
+che la riga difende.
 
-Le due euristiche di questo capitolo sono tutte e due consistenti, e valgono
+Le due euristiche del rompicapo sono tutte e due consistenti, e valgono
 zero sulla configurazione finale.
 
 `````

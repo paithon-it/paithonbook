@@ -76,7 +76,23 @@ precedente (dove si è detto anche perché i modelli successivi preferiscono il
 Pre-LN). Si noti la divisione dei ruoli: l'attenzione *mescola*
 informazione tra le posizioni, la FFN la *trasforma* posizione per posizione;
 è l'alternanza dei due movimenti, ripetuta per $L$ strati, a costruire
-rappresentazioni via via più astratte.
+rappresentazioni via via più astratte. Per esteso, con
+$\mathbf{H}^{(0)} = \sqrt{d_{\text{model}}}\,\mathbf{X}_{\text{emb}} +
+\mathbf{PE}$ (l'articolo moltiplica gli embedding per $\sqrt{d_{\text{model}}}$
+prima di sommare la codifica di posizione), lo strato $\ell$ calcola
+
+$$
+\mathbf{U}^{(\ell)} = \text{LayerNorm}\big(\mathbf{H}^{(\ell-1)} +
+\text{MultiHead}(\mathbf{H}^{(\ell-1)})\big), \qquad
+\mathbf{H}^{(\ell)} = \text{LayerNorm}\big(\mathbf{U}^{(\ell)} +
+\text{FFN}(\mathbf{U}^{(\ell)})\big).
+$$
+
+Bias e normalizzazioni esclusi, uno strato di encoder ha $4d^2$ parametri
+nell'attenzione e $8d^2$ nella FFN, cioè $12d^2$ con $d = d_{\text{model}}$
+(lo stesso conto che la {doc}`matematica di un modello linguistico
+</Matematica/matematica-llm>` fa per GPT-3); uno strato di decoder, con la
+cross-attention, ne ha $16d^2$.
 `````
 
 ## Il decoder: la torre che scrive
@@ -131,8 +147,9 @@ successivo. Da quella distribuzione si sceglie un token, ed è il suo
 embedding a rientrare come input al passo dopo: non la distribuzione, che è un
 vettore di $|\mathcal{V}|$ probabilità e non ha modo di entrare in un ingresso
 fatto per un token. Come si sceglie a generazione (il più probabile, oppure uno
-estratto a sorte) è una questione a sé, e la sezione sui grandi modelli
-linguistici la affronta per intero. In addestramento entra invece il token
+estratto a sorte) è una questione a sé, e la {doc}`sezione sui grandi modelli
+linguistici <llm>` la affronta per intero. In addestramento entra invece il
+token
 vero, ed è il *teacher forcing*. La maschera garantisce che il meccanismo
 sia lo stesso nei due casi, ma i prefissi su cui il decoder viene interrogato
 no: in addestramento sono quelli del riferimento, in generazione i propri, ed è
@@ -211,9 +228,19 @@ normalizzarlo non aiuta: se per tenerlo piccolo si divide per la lunghezza
 della frase, «metà frase» diventa 0,5 sia in una frase di sei parole sia in una
 di seicento, e la stessa firma finisce a significare due cose diverse.
 
-La soluzione del 2017 tiene insieme le due esigenze con un'idea sola:
-**lancette**. Immagina più orologi affiancati, uno veloce, uno medio, uno lento.
-Nessuna lancetta si allontana mai, perché gira e torna: qualunque posizione
+La soluzione del 2017 tiene insieme le due esigenze con una famiglia di
+sinusoidi a frequenze che decrescono in progressione geometrica. Ogni coordinata
+oscilla fra $-1$ e $1$, quindi nessun valore cresce con la posizione; le
+frequenze alte distinguono i vicini immediati, quelle basse dicono in quale
+parte della sequenza siamo: più scale insieme invece di una. Con
+$d_{\text{model}} = 512$ la sinusoide più lenta ha un periodo di oltre
+sessantamila posizioni, e nessuna frase è abbastanza lunga perché la firma di
+una posizione torni uguale.
+
+`````{tab} Elementare
+Tre orologi affiancati, uno veloce, uno medio, uno lento: la soluzione del
+2017 sono le loro lancette. Nessuna lancetta si allontana mai, perché gira e
+torna: qualunque posizione
 della frase, il numero che se ne legge resta sempre nella stessa fascia. E la
 lancetta veloce distingue i vicini immediati, quella lenta dice in quale parte
 della frase siamo: due scale insieme invece di una.
@@ -230,7 +257,6 @@ l'una multipla dell'altra. Le velocità delle onde stanno molto più lontane fra
 loro, e la più lenta impiega oltre sessantamila posizioni a compiere un giro:
 nessuna frase è abbastanza lunga perché la fila dei punti torni uguale.
 
-`````{tab} Elementare
 Il posto numerato, dunque, c'è, ma il numero è scritto con le lancette invece
 che in cifre. La sostanza però è quella del teatro: stessa parola, poltrona
 diversa, e la rete può accorgersi che l'ordine conta. Il modo in cui la firma
@@ -303,14 +329,29 @@ usano infatti encoding appresi (BERT); i modelli linguistici recenti usano
 quasi tutti la **RoPE** (*rotary position embedding*
 {cite}`su2024roformer`), che prende quell'identità sul serio e la promuove da
 congettura a costruzione. La RoPE non aggiunge niente all'embedding:
-ruota query e chiave, coppia di coordinate per coppia, di un angolo
-proporzionale alla posizione assoluta del token,
+in ogni strato ruota query e chiave, coppia di coordinate per coppia, di un
+angolo proporzionale alla posizione assoluta del token,
 $\mathbf{q}_m \mapsto \mathbf{R}_{m}\,\mathbf{q}_m$ e
-$\mathbf{k}_n \mapsto \mathbf{R}_{n}\,\mathbf{k}_n$; nel prodotto scalare le
-due rotazioni si compongono, $\mathbf{R}_m^\top \mathbf{R}_n =
-\mathbf{R}_{n-m}$, e ai punteggi di attenzione arriva soltanto la distanza
-$n-m$. Ogni vettore è ruotato secondo la posizione assoluta in cui sta,
-e l'attenzione vede solo le posizioni relative. Il principio, in ogni caso,
+$\mathbf{k}_n \mapsto \mathbf{R}_{n}\,\mathbf{k}_n$, dove
+$\mathbf{R}_m = \operatorname{diag}\big(\mathbf{R}(m\omega_0), \dots,
+\mathbf{R}(m\omega_{d_k/2-1})\big)$ è diagonale a blocchi di rotazioni piane
+$2 \times 2$ e $\omega_i = 10000^{-2i/d_k}$ sono le frequenze delle sinusoidi.
+Poiché rotazioni nello stesso piano commutano, nel prodotto scalare le due si
+compongono, $\mathbf{R}_m^\top \mathbf{R}_n = \mathbf{R}_{n-m}$, e il punteggio
+$\mathbf{q}_m^\top \mathbf{R}_{n-m}\,\mathbf{k}_n$ dipende dalle posizioni
+soltanto attraverso la distanza $n-m$. Ogni vettore è ruotato secondo la
+posizione assoluta in cui sta, e l'attenzione vede solo le posizioni relative.
+
+La stessa idea, scrivere nei punteggi la distanza invece della posizione, ha
+altre due forme. Shaw e colleghi {cite}`shaw2018self` e poi T5
+{cite}`raffel2020exploring` sommano ai punteggi un termine appreso che dipende
+da $j - i$ (in T5 uno scalare per testa e per fascia di distanza); ALiBi
+{cite}`press2022train` somma una penalità fissa e lineare, $-m_h\,(i-j)$, con
+una pendenza $m_h$ diversa per ogni testa, e nessuna codifica all'ingresso. Gli
+schemi si separano sull'estrapolazione: oltre la lunghezza vista in
+addestramento la RoPE incontra angoli mai visti e degrada se non se ne
+riscalano le frequenze, mentre ALiBi è stato costruito per reggere contesti
+più lunghi di quelli di addestramento. Il principio, in ogni caso,
 resta lo stesso: iniettare l'ordine, perché la self-attention da
 sola è permutation-equivariante, cioè permutando i token in ingresso le
 uscite escono permutate allo stesso modo e la rappresentazione di ogni parola
@@ -352,7 +393,8 @@ della torre che scrive le riunioni sono due, la propria e la consultazione
 dell'altra torre, quindi lì si va a otto contro otto e la quota scende a metà;
 ma i grandi modelli linguistici di oggi tengono solo la torre che scrive e non
 consultano nessuno, e tornano ai due terzi. Il gesto più semplice della torre è
-anche quello dove il modello tiene quello che sa.
+anche quello che tiene la maggior parte dei numeri imparati, ed è lì che molti
+ricercatori sono andati a cercare dove il modello conservi quello che sa.
 
 Tre gesti e due moduli: questo è il piano del 2017, e i modelli di oggi lo
 hanno ritoccato in due punti. Le righe negative ora si scoloriscono invece di
@@ -384,13 +426,18 @@ due terzi dei parametri di uno strato di encoder
 dell'attenzione); negli strati di
 decoder, che hanno una seconda attenzione, la quota scende a metà. Nei grandi
 modelli linguistici, che sono decoder-only e quindi senza cross-attention, si
-torna ai due terzi, ed è lì che risiede gran parte della capacità. Una linea di
-ricerca interpreta la FFN come una memoria associativa di conoscenze apprese
-durante l'addestramento.
+torna ai due terzi, ed è lì che sta la maggior parte dei parametri. Una linea di
+ricerca legge la FFN come una memoria chiave-valore: le colonne di
+$\mathbf{W}_1$ fanno da chiavi che si accendono su configurazioni
+dell'ingresso, e le righe corrispondenti di $\mathbf{W}_2$ da valori che
+spostano la previsione del token successivo {cite}`geva2021transformer`. È
+un'interpretazione sostenuta da esperimenti, non una proprietà
+dell'architettura.
 
 Questa è però la FFN del paper originale. I modelli successivi ne hanno
-cambiato la non linearità: prima la GELU, una ReLU ammorbidita (BERT,
-GPT-2), poi le varianti *gated* e in particolare **SwiGLU**, che è la scelta
+cambiato la non linearità: prima la GELU {cite}`hendrycks2016gaussian`, una
+ReLU ammorbidita (GPT, BERT, GPT-2), poi le varianti *gated* proposte da
+Shazeer {cite}`shazeer2020glu`, e fra queste **SwiGLU**, che è la scelta
 prevalente nei modelli recenti:
 
 $$
@@ -414,8 +461,9 @@ elemento, decide quanto lasciar passare di ciascuna unità del ramo lineare
 $\mathbf{x}\mathbf{W}_3$. Le matrici diventano tre invece di due, e per non
 gonfiare il conteggio dei parametri si riduce la dimensione interna da $4d$ a
 circa $\tfrac{8}{3}d$: così $3 \cdot d \cdot \tfrac{8}{3}d = 8d^2$, esattamente
-quanto $2 \cdot d \cdot 4d$ della versione classica. Stessi parametri,
-risultati migliori a parità di addestramento.
+quanto $2 \cdot d \cdot 4d$ della versione classica. Stessi parametri, e
+nelle prove di Shazeer perplessità più bassa a parità di passi di
+addestramento; spiegazioni teoriche, l'autore dichiara di non averne.
 `````
 
 Con la feed-forward il giro è completo, e conviene guardare indietro un
@@ -440,7 +488,8 @@ il momento in cui il decoder la consultava, cioè dei tre pezzi di ogni suo
 piano ne restano due. Quel che rimane, davanti a un pezzo di testo qualsiasi,
 fa esattamente quello che sa fare, cioè continuarlo; e continuare un testo, se
 il testo è una domanda, somiglia molto a rispondere. Le famiglie di modelli
-che nascono da questa potatura sono l'argomento di una delle prossime sezioni.
+che nascono da questa potatura sono l'argomento della {doc}`sezione sulle
+famiglie di modelli <multimodalita>`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

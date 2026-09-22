@@ -77,8 +77,8 @@ classico: il **compromesso bias-varianza** (*bias-variance tradeoff*).
 
 Il modo classico di raccontarla è un bersaglio da tiro a segno, ma prima di
 guardarlo serve sapere che cosa sia un colpo, perché il
-modello è uno solo e i fori sul bersaglio sono tanti. Il gioco è questo:
-immagina di rifare l'esperimento da capo molte volte, ogni volta raccogliendo
+modello è uno solo e i fori sul bersaglio sono tanti. Il gioco è questo: si
+rifà l'esperimento da capo molte volte, ogni volta raccogliendo
 un campione di dati nuovo e riaddestrando il modello su quello. Ogni foro sul
 bersaglio è un addestramento, e il centro del bersaglio è la risposta giusta.
 Un modello può sbagliare in due modi indipendenti: perché il gruppo dei fori è
@@ -126,12 +126,15 @@ l'aria si muove. Nei dati il vento è la misura imprecisa, l'eccezione, tutto
 ciò che capita e basta: quella parte di errore resta lì comunque, e nessun
 modello, per quanto bravo, se la prende.
 
-Il conto va fatto come si è fatto sul prezzo delle case: si misura di quanto il colpo si
-allontana dal centro, si eleva al quadrato, e si fa la media su tutti i colpi.
-Solo allora i tre pezzi si sommano davvero, e quella media si spacca in tre
-addendi puliti: quello del mirino, quello della mano, quello del vento. Sulle
-distanze nude la somma non torna, e la stessa aritmetica che rende il quadrato
-scomodo da leggere è quella che lo rende scomponibile.
+Il conto va fatto come si è fatto sul prezzo delle case: si misura di quanto il
+colpo si allontana dal centro, si eleva al quadrato, e si fa la media su tutti
+i colpi. Solo allora i tre pezzi si sommano davvero, e quella media si spacca
+in tre addendi puliti: quello del mirino, quello della mano, quello del vento.
+Sulle distanze nude la somma non torna. Il quadrato di una somma si apre in
+pezzi, i quadrati dei tre scarti più i loro prodotti a due a due, e i prodotti
+misti, in media su molti colpi, fanno zero, perché mirino, mano e vento non si
+parlano fra loro: resta la somma dei tre quadrati. È la stessa aritmetica che
+rende il quadrato scomodo da leggere a renderlo scomponibile.
 
 Letto così, il quadro è semplice. Un modello rigido ha molto bias e poca
 varianza; uno flessibile, poco bias e molta varianza. Il bravo modellista cerca
@@ -169,7 +172,11 @@ il minimo è il modello ottimale.
 
 Un'avvertenza sull'ambito di validità, perché il vocabolario viaggia più
 lontano del teorema. La decomposizione è un’identità della loss quadratica:
-per la loss 0-1 dei classificatori non esiste una scomposizione additiva
+per la loss 0-1 dei classificatori manca una scomposizione additiva con
+termini di segno fisso: in quella proposta da Domingos
+{cite}`domingos2000unified` la varianza entra col segno più dove la
+previsione media è giusta e col segno meno dove è sbagliata, e in generale non
+esiste una scomposizione additiva
 analoga {cite}`wood2023unified`, e più varianza può perfino *ridurre* l'errore
 quando il bias sta dalla parte sbagliata della soglia. Da qui in avanti «bias» e
 «varianza» restano utilissimi come vocabolario anche parlando di alberi e di
@@ -467,7 +474,7 @@ Si può spingere all'estremo: un blocco per ogni singolo esempio, cioè tanti
 compiti quanti sono i dati. Sembra il giudizio più solido di tutti, e non lo è.
 Quello che il modello ha studiato prima di un compito e prima del successivo
 cambia di un esempio soltanto, quindi i giudizi si somigliano tutti, e la media
-di tanti giudizi che si somigliano non è più stabile di uno solo. In più il
+di tanti giudizi che si somigliano è poco più stabile di uno solo. In più il
 modello va riaddestrato una volta per esempio, e con centomila esempi il conto
 non sta in piedi. Cinque o dieci blocchi sono il punto in cui la spesa vale il
 guadagno.
@@ -502,12 +509,25 @@ $$
 
 dove $f_\theta^{(-i)}$ è il modello addestrato escludendo il fold $i$-esimo. Il
 caso estremo $k=m$ (un fold per esempio) è la *leave-one-out*: quasi non
-distorta, perché ogni modello studia su $m-1$ esempi, ma costosa e con
-varianza più alta della $k$-fold con $k<m$ {cite}`james2023introduction`,
-perché media $m$ modelli addestrati su insiemi quasi identici e quindi
-fortemente correlati fra loro, e la media di quantità correlate non si
-stabilizza. Valori $k=5$ o $k=10$ offrono il miglior compromesso fra
-distorsione, costo computazionale e stabilità della stima.
+distorta, perché ogni modello studia su $m-1$ esempi, ma costosa e con varianza
+più alta della $k$-fold con $k<m$ {cite}`james2023introduction`, perché media
+$m$ modelli addestrati su insiemi quasi identici e quindi fortemente correlati
+fra loro, e la media di quantità fortemente correlate si stabilizza poco: con
+correlazione $\rho$ fra i termini la sua varianza non scende sotto
+$\rho\,\sigma^2$, qualunque sia il numero dei termini. Valori $k=5$ o $k=10$
+offrono il miglior compromesso fra distorsione, costo computazionale e
+stabilità della stima. Resta da dire che cosa stimino. $\text{CV}_k$ approssima
+bene l'errore atteso sui possibili insiemi di addestramento, e male l'errore
+del modello addestrato proprio sui nostri dati, con cui nelle simulazioni di
+ESL risulta perfino debolmente anticorrelata {cite}`hastie2009elements`; e
+siccome ogni modello vede $(k-1)m/k$ esempi, la stima è pessimista per il
+modello finale, addestrato su tutti gli $m$. Perché stimi qualcosa, poi, ogni
+passo che guarda i dati deve stare dentro il ciclo. Il controesempio classico è
+di ESL: cinquanta esempi, cinquemila colonne di puro rumore, le cento più
+correlate con l'etichetta scelte guardando tutti i dati, e un $1$-NN valutato
+in cross-validation; l'errore stimato è del $3\%$, quello vero del $50\%$.
+Selezione delle colonne, riscalatura, imputazione e ricampionamento vanno
+quindi in una `Pipeline`, che scikit-learn riaddestra da capo in ogni fold.
 
 E quando più configurazioni risultano a pari merito dentro l'incertezza della
 stima, la convenzione per decidere è la **regola dell'errore standard**: si
@@ -527,15 +547,41 @@ paziente, più eventi dello stesso utente, più fotogrammi dello stesso video),
 il rimescolamento mette quasi-duplicati sia in training sia in validation, e il
 modello ritrova in validation ciò che ha già visto. Il risultato è una stima
 priva di significato, non solo un po’ ottimista, e non dà nessun
-segnale d'allarme. Con duecento soggetti, dieci misure quasi identiche
-ciascuno e un'etichetta assegnata a caso a ogni soggetto (quindi non c'è
-niente da imparare, e la verità è $0{,}50$), un classificatore capace di
-memorizzare, come il $k$-NN a un vicino, in 5-fold mescolata riporta
-accuratezza $1{,}000$; raggruppando per soggetto torna attorno a $0{,}5$, dove
-deve stare. In questi casi i fold vanno costruiti per soggetto (`GroupKFold`,
-`GroupShuffleSplit`); se invece le righe sono ordinate nel tempo vale il
-discorso dei {doc}`dati che cambiano </MachineLearning/dati-che-cambiano>`,
-cioè `TimeSeriesSplit` e non un rimescolamento.
+segnale d'allarme. Il conto, con duecento soggetti, dieci misure quasi
+identiche ciascuno e un'etichetta assegnata a caso a ogni soggetto (quindi non
+c'è niente da imparare, e la verità è $0{,}50$), fatto con un classificatore
+capace di memorizzare come il $k$-NN a un vicino:
+
+```python
+import numpy as np
+from sklearn.model_selection import GroupKFold, KFold, cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+
+rng = np.random.default_rng(0)
+soggetto = np.repeat(np.arange(200), 10)              # dieci righe per soggetto
+centro = rng.normal(size=(200, 5))
+X_g = centro[soggetto] + rng.normal(0, 0.01, (2000, 5))  # quasi identiche
+y_g = rng.integers(0, 2, 200)[soggetto]   # a caso: non c'è niente da imparare
+uno = KNeighborsClassifier(n_neighbors=1)
+mescolata = cross_val_score(uno, X_g, y_g,
+                            cv=KFold(5, shuffle=True, random_state=0))
+per_soggetto = cross_val_score(uno, X_g, y_g, cv=GroupKFold(5), groups=soggetto)
+print(f"5-fold mescolata:    {mescolata.mean():.3f}")
+print(f"5-fold per soggetto: {per_soggetto.mean():.3f}")
+```
+
+```text
+5-fold mescolata:    1.000
+5-fold per soggetto: 0.543
+```
+
+La validazione mescolata dichiara un classificatore perfetto; raggruppata per
+soggetto torna a $0{,}543$, dentro l'oscillazione che duecento soggetti
+consentono attorno a $0{,}5$. In questi casi i fold vanno costruiti per
+soggetto (`GroupKFold`, `GroupShuffleSplit`); se invece le righe sono ordinate
+nel tempo vale il discorso dei {doc}`dati che cambiano
+</MachineLearning/dati-che-cambiano>`, cioè `TimeSeriesSplit` e non un
+rimescolamento.
 
 `````
 
@@ -718,6 +764,28 @@ cross-validation. La geometria spigolosa della norma $\ell_1$ è ciò che rende
 *sparse* le soluzioni del Lasso, annullando interi coefficienti: un selettore
 automatico di feature.
 
+Con le colonne centrate, così che l'intercetta resti fuori dalla penalità,
+Ridge ha soluzione in forma chiusa,
+
+$$
+\hat{\theta}_{\text{Ridge}} = \big(\mathbf{X}^\top\mathbf{X} + m\lambda\,\mathbf{I}\big)^{-1}\mathbf{X}^\top\mathbf{y},
+$$
+
+dove il fattore $m$ viene dalla media nella loss. La matrice è invertibile per
+ogni $\lambda>0$, anche con colonne collineari o con più colonne che esempi,
+cioè proprio dove le equazioni normali degeneravano. Con colonne ortogonali,
+$\mathbf{X}^\top\mathbf{X} = m\,\mathbf{I}$, le due penalità si leggono
+coefficiente per coefficiente a partire dalla stima dei minimi quadrati
+$\hat{\theta}_j$: Ridge la divide, $\hat{\theta}_j/(1+\lambda)$, e non la
+azzera mai; Lasso la accorcia di una quantità fissa,
+$\operatorname{sign}(\hat{\theta}_j)\,\big(|\hat{\theta}_j| - \lambda/2\big)_+$
+(il *soft thresholding*), e manda a zero esatto ogni coefficiente sotto
+$\lambda/2$ {cite}`hastie2009elements`. Le due penalità sono anche stime MAP:
+con rumore $\mathcal{N}(0,\sigma^2)$ e prior $\theta_j \sim \mathcal{N}(0,\tau^2)$
+si ottiene Ridge con $\lambda = \sigma^2/(m\tau^2)$, e con un prior di Laplace
+si ottiene il Lasso, che non ha forma chiusa e in scikit-learn si risolve per
+discesa coordinata.
+
 Due cose le formule le dicono in silenzio.
 La prima è che l'indice $j$ corre da $1$ a $n$, cioè sulle sole
 caratteristiche: l’intercetta non è penalizzata. Se lo fosse, il modello
@@ -859,12 +927,16 @@ rispetto al *tempo di addestramento* (epoch-wise) e alla *quantità di dati*, e
 in quest'ultimo caso produce l'effetto contro-intuitivo per cui, vicino al
 punto di interpolazione, aggiungere dati può peggiorare il test error.
 
-Il rasoio di Occam regge, misurato bene. Il numero di
-parametri è un pessimo proxy della complessità di una rete: la quantità che
-conta è una misura di norma della soluzione trovata, non di capacità
-dell'ipotesi. La discesa del gradiente ha un *bias implicito* verso soluzioni
-a norma piccola, e in quel senso continua a scegliere la spiegazione più
-semplice: solo che «semplice» non si conta in parametri.
+Il rasoio di Occam regge, se si cambia che cosa si misura. Il numero di
+parametri è un pessimo proxy della complessità di una rete, e la candidata più
+studiata al suo posto è una misura di norma della soluzione trovata. In due
+casi il legame con l'algoritmo è un teorema: sui minimi quadrati con più
+parametri che esempi la discesa del gradiente partita da zero converge alla
+soluzione interpolante di norma $\ell_2$ minima, e sulla regressione logistica
+con dati separabili la direzione dei pesi converge a quella di massimo margine
+{cite}`soudry2018implicit`. Sulle reti profonde lo stesso *bias implicito* è
+un'ipotesi con buone prove sperimentali: che «semplice» non si conti in
+parametri è assodato, in che cosa si conti no.
 
 Si vede soprattutto con le etichette sporche, e la regolarizzazione appiana il
 picco. La prima clausola è degli autori stessi («le osserviamo tutte con più
@@ -1065,9 +1137,10 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
   nel tempo `TimeSeriesSplit`.
 - La regolarizzazione (Ridge $\ell_2$, Lasso $\ell_1$) frena la complessità
   con una penalità $\lambda$ sui pesi; il Lasso azzera le feature inutili.
-- Il rasoio di Occam regge, misurato bene: la quantità che conta è la norma
-  della soluzione trovata, non il numero di parametri, e la discesa del
-  gradiente ha un *bias implicito* verso norme piccole.
+- Il rasoio di Occam regge se la complessità non si conta in parametri: sui
+  modelli lineari la discesa del gradiente ha un *bias implicito* dimostrato
+  verso soluzioni di norma piccola, sulle reti profonde è l'ipotesi più
+  studiata.
 ```
 
 `````

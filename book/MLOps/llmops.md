@@ -241,7 +241,8 @@ tre giri risparmiati. E se il piccolo sbaglia, la correzione del grande è
 comunque quella giusta.
 ```
 
-La proprietà rara annunciata sopra si legge nella metà inferiore di
+La proprietà rara, che il testo resti quello del modello grande, si legge
+nella metà inferiore di
 {numref}`fig-speculative-decoding`: il modello grande non si fida mai del
 piccolo, lo *controlla*, e il controllo mette a confronto le due probabilità.
 Se il grande dava a quella parola almeno la fiducia che le dava il piccolo, la
@@ -297,12 +298,25 @@ Il metodo è dovuto a Leviathan, Kalman e Matias di Google Research
    $\min\!\bigl(1,\ p_{\text{t}}(x_i)/p_{\text{b}}(x_i)\bigr)$; al primo
    rifiuto si campiona un token correttivo dalla distribuzione residua
    normalizzata $\bigl[p_{\text{t}}(x)-p_{\text{b}}(x)\bigr]_+$ e si scarta
-   la coda.
+   la coda; se tutti i $\gamma$ token sono accettati, dalla distribuzione del
+   target già calcolata nella posizione $\gamma+1$ si campiona un token in più,
+   gratis.
 
-Questa regola di accettazione-rifiuto è ciò che rende il metodo esatto: la
-distribuzione dei token emessi è identica a quella del solo modello target.
-L'uscita è la stessa, solo più in fretta, senza nessuno scambio fra qualità e
-velocità.
+Questa regola di accettazione-rifiuto è ciò che rende il metodo esatto, e la
+verifica sta in una riga. Sia
+$\beta = \sum_x \min\bigl(p_{\text{b}}(x), p_{\text{t}}(x)\bigr)$ la probabilità
+di accettare; allora $\sum_x [p_{\text{t}}(x)-p_{\text{b}}(x)]_+ = 1-\beta$ e
+
+$$
+P(x) = p_{\text{b}}(x)\min\Bigl(1,\tfrac{p_{\text{t}}(x)}{p_{\text{b}}(x)}\Bigr)
++ (1-\beta)\,\frac{[p_{\text{t}}(x)-p_{\text{b}}(x)]_+}{1-\beta}
+= \min(p_{\text{b}},p_{\text{t}}) + \max(0, p_{\text{t}}-p_{\text{b}}) = p_{\text{t}}(x).
+$$
+
+La distribuzione dei token emessi è quindi identica a quella del solo modello
+target, qualunque sia il modello bozza: un modello bozza peggiore abbassa
+$\beta$ e con esso la velocità, mai la qualità. L'uscita è la stessa, solo più
+in fretta, senza nessuno scambio fra qualità e velocità.
 
 Il guadagno dipende dal **tasso di accettazione** $\alpha$: sotto l'ipotesi
 semplificatrice (dichiarata dagli autori) che le accettazioni siano
@@ -461,7 +475,7 @@ né GPTQ né AWQ usano una scala per tensore, ma gruppi di pesi (tipicamente
 128), ed è proprio quella granularità a rendere i 4 bit praticabili. Ogni
 gruppo si porta dietro la sua scala e il suo zero (mettiamo sedici bit per la
 prima e quattro per il secondo, venti in tutto): spalmati su 128 pesi fanno
-$4{,}16$ bit effettivi per peso, su 32 pesi ne fanno $4{,}62$. Il rapporto
+$4{,}16$ bit effettivi per peso, su 32 pesi ne fanno $4{,}625$. Il rapporto
 reale rispetto ai 16 bit è quindi $3{,}8\times$, non $4\times$: qualche punto
 percentuale di bit in più, speso per comprare qualità.
 

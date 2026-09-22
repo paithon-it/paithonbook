@@ -34,19 +34,19 @@ che il libro ha già usato per tutt'altro mestiere: il gradiente.
 
 ## Mappe di salienza: il gradiente come misura di importanza
 
-Conviene ricordare in due righe che cos'è, il gradiente, perché tutto quel che
-segue ci si appoggia. Immagina un apparecchio pieno di manopole e con un solo
-indicatore. La domanda «di quanto si sposta l'indicatore se giro questa manopola
-di un nulla?» ha una risposta tecnica che si chiama derivata; il
-gradiente è la stessa cosa fatta per tutte le manopole insieme, cioè
-l'elenco completo di quelle risposte, una per manopola.
+Il gradiente di un'uscita scalare è il vettore delle sue derivate parziali
+rispetto a tutte le variabili d'ingresso: se le variabili sono manopole e
+l'uscita un indicatore, dice di quanto si sposta l'indicatore girando di un
+nulla ciascuna manopola, le altre ferme.
 
 Nell'addestramento di una rete le manopole erano i numeri interni della rete
 (che si chiamano pesi) e l'indicatore era l'errore: girare le manopole nel
 verso che abbassa l'errore *è* l'addestramento, come si è visto nella
 {doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>`.
 
-Adesso puntiamo lo stesso strumento altrove. Teniamo ferme le manopole dei pesi
+Adesso puntiamo lo stesso strumento altrove, con la mossa già vista nelle
+{doc}`PINN </PINN/come-funziona>`, dove la derivata si chiedeva rispetto
+all'istante di tempo invece che ai pesi. Teniamo ferme le manopole dei pesi
 e chiamiamo manopola ogni pixel dell'immagine in ingresso; l'indicatore da
 guardare non è più l'errore, ma quanto la rete è convinta della risposta che ha
 dato. Se la rete sceglie fra mille risposte possibili (cane, gatto, camion: si
@@ -98,11 +98,28 @@ quindi le componenti del gradiente di modulo maggiore individuano i pixel la cui
 piccola variazione altera di più il punteggio. Per un'immagine a colori si
 prende in genere il massimo del modulo sui tre canali RGB.
 
-Il limite è duplice. Primo, il gradiente è locale: coglie la pendenza solo
-nel punto $\mathbf{X}$, e le reti profonde sono tutt'altro che lineari. Secondo, è
-rumoroso, perché la superficie $S_c$ ha derivate che oscillano rapidamente.
-Le mappe risultano granulose, e le tecniche successive nascono quasi tutte per
-domare questo rumore.
+Il limite è duplice. Primo, il gradiente è locale: coglie la pendenza solo nel
+punto $\mathbf{X}$, e le reti profonde sono tutt'altro che lineari. Secondo, è
+rumoroso, perché la superficie $S_c$ ha derivate che oscillano rapidamente. Le
+mappe risultano granulose, e le tecniche successive nascono quasi tutte per
+domare questo rumore. La più diretta è *SmoothGrad* di Smilkov e colleghi
+{cite}`smilkov2017smoothgrad`, che media il gradiente su copie dell'ingresso
+perturbate con rumore gaussiano,
+
+$$
+\hat{\mathbf{M}} = \frac{1}{N}\sum_{s=1}^{N} \frac{\partial S_c}{\partial
+\mathbf{X}}\Big|_{\mathbf{X} + \boldsymbol{\varepsilon}_s}, \qquad
+\boldsymbol{\varepsilon}_s \sim \mathcal{N}(\mathbf{0}, \sigma^2\mathbf{I}),
+$$
+
+con $\sigma$ fra il 10 e il 20% dell'escursione dei pixel e $N \approx 50$: è la
+stima Monte Carlo del gradiente di $S_c$ convoluto con una gaussiana, cioè di
+una versione lisciata della funzione, e costa $N$ backward invece di una.
+L'altra variante, che tornerà nei controlli di sanità, è **gradient $\odot$
+input**, $\mathbf{X} \odot \partial S_c/\partial\mathbf{X}$: per un modello
+lineare senza bias restituisce esattamente il contributo $w_i x_i$ di ciascun
+ingresso, ed equivale agli Integrated Gradients con baseline nulla e un solo
+passo di integrazione, valutato all'arrivo.
 
 `````
 
@@ -142,7 +159,11 @@ dire «cane». Dove invece i faretti tirano dall'altra parte, verso una risposta
 diversa, la macchia resta fredda: tiene le prove a favore, non quelle contro. È
 grossolana (la risoluzione è quella dell'ultimo strato, non dei pixel), ma è
 pulita e onesta: nel caso dell'husky, la macchia calda finirebbe proprio sulla
-neve, smascherando l'inganno.
+neve, smascherando l'inganno. E ci finirebbe anche se la neve l'ha imparata
+soltanto il modello a somma appoggiato in cima: il gradiente parte dal
+punteggio finale e passa da quel modello prima di arrivare ai faretti, quindi
+accende di più quelli a cui il modello in cima dà peso, e fra questi c'è il
+faretto della neve.
 
 `````
 
@@ -557,8 +578,12 @@ più semplice che c'è, un piccolo classificatore addestrato apposta. Se ci
 riesce, l'informazione a quel piano c'è; se fallisce, non c'è, o non è scritta
 in modo semplice. Con un'avvertenza: uno strumento di lettura troppo bravo
 rischia di indovinare da sé ciò che doveva soltanto leggere. Per accorgersene
-gli si dà da leggere un'informazione che non c'è, cioè etichette tirate a caso:
-se riesce lo stesso, non stava leggendo, stava indovinando.
+gli si dà un compito finto costruito apposta: a ogni parola
+del vocabolario si appiccica un'etichetta tirata a sorte una volta per tutte, e
+da lì in avanti quella parola porta sempre quella. Nella rete
+quell'informazione non è scritta da nessuna parte, ma si può imparare a memoria
+parola per parola. Se lo strumento riesce anche lì quasi come sul compito vero,
+non stava leggendo: stava imparando lui.
 
 `````
 
@@ -582,19 +607,26 @@ $$
 $$
 
 dove $\mathbf{W}^{(l)}_{\text{att}}$ è la matrice di attenzione grezza dello
-strato $l$, $\mathbf{I}$ l'identità e $\mathbf{R}^{(l)}$ la matrice corretta.
-I due mezzi non sono una taratura: le righe dell'attenzione sommano a uno e
-quelle dell'identità pure, quindi sommandole si arriverebbe a due, e la
-rinormalizzazione riporta ogni riga a uno.
-Si moltiplicano poi le $\mathbf{R}^{(l)}$ fra loro per ottenere quanto di ogni
-token di ingresso è finito in ogni posizione all'altezza voluta. È l’attention
-rollout. La variante *attention flow* tratta la stessa struttura come un
-grafo orientato aciclico e calcola il flusso massimo dal token di ingresso a
-quello di arrivo, che è più costoso e tiene conto dei colli di bottiglia lungo
-il cammino. In entrambi i casi il risultato è una mappa sui token
-d'ingresso, cioè finalmente confrontabile con le attribuzioni delle sezioni
-precedenti, e visibilmente diversa (spesso più sensata) della matrice del
-singolo strato che si è tentati di visualizzare.
+strato $l$, $\mathbf{I}$ l'identità e $\mathbf{R}^{(l)}$ la matrice corretta. I
+due mezzi fanno due mestieri, e conviene separarli. Che i coefficienti sommino a
+uno è una necessità: le righe dell'attenzione e quelle dell'identità sommano a
+uno, e una loro combinazione convessa conserva la proprietà, così che il
+prodotto delle $\mathbf{R}^{(l)}$ resti una matrice stocastica per righe. Che
+siano uguali è invece un'ipotesi: dice che in ogni strato il ramo residuale e
+quello dell'attenzione pesano lo stesso, e nulla nel Transformer lo garantisce
+(dopo la normalizzazione e la proiezione d'uscita le norme dei due rami possono
+differire di molto). La scelta
+$\lambda\,\mathbf{W}^{(l)}_{\text{att}} + (1-\lambda)\,\mathbf{I}$ con
+$\lambda \neq \tfrac{1}{2}$ è normalizzata altrettanto bene, e dà un rollout
+diverso. Si moltiplicano poi le $\mathbf{R}^{(l)}$ fra loro per ottenere quanto
+di ogni token di ingresso è finito in ogni posizione all'altezza voluta. È
+l’attention rollout. La variante *attention flow* tratta la stessa struttura
+come un grafo orientato aciclico e calcola il flusso massimo dal token di
+ingresso a quello di arrivo, che è più costoso e tiene conto dei colli di
+bottiglia lungo il cammino. In entrambi i casi il risultato è una mappa sui
+token d'ingresso, cioè finalmente confrontabile con le attribuzioni delle
+sezioni precedenti, e visibilmente diversa (spesso più sensata) della matrice
+del singolo strato che si è tentati di visualizzare.
 
 Un approccio complementare, più controllato, è il probing. L'idea: se una
 rappresentazione interna «sa» qualcosa (poniamo, la parte del discorso di una
@@ -609,11 +641,18 @@ proprietà. Il probe lineare è la proposta di Alain e Bengio
 lineare e con la convessità del problema di addestramento; l'avvertenza che ne
 delimita l'uso è invece di Hewitt e Liang {cite}`hewitt2019control`, e va
 attribuita a loro: un probe troppo potente rischia di *imparare* lui la
-proprietà invece di limitarsi a leggerla. La loro proposta per accorgersene
-sono i *control task*, cioè rifare lo stesso addestramento su un'etichettatura
-casuale, e misurare la **selectivity**, lo scarto fra quanto il probe riesce
-sulla proprietà vera e quanto riesce sul casuale. Un probe che va bene su
-entrambe non stava leggendo: stava risolvendo.
+proprietà invece di limitarsi a leggerla. La loro proposta per accorgersene sono
+i *control task*: a ogni *tipo* di parola si assegna un'etichetta sorteggiata
+una volta per tutte (ogni occorrenza di «cane» riceve sempre la stessa, con la
+stessa distribuzione delle etichette vere), e si addestra lo stesso probe su
+questo compito. L'etichetta di controllo, lungi dall'essere rumore, è una
+funzione deterministica dell'identità della parola, che un probe può imparare
+solo memorizzando il vocabolario e non leggendo una proprietà linguistica nella
+rappresentazione. La **selectivity** è la differenza fra l'accuratezza sul
+compito vero e quella sul controllo: alta, il probe legge; bassa, il probe
+risolve da sé. Gli autori trovano che probe più capaci dei lineari raggiungono
+accuratezze simili sulla parte del discorso con selectivity più bassa: la
+capacità in più era servita a memorizzare.
 
 `````
 
@@ -666,20 +705,22 @@ riscrivere ciò che riceve in modo da poterlo poi ricostruire uguale.
 
 Perché quelle due regole insieme dovrebbero produrre caselle leggibili? Ecco il
 ragionamento. Riscrivere tutto potendo accendere pochissime caselle è una
-richiesta severa, e il ragionamento sta tutto nel prezzo di una casella
-confusa. Una casella non è solo un interruttore: quando si accende, aggiunge
-alla ricostruzione un contributo sempre uguale, la sua impronta. Se una casella
-si occupasse di tre cose diverse, quella unica impronta dovrebbe andare bene
-per tutte e tre, e non può: per rimettere a posto la ricostruzione bisognerebbe
+richiesta severa, e il ragionamento sta tutto nel prezzo di una casella confusa.
+Una casella non è solo un interruttore: quando si accende, aggiunge alla
+ricostruzione un contributo sempre uguale, la sua impronta. Se una casella si
+occupasse di tre cose diverse, quella unica impronta dovrebbe andare bene per
+tutte e tre, e non può: per rimettere a posto la ricostruzione bisognerebbe
 accendere altre caselle di correzione, cioè spendere di più proprio dove il
 conto va tenuto basso. Una casella che si occupa di una cosa sola, invece,
 quella cosa la ricostruisce da sé. Il posto abbondante serve appunto perché ce
 ne sia una per ogni cosa, senza doverle mescolare, e la rarità serve perché
 così, su ogni esempio, se ne accendono davvero poche. Questa è la stessa idea
-della rete, rovesciata: la rete sovrappone i concetti perché ha poco spazio e
-li può sovrapporre proprio perché sono rari; lo sparse autoencoder li separa
-dando spazio in abbondanza e sfruttando la stessa rarità. Che poi il risultato
-sia davvero una casella per concetto, però, è un'altra questione.
+della rete, rovesciata: la rete sovrappone i concetti perché ha poco spazio, e
+se lo può permettere perché ogni concetto compare di rado: una foto con un
+gatto, un'automobile e il colore verde tutti insieme capita poco, e finché due
+concetti non si accendono insieme non si pestano i piedi; lo sparse autoencoder
+li separa dando spazio in abbondanza e sfruttando la stessa rarità. Che poi il
+risultato sia davvero una casella per concetto, però, è un'altra questione.
 
 Il campo è giovane e va raccontato per quello che è. La tecnica ha retto la
 prova della scala, e si applica ormai a modelli linguistici veri, non a
@@ -693,28 +734,57 @@ intero.
 
 `````{tab} Superiore
 
-Il programma dei circuiti è stato articolato da Olah e colleghi su
-*Distill* nel 2020 {cite}`olah2020zoom`: studiare una rete come un oggetto
-scientifico, individuando *feature* (direzioni nello spazio delle attivazioni
-che codificano un concetto) e i *circuiti* che le collegano; sottografi di
-neuroni e pesi che implementano un calcolo interpretabile, come i rilevatori
-di curve nelle prime reti di visione.
+Il programma dei circuiti è stato articolato da Olah e colleghi su *Distill* nel
+2020 {cite}`olah2020zoom`: studiare una rete come un oggetto scientifico,
+individuando *feature* (direzioni nello spazio delle attivazioni che codificano
+un concetto) e i *circuiti* che le collegano; sottografi di neuroni e pesi che
+implementano un calcolo interpretabile, come i rilevatori di curve nelle prime
+reti di visione. Nei Transformer il circuito più studiato è la *induction head*
+{cite}`olsson2022induction`: due teste in strati consecutivi, la prima scrive
+in ogni posizione l'identità del token precedente, la seconda cerca nel
+contesto un token uguale a quello corrente e ne copia il successore,
+completando lo schema $[A][B]\dots[A] \to [B]$; la sua comparsa durante
+l'addestramento coincide con un salto nell'apprendimento in contesto. Lo
+strumento che trasforma un'ipotesi così in una prova è l’*activation
+patching*: si esegue il modello su un ingresso pulito e su uno corrotto che ne
+cambia la risposta, si sostituisce nella corsa corrotta l'attivazione di un
+solo componente con quella della corsa pulita, e si misura quanta risposta
+corretta ritorna. È un intervento, non una correlazione: con esso Meng e
+colleghi hanno localizzato negli MLP degli strati intermedi di GPT-2 XL il
+richiamo di fatti {cite}`meng2022locating`, e Wang e colleghi hanno
+ricostruito in GPT-2 small un circuito di ventisei teste
+{cite}`wang2023interpretability`.
 
 L'ostacolo teorico è la sovrapposizione (*superposition*), studiata a
 fondo da Elhage e colleghi nei *Toy Models of Superposition* (Anthropic, 2022)
 {cite}`elhage2022toy`: una rete con $n$ neuroni può rappresentare molte più di
 $n$ feature sfruttando direzioni quasi ortogonali in $\mathbb{R}^n$, purché
-ciascuna feature sia rara. La
-conseguenza pratica è la polisemanticità: un singolo neurone risponde a
-stimoli non correlati, e diventa illeggibile. Bricken e colleghi, in *Towards
-Monosemanticity* (Anthropic, 2023), affrontano il problema con uno **sparse
-autoencoder** {cite}`bricken2023monosemanticity`: le attivazioni di uno strato
-vengono ricodificate in un dizionario **sovracompleto** (molte più unità dei
-neuroni originali) sotto un vincolo di sparsità, che spinge poche unità
-attive per esempio. Le feature così estratte risultano in buona parte
-leggibili, e conviene prendere «in buona parte» e «leggibili» per quel che
-sono: il giudizio di valutatori umani (o di un modello usato come valutatore)
-su un campione di feature, non una proprietà dimostrata.
+ciascuna feature sia rara. La conseguenza pratica è la polisemanticità: un
+singolo neurone risponde a stimoli non correlati, e diventa illeggibile. Bricken
+e colleghi, in *Towards Monosemanticity* (Anthropic, 2023), affrontano il
+problema con uno **sparse autoencoder** {cite}`bricken2023monosemanticity`: le
+attivazioni $\mathbf{x} \in \mathbb{R}^{d}$ di uno strato vengono ricodificate
+in un dizionario **sovracompleto** di $F \gg d$ unità,
+
+$$
+\mathbf{f}(\mathbf{x}) = \mathrm{ReLU}\big(\mathbf{W}_e(\mathbf{x} -
+\mathbf{b}_d) + \mathbf{b}_e\big), \qquad \hat{\mathbf{x}} =
+\mathbf{W}_d\,\mathbf{f}(\mathbf{x}) + \mathbf{b}_d,
+$$
+
+addestrate a minimizzare
+$\|\mathbf{x} - \hat{\mathbf{x}}\|_2^2 + \lambda\,\|\mathbf{f}(\mathbf{x})\|_1$,
+con le colonne di $\mathbf{W}_d$ vincolate a norma unitaria, perché la penalità
+non si possa aggirare rimpicciolendo le attivazioni e ingrandendo le colonne.
+Ogni colonna di $\mathbf{W}_d$ è la direzione di una feature nello spazio delle
+attivazioni, e $f_i(\mathbf{x})$ dice quanta ce n'è; nel lavoro di Bricken il
+rapporto $F/d$ va da 1 a 256, sullo strato MLP da 512 neuroni di un Transformer
+a uno strato solo. La norma $L_1$ è un surrogato della sparsità vera, e ha un
+prezzo noto: schiaccia verso zero anche le attivazioni che dovrebbero restare
+grandi (*shrinkage*). Le feature così estratte risultano in buona parte
+leggibili, e conviene prendere «in buona parte» e «leggibili» per quel che sono:
+il giudizio di valutatori umani (o di un modello usato come valutatore) su un
+campione di feature, non una proprietà dimostrata.
 
 Il campo è nascente e va preso con l'onestà che si deve alle frontiere. La
 frontiera, però, oggi non passa dove si tende a metterla. La prova della
@@ -927,10 +997,10 @@ la riga dopo somma le mappe con quei pesi e con `relu` butta via i contributi
 negativi, tenendo solo le zone che *sostengono* la risposta; l'ultima porta i
 valori fra $0$ e $1$ per poterli disegnare (il $10^{-8}$ evita una divisione per
 zero nel caso, raro ma possibile su una classe non predetta, in cui `relu`
-azzeri tutta la mappa).
-Su un'immagine di cane la macchia calda cadrebbe sul muso; su
-un husky delle venti foto truccate, sulla neve, ed è precisamente questo che
-volevamo poter vedere.
+azzeri tutta la mappa). Qui l'immagine è rumore tirato a caso (`torch.randn`):
+basta a controllare le forme dei numeri, ma non dà una mappa da guardare. Su una
+vera foto di cane la macchia calda cadrebbe sul muso; su un husky delle venti
+foto truccate, sulla neve, ed è precisamente questo che volevamo poter vedere.
 
 `````{tab} Elementare
 

@@ -40,12 +40,16 @@ si chiama *vocoder*). Ma la sua origine è qui.
 Un'onda sonora si può disegnare su carta millimetrata, puntino per puntino, da
 sinistra a destra. Ogni puntino è l'altezza dell'onda in quell'istante, e per
 decidere dove metterlo guardi indietro, ai puntini che hai già segnato, così la
-curva resta coerente. Riguardarli tutti a uno a uno sarebbe impossibile: dai
-un'occhiata all'ultimo puntino, una a quello di due posti prima, una a quello di
-quattro, e la distanza raddoppia ogni volta. Il raddoppio però non prosegue
-all'infinito: dopo una decina di occhiate si ricomincia da vicino, con un
-secondo giro fatto come il primo, e a portarti indietro nel tempo sono i giri
-messi uno sull'altro. Avanti non guardi mai, perché avanti il
+curva resta coerente. Riguardarli tutti a uno a uno, per ogni puntino nuovo,
+vorrebbe dire
+rileggere migliaia di puntini ogni volta. Allora dai un'occhiata all'ultimo
+puntino, una a quello di due posti prima, una a quello di quattro, e la
+distanza raddoppia ogni volta: una decina di occhiate coprono un tratto di mille
+puntini. Poi si ricomincia da vicino con un secondo giro, e il trucco è che le
+sue occhiate non cadono su puntini nudi: cadono sugli appunti del primo giro,
+ciascuno dei quali riassume già un tratto di curva. Così il secondo giro allunga
+lo sguardo di altri mille puntini, e ogni giro messo sopra lo allunga ancora.
+Avanti non guardi mai, perché avanti il
 foglio è bianco.
 
 WaveNet fa esattamente questo, ma i
@@ -130,10 +134,11 @@ cura che merita. Su una nota che sfuma fino quasi al silenzio, il righello con
 le tacche spostate restituisce l'onda quasi intatta proprio nelle code più
 delicate, dove quello a tacche uguali la affoga nel fruscio.
 
-Il rovescio della medaglia insegna qualcosa sulle misure. Le tacche larghe
-che la $\mu$-law lascia sui picchi
-fanno sì che, sul singolo errore più grosso di tutto il brano, il righello a
-tacche uguali sia cinque volte migliore. Una misura peggiora di cinque
+Il rovescio della medaglia insegna qualcosa sulle misure. Sui picchi le tacche
+della $\mu$-law sono larghe, e sul singolo errore più grosso di tutto il brano
+il righello a tacche uguali è cinque volte migliore: quattro millesimi
+dell'altezza massima contro due centesimi, su una nota di pianoforte che
+sfuma. Una misura peggiora di cinque
 volte, e il suono migliora lo stesso: perché quell'errore più grosso capita
 dove c'è un colpo forte, e un colpo forte copre da sé il proprio difetto,
 mentre nel silenzio non c'è niente che copra niente.
@@ -320,13 +325,21 @@ in quest'ordine, perché se parti dal timbro senza una struttura ti perdi in
 bei suoni che non vanno da nessuna parte.
 
 AudioLM fa proprio così, con due tipi di token. I primi (chiamiamoli token
-della **struttura**) catturano l'ossatura a lungo termine: che cosa viene
-detto o suonato, in che ordine. I secondi (i token del **suono**) aggiungono
+della **struttura**) catturano l'ossatura a lungo termine: che cosa viene detto
+o suonato, in che ordine. Vengono dall'orecchio che si allenava alla parte
+coperta in {doc}`Imparare dal suono senza etichette
+</Audio/rappresentazioni-auto-supervisionate>`, ridotto però a nomi di gruppo
+come l'alfabeto provvisorio di HuBERT: in quel passaggio il timbro si perde
+quasi tutto, e resta l'ossatura. I secondi (i token del **suono**) aggiungono
 il dettaglio fine: la voce precisa, il colore, la grana. Il modello genera
 prima la struttura, dall'inizio alla fine, e solo dopo la riveste di suono. Il
 risultato ha insieme le due qualità che, prese da sole, si escludevano:
 coerenza (il brano ha un filo, non deraglia dopo pochi secondi) e
-fedeltà (suona come audio vero, non come un'imitazione metallica).
+fedeltà (suona come audio vero, non come un'imitazione metallica). Il prezzo
+sta nell'ordine: chi scrive lo scheletro non sente ancora il timbro, e lo
+scheletro poi non si ritocca. Se una frase, detta con quella voce, avrebbe
+chiesto un respiro in un altro punto, chi la riveste non può spostarlo: veste
+quello che trova.
 
 `````
 
@@ -420,8 +433,12 @@ parlato, e per capirla bisogna guardare *che cosa vede*
 ciascun token nel momento in cui viene prodotto. L'idea è **sfalsare** i
 quattro flussi di un passo l'uno dall'altro, come le voci di un canone che
 entrano una dopo l'altra. A ogni giro il modello emette ancora quattro token in
-un colpo solo, e sono il primo dell'istante di adesso, il secondo dell'istante
-prima, il terzo di due istanti fa, il quarto di tre. Ed è tutto lì: il secondo
+un colpo solo, e sono il
+primo dell'istante di adesso, il secondo dell'istante prima, il terzo di due
+istanti fa, il quarto di tre. Al giro 5, per esempio, escono il primo token
+dell'istante 5, il secondo del 4, il terzo del 3 e il quarto del 2: l'istante 2
+è completo soltanto adesso, tre giri dopo che era uscito il suo primo token. Ed
+è tutto lì: il secondo
 token dell'istante prima può guardare il primo di quello stesso istante, perché
 quello è già uscito, un giro fa. La finzione non sparisce, si sposta dove costa
 meno: i quattro che escono insieme sono ancora dati per indipendenti fra loro,
@@ -712,12 +729,16 @@ maschera causale le butta.
 L'idea era guardare a *quanto indietro* nella fila sta un simbolo, invece che
 al posto preciso che occupa, e per la musica è proprio ciò che serve: una
 battuta fa lo stesso effetto all'inizio o alla fine del pezzo. Il modo in cui
-era scritta, però, chiedeva di tenere da parte un appunto per ogni coppia
-di simboli della fila, e con brani da duemila simboli quel foglio di appunti
-pesa $8{,}5$ GB per ogni strato della rete: in una scheda grafica non ci sta,
-quindi non si fa. Huang e colleghi si accorgono che il foglio grande non serve
-tenerlo: lo si ricava da uno molto più piccolo, facendo scorrere le sue righe,
-ognuna di una casella in più della precedente. Il conto scende a $4{,}2$ MB,
+era scritta, però, chiedeva di tenere da parte un appunto per
+ogni coppia di simboli della fila, una lista di cinquecento numeri e passa che
+descrive quanto i due sono lontani; con brani da duemila simboli, cioè quattro
+milioni di coppie, quel foglio di appunti pesa $8{,}5$ GB per ogni strato della
+rete, e in una scheda grafica non ci sta. Huang e colleghi si accorgono che
+quasi tutti quegli appunti sono copie: due coppie alla stessa distanza (il
+primo e il terzo simbolo, il decimo e il dodicesimo) hanno lo stesso appunto.
+Basta tenerne uno per distanza, duemila in tutto, calcolare con quelli i
+punteggi e poi farli scorrere al posto giusto, ogni riga di una casella in più
+della precedente. Il conto scende a $4{,}2$ MB,
 circa duemila volte meno, e il risultato è identico. Un foglio grande resta, ed
 è un altro: quello su cui il modello mette a confronto ogni simbolo con ogni
 altro, e non lo risparmia nessuna delle due strade. La fila, quindi, non
@@ -932,12 +953,12 @@ gioco sono ancora tutte da scrivere.
 
 `````
 
-Resta il suono di cui qui non si è parlato, e non per dimenticanza: la voce.
-Con la musica e con i suoni d'ambiente di cui il capitolo si è occupato non
-esiste una continuazione giusta e una sbagliata: lo spartito,
-qui, è stato materiale da generare, non un verdetto con cui confrontarsi. Con il
-parlato invece una risposta giusta c'è, ed è già scritta: il testo che qualcuno
-ha pronunciato davvero. La catena costruita qui ci viene dietro tutta, onda,
-spettrogramma, token, e sopra di essi un modello che li produce come
-produrrebbe delle parole. «Speech Recognition» la rimette in fila nei due
-sensi, dalla voce al testo e dal testo alla voce.
+Resta la voce, che qui è comparsa solo come banco di prova (le ore di parlato
+di wav2vec 2.0, le frasi di WaveNet) e mai come argomento. Nella musica e nei
+suoni d'ambiente una continuazione giusta non esiste: si genera un brano, e
+nessuno ha in mano quello «vero» con cui confrontarlo. Nel parlato invece la
+risposta giusta c'è, ed è già scritta: il testo che qualcuno ha pronunciato
+davvero. La catena costruita fin qui (onda, spettrogramma, token, e un modello
+che li produce come produrrebbe delle parole) ci viene dietro tutta, e il
+{doc}`capitolo sul riconoscimento vocale </SpeechRecognition/overview>` la
+rimette in fila nei due sensi, dalla voce al testo e dal testo alla voce.

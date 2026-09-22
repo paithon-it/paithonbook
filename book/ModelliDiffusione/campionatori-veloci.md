@@ -20,8 +20,9 @@ accorto di percorrere la stessa strada.
 `````{tab} Elementare
 
 Una barca scende un fiume. Due cose la muovono: la corrente, che la trascina in
-un modo perfettamente noto perché il fiume è quello e non cambia, e i colpi di
-remo di chi ci sta sopra, che dipendono da dove si trova e da cosa vede.
+un modo perfettamente noto perché del fiume abbiamo la carta, con i tratti
+lenti e le rapide, e i colpi di remo di chi ci sta sopra, che dipendono da dove
+si trova e da cosa vede.
 
 Chi volesse prevedere dove finirà la barca ha due strade. La prima è misurare
 ogni secondo lo spostamento complessivo e sommarlo: onesto, e sprecato, perché
@@ -73,13 +74,20 @@ approssimazione, nessun errore accumulato. Tutto l'errore di discretizzazione
 sta nell'integrale, cioè nella sola parte che dipende dalla rete.
 
 Questa è la definizione di **integratore esponenziale**, una famiglia di metodi
-sviluppata per i problemi *stiff*, quelli in cui la parte lineare ha costanti di
-tempo molto più corte del resto. La PF-ODE è stiff proprio in questo senso: il
-coefficiente lineare $f(t)=-\tfrac12\beta(t)$ passa da $-0{,}05$ a $-10$ lungo
-il percorso, e a passi uniformi nel tempo un metodo generico deve tenerli
-piccoli per restare stabile dove $|f|$ è grande. È la ragione per cui il metodo
-di Eulero applicato direttamente a questa equazione si comporta peggio del suo
-ordine nominale, come il conto misura.
+sviluppata per i problemi *stiff*, quelli con costanti di tempo molto più corte
+del passo che si vorrebbe usare. Nella PF-ODE, però, la rigidità sta nel termine
+della rete vicino a $t = 0$, e il coefficiente lineare ne è quasi esente:
+$f(t) = -\tfrac12\beta(t)$ resta fra $-0{,}05$ e $-10$, e con otto passi
+uniformi Eulero su quel solo termine è già stabile ($|1 + hf| \le 0{,}25$). Con
+$\boldsymbol{\epsilon}_\theta \approx (\mathbf{x} - \alpha_t\mathbf{x}_0)/\sigma_t$,
+invece, la derivata del termine della rete rispetto a $\mathbf{x}$ vale circa
+$g^2(t)/(2\sigma_t^2)$, che sul banco di prova passa da $10$ a $t = 1$ a circa
+$545$ a $t = 10^{-3}$. Il cambio di variabile in $\lambda$ lo disinnesca: il
+fattore $1/\sigma_t$ diventa il peso $e^{-\lambda}$, integrato in forma chiusa,
+e ad essere approssimata resta la sola
+$\hat{\boldsymbol{\epsilon}}_\theta(\lambda)$, che in $\lambda$ varia
+lentamente. Eulero a passi uniformi in $t$ non ha nessuna delle due difese, ed è
+la ragione per cui si comporta peggio del suo ordine nominale.
 
 `````
 
@@ -97,10 +105,12 @@ grossolani; nell'ultimo tratto si decidono i dettagli, e lì i passi vanno
 fitti. Passi uniformi nel tempo ne sprecano parecchi dove non serve.
 
 La grandezza rispetto a cui conviene spaziarli è quanto segnale c'è rispetto
-al rumore, misurata in scala logaritmica. Distribuire i passi uniformemente
-lungo quella scala significa fare in modo che a ogni passo il rapporto fra
-segnale e rumore cambi sempre della stessa proporzione, ed è quello che rende
-i passi ugualmente informativi.
+al rumore, e conviene contarla per moltiplicazioni invece che per somme. Un
+passo porta il rapporto fra segnale e rumore da un centesimo a un decimo, il
+successivo da un decimo a 1, quello dopo da 1 a 10: ogni passo moltiplica per
+dieci, cioè cambia le cose della stessa proporzione, ed è quello che rende i
+passi ugualmente informativi. Contare così, per fattori invece che per
+differenze, si chiama usare una scala logaritmica.
 
 È un cambio di variabile, cioè un'operazione che non tocca l'equazione ma solo
 il modo di percorrerla, e da sola vale una parte importante del risparmio. Chi
@@ -149,7 +159,29 @@ in $t$ concentra i passi dove $\hat{\boldsymbol{\epsilon}}$ varia di più, e su
 programmi come quello lineare di DDPM la differenza fra le due griglie è
 sostanziale a parità di valutazioni. È il motivo per cui i campionatori delle
 librerie espongono la griglia come parametro separato dal metodo: sono due
-scelte ortogonali, e si sbaglia a considerarle una sola.
+scelte distinte, e si sbaglia a considerarle una sola.
+
+La parametrizzazione che le librerie hanno adottato più di tutte è quella di
+Karras e colleghi {cite}`karras2022elucidating`. Si scrive il dato rumoroso come
+$\mathbf{x} = \mathbf{x}_0 + \sigma\boldsymbol{\epsilon}$ e si usa $\sigma$
+stesso come tempo, così che la PF-ODE diventa
+$\mathrm{d}\mathbf{x}/\mathrm{d}\sigma = \big(\mathbf{x} - D_\theta(\mathbf{x};\sigma)\big)/\sigma$,
+con $D_\theta$ la rete che stima $\mathbf{x}_0$. La griglia è
+
+$$
+\sigma_i = \Big(\sigma_{\max}^{1/\rho}
+  + \tfrac{i}{N-1}\big(\sigma_{\min}^{1/\rho} - \sigma_{\max}^{1/\rho}\big)\Big)^{\rho},
+\qquad i = 0, \dots, N-1,
+$$
+
+con $\rho = 7$, $\sigma_{\min} = 0{,}002$ e $\sigma_{\max} = 80$: per $\rho = 1$
+sarebbe uniforme in $\sigma$, per $\rho \to \infty$ geometrica, cioè uniforme in
+$\lambda = -\log\sigma$, e $\rho = 7$ sta in mezzo. Il metodo è quello di Heun,
+del secondo ordine: un passo di Eulero, una seconda valutazione nel punto
+d'arrivo e la media delle due pendenze, con l'ultimo passo verso $\sigma = 0$
+lasciato a Eulero. Le valutazioni della rete sono quindi $2N - 1$, e su
+CIFAR-10 ne bastano trentacinque. È la griglia che le librerie accendono con
+l'opzione dei «sigma di Karras».
 
 `````
 
@@ -284,20 +316,55 @@ for N in (8, 16, 32, 64, 128):
 print("ordine misurato:", [round(float(np.log(misure[32][i] / misure[128][i])
                                        / np.log(4)), 2) for i in range(3)])
 # -> ordine misurato: [0.78, 1.07, 2.08]
+
+# la griglia e il metodo, separati: ciascuno sulla griglia dell'altro
+def eulero_in_lambda(M):
+    Ls = np.linspace(lam(1.0), lam(T_MIN), M + 1)
+    ts = [t_di_lam(L) for L in Ls]
+    x = z.copy()
+    for k in range(M):
+        t = ts[k]
+        campo = -0.5 * beta(t) * x + 0.5 * beta(t) / sigma(t) * eps(x, t)
+        x = x + (ts[k + 1] - t) * campo
+    return x
+
+def ddim_in_t(M):
+    ts = np.linspace(1.0, T_MIN, M + 1)
+    x = z.copy()
+    for k in range(M):
+        s, t = ts[k], ts[k + 1]
+        h = lam(t) - lam(s)
+        x = alpha(t) / alpha(s) * x - sigma(t) * (np.exp(h) - 1) * eps(x, s)
+    return x
+
+print("32 valutazioni: Eulero in lambda", f"{scarto(eulero_in_lambda(32)):.3e}",
+      "  DDIM in t", f"{scarto(ddim_in_t(32)):.3e}")
+rapporto = scarto(eulero_in_lambda(32)) / scarto(eulero_in_lambda(128))
+print("ordine di Eulero in lambda:", round(float(np.log(rapporto) / np.log(4)), 2))
+# -> 32 valutazioni: Eulero in lambda 2.787e-03   DDIM in t 1.143e-03
+# -> ordine di Eulero in lambda: 1.09
 ```
 
 Gli ordini misurati (l'esponente per cui, raddoppiando i passi, l'errore si
 divide per due elevato a quell'esponente) dicono che i metodi si comportano
 esattamente come la teoria prevede: DDIM è del primo ordine ($1{,}07$),
-DPM-Solver del secondo ($2{,}08$). Eulero invece non raggiunge il primo
-ordine ($0{,}78$), e non per un difetto del metodo ma perché la parte che lui
-approssima invece di risolvere è proprio quella che cambia in fretta.
+DPM-Solver del secondo ($2{,}08$). Eulero invece non raggiunge il primo ordine
+($0{,}78$), e il confronto va letto con un'avvertenza: Eulero cammina a passi
+uniformi in $t$, DDIM e DPM-Solver a passi uniformi in $\lambda$, quindi la
+tabella mescola il metodo e la griglia. Le ultime due righe li separano sullo
+stesso banco: Eulero sulla griglia in $\lambda$ torna del primo ordine
+($1{,}09$) e a trentadue valutazioni scende da $1{,}1 \cdot 10^{-2}$ a
+$2{,}8 \cdot 10^{-3}$, mentre DDIM sulla griglia uniforme in $t$ fa meglio che
+su quella in $\lambda$ ($1{,}1 \cdot 10^{-3}$ contro $2{,}1 \cdot 10^{-3}$). Il
+ritardo di Eulero viene soprattutto dalla griglia, che in $t$ lascia pochi passi
+proprio dove il termine della rete è più ripido; e quale griglia convenga
+dipende dal metodo e dal programma di rumore.
 
 Il confronto a parità di valutazioni della rete, che è la valuta con cui si
 paga davvero, dice il resto. Per arrivare allo stesso scarto che DDIM ottiene
 con trentadue valutazioni, a Eulero ne servono più di centoventotto; a
-DPM-Solver del secondo ordine ne bastano ventidue, e con le stesse trentadue è
-già tre volte più preciso.
+DPM-Solver del secondo ordine ne basta una ventina, a stimarlo fra le righe da
+sedici e da trentadue, e con le stesse trentadue è già tre volte più preciso.
 
 ## Quando l'ordine alto smette di aiutare
 
@@ -317,11 +384,12 @@ correzione fa danni invece che bene.
 Ci sono altre due cose che in pratica limitano l'ordine alto, e le conosce chi
 usa questi strumenti tutti i giorni.
 
-La prima riguarda il condizionamento sul testo. Quando si chiede al modello di
-seguire con forza una descrizione, l'uscita della rete diventa molto più grande
-in modulo, perché è la differenza amplificata fra due risposte; a quel punto un
-metodo che estrapola quella grandezza esce di strada. La cura è cambiare che
-cosa il metodo estrapola: invece del disturbo si estrapola la stima
+La prima riguarda la guida, il trucco raccontato nella {doc}`sezione su Stable
+Diffusion </ModelliDiffusione/stable-diffusion>` che interroga la rete due
+volte, con e senza la richiesta, e moltiplica la differenza per sette o dieci.
+Quella moltiplicazione rende l'uscita della rete molto più grande del normale; a
+quel punto un metodo che estrapola quella grandezza esce di strada. La cura è
+cambiare che cosa il metodo estrapola: invece del disturbo si estrapola la stima
 dell'immagine pulita, che di grandezza normale resta molto più a lungo, e che
 quando esagera si può riportare dentro i limiti dell'immagine. È esattamente la
 modifica che porta da un campionatore alla sua versione «più», ed è pensata per
@@ -368,10 +436,12 @@ medio della rete rispetto al punteggio vero, l'errore del campione generato
 porta un termine che dipende da $\delta$ e che nessun integratore riduce: i
 limiti noti sono superiori, cioè dicono che quel termine non sparisce
 rimpicciolendo il passo, non che esista un pavimento sotto cui non si possa
-scendere. Nei modelli veri quel pavimento si incontra fra le venti e le
-cinquanta valutazioni, ed è la ragione strutturale per cui la corsa ai solutori
-si è fermata lì: sotto quella soglia il guadagno non può più venire dal modo di
-percorrere la traiettoria, ma solo da un modello che ne percorra una più corta.
+scendere. Dove quel termine cominci a dominare, nei modelli veri, dipende dal
+modello e dal compito, e non c'è una cifra che valga per tutti; quello che si
+osserva è che sotto le dieci valutazioni nessun solutore conserva la qualità, ed
+è la ragione strutturale per cui la corsa ai solutori si è fermata lì: sotto
+quella soglia il guadagno non può più venire dal modo di percorrere la
+traiettoria, ma solo da un modello che ne percorra una più corta.
 
 `````
 
@@ -390,7 +460,9 @@ for N in (8, 16, 32, 64):
 
 La regola che se ne ricava vale anche sui modelli veri, con le soglie spostate:
 fino alle sedici valutazioni conviene il primo ordine, e sopra conviene il
-secondo. Nelle librerie i nomi sono `DDIM` o `Euler` per il primo,
+secondo. Nelle librerie i nomi sono `DDIM` per il primo, e anche `Euler`, che
+però non è l'Eulero della tabella: fa i suoi passi sulla scala del rumore invece
+che sul tempo, e così finisce per comportarsi quasi come DDIM;
 `DPMSolverMultistep` (nella variante «più») o `Heun` per il secondo. La scelta
 della griglia è un'impostazione a parte, e attenzione al nome: il parametro che
 si chiama *timestep spacing* sceglie fra tre spaziature tutte uniformi nel
@@ -445,8 +517,10 @@ altro interruttore, quello che ridistribuisce i livelli di rumore.
   $\tilde{\boldsymbol{\epsilon}}$ che cresce con la guida (donde
   DPM-Solver++, che estrapola $\hat{\mathbf{x}}_0$ ed è multipasso), e il
   pavimento dovuto all'errore $\delta$ della rete.
-- La griglia è una scelta ortogonale al metodo, e va uniforme in
-  $\lambda$.
+- La griglia è una scelta separata dal metodo, e non ha una risposta
+  unica: sul banco di prova la griglia uniforme in $\lambda$ salva Eulero e
+  penalizza DDIM. Per questo le librerie offrono più spaziature (uniforme in
+  $t$, in $\lambda$, o quella di Karras e colleghi in $\sigma^{1/\rho}$).
 ```
 `````
 

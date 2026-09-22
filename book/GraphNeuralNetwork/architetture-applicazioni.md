@@ -28,7 +28,7 @@ grafo di miliardi di archi, dove qualche nodo-celebrità ha milioni di
 connessioni, bastano due o tre anelli perché quella cerchia arrivi a
 inghiottire mezza rete.
 
-Questa sezione racconta le due idee che hanno tolto la GNN dal laboratorio e
+Le due idee che hanno tolto la GNN dal laboratorio e
 l'hanno messa in produzione da Pinterest a Google Maps (*GraphSAGE* e la *Graph
 Attention Network*) e poi fa il giro delle cose che oggi, con questi strumenti,
 si riesce davvero a fare.
@@ -43,18 +43,21 @@ guardarli tutti, e mettere insieme quel che si è pescato: due parole, due idee.
 
 `````{tab} Elementare
 
-Torniamo all'immagine della sezione sul message passing: per farsi un'idea di
-un nodo si guardano i suoi vicini. La GCN, per farlo, ha bisogno di avere
-davanti *tutta* la rete di amicizie, e di averla vista per intero già durante
-l'addestramento. GraphSAGE cambia il punto di vista con una domanda semplice:
-e se, invece di imparare a memoria una fila di numeri per ciascuna persona,
-imparassimo la ricetta per costruirla? Una ricetta del tipo «prendi la
-persona, guarda i suoi amici, mescola nel modo giusto». Una ricetta la puoi
-applicare anche a qualcuno che non hai mai visto, purché tu sappia chi sono i
-suoi amici. Questo si chiama modo induttivo: la rete non impara *i
+Torniamo all'immagine della sezione sul message passing: per farsi un'idea di un
+nodo si guardano i suoi vicini. La GCN, per farlo, ha bisogno di avere davanti
+*tutta* la rete di amicizie, e di averla vista per intero già durante
+l'addestramento. Eppure la sua ricetta di riscrittura, uguale per tutti,
+andrebbe bene anche per chi arriva dopo: è il modo di addestrarla a non
+prevederlo. GraphSAGE cambia il punto di vista con una domanda semplice: e se
+l'addestramento, invece di guardare il grafo intero una volta per tutte,
+guardasse ogni volta un nodo e i suoi dintorni, così che la ricetta impari fin
+dall'inizio a lavorare su pezzi di rete sempre diversi? Una ricetta del tipo
+«prendi la persona, guarda i suoi amici, mescola nel modo giusto». Una ricetta
+la puoi applicare anche a qualcuno che non hai mai visto, purché tu sappia chi
+sono i suoi amici. Questo si chiama modo induttivo: la rete non impara *i
 risultati*, impara *come si calcolano*, e quel «come» funziona pure sui nuovi
-arrivati e su reti diverse da quella di addestramento (un antibiotico nuovo,
-un utente iscritto stamattina).
+arrivati e su reti diverse da quella di addestramento (un antibiotico nuovo, un
+utente iscritto stamattina).
 
 La seconda idea combatte l'ingombro. Se una persona ha diecimila contatti,
 guardarli tutti a ogni giro è impraticabile. E se ne bastasse un campione?
@@ -88,13 +91,22 @@ $$
 dove $\|$ è la concatenazione, $\sigma$ una non linearità, $\mathbf{W}^{(k)}$ i
 pesi condivisi dello strato $k$, e (cruciale)
 $\mathcal{S}(v) \subseteq \mathcal{N}(v)$ è un sottoinsieme campionato
-uniformemente dei vicini, di dimensione fissa. È il campionamento a rendere
-il costo per nodo indipendente dal grado: con $S$ vicini campionati per strato
-e $K$ strati, il sottografo che alimenta un nodo ha al più $S^K$ foglie,
-comunque grande sia il grafo. E poiché $\mathbf{W}^{(k)}$ e le funzioni di
-aggregazione non dipendono da *quali* nodi si stia guardando ma solo dalle loro
-feature, il modello si applica di peso a nodi e grafi mai visti: l'inferenza su
-un nuovo nodo richiede solo di conoscerne il vicinato, non di riaddestrare.
+uniformemente dei vicini, di dimensione fissa. È il campionamento a rendere il
+costo per nodo indipendente dal grado: con $S$ vicini campionati per strato e
+$K$ strati, il sottografo che alimenta un nodo ha al più $S^K$ foglie, comunque
+grande sia il grafo. E poiché $\mathbf{W}^{(k)}$ e le funzioni di aggregazione
+non dipendono da *quali* nodi si stia guardando ma solo dalle loro feature, il
+modello si applica di peso a nodi e grafi mai visti: l'inferenza su un nuovo
+nodo richiede solo di conoscerne il vicinato, non di riaddestrare. Due dettagli
+dell'algoritmo completano il quadro. Dopo ogni strato lo stato si normalizza,
+$\mathbf{h}_v^{(k)} \leftarrow \mathbf{h}_v^{(k)} / \lVert \mathbf{h}_v^{(k)} \rVert_2$.
+E in assenza di etichette la rete si addestra con la loss di skip-gram sui
+cammini casuali,
+$\mathcal{L} = -\log \sigma(\mathbf{z}_u^\top \mathbf{z}_v) - Q\, \mathbb{E}_{v_n \sim P_n}\log \sigma(-\mathbf{z}_u^\top \mathbf{z}_{v_n})$,
+dove $\sigma$ qui è la sigmoide, $v$ compare vicino a $u$ in un cammino breve,
+$P_n$ è la distribuzione dei negativi e $Q$ il loro numero. È l'obiettivo di
+DeepWalk, con la differenza che $\mathbf{z}_u = \mathbf{h}_u^{(K)}$ esce da una
+funzione delle feature invece che da una riga di tabella.
 
 La funzione $\mathrm{AGGREGATE}$ deve restare invariante all'ordine dei vicini;
 Hamilton et al. ne propongono tre varianti:
@@ -255,6 +267,19 @@ fatto che nella GAT non esiste una proiezione separata per i *value*: la stessa
 $\mathbf{W}$ fa due mestieri, costruisce il punteggio e produce il vettore che
 poi viene mediato, mentre il Transformer tiene $\mathbf{W}_Q$, $\mathbf{W}_K$ e
 $\mathbf{W}_V$ distinte.
+
+Il punteggio della GAT ha però un limite che la formula nasconde. Scrivendo
+$\mathbf{a} = [\mathbf{a}_1 \,\|\, \mathbf{a}_2]$ si ha
+$\mathbf{a}^\top[\mathbf{W}\mathbf{h}_i \,\|\, \mathbf{W}\mathbf{h}_j] = \mathbf{a}_1^\top\mathbf{W}\mathbf{h}_i + \mathbf{a}_2^\top\mathbf{W}\mathbf{h}_j$,
+e la LeakyReLU è monotona crescente: l'ordine dei vicini secondo $\alpha_{ij}$
+dipende solo dal termine in $j$, quindi è lo stesso per ogni nodo $i$ che li
+guarda, e su un vicinato comune il vicino preferito da uno è il preferito da
+tutti. Brody, Alon e Yahav la chiamano attenzione *statica* e la correggono
+spostando la non linearità prima del prodotto con $\mathbf{a}$,
+$e_{ij} = \mathbf{a}^\top \mathrm{LeakyReLU}\big(\mathbf{W}[\mathbf{h}_i \,\|\, \mathbf{h}_j]\big)$:
+è GATv2, che ha attenzione dinamica allo stesso costo
+{cite}`brody2022attentive`. Quel costo, per uno strato e una testa, è
+$O(|V|FF' + |E|F')$, lineare nel numero di archi.
 
 Un esempio a mano. Un nodo $i$ ha tre vicini, e i punteggi (dopo la
 $\mathrm{LeakyReLU}$) valgono $e_{i1}=2$, $e_{i2}=1$, $e_{i3}=0$; il cappio,
@@ -425,19 +450,23 @@ mostrare dove le GNN, oggi, fanno la differenza.
 
 **Chimica e farmaci.** È il terreno naturale delle GNN: una molecola *è* un
 grafo (atomi nei nodi, legami negli archi) e prevederne una proprietà è un
-compito a livello di grafo. L'idea di leggere le molecole con reti su grafo
-risale ai *fingerprint molecolari neurali* di Duvenaud e colleghi del 2015
-{cite}`duvenaud2015convolutional`: prima di allora le caratteristiche di una
-molecola da dare in pasto a un modello (quanti anelli, quali gruppi chimici,
-che peso) le sceglieva un chimico a mano, una per una; il lavoro di Duvenaud
-le fa trovare alla rete, che dalla struttura della molecola ricava da sé la
-fila di numeri che la descrive. La punta di diamante è halicin, la
-molecola con cui si è aperto il capitolo. Conviene aggiungere solo quello che
-lì non era stato detto: la rete che l'ha pescata è una rete a message passing
-come quelle di queste pagine, e la molecola non funziona su un batterio
-soltanto, ma su batteri molto diversi fra loro (fra gli altri il bacillo della
-tubercolosi e alcuni ceppi intestinali che ai farmaci più recenti non
-rispondono più).
+compito a livello di grafo. Le prime reti su grafo provate sulle molecole sono
+quelle ricordate in apertura del capitolo: i modelli di Scarselli e di Micheli
+erano già misurati su dati chimici, come mutagenicità, tossicità e proprietà di
+alcani
+{cite}`scarselli2009graph,micheli2009neural`. A rendere l'idea corrente nella
+chimica computazionale sono stati i *fingerprint molecolari neurali* di Duvenaud
+e colleghi del 2015 {cite}`duvenaud2015convolutional`. Le caratteristiche di una
+molecola da dare in pasto a un modello (quanti anelli, quali gruppi chimici, che
+peso) fino ad allora si sceglievano quasi sempre a mano, o si calcolavano con
+impronte fisse come le circolari ECFP; qui le trova la rete, che dalla struttura
+della molecola ricava da sé la fila di numeri che la descrive. La punta di
+diamante è halicin, la molecola con cui si è aperto il capitolo. Conviene
+aggiungere solo quello che lì non era stato detto: la rete che l'ha pescata è
+una rete a message passing come quelle di queste pagine, e la molecola non
+funziona su un batterio soltanto, ma su batteri molto diversi fra loro (fra gli
+altri il bacillo della tubercolosi e alcuni ceppi intestinali che ai farmaci più
+recenti non rispondono più).
 
 **Raccomandazione su grafo.** Il caso industriale più celebre è **PinSage**, il
 sistema che Pinterest mette in produzione nel 2018
@@ -548,7 +577,16 @@ amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
   proveniente da nodi distanti viene «schiacciata» attraverso colli di
   bottiglia topologici, penalizzando i compiti a lungo raggio. Profondità e
   portata sono così in tensione: servirebbero più strati per raggiungere nodi
-  lontani, ma più strati innescano l'oversmoothing.
+  lontani, ma più strati innescano l'oversmoothing. La versione misurabile è di
+  Topping e colleghi: se le derivate delle funzioni di messaggio e di
+  aggiornamento sono limitate da due costanti $c_1$ e $c_2$, la sensibilità
+  dello stato di $v$ alla feature di un nodo $u$ a distanza $K$ soddisfa
+  $\big\lVert \partial \mathbf{h}_v^{(K)} / \partial \mathbf{x}_u \big\rVert
+  \le (c_1 c_2)^K \big(\hat{\mathbf{A}}^K\big)_{vu}$, e quell'elemento di
+  $\hat{\mathbf{A}}^K$ è piccolo proprio quando i cammini fra i due passano per
+  pochi archi. Ne ricavano una curvatura degli archi che individua i colli di
+  bottiglia, e un *rewiring* che aggiunge archi dove la curvatura è più
+  negativa {cite}`topping2022oversquashing`.
 - **Scalabilità.** Il campionamento di GraphSAGE e PinSage attenua il costo, ma
   addestrare su grafi da miliardi di nodi resta un problema aperto di sistemi,
   non solo di modelli.
@@ -625,7 +663,13 @@ ogni nodo raggiunge ogni altro in un solo passo, quindi l'over-squashing
 sparisce per costruzione e non serve profondità per avere portata.
 
 L'affermazione fatta sopra, che l'oversmoothing invece peggiora, si misura in
-una riga. Su un grafo completo con i cappi l'adiacenza $\tilde{\mathbf{A}}$ è
+una riga nel caso limite in cui l'attenzione pesa tutti allo stesso modo. Per
+un'attenzione appresa il risultato è di Dong, Cordonnier e Loukas: una pila di
+strati di sola self-attention, senza connessioni residue né MLP, porta le
+rappresentazioni verso una matrice di rango uno con velocità doppiamente
+esponenziale nella profondità, e sono proprio residui e MLP a frenarla
+{cite}`dong2021attention`. Il caso uniforme dà l'intuizione. Su un grafo
+completo con i cappi l'adiacenza $\tilde{\mathbf{A}}$ è
 $\mathbf{J}$, la matrice fatta di soli uno, tutti i gradi valgono $N$ e quindi
 $\hat{\mathbf{A}} = \tilde{\mathbf{D}}^{-1/2}\tilde{\mathbf{A}}
 \tilde{\mathbf{D}}^{-1/2} = \mathbf{J}/N$, il cui spettro è $1$ una volta e $0$
@@ -661,17 +705,19 @@ La prima è una **codifica posizionale**: si calcolano i primi $k$ autovettori
 non banali del laplaciano normalizzato
 $\mathbf{L} = \mathbf{U}\boldsymbol{\Lambda} \mathbf{U}^\top$ e si prende la
 riga $i$-esima di $\mathbf{U}_{:,1:k}$ come firma del nodo $i$, che chiamiamo
-$\mathbf{p}_i$. Nel lavoro che ha introdotto la costruzione
-{cite}`dwivedi2020generalization` quella firma si somma alle feature del
-nodo dopo una proiezione lineare
+$\mathbf{p}_i$. La costruzione viene dal lavoro di Dwivedi e colleghi che ha
+messo in fila i banchi di prova per le GNN {cite}`dwivedi2020benchmarking`, e
+riprende le *laplacian eigenmaps* della riduzione di dimensionalità; nel Graph
+Transformer di Dwivedi e Bresson {cite}`dwivedi2020generalization` quella firma
+si somma alle feature del nodo dopo una proiezione lineare
 ($\mathbf{p}_i^0 = \mathbf{C}^0\mathbf{p}_i + \mathbf{c}^0$ con
 $\mathbf{C}^0 \in \mathbb{R}^{d \times k}$, poi
 $\mathbf{h}_i^0 = \hat{\mathbf{h}}_i^0 + \mathbf{p}_i^0$), non si concatena: la
 proiezione serve proprio perché $k$ e $d$ non coincidono. È la stessa mossa che
 il capitolo sui Transformer descrive per la codifica sinusoidale, dove la firma
 della posizione si somma all'embedding del token invece di affiancarglisi.
-Diverse implementazioni successive concatenano invece; e la codifica entra
-solo allo strato d'ingresso, non negli strati intermedi.
+Diverse implementazioni successive concatenano invece; e la codifica entra solo
+allo strato d'ingresso, non negli strati intermedi.
 
 La giustificazione è quella già stabilita in questo capitolo: gli autovettori
 sono i modi di variazione del grafo ordinati per frequenza, e su un grafo a
@@ -835,13 +881,14 @@ riordinare i nodi di un grafo. Cambia l'elenco, cambia la rete.
 
 ```{admonition} Da ricordare
 :class: important
-- GraphSAGE impara la ricetta con cui si costruisce la descrizione di un
-  nodo, non la descrizione già fatta: una ricetta la si applica anche a chi non
-  c'era durante l'addestramento (l'utente iscritto stamattina) e a reti diverse
-  da quella su cui si è imparato, ed è questo che si chiama modo induttivo.
-  In più, invece di ascoltare tutti i vicini ne pesca a caso un numero fisso
-  (venticinque, per dire) e mescola solo quelli: come ci si fa un'idea di un
-  quartiere intervistandone un campione a sorte, invece di bussare a ogni porta.
+-  GraphSAGE si addestra su un nodo e i suoi dintorni per volta, e così impara
+  una ricetta con cui si costruisce la descrizione di un nodo: una ricetta la si
+  applica anche a chi non c'era durante l'addestramento (l'utente iscritto
+  stamattina) e a reti diverse da quella su cui si è imparato, ed è questo che
+  si chiama modo induttivo. In più, invece di ascoltare tutti i vicini ne pesca
+  a caso un numero fisso (venticinque, per dire) e mescola solo quelli: come ci
+  si fa un'idea di un quartiere intervistandone un campione a sorte, invece di
+  bussare a ogni porta.
 - La GAT passa l'evidenziatore sui vicini: prima decide, vicino per vicino,
   quanto pesarlo (a ognuno un voto tra 0 e 1, e i voti sommano a 1), poi fa la
   media pesata con quei voti, che non scrive nessuno a mano ma impara la rete. È

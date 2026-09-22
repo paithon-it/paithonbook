@@ -14,7 +14,8 @@ C'è però un presupposto nascosto, e i modelli generativi lo mandano in pezzi.
 Miller dà per scontato che la risposta sia un evento, l'istante in cui la
 macchina consegna il risultato. Per un classificatore è ancora così, e la
 latenza è un numero solo, il tempo fra la domanda e la risposta; la sezione
-«Servire un modello» ci ha insegnato a prometterlo per percentili.
+{doc}`Servire un modello </MLOps/deployment-e-serving>` ci ha
+insegnato a prometterlo per percentili.
 
 Ma un modello che genera testo non consegna niente in un istante: consegna un
 pezzo alla volta, per secondi, e mentre consegna il lettore sta già leggendo.
@@ -404,7 +405,8 @@ entro cui è servito il 95% delle richieste, la p99 quello entro cui ne è
 servito il 99%, e la promessa si scrive su quelli e non sulla media. Manca
 solo un nome, che da qui in poi torna in ogni paragrafo: il gruppetto di
 richieste sfortunate che resta *oltre* il percentile si chiama la coda.
-Attenzione, è la coda della cometa e non quella di una fila: la
+Attenzione, perché poche pagine fa la stessa parola voleva dire la fila di
+richieste che aspettano il turno. Qui è l'altra coda, quella della cometa: la
 striscia di ritardatarie che si allunga dietro a tutte le altre. Sono poche,
 sono molto più lente, e sono quelle che fanno arrabbiare le persone.
 
@@ -445,15 +447,15 @@ subìto per conto suo. Lì a sfondare la promessa è il totale, che di suo è
 venti volte più grande di un passo solo.
 
 La terza si vede nel confronto fra le due configurazioni di poco fa, sugli
-stessi numeri. Con mazzi da
-64 il TTFT medio è 457 ms, cioè dentro l'obiettivo di 500 ms: guardando
-quello, il sistema mantiene la promessa. Ma la p95 passa da 486 a 729 ms, e lì
-la riga dei 500 viene attraversata di netto. E la tabella ha una colonna che
-conta proprio le sforate: a mazzi da 64 sfora il mezzo secondo il 33,4%
-delle richieste, cioè una su tre, contro il $3{,}5\%$ dei mazzi da 16. Chi
-riportasse la media lo farebbe in buona fede, e sarebbe smentito da un terzo
-dei suoi utenti. È il modo più comune in cui un cruscotto tutto verde copre un
-servizio in rosso.
+stessi numeri. Con mazzi da 64 il TTFT medio è 457 ms, cioè dentro l'obiettivo
+di 500 ms: guardando quello, il sistema mantiene la promessa. Ma la p95 passa da
+486 a 729 ms, e lì la riga dei 500 viene attraversata di netto. E c'è un terzo
+numero, stampato dalla simulazione di «Misurare in venti righe», che conta
+proprio le sforate: a mazzi da 64 sfora il mezzo secondo il 33,4% delle
+richieste, cioè una su tre, contro il $3{,}5\%$ dei mazzi da 16. Chi riportasse
+la media lo farebbe in buona fede, e sarebbe smentito da un terzo dei suoi
+utenti. È il modo più comune in cui un cruscotto tutto verde copre un servizio
+in rosso.
 
 Vale poi, a maggior ragione, il caso che qui non si vede e che in produzione
 capita: una media che migliora mentre la p95 o la p99 peggiorano è un
@@ -509,10 +511,13 @@ trova il suo atto da ricopiare da capo.
 
 `````{tab} Superiore
 
-Nell'attenzione causale la coppia $(\mathbf{k}, \mathbf{v})$ della posizione $j$ dipende solo dai
-token $1, \dots, j$. Due richieste che condividono un prefisso hanno quindi, per
-quelle posizioni, una KV cache bit a bit identica, a parità di pesi,
-precisione, eventuale adattatore LoRA e codifica posizionale. La chiave del
+Nell'attenzione causale la coppia $(\mathbf{k}, \mathbf{v})$ della posizione $j$
+dipende solo dai token $1, \dots, j$. Due richieste che condividono un prefisso
+hanno quindi, per quelle posizioni, la stessa KV cache in aritmetica esatta, a
+parità di pesi, precisione, eventuale adattatore LoRA e codifica posizionale;
+ricalcolata dentro un mazzo di forma diversa può differire nelle ultime cifre,
+per la stessa non associatività della somma che il batching dinamico già
+introduce, e riusarla non è quindi meno esatto che ricalcolarla. La chiave del
 riuso è la sequenza esatta di identificativi di token, non la stringa.
 
 Il meccanismo di riferimento è la **RadixAttention** di SGLang
@@ -571,7 +576,7 @@ tempi non sono misurati ma estratti a sorte, e la forma con cui si sorteggia
 non è scelta a caso: dev'essere quella che i tempi di risposta hanno davvero,
 cioè tantissime richieste ammassate attorno a un valore tipico e poche, sempre
 più rare, che si allontanano verso i tempi lunghi. È esattamente la coda di cui
-parla tutta questa pagina, e ha anche la proprietà che serve, cioè che non esce
+si è parlato fin qui, e ha anche la proprietà che serve, cioè che non esce
 mai un tempo negativo. Quella forma ha un nome, **lognormale**, e nel codice è
 la riga `rng.lognormal`.
 

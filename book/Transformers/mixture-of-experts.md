@@ -152,7 +152,12 @@ parametri ($36{,}5 / 6{,}44 \approx 5{,}7$) a parità di aritmetica per token.
 Con $k = 2$ ed esperti della stessa taglia gli attivi salgono a $10{,}7$
 miliardi, $1{,}7$ volte il denso; per pareggiare del tutto si riduce la
 $d_{\text{ff}}$ di ciascun esperto, così che due esperti dimezzati costino
-quanto una FFN intera.
+quanto una FFN intera. Mixtral 8x7B {cite}`jiang2024mixtral` ha scelto l'altra
+strada: $k = 2$ su $N = 8$ esperti SwiGLU di taglia piena
+($d_{\text{ff}} = 14\,336$), su 32 strati con $d_{\text{model}} = 4096$. La
+stessa formula dà circa 46,7 miliardi di parametri totali e 12,9 attivi. Il
+nome suggerirebbe $8 \times 7 = 56$, ma l'attenzione e gli embedding non si
+moltiplicano: si moltiplicano solo le FFN.
 
 Il router, in tutto questo, è rumore di fondo: una matrice
 $\mathbf{W}_g \in \mathbb{R}^{N \times d_{\text{model}}}$ per strato, cioè
@@ -209,7 +214,10 @@ due si buttano via: per questo token semplicemente non esistono. Restano da
 decidere le proporzioni della miscela, cioè da trasformare due punteggi
 ($2{,}0$ e $1{,}5$) in due percentuali che sommino a cento. La ricetta standard
 si chiama softmax, ed è una divisione con un passaggio in più: si prende il
-numero $e = 2{,}718\ldots$, lo si eleva a ciascun punteggio, e si divide
+numero $e = 2{,}718\ldots$, lo si eleva a ciascun punteggio (elevare a un
+esponente con la virgola è la stessa idea delle potenze che si conoscono, solo
+più fine: lo fa una calcolatrice, e più il punteggio è alto più il risultato
+cresce), e si divide
 ciascun risultato per la somma di tutti. Sui nostri due, $e^{2{,}0} = 7{,}39$ e
 $e^{1{,}5} = 4{,}48$, che sommati fanno $11{,}87$; quindi
 $7{,}39 / 11{,}87 = 0{,}62$ e $4{,}48 / 11{,}87 = 0{,}38$. Due pesi che sommano
@@ -379,7 +387,9 @@ P_i = \frac{1}{T}\sum_{\mathbf{x} \in \mathcal{B}} p_i(\mathbf{x}),
 $$
 
 dove $p(\mathbf{x})$ è la distribuzione softmax del router sul token
-$\mathbf{x}$, $f_i$ è la
+$\mathbf{x}$ (un vettore di $N$ componenti, $p_i(\mathbf{x})$ quella
+dell'esperto $i$; lo stesso vale per $f$ e $P$, vettori sul simplesso le cui
+componenti sono $f_i$ e $P_i$), $f_i$ è la
 frazione di token effettivamente instradati all'esperto $i$ (un
 conteggio), $P_i$ la probabilità media che il router gli ha assegnato (una
 quantità continua) e $\alpha$ il peso della penalità, $10^{-2}$ nel paper.
@@ -432,7 +442,18 @@ regime è ben condizionata: il gradiente non dipende da dove ci si trova sul
 simplesso. È una linearità locale, però, non globale: $f$ dipende dagli stessi
 parametri del router, e quando l'instradamento cambia cambia anche il
 coefficiente della penalità, il che riporta il paesaggio della loss ausiliaria
-fra le cose che si osservano, non fra quelle che si dimostrano.
+fra le cose che si osservano, non fra quelle che si dimostrano. Due correttivi
+successivi rispondono ai suoi difetti. La *router z-loss* di ST-MoE
+{cite}`zoph2022stmoe` aggiunge
+$\frac{1}{T}\sum_{\mathbf{x}}\big(\log\sum_j
+e^{(\mathbf{W}_g\mathbf{x})_j}\big)^2$,
+che tiene piccoli i logit del router e con essi gli errori di arrotondamento.
+DeepSeek-V3 {cite}`liu2024deepseekv3` toglie invece del tutto la loss
+ausiliaria, che spinge anche contro la qualità: somma a ogni punteggio un bias
+$b_i$ usato solo per scegliere i $k$ esperti e non per pesarli, e dopo ogni
+passo lo abbassa di poco agli esperti sovraccarichi e lo alza a quelli scarichi.
+Il bilanciamento passa dalla loss a una regola di controllo, e il gradiente
+della cross-entropia resta pulito.
 
 `````
 
@@ -443,7 +464,10 @@ token qualunque (nel gergo un batch, cioè il gruppo di esempi che il
 modello elabora in una volta sola) un esperto può comunque ricevere più token
 di quanti ne possa elaborare. Per questo l'implementazione fissa in anticipo
 una **capacità**, cioè il numero massimo di token che ciascun esperto accetta
-per batch. La ricetta è semplice: si conta quanti token toccherebbero a testa
+per batch. Al tavolo dello sport arrivano cinque pezzi, ma chi ci siede ne può
+rileggere
+tre: due restano fuori. La ricetta per fissare il tetto è
+semplice: si conta quanti token toccherebbero a testa
 in un mondo perfettamente equo, si aggiunge un margine di sicurezza, e si
 arrotonda per eccesso.
 
@@ -531,7 +555,8 @@ token. Quasi sei volte la memoria per lo stesso calcolo: il baratto è
 esplicito.
 
 In addestramento distribuito la strategia naturale è l’expert parallelism,
-già nominato nella sezione sul parallelismo distribuito accanto agli assi
+già nominato nella {doc}`sezione sul parallelismo distribuito
+</GPU/parallelismo-distribuito>` accanto agli assi
 dati, tensor e pipeline: gli esperti di ciascuno strato si spartiscono fra le
 schede, una manciata per GPU. Il pattern di comunicazione che ne nasce non è
 l'all-reduce del parallelismo dati, ma un **all-to-all**: ogni GPU spedisce a
@@ -544,7 +569,8 @@ sovrapporre al calcolo come si fa con l'all-reduce di
 l'esperto più affollato detta il ritmo a tutte le altre. Questa, e non solo la
 qualità del modello, è la ragione economica della loss di bilanciamento.
 
-In inferenza vale il quadro che la sezione su LLMOps riprenderà in dettaglio:
+In inferenza vale il quadro che la {doc}`sezione su LLMOps </MLOps/llmops>`
+riprenderà in dettaglio:
 la generazione è memory-bound, e il tempo per token è dominato dalla
 lettura dei pesi dalla memoria della GPU, non dall'aritmetica. La
 sparsità qui aiuta in modo condizionato, e la condizione è il batch. Con
@@ -737,7 +763,8 @@ in fretta: è un pezzo di ricambio più che un'architettura nuova.
 Nulla di tutto questo, però, cambia *cosa* il modello ha imparato a fare.
 Denso o sparso, quello che esce dal pre-addestramento resta un completatore di
 testo, e per trasformarlo in un interlocutore serve la fase successiva, il
-post-training, di cui parla la sezione che segue.
+post-training, di cui parla la {doc}`sezione sul post-training
+<post-training>`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

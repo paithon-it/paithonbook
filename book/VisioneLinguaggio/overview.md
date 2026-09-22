@@ -69,13 +69,14 @@ informazione linguistica smettono di essere separate.
 
 La prima delle due cose da fare, dare all'immagine dei pezzi, ha una risposta
 condivisa da quasi tutti i sistemi di oggi, e il lettore la conosce già: il
-Vision Transformer {cite}`dosovitskiy2021image` del capitolo sui
-Transformer. Conviene richiamarne il gesto, perché tutto il resto ci poggia
+Vision Transformer {cite}`dosovitskiy2021image` del {doc}`capitolo sui
+Transformer </Transformers/multimodalita>`. Conviene richiamarne il gesto,
+perché tutto il resto ci poggia
 sopra, e sta in due mosse.
 
-La prima: si taglia la fotografia in quadratini tutti uguali, che qui chiameremo
-**tessere** (in inglese *patch*, ed è la parola che si incontra ovunque, qui
-compresa). La seconda: siccome le tessere, una volta messe in fila, non
+La prima: si taglia la fotografia in quadratini tutti uguali, che chiameremo
+**tessere** (in inglese *patch*: da qui in avanti le due parole vogliono dire
+la stessa cosa). La seconda: siccome le tessere, una volta messe in fila, non
 ricordano più da quale punto della foto venissero, a ciascuna si attacca
 un'etichetta che dice dove stava nella griglia, e quell'etichetta si chiama
 codifica di posizione.
@@ -163,7 +164,9 @@ La prima allinea due spazi senza fonderli: due reti separate, una per le
 immagini e una per i testi, imparano a mandare una foto e la sua didascalia in
 due punti vicini di una stessa mappa, e a tenere lontane le coppie che non si
 corrispondono. Vicini rispetto a che cosa è meno ovvio di quel che sembra, e la
-risposta chiude la sezione «Allineare due spazi». È l'idea di CLIP
+risposta la dà la {doc}`sezione sull'allineamento
+</VisioneLinguaggio/allineare-due-spazi>`, quando si va a misurare quanto
+vicini. È l'idea di CLIP
 {cite}`radford2021learning`, addestrato su 400 milioni di coppie di immagine e
 testo raccolte dal web: il modello che ne esce non scrive una riga, ma sa dire
 quanto un'immagine e un testo si somigliano.
@@ -243,26 +246,30 @@ suggerisca, e i sistemi reali sono spesso ibridi.
 
 `````
 
-## Quello che serve avere già in mano
+## I pezzi già costruiti
 
-Il capitolo poggia su cose viste altrove e non le rispiega. Conviene dire
-quali sono, una riga ciascuna.
-
-Dal capitolo sul linguaggio serve la mappa del significato: l'idea che
+Dalla {doc}`rappresentazione del testo
+</NaturalLanguageProcessing/rappresentare-testo>` serve la mappa del
+significato: l'idea che
 una parola si possa scrivere come una fila di numeri, e che su quella mappa
 *gatto* e *felino* finiscano vicini mentre *gatto* e *mercoledì* finiscono agli
 antipodi, con un numero fra $-1$ e $+1$ a dire quanto. Far entrare le
 fotografie in quella stessa mappa è il lavoro che comincia adesso.
 
-Dal capitolo sui Transformer serve la cross-attention. È l'attenzione di
+Dal {doc}`capitolo sui Transformer </Transformers/architettura>` serve la
+cross-attention. È l'attenzione di
 sempre, con una differenza: chi fa le domande e chi le riceve sono due sequenze
 diverse. Le domande (in gergo, le *query*) vengono dal testo; quel che si va a
 consultare (le *chiavi*, per trovare il punto giusto, e i *valori*, cioè quel che
 si porta via) viene dall'immagine. È il meccanismo con cui il testo interroga
-l'immagine. Dallo stesso capitolo serve l’instruction tuning, che trasforma
-un modello che descrive immagini in un modello a cui si fanno domande.
+l'immagine. Dalla {doc}`sezione sul post-training </Transformers/post-training>`
+serve
+l’instruction tuning, che insegna a un modello che continuava testi a eseguire
+una consegna: qui farà lo stesso con un modello che descrive immagini, e ne
+farà uno a cui si fanno domande.
 
-Dal capitolo sulla visione artificiale serve il transfer learning,
+Dal {doc}`capitolo sulla visione artificiale </VisioneArtificiale/overview>`
+serve il transfer learning,
 riusare una rete pre-addestrata congelandone i pesi: qui è la strategia
 dominante.
 
@@ -312,8 +319,8 @@ che il sistema abbia davvero guardato.
   coppie giuste e allontanando le sbagliate. Da lì viene fuori, come effetto collaterale,
   un classificatore che si scrive a parole.
 - **Innestare gli occhi**: il raccordo fra un encoder visivo e un modello di
-  linguaggio lasciato fermo. Di raccordi ne sono stati provati tre, e ha vinto
-  il più semplice.
+  linguaggio lasciato fermo. Di raccordi ne sono stati provati tre, e si è
+  diffuso il più semplice, per ragioni che contano più della sua forma.
 - **Fusione precoce e tardiva**, cioè presto o tardi lungo il percorso:
   l'immagine ridotta a simboli di un elenco fin dall'ingresso, come le parole.
   Cosa si guadagna a poterla anche produrre, e cosa si perde nell'arrotondarla
@@ -340,7 +347,8 @@ che il sistema abbia davvero guardato.
   in fila come le parole di una frase, attaccando a ciascuna un'etichetta che
   dice dove stava. Da lì in poi immagine e testo sono due file di pezzi, e le
   file sappiamo già come si mettono insieme. Il prezzo si paga sul numero di
-  tessere: se raddoppiano, il lavoro quadruplica.
+  tessere: se raddoppiano, i confronti fra tessere quadruplicano, mentre il
+  resto del lavoro raddoppia soltanto.
 - La domanda che genera tutto il capitolo è dove i due flussi si incontrano,
   e le risposte che hanno retto sono tre: due che non si parlano ma segnano le
   cose sulla stessa mappa (cerca), un interprete che sussurra a chi sa già

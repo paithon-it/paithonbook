@@ -33,15 +33,12 @@ aggiorna a ogni parola (nel disegno, la cella) è sempre la stessa, con
 dentro sempre gli stessi numeri: aggiornare il riassunto vuol dire dunque
 moltiplicarlo, parola dopo parola, per quegli stessi numeri.
 
-Ed è lì che casca tutto, perché una moltiplicazione ripetuta cento volte non
-perdona. Diciamo che il fattore sia $0{,}9$, cioè che a ogni passo il ricordo
-conservi nove decimi di sé: non sembra una perdita grave. Dopo cento parole
-resta $0{,}9$ moltiplicato per sé stesso cento volte, cioè $0{,}000027$, che di
-quel ricordo è meno di un trentamillesimo. E anche partendo da $0{,}99$, che è
-quasi non perdere niente, dopo cento parole si è scesi a $0{,}37$: più di metà
-del ricordo è svanito senza che nessuno l'abbia buttato via. Il numero $0{,}9$
-qui è messo per far vedere il meccanismo, non è misurato su una rete vera; ma
-qualunque fattore minore di uno finisce nello stesso posto, ed è tutta lì la
+Ed è lì che casca tutto, perché una moltiplicazione ripetuta non perdona: con
+un fattore di $0{,}9$ per passo, dopo cento parole del ricordo resta meno di un
+trentamillesimo, il conto che la {doc}`sezione sui modelli di sequenza
+</NaturalLanguageProcessing/modelli-sequenza>` ha fatto per esteso. Anche
+$0{,}99$, che è quasi non perdere niente, dopo cento parole è sceso a $0{,}37$.
+Qualunque fattore minore di uno finisce nello stesso posto, ed è tutta lì la
 ragione per cui l'inizio di un testo lungo sbiadisce.
 
 `````{tab} Elementare
@@ -82,12 +79,10 @@ posizioni distanti $m$ passi attraversa $m$ applicazioni di $f$, e il
 gradiente retropropagato si attenua o esplode esponenzialmente (il *vanishing
 / exploding gradient* del
 {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`). Le LSTM
-{cite}`hochreiter1997long` introducono una cella di memoria regolata da gate,
-che creano un cammino quasi lineare per il gradiente: nell'architettura del
-1997 sono due, *input* e *output*, e diventano tre quando Gers, Schmidhuber e
-Cummins aggiungono il *forget gate* {cite}`gers2000learning`; le GRU
-{cite}`cho2014learning` ottengono un effetto simile con due soli gate, *reset*
-e *update*, e meno parametri. Entrambe allungano
+{cite}`hochreiter1997long` e le GRU {cite}`cho2014learning`, costruite nella
+{doc}`sezione sui modelli di sequenza
+</NaturalLanguageProcessing/modelli-sequenza>`, aprono con i gate un cammino
+quasi lineare per il gradiente. Entrambe allungano
 l'orizzonte della memoria ma restano sequenziali: il passo $t$ attende il
 passo $t-1$, in addestramento come in inferenza.
 
@@ -106,7 +101,10 @@ Il Transformer non è gratis, e il suo tallone d'Achille è proprio il gesto
 che lo definisce: far guardare ogni parola a tutte le altre.
 
 `````{tab} Elementare
-Quattro persone in una stanza, e ognuno deve parlare con ognuno: io con te, io
+Il conto è lo stesso dei cento sguardi dell’apertura del capitolo, con delle
+persone
+al posto delle parole. Quattro persone in una stanza, e ognuno deve parlare con
+ognuno: io con te, io
 con lui, io con lei, tu con lui, tu con lei, lui con lei. Sei coppie, contate
 con le dita. Senza dita: $4 \times 3 = 12$, ognuno con tutti tranne sé, e
 $12 : 2 = 6$ perché ogni coppia è finita nel conto due volte. In otto,
@@ -127,9 +125,11 @@ milione in mille. Il tempo alla peggio lo si aspetta; il tabellone o sta nella
 stanza o non ci sta, ed è lui a decidere quanto testo un modello si tiene
 davanti. Di qui i tre modi di far parlare tutti senza convocare la plenaria.
 
-Il primo fissa il programma prima di entrare: ognuno con i vicini di posto,
-qualche coppia sorteggiata per accorciare le distanze, pochi che parlano con
-tutti e fanno da ponte. Si arriva ancora dove arrivava la plenaria, e lo si
+Il primo fissa il programma prima di entrare: ognuno con i vicini di posto
+(poniamo i tre a destra e i tre a sinistra), qualche coppia sorteggiata per
+accorciare le distanze, e due o tre persone che parlano con tutti e fanno da
+ponte. In mille, invece di mezzo milione di chiacchiere ne servono qualche
+migliaio. Si arriva ancora dove arrivava la plenaria, e lo si
 dimostra; a reggere la dimostrazione sono i ponti, non i vicini. Ma i ponti
 sono pochi e in un giro non ripetono tutto a tutti: quello che la plenaria
 sbrigava in una volta vuole più giri, e i giri crescono con i presenti. Si
@@ -158,7 +158,7 @@ Il terzo butta la lista degli invitati invece di sfoltirla: i conti si
 riordinano perché le coppie non si formino mai una per una, invece di
 calcolarle tutte e scartarne poi quasi tutte. Costa una rinuncia (il modo in
 cui i punteggi diventano intensità va cambiato) e ha un capitolo suo, quello
-sull'attenzione lineare.
+sull’{doc}`attenzione lineare </AttenzioneLineare/overview>`.
 `````
 
 `````{tab} Superiore
@@ -166,13 +166,21 @@ La matrice di attenzione ha $n \times n$ elementi. Contando la sola
 operazione di attenzione (proiezioni escluse), il costo in tempo è
 $O(n^2 \cdot d)$ nella lunghezza $n$ della sequenza, contro l’$O(n \cdot
 d^2)$ delle ricorrenti; la memoria per i punteggi è $O(n^2)$, contro
-l’$O(n \cdot d)$ delle attivazioni ricorrenti. Sotto questo vincolo sono
-nate le finestre di contesto limitate dei grandi modelli, e una vasta
-letteratura di rimedi:
-attenzione sparsa o a finestre locali (Longformer, BigBird),
-approssimazioni a rango basso o kernel (Linformer, Performer), e
-ottimizzazioni esatte ma efficienti in memoria come FlashAttention, che
-riorganizza il calcolo per sfruttare la gerarchia di memoria delle GPU.
+l’$O(n \cdot d)$ delle attivazioni ricorrenti. Il confronto fra i due termini
+dice anche quando l'uno conviene sull'altro: lo strato di self-attention costa
+meno di quello ricorrente finché $n < d$, il caso tipico della traduzione del
+2017. Dentro il Transformer, poi, il termine quadratico va messo accanto a
+quello delle proiezioni e della FFN: per strato il conto è $12nd^2 + 2n^2d$, e
+il secondo supera il primo solo per $n > 6d$, come ricava la {doc}`matematica
+di un modello linguistico </Matematica/matematica-llm>`. Sotto il vincolo della
+memoria, più ancora che del tempo, sono nate le finestre di contesto limitate
+dei grandi modelli, e una vasta letteratura di rimedi: attenzione sparsa o a
+finestre locali (Longformer, BigBird), approssimazioni a rango basso o kernel
+(Linformer, Performer {cite}`choromanski2021performer`), e ottimizzazioni
+esatte come FlashAttention {cite}`dao2022flashattention`, che lascia il conto
+a $O(n^2 d)$ ma non scrive mai la matrice $n \times n$ in memoria globale e
+porta lo spazio aggiuntivo da $O(n^2)$ a $O(n)$; la costruisce la
+{doc}`sezione sulla FlashAttention </GPU/flash-attention>`.
 
 L'attenzione sparsa nasce da un cambio di punto di vista, più che da un trucco
 di calcolo. La matrice di attenzione è la matrice di adiacenza di un
@@ -230,8 +238,9 @@ $g(\mathbf{q}_j) \neq g(\mathbf{k}_j)$ una query può finire in un secchiello
 dove la sua stessa
 chiave non c'è. Il Reformer usa quindi la stessa proiezione per entrambe
 (*shared-QK*), rinunciando alla distinzione fra il cercare e l'essere trovati
-su cui si regge la {numref}`fig-qkv`; gli autori misurano che questa rinuncia
-non costa prestazioni, il che è di per sé un'informazione interessante. Fatto
+su cui si regge la {numref}`fig-qkv`; gli autori non trovano perdite
+sui due compiti su cui la provano (testo a livello di carattere e immagini a
+64 pixel), il che è di per sé un'informazione interessante. Fatto
 questo, si raggruppano query e chiavi per secchiello, si calcola l'attenzione
 piena solo dentro ciascun secchiello, e il costo scende da $O(n^2)$ a
 $O(n \log n)$. Il prezzo ulteriore è che l'hashing sbaglia: si ripete con più
@@ -271,7 +280,10 @@ proprio come facevano le RNN, ma costruito in modo da non pagare il costo
 della riunione plenaria. Si chiamano *attenzioni lineari* e *state space
 model* (in italiano «modelli a spazio di stato», dove lo stato è appunto il
 riassunto che si aggiorna; il più noto si chiama Mamba), e hanno un capitolo
-ciascuna subito dopo questo. In altre parole: il Transformer ha vinto la
+ciascuna subito dopo quello sui Transformer: il {doc}`capitolo sull'attenzione
+lineare </AttenzioneLineare/overview>` e quello sugli
+{doc}`state space model </StateSpaceModel/overview>`. In altre parole: il
+Transformer ha vinto la
 partita del decennio, non necessariamente il campionato eterno.
 
 `````{tab} Elementare
@@ -293,7 +305,8 @@ partita del decennio, non necessariamente il campionato eterno.
   partecipante che parla con tutti), lasciare che siano i dati a dire quali
   coppie contano, oppure cambiare del tutto il modo di fare i conti (il
   {doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`).
-- Nessuna architettura vince per sempre: i due capitoli che seguono riportano
+- Nessuna architettura vince per sempre: i due capitoli dopo quello sui
+  Transformer riportano
   in gioco l'idea del riassunto che si aggiorna, proprio dove la riunione
   plenaria costa troppo.
 ```
@@ -321,7 +334,8 @@ partita del decennio, non necessariamente il campionato eterno.
   chiavi condivise), oppure rinunciare del tutto alla softmax e
   fattorizzarla (il capitolo sull'attenzione lineare).
 - Nessuna architettura vince per sempre: attenzione lineare e *state space
-  model* (i due capitoli che seguono) rimettono in gioco idee ricorrenti
+  model* (i due capitoli dopo quello sui Transformer) rimettono in gioco idee
+  ricorrenti
   proprio dove l'attenzione costa troppo.
 ```
 `````

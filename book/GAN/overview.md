@@ -1,6 +1,6 @@
 # Generative Adversarial Networks
 
-L'idea di cui parla questo capitolo è nata, dice la leggenda (perché ormai è
+L'idea delle GAN è nata, dice la leggenda (perché ormai è
 una leggenda), in un bar di Montréal, «Les 3 Brasseurs», nel 2014. Ian
 Goodfellow, dottorando nel laboratorio di Yoshua Bengio, festeggia con alcuni
 colleghi. Gli raccontano a che cosa stanno lavorando: vogliono una rete che
@@ -19,11 +19,15 @@ cioè reti che fabbricano qualcosa e che imparano a farlo sfidandosi.
 
 ## Generare, non classificare
 
-Il libro ha già incontrato reti che *producono* qualcosa: un modello
+Abbiamo già incontrato reti che *producono* qualcosa: un modello
 linguistico scrive la parola dopo, un sintetizzatore legge un testo ad alta
-voce. Tutte e due, però, mentre imparavano avevano sotto gli occhi la risposta
+voce. Tutte e due, mentre imparavano, avevano accanto la risposta
 giusta: la parola che veniva davvero dopo, l'onda che quella frase aveva
-davvero. Chi deve disegnare un gatto mai esistito non ce l'ha e non può
+davvero. Nel sintetizzatore, e prima ancora nei {doc}`codec neurali
+</Audio/codec-neurali>`, lavorava già anche un falsario sorvegliato da un
+esperto, ma lì l'esperto si aggiungeva al confronto con l'originale e non ne
+prendeva il posto. Chi deve disegnare un gatto mai esistito non ce l'ha e non
+può
 averla: non c'è nessun originale da mettere accanto al risultato per vedere,
 punto per punto, di quanto ci si è allontanati. La domanda di questo capitolo è
 proprio questa: come si insegna a una rete a fabbricare dati nuovi e
@@ -58,7 +62,10 @@ Durante l'addestramento alla rete arrivano solo manciate sorteggiate così, e
 lei impara a cavarsela dove quelle manciate cadono. Una manciata scelta a mano
 (i numeri tutti uguali, o in fila 1, 2, 3…) cade quasi sempre lontano, in un
 territorio dove la rete non è mai stata, e quello che ne esce non ha nessuna
-ragione di somigliare a un gatto. Il sorteggio è un patto preso in
+ragione di somigliare a un gatto. È la stessa terra mai battuta in cui finivano
+le schede pescate a caso dalla clessidra, nel capitolo sui modelli latenti, e il
+sorteggio sempre uguale è lo stesso vocabolario comune che là rimetteva le cose
+a posto. Il sorteggio è un patto preso in
 addestramento, e va rispettato anche dopo.
 
 `````

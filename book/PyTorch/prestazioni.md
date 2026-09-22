@@ -137,14 +137,21 @@ denormali vanno in *underflow* a zero. Il **loss scaling** di
 {cite}`micikevicius2018mixed` moltiplica $\mathcal{L}$ per un fattore $s$
 prima del backward, i gradienti scalano linearmente,
 $\nabla(s\mathcal{L}) = s\nabla\mathcal{L}$, e divide per $s$ prima dello
-`step`; `GradScaler` adatta $s$ dinamicamente e salta l'aggiornamento se trova
-`inf`/`NaN`. I pesi del modello restano in `float32` (`autocast` li converte
+`step`; `GradScaler` adatta $s$ dinamicamente: parte da $s = 2^{16}$, lo
+raddoppia dopo $2000$ passi di fila senza traboccamenti, e appena un gradiente
+è `inf` o `NaN` lo dimezza e salta l'aggiornamento (il `float16` si ferma a
+$65\,504$, quindi un $s$ troppo grande trabocca in alto invece che in
+basso). I pesi del modello restano in `float32` (`autocast` li converte
 al volo solo dentro le singole operazioni), perché aggiornamenti piccoli su
 pesi a 16 bit si perderebbero per arrotondamento (è l'idea della copia
 *master* del paper). L'alternativa moderna è bfloat16 (1, 8, 7): stesso
 esponente del `float32`, quindi stesso intervallo dinamico e niente scaler, al
 prezzo di una mantissa più corta; è il formato preferito sulle GPU NVIDIA da
-Ampere in poi e sulle TPU, dov'è nato.
+Ampere in poi e sulle TPU, dov'è nato. Un terzo formato lavora anche senza
+essere chiesto: sulle GPU da Ampere in poi le convoluzioni di cuDNN usano per
+default il TF32 (8 bit di esponente, 10 di mantissa) dentro i tensor core,
+mentre i prodotti fra matrici restano in `float32` pieno finché non si chiama
+`torch.set_float32_matmul_precision("high")`.
 `````
 
 Nel giro di addestramento visto nella sezione sul
@@ -535,13 +542,17 @@ compensare vuole pesi un po’ più grandi. La {doc}`sezione
 sull'inizializzazione </DeepLearning/ottimizzazione-regolarizzazione>` ne darà
 la ragione per esteso; qui vediamo il gesto con cui si applicano.
 
-I default di PyTorch sono ragionevoli, e conviene sapere quali sono, perché si
-legge spesso che i framework moderni usino Xavier o He e per `nn.Linear` non è
-vero: il default è una variante uniforme ereditata dal vecchio Torch, che
-sorteggia i pesi fra $-1/\sqrt{d}$ e $+1/\sqrt{d}$, con $d$ il numero di
-ingressi. Sullo strato da mille ingressi dell'esempio di poco fa,
-$\sqrt{1000}$ fa circa $31{,}6$, quindi i pesi nascono tutti fra $-0{,}032$ e
-$+0{,}032$: piccoli, come previsto. Quando si vuole il controllo esplicito,
+I default di PyTorch non sono né Xavier né He, e conviene sapere quali sono,
+perché si legge spesso il contrario: per `nn.Linear` il default è una variante
+uniforme ereditata dal vecchio Torch, che sorteggia i pesi fra $-1/\sqrt{d}$ e
+$+1/\sqrt{d}$, con $d$ il numero di ingressi. Sullo strato da mille ingressi
+dell'esempio di poco fa, $\sqrt{1000}$ fa circa $31{,}6$, quindi i pesi
+nascono tutti fra $-0{,}032$ e $+0{,}032$: piccoli, e più piccoli di He. La
+varianza di quella uniforme è $1/(3d)$, un sesto dei $2/d$ di He, e in una pila
+di strati con la ReLU il segnale perde a ogni strato un fattore
+$\sqrt{6} \approx 2{,}4$ in ampiezza (trascurando i bias). Su tre strati non si
+vede; su una rete profonda è il caso in cui la ricetta esplicita serve
+davvero. Quando si vuole il controllo esplicito,
 `torch.nn.init` offre le ricette pronte, e i loro nomi finiscono tutti con un
 trattino basso: è la convenzione con cui PyTorch segna le funzioni che
 riscrivono il tensore che ricevono, invece di restituirne uno nuovo.

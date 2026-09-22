@@ -16,17 +16,20 @@ tribunale né del tempo che scorre: è il termine con cui in statistica si
 indica un'intera famiglia di quantità imparentate fra loro, qui i valori che la
 curva vera può assumere in ogni punto.
 
-L'idea ha radici minerarie. Nel 1951 Danie Krige, un giovane ingegnere
-sudafricano, affrontava il problema più costoso delle miniere d'oro del
-Witwatersrand: ogni carotaggio (un pozzo di assaggio per misurare la
-concentrazione del minerale) costava una fortuna, e i punti campionati erano
-per forza pochi e sparsi. Come stimare quanto oro c'è *tra* un pozzo e
-l'altro? Krige propose di usare medie pesate dei campioni vicini, con pesi
-scelti in modo statistico, e con una misura esplicita di quanto ogni stima
-fosse affidabile. Nei primi anni Sessanta il matematico francese Georges
-Matheron formalizzò il metodo e lo battezzò *kriging*, in suo onore. Oggi la
-stessa matematica, generalizzata e ribattezzata processi gaussiani, è uno
-degli strumenti più eleganti del machine learning
+L'idea ha più di una radice, e quella che le ha dato il nome non è la più
+vecchia: la previsione con processi gaussiani risale a Kolmogorov (1941) e a
+Wiener (1949), che la studiavano sulle serie temporali
+{cite}`rasmussen2006gaussian`. Il nome, però, viene dalle miniere. Nel 1951
+Danie Krige, un giovane ingegnere sudafricano, affrontava il problema più
+costoso delle miniere d'oro del Witwatersrand: ogni carotaggio (un pozzo di
+assaggio per misurare la concentrazione del minerale) costava una fortuna, e i
+punti campionati erano per forza pochi e sparsi. Come stimare quanto oro c'è
+*tra* un pozzo e l'altro? Krige propose di usare medie pesate dei campioni
+vicini, con pesi scelti in modo statistico, e con una misura esplicita di
+quanto ogni stima fosse affidabile. Nei primi anni Sessanta il matematico
+francese Georges Matheron formalizzò il metodo e lo battezzò *kriging*, in suo
+onore. Oggi la stessa matematica, generalizzata e ribattezzata processi
+gaussiani, è uno degli strumenti più eleganti del machine learning
 {cite}`rasmussen2006gaussian`.
 
 ## Un fascio di curve, non una sola
@@ -146,20 +149,25 @@ valico, con due misure lì accanto, resta stretta e sbagliata.
 Il kernel più usato è l’RBF (*Radial Basis Function*, o gaussiano):
 
 $$
-k(\mathbf{x}, \mathbf{x}') = \sigma^2
+k(\mathbf{x}, \mathbf{x}') = \sigma_f^2
 \exp\!\left(-\frac{\lVert \mathbf{x} - \mathbf{x}'\rVert^2}{2\ell^2}\right),
 $$
 
-dove $\sigma^2$ è la varianza di segnale (l'ampiezza tipica delle oscillazioni
-del fascio) e $\ell$ è la **lunghezza-scala** (*lengthscale*): la distanza
-oltre la quale due valori diventano, di fatto, indipendenti. Con $\ell = 1$
+dove $\sigma_f^2$ è la varianza di segnale (l'ampiezza tipica delle
+oscillazioni del fascio) e $\ell$ è la **lunghezza-scala** (*lengthscale*):
+l'unità in cui il kernel misura le distanze. A distanza $\ell$ due valori sono
+ancora ben correlati, e la correlazione diventa trascurabile solo verso
+$3\ell$. È lo stesso kernel del {doc}`kernel trick <svm-kernel>`, con
+$\gamma = 1/(2\ell^2)$: la larghezza che là si chiamava $\sigma$ qui si chiama
+$\ell$, e in scikit-learn è `gamma` in `SVC` e `length_scale` in `RBF`. Con
+$\ell = 1$
 due punti a distanza $1$ hanno correlazione $e^{-0{,}5} \approx 0{,}61$; a
 distanza $3$, $e^{-4{,}5} \approx 0{,}01$. Una $\ell$ piccola produce funzioni
 nervose che dimenticano in fretta; una $\ell$ grande, funzioni lisce e a lungo
 raggio. Il kernel RBF genera funzioni infinitamente derivabili: un'ipotesi di
 regolarità forte, non sempre realistica.
 
-I suoi iperparametri $(\sigma, \ell)$
+I suoi iperparametri $(\sigma_f, \ell)$
 non si fissano a mano: si stimano massimizzando la **verosimiglianza
 marginale** dei dati, cosa che `scikit-learn` fa da sola durante il `fit`. È il
 pezzo di matematica più elegante dei processi gaussiani:
@@ -174,7 +182,7 @@ $$
 
 dove $\mathbf{K}$ è la matrice del kernel fra i punti di addestramento
 ($K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$), $\sigma_n^2$ la varianza del
-**rumore di misura** (da non confondere con la $\sigma^2$ di segnale del
+**rumore di misura** (da non confondere con la $\sigma_f^2$ di segnale del
 kernel), $\mathbf{I}$ la matrice identità e $m$ il numero di esempi.
 
 Il primo termine premia l'aderenza ai dati, il secondo (il logaritmo del
@@ -239,8 +247,19 @@ di non avere dati per rispondere.
 Siano $\mathbf{X}$ gli $m$ punti di addestramento
 $\mathbf{x}_1, \dots, \mathbf{x}_m$ con osservazioni rumorose $\mathbf{y}$ (la
 solita $m$ del capitolo: il numero di esempi), e $\mathbf{X}_*$ gli $m_*$ punti
-dove vogliamo predire. Il posteriore è gaussiano con media e covarianza in
-forma chiusa {cite}`rasmussen2006gaussian`:
+dove vogliamo predire. Il conto è un condizionamento gaussiano. Per
+definizione di processo gaussiano, osservazioni e valori nuovi sono
+congiuntamente gaussiani,
+
+$$
+\begin{pmatrix}\mathbf{y}\\ \mathbf{f}_*\end{pmatrix}
+\sim \mathcal{N}\!\left(\mathbf{0},\;
+\begin{pmatrix}\mathbf{K} + \sigma_n^2\mathbf{I} & \mathbf{K}_*\\ \mathbf{K}_*^{\!\top} & \mathbf{K}_{**}\end{pmatrix}\right),
+$$
+
+e la legge di un blocco dato l'altro è ancora gaussiana, con media e
+covarianza in forma chiusa (il complemento di Schur)
+{cite}`rasmussen2006gaussian`:
 
 $$
 \boldsymbol{\mu}_* = \mathbf{K}_*^\top
@@ -311,7 +330,7 @@ y_train = np.sin(X_train).ravel() + rng.normal(0, 0.1, size=8)
 kernel = 1.0 * RBF(length_scale=1.0)
 gp = GaussianProcessRegressor(kernel=kernel, alpha=0.1**2,
                               n_restarts_optimizer=5, random_state=0)
-gp.fit(X_train, y_train)          # stima anche sigma e l dai dati
+gp.fit(X_train, y_train)          # stima anche sigma_f e l dai dati
 
 # Previsione CON incertezza: media e deviazione standard
 X_test = np.array([[1.5], [3.0], [8.0]])

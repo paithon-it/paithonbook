@@ -157,8 +157,10 @@ g(z) = \begin{cases} 1 & \text{se } z \ge 0, \\ 0 & \text{altrimenti.}\end{cases
 $$
 
 Lo zero sta con l'uno, ed è una convenzione: la funzione di Heaviside in zero
-si definisce anche $1/2$, e il libro sceglie $1$ perché le mosse dell'esempio
-della porta AND contino quelle che contano. Due proprietà di $g$ contano più della
+si definisce anche $1/2$. Qui vale $1$, come in `np.where(z >= 0, 1, 0)` del
+codice, e la scelta ha un effetto che si vede subito: con i pesi e il bias a
+zero il neurone risponde $1$ a ogni ingresso, ed è da quel sì indiscriminato
+che partono le correzioni. Due proprietà di $g$ contano più della
 convenzione. La prima: la decisione è binaria, $\hat{y}\in\{0,1\}$. La seconda,
 che si paga cara più avanti: $g'(z)=0$ per ogni $z\neq 0$ e in $0$ la derivata
 non esiste, quindi un metodo che corregga i pesi seguendo la pendenza qui
@@ -265,12 +267,15 @@ bastano poche correzioni. Due giornate quasi identiche che vogliono risposte
 opposte lo assottigliano, e le correzioni si moltiplicano: ogni volta che si
 dimezza, quelle che possono servire diventano quattro volte tante.
 
-Largo in proporzione al disegno, non in centimetri. Fotocopia il foglio al
-doppio e non cambia niente: corridoio doppio, puntini due volte più lontani,
-stesse correzioni di prima. E mille giornate in più segnate sul foglio non
-aggiungono una correzione a quelle che possono servire, purché stiano dentro
-allo spazio già occupato: a contare non è quante sono, ma quanto è largo il
-corridoio rispetto alla distanza del puntino più lontano.
+Largo in proporzione al disegno, non in centimetri, e il disegno ha un
+punto fermo: l'angolo del foglio da cui si misura tutto. Il bias è un indizio
+che vale sempre $1$, e quell’$1$ la fotocopia non lo ingrandisce, quindi
+fotocopiando il foglio al doppio le correzioni cambiano, e di solito crescono.
+Restano le stesse soltanto se la riga passa per l'angolo, cioè senza bias. E
+mille giornate in più segnate sul foglio non aggiungono una correzione a quelle
+che possono servire, purché stiano dentro allo spazio già occupato: a contare
+non è quante sono, ma quanto è largo il corridoio rispetto alla distanza del
+puntino più lontano dall'angolo.
 
 La riga prudente, però, la macchina non la promette. Si ferma appena nessun
 puntino resta dalla parte sbagliata, e la riga può restare lì, appiccicata a un
@@ -297,43 +302,63 @@ cosmetico: partendo da $\mathbf{w}=\mathbf{0}$ e $b=0$ ogni aggiornamento è
 proporzionale a $\eta$, quindi cambiarlo riscala $\mathbf{w}$ e $b$ dello stesso
 fattore, e la decisione dipende solo dal segno di
 $\mathbf{w}^\top\mathbf{x}+b$, che un riscalamento positivo non tocca. Con
-$\eta=0{,}1$, $\eta=1$ o $\eta=7{,}3$ la porta AND dell'esempio esce identica. Il
-riscalamento esatto vale però in aritmetica esatta: basta un totale che cada
-proprio su zero, dove l'arrotondamento decide da che parte sta, perché le due
-esecuzioni si separino e finiscano su due rette diverse, tutte e due
-separatrici.
+$\eta=1$ e $\eta=7{,}3$ la porta AND esce identica, con pesi $(2,\ 1)$ e bias
+$-3$ in unità di $\eta$. Il riscalamento esatto vale però in aritmetica esatta,
+e con $\eta=0{,}1$ si rompe proprio su questo esempio: $0{,}1$ in binario non
+è esatto, e a un certo passo il totale sul caso $(1,0)$, che doveva valere zero
+e far scattare una correzione, esce $-2{,}8\cdot 10^{-17}$. Il neurone risponde
+$0$, nessuno corregge, e la corsa si ferma sulla retta $2x_1 + x_2 - 2 = 0$, che
+passa esattamente per $(1,0)$: separa solo grazie all'arrotondamento. Per
+questo il codice chiama `addestra` con $\eta = 1$, dove tutti i conti sono
+interi.
 Diventerà una scelta vera nella sezione sulla backpropagation, dove la
 correzione non sarà più proporzionale all'errore ma al gradiente di una loss.
 
-C'è poi il teorema di convergenza del percettrone: se i dati sono
-linearmente separabili, l'algoritmo trova in un numero finito di passi un
-iperpiano che li separa. Rosenblatt lo dimostra in *Principles of
-Neurodynamics* (1962) {cite}`rosenblatt1962principles`, non nell'articolo del
-1958 che presenta il modello. Il teorema dice di più di quanto sembri, nella
-forma che si deve a Novikoff {cite}`novikoff1962convergence`: il numero di
-correzioni, partendo da $\mathbf{w}=\mathbf{0}$, è al più $(R/\gamma)^2$, dove
-$R = \max_i \lVert\mathbf{x}_i\rVert$ è
-la norma massima degli esempi e $\gamma$ il margine geometrico del miglior
-separatore, cioè la distanza dall'iperpiano al punto più vicino, che è metà
-del corridoio vuoto fra le due classi, misurata nello stesso spazio in cui si
-vive dopo aver assorbito il bias
-($\gamma = \min_i |\mathbf{w}^{*\top}\mathbf{x}_i|$ con
-$\lVert\mathbf{w}^*\rVert = 1$: senza quel vincolo il rapporto non sarebbe
-nemmeno un numero puro, perché basterebbe raddoppiare $\mathbf{w}^*$ per
-raddoppiare $\gamma$). Il limite vale per la versione senza bias, o con il
-bias assorbito come ingresso costante: è il trucco della
-{numref}`fig-neurone-con-retroazione`, l'ingresso sempre pari a $1$, e serviva
-proprio qui (assorbito il bias, quella coordinata in più entra anche in $R$). In
-quel limite non compaiono né il numero di esempi né la dimensione: quel che
-conta è il rapporto fra quanto sono lontani gli esempi e quanto è sottile il
-corridoio fra le due classi (la dimensione rientra dentro $R$), e raddoppiare
-il dataset non raddoppia il numero di correzioni. E non dice l'altra metà:
-l'iperpiano trovato è uno
+C'è poi il teorema di convergenza del percettrone: se i dati sono linearmente
+separabili, l'algoritmo trova in un numero finito di passi un iperpiano che li
+separa. Rosenblatt lo dimostra in *Principles of Neurodynamics* (1962)
+{cite}`rosenblatt1962principles`, non nell'articolo del 1958 che presenta il
+modello. Il teorema dice di più di quanto sembri, nella forma che si deve a
+Novikoff {cite}`novikoff1962convergence`: il numero di correzioni, partendo da
+$\mathbf{w}=\mathbf{0}$, è al più $(R/\gamma)^2$, dove $R = \max_i
+\lVert\mathbf{x}_i\rVert$ è la norma massima degli esempi e $\gamma$ il margine
+geometrico del miglior separatore, cioè la distanza dall'iperpiano al punto più
+vicino, che è metà del corridoio vuoto fra le due classi, misurata nello stesso
+spazio in cui si vive dopo aver assorbito il bias ($\gamma = \min_i
+|\mathbf{w}^{*\top}\mathbf{x}_i|$ con $\lVert\mathbf{w}^*\rVert = 1$: senza
+quel vincolo il rapporto non sarebbe nemmeno un numero puro, perché basterebbe
+raddoppiare $\mathbf{w}^*$ per raddoppiare $\gamma$). Il limite vale per la
+versione senza bias, o con il bias assorbito come ingresso costante: è il
+trucco della {numref}`fig-neurone-con-retroazione`, l'ingresso sempre pari a
+$1$, e serviva proprio qui (assorbito il bias, quella coordinata in più entra
+anche in $R$). La dimostrazione sta in due disuguaglianze. Si scrivono le
+etichette come $t_i = 2y_i - 1 \in \{-1,+1\}$: la $k$-esima correzione aggiunge
+$\eta\,t_i\mathbf{x}_i$ su un esempio con
+$t_i\,\mathbf{w}_{k-1}^\top\mathbf{x}_i \le 0$. Ogni correzione fa salire la
+proiezione su $\mathbf{w}^*$ di almeno $\eta\gamma$, perché
+$t_i\,\mathbf{w}^{*\top}\mathbf{x}_i \ge \gamma$, quindi
+$\mathbf{w}_k^\top\mathbf{w}^* \ge k\eta\gamma$; e fa crescere il quadrato
+della norma di al più $\eta^2R^2$, perché il termine incrociato
+$2\eta\,t_i\,\mathbf{w}_{k-1}^\top\mathbf{x}_i$ non è positivo, quindi
+$\lVert\mathbf{w}_k\rVert^2 \le k\eta^2R^2$. Per Cauchy-Schwarz $k\eta\gamma
+\le \mathbf{w}_k^\top\mathbf{w}^* \le \lVert\mathbf{w}_k\rVert \le
+\sqrt{k}\,\eta R$, da cui $k \le (R/\gamma)^2$: $\eta$ si semplifica, ed è un
+altro modo di vedere che qui è cosmetico. In quel limite non compaiono né il
+numero di esempi né la dimensione: quel che conta è il rapporto fra quanto sono
+lontani gli esempi e quanto è sottile il corridoio fra le due classi (la
+dimensione rientra dentro $R$), e raddoppiare il dataset non raddoppia il
+numero di correzioni. E non dice l'altra metà: l'iperpiano trovato è uno
 qualunque fra quelli che separano, senza alcuna garanzia di margine, che è
-esattamente la differenza con le
-{doc}`Support Vector Machine </MachineLearning/svm>`. Il seme
-dell'apprendimento moderno è già qui, anche se la discesa del gradiente su loss
-differenziabili verrà dopo.
+esattamente la differenza con le {doc}`Support Vector Machine
+</MachineLearning/svm>`. Il seme dell'apprendimento moderno è già qui, e si può
+dire con precisione: la regola è la discesa del gradiente stocastica, un
+esempio alla volta, sul *criterio del percettrone* $\mathcal{L}(\mathbf{w}) =
+\sum_i \max\big(0,\,-t_i\,\mathbf{w}^\top\mathbf{x}_i\big)$, con $t_i = 2y_i -
+1$ e il bias assorbito. Sugli esempi classificati bene il termine è nullo e non
+spinge; su quelli sbagliati il suo gradiente è $-t_i\mathbf{x}_i$, e un passo
+lungo $\eta$ è esattamente la correzione di Rosenblatt. È una loss lineare a
+tratti, con un angolo dove il gradino salta: la discesa del gradiente su loss
+derivabili ovunque verrà dopo.
 
 `````
 
@@ -363,7 +388,7 @@ def addestra(X, y, eta=0.1, epoche=10):
 # i suoi quattro casi si separano con una retta
 X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 y_and = np.array([0, 0, 0, 1])
-w, b = addestra(X, y_and)
+w, b = addestra(X, y_and, eta=1.0)   # con 1 i conti sono interi, quindi esatti
 print(gradino(X @ w + b))                   # ha imparato la AND
 ```
 

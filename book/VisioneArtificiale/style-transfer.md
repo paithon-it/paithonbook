@@ -241,16 +241,24 @@ $$
 $$
 
 dove $\mathbf{G}^{(l)}$ e $\mathbf{A}^{(l)}$ sono le Gram dell'immagine
-generata e del quadro di
-stile allo strato $l$, $w_l$ è il peso dello strato e il fattore
-$1/(4 N_l^2 M_l^2)$ va come l'inverso del quadrato del numero di canali e
-di posizioni, perché le entrate della Gram crescono con $M_l$ e la loro
-differenza al quadrato con $M_l^2$. Usare
-più strati cattura lo stile a più scale: dai granelli di colore alle volute
-larghe. Nel paper il rapporto $\alpha/\beta$ è dell'ordine di $10^{-3}$–$10^{-4}$,
-ma quel numero è solidale con la normalizzazione appena scritta: cambiandola
-cambia il rapporto utile, e un'implementazione che normalizza le Gram in un
-altro modo chiede un $\beta$ di tutt'altra taglia.
+generata e del quadro di stile allo strato $l$, $w_l$ è il peso dello strato
+(nel paper $1/5$ per ciascuno dei cinque) e il fattore $1/(4 N_l^2 M_l^2)$
+rende confrontabili strati di taglia diversa: ogni entrata della Gram è una
+somma su $M_l$ posizioni, quindi il suo scarto al quadrato cresce come $M_l^2$,
+e le entrate sono $N_l^2$. La scelta della Gram ha una lettura precisa.
+Trattando le $M_l$ colonne di $\mathbf{F}^{(l)}$ come campioni di una
+distribuzione di feature, $\mathbf{G}^{(l)}/M_l$ ne è il momento secondo non
+centrato, e il termine di stile di uno strato è, a meno della costante
+$1/(4N_l^2)$, la *maximum mean discrepancy* al quadrato fra le feature
+dell'immagine generata e quelle del quadro, con il nucleo polinomiale
+$k(\mathbf{a}, \mathbf{b}) = (\mathbf{a}^\top \mathbf{b})^2$
+{cite}`li2017demystifying`. Lo stile, in questo senso, è una distribuzione di
+feature a cui si è tolta la posizione, confrontata sui soli momenti del secondo
+ordine. Usare più strati cattura lo stile a più scale: dai granelli di colore
+alle volute larghe. Nel paper il rapporto $\alpha/\beta$ è dell'ordine di
+$10^{-3}$–$10^{-4}$, ma quel numero è solidale con la normalizzazione appena
+scritta: cambiandola cambia il rapporto utile, e un'implementazione che
+normalizza le Gram in un altro modo chiede un $\beta$ di tutt'altra taglia.
 
 `````
 
@@ -275,7 +283,7 @@ vgg = vgg.features.to(device).eval()
 for p in vgg.parameters():
     p.requires_grad_(False)
 
-STRATI_STILE = [0, 5, 10, 19, 28]   # conv1_1 ... conv5_1
+STRATI_STILE = [0, 5, 10, 19, 28]   # conv1_1 ... conv5_1, letti dopo la ReLU
 STRATO_CONTENUTO = 21               # conv4_2
 
 def attivazioni(x):
@@ -358,7 +366,20 @@ addestramento; dopo, applicare lo stile è una singola passata in avanti: circa
 mille volte più veloce (tre ordini di grandezza), abbastanza per un video in
 tempo reale. È la
 famiglia di tecniche che ha reso possibili app come Prisma, con il compromesso
-di una rete da addestrare *per ciascuno stile*.
+di una rete da addestrare *per ciascuno stile*. Il compromesso è durato un
+anno. Huang e Belongie {cite}`huang2017arbitrary` hanno osservato che per
+trasferire uno stile qualunque basta allineare, canale per canale, media e
+deviazione standard delle attivazioni del contenuto a quelle dello stile,
+
+$$
+\mathrm{AdaIN}(\mathbf{x}, \mathbf{s}) = \sigma(\mathbf{s})\,
+\frac{\mathbf{x} - \mu(\mathbf{x})}{\sigma(\mathbf{x})} + \mu(\mathbf{s}),
+$$
+
+dove $\mu$ e $\sigma$ si calcolano per canale sulle posizioni: una rete sola,
+un quadro qualunque, una passata. È una versione ridotta della Gram, che tiene
+i momenti di ogni canale e lascia cadere le correlazioni fra canali, ed è la
+stessa operazione che StyleGAN porterà dentro il generatore.
 
 La storia poi è proseguita altrove. Per insegnare a un programma a tradurre una
 foto in un quadro il modo ovvio sarebbe mostrargli tante coppie, la stessa
@@ -393,8 +414,9 @@ rete, nasce qui, da una passeggiata sul Neckar.
 - Chi ha fretta fa la fatica una volta sola: invece di ritoccare la tela
   per ogni foto, addestra una rete apposta per un solo stile, e da quel momento
   dipingere una foto qualunque è questione di un istante, abbastanza da stare
-  dietro anche a un video. Il prezzo è che per un altro stile serve un altro
-  addestramento.
+  dietro anche a un video. Nelle prime versioni serviva una rete per ogni
+  stile; dal 2017 ne basta una, che del quadro prende soltanto la media e
+  l'ampiezza di ogni motivo.
 ```
 
 `````

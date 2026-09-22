@@ -102,11 +102,27 @@ $$
 $$
 
 (Il denominatore $P(\mathbf{X})$ di Bayes è sparito legittimamente: non dipende
-da $W$, quindi non altera l'argmax.) Il modello acustico
-$P(\mathbf{X} \mid W)$ misura
-quanto i suoni osservati siano compatibili con una data sequenza di parole;
-storicamente era un *Hidden Markov Model* con emissioni modellate da misture
-di gaussiane (GMM). Il modello di
+da $W$, quindi non altera l'argmax.) Il modello acustico $P(\mathbf{X} \mid W)$
+misura quanto i suoni osservati siano
+compatibili con una data sequenza di parole, e storicamente si scompone ancora
+in due: un **dizionario di pronuncia** traduce $W$ in fonemi, e ogni fonema,
+preso nel contesto del precedente e del successivo (il *trifone*), è un
+*Hidden Markov Model* sinistra-destra di tre stati. Con
+$Q = (q_1, \dots, q_T)$ la sequenza nascosta di stati,
+
+$$
+P(\mathbf{X} \mid W) = \sum_{Q} \prod_{t=1}^{T} P(q_t \mid q_{t-1})\, p(\mathbf{x}_t \mid q_t),
+\qquad
+p(\mathbf{x} \mid q = j) = \sum_{m=1}^{M} \pi_{jm}\,\mathcal{N}\!\big(\mathbf{x};\, \boldsymbol{\mu}_{jm},\, \boldsymbol{\Sigma}_{jm}\big),
+$$
+
+dove l'emissione di ogni stato è una mistura di $M$ gaussiane (GMM) con
+covarianze $\boldsymbol{\Sigma}_{jm}$ diagonali. Gli stati dei trifoni sono
+decine di migliaia, troppi per stimarli uno per uno: si raggruppano con alberi
+di decisione fonetici e si addestrano con l'EM di Baum-Welch; in decodifica la
+somma su $Q$ diventa il massimo di Viterbi, e il modello di linguaggio entra
+elevato a un peso, $P(W)^{\lambda}$, perché i due fattori sono stimati su scale
+diverse. Il modello di
 linguaggio $P(W)$ assegna una probabilità a priori alle frasi ($n$-grammi,
 oggi reti neurali) ed è quello che disambigua gli omofoni. Dal 2012 le reti
 neurali profonde sostituiscono le GMM nel modello acustico
@@ -126,25 +142,20 @@ trent'anni, dagli anni Ottanta al 2010 circa, e chi legge qualsiasi cosa
 scritta in quel periodo trova sempre la stessa sigla poco amichevole,
 **HMM-GMM**. Sono due macchine già incontrate, e qui lavorano insieme.
 
-La prima descrive il parlato come una fila di suoni che si susseguono e che
-nessuno vede direttamente: è una recita dietro la tenda, dove si sentono le
-battute ma non si vede chi le dice, e dagli anni Ottanta è il modo standard di
-raccontare una cosa che si svolge nel tempo e che si può solo intuire da fuori.
-Si chiama «modello di Markov nascosto», HMM, ed è la stessa macchina di
-{doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`,
-dove gli attori dietro la tenda erano le categorie grammaticali invece dei
-suoni.
+La prima descrive il parlato come una fila di stati nascosti, pezzi di fonema
+che si susseguono senza che nessuno li osservi: si osservano soltanto i frame
+acustici che ciascuno stato emette, e da quelli si risale agli stati. Si chiama
+«modello di Markov nascosto», HMM, ed è la stessa macchina di {doc}`POS tagging
+ed entità </NaturalLanguageProcessing/etichettare-sequenze>`, dove gli stati
+nascosti erano le categorie grammaticali e le emissioni le parole.
 
-La seconda dice che uno stesso suono non è mai due volte identico. Ogni
-frammento di suono, prima di tutto, viene ridotto a una manciata di misure,
-cioè, se ti aiuta immaginarlo, a un puntino su una mappa; e la «a» di mille
-persone diverse non cade tutte le volte sullo stesso puntino, cade in una
-nuvola di puntini vicini. Descrivere quella nuvola invece del suo centro, e
-sovrapporne più d'una dove la forma è storta, è esattamente quello che fanno le
-misture di gaussiane (GMM) di {doc}`Riduzione e clustering
-</MachineLearning/riduzione-clustering>`, dove servivano a trovare gruppi nei
-dati: «gaussiana» è il nome della forma di nuvola più comune in natura, quella
-fitta al centro e sempre più rada man mano che ci si allontana.
+La seconda dice che cosa emette ciascuno stato. Ogni frame è ridotto a un
+vettore di poche decine di misure, e la «a» di mille persone diverse non
+produce mai lo stesso vettore: produce una nuvola di vettori vicini, fitta al
+centro e rada ai bordi. Quella nuvola, e dove la forma è storta la somma di più
+nuvole, la descrivono le misture di gaussiane (GMM) di {doc}`Riduzione e
+clustering </MachineLearning/riduzione-clustering>`, dove servivano a trovare
+gruppi nei dati; qui ogni stato dell'HMM ha la sua.
 
 L'ultimo salto è l'approccio **end-to-end** ("da un capo all'altro"): una sola
 rete neurale che impara direttamente il passaggio dall'audio al testo, senza
@@ -198,8 +209,10 @@ misura "quanta energia c'è a ciascuna altezza sonora": un po’ come le barrett
 colorate che ballano nelle app della musica, dove le più a sinistra si alzano
 sui suoni gravi e le più a destra sugli acuti. Le fettine si prendono
 accavallate, così una consonante a cavallo di un taglio non va persa. Questa
-sequenza di istantanee sonore ha un nome, spettrogramma, ed è questo che
-il modello acustico ascolta al posto dell'onda. Un tempo lo riceveva anche più
+sequenza di istantanee sonore è lo spettrogramma costruito passo per
+passo in {doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>`, ed è
+questo che il modello acustico ascolta al posto dell'onda. Un tempo lo riceveva
+anche più
 spremuto, una dozzina di numeri per fettina, perché lavorava bene solo con
 poche misure che non si ripetessero fra loro, e le bande vicine dello
 spettrogramma salgono e scendono quasi insieme; oggi le reti se lo prendono

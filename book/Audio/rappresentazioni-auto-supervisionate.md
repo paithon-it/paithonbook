@@ -20,14 +20,16 @@ tiene in mente un pezzetto di suono: qualche centinaio di numeri ogni venti
 millesimi di secondo, cioè cinquanta gruppetti per ogni secondo di audio, che
 nessuno ha scritto a mano e che nessuno saprebbe leggere uno per uno.
 
-Quando è che una rappresentazione è *migliore* di un'altra? Immagina di
-appendere ogni pezzetto di suono in un punto di una stanza enorme, scegliendo
-il punto in base ai suoi numeri. Una buona rappresentazione è quella che
-appende vicini i pezzetti che si somigliano davvero e lontani quelli diversi:
-tutte le «s» in un angolo, tutte le «a» in un altro, i colpi di tamburo da
-tutt'altra parte. Se la stanza è ordinata così, qualunque domanda arrivi dopo
-(«che vocale è?», «che strumento sta suonando?») si risponde tracciando una
-riga fra due zone, e diventa facile. Anche lo spettrogramma (e con lui la scala
+Quando è che una rappresentazione è *migliore* di un'altra? Ogni gruppetto è
+un punto in uno spazio da qualche centinaio di dimensioni, e una buona
+rappresentazione mette vicini i frammenti che si somigliano davvero e lontani
+quelli diversi: le «s» in una regione, le «a» in un'altra, i colpi di tamburo
+altrove. Il criterio pratico è quello che si userà dopo: se le classi che
+interessano («che vocale è?», «che strumento sta suonando?») si separano con un
+classificatore lineare addestrato sopra la rappresentazione congelata, la
+rappresentazione le contiene già in forma pronta. È il sondaggio lineare di
+{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
+trasportato sul suono. Anche lo spettrogramma (e con lui la scala
 mel e gli MFCC) della sezione {doc}`Dal suono alle feature
 </Audio/dal-suono-alle-feature>` era una rappresentazione, ma l'avevamo
 disegnata noi; qui il modello se la costruisce da sé.
@@ -214,17 +216,40 @@ $$
 {\sum_{\tilde{\mathbf{q}}\,\in\,\mathcal{Q}_t}\exp\!\big(\mathrm{sim}(\mathbf{c}_t, \tilde{\mathbf{q}})/\kappa\big)}.
 $$
 
-È la perdita InfoNCE, la stessa che il libro ha già montato per le immagini e
-per la coppia immagine-testo {cite}`oord2018representation`, con l'audio al
-posto delle une e dell'altra. Qui $\mathrm{sim}(\mathbf{a},\mathbf{b})$ è la
+È la perdita InfoNCE {cite}`oord2018representation`, la stessa
+dell'apprendimento contrastivo sulle immagini in {doc}`Imparare a vedere senza
+etichette </VisioneArtificiale/senza-etichette>` e della coppia immagine-testo
+in {doc}`Un solo spazio per le immagini e le parole
+</VisioneLinguaggio/allineare-due-spazi>`, con l'audio al posto delle une e
+dell'altra. Qui $\mathrm{sim}(\mathbf{a},\mathbf{b})$ è la
 similarità del coseno (già usata per gli embedding) e $\mathcal{Q}_t$ l'insieme
 dei candidati; $\kappa$ è la temperatura del contrastivo, e il nome è quello
 del paper, che la $\tau$ l'aveva già spesa per la Gumbel-softmax. Altrove la
 stessa temperatura si scrive $\tau$, ed è lì che si inciampa. La perdita è il
 meno logaritmo di una softmax, e scende quando il modello assegna a
 $\mathbf{q}_t$ la probabilità più alta. Accanto le sta il termine di diversità,
-e la ragione la dà il paper: se il dizionario collassa su poche voci, il
-bersaglio e i distrattori diventano la stessa cosa e il compito degenera. A
+e la ragione la dà il paper: se il
+dizionario collassa su poche voci, il bersaglio e i distrattori diventano la
+stessa cosa e il compito degenera. La perdita completa è
+
+$$
+\mathcal{L} = \mathcal{L}_m + \alpha\,\mathcal{L}_d,
+\qquad
+\mathcal{L}_d = \frac{1}{GV}\sum_{g=1}^{G} -H(\bar{\mathbf{p}}_g)
+= \frac{1}{GV}\sum_{g=1}^{G}\sum_{v=1}^{V} \bar{p}_{g,v}\log \bar{p}_{g,v},
+$$
+
+dove $\bar{\mathbf{p}}_g$ è la softmax dei logit del gruppo $g$ mediata sui
+frame
+del batch, $H$ l'entropia e $\alpha = 0{,}1$: minimizzare $\mathcal{L}_d$ vuol
+dire massimizzare l'entropia dell'uso medio, che tocca il massimo $\log V$
+quando le $V$ voci sono scelte con la stessa frequenza. La misura è di batch: al
+singolo frame si chiede una scelta netta, al batch di spenderle tutte. Il
+mascheramento ha due numeri soli: si estrae come inizio di un tratto il
+$6{,}5\%$
+dei passi ($p = 0{,}065$) e da ciascuno si coprono i dieci successivi
+($M = 10$), con sovrapposizioni ammesse, sicché resta coperto circa il $49\%$
+dei passi, in tratti lunghi in media $299$ ms. A
 valle, con una testa CTC su pochissime etichette, la versione grande di wav2vec
 2.0 raggiunge un tasso di errore sulle parole (in sigla WER, *word error rate*:
 la quota di parole da correggere per rimettere a posto la trascrizione, e il
@@ -254,10 +279,11 @@ quando metterà in fila i pezzi di una pipeline di riconoscimento.
 Il cuore del compito si vede in poche righe di NumPy, e la domanda a cui
 risponde è semplice: il modello punta sull'unità giusta o su uno dei
 distrattori? Ogni candidato è un gruppetto di numeri. Per misurare quanto
-somiglia a ciò che il modello si è fatto in mente del pezzetto coperto si
-calcola un solo numero, che vale 1 quando i due gruppetti dicono la stessa
-cosa, 0 quando non hanno niente in comune e scende fino a $-1$ quando dicono
-il contrario: si chiama similarità del coseno. I
+somiglia a ciò che il modello si è fatto in mente del
+pezzetto coperto si usa la similarità del coseno di {doc}`Rappresentare il
+testo </NaturalLanguageProcessing/rappresentare-testo>`, la stessa che là
+confrontava due parole: 1 quando i due gruppetti dicono la stessa cosa, 0
+quando non hanno niente in comune, $-1$ quando dicono il contrario. I
 cinque punteggi vengono poi riscalati in modo che sommino a uno, così si leggono
 come probabilità: quanta fiducia il modello mette su ciascun candidato.
 
@@ -374,9 +400,13 @@ cluster ed è l'intero inventario discreto. La lettera è quella del paper, e
 tiene separato questo conto dalla $V$ di wav2vec 2.0, che conta le voci di
 *uno* dei due codebook: là l'inventario è il prodotto dei due, centomila voci
 abbondanti, qui è $C$ e basta. E $u_t$ non si chiama $\mathbf{z}_t$ apposta: è
-un intero, un nome di gruppo, mentre lo $\mathbf{z}_t$ di wav2vec 2.0 è un
-vettore di numeri reali. È la differenza di fondo fra i due metodi, e si vede
-nei simboli. Nella prima iterazione le feature sono banali MFCC; nelle
+un intero, un nome di gruppo,
+mentre lo $\mathbf{z}_t$ di wav2vec 2.0 è l'uscita reale dell'encoder,
+l'ingresso della quantizzazione e non il bersaglio. Il bersaglio di wav2vec 2.0
+è $\mathbf{q}_t$, discreto anche lui: la differenza fra i due metodi sta in chi
+lo fissa e quando, un quantizzatore addestrato insieme al modello là, un
+k-means rifatto fuori linea qui. Nella prima iterazione le feature sono banali
+MFCC; nelle
 successive si usano le rappresentazioni interne del HuBERT già addestrato, che
 danno cluster via via migliori. I numeri del paper: cento cluster su MFCC alla
 prima iterazione, cinquecento sulle uscite del sesto strato del Transformer

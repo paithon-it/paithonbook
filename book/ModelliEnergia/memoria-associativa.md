@@ -18,7 +18,7 @@ Non parte da un foglio bianco, ed è giusto dirlo. Memorie che si interrogano
 per contenuto circolavano già da un decennio, costruite legando fra loro i
 pezzi che nei ricordi vanno d'accordo: le propongono, tutti nel 1972 e ognuno
 per conto suo, Teuvo Kohonen, Kaoru Nakano, James Anderson e Shun-ichi Amari,
-il cui lavoro è quello che il libro cita {cite}`amari1972learning`. E nel 1974
+{cite}`amari1972learning`. E nel 1974
 William Little descrive una rete in cui i neuroni si accendono tutti nello
 stesso istante, ciascuno con una probabilità che cresce con la spinta
 ricevuta, e mostra che una rete così può conservare a lungo una traccia di dov'è
@@ -202,21 +202,29 @@ $$
 
 perché $(\xi_j^\mu)^2 = 1$ per ogni $j$. Il primo termine tira il neurone
 esattamente dove il pattern lo vuole; il secondo è la somma delle
-sovrapposizioni con tutti gli altri ricordi, e il bit resta al suo posto
-finché quel disturbo, moltiplicato per $\xi_i^\mu$, non scende sotto
-$-(N-1)/N$. Da qui vengono, in un colpo solo, tre cose: che i pattern quasi
-ortogonali (interferenza piccola) siano stabili; che aggiungerne troppi faccia
-crescere il disturbo finché vince; e che a pesare non sia solo il loro numero,
-ma anche quanto si somigliano, come si vedrà con la T, la L e la X. La capienza
-è dunque limitata: l'analisi di meccanica statistica di Daniel Amit, Hanoch
+sovrapposizioni con tutti gli altri ricordi, e il bit resta al suo posto finché
+quel disturbo, moltiplicato per $\xi_i^\mu$, non scende sotto $-(N-1)/N$. Da qui
+vengono, in un colpo solo, tre cose: che i pattern quasi ortogonali
+(interferenza piccola) siano stabili; che aggiungerne troppi faccia crescere il
+disturbo finché vince; e che a pesare non sia solo il loro numero, ma anche
+quanto si somigliano, come si vedrà con la T, la L e la X. Per pattern casuali
+il conto si chiude. L'interferenza è una somma di $(M-1)(N-1)$ termini $\pm 1/N$
+indipendenti, con media nulla e varianza $\approx M/N$, quindi per il limite
+centrale un bit è instabile al primo passo con probabilità
+$\approx \Phi\big(-\sqrt{N/M}\big)$, dove $\Phi$ è la ripartizione della normale
+standard: a $M/N = 0{,}138$ vale $0{,}0036$. Se invece si pretende che tutti i
+bit di tutti i pattern restino fermi con probabilità che tende a uno, serve
+$M < N/(4 \ln N)$ {cite}`mceliece1987capacity`: $1{,}9$ ricordi a $N = 25$,
+$271$ a $N = 10\,000$, dove $0{,}138\,N$ ne darebbe $1380$. La differenza fra le
+due capienze è la tolleranza su una piccola frazione di bit. La capienza è
+dunque limitata: l'analisi di meccanica statistica di Daniel Amit, Hanoch
 Gutfreund e Haim Sompolinsky {cite}`amit1985storing`, con i metodi dei vetri di
 spin, mostra che la memoria associativa esiste solo per $M < \alpha_c N$ con
 $\alpha_c = 0{,}138$, e che oltre quella soglia il recupero non degrada
 dolcemente: crolla tutto insieme (la transizione è del primo ordine). Il
-$0{,}14$ che si trova citato dappertutto non arriva da dopo: è
-l'arrotondamento, e sta nello stesso articolo del 1985, che scrive $0{,}138$
-sotto la formula e nei due grafici, e circa $0{,}14$ nel sommario e nella
-conclusione.
+$0{,}14$ che si trova citato dappertutto non arriva da dopo: è l'arrotondamento,
+e sta nello stesso articolo del 1985, che scrive $0{,}138$ sotto la formula e
+nei due grafici, e circa $0{,}14$ nel sommario e nella conclusione.
 
 Le ipotesi contano, perché sono ciò che rende quel numero un teorema e non
 un'osservazione: pattern casuali e non correlati, rete completamente

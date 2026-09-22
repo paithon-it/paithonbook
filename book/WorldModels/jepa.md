@@ -1,8 +1,9 @@
 # La via di LeCun: predire nello spazio delle idee
 
-Il 27 giugno 2022 Yann LeCun deposita su OpenReview (la piattaforma dove di
-solito si caricano gli articoli in attesa di revisione) un documento di 62
-pagine intitolato *A Path Towards Autonomous Machine Intelligence*
+Il documento di LeCun che l'apertura del capitolo ha nominato ha una data
+precisa: il 27 giugno 2022 Yann LeCun lo deposita su OpenReview (la piattaforma
+dove di solito si caricano gli articoli in attesa di revisione) un documento di
+62 pagine intitolato *A Path Towards Autonomous Machine Intelligence*
 {cite}`lecun2022path`. Già il sottotitolo è insolito: «versione 0.9.2», come
 un software non ancora finito. E insolito è tutto il resto: non è un paper di
 risultati, con esperimenti e tabelle, ma un documento di posizione (la
@@ -218,22 +219,27 @@ ogni voto torna indietro nella rete e le ritocca i numeri. Non potendo
 contrattare, l'insegnante non può accordarsi con l'allievo per abbassare
 l'asticella, e all'allievo non resta che inseguire le descrizioni dell'altro.
 
-C'è poi una seconda accortezza: come insegnante si usa una **copia lenta
+C'è poi una seconda accortezza, dalla parte dell'allievo: la sua descrizione
+non arriva all'insegnante così com'è, ma passa prima per un traduttore che
+lavora solo per lui e che l'insegnante non ha. È quello che rende i due
+davvero diversi, e nei sistemi veri conta quanto il silenzio dell'insegnante:
+tolto il traduttore, o ridata la voce all'insegnante, la truffa ricomincia.
+
+C'è infine una terza accortezza: come insegnante si usa una **copia lenta
 dell'allievo**, non una seconda rete addestrata a parte ma l'allievo stesso
 com'era in media negli ultimi tempi, cioè i suoi numeri mescolati un pochino a
 ogni passo. Il dosaggio lo scelgono i ricercatori, e nel sistema vero è quattro
 parti su mille: se un numero dell'allievo passa da 10 a 20, quello
-dell'insegnante non salta a 20, diventa 10,04, cioè copre quattro millesimi
-dei dieci di divario. Per raggiungerlo davvero gli servono centinaia di passi,
-e nel frattempo il bersaglio cambia idea solo al ritmo a cui l'allievo migliora
+dell'insegnante non salta a 20, diventa 10,04, cioè copre quattro millesimi dei
+dieci di divario. Per raggiungerlo davvero gli servono centinaia di passi, e nel
+frattempo il bersaglio cambia idea solo al ritmo a cui l'allievo migliora
 *davvero*; verso la fine il dosaggio scende a zero, e l'insegnante non cambia
-più idea affatto. Delle due accortezze, quella che impedisce la truffa è
-l'insegnante senza voce in capitolo: su un esercizio in miniatura la lentezza
-si può togliere e la truffa non ricomincia. Chi ha costruito questi sistemi la
-lentezza non la toglie e la dichiara necessaria; altri, su sistemi altrettanto
-veri, l'hanno tolta e la truffa non è ricominciata nemmeno lì. Quindi la
-lentezza serve a qualcosa, ma che cosa esattamente è ancora oggetto di
-studio.
+più idea affatto. Delle tre accortezze, quella di cui si fa a meno è la
+lentezza: su un esercizio in miniatura la si può togliere e la truffa non
+ricomincia. Chi ha costruito questi sistemi la lentezza non la toglie e la
+dichiara necessaria; altri, su sistemi altrettanto veri, l'hanno tolta e la
+truffa non è ricominciata nemmeno lì. Quindi la lentezza serve a qualcosa, ma
+che cosa esattamente è ancora oggetto di studio.
 
 `````
 
@@ -261,15 +267,17 @@ pezzo, che si dimentica volentieri perché sta dalla parte dell'allievo: il
 predictor, che esiste su un ramo solo ed è ciò che rende l'asimmetria
 un'asimmetria vera. I paper della famiglia li nominano tutti e tre insieme.
 
-Dei tre, il candidato a impedire la discesa coordinata dei due encoder verso
-la costante è lo stop-gradient, perché il bersaglio insegue e non può
-contrattare: nella mini-JEPA in PyTorch, togliere l'EMA e tenere il resto non
-produce alcun collasso (la varietà delle rappresentazioni, anzi, sale da 1,0 a
-1,6). Da un giocattolo ai sistemi veri, però, il passo non è automatico:
-I-JEPA chiama l'EMA «essenziale per addestrare» architetture come questa, e la
-difesa dal collasso la attribuisce all'asimmetria fra i due rami nel suo
-insieme. Fuori dalla famiglia JEPA la copia lenta è però già stata tolta senza
-che niente collassasse, ed è SimSiam {cite}`chen2021exploring`, che la
+Dei tre, l'EMA è quello sacrificabile: nella mini-JEPA in PyTorch, toglierla
+e tenere il resto non produce alcun collasso (la varietà delle
+rappresentazioni, anzi, sale da 1,0 a 1,6). Stop-gradient e predictor servono
+invece insieme: in SimSiam togliere l'uno o l'altro fa collassare
+{cite}`chen2021exploring`, e la dinamica del predictor che lo spiega l'hanno
+analizzata Tian, Chen e Ganguli {cite}`tian2021understanding`. Da un giocattolo
+ai sistemi veri, però, il passo non è automatico: I-JEPA chiama l'EMA
+«essenziale per addestrare» architetture come questa, e la difesa dal collasso
+la attribuisce all'asimmetria fra i due rami nel suo insieme. Fuori dalla
+famiglia JEPA la copia lenta è però già stata tolta senza che niente
+collassasse, ed è SimSiam {cite}`chen2021exploring`, che la
 {doc}`sezione sull'imparare a vedere senza etichette
 </VisioneArtificiale/senza-etichette>` ha già raccontato. È
 comunque la stessa scoperta empirica che aveva sorpreso la comunità con BYOL
@@ -341,20 +349,25 @@ $$
 $$
 
 dove $B_i$ è l'insieme delle patch del blocco bersaglio $i$, e
-$\hat{\mathbf{s}}_{y,j}$ e $\mathbf{s}_{y,j}$ sono le rappresentazioni predette e bersaglio
-della singola patch $j$: il confronto avviene patch per patch, non fra due
-riassunti di blocco. Un dettaglio architetturale è
-decisivo: l'encoder target elabora l'immagine intera, e i bersagli si
-ottengono mascherando la sua *uscita*, non il suo ingresso; così ogni
-rappresentazione-bersaglio incorpora il contesto globale ed è semanticamente
-ricca. Niente augmentation artigianali: nessun crop multiplo, nessun jitter di
-colore. I numeri del paper {cite}`assran2023self`: su ImageNet-1K con l’1%
-delle etichette, un ViT-H/14 pre-addestrato con I-JEPA raggiunge il 73,3% di
-accuratezza top-1 (77,3% per il ViT-H/16 a risoluzione 448), contro il 71,5%
-di MAE (il metodo generativo che ricostruisce i pixel mascherati) e il 69,7%
-di iBOT (lì con un ViT-B/16, che è un modello molto più piccolo), e il
-pre-addestramento del ViT-H/14 richiede meno di 1200 ore-GPU (meno di 72 ore su
-16 A100), oltre dieci volte meno di MAE a parità di architettura.
+$\hat{\mathbf{s}}_{y,j}$ e $\mathbf{s}_{y,j}$ sono le rappresentazioni predette
+e bersaglio della singola patch $j$: il confronto avviene patch per patch, non
+fra due riassunti di blocco. Un dettaglio architetturale è decisivo: l'encoder
+target elabora l'immagine intera, e i bersagli si ottengono mascherando la sua
+*uscita*, non il suo ingresso; così ogni rappresentazione-bersaglio incorpora il
+contesto globale ed è semanticamente ricca. Niente augmentation artigianali:
+nessun crop multiplo, nessun jitter di colore. I numeri del paper
+{cite}`assran2023self`: su ImageNet-1K con l’1% delle etichette, un ViT-H/14
+pre-addestrato con I-JEPA raggiunge il 73,3% di accuratezza top-1 (77,3% per il
+ViT-H/16 a risoluzione 448), contro il 71,5% di MAE (il metodo generativo che
+ricostruisce i pixel mascherati) e il 69,7% di iBOT (lì con un ViT-B/16, che è
+un modello molto più piccolo). Nella stessa tabella data2vec
+{cite}`baevski2022data2vec`, che predice anch'esso le rappresentazioni di un
+maestro EMA invece dei pixel, arriva al 73,3% con un ViT-L/16, e MSN, che usa le
+augmentation, al 75,7%: il vantaggio netto di I-JEPA è sui metodi che
+ricostruiscono i pixel, non sull'intera famiglia che predice nel latente, di cui
+data2vec è un predecessore; e il pre-addestramento del ViT-H/14 richiede meno di
+1200 ore-GPU (meno di 72 ore su 16 A100), oltre dieci volte meno di MAE a parità
+di architettura.
 
 Il risparmio, però, non viene da dove sembra. Calcolare i bersagli nello
 spazio delle rappresentazioni, invece che nei pixel, aggiunge costo,
@@ -655,25 +668,27 @@ vado alla stazione») e quelli sotto ne riempiono i dettagli, ciascuno sulla
 propria scala di tempo; il configuratore; il ragionamento a lungo orizzonte,
 cioè su catene lunghe di conseguenze.
 
-I critici, dal canto loro, fanno notare che la storia recente non è stata
-tenera con le previsioni di insufficienza: i modelli generativi, cresciuti
-abbastanza in taglia e in dati, continuano a esibire capacità che «non
-avrebbero dovuto» avere. L'argomento più forte di quella sponda non è
-un'impressione, ed è nella sezione seguente: un modello addestrato soltanto a
-indovinare la mossa successiva si costruisce dentro una rappresentazione dello
-stato del gioco, e la usa {cite}`li2023emergent`. Sull'idea che la coerenza
-fisica dei generatori di video migliori da sé man mano che li si ingrandisce,
-invece, conviene essere cauti quanto lo siamo con l'altra sponda: le fonti su
-cui poggia sono, per i sistemi più spinti, gli annunci aziendali con
-dimostrazioni scelte di cui parla la prossima sezione. È un'affermazione da
-verificare, non da concedere. Se per capire
-il mondo serva davvero smettere di generarlo, o se generare *sia* un modo di
-capire, è esattamente la domanda su cui il campo è spaccato. LeCun, come
-ricordato in apertura di capitolo, ci ha scommesso la carriera: ha lasciato
-Meta per una startup dedicata ai world model. La prossima sezione attraversa il
-fronte opposto del dibattito: i simulatori generativi di video, da Sora a
-Genie, e la domanda se un modello che *disegna* futuri plausibili abbia capito
-la fisica o abbia solo imparato a imitarla.
+I critici, dal canto loro, fanno notare che la storia recente non è stata tenera
+con le previsioni di insufficienza: i modelli generativi, cresciuti abbastanza
+in taglia e in dati, continuano a esibire capacità che «non avrebbero dovuto»
+avere. L'argomento più forte di quella sponda non è un'impressione, ed è
+nell'ultima sezione del capitolo: un modello addestrato soltanto a indovinare la
+mossa successiva si costruisce dentro una rappresentazione dello stato del
+gioco, e la usa {cite}`li2023emergent`. Sull'idea che la coerenza fisica dei
+generatori di video migliori da sé man mano che li si ingrandisce, invece,
+conviene essere cauti quanto lo siamo con l'altra sponda: le fonti su cui poggia
+sono, per i sistemi più spinti, gli annunci aziendali con dimostrazioni scelte
+di cui parla l'ultima sezione del capitolo. È un'affermazione da verificare, non
+da concedere. Se per capire il mondo serva davvero smettere di generarlo, o se
+generare *sia* un modo di capire, è esattamente la domanda su cui il campo è
+spaccato. LeCun, come ricordato in apertura di capitolo, ci ha scommesso la
+carriera: ha lasciato Meta per una startup dedicata ai world model. Il fronte
+opposto del dibattito (i simulatori generativi di video, da Sora a Genie, e la
+domanda se un modello che *disegna* futuri plausibili abbia capito la fisica o
+abbia solo imparato a imitarla) lo attraversa la {doc}`sezione sui simulatori
+</WorldModels/simulatori-e-dibattito>`.
+Prima, una deviazione nelle neuroscienze: l'inferenza attiva, che alla stessa
+domanda risponde da tutt'altra parte.
 
 ## Una mini-JEPA in PyTorch
 
@@ -682,14 +697,14 @@ embedding) stanno comodamente in una pagina di PyTorch. L'esperimento è
 volutamente in miniatura: ogni «immagine» è una scena finta fatta di 8
 **patch**, cioè di 8 tessere (è il modo in cui i Vision Transformer tagliano
 un'immagine; qui le tessere nascono da un contenuto comune più rumore). Il
-modello vede 6 tessere di contesto e deve prevedere l’embedding (non i
-valori!) delle 2 tessere coperte. Il commento chiave è sull’asimmetria: il
-bersaglio non riceve gradiente, e per questo non può mettersi d'accordo con
-l'encoder. Quel «non riceve gradiente» ha un nome, stop-gradient, ed è la
-traduzione in codice dell'insegnante che non può lamentarsi del voto: è lui a
-tenere il sistema lontano dal collasso. L'EMA rende il bersaglio più lento e
-più stabile, cosa che nei sistemi veri conta parecchio, ma non è lei a reggere
-il muro, e qui sotto lo si misura.
+modello vede 6 tessere di contesto e deve prevedere l’embedding (non i valori!)
+delle 2 tessere coperte. Il commento chiave è sull’asimmetria: il bersaglio non
+riceve gradiente, e per questo non può mettersi d'accordo con l'encoder. Quel
+«non riceve gradiente» ha un nome, stop-gradient, ed è la traduzione in codice
+dell'insegnante che non può lamentarsi del voto: insieme al predictor, che sta
+su un ramo solo, tiene il sistema lontano dal collasso. L'EMA rende il bersaglio
+più lento e più stabile, cosa che nei sistemi veri conta parecchio, ma non è lei
+a reggere il muro, e qui sotto lo si misura.
 
 ```python
 import copy
@@ -723,7 +738,8 @@ for p in encoder_target.parameters():
 @torch.no_grad()
 def aggiorna_target(m=0.996):
     """EMA: il target insegue lentamente l'encoder, e non ne riceve mai
-    il gradiente. L'anti-collasso è proprio quel 'mai': senza gradiente
+    il gradiente. Quel 'mai', con il predictor su un ramo solo, e' la difesa dal
+    collasso: senza gradiente
     il target non può accordarsi con l'encoder per appiattire tutti gli
     embedding sulla stessa costante. L'EMA aggiunge la lentezza."""
     for p, p_t in zip(encoder.parameters(), encoder_target.parameters()):
@@ -797,12 +813,13 @@ ingegneria; la logica è tutta in queste righe.
   disegnare *una* foto finisce per disegnare la media sfocata di tutte. La
   proposta è prevedere il succo, non la foto.
 - Il pericolo di prevedere il succo è che allievo e insegnante si accordino
-  per rispondere sempre «boh»: si chiama collasso. A impedirlo è una cosa
-  sola, che l'insegnante non riceva mai lamentele sul voto: non potendo
-  contrattare, non può accordarsi al ribasso. Che sia anche una copia lenta
-  dell'allievo serve a rendere l'esercizio stabile; chi ha costruito questi
-  sistemi non la toglie, ma altrove è stata tolta e la truffa non è
-  ricominciata.
+  per rispondere sempre «boh»: si chiama collasso. A impedirlo sono due
+  accortezze insieme: l'insegnante non riceve mai lamentele sul voto,
+  quindi non può accordarsi al ribasso, e l'allievo passa la sua descrizione
+  per un traduttore che l'insegnante non ha. Che l'insegnante sia anche una
+  copia lenta dell'allievo serve a rendere l'esercizio stabile; chi ha
+  costruito questi sistemi non la toglie, ma altrove è stata tolta e la truffa
+  non è ricominciata.
 - La prova sulle immagini è il gioco della cartolina strappata: si coprono
   quattro rettangoli grandi e si chiede di *descriverli*, non di
   ridisegnarli. Funziona, e impara con molto meno calcolo dei metodi che
@@ -818,7 +835,8 @@ ingegneria; la logica è tutta in queste righe.
 - Tre modi di studiare senza professore, e sono tre studenti diversi:
   ricopiare con i buchi, il gioco delle coppie, prevedere il
   riassunto. Prevedere il riassunto è la via JEPA, ed è la più giovane
-  delle tre. La prossima sezione va a sentire l'altra campana.
+  delle tre. L'altra campana, quella di chi scommette sul generare, suona
+  nell'ultima sezione del capitolo.
 ```
 
 `````
@@ -839,10 +857,10 @@ ingegneria; la logica è tutta in queste righe.
   l'energia è l'errore di predizione tra embedding.
 - Il pericolo è il solito collasso (embedding costanti, energia bassa
   ovunque); la difesa dei sistemi reali è l'asimmetria fra i due rami, fatta
-  di tre pezzi (EMA, stop-gradient, predictor su un ramo solo), e il muro
-  sembra lo stop-gradient: il ramo del target non riceve gradiente e non
-  può colludere. Che a impedire il collasso non sia l'EMA lo dice SimSiam,
-  che la toglie senza conseguenze.
+  di tre pezzi (EMA, stop-gradient, predictor su un ramo solo). L'EMA è
+  sacrificabile: SimSiam la toglie senza conseguenze. Stop-gradient e
+  predictor servono invece insieme: in SimSiam togliere l'uno o l'altro fa
+  collassare {cite}`chen2021exploring,tian2021understanding`.
 - I-JEPA {cite}`assran2023self` (CVPR 2023): un ViT predice le
   rappresentazioni di quattro blocchi mascherati dal contesto; niente
   augmentation artigianali; con l’1% delle etichette di ImageNet batte i
@@ -861,14 +879,14 @@ ingegneria; la logica è tutta in queste righe.
   *attentive probe* (per V-JEPA 2, quattro blocchi transformer), quindi
   misurano quanto l'informazione sia estraibile, non quanto il modello
   «capisca».
-- Tre famiglie di auto-supervisione, classificate secondo dove avviene la
-  previsione: generativa (ricostruisci il dato: BERT, MAE),
-  contrastiva (avvicina/allontana: CLIP), predittiva nello spazio
-  latente (JEPA). È un asse diverso da quello del capitolo
-  sull'auto-supervisione, che taglia invece secondo che cosa impedisce il
-  collasso e ottiene quattro famiglie: i due elenchi non si contraddicono, si
-  incrociano. La partita tra generare e predire-nelle-idee è aperta: la
-  prossima sezione visita l'altra sponda.
+-  Tre famiglie di auto-supervisione, classificate secondo dove avviene la
+  previsione: generativa (ricostruisci il dato: BERT, MAE), contrastiva
+  (avvicina/allontana: CLIP), predittiva nello spazio latente (JEPA). È un asse
+  diverso da quello del capitolo sull'auto-supervisione, che taglia invece
+  secondo che cosa impedisce il collasso e ottiene quattro famiglie: i due
+  elenchi non si contraddicono, si incrociano. La partita tra generare e
+  predire-nelle-idee è aperta: l'altra sponda la visita l'ultima sezione del
+  capitolo.
 ```
 
 `````

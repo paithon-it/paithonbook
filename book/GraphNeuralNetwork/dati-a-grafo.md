@@ -14,9 +14,9 @@ Le reti che abbiamo studiato finora (quelle convoluzionali per le immagini,
 quelle ricorrenti e i Transformer per il testo) sono nate per dati con una
 forma regolare: una griglia di pixel, una sequenza di parole. Ma un grafo non
 ha né una griglia né un ordine. È una struttura più libera e, proprio per
-questo, più difficile da dare in pasto a una rete neurale. Questo capitolo
-racconta come si fa; questa prima sezione mette in fila il vocabolario e i
-problemi di fondo, per capire *perché* servono strumenti nuovi.
+questo, più difficile da dare in pasto a una rete neurale. Come si fa lo dicono
+un vocabolario e alcuni problemi di fondo, che spiegano
+*perché* servono strumenti nuovi.
 
 ## Nodi e archi: l'anatomia di un grafo
 

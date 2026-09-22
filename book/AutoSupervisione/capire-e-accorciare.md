@@ -38,9 +38,10 @@ scriverla. La ricava dal teorema di Shannon la sezione
 {doc}`Teoria dell'informazione </Matematica/teoria-informazione>`: il numero di
 bit che serve per scrivere un messaggio con il codice migliore possibile è
 $-\log_2 p$, dove $p$ è la probabilità che il modello assegna a quel messaggio.
-La formula si legge anche senza farne il conto: se il modello dava per quasi
-certo quello che è arrivato, il prezzo va quasi a zero; se lo dava per
-improbabile, il prezzo si impenna. L'ha resa operativa
+La formula si legge con due conti a mente: se il modello dava a quello che è
+arrivato una probabilità su due, il prezzo è un bit; una su otto, tre bit; una
+su mille, circa dieci. Se lo dava per quasi certo, al 99%, il prezzo scende a
+un centesimo e mezzo di bit. L'ha resa operativa
 {doc}`A che serve saperlo, e dove sbaglia </VerosimiglianzaEsatta/a-che-serve>`:
 un modello che sa dire $p(\mathbf{x})$, cioè quanto è probabile un dato, è
 un compressore, non per analogia, e infatti quella famiglia di modelli si
@@ -404,12 +405,13 @@ scegliere un modello mentre $K$ da sola non servirebbe.
 
 `````
 
-E il legame conta: quello appena scritto è il rasoio di Occam, in una forma
-che si può mettere in un programma. Il capitolo sul
-machine learning aveva enunciato il rasoio come massima («a parità di
-spiegazione, vince la più semplice») e poi l'aveva reso operativo con la
-regolarizzazione, che penalizza i pesi grandi. La complessità di Kolmogorov dice
-qual è la penalità *giusta*: la lunghezza della descrizione.
+La dettatura più corta è il rasoio di Occam in una forma che si può mettere in
+un programma: fra due spiegazioni degli stessi dati vince quella che si detta
+in meno parole. La {doc}`sezione sull'overfitting
+</MachineLearning/overfitting-validazione>` aveva enunciato il rasoio come
+massima («a parità di spiegazione, vince la più semplice») e poi l'aveva reso
+operativo con la regolarizzazione, che penalizza i pesi grandi. La complessità
+di Kolmogorov dice qual è la penalità *giusta*: la lunghezza della descrizione.
 
 Da lì nascono due criteri che si usano davvero, perché al posto della macchina
 universale mettono una famiglia di modelli concreta. La **lunghezza minima di
@@ -530,9 +532,11 @@ farlo pesare il meno possibile.
 
 Ecco: la roba tanta e in sé inutile è il testo di internet, la cosa poca che
 serve davvero è il compito a cui tieni, e fare un bagaglio solo è il
-pre-addestramento. Con una valigia fatta alla perfezione sarebbe una scommessa
-che nel peggiore dei casi va in pari; chi la fa davvero perfetto non è, e
-capita che riempia male. Quanto ci guadagni è quanto la prima valigia
+pre-addestramento. Il peso è la lunghezza della descrizione compressa: un
+bagaglio leggero è un file corto, e un file corto lo scrive solo chi sa
+prevedere che cosa c'è dentro. Con una valigia fatta alla perfezione sarebbe una
+scommessa che nel peggiore dei casi va in pari; chi la fa davvero perfetto non
+è, e capita che riempia male. Quanto ci guadagni è quanto la prima valigia
 conteneva già della seconda, e non lo decidi tu: lo decide il mondo, cioè se
 davvero il testo scritto dalle persone contiene qualcosa della biologia.
 
@@ -658,7 +662,7 @@ che si poteva fare con quello che avevi. È un tipo di garanzia diverso da
 quello del supervisionato, e altrettanto solido: là si garantisce un risultato,
 qui si garantisce di non aver sprecato niente.
 
-Va detto anche quello che l'immagine del bagaglio non porta con sé. Il
+Va detto anche quello che questa garanzia non porta con sé. Il
 «peggio che va, si va in pari» è una proprietà del compressore ideale, che
 per definizione non fa mai peggio del meglio possibile. Una rete vera, cercata
 con la discesa del gradiente, quella garanzia non ce l'ha: capita che un
@@ -675,11 +679,11 @@ capace» da «non ho trovato niente perché non c'era niente».
 
 E il rimpianto ha un fratello, cioè la quantità di cui misura lo spreco. Il
 divario fra il comprimere insieme e il comprimere separatamente ha un nome
-proprio, **informazione mutua algoritmica**, ed è alla lettera quello che il
-paragrafo del bagaglio chiamava «quanto la prima valigia conteneva già della
-seconda». Quel divario è il massimo che il pre-addestramento possa fruttare: un
-compressore migliore ne estrae di più, nessun compressore può inventarne dove
-non ce n'è, e il rimpianto è quanto se ne è lasciato sul piatto.
+proprio, **informazione mutua algoritmica**, ed è alla lettera quanto i dati non
+etichettati contengono già del compito a cui si tiene. Quel divario è il massimo
+che il pre-addestramento possa fruttare: un compressore migliore ne estrae di
+più, nessun compressore può inventarne dove non ce n'è, e il rimpianto è quanto
+se ne è lasciato sul piatto.
 
 ```{admonition} Un corollario inatteso, sulle architetture
 :class: tip
@@ -991,16 +995,16 @@ che nel caso ideale è infinitamente costosa e nel caso vero è la discesa del
 gradiente. Un'analogia da maneggiare con cautela, perché non vale
 universalmente.
 
-E la teoria parla di un insieme di dati fisso, non di un flusso. In teoria
-si comprime un file che sta lì; nell'addestramento vero c'è un insieme di
+E la teoria parla di un insieme di dati fisso, non di un flusso. In teoria si
+comprime un file che sta lì; nell'addestramento vero c'è un insieme di
 addestramento e poi dati nuovi che, di fatto, non finiscono mai. Se quello che
 si vuole comprimere non finisce mai, la dimensione del compressore smette di
 contare, perché la si divide per una quantità che cresce senza limite. Ecco
-perché il paragrafo precedente è un'obiezione che vale su un file e non una che
-chiude la partita: e la sua forza dipende da una domanda che
-va posta ogni volta, cioè se il dato sia una cosa finita o un rubinetto aperto.
-Anche questa resta dichiarata come una discrepanza da chiarire, non come una
-cosa risolta.
+perché il prezzo del modello, quello di «Chi paga il vocabolario», è
+un'obiezione che vale su un file e non una che chiude la partita: e la sua forza
+dipende da una domanda che va posta ogni volta, cioè se il dato sia una cosa
+finita o un rubinetto aperto. Anche questa resta dichiarata come una discrepanza
+da chiarire, non come una cosa risolta.
 
 Gli altri quattro sono quelli soliti, e uno lo abbiamo appena finito di
 guardare.
@@ -1140,12 +1144,11 @@ funzioni è, prima di tutto, un'informazione su dove abitiamo.
   si legge in giro è la rete rifinita per intero, cioè un'altra prova). La
   separabilità lineare resta non spiegata, e non è una conseguenza della
   compressione; quello che la teoria predice è la buona rifinitura.
-- Prove empiriche. Chinchilla 70B con codifica aritmetica
-  {cite}`deletang2024language`: `enwik9` $8{,}3\%$, ImageNet $48{,}0\%$ (PNG
-  $61{,}7\%$), LibriSpeech $21{,}0\%$ (FLAC $30{,}3\%$), dati casuali
-  $100{,}8\%$. Su 31 modelli e 12 prove, correlazione di Pearson fra bit per
-  carattere e punteggio medio pari a $-0{,}93$ complessiva, e $-0{,}935$,
-  $-0{,}937$ e $-0{,}953$ per conoscenza, codice e matematica
+- Prove empiriche: un modello di testo comprime immagini e audio meglio
+  di PNG e FLAC, e su dati casuali non comprime affatto
+  {cite}`deletang2024language`. Su 31 modelli e 12 prove, correlazione di
+  Pearson fra bit per carattere e punteggio medio pari a $-0{,}93$ complessiva,
+  e $-0{,}935$, $-0{,}937$ e $-0{,}953$ per conoscenza, codice e matematica
   {cite}`huang2024compression`.
 - La contabilità decide il verdetto. Il conto a modello dato non è una
   lunghezza di descrizione: contando i parametri, lo stesso Chinchilla 70B passa

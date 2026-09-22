@@ -251,8 +251,24 @@ approssimare frontiere di decisione arbitrarie, ma la scelta greedy degli split
 è estremamente sensibile alle fluttuazioni del campione. Piccole perturbazioni
 dei dati si propagano dalla radice alle foglie, cambiando l'intera struttura.
 
-Lo si può limitare con la potatura (*pruning*) o vincolando la crescita
-(profondità massima, numero minimo di esempi per foglia) ma questi freni
+Lo si può limitare vincolando la crescita (profondità massima, numero minimo
+di esempi per foglia) oppure con la potatura di costo-complessità di CART
+{cite}`breiman1984classification`: cresciuto l'albero pieno $T_0$, fra i suoi
+sottoalberi $T$ si minimizza
+
+$$
+R_\alpha(T) = R(T) + \alpha\,|T| ,
+$$
+
+dove $R(T)$ è l'errore sulle foglie e $|T|$ il loro numero. Al crescere di
+$\alpha$ si toglie per primo il nodo interno che costa meno errore per foglia
+risparmiata (*weakest link pruning*), e ne esce una successione annidata di
+sottoalberi fra cui si sceglie per cross-validation: in scikit-learn è
+`ccp_alpha`, e `cost_complexity_pruning_path` restituisce i valori critici.
+Quanto al costo, con le colonne preordinate lo split migliore di un nodo con
+$m_t$ esempi si trova in $O(d\,m_t)$, e un albero bilanciato costa
+$O(d\,m\log m)$ in addestramento e $O(\log m)$ per predizione. Questi freni,
+però,
 scambiano varianza con bias, e un solo albero raramente compete con i modelli
 migliori. La strada vincente è un'altra: tenere alberi flessibili (bias basso)
 e abbattere la varianza combinandone molti. È il principio degli ensemble.
@@ -428,16 +444,23 @@ stesso osserva che il risultato è poco sensibile a quel numero, e in
 scikit-learn è anche una convenzione e non un default, perché
 `RandomForestClassifier` estrae davvero $\sqrt{d}$ colonne, ma
 `RandomForestRegressor` ha `max_features=1.0`, cioè le guarda tutte. Chi scrive
-`RandomForestRegressor()` e basta ottiene quindi un bagging di alberi, senza
-il secondo sorteggio che distingue la foresta dal bagging; se lo vuole, deve
+`RandomForestRegressor()` e basta ottiene quindi un bagging di alberi, senza il
+secondo sorteggio che distingue la foresta dal bagging; se lo vuole, deve
 chiederlo (`max_features="sqrt"`, oppure `1/3`). Il vincolo sulle colonne
-abbassa la correlazione $\rho$ tra gli alberi: nella formula della
-varianza della media, è esattamente la leva che fa scendere il termine
-dominante $\rho\,\sigma^2$. Si accetta un lieve aumento del bias e della
-varianza del singolo albero in cambio di una riduzione netta della varianza
-dell'ensemble. Una variante ancora più aggressiva, gli **Extra-Trees**
-(*Extremely Randomized Trees*), estrae a caso anche le soglie di split invece
-di ottimizzarle, guadagnando velocità e ulteriore decorrelazione.
+abbassa la correlazione $\rho$ tra gli alberi: nella formula della varianza
+della media, è esattamente la leva che fa scendere il termine dominante
+$\rho\,\sigma^2$. Si accetta un lieve aumento del bias e della varianza del
+singolo albero in cambio di una riduzione netta della varianza dell'ensemble.
+Per la classificazione Breiman dà a questa leva un teorema
+{cite}`breiman2001random`: detta $s$ la *forza* della foresta, cioè il margine
+atteso con cui il voto sceglie la classe giusta, e $\bar{\rho}$ la correlazione
+media fra i margini dei singoli alberi, l'errore di generalizzazione soddisfa
+$PE^\star \le \bar{\rho}\,(1-s^2)/s^2$. Il limite è largo, ma dice in che verso
+muovere il numero di colonne sorteggiate: abbassarlo fa calare $\bar{\rho}$ e,
+oltre un certo punto, anche $s$. Una variante ancora più aggressiva, gli
+**Extra-Trees** (*Extremely Randomized Trees*), estrae a caso anche le soglie
+di split invece di ottimizzarle, guadagnando velocità e ulteriore
+decorrelazione.
 
 `````
 
@@ -456,13 +479,10 @@ Il conto, per chi ha voglia di rifarlo, è questo. Un esempio preciso, a ogni
 pescata, ha $999$ probabilità su $1000$ di non essere quello estratto; per
 restare fuori dal campione deve scamparle tutte e mille, e siccome le pescate
 sono indipendenti le probabilità si moltiplicano fra loro:
-$(999/1000)^{1000} \approx 0{,}37$. Il valore non dipende quasi dalla taglia
-del mucchio: con $m$ esempi vale $(1 - 1/m)^m$, che da qualche centinaio in su
-si è già assestato attorno a $0{,}368$ e non si muove più. Chi ha in mano i
-limiti riconosce in quel numero $1/e$, l'inverso della base dei logaritmi
-naturali; a chi non li ha basta il fatto, che si controlla con la
-calcolatrice: con dieci esempi $(1 - 1/10)^{10}$ fa già $0{,}35$, con cento
-$0{,}366$, e da lì in poi il numero non si muove più.
+$(999/1000)^{1000} \approx 0{,}37$. Il valore dipende pochissimo dalla taglia
+del mucchio: con $m$ esempi vale $(1 - 1/m)^m$, che fa $0{,}35$ con dieci
+esempi e $0{,}366$ con cento, e tende a $1/e \approx 0{,}368$, l'inverso della
+base dei logaritmi naturali.
 
 Quel terzo di esempi rimasti fuori si chiamano *out-of-bag*, «fuori dal
 sacchetto». Per ciascun esempio
@@ -478,8 +498,12 @@ stessa segnala: questa misura tende a gonfiare l'importanza delle
 caratteristiche con molti valori distinti, e va letta con prudenza. C'è una
 misura più affidabile, la *permutation importance*, e funziona così: si
 prende una colonna e la si mescola a caso, rovinandola di proposito, poi si
-guarda di quanto peggiora il modello. Se non peggiora, quella colonna non
-serviva.
+guarda di quanto peggiora il modello su dati che non ha visto in
+addestramento. Se non peggiora, il modello quella colonna non la usa, o può
+farne a meno: una colonna quasi gemella di un'altra risulta poco importante
+anche quando porta informazione vera, perché la gemella la sostituisce. I
+limiti di tutte e due le misure li racconta la {doc}`sezione sui modelli
+trasparenti </Interpretabilita/modelli-trasparenti-e-importanza>`.
 
 ## Boosting: correggere gli errori, uno alla volta
 
@@ -546,8 +570,14 @@ approssimare proprio questi pseudo-residui. Nel caso della loss quadratica
 $\ell = \tfrac{1}{2}(y - F)^2$ il gradiente si riduce a $r_i = y_i -
 F_{t-1}(\mathbf{x}_i)$: cioè, semplicemente, l’errore residuo ancora da
 spiegare (al primo passo, lo scarto dalla media $F_0$).
-Detto a parole: ogni albero fitta ciò che i precedenti hanno sbagliato. AdaBoost
-è il caso particolare che si ottiene scegliendo la *exponential loss*.
+Detto a parole: ogni albero fitta ciò che i precedenti hanno sbagliato. Il
+legame con AdaBoost passa per un lavoro di poco precedente
+{cite}`friedman2000additive`: AdaBoost coincide con la costruzione additiva un
+termine alla volta (*forward stagewise additive modeling*) sotto la
+*exponential loss* $\ell = e^{-yF}$ con $y \in \{-1,+1\}$, in cui ogni termine
+nuovo minimizza esattamente quella loss. Il gradient boosting sostituisce quella
+minimizzazione esatta con un passo di gradiente, e applicato alla loss
+esponenziale ne dà un'approssimazione, non una copia.
 
 Un passaggio, nell'algoritmo di Friedman, si salta spesso raccontandolo, e
 cambia i numeri: dell'albero appena fittato si tiene la partizione, non i
@@ -562,9 +592,37 @@ $$
 dove $R_{jt}$ è la $j$-esima foglia dell'albero $t$ e $\gamma_{jt}$ il valore
 che le viene assegnato. Con la loss quadratica il passaggio è invisibile,
 perché quella costante è la media dei residui, cioè esattamente ciò che
-l'albero aveva già messo nella foglia. Con la
-log-loss no, i due valori sono diversi, e la log-loss è il default di
-`GradientBoostingClassifier`.
+l'albero aveva già messo nella foglia. Con la log-loss no, i due valori sono
+diversi, e la log-loss è il default di `GradientBoostingClassifier`, che quel
+minimo non lo cerca esattamente: lo approssima con un solo passo di Newton,
+$\gamma_{jt} = \sum_{i \in R_{jt}} r_i \big/ \sum_{i \in R_{jt}}
+\hat{p}_i(1-\hat{p}_i)$, come l'algoritmo di Friedman.
+
+XGBoost {cite}`chen2016xgboost` porta il secondo ordine dentro la costruzione
+dell'albero. Dette $g_i$ e $s_i$ la derivata prima e seconda di
+$\ell(y_i, F)$ rispetto a $F$, calcolate in $F_{t-1}(\mathbf{x}_i)$, il nuovo
+albero minimizza lo sviluppo di Taylor della loss più una penalità sulla sua
+forma,
+
+$$
+\sum_{i=1}^{m}\Big[g_i\,h_t(\mathbf{x}_i) + \tfrac{1}{2}\,s_i\,h_t(\mathbf{x}_i)^2\Big]
++ c\,T + \tfrac{1}{2}\lambda\sum_{j=1}^{T} w_j^2 ,
+$$
+
+dove $T$ è il numero di foglie, $w_j$ il valore della foglia $j$, $c$ il
+prezzo di una foglia (il `gamma` della libreria) e $\lambda$ il freno $\ell_2$
+sui valori (`reg_lambda`). Con $G_j$ e $S_j$ le somme di $g_i$ e $s_i$ sulla
+foglia, il valore ottimo è $w_j^\star = -G_j/(S_j+\lambda)$, cioè il passo di
+Newton di Friedman ristretto verso zero, e con la loss quadratica ($s_i = 1$)
+la media dei residui ristretta verso zero. Uno split si accetta solo se il
+guadagno
+
+$$
+\tfrac{1}{2}\left[\frac{G_L^2}{S_L+\lambda} + \frac{G_R^2}{S_R+\lambda}
+- \frac{(G_L+G_R)^2}{S_L+S_R+\lambda}\right] - c
+$$
+
+è positivo: la potatura è incorporata nella crescita.
 
 `````
 
@@ -800,6 +858,16 @@ pila = StackingClassifier(base, final_estimator=LogisticRegression(),
 print(f"{'voto duro':<12} {duro.score(X_te, y_te):.4f}")
 print(f"{'voto morbido':<12} {morbido.score(X_te, y_te):.4f}")
 print(f"{'stacking':<12} {pila.score(X_te, y_te):.4f}")
+
+# la garanzia della media vale per una perdita convessa delle probabilità,
+# come il punteggio di Brier (più basso è meglio), non per l'accuratezza
+from sklearn.metrics import brier_score_loss
+brier = [brier_score_loss(y_te, m.predict_proba(X_te)[:, 1]) for _, m in base]
+print("Brier dei tre:", " ".join(f"{b:.4f}" for b in brier),
+      f" media {sum(brier) / 3:.4f}")
+print(f"Brier del voto morbido: "
+      f"{brier_score_loss(y_te, morbido.predict_proba(X_te)[:, 1]):.4f}")
+print("pesi del combinatore:", pila.final_estimator_.coef_.round(2))
 ```
 
 ```text
@@ -809,6 +877,9 @@ bayes        0.8156
 voto duro    0.8867
 voto morbido 0.8822
 stacking     0.9089
+Brier dei tre: 0.0945 0.0889 0.1303  media 0.1046
+Brier del voto morbido: 0.0961
+pesi del combinatore: [[ 6.05  4.86 -1.14]]
 ```
 
 I singoli arrivano a $0{,}8933$ (foresta), $0{,}8889$ (vicini) e $0{,}8156$
@@ -849,25 +920,30 @@ esatto, e la versione approssimata che quasi tutti i manuali chiamano test di
 McNemar dà $0{,}050$, cioè sopra la soglia. Un confronto che si gioca lì non
 è un confronto vinto.
 
-Quello che invece i numeri dicono senza ambiguità riguarda un'altra domanda, e
-conviene tenerle distinte: mediare dei numeri a pesi fissi mette al riparo dal
-membro medio, e non promette di superare il migliore. La garanzia è quella, e
-vale per la media, non per un voto contato a maggioranza, dove un comitato può
-finire perfino sotto il membro medio. Qui i numeri si comportano bene: la
-media dei tre punteggi
-sta a $0{,}8659$, e il voto morbido la batte di oltre un punto e mezzo
-($0{,}8822$);
-che dovesse battere anche la foresta non l'aveva promesso nessuno, ed è per
-l'appunto il confronto che questi dati non sanno decidere.
+Quello che invece i numeri possono dire riguarda un'altra domanda, e conviene
+tenerle distinte: mediare probabilità a pesi fissi mette al riparo dal membro
+medio, e non promette di superare il migliore. La garanzia vale per una
+perdita convessa delle probabilità mediate, come la distanza al quadrato fra
+probabilità ed esito (il punteggio di Brier, dove più basso è meglio) o la
+log-loss, e non per l'accuratezza: il voto morbido media e poi sceglie la
+classe più probabile, e quella scelta è di nuovo una perdita 0-1, dove un
+comitato può finire perfino sotto il membro medio. Sul punteggio di Brier il
+voto morbido fa $0{,}0961$ contro una media dei tre di $0{,}1046$, come la
+garanzia promette, e perde contro la foresta ($0{,}0945$) e contro il $k$-NN
+($0{,}0889$), come la garanzia non esclude. Che sull'accuratezza superi la
+media dei tre punteggi ($0{,}8822$ contro $0{,}8659$) è un fatto di questi
+dati, non una promessa.
 
 Sul perché il voto non guadagni di più, invece, si può ragionare, e la ragione
 è il terzo modello. Il Bayes ingenuo è nettamente il più debole, e in una media
 a pesi fissi conta quanto gli altri: il voto lo tratta alla pari con la
-foresta. Lo stacking impara che di quel modello ci si può fidare poco, e
-gli assegna un peso piccolo: è il vantaggio strutturale di far decidere i pesi
-ai dati invece che fissarli a priori, e la ragione per cui, in un ensemble
-eterogeneo, la media semplice è una scommessa sulla qualità uniforme dei
-membri.
+foresta. Lo stacking impara che di quel modello ci si può fidare poco, e i pesi
+del combinatore lo dicono: $6{,}05$ alla foresta, $4{,}86$ al $k$-NN e
+$-1{,}14$ al Bayes ingenuo, cioè un peso piccolo e perfino di segno opposto,
+che usa il modello debole come correzione degli altri due: è il vantaggio
+strutturale di far decidere i pesi ai dati invece che fissarli a priori, e la
+ragione per cui, in un ensemble eterogeneo, la media semplice è una scommessa
+sulla qualità uniforme dei membri.
 
 Non è però un invito a impilare tutto: il guadagno qui è di poco più di un
 punto e mezzo,

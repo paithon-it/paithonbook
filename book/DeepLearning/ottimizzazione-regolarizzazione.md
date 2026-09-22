@@ -193,7 +193,7 @@ sentito, dovrebbe valere zero all'inizio, perché non c'è ancora ragione di
 preferire un verso, e PyTorch lo sorteggia come i pesi.
 
 Una fila di poche stanze perdona tutto. Quaranta no. Il grido che torna alla
-prima vale ancora quattro decimi con i pesi alla He; con quelli di PyTorch
+prima vale ancora quasi mezzo con i pesi alla He; con quelli di PyTorch
 comincia con diciassette zeri dopo la virgola, decine di milioni di miliardi di
 volte più fioco. Non è ancora silenzio, ma tanto vale. A sessanta stanze lo
 diventa: il calcolatore non ha più cifre per scrivere un numero così piccolo, e
@@ -209,8 +209,25 @@ la rete, prima che faccia un solo passo.
 `````{tab} Superiore
 
 L'obiettivo è preservare la varianza delle attivazioni (e dei gradienti) da
-uno strato all'altro. Con $n_{\text{in}}$ ingressi e $n_{\text{out}}$ uscite,
-l'inizializzazione di Glorot {cite}`glorot2010understanding` campiona i
+uno strato all'altro, e il conto si fa in due righe sotto tre ipotesi: pesi
+indipendenti, a media nulla e indipendenti dagli ingressi; pre-attivazioni
+simmetriche attorno a zero; bias nulli. Per la pre-attivazione di un'unità,
+$z = \sum_{j=1}^{n_{\text{in}}} w_j h_j$, l'indipendenza dà
+
+$$
+\operatorname{Var}(z) = n_{\text{in}}\,\operatorname{Var}(w)\,\mathbb{E}[h^2].
+$$
+
+Con la ReLU e la pre-attivazione dello strato prima, $z'$, simmetrica attorno a
+zero, $\mathbb{E}[h^2] = \mathbb{E}[\max(0,z')^2] =
+\tfrac{1}{2}\operatorname{Var}(z')$, quindi la varianza resta costante di
+strato in strato se e solo se $n_{\text{in}}\operatorname{Var}(w)/2 = 1$. Con
+un'attivazione che vicino a zero è l'identità, come la tanh, il fattore
+$\tfrac{1}{2}$ sparisce e la condizione diventa
+$n_{\text{in}}\operatorname{Var}(w) = 1$; la stessa richiesta sui gradienti,
+che all'indietro attraversano la matrice trasposta, dà
+$n_{\text{out}}\operatorname{Var}(w) = 1$. L'inizializzazione di Glorot
+{cite}`glorot2010understanding` fa la media fra le due richieste e campiona i
 pesi con varianza
 
 $$
@@ -253,14 +270,55 @@ PyTorch nel caso del default, che è appunto quel che si ottiene senza toccare
 niente. E conta: azzerando anche quelli del default, si arriva a zero esatto
 già a quaranta blocchi invece che a sessanta, perché quei valori
 uniformi sono l'unica cosa che tiene in vita il segnale quando i pesi lo
-spengono. Viene $4{,}2\times10^{-1}$ inizializzando alla
-He, $5{,}5\times10^{-13}$ alla Glorot e $9{,}7\times10^{-18}$ con il default di
+spengono. Il conto sta in un blocco:
+
+```python
+import statistics
+import torch
+from torch import nn
+
+torch.set_num_threads(1)
+
+def norma_primo_strato(ricetta, blocchi, seme):
+    torch.manual_seed(seme)
+    strati = []
+    for _ in range(blocchi):
+        lineare = nn.Linear(100, 100)
+        if ricetta == "He":
+            nn.init.kaiming_normal_(lineare.weight, nonlinearity="relu")
+            nn.init.zeros_(lineare.bias)
+        elif ricetta == "Glorot":
+            nn.init.xavier_normal_(lineare.weight)
+            nn.init.zeros_(lineare.bias)
+        strati += [lineare, nn.ReLU()]
+    rete = nn.Sequential(*strati)
+    (rete(torch.randn(64, 100)) ** 2).mean().backward()
+    return rete[0].weight.grad.norm().item()
+
+for blocchi in (40, 60):
+    for ricetta in ("He", "Glorot", "default"):
+        norme = [norma_primo_strato(ricetta, blocchi, s) for s in range(5)]
+        print(f"{blocchi} blocchi, {ricetta:<8} mediana {statistics.median(norme):.1e}"
+              f"   (da {min(norme):.1e} a {max(norme):.1e})")
+```
+
+```text
+40 blocchi, He       mediana 4.7e-01   (da 8.2e-02 a 9.7e-01)
+40 blocchi, Glorot   mediana 6.1e-13   (da 1.1e-13 a 1.3e-12)
+40 blocchi, default  mediana 9.6e-18   (da 2.2e-18 a 1.5e-17)
+60 blocchi, He       mediana 1.7e-01   (da 4.6e-02 a 1.2e+00)
+60 blocchi, Glorot   mediana 2.1e-19   (da 5.7e-20 a 1.4e-18)
+60 blocchi, default  mediana 0.0e+00   (da 0.0e+00 a 0.0e+00)
+```
+
+A quaranta blocchi la mediana vale $4{,}7\times10^{-1}$ inizializzando alla He,
+$6{,}1\times10^{-13}$ alla Glorot e $9{,}6\times10^{-18}$ con il default di
 PyTorch: più di sedici ordini di grandezza fra la prima e l'ultima, e
 l'addestramento non è ancora cominciato. La dispersione fra semi è ampia (con
-He il singolo seme va da $1{,}4\times10^{-1}$ a $3{,}8$), il divario fra le tre
-no. Portando la pila a sessanta blocchi il default arriva esattamente a
-$0{,}0$, in cinque semi su cinque, e lì lo zero non è un modo di dire ma un
-underflow in `float32`. Che la questione sia nota a chi scrive le
+He il singolo seme va da $8{,}2\times10^{-2}$ a $9{,}7\times10^{-1}$), il
+divario fra le tre no. Portando la pila a sessanta blocchi il default arriva
+esattamente a $0{,}0$, in cinque semi su cinque, e lì lo zero non è un modo di
+dire ma un underflow in `float32`. Che la questione sia nota a chi scrive le
 librerie lo dicono le librerie stesse: la ResNet di `torchvision` non si fida
 del default e reinizializza ogni convoluzione con
 `nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")`.
@@ -362,6 +420,20 @@ $\hat{\mu} \leftarrow (1-m)\,\hat{\mu} + m\,\mu_{\mathcal{B}}$, non la media di
 tutto ciò che si è visto. Attenzione al nome del parametro: il `momentum` di
 `nn.BatchNorm2d` (default $0{,}1$) è il peso del dato nuovo, cioè
 l'opposto del $\beta_1$ di Adam, dove $0{,}9$ è il peso della storia.
+
+Quale delle due statistiche si usa lo decide lo stato del modulo: dopo
+`model.train()` lo strato normalizza con $(\mu_{\mathcal{B}},
+\sigma^2_{\mathcal{B}})$ e aggiorna le medie mobili, dopo `model.eval()` usa le
+medie mobili e non le tocca più. Dimenticare `eval()` in valutazione fa
+dipendere la predizione di un esempio dagli altri del batch, ed è il guasto più
+frequente di questo strato. In addestramento PyTorch normalizza con la varianza
+distorta (divisa per $m$, la taglia del batch) e aggiorna la media mobile con
+quella corretta (divisa per $m-1$). E il gradiente attraversa anche
+$\mu_{\mathcal{B}}$ e $\sigma_{\mathcal{B}}$, che dipendono da tutti gli esempi
+del batch: ogni esempio riceve un gradiente che dipende dagli altri, e con
+batch di pochi esempi le stime sono così rumorose che lo strato peggiora
+l'addestramento. È la ragione per cui altrove si normalizza sul singolo
+esempio, come fa la layer normalization dei Transformer.
 
 `````
 
@@ -831,10 +903,26 @@ a $0{,}99$.
 
 Sulla stessa idea, Adadelta {cite}`zeiler2012adadelta` accumula una media
 mobile anche degli aggiornamenti, eliminando di fatto la scelta di $\eta$.
-Adam unisce momentum e passo adattivo (i coefficienti delle due medie
-mobili si ribattezzano $\beta_1$ e $\beta_2$) con correzione del bias iniziale
-$\hat{\mathbf{v}}_t = \mathbf{v}_t/(1-\beta_1^t)$ e
-$\hat{\mathbf{s}}_t = \mathbf{s}_t/(1-\beta_2^t)$:
+Adam unisce momentum e passo adattivo con due medie mobili elemento per
+elemento,
+
+$$
+\mathbf{v}_t = \beta_1\,\mathbf{v}_{t-1} + (1-\beta_1)\,\mathbf{g}_t, \qquad
+\mathbf{s}_t = \beta_2\,\mathbf{s}_{t-1} + (1-\beta_2)\,\mathbf{g}_t \odot \mathbf{g}_t,
+$$
+
+che partono da $\mathbf{v}_0 = \mathbf{s}_0 = \mathbf{0}$, e quella partenza le
+tira verso il basso. Svolgendo la ricorrenza, $\mathbf{s}_t =
+(1-\beta_2)\sum_{\tau=1}^{t}\beta_2^{\,t-\tau}\,\mathbf{g}_\tau\odot\mathbf{g}_\tau$,
+e se i gradienti hanno momento secondo costante si ottiene
+$\mathbb{E}[\mathbf{s}_t] =
+(1-\beta_2^{\,t})\,\mathbb{E}[\mathbf{g}\odot\mathbf{g}]$, e lo stesso per
+$\mathbf{v}_t$ con $\beta_1$. Da qui la correzione del bias,
+$\hat{\mathbf{v}}_t = \mathbf{v}_t/(1-\beta_1^t)$ e $\hat{\mathbf{s}}_t =
+\mathbf{s}_t/(1-\beta_2^t)$, che conta nei primi passi: senza, con i default,
+al primo passo il rapporto $\mathbf{v}_1/\sqrt{\mathbf{s}_1}$ vale
+$0{,}1/\sqrt{0{,}001} \approx 3{,}16$ volte il segno del gradiente, cioè un
+passo più che triplo proprio quando le stime sono peggiori. L'aggiornamento è:
 
 $$
 \theta_t = \theta_{t-1}
@@ -1211,10 +1299,12 @@ regge da sola, tenerlo diventa una spesa senza ritorno, e lui lo butta.
 
 Da fuori quello è il momento in cui «di colpo ha capito». In realtà aveva già
 capito da un pezzo, e quello che è successo di colpo è la buttata via del
-bigliettino. E si vede subito che cosa reggeva l'intero episodio: se tenere
-appunti fosse gratis, il bigliettino resterebbe lì per sempre, il quadrante
-non verrebbe mai allo scoperto, e chi guarda da fuori concluderebbe che non ha
-imparato niente.
+bigliettino. E si vede che cosa affretta l'intero episodio: se tenere appunti
+costa, il bigliettino prima o poi diventa una spesa senza ritorno e si butta;
+se è gratis può restare lì molto più a lungo, e il quadrante ci mette molto di
+più a venire allo scoperto. La multa non è indispensabile (la curva più famosa
+di questo fenomeno è stata ottenuta senza, lasciando correre l'addestramento
+per un milione di passi), ma è la cosa che anticipa di più il momento.
 
 Da qui la cosa che conta per chi addestra. Mandarlo a casa il giorno in cui il
 bigliettino era completo, perché tanto da fuori non migliorava più, sarebbe
@@ -1233,9 +1323,9 @@ risposte. La **formazione del circuito** costruisce, in parallelo e
 gradualmente, un meccanismo che generalizza: sui compiti di addizione modulare
 la rete calcola una trasformata di Fourier discreta e usa le identità
 trigonometriche per trasformare la somma in una rotazione sul cerchio. La
-**pulizia** rimuove le componenti memorizzanti, ed è la multa sui pesi a
-guidarla, perché il circuito completo risolve il compito con una norma dei
-pesi più bassa di quella del circuito che memorizza.
+**pulizia** rimuove le componenti memorizzanti, e nel loro impianto è la multa
+sui pesi a guidarla, perché il circuito completo risolve il compito con una
+norma dei pesi più bassa di quella del circuito che memorizza.
 
 Ne segue la conclusione del lavoro di Nanda e colleghi: la transizione che si
 osserva coincide con la sparizione del circuito che memorizza, mentre quello
@@ -1390,14 +1480,20 @@ la rete sta facendo.
   warmup giova anche a SGD con momentum, che di stime adattive non ne ha. Poi
   si decade, di norma a coseno.
 - Il grokking divide l'addestramento in memorizzazione, formazione del
-  circuito e pulizia, e solo la terza si vede nelle curve: è il weight decay a
-  guidarla, perché il circuito che generalizza ha norma dei pesi più bassa di
+  circuito e pulizia, e solo la terza si vede nelle curve: il weight decay la
+  anticipa (non è indispensabile, ma la rende molto più rapida), perché il
+  circuito che generalizza ha norma dei pesi più bassa di
   quello che memorizza. Ne segue che l'ipotesi implicita dell'arresto
   anticipato, cioè che una validazione ferma voglia dire che non c'è altro da
   imparare, è un'ipotesi. Documentato su dataset algoritmici piccoli, e quanto
   si estenda ai dati veri resta aperto.
 ```
 `````
+
+Fin qui si è visto come far funzionare una rete profonda. Resta da vedere
+quali reti, con questi stessi accorgimenti, hanno davvero vinto, e in che
+ordine: è la storia delle {doc}`architetture che hanno fatto la storia
+<architetture-storiche>`.
 
 [^momentum-pytorch]: Attenzione a trasferire la formula nel codice:
 `torch.optim.SGD` usa la convenzione classica $\mathbf{v}_t =

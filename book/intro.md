@@ -456,9 +456,9 @@ $$
 
 E perché occuparsene? Perché un filtro così banale, ripetuto milioni di volte,
 è uno dei mattoni delle reti neurali: è la regola che decide quali segnali
-proseguono dentro la rete e quali si fermano lì. Il capitolo sulle reti neurali
-racconta perché proprio questa funzioni meglio di alternative in apparenza più
-raffinate.
+proseguono dentro la rete e quali si fermano lì. Il {doc}`capitolo sulle reti
+neurali </RetiNeurali/funzioni-attivazione>` racconta perché proprio questa
+funzioni meglio di alternative in apparenza più raffinate.
 
 `````
 
@@ -480,10 +480,34 @@ f(x) = \begin{cases}
 \end{cases}
 $$
 
-Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo; altrimenti, restituisce zero.
-La ReLU è ampiamente utilizzata nelle reti neurali perché introduce una non linearità essenziale e la sua derivata vale esattamente $1$ per $x > 0$: durante la *backpropagation*, lungo i cammini attivi, il gradiente non si attenua per colpa dell'attivazione, e sparisce la saturazione che affligge sigmoide e tangente iperbolica.
+Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo;
+altrimenti, restituisce zero. La ReLU è ampiamente utilizzata nelle reti
+neurali perché introduce una non linearità essenziale e la sua derivata vale
+esattamente $1$ per $x > 0$: durante la *backpropagation*, lungo i cammini
+attivi, il gradiente non si attenua per colpa dell'attivazione, e per $x > 0$
+sparisce la saturazione che affligge sigmoide e tangente iperbolica. Per $x <
+0$ la derivata è invece nulla: un'unità la cui preattivazione resta negativa su
+tutti gli esempi non riceve più gradiente e non si riaccende (la *dying ReLU*,
+di cui tratta la {doc}`sezione sulle funzioni di attivazione
+</RetiNeurali/funzioni-attivazione>`).
 
-Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che attraversa uno strato è $\mathbf{W}^\top \mathrm{diag}(\mathbb{1}[\mathbf{z}>0])$, dove $\mathbf{W}$ sono i pesi dello strato e $\mathbf{z}$ le sue preattivazioni: l'attenuazione la producono i pesi e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati dipende quindi dalla scala dell'inizializzazione, e con quella sbagliata si vede subito: attraversando cinquanta strati di sole ReLU, con la scala di Xavier (giusta per la tangente iperbolica) il gradiente si attenua di sette ordini di grandezza, e con una scala un po’ troppo grande esplode di otto. È proprio la ReLU a richiedere una scala sua, il fattore $2$ di He, perché azzera metà delle unità: la frazione di derivate nulle, misurata, è $0{,}50$.
+Attenzione però a non chiedere alla ReLU più di quanto dia. Il gradiente che
+attraversa uno strato è $\mathbf{W}^\top
+\mathrm{diag}(\mathbb{1}[\mathbf{z}>0])$, dove $\mathbf{W}$ sono i pesi dello
+strato e $\mathbf{z}$ le sue preattivazioni: l'attenuazione la producono i pesi
+e le unità spente, non l'attivazione. Che il segnale sopravviva a molti strati
+dipende quindi dalla scala dell'inizializzazione. Con pesi indipendenti, a
+media nulla e varianza $\sigma_w^2$, in strati larghi $n$ con preattivazioni
+simmetriche attorno a zero, metà delle unità è spenta e ogni strato moltiplica
+in media il quadrato della norma del gradiente per $n\sigma_w^2/2$: dopo $L$
+strati la norma scala come $(n\sigma_w^2/2)^{L/2}$, un conto in media che
+diventa esatto al limite di strati molto larghi. La scala di Xavier,
+$\sigma_w^2 = 1/n$ per strati quadrati (giusta per la tangente iperbolica), dà
+$2^{-L/2}$: su cinquanta strati $2^{-25} \approx 3 \cdot 10^{-8}$, sette ordini
+e mezzo di attenuazione, e il doppio della varianza giusta dà lo stesso fattore
+all'insù. Il fattore resta $1$ solo con $\sigma_w^2 = 2/n$, la scala di He
+{cite}`he2015delving`, il cui $2$ compensa proprio la metà delle unità che la
+ReLU azzera {cite}`glorot2010understanding`.
 
 In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il sottodifferenziale è l'intervallo $[0, 1]$ e nella pratica, PyTorch compreso, si adotta la convenzione $f'(0) = 0$.
 

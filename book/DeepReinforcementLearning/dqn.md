@@ -266,6 +266,16 @@ termine $r + \gamma \max_{a'} Q(s', a'; \theta^{-})$ è il bersaglio,
 calcolato con i pesi congelati $\theta^{-}$. Congelarli evita il *feedback*
 instabile in cui il bersaglio si muove insieme alla stima.
 
+Due dettagli del lavoro su *Nature* {cite}`mnih2015human` cambiano questa
+perdita. Nel gradiente l'errore $\delta = y - Q(s,a;\theta)$ è tosato in
+$[-1,1]$, il che equivale alla perdita di Huber, quadratica per $|\delta| \le
+1$ e lineare oltre: un bersaglio sballato di cento spinge quanto uno sballato
+di uno. E le ricompense sono tosate a $-1$, $0$, $+1$, perché lo stesso passo
+valga su giochi con scale di punteggio diversissime, al prezzo di non
+distinguere più un bottino piccolo da uno grande. Completano la ricetta un
+$\varepsilon$ portato da $1$ a $0{,}1$ nel primo milione di fotogrammi e ogni
+azione ripetuta per quattro fotogrammi.
+
 `````
 
 Sono due modi di rompere lo stesso legame, quello che tiene attaccate fra loro

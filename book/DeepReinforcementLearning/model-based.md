@@ -335,6 +335,17 @@ ritorno all'errore del modello *e* alla lunghezza del rollout, giustificando
 formalmente la scelta di tenerlo corto: si sfrutta il modello dove aiuta, lo
 si evita dove mente.
 
+L'ensemble viene da PETS (*Probabilistic Ensembles with Trajectory Sampling*,
+Chua e colleghi, 2018), che il modello lo usa per pianificare senza nessuna
+policy appresa. Ogni rete predice una gaussiana sullo stato successivo, la cui
+varianza rappresenta il rumore dell'ambiente (incertezza aleatoria), mentre il
+disaccordo fra le reti rappresenta ciò che i dati non hanno ancora fissato
+(incertezza epistemica). A ogni passo reale il *cross-entropy method* cerca la
+sequenza di azioni migliore su un orizzonte $H$, valutandola con traiettorie
+propagate nell'ensemble; si esegue la sola prima azione e si ricomincia, cioè
+*model predictive control*. Il costo si sposta dall'addestramento alla
+decisione: centinaia di sequenze di $H$ passi per ogni azione.
+
 `````
 
 ## MuZero: pianificare senza conoscere le regole
@@ -414,11 +425,14 @@ La terza via ha una possibilità che alle altre due manca, e sta nel fatto che
 sono reti neurali tutte e due: il simulatore e la strategia che si allena
 dentro di esso. Una rete sa correggersi all'indietro: si parte da com'è andata
 a finire e si risale, un pezzo alla volta, fino ai numeri interni che hanno
-prodotto quel risultato. Se sono reti tutte e due, allora la catena
-all'indietro può non fermarsi alla fine della partita immaginata: risale lungo
-tutta la partita, mossa dopo mossa, fino alla prima. Così la strategia impara
-non solo *che* la partita è finita male, ma anche *quale* mossa andava
-cambiata.
+prodotto quel risultato. Se sono reti tutte e due, e se la mossa è una
+quantità da dosare (quanta spinta, quanto sterzo), la catena all'indietro può
+attraversare anche il simulatore: risale il tratto sognato, mossa dopo mossa,
+fino alla prima. Così la strategia impara non solo *che* il tratto è andato
+male, ma anche *di quanto* andava spostata ciascuna mossa. Quando le mosse sono
+voci di un menu, come nei giochi Atari, la catena si spezza, perché una scelta
+fra voci non ha pendenza, e sul tratto sognato si torna al gradiente di policy
+di REINFORCE.
 
 E la partita immaginata si srotola dentro il latente: a ogni passo il
 simulatore prevede il riassunto successivo, senza mai ridisegnare quello che
@@ -453,19 +467,21 @@ partendo da zero, senza che nessuno gli mostri come.
 `````{tab} Superiore
 
 Dreamer apprende un modello ricorrente dello stato nello spazio latente e vi
-addestra un attore-critico (i metodi visti nella
-{doc}`sezione sul gradiente di policy <policy-gradient>`) per retropropagazione
-lungo rollout immaginati a orizzonte breve (una quindicina di passi) proprio
-per contenere il compounding error. DreamerV3 {cite}`hafner2023mastering`
-aggiunge normalizzazioni robuste di osservazioni, ricompense e ritorni che
-rendono lo stesso set di iperparametri valido su domini radicalmente diversi: è
-la dimostrazione che un agente model-based può essere *generalista*. La
-parentela con Dyna è diretta (attore e critico crescono su esperienza sintetica
-generata da un modello appreso) ma il modello qui è una rete profonda che vive
-in uno spazio latente, non una tabella di transizioni. Per la ricetta completa
-(encoder, modello ricorrente, il «sogno» come rollout latente), si rimanda al
-capitolo sui World Model, che tratta anche la proposta di LeCun e le
-architetture JEPA, la frontiera di questa linea di ricerca.
+addestra un attore-critico (i metodi visti nella {doc}`sezione sul gradiente di
+policy <policy-gradient>`) per retropropagazione attraverso il modello quando
+le azioni sono continue, con lo stimatore di REINFORCE quando sono discrete,
+lungo rollout di quindici passi chiusi dai $\lambda$-ritorni del critico,
+proprio per contenere il compounding error. DreamerV3
+{cite}`hafner2023mastering` aggiunge normalizzazioni robuste di osservazioni,
+ricompense e ritorni che rendono lo stesso set di iperparametri valido su
+domini radicalmente diversi: è la dimostrazione che un agente model-based può
+essere *generalista*. La parentela con Dyna è diretta (attore e critico
+crescono su esperienza sintetica generata da un modello appreso) ma il modello
+qui è una rete profonda che vive in uno spazio latente, non una tabella di
+transizioni. Per la ricetta completa (encoder, modello ricorrente, il «sogno»
+come rollout latente), si rimanda al capitolo sui World Model, che tratta anche
+la proposta di LeCun e le architetture JEPA, la frontiera di questa linea di
+ricerca.
 
 `````
 

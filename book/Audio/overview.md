@@ -35,11 +35,10 @@ rumore indistinto. Ha regole sue, riconoscibili, come le ha una lingua. Un
 temporale non comincia a caso; un motore che si sta guastando suona storto in
 un modo suo. Solo che qui non ci sono parole.
 
-Il capitolo sullo Speech Recognition, che viene subito dopo, si dedicherà a un
-caso particolare e cruciale: la voce, dal parlato al testo e ritorno
-(ascoltare e parlare). Questo capitolo viene prima e guarda più in largo
-(sentire il mondo, non solo le parole di chi lo abita) e getta le fondamenta
-comuni a entrambi.
+Il {doc}`riconoscimento vocale </SpeechRecognition/overview>` si dedicherà a
+un caso particolare e cruciale: la voce, dal parlato al testo e ritorno
+(ascoltare e parlare). Qui si guarda più in largo (sentire il mondo, non solo
+le parole di chi lo abita), e si gettano le fondamenta comuni ai due.
 
 ## Il suono, oltre la voce
 
@@ -94,8 +93,11 @@ $\hat{W}$. I compiti dell'audio generale hanno firme diverse:
 La radice comune è che le rappresentazioni tempo–frequenza restano quelle: la
 costruzione dello spettrogramma e della scala mel è la stessa per un colpo di
 tamburo e per una vocale, e a cambiare sono i parametri (la finestra standard di
-25 ms è tarata sulla durata di un fonema, e chi lavora sulla musica alza il
-numero di bande). Cambia poi tutto a valle (l'obiettivo, la funzione di perdita,
+25 ms è tarata sul parlato: abbastanza corta perché
+il tratto vocale si possa considerare fermo, abbastanza lunga da contenere due o
+tre periodi della fondamentale; chi lavora sulla musica allunga la finestra, per
+separare note vicine, e alza il numero di bande). Cambia poi tutto a valle
+(l'obiettivo, la funzione di perdita,
 l'architettura), perché la struttura statistica di musica e suoni ambientali non
 è quella, quasi-periodica e vincolata dal tratto vocale, del parlato.
 
@@ -149,11 +151,10 @@ Prima della strada nuova conviene guardare quella già battuta, che
 immagine, e dall'immagine un modello ricava le parole. Le parole escono a
 destra, una per riquadro, e ciascuno di quei riquadri si chiama token. È la
 parola che regge tutto il capitolo, e qui vuol dire una cosa precisa: un simbolo
-preso da un elenco chiuso, deciso in anticipo. (Nei Transformer la stessa parola
-indica più genericamente un elemento della sequenza in ingresso, che un elenco
-chiuso dietro di sé può anche non averlo: la
-{doc}`sezione sulla classificazione audio </Audio/classificazione-audio>` ne
-incontrerà di quel tipo.) Quanto grosso sia il pezzo che un
+preso da un elenco chiuso, deciso in anticipo. (Nei Transformer la parola si
+allarga: si chiamano token anche le tessere in
+cui si taglia un'immagine, che un elenco chiuso dietro non ce l'hanno.) Quanto
+grosso sia il pezzo che un
 token rappresenta cambia da caso a caso (nel disegno è una parola intera,
 altrove sarà una sillaba o un frammento di suono), ma la sostanza è quella:
 un elenco finito di simboli, e tutto si scrive con quelli.
@@ -186,8 +187,11 @@ Un testo nasce discreto, perché è fatto di lettere. Un suono nasce continuo:
 l'onda di pressione che arriva all'orecchio non ha né scalini nel tempo né
 scalini nel valore. Qui però c'è un tranello, e conviene scioglierlo adesso,
 perché dentro un calcolatore quell'onda non c'è più. Quello che c'è è una fila
-di numeri interi presi da un elenco chiuso: con la codifica a sedici bit, che la
-prossima sezione racconta per esteso, ciascuno vale uno fra 65.536 livelli. Un
+di numeri interi presi da un elenco chiuso: ogni
+misura si scrive con sedici risposte sì/no, cioè sedici *bit*, e siccome ogni
+risposta raddoppia i casi possibili, ciascuna vale uno fra 65.536 livelli
+({doc}`Dal suono alle feature </Audio/dal-suono-alle-feature>` lo racconta per
+esteso). Un
 alfabeto, dunque, ce l'abbiamo già. Solo che è l'alfabeto sbagliato: le lettere
 sono troppe, e arrivano troppo fitte, sedicimila al secondo di parlato contro le
 poche parole al secondo di chi lo pronuncia.

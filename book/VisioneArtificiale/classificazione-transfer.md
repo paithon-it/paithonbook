@@ -246,10 +246,20 @@ fermarla davvero, i moduli BatchNorm vanno messi in modalità valutazione
 Nel **fine-tuning** riattiviamo il gradiente sugli strati alti della base e
 riprendiamo l'ottimizzazione con un learning rate molto basso (tipicamente
 $10^{-5}$ contro $10^{-3}$): passi grandi sovrascriverebbero le
-rappresentazioni utili. Due accortezze: si scongelano solo gli strati alti (i
-bassi sono i più generici) e i BatchNorm restano anche qui in `.eval()`, per
-non destabilizzare con i piccoli batch del fine-tuning le statistiche apprese
-su ImageNet.
+rappresentazioni utili. Il passo non deve essere per forza uno solo: con i
+*param group* dell'ottimizzatore ogni gruppo di strati riceve il suo, più
+piccolo quanto più lo strato è basso, e ULMFiT ne fa una regola,
+$\eta_{l-1} = \eta_l / 2{,}6$ {cite}`howard2018universal` (il
+*discriminative fine-tuning*). Conta anche l'ordine. Una testa appena
+inizializzata a caso produce all'inizio gradienti grandi e privi di senso, che
+scendendo nella base ne deformano le feature prima che la testa abbia imparato
+a usarle; addestrare prima la sola testa e poi sbloccare protegge la base, e
+fuori dalla distribuzione di addestramento rende più del fine-tuning diretto
+{cite}`kumar2022finetuning`. Si scongelano solo gli strati alti, perché i bassi
+sono i più generici, e i BatchNorm si lasciano in `.eval()` quando i batch del
+fine-tuning sono piccoli, perché le loro medie salterebbero da un batch
+all'altro; con batch grandi e un dominio lontano da ImageNet riaggiornarle sul
+nuovo dominio può invece aiutare.
 
 `````
 
@@ -379,7 +389,7 @@ statistiche non c'è, perché la LayerNorm statistiche non ne conserva.
   gradienti *e* mettere i BatchNorm in `.eval()`, perché le loro statistiche
   sono buffer e in `train()` deriverebbero comunque verso il nuovo dominio.
   Fine-tuning: si scongelano gli strati alti con learning rate piccolo
-  (più preciso, più dati), BatchNorm sempre in `.eval()`.
+  (più preciso, più dati), BatchNorm in `.eval()` quando i batch sono piccoli.
 ```
 
 `````

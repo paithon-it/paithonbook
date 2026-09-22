@@ -22,12 +22,13 @@ recenti sono scritti così.
 
 ## La filosofia: il grafo si costruisce mentre giri
 
-La scelta di fondo di PyTorch (quella che l'ha fatto vincere) riguarda
-*quando* i conti vengono eseguiti. Il **grafo** del titolo è la parola tecnica
-per una cosa semplice: l'elenco delle operazioni da fare e delle frecce che le
-collegano, cioè quale risultato serve a quale conto successivo. È la ricetta,
-prima che qualcuno la esegua; e la domanda è se vada scritta tutta in anticipo
-o se possa nascere mentre si cucina.
+La scelta di fondo di PyTorch (quella che l'ha fatto vincere) riguarda *quando*
+i conti vengono eseguiti. Il **grafo** del titolo è il grafo computazionale: le
+operazioni sui tensori collegate da frecce, dove ogni freccia dice quale
+risultato entra in quale operazione successiva (in gergo, un grafo orientato
+senza cicli). È la struttura su cui si calcoleranno le derivate, e la domanda è
+se vada dichiarata tutta prima di eseguire qualcosa o se possa nascere mentre
+il programma gira.
 
 `````{tab} Elementare
 Due modi di seguire un percorso in auto. Il primo: stampi l'itinerario completo
@@ -73,8 +74,12 @@ ricorsione) anche dentro il modello; il debugging usa gli strumenti ordinari
 (`print`, `pdb`); reti a struttura variabile (sequenze di lunghezza diversa,
 alberi) si scrivono in modo naturale. Il costo storico era la minore
 ottimizzazione rispetto a un grafo compilato; da PyTorch 2.0 (2023)
-`torch.compile` recupera il divario compilando *just-in-time* il codice Python
-in kernel ottimizzati, senza cambiarne una riga. TensorFlow stesso, con la
+`torch.compile` ne recupera una parte: cattura dal bytecode Python i tratti di
+grafo che riesce a tracciare, li compila *just-in-time* in kernel fusi e torna
+all'esecuzione ordinaria dove non ci riesce (un *graph break*), ricompilando
+quando cambiano le forme dei tensori o il ramo preso. Il codice non va
+riscritto; quanto si guadagna dipende dal modello, e su quelli piccoli può
+essere negativo. TensorFlow stesso, con la
 versione 2.0 del 2019, è passato all'esecuzione *eager* di default: su questo
 punto la storia ha dato ragione a PyTorch.
 `````

@@ -26,7 +26,8 @@ già tutto: un VAE con una manopola in più.
 Girare la manopola vuol dire chiedere all’archivista di essere ancora più
 sintetico. Con la manopola a uno siamo al patto della sezione precedente; a
 due gli si dice che ogni riga scritta costa il doppio; a quattro, il quadruplo.
-Un tetto e un prezzo, per lui, sono lo stesso ordine: invece di scrivergli sul
+Un tetto e un prezzo, per lui, sono due modi di dare lo stesso ordine: invece di
+scrivergli sul
 contratto «non più di tre righe», si alza il prezzo della riga finché di righe
 ne scrive tre, e la manopola è quel prezzo.
 
@@ -49,15 +50,15 @@ sempre lo stesso quadro, che è la media di tutti quelli che ha visto, e
 cambiare i numeri della scheda non cambia più niente perché non c’è più niente
 da cambiare.
 
-In certi casi, poi, la manopola c’era già, senza che nessuno l’avesse chiamata
-così, il che le toglie l’aria della trovata. Quando il metro con cui si giudica
-la copia porta dentro di sé quanto si è disposti a sbagliare un pixel,
-scegliere quel metro è già scegliere quanto pesi l’altra voce: chi lo sceglie
-gira la manopola senza saperlo. Vale finché quella tolleranza la fissiamo noi;
-se a deciderla è il copista, la manopola gratis non c’è più. E il metro usato
-qui giudica ogni pixel come una scommessa fra bianco e nero, e una misura così
-quella manopola dentro non ce l’ha: bisogna metterla a mano. È quello che
-facciamo adesso, girandola su quattro tacche.
+In certi casi, poi, la manopola c’era già senza che nessuno la chiamasse così.
+Se la pagella del copista dice «su ogni pixel ti perdono un errore di tanto»,
+quel «tanto» fa lo stesso lavoro della manopola: più perdono si concede, meno
+conta ricostruire bene, e più pesa, al confronto, il costo della scheda. Chi
+sceglie quel perdono gira la manopola senza saperlo, finché è lui a sceglierlo;
+se lo si lascia decidere al copista, la manopola gratis sparisce. La pagella
+usata qui, però, giudica ogni pixel come una scommessa fra bianco e nero, e un
+perdono da regolare non ce l’ha: la manopola bisogna metterla a mano. È quello
+che facciamo adesso, girandola su quattro tacche.
 
 `````
 
@@ -88,7 +89,14 @@ dell’apertura del capitolo, non la larghezza della zona proposta
 dall’encoder), il termine di ricostruzione porta
 davanti a sé un fattore $1/(2\sigma^2)$; moltiplicando l’obiettivo per
 $2\sigma^2$, che è positivo e quindi non sposta l’ottimo, si ottiene
-esattamente l’obiettivo del $\beta$-VAE con $\beta = 2\sigma^2$. Due riserve,
+$-\lVert \mathbf{x} - f_\theta(\mathbf{z}) \rVert^2 - 2\sigma^2
+D_{\mathrm{KL}}$,
+cioè l’obiettivo del $\beta$-VAE con $\beta = 2\sigma^2$ quando la sua
+ricostruzione è scritta come somma dei quadrati degli scarti. Il valore
+numerico dipende da quella convenzione (con $-\tfrac{1}{2}\lVert\cdot\rVert^2$
+verrebbe $\sigma^2$, con la media sui pixel invece della somma $2\sigma^2/D$);
+quello che non ne dipende è che $\beta$ e la varianza del rumore sono la stessa
+manopola. Due riserve,
 però, e la seconda morde qui: se $\sigma^2$ viene appreso invece che
 fissato, il termine additivo $-\tfrac{D}{2}\log(2\pi\sigma^2)$ non è più una
 costante e la manopola libera sparisce; e il decoder di questo capitolo non è
@@ -291,19 +299,28 @@ dal centro, e cambiano soltanto i due numeri con cui la si scrive: $0{,}50$ e
 $0{,}90$ diventano $0{,}88$ e $0{,}53$.
 ```
 
-Guarda che cosa non cambia. Il vocabolario comune non ha un verso suo, è tondo
-come una moneta, e una moneta girata resta la stessa moneta: girarlo lo lascia
-identico a prima. Al copista basta leggere le righe girate all’indietro dello
-stesso angolo, e ridipinge esattamente i quadri di sempre. E il conto del costo
-torna identico. Nei quadri, quindi, non c’è niente che dica che la coppia di
+Guarda che cosa non cambia. Il prior $\mathcal{N}(\mathbf{0}, \mathbf{I})$ è
+tondo come una moneta: se $\mathbf{R}$ è una matrice ortogonale,
+$\mathbf{R}\mathbf{z}$ ha la stessa distribuzione di $\mathbf{z}$. Un decoder
+che prima di lavorare applica $\mathbf{R}^\top$ ridipinge quindi esattamente i
+quadri di sempre, e la marginale $p_\theta(\mathbf{x})$ non si sposta di un
+nat. Il teorema di Locatello e colleghi generalizza l’esempio a ogni prior
+fattorizzato, $p(\mathbf{z}) = \prod_j p(z_j)$: esistono infinite biiezioni $f$
+che lasciano invariata la distribuzione di $\mathbf{z}$ e in cui ogni
+componente di $f(\mathbf{z})$ dipende da tutte quelle di $\mathbf{z}$
+($\partial f_i / \partial z_j \neq 0$ quasi ovunque), cioè che mescolano del
+tutto i fattori senza che la verosimiglianza se ne accorga. Nei quadri, quindi,
+non c’è niente che dica che la coppia di
 partenza sia più giusta di quella girata: sono due descrizioni ugualmente
 buone, e dai dati non arriva nessun motivo per preferire quella che a noi
 sembra sensata.
 
 Un motivo, per la verità, c’è, e non viene da quello che abbiamo chiesto: viene
 da come l’archivista è fatto. L’alone attorno a ogni scheda lo decide una riga
-per volta, quindi resta sempre squadrato sulle righe, e una scheda girata non
-la sa descrivere come descrive quella diritta. Le direzioni che finisce per
+per volta: può allungarlo lungo una riga o lungo l’altra, ma non di sbieco, come
+un ovale che sta sempre dritto sul foglio. Una scheda girata avrebbe bisogno di
+aloni inclinati, e quindi non la sa descrivere come descrive quella diritta. Le
+direzioni che finisce per
 scegliere somigliano a quelle della PCA {cite}`rolinek2019variational`: è un
 appiglio, e spiega perché qualcosa si separi invece di niente; ma la PCA guarda
 dove i quadri si sparpagliano di più, e quello non è l’elenco degli
@@ -350,9 +367,12 @@ annunciato. Il trucco per far tornare indietro le correzioni funzionava perché
 lo scarto si poteva decidere prima e poi appoggiare sulla zona proposta. Fra la
 descrizione numero tre e la numero quattro non c’è niente in mezzo, quindi non
 c’è nessuno scarto da decidere, e il trucco non si applica. Ci vuole un’altra
-idea, e il libro l’ha già raccontata parlando di come si comprime il suono: la
-si trova nel {doc}`capitolo sull’audio </Audio/overview>`, nella sezione sui
-codec neurali, e torna nel
+idea, e la si trova nella {doc}`sezione sui codec neurali
+</Audio/codec-neurali>`,
+dove il prontuario si chiamava tavolozza: all’indietro si fa finta che la
+scelta della casella non ci sia, e la correzione arriva all’archivista come se
+avesse consegnato la sua descrizione esatta invece della casella più vicina.
+È un’approssimazione, ma funziona. L’idea torna nel
 {doc}`capitolo sulle GAN </GAN/overview>`, le reti che si sfidano, dove la
 stessa idea serve per le immagini.
 
@@ -363,9 +383,21 @@ stessa idea serve per le immagini.
 Il VQ-VAE {cite}`oord2017neural` sostituisce il latente continuo con uno
 discreto: l’uscita dell’encoder viene sostituita dalla voce più vicina di un
 dizionario appreso di $K$ vettori, e la scheda diventa una sequenza di indici in
-$\{1, \dots, K\}$. Il libro lo spiega per esteso nel capitolo sull’audio, dove
-serve a fabbricare un alfabeto per il suono, e lo riprende nel capitolo sulle
-GAN, dove diventa la base di VQ-GAN; qui interessa solo la sua posizione in
+$\{1, \dots, K\}$. La {doc}`sezione sui codec neurali </Audio/codec-neurali>` lo
+spiega per
+esteso, dove serve a fabbricare un alfabeto per il suono, e la {doc}`sezione
+sulle evoluzioni delle GAN </GAN/applicazioni-evoluzioni>` lo riprende come
+base di VQ-GAN. L’obiettivo, con $\mathbf{z}_e = e_\phi(\mathbf{x})$,
+$\mathbf{e}_{k^\star}$ la voce più vicina e $\mathrm{sg}$ lo *stop-gradient*, è
+
+$$
+\mathcal{L} = -\log p_\theta(\mathbf{x} \mid \mathbf{e}_{k^\star}) + \lVert \mathrm{sg}[\mathbf{z}_e] - \mathbf{e}_{k^\star} \rVert^2 + \beta\, \lVert \mathbf{z}_e - \mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2,
+$$
+
+dove il secondo termine porta il dizionario verso l’encoder e il terzo, la
+*commitment loss*, trattiene l’encoder vicino al dizionario ($\beta = 0{,}25$
+nel lavoro originale: è il $\beta$ del VQ-VAE, e con quello del $\beta$-VAE di
+poco sopra ha in comune solo la lettera). Qui interessa la sua posizione in
 questa famiglia.
 
 La posizione è questa. Con un latente categorico la riparametrizzazione non è

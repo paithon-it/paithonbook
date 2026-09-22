@@ -53,10 +53,29 @@ righello, e le tacche sono in numero fisso, deciso una volta per tutte.
 Il suono è un segnale continuo $x(t)$: l'ampiezza dell'onda di pressione in
 funzione del tempo. La digitalizzazione compie due operazioni. Il
 campionamento discretizza il tempo, misurando $x$ a intervalli regolari
-$T_s$ e ottenendo la sequenza $x[n] = x(nT_s)$. La quantizzazione
-discretizza l'ampiezza su un numero finito di livelli: con la codifica PCM a
-16 bit ogni campione è un intero su $2^{16} = 65536$ valori. Un secondo di
-audio "CD" è quindi, per ogni canale, un vettore di $44\,100$ interi.
+$T_s$ e ottenendo la sequenza $x[n] = x(nT_s)$. La quantizzazione discretizza
+l'ampiezza su un numero finito di livelli: con
+la codifica PCM a $b = 16$ bit ogni campione è un intero su $2^{16} = 65536$
+valori. Un secondo di audio "CD" è quindi, per ogni canale, un vettore di
+$44\,100$ interi.
+
+Il campionamento, sotto le ipotesi del teorema che segue, non perde niente; la
+quantizzazione perde sempre. Con passo uniforme $\Delta = 2A/2^b$ su
+un'escursione $[-A, A]$, l'errore di arrotondamento sta in
+$[-\Delta/2, \Delta/2]$, e se il segnale è abbastanza vario da renderlo
+scorrelato da $x$ lo si modella come rumore uniforme di varianza $\Delta^2/12$.
+Per una sinusoide a piena scala, di potenza $A^2/2$, il rapporto
+segnale-rumore di quantizzazione vale
+
+$$
+\mathrm{SNR} = 10\log_{10}\frac{A^2/2}{\Delta^2/12} = 6{,}02\,b + 1{,}76\ \text{dB},
+$$
+
+circa $98$ dB a $16$ bit e $50$ a $8$: ogni bit vale sei decibel. Il modello
+uniforme cade dove il segnale è debole, perché un sussurro occupa pochi livelli
+e l'errore smette di somigliare a un rumore indipendente; è il difetto che la
+compansione $\mu$-law di {doc}`Generare suono e musica
+</Audio/generazione-audio>` corregge.
 
 `````
 
@@ -137,9 +156,23 @@ nullo: per un segnale che non sia una sinusoide pura, «la frequenza più alta»
 non è definibile senza quella decomposizione, ed è la ragione per cui
 l'enunciato di Nyquist ha bisogno di quello strumento.
 
-La soglia $f_s/2$ è la **frequenza di Nyquist**. Se il segnale contiene
-componenti oltre questa soglia, esse si "ripiegano" su frequenze più basse
-generando l’**aliasing**: artefatti irreversibili. Per questo si applica un
+La soglia $f_s/2$ è la **frequenza di Nyquist**. Sotto l'ipotesi che lo
+spettro sia nullo oltre $f_{\max}$ (segnale *a banda limitata*), il teorema dà
+anche la ricostruzione esplicita,
+
+$$
+x(t) = \sum_{n=-\infty}^{\infty} x[n]\,\operatorname{sinc}\!\Big(\frac{t - nT_s}{T_s}\Big),
+\qquad \operatorname{sinc}(u) = \frac{\sin \pi u}{\pi u},
+$$
+
+un'interpolazione con un nucleo che si estende all'infinito nei due versi:
+esatta in teoria, approssimata con un filtro troncato in pratica. Se invece il
+segnale contiene componenti oltre la soglia, esse si "ripiegano" su frequenze
+più basse generando l’**aliasing**: un coseno a frequenza $f$ dà gli stessi
+campioni di un coseno a $|f - k f_s|$ per ogni intero $k$, quindi dopo il
+campionamento è indistinguibile dalla sua immagine nella banda $[0, f_s/2]$
+(un tono a $5$ kHz campionato a $8$ kHz dà esattamente i campioni di un tono a
+$3$ kHz). Sono artefatti irreversibili. Per questo si applica un
 filtro anti-aliasing (passa-basso) *prima* di campionare. La voce viene tipicamente
 trattata a $f_s = 16\,\text{kHz}$, un buon compromesso tra fedeltà e peso.
 
@@ -271,11 +304,15 @@ La finestra ascolta allo stesso modo, e paga lo stesso prezzo: per dire che
 nota era deve sentirla oscillare un po’ di volte, e quel po’ di tempo è
 esattamente l'istante che si perde.
 
-I due lati del baratto hanno dei numeri. Con la finestra da 25 millesimi di
+I due lati del baratto hanno dei numeri, e sono misure di sparpagliamento:
+quanto si allarga la macchia che la finestra lascia nel tempo e nelle note (la
+stessa idea della deviazione standard di {doc}`Probabilità e statistica
+</Matematica/probabilita-statistica>`). Con la finestra da 25 millesimi di
 secondo il quando si mette a fuoco entro 3,5 millesimi, la nota entro 23
-oscillazioni al secondo. Il primo è più piccolo della finestra perché non ne
-misura la lunghezza, ma quanto il suo peso sta stretto attorno al centro: la
-finestra è gonfia in mezzo e va a zero ai bordi.
+oscillazioni al secondo. Il primo numero è più piccolo della finestra perché la
+finestra, gonfia in mezzo e a zero ai bordi, pesa quasi tutto nei pochi
+millesimi attorno al centro: quello che capita ai margini conta poco, e la
+macchia nel tempo resta stretta.
 
 Il secondo va preso con cautela: 23 è quanto una nota sola si spalma, non la
 distanza minima fra due note che si riescano ancora a separare. Quella è più

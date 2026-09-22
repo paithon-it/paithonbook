@@ -77,11 +77,26 @@ codominio di ogni relazione (`sindaco-di` va da una `Persona` a un
 entra e permettere l'inferenza per ereditarietà, cioè dedurre triple non scritte
 da quelle scritte.
 
-La proprietà semantica decisiva è l’**assunzione di mondo aperto**: la
-mancanza di una tripla non è la sua negazione. Ne discende che il problema
-naturale su un knowledge graph, la link prediction, non è una
-classificazione binaria ordinaria: dispone di soli esempi positivi, e gli
-insiemi di addestramento e di valutazione vanno costruiti di conseguenza.
+La proprietà semantica decisiva è l’**assunzione di mondo aperto**: la mancanza
+di una tripla non è la sua negazione. Ne discende che il problema naturale su un
+knowledge graph, la link prediction, non è una classificazione binaria
+ordinaria: dispone di soli esempi positivi, e gli insiemi di addestramento e di
+valutazione vanno costruiti di conseguenza. La valutazione standard lo fa così.
+Per ogni tripla di test $(h, r, t)$ si sostituisce la coda con ciascuna entità
+$e \in \mathcal{E}$, si ordinano i candidati per punteggio $f(h, r, e)$ e si
+registra la posizione $\mathrm{rank}$ della coda vera; lo stesso si fa con la
+testa. Su un insieme $\mathcal{T}$ di interrogazioni si riportano la media dei
+reciproci,
+$\mathrm{MRR} = \frac{1}{|\mathcal{T}|}\sum_{q \in \mathcal{T}} 1/\mathrm{rank}_q$,
+e la frazione $\text{Hits@}k$ di interrogazioni con $\mathrm{rank}_q \le k$ (di
+solito $k$ vale 1, 3 o 10); per entrambe, più alto è meglio. L'impostazione
+*filtrata* toglie dalla graduatoria le altre entità che formano triple vere già
+note, perché un modello che mette al primo posto un'altra risposta giusta non va
+punito {cite}`bordes2013translating`. Il protocollo ha anche una storia da
+conoscere: nei banchi FB15k e WN18 molte triple di test erano l'inversa di una
+tripla d'addestramento, tanto che una regola banale li risolveva quasi per
+intero, e le versioni ripulite FB15k-237 e WN18RR sono nate per toglierla
+{cite}`toutanova2015observed,dettmers2018convolutional`.
 
 `````
 
@@ -258,18 +273,29 @@ qualunque grafo con un'ontologia). Lì servirebbero insieme $\mathbf{a} +
 cioè ancora una volta $\mathbf{r} \approx \mathbf{0}$.
 
 Il seguito della famiglia sistema altre caselle, e conviene dire quali, perché
-non è la transitività. I modelli bilineari come DistMult sono simmetrici
-per costruzione, e quindi perdono l'antisimmetria e l'inversione che TransE
-aveva; la loro estensione ai numeri complessi, ComplEx, le recupera
-entrambe, ma la composizione, in quella stessa tassonomia, resta fuori tanto da
-DistMult quanto da ComplEx; RotatE sostituisce la traslazione con una
-rotazione nel piano complesso e le tiene insieme tutte e quattro. La
-transitività però resta fuori anche di lì, per lo stesso motivo algebrico: se
-una rotazione applicata due volte deve dare sé stessa, e ha modulo uno, allora
-è l'identità, e la relazione torna a non spostare niente. A reggere le
-gerarchie servono famiglie di altro tipo, che rappresentano un'entità non come
-un punto ma come un oggetto capace di contenerne un altro (ordini parziali,
-scatole, spazi iperbolici).
+non è la transitività. I modelli bilineari come DistMult
+{cite}`yang2015embedding` danno il
+punteggio $f(h,r,t) = \sum_{k} h_k r_k t_k$, una forma bilineare con matrice
+diagonale $\mathrm{diag}(\mathbf{r})$. Scambiando $\mathbf{h}$ e $\mathbf{t}$ il
+punteggio resta identico, quindi sono simmetrici per costruzione e perdono
+l'antisimmetria e l'inversione che TransE aveva. ComplEx
+{cite}`trouillon2016complex` porta gli embedding in $\mathbb{C}^d$ e usa
+$f(h,r,t) = \mathrm{Re}\big(\sum_k h_k r_k \bar{t}_k\big)$: il coniugato
+$\bar{t}_k$ rompe la simmetria, la parte immaginaria di $\mathbf{r}$ dosa quanto
+la relazione è antisimmetrica, e l'inversa di una relazione si ottiene
+coniugandone il vettore. La composizione, in quella stessa tassonomia, resta
+fuori tanto da DistMult quanto da ComplEx. RotatE fa di ogni relazione una
+rotazione componente per componente,
+$f(h,r,t) = -\lVert \mathbf{h} \circ \mathbf{r} - \mathbf{t} \rVert$ con
+$r_k = e^{\mathrm{i}\theta_{r,k}}$: la simmetria corrisponde ad angoli
+$\theta_{r,k} \in \{0, \pi\}$, l'inversa al coniugato, la composizione alla
+somma degli angoli, e le quattro proprietà stanno insieme. La transitività però
+resta fuori anche di lì, per lo stesso motivo algebrico: se una rotazione
+applicata due volte deve dare sé stessa, e ha modulo uno, allora è l'identità, e
+la relazione torna a non spostare niente. A reggere le gerarchie servono
+famiglie di altro tipo, che rappresentano un'entità non come un punto ma come un
+oggetto capace di contenerne un altro (ordini parziali, scatole, spazi
+iperbolici).
 
 Poi c'è la via del message passing. **R-GCN**
 {cite}`schlichtkrull2018modeling` porta il message passing sui grafi

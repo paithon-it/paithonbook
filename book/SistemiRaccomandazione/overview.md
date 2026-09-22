@@ -243,22 +243,39 @@ nella sezione {doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`
 incidente esterno, ma è prodotto dal sistema stesso. Le contromisure
 (esplorazione controllata, correzioni per propensità) esistono, ma nessuna è
 gratis: esplorare significa mostrare a qualche utente qualcosa che il modello
-non avrebbe scelto.
+non avrebbe scelto. La correzione per propensità ha una forma precisa. Detta
+$P_{ui}$ la probabilità che la coppia $(u,i)$ venga osservata sotto la politica
+che ha raccolto i dati, $o_{ui} \in \{0,1\}$ l'indicatore di osservazione e
+$\delta_{ui}$ l'errore del modello su quella coppia, lo stimatore a propensità
+inversa
+
+$$
+\hat{R}_{\text{IPS}} = \frac{1}{|\mathcal{U}|\,|\mathcal{I}|}
+\sum_{(u,i):\,o_{ui}=1} \frac{\delta_{ui}}{P_{ui}}
+$$
+
+è non distorto per l'errore medio su *tutte* le coppie, osservate e no, a due
+condizioni: che ogni coppia abbia $P_{ui}>0$ (una cella che la politica non
+mostra mai non si recupera con nessun peso) e che le $P_{ui}$ siano note o
+stimate bene {cite}`schnabel2016recommendations`. Il prezzo è la varianza: le
+coppie mostrate di rado entrano con pesi enormi, e in pratica si tronca $P_{ui}$
+dal basso o si normalizza per la somma dei pesi, cedendo un po' di distorsione
+in cambio di molta meno varianza.
 
 `````
 
 ## Da chi somiglia a chi, fino alle reti
 
-Due sezioni, dall'idea classica a quella neurale.
+Il percorso va dall'idea classica a quella neurale.
 
-La prima muove da un'idea che usiamo tutti i giorni senza chiamarla così:
+Si parte da un'idea che usiamo tutti i giorni senza chiamarla così:
 chiedere all'amico giusto. Vedremo come si rende calcolabile, e il metodo
 si chiama *filtraggio collaborativo*. Vedremo poi perché la versione ingenua si
 arena sul vuoto della tabella, e come se ne esce: riassumendo ogni persona e
 ogni film in una scheda di pochi numeri. È l'idea che ha vinto il Netflix
 Prize, e la scriveremo in PyTorch in una ventina di righe.
 
-La seconda porta le reti neurali dentro il problema. Il confronto fra due
+Poi le reti neurali entrano nel problema. Il confronto fra due
 schede è un conto elementare, moltiplicare e sommare; la domanda è ovvia (una
 rete farà meglio?) e la risposta non è quella che ci si aspetta. Vedremo che
 cosa è successo quando ci hanno provato, e perché di solito non conviene.

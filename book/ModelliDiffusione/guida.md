@@ -20,7 +20,8 @@ solito si racconta.
 `````{tab} Elementare
 
 Il modello sa una cosa sola: in ogni punto, in che direzione muoversi per
-rendere l'immagine più credibile. Chiamiamola la bussola della verosimiglianza.
+rendere l'immagine più credibile. Chiamiamola la bussola della credibilità (il
+nome tecnico di quel «quanto è credibile» è verosimiglianza).
 Quello che manca è una seconda bussola, che indichi la direzione verso ciò che
 si è chiesto.
 
@@ -545,7 +546,11 @@ sola per classe non lo può mostrare affatto.
 - Le cure sono tre, e la più economica costa zero: accendere la guida solo in
   un tratto del percorso. Sul banco lo scarto si concentra in mezzo alla
   strada, dove le due bussole divergono di più; ai due estremi, dove indicano
-  quasi la stessa direzione, la guida non sposta quasi niente.
+  quasi la stessa direzione, la guida non sposta quasi niente. Il banco però
+  è troppo semplice per dire dove accenderla: nei modelli veri le due
+  bussole restano lontane fin dai primi passi, e chi usa la guida la tiene
+  accesa proprio nel tratto di mezzo e la spegne ai due capi, dove all'inizio
+  fa danno e alla fine non serve.
 - La seconda bussola può venire da qualunque misura che sappia dire in che
   direzione ritoccare i pixel: somiglianza a una foto, rispetto di un contorno,
   gradimento estetico, energia di una molecola. Nessun riaddestramento, ma ogni
@@ -570,12 +575,15 @@ sola per classe non lo può mostrare affatto.
   quanto si legge spesso, perché inclinazione e diffusione non commutano
   {cite}`bradley2024classifier`. A $w=7{,}5$ il campionatore dà media
   $2{,}570$ e deviazione $0{,}247$ contro $1{,}508$ e $0{,}490$ dell'inclinata.
-- Mitigazioni: CFG rescale (riporta la scala a quella della predizione
+-  Mitigazioni: CFG rescale (riporta la scala a quella della predizione
   condizionata, mescolando), dynamic thresholding (satura a un quantile),
   intervallo di guida (guida solo in un tratto). Sul banco lo scarto si
   concentra a metà percorso: guidare soltanto nell'ultimo quinto lo riduce da
-  $1{,}070$ a $0{,}046$. Nei modelli veri la fascia utile è quella centrale,
-  perché lì il divario fra le due predizioni non si annulla come qui.
+  $1{,}070$ a $0{,}046$, ma perché lì la guida non fa quasi niente. Nei modelli
+  veri si guida proprio nella fascia centrale e la si spegne agli estremi
+  {cite}`kynkaanniemi2024guidance`: ad alto rumore, dove il banco vede due
+  predizioni quasi uguali, in un modello vero restano lontane e la guida fa
+  danno; a basso rumore non serve.
 - Guida senza addestramento: si sostituisce il secondo termine con
   $\nabla h(\hat{\mathbf{x}}_0)$ per una $h$ qualsiasi derivabile. Copre
   inpainting, super-risoluzione, deblurring e tomografia con lo stesso codice.

@@ -307,16 +307,25 @@ rovescia senza bagnare il tavolo sta lì a ricordarlo.
 
 È la stessa logica auto-supervisionata che ha alimentato gli LLM (il bersaglio
 dell'addestramento è il dato stesso, spostato nel tempo) applicata a un
-serbatoio più grande di ordini di grandezza: il target è $\mathbf{x}_{t+1}$ (o una sua
-rappresentazione $\mathbf{z}_{t+1}$, nella scelta JEPA), la loss una verosimiglianza o
-una distanza predittiva, l'annotatore nessuno. Se la lezione delle leggi di
-scala {cite}`kaplan2020scaling` è che le prestazioni crescono con dati e
-calcolo secondo regolarità prevedibili, i video sono il posto naturale dove
-proseguire la curva quando il testo si esaurisce. Le incognite però sono
-due: *dove* predire (lo spazio dei
-pixel obbliga a modellare dettagli irrilevanti; lo spazio latente rischia il
-collasso e va regolarizzato) e *che cosa* la predizione garantisce; perché
-prevedere bene i fotogrammi tipici, come mostrano gli errori di Sora, non
+serbatoio più grande di ordini di grandezza: il target è $\mathbf{x}_{t+1}$ (o
+una sua rappresentazione $\mathbf{z}_{t+1}$, nella scelta JEPA), la loss una
+verosimiglianza o una distanza predittiva, l'annotatore nessuno. Se la lezione
+delle leggi di scala {cite}`kaplan2020scaling` è che le prestazioni crescono con
+dati e calcolo secondo regolarità prevedibili, i video sono il posto naturale
+dove proseguire la curva quando il testo si esaurisce. Le incognite però sono
+due: *dove* predire (lo spazio dei pixel obbliga a modellare dettagli
+irrilevanti; lo spazio latente rischia il collasso e va regolarizzato) e *che
+cosa* la predizione garantisce. Sulla seconda i dati cominciano a esserci, e non
+vengono dagli annunci. Kang e colleghi addestrano generatori video di taglia
+crescente su un mondo bidimensionale sintetico, governato da leggi della
+meccanica note, e misurano se i video generati le rispettano: dentro la
+distribuzione d'addestramento la scala aiuta, fuori no, e il modello si comporta
+come chi richiama il caso d'addestramento più simile invece di applicare la
+legge, dando più peso al colore di un oggetto che alla sua velocità
+{cite}`kang2024far`. Il banco Physics-IQ, costruito su riprese vere di
+esperimenti di meccanica, fluidi e ottica, trova lo stesso sui generatori più
+noti: il realismo visivo non predice la correttezza fisica
+{cite}`motamed2025generative`. Prevedere bene i fotogrammi tipici, insomma, non
 equivale ad aver interiorizzato le leggi che li generano.
 
 `````
@@ -324,19 +333,19 @@ equivale ad aver interiorizzato le leggi che li generano.
 ## Il filo del capitolo
 
 Riavvolgiamo. Kenneth Craik, 1943: un organismo con un «modello in scala
-ridotta» della realtà può provare le alternative nella testa e reagire al
-futuro prima che arrivi. Ha e Schmidhuber, 2018: un agente si allena dentro il
-proprio sogno e torna nel gioco vero più bravo di prima. Hopfield, 1982, e la
-tradizione delle energie: dare un voto a ogni combinazione possibile, e poi
-lasciare che il sistema scivoli verso quelle che il voto dice compatibili. È
-insieme il modo di ricordare e quello di giudicare, ed è la lingua in cui LeCun
-ha scritto la sua proposta.
-Le JEPA: prevedere sì, ma nello spazio delle rappresentazioni, lasciando
-cadere i dettagli che non contano. E infine Sora e Genie: la previsione fatta
-spettacolo, fotogrammi interi di futuro. Il filo che attraversa ottant'anni è
-uno solo, e conviene dirlo in chiaro: in questa tradizione di ricerca
-l'intelligenza è la capacità di prevedere, e di usare le previsioni per
-agire.
+ridotta» della realtà può provare le alternative nella testa e reagire al futuro
+prima che arrivi. Ha e Schmidhuber, 2018: un agente si allena dentro il proprio
+sogno e torna nel gioco vero più bravo di prima. Hopfield, 1982, e la tradizione
+delle energie che il {doc}`capitolo sui modelli a energia
+</ModelliEnergia/overview>` ha raccontato: dare un voto a ogni combinazione
+possibile, e poi lasciare che il sistema scivoli verso quelle che il voto dice
+compatibili. È insieme il modo di ricordare e quello di giudicare, ed è la
+lingua in cui LeCun ha scritto la sua proposta. Le JEPA: prevedere sì, ma nello
+spazio delle rappresentazioni, lasciando cadere i dettagli che non contano. E
+infine Sora e Genie: la previsione fatta spettacolo, fotogrammi interi di
+futuro. Il filo che attraversa ottant'anni è uno solo, e conviene dirlo in
+chiaro: in questa tradizione di ricerca l'intelligenza è la capacità di
+prevedere, e di usare le previsioni per agire.
 
 Che cosa manca, lo si può dire con la stessa calma. Manca la
 composizionalità: i simulatori attuali sanno muoversi *fra* le scene che

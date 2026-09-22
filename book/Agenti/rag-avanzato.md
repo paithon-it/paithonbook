@@ -43,13 +43,17 @@ domanda e passaggi in punti su una mappa del significato, prendeva i pochi
 passaggi più vicini alla domanda (quanti, lo decidiamo noi: diciamo i primi
 cinque) e li incollava nel foglietto di istruzioni che si dà al modello, il
 *prompt*, prima di fargli scrivere la risposta. Il cercatore è quello di DPR
-{cite}`karpukhin2020dense`; la catena intera, con il generatore in fondo,
-discende da quella di Lewis e colleghi, che però le risposte le sommava
-invece di incollare i passaggi in un prompt solo. È un ottimo punto di
+{cite}`karpukhin2020dense`, la ricerca per
+significato con due codificatori, uno per le domande e uno per i passaggi; la
+catena intera, con il generatore in fondo, discende da quella di Lewis e
+colleghi, che però non incollava i passaggi in un prompt solo: faceva scrivere
+la risposta a partire da ciascun passaggio e poi le metteva insieme, dando più
+peso a quelle venute dai passaggi che il cercatore giudicava migliori. È un
+ottimo punto di
 partenza e un pessimo punto di arrivo.
 
-Questa sezione raccoglie le tecniche che spingono quel tetto più in alto. Sono
-tre, e si distinguono per dove intervengono lungo la pipeline, la catena di
+Le tecniche che spingono quel tetto più in alto sono tre, e si distinguono per
+dove intervengono lungo la pipeline, la catena di
 passi che porta dalla domanda alla risposta: *prima* di cercare, migliorando
 la domanda; *dopo* aver
 cercato, riordinando i candidati; e *attorno* all'intero ciclo, facendo
@@ -69,7 +73,7 @@ riordino.
 
 Conviene tenere {numref}`fig-rag-avanzato` sott'occhio mentre si legge il
 resto. Dei suoi riquadri, due li sbrighiamo subito in poche righe (la doppia
-ricerca e la fusione) e gli altri hanno una sezione ciascuno. La regola che
+ricerca e la fusione) e gli altri hanno un paragrafo ciascuno. La regola che
 governa l'insieme è una sola: il recupero grezzo, quello all'inizio, deve
 essere generoso (meglio cento candidati mediocri che dieci scelti male,
 perché ciò che non entra lì è perduto per sempre) e ciò che viene dopo deve
@@ -126,8 +130,8 @@ secondi l'utente aspetta prima di vedere qualcosa, cioè la latenza.
 
 ## Migliorare la domanda: riscrittura ed espansione
 
-Prima di entrare nel merito, una parola sul termine che tornerà in ogni riga
-di questa sezione. Nel gergo del recupero si chiama query il testo con cui
+Prima di entrare nel merito, una parola sul termine che tornerà a ogni riga. Nel
+gergo del recupero si chiama query il testo con cui
 si interroga l'archivio. Non è sempre la domanda dell'utente, ed è proprio
 questo il punto: la domanda è quello che una persona ha scritto, la query è
 quello che mandiamo davvero a cercare. Tutta la prima leva consiste nel non
@@ -177,10 +181,13 @@ ipotetici» che si fa scrivere.
 
 Tutto dipende però da chi scrive l'esca. Se le tre paginette le butta giù uno
 che di cani non sa niente, portano lontano dallo scaffale giusto: meglio allora
-cercare con la domanda e basta. E c'è un caso in cui il trucco non serve: un
-cercatore si può addestrare sul proprio archivio, mostrandogli migliaia di
-domande con accanto i libri giusti, finché non impara a pescare quelli. Chi può
-permetterselo fa quello: è la strada migliore. HyDE nasce per l'altro caso, il
+cercare con la domanda e basta. E c'è un caso in cui il trucco non è la prima
+cosa da provare: un cercatore
+si può addestrare sul proprio archivio, mostrandogli migliaia di domande con
+accanto i libri giusti, finché non impara a pescare quelli. Chi può
+permetterselo parte da lì; l'esca, sopra un cercatore già addestrato, a volte
+aiuta ancora e a volte peggiora, e lo si scopre solo provando. HyDE nasce per
+l'altro caso, il
 primo giorno, quando l'archivio è nuovo e nessuno ci ha ancora cercato niente.
 
 `````
@@ -251,10 +258,15 @@ $E_q(q)^\top E_p(d)$, con due reti distinte. Applicare la ricetta di HyDE su un
 indice a due encoder significherebbe codificare la query con la rete
 sbagliata. Le riscritture
 multi-query si formalizzano invece come unione dei risultati, spesso fusi con
-la reciprocal rank fusion {cite}`cormack2009reciprocal`: a ogni documento
-si assegna il punteggio $\sum 1/(c + r)$, sommando sui ranghi $r$ che occupa
-nelle diverse liste, dove $c$ è una costante di smorzamento ($60$
-nell'articolo originale) che evita di sovrappesare i primissimi posti.
+la reciprocal rank fusion {cite}`cormack2009reciprocal`: a ogni documento $d$
+si assegna il punteggio $\mathrm{RRF}(d) = \sum_{\ell=1}^{m} 1/(c + r_\ell(d))$,
+dove $m$ è il numero di liste, $r_\ell(d)$ il rango di $d$ nella lista $\ell$
+(contato da $1$; una lista che non contiene $d$ non contribuisce) e $c$ una
+costante di smorzamento ($60$ nell'articolo originale) che appiattisce il
+divario fra i primi posti: con $c = 60$ il primo vale $1/61 \approx 0{,}0164$ e
+il decimo $1/70 \approx 0{,}0143$. Ne segue che un documento decimo in due liste
+($\approx 0{,}029$) batte uno primo in una sola: la fusione premia l'accordo fra
+le liste più della vetta di una sola.
 
 `````
 
@@ -303,7 +315,7 @@ numero civico.
 ```
 
 La seconda leva agisce a valle del recupero, e poggia su una distinzione da
-rifare per intero, perché è il cuore di tutta la sezione. Ci sono due modi di
+rifare per intero, perché regge tutto il resto. Ci sono due modi di
 far confrontare una domanda con un passaggio.
 
 Il primo è quello che abbiamo usato finora: si riassume il passaggio in un
@@ -602,8 +614,8 @@ nessuna singola ricerca li riporta insieme: per trovare il secondo bisogna
 sapere il primo. Lì il sistema rigido non fallisce per distrazione, fallisce
 per costruzione.
 
-La terza leva rompe la rigidità nello stesso modo in cui si rompe ogni
-rigidità in questo capitolo: lascia che sia il modello a decidere se,
+La terza leva rompe la rigidità nello stesso modo in cui si rompe ogni rigidità
+in un agente: lascia che sia il modello a decidere se,
 quando e quante volte cercare.
 
 C'è anche una via diversa al secondo dei due problemi, e non passa dal cercare
@@ -747,7 +759,11 @@ risposta. La pertinenza della risposta valuta invece se la risposta indirizza
 la domanda posta (non un tema adiacente), e la precision/recall del contesto
 misurano la qualità del recupero a monte: quanti dei passaggi recuperati sono
 rilevanti (precision) e quanti dei rilevanti sono stati recuperati (recall);
-quest'ultimo è proprio il *tetto* da cui siamo partiti. Il quadro operativo di
+quest'ultimo è proprio il *tetto* da cui siamo partiti. Sul recupero da solo
+si usano la recall@k, la MRR e la nDCG definite nella {doc}`sezione sul RAG
+</Transformers/rag>`: la recall@k misurata alla profondità che il generatore
+vedrà davvero è il tetto stesso, e la nDCG è la metrica dei numeri di HyDE su
+TREC DL. Il quadro operativo di
 riferimento è **RAGAS** {cite}`es2024ragas`, che nell'articolo originale
 propone tre metriche senza risposte di riferimento (*reference-free*), affidate
 a un LLM che fa da giudice: fedeltà, pertinenza della risposta e rilevanza del

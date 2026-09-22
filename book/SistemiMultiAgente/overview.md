@@ -239,7 +239,8 @@ solo, ci prende sette volte su dieci. Decidendo a maggioranza il gruppo ci
 prende quasi otto volte su dieci (78%), e con nove colleghi il 90%: perché il
 gruppo sbagli servono almeno due errori insieme, che sono più rari di uno. Da
 dove esca esattamente quel 78 lo vedremo elencando i casi uno per uno nella
-sezione «Protocolli e consenso» (il 90 esce allo stesso modo, con molti più
+{doc}`sezione sui protocolli e il consenso <protocolli-e-consenso>` (il 90 esce
+allo stesso modo, con molti più
 casi da elencare): è un conto da foglio e matita, ma per adesso basta il senso.
 
 Il conto però vale solo se i tre sbagliano in modo *diverso*. Se hanno studiato
@@ -264,12 +265,12 @@ $$
 P_n = \sum_{k=\lfloor n/2 \rfloor + 1}^{n} \binom{n}{k}\, p^{k} (1-p)^{\,n-k},
 $$
 
-dove $\binom{n}{k}$ è il numero di modi in cui $k$ votanti su $n$ possono
-azzeccare e la somma parte dalla più piccola maggioranza stretta. L'andamento
-asintotico è una dicotomia: al crescere di $n$,
-$P_n \to 1$ se $p > 1/2$ e $P_n \to 0$ se $p < 1/2$. Con $p = 0{,}7$ si ha
-$P_3 = 0{,}784$, $P_5 = 0{,}837$, $P_9 = 0{,}901$; con $p = 0{,}4$,
-$P_3 = 0{,}352$ e $P_9 = 0{,}267$.
+dove $\binom{n}{k}$ conta i modi in cui $k$ votanti su $n$ possono azzeccare.
+Al crescere di $n$, $P_n \to 1$ se $p > 1/2$ e $P_n \to 0$ se $p < 1/2$; con
+$p = 0{,}7$ si ha $P_3 = 0{,}784$ e $P_9 = 0{,}901$, con $p = 0{,}4$
+$P_3 = 0{,}352$. La derivazione, il caso a più alternative e un modello di
+errori correlati stanno nella {doc}`sezione sui protocolli e il consenso
+<protocolli-e-consenso>`.
 
 L'ipotesi vincolante è l’**indipendenza degli errori**, ed è la più fragile che
 ci sia fra agenti che condividono il modello di base, i dati di
@@ -311,8 +312,9 @@ solito, somiglia a cercare il punto più basso di una valle nella nebbia: si
 scende, e quando non si scende più si è arrivati. Qui no, perché ogni passo
 avanti di uno rende più difficile il mestiere dell'altro, e una valle sola non
 c'è. Quello che si può sperare è un **pareggio**, cioè il momento in cui a
-nessuno dei due conviene più cambiare mossa, perché a qualunque mossa l'altro
-saprebbe rispondere.
+nessuno dei due conviene più cambiare mossa da solo: se l'altro resta dov'è,
+qualunque cambio gli farebbe perdere qualcosa, o al massimo non gli darebbe
+niente.
 
 Un sistema multi-agente allarga quella struttura: i giocatori possono essere
 dieci, e non sono per forza nemici. E imparare diventa più difficile, perché un
@@ -338,8 +340,20 @@ ricade nel caso a somma zero, che è la forma minimax della GAN (con la
 {doc}`sezione su come funziona una GAN </GAN/come-funziona>` spiega perché),
 dove l'obiettivo non è un minimo di
 $\mathcal{L}$ ma un **equilibrio di Nash**: un profilo $(\pi^1, \dots, \pi^N)$
-in cui nessun agente migliora il proprio ritorno atteso cambiando policy da
-solo. Ne segue che il caso multi-agente non è quello singolo ripetuto $N$
+tale che per ogni agente $i$, ogni policy alternativa $\tilde{\pi}^i$ e ogni
+stato $s$ valga $V^i_{(\pi^i,\pi^{-i})}(s) \ge
+V^i_{(\tilde{\pi}^i,\pi^{-i})}(s)$,
+dove $V^i$ è il ritorno atteso scontato di $i$ e $\pi^{-i}$ le policy degli
+altri. Con stati e azioni finiti un equilibrio in policy stazionarie esiste
+(Shapley, 1953, per la somma zero; Fink, 1964, in generale), ma di solito non
+è unico e non è per forza un buon esito. Nel **dilemma del prigioniero**
+(ricompense $(3,3)$ se cooperano entrambi, $(5,0)$ o $(0,5)$ se defeziona uno
+solo, $(1,1)$ se defezionano entrambi) defezionare è la miglior risposta a
+qualunque mossa dell'altro: l'unico equilibrio è $(1,1)$, ed è anche l'unico
+esito non **Pareto-ottimo**, cioè migliorabile per qualcuno senza peggiorarlo
+per nessuno. Nel caso cooperativo il profilo ottimo è un equilibrio, ma
+accanto a equilibri peggiori, e scegliere fra loro è un problema a sé. Ne segue
+che il caso multi-agente non è quello singolo ripetuto $N$
 volte: per l'agente $i$ l'ambiente comprende le policy $\pi^{-i}$ degli altri,
 che cambiano durante l'addestramento, quindi il processo che $i$ osserva non
 è stazionario e le garanzie di convergenza del Q-learning, che presuppongono

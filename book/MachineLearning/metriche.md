@@ -149,14 +149,14 @@ casa: novantaquattro volte non succede niente, tre volte c'è del fumo di
 padella, tre volte un incendio vero, e lui dice sempre «niente». Alla risposta
 «niente» tocca un voto altissimo, $0{,}97$, perché delle novantaquattro notti
 tranquille non se ne lascia sfuggire una e la dà a sproposito soltanto nelle
-sei rimanenti. Alle altre due tocca zero, dato che non le nomina mai. Chi fa
-la media dei tre voti ottiene $0{,}32$. Chi butta tutte le risposte in un
-mucchio solo e dà un voto al mucchio ottiene $0{,}94$, che è poi la
-percentuale di notti indovinate, cioè l'accuratezza, rientrata dalla finestra
-proprio nella misura scelta per non farsene ingannare. Chi pesa i tre voti per
-quanto spesso ciascuna risposta capita ottiene $0{,}91$, di nuovo a un soffio
-dall'accuratezza. Stesso apparecchio, stesse cento notti; cambia solo come si
-è deciso di fare la somma.
+sei rimanenti. Alle altre due tocca zero, dato che non le nomina mai. Chi fa la
+media dei tre voti (la media *macro*) ottiene $0{,}32$. Chi butta tutte le
+risposte in un mucchio solo e dà un voto al mucchio (la media *micro*) ottiene
+$0{,}94$, che è poi la percentuale di notti indovinate, cioè l'accuratezza,
+rientrata dalla finestra proprio nella misura scelta per non farsene ingannare.
+Chi pesa i tre voti per quanto spesso ciascuna risposta capita (la media
+*weighted*) ottiene $0{,}91$, di nuovo a un soffio dall'accuratezza. Stesso
+apparecchio, stesse cento notti; cambia solo come si è deciso di fare la somma.
 
 `````
 
@@ -326,9 +326,19 @@ loro metà porta a $0{,}75$, che è quanto restituisce `roc_auc_score`. Chi si
 fermasse al primo numero concluderebbe che la libreria ha un errore.
 
 $0{,}5$ equivale al caso, $1$ alla separazione perfetta. A differenza
-dell'accuratezza, l'AUC è indipendente dalla soglia e meno sensibile allo
-sbilanciamento, ma su dataset molto sbilanciati la curva *precision–recall* è
-spesso più informativa.
+dell'accuratezza, l'AUC non dipende dalla soglia, e nemmeno dalla prevalenza:
+TPR e FPR sono frequenze condizionate alla classe vera, quindi cambiare la
+proporzione fra positivi e negativi lascia la curva dov'è. È un pregio e un
+limite, perché la precision invece ne dipende, $\text{precision} =
+\pi\,\text{TPR}/\big(\pi\,\text{TPR} + (1-\pi)\,\text{FPR}\big)$ con $\pi$ la
+prevalenza: con $\pi = 0{,}01$, un FPR del $5\%$ a recall piena vuol dire una
+precision di $0{,}17$. Per questo su dati molto sbilanciati si guarda la curva
+*precision–recall* e il suo riassunto, l’*average precision*, $\text{AP} =
+\sum_n \big(\text{Rec}_n - \text{Rec}_{n-1}\big)\,\text{Prec}_n$, con
+$\text{Prec}_n$ e $\text{Rec}_n$ precision e recall alla $n$-esima soglia (è
+l’`average_precision_score` di scikit-learn); più alta è meglio, e il termine
+di paragone è la prevalenza e non $0{,}5$, perché un modello che tira a caso fa
+$\text{AP} \approx \pi$.
 
 `````
 
@@ -629,6 +639,29 @@ base, e quello scostamento dice soltanto quanto è sbilanciato. La
 </SerieTemporali/validazione-e-feature>` usa la stessa
 coppia sui punteggi propri per le previsioni con banda.
 
+Quel criterio si misura con una **regola di punteggio propria**, cioè una
+perdita il cui valore atteso è minimo solo quando la probabilità dichiarata è
+quella vera. Le due classiche sono la log-loss,
+$-\frac{1}{n}\sum_i\big[y_i\log\hat{p}_i + (1-y_i)\log(1-\hat{p}_i)\big]$, e il
+**punteggio di Brier** {cite}`brier1950verification`,
+$\mathrm{BS} = \frac{1}{n}\sum_i(\hat{p}_i - y_i)^2$: per tutte e due più basso
+è meglio, e premiano insieme calibrazione e finezza, che l'ECE e l'AUC
+misurano separatamente. Raggruppando le previsioni negli stessi $M$ intervalli
+dell'ECE, Brier si scompone {cite}`murphy1973new` in
+
+$$
+\mathrm{BS} \approx \underbrace{\sum_{b} \tfrac{n_b}{n}\big(\bar{p}_b - \bar{y}_b\big)^2}_{\text{affidabilità}}
+\;-\; \underbrace{\sum_{b} \tfrac{n_b}{n}\big(\bar{y}_b - \bar{y}\big)^2}_{\text{risoluzione}}
+\;+\; \underbrace{\bar{y}\,(1-\bar{y})}_{\text{incertezza}},
+$$
+
+con $\bar{y}$ la frequenza di base, e l'uguaglianza è esatta quando dentro
+ogni intervallo la previsione è costante. Il primo termine è l'errore di
+calibrazione al quadrato, il secondo la capacità di distinguere, il terzo non
+dipende dal modello. Il predittore costante ha affidabilità quasi nulla e
+risoluzione nulla, e fra i modelli calibrati prende il Brier più alto: è il
+modello onesto e inutile, scritto in una formula.
+
 `````
 
 La prova si fa sul modello riequilibrato con i pesi di classe, in tre passi:
@@ -682,6 +715,8 @@ tabella(p_te, y_te, "come esce")
 al_sicuro = lambda v: np.clip(v, 1e-12, 1 - 1e-12)
 logit = lambda v: np.log(al_sicuro(v) / (1 - al_sicuro(v)))
 L_cal, L_te = logit(p_cal).reshape(-1, 1), logit(p_te).reshape(-1, 1)
+# Platt senza i bersagli ammorbiditi: con 3 750 casi di calibrazione
+# la differenza cade alla quarta cifra dell'ECE
 convertite = {nome: LogisticRegression(**opz).fit(L_cal, y_cal)
                                         .predict_proba(L_te)[:, 1]
               for nome, opz in (("Platt", {}),
@@ -777,7 +812,8 @@ formula si porta dietro.
 
 Due righe vanno lette insieme. La versione a una manopola sola, che si chiama
 scaling di temperatura ed è la ricetta standard sulle reti che il libro
-incontrerà a partire dal capitolo sulle reti neurali, qui non serve quasi a
+incontrerà a partire dal {doc}`capitolo sulle reti neurali
+</RetiNeurali/overview>`, qui non serve quasi a
 niente ($0{,}2221$ contro $0{,}2409$): stringe o allarga la sicurezza, mentre
 il guasto era uno spostamento di tutta la scala, e per raddrizzarlo serve la
 seconda manopola. E il modello costante, che risponde $0{,}0364$ a chiunque,
@@ -890,7 +926,8 @@ di Cohen pesato*), e allora lo scambio fra due fasce vicine costa molto meno
 di quello fra la prima e l'ultima.
 
 Quel voto ha un'abitudine da conoscere prima di fidarsene, e si vede portando
-lo stesso modello in due sale d'attesa diverse. Il modello sposta la risposta
+lo stesso modello in due sale d'attesa diverse, con tre fasce sole invece di
+cinque. Il modello sposta la risposta
 di una fascia una volta su cinque, in su o in giù a caso, e quando gli
 toccherebbe uscire dalla scala lascia la persona dov'è. Nella prima sala le
 tre fasce sono ugualmente affollate, e prende $0{,}90$. Nella seconda

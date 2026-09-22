@@ -56,9 +56,11 @@ nessuna casella del dato e servono alla rete per annotare regolarità sue
 Imparare diventa un confronto fra due modi di stare al mondo. Nella *veglia* la
 macchina guarda i dati veri e segna quali coppie di caselle si accendono
 insieme. Le coppie, e non altro: i suoi legami collegano due caselle per volta,
-e non sa segnare altro. Le coppie però non sono soltanto quelle del disegno, ed
-è qui che i taccuini si guadagnano il posto: ogni taccuino ha un legame con
-ciascuna casella, quindi una regolarità che ne riguarda parecchie insieme la
+e non sa segnare altro. Una regola come «la riga in cima è tutta accesa o tutta
+spenta» riguarda cinque caselle insieme, e con legami a due a due fra caselle
+non si scrive. È qui che i taccuini si guadagnano il posto: ogni taccuino ha un
+legame con ciascuna casella del disegno, si accende quando quelle cinque vanno
+d'accordo, e così una regolarità che riguarda parecchie caselle insieme la
 macchina la impara appoggiandola lì. Nel *sogno* la si lascia inventare
 configurazioni per conto suo, e si segna la stessa cosa.
 
@@ -109,8 +111,8 @@ $$
 È quel salto di $2h_i$, e non $h_i$, a produrre il 2. Chi confronta con
 altre fonti tenga d'occhio la convenzione: l'articolo originale di Ackley,
 Hinton e Sejnowski usa unità in $\{0,1\}$, dove il salto è $h_i$ e la formula
-è $\sigma(h_i/T)$ senza il fattore, ed è la stessa forma che tornerà per le
-RBM fra poco.
+è $\sigma(h_i/T)$ senza il fattore, ed è la stessa forma delle condizionali
+dell'RBM, scritte più sotto con la contrastive divergence.
 
 Per $T \to 0$ si ritrova l'aggiornamento deterministico di Hopfield; per $T$
 grande la rete accetta spesso anche mosse che *alzano* l'energia, e può
@@ -182,11 +184,14 @@ fra poco, farà sparire.
 
 La via d'uscita arriva quasi vent'anni dopo, ed è di nuovo di Hinton: la
 **contrastive divergence** {cite}`hinton2002training`, che in italiano
-suonerebbe «divergenza contrastiva», dove il contrasto è quello fra veglia e
-sogno di cui si è appena detto. In una riga: rinunciare
-al sogno completo. Invece di lasciar sognare la macchina finché il sogno non
-si assesta, la si fa partire da una cosa vera e le si concede un istante solo
-di fantasia.
+suonerebbe «divergenza contrastiva». Il nome viene dall'obiettivo che Hinton
+scrive: una differenza fra due divergenze, quella fra i dati e il modello meno
+quella fra il sogno abbreviato e il modello,
+$\mathrm{KL}(p_0 \,\|\, p_\theta) - \mathrm{KL}(p_k \,\|\, p_\theta)$, con $p_0$
+i dati e $p_k$ la catena fermata dopo $k$ passi. Dentro c'è il contrasto fra
+veglia e sogno di cui si è appena detto. In una riga: rinunciare al sogno
+completo. Invece di lasciar sognare la macchina finché il sogno non si assesta,
+la si fa partire da una cosa vera e le si concede un istante solo di fantasia.
 
 `````{tab} Elementare
 
@@ -223,9 +228,40 @@ Invece di far girare la catena fino all'equilibrio, la si fa partire *dai
 dati* e la si ferma dopo un solo passo (o pochi), usando quel sogno appena
 abbozzato come surrogato della fase negativa. Funziona soprattutto sulle
 macchine di Boltzmann ristrette (RBM), la variante in cui i collegamenti
-esistono solo tra strato visibile e strato nascosto: lì i nascosti sono
-indipendenti fra loro dati i visibili (e viceversa), quindi la fase positiva
-ha forma chiusa e ogni strato si campiona in blocco, in parallelo. È l'RBM a
+esistono solo tra strato visibile e strato nascosto. Con unità in $\{0,1\}$,
+$\mathbf{v} \in \{0,1\}^{n_v}$ e $\mathbf{h} \in \{0,1\}^{n_h}$ ($T = 1$),
+
+$$
+E(\mathbf{v}, \mathbf{h}) = -\mathbf{a}^\top \mathbf{v} - \mathbf{b}^\top \mathbf{h}
+- \mathbf{v}^\top \mathbf{W} \mathbf{h},
+\qquad
+p(\mathbf{v}, \mathbf{h}) = \frac{e^{-E(\mathbf{v}, \mathbf{h})}}{Z},
+$$
+
+dove $\mathbf{W} \in \mathbb{R}^{n_v \times n_h}$ sono i pesi e $\mathbf{a}$,
+$\mathbf{b}$ le soglie dei due strati. Senza legami interni a uno strato, la
+condizionale si fattorizza:
+$p(h_j = 1 \mid \mathbf{v}) = \sigma\big(b_j + (\mathbf{W}^\top \mathbf{v})_j\big)$
+e $p(v_i = 1 \mid \mathbf{h}) = \sigma\big(a_i + (\mathbf{W}\mathbf{h})_i\big)$,
+la sigmoide senza fattore 2 delle unità in $\{0,1\}$. Quindi la fase positiva ha
+forma chiusa, e ogni strato si campiona in blocco, in parallelo. Il gradiente
+della log-verosimiglianza rispetto ai pesi è
+$\mathbb{E}_{\text{dati}}\big[\mathbf{v}\,\mathbb{E}[\mathbf{h} \mid
+\mathbf{v}]^\top\big]
+- \mathbb{E}_{p(\mathbf{v}, \mathbf{h})}\big[\mathbf{v}\mathbf{h}^\top\big]$,
+e CD-$k$ sostituisce il secondo termine con la catena di Gibbs fermata dopo
+$k$ passaggi alternati partendo dal dato $\mathbf{v}^{(0)}$:
+
+$$
+\Delta \mathbf{W} = \eta \Big( \mathbf{v}^{(0)} \hat{\mathbf{h}}^{(0)\top}
+- \mathbf{v}^{(k)} \hat{\mathbf{h}}^{(k)\top} \Big),
+\qquad
+\hat{\mathbf{h}}^{(t)} = \sigma\big(\mathbf{b} + \mathbf{W}^\top \mathbf{v}^{(t)}\big).
+$$
+
+Per $k \to \infty$ si ritrova il gradiente esatto; a $k$ finito
+l'aggiornamento trascura il termine che nasce dal fatto che anche $p_k$ dipende
+dai parametri. Costa $O(k \, n_v n_h)$ per esempio. È l'RBM a
 riparare la metà cara di cui sopra; la contrastive divergence accorcia
 l'altra.
 
@@ -261,7 +297,9 @@ Il compromesso ha un secondo difetto, questo intuitivo: partendo sempre dai
 dati, la catena esplora solo i dintorni di ciò che ha già visto, e le regioni
 in cui il modello mette per sbaglio molta probabilità restano inesplorate,
 perché nessuno va a farvi salire l'energia. Il rimedio più semplice è la
-**persistent contrastive divergence** {cite}`tieleman2008training`: non far
+**persistent contrastive divergence** {cite}`tieleman2008training`, nota nella
+statistica già da prima col nome di *stochastic maximum likelihood*
+{cite}`younes1999convergence`: non far
 ripartire la catena dai dati a ogni passo, ma tenerne una che prosegue da dove
 era arrivata, così che nel corso dell'addestramento il «sogno» abbia il tempo
 di allontanarsi e di visitare il paesaggio. È un'idea che ritroveremo intatta,
@@ -334,8 +372,8 @@ paesaggio intero, cioè il gesto che trasforma un'altezza in una percentuale.
   sistema la veglia; la contrastive divergence bara sul sogno, concedendo
   alla macchina un istante solo di fantasia a partire da una cosa vera.
   Funziona, ma è una scorciatoia, non una soluzione: il numero che dice quanto
-  la macchina sta sbagliando resta fuori portata, e i ritocchi che fa non sono
-  la discesa di nessun numero.
+  la macchina sta sbagliando resta fuori portata, e nel caso più studiato si è
+  dimostrato che i ritocchi che fa non sono la discesa di nessun numero.
 - Da qui in avanti l'altezza del paesaggio diventa una percentuale, e per
   trasformarla bisognerebbe aver misurato il paesaggio intero, valle per
   valle. È il conto che l'apertura del capitolo chiamava funzione di

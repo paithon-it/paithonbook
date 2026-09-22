@@ -212,9 +212,8 @@ torneremo.
 
 Le due frecce del capitolo. Quella in basso è una ricetta fissa e si può
 calcolare; quella in alto è l'unica cosa che una rete deve imparare. Qui i
-riquadri sono in ordine di *pulizia* crescente, cioè al contrario della figura
-precedente, dove andavano dal nitido al rumore: guarda le frecce, non la
-posizione.
+riquadri vanno dal rumore al nitido e la freccia che si impara è in alto:
+tutto scambiato rispetto alla figura precedente.
 ```
 
 L'asimmetria di {numref}`fig-dal-rumore-all-immagine` è la ragione per cui il
@@ -352,9 +351,12 @@ applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
   Il conto si paga in attesa: il falsario dipinge in una pennellata sola, il
   restauratore ripete il suo giro centinaia di volte. È un baratto e non una
   classifica: tempo in cambio di stabilità e varietà.
-- Nel resto del capitolo: DDPM in dettaglio; il trucco che fa lavorare la rete
-  su una versione compressa della fotografia invece che sui pixel, ed è il
-  motivo per cui Stable Diffusion gira in casa; un Transformer, cioè
+- Nel resto del capitolo: DDPM in dettaglio; i mille gradini resi
+    infinitamente piccoli, che fanno della scala una rampa; il flow matching,
+    che la strada fra rumore e immagine la sceglie dritta invece di ereditarla;
+    il trucco che fa lavorare la rete su una versione compressa della fotografia
+    invece che sui pixel, ed è il motivo per cui Stable Diffusion gira in casa;
+    un Transformer, cioè
   l'architettura del capitolo che porta quel nome, messo al posto della rete di
   visione; e i modelli che con la stessa ricetta generano video.
 ```

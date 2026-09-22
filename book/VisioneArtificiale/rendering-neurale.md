@@ -44,11 +44,11 @@ questo triangolo sta qui, quest'altro là, sopra ci va questa immagine. È un
 archivio, e come tutti gli archivi ha una risoluzione: più triangoli, più
 dettaglio, più memoria.
 
-Un **campo di radianza** è un'altra cosa. Non è un elenco, è una risposta a
-una domanda. La domanda è: «se mi metto in questo punto dello spazio e
-guardo in questa direzione, che colore vedo, e c'è qualcosa di solido qui?».
-La scena diventa un oggetto che sa rispondere a quella domanda in ogni punto
-e per ogni direzione, e la risposta la dà una piccola rete neurale.
+Un **campo di radianza** risponde invece a una domanda. La domanda è: «se mi
+metto in questo punto dello spazio e guardo in questa direzione, che colore
+vedo, e c'è qualcosa di solido qui?». La scena diventa un oggetto che sa
+rispondere a quella domanda in ogni punto e per ogni direzione, e la risposta
+la dà una piccola rete neurale.
 
 Due conseguenze, che è il caso di sentire come strane prima di trovarle
 normali. La prima: la scena non ha una risoluzione. Puoi chiedere il colore
@@ -113,13 +113,9 @@ il meccanismo, ed è fisica ottocentesca invece che una rete: per la precisione
 la legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
 nomi di Beer e Lambert e ha quasi due secoli.
 
-Differenziabile vuol dire che di ogni numero in gioco si può sempre
-chiedere: «se questo fosse un pochino più grande, il risultato finale come
-cambierebbe?», e la risposta non è un'opinione, si calcola. È la condizione che
-permette di partire da un pixel venuto male e risalire la catena all'indietro
-fino a chi lo ha prodotto, per correggerlo. Dove quella domanda non ha risposta
-(perché qualcosa fa un salto brusco, o perché c'è una decisione secca del tipo
-«qui mi fermo») la strada all'indietro si interrompe.
+Differenziabile vuol dire che autograd attraversa l'intera catena, dal
+pixel reso fino ai pesi della rete: nessun passo fa un salto brusco o prende
+una decisione secca del tipo «qui mi fermo», che interromperebbe il gradiente.
 
 ```{figure} ../figures/nerf-campo-di-radianza.svg
 :name: fig-nerf-rendering
@@ -197,7 +193,10 @@ punto contribuisce in proporzione a quanto è denso *e* a quanto è libera la
 strada davanti a lui.
 
 In pratica l'integrale si valuta per quadratura su $N$ campioni con passo
-$\delta_i = t_{i+1} - t_i$:
+$\delta_i = t_{i+1} - t_i$, supponendo $\sigma$ e $\mathbf{c}$ costanti dentro
+ciascun intervallo. Sotto questa ipotesi la formula che segue è esatta, e
+l'approssimazione sta tutta nel campionamento: dove i campioni sono radi una
+superficie più sottile di $\delta_i$ può sparire del tutto:
 
 $$
 \hat{C}(\mathbf{r}) = \sum_{i=1}^{N} T_i\,\alpha_i\, \mathbf{c}_i,
@@ -295,12 +294,18 @@ $$
 \sin(2^{L-1} \pi p),\, \cos(2^{L-1} \pi p)\big),
 $$
 
-applicata a ciascuna delle tre coordinate (con $L = 10$ nel lavoro originale)
-e alle componenti della direzione (con $L = 4$). Non è un espediente: Tancik e
-colleghi mostrano che le *Fourier features* trasformano il **neural tangent
-kernel** dell'MLP in un kernel stazionario di banda regolabile, e che senza di
-esse una rete densa non può, in teoria prima ancora che in pratica, apprendere
-le alte frequenze in domini di bassa dimensione {cite}`tancik2020fourier`.
+applicata a ciascuna delle tre coordinate (con $L = 10$ nel lavoro originale) e
+alle componenti della direzione (con $L = 4$). Non è un espediente. Nel regime
+del **neural tangent kernel**, dove una rete larga addestrata a passi piccoli
+si comporta come una regressione a nucleo, l'errore lungo ogni autovettore del
+nucleo cala con una velocità proporzionale al suo autovalore; per un MLP con
+ingresso a bassa dimensione gli autovalori calano rapidamente con la frequenza,
+e le alte frequenze richiedono un numero di passi impraticabile. Tancik e
+colleghi mostrano che le *Fourier features* rendono il nucleo stazionario, con
+una banda che si regola scegliendo le frequenze {cite}`tancik2020fourier`. La
+mappa presuppone coordinate normalizzate, in NeRF dentro $[-1, 1]$: la
+frequenza più alta, $2^{L-1}\pi$, fissa la scala più fine rappresentabile, e
+una $L$ troppo grande produce rumore ad alta frequenza invece che dettaglio.
 
 Il legame con i Transformer non è un'analogia vaga: la forma è la stessa,
 sinusoidi a frequenze geometricamente scalate, e il ruolo è lo stesso, rendere
@@ -436,9 +441,20 @@ coefficienti di armoniche sferiche per il colore dipendente dalla direzione
 
 La proiezione di una gaussiana 3D sul piano immagine è ancora, con buona
 approssimazione, una gaussiana 2D, il che rende il rendering una
-rasterizzazione invece di un *ray
-marching*: si ordina per profondità, si compone con la stessa formula di
-$\alpha$-blending vista sopra, e si sfrutta appieno l'hardware grafico. Con una
+rasterizzazione invece di un *ray marching*: si ordina per profondità e si
+compone con la stessa somma
+$\hat{C} = \sum_i \mathbf{c}_i\, \alpha_i \prod_{j<i} (1 - \alpha_j)$, dove però
+l'opacità non viene da una densità integrata lungo il raggio ma dalla gaussiana
+proiettata valutata nel pixel $\mathbf{u}$,
+$\alpha_i = o_i \exp\!\big(-\tfrac{1}{2}(\mathbf{u} - \boldsymbol{\mu}'_i)^\top
+\boldsymbol{\Sigma}'^{-1}_i (\mathbf{u} - \boldsymbol{\mu}'_i)\big)$, con $o_i$
+l'opacità appresa e $\boldsymbol{\mu}'_i$, $\boldsymbol{\Sigma}'_i$ centro e
+covarianza proiettati. L'ordinamento si fa una volta per tile di
+$16 \times 16$ pixel, sui centri delle gaussiane, e non pixel per pixel: dove
+due gaussiane si compenetrano l'ordine può scattare fra un fotogramma e
+l'altro. Le gaussiane infine non partono a caso: nascono sulla nuvola di punti
+che la structure from motion produce insieme alle pose, e il rendering sfrutta
+appieno l'hardware grafico. Con una
 precisazione che il metodo non nasconde: sotto la prospettiva vera, che divide
 per $Z$, l'immagine di una gaussiana non è una gaussiana. Lo diventa se la
 proiezione si linearizza localmente, e la covarianza proiettata è allora
@@ -448,8 +464,8 @@ lo jacobiano dell'approssimazione affine della proiezione (è la ricetta dello
 *splatting* con filtro ellittico della grafica volumetrica). Lo scarto si vede
 ai bordi dell'inquadratura, dove la linearizzazione è peggiore. Gli
 autori riportano sintesi di nuove viste in tempo reale ($\geq$ 30 fotogrammi
-al secondo) a risoluzione 1080p, con qualità allo stato dell'arte e tempi di
-addestramento competitivi.
+al secondo) a risoluzione 1080p, con qualità pari a quella dei migliori campi di
+radianza allora pubblicati e tempi di addestramento competitivi.
 
 L'ottimizzazione alterna discesa del gradiente sui parametri e un
 **controllo adattivo della densità**: le gaussiane con gradiente di posizione
@@ -465,8 +481,8 @@ geometriche, ma con la loss differenziabile del rendering neurale.
 
 ## Cosa questo cambia, e cosa resta difficile
 
-Conviene dire con precisione che cosa è stato risolto, perché intorno a questi
-metodi la retorica è abbondante.
+Intorno a questi metodi la retorica è abbondante, e quello che è stato risolto
+davvero va detto con precisione.
 
 Cosa funziona. Servono da qualche decina a un centinaio di fotografie di
 una scena ferma, cioè quello che si raccoglie girandoci attorno col telefono in
@@ -481,7 +497,7 @@ fotocamere. Praticamente ogni pipeline le ottiene da una ricostruzione
 sbaglia un po’: produce una nuvola incoerente. La geometria classica è
 diventata l'infrastruttura su cui il metodo poggia.
 
-Cosa resta aperto. Tre cose, e conviene distinguerle.
+Cosa resta aperto. Tre problemi non si sono ancora sciolti:
 
 - Si addestra una scena alla volta. Non c'è nessun transfer: il modello di
   ieri non aiuta la scena di oggi. I lavori che generalizzano da poche viste,
@@ -648,3 +664,9 @@ pesci pigliare.
 ```
 
 `````
+
+Fin qui la domanda è stata sempre che aspetto abbia la scena da un altro punto
+di vista. Il {doc}`trasferimento di stile <style-transfer>` ne fa un'altra:
+che aspetto avrebbe la stessa foto se l'avesse dipinta qualcun altro. E ci
+arriva con una rete che non ricostruisce niente: la usa soltanto per
+guardare.

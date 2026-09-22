@@ -10,25 +10,26 @@ esattamente il tono con cui, all'epoca, le due macchine che smistavano le
 telefonate si dicevano fra loro che una linea a lunga distanza era di nuovo
 libera.
 
-Il trucco stava tutto lì, e aveva un passaggio in più di quanto sembri. Prima
-si chiamava un numero che non costava niente, per esempio il numero verde di
+Il trucco stava tutto lì, e aveva un passaggio in più di quanto sembri. Prima si
+chiamava un numero che non costava niente, per esempio il numero verde di
 un'azienda dall'altra parte del paese: la centrale di partenza segnava sul
 nastro della contabilità una chiamata a un numero gratuito. Poi, mentre di là il
 telefono squillava ancora, si fischiava. La macchina lontana sentiva «linea
 libera», concludeva che chi aveva chiamato avesse riagganciato e smetteva di far
-squillare. E qui sta il passaggio che conta: appena il fischio smetteva, quella
-stessa macchina concludeva che la linea fosse tornata in uso e si rimetteva in
-ascolto dei toni che dicono dove mandare la chiamata, perché altro modo di
-saperlo non ce l'aveva. Con una scatoletta che quei toni li generava tutti (la
-«scatola blu» che dà il titolo al reportage) le si dettava allora un numero
-qualunque, a New York come a Roma. Sulla bolletta di fine mese non compariva
-niente, perché il conteggio era stato istruito a non far pagare le chiamate ai
-numeri gratuiti. Chi finì arrestato, spiega nel reportage uno dei protagonisti,
-aveva sbagliato nel modo più semplice: partire da un numero che gratuito non
-era. Alla rete il fischio era arrivato come un comando e non come un suono
-dentro una conversazione, perché le parole delle persone e i comandi delle
-macchine viaggiavano sullo stesso paio di fili. Non c'era nessun errore di
-programmazione da correggere. C'era un canale solo.
+squillare. E qui sta il passaggio che conta. Appena il fischio smetteva, la
+macchina lontana credeva che qualcuno avesse alzato la cornetta per fare una
+chiamata nuova, e si metteva in attesa del numero da comporre: la linea era
+ancora quella del numero verde, ma adesso obbediva a chi aveva fischiato. Con
+una scatoletta che quei toni li generava tutti (la «scatola blu» che dà il
+titolo al reportage) le si dettava allora un numero qualunque, a New York come a
+Roma. Sulla bolletta di fine mese non compariva niente, perché il conteggio era
+stato istruito a non far pagare le chiamate ai numeri gratuiti. Chi finì
+arrestato, spiega nel reportage uno dei protagonisti, aveva sbagliato nel modo
+più semplice: partire da un numero che gratuito non era. Alla rete il fischio
+era arrivato come un comando e non come un suono dentro una conversazione,
+perché le parole delle persone e i comandi delle macchine viaggiavano sullo
+stesso paio di fili. Non c'era nessun errore di programmazione da correggere.
+C'era un canale solo.
 
 Il problema la rete telefonica lo ha risolto in un paio di decenni, nell'unico
 modo strutturale che si conosca: mandando i comandi delle macchine (in gergo la
@@ -38,15 +39,14 @@ voce. Da allora si può fischiare quanto si
 vuole nella cornetta: il fischio resta un suono, perché i comandi passano da
 un'altra parte.
 
-La sezione {doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>`
-ha mostrato come si inganna la *vista* di una rete neurale, con manomissioni
-invisibili all'occhio. Questa affronta
-la stessa domanda per i modelli di linguaggio, e il quadro cambia in due modi.
-Il primo: l'attacco è prosa che chiunque può leggere, non un rumore
-impercettibile, e per scriverla non serve né conoscere il modello né saper fare i
-conti. Il secondo, meno rassicurante: il canale separato, per ora, non c'è, e a
-mancare non è l'etichetta di provenienza, che si sa attaccare, ma il modo di
-costringere il modello a rispettarla.
+La sezione {doc}`Privacy e robustezza </AIResponsabile/privacy-e-robustezza>` ha
+mostrato come si inganna la *vista* di una rete neurale, con manomissioni
+invisibili all'occhio. Per i modelli di linguaggio la domanda è la stessa, e il
+quadro cambia in due modi. Il primo: l'attacco è prosa che chiunque può leggere,
+non un rumore impercettibile, e per scriverla non serve né conoscere il modello
+né saper fare i conti. Il secondo, meno rassicurante: il filo separato, per ora,
+non c'è. Accanto a ogni pezzo di testo si sa scrivere da dove viene; quello che
+non si sa fare è obbligare il modello a tenerne conto.
 
 ## Il difetto sta nel canale, non nel modello
 
@@ -95,7 +95,8 @@ dove $\theta$ sono i pesi, $\oplus$ è la concatenazione e i tre blocchi sono il
 prompt di sistema, il turno dell'utente e il testo recuperato da terzi. Il
 punto è ciò che nella formula non compare: un secondo argomento
 $\boldsymbol{\tau}$ che porti, token per token, la provenienza. La gerarchia
-*system > user* incontrata nel capitolo sull'ingegneria degli LLM esiste, ma è
+*system > user* incontrata nella {doc}`sezione sul prompt engineering
+</IngegneriaLLM/prompt-engineering>` esiste, ma è
 una *disposizione appresa* a dare più peso ai segmenti delimitati dai marcatori
 di ruolo, non un controllo di accesso: è morbida per costruzione, perché è
 statistica.
@@ -210,7 +211,7 @@ cartellino falso è bloccato, la frase in prosa no. Continua ad arrivare al
 modello, dentro la regione dei dati, e continua a essere una richiesta scritta
 in una lingua che lui capisce benissimo.
 
-## Due minacce, due vittime
+## Due attacchi, tre vittime
 
 Da questo unico difetto discendono due attacchi che vengono spesso confusi e
 che invece hanno forme diverse, e quindi difese e gravità diverse. Portano due
@@ -289,9 +290,9 @@ si fanno vedere moltissime coppie di risposte con scritto quale delle due era
 migliore, si addestra un secondo modello a dare un voto imitando quel giudizio,
 e poi si spinge il primo a prendere voti alti senza allontanarsi troppo da
 com'era {cite}`ouyang2022training`; oppure quelle coppie si danno direttamente
-al modello che parla, saltando il giudice, ed è la scorciatoia che
-{doc}`Allineamento e governance </AIResponsabile/allineamento-e-governance>`
-racconta per esteso {cite}`rafailov2023direct`. In un modo o nell'altro, il
+al modello che parla, saltando il giudice, ed è la scorciatoia che la stessa
+sezione sul post-training ricava per esteso, derivazione compresa
+{cite}`rafailov2023direct`. In un modo o nell'altro, il
 risultato di quel lavoro va guardato per quello che è: una **disposizione
 appresa**, sparsa in miliardi di numeri, non una regola che qualcuno possa
 esibire e verificare. Una regola vale o non vale; una disposizione si può
@@ -417,14 +418,29 @@ non a soglia. La conseguenza di progetto è che non esiste un numero di esempi
 sotto il quale dichiararsi al sicuro, e che l'estensione della finestra è a
 tutti gli effetti un ampliamento della superficie d'attacco.
 
-Esiste infine, per chi dispone dei pesi, la versione testuale degli attacchi
-avversari alle immagini: Andy Zou e colleghi {cite}`zou2023universal` hanno
-mostrato che si può ottimizzare l'input con una ricerca guidata dal
-gradiente sui token (il testo è fatto di simboli discreti, quindi non si somma
-una perturbazione minuscola come si fa con i pixel: si prova a sostituire un
-token con un altro e si tiene la sostituzione migliore), e che le stringhe
-così trovate spesso funzionano anche su modelli diversi da quello su cui sono
-nate. La **trasferibilità** è la parte che conta: dice che ciò che si sfrutta
+Esiste infine, per chi dispone dei pesi, la versione testuale degli
+attacchi avversari alle immagini, il **GCG** (*Greedy Coordinate Gradient*) di
+Andy Zou e colleghi {cite}`zou2023universal`. Alla richiesta $\mathbf{x}$ si
+accoda un suffisso $\mathbf{s}$ di una ventina di token, ottimizzato perché il
+modello cominci la risposta con una frase bersaglio affermativa
+$\mathbf{y}^\star$, del tipo «Certo, ecco come…», minimizzando
+
+$$
+\mathcal{L}(\mathbf{s}) = -\log p_\theta\big(\mathbf{y}^\star \mid \mathbf{x} \oplus \mathbf{s}\big),
+$$
+
+dove le tre sono sequenze di token. Il testo è fatto di simboli discreti,
+quindi non si somma una perturbazione minuscola come si fa con i pixel: il
+gradiente di $\mathcal{L}$ rispetto alla codifica one-hot di ciascun token del
+suffisso indica, posizione per posizione, i $k$ sostituti più promettenti; se
+ne valuta esattamente un campione casuale e si tiene la sostituzione che
+abbassa di più la loss. Ottimizzando lo stesso suffisso su più richieste e più
+modelli aperti insieme, le stringhe trovate spesso funzionano anche su modelli
+diversi da quello su cui sono nate, compresi modelli raggiungibili solo da
+un'interfaccia. Hanno però un segno che le tradisce: sono sequenze prive di
+senso, a perplessità altissima, e un filtro sulla perplessità ne ferma molte
+finché l'attacco non viene costretto a produrre testo leggibile. La
+**trasferibilità** è la parte che conta: dice che ciò che si sfrutta
 non è la particolarità di un modello ma qualcosa di condiviso dal modo in cui
 questi modelli vengono costruiti. La stessa proprietà, e la stessa cattiva
 notizia, degli esempi avversari della visione.
@@ -621,8 +637,8 @@ robusto il modello. Due cose però la limitano, e vanno dette insieme alla
 promessa. La prima è che l'invariante vale rispetto alle regole scritte e alle
 etichette messe: se una sorgente non è marcata, o una regola manca, il cancello
 lascia passare senza accorgersi di niente. La seconda è il prezzo in compiti
-che non arrivano in fondo: il lavoro che ha misurato per primo questa difesa su
-un banco di prova per agenti ne porta a termine il 77% con la garanzia contro
+che non arrivano in fondo: sul banco di prova per agenti AgentDojo, il lavoro
+che ha proposto questa difesa ne porta a termine il 77% con la garanzia contro
 l'84% senza {cite}`debenedetti2025camel`.
 
 Il modo di ottenerlo è vecchio quanto la sicurezza dei sistemi: privilegio

@@ -26,12 +26,13 @@ guarda che cosa hanno in comune.
 
 ## Un compito la cui risposta è già nei dati
 
-Il nome è **apprendimento auto-supervisionato**, e la definizione sta in una
-riga: ci si inventa un compito la cui risposta corretta è ricavabile dai dati
-stessi, senza che nessuno la scriva. Un compito così si chiama un pretesto,
-e il nome è onesto: risolverlo non interessa a nessuno. Interessa quello che il
-modello è costretto a capire per riuscirci, e che gli resta addosso quando il
-pretesto si butta via.
+Il nome è **apprendimento auto-supervisionato**, e la definizione, che
+{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`
+ha già dato per le immagini, sta in una riga: ci si inventa un compito la cui
+risposta corretta è ricavabile dai dati stessi, senza che nessuno la scriva. Un
+compito così si chiama un pretesto, e il nome è onesto: risolverlo non interessa
+a nessuno. Interessa quello che il modello è costretto a capire per riuscirci, e
+che gli resta addosso quando il pretesto si butta via.
 
 La differenza con l'apprendimento supervisionato dei capitoli precedenti non
 sta nell'algoritmo, che è lo stesso, e nemmeno nella rete, che è la stessa.
@@ -105,6 +106,11 @@ può essere una mossa oppure diecimila.
 `````
 
 Il conto lo facciamo fare al calcolatore, così si può rifare e discutere.
+L'unità è il bit, quella del gioco delle venti domande della
+{doc}`teoria dell'informazione </Matematica/teoria-informazione>`: una
+risposta scelta fra mille possibilità si indovina con dieci domande da sì o no
+(mille, cinquecento, duecentocinquanta, e avanti a dimezzare), quindi vale al
+più dieci bit; un vinto-o-perso ne vale uno.
 
 ```python
 from math import log2
@@ -221,10 +227,11 @@ numero di bit.
 
 L'argomento ha una forma celebre, e la sua storia dice qualcosa sul campo.
 
-Nel dicembre del 2016, a un convegno, Yann LeCun mostra una diapositiva con
-una fetta di torta e una frase: «se l'intelligenza è una torta, il grosso della
-torta è l'apprendimento non supervisionato, la glassa è l'apprendimento
-supervisionato, e la ciliegina è l'apprendimento per rinforzo»
+Il capitolo sui modelli a energia l'ha già citata di passaggio, per la sua
+ciliegina; eccola per intero. Nel dicembre del 2016, a un convegno, Yann LeCun
+mostra una diapositiva con una fetta di torta e una frase: «se l'intelligenza è
+una torta, il grosso della torta è l'apprendimento non supervisionato, la glassa
+è l'apprendimento supervisionato, e la ciliegina è l'apprendimento per rinforzo»
 {cite}`lecun2016cake`. L'immagine fa il giro del mondo, e la ciliegina diventa
 un modo di dire.
 
@@ -306,8 +313,12 @@ il divario fra quello che l'organismo si aspetta e quello che gli arriva, in
 quella letteratura circola sotto molti nomi: minimizzare la sorpresa,
 l’entropia, l’errore di predizione oppure l’energia libera variazionale. Non
 sono la stessa quantità, e chi le tratta come sinonimi si perde il pezzo
-centrale di quella teoria: l'energia libera è un limite superiore sulla
-sorpresa, e le altre due ne discendono sotto ipotesi che vanno dette.
+centrale di quella teoria. L'energia libera, in particolare, ha poco da
+spartire con l'energia dei {doc}`modelli a energia </ModelliEnergia/overview>`,
+il voto dato a una risposta: fa da tetto alla sorpresa, cioè è un numero che la
+sorpresa non può superare, e si usa perché la sorpresa vera non si sa calcolare
+mentre il tetto sì. L'entropia (la sorpresa media) e l'errore di predizione ne
+discendono sotto ipotesi che vanno dette.
 {doc}`Inferenza attiva </WorldModels/inferenza-attiva>` scrive come stanno fra
 loro. Quale nome si usi dipende poi dal mestiere di chi parla: «errore di
 predizione» dove si spiegano segnali cerebrali, «energia libera variazionale»

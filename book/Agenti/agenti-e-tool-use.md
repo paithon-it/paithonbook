@@ -30,8 +30,9 @@ diventato il modo in cui gli si dice cosa fare, potente e fragile insieme,
 perché una parola diversa cambia il risultato.
 
 Un agente è il passo successivo: quello stesso modello, messo dentro il ciclo
-osserva-ragiona-agisci, con strumenti a portata di mano e il permesso di
-usarli.
+osserva-ragiona-agisci che l’{doc}`anatomia di un agente </Agenti/overview>` ha
+appena montato, con strumenti a portata di mano e il permesso di usarli. Quel
+ciclo adesso si smonta pezzo per pezzo, cominciando dalle mani.
 
 ## Dare le mani al modello: il tool use
 
@@ -78,8 +79,9 @@ in mano l'esecuzione, solo la richiesta.
 
 `````{tab} Elementare
 
-Sulla scrivania di un dirigente competente non c'è nessun attrezzo: c'è un
-blocco di moduli. La calcolatrice, il telefono e lo schedario stanno nella
+Il foglietto del cuoco, in un ufficio, diventa un modulo con le caselle. Sulla
+scrivania di un dirigente competente non c'è nessun attrezzo: c'è un blocco di
+moduli. La calcolatrice, il telefono e lo schedario stanno nella
 stanza accanto, dove lavora la sua assistente. Alla domanda «quanto fa il
 totale della commessa?» lui non azzarda una cifra e non si alza a fare il
 conto: riempie un modulo, lo passa di là, e aspetta. Il foglio con il risultato
@@ -138,13 +140,12 @@ La descrizione è il testo su cui il modello ragiona per decidere *se* e
 effetti. Il modello, invece di campionare token destinati all'utente, emette
 una struttura che dice il nome dello strumento e i valori da metterci dentro;
 il runtime la valida contro lo schema, esegue la funzione, e re-inietta il
-risultato nel contesto. Anche qui la forma esatta cambia da un fornitore
-all'altro, e si guarda prima di scrivere del codice: per gli uni è un blocco
-`tool_use` con i valori sotto la chiave `input`, e il risultato torna come
-blocco `tool_result` dentro un messaggio di ruolo *user* (è la coppia della
-figura); per gli altri è un elemento `function_call` con i valori sotto
-`arguments`, ma come stringa JSON invece che come oggetto, e il risultato
-rientra come elemento a sé, `function_call_output`. Il giro è lo stesso. La
+risultato nel contesto. Anche qui la forma esatta (i nomi dei campi, se gli
+argomenti arrivano come
+oggetto o come stringa JSON da decodificare, in quale messaggio rientra il
+risultato) cambia da un fornitore all'altro e da una versione all'altra delle
+API, e si guarda nella documentazione prima di scrivere del codice. Il giro è lo
+stesso. La
 capacità di scegliere lo strumento e compilarne gli argomenti nel formato
 giusto non è innata, e ci si arriva per due strade: addestrando il modello su
 tracce di chiamate già fatte, oppure mostrandogliene qualcuna nel prompt (allo
@@ -216,10 +217,16 @@ testo e la generazione riparte da lì, come se il numero l'avesse scritto lui.
 
 Il dettaglio da guardare in {numref}`fig-toolformer` è appunto quello: la
 chiamata sta dentro la frase, e il suo risultato ($0{,}29$) rientra nel
-testo giusto prima della parola che lo commenta ($29\%$). Ed è questo a rendere
-possibile il trucco con cui Toolformer impara. Se la chiamata sta lì in mezzo,
-il modello può misurare una cosa che sa misurare benissimo: quanto gli riesce
-facile scrivere le parole che vengono subito dopo. «Facile» qui ha un metro
+testo giusto prima della parola che lo commenta ($29\%$). Ed è il punto della
+frase a rendere possibile il trucco con cui Toolformer
+impara: scelto il posto in cui la chiamata andrebbe, il modello può misurare una
+cosa che sa misurare benissimo, cioè quanto gli riesce facile scrivere le
+parole che vengono subito dopo quel posto. Durante questa prova la chiamata e
+il suo risultato gli vengono messi davanti in cima al testo, e non ancora in
+mezzo alla frase, perché un modello che non ha mai visto una chiamata a metà di
+un periodo, trovandosela lì, si confonderebbe; in mezzo alla frase, come nel
+disegno, la chiamata ci va dopo, negli esempi su cui il modello si addestra.
+«Facile» qui ha un metro
 esatto, ed è la probabilità che il modello assegna alle parole che di fatto
 seguono: alta vuol dire facile. Con il numero vero sotto gli
 occhi, «29%» diventa quasi obbligato; senza, è un tiro a indovinare. La
@@ -233,8 +240,10 @@ dove lui sbaglia: la volta dopo, per i conti lunghi, la prende subito.
 Toolformer si allena così su se stesso, e il compito su cui si corregge è un
 testo già scritto da altri, di cui conosce ogni parola.
 
-Prende quel testo e, qua e là, prova a infilarci dentro la chiamata a uno
-strumento (per scriverla gli basta una manciata di esempi già fatti). Poi copre
+Prende quel testo e, qua e là, segna un punto in cui una chiamata a uno
+strumento potrebbe servire (per scriverla gli basta una manciata di esempi già
+fatti); la chiamata, per ora, la annota in cima al foglio, non in mezzo alla
+frase. Poi copre
 il seguito e prova a indovinarlo due volte: una con il risultato dell'attrezzo
 davanti agli occhi, una senza. Il «29%» di prima lo mostra bene: con «0,29»
 scritto in mezzo, viene quasi da sé. Se il salto di facilità è grosso,
@@ -269,9 +278,14 @@ $$
 \mathcal{L}_i(z) = -\sum_{j \ge i} w_{j-i}\, \log p(x_j \mid z,\, x_{<j}),
 $$
 
-dove $z$ è ciò che si antepone in posizione $i$ (la chiamata con il suo
-risultato, la chiamata senza, oppure niente) ed è l'unica cosa che cambia fra i
-due termini del confronto: $\mathcal{L}_i^{\text{con}}$ e
+dove $z$ è il prefisso messo in testa all'intera sequenza (la chiamata con il
+suo risultato, la chiamata senza risultato, oppure niente), mentre $i$ è il
+punto in cui la chiamata andrebbe inserita e da cui parte la somma; $z$ è
+l'unica cosa che cambia fra i due termini del confronto. Gli autori mettono la
+chiamata in testa, e non al posto $i$, perché il modello non ha ancora visto
+chiamate in mezzo a un testo e trovarsene una lì ne peggiorerebbe la
+perplessità; dentro la frase la chiamata entra solo nel dataset aumentato su
+cui il modello viene poi messo a punto: $\mathcal{L}_i^{\text{con}}$ e
 $\mathcal{L}_i^{\text{senza}}$ sono la perdita futura con e senza la chiamata
 ($\mathcal{L}_i^{\text{senza}}$ è il minimo fra il non chiamare affatto e
 il chiamare ottenendo una risposta vuota), $x_j$ sono i token che nel testo
@@ -305,7 +319,9 @@ Uno strumento, da solo, non basta a fare un agente. Serve una procedura:
 quando pensare, quando agire, come usare ciò che l'azione ha restituito. Lo
 schema di lavoro che ha dato il nome a questo modo di procedere si chiama
 **ReAct**, dall'inglese *reasoning* e *acting*, ragionare e agire, ed è stato
-proposto nel 2022 da Shunyu Yao e colleghi {cite}`yao2023react`. L'idea è
+proposto nel 2022 da Shunyu Yao e colleghi {cite}`yao2023react`, qualche mese
+prima di Toolformer: le due idee rispondono a domande diverse, e qui sono messe
+in fila per ragione, non per data. L'idea è
 intrecciare, in un unico flusso, tre tipi di passi: un **pensiero**
 (*Thought*, il ragionamento ad alta voce), un’**azione** (*Action*, la
 chiamata a uno strumento) e un’**osservazione** (*Observation*, il risultato
@@ -336,19 +352,15 @@ ottenuto il primo: finché non so *quale* sia il film d'esordio, non ho niente
 da cercare. Un sistema che agisse una volta sola resterebbe fermo al primo
 giro, perché non saprebbe ancora cosa chiedere.
 
-Perché conviene far ragionare il modello *ad alta voce* tra un'azione e
-l'altra? Non per la ragione che viene in mente per prima, cioè il guadagno che
-si ha facendo scrivere al modello i passaggi prima della risposta, come nel
-«mostra i passaggi» del compito di matematica {cite}`wei2022chain`: quel
-guadagno lì è misurato sui conti e sulla logica {cite}`sprague2025cot`, e il
-ciclo di un agente è fatto in buona parte d'altro, cioè scegliere uno
-strumento, leggere un risultato e decidere se ripetere.
-
-La ragione per cui il pensiero esplicito serve *qui* è un'altra, e più
-prosaica: dà al modello un posto dove scrivere a che punto è del compito prima
-di scegliere l'azione. È la stessa idea che ritroveremo, chiamata foglio di
-brutta o *scratchpad*, nella {doc}`sezione su come si riempie la finestra di
-contesto </Agenti/context-engineering>`.
+Il pensiero esplicito, in un ciclo d'agente, serve soprattutto a dare al
+modello un posto dove scrivere a che punto è del compito prima di scegliere
+l'azione, come si è visto montando l'anatomia di un agente: è il foglio di
+brutta o *scratchpad* della {doc}`sezione su come si riempie la finestra di
+contesto </Agenti/context-engineering>`. Il guadagno generale della catena di
+pensiero {cite}`wei2022chain`, misurato sui conti e sulla logica
+{cite}`sprague2025cot`, qui conta meno, perché il ciclo di un agente è fatto in
+buona parte d'altro: scegliere uno strumento, leggere un risultato e decidere se
+ripetere.
 
 Il guadagno dell'osservazione, poi, è di un'altra specie rispetto a quello del
 pensiero, e non si legge nel punteggio: si legge in che cosa smette di
@@ -519,7 +531,11 @@ ha un appiglio solido su cui costruire. Quando invece l'unico giudice è il
 modello stesso, senza alcun riscontro dal mondo, la faccenda si fa scivolosa:
 un modello convinto di una risposta sbagliata tende a produrre auto-critiche
 che *confermano* l'errore, e può perfino peggiorare una risposta che era
-corretta, «correggendola» verso il falso. Riflettere aiuta a patto di avere
+corretta, «correggendola» verso il falso: Huang e colleghi
+{cite}`huang2024selfcorrect` lo misurano sui problemi di ragionamento, dove
+chiedere al modello di rivedere la propria risposta senza alcun riscontro
+esterno (l'auto-correzione *intrinseca*) lascia l'accuratezza ferma o la
+abbassa. Riflettere aiuta a patto di avere
 qualcosa contro cui verificarsi; la sola introspezione, da sé, non crea
 competenza che il modello non aveva.
 

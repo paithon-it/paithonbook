@@ -6,9 +6,11 @@ nessun giocatore professionista avrebbe scelto: i commentatori pensano a un
 errore. (Il Go si gioca appoggiando pietre bianche e nere sugli incroci di una
 griglia, e vince chi circonda più territorio.) Era invece una mossa che, secondo
 le stime del programma stesso, un umano avrebbe giocato circa una volta su
-diecimila. Lee Sedol si alza dal tavolo per un quarto d'ora. Quella mossa non
-veniva da nessun archivio di partite umane, ma da una *strategia* appresa
-giocando milioni di volte contro se stesso.
+diecimila. Lee Sedol si alza dal tavolo per un quarto d'ora. Quella stima la
+dava la rete che AlphaGo aveva addestrato a imitare le partite umane; la mossa
+la trovò la ricerca, guidata da una rete di valore che aveva imparato su
+milioni di partite giocate dal programma contro sé stesso, con una *strategia*
+affinata proprio con il metodo raccontato qui.
 
 Come si insegna a una macchina una strategia? Nei metodi basati sul valore,
 che abbiamo incontrato con il Q-learning, impariamo a stimare *quanto vale una
@@ -189,17 +191,19 @@ $$
 \theta \leftarrow \theta + \alpha\, \nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t ,
 $$
 
-con $\alpha$ il passo di apprendimento. E qui c'è un'avvertenza di rigore, perché
-l'aggiornamento appena scritto non è la formula del teorema: il $\gamma^{\,t}$
-davanti a ciascun addendo è sparito. Ometterlo è la prassi, ed è la prassi che
-seguiamo anche noi, e costa: la direzione che si ottiene è
-leggermente distorta rispetto a $\nabla_\theta J(\theta)$, in cambio di non
-soffocare il segnale dei passi lontani nel tempo, che con lo sconto esatto
-peserebbero quasi nulla. Chi ha letto la sezione
-sui bandit
-riconosce la struttura: il *bandit a gradiente* era esattamente questo, in un
-mondo con un solo stato, dove la softmax sulle preferenze $H(a)$ faceva le
-veci di $\pi_\theta(a\mid s)$. Anche il rimedio che segue è già comparso là.
+con $\alpha$ il passo di apprendimento. E qui c'è un'avvertenza di rigore,
+perché l'aggiornamento appena scritto non è la formula del teorema: il
+$\gamma^{\,t}$ davanti a ciascun addendo è sparito. Ometterlo è la prassi, ed è
+la prassi che seguiamo anche noi, e costa: la direzione che si ottiene non è
+più $\nabla_\theta J(\theta)$, e Nota e Thomas hanno mostrato che non è il
+gradiente di nessuna funzione, per cui le garanzie della salita del gradiente
+non la coprono (esiste un esempio costruito in cui converge a una politica
+pessima). In pratica la si usa perché non soffoca il segnale dei passi lontani
+nel tempo, che con lo sconto esatto peserebbero quasi nulla. Chi ha letto la
+sezione sui bandit riconosce la struttura: il *bandit a gradiente* era
+esattamente questo, in un mondo con un solo stato, dove la softmax sulle
+preferenze $H(a)$ faceva le veci di $\pi_\theta(a\mid s)$. Anche il rimedio che
+segue è già comparso là.
 
 Il punto debole è la varianza:
 $G_t$ dipende dall'intero seguito casuale della partita, e le stime risultano
@@ -471,7 +475,7 @@ che confrontano riesce a tenere i rapporti dentro l'intervallo
 $[1-\epsilon,1+\epsilon]$, PPO compreso, che pure è addestrato con un obiettivo
 che quei rapporti li tosa. Attenzione però a quale recinto si sta misurando:
 questo è il vincolo sui rapporti, non la regione di fiducia in divergenza di
-Kullback-Leibler della formula qui sotto, che TRPO impone davvero, quasi per
+Kullback-Leibler della formula di TRPO, che TRPO impone davvero, quasi per
 costruzione, e che gli stessi autori misurano e trovano rispettata.
 
 Detto così il tosaggio sembra un trucco, e invece è l'approssimazione
@@ -527,10 +531,10 @@ Sarebbe comodo chiudere dicendo che PPO ha vinto perché il tosaggio è
 non regge, e conviene guardarla in faccia per due ragioni.
 
 La prima è che il confronto con TRPO non è fra un'euristica e un teorema. Il
-teorema di miglioramento monotono chiede il massimo della KL su tutti gli
-stati e un coefficiente di penalità; la formula scritta qui sopra, quella che si
-implementa, è già il suo rilassamento con la KL media. Anche TRPO, così
-com'è usato, ha già rinunciato alla garanzia.
+teorema di miglioramento monotono chiede il massimo della KL su tutti gli stati
+e un coefficiente di penalità; la formula di TRPO scritta sopra, quella che si
+implementa, è già il suo rilassamento con la KL media. Anche TRPO, così com'è
+usato, ha già rinunciato alla garanzia.
 
 La seconda è che il vantaggio empirico di PPO su TRPO, misurato, viene in
 larghissima parte da altro. Engstrom e colleghi
@@ -592,6 +596,6 @@ via quello che funzionava.
 `````
 
 Resta il gesto che i giocatori forti fanno prima di muovere: pensare. È la
-[ricerca ad albero Monte Carlo](mcts-alphago.md), dove la strategia appena
-costruita smette di rispondere d'istinto, ed è la strada che porta ad AlphaGo
-e, di lì, all'allineamento dei modelli linguistici.
+{doc}`ricerca ad albero Monte Carlo <mcts-alphago>`, dove la strategia appena
+costruita smette di rispondere d'istinto e diventa il consiglio che orienta una
+ricerca, ed è la strada che porta ad AlphaGo.

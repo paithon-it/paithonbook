@@ -51,14 +51,14 @@ facile da capire e da prevedere: il canone lo estrapoli, la stagione la ripeti,
 e sull'imprevisto puoi solo dire quanto è grande di solito.
 
 Separarli è un lavoro da medie. Il canone di un certo mese si trova facendo la
-media di un anno intero attorno a quel mese: i sei prima, i sei dopo, e i due
-agli estremi contati per metà, così che i mesi pesati facciano esattamente
-dodici. La stagione, che in dodici mesi sale e scende, in quella media si
-annulla, e l'imprevisto pure. Tolto il canone resta la stagione più
-l'imprevisto, e la stagione si riconosce perché è la parte che torna uguale
-ogni anno: se ne fa la media su tutti i gennai, poi su tutti i febbrai, e così
-via. Quello che avanza
-dopo aver tolto anche quella è l'imprevisto.
+media di un anno intero attorno a quel mese: il mese stesso, i sei prima e i sei
+dopo, cioè tredici mesi, con i due agli estremi contati per metà, così che i
+mesi pesati facciano esattamente dodici. La stagione, che in dodici mesi sale e
+scende, in quella media si annulla, e l'imprevisto pure. Tolto il canone resta
+la stagione più l'imprevisto, e la stagione si riconosce perché è la parte che
+torna uguale ogni anno: se ne fa la media su tutti i gennai, poi su tutti i
+febbrai, e così via. Quello che avanza dopo aver tolto anche quella è
+l'imprevisto.
 
 `````
 
@@ -95,10 +95,25 @@ della sezione seguente) esponenziare e basta è esattamente giusto; se serve la
 media, perché si sommano le previsioni di più prodotti o perché si giudica con
 l'RMSE, la correzione va applicata {cite}`hyndman2021forecasting`.
 
-Le stime pratiche di $T_t$, $S_t$, $R_t$ si ottengono con **medie mobili
-centrate** (ogni istante sostituito dalla media dei suoi vicini: la
-*classical decomposition*) o con metodi più robusti come STL
-{cite}`hyndman2021forecasting`.
+Nella *classical decomposition* $T_t$ si stima con una **media mobile
+centrata**; con $m$ pari serve la media $2\times m$, che per $m=12$ è
+
+$$
+\hat{T}_t = \tfrac{1}{24}\,x_{t-6} + \tfrac{1}{12}\sum_{j=-5}^{5} x_{t+j}
++ \tfrac{1}{24}\,x_{t+6},
+$$
+
+tredici termini con gli estremi a metà peso, così che ogni mese dell'anno pesi
+uguale e la stagionalità si annulli. Poi $S_t$ è la media, mese per mese, di
+$x_t - \hat{T}_t$, ricentrata a somma zero, e $R_t$ il resto. I limiti sono
+due: il trend manca per $m/2$ punti a ciascun estremo, cioè proprio dove
+servirebbe prevedere, e la stagionalità è imposta identica ogni anno. STL
+(*Seasonal-Trend decomposition using Loess*) li scioglie entrambi: alterna una
+regressione locale sulle sottoserie dello stesso mese, che dà una stagionalità
+libera di evolvere lentamente, e una sulla serie destagionalizzata, che dà il
+trend; un ciclo esterno assegna pesi bassi ai punti anomali, così che un picco
+isolato non deformi le componenti {cite}`hyndman2021forecasting`. È additiva:
+una stagionalità moltiplicativa si decompone sul logaritmo.
 
 `````
 
@@ -174,7 +189,9 @@ scorsi, il residuo di quel trimestre sarebbe $82 - (45 + 35) = 2$.
 Le due forme sono poi la stessa scomposizione misurata su due scale, e a
 passare dall'una all'altra basta cambiare unità: contare in percentuali invece
 che in euro trasforma una moltiplicazione in una somma, ed è esattamente
-quello che fa il logaritmo. Portata sui logaritmi, la stagione della gelateria
+quello che fa il logaritmo: in base dieci il logaritmo di 10 è 1, di 100 è 2,
+di 1000 è 3, cioè ogni volta che si moltiplica per dieci il logaritmo aggiunge
+uno. Portata sui logaritmi, la stagione della gelateria
 smette di moltiplicare per $1{,}78$ e torna ad aggiungere sempre la stessa
 cifra. È la strada che Box e Jenkins presero sui passeggeri aerei, ed è il
 motivo per cui i modelli che lavorano su somme se la cavano anche con una
@@ -402,9 +419,10 @@ ha; e una barra sola che sporge non è la firma di niente, perché su venti barr
 capita più spesso che no che una sporga per caso. Di memorie, fra poco, ne
 incontreremo due, e ciascuna lascia la firma su un grafico diverso: se a
 schiacciarsi di colpo è la PACF, la serie si ricorda i valori passati; se è
-l'ACF, si ricorda gli urti passati. Con una riserva: sulle serie vere le due
-firme si sovrappongono, e questo modo di leggerle funziona molto meno di quanto
-i manuali lascino sperare.
+l'ACF, si ricorda gli urti passati, cioè le sorprese dei giorni scorsi (una gita
+che svuota la gelateria) più che i numeri che ne sono venuti fuori. Con una
+riserva: sulle serie vere le due firme si sovrappongono, e questo modo di
+leggerle funziona molto meno di quanto i manuali lascino sperare.
 
 `````
 
@@ -940,14 +958,15 @@ BIC di Schwarz {cite}`schwarz1978estimating` ($k\ln n - 2\ln\hat L$, con $n$ il
 numero di osservazioni) penalizza
 di più al crescere delle osservazioni e tende a scegliere modelli più piccoli.
 
-Due dettagli cambiano il numero. Il primo:
-in $k$ entra anche la varianza dell'innovazione, non solo i $\phi$, i
-$\theta$ e la costante; `statsmodels` la conta (per un ARMA(1,1) con costante
-$k=4$), e chi rifà il conto a mano con $k=3$ sbaglia di due unità, cioè
-esattamente la soglia sotto la quale l'AIC non distingue niente. Il secondo: il
-$2k$ è una correzione asintotica, e in campione corto va sostituita con
-quella esatta, l’AICc $= \mathrm{AIC} + \frac{2k(k+1)}{n-k-1}$, che è
-quella che i manuali usano di default sugli ARIMA
+Due dettagli cambiano il numero. Il primo: in $k$ entra anche la varianza
+dell'innovazione, non solo i $\phi$, i $\theta$ e la costante; `statsmodels` la
+conta (per un ARMA(1,1) con costante $k=4$), e chi rifà il conto a mano con
+$k=3$ sbaglia di due unità, cioè esattamente la soglia sotto la quale l'AIC non
+distingue niente. Il secondo: il $2k$ è una correzione asintotica, e in campione
+corto va sostituita con la versione corretta per il campione finito (esatta per
+la regressione lineare gaussiana, approssimata per gli ARIMA), l’AICc
+$= \mathrm{AIC} + \frac{2k(k+1)}{n-k-1}$, che è quella che i manuali usano di
+default sugli ARIMA
 {cite}`hyndman2021forecasting`. Con seicento osservazioni e quei quattro
 parametri la differenza è di sette centesimi; con quaranta, e sei parametri,
 supera le due unità e cambia la scelta.
@@ -956,24 +975,22 @@ Una nota che vale più della formula: l'AIC è una quantità relativa. Il suo
 valore assoluto non significa nulla, contano solo le differenze, e differenze
 sotto le due unità non sono evidenza di niente.
 
-E contano solo fra modelli stimati sugli stessi dati. È la clausola che
-rende l'AIC un criterio invece che un numero, ed è la ragione per cui $d$ si
-fissa al passo 1 e non si mette nella griglia: differenziare cambia i dati su
-cui la verosimiglianza è calcolata (una serie differenziata una volta ha
+E contano solo fra modelli stimati sugli stessi dati. È la clausola che rende
+l'AIC un criterio invece che un numero, ed è la ragione per cui $d$ si fissa al
+passo 1 e non si mette nella griglia: differenziare cambia i dati su cui la
+verosimiglianza è calcolata (una serie differenziata una volta ha
 un'osservazione in meno), e due AIC così non si possono sottrarre. Vale identico
 per le trasformazioni: l'AIC di un modello su $\log x_t$ e quello di un modello
 su $x_t$ non vivono nella stessa scala, e la differenza fra i due è dominata dal
-cambio di variabile, non dal modello. Su una serie di prova (duecento punti
-positivi che partono da un centinaio e si moltiplicano fino a circa sette volte
-tanto, con un ARMA(1,1) stimato su ciascuna delle due scale) il logaritmo
-«vince» di quasi duemilaquattrocento unità, cioè di più di mille volte la soglia
-delle due. Ma duemiladuecento di quelle unità sono soltanto il cambio di
-variabile, cioè il termine jacobiano $2\sum_t \log x_t$: rimettendolo al suo
-posto, del vantaggio ne resta poco più di un centinaio. Quel termine dipende
-solo da quanto sono grandi i numeri della serie, non da come si comportano,
-ed è la ragione per cui la lunghezza della serie e la sua crescita cambiano i
-primi due numeri di questo conto lasciando intatta la morale: il confronto
-grezzo stava misurando l'unità di misura.
+cambio di variabile, non dal modello. Su una serie positiva il confronto grezzo
+è dominato dal termine jacobiano $2\sum_t \log x_t$, che nasce dal cambio di
+variabile e va rimesso al suo posto prima di sottrarre i due AIC. Per duecento
+punti che crescono in proporzione costante da un centinaio a circa settecento
+vale circa $2.230$, cioè più di mille volte la soglia delle due unità, e dipende
+solo da quanto sono grandi i numeri della serie, non da come si comportano.
+Tolto quel termine, il vantaggio del logaritmo, se c'è, torna della grandezza di
+una differenza fra modelli: il confronto grezzo stava misurando l'unità di
+misura.
 
 **3. Verificare i residui.** Se il modello ha catturato la struttura, i residui
 $\hat\varepsilon_t = x_t - \hat x_t$ devono essere rumore bianco: media
@@ -1416,18 +1433,19 @@ Il lisciamento esponenziale ha una manopola, e finora è stata una scelta di
 gusto: girala di qua e insegue, girala di là e va lenta. C'è una risposta
 migliore, e viene dall'ingegneria dei sistemi di controllo. La
 {doc}`sezione sui sistemi dinamici </StateSpaceModel/dai-sistemi-dinamici-a-s4>`
-racconta la formulazione che Rudolf Kálmán pubblicò nel 1960: descrivere
-quello che evolve nel tempo con una manciata di variabili nascoste, lo
-stato, e tenere separata la misura che se ne prende. Lo stesso ciclo era
-stato scritto altrove e prima, dall'astronomo danese Thorvald Thiele nel 1880 e
-da Ruslan Stratonovich e Peter Swerling alla fine degli anni Cinquanta
-{cite}`russell2020artificial`; il nome è rimasto a Kálmán perché è la sua
-versione che l'ingegneria ha adottato. Quello che resta da dire è la ricetta
-che quella rappresentazione porta con sé {cite}`kalman1960new`: come si
-aggiorna la stima dello stato ogni volta che arriva una misura nuova. Quella
-ricetta ha un caso particolare, e il caso particolare è il lisciamento
-esponenziale; la manopola, allora, smette di essere una questione di gusto e
-diventa una conseguenza di due incertezze dichiarate.
+racconta la formulazione che Rudolf Kálmán pubblicò nel 1960: descrivere quello
+che evolve nel tempo con una manciata di variabili nascoste, lo stato, e tenere
+separata la misura che se ne prende. Il ciclo che quella rappresentazione porta
+con sé (prevedere lo stato, guardare la misura, correggere) l'avevano scritto
+prima l'astronomo danese Thorvald Thiele nel 1880 e, alla fine degli anni
+Cinquanta, Ruslan Stratonovich e Peter Swerling {cite}`russell2020artificial`;
+il nome è rimasto a Kálmán perché è la sua versione che l'ingegneria ha
+adottato. Quello che resta da dire è la ricetta che quella rappresentazione
+porta con sé {cite}`kalman1960new`: come si aggiorna la stima dello stato ogni
+volta che arriva una misura nuova. Quella ricetta ha un caso particolare, e il
+caso particolare è il lisciamento esponenziale; la manopola, allora, smette di
+essere una questione di gusto e diventa una conseguenza di due incertezze
+dichiarate.
 
 `````{tab} Elementare
 
@@ -1737,13 +1755,20 @@ previsione puntuale, sanno dare la forbice attorno a essa.
 ## Quando i classici bastano (o battono il deep learning)
 
 Verrebbe da pensare che, con le reti neurali che il capitolo affronta più
-avanti, questi modelli di mezzo secolo fa siano roba da manuale di storia. Non
-è così, e conviene dire perché con onestà. La prova più citata sono le
-competizioni M dell'introduzione al capitolo, quelle di Spyros Makridakis.
-Il verdetto è scomodo per gli entusiasti: i
-metodi statistici semplici (ARIMA, Holt-Winters, e loro medie) restano
-difficilissimi da battere, e per molti anni hanno superato reti neurali ben
-più complesse.
+avanti, questi modelli di mezzo secolo fa siano roba da manuale di storia. Non è
+così, e conviene dire perché con onestà. La prova più citata sono le
+competizioni M dell'introduzione al capitolo, quelle di Spyros Makridakis. Il
+verdetto è scomodo per gli entusiasti: i metodi statistici semplici (ARIMA,
+Holt-Winters, e loro medie) restano difficilissimi da battere, e per molti anni
+hanno superato reti neurali ben più complesse. La quinta edizione, la M5 del
+2020, ha però spostato il quadro in un punto preciso: su quarantaduemila serie
+gerarchiche di vendite Walmart, collegate fra loro e accompagnate da prezzi e
+calendario, i primi classificati erano modelli di apprendimento automatico
+globali, per lo più alberi potenziati, e distanziavano nettamente le linee di
+base statistiche
+{cite}`makridakis2022m5`. Quando le serie sono tante, collegate e ricche di
+covariate, un modello globale ha da cui imparare ciò che un modello per serie
+non vede.
 
 Le ragioni sono tre. La **robustezza**: un modello con pochi parametri ha poco
 spazio per rincorrere il rumore, e rincorrere il rumore è il modo migliore di
@@ -1844,21 +1869,21 @@ passo che non si salta.
 La seconda: con cinquecento osservazioni la stima è buona, con cinquanta lo è
 molto meno. La prova con cinquecento dà $0{,}635$ contro un vero $0{,}6$, cioè
 un po’ alto, ma una prova sola non dice niente sul metodo: dice cosa è capitato
-questa volta.
-È ripetendo l'esperimento tante volte che salta fuori il difetto vero, e il
-difetto vero punta dalla parte opposta: la media delle stime cade sotto il
-valore vero, e ci cade tanto più quanto la serie è corta. Il colpevole è il modo
-stesso di fare il conto, e ha due gambe. La prima: il valore di ieri, quello
-che facciamo da guida, porta già dentro la scossa di ieri, quindi guida ed
-errore non sono estranei come una regressione ordinaria pretende. La seconda, e
-qui pesa di più: anche il livello attorno a cui la serie balla si stima dagli
-stessi dati, e quella media insegue la serie. Dove la serie sta alta la media
-stimata sta alta con lei, gli scarti da quella media escono più corti di quelli
-veri, e una somiglianza misurata su scarti accorciati esce più debole: la retta
-viene un filo più piatta di quella vera. Quanto? Con cinquecento osservazioni sei
+questa volta. È ripetendo l'esperimento tante volte che salta fuori il difetto
+vero, e il difetto vero punta dalla parte opposta: la media delle stime cade
+sotto il valore vero, e ci cade tanto più quanto la serie è corta. Il colpevole
+è il modo stesso di fare il conto, e ha due gambe. La prima: il valore di ieri,
+quello che facciamo da guida, porta già dentro la scossa di ieri, quindi guida
+ed errore non sono estranei come una regressione ordinaria pretende. La seconda,
+e qui pesa di più: il livello attorno a cui la serie balla non lo conosce
+nessuno, e lo si stima con la media degli stessi giorni. Se per caso in quei
+giorni la serie è stata quasi sempre sopra il livello vero, la media stimata
+viene più alta, e misurati da lì i giorni alti sembrano meno alti di quanto
+fossero: gli scarti da quella media escono più corti di quelli veri, e una
+somiglianza misurata su scarti accorciati esce più debole: la retta viene un
+filo più piatta di quella vera. Quanto? Con cinquecento osservazioni sei
 millesimi, che non si vedono; con cinquanta, sei centesimi, cioè un decimo del
-valore vero. Molte serie reali sono corte, e chi legge quel numero deve
-saperlo.
+valore vero. Molte serie reali sono corte, e chi legge quel numero deve saperlo.
 
 `````
 

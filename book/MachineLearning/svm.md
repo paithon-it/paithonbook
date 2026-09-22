@@ -151,8 +151,11 @@ $$
 
 dove $\mathbf{w}$ è il vettore dei pesi, $b$ il termine di bias,
 $\mathbf{x}_i$ l’$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È
-un problema di programmazione quadratica *convesso*: ha un'unica soluzione, senza minimi
-locali in cui restare intrappolati.
+un problema di programmazione quadratica *convesso*, con obiettivo strettamente
+convesso in $\mathbf{w}$: se i dati sono separabili la soluzione
+$(\mathbf{w}, b)$ esiste ed è unica, e non ci sono minimi locali in cui
+restare intrappolati; se non lo sono, nessuna coppia rispetta tutti i vincoli e
+il problema non ha soluzione.
 
 `````
 
@@ -303,7 +306,8 @@ $C$:
 - $C$ piccolo = «accetto qualche sbavatura»: il corridoio si allarga, più
   robusto, anche a costo di qualche punto dentro la fascia.
 
-È lo stesso compromesso bias-varianza della sezione sull'overfitting, con la
+È lo stesso compromesso bias-varianza della {doc}`sezione sull'overfitting
+<overfitting-validazione>`, con la
 manopola girata al contrario rispetto alla regolarizzazione: qui $C$ *grande*
 significa freno *debole*.
 
@@ -334,22 +338,28 @@ $$
 + \frac{1}{2C}\lVert \mathbf{w}\rVert^2 .
 $$
 
-La hinge loss $\max(0,\,1 - y_i f(\mathbf{x}_i))$, dove
-$f(\mathbf{x}) = \mathbf{w}^\top\mathbf{x} + b$, è nulla per i punti ben
-classificati
-e fuori dal margine, e cresce *linearmente* per quelli dentro la fascia o
-dalla parte sbagliata: è l'analogo, per la SVM, di ciò che la log-loss è per
-la regressione logistica, con la differenza che, essendo piatta oltre il
-margine, ignora del tutto i punti «facili» e dà alla SVM la sua sparsità in
-vettori di supporto. In questa forma si legge chiaramente il ruolo di $C$: il
-coefficiente della penalità $\lVert \mathbf{w}\rVert^2$ è $1/(2C)$, quindi $C$ è
-l'inverso della forza di regolarizzazione. $C$ grande → penalità debole →
-margine stretto, varianza alta; $C$ piccolo → penalità forte → margine largo,
-bias più alto. È la stessa manopola $\lambda$ della sezione sull'overfitting,
-letta al contrario; con un'avvertenza di normalizzazione: la loss Ridge era
-*mediata* sugli $m$ esempi, la hinge qui è *sommata*, e a parità di
-convenzione l'identificazione esatta è $\lambda = 1/(2Cm)$, cioè a meno di un
-fattore pari alla taglia del dataset.
+La hinge loss $\max(0,\,1 - y_i f(\mathbf{x}_i))$, dove $f(\mathbf{x}) =
+\mathbf{w}^\top\mathbf{x} + b$, è nulla per i punti ben classificati e fuori
+dal margine, e cresce *linearmente* per quelli dentro la fascia o dalla parte
+sbagliata: è l'analogo, per la SVM, di ciò che la log-loss è per la regressione
+logistica, con la differenza che, essendo piatta oltre il margine, ignora del
+tutto i punti «facili» e dà alla SVM la sua sparsità in vettori di supporto. La
+piattezza ha un prezzo: il minimizzatore della hinge in popolazione è
+$f(\mathbf{x}) = \operatorname{sign}\bigl[P(y = +1 \mid \mathbf{x}) -
+\tfrac12\bigr]$, quello della log-loss è il logit di $P(y = +1 \mid
+\mathbf{x})$ {cite}`hastie2009elements`. La SVM stima quindi la classe e non la
+sua probabilità, e il punteggio $f(\mathbf{x})$ non va letto come una
+confidenza: dove serve una probabilità lo si ricalibra, e lo scaling di Platt
+della {doc}`sezione sulle metriche <metriche>` è nato proprio per le SVM. In
+questa forma si legge chiaramente il ruolo di $C$: il coefficiente della
+penalità $\lVert \mathbf{w}\rVert^2$ è $1/(2C)$, quindi $C$ è l'inverso della
+forza di regolarizzazione. $C$ grande → penalità debole → margine stretto,
+varianza alta; $C$ piccolo → penalità forte → margine largo, bias più alto. È
+la stessa manopola $\lambda$ della {doc}`sezione sull'overfitting
+<overfitting-validazione>`, letta al contrario; con un'avvertenza di
+normalizzazione: la loss Ridge era *mediata* sugli $m$ esempi, la hinge qui è
+*sommata*, e a parità di convenzione l'identificazione esatta è $\lambda =
+1/(2Cm)$, cioè a meno di un fattore pari alla taglia del dataset.
 
 E la lettera $C$ non ha lo stesso verso in tutti i testi, il che rende
 ingannevole confrontare due grafici a occhio. Qui, in scikit-learn e in *The
@@ -680,7 +690,8 @@ uscita una somma di case: la frontiera è fatta dei dati, e siccome quasi tutti
 i cartellini segnano zero, di case ne entrano pochissime.
 
 Dallo stesso terreno piatto esce una seconda condizione, molto più modesta: i
-due quartieri pagano lo stesso totale. Cinque case, tre col cartellino a zero;
+due quartieri pagano lo stesso totale. Con un esempio a parte, per capirci:
+cinque case, tre col cartellino a zero;
 se quella dei più paga $4$, anche quella dei meno paga $4$, e la differenza fa
 zero. Sembra contabilità e basta, e appena rimetteremo la freccia dentro il
 conto cancellerà da sola un pezzo intero.
@@ -701,19 +712,19 @@ $$
 dove il primo termine è la quantità da minimizzare, la parentesi quadra è
 esattamente il vincolo del secondo passo, quello che vale zero sui punti di
 margine, e $\alpha_i$ è il moltiplicatore associato al vincolo $i$-esimo. Un
-avvertimento sul simbolo, perché qui il libro fa un'eccezione: in queste pagine
-$\mathcal{L}$ è la **lagrangiana**, non la funzione di costo che la stessa
-lettera indica ovunque altrove. È la notazione consolidata di questa
-derivazione, e vale fino alla fine della sezione. Il segno meno, con
-$\alpha_i \ge 0$, non è arbitrario: se un vincolo è
-violato la parentesi diventa negativa, il termine $-\alpha_i[\,\cdot\,]$ diventa
-positivo e si può far crescere quanto si vuole alzando $\alpha_i$, quindi la
-violazione si paga; se invece il vincolo è rispettato con margine, il valore di
-$\alpha_i$ che conviene è zero. La sparsità è già lì, in nuce.
+avvertimento sul simbolo: qui $\mathcal{L}$ è la **lagrangiana**, non la
+funzione di costo che la stessa lettera indica ovunque altrove. È la notazione
+consolidata di questa derivazione, e vale fino alla fine della sezione. Il
+segno meno, con $\alpha_i \ge 0$, non è arbitrario: se un vincolo è violato la
+parentesi diventa negativa, il termine $-\alpha_i[\,\cdot\,]$ diventa positivo
+e si può far crescere quanto si vuole alzando $\alpha_i$, quindi la violazione
+si paga; se invece il vincolo è rispettato con margine, il valore di $\alpha_i$
+che conviene è zero. La sparsità è già lì, in nuce.
 
 Ora si annullano le derivate. Rispetto a $\mathbf{w}$, che è un vettore, si
 deriva componente per componente e il risultato ha la stessa forma del caso
-scalare (è la convenzione di layout dichiarata nel capitolo di matematica):
+scalare (è la convenzione di layout dichiarata nel {doc}`capitolo di matematica
+</Matematica/overview>`):
 
 $$
 \frac{\partial \mathcal{L}}{\partial \mathbf{w}}
@@ -827,6 +838,20 @@ ottimizzare e $\mathbf{x}_i^\top\mathbf{u}$ nella regola di decisione. Non
 servono le coordinate, non serve la dimensione dello spazio, non serve nemmeno
 sapere che cosa siano gli $\mathbf{x}_i$: serve una tabella di prodotti scalari.
 Da questa osservazione, e da nient'altro, nasce il kernel trick.
+
+Resta da dire perché il duale si *massimizzi*. Fissati gli $\alpha_i \ge 0$,
+il minimo della lagrangiana su $(\mathbf{w}, b)$ è la funzione duale
+$g(\alpha)$, e per ogni $\mathbf{w}$ ammissibile vale
+$g(\alpha) \le \tfrac12\lVert\mathbf{w}\rVert^2$, perché il termine sottratto
+non è mai negativo: ogni $\alpha$ dà un limite inferiore al primale (dualità
+debole), e il più stretto si cerca massimizzando. Qui il limite si tocca
+(dualità forte), perché l'obiettivo è convesso e i vincoli sono affini e
+soddisfacibili, che è la condizione di Slater nella forma per vincoli lineari.
+Trovati gli $\alpha_i$, $b$ si ricava da un qualunque vettore di supporto con
+$\alpha_i > 0$ (con $0 < \alpha_i < C$ nel margine morbido), che sta sul
+marciapiede: $b = y_i - \mathbf{w}^\top\mathbf{x}_i$, e in pratica si fa la
+media su tutti. Sull'esempio dei quattro punti, da $\mathbf{x}_2$ viene
+$b = 1 - 2 = -1$.
 
 Due note a margine. La prima: la funzione obiettivo del duale è concava e
 il dominio è convesso, quindi ogni massimo locale è anche globale e non ci sono

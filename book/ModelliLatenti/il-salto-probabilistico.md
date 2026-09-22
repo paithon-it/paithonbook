@@ -28,6 +28,7 @@ sono infiniti.
 
 `````{tab} Elementare
 
+L’apertura del capitolo lo aveva anticipato, e adesso lo si guarda da vicino.
 L’istinto dice: se sommare tutto non si può, si tira a sorte. Pesco mille
 schede a caso, guardo quanto ciascuna spiega bene la cifra che ho in mano,
 faccio la media, e ho una stima. È un metodo onesto e in tanti problemi
@@ -86,9 +87,11 @@ semplice la probabilità del dato si sa scrivere con carta e penna.
 
 Nella tabella «dimensioni» vuol dire quanti numeri ha la causa nascosta, ed è
 il conto che si allunga da uno a quaranta. Le colonne «vero» e «stimato» sono
-scritte in scala logaritmica, cioè schiacciate col logaritmo dei richiami
-di matematica: senza, sarebbero numeri con decine di zeri dopo la virgola e non
-si guarderebbero. La colonna che conta è quella dell’errore, che è la loro
+scritte in scala logaritmica, cioè schiacciate: di ogni numero si tiene, in
+sostanza, quanti zeri ha dopo la virgola, col segno meno davanti, e più il
+numero è minuscolo, più quel valore è negativo. Senza, sarebbero numeri con
+decine di zeri dopo la virgola e non si guarderebbero. La colonna che conta è
+quella dell’errore, che è la loro
 differenza.
 
 ```python
@@ -140,8 +143,9 @@ dimensioni  log p(x) vero    stimato   errore   peso del piu grosso
 Con una causa nascosta da un numero solo, centomila sorteggi danno la risposta
 esatta a due cifre decimali. Con quaranta numeri sbagliano di dieci nat, e
 dieci nat non vogliono dire «un po’»: i nat si sommano dove le probabilità si
-moltiplicano, quindi dieci nat di scarto sono una probabilità stimata
-ventiduemila volte più piccola di quella vera. E l’errore, salendo di
+moltiplicano, e ogni nat vale un fattore 2,718: dieci nat di scarto sono dieci
+fattori 2,718 uno dopo l’altro, cioè una probabilità stimata ventiduemila volte
+più piccola di quella vera. E l’errore, salendo di
 dimensione, è tutto dalla stessa parte: per difetto. (Nelle poche
 dimensioni la stima balla in tutti e due i versi, e infatti a cinque il segno
 è positivo per un centesimo: la spinta verso il basso è una tendenza, e diventa
@@ -158,8 +162,12 @@ di casa, ne ha sedicimila.
 ## Chiedere a chi sa dove guardare
 
 Se il problema è che si pesca nel posto sbagliato, la soluzione è pescare nel
-posto giusto. E chi sa dov’è il posto giusto? Chi ha la cifra sotto gli occhi:
-l’archivista.
+posto giusto, e il posto giusto dipende dal dato: sono i valori del latente
+compatibili con *questa* cifra, cioè la posterior
+$p_\theta(\mathbf{z} \mid \mathbf{x})$. Calcolarla non si può, ma la si può
+approssimare con una rete che guarda $\mathbf{x}$ e propone una distribuzione
+sul latente: l’encoder, che qui si scrive $q_\phi(\mathbf{z} \mid \mathbf{x})$,
+e che nella scheda di chi legge per immagini è l’archivista.
 
 Ecco allora la mossa, prima in italiano che in formule.
 Invece di sorteggiare schede alla cieca, chiediamo all’archivista di
@@ -177,16 +185,19 @@ trovi mai. Il metodo sensato è chiedere a qualcuno che la conosce «in che
 quartiere abita?», andare lì, e cercare in quel quartiere.
 
 Cercando solo dove ha detto lui non si perde niente: il conto si corregge
-apposta per il fatto che si è guardato in una fetta sola, e resta giusto. (Un
-quartiere che in quella città non esiste manderebbe all’aria tutto, e per
-fortuna non capita.) Quello che ne esce, però, è una **stima prudente** e non
+apposta per il fatto che si è guardato in una fetta sola, e resta giusto. (Serve
+una sola condizione: che il conoscente non mandi mai a cercare in un
+quartiere dove, secondo la mappa della città, la persona non potrebbe proprio
+abitare. Qui la mappa non esclude nessun quartiere, e la condizione vale
+sempre.) Quello che ne esce, però, è una **stima prudente** e non
 la probabilità vera, cioè un numero che sta sicuramente sotto a quello giusto.
 
 Perché sotto e non sopra? Non per via della fetta, ma per l’ordine di due
 operazioni. I numeri in gioco sono minuscoli, e per maneggiarli si
 schiacciano, cioè di ciascuno si tiene solo quanti zeri ha, che è il suo
-ordine di grandezza. Prendi 1 e 100: la media è 50,5, ma schiacciati diventano
-0 e 2, la cui media è 1, cioè 10. Il 100, che nella media si prendeva quasi
+ordine di grandezza. Prendi 1 e 100: la media è 50,5. Schiacciati diventano
+0 e 2, la cui media è 1, e un 1 schiacciato, rigonfiato, vale 10: dieci invece
+di cinquanta. Il 100, che nella media si prendeva quasi
 tutto, schiacciato non pesa quasi niente. Il conto che sappiamo fare è quello
 schiacciato; il valore vero è l’altro, e sta sempre più in alto.
 
@@ -266,6 +277,31 @@ due fatti che reggono tutto il metodo {cite}`kingma2019introduction`:
   stringe il divario, cioè si migliora l’encoder. È il «due al prezzo di uno»
   di Kingma e Welling.
 
+La strada di Jensen, per confronto, parte dal campionamento per importanza, che
+la stessa $q_\phi$ rende esatto:
+
+$$
+p_\theta(\mathbf{x}) = \mathbb{E}_{q_\phi(\mathbf{z} \mid \mathbf{x})}\!\left[\frac{p_\theta(\mathbf{x}, \mathbf{z})}{q_\phi(\mathbf{z} \mid \mathbf{x})}\right],
+$$
+
+purché $q_\phi$ sia positiva dove lo è la posterior. Il rapporto è la
+correzione per aver pescato dove l’encoder suggeriva invece che dal prior; con
+$S$ campioni da $q_\phi$ dà uno stimatore non distorto di
+$p_\theta(\mathbf{x})$,
+di varianza tanto più piccola quanto $q_\phi$ è vicina alla posterior, ed è
+quello con cui si valuta un VAE già addestrato {cite}`kingma2019introduction`.
+Portare il logaritmo dentro il valore atteso dà, per Jensen, l’ELBO; portarlo
+dentro soltanto dopo aver mediato $K$ pesi dà
+
+$$
+\mathcal{E}_K(\mathbf{x}) = \mathbb{E}_{\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(K)} \sim q_\phi}\!\left[\log \frac{1}{K} \sum_{k=1}^{K} \frac{p_\theta(\mathbf{x}, \mathbf{z}^{(k)})}{q_\phi(\mathbf{z}^{(k)} \mid \mathbf{x})}\right],
+$$
+
+il limite dell’*importance weighted autoencoder* {cite}`burda2016importance`,
+che per $K = 1$ è l’ELBO, non decresce con $K$ e tende a
+$\log p_\theta(\mathbf{x})$. Il prezzo è quello della stima dal prior,
+attenuato: in alta dimensione i pesi tornano a concentrarsi su pochi campioni.
+
 {doc}`Come funziona la diffusione </ModelliDiffusione/come-funziona>`, più
 avanti, userà una versione ripesata di questo stesso limite, e chi ci arriverà
 riconoscerà l’oggetto. E chi arriva dalla {doc}`sezione su riduzione e
@@ -315,7 +351,10 @@ precedente, nient’altro che il vecchio «la copia somiglia all’originale?».
 
 Seconda voce: quanto costa scrivere la scheda. Qui c’è la novità, ed è la
 regola che mancava. Un **vocabolario comune** è stato fissato prima che i due
-cominciassero, e non lo decidono loro: un modo standard di descrivere un
+cominciassero, e non lo decidono loro: è la «forma decisa in anticipo per il
+cassetto» che alla clessidra mancava, la stessa preferenza per il centro del
+righello con cui il capitolo si apre, vista stavolta da chi scrive la scheda. un
+modo standard di descrivere un
 quadro, che vale per tutti i quadri e non è stato adattato a nessuno. Quando
 l’archivista scrive una scheda, paga solo per quello che si discosta da quel
 vocabolario. Descrivere un quadro come «uno dei soliti» non costa niente;
@@ -371,9 +410,18 @@ divergenza di Kullback–Leibler dei richiami di matematica misura quanto si pag
 in più codificando con la distribuzione sbagliata (là il conto è in bit, qui in
 nat: cambia solo la base del logaritmo); qui è il sovrapprezzo
 di descrivere $\mathbf{z}$ con la posterior specifica di quel dato invece che
-con il codice comune $p(\mathbf{z})$. Il negativo dell’ELBO è quindi, alla
-lettera, un costo di descrizione totale: i nat spesi per la scheda più i nat
-spesi per rifare il dato a partire dalla scheda. Massimizzare l’ELBO è
+con il codice comune $p(\mathbf{z})$. Il negativo dell’ELBO si legge allora come
+un costo di descrizione totale, i
+nat spesi per la scheda più quelli spesi per rifare il dato a partire dalla
+scheda, ma a una condizione che la lettura ingenua salta. Chi trasmette un
+$\mathbf{z}$ pescato da $q_\phi(\mathbf{z} \mid \mathbf{x})$ con il codice
+$p(\mathbf{z})$ spende in media $\mathbb{E}_{q_\phi}[-\log p(\mathbf{z})]$, cioè
+la divergenza più l’entropia $H(q_\phi)$; il sovrapprezzo scende alla sola
+divergenza soltanto se quei nat di entropia li si recupera, usando la
+casualità del sorteggio per trasportare altri bit, lo schema *bits-back* di
+Hinton e van Camp {cite}`hinton1993keeping`. Con un latente continuo serve in
+più discretizzare $\mathbf{z}$ a una precisione fissa, che aggiunge ai due
+termini la stessa costante. Sotto queste condizioni massimizzare l’ELBO è
 minimizzare quel costo, che è la formulazione a *minimum description length*
 del metodo.
 
@@ -484,11 +532,12 @@ prende il valore atteso. Il **trucco della
 riparametrizzazione**, proposto indipendentemente da Kingma e Welling
 {cite}`kingma2014auto` e da Rezende, Mohamed e Wierstra
 {cite}`rezende2014stochastic`, riscrive la variabile aleatoria come funzione
-derivabile di una sorgente di rumore che di $\phi$ non sa niente (e non furono
-i primi: la monografia di Kingma e Welling {cite}`kingma2019introduction`
-segnala un lavoro precedente che aveva usato una riscrittura simile per
-apprendere i parametri della distribuzione approssimante invece che il
-latente):
+derivabile di una sorgente di rumore che di $\phi$ non sa niente (e non furono i
+primi: Salimans e Knowles {cite}`salimans2013fixed` avevano
+usato una riscrittura simile per apprendere i parametri naturali di una
+distribuzione approssimante della famiglia esponenziale, invece del latente di
+un modello ammortizzato, come ricorda la monografia di Kingma e Welling
+{cite}`kingma2019introduction`):
 
 $$
 \mathbf{z} = \boldsymbol{\mu}_\phi(\mathbf{x})
@@ -528,9 +577,12 @@ giusta si conosce in anticipo, così non si tratta di fidarsi. Il gioco è
 questo: si sorteggia un numero attorno a un centro (qui il centro vale 2), si
 guarda il suo quadrato, e ci si chiede di quanto cambierebbe la media di quel
 quadrato se il centro si spostasse. La risposta esatta si sa: la media del
-quadrato vale il quadrato del centro più uno (l’uno è quanto balla il
-sorteggio), quindi spostando il centro di un pochino la media cambia del doppio
-del centro. Col centro a 2, la risposta è 4. Vediamo quanto ci si
+quadrato vale il quadrato del centro più uno (l’uno è quanto
+balla il sorteggio), quindi spostando il centro di un pochino la media cambia
+del doppio del centro. Con dei numeri: col centro a 2 la media del quadrato è
+$2 \times 2 + 1 = 5$; col centro a 2,01 è $2{,}01 \times 2{,}01 + 1 = 5{,}0401$.
+Il centro si è mosso di un centesimo e la media di quattro centesimi, quattro
+volte tanto. Col centro a 2, la risposta è 4. Vediamo quanto ci si
 avvicinano i due metodi, e soprattutto con quanta mano ferma.
 
 ```python
@@ -552,20 +604,27 @@ riparametrizzato = 2 * z
 #    per una gaussiana, d(log q)/dmu = z - mu
 punteggio = z ** 2 * (z - MU)
 
-for nome, stima in (("riparametrizzazione", riparametrizzato), ("punteggio", punteggio)):
+# 3. lo stesso punteggio con la migliore linea di base costante, che qui vale
+#    E[z^2 (z-mu)^2] / E[(z-mu)^2] = mu^2 + 3: sottrarla non sposta la media
+con_base = (z ** 2 - (MU ** 2 + 3)) * (z - MU)
+
+for nome, stima in (("riparametrizzazione", riparametrizzato), ("punteggio", punteggio),
+                    ("punteggio con base", con_base)):
     print(f"{nome:>20}: media {stima.mean():6.3f}   "
           f"deviazione standard {stima.std():7.3f}")
 print(f"{'valore vero':>20}: {2 * MU:6.3f}")
 print(f"\nla varianza del secondo e' {(punteggio.var() / riparametrizzato.var()):.0f} "
-      f"volte quella del primo")
+      f"volte quella del primo, {(con_base.var() / riparametrizzato.var()):.1f} "
+      f"con la linea di base")
 ```
 
 ```text
  riparametrizzazione: media  3.993   deviazione standard   2.000
            punteggio: media  3.974   deviazione standard   9.306
+  punteggio con base: media  4.000   deviazione standard   6.165
          valore vero:  4.000
 
-la varianza del secondo e' 22 volte quella del primo
+la varianza del secondo e' 22 volte quella del primo, 9.5 con la linea di base
 ```
 
 Tutti e due i metodi puntano al valore giusto, 4: nessuno dei due imbroglia. La
@@ -576,7 +635,11 @@ fondo eleva al quadrato quelle due, che è il passaggio con cui si arriva alla
 varianza: 9,3 al quadrato contro 2 al quadrato, cioè ventidue volte tanto.
 
 Ventidue volte di varianza vuol dire, a parità di precisione, ventidue volte i
-campioni. In un addestramento che di campioni ne tira uno per esempio, è la
+campioni. Chi viene dal gradiente di policy chiederà della linea di base, e
+fa bene: sottrarre dal quadrato la migliore costante, che qui vale $\mu^2 + 3$,
+non sposta la media e porta la deviazione standard da 9,3 a 6,2, cioè il
+rapporto da ventidue a nove e mezzo. La riparametrizzazione vince ancora, ma
+di meno. In un addestramento che di campioni ne tira uno per esempio, è la
 differenza fra un metodo che si usa e uno che non si usa.
 
 ## Tutto insieme
@@ -751,6 +814,13 @@ print(f"{'autoencoder':<26}{quanto_e_vuoto(codici_ae, sorteggiati_ae):>17.1f}x"
       f"{quanto_somiglia(nuove_ae, X):>22.2f}")
 print(f"{'autoencoder variazionale':<26}{quanto_e_vuoto(codici_vae, sorteggiati_vae):>17.1f}x"
       f"{quanto_somiglia(nuove, X):>22.2f}")
+
+# il metro ha un punto cieco: una media di cifre vere, cioe' una cifra sfocata
+# che nessuno ha scritto, sta alle vere piu' vicino di quanto stiano fra loro
+etichette = torch.tensor(load_digits().target)
+sfocate = torch.stack([X[torch.nonzero(etichette == k % 10).squeeze()]
+                       [torch.randperm(150)[:5]].mean(0) for k in range(500)])
+print(f"{'media di cinque cifre':<26}{'':>18}{quanto_somiglia(sfocate, X):>22.2f}")
 ```
 
 ```text
@@ -758,6 +828,7 @@ print(f"{'autoencoder variazionale':<26}{quanto_e_vuoto(codici_vae, sorteggiati_
 cifra vera                                                    1.01
 autoencoder                             2.2x                  1.62
 autoencoder variazionale                1.0x                  1.09
+media di cinque cifre                                         0.98
 ```
 
 Prima di leggerla, una precisazione onesta: le due righe non pescano allo
@@ -776,8 +847,14 @@ La seconda colonna è la conseguenza: una cifra vera dista dalla sua vicina
 1,01; una cifra inventata dal VAE dista 1,09, cioè l’otto per cento in più;
 una inventata dalla clessidra dista 1,62, cioè più del sessanta per cento in
 più.
-Un dato inventato dal VAE è quasi indistinguibile, con questo metro, da uno
-vero; uno inventato dalla clessidra no.
+Con questo metro un dato inventato dal VAE sta alle cifre vere quasi quanto
+una cifra vera sta alle altre; uno inventato dalla clessidra no. Il metro però
+ha un punto cieco, e l’ultima riga della tabella lo mostra: la media di cinque
+cifre vere della stessa classe, una cifra sfocata che nessuno ha mai scritto,
+sta alla vera più vicina più accosto di una cifra vera. La distanza euclidea
+premia la media, e la media è il difetto che questa famiglia si porta dietro:
+la tabella dice che il VAE pesca dove il decoder è stato, non che le sue cifre
+siano nitide.
 
 La stessa differenza, guardata mentre avviene invece che a conti fatti, è
 quella di {numref}`fig-cammino-latente`.
@@ -850,7 +927,15 @@ dati non ci sono è mite: il modello ottimale è quindi più disperso dei dati, 
 su immagini «più disperso» si legge come sfocato. È la spiegazione che danno
 Kingma e Welling {cite}`kingma2019introduction`, i quali osservano anche che il
 rimedio non è cambiare obiettivo ma rendere più flessibili la posterior o il
-decoder.
+decoder. A questa causa se ne somma una seconda, che sta nella verosimiglianza
+scelta: con $p_\theta(\mathbf{x} \mid \mathbf{z})$ fattorizzata sui pixel, tutto
+ciò che $\mathbf{z}$ non determina viene trattato come rumore indipendente
+pixel per pixel, e la media $\mathbb{E}[\mathbf{x} \mid \mathbf{z}]$ che si
+disegna è una media su tutte le immagini compatibili con quel codice, sfocata
+per costruzione; campionando invece di prendere la media esce rumore, non
+dettaglio. Le due cause pesano insieme {cite}`zhao2017towards`, ed è per questo
+che i VAE più nitidi hanno decoder autoregressivi, latenti gerarchici o latenti
+discreti.
 
 **Collasso della posterior.** All’inizio dell’addestramento il termine di
 ricostruzione è debole, e $q_\phi(\mathbf{z} \mid \mathbf{x}) \approx
@@ -910,11 +995,11 @@ Qual è, lo dice la sezione seguente.
 - La stima ha due voci: quanto male si ricostruisce, e quanto costa scrivere
   la scheda rispetto a un vocabolario comune deciso prima. La seconda voce è
   ciò che riempie i buchi.
-- Per addestrare serve decidere gli errori prima: si sorteggia uno scarto,
+- Per addestrare serve decidere gli scarti prima: si sorteggia uno scarto,
   e lo si appoggia sulla zona proposta. Così le correzioni tornano indietro.
   L’altro modo (tenere conto di quanto era probabile pescare proprio quel
   punto) funziona e non imbroglia, ma ha la mano molto meno ferma: in questo
-  esempio, ventidue volte.
+  esempio ventidue volte, nove e mezzo togliendo la migliore linea di base.
 - Il risultato: le cifre pescate dal nulla sono grosse e molli, e su qualcuna
   si esita fra due cifre, ma vengono da niente; e un codice sorteggiato cade
   dove il copista è già stato. Il prezzo è una
@@ -947,8 +1032,10 @@ Qual è, lo dice la sezione seguente.
 - Riparametrizzazione {cite}`kingma2014auto,rezende2014stochastic`:
   $\mathbf{z} = \boldsymbol{\mu}_\phi + \boldsymbol{\sigma}_\phi \odot
   \boldsymbol{\epsilon}$ con $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0},
-  \mathbf{I})$. Sposta il caso fuori dal grafo delle derivate; misurato, ha
-  varianza 22 volte minore dello stimatore a punteggio (REINFORCE), che però si
+  \mathbf{I})$. Sposta il caso fuori dal grafo delle derivate; nell'esempio ha
+  varianza 22
+  volte minore dello stimatore a punteggio (REINFORCE), 9,5 con la migliore
+  linea di base costante, che però si
   applica anche ai latenti discreti, dove la riparametrizzazione non arriva.
 - Limiti strutturali: sfocatura (direzione della KL, quindi copertura),
   collasso della posterior {cite}`bowman2016generating,kingma2016improved`

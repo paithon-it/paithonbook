@@ -160,16 +160,45 @@ $$
 \bigl(\hat\theta^{*}_{b} - \bar{\theta^{*}}\bigr)^2},
 $$
 
-e l'intervallo **percentile** al livello $1-2\alpha$ è la coppia di quantili
-empirici $[\hat\theta^{*}_{(\alpha)},\, \hat\theta^{*}_{(1-\alpha)}]$.
+e presa alla lettera, la sostituzione dà l'intervallo *basic*: se $\hat\theta^*
+- \hat\theta$ cade fra $\hat\theta^{*}_{(\alpha)} - \hat\theta$ e
+$\hat\theta^{*}_{(1-\alpha)} - \hat\theta$, allora $\theta$ cade in
+$[\,2\hat\theta - \hat\theta^{*}_{(1-\alpha)},\ 2\hat\theta -
+\hat\theta^{*}_{(\alpha)}\,]$, con i quantili ribaltati attorno alla stima.
+L'intervallo **percentile** al livello $1-2\alpha$ prende invece i quantili
+così come sono, $[\hat\theta^{*}_{(\alpha)},\, \hat\theta^{*}_{(1-\alpha)}]$:
+coincide col *basic* quando la distribuzione bootstrap è simmetrica attorno a
+$\hat\theta$, e si giustifica con un altro argomento, l'esistenza di una
+trasformazione monotona che renda simmetrica la statistica. Sui sessanta
+stipendi dell'esempio che segue i due danno, per la mediana, $[25\,678;\
+32\,844]$ e $[25\,720;\ 32\,885]$.
 
 Due avvertenze. La prima: $B$ conta le simulazioni, non gli esempi del
 campione, e l'unico costo è di calcolo; $B = 200$ basta per un errore
 standard, per i quantili di un intervallo ne servono almeno $1000$ e $10\,000$
 non fanno male. La seconda: l'intervallo percentile è il più semplice e non il
-migliore. È corretto al primo ordine, e con statistiche distorte o asimmetriche
-sotto-copre; le versioni $\mathrm{BCa}$ (*bias-corrected and accelerated*) e
-$t$-bootstrap correggono, al prezzo di più conti. Su dati simulati, dove il
+migliore. Ciascuno dei suoi estremi ha un errore di copertura di ordine
+$m^{-1/2}$, e con statistiche distorte o asimmetriche sotto-copre. Il
+$\mathrm{BCa}$ (*bias-corrected and accelerated*) {cite}`efron1987better`
+tiene gli stessi quantili bootstrap e ne sposta i livelli:
+
+$$
+\alpha_{1,2} = \Phi\!\Bigl(\hat z_0 + \frac{\hat z_0 + z}{1 - \hat a\,(\hat z_0 + z)}\Bigr),
+\qquad z = z_{\alpha},\ z_{1-\alpha},
+$$
+
+dove $\Phi$ è la ripartizione della normale standard,
+$z_\alpha = \Phi^{-1}(\alpha)$,
+$\hat z_0 = \Phi^{-1}\bigl(\#\{b : \hat\theta^*_b < \hat\theta\}/B\bigr)$
+misura la distorsione mediana e l'accelerazione $\hat a$ si stima col
+jackknife; con $\hat z_0 = \hat a = 0$ si torna al percentile. L'errore di
+ciascun estremo scende all'ordine $m^{-1}$, e lo stesso ordine lo dà il
+$t$-bootstrap, al prezzo di una stima dell'errore standard dentro ogni replica
+(sui sessanta stipendi `scipy.stats.bootstrap` con `method="BCa"` sposta
+l'estremo inferiore da $25\,720$ a $25\,774$). Sul massimo, invece, non c'è
+correzione che tenga: la distribuzione bootstrap non converge a quella vera
+{cite}`bickel1981some`, e il rimedio è ricampionare $r$ punti invece di $m$,
+con $r/m \to 0$. Su dati simulati, dove il
 valore vero si conosce, la sotto-copertura si può misurare.
 
 `````
@@ -305,7 +334,8 @@ Alla seconda («è esatto?») risponde di no, ma la risposta va letta con la ter
 riga in mano, ed è per averla che quel numero è stampato con due decimali
 invece di uno. Anche il $94{,}27\%$ è una stima, ottenuta da quattromila prove
 e non da infinite, quindi balla pure lui, fra $93{,}56\%$ e $94{,}99\%$: è
-l'intervallo di Wald della {doc}`sezione sugli intervalli di confidenza
+l'intervallo di Wald (la stima, più o meno due errori standard) della
+{doc}`sezione sugli intervalli di confidenza
 </Matematica/probabilita-statistica>`, applicato a $3771$ successi su $4000$. Il
 $95\%$ promesso resta fuori da quell'intervallo, e ci resta per mezzo
 centesimo di punto ($94{,}995$ contro $95{,}000$): l'esperimento rileva la
@@ -395,7 +425,8 @@ lo stesso e sembra buono.
   palline si distrugge proprio la struttura che rende la serie una serie. Il
   risultato è un intervallo troppo stretto, cioè una fiducia che non c'è.
   Il rimedio si chiama *block bootstrap*, e ricampiona pezzi di serie interi
-  invece che singoli valori; il capitolo sulle serie temporali torna sul perché
+  invece che singoli valori; il {doc}`capitolo sulle serie temporali
+</SerieTemporali/validazione-e-feature>` torna sul perché
   quei dati vadano trattati a parte.
 - Il campione stesso. Come diceva l'analogia della fotografia, il bootstrap
   misura la variabilità dovuta al caso del campionamento e nient'altro. Un
@@ -461,7 +492,8 @@ un test da mille esempi sono, quasi sempre, la stessa cosa.
 - Il percentile è corretto al primo ordine e sotto-copre con statistiche
   distorte o asimmetriche: $94{,}27\%$ contro il $95\%$ nominale
   su $4000$ prove, con intervallo Monte Carlo $[93{,}56;\ 94{,}99]$ che
-  esclude il valore nominale per un centesimo di punto. Il verdetto dipende
+  esclude il valore nominale per mezzo centesimo di punto ($94{,}995$). Il
+  verdetto dipende
   dalla seconda cifra decimale, che va quindi stampata. $\mathrm{BCa}$ e
   $t$-bootstrap correggono.
 - Condizioni di validità: statistica sufficientemente regolare in $F$ e dati

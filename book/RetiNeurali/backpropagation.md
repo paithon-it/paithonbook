@@ -12,9 +12,12 @@ la **differenziazione automatica**: far calcolare a un programma non soltanto il
 risultato di un conto, ma anche di quanto quel risultato cambierebbe muovendo
 ciascuno dei suoi ingressi. A pubblicarne per primo la forma generale è il
 finlandese Seppo Linnainmaa, nella tesi di laurea del 1970
-{cite}`linnainmaa1970taylor`, che uscirà in inglese soltanto sei anni dopo;
-Paul Werbos la porta sulle reti neurali nella tesi di dottorato del 1974
-{cite}`werbos1974beyond`.
+{cite}`linnainmaa1970taylor`, che uscirà in inglese soltanto sei anni dopo.
+Paul Werbos ne propone l'uso per le reti neurali nella tesi di dottorato del
+1974 {cite}`werbos1974beyond`, e la applica a una rete in un lavoro del 1982
+{cite}`werbos1982applications`; prima ancora, nei primi anni Sessanta, il
+controllo ottimo aveva già calcolato gradienti all'indietro lungo le
+traiettorie, nella forma continua.
 
 L'idea sta in due movimenti, come un respiro. In avanti la rete produce una
 risposta; all'indietro misura di quanto ha sbagliato e distribuisce la
@@ -101,22 +104,21 @@ La previsione da sola non basta: serve un numero che dica *quanto* la rete ha
 sbagliato rispetto alla risposta giusta. Quel numero è la loss (in inglese
 «perdita»; il nome italiano si usa poco), e imparare significa renderlo il più
 piccolo possibile. Da dove venga la sua forma lo ricava
-{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`: qui si
-prende quella forma per data, e si guarda che cosa succede quando ci si deriva
-sopra, perché è di derivate che vive tutto il resto della sezione.
+{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`; presa
+quella forma per data, ci si deriva sopra.
 
 `````{tab} Elementare
 
 La loss è una distanza tra la risposta della rete e la verità. Cambiamo esempio
 per un attimo, perché con i soldi il conto si vede meglio che con i gatti.
 Mettiamo che la rete debba stimare il prezzo di una casa: la casa vale davvero
-200.000 € e lei
-ne prevede 170.000, quindi l'errore è di 30.000. Poi quell'errore si eleva al
-quadrato: $30.000 \times 30.000 = 900$ milioni. Il quadrato arriva dalla forma
-a campana con cui si è deciso di descrivere gli errori, e l'effetto che
-produce si vede confrontando due casi: sbagliare di 60.000, cioè il doppio, dà
-$3.600$ milioni, cioè quattro volte tanto. Raddoppiare l'errore ne quadruplica
-il costo, e la rete impara a evitare le cantonate prima delle imprecisioni. La
+200.000 € e lei ne prevede 170.000, quindi l'errore è di 30.000. Poi
+quell'errore si eleva al quadrato: $30.000 \times 30.000 = 900$ milioni. Il
+quadrato arriva dalla forma a campana con cui si è deciso di descrivere gli
+errori, e l'effetto che produce si vede confrontando due casi: sbagliare di
+60.000, cioè il doppio, dà $3.600$ milioni, cioè quattro volte tanto. È lo
+stesso conto della campana di poco fa: raddoppiare l'errore ne quadruplica il
+costo, e la rete impara a evitare le cantonate prima delle imprecisioni. La
 cifra in sé conta poco: se tutte le penalità si dimezzassero, resterebbe
 identico quale sbaglio costa più di quale, e la rete andrebbe a finire nello
 stesso posto.
@@ -148,10 +150,11 @@ volte tanto. Chi ha torto marcio si corregge meno di chi era soltanto incerto,
 ed è l'ultima cosa che si vorrebbe.
 
 Ecco perché, quando la risposta è una scelta fra nomi, la penalità si conta in
-un altro modo, la cross-entropia: è fatta apposta perché il fattore dello
-schiacciamento si semplifichi e sparisca dal conto. Resta soltanto la
-lontananza dalla verità, 0,99 contro 0,5, e chi sbaglia di più riceve la spinta
-più forte.
+un altro modo, la cross-entropia, quella che viene dal gioco dei gettoni nelle
+caselle: con lo schiacciamento della sigmoide si incastra così bene che il
+fattore dello schiacciamento si semplifica e sparisce dal conto. Resta soltanto
+la lontananza dalla verità, 0,99 contro 0,5, e chi sbaglia di più riceve la
+spinta più forte.
 
 `````
 
@@ -205,8 +208,17 @@ $$
 e il gradiente diventa proporzionale all'errore: più si sbaglia, più si
 corregge. È lo stesso fenomeno di saturazione che nella sezione sulle funzioni
 di attivazione motivava l'abbandono della sigmoide, visto però dal lato della
-loss invece che da quello dell'attivazione: la scelta della funzione di costo
-non è una convenzione, è ciò che decide se il gradiente sopravvive.
+loss invece che da quello dell'attivazione, e la cancellazione ha una
+ragione. La sigmoide è l'inversa del
+{doc}`legame canonico </MachineLearning/apprendimento-supervisionato>` della
+Bernoulli, la softmax quella della categorica, l'identità quella della
+gaussiana; e per ogni famiglia accoppiata al suo legame canonico la derivata
+della log-verosimiglianza negativa rispetto all'uscita lineare è predizione
+meno bersaglio. Per questo $\boldsymbol{\delta}^{[L]} = \hat{\mathbf{y}} -
+\mathbf{y}$ vale, a meno del fattore costante della definizione, per l'errore
+quadratico con uscita lineare, per la cross-entropia binaria con la sigmoide e
+per quella multiclasse con la softmax: è la scelta della coppia, loss e ultima
+attivazione, a decidere se il gradiente sopravvive.
 
 `````
 
@@ -302,7 +314,7 @@ $$
 
 cioè, componente per componente, di quanto cambierebbe la loss se il neurone $i$
 dello strato $l$ ricevesse un pelo di somma pesata in più. Per il
-[layout al denominatore](../Matematica/analisi-ottimizzazione.md) del libro (la
+{doc}`layout al denominatore </Matematica/analisi-ottimizzazione>` del libro (la
 derivata di uno scalare ha sempre la forma dell'oggetto rispetto a cui si
 deriva) $\boldsymbol{\delta}^{[l]}$ ha la stessa forma di $\mathbf{z}^{[l]}$: un
 numero per neurone.
@@ -367,17 +379,29 @@ passaggio all'indietro basta a calcolare tutti i gradienti. È questo che rende
 l'addestramento praticabile su reti enormi.
 
 Che il verso giusto sia questo ha una ragione, ed è il contenuto della
-differenziazione automatica. Derivare automaticamente si può in due modi.
-Nel **modo diretto** si propaga in avanti, insieme al calcolo, la derivata
-rispetto a una direzione fissata dei parametri: una passata dà la derivata
-lungo *quella* direzione, e per il gradiente completo servono $n$ passate, una
-per parametro. Nel **modo inverso** si propaga all'indietro dall'uscita, e una
+differenziazione automatica. Derivare automaticamente si può in due modi. Nel
+**modo diretto** si propaga in avanti, insieme al calcolo, la derivata rispetto
+a una direzione fissata dei parametri: una passata dà la derivata lungo
+*quella* direzione, e per il gradiente completo servono $n$ passate, una per
+parametro. Nel **modo inverso** si propaga all'indietro dall'uscita, e una
 passata sola le dà tutte quante. Quando l'uscita è una sola (la loss è uno
 scalare) e gli ingressi sono milioni, il verso conveniente è ovviamente il
 secondo, e il gradiente finisce per costare un multiplo costante della
 funzione, qualunque sia il numero di parametri: è il *cheap gradient
-principle*. La backpropagation è il modo inverso applicato a una rete: quello
-generale è di Linnainmaa (1970), Werbos (1974) è chi lo porta qui.
+principle*. Sull'MLP la costante si conta. Su un mini-batch di $B$ esempi messi
+in colonna, $\mathbf{A}^{[l-1]}\in\mathbb{R}^{n_{l-1}\times B}$, l'andata di
+uno strato è un prodotto $\mathbf{W}^{[l]}\mathbf{A}^{[l-1]}$, circa $2\,n_l
+n_{l-1} B$ operazioni; il ritorno ne fa due della stessa taglia,
+$(\mathbf{W}^{[l]})^{\top}\boldsymbol{\Delta}^{[l]}$ per il segnale da passare
+indietro e $\boldsymbol{\Delta}^{[l]}(\mathbf{A}^{[l-1]})^{\top}$ per il
+gradiente dei pesi, dove $\boldsymbol{\Delta}^{[l]}\in\mathbb{R}^{n_l\times B}$
+raccoglie in colonna i $\boldsymbol{\delta}^{[l]}$ dei singoli esempi. Il
+ritorno costa quindi circa due andate, e il prodotto
+$\boldsymbol{\Delta}^{[l]}(\mathbf{A}^{[l-1]})^{\top}$ fa da sé la somma sugli
+esempi: diviso per $B$, è il gradiente della loss media del mini-batch. La
+backpropagation è il modo inverso applicato a una rete: quello generale è di
+Linnainmaa (1970), Werbos ne propone l'uso sulle reti nel 1974 e lo applica a
+una rete nel 1982.
 
 Il conto però non è gratis, e il prezzo è in memoria. Per calcolare
 $\partial\mathcal{L}/\partial \mathbf{W}^{[l]} =
@@ -408,7 +432,8 @@ ricalcola in avanti quando serve: memoria contro tempo.
 
 I due movimenti, uno dopo l'altro: il segnale va avanti fino all'errore, poi la
 colpa torna indietro. Tornando, a ogni strato che attraversa viene
-moltiplicata per un pezzo in più, come nella sezione sulle attivazioni: sullo
+moltiplicata per un pezzo in più, come nella {doc}`sezione sulle attivazioni
+</RetiNeurali/funzioni-attivazione>`: sullo
 schermo è il prodotto che si allunga, e ogni suo fattore è il contributo di uno
 strato.
 ```
@@ -489,8 +514,13 @@ $$
 
 dove $\theta$ sono i parametri, $\nabla_{\theta}\mathcal{L}$ il gradiente
 calcolato dalla backpropagation ed $\eta > 0$ il learning rate (o tasso di
-apprendimento). Un $\eta$ troppo grande fa divergere la loss; troppo piccolo
-rende la convergenza lentissima o la blocca in un minimo mediocre. Gli
+apprendimento). Il confine fra troppo e abbastanza lo dà la curvatura:
+vicino a un minimo, dove la loss è quasi una quadratica con hessiana
+$\mathbf{H}$, la discesa converge se $\eta < 2/\lambda_{\max}(\mathbf{H})$ e
+diverge lungo la direzione più curva appena $\eta$ supera quella soglia, che è
+la stessa del lemma di discesa di {doc}`Analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>`. Un $\eta$ troppo piccolo rende la
+convergenza lentissima o la blocca in un minimo mediocre. Gli
 ottimizzatori moderni aggiungono memoria delle direzioni già prese (Momentum,
 che però conserva un solo $\eta$ per tutti i parametri) oppure un passo diverso
 per ciascun parametro (RMSProp, Adam {cite}`kingma2015adam`), ma il cuore
@@ -528,9 +558,12 @@ racconta più spesso. Si sente dire che serva a scavalcare i **minimi locali**,
 cioè le conche poco profonde in cui la discesa si può fermare credendo di
 essere arrivata in fondo; ma nelle reti profonde quelle conche sono rare
 {cite}`dauphin2014identifying`. Serve piuttosto a staccarsi dai tratti piatti e
-dalle selle di poco fa, dove la pendenza vera è quasi zero e un algoritmo
-perfettamente preciso resterebbe immobile. Un po’ di imprecisione dà la spinta
-per uscirne.
+dalle selle di poco fa, dove la pendenza vera è quasi zero. Un algoritmo
+perfettamente preciso, partito da un punto a caso, da una sella che abbia
+almeno una direzione in discesa finisce per uscire {cite}`lee2016gradient`, ma
+può metterci un numero di passi che cresce esponenzialmente con la dimensione
+{cite}`du2017gradient`; un po’ di imprecisione accorcia di molto quell'attesa
+{cite}`jin2017escape`.
 
 Si racconta anche che i gruppetti piccoli portino a fermarsi in valli larghe
 invece che in fessure strette, e che sia un bene: una soluzione che regge
@@ -626,11 +659,14 @@ parole, nessuna esclusa, e nelle reti che usano la ReLU (la piega delle
 funzioni di attivazione, quella che azzera tutto ciò che arriva negativo) non
 capita mai: a ogni strato una parte dei neuroni è spenta, e quello che passa di
 lì viene azzerato invece che alzato. Ne basta uno spento perché la certezza
-salti. Lo svanire, allora, si può
-prevedere e prevenire, scegliendo com'è fatta la rete e da dove partono i pesi;
-l'esplodere si vede solo quando accade, e allora lo si tampona: si misura
-quanto è forte il messaggio che sta tornando indietro e, se supera una soglia,
-lo si abbassa prima di passarlo.
+salti. La certezza manca, ma la media si
+sa prevedere, e nei due versi: se i pesi di partenza sono un po' troppo grandi
+il messaggio cresce in media a ogni strato, se sono un po' troppo piccoli cala,
+e scegliendo bene quanto grandi farli partire si evitano tutti e due i guasti
+all'inizio. Quello che la partenza non può prevedere è il viaggio: durante
+l'addestramento i pesi cambiano, e il messaggio può impennarsi di colpo. Per
+quello si misura quanto è forte il messaggio che sta tornando indietro e, se
+supera una soglia, lo si abbassa prima di passarlo.
 
 Le reti profonde vanno quindi progettate perché il messaggio arrivi integro fino
 in fondo, e un rimedio lo conosci già: è la ReLU stessa, che dal lato positivo
@@ -642,13 +678,16 @@ saltano gli strati) sono il mestiere del capitolo sul deep learning.
 `````{tab} Superiore
 
 Il gradiente verso i primi strati è un prodotto di molti fattori: le Jacobiane
-$\mathbf{J}^{[l]}$ strato per strato, cioè le derivate dell'uscita di uno
-strato rispetto al suo ingresso, la cui "grandezza" si misura con i valori
-singolari (e non con gli autovalori, perché sono matrici diverse l'una
-dall'altra e non c'è
-nessuna potenza di una matrice sola da diagonalizzare: è l'avvertimento della
-{doc}`sezione di algebra lineare </Matematica/algebra-lineare>`, ed è qui che
-serviva).
+$\mathbf{J}^{[l]} = \partial\mathbf{a}^{[l]}/\partial\mathbf{a}^{[l-1]} =
+\mathrm{diag}\big(\sigma'(\mathbf{z}^{[l]})\big)\,\mathbf{W}^{[l]}$ strato per
+strato, cioè le derivate dell'uscita di uno strato rispetto al suo ingresso (la
+ricorsione di $\boldsymbol{\delta}$ è la stessa cosa letta al contrario, un
+prodotto per una jacobiana trasposta come nella {doc}`regola della catena in
+più variabili </Matematica/analisi-ottimizzazione>`), la cui "grandezza" si
+misura con i valori singolari (e non con gli autovalori, perché sono matrici
+diverse l'una dall'altra e non c'è nessuna potenza di una matrice sola da
+diagonalizzare: è l'avvertimento della {doc}`sezione di algebra lineare
+</Matematica/algebra-lineare>`, ed è qui che serviva).
 
 Se i valori singolari massimi restano sistematicamente sotto $1$, il
 prodotto tende a zero esponenzialmente con la profondità (*vanishing
@@ -669,17 +708,26 @@ $\lVert\prod_l \mathbf{J}^{[l]}\,\mathbf{v}\rVert \ge \prod_l
 \sigma_{\min}(\mathbf{J}^{[l]})\,
 \lVert\mathbf{v}\rVert$ e non c'è scampo.
 
-Solo che quella garanzia, sulle reti fatte con la ReLU, non
-scatta mai. La Jacobiana di uno strato del genere azzera le righe delle unità spente,
-e su uno strato che non allarga ne basta una sola perché $\sigma_{\min}$ valga
+Solo che quella garanzia, sulle reti fatte con la ReLU, non scatta mai. La
+Jacobiana di uno strato del genere azzera le righe delle unità spente, e su uno
+strato che non allarga ne basta una sola perché $\sigma_{\min}$ valga
 esattamente zero: in uno strato da $64$ unità con ingressi casuali le spente
 sono decine, e il prodotto si ritrova $\sigma_{\min}=0$ per costruzione. La
-condizione è sufficiente e non necessaria, e su queste reti è vacua: non esiste
-un criterio comodo che dica in anticipo se il gradiente esploderà. Ecco perché
-i due guasti si trattano in modi opposti: lo svanire si previene a monte,
-scegliendo attivazioni e inizializzazione, mentre l'esplodere si tampona a
-valle quando accade, con il *gradient clipping*, che taglia la norma del
-gradiente sopra una soglia.
+condizione è sufficiente e non necessaria, e su queste reti è vacua: come
+garanzia valida per ogni ingresso, per l'esplosione non ne esiste una comoda.
+In media, però, il conto si fa, e vale nei due versi insieme. In una rete ReLU
+con pesi indipendenti di varianza $c\cdot 2/n$ la norma quadratica del
+gradiente cambia in media di un fattore $c$ a ogni strato attraversato, quindi
+all'inizializzazione svanisce per $c<1$ ed esplode per $c>1$, come $c^{L/2}$ in
+norma: su cinquanta strati, $1{,}2^{25}\approx 95$. È la condizione
+$\tfrac{1}{2}\,n\,\mathrm{Var}[w]=1$ di He {cite}`he2015delving`, e
+l'inizializzazione la sceglie proprio per evitare tutti e due i guasti in
+partenza. Quello che la partenza non controlla è l'addestramento: lungo la
+traiettoria la loss può presentare pareti ripidissime che nessuna analisi a
+priori prevede, soprattutto nelle reti ricorrenti
+{cite}`pascanu2013difficulty`, e lì l'esplodere si tampona a valle quando
+accade, con il *gradient clipping*, che taglia la norma del gradiente sopra una
+soglia.
 
 L'analisi è quella resa celebre da Hochreiter
 {cite}`hochreiter1991untersuchungen` e da Bengio {cite}`bengio1994learning`
@@ -781,8 +829,9 @@ per riga.
   su tutti i dati (le epoche). Nelle reti molto profonde il messaggio che
   torna indietro può affievolirsi fino a non insegnare più niente ai primi
   strati, oppure amplificarsi fino a diventare assordante e mandare tutto in
-  tilt; e le due cose non si somigliano, perché lo svanire si può prevedere e
-  l'esplodere si vede solo quando accade. Per questo una rete profonda va
+  tilt. In partenza tutte e due si evitano scegliendo bene quanto grandi far
+  nascere i pesi; durante l'addestramento, un'impennata improvvisa si tampona
+  quando arriva. Per questo una rete profonda va
   progettata apposta per far arrivare il messaggio integro fino in fondo, e un
   rimedio è già noto: la ReLU, che non appiattisce il segnale.
 ```
@@ -807,13 +856,15 @@ per riga.
 - Si lavora a mini-batch ed epoche (SGD), e il rumore del
   campionamento aiuta a staccarsi da selle e altipiani, non tanto dai minimi
   locali.
-- Nelle reti profonde i gradienti possono svanire o esplodere, ma le due
-  cose non sono simmetriche: $\sigma_{\max} < 1$ su ogni Jacobiana basta a
-  garantire lo svanire, mentre per garantire l'esplodere servirebbe
-  $\sigma_{\min} > 1$, che con la ReLU non capita mai (una sola unità spenta lo
-  porta a zero). Lo svanire si previene a monte, con ReLU, inizializzazioni
-  accorte, batch norm e connessioni residue; l'esplodere si tampona a valle, con
-  il *gradient clipping*.
+- Nelle reti profonde i gradienti possono svanire o esplodere. Come
+  garanzia per ogni ingresso le due cose non sono simmetriche:
+  $\sigma_{\max} < 1$ su ogni Jacobiana basta a garantire lo svanire, mentre per
+  l'esplodere servirebbe $\sigma_{\min} > 1$, che con la ReLU non capita mai. In
+  media, all'inizializzazione, le decide tutte e due lo stesso numero,
+  $\tfrac{1}{2}\,n\,\mathrm{Var}[w]$, e l'inizializzazione di He le evita
+  entrambe; durante l'addestramento aiutano batch norm e connessioni residue, e
+  l'esplosione che arriva lo stesso si tampona a valle, con il *gradient
+  clipping*.
 ```
 
 `````

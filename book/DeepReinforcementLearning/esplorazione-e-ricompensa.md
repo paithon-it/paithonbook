@@ -124,7 +124,7 @@ tende a zero su quelli battuti: l'agente è incentivato a raggiungere le zone
 poco esplorate. Sullo stato mai visitato, $N=0$, la formula scritta così
 diverge, e nella teoria è voluto: uno stato mai visto va visitato, e basta. In
 un programma quell'infinito va smorzato, e si scrive
-$\beta/\sqrt{N(s_t)+1}$, che è la forma implementata nel codice qui sotto.
+$\beta/\sqrt{N(s_t)+1}$, che è la forma implementata nel codice.
 
 Il limite è evidente in spazi grandi o continui: con osservazioni ad alta
 dimensione (i pixel di uno schermo) ogni stato è, letteralmente, unico, e
@@ -285,6 +285,18 @@ con le parole del lavoro stesso, che sull'esito è prudente: l'agente
 quello il gioco va avanti. Superare il punteggio umano medio e risolvere un
 gioco sono due affermazioni diverse, e vanno tenute separate.
 
+La differenza fra le due sta in che cosa si predice. L'errore di un predittore
+nasce dalla scarsità di dati attorno a uno stato, che è la novità da premiare,
+e dalla casualità dell'ambiente, che nessun addestramento riduce. ICM predice
+lo stato successivo e resta esposto al rumore che le azioni controllano: un
+televisore con il telecomando, dove ogni cambio di canale dà un'immagine
+imprevedibile, inchioda l'agente davanti allo schermo. RND predice $f(s_t)$,
+funzione deterministica dello stato osservato: il caso della transizione non
+entra nel bersaglio, e il rumore visto spesso diventa familiare come ogni altro
+stato. In pratica vuole osservazioni e ricompensa intrinseca normalizzate, e
+due teste di valore, una per ciascuna ricompensa, con quella intrinseca che non
+si azzera a fine episodio.
+
 `````
 
 Il cuore di RND si scrive in poche righe di PyTorch:
@@ -370,8 +382,8 @@ fila è il «quanto ci imparo». Dentro il tempio azteco, insomma, a guidare res
 soltanto la curiosità, cioè proprio il pezzo che con le ricompense ordinarie
 tocca appiccicare da fuori.
 
-Da qui non viene però una ricetta migliore: dentro quel tempio chi arriva più
-lontano è ancora l'agente a cui la curiosità è stata pagata da fuori. Questa
+Da qui non viene però una ricetta migliore: dentro quel tempio nessuno dei
+passi avanti è venuto da questa strada. Questa
 lettura serve a capire da dove viene la toppa, non a sostituirla; e il «resta
 soltanto la curiosità» discende da come la quantità è fatta, non da una misura
 presa su un agente vero.
@@ -400,9 +412,9 @@ ordinarle. Quel che resta a decidere è il termine epistemico, cioè la curiosit
 come tale dovrebbe verificarla.
 
 Resta la differenza che conta per chi implementa: questo quadro nasce come
-teoria del comportamento biologico, e i sistemi che oggi arrivano più lontano in
-*Montezuma's Revenge* sono quelli a ricompensa intrinseca, non quelli
-dell'inferenza attiva. Serve a capire da dove viene la toppa, non a sostituirla.
+teoria del comportamento biologico, e nessuno dei progressi su *Montezuma's
+Revenge* raccontati qui viene dall'inferenza attiva. Serve a capire da dove
+viene la toppa, non a sostituirla.
 
 `````
 
@@ -612,12 +624,16 @@ basato su modello, i sogni corti, perché non esplodesse
 l'immaginazione. Nell'imitazione, l'esperto richiamato a etichettare, perché
 l'allievo non finisse nel fosso. Nell'offline RL, il recinto attorno
 all'archivio, perché non esplodessero le stime su ciò che nessuno ha mai
-provato.
+provato. Nella ricerca ad albero, il consiglio della rete che orienta le
+simulazioni, perché l'albero non si disperdesse; nella gerarchia, le opzioni
+aggiunte alle mosse invece che al loro posto, perché non si perdessero le
+scorciatoie.
 
 Il reward hacking è la stessa storia raccontata all'ultimo livello, quello
 dell'obiettivo, e con una differenza: qui il contenimento diventa una domanda
-su che cosa vogliamo davvero, invece di un accorgimento tecnico. Il capitolo
-sull'AI responsabile comincia da qui.
+su che cosa vogliamo davvero, invece di un accorgimento tecnico. Il
+{doc}`capitolo sull'AI responsabile </AIResponsabile/overview>` comincia da
+qui.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

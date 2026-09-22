@@ -48,8 +48,9 @@ peso lo riscala per conto proprio.
 
 Nel codice le cose hanno il nome inglese: `criterion` è la funzione di perdita
 (sì, la stessa che il capitolo chiama *loss* e che qui a volte si chiama
-«criterio»: sono tre nomi per un oggetto solo), `dataloader` è un cameriere che
-porta i pacchetti di esempi e che costruiremo nel prossimo paragrafo,
+«criterio»: sono tre nomi per un oggetto solo), `dataloader` è l'oggetto che
+consegna gli esempi a pacchetti, uno per giro, e che costruiremo nel prossimo
+paragrafo,
 `optimizer` è l'ottimizzatore appena presentato.
 
 ```{code-block} python
@@ -149,7 +150,12 @@ grande su una macchina piccola che vedremo in
 un solo `step()`, quindi l'azzeramento esce dal giro e si fa una volta ogni
 $k$ micro-batch. Rispettare la liturgia lì è l'errore: il codice gira
 identico, e la matematica no. L'accumulo fatto bene coincide con il batch
-grande vero a meno dell'arrotondamento in virgola mobile; quello con lo
+grande vero a meno dell'arrotondamento in virgola mobile, a tre condizioni: che
+ogni loss sia divisa per $k$ prima del `backward()` (con `reduction="mean"`
+ogni micro-batch restituisce già una media, e $k$ medie sommate danno $k$ volte
+il gradiente), che i micro-batch abbiano tutti la stessa dimensione, e che nel
+modello non ci siano strati che si tarano sul batch, come la batch norm, che
+continua a vedere il micro-batch. Quello con lo
 `zero_grad()` a ogni micro-batch conserva soltanto il gradiente dell'ultimo
 micro-batch, senza una riga di errore.
 `````
@@ -219,10 +225,16 @@ asincrono verso la GPU, non l'asincronia: quella richiede anche
 converte le immagini PIL in tensori `float32` con valori in $[0, 1]$ e layout
 channels-first $(C, H, W)$; per MNIST si può aggiungere
 `transforms.Normalize((0.1307,), (0.3081,))` (media e deviazione standard del
-dataset) per centrare gli input, come visto nel capitolo sulle reti neurali.
-Statisticamente, il gradiente su un mini-batch è una stima non distorta ma
-rumorosa del gradiente vero: il rumore è il prezzo (e in parte il segreto)
-della discesa *stocastica*.
+dataset) per centrare gli input, come visto nel {doc}`capitolo sulle reti
+neurali </RetiNeurali/overview>`. Statisticamente, con esempi estratti in modo
+uniforme, il gradiente su un mini-batch di $B$ esempi è una stima non distorta
+del gradiente sull'intero insieme di $N$ esempi, con covarianza
+$\boldsymbol{\Sigma}/B$, dove $\boldsymbol{\Sigma}$ è la covarianza dei
+gradienti dei singoli esempi (va moltiplicata per $(N-B)/(N-1)$ quando si estrae
+senza reimmissione, come fa
+`shuffle=True` dentro un'epoca). Il rumore scende quindi come $1/\sqrt{B}$:
+quadruplicare il batch lo dimezza. È il prezzo, e in parte il segreto, della
+discesa *stocastica*.
 `````
 
 ## MNIST da cima a fondo
@@ -488,7 +500,11 @@ quella classe sta nel tuo codice, che intanto cambia: fra sei mesi il file
 proverebbe a ricostruire una classe che non esiste più con quel nome, o che
 esiste con un `forward` diverso. Salvando solo i numeri, il file resta leggibile
 finché sai ricostruire l'architettura, e l'architettura è scritta nel codice,
-dove si può leggere e correggere.
+dove si può leggere e correggere. C'è anche una ragione di sicurezza: un
+oggetto Python salvato si ricarica con `pickle`, che può eseguire codice
+arbitrario, e per questo da PyTorch 2.6 `torch.load` accetta di default solo
+tensori, numeri, stringhe e contenitori di questi (`weights_only=True`): un
+modello salvato intero, al ricaricamento, si ferma con un errore.
 
 ```python
 torch.save(model.state_dict(), "mnist_mlp.pt")     # salva i numeri
@@ -525,11 +541,15 @@ appena creato è come rimettere qualcuno alla guida nel punto esatto in cui lo
 avevi lasciato, ma senza dirgli che sta arrivando in curva: la posizione è
 giusta, la velocità no, ed è troppa.
 
-La direzione sorprende: dopo una ripresa fatta così il primo passo è il più
-lungo che quella manopola consenta, perché un ottimizzatore appena nato non ha
-ancora nessun motivo per moderarsi. La corsa non interrotta, alla stessa
-altezza, ne avrebbe fatto uno molto più corto. Di quanto più corto dipende dal
-problema; che sia più corto, sempre.
+La direzione sorprende: dopo una ripresa fatta così il primo passo è
+lungo esattamente quanto dice la manopola, per ogni peso, perché un
+ottimizzatore appena nato non ha ancora nessun motivo per moderarsi. La corsa
+non interrotta, arrivata vicino al fondo, ne avrebbe fatto di solito uno molto
+più corto, perché lì le spinte si fanno piccole e cambiano verso. Non è una
+legge: un peso rimasto fermo a lungo, che riceve di colpo una spinta forte,
+con la memoria intatta fa un passo anche più lungo. Quello che resta vero in
+ogni caso è che il passo dopo la ripresa è diverso da quello della corsa
+interrotta.
 
 Il rimedio costa una riga: nel file si mette anche lo stato
 dell'ottimizzatore, e al ritorno lo si ricarica. Lo stesso vale per qualunque
@@ -544,8 +564,14 @@ ripartire senza di essi non riprende la stessa traiettoria. La parte
 strutturale, quella che vale su qualunque problema, è questa: la correzione
 del bias riparte da $t = 1$, e a $t = 1$ il rapporto
 $\hat{m}/(\sqrt{\hat{v}} + \varepsilon)$ vale $\pm 1$ per costruzione, quindi
-il primo aggiornamento è $\eta$ pieno, il passo più lungo che quella
-manopola consenta. Qui $\hat{m}$ e $\hat{v}$ sono i due momenti corretti per il
+il primo aggiornamento sposta ogni coordinata di $\eta$ esatto. Non è un tetto:
+a regime il rapporto può superare $1$, fino a
+$(1-\beta_1)/\sqrt{1-\beta_2} \approx 3{,}16$ con i valori di default, quando
+un gradiente grande arriva dopo una lunga serie di gradienti quasi nulli
+{cite}`kingma2015adam`. Vicino a un minimo, con gradienti che si smorzano e
+cambiano segno, succede il contrario: $|\hat{m}|$ cala più in fretta di
+$\sqrt{\hat{v}}$, e il passo della corsa non interrotta è più corto di
+$\eta$. Qui $\hat{m}$ e $\hat{v}$ sono i due momenti corretti per il
 bias ($m$ e $v$ divisi per $1-\beta_1^t$ e $1-\beta_2^t$) ed $\varepsilon$ è il
 termine minuscolo che evita la divisione per zero: a $t = 1$ quelle correzioni
 danno $\hat{m} = g$ e $\hat{v} = g^2$, con $g$ il gradiente, da cui il rapporto
@@ -553,14 +579,44 @@ $\pm 1$. Ricaricando lo stato, invece, il passo coincide
 esattamente con quello della traiettoria mai interrotta.
 
 Di quanto sia più lungo dipende dal problema, e quindi va detto su quale è
-misurato e come. Il problema: una quadratica
-$\mathcal{L}(\theta) = \frac{1}{2}\|\theta\|^2$ con cento parametri
-inizializzati da una normale standard, venti passi di Adam con $\eta = 0{,}1$,
-poi la ripresa. La misura: la media quadratica dello spostamento sui cento
-parametri, al primo passo dopo la ripresa. Viene $0{,}100$ senza lo stato
-dell'ottimizzatore (cioè esattamente $\eta$, come previsto) contro $0{,}0294$
-ricaricandolo (torch 2.13). Un fattore $3{,}4$, e nessun messaggio d'errore né
-con lo stato né senza.
+misurato e come: una quadratica $\mathcal{L}(\theta) = \frac{1}{2}\|\theta\|^2$
+con cento parametri inizializzati da una normale standard, venti passi di Adam
+con $\eta = 0{,}1$, poi la ripresa, e come misura la media quadratica dello
+spostamento al primo passo dopo di essa.
+
+```python
+import torch
+from torch import nn, optim
+
+def primo_passo_dopo_ripresa(ricarica: bool) -> float:
+    torch.manual_seed(0)
+    theta = nn.Parameter(torch.randn(100))          # L = ||theta||^2 / 2
+    opt = optim.Adam([theta], lr=0.1)
+    for _ in range(20):
+        opt.zero_grad()
+        (0.5 * theta.pow(2).sum()).backward()
+        opt.step()
+    nuovo = optim.Adam([theta], lr=0.1)              # la ripresa
+    if ricarica:
+        nuovo.load_state_dict(opt.state_dict())
+    prima = theta.detach().clone()
+    nuovo.zero_grad()
+    (0.5 * theta.pow(2).sum()).backward()
+    nuovo.step()
+    return (theta.detach() - prima).pow(2).mean().sqrt().item()
+
+print(f"senza stato: {primo_passo_dopo_ripresa(False):.4f}")
+print(f"con lo stato: {primo_passo_dopo_ripresa(True):.4f}")
+```
+
+```text
+senza stato: 0.1000
+con lo stato: 0.0294
+```
+
+Senza lo stato il passo è esattamente $\eta$, come previsto; ricaricandolo è
+$0{,}0294$, un fattore $3{,}4$, e nessun messaggio d'errore né con lo stato né
+senza. Il valore esatto cambia col seme, il verso no.
 
 Lo stesso vale per tutto ciò che ha uno `state_dict` e che il ciclo tocca:
 lo *scheduler* del learning rate, il `GradScaler` della precisione mista, il

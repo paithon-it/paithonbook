@@ -29,8 +29,10 @@ Transformer e reti ricorrenti si arrendevano, ed è il primo a risolvere il
 compito di quel banco in cui il legame da riconoscere è lungo sedicimila
 passi, dove un «passo» è un elemento della sequenza (una parola, un campione
 audio, un pixel). È l'atto di nascita di una seconda strada verso il modello
-di sequenze a costo lineare: non quella dell'attenzione resa economica del
-capitolo precedente, ma quella, apparentemente lontana, dei sistemi dinamici.
+di sequenze a costo lineare: non quella dell'attenzione resa economica,
+raccontata nel {doc}`capitolo
+sull'attenzione lineare </AttenzioneLineare/overview>`, ma quella,
+apparentemente lontana, dei sistemi dinamici.
 Alla fine, scopriremo, le due strade portano allo stesso posto.
 
 ## Un sistema che riassume il passato

@@ -108,9 +108,19 @@ $2^{-23}\approx 1{,}19\cdot10^{-7}$ per `float32` e
 $2^{-52}\approx 2{,}22\cdot10^{-16}$ per `float64`. Ogni operazione arrotonda
 al numero rappresentabile più vicino, e l'errore relativo che ne deriva è
 limitato dall’unità di arrotondamento $u=\varepsilon/2$ (metà del gradino,
-perché si arrotonda all'estremo più vicino). Le reti neurali si addestrano
-spesso in precisione ridotta (`float32` o perfino `float16`) per risparmiare
-memoria e tempo: più veloci, ma con meno cifre di margine.
+perché si arrotonda all'estremo più vicino), purché il risultato non cada
+fuori dalla portata. Per i formati da sedici bit gli stessi conti danno: il
+`float16` ha $\varepsilon=2^{-10}\approx 9{,}8\cdot10^{-4}$ e un massimo di
+$65\,504$, il `bfloat16` ha $\varepsilon=2^{-7}\approx 7{,}8\cdot10^{-3}$ e la
+portata del `float32`. Il `float16` ha anche il più piccolo normalizzato a
+$2^{-14}\approx 6{,}1\cdot10^{-5}$; sotto quella soglia i numeri diventano
+*subnormali*, perdono cifre fino a $2^{-24}\approx 6\cdot10^{-8}$ e poi
+finiscono a zero, e molti gradienti di una rete stanno proprio lì.
+L'addestramento in precisione mista tiene allora una copia `float32` dei pesi,
+calcola in `float16` e moltiplica la loss per un fattore di scala prima della
+retropropagazione, per poi dividerlo via dai gradienti
+{cite}`micikevicius2018mixed`. Col `bfloat16` quel fattore di norma non
+serve, ed è la ragione pratica per cui lo si preferisce.
 
 `````
 
@@ -290,7 +300,7 @@ formare $e^{z_i}$ crudo; la cross-entropy è semplicemente il suo opposto,
 $\operatorname{logsumexp}(\mathbf{z}) - z_i$. È per stabilità numerica, e non
 per pigrizia d'API, che i framework espongono `log_softmax` e loss che
 lavorano direttamente sui logit (come la `nn.CrossEntropyLoss` di PyTorch,
-che incontreremo nel capitolo dedicato).
+che torna nella {doc}`sezione sul training loop </PyTorch/addestramento>`).
 
 `````
 
@@ -305,14 +315,15 @@ numeri quasi uguali.
 Si pesa un capitano *con la sua barca* ($80\,000$ kg), poi si pesa la sola
 barca ($79\,930$ kg), ciascuna misura accurata al chilo. La differenza (il peso
 del capitano) è $70$ kg, ma l'incertezza di un chilo su ciascuna misura ora
-pesa tantissimo *in proporzione*. Le cifre affidabili si sono "cancellate" e
-resta soprattutto rumore. Al posto del capitano metti un gabbiano, e succede
-di peggio: due pesate sbagliate di un chilo in versi opposti possono dare una
-differenza sotto zero, cioè un peso negativo, una risposta impossibile. La via
-d'uscita esiste: il capitano sale sulla bilancia da solo, una pesata sola e
-l'errore torna a un chilo su settanta. In pratica: evita di calcolare una
-quantità piccola come differenza di due quantità grandi; quando puoi, misura
-direttamente la cosa piccola.
+pesa tantissimo *in proporzione*. Le cifre affidabili si sono "cancellate":
+l'errore possibile, due chili su settanta, in proporzione è migliaia di volte
+più grande di quello delle due pesate. Al posto del capitano metti un gabbiano,
+e succede di peggio: due pesate sbagliate di un chilo in versi opposti possono
+dare una differenza sotto zero, cioè un peso negativo, una risposta
+impossibile. La via d'uscita esiste: il capitano sale sulla bilancia da solo,
+una pesata sola e l'errore torna a un chilo su settanta. In pratica: evita di
+calcolare una quantità piccola come differenza di due quantità grandi; quando
+puoi, misura direttamente la cosa piccola.
 
 `````
 
@@ -329,19 +340,34 @@ quadratici, in due passate; quando i dati arrivano in flusso e di passata se ne
 può fare una sola, si usa l'algoritmo di Welford, numericamente stabile.
 Regola generale: riformula le espressioni per non sottrarre grandezze vicine;
 la stessa quantità matematica può perdere molte o poche cifre a seconda di
-*come* la si calcola.
+*come* la si calcola. La ragione sta in una riga. Se $\tilde{x}=x(1+\delta_1)$
+e $\tilde{y}=y(1+\delta_2)$, con $|\delta_i|\le u$, allora
+
+$$
+\left|\frac{(\tilde{x}-\tilde{y})-(x-y)}{x-y}\right|
+\le u\,\frac{|x|+|y|}{|x-y|},
+$$
+
+e il fattore $(|x|+|y|)/|x-y|$ è il numero di condizionamento della
+sottrazione: per le due pesate della barca vale $159\,930/70\approx 2\,300$.
+La sottrazione di per sé non sbaglia (per il lemma di Sterbenz, due numeri in
+virgola mobile entro un fattore due l'uno dall'altro si sottraggono
+esattamente): amplifica l'errore che gli operandi portano già. Per la stessa
+ragione le librerie offrono `log1p(x)` ed `expm1(x)`, che calcolano
+$\log(1+x)$ ed $e^x-1$ per $x$ piccolo senza formare $1+x$, ed è con loro che si
+scrivono in modo stabile la *softplus* e la perdita logistica.
 
 `````
 
 ## Lo stesso programma, due calcolatori, due risultati
 
 Stesso codice, stessi dati, stesso seme del generatore casuale, librerie alla
-stessa versione fino all'ultima cifra: due calcolatori diversi, e i numeri
-stampati non combaciano. Dove uno stampa $67{,}0\%$ l'altro stampa $66{,}5\%$;
-dove uno dà $5{,}551\cdot10^{-16}$ l'altro dà $4{,}441\cdot10^{-16}$. Quasi
-sempre la differenza resta in fondo, nella quindicesima o sedicesima cifra, e
-non se ne accorge nessuno. Ogni tanto arriva davanti, e allora conviene sapere
-da dove viene.
+stessa versione fino all'ultima cifra: su due calcolatori diversi i numeri
+stampati possono non combaciare. Quasi sempre la differenza resta in fondo,
+nella quindicesima o sedicesima cifra, e non se ne accorge nessuno. Ogni tanto
+arriva davanti, e allora conviene sapere da dove viene. Il fenomeno si
+riproduce anche su una macchina sola, cambiando soltanto l'ordine in cui si
+somma.
 
 Il colpevole è una proprietà che a scuola si dà per acquisita e in virgola
 mobile è falsa: l’addizione non è associativa. $(a+b)+c$ e $a+(b+c)$ sono
@@ -415,7 +441,7 @@ di codice specializzato per il ferro su cui deve girare.
 Una libreria di algebra lineare non contiene una sola implementazione di
 ciascuna routine: ne contiene molte, compilate ciascuna per un insieme di
 istruzioni vettoriali, cioè per una delle SIMD di cui parla il
-{doc}`capitolo su Python </Python/numpy>`. Su un processore x86 sono
+{doc}`sezione su NumPy </Python/numpy>`. Su un processore x86 sono
 generazioni successive, e a distinguerle è la
 larghezza dei registri su cui lavorano: 128 bit per SSE2, 256 per AVX2, 512
 per AVX-512, dove il numero nel nome è proprio quella larghezza. In doppia
@@ -423,8 +449,8 @@ precisione vuol dire due, quattro e otto numeri per istruzione.
 
 Al caricamento la libreria sceglie la variante adatta a quello che la CPU
 dichiara di saper fare: in OpenBLAS il meccanismo si chiama `DYNAMIC_ARCH`.
-Fa lo stesso PyTorch, la libreria con cui il libro addestrerà le reti neurali
-a partire dal capitolo che porta il suo nome: anche lui smista le proprie
+Fa lo stesso {doc}`PyTorch </PyTorch/overview>`, la libreria con cui si
+addestrano le reti neurali da lì in avanti: anche lui smista le proprie
 operazioni su CPU fra più varianti compilate.
 
 La larghezza dei registri decide quanti accumulatori parziali la riduzione
@@ -455,17 +481,17 @@ Una differenza nella sedicesima cifra sembra irrilevante, e quasi sempre lo
 calcolo lungo: se su quei valori si fa una discesa del gradiente, cioè
 migliaia di passi in cui ognuno riparte da dove è arrivato il precedente, due
 traiettorie che partono a distanza $10^{-16}$ si separano, e alla fine la
-differenza non è più nell’ultima cifra ma nel primo decimale. Vengono da un calcolo di quel tipo i due numeri di poco fa: $67{,}0\%$ e
-$66{,}5\%$ escono dallo stesso codice, con lo stesso punto di partenza, su due
-processori diversi.
+differenza non è più nell’ultima cifra ma nel primo decimale: un'accuratezza
+finale può cambiare di mezzo punto fra due processori, con lo stesso codice e
+lo stesso punto di partenza.
 
 Da qui tre abitudini che costano poco. Un numero che esce da un calcolo lungo
 si racconta con le cifre che reggono, non con tutte quelle che il calcolatore
 stampa. Due risultati in virgola mobile non si confrontano con `==` ma con una
 tolleranza dichiarata, che `np.allclose` prende come argomento. E le cifre
-di un residuo di arrotondamento non si leggono come un risultato: il
-$5{,}551\cdot10^{-16}$ di prima vuol dire zero, a meno dell’epsilon macchina, e
-la sua mantissa è l’impronta del processore su cui è girato il conto, non
+di un residuo di arrotondamento non si leggono come un risultato: un residuo
+dell'ordine di $10^{-16}$ vuol dire zero, a meno dell’epsilon macchina, e le
+sue cifre sono l’impronta del processore su cui è girato il conto, non
 un’informazione sul problema.
 
 ## Condizionamento: quanto un problema amplifica gli errori
@@ -522,20 +548,49 @@ dipende dalla norma scelta, e su
 $\mathbf{A}=\begin{pmatrix}1&2\\3&4\end{pmatrix}$ vale $14{,}9$ in norma $2$ e
 $21$ in norma $1$. `np.linalg.cond` restituisce il primo solo perché è il
 default; LAPACK stima abitualmente il secondo, che costa meno. Il valore
-cambia, il significato no: se è enorme, la soluzione è ipersensibile e poco
-affidabile.
+cambia, il significato no, e sta in una disuguaglianza. Se il termine noto è
+perturbato, $\mathbf{A}(\mathbf{x}+\delta\mathbf{x})=\mathbf{b}+\delta\mathbf{b}$,
+allora
+
+$$
+\frac{\lVert\delta\mathbf{x}\rVert}{\lVert\mathbf{x}\rVert}
+\le\kappa(\mathbf{A})\,\frac{\lVert\delta\mathbf{b}\rVert}{\lVert\mathbf{b}\rVert} .
+$$
+
+Bastano due righe: $\delta\mathbf{x}=\mathbf{A}^{-1}\delta\mathbf{b}$ dà
+$\lVert\delta\mathbf{x}\rVert\le\lVert\mathbf{A}^{-1}\rVert\,\lVert\delta\mathbf{b}\rVert$,
+e $\mathbf{b}=\mathbf{A}\mathbf{x}$ dà
+$\lVert\mathbf{b}\rVert\le\lVert\mathbf{A}\rVert\,\lVert\mathbf{x}\rVert$; si
+dividono membro a membro. In norma $2$ la maggiorazione è raggiunta, con
+$\mathbf{b}$ lungo il vettore singolare sinistro di $\sigma_{\max}$ e
+$\delta\mathbf{b}$ lungo quello di $\sigma_{\min}$. Poiché gli ingressi portano
+già un errore relativo dell'ordine di $u$, se ne ricava la regola pratica: si
+perdono circa $\log_{10}\kappa$ cifre decimali. Con $\kappa=10^{8}$ un
+`float64` ne conserva otto, un `float32` nessuna. È il conto che fa preferire
+la QR alle equazioni normali, dove $\kappa$ si eleva al quadrato.
 
 L'altra metà del binomio riguarda invece l'algoritmo, e senza di essa un
 lettore attribuisce al problema ogni guaio numerico. Un algoritmo si dice
 **stabile all'indietro** (*backward stable*) se il risultato che produce è la
 soluzione *esatta* di un problema di poco perturbato rispetto a quello dato.
-La regola che tiene insieme le due cose, in una riga:
+La regola che tiene insieme le due cose: se l'algoritmo restituisce una
+$\hat{\mathbf{x}}$ che risolve esattamente
+$(\mathbf{A}+\delta\mathbf{A})\hat{\mathbf{x}}=\mathbf{b}$, con errore
+all'indietro $\eta=\lVert\delta\mathbf{A}\rVert/\lVert\mathbf{A}\rVert$,
+allora, finché $\kappa\eta\ll 1$,
 
 $$
-\text{errore finale} \;\lesssim\;
-\underbrace{\kappa(\text{problema})}_{\text{non dipende da te}} \times
-\underbrace{\text{instabilità dell'algoritmo}}_{\text{dipende da te}} .
+\frac{\lVert\hat{\mathbf{x}}-\mathbf{x}\rVert}{\lVert\mathbf{x}\rVert}
+\;\lesssim\;
+\underbrace{\kappa(\mathbf{A})}_{\text{del problema}} \cdot
+\underbrace{\eta}_{\text{dell'algoritmo}} .
 $$
+
+Un algoritmo stabile all'indietro ha $\eta=O(u)$: la fattorizzazione QR di
+Householder lo è sempre, l'eliminazione di Gauss con pivoting parziale lo è in
+pratica. Con loro l'errore relativo finale è dell'ordine di
+$\kappa(\mathbf{A})\,u$, e per fare di meglio bisogna cambiare problema
+{cite}`higham2002accuracy`.
 
 Sono due cause indipendenti. Welford e il *log-sum-exp* curano la seconda, non
 la prima; standardizzare i dati cura la prima, non la seconda.
@@ -549,11 +604,11 @@ l'operazione che si fa più spesso prima di dare dei dati a un modello.
 
 `````{tab} Elementare
 
-Un appartamento descritto da tre numeri (prezzo in euro, metri quadri, numero
-di stanze) porta con sé un problema che non si vede a occhio: quei tre numeri
-vivono su scale lontanissime. Il prezzo è nell'ordine delle centinaia di
-migliaia, le stanze sono tre. Ciascuna di queste caratteristiche (in gergo si
-dicono *feature*, «caratteristiche» appunto) parla una lingua sua.
+L'appartamento di sempre, descritto questa volta da prezzo in euro, metri
+quadri e numero di stanze, porta con sé un problema che non si vede a occhio:
+quei tre numeri vivono su scale lontanissime. Il prezzo è nell'ordine delle
+centinaia di migliaia, le stanze sono tre. Ciascuna di queste caratteristiche
+(in gergo si dicono *feature*, «caratteristiche» appunto) parla una lingua sua.
 
 Per il modello è un guaio, ed è esattamente il guaio del condizionamento
 appena visto.
@@ -594,14 +649,22 @@ media $0$ e scala $1$. Il motivo è la stabilità: è un intervento sul
 condizionamento del problema, non sull'algoritmo.
 
 Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
-prodotti dentro la rete stanno su scale lontanissime (invito all'overflow) e
-la superficie della *loss* si allunga in una valle stretta, mal condizionata.
-La discesa del gradiente vi rimbalza da una parete all'altra a zig-zag,
+prodotti dentro la rete stanno su scale lontanissime (invito all'overflow) e la
+superficie della *loss* si allunga in una valle stretta, mal condizionata. La
+discesa del gradiente vi rimbalza da una parete all'altra a zig-zag,
 convergendo con lentezza esasperante. Standardizzare rende le curve di livello
 molto più tonde: il gradiente punta quasi dritto verso il minimo
-({numref}`fig-condizionamento`). Detto con il numero di condizionamento: si
-riducono i $\sigma_{\max}/\sigma_{\min}$ dell'Hessiana nel punto, e con essi il
-fattore che moltiplica ogni errore.
+({numref}`fig-condizionamento`). Detto con il numero di condizionamento: per un
+modello lineare con perdita quadratica l'hessiana è
+$\mathbf{X}^\top\mathbf{X}/n$, e dopo la standardizzazione diventa la matrice
+di correlazione delle feature, con diagonale di soli $1$. Il suo
+$\kappa=\lambda_{\max}/\lambda_{\min}$ fissa il fattore di contrazione
+$(\kappa-1)/(\kappa+1)$ della discesa del gradiente visto nella {doc}`sezione
+su analisi e ottimizzazione <analisi-ottimizzazione>`. Che la riduzione sia
+quasi la migliore possibile, anche se non garantita, lo dice un teorema di van
+der Sluis: fra tutte le riscalature diagonali delle colonne di $\mathbf{X}$,
+quella che le rende di norma uguale ha un $\kappa_2$ al più $\sqrt{p}$ volte
+l'ottimo, con $p$ il numero di colonne {cite}`higham2002accuracy`.
 
 Non è una cura completa, perché mette tutte le feature sulla stessa scala ma
 non cambia la loro correlazione: se due di esse crescono e calano quasi

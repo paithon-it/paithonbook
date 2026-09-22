@@ -38,8 +38,10 @@ della materia.
 ## Il ciclo come unità di progetto
 
 Prima, però: una parola qui cambia significato, e conviene dirlo invece di
-lasciarlo capire. Aprendo il capitolo il «loop» era la conversazione: tu
-chiedi, guardi la risposta, storci il naso, richiedi meglio. Quel loop esiste
+lasciarlo capire. Aprendo il capitolo il «loop» era il giro di un agente
+(osserva, ragiona,
+agisci), e il giro più comune di tutti è quello che fai tu in una chat: chiedi,
+guardi la risposta, storci il naso, richiedi meglio. Quel loop esiste
 ancora ed è il più comune di tutti; solo che lo giri tu, a mano, e finisce
 quando chiudi la finestra. Qui il loop diventa un'altra cosa: lo stesso giro
 affidato a un programma, che lo fa partire da sé, lo ripete e ne conserva
@@ -62,7 +64,9 @@ la prossima mossa, la fa, guarda di nuovo; avanti così finché l'oggetto è
 finito. Questo è il ciclo *interno*, quello dentro la sua testa e
 le sue mani, e dura quanto dura un lavoro.
 
-Ma sopra l'artigiano c'è il **capobottega**. Lui non intaglia: decide *quando*
+La bottega del capitolo sugli agenti divideva il lavoro fra chi costruisce e
+chi collauda; qui serve una figura in più, che nessuno dei due fa. Sopra
+l'artigiano c'è il **capobottega**. Lui non intaglia: decide *quando*
 si comincia (lunedì mattina, o ogni notte alle tre), tiene un registro di
 cosa è stato fatto, controlla il pezzo finito prima di spedirlo, e se non va
 lo rimanda indietro con un appunto. Il capobottega è il ciclo *esterno*. Il
@@ -112,8 +116,8 @@ avviare, con quali condizioni iniziali, e come giudicarne l'esito.
 `````
 
 Il ciclo esterno, disegnato per esteso, ha quattro stazioni. La
-{numref}`fig-loop-ciclo` le mostra chiuse in cerchio, con un dettaglio che è
-il cuore di tutta la sezione: alla stazione di verifica c'è un **cancello**,
+{numref}`fig-loop-ciclo` le mostra chiuse in cerchio, con il dettaglio che regge
+tutto il resto: alla stazione di verifica c'è un **cancello**,
 cioè un controllo che decide se il giro può chiudersi o va rifatto, e a
 deciderlo non è il modello. Più avanti vedremo che dove il lavoro tocca cose
 difficili da disfare (mandare una mail a un cliente, cancellare dei dati,
@@ -291,8 +295,10 @@ conta solo se li supera tutti {cite}`chen2021evaluating`. È la forma pura
 del cancello: nessun giudizio, nessuna sfumatura, un programma che gira o non
 gira.
 
-Questa idea ha una radice accademica precisa, in due lavori che il capitolo
-sugli Agenti ha già introdotto e che qui rileggiamo dal lato del loop. Il
+Il ciclo attorno al cancello (provare, farsi respingere, ripensarci,
+riprovare) ha invece una radice accademica precisa, in due lavori che il
+capitolo sugli Agenti ha già introdotto e che qui rileggiamo dal lato del
+loop. Il
 primo si chiama ReAct {cite}`yao2023react`, e mostra che intrecciare
 ragionamento e azione (pensare a parole *e* usare strumenti) rende più del
 solo agire. Siccome ogni pensiero è agganciato a quello che gli strumenti
@@ -301,22 +307,14 @@ a sé stesso, cioè della catena di pensiero della sezione sul prompt
 {cite}`wei2022chain`, che pensa a voce alta senza mai andare a controllare.
 
 Questo non vuol dire che ReAct vinca sempre, e sono gli stessi autori a
-misurarlo. Su una raccolta di domande che per rispondere obbligano a incrociare
-più informazioni, cercandole una dopo l'altra, la catena di pensiero resta
-avanti: risponde giusto nel 29,4 per cento dei casi contro il 27,4. Su una
-raccolta di affermazioni da confrontare con una fonte per dire se reggono, è
-ReAct a passare davanti: 60,9 contro 56,3. Sono scarti piccoli, due punti nel
-primo caso e quasi cinque nel secondo, e la loro piccolezza è il risultato
-interessante: nessuno dei due metodi vince in assoluto, e quale sia il
-migliore dipende dal compito. Il risultato più alto, in tutti e due i casi,
-arriva dai due metodi in coppia: uno parte, l'altro subentra quando il primo si
-arena, e la catena di pensiero è quella a più tentativi con voto di
-maggioranza vista nella sezione sul prompt. A cambiare è chi parte. Sulle
-domande a più passaggi conviene mandare avanti ReAct e chiamare in soccorso la
-catena di pensiero, e si arriva a 35,1; sulle affermazioni da verificare
-conviene l'ordine inverso, e si arriva a 64,6. Sono misure di un modello del
-2022, e come tutte le cifre di quel tipo invecchiano: quello che non invecchia
-è che l'ordine giusto lo detta il compito.
+misurarlo. Sulle domande che obbligano a incrociare più fatti la catena di
+pensiero resta
+di poco avanti, sulle affermazioni da verificare contro una fonte passa avanti
+ReAct, e il risultato migliore, in tutti e due i casi, viene dai due metodi in
+coppia, con l'uno che subentra quando l'altro si arena; i numeri e la regola
+del cambio di turno stanno nella {doc}`sezione sul ciclo dell'agente
+</Agenti/agenti-e-tool-use>`. Quello che resta è che l'ordine giusto lo detta
+il compito.
 
 Il secondo lavoro si chiama Reflexion {cite}`shinn2023reflexion`, e aggiunge
 il tassello mancante: dopo un fallimento l'agente riflette a parole sul
@@ -500,7 +498,9 @@ proprio in come è definito quel $p$: non è la probabilità di sbagliare, è la
 probabilità di sbagliare senza che nessuno se ne accorga. Un cancello
 intercetta, e quindi abbassa $p$; e siccome a essere moltiplicato per sé stesso
 venti volte è $1 - p$, abbassare $p$ anche di poco cambia moltissimo il
-risultato.
+risultato: se il cancello porta gli sbagli che passano inosservati dal cinque al
+due per cento, i giri puliti su venti passi salgono da trentasei a sessantasette
+su cento ($0{,}98^{20} \approx 0{,}67$).
 
 Il cancello però lavora dentro il ciclo, e contro l'aritmetica c'è una seconda
 difesa che sta invece attorno: non consegnare al loop tutto il potere il primo

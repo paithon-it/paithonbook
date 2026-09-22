@@ -11,7 +11,7 @@ correzione e verifica che i test passino». Il ciclo ReAct, da solo, si
 smarrisce: troppe mosse, troppe strade, troppe occasioni per perdere il filo.
 Un agente che gira da solo non basta più.
 
-Da qui due mosse, ed è di queste che parla la sezione. La prima è
+Da qui due mosse. La prima è
 pianificare in anticipo invece di reagire un passo alla volta. La seconda
 è comporre più agenti, ciascuno con un mestiere, come si mette insieme una
 squadra.
@@ -65,7 +65,15 @@ plan-and-execute separa due ruoli: un *pianificatore* produce in un colpo
 solo una sequenza di sotto-obiettivi $g_1, \dots, g_k$ che decompongono il
 compito, e un *esecutore* li affronta uno per uno (spesso con un mini-loop
 ReAct dentro ciascuno). Il piano dà struttura, coerenza globale e spesso
-meno chiamate al modello per il ragionamento di alto livello.
+meno chiamate al modello per il ragionamento di alto livello. ReWOO
+{cite}`xu2023rewoo` ne dà una misura: scrive il piano una volta sola, con
+segnaposto al posto delle osservazioni ancora da ottenere (il passo 2 usa «il
+risultato del passo 1» senza conoscerlo), fa eseguire gli strumenti e chiama il
+modello un'ultima volta per comporre la risposta; su HotpotQA dichiara un
+consumo di token circa cinque volte minore di un ciclo intercalato alla ReAct e
+quattro punti di accuratezza in più. Il risparmio viene dal non rileggere a ogni
+passo prompt e cronologia; il prezzo è che il piano non vede le osservazioni
+mentre le raccoglie, e un'osservazione inattesa la paga tutta il re-planning.
 
 Il compromesso è netto e va dichiarato. Pianificare in anticipo conviene
 quando il compito è *decomponibile* e l'ambiente *prevedibile*: il piano regge
@@ -130,16 +138,21 @@ Con gli agenti funziona uguale. Invece di un modello che fa e si giudica da
 solo, se ne mettono in fila alcuni con compiti diversi, che si scrivono l'un
 l'altro come colleghi in chat: «ecco il piano», «ecco il codice», «ho provato,
 il test 3 non passa, correggi qui». La specializzazione aiuta: un critico
-dedicato pesca errori che l'esecutore non vedeva. Quando c'è: nelle botteghe
-vere il posto del collaudatore è quello che resta scoperto per primo, e il
-lavoro esce lo stesso.
+dedicato pesca errori che l'esecutore
+non vedeva. Il guaio è che spesso manca: nelle botteghe vere il posto del
+collaudatore è il primo a restare vuoto, e il lavoro esce lo stesso, senza che
+nessuno l'abbia provato.
 
 Ma attenzione: più teste vuol dire anche più stipendi. Ogni volta che un
 agente parla, qualcuno da qualche parte fa lavorare un modello, e quel lavoro
-si paga a consumo: quattro agenti che si scrivono a vicenda per dieci giri non costano quattro
-volte, e nemmeno quaranta: ogni volta che uno prende la parola rilegge da capo
-tutto quello che gli altri hanno già detto, e quella rilettura si paga come il
-resto. E ci sono più modi di litigare o
+si paga a consumo: quattro agenti che si scrivono a vicenda per dieci giri fanno
+quaranta
+interventi, ma non costano quaranta volte uno solo: ogni volta che uno prende
+la parola rilegge da capo tutto quello che gli altri hanno già detto. Il primo
+intervento non rilegge niente, il quarantesimo rilegge trentanove messaggi, e
+sommate le riletture fanno settecentottanta messaggi letti per quaranta
+scritti. Quella rilettura si paga come il resto. E ci sono più modi di litigare
+o
 fraintendersi. Non sempre la bottega batte il buon artigiano.
 
 `````
@@ -391,7 +404,29 @@ a strumenti; perché un agente sostenibile non è solo quello che riesce, ma
 quello che riesce a un costo accettabile. E ognuna di queste misure va presa
 più volte sullo stesso compito, perché l'ambiente non sta fermo: accanto alla
 media si riporta la dispersione fra le ripetizioni, senza la quale non si sa
-se una differenza fra due agenti esista davvero.
+se una differenza fra due agenti esista davvero. Le ripetizioni si riassumono
+con due stimatori che rispondono a domande opposte. Se su un compito si fanno
+$n$ tentativi indipendenti e $c$ riescono, la probabilità che almeno uno fra
+$k \le n$ tentativi riesca si stima senza distorsione con
+
+$$
+\text{pass@}k = \mathbb{E}_{\text{compiti}}\!\left[1 - \binom{n-c}{k}\Big/\binom{n}{k}\right]
+$$
+
+{cite}`chen2021evaluating`, e dice quanto rende un verificatore che sceglie fra
+$k$ proposte; la probabilità che riescano tutti e $k$ si stima con
+
+$$
+\text{pass}^k = \mathbb{E}_{\text{compiti}}\!\left[\binom{c}{k}\Big/\binom{n}{k}\right]
+$$
+
+{cite}`yao2024taubench`, e dice l'affidabilità che serve quando ogni tentativo
+arriva a un utente. Con un tasso vero di $0{,}6$ e tentativi indipendenti,
+$\text{pass@}5 \approx 0{,}99$ e $\text{pass}^5 \approx 0{,}08$: lo stesso
+agente
+è quasi infallibile nel primo senso e quasi inservibile nel secondo. I
+coefficienti binomiali servono perché la stima ingenua $1-(1-c/n)^k$, concava in
+$c/n$, è distorta verso il basso.
 
 `````
 

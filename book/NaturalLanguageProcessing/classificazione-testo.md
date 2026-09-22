@@ -18,13 +18,12 @@ che gli storici avevano già notato: Hamilton preferiva *while*, Madison
 contesi risultarono tutti di Madison: un verdetto oggi condiviso dagli storici
 {cite}`mosteller1964inference`.
 
-Quello che è successo ha un nome: un problema da archivisti è stato
-risolto trasformandolo in un problema di **classificazione di testi**
-(assegnare a ogni documento un'etichetta, "Hamilton" o "Madison", sulla base
-delle parole che contiene). E lo strumento matematico era un teorema del
-Settecento e non un ritrovato dell'informatica, applicato con più pazienza
-che potenza di calcolo. In questa sezione costruiamo proprio quel tipo di
-giudice automatico, con gli attrezzi di oggi.
+Quello che è successo ha un nome: un problema da archivisti è stato risolto
+trasformandolo in un problema di **classificazione di testi** (assegnare a ogni
+documento un'etichetta, "Hamilton" o "Madison", sulla base delle parole che
+contiene). E lo strumento matematico era un teorema del Settecento e non un
+ritrovato dell'informatica, applicato con più pazienza che potenza di calcolo.
+Costruiamo proprio quel tipo di giudice automatico, con gli attrezzi di oggi.
 
 ## Dare un'etichetta a un testo
 
@@ -34,15 +33,17 @@ email va allo sportello "reclami" o "fatturazione"? Chi ha scritto questo
 saggio? Il formato è sempre lo stesso: in ingresso un documento, in uscita una
 scelta tra poche etichette prefissate.
 
-Gli ingredienti li abbiamo già. Nella sezione sulla rappresentazione del testo
-abbiamo imparato a trasformare un documento in un vettore di numeri: il
-*bag-of-words* dei conteggi, o la sua versione tarata TF-IDF. Qui aggiungiamo
-il pezzo mancante: due modelli che, dato quel vettore, emettono il verdetto.
-Il primo, Naive Bayes, è il discendente diretto del metodo di Mosteller e
-Wallace; il secondo, la regressione logistica, l'abbiamo già incontrata
-nel {doc}`capitolo sul machine learning </MachineLearning/overview>` e qui la
-mettiamo al lavoro sul testo. Il confronto tra i due, vedremo, insegna una
-distinzione che attraversa tutto il machine learning.
+Gli ingredienti li abbiamo già. Nella {doc}`sezione sulla rappresentazione del
+testo </NaturalLanguageProcessing/rappresentare-testo>` abbiamo imparato a
+trasformare un documento in un vettore di numeri: il *bag-of-words* dei
+conteggi, o la sua versione tarata TF-IDF, costruito sui token che la
+tokenizzazione ci ha dato. Qui aggiungiamo il pezzo mancante: due modelli che,
+dato quel vettore, emettono il verdetto. Il primo, Naive Bayes, è il
+discendente diretto del metodo di Mosteller e Wallace; il secondo, la
+regressione logistica, l'abbiamo già incontrata nel {doc}`capitolo sul machine
+learning </MachineLearning/overview>` e qui la mettiamo al lavoro sul testo. Il
+confronto tra i due, vedremo, insegna una distinzione che attraversa tutto il
+machine learning.
 
 ## Naive Bayes: indizi che votano
 
@@ -73,7 +74,7 @@ un sacchetto di parole e conta chi c'è dentro; di chi veniva prima e chi dopo
 non gli arriva niente. Per lui «Il gatto nero salta sul muro» e «Il muro nero
 salta sul gatto» sono lo stesso identico messaggio. Per decidere se una
 recensione è entusiasta se ne può fare a meno; per altre cose no, ed è il
-motivo per cui questo capitolo va avanti.
+motivo per cui il NLP non si ferma qui.
 
 `````{tab} Elementare
 
@@ -175,9 +176,9 @@ minuscole va in *underflow*, perciò in pratica si lavora nello spazio dei
 logaritmi, massimizzando $\log P(c) + \sum_i \log P(w_i \mid c)$; il prodotto
 diventa una somma e l'argmax non cambia, perché il logaritmo è monotono.
 
-Una precisazione sul modello, perché la formula qui sopra ne individua uno solo
+Una precisazione sul modello, perché la formula di Bayes ne individua uno solo
 di due. Dividendo le occorrenze di $w$ per il totale dei token della classe
-si ottiene il Naive Bayes multinomiale, quello che il codice qui sotto
+si ottiene il Naive Bayes multinomiale, quello che il codice sulle recensioni
 usa (`MultinomialNB`) e quello adatto quando conta *quante volte* una
 parola compare. Esiste anche la variante di Bernoulli, in cui $P(w \mid c)$
 è la frazione di documenti della classe che contengono $w$, e ogni parola
@@ -219,10 +220,10 @@ modelli di oggi.
 Lo studio che aprì il filone è del 2002, e lo firmano Bo Pang, Lillian Lee e
 Shivakumar Vaithyanathan {cite}`pang2002thumbs`. Presero 1.400 recensioni di
 film, 700 entusiaste e 700 stroncature, e ci misero alla prova tre giudici
-automatici diversi: Naive Bayes, un cugino stretto della regressione logistica
-che vedremo fra poco, e le *support vector machine*, che nel capitolo sul
-machine learning hanno una sezione tutta loro e che cercano il confine più
-largo possibile fra due gruppi di esempi.
+automatici diversi: Naive Bayes; un modello a massima entropia, che è la
+regressione logistica sotto un altro nome; e le *support vector machine*, che
+cercano il confine più largo possibile fra due gruppi di esempi e hanno una
+{doc}`sezione tutta loro </MachineLearning/svm>` nel machine learning.
 
 Due risultati restano istruttivi. Il primo: tutti e tre i giudici, che il
 giudizio se lo erano ricavato dagli esempi, arrivavano intorno all'80 per cento
@@ -233,7 +234,7 @@ secondo: giudicare il tono si rivelò più difficile che riconoscere di che
 argomento parla un testo, perché l'argomento sta nelle parole e il giudizio si
 nasconde nei giri di frase, che i conteggi prendono male.
 
-Con `scikit-learn` il filtro antispam diventa poche righe. Costruiamo un
+Con `scikit-learn` il classificatore diventa poche righe. Costruiamo un
 micro-corpus di recensioni in italiano:
 
 ```python
@@ -294,7 +295,7 @@ piatto prima ancora di leggere la recensione. Se nell'archivio le stroncature
 fossero il doppio delle recensioni entusiaste, l'ago partirebbe già inclinato
 verso il negativo, e alle parole toccherebbe spingere più forte per
 raddrizzarlo. Con entusiaste e stroncature in parità l'ago parte in piano, e il
-totale è la somma dei soli pesetti delle parole, come nel conto qui sopra.
+totale è la somma dei soli pesetti delle parole, come nel conto dei pesetti.
 
 C'è poi una regola che tiene i pesetti moderati, e serve soprattutto contro le
 parole rare. Una parola comparsa in una recensione sola, entusiasta, se la
@@ -352,7 +353,14 @@ parole rare. Un vantaggio pratico: le feature non devono essere solo parole.
 Si possono affiancare le coppie di parole adiacenti (i *bigrammi*), la
 lunghezza del documento, il numero di punti esclamativi, i conteggi da un
 lessico di sentiment: il modello impara il peso di ciascuna, qualunque cosa
-misuri.
+misuri. Con feature dense al posto dei conteggi si ottiene fastText usato come
+classificatore {cite}`joulin2017bag`. Il documento è la media degli embedding
+delle sue parole e dei suoi bigrammi, questi ultimi mappati per hashing su un
+numero fisso di righe, e sopra la media sta la stessa regressione logistica
+multinomiale, con una softmax gerarchica quando le classi sono migliaia. È un
+solo strato lineare, quindi si addestra su CPU in minuti, e gli autori lo
+propongono come linea di base da battere prima di scomodare una rete
+profonda.
 
 `````
 
@@ -397,17 +405,35 @@ $P(d, c) = P(d \mid c)\,P(c)$ e classifica passando dalla regola di Bayes: per
 Naive Bayes, "generare" un documento di classe $c$ significa estrarre parole
 da $P(w \mid c)$. Un modello discriminativo stima direttamente la quantità
 che serve alla decisione, $P(c \mid d)$, senza mai modellare come sono fatti i
-documenti. Le conseguenze pratiche: quando le feature sono correlate (e nel
-testo lo sono sempre) Naive Bayes moltiplica evidenze non indipendenti e
-produce probabilità mal calibrate, schiacciate verso 0 o 1 (la *decisione*
-spesso resta giusta, la *confidenza* no); la regressione logistica,
-ottimizzando i pesi congiuntamente, ripartisce il credito tra feature
-correlate. In cambio, Naive Bayes ha stime a bassa varianza che convergono con
-pochi dati e si addestra in un solo passaggio; la regressione logistica tende
-a vincere quando gli esempi abbondano. Già nei confronti di Pang, Lee e
-Vaithyanathan sulle recensioni di film i modelli discriminativi tendevano a
-superare Naive Bayes, ma di poco {cite}`pang2002thumbs`: su compiti lessicali
-con dati scarsi, l'ingenuo resta un avversario dignitoso.
+documenti. I due modelli sono una coppia generativa-discriminativa in senso
+stretto. Con due classi, nello spazio dei logaritmi, il Naive Bayes
+multinomiale decide con
+
+$$
+\log\frac{P(c_1\mid d)}{P(c_0\mid d)} = \log\frac{P(c_1)}{P(c_0)}
++ \sum_{w\in V} x_w \log\frac{P(w\mid c_1)}{P(w\mid c_0)},
+$$
+
+dove $x_w$ è il conteggio di $w$ in $d$. È una funzione lineare di
+$\mathbf{x}$, della stessa forma $\mathbf{w}^\top\mathbf{x}+b$ della
+regressione logistica. Cambia come si scelgono i pesi: per conteggio, parola
+per parola, oppure per massima verosimiglianza condizionata, tutti insieme. Ng
+e Jordan {cite}`ng2001discriminative` ne ricavano il compromesso che segue: il
+generativo si avvicina al proprio errore asintotico con un numero di esempi che
+cresce come il logaritmo del numero di feature, il discriminativo linearmente,
+ma l'asintoto del discriminativo è più basso (il confronto è rifatto in
+{doc}`Modelli generativi </MachineLearning/modelli-generativi>`). Le
+conseguenze pratiche: quando le feature sono correlate (e nel testo lo sono
+sempre) Naive Bayes moltiplica evidenze non indipendenti e produce probabilità
+mal calibrate, schiacciate verso 0 o 1 (la *decisione* spesso resta giusta, la
+*confidenza* no); la regressione logistica, ottimizzando i pesi congiuntamente,
+ripartisce il credito tra feature correlate. In cambio, Naive Bayes ha stime a
+bassa varianza che convergono con pochi dati e si addestra in un solo
+passaggio; la regressione logistica tende a vincere quando gli esempi
+abbondano. Già nei confronti di Pang, Lee e Vaithyanathan sulle recensioni di
+film i modelli discriminativi tendevano a superare Naive Bayes, ma di poco
+{cite}`pang2002thumbs`: su compiti lessicali con dati scarsi, l'ingenuo resta
+un avversario dignitoso.
 
 `````
 

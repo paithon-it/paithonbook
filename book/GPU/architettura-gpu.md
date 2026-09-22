@@ -17,8 +17,9 @@ istruzioni, e per questo i suoi core sono pochi e complicati. I progettisti
 delle GPU ne misero migliaia, ciascuno lento e limitato, tutti attivi nello
 stesso istante.
 
-Di quella folla, che la sezione «Prestazioni e scala» del {doc}`capitolo su
-PyTorch </PyTorch/overview>` chiamava una squadra di operai semplici, qui
+Di quella folla, che la sezione {doc}`«Prestazioni e scala»
+</PyTorch/prestazioni>`
+chiamava una squadra di operai semplici, qui
 apriamo il cofano: com'è fatta dentro, e (soprattutto) *come esegue* il codice.
 Perché il segreto delle prestazioni non è che ogni operaio sia veloce (non lo
 è), ma come sono organizzati, a squadre, e come si coprono a vicenda i tempi
@@ -73,7 +74,9 @@ uguali di un solo strato di una rete, vuoi il formicaio.
 
 `````{tab} Superiore
 
-Una CPU è *latency-oriented*: pochi core (dell'ordine della decina), ma
+Una CPU è *latency-oriented*: pochi core (da qualche unità a qualche
+centinaio sui processori da server, ciascuno con unità vettoriali SIMD fino a
+512 bit), ma
 complessi, con grandi cache per tenere i dati vicini, predizione dei salti ed
 esecuzione fuori ordine per non fermarsi mai su un singolo flusso di
 istruzioni. Gran parte del silicio è spesa in logica di controllo e memoria,
@@ -87,7 +90,9 @@ pronto. Non accorcia l'attesa del singolo: la *copre* con il lavoro degli
 altri. È una scelta sensata solo se il problema offre parallelismo a valanga,
 ed è esattamente il caso delle reti neurali: come richiamato nella sezione
 «Prestazioni e scala», il prodotto di due matrici $(M,K)$ e $(K,N)$ costa
-circa $2MNK$ operazioni tutte indipendenti.
+circa $2MNK$ operazioni, raccolte in $MN$ prodotti scalari indipendenti l'uno
+dall'altro (dentro ciascuno le $K$ somme restano una catena, che si accorcia a
+profondità $\log_2 K$ solo sommando ad albero).
 
 `````
 
@@ -150,10 +155,12 @@ GPU tiene in carico contemporaneamente, cioè qualche decina di compiti per ogni
 postazione.
 
 Da lì si ricavano i numeri che si leggono sulle schede tecniche, e il conto è
-di quelli che si fanno a mente: diecimila postazioni, ciascuna una
-moltiplicazione-e-somma per battito (che di conti ne vale due), e un metronomo
-che batte più di un miliardo di volte al secondo, fanno qualche decina di
-migliaia di miliardi di conti al secondo. È il motivo per cui una GPU
+di quelli che si fanno a mente: $P_\text{picco} = n_\text{SM} \cdot
+n_\text{FMA} \cdot 2 \cdot f$, dove $n_\text{SM}$ è il numero di SM,
+$n_\text{FMA}$ le unità di moltiplicazione-e-somma per SM (una FMA vale due
+conti) e $f$ la frequenza del metronomo. Su una A100, $108 \cdot 64 \cdot 2
+\cdot 1{,}41 \cdot 10^9 \approx 19{,}5 \cdot 10^{12}$ conti al secondo in
+`float32`: qualche decina di migliaia di miliardi. È il motivo per cui una GPU
 divora le moltiplicazioni fra tabelloni di numeri di cui una rete neurale è
 fatta.
 

@@ -163,7 +163,21 @@ La famiglia a uno stadio (YOLO {cite}`redmon2016you` e SSD
 predice simultaneamente riquadri e classi su una griglia dell'immagine. Il
 prezzo storico è stato lo squilibrio tra i pochi riquadri con oggetto e i
 moltissimi di sfondo; la *focal loss* di RetinaNet {cite}`lin2017focal` lo ha
-in gran parte sanato, avvicinando le due famiglie in accuratezza.
+in gran parte sanato, avvicinando le due famiglie in accuratezza. Posto
+$p_t = p$ se l'ancora è positiva e $p_t = 1 - p$ se è sfondo, la
+cross-entropy $-\log p_t$ diventa
+
+$$
+\mathrm{FL}(p_t) = -\alpha_t\,(1 - p_t)^{\gamma} \log p_t ,
+$$
+
+dove $\alpha_t$ è un peso fisso per classe (il $\lambda_{\text{noobj}}$ di YOLO
+ne è un antenato) e il fattore $(1 - p_t)^{\gamma}$ è quello nuovo, perché
+dipende da quanto l'esempio è già risolto. Con $\gamma = 2$ un esempio con
+$p_t = 0{,}9$ pesa cento volte meno che nella cross-entropy, uno con
+$p_t \approx 0{,}968$ mille volte meno; il lavoro usa $\gamma = 2$ e
+$\alpha = 0{,}25$, e divide la somma per il numero delle sole ancore
+positive.
 
 `````
 
@@ -298,8 +312,11 @@ perché ogni cornice sbagliata li tira giù e la giusta che viene dopo li rialza
 su e giù come i denti di una sega. Prima di sommarli il correttore li
 appiattisce, e la regola sta in una riga: al posto del numero di quel momento
 si prende il più alto fra quello e tutti quelli che vengono dopo. I tre
-diventano 1, 0,60 e 0,60. Un altro correttore, in un'altra stanza, arriva agli
-stessi tre, ed è per questo che si appiattisce.
+diventano 1, 0,60 e 0,60. Così il voto non dipende dal caso: basta che due
+cornici quasi ugualmente sicure si scambino di posto nella fila perché i denti
+della sega si spostino, mentre il più alto fra adesso e dopo resta quasi fermo.
+Ed è un conto onesto, perché è la precisione migliore che il correttore
+troverebbe accettando di andare un po’ più avanti nella fila.
 
 La somma fa 2,20, e si divide per tre, cioè per i cani che c'erano davvero, non
 per le cinque cornici disegnate: 0,73. Un cane che nessuna cornice avesse
@@ -334,9 +351,14 @@ falsi positivi. Da qui si costruisce la curva
 *precision–recall* per ciascuna classe: l'area sotto la sua interpolata
 (l'inviluppo monotono decrescente, campionato a 11 punti di recall nel VOC fino
 al 2009, a tutti i cambi di recall dal 2010, a 101 punti in COCO) è l’**Average
-Precision** (AP). La curva grezza è a denti di sega e nessuno la integra: è la
-scelta dell'interpolazione a rendere i numeri riproducibili fra
-implementazioni. La **mean Average Precision** (mAP) ne fa la media sulle
+Precision** (AP). La curva grezza è a denti di sega, e basta che due predizioni
+di
+confidenza quasi uguale si scambino di posto perché i denti si spostino:
+l'inviluppo, che a ogni recall prende la precisione migliore ottenibile a
+recall uguale o maggiore, rende la misura stabile rispetto a queste piccole
+variazioni di ordinamento {cite}`everingham2010pascal`. Le convenzioni di
+campionamento restano però diverse, e un AP a 11 punti non si confronta con uno
+a 101. La **mean Average Precision** (mAP) ne fa la media sulle
 classi. Il benchmark COCO irrigidisce la metrica mediando la mAP su dieci soglie
 di IoU, da $0{,}5$ a $0{,}95$ a passi di $0{,}05$: premia i modelli che
 localizzano con precisione, non solo che indovinano la classe.
@@ -364,13 +386,17 @@ C'è però una terza via, che il problema lo toglie invece di risolverlo. Una
 famiglia di rilevatori inaugurata nel 2020 da DETR {cite}`carion2020end` (sta
 per *detection transformer*) chiede alla rete un numero fisso di risposte, per
 esempio cento, e durante l'addestramento le abbina agli oggetti veri una a una:
-ogni oggetto vero viene assegnato a una sola delle cento risposte, e tutte
-quelle che restano sono premiate per dire «qui non c'è niente». Chi produce un
-doppione viene quindi punito mentre impara, non ripulito dopo, e alla fine
+fra tutte le assegnazioni possibili sceglie quella di costo minimo (un
+*abbinamento bipartito*, che l’*algoritmo ungherese* trova in tempo
+polinomiale), dove il costo di una coppia premia la probabilità che la risposta
+dà alla classe giusta e punisce la distanza fra i due riquadri. Gli oggetti
+veri si completano con «nessun oggetto» fino a cento, e tutte le risposte
+rimaste sono premiate per dire «qui non c'è niente». Chi produce un doppione
+viene quindi punito mentre impara, non ripulito dopo, e alla fine
 dell'addestramento i doppioni non li produce più. Spariscono così sia le
-cornici di partenza sia la fase di pulizia. Il prezzo, storicamente, è stato
-che l'addestramento impiega molto più tempo a stabilizzarsi su un risultato
-buono.
+cornici di partenza sia la fase di pulizia. Il prezzo è stato un addestramento
+molto più lungo (500 epoche, contro le 36 del Faster R-CNN con cui il lavoro
+si confronta) e risultati peggiori sugli oggetti piccoli.
 
 ## La famiglia YOLO: le impalcature tolte una alla volta
 
@@ -386,16 +412,16 @@ anche l'oggetto piccolo trova una griglia abbastanza fitta da vederlo, e al
 posto della softmax mette tanti classificatori indipendenti, uno per classe,
 perché la stessa figura può essere insieme «persona» e «pedone».
 
-Poi la famiglia cambia natura. Dal 2020 le versioni nuove sono software,
-mantenuto dalla società Ultralytics {cite}`jocher2026ultralytics`, e la storia
-di questa linea si legge nei registri delle versioni invece che negli
-articoli. YOLOv5 arriva
-così, libreria PyTorch senza paper; YOLOv8, nel 2023, toglie le ancore,
+Poi la famiglia si divide. Dal 2020 il nome lo portano due linee parallele:
+articoli di gruppi diversi (YOLOv4 nel 2020, YOLOv7 nel 2022, YOLOv10 nel 2024)
+e il software della società Ultralytics {cite}`jocher2026ultralytics`, la cui
+storia si legge nei registri delle versioni invece che negli articoli. YOLOv5
+arriva così, libreria PyTorch senza paper; YOLOv8, nel 2023, toglie le ancore,
 predicendo direttamente centro e distanze dai bordi, come i rilevatori detti
 *anchor-free*; e YOLO26, all'inizio del 2026, toglie anche la NMS, punendo i
 doppioni durante l'addestramento con la stessa idea dell'abbinamento uno a uno
-di DETR, che nella famiglia era entrata qualche versione prima, così quello che
-la rete produce è già il risultato finale. Le due
+di DETR, che nella famiglia era entrata con YOLOv10, un lavoro dell'Università
+Tsinghua: quello che la rete produce è già il risultato finale. Le due
 impalcature del mestiere, le ancore e la pulizia dei doppioni, la famiglia le ha
 prima usate e poi tolte tutte e due; restano la griglia, la passata unica e il
 nome.
@@ -499,8 +525,29 @@ punteggi di classe a due soli livelli.
 
 La segmentazione di istanza unisce detection e maschere: **Mask R-CNN**
 {cite}`he2017mask` estende Faster R-CNN con un terzo ramo che, per ciascuna
-regione, predice una maschera binaria. Ottiene così, insieme, riquadro, classe e
-sagoma di ogni singola istanza.
+regione, predice una maschera binaria $28 \times 28$ per ogni classe, con una
+sigmoide per pixel invece di una softmax fra classi. Solo la maschera della
+classe vera riceve gradiente, così le classi non competono pixel per pixel; e
+le feature della regione si estraggono con **RoIAlign**, che campiona la mappa
+per interpolazione bilineare invece di arrotondare le coordinate della regione
+alla griglia, che farebbe scivolare la maschera di frazioni di cella. Ottiene
+così, insieme, riquadro, classe e sagoma di ogni singola istanza.
+
+Le metriche seguono. Per la semantica la IoU si calcola per classe, sui pixel
+di tutto il dataset, $\mathrm{IoU}_k = \mathrm{TP}_k / (\mathrm{TP}_k +
+\mathrm{FP}_k + \mathrm{FN}_k)$, e la **mIoU** ne fa la media sulle $K$
+classi. In ambito medico si preferisce il coefficiente di **Dice**,
+
+$$
+\mathrm{Dice}(A, B) = \frac{2\,|A \cap B|}{|A| + |B|}
+= \frac{2\,\mathrm{IoU}}{1 + \mathrm{IoU}},
+$$
+
+che è la F1 calcolata sui pixel e ordina le predizioni come la IoU; la sua
+versione continua, con le probabilità al posto delle maschere binarie, si usa
+anche come loss, perché non si lascia sommergere dai moltissimi pixel di sfondo
+quando la lesione ne occupa pochi. Per l'istanza si riusa la mAP, con la IoU fra
+maschere al posto di quella fra riquadri.
 
 `````
 
@@ -559,9 +606,12 @@ $$
 
 L'1 ha stampato un blocchetto di 1, il 4 un blocchetto di 4. Con passo 1,
 invece, i colpi si sarebbero sovrapposti e nelle caselle condivise i valori si
-sarebbero sommati. Le sovrapposizioni disuguali lasciano il segno: certe caselle
-ricevono due colpi e le loro vicine uno solo, e nell'immagine finale compare una
-trama regolare a quadretti che nella scena non c'era.
+sarebbero sommati; con un timbro di due caselle, però, ogni casella interna ne
+riceve lo stesso numero, e solo il bordo ne riceve meno. Il guaio arriva quando
+il timbro non copre un numero intero di passi, per esempio un timbro di tre
+caselle spostato ogni volta di due: allora una casella riceve due colpi e la
+vicina uno solo, alternandosi, e nell'immagine finale compare una trama regolare
+a quadretti che nella scena non c'era.
 
 C'è poi una cosa che la timbratura non può sapere. La mappa $2 \times 2$ di
 partenza l'ha prodotta la discesa, che aveva riassunto una tela più grande
@@ -643,13 +693,16 @@ cade nel posto sbagliato, per eccesso o per difetto. Su un nodulo quel decimo
 può anche non cambiare il volume misurato, perché la parte in più e quella in
 meno si compensano; a spostarsi è il contorno, che in qualche punto entra nel
 tessuto sano e in qualche altro lascia fuori del tumore. E soprattutto restano
-gli oggetti mancati del tutto, che in
-quel numero non compaiono affatto: la IoU si calcola confrontando due cornici,
-quindi esiste solo dove il sistema una cornice l'ha disegnata. Un pedone che il
-rilevatore non ha visto non ha nessuna cornice, quindi nessuna IoU, quindi non
-peggiora la media di niente. In medicina o alla guida sono le due cose insieme,
-il contorno approssimato e l'oggetto non visto, a chiedere un occhio umano. Ma
-la traiettoria è chiara: dal *cosa*, al *dove*, fino al contorno esatto.
+gli oggetti mancati del tutto, che nella IoU di una coppia non compaiono
+affatto: quella si calcola confrontando due cornici, quindi esiste solo dove il
+sistema una cornice l'ha disegnata, e una media delle IoU sulle sole coppie
+trovate non peggiora di niente per un pedone che il rilevatore non ha visto. Lo
+vedono invece le misure che contano anche gli assenti: la mAP, che divide per
+gli oggetti veri, e la IoU per classe della segmentazione, dove i pixel di un
+nodulo mancato entrano nell'unione e abbassano il voto. In medicina o alla
+guida sono le due cose insieme, il contorno approssimato e l'oggetto non visto,
+a chiedere un occhio umano. Ma la traiettoria è chiara: dal *cosa*, al *dove*,
+fino al contorno esatto.
 
 `````{tab} Elementare
 

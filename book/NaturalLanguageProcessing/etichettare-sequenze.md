@@ -124,8 +124,9 @@ una parola alla forma con cui la si cerca sul vocabolario, il suo *lemma*. Per
 è il nome (e allora il lemma è *porta*) o il verbo (e allora è *portare*).
 
 Alla sintesi vocale, cioè ai programmi che leggono un testo ad alta voce,
-il percorso inverso del riconoscimento vocale che incontreremo nel capitolo
-dedicato alla voce: un lettore automatico davanti ad «ancora» deve scegliere
+il percorso inverso del riconoscimento vocale, che ha una {doc}`sezione sua
+</SpeechRecognition/sintesi-vocale>` nel capitolo sul parlato: un lettore
+automatico davanti ad «ancora» deve scegliere
 tra *àncora* e *ancóra*, e l'accento giusto lo decide la categoria
 grammaticale.
 
@@ -281,7 +282,8 @@ d'obbligo resta il tutorial di Rabiner {cite}`rabiner1989tutorial`.
 Questa macchina, del resto, non è nata per la grammatica. Lo scritto che l'ha
 resa popolare è del 1989, lo firma Lawrence Rabiner {cite}`rabiner1989tutorial`
 e parla di riconoscimento del parlato: gli HMM hanno retto la trascrizione
-automatica per trent'anni, e li ritroveremo nel capitolo dedicato.
+automatica per trent'anni, e li ritroveremo nel {doc}`capitolo sul
+riconoscimento del parlato </SpeechRecognition/overview>`.
 
 Cambia solo il cast della recita, e conviene vedere come. Dietro la tenda non
 ci sono più le categorie grammaticali, ci sono i suoni elementari della
@@ -325,8 +327,8 @@ algoritmo ha poi viaggiato dentro i telefoni cellulari di mezzo mondo.
 
 Facciamo i conti fino in fondo su un modello giocattolo: tre categorie
 (`DET`, `NOME`, `VERBO`) e la frase «la porta cigola», dove «porta» ha la
-stessa doppiezza dell'aggancio di questa sezione. I numeri delle due tabelle
-qui sotto sono inventati per l'esempio, scelti tondi perché i conti si
+stessa doppiezza di «porta» nella frase d'apertura. I numeri delle due tabelle
+di probabilità sono inventati per l'esempio, scelti tondi perché i conti si
 possano rifare a mente: in un sistema vero verrebbero dai conteggi su un
 corpus già etichettato, come si è detto poco fa.
 
@@ -400,6 +402,15 @@ possibilità, e quella entrata con meno punteggio non recupera più. Poi
 moltiplica per lo $0{,}3$ con cui un verbo dice «cigola», e l’incrocio chiude a
 $0{,}0063$.
 
+Se a ogni incrocio il navigatore sommasse i punteggi delle strade che arrivano,
+invece di tenere la migliore, a «cigola» troverebbe
+$0{,}0063 + 0{,}0024 \times 0{,}3 = 0{,}0063 + 0{,}00072 = 0{,}00702$: la
+probabilità della frase, sommata su tutte le strade che la possono produrre. La
+strada migliore ne porta circa nove decimi. Lo stesso giro fatto dalla fine
+verso l'inizio, e combinato con questo, dice per ogni parola quanto è probabile
+ciascuna categoria tenendo conto di tutte le strade; e sono quelle probabilità
+a permettere di imparare le tabelle da un testo che nessuno ha etichettato.
+
 A ogni strada tenuta il navigatore si era segnato su un foglietto da dove
 veniva. Adesso rilegge i foglietti all’indietro: verbo ← nome ← articolo. La
 frase esce così: *la*/articolo *porta*/nome *cigola*/verbo.
@@ -457,6 +468,23 @@ garanzia dell'ottimo globale; a differenza della *beam search* della sezione
 precedente, che è un'euristica. In pratica si lavora con i logaritmi, sommando
 invece di moltiplicare, per evitare l'underflow.
 
+Sostituendo il massimo con una somma, la stessa ricorrenza diventa
+l’**algoritmo forward**,
+$\alpha_i(s) = \sum_{s'} \alpha_{i-1}(s')\,P(s \mid s')\,P(w_i \mid s)$, con
+$P(w_{1:n}) = \sum_s \alpha_n(s)$ e lo stesso costo $O(n\,T^2)$: sul modello
+giocattolo $P(w_{1:3}) = 0{,}0063 + 0{,}00072 = 0{,}00702$, e il cammino di
+Viterbi ne raccoglie circa il $90\%$. Affiancato alla ricorrenza speculare
+all'indietro,
+$\beta_i(s) = \sum_{s'} P(s' \mid s)\,P(w_{i+1} \mid s')\,\beta_{i+1}(s')$ con
+$\beta_n(s) = 1$, dà le probabilità a posteriori
+$P(t_i = s \mid w_{1:n}) = \alpha_i(s)\,\beta_i(s) / P(w_{1:n})$: è il
+**forward-backward**. Serve dove i conteggi non si possono fare: senza un corpus
+annotato l'algoritmo di Baum–Welch, un caso dell'EM, usa quelle probabilità come
+conteggi attesi e non fa mai scendere la verosimiglianza da un'iterazione
+all'altra, fino a un massimo locale {cite}`rabiner1989tutorial`. Nel caso
+sommato l'underflow si evita riscalando le $\alpha_i$ a ogni passo, perché il
+logaritmo di una somma non è una somma.
+
 `````
 
 Una riga di storia successiva. Agli HMM sono succeduti i **Conditional Random
@@ -470,6 +498,63 @@ documenti. Il guadagno è che un CRF può guardare indizi che a un HMM sfuggono,
 per esempio la maiuscola iniziale, le ultime tre lettere della parola, la
 presenza di un trattino; e per oltre un decennio sono stati il modo migliore di
 fare NER. Per trovare il percorso migliore, però, chiamano sempre Viterbi.
+
+`````{tab} Elementare
+
+Fra l'HMM e il CRF c'è stato un modello di mezzo, più furbo dell'HMM sugli
+indizi ma ancora abituato a giudicare la sfilata un passo alla volta. A ogni
+incrocio doveva distribuire tutto il suo punteggio fra le strade che ripartono
+da lì, e la parola serviva solo a decidere come spartirlo. Il guaio si vede a
+un incrocio con una sola uscita: la strada va presa per forza, con tutto il
+punteggio, qualunque parola arrivi, e la parola non ha modo di protestare.
+(Nell'HMM questo non succede, perché la parola entra come un voto a parte; ma
+l'HMM gli indizi non li sa usare.)
+
+Un CRF aspetta la fine. Dà un punteggio a ogni percorso intero, sommando quanto
+ogni etichetta sta bene con le parole (una maiuscola in testa, una desinenza
+in *-mente*) e quanto sta bene con l'etichetta che la precede, e solo alla fine
+divide per la somma dei punteggi di tutti i percorsi possibili. Quella somma
+sembra impossibile, perché i percorsi sono miliardi di miliardi, ma si fa con
+lo stesso traliccio di Viterbi, sommando invece di scegliere. Così un percorso
+intero può valere poco anche se ogni suo incrocio era obbligato.
+
+Per imparare, si cercano i pesi che rendono più probabili i percorsi giusti
+degli esempi, e la ricerca ha una sola cima, senza cime false dove fermarsi per
+errore. Nella versione con le reti, i punteggi fra parole ed etichette li
+calcola una rete ricorrente che legge nei due sensi, e al CRF restano da
+imparare soltanto quelli fra un'etichetta e la successiva.
+
+`````
+
+`````{tab} Superiore
+
+Un CRF a catena lineare modella direttamente la condizionata,
+
+$$
+P(t_{1:n} \mid w_{1:n}) = \frac{1}{Z(w_{1:n})}
+\exp\Big(\sum_{i=1}^{n} \theta^{\top}\mathbf{f}(t_{i-1}, t_i, w_{1:n}, i)\Big),
+$$
+
+$$
+Z(w_{1:n}) = \sum_{t'_{1:n}} \exp\Big(\sum_{i=1}^{n} \theta^{\top}\mathbf{f}(t'_{i-1}, t'_i, w_{1:n}, i)\Big),
+$$
+
+dove $\mathbf{f}$ è un vettore di caratteristiche che possono guardare l'intera
+frase (maiuscola, suffissi, parole vicine) e $\theta$ i loro pesi. La
+normalizzazione è **globale**: $Z$ somma su tutte le $T^n$ sequenze e si calcola
+con l'algoritmo forward in $O(n\,T^2)$. È questo a separare il CRF dai MEMM che
+lo precedono, normalizzati passo per passo: lì ogni stato distribuisce una
+massa unitaria fra i successori qualunque sia la parola, e uno stato con pochi
+successori ignora di fatto l'osservazione, il *label bias* che
+{cite}`lafferty2001conditional` mostrano e che il CRF elimina. L'addestramento
+massimizza la log-verosimiglianza condizionata, concava in $\theta$, il cui
+gradiente è la differenza fra i conteggi empirici delle caratteristiche e quelli
+attesi sotto il modello, calcolati col forward-backward. La decodifica resta
+Viterbi sui punteggi $\theta^\top\mathbf{f}$. Nella versione neurale le
+caratteristiche di emissione le produce una BiLSTM, e restano da apprendere le
+sole transizioni fra etichette.
+
+`````
 
 ## La via neurale: una BiLSTM per etichettare
 
@@ -510,9 +595,15 @@ quella di sempre, la cross-entropia (quanto la previsione si discosta
 dall'etichetta giusta), applicata però parola per parola, e con un
 accorgimento: le frasi di un gruppo hanno lunghezze diverse e si pareggiano
 riempiendo le più corte con caselle vuote (il *padding*), che vanno escluse dal
-conto, altrimenti la rete si metterebbe a imparare il vuoto. È a questo che
-serve il `-100` nel codice qui sotto: è la marca convenzionale che dice
-«questa casella non conta».
+conto, altrimenti la rete si metterebbe a imparare il vuoto. Il `-100` passato
+a `CrossEntropyLoss` è la marca convenzionale che dice «questa casella non
+conta». Escluderle dal conto, però, non basta: la LSTM che legge all'indietro
+comincia dall'ultima casella, quindi attraversa i riempitivi prima di arrivare
+alle parole vere, e l'etichetta di «porta» cambierebbe con il numero di caselle
+vuote in coda. Per questo il lotto, prima della LSTM, si impacchetta con
+`nn.utils.rnn.pack_padded_sequence`, passando le lunghezze vere, e dopo si
+srotola con `pad_packed_sequence`: così ciascuna direzione legge soltanto la
+propria frase. Lo schema del ciclo resta questo:
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -540,8 +631,9 @@ sopra la stessa testa che assegna un punteggio a ogni etichetta, e proseguire
 l'addestramento per pochi giri sul compito specifico. Questa seconda fase corta
 si chiama fine-tuning, «rifinitura»: non si riparte da zero, si parte da un
 modello che la lingua la sa già e gli si insegna soltanto il mestiere nuovo,
-con una frazione dei dati e del tempo. Ne parleremo nel capitolo sui
-Transformer, dove la lettura nei due sensi, che qui abbiamo dovuto costruire a
+con una frazione dei dati e del tempo. Ne parla il {doc}`capitolo sui
+Transformer </Transformers/overview>`, dove la lettura nei due sensi, che qui
+abbiamo dovuto costruire a
 mano con due reti affiancate, viene da sé.
 
 ## Misurare bene: token o entità?
@@ -620,7 +712,14 @@ $$
 
 La severità
 dell'exact match è motivata dall'uso a valle: un'entità dai confini
-sbagliati inquina qualunque base di conoscenza la riceva. L'accuratezza per
+sbagliati inquina qualunque base di conoscenza la riceva. Ha però un costo
+contabile: un'entità con un confine sbagliato conta due volte, come falso
+positivo (il segmento predetto) e come falso negativo (quello vero mancato),
+mentre non predire niente costa un falso negativo soltanto, sicché un sistema
+che tace sui casi dubbi può guadagnare $F_1$. I conteggi si sommano su tutti i
+tipi prima di calcolare precisione e richiamo (media *micro*), e lo script di
+CoNLL, come la libreria `seqeval` che lo riproduce, legge una `I-X` dopo una
+`O` come l'inizio di un'entità. L'accuratezza per
 token, dominata dall'etichetta `O`, qui non discrimina nulla: il sistema
 che predice sempre `O` ne uscirebbe con punteggi altissimi e utilità zero.
 

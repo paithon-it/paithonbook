@@ -87,8 +87,22 @@ dove la media è presa sulle traiettorie che la policy $\pi$ genera e
 $\gamma \in [0, 1)$ sconta le ricompense future; con ricompense limitate è lo
 sconto a rendere finita una somma di infiniti termini, e senza quel limite la
 convergenza non è più garantita. Per la robotica, con azioni continue
-(coppie ai motori), si usano i metodi a gradiente di policy; l'addestramento
-avviene in simulazione, con il passaggio al robot fisico (*sim-to-real*) come
+(coppie ai motori), si usano i metodi a gradiente di policy: la policy è una
+distribuzione parametrica $\pi_\theta(a \mid s)$, tipicamente una gaussiana
+la cui media esce da una rete, e $\theta$ sale lungo
+
+$$
+\nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}\!\left[\sum_{t}
+\nabla_\theta \log \pi_\theta(a_t \mid s_t)\, G_t\right],
+\qquad G_t = \sum_{k \ge t} \gamma^{\,k-t} r_{k+1},
+$$
+
+dove $G_t$ è il ritorno scontato dal passo $t$ in poi (a meno di un fattore
+$\gamma^{\,t}$ che nella pratica si omette): le azioni seguite da un ritorno
+alto diventano più probabili, le altre meno (REINFORCE
+{cite}`williams1992simple`). La stima ha varianza alta, e in pratica a $G_t$
+si sottrae una *baseline*. L'addestramento avviene in simulazione, con il
+passaggio al robot fisico (*sim-to-real*) come
 problema aperto.
 `````
 

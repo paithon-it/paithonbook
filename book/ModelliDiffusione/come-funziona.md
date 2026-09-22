@@ -97,9 +97,11 @@ centesimo su 0,8. Ed è successo a *tutti* i pixel insieme: la foto è diventata
 pulviscolo che non ricorda niente di ciò che era.
 
 Resta da capire da dove escono i due numeri di prima, 0,99 e 0,14, e qui c'è la
-cosa meno ovvia di tutta la ricetta. Verrebbe da pensare che se togli 0,01 di
-caffè devi versare 0,01 di latte, e invece di latte se ne versa quattordici volte
-tanto. Il motivo è che il rumore, essendo sorteggiato, non si accumula come si
+cosa meno ovvia di tutta la ricetta, quella in cui la tazza smette di
+somigliare alla cosa vera. In una tazza vera, se togli 0,01 di caffè devi
+versare 0,01 di latte; nella ricetta di latte se ne versa quattordici volte
+tanto, e la tazza non trabocca. Il motivo è che il rumore, essendo sorteggiato,
+non si accumula come si
 accumula una quantità ordinaria. Fai mille passi da un metro tutti nella stessa
 direzione e ti ritrovi a un chilometro; falli in direzioni sorteggiate a caso e
 ti ritrovi a una trentina di metri, perché ogni passo disfa in parte quello di
@@ -109,6 +111,12 @@ numeri ma i loro quadrati:
 $0{,}99^2 + 0{,}14^2 = 0{,}9801 + 0{,}0196 \approx 1$. Chi decide quanto
 attenuare ha già deciso, senza poter fare altrimenti, quanto disturbo
 aggiungere.
+
+C'è poi una scorciatoia. Per portare una fotografia al livello di rovina 700
+non serve versare settecento volte: settecento pizzichi presi dalla stessa
+campana, sommati, danno ancora un pizzico da quella campana, solo più grosso.
+Quindi i settecento pizzichi si possono rimpiazzare con un unico pizzico
+grosso, e le settecento attenuazioni con un'unica moltiplicazione.
 
 `````
 
@@ -127,7 +135,25 @@ rumore iniettato al passo $t$ e $\mathbf{I}$ è la matrice identità. La success
 $\beta_1, \dots, \beta_T$ è lo **schedule**: in DDPM è lineare, da
 $\beta_1 = 10^{-4}$ a $\beta_T = 0{,}02$ su $T = 1000$ passi (veli
 sottilissimi all'inizio, più decisi verso la fine). Nessun parametro appreso:
-$q$ è fissata una volta per tutte.
+$q$ è fissata una volta per tutte. Lo schedule
+lineare ha un difetto che la {numref}`fig-diffusione-avanti` lascia
+intravedere: a $t = 700$ del segnale resta l'8% dell'ampiezza, e gli ultimi
+passi della catena lavorano su rumore quasi puro, tanto che se ne può saltare
+fino a un quinto senza perdere granché; a bassa risoluzione il difetto pesa di
+più. Nichol e Dhariwal {cite}`nichol2021improved` definiscono allora lo schedule
+direttamente su $\bar{\alpha}_t$,
+
+$$
+\bar{\alpha}_t = \frac{h(t)}{h(0)}, \qquad h(t) = \cos^2\!\Big(\frac{t/T + s}{1+s}\cdot\frac{\pi}{2}\Big), \qquad s = 0{,}008,
+$$
+
+con $\beta_t = 1 - \bar{\alpha}_t/\bar{\alpha}_{t-1}$ troncato a $0{,}999$
+perché
+l'ultimo passo non esploda: $\bar{\alpha}_t$ scende quasi linearmente nel tratto
+centrale e resta piatto ai due capi. Nello stesso lavoro la varianza del passo
+inverso smette di essere fissata e si apprende come interpolazione in scala
+logaritmica fra $\beta_t$ e $\tilde{\beta}_t$, il che migliora la
+verosimiglianza e regge il campionamento con meno passi.
 
 Definendo $\alpha_t = 1-\beta_t$ e $\bar{\alpha}_t = \prod_{s=1}^{t}
 \alpha_s$, la catena ammette una forma chiusa che salta direttamente da
@@ -158,14 +184,11 @@ rumore gaussiano puro, indipendente dal dato di partenza.
 
 `````
 
-In quella ricetta c'è una scorciatoia, e conviene vederla prima di proseguire,
-perché è quella che rende il metodo praticabile. Per portare una fotografia al
-livello di rovina 700 non serve eseguire settecento passi: ci si arriva in un
-colpo solo. Il motivo è la proprietà della campana di Gauss di cui si diceva
-sopra. Settecento sorteggi da quella campana, sommati, danno ancora un
-sorteggio da quella campana, solo più ampio: quindi i settecento pizzichi si
-possono rimpiazzare con un unico pizzico grosso, e le settecento attenuazioni
-con un'unica moltiplicazione.
+La catena ha una scorciatoia, la forma chiusa
+$q(\mathbf{x}_t \mid \mathbf{x}_0)$, ed è quella che rende il metodo
+praticabile: al livello 700 si arriva con un solo sorteggio e una sola
+moltiplicazione, senza eseguire settecento passi, perché una somma di
+gaussiane indipendenti è ancora gaussiana.
 
 L'andata si può allora guardare tutta in una volta, come una manopola con mille
 tacche. A ogni tacca corrispondono due dosi: quanto disegno è sopravvissuto e
@@ -256,14 +279,18 @@ saper rispondere all'una vorrebbe dire saper rispondere all'altra, e al passo
 La differenza non sta nella risposta esatta, che nessuno può dare, ma
 nell’errore. Alla rete non chiediamo di indovinare: chiediamo la migliore
 approssimazione che sa dare, e le due approssimazioni si comportano in modo
-diverso. Quella sul disturbo sbaglia sempre più o meno della stessa quantità,
-perché il bersaglio ha sempre la stessa taglia. Quella sulla foto pulita no:
-per ricavare la foto bisogna dividere per la parte di disegno sopravvissuta, e
-al passo 1000 ne è sopravvissuto sei millesimi, quindi lo stesso errore
-sull'una diventa un errore centocinquanta volte più grosso sull'altra. E
-siccome la risposta non serve per saltare in fondo ma per fare un solo
-piccolo passo (lo vedremo fra poco), una stima imprecisa ma sempre della
-stessa taglia è esattamente quello che serve.
+diverso. Quella sul disturbo ha un tetto: non può sbagliare di più della taglia
+del
+disturbo stesso, che è la stessa a ogni passo. Sotto quel tetto sbaglia molto
+dove il disturbo è poco (al passo 10 ne resta una traccia minuscola, e
+indovinarlo vuol dire conoscere la foto quasi al puntino) e quasi niente dove la
+schermata è quasi tutta disturbo. Quella sulla foto pulita non ha tetto: per
+ricavare la foto bisogna dividere per la parte di disegno sopravvissuta, e al
+passo 1000 ne è sopravvissuto sei millesimi, quindi lo stesso errore sull'una
+diventa un errore centocinquanta volte più grosso sull'altra. E siccome la
+risposta non serve per saltare in fondo ma per fare un solo piccolo passo (lo
+vedremo fra poco), una stima imprecisa ma con un errore sempre contenuto è
+esattamente quello che serve.
 
 `````
 
@@ -315,14 +342,22 @@ $$
 \big) \big\rVert^2 \,\right],
 $$
 
-dove $\mathbf{x}_0$ è un dato del training set, $t$ è uniforme su $\{1, \dots, T\}$ e
-$\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$: si campiona una tripla, si costruisce $\mathbf{x}_t$
-in un colpo solo con la forma chiusa (senza percorrere la catena), e si
-confrontano rumore vero e rumore predetto. Si noti che predire $\boldsymbol{\epsilon}$ e
-predire $\boldsymbol{\mu}$ sono formulazioni legate da una relazione affine (dato $\mathbf{x}_t$,
-l'una si ricava dall'altra) ma non equivalenti come problemi di regressione:
-il bersaglio $\boldsymbol{\epsilon}$ ha distribuzione $\mathcal{N}(\mathbf{0}, \mathbf{I})$ *a ogni* $t$,
-quindi scala costante e ben condizionata.
+dove $\mathbf{x}_0$ è un dato del training set, $t$ è uniforme su $\{1, \dots,
+T\}$ e $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$: si
+campiona una tripla, si costruisce $\mathbf{x}_t$ in un colpo solo con la forma
+chiusa (senza percorrere la catena), e si confrontano rumore vero e rumore
+predetto. Si noti che predire $\boldsymbol{\epsilon}$, predire
+$\boldsymbol{\mu}$ e predire il dato pulito sono formulazioni legate da
+relazioni affini (dato $\mathbf{x}_t$, l'una si ricava dall'altra: per esempio
+$\hat{\mathbf{x}}_0 = (\mathbf{x}_t -
+\sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta)/\sqrt{\bar{\alpha}_t}$),
+ma non equivalenti come problemi di regressione. Il bersaglio
+$\boldsymbol{\epsilon}$ ha distribuzione $\mathcal{N}(\mathbf{0}, \mathbf{I})$
+*a ogni* $t$, quindi il suo errore quadratico per componente non supera 1:
+vicino a 1 per $t$ piccolo, dove il rumore è una traccia minuscola, vicino a 0
+per $t$ grande. Lo stesso errore, riportato su $\hat{\mathbf{x}}_0$, viene
+moltiplicato per $(1-\bar{\alpha}_t)/\bar{\alpha}_t$, che a $t = T$ vale circa
+$2{,}5 \cdot 10^4$ (il quadrato del fattore $157$).
 
 L'ablazione di DDPM su questo punto va letta con attenzione, perché dice
 qualcosa di più stretto del solito «predire il rumore è meglio». A parità di
@@ -331,10 +366,15 @@ completo con $\sigma_t^2$ fissata, le due parametrizzazioni si equivalgono. Il
 salto di qualità arriva soltanto dalla *coppia*: $\boldsymbol{\epsilon}$
 insieme alla $\mathcal{L}_{\text{semplice}}$. E la coppia speculare,
 $\boldsymbol{\mu}$ insieme alla loss semplificata, il paper la marca come
-instabile in addestramento. La lettura corretta è quindi più forte, non più
-debole: predire $\boldsymbol{\epsilon}$ non è tanto un bersaglio migliore in
-sé, quanto la sola parametrizzazione con cui la loss semplificata addestri
-davvero.
+instabile in addestramento. La lettura corretta è quindi più stretta: fra le due
+parametrizzazioni che il
+paper confronta, $\boldsymbol{\epsilon}$ è l'unica con cui la loss semplificata
+addestri davvero. La sola in assoluto non è: predire il dato pulito o la
+velocità $\mathbf{v}$ con una loss quadratica funziona anch'esso, scegliendo il
+peso sui livelli di rumore, ed è la strada della distillazione e di Stable
+Diffusion 2 {cite}`salimans2022progressive`; la {doc}`sezione sul limite
+continuo </ModelliDiffusione/sde-e-ode>` mostra che le parametrizzazioni
+differiscono soltanto per quel peso.
 
 `````
 
@@ -487,9 +527,15 @@ fino a $\sqrt{\alpha_1} \approx 1$, e a $t = 1$ il rimescolamento non c'è
 affatto. Cioè: la ripulitura arriva a pesare quanto il rimescolamento soltanto
 alla fine, quando l'immagine è già decisa.
 
-Il livello di rumore, allora, come scende? Poco per volta, e per il modo in
-cui i tre contributi si compongono, non per la loro taglia. Scomponendo il
-passo $t = 500$, dove il rumore presente ha deviazione standard $0{,}9599$: la
+Il livello di rumore, allora, come scende? Poco per volta, e per il modo in cui
+i tre contributi si compongono, non per la loro taglia. Il conto che segue
+suppone una rete perfetta, $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) =
+\boldsymbol{\epsilon}$, cioè il passo di DDPM applicato a un $\mathbf{x}_t$ di
+cui si conosce l'origine: è il solo modo di separare segnale e rumore, e
+descrive bene la parte alta della catena, dove la rete indovina quasi tutto;
+negli ultimi passi l'errore della rete sul rumore si avvicina alla taglia del
+rumore stesso, e la correzione smette di essere allineata. Scomponendo il passo
+$t = 500$, dove il rumore presente ha deviazione standard $0{,}9599$: la
 riscalatura per $1/\sqrt{\alpha_t}$ lo alza di $+0{,}0049$, la correzione lo
 abbassa di $-0{,}0105$ (tutto il proprio valore, perché è allineata al rumore
 che c'è), l'iniezione lo rialza di $+0{,}0052$ (molto meno del proprio
@@ -565,9 +611,10 @@ aggiunge di suo. Fatti i conti, i mille livelli non contano uguale: quelli
 quasi puliti, dove indovinare è facile, peserebbero una cinquantina di volte
 più di quelli pieni di rumore. DDPM li fa contare tutti uguali, e così facendo
 promuove proprio i passi difficili, che nella ricetta originale contavano
-pochissimo. Non è più la ricetta di prima, quindi; è una
-sua versione riequilibrata a mano. Seguita alla lettera dà immagini peggiori; con i pesi appiattiti così,
-migliori. E il conto si paga dove la ricetta prometteva: davanti alle
+pochissimo. Il voto di DDPM non è quindi quello che il principio
+detta, ma una sua versione riequilibrata a mano; e il voto del principio,
+seguito alla lettera, dà immagini peggiori di quello riequilibrato. E il conto
+si paga dove la ricetta prometteva: davanti alle
 fotografie vere dell'archivio, il modello riequilibrato le dichiara meno
 probabili di quanto faccia quello fedele. Genera meglio e giudica peggio.
 
@@ -605,28 +652,59 @@ termini di bordo: una ricostruzione $-\log p_\theta(\mathbf{x}_0 \mid
 \mathbf{x}_0)\,\|\,p(\mathbf{x}_T)\big)$, che non contiene parametri e si può
 ignorare. Ogni KL confronta il posteriore condizionato al dato,
 $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)$, con il passo appreso
-$p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$; attenzione a non confonderlo
-con l'inverso vero $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ incontrato sopra,
-gaussiano solo per approssimazione: condizionando anche su $\mathbf{x}_0$, la
-distribuzione diventa gaussiana *esatta* e nota in forma chiusa. Tra gaussiane,
-ogni KL si riduce a una distanza quadratica tra medie; con la
-riparametrizzazione di $\boldsymbol{\mu}_\theta$ vista sopra, ogni termine
-diventa $\lVert \boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta \rVert^2$
-moltiplicato per un peso dipendente da $t$. La $\mathcal{L}_{\text{semplice}}$
+$p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$; attenzione a non confonderlo con
+l'inverso vero $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ incontrato sopra,
+gaussiano solo per approssimazione. Condizionando anche su $\mathbf{x}_0$ la
+distribuzione diventa gaussiana *esatta*: per Bayes è proporzionale a
+$q(\mathbf{x}_t \mid \mathbf{x}_{t-1})\,q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)$
+(la
+proprietà di Markov toglie $\mathbf{x}_0$ dal primo fattore), prodotto di due
+gaussiane in $\mathbf{x}_{t-1}$, e completando il quadrato
+
+$$
+q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) = \mathcal{N}\!\big(\mathbf{x}_{t-1};\ \tilde{\boldsymbol{\mu}}_t,\ \tilde{\beta}_t \mathbf{I}\big),
+\qquad
+\tilde{\boldsymbol{\mu}}_t = \frac{\sqrt{\bar{\alpha}_{t-1}}\,\beta_t}{1-\bar{\alpha}_t}\,\mathbf{x}_0 + \frac{\sqrt{\alpha_t}\,(1-\bar{\alpha}_{t-1})}{1-\bar{\alpha}_t}\,\mathbf{x}_t ,
+$$
+
+con la $\tilde{\beta}_t$ già vista. Sostituendo
+$\mathbf{x}_0 = (\mathbf{x}_t -
+\sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon})/\sqrt{\bar{\alpha}_t}$
+si ottiene
+$\tilde{\boldsymbol{\mu}}_t = \frac{1}{\sqrt{\alpha_t}}\big(\mathbf{x}_t -
+\frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\boldsymbol{\epsilon}\big)$:
+è da qui che viene la forma di $\boldsymbol{\mu}_\theta$ scelta sopra, che copia
+$\tilde{\boldsymbol{\mu}}_t$ mettendo $\boldsymbol{\epsilon}_\theta$ al posto di
+$\boldsymbol{\epsilon}$. Fra due gaussiane isotrope di varianze fissate la KL
+vale, a meno di una costante,
+$\lVert \tilde{\boldsymbol{\mu}}_t - \boldsymbol{\mu}_\theta \rVert^2 /
+(2\sigma_t^2)$,
+e le due medie differiscono soltanto nel rumore:
+
+$$
+\mathcal{L}_{t-1} = \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}}\Big[\lambda_t\,\big\lVert \boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\big\rVert^2\Big] + C,
+\qquad
+\lambda_t = \frac{\beta_t^2}{2\sigma_t^2\,\alpha_t\,(1-\bar{\alpha}_t)} .
+$$ La $\mathcal{L}_{\text{semplice}}$
 è questo obiettivo con i pesi posti a 1: non più un bound, ma una sua versione
 ripesata che nella pratica produce campioni migliori {cite}`ho2020denoising`.
 
 La riponderazione ha un prezzo, e il prezzo va messo in chiaro: senza,
 resterebbe in piedi come premessa una proprietà che qui viene ritirata. Il peso
-che l'ELBO assegna al passo $t$ è
-$\lambda_t = \beta_t^2 / \big(2\sigma_t^2\alpha_t(1-\bar{\alpha}_t)\big)$,
-e con lo schedule di DDPM vale $0{,}500$ al passo 1 contro $0{,}0102$ al passo
-1000: porli tutti a 1 significa moltiplicare per circa cinquanta il peso
-relativo dei passi ad alto rumore rispetto a quelli quasi puliti. È voluto, e
-Ho e colleghi lo dichiarano (la loss semplificata sottopesa i termini a $t$
-piccolo, «così che la rete possa concentrarsi sui compiti di denoising più
-difficili a $t$ grande»). La conseguenza è che un modello addestrato con
-$\mathcal{L}_{\text{semplice}}$ non massimizza più la verosimiglianza: la
+$\lambda_t$ che l'ELBO assegna al passo $t$, con lo schedule di DDPM, vale
+$0{,}500$ al passo 1 contro $0{,}0102$ al passo 1000: porli tutti a 1 significa
+moltiplicare per circa cinquanta il peso relativo dei passi ad alto rumore
+rispetto a quelli quasi puliti. È voluto, e Ho e colleghi lo dichiarano (la
+loss semplificata sottopesa i termini a $t$ piccolo, «così che la rete possa
+concentrarsi sui compiti di denoising più difficili a $t$ grande»). Il peso
+agisce in un posto preciso. Poiché $t$ è un ingresso della rete, ciascun
+termine della somma è minimizzato dalla stessa funzione,
+$\boldsymbol{\epsilon}^*(\mathbf{x}_t, t) = \mathbb{E}[\boldsymbol{\epsilon}
+\mid \mathbf{x}_t]$, qualunque peso gli si dia: con capacità illimitata i due
+obiettivi hanno lo stesso ottimo {cite}`lai2026principles`. I pesi decidono
+dove una rete finita spende la propria capacità e quanto è rumoroso il
+gradiente, ed è lì che un modello addestrato con
+$\mathcal{L}_{\text{semplice}}$ smette di massimizzare la verosimiglianza: la
 sua verosimiglianza è misurabilmente peggiore di quella dello stesso modello
 addestrato sul bound vero, e resta lontana da quella dei modelli
 autoregressivi, come gli autori scrivono senza girarci intorno. È il
@@ -649,15 +727,20 @@ $$
 \nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t),
 $$
 
-dove $\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t)$ (il gradiente della log-densità dei dati
-rumorosi, detto **score**) è esattamente la «freccia della salita» verso le
-regioni più probabili. È la prospettiva *score-based* sviluppata da Yang Song
-e Stefano Ermon, che Song e colleghi portano a compimento nel 2021
+dove $\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t)$ (il gradiente della
+log-densità dei dati rumorosi, detto **score**) è esattamente la «freccia della
+salita» verso le regioni più probabili. È la prospettiva *score-based* di Yang
+Song e Stefano Ermon, che nel 2019 addestrano una sola rete a stimare lo score
+su una scala geometrica di livelli di rumore e campionano con una dinamica di
+Langevin, un livello di rumore dopo l'altro dal più alto al più basso
+{cite}`song2019generative`. Song e colleghi la portano a compimento nel 2021
 {cite}`song2021score`: l'andata è la discretizzazione di un'equazione
-differenziale stocastica (SDE) che diffonde i dati nel rumore, e la SDE
-inversa (che genera) dipende dai dati soltanto attraverso lo score. DDPM e i
-modelli score-based si rivelano così due discretizzazioni dello stesso
-processo continuo: una sola teoria, due dialetti.
+differenziale stocastica (SDE) che diffonde i dati nel rumore, e la SDE inversa
+(che genera) dipende dai dati soltanto attraverso lo score. DDPM e i modelli
+score-based si rivelano così discretizzazioni di due SDE della stessa famiglia:
+DDPM di quella che conserva la varianza (VP), Song ed Ermon di quella che la
+lascia esplodere (VE), e le due si convertono l'una nell'altra riscalando lo
+stato. Una sola teoria, due dialetti.
 
 `````
 
@@ -688,7 +771,9 @@ sta eseguendo male DDPM, si sta eseguendo bene qualcos'altro. E quella
 procedura, non dovendo imitare passo per passo una catena, si può percorrere
 saltando: qualche decina di fermate scelte
 (venti, cinquanta, cento) invece di mille. E le due cose vanno insieme: chi
-salta gradini paga gli scossoni molto più caro, e fra tutte le procedure della
+salta gradini paga gli scossoni molto più caro (su un salto lungo lo scossone
+va dosato per tutto il tratto saltato, e diventa troppo grosso perché le poche
+correzioni rimaste riescano a riassorbirlo), e fra tutte le procedure della
 famiglia quella che non ne ha è la sola che regga i salti larghi. Meno ci si
 ferma, più si risparmia e peggiore viene l'immagine: è una manopola, non un
 pasto gratis.
@@ -823,11 +908,10 @@ dell'andata li disperderà in una nuvola informe, e la rete imparerà a
 ridisporli in spirale. Gli ingredienti sono *esattamente* quelli delle
 immagini; cambia solo la taglia.
 
-E se non hai mai programmato, nessun obbligo di leggere le righe una per una:
-i quattro blocchi che seguono sono, nell'ordine, i quattro pezzi del racconto
-(la spirale e la ricetta per rovinarla, la rete che indovina il disturbo, il
-mazzo di carte dell'addestramento, la scala scesa mille volte), e il testo
-fra un blocco e l'altro dice tutto quello che serve.
+I quattro blocchi sono, nell'ordine, i quattro pezzi del meccanismo: i dati
+con la forma chiusa dell'andata, la rete $\boldsymbol{\epsilon}_\theta$, il ciclo
+che minimizza $\mathcal{L}_{\text{semplice}}$, il campionamento ancestrale, e
+fra un blocco e l'altro il testo dice che cosa fa ciascuno.
 
 Prima i dati e la ricetta dell'andata:
 
@@ -999,8 +1083,10 @@ portatile.
 Due esperimenti valgono la pena. Interrompere il campionamento a metà strada,
 per vedere la forma «mezza decisa». E passare da questi punti alle immagini,
 dove l'unica modifica sostanziale è sostituire l'MLP con una U-Net e le coppie
-di coordinate con griglie di pixel: schedule, voto e cicli restano identici,
-carattere per carattere.
+di coordinate con griglie di pixel: schedule, voto e cicli restano gli stessi,
+salvo le forme dei tensori (in `rumorizza` il coefficiente va allargato a `(B,
+1, 1, 1)` invece che a `(B, 1)`, e `campiona` sorteggia griglie `(n, 3, H, W)`
+invece di coppie).
 
 `````{tab} Elementare
 
@@ -1026,8 +1112,9 @@ carattere per carattere.
   sotto quel pulviscolo.
 - La cosa da non dimenticare è che quella manciata è dalle sette alle dieci
   volte più grande della scheggia (al passo 500: 0,1002 contro 0,0105), e lo
-  è per i primi novecento passi su mille; poi cala, e sull'ultimo gradino le
-  due si pareggiano. Il passo non «solleva un velo»: rimescola molto più di
+  è per i primi novecento passi su mille; nell'ultimo decimo cala fino a
+    pareggiarla, e sull'ultimo gradino sparisce del tutto. Il passo non «solleva
+    un velo»: rimescola molto più di
   quanto pulisca. L'immagine esce fuori lo stesso per due ragioni che vanno
   tenute insieme: la cancellatura è sempre mirata mentre il rumore nuovo è
   sempre sorteggiato, e il volume, salendo a ogni passo, ingrandisce di
@@ -1090,10 +1177,12 @@ carattere per carattere.
   favoriti di un fattore ~50, al prezzo di verosimiglianze peggiori), e
   predire il rumore
   equivale a stimare lo score $\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t)$;
-  DDPM e modelli score-based sono due discretizzazioni della stessa SDE
+  DDPM e modelli score-based discretizzano due SDE della stessa famiglia (VP e VE)
   {cite}`song2021score`.
 - DDIM {cite}`song2021denoising`: stesso modello, campionamento
-  deterministico ($\eta = 0$) su 20–50 passi; possibile perché la loss dipende
+    deterministico ($\eta = 0$) su qualche decina di passi (la qualità dei
+    mille passi si raggiunge verso i cento; a venti è già degradata); possibile
+    perché la loss dipende
   solo dalle marginali $q(\mathbf{x}_t \mid \mathbf{x}_0)$, non dalla catena
   markoviana. Con $\eta = 1$ si ritrova il campionatore ancestrale nella
   variante $\sigma_t^2 = \tilde{\beta}_t$, non in quella
@@ -1104,3 +1193,9 @@ carattere per carattere.
 ```
 
 `````
+
+Fin qui la diffusione è una scala di mille gradini, e la rete impara a
+scenderla. Ma mille è un numero scelto, non un fatto di natura: se i gradini
+diventano infiniti e bassissimi, la scala diventa una rampa, e su una rampa si
+vedono cose che sui gradini restavano nascoste.
+

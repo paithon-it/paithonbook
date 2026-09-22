@@ -1,6 +1,6 @@
 # Mamba: selezione e scan
 
-Nella sezione precedente abbiamo costruito S4 e i suoi parenti: uno *state
+Abbiamo costruito S4 e i suoi parenti: uno *state
 space model* nasce come sistema dinamico continuo e, una volta discretizzato,
 diventa una ricorrenza lineare a stato fisso (a ogni passo lo stato di prima si
 riduce un po’, ci si somma quello che entra adesso, e da lì si legge l'uscita),
@@ -98,11 +98,17 @@ $$
 \Delta_t = \mathrm{softplus}\!\big(p + \mathrm{Linear}_1(\mathbf{x}_t)\big),
 $$
 
-dove $\mathrm{Linear}_N$ proietta $\mathbf{x}_t$ in un vettore di dimensione $N$, $p$ è un
-parametro scalare appreso e $\mathrm{softplus}(z) = \log(1 + e^z)$ garantisce un
-passo $\Delta_t > 0$. La matrice $\mathbf{A}$, diagonale, resta un parametro fisso: non
-dipende dal token. Ma la discretizzazione (la scelta *zero-order hold* usata da
-Mamba, che nella sezione precedente ha dato $\bar{\mathbf{A}} = \exp(\Delta \mathbf{A})$) fa passare
+dove $\mathrm{Linear}_N$ proietta $\mathbf{x}_t$ in un vettore di dimensione
+$N$ ($\mathbf{B}_t$ e $\mathbf{C}_t$ sono vettori, ma conservano la maiuscola
+delle matrici $\mathbf{B}$ e $\mathbf{C}$ da cui discendono, come in tutta la
+letteratura), $p$ è il bias appreso del canale (uno per canale, un vettore di
+dimensione $D$ in tutto) e $\mathrm{softplus}(z) = \log(1 + e^z)$ garantisce un
+passo $\Delta_t > 0$. Nell'implementazione $\mathrm{Linear}_1$ è una proiezione
+di rango basso verso tutti i $D$ canali, così che ogni canale abbia il suo
+passo; la formula ne scrive la componente di un canale. La matrice
+$\mathbf{A}$, diagonale, resta un parametro fisso: non dipende dal token. Ma la
+discretizzazione (la scelta *zero-order hold* usata da Mamba, che nella sezione
+precedente ha dato $\bar{\mathbf{A}} = \exp(\Delta \mathbf{A})$) fa passare
 $\Delta_t$ *dentro* la transizione:
 
 $$
@@ -327,7 +333,7 @@ def ssm_selettivo(x, A, B, C, delta):
 Il ciclo `for` è la forma ricorrente, quella dell'inferenza: costo e memoria
 costanti per token, un aggiornamento dopo l'altro. Quel ciclo però si può evitare in due modi, e li proviamo tutti e due.
 
-Il primo riguarda la sezione precedente: se le regole non cambiano da un
+Il primo riprende la discretizzazione: se le regole non cambiano da un
 passo all'altro, lo stesso risultato si ottiene con un filtro unico che scorre
 sulla sequenza. Congeliamo allora i tre parametri che dipendevano dal token,
 costruiamo quel filtro e confrontiamo.
@@ -482,9 +488,8 @@ mattone è *l'unico* mattone: non si alternano blocchi di attenzione e blocchi
 
 ## Cosa ottiene Mamba
 
-Messi insieme i pezzi (selettività per il ragionamento basato sul contenuto,
-scan hardware-aware per l'efficienza, un blocco unico per l'architettura) che
-cosa se ne ricava?
+Messi insieme i pezzi, la scelta di che cosa ricordare, il modo di farla in
+fretta sulla scheda grafica e il blocco che li ospita, che cosa se ne ricava?
 
 `````{tab} Elementare
 
@@ -542,8 +547,8 @@ Di nodi aperti, però, ne restano due. Lo *scan* selettivo non sfruttava appieno
 le unità di calcolo matriciale delle GPU: un dettaglio ingegneristico che
 sembra minore e in pratica pesa parecchio. E lo stato di dimensione fissa, che
 è la forza di Mamba in efficienza, resta il suo limite quando serve ritrovare
-un dettaglio preciso in un contesto molto lungo. Sono
-proprio questi i nodi che la sezione successiva scioglie: Mamba-2 riscrive il
+un dettaglio preciso in un contesto molto lungo. Sono proprio questi i nodi che
+scioglie Mamba-2: Mamba-2 riscrive il
 selective scan come una moltiplicazione di matrici (recuperando i *tensor
 core* della GPU) e, nel farlo, svela una parentela inattesa. Perché dietro
 l'SSM selettivo, vedremo, si nasconde di nuovo l'attenzione: le due famiglie
@@ -576,10 +581,9 @@ stessa cosa.
   doppio, lavoro doppio, non quadruplo), la memoria durante la generazione non
   cresce mai, e si reggono sequenze dell'ordine del milione di passi, misurate
   però fuori dal linguaggio (un minuto di suono grezzo, un tratto di genoma).
-  Uscito nel 2023 come articolo non ancora giudicato da nessuno (*preprint*),
-  respinto dal convegno ICLR nel 2024 e
-  pubblicato lo stesso anno al convegno COLM, che lo ha premiato: è anche una
-  buona lezione su come funziona il giudizio nella ricerca.
+  Restano due limiti, che Mamba-2 affronterà: il conto passo dopo passo non
+  sfrutta le parti più veloci della scheda grafica, e una memoria di taglia
+  fissa fatica a ricordare parola per parola.
 ```
 
 `````
@@ -614,10 +618,10 @@ stessa cosa.
 - Cosa ottiene: tempo lineare nella lunghezza, inferenza a memoria
   costante (nessuna KV cache che cresce), scaling verificato fino a
   $\sim 10^6$ passi su audio grezzo e genomica (sul linguaggio, contesti molto
-  più corti), e lo stesso impianto valido per tutte e tre le modalità. Uscito
-  nel 2023 come articolo non ancora giudicato da nessuno (*preprint*), respinto
-  dal convegno ICLR nel 2024 e pubblicato lo stesso anno al convegno COLM, che lo ha premiato
-  (*Outstanding Paper*), con i limiti che Mamba-2 affronterà.
+  più corti), e lo stesso impianto valido per tutte e tre le modalità. Resta
+  aperto
+  quello che Mamba-2 affronterà: lo scan non usa i tensor core, e lo stato
+  fisso limita il richiamo esatto.
 ```
 
 `````

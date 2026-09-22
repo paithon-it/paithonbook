@@ -9,8 +9,8 @@ il *quadrato* della lunghezza del testo. Raddoppia le parole e quella tabella
 quadruplica; moltiplicale per dieci e diventa cento volte più grande. A un
 certo punto non ci sta più nella memoria della GPU, e anche quando ci sta,
 spostarla avanti e indietro costa così tanto tempo da rendere tutto
-insopportabilmente lento. Questa sezione racconta l'idea (sorprendentemente
-semplice nella sostanza) che ha fatto saltare quel muro.
+insopportabilmente lento. L'idea che ha spostato quel muro,
+FlashAttention, è semplice nella sostanza: quella tabella non scriverla mai.
 
 Serve prima sapere che cos'è l'attenzione, il meccanismo su cui i modelli
 linguistici sono costruiti. Il {doc}`capitolo sui Transformer
@@ -163,8 +163,10 @@ Due ingredienti lo rendono possibile ({numref}`fig-flash-attention`). Il primo
 precedente. Qui le tessere si ritagliano non nella tabella dei confronti, che
 non esisterà mai, ma nell'elenco delle parole di partenza: si tiene ferma una
 manciata di parole e si fa scorrere davanti a loro tutto il resto, un
-blocchetto per volta. Il secondo ingrediente è la **online softmax**, che
-permette di calcolare le percentuali *a pezzi* invece che tutte insieme.
+blocchetto per volta. Il secondo ingrediente è la **online softmax**, proposta
+nel 2018 da Milakov e Gimelshein per calcolare la softmax in una passata sola
+{cite}`milakov2018online`, che permette di calcolare le percentuali *a pezzi*
+invece che tutte insieme.
 
 ```{figure} ../figures/flash-attention-tiling.svg
 :name: fig-flash-attention
@@ -175,8 +177,8 @@ La grande tabella dei confronti non viene mai scritta (a sinistra, sbarrata).
 Sul tavolo di lavoro veloce resta ferma una manciata di parole da elaborare, e
 il resto del testo le scorre davanti a blocchetti; a ogni blocchetto si
 aggiorna il risultato e due soli numeri di riepilogo, che bastano a rifare le
-percentuali alla fine. Il risultato è identico a quello del calcolo in un colpo
-solo.
+percentuali alla fine. Il risultato è quello del calcolo in un colpo solo, a
+meno dell'ultima cifra, perché le stesse somme si fanno in un altro ordine.
 ```
 
 `````{tab} Elementare
@@ -188,8 +190,10 @@ confrontarle, calcoli i punteggi, aggiorni il risultato; butti via quel
 blocchetto, prendi il successivo, e così via fino alla fine. Sul tavolo, in
 ogni istante, c'è solo un pezzetto piccolo. La tabella da un milione di caselle
 non viene mai scritta per intero da nessuna parte: esiste un blocchetto alla
-volta, e sparisce appena hai finito di usarlo. Meno viaggi al magazzino, stesso
-identico risultato.
+volta, e sparisce appena hai finito di usarlo. Meno viaggi al magazzino, e lo
+stesso risultato della tabella intera: le somme sono le stesse, fatte in un
+altro ordine, e come ogni somma fatta a rate possono differire al più
+nell'ultima cifra.
 
 Quanto grande è un blocchetto? Quanto ci sta sul tavolo insieme alla manciata
 di parole ferme, e non un dito di più: la misura la decide il tavolo, non il
@@ -274,7 +278,12 @@ dell'attenzione standard. Resta quadratico in $N$, ma diviso per un fattore
 $M_\text{chip}/d_k^2$ che si può mettere in cifre, perché il paper quantifica
 $M_\text{chip}$: 192 KB di SRAM per SM su A100, cioè poco meno di centomila
 elementi in `float16`. Il fattore vale allora sei con $d_k = 128$ e
-ventiquattro con $d_k = 64$: su un carico memory-bound è tanto. È
+ventiquattro con $d_k = 64$: su un carico memory-bound è tanto. Il conto vale
+per $d_k \le M_\text{chip} \le N d_k$, e in quel regime non si fa di meglio:
+il paper dimostra che nessun algoritmo di attenzione esatta scende a
+$o(N^2 d_k^2 / M_\text{chip})$ accessi per tutti i valori di $M_\text{chip}$ di
+quell'intervallo. È un limite inferiore su un intervallo di taglie, non per
+ogni singola scheda. È
 l'idea del tiling in shared memory del GEMM, applicata
 all'attenzione: caricare una volta, riusare in tanti, non tornare al
 magazzino.
@@ -408,9 +417,13 @@ corti il guadagno è modesto, ma cresce con la lunghezza, ed è proprio sui test
 lunghi, dove la vecchia attenzione esauriva la memoria della scheda o
 rallentava fino a fermarsi, che FlashAttention cambia le carte in tavola. Una
 versione successiva, **FlashAttention-2** {cite}`dao2023flashattention2`,
-spreme ancora di più l'hardware: ripartisce meglio il lavoro fra i gruppi di
-lavoratori e riduce le operazioni che i tensor core non sanno accelerare,
-quelle diverse dalla moltiplicazione fra tabelle. Ne esce un tempo di
+spreme ancora di più l'hardware con tre mosse: rinvia a fine ciclo la
+divisione per il totale, riducendo le operazioni che i tensor core non sanno
+accelerare; distribuisce su officine diverse anche i blocchi di query della
+stessa testa, così che un testo lungo con pochi esempi tenga occupata tutta la
+scheda; e dentro il blocco divide il lavoro fra i warp per righe di query
+invece che per colonne di chiavi, eliminando lo scambio di risultati parziali
+in shared memory. Ne esce un tempo di
 esecuzione grosso modo dimezzato rispetto alla prima versione.
 
 Va però detto con precisione che cosa tutto questo risolve, perché è facile
@@ -428,24 +441,25 @@ del confronto che vanno conservati entrambi).
 Quel taccuino cresce in proporzione alla lunghezza del testo, non al suo
 quadrato, ma è pesante, e il conto si fa meglio con i numeri di un modello
 vero, uno da otto miliardi di numeri imparati. Ha trentadue strati e ognuno
-tiene il proprio taccuino. Dentro uno strato le «teste» che leggono il testo in
-parallelo sono trentadue, ma non ognuna si scrive le proprie chiavi e i propri
-valori: se li spartiscono a gruppi, e i gruppi sono otto, il che ha già diviso
-per quattro il peso del taccuino prima ancora di cominciare a contarlo. Ogni
-gruppo descrive una parola con 128 numeri; di ogni parola vanno conservati
-chiave e valore, quindi due volte tanto; e ogni numero occupa due byte. In
-tutto $2 \times 32 \times 8 \times 128 \times 2$ byte, cioè $131\,072$ per
-ogni parola letta. Su centomila parole di contesto fanno tredici
+tiene il proprio taccuino. Dentro uno strato il confronto fra le parole non si
+fa una volta sola: se ne fanno più copie in parallelo, le «teste», ciascuna che
+guarda il testo a modo suo, e qui sono trentadue, ma non ognuna si scrive le
+proprie chiavi e i propri valori: se li spartiscono a gruppi, e i gruppi sono
+otto, il che ha già diviso per quattro il peso del taccuino prima ancora di
+cominciare a contarlo. Ogni gruppo descrive una parola con 128 numeri; di ogni
+parola vanno conservati chiave e valore, quindi due volte tanto; e ogni numero
+occupa due byte. In tutto $2 \times 32 \times 8 \times 128 \times 2$ byte, cioè
+$131\,072$ per ogni parola letta. Su centomila parole di contesto fanno tredici
 gigabyte, per una conversazione sola, su una scheda che di gigabyte ne ha
 ottanta. FlashAttention non lo tocca: è un altro mestiere. Leggere la domanda
 tutta insieme e scrivere la risposta una parola per volta hanno un nome
-ciascuno, e da qui in avanti tornano spesso: il *prefill* e la *decodifica*.
-Il peso del taccuino lo affrontano davvero altre tecniche, e stanno nella
-sezione sui {doc}`grandi modelli linguistici </Transformers/llm>` e in quella
-su {doc}`prefill e decodifica </MLOps/metriche-di-servizio>`. E
-FlashAttention non riduce il numero di conti da fare, che resta proporzionale
-al quadrato della lunghezza: quello è il mestiere del
-{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`.
+ciascuno, e da qui in avanti tornano spesso: il *prefill* e la *decodifica*. Il
+peso del taccuino lo affrontano davvero altre tecniche, e stanno nella sezione
+sui {doc}`grandi modelli linguistici </Transformers/llm>` e in quella su
+{doc}`prefill e decodifica </MLOps/metriche-di-servizio>`. E FlashAttention non
+riduce il numero di conti da fare, che resta proporzionale al quadrato della
+lunghezza: quello è il mestiere del {doc}`capitolo sull'attenzione lineare
+</AttenzioneLineare/overview>`.
 
 Onestà anche sul codice: l'idea è semplice, il kernel che la realizza è
 notoriamente complicato (indici, gestione della shared memory, casi limite
@@ -549,11 +563,17 @@ calcolo:
   reparti di una catena di montaggio. La specializzazione tiene le unità di
   calcolo sempre rifornite e i canali di memoria sempre occupati.
 
-Sono le tecniche con cui sono scritte le versioni più recenti dei kernel di
-attenzione, che portano l'idea di FlashAttention fin sul silicio più nuovo.
-Chi vuole seguirle fino in fondo (dal TMA alla warp specialization, fino alle
-generazioni più recenti di FlashAttention) trova una trattazione avanzata nel
-corso *Modern GPU Programming for MLSys* di mlc.ai. Il messaggio, però, resta
+Sono le tre leve di FlashAttention-3 {cite}`shah2024flashattention3`, scritta
+nel 2024 per le GPU Hopper, più due mosse sue. La prima alterna due gruppi di
+warp (*ping-pong*): la softmax dell'uno, che i tensor core non accelerano, gira
+mentre l'altro esegue i propri GEMM. La seconda, in FP8, precede la
+quantizzazione a blocchi con una rotazione casuale (una trasformata di Hadamard
+con segni casuali, detta *incoherent processing*) che sparpaglia i valori
+anomali prima di arrotondare. Algoritmo, online softmax e conto degli accessi
+alla HBM restano quelli del 2022: cambia quanta parte del movimento dei dati il
+calcolo riesce a coprire. Chi vuole seguirle fino al codice trova una
+trattazione avanzata nel corso *Modern GPU Programming for MLSys* di mlc.ai. Il
+messaggio, però, resta
 quello con cui abbiamo aperto il capitolo: le migliaia di core semplici sono
 la parte facile; l'ingegneria vera è tenerle sfamate.
 `````
@@ -574,7 +594,8 @@ capitolo.
 - FlashAttention {cite}`dao2022flashattention` quella tabella non la scrive
   mai: tiene ferma sul tavolo una manciata di parole e fa scorrere le altre a
   blocchetti, uno per volta, buttando via ogni blocchetto appena usato. Il
-  risultato è lo stesso identico numero di prima, e non un'approssimazione.
+  risultato è lo stesso numero di prima, a meno dell'ultima cifra, e non
+  un'approssimazione.
 - A rendere possibile il lavoro a blocchetti è la online softmax, il gesto
   di chi pesa i sacchi due per volta tenendo un foglietto con il totale finora:
   qui i foglietti sono due, il totale e il punteggio più alto visto fin lì, e

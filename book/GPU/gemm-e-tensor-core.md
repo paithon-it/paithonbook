@@ -8,16 +8,16 @@ matrici, cioè fra
 due tabelloni di numeri: una tabella per una tabella, e viene fuori una terza
 tabella.
 
-Quell'operazione, nelle librerie di calcolo (le raccolte di pezzi di
-programma già scritti e collaudati, che chiunque richiama invece di
-riscriverseli), porta da decenni una sigla: **GEMM**, *GEneral Matrix
-Multiply*. Il «generale» non riguarda l'operazione ma la *matrice*: nello
-schema con cui le BLAS battezzano le proprie routine dice che le due tabelle
-sono qualunque, mentre altre sigle sono riservate ai casi speciali (simmetrica,
-triangolare, a banda), dove si risparmia: su una triangolare i conti si
-dimezzano, su una simmetrica si dimezza quello che si legge, su una a banda si
-risparmia molto di più. È
-probabilmente il pezzo di codice più ottimizzato della storia
+Quell'operazione, nelle librerie di calcolo (le raccolte di pezzi di programma
+già scritti e collaudati, che chiunque richiama invece di riscriverseli), porta
+da decenni una sigla: **GEMM**, *GEneral Matrix Multiply*. Il «generale» non
+riguarda l'operazione ma la *matrice*: nello schema con cui le BLAS (le
+librerie che dal 1979 fissano i nomi e le firme delle operazioni di algebra
+lineare) battezzano le proprie routine dice che le due tabelle sono qualunque,
+mentre altre sigle sono riservate ai casi speciali (simmetrica, triangolare, a
+banda), dove si risparmia: su una triangolare i conti si dimezzano, su una
+simmetrica si dimezza quello che si legge, su una a banda si risparmia molto di
+più. È probabilmente il pezzo di codice più ottimizzato della storia
 dell'informatica: a ogni generazione di hardware qualcuno lo riscrive da capo
 per spremerne l'ultima goccia.
 
@@ -107,7 +107,7 @@ memoria </GPU/gerarchia-memoria>`: caricare una
 volta, riusare in tanti. Invece di calcolare $\mathbf{C}$ una casella alla
 volta, la si spezza in **tessere** (i *tile*); per ogni tessera si portano i
 blocchi corrispondenti di $\mathbf{A}$ e di $\mathbf{B}$ nella shared memory
-(il ripiano condiviso della scrivania) *una sola volta*, e da lì si riusano per
+*una sola volta*, e da lì si riusano per
 tutti i prodotti della tessera ({numref}`fig-gemm-tiling`).
 
 ```{figure} ../figures/gemm-tiling.svg
@@ -133,24 +133,29 @@ calcolando. Ogni numero arriva una volta e viene riusato molte volte prima di
 essere buttato.
 
 Più grande la cassetta, più piatti escono da ogni viaggio, e sul ripiano ci sta
-una cassetta e poco più. Con una tessera da trentadue caselle di lato ogni
+una cassetta e poco più. Il conto dice quanto: i numeri portati crescono come
+il lato della tessera al quadrato, i conti che se ne ricavano come il lato al
+cubo, quindi a ogni raddoppio del lato ogni numero lavora il doppio. Con una
+tessera da trentadue caselle di lato ogni
 viaggio porta duemilaquarantotto numeri, due blocchetti da trentadue per
 trentadue, e da quei numeri escono trentaduemilasettecentosessantotto
 moltiplicazioni con altrettante somme: trentadue conti per ogni numero portato,
 e siccome un numero pesa quattro byte, otto conti per ogni byte che ci si è
 fatti portare. Non basta: il pareggio fra magazzino e cuochi, quello stabilito
 nella sezione sulla memoria, sta a dieci, e i cuochi restano un po’ fermi ad
-aspettare. Qualche casella in più colmerebbe il divario, e in effetti la
-cassetta più grande che sul ripiano ci sta, centoquarantaquattro caselle di
-lato, arriva a trentasei, cioè quel pareggio lo supera di tre volte e mezzo.
+aspettare. Qualche casella in più colmerebbe il divario, e in effetti una
+cassetta da centoquarantaquattro caselle di lato arriva a trentasei, cioè quel
+pareggio lo supera di tre volte e mezzo.
 
 Solo che la soglia non sta ferma. Le unità costruite apposta per moltiplicare
 tabelloni lavorano con numeri corti, che pesano due byte invece di quattro:
 ogni byte porta allora il doppio dei conti, ma il pareggio da tenere sale oltre
-il centocinquanta. In quella valuta la cassetta da trentadue fa sedici, e la
-più grande che sul ripiano ci sta, duecento caselle di lato, arriva a poco più
-di cento: sotto di un buon terzo, e non c'è cassetta che ci arrivi. Allargare
-il ripiano, poi, rende meno di quanto prometta, perché la cassetta è un
+il centocinquanta. In quella valuta la cassetta da trentadue fa sedici, e una
+da duecento caselle di lato arriva a poco più di cento: sotto di un buon terzo.
+E più grande non si va, ma non per colpa del ripiano: i risultati parziali
+della tessera, uno per casella, restano in mano ai cuochi per tutto il lavoro,
+come la penna, e le mani sono poche. Allargare la tessera, poi, rende meno di
+quanto prometta, perché la cassetta è un
 quadrato: per fare il doppio dei conti su ogni byte deve diventare quattro
 volte più grande.
 
@@ -206,14 +211,19 @@ roofline sta a $\approx 10$ con i CUDA core in `float32` e a $\approx 161$ con
 i tensor core in `float16` su A100. I due numeri vanno confrontati a parità di
 formato: la stessa tessera in `float16` fa 16, non 8, e resta a sinistra anche
 di quello. Da sola è ancora memory-bound. Il primo ginocchio il tiling lo
-supera da sé, e senza sforzo: basta $T \ge 41$, che in `float32` occupa
-$13{,}1$ KB dei $164$ configurabili su una A100. Il secondo no: in `float16`
-(dove $I \approx T/2$) servirebbe $T \ge 323$, cioè una tessera da oltre 400
-KB, che in quei 164 non ci sta. E non è questione di scegliere meglio la
-taglia: la tessera più grande che in quei 164 KB ci sta è $204 \times 204$ (due
-blocchi da $T^2$ elementi a 2 byte l'uno), e dà $I \approx 102$. Nessuna
-tessera in shared memory arriva a 161, e quella $128 \times 128$ dei GEMM
-industriali si ferma a 64.
+supera da sé: basta $T \ge 41$. Il secondo no: in `float16` (dove $I \approx
+T/2$) servirebbe $T \ge 323$. E il limite non viene dalla shared memory. Con
+una tessera rettangolare $B_M \times B_N$ di $\mathbf{C}$ e un passo $B_K$
+lungo $K$, a ogni passo entrano $(B_M + B_N)\,B_K$ elementi e si fanno
+$2B_MB_NB_K$ FLOP, quindi $I = 2B_MB_N / \big((B_M+B_N)\,s\big)$, con $s$ byte
+per elemento: $B_K$ si semplifica, e lo si tiene piccolo (32 o 64) perché la
+tessera in shared costi pochi KB. Quello che non si semplifica sono gli
+accumulatori, $B_MB_N$ valori in `float32` che restano nei registri del blocco
+per tutto il ciclo su $K$: con $T = 323$ sarebbero oltre 400 KB, contro un
+register file da 256 KB per SM. Anche dedicandogli l'intero register file, cosa
+che nessun kernel può fare, la tessera $256 \times 256$ darebbe $I = 128$;
+quella $128 \times 128$ dei GEMM industriali si ferma a 64. Nessuna tessera
+arriva a 161.
 
 La domanda diventa allora chi li salvi davvero, quei GEMM, dato che veloci lo
 sono. La risposta sta un piano più giù ed è la cache L2. Il modello usato
@@ -245,7 +255,14 @@ alimentare 312 TFLOP/s di tensor core servono dunque 16 FLOP per ogni byte
 letto dalla shared, e un thread che vada a prendersi i due operandi di ogni
 singolo prodotto ne fa $0{,}5$: due FLOP ogni quattro byte in `float16`. Con
 una micro-tessera $R \times R$ tenuta nei registri, invece, ogni thread legge
-$2R$ valori e ne ricava $R^2$ prodotti, cioè $R/2$ FLOP per byte. È la stessa
+$2R$ valori e ne ricava $R^2$ prodotti, cioè $R/2$ FLOP per byte. Per arrivare
+a 16 servirebbe però $R = 32$, cioè 1024 accumulatori a testa, quattro volte il
+tetto di 255 registri per thread. Il riuso che basta si ottiene un gradino più
+su, sul warp: con i tensor core il frammento $W \times W$ di $\mathbf{C}$ sta
+nei registri dei 32 thread insieme ($W^2/32$ accumulatori a testa), a ogni
+passo il warp legge dalla shared $2W$ valori e ne ricava $W^2$ prodotti, e
+l'intensità torna $W/2$: la tessera di warp $64 \times 64$ tipica dei GEMM su
+Ampere dà 32 FLOP per byte con 128 accumulatori per thread. È la stessa
 aritmetica del tiling, con la shared al posto della HBM e i registri al posto
 della shared: il riuso si ricompra un piano più giù, ed è possibile per la
 ragione vista nella sezione sulla memoria, che il register file di un SM è il
@@ -388,7 +405,12 @@ l'innalzamento di $P_\text{picco}$ che, come notava il roofline, sposta il
 ginocchio verso destra e rende la banda ancora più decisiva. Non li programmi
 tu direttamente: cuBLAS e cuDNN li usano dietro le quinte ogni volta
 che una `nn.Linear` o una convoluzione girano su una GPU recente in mezza
-precisione.
+precisione. Da Ampere c'è anche una terza via, il `tf32`: ingressi `float32`
+troncati a 10 bit di mantissa e accumulo a 32 bit, che su una A100 dà 156
+TFLOP/s contro i 19,5 dei CUDA core, e quindi un ginocchio intermedio a circa
+81 FLOP/byte. In PyTorch il `tf32` è acceso per default nelle convoluzioni di
+cuDNN e spento nelle moltiplicazioni fra matrici, dove lo accende
+`torch.set_float32_matmul_precision("high")`.
 `````
 
 ## L'altra strada: far scorrere i dati invece dei conti
@@ -579,8 +601,8 @@ alla tessera, che non c'entra.
 `````
 
 Il tiling, insomma, tiene insieme i due limiti che il roofline della sezione
-«La memoria: il vero collo di bottiglia» (il grafico che dice se sei bloccato
-dal magazzino o dai cuochi) metteva uno di fronte all'altro: taglia i byte da
+«La memoria: il vero collo di bottiglia» (il grafico che dice se il tempo lo
+decide la banda o il calcolo) metteva uno di fronte all'altro: taglia i byte da
 spostare, perché riusa quel che ha già sul tavolo, e in cambio dà da lavorare
 ai tensor core. La stessa idea, cioè riorganizzare un calcolo per non tornare
 mai a rileggere dalla memoria lontana ciò che si può tenere vicino, applicata
@@ -652,8 +674,10 @@ pagina.
   con tessere $T \times T$ l'intensità sale a circa $T/4$ FLOP/byte. Con
   $T = 32$ fa 8 in `float32` e 16 in `float16` (dove $I \approx T/2$). Il primo
   ginocchio, 10 con i CUDA core, il tiling lo supera da sé; il secondo, 161 con
-  i tensor core su A100, no: la tessera più grande che stia nei 164 KB di
-  shared è $204 \times 204$, cioè $I \approx 102$ in `float16`. A tenere i GEMM
+  i tensor core su A100, no: con tessere $B_M \times B_N$ l'intensità è
+  $2B_MB_N/((B_M+B_N)s)$, e a limitarla sono gli accumulatori in registro
+  (256 KB per SM), non la shared: $256 \times 256$ darebbe 128, la
+  $128 \times 128$ dei GEMM industriali dà 64. A tenere i GEMM
   veri lontani dal muro della HBM è la cache L2, che serve le tessere che i
   blocchi si ripassano (su un GEMM $8192^3$ in `float16` il traffico crudo è 17
   GB, cioè $8{,}9$ ms contro $3{,}5$ ms di calcolo; il pavimento del riuso

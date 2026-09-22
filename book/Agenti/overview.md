@@ -55,9 +55,10 @@ Un agente è un *sistema* costruito attorno a un modello: un programma che
 guarda l'ambiente, lascia che il modello decida la mossa successiva, la esegue
 davvero, osserva com'è andata e ricomincia. L’ambiente è tutto ciò su cui
 l'agente può mettere le mani e da cui può ricevere notizie: le pagine del web,
-i file di un computer, i servizi a cui si può chiedere qualcosa. Il modello è
-il motore; l'agente è l'automobile, con volante, ruote e strada. Questo
-capitolo è dedicato all'automobile.
+i file di un computer, i servizi a cui si può chiedere qualcosa. Il modello
+sceglie la mossa; l'agente è tutto il resto, cioè il programma che
+gli prepara il contesto, esegue la mossa scelta, ne raccoglie l'esito e decide
+quando fermarsi. È di quel resto che si parla qui.
 
 ## Dal completare testo all'agire
 
@@ -179,7 +180,7 @@ non una cura generale.
 
 ## L'anatomia di un agente
 
-Smontiamo l'automobile. Al di là delle mille varianti, ogni agente ha quattro
+Smontiamo l'agente. Al di là delle mille varianti, ogni agente ha quattro
 ingredienti, e conviene tenerli distinti perché ognuno ha problemi suoi.
 
 - Il modello è il cervello: legge il contesto, ragiona, decide la prossima
@@ -285,7 +286,7 @@ Tre dei quattro ingredienti appena elencati (qualcosa che decide, degli
 strumenti, un ciclo che li mette in moto) non sono un'idea nuova.
 L'intelligenza artificiale classica, quella fatta di regole scritte a mano da
 un programmatore, costruiva agenti così già fra gli anni Sessanta e Settanta.
-La sezione sui chatbot a regole ne racconta due, e con loro il quarto
+Due di loro, ELIZA e GUS, arrivano fra poche righe, e con loro il quarto
 ingrediente, la memoria, che quei sistemi avevano in forma minima.
 
 Perché allora gli agenti *basati su LLM* nascono solo ora? Le tre lettere
@@ -342,9 +343,13 @@ che non garantisce niente ma spesso va, si dice che è un’euristica).
 
 La seconda avvertenza è un problema strutturale: gli errori si sommano lungo
 il ciclo. Se il modello sbaglia una mossa su dieci, dieci mosse di fila
-senza un solo inciampo gli riescono poco più di una volta su tre. Il conto
-è quello che sembra: chiamiamo $p$ la probabilità di sbagliare un passo e $n$
-il numero di passi, e la probabilità di attraversarli tutti senza errori vale
+senza un solo inciampo gli riescono poco più di una volta su tre. Il conto si
+può fare a mano: su cento tentativi il primo passo ne lascia
+passare novanta, il secondo nove decimi di quei novanta (ottantuno), il terzo
+nove decimi di ottantuno (circa settantatré), e ogni passo perde un decimo di
+quelli rimasti, finché dopo dieci passi ne restano trentacinque. In simboli,
+chiamiamo $p$ la probabilità di sbagliare un passo e $n$ il numero di passi, e
+la probabilità di attraversarli tutti senza errori vale
 $(1-p)^n$, che con $p = 0{,}1$ e $n = 10$ fa $0{,}9^{10} \approx 0{,}35$. Il
 conto vale finché ogni passo va per conto suo, senza che sbagliare il primo
 renda più probabile sbagliare il secondo; nella realtà non è proprio così, e ci

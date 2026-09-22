@@ -16,12 +16,16 @@ sopra tutto il resto.
 
 ## L'idea: un'aggregazione pesata che dipende dal contenuto
 
-Una cosa va detta prima di tutte, perché senza quella il resto sembra magia:
-dentro una rete le parole non sono parole. Ognuna diventa una lista di
-numeri, qualche centinaio, che la rete si è costruita imparando; nel gergo del
-libro una lista del genere si chiama vettore. Il motivo per cui la cosa
-conta è aritmetico: fare la media fra «gatto» e «muro» non vuol dire niente,
-fare la media fra due liste di numeri sì, si sommano numero per numero.
+Ogni token entra nell'attenzione come un vettore
+$\mathbf{x}_i \in \mathbb{R}^{d_{\text{model}}}$, l'embedding della
+{doc}`sezione sulla rappresentazione del testo
+</NaturalLanguageProcessing/rappresentare-testo>`, e la ragione per cui la cosa
+conta è aritmetica: fra due parole una media non è definita, fra due vettori sì,
+coordinata per coordinata. Chi ha letto la {doc}`matematica di un modello
+linguistico </Matematica/matematica-llm>` ha già visto il meccanismo per
+intero, con le tre proiezioni chiamate $\mathbf{W}^A$, $\mathbf{W}^B$,
+$\mathbf{W}^C$: qui lo si rivede con il vocabolario standard e con i pezzi che
+là restavano fuori.
 
 Ed è esattamente quello che l'attenzione fa. Per ogni parola da elaborare
 guarda tutte le altre parole della frase, decide quanto ciascuna conta per
@@ -33,34 +37,16 @@ altrove: i pesi non stanno scritti in nessun regolamento, li produce la frase
 stessa, parola per parola. Di qui il nome tecnico dell'oggetto,
 aggregazione pesata dipendente dal contenuto.
 
-Il problema che questa idea viene a risolvere si vede bene guardando com'era
-fatto un traduttore automatico prima. Erano due macchine attaccate: la prima
-leggeva la frase di partenza e ne faceva un riassunto, la seconda leggeva solo
-quel riassunto e da lì scriveva la traduzione. Le due metà hanno un nome che
-torna in tutto il capitolo: l’encoder è la parte che legge, il decoder
-quella che scrive, e la {doc}`sezione sulla struttura del Transformer
-<architettura>` li smonta pezzo per pezzo. E il
-riassunto era una sola lista di numeri, sempre lunga uguale: la stessa per una
-frase di cinque parole e per una di cinquanta.
-
-```{figure} ../figures/seq2seq-collo-di-bottiglia.svg
-:name: fig-collo-di-bottiglia
-:alt: "Schema di un seq2seq senza attenzione: le parole della frase in ingresso entrano una alla volta nell'encoder e vengono compresse in un unico vettore di contesto, disegnato come una strozzatura; da quel solo vettore il decoder deve generare tutta la traduzione, parola dopo parola."
-:width: 92%
-
-Il collo di bottiglia che l'attenzione viene a sciogliere. Tutta la frase
-d'origine deve passare per un'unica lista di numeri, sempre lunga uguale: più
-la frase è lunga, più quella lista è costretta a dimenticare.
-```
-
-{numref}`fig-collo-di-bottiglia` è il problema da cui nasce tutto, e con due
-numeri si tocca con mano. Se il riassunto è lungo cinquecento numeri e la frase
-è lunga cinquanta parole, a ogni parola tocca in media una decina di numeri per
-raccontarsi: la prima e l'ultima si contendono lo stesso spazio, e a rimetterci
-sono di solito quelle dell'inizio, viste per prime e sovrascritte da tutte
-quelle che vengono dopo. L'attenzione toglie la strozzatura in un modo
-sbrigativo: mentre scrive, il decoder smette di guardare il riassunto e va a
-rileggersi *tutte* le parole d'origine, pesandole di volta in volta.
+Il problema che questa idea viene a risolvere è il collo di bottiglia del
+traduttore a due metà, che la {doc}`sezione sulla traduzione con le reti
+</NaturalLanguageProcessing/seq2seq-traduzione>` ha raccontato insieme alla
+soluzione di Bahdanau: l'encoder, la parte che legge, comprimeva la frase in un
+solo vettore di lunghezza fissa, e il decoder, la parte che scrive, doveva
+tradurre da quello soltanto. I due nomi tornano in tutto il capitolo, e la
+{doc}`sezione sulla struttura del Transformer <architettura>` li smonta pezzo
+per pezzo. Il passo nuovo è prendere la mossa di Bahdanau, il decoder che
+rilegge tutte le parole d'origine pesandole di volta in volta, e farne l'unico
+meccanismo della rete.
 
 `````{tab} Elementare
 Prendi la frase "Il gatto nero salta sul muro". Il modello sta elaborando la
@@ -137,9 +123,16 @@ $\mathbf{q}$ «la domanda» e $\mathbf{k}_j$ «la risposta» aiuta a ricordare,
 ed è un uso corrente; ma il meccanismo è il
 prodotto scalare fra due proiezioni apprese, non un dialogo. E il prodotto
 scalare non c'era fin dall'inizio: nel lavoro del 2014 il punteggio lo
-calcolava una piccola rete a sé, e la forma moltiplicativa arriva l'anno dopo
-con Luong, Pham e Manning {cite}`luong2015effective`, che è quella che il
-Transformer adotta.
+calcolava una piccola rete a sé (l'attenzione *additiva*). La forma
+moltiplicativa compare nel 2015 per due strade: nelle end-to-end memory
+network {cite}`sukhbaatar2015end`, che pesano ogni fatto $\mathbf{m}_i$ in
+memoria con $\operatorname{softmax}(\mathbf{u}^\top \mathbf{m}_i)$, dove
+$\mathbf{u}$ è la domanda, e nella traduzione con Luong, Pham e Manning
+{cite}`luong2015effective`. È questa che il Transformer adotta, aggiungendo
+la scala, e l'articolo del 2017 ne dice il motivo: a parità di complessità
+teorica il prodotto scalare è un prodotto fra matrici, molto più veloce e
+parco di memoria della rete additiva, che però lo supera quando $d_k$ è
+grande e la scala manca.
 `````
 
 ## Il tabellone: quali sono le forme in gioco
@@ -243,7 +236,10 @@ diverse e apprese, e il percorso che ne segue, dalla proiezione fino alla
 miscela dei value, è quello che {numref}`fig-qkv` disegna per una parola sola.
 
 `````{tab} Elementare
-Tre versioni della stessa parola, una per mestiere. La prima dice che cosa
+Sono i tre biglietti della {doc}`matematica di un modello linguistico
+</Matematica/matematica-llm>`, che qui prendono i nomi che si useranno da ora
+in poi. Tre versioni della stessa parola, una per mestiere. La prima dice che
+cosa
 quella parola sta cercando nelle altre: "salta" cerca chi compie l'azione. La
 seconda è l'etichetta con cui si fa trovare da chi la sta cercando:
 "gatto" si presenta come qualcosa di animato, che può compiere azioni. La terza
@@ -307,9 +303,13 @@ $\mathbf{W}^Q\mathbf{W}^{K\top}$, che in generale non è simmetrica. Che
 $i$ attenda a $j$ non implica quindi che $j$ attenda a $i$, ed è da questa
 asimmetria che viene la capacità di rappresentare relazioni orientate come
 «chi è il soggetto di», invece della sola somiglianza. Le varianti che legano
-le due proiezioni rinunciano a quella libertà, e quanto costi è una domanda
-aperta: il {doc}`confronto coi modelli precedenti <confronti>` riporta l'unica
-misura pubblicata, quella del Reformer, che un costo non lo trova.
+le due proiezioni rinunciano a quella libertà nei punteggi (la matrice
+$\mathbf{X}\mathbf{W}\mathbf{W}^\top\mathbf{X}^\top$ diventa simmetrica, anche
+se la softmax per riga lascia asimmetrici i pesi), e quanto costi dipende dal
+compito: il Reformer, nel {doc}`confronto coi modelli precedenti
+<confronti>`, non trova perdite sui due compiti su cui la prova, e varianti
+simmetriche più recenti riportano su BERT risultati pari o migliori con meno
+parametri {cite}`courtois2024symmetric`.
 `````
 
 ```{figure} ../figures/attention-is-all-you-need.svg
@@ -328,7 +328,7 @@ Presa la riga $i$ di $\mathbf{Q}$ e la riga $j$ di $\mathbf{K}$, l'elemento di
 posto $(i, j)$ della matrice dei punteggi è il loro prodotto scalare:
 
 $$
-S_{ij} = \mathbf{q}_i^\top \mathbf{k}_j .
+z_{ij} = \mathbf{q}_i^\top \mathbf{k}_j .
 $$
 
 Il prodotto fra matrici $\mathbf{Q}\mathbf{K}^\top$ calcola in un colpo solo
@@ -398,24 +398,24 @@ quanto sono distanti.
 La scala si applica ai punteggi grezzi prima della softmax:
 
 $$
-\tilde{\mathbf{S}} = \frac{\mathbf{Q}\mathbf{K}^\top}{\sqrt{d_k}} .
+\tilde{\mathbf{Z}} = \frac{\mathbf{Q}\mathbf{K}^\top}{\sqrt{d_k}} .
 $$
 
-L'analisi dimensionale dice subito che il fattore è ammissibile: $S_{ij}$ è uno
+L'analisi dimensionale dice subito che il fattore è ammissibile: $z_{ij}$ è uno
 scalare, $\sqrt{d_k}$ è un numero puro, e la softmax vuole in ingresso degli
 scalari; la divisione cambia la scala dei logit e non il tipo dell'oggetto.
 Resta da capire perché *quel* numero.
 
-Supponiamo che le componenti $q_i$ e $k_i$ siano a media nulla, varianza
-unitaria, indipendenti fra loro e indipendenti al variare di $i$. Allora ogni
+Supponiamo che le componenti $q_c$ e $k_c$ siano a media nulla, varianza
+unitaria, indipendenti fra loro e indipendenti al variare di $c$. Allora ogni
 addendo del prodotto scalare ha varianza
-$\mathbb{E}[q_i^2 k_i^2] - (\mathbb{E}[q_i]\,\mathbb{E}[k_i])^2 =
-\mathbb{E}[q_i^2]\,\mathbb{E}[k_i^2] = 1$, dove la fattorizzazione
-dell'aspettazione usa l'indipendenza fra $q_i$ e $k_i$; e siccome gli
-addendi sono scorrelati al variare di $i$, le varianze si sommano:
+$\mathbb{E}[q_c^2 k_c^2] - (\mathbb{E}[q_c]\,\mathbb{E}[k_c])^2 =
+\mathbb{E}[q_c^2]\,\mathbb{E}[k_c^2] = 1$, dove la fattorizzazione
+dell'aspettazione usa l'indipendenza fra $q_c$ e $k_c$; e siccome gli
+addendi sono scorrelati al variare di $c$, le varianze si sommano:
 
 $$
-\operatorname{Var}\!\left(\sum_{i=1}^{d_k} q_i k_i\right) = d_k .
+\operatorname{Var}\!\left(\sum_{c=1}^{d_k} q_c k_c\right) = d_k .
 $$
 
 Dividere per $\sqrt{d_k}$ la riporta a 1. Servono dunque due indipendenze
@@ -459,12 +459,13 @@ tocca esattamente zero.
 
 I divieti che si incontrano si assomigliano poco. C'è quello di guardare
 avanti: chi scrive una parola alla volta non può sbirciare le parole che non ha
-ancora scritto, e la metà destra del tabellone è tutta crociata. C'è quello di
-guardare il riempitivo: per elaborare insieme frasi di lunghezza diversa le si
-allunga tutte con parole finte fino alla più lunga, e quelle parole finte non
-devono contare niente. E c'è il caso del traduttore, dove il tabellone è già
-rettangolare di suo e il divieto riguarda quali parole lette siano ancora
-disponibili.
+ancora scritto, e tutto il triangolo sopra la diagonale del tabellone è
+crociato. C'è quello di guardare il riempitivo: per elaborare insieme frasi di
+lunghezza diversa le si allunga tutte con parole finte fino alla più lunga, e
+quelle parole finte non devono contare niente. E c'è quello di guardare
+lontano, che serve a risparmiare: ogni parola può guardare soltanto le vicine
+entro una certa distanza, e sul tabellone resta aperta solo una striscia
+attorno alla diagonale.
 
 Cancellare a colorazione finita sembra equivalente a mettere le croci prima,
 ed è l'errore che si fa più spesso. Se distribuisci l'unità di colore su
@@ -514,6 +515,15 @@ softmax dell'intero rinormalizzata; ma i logit vietati continuano a entrare nel
 massimo e nella somma, e basta che uno sia abbastanza grande perché i termini
 permessi vadano in underflow. A quel punto il denominatore è zero e la
 rinormalizzazione produce `nan`.
+
+Lo stesso `nan` arriva per un'altra strada anche con la maschera al posto
+giusto: una riga in cui tutte le posizioni sono vietate (per esempio la prima
+posizione di riempimento quando il padding sta a sinistra e la maschera è
+causale) ha denominatore $\sum_j e^{-\infty} = 0$. La softmax scritta a mano
+restituisce `nan`, che può propagarsi nel passo all'indietro; le
+implementazioni di libreria trattano il caso a parte, e in PyTorch
+`scaled_dot_product_attention` su quella riga restituisce zeri, quindi un
+confronto fra la versione a mano e quella di libreria diverge proprio lì.
 
 Resta la finezza dell'allineamento, che il caso quadrato nasconde. Con
 $L \neq S$ l'espressione «triangolare inferiore» è ambigua finché non si
@@ -569,11 +579,12 @@ all'altra; tutto il resto serve a decidere quanta.
 La softmax si applica lungo la dimensione delle chiavi, per ogni riga di query:
 
 $$
-A_{ij} = \frac{\exp(\tilde{S}_{ij})}{\sum_{r=1}^{S} \exp(\tilde{S}_{ir})},
+A_{ij} = \frac{\exp(\tilde{z}_{ij} + M_{ij})}{\sum_{r=1}^{S} \exp(\tilde{z}_{ir} + M_{ir})},
 \qquad A_{ij} \ge 0, \qquad \sum_{j=1}^{S} A_{ij} = 1 ,
 $$
 
-dove $\tilde{S}_{ij}$ è il punteggio scalato e mascherato. Ogni riga di
+dove $\tilde{z}_{ij} = \mathbf{q}_i^\top \mathbf{k}_j/\sqrt{d_k}$ è il punteggio
+scalato e $M_{ij}$ la maschera. Ogni riga di
 $\mathbf{A}$ è quindi una distribuzione di probabilità sulle posizioni di
 chiave permesse per quella query, e le sue entrate si trovano scritte anche
 $\alpha_{ij}$, che è la forma usata in {numref}`fig-qkv` e nella letteratura
@@ -828,7 +839,7 @@ stesso insieme di parole.
 La conseguenza è precisa, e si dimostra in una riga: rimescolare le righe di
 $\mathbf{X}$ con una permutazione $\mathbf{P}$ rimescola allo stesso modo
 quelle di $\mathbf{Q}$, $\mathbf{K}$ e $\mathbf{V}$, quindi i punteggi
-diventano $\mathbf{P}\tilde{\mathbf{S}}\mathbf{P}^\top$; la softmax lavora riga
+diventano $\mathbf{P}\tilde{\mathbf{Z}}\mathbf{P}^\top$; la softmax lavora riga
 per riga e il rimescolamento la attraversa intatto; e il prodotto finale lo
 riporta fuori tale e quale, perché
 $(\mathbf{P}\mathbf{A}\mathbf{P}^\top)(\mathbf{P}\mathbf{V}) =
@@ -849,8 +860,13 @@ blocco per intero.
 Due precisazioni, perché sono i due modi in cui questo punto si fraintende. La
 codifica posizionale non fa parte dell'attenzione: modifica le rappresentazioni,
 o l'interazione fra query e chiavi, in modo che l'attenzione possa usare la
-posizione. E la maschera causale, che pure introduce una direzione, non basta:
-dice che cosa si può guardare, non quanto sia distante.
+posizione. E la maschera causale introduce una direzione, e con essa un segnale
+di posizione indiretto: la riga $i$ fa la media su esattamente $i$ vettori, e
+un modello causale addestrato senza codifica esplicita impara a ricavarne dove
+si trova {cite}`haviv2022transformer`, come ha già notato la
+{doc}`matematica di un modello linguistico </Matematica/matematica-llm>`. Un
+encoder bidirezionale non ha nemmeno questo appiglio, e per tutti e due la
+codifica esplicita resta il modo diretto di dare l'ordine.
 
 ## Dove va a finire l'attenzione: encoder e decoder
 
@@ -923,14 +939,30 @@ residuale (la stessa idea delle ResNet che abbiamo visto fra le
 </DeepLearning/architetture-storiche>`) offre al gradiente un cammino quasi
 diretto verso gli strati
 iniziali, contrastando il gradiente che svanisce; la layer normalization
-stabilizza media e varianza delle attivazioni a ogni posizione, rendendo
-l'addestramento meno sensibile a learning rate e inizializzazione. «Quasi»,
+{cite}`ba2016layer` standardizza ogni vettore sulle proprie coordinate, token
+per token e senza guardare il resto del batch:
+
+$$
+\text{LayerNorm}(\mathbf{x}) = \boldsymbol{\gamma} \odot
+\frac{\mathbf{x} - \mu\,\mathbf{1}}{\sqrt{\sigma^2 + \epsilon}} + \boldsymbol{\beta},
+\qquad \mu = \frac{1}{d}\sum_{i=1}^{d} x_i, \qquad
+\sigma^2 = \frac{1}{d}\sum_{i=1}^{d} (x_i - \mu)^2 ,
+$$
+
+dove $\boldsymbol{\gamma}, \boldsymbol{\beta} \in \mathbb{R}^d$ sono guadagno e
+traslazione appresi ed $\epsilon$ una costante piccola che evita la divisione
+per zero. Non usando statistiche del batch, si comporta allo stesso modo in
+addestramento e in inferenza e con sequenze di lunghezza qualsiasi, cosa che la
+batch normalization non garantisce; e rende l'addestramento meno sensibile a
+learning rate e inizializzazione. «Quasi»,
 perché in questa formulazione (detta *Post-LN*, quella del 2017) la
 normalizzazione sta proprio sul ramo della scorciatoia, e il gradiente la
 attraversa a ogni strato: i modelli successivi la spostano prima del
 sotto-strato, $\mathbf{x} + \text{SubLayer}(\text{LayerNorm}(\mathbf{x}))$, il
 cosiddetto
-*Pre-LN*, ed è lì che il cammino identità diventa davvero pulito (Xiong e
+*Pre-LN* (che vuole una normalizzazione finale dopo l'ultimo blocco, e GPT-2
+la aggiunge esplicitamente), ed è lì che il cammino identità diventa davvero
+pulito (Xiong e
 colleghi {cite}`xiong2020layer` mostrano che senza questo spostamento serve un
 riscaldamento graduale del learning rate per addestrare stabilmente).
 
@@ -940,7 +972,8 @@ alleggerita: al posto della LayerNorm c'è quasi sempre la **RMSNorm**
 vettore per la sua radice quadratica media e lo riscala con un guadagno
 appreso,
 $\mathbf{x} \mapsto \boldsymbol{\gamma} \odot \mathbf{x}/\mathrm{RMS}(\mathbf{x})$
-con $\mathrm{RMS}(\mathbf{x}) = \sqrt{\tfrac{1}{d}\sum_i x_i^2}$: meno conti
+con $\mathrm{RMS}(\mathbf{x}) = \sqrt{\tfrac{1}{d}\sum_i x_i^2 + \epsilon}$:
+meno conti
 per strato, e in pratica la stessa stabilità.
 `````
 
@@ -1093,7 +1126,8 @@ non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nom
   ($h = 8$ nel modello originale) e ricompone con $\mathbf{W}^O$; le semantiche
   delle teste sono emergenti e non garantite.
 - La self-attention senza maschera è equivariante alle permutazioni: la
-  posizione va aggiunta da fuori, e la maschera causale dà una direzione ma non
+  posizione va aggiunta da fuori, e la maschera causale ne dà soltanto un
+  segnale indiretto, non
   una distanza.
 - Residual connection e layer normalization tengono addestrabili le
   pile profonde di blocchi. L'articolo del 2017 le combina come

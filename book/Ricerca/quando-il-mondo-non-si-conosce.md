@@ -125,8 +125,12 @@ facendo la media e finisce facendo il minimax: è di Rémi Coulom
 regola che decide dove spendere la simulazione successiva, cioè la stessa regola
 dei bandit (si chiama UCB1, e sceglie il ramo col miglior compromesso fra quanto
 ha reso finora e quanto poco lo si è provato) applicata a ogni nodo dell’albero
-{cite}`kocsis2006bandit`: è la seconda a dare al metodo le sue garanzie di
-convergenza, che però dicono che la stima arriva, non quanto in fretta.
+{cite}`kocsis2006bandit`: è la seconda a dare al metodo le sue garanzie. Con
+ricompense in $[0,1]$ la distorsione della stima alla radice cala come
+$O(\ln n / n)$ nel numero $n$ di simulazioni, e la probabilità di scegliere una
+mossa sbagliata va a zero a velocità polinomiale; ma le costanti dipendono
+dalla profondità dell'albero, e su alberi costruiti apposta il tempo prima che
+la garanzia cominci a valere è proibitivo {cite}`coquelin2007bandit`.
 
 C’è un limite, e il metodo se lo porta dietro: la stima campionaria è tanto
 più informativa quanto più il valore di una posizione è robusto rispetto
@@ -157,7 +161,7 @@ trent’anni, ha cominciato a cedere.
 
 L’arrivo cade più silenziosamente del voto, e per questo è più insidioso.
 
-In tutti i problemi di questo capitolo c’era un test che diceva «sei
+In tutti i problemi visti fin qui c’era un test che diceva «sei
 arrivato». Ma prova a scriverlo per «trova una buona sistemazione dei turni del
 personale». Un test in realtà c’è, e non serve a niente: dice se una
 sistemazione sta in piedi (nessuno di turno due volte nello stesso momento), e
@@ -224,8 +228,8 @@ immaginati, il rinforzo spende esperienza per stimare valori da futuri
 davvero accaduti.
 
 Le due cose non sono alternative, e i capitoli che seguono lo mostrano in tre
-modi. Se il modello manca ma lo si può imparare, si ricade nel caso di
-questo capitolo usando il modello appreso al posto di quello vero: è la
+modi. Se il modello manca ma lo si può imparare, si ricade nella ricerca
+in avanti usando il modello appreso al posto di quello vero: è la
 {doc}`famiglia dei metodi basati su modello
 </DeepReinforcementLearning/model-based>`, col rischio che gli errori del
 modello si accumulino lungo i rami immaginati. Se
@@ -256,7 +260,7 @@ ci hanno tolto.
 
 ```{admonition} Da ricordare
 :class: important
-- Tutta la ricerca di questo capitolo poggia su tre regali: le regole, che
+- Tutta la ricerca in avanti poggia su tre regali: le regole, che
   si possono interrogare quante volte si vuole per provare le mosse nella
   propria testa; l’arrivo, che si sa riconoscere; e il voto, che si sa
   dare a una posizione di mezzo.
@@ -284,9 +288,14 @@ ci hanno tolto.
 
 ```{admonition} Da ricordare
 :class: important
-- Le tre ipotesi implicite della ricerca classica sono: modello interrogabile
-  ($\mathrm{ris}$ e $c$ disponibili a costo nullo), test di terminazione
-  definito, valutazione degli stati intermedi scrivibile.
+- Le ipotesi implicite della ricerca classica sono cinque, e qui se ne
+  tolgono tre: modello interrogabile ($\mathrm{ris}$ e $c$ disponibili a costo
+  nullo), test di terminazione definito, valutazione degli stati intermedi
+  scrivibile. Le altre due sono azioni deterministiche e stato pienamente
+  osservabile: senza la prima il minimax diventa expectiminimax, con nodi di
+  caso che fanno la media; senza la seconda si cerca nello spazio delle
+  distribuzioni sugli stati, il *belief state* del POMDP della
+  {doc}`sezione sugli MDP </ReinforcementLearning/mdp-valore>`.
 - Cade la valutazione: si sostituisce $\mathrm{ev}(s)$ con una stima
   campionaria ottenuta simulando partite fino in fondo, e si distribuiscono le
   simulazioni risolvendo un problema di esplorazione contro sfruttamento.

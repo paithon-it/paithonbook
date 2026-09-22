@@ -79,8 +79,10 @@ ma leggere il non misurabile a partire dal misurabile.
 
 ## Il problema inverso, cioè il superpotere
 
-Per capire perché quel risultato sull'aneurisma sia speciale bisogna
-distinguere due modi opposti di usare un'equazione.
+Diretto e inverso li abbiamo già incontrati: il caffè ricostruito da una
+legge nota, e la rigidezza della molla ricavata da venticinque misure. Resta da
+vedere perché l'inverso, che sembra la stessa strada fatta al contrario, sia
+tanto più difficile, e perché il risultato sull'aneurisma sia speciale.
 
 `````{tab} Elementare
 
@@ -284,8 +286,9 @@ un'increspatura minuscola, se è stretta, piega moltissimo. Basta quindi un
 ritocco invisibile perché quella squadra strattoni con tutt'altra forza, e con
 un avversario così non c'è passo che vada bene: si avanza al rallentatore, o
 non si avanza affatto. Un rimedio che funziona è cominciare da una versione
-mite della legge, con il numero che la rende difficile abbassato, e riportarlo
-poco alla volta al suo valore mentre la curva si sistema.
+mite della legge e indurirla poco alla volta: per una sostanza trascinata da
+una corrente, si parte da una corrente lenta, che la rete impara senza fatica,
+e si alza la velocità a piccoli passi mentre la curva si sistema.
 
 `````
 
@@ -297,9 +300,27 @@ camuffata da obiettivo singolo. I gradienti dei due termini possono puntare in
 direzioni discordi: minimizzare l'uno peggiora l'altro, e il peso $\lambda$ ne
 stabilisce il compromesso, dove $\mathcal{L}_{\text{dati}}$ raccoglie gli
 scarti su misure, condizioni iniziali e condizioni al contorno. Una formula
-chiusa per $\lambda$ non c'è: o lo si cerca provando, o lo si fa ristimare
-durante l'addestramento dalle statistiche dei gradienti, che è la proposta di
-Wang, Teng e Perdikaris. Peggio: il termine fisico contiene operatori
+chiusa per $\lambda$ non c'è: o lo si cerca provando, o lo
+si fa ristimare durante l'addestramento dalle statistiche dei gradienti, che è
+la proposta di Wang, Teng e Perdikaris {cite}`wang2021understanding`. A ogni
+passo calcolano, per ciascun termine di dati $\mathcal{L}_i$ (misure,
+condizioni iniziali, bordo),
+
+$$
+\hat{\lambda}_i = \frac{\max_\theta \big|\nabla_\theta
+\mathcal{L}_{\text{fisica}}\big|}{\overline{\big|\nabla_\theta
+\mathcal{L}_i\big|}}, \qquad \lambda_i \leftarrow (1-\alpha)\,\lambda_i +
+\alpha\,\hat{\lambda}_i,
+$$
+
+dove il massimo e la media (la barra) sono presi sulle componenti del gradiente
+rispetto ai pesi e $\alpha = 0{,}9$; qui il peso sta sui termini di dati, che
+sono quelli da rialzare. Costa una backward in più per termine. Un'altra
+strada, dello stesso gruppo, pesa ogni termine con la traccia del suo nucleo
+tangente {cite}`wang2022when`; un'altra ancora fa girare i pesi
+all'addestramento, ma in *salita*, come un problema di punto di sella in cui la
+rete minimizza e i pesi massimizzano (le *self-adaptive PINN*
+{cite}`mcclenny2023self`). Peggio: il termine fisico contiene operatori
 differenziali di ordine alto (derivate seconde, a volte quarte) che rendono il
 problema mal condizionato, nel senso preciso dei {doc}`richiami di analisi
 numerica </Matematica/analisi-numerica>`, e la discesa rallenta o si blocca. De
@@ -356,7 +377,9 @@ pittore a partire da sinistra e ad andare in ordine: ritocca un pezzo qua e
 uno là, ogni tratto guardato da vicino sta in piedi, ma l'alba che gli avevano
 dato non arriva mai in fondo alla parete. Viene fuori una giornata piatta e
 senza ore, che passa tutti i controlli da vicino ed è sbagliata guardata
-intera.
+intera. È quello che è successo alla molla con il seme 7: dopo il primo tuffo
+la rete si è stesa sullo zero, in regola in ogni punto controllato, e le
+oscillazioni che dovevano venire dopo non sono mai arrivate.
 
 `````
 
@@ -390,28 +413,44 @@ spectral bias spiega davvero sono i fronti ripidi e gli strati limite, che
 sono *localmente* ad alta frequenza, e fra questi il transitorio iniziale di
 un problema stiff.
 
-C'è poi un caso che lo spectral bias non copre affatto, ed è il più duro:
-quando la soluzione ha una discontinuità vera, come l'urto di una legge di
+C'è poi un caso che lo spectral bias non copre affatto, ed è il più duro: quando
+la soluzione ha una discontinuità vera, come l'urto di una legge di
 conservazione non viscosa. Lì l'equazione in forma forte non ha nessuna
 soluzione classica, perché la soluzione vera sull'urto non è derivabile; la
 rete, che è liscia per costruzione, un residuo lo calcola lo stesso, e il guaio
 è tutto qui. Non è che impari piano, è che il problema che sta minimizzando non
-è quello giusto. La strada, in quel caso, è riscrivere il
-vincolo in forma **debole** o integrale, che è un'altra famiglia di metodi.
+è quello giusto. La strada, in quel caso, è riscrivere il vincolo in forma
+**debole**: invece di chiedere $\mathcal{N}[u_\theta] = 0$ punto per punto, si
+chiede che il residuo sia ortogonale a una famiglia di funzioni test,
+$\int_\Omega \mathcal{N}[u_\theta]\,\varphi\,\mathrm{d}\mathbf{x} = 0$, e
+un'integrazione per parti sposta le derivate da $u_\theta$ a $\varphi$, così che
+sull'urto la soluzione non vada più derivata. Sono le *variational PINN* di
+Kharazmi, Zhang e Karniadakis {cite}`kharazmi2019variational`, e per le leggi di
+conservazione le *weak PINN* di De Ryck, Mishra e Molinaro
+{cite}`deryck2024wpinn`, che impongono in forma debole le disuguaglianze di
+entropia, con funzioni test anch'esse reti, in un problema di punto di sella.
+Parente stretto, ma solo per i problemi che derivano da un principio
+variazionale, è il *Deep Ritz* di E e Yu {cite}`e2018deep`: per l'equazione di
+Poisson $-\Delta u = q$ la loss non è un residuo ma l'energia
+$\int_\Omega \big(\tfrac{1}{2}|\nabla u_\theta|^2 - q\,u_\theta\big)\mathrm{d}\mathbf{x}$,
+il cui minimo è la soluzione, e l'ordine delle derivate richieste scende da due
+a uno.
 
-Sugli orizzonti temporali lunghi agisce invece un guasto tutto suo, da
-tenere distinto dallo spectral bias: è un meccanismo indipendente, non quello
-detto in altre parole. Non è nemmeno un accumulo di
-errore passo dopo passo (quella è la malattia degli integratori sequenziali,
-e qui di passi non ce ne sono: l'ottimizzazione è globale nel tempo). È che
-la loss, sommando residui su punti sparsi in tutto il dominio, non impone
-alcun **ordine causale**: nulla obbliga la rete a sistemare prima l'inizio
-dell'intervallo e poi il resto, e l'informazione delle condizioni iniziali
-non viene propagata in avanti nel tempo. Il residuo può così restare piccolo
-mentre la rete collassa su una dinamica banale, plausibile punto per punto e
-sbagliata nel complesso. È proprio il difetto che la decomposizione
-sequenziale nel tempo di Krishnapriyan et al., vista poco sopra, va a
-correggere.
+Sugli orizzonti temporali lunghi agisce invece un guasto tutto suo, da tenere
+distinto dallo spectral bias: è un meccanismo indipendente, non quello detto in
+altre parole. Non è nemmeno un accumulo di errore passo dopo passo (quella è la
+malattia degli integratori sequenziali, e qui di passi non ce ne sono:
+l'ottimizzazione è globale nel tempo). È che la loss, sommando residui su punti
+sparsi in tutto il dominio, non impone alcun **ordine causale**: nulla obbliga
+la rete a sistemare prima l'inizio dell'intervallo e poi il resto, e
+l'informazione delle condizioni iniziali non viene propagata in avanti nel
+tempo. Il residuo può così restare piccolo mentre la rete collassa su una
+dinamica banale, plausibile punto per punto e sbagliata nel complesso. Lo
+correggono la decomposizione sequenziale nel tempo di Krishnapriyan et al.,
+vista poco sopra, che addestra una finestra temporale per volta, e i pesi
+causali di Wang, Sankaran e Perdikaris {cite}`wang2024respecting`, che dentro
+un'unica ottimizzazione fanno contare il residuo di un istante solo quando
+quelli che lo precedono sono già piccoli.
 
 `````
 
@@ -685,10 +724,10 @@ troppo vicino per vedersi.
 
 `````
 
-Le PINN chiudono la parte del libro che cambia dominio a ogni capitolo, grafi,
-cataloghi, serie storiche, equazioni della fisica, cioè la stessa matematica
-che si adatta di volta in volta alla forma dei dati. Da qui la domanda cambia.
-Il {doc}`capitolo su MLOps </MLOps/overview>` non chiede più che cosa un
-modello riesca a imparare, ma che cosa gli succede il giorno dopo, quando
-smette di essere un esperimento e diventa un servizio che qualcuno usa
-davvero.
+Le PINN chiudono la parte del libro che cambia dominio a ogni capitolo (grafi,
+cataloghi di prodotti da consigliare, serie storiche, equazioni della fisica),
+cioè la stessa matematica che si adatta di volta in volta alla forma dei dati.
+Da qui la domanda cambia. Il {doc}`capitolo su MLOps </MLOps/overview>` non
+chiede più che cosa un modello riesca a imparare, ma che cosa gli succede il
+giorno dopo, quando smette di essere un esperimento e diventa un servizio che
+qualcuno usa davvero.

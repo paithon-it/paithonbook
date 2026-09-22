@@ -78,8 +78,7 @@ carta, senza apprendimento: i pesi li fissava a mano il progettista.
 Il salto arriva nel 1958 con Frank Rosenblatt e il suo **percettrone**. Non
 solo un neurone che decide, ma un neurone che *impara*: aggiusta i propri pesi
 guardando gli errori che commette. La stampa dell'epoca si entusiasma oltre
-ogni misura: il *New York Times* scrisse di una macchina che un giorno avrebbe
-camminato, parlato e avuto coscienza di sé.
+ogni misura.
 
 `````{tab} Elementare
 
@@ -372,9 +371,15 @@ ogni $\sigma$ non polinomiale, ReLU compresa ({cite}`leshno1993multilayer`).
 È però un teorema di esistenza: dice che i pesi giusti ci sono, non che la
 discesa del gradiente li trovi. E c'è una seconda cosa che non dice, altrettanto
 importante: quanto ampio. Nell'enunciato "abbastanza ampio" non è
-quantificato, e per una funzione qualsiasi di $d$ variabili il numero di neuroni
-necessari cresce esponenzialmente in $d$: la garanzia c'è, il conto è fuori
-portata già per un'immagine piccola. È il vero motivo per cui il teorema
+quantificato, e nel caso peggiore il conto è proibitivo: per approssimare a
+meno di $\varepsilon$ ogni funzione di $d$ variabili con $s$ derivate limitate
+servono dell'ordine di $\varepsilon^{-d/s}$ neuroni, esponenziale in $d$, e per
+una funzione generica il conto è fuori portata già per un'immagine piccola. Non
+per tutte, però: se la trasformata di Fourier della funzione ha primo momento
+finito $C_f$, Barron {cite}`barron1993universal` mostra che $n$ neuroni
+sigmoidali danno un errore quadratico dell'ordine di $C_f^2/n$, senza
+esponenziale in $d$ (la dipendenza dalla dimensione si sposta dentro
+$C_f$). È il vero motivo per cui il teorema
 consola meno di quanto suoni. La non linearità $\sigma$ è essenziale: senza
 di essa, due strati lineari collasserebbero in uno solo.
 

@@ -220,9 +220,11 @@ decennio, quando si è capito come farla girare in fretta anche su grafi enormi
 {cite}`hamilton2020graph`.
 
 Una volta che ogni nodo ha la sua rappresentazione, che cosa ce ne facciamo?
-Le domande che si possono fare a un grafo sono di tre tipi soltanto, e conviene
-distinguerli fin da subito, perché ogni problema reale ricade in una di queste
-tre caselle.
+Le domande che si fanno più spesso a un grafo sono di tre tipi, e conviene
+distinguerle fin da subito. Accanto a queste ce ne sono altre, come generare un
+grafo nuovo (progettare una molecola invece di giudicarla) o raggruppare i nodi
+in comunità senza etichette, ma le tre caselle coprono i compiti con cui si
+addestra una GNN supervisionata.
 
 `````{tab} Elementare
 
@@ -262,9 +264,7 @@ mai visti in addestramento.
 
 `````
 
-## La mappa del capitolo
-
-Il capitolo procede dal dato all'architettura.
+## Dal dato all'architettura
 
 - Il mondo come grafo. Come si mette un problema «in forma di grafo»: cosa
   sono nodi e archi, e che cosa c'è scritto su ciascuno (le loro

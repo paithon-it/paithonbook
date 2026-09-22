@@ -22,10 +22,10 @@ alla versione di un sito che sta rendendo di più. Prima di arrivarci conviene
 però vedere tre strade che di ogni leva tengono un numero solo: sono più
 semplici da raccontare e più facili da mettere in codice.
 
-È il dilemma fra esplorare e sfruttare annunciato nella panoramica del
-capitolo, e qui si presenta nella forma più pura che esista, perché manca tutto
-il resto: nessuno stato che cambia, nessuna conseguenza differita, nessun
-merito da distribuire su una catena di mosse. Solo la tensione, nuda.
+È di nuovo il dilemma fra esplorare e sfruttare, e qui si presenta nella forma
+più pura che esista, perché manca tutto il resto: nessuno stato che cambia,
+nessuna conseguenza differita, nessun merito da distribuire su una catena di
+mosse. Solo la tensione, nuda.
 
 Il nome viene dallo slang americano: la macchinetta da casinò con la leva si
 chiama *one-armed bandit*, il bandito con un braccio solo, perché ti deruba con
@@ -377,34 +377,55 @@ massimamente urgenti). Il termine sotto radice è, a meno di costanti, la
 larghezza di un intervallo di confidenza sulla media di $a$: il numeratore
 $\ln t$ cresce con il tempo, il denominatore $N_t(a)$ con l'uso. La forma
 $\sqrt{\ln t / N_t(a)}$ non è arbitraria: esce da una disuguaglianza di
-concentrazione (Hoeffding, che per ricompense in $[0,1]$ dà
-$\Pr(|\bar{X}_n - \mu| \ge u) \le 2e^{-2nu^2}$) applicata alla media di
+concentrazione (la {doc}`disuguaglianza di Hoeffding
+</Matematica/concentrazione>`,
+che per $n$ ricompense indipendenti in $[0,1]$, con media vera $\mu$ e media
+campionaria $\bar{X}_n$, dà $\Pr(|\bar{X}_n - \mu| \ge u) \le 2e^{-2nu^2}$ per
+ogni scarto $u > 0$) applicata alla media di
 $N_t(a)$ campioni, con il $\ln t$ che paga l'unione su tutti i passi fatti
 finora. Il nome dice il principio: **ottimismo di fronte all'incertezza**, cioè
 agire come se ogni azione valesse il massimo compatibile con i dati raccolti, e
 lasciare che siano i dati a smentire.
 
-Il decadimento logaritmico non è decorativo. Lai e Robbins
-{cite}`lai1985asymptotically` dimostrano che nessun algoritmo buono su *tutte*
-le istanze del problema (con rimpianto sub-polinomiale qualunque siano i
-valori delle leve: la clausola esclude scorciatoie come tirare sempre la
-stessa leva, che trionfa quando quella leva è la migliore e affonda su tutte
-le altre istanze) può avere un **rimpianto**
+Il decadimento logaritmico non è decorativo. Si chiami **rimpianto** in $T$
+tiri
 
 $$
 \mathcal{R}_T = T \max_a q_*(a) - \mathbb{E}\!\left[\sum_{t=1}^{T} R_t\right]
+= \sum_{a} \Delta_a\, \mathbb{E}[N_T(a)],
+\qquad \Delta_a = \max_b q_*(b) - q_*(a),
 $$
 
-dove $\mathcal{R}_T$, in calligrafico, è il rimpianto accumulato in $T$ tiri, e
-$R_t$ resta la ricompensa del singolo tiro. Quel rimpianto non può crescere,
-asintoticamente, meno che logaritmicamente in $T$: perdere qualcosa è
-inevitabile, la domanda è solo quanto. Auer, Cesa-Bianchi e
-Fischer {cite}`auer2002finite` mostrano che UCB1 raggiunge quella crescita
-logaritmica con una garanzia valida a ogni istante finito, non solo
-asintoticamente; resta però sopra la costante ottima di Lai e Robbins (la
-raggiungono varianti più fini, come KL-UCB), e il teorema assume ricompense
-limitate, un'ipotesi che il banco di prova gaussiano a dieci leve, a rigore, non
-rispetta.
+dove $\mathcal{R}_T$, in calligrafico, è il rimpianto accumulato, $R_t$ resta
+la ricompensa del singolo tiro, $\Delta_a$ è lo scarto della leva $a$ dalla
+migliore e $N_T(a)$ quante volte è stata tirata. Lai e Robbins
+{cite}`lai1985asymptotically` dimostrano che ogni algoritmo *consistente*, cioè
+con $\mathcal{R}_T = o(T^p)$ per ogni $p > 0$ su tutte le istanze (la clausola
+esclude scorciatoie come tirare sempre la stessa leva, che trionfa quando
+quella leva è la migliore e affonda su tutte le altre istanze), soddisfa
+
+$$
+\liminf_{T \to \infty} \frac{\mathcal{R}_T}{\ln T} \;\ge \sum_{a:\,\Delta_a > 0}
+\frac{\Delta_a}{D_{\mathrm{KL}}(\nu_a \,\|\, \nu_{a^*})},
+$$
+
+dove $\nu_a$ è la distribuzione delle ricompense della leva $a$ e $a^*$ la leva
+migliore: perdere qualcosa è inevitabile, e la costante dice quanto costa
+distinguere ogni leva dalla migliore. Auer, Cesa-Bianchi e Fischer
+{cite}`auer2002finite` mostrano che UCB1, con ricompense in $[0,1]$, garantisce
+a ogni $T$ finito
+
+$$
+\mathcal{R}_T \le 8 \sum_{a:\,\Delta_a > 0} \frac{\ln T}{\Delta_a}
++ \Big(1 + \frac{\pi^2}{3}\Big) \sum_a \Delta_a .
+$$
+
+L'ordine è quello giusto, la costante no. Poiché per ricompense in $\{0,1\}$
+vale $D_{\mathrm{KL}} \ge 2\Delta_a^2$ (disuguaglianza di Pinsker), il limite
+inferiore pesa ogni leva al più $1/(2\Delta_a)$, e l'$8/\Delta_a$ di UCB1 gli
+sta sopra: lo raggiungono varianti più fini, come KL-UCB. Il teorema assume
+inoltre ricompense limitate, un'ipotesi che il banco di prova gaussiano a dieci
+leve, a rigore, non rispetta.
 
 Per confronto, $\varepsilon$-greedy con $\varepsilon$ costante ha rimpianto
 lineare in $T$, perché continua a sbagliare una frazione fissa delle volte
@@ -790,14 +811,15 @@ l'illustrazione di un teorema.
 Il punto di rottura sta dove sta il guadagno: la garanzia riguarda il modello,
 non il mondo. Un priore troppo stretto produce una posteriore che si stringe
 attorno alla cosa sbagliata, e il sorteggio smette di esplorare proprio mentre
-dovrebbe. Una $\sigma$ sbagliata guasta invece nei due versi, e il secondo è
-quello che sorprende: crederla più piccola del vero fa pesare troppo ogni
-singolo incasso e impegnare presto; crederla più grande tiene la posteriore
-larga per sempre, e allora il sorteggio continua a esplorare quando non ci
-sarebbe più niente da scoprire. E come tutto il resto
-della sezione, presuppone un problema stazionario: se i bracci cambiano
-carattere, la posteriore accumulata descrive un mondo che non c'è più, e
-occorre farla dimenticare.
+dovrebbe. Una $\sigma$ sbagliata guasta invece nei due versi. Crederla più
+piccola del vero fa pesare troppo ogni singolo incasso e impegnare presto,
+magari sulla leva sbagliata. Crederla più grande non tiene la posteriore larga
+per sempre, perché la sua varianza cala comunque come $\hat{\sigma}^2/N_t(a)$,
+con $\hat{\sigma}$ il valore creduto, e va a zero: la stringe più adagio, e il
+sorteggio spende sulle leve peggiori più tiri del necessario prima di
+lasciarle. E come tutto il resto della sezione, presuppone un problema
+stazionario: se i bracci cambiano carattere, la posteriore accumulata descrive
+un mondo che non c'è più, e occorre farla dimenticare.
 
 `````
 
@@ -999,7 +1021,8 @@ prossima sezione.
   UCB1 avvicina soltanto (il banco di prova è però gaussiano: là il 91,8% è una
   misura). Il prezzo è che la garanzia è sul modello: un priore troppo stretto
   smette di esplorare mentre dovrebbe (75,2%), una $\sigma$ creduta troppo
-  grande esplora invece per sempre, e la posteriore accumulata presuppone un
+  grande esplora più a lungo del necessario, e la posteriore accumulata
+  presuppone un
   problema stazionario.
 - Si incontrano davvero in test A/B adattivi, esplorazione nei sistemi di
   raccomandazione e ricerca di iperparametri (Hyperband è *best-arm

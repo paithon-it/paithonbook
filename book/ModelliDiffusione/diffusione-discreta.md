@@ -162,9 +162,25 @@ probabilità di stati vicini, $p_t(\mathbf{y})/p_t(\mathbf{x})$ per
 $\mathbf{y}$ che differisce da $\mathbf{x}$ in una posizione
 {cite}`lou2024discrete`. Quel rapporto è la controparte discreta del punteggio
 (dove non si può derivare, si divide), il processo è una catena di Markov a
-tempo continuo con la sua matrice generatrice, e l'obiettivo che lo stima è una
-divergenza di Bregman anziché una quadratica. La struttura è la stessa; cambia
-l'aritmetica.
+tempo continuo con la sua matrice generatrice, e l'obiettivo che lo stima, la
+*score entropy*, è una divergenza di Bregman anziché una quadratica:
+
+$$
+\mathcal{L}_{\mathrm{SE}} = \mathbb{E}_{\mathbf{x}\sim p}
+  \sum_{\mathbf{y}\neq\mathbf{x}} w_{\mathbf{x}\mathbf{y}}
+  \Big(s_\theta(\mathbf{x})_{\mathbf{y}}
+  - \frac{p(\mathbf{y})}{p(\mathbf{x})}\log s_\theta(\mathbf{x})_{\mathbf{y}}
+  + K\Big(\frac{p(\mathbf{y})}{p(\mathbf{x})}\Big)\Big),
+\qquad K(a) = a(\log a - 1),
+$$
+
+dove $s_\theta(\mathbf{x})_{\mathbf{y}} > 0$ è la stima del rapporto
+$p(\mathbf{y})/p(\mathbf{x})$ e $w_{\mathbf{x}\mathbf{y}} \ge 0$ sono pesi: ogni
+addendo è non negativo e si annulla solo quando la stima è esatta. Il rapporto
+vero non si conosce, e come nel caso gaussiano lo si sostituisce con quello del
+nucleo di perturbazione condizionato a $\mathbf{x}_0$ (la versione
+*denoising*), che cambia la perdita per una costante. La struttura è la stessa;
+cambia l'aritmetica.
 
 `````
 
@@ -362,9 +378,12 @@ dai vincoli è più naturale che scrivere da sinistra a destra.
 La fattorizzazione dice anche dove cercare la distanza dai modelli
 autoregressivi, ed è una previsione verificabile: la distanza deve concentrarsi
 sui compiti in cui la dipendenza fra posizioni lontane è forte, cioè sulla
-generazione lunga, e assottigliarsi dove il contesto determina quasi tutto,
-cioè sulla comprensione. È quello che si osserva sui modelli linguistici a
-diffusione mascherata addestrati su scala {cite}`nie2025llada`.
+generazione lunga, e assottigliarsi dove il contesto determina quasi tutto, cioè
+sulla comprensione. È una previsione, e i lavori su scala non l'hanno ancora
+messa alla prova in questa forma: LLaDA {cite}`nie2025llada` riporta prestazioni
+paragonabili a quelle di un modello autoregressivo della stessa taglia sulla
+maggior parte dei compiti, e un vantaggio netto dove l'ordine da sinistra a
+destra è d'intralcio, come la *reversal curse*.
 
 Da qui tre osservazioni di prospettiva, tutte verificabili sul conto fatto e
 nessuna delle quali richiede di sapere quale modello sia uscito quando.
@@ -399,8 +418,9 @@ guadagno.
 `````
 
 Resta da registrare un conto in sospeso. Anche qui la strada del ritorno ha una
-formula esatta, la matrice generatrice invertita, come nel continuo ce l'aveva
-il risultato di Anderson della {doc}`sezione sul limite continuo
+regola esatta, che dice istante per istante con che frequenza ogni segnaposto
+torna a essere una parola, come nel continuo ce l'aveva il risultato di Anderson
+della {doc}`sezione sul limite continuo
 </ModelliDiffusione/sde-e-ode>`. Ma la dinamica esatta scopre una posizione per
 volta, perché il processo in avanti corrompe ogni posizione per conto suo e due
 cancellazioni nello stesso istante hanno probabilità trascurabile: ogni volta

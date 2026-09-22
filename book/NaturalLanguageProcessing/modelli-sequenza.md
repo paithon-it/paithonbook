@@ -17,10 +17,11 @@ e fra una risposta e l'altra non si ricordano niente.
 Un modello che vuole capire o generare testo deve invece fare due cose in più:
 accettare una sequenza di lunghezza qualsiasi (le frasi non hanno tutte lo
 stesso numero di parole) e portarsi dietro una memoria di quello che ha già
-letto man mano che avanza. Questa sezione racconta come, tra gli anni Ottanta
-e il 2017, si è passati dalle prime reti con memoria fino alla vigilia dei
-Transformer, che sono l'architettura su cui oggi si costruiscono i grandi
-modelli linguistici, e che hanno un capitolo tutto loro subito dopo questo.
+letto man mano che avanza. Tra gli anni Ottanta e il 2017 la risposta sono
+state le reti ricorrenti, dalle prime reti con memoria fino alla vigilia dei
+Transformer, l'architettura su cui oggi si costruiscono i grandi modelli
+linguistici e a cui è dedicato il {doc}`capitolo che segue
+</Transformers/overview>`.
 
 ## Le reti ricorrenti: una memoria che scorre nel tempo
 
@@ -55,7 +56,8 @@ la rete.
 Una RNN «srotolata» nel tempo. È
 sempre la stessa cella, applicata a ogni passo: riceve la parola di turno e
 il riassunto di tutto quello che è venuto prima, e produce il riassunto
-aggiornato più la sua scommessa (qui indicata con $\hat{y}$: a seconda del
+aggiornato più la sua scommessa ($\hat{y}$, col cappello che segna
+ogni previsione: a seconda del
 compito sarà la parola successiva, o l'etichetta di quella corrente). Le tre
 copie del disegno sono tre momenti diversi, non tre pezzi diversi di rete.
 ```
@@ -79,7 +81,8 @@ E la mano come impara a fare meglio? Ogni tanto ti fermi, confronti le risposte
 che hai dato con quello che il libro diceva davvero, e ripercorri le righe
 all'indietro per capire in quale punto il gesto ti ha portato fuori strada.
 Ripercorrerle tutte vorrebbe dire tenere mille righe sotto gli occhi insieme, e
-sul tavolo non ci stanno. Allora si lavora a blocchi di trenta righe. Correggi
+sul tavolo non ci stanno. Allora si lavora a blocchi, per esempio di trenta
+righe. Correggi
 la mano guardando quelle trenta, poi riparti dal foglietto così com'è, senza
 più tornare su come ci sei arrivato.
 
@@ -169,9 +172,13 @@ per «dimenticare» ciò di cui avrebbe ancora bisogno. È il problema delle
 
 Ogni tanto capita il rovescio. Un gesto che a ogni riga ingrandisce invece di
 smorzare fa crescere la correzione mentre risale, finché quello che arriva in
-cima è uno strattone che scompone la mano invece di aggiustarla. Perché succeda
-serve un gesto che ingrandisce, ma non basta che ingrandisca: dipende anche da
-come le righe si compongono fra loro.
+cima è uno strattone che scompone la mano invece di aggiustarla. Che il gesto
+ingrandisca è necessario ma non basta: ingrandimenti in direzioni diverse,
+passati uno dopo l'altro, possono anche compensarsi, e per sapere se lo
+strattone arriva bisogna seguirli nell'ordine in cui si susseguono. Per lo
+strattone il rimedio è semplice: se la correzione arriva più lunga di una
+misura fissata, la si accorcia a quella misura prima di usarla, senza
+cambiarne la direzione. Per lo smorzamento no: serve un foglio diverso.
 
 `````
 
@@ -189,12 +196,23 @@ $$
 $$
 
 un prodotto di $k$ fattori, e l'ordine conta perché le jacobiane non commutano.
-Se questi fattori hanno norma tipicamente minore di
-1, il prodotto tende a $0$ in modo esponenziale (gradiente che svanisce,
-*vanishing gradient*); se maggiore di 1, il gradiente *può* crescere fino a
-esplodere. La norma dei fattori, infatti, dà solo un maggiorante del prodotto:
-che sia maggiore di 1 è condizione necessaria perché il gradiente esploda, non
-sufficiente {cite}`pascanu2013difficulty`. Che una rete ricorrente «semplice»
+Per la rete di Elman ciascun fattore si scrive per esteso,
+$\partial \mathbf{h}_s / \partial \mathbf{h}_{s-1} = \mathrm{diag}\big(1 -
+\mathbf{h}_s \odot \mathbf{h}_s\big)\,\mathbf{W}_{hh}$,
+e poiché la derivata della $\tanh$ non supera $1$ vale
+$\big\|\partial \mathbf{h}_t / \partial \mathbf{h}_{t-k}\big\| \le
+\|\mathbf{W}_{hh}\|^{k}$,
+con $\|\cdot\|$ la norma spettrale: se il massimo valore singolare di
+$\mathbf{W}_{hh}$ è minore di $1$ il gradiente svanisce in modo esponenziale
+(*vanishing gradient*), e la diagonale, che tende a zero quando le unità
+saturano, lo spinge ancora più giù. Il maggiorante non dice invece quando il
+gradiente esplode: un valore singolare maggiore di $1$ è condizione necessaria,
+non sufficiente {cite}`pascanu2013difficulty`. Per l'esplosione il rimedio
+proposto nello stesso lavoro è il *gradient clipping*: se
+$\|\mathbf{g}\| > \tau$ si riscala
+$\mathbf{g} \leftarrow \tau\,\mathbf{g}/\|\mathbf{g}\|$ (in PyTorch
+`torch.nn.utils.clip_grad_norm_`), che cura l'esplosione e non tocca la
+scomparsa. Che una rete ricorrente «semplice»
 faccia fatica su molti passi è un risultato del 1994 di Yoshua Bengio, Patrice
 Simard e Paolo Frasconi {cite}`bengio1994learning`, e va enunciato per quello
 che è: un compromesso, non un divieto. Se la rete conserva l'informazione in
@@ -248,53 +266,15 @@ riscriverla da capo a ogni passo.
 ```
 
 Il dettaglio decisivo di {numref}`fig-cella-lstm` è la linea orizzontale che
-passa da sinistra a destra quasi indisturbata, ed è quella il taccuino. Perché
-sia decisiva richiede tre passaggi, e conviene farli.
-
-Primo: che cosa vuol dire «riscrivere il riassunto». Fin qui l'abbiamo
-detto a parole, ma dentro il computer quel riassunto è una fila di numeri. E
-anche la parola nuova è una fila di numeri: prima di entrare nella rete, ogni
-parola viene sostituita dalle sue coordinate sulla mappa dei significati,
-quelle della {doc}`sezione su come si rappresenta il testo
-<rappresentare-testo>`. Riscrivere il riassunto
-vuol dire allora moltiplicarlo per i pesi della cella e sommarci la fila di
-numeri della parola nuova. Non è una metafora: a ogni passo i numeri del
-riassunto vengono letteralmente moltiplicati per gli stessi numeri, quelli
-della cella, che è sempre la stessa.
-
-Secondo: perché ripetere una moltiplicazione fa danni. Una rete impara
-correggendo i propri pesi, e per correggerli deve poter risalire all'indietro
-fino al punto in cui l'errore è nato. Quel segnale di ritorno si chiama
-gradiente, e dice a ogni pezzo della rete quanto e in che verso spostarsi.
-Tornando indietro di cento passi, però, il gradiente attraversa cento volte la
-stessa moltiplicazione, e ripetere cento volte una moltiplicazione porta o a
-zero o all'infinito: $0{,}9$ elevato a cento fa $0{,}000027$, e $1{,}1$ elevato
-a cento fa quasi quattordicimila. Il segnale di ritorno o si spegne o esplode,
-e la rete non impara più niente sulle cose lontane.
-
-Terzo: perché le somme salvano. Nella LSTM la strada principale, quella del
-taccuino, funziona per aggiunte: al passo dopo il taccuino è quello di
-prima più una piccola correzione.
-
-E su una somma il segnale di ritorno passa intero. Il perché si tocca con mano
-con due numeri. Se scrivo $b = 0{,}9 \times a$ e poi cambio $a$ di un
-centesimo, $b$ cambia di nove millesimi: il cambiamento è arrivato attenuato, e
-ripetendo cento volte non arriva più niente, come abbiamo appena visto. Se
-invece scrivo $b = a + c$ e cambio $a$ di un centesimo, $b$ cambia di un
-centesimo esatto: la somma non tocca la parte che le passa attraverso, si
-limita ad aggiungerle qualcosa accanto. Il segnale di ritorno funziona allo
-stesso modo, all'incontrario: attraversando cento somme arriva com'era partito,
-attraversando cento moltiplicazioni per $0{,}9$ arriva ridotto a meno di un
-trentamillesimo.
-
-Guardando la figura si vede che una moltiplicazione c'è anche lì, sulla
-sinistra: è il cancello che dimentica, e serve appunto a cancellare. Ma è una
-sola per passo, e soprattutto è una manopola che la rete controlla: se
-quello che c'è scritto sul taccuino serve ancora, la rete tiene il cancello
-spalancato, quella moltiplicazione è per uno, e non attenua niente. Nella RNN
-semplice invece la moltiplicazione è obbligatoria e sempre la stessa, e nessuno
-può disattivarla. È tutta qui la differenza fra riscrivere un foglio da capo e
-annotare a margine.
+passa da sinistra a destra quasi indisturbata: è lo stato di cella
+$\mathbf{c}_t$, che da un passo all'altro viene soltanto moltiplicato per il
+cancello che dimentica e sommato a una correzione, invece di passare ogni volta
+per i pesi $\mathbf{W}_{hh}$ e per una $\tanh$ come lo stato della rete
+semplice. Su quella strada il gradiente all'indietro attraversa prodotti per
+numeri che la rete stessa tiene vicini a uno: cento moltiplicazioni per un
+fattore fisso di $0{,}9$ lasciano $0{,}9^{100} \approx 0{,}000027$ del segnale,
+meno di un trentamillesimo, mentre cento passaggi per un cancello spalancato ne
+lasciano $1^{100} = 1$.
 
 `````{tab} Elementare
 
@@ -318,18 +298,33 @@ parlando di *chiavi*, plurale»), la prima manopola resta spalancata, dal
 taccuino non si cancella niente, e quella riga arriva intatta cento righe più
 in là.
 
+Ed è per la stessa ragione che la correzione, risalendo, arriva in cima. Sul
+foglietto ogni riga ripassa per la stessa riscrittura, e cento riscritture che
+conservano nove decimi lasciano meno di un trentamillesimo: $0{,}9$
+moltiplicato per sé stesso cento volte fa $0{,}000027$. Sul taccuino la riga
+vecchia non si riscrive, le si scrive accanto. Se scrivo $b = a + c$ e cambio
+$a$ di un centesimo, $b$ cambia di un centesimo esatto; così la correzione che
+risale lungo il taccuino attraversa cento aggiunte e arriva com'era partita.
+L'unica moltiplicazione è la prima manopola, e finché resta spalancata
+moltiplica per uno.
+
 Una curiosità che dice qualcosa su come si fa ricerca: nella prima versione, del
 1997, le manopole erano due, annota e mostra. Quella che dimentica sembrava
 superflua (perché mai insegnare a una memoria a cancellarsi?) e fu aggiunta solo
 tre anni dopo, quando ci si accorse che su un testo che non finisce mai il
-taccuino si riempie e non c'è più spazio per niente di nuovo. Saper dimenticare,
+taccuino si carica di segni sempre più calcati, uno sopra l'altro, finché a
+leggerlo è tutto nero e una riga non si distingue più dall'altra. Saper
+dimenticare,
 si scoprì, è parte del saper ricordare.
 
 Esiste anche una versione più snella della stessa idea, proposta nel 2014 da
 Kyunghyun Cho e colleghi e chiamata **GRU** (*Gated Recurrent Unit*, «unità
 ricorrente con i cancelli»: il nome descrive esattamente quello che è). Le
 manopole sono due invece di tre, e il taccuino è lo stesso foglio del
-promemoria, invece di essere separato. Meno pezzi, meno numeri da imparare, e
+promemoria, invece di essere separato. Una sola manopola decide insieme quanto
+tenere del vecchio e quanto scrivere del nuovo, perché lo spazio è uno: quello
+che lasci al vecchio lo togli al nuovo. L'altra decide quanto del vecchio
+guardare mentre prepari l'appunto. Meno pezzi, meno numeri da imparare, e
 spesso risultati altrettanto buoni. Le due sigle compaiono quasi sempre
 appaiate, LSTM e GRU: sono due tagli dello stesso vestito.
 
@@ -362,20 +357,45 @@ $$
 \mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{c}_t),
 $$
 
-dove
-$\tilde{\mathbf{c}}_t = \tanh(\mathbf{W}_c[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_c)$
-è la memoria candidata e $\odot$ è il prodotto elemento per elemento. La
-**GRU** (*Gated Recurrent Unit*, {cite}`cho2014learning`) è una variante più
-snella con due soli gate (*update* e *reset*) e nessuno stato di cella
-separato: spesso rende quanto la LSTM con meno parametri.
+dove $\tilde{\mathbf{c}}_t =
+\tanh(\mathbf{W}_c[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_c)$ è la memoria
+candidata e $\odot$ è il prodotto elemento per elemento. Il perché si legge
+nella derivata lungo la strada della memoria: trascurando la dipendenza dei
+gate da $\mathbf{h}_{t-1}$, $\partial \mathbf{c}_t / \partial \mathbf{c}_{t-1}
+= \mathrm{diag}(\mathbf{f}_t)$, una diagonale che la rete porta vicino a $1$
+quando deve ricordare, al posto del fattore fisso $\mathrm{diag}(1 -
+\mathbf{h}_s \odot \mathbf{h}_s)\,\mathbf{W}_{hh}$ della rete semplice. Nel
+1997 quel fattore era l'identità per costruzione, il *constant error carousel*
+di Hochreiter e Schmidhuber; per la stessa ragione il bias di $\mathbf{f}_t$ si
+inizializza di solito a $1$ {cite}`jozefowicz2015empirical`. La **GRU** (*Gated
+Recurrent Unit*, {cite}`cho2014learning`) fonde stato e memoria in un solo
+vettore e usa due gate, *update* $\mathbf{z}_t$ e *reset* $\mathbf{r}_t$:
+
+$$
+\mathbf{z}_t = \sigma(\mathbf{W}_z[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_z), \quad
+\mathbf{r}_t = \sigma(\mathbf{W}_r[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_r),
+$$
+
+$$
+\tilde{\mathbf{h}}_t = \tanh(\mathbf{W}_h[\mathbf{r}_t \odot \mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_h), \qquad
+\mathbf{h}_t = \mathbf{z}_t \odot \mathbf{h}_{t-1} + (1-\mathbf{z}_t) \odot \tilde{\mathbf{h}}_t .
+$$
+
+L'update gate fa insieme il lavoro del forget e dell'input della LSTM, legati in
+modo da sommare a uno; il reset decide quanta parte dello stato passato entra
+nella candidata. Con tre blocchi di pesi invece di quattro la GRU ha tre quarti
+dei parametri della LSTM a parità di dimensione, e i confronti sistematici non
+trovano un vincitore netto fra le due {cite}`greff2017lstm`.
 
 `````
 
 ## In pratica, con PyTorch
 
 Tutta questa storia (cella, cancelli, stato nascosto) in PyTorch si condensa in
-poche righe. Il compito che scegliamo per l'esempio è quello della sezione sulla
-classificazione: leggere una recensione e dire se è entusiasta o stroncatoria.
+poche righe. Il compito che scegliamo per l'esempio è quello della {doc}`sezione
+sulla
+classificazione <classificazione-testo>`: leggere una recensione e dire se è
+entusiasta o stroncatoria.
 
 I tre pezzi del programma hanno i nomi delle cose di cui abbiamo appena
 parlato: `nn.Embedding` è la tabella che trasforma ogni parola nella sua fila
@@ -406,8 +426,12 @@ prende l'ultimo posto della fila. Quando le frasi di un lotto hanno lunghezze
 diverse le si allunga tutte alla stessa misura con dei riempitivi, e allora
 l'ultimo posto è l'ultimo riempitivo, non l'ultima parola: lo stato che si
 legge dipende da quanti se ne sono aggiunti. Con il riempimento si passa per
-`pack_padded_sequence`, oppure si va a prendere lo stato all'indice della
-lunghezza vera di ciascuna frase.
+`pack_padded_sequence`, e allora lo stato da leggere è il secondo valore che la
+rete restituisce, `h_n` (per la LSTM la coppia `h_n, c_n`), che per ciascuna
+frase si ferma alla sua ultima parola vera: `h[:, -1]` sulla sequenza srotolata
+con `pad_packed_sequence` darebbe invece un vettore di zeri per ogni frase più
+corta del lotto. Senza impacchettare, lo stato giusto si prende all'indice
+della lunghezza vera meno uno di ciascuna frase.
 
 Il ciclo di addestramento è quello che conosciamo dal {doc}`capitolo su PyTorch
 </PyTorch/overview>`. E provare, come si è detto, costa una parola: si scambia
@@ -443,6 +467,13 @@ tutte le righe di mezzo, una per una. Le manopole tengono la strada aperta
 molto meglio di un foglio riscritto da capo, ma cento passaggi restano cento
 passaggi, e imparare un legame così lontano resta difficile.
 
+La catena si potrebbe spezzare solo se ogni postazione facesse un gesto
+semplicissimo e sempre dello stesso tipo, moltiplicare e aggiungere, senza
+guardare il foglietto per decidere come: allora pezzi di catena diversi si
+potrebbero montare in parallelo e poi attaccare in pochi passaggi. Con le
+manopole che dipendono dal foglietto non si può, ed è la strada che
+riprenderanno, molti anni dopo, i modelli a spazio di stati.
+
 `````
 
 `````{tab} Superiore
@@ -453,7 +484,16 @@ richiede $O(n)$ passi che non possono essere parallelizzati lungo l'asse
 temporale. Questo mal si sposa con le GPU, progettate per eseguire in parallelo
 enormi moltiplicazioni tra matrici. Inoltre il segnale tra due token distanti
 deve attraversare $O(n)$ celle, il che rende ancora arduo (pur mitigato dai
-gate) l'apprendimento di dipendenze molto lunghe.
+gate) l'apprendimento di dipendenze molto lunghe. Con stato di dimensione $d$ il
+conto è $O(n\,d^2)$ operazioni in $O(n)$ passi sequenziali; l'autoattenzione
+paga $O(n^2 d)$ operazioni, ma in $O(1)$ passi sequenziali e con un cammino di
+lunghezza $O(1)$ fra due posizioni qualsiasi, e costa meno finché $n$ resta
+sotto $d$ {cite}`vaswani2017attention`. La sequenzialità, del resto, è un
+vincolo
+delle ricorrenze non lineari: se l'aggiornamento è lineare in $\mathbf{h}_{t-1}$
+la composizione dei passi è associativa e si calcola con una scansione parallela
+in $O(\log n)$ passi, la strada presa dai {doc}`modelli a spazio di stati
+</StateSpaceModel/overview>`.
 
 `````
 
@@ -461,8 +501,9 @@ gate) l'apprendimento di dipendenze molto lunghe.
 
 Le celle ricorrenti che abbiamo costruito qui sono i mattoni del passo
 successivo: mettere due RNN una di fronte all'altra (una che legge, una che
-scrive) e farle tradurre una frase intera. È la storia della prossima
-sezione, ed è proprio lì, per rimediare ai limiti di questa architettura, che
+scrive) e farle tradurre una frase intera. È la storia della {doc}`traduzione
+con le reti <seq2seq-traduzione>`, ed è proprio lì, per rimediare ai limiti di
+questa architettura, che
 nascerà il meccanismo di attenzione: la possibilità, per ogni parola in
 uscita, di tornare a guardare tutte le parole in ingresso e pesare da sola
 quali contano.

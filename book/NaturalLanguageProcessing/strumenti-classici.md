@@ -1,13 +1,13 @@
 # La cassetta degli attrezzi: espressioni regolari, normalizzazione e distanza di edit
 
-Nell'Introduzione abbiamo incontrato ELIZA, il programma con cui Joseph
-Weizenbaum dimostrò (suo malgrado) quanto sia facile attribuire
-un'intelligenza a una macchina {cite}`weizenbaum1966eliza`. Conviene riaprire
-il cofano: dentro non c'era nessuna comprensione del linguaggio, ma un gioco
-di **pattern matching**, la ricerca di schemi nel testo. Se l'utente scriveva
-«mi sento triste», ELIZA agganciava lo schema «mi sento X» e riassemblava i
-pezzi in «Da quanto tempo ti senti X?», seguendo regole scritte a mano da
-Weizenbaum stesso. Tutto qui.
+Nell’{doc}`Introduzione </Introduzione/overview>` abbiamo incontrato ELIZA, il
+programma con cui Joseph Weizenbaum dimostrò (suo malgrado) quanto sia facile
+attribuire un'intelligenza a una macchina {cite}`weizenbaum1966eliza`. Conviene
+riaprire il cofano: dentro non c'era nessuna comprensione del linguaggio, ma un
+gioco di **pattern matching**, la ricerca di schemi nel testo. Se l'utente
+scriveva «mi sento triste», ELIZA agganciava lo schema «mi sento X» e
+riassemblava i pezzi in «Da quanto tempo ti senti X?», seguendo regole scritte
+a mano da Weizenbaum stesso. Tutto qui.
 
 Prima delle reti neurali che occuperanno il resto del capitolo, l'NLP era in
 larga parte questo: schemi, regole, conteggi. Sarebbe però un errore liquidare
@@ -43,7 +43,7 @@ ogni volta che gli mandate un testo scatta il tassametro.
 
 {numref}`fig-nlp-classico-vs-llm` mette a confronto tempi e costi, che è il
 modo in cui la scelta si presenta a chi deve consegnare un lavoro. Ma c'è una
-seconda ragione, e riguarda proprio gli attrezzi di questa sezione: si
+seconda ragione, e riguarda proprio questi attrezzi: si
 spiegano in una riga, si ispezionano un passaggio alla volta e si correggono a
 mano. Un modello vi dice che quell'indirizzo email è valido *quasi sempre*;
 un'espressione regolare o combacia o non combacia, e se sbaglia potete aprirla
@@ -68,7 +68,7 @@ gli stessi da cui parte il {doc}`capitolo sulle reti neurali
 </RetiNeurali/overview>`, e per dire quali
 sequenze di segnali una rete del genere sa distinguere si inventò questa
 notazione. Conviene fermarsi un secondo su questo: gli attrezzi «vecchi» e
-quelli «nuovi» di questo capitolo hanno lo stesso atto di nascita.
+quelli «nuovi» del NLP hanno lo stesso atto di nascita.
 
 A portarle dentro i programmi fu Ken Thompson, uno dei padri del sistema
 operativo Unix, alla fine degli anni Sessanta. Le mise in due programmi per
@@ -205,8 +205,8 @@ Una regola d'onestà: le espressioni regolari non *capiscono* niente. Trovano
 forme, non significati: proprio come ELIZA, che agganciava «mi sento X» senza
 avere idea di cosa fosse un sentimento. Per estrarre un CAP bastano; per
 decidere se una recensione è entusiasta o sarcastica no. È il confine esatto
-tra ciò che questa sezione può fare e ciò per cui servirà il resto del
-capitolo.
+tra ciò che le espressioni regolari possono fare e ciò per cui servono i
+modelli statistici.
 
 ## Normalizzare il testo: decidere cosa è «la stessa parola»
 
@@ -297,7 +297,9 @@ l'italiano il compromesso è quasi sempre favorevole.
 In Python bastano poche righe per una catena di normalizzazione essenziale. Il
 programma fa tre cose in fila: uniforma le codifiche (è la prima riga, quella
 che risolve il caso del `perché` scritto in due modi: `NFKC` è il nome della
-regola che sceglie sempre la versione a un carattere solo), manda tutto in
+regola che ricompone lettera e accento in un carattere unico e, già che c'è,
+riporta alla forma semplice le varianti tipografiche: la legatura `ﬁ` torna `f`
+più `i`, il `²` torna `2`), manda tutto in
 minuscolo, butta via la punteggiatura e le parole-colla. Nella terza riga,
 `[^\w\s]` si legge «tutto ciò che *non* è né una lettera o cifra (`\w`) né
 uno spazio (`\s`)»: il `^` dentro le parentesi quadre rovescia l'elenco, e
@@ -342,7 +344,8 @@ Il terzo attrezzo nasce da un'esperienza quotidiana: digiti «gatot» e il
 telefono capisce che intendevi «gatto». Come fa a sapere che «gatot» somiglia
 a «gatto» più che a «divano»? Serve un modo per *misurare* la distanza tra due
 parole. La misura standard porta il nome del matematico sovietico Vladimir
-Levenshtein, che la introdusse nel 1966 {cite}`levenshtein1966binary`, in un
+Levenshtein, che la introdusse nel 1965 (la traduzione inglese, quella che si
+cita, è del 1966) {cite}`levenshtein1966binary`, in un
 articolo di poche pagine che non parlava affatto di parole: parlava di codici
 binari per correggere errori di trasmissione, e le sue «parole» erano sequenze
 di 0 e 1. Il nome **distanza di Levenshtein** per la versione sul testo si
@@ -448,7 +451,7 @@ ogni cella costa un confronto: complessità $O(nm)$ in tempo, riducibile a
 $O(\min(n,m))$ in memoria tenendo in vita solo due righe della tabella,
 orientata lungo la stringa più corta. La formulazione tabellare è nota anche
 come algoritmo di Wagner–Fischer (1974). Una quarta mossa, lo scambio di
-due lettere adiacenti, viene da Fred Damerau, che nel 1964 precede di due anni
+due lettere adiacenti, viene da Fred Damerau, che nel 1964 precede di un anno
 l'articolo di Levenshtein: per «gatot» → «gatto» la distanza scende da 2 a 1,
 coerente con l'osservazione di Damerau che circa quattro refusi su cinque sono
 a una sola mossa dalla parola giusta.
@@ -516,7 +519,21 @@ capita eccome quando si scrive in fretta sulla tastiera, diciamo una volta su
 venti: il suo voto complessivo è un ventimillesimo per un ventesimo, cioè una
 probabilità su quattrocentomila. Il candidato *gatot* così com'è, se anche
 fosse una parola, sarebbe molto più raro di così. Vince *gatto*, ed è quello
-che il telefono scrive.
+che il telefono scrive. In simboli, per la stringa digitata $x$ e l'insieme
+$\mathcal{C}(x)$ dei candidati a distanza di edit al più 2,
+
+$$
+\hat{w} = \arg\max_{w \in \mathcal{C}(x)} P(x \mid w)\,P(w),
+$$
+
+dove $P(w)$ è il modello della lingua (il primo voto) e $P(x \mid w)$ il
+modello del canale (il secondo). È la regola di Bayes con il denominatore
+$P(x)$ tolto, perché uguale per tutti i candidati. Kernighan, Church e Gale
+stimano il canale con quattro matrici di confusione, una per mossa
+(sostituzione, cancellazione, inserimento, scambio), contate su coppie di
+refusi e correzioni. La scelta guarda la parola da sola, quindi «case» e «cane»
+si decidono senza leggere la frase: è il limite che toglieranno i
+{doc}`modelli n-gram </NaturalLanguageProcessing/modelli-ngram>`.
 
 È un'idea messa in pratica già nel 1990 da Mark Kernighan, Kenneth Church e
 William Gale, con un correttore che non conteneva nemmeno una regola di
@@ -540,7 +557,7 @@ lettere ma sulle parole, cioè quante parole un
 programma ha sbagliato, saltato o aggiunto rispetto a quello che era stato
 detto davvero; il rapporto fra queste e il totale è il **WER**, *word error
 rate*, il tasso di errore per parola. Chi volesse approfondire l'intera
-cassetta degli attrezzi di questa sezione trova la trattazione di riferimento
+cassetta di questi attrezzi trova la trattazione di riferimento
 in Jurafsky e Martin {cite}`jurafsky2026speech`.
 
 `````{tab} Elementare
@@ -559,14 +576,15 @@ in Jurafsky e Martin {cite}`jurafsky2026speech`.
   forme di uno stesso verbo raggruppate. Lo stemming lavora di forbici
   (taglia la coda, e sui verbi irregolari il paradigma resta sparpagliato), la
   lemmatizzazione di dizionario (*andavamo* → *andare*).
-- Si normalizza con decisione quando si *conta*, ed è quello che faremo nella
-  prossima sezione (motori di ricerca, sacchetto di parole). I modelli neurali
+- Si normalizza con decisione quando si *conta*, come fanno i motori di
+  ricerca e il sacchetto di parole della {doc}`rappresentazione del testo
+  </NaturalLanguageProcessing/rappresentare-testo>`. I modelli neurali
   di oggi preferiscono invece conservare il testo com'è e spezzarlo in pezzi
-  più piccoli della parola: come si scelgono quei pezzi è il tema della sezione
-  sui tokenizzatori, due più avanti.
+  più piccoli della parola: come si scelgono quei pezzi lo racconta la
+  {doc}`sezione sui tokenizzatori </NaturalLanguageProcessing/tokenizzatori>`.
 - La distanza di edit è il numero minimo di mosse (sostituisci, cancella,
   inserisci) per passare da una parola all'altra: *gatot* dista 2 da *gatto* e
-  5 da *divano*. Si calcola riempendo una griglia, senza che nessuna
+  5 da *divano*. Si calcola riempiendo una griglia, senza che nessuna
   scorciatoia possa sfuggire.
 - Il correttore ortografico la usa dentro l'idea del *canale rumoroso*:
   prima si fa la lista corta delle parole vicine a quella digitata, poi si dà a
@@ -591,9 +609,8 @@ in Jurafsky e Martin {cite}`jurafsky2026speech`.
   fisse, la lemmatizzazione risale alla forma di dizionario
   (*andavamo* → *andare*).
 - Normalizzare in modo aggressivo serve quando si *conta* (ricerca,
-  *bag-of-words*: la prossima sezione); i modelli neurali moderni preferiscono
-  conservare il testo e spezzarlo in unità sotto la parola, ed è il tema della
-  sezione sui tokenizzatori, due più avanti.
+  *bag-of-words*); i modelli neurali moderni preferiscono conservare il testo e
+  spezzarlo in unità sotto la parola, scelte da un tokenizzatore.
 - La distanza di Levenshtein {cite}`levenshtein1966binary` è il numero
   minimo di inserzioni, cancellazioni e sostituzioni tra due stringhe; si
   calcola per programmazione dinamica in tempo $O(nm)$.
@@ -603,3 +620,10 @@ in Jurafsky e Martin {cite}`jurafsky2026speech`.
   contata sulle parole, diventerà il WER del riconoscimento vocale.
 ```
 `````
+
+Regole e distanze trattano il testo come una stringa di caratteri, e
+nessuna delle due sa che *gatto* e *felino* parlano della stessa cosa. Il
+passo successivo è trasformare un documento in un vettore di numeri su cui si
+possa fare aritmetica, prima contando le parole e poi imparandone le
+coordinate: è la {doc}`rappresentazione del testo
+</NaturalLanguageProcessing/rappresentare-testo>`.

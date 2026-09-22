@@ -483,7 +483,13 @@ amichevole.
 
 `````{tab} Superiore
 
-Si parte dal **laplaciano normalizzato** del grafo,
+Il laplaciano più semplice è $\mathbf{D} - \mathbf{A}$: simmetrico, con le righe
+che sommano a zero e con forma quadratica
+$\mathbf{x}^\top (\mathbf{D} - \mathbf{A})\, \mathbf{x} = \sum_{(u,v) \in E} (x_u - x_v)^2 \ge 0$,
+quindi semidefinito positivo. L'autovalore $0$ ha autovettore $\mathbf{1}$, e
+compare tante volte quante sono le componenti connesse del grafo.
+Normalizzandolo da entrambi i lati con $\mathbf{D}^{-1/2}$ (su un grafo senza
+nodi isolati) si ottiene il **laplaciano normalizzato** del grafo,
 
 $$
 \mathbf{L} = \mathbf{I}_N - \mathbf{D}^{-1/2} \mathbf{A} \mathbf{D}^{-1/2} = \mathbf{U} \boldsymbol{\Lambda} \mathbf{U}^\top ,

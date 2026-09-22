@@ -295,7 +295,15 @@ di generazione condizionale. Le due pile e le unità *gated* insieme portano il
 PixelCNN, su CIFAR-10, da $3{,}14$ a $3{,}03$ bit per dimensione (quanti bit
 costa in media ogni numero dell'immagine: più basso è meglio), a un soffio dal
 $3{,}00$ del PixelRNN, che però è molto più lento da addestrare, perché una
-ricorrenza sui pixel non si parallelizza come una convoluzione.
+ricorrenza sui pixel non si parallelizza come una convoluzione. Il PixelRNN usa
+due LSTM bidimensionali: la *Row LSTM* elabora una riga alla volta con una
+convoluzione $k \times 1$ sullo stato della riga precedente, e ha un campo
+recettivo triangolare; la *Diagonal BiLSTM* scorre lungo le diagonali
+dell'immagine inclinata e copre tutto il contesto passato, ed è lei a dare il
+$3{,}00$. WaveNet affronta in una dimensione il problema opposto, un campo che
+con strati ordinari cresce solo di un passo per strato: con convoluzioni
+causali *dilatate*, raddoppiando la dilatazione a ogni strato, il campo cresce
+come $2^L$ invece che come $L$.
 
 Fra i successori, **PixelCNN++** {cite}`salimans2017pixelcnn` sostituisce la
 categorica su 256 livelli con una **miscela di logistiche discretizzate**: per

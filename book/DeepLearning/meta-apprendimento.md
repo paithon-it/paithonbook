@@ -95,10 +95,30 @@ $$
 con $\beta$ il passo esterno. Qui sta tutto: il gradiente si prende rispetto a
 $\theta$ di una perdita valutata in $\theta_i'$, che di $\theta$ è funzione.
 Derivare attraverso il passo di adattamento chiama in causa le derivate
-seconde, ed è il costo dell'algoritmo. L'obiettivo che ne esce si legge
-«$\theta$ è un punto da cui pochi passi bastano», e non «$\theta$ è bravo sui
-compiti visti»: sono due proprietà diverse, e la prima si ottiene solo
-scrivendola nella funzione obiettivo.
+seconde, ed è il costo dell'algoritmo. Per un passo interno la regola della
+catena dà
+
+$$
+\nabla_\theta\,\mathcal{L}_{\mathcal{T}_i}(\theta_i') = \big(\mathbf{I} - \alpha\,\nabla^2_\theta \mathcal{L}_{\mathcal{T}_i}(\theta)\big)\,\nabla_{\theta'}\mathcal{L}_{\mathcal{T}_i}(\theta')\big|_{\theta' = \theta_i'},
+$$
+
+dove $\nabla^2_\theta$ è l'hessiana della perdita interna. L'hessiana non si
+forma mai, basta il suo prodotto per un vettore, che costa un secondo passaggio
+all'indietro; ma per derivare attraverso $m$ passi interni bisogna tenere in
+memoria il grafo di tutti e $m$, e la memoria cresce linearmente con $m$. La
+versione del primo ordine, già provata nel lavoro originale, butta via il
+termine con l'hessiana e usa
+$\nabla_{\theta'}\mathcal{L}_{\mathcal{T}_i}(\theta_i')$ come se $\theta_i'$
+non dipendesse da $\theta$: sulle immagini gli autori la trovano quasi
+equivalente e più veloce. Reptile (Nichol, Achiam e Schulman, 2018) rinuncia
+anche a quel gradiente e sposta $\theta$ verso i parametri adattati, $\theta
+\leftarrow \theta + \beta\,(\theta_i' - \theta)$. Le due perdite, infine, non
+si calcolano sugli stessi esempi: quella del ciclo interno sull'insieme di
+supporto, quella del ciclo esterno sull'insieme di interrogazione, come nel
+codice sulle sinusoidi. L'obiettivo che ne esce si legge «$\theta$ è un punto
+da cui pochi passi bastano», e non «$\theta$ è bravo sui compiti visti»: sono
+due proprietà diverse, e la prima si ottiene solo scrivendola nella funzione
+obiettivo.
 
 La valutazione ha una forma sua, **$N$-way $k$-shot**: si costruisce un compito
 con $N$ classi e $k$ esempi per classe, si dà al modello l’**insieme di

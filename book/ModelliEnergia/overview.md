@@ -26,10 +26,9 @@ calamita (da dove esca lo racconta la prima sezione), e quella
 parola porta con sé un'immagine comoda, le risposte buone come il fondo di una
 valle.
 
-Sarà così per tutto il capitolo: ogni volta che una parola arriva dalla
-fisica il testo la scioglie sul posto. La prima è quella appena sciolta,
-energia; le altre che contano sono temperatura, partizione e
-spin, e arrivano in quest'ordine.
+Le parole che arrivano dalla fisica sono quattro, e ciascuna si scioglie dove
+compare. La prima è quella appena sciolta, energia; le altre sono
+temperatura, partizione e spin, e arrivano in quest'ordine.
 
 E c'è una ragione precisa per cui il fondo, e non la cima. Una pallina, nel
 mondo, cade: nei punti bassi ci va da sola, mentre in cima a un monte non ci
@@ -210,7 +209,9 @@ in favore dei modelli a energia; l'argomento disteso sta nel documento di
 posizione del 2022 {cite}`lecun2022path`.
 
 Diffusione, JEPA, Hopfield moderne, il programma di LeCun: sembrano quattro
-argomenti distinti. Sono lo stesso, e questo capitolo lo guarda in faccia.
+argomenti distinti. Hanno in comune un oggetto, un punteggio che si scende
+invece di normalizzarlo, con la riserva che la sezione sulla funzione di
+partizione rende precisa per la diffusione.
 
 ## Dal paesaggio all'energia
 

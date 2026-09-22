@@ -70,7 +70,17 @@ questa dipendenza da una stima per aggiornarne un'altra si chiama
 precedente non fanno. Il bersaglio non è più il ritorno osservato $G_t$ ma una
 sua approssimazione a un passo: si guadagna in varianza (un solo termine
 casuale invece di una somma lunga) e si perde in correttezza, perché $V(s')$ è
-a sua volta una stima, e all'inizio è sbagliata.
+a sua volta una stima, e all'inizio è sbagliata. La distorsione però non resta:
+per una policy fissa e una tabella, TD(0) converge a $V^\pi$ con probabilità
+$1$ se ogni stato è visitato infinite volte e i passi soddisfano le condizioni
+di Robbins-Monro viste sui bandit {cite}`sutton2018reinforcement`. E a parità
+di dati le due famiglie non convergono alla stessa cosa. Ripassando all'infinito
+un insieme finito di episodi (l'aggiornamento *batch*), Monte Carlo si ferma
+sui valori che minimizzano l'errore quadratico sui ritorni osservati; TD(0) si
+ferma invece sul valore esatto dell'MDP di massima verosimiglianza stimato da
+quegli episodi, la stima di *certainty equivalence*. Se il processo è davvero
+markoviano la seconda generalizza meglio, ed è una ragione, oltre alla
+varianza, per cui TD impara spesso più in fretta.
 
 `````
 
@@ -603,7 +613,8 @@ cinquemila partite ci è arrivato così vicino che, alla seconda cifra, si legge
 $1{,}00$.
 
 Per le altre caselle succede la stessa cosa, con una complicazione in più da
-nominare perché è tutto il capitolo in miniatura: il loro bersaglio non sta
+nominare perché è il reinforcement learning in miniatura: il loro bersaglio non
+sta
 fermo. La casella accanto era partita rincorrendo $0{,}45$, cioè lo sconto per
 il $0{,}5$ che c'era allora; ma mentre lei ci correva dietro, quel $0{,}5$ è
 salito verso $1$, e quindi il bersaglio è salito verso $0{,}90$. Ogni casella
@@ -648,12 +659,14 @@ su un numero; qui non se ne accorge nessuno, perché il labirinto è tutto fisso
 e la sorpresa, alla fine, è zero. È comunque una scelta che ha un prezzo: fra
 le condizioni del teorema di convergenza c'è proprio un tasso che si accorci
 come il passo del quaderno delle leve all'inizio del capitolo: abbastanza da
-posarsi, non tanto da fermarsi prima di arrivare. Qui ci si
-rinuncia, in cambio di un algoritmo che reagisce in fretta, che nella pratica
-conviene quasi sempre. Anche la quota di esplorazione resta ferma a un decimo
-invece di calare, e qui è lecito: al Q-learning, che impara la mossa migliore
-mentre ne fa un'altra, di quelle due condizioni serve solo la prima, che ogni
-coppia continui a essere provata.
+posarsi, non tanto da fermarsi prima di arrivare. Qui ci si rinuncia, in cambio
+di un algoritmo che reagisce in fretta, che nella pratica conviene quasi
+sempre. Anche la quota di esplorazione resta ferma a un decimo invece di
+calare, e qui è lecito: al Q-learning, che impara la mossa migliore mentre ne
+fa un'altra, basta che ogni coppia continui a essere provata. Che
+l'esplorazione alla lunga si spenga lo chiede invece SARSA, che valuta le mosse
+che fa davvero e, con un decimo di mosse a caso, impara il valore di chi
+sbaglia un decimo delle volte.
 
 Ogni partita comincia da una casella sorteggiata invece che dalla partenza.
 Sono gli **inizi esplorativi** dei metodi Monte Carlo in versione più debole:
@@ -711,7 +724,8 @@ Con $\lambda = 0$ la prima si prende tutto, e siamo tornati alle differenze
 temporali. Alzando $\lambda$ il peso scivola sempre più in fondo alla fila, e
 il modo più pulito di vederlo è contare quanto ne è stato distribuito fino a
 un certo punto: alle prime dieci lunghezze messe insieme tocca uno meno
-$\lambda$ elevato alla decima, cioè quasi due terzi con $\lambda = 0{,}9$ e un
+$\lambda$ elevato alla decima ($0{,}9$ moltiplicato per sé stesso dieci volte fa
+circa $0{,}35$), cioè quasi due terzi con $\lambda = 0{,}9$ e un
 decimo scarso con $\lambda = 0{,}99$. Più $\lambda$ si avvicina a uno, meno
 peso resta a un numero finito di lunghezze, per grande che sia; e a
 $\lambda = 1$ non ne resta niente, perché è tutto più in là. Più in là c'è la
@@ -883,7 +897,10 @@ o poi ai voti giusti non è una speranza, è un teorema, dimostrato nel 1992 da
 Watkins insieme a Peter Dayan; ma quel teorema parla di una tabella, e di una
 tabella soltanto. Buttata via la tabella, la promessa non c'è più, e non
 perché manchi ancora una dimostrazione: si sa che in quel caso i voti possono
-scappare via, e ci sono esempi costruiti apposta per farlo vedere. Il deep
+scappare via, e ci sono esempi costruiti apposta per farlo vedere. La causa ha
+un nome, la {doc}`triade fatale </DeepReinforcementLearning/dqn>`:
+approssimazione di funzione, bootstrapping e apprendimento off-policy insieme,
+cioè esattamente un Q-learning con una rete al posto della tabella. Il deep
 reinforcement learning è in buona parte il mestiere di tenerli fermi lo
 stesso.
 

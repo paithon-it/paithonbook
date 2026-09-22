@@ -260,10 +260,11 @@ più lunga glielo fa comparire. Per guardare più indietro si aggiunge uno
 strato, o si allarga la finestra di ciascuno.
 
 Uno strato non riscrive il diario da capo: si tiene accanto la pagina com'era e
-ci annota soltanto quello che ha da aggiungere. Il vantaggio si vede quando si
-corregge: la correzione risale la pila, dall'ultimo strato al primo, che è un
-viaggio dentro la rete e non dentro il calendario. Se gli strati sono tanti, per
-strada si smorza fino a sparire; se
+ci annota soltanto quello che ha da aggiungere. Il vantaggio si vede in
+addestramento, quando la rete corregge i propri pesi a partire dall'errore della
+previsione: quell'avviso d'errore parte dall'ultimo strato e risale la pila fino
+al primo (è la retropropagazione), un viaggio dentro la rete e non dentro il
+calendario. Se gli strati sono tanti, per strada si smorza fino a sparire; se
 ogni strato però conserva la pagina di partenza, la correzione trova sempre una
 scorciatoia per arrivare in fondo, e anche una pila alta resta correggibile. Il
 tutto senza ricorrenza: ogni istante si calcola in parallelo agli altri, e
@@ -588,9 +589,10 @@ senso di una stessa famiglia, e i tre sono imparentati: era l'imprevisto che
 avanzava dalla decomposizione, era l'errore che avanzava da un modello stimato,
 e adesso è quello che avanza da un blocco della rete e passa al blocco dopo.
 Ogni volta è «ciò che non è stato spiegato», e cambia solo chi ha provato a
-spiegarlo. La *connessione* residua di poco fa sta invece fuori dalla famiglia,
-ed è per questo che va detta a parte: lì non avanza niente, si porta l'ingresso
-oltre il blocco.
+spiegarlo. Fuori dalla famiglia sta invece la *connessione residua* delle TCN,
+lo strato che si tiene accanto la pagina com'era e ci annota soltanto quello che
+ha da aggiungere, ed è per questo che va detta a parte: lì non avanza niente, si
+porta l'ingresso oltre il blocco.
 
 La variante in cui alcuni blocchi si occupano della tendenza e altri della
 stagione si chiama interpretabile, e riallaccia il forecasting neurale alla
@@ -740,6 +742,17 @@ un indizio suggestivo, non una spiegazione affidabile
 Resta comunque un promemoria di metodo: sempre una linea di base, sempre
 onesta.
 
+E la classifica si è già mossa. Nie e colleghi hanno risposto a Zeng sugli
+stessi banchi e con la stessa finestra lunga: **PatchTST** taglia la finestra
+passata in segmenti di $16$ istanti con passo $8$ e usa ciascun segmento come
+un token, alla maniera dei *patch* di un Vision Transformer; tratta poi ogni
+variabile come una serie a sé con pesi condivisi (*channel independence*).
+Con token che portano già una forma locale, e una sequenza di token circa otto
+volte più corta, l'attenzione torna a guadagnare dalla finestra lunga, e il
+modello supera DLinear sulla maggior parte di quei dataset
+{cite}`nie2023time`. Le due prove di Zeng restano valide come metodo; ciò che
+hanno colpito era un modo di tokenizzare la serie, un istante per token.
+
 `````
 
 ## Foundation model: la «GPT delle serie»
@@ -859,6 +872,32 @@ class TCN(nn.Module):
         h = self.rete(x.unsqueeze(1))      # (batch, canali, tempo)
         return self.testa(h[:, :, -1])     # ultimo istante -> (batch, 1)
 ```
+
+Che la rete guardi davvero quindici istanti, e non uno di più, si prova dando
+uno scossone a un solo punto della finestra e guardando se l'uscita cambia.
+
+```python
+torch.manual_seed(0)
+tcn = TCN().eval()
+x = torch.randn(1, 40)                  # una finestra di 40 istanti
+with torch.no_grad():
+    base = tcn(x)
+    for indietro in (0, 14, 15, 20):    # quanti passi prima dell'ultimo
+        x2 = x.clone()
+        x2[0, -1 - indietro] += 5.0     # uno scossone in quel punto
+        print(indietro, round((tcn(x2) - base).abs().item(), 4))
+```
+
+```text
+0 1.1355
+14 0.1235
+15 0.0
+20 0.0
+```
+
+Quattordici passi indietro l'uscita risente ancora dello scossone, a quindici
+non lo vede più: è il campo recettivo $1+(k-1)(2^L-1)=15$, e oltre quello la
+rete è cieca per costruzione.
 
 L'addestramento è il consueto ciclo di discesa del gradiente del {doc}`training
 loop di PyTorch </PyTorch/addestramento>`. Si taglia la serie in coppie, la

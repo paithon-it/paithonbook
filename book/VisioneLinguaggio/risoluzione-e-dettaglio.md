@@ -13,8 +13,9 @@ tokenizzatore la riduce a simboli. In tutti e tre i casi c'era un numero
 nascosto sotto il tappeto, quanti pixel entrano nell'encoder, ed è il vincolo
 economico che governa i sistemi reali molto più delle differenze
 architetturali. Ogni pixel in più si paga in contesto, cioè nei posti che
-l'immagine occupa nella sequenza e sottrae a tutto il resto; e non lo si paga in
-proporzione.
+l'immagine occupa nella sequenza e sottrae a tutto il resto: i posti
+crescono con l'area, cioè con il quadrato del lato, e il confronto di ogni
+posto con tutti gli altri cresce ancora più in fretta.
 
 ## Il conto, in due righe
 
@@ -32,7 +33,8 @@ per colonna, quindi $16 \times 16 = 256$ tessere: la nostra immagine è una
 conto fatto sul Vision Transformer: a decidere quanti pezzi ha la «frase» è la
 taglia della tessera.
 
-Adesso raddoppiamo il lato, da $224$ a $448$: le tessere diventano $32$ per riga
+Adesso raddoppiamo il lato, da $224$ a $448$, come avevamo fatto con il mosaico
+all'inizio del capitolo: le tessere diventano $32$ per riga
 e $32$ per colonna, in tutto $32 \times 32 = 1024$. Sono quadruplicate, e la
 ragione è che a raddoppiare sono due lati insieme, la larghezza e l'altezza:
 l'immagine ha quattro volte l'area.
@@ -221,24 +223,33 @@ $p = 14$: monolitica sono $4096$ token e $4096^2 \approx 16{,}8$ milioni di
 coppie; a riquadri sono cinque pezzi (quattro più la miniatura) da $1024$ token,
 cioè $5 \cdot 1024^2 \approx 5{,}2$ milioni di coppie, $3{,}2$ volte meno.
 
-Quel $3{,}2$, però, conta le coppie di attenzione, non i FLOP dell'encoder, e
-a questi valori di $N$ le due cose non coincidono affatto. La soglia $N > 6d$
-fra il termine quadratico e quello lineare dice che con $4096$ token e $d$
-dell'ordine del migliaio siamo ancora *sotto*: l'attenzione è meno della metà del blocco, e il tiling
-taglia la parte piccola del conto mentre manda nel feed-forward $5120$ token
-invece di $4096$, cioè paga di più sul termine che domina. Rifacendo il conto per
-intero con la stessa contabilità di prima ($24Nd^2 + 4N^2d$ per strato), il
-lavoro totale cala di $1{,}24$ volte a $d = 768$, di $1{,}14$ a $d = 1024$ e di
-$1{,}06$ a $d = 1408$: un risparmio fra il 5% e il 20%, non tre volte, e tanto
-minore quanto più l'encoder è largo. (Attenzione a non leggere il rapporto come
-una percentuale: dividere per $1{,}24$ vuol dire risparmiare il 19%, non il
-24%.) In cambio i token *totali* salgono da $4096$ a $5120$, perché la
-miniatura è ridondante per costruzione: il conto si è spostato, non è
-sparito, e tutti quei token finiscono nella stessa sequenza del modello di
-linguaggio, dove l'attenzione è di nuovo quadratica su tutto.
+Quel $3{,}2$, però, conta le coppie di attenzione, non i FLOP dell'encoder, e a
+questi valori di $N$ le due cose non coincidono affatto. La soglia $N > 6d$ fra
+il termine quadratico e quello lineare dice che con $4096$ token e $d$
+dell'ordine del migliaio siamo ancora *sotto*: l'attenzione è meno della metà
+del blocco, e il tiling taglia la parte piccola del conto mentre manda nel
+feed-forward $5120$ token invece di $4096$, cioè paga di più sul termine che
+domina. Rifacendo il conto per intero con la stessa contabilità di prima
+($24Nd^2 + 4N^2d$ per strato), il lavoro totale cala di $1{,}24$ volte a $d =
+768$, di $1{,}14$ a $d = 1024$ e di $1{,}06$ a $d = 1408$, e con l'encoder di
+InternVL, largo $d = 3200$, si rovescia: a riquadri costa l'8% in più. Il
+guadagno immediato va da un quinto a niente, e diventa una perdita quanto più
+l'encoder è largo. (Attenzione a non leggere il rapporto come una percentuale:
+dividere per $1{,}24$ vuol dire risparmiare il 19%, non il 24%.) In cambio i
+token *totali* salgono da $4096$ a $5120$, perché la miniatura è ridondante per
+costruzione: il conto si è spostato, non è sparito, e tutti quei token
+finiscono nella stessa sequenza del modello di linguaggio, dove l'attenzione è
+di nuovo quadratica su tutto.
 
 Gli argomenti che reggono di più, quindi, sono gli altri due, e non sono
-computazionali. Gli embedding di posizione
+computazionali. Esiste però una strada che li supera entrambi senza tagliare:
+addestrare l'encoder a risoluzione nativa, con codifiche di posizione relative
+che non hanno una griglia fissa da interpolare (la RoPE in due dimensioni) e
+impacchettando nello stesso batch immagini di forme diverse
+{cite}`dehghani2023navit`. Qwen2-VL {cite}`wang2024qwen2vl` la adotta: nessun
+riquadro, nessuna miniatura, e un'immagine $224 \times 224$ che, dopo una
+fusione $2 \times 2$ dei token, ne costa $66$. Il prezzo è che l'encoder va
+riaddestrato. Gli embedding di posizione
 dell'encoder restano validi, quindi non vanno interpolati su una griglia più
 grande, operazione che degrada e in genere chiede un riaddestramento; e il
 sistema resta indifferente alle proporzioni, perché una schermata panoramica e
@@ -290,7 +301,8 @@ adesso devono entrarci quattro barattoli. Se il posto è abbastanza capiente ci
 stanno tutti; se non lo è, qualcosa resta fuori. Il rimescolamento in sé non
 perde niente: a perdere, semmai, è il farcelo stare. Con una differenza dal
 barattolo mescolato: là il marrone viene deciso in partenza e sempre allo stesso
-modo, qui chi impacchetta ha imparato a furia di prove che cosa conviene
+modo, qui a far stare la cassetta nel posto è il proiettore, la tabella di
+conversione del connettore, che ha imparato a furia di prove che cosa conviene
 tenere.
 
 `````
@@ -423,8 +435,10 @@ domanda, che è il momento giusto.
 C'è un dettaglio che fa la differenza: di ogni pagina non si tiene una sola fila
 di numeri riassuntiva, ma una fila per ogni tessera del mosaico, mille
 riassunti minuscoli invece di uno grande. Così ogni parola della domanda può
-cercarsi il pezzo di pagina che le somiglia di più, ed è quello il pezzo che fa
-punteggio. In cambio l'archivio occupa molto più spazio: è il prezzo di non aver
+cercarsi il pezzo di pagina che le somiglia di più, e i voti che ciascuna
+parola dà al suo pezzo migliore si sommano: vince la pagina in cui tutte le
+parole della domanda hanno trovato qualcosa di loro. In cambio l'archivio occupa
+molto più spazio: è il prezzo di non aver
 buttato via niente.
 
 Una cosa però si perde per strada, ed è il codice esatto. «Errore E-52», un
@@ -521,6 +535,15 @@ print(f"  monolitica    {token(lato):>5} token   {token(lato) ** 2:>9} coppie ne
 print(f"  a riquadri    {tot:>5} token   {coppie:>9} coppie  ({pezzi} pezzi)")
 print(f"  l'encoder confronta {token(lato) ** 2 / coppie:.1f} volte meno coppie")
 print(f"  con pixel shuffle al modello di linguaggio arrivano {tot_ps} token")
+
+# il lavoro dell'encoder per strato: 24 N d^2 (proiezioni e FFN) + 4 N^2 d
+def lavoro(N, d):
+    return 24 * N * d**2 + 4 * N**2 * d
+
+print()
+for d in (768, 1024, 1408, 3200):
+    rapporto = lavoro(4096, d) / (5 * lavoro(1024, d))
+    print(f"  d = {d:>4}: lavoro monolitico / a riquadri = {rapporto:.2f}")
 ```
 
 ```text
@@ -534,6 +557,11 @@ print(f"  con pixel shuffle al modello di linguaggio arrivano {tot_ps} token")
   a riquadri     5120 token     5242880 coppie  (5 pezzi)
   l'encoder confronta 3.2 volte meno coppie
   con pixel shuffle al modello di linguaggio arrivano 1280 token
+
+  d =  768: lavoro monolitico / a riquadri = 1.24
+  d = 1024: lavoro monolitico / a riquadri = 1.14
+  d = 1408: lavoro monolitico / a riquadri = 1.06
+  d = 3200: lavoro monolitico / a riquadri = 0.92
 ```
 
 L'uscita è il riassunto numerico della sezione: le tre righe della tabella sono
@@ -545,7 +573,8 @@ c'è anche il lavoro che spende su ogni tessera per conto suo, e quello cresce
 con il numero delle tessere e basta, quindi il taglio a riquadri, che di
 tessere ne aggiunge mille, lo peggiora. Messi insieme i due conti (i confronti
 fra tessere da una parte, il lavoro su ogni tessera dall'altra), il risparmio
-vero sta fra il 5% e il 20%, ed è tanto minore quanto più l'encoder è grosso.
+vero, nelle ultime quattro righe, va da un quinto a
+niente, e con l'encoder largo 3200 di InternVL diventa una spesa in più.
 Il pixel shuffle, dal canto suo, riporta quei $5120$ token a $1280$, meno di un
 terzo di quanto vedrebbe l'immagine monolitica, cioè non tagliata a pezzi.
 Nessuna delle due ha toccato la prima tabella.
@@ -582,8 +611,9 @@ confortante.
 :class: important
 - Il conto è una divisione: quante tessere da 14 puntini stanno nella foto. A
   $224 \times 224$ sono 256 tessere, a $448 \times 448$ sono 1024, cioè
-  quattro volte tante perché l'area è quadruplicata. Ma il lavoro del modello
-  cresce come il quadrato delle tessere: raddoppiare il lato della foto
+  quattro volte tante perché l'area è quadruplicata. Ma i confronti fra le
+  tessere
+    crescono come il quadrato delle tessere: raddoppiare il lato della foto
   moltiplica per sedici il lavoro di confrontare ogni tessera con tutte le altre.
 - Quanta risoluzione serve lo decide il compito. Un gatto si riconosce anche
   da lontano; su un foglio A4 ridotto a 224 puntini una maiuscola ne occupa uno e
@@ -631,8 +661,9 @@ confortante.
   risoluzione nativa dell'encoder e aggiunge una miniatura per il contesto
   globale: l'attenzione dell'encoder diventa lineare nell'area e non serve
   riaddestrare nulla. Attenzione a non sopravvalutare il guadagno immediato: a
-  $4096$ token le coppie di attenzione calano di $3{,}2$ volte ma i FLOP solo del
-  5-20% a seconda di $d$, perché a quei valori domina il feed-forward. I due
+  $4096$ token le coppie di attenzione calano di $3{,}2$ volte ma i FLOP al più
+di un quinto, e con un encoder largo aumentano, perché a quei valori domina il
+feed-forward. I due
   argomenti solidi sono gli embedding di posizione che restano validi e
   l'indifferenza alle proporzioni. In cambio un oggetto a cavallo di due riquadri
   si spezza, e la miniatura è l'unico posto dove l'insieme resta visibile.

@@ -124,10 +124,18 @@ Formalmente la normalizzazione è una trasduzione testo→testo: mappare le
 **classi semiotiche** (cardinali, ordinali, date, orari, valute, unità di
 misura, sigle) nella loro forma pronunciabile. Storicamente si fa con regole e
 trasduttori a stati finiti pesati (WFST), che restano lo standard nei sistemi
-di produzione; gli approcci seq2seq neurali funzionano ma sbagliano in un modo
-particolarmente insidioso: leggere «1901» come *millenovecentodieci* è un
-errore silenzioso, plausibile all'ascolto, che chi sente non ha modo di
-correggere perché non si accorge che c'è. Il secondo fronte sono gli **omografi
+di produzione; gli approcci seq2seq neurali sbagliano poco in media e male nei
+casi che
+contano. Sproat e Jaitly lo misurano su un grande corpus allineato:
+l'accuratezza complessiva è alta, ma gli errori residui sono quelli che loro
+stessi chiamano «sciocchi», concentrati nelle classi semiotiche, come una cifra
+cambiata in una data o un orario letto come un altro, cioè un testo scorrevole
+che dice un'altra cosa e che chi ascolta non ha modo di accorgersi di aver
+sentito male {cite}`sproat2016rnn`. Il rimedio che propongono è ibrido: la rete
+propone, e un filtro a stati finiti scritto a mano, che elenca le letture
+ammissibili di ogni classe, scarta le proposte impossibili, così che «1901»
+possa diventare un anno o un numero di interno ma mai *millenovecentodieci*. Il
+secondo fronte sono gli **omografi
 eterofoni**: *àncora/ancóra*, *sùbito/subìto*, *lèggere/leggère*. La grafia non
 basta: serve la categoria grammaticale, cioè il POS tagging visto nel capitolo
 NLP, o un contesto più ampio. La normalizzazione è la parte meno glamour della
@@ -196,7 +204,7 @@ dati, ed è lì che si gioca la naturalezza.
 
 `````
 
-## Da robot a persona: tre generazioni di sintesi
+## Da robot a persona: le generazioni della sintesi
 
 La prima generazione automatizza proprio il Voder: al posto delle dita
 dell'operatrice ci sono regole scritte a mano, una per ogni suono da
@@ -243,8 +251,18 @@ voce umana) ma le giunture si sentono, e il sistema è rigido: per cambiare
 stile, o anche solo correggere un'intonazione, bisogna tornare in studio di
 registrazione.
 
-La terza generazione è quella neurale, e comincia nel 2016 con WaveNet
-{cite}`oord2016wavenet`, che fa una cosa che nessuno credeva possibile:
+Fra la seconda e la terza c'è una generazione che le storie brevi saltano, e
+che per quindici anni ha tenuto il campo accanto alla concatenativa: la
+**sintesi parametrica statistica**. Un modello impara dalle registrazioni la
+distribuzione dei parametri acustici (inviluppo spettrale, $F_0$, durate) di
+ciascun fonema nel suo contesto, e un vocoder a regole li rende udibili: prima
+con modelli di Markov nascosti {cite}`zen2009statistical`, dal 2013 con reti
+neurali profonde {cite}`zen2013statistical`. Suonava più liscia e più ovattata
+della concatenativa (nel confronto di Tacotron 2 prende $3{,}49$ contro
+$4{,}17$), ma si ritoccava cambiando un numero invece che tornando in studio. Le
+reti neurali entrano nella sintesi da lì; la generazione che le mette al centro
+comincia nel 2016 con WaveNet {cite}`oord2016wavenet`, che fa una cosa che
+nessuno credeva possibile:
 fabbrica l'onda sonora un campione alla volta, sedicimila al secondo, con una
 rete sola e una qualità mai sentita prima. Dimostrato che si poteva,
 restava il problema che ci metteva un'eternità, ed è per aggirarlo che nel
@@ -320,10 +338,15 @@ $$
 
 dove il testo in ingresso si chiama $c$ e non $\mathbf{x}$ perché in questo
 capitolo $\mathbf{x}$ è già il vettore acustico di un frame: qui la freccia va
-nell'altro verso, e all'ingresso c'è il testo. È una funzione autoregressiva ma
-deterministica: niente densità da
-massimizzare, la loss è l'errore quadratico sui frame mel, più un predittore
-di stop che decide quando la frase è finita. Ogni passo è condizionato da un
+nell'altro verso, e all'ingresso c'è il testo. Come regressore la rete è
+autoregressiva ma non probabilistica: nessuna
+densità da massimizzare, la loss è la somma degli errori quadratici sui frame
+mel prima e dopo la *post-net* (cinque convoluzioni che aggiungono un residuo
+alla predizione), più un predittore di stop, una sigmoide che chiude la frase
+al primo frame in cui supera $0{,}5$. Deterministica però non è: il dropout con
+probabilità $0{,}5$ sugli strati della *pre-net* resta acceso anche in
+inferenza, ed è la sorgente della variazione fra due letture della stessa frase
+{cite}`shen2018natural`. Ogni passo è condizionato da un
 vettore di contesto calcolato con l'attenzione di Bahdanau vista nella
 traduzione (in variante *location-sensitive*, che tiene traccia di dove ha
 già guardato per favorire un avanzamento monotono sul testo). Nei test
@@ -380,11 +403,11 @@ costruisce mattone su mattone. WaveNet (l'abbiamo già incontrata in
 {doc}`Generare suono e musica </Audio/generazione-audio>`, quando generava
 musica) lavora come un amanuense: scrive l'onda un campione alla volta,
 sedicimila al secondo, decidendo ognuno sulla base di quelli che ha già
-scritto. Qualità mai sentita prima, ma una lentezza proverbiale. Il seguito
-dell'anno dopo, *Parallel WaveNet*, la cronometra su una scheda grafica di
-allora: centosettantadue campioni al secondo, su un'onda che ne conta
-ventiquattromila per ogni secondo di suono. Sono più di due minuti di calcolo
-per un secondo di parlato. **HiFi-GAN** risolve il problema con una gara fra
+scritto. Qualità mai sentita prima, ma con la lentezza proverbiale già
+cronometrata in
+{doc}`Generare suono e musica </Audio/generazione-audio>`: più di due minuti di
+calcolo per un secondo di parlato. **HiFi-GAN** risolve il problema con una gara
+fra
 falsario ed esperti d'arte. È l'idea delle GAN, le reti
 avversarie generative, a cui più avanti è dedicato un capitolo intero: qui
 basta il gioco. Una rete-falsario impara a produrre l'onda intera
@@ -512,10 +535,19 @@ passa ancora dall'orecchio umano.
 C'è un rovescio della medaglia, ed è bene guardarlo senza allarmismi ma senza
 sconti. Gli stessi modelli, addestrati sulla voce di una persona specifica,
 producono un **clone vocale**.
-La quantità di registrazione che serve è crollata da ore a minuti da quando la
-voce non si riaddestra più ma si *condiziona*: un secondo modello ricava da un
-campione un vettore che descrive quel timbro, e il sintetizzatore lo riceve
-come riceve il testo.
+La quantità di registrazione che serve è crollata da ore a secondi da quando
+la voce non si riaddestra più ma si *condiziona*: un secondo modello,
+addestrato a riconoscere chi parla, ricava da un campione di pochi secondi un
+vettore che descrive quel timbro, e il sintetizzatore lo riceve come riceve il
+testo {cite}`jia2018transfer`. Il passo successivo viene dalla strada dei token
+di {doc}`Generare suono e musica </Audio/generazione-audio>`. VALL-E
+{cite}`wang2023neural` tratta la sintesi come un modello di linguaggio sui
+token di EnCodec: legge i fonemi del testo e tre secondi di una voce mai
+sentita, già codificati, e continua la fila; il primo livello della cascata RVQ
+lo scrive un Transformer autoregressivo, i sette successivi uno non
+autoregressivo. Addestrato su sessantamila ore di parlato inglese, riproduce
+timbro, ambiente acustico ed emozione del campione: è la continuazione di
+AudioLM guidata da un testo.
 
 Le truffe sono già successe. Nel 2019 il *Wall Street Journal* raccontò
 questa: l'amministratore delegato di un'azienda energetica britannica riceve
@@ -549,9 +581,10 @@ Tutto questo si può anche, semplicemente, ascoltare. `torchaudio` tiene pronti
 i due stadi già addestrati, e bastano una decina di righe per metterli in fila:
 qui Tacotron 2 disegna l'immagine a bande, e un vocoder di nome WaveRNN (un
 parente alleggerito di WaveNet, che scrive anche lui un campione alla volta) la
-trasforma in onda. La frase da pronunciare è la traduzione inglese dell'esempio
-che il libro si porta dietro dal capitolo sul linguaggio naturale, «il gatto
-nero salta sul muro».
+trasforma in onda. La frase da pronunciare è la traduzione inglese di «il gatto
+nero salta sul
+muro», che ci accompagna dal {doc}`capitolo sul linguaggio naturale
+</NaturalLanguageProcessing/overview>`.
 
 ```python
 import torch
@@ -635,7 +668,8 @@ quando chiedi «che ore sono?» al telefono, e una voce sintetica ti risponde.
 - Tre generazioni di macchine parlanti: quella per formanti (fabbrica i
   suoni da zero seguendo regole, ed è la voce robotica di Hawking), quella
   concatenativa (ritagli di voce vera ricuciti insieme), quella
-  neurale, di oggi.
+  neurale, di oggi; in mezzo, per quindici anni, quella parametrica, che
+  impara dalle registrazioni i numeri di ogni suono.
 - Oggi il lavoro è diviso in due: un modello scrive l'immagine del suono
   (Tacotron 2 una colonna alla volta, FastSpeech 2 tutte insieme e
   senza balbettare) e un secondo modello, il vocoder, la trasforma in
@@ -668,7 +702,8 @@ quando chiedi «che ore sono?» al telefono, e una voce sintetica ti risponde.
   Sopra tutto c'è la prosodia: intonazione, durate, pause.
 - Tre generazioni: sintesi per formanti (robotica: le regole di Klatt, il
   DECtalk, e il CallText 5010 che dava la voce a Hawking), concatenativa
-  (ritagli di voce vera ricuciti), neurale.
+  (ritagli di voce vera ricuciti), neurale; in mezzo la parametrica
+  statistica, con HMM e poi reti profonde a stimare i parametri acustici.
 - Il TTS neurale lavora in due stadi: un modello acustico testo→mel
   (Tacotron 2, seq2seq con attenzione; FastSpeech 2, parallelo e più
   stabile, ma con le durate fornite da un allineatore forzato esterno) e un
@@ -689,9 +724,12 @@ A decidere se una voce sintetica è buona resta l'orecchio, e non è una
 particolarità della sintesi: quando le risposte accettabili sono molte, nessun
 conto automatico dice quale valga, e da qui in avanti è la regola. È la
 condizione di chi fabbrica dati nuovi invece di riconoscerli, ed è il terreno
-dei capitoli che seguono. Il primo, «Modelli latenti», fa proprio questo: se
-le risposte accettabili sono molte, tanto vale mettere nel modello una
-quantità nascosta che le distingua, e imparare a sorteggiarla. Quello dopo,
+dei capitoli che seguono. Il primo, il {doc}`capitolo sui modelli latenti
+</ModelliLatenti/overview>`,
+riparte dalla clessidra dei codec neurali, l'autoencoder che stringe il suono in
+un pugno di numeri: se le risposte accettabili sono molte, basta imparare a
+pescare a caso un pugno di numeri nuovo e lasciare che il decoder lo trasformi
+in un dato mai visto. Quello dopo,
 «GAN», sceglie la strada opposta e mette un giudice; ci si arriva con un pezzo
 già in mano, la gara fra falsario ed esperti che rende HiFi-GAN capace di
 scrivere l'onda in un colpo solo, e quel capitolo la smonta per mostrare a

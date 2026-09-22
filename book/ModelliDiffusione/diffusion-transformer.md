@@ -22,12 +22,13 @@ insieme a Tim Brooks, alla guida di un progetto chiamato Sora.
 
 ## Affettare la scheda: le tessere come parole
 
-DiT non butta via tutto. Il trasloco nello spazio latente della sezione
-precedente resta: c'è ancora l'archivista (il VAE che comprime le immagini in
-schede compatte) e la diffusione lavora ancora sulle schede, non sui pixel
-{cite}`rombach2022high`. A cambiare è solo *chi* indovina il rumore a ogni
-passo: via la U-Net, dentro un Transformer. Il mestiere del restauratore resta
-identico, cambia la persona che lo esercita.
+DiT non butta via tutto. Resta la diffusione latente della sezione precedente:
+un VAE comprime l'immagine in un latente $\mathbf{z}$ più piccolo (la «scheda»
+compatta della sezione precedente), e il processo di rumore lavora su
+$\mathbf{z}$, non sui pixel {cite}`rombach2022high`. A
+cambiare è solo la rete $\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t)$ che
+stima il rumore a ogni passo: via la U-Net, dentro un Transformer. L'obiettivo
+di addestramento e il campionatore restano identici.
 
 Un Transformer, però, mangia sequenze: parole in fila, una dopo l'altra, che in
 gergo si chiamano token. Una scheda invece è una griglia di caselle. Come si dà
@@ -120,11 +121,7 @@ testo). Le due insieme si chiamano il **condizionamento**, che vuol dire
 esattamente quello: le informazioni che orientano il lavoro senza far parte di
 ciò su cui si lavora. La parola è quella della probabilità condizionata, e il
 legame è letterale, perché ciò che la rete impara è la distribuzione delle
-immagini *dato* quello che le si è chiesto. Il «condizionamento numerico»
-della {doc}`sezione sul limite continuo </ModelliDiffusione/sde-e-ode>` è
-tutt'altro mestiere: là si misura quanto un conto amplifica gli errori di chi
-glieli passa, ed è il numero di condizionamento dell’{doc}`analisi numerica
-</Matematica/analisi-numerica>`.
+immagini *dato* quello che le si è chiesto.
 
 La U-Net aveva un modo semplice di riceverle, appenderle come un'etichetta; con
 le tessere in fila si aprono più strade, e Peebles e Xie le mettono a
@@ -144,16 +141,15 @@ restringe; e *zero* è il modo in cui si parte, che vedremo fra poco.
 La torre ha una regia, e a ogni piano c'è un tecnico che la ascolta in
 auricolare: il messaggio è lo stesso per tutti, ma ognuno ne ricava le
 regolazioni buone per il proprio piano. La regia non suggerisce parole: dà
-istruzioni di *regolazione*, e le manopole
-sono di due specie, perché stanno ai due capi del piano. Le prime due sono
-all'ingresso, e dicono quanto alzare o abbassare il volume di ciò che arriva e
-come spostarne il tono: cambiano quello che il piano si trova davanti da
-leggere. La terza è all'uscita, e dice quanto di ciò che il piano ha prodotto
-va aggiunto a quello che c'era prima: a fondo scala il piano interviene a piena
-forza, a zero il suo lavoro resta nel cassetto e quello che era arrivato
+istruzioni di *regolazione*, e le manopole sono tre, divise fra i due capi del
+piano. Due sono all'ingresso, e dicono quanto alzare o abbassare il volume di
+ciò che arriva e come spostarne il tono: cambiano quello che il piano si trova
+davanti da leggere. La terza è all'uscita, e dice quanto di ciò che il piano ha
+prodotto va aggiunto a quello che c'era prima: a fondo scala il piano interviene
+a piena forza, a zero il suo lavoro resta nel cassetto e quello che era arrivato
 prosegue intatto. Le istruzioni dipendono dal momento: se siamo ai primi passi
-della pulitura (quasi tutto rumore) o agli ultimi ritocchi, se si sta
-disegnando un gatto o un faro.
+della pulitura (quasi tutto rumore) o agli ultimi ritocchi, se si sta disegnando
+un gatto o un faro.
 
 Il "-zero" del nome è un'astuzia da cantiere: il primo giorno di addestramento
 tutte le manopole d'uscita sono a zero, e quindi nessun piano tocca niente. Il
@@ -185,39 +181,36 @@ $$
 \mathrm{Sottostrato}\big(\mathrm{adaLN}(\mathbf{x})\big),
 $$
 
-dove $\mathbf{h}$ e $\mathbf{x}$ sono lo stesso oggetto, la rappresentazione
-di un token in ingresso al sotto-strato, $\mathrm{Sottostrato}$ è l'attenzione
-o l'MLP del blocco, $\mathrm{LN}$ è la normalizzazione *senza* parametri
-appresi, $\boldsymbol{\gamma}_c$ e $\boldsymbol{\beta}_c$ sono scala e
-traslazione dettate dal condizionamento, $\odot$ è il prodotto elemento per
-elemento e
-$\boldsymbol{\alpha}_c$ è un *gate* che dosa il contributo
-del sotto-strato prima della somma residua. Il pedice $c$ non è decorativo e
-va letto: $\boldsymbol{\alpha}_c, \boldsymbol{\beta}_c, \boldsymbol{\gamma}_c$
-vengono dal condizionamento e non
-hanno niente a che vedere con $\alpha_t$ e $\beta_t$, che in questo capitolo
-sono lo schedule del rumore. Il suffisso *zero* sta nell'inizializzazione, e
-basta azzerare $\boldsymbol{\alpha}_c$: con il gate a zero il ramo residuo non
-passa, e il blocco è l’identità qualunque cosa facciano scala e traslazione. Il
-paper dichiara azzerato quello; l'implementazione di riferimento azzera per
-comodità l'ultimo strato dell'MLP per intero, e la differenza non si vede,
-perché finché $\boldsymbol{\alpha}_c = 0$ il gradiente di scala e traslazione è
-nullo e a muoversi è solo il gate. Il gradiente del gate no, perché vale il
-prodotto scalare fra ciò che il sotto-strato ha prodotto e la direzione in cui
-l'uscita andrebbe spostata: il blocco impara quanto aprirsi pur non
-contribuendo ancora, e la rete che comincia come un tubo vuoto si accende un
-piano alla volta.
-L'idea di modulare le normalizzazioni ha un precedente illustre che
-conosciamo: l'AdaIN con cui StyleGAN {cite}`karras2019style` inietta lo stile
-nel generatore. Nelle ablazioni del paper adaLN-zero batte sia i token
-in-context sia la cross-attention, e le batte spendendo meno: $118{,}6$
-Gflops contro i $119{,}4$ dell'in-context e i $137{,}6$ della
-cross-attention, che è un sedici per cento in più. In Gflops, quindi, le
-manopole non costano quasi niente, perché sono vettori e non token da far
-partecipare all'attenzione. In parametri costano parecchio: gli MLP di
-modulazione sono $226$ dei $675$ milioni di DiT-XL/2, cioè un terzo della
-rete, e il confronto delle ablazioni corre a passi di addestramento pari, non
-a parametri pari.
+dove $\mathbf{h}$ e $\mathbf{x}$ sono lo stesso oggetto, la rappresentazione di
+un token in ingresso al sotto-strato, $\mathrm{Sottostrato}$ è l'attenzione o
+l'MLP del blocco, $\mathrm{LN}$ è la normalizzazione *senza* parametri appresi,
+$\boldsymbol{\gamma}_c$ e $\boldsymbol{\beta}_c$ sono scala e traslazione
+dettate dal condizionamento, $\odot$ è il prodotto elemento per elemento e
+$\boldsymbol{\alpha}_c$ è un *gate* che dosa il contributo del sotto-strato
+prima della somma residua. Il pedice $c$ non è decorativo e va letto:
+$\boldsymbol{\alpha}_c, \boldsymbol{\beta}_c, \boldsymbol{\gamma}_c$ vengono dal
+condizionamento e non hanno niente a che vedere con $\alpha_t$ e $\beta_t$, che
+in questo capitolo sono lo schedule del rumore. Il suffisso *zero* sta
+nell'inizializzazione, e basta azzerare $\boldsymbol{\alpha}_c$: con il gate a
+zero il ramo residuo non passa, e il blocco è l’identità qualunque cosa facciano
+scala e traslazione. Il paper dichiara azzerato quello; l'implementazione di
+riferimento azzera per comodità l'ultimo strato dell'MLP per intero, e la
+differenza non si vede, perché finché $\boldsymbol{\alpha}_c = 0$ il gradiente
+di scala e traslazione è nullo e a muoversi è solo il gate. Il gradiente del
+gate no, perché vale il prodotto scalare fra ciò che il sotto-strato ha prodotto
+e la direzione in cui l'uscita andrebbe spostata: il blocco impara quanto
+aprirsi pur non contribuendo ancora, e la rete, che comincia come un tubo vuoto,
+riceve gradiente su tutti i gate insieme fin dal primo passo. L'idea di modulare
+le normalizzazioni ha un precedente illustre che conosciamo: l'AdaIN con cui
+StyleGAN {cite}`karras2019style` inietta lo stile nel generatore. Nelle
+ablazioni del paper adaLN-zero batte sia i token in-context sia la
+cross-attention, e le batte spendendo meno: $118{,}6$ Gflops contro i $119{,}4$
+dell'in-context e i $137{,}6$ della cross-attention, che è un sedici per cento
+in più. In Gflops, quindi, le manopole non costano quasi niente, perché sono
+vettori e non token da far partecipare all'attenzione. In parametri costano
+parecchio: gli MLP di modulazione sono $226$ dei $675$ milioni di DiT-XL/2, cioè
+un terzo della rete, e il confronto delle ablazioni corre a passi di
+addestramento pari, non a parametri pari.
 
 `````
 
@@ -475,8 +468,8 @@ per il **rectified flow** {cite}`liu2023rectified`, letteralmente «flusso
 raddrizzato», che è una variante particolare di una famiglia di metodi più
 generale, il *flow matching* di Yaron Lipman e colleghi {cite}`lipman2023flow`,
 che la {doc}`sezione dedicata </ModelliDiffusione/flow-matching>` ha già
-presentato. Qui si riprende dal lato che riguarda l'architettura, una volta a
-parole e una con la matematica.
+presentato. Qui interessa per quello che cambia nel viaggio dal rumore
+all'immagine: quante fermate servono.
 
 ```{figure} ../figures/flow-matching-traiettorie-dritte.svg
 :name: fig-traiettorie-dritte
@@ -503,7 +496,9 @@ il sentiero che la catena di rumore ha tracciato all'andata curva da sé, e il
 rimescolamento a ogni tappa lo scuote ancora. Per questo le tappe devono essere
 tante e corte: chi tiene la direzione per troppo tempo esce di strada.
 
-L'idea nuova è quasi insolente: perché seguire una strada tortuosa? Prendi la
+L'idea l'abbiamo già incontrata nella {doc}`sezione sul flow matching
+</ModelliDiffusione/flow-matching>` sotto il nome di flusso rettificato, ed è
+quasi insolente: perché seguire una strada tortuosa? Prendi la
 scheda tutta rumore e la scheda dell'immagine finita, traccia una linea
 dritta tra le due, e insegna alla rete una sola cosa: in ogni punto della
 linea, *in che direzione si cammina*. La lezione è facile da preparare, perché
@@ -520,10 +515,9 @@ guadagnare in tutto. Se decidiamo di farlo in dieci tappe, ogni tappa sale
 sempre della stessa quantità, $0{,}6 : 10 = 0{,}06$. Nessuna sorpresa lungo la
 strada, perché la strada è dritta.
 
-Su una strada così non serve fermarsi cinquanta volte a ricontrollare la
-mappa: ne bastano una ventina, o meno. È questo il motivo per cui i modelli a
-rectified flow generano in pochissimi passi ciò che alla catena di rumore ne
-costava cinquanta con le scorciatoie e mille senza.
+Su una strada così non serve fermarsi mille volte a ricontrollare la mappa, e
+nemmeno le cinquanta delle scorciatoie: ne bastano poche decine, e con qualche
+accorgimento anche meno. A una sola fermata, però, non si arriva.
 
 Le strade che la rete impara, però, non escono mai perfettamente dritte. Le
 linee tracciate in addestramento sono milioni, una per ogni coppia (questo
@@ -594,15 +588,15 @@ lo fa: quello che addestra è un flusso rettificato una volta sola.
 
 ## Un DiT in miniatura
 
-Come per la spirale di punti con cui abbiamo smontato DDPM, il modo migliore
-di fissare l'architettura è costruirla in piccolo. Il codice che segue è un
-DiT completo ma in miniatura: si taglia una scheda finta in tessere, le si fa
-passare per i piani della torre con l'attenzione e le manopole della regia, e
-si ricompone il risultato. Anche qui, se non hai mai programmato non c'è nessun
-obbligo di leggere le righe una per una: il testo dopo dice quello che serve.
-Non c'è addestramento (servirebbero i dati e le ore di calcolo su GPU) ma tutte
-le misure tornano, e il ciclo di addestramento sarebbe *lo stesso* visto per
-DDPM: cambia solo la rete interrogata.
+Come per la spirale di punti con cui abbiamo smontato DDPM, il modo migliore di
+fissare l'architettura è costruirla in piccolo. Il codice che segue è un DiT
+completo ma in miniatura: si taglia una scheda finta in tessere, le si fa
+passare per i piani della torre con l'attenzione e le manopole della regia, e si
+ricompone il risultato. Le stampe da guardare sono tre: la forma del risultato,
+il numero di pesi e la prova che le manopole partono davvero da zero. Non c'è
+addestramento (servirebbero i dati e le ore di calcolo su GPU) ma tutte le
+misure tornano, e il ciclo di addestramento sarebbe *lo stesso* visto per DDPM:
+cambia solo la rete interrogata.
 
 ```python
 import math

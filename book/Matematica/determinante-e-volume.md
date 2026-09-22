@@ -81,10 +81,14 @@ $$
 
 ed è l’area con segno del parallelogramma generato dalle due colonne. In
 $\mathbb{R}^n$ è il volume con segno del parallelepipedo generato dalle $n$
-colonne, e la definizione che rende tutto immediato è quella assiomatica: il
-determinante è l'unica funzione $\mathbb{R}^{n\times n}\to\mathbb{R}$ che sia
-**multilineare** nelle colonne, **alternante** (cambia segno scambiando due
-colonne) e **normalizzata** ($\det\mathbf{I}=1$).
+colonne, e il fattore vale per ogni figura: se $S\subset\mathbb{R}^n$ ha
+volume,
+$\operatorname{vol}(\mathbf{A}S)=|\det\mathbf{A}|\,\operatorname{vol}(S)$ (si
+approssima $S$ con cubetti, e ciascuno va in un parallelepipedo di volume
+$|\det\mathbf{A}|$ volte il suo). La definizione che rende tutto immediato è
+quella assiomatica: il determinante è l'unica funzione $\mathbb{R}^{n\times
+n}\to\mathbb{R}$ che sia **multilineare** nelle colonne, **alternante** (cambia
+segno scambiando due colonne) e **normalizzata** ($\det\mathbf{I}=1$).
 
 Da questi tre assiomi discende tutto il resto, e in particolare le proprietà
 che si usano davvero:
@@ -291,9 +295,13 @@ trasformazione è stata piegata al conto, e non il contrario.
 
 `````{tab} Superiore
 
-Sia $\mathbf{f}:\mathbb{R}^n\to\mathbb{R}^n$ una trasformazione invertibile e
-differenziabile, e $\mathbf{y}=\mathbf{f}(\mathbf{x})$. La formula del cambio
-di variabile per una densità è
+Sia $\mathbf{f}:\mathbb{R}^n\to\mathbb{R}^n$ un diffeomorfismo, cioè
+invertibile, differenziabile con continuità e con inversa differenziabile
+(equivalentemente, per una $\mathbf{f}$ invertibile di classe $C^1$,
+$\det\mathbf{J}_{\mathbf{f}}\neq 0$ in ogni punto), e
+$\mathbf{y}=\mathbf{f}(\mathbf{x})$. L'ipotesi sull'inversa serve: $f(x)=x^3$
+è invertibile e derivabile, ma in $0$ ha derivata nulla, e la densità
+trasformata vi diverge. La formula del cambio di variabile per una densità è
 
 $$
 p_Y(\mathbf{y}) = p_X(\mathbf{x})\,
@@ -348,8 +356,11 @@ Il caso opposto chiude il discorso. Una rete
 neurale ordinaria non è invertibile: la funzione di attivazione, cioè quella
 che piega i numeri fra uno strato e l'altro, nella forma più diffusa manda a
 zero tutti i valori negativi, e da uno zero non si risale al numero di
-partenza. Il determinante della sua jacobiana è nullo su intere regioni, e
-quindi la formula del cambio di variabile non si applica. È il prezzo che
+partenza. Il determinante che misura quanto la rete deforma lo spazio attorno
+a ogni punto, dilatandolo o comprimendolo, vale zero su intere regioni,
+e quindi la formula del cambio di variabile non si applica; e quando la rete
+manda i dati in uno spazio di dimensione diversa, quel determinante non
+esiste affatto. È il prezzo che
 separa i modelli capaci di dire quanto è probabile ciò che generano da quelli
 che sanno soltanto generare, ed è una scelta di progetto, non una svista.
 

@@ -1,7 +1,7 @@
 # Parlare con le macchine: dialogo e chatbot
 
-Questo capitolo si chiude dove il libro era cominciato. Nell'Introduzione
-abbiamo raccontato di Joseph Weizenbaum e di ELIZA
+Si torna dove tutto era cominciato. Nell’{doc}`Introduzione
+</Introduzione/overview>` abbiamo raccontato di Joseph Weizenbaum e di ELIZA
 {cite}`weizenbaum1966eliza`, il programma che a metà degli anni Sessanta
 conversava per iscritto con gli esseri umani, e della sorpresa del suo autore
 nello scoprire quante persone attribuivano sentimenti a poche pagine di
@@ -15,8 +15,8 @@ travolto dalle proteste di chi usava il programma: quello era spiare, quelle
 erano cose private.
 
 Sessant'anni dopo, milioni di persone conversano ogni giorno con delle
-macchine. In quest'ultima sezione mettiamo insieme gli attrezzi del capitolo e
-li puntiamo sul compito che l'NLP non ha ancora chiuso, il dialogo.
+macchine. Gli attrezzi messi insieme fin qui si possono puntare sul compito che
+l'NLP non ha ancora chiuso, il dialogo.
 Vedremo perché una conversazione è più di una fila di frasi, come sono fatte
 le tre famiglie di sistemi di dialogo, come si dà loro un voto, e perché la
 storia della segretaria non è un aneddoto d'epoca ma una questione ancora
@@ -133,7 +133,13 @@ una funzione ultima-frase → risposta, ma una macchina con memoria.
 In sessant'anni i sistemi di dialogo si sono organizzati in tre famiglie:
 quelli che rispondono **per regole**, quelli che compilano **moduli**, quelli
 che **generano** la risposta parola per parola. Non è solo una successione
-storica: tutte e tre sono vive, spesso dentro lo stesso prodotto.
+storica: tutte e tre sono vive, spesso dentro lo stesso prodotto. Accanto alla
+terza ne è cresciuta una parente, che la risposta non la scrive ma la
+**sceglie**: fra milioni di battute già dette da persone prende quella che si
+accorda meglio con la conversazione, con un punteggio appreso fra contesto e
+candidata (Lowe e colleghi ne fecero il banco di prova sulle chat di assistenza
+di Ubuntu {cite}`lowe2015ubuntu`). Non inventa parole, perché ogni risposta
+l'ha scritta qualcuno, ma non sa dire niente che nessuno abbia già detto.
 
 ```{figure} ../figures/tre-famiglie-dialogo.svg
 :name: fig-tre-famiglie-dialogo
@@ -355,12 +361,20 @@ traduzione {cite}`sutskever2014sequence`. Uno dei primi chatbot neurali
 end-to-end è quello di Vinyals e Le (2015), addestrato su log di assistenza
 tecnica e sottotitoli di film. Il difetto emerse subito: massima
 verosimiglianza e beam search privilegiano risposte ad alta probabilità
-*marginale*, generiche per costruzione («I don't know»: Li et al., 2016, che
-proposero di riordinare le ipotesi con la mutua informazione tra $x$ e $y$).
+*marginale*, generiche per costruzione («I don't know»). Li e colleghi
+{cite}`li2016diversity` sostituiscono l'obiettivo di decodifica con una mutua
+informazione pesata,
+$\hat{y} = \arg\max_y \big[\log P(y \mid x) - \lambda \log P(y)\big]$, dove il
+secondo termine, stimato da un modello di linguaggio sulle sole risposte, toglie
+punti alle risposte probabili a prescindere dal contesto: con $\lambda = 1$ è la
+mutua informazione puntuale, in pratica si usa $\lambda < 1$ e la si applica
+riordinando le $N$ migliori ipotesi del beam, perché dentro la ricerca
+premierebbe frasi sgrammaticate.
 
 Il salto di qualità arriva con la scala (modelli decoder-only pre-addestrati
 su corpora web {cite}`brown2020language`) ma soprattutto con il
-post-training, che risolve il disallineamento di fondo: un language model
+post-training, che riduce il disallineamento di fondo senza eliminarlo: un
+language model
 modella $P(\text{continuazione} \mid \text{prefisso})$, non «rispondi in modo
 utile e onesto». La ricetta è in due tempi {cite}`ouyang2022training`:
 **instruction tuning** (fine-tuning supervisionato su coppie richiesta → buona
@@ -419,9 +433,14 @@ tema più lungo.
 Per i sistemi *task-oriented* la valutazione è ancorata al compito, e le
 grandezze si leggono in due versi opposti: tasso di successo e accuratezza
 degli slot si vogliono alti, i costi del dialogo (numero di turni, correzioni,
-richieste ripetute) bassi. Il framework PARADISE (Walker et al., 1997) combina
-successo del compito e costi in un'unica funzione di qualità, dove i costi
-entrano col segno meno, stimata sui giudizi di soddisfazione degli utenti.
+richieste ripetute) bassi. Il framework PARADISE {cite}`walker1997paradise` ne
+fa una formula,
+$\mathrm{prestazione} = \alpha\, z(\kappa) - \sum_i w_i\, z(c_i)$, dove $\kappa$
+è il coefficiente kappa di accordo fra i valori raccolti dal sistema e quelli
+dello scenario (il successo del compito corretto per il caso), le $c_i$ sono i
+costi del dialogo, $z$ è la standardizzazione a media nulla e varianza unitaria
+che rende confrontabili grandezze in unità diverse, e i pesi $\alpha, w_i$ si
+stimano con una regressione lineare sui giudizi di soddisfazione degli utenti.
 
 Per i chatbot aperti le metriche ereditate dalla traduzione falliscono: la
 sovrapposizione con una risposta di riferimento (BLEU {cite}`papineni2002bleu`
@@ -517,14 +536,11 @@ la scelta di cosa affidare a una macchina che parla è una scelta nostra, da
 fare a occhi aperti: sapendo che dall'altra parte non c'è nessuno, per quanto
 forte sia l'impressione contraria.
 
-Con questo il cerchio del capitolo si chiude. Siamo partiti dalle espressioni
+Il cerchio aperto con Weizenbaum si chiude qui. Siamo partiti dalle espressioni
 regolari e siamo arrivati a modelli che conversano, e per strada abbiamo visto
 il gatto nero saltare sul muro in tutti i modi in cui una macchina lo può
 scrivere: come conteggi in un sacchetto, come punti su una mappa di
 significati, come riassunto che scorre dentro una rete che legge in fila.
-L'ultimo passo, l'architettura che ha mandato in pensione quella lettura in
-fila e ha reso possibili gli interlocutori artificiali di oggi, merita un
-capitolo intero, ed è quello sui Transformer.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -591,6 +607,8 @@ capitolo intero, ed è quello sui Transformer.
 Quello che resta in mano, arrivati qui, è un catalogo di problemi più che di
 modelli. Dove si taglia un testo, come una parola diventa numeri,
 come si giudica una macchina che parla quando la risposta giusta non è una
-sola. Il capitolo sui Transformer eredita quelle domande per intero: a
+sola. Il {doc}`capitolo sui Transformer </Transformers/overview>`, con
+l'architettura che ha mandato in pensione la lettura in fila, eredita quelle
+domande per intero: a
 cambiare è la macchina che prova a rispondere, non le domande, e chi le ha
 lette qui riconoscerà là dentro i problemi di sempre sotto nomi nuovi.

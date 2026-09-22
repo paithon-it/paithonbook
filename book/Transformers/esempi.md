@@ -91,8 +91,8 @@ token), inferenza con `generate` (encoder e decoder Transformer, con
 generazione autoregressiva e maschera causale) e decodifica (dagli id di
 token al testo). La libreria offre anche una scorciatoia, `pipeline`, che li
 incapsula in una riga; qui li teniamo separati perché sono esattamente i pezzi
-che il capitolo ha spiegato, e perché i nomi delle scorciatoie cambiano tra
-versioni, mentre `AutoTokenizer` e `generate` no. Sotto il cofano il modello è
+che il capitolo ha spiegato; nel secondo esempio, dove non aggiungerebbero
+niente, la scorciatoia va benissimo. Sotto il cofano il modello è
 un `nn.Module` PyTorch come quelli della {doc}`sezione sui moduli
 </PyTorch/moduli>`: con `modello.named_parameters()` si ispezionano strati,
 teste di attenzione e
@@ -185,8 +185,10 @@ riaddestrano, le cifre esatte possono cambiare, mentre la graduatoria e il
 fenomeno che segue restano.
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
-classificazione usa la rappresentazione del token speciale `[CLS]` passata a
-una testa lineare (architettura encoder-only, senza generazione). Le prime due
+classificazione usa la rappresentazione del token speciale `[CLS]`, passata per
+uno strato denso con tangente iperbolica (il *pooler* di BERT) e poi a una
+testa lineare a cinque uscite (architettura encoder-only, senza generazione). Le
+prime due
 righe sono quelle che ci si aspetta; la terza no, ed è il motivo per cui il
 codice stampa la graduatoria e non solo la vincente. I valori esatti sono
 $0{,}365$ a due stelle e $0{,}336$ a tre: uno scarto di ventinove millesimi,
@@ -227,7 +229,7 @@ nessuna delle tre porta da sola: l'attenzione mette «non», «affatto» e «mal
 in contatto, ma il contatto non garantisce che dalla composizione esca la cosa
 giusta. Le due frasi facili, da sole, avrebbero fatto una bella dimostrazione e
 insegnato molto meno: quattro frasi provate al volo non sono un collaudo, e
-questa pagina l'ha appena dimostrato su sé stessa.
+l'esempio appena visto lo dimostra da solo.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -242,7 +244,7 @@ questa pagina l'ha appena dimostrato su sé stessa.
   usano in poche righe.
 - I risultati vanno sempre provati sui propri testi: ironia, modi di dire e
   complimenti detti al contrario restano difficili, come mostra il "non è
-  affatto male" di questa pagina.
+  affatto male" dell'esempio sulle recensioni.
 ```
 `````
 

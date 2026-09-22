@@ -1,4 +1,4 @@
-# Richiami di Algebra, Statistica e Analisi Numerica
+# La matematica del machine learning: algebra lineare, analisi, probabilità
 
 ```{epigraph}
 La filosofia è scritta in questo grandissimo libro che continuamente ci sta aperto innanzi a gli occhi (io dico l'universo), ma non si può intendere se prima non s'impara a intender la lingua, e conoscer i caratteri, ne’ quali è scritto. Egli è scritto in lingua matematica, e i caratteri son triangoli, cerchi, ed altre figure geometriche, senza i quali mezi è impossibile a intenderne umanamente parola; senza questi è un aggirarsi vanamente per un oscuro laberinto.
@@ -26,7 +26,8 @@ Neumann, e che a riceverlo fosse Claude Shannon, il quale nel 1948 aveva appena
 trovato il modo di misurare l'informazione e non sapeva come chiamare la
 grandezza che gli era venuta fuori. Aveva pensato a «informazione», parola già
 troppo usata, poi a «incertezza». Alla fine seguì il consiglio, e quel nome è
-rimasto: lo incontreremo nella sezione sulla teoria dell'informazione.
+rimasto: lo incontreremo nella {doc}`sezione sulla teoria dell'informazione
+<teoria-informazione>`.
 
 L'aneddoto è tramandato, non documentato: lo raccontò Shannon stesso, a voce,
 nel 1961, e a stampa arrivò dieci anni più tardi, riferito da chi glielo aveva
@@ -43,8 +44,8 @@ vocabolario che serve a noi, però, è corto. Per usare il machine learning non
 serve essere matematici, ma per *capirlo* serve riconoscere le poche idee
 matematiche che vi ritornano di continuo. Sono sorprendentemente poche.
 
-Nessuna di queste idee è data per saputa: ognuna è ripresa da capo, e chi non
-le ha mai viste è esattamente il lettore per cui questo capitolo è scritto.
+Nessuna di queste idee è data per saputa: ognuna è ripresa da capo, con
+un'immagine prima e la formula dopo.
 
 ## Una foto, e tre lingue
 
@@ -115,10 +116,6 @@ L'ultima sezione non aggiunge un sesto attrezzo, rimette al lavoro i cinque
 insieme su un oggetto solo: un modello linguistico (in inglese *large language
 model*, da cui la sigla LLM che si incontra ovunque), smontato con i soli
 attrezzi di questo capitolo, che sono poi gli unici che servono.
-
-I nomi fra parentesi sono le etichette tecniche, e nessuna di esse è data per
-saputa: ognuna nasce dentro la sua sezione, con un'immagine prima e la formula
-dopo.
 
 ```{tip}
 Se un simbolo ti blocca, non saltarlo: quasi sempre dietro una formula

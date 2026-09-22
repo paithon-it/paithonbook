@@ -70,7 +70,8 @@ stazioni 3–5 sono un ciclo di ricerca su iperparametri e architettura, guidato
 dalla metrica di validazione, e ogni decisione presa guardando quel numero
 lo consuma un po’, perché il set di validazione diventa a poco a poco parte
 dell'addestramento. Per questo il test set si tocca una volta sola, alla
-fine: è l'unica stima onesta che rimane. Il capitolo sul machine learning
+fine: è l'unica stima onesta che rimane. Il {doc}`capitolo sul machine learning
+</MachineLearning/overview>`
 tratta per esteso questa contabilità in [overfitting e
 validazione](../MachineLearning/overfitting-validazione.md).
 `````
@@ -373,17 +374,18 @@ chiavi sono sei, dalla più efficace alla più illusoria.
 3. Un modello più capiente, più strati e più unità. Ma solo dopo aver
    verificato che il piccolo non ce la faccia davvero: su dati sbagliati, uno
    grande impara a memoria le cose sbagliate.
-4. Il passo, cioè il learning rate. Delle due manopole della doccia è quella
-   della temperatura: con la portata si convive, il punto giusto è uno solo e
-   stretto, e spostarlo di un fattore dieci in su o in giù separa un modello
+4. Il passo, cioè il learning rate. È la manopola della temperatura di una
+   doccia: il punto giusto è uno solo e stretto, e spostarlo di un fattore dieci
+   in su o in giù separa un modello
    che impara da uno che non parte. Si trova girando piano verso il caldo
    finché non scotta e tornando un filo indietro: una corsa breve in cui il
    passo cresce a ogni giro, e si prende il valore poco prima che l'errore si
    impenni.
-5. I freni, che rendono la vita più difficile al modello mentre studia,
-   apposta perché non si limiti a memorizzare (*dropout* e *weight decay*,
-   spiegati nel capitolo sul deep learning). Si mettono solo se la distanza fra
-   l'errore in addestramento e quello in validazione si allarga.
+5.  I freni, che rendono la vita più difficile al modello mentre studia, apposta
+   perché non si limiti a memorizzare (*dropout* e *weight decay*, spiegati nel
+   {doc}`capitolo sul deep learning </DeepLearning/overview>`). Si mettono solo
+   se la distanza fra l'errore in addestramento e quello in validazione si
+   allarga.
 6. Cambiare strada: un'altra architettura, o un modello già addestrato da
    altri, il *transfer learning* del [capitolo sulla
    visione](../VisioneArtificiale/classificazione-transfer.md).
@@ -413,17 +415,20 @@ Formalmente si sta esplorando lo spazio degli iperparametri con un budget
 limitato, e la sensibilità non è uniforme: il learning rate domina, seguito
 dalla dimensione del batch e dalla capacità del modello, mentre molte altre
 scelte contano poco. Da qui due pratiche standard. La prima è la ricerca
-casuale invece della ricerca a griglia: con $n$ prove, la casuale campiona
-$n$ valori distinti *per ogni* iperparametro, la griglia molti meno, e con
-sensibilità così sbilanciate questo cambia tutto. La seconda è il *learning
+casuale invece della ricerca a griglia {cite}`bergstra2012random`: con $n$
+prove su $h$ iperparametri la griglia prova $n^{1/h}$ valori per asse (nove
+prove su due assi sono tre valori ciascuno), la casuale $n$ valori distinti
+*per ogni* asse, e quando la loss dipende davvero da pochi assi, com'è la
+regola, quegli assi la casuale li esplora $n^{1-1/h}$ volte più fitti. La
+seconda è il *learning
 rate range test*: si fa crescere $\eta$ esponenzialmente per poche centinaia
 di iterazioni e si sceglie il valore poco prima che la loss esploda.
 
-C'è poi una diagnosi che viene prima di tutto il resto: verificare che il
-modello riesca a fare *overfitting* su un campione minuscolo (due o tre
-batch). Se non riesce a mandare a memoria dieci esempi, il problema è un bug e
-non gli iperparametri (target disallineati, loss sbagliata, gradienti che non
-arrivano). Sono cinque minuti che ne risparmiano molti. Il repertorio
+C'è poi una diagnosi che viene prima di tutto il resto: sovradattare
+di proposito un solo batch di una decina di esempi. Se il modello non ci
+riesce, il problema è un bug e non gli iperparametri; il protocollo e i
+sospettati sono nella {doc}`sezione sui tre errori più comuni
+<errori-comuni>`. Il repertorio
 completo (regolarizzazione, scheduler, normalizzazione) è nel capitolo sul
 [deep learning](../DeepLearning/ottimizzazione-regolarizzazione.md);
 l'infrastruttura per non perdere il conto degli esperimenti in [dal notebook

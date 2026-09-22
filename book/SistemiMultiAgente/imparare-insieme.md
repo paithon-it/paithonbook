@@ -35,8 +35,9 @@ quello che sappiamo da quel capitolo, in compagnia, smette di valere.
 
 ## Il terreno si muove sotto i piedi
 
-Il reinforcement learning classico poggia su un'impalcatura precisa, e tutta
-l'impalcatura sta appesa a una parola: fisse. Fisse sono le regole del mondo
+Il reinforcement learning classico poggia su un'ipotesi precisa: l'ambiente
+è un processo decisionale di Markov *stazionario*, e tutta l'impalcatura sta
+appesa a una parola: fisse. Fisse sono le regole del mondo
 (se faccio questa mossa in questa situazione, quello che succede dopo obbedisce
 sempre alla stessa legge) e fissi sono i premi (la stessa cosa vale sempre
 altrettanto). Su quell'impalcatura si dimostra che imparare per tentativi
@@ -160,10 +161,21 @@ la probabilità di ricevere le osservazioni $o = (o^1, \dots, o^N)$
 {cite}`oliehoek2016concise`. La policy dell'agente $i$ non è una funzione dello
 stato ma della propria storia di osservazioni,
 $\pi^i(a^i \mid \bar{o}^i)$, perché nessuna osservazione locale è markoviana; e
-non esiste alcun canale di comunicazione implicito, per cui il coordinamento
-dev'essere interamente contenuto nelle policy fissate in anticipo.
+il modello non prevede alcun canale di comunicazione esplicito: gli agenti si
+influenzano solo in modo implicito, attraverso azioni che cambiano lo stato e
+quindi le osservazioni altrui, e il coordinamento dev'essere interamente
+contenuto nelle policy fissate in anticipo (la comunicazione esplicita richiede
+un'estensione, il Dec-POMDP-Com, in cui i messaggi sono azioni con un costo).
 
-Il prezzo di questa generalità conviene dirlo subito e per intero. Risolvere
+Il prezzo di questa generalità si vede già contando. Una policy deterministica
+di $i$ a orizzonte $h$ assegna un'azione a ogni storia di osservazioni di
+lunghezza $0, \dots, h-1$, e le storie sono
+$(|\Omega^i|^h - 1)/(|\Omega^i| - 1)$; le policy sono quindi
+$|\mathcal{A}^i|^{(|\Omega^i|^h - 1)/(|\Omega^i| - 1)}$, e i profili congiunti
+il loro prodotto su $i$: doppiamente esponenziale in $h$, esponenziale in $N$.
+Con due agenti, $|\mathcal{A}^i| = |\Omega^i| = 2$ e $h = 5$ fanno
+$2^{62} \approx 4{,}6 \cdot 10^{18}$ profili, e il conto non esagera la
+difficoltà. Risolvere
 esattamente un Dec-POMDP a orizzonte finito è **NEXP-completo**, e lo è già con
 due soli agenti; per confronto lo stesso problema è P-completo per un MDP e
 PSPACE-completo per un POMDP, quindi la sola decentralizzazione fa saltare due
@@ -189,12 +201,12 @@ della partita, e bisogna capire quale mossa se lo sia guadagnato. La prima
 risposta era spalmarlo all'indietro su tutte le mosse, contando meno quelle più
 lontane nel tempo.
 
-Poi si è affinata, e conviene dirlo con calma perché i due nomi che ne escono
-tornano per tutta la sezione. A chi decide le mosse si affianca un secondo pezzo
-di programma, che non decide niente: tiene il conto di quanto ci si aspettava di
-guadagnare in ciascuna situazione. Così, invece di dire «hai preso otto», si può
-dire «hai preso due più di quanto ci si aspettasse», che è un giudizio molto più
-utile. Chi decide si chiama attore; chi tiene il conto si chiama critico.
+Poi si è affinata nell'architettura **attore-critico** della {doc}`sezione
+sui gradienti di policy </DeepReinforcementLearning/policy-gradient>`:
+l'attore è la policy che sceglie le mosse, il critico una stima del valore
+$V(s)$ che non sceglie niente e fa da termine di paragone, così che l'attore
+venga corretto dal *vantaggio* («hai preso due più di quanto ci si
+aspettasse») invece che dal ritorno grezzo («hai preso otto»).
 
 Con più agenti, al merito nel tempo se ne aggiunge uno **fra compagni**, e la
 domanda cambia di natura: la squadra ha vinto, chi è stato bravo?
@@ -393,8 +405,12 @@ Ma proviamo a crederci e vediamo dove va a finire. Se per il primo agente A vale
 più di B, allora, per la regola, mettendolo su A la squadra non può fare peggio
 che mettendolo su B, a parità di mossa del secondo. Mettiamo il secondo su B: ne
 segue che la casella «io A, l'altro B» dovrebbe valere almeno quanto la casella
-«io B, l'altro B». La tabella dice zero contro uno. Non torna, e non tornerà mai
-con nessun voto individuale, per quanto lo si scelga bene.
+«io B, l'altro B». La tabella dice zero contro uno. Non torna. E l'altra strada,
+dare a B
+il voto individuale più alto per tutti e due, non va meglio: allora la regola
+chiede che «io B, l'altro B» valga almeno quanto «io A, l'altro A», e la
+tabella dice uno contro due. Nessuna scelta dei voti individuali regge, per
+quanto la si faccia bene.
 
 Quello che la tabella dice è preciso, e conviene non chiedergli di più: quel
 punteggio di squadra, con questa ricetta, non si può riprodurre esatto. Sono le
@@ -446,10 +462,15 @@ dallo stato successivo è una media sulle azioni che gli altri giocheranno lì,
 pesate con le loro policy correnti, che è esattamente la cosa che si muove.
 La transizione è ferma; il bersaglio no.
 
-È il motivo per cui MADDPG tiene comunque le reti target e, nel lavoro
-originale, gli *ensemble* di policy: sono contromisure alla non stazionarietà
-residua, e non esisterebbero se questa fosse stata eliminata «per
-costruzione». Da cui la conseguenza già enunciata in apertura di sezione, che
+Nel lavoro originale MADDPG aggiunge al critico centralizzato gli *ensemble*
+di policy: ogni agente allena $K$ sotto-policy e a ogni episodio ne sorteggia
+una, così che gli altri non possano adattarsi a un avversario solo. È una
+contromisura esplicita alla non stazionarietà residua, e non servirebbe se
+questa fosse stata eliminata «per costruzione». Le reti target invece non
+provano niente né in un senso né nell'altro: MADDPG le eredita da DDPG, dove
+esistono già con un agente solo, perché anche lì il bersaglio
+$r + \gamma\,Q'$ si calcolerebbe altrimenti con la stessa rete che si sta
+aggiornando. Da cui la conseguenza già enunciata in apertura di sezione, che
 qui va ribadita perché è facile crederla revocata: le garanzie di convergenza
 del reinforcement learning a un agente solo, qui, non valgono. Il Q-learning
 converge perché itera un operatore di Bellman fisso; qui l'operatore si muove
@@ -465,8 +486,17 @@ dell'ingresso. Il secondo: serve un critico per
 agente non appena le ricompense non coincidono, cioè in ogni scenario
 competitivo o misto.
 
-**QMIX** {cite}`rashid2018qmix` affronta l'altro pezzo, l'assegnazione
-strutturale del merito, nel caso puramente cooperativo. Ogni agente stima
+Il termine di paragone di tutta la famiglia è l’**independent Q-learning**
+(Tan, 1993): ogni agente esegue il Q-learning sulla propria
+$Q^i(\bar{o}^i, a^i)$ e tratta gli altri come parte dell'ambiente, cioè ignora
+proprio la non stazionarietà di $P^i_t$. Non ha garanzie, eppure resta una base
+sorprendentemente robusta, e il lavoro su QMIX la usa come tale. Un passo oltre
+sta **VDN** (Sunehag e colleghi, 2018), che impara le $Q^i$ dalla sola
+ricompensa di squadra imponendo $Q_{tot} = \sum_i Q^i$: la somma rende banale
+l'argmax congiunto e insieme restringe la classe rappresentabile alle funzioni
+additive. **QMIX** {cite}`rashid2018qmix` allarga quella classe e affronta così
+l'altro pezzo, l'assegnazione strutturale del merito, nel caso puramente
+cooperativo. Ogni agente stima
 un'utilità $Q^i(\bar{o}^i, a^i)$ sulla sola storia locale, e una rete di
 miscelazione le compone nel valore di squadra $Q_{tot}$ sotto il vincolo
 
@@ -516,8 +546,9 @@ avvicinarsi di più a quel valore, pur senza riprodurlo, serve a qualcosa.
 `````
 
 C'è una terza ricetta, e il suo interesse è di metodo prima che tecnico.
-**MAPPO** {cite}`yu2022surprising` non inventa nulla: prende PPO, che sono
-le due P del suo nome, cioè l'algoritmo dei
+**MAPPO** {cite}`yu2022surprising` non inventa nulla: prende PPO (*proximal
+policy optimization*: MA, nel nome, sta per
+*multi-agent*), cioè l'algoritmo dei
 {doc}`gradienti di policy </DeepReinforcementLearning/policy-gradient>` che a
 ogni aggiornamento impedisce a un agente di cambiare troppo il proprio modo di
 giocare, lascia a
@@ -583,8 +614,11 @@ vuol dire qualcosa.
 È la linea che porta ad AlphaGo {cite}`silver2016mastering`, già raccontato
 nella sezione {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>`:
 una rete che sceglie la mossa,
-addestrata prima sulle partite dei giocatori umani e poi affinata giocando
-contro copie di sé, e una rete che dice chi sta vincendo, addestrata proprio
+addestrata prima sulle partite dei giocatori umani e poi affinata col gradiente
+di policy contro una versione precedente di sé, sorteggiata ogni volta da un
+archivio invece di prendere sempre l'ultima (per non lasciare che la rete si
+adatti alla sola policy corrente, il guasto che sasso, carta e forbici mostrano
+più avanti), e una rete che dice chi sta vincendo, addestrata proprio
 sulle partite così generate. Le due guidano la ricerca ad albero Monte Carlo di
 quella sezione, che prima di muovere prova a immaginare come proseguirebbe la
 partita. L'anno dopo la stessa squadra
@@ -790,9 +824,11 @@ storia, e allenarsi contro tutto il passato è quello che rompe l'orbita.
 
 ## Una GAN è un sistema multi-agente a due
 
-Conviene chiudere il cerchio su una cosa che il libro racconterà per esteso più
-avanti, nel capitolo sulle GAN, e che da qui si riconosce a colpo d'occhio.
-Non serve averlo già letto: quello che serve sta in due righe. Una GAN è una
+Nell'apertura del capitolo le GAN erano comparse di passaggio: due reti
+che si allenano l'una contro l'altra e che finiscono in un pareggio invece che
+in fondo a una valle. Il {doc}`capitolo sulle GAN </GAN/overview>` le racconta
+per esteso più avanti, ma da qui si riconoscono a colpo d'occhio, e quello che
+serve sta in due righe. Una GAN è una
 coppia di reti che si allenano l'una contro l'altra. La prima, il
 generatore, fabbrica esemplari falsi (di solito immagini) partendo dal caso;
 la seconda, il discriminatore, guarda un esemplare e dice se è vero o falso.
@@ -805,11 +841,10 @@ quanto li spieghi la teoria delle reti.
 
 `````{tab} Elementare
 
-Il traguardo, per cominciare, non è un traguardo. Addestrare, di solito, vuol
-dire scendere: c'è una valle, si cerca il fondo, e quando ci si è arrivati si è
-finito. Qui una valle sola non c'è, perché ogni passo avanti di uno rende più
-difficile il mestiere dell'altro. Quello che si può sperare è un pareggio,
-cioè la situazione in cui a nessuno dei due conviene più cambiare mossa da solo.
+Il traguardo, per cominciare, è quello già incontrato nell'apertura del
+capitolo: non il fondo di una valle, perché ogni passo avanti di uno rende più
+difficile il mestiere dell'altro, ma un pareggio, cioè la situazione in cui a
+nessuno dei due conviene più cambiare mossa da solo.
 
 Da lì si capiscono i due modi in cui l'addestramento di una GAN va storto, e
 sono due vecchie conoscenze sotto altro nome. Per raccontarli chiamiamo le due
@@ -860,7 +895,15 @@ Riletti da qui, i guasti classici dell'addestramento avversario smettono di
 sembrare capricci di quella famiglia di modelli. L’**oscillazione** è la stessa
 orbita di poche righe fa: il generatore fa la miglior risposta al discriminatore
 corrente, il discriminatore la miglior risposta a quello, e la coppia percorre
-un ciclo invece di avvicinarsi all'equilibrio. Il **collasso dei modi** è il
+un ciclo invece di avvicinarsi all'equilibrio. Il caso minimo sta in una riga:
+$\min_x \max_y\, xy$, con unico equilibrio in $(0,0)$. La discesa-ascesa
+simultanea, $x \leftarrow x - \eta\,y$ e $y \leftarrow y + \eta\,x$, è una mappa
+lineare i cui autovalori $1 \pm i\eta$ hanno modulo $\sqrt{1+\eta^2} > 1$: a
+ogni passo la coppia ruota e si allontana dall'equilibrio, per qualunque
+$\eta > 0$. Nel limite continuo percorre cerchi chiusi, le orbite di Volterra;
+aggiornando i due giocatori in alternanza le orbite restano limitate ma non
+convergono al centro. L'oscillazione appartiene dunque alla dinamica del
+gradiente sui giochi prima che alle reti. Il **collasso dei modi** è il
 self-play ingenuo visto dall'altro lato: il generatore si specializza sull'unica
 regione dello spazio che inganna l'avversario corrente, ottiene contro di lui un
 tasso di successo altissimo, e perde tutto il resto del supporto (che è, parola
@@ -874,9 +917,11 @@ passate del generatore. È una lega in miniatura, con la stessa motivazione.
 
 ## Il critico che vede tutto
 
-Resta da vedere quanto poco codice serva a scrivere la struttura di CTDE, cioè
-allenarsi guardando tutto e giocare guardando poco. L'esempio qui sotto è lo
-scheletro della prima ricetta di questa sezione: un attore per agente, che vede
+Prima di chiudere si torna per un momento all'allenatore con la
+ripresa dall'alto, per vedere quanto poco codice serva a scrivere CTDE, cioè
+allenarsi guardando tutto e giocare guardando poco. Il programma che segue è lo
+scheletro di MADDPG, la prima delle ricette viste per CTDE: un attore per
+agente, che vede
 soltanto quello che vedrà anche in partita, e accanto a ciascuno un critico che
 riceve invece le osservazioni e le mosse di tutti. Manca tutto il resto
 (l'archivio delle partite passate da cui si ripescano gli esempi, le copie
@@ -908,8 +953,8 @@ class Attore(nn.Module):
 class CriticoCentralizzato(nn.Module):
     """Esiste solo in addestramento: riceve osservazioni e azioni di TUTTI,
     cosi' la transizione che vede non dipende piu' dalle policy altrui.
-    (Il bersaglio da regredire, invece, dipende ancora dal futuro: per
-    quello servono comunque le reti target.)"""
+    (Il bersaglio da regredire, invece, dipende ancora dalle policy future
+    degli altri.)"""
 
     def __init__(self, dim_oss, dim_azione, n_agenti):
         super().__init__()
@@ -1032,8 +1077,9 @@ la domenica.
   osservazione vera in esecuzione. MADDPG {cite}`lowe2017multi` dà a ogni
   agente un critico che vede le azioni di tutti, e condizionando su quelle la
   transizione non dipende più dalle policy; il bersaglio di regressione
-  invece sì, perché è un valore atteso sul futuro, ed è per questo che restano
-  necessarie le reti target. Le garanzie di convergenza del caso a un agente
+  invece sì, perché è un valore atteso sul futuro, e contro questo residuo il
+    lavoro originale allena più policy per agente e le sorteggia. Le garanzie di
+    convergenza del caso a un agente
   solo, qui, non si trasferiscono. QMIX {cite}`rashid2018qmix`
   fattorizza $Q_{tot}$ in modo monotono ($\partial Q_{tot}/\partial Q^i \ge 0$),
   così l'argmax individuale coincide con quello congiunto; il prezzo è che i
@@ -1053,3 +1099,8 @@ la domenica.
 ```
 
 `````
+
+Fin qui gli agenti erano pochi, costosi e capaci di imparare. Resta l'estremo
+opposto, quello da cui il capitolo era partito con gli storni: centinaia di
+partecipanti che non ragionano affatto e che, messi insieme, risolvono
+problemi.

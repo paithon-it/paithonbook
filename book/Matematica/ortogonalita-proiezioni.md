@@ -7,9 +7,10 @@ posizione, poi il corpo celeste passa dietro il Sole e sparisce. Per ritrovarlo
 bisogna prevedere dove riemergerà, e per prevederlo bisogna ricavarne l'orbita
 da quelle ventiquattro misure.
 
-Il problema è mal messo. Un'orbita si descrive con sei numeri, e le misure sono
-ventiquattro: ci sono quattro volte più equazioni che incognite, e nessuna
-orbita passa esattamente per tutti i punti osservati, perché ogni misura porta
+Il problema è sovradeterminato. Un'orbita si descrive con sei numeri, e
+ciascuna delle ventiquattro misure dà due coordinate sulla volta celeste:
+quarantotto equazioni per sei incognite, e nessuna orbita passa esattamente
+per tutti i punti osservati, perché ogni misura porta
 con sé il suo errore. Il ventiquattrenne Carl Friedrich Gauss risolve il
 problema cambiando la domanda: se nessuna orbita azzera gli scarti, si prende
 quella che rende minima la somma dei loro quadrati. Cerere viene ritrovata
@@ -21,7 +22,7 @@ storia a diventare di uso quotidiano. Quello che nessuno dei due scrisse, e che
 oggi si insegna per primo, è che quel minimo ha una forma geometrica semplice:
 è un'ombra.
 
-## Perpendicolare vuol dire che non si dicono niente
+## Perpendicolare: due direzioni che non si intralciano
 
 Il prodotto scalare della sezione sull'algebra lineare misura quanto due
 vettori vanno d'accordo, e ha un valore speciale che merita un nome.
@@ -38,7 +39,11 @@ in alto, il loro prodotto scalare fa $3\cdot 0 + 0\cdot 5 = 0$. Quanto vai a est
 e quanto vai a nord sono due conti separati, e ciascuno si fa senza guardare
 l'altro. La conclusione più grossa, però, non si tira: due direzioni
 perpendicolari non si intralciano, e questo non vuol dire che due grandezze
-misurate lungo di esse non abbiano niente da dirsi.
+misurate lungo di esse non abbiano niente da dirsi. Sui quattro punti
+$(-2,4)$, $(-1,1)$, $(1,1)$ e $(2,4)$ la posizione verso est non aiuta a
+tracciare una retta che salga o scenda verso nord (il conto del prodotto
+scalare fra le due colonne, $-8-1+1+8$, fa zero), eppure l'altezza è decisa per
+intero dalla posizione: è il suo quadrato.
 
 Quando in un gruppo le direzioni sono tutte perpendicolari a due a due, e
 lunghe uno, il gruppo si dice **ortonormale** e diventa comodissimo. Il motivo
@@ -77,7 +82,12 @@ $$
 
 dove $\delta_{ij}$ è il simbolo di Kronecker. Un insieme ortonormale è sempre
 linearmente indipendente: prendendo il prodotto scalare di una combinazione
-nulla con $\mathbf{q}_i$ resta $c_i = 0$.
+nulla con $\mathbf{q}_i$ resta $c_i = 0$. L'ortogonalità è una proprietà di
+vettori fissati. Per due variabili aleatorie centrate l'analogo è
+$\mathbb{E}[XY]=0$, cioè covarianza nulla, e la {doc}`sezione su probabilità e
+statistica <probabilita-statistica>` mostra che non implica l'indipendenza:
+$X$ simmetrica attorno a zero e $Y=X^2$ sono incorrelate e legate da una
+funzione.
 
 La comodità operativa sta tutta in una formula. Se $\{\mathbf{q}_i\}$ è una
 base ortonormale di un sottospazio e $\mathbf{v}$ appartiene a quel
@@ -108,7 +118,7 @@ sono costruiti a partire da esse.
 
 ## L'ombra di un vettore su una direzione
 
-L'immagine della lampada della sezione precedente torna qui, con una sola
+L'ombra al sole della sezione precedente torna qui, con una sola
 differenza: il sole a picco, cioè i raggi tutti perpendicolari al muro. Questa
 è la **proiezione ortogonale**, ed è l'ombra che tutti disegnano quando dicono
 «ombra».
@@ -538,9 +548,10 @@ invece delle prime due: si butta il $6$, il conto di Pitagora dà poco più di
 $6$, e lo sbaglio quasi triplica. Sullo sbaglio complessivo l'unico caso in cui
 l'ordine lascia qualcosa in sospeso è quello di due pesi identici: allora quale
 delle due premiscele tenere non lo decide nessuno, e vanno bene tutte e due.
-Guardando invece la sola tinta peggiore le coppie ottime sono tante, perché
-quel conto non vede la differenza fra due scelte che sbagliano ugualmente sul
-caso più difficile.
+Guardando invece lo sbaglio sulla miscela più sfortunata, la peggiore fra
+tutte le combinazioni di tinte che un cliente potrebbe chiedere, le coppie
+ottime sono tante, perché quel conto guarda un caso solo e non vede la
+differenza fra due scelte che sbagliano ugualmente lì.
 
 Due avvertenze, e sono le situazioni in cui questo mestiere non si può fare. La
 prima è un catalogo con i pesi tutti uguali, mettiamo tutti $3$: buttarne tre

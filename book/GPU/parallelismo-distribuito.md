@@ -175,9 +175,13 @@ Collective Communications Library*), sceglie fra più algoritmi in base a
 taglia del messaggio e topologia; quello classico è lo schema
 **ring all-reduce**: le GPU formano un anello logico e ogni GPU comunica
 soltanto con i due vicini, in due fasi (*reduce-scatter* e poi *all-gather*).
-Il volume di dati che ciascuna GPU trasmette è $2\frac{K-1}{K}$ volte la
-dimensione del gradiente: al crescere di $K$ tende a una costante, cioè è
-ottimale in banda (cresce solo la latenza, non il traffico per GPU). È
+Nel modello a latenza e banda, con $\alpha$ il costo fisso di un messaggio,
+$\beta$ la banda del collegamento e $n$ i byte del gradiente, l'anello costa
+$T_\text{ring} = 2(K-1)\,\alpha + 2\frac{K-1}{K}\,\frac{n}{\beta}$. Il secondo
+termine è il volume trasmesso da ciascuna GPU, $2\frac{K-1}{K}$ volte il
+gradiente: tende a $2n/\beta$, che è il minimo per qualunque all-reduce, cioè
+l'anello è ottimale in banda. Il primo termine, la latenza, cresce invece
+linearmente con $K$. È
 proprio quella latenza, proporzionale a $K$, il motivo per cui a molti nodi
 NCCL abbandona l'anello per schemi ad albero (*double binary tree*), che la
 contengono senza sacrificare la banda.
@@ -277,16 +281,20 @@ $$
 $$
 
 dove $\mathbf{A}_i$ e $\mathbf{B}_i$ sono le porzioni assegnate alla GPU $i$.
-La somma dei due
-addendi richiede una sola collettiva (un all-reduce) in avanti e una
-all'indietro, per blocco. Nell'attenzione multi-testa il taglio è ancora più
+La somma dei due addendi richiede una sola collettiva (un all-reduce) in avanti
+e una all'indietro, per blocco: per strato di Transformer, contando anche
+l'attenzione, sono quattro all-reduce, ciascuno sulle attivazioni di $b \cdot s
+\cdot h$ numeri ($b$ esempi, $s$ posizioni, $h$ dimensione del modello). Il
+traffico cresce con il batch e con la lunghezza del testo, e si ripete a ogni
+strato; quello del parallelismo dati dipende solo dal numero di parametri, e si
+paga una volta per passo. Nell'attenzione multi-testa il taglio è ancora più
 naturale: teste diverse su GPU diverse. Il costo è la comunicazione: le
 collettive sulle *attivazioni* si ripetono a ogni blocco, sono sincrone e
-stanno sul cammino critico (il calcolo non può proseguire finché non
-finiscono, quindi non si nascondono dietro di esso, come invece fa
-l'all-reduce dei gradienti). Per questo il
-tensor parallelism vive di norma dentro un singolo nodo, dove le GPU sono
-collegate da NVLink a centinaia di GB/s, e non tra nodi diversi.
+stanno sul cammino critico (il calcolo non può proseguire finché non finiscono,
+quindi non si nascondono dietro di esso, come invece fa l'all-reduce dei
+gradienti). Per questo il tensor parallelism vive di norma dentro un singolo
+nodo, dove le GPU sono collegate da NVLink a centinaia di GB/s, e non tra nodi
+diversi.
 
 `````
 
@@ -454,7 +462,12 @@ un attimo prima di usarli e liberandoli subito dopo.
 
 ZeRO elimina la ridondanza del parallelismo dati in tre stadi cumulativi:
 partiziona tra le GPU prima gli stati dell'ottimizzatore (stadio 1), poi
-anche i gradienti (stadio 2), infine anche i parametri (stadio 3).
+anche i gradienti (stadio 2), infine anche i parametri (stadio 3). Per «stati
+dell'ottimizzatore» ZeRO intende 12 dei 16 byte del conto d'apertura: le due
+statistiche di Adam e la copia dei pesi in precisione piena. Con $\Psi$
+parametri e $K$ schede, la memoria per scheda passa da $16\Psi$ a
+$4\Psi + 12\Psi/K$ nello stadio 1, a $2\Psi + 14\Psi/K$ nello stadio 2 e a
+$16\Psi/K$ nello stadio 3; con $K = 8$ sono riduzioni di 2,9, 4,3 e 8 volte.
 FSDP arriva allo stesso risultato dello stadio 3, con un disegno rifatto per
 PyTorch: gli autori scrivono di essersene fatti ispirare, non di averlo
 riprodotto, e la differenza sta nelle collettive scelte e nel modo di
@@ -487,26 +500,24 @@ identico.
 :class: pt-non-eseguibile
 
 # SCHEMA (come DDP), si lancia con: torchrun --nproc_per_node=4 addestra.py
-import functools
 import os
 import torch
 import torch.distributed as dist
-from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
-from torch.distributed.fsdp.wrap import transformer_auto_wrap_policy
+from torch.distributed.fsdp import fully_shard
 
 dist.init_process_group("nccl")
 rank = int(os.environ["LOCAL_RANK"])
 torch.cuda.set_device(rank)
 
-# La auto_wrap_policy dice a FSDP quali sotto-moduli trattare come unità
-# separate; senza, il modello è un'unica unità e l'all-gather ricomporrebbe
-# TUTTI i pesi insieme, vanificando il risparmio di memoria. Qui l'unità è il
-# singolo blocco Transformer (BloccoTransformer è la classe del tuo modello).
-policy = functools.partial(transformer_auto_wrap_policy,
-                           transformer_layer_cls={BloccoTransformer})
+# L'unità di sharding è il singolo blocco Transformer: fully_shard su ogni
+# blocco, poi sul modello intero. Applicato al solo modello, l'all-gather
+# ricomporrebbe TUTTI i pesi insieme, vanificando il risparmio di memoria.
+# (model.blocchi è la lista dei blocchi del tuo modello.)
+for blocco in model.blocchi:
+    fully_shard(blocco)
 
 # invece di REPLICARE il modello (come DDP), FSDP ne SPARTISCE i parametri.
-model = FSDP(model, device_id=rank, auto_wrap_policy=policy)
+fully_shard(model)
 
 # training loop IDENTICO: FSDP raduna (all-gather) i pesi di ogni blocco
 # appena prima di usarlo, e li ri-spartisce subito dopo, in automatico.
@@ -548,7 +559,8 @@ indipendente dalle altre. Serve ad alleggerire la memoria che si mangiano le
 attivazioni, cioè i risultati intermedi che ogni strato produce e che vanno
 conservati fino al passaggio all'indietro, quello in cui il modello impara dai
 propri errori.
-L’**expert parallelism** riguarda i modelli *Mixture of Experts*, quelli in cui
+L’**expert parallelism** riguarda i modelli {doc}`Mixture of Experts
+</Transformers/mixture-of-experts>`, quelli in cui
 il modello non è uno solo ma un mazzo di modelli specializzati fra cui un
 selettore smista ogni parola in arrivo: lì si mettono esperti diversi su schede
 diverse.
@@ -640,7 +652,7 @@ modello che in una scheda sola non entra, è da lì che si comincia.
   ricomponendoli al volo (all-gather) solo quando servono: la via pratica per i
   modelli grandi. I primi due stadi non costano nulla in comunicazione; solo il
   terzo, quello di FSDP, paga fino a $1{,}5\times$, con le collettive ad anello.
-  In PyTorch: `FullyShardedDataParallel`.
+  In PyTorch: `fully_shard` (FSDP2).
 - Nella realtà si combinano (3D parallelism: dati × tensor × pipeline),
   più sequence ed expert parallelism. Il memory wall (modelli che crescono
   più in fretta della memoria per GPU) è la ragione per cui lo sharding conta.

@@ -121,6 +121,7 @@ sphinx:
       - MachineLearning
       - Matematica
       - ModelliDiffusione
+      - ModelliEnergia
       - ModelliLatenti
       - NaturalLanguageProcessing
       - PINN

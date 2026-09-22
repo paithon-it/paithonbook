@@ -4,9 +4,9 @@ Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro,
 Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
 Doveva guardare una fotografia e dire se ritraeva un husky o un lupo, e
 nessuno gliel'aveva insegnato a parole: l'aveva imparato da solo, guardando
-delle foto su cui qualcuno aveva già scritto la risposta giusta. Quegli esempi
-sono il suo addestramento, e il programma che ne è uscito è il modello: la
-parola che tornerà in ogni riga di questo capitolo.
+delle foto su cui qualcuno aveva già scritto la risposta giusta: un
+classificatore addestrato come quelli del {doc}`capitolo sul machine learning
+</MachineLearning/overview>`.
 
 Il trucco stava nelle foto. Erano venti soltanto, poche apposta, e scelte a mano
 in modo che tutti i lupi comparissero su sfondo innevato e nessun husky lo
@@ -141,9 +141,10 @@ davvero, e che l'accuratezza aggregata, per costruzione, non può vedere.
 
 Le ragioni per volere una spiegazione non sono una sola, e non hanno tutte lo
 stesso peso. Hanno però una radice comune {cite}`doshi2017towards`: si vuole
-una spiegazione dove il problema non si è riusciti a scriverlo per intero, cioè
-dove il punteggio che il modello fa salire non dice tutto quello che davvero
-gli si chiede. Elencarle conviene lo stesso, perché guidano *che tipo* di
+una spiegazione quando il punteggio su cui il modello è stato addestrato non
+riesce a contenere tutto quello che gli chiediamo davvero: «indovina
+l'animale» si scrive in una formula, «guarda l'animale e non lo sfondo» o «non
+discriminare» no. Elencarle conviene lo stesso, perché guidano *che tipo* di
 spiegazione cerchiamo.
 
 - **Fiducia.** Un medico non delega una diagnosi a un sistema di cui non
@@ -447,7 +448,9 @@ foresta casuale    96.0%
 Tanti pareri sbagliano meno di uno, e infatti la foresta indovina un po’ più
 dell'alberello: la differenza è di un punto e tre. In cambio, la logica
 della foresta non si stampa più, perché sono centinaia di ricette che votano
-invece di una sola. È in questo scambio che nascono i metodi del capitolo.
+invece di una sola. I metodi del capitolo servono quando questo scambio c'è
+davvero, cioè quando il modello che non si legge indovina parecchio di più di
+quello che si legge.
 
 Quel punto e tre, però, misura il tetto che all'albero abbiamo messo noi per
 farlo stare in sette righe, non il prezzo della leggibilità. Concedendogli una

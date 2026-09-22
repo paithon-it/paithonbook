@@ -128,12 +128,12 @@ sul prato».
 `````{tab} Superiore
 
 Il numero di contesti di lunghezza $m$ su un vocabolario di cardinalità
-$|\mathcal{V}|$ è $|\mathcal{V}|^m$: con $|\mathcal{V}| = 5 \cdot 10^4$ e
-$m = 10$ si ottiene $9{,}8 \cdot 10^{46}$. Una stima tabellare
-(la massima verosimiglianza per conteggi, cioè i modelli $n$-gram del
-capitolo sul NLP) è impraticabile ben prima: il numero di parametri cresce
-esponenzialmente in $m$, e la matrice dei conteggi diventa quasi ovunque
-nulla.
+$|\mathcal{V}|$ è $|\mathcal{V}|^m$: con $|\mathcal{V}| = 5 \cdot 10^4$ e $m =
+10$ si ottiene $9{,}8 \cdot 10^{46}$. Una stima tabellare (la massima
+verosimiglianza per conteggi, cioè i {doc}`modelli $n$-gram
+</NaturalLanguageProcessing/modelli-ngram>`) è impraticabile ben prima: il
+numero di parametri cresce esponenzialmente in $m$, e la matrice dei conteggi
+diventa quasi ovunque nulla.
 
 La via d'uscita è sostituire la tabella con una funzione parametrica
 $f_\theta$ che mappa contesti in distribuzioni, con $|\theta|$ fissato e
@@ -270,7 +270,8 @@ moduli di domande fisse. Entra una lista lunga, esce un biglietto corto, e il
 modulo è la tabella di pesi dell'appartamento, quella da cui, partendo da metri
 quadri, stanze e piano, uscivano «ampiezza» e «comodità». Nessun grammatico ha
 scritto i moduli. Partono uguali, e a distinguerli è il posto che occupano: i
-primi due finiscono accostati, il terzo letto ad alta voce, e mestieri diversi
+primi due si confrontano fra loro, il terzo consegna il proprio contenuto a
+chi lo ha interpellato, e mestieri diversi
 li tirano in direzioni diverse. Il posto è deciso a tavolino, quello che ci
 finisce sopra viene dalle prove. Se salta fuori qualcosa che somiglia alla
 grammatica, è perché aiuta a indovinare la parola dopo.
@@ -400,8 +401,8 @@ in un pezzo di codice.
 | *value* ($\mathbf{W}^V$) | la terza tabella, $\mathbf{W}^C$ | estrae ciò che quella posizione trasmette, deciso il peso |
 | *attention score* | punteggio di influenza, $r_{ij}$ | il prodotto scalare fra le prime due versioni ridotte |
 | *attention weight* | peso di influenza, $\alpha_{ij}$ | il punteggio normalizzato: non negativo, a somma 1 |
-| *softmax* | logit multinomiale inverso | la ricetta che trasforma punteggi qualsiasi in proporzioni |
-| *head* | relazione | una delle copie parallele dello stesso meccanismo |
+| *softmax* | la stessa softmax | la ricetta che trasforma punteggi qualsiasi in proporzioni |
+| *head* | relazione | una delle copie parallele dello stesso meccanismo, che arrivano poco più avanti |
 
 ## Una forma bilineare di rango basso
 
@@ -600,14 +601,14 @@ determinati solo a meno di una trasformazione ortogonale
 rotazione (varimax e simili) e le liti su quale usare. Lo stesso argomento,
 rifatto sulle immagini invece che sulle matrici, sta nella {doc}`sezione sul
 latente che si usa </ModelliLatenti/il-latente-che-si-usa>`. Due conseguenze,
-opposte di segno. Per l'interpretabilità è una cattiva notizia: le quantità
-che hanno senso studiare sono quelle invarianti (i prodotti, i pesi
-$\alpha_{ij}$, le direzioni nello spazio delle rappresentazioni), non le
-singole righe delle matrici, e il capitolo sull'interpretabilità ci torna
-sopra. Per l'ottimizzazione è una buona notizia: l'insieme delle soluzioni
-equivalenti è una varietà continua, non un punto isolato, e un paesaggio con
-tanti minimi equivalenti è molto più facile da scendere di uno con un solo
-minimo stretto.
+opposte di segno. Per l'interpretabilità è una cattiva notizia: le quantità che
+hanno senso studiare sono quelle invarianti (i prodotti, i pesi $\alpha_{ij}$,
+le direzioni nello spazio delle rappresentazioni), non le singole righe delle
+matrici, e la {doc}`sezione sull'interpretabilità meccanicistica
+</Interpretabilita/attribuzione-e-meccanicistica>` ci torna sopra. Per
+l'ottimizzazione è una buona notizia: l'insieme delle soluzioni equivalenti è
+una varietà continua, non un punto isolato, e un paesaggio con tanti minimi
+equivalenti è molto più facile da scendere di uno con un solo minimo stretto.
 
 `````
 
@@ -667,6 +668,20 @@ $$
 Ponendo $k = d/H$ il costo totale resta quello di una singola aggregazione a
 dimensione piena. Nei modelli attuali $H$ va tipicamente da 12 a 96.
 
+Il conto, per uno strato e una sequenza di $n$ posizioni, contando
+moltiplicazioni e somme: le tre proiezioni e la riproiezione $\mathbf{W}^O$
+costano $4nd^2$; i punteggi di tutte le coppie costano $n^2k$ per relazione,
+cioè $n^2d$ in tutto, e altrettanto la media pesata; la parte non lineare, che
+si allarga a $4d$, costa $8nd^2$. In totale $12nd^2+2n^2d$ (la maschera
+causale dimezza le coppie). Il primo termine è lineare nella lunghezza, il
+secondo quadratico, e la memoria segue la stessa sorte, perché le matrici dei
+pesi $\alpha_{ij}$ hanno $n^2$ elementi per relazione. Il termine quadratico
+supera l'altro solo per $n>6d$: per GPT-3, con $n=2048$ e $d=12\,288$, vale
+meno del $3\%$ del conto, e il costo per token è di circa due operazioni per
+parametro {cite}`kaplan2020scaling`. Il quadrato morde sui contesti lunghi, e
+lo discute la {doc}`sezione sull'attenzione in pratica
+</Transformers/attenzione-in-pratica>`.
+
 Conviene tenere separato ciò che è progettato da ciò che è scoperto. La
 scelta di avere $H$ copie è architetturale e crea *capacità* di
 specializzazione; quali relazioni emergano è deciso dall'ottimizzazione, che
@@ -711,9 +726,11 @@ per cui raddoppiare e poi triplicare equivale a sestuplicare: hai fatto due
 passaggi, ma per ottenere lo stesso risultato ne sarebbe bastato uno.
 Cento strati tutti lineari equivarrebbero quindi a
 uno, e tutta la pila collasserebbe in un'unica tabella. Serve, fra
-uno strato e l'altro, una funzione che *pieghi* i numeri, e la più usata è la
-più semplice che si possa immaginare: azzerare i valori negativi e lasciar
-passare i positivi. È la non linearità del capitolo sulle reti neurali, ed è
+uno strato e l'altro, una funzione che *pieghi* i numeri, e la più semplice
+che si possa immaginare è azzerare i valori negativi e lasciar passare i
+positivi (i modelli linguistici ne usano per lo più una versione smussata,
+senza lo spigolo in zero). È la non linearità della {doc}`sezione sulle
+funzioni di attivazione </RetiNeurali/funzioni-attivazione>`, ed è
 la ragione per cui la profondità aggiunge davvero qualcosa.
 
 Due accorgimenti rendono la pila addestrabile. Il primo è che ogni strato non
@@ -745,7 +762,11 @@ oltre all'aggregazione contestuale.
 **Non linearità.** Fra un'aggregazione e l'altra si applica a ogni posizione,
 indipendentemente, una trasformazione del tipo $\mathbf{W}_2\,\phi(\mathbf{W}_1
 \mathbf{h}_i + \mathbf{b}_1) + \mathbf{b}_2$ con $\phi$ non lineare
-elemento per elemento, tipicamente $\phi(x) = \max(0, x)$. Senza $\phi$ la
+elemento per elemento: $\phi(x)=\max(0,x)$ nell'articolo del 2017, la GELU
+$\phi(x)=x\,\Phi(x)$ (con $\Phi$ la funzione di ripartizione della normale
+standard) in GPT-2 e GPT-3 {cite}`hendrycks2016gaussian`, e in molti modelli
+recenti una variante *gated*, con una terza matrice e un prodotto elemento per
+elemento, che cambia il conteggio dei parametri. Senza $\phi$ la
 composizione di $L$ mappe lineari sarebbe una mappa lineare: la profondità non
 aggiungerebbe potenza espressiva.
 
@@ -824,7 +845,12 @@ l'ordine va aggiunto da fuori.
 Un secondo intervento riguarda invece la direzione del tempo. Poiché il compito
 è prevedere la parola successiva, la media pesata non può prendere tutte le
 posizioni ma solo quelle già viste, da lì all'indietro: altrimenti il modello,
-per indovinare la parola dopo, se la leggerebbe.
+per indovinare la parola dopo, se la leggerebbe. Questa maschera, a differenza
+dei punteggi, l'ordine lo conosce: la posizione $i$ fa la media su $i$
+vettori, la prima su uno solo. Per questo un modello causale addestrato senza
+nessuna codifica di posizione riesce comunque a ricavarne una
+{cite}`haviv2022transformer`, e la codifica esplicita resta il modo diretto di
+dargliela.
 
 ## Dall'ultimo vettore alla parola dopo
 
@@ -953,8 +979,8 @@ media di zero: gli errori dei singoli passi si compensano invece di sommarsi in
 una direzione. I parametri si aggiornano nella direzione che migliora
 l'obiettivo. Che il gradiente sia calcolabile attraverso decine di strati viene
 dalla regola della catena: il modello, dagli embedding fino alle probabilità, è
-una composizione di funzioni differenziabili, e il capitolo su PyTorch mostra
-la macchina che lo fa in automatico.
+una composizione di funzioni differenziabili, e la {doc}`sezione su tensori e
+autograd </PyTorch/tensori>` mostra la macchina che lo fa in automatico.
 
 `````
 
@@ -1067,10 +1093,12 @@ dell'oggetto.
 Il modello impara da testo e basta: non ha modo di verificare un'affermazione
 contro il mondo, e ottimizza la verosimiglianza, non la verità. Genera
 volentieri frasi plausibili e false, perché plausibile è esattamente ciò che
-l'obiettivo premia. Non esegue deduzioni: riproduce schemi di ragionamento
-ben rappresentati nei dati, il che è utilissimo e non è la stessa cosa,
-come si vede cambiando i nomi delle variabili in un problema di logica o
-immergendolo in una storia insolita. E vede solo dentro una finestra di
+l'obiettivo premia. Niente, nella forma dell'obiettivo, lo obbliga a
+eseguire deduzioni: premia chi riproduce bene gli schemi di ragionamento
+rappresentati nei dati, il che è utilissimo e non è detto che sia la stessa
+cosa. E infatti le prestazioni su problemi di matematica e di logica calano, a
+volte di molto, quando se ne cambiano i nomi e i numeri o li si immerge in una
+storia insolita {cite}`mirzadeh2025gsmsymbolic`. E vede solo dentro una finestra di
 contesto fissata a progetto: quello che sta prima, semplicemente, non c'è.
 
 Resta la domanda aperta, che è anche la più interessante. Nessuna di quelle

@@ -209,8 +209,12 @@ di sparsità, quantizzazione dei codici (il {doc}`VQ-VAE dei codec neurali
 o decorrelazione alle rappresentazioni. L'intuizione è che un modello con pochi
 gradi di libertà non *può* dare energia bassa a tutto, e allora non serve alcun
 controesempio a impedirglielo. È la famiglia su cui LeCun scommette per i world
-model, ed è il motivo per cui, nel capitolo sui *world model*, la JEPA si
-difende dal collasso senza mai fabbricare un solo controesempio.
+model. Lì la cornice si allarga con una variabile latente $\mathbf{z}$ che
+assorbe la parte imprevedibile della risposta, e l'energia della coppia
+diventa $\min_{\mathbf{z}} E_\theta(\mathbf{x}, y, \mathbf{z})$: limitare il
+contenuto informativo di $\mathbf{z}$ è a sua volta un vincolo di volume. La
+{doc}`sezione sulla JEPA </WorldModels/jepa>` ne scrive l'energia e mostra come
+si difende dal collasso senza fabbricare un solo controesempio.
 
 `````
 

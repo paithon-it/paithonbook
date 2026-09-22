@@ -37,8 +37,9 @@ fu del 15%. È il numero meno spettacolare, ed è quello che dice di più.
 
 Il secondo è in medicina. Una rete neurale addestrata su più di novantamila
 tracciati, raccolti da oltre cinquantamila pazienti, riconosce le aritmie
-cardiache dal solo elettrocardiogramma con un'accuratezza confrontabile con
-quella di un cardiologo {cite}`hannun2019cardiologist`. Il confronto si fa
+cardiache da un elettrocardiogramma a una sola derivazione, registrato da un
+monitor portatile, e sul punteggio F1 fa meglio del cardiologo medio
+($0{,}837$ contro $0{,}780$) {cite}`hannun2019cardiologist`. Il confronto si fa
 così: un gruppo di cardiologi discute i tracciati finché non converge su una
 risposta, e quella diventa la risposta giusta; poi gli stessi tracciati vanno
 ad altri cardiologi, che li leggono da soli, e si guarda quanto spesso ci
@@ -140,8 +141,9 @@ all'AI responsabile.
 ```{admonition} Da ricordare
 :class: important
 - La cornice che regge buona parte del libro: si parametrizza il comportamento
-  con $\theta$, se ne misura la qualità con $J(\theta) = \mathbb{E}[U \mid
-  \theta]$ e si cerca $\theta^\star \in \arg\max_\theta J(\theta)$, cioè
+  con $\theta$, se ne misura la qualità con
+  $J(\theta) = \mathbb{E}_{\xi \sim p_\theta}[U(\theta, \xi)]$ e si cerca
+  $\theta^\star \in \arg\max_\theta J(\theta)$, cioè
   $\arg\min_\theta \mathcal{L}$ con $\mathcal{L} = -J$.
 - Quell'attesa non è calcolabile, perché è presa sui casi futuri: in
   pratica si ottimizza la media su un campione già raccolto. La distanza fra le

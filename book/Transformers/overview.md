@@ -68,16 +68,21 @@ posizioni è un prodotto tra matrici, parallelizzabile per costruzione. È
 questa seconda proprietà, più ancora della prima, ad aver cambiato la scala
 dei modelli: addestrare su corpora enormi è diventato una questione di
 hardware, non di architettura. Il prezzo è un costo quadratico nella lunghezza
-della sequenza, di cui parleremo nella sezione sui confronti.
+della sequenza, che il {doc}`confronto coi modelli precedenti <confronti>`
+mette sul tavolo.
 `````
 
 ## Dal meccanismo ai modelli
 
-I Transformer sono importanti, ma non sono magia: sotto il cofano ci sono
+I Transformer sono importanti, ma non sono magia: dentro ci sono
 tabelle di numeri e operazioni che si fanno con carta e penna, montate in un
-ordine particolarmente felice. Chi ha letto i {doc}`capitoli sulla matematica
-</Matematica/overview>` e sulle reti neurali ritroverà i pezzi con i loro nomi:
-matrici, prodotti scalari, softmax.
+ordine particolarmente felice. Chi ha letto la {doc}`matematica di un modello
+linguistico
+</Matematica/matematica-llm>` ritroverà lì lo stesso meccanismo per intero, con
+altri nomi (le tre proiezioni si chiamavano $\mathbf{W}^A$, $\mathbf{W}^B$,
+$\mathbf{W}^C$): qui lo si rivede con il vocabolario standard, query, key e
+value, e con i pezzi che là restavano fuori, le maschere e l'architettura che
+li monta.
 
 Il capitolo segue la scia dell'articolo del 2017. Si comincia dal meccanismo
 di attenzione: cos'è, come si calcola, perché funziona. Poi si monta
@@ -132,8 +137,10 @@ sguardo alle tendenze, con i limiti, che non mancano.
 - Il Transformer (Vaswani et al., 2017, *Attention Is All You Need*)
   sostituisce ricorrenza e convoluzione con la self-attention. La Tabella 1
   dell'articolo mette in fila il guadagno: il cammino massimo fra due posizioni
-  qualsiasi scende da $O(n)$ di uno strato ricorrente a $O(1)$, ed è questa la
-  ragione per cui le dipendenze lunghe si imparano meglio.
+  qualsiasi scende da $O(n)$ di uno strato ricorrente a $O(1)$, e secondo gli
+  autori cammini più corti rendono più facili da imparare le dipendenze
+  lunghe. È un'ipotesi e non una garanzia: sull'accordo fra soggetto e verbo
+  a distanza le LSTM hanno fatto meglio {cite}`tran2018importance`.
 - Cade con la ricorrenza anche il vincolo sequenziale: le operazioni da fare
   una dopo l'altra passano da $O(n)$ a $O(1)$, quindi l'intera sequenza si
   elabora in parallelo e l'addestramento sfrutta l'hardware a molti core.

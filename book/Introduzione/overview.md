@@ -132,7 +132,7 @@ continuo, ed è la matematica del termostato e del pilota automatico; la
 **teoria dei giochi** come decidere quando dall'altra parte c'è qualcuno che
 decide a sua volta.
 
-Guardati da vicino, i tre facevano in fondo la stessa cosa. Ognuno inventava un
+Visti da vicino, i tre facevano in fondo la stessa cosa. Ognuno inventava un
 punteggio che dice come sta andando (quanto costa il giro dei camion, di quanto
 la temperatura si scosta da quella voluta, quanto si guadagna in una partita).
 Il costo e lo scarto si vogliono piccoli, il guadagno grande, ma il mestiere è
@@ -295,9 +295,12 @@ cento cifre, costa molto più che su numeri da una cifra.
 `````
 
 `````{tab} Superiore
-L'algoritmo sfrutta l'identità
-$\mathrm{MCD}(a, b) = \mathrm{MCD}(b,\, a \bmod b)$, con caso base
-$\mathrm{MCD}(a, 0) = a$, dove $a \bmod b$ è il resto della divisione intera.
+Per interi $a \ge 0$ e $b > 0$ l'algoritmo sfrutta l'identità
+$\mathrm{MCD}(a, b) = \mathrm{MCD}(b,\, a \bmod b)$, dove $a \bmod b$ è il
+resto della divisione intera, $0 \le a \bmod b < b$; il caso base è
+$\mathrm{MCD}(a, 0) = a$ per $a > 0$, e $\mathrm{MCD}(0, 0)$ si pone uguale a
+$0$ per convenzione. Poiché il secondo argomento scende strettamente a ogni
+passo restando non negativo, il ciclo termina.
 La correttezza segue dal fatto che ogni divisore comune di $a$ e $b$ divide
 anche $a \bmod b = a - \lfloor a/b \rfloor\, b$ e che, viceversa, ogni
 divisore comune di $b$ e $a \bmod b$ divide
@@ -306,8 +309,10 @@ coincidono, quindi il massimo è invariante a ogni passo. Per $a=12$, $b=8$:
 $(12, 8) \to (8, 4) \to (4, 0) \Rightarrow 4$. Il numero di passi è
 $O(\log \min(a, b))$: il caso peggiore si ha con due numeri di Fibonacci
 consecutivi (teorema di Lamé, 1844). È per questa efficienza (non solo per
-l'età) che l'idea di Euclide è ancora oggi nelle librerie standard di ogni
-linguaggio. Attenzione però a leggere bene la stima: quelli sono *passi*, e il
+l'età) che l'idea di Euclide è ancora oggi nelle librerie standard di quasi
+tutti i linguaggi (`math.gcd` in Python, `std::gcd` in C++ dal 2017; la
+libreria standard del C non ne ha una). Attenzione però a leggere bene la stima:
+quelli sono *passi*, e il
 logaritmo è preso sul *valore* di $\min(a, b)$, quindi su due numeri di $n$
 cifre i passi sono $O(n)$, non $O(\log n)$. Su interi lunghi ogni passo costa
 una divisione, il cui prezzo è proporzionale alle cifre del quoziente
@@ -480,14 +485,18 @@ Formalmente, si descrive il comportamento del sistema con dei parametri
 $\theta$ e se ne misura la qualità con un'utilità attesa
 
 $$
-J(\theta) = \mathbb{E}\!\left[\, U \mid \theta \,\right],
+J(\theta) = \mathbb{E}_{\xi \sim p_\theta}\!\left[\, U(\theta, \xi) \,\right],
 $$
 
-dove $U$ è il punteggio ottenuto in una singola situazione e la media
-$\mathbb{E}$ è presa su ciò che il sistema incontrerà: i dati che vedrà, o
-l'ambiente in cui agirà. Massimizzare $J$ equivale a minimizzare la perdita
-(*loss*) $\mathcal{L}(\theta) = -J(\theta)$ e, assumendo che un ottimo
-esista, si cerca
+dove $\xi$ è una situazione (un esempio, un episodio), $U(\theta, \xi)$ il
+punteggio che il sistema vi ottiene e $p_\theta$ la distribuzione delle
+situazioni che incontrerà: i dati che vedrà, o l'ambiente in cui agirà.
+Nell'apprendimento supervisionato $p_\theta = p$ non dipende dai parametri, e
+$\theta$ agisce solo attraverso $U$; nel reinforcement learning le azioni
+decidono quali stati si visitano, $p_\theta$ dipende da $\theta$, ed è questa
+dipendenza a rendere il gradiente di $J$ più difficile da stimare. Massimizzare
+$J$ equivale a minimizzare la perdita (*loss*) $\mathcal{L}(\theta) =
+-J(\theta)$ e, assumendo che un ottimo esista, si cerca
 
 $$
 \theta^\star \in \arg\max_{\theta} J(\theta) = \arg\min_{\theta} \mathcal{L}(\theta),
@@ -497,11 +506,17 @@ dove $\theta^\star$ è una configurazione ottima dei parametri.
 
 Un avvertimento che vale per tutto il seguito, ed è la differenza fra
 *ottimizzare* e *imparare*: quell'attesa non si sa calcolare, perché la
-distribuzione su cui è presa è quella dei casi futuri, l'unica a cui in fase
-di addestramento non si ha accesso. In pratica si massimizza la sua media su
-un campione già raccolto e si spera che le due quantità non siano troppo
-distanti. Misurare quella distanza, e sapere quando fidarsene, è il mestiere
-del {doc}`capitolo sul machine learning </MachineLearning/overview>`.
+distribuzione su cui è presa è quella dei casi futuri, l'unica a cui in fase di
+addestramento non si ha accesso. In pratica si massimizza la media su $n$
+situazioni già raccolte, $\hat{J}_n(\theta) = \frac{1}{n}\sum_{i=1}^{n}
+U(\theta, \xi_i)$, con le $\xi_i$ estratte in modo indipendente dalla stessa
+$p$ (il caso supervisionato), e si spera che il $\hat{\theta}$ che la
+massimizza valga molto anche per $J$. Per un $\theta$ fissato la legge dei
+grandi numeri garantisce $\hat{J}_n(\theta) \to J(\theta)$; per $\hat{\theta}$
+no, perché è stato scelto guardando proprio quei dati, e in media
+$\hat{J}_n(\hat{\theta})$ sovrastima $J(\hat{\theta})$. Misurare quella
+distanza, e sapere quando fidarsene, è il mestiere del {doc}`capitolo sul
+machine learning </MachineLearning/overview>`.
 
 È la cornice dell’**agente razionale** {cite}`russell2020artificial`: un
 sistema che sceglie le azioni che massimizzano l'utilità attesa, date le

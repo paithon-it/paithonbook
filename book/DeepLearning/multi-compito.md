@@ -248,10 +248,23 @@ Il rovescio ha un nome, **trasferimento negativo** (*negative transfer*), e una
 diagnosi meccanica proposta da Yu e colleghi: i **gradienti in conflitto**. I
 gradienti che due compiti imprimono ai parametri condivisi possono avere
 prodotto scalare negativo, e allora ogni passo che aiuta l'uno danneggia
-l'altro. **PCGrad** {cite}`yu2020gradient` interviene esattamente lì: quando
-$\nabla\mathcal{L}_i \cdot \nabla\mathcal{L}_j < 0$, proietta ciascun gradiente
-sul piano ortogonale all'altro prima di sommarli, rimuovendo la sola componente
-distruttiva e lasciando intatto il resto.
+l'altro. **PCGrad** {cite}`yu2020gradient` interviene esattamente lì. Chiamati
+$\mathbf{g}_i = \nabla_\phi \mathcal{L}_i$ i gradienti dei compiti rispetto ai
+soli parametri condivisi, quando $\mathbf{g}_i^\top \mathbf{g}_j < 0$ si
+sostituisce $\mathbf{g}_i$ con la sua proiezione sul piano normale a
+$\mathbf{g}_j$,
+
+$$
+\mathbf{g}_i \leftarrow \mathbf{g}_i - \frac{\mathbf{g}_i^\top \mathbf{g}_j}{\lVert \mathbf{g}_j \rVert^2}\,\mathbf{g}_j ,
+$$
+
+e simmetricamente $\mathbf{g}_j$ contro il $\mathbf{g}_i$ originale, prima di
+sommarli: si toglie la sola componente distruttiva e si lascia intatto il
+resto. Con più di due compiti ogni gradiente si proietta contro gli altri uno
+alla volta, in ordine casuale, perché il risultato dipende dall'ordine. Il
+prezzo è nel conto: invece di un solo passaggio all'indietro sulla somma delle
+perdite ne servono $T$, e in memoria $T$ gradienti della dimensione di
+$\phi$.
 
 Il beneficio pratico di questa famiglia di metodi è però contestato:
 confronti su larga scala trovano che la somma pesata semplice, purché
@@ -422,13 +435,17 @@ pesato $\lambda = 0{,}1$ e $\lambda = 0{,}01$: il danno scende a $+7\%$, e poi a
 $+1\%$. Il trasferimento negativo, insomma, è una proprietà della coppia e del
 peso che le si dà, non della sola coppia di compiti.
 
-E per simmetria va detto anche del primo numero, il migliore dei tre. Il compito
-«parente» è imparentato quanto è possibile esserlo: il suo bersaglio si ricava
-dalla stessa quantità nascosta del compito principale con un conto fisso (il
-quadrato), e nient'altro. Non ha una sola difficoltà propria: chi ha imparato
-l'uno ha già in mano tutto quello che serve all'altro. Il $-65\%$ è dunque
-vicino al tetto di quello che un compito in più può fare, non a un caso tipico:
-due compiti davvero distinti condividono una parte della struttura, non tutta.
+E per simmetria va detto anche del primo numero, il migliore dei tre. Il
+compito «parente» è imparentato quanto è possibile esserlo: il suo bersaglio si
+ricava dalla stessa quantità nascosta del compito principale con un conto fisso
+(il quadrato), e nient'altro. Non ha una sola difficoltà propria: chi ha
+imparato il principale ha già in mano tutto quello che serve al «parente». Il
+contrario vale quasi, e il quasi è il segno: $\tanh(\mathbf{x}^\top\mathbf{w})$
+e il suo opposto hanno lo stesso quadrato, quindi quello che il tronco impara
+dal «parente» è la direzione $\mathbf{w}$ da guardare, e il segno resta da
+imparare sui quaranta esempi etichettati. Il $-65\%$ è dunque vicino al tetto
+di quello che un compito in più può fare, non a un caso tipico: due compiti
+davvero distinti condividono una parte della struttura, non tutta.
 
 Che compiti in competizione peggiorino il risultato è comunque un fatto
 documentato su scala ben più grande di questa {cite}`standley2020tasks`, e

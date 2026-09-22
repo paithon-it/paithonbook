@@ -1,6 +1,7 @@
 # Le architetture lineari: RetNet, RWKV, xLSTM
 
-Le due sezioni precedenti hanno smontato i *meccanismi*: il modo di riassumere
+Il trucco del kernel, i gate e la delta rule hanno smontato i *meccanismi*: il
+modo di riassumere
 che trasforma l'attenzione in una memoria di taglia fissa, gli interruttori che
 la fanno sbiadire, la regola che corregge una voce invece di sommarci sopra.
 Erano pezzi sciolti su un tavolo. Adesso li vediamo montati in macchine intere:
@@ -167,10 +168,27 @@ dove $\gamma$ è il fattore di decadimento e $\mathbf{v}_t \mathbf{k}_t^\top$ è
 scritta in memoria. Ogni token costa un aggiornamento a memoria fissa: niente
 cache che cresce.
 
-**Chunkwise** (contesto lungo). Un ibrido: si spezza la sequenza in blocchi,
-dentro ogni blocco si usa la forma parallela, tra un blocco e l'altro quella
-ricorrente. Il costo diventa lineare in $n$, tenendo la parallelizzazione dentro
-i blocchi.
+**Chunkwise** (contesto lungo). Si spezza la sequenza in blocchi di $B$ token;
+per il blocco $c$, con $\mathbf{Q}_c, \mathbf{K}_c, \mathbf{V}_c \in
+\mathbb{R}^{B\times d}$ le sue righe e $\mathbf{S}_{c-1}$ lo stato alla fine del
+blocco precedente,
+
+$$
+\mathbf{O}_c = \big(\mathbf{Q}_c \mathbf{K}_c^\top \odot \mathbf{D}\big)\mathbf{V}_c + \boldsymbol{\Xi}\,\mathbf{Q}_c\,\mathbf{S}_{c-1}^\top,
+\qquad
+\mathbf{S}_c = \gamma^{B}\,\mathbf{S}_{c-1} + \mathbf{V}_c^\top \mathbf{Z}\,\mathbf{K}_c ,
+$$
+
+dove $\mathbf{D}$ è la maschera con decadimento della forma parallela ristretta
+al blocco ($B \times B$), $\boldsymbol{\Xi} = \operatorname{Diag}(\gamma^{1},
+\dots, \gamma^{B})$ sbiadisce lo stato ereditato secondo la posizione nel blocco
+e $\mathbf{Z} = \operatorname{Diag}(\gamma^{B-1}, \dots, \gamma^{0})$ sbiadisce
+ogni scrittura secondo quanto manca alla fine del blocco. Il primo addendo è la
+forma parallela dentro il blocco, il secondo la lettura dello stato ereditato,
+la seconda equazione la ricorrenza fra blocchi. Un blocco costa $O(B^2 d)$ per
+la parte parallela e $O(B d^2)$ per lettura e aggiornamento dello stato, in
+tutto $O(nBd + nd^2)$: lineare in $n$, con ogni conto scritto come prodotto di
+matrici. $B = 1$ ridà la ricorrenza pura, $B = n$ la forma parallela.
 
 Un dettaglio dà a RetNet la sua firma: la retention è **multi-scala**. Ogni
 testa usa un $\gamma$ diverso (chi vicino a $1$ ricorda a lungo, chi più
@@ -322,10 +340,14 @@ per canale della GLA e ci aggiunge la correzione, invece di scambiare l'uno con
 l'altra, ed è la differenza che gli autori sottolineano contro i lavori
 precedenti.
 
-La capacità nuova, però, non viene da lì. Viene dal fattore di rango uno, che
-non è più la riflessione di Householder di DeltaNet, i cui autovalori valgono
-tutti $1$ tranne uno: è una sua approssimazione riscalata, i cui autovalori
-possono cadere in tutto $[-1, 1]$, negativi compresi, ed è quel segno meno a
+La capacità nuova, però, non viene da lì. Viene dal fattore di rango uno. In
+DeltaNet $\mathbf{I} - \beta_t \mathbf{k}_t\mathbf{k}_t^\top$ è una Householder
+*generalizzata* con $\beta_t \in (0,1)$: un autovalore vale $1-\beta_t \in
+(0,1)$, gli altri $1$, e uno negativo non compare mai (la riflessione vera, con
+autovalore $-1$, si avrebbe solo a $\beta_t = 2$). In RWKV-7 il termine di
+rimozione è disaccoppiato e riscalato, e i suoi autovalori possono cadere in
+$[-1, 1]$, negativi compresi (nei modelli preaddestrati gli autori ne ammettono
+solo una parte, per stabilità dell'addestramento), ed è quel segno meno a
 permettere allo stato di *tenere il conto* invece di limitarsi a sbiadire. È
 questo che dà a RWKV-7 una capacità di *state tracking* che le versioni
 precedenti non avevano: gli autori mostrano che riconosce tutti i linguaggi
@@ -577,7 +599,8 @@ query. Nella tassonomia dei paper è la differenza fra stato *piccolo* e stato
 
 `````
 
-Gli State Space Model (S4, Mamba e i loro discendenti) arrivano esattamente
+Gli {doc}`State Space Model </StateSpaceModel/overview>` (S4, Mamba e i loro
+discendenti) arrivano esattamente
 allo stesso posto, ma da tutt'altra strada: non da un'attenzione da rendere
 economica, bensì dalla matematica con cui si descrive un sistema che evolve nel
 tempo (un pendolo, un circuito), presa nella sua forma continua e poi ridotta a

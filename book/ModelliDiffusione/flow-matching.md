@@ -111,8 +111,10 @@ viaggio verso infiniti rumori diversi, ciascuna con la sua velocità, e quella
 giusta è la loro media. Calcolarla vorrebbe dire fare un integrale su tutto
 l'archivio, per ogni punto e per ogni istante.
 
-Il trucco che sblocca la situazione è lo stesso con cui la rete ha imparato il
-verso della salita, ed è uno dei più usati in tutto il machine learning. Invece
+Il trucco che sblocca la situazione reggeva già, senza dirlo, il gioco del
+disturbo: la rete di DDPM non vede mai il verso della salita, vede soltanto il
+disturbo di una carta per volta, eppure è il verso della salita che impara. È
+uno dei trucchi più usati in tutto il machine learning. Invece
 di chiedere alla rete la velocità media su tutti i viaggi che passano di
 lì, le si chiede la velocità di un viaggio specifico: si prende una
 fotografia, si sorteggia un rumore di arrivo, si decide che quei due sono gli
@@ -207,8 +209,12 @@ C'è però un'insidia da capire bene, perché il metodo si spiega spesso male.
 Ogni singolo viaggio è una retta; il campo dei venti che ne risulta no. In
 un punto in cui passano molti viaggi diretti in posti diversi, la freccia è la
 loro media, e seguendo le medie non si percorre nessuna delle rette: si fa una
-curva. È come una folla in cui ciascuno cammina dritto verso casa propria: il
-flusso complessivo, visto dall'alto, gira.
+curva. È come un incrocio affollato in cui ciascuno, invece di seguire la
+propria
+strada, segue la media delle direzioni di chi gli sta intorno: chi è diretto a
+sinistra e chi a destra, mediati, puntano dritti in mezzo, dove non abita
+nessuno, e solo avvicinandosi a destinazione le direzioni si separano. La
+strada che ne esce è una curva.
 
 Il rimedio esiste e si chiama **raddrizzamento**. Si fa girare il modello una
 volta, e si guarda dove ciascun rumore di partenza va a finire: si ottengono
@@ -243,7 +249,14 @@ varianti:
 
 Nel caso rettificato l'interpolazione è
 $\mathbf{x}_t = (1-t)\mathbf{x}_0 + t\,\boldsymbol{\epsilon}$ e la velocità
-condizionata è costante nel tempo, il che rende l'obiettivo
+condizionata è costante nel tempo. Negli articoli originali il tempo corre al
+contrario: Lipman e colleghi e Liu e colleghi mettono il rumore a $t = 0$ e i
+dati a $t = 1$, e la velocità diventa dati meno rumore; il verso usato qui è
+quello della diffusione e di Stable Diffusion 3 {cite}`esser2024scaling`. La
+stessa idea compare nello stesso anno come *interpolante stocastico*
+{cite}`albergo2023building`, e le tre formulazioni coincidono sul percorso
+lineare (in Lipman e colleghi, nel limite di varianza minima nulla). La
+velocità costante rende l'obiettivo
 
 $$
 \mathcal{L} = \mathbb{E}_{t,\mathbf{x}_0,\boldsymbol{\epsilon}}
@@ -347,7 +360,8 @@ La prima è il risultato atteso: con il percorso rettificato otto passi
 bastano ad arrivare più vicino di quanto il percorso della diffusione arrivi
 con duecentocinquantasei. Sull'ultima riga, però, il confronto va letto con una
 riserva: le due colonne non hanno lo stesso pavimento. A un millesimo dalla
-fine il percorso rettificato ha $\sigma_t=0{,}001$ e quello della diffusione
+fine, l'ultimo istante a cui la prova arriva, sul percorso rettificato resta
+un velo di disturbo largo 0,001 e su quello della diffusione uno largo
 $0{,}0105$, dieci volte tanto, e quei soli residui valgono $0{,}0016$ e
 $0{,}0084$. Dei $0{,}0104$ della riga a duecentocinquantasei passi, quindi,
 quasi tutto è residuo e non errore di integrazione: il divario vero è quello
@@ -487,7 +501,8 @@ nomi diversi.
 - Un flusso è generato da $\dot\Phi_t = \mathbf{u}_t(\Phi_t)$, e la coppia
   $(p_t,\mathbf{u}_t)$ deve soddisfare l’equazione di continuità
   $\partial_t p_t + \nabla\!\cdot\!(p_t\mathbf{u}_t)=0$. Il campo compatibile
-  con un dato $p_t$ non è unico, e la PF-ODE è un'altra sua soluzione.
+    con un dato $p_t$ non è unico; sui percorsi gaussiani quello che il flow
+    matching sceglie coincide con la PF-ODE.
 - $\mathcal{L}_{\text{FM}}$ è intrattabile; $\mathcal{L}_{\text{CFM}}$, che
   regredisce sulla velocità condizionata, ha lo stesso gradiente e lo
   stesso minimo, che è $\mathbb{E}[\mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\mid
@@ -510,6 +525,11 @@ nomi diversi.
 
 Con il flow matching il percorso è diventato una scelta di progetto, e la
 scelta migliore accorcia il viaggio. Resta il fatto che quel viaggio va
-comunque percorso, e che percorrerlo significa risolvere numericamente
-un'equazione differenziale: è un problema con una letteratura di due secoli
-alle spalle, e conviene usarla.
+comunque percorso, e che percorrerlo significa rileggere, a ogni passo, tutti i
+numeri
+dell'immagine: centinaia di migliaia. Il primo modo di renderlo leggero non
+tocca la strada ma il viaggiatore, ed è quello che ha portato la diffusione sui
+computer di casa: far viaggiare una versione compressa dell'immagine. Ad
+accorciare la strada penseranno poi i {doc}`campionatori veloci
+</ModelliDiffusione/campionatori-veloci>`, con due secoli di analisi numerica
+alle spalle.

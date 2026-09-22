@@ -99,12 +99,13 @@ imporre quel divieto dentro una rete che di suo guarda in tutte le direzioni.
 Il costo vero però arriva quando si genera: un pezzo alla volta, e i pezzi di
 un'immagine sono decine di migliaia.
 
-Un flusso paga altrove. Perché la trasformazione si possa invertire, ogni
-strato dev'essere invertibile, e questo esclude quasi tutto quello che il libro
-ha usato finora (non si può schiacciare, non si può buttare via niente, non si
-può nemmeno cambiare il numero di coordinate). Un flusso non comprime: entra
-con un milione di numeri ed esce con un milione di numeri. Ed è la ragione
-strutturale per cui ha perso.
+Un flusso paga altrove. Perché la trasformazione si possa invertire, ogni strato
+dev'essere invertibile, e questo esclude quasi tutto quello che il libro ha
+usato finora (non si può schiacciare, non si può buttare via niente, non si può
+nemmeno cambiare il numero di coordinate). Un flusso non comprime: entra con un
+milione di numeri ed esce con un milione di numeri, e per lavorare su qualcosa
+di più piccolo deve farsi mettere davanti un compressore, come la diffusione
+latente, rinunciando alla probabilità esatta dell'immagine.
 
 `````{tab} Elementare
 
@@ -151,10 +152,12 @@ strutturale per cui ha perso.
   \mathbf{x}_{<i})$, ogni fattore una softmax normalizzata. Valutazione in un
   passaggio (*teacher forcing*), campionamento in $D$ passaggi sequenziali,
   con $D$ il numero di valori che compongono il dato.
-- Flussi: $\log p(\mathbf{x}) = \log p_Z(f(\mathbf{x})) + \log \lvert \det
-  \partial f / \partial \mathbf{x} \rvert$, con $f$ invertibile. Valutazione e
-  campionamento entrambi in un passaggio; in cambio $f$ è vincolata a essere
-  un diffeomorfismo, quindi a conservare la dimensione.
+-  Flussi:
+  $\log p(\mathbf{x}) = \log p_Z(f(\mathbf{x})) + \log \lvert \det \partial f / \partial \mathbf{x} \rvert$,
+  con $f$ invertibile. Con gli strati di accoppiamento valutazione e
+  campionamento costano un passaggio ciascuno; nei flussi autoregressivi (MAF,
+  IAF) uno dei due ne costa $D$. In ogni caso $f$ è vincolata a essere un
+  diffeomorfismo, quindi a conservare la dimensione.
 - Nessuna delle due paga in fedeltà del modello di probabilità: pagano in
   vincoli architetturali. È il baratto che il capitolo mette a fuoco, e la
   ragione per cui la famiglia ha perso la corsa alle immagini senza perdere

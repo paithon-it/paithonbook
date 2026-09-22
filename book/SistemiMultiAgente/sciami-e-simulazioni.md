@@ -36,8 +36,9 @@ nata in un'università italiana, e il problema su cui viene provato è il
 **commesso viaggiatore**: date certe città e le distanze fra loro, trovare il
 giro più corto che le tocchi tutte una volta sola e torni al punto di partenza.
 È facile da enunciare e feroce da risolvere, perché i giri possibili crescono in
-modo mostruoso col numero di città, ed è per questo uno dei problemi più
-studiati che esistano.
+modo mostruoso col numero di città: con dieci città i giri diversi sono
+centottantunmilaquattrocentoquaranta, con venti diventano circa sessanta milioni
+di miliardi. È per questo uno dei problemi più studiati che esistano.
 
 Il meccanismo biologico è a una riga. Una formica che cammina deposita per
 terra una sostanza, il **feromone**; una formica che incontra una traccia già
@@ -238,8 +239,10 @@ $$
 \sum_{s=1}^{t} (1-\rho)^{\,t-s}\;\Delta\tau_{ij}(s),
 $$
 
-cioè una media mobile esponenziale della qualità recente di quell'arco, con
-i contributi vecchi pesati sempre meno; il primo addendo è la traccia iniziale,
+cioè una somma della qualità recente di quell'arco con pesi che decadono
+esponenzialmente (una media mobile esponenziale moltiplicata per $1/\rho$, che
+è la somma dei pesi: per questo il punto fisso vale $\Delta/\rho$ e non
+$\Delta$); il primo addendo è la traccia iniziale,
 una costantina positiva uguale su tutti gli archi, e si spegne da sé nei primi
 cicli. Due conseguenze quantitative. La prima:
 la traccia non diverge. Se un arco riceve un deposito costante $\Delta$ a ogni
@@ -373,6 +376,22 @@ l'algoritmo diventa inefficace nel trovare gli ottimi globali. È la stessa
 ragione dell'evaporazione delle formiche, in veste meccanica: un sistema che va
 solo dove è già andato bene smette di cercare.
 
+La stabilità ha una risposta chiusa (Clerc e Kennedy, 2002). Con
+$\varphi = c_1 + c_2 > 4$ e il fattore di costrizione
+
+$$
+\chi = \frac{2}{\bigl|\,2 - \varphi - \sqrt{\varphi^2 - 4\varphi}\,\bigr|},
+$$
+
+l'aggiornamento
+$\mathbf{v}_i \leftarrow \chi\,[\mathbf{v}_i + c_1\mathbf{r}_1 \odot
+(\mathbf{p}_i - \mathbf{x}_i) + c_2\mathbf{r}_2 \odot (\mathbf{g} -
+\mathbf{x}_i)]$
+tiene le traiettorie limitate e le fa convergere. Con $\varphi = 4{,}1$ si ha
+$\chi \approx 0{,}7298$, cioè $w \approx 0{,}73$ e
+$c_1 = c_2 = 2{,}05\,\chi \approx 1{,}50$; con $w = 1$ e senza costrizione le
+velocità crescono invece senza limite.
+
 `````
 
 ## Rimescolare invece di muoversi: gli algoritmi genetici
@@ -471,7 +490,8 @@ degli obiettivi in anticipo e rilanciare la ricerca per ogni compromesso.
 
 Lo zaino è il tipo di problema su cui il metodo
 solito, quello che cerca il punto più basso sentendo da che parte scende il
-terreno (la discesa del gradiente, di cui si parla fra due pagine), non ha
+terreno (la discesa del gradiente della {doc}`matematica
+</Matematica/analisi-ottimizzazione>`, con cui si addestrano le reti), non ha
 proprio dove appoggiarsi. Nel codice che segue i
 venti oggetti, con i loro pesi e i loro valori, sono sorteggiati una volta sola e
 poi restano quelli; e siccome sono soltanto venti possiamo permetterci il lusso
@@ -691,7 +711,9 @@ gruppo si limita a rifinire un valore già piccolissimo.
 Quanto costa? Ogni giro lo sciame misura la quota nei trenta punti in cui si
 trovano le sue particelle; i giri sono sessanta, più la misura iniziale, quindi
 in tutto milleottocentotrenta misure. In due dimensioni sono niente. In mille
-dimensioni sarebbero ancora milleottocentotrenta, e non basterebbero.
+dimensioni sarebbero ancora milleottocentotrenta, e non basterebbero: per
+capire da che parte si scende servirebbero almeno mille misure a ogni passo,
+cioè quasi tutto il bilancio speso per un passo solo.
 
 E il risultato non è garantito. Il programma qui sopra parte da posizioni
 sorteggiate, e ripetendolo con sorteggi diversi le cose vanno diversamente. Se
@@ -731,9 +753,11 @@ Ogni punto iniziale, insomma, è un biglietto della lotteria che vince otto volt
 su mille, e ogni prova ne compra trenta. Attenzione a non sommarli: trenta per
 otto farebbe ventiquattro su cento, ma una prova in cui due biglietti vincono
 resta una prova riuscita, e nel conto va contata una volta sola. La domanda
-giusta è al contrario: quante prove perdono tutti e trenta i biglietti? Il
-conto lo si fa una volta e dà poco più di una prova su cinque che va a segno,
-cioè sessantaquattro su trecento. Ne escono sessantasette.
+giusta è al contrario: quante prove perdono tutti e trenta i biglietti? Un
+biglietto perde novecentonovantadue volte su mille, e perché perdano tutti e
+trenta bisogna moltiplicare quel numero per sé stesso trenta volte: viene poco
+meno di ottanta su cento. Le prove che vanno a segno sono il resto, poco più di
+una su cinque, cioè sessantaquattro su trecento. Ne escono sessantasette.
 
 Conviene verificare che la storia sia davvero questa, e non un'altra che dà
 per caso lo stesso numero. Contiamo i sorteggi che avevano almeno un punto di
@@ -849,8 +873,10 @@ pochi che vanno messi nel contesto adesso?
 
 `````{tab} Elementare
 
-Tre criteri, e nessuno dei tre basta da solo. Quanto è recente il ricordo,
-quanto è importante, e quanto c'entra con quello che sto facendo. Chi
+Sono i tre voti del bibliotecario che, nel {doc}`capitolo sugli Agenti
+</Agenti/architetture-e-valutazione>`, pescava dal diario le pagine giuste:
+quanto è recente il ricordo, quanto è importante, e quanto c'entra con quello
+che sto facendo. Nessuno dei tre basta da solo. Chi
 guarda solo l'orologio si ricorda l'ultima cosa successa; chi guarda solo
 l'importanza si ripete addosso sempre lo stesso trauma; chi guarda solo
 l'attinenza pesca frasi che somigliano alla domanda ma sono di sei mesi fa.
@@ -947,6 +973,18 @@ recupero successivo, e sopra le prime riflessioni se ne formano altre. Ne esce
 un albero di astrazioni costruito dal basso, ed è anche il punto delicato
 dell'architettura, perché un'inferenza sbagliata in basso diventa una premessa
 a tutti i livelli sopra.
+
+Ciò che fa di Smallville un esperimento multi-agente, e non venticinque
+esperimenti su un agente, sono le tre misure di emergenza sociale del lavoro. La
+**diffusione dell'informazione**: quanti agenti conoscono un fatto seminato in
+uno solo (la festa passa da $1$ a $13$ agenti su $25$ in due giorni simulati,
+una candidatura da $1$ a $8$). La **formazione di relazioni**, sul grafo non
+orientato in cui un arco unisce due agenti che si conoscono a vicenda, con
+densità $\operatorname{dens}(G) = 2|E| / \bigl(|V|(|V|-1)\bigr)$, che sale da
+$0{,}167$ a $0{,}74$. Il **coordinamento**: dei dodici invitati alla festa se ne
+presentano cinque. Le prime due misure si leggono intervistando gli agenti, e
+quindi ereditano le loro allucinazioni (l’1,3% delle risposte sulle conoscenze
+reciproche era inventato).
 
 `````
 
@@ -1107,7 +1145,8 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
   costruito: la traccia registra il merito, non il traffico.
 - L’evaporazione è l'esplorazione. Con
   $\tau_{ij} \leftarrow (1-\rho)\tau_{ij} + \Delta\tau_{ij}$ la traccia è una
-  media mobile esponenziale con orizzonte $1/\rho$ cicli; senza evaporazione il
+  somma a pesi esponenzialmente decrescenti, con orizzonte $1/\rho$ cicli; senza
+  evaporazione il
   rinforzo positivo fossilizza la colonia sul primo cammino trovato per caso
   (comportamento di stagnazione).
 - La memoria del gruppo non sta negli individui, sta nell’ambiente: è la
@@ -1158,8 +1197,9 @@ ciascuno, ma che cosa può scrivere ciascuno, a chi, quando, e chi decide dopo.
 
 Chi progetta un sistema con più di una parte che parla ha una domanda da farsi
 prima di tutte le altre, e non riguarda soltanto gli agenti software: chi può
-scrivere a chi, quando, e chi decide dopo. Qui finisce il tratto del libro
-dedicato ai modelli linguistici e a chi li mette in squadra.
-«Audio oltre la voce» cambia materia e riparte da un segnale grezzo, l'onda che
+scrivere a chi, quando, e chi decide dopo. Con le squadre di agenti si chiude il
+tratto dedicato ai modelli
+linguistici. {doc}`Audio oltre la voce </Audio/overview>` cambia materia e
+riparte da un segnale grezzo, l'onda che
 esce da un microfono; gli attrezzi però restano, e il Transformer riappare
 presto, con al posto delle parole dei simboli che descrivono un suono.

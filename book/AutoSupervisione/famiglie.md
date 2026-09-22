@@ -13,7 +13,9 @@ e un altro, oppure la stessa scena con i colori spostati), e chiediamo al
 modello di dire che si somigliano. La risposta che vince sempre è dire che
 tutte le foto si somigliano, descrivendole tutte allo stesso identico modo.
 Punteggio pieno, niente da correggere, e un modello che non ha guardato niente.
-Quella risposta vuota si chiama collasso.
+Quella risposta vuota si chiama collasso, ed è il buttafuori pigro dei
+{doc}`modelli a energia </ModelliEnergia/energia-come-compatibilita>`, quello
+che dice sempre sì.
 
 Quindi la domanda vera non è «quale pretesto». È: che cosa impedisce la
 risposta vuota. Le quattro famiglie sono quattro risposte a questa domanda, e
@@ -23,7 +25,8 @@ messe in fila si tengono a mente molto meglio che come quattro elenchi di sigle.
 
 Al modello si dà una delle due viste. L'altra, il suo **gemello**, viene
 nascosta in mezzo a una folla di viste prese da foto tutte diverse, che
-chiameremo i **rivali**, e il compito è ritrovarla. Non si chiede soltanto di
+chiameremo i **rivali** (sono i controesempi del buttafuori, le coppie
+sbagliate da respingere), e il compito è ritrovarla. Non si chiede soltanto di
 avvicinarsi al gemello, quindi, ma anche di allontanarsi dai rivali, e la
 risposta vuota diventa impossibile per costruzione: se descrivo tutto allo
 stesso modo, non distinguo nessun rivale dal gemello e il punteggio crolla.
@@ -45,8 +48,12 @@ niente: sul testo esisteva già prima.
 Si tolgono i rivali e si mettono due reti che guardano la stessa scena da due
 punti diversi, chiedendo a una di indovinare quello che dice l'altra. Non c'è
 niente che allontani; a impedire il collasso è che le due reti non sono
-intercambiabili, una impara e l'altra insegue in ritardo, e una sola delle due
-ha un passaggio in più prima del confronto.
+intercambiabili: una sola riceve il gradiente, l'altra fa da bersaglio
+fermo. Come si rompa la simmetria cambia da metodo a metodo: in BYOL il
+bersaglio è una copia lenta, e solo il ramo che impara ha un passaggio in più
+prima del confronto; in SimSiam le due reti hanno gli stessi pesi e basta
+fermare il gradiente su un ramo; in DINO le architetture sono identiche e il
+lavoro lo fanno la centratura e l'affilatura dell'insegnante.
 
 È la famiglia della distillazione, perché una rete impara da quello che
 dice l'altra, e anche questa è già stata percorsa in «Imparare a vedere senza
@@ -88,10 +95,12 @@ Perché la scheda sia buona devono valere due regole, e chiedono cose diverse.
 
 La somiglianza: se compilo la scheda guardando due ritagli diversi della stessa
 foto, le due schede devono venire uguali. Prima di confrontarle, però, si guarda
-che cosa ogni casella ha scritto sulle altre fotografie, e una casella che
-scrive sempre lo stesso numero viene messa da parte: non ha detto niente. Due
-schede identiche perché tutte le caselle sono bloccate non si somigliano
-affatto, non hanno detto niente su cui somigliarsi.
+che cosa ogni casella ha scritto sulle altre fotografie. Se la casella 4
+scrive 7 per un gatto, 7 per una barca e 7 per una montagna, il fatto che
+scriva 7 anche sui due ritagli non prova niente: per la regola della
+somiglianza conta solo una casella che cambia da foto a foto, e cambia allo
+stesso modo sui due ritagli. Due schede identiche perché tutte le caselle sono
+bloccate, allora, per quella regola non si somigliano affatto.
 
 La varietà: le otto caselle devono dire otto cose diverse. Se la casella 3 dice
 sempre la stessa cosa della casella 5, ho una scheda da otto caselle che ne vale
@@ -160,18 +169,36 @@ pagherebbe zero. Non serve un argomento sulla dinamica dell'ottimizzazione:
 la penalità si legge sul valore della perdita, perché è scritta nell'obiettivo.
 
 **VICReg** {cite}`bardes2022vicreg` arriva alla stessa meta con tre termini
-espliciti, varianza, invarianza e covarianza, e la differenza pratica sta nella
-varianza: un termine che tiene la deviazione standard di ogni coordinata sopra
-una soglia, con una hinge che paga sotto la soglia e vale zero sopra,
-calcolato su ciascun ramo per conto suo. Gli autori lo scrivono come una critica
-alla seconda famiglia: il collasso, dicono,
-«è spesso evitato attraverso bias impliciti nell'architettura di apprendimento,
-che spesso mancano di una giustificazione o di un'interpretazione chiara», e
-VICReg «evita esplicitamente il problema del collasso» con un termine di
-regolarizzazione sulla varianza. Due conseguenze concrete: le due reti non hanno
-bisogno di condividere i pesi né di essere una la copia lenta dell'altra, e i
-due rami possono avere architetture diverse o perfino ingressi di natura
-diversa.
+espliciti. Con $\mathbf{z}_n$ le righe di $\mathbf{Z}$,
+$\mathbf{C}(\mathbf{Z}) = \frac{1}{N-1}\sum_n (\mathbf{z}_n -
+\bar{\mathbf{z}})(\mathbf{z}_n - \bar{\mathbf{z}})^\top$
+la covarianza *di un solo ramo* e $\mathbf{z}^{j}$ la colonna $j$,
+
+$$
+\mathcal{L} = \lambda_{\text{inv}} \frac{1}{N}\sum_{n}
+\big\lVert \mathbf{z}^A_n - \mathbf{z}^B_n \big\rVert^2
++ \lambda_{\text{var}} \big[v(\mathbf{Z}^A) + v(\mathbf{Z}^B)\big]
++ \lambda_{\text{cov}} \big[c(\mathbf{Z}^A) + c(\mathbf{Z}^B)\big],
+$$
+
+$$
+v(\mathbf{Z}) = \frac{1}{D}\sum_{j=1}^{D}
+\max\!\Big(0,\; \gamma - \sqrt{\operatorname{Var}(\mathbf{z}^{j}) + \epsilon}\Big),
+\qquad
+c(\mathbf{Z}) = \frac{1}{D}\sum_{i \neq j} C_{ij}(\mathbf{Z})^2,
+$$
+
+con soglia $\gamma = 1$ e pesi $25$, $25$, $1$ nel lavoro originale. Rispetto a
+Barlow Twins cambiano due cose: la varianza è una hinge che paga solo sotto
+soglia, e la decorrelazione si impone dentro ciascun ramo, senza standardizzare
+e senza incrociare i rami. Gli autori lo scrivono come una critica alla seconda
+famiglia: il collasso, dicono, «è spesso evitato attraverso bias impliciti
+nell'architettura di apprendimento, che spesso mancano di una giustificazione o
+di un'interpretazione chiara», e VICReg «evita esplicitamente il problema del
+collasso» con un termine di regolarizzazione sulla varianza. Due conseguenze
+concrete: le due reti non hanno bisogno di condividere i pesi né di essere una
+la copia lenta dell'altra, e i due rami possono avere architetture diverse o
+perfino ingressi di natura diversa.
 
 **SwAV** {cite}`caron2020swav` sta a cavallo fra questa famiglia e la prima. Non
 confronta le rappresentazioni a coppie: assegna ogni vista a un insieme di
@@ -352,11 +379,12 @@ dentro il compito.
 ## Un avvertimento sulle tassonomie
 
 Le famiglie si possono contare in più di un modo, e quale sia quello usato qui
-va detto. Il taglio è che cosa impedisce la risposta vuota, ed è la
-colonna di mezzo della tabella; ne escono quattro famiglie.
-La colonna di destra, «dove sta la difficoltà», è invece l'asse che usa
-{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
-e la coincidenza ha una ragione. In
+va detto. Il taglio è che cosa impedisce la risposta vuota, ed è la terza
+colonna della tabella, «che cosa impedisce la risposta vuota»; ne escono quattro
+famiglie. La colonna di destra, «dove sta la difficoltà», è invece l'asse che
+usa
+{doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`.
+In
 {doc}`Tre famiglie per imparare senza etichette </WorldModels/jepa>` si taglia
 invece secondo dove avviene la previsione, cioè se il modello prova a
 rifare il dato (i pixel, i token) oppure il suo riassunto: da lì escono tre
@@ -381,9 +409,9 @@ da due lati.
   metodi si distinguono per come lo impediscono, non per come si chiamano.
 - Respingere: si mettono in campo dei rivali, e descrivere tutto uguale fa
   perdere. Funziona, ma i rivali servono a migliaia e costano.
-- Rendere le due reti diverse: niente rivali, ma le due reti non sono
-  intercambiabili, una impara e l'altra la insegue in ritardo. Funziona, e la
-  spiegazione del perché è arrivata dopo il risultato.
+-  Rendere le due reti diverse: niente rivali, ma le due reti non sono
+  intercambiabili: una impara, l'altra fa da maestro che quel giro non si
+  corregge. Funziona, e la spiegazione del perché è arrivata dopo il risultato.
 - Vincolare le statistiche: si compila una scheda con otto caselle e si
   chiedono due cose insieme, la somiglianza e la varietà. La somiglianza vuole
   che due ritagli della stessa foto diano la stessa scheda; la varietà vuole che

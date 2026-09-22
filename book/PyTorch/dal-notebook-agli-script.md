@@ -527,3 +527,7 @@ esperimento smetta di essere un ricordo.
 - Non modularizzare troppo presto: la regola delle tre volte.
 ```
 `````
+
+La stessa disciplina serve a un compito diverso, rifare il lavoro di
+qualcun altro partendo da un articolo scientifico invece che da un proprio
+progetto: è il {doc}`metodo per replicare un paper <replicare-un-paper>`.

@@ -24,14 +24,14 @@ Box e Gwilym Jenkins destinato a diventare un classico dell'econometria (la
 statistica applicata ai fenomeni economici) e dell'ingegneria
 {cite}`box2015time`. La loro ricetta sta in tre mosse: identificare che forma
 ha la serie, stimare i numeri del modello, verificare che il modello non abbia
-lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare
-un valore con quelli che lo precedono, e cioè l’**autoregressione**, la faceva
-già George Udny Yule nel 1927, sulle macchie solari. È però la prima
-procedura che dica come scegliere il modello, invece di lasciare che se ne
-inventi uno diverso ogni volta. Mezzo secolo dopo, lo statistico greco Spyros
-Makridakis mette alla prova quei metodi su larga scala con le **competizioni
-M**, gare pubbliche di previsione su migliaia e poi su centomila serie reali
-{cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto
+lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare un
+valore con quelli che lo precedono, e cioè l’**autoregressione**, la faceva già
+George Udny Yule nel 1927, sulle macchie solari. È però la prima procedura che
+dica come scegliere il modello, invece di lasciare che se ne inventi uno diverso
+ogni volta. Dal 1982 lo statistico greco Spyros Makridakis mette alla prova quei
+metodi su larga scala con le **competizioni M**, gare pubbliche di previsione su
+un migliaio di serie reali nella prima edizione e su centomila nella quarta, del
+2018 {cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto
 morale: si prevede, sì, ma con umiltà. Nessun modello domina sempre, e
 dichiarare *quanto* siamo incerti conta quanto la previsione stessa.
 
@@ -163,13 +163,22 @@ $$
 
 dove $j$ è il passo corrente e va da $1$ a $h$. La ricorsiva è economica ma
 soffre di **error compounding**: l'errore al passo $j$ entra nell'input del
-passo $j+1$ e si propaga. Con un modello stimato, o non lineare, questo aggiunge
-una distorsione che la strategia diretta non ha, perché la media di una
-funzione non è la funzione della media ($\mathbb{E}[f(X)] \neq f(\mathbb{E}[X])$),
-e questo vale sia sullo stato, in una ricorsione non lineare, sia sui parametri
-stimati, dove $\mathbb{E}[\hat\phi^{\,h}] \neq \phi^h$: è la
-ragione per cui i modelli probabilistici che vedremo campionano invece di
-propagare la media.
+passo $j+1$ e si propaga. Su un modello lineare ben specificato questo non costa
+niente, perché la media condizionata di un AR si propaga per linearità e la
+ricorsione *è* la previsione ottima; il costo nasce in due punti da tenere
+distinti. Il primo è la non linearità: in una ricorsione
+$x_{t+1} = f(x_t) + \varepsilon_{t+1}$ reiniettare la previsione puntuale
+sbaglia la media, perché $\mathbb{E}[f(X)] \neq f(\mathbb{E}[X])$, ed è la
+ragione per cui i modelli probabilistici che vedremo campionano traiettorie
+invece di propagare la media. Il secondo è la specificazione: se il modello a un
+passo è sbagliato, lo sbaglio viene riapplicato $h$ volte, mentre la strategia
+diretta stima per ogni orizzonte la migliore proiezione di $x_{T+h}$ sul passato
+e resta robusta dove la ricorsiva si allontana. In cambio la diretta paga in
+varianza (un modello per orizzonte, nessun vincolo di coerenza fra orizzonti
+vicini) e non sfugge all'errore di stima: il coefficiente $\hat\phi_h$ di una
+regressione di $x_{t+h}$ su $x_t$ è distorto in campione finito come lo è
+$\hat\phi^{\,h}$, e nessun campionamento lo corregge. Sui modelli ben
+specificati tende a vincere la ricorsiva, su quelli approssimati la diretta.
 
 Questa distorsione va tenuta separata dalla ragione per cui l'incertezza cresce
 con l'orizzonte, che è un'altra e vale per tutte le strategie, diretta
@@ -271,16 +280,16 @@ fenomeno è tornato dov'era.
 Rimescoliamo adesso le date: teniamo gli stessi duecento numeri e li rimettiamo
 in fila a caso. Il coefficiente crolla a $0{,}14$. Non è esattamente zero, e non
 poteva esserlo: rimescolando duecento numeri qualche somiglianza per puro caso
-ci scappa sempre. Quanta, lo dice il rimescolamento rifatto duemila volte
-invece di una: il coefficiente oscilla di sette centesimi, che è uno diviso la
-radice del numero di punti. Ecco allora il metro per leggere qualunque
-coefficiente: sotto il doppio di quell'oscillazione, qui quattordici
-centesimi, un numero non si distingue dal caso, ed è la fascia che i programmi
-di statistica disegnano in grigio attorno allo zero. Il nostro $0{,}14$ cade
-esattamente lì sopra. Ma di quel $0{,}94$ non è rimasto niente.
-Gli stessi identici valori, in un altro ordine, non prevedono più niente:
-quello che rendeva prevedibile la serie non stava nei numeri, stava nel loro
-ordine.
+ci scappa sempre. Quanta, lo dice il rimescolamento rifatto duemila volte invece
+di una: il coefficiente oscilla di sette centesimi, che è uno diviso la radice
+del numero di punti. Ecco allora il metro per leggere qualunque coefficiente:
+sotto il doppio di quell'oscillazione, qui quattordici centesimi, un numero non
+si distingue dal caso, ed è la fascia che i programmi di statistica disegnano in
+grigio attorno allo zero. Il nostro $0{,}14$ cade proprio sul bordo della
+fascia: è il genere di somiglianza che il caso da solo produce, ogni tanto,
+rimescolando duecento numeri. Di quel $0{,}94$, invece, non è rimasto niente.
+Gli stessi identici valori, in un altro ordine, non prevedono più niente: quello
+che rendeva prevedibile la serie non stava nei numeri, stava nel loro ordine.
 
 Tre ritardi sono tre assaggi, e il metro del caso vale per tutti: la
 {numref}`fig-copia-che-scivola` li mette in fila dal primo al ventiquattresimo,

@@ -23,9 +23,11 @@ sistemi reali il guadagno più grande si ottiene quasi sempre migliorando i
 
 Se è così, i dati non possono restare un allegato del codice: vanno trattati
 come cittadini di prima classe, versionati, testati e sorvegliati con la
-stessa disciplina. La sezione precedente ha stabilito che riprodurre un
-modello richiede tre artefatti: codice, dati, modello. Questa entra nel più
-grande e trascurato dei tre, e nel sistema di tubature che lo trasporta
+stessa disciplina. {doc}`Dal notebook alla produzione
+</MLOps/dal-notebook-alla-produzione>` ha
+stabilito che riprodurre un modello richiede tre artefatti: codice, dati,
+modello. Qui si entra nel più grande e trascurato dei tre, e nel sistema di
+tubature che lo trasporta
 {cite}`huyen2022designing`.
 
 ## Versionare i dati
@@ -223,8 +225,9 @@ non c'è niente da riconoscere.
 
 L'archivio però riconosce solo i valori uguali, e nella colonna degli orari,
 che crescono di pochi secondi alla volta, di uguali non ce n'è quasi nessuno:
-gli basterebbe segnare il primo e poi gli scarti, ma quel modo di scrivere
-glielo si deve chiedere apposta.
+gli basterebbe segnare il primo orario e poi, per ciascuno dei seguenti, di
+quanti secondi è più avanti del precedente (un numerino piccolo che si ripete
+spesso), ma quel modo di scrivere glielo si deve chiedere apposta.
 
 Il formato per colonna più usato si chiama **Parquet**, e in più tiene i tipi
 delle colonne (che il CSV non ha: per lui è tutto testo, ed è il motivo per cui
@@ -253,15 +256,16 @@ di ML, dove si leggono poche colonne di tabelle larghe, è la voce dominante.
 **Compressione**: dentro una colonna i valori sono omogenei per tipo e spesso
 per contenuto, il che abilita codifiche specializzate (dizionario per le
 categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
-timestamp) prima ancora della compressione generica. Rispetto al CSV
-equivalente il guadagno è di qualche volta, e a decidere quante è la
-codifica a dizionario. I numeri che seguono vengono da tabelle di duecentomila
-righe, con il `.csv` e il `.parquet` scritti da Pandas 3 e PyArrow 25 con le
-impostazioni di serie. Sei colonne di categorie con sei valori
-distinti (nomi di città) stanno in un file diciotto volte più piccolo,
-perché il dizionario sostituisce ogni stringa con un indice, e quante volte lo
-decide la lunghezza delle stringhe. Sei colonne di numeri casuali con la
-virgola scendono a poco più di due volte, perché lì non c'è niente da
+timestamp) prima ancora della compressione generica. Rispetto al CSV equivalente
+il guadagno è di qualche volta, e a decidere quante è la codifica a dizionario.
+I numeri che seguono vengono da tabelle di duecentomila righe, scritte con le
+impostazioni di serie; per gli istanti conta anche la risoluzione con cui sono
+memorizzati (in microsecondi gli scarti sono piccoli interi, in nanosecondi
+mille volte più grandi, e la delta rende la metà). Sei colonne di categorie con
+sei valori distinti (nomi di città) stanno in un file diciotto volte più
+piccolo, perché il dizionario sostituisce ogni stringa con un indice, e quante
+volte lo decide la lunghezza delle stringhe. Sei colonne di numeri casuali con
+la virgola scendono a poco più di due volte, perché lì non c'è niente da
 riconoscere, e una tabella mista come quelle su cui si addestra di solito sta
 fra il due e il tre a seconda di quante colonne siano categoriche.
 

@@ -13,8 +13,16 @@ associative di oggi, che quel linguaggio lo usano senza nominarlo.
 Il ritorno esplicito arriva nel 2019, quando Yilun Du e Igor Mordatch mostrano
 che un modello a energia (in inglese *energy-based model*, che nella
 letteratura si abbrevia in **EBM**) si può addestrare su immagini vere,
-e lo fanno con gli attrezzi della sezione dedicata alla funzione di
-partizione, senza inventarne di nuovi {cite}`du2019implicit`.
+e lo fanno ripartendo dagli attrezzi della sezione dedicata alla
+funzione di partizione, con aggiustamenti che contano {cite}`du2019implicit`:
+una normalizzazione spettrale su ogni strato e una penalità sulla grandezza
+delle energie, senza le quali la catena diverge. Soprattutto, passo di discesa
+e rumore vengono scelti ciascuno per conto suo (passo 10, rumore di deviazione
+standard 0,005), mentre la ricetta di Langevin lega il secondo alla radice del
+primo. Quella catena è una discesa con un filo di rumore, fermata dopo qualche
+decina di passi, e non campiona la distribuzione del modello: Erik Nijkamp e
+colleghi ne fanno un generatore a sé, che chiamano MCMC a corto raggio
+{cite}`nijkamp2019learning`.
 
 A calcolare l'altezza del paesaggio, cioè a dare il voto a ogni immagine, c'è
 una rete convoluzionale come quelle del {doc}`capitolo sul deep learning </DeepLearning/overview>`: il
@@ -220,7 +228,8 @@ neuroni: raddoppiandoli, i ricordi diventano quattro volte tanti.
 Mete Demircigil e colleghi, l'anno dopo, spingono la stessa idea fino in fondo
 {cite}`demircigil2017model`, e la capienza cambia proprio modo di crescere.
 La rete del 1982 tiene circa il 14% dei neuroni, cioè guadagna un ricordo ogni
-sette neuroni in più; questa si avvicina al raddoppio ogni due.
+sette neuroni in più; in questa, ogni due neuroni aggiunti i ricordi che può
+tenere quasi raddoppiano, come gli interessi composti.
 
 E Hubert Ramsauer e colleghi portano il tutto ai valori continui, dove un
 neurone non è più acceso o spento ma porta un numero qualsiasi, trovando la
@@ -241,25 +250,45 @@ vale a tre condizioni. La prima: che si faccia un solo passo di
 aggiornamento, invece di ripetere il passo fino in fondo come farebbe una rete
 di Hopfield normale. La seconda: che la temperatura della memoria, cioè quanto
 forte la si scuote, sia fissata esattamente al valore che i Transformer usano
-per dividere i loro punteggi prima di confrontarli, cioè la radice quadrata
-della lunghezza dei vettori in gioco. La terza: che quello che la memoria
+per dividere i loro punteggi prima di confrontarli, cioè la radice quadrata del
+numero di componenti dei vettori in gioco. La terza: che quello che la memoria
 restituisce venga fatto passare per un'ultima moltiplicazione, la stessa che
 nell'attenzione trasforma i ricordi in ciò che poi viene davvero letto, e che
-si chiama *value*. I ricordi grezzi, nella corrispondenza, sono le key; i value
-sono quegli stessi ricordi dopo quella moltiplicazione.
+si chiama *value*. I ricordi grezzi, nella corrispondenza, sono le key; i
+value sono quegli stessi ricordi dopo quella moltiplicazione. In simboli, con
+gli $M$ ricordi come colonne di $\mathbf{X} \in \mathbb{R}^{d \times M}$ e lo
+stato $\boldsymbol{\xi} \in \mathbb{R}^{d}$, l'energia e il suo aggiornamento
+sono
+
+$$
+E(\boldsymbol{\xi}) = -\frac{1}{\beta} \log \sum_{\mu=1}^{M}
+e^{\beta\, \mathbf{x}_\mu^\top \boldsymbol{\xi}}
++ \frac{1}{2}\, \boldsymbol{\xi}^\top \boldsymbol{\xi} + \text{cost.},
+\qquad
+\boldsymbol{\xi}^{\text{nuovo}} = \mathbf{X}\,
+\operatorname{softmax}\!\big(\beta\, \mathbf{X}^\top \boldsymbol{\xi}\big),
+$$
+
+dove $\beta$ è la temperatura inversa. L'aggiornamento non fa mai salire $E$ e
+converge a un punto fisso; con i ricordi ben separati basta un passo, e la
+capienza cresce in modo esponenziale con $d$ {cite}`ramsauer2021hopfield`.
+Messi in riga gli stati come query, e con $\beta = 1/\sqrt{d_k}$, è la riga di
+$\operatorname{softmax}(\mathbf{Q}\mathbf{K}^\top/\sqrt{d_k})\,\mathbf{V}$.
 
 C'è poi un risultato che questo capitolo tiene volentieri, perché è più
-interessante della battuta. L'attenzione di un Transformer non è un blocco
-solo: dentro ogni strato ce ne sono parecchie copie che lavorano in parallelo,
-e ciascuna copia si chiama testa. Puntando questa lente sulle teste di un
-modello di linguaggio addestrato davvero (nell'articolo è BERT), gli autori
-trovano che nei primi strati la maggior parte di
-esse non sta richiamando nessun ricordo singolo: sta facendo una media su
-moltissimi. La discesa c'è sempre; il punto d'arrivo è un ricordo preciso
-solo quando i ricordi sono ben separati fra loro, e altrimenti è una media. La
-memoria del 1982 e il meccanismo che regge i modelli di linguaggio parlano
-dunque la stessa lingua, e la parentela dice sull'attenzione qualcosa di più
-sfumato, e più informativo, di «è un richiamo di memoria».
+interessante della battuta. L'attenzione di un Transformer non è un blocco solo:
+dentro ogni strato ce ne sono parecchie copie che lavorano in parallelo, e
+ciascuna copia si chiama testa. Puntando questa lente sulle teste di un modello
+di linguaggio addestrato davvero (nell'articolo è BERT), gli autori trovano che
+nei primi strati la maggior parte di esse non sta richiamando nessun ricordo
+singolo: sta facendo una media su moltissimi. Più avanti la media si stringe, a
+metà rete qualche testa arriva vicino a un ricordo solo, e negli ultimi strati
+si torna a medie su gruppetti di ricordi. La discesa c'è sempre; il punto
+d'arrivo è un ricordo preciso solo quando i ricordi sono ben separati fra loro,
+e altrimenti è una media. La memoria del 1982 e il meccanismo che regge i
+modelli di linguaggio parlano dunque la stessa lingua, e la parentela dice
+sull'attenzione qualcosa di più sfumato, e più informativo, di «è un richiamo di
+memoria».
 
 ## Le quattro rinunce
 
@@ -385,7 +414,8 @@ una profezia.
 ```{admonition} Da ricordare
 :class: important
 - Gli EBM sulle immagini {cite}`du2019implicit` addestrano una rete come
-  $E_\theta$ con campioni negativi da Langevin e un serbatoio persistente: un
+  $E_\theta$ con campioni negativi da una discesa rumorosa parente di Langevin
+  (rumore tarato a parte, catene corte) e un serbatoio persistente: un
   solo modello genera, completa, rileva anomalie e compone concetti.
 - JEM {cite}`grathwohl2020your`: un classificatore è già un EBM, con
   $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$.
@@ -422,7 +452,8 @@ tenerla: un punteggio di compatibilità fra due cose, basso quando stanno bene
 insieme, e nessun obbligo di trasformarlo in una probabilità. Resta però in
 sospeso la domanda che questo capitolo ha incontrato a ogni pagina, da dove
 arrivano gli esempi che tengono alto il resto del paesaggio.
-«Auto-supervisione» la prende dall'altro capo e chiede da dove venga il segnale
+Il {doc}`capitolo sull'auto-supervisione </AutoSupervisione/overview>` la
+prende dall'altro capo e chiede da dove venga il segnale
 di addestramento quando nessuno ha etichettato niente, che è poi la domanda da
 cui dipende se un modello del genere impara qualcosa o impara a rispondere
 sempre la stessa cosa.

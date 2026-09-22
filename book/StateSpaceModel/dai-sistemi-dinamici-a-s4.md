@@ -11,7 +11,8 @@ del controllo e di elaborazione dei segnali, lontana anni luce dal linguaggio
 naturale.
 
 Eppure è la stessa idea che, mezzo secolo dopo, ha dato una seconda strada
-verso l'obiettivo che questo capitolo condivide con il precedente: un modello di
+verso l'obiettivo che condivide con il capitolo sull'attenzione lineare: un
+modello di
 sequenze che si addestri in parallelo come un Transformer e che poi, una volta
 in servizio, spenda per ogni parola sempre la stessa quantità di tempo e di
 memoria, come una rete ricorrente. Usare un modello già addestrato, in gergo,
@@ -139,9 +140,10 @@ confusione: non esiste un solo modo di discretizzare. Quello che succede
 lo indovinano in modi diversi, e i due modelli principali del capitolo ne
 usano due che non vanno scambiate.
 
-Il modo più rapido di tenerle separate è pensarle come due figure
-geometriche: quella di S4 è un trapezio, quella di Mamba (l'altro protagonista
-del capitolo) è un rettangolo. Vediamo perché, e come si chiamano.
+Il modo più rapido di tenerle separate è una figura geometrica: la regola di
+S4 stima con un trapezio quello che la regola di Mamba (l'altro protagonista
+del capitolo) calcola esattamente, cioè quanto lo stato cala da solo durante il
+salto. Vediamo perché, e come si chiamano.
 
 `````{tab} Elementare
 
@@ -156,15 +158,16 @@ l'altro succede molto e di quel che c'era prima resta poco. È la manopola che
 decide quanto in fretta il sistema dimentica, e più avanti Mamba la girerà a
 ogni parola.
 
-Le due regole sono due modi diversi di indovinare cosa
-succede *tra* un campione e l'altro, e basta un po’ di geometria a
-raccontarli. Immagina di dover calcolare quanta acqua è entrata nella vasca
-durante il tratto che non hai visto, sapendo solo l'apertura del rubinetto
-all'inizio e alla fine. Lo *zero-order hold*, la scelta di Mamba, tiene
-l'apertura ferma per tutto il tratto, come se il rubinetto non si fosse mosso:
-la figura da misurare è un **rettangolo**. La bilineare, la scelta di S4, tiene
-conto di come l'apertura è cambiata da un capo all'altro: il lato di sopra si
-inclina, e la figura diventa un **trapezio**. Il risultato è lo stesso tipo di
+Le due regole sono due modi diversi di indovinare cosa succede *tra* un
+campione e l'altro, e tutte e due tengono fermo il rubinetto per l'intero
+tratto, all'apertura che si legge adesso. Si separano sullo scarico. Lo
+*zero-order hold*, la scelta di Mamba, fa il conto esatto di quanta acqua la
+vasca perde nel tratto, sapendo che lo scarico tira di più a vasca piena e di
+meno man mano che il livello scende: il rubinetto fermo fa del suo contributo
+un **rettangolo**. La bilineare, la scelta di S4, lo scarico lo stima alla
+buona: prende quanto tirava all'inizio del tratto e quanto tira alla fine, e ne
+fa la media, cioè misura un **trapezio** al posto della curva vera. Il risultato
+è lo stesso tipo di
 regola passo dopo passo; cambia quanto errore ti porti dietro a ogni salto, e
 l'errore, a forza di salti, si accumula.
 
@@ -322,8 +325,9 @@ resterà solo lo scan ricorrente.
 
 `````
 
-Questa dualità è esattamente lo stesso trucco che ha animato il capitolo
-sull'attenzione lineare: un'unica funzione con una forma parallela per
+Questa dualità è esattamente lo stesso trucco che ha animato il {doc}`capitolo
+sull'attenzione lineare </AttenzioneLineare/overview>`: un'unica funzione con
+una forma parallela per
 l'addestramento e una forma ricorrente per l'inferenza. Che due strade così
 diverse (una nata dall'attenzione, l'altra dai sistemi dinamici) approdino
 alla stessa struttura ha una ragione, che la
@@ -437,7 +441,17 @@ $\Delta$, che infatti non si sceglie a caso ma si inizializza su una gamma
 ampia di ordini di grandezza (tipicamente log-uniforme fra $10^{-3}$ e
 $10^{-1}$), proprio per coprire orizzonti di memoria diversi. Il risultato
 pratico è una matrice $\mathbf{A}$ specifica (la *matrice HiPPO*) con cui
-inizializzare l'SSM per dotarlo di memoria a lungo raggio.
+inizializzare l'SSM per dotarlo di memoria a lungo raggio. Per LegS, con indici
+$n, k = 0, \dots, N-1$,
+
+$$
+A_{nk} = -\begin{cases} \sqrt{2n+1}\,\sqrt{2k+1} & n > k \\ n+1 & n = k \\ 0 & n < k \end{cases}
+\qquad
+B_n = \sqrt{2n+1},
+$$
+
+triangolare inferiore: il coefficiente di grado $n$ riceve solo da quelli di
+grado più basso, e gli autovalori sono la diagonale.
 
 S4 (*Structured State Space Sequence model*, Gu, Goel e Ré, ICLR 2022,
 {cite}`gu2022s4`) parte proprio da qui: inizializza $\mathbf{A}$ con
@@ -499,15 +513,18 @@ nominare, perché ognuna smonta un pezzo del problema.
 
 `````{tab} Elementare
 
-Tre modelli, tre pezzi del problema. **S5** (2023) semplifica la macchina di S4
+A S4 mancano ancora tre cose perché diventi Mamba: una forma passo dopo passo
+che non sia lenta, un modo di scegliere che cosa ricordare, e filtri più lunghi
+e flessibili. Tre modelli, tre pezzi del problema. **S5** (2023) semplifica la
+macchina di S4
 e, soprattutto, fa vedere che la forma «passo dopo passo» non è condannata a
 essere lenta. Sembrerebbe di sì, visto che ogni passo ha bisogno del risultato
 del precedente. Il fatto è che due passi consecutivi si possono fondere in un
 passo solo, che fa il lavoro di tutti e due; e le fusioni di coppie diverse non
 si aspettano fra loro, quindi si possono fare tutte nello stesso momento. Un
 giro dimezza i passi rimasti, il giro dopo li dimezza ancora, e in una manciata
-di giri si è arrivati in fondo. Il conto per esteso sta nella prossima sezione:
-è il trucco che Mamba erediterà.
+di giri si è arrivati in fondo. Il conto per esteso lo fa Mamba, che eredita lo
+stesso trucco.
 
 **H3** (2023) affronta invece la memoria «a richiamo»: ritrovare più avanti
 una cosa già letta ("chi era il soggetto di quella frase?"). I modelli di
@@ -529,6 +546,16 @@ l'attenzione, costando molto meno.
 `````
 
 `````{tab} Superiore
+
+Prima ancora c'è un passo che Mamba darà per scontato: togliere a S4 la
+correzione di rango basso. DSS {cite}`gupta2022dss` e poi S4D {cite}`gu2022s4d`
+mostrano che con $\mathbf{A}$ soltanto diagonale la qualità resta vicina a
+quella di S4, purché l'inizializzazione conservi lo spettro di HiPPO: la parte
+normale di LegS, $a_n = -\tfrac12 + i\pi n$ (S4D-Lin), o i reali $a_n =
+-(n+1)$ (S4D-Real), cioè gli autovalori stessi di LegS. Il kernel diventa una
+somma di $N$ esponenziali, $\bar K_j = \sum_n C_n\, e^{j\Delta a_n}\, \bar
+b_n$, calcolabile con una matrice di Vandermonde, senza Cauchy né Woodbury. La
+$\mathbf{A}$ diagonale e reale di Mamba viene da qui.
 
 S5 (Smith, Warrington e Linderman, ICLR 2023, {cite}`smith2023s5`)
 semplifica S4 su due fronti. Primo: usa un unico SSM **MIMO** (a più ingressi
@@ -584,9 +611,10 @@ Mamba, ed è il tema della prossima sezione.
   esploda, complementare all'attenzione lineare del capitolo precedente.
 - Per usarlo su una sequenza (parole, campioni audio) bisogna misurare a
   intervalli regolari e indovinare cosa succede *tra* un campione e il
-  successivo. Le ricette non sono una sola e non vanno confuse: S4 immagina
-  quel tratto come un trapezio; Mamba tiene l'ingresso fermo per tutto
-  l'intervallo (è lo *zero-order hold*, la tenuta di ordine zero). Per
+  successivo. Le ricette non sono una sola e non vanno confuse: tutte e due
+  tengono fermo l'ingresso per il tratto; S4 stima con un
+  trapezio quanto lo stato cala nel frattempo, Mamba lo calcola esatto (è lo
+  *zero-order hold*, la tenuta di ordine zero). Per
   calcolare quanta parte di ciò che entra finisce nella memoria, Mamba si
   accontenta del conto più sbrigativo, a rettangoli: è il pezzo che il modello
   più recente della famiglia, Mamba-3, rifarà a trapezi.
@@ -625,7 +653,8 @@ Mamba, ed è il tema della prossima sezione.
 - Per usarlo su sequenze discrete serve un passo $\Delta$ di
   discretizzazione: una regola per indovinare cosa succede *tra* un campione
   e il successivo. Di regole ce n'è più d'una e non vanno confuse. S4 usa la
-  bilineare (immagina quel tratto come un trapezio); Mamba usa lo
+  bilineare (trapezio sulla dinamica dello stato, ingresso tenuto
+  fermo); Mamba usa lo
   *zero-order hold* (ZOH: l'ingresso resta fermo per tutto l'intervallo), che
   gli dà la transizione $\bar{\mathbf{A}}=\exp(\Delta \mathbf{A})$. Per il
   termine d'ingresso, però, l'implementazione di Mamba si accontenta del conto a

@@ -45,10 +45,10 @@ torchaudio==2.11.0+cpu
 # che e' la terza volta che questo file scopre una dipendenza cosi', sempre
 # perche' l'ambiente di chi verifica e' piu' ricco di quello che pubblica.
 #
-# Una GPU NON serve: il blocco **definisce** il kernel e non lo lancia mai
-# (`fused_relu` non viene chiamata), e `@triton.jit` compila alla prima
-# chiamata, non alla decorazione. Provato senza CUDA: import e decorazione
-# riescono. Unica cautela, che e' del decoratore e non del libro: la funzione
+# Una GPU NON serve: il blocco lancia il kernel una volta sola, su due numeri,
+# e senza CUDA accende `TRITON_INTERPRET=1` prima di importare Triton, cosi'
+# il kernel gira nell'interprete sulla CPU e stampa `tensor([7., 0.])`
+# (provato con triton 3.7.1 su una macchina senza GPU). Unica cautela, che e' del decoratore e non del libro: la funzione
 # dev'essere in un file vero, perche' `triton.jit` legge il sorgente con
 # `inspect`; da un `python3 -c` fallisce, dal notebook e dal verificatore no.
 triton==3.7.1

@@ -23,10 +23,11 @@ un'immagine può uscire da una sola valutazione della rete.
 `````{tab} Elementare
 
 La ricetta più diretta è anche la prima che ha funzionato, e sta in una riga:
-si prende il modello che sa fare mille passi, gli si chiede di farne due, e si
-addestra un secondo modello a ottenere lo stesso risultato con un passo
-solo. Il secondo modello a quel punto sa fare in cinquecento passi quello che
-il primo faceva in mille.
+si prende il modello che sa fare mille passi e, in un punto qualsiasi del
+percorso, gli si fanno fare due passi di fila; poi si addestra un secondo
+modello ad arrivare nello stesso posto con un passo solo. Imparato questo su
+tutti i tratti del percorso, il secondo modello sa fare in cinquecento passi
+quello che il primo faceva in mille.
 
 E poi lo si rifà. Il secondo modello diventa il maestro, un terzo impara a
 dimezzarlo ancora, e si scende a duecentocinquanta. Ogni giro dimezza, quindi
@@ -47,11 +48,12 @@ importante. Chiedendole «qual era il disturbo?» si ottiene una risposta da cui
 l'immagine va ancora ricavata, e all'inizio del ritorno quel passaggio è
 disastroso: lì dell'immagine è rimasto quasi niente, quindi per tirarla fuori
 bisogna dividere per quel quasi niente, e ogni errore sul disturbo viene
-moltiplicato. All'altro capo succede il rovescio, ed è mal posta la domanda
-«com'era l'immagine pulita?». Chi fa passi lunghi attraversa tutti e due gli
-estremi in un colpo solo, e gli serve una descrizione che regga a tutti e due:
-quella che mescola disturbo e immagine pulita è nata proprio per questo,
-insieme a questo metodo.
+moltiplicato. All'altro capo succede il rovescio: lì di disturbo ne è rimasto
+quasi niente, e chi risponde «com'era l'immagine pulita?» lascia da ricavare il
+disturbo, dividendo di nuovo per quel quasi niente. Chi fa passi lunghi
+attraversa tutti e due gli estremi in un colpo solo, e gli serve una descrizione
+che regga a tutti e due: quella che mescola disturbo e immagine pulita è nata
+proprio per questo, insieme a questo metodo.
 
 `````
 
@@ -96,8 +98,11 @@ c'è: la discrepanza fra addestramento e uso è invisibile con mille passi e
 diventa dominante con uno.
 
 Il limite del metodo è strutturale: lo studente insegue le traiettorie del
-maestro, quindi ne eredita gli errori e non può superarlo. Il tetto è la
-qualità del maestro, e ogni giro ci si avvicina da sotto.
+maestro, quindi ne eredita gli errori e niente lo spinge oltre. Il tetto è la
+qualità del maestro, e ogni giro se ne allontana un poco, perché ogni nuovo
+studente somma il proprio errore di approssimazione a quello ereditato: la
+perdita resta piccola finché i passi sono qualche unità, e diventa netta
+scendendo a due e a uno.
 
 `````
 
@@ -123,9 +128,11 @@ Come si misuri se due mucchi di immagini sono distribuiti allo stesso modo è il
 problema tecnico, e le risposte sono due. La prima usa un giudice che impara a
 distinguere le immagini vere da quelle dello studente, che è l'idea delle
 {doc}`reti avversarie </GAN/overview>`. La seconda, più stabile, confronta le
-due distribuzioni attraverso il *verso della salita* di ciascuna: si tiene un
-modello che conosce quello dei dati veri e uno che impara quello dello
-studente, e si spinge lo studente finché i due non coincidono.
+due distribuzioni attraverso la loro freccia, quella che in ogni punto indica da
+che parte le immagini si fanno più credibili: si tiene un modello che conosce la
+freccia dei dati veri (è il maestro stesso) e uno che impara quella delle
+immagini dello studente, e si spinge lo studente finché le due frecce non
+indicano dappertutto la stessa direzione.
 
 `````
 
@@ -133,8 +140,11 @@ studente, e si spinge lo studente finché i due non coincidono.
 
 La **distillazione per corrispondenza di distribuzione** sostituisce l'errore
 sulle traiettorie con una divergenza fra la distribuzione $p_\phi$ dello
-studente e quella $p_\theta$ del maestro. La formulazione più usata minimizza
-la KL inversa,
+studente e quella $p_\theta$ del maestro. La formulazione più usata, la
+*distribution matching distillation* di Yin e colleghi {cite}`yin2024one`,
+minimizza la KL inversa fra le due distribuzioni diffuse allo stesso livello di
+rumore $t$, mediata su $t$ (sui dati puliti i due punteggi non si saprebbero
+stimare, sulle versioni diffuse sì),
 
 $$
 D_{\mathrm{KL}}\big(p_\phi \,\|\, p_\theta\big),
@@ -153,9 +163,14 @@ $$
 Il primo punteggio è il maestro; il secondo si stima con un modello di
 diffusione ausiliario addestrato in linea sui campioni dello studente. Il
 gradiente si annulla quando i due punteggi coincidono, cioè quando le due
-distribuzioni sono uguali. In pratica si aggiunge un termine di ricostruzione
-su un piccolo insieme di coppie per ancorare lo studente, e spesso un
-discriminatore avversario che accelera la convergenza.
+distribuzioni sono uguali. In pratica si aggiunge un termine di ricostruzione su
+un piccolo insieme di coppie per ancorare lo studente, e spesso un
+discriminatore avversario che accelera la convergenza. La *adversarial diffusion
+distillation* di Sauer e colleghi {cite}`sauer2024adversarial` fa del
+discriminatore il pezzo principale: lo studente, inizializzato dal maestro, è
+giudicato da un discriminatore che lavora sulle caratteristiche di una rete
+visiva preaddestrata e congelata, è tenuto vicino al maestro da una perdita di
+distillazione del punteggio, e genera in un numero di passi fra uno e quattro.
 
 La differenza sostanziale rispetto alla distillazione progressiva è che il
 vincolo è a livello di distribuzione e non di traiettoria. Ne segue che lo
@@ -234,7 +249,12 @@ Q-Network </DeepReinforcementLearning/dqn>`, cioè che la stima non deve
 inseguire un bersaglio che si muove insieme a lei (là la copia è periodica
 invece che a media mobile). L’**addestramento di consistenza** fa a meno del
 maestro sostituendo il passo con uno stimatore non distorto del punteggio
-ricavato dal rumore iniettato, e addestra da zero.
+ricavato dal rumore iniettato, e addestra da zero. In questo regime la copia a
+media mobile si è poi rivelata d'intralcio: nella versione migliorata di Song e
+Dhariwal {cite}`song2024improved` il bersaglio è la rete stessa con il
+gradiente fermato, insieme a una perdita di Pseudo-Huber e a un programma di
+rumore lognormale, e l'addestramento da zero supera la distillazione a uno e a
+due passi.
 
 Il campionamento a un passo è
 $\mathbf{x}_\varepsilon = \mathbf{f}_\phi(\mathbf{x}_T,T)$.
@@ -250,13 +270,18 @@ usano davvero.
 
 `````{tab} Elementare
 
-Le tre famiglie sembrano tre trucchi diversi. Guardate da un passo indietro
-sono la stessa mossa.
+La distillazione progressiva e i consistency model sembrano trucchi diversi,
+e guardati da un passo indietro sono la stessa mossa. La famiglia che fa
+combaciare le distribuzioni resta fuori, e il motivo è istruttivo: il suo
+studente non impara dove porta la strada del maestro, impara una strada
+qualsiasi, purché le destinazioni, prese tutte insieme, si distribuiscano come
+le sue.
 
-Un modello di diffusione ordinario impara la **velocità istantanea**: dove
-andare adesso, per un tratto infinitesimo. Per sapere dove si finisce bisogna
-integrarla, cioè fare tanti passi. Tutti e tre imparano invece qualcosa che
-contiene già l'integrale: la **destinazione**, oppure la velocità **media** su
+Un modello di diffusione ordinario impara la velocità istantanea: dove andare
+adesso, per un tratto piccolissimo. Per sapere dove si finisce bisogna sommare
+tanti di quei tratti uno dopo l'altro, cioè fare tanti passi (questa somma, in
+matematica, si chiama integrale). Le altre due famiglie imparano invece qualcosa
+che contiene già la somma fatta: la destinazione, oppure la velocità media su
 un tratto lungo.
 
 E la velocità media è la chiave, perché rende ovvio il perché del guadagno.
@@ -377,11 +402,13 @@ print(np.round(z + (T_MIN - 1.0) * campo(z, 1.0), 4))
 # -> [ 0.1258 -0.1322  0.6408  0.105  -0.536   0.3618  1.3047  0.9476]
 ```
 
-Le due righe dicono tutto quello che c'è da dire sui generatori a un passo. Un
-solo passo con la velocità media riproduce la destinazione cifra per cifra,
-perché la media è definita esattamente così; lo stesso passo con la velocità
-istantanea finisce ovunque tranne che sui due modi. La difficoltà non sta
-nel campionare, sta nell'imparare quella media.
+La prima riga non verifica niente, ed è bene dirlo: la velocità media è stata
+ricavata dalla destinazione, quindi un passo con essa la riproduce per identità
+algebrica, $\mathbf{z} + (s-t)\,(\Phi - \mathbf{z})/(s-t) = \Phi$. Stampa la
+definizione, e fissa che cosa una rete a un passo deve imparare. La seconda è la
+misura vera: lo stesso passo con la velocità istantanea finisce ovunque tranne
+che sui due modi. La difficoltà non sta nel campionare, sta nell'imparare quella
+media.
 
 ## Che cosa si perde
 

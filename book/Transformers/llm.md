@@ -20,7 +20,8 @@ parole; GPT-3 in addestramento ne ha viste circa 300 miliardi contate in
 *token*, cioè nei pezzi in cui il testo viene spezzato, che per l'inglese
 corrispondono a poco più di 200 miliardi di parole: più di duemila volte tanto.
 
-Il terreno è già preparato. Nella sezione su GPT, BERT e T5 abbiamo visto il
+Il terreno è già preparato. Nella {doc}`sezione sulle famiglie di modelli
+<multimodalita>`, alla voce su GPT, BERT e T5, abbiamo visto il
 metodo di studio della famiglia GPT, quello dello studente che copre la pagina
 con la mano e indovina la parola dopo (in gergo: un Transformer
 *decoder-only*, addestrato a predire il token successivo). E abbiamo visto che
@@ -216,8 +217,23 @@ proporzione) con un rapporto quasi costante $D/N \approx 20$ token per
 parametro. La verifica empirica è **Chinchilla**: 70 miliardi di parametri
 addestrati su 1.400 miliardi di token che, a parità di calcolo, superano
 Gopher (280 miliardi di parametri, circa 300 miliardi di token). Col senno del
-2022, GPT-3 era fortemente sotto-addestrato: per 175 miliardi di parametri la
-regola prescriverebbe circa 3.500 miliardi di token, contro i 300 effettivi.
+2022, GPT-3 era fortemente sotto-addestrato. Il conto passa per il costo di un
+addestramento, $C \approx 6ND$ operazioni in virgola mobile: due per parametro
+e per token nel passaggio in avanti, quattro nella retropropagazione. Con
+$D = 20N$ viene $C \approx 120N^2$, quindi $N_{\text{opt}} \approx
+\sqrt{C/120}$.
+Il calcolo di GPT-3, $6 \times 175\cdot10^9 \times 300\cdot10^9 \approx
+3{,}2\cdot10^{23}$, sarebbe stato speso al meglio su circa 51 miliardi di
+parametri e mille miliardi di token; tenuti fissi i 175 miliardi, la regola ne
+chiederebbe 3.500. Kaplan prescriveva invece $N_{\text{opt}} \propto
+C^{0{,}73}$; la differenza viene in buona parte da come erano stati misurati i
+modelli piccoli (programma del learning rate non adattato alla durata,
+embedding esclusi dal conteggio). Hoffmann adatta la forma
+$\bar{\mathcal{L}}(N,D) = E + A/N^{a} + B/D^{b}$, con $E \approx 1{,}69$ il
+termine irriducibile e $a \approx 0{,}34$, $b \approx 0{,}28$. Il rapporto 20
+minimizza il costo dell'addestramento e non quello dell'uso: chi prevede di
+servire molte richieste addestra di proposito un modello più piccolo su molti
+più token.
 `````
 
 ```{figure} ../figures/chinchilla-2022.svg
@@ -255,7 +271,7 @@ prendere ogni volta la parola più probabile e tirare dritto (si chiama
 *greedy*, cioè ingorda). Il secondo è meno miope: invece di impegnarsi subito,
 si portano avanti in parallelo le $k$ continuazioni più promettenti, si vede
 come proseguono, e solo alla fine si tiene la migliore delle $k$ (è la *beam
-search*, «ricerca a fascio»). Piccola nota che vale per tutta la sezione:
+search*, «ricerca a fascio»). D'ora in avanti
 lettere come $k$, $n$, $T$, $p$ stanno per numeri che sceglie chi usa il
 modello, non per costanti di natura: sono manopole.
 
@@ -471,8 +487,9 @@ costi molto diversi.
 
 ## Programmare con le parole: prompt e in-context learning
 
-Abbiamo visto, nella sezione su GPT, BERT e T5, la scoperta sorprendente di
-GPT-3. Il prompt è tutto quello che si scrive al modello prima che
+Abbiamo visto, fra le {doc}`famiglie di modelli <multimodalita>`, la scoperta
+sorprendente di GPT-3. Il prompt è tutto quello che si scrive al modello prima
+che
 risponda: la richiesta, il testo su cui deve lavorare, le istruzioni su come
 farlo. Ebbene, descrivere un compito lì dentro (magari con due o tre esempi già
 svolti) basta spesso a farglielo eseguire, senza toccargli un solo numero
@@ -499,7 +516,8 @@ italiano* (o in inglese), e il modello, completando il testo nel modo più
 probabile, di fatto lo esegue. Il prompt è diventato un'interfaccia di
 programmazione in linguaggio naturale: si "programma" il modello scrivendo, e
 l’*in-context learning* (imparare dal contesto della singola richiesta) non
-era un obiettivo di progetto, ma un comportamento comparso con la scala.
+era un obiettivo di progetto: nessuna loss lo chiede, e migliora con la scala,
+anche se i suoi circuiti elementari compaiono già in modelli piccolissimi.
 
 L'onestà impone però di dire che questa "programmazione" è fragile.
 Riformulare la stessa domanda con parole diverse può cambiare la risposta;
@@ -704,7 +722,7 @@ def sample_next(logits, temperature=1.0, top_k=None, top_p=None):
         probs_ord = torch.softmax(ordinati, dim=-1)
         cumulate = torch.cumsum(probs_ord, dim=-1)
         # fuori dal nucleo i token oltre la soglia (il migliore resta sempre)
-        fuori = (cumulate - probs_ord) > top_p
+        fuori = (cumulate - probs_ord) >= top_p
         ordinati[fuori] = float("-inf")
         logits = torch.full_like(logits, float("-inf")).scatter(0, indici, ordinati)
 
@@ -715,8 +733,9 @@ def sample_next(logits, temperature=1.0, top_k=None, top_p=None):
 logits = torch.tensor([2.0, 1.0, 0.0, -2.0])
 for T in (0.5, 1.0, 2.0):
     print(f"T={T}:", torch.softmax(logits / T, dim=-1).round(decimals=3))
-# T=0.5: [0.867, 0.117, 0.016, 0.000]   il dado si trucca verso "muro"
-# T=2.0: [0.474, 0.287, 0.174, 0.064]   il dado si appiattisce
+# T=0.5: tensor([0.8670, 0.1170, 0.0160, 0.0000])   il dado si trucca verso "muro"
+# T=1.0: tensor([0.6570, 0.2420, 0.0890, 0.0120])
+# T=2.0: tensor([0.4740, 0.2870, 0.1740, 0.0640])   il dado si appiattisce
 ```
 
 E un mini-ciclo di generazione, con un "modello" giocattolo al posto di un

@@ -1,10 +1,10 @@
 # Oltre la partizione: tre modi di aggirare $Z$
 
 La macchina di Boltzmann ha lasciato in eredità $Z$, la funzione di
-partizione: la somma su *tutte* le configurazioni possibili (da qui in avanti
-la temperatura si assorbe nell'energia, cioè $T = 1$, e $Z$ dipende solo dai
-parametri). È lei a dettare tutto ciò che segue, e il fatto che non si riesca a
-calcolarla non è una difficoltà tecnica fra le tante, è un muro.
+partizione: la somma su *tutte* le configurazioni possibili. È lei a dettare
+tutto ciò che segue, e il fatto che non si riesca a calcolarla è un muro, più
+che una difficoltà tecnica fra le tante. (Da qui in avanti si pone $T = 1$,
+così che $Z$ dipenda solo dai parametri.)
 
 Una rete di venticinque neuroni accesi o spenti, come quella della memoria
 associativa, ha trentatré milioni di configurazioni ($2^{25} = 33\,554\,432$),
@@ -148,7 +148,9 @@ sotto i suoi piedi. La misura dell'intero continente, quella che non sappiamo
 calcolare, serve a una cosa sola: dividere per il totale la pioggia di ogni
 valle, cioè fare lo stesso identico gesto in ogni punto. E fra le due lingue il
 cambio è questo: scendere di un gradino non aggiunge una quantità fissa di
-pioggia, la moltiplica per un fattore fisso, sempre lo stesso. Dividere
+pioggia, la moltiplica per un fattore fisso, sempre lo stesso. Se ogni gradino
+in giù raddoppia la pioggia, una valle tre gradini più bassa di un'altra ne
+raccoglie otto volte tanto, dovunque stiano le due. Dividere
 tutta la pioggia per uno stesso numero, allora, dall'altra parte è alzare tutto
 il paesaggio della stessa quantità. Ma alzare l'intero paesaggio di dieci
 metri non cambia di un grado nessuna salita e nessuna discesa. La pallina, che
@@ -304,62 +306,73 @@ scala di gradini non è una rampa. Più i saltelli sono brevi, più la fotografi
 finale somiglia a quella vera; con saltelli di durata finita resta uno scarto
 che non dipende dalla sfortuna e che nessuna quantità di catene fa sparire.
 
-Per vederlo, una sola esecuzione non basta. Con ventimila catene, due
-esecuzioni identiche in tutto tranne che nel sorteggio danno risultati che
-ballano di circa 0,003 su un bin, cioè quanto l'effetto che vogliamo misurare:
-quel numero, da solo, non sa distinguere le due cose. Lo 0,006 della tabella,
-insomma, è la somma di un effetto vero e di una botta di fortuna, e non
-sappiamo quanto sia l'uno e quanto l'altra. I numeri che seguono servono a
-separarli, e saranno più piccoli.
+Per vederlo, una sola esecuzione non basta. Con ventimila catene, due esecuzioni
+identiche in tutto tranne che nel sorteggio danno risultati che ballano di
+qualche millesimo su un bin, cioè quanto l'effetto che vogliamo misurare: quel
+numero, da solo, non sa distinguere le due cose. Lo 0,006 della tabella,
+insomma, è la somma di un effetto vero e di una botta di fortuna, e non sappiamo
+quanto sia l'uno e quanto l'altra. I numeri che seguono servono a separarli, e
+saranno più piccoli.
 
-Allora si ripete. Sei esecuzioni con sei sorteggi diversi (nel codice si
-cambia il numero da cui parte il sorteggiatore, e qui sono i numeri da 0 a 5),
-tutte a parità di *tempo percorso*: se si dimezza la durata del saltello si
-raddoppia il numero di saltelli, così la passeggiata dura sempre lo stesso. Lo
-scarto medio sul bin centrale vale $+0{,}0032$ con $\epsilon = 0{,}01$, poi
-$+0{,}0024$ con $\epsilon = 0{,}002$ e $-0{,}0002$ con $\epsilon = 0{,}0005$,
-e su tutti e tre l'incertezza è di circa $\pm 0{,}0013$: è di tanto che quella
-media balla da un sorteggio all'altro, e stimarla dalle sole sei esecuzioni la
-fa uscire più stretta di quanto sia.
+Ripetere non basta a chiudere la questione, perché il ballo si divide per la
+radice quadrata del numero di esecuzioni: per dimezzarlo ne servono quattro
+volte tante, e qui ce ne vorrebbero centinaia. Conviene cambiare strumento, e
+la strada è quella già usata per $Z$: in una dimensione si può calcolare la
+risposta esatta senza tirare nemmeno una pallina. Si scrive la regola con cui
+la catena si sposta come una matrice su una griglia fine (la riga di un punto
+dice con che probabilità da lì si arriva in ciascun altro), e si cerca l'unica
+distribuzione che quella regola lascia identica a se stessa, l'autovettore di
+Perron dell'operatore di transizione: è quella su cui la catena a passo
+$\epsilon$ si assesta davvero.
 
-E adesso la parte onesta, perché sei ripetizioni non bastano ancora: fra i
-primi due punti c'è una differenza di 0,0008 e le incertezze valgono 0,0013
-l'una, cioè nessuna differenza. Chi si fermasse qui avrebbe due punti
-indistinguibili e un terzo che potrebbe benissimo essere zero, e concluderebbe
-per fede.
+```python
+import numpy as np
+from scipy import sparse
+from scipy.sparse.linalg import eigs
 
-La strada che chiude la questione è quella già usata per $Z$: in una
-dimensione si può calcolare la risposta esatta, senza
-tirare nemmeno una pallina. Si prende la regola con cui la catena si sposta e
-si chiede quale sia l'unica distribuzione che, applicandole quella regola,
-resta identica a se stessa: è quella su cui la catena a passo $\epsilon$ si
-assesta davvero, e su una griglia fine si trova in poche righe di codice. Chi
-volesse cercarne il nome per esteso: è l'autovettore di Perron dell'operatore
-di transizione. Il suo
-scarto sul bin centrale vale $+0{,}00357$ a $\epsilon = 0{,}01$, $+0{,}00071$
-a $\epsilon = 0{,}002$ e $+0{,}00018$ a $\epsilon = 0{,}0005$: sempre positivo
-(la barriera è sovrappesata), e il rapporto fra lo scarto e la durata del
-saltello resta fra $0{,}35$ e $0{,}36$ mentre il passo si accorcia di venti
-volte. Lo scarto, cioè, cala esattamente in proporzione al passo: passo cinque
-volte più corto,
-scarto cinque volte più piccolo, e zero soltanto al limite di saltelli di
-durata nulla. Sparirebbe anche in un altro modo: aggiungendo, dopo ogni
-saltello, un controllo che confronta il punto di arrivo con quello di partenza
-e ogni tanto rifiuta la mossa, con una regola tarata apposta perché le
-proporzioni finali tornino esatte. Si chiama test di accettazione di
-Metropolis, e i modelli a energia ci rinunciano per semplicità.
+energia = lambda x: (x**2 - 1.0)**2
+gradiente = lambda x: 4.0 * x * (x**2 - 1.0)
 
-Il confronto fra le sei ripetizioni e il conto esatto è la lezione, e vale ben
-oltre questo esempio. Su un singolo sorteggio cambia perfino il segno: con
-$\epsilon = 0{,}0005$ tre esecuzioni su sei danno uno scarto negativo, mentre
-il valore vero è positivo. E la media delle sei, a $\epsilon = 0{,}002$, dà
-$0{,}0024$ dove il valore vero è $0{,}00071$: più del triplo. L'effetto c'è
+# la distribuzione su cui la catena a passo eps si assesta: quella che la
+# regola di transizione, scritta come matrice su una griglia fine, lascia ferma
+griglia = np.linspace(-2.6, 2.6, 5201)
+centro = (griglia >= -0.5) & (griglia < 0.5)
+esatta = np.exp(-energia(griglia))
+esatta /= esatta.sum()
+for eps in (0.01, 0.002, 0.0005):
+    media = griglia - 0.5 * eps * gradiente(griglia)
+    K = np.exp(-(griglia[None, :] - media[:, None])**2 / (2 * eps))
+    K[K < 1e-12] = 0.0
+    K = sparse.csr_matrix(K / K.sum(1, keepdims=True))
+    _, v = eigs(K.T, k=1, which="LM")
+    p = np.abs(v[:, 0].real)
+    p /= p.sum()
+    scarto = p[centro].sum() - esatta[centro].sum()
+    print(f"eps = {eps:<7} scarto sul bin centrale {scarto:+.5f}"
+          f"   scarto/eps {scarto / eps:.3f}")
+```
+
+```text
+eps = 0.01    scarto sul bin centrale +0.00357   scarto/eps 0.357
+eps = 0.002   scarto sul bin centrale +0.00071   scarto/eps 0.353
+eps = 0.0005  scarto sul bin centrale +0.00018   scarto/eps 0.352
+```
+
+Lo scarto è sempre positivo (la barriera è sovrappesata), e il rapporto fra lo
+scarto e la durata del saltello resta fra $0{,}35$ e $0{,}36$ mentre il passo
+si accorcia di venti volte. Lo scarto, cioè, cala esattamente in proporzione al
+passo: passo cinque volte più corto, scarto cinque volte più piccolo, e zero
+soltanto al limite di saltelli di durata nulla. Sparirebbe anche in un altro
+modo: aggiungendo, dopo ogni saltello, un controllo che confronta il punto di
+arrivo con quello di partenza e ogni tanto rifiuta la mossa, con una regola
+tarata apposta perché le proporzioni finali tornino esatte. Si chiama test di
+accettazione di Metropolis, e i modelli a energia ci rinunciano per semplicità.
+
+La lezione vale ben oltre questo esempio. A $\epsilon = 0{,}002$ l'effetto vero
+vale sette decimillesimi, e un'esecuzione sola balla di più: l'effetto c'è
 sempre, ma è più piccolo di quanto i numeri ballino da un sorteggio all'altro.
-Ripetendo di più si vedrebbe, ma tardi: il ballo si divide per la radice
-quadrata del numero di esecuzioni, quindi per dimezzarlo ne servono quattro
-volte tante, e qui ce ne vorrebbero centinaia. Cambiare strumento costa molto
-meno. E un numero solo, per quanto stampato con quattro cifre, non dimostra
-niente.
+Un numero solo, per quanto stampato con quattro cifre, non dimostra niente se
+non si sa di quanto balla.
 
 Qui funziona bene per una ragione che non si generalizza. La collinetta fra le
 due buche è alta un'unità di energia, e un'unità è esattamente la salita che le
@@ -604,10 +617,10 @@ la stessa con cui si insegna a un computer a dare dei numeri alle parole di una
 lingua o ai nodi di un grafo: gli si mostrano accostamenti veri e accostamenti
 inventati, e gli si chiede di distinguerli. Per le parole sono i *word
 embedding* della {doc}`sezione su come si rappresenta il testo
-</NaturalLanguageProcessing/rappresentare-testo>`; nel capitolo sulle Graph
-Neural Network, più avanti nel libro, la stessa mossa si ritroverà col suo
-nome inglese, *negative sampling*. La famiglia è più larga di quanto il
-nome lasci pensare.
+</NaturalLanguageProcessing/rappresentare-testo>`; nel {doc}`capitolo sulle
+Graph Neural Network </GraphNeuralNetwork/overview>`, più avanti nel libro, la
+stessa mossa si ritroverà col suo nome inglese, *negative sampling*. La famiglia
+è più larga di quanto il nome lasci pensare.
 
 `````
 
@@ -634,17 +647,28 @@ P(\text{dati} \mid \mathbf{x})
 $$
 
 dove $\sigma$ è di nuovo la sigmoide, non la deviazione standard del rumore di
-poco fa. Si massimizza la log-verosimiglianza di questa classificazione
-binaria. La
-mossa decisiva è che $\log Z$ viene trattata come un parametro in più,
-stimato insieme agli altri: il modello non normalizzato
-$\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - c$ impara anche $c$, perché al
-classificatore la costante *serve* per calibrarsi. Con la massima
-verosimiglianza la stessa mossa è impossibile, non soltanto inutile:
-lasciando $c$ libero, la verosimiglianza si fa crescere quanto si vuole
-mandando $c \to -\infty$, cioè dichiarando una densità sempre più alta in
-ogni punto, e il problema non ha soluzione. È il vincolo di
-normalizzazione a impedirlo, ed è esattamente ciò a cui NCE rinuncia
+poco fa. Si massimizza la log-verosimiglianza di questa classificazione binaria,
+
+$$
+J(\theta) = \mathbb{E}_{\mathbf{x} \sim p_{\text{dati}}}\big[\log h_\theta(\mathbf{x})\big]
++ \nu\, \mathbb{E}_{\mathbf{x} \sim p_n}\big[\log\big(1 - h_\theta(\mathbf{x})\big)\big],
+$$
+
+con $h_\theta(\mathbf{x}) = P(\text{dati} \mid \mathbf{x})$ come sopra. Se $p_n$
+è positiva dove lo è $p_{\text{dati}}$ e il modello contiene la distribuzione
+vera, lo stimatore è consistente per ogni $\nu$; la sua varianza asintotica cala
+al crescere di $\nu$ e tende a quella della massima verosimiglianza per
+$\nu \to \infty$, e gli autori raccomandano un rumore il più possibile simile ai
+dati, perché a $\nu$ fissato è quello che rende la classificazione informativa
+{cite}`gutmann2012noise`. La mossa decisiva è che $\log Z$ viene trattata come
+un parametro in più, stimato insieme agli altri: il modello non normalizzato
+$\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - c$ impara anche $c$, perché
+al classificatore la costante *serve* per calibrarsi. Con la massima
+verosimiglianza la stessa mossa è impossibile, non soltanto inutile: lasciando
+$c$ libero, la verosimiglianza si fa crescere quanto si vuole mandando
+$c \to -\infty$, cioè dichiarando una densità sempre più alta in ogni punto, e
+il problema non ha soluzione. È il vincolo di normalizzazione a impedirlo, ed è
+esattamente ciò a cui NCE rinuncia
 {cite}`gutmann2010noise`.
 
 Il discriminatore delle GAN è cugino stretto di NCE: tutti e due imparano un
@@ -684,8 +708,9 @@ autori scrivono che quella proprietà per il loro scopo non serve.
     imparata è quella dei dati sporcati di rumore, non dei dati
 * - **NCE** (*noise-contrastive estimation*, la domanda sì o no) e parenti
   - La stima come un numero qualunque, insieme a tutto il resto
-  - Dipende dal rumore che si sceglie: se è troppo diverso dai dati,
-    distinguere diventa banale e non si impara nulla
+  - Dipende dal rumore che si sceglie: la stima resta corretta con
+    qualunque rumore che copra i dati, ma se è troppo diverso distinguere
+    diventa facile e servono moltissimi esempi per imparare poco
 ```
 
 Tre modi di non pagare il conto, e nessuno dei tre gratis. Le tre strade
@@ -724,8 +749,8 @@ conto non si apre nemmeno.
 - Terza via, la domanda sì o no. Al posto di «quanto è probabile questo?»
   si chiede «viene dal mondo o l'ho fabbricato io?», e si addestra il modello
   a smistare i veri dai finti. Funziona, ma dipende dal rumore che gli si
-  mette davanti: se è troppo diverso dai dati, il gioco diventa facile e non
-  si impara niente.
+  mette davanti: se è troppo diverso dai dati, il gioco diventa
+  facile, e per imparare qualcosa servono moltissimi esempi.
 ```
 `````
 

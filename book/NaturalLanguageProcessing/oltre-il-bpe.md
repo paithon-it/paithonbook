@@ -67,9 +67,11 @@ $P(x) = \prod_i p(x_i)$ con $p$ stimata per frequenza relativa. Sotto questo
 modello, il guadagno esatto di log-verosimiglianza di una fusione cresce
 (circa) come $\mathrm{freq}(ab)$ volte il logaritmo di quanto la coppia è più
 frequente del previsto: pesa cioè anche *quante volte* la fusione si applica.
-Il criterio adottato in pratica lascia cadere quel peso e valuta il guadagno
-*per occorrenza*; un'euristica ispirata alla verosimiglianza, più che una sua
-conseguenza:
+L'implementazione con cui Google ha addestrato il vocabolario di BERT non è
+mai stata pubblicata, e il criterio che circola è una ricostruzione dalla
+letteratura, quella della libreria `tokenizers` di Hugging Face. Quel criterio
+lascia cadere il peso e valuta il guadagno *per occorrenza*; un'euristica
+ispirata alla verosimiglianza, più che una sua conseguenza:
 
 $$
 (a^\star, b^\star) \;=\;
@@ -115,7 +117,10 @@ BERT usa un vocabolario di circa $30\,000$ token così costruiti. In fase di
 codifica, inoltre, quella implementazione non replica una lista di fusioni ma
 applica una scansione greedy del prefisso più lungo presente nel
 vocabolario: differenza sottile che può produrre segmentazioni diverse da
-quelle che il replay di BPE darebbe a parità di vocabolario.
+quelle che il replay di BPE darebbe a parità di vocabolario. Diverso è anche il
+fallimento: se da un certo punto della parola nessun prefisso sta nel
+vocabolario, l'implementazione di BERT restituisce `[UNK]` per la parola
+intera, e non per il solo pezzo mancante.
 
 `````
 
@@ -153,16 +158,20 @@ I pezzi si possono anche scegliere al rovescio di BPE. Invece di partire dalle
 lettere e incollare, si parte da un cassetto troppo pieno: dentro ci sono
 tutti i frammenti che nel testo ricorrono un po’, molti più di quanti ce ne
 stiano. Poi si toglie. Si prende uno spezzone, si rifanno senza di lui tutte
-le collane del testo, e se nessuna ne sente la mancanza si butta; si rifà il
-giro finché nel cassetto resta il numero di pezzi che ci si era prefissi.
+le collane del testo e si guarda quanto peggiorano. A ogni giro si butta una
+parte degli spezzoni, quelli di cui si sente meno la mancanza, e si tengono
+sempre le perline di una lettera sola, perché senza di loro qualche collana non
+si infilerebbe più. Si rifà il giro finché nel cassetto resta il numero di
+pezzi che ci si era prefissi.
 Quanto ciascuno serva si scopre solo usandolo: si infila, si segna quali sono
 serviti, si aggiorna il conto e si ricomincia, finché non cambia più niente.
 
 Davanti a una parola nuova, con il cassetto ripulito non si ripetono gli
 incollaggi nell'ordine in cui sono stati scoperti: si cerca il modo migliore di
-coprirla con gli spezzoni rimasti. Ogni modo ha il suo punteggio, quindi si può
-prendere apposta il secondo migliore, e il modello vede la stessa parola
-composta in modi diversi senza affezionarsi a uno solo.
+coprirla con gli spezzoni rimasti. Ogni modo ha il suo punteggio, quindi in
+allenamento si può pescare a sorte fra i modi, dando più biglietti a quelli col
+punteggio più alto, e il modello vede la stessa parola composta in modi diversi
+senza affezionarsi a uno solo.
 
 Resta un buco. Gli spezzoni sono fatti delle lettere già viste, e le lettere del
 mondo sono oltre centomila: nessun corpus le contiene tutte. Un ideogramma raro,
@@ -192,12 +201,13 @@ SentencePiece è insieme un formato e una libreria, e va guardato su due piani:
 come tratta il testo in ingresso, e con quale algoritmo costruisce il
 vocabolario.
 
-Il primo piano è la normalizzazione e la reversibilità. L'input è trattato
-come una sequenza Unicode, passata per una normalizzazione (NFKC nella
-configurazione predefinita), in cui lo spazio è rimpiazzato dal meta-simbolo
-`▁` (U+2581, LOWER ONE EIGHTH BLOCK) prefisso al segmento che segue. La
-decodifica è la concatenazione dei token seguita dalla sostituzione inversa, e
-vale l'identità
+Il primo piano è la normalizzazione e la reversibilità. L'input è trattato come
+una sequenza Unicode, passata per una normalizzazione (nella configurazione
+predefinita la regola `nmt_nfkc`, cioè NFKC più alcune regole pensate per la
+traduzione, e gli spazi ripetuti fusi in uno solo), in cui lo spazio è
+rimpiazzato dal meta-simbolo `▁` (U+2581, LOWER ONE EIGHTH BLOCK) prefisso al
+segmento che segue. La decodifica è la concatenazione dei token seguita dalla
+sostituzione inversa, e vale l'identità
 
 $$
 \mathrm{decode}\bigl(\mathrm{encode}(\mathrm{norm}(s))\bigr)
@@ -209,8 +219,8 @@ proprietà che gli autori chiamano tokenizzazione *lossless*, e che nelle
 pipeline basate su tokenizzatori dipendenti dalla lingua non è garantita,
 perché la detokenizzazione è lì una collezione di regole ad hoc.
 
-Il secondo piano è l'algoritmo di costruzione del vocabolario, dove
-SentencePiece offre BPE e in alternativa il modello unigram
+Il secondo piano è l'algoritmo di costruzione del vocabolario. SentencePiece
+offre BPE, ma la sua scelta predefinita è il modello unigram
 {cite}`kudo2018subword`, che procede al contrario: si parte da un vocabolario
 candidato ampio $V$ e lo si pota. A $V$ fissato, il modello è lo stesso
 unigramma già incontrato con WordPiece, cioè assegna a una segmentazione
@@ -222,8 +232,12 @@ l'algoritmo EM (lo stesso delle misture gaussiane della {doc}`sezione su
 riduzione e clustering </MachineLearning/riduzione-clustering>`: qui la
 variabile nascosta, quella che renderebbe facile la stima, è la
 segmentazione e non l'identità della componente); poi, per ogni token, si
-calcola quanto la verosimiglianza totale calerebbe rimuovendolo, e si
-elimina la frazione di token meno utili.
+calcola quanto la verosimiglianza totale calerebbe rimuovendolo, e si tiene
+soltanto la frazione più utile (nel lavoro originale l'80%). I caratteri
+singoli non si tolgono mai: sono loro a garantire che ogni stringa del corpus
+resti segmentabile. Il vocabolario candidato di partenza è l'unione dei
+caratteri e delle sottostringhe più frequenti del corpus, estratte con un
+array dei suffissi, e va scelto ben più grande della taglia finale.
 Si itera fino alla taglia voluta. La segmentazione di una stringa nuova è
 quella di massima probabilità, trovata con Viterbi in tempo lineare nella
 lunghezza. Due proprietà distinguono unigram da BPE: è un modello
@@ -244,7 +258,15 @@ meritare una fusione, un singolo ideogramma può costare più token di una parol
 inglese intera. La
 copertura universale non è gratis: si paga in lunghezza di sequenza, sempre
 per le lingue meno rappresentate nel corpus di addestramento del
-tokenizzatore.
+tokenizzatore. Il vocabolario di GPT-2 conta 50 257 voci: i 256 byte, 50 000
+fusioni e un simbolo di fine testo. Prima di fondere, un'espressione regolare
+separa lettere, cifre, punteggiatura e spazi, così che nessuna fusione
+attraversi due categorie. SentencePiece arriva allo stesso risultato per
+un'altra strada, l'opzione `byte_fallback`, spenta per default. Senza, i
+caratteri che coprono l'ultimo $0{,}05\%$ del corpus
+(`character_coverage=0.9995`) diventano `<unk>`; con l'opzione accesa si
+scrivono con i loro byte, e il vocabolario resta a sotto-parole di carattere
+per tutto il resto.
 
 `````
 
@@ -331,9 +353,7 @@ spalle. La prima è comunissima, perché quasi sempre *gatto* è preceduto da un
 spazio; la seconda è rara, perché ricorre solo dove *gatto* attacca senza
 spazio davanti, cioè quasi mai.
 
-Ne segue una cosa che sorprende chiunque non l'abbia mai sentita. Il testo che
-si scrive a un modello per farlo lavorare (una domanda, un'istruzione, l'inizio
-di un documento da completare) si chiama prompt. Se il vostro prompt
+Ne segue una cosa che sorprende chiunque non l'abbia mai sentita. Se il prompt
 finisce con uno spazio, quello spazio l'avete già speso voi, e al modello
 tocca continuare con un token *senza* barretta iniziale, cioè con la variante
 rara, quella su cui ha molta meno esperienza. Un solo carattere invisibile in
@@ -389,10 +409,18 @@ tokenizzazione del testo, la soluzione è diversa perché diversa è la materia
 prima.
 
 E la domanda che resta aperta, in entrambi i casi, è se il testo e il suono
-debbano davvero passare per dei simboli, o se un giorno i modelli lavoreranno
-direttamente sui byte grezzi. Per ora la risposta è economica più che teorica:
-i simboli accorciano le sequenze, e la lunghezza delle sequenze è ciò che si
-paga.
+debbano passare per dei simboli scelti prima dell'addestramento. Per il testo
+la strada senza tokenizzatore esiste già. ByT5 legge e scrive direttamente i
+byte UTF-8 {cite}`xue2022byt5` e paga il conto previsto: sequenze circa quattro
+volte più lunghe di quelle a sotto-parole. I modelli successivi riducono il
+conto raggruppando i byte dentro la rete, in blocchi di taglia fissa (MEGABYTE
+{cite}`yu2023megabyte`) oppure in blocchi che si allungano dove il byte
+successivo è facile da prevedere e si accorciano dove è incerto (il Byte Latent
+Transformer {cite}`pagnoni2024byte`). La segmentazione resta, ma passa dentro
+il modello e si impara con il resto dei pesi, invece di stare in un file
+fissato prima. Se il tokenizzatore resiste, la ragione è economica più che
+teorica: i simboli accorciano le sequenze, e la lunghezza delle sequenze è ciò
+che si paga.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -419,8 +447,8 @@ paga.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- WordPiece {cite}`schuster2012japanese` ha la stessa struttura di BPE ma
-  sceglie la coppia che massimizza
+- WordPiece {cite}`schuster2012japanese` ha la stessa struttura di BPE; la
+  ricostruzione oggi in uso sceglie la coppia che massimizza
   $\mathrm{freq}(ab)/(\mathrm{freq}(a)\,\mathrm{freq}(b))$: non ciò che ricorre,
   ma ciò che ricorre più di quanto ci si aspetterebbe dal caso.
 - SentencePiece {cite}`kudo2018sentencepiece` tratta il testo come flusso

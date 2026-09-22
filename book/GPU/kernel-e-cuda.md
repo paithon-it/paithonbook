@@ -7,10 +7,7 @@ innocua è appena partito un piccolo programma, lanciato in un colpo solo su un
 milione di minuscoli esecutori che sommano ognuno la propria coppia di numeri,
 tutti insieme. Quel programma ha un nome: **kernel**.
 
-(Un tensore, se serve un ripasso, è la scatola in cui il deep learning tiene i
-numeri: una lunga fila di valori, o una tabella, o una pila di tabelle,
-comunque tanti numeri raccolti sotto un nome solo. `a + b` somma i due mucchi
-posizione per posizione.) Il kernel è l'unità di lavoro che gira davvero sulla
+Il kernel è l'unità di lavoro che gira davvero sulla
 GPU, e finora l'abbiamo solo nominata. Nella sezione sull'architettura abbiamo
 visto *chi* esegue (gli Streaming Multiprocessor, i warp da 32 thread); in
 quella sulla memoria, *da dove* arrivano i dati. Qui vediamo *cosa* eseguono:
@@ -20,8 +17,7 @@ il kernel, appunto, e come lo si scrive.
 
 La cosa spiazzante, la prima volta, è che un kernel non descrive il lavoro
 intero. Descrive quello di *un solo* esecutore, un thread, su un pezzetto di
-dato: come una ricetta scritta per una porzione, che poi viene consegnata a
-migliaia di cuochi in una volta sola.
+dato, e la GPU lo replica su tutti i thread della griglia in una volta sola.
 
 Facciamo prima un po’ d'ordine sul pezzetto di dato. La fila di numeri su cui
 un kernel lavora, messi in ordine uno dopo l'altro e ciascuno con la sua
@@ -163,7 +159,10 @@ il kernel vero e proprio sono le sette righe di conti in alto, il resto è il
 modo di lanciarlo.
 
 ```python
+import os
 import torch
+if not torch.cuda.is_available():
+    os.environ["TRITON_INTERPRET"] = "1"   # senza GPU, Triton interpreta il kernel sulla CPU
 import triton
 import triton.language as tl
 
@@ -186,6 +185,13 @@ def fused_relu(x, a, b):
     grid = lambda meta: (triton.cdiv(n, meta["BLOCK_SIZE"]),)
     fused_kernel[grid](x, out, a, b, n, BLOCK_SIZE=1024)
     return out
+
+
+print(fused_relu(torch.tensor([3.0, -4.0]), a=2.0, b=1.0))
+```
+
+```text
+tensor([7., 0.])
 ```
 
 `````{tab} Elementare
@@ -322,7 +328,11 @@ poi fondere ancora non rende più niente.
 Ci sono due costi sovrapposti. Il primo è il **launch overhead**: ogni
 invocazione di kernel richiede alla CPU di preparare e inviare il lancio alla
 GPU, un costo dell'ordine dei microsecondi che, moltiplicato per una catena di
-molte operazioni leggere, diventa visibile. Il secondo, più pesante, è il
+molte operazioni leggere, diventa visibile. Ha una cura sua, indipendente
+dalla fusione: i *CUDA Graphs*, che registrano una volta la sequenza di lanci
+e la rieseguono con una sola chiamata dalla CPU, ed è quello che accende
+`torch.compile(mode="reduce-overhead")`. Tolgono i lanci, non i viaggi in
+memoria. Il secondo, più pesante, è il
 traffico di memoria. Le operazioni *elemento-per-elemento* hanno intensità
 aritmetica bassissima: come calcolato nel roofline della sezione precedente,
 una somma vettoriale fa circa $1$ FLOP ogni $12$ byte spostati (profondamente

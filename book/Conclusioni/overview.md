@@ -149,7 +149,9 @@ E poi gli ultimi capitoli, che non parlano di architetture ma di mestiere:
 portare un modello in produzione e tenerlo in vita
 ([MLOps](../MLOps/overview.md)), aprirlo per capire perché ha deciso così
 ([interpretabilità](../Interpretabilita/overview.md)), rispondere delle sue
-conseguenze ([AI responsabile](../AIResponsabile/overview.md)). Sono la parte
+conseguenze ([AI responsabile](../AIResponsabile/overview.md)): chi può
+scoprire che eri nei dati, chi lo inganna con una frase nascosta in una pagina
+web, quale numero gli abbiamo dato da far salire. Sono la parte
 del lavoro che decide se quello che hai costruito serve a qualcuno o fa danni,
 non appendici morali messe in fondo per buona educazione.
 
@@ -244,13 +246,13 @@ il modello guarda quanto ha sbagliato e sposta ciascuna manopola nella
 direzione che riduce l'errore, un pochino. Ripetuto abbastanza volte, funziona.
 
 Con un mixer vero la direzione giusta la scopri provando, e con milioni di
-manopole non finiresti mai. Il modello non prova: la calcola. Per ogni
-manopola si chiede "se la giro di un pelo in su, l'errore sale o scende, e di
-quanto?", e ottiene tutte le risposte insieme con un conto solo, invece che con
-milioni di tentativi. Quel conto è il gradiente, e il modo di ottenerlo in una
-passata sola è la [retropropagazione](../RetiNeurali/backpropagation.md), che
-sta nel capitolo sulle reti neurali. Senza, niente di tutto questo sarebbe
-possibile.
+manopole non finiresti mai. Il modello non prova: la calcola. Per ogni manopola
+si chiede "se la giro di un pelo in su, l'errore sale o scende, e di quanto?", e
+ottiene tutte le risposte insieme con un conto solo, invece che con milioni di
+tentativi. Quel conto è il gradiente, e il modo di ottenerlo in una passata sola
+è la [retropropagazione](../RetiNeurali/backpropagation.md), che sta nel
+{doc}`capitolo sulle reti neurali </RetiNeurali/overview>`. Senza, niente di
+tutto questo sarebbe possibile.
 
 Ci si ferma dove ogni piccolo giro peggiora le cose, e quello non è il suono
 più bello che quel mixer sappia fare. Con le manopole messe in tutt'altro modo
@@ -341,15 +343,16 @@ Tre risorse, tre rette. Gli assi sono in scala logaritmica: un passo lungo
 l'asse non aggiunge una quantità, la moltiplica per dieci. Una retta che scende
 vuol dire quindi che per guadagnare ancora un poco bisogna moltiplicare la
 risorsa, non aggiungerne un pezzetto. Accanto a ogni retta c'è la sua legge di
-potenza, e quanto rende quella moltiplicazione è dieci elevato al suo esponente:
-prendendo dieci volte tanto, la loss resta a 0,89 di quanto era, poco meno di
-nove decimi, per il calcolo; a 0,80, quattro quinti, per i dati; a 0,84, poco
-più di cinque sesti, per i parametri. Le tre rette sono disegnate con
-inclinazioni proporzionali ai tre esponenti, e la più ripida è quella dei dati,
-cioè la risorsa che rende di più. Schema ridisegnato sugli esponenti misurati da
-Kaplan e colleghi nel 2020. Nel primo pannello il calcolo è quello «allocato al
-meglio», come dice l'asse: per ogni budget, con la taglia di modello e la durata
-di addestramento che rendono di più.
+potenza, cioè un numero che dice quanto si accorcia la loss ogni volta che la
+risorsa si moltiplica per dieci (il conto è dieci elevato a quel numero, e lo fa
+una calcolatrice): prendendo dieci volte tanto, la loss resta a 0,89 di quanto
+era, poco meno di nove decimi, per il calcolo; a 0,80, quattro quinti, per i
+dati; a 0,84, poco più di cinque sesti, per i parametri. Le tre rette sono
+disegnate con inclinazioni proporzionali ai tre esponenti, e la più ripida è
+quella dei dati, cioè la risorsa che rende di più. Schema ridisegnato sugli
+esponenti misurati da Kaplan e colleghi nel 2020. Nel primo pannello il calcolo
+è quello «allocato al meglio», come dice l'asse: per ogni budget, con la taglia
+di modello e la durata di addestramento che rendono di più.
 ```
 
 L'assenza di un ginocchio in {numref}`fig-leggi-di-scala-tre` è ciò che ha
@@ -363,7 +366,7 @@ Quello che nessuno sa è a che altezza sia. È bene tenerlo a mente in quel che
 segue.
 
 Un capitolo di conclusioni, in questa materia, di solito chiude proprio con le
-«direzioni future», e anche questo un tempo lo faceva, indicandone tre: i
+«direzioni future», e le tre che si indicavano più spesso erano: i
 modelli di fondazione (in inglese *foundation model*: uno solo, enorme,
 riadattato a mille compiti), la multimodalità (un modello solo che tratta
 insieme più di un tipo di dato, il testo con le immagini o col suono) e gli
@@ -372,7 +375,8 @@ le ha superate comunque: tutte e tre sono entrate nel libro, nessuna
 nella forma prevista. La multimodalità ha un capitolo suo, per la coppia che
 conta di più, visione e linguaggio; il suono e la voce, invece, hanno preso un
 capitolo per uno, per conto proprio. E gli agenti ne hanno tre: il loro,
-quello sui prompt e quello sui sistemi multi-agente.
+quello sull'ingegneria degli LLM (prompt, contesto, cicli) e quello sui
+sistemi multi-agente.
 
 I modelli di fondazione, in compenso, hanno fatto una fine più curiosa: non
 sono diventati né un capitolo né una sezione. Si sono sciolti dentro quello sui
@@ -412,7 +416,8 @@ corto è una spesa fra le tante, e lo resta più a lungo di quanto quel quadrato
 lasci temere: passa in testa a tutte le altre solo da qualche decina di
 migliaia di parole in su, e prima ancora a riempirsi è la memoria, che è un
 guaio diverso. C'è una gara in corso per pagare meno, ed è il mestiere del
-capitolo sull'efficienza e dei due sulle architetture nate apposta.
+{doc}`capitolo sull'efficienza </Efficienza/overview>` e dei due sulle
+architetture nate apposta.
 
 Se capisce o indovina. Un modello che risponde bene non è per forza un
 modello che ha capito, e per saperlo bisogna aprirlo e guardarci dentro. Non è
@@ -420,19 +425,21 @@ facile: quello che ha imparato non sta scritto in chiaro da nessuna parte, è
 spalmato su miliardi di numeri, e un singolo pezzo di rete si accende per cose
 che fra loro non c'entrano niente.
 
-Se ci si può fidare. Un agente lavora da solo per venti passi di fila, e
-ogni passo gli riesce 95 volte su 100. Quante volte gli riescono tutti e venti?
-Il conto sta in una calcolatrice: si moltiplica, perché ogni passo aggiunge una
+Se ci si può fidare. Un agente lavora da solo per venti passi di fila, e ogni
+passo gli riesce 95 volte su 100. Quante volte gli riescono tutti e venti? Il
+conto sta in una calcolatrice: si moltiplica, perché ogni passo aggiunge una
 condizione da soddisfare, e 0,95 per venti volte fa 0,3585, appena 36 su 100.
 Quel conto però suppone due cose che per un agente vero non valgono: che un solo
 inciampo rovini tutto, e che i venti passi non si influenzino fra loro. Se
 l'agente si accorge dello sbaglio e torna indietro va meglio; se i passi non
-sbagliano mai insieme, e a rovinare una prova è ogni volta un altro passo, va
-peggio, fino al caso in cui non ne finisce nessuna; se invece sbagliano tutti
-insieme, per la stessa ragione, o va tutto bene o va tutto storto in blocco, e
-le volte buone risalgono a 95 su 100. Il 36 su 100 è quindi il caso di
-riferimento, non il peggiore, e quello che non cambia mai è che ogni passo in
-più è una condizione in più: per questo i compiti lunghi restano difficili.
+sbagliano mai insieme, va peggio: venti passi che inciampano cinque volte su
+cento l'uno fanno cento inciampi ogni cento prove, e se ciascuno cade in una
+prova diversa ogni prova ne prende uno, e non ne finisce nessuna; se invece
+sbagliano tutti insieme, per la stessa ragione, o va tutto bene o va tutto
+storto in blocco, e le volte buone risalgono a 95 su 100. Il 36 su 100 è quindi
+il caso di riferimento, non il peggiore, e quello che non cambia mai è che ogni
+passo in più è una condizione in più: per questo i compiti lunghi restano
+difficili.
 
 Quanto consuma. Addestrare e far girare questi modelli costa corrente,
 acqua per raffreddare i calcolatori e chip che sanno fabbricare pochissime

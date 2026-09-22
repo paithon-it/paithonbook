@@ -11,9 +11,12 @@ Sapere quanto un dato è probabile e saperlo comprimere sono la stessa cosa
 detta in due modi, e la {doc}`sezione sulla teoria dell'informazione
 </Matematica/teoria-informazione>`, nei richiami di matematica, l'ha già
 stabilito: il numero di bit che servono per scrivere un messaggio con il codice
-migliore possibile è $-\log_2 p$ del messaggio. Non «all'incirca a meno di un
-fattore»: proprio quella grandezza lì, con uno scarto di un paio di bit su
-tutto il file, che è quanto costa scrivere in bit interi una quantità che
+migliore possibile è $-\log_2 p$ del messaggio, cioè quante volte bisogna
+dimezzare 1 per arrivare alla sua probabilità. Un messaggio che ha una
+probabilità su otto costa 3 bit, perché $2 \times 2 \times 2 = 8$; uno che ne ha
+una su mille ne costa circa dieci, perché $2^{10} = 1024$. Non «all'incirca a
+meno di un fattore»: proprio quella grandezza lì, con uno scarto di un paio di
+bit su tutto il file, che è quanto costa scrivere in bit interi una quantità che
 intera non è.
 
 Un modello che sa dire $p(\mathbf{x})$ *è* un compressore, e non per
@@ -49,18 +52,25 @@ Va benissimo per confrontare due modelli, ma non è la stessa cosa.
 
 `````{tab} Superiore
 
-Il codice della sezione precedente stampa nat, la letteratura riporta bit per
-dimensione, e il ponte fra i due è una divisione:
+Il codice della sezione precedente stampa nat di una densità continua su dati
+standardizzati, la letteratura riporta bit per dimensione su pixel interi, e il
+ponte fra i due è una divisione, purché $p$ sia misurata nella scala giusta:
 
 $$
 \text{bit/dim} = \frac{-\log p(\mathbf{x})}{D \ln 2},
 $$
 
 con $D$ il numero di componenti del dato ($D = 32 \times 32 \times 3 = 3.072$
-per un'immagine di CIFAR-10). Su CIFAR-10, che è il banco di prova storico
-della famiglia: NICE $4{,}48$; RealNVP $3{,}49$; Glow $3{,}35$; PixelCNN
-$3{,}14$; Gated PixelCNN $3{,}03$; PixelRNN $3{,}00$; PixelCNN++ $2{,}92$. E in
-cima, a $8{,}00$, il modello che non sa niente.
+per un'immagine di CIFAR-10) e $p$ una probabilità sui valori interi, oppure una
+densità sui pixel dequantizzati nella loro scala originale $[0, 256)^D$. Se il
+modello lavora sui pixel riscalati in $[0, 1]$, al numeratore si aggiunge
+$D \ln 256$, cioè otto bit per dimensione, che è il determinante del
+riscalamento; senza quel termine i numeri escono irrisori o negativi. Per la
+stessa ragione la log-densità delle due lune, misurata su coordinate
+standardizzate, non ha un equivalente in bit. Su CIFAR-10, che è il banco di
+prova storico della famiglia: NICE $4{,}48$; RealNVP $3{,}49$; Glow $3{,}35$;
+PixelCNN $3{,}14$; Gated PixelCNN $3{,}03$; PixelRNN $3{,}00$; PixelCNN++
+$2{,}92$. E in cima, a $8{,}00$, il modello che non sa niente.
 
 Una precisazione che la parola «esatta» rischia di far perdere. Un modello
 autoregressivo sui 256 livelli dà la probabilità di *quell'immagine lì*, e il
@@ -74,6 +84,18 @@ di Jensen {cite}`theis2016note`: la log-verosimiglianza media del modello
 continuo sta sotto quella del corrispondente modello discreto, quindi i bit
 per dimensione riportati per un flusso sono un limite *superiore* al costo di
 codifica vero. Conservativo, il che va benissimo, ma non è la stessa cosa.
+
+Che verosimiglianza e qualità dei campioni si possano separare lo mostrano due
+costruzioni di Theis e colleghi {cite}`theis2016note`. Nella prima si mescola un
+buon modello $p$ con un generatore di rumore $r$, $q = 0{,}01\,p + 0{,}99\,r$:
+poiché $q \ge 0{,}01\,p$ ovunque, $\log_2 q(\mathbf{x}) \ge \log_2 p(\mathbf{x})
+-  \log_2 100$, cioè $q$ perde al più $6{,}6$ bit per immagine, $0{,}002$ bit
+  per dimensione su CIFAR-10, mentre novantanove campioni su cento sono rumore.
+  Nella seconda, un modello che ripete le immagini di addestramento con un
+  nucleo strettissimo attorno a ciascuna dà campioni perfetti e una
+  verosimiglianza pessima sui dati di prova. Una differenza di qualità che salta
+  all'occhio può quindi valere, in bit per dimensione, meno dell'ultima cifra
+  che le tabelle riportano.
 
 `````
 
@@ -227,9 +249,11 @@ dichiara una velocità in ogni punto dello spazio e in ogni istante, si
 lascia scorrere, e il punto di partenza arriva dove deve. La deformazione
 diventa un movimento continuo, invece di una scala di gradini.
 
-Il guadagno è enorme. In quel limite il logaritmo del determinante si riduce
-all'integrale nel tempo della traccia della jacobiana, cioè della sola
-diagonale: è il risultato delle *neural ODE* di Ricky Chen e colleghi
+Il guadagno è enorme. In quel limite il fattore di stiramento non va più
+calcolato su tutta la tabella delle derivate: basta la sua diagonale, cioè
+quanto ogni coordinata stira sé stessa, sommata istante per istante lungo il
+movimento (in formule, l'integrale nel tempo della traccia della jacobiana). È
+il risultato delle *neural ODE* di Ricky Chen e colleghi
 {cite}`chen2018neural`, che al posto di una pila di strati mettono
 l'integrazione di un'equazione differenziale. Quella traccia però va ancora
 calcolata, e calcolarla per intero costa quanto il quadrato delle dimensioni; a

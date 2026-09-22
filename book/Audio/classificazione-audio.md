@@ -3,11 +3,10 @@
 Chiudi gli occhi in una stanza e prova a nominare quello che senti: il ronzio
 del frigorifero, un'auto che passa, il tuo stesso respiro. Il cervello lo fa
 di continuo, in sottofondo, senza fatica, ed è un lavoro sorprendentemente
-difficile da imitare. Nella prima sezione di questo capitolo abbiamo imparato
-a trasformare un suono in immagine: lo spettrogramma, la «parola visibile»
-di Potter, con il tempo sull'asse orizzontale, la frequenza su quello
-verticale e l'intensità resa dal colore (lo abbiamo costruito passo per passo
-in [Dal suono alle feature](dal-suono-alle-feature.md)). Fatto quel passaggio,
+difficile da imitare. In {doc}`Dal suono alle feature
+</Audio/dal-suono-alle-feature>` abbiamo
+imparato a trasformare un suono in immagine: lo spettrogramma, la «parola
+visibile» di Potter. Fatto quel passaggio,
 la domanda «che suono è questo?» smette di essere un problema di *audio* e
 diventa un problema di *visione*. Un abbaiare, un vetro che si rompe, una
 corda di chitarra pizzicata: ognuno lascia sullo spettrogramma una firma
@@ -130,8 +129,20 @@ vera. Nessun vincolo di somma: più classi possono essere «accese» insieme. Il
 **rilevamento degli eventi sonori** (*sound event detection*, il cuore delle
 sfide DCASE, la gara annuale sul rilevamento e la classificazione di scene ed
 eventi acustici) spinge oltre, chiedendo una predizione per ogni istante (un
-tagging *frame per frame* con i confini temporali di ogni evento) e si valuta
-con metriche che confrontano gli intervalli predetti con quelli veri.
+tagging *frame
+per frame* con i confini temporali di ogni evento) e si valuta con metriche che
+confrontano gli intervalli predetti con quelli veri. Il nodo è che le etichette
+sono quasi sempre della clip e non del frame, cioè *deboli*: è apprendimento a
+istanze multiple, dove la clip è un sacco di frame e l'etichetta dice soltanto
+se nel sacco c'è almeno un evento. Il modello produce allora probabilità per
+frame $\hat{y}_{c,t}$, una funzione di *pooling* le riduce a una probabilità di
+clip, e su quella si calcola la BCE. Il massimo $\max_t \hat{y}_{c,t}$ è fedele
+alla definizione ma passa il gradiente a un frame solo; la media lo spalma su
+tutti e premia gli eventi lunghi; la *linear softmax*
+$\sum_t \hat{y}_{c,t}^2 / \sum_t \hat{y}_{c,t}$ sta in mezzo, come le varianti
+ad attenzione che imparano quali frame pesare. Da quella scelta dipende se i
+confini temporali che escono dal modello valgono qualcosa, visto che nessuno
+glieli ha mai mostrati {cite}`wang2019comparison`.
 
 `````
 
@@ -159,6 +170,10 @@ Il catalogo però non si riempie in modo uniforme. La musica e il parlato
 compaiono ovunque; il verso di un uccello raro sta in un centinaio di frammenti
 su due milioni. E il modello lo si giudica categoria per categoria, facendo poi
 la media dei voti, quindi quelle caselle quasi vuote pesano quanto la musica.
+Un modello bravissimo sulla musica e sordo agli uccelli rari prende un voto
+mediocre, anche se ha ragione su quasi tutti i frammenti: la media per
+categoria è fatta apposta per non lasciarsi abbagliare dalle caselle affollate,
+e costringe a imparare anche quelle con pochi esempi.
 
 `````
 
@@ -189,9 +204,10 @@ modello e il pre-addestramento della precisione di ogni singola annotazione.
 
 Fino al 2021 la mappa era chiara: gli spettrogrammi si classificano con una
 rete convoluzionale, al più con un po’ di attenzione appiccicata sopra
-all'ultimo strato. Poi è arrivato l’**Audio Spectrogram Transformer** (AST)
-di Gong, Chung e Glass {cite}`gong2021ast`, e ha buttato via proprio quelle. Le
-convoluzioni sono i filtri che scorrono: piccole griglie di numeri, larghe
+all'ultimo strato. Poi è arrivato l’**Audio Spectrogram Transformer** (AST), e
+le convoluzioni le
+ha buttate via del tutto {cite}`gong2021ast`. Le convoluzioni sono i filtri che
+scorrono: piccole griglie di numeri, larghe
 pochi quadretti, che passano sull'immagine un pezzetto alla volta cercando
 sempre la stessa cosa (un bordo, una macchia, una riga). Erano il pezzo di
 macchina attorno a cui tutto il resto era costruito

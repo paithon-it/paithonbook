@@ -1,24 +1,25 @@
 # Tendenze e limiti
 
-Chiudere un capitolo sui Transformer con le previsioni è un esercizio
-rischioso: questo campo brucia le profezie in fretta. Più utile fissare le
+Fare previsioni sui Transformer è un esercizio rischioso: questo campo brucia
+le profezie in fretta. Più utile fissare le
 direzioni di lavoro visibili oggi, e i problemi aperti che le motivano. Perché
 il paradosso è proprio questo: mai un'architettura ha funzionato così bene, e
 mai è stato così chiaro quanto costa farla funzionare.
 
 ## Dove punta la ricerca
 
-Tre cantieri, su tutti, e conviene nominarli prima di scendere in uno.
+I cantieri aperti sono soprattutto questi, e vanno nominati prima di
+scendere in uno.
 
 Il primo è fare di più con meno: i grandi modelli sono motori potentissimi
 che consumano moltissimo, e buona parte della ricerca è una gara di efficienza,
 per farli stare in un telefono invece che in un centro di calcolo. Il secondo è
 unire i sensi: modelli che leggono, guardano e ascoltano insieme, come
 l'assistente a cui mostri una foto e fai una domanda a voce. Il terzo è
-superare i limiti dell'architettura stessa: l'assemblea in cui ogni parola
-parla con ogni altra costa troppo sui testi lunghi, perché raddoppiando le
-parole le conversazioni quadruplicano, e questo spinge a cercare modi più
-economici di far comunicare le parti di un testo.
+superare i limiti dell'architettura stessa: nell'attenzione piena ogni token si
+confronta con ogni altro, e su una sequenza di $n$ token il costo cresce come
+$n^2$, quindi raddoppiando la lunghezza i confronti quadruplicano; questo spinge
+a cercare modi più economici di far comunicare le parti di un testo.
 
 Del primo cantiere conviene vedere da vicino il metodo più elegante, che si
 chiama distillazione: si prende un modello grande e bravo, lo si mette a
@@ -59,8 +60,10 @@ quanti. Sa quello che sanno tutti i suoi redattori, e su ogni articolo spende
 quanto ne spende uno.
 
 Sul contesto lungo la ricerca prova invece a far comunicare le parole senza
-convocarle tutte insieme, e le due strade più promettenti sono l'attenzione
-lineare e i modelli a spazio di stato, che hanno un capitolo ciascuna. Una
+convocarle tutte insieme, e le due strade più promettenti sono
+l’{doc}`attenzione
+lineare </AttenzioneLineare/overview>` e i {doc}`modelli a spazio di stato
+</StateSpaceModel/overview>`, che hanno un capitolo ciascuna. Una
 terza non tocca il meccanismo e cambia il modo di eseguirlo, tenendo in memoria
 meno roba per volta. Sul fronte dei sensi si costruiscono mappe del significato
 condivise, dove una foto di gatto e la parola «gatto» cadono nello stesso
@@ -110,9 +113,10 @@ stanza fosse una sola, e ci si rientrasse? I giri li deciderebbe la domanda:
 due per «due più due», venti per il rompicapo. A ogni giro un bigliettino può
 dire «io ho finito», e resta lì com'è mentre gli altri continuano.
 
-Nei muri della stanza non è scritto nessun massimo, e sulle frasi lunghe si
-vede: davanti a una più lunga di tutte quelle viste in addestramento si fanno
-due giri in più, invece di fermarsi in cima perché il palazzo finisce.
+Nei muri della stanza non è scritto nessun massimo: il numero di giri lo
+decide la domanda e non l'edificio, e per questo la stanza sola promette di
+reggere anche frasi più lunghe di tutte quelle viste in addestramento, dove il
+palazzo finirebbe prima.
 
 Manca un pezzo. Un bigliettino che può fermarsi non ha motivo di farlo, girare
 è gratis e un giro in più non fa danno. Perciò all'ingresso si paga un
@@ -200,29 +204,29 @@ risposta corrente è: non necessariamente.
 
 ## I limiti che restano
 
-Un elenco onesto, da tenere accanto agli entusiasmi:
-
-- Costo: addestramento e inferenza dei modelli maggiori richiedono risorse
-  (economiche, energetiche, di hardware) concentrate in poche aziende; la
-  ricerca indipendente lavora per necessità su scala ridotta.
-- Dati: le grandi raccolte di testo prese dal web (i *corpora*) si stanno
-  esaurendo come fonte gratuita di materiale di qualità, e portano con sé le
-  distorsioni sistematiche di ciò che è stato scritto online, i bias, che i
-  modelli assorbono insieme al resto.
-- Affidabilità: le allucinazioni (risposte fluenti ma false) derivano dal
-  mestiere stesso di questi modelli, che è scrivere una parola alla volta
-  scegliendo ogni volta la continuazione più probabile; probabile non vuol dire
-  vero, e nulla nel meccanismo distingue le due cose. Mitigarle (con il
-  recupero di fonti esterne, la verifica, la calibrazione) è un problema aperto.
-- Comprensione: su cosa i modelli *capiscano* davvero il dibattito
-  scientifico è tutt'altro che chiuso, e attribuire loro intenzioni o
-  ragionamento senza prove è un errore prima ancora che una scortesia verso i
-  fatti. Prudenza, qui, è il modo in cui si tratta
-  un'affermazione che non si sa ancora come verificare.
+Accanto agli entusiasmi va tenuto il conto dei limiti, e i limiti si tengono
+l'un l'altro. Il primo è il costo: addestramento e inferenza dei modelli
+maggiori richiedono risorse (economiche, energetiche, di hardware) concentrate
+in poche aziende, e la ricerca indipendente lavora per necessità su scala
+ridotta. Quel costo cresce con i dati, e i dati sono il secondo limite: le
+grandi raccolte di testo prese dal web (i *corpora*) si stanno esaurendo come
+fonte gratuita di materiale di qualità, e portano con sé le distorsioni
+sistematiche di ciò che è stato scritto online, i bias, che i modelli
+assorbono insieme al resto. Da quei dati il modello impara a scrivere il
+probabile, e qui sta il terzo limite, l'affidabilità: le allucinazioni
+(risposte fluenti ma false) derivano dal mestiere stesso di questi modelli, che
+è scrivere una parola alla volta scegliendo ogni volta la continuazione più
+probabile; probabile non vuol dire vero, e nulla nel meccanismo distingue le
+due cose. Mitigarle (con il recupero di fonti esterne, la verifica, la
+calibrazione) è un problema aperto. E resta aperta la domanda più grande, su
+che cosa i modelli *capiscano* davvero: il dibattito scientifico è
+tutt'altro che chiuso, e attribuire loro intenzioni o ragionamento senza prove
+è un errore prima ancora che una scortesia verso i fatti. Prudenza, qui, è il
+modo in cui si tratta un'affermazione che non si sa ancora come verificare.
 
 ## Niente di nuovo, tutto in un ordine nuovo
 
-Con questo capitolo si chiude un tratto del percorso tecnico del libro: dai
+Si chiude qui un tratto del percorso tecnico: dai
 neuroni del percettrone all'attenzione, ogni pezzo dei Transformer è un
 concetto che hai già incontrato, montato in una configurazione nuova.
 L'evidenziatore che pesa le parole, il posto numerato che dice l'ordine, la
@@ -294,10 +298,12 @@ insegue le mode: le legge.
 
 `````
 
-C'è però un conto che questo capitolo nomina e non salda. Se ogni parola guarda
+C'è però un conto rimasto aperto. Se ogni parola guarda
 tutte le altre, il lavoro cresce col quadrato della lunghezza, e mentre il
 modello scrive l'archivio dei suoi appunti si allunga a ogni parola prodotta:
 sono i due prezzi dell'attenzione, e li paga chi vuole leggere lungo. Da lì
-riparte Attenzione lineare, che per abbassarli mette le mani sull'unico
+riparte il {doc}`capitolo sull'attenzione lineare
+</AttenzioneLineare/overview>`,
+che per abbassarli mette le mani sull'unico
 pezzo che qui non abbiamo mai discusso, quello che decide come l'attenzione si
 spartisce fra le parole.

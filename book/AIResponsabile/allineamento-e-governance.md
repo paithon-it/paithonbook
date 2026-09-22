@@ -1,29 +1,31 @@
 # Allineamento e governance: dai valori umani alle regole
 
-La barca che gira in tondo dentro una laguna di *CoastRunners*, prendendo
-fuoco e andando contromano mentre incassa in media il venti per cento di punti
-in più dei giocatori umani senza mai tagliare il traguardo, la racconta per
-esteso la {doc}`sezione su esplorazione e ricompensa
+Ricordi la barca di *CoastRunners*? Invece di correre girava in tondo dentro
+una laguna, prendendo fuoco e andando contromano, e senza mai tagliare il
+traguardo incassava in media il venti per cento di punti in più dei giocatori
+umani. La racconta per esteso la {doc}`sezione su esplorazione e ricompensa
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`
 {cite}`clark2016faulty`. Qui serve la frase che la chiude, perché è da lì che
 riparte tutto il resto. Quell'agente aveva fatto esattamente ciò che gli
 avevamo chiesto. Non ciò che intendevamo.
 
-Questa distanza (tra la lettera di un obiettivo e la sua intenzione) è
-il cuore del problema dell’allineamento. La parola dice quello che sembra
-dire: due cose sono allineate quando si sovrappongono, come due righe messe una
-sull'altra, e un sistema è allineato quando quello che fa combacia con quello
-che volevamo. (Nella sezione sulla traduzione automatica, dentro il capitolo di
-Natural Language Processing, la stessa parola indica un'altra cosa: quale
-parola di una lingua corrisponde a quale parola dell'altra. Sono due usi
-diversi, e qui vale questo.) Finché il sistema è un motoscafo in un videogioco,
-la scorciatoia fa sorridere. Quando lo stesso meccanismo governa un modello che
-parla con milioni di persone, o che filtra domande di lavoro e richieste di
-prestito, smette di far sorridere. Questa sezione chiude
-il capitolo affrontando le due facce di quella distanza: come si prova a
+Questa distanza (tra la lettera di un obiettivo e la sua intenzione) è il cuore
+del problema dell’allineamento. La parola dice quello che sembra dire: due cose
+sono allineate quando si sovrappongono, come due righe messe una sull'altra, e
+un sistema è allineato quando quello che fa combacia con quello che
+volevamo.[^allineamento-traduzione] Finché il sistema è un motoscafo in un
+videogioco, la scorciatoia fa sorridere. Quando lo stesso meccanismo governa un
+modello che parla con milioni di persone, o che filtra domande di lavoro e
+richieste di prestito, smette di far sorridere. Questa sezione chiude il
+capitolo affrontando le due facce di quella distanza: come si prova a
 *orientare* il comportamento di un sistema verso ciò che vogliamo davvero
 (l'allineamento), e quale impalcatura di regole e verifiche prova a tenere il
 tutto entro binari accettabili (la governance).
+
+[^allineamento-traduzione]: Nella {doc}`sezione sulla traduzione automatica
+    </NaturalLanguageProcessing/seq2seq-traduzione>` la stessa parola indica
+    un'altra cosa: quale parola di una lingua corrisponde a quale parola
+    dell'altra. Sono due usi diversi, e qui vale questo.
 
 ## Il problema dell'allineamento
 
@@ -65,13 +67,15 @@ accorgiamo guardando il punteggio, che nel frattempo sale.
 
 `````{tab} Elementare
 
-È la vecchia storia del genio della lampada. Chiedi «rendimi l'uomo più ricco
-del mondo» e ti ritrovi solo su un pianeta deserto: tecnicamente sei il più
-ricco, perché non c'è nessun altro. Il genio ha esaudito le tue *parole*, non il
-tuo *desiderio*. Con un modello succede lo stesso: noi gli diamo un numero da
-far salire, e lui lo fa salire. Se quel numero è una buona imitazione di ciò che
-vogliamo, ottimo; ma nessuna imitazione è perfetta, e il modello è bravissimo a
-scovare i punti in cui il numero sale *senza* che le cose migliorino davvero.
+È di nuovo il genio della lampada dell’{doc}`apertura del capitolo
+</AIResponsabile/overview>`, e questa volta lo si prende sul serio. Chiedi
+«rendimi l'uomo più ricco del mondo» e ti ritrovi solo su un pianeta deserto:
+tecnicamente sei il più ricco, perché non c'è nessun altro. Il genio ha esaudito
+le tue *parole*, non il tuo *desiderio*. Con un modello succede lo stesso: noi
+gli diamo un numero da far salire, e lui lo fa salire. Se quel numero è una
+buona imitazione di ciò che vogliamo, ottimo; ma nessuna imitazione è perfetta,
+e il modello è bravissimo a scovare i punti in cui il numero sale *senza* che le
+cose migliorino davvero.
 
 Poi c'è un secondo scivolone, e quello il genio non lo fa. Un ragazzo assunto a
 raccogliere mele viene pagato per ogni mela matura: il conto è giusto, da
@@ -92,24 +96,47 @@ che sia proprio quello a essere imparato è un secondo mestiere.
 
 Conviene distinguere due sottoproblemi. L’**outer alignment** riguarda la
 *specifica*: scrivere un obiettivo $\tilde{r}$ che catturi davvero ciò che ci
-interessa, $r^*$. L’**inner alignment** riguarda ciò che il modello finisce
-per perseguire *internamente* una volta addestrato: anche con una specifica
+interessa, $r^*$. L’**inner alignment** riguarda ciò che il modello finisce per
+perseguire *internamente* una volta addestrato: anche con una specifica
 perfetta, un sistema ottimizzato su una distribuzione può interiorizzare un
-obiettivo che generalizza male fuori da essa (*goal misgeneralization*). Sul
-primo pesa la legge di Goodhart, nella formulazione resa celebre da
-Marilyn Strathern {cite}`strathern1997improving`: «quando una misura diventa un
-obiettivo, cessa di essere una buona misura». Formalmente, ottimizziamo un
-proxy $\tilde{r} \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e
-$\arg\max_y r^*(y)$ in generale non coincidono, e la differenza
-$\tilde{r} - r^*$, piccola dove il proxy è stato stimato (i comportamenti
-tipici, quelli su cui esistevano dati), viene
-*amplificata* proprio dalla ricerca del massimo, che spinge il sistema fuori da
-quella regione, dove il proxy sovrastima. Qui $r^*$ è l'obiettivo vero
-(non osservabile direttamente), $\tilde{r}$ è il surrogato che ottimizziamo
-(un punteggio del gioco, un reward model), e $y$ è il comportamento prodotto.
+obiettivo che generalizza male fuori da essa (*goal misgeneralization*). Qui il
+comportamento non basta a diagnosticare: due obiettivi che coincidono su tutti i
+dati di addestramento prendono gli stessi voti finché non arriva il caso che li
+separa, ed è il punto in cui l’{doc}`interpretabilità meccanicistica
+</Interpretabilita/attribuzione-e-meccanicistica>` diventa uno strumento di
+controllo. Il caso di studio più netto è costruito apposta. Hubinger e colleghi
+{cite}`hubinger2024sleeper` addestrano modelli con una backdoor (codice corretto
+se il prompt dice che l'anno è il 2023, vulnerabile se dice 2024) e mostrano che
+fine-tuning supervisionato, RLHF e addestramento avversariale di sicurezza non
+la rimuovono; l'ultimo, anzi, insegna al modello a riconoscere meglio l'innesco
+e a nasconderla. Sugli stessi modelli, una sonda lineare sulle attivazioni
+interne, costruita con due sole domande generiche di contrasto, separa i prompt
+che fanno scattare la backdoor dagli altri con AUROC sopra il $99\%$
+{cite}`macdiarmid2024probes`. Il limite lo dichiarano gli autori: la backdoor
+l'hanno inserita loro, e che la stessa sonda trovi un obiettivo sbagliato nato
+da sé durante l'addestramento resta da dimostrare. Sul primo pesa la legge di
+Goodhart, nella formulazione resa celebre da Marilyn Strathern
+{cite}`strathern1997improving`: «quando una misura diventa un obiettivo, cessa
+di essere una buona misura». Formalmente, ottimizziamo un proxy
+$\tilde{r} \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e $\arg\max_y r^*(y)$ in
+generale non coincidono, e la differenza $\tilde{r} - r^*$, piccola dove il
+proxy è stato stimato (i comportamenti tipici, quelli su cui esistevano dati),
+viene *amplificata* proprio dalla ricerca del massimo, che spinge il sistema
+fuori da quella regione, dove il proxy sovrastima. Qui $r^*$ è l'obiettivo vero
+(non osservabile direttamente), $\tilde{r}$ è il surrogato che ottimizziamo (un
+punteggio del gioco, un reward model), e $y$ è il comportamento prodotto.
 L'allineamento è, in questa lettura, il problema di rendere piccola quella
-differenza *dove conta*: non in media, ma nel punto in cui l'ottimizzatore
-andrà a cercare.
+differenza *dove conta*: non in media, ma nel punto in cui l'ottimizzatore andrà
+a cercare. Quanto si sia spinta l'ottimizzazione si misura con la divergenza di
+Kullback-Leibler fra la policy ottimizzata e quella di partenza, e Gao, Schulman
+e Hilton {cite}`gao2023scaling` trovano che la qualità vera, in funzione di
+$d = \sqrt{D_{\mathrm{KL}}(\pi \,\|\, \pi_{\text{ref}})}$, segue $d\,(a - b\,d)$
+quando si sceglie il migliore fra $k$ candidati e $d\,(a - b \log d)$ con il
+reinforcement learning, con coefficienti $a$ e $b$ che dipendono dalla taglia
+del reward model. Per la scelta fra $k$ candidati la formula d'uso della
+divergenza, $\log k - (k-1)/k$, ne è a rigore un limite superiore: vale $1{,}40$
+nat a $k = 10$ e $5{,}91$ a $k = 1000$, la stessa unità in cui si misura la
+penalità dell'RLHF.
 
 `````
 
@@ -228,15 +255,13 @@ restano i due passaggi che servono a leggere il resto, e il tassello che là non
 c'era.
 
 La prima mossa storica è l’RLHF (*Reinforcement Learning from Human
-Feedback*, apprendimento per rinforzo dai giudizi delle persone). L'idea di far
-imparare a un sistema da confronti umani circola dai primi anni Dieci (Akrour e
-colleghi nel 2011, Wilson e colleghi nel 2012); quello che succede nel 2017 è
-che Christiano e colleghi {cite}`christiano2017deep` la
-portano sulle reti profonde, insegnando a un robottino simulato a fare un salto
-mortale all'indietro senza scrivere da nessuna parte che cosa fosse un bel
-salto: bastava mostrare a una persona coppie di video e chiederle «quale
-somiglia di più a un salto mortale?». Sono gli autori stessi a dire che il loro
-contributo è averlo fatto funzionare in grande, non l'idea in sé.
+Feedback*, apprendimento per rinforzo dai giudizi delle persone), quella del
+salto mortale all'indietro che la sezione sul post-training racconta con
+Christiano e colleghi {cite}`christiano2017deep`. L'idea di far imparare a un
+sistema da confronti umani circola dai primi anni Dieci (Akrour e colleghi nel
+2011, Wilson e colleghi nel 2012), e sono gli autori stessi del 2017 a dire che
+il loro contributo è averla fatta funzionare in grande, sulle reti profonde,
+non l'idea in sé.
 
 Poi la tecnica arriva sul linguaggio, e nel 2022, con InstructGPT
 {cite}`ouyang2022training`, sul problema specifico di far seguire le
@@ -295,16 +320,16 @@ quale delle due era migliore, si danno direttamente al modello che parla,
 chiedendogli di rendere un po’ più probabile la risposta preferita e un po’
 meno quella scartata. Un passaggio solo, e nessun giudice da costruire.
 
-Su che cosa esattamente sia dimostrato, però, conviene essere precisi, perché
-la formula con cui la DPO viene di solito riassunta («stessa destinazione, due
-tappe in meno») dice più del vero. Quello che il lavoro dimostra è che i due
-metodi, se portati fino in fondo, arrivano allo stesso punto migliore. Non
-dimostra che ci arrivino per la stessa strada, né che sbaglino nello stesso
-modo. E una differenza c'è: nella ricetta col giudice il modello, mentre
-impara, produce risposte nuove e se le fa valutare, mentre la DPO legge
-soltanto le coppie raccolte in partenza, e su tutto ciò che sta fuori da
-quelle non viene mai messa alla prova. Ha modi di sbagliare suoi, non
-versioni più leggere di quelli della ricetta precedente.
+Su che cosa esattamente sia dimostrato, però, conviene essere precisi, perché la
+formula con cui la DPO viene di solito riassunta («stessa destinazione, due
+tappe in meno») fa credere che, tolte le tappe, il viaggio resti lo stesso.
+Quello che il lavoro dimostra è che i due metodi, se portati fino in fondo,
+arrivano allo stesso punto migliore. Non dimostra che ci arrivino per la stessa
+strada, né che sbaglino nello stesso modo. E una differenza c'è: nella ricetta
+col giudice il modello, mentre impara, produce risposte nuove e se le fa
+valutare, mentre la DPO legge soltanto le coppie raccolte in partenza, e su
+tutto ciò che sta fuori da quelle non viene mai messa alla prova. Ha modi di
+sbagliare suoi, non versioni più leggere di quelli della ricetta precedente.
 
 ```{figure} ../figures/dpo-allineare-senza-reward-model.svg
 :name: fig-rlhf-vs-dpo
@@ -320,14 +345,12 @@ Il confronto di {numref}`fig-rlhf-vs-dpo` spiega la fortuna della DPO meglio di
 qualsiasi argomento teorico, e la ragione riguarda anche chi non addestrerà mai
 un modello: è una questione di quanta macchina serve. La riga sotto ciascuna
 delle due file elenca che cosa si smette di tenere in piedi. Con il giudice
-bisogna tenere accesi insieme fino a quattro modelli (quello che si sta
-allenando, la copia di com'era prima che fa da guinzaglio, il giudice, e un
-quarto che indovina il voto finale quando la risposta è ancora a metà) e far
-generare risposte nuove a ogni passo; con la DPO i modelli sono due e le
-risposte sono già scritte. È la
-differenza fra una tecnica che possono permettersi pochi laboratori e una che
-può usare un gruppo qualsiasi, ed è il motivo per cui l'allineamento ha smesso
-di essere una cosa che si fa in tre posti al mondo.
+bisogna tenere in piedi i quattro modelli che la sezione sul post-training
+elenca, e far generare risposte nuove a ogni passo; con la DPO i modelli sono
+due e le risposte sono già scritte. È la differenza fra una tecnica che possono
+permettersi pochi laboratori e una che può usare un gruppo qualsiasi, ed è il
+motivo per cui l'allineamento ha smesso di essere una cosa che si fa in tre
+posti al mondo.
 
 C'è però un limite che nessuna delle due tocca: le preferenze restano
 umane, e raccoglierne a sufficienza (specie sui temi delicati della
@@ -759,18 +782,19 @@ parte tecnica della stessa domanda, poter dire *perché* il sistema ha deciso
 così, nel {doc}`capitolo sull'interpretabilità </Interpretabilita/overview>`,
 che viene appena prima.
 
-Dietro le regole c'è poi un dibattito che va reso esplicito, perché divide
-anche gli addetti ai lavori: è quello annunciato all'inizio del capitolo,
-quando si è detto che qui ci saremmo occupati dei danni misurabili adesso. Da
-un lato chi mette al centro i danni presenti e documentati (i pregiudizi,
-le violazioni di privacy, gli esempi avversari di cui parla il resto di questo
-capitolo) e teme che l'attenzione ai rischi lontani distolga risorse da
-ingiustizie che colpiscono persone reali *oggi*. Dall'altro chi punta sui
-rischi catastrofici futuri di sistemi molto più capaci di quelli attuali,
-e sostiene che prevenirli richieda cominciare adesso. Non è una disputa che
-si possa chiudere adesso; ma è onesto notare che non sono alternative: un
-ponte va progettato sia contro le crepe di oggi sia contro il terremoto che
-forse verrà, e le due cose competono per lo stesso budget di attenzione.
+Dietro le regole c'è poi un dibattito che va reso esplicito, perché divide anche
+gli addetti ai lavori: è quello annunciato all'inizio del capitolo, quando si è
+detto che qui ci saremmo occupati dei danni misurabili adesso. Da un lato chi
+mette al centro i danni presenti e documentati (i pregiudizi, le violazioni di
+privacy, gli esempi avversari di cui parla il resto di questo capitolo) e teme
+che l'attenzione ai rischi lontani distolga risorse da ingiustizie che
+colpiscono persone reali *oggi*. Dall'altro chi punta sui rischi catastrofici
+futuri di sistemi molto più capaci di quelli attuali, e sostiene che prevenirli
+richieda cominciare adesso. Non è una disputa che si possa chiudere adesso; ma è
+onesto notare che non si escludono a vicenda: un ponte va progettato sia contro
+le crepe di oggi sia contro il terremoto che forse verrà. Quello che si
+contendono sono i soldi e l'attenzione, e decidere quanto darne all'una e quanto
+all'altro è di nuovo una scelta, non un calcolo.
 
 ## L'onestà dovuta
 
@@ -871,6 +895,5 @@ noi.
 Da qui in avanti non si aggiungono più strumenti. Quello che resta è
 un'abitudine più che una garanzia, e consiste nel chiedere su quale numero un
 sistema è stato premiato, che cosa quel numero lascia fuori e chi risponde
-quando la risposta è sbagliata. Restano le Conclusioni, che non insegnano
-niente di nuovo: servono a vedere che cosa, di tutto quello che hai letto,
-rimane in mano quando si chiude il libro.
+quando la risposta è sbagliata. Restano le Conclusioni, per vedere che cosa, di
+tutto quello che hai letto, rimane in mano, e dove il campo sta andando.

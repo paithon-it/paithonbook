@@ -283,16 +283,29 @@ $$
 \big(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\big)^2 .
 $$
 
-$\mathcal{L}$ è convessa in $(\mathbf{w},b)$: niente minimi locali in cui restare
-intrappolati. Se le colonne della matrice dei dati, insieme alla colonna
-costante del bias, sono linearmente indipendenti, il minimo è anche unico e si
-raggiunge in forma chiusa con le equazioni normali; con feature collineari (una
-feature costante basta, perché replica la colonna del bias), o con meno esempi
-che feature, i punti di minimo diventano infiniti (un intero sottospazio, tutti
-con lo stesso valore della loss) e le equazioni normali degenerano. Su grandi
-dataset, in ogni caso, si preferisce la discesa del gradiente. Elevare al
-quadrato penalizza fortemente gli errori grossi e rende la loss differenziabile
-ovunque: due proprietà che tornano comode.
+$\mathcal{L}$ è convessa in $(\mathbf{w},b)$: niente minimi locali in cui
+restare intrappolati. Se le colonne della matrice dei dati, insieme alla
+colonna costante del bias, sono linearmente indipendenti, il minimo è anche
+unico e si raggiunge in forma chiusa con le equazioni normali; con feature
+collineari (una feature costante basta, perché replica la colonna del bias), o
+con meno esempi che feature, i punti di minimo diventano infiniti (un intero
+sottospazio, tutti con lo stesso valore della loss) e le equazioni normali
+degenerano. Su grandi dataset, in ogni caso, si preferisce la discesa del
+gradiente. Con $\tilde{\mathbf{X}} \in \mathbb{R}^{m\times(n+1)}$, la matrice
+dei dati con in più la colonna di uni, la soluzione è $(\hat{\mathbf{w}},
+\hat{b}) =
+(\tilde{\mathbf{X}}^\top\tilde{\mathbf{X}})^{-1}\tilde{\mathbf{X}}^\top\mathbf{y}$,
+e la {doc}`sezione su ortogonalità e proiezioni
+</Matematica/ortogonalita-proiezioni>` spiega perché la si calcola con una
+fattorizzazione QR invece di invertire. Il costo è $O(mn^2 + n^3)$, contro
+$O(mn)$ per un passo di discesa del gradiente: con $n$ nell'ordine delle
+migliaia, o con dati che non stanno in memoria, si passa all'iterativo.
+Minimizzare l'MSE equivale poi alla stima di massima verosimiglianza sotto il
+modello $y = \mathbf{w}^\top\mathbf{x} + b + \varepsilon$ con $\varepsilon \sim
+\mathcal{N}(0,\sigma^2)$ indipendenti: è l'ipotesi che si firma usando questa
+loss, e i modelli lineari generalizzati la allentano. Elevare al quadrato
+penalizza fortemente gli errori grossi e rende la loss differenziabile ovunque:
+due proprietà che tornano comode.
 
 `````
 
@@ -362,8 +375,26 @@ $$
 $$
 
 è il **confine di decisione**, un iperpiano che divide lo spazio in due regioni.
-I parametri si stimano minimizzando la *cross-entropy* invece dell'MSE, perché
-si accorda con l'interpretazione probabilistica e mantiene la loss convessa.
+I parametri si stimano minimizzando la *cross-entropy*, cioè la
+log-verosimiglianza negativa di una Bernoulli di parametro
+$\hat{y}^{(i)} = \sigma(z^{(i)})$:
+
+$$
+\mathcal{L}(\mathbf{w},b) = -\frac{1}{m}\sum_{i=1}^{m}\Big[y^{(i)}\log\hat{y}^{(i)}
++ \big(1-y^{(i)}\big)\log\big(1-\hat{y}^{(i)}\big)\Big].
+$$
+
+Grazie a $\sigma'(z) = \sigma(z)\,(1-\sigma(z))$ il gradiente ha la forma di
+quello dei minimi quadrati, $\nabla_{\mathbf{w}}\mathcal{L} =
+\frac{1}{m}\sum_i\big(\hat{y}^{(i)} - y^{(i)}\big)\,\mathbf{x}^{(i)}$, e
+l'hessiana $\frac{1}{m}\sum_i
+\hat{y}^{(i)}\big(1-\hat{y}^{(i)}\big)\,\mathbf{x}^{(i)}\mathbf{x}^{(i)\top}$ è
+semidefinita positiva: la loss è convessa. L'MSE composto con la sigmoide
+invece non lo è, e ha un difetto peggiore: il suo gradiente contiene il fattore
+$\sigma'(z)$, che si annulla proprio sugli esempi sbagliati con grande
+sicurezza, e la discesa si ferma dove l'errore è massimo. Non c'è forma chiusa:
+si risolve con il metodo di Newton (l'IRLS dei modelli lineari generalizzati) o
+con L-BFGS, che è il `solver` di default di scikit-learn.
 
 `````
 
@@ -496,7 +527,8 @@ Il prezzo di questa scelta va detto subito, perché cambia il senso dei pesi.
 Nel punteggio i pesi si sommano, come sempre; ma disfare un logaritmo
 trasforma le somme in prodotti, e quindi sui clienti quei pesi
 moltiplicano. Un peso che vale un mezzo non aggiunge mezzo cliente:
-moltiplica per la radice quadrata di $2{,}718$, cioè per $1{,}65$. Il sabato
+moltiplica per la radice quadrata di $2{,}718$ (elevare a un mezzo è fare la
+radice quadrata, perché due mezzi fanno uno), cioè per $1{,}65$. Il sabato
 non aggiunge dodici clienti: il sabato raddoppia.
 
 C'è anche una cosa da sistemare prima di cominciare, e riguarda il tempo. Un

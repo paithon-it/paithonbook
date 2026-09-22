@@ -138,14 +138,14 @@ cambia dimensione ($C = d$), così che lo stato sia una $d \times d$: è il caso
 della feature map che sceglieremo fra poco, ma non il caso generale.
 
 Le due strade hanno costi diversissimi. Calcolare tutti i prodotti
-$\phi(\mathbf{q}_i)^\top \phi(\mathbf{k}_j)$ è la matrice $n \times n$, costo $O(n^2 d)$;
-costruire $\mathbf{S}$ una volta e applicarla a ogni query costa $O(n d^2)$: una
-matrice $d \times d$ al posto di una $n \times n$. Quando $n \gg d$ (sequenze
-lunghe), la seconda vince nettamente, ed è il passaggio da $O(n^2 d)$ a
-$O(n d^2)$, cioè da quadratico a lineare nella lunghezza (lo stesso
-$O(n d^2)$ delle ricorrenti che avevamo incontrato nel confronto fra
-Transformer e RNN). In forma matriciale compatta, per tutte le query insieme,
-è l'identità
+$\phi(\mathbf{q}_i)^\top \phi(\mathbf{k}_j)$ è la matrice $n \times n$, costo
+$O(n^2 d)$; costruire $\mathbf{S}$ una volta e applicarla a ogni query costa
+$O(n d^2)$: una matrice $d \times d$ al posto di una $n \times n$. Quando $n
+\gg d$ (sequenze lunghe), la seconda vince nettamente, ed è il passaggio da
+$O(n^2 d)$ a $O(n d^2)$, cioè da quadratico a lineare nella lunghezza (lo
+stesso $O(n d^2)$ delle ricorrenti che avevamo incontrato nel {doc}`confronto
+fra Transformer e RNN </Transformers/confronti>`). In forma matriciale
+compatta, per tutte le query insieme, è l'identità
 
 $$
 \big(\phi(\mathbf{Q})\,\phi(\mathbf{K})^\top\big)\,\mathbf{V} = \phi(\mathbf{Q})\,\big(\phi(\mathbf{K})^\top \mathbf{V}\big),
@@ -294,8 +294,10 @@ il testo c'è già tutto non c'è nessun bisogno di aspettare: lo stesso identic
 risultato si può ottenere anche in un colpo solo, spartendo il lavoro fra tante
 unità di calcolo che macinano insieme. Sono due volti dello stesso calcolo. Non è
 una coincidenza tecnica: è la proprietà che rende interessante tutta questa
-famiglia di modelli, e che ritroveremo (con parole diverse) nel capitolo sugli
-*State Space Model*, i modelli che descrivono una sequenza come un sistema che
+famiglia di modelli, e che ritroveremo (con parole diverse) nel {doc}`capitolo
+sugli
+State Space Model </StateSpaceModel/overview>`, i modelli che descrivono una
+sequenza come un sistema che
 evolve nel tempo.
 
 ```{figure} ../figures/stato-ricorrente.gif
@@ -366,26 +368,29 @@ valanga.
 
 `````{tab} Superiore
 
-In addestramento si usa la forma parallela, e qui serve un momento di
-onestà sui costi. La strada più diretta è il prodotto fra matrici *mascherato*
-dalla causalità, $\big(\phi(\mathbf{Q})\,\phi(\mathbf{K})^\top \odot \mathbf{M}\big)\mathbf{V}$ con $\mathbf{M}$ la
-maschera triangolare: parallelo esattamente come un Transformer, ma la
-maschera impedisce di ri-associare il prodotto e si torna a pagare
-$O(n^2 d)$.
-L'alternativa è srotolare la somma cumulativa
-$\mathbf{S}_t = \sum_{i\le t} \mathbf{v}_i\,\phi(\mathbf{k}_i)^\top$ come *prefix sum* (una somma
-progressiva): l'operazione è associativa, quindi si calcola con uno *scan*
-parallelo a costo $O(n d^2)$, lineare. L'ostacolo qui non è il numero di
-operazioni ma la memoria: uno scan pretende di materializzare tutti gli $n$
-stati intermedi $d \times d$, cioè $O(n d^2)$ di memoria contro gli $O(d^2)$
-della forma ricorrente, e il traffico da e verso la memoria della GPU si mangia
-il guadagno del parallelismo (con $n = 8192$ e $d = 64$ per testa sono più di
-33 milioni di valori per testa e per strato, contro i 4096 dello stato).
-Nessuna delle due forme dà insieme le due cose; la conciliazione usata in
-pratica è il calcolo a blocchi (*chunkwise*): parallelo dentro ogni blocco,
-ricorrente fra un blocco e l'altro, costo $O(nBd + nd^2)$ con blocchi di
-ampiezza $B$, cioè lineare in $n$. Lo ritroveremo, formalizzato, in RetNet e
-DeltaNet.
+In addestramento si usa la forma parallela, e qui serve un momento di onestà
+sui costi. La strada più diretta è il prodotto fra matrici *mascherato* dalla
+causalità, $\big(\phi(\mathbf{Q})\,\phi(\mathbf{K})^\top \odot
+\mathbf{M}\big)\mathbf{V}$ con $\mathbf{M}$ la maschera triangolare: parallelo
+esattamente come un Transformer, ma la maschera impedisce di ri-associare il
+prodotto e si torna a pagare $O(n^2 d)$. L'alternativa è srotolare la somma
+cumulativa $\mathbf{S}_t = \sum_{i\le t} \mathbf{v}_i\,\phi(\mathbf{k}_i)^\top$
+come *prefix sum* (una somma progressiva): l'operazione è associativa, quindi
+si calcola con uno *scan* parallelo a costo $O(n d^2)$, lineare. L'ostacolo qui
+non è il numero di operazioni ma la memoria: uno scan pretende di
+materializzare tutti gli $n$ stati intermedi $d \times d$, cioè $O(n d^2)$ di
+memoria contro gli $O(d^2)$ della forma ricorrente, e il traffico da e verso la
+memoria della GPU si mangia il guadagno del parallelismo (con $n = 8192$ e $d =
+64$ per testa sono più di 33 milioni di valori per testa e per strato, contro i
+4096 dello stato). Nessuna delle due forme dà insieme le due cose.
+Katharopoulos e colleghi addestrano con la forma ricorrente, scritta come
+kernel per GPU che è sequenziale nel tempo e parallelo su tutto il resto, e
+riscrivono anche il gradiente come somma cumulativa, così da non conservare
+nessuno stato intermedio; la conciliazione usata in seguito è il calcolo a
+blocchi (*chunkwise*), proposto da Hua e colleghi nel 2022
+{cite}`hua2022flash`: parallelo dentro ogni blocco, ricorrente fra un blocco e
+l'altro, costo $O(nBd + nd^2)$ con blocchi di ampiezza $B$, cioè lineare in
+$n$. Lo ritroveremo, formalizzato, in RetNet e DeltaNet.
 
 Un'ultima onestà sul lato addestramento, perché «lineare» non vuol dire
 «subito più veloce»: l'attenzione softmax ha implementazioni curatissime nel

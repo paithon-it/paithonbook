@@ -1,7 +1,10 @@
 # Mondi in miniatura: imparare sognando
 
-C'è un esperimento, nel 2018, che sembra uscito da un racconto più che da un
-laboratorio di machine learning. David Ha e Jürgen Schmidhuber prendono un
+L'esperimento del 2018 che l'apertura del capitolo ha nominato di passaggio, e
+che la {doc}`sezione sul reinforcement learning basato su modello
+</DeepReinforcementLearning/model-based>` aveva già messo sul tavolo, sembra
+uscito da un racconto più che da un laboratorio di machine learning. Qui lo si
+smonta pezzo per pezzo. David Ha e Jürgen Schmidhuber prendono un
 livello di *Doom* (lo storico sparatutto) in cui bisogna schivare palle di
 fuoco, e ci allenano un agente che, durante l'allenamento, il gioco vero non lo
 tocca mai. L'ordine delle cose è questo: prima si raccolgono migliaia di
@@ -100,15 +103,14 @@ somiglia, quei 32 numeri vanno usati meglio. Come al telefono: se dalla tua
 descrizione l'amico disegna una scena quasi uguale, la descrizione era buona.
 
 Nell'andata e ritorno c'è una seconda regola, e a imporla è l'allenamento
-stesso: la stessa schermata, descritta due volte, non deve mai venire con le
-stesse parole. «Curva a sinistra» oggi, «piega a sinistra» domani, e l'amico
-deve cavare una scena sensata da tutt'e due, e da qualunque frase che ci
-somigli. Senza quell'obbligo imparerebbe a memoria una manciata di frasi
-esatte e per tutte le altre non saprebbe che disegnare: fra una descrizione
-buona e l'altra resterebbe il vuoto. Il vuoto sarebbe un guaio, perché quelle
-frasi presto se le inventerà M, che lo schermo non lo guarda mai: se a una
-frase inventata non corrispondesse nessun disegno, l'amico poserebbe la matita
-quasi subito.
+stesso: il riassunto non esce mai due volte identico. La stessa schermata una
+volta diventa «curva a sinistra», un'altra «piega a sinistra», e l'amico deve
+saper disegnare una scena sensata da tutte e due, e da qualunque frase che ci
+somigli. Perché questa fatica? Perché fra poco le frasi non le detterà più chi
+guarda lo schermo: se le inventerà M, che lo schermo non lo vede mai, e le sue
+frasi non saranno mai precise parola per parola. Se l'amico sapesse disegnare
+soltanto una manciata di frasi imparate a memoria, davanti a una frase
+inventata poserebbe la matita, e il sogno finirebbe lì.
 
 `````
 
@@ -343,28 +345,29 @@ numeri, una memoria da 512 numeri e un controller da 1088 parametri: la ricetta
 `````{tab} Elementare
 
 È il pilota che la sera prima della gara ripassa il circuito a occhi chiusi,
-curva per curva, i piloti veri lo fanno davvero: costa zero benzina e zero
-incidenti. E se il gioco vero è staccato, chi tiene il punteggio? Il sogno
-stesso. Nello sparatutto il punteggio è quanto sopravvivi, e M, oltre al
-riassunto del momento dopo, prevede anche se sei stato colpito: quando decide
-che l'hai presa, la partita sognata finisce e il punteggio è la sua durata. Ma
-c'è un tallone d'Achille: se nella tua testa una curva è più dolce che in
-pista, impari una traiettoria che domani ti manda nella ghiaia. E lo scarto
-non resta dov'è: ogni curva ripassata storta sposta anche il punto da cui
-parte quella dopo, così più a lungo il ripasso va avanti, meno il circuito
-immaginato somiglia a quello vero. All'agente di Ha e
-Schmidhuber successe qualcosa di più subdolo: dentro il sogno scoprì dei
-*trucchi*. Trovò modi di muoversi per cui le palle di fuoco, mentre stavano
-per formarsi, svanivano. Stava
-barando al *proprio sogno*, sfruttandone i difetti, come uno studente che si
-prepara all'esame inventandosi da solo domande facili. Punteggi splendidi nel
-mondo immaginato, figuraccia in quello vero. (Un secondo guasto c'era e non
-era colpa sua: con il sogno troppo docile i mostri non sparavano affatto,
-qualunque cosa l'agente facesse, perché M si era ridotto a raccontare sempre
-la stessa storia.)
+lo stesso che nella {doc}`sezione sul reinforcement learning basato su modello
+</DeepReinforcementLearning/model-based>` si allenava nel sogno di Dreamer. Il
+ripasso costa zero benzina e zero incidenti. E se il gioco vero è staccato, chi
+tiene il punteggio? Il sogno stesso. Nello sparatutto il punteggio è quanto
+sopravvivi, e M, oltre al riassunto del momento dopo, prevede anche se sei stato
+colpito: quando decide che l'hai presa, la partita sognata finisce e il
+punteggio è la sua durata. Ma c'è un tallone d'Achille: se nella tua testa una
+curva è più dolce che in pista, impari una traiettoria che domani ti manda nella
+ghiaia. E lo scarto non resta dov'è: ogni curva ripassata storta sposta anche il
+punto da cui parte quella dopo, così più a lungo il ripasso va avanti, meno il
+circuito immaginato somiglia a quello vero. All'agente di Ha e Schmidhuber
+successe qualcosa di più subdolo: dentro il sogno scoprì dei *trucchi*. Trovò
+modi di muoversi per cui le palle di fuoco, mentre stavano per formarsi,
+svanivano. Stava barando al *proprio sogno*, sfruttandone i difetti, come uno
+studente che si prepara all'esame inventandosi da solo domande facili. Punteggi
+splendidi nel mondo immaginato, figuraccia in quello vero. (Un secondo guasto
+c'era e non era colpa sua: con il sogno troppo docile i mostri non sparavano
+affatto, qualunque cosa l'agente facesse, perché M si era ridotto a raccontare
+sempre la stessa storia.)
 
-Il rimedio è rendere il sogno *più capriccioso* del
-gioco vero, e si fa girando una manopola sola, la temperatura. M non
+Il rimedio è rendere il sogno *più capriccioso* del gioco vero, e si fa
+girando una manopola sola. Si chiama temperatura, per un'immagine presa dalla
+fisica: più una cosa è calda, più le sue particelle si agitano a caso. M non
 annuncia una continuazione unica ma un ventaglio di continuazioni con le loro
 probabilità: alzando la temperatura escono più spesso quelle improbabili. Il
 sogno diventa dispettoso, e un trucco che ha funzionato una volta la volta dopo
@@ -553,15 +556,15 @@ servono milioni.
 
 `````{tab} Elementare
 
-Al DQN servono decine di
-milioni di fotogrammi per imparare un gioco Atari dove a un umano bastano
-minuti {cite}`mnih2015human`. Ogni esperienza serve solo ad aggiustare di un
-soffio le valutazioni, come uno studente che di un'intera lezione trattiene
-una riga. Un world model spreme la stessa esperienza molto di più: ogni
-partita vera migliora la copia interna del gioco, e dentro la copia ci si
-allena quanto si vuole, al solo costo dell'elettricità. L'idea, in piccolo, ha
-più di trent'anni: si chiama Dyna, l'architettura con cui Richard Sutton nel
-1990 faceva alternare a un agente mosse vere e mosse «ripassate» in un
+Ogni esperienza vera, per il DQN {cite}`mnih2015human`, serve solo ad aggiustare
+di un soffio le valutazioni, come uno studente che di un'intera lezione
+trattiene una riga. Un world model spreme la stessa esperienza molto di più:
+ogni partita vera migliora la copia interna del gioco, e dentro la copia ci si
+allena quanto si vuole, al solo costo dell'elettricità. L'idea, in piccolo, la
+conosciamo già: è Dyna, l'architettura della
+{doc}`sezione sul reinforcement learning basato su modello
+</DeepReinforcementLearning/model-based>` con cui Richard Sutton nel 1990 faceva
+alternare a un agente mosse vere e mosse «ripassate» in un
 modellino imparato del labirinto {cite}`sutton1990integrated` (un antenato a
 caselle dei sogni di Dreamer, divulgato l'anno dopo in una versione più breve
 {cite}`sutton1991dyna`).
@@ -585,21 +588,41 @@ appreso, mescolando apprendimento e pianificazione. I Dreamer ne sono l'erede
 profondo, e il modello che adoperano non è farina del loro sacco: l'RSSM (il
 modello ricorrente a spazio di stati) lo introduce PlaNet
 {cite}`hafner2019learning`, un anno prima, per pianificare dentro il latente.
-Con una componente deterministica e una stocastica, apprende la dinamica nello
-spazio latente;
-attore e critico si addestrano dentro rollout
-immaginati a orizzonte breve (una quindicina di passi, per contenere
-l'accumulo degli errori del modello): il critico per regressione sui ritorni
-stimati lungo quei rollout, l'attore per retropropagazione attraverso la
-dinamica appresa nella prima versione e con uno stimatore alla Reinforce in
-DreamerV3, che lo usa sia per le azioni discrete sia per quelle continue.
-DreamerV3 aggiunge normalizzazioni robuste
-(osservazioni, ricompense, ritorni) che rendono gli stessi iperparametri validi
-su domini radicalmente diversi {cite}`hafner2023mastering`. Il guadagno è
-l'efficienza campionaria; il tetto è la qualità del modello: la policy è buona
-quanto il sogno in cui è cresciuta, e su dinamiche caotiche o eventi rari i
-modelli restano il punto debole. Il confronto con i metodi model-free,
-competitivi quando i campioni costano poco, è tutt'altro che chiuso.
+Il modello ha una memoria deterministica
+$\mathbf{h}_t = f_\phi(\mathbf{h}_{t-1}, \mathbf{z}_{t-1}, a_{t-1})$, un codice
+stocastico
+$\mathbf{z}_t \sim q_\phi(\mathbf{z}_t \mid \mathbf{h}_t, \mathbf{x}_t)$ che
+guarda il fotogramma e un predittore
+$\hat{\mathbf{z}}_t \sim p_\phi(\hat{\mathbf{z}}_t \mid \mathbf{h}_t)$ che lo
+indovina senza guardarlo, ed è quello che gira nel sogno; teste separate
+predicono osservazione, ricompensa e continuazione $c_t$ dell'episodio. La loss
+è un ELBO sequenziale, in cui DreamerV3 spezza il KL fra $q_\phi$ e $p_\phi$ in
+due termini con lo stop-gradient $\mathrm{sg}$ su lati opposti:
+$\max\big(1, D_{\mathrm{KL}}[\mathrm{sg}(q_\phi) \,\|\, p_\phi]\big)$ addestra
+il predittore,
+$\max\big(1, D_{\mathrm{KL}}[q_\phi \,\|\, \mathrm{sg}(p_\phi)]\big)$, con un
+peso molto più piccolo ($0{,}1$), chiede all'encoder di farsi prevedere, e la
+soglia di un nat (*free bits*) li spegne quando sono già piccoli, così che il
+latente non si riduca a una dinamica banale. Attore e critico si addestrano
+dentro rollout immaginati di una quindicina di passi, per contenere l'accumulo
+degli errori del modello, e il critico regredisce sul $\lambda$-ritorno
+$R^\lambda_t = r_t + \gamma c_t\big[(1-\lambda)\, v(\mathbf{s}_{t+1}) + \lambda R^\lambda_{t+1}\big]$,
+con $R^\lambda_T = v(\mathbf{s}_T)$ e
+$\mathbf{s}_t = (\mathbf{h}_t, \mathbf{z}_t)$, che mescola la ricompensa sognata
+con il valore stimato oltre l'orizzonte. L'attore si aggiorna per
+retropropagazione attraverso la dinamica nella prima versione, con REINFORCE
+sulle sole azioni discrete in DreamerV2, con REINFORCE su tutte in DreamerV3.
+Gli stessi iperparametri reggono su domini diversi grazie a tre accorgimenti di
+scala: osservazioni vettoriali passate per
+$\mathrm{symlog}(x) = \mathrm{sign}(x)\ln(|x|+1)$; ricompense e valori predetti
+come distribuzione categoriale su intervalli spaziati in modo esponenziale, con
+il bersaglio spartito fra i due intervalli adiacenti (codifica *two-hot*);
+ritorni divisi per $\max(1, S)$, con $S$ l'ampiezza fra i percentili 5 e 95
+{cite}`hafner2023mastering`. Il guadagno è l'efficienza campionaria; il tetto è
+la qualità del modello: la policy è buona quanto il sogno in cui è cresciuta, e
+su dinamiche caotiche o eventi rari i modelli restano il punto debole. Il
+confronto con i metodi model-free, competitivi quando i campioni costano poco, è
+tutt'altro che chiuso.
 
 `````
 

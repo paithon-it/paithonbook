@@ -127,7 +127,9 @@ Una frase, disegnata così, ha la stessa forma: ogni parola dipende da un'altra
 parola, tranne il verbo principale, che è l'amministratore delegato. In «Il
 gatto nero salta sul muro» comanda «salta»: per lui lavorano «gatto», con la
 qualifica di *soggetto* (chi compie l'azione), e «muro», con la qualifica di
-complemento del verbo, che a scuola si chiama complemento di stato in luogo. A
+complemento del verbo, che a scuola si chiama complemento di luogo (moto a luogo
+se il gatto ci salta sopra, stato in luogo se salta stando già lassù: la freccia
+è la stessa, e la differenza la decide il significato). A
 loro volta «il» e «nero» lavorano per «gatto», e «sul» per «muro»: attenzione
 a quest'ultima, perché a scuola la preposizione *introduce* il complemento,
 mentre qui dipende dal nome che accompagna. Sei parole in fila, cinque frecce
@@ -382,6 +384,14 @@ storto alla terza parola resta storto fino all'ultima, ed è il difetto di ogni
 scelta ingorda, quella della traduzione compresa. Il rimedio è tenere aperte
 tre o quattro partite invece di una, e scartare alla fine quelle andate peggio.
 
+Le carte hanno anche un limite di disegno: le frecce che producono non si
+incrociano mai. In italiano capita di rado, ma nelle lingue in cui le parole
+si spostano con libertà due frecce che si scavalcano sono comuni, e lì il gioco
+sbaglia per costruzione, finché non gli si concede una quarta mossa, quella che
+rimette una carta sotto un'altra. C'è poi un modo che non gioca affatto: dà un
+voto a ogni freccia possibile fra due parole della frase, e cerca
+l'organigramma che ha il voto totale più alto, frecce incrociate comprese.
+
 `````
 
 `````{tab} Superiore
@@ -410,8 +420,8 @@ dove $k$ scorre sui punti di taglio interni all'intervallo e $R$ sono le
 regole. Le celle sono $O(n^2)$, ogni cella prova $O(n)$ tagli per ognuna delle
 $|R|$ regole: costo totale $O(n^3\,|R|)$, contro l'esplosione esponenziale
 degli alberi espliciti. La stessa ricorrenza, con somme al posto delle unioni,
-*conta* gli alberi, ed è la versione contabile di CKY di cui la sezione dà il
-programma; con probabilità sulle regole
+*conta* gli alberi, ed è la versione contabile di CKY che il programma sulla
+frase del binocolo esegue; con probabilità sulle regole
 (**PCFG**, stimate contando su un treebank) e massimi al posto delle somme
 restituisce l'albero più probabile: è Viterbi, trasportato dai prefissi agli
 intervalli.
@@ -431,7 +441,18 @@ sul Penn Treebank convertito in dipendenze (il treebank originale è a
 costituenti, e la conversione è un passaggio a parte), i parser neurali
 sbagliano la testa di poche parole su cento: la misura si chiama UAS,
 *unlabeled attachment score*, ed è la quota di parole agganciate alla testa
-giusta.
+giusta; il **LAS** (*labeled attachment score*) conta giusta una parola solo se
+sono corrette sia la testa sia l'etichetta della relazione. L'arc-standard
+produce soltanto alberi proiettivi, quindi sulle lingue a ordine libero sbaglia
+per costruzione gli archi che si incrociano; li recupera una quarta mossa,
+`swap`, che riordina pila e buffer {cite}`nivre2009non`. L'alternativa è il
+parsing **basato su grafi**: si assegna un punteggio $s(h, d)$ a ogni arco
+possibile dalla testa $h$ al dipendente $d$ e si cerca l'albero di punteggio
+massimo, con l'algoritmo di Eisner in $O(n^3)$ se lo si vuole proiettivo, con
+quello di Chu–Liu/Edmonds in $O(n^2)$ se no {cite}`mcdonald2005non`. Con i
+punteggi prodotti da una BiLSTM e da un prodotto biaffine
+{cite}`dozat2017deep` è la famiglia dei sistemi migliori nelle campagne su
+Universal Dependencies.
 
 `````
 
@@ -457,7 +478,7 @@ preposizione sola, «con». La frase cambia, la forma no, e infatti il numero ch
 esce è lo stesso.
 
 ```python
-# Grammatica giocattolo in forma normale di Chomsky (6 regole + lessico)
+# Grammatica giocattolo: ogni regola unisce esattamente due pezzi (6 regole + lessico)
 lessico = {
     "ho": {"AUX"}, "visto": {"V"}, "un": {"DET"}, "il": {"DET"},
     "uomo": {"N"}, "binocolo": {"N"}, "cappello": {"N"},
@@ -530,9 +551,11 @@ parlato, ieri con le probabilità sulle regole, oggi con le reti neurali.
 ## La sintassi al tempo dei modelli giganti
 
 Domanda inevitabile: i grandi modelli linguistici (in sigla LLM, *large
-language model*) fanno parsing? No, non nel senso di questa sezione. Un modello
-addestrato a indovinare la parola successiva non produce alberi, e nessuno
-glieli ha mai mostrati.
+language model*) fanno parsing? Non come un parser. Un modello addestrato a
+indovinare la parola successiva non costruisce alberi mentre legge, e il suo
+addestramento non glielo chiede; se glielo si chiede, un albero lo scrive come
+scrive qualunque altro testo, senza nessuna garanzia che sia un albero ben
+formato.
 
 Eppure c'è un filone di studi che racconta una storia interessante, e si chiama
 *probing*, «sondaggio». Mentre un modello come BERT {cite}`devlin2019bert` legge
@@ -544,10 +567,16 @@ cioè un secondo programmino, minuscolo, che si addestra a ricavarne una certa
 informazione. Il punto sta tutto nel «minuscolo». Se la sonda fosse una rete
 grande, potrebbe imparare il compito per conto suo, e allora non avremmo
 scoperto niente sul modello: avremmo scoperto che una rete grande impara la
-grammatica, cosa che già sapevamo. Se invece la sonda è tenuta così piccola da
-non poter imparare quasi nulla e ci riesce lo stesso, l'unica spiegazione è che
-l'informazione nei numeri di partenza ci fosse già, e alla sonda sia bastato
-andarla a leggere.
+grammatica, cosa che già sapevamo. Se invece la sonda è tenuta piccola e ci
+riesce lo
+stesso, la spiegazione più semplice è che l'informazione nei numeri di partenza
+ci fosse già, e alla sonda sia bastato andarla a leggere. Più semplice, non
+unica: anche una sonda lineare, su numeri abbastanza ricchi, impara etichette
+assegnate a caso, e il controllo proposto da Hewitt e Liang
+{cite}`hewitt2019control` consiste proprio nel rifare l'addestramento su
+un'etichettatura casuale e guardare lo scarto, come racconta la
+{doc}`sezione sull'interpretabilità
+</Interpretabilita/attribuzione-e-meccanicistica>`.
 
 Hewitt e Manning, nel 2019 {cite}`hewitt2019structural`, provano a ricavarne
 le distanze nell'albero,
@@ -577,8 +606,8 @@ qualcuno ha già disegnato l'albero giusto, si guarda l'albero prodotto dalla
 macchina, e si contano le parole agganciate al capo corretto. Nessuna
 interpretazione, nessun giudizio da dare: quella freccia o punta alla parola
 giusta o no. È il contrario di quel che succede con un chatbot, dove la
-risposta buona non è una sola, e vedremo nella prossima sezione quanto quella
-differenza pesi.
+risposta buona non è una sola, e nel {doc}`dialogo <dialogo-chatbot>` quella
+differenza pesa parecchio.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -653,5 +682,5 @@ differenza pesi.
 Con le etichette della sezione precedente e gli alberi di questa, una
 macchina può dire chi fa che cosa a chi dentro una frase isolata. Ma le
 frasi, nella vita, arrivano in botta e risposta: domande, risposte,
-malintesi, sottintesi. La prossima sezione porta tutto questo in scena: il
-dialogo tra persone e macchine.
+malintesi, sottintesi. Il {doc}`dialogo tra persone e macchine
+<dialogo-chatbot>` porta tutto questo in scena.

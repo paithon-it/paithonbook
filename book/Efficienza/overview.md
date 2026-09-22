@@ -124,8 +124,7 @@ non qui.
 
 ## Tre piani, tre mestieri
 
-Il libro parla di efficienza in tre punti, e conviene distinguerli subito,
-perché è facile andarli a cercare nel posto sbagliato.
+L’efficienza di un modello sta su tre piani, e ciascuno ha un mestiere suo.
 
 Il {doc}`capitolo sulla GPU </GPU/overview>` spiega l’hardware: com’è fatta
 la memoria di una scheda, perché i byte che viaggiano contano più dei conti che

@@ -69,8 +69,11 @@ abbiamo dato da guardare, difetti compresi.
 Chi vendeva il software rispose con un conto suo, e tornava anche quello: fra
 gli imputati che il sistema aveva etichettato «ad alto rischio», quelli
 riarrestati davvero erano in proporzione gli stessi, neri o bianchi. Due conti
-giusti che si contraddicono, e nessuno dei due è truccato: se nei due gruppi il
-riarresto non capita con la stessa frequenza, le due pretese non possono valere
+giusti che si contraddicono, e nessuno dei due è truccato. ProPublica, però,
+non guardava soltanto i falsi allarmi: guardava anche l'errore opposto, i
+recidivi etichettati «a basso rischio», più frequenti fra i bianchi. Se nei due
+gruppi il riarresto non capita con la stessa frequenza, l'affidabilità
+dell'«alto rischio» e la parità di tutti e due gli errori non possono valere
 insieme, e nessun codice migliore le riconcilia.
 
 `````
@@ -159,9 +162,8 @@ intrecciate, e conviene chiamarle per nome prima di entrarci dentro.
   stesso programma che diceva «panda» dice «scimmia». Le immagini truccate così
   si chiamano **esempi avversari**.
 - **Trasparenza**: poter spiegare *perché* un modello ha deciso così. È lo scopo
-  dell’interpretabilità, di cui il libro parla in un capitolo dedicato: qui
-  la trattiamo come uno strumento al servizio della responsabilità, non come fine
-  a sé.
+  dell’{doc}`interpretabilità </Interpretabilita/overview>`, qui presa come
+  uno strumento al servizio della responsabilità più che come fine a sé.
 - **Allineamento (*alignment*)**: fare in modo che il comportamento di un
   sistema corrisponda davvero a ciò che chi lo usa intendeva, e non alla lettera
   di come gliel'ha detto. È il guaio del genio della lampada, che esaudisce il
@@ -239,10 +241,12 @@ Tre spostamenti quantitativi hanno reso il tema ineludibile.
 
 `````
 
-## Tre modi in cui un modello fa danno
+## Tre famiglie di danno
 
-I modi in cui un modello fa danno sono tre, e vanno dagli effetti più visibili
-a quelli più strutturali.
+Le preoccupazioni dell'elenco si raccolgono in tre famiglie, dalle più visibili
+alle più strutturali: il modello che tratta peggio qualcuno, il modello che si
+lascia spiare o ingannare, il modello che fa quello che gli abbiamo detto
+invece di quello che volevamo.
 
 Prima l’equità e i *bias*: da dove nasce un pregiudizio (dai dati, dalle
 etichette, da come è stato scelto l'obiettivo), come lo si *misura* e quali

@@ -112,7 +112,7 @@ premio*. Questa email è spam? Risposta:», e la parola con cui continua è il
 verdetto. Non gli si chiede di tradurre: gli si dà «Italiano: *il gatto nero
 salta sul muro*. Inglese:». Stesso programma, stessi numeri dentro: cambia
 soltanto il foglio che gli si mette davanti. Il come, e a quale prezzo, è il
-filo che percorre il capitolo fino all'ultima sezione.
+filo che tiene insieme tutto quello che segue.
 
 ## Una parabola storica: dalle regole ai Transformer
 

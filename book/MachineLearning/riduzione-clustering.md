@@ -228,7 +228,19 @@ proiezioni su quell'asse.
 Proiettare su $\mathbf{u}_1, \dots, \mathbf{u}_k$ (con $k \ll d$) dà la
 rappresentazione ridotta
 $\mathbf{Z} = \mathbf{X}\,\mathbf{U}_k$, dove $\mathbf{U}_k$ raccoglie i
-primi $k$ autovettori in colonna.
+primi $k$ autovettori in colonna. Tornare indietro costa una moltiplicazione,
+$\hat{\mathbf{X}} = \mathbf{Z}\,\mathbf{U}_k^{\!\top}$, e l'errore medio di
+ricostruzione è la somma degli autovalori scartati,
+$\tfrac{1}{m}\lVert\mathbf{X} - \hat{\mathbf{X}}\rVert_F^2 = \sum_{j>k}\lambda_j$.
+Massimizzare la varianza proiettata (la domanda di Hotelling) e minimizzare
+l'errore di ricostruzione (quella di Pearson) danno quindi le stesse
+direzioni, e per il teorema di Eckart e Young nessun'altra approssimazione di
+rango $k$ fa meglio. In pratica la matrice di covarianza non si forma: si
+calcola la decomposizione a valori singolari
+$\mathbf{X} = \mathbf{P}\,\mathbf{S}\,\mathbf{U}^{\!\top}$, in cui le colonne di
+$\mathbf{U}$ sono proprio gli $\mathbf{u}_j$ e $\lambda_j = s_j^2/m$, al costo
+di $O(m\,d\,\min(m,d))$, o molto meno con le versioni randomizzate quando
+servono poche componenti.
 
 `````
 
@@ -717,9 +729,12 @@ locale, cioè un assetto che non si può migliorare con una mossa piccola pur
 non essendo il migliore possibile (come una pallina che si ferma in una
 conchetta a mezza costa invece di arrivare a valle: da lì, in qualunque
 direzione si guardi, si sale). Il rimedio standard è
-**k-means++**, che sceglie i centroidi iniziali lontani tra loro
-invece che a caso: è oggi l'inizializzazione predefinita in scikit-learn. Il
-secondo rimedio è farlo ripartire più volte e tenere la soluzione migliore.
+**k-means++**, che i centroidi iniziali li sorteggia ancora, ma con una
+probabilità proporzionale al quadrato della distanza dal centroide già scelto
+più vicino, così che partano lontani tra loro: è oggi l'inizializzazione
+predefinita in scikit-learn. Il secondo rimedio è farlo ripartire più volte e
+tenere la soluzione migliore, e va chiesto esplicitamente, perché con
+k-means++ il default `n_init="auto"` fa una partenza sola.
 
 ## DBSCAN: seguire la densità, non i centri
 
@@ -844,8 +859,8 @@ popolazioni. Nessun livello è «quello giusto» in assoluto: dipende dalla
 domanda.
 
 Resta un dettaglio che cambia tutto: quando due gruppi contengono molti punti,
-cosa vuol dire che sono «vicini»? Immagina due comitive in gita e chiediti
-quanto distano fra loro: la risposta cambia secondo chi guardi, e le quattro
+cosa vuol dire che sono «vicini»? Due comitive in gita, e la domanda è quanto
+distano fra loro: la risposta cambia secondo chi guardi, e le quattro
 risposte sensate sono queste (in gergo si chiamano criteri di **linkage**).
 
 - **single** («legame singolo»): distanza fra i due membri più vicini, uno per
@@ -979,12 +994,28 @@ $$
 \pi_k = \frac{m_k}{m}.
 $$
 
-La proprietà che rende EM un algoritmo e non un'euristica: la verosimiglianza
-non decresce mai, perché ogni iterazione massimizza una funzione che sta
-sotto di essa e la tocca nel punto corrente. Non garantisce l'ottimo globale
-(la verosimiglianza è multimodale, e da inizializzazioni diverse si arriva a
-soluzioni diverse: per questo si inizializza tipicamente con k-means e si
-riparte più volte), garantisce la monotonia.
+La proprietà che rende EM un algoritmo e non un'euristica è la monotonia, e
+la prova sta in una riga. Per qualunque distribuzione $q$ sulle $z^{(i)}$,
+
+$$
+\log p(\mathbf{X}\mid\theta) = \mathcal{E}(q,\theta)
++ \sum_{i}\mathrm{KL}\bigl(q(z^{(i)})\,\Vert\,p(z^{(i)}\mid\mathbf{x}^{(i)},\theta)\bigr),
+\qquad
+\mathcal{E}(q,\theta) = \sum_i \mathbb{E}_{q}\bigl[\log p(\mathbf{x}^{(i)}, z^{(i)}\mid\theta) - \log q(z^{(i)})\bigr],
+$$
+
+e siccome la KL non è mai negativa, $\mathcal{E}$ sta sotto la
+log-verosimiglianza. Il passo E prende come $q$ la posteriore, cioè le
+responsabilità $\gamma_{ik}$: la KL si annulla e il limite tocca la
+verosimiglianza nel $\theta$ corrente. Il passo M massimizza $\mathcal{E}$ in
+$\theta$, e allora $\log p(\mathbf{X}\mid\theta_{\text{nuovo}}) \ge
+\mathcal{E}(q,\theta_{\text{nuovo}}) \ge \mathcal{E}(q,\theta_{\text{vecchio}})
+= \log p(\mathbf{X}\mid\theta_{\text{vecchio}})$. La monotonia non garantisce
+l'ottimo globale e nemmeno un massimo locale: il punto a cui si arriva è in
+generale un punto stazionario (la verosimiglianza è multimodale, e da
+inizializzazioni diverse si arriva a soluzioni diverse: per questo si
+inizializza tipicamente con k-means e si riparte più volte, cosa che in
+scikit-learn va chiesta con `n_init`, che di suo vale $1$).
 
 Con le covarianze piene, però, quell'ottimo globale non è nemmeno una cosa da
 cercare: la verosimiglianza è illimitata superiormente. Basta una

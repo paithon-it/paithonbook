@@ -1,10 +1,10 @@
 # La memoria: il vero collo di bottiglia
 
-Nella sezione {doc}`«Prestazioni e scala» </PyTorch/prestazioni>` avevamo
-lasciato cadere, quasi di sfuggita, un'osservazione scomoda: «il collo di
-bottiglia, più spesso del calcolo, è il movimento dei dati». È il momento di
-prenderla sul serio, perché è una delle verità meno intuitive di tutto
-l'hardware moderno.
+La sezione precedente si è chiusa su un'osservazione scomoda, che la sezione
+{doc}`«Prestazioni e scala» </PyTorch/prestazioni>` aveva già lasciato cadere
+di sfuggita: il collo di bottiglia, più spesso del calcolo, è il movimento dei
+dati. È il momento di prenderla sul serio, perché è una delle verità meno
+intuitive di tutto l'hardware moderno.
 
 L'immagine che viene spontanea è quella di una GPU come un mostro di calcolo
 che divora numeri. La realtà, molto più spesso, è un mostro *affamato* che
@@ -128,8 +128,9 @@ grandezza (le cifre esatte cambiano con la generazione: qui contano le
   KB per unità di calcolo, e la sua particolarità è che *non* è una cache
   automatica: la gestisci a mano, decidendo tu cosa metterci. La L1 sì, è
   automatica. Il punto che la piramide disegnata nasconde è che oggi le due
-  sono lo stesso banco di SRAM (lo erano già nel 2010, poi per due generazioni
-  furono separate, e dal 2017 lo sono di nuovo), ripartito fra le due funzioni
+  sono lo stesso banco di SRAM (lo erano con Fermi e Kepler, dal 2010,
+  furono separate con Maxwell e Pascal, e da Volta, nel 2017, lo sono di
+  nuovo), ripartito fra le due funzioni
   da un pomello
   che il programmatore gira (192 KB combinati per SM su A100, di cui fino a 164
   configurabili come shared; 256 KB su H100). Tre conseguenze pratiche:
@@ -236,7 +237,7 @@ satura la GPU e uno che la lascia mezza spenta.
 C'è un secondo modo di risparmiare banda, complementare al primo: non
 ri-leggere dalla HBM ciò che ti serve più volte. Se un blocco di dati verrà
 usato da molti thread, conviene portarlo *una sola volta* nella shared memory
-(il ripiano condiviso della scrivania) e da lì servirlo a tutti.
+e da lì servirlo a tutti.
 
 Di questo principio l'esempio più puro si chiama FlashAttention, ed è il modo
 in cui oggi si eseguono i confronti fra le parole di un testo dentro un modello
@@ -351,8 +352,8 @@ passi la vita ad aspettare i dati; tante operazioni per pochi byte significa
 che i dati ti bastano e sei limitato solo da quanto calcoli. Le due situazioni
 hanno un nome, e sono due parole inglesi che ricorreranno in ogni pagina che
 segue: nel primo caso si è **memory-bound**, alla lettera «legati alla
-memoria», cioè bloccati dal magazzino; nel secondo **compute-bound**, «legati
-al calcolo», cioè bloccati dai cuochi.
+memoria», e il tempo lo decide la banda; nel secondo **compute-bound**,
+«legati al calcolo», e il tempo lo decide il picco di conti al secondo.
 
 ```{figure} ../figures/roofline.svg
 :name: fig-roofline
@@ -431,7 +432,16 @@ $$
 
 l'intensità di pareggio. A sinistra ($I < I^\star$) domina la banda: si è
 memory-bound. A destra ($I > I^\star$) domina il calcolo: si è
-compute-bound.
+compute-bound. Dietro il $\min$ c'è un modello di tempo,
+$t = \max(F / P_\text{picco},\; Q / B)$ per $F$ FLOP e $Q$ byte spostati, con
+$I = F/Q$, e tre ipotesi. La prima: calcolo e trasferimento si sovrappongono
+per intero (senza sovrapposizione il tempo è la somma dei due, e a
+$I = I^\star$ la prestazione si dimezza). La seconda: ci sono abbastanza
+accessi in volo da saturare la banda, la legge di Little della sezione
+sull'architettura. La terza: $Q$ è contato su un solo livello della piramide.
+Ogni livello ha il suo roofline, e lo stesso kernel può essere compute-bound
+rispetto alla HBM e memory-bound rispetto alla shared
+{cite}`williams2009roofline`.
 
 Conviene fissare subito dove cade quel ginocchio, perché è il metro con cui il
 resto del capitolo giudicherà ogni tecnica, e perché ce n'è più d'uno sulla

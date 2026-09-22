@@ -12,7 +12,8 @@ sotto quella di tutti gli altri. L'asma, di suo, non proteggeva un bel niente.
 A proteggere era la corsia in cui l'asma ti faceva finire. Il modello aveva
 colto una correlazione vera nei dati e ne aveva tratto una conclusione che,
 usata per decidere chi mandare a casa, avrebbe ucciso. La storia (raccontata
-anni dopo da Rich Caruana) è diventata il manifesto di un campo: se non
+anni dopo da Rich Caruana e colleghi
+{cite}`caruana2015intelligible`) è diventata il manifesto di un campo: se non
 possiamo *guardare dentro* un modello, non sappiamo su quali scorciatoie si
 regge, e non possiamo fidarcene quando la posta è alta.
 
@@ -20,9 +21,8 @@ Ci sono due strade per capire un modello. La prima è sceglierlo trasparente
 per costruzione, così semplice che la sua logica si legge a occhio nudo. La
 seconda è tenere il modello com'è, anche se dentro ha milioni di numeri e non
 si legge affatto, e interrogarlo da fuori: gli si passano dei casi, si guardano
-le risposte, e si deduce il resto. Un modello trattato così si dice una
-scatola nera, perché non se ne vede l'interno; uno che si legge, per
-contrasto, una scatola bianca.
+le risposte, e si deduce il resto. È la scatola nera dell'apertura del
+capitolo; un modello che si legge, per contrasto, si dice scatola bianca.
 
 Questa sezione percorre la prima strada per intero, e poi imbocca la seconda
 con il primo attrezzo che vi si incontra: una classifica delle colonne dei dati,
@@ -87,9 +87,11 @@ Confrontare due cartellini fra loro è un'altra faccenda. La stanza dice
 $8\,000$ e il metro quadro $2\,000$, e sembrerebbe che le stanze pesino quattro
 volte tanto; ma una stanza non è un metro quadro, e voci misurate in unità
 diverse non si mettono in fila. E dove due voci vanno sempre insieme la
-ricevuta si può riscrivere: le case grandi hanno più stanze, quindi il
-cartellino del metro quadro può scendere di 100 € e quello della stanza salire
-di $3\,000$ €, e il totale resta $210\,000$ €. Il prezzo finale regge; quale
+ricevuta si può riscrivere: se nei dati le case hanno quasi sempre una stanza
+ogni 30 metri quadri, il cartellino del metro quadro può scendere di 100 € e
+quello della stanza salire di $3\,000$ €, e il totale resta $210\,000$ €
+(novanta metri fanno $-9\,000$ €, tre stanze $+9\,000$ €), e resta quasi uguale
+su tutte le case fatte così. Il prezzo finale regge; quale
 delle due righe se lo meriti, non lo dice più nessuno.
 
 Vale lo stesso per la regressione logistica, che al posto di una quantità dà
@@ -119,12 +121,28 @@ prima dell'incremento.
 
 Due avvertenze rendono onesta questa lettura. Primo, i coefficienti sono
 confrontabili tra loro solo se le feature sono **standardizzate** (stessa
-scala): un $w_j$ grande può riflettere semplicemente un'unità di misura
-piccola. Secondo, l'inciso «a parità di tutte le altre» è fragile quando le
-feature sono correlate: se due colonne si muovono insieme, il modello può
-spartire il loro effetto in modo arbitrario, e i singoli coefficienti
-diventano instabili (la stessa multicollinearità che rende preziosa la
-regolarizzazione Ridge/Lasso vista nel capitolo di machine learning).
+scala): un $w_j$ grande può riflettere semplicemente un'unità di misura piccola.
+Secondo, l'inciso «a parità di tutte le altre» è fragile quando le feature sono
+correlate, e la fragilità si misura. Per i minimi quadrati con rumore
+omoschedastico di varianza $\sigma^2$ vale
+$\operatorname{Var}(\hat{\mathbf{w}}) = \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}$,
+e per la singola componente
+
+$$
+\operatorname{Var}(\hat{w}_j) = \frac{\sigma^2}{\sum_i (x_{ij} - \bar{x}_j)^2}
+\cdot \frac{1}{1 - R_j^2},
+$$
+
+dove $R_j^2$ è il coefficiente di determinazione della regressione di $x_j$
+sulle altre feature. Il secondo fattore è il *variance inflation factor*: con
+$R_j^2 = 0{,}99$ la varianza del coefficiente è cento volte quella che avrebbe
+con feature scorrelate, e il segno stesso di $\hat{w}_j$ può cambiare da un
+campione all'altro mentre la predizione resta stabile, perché quello che i
+dati determinano bene è la somma degli effetti, non la loro spartizione. È la
+stessa multicollinearità che rende preziosa la regolarizzazione Ridge e Lasso
+della {doc}`sezione sull'overfitting
+</MachineLearning/overfitting-validazione>`,
+al prezzo di una stima distorta.
 
 `````
 
@@ -232,15 +250,24 @@ una stima di come si comporta, non la regola con cui decide.
 `````{tab} Superiore
 
 Il presunto compromesso accuratezza/interpretabilità è stato messo in
-discussione, in particolare da Cynthia Rudin {cite}`rudin2019stop`, che
-sostiene come su dati
-strutturati con feature dotate di senso il divario tra un modello
+discussione, in particolare da Cynthia Rudin {cite}`rudin2019stop`, che sostiene
+come su dati strutturati con feature dotate di senso il divario tra un modello
 interpretabile ben ingegnerizzato e una scatola nera sia spesso trascurabile o
-nullo. La ragione è che il vantaggio del *deep learning* si manifesta soprattutto
-là dove serve apprendere le rappresentazioni da dati grezzi ad alta
+nullo. La ragione è che il vantaggio del *deep learning* si manifesta
+soprattutto là dove serve apprendere le rappresentazioni da dati grezzi ad alta
 dimensione (pixel, forme d'onda, token); sui dati tabellari le feature sono già
-significative, e modelli come gradient boosting o GAM catturano quasi tutta la
-struttura utile restando ispezionabili.
+significative, e un modello additivo cattura spesso quasi tutta la struttura
+utile restando ispezionabile. Il gradient boosting con centinaia di alberi resta
+fuori: è anzi la scatola nera tipica delle tabelle. Lo diventa se lo si
+costringe alla forma additiva, addestrando per boosting un albero minuscolo alla
+volta su una feature sola, a turno, e sommando gli alberi di ogni feature in una
+curva $f_j$: è il GA²M di Lou, Caruana e Gehrke {cite}`lou2013accurate`, che a
+$\sum_j f_j(x_j)$ aggiunge pochi termini a coppie $f_{jk}(x_j, x_k)$ scelti con
+un test statistico, e che la libreria InterpretML distribuisce col nome di
+*Explainable Boosting Machine*. Con un modello di questa famiglia Caruana e
+colleghi hanno riletto il caso della polmonite e dell'asma
+{cite}`caruana2015intelligible`: la curva dell'asma si poteva guardare, e
+correggere a mano.
 
 Ne discende una gerarchia metodologica: preferire un modello intrinsecamente
 interpretabile quando le prestazioni sono comparabili, e riservare gli
@@ -548,12 +575,27 @@ fuorvianti. L’**Accumulated Local Effects** (ALE) di Apley e Zhu
 {cite}`apley2020visualizing` corregge il tiro: invece di marginalizzare su
 tutta la distribuzione, media le *differenze* di predizione entro piccoli
 intervalli di $x_j$, usando la distribuzione condizionata e restando così nelle
-regioni densamente popolate. È la scelta da preferire quando le feature sono
-marcatamente correlate. La scelta fra i due non è fra un metodo giusto e uno
-sbagliato, ma è di nuovo la forcella dell'apertura: il PDP marginale risponde a
-«che cosa farebbe *questo modello* se gli riscrivessi una colonna», l'ALE
-condizionato a «come si comporta la predizione lungo i dati che esistono
-davvero».
+regioni densamente popolate. Divisa la scala di $x_j$ in intervalli di estremi
+$z_{0,j} < z_{1,j} < \dots < z_{H,j}$ (di solito ai quantili, così che ciascuno
+contenga lo stesso numero di esempi), e detto $N_j(h)$ l'insieme degli esempi
+con $x_j$ nell'intervallo $h$, lo stimatore non centrato è
+
+$$
+\tilde{f}_{j,\text{ALE}}(v) = \sum_{h=1}^{h_j(v)} \frac{1}{|N_j(h)|}
+\sum_{i \in N_j(h)} \Big[ f\big(z_{h,j},\, \mathbf{x}_{-j}^{(i)}\big) -
+f\big(z_{h-1,j},\, \mathbf{x}_{-j}^{(i)}\big) \Big],
+$$
+
+dove $h_j(v)$ è l'intervallo che contiene $v$; gli si sottrae poi la media sugli
+esempi, così che l'effetto medio sia nullo. Ogni esempio viene spostato solo
+fino ai bordi del proprio intervallo, mai fino a un valore lontano, e lì sta la
+protezione dall'estrapolazione; il prezzo è una curva che dipende dal numero di
+intervalli e che, con pochi esempi per intervallo, si fa rumorosa. È la scelta
+da preferire quando le feature sono marcatamente correlate. La scelta fra i due
+non è fra un metodo giusto e uno sbagliato, ma è di nuovo la forcella
+dell'apertura: il PDP marginale risponde a «che cosa farebbe *questo modello* se
+gli riscrivessi una colonna», l'ALE condizionato a «come si comporta la
+predizione lungo i dati che esistono davvero».
 
 `````
 
@@ -717,14 +759,14 @@ non va letta come una classifica.
 ## Che una feature conti, non come, né perché
 
 Chiudiamo con l'avvertenza più importante, la stessa della storia degli
-asmatici. L'importanza delle feature (per rimescolamento o da impurità) dice
-che una colonna pesa sulle risposte del modello. Non dice come agisce
-(per quello servono le curve di poco fa), non dice se l'effetto sia lo stesso
-per tutti (per quello servono i metodi della sezione seguente), e soprattutto
-non dice che quella colonna sia la causa di niente. Attenzione a questa
-parola, che somiglia a un'altra usata qui di continuo: «casuale»
-vuol dire tirato a sorte, «causale» vuol dire che una cosa ne provoca un'altra,
-ed è la seconda che qui stiamo negando.
+asmatici. L'importanza delle feature (per rimescolamento o da impurità) dice che
+una colonna pesa sulle risposte del modello. Non dice come agisce (per quello
+servono le curve di poco fa), non dice se l'effetto sia lo stesso per tutti (lo
+dicono le curve ICE, e caso per caso i metodi della sezione seguente), e
+soprattutto non dice che quella colonna sia la causa di niente. Attenzione a
+questa parola, che somiglia a un'altra usata qui di continuo: «casuale» vuol
+dire tirato a sorte, «causale» vuol dire che una cosa ne provoca un'altra, ed è
+la seconda che qui stiamo negando.
 
 Un esempio, e sta tutto nella storia degli asmatici di apertura. Là l'asma
 risultava importante, e chi avesse letto quel numero come una causa avrebbe

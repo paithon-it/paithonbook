@@ -167,8 +167,12 @@ I costi sono di tre specie, e l'ultima è quella che si dimentica.
   nell'aver ristretto l'insieme delle traiettorie percorribili. Da
   qui la scelta di progetto standard, che le opzioni si aggiungano
   all'insieme delle azioni elementari invece di rimpiazzarlo: così l'ottimo
-  raggiungibile resta quello di prima, e le opzioni possono solo far arrivare
-  prima.
+  raggiungibile resta quello di prima. Raggiungibile, però, non vuol dire
+  raggiunto: le opzioni cambiano quali stati l'agente visita, e un'opzione
+  che porta abbastanza bene sottrae all'apprendimento le visite che servivano
+  a scoprire la strada migliore. Si impara più in fretta all'inizio e si
+  arriva all'ottimo più tardi, o non ci si arriva; che il saldo sia positivo
+  dipende da quanto le opzioni sono adatte al compito.
 
 `````
 
@@ -373,11 +377,11 @@ mosse a coprire l'ultimo tratto.
 
 ## Dove i sotto-obiettivi non li dà nessuno
 
-Nel banco di prova qui sopra i sotto-obiettivi, cioè le porte, li ha trovati
-una regola di due righe: sono le caselle con due soli vicini. È un lusso della
-pianta a stanze. Nel mondo vero il repertorio non lo detta nessuno, e trovarlo
-è il problema, non il preliminare. Le risposte si dividono in due famiglie, e
-si distinguono per chi decide che cosa.
+Nel banco di prova delle quattro stanze i sotto-obiettivi, cioè le porte, li ha
+trovati una regola di due righe: sono le caselle con due soli vicini. È un
+lusso della pianta a stanze. Nel mondo vero il repertorio non lo detta nessuno,
+e trovarlo è il problema, non il preliminare. Le risposte si dividono in due
+famiglie, e si distinguono per chi decide che cosa.
 
 La prima famiglia non decide niente in anticipo: fa imparare le opzioni
 insieme alla politica che le sceglie. L’**option-critic**
@@ -385,8 +389,13 @@ insieme alla politica che le sceglie. L’**option-critic**
 {doc}`gradiente di policy </DeepReinforcementLearning/policy-gradient>`, e lo
 usa per aggiustare tre cose alla volta: che cosa fa
 un'opzione, quando finisce, e quale opzione conviene chiamare. Nessuno deve
-scrivere un sotto-obiettivo; bisogna solo dire quante opzioni si vogliono,
-che è come dire a una squadra «preparatene otto» invece di dettargliele.
+scrivere un sotto-obiettivo; bisogna solo dire quante opzioni si vogliono. Il
+gradiente della terminazione si legge da solo,
+$-\,\partial\beta_{\omega,\vartheta}(s')/\partial\vartheta\,\big(Q_\Omega(s',\omega)
+- V_\Omega(s')\big)$: l'opzione si allunga dove continuarla vale più della
+media delle alternative e si chiude dove vale meno. Lasciate libere, però,
+le terminazioni degenerano in opzioni da un passo o in un'opzione sola che
+fa tutto, e in pratica si aggiunge un costo per ogni cambio di opzione.
 
 La seconda famiglia divide i compiti: il livello alto nomina un obiettivo,
 il livello basso lo raggiunge come crede. L'immagine è quella di un feudo, dove
@@ -405,7 +414,11 @@ raggiungerlo, e il premio che tiene in piedi il livello basso se lo dà l'agente
 stesso quando l'obiettivo è raggiunto. Senza quel premio interno il livello
 basso non avrebbe niente da inseguire, perché il punteggio del gioco può
 arrivare migliaia di passi dopo, quando la porta attraversata è dimenticata da
-un pezzo.
+un pezzo. Gli obiettivi, però, l'h-DQN non li trova da sé: su *Montezuma's
+Revenge* li prende da un rivelatore di oggetti scritto a mano (la scala, la
+chiave, la porta), cioè riceve dall'esterno proprio ciò che si stava cercando.
+Mostra che due livelli e un premio interno superano le ricompense rade quando
+gli obiettivi ci sono; trovarli resta il compito dell'altra famiglia.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -424,9 +437,8 @@ un pezzo.
 - Per questo gli schemi si aggiungono al gioco libero e non lo
   sostituiscono: chi ha in mano tutti e due chiama lo schema quando serve e va
   da solo quando la strada è aperta. Nelle quattro stanze si vede in numeri:
-  chi ha solo gli schemi impara prima di tutti e poi resta fermo a quasi il
-  doppio del cammino più corto, e se il traguardo è in un punto dove nessuno
-  schema conduce non ci arriva mai.
+  chi ha solo gli schemi impara prima di tutti, ma se il traguardo è in un
+  punto dove nessuno schema conduce non ci arriva mai.
 ```
 `````
 
@@ -461,7 +473,8 @@ La gerarchia, insomma, cambia l'unità di misura del tempo: il livello alto vede
 una partita fatta di poche mosse grosse, e quanto duri ciascuna glielo dice il
 livello basso. Resta in piedi il punto su cui l'h-DQN si appoggia, cioè la
 ricompensa che l'agente si dà da sé, comparsa qui senza spiegazioni. È il
-problema della prossima sezione, e senza risolverlo la gerarchia non parte: un
+problema della {doc}`sezione sull'esplorazione <esplorazione-e-ricompensa>`, e
+senza risolverlo la gerarchia non parte: un
 livello basso che deve imparare a raggiungere una porta ha bisogno di sapere
 subito se ci è arrivato, mentre il punteggio dell'ambiente, nei giochi a
 ricompensa rada, può tardare migliaia di passi.

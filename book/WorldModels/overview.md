@@ -1,17 +1,17 @@
 # World Model
 
-Un gatto di casa ha molto più senso comune e comprensione del mondo di
-qualunque modello di linguaggio. A ripeterlo da anni, con poche variazioni, in
-conferenze e interviste, non è uno scettico qualsiasi ma Yann LeCun, premio
-Turing 2018 (il riconoscimento che in informatica vale quanto un Nobel) e uno
-dei padri del deep learning. Mentre mezzo mondo si stupiva di ciò che sanno
-scrivere i programmi che compongono un testo indovinando una parola dopo
-l'altra, i grandi modelli di linguaggio (gli LLM, *Large Language Model*),
-uno dei loro nonni intellettuali indicava un gatto. Provocazione calcolata,
-certo. Ma proviamo a prenderla sul serio: che cosa sa fare, un gatto? Non
-risolve integrali e non scrive sonetti; però salta sul mobile calibrando la
-traiettoria al primo colpo, prevede da che parte sbucherà il gomitolo rotolato
-sotto il divano, e se una mossa è finita male non la ripete tale e quale.
+Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque
+modello di linguaggio. A ripeterlo da anni, con poche variazioni, in conferenze
+e interviste, non è uno scettico qualsiasi ma Yann LeCun, premio Turing 2018 (il
+riconoscimento che in informatica vale quanto un Nobel) e uno dei padri del deep
+learning. Mentre mezzo mondo si stupiva di ciò che sanno scrivere i grandi
+modelli di linguaggio (gli LLM, *Large Language Model*, i programmi che
+compongono un testo indovinando una parola dopo l'altra), uno dei loro nonni
+intellettuali indicava un gatto. Provocazione calcolata, certo. Ma proviamo a
+prenderla sul serio: che cosa sa fare, un gatto? Non risolve integrali e non
+scrive sonetti; però salta sul mobile calibrando la traiettoria al primo colpo,
+prevede da che parte sbucherà il gomitolo rotolato sotto il divano, e se una
+mossa è finita male non la ripete tale e quale.
 
 E prima del gatto, il bambino. A pochi mesi di vita un neonato si stupisce (lo
 si misura da quanto a lungo guarda), quando un giocattolo nascosto da uno
@@ -42,8 +42,8 @@ simulatore interno che serve a prevedere («cosa succede se lascio il
 bicchiere?») e quindi a pianificare, senza dover provare tutto per
 davvero.
 
-Su quella parola, «simulatore», conviene intendersi subito, perché il capitolo
-la userà spesso e i mestieri non sono lo stesso. Il simulatore di volo su cui
+Su quella parola, «simulatore», bisogna intendersi, perché torna spesso e i
+mestieri non sono lo stesso. Il simulatore di volo su cui
 si esercitano i piloti l'hanno scritto degli ingegneri che le equazioni
 dell'aria le conoscevano già: la fisica, lì dentro, ce l'ha messa qualcuno, una
 regola alla volta. Un modello del mondo no: nessuno gliel'ha scritto, se lo

@@ -28,7 +28,7 @@ ancora oggi. L'obiettivo di vetro del telefono non cambia le carte in tavola:
 serve a far entrare più luce di quanta ne passi da un buco di spillo, ma i
 raggi li fa convergere in un punto solo, e quel punto fa la parte del foro.
 
-E il foro porta con sé il problema che occupa tutta questa sezione. Un punto
+E il foro porta con sé un problema di fondo. Un punto
 del mondo, per dire dov'è, ha bisogno di tre numeri: quanto a destra, quanto in
 alto, quanto lontano. Un punto sulla foto ne ha due, la riga e la colonna del
 suo pixel. Proiettare significa quindi buttare via un numero per ogni
@@ -683,11 +683,13 @@ conviene tenere a mente: essendo un ricordo statistico e non una misura, si
 può ingannare. Una fotografia di una fotografia viene letta come una scena
 vera, e un plastico ben fatto viene letto come un palazzo.
 
-C'è poi un limite che non è un difetto ma una legge: la scala resta
-sconosciuta. La rete mette la scena in fila dal vicino al lontano, e dice senza
-esitare che l'auto sta più indietro dell'albero; se siano a dieci metri o a
-cento non lo dice, e nemmeno di quante volte l'una sia più lontana dell'altra.
-Nessun indizio nell'immagine lo contiene.
+C'è poi un limite che viene dalla geometria: la scala, da sola, la foto non
+la dà. Una rete addestrata a mettere la scena in fila dal vicino al lontano
+dice senza esitare che l'auto sta più indietro dell'albero; se siano a dieci
+metri o a cento, e di quante volte l'una sia più lontana dell'altra, non lo
+dice. A dirlo può essere soltanto quello che si sa del mondo, come la taglia di
+una porta o di un'auto, e allora la risposta vale quanto quel ricordo: un
+plastico fatto bene la manda fuori strada di un fattore dieci.
 
 `````
 
@@ -695,12 +697,18 @@ Nessun indizio nell'immagine lo contiene.
 
 Il problema è mal posto in senso stretto: infinite scene generano la stessa
 immagine, e la classe di ambiguità include almeno la scala globale. Un modello
-monoculare non risolve la geometria, apprende un prior $p(\text{scena})$
-e restituisce il massimo a posteriori dato quel prior. La distinzione
-terminologica che ne discende è utile: si parla di profondità relativa
-(ordinamento, o profondità a meno di scala e offset) contro profondità
-metrica (in metri), e la seconda richiede vincoli aggiuntivi, per esempio
-intrinseci noti o un sensore inerziale.
+monoculare non risolve la geometria: impara dai dati la distribuzione della
+profondità data l'immagine, e ne restituisce la statistica che la loss sceglie
+(la media con l'errore quadratico, la mediana con quello assoluto). La
+distinzione terminologica che ne discende è utile: si parla di profondità
+relativa (l'ordinamento, oppure l'inversa della profondità a meno di scala e
+offset, che è ciò che predice MiDaS; uno spostamento costante della disparità
+non è uno spostamento costante della profondità, e dal risultato non si
+ricavano nemmeno i rapporti fra le distanze) contro profondità metrica (in
+metri). La seconda chiede che il prior contenga anche le taglie degli oggetti e
+che la focale sia nota, perché la stessa scena ripresa con un grandangolo o con
+un teleobiettivo suggerisce distanze diverse; con più viste bastano invece la
+base nota o un sensore inerziale.
 
 Il progresso decisivo è stato di dati, non di architettura. **MiDaS** mostra
 che mescolando dataset molto diversi (scansioni 3D, stereo da film, ricostruzioni
@@ -783,15 +791,15 @@ riga dell'altra immagine, così che a cercarlo basta scorrere quella.
 
 Ora il caso generale, con la seconda fotocamera ruotata di otto gradi attorno
 alla verticale, come due telecamere puntate un po’ l'una verso l'altra. Qui non
-c'è più nessuna riga comoda, ma la retta esiste ancora: il calcolo qui sotto la
-scrive a partire da come sono messe le due fotocamere (è la matrice `F`), e poi
-verifica, punto per punto, se il pixel della seconda immagine cade sulla retta
-o fuori. Quel «quanto fuori» è il residuo, lo stesso nome che nella
-{doc}`sezione su ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`
-porta lo scarto fra un punto e la sua ombra: la parte che il modello non
-spiega. Vale esattamente zero quando il pixel sta sulla retta; in pixel, però,
-non ci si legge ancora, e il conto che lo converte arriva subito dopo il
-programma.
+c'è più nessuna riga comoda, ma la retta esiste ancora: il programma la ricava
+dalla posizione reciproca delle due fotocamere con lo stesso conto visto per la
+retta epipolare, e poi verifica, punto per punto, se il pixel della seconda
+immagine cade sulla retta o fuori. Quel «quanto fuori» è il residuo, lo stesso
+nome che nella {doc}`sezione su ortogonalità e proiezioni
+</Matematica/ortogonalita-proiezioni>` porta lo scarto fra un punto e la sua
+ombra: la parte che il modello non spiega. Vale esattamente zero quando il
+pixel sta sulla retta; in pixel, però, non ci si legge ancora, e il conto che
+lo converte arriva subito dopo il programma.
 
 ```python
 ang = np.deg2rad(8.0)
@@ -820,16 +828,16 @@ Il residuo massimo è dell'ordine di $10^{-17}$, cioè ancora una volta zero.
 Ecco la conversione promessa: è un numero algebrico e non una distanza, e per
 farne pixel va diviso per la lunghezza dei soli due primi coefficienti della
 retta $l = \mathbf{F}\tilde{\mathbf{x}}_L$, cioè per $\sqrt{a^2+b^2}$, che qui
-vale circa $4 \cdot 10^{-4}$; dividerlo per la lunghezza di tutti e tre
-darebbe un numero quasi trecento volte più piccolo e senza significato. Un
-residuo di $0{,}3$ vorrebbe dire settecento pixel fuori posto su un sensore
-largo seicentoquaranta (il centro dell'immagine, nel programma, sta a $320$),
-cioè dall'altra parte dell'immagine; questo vale $3 \cdot 10^{-14}$ pixel. Per ognuno degli otto
-punti il pixel nella seconda immagine sta
-esattamente sulla retta calcolata dalla prima. Nessuna rete, nessun
-dato: è un'identità algebrica che dipende solo da come è fatta la proiezione,
-ed è la ragione per cui questa parte della visione artificiale non è
-invecchiata.
+vale circa $4 \cdot 10^{-4}$; dividerlo per la lunghezza di tutti e tre darebbe
+un numero quasi trecento volte più piccolo e senza significato. Un residuo di
+$0{,}3$ vorrebbe dire settecento pixel fuori posto su un sensore largo
+seicentoquaranta (il centro dell'immagine, nel programma, sta a $320$), cioè
+dall'altra parte dell'immagine: è il metro con cui guardare il risultato. Il
+residuo misurato vale invece $3 \cdot 10^{-14}$ pixel, cioè zero. Per ognuno
+degli otto punti il pixel nella seconda immagine sta esattamente sulla retta
+calcolata dalla prima. Nessuna rete, nessun dato: è un'identità algebrica che
+dipende solo da come è fatta la proiezione, ed è la ragione per cui questa
+parte della visione artificiale non è invecchiata.
 
 `````{tab} Elementare
 
@@ -863,7 +871,8 @@ invecchiata.
 - Da una foto sola la distanza è indeterminata per legge, eppure le reti la
   stimano bene: non la calcolano, la riconoscono, perché hanno visto
   milioni di scene. Ottimo in pratica, ingannabile per costruzione (una
-  fotografia di una fotografia le inganna), e cieco alla scala.
+  fotografia di una fotografia le inganna), e cieco alla scala, salvo quella
+  che indovina dalle taglie che ricorda.
 ```
 
 `````
@@ -897,7 +906,8 @@ invecchiata.
   proiettivo. Le sue pose sono l'ingresso obbligatorio del rendering neurale.
 - La profondità da una sola immagine è matematicamente indeterminata: le
   reti non la calcolano, applicano un prior appreso. Ottimo in pratica,
-  ingannabile per costruzione, e cieco alla scala assoluta.
+  ingannabile per costruzione, e cieco alla scala assoluta, salvo quella che
+  il prior suggerisce dalle taglie note degli oggetti.
 ```
 
 `````

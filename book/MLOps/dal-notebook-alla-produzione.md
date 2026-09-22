@@ -86,11 +86,8 @@ sistema di ML è, in buona misura, l'arte di bilanciarle.
 
 ## Il ciclo di vita, in concreto
 
-Il primo malinteso da smontare è che addestrare il modello sia il cuore del
-lavoro. Nel codice di un sistema di ML reale, la parte di apprendimento vero e
-proprio è una frazione minima; tutto il resto è raccogliere dati, ripulirli,
-trasformarli, distribuire il modello e sorvegliarlo. E soprattutto: non è una
-linea retta con un traguardo, ma un ciclo che si percorre molte volte.
+Il rettangolino nero e l'anello li conosciamo già: addestrare è la parte
+piccola, e il percorso gira in tondo. Adesso li si guarda da vicino.
 
 Prima di guardare il ciclo intero, però, conviene guardare da vicino un suo
 pezzo, quello che si ripete più spesso ({numref}`fig-cicd-ml`): il viaggio che
@@ -107,7 +104,8 @@ propone un cambiamento, una macchina prova il codice, poi riaddestra il
 modello e gli dà un voto su esempi che non ha mai visto. Solo se quel voto
 supera la soglia decisa in anticipo, il cambiamento viene accettato e
 pubblicato. Nella figura il voto è l’`F1`, uno dei modi di dare un numero solo
-alla bravura di un classificatore, visto nel capitolo sul machine learning; va
+alla bravura di un classificatore, visto nel {doc}`capitolo sul machine learning
+</MachineLearning/overview>`; va
 bene qualunque altro, purché la soglia sia stata scritta *prima*. Rispetto al
 software normale lo stadio in più è proprio quello del voto, ed è un cancello
 che può dire di no.
@@ -242,8 +240,9 @@ def fissa_seed(seed: int = 42) -> None:
     torch.manual_seed(seed)   # pesi iniziali, dropout, DataLoader che mescola
     # i Generator moderni di NumPy ricevono il seme alla creazione:
     #   rng = np.random.default_rng(seed)
-    # e un DataLoader che mescola vuole il proprio generatore, piu' un
-    # worker_init_fn se num_workers > 0:
+    # il DataLoader che mescola pesca dal seme globale; un generator
+    # proprio lo isola dagli altri consumi (worker_init_fn serve solo per
+    # generatori costruiti a mano dentro i worker):
     #   DataLoader(dati, shuffle=True,
     #              generator=torch.Generator().manual_seed(seed))
 ```
@@ -272,9 +271,11 @@ La prima è la **riproducibilità bit a bit**: due esecuzioni che danno numeri
 identici fino all'ultima cifra. Si può avere, ma si paga. Bisogna dare un seme
 a ogni sorgente di casualità, chiedere esplicitamente alla libreria di usare
 solo procedimenti che a parità di ingressi danno sempre la stessa uscita
-(`torch.use_deterministic_algorithms(True)`), rinunciare a caricare i dati con
-più processi in parallelo, e accettare di andare più piano. E vale su una
-macchina sola: quel comando vieta i procedimenti ballerini di *quel*
+(`torch.use_deterministic_algorithms(True)`, con `cudnn.benchmark` spento e,
+su GPU, la variabile `CUBLAS_WORKSPACE_CONFIG`), seminare anche i processi che
+caricano i dati, e accettare di andare più piano: il dettaglio sta in
+{doc}`Dal notebook agli script </PyTorch/dal-notebook-agli-script>`. E vale su
+una macchina sola: quel comando vieta i procedimenti ballerini di *quel*
 calcolatore, non l'ordine in cui due processori diversi sommano gli stessi
 numeri.
 
@@ -315,14 +316,14 @@ programma, non in una cella del notebook.
 Serve poi un modo per dare a ogni combinazione un nome corto e sempre uguale,
 così da accorgersi di stare rifacendo una prova già fatta. Il modo è un
 tritatutto: si passa dentro l'elenco delle impostazioni e ne esce un codice
-corto, completamente diverso appena una cifra cambia. Le impostazioni si
-mettono in fila in ordine alfabetico prima di buttarle dentro, così chi le ha
-scritte in un ordine e chi in un altro ottiene lo stesso codice. Per il resto,
-però, il tritatutto è letterale: legge quello che c'è scritto, non quello
-che si intendeva. «5» e «5,0» sono lo stesso numero di giri e danno due codici
-diversi, quindi i numeri vanno scritti sempre allo stesso modo, o si rifà una
-prova credendo che sia nuova. È lo stesso attrezzo che serve a mettere un
-cartellino a un intero archivio di dati.
+corto, completamente diverso appena una cifra cambia. Le impostazioni si mettono
+in fila in ordine alfabetico prima di buttarle dentro, così chi le ha scritte in
+un ordine e chi in un altro ottiene lo stesso codice. Per il resto, però, il
+tritatutto è letterale: legge quello che c'è scritto, non quello che si
+intendeva. «5» e «5,0» dicono la stessa cosa (cinque passate sui dati di
+addestramento) e danno due codici diversi, quindi i numeri vanno scritti sempre
+allo stesso modo, o si rifà una prova credendo che sia nuova. È lo stesso
+attrezzo che serve a mettere un cartellino a un intero archivio di dati.
 
 `````
 
@@ -393,8 +394,9 @@ risultati finiscano da qualche parte che sopravviva alla chiusura del notebook.
 
 ## Il debito tecnico del machine learning
 
-C'è un'ultima verità, la più scomoda, e la mette a fuoco un paper del 2015:
-*Hidden Technical Debt in Machine Learning Systems*
+C'è un'ultima verità, la più scomoda, e viene dallo stesso articolo del 2015 del
+rettangolino nero soffocato dalle scatole: *Hidden Technical Debt in Machine
+Learning Systems*
 {cite}`sculley2015hidden`, di un gruppo di Google. La tesi è che i
 sistemi di ML accumulano debito tecnico (le scorciatoie di oggi che si
 pagano con gli interessi domani) più in fretta e in modi più insidiosi del
@@ -422,11 +424,13 @@ equilibri e sposti le risposte anche dove nessuno se lo aspettava. Cambiare
 *qualsiasi* cosa può cambiare *tutto*. E i dati, a differenza del codice,
 cambiano da soli, senza che nessuno tocchi una riga.
 
-Chi compra una casa così manda un perito, e il perito non fa la media delle
-stanze: guarda quella messa peggio. Muri perfetti e impianto elettrico fuori
-norma fanno una casa fuori norma. E il sopralluogo non si fa una volta sola a
-lavori finiti: si rifà a ogni modifica, e a farlo è una macchina che non si
-stanca.
+Chi compra una casa così manda un perito, con un elenco di controlli da spuntare
+(per un sistema di machine learning ne esiste uno di ventotto, divisi fra i
+dati, il modello, le macchine e la sorveglianza), e il perito non fa la media
+delle stanze: guarda quella messa peggio. Muri perfetti e impianto elettrico
+fuori norma fanno una casa fuori norma. E il sopralluogo non si fa una volta
+sola a lavori finiti: si rifà a ogni modifica, e a farlo è una macchina che non
+si stanca.
 
 `````
 
@@ -451,8 +455,9 @@ Come si misura se un sistema è pronto per la produzione? Una rubrica nota come
 **ML Test Score** mette in fila 28 controlli concreti su quattro aree (dati e
 feature, sviluppo del modello, infrastruttura, monitoraggio)
 {cite}`breck2017ml`. Il voto complessivo è dettato dall'area più debole: non
-basta un modello brillante se il monitoraggio è assente. In cima a quella
-scala sta la Continuous Delivery for Machine Learning, in sigla **CD4ML**
+basta un modello brillante se il monitoraggio è assente. Accanto a quella
+rubrica, come pratica e non come suo gradino, sta la
+Continuous Delivery for Machine Learning, in sigla **CD4ML**
 {cite}`sato2019continuous`, che estende al ML le pratiche di consegna continua
 del software: automatizzare l'intero ciclo (dati, training, valutazione,
 deploy), così che qualunque modello sia riproducibile e rilasciabile in modo

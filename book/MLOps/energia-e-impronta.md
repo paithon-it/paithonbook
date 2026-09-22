@@ -69,12 +69,15 @@ Quella tabella circola in più versioni, e la più citata non è quella della
 relazione ma la sua ripresa nella letteratura successiva sulle reti compresse:
 i singoli valori differiscono (la moltiplicazione in virgola mobile a 32 bit è
 data ora $3{,}7$ ora $4$ picojoule; la lettura dalla DRAM $640$ picojoule
-nella ripresa, e fra $1{,}3$ e $2{,}6$ nanojoule nella tabella della relazione
-originale). Quello che regge in tutte e due è il salto: oltre due ordini di
-grandezza fra l'aritmetica e la DRAM. Il pareggio invece si sposta, e non di
-poco. Chi rifà i conti cambiando la sola moltiplicazione lo trova a
+nella ripresa, che è una lettura a 32 bit, e fra $1{,}3$ e $2{,}6$ nanojoule
+nella tabella della relazione originale, che è una lettura a 64 bit). Riportati
+allo stesso byte, i due valori quasi si toccano: $160$ picojoule per byte nella
+ripresa, fra $162$ e $325$ nella relazione. Quello che regge in tutte e due è il
+salto: oltre due ordini di grandezza fra l'aritmetica e la DRAM. Il pareggio
+invece si sposta. Chi rifà i conti cambiando la sola moltiplicazione lo trova a
 sessantacinque FLOP per byte invece che a settanta; chi prende i nanojoule
-della relazione lo trova da due a quattro volte più in alto. La morale non
+della relazione, divisi per gli otto byte della lettura, lo trova fra settanta
+e centoquaranta, cioè fino al doppio. La morale non
 cambia, perché la generazione sta a uno e la lettura di un prompt a qualche
 migliaio, ma il numero sì, e conviene sapere da dove viene il proprio.
 
@@ -113,8 +116,18 @@ dimezza i byte da muovere prima ancora di dimezzare i conti) e l'array
 sistolico, la cui intera ragione d'essere è far attraversare un dato letto una
 sola volta a decine di unità di calcolo.
 
-Da qui, la prima stima grossolana ma utile: l'energia di un carico di lavoro si
-approssima come potenza media dell'acceleratore per tempo di esecuzione. È
+Da qui, la prima stima grossolana ma utile, in due forme. A consuntivo,
+l'energia di un carico di lavoro si approssima come potenza media
+dell'acceleratore per tempo di esecuzione. A preventivo, si parte dai FLOP: un
+addestramento costa circa $6ND$ FLOP ($N$ parametri, $D$ token, come nella
+{doc}`sezione sui grandi modelli linguistici </Transformers/llm>`), e
+$E \approx 6ND / (\text{MFU}\cdot \phi)$, dove $\phi$ sono i FLOP per joule di
+picco della scheda e MFU la frazione di picco davvero sfruttata. Con
+$N = 7\cdot10^9$, $D = 10^{12}$, una scheda da circa $10^{15}$ FLOP/s a 700 W e
+MFU del $40\%$, sono $4{,}2\cdot10^{22}$ FLOP, circa $7\cdot10^{10}$ J, cioè una
+ventina di MWh sulle sole schede, e con PUE $1{,}1$ e $400$ g/kWh circa nove
+tonnellate di CO₂e. Il conto sottostima (CPU, rete e memoria dei nodi non ci
+sono), ma dice dove guardare: l'MFU pesa quanto l'hardware. È
 grossolana perché la potenza dipende da *cosa* si sta calcolando, ma ha il
 pregio di essere misurabile con strumenti che esistono già
 (`nvidia-smi` espone la potenza istantanea, i contatori RAPL fanno lo stesso
@@ -232,19 +245,28 @@ scelta del luogo è di qualcun altro.
 C'è un errore di prospettiva che quasi tutti fanno all'inizio, e nasce dal
 fatto che addestrare fa notizia e rispondere no.
 
-Addestrare è un costo che si paga una volta sola: grande, ben visibile, si
-può misurare, si può datare, si può scrivere in un articolo scientifico.
-Rispondere è un costo minuscolo moltiplicato per un numero enorme: una
-singola risposta consuma pochissimo, ma se il modello risponde a milioni di
-richieste al giorno per due anni, il totale supera facilmente l'addestramento
-che l'ha prodotto. C'è quindi un momento, nella vita di un modello, in cui la
-somma di tutte le risposte date fin lì raggiunge il costo di averlo costruito:
-è il **punto di pareggio**. Dove cada non è un numero universale e non lo si
-può scrivere qui: dipende da quanto è grande il modello, da quante richieste
-riceve e da quanto a lungo resta acceso, e ciascuno se lo deve calcolare per
-il proprio caso. Quello che è stabile è l'ordine di priorità che ne discende,
-e conviene tenerlo in mente quando si sceglie fra un modello grande e uno
-piccolo rifinito bene.
+Addestrare è un costo che si paga una volta sola: grande, ben visibile, si può
+misurare, si può datare, si può scrivere in un articolo scientifico. Rispondere
+è un costo minuscolo moltiplicato per un numero enorme: una singola risposta
+consuma pochissimo, ma se il modello risponde a milioni di richieste al giorno
+per due anni, il totale supera facilmente l'addestramento che l'ha prodotto. Il
+pareggio ha una forma semplice: $N^\ast = E_{\text{add}}/e_{\text{inf}}$
+richieste, dove $E_{\text{add}}$ è l'energia dell'addestramento ed
+$e_{\text{inf}}$ quella media di una risposta; a $r$ richieste al giorno lo si
+raggiunge in $N^\ast/r$ giorni. Le misure dirette del costo per richiesta,
+compito per compito, mostrano che per i modelli generativi $e_{\text{inf}}$ sta
+ordini di grandezza sopra quello di un classificatore dedicato
+{cite}`luccioni2024power`. C'è quindi un momento, nella vita di un modello, in
+cui la somma di tutte le risposte date fin lì raggiunge il costo di averlo
+costruito: è il **punto di pareggio**. Dove cada non è un numero universale (con
+numeri di fantasia: se addestrare è costato quanto dieci milioni di risposte e
+il modello ne dà un milione al giorno, il pareggio arriva al decimo giorno, e
+dopo due anni l'addestramento pesa poco più dell'uno per cento del totale), e un
+numero vero non lo si può scrivere qui: dipende da quanto è grande il modello,
+da quante richieste riceve e da quanto a lungo resta acceso, e ciascuno se lo
+deve calcolare per il proprio caso. Quello che è stabile è l'ordine di priorità
+che ne discende, e conviene tenerlo in mente quando si sceglie fra un modello
+grande e uno piccolo rifinito bene.
 
 Ne segue che le leve che contano sono quelle del rispondere, non quelle
 dell'addestrare. E la buona notizia è che sono le
@@ -350,12 +372,13 @@ Nella corsa alla scala degli ultimi anni, ogni volta che addestrare è diventato
 più economico il risparmio è stato in buona parte reinvestito in modelli più
 grandi anziché incassato: è l'effetto di rimbalzo che va sotto il nome di
 paradosso di Jevons. Non è però una legge, ed è onesto dire che la questione è
-aperta. C'è almeno un caso, e non piccolo, in cui l'efficienza la crescita l'ha
-assorbita davvero. Lo ha misurato un gruppo guidato da Eric Masanet, su
-*Science* nel 2020, ricontando quanta elettricità consumano i centri dati del
-mondo: fra il 2010 e il 2018 quel consumo è cresciuto di circa il sei per
-cento, mentre nello stesso periodo il lavoro che ci girava dentro si è
-moltiplicato per più di sei. Attenzione a non confondere le due cifre: la
+aperta. C'è almeno un caso, e non piccolo, in cui l'efficienza ha davvero
+assorbito la crescita. Lo ha misurato un gruppo guidato da Eric Masanet, su
+*Science* nel 2020
+{cite}`masanet2020recalibrating`, ricontando quanta elettricità consumano i
+centri dati del mondo: fra il 2010 e il 2018 quel consumo è cresciuto di circa
+il sei per cento, mentre nello stesso periodo il lavoro che ci girava dentro si
+è moltiplicato per più di sei. Attenzione a non confondere le due cifre: la
 prima è un pochino in più, la seconda è sei volte tanto. In otto anni il mondo
 ha chiesto ai centri dati sei volte il lavoro, e loro hanno consumato quasi
 uguale: lì l'efficienza la crescita se l'è mangiata tutta.
@@ -442,7 +465,7 @@ molto.
 ```
 `````
 
-La sorveglianza di cui parla questo capitolo dice sempre e solo che qualcosa è
+La sorveglianza di tutto l'anello MLOps dice sempre e solo che qualcosa è
 cambiato. Che l'errore è salito, che i dati in arrivo non somigliano più a
 quelli di prima, che la bolletta è cresciuta. Non dice mai perché, e nemmeno su
 che cosa il modello si stia basando per rispondere. È la domanda del

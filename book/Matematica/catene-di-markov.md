@@ -85,9 +85,11 @@ che parte sta la somma a uno.
 L'ipotesi di Markov è meno restrittiva di quanto sembri, per via
 dell’allargamento dello stato: un processo che dipende dagli ultimi $k$
 istanti diventa markoviano prendendo come stato la $k$-upla degli ultimi $k$
-valori, al prezzo di $n^k$ stati. È esattamente la costruzione dei modelli
-$n$-gram, e la stessa che porta dai processi decisionali di Markov alle loro
-versioni con memoria.
+valori, al prezzo di $n^k$ stati. È la costruzione dei modelli linguistici
+che condizionano ogni parola alle $k$ precedenti (gli $n$-gram, dove $n=k+1$
+conta le parole della finestra e non gli stati), e la stessa con cui un
+problema di decisione in cui conta la storia recente si riporta a un processo
+decisionale di Markov.
 
 `````
 
@@ -172,9 +174,18 @@ Il calcolo si può fare in tre modi, tutti usati:
 L'equilibrio è dinamico: la catena continua a saltare da uno stato
 all'altro, ed è il flusso complessivo a pareggiarsi. Una condizione più forte,
 il **bilancio dettagliato** $P_{ij}\pi_j = P_{ji}\pi_i$, chiede che si pareggi
-ogni singola coppia di stati; non è necessaria perché $\boldsymbol{\pi}$ sia
-stazionaria, ma è la proprietà su cui si costruiscono i campionatori usati nei
-{doc}`modelli a energia </ModelliEnergia/overview>`.
+ogni singola coppia di stati. È sufficiente, e lo si vede sommando su $j$:
+$\sum_j P_{ij}\pi_j=\pi_i\sum_j P_{ji}=\pi_i$. Non è necessaria, ed è questo a
+renderla comoda: per costruire una catena con una stazionaria assegnata basta
+imporre una condizione locale fra coppie di stati, senza risolvere nessun
+sistema. È la proprietà su cui si costruiscono i campionatori usati nei
+{doc}`modelli a energia </ModelliEnergia/overview>`. Una catena che la
+soddisfa si dice *reversibile*, e ne segue un fatto spettrale: posto
+$\mathbf{D}=\operatorname{diag}(\boldsymbol{\pi})$, la matrice
+$\mathbf{D}^{-1/2}\mathbf{P}\mathbf{D}^{1/2}$ è simmetrica, quindi gli
+autovalori di $\mathbf{P}$ sono tutti reali. Gli autovalori complessi della
+catena del PageRank, e la rotazione che producono, sono la firma di una catena
+non reversibile.
 
 `````
 
@@ -193,8 +204,8 @@ zona. Chiedere «dove finisce il sistema» non ha una risposta sola, perché
 dipende da dove è partito. È il caso di un web fatto di due gruppi di pagine
 che non si citano a vicenda, ed è più comune di quanto si creda.
 
-Seconda condizione: non deve esserci un ritmo fisso. Immagina due stanze
-collegate da una porta girevole che a ogni passo ti obbliga a cambiare stanza.
+Seconda condizione: non deve esserci un ritmo fisso. Due stanze sono
+collegate da una porta girevole che a ogni passo obbliga a cambiare stanza.
 Partendo dalla prima sarai nella seconda a ogni turno dispari e nella prima a
 ogni turno pari, per sempre: la distribuzione oscilla fra due valori e non si
 assesta mai, anche se la media sul lungo periodo è metà e metà. Basta una sola
@@ -236,11 +247,20 @@ periodo $2$) lo spettro è $\{1,-1\}$: la stazionaria $(\tfrac12,\tfrac12)$
 esiste ed è unica, ma $\mathbf{P}^t\mathbf{x}_0$ oscilla e non converge, perché
 l'autovalore $-1$ sta anch'esso sul bordo del disco.
 
-Un'ipotesi più debole basta per l'esistenza e l'unicità senza la convergenza:
-l'irriducibilità da sola garantisce una stazionaria unica e strettamente
-positiva. L'aperiodicità serve solo a far convergere le distribuzioni, ed è
-questa la ragione per cui gli algoritmi che sfruttano le catene aggiungono
-quasi sempre una probabilità di restare fermi.
+Un'ipotesi più debole basta per l'esistenza e l'unicità senza la convergenza.
+L'irriducibilità da sola garantisce una stazionaria unica e strettamente
+positiva, e per di più il **teorema ergodico**: qualunque sia la partenza,
+$\frac1T\sum_{t<T} f(S_t)\to\sum_i\pi_i f(i)$ quasi certamente per ogni
+funzione $f$ degli stati, e in particolare la frazione di tempo passata in $i$
+tende a $\pi_i$. L'aperiodicità serve soltanto alla convergenza della
+distribuzione al tempo $t$, non a quella delle medie nel tempo: la catena che
+salta fra due stati ha le medie giuste anche se la sua distribuzione oscilla.
+Ed è il teorema ergodico, non la convergenza di $\mathbf{P}^t\mathbf{x}_0$, che
+giustifica un campionatore MCMC, il quale stima un valore atteso con la media
+lungo una sola traiettoria. La catena *pigra* $\tfrac12(\mathbf{I}+\mathbf{P})$
+si usa soprattutto nelle dimostrazioni: sposta lo spettro nel disco di centro
+$\tfrac12$ e raggio $\tfrac12$, che tocca il bordo solo in $1$, al prezzo di
+dimezzare circa il gap.
 
 `````
 
@@ -280,7 +300,9 @@ giusto di passi, e che farne il doppio è spreco.
 
 Siano $1 = |\lambda_1| > |\lambda_2| \ge \dots \ge |\lambda_n|$ gli autovalori
 di $\mathbf{P}$. Scomponendo $\mathbf{x}_0 = \boldsymbol{\pi} + \mathbf{r}_0$
-con $\mathbf{r}_0$ nel complemento dell'autospazio dominante,
+con $\mathbf{r}_0$ nel sottospazio
+$\{\mathbf{r}:\mathbf{1}^\top\mathbf{r}=0\}$, che $\mathbf{P}$ lascia invariato
+perché $\mathbf{1}^\top\mathbf{P}=\mathbf{1}^\top$,
 
 $$
 \mathbf{P}^t\mathbf{x}_0 - \boldsymbol{\pi}
@@ -288,20 +310,36 @@ $$
 = O\!\left(|\lambda_2|^{\,t}\right) ,
 $$
 
-cioè lo scarto decade geometricamente con ragione $|\lambda_2|$. La quantità
+cioè lo scarto decade geometricamente con ragione $|\lambda_2|$. La scrittura
+$O(|\lambda_2|^t)$ presuppone però che $\mathbf{P}$ sia diagonalizzabile: se
+$\lambda_2$ ha un blocco di Jordan di taglia $m$ lo scarto va come
+$t^{m-1}|\lambda_2|^t$, con la stessa ragione asintotica ma con un
+transitorio polinomiale davanti. La quantità
 
 $$
 \text{gap spettrale} = 1 - |\lambda_2|
 $$
 
-governa tutto: il **tempo di mescolamento**, definito come il numero di passi
-oltre il quale la distanza in variazione totale dalla stazionaria resta sotto
-una soglia $\varepsilon$, si comporta come
+governa il **tempo di mescolamento**. Con la distanza in variazione totale
+$\lVert\boldsymbol{\mu}-\boldsymbol{\nu}\rVert_{TV}=\tfrac12\sum_i|\mu_i-\nu_i|$
+e il caso peggiore sulla partenza,
+$d(t)=\max_{\mathbf{x}_0}\lVert\mathbf{P}^t\mathbf{x}_0-\boldsymbol{\pi}\rVert_{TV}$,
+si pone $t_{\text{mix}}(\varepsilon)=\min\{t: d(t)\le\varepsilon\}$. Per una
+catena reversibile (quella in bilancio dettagliato), irriducibile e aperiodica
+valgono le due stime {cite}`levin2017markov`
 
 $$
-t_{\text{mix}}(\varepsilon) = O\!\left(
-\frac{1}{1-|\lambda_2|}\,\log\frac{1}{\varepsilon}\right) .
+\left(\frac{1}{1-|\lambda_2|}-1\right)\log\frac{1}{2\varepsilon}
+\;\le\; t_{\text{mix}}(\varepsilon) \;\le\;
+\frac{1}{1-|\lambda_2|}\,\log\frac{1}{\varepsilon\,\pi_{\min}} ,
 $$
+
+con $|\lambda_2|$ il più grande modulo fra gli autovalori diversi da $1$ e
+$\pi_{\min}=\min_i\pi_i$. Il fattore $\log(1/\pi_{\min})$ non è innocuo: per
+il mazzo di carte $\pi_{\min}=1/52!$, e il logaritmo vale circa $156$. Per una
+catena non reversibile, come la matrice di Google, lo spettro da solo non
+basta nemmeno a questa maggiorazione, perché conta anche quanto sono vicini
+fra loro gli autovettori.
 
 Il logaritmo dice che guadagnare una cifra decimale costa sempre lo stesso
 numero di passi, e il fattore davanti dice quanti. Attenzione però a come si
@@ -468,19 +506,24 @@ quella, e si misura sull'inviluppo, mai su un passo solo.
 
 ## Dove le catene tornano, nel resto del libro
 
-Sotto nomi diversi, è sempre la stessa struttura.
-I {doc}`modelli n-gram </NaturalLanguageProcessing/modelli-ngram>` sono catene
-di Markov sulle parole, con lo stato allargato alle ultime $n-1$. I
-{doc}`processi decisionali di Markov </ReinforcementLearning/mdp-valore>` del
-reinforcement learning sono catene in cui a ogni passo qualcuno sceglie, e
-l'equazione di Bellman che vi si risolve è un sistema lineare come quelli
-visti. I campionatori dei {doc}`modelli a energia </ModelliEnergia/overview>`
+Sotto nomi diversi, è sempre la stessa struttura. I {doc}`modelli n-gram
+</NaturalLanguageProcessing/modelli-ngram>` sono catene di Markov sulle parole,
+con lo stato allargato alle ultime $n-1$. I {doc}`processi decisionali di
+Markov </ReinforcementLearning/mdp-valore>` del reinforcement learning sono
+catene in cui a ogni passo qualcuno sceglie. Fissata la politica, l'equazione
+di Bellman per il suo valore è un sistema lineare come quelli visti,
+$(\mathbf{I}-\gamma\mathbf{P}_\pi^\top)\mathbf{v}=\mathbf{r}$, invertibile per
+ogni $\gamma<1$ perché lo spettro di $\mathbf{P}_\pi$ sta nel disco unitario;
+l'equazione di ottimalità, con il massimo sulle azioni, lineare non è più. I
+campionatori dei {doc}`modelli a energia </ModelliEnergia/overview>`
 costruiscono una catena apposta perché la sua stazionaria sia la distribuzione
 che si vuole campionare, e ne aspettano il mescolamento. E il processo di
 andata dei {doc}`modelli di diffusione </ModelliDiffusione/overview>`, che
-aggiunge rumore un passo alla volta, è una catena di Markov la cui stazionaria
-è il rumore puro: tutta la difficoltà di quei modelli sta nel percorrerla al
-contrario.
+aggiunge rumore un passo alla volta, è una catena di Markov su uno spazio
+continuo, con una regola che cambia a ogni passo, quindi fuori dal teorema di
+Perron-Frobenius per le catene finite. La sua distribuzione tende comunque al
+rumore puro, una gaussiana standard, e tutta la difficoltà di quei modelli sta
+nel percorrerla al contrario.
 
 ## In pratica, con NumPy
 

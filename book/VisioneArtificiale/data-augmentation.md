@@ -69,6 +69,18 @@ anche l'intensità: una rotazione di 5 gradi su una foto di strada è
 realistica, una di 90 gradi produce pedoni sdraiati che in produzione non
 esistono. Scegliere le trasformazioni è progettazione, non un dettaglio
 tecnico.
+
+Quando l'uscita ha una geometria (riquadri, maschere, punti chiave) la
+condizione cambia forma: una trasformazione geometrica $T$ dell'immagine chiede
+la trasformazione corrispondente $T'$ dell'etichetta, e si addestra su
+$(T(\mathbf{x}), T'(y))$. Specchiando orizzontalmente un'immagine larga $W$, il
+riquadro $(x_1, y_1, x_2, y_2)$ diventa $(W - x_2,\ y_1,\ W - x_1,\ y_2)$ e la
+maschera si specchia con l'immagine. È la richiesta di **equivarianza**, di cui
+l'invarianza della classificazione è il caso con $T'$ identità; le
+trasformazioni fotometriche (luce, contrasto, colore) restano invarianti per
+ogni compito. In torchvision la gestisce `transforms.v2`, che applica la stessa
+$T$ all'immagine e ai riquadri o alle maschere passati insieme; `transforms`
+trasforma soltanto l'immagine.
 `````
 
 ```{figure} ../figures/data-augmentation.svg
@@ -221,9 +233,18 @@ $$
 dove $\mathcal{T}$ è la distribuzione sulle trasformazioni ammesse. In altre parole
 allarga il supporto della distribuzione empirica: invece di esigere la
 risposta giusta in $n$ punti isolati, la esige su interi intorni, e questo
-spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte (un
-vincolo che riduce l'overfitting con lo stesso effetto di un termine di
-regolarizzazione). È l'idea del *vicinal risk minimization*, formulata da
+spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte. Per
+trasformazioni piccole l'equivalenza con un regolarizzatore è un conto: se $T$
+sposta l'ingresso di $\xi\,\mathbf{t}$ lungo la direzione $\mathbf{t}$, con
+$\xi$ a media nulla e varianza $\sigma_\xi^2$, per un'uscita scalare e la
+perdita $\ell = \frac{1}{2}(\hat{y} - y)^2$ lo sviluppo al secondo ordine dà,
+a meno di un termine che vicino all'ottimo si annulla,
+$\hat{R}_{\text{aug}} \approx \hat{R} + \frac{\sigma_\xi^2}{2}\,\frac{1}{n}
+\sum_{i} \big(\nabla_{\mathbf{x}} f_\theta(\mathbf{x}_i)^\top
+\mathbf{t}_i\big)^2$: una penalità sulla derivata dell'uscita lungo la
+trasformazione, la *tangent propagation*, che col rumore gaussiano al posto di
+$\mathbf{t}$ diventa la regolarizzazione di Tikhonov sul gradiente rispetto
+all'ingresso. È l'idea del *vicinal risk minimization*, formulata da
 Chapelle, Weston, Bottou e Vapnik {cite}`chapelle2000vicinal` (apprendere non
 dai punti, ma dai loro dintorni), che tra poco vedremo portata alle estreme
 conseguenze da mixup {cite}`zhang2018mixup`.
@@ -282,7 +303,20 @@ miscele restano leggere; con $\alpha = 1$, che è quanto usa sui dataset più
 piccoli, $\lambda$ è uniforme e il mezzo e mezzo capita quanto tutto il resto.
 Il modello viene addestrato a produrre predizioni che interpolano linearmente
 tra le classi, il che regolarizza il comportamento *tra* gli esempi, dove il
-rischio empirico tace. **Cutout**
+rischio empirico tace. Siccome la cross-entropy è lineare nel bersaglio,
+$\ell(\hat{\mathbf{y}}, \lambda \mathbf{y}_i + (1-\lambda)\mathbf{y}_j) =
+\lambda\, \ell(\hat{\mathbf{y}}, \mathbf{y}_i) + (1-\lambda)\,
+\ell(\hat{\mathbf{y}}, \mathbf{y}_j)$, in codice l'etichetta mescolata non si
+costruisce: si mescolano le due perdite. Un effetto misurato dopo il lavoro
+originale è la calibrazione, cioè probabilità meno sbilanciate verso la
+certezza {cite}`thulasidasan2019mixup`. **CutMix** {cite}`yun2019cutmix`
+mescola incollando invece che sfumando: con una maschera binaria $\mathbf{M}$
+che vale $0$ su un rettangolo casuale,
+$\tilde{\mathbf{x}} = \mathbf{M} \odot \mathbf{x}_i + (\mathbf{1} - \mathbf{M})
+\odot \mathbf{x}_j$, e il $\lambda$ dell'etichetta è la frazione di area rimasta
+a $\mathbf{x}_i$. L'immagine resta naturale pezzo per pezzo, e a differenza di
+Cutout nessun pixel del rettangolo va sprecato: lì la rete vede un'altra classe
+e deve riconoscerla. **Cutout**
 {cite}`devries2017improved` azzera un riquadro casuale dell'immagine (l'idea
 quasi identica del *random erasing* lo riempie invece di valori casuali;
 torchvision le fa tutte e due con `transforms.RandomErasing`, da applicare dopo

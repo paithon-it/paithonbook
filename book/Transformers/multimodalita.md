@@ -84,11 +84,13 @@ bozze.
 `````{tab} Superiore
 GPT {cite}`radford2018improving` (OpenAI, 2018) è un Transformer *decoder-only*
 con maschera causale, addestrato come modello di linguaggio autoregressivo:
-massimizza $\prod_t p(x_t \mid x_1, \dots, x_{t-1})$, dove $x_t$ è il token in
-posizione $t$ e il condizionamento arriva fin dove arriva la finestra di
-contesto. La linea di scala culmina in GPT-3 {cite}`brown2020language` (175
-miliardi di parametri), che mostra capacità *few-shot*: adattarsi a un compito
-descritto nel prompt, senza aggiornare i pesi. BERT {cite}`devlin2019bert`
+massimizza la log-verosimiglianza
+$\sum_t \log p_\theta(x_t \mid x_{t-k}, \dots, x_{t-1})$, dove $x_t$ è il token
+in posizione $t$ e $k$ la lunghezza della finestra di contesto. La linea di
+scala culmina in GPT-3 {cite}`brown2020language` (175 miliardi di parametri),
+che mostra l'apprendimento *in-context*: adattarsi a un compito mostrato nel
+prompt con pochi esempi svolti (*few-shot*) o soltanto descritto
+(*zero-shot*), senza aggiornare i pesi. BERT {cite}`devlin2019bert`
 (Google) è *encoder-only* e bidirezionale, pre-addestrato con *masked language
 modeling* (si sorteggia il $15\%$ dei token e si chiede di predirli: di quelli
 scelti l’$80\%$ diventa `[MASK]`, il $10\%$ un token a caso e il $10\%$ resta
@@ -192,7 +194,8 @@ dà da studiare molta più roba. Quando i dati sono pochi, la regola scritta a
 mano vince.
 
 `````{tab} Elementare
-E le immagini? Il trucco è di una semplicità disarmante: si taglia la foto in
+E le immagini? Il trucco, che il capitolo su PyTorch ha già messo in codice
+costruendo il ViT, è di una semplicità disarmante: si taglia la foto in
 tessere quadrate, come un mosaico, e si mettono le tessere in fila come se
 fossero le parole di una frase. A quel punto il Transformer fa quello che sa
 fare: per capire la tessera con l'orecchio del gatto, va a "guardare" anche
@@ -215,12 +218,18 @@ un modulo e gli chiedi di spiegartelo.
 `````
 
 `````{tab} Superiore
-Il Vision Transformer (ViT {cite}`dosovitskiy2021image`) suddivide
-l'immagine in patch (tipicamente $16 \times 16$ pixel), le proietta
-linearmente in embedding e le tratta come token, con un positional encoding
-per la posizione spaziale. La cosa da portarsi via è la condizione: senza il
-*bias induttivo* di località delle CNN, il ViT regge il confronto solo se
-pre-addestrato su dataset molto grandi, e sotto quella soglia resta indietro.
+Il Vision Transformer (ViT {cite}`dosovitskiy2021image`), che la
+{doc}`sezione sul replicare un paper </PyTorch/replicare-un-paper>` ha già
+costruito riga per riga, suddivide l'immagine in patch (tipicamente
+$16 \times 16$ pixel), le proietta linearmente in embedding e le tratta come
+token, con un token di classe in testa e codifiche di posizione apprese in una
+dimensione sola (le varianti 2-D e relative non fanno differenza). La cosa da
+portarsi via è la condizione: senza il *bias induttivo* di località delle CNN,
+il ViT dell'articolo regge il confronto solo se pre-addestrato su dataset molto
+grandi (ImageNet-21k, JFT-300M). La soglia però si sposta con la ricetta: con
+aumentazione aggressiva, regolarizzazione e distillazione da una rete
+convoluzionale, DeiT {cite}`touvron2021training` addestra lo stesso modello sul
+solo ImageNet-1k.
 La località non è gratis: o la si mette nell'architettura, o la si compra in
 dati. Sul fronte multimodale, **CLIP**
 {cite}`radford2021learning` allinea in uno spazio comune embedding di immagini
@@ -391,7 +400,9 @@ per il testo, le immagini e l'audio. Ma anche le sfide sono reali:
   volta, ogni volta scegliendo la continuazione più probabile di quello che ha
   già scritto) produce la continuazione più plausibile, non necessariamente
   quella *vera*: le "allucinazioni" (risposte fluenti e sbagliate) sono un
-  limite strutturale, non un incidente.
+  limite strutturale, non un incidente: è la conseguenza già vista nella
+  {doc}`matematica di un modello linguistico </Matematica/matematica-llm>`,
+  dove l'obiettivo premia la plausibilità e non la verità.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

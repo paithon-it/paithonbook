@@ -20,9 +20,8 @@ ostacolo che dovette aggirare a mano: un guidatore bravo non esce mai dalla
 corsia, quindi nelle sue registrazioni non c'è un solo fotogramma che mostri
 come si rimedia a un'auto storta. Se li dovette fabbricare, deformando le foto
 buone per ottenerne altre scattate come se l'auto fosse un po’ fuori centro
-{cite}`pomerleau1991efficient`. Il resto della sezione spiega perché quel
-lavoro in più non fosse un capriccio, ma la sola cosa che tenesse in piedi il
-furgone.
+{cite}`pomerleau1991efficient`. Quel lavoro in più non fu un capriccio: fu la
+sola cosa che tenne in piedi il furgone, e il motivo è quello che segue.
 
 L'imitazione è, in un certo senso, l'idea più ovvia di tutte, e per questo
 conviene capire bene perché non basta. Nei capitoli precedenti l'agente impara
@@ -88,7 +87,7 @@ non compare il bootstrapping: è regressione o classificazione, con tutto
 ciò che ne consegue in termini di stabilità e di strumenti già noti.
 
 La stessa mossa compare in tre punti del libro, e conviene riconoscerla. Nella
-{doc}`sezione sui metodi a gradiente di policy <policy-gradient>`, la rete di
+{doc}`sezione sulla ricerca ad albero Monte Carlo <mcts-alphago>`, la rete di
 policy di AlphaGo è
 pre-addestrata in modo supervisionato su partite umane prima del *self-play*.
 Nel post-addestramento dei modelli linguistici, la fase di *supervised
@@ -178,7 +177,8 @@ Il risultato che inquadra il problema è di Ross e Bagnell
 citano, quello del 2011, lo riprende come premessa. Se la politica appresa ha
 un tasso d'errore $\epsilon$ sotto la distribuzione dell'esperto, e il costo di
 un singolo passo è limitato, su un orizzonte $T$ il costo aggiuntivo
-della clonazione comportamentale cresce in generale come $O(\epsilon T^2)$: il
+della clonazione comportamentale cresce, nel caso peggiore e con un limite
+che è stretto, come $O(\epsilon T^2)$: il
 fattore $T$ in più rispetto all'ideale $O(\epsilon T)$ è esattamente la
 composizione degli errori. Su orizzonti lunghi la differenza fra $T$ e $T^2$ è
 tutta la differenza fra un sistema che funziona e uno che no.
@@ -241,6 +241,23 @@ motivo per cui l'RLHF non si ferma alla fase supervisionata: il modello di
 ricompensa addestrato sulle preferenze è, di fatto, una ricompensa inferita da
 comportamento umano.
 
+L'RL inverso classico chiede di risolvere per intero un problema di RL a ogni
+ritocco della ricompensa candidata. GAIL (Ho ed Ermon, 2016) toglie il ciclo
+interno dando all'imitazione la forma di una GAN: un discriminatore $D(s,a)$
+impara a separare le coppie della politica da quelle dell'esperto, e la
+politica si addestra con un metodo a gradiente di policy usando $-\log D(s,a)$
+come ricompensa,
+
+$$
+\min_\pi \max_D \; \mathbb{E}_{\pi}\big[\log D(s,a)\big] +
+\mathbb{E}_{\pi^\star}\big[\log(1 - D(s,a))\big] - \lambda\,\mathcal{H}(\pi),
+$$
+
+con $\mathcal{H}(\pi)$ l'entropia causale della politica. Come DAgger impara
+sugli stati che la politica visita davvero, e sfugge alla composizione degli
+errori; a differenza di DAgger non chiede un esperto interrogabile, ma molte
+interazioni con l'ambiente.
+
 Il difetto strutturale, però, gli sta accanto fin dal lavoro che ne dà i primi
 algoritmi {cite}`ng2000algorithms`: l'RL inverso, nella sua forma nuda, è **mal
 posto**. Infinite funzioni di ricompensa rendono ottimo lo stesso comportamento
@@ -248,8 +265,12 @@ osservato, a cominciare da quella identicamente nulla, sotto la quale ogni
 politica è ottima: l'insieme delle ricompense compatibili con una politica
 osservata è un poliedro e non una retta. Nemmeno chiedendo molto di più, cioè
 che l'ordinamento di *tutte* le politiche resti quello, si arriva a una
-risposta sola: si arriva a una scala positiva e a un termine di *shaping
-potential-based* {cite}`ng1999policy`, e non oltre. È un oggetto che il
+risposta sola: restano una scala positiva, un termine di *shaping
+potential-based* e, quando la ricompensa dipende anche dallo stato d'arrivo,
+una ridistribuzione fra gli stati d'arrivo che non ne cambia il valore
+atteso. Che quel termine di shaping sia innocuo lo dimostrano Ng, Harada e
+Russell {cite}`ng1999policy`; che l'ambiguità si fermi lì è un risultato
+recente sull'identificabilità della ricompensa. È un oggetto che il
 capitolo rincontrerà: nella {doc}`sezione sull'esplorazione
 <esplorazione-e-ricompensa>` si dimostra che aggiungere alla ricompensa un
 termine della forma $\gamma\Phi(s')-\Phi(s)$ lascia invariata la policy ottima,
@@ -435,9 +456,11 @@ sorprendente. Le occasioni di sbagliare sono tante quanti i passi del percorso;
 e ogni singolo sbaglio non si paga una volta sola, perché lascia l'allievo in
 una zona che non conosce per tutti i passi che restano. Tanti inciampi
 possibili, e ciascuno che si paga a lungo: le due quantità si moltiplicano fra
-loro invece di sommarsi, e il danno cresce come il quadrato della durata del
-percorso invece che in proporzione a essa. Su un tragitto dieci volte più lungo
-il danno non decuplica: si moltiplica per cento.
+loro invece di sommarsi, e il danno, nel caso peggiore, cresce come il
+quadrato della durata del percorso invece che in proporzione a essa: su un
+tragitto dieci volte più lungo non decuplica, si moltiplica per cento. Il caso
+peggiore esiste davvero, ma dove uno sbaglio si riassorbe da sé il danno torna
+a crescere in proporzione.
 
 Qui la spinta iniziale è un espediente, il modo più rapido di mettere l'allievo
 dove non è mai stato per mostrare cosa succede una volta che ci si trova. Quello

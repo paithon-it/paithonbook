@@ -25,7 +25,7 @@ precedente (oggi le chiamiamo catene di Markov, e sono quelle della
 la dipendenza dentro un capolavoro della letteratura. Presentò i conteggi
 all'Accademia il 23 gennaio 1913.
 
-Di quelle catene il libro si serve più volte, con nomi diversi. Nel capitolo
+Le stesse catene tornano più avanti con nomi diversi. Nel capitolo
 sul Reinforcement Learning l'ambiente in cui si muove un agente è un *processo
 decisionale di Markov*, che è una catena di Markov con in più le azioni di
 qualcuno e le ricompense che ne seguono; nei modelli di diffusione sarà una
@@ -34,9 +34,9 @@ strada al contrario e ripulirla. La struttura è sempre questa:
 il prossimo passo dipende solo da dove sei adesso.
 
 Trentacinque anni dopo, Claude Shannon rovescia il gioco, nell'articolo del
-1948 che abbiamo già incontrato nel capitolo sui richiami di matematica
-{cite}`shannon1948mathematical`: non contare per *capire* un testo, ma contare
-per *generarne* uno.
+1948 che abbiamo già incontrato in {doc}`Teoria dell'informazione
+</Matematica/teoria-informazione>` {cite}`shannon1948mathematical`: non contare
+per *capire* un testo, ma contare per *generarne* uno.
 
 Il suo metodo è artigianale quanto quello di Markov, e si può rifare stasera
 con un libro qualunque. Scrivi una lettera a caso su un foglio, mettiamo la
@@ -53,7 +53,8 @@ ON AN ENGLISH WRITER THAT THE CHARACTER OF THIS POINT…»*: ogni gruppetto di d
 o tre parole fila liscio, l'insieme non significa nulla. Tre anni dopo, con un
 gioco di predizione fatto in casa, Shannon stimerà quanto l'inglese sia
 prevedibile lettera per lettera {cite}`shannon1951prediction`: circa un bit a
-lettera, come abbiamo visto parlando di compressione. Un bit è una domanda da
+lettera, come si è visto parlando di {doc}`compressione
+</Matematica/teoria-informazione>`. Un bit è una domanda da
 sì o no: vuol dire che, in media, chi conosce bene l'inglese indovina la
 lettera successiva con una domanda sola, purché ben scelta. Non perché le
 lettere siano due: perché quasi sempre quello che precede ha già ristretto il
@@ -61,15 +62,15 @@ campo a una o due candidate (dopo «th» ci si aspetta una vocale, dopo «q» un
 «u»), e le rare volte in cui il campo resta largo si pagano su quella media.
 
 L'idea che unisce il matematico che contava le lettere a Pietroburgo e
-l'ingegnere dei laboratori Bell è la tesi di questa sezione: il linguaggio si
-può modellare come una catena di scommesse. Nella sezione precedente il testo
-era un sacchetto di parole, e per il classificatore «Il gatto nero salta sul
-muro» e «Il muro nero salta sul gatto» erano gemelli indistinguibili. Qui
-l'ordine torna protagonista: costruiamo la macchina più semplice che scommette
-sulla parola successiva, il modello **n-gram**, che per mezzo secolo è stato il
-cuore del NLP statistico. Il nome dice quanto lungo è il gruppetto di parole
-che si guarda: due, e si chiama bigramma; tre, e si chiama trigramma; $n$ è il
-numero lasciato in bianco.
+l'ingegnere dei laboratori Bell è la tesi da cui partono i modelli di
+linguaggio: il linguaggio si può modellare come una catena di scommesse. Nella
+sezione precedente il testo era un sacchetto di parole, e per il classificatore
+«Il gatto nero salta sul muro» e «Il muro nero salta sul gatto» erano gemelli
+indistinguibili. Qui l'ordine torna protagonista: costruiamo la macchina più
+semplice che scommette sulla parola successiva, il modello **n-gram**, che per
+mezzo secolo è stato il cuore del NLP statistico. Il nome dice quanto lungo è
+il gruppetto di parole che si guarda: due, e si chiama bigramma; tre, e si
+chiama trigramma; $n$ è il numero lasciato in bianco.
 
 ## La lingua come catena di scommesse
 
@@ -123,10 +124,10 @@ $$
 P(w_t \mid w_1, \dots, w_{t-1}) \;\approx\; P(w_t \mid w_{t-n+1}, \dots, w_{t-1}).
 $$
 
-Con $n=2$ si ha il bigramma, $P(w_t \mid w_{t-1})$; con $n=3$ il
-trigramma. La stima è quella di massima verosimiglianza (MLE), già
-incontrata nel capitolo sui richiami di matematica: semplici frequenze
-relative,
+Con $n=2$ si ha il bigramma, $P(w_t \mid w_{t-1})$; con $n=3$ il trigramma. La
+stima è quella di massima verosimiglianza (MLE), già incontrata in
+{doc}`Probabilità e statistica </Matematica/probabilita-statistica>`: semplici
+frequenze relative,
 
 $$
 P(w_t \mid w_{t-1}) = \frac{C(w_{t-1}\, w_t)}{C(w_{t-1})},
@@ -162,12 +163,13 @@ la frase finisce lì o continua, e senza un simbolo per «finisce lì» non
 saprebbe come dirlo.
 
 I conti che seguono si scrivono in una notazione da decifrare una volta per
-tutte, perché ricorre in tutto il libro: $P(\text{gatto} \mid \text{il})$ si
-legge «la probabilità di *gatto*, sapendo che prima c'era *il*». La
-barretta verticale vuol dire «dato che», e separa la cosa su cui si scommette
-(a sinistra) da quello che si sa già (a destra). Tutto qui: è una frazione con
-un nome, e la frazione è proprio la pagina del quaderno, «quante volte questa
-parola ha seguito quell'altra, diviso quante volte quell'altra è comparsa».
+tutte, perché ricorre in tutto quello che segue: $P(\text{gatto} \mid
+\text{il})$ si legge «la probabilità di *gatto*, sapendo che prima c'era *il*».
+La barretta verticale vuol dire «dato che», e separa la cosa su cui si
+scommette (a sinistra) da quello che si sa già (a destra). Tutto qui: è una
+frazione con un nome, e la frazione è proprio la pagina del quaderno, «quante
+volte questa parola ha seguito quell'altra, diviso quante volte quell'altra è
+comparsa».
 
 - ogni frase comincia con «il»: $P(\text{il} \mid \langle s \rangle) = 3/3 = 1$;
 - «il» compare 4 volte, seguito 3 volte da «gatto» e 1 da «cane»:
@@ -315,9 +317,15 @@ due, spesso combinate:
 - **backoff**: usare l'ordine alto quando il suo conteggio è positivo e
   *ripiegare* sull'ordine inferiore altrimenti. Nella forma classica è il
   backoff di Katz (1987), e i fattori in gioco sono due, con due mestieri
-  distinti: lo sconto di Good e Turing, che ri-stima verso il basso i
-  conteggi piccoli, e un peso di ripiego che rimette la probabilità totale a
-  1. La variante a sconto costante, quella che serve a Kneser–Ney, si chiama
+  distinti. Il primo è lo sconto di Good e Turing: con $N_r$ il numero di
+  bigrammi distinti visti esattamente $r$ volte, un conteggio $r$ si ri-stima
+  in $r^* = (r+1)\,N_{r+1}/N_r$, e la massa lasciata agli eventi mai visti è
+  $N_1$ diviso il totale dei bigrammi osservati, cioè la frazione di eventi
+  incontrati una volta sola. Katz lo applica ai soli conteggi piccoli
+  ($r \le 5$), dove è affidabile. Il secondo è un peso di ripiego
+  $\alpha(w_{t-1})$ che distribuisce quella massa sulle continuazioni mai viste
+  in proporzione a $P(w_t)$, rimettendo la probabilità totale a 1. La variante a
+  sconto costante, quella che serve a Kneser–Ney, si chiama
   invece sconto assoluto: si toglie sempre la stessa quantità, qualunque sia
   il conteggio di partenza.
 
@@ -392,15 +400,25 @@ P_{KN}(w_t \mid w_{t-1}) =
 + \lambda(w_{t-1})\, P_{\text{cont}}(w_t),
 $$
 
-dove $d$ è uno sconto assoluto (tipicamente intorno a $0{,}75$) sottratto
-a ogni conteggio positivo, e $\lambda(w_{t-1})$ è il coefficiente che
-raccoglie esattamente la massa scontata e la ridistribuisce secondo
-$P_{\text{cont}}$, così che le probabilità sommino a 1. La variante
+dove $d$ è uno sconto assoluto sottratto a ogni conteggio positivo e
+
+$$
+\lambda(w_{t-1}) = \frac{d}{C(w_{t-1})}\,\bigl|\{\, w : C(w_{t-1}\, w) > 0 \,\}\bigr|
+$$
+
+è esattamente la massa scontata (uno sconto $d$ per ogni continuazione distinta
+vista dopo $w_{t-1}$), ridistribuita secondo $P_{\text{cont}}$ così che le
+probabilità sommino a 1. Il valore di $d$ si stima dai dati: $d = N_1/(N_1 +
+2N_2)$, con $N_r$ il numero di bigrammi visti esattamente $r$ volte, e $0{,}75$
+è il valore che si usa quando la stima manca. Con ordini più alti la formula si
+applica ricorsivamente: il trigramma scontato ripiega sul bigramma, e a ogni
+livello inferiore i conteggi grezzi lasciano il posto ai conteggi di
+continuazione. Solo il livello più alto usa i conteggi veri. La variante
 «modificata» di Chen e Goodman (tre sconti diversi a seconda che il conteggio
-valga 1, 2 o di più) è la vincitrice sistematica del loro studio, con le
-parole degli autori: batte «consistentemente» tutti gli altri algoritmi
-provati. Da lì in poi è la linea di base con cui ogni modello n-gram si
-confronta, ed è l'unico che KenLM, il costruttore più usato, sappia fare.
+valga 1, 2 o di più) è la vincitrice sistematica del loro studio, con le parole
+degli autori: batte «consistentemente» tutti gli altri algoritmi provati. Da lì
+in poi è la linea di base con cui ogni modello n-gram si confronta, ed è
+l'unico che KenLM, il costruttore più usato, sappia fare.
 
 `````
 
@@ -411,9 +429,9 @@ perplessità, e l'immagine da tenere è quella del dado: la perplessità dice
 con quante facce è il dado su cui il modello sta tirando a ogni scommessa.
 Perplessità 2, e il modello esita fra due parole soltanto; perplessità 100, e
 ne ha davanti cento tutte ugualmente plausibili. Più il numero è basso, meglio
-scommette. Nel capitolo sui richiami di matematica l'avevamo definita nella
-sezione sulla teoria dell'informazione, promettendo di riprenderla numeri alla
-mano: eccoci.
+scommette. L'avevamo definita in {doc}`Teoria dell'informazione
+</Matematica/teoria-informazione>`, promettendo di riprenderla numeri alla
+mano.
 
 `````{tab} Elementare
 
@@ -458,12 +476,16 @@ $$
 cioè l'inverso della probabilità del testo, riportato «per token» dalla media
 geometrica: è la stessa quantità $2^H$ della teoria dell'informazione, con $H$
 la cross-entropia media per token misurata in bit, cioè con il logaritmo in
-base due, che è la base del `math.log2` con cui il programma del bigramma fa
-il conto. E «cross-entropia» è il nome di un limite, il *tasso* di
-cross-entropia: quello che si misura su un testo finito è la
-log-verosimiglianza media per token cambiata di segno, che a quel limite
-tende soltanto se il processo che genera il testo è stazionario ed ergodico e
-il testo è abbastanza lungo. Su una frase di sette token è un nome generoso.
+base due, che è la base del `math.log2` con cui il programma del bigramma fa il
+conto. E «cross-entropia» è il nome di un limite, il *tasso* di cross-entropia:
+quello che si misura su un testo finito è la log-verosimiglianza media per
+token cambiata di segno, che a quel limite tende soltanto se il processo che
+genera il testo è stazionario ed ergodico e il testo è abbastanza lungo. Su una
+frase di sette token è un nome generoso. La base del logaritmo non cambia il
+numero: $\mathrm{PP} = 2^{H_2} = e^{H_e}$, con $H_2$ in bit e $H_e$ in nat.
+Addestrando una rete si incontra la seconda forma: `nn.CrossEntropyLoss` di
+PyTorch restituisce la log-verosimiglianza negativa media in nat, e la
+perplessità è il suo esponenziale.
 
 Un avvertimento sul conto di $N$, perché è il punto esatto in cui si sbaglia.
 Con le frasi incorniciate fra `<s>` e `</s>`, anche `</s>` è una scommessa e va
@@ -611,8 +633,8 @@ bianche (combinazioni mai viste nemmeno in una biblioteca). E c'è un difetto
 più sottile: per il quaderno «gatto» e «micio» sono estranei totali. Aver
 letto mille volte «il gatto dorme» non lo aiuta di un grammo a scommettere su
 «il micio dorme». Servirebbe un modello che capisca che parole *simili*
-meritano scommesse *simili*. Quel modo di scrivere le parole il libro l'ha
-già montato, ed è quello che colloca «gatto» e «micio» vicini invece di
+meritano scommesse *simili*. Quel modo di scrivere le parole è già
+comparso, ed è quello che colloca «gatto» e «micio» vicini invece di
 trattarli come due numeri qualunque; le reti che scommettono sono la mossa che
 resta da fare.
 
@@ -755,11 +777,12 @@ costruiti, in fondo, con la matita di Markov. Per anni la barra dei
 suggerimenti delle tastiere dei telefoni è stata proprio questo (un n-gram con
 smoothing, piccolo e veloce abbastanza da girare sul dispositivo), oggi
 affiancato da reti compatte che girano sullo stesso dispositivo. E nel
-riconoscimento vocale, come vedremo nel capitolo sullo Speech Recognition, un
-modello di linguaggio si fonde ancora col modello acustico per scegliere fra
-trascrizioni identiche all'orecchio («l'ago» o «lago») e per anni quel
-correttore silenzioso è stato un n-gram alla Kneser–Ney. Quando serve una
-probabilità *subito*, su hardware qualunque, contare resta un'ottima idea.
+riconoscimento vocale, come racconta il {doc}`capitolo sul riconoscimento del
+parlato </SpeechRecognition/overview>`, un modello di linguaggio si fonde
+ancora col modello acustico per scegliere fra trascrizioni identiche
+all'orecchio («l'ago» o «lago») e per anni quel correttore silenzioso è stato
+un n-gram alla Kneser–Ney. Quando serve una probabilità *subito*, su hardware
+qualunque, contare resta un'ottima idea.
 
 Ma il soffitto degli n-gram è quello che abbiamo toccato con mano: memoria
 corta per costruzione, e nessuna nozione del fatto che «gatto» e «micio» si

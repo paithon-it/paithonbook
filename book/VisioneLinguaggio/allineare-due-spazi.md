@@ -30,18 +30,16 @@ cambio di domanda.
 
 ## Non «che cosa è», ma «quale di queste»
 
-Prima dell'idea serve un attrezzo, e il libro lo ha già costruito. Nel capitolo
-sul linguaggio abbiamo visto che una parola si può scrivere come un vettore,
-cioè una fila di numeri, e che quelle file di numeri formano una mappa del
-significato: *gatto* e *felino* finiscono vicini, *gatto* e *mercoledì*
-lontanissimi, e quanto due cose siano vicine lo dice un solo numero fra $-1$ e
+L'attrezzo è la mappa del significato già richiamata in apertura del
+capitolo, quella in cui una parola è una fila di numeri e *gatto* finisce vicino
+a *felino*; quanto due cose siano vicine lo dice un solo numero fra $-1$ e
 $+1$: più è alto, più le due cose si somigliano. Lo spazio che serve qui è
 quella mappa, con un'aggiunta:
 dentro non ci vanno soltanto le parole, ci vanno anche le fotografie. La foto di
 un gatto nero su un muro deve finire più vicina alla frase «un gatto nero su
 un muro» di quanto sia a «una scodella di minestra». Più vicina, si badi, non
-sovrapposta: è una differenza che tornerà a farsi sentire alla fine della
-sezione.
+sovrapposta: è una differenza che si farà sentire quando si andrà a misurare
+quanto vicina.
 
 L'idea, resa celebre da CLIP {cite}`radford2021learning` nel 2021, è di
 addestrare due reti separate, un encoder di immagini e un encoder di
@@ -115,9 +113,9 @@ Il compito di pretesto è una classificazione a $B$ vie *definita dal batch
 stesso*: data l'immagine $i$, indovinare quale delle $B$ didascalie presenti sia
 la sua. Non c'è alcuna ontologia fissata a priori, e il «vocabolario» delle
 descrizioni è aperto quanto la lingua. È un caso di apprendimento
-auto-supervisionato di famiglia contrastiva, quella che il capitolo sui
-world model metterà accanto alla generativa e alla predittiva nello spazio
-latente: si impara una geometria, avvicinando ciò che va insieme e
+auto-supervisionato di famiglia contrastiva, quella che la {doc}`sezione su
+JEPA </WorldModels/jepa>` metterà accanto alla generativa e alla predittiva
+nello spazio latente: si impara una geometria, avvicinando ciò che va insieme e
 allontanando ciò che non va insieme.
 
 `````
@@ -145,8 +143,10 @@ sembra.
 La {numref}`fig-vlm-contrastivo` mostra la struttura che ne esce, ed è tutta la
 sezione in un disegno. Le due reti (ciascuna è una pila di strati, cioè una
 *torre*) non si scambiano niente durante il calcolo, e si incontrano solo alla
-fine, in un prodotto scalare. Sono due torri separate, come quelle del recupero
-che tengono le domande da una parte e i passaggi dall'altra; nel Transformer che
+fine, in un prodotto scalare. Sono due torri separate, come quelle della
+{doc}`ricerca per rispondere
+</Transformers/rag>`, che tengono le domande da una parte e i passaggi
+dall'altra; nel Transformer che
 traduce, invece, la torre che scrive consulta a ogni piano quella che legge. Le
 caselle fuori dalla diagonale hanno un nome, i negativi: sono gli abbinamenti
 sbagliati che il caso ha messo insieme nello stesso batch.
@@ -247,7 +247,8 @@ concorrenti credibili.
 
 Adesso i numeri, perché la temperatura, la manopola che amplifica le differenze
 fra le somiglianze prima di trasformarle in percentuali (e amplifica tanto più
-quanto più è piccola, perché nella formula divide), fa una differenza che a
+quanto più è piccola, perché ogni somiglianza viene divisa per lei), fa una
+differenza che a
 parole non si apprezza. Prendiamo un batch
 minuscolo, $B = 4$: quattro immagini e le loro quattro didascalie. Nella
 tabella delle somiglianze le righe
@@ -397,8 +398,16 @@ Il secondo parametro strutturale è $B$. Il denominatore della InfoNCE somma sui
 candidati del batch: i negativi *sono* il batch, non un insieme costruito a
 parte. Con $B$ piccolo il compito è banale (la baseline casuale è $\log B$, e
 con $B = 4$ vale $1{,}39$) e il segnale di apprendimento è povero; al
-crescere di $B$ il compito diventa un ago in un pagliaio e il gradiente informa
-molto di più. CLIP addestra con batch da $32\,768$ coppie, distribuiti su
+crescere di $B$ il compito diventa un ago in un pagliaio. La ragione
+formale è il risultato con cui la InfoNCE è nata {cite}`oord2018representation`:
+per ogni ancora vale
+$\mathcal{I}(\mathbf{u}; \mathbf{v}) \ge \log B - \mathcal{L}_{\text{InfoNCE}}$,
+quindi minimizzare la perdita alza un limite inferiore sulla mutua
+informazione fra immagine e didascalia, ma quel limite non può superare
+$\log B$. Con $B = 4$ il tetto è $1{,}39$ nat, con $B = 32\,768$ è circa
+$10{,}4$: il batch fissa quanta informazione la perdita può certificare, ed è
+anche la ragione per cui il guadagno cresce solo come il logaritmo di $B$. CLIP
+addestra con batch da $32\,768$ coppie, distribuiti su
 centinaia di GPU. Il prezzo è la struttura stessa della loss: la matrice di
 similarità è $B \times B$, il suo costo cresce con il quadrato del batch, e la
 normalizzazione della softmax richiede che ogni riga veda *tutte* le colonne,
@@ -807,8 +816,12 @@ mescolano le parole, si rifà la ricerca per immagini, e il risultato non
 peggiora. Se l'ordine si può buttare via senza pagare pegno, l'ordine il compito
 non lo chiedeva. Lo stesso lavoro mostra anche il rovescio, che è la parte utile:
 aggiungendo al mucchio, come didascalie sbagliate, la didascalia giusta con le
-parole rimescolate, la stessa identica rete impara l'ordine. Il limite
-stava in quello che le si chiedeva di distinguere, non nell'architettura.
+parole rimescolate, la stessa rete migliora nettamente sui test di ordine: una
+buona parte del limite stava in quello che le si chiedeva di distinguere. Solo
+una parte, però: quelle didascalie rimescolate sono spesso frasi sgrammaticate,
+che un modello di solo testo riconosce senza guardare l'immagine, e rifatta la
+prova con negativi scritti bene il guadagno si ridimensiona di molto
+{cite}`hsieh2023sugarcrepe`.
 
 Due precisazioni, per onestà. La prima è che quegli esempi, scelti a mano
 perché siano difficili, lo sono anche per altre ragioni (alcuni chiedono
@@ -907,8 +920,9 @@ che sa solo leggere è la prossima sezione.
   sacco di concetti. Winoground {cite}`thrush2022winoground` rende visibile
   il fallimento, e l'esperimento delle didascalie con le parole mescolate
   {cite}`yuksekgonul2023when` ne isola la causa (il recupero non peggiora) e
-  mostra che con negativi permutati la stessa rete impara l'ordine: il limite è
-  dell'obiettivo, non dell'architettura. Da qui le architetture delle sezioni
+  mostra che con negativi permutati la stessa rete migliora su quei test,
+    anche se in parte per scorciatoie del benchmark
+    {cite}`hsieh2023sugarcrepe`. Da qui le architetture delle sezioni
   successive.
 ```
 

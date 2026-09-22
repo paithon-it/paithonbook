@@ -566,8 +566,9 @@ e non gli serve saperlo; un pezzo di programma a parte decide, giro dopo giro,
 chi lasciar agire.
 
 L'architettura nasce dentro un riconoscitore di parlato, e il motivo per cui
-nasce lì è il ritratto in miniatura del problema che risolve (il
-riconoscimento del parlato avrà poi un capitolo suo, più avanti nel libro).
+nasce lì è il ritratto in miniatura del problema che risolve (il riconoscimento
+del parlato ha poi un capitolo suo,
+{doc}`Speech Recognition </SpeechRecognition/overview>`).
 Riconoscere il parlato vuol dire far collaborare conoscenze di natura
 incompatibile, e nessuna affidabile da sola: com'è fatto il suono, come si
 dividono le sillabe, quali parole esistono, come si mettono in fila, che cosa ha
@@ -603,7 +604,7 @@ dell'esistenza dell'altro.
 Il pregio è che si può aggiungere uno specialista nuovo senza avvisare nessuno:
 se sa leggere la lavagna e scriverci sopra, è dentro, e nessuno degli altri va
 modificato. È il contrario del capo cantiere, che va aggiornato ogni volta che
-arriva un operaio e che, a differenza di un muro, ha una giornata sola da
+arriva un operaio e che, a differenza della lavagna, ha una giornata sola da
 spendere.
 
 I difetti sono i due che chiunque abbia visto una lavagna vera conosce. Il
@@ -614,7 +615,8 @@ di più, e lo si decide riga per riga. Il secondo difetto è che, guardandola a
 fine giornata, non si sa più chi ha scritto cosa: c'è un
 risultato, e se è sbagliato non si sa da quale mano sia uscito l'errore.
 
-Non tutto passa dal muro. I conti che uno fa per arrivare alla sua riga restano
+Non tutto passa dalla lavagna. I conti che uno fa per arrivare alla sua riga
+restano
 sul suo taccuino: trascriverne ogni passaggio intermedio lo rallenterebbe e
 basta, e certe volte gli impedirebbe di arrivarci. E se il lavoro è sempre lo
 stesso e l'ordine si conosce già, radunarsi a ogni giro per decidere chi scrive

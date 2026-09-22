@@ -108,13 +108,14 @@ Qui serve una dose di onestà intellettuale, e non riguarda un paper solo. Nel
 Klagenfurt hanno provato a rifare i conti di diciotto metodi neurali per la
 raccomandazione, presentati alle conferenze principali {cite}`dacrema2019are`.
 Solo sette si sono lasciati riprodurre con uno sforzo ragionevole, e di quei
-sette sei venivano spesso battuti da metodi molto più semplici: i vicini
-della sezione precedente, o le tecniche su grafo di cui parleremo fra poco. Il
-settimo batteva chiaramente quei metodi semplici, ma non riusciva a battere in
-modo costante un metodo lineare, cioè senza reti neurali, tarato con cura. Il
-lavoro ha vinto il premio per il miglior articolo lungo di RecSys, la
-conferenza del settore, e ha spostato la domanda che si fa a un risultato
-nuovo: non «funziona?» ma «meglio di che cosa, tarato da chi?».
+sette sei venivano spesso battuti da metodi molto più semplici: i vicini della
+sezione precedente, o semplici passeggiate casuali sul grafo utenti-oggetti, che
+con le reti su grafo della sezione seguente condividono il disegno ma non i
+parametri da imparare. Il settimo batteva chiaramente quei metodi semplici, ma
+non riusciva a battere in modo costante un metodo lineare, cioè senza reti
+neurali, tarato con cura. Il lavoro ha vinto il premio per il miglior articolo
+lungo di RecSys, la conferenza del settore, e ha spostato la domanda che si fa a
+un risultato nuovo: non «funziona?» ma «meglio di che cosa, tarato da chi?».
 
 L'anno dopo Steffen Rendle e colleghi hanno rifatto la stessa operazione
 proprio sul NCF, sugli stessi banchi di prova del paper originale
@@ -132,15 +133,14 @@ giusta sul problema, non una rigidità arbitraria, e su dati scarsi un'ipotesi
 giusta vale più di mille parametri in più.
 
 E il confronto voce per voce ha un secondo pregio, che con la qualità non
-c'entra: è l'unica forma di punteggio che permette di non calcolarne uno
-per ogni titolo del catalogo. Su cataloghi da milioni di titoli è questo, più
-della qualità, a decidere se il sistema sta in piedi. Il motivo in breve: le
-schede dei titoli si possono preparare tutte
-in anticipo e mettere in uno scaffale ordinato, dove trovare le più vicine alla
-tua non richiede di guardarle tutte; una rete, invece, va fatta girare una
-volta per ogni titolo, e nessuno può farla girare un milione di volte per ogni
-persona che apre l'app (ci torniamo in fondo al capitolo). Su dati fitti, cioè
-il contrario
+c'entra: è la forma di punteggio più semplice e più diffusa fra quelle che
+permettono di non calcolarne uno per ogni titolo del catalogo. Su cataloghi da
+milioni di titoli è questo, più della qualità, a decidere se il sistema sta in
+piedi. Il motivo in breve: le schede dei titoli si possono preparare tutte in
+anticipo e mettere in uno scaffale ordinato, dove trovare le più vicine alla tua
+non richiede di guardarle tutte; una rete, invece, va fatta girare una volta per
+ogni titolo, e nessuno può farla girare un milione di volte per ogni persona che
+apre l'app (ci torniamo in fondo al capitolo). Su dati fitti, cioè il contrario
 della tabella quasi vuota di prima, le reti ripagano; e ripagano ancora di più
 quando accanto alle interazioni c'è dell'altro da guardare, l'ora, il
 dispositivo, il prezzo, il genere, che nel gergo del mestiere si chiamano
@@ -303,8 +303,10 @@ prevedere valori e impara direttamente a *ordinare*
 {cite}`rendle2009bpr`. Delle tre parole del nome quella che conta è l'ultima,
 *ranking*, che vuol dire mettere in fila. Le altre due dicono da dove viene la
 formula: *personalized* perché la fila è diversa per ogni persona, *bayesian*
-perché la si ricava partendo da un'ipotesi su come sono fatti i numeri del
-modello, dichiarata prima ancora di guardare i dati.
+perché la formula parte da un'ipotesi dichiarata prima di guardare i dati:
+che i numeri delle schede siano quasi sempre piccoli, vicini allo zero. È lo
+stesso freno della fattorizzazione, che tirava le schede verso lo zero, solo
+che qui viene ricavato da quell'ipotesi invece di essere aggiunto a mano.
 
 `````{tab} Elementare
 
@@ -449,16 +451,17 @@ numero di due cifre, è il logaritmo, quello della
 {doc}`sezione di analisi </Matematica/analisi-ottimizzazione>`, preso col segno
 cambiato: è il meno davanti a `F.logsigmoid` nel codice.
 
-Il guaio, se i due conti si fanno separati, è che «senza limite» il computer
-non lo regge. Quando il libro comprato sta molto sotto quello ignorato, diciamo
-cento posizioni di punteggio, la sigmoide restituisce un numero con più di
-quaranta zeri dopo la virgola, e la macchina non riesce più a distinguerlo
-dallo zero: scrive proprio zero. Sullo zero il logaritmo non ha una risposta
-finita, il calcolatore stampa `-inf`, e da lì in poi ogni conto che ci passa
-sopra è rovinato. Fatti insieme, invece, i due passaggi si semplificano a
-vicenda e il punteggio resta un numero: esattamente $100$, cioè il margine da
-cui si era partiti, perché in quella coda il logaritmo restituisce quasi
-intatto il numero che la sigmoide aveva appena compresso.
+Il guaio, se i due conti si fanno separati, è che «senza limite» il computer non
+lo regge. Quando il punteggio del libro comprato sta molto sotto quello
+dell'ignorato, diciamo cento punti sotto (punti di punteggio, non posti in
+vetrina), la sigmoide restituisce un numero con più di quaranta zeri dopo la
+virgola, e la macchina non riesce più a distinguerlo dallo zero: scrive proprio
+zero. Sullo zero il logaritmo non ha una risposta finita, il calcolatore stampa
+`-inf`, e da lì in poi ogni conto che ci passa sopra è rovinato. Fatti insieme,
+invece, i due passaggi si semplificano a vicenda e il punteggio resta un numero:
+esattamente $100$, cioè il margine da cui si era partiti, perché in quella coda
+il logaritmo restituisce quasi intatto il numero che la sigmoide aveva appena
+compresso.
 
 ## Misurare una classifica
 
@@ -493,7 +496,10 @@ decimo posto forse non arrivi mai. La NDCG è la metrica che ne tiene
 conto: premia le classifiche che mettono i titoli giusti in cima, come un
 giornale che sceglie bene la prima pagina. In cifre: un titolo giusto vale $1$
 al primo posto, poi $0{,}63$, $0{,}50$, $0{,}43$, $0{,}39$,
-$0{,}36$, $0{,}33$ scendendo fino al settimo, e $0{,}29$ al decimo. Lo sconto
+$0{,}36$, $0{,}33$ scendendo fino al settimo, e $0{,}29$ al decimo. Non sono
+numeri a caso: il terzo posto vale metà del primo, il settimo un terzo, il
+quindicesimo un quarto. Ogni volta che il numero del posto più uno raddoppia
+(2, 4, 8, 16), il valore scende di un gradino. Lo sconto
 cala sempre più piano man mano che si scende: fra il primo e il secondo posto
 c'è più differenza ($0{,}37$) che fra il quinto e il decimo ($0{,}10$).
 
@@ -559,6 +565,22 @@ che la si trova nei paper; la metrica naturale diventa allora la MRR
 (*mean reciprocal rank*), $\frac{1}{|\mathcal{U}|}\sum_u 1/\mathrm{rank}_u$,
 cioè la media dell'inverso della posizione in cui è finito l'unico item
 giusto.
+
+Fra la precision e la NDCG sta la *average precision* della {doc}`sezione
+sulle metriche </MachineLearning/metriche>`, qui troncata al taglio $k$:
+
+$$
+\mathrm{AP@}k = \frac{1}{\min(|\mathrm{Ril}_u|, k)}\sum_{j=1}^{k}
+\text{precision@}j \cdot \mathrm{rel}_j ,
+$$
+
+cioè la media delle precision misurate nelle sole posizioni in cui cade un
+item rilevante; mediata sugli utenti diventa la MAP@$k$. Premia anch'essa i
+successi in cima, con uno sconto implicito diverso da quello logaritmico della
+NDCG, e il denominatore cambia fra le implementazioni ($|\mathrm{Ril}_u|$
+oppure $\min(|\mathrm{Ril}_u|,k)$), quindi va dichiarato. Con un solo item
+rilevante la AP@$k$ si riduce al reciproco del rango, $1/\mathrm{rank}_u$ (zero
+se l'item è fuori dai primi $k$), e la NDCG@$k$ a $1/\log_2(\mathrm{rank}_u+1)$.
 
 Tutte queste metriche si mediano sugli utenti; e tutte ereditano il difetto
 della valutazione offline: misurano il recupero di interazioni passate,
@@ -689,6 +711,17 @@ terminologica: una torre che legge le *feature* dell'item sa dare un embedding
 anche a un item mai visto, un peso appreso per identificativo no, ed è
 esattamente la partenza a freddo.
 
+L'addestramento tratta il recupero come una classificazione sull'intero
+catalogo, $P(i \mid u) = e^{s(u,i)} / \sum_{j \in \mathcal{I}} e^{s(u,j)}$, con
+$s(u,i) = \mathbf{e}_u^\top \mathbf{e}_i$ il prodotto scalare fra le uscite
+delle due torri, e il denominatore, che somma su milioni di item, si
+approssima con gli altri item dello stesso batch usati come negativi. Quei
+negativi non sono uniformi: un item compare nei batch in proporzione a quanto
+è popolare, e la softmax campionata finisce per penalizzare proprio i titoli
+popolari. La correzione di Yi e colleghi sottrae al punteggio il logaritmo
+della probabilità di campionamento, $s^{c}(u,j) = s(u,j) - \log p_j$, con $p_j$
+stimata in streaming dalla frequenza dell'item {cite}`yi2019sampling`.
+
 `````
 
 E una cosa che sorprende sempre, in un sistema del genere: il lavoro difficile
@@ -705,18 +738,18 @@ vedi, e impara da ciò che vedi, ti sta *servendo* o ti sta *plasmando*? Nel
 {cite}`pariser2011filter`: *filter bubble*, la bolla in cui l'algoritmo,
 inseguendo i tuoi click, ti mostra sempre più di ciò che già pensi. Gli studi
 empirici hanno poi restituito un quadro meno netto, e per certi versi
-sorprendente. Prendiamo le notizie online. Immagina di dare a ogni giornale un
-posto su una riga che va da sinistra a destra, e a ogni lettore il posto medio
-dei giornali che legge: si può allora misurare quanto due lettori sono lontani.
-Chi arriva agli articoli passando da un motore di ricerca o dai social risulta,
-in media, più lontano dagli altri lettori di chi va dritto sul sito del
+sorprendente. Prendiamo le notizie online. Flaxman e colleghi danno a ogni
+giornale un posto su una riga che va da sinistra a destra, e a ogni lettore il
+posto medio dei giornali che legge, e misurano così quanto due lettori sono
+lontani. Chi arriva agli articoli passando da un motore di ricerca o dai social
+risulta, in media, più lontano dagli altri lettori di chi va dritto sul sito del
 giornale: quei canali dividono di più, e fin qui la bolla c'è. Ma le stesse
-persone, proprio passando di lì, finiscono più spesso anche su articoli
-della parte politica che gradiscono meno {cite}`flaxman2016filter`. Le due cose
-non si contraddicono, perché non misurano la stessa cosa: la prima dice quanto i
+persone, proprio passando di lì, finiscono più spesso anche su articoli della
+parte politica che gradiscono meno {cite}`flaxman2016filter`. Le due cose non si
+contraddicono, perché non misurano la stessa cosa: la prima dice quanto i
 lettori sono distanti fra loro, la seconda quanto ciascuno di loro incontra
-l'altra campana. Ed è la seconda a sorprendere. Resta però vero il meccanismo
-da cui è nata la paura di Pariser, il feedback loop già incontrato: il modello
+l'altra campana. Ed è la seconda a sorprendere. Resta però vero il meccanismo da
+cui è nata la paura di Pariser, il feedback loop già incontrato: il modello
 impara da dati che il modello stesso ha filtrato, come discusso nella sezione
 {doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`.
 
@@ -757,7 +790,8 @@ smettere di prendere la vetrina per il catalogo.
   alla prova dei fatti il vecchio confronto, tarato con cura, resta un
   avversario durissimo: più libertà non è gratis. Il caso non è isolato:
   rifacendo i conti di diciotto metodi neurali, sette si sono lasciati
-  riprodurre e sei di quei sette perdevano contro metodi molto più semplici.
+  riprodurre e sei di quei sette venivano spesso battuti da metodi molto più
+  semplici.
 - La tabella dei voti si può disegnare: utenti da una parte, film dall'altra,
   una linea per ogni visione. Raccomandare vuol dire indovinare le linee che
   ancora non ci sono. Camminando sul disegno per più passi si raccoglie anche

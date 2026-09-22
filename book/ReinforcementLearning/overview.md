@@ -24,16 +24,11 @@ rendere più grande possibile non è la ricompensa di adesso, ma la somma di
 tutte quelle che verranno da qui alla fine: quella somma ha un nome, **ritorno**
 (in inglese *return*), e da qui in avanti la useremo continuamente.
 
-Nella somma c'è però una regola di impazienza, perché dieci euro oggi valgono
-più di dieci euro l'anno prossimo: un premio lontano entra ridotto. Il taglio è
-sempre lo stesso a ogni passo di attesa. Se per esempio ogni attesa lascia in
-piedi nove decimi, un premio di dieci punti che arriva una mossa più tardi ne
-vale nove, due mosse più tardi otto e un decimo, e così via.
-
-Il taglio serve anche a una cosa pratica: su una partita che non finisce mai
-la somma di tutti i premi cresce all'infinito e smette di dire qualcosa,
-mentre ridotta resta un numero. La sezione
-{doc}`MDP e funzioni valore <mdp-valore>` lo scrive per bene, coi conti.
+Nella somma i premi lontani entrano ridotti: ogni passo di attesa moltiplica
+un premio per lo stesso numero fra zero e uno, il fattore di sconto, e la somma
+così ridotta resta un numero anche su una partita che non finisce mai. La
+sezione {doc}`MDP e funzioni valore <mdp-valore>` lo scrive per bene, coi
+conti.
 
 ```{figure} ../figures/rl-ciclo-interazione.svg
 :name: fig-rl-ciclo
@@ -242,17 +237,16 @@ Confidence Bound* e i bonus di curiosità privilegiano le azioni su cui la stima
 ## Tre tappe che hanno fatto la storia
 
 Il RL non è un'idea nuova, ma ha avuto pochi momenti che ne hanno mostrato la
-potenza. Nei primi anni Novanta, all'IBM, Gerald Tesauro costruì **TD-Gammon**,
-un programma che imparò a giocare a backgammon (il gioco da tavolo con le
-pedine e i dadi) quasi al livello dei campioni umani. Il metodo con cui
-imparava lo racconta per esteso la sezione sul
-{doc}`Q-learning e le differenze temporali <q-learning>`:
-a ogni mossa il programma si fa un'idea di come andrà a finire, e alla mossa
-dopo corregge un poco l'idea di prima. Le partite se le giocò da solo, oltre un
-milione, muovendo da tutte e due le parti: nessuno gli diceva quale fosse la
-mossa buona, ma alla fine uno dei due lati aveva vinto, e quel giudizio bastava
-per capire quali idee erano da rivedere. Ne uscirono aperture che i maestri poi
-adottarono.
+potenza. Nei primi anni Novanta, all'IBM, Gerald Tesauro costruì **TD-Gammon**
+{cite}`tesauro1995temporal`, un programma che imparò a giocare a backgammon (il
+gioco da tavolo con le pedine e i dadi) quasi al livello dei campioni umani. Il
+metodo con cui imparava lo racconta per esteso la sezione sul {doc}`Q-learning
+e le differenze temporali <q-learning>`: a ogni mossa il programma si fa
+un'idea di come andrà a finire, e alla mossa dopo corregge un poco l'idea di
+prima. Le partite se le giocò da solo, oltre un milione, muovendo da tutte e
+due le parti: nessuno gli diceva quale fosse la mossa buona, ma alla fine uno
+dei due lati aveva vinto, e quel giudizio bastava per capire quali idee erano
+da rivedere. Ne uscirono aperture che i maestri poi adottarono.
 
 Nel 2015 DeepMind, un laboratorio londinese, pubblicò su *Nature*, una delle
 riviste scientifiche più importanti che esistano, il **DQN**. Era un agente che

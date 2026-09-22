@@ -212,9 +212,11 @@ Piantare, far crescere, controllare, aprire al pubblico: questi gesti li
 conosci già. Il gesto nuovo è tornare a guardare, e quando l'occhio in
 produzione vede che i dati sono cambiati tira la freccia che riporta
 all'inizio. E le strade di ritorno del giardino sono parecchie. Il basilico
-cresce e non profuma: potare non serve, quel guaio si ripara a monte, nel
-terreno e nella scelta dei semi. Trovi i sacchetti dei semi con le etichette
-scambiate: quello che è cresciuto è rigoglioso e inservibile, e si ricomincia
+cresce e non profuma (il modello passa la prova ma risponde male): potare,
+cioè riaddestrare, non serve, quel guaio si ripara a monte, nel terreno e nella
+scelta dei semi (quali dati e quali informazioni gli si danno). Trovi i
+sacchetti dei semi con le etichette scambiate (esempi con la risposta giusta
+sbagliata): quello che è cresciuto è rigoglioso e inservibile, e si ricomincia
 dal sacchetto. Ogni freccia indietro torna al punto in cui il guaio è nato.
 
 `````
@@ -311,11 +313,11 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
   davvero «veloce» quando la risposta non arriva tutta insieme ma una parola
   alla volta: quanto si aspetta la prima, con che ritmo scorrono le altre, e
   perché le medie mentono.
-- {doc}`Il conto in energia </MLOps/energia-e-impronta>`, l'unica voce che non
-  si dichiara quasi mai: dove finisce la corrente (nel movimento dei dati, non
-  nei conti), come si arriva dall'energia ai grammi di anidride carbonica, e
-  perché in un modello che resta in servizio per anni rispondere costa più che
-  addestrare.
+-  {doc}`Il conto in energia </MLOps/energia-e-impronta>`, l'unica voce che non
+  si dichiara quasi mai: dove finisce la corrente (quando si genera una parola
+  alla volta, più nei viaggi dei dati che nei conti), come si arriva
+  dall'energia ai grammi di anidride carbonica, e perché in un modello che resta
+  in servizio per anni rispondere costa più che addestrare.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

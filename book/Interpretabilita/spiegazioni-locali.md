@@ -177,7 +177,16 @@ tarare: la spiegazione dipende da come si è deciso di segmentare l'input,
 cioè da quali sono le componenti che si accendono e si spengono. Cambia la
 segmentazione, cambia la spiegazione, e la segmentazione la sceglie chi usa lo
 strumento. La spiegazione dipende quindi da scelte che l'utente raramente
-controlla: un motivo per affiancarle un metodo dai fondamenti più solidi.
+controlla. E c'è un quarto limite, che nasce dal campionamento e vale anche per
+KernelSHAP: i punti perturbati cadono in buona parte fuori dal supporto dei
+dati, e un modello li può riconoscere. Slack e colleghi
+{cite}`slack2020fooling` costruiscono un classificatore che sui dati veri
+decide in base a un attributo protetto e sui campioni perturbati risponde con
+una regola innocua: LIME e KernelSHAP riportano la regola innocua, e
+l'attributo protetto sparisce dalla spiegazione. Un'attribuzione per
+campionamento certifica il modello sui punti che ha interrogato, non sui
+clienti veri. Sono motivi per affiancarle un metodo dai fondamenti più solidi,
+sapendo che l'ultimo dei quattro insidia anche quello.
 
 `````
 
@@ -358,7 +367,9 @@ Calcolare i valori di Shapley esatti richiede di provare tutte le
 **coalizioni**, cioè tutti i gruppi di feature che si possono formare. Ogni
 colonna può esserci o non esserci, quindi i gruppi si contano moltiplicando due
 per sé stesso una volta per colonna: con trenta colonne fa oltre un miliardo di
-gruppi. Nel 2017 Scott Lundberg e Su-In Lee
+gruppi. L'idea di usarli per spiegare la singola predizione, stimandoli per
+campionamento degli ordini, è di Erik Štrumbelj e Igor Kononenko
+{cite}`strumbelj2014explaining`; nel 2017 Scott Lundberg e Su-In Lee
 {cite}`lundberg2017unified` hanno mostrato come stimarli in modo efficiente,
 unificando sotto un'unica teoria (**SHAP**, *SHapley Additive exPlanations*)
 metodi fino ad allora scollegati. Anche LIME rientra in quella teoria, come caso
@@ -391,8 +402,10 @@ chiedere al modello che cosa direbbe di chi guadagna mille euro al mese e
 centomila all'anno, un cliente che non esiste; e il merito va tutto alla casella
 guardata, zero all'altra, che per Maria diceva la stessa identica cosa.
 
-In cambio, una garanzia: se il modello cambia e una colonna pesa di più in ogni
-combinazione, il suo merito non può scendere.
+Quello che si guadagna rispetto ad altri metodi è una garanzia: se il modello
+viene cambiato in modo che una colonna aggiunga di più in ogni gruppo in cui
+entra, il suo merito non può scendere. Con l'importanza da impurità degli
+alberi questo non era garantito.
 
 Il risultato si legge nel grafico a cascata della
 {numref}`fig-shap-contributi`: si parte dalla risposta base e si impilano i
@@ -425,7 +438,8 @@ dell'apertura, ed è il punto in cui morde: KernelSHAP restituisce
 sistematicamente la prima risposta, mentre chi la legge crede spesso di star
 leggendo la seconda.
 
-TreeSHAP (introdotto in un lavoro successivo degli stessi autori) elimina
+TreeSHAP (introdotto in un lavoro successivo degli stessi autori
+{cite}`lundberg2020local`) elimina
 invece il campionamento per i modelli ad albero, con costo $O(T L D^2)$ ($T$
 alberi, $L$ foglie, $D$ profondità), propagando lungo l'albero le popolazioni
 delle coalizioni. I valori sono esatti rispetto alla $v$ che

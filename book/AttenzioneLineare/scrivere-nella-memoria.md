@@ -1,12 +1,12 @@
 # Scrivere meglio nella memoria: gate e delta rule
 
-Nella sezione precedente abbiamo scoperto che l'attenzione lineare è, sotto
-mentite spoglie, una rete ricorrente: al posto dell'archivio di appunti che si
+L'attenzione lineare è, sotto mentite spoglie, una rete ricorrente: al posto
+dell'archivio di appunti che si
 allunga a ogni parola, un'unica memoria di dimensione fissa. È un registro che
 funziona da **rubrica**: ogni parola che passa vi aggiunge una voce
 «etichetta → informazione», sommandola a quelle che ci sono già, e per
 rispondere a una domanda la rubrica si rilegge invece di ripercorrere tutto il
-testo. È l'immagine che ci accompagnerà per tutta la sezione.
+testo. È l'immagine che regge tutto quello che segue.
 
 `````{tab} Elementare
 
@@ -24,7 +24,9 @@ trucco funziona.
 `````{tab} Superiore
 
 In formule, e con la scrittura snella annunciata nella sezione precedente (che
-vale da qui a fine capitolo: la feature map $\phi$ è posta all'identità e il
+vale da qui a fine capitolo: la feature map è assorbita nelle proiezioni che
+producono $\mathbf{k}_t$ e $\mathbf{q}_t$, come in GLA che non ne usa nessuna o
+in DeltaNet che vi mette una SiLU seguita dalla normalizzazione $L_2$, e il
 normalizzatore $\mathbf{z}_t$ non compare),
 
 $$
@@ -63,7 +65,8 @@ moltiplica.
 
 `````{tab} Elementare
 
-Sul registro l'inchiostro sbiadisce, come su una lavagna. A ogni
+Sul registro l'inchiostro sbiadisce, come su una lavagna (sono lo stesso
+foglio, raccontato con un'altra immagine). A ogni
 passo tutte le voci si affievoliscono un po’: quelle appena scritte sono nitide,
 quelle vecchie quasi invisibili. Se il fattore di sbiadimento è $0{,}9$, dopo
 dieci passi una voce vale $0{,}9^{10} \approx 0{,}35$ di quanto valeva: circa
@@ -460,7 +463,10 @@ $$
 $$
 
 È esattamente la delta rule di DeltaNet: il passo di gradiente *esatto* su
-$\mathcal{L}_t$. Le altre ricorrenze sono parenti meno fedeli dello stesso
+$\mathcal{L}_t$, nella lettura che Yang e colleghi fanno esplicita
+{cite}`yang2024deltanet` e che risale a Widrow e Hoff
+{cite}`widrow1960adaptive`. Le altre ricorrenze sono parenti meno fedeli dello
+stesso
 passo. L'accumulo puro dell'attenzione lineare scrive $\mathbf{v}_t
 \mathbf{k}_t^\top$ senza sottrarre ciò che la memoria già predice: equivale a
 trascurare il termine $\mathbf{S}_{t-1} \mathbf{k}_t$ nel gradiente, cioè a

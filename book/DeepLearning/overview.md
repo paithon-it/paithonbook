@@ -82,10 +82,10 @@ Una rete profonda è fatta di strati: gruppi di neuroni messi in fila, dove il
 primo riceve i numeri dell'immagine e ognuno dei successivi riceve ciò che ha
 prodotto lo strato prima. (Un neurone, qui, è un pezzetto di conto e non una
 cellula: prende dei numeri, li somma dopo averli pesati e ne restituisce uno.)
-Quello che uno strato consegna al successivo è a sua volta una lista di numeri,
-ed è la rappresentazione che lo strato si è fatto di ciò che ha ricevuto: ce
-n'è una per piano, ciascuna costruita su quella di sotto, ed è questo a
-renderle gerarchiche. Cosa impara davvero uno strato?
+Quello che uno strato consegna al successivo è a sua volta una lista di numeri.
+È la rappresentazione che lo strato si è fatto di ciò che ha ricevuto, e ce
+n'è una per piano: ciascuna è costruita su quella di sotto, ed è proprio questo
+a renderle gerarchiche. Cosa impara davvero uno strato?
 
 Nel 2014 Zeiler e Fergus {cite}`zeiler2014visualizing` trovarono il modo di
 "visualizzarlo", cioè di risalire, per ogni neurone di una rete
@@ -234,8 +234,9 @@ addestramento distribuite su 1000 categorie. Nel 2012 AlexNet (Krizhevsky,
 Sutskever, Hinton) vince proprio la ILSVRC portando l'errore *top-5* dal 26,2%
 del miglior metodo classico al 15,3%. Il confronto va letto per quello che è:
 il 15,3% è il punteggio della sottomissione, che media le predizioni di sette
-reti; la singola rete descritta nell'articolo si ferma al 18,2%, e anche così
-il salto è senza precedenti.
+reti; la singola rete descritta nell'articolo si ferma al 18,2% sull'insieme di
+validazione (per la rete sola l'articolo non riporta il test), e anche così il
+salto è senza precedenti.
 
 I tre ingredienti, in numeri:
 
@@ -338,18 +339,20 @@ trasformata di Fourier, per cui l'errore quadratico scende come $O(1/N)$ senza
 dipendere dalla dimensione. La crescita esponenziale è una proprietà della
 classe di funzioni, non delle reti a uno strato in quanto tali.
 
-Sulla profondità, invece, le separazioni sono nette e dimostrate. Esistono
-famiglie di funzioni rappresentabili da reti profonde con un numero di neuroni
-*polinomiale* nella profondità, ma che richiedono larghezza *esponenziale* se
-ci si limita a un solo strato {cite}`telgarsky2016benefits`; Eldan e Shamir
-{cite}`eldan2016power` esibiscono una funzione che una rete con due strati
-nascosti rappresenta con un numero di neuroni polinomiale nella dimensione
-dell'ingresso, e che una rete con uno solo non riesce ad approssimare oltre
-una certa soglia a meno di renderla esponenzialmente larga. Montúfar e colleghi
-{cite}`montufar2014number` mostrano che il numero di regioni lineari che una
-rete ReLU può generare cresce esponenzialmente con la profondità e solo
-polinomialmente con la larghezza. Tradotto: la profondità compra efficienza
-espressiva. È più economico comporre trasformazioni che allargarne una sola.
+Sulla profondità, invece, le separazioni sono nette e dimostrate. Per ogni
+intero $k$ esistono reti ReLU con $\Theta(k^3)$ strati e $\Theta(1)$ neuroni
+per strato che nessuna rete con $O(k)$ strati approssima, se non ha almeno
+$\Omega(2^k)$ neuroni {cite}`telgarsky2016benefits`: la separazione vale fra
+due profondità qualunque, una cubica nell'altra, e non soltanto fra uno strato
+e molti; Eldan e Shamir {cite}`eldan2016power` esibiscono una funzione che una
+rete con due strati nascosti rappresenta con un numero di neuroni polinomiale
+nella dimensione dell'ingresso, e che una rete con uno solo non riesce ad
+approssimare oltre una certa soglia a meno di renderla esponenzialmente larga.
+Montúfar e colleghi {cite}`montufar2014number` mostrano che il numero di
+regioni lineari che una rete ReLU può generare cresce esponenzialmente con la
+profondità e solo polinomialmente con la larghezza. Tradotto: la profondità
+compra efficienza espressiva. È più economico comporre trasformazioni che
+allargarne una sola.
 
 `````
 
@@ -556,7 +559,8 @@ precedente: la stessa scala dai bordi agli oggetti della
   gara di ImageNet vinse AlexNet.
 - Uno strato solo, se lo si facesse enorme, in teoria basterebbe: il teorema
   però dice che una rete così *esiste*, non che l'addestramento la sappia
-  trovare. E la profondità arriva allo stesso risultato con molti meno neuroni,
+  trovare. E per certe funzioni la profondità arriva allo stesso risultato con
+  molti meno neuroni,
   perché ogni strato può costruire sopra quello che ha trovato il
   precedente, invece di descrivere ogni forma a partire dai pixel.
 ```
@@ -572,8 +576,10 @@ precedente: la stessa scala dai bordi agli oggetti della
 - È esploso dopo il 2012 (ImageNet, AlexNet) grazie alla triade dati + GPU +
   algoritmi, non a una singola idea nuova.
 - Una rete larga e piatta è universale in teoria (con un'attivazione non
-  polinomiale), ma la profondità ottiene la stessa espressività con molti
-  meno neuroni: comporre conviene. L'universalità però è un'esistenza, non
+  polinomiale), ma esistono famiglie di funzioni che una rete profonda
+  rappresenta con pochi neuroni e una meno profonda solo con un numero
+  esponenziale: è una separazione dimostrata su famiglie costruite, non una
+  garanzia per ogni funzione. L'universalità però è un'esistenza, non
   un'apprendibilità.
 ```
 `````

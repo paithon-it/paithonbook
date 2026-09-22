@@ -56,7 +56,17 @@ $\mathbb{E}\big[\sum_t \gamma^t r_t\big]$) ma va raggiunto *dentro il
 supporto* di $\mathcal{D}$. Il setting online concede qualcosa che qui manca:
 il Q-learning e i metodi a gradiente di policy visti fin qui presuppongono di
 poter *provare* le proprie ipotesi, e sono le prove a correggere le stime
-sbagliate. Togliere le prove cambia la natura del problema.
+sbagliate. Togliere le prove cambia la natura del problema, e cambia anche il
+collaudo: una policy appresa offline va valutata sull'archivio (*off-policy
+evaluation*). La stima più semplice ripesa i ritorni osservati con il rapporto
+di importance sampling della {doc}`sezione sui metodi Monte Carlo
+</ReinforcementLearning/monte-carlo>`, $\prod_t \pi(a_t\mid
+s_t)/\pi_\beta(a_t\mid
+s_t)$, che chiede di conoscere $\pi_\beta$ e ha una varianza che esplode con
+l'orizzonte; l'alternativa, stimare $Q^\pi$ sui dati (*fitted Q evaluation*),
+eredita l'errore di estrapolazione descritto più avanti. La valutazione
+dell’*AI Clinician* è stata fatta così, ed è su questo punto che è stata
+criticata.
 
 `````
 
@@ -72,9 +82,10 @@ sempre. Capire *perché* è il cuore di tutto l'argomento.
 ## Il buco nero delle azioni mai viste
 
 Il colpevole è la differenza fra le mosse che nel diario ci sono e le mosse che
-l'agente, imparando, vorrebbe fare. Ha un nome tecnico, **distributional
-shift**, lo spostamento di distribuzione, e un modo molto più chiaro di
-raccontarlo.
+l'agente, imparando, vorrebbe fare, la stessa frattura vista nell'imitazione
+quando l'allievo usciva dalla fascia dimostrata. Ha un nome tecnico,
+**distributional shift**, lo spostamento di distribuzione, e un modo molto più
+chiaro di raccontarlo.
 
 `````{tab} Elementare
 
@@ -130,7 +141,8 @@ massimo, insomma, e tutti gli altri voti sono numeri negativi.
 Chi ha raccolto i dati, però, è stato prudente: ha provato soltanto la fetta fra
 $-1{,}0$ e $-0{,}2$, quaranta volte in tutto. La mossa migliore, nell'archivio,
 non c'è, e tutto l'esempio serve a mostrare che cosa succede per questo. Il
-programma qui sotto fa passare una curva per quei quaranta punti e poi le chiede
+programma sullo sterzo fa passare una curva per quei quaranta punti e poi le
+chiede
 il voto di tutte le mosse, comprese quelle mai provate.
 
 ```python

@@ -363,6 +363,21 @@ ordinario con $d$ colonne la matrice di proiezione ha traccia esattamente $d$,
 quindi la definizione non è una convenzione nuova ma la stessa di sempre, letta
 in un caso in cui i parametri non si contano.
 
+La stessa linearità rende quasi gratuita la scelta di $\lambda$. L'errore
+*leave-one-out* non richiede $m$ adattamenti, perché vale l'identità
+
+$$
+\mathrm{CV}(\lambda) = \frac{1}{m}\sum_{i=1}^{m}\left(\frac{y_i - \hat{f}_\lambda(x_i)}{1 - S_{\lambda,ii}}\right)^2 ,
+$$
+
+dove $S_{\lambda,ii}$ è l’$i$-esimo elemento diagonale di $\mathbf{S}_\lambda$
+{cite}`hastie2009elements`; la *validazione incrociata generalizzata* (GCV)
+sostituisce ogni $S_{\lambda,ii}$ con la media $\mathrm{df}(\lambda)/m$, ed è
+il criterio con cui `make_smoothing_spline` di SciPy sceglie $\lambda$ quando
+non glielo si passa. E il sistema da risolvere, scritto nella base B-spline, è
+a banda, quindi il costo è lineare in $m$: è ciò che rende praticabile un nodo
+per dato.
+
 `````
 
 Girando la manopola si vede quanta flessibilità resta alla curva, accanto
@@ -466,7 +481,8 @@ vogliono purché la curva risultante sia dolce. Sono due modi diversi di dire
 Tutto questo vale per una variabile. Con dieci colonne non si può fare la
 stessa cosa, perché una superficie flessibile in dieci dimensioni ha bisogno di
 una quantità di dati che nessuno ha: è la maledizione della dimensionalità
-incontrata nella prima sezione del capitolo, vista qui dal lato di chi deve
+incontrata a proposito del {doc}`k-NN <apprendimento-supervisionato>`, vista
+qui dal lato di chi deve
 stimare, e conviene dirla nei suoi termini. Per riempire una griglia a $10$
 caselle per lato in una dimensione bastano dieci punti; in dieci dimensioni le
 caselle sono $10^{10}$, e per averne uno per casella servirebbero dieci

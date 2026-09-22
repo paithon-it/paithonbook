@@ -24,9 +24,10 @@ contenerlo.
 ## Un errore che non riguarda gli occhi
 
 L’{doc}`apertura del capitolo </VisioneLinguaggio/overview>` ha già dato un
-nome al fenomeno, allucinazione visiva, e ne ha mostrato la radice nella
-funzione di costo, cioè nel punteggio dell'errore che l'addestramento fa
-scendere. Conviene scavare un
+nome al fenomeno, allucinazione visiva, e ne ha mostrato la radice: il punteggio
+dell'errore che l'addestramento fa
+scendere premia chi indovina le parole, e chi indovina bene impara a fare a
+meno di guardare. Conviene scavare un
 poco più a fondo, perché la forma precisa dell'argomento dice anche dove si
 può intervenire.
 
@@ -92,8 +93,9 @@ Il punto di partenza dell'ottimizzazione aggrava lo sbilanciamento. Il priore
 arriva già formato da un pre-addestramento testuale enormemente più lungo,
 mentre il connettore è inizializzato a caso e vale, come si è visto, qualche
 milione di parametri contro i miliardi del modello di linguaggio. All'iterazione
-zero ignorare l'immagine è un ottimo locale, e la discesa del gradiente non ha
-alcun motivo di uscirne se non nella misura in cui i dati la costringono.
+zero ignorare l'immagine costa poco, perché la perdita è già bassa senza
+di lei; il gradiente verso il percorso visivo è piccolo, e la discesa non ha
+motivo di imboccarlo se non nella misura in cui i dati la costringono.
 
 C'è infine un contributo che nasce nei dati stessi. I corpora di istruzione
 visiva generati da un modello di solo testo a partire da didascalie e riquadri
@@ -124,9 +126,17 @@ e poi verificarle una a una.
 La via classica è del 2018 e si chiama **CHAIR** {cite}`rohrbach2018object`, le
 iniziali di *Caption Hallucination Assessment with Image Relevance*. Si fissa un
 elenco chiuso di categorie di oggetti e si cercano quelle parole nel testo
-generato, con una tabella di sinonimi e di plurali. Poi si conta: di tutti gli
-oggetti che il modello ha nominato, quanti non compaiono nell'elenco di quel che
-c'è nella fotografia, scritto a mano da chi le ha preparate.
+generato, con una tabella di sinonimi e di plurali. Poi si conta, in due modi:
+sugli oggetti,
+$\mathrm{CHAIR}_i = \lvert\{\text{oggetti nominati e assenti}\}\rvert /
+\lvert\{\text{oggetti nominati}\}\rvert$,
+e sulle descrizioni,
+$\mathrm{CHAIR}_s = \lvert\{\text{descrizioni con almeno un oggetto
+assente}\}\rvert / \lvert\{\text{descrizioni}\}\rvert$,
+dove «assente» vuol dire fuori dall'elenco di quel che c'è nella fotografia,
+scritto a mano da chi le ha preparate (nel lavoro originale, le 80 categorie di
+COCO). Il secondo numero è sempre il più severo, perché basta una forchetta a
+bocciare tutta la descrizione.
 Funziona, è stata la prima misura del campo, ed è il capostipite della famiglia
 che guarda quel che il modello scrive di sua iniziativa invece di interrogarlo.
 Porta però con sé quattro fragilità che non si possono togliere.
@@ -397,9 +407,10 @@ aver mai visto una didascalia, mette le stesse due foto sotto $0{,}6$: per lui
 sono due cose diverse. La differenza non sta nella fotografia, sta nella
 bilancia con cui la si pesa, e non è sfortuna: chi ha imparato dalle didascalie
 tiene quello che le didascalie nominano, e il verso in cui è girato un animale
-le didascalie non lo dicono quasi mai. (Le due coppie di fotografie, del resto,
-si sono cercate apposta con quei due numeri in mano: è così che sono state
-trovate.)
+le didascalie non lo dicono quasi mai. (Coppie così non capitano per caso: i
+ricercatori le hanno pescate apposta,
+tenendo solo quelle in cui la prima bilancia diceva «quasi uguali» e la seconda
+«diverse».)
 
 Ed ecco il punto che chiude il cerchio: quando la bilancia distingue troppo
 poco, il modello di linguaggio non risponde «non lo so». Riempie il buco con
@@ -439,7 +450,12 @@ $\mathcal{I}(Y; \mathbf{I}) \le \mathcal{I}(\mathbf{Z}; \mathbf{I})$, dove
 $\mathcal{I}$ è la mutua informazione: addestrando ciò che viene dopo non si
 aggiunge informazione sull'immagine. Vero, e qui inoffensivo. L'encoder è una
 funzione deterministica e le due immagini della coppia hanno coseno $0{,}95$,
-cioè embedding *distinti*: finché $E$ è iniettivo,
+cioè embedding *distinti*. (Una precisazione sull'oggetto: il coseno
+$0{,}95$ è misurato sull'embedding globale dell'immagine, mentre un modello con
+connettore riceve la griglia delle feature di patch del penultimo strato, che
+di solito differiscono di più; il legame fra le due cose è empirico, perché
+gli stessi modelli sbagliano sulle domande costruite da quelle coppie.) Finché
+$E$ è iniettivo,
 $\mathcal{I}(\mathbf{Z}; \mathbf{I}) = H(\mathbf{I})$, con $H$ l'entropia
 dell'immagine (finita, perché i pixel sono già quantizzati), e un limite pari a
 tutta l'informazione disponibile non vieta niente a nessuno. La disuguaglianza
@@ -549,7 +565,9 @@ l'immagine c'è ancora, solo che è illeggibile.
 Se «forchetta» risulta probabile in entrambi i casi, quella parola non viene
 dalla foto: viene dall'abitudine, e allora la si penalizza. Se «coltello» è
 probabile solo a occhi aperti, quella parola l'ha vista davvero, e la si premia.
-In pratica si sottrae, punto per punto, quello che il modello direbbe comunque.
+In pratica si parte dal giudizio a occhi aperti e gli si toglie una dose di
+quello che il modello direbbe comunque: quanto è grande la dose lo decide una
+manopola.
 
 Una precauzione serve, altrimenti il trucco si rivolta: sottraendo senza freni
 si finisce per premiare parole assurde, che a occhi chiusi erano
@@ -594,8 +612,12 @@ pratica intorno a $0{,}1$) è la soglia di plausibilità che impedisce alla
 sottrazione di promuovere token del tutto improbabili. La differenza dei due
 logit è, a meno delle costanti di normalizzazione, proprio
 il contributo visivo isolato nella scomposizione della perdita:
-si sta decodificando su una stima della mutua informazione puntuale invece
-che sulla probabilità totale, con la stessa approssimazione di allora, resa
+si sta decodificando sulla log-probabilità a occhi aperti corretta da
+$\alpha$ volte una stima della mutua informazione puntuale,
+$\ell_\theta(y_t \mid \cdot, \mathbf{I}) + \alpha\,\big[\ell_\theta(y_t \mid
+\cdot, \mathbf{I}) - \ell_\theta(y_t \mid \cdot, \mathbf{I}')\big]$,
+che si riduce alla sola mutua informazione soltanto al limite $\alpha \to
+\infty$, con la stessa approssimazione di allora, resa
 qui ancora più larga quando $\mathbf{I}'$ è un'immagine degradata e non l'assenza
 dell'immagine.
 
@@ -630,7 +652,10 @@ scompone in affermazioni elementari («c'è un piatto», «c'è una forchetta»,
 forchetta è a sinistra del piatto») e verifica ciascuna con l'immagine in mano,
 riscrivendo o togliendo quelle che non passano {cite}`yin2023woodpecker`. La
 forma delle domande di
-verifica è, letteralmente, quella binaria di POPE: il protocollo di valutazione
+verifica, per gli oggetti, è quella di POPE allargata al conteggio («c'è una
+forchetta? quante?», a cui risponde un rilevatore di oggetti), mentre per gli
+attributi è aperta («di che colore è?», a cui risponde un modello di domanda e
+risposta sulle immagini): il protocollo di valutazione
 diventa un componente del sistema. Il costo è la latenza, moltiplicata per il
 numero di affermazioni; e il difetto è più
 insidioso, perché se il verificatore è un modello della stessa famiglia porta lo
@@ -787,18 +812,18 @@ contano in parti per milione, e nessun sistema addestrato per massima
 verosimiglianza su meno di un milione di dimostrazioni ha oggi argomenti per
 promettere quel numero.
 
-Il terzo sono i dati. Le traiettorie non si raccolgono dal web: ognuna
-richiede un robot vero e una persona che lo guida, e la scala che si raggiunge è
+Il terzo sono i dati. Le traiettorie non si raccolgono dal web: ognuna richiede
+un robot vero e una persona che lo guida, e la scala che si raggiunge è
 lontanissima dai miliardi di token del testo. E qui la generalizzazione cambia
 natura. Cambiare robot cambia la relazione fra il comando e il movimento, e la
 regola con cui il modello decide che cosa fare (la sua politica) non si
 trasferisce come si trasferisce un prompt. È lo stesso scarto fra il mondo
 simulato e il mondo vero (il *sim-to-real*) che il capitolo introduttivo nomina
 a proposito di robotica, e nessuna quantità di didascalie lo colma. È anche la
-ragione per cui il capitolo sui world model, cioè i modelli che si
-costruiscono una copia mentale del mondo, è il vicino di casa naturale di un
-robot che impara: provare in quella copia costa meno che provare sul robot
-vero.
+ragione per cui il {doc}`capitolo sui world model </WorldModels/overview>`, cioè
+i modelli che si costruiscono una copia mentale del mondo, è il vicino di casa
+naturale di un robot che impara: provare in quella copia costa meno che provare
+sul robot vero.
 
 Resta il fatto che il meccanismo è di una economia notevole. Non c'è
 un'architettura per l'azione: c'è la stessa macchina di tutto il capitolo, con
@@ -809,8 +834,10 @@ movimento.
 
 ## Quattro mosse, e una diffidenza
 
-Il capitolo si chiude dove era cominciato, con la domanda su dove si incontrano
-i due flussi. Allineare due spazi senza fonderli, cioè mandare le foto e le
+Sotto la sua pipa Magritte aveva scritto che quella non era una pipa, e chi
+guardava il quadro capiva al volo il salto fra il disegno, la cosa e la parola.
+Per una macchina quel salto dipende da dove si incontrano i due flussi.
+Allineare due spazi senza fonderli, cioè mandare le foto e le
 frasi sulla stessa mappa, dà un modello che cerca e non parla; e uno spazio
 allineato non è uno spazio che capisce. Innestare un occhio su un modello
 che sa già parlare dà un modello che conversa, e ha vinto la saldatura più
@@ -911,4 +938,4 @@ si può scrivere, e chi scrive azioni sbaglia come sbaglia chi scrive parole,
 cioè con sicurezza e senza accorgersene. Quello che qui nessuno fa è il resto
 del mestiere: decidere quando è il momento di agire, mettere in fila le mosse di
 un lavoro lungo, tenere il conto di che cosa si è già provato. Comincia da lì il
-capitolo sugli agenti.
+{doc}`capitolo sugli agenti </Agenti/overview>`.

@@ -129,11 +129,18 @@ nemmeno il doppio, e sempre sotto il tetto). Il termine $b \in [0, 1]$
 penalizza i documenti più lunghi della media, che accumulano occorrenze per
 pura mole.
 
-Due parole sulla valutazione, perché torneranno: la **precision@k** è la
-frazione di documenti rilevanti tra i primi $k$ restituiti, e l’**MRR** (*Mean
-Reciprocal Rank*) è la media, sulle query, di $1/r$ dove $r$ è la posizione
-del primo risultato corretto (vale $1$ se il sistema azzecca sempre il primo
-posto).
+Due parole sulla valutazione, perché torneranno. Detti $\mathrm{Ril}(q)$ i
+documenti rilevanti per la query e $\mathrm{Top}_k(q)$ i primi $k$ restituiti,
+la **precision@k** è $|\mathrm{Ril}\cap\mathrm{Top}_k|/k$ e la **recall@k** è
+$|\mathrm{Ril}\cap\mathrm{Top}_k|/|\mathrm{Ril}|$: la prima misura quanto è
+pulita la lista, la seconda quanto del necessario ci è entrato, ed è quella che
+conta per un sistema che poi legge i passaggi. L’**MRR** (*Mean Reciprocal
+Rank*) è la media, sulle query, di $1/r$, dove $r$ è la posizione del primo
+risultato corretto (vale $1$ se il sistema azzecca sempre il primo posto).
+Quando la rilevanza ha dei gradi si usa l’**nDCG@k**,
+$\sum_{i=1}^{k}(2^{g_i}-1)/\log_2(i+1)$ diviso per lo stesso valore
+dell'ordinamento ideale, dove $g_i$ è il grado di rilevanza del documento in
+posizione $i$. Tutte e quattro crescono verso il meglio.
 
 `````
 
@@ -248,8 +255,13 @@ passaggio sotto gli occhi, quindi ne ricalcano le parole, e vengono tutte da
 poco più di cinquecento articoli. Quel che resta valido oltre i numeri è il
 perché: il denso recupera ciò che è detto con altre parole, il lessicale ciò
 che è scritto con quelle esatte. E infatti su termini rari, sigle ed entità
-fuori distribuzione il lessicale regge, e gli ibridi BM25 + denso restano una
-scelta di buon senso.
+fuori distribuzione il lessicale regge. I sistemi ibridi interrogano tutti e
+due e fondono le liste con la *reciprocal rank fusion*,
+$\mathrm{RRF}(d) = \sum_{m} 1/(c + \mathrm{rank}_m(d))$ con $c$ intorno a 60
+{cite}`cormack2009reciprocal`: conta la posizione in ciascuna lista e non il
+punteggio, che fra un BM25 e un prodotto scalare non è confrontabile. La fusione
+e il reranking hanno una sezione propria, {doc}`RAG avanzato
+</Agenti/rag-avanzato>`.
 
 Un raffinamento chiude il quadro: il bi-encoder codifica query e passaggio
 *separatamente*, mentre un **cross-encoder** li concatena in un unico
@@ -396,9 +408,10 @@ generatore. Il segno di «circa» dice una cosa precisa: la somma esatta correre
 su tutti i passaggi dell'archivio, e qui si ferma ai primi $k$. Il paper la
 chiama approssimazione top-$k$ e non la giustifica: quanto pesi la coda che
 resta fuori dipende dalla scala dei prodotti scalari del retriever, e non è
-detto sia poco. La somma troncata, per giunta, non viene rinormalizzata,
-quindi quello che ne esce non è una distribuzione di probabilità ma la massa
-dei soli $k$ passaggi tenuti.
+detto sia poco. La somma troncata viene poi rinormalizzata sui soli $k$
+passaggi tenuti (nel codice di riferimento una softmax sui loro punteggi),
+quindi quello che ne esce è di nuovo una distribuzione: quella esatta, però,
+solo se la coda scartata pesava davvero poco.
 
 Il tutto si addestra end-to-end sulle sole coppie
 domanda–risposta: il gradiente attraversa il generatore e l'encoder delle
@@ -477,7 +490,7 @@ casa, di automobili, di cucina), al posto delle centinaia di coordinate opache
 che produrrebbe un modello vero. Tutto il resto è identico a un sistema in
 funzione.
 
-Due righe per capire i numeri che escono. Ogni passaggio è un punto sulla
+Il coseno si legge così. Ogni passaggio è un punto sulla
 mappa, e un punto sulla mappa si
 può guardare anche come una freccia che parte dall'origine e arriva lì: la
 similarità del coseno misura quanto due di quelle frecce puntano nella

@@ -127,14 +127,26 @@ $$
                     {\max(\mathrm{RI}) - \mathbb{E}[\mathrm{RI}]},
 $$
 
-dove il massimo è quello raggiungibile tenendo fisse le taglie dei gruppi
-delle due partizioni, e non $1$. L'indice vale $1$ per l'accordo perfetto, $0$
-in media sul caso casuale, e può essere negativo per un accordo peggiore del
-caso. L'alternativa dal versante
-informazionale è l’NMI, informazione mutua fra le due partizioni normalizzata
-dalle rispettive entropie, che ha lo stesso spirito e una diversa sensibilità al
-numero di gruppi (tende a premiare le partizioni fini, e ha a sua volta una
-versione aggiustata, l'AMI).
+dove $\max(\mathrm{RI})$ non è il massimo davvero raggiungibile ma un limite
+superiore, che con taglie diverse nelle due partizioni non si tocca. Sulla
+tabella di contingenza $n_{ij}$ (i punti che stanno nel gruppo $i$ di $C$ e nel
+gruppo $j$ di $T$), con $u_i$ e $v_j$ i totali di riga e di colonna,
+
+$$
+\mathrm{ARI} = \frac{\sum_{ij}\binom{n_{ij}}{2} - t}
+{\tfrac12\bigl[\sum_i\binom{u_i}{2} + \sum_j\binom{v_j}{2}\bigr] - t},
+\qquad
+t = \frac{\sum_i\binom{u_i}{2}\,\sum_j\binom{v_j}{2}}{\binom{m}{2}},
+$$
+
+dove $t$ è il numero atteso di coppie tenute insieme da entrambe sotto il
+modello di permutazione, e il denominatore sostituisce $1$. L'indice vale $1$
+per l'accordo perfetto, $0$ in media sul caso casuale, e può essere negativo
+per un accordo peggiore del caso. L'alternativa dal versante informazionale è
+l’NMI, informazione mutua fra le due partizioni normalizzata dalle rispettive
+entropie, che ha lo stesso spirito e una diversa sensibilità al numero di
+gruppi (tende a premiare le partizioni fini, e ha a sua volta una versione
+aggiustata, l'AMI).
 
 Tutti e due sono invarianti alla permutazione delle etichette, che è
 indispensabile: il «gruppo 0» di un algoritmo e il «gruppo 0» di un altro non
@@ -261,11 +273,12 @@ l'accordo fra le due assegnazioni con un indice esterno (l'ARI, appunto, perché
 l'accordo fra due partizioni è esattamente ciò che misura). Ripetuto e mediato,
 dà $\mathrm{stab}(k)$, e si sceglie il $k$ che la massimizza.
 
-Il criterio ha una nota da conoscere prima di usarlo: i valori piccoli di
-$k$ sono stabili quasi per
-costruzione, perché una bipartizione grossolana di dati ben separati esce quasi
-sempre uguale. La stabilità va quindi letta come un vincolo (scarta i $k$
-instabili),
+Il criterio ha un limite che è un teorema. Per $k$-means, quando il minimo
+dell'inerzia è unico, la stabilità tende a $1$ al crescere dei dati qualunque
+sia $k$, giusto o sbagliato, e scende sotto $1$ solo quando i minimi
+equivalenti sono più d'uno, cioè per una simmetria dei dati
+{cite}`bendavid2006sober`. La stabilità va quindi letta come un vincolo
+(scarta i $k$ instabili),
 non come una funzione da massimizzare alla cieca.
 
 `````
@@ -329,9 +342,12 @@ opposti, quasi sempre un accordo pieno e ogni tanto un disaccordo totale.
 Il perché sta nella geometria. Quattro mucchi ai vertici di un quadrato si
 possono tagliare in due in due modi che costano esattamente uguale, in
 orizzontale o in verticale; quasi ogni volta le due metà dei dati scelgono lo
-stesso, e ogni tanto no. La stabilità di un $k$ sbagliato può quindi essere
-altissima per pura simmetria, e a smascherarla non è la media ma la sua
-dispersione.
+stesso, e ogni tanto no. È la simmetria a far ballare il $k = 2$, e qui ci
+salva. Basta allungare il quadrato in un rettangolo perché il taglio che separa
+i due mucchi in basso dai due in alto diventi l'unico ottimo: allora il $k = 2$
+sbagliato esce stabile quanto il $k = 4$ giusto, e né la media né la
+dispersione se ne accorgono. La stabilità dice se il raggruppamento migliore è
+unico, e sulla sua correttezza tace.
 
 Ecco perché la stabilità serve a scartare i valori che non tengono (qui il
 $3$, con $0{,}655 \pm 0{,}238$: un raggruppamento in tre parti di quattro mucchi
@@ -340,10 +356,10 @@ non a scegliere il massimo assoluto senza guardare altro.
 
 ## Una parentesi sul nome: «non supervisionato»
 
-Prima di tirare le somme conviene sistemare una faccenda di vocabolario, perché
-il libro chiama questi metodi «non supervisionati» e altrove spiega perché quel
-nome non andrebbe usato. La contraddizione è solo apparente, e scioglierla
-serve a capire di che cosa parliamo.
+Prima di tirare le somme c'è una faccenda di vocabolario da sistemare: questi
+metodi si chiamano «non supervisionati», e c'è chi sostiene che quel nome non
+andrebbe usato. La contraddizione è solo apparente, e scioglierla serve a
+capire di che cosa parliamo.
 
 Yann LeCun ha rinunciato pubblicamente all'espressione «apprendimento non
 supervisionato», e la ragione, scritta con Ishan Misra nel 2021, è che quel nome
@@ -362,11 +378,11 @@ risposta: c'è una funzione obiettivo che descrive la forma dei dati e la si
 ottimizza. Qui la supervisione manca davvero, e il nome tradizionale non inganna
 nessuno.
 
-La regola che il libro segue è dunque questa: «non supervisionato» per i metodi
+La distinzione che ne esce è questa: «non supervisionato» per i metodi
 che descrivono i dati senza prevederne nessuna parte (raggruppamento, riduzione
 della dimensionalità, stima di densità), e mai per l'auto-supervisione, dove
 il bersaglio c'è e se lo fabbrica il metodo stesso. È quel secondo uso ad aver
-spinto LeCun a cambiare parola, ed è l'unico che qui si evita.
+spinto LeCun a cambiare parola, ed è l'unico da evitare.
 
 ## Perché non esiste un indice giusto
 
@@ -409,7 +425,8 @@ obbligatoria, e non approssimazioni imperfette di un ideale che un giorno
 qualcuno troverà: ciascuno dichiara, con la sua regola d'arresto, a che cosa ha
 rinunciato.
 
-È lo stesso Jon Kleinberg che il capitolo sull'AI responsabile incontra per il
+È lo stesso Jon Kleinberg che il {doc}`capitolo sull'AI responsabile
+</AIResponsabile/equita-e-bias>` incontra per il
 teorema di impossibilità sull’equità, dove tre criteri ragionevoli di
 imparzialità non possono valere insieme se non nei casi degeneri. Due
 impossibilità distinte, stessa forma dell'argomento e stesso autore, a quindici

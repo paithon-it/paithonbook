@@ -60,8 +60,9 @@ ordine. E più lunga è la giornata, più sono le decisioni fra cui dividerla.
 
 `````{tab} Superiore
 
-La prima mossa è quantitativa ed è già misurata: il bersaglio nel rinforzo è
-uno scalare per episodio, cioè al più pochi bit,
+La prima mossa è quantitativa, ed è il tetto già calcolato: con una
+ricompensa binaria, come quella verificabile dei problemi di matematica, il
+bersaglio nel rinforzo è al più un bit per episodio,
 mentre nel pre-addestramento auto-supervisionato è dell'ordine di $10^5$ bit per
 esempio. È il rapporto che il programma sui bit stampa.
 
@@ -115,7 +116,7 @@ ma che sia nel posto sbagliato: va bene per rifinire una policy quando la
 comprensione del mondo è già stata costruita altrove, e non va bene come modo
 di costruirla.
 
-Questa posizione è già comparsa, senza la sua motivazione. Nel
+Questa posizione è già comparsa, con il suo perché detto in breve. Nel
 {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` c'è l'elenco
 delle quattro rinunce che LeCun ripete nelle sue conferenze, e la quarta dice:
 abbandonare l'apprendimento per

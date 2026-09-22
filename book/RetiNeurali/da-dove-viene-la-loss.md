@@ -1,8 +1,10 @@
 # Da dove viene la loss
 
-I minimi quadrati hanno una seconda lettura, oltre a quella geometrica di
-{doc}`Ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`, dove
-sono un'ombra proiettata su un sottospazio. Gauss la percorse in un verso che
+Perché l'errore di una rete si misura spesso al quadrato, e non con la
+differenza secca? I minimi quadrati hanno una seconda lettura, oltre a quella
+geometrica di {doc}`Ortogonalità e proiezioni
+</Matematica/ortogonalita-proiezioni>`, dove sono un'ombra proiettata su un
+sottospazio. Gauss la percorse in un verso che
 oggi si fa al contrario. Nel *Theoria motus* del 1809 si chiese quale
 legge degli errori rendesse la media aritmetica il valore più probabile di una
 serie di misure: la risposta fu la curva a campana, e da lì la somma dei
@@ -106,7 +108,7 @@ $\boldsymbol{\lambda}^{(i)} = f_\theta(\mathbf{x}^{(i)})$ e si scrive la
 verosimiglianza dei parametri della rete:
 
 $$
-L(\theta) = \prod_{i=1}^{m}
+p(\mathcal{D} \mid \theta) = \prod_{i=1}^{m}
 p\big(y^{(i)} \mid f_\theta(\mathbf{x}^{(i)})\big) .
 $$
 
@@ -126,7 +128,7 @@ $$
 \mathcal{L}(\theta) = -\sum_{i=1}^{m}
 \log p\big(y^{(i)} \mid f_\theta(\mathbf{x}^{(i)})\big) ,
 \qquad
-\hat\theta = \arg\max_{\theta} L(\theta)
+\hat\theta = \arg\max_{\theta} p(\mathcal{D} \mid \theta)
 = \arg\min_{\theta} \mathcal{L}(\theta) .
 $$
 
@@ -225,8 +227,15 @@ Il primo addendo non dipende da $\theta$ e il denominatore $2\sigma^2$ è una
 costante positiva: nessuno dei due sposta il punto di minimo. Quello che resta
 è $\sum_i (y^{(i)} - \hat y^{(i)})^2$, la somma dei quadrati dei residui. I
 minimi quadrati sono la log-verosimiglianza negativa di una gaussiana a
-varianza fissa, e le ipotesi che li giustificano sono esattamente tre:
-gaussianità, indipendenza condizionata, varianza costante.
+varianza fissa, e gaussianità, indipendenza condizionata e varianza costante
+sono le ipotesi sotto cui la somma dei quadrati è la stima di massima
+verosimiglianza. Per usarla ne servono meno. Per qualunque distribuzione con
+varianza finita, il minimo dell'errore quadratico atteso è la media
+condizionata $\mathbb{E}[y \mid \mathbf{x}]$, e su un modello lineare basta che
+i residui abbiano media nulla, varianza costante e siano incorrelati (il
+teorema di Gauss-Markov): la gaussianità serve a fare della somma dei quadrati
+la stima migliore in assoluto e a dare agli intervalli la loro forma esatta,
+non a centrare la media.
 
 Quali sono i punti di rottura si legge dalle ipotesi, una per una. Se la
 distribuzione condizionata vera ha code più pesanti di una gaussiana, un
@@ -444,7 +453,14 @@ Che il prezzo sia tarato bene si vede fissando $\mu$ e annullando la derivata
 rispetto a $\sigma$: si ottiene $\hat\sigma^2 = (y-\mu)^2$ sul singolo punto e,
 su un gruppo di punti che condividono la stessa larghezza, la media dei
 quadrati dei residui. La larghezza ottima è lo scarto quadratico medio,
-cioè la loss chiede di dichiarare l'incertezza che si ha davvero.
+cioè la loss chiede di dichiarare l'incertezza che si ha davvero. Il singolo
+punto, però, è anche il primo guasto. Se la rete riesce a far coincidere
+$\mu_i$ con $y^{(i)}$, il residuo è nullo, l'ottimo è $\sigma_i \to 0$ e la
+loss scende senza limite, perché $\log\sigma_i \to -\infty$: una densità può
+crescere a piacere, e con una sola osservazione e la media incognita la stima
+di massima verosimiglianza della varianza non esiste
+{cite}`detlefsen2019reliable`. In pratica si mette un pavimento a $\sigma$, o
+si stima la larghezza su punti che non hanno contribuito a fissare il centro.
 
 Due punti di rottura. Il primo: il gradiente rispetto a $\mu_i$
 porta un fattore $1/\sigma_i^2$, quindi la rete può abbassare la loss
@@ -582,12 +598,13 @@ dati sono stati generati, $0{,}1$ e $0{,}6$.
   è la loss.
 - Le loss note ne sono i casi particolari. Gaussiana a varianza fissa →
   minimi quadrati; Bernoulli → cross-entropia binaria; categorica →
-  cross-entropia multiclasse. Le ipotesi dei minimi quadrati sono quindi tre e
-  vanno dichiarate: gaussianità, indipendenza condizionata, varianza costante.
+  cross-entropia multiclasse. Le ipotesi sotto cui i minimi quadrati sono di
+  massima verosimiglianza sono quindi tre, e vanno dichiarate: gaussianità,
+  indipendenza condizionata, varianza costante.
 - La funzione sull'ultimo strato la detta il dominio del parametro: nessuna
   per $\mu \in \mathbb{R}$, sigmoide per $[0,1]$, softmax per il simplesso.
 - La regressione eteroschedastica fa predire anche $\sigma$, e la loss
-  diventa $\sum_i [\log\sigma_i + (y^{(i)}-\mu_i)^2 / 2\sigma_i^2]$: errore
+  diventa $\sum_i [\log\sigma_i + (y^{(i)}-\mu_i)^2 / (2\sigma_i^2)]$: errore
   pesato più il prezzo di dichiararsi incerti. Senza il termine $\log\sigma_i$
   il minimo sarebbe $\sigma \to \infty$.
 - Due limiti restano. Il gradiente su $\mu_i$ va come $1/\sigma_i^2$, quindi

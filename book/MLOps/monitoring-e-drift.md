@@ -131,14 +131,14 @@ perché a caso, fra un dato di ieri e uno di oggi, quale sia quale lo si azzecca
 una volta su due.
 
 Un'AUC vicina a $0{,}5$ dice quindi che i due periodi sono indistinguibili *per
-lui*. È una rassicurazione, non una prova: uno scostamento piccolo e
-concentrato in poche colonne fra tante resta sotto il rumore di quel
-classificatore e non gli sposta l'AUC, perso com'è in mezzo a decine di colonne
-che non sono cambiate. Uno scostamento altrettanto piccolo, ma che tocca molte
-colonne insieme, il detective lo trova, e lo trova mentre ciascuna colonna,
-presa da sola, si è mossa di pochissimo: sommare indizi piccoli è il mestiere
-per cui esiste. (Le colonne dei dati, nel gergo del mestiere, sono le
-*feature*, ed è il nome che portano anche nel codice.)
+lui*. È una rassicurazione, non una prova: uno scostamento piccolo e concentrato
+in poche colonne fra tante si confonde con le differenze che il caso produce
+comunque fra due settimane qualsiasi, e non gli sposta l'AUC, perso com'è in
+mezzo a decine di colonne che non sono cambiate. Uno scostamento altrettanto
+piccolo, ma che tocca molte colonne insieme, il detective lo trova, e lo trova
+mentre ciascuna colonna, presa da sola, si è mossa di pochissimo: sommare indizi
+piccoli è il mestiere per cui esiste. (Le colonne dei dati, nel gergo del
+mestiere, sono le *feature*, ed è il nome che portano anche nel codice.)
 
 Nel capitolo di Machine Learning il detective era una diagnosi fatta una volta
 sola. Per un impianto acceso va invece trasformato in una sorveglianza
@@ -207,9 +207,19 @@ cambia). Le tre decisioni operative sono:
   D = \sup_x \left| F_{\text{rif}}(x) - F_{\text{cur}}(x) \right|,
   $$
 
-  dove $F_{\text{rif}}$ e $F_{\text{cur}}$ sono le CDF empiriche della
-  *feature* nella finestra di riferimento e in quella corrente. Un'alternativa
-  diffusa, basata sugli istogrammi, è il *Population Stability Index*.
+  dove $F_{\text{rif}}$ e $F_{\text{cur}}$ sono le CDF empiriche della *feature*
+  nella finestra di riferimento e in quella corrente. Un'alternativa diffusa,
+  basata sugli istogrammi, è il *Population Stability Index*. Sul versante
+  multivariato il detective ha un nome, *classifier two-sample test*
+  {cite}`lopezpaz2017revisiting`, e un concorrente senza addestramento, la
+  **maximum mean discrepancy** {cite}`gretton2012kernel`: con un nucleo $k$ (per
+  esempio gaussiano),
+  $\mathrm{MMD}^2 = \mathbb{E}[k(\mathbf{x},\mathbf{x}')] + \mathbb{E}[k(\mathbf{y},\mathbf{y}')] - 2\,\mathbb{E}[k(\mathbf{x},\mathbf{y})]$,
+  con $\mathbf{x},\mathbf{x}'$ dalla finestra di riferimento e
+  $\mathbf{y},\mathbf{y}'$ da quella corrente. Con un nucleo caratteristico vale
+  zero se e solo se le due distribuzioni coincidono; la stima costa $O(n^2)$
+  valutazioni del nucleo, la soglia si ottiene per permutazione, e la scelta
+  della larghezza del nucleo fa la parte che nel detective fa il classificatore.
 
   Sul criterio di allarme il riflesso abituale è quello sbagliato. Alle taglie
   di una finestra di produzione (migliaia di record) il KS ha una potenza
@@ -297,10 +307,12 @@ restituisce, e prenderlo per la soglia è l'errore più comune del mestiere.
 `````{tab} Elementare
 
 Il controllo, oltre a $D$, restituisce un secondo numero, che si chiama
-$p$-value e che dice quanto sarebbe improbabile vedere uno scarto così
-grande se in realtà non fosse cambiato niente. Se quel numero è minuscolo, si
-conclude che qualcosa è cambiato davvero. Sembra la spia perfetta, e invece è
-una spia che, con i numeri di un servizio vero, suona sempre.
+$p$-value e che dice quanto sarebbe improbabile vedere uno scarto così grande se
+in realtà non fosse cambiato niente. Se quel numero è minuscolo (la soglia
+abituale è $0{,}05$: se nulla fosse cambiato, uno scarto così uscirebbe meno di
+cinque volte su cento), si conclude che qualcosa è cambiato davvero. Sembra la
+spia perfetta, e invece è una spia che, con i numeri di un servizio vero, suona
+sempre.
 
 Il motivo è che il $p$-value non dipende solo da quanto le cose sono cambiate:
 dipende anche da quanti dati hai guardato. Con pochi dati un piccolo scarto
@@ -335,9 +347,10 @@ rifiuta quando l'occhio non vede ancora niente.
 Il conto, su quel mese (due normali di uguale varianza sfalsate di $0{,}15$
 deviazioni standard, che è lo scostamento del mese 1; duemila osservazioni per
 finestra, duemila ripetizioni): il rifiuto al cinque per cento
-arriva nel $98{,}5\%$ delle prove, con un $p$ mediano di $6\cdot 10^{-5}$. Alla
-stessa identica deriva, con cinquecento osservazioni per finestra, il rifiuto
-scende al $54\%$ e il $p$ mediano risale a $4\cdot 10^{-2}$. Non è cambiato lo
+arriva in circa il $99\%$ delle prove, con un $p$ mediano dell'ordine di
+$10^{-4}$. Alla stessa identica deriva, con cinquecento osservazioni per
+finestra, il rifiuto scende a poco più della metà delle prove e il $p$ mediano
+risale attorno a $5\cdot 10^{-2}$. Non è cambiato lo
 scostamento: è cambiata la taglia del campione, e con essa la potenza del test.
 
 `````
@@ -433,19 +446,19 @@ movimento minuscolo rispetto a quanto quei numeri ballano già da soli. Le
 colonne toccate si spostano della stessa quantità nei due casi, e infatti il KS
 tipico è quasi identico, `0.079` contro `0.074`: il controllo colonna per
 colonna vede la stessa cosa tutt'e due le volte, e tutt'e due le volte non
-arriva a dire niente di utile. Nel primo caso nessuna colonna supera lo
-$0{,}10$ dell'allarme; nel secondo ne supera una sola, e chi guardasse quella
-andrebbe a cercare il guasto in una colonna mentre a muoversi sono tutte e
-quaranta. A cambiare è il detective, che passa da `AUC = 0.502` con lo
-scostamento su una colonna sola, cioè il livello del caso, a `AUC = 0.698`
-quando lo stesso scostamento tocca tutte e quaranta, e lì l'allarme scatta.
-Sommare quaranta indizi piccoli gli dà quello che nessuno dei quaranta, da
-solo, poteva dargli. Con un'avvertenza sul conto: nella seconda prova a
+arriva a dire niente di utile. Nel primo caso nessuna colonna supera lo $0{,}10$
+dell'allarme; nel secondo ne supera una sola, e chi guardasse quella andrebbe a
+cercare il guasto in una colonna mentre a muoversi sono tutte e quaranta. A
+cambiare è il detective, che passa da `AUC = 0.502` con lo scostamento su una
+colonna sola, cioè il livello del caso, a `AUC = 0.698` quando lo stesso
+scostamento tocca tutte e quaranta, e lì l'allarme scatta. Sommare quaranta
+indizi piccoli gli dà quello che nessuno dei quaranta, da solo, poteva dargli.
+Attenzione a non leggerla come una gara alla pari: nella seconda prova a
 muoversi sono quaranta colonne invece di una, quindi il mondo si è spostato
-molto di più, e non è la stessa deriva spalmata. È proprio il caso che
-interessa, perché una deriva vera si presenta così, un po' dappertutto; il
-merito del detective sta nel raccoglierla mentre il controllo colonna per
-colonna, davanti allo stesso identico movimento, non vede niente.
+quaranta volte tanto, e non è la deriva di prima divisa fra più colonne. È
+proprio il caso che interessa, perché una deriva vera si presenta così, un po'
+dappertutto; il merito del detective sta nel raccoglierla mentre il controllo
+colonna per colonna, davanti allo stesso identico movimento, non vede niente.
 
 È lo scheletro di un sistema di monitoraggio reale, e la stessa funzione,
 girata a ogni ora sulla finestra scorrevole, produce una serie storica
@@ -472,24 +485,31 @@ nelle dipendenze, da cercare con strumenti che le guardino
 (le importanze del detective stesso, le correlazioni a coppie).
 
 Una cautela finale, la stessa della sezione statistica ma più severa di come la
-si racconta di solito. Il detective è addestrato sui soli ingressi: quello
-che rileva è che è cambiato il tipo di richieste che arrivano, e nient'altro.
-Non distingue un cambiamento innocuo da uno che rovina le predizioni; e non
+si racconta di solito. Il detective è addestrato sui soli ingressi: quello che
+rileva è che è cambiato il tipo di richieste che arrivano, e nient'altro. Non
+distingue un cambiamento innocuo da uno che rovina le predizioni; e non
 distingue nemmeno le tre famiglie fra loro. Anche un puro cambio di proporzioni
-fra le risposte giuste (il *label shift*) lo sposta, e la ragione è
-semplice: se le frodi passano da una su cento a una su dieci, in mezzo alle
-richieste in arrivo ce ne sono dieci volte tante che *assomigliano* a una
-frode. Il detective non vede le risposte, ma vede quelle richieste, e le nota.
-Di quanto le noti, però, è un'altra faccenda, e la risposta è: poco. Se la
-proporzione passa da una su cento a una su dieci, la parte di richieste in
-arrivo che è cambiata è nove su cento, e con uno scarto così l'indicatore
-globale non arriva a $0{,}55$ nemmeno se frodi e richieste oneste fossero
-distinguibili a colpo d'occhio. Resta sotto qualunque soglia che qualcuno
-metterebbe davvero: il label shift lo sposta, e non basta a farlo suonare.
-Del concept shift puro, poi, non vede
-niente: lì gli ingressi restano identici ed è la regola giusta a essere
-cambiata sotto. Per separare i tre casi non c'è scorciatoia: servono le
-etichette vere del terzo livello, o almeno le predizioni aggregate. Il
+fra le risposte giuste (il *label shift*) lo sposta, e la ragione è semplice: se
+le frodi passano da una su cento a una su dieci, in mezzo alle richieste in
+arrivo ce ne sono dieci volte tante che *assomigliano* a una frode. Il detective
+non vede le risposte, ma vede quelle richieste, e le nota. Di quanto le noti,
+però, è un'altra faccenda, e la risposta è: poco. Se la proporzione passa da una
+su cento a una su dieci, la parte di richieste in arrivo che è cambiata è nove
+su cento, e con uno scarto così l'indicatore globale non arriva a $0{,}55$
+nemmeno se frodi e richieste oneste fossero distinguibili a colpo d'occhio: su
+quei nove casi il detective indovina sempre, sugli altri novantuno tira a caso e
+ci prende una volta su due, e
+$0{,}09 \times 1 + 0{,}91 \times 0{,}5 \approx 0{,}545$. Resta sotto qualunque
+soglia che qualcuno metterebbe davvero: il label shift lo sposta, e non basta a
+farlo suonare. Del concept shift puro, poi, non vede niente: lì gli ingressi
+restano identici ed è la regola giusta a essere cambiata sotto. Per separare i
+tre casi le etichette vere del terzo livello restano la prova. Per il label
+shift, però, bastano le predizioni: se $P(X\mid y)$ non cambia, la distribuzione
+delle classi predette in produzione è la matrice di confusione del modello
+(stimata su dati etichettati di validazione) applicata alle nuove prevalenze, e
+invertendola le si stima senza nessuna etichetta nuova
+{cite}`lipton2018detecting`, come in {doc}`Quando i dati cambiano
+</MachineLearning/dati-che-cambiano>`. Il
 monitoraggio statistico è un allarme precoce, non un verdetto.
 
 ## Rispondere al drift
@@ -651,7 +671,22 @@ Le tre tecniche, in ordine crescente di esposizione {cite}`huyen2022designing`:
   contemporaneamente il modello A (vecchio) e il B (nuovo); si confronta una
   metrica di business su un orizzonte definito e si decide con un test
   statistico, verificando che la differenza sia significativa e non rumore
-  campionario. È lo strumento per rispondere a *«il nuovo è davvero meglio?»*,
+  campionario. La taglia si fissa *prima*: per due proporzioni $p_A$, $p_B$,
+  a livello $\alpha$ e potenza $1-\beta$,
+
+  $$
+  n \approx \frac{(z_{1-\alpha/2}+z_{1-\beta})^2\,[p_A(1-p_A)+p_B(1-p_B)]}{(p_A-p_B)^2}
+  $$
+
+  utenti per gruppo, dove $z_q$ è il quantile $q$ della normale standard.
+  Per distinguere $0{,}07$ da $0{,}06$ con $\alpha=0{,}05$ e potenza $0{,}8$
+  ne servono circa $9\,500$ per gruppo, e la differenza minima da rilevare
+  entra al quadrato: dimezzarla quadruplica il campione. E il test si guarda
+  una volta sola: chi controlla il $p$ ogni giorno e si ferma al primo
+  $p<0{,}05$ fa molti test invece di uno, e su due modelli identici dichiara
+  un vincitore molto più spesso di una volta su venti. Se si vuole guardare in
+  corsa, si usano disegni sequenziali, che spendono $\alpha$ fra le occhiate.
+  È lo strumento per rispondere a *«il nuovo è davvero meglio?»*,
   mentre shadow e canary rispondono a *«il nuovo è sicuro da servire?»*.
 
 Le tre non sono alternative ma un percorso: shadow per verificare che non si
@@ -694,7 +729,7 @@ finché il modello serve.
 - Quando suona, si risponde per gradi, come con la spia dell'olio: prima si
   guarda, poi si controlla, poi semmai si riaddestra, e solo in emergenza si
   torna al modello vecchio. Rispondere sempre col gesto più drastico è come
-  cambiare il motore ogni volta che si accende una spia.
+  chiamare il carro attrezzi ogni volta che si accende una spia.
 - Riaddestrare da soli su dati che il modello stesso ha contribuito a produrre
   non lo corregge: ne amplifica gli errori, a ogni giro. Serve una persona
   nell'anello e dati freschi.

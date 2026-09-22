@@ -1,26 +1,30 @@
 # Controllo continuo: DDPG, TD3, SAC
 
-Un joystick Atari ha nove posizioni: su, giù, sinistra, destra, le quattro
-diagonali, il centro. Il Deep Q-Network sceglie fra queste guardando i voti di
-tutte e nove e tenendo il più alto: nel codice l'operazione si chiama `argmax`,
-e restituisce *quale* voce ha il voto massimo, non il voto. Ma prova a
-immaginare un braccio robotico con sette articolazioni, o un robot a quattro
-zampe che deve imparare a camminare. A ogni istante il controllore non decide
-"sinistra o destra": decide *quanta spinta* dare a ciascun motore, un numero
-con la virgola, magari negativo per frenare, magari $3{,}4$, magari $3{,}41$.
-Non c'è un menu di mosse da scorrere, ma un continuo di forze da dosare.
+Messa da parte la ricerca che pensa prima di muovere, si torna alle mosse
+decise d'istinto. Un joystick Atari ha nove posizioni: su, giù, sinistra,
+destra, le quattro diagonali, il centro. Il Deep Q-Network sceglie fra queste
+guardando i voti di tutte e nove e tenendo il più alto: nel codice l'operazione
+si chiama `argmax`, e restituisce *quale* voce ha il voto massimo, non il voto.
+Ma prova a immaginare un braccio robotico con sette articolazioni, o un robot a
+quattro zampe che deve imparare a camminare. A ogni istante il controllore non
+decide "sinistra o destra": decide *quanta spinta* dare a ciascun motore, un
+numero con la virgola, magari negativo per frenare, magari $3{,}4$, magari
+$3{,}41$. Non c'è un menu di mosse da scorrere, ma un continuo di forze da
+dosare.
 
 È lo scoglio annunciato in fondo alla {doc}`sezione su DQN <dqn>`. Prendere il
 voto più alto vuol dire scorrere le mosse una per una: con un joystick si può,
 con uno sterzo, un acceleratore o sette giunti che si muovono insieme le
 combinazioni sono infinite e non si scorre più niente.
 
-I metodi a [gradiente di policy](policy-gradient.md) (REINFORCE,
+I metodi a {doc}`gradiente di policy <policy-gradient>` (REINFORCE,
 attore-critico, A3C, PPO) su questo non hanno problemi: imparano a decidere,
 non a votare, e una quantità da dosare la sanno produrre. Ma hanno due difetti
 loro. Il primo: imparano soltanto dalla strategia che stanno giocando in quel
 momento (in gergo sono *on-policy*, il contrario dell’*off-policy* di DQN), e
-quindi ogni esperienza si usa una volta e poi si butta. Il secondo: il loro
+quindi ogni esperienza serve finché la strategia che l'ha prodotta è ancora
+quella di adesso, cioè per pochi aggiornamenti (PPO la ripassa qualche volta,
+non di più), e poi si butta. Il secondo: il loro
 apprendimento
 balla, cioè la stessa strategia, rigiocata, dà correzioni molto diverse fra
 loro. Per un robot vero, dove ogni tentativo costa secondi di usura reale, sono
@@ -131,10 +135,17 @@ garantisce: è una scelta pratica.
 
 In simboli: l'attore è una policy deterministica $\mu_\theta(s)$, che
 restituisce direttamente il vettore delle azioni invece di una distribuzione su
-di esse; il critico è $Q_\phi(s,a)$, con l'azione fra gli ingressi. L'attore
-massimizza il ritorno atteso $J(\theta)=\mathbb{E}_{s}[Q_\phi(s,
-\mu_\theta(s))]$, e il suo gradiente è il **deterministic policy gradient**
-{cite}`silver2014deterministic`, che si ottiene per regola della catena:
+di esse; il critico è $Q_\phi(s,a)$, con l'azione fra gli ingressi. L'obiettivo
+vero è il ritorno atteso di $\mu_\theta$, e il **deterministic policy gradient
+theorem** {cite}`silver2014deterministic` ne dà il gradiente come
+$\mathbb{E}_{s\sim\rho^{\mu}}\big[\nabla_a Q^{\mu}(s,a)\big|_{a=\mu_\theta(s)}
+\nabla_\theta\mu_\theta(s)\big]$, con $\rho^\mu$ la distribuzione scontata
+degli stati che $\mu_\theta$ visita e $Q^\mu$ il suo valore vero: come nel
+teorema del gradiente di policy stocastico, la dipendenza degli stati visitati
+da $\theta$ non va derivata. DDPG sostituisce $Q^\mu$ con il critico e
+$\rho^\mu$ con il buffer, e sul surrogato $\hat
+J(\theta)=\mathbb{E}_{s\sim\mathcal{D}}[Q_\phi(s,\mu_\theta(s))]$ la regola
+della catena dà:
 
 $$
 \nabla_\theta J(\theta) =
@@ -369,7 +380,7 @@ rumore esterno,
 $$
 \mathbf{u} = \boldsymbol{\mu}_\theta(s) +
 \boldsymbol{\sigma}_\theta(s) \odot \boldsymbol{\epsilon},
-\qquad a = \tanh(\mathbf{u}),
+\qquad \mathbf{a} = \tanh(\mathbf{u}),
 \qquad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
@@ -383,13 +394,21 @@ $\mathbf{u}$ è l'azione prima dello schiacciamento. Dimenticarlo è l'errore
 d'implementazione classico di SAC, e cade nel punto peggiore: falsa
 l'entropia, cioè proprio il termine che l'algoritmo esiste per dosare.
 
-La temperatura $\alpha$ non va fissata a mano: nella
-versione matura di SAC è auto-regolata, ricavata risolvendo un problema
-vincolato che chiede all'entropia media della policy di non scendere sotto un
-valore-obiettivo $\mathcal{H}_0$. Il risultato è un algoritmo robusto e
-campione-efficiente, e la ragione della sua fortuna è precisamente questa:
-l'esplorazione smette di essere un parametro da indovinare a mano e diventa una
-conseguenza dell'obiettivo.
+La temperatura $\alpha$ non va fissata a mano: nella versione matura di SAC
+{cite}`haarnoja2018applications` è auto-regolata dal problema vincolato che
+chiede all'entropia media della policy di non scendere sotto un
+valore-obiettivo $\mathcal{H}_0$ (di solito $-n$, meno la dimensione
+dell'azione). Il duale dà una discesa su $\alpha$ con perdita
+$\mathcal{L}(\alpha) = \mathbb{E}_{s\sim\mathcal{D},\,\mathbf{a}\sim\pi_\theta}
+\big[-\alpha\,(\log\pi_\theta(\mathbf{a}\mid s) + \mathcal{H}_0)\big]$, che
+alza $\alpha$ quando l'entropia scende sotto la soglia e la abbassa quando la
+supera; l'attore intanto minimizza
+$\mathbb{E}_{s\sim\mathcal{D},\,\boldsymbol{\epsilon}}\big[\alpha\log
+\pi_\theta(\mathbf{a}_\theta\mid s) - \min_{i=1,2}Q_{\phi_i}(s,
+\mathbf{a}_\theta)\big]$, con $\mathbf{a}_\theta$ l'azione riparametrizzata. Il
+risultato è un algoritmo robusto e campione-efficiente, e la ragione della sua
+fortuna è precisamente questa: l'esplorazione smette di essere un parametro da
+indovinare a mano e diventa una conseguenza dell'obiettivo.
 
 `````
 

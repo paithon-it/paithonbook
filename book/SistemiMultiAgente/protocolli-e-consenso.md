@@ -38,8 +38,10 @@ un agente no, e la memoria disegnata al centro è esattamente ciò che li
 distingue: fra un giro e il successivo qualcosa resta.
 ```
 
-Conviene tenere {numref}`fig-ciclo-percezione-azione` come unità di misura per
-tutto quello che segue. Ogni partecipante a un protocollo è uno di questi
+Prima di guardare i messaggi conviene rimettersi davanti il singolo agente
+del {doc}`capitolo sugli Agenti </Agenti/agenti-e-tool-use>`, disegnato in
+{numref}`fig-ciclo-percezione-azione`: è l'unità di misura di tutto quello che
+segue. Ogni partecipante a un protocollo è uno di questi
 anelli, e i messaggi che si scambiano entrano dalla stazione «percezione» ed
 escono da quella «azione»: parlare, per un agente, è agire.
 
@@ -245,14 +247,15 @@ numerosa giudica meglio di un singolo giudice? La risposta è sì, ma a due
 condizioni, e sono le condizioni a interessarci. La prima è che ciascun giurato,
 da solo, ci prenda più della metà delle volte. La seconda è che i giurati
 sbaglino in modo indipendente, cioè che non sbaglino tutti sulle stesse
-domande. Della seconda parla la sezione qui sotto, perché è quella che nei
-sistemi di agenti salta sempre.
+domande. La seconda è quella che nei sistemi di agenti salta sempre, ed è il
+tema del
+paragrafo che segue.
 
 `````{tab} Elementare
 
-Tre persone rispondono a una domanda difficile con due sole risposte possibili,
-e ciascuna, da sola, ci prende sette volte su dieci. Facciamo il conto su mille
-domande, elencando tutti i casi possibili.
+Nell'apertura del capitolo tre colleghi che ci prendono sette volte su dieci
+arrivavano, votando, al 78%, senza che si vedesse come. Ecco il conto: due sole
+risposte possibili, mille domande, e tutti i casi possibili messi in fila.
 
 Che ci prendano tutte e tre capita sette volte su dieci, per sette su dieci,
 per sette su dieci: sette per sette per sette fa trecentoquarantatré, quindi
@@ -283,8 +286,8 @@ E attenzione al verso, perché è la prima delle due condizioni. Se ciascuno ci
 prende meno della metà delle volte il conto si ribalta: con tre persone che
 azzeccano quattro volte su dieci il gruppo scende a trentacinque su cento, e con
 nove a ventisette. Più si è, peggio si fa. Il voto non aggiunge competenza,
-amplifica quella che c'è, e se quella che c'è è sotto zero amplifica il segno
-meno.
+amplifica quella che c'è: sopra la metà spinge verso la risposta giusta, sotto
+la metà verso quella sbagliata.
 
 `````
 
@@ -308,7 +311,13 @@ pareggi).
 L'ipotesi delle due sole alternative pesa sul seguito: le risposte di un agente
 non sono binarie, e con molte alternative la formula smette di dare
 l'accuratezza della maggioranza e ne diventa un limite inferiore, perché i voti
-sbagliati si disperdono invece di sommarsi su un'unica risposta falsa.
+sbagliati si disperdono invece di sommarsi su un'unica risposta falsa. E si
+sposta anche la soglia. Con voto di pluralità e voti indipendenti, se ciascuno
+sceglie la risposta giusta con probabilità $p$ e la più probabile fra le
+sbagliate con probabilità $q$, la pluralità tende alla verità per
+$n \to \infty$ non appena $p > q$, anche con $p < 1/2$ (List e Goodin, 2001):
+una risposta giusta al 40% batte dieci risposte sbagliate al 6% ciascuna. La
+dicotomia con la soglia a $1/2$ che segue è quella del caso binario.
 
 Il teorema ha due parti: per $p > 1/2$ la successione $P_n$, letta
 sui valori dispari di $n$, è crescente e tende a $1$; per $p < 1/2$ è
@@ -375,7 +384,12 @@ uguale a prima, indistinguibile da fuori se guardi un agente alla
 volta.
 
 Cambia tutto quando si vota. Con tre agenti si passa da settantotto volte su
-cento a settantasette: poco. Con nove agenti, dove Condorcet prometteva novanta,
+cento a settantasette: poco. Il conto è in due pezzi. Sulle venti trappole su
+cento la maggioranza sbaglia sempre. Sulle altre ottanta ciascuno ci prende
+sette volte su otto, e il conto dei casi fatto per Condorcet, rifatto con sette
+ottavi al posto di sette decimi, dà una maggioranza giusta novantasei volte su
+cento: novantasei per cento di ottanta fa settantasette. Con nove agenti, dove
+Condorcet prometteva novanta,
 ci si ferma a ottanta. E la cosa da guardare è che
 oltre non si va: con ventuno agenti si fa ottanta, con novantanove ancora
 ottanta. Il tetto lo fissa la quota di domande-trappola: restano le altre
@@ -434,18 +448,18 @@ $$
 
 dove $\rho$ è la correlazione fra i giudizi di due votanti qualsiasi. Con
 $\rho = 0{,}5$, mille agenti valgono due votanti indipendenti; con
-$\rho = 0{,}2$ ne valgono cinque. Il numero va preso per quello che è, un
-ordine di grandezza: il conto è esatto per la varianza della media, mentre
+$\rho = 0{,}2$ ne valgono cinque. Il numero va preso per quello che è, un ordine
+di grandezza: il conto è esatto per la varianza della media, mentre
 l'accuratezza della maggioranza su voti binari non è determinata dalla sola
 correlazione a coppie (due meccanismi di correlazione con la stessa $\rho$
 possono dare curve $P_n$ diverse, e il modello a trappole è appunto un
-meccanismo particolare). Il messaggio qualitativo però non cambia: la curva
-si appiattisce. È la stessa aritmetica che governa gli
-*ensemble* nel capitolo di machine learning, dove il guadagno del bagging viene
-dalla decorrelazione e non dal numero di alberi. La conseguenza per chi
-progetta è una sola: finché $\rho$ non si misura, il numero di agenti che si
-pagano dice poco sul numero di giudizi indipendenti che si ottengono, e la
-curva reale sta sotto quella di Condorcet.
+meccanismo particolare). Il messaggio qualitativo però non cambia: la curva si
+appiattisce. È la stessa aritmetica che governa gli *ensemble* nel
+{doc}`capitolo di machine learning </MachineLearning/overview>`, dove il
+guadagno del bagging viene dalla decorrelazione e non dal numero di alberi. La
+conseguenza per chi progetta è una sola: finché $\rho$ non si misura, il numero
+di agenti che si pagano dice poco sul numero di giudizi indipendenti che si
+ottengono, e la curva reale sta sotto quella di Condorcet.
 
 Peggiora se si guarda l'unanimità. Nel modello a trappole, con $n = 9$, la
 probabilità che tutti concordino è $\lambda + (1-\lambda)p_0^9 = 0{,}441$: il
@@ -523,10 +537,11 @@ che allontana di più gli errori gli uni dagli altri, perché cambia la macchina
 non solo la strada che percorre, ed è anche il più caro da gestire.
 
 È esattamente il meccanismo della self-consistency
-{cite}`wang2023selfconsistency`: invece di tenersi l'unico ragionamento che il
-modello produce quando lo si costringe a scegliere sempre la parola più
-probabile, se ne fanno produrre molti diversi e si tiene la risposta finale
-che compare più spesso, buttando via i ragionamenti che ci hanno portato.
+{cite}`wang2023selfconsistency`, che la {doc}`sezione sul prompt engineering
+</IngegneriaLLM/prompt-engineering>` ha descritto come voto di maggioranza fra
+catene di ragionamento campionate, e dove era già comparsa la stessa riserva:
+compra affidabilità contro il rumore di campionamento, non contro un errore che
+il prompt induce in tutte le catene. Il modello a trappole la mette in numeri.
 Funziona, e funziona per la ragione che questa sezione ha appena messo in
 conto: variare il modo di generare rende gli errori un po’ meno simili fra
 loro. Conviene insistere su quel «un po’». Quei percorsi escono tutti dallo
@@ -713,7 +728,8 @@ se i messaggi fossero firmati in modo non falsificabile, il nostro generale
 mostrerebbe al collega il foglio con la firma del comandante, e chi ha mentito
 salterebbe fuori in un colpo. Restiamo dunque a voce, che è il caso duro.
 
-Da qui il risultato: con soli messaggi a voce non basta che gli onesti siano la
+Il caso dei tre è il mattone di un risultato più generale, che qui non
+dimostriamo: con soli messaggi a voce non basta che gli onesti siano la
 maggioranza, devono essere più di due terzi. Il che vuol dire che i bugiardi
 possono essere meno di un terzo, cioè che per sopportarne uno bisogna essere
 almeno in quattro (uno su quattro è meno di un terzo, uno su tre no); per due
@@ -781,8 +797,9 @@ un'ipotesi sul tempo, travestita da dettaglio tecnico. Sono gli autori
 stessi a scioglierla, quando passano ai sistemi reali. L'assenza di un messaggio
 si può rilevare in un modo solo, cioè constatando che non è arrivato entro un
 tempo prefissato, e questo richiede che esista un tempo massimo entro il quale
-un messaggio viene prodotto e consegnato. A3 è, alla lettera, l'ipotesi di
-**sincronia**.
+un messaggio viene prodotto e consegnato. Quella terza ipotesi, che
+nell'articolo porta il nome A3, è alla lettera
+l'ipotesi di **sincronia**.
 
 Tolta quella, il quadro cambia di natura, e per una ragione che con i traditori
 non c'entra niente. Il risultato di Fischer, Lynch e Paterson del 1985
@@ -806,9 +823,16 @@ scommessa salta. La **randomizzazione**, che rinuncia alla terminazione certa e
 si tiene quella con probabilità $1$. E i **rilevatori di guasti**, cioè un
 oracolo esterno, necessariamente fallibile, che dichiara chi è morto. Paxos
 {cite}`lamport1998part` e Raft {cite}`ongaro2014raft`, i due algoritmi con cui
-si tiene coerente qualunque base di dati replicata, comprano la prima: la
-coerenza la garantiscono sempre, decidere entro un tempo dato no, e quando la
-rete si comporta male smettono di avanzare invece di sbagliare.
+si tengono coerenti le basi di dati replicate, comprano la prima: la coerenza
+la garantiscono sempre, decidere entro un tempo dato no, e quando la rete si
+comporta male smettono di avanzare invece di sbagliare. Tollerano però processi
+che si *fermano*, non processi che mentono, e per questo bastano $n \ge 2f+1$
+repliche: due maggioranze qualsiasi hanno sempre un membro in comune. Il caso
+bizantino in sincronia parziale richiede di nuovo $n \ge 3f+1$, e qui le firme
+non lo abbassano, perché con ritardi senza limite noto un leale non distingue
+un traditore da un compagno lento (Dwork, Lynch e Stockmeyer, 1988); il suo
+algoritmo classico è PBFT di Castro e Liskov (1999). La soglia $n \ge f+2$ dei
+messaggi firmati è, insomma, un risultato sincrono.
 
 È un punto di metodo che vale ben oltre i generali: un risultato di
 impossibilità non dice «impossibile», dice «impossibile sotto queste
@@ -819,8 +843,8 @@ partecipanti, tre volte tanti quanti sono i bugiardi che si vogliono tollerare.
 
 `````
 
-Che cosa ci fa un teorema sui protocolli di consenso in un libro di
-intelligenza artificiale? Ci fa la distinzione che introduce, che è
+Che cosa c'entra un teorema sui protocolli di consenso con l'intelligenza
+artificiale? Ci fa la distinzione che introduce, che è
 esattamente quella che serve qui. Un partecipante **guasto** smette di
 rispondere: se ne accorge chiunque, basta aspettare un po’ e dichiararlo morto,
 e la cura è avere qualcuno di riserva (se uno tace, chiedi a un altro). Un
@@ -836,9 +860,9 @@ con lo stesso garbo con cui produce quelle vere. Ecco la ragione tecnica per cui
 ridondanza ingenua non basta: aggiungere copie protegge dai guasti, non
 dalle bugie, e le architetture multi-agente costruite sull'idea «se sono in
 tanti, qualcuno se ne accorgerà» stanno applicando la contromisura sbagliata al
-guasto sbagliato. È lo stesso terreno su cui tornerà, in chiusura di libro, il
-capitolo sull’AI responsabile, dove la robustezza non è la capacità di non
-rompersi ma quella di comportarsi in modo prevedibile quando qualcosa (o
+guasto sbagliato. Lo stesso terreno lo riprende la
+{doc}`sezione su privacy e robustezza </AIResponsabile/privacy-e-robustezza>`,
+dove robusto vuol dire comportarsi in modo prevedibile quando qualcosa (o
 qualcuno) prova a farti sbagliare.
 
 Va detto con onestà fin dove arriva l'analogia. Il teorema descrive un
@@ -850,9 +874,11 @@ si trasferisce, e conta parecchio, è la classificazione dei guasti e la sua
 conseguenza di progetto: contro un partecipante che mente con garbo, l'unica
 difesa è un riscontro esterno che non passi per la sua parola. Uno strumento
 che misura, una fonte che si può andare a leggere, un programma di prova che o
-passa o non passa: è il cancello di verifica del «Costo del coordinamento», qui
-nella veste di antidoto alla menzogna. E vale, sempre, l'avvertenza con cui
-quella sezione si chiudeva: un verificatore che non ha modo di controllare
+passa o non passa: è il cancello di verifica della {doc}`sezione sul costo del
+coordinamento
+</SistemiMultiAgente/costo-del-coordinamento>`, qui nella veste di antidoto
+alla menzogna. E vale, sempre, l'avvertenza che la stessa sezione dava sui
+fallimenti reali: un verificatore che non ha modo di controllare
 davvero non aggiunge informazione, aggiunge una firma {cite}`cemri2025why`.
 
 ## Rendere visibile il disaccordo
@@ -965,7 +991,8 @@ converge in silenzio sulla risposta sbagliata.
   capostipite di questi protocolli.
 - Il teorema di Condorcet: con $n$ votanti indipendenti corretti con
   probabilità $p > 1/2$, la maggioranza tende alla verità
-  ($p = 0{,}7$: $P_3 = 0{,}784$, $P_9 = 0{,}901$). Sotto $1/2$ converge
+  ($p = 0{,}7$: $P_3 = 0{,}784$, $P_9 = 0{,}901$). Sotto $1/2$ (con due
+  alternative) converge
   all'errore: il voto amplifica la tendenza di fondo, non aggiunge competenza.
 - L'ipotesi crolla fra agenti identici. Dieci istanze dello stesso modello
   sono un votante interrogato dieci volte: con una frazione $\lambda$ di errori
@@ -989,7 +1016,8 @@ converge in silenzio sulla risposta sbagliata.
   {cite}`browncohen2023doubly, browncohen2025obfuscation`.
 - I generali bizantini {cite}`lamport1982byzantine`: con soli messaggi
   orali servono $n \ge 3f+1$ partecipanti per tollerarne $f$ che mentono (con
-  firme il vincolo cade a $n \ge f+2$). Un agente guasto tace e lo becca un
+    firme, e solo in un sistema sincrono, il vincolo cade a $n \ge f+2$). Un
+    agente guasto tace e lo becca un
   timeout; uno bizantino risponde in modo plausibile e falso, come un LLM che
   allucina con sicurezza: contro di lui la ridondanza non serve, serve un
   riscontro esterno.

@@ -100,7 +100,7 @@ e aggiunge il segno). È il gesto che si fa ogni volta che si vuole guardare un
 numero senza tutte le cifre che il computer si porta dietro:
 
 ```python
-loss = 0.0347218                 # un numero con troppe cifre da leggere
+loss = 0.0347218                 # l'errore di un modello: troppe cifre da leggere
 f"loss: {loss:.3f}"              # -> 'loss: 0.035'      tre cifre, da decimale
 f"accuratezza: {0.8723:.1%}"     # -> 'accuratezza: 87.2%'  una cifra, in percento
 ```
@@ -139,13 +139,17 @@ due vanno per conto loro.
 `````{tab} Superiore
 
 Python è **dinamicamente tipizzato**: il tipo appartiene all’*oggetto*, non al
-nome. Un nome è solo un riferimento; `x = 5` lega il nome `x` all'oggetto
+nome. Dinamico non vuol dire debole: fra tipi incompatibili Python non
+converte di nascosto, e `"1" + 1` solleva `TypeError` invece di produrre
+`"11"` o `2`. Un nome è solo un riferimento; `x = 5` lega il nome `x` all'oggetto
 intero `5`. Ogni valore è un oggetto con un tipo a runtime, e lo stesso nome può
 essere rilegato a oggetti di tipo diverso in momenti diversi.
 
 Dettagli che contano più avanti: gli `int` hanno precisione arbitraria
-(non c'è overflow a 64 bit), i `float` sono double IEEE 754 a 64 bit
-(attenzione agli errori di arrotondamento), le `str` sono sequenze Unicode
+(non c'è overflow a 64 bit), i `float` sono double IEEE 754 a 64 bit, con una
+quindicina di cifre decimali significative e decimali come $0{,}1$ non
+rappresentabili esattamente (`0.1 + 0.2 == 0.3` è `False`, e due `float` si
+confrontano con `math.isclose`), le `str` sono sequenze Unicode
 immutabili, e `bool` è una sottoclasse di `int`, infatti `True == 1` e
 `False == 0`. Dalla stessa premessa, il tipo che appartiene all'oggetto, viene
 lo stile *duck typing*: conta cosa un oggetto *sa fare*, non a quale classe
@@ -234,7 +238,9 @@ cose che le mancavano.
 
 Le analogie aiutano ({numref}`fig-strutture-dati`):
 
-- list, la lista della spesa: elementi in fila, che aggiungi e togli.
+- list, i fogli numerati di un quaderno: in fila, se ne aggiungono e se ne
+  tolgono; aprire al decimo è immediato, ma per trovare il foglio su cui sta
+  scritta una certa cosa bisogna sfogliarli dall'inizio.
 - tuple, le coordinate scritte a penna: una coppia fissa, non si cancella.
 - dict, il guardaroba di un teatro: consegni il cappotto (il valore) e ti
   danno un numero (la chiave). Il guardarobiere non scorre i ganci uno per uno:
@@ -254,14 +260,23 @@ La differenza tecnica è mutabilità e **hashabilità**. `list`, `dict` e
 `set` sono mutabili; `tuple` è immutabile, ed è *hashable* solo se lo sono
 anche i suoi elementi: solo in quel caso può fare da chiave di dizionario.
 `dict` e `set` sono tabelle hash: l'accesso e il test di appartenenza sono in
-media $O(1)$, contro l’$O(n)$ della ricerca lineare in una lista. Le chiavi di
+media $O(1)$ (nel caso peggiore, con molte collisioni, $O(n)$), contro
+l’$O(n)$ della ricerca lineare in una lista. La lista è a sua volta un array
+dinamico di riferimenti: l'accesso per indice è $O(1)$, `append` e `pop()` in
+coda sono $O(1)$ ammortizzati, perché la lista cresce a scatti e tiene spazio
+di riserva, mentre `insert(0, x)` e `pop(0)` sono $O(n)$, perché spostano di
+un posto tutti gli elementi. Una coda da cui si toglie in testa si scrive con
+`collections.deque`, che fa $O(1)$ ai due capi. Le chiavi di
 un `dict` e gli elementi di un `set` devono essere hashable, cioè avere un
 hash che non cambia nel tempo. Per i tipi built-in la proprietà coincide in
 pratica con l'immutabilità (una tupla che contiene una lista, per esempio,
 non è hashable), ed è il motivo per cui una lista non può stare in un set ma
 una tupla di numeri sì; fuori dai built-in la coincidenza cade, perché
 un'istanza di una classe definita dall'utente è mutabile ed è hashable per
-default (l'hash deriva dall'identità dell'oggetto).
+default (l'hash deriva dall'identità dell'oggetto), finché la classe non
+ridefinisce `__eq__`: in quel caso Python pone `__hash__ = None` e l'istanza
+smette di essere hashable, a meno di scrivere un `__hash__` coerente con
+l'uguaglianza (oggetti uguali devono avere hash uguale).
 
 `````
 
@@ -921,7 +936,7 @@ quando si va a cercare un guasto.
 
 `@torch.no_grad()` mette al banco un custode di un altro mestiere: per la
 durata della visita tiene spento il calcolo dei gradienti, le quantità con
-cui una rete neurale impara, e all'uscita lo riaccende. Serve quando la rete
+cui una rete neurale impara, e all'uscita lo rimette com'era. Serve quando la rete
 deve solo rispondere e non più imparare.
 
 `````
@@ -1090,7 +1105,8 @@ numeri, insomma, il lucchetto è aperto quasi sempre.
 Il **Global Interpreter Lock** è un mutex nell'implementazione di riferimento
 di Python (CPython) che protegge lo stato interno dell'interprete, in
 particolare il **conteggio dei riferimenti** con cui ogni oggetto tiene traccia
-di quanti nomi lo puntano (è il meccanismo primario con cui CPython libera la
+di quanti riferimenti lo puntano (un nome, un posto in una lista, un attributo)
+(è il meccanismo primario con cui CPython libera la
 memoria; il `gc` vero e proprio gli sta sopra e serve a raccogliere i cicli).
 La sua conseguenza è netta: un solo thread per interprete esegue bytecode
 Python in un dato istante. Resta una scelta di implementazione e non una
@@ -1148,9 +1164,10 @@ nuclei sono due problemi diversi.
 
 Che i thread non aiutino a calcolare, e aiutino invece ad aspettare, si può
 vedere in una ventina di righe, con una misura da fare una volta con le
-proprie mani. Il programma che segue prova quattro casi, e di ciascuno stampa
-due tempi, perché i tempi da guardare sono due; nel quinto caso, quello dei
-processi, basta il primo, che il tempo di CPU dei figli il padre non lo vede.
+proprie mani. Il programma che segue prova cinque casi. Dei primi quattro
+stampa due tempi, perché i tempi da guardare sono due; del quinto, quello dei
+processi, soltanto il primo, perché il tempo di CPU dei figli il padre non lo
+vede.
 Il **tempo di parete** è quello dell'orologio appeso al muro, cioè quanto si è
 aspettato; il **tempo di CPU** è quanto lavoro ha fatto davvero il processore,
 sommato su tutti i lavoratori. È la differenza fra «quanto ci ha messo» e

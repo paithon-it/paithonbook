@@ -102,15 +102,28 @@ da costruire, eppure $k$ si calcola in una riga.
 Un'ultima clausola, quella che fa del trucco un teorema invece che una
 speranza. La frase «se esiste una funzione $k$ che calcola quel prodotto
 scalare» rovescia l'ordine dei fatti: in pratica non si parte da $\phi$ per
-cercare $k$, si sceglie $k$ e si spera che un $\phi$ esista. Esiste se e
-solo se $k$ è simmetrica e **semidefinita positiva**, cioè se ogni matrice di
-Gram $\mathbf{K}$, quella di elementi $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$,
-ha autovalori non negativi: è il
-teorema di Mercer {cite}`scholkopf2002learning`, ed è la ragione per cui i
-kernel non si inventano a piacere. Se $k$ non lo è, il duale smette di essere
-concavo e il solutore sta risolvendo un problema diverso da quello che si
-crede. Non ogni «misura di somiglianza» è un kernel, ed è l'errore più comune
-di chi prova a scriversene uno.
+cercare $k$, si sceglie $k$ e si spera che un $\phi$ esista. Esiste se e solo
+se $k$ è simmetrica e **semidefinita positiva**, cioè se ogni matrice di Gram
+$\mathbf{K}$, quella di elementi $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$, ha
+autovalori non negativi. Che la condizione basti lo dice il teorema di Moore e
+Aronszajn: ogni $k$ del genere definisce uno spazio di Hilbert di funzioni, lo
+spazio a nucleo riproducente $\mathcal{H}_k$, in cui $\langle
+k(\cdot,\mathbf{x}),\, k(\cdot,\mathbf{z})\rangle_{\mathcal{H}_k} =
+k(\mathbf{x},\mathbf{z})$, e basta prendere $\phi(\mathbf{x}) =
+k(\cdot,\mathbf{x})$. Il teorema di Mercer, con cui la condizione viene spesso
+confusa, è il caso di un $k$ continuo su un dominio compatto, dove $\phi$ si
+scrive con autovalori e autofunzioni dell'operatore integrale
+{cite}`scholkopf2002learning`. Dallo stesso spazio viene il **teorema del
+rappresentante** (Kimeldorf e Wahba, 1971): per qualunque perdita $\ell$, il
+problema $\min_{f \in \mathcal{H}_k} \sum_{i=1}^{m} \ell\bigl(y_i,
+f(\mathbf{x}_i)\bigr) + \lambda\lVert f\rVert^2_{\mathcal{H}_k}$ ha soluzione
+della forma $f = \sum_i \alpha_i\, k(\cdot, \mathbf{x}_i)$, che estende a ogni
+perdita il $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ della strada più
+larga. Ed è la condizione di semidefinitezza la ragione per cui i kernel non si
+inventano a piacere. Se $k$ non lo è, il duale smette di essere concavo e il
+solutore sta risolvendo un problema diverso da quello che si crede. Non ogni
+«misura di somiglianza» è un kernel, ed è l'errore più comune di chi prova a
+scriversene uno.
 
 `````
 
@@ -202,7 +215,10 @@ penalizzare ogni piccolo scarto tra previsione e valore vero (come fa la
 regressione lineare classica) disegna attorno alla linea un «tubo» di
 tolleranza, come un tratto di pennarello grosso al posto di una riga di
 matita: finché un punto sta dentro il tratto, l'errore conta zero. Pagano solo
-i punti che sporgono, e solo per quanto sporgono.
+i punti che sporgono, e solo per quanto sporgono. Con un pennarello largo due
+decimi per parte, una previsione di $21{,}5$ non paga niente se il valore vero
+sta fra $21{,}3$ e $21{,}7$; se il vero è $21{,}9$ paga $0{,}2$, cioè non i
+quattro decimi di scarto ma soltanto i due che escono dal tratto.
 
 Le manopole nuove sono due, e fanno mestieri diversi. La prima è la grossezza
 del pennarello, cioè quanto scarto si accetta di chiamare zero. La seconda è quanto si tiene ai punti rimasti fuori: girata verso il
@@ -228,10 +244,23 @@ L_\epsilon\big(y,\, f(\mathbf{x})\big)
 $$
 
 Gli errori entro $\pm\epsilon$ non vengono penalizzati; oltre, la penalità
-cresce linearmente. Il parametro $\epsilon$ fissa l'ampiezza del tubo, mentre
-$C$ regola come sempre il compromesso tra piattezza del modello e violazioni.
-Anche qui vale il kernel trick, così la SVR può adattare curve non lineari
-esattamente come la SVM classifica frontiere non lineari.
+cresce linearmente. Con due slack per esempio, una per chi sporge sopra il
+tubo e una per chi sporge sotto, il problema è
+
+$$
+\min_{\mathbf{w},\,b,\,\xi,\,\xi^*}\ \tfrac12\lVert\mathbf{w}\rVert^2 + C\sum_{i=1}^{m}(\xi_i+\xi_i^*)
+\quad\text{con}\quad
+y_i - f(\mathbf{x}_i) \le \epsilon + \xi_i,\ \ f(\mathbf{x}_i) - y_i \le \epsilon + \xi_i^*,\ \ \xi_i,\,\xi_i^* \ge 0,
+$$
+
+e i vettori di supporto sono i punti sul bordo del tubo o fuori. Da qui anche
+il guasto: se $\epsilon \ge \tfrac12(\max_i y_i - \min_i y_i)$, la costante $f
+= \tfrac12(\max_i y_i + \min_i y_i)$ con $\mathbf{w} = \mathbf{0}$ sta tutta
+nel tubo, ha obiettivo nullo ed è quindi la soluzione: il modello risponde lo
+stesso numero a ogni domanda. Il parametro $\epsilon$ fissa l'ampiezza del
+tubo, mentre $C$ regola come sempre il compromesso tra piattezza del modello e
+violazioni. Anche qui vale il kernel trick, così la SVR può adattare curve non
+lineari esattamente come la SVM classifica frontiere non lineari.
 
 `````
 
@@ -278,23 +307,23 @@ in cui l'ha guardato.
 
 `````{tab} Superiore
 
-La one-class SVM di Schölkopf e colleghi {cite}`scholkopf2001estimating`
-adatta l'idea del margine al caso non supervisionato: mappati i dati nello
-spazio delle feature con un kernel (di solito RBF), cerca l'iperpiano che
-separa i punti dall’origine con il massimo margine. Ricondotto allo spazio
-originale, questo equivale a racchiudere i dati normali in una regione
-compatta; ciò che cade fuori è novità/anomalia. Il parametro $\nu \in (0,1]$
-ha un doppio significato preciso: è un limite *superiore* alla frazione di
-esempi di addestramento classificati come anomali (i *margin error*) e un
-limite *inferiore* alla frazione di vettori di supporto. La distingue dalla
+La one-class SVM di Schölkopf e colleghi {cite}`scholkopf2001estimating` adatta
+l'idea del margine al caso non supervisionato: mappati i dati nello spazio
+delle feature con un kernel (di solito RBF), cerca l'iperpiano che separa i
+punti dall’origine con il massimo margine. Ricondotto allo spazio originale,
+questo equivale a racchiudere i dati normali in una regione compatta; ciò che
+cade fuori è novità/anomalia. Il parametro $\nu \in (0,1]$ ha un doppio
+significato preciso: è un limite *superiore* alla frazione di esempi di
+addestramento classificati come anomali (i *margin error*) e un limite
+*inferiore* alla frazione di vettori di supporto. La distingue dalla
 classificazione binaria un'assenza: in addestramento non c'è la classe
 «anomalo»: si impara solo la forma del normale. Un parente stretto è la
 **Support Vector Data Description** (SVDD) di Tax e Duin, che invece della
 separazione dall'origine cerca la *ipersfera* minima che racchiude i dati; e
 tra le alternative non-kernel ci sono l’**Isolation Forest** (che isola le
 anomalie con partizioni casuali, ereditando la scalabilità degli alberi della
-sezione sugli ensemble) e il *Local Outlier Factor* basato sulla densità
-locale.
+{doc}`sezione sugli ensemble <alberi-ensemble>`) e il *Local Outlier Factor*
+basato sulla densità locale.
 
 `````
 
@@ -322,7 +351,7 @@ numero di esempi $m$: ottima da poche
 centinaia a qualche decina di migliaia di punti, diventa proibitiva su milioni.
 Per i dataset molto grandi si ripiega su modelli lineari (`LinearSVC`,
 `SGDClassifier`, che scalano circa come $O(m)$) o sugli alberi in boosting
-della sezione sugli ensemble {cite}`geron2022hands`.
+della {doc}`sezione sugli ensemble <alberi-ensemble>` {cite}`geron2022hands`.
 
 ```python
 import numpy as np
@@ -352,8 +381,10 @@ reg = make_pipeline(StandardScaler(),
                     SVR(kernel="rbf", C=10.0, epsilon=0.1))
 reg.fit(X, y_reg)
 
-# One-class SVM: impara la regione dei dati "normali"; nu e' un tetto,
-# non una previsione: al piu' quella frazione dei dati visti resta fuori
+# One-class SVM: impara la regione dei dati "normali". nu dice che al
+# piu' quella frazione dei dati visti sta oltre il bordo e che almeno quella
+# frazione lo regge; chi sta proprio sul bordo puo' uscire -1 per
+# arrotondamento, e predict ne segnala qualcuno in piu'
 normali = X[y == 0]                      # fingiamo di avere solo la classe "normale"
 det = make_pipeline(StandardScaler(),
                     OneClassSVM(kernel="rbf", nu=0.05, gamma="scale"))
@@ -361,10 +392,12 @@ det.fit(normali)
 esito = det.predict(X)                   # +1 = normale, -1 = anomalia
 mai_visti = esito[y == 1]                # i 100 punti dell'altra luna
 print("dei 100 mai visti, segnalati:", int(np.sum(mai_visti == -1)))
+print("dei 100 visti, segnalati:", int(np.sum(det.predict(normali) == -1)))
 ```
 
 ```text
 dei 100 mai visti, segnalati: 95
+dei 100 visti, segnalati: 9
 ```
 
 Il rilevatore ha imparato la forma di una luna sola e non ha mai visto
@@ -372,7 +405,8 @@ l'altra: dei cento punti di quell'altra ne riconosce estranei novantacinque.
 
 La solita grammatica `fit`/`predict` regge anche qui. Per la SVM con kernel la
 coppia di iperparametri da tarare per validazione è $(C, \gamma)$: una ricerca
-su griglia con la cross-validation della sezione sull'overfitting è la prassi.
+su griglia con la cross-validation della {doc}`sezione sull'overfitting
+<overfitting-validazione>` è la prassi.
 
 `````{tab} Elementare
 
@@ -418,3 +452,9 @@ su griglia con la cross-validation della sezione sull'overfitting è la prassi.
 ```
 
 `````
+
+Fin qui ogni classificatore ha imparato a tracciare un confine, dritto o
+piegato dal kernel, guardando soltanto dove le classi si toccano. C'è un'altra
+strada, che il confine non lo cerca: impara com'è fatta ciascuna classe per
+intero, e il confine viene dopo, per conseguenza. È la strada dei
+{doc}`modelli generativi <modelli-generativi>`.

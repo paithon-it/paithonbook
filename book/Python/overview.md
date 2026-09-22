@@ -1,22 +1,23 @@
 # Python: il linguaggio dell'intelligenza artificiale
 
-Nel Natale del 1989 un programmatore olandese, Guido van Rossum, si annoia.
-Gli uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le
-feste, e lui riempie il tempo scrivendo, per hobby, un nuovo linguaggio di
+Nel Natale del 1989 un programmatore olandese, Guido van Rossum, si annoia. Gli
+uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le feste,
+e lui riempie il tempo scrivendo, per hobby, un nuovo linguaggio di
 programmazione. Lo chiama **Python**: non per il serpente, ma per i Monty
 Python, il gruppo comico inglese di cui è fan. La prima versione pubblica esce
 nel 1991. Nessuno, allora, poteva immaginare che trent'anni dopo quel
 passatempo sarebbe diventato la lingua franca dell'intelligenza artificiale:
-dalla rivoluzione del deep learning del 2012 fino ai grandi modelli
-linguistici di oggi, la quasi totalità della ricerca recente si scrive, si
-mette a punto e si pubblica in Python. Non è sempre stato così: la rete che
-nel 2012 aprì la stagione del deep learning era scritta in C++ e in CUDA, il
-linguaggio con cui si parla alle schede grafiche; e la libreria su cui
-lavoravano i laboratori di punta, negli anni subito dopo, si programmava in
-Lua. Python però aveva già Theano, nato in ambito accademico prima di quella
-rivoluzione, e vince quando accanto a Theano arrivano Caffe e poi TensorFlow;
-la partita si chiude con PyTorch, nato dentro Facebook AI Research nel 2016 e
-arrivato ai ricercatori all'inizio del 2017.
+dalla rivoluzione del deep learning del 2012 fino ai grandi modelli linguistici
+di oggi, la quasi totalità della ricerca recente si scrive, si mette a punto e
+si pubblica in Python. La forma di quella divisione del lavoro c'era già nella
+rete che nel 2012 aprì la stagione del deep learning: il calcolo in C++ e in
+CUDA, il linguaggio con cui si parla alle schede grafiche, e sopra uno strato
+di Python per configurarla e lanciarla. La partita però non era chiusa: la
+libreria su cui lavoravano i laboratori di punta, negli anni subito dopo, si
+programmava in Lua. Python però aveva già Theano, nato in ambito accademico
+prima di quella rivoluzione, e vince quando accanto a Theano arrivano Caffe e
+poi TensorFlow; la partita si chiude con PyTorch, nato dentro Facebook AI
+Research nel 2016 e arrivato ai ricercatori all'inizio del 2017.
 
 Com'è successo? Python non è il linguaggio più veloce, né il più elegante in
 senso accademico. Ha vinto per altre ragioni.
@@ -64,10 +65,18 @@ tira su chi ha gli attrezzi per farlo in fretta.
 
 `````{tab} Superiore
 
-Python è un linguaggio interpretato e dinamicamente tipizzato: paghi
-in velocità di esecuzione ciò che guadagni in velocità di sviluppo. La chiave
-del suo successo scientifico è però che aggira il *problema dei due
-linguaggi*. Le operazioni pesanti non girano affatto in Python puro: NumPy è
+CPython, l'implementazione di riferimento, compila il sorgente in *bytecode*
+e lo esegue su una macchina virtuale a pila. I tipi sono dinamici, quindi ogni
+operazione va risolta a runtime sul tipo degli operandi: l'interprete
+adattivo della PEP 659 (Python 3.11) specializza il bytecode sui tipi che
+osserva, il JIT della PEP 744 (sperimentale dal 3.13) prova ad andare oltre, e
+il costo per operazione resta comunque molto sopra quello del codice
+compilato. Paghi in velocità di esecuzione ciò che guadagni in velocità di
+sviluppo. Il calcolo scientifico in Python convive con il *problema dei due
+linguaggi* (prototipare in un linguaggio comodo e riscrivere in uno veloce, il
+problema da cui è nato Julia) e lo risolve spartendolo per ruoli: il secondo
+linguaggio lo scrive chi sviluppa le librerie, e chi le usa resta nel primo.
+Le operazioni pesanti non girano affatto in Python puro: NumPy è
 scritto in C, PyTorch e TensorFlow in C++ e CUDA. Python fa da **collante**
 (*glue language*), orchestrando componenti compilate che sfruttano BLAS, SIMD
 e GPU. Scrivi codice ad alto livello, leggibile; sotto, gira codice nativo
@@ -268,10 +277,10 @@ Il codice si può leggere, ma è fatto per essere provato. Ecco come, in concret
 
 ### Senza installare niente
 
-Ogni capitolo esiste anche come notebook su Google Colab, con tutte le sue
-celle in ordine e già pronte: gira nel browser, le librerie sono già
+Quasi ogni capitolo esiste anche come notebook su Google Colab, con tutte le
+sue celle in ordine e già pronte: gira nel browser, le librerie sono già
 installate, e per eseguire una cella si preme il triangolino che ha accanto. Il
-collegamento sta in testa a ogni capitolo su `book.paithon.it/main`, e non
+collegamento, dove c'è, sta in testa al capitolo («Esegui il codice»), e non
 serve altro che un browser e un account Google. È il modo più rapido per
 provare gli esempi mentre si legge.
 

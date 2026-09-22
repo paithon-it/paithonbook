@@ -52,7 +52,7 @@ Con una piega di quelle buone, e abbastanza macchinette affiancate, ci si
 avvicina quanto si vuole a qualunque curva tracciata senza staccare la matita.
 La garanzia è dimostrata, e dice una cosa sola: uno strato che ci riesce
 esiste. Quanto largo debba essere non lo dice, e per una curva che dipende da
-molte grandezze insieme il numero di macchinette esplode.
+molte grandezze insieme il numero di macchinette può esplodere.
 
 `````
 
@@ -114,8 +114,8 @@ condizione la rete è un **approssimatore universale**: con abbastanza neuroni
 avvicina, con errore arbitrariamente piccolo, qualunque funzione continua su un
 insieme compatto ({cite}`cybenko1989approximation` per le sigmoidali;
 {cite}`leshno1993multilayer` nella forma generale, ReLU compresa). Resta un
-teorema di esistenza, e per giunta muto sulla larghezza necessaria, che per una
-funzione qualunque di $d$ variabili cresce esponenzialmente in $d$.
+teorema di esistenza, e per giunta muto sulla larghezza necessaria, che nel
+caso peggiore cresce esponenzialmente in $d$.
 
 `````
 
@@ -148,8 +148,7 @@ Una buona funzione di attivazione è una che non spegne il messaggio mentre lo
 lascia passare.
 
 Le protagoniste degli strati nascosti sono tre, ognuna con un carattere
-diverso ({numref}`fig-attivazioni`); alla fine della sezione se ne aggiunge una
-quarta,
+diverso ({numref}`fig-attivazioni`); più avanti se ne aggiunge una quarta,
 la softmax, che fa un altro mestiere e lavora solo sull'ultimo strato.
 
 ```{figure} ../figures/attivazioni-sigmoide-tanh-relu.svg
@@ -169,8 +168,8 @@ la rete si spegne.
 La prima scelta, storicamente: schiaccia qualunque numero in un valore fra $0$
 e $1$. Comoda, perché un numero fra zero e uno si legge come un interruttore
 acceso a metà, o come «quanto sono convinto». Viene dalla regressione
-logistica, il classificatore di [apprendimento
-supervisionato](../MachineLearning/apprendimento-supervisionato.md).
+logistica, il classificatore dell’{doc}`apprendimento supervisionato
+</MachineLearning/apprendimento-supervisionato>`.
 
 `````{tab} Elementare
 
@@ -214,7 +213,7 @@ ingrandirli li spinge proprio verso le code, dove la curva è ancora più
 piatta. Su una rete di venti strati, moltiplicando per quattro tutti i pesi,
 la parte di messaggio che sopravvive a ogni strato sale da $0{,}24$ a $0{,}6$.
 Si guadagna qualcosa, e non basta: $0{,}6$ moltiplicato venti volte per sé
-stesso vale meno di un decimillesimo. Il messaggio si spegne comunque, solo un
+stesso vale circa un decimillesimo. Il messaggio si spegne comunque, solo un
 po’ più in là.
 
 `````
@@ -250,8 +249,43 @@ standard, e si chiama «fattore» il rapporto fra la norma del gradiente che esc
 da uno strato verso l'ingresso e quella del gradiente che vi è entrato
 dall'uscita, mediato sugli strati. Il fattore medio per strato viene $0{,}24$,
 in linea con il tetto di $1/4$; quadruplicando la scala dei pesi sale soltanto
-a $0{,}6$, perché nel frattempo $\mathbb{E}[\sigma'(z)]$ scende da $0{,}23$ a
-$0{,}13$. Si guadagna sul modulo di $\mathbf{W}$ e si perde sulla saturazione,
+a $0{,}63$, perché nel frattempo $\mathbb{E}[\sigma'(z)]$ scende da $0{,}23$ a
+$0{,}13$.
+
+```python
+import numpy as np
+
+def sigmoide(z):
+    return 1 / (1 + np.exp(-z))
+
+def fattore_medio(scala, strati=20, n=128, esempi=256, seme=0):
+    rng = np.random.default_rng(seme)
+    limite = np.sqrt(6 / (n + n)) * scala          # Glorot uniforme, riscalata
+    W = [rng.uniform(-limite, limite, (n, n)) for _ in range(strati)]
+    a, zeta = rng.normal(size=(esempi, n)), []
+    for Wl in W:                                    # andata: si tengono le z
+        z = a @ Wl.T
+        zeta.append(z)
+        a = sigmoide(z)
+    g, fattori, pendenze = rng.normal(size=(esempi, n)), [], []
+    for Wl, z in zip(reversed(W), reversed(zeta)):  # ritorno: W^T (g * sigma')
+        d = sigmoide(z) * (1 - sigmoide(z))
+        nuovo = (g * d) @ Wl
+        fattori.append(np.linalg.norm(nuovo) / np.linalg.norm(g))
+        pendenze.append(d.mean())
+        g = nuovo
+    return np.mean(fattori), np.mean(pendenze)
+
+for scala in (1, 4):
+    f, p = fattore_medio(scala)
+    print(f"pesi x{scala}: fattore per strato {f:.2f}, E[sigma'(z)] {p:.2f}")
+```
+
+```text
+pesi x1: fattore per strato 0.24, E[sigma'(z)] 0.23
+pesi x4: fattore per strato 0.63, E[sigma'(z)] 0.13
+```
+ Si guadagna sul modulo di $\mathbf{W}$ e si perde sulla saturazione,
 e il fattore resta sotto $1$ comunque: la sigmoide perde da entrambi i lati.
 
 `````
@@ -407,12 +441,17 @@ $$
 Sulla stessa idea nascono PReLU (con $\alpha$ appreso), ELU e, nei Transformer
 moderni, la GELU {cite}`hendrycks2016gaussian`, cioè $x\,\Phi(x)$: una ReLU
 ammorbidita in cui il gradino secco è sostituito da $\Phi$, la funzione di
-ripartizione della normale standard. Da non confondere con la densità, che
-qui chiamiamo $\Phi'$ per non tirare in ballo la $\varphi$ (nel resto del
-capitolo $\varphi$ è l'attivazione dello strato d'uscita, e un simbolo con
-due mestieri è un errore che aspetta): $x\,\Phi'(x)$ è tutt'altra funzione,
-dispari e non monotona, e chi prova a rifarsi il grafico partendo dalla campana
-ottiene un disegno diverso.
+ripartizione della normale standard. La sua derivata, $\Phi(x) + x\,\Phi'(x)$,
+non somiglia a nessuna delle precedenti: vale $1/2$ nell'origine, supera $1$
+(fino a circa $1{,}13$ in $x=\sqrt{2}$), diventa negativa a sinistra del minimo
+della funzione ($x \approx -0{,}75$, dove la GELU vale circa $-0{,}17$) e tende
+a $0$ per $x \to -\infty$: il lato negativo satura come quello della ReLU,
+soltanto senza lo spigolo. Da non confondere con la densità, che qui chiamiamo
+$\Phi'$ per non tirare in ballo la $\varphi$ (nel resto del capitolo $\varphi$
+è l'attivazione dello strato d'uscita, e un simbolo con due mestieri è un
+errore che aspetta): $x\,\Phi'(x)$ è tutt'altra funzione, dispari e non
+monotona, e chi prova a rifarsi il grafico partendo dalla campana ottiene un
+disegno diverso.
 
 `````
 
@@ -466,7 +505,7 @@ cross-entropia. Attenzione: l'esponenziale di logit grandi va facilmente
 in overflow. La soluzione standard è sottrarre il massimo,
 $z_i \leftarrow z_i - \max_j z_j$, che non cambia il risultato ma lo rende
 numericamente stabile: il trucco del *log-sum-exp*, discusso nella sezione di
-[analisi numerica](../Matematica/analisi-numerica.md).
+{doc}`analisi numerica </Matematica/analisi-numerica>`.
 
 `````
 

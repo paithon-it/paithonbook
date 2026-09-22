@@ -17,9 +17,9 @@ ultima, la breve frase dell'utente.
 
 Quella frase è la punta dell'iceberg; sotto c'è tutto il carico montato dal
 programma, il payload di cui si diceva aprendo il capitolo.
-Quando Andrej Karpathy, nel 2025, ha dato credito al nome *context
-engineering* per il mestiere di montarlo {cite}`karpathy2025context`, ha
-spostato l'oggetto del lavoro: non più la singola frase («trovare
+Il nome a cui Karpathy ha dato credito aprendo il capitolo, *context
+engineering*, è quello del mestiere di montarlo {cite}`karpathy2025context`, e
+sposta l'oggetto del lavoro: non più la singola frase («trovare
 l'incantesimo giusto») ma il governo dell'intero contesto che riempie la
 finestra a ogni passo.
 
@@ -86,18 +86,15 @@ contesto deve contenere e coordinare:
 | Molecole | *few-shot* | istruzione + esempi svolti (condizionamento) |
 | Cellule | memoria / stato | informazione che persiste tra i turni |
 | Organi | workflow, strumenti | più passi coordinati, *tool use*, template di ragionamento |
-| Sistemi / campi | frontiera | rappresentazioni «a campo» del contesto |
+
 
 I primi quattro livelli corrispondono a pratiche consolidate: gli esempi
 *few-shot* sono lo stesso condizionamento visto nella sezione sul prompt
 engineering; la memoria persistente e gli strumenti sono il pane degli agenti.
-L'estremità alta della scala è un'altra cosa, e va detto con chiarezza: le
-proposte di modellare il contesto come neural field o di parlare di
-«semantica quantistica» sono **frontiera speculativa** (analogie suggestive,
-non risultati consolidati né tecniche con evidenza empirica robusta). Le
-includiamo per onestà verso la fonte, ma chi costruisce oggi lavora tra gli
-atomi e gli organi; il resto è ricerca aperta, da maneggiare con lo
-scetticismo che merita ogni cosa non ancora misurata.
+L'estremità alta della scala, che nella fonte modella il contesto come un
+campo continuo, non ha finora né una definizione operativa né una misura, e
+resta fuori da questo discorso: chi costruisce oggi lavora tra gli atomi e gli
+organi.
 
 `````
 
@@ -119,8 +116,9 @@ come un piccolo repertorio.
 
 `````{tab} Elementare
 
-La scrivania è minuscola: sul tavolo ci sta poca roba, e accanto hai uno
-schedario grande quanto vuoi. Da qui i quattro gesti.
+È la scrivania del capitolo sugli agenti, con il suo foglio di brutta e il suo
+schedario: sul tavolo ci sta poca roba, e accanto hai uno schedario grande
+quanto vuoi. Da qui i quattro gesti.
 
 Scrivere: quello che adesso non ti serve lo metti nello schedario, così
 libera il tavolo e non è perso. Selezionare: quando ti serve qualcosa, vai
@@ -163,9 +161,14 @@ Le quattro operazioni, in termini di ingegneria del contesto:
   «ricercatore» e uno «scrittore», ciascuno con il suo contesto, che si
   scambiano solo il risultato.
 
-Le prime tre sono le operazioni che il *context builder* del capitolo sugli
-Agenti già esegue sotto il cofano: sono la stessa aritmetica del budget di
-token, vista dal lato delle tattiche invece che dal lato del codice. La
+Il *context builder* della {doc}`sezione sul contesto degli agenti
+</Agenti/context-engineering>` ne esegue due sotto il cofano, *select* (i
+passaggi per rilevanza, finché il budget regge) e una forma grezza di
+*compress* (il troncamento dell'ultimo passaggio): è la stessa aritmetica del
+budget di token, vista dal lato delle tattiche invece che dal lato del codice.
+*Write* lì manca, perché quel montatore non conserva niente da un passo
+all'altro, ed è la mossa che il loop engineering trasformerà in stato su file.
+La
 quarta, *isolate*, apre verso la progettazione multi-agente, e chiama in causa
 il loop engineering che vedremo nella prossima sezione: decidere *quando*
 delegare a un sotto-contesto è già una scelta sul ciclo, non sul singolo
@@ -238,9 +241,11 @@ dentro la stessa chat lascia l'errore dov'è, in mezzo a tutto quello che si è
 detto prima, e lui continua a rileggerlo. Una chat nuova parte dal foglio
 bianco, ed è l'unico modo che hai, da fuori, di togliere la diceria dal gruppo.
 
-Che «più lungo» non voglia dire «migliore» è stato misurato. In una prova di
-Liu e colleghi diventata famosa si dava al modello una domanda e un mucchio di
-documenti in cui cercare la risposta, spostando quello giusto ora in cima, ora
+Che «più lungo» non voglia dire «migliore» è stato misurato. La prova è quella
+di Liu e colleghi, la stessa dei fogli sepolti in mezzo alla
+pila che si è vista con gli agenti; qui conta l'altra metà del risultato, la
+lunghezza. Si dava al modello una domanda e un mucchio di documenti in cui
+cercare la risposta, spostando quello giusto ora in cima, ora
 in mezzo, ora in fondo. Con venti o trenta documenti, e quello giusto nel
 mezzo, il modello rispondeva peggio di quando non gliene davano nessuno e
 doveva rispondere a memoria. Era un modello solo, e di allora: quello che si
@@ -329,12 +334,11 @@ finito. I primi tre ingredienti sono context engineering allo stato puro: sono
 le mosse *select* e *write* rese esplicite in un artefatto versionabile. Il
 quarto anticipa la prossima sezione: il *validation gate* è il seme del loop
 engineering, perché trasforma un colpo solo in un ciclo (genera,
-verifica contro il gate, e se fallisce reitera con l'esito in contesto). Il
-repo riassume la propria tesi con uno slogan volutamente iperbolico («10x
-meglio del prompt engineering, 100x meglio del *vibe coding*») che riportiamo
-come rivendicazione di chi propone il metodo, non
-come misura verificata: l'ordine di grandezza è retorica, l'intuizione (dare
-più contesto strutturato riduce gli errori) è sensata.
+verifica contro il gate, e se fallisce reitera con l'esito in contesto). Che
+dare al modello più contesto strutturato riduca gli errori è
+l'affermazione di chi propone il metodo {cite}`medin2025contextintro`, e va
+letta come tale: è un'intuizione sensata, senza un confronto controllato alle
+spalle.
 
 `````
 

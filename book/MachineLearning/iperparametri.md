@@ -394,8 +394,19 @@ $\sigma(\lambda)$ alto (esplorazione); la prossima prova è
 $\lambda_{\text{next}} = \arg\max_\lambda \mathrm{EI}(\lambda)$:
 un'ottimizzazione a sua volta, ma sul surrogato, che risponde in millisecondi.
 Il prezzo è la natura essenzialmente sequenziale del metodo (ogni scelta
-attende l'esito della precedente) e la dipendenza dalle ipotesi del surrogato,
-a cominciare dalla scelta del kernel.
+attende l'esito della precedente), la dipendenza dalle ipotesi del
+surrogato, a cominciare dalla scelta del kernel, e il costo del surrogato
+stesso: l'inferenza esatta di un processo gaussiano su $n$ prove costa
+$O(n^3)$, che con qualche centinaio di prove è niente e con decine di migliaia
+no. Per questo il surrogato più diffuso in pratica è un altro, il
+*Tree-structured Parzen Estimator* (TPE) {cite}`bergstra2011algorithms`,
+campionatore di default di Optuna. Divide le prove in buone e cattive secondo
+un quantile del punteggio, stima la densità delle configurazioni in ciascun
+gruppo, $p_{\text{buone}}(\lambda)$ e $p_{\text{cattive}}(\lambda)$, e propone
+la configurazione che massimizza il loro rapporto; sotto quel modello è la
+stessa scelta che massimizza l'expected improvement, e si adatta con
+naturalezza a spazi misti di variabili continue, intere e categoriche, dove un
+kernel è scomodo.
 
 `````
 
@@ -527,8 +538,10 @@ primo posto di rumore. L'altra costa di più, e serve quando il giudizio
 riguarda il modo di scegliere e non la singola configurazione: la ricerca si
 rifà da capo cinque volte, su cinque spezzoni diversi di dati, e ogni
 vincitrice viene misurata sullo spezzone che la sua ricerca non ha mai visto.
-Cinque giri esterni, con cinque prove ciascuno, fanno venticinque addestramenti
-dove prima ne bastavano cinque, e sconti non ce ne sono.
+E il conto si moltiplica: la ricerca intera, con tutte le sue combinazioni e
+i suoi cinque assaggi ciascuna, va rifatta dentro ognuno dei cinque giri
+esterni, e le $3\,125$ tazzine della macchina del caffè diventano $15\,625$.
+Sconti non ce ne sono.
 
 `````
 

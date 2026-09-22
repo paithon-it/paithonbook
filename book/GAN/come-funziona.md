@@ -11,9 +11,9 @@ Le **Generative Adversarial Networks** (GAN) {cite}`goodfellow2014generative`
 cambiano giudice: al posto del confronto punto per punto mettono una seconda
 rete, il cui unico mestiere è smascherare la prima.
 
-I due personaggi dell'apertura prendono qui il loro nome tecnico: il falsario
-che dipinge quadri contraffatti è il generatore $G$, l'esperto d'arte che
-deve smascherarlo è il discriminatore $D$. Da qui in avanti usiamo tutti e
+I due personaggi dell'apertura, il generatore e il discriminatore, ricevono qui
+anche una lettera: il falsario che dipinge quadri contraffatti è $G$, l'esperto
+d'arte che deve smascherarlo è $D$. Da qui in avanti usiamo tutti e
 due i nomi, e cominciamo da che cosa entra e che cosa esce da ciascuno.
 
 ## Il generatore: dal rumore al dato
@@ -103,12 +103,11 @@ Il circuito completo. La freccia di ritorno verso il generatore è il punto:
 $G$ non vede mai i dati reali, impara soltanto da quanto bene ha ingannato $D$.
 ```
 
-Queste due riprendono il circuito già visto in apertura di capitolo, e la
-differenza fra loro è la lingua: {numref}`fig-gan-architettura` lo scrive con i
-simboli e chiama il segnale di ritorno con il suo nome tecnico, i *gradienti*
-dell'errore; {numref}`fig-gan-circuito` lo dice a parole. Chi preferisce
-incontrare i simboli più tardi guardi la seconda, dove le formule non compaiono
-affatto, ed è anche quella da tenere sott'occhio da qui in avanti. Tutte e due
+Le due figure disegnano il circuito di {numref}`fig-gan-gioco` in due lingue:
+{numref}`fig-gan-architettura` con i simboli e con il nome tecnico del segnale
+di
+ritorno, i *gradienti* dell'errore; {numref}`fig-gan-circuito` a parole. Tutte e
+due
 disegnano soltanto la freccia che torna al generatore, perché è quella che
 interessa qui: anche l'esperto impara dal proprio errore, ma la sua parte del
 ritorno non è disegnata.
@@ -141,9 +140,8 @@ lato di $D$, e da lì raggiunge $G$ di rimbalzo.
 
 ## Il gioco minimax
 
-Le due reti non inseguono due obiettivi scollegati: condividono un’unica
-funzione di valore, cioè un punteggio solo per tutta la partita, che uno
-vuole tirare più in alto possibile e l'altro più in basso possibile.
+La funzione di valore è quella del gioco a somma zero dell’{doc}`apertura del
+capitolo </GAN/overview>`, e qui la si guarda da dentro.
 
 *Minimax* è la contrazione di *minimo* e *massimo*, e dice come si ragiona
 quando l'avversario è bravo. Chi gioca da solo sceglie la mossa che gli
@@ -533,10 +531,10 @@ si inceppano, i guasti saranno guasti di quell'elenco: a volte le spintarelle
 si assottigliano fino a sparire (è ciò che in gergo si chiama «gradienti che
 svaniscono») e il falsario non sa più da che parte andare; altre volte
 diventano enormi e tutte diverse fra loro, e lo fanno barcollare invece di
-guidarlo. Anche il rimedio che si è imposto, il *gradient penalty*,
-riguarda l'elenco: è una multa all'esperto quando le
-sue spintarelle si allontanano da una taglia fissa, in su o in giù. Mai il
-verdetto.
+guidarlo. Anche uno dei rimedi che torneranno fra gli accorgimenti per
+stabilizzare il
+duello riguarda l'elenco e non il verdetto: una multa all'esperto quando le sue
+spintarelle si allontanano da una taglia fissa, in su o in giù.
 
 ### Gli altri due dettagli
 
@@ -552,15 +550,11 @@ garantire che ciascuno dei due impari solo nel proprio turno. È il
 «congelamento» dei pesi, ed è il modo in cui i due allenatori sono stati messi
 su fin dall'inizio.
 
-Chi programma in PyTorch si aspetterebbe qui la parola `.detach()`, che
-compare nel codice quando si allena l'esperto sui falsi, e a cui quel merito
-viene spesso attribuito. Non è suo: dice soltanto di non calcolare
-nemmeno la correzione per il falsario, dato che in quel turno verrebbe comunque
-buttata via. Non serve a tenere separati i due allenamenti (a quello bastano i
-due allenatori), serve a non sprecare lavoro, e su reti grandi il risparmio è
-notevole. Regge finché le righe del ciclo stanno in quest'ordine: cambiandolo,
-quel lavoro sprecato smetterebbe di essere innocuo e `.detach()` tornerebbe
-indispensabile.
+Nel codice, dove si mostrano i falsi all'esperto, compare la parola
+`.detach()`. Non serve a separare i due allenamenti, a quello bastano i due
+allenatori: serve a non calcolare una correzione per il falsario che in quel
+turno verrebbe buttata via, e su reti grandi è un bel risparmio. Vale finché le
+righe del ciclo restano nell'ordine scritto.
 
 Secondo dettaglio: nel suo turno, il falsario misura il proprio errore come
 se i suoi falsi *dovessero* risultare autentici, e impara da quanto il verdetto
@@ -716,8 +710,11 @@ reti più difficili da addestrare, e tre problemi ricorrono.
   l'immagine di uno spazio di rumore a poche decine o centinaia di dimensioni,
   vive su una varietà di dimensione bassa immersa nello spazio dei dati: con
   $\mathbf{z} \in \mathbb{R}^{100}$ e immagini $1024\times1024$ a colori, il supporto di
-  $p_G$ ha dimensione al più $100$ dentro $\mathbb{R}^{3\,145\,728}$. Due
-  varietà così hanno supporti quasi certamente disgiunti (o intersecantisi in
+  $p_G$ ha dimensione al più $100$ dentro $\mathbb{R}^{3\,145\,728}$. Se anche
+  $p_{\text{dati}}$ vive vicino a una varietà di dimensione bassa
+    (l’ipotesi della varietà, che Arjovsky e Bottou assumono senza
+    dimostrarla), due varietà così, salvo allineamenti perfetti, hanno
+    supporti quasi certamente disgiunti (o intersecantisi in
   un insieme di misura nulla), un discriminatore perfetto esiste, e su supporti
   disgiunti la $\mathrm{JSD}$ vale $\log 2$ qualunque sia la distanza fra le
   due distribuzioni. Il gradiente è nullo, e non soltanto piccolo, e resta
@@ -786,71 +783,122 @@ larga, perché uno che avesse imparato bene tutti e otto ne metterebbe in
 ciascuno un ottavo, cioè il dodici e mezzo per cento. Un mucchietto non coperto
 è quindi un mucchietto proprio abbandonato, non uno servito male.
 
-I mucchietti sono otto campane, di quelle
-disegnate poco fa, con la larghezza (in gergo la *deviazione standard*) di
-$0{,}05$, disposte sui vertici di un ottagono di raggio $2$; il raggio
-dell'isolotto, $0{,}15$, è tre volte quella larghezza. Generatore e
-discriminatore sono due reti con due strati nascosti da $128$ unità, con la
-funzione di attivazione detta *leaky ReLU* (quella che lascia passare anche i
-negativi, molto ridotti: $0{,}2$ volte il loro valore), e il falsario parte da
-*due* soli numeri casuali. Come allenatore si usa Adam, quello già visto
-nella {doc}`sezione sull'addestramento in PyTorch </PyTorch/addestramento>`,
-con correzioni di ampiezza $2\cdot 10^{-4}$: piccole, che è il modo di tenere
-a bada l'instabilità detta sopra. I gruppi sono da $256$
-esempi e i giri quattrocento, dove un giro vuol dire una passata sull'intero
-insieme dei quattromila punti, non un singolo gruppo: sono due dettagli che
-cambiano tutto, perché con quattrocento gruppi soli il falsario non impara
-niente e i mucchietti restano scoperti. L'unica cosa che cambia da un
-addestramento all'altro è il numero da cui parte il sorteggio, i semi da $0$ a
+I mucchietti sono otto campane, di quelle disegnate poco fa, larghe $0{,}05$ e
+disposte sui vertici di un ottagono di raggio $2$. Generatore e discriminatore
+sono due reti piccole, del tipo raccontato nel {doc}`capitolo sulle reti
+neurali </RetiNeurali/overview>`, e il falsario parte da *due* soli numeri
+casuali; l'allenatore è Adam, con correzioni piccole, che è il modo di tenere
+a bada l'instabilità detta sopra. Quattrocento giri, dove un giro è una
+passata sull'intero insieme dei quattromila punti, e quattro addestramenti
+identici in tutto tranne il numero da cui parte il sorteggio, i semi da $0$ a
 $3$.
 
-Prima dei numeri servono due riferimenti, altrimenti le cifre che seguono non
-dicono niente. Se l'esperto fosse ridotto a rispondere «cinquanta e cinquanta»
-a qualunque cosa, cioè a tirare a indovinare, la sua loss varrebbe $1{,}39$ e
-quella del falsario $0{,}69$. È lo stesso conto fatto due volte da una parte e
-una dall'altra: l'esperto viene giudicato su due risposte, una su un quadro
-vero e una su un falso, e il falsario su una sola, la propria; per questo il
-suo numero è la metà.
+```{code-block} python
+:class: pt-lento
+
+# pt-lento: quattro addestramenti da quattrocento giri, circa un minuto su CPU
+import math
+import torch
+from torch import nn
+
+torch.set_num_threads(1)
+angoli = torch.arange(8) * 2 * math.pi / 8
+centri = torch.stack([2 * torch.cos(angoli), 2 * torch.sin(angoli)], 1)
+
+
+def rete(ingressi, uscite):
+    return nn.Sequential(nn.Linear(ingressi, 128), nn.LeakyReLU(0.2),
+                         nn.Linear(128, 128), nn.LeakyReLU(0.2),
+                         nn.Linear(128, uscite))
+
+
+def giudica(G):
+    """Mucchietti coperti (almeno l'1% dei punti) e quota di punti a segno."""
+    with torch.no_grad():
+        distanze = torch.cdist(G(torch.randn(5000, 2)), centri).min(1)
+    a_segno = distanze.values < 0.15
+    coperti = sum(bool((a_segno & (distanze.indices == k)).float().mean() >= 0.01)
+                  for k in range(8))
+    return coperti, a_segno.float().mean().item()
+
+
+criterio = nn.BCEWithLogitsLoss()
+for seme in range(4):
+    torch.manual_seed(seme)
+    dati = centri[torch.randint(0, 8, (4000,))] + 0.05 * torch.randn(4000, 2)
+    G, D = rete(2, 2), rete(2, 1)
+    opt_G = torch.optim.Adam(G.parameters(), lr=2e-4)
+    opt_D = torch.optim.Adam(D.parameters(), lr=2e-4)
+    for giro in range(400):
+        somme = [0.0, 0.0]
+        for batch_reale in dati[torch.randperm(4000)].split(256):
+            n = batch_reale.size(0)
+            uni, zeri = torch.ones(n, 1), torch.zeros(n, 1)
+            falsi = G(torch.randn(n, 2)).detach()
+            loss_D = criterio(D(batch_reale), uni) + criterio(D(falsi), zeri)
+            opt_D.zero_grad(); loss_D.backward(); opt_D.step()
+            loss_G = criterio(D(G(torch.randn(n, 2))), uni)
+            opt_G.zero_grad(); loss_G.backward(); opt_G.step()
+            somme[0] += loss_D.item() * n; somme[1] += loss_G.item() * n
+        if giro in (0, 399):
+            coperti, quota = giudica(G)
+            print(f"seme {seme}, giro {giro + 1:>3}: loss_D {somme[0] / 4000:.2f}  "
+                  f"loss_G {somme[1] / 4000:.2f}  coperti {coperti}/8  "
+                  f"a segno {quota:.0%}")
+```
+
+```text
+seme 0, giro   1: loss_D 1.30  loss_G 0.70  coperti 0/8  a segno 0%
+seme 0, giro 400: loss_D 1.26  loss_G 0.92  coperti 8/8  a segno 77%
+seme 1, giro   1: loss_D 1.32  loss_G 0.72  coperti 0/8  a segno 0%
+seme 1, giro 400: loss_D 1.29  loss_G 0.91  coperti 8/8  a segno 78%
+seme 2, giro   1: loss_D 1.31  loss_G 0.70  coperti 0/8  a segno 0%
+seme 2, giro 400: loss_D 1.31  loss_G 0.84  coperti 8/8  a segno 82%
+seme 3, giro   1: loss_D 1.33  loss_G 0.73  coperti 0/8  a segno 0%
+seme 3, giro 400: loss_D 1.25  loss_G 0.94  coperti 8/8  a segno 76%
+```
+
+Prima di leggere i numeri servono due riferimenti. Se l'esperto fosse ridotto
+a rispondere «cinquanta e cinquanta» a qualunque cosa, cioè a tirare a
+indovinare, ogni risposta gli costerebbe $0{,}69$ nat, il costo di un testa o
+croce: la sua loss varrebbe $1{,}39$, perché lo si giudica su due risposte,
+una su un vero e una su un falso, e quella del falsario $0{,}69$, perché lo si
+giudica su una sola.
 
 Quei due valori sono il punto in cui il gioco è in parità, e non un voto di
 promozione. Quello che conta è di quanto ciascuna loss se ne allontana, e la
 cosa più comoda è tradurla nella domanda vera: quanto l'esperto crede vero un
 falso. Il conto ne dà il minimo: a $0{,}69$ almeno una volta su due, cioè non
-lo distingue affatto; a $0{,}81$ almeno il quarantaquattro per cento delle
-volte; a $1{,}27$ almeno il ventotto, e lì lo sta davvero smascherando. (Si
-eleva $e$ all'opposto della loss del falsario, e siccome quella loss è una
-media di logaritmi quello che ne esce è un minimo, non il valore vero.)
+lo distingue affatto; a $0{,}84$ almeno il quarantatré per cento delle volte;
+a $0{,}94$ almeno il trentanove. (Si eleva $e$ all'opposto della loss del
+falsario, e siccome quella loss è una media di logaritmi quello che ne esce è
+un minimo, non il valore vero.)
 
-Il risultato più netto sta dentro un singolo addestramento, e si ripete in
-tutti e quattro (uno per seme, quattro addestramenti identici in tutto tranne
-il sorteggio iniziale): la loss del generatore sale mentre il generatore
-migliora. Al primo giro non ha imparato niente (nessun mucchietto coperto,
-nessun punto a segno) e la sua loss vale fra $0{,}68$ e $0{,}73$, cioè proprio
-lì attorno a $0{,}69$: non perché il gioco sia in parità, ma perché al primo
-giro l'esperto non sa ancora riconoscere i falsi, e su quelli risponde più o
-meno a caso pure lui. Quattrocento giri dopo la loss del falsario vale di più
-in tutti e quattro i casi: fra $0{,}76$ e $0{,}81$ nei tre che sono arrivati a
-coprire tutti e otto i mucchietti, $1{,}27$ nel quarto. Un criterio di arresto
-che aspettasse la loss più bassa avrebbe fermato tutto al primo giro, con un
+Il risultato più netto sta dentro ciascun addestramento, e si ripete in tutti
+e quattro: la loss del generatore sale mentre il generatore migliora. Al primo
+giro non ha imparato niente (nessun mucchietto coperto, nessun punto a segno)
+e la sua loss vale fra $0{,}70$ e $0{,}73$, cioè proprio lì attorno a $0{,}69$:
+non perché il gioco sia in parità, ma perché al primo giro l'esperto non sa
+ancora riconoscere i falsi, e su quelli risponde più o meno a caso pure lui.
+Quattrocento giri dopo tutti e quattro coprono gli otto mucchietti, e la loss
+del falsario vale di più, fra $0{,}84$ e $0{,}94$. Un criterio di arresto che
+aspettasse la loss più bassa avrebbe fermato tutto al primo giro, con un
 generatore buono a niente.
 
-Poi c'è la differenza fra un addestramento e l'altro. I tre che convergono
-finiscono con loss tutte in una fascia stretta e appena fuori dalla parità
-(`loss_D` fra $1{,}33$ e $1{,}36$, `loss_G` fra $0{,}76$ e $0{,}81$: l'esperto
-crede veri i falsi almeno fra il $44$ e il $47$ per cento delle volte, cioè
-quasi non li distingue). La qualità invece non si somiglia per niente: i punti
-a segno vanno dal $79\%$ al $91\%$, dove un generatore perfetto ne farebbe
-circa il $99\%$. Loss quasi identiche, dodici punti di qualità di differenza.
+Fra un addestramento e l'altro, poi, le loss e la qualità non vanno insieme. Il
+seme con la loss del falsario più bassa, $0{,}84$, è anche quello con più punti
+a segno, l’$82\%$; ma quello con la loss più alta, $0{,}94$, ne ha il $76\%$, e
+in mezzo $0{,}91$ e $0{,}92$ danno $78\%$ e $77\%$: un ordine che la loss non
+avrebbe permesso di prevedere, su scarti così piccoli. E un generatore perfetto
+ne metterebbe a segno circa il $99\%$: tutti e quattro sono lontani dalla meta
+con loss che non lo dicono.
 
-Il quarto è il caso da guardare con attenzione, perché è l'unico finito in
-*mode collapse*, con cinque mucchietti coperti su otto. Lì le loss *lo dicono*,
-e lo dicono perché escono dalla fascia: $0{,}97$ per l'esperto e $1{,}27$ per
-il falsario, cioè un esperto a cui i falsi passano molto meno spesso che negli
-altri tre.
-Ma è esattamente la diagnosi di partenza, non una smentita: le loss non hanno
-misurato la qualità, hanno misurato chi dei due stesse vincendo. Che nel quarto
-caso le due cose coincidano è una fortuna, non un metodo, e i primi tre lo
-mostrano.
+Resta da dire che cosa questo esperimento *non* mostra. Il mode collapse, con
+queste reti piccole e questi otto mucchietti ben separati, non si presenta in
+nessuno dei quattro addestramenti: il falsario li copre tutti ogni volta. È il
+guasto più temuto delle GAN, e servono compiti più duri per farlo comparire; il
+punto qui è un altro, e i numeri lo reggono da soli: le loss non misurano la
+qualità, misurano chi dei due sta vincendo in quel momento.
 
 Serve una misura che giudichi un insieme di immagini invece di una sola:
 in gergo, la loro *distribuzione*, cioè come si spartiscono fra i vari tipi
@@ -979,7 +1027,17 @@ generatore ha perso per strada l'intera struttura a due modi, e riempie di
 campioni proprio la voragine che li separa: nella fascia $|x| < 1$ finisce il
 $25\%$ delle sue uscite contro il $2{,}3\%$ dei dati reali. Il termine sulle
 covarianze smaschera il collasso su un punto; la perdita di modi a momenti
-invariati, no.
+invariati, no. La risposta della letteratura è separare le due cose che il FID
+fonde in un numero: la precisione, quanta parte dei campioni generati cade nel
+supporto stimato dei dati, e il richiamo, quanta parte dei dati cade nel
+supporto stimato dei generati
+{cite}`sajjadi2018assessing,kynkaanniemi2019improved`;
+un generatore che abbandona un soggetto perde richiamo, uno che sporca le
+immagini perde precisione. Ma guardano il supporto e non quanta massa ci sta
+sopra, e nel controesempio della mistura, dove i due supporti coincidono, non
+vedono niente nemmeno loro. Per la distorsione con pochi campioni c’è invece il
+KID {cite}`binkowski2018demystifying`, uno stimatore non distorto della
+discrepanza fra le due popolazioni di attivazioni.
 
 `````
 
@@ -993,11 +1051,11 @@ l'obiettivo dichiarato, non il singolo prodotto. Il FID sarà anche l'unità di
 misura con cui, nel {doc}`capitolo sui modelli di diffusione </ModelliDiffusione/overview>`, la nuova famiglia
 dimostrerà di aver superato le GAN.
 
-## Accorgimenti pratici (cenni)
+## Stabilizzare il duello
 
 La ricerca successiva ha prodotto una cassetta degli attrezzi per domare
-l'addestramento. Qui ne diamo solo i titoli; il filo che li unisce è che si può
-intervenire su tre cose diverse.
+l'addestramento, e il filo che li unisce è che si può intervenire su tre cose
+diverse.
 
 Si può cambiare com'è fatta ciascuna delle due reti, dando loro un occhio
 adatto alle immagini invece che a una lista qualunque di numeri: è la ricetta
@@ -1012,10 +1070,11 @@ no" adotta una misura dal comportamento più regolare, che cala e cresce con
 dolcezza mentre i due mucchi si avvicinano invece di saltare da un estremo
 all'altro. (È un'altra distanza da quella del FID, e si usa in un altro
 momento: questa la si calcola durante l'addestramento, ed è la cosa che il
-falsario cerca di far scendere.) È il rimedio alla situazione peggiore vista
-sopra, quella in cui chiedere all'esperto «quanto manca perché passi per vero?» tiene viva la
-correzione, ma quando lui è molto più bravo la risposta è sempre «moltissimo»,
-e il falsario oscilla invece di avanzare. Una distanza si comporta meglio: dice
+falsario cerca di far scendere.) È il rimedio al guasto che col dosaggio non
+c'entra, quello dei due mucchi che
+non si toccano: lì la domanda «è autentico?» boccia ogni falso con la stessa
+sicurezza, venuto bene o malissimo, e al falsario non arriva più nessuna
+indicazione. Una distanza si comporta meglio: dice
 quanto manca *e* di quanto ci si è avvicinati all'ultimo ritocco, anche quando i
 due mucchi sono ancora lontanissimi.
 
@@ -1028,6 +1087,58 @@ impoverisce, e che le correzioni finiscono per esplodere o per sparire. Il
 rimedio che si è imposto è il loro, il *gradient penalty*: invece di stringere
 i pesi, si aggiunge alla loss dell'esperto una multa che cresce quando la sua
 risposta cambia più in fretta, o più adagio, di una velocità fissa.
+
+`````{tab} Elementare
+Il nome inglese della distanza dice come si calcola: *earth mover's distance*,
+la fatica del movimento terra. I falsi sono un cumulo di sabbia, i veri un
+altro, e la distanza è quanta sabbia bisogna spostare per quanta strada,
+scegliendo il modo più economico di rifare l'un cumulo con l'altro. Due cumuli
+lontani costano molto, e avvicinarne uno di un metro fa scendere il conto di un
+metro per ogni carriola: è per questo che la correzione non si spegne mai,
+nemmeno quando i cumuli non si toccano. Il critico è chi stima quel conto
+guardando i due cumuli, e la multa gli vieta di dare giudizi che saltano più in
+fretta di quanto cambi il quadro.
+`````
+
+`````{tab} Superiore
+La distanza è la $W_1$ di Wasserstein:
+
+$$
+W_1(p_{\text{dati}}, p_G) = \inf_{\gamma \in \Pi(p_{\text{dati}}, p_G)} \mathbb{E}_{(\mathbf{x}, \mathbf{y}) \sim \gamma}\big[\lVert \mathbf{x} - \mathbf{y} \rVert\big]
+= \sup_{\lVert f \rVert_L \le 1} \mathbb{E}_{\mathbf{x} \sim p_{\text{dati}}}[f(\mathbf{x})] - \mathbb{E}_{\mathbf{z} \sim p_z}[f(G(\mathbf{z}))],
+$$
+
+dove $\Pi$ è l'insieme delle congiunte con marginali $p_{\text{dati}}$ e $p_G$
+(i piani di trasporto) e la seconda uguaglianza è la dualità di
+Kantorovich-Rubinstein. A differenza della $\mathrm{JSD}$, $W_1$ è continua nei
+parametri se $G$ lo è, e quasi ovunque derivabile se $G$ è localmente
+lipschitziana: fra due segmenti paralleli a distanza $\vartheta$ vale
+$\lvert\vartheta\rvert$, mentre la $\mathrm{JSD}$ resta $\log 2$ per ogni
+$\vartheta \ne 0$ {cite}`arjovsky2017wasserstein`. Il critico $f_\omega$
+approssima l'estremo superiore dentro una famiglia di reti: il taglio dei pesi
+in $[-c, c]$ la rende $K$-lipschitziana per qualche $K$, e $W_1$ esce stimata a
+meno di quel fattore. WGAN-GP {cite}`gulrajani2017improved` sostituisce il
+taglio con la penalità
+
+$$
+\lambda\, \mathbb{E}_{\hat{\mathbf{x}}}\big[(\lVert \nabla_{\hat{\mathbf{x}}} f_\omega(\hat{\mathbf{x}}) \rVert_2 - 1)^2\big],
+\qquad \hat{\mathbf{x}} = \epsilon\, \mathbf{x} + (1 - \epsilon)\, G(\mathbf{z}),\ \epsilon \sim U[0,1],
+$$
+
+con $\lambda = 10$: il critico ottimo ha gradiente di norma unitaria sui
+segmenti fra campioni accoppiati, e la penalità lo chiede soltanto lì, perché
+imporlo ovunque è intrattabile. La terza via, la normalizzazione spettrale
+{cite}`miyato2018spectral`, divide ogni matrice di pesi per la sua norma
+spettrale $\sigma(\mathbf{W})$, stimata con un passo di iterazione di potenza
+per
+aggiornamento: con attivazioni 1-lipschitziane la costante della rete è al più
+$\prod_l \sigma(\mathbf{W}_l)$, cioè al più 1. Non costa passaggi all'indietro
+in
+più, e si usa come stabilizzatore anche per discriminatori che non stimano
+nessuna $W_1$.
+`````
+
+
 
 E si può cambiare il regolamento del duello, in tre modi. Si può chiedere
 all'esperto di non essere mai sicuro al cento per cento, ma di fermarsi a

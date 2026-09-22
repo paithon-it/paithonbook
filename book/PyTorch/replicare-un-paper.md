@@ -73,10 +73,16 @@ tutti controllabili senza addestrare:
    meno dell'1% significa che la struttura è quella; discostarsi del 30%
    significa che manca un blocco o che una dimensione è sbagliata.
 3. **Invariante di gradiente.** Un `backward()` su una loss finta deve
-   produrre `p.grad is not None` per ogni parametro. Un tensore creato con
-   `torch.tensor(...)` invece che `nn.Parameter`, o un ramo staccato per
-   sbaglio con `detach()`, si scopre qui e non dopo tre giorni di
-   addestramento che non converge.
+   produrre `p.grad is not None` per ogni parametro di `named_parameters()`.
+   Il controllo vede un ramo staccato per sbaglio con `detach()`, o un
+   sotto-modulo che il `forward` non usa mai; non vede un peso creato con
+   `torch.tensor(...)` invece che `nn.Parameter`, perché quello fra i
+   parametri non c'è e il ciclo non lo visita: lo prende l'invariante di
+   conteggio, che esce più basso del dovuto. E `not None` non vuol dire
+   diverso da zero (una ReLU che non si accende mai consegna gradienti
+   nulli), quindi conviene guardare anche `p.grad.abs().sum()`. Tutti e due i
+   difetti si scoprono qui e non dopo tre giorni di addestramento che non
+   converge.
 
 Solo dopo che i tre invarianti sono soddisfatti ha senso parlare di risultati
 numerici, ed è a quel punto che comincia la parte difficile.
@@ -84,7 +90,8 @@ numerici, ed è a quel punto che comincia la parte difficile.
 
 ## Il caso: il Vision Transformer
 
-Prendiamo un articolo che il libro incontrerà più volte più avanti: *An Image
+Il metodo si prova meglio su un modello molto più grande di quelli usati fin
+qui, e su un articolo che torna più volte più avanti: *An Image
 is Worth 16x16 Words* {cite}`dosovitskiy2021image`, che nel 2021 ha portato
 l'architettura Transformer dentro la visione artificiale. È un ottimo caso di
 studio perché l'architettura è breve (quattro equazioni) e perché i numeri da
@@ -259,9 +266,9 @@ esattamente il tipo di nota che fa fallire una replica.
 Le equazioni 2 e 3 descrivono il blocco che poi si ripete dodici volte, e in
 esse compaiono tre sigle e due parole che il libro spiegherà per esteso nella
 {doc}`sezione sulla struttura del Transformer </Transformers/architettura>`.
-Qui bastano una riga a testa. MSA è l'attenzione multi-testa, cioè la
-scatola in cui i quadratini si guardano fra loro e ognuno
-raccoglie qualcosa dagli altri. MLP è una coppia di strati come quelli già
+Qui bastano una riga a testa. La scatola in cui i quadratini si guardano fra
+loro, e ognuno raccoglie qualcosa dagli altri, è l'attenzione multi-testa, MSA
+nel paper. MLP è una coppia di strati come quelli già
 visti, che lavora su ogni posizione per conto suo. LN è la
 *LayerNorm*, che rimette i numeri su una scala comoda prima di darli in pasto
 alle altre due. *Pre-norm* vuol dire soltanto che quella rimessa in scala
@@ -293,7 +300,7 @@ class BloccoTransformer(nn.Module):
         self.norm2 = nn.LayerNorm(d_modello)
         self.mlp = nn.Sequential(
             nn.Linear(d_modello, d_mlp),
-            nn.GELU(),                       # il paper usa GELU, non ReLU
+            nn.GELU(),                       # il paper usa GELU, una ReLU smussata
             nn.Dropout(dropout),
             nn.Linear(d_mlp, d_modello),
             nn.Dropout(dropout),
@@ -496,13 +503,16 @@ differenza viene da come si misura e non dal modello.
 `````{tab} Superiore
 In dettaglio, i punti su cui una replica si perde più spesso.
 
-Programma del learning rate. La forma quasi universale è warmup lineare
-per $T_w$ passi seguito da decadimento a coseno fino a zero. Il valore di
-picco non è trasferibile tra batch di dimensione diversa: la *linear scaling
-rule* prescrive $\eta \propto B$ (con warmup, per evitare l'instabilità
-iniziale) per SGD; con Adam e AdamW la dipendenza empirica è più vicina a
-$\eta \propto \sqrt{B}$. Un paper che riporta solo $\eta$ senza $B$, warmup e
-schedule non è replicabile alla lettera.
+Programma del learning rate. La forma quasi universale è warmup lineare per
+$T_w$ passi seguito da decadimento a coseno fino a zero. Il valore di picco non
+è trasferibile tra batch di dimensione diversa: la *linear scaling rule*
+{cite}`goyal2017accurate` prescrive $\eta \propto B$ per SGD, con un warmup che
+la tiene stabile nei primi passi, e vale finché $B$ resta sotto una soglia
+oltre la quale il guadagno si ferma; con Adam e AdamW l'analisi via equazioni
+differenziali stocastiche suggerisce invece $\eta \propto \sqrt{B}$, che è la
+regola da cui si parte e da ricontrollare sul proprio problema. Un paper che
+riporta solo $\eta$ senza $B$, warmup e schedule non è replicabile alla
+lettera.
 
 Accumulo dei gradienti. Il batch efficace è
 $B_{\text{eff}} = B_{\text{micro}} \times k \times n_{\text{GPU}}$, dove $k$
@@ -610,3 +620,7 @@ qualunque articolo che dichiari un'architettura e dei numeri.
   diverso. Dirlo è parte del lavoro.
 ```
 `````
+
+Resta una domanda che il metodo da solo non risolve: una volta che il modello
+è giusto, come lo si fa girare in fretta, e su più schede? È l'argomento di
+{doc}`prestazioni e scala <prestazioni>`.
