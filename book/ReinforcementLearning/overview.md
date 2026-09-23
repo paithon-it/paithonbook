@@ -1,5 +1,17 @@
 # Reinforcement Learning: imparare per tentativi
 
+```{image} ../figures/aperture/reinforcement-learning.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un bambino muove i primi passi incerti verso un divano, e dietro di lui restano le sagome delle cadute precedenti.
+```
+
+```{image} ../figures/aperture/reinforcement-learning-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un bambino muove i primi passi incerti verso un divano, e dietro di lui restano le sagome delle cadute precedenti.
+```
+
 Nessuno insegna a un bambino a camminare elencandogli la sequenza esatta di
 contrazioni muscolari. Il bambino ci prova, oscilla, cade, si rialza, fa un
 passo e cade di nuovo. Ogni tentativo il mondo gli restituisce un giudizio

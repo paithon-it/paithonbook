@@ -1,5 +1,17 @@
 # Introduzione
 
+```{image} ../figures/aperture/introduzione.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una telescrivente degli anni Sessanta con un lungo rotolo di carta che si arriccia; accanto, un sipario scostato a metà lascia vedere gli ingranaggi nascosti dietro.
+```
+
+```{image} ../figures/aperture/introduzione-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una telescrivente degli anni Sessanta con un lungo rotolo di carta che si arriccia; accanto, un sipario scostato a metà lascia vedere gli ingranaggi nascosti dietro.
+```
+
 Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e
 professore al MIT. Nel 1966 presentò al mondo ELIZA, il capostipite dei
 *chatbot*: un programma con cui si poteva conversare per iscritto, digitando

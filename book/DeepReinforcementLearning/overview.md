@@ -1,5 +1,17 @@
 # Deep Reinforcement Learning
 
+```{image} ../figures/aperture/deep-reinforcement-learning.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un muro di mattoncini da videogioco con un tunnel scavato su un lato e la pallina che rimbalza dietro il muro; in basso la racchetta.
+```
+
+```{image} ../figures/aperture/deep-reinforcement-learning-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un muro di mattoncini da videogioco con un tunnel scavato su un lato e la pallina che rimbalza dietro il muro; in basso la racchetta.
+```
+
 Nel 2013 un laboratorio londinese ancora poco noto, DeepMind, pubblica un
 risultato che sembra un giochino e invece è uno spartiacque: una rete neurale
 impara a giocare a *Breakout*, il classico dei mattoncini dell'Atari 2600,

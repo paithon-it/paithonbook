@@ -1,5 +1,17 @@
 # Modelli latenti e inferenza variazionale
 
+```{image} ../figures/aperture/modelli-latenti.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un'aula vista dall'alto, con i banchi in fila e quattro pile di compiti; sotto il pavimento un grande cerchio tenue li unisce tutti.
+```
+
+```{image} ../figures/aperture/modelli-latenti-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un'aula vista dall'alto, con i banchi in fila e quattro pile di compiti; sotto il pavimento un grande cerchio tenue li unisce tutti.
+```
+
 In una scuola preparatoria inglese, trentatré ragazzi fanno gli esami di
 quattro materie: le materie classiche, il francese, l’inglese e la matematica.
 I voti si somigliano più di quanto dovrebbero. Chi va bene in una tende ad

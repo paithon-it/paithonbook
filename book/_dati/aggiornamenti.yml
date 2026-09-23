@@ -48,6 +48,16 @@
 
 versioni:
 
+- versione: "1.12.16"
+  data: 2026-09-23
+  voci:
+
+  - tipo: ampliato
+    testo: >
+      **Ogni capitolo si apre con un'illustrazione.** Racconta l'aneddoto con
+      cui il capitolo comincia, nelle cinque tinte del libro e con la sua
+      versione per il tema scuro; la prefazione dice come sono fatte.
+
 - versione: "1.12.15"
   data: 2026-09-22
   voci:

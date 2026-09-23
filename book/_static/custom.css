@@ -2050,3 +2050,12 @@ div.pt-non-eseguibile::after {
   color: var(--text-light);
   pointer-events: none;
 }
+
+/* Illustrazione d'apertura di capitolo: a tutta larghezza sotto il titolo,
+ * con lo stesso respiro che separa il titolo dal primo capoverso. */
+.bd-article img.pt-apertura {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0.5rem 0 1.75rem;
+}

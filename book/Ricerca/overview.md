@@ -1,5 +1,17 @@
 # Ricerca e pianificazione: l’albero dei futuri
 
+```{image} ../figures/aperture/ricerca.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un automa scacchista d'inizio Novecento: una cassa con ingranaggi e un braccio meccanico che muove una torre su una scacchiera con tre soli pezzi; sopra, un albero di posizioni future che si ramifica.
+```
+
+```{image} ../figures/aperture/ricerca-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un automa scacchista d'inizio Novecento: una cassa con ingranaggi e un braccio meccanico che muove una torre su una scacchiera con tre soli pezzi; sopra, un albero di posizioni future che si ramifica.
+```
+
 Una cassa di ingranaggi e contatti elettrici, in una sala di Parigi, gioca a
 scacchi da sola davanti al pubblico. Dentro non c’è nessuno, a differenza del
 famoso Turco, che un giocatore nascosto ce l’aveva, e con quello aveva girato

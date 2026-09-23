@@ -98,6 +98,10 @@ numero è verificabile, e il montaggio è falso. Il triangolo sta sul libro per
 tutte e due le ragioni: è il giro dei tre ruoli che si reggono a vicenda, ed è
 il guasto contro cui quel lavoro esiste.
 
+Le illustrazioni che aprono i capitoli sono generate con il modello Recraft
+V4.1, a partire da una descrizione dell'aneddoto con cui ciascun capitolo
+comincia; ogni pixel viene poi riportato sulle cinque tinte del libro.
+
 % La chiusa di questo capoverso esiste in due versioni perche' la pagina degli
 % aggiornamenti online c'e' e in stampa no: `FUORI_STAMPA` in `pt_stampa.py` la
 % toglie dal PDF, dove la versione e' una sola ed e' quella del colophon. Senza

@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-16)=
+
+## 1.12.16 · 23 settembre 2026
+
+### Pagine ampliate
+
+- **Ogni capitolo si apre con un'illustrazione.** Racconta l'aneddoto con cui il capitolo comincia, nelle cinque tinte del libro e con la sua versione per il tema scuro; la prefazione dice come sono fatte.
+
 (v1-12-15)=
 
 ## 1.12.15 · 22 settembre 2026

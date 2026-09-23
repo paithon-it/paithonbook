@@ -1,5 +1,17 @@
 # MLOps: mettere i modelli in produzione
 
+```{image} ../figures/aperture/mlops.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un minuscolo rettangolo nero al centro, circondato da scatole molto più grandi collegate da tubi e fili.
+```
+
+```{image} ../figures/aperture/mlops-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un minuscolo rettangolo nero al centro, circondato da scatole molto più grandi collegate da tubi e fili.
+```
+
 C'è una figura, in un articolo del 2015, che vale da sola un capitolo intero.
 La disegnano alcuni ingegneri di Google (D. Sculley e colleghi) per una
 conferenza di apprendimento automatico {cite}`sculley2015hidden`. Al centro

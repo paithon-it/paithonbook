@@ -1,5 +1,17 @@
 # Conclusioni
 
+```{image} ../figures/aperture/conclusioni.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un palcoscenico con il sipario tutto aperto: al centro un meccanismo di ingranaggi e leve, e a terra il cilindro vuoto di un prestigiatore.
+```
+
+```{image} ../figures/aperture/conclusioni-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un palcoscenico con il sipario tutto aperto: al centro un meccanismo di ingranaggi e leve, e a terra il cilindro vuoto di un prestigiatore.
+```
+
 Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: «si dice
 che spiegare sia dissolvere l'incanto» {cite}`weizenbaum1966eliza`. Voleva dire
 che quando capisci come è fatto un trucco, il trucco smette di essere magia.

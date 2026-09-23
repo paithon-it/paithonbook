@@ -1,5 +1,17 @@
 # Modelli che vedono e parlano
 
+```{image} ../figures/aperture/visione-linguaggio.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Il quadro di una pipa appeso a una parete, con sotto un cartellino vuoto; accanto, un fumetto vuoto.
+```
+
+```{image} ../figures/aperture/visione-linguaggio-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Il quadro di una pipa appeso a una parete, con sotto un cartellino vuoto; accanto, un fumetto vuoto.
+```
+
 Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a
 mano *Ceci n'est pas une pipe*: questa non è una pipa. È una constatazione
 esatta, non un gioco di parole. Il disegno non è la pipa, è un velo di

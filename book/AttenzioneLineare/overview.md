@@ -1,5 +1,17 @@
 # Attenzione lineare
 
+```{image} ../figures/aperture/attenzione-lineare.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un libro molto spesso aperto: sopra le pagine un groviglio di fili che collegano tutto a tutto, che sulla destra si scioglie in un filo solo avvolto su un rocchetto.
+```
+
+```{image} ../figures/aperture/attenzione-lineare-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un libro molto spesso aperto: sopra le pagine un groviglio di fili che collegano tutto a tutto, che sulla destra si scioglie in un filo solo avvolto su un rocchetto.
+```
+
 Centomila parole sono la lunghezza di un romanzo, e per leggerlo un Transformer
 deve confrontare ogni parola con tutte le altre: centomila per centomila, cioè
 dieci miliardi di confronti, e non una volta sola, ma in ognuno degli strati

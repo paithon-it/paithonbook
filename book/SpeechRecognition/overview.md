@@ -1,5 +1,17 @@
 # Speech Recognition: dalla voce al testo
 
+```{image} ../figures/aperture/speech-recognition.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un apparecchio da laboratorio degli anni Cinquanta pieno di valvole e relè, un microfono d'epoca sull'asta, e una fila di dieci cerchietti che si accendono uno dopo l'altro.
+```
+
+```{image} ../figures/aperture/speech-recognition-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un apparecchio da laboratorio degli anni Cinquanta pieno di valvole e relè, un microfono d'epoca sull'asta, e una fila di dieci cerchietti che si accendono uno dopo l'altro.
+```
+
 Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante
 fatto di valvole e relè (l'elettronica di allora: bulbi di vetro
 incandescenti e interruttori che scattano da soli) imparò a riconoscere le

@@ -1,5 +1,17 @@
 # Prompt, contesto e loop: programmare gli LLM
 
+```{image} ../figures/aperture/ingegneria-llm.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una mano sistema con cura dentro una cornice posata su un tavolo carte, fogli e piccoli oggetti scelti; quelli che non servono restano fuori.
+```
+
+```{image} ../figures/aperture/ingegneria-llm-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una mano sistema con cura dentro una cornice posata su un tavolo carte, fogli e piccoli oggetti scelti; quelli che non servono restano fuori.
+```
+
 Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo
 dell'intelligenza artificiale in Tesla) ha dato credito a un nome appena
 proposto per un mestiere che esisteva già. Su X ha scritto di preferire il

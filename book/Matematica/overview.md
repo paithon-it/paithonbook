@@ -1,5 +1,17 @@
 # La matematica del machine learning: algebra lineare, analisi, probabilità
 
+```{image} ../figures/aperture/matematica.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una linea del telegrafo con i suoi isolatori, e accanto una clessidra in cui le perline ordinate in alto cadono in disordine in basso.
+```
+
+```{image} ../figures/aperture/matematica-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una linea del telegrafo con i suoi isolatori, e accanto una clessidra in cui le perline ordinate in alto cadono in disordine in basso.
+```
+
 ```{epigraph}
 La filosofia è scritta in questo grandissimo libro che continuamente ci sta aperto innanzi a gli occhi (io dico l'universo), ma non si può intendere se prima non s'impara a intender la lingua, e conoscer i caratteri, ne’ quali è scritto. Egli è scritto in lingua matematica, e i caratteri son triangoli, cerchi, ed altre figure geometriche, senza i quali mezi è impossibile a intenderne umanamente parola; senza questi è un aggirarsi vanamente per un oscuro laberinto.
 

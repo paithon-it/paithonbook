@@ -1,5 +1,17 @@
 # Deep Learning: perché la profondità conta
 
+```{image} ../figures/aperture/deep-learning.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un gatto di profilo guarda una barra di luce inclinata proiettata dentro una cornice.
+```
+
+```{image} ../figures/aperture/deep-learning-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un gatto di profilo guarda una barra di luce inclinata proiettata dentro una cornice.
+```
+
 Nel 1959 due neuroscienziati, David Hubel e Torsten Wiesel
 {cite}`hubel1959receptive`, infilarono un sottile elettrodo nella corteccia
 visiva di un gatto e proiettarono forme luminose davanti ai suoi occhi.

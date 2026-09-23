@@ -1,5 +1,17 @@
 # Agenti: quando i modelli linguistici agiscono
 
+```{image} ../figures/aperture/agenti.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un meccanismo a ingranaggi con una ruota rotta, una chiave inglese e un cacciavite che la riparano; accanto una griglia di quadratini quasi tutti pieni.
+```
+
+```{image} ../figures/aperture/agenti-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un meccanismo a ingranaggi con una ruota rotta, una chiave inglese e un cacciavite che la riparano; accanto una griglia di quadratini quasi tutti pieni.
+```
+
 Fra rispondere bene a una domanda e portare a termine un lavoro c'è un salto, e
 qualcuno ha provato a misurarlo con una gara di riparazioni. La gara prende
 2.294 segnalazioni di errore vere, di quelle che gli utenti scrivono agli autori

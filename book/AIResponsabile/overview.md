@@ -1,5 +1,17 @@
 # AI responsabile: la tecnologia non è neutra
 
+```{image} ../figures/aperture/ai-responsabile.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una bilancia della giustizia e un martelletto sul banco di un tribunale, e sopra un quadrante a lancetta, un punteggio di rischio.
+```
+
+```{image} ../figures/aperture/ai-responsabile-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una bilancia della giustizia e un martelletto sul banco di un tribunale, e sopra un quadrante a lancetta, un punteggio di rischio.
+```
+
 Nel maggio del 2016 la redazione investigativa di ProPublica pubblica
 un'inchiesta destinata a diventare un caso di scuola
 {cite}`angwin2016machine`. Al centro c'è **COMPAS**, un software venduto ai

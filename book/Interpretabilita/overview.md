@@ -1,5 +1,17 @@
 # Aprire la scatola nera
 
+```{image} ../figures/aperture/interpretabilita.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un lupo sulla neve e un husky sull'erba; una grande lente d'ingrandimento è puntata sulla neve invece che sugli animali.
+```
+
+```{image} ../figures/aperture/interpretabilita-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un lupo sulla neve e un husky sull'erba; una grande lente d'ingrandimento è puntata sulla neve invece che sugli animali.
+```
+
 Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro,
 Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
 Doveva guardare una fotografia e dire se ritraeva un husky o un lupo, e

@@ -1,5 +1,17 @@
 # Sistemi di Raccomandazione
 
+```{image} ../figures/aperture/sistemi-raccomandazione.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una poltrona davanti a una libreria piena di bobine e custodie di film, e sopra gli scaffali una fila di stelle, alcune piene e alcune vuote.
+```
+
+```{image} ../figures/aperture/sistemi-raccomandazione-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una poltrona davanti a una libreria piena di bobine e custodie di film, e sopra gli scaffali una fila di stelle, alcune piene e alcune vuote.
+```
+
 Il 2 ottobre 2006 Netflix, che allora campava spedendo DVD per posta, mette in
 palio un milione di dollari. Li prende chi riesce a migliorare del 10% il suo
 sistema di raccomandazione, Cinematch.

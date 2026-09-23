@@ -1,5 +1,17 @@
 # Generative Adversarial Networks
 
+```{image} ../figures/aperture/gan.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Due figure al tavolo di un bar, con i bicchieri di birra: una dipinge un quadro falso, l'altra lo esamina con una lente d'ingrandimento.
+```
+
+```{image} ../figures/aperture/gan-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Due figure al tavolo di un bar, con i bicchieri di birra: una dipinge un quadro falso, l'altra lo esamina con una lente d'ingrandimento.
+```
+
 L'idea delle GAN è nata, dice la leggenda (perché ormai è
 una leggenda), in un bar di Montréal, «Les 3 Brasseurs», nel 2014. Ian
 Goodfellow, dottorando nel laboratorio di Yoshua Bengio, festeggia con alcuni

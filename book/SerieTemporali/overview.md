@@ -1,5 +1,17 @@
 # Il futuro nei numeri: serie temporali e forecasting
 
+```{image} ../figures/aperture/serie-temporali.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una macchina vittoriana di pulegge e corde che traccia una linea ondulata su un rotolo di carta, con le onde del mare sullo sfondo.
+```
+
+```{image} ../figures/aperture/serie-temporali-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una macchina vittoriana di pulegge e corde che traccia una linea ondulata su un rotolo di carta, con le onde del mare sullo sfondo.
+```
+
 Negli anni Settanta dell'Ottocento William Thomson, professore a Glasgow (il
 mondo lo avrebbe conosciuto come Lord Kelvin), fece costruire a Londra una
 macchina di ottone, corde e pulegge che prevedeva le maree. Non con la magia:

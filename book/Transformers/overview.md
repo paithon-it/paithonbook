@@ -1,5 +1,17 @@
 # Transformer: quando l'attenzione basta
 
+```{image} ../figures/aperture/transformers.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una fila di tessere quadrate da cui partono archi che collegano ogni tessera a tutte le altre.
+```
+
+```{image} ../figures/aperture/transformers-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una fila di tessere quadrate da cui partono archi che collegano ogni tessera a tutte le altre.
+```
+
 Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google
 Research, pubblicano un *paper* (un articolo scientifico: il modo in cui chi fa
 ricerca racconta agli altri quello che ha trovato) dal titolo che suona come

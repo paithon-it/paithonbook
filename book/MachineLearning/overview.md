@@ -1,5 +1,17 @@
 # Machine Learning: imparare dai dati
 
+```{image} ../figures/aperture/machine-learning.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Due giocatori identici, uno di fronte all'altro, giocano a dama: la stessa figura che gioca contro sé stessa. Sopra la scacchiera un arco di punti accenna alle mosse guardate in anticipo.
+```
+
+```{image} ../figures/aperture/machine-learning-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Due giocatori identici, uno di fronte all'altro, giocano a dama: la stessa figura che gioca contro sé stessa. Sopra la scacchiera un arco di punti accenna alle mosse guardate in anticipo.
+```
+
 Nel 1959 un ingegnere dell'IBM di nome Arthur Samuel pubblicò un articolo dal
 titolo modesto (*Some Studies in Machine Learning Using the Game of Checkers*
 {cite}`samuel1959some`) che oggi suona profetico. Samuel aveva scritto un

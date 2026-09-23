@@ -1,5 +1,17 @@
 # Modelli a energia
 
+```{image} ../figures/aperture/modelli-energia.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un paesaggio di colline e valli visto di lato, con una pallina che rotola nella valle più profonda.
+```
+
+```{image} ../figures/aperture/modelli-energia-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un paesaggio di colline e valli visto di lato, con una pallina che rotola nella valle più profonda.
+```
+
 L'8 ottobre 2024 l'Accademia reale svedese delle scienze annuncia il premio
 Nobel per la fisica: va a John Hopfield e Geoffrey Hinton «per scoperte e
 invenzioni fondamentali che rendono possibile l'apprendimento automatico con

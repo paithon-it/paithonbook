@@ -1,5 +1,17 @@
 # GPU e calcolo parallelo
 
+```{image} ../figures/aperture/gpu.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: A sinistra un metronomo solo e grande; a destra una griglia di centinaia di metronomi minuscoli che battono insieme; in basso un piatto vuoto e una forchetta.
+```
+
+```{image} ../figures/aperture/gpu-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: A sinistra un metronomo solo e grande; a destra una griglia di centinaia di metronomi minuscoli che battono insieme; in basso un piatto vuoto e una forchetta.
+```
+
 Per trent'anni i programmatori hanno goduto di un privilegio che sembrava una
 legge di natura: bastava aspettare. Un programma lento oggi sarebbe stato
 veloce l'anno seguente, senza toccare una riga di codice, perché i processori

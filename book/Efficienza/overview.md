@@ -1,5 +1,17 @@
 # Efficienza: il modello che si addestra non è quello che si usa
 
+```{image} ../figures/aperture/efficienza.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un bruco su una foglia e, accanto, lo stesso animale diventato una falena in volo.
+```
+
+```{image} ../figures/aperture/efficienza-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un bruco su una foglia e, accanto, lo stesso animale diventato una falena in volo.
+```
+
 Molti insetti vivono due vite in un corpo solo. La larva è fatta per mangiare:
 lenta, molle, con un apparato digerente che occupa quasi tutto lo spazio
 disponibile. L’adulto è fatto per volare e riprodursi, ed è un animale

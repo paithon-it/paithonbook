@@ -1,5 +1,17 @@
 # Python: il linguaggio dell'intelligenza artificiale
 
+```{image} ../figures/aperture/python.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un ufficio vuoto di notte, a Natale: una lampada accesa sulla scrivania, dalla finestra le case strette di un canale di Amsterdam con una fila di luci, e un nastro di carta che si avvolge come un serpente.
+```
+
+```{image} ../figures/aperture/python-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un ufficio vuoto di notte, a Natale: una lampada accesa sulla scrivania, dalla finestra le case strette di un canale di Amsterdam con una fila di luci, e un nastro di carta che si avvolge come un serpente.
+```
+
 Nel Natale del 1989 un programmatore olandese, Guido van Rossum, si annoia. Gli
 uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le feste,
 e lui riempie il tempo scrivendo, per hobby, un nuovo linguaggio di

@@ -1,5 +1,17 @@
 # Reti neurali: dal neurone al percettrone multistrato
 
+```{image} ../figures/aperture/reti-neurali.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un neurone biologico, con i dendriti ramificati, i cui rami si raddrizzano verso destra fino a diventare le linee dritte di una rete di nodi disposti in colonne.
+```
+
+```{image} ../figures/aperture/reti-neurali-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un neurone biologico, con i dendriti ramificati, i cui rami si raddrizzano verso destra fino a diventare le linee dritte di una rete di nodi disposti in colonne.
+```
+
 C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella
 del cervello. Miliardi di cellule che si scambiano segnali, e da quel
 brulichio emergono la memoria, il linguaggio, il riconoscere il volto di un

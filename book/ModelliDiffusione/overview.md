@@ -1,5 +1,17 @@
 # Modelli di Diffusione
 
+```{image} ../figures/aperture/modelli-diffusione.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una goccia d'inchiostro cade in un bicchiere d'acqua e si apre in volute e filamenti.
+```
+
+```{image} ../figures/aperture/modelli-diffusione-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una goccia d'inchiostro cade in un bicchiere d'acqua e si apre in volute e filamenti.
+```
+
 Versa una goccia d'inchiostro in un bicchiere d'acqua e guarda. Prima un
 filamento scuro, poi volute sempre più sottili, e in pochi minuti l'acqua è
 tutta di un azzurro pallido e uniforme. Succede da solo, ogni volta, senza che

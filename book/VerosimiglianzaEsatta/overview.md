@@ -1,5 +1,17 @@
 # Modelli a verosimiglianza esatta
 
+```{image} ../figures/aperture/verosimiglianza-esatta.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Una vecchia bilancia a due piatti pesa un piccolo quadro contro una pila di pesi d'ottone.
+```
+
+```{image} ../figures/aperture/verosimiglianza-esatta-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Una vecchia bilancia a due piatti pesa un piccolo quadro contro una pila di pesi d'ottone.
+```
+
 Il generatore di volti del {doc}`capitolo sulle GAN </GAN/overview>` sforna a
 ripetizione persone che non esistono. Facciamogli una domanda diversa da tutte
 quelle che gli abbiamo fatto finora. Non «fammi un volto», ma: prendi *questa*

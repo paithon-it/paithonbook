@@ -1,5 +1,17 @@
 # Sistemi multi-agente: molti che decidono
 
+```{image} ../figures/aperture/sistemi-multi-agente.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un grande stormo di storni disegna una forma fluida nel cielo al tramonto, sopra i pini a ombrello di Roma e la sagoma di una cupola.
+```
+
+```{image} ../figures/aperture/sistemi-multi-agente-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un grande stormo di storni disegna una forma fluida nel cielo al tramonto, sopra i pini a ombrello di Roma e la sagoma di una cupola.
+```
+
 Chi attraversa Roma in un pomeriggio d'inverno lo ha visto almeno una volta:
 poco prima del tramonto migliaia di storni arrivano dalla campagna e sopra gli
 alberi del posatoio disegnano forme che si allungano, si piegano e tornano

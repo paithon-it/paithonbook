@@ -1,5 +1,17 @@
 # Auto-supervisione: il segnale è già nei dati
 
+```{image} ../figures/aperture/auto-supervisione.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un foglio con le righe di testo disegnate come barre, alcune mancanti, e una matita che riempie uno dei vuoti.
+```
+
+```{image} ../figures/aperture/auto-supervisione-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un foglio con le righe di testo disegnate come barre, alcune mancanti, e una matita che riempie uno dei vuoti.
+```
+
 Nel 1953 Wilson Taylor, che studiava giornalismo e non calcolatori, aveva un
 problema pratico: misurare quanto un testo sia facile da leggere. Le formule in
 circolazione contavano sillabe e lunghezza delle frasi, e a lui non

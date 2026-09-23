@@ -1,5 +1,17 @@
 # Reti neurali su grafo
 
+```{image} ../figures/aperture/graph-neural-network.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: La pianta di una città attraversata da un fiume, e sopra un grafo: cerchi sulle terre e linee sui ponti.
+```
+
+```{image} ../figures/aperture/graph-neural-network-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: La pianta di una città attraversata da un fiume, e sopra un grafo: cerchi sulle terre e linee sui ponti.
+```
+
 Nella Königsberg del primo Settecento (oggi Kaliningrad, in Russia) c'era un
 passatempo cittadino. Il fiume Pregel divideva la città prussiana in quattro
 lembi di terra, due sponde e due isole, cuciti insieme da sette ponti; e la

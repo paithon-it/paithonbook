@@ -1,5 +1,17 @@
 # Audio oltre la voce
 
+```{image} ../figures/aperture/audio.png
+:class: pt-apertura only-light
+:width: 100%
+:alt: Un merlo canta su un ramo di siepe, e le onde del suo canto arrivano a un telefono tenuto in mano.
+```
+
+```{image} ../figures/aperture/audio-scura.png
+:class: pt-apertura only-dark
+:width: 100%
+:alt: Un merlo canta su un ramo di siepe, e le onde del suo canto arrivano a un telefono tenuto in mano.
+```
+
 Un mattino di primavera, punti il telefono verso una siepe e apri
 un'applicazione. Un merlo canta, invisibile tra le foglie, e sullo schermo
 compare un nome: *Turdus merula*. L'app si chiama BirdNET, nasce dal
