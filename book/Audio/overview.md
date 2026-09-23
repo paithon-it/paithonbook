@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/audio.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un merlo canta su un ramo di siepe, e le onde del suo canto arrivano a un telefono tenuto in mano.
+:alt: Un merlo che canta su un ramo, con le onde del canto che escono dal becco.
 ```
 
 ```{image} ../figures/aperture/audio-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un merlo canta su un ramo di siepe, e le onde del suo canto arrivano a un telefono tenuto in mano.
+:alt: Un merlo che canta su un ramo, con le onde del canto che escono dal becco.
 ```
 
 Un mattino di primavera, punti il telefono verso una siepe e apri

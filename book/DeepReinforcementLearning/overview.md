@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/deep-reinforcement-learning.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un muro di mattoncini da videogioco con un tunnel scavato su un lato e la pallina che rimbalza dietro il muro; in basso la racchetta.
+:alt: Un muro di mattoncini con un tunnel scavato su un lato, la pallina che rimbalza dietro il muro e la racchetta in basso.
 ```
 
 ```{image} ../figures/aperture/deep-reinforcement-learning-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un muro di mattoncini da videogioco con un tunnel scavato su un lato e la pallina che rimbalza dietro il muro; in basso la racchetta.
+:alt: Un muro di mattoncini con un tunnel scavato su un lato, la pallina che rimbalza dietro il muro e la racchetta in basso.
 ```
 
 Nel 2013 un laboratorio londinese ancora poco noto, DeepMind, pubblica un

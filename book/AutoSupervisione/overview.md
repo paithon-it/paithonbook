@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/auto-supervisione.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un foglio con le righe di testo disegnate come barre, alcune mancanti, e una matita che riempie uno dei vuoti.
+:alt: Una fila di tessere come le parole di una frase, con una tessera mancante che una mano sta rimettendo al suo posto.
 ```
 
 ```{image} ../figures/aperture/auto-supervisione-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un foglio con le righe di testo disegnate come barre, alcune mancanti, e una matita che riempie uno dei vuoti.
+:alt: Una fila di tessere come le parole di una frase, con una tessera mancante che una mano sta rimettendo al suo posto.
 ```
 
 Nel 1953 Wilson Taylor, che studiava giornalismo e non calcolatori, aveva un

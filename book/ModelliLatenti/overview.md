@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/modelli-latenti.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un'aula vista dall'alto, con i banchi in fila e quattro pile di compiti; sotto il pavimento un grande cerchio tenue li unisce tutti.
+:alt: Una mano regge dall'alto la croce di un burattinaio, e con i fili muove insieme quattro marionette.
 ```
 
 ```{image} ../figures/aperture/modelli-latenti-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un'aula vista dall'alto, con i banchi in fila e quattro pile di compiti; sotto il pavimento un grande cerchio tenue li unisce tutti.
+:alt: Una mano regge dall'alto la croce di un burattinaio, e con i fili muove insieme quattro marionette.
 ```
 
 In una scuola preparatoria inglese, trentatré ragazzi fanno gli esami di

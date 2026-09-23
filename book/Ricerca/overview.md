@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/ricerca.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un automa scacchista d'inizio Novecento: una cassa con ingranaggi e un braccio meccanico che muove una torre su una scacchiera con tre soli pezzi; sopra, un albero di posizioni future che si ramifica.
+:alt: Un re degli scacchi su un pezzo di scacchiera, da cui sale un albero di linee tratteggiate che si ramifica nelle mosse possibili.
 ```
 
 ```{image} ../figures/aperture/ricerca-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un automa scacchista d'inizio Novecento: una cassa con ingranaggi e un braccio meccanico che muove una torre su una scacchiera con tre soli pezzi; sopra, un albero di posizioni future che si ramifica.
+:alt: Un re degli scacchi su un pezzo di scacchiera, da cui sale un albero di linee tratteggiate che si ramifica nelle mosse possibili.
 ```
 
 Una cassa di ingranaggi e contatti elettrici, in una sala di Parigi, gioca a

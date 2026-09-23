@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/reti-neurali.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un neurone biologico, con i dendriti ramificati, i cui rami si raddrizzano verso destra fino a diventare le linee dritte di una rete di nodi disposti in colonne.
+:alt: Un neurone con i dendriti ramificati i cui rami, verso destra, diventano le linee dritte di una piccola rete di nodi.
 ```
 
 ```{image} ../figures/aperture/reti-neurali-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un neurone biologico, con i dendriti ramificati, i cui rami si raddrizzano verso destra fino a diventare le linee dritte di una rete di nodi disposti in colonne.
+:alt: Un neurone con i dendriti ramificati i cui rami, verso destra, diventano le linee dritte di una piccola rete di nodi.
 ```
 
 C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella

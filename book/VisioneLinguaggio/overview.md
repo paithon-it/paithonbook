@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/visione-linguaggio.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Il quadro di una pipa appeso a una parete, con sotto un cartellino vuoto; accanto, un fumetto vuoto.
+:alt: Il quadro di una pipa in una cornice, e accanto un fumetto vuoto.
 ```
 
 ```{image} ../figures/aperture/visione-linguaggio-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Il quadro di una pipa appeso a una parete, con sotto un cartellino vuoto; accanto, un fumetto vuoto.
+:alt: Il quadro di una pipa in una cornice, e accanto un fumetto vuoto.
 ```
 
 Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a

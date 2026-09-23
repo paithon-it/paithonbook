@@ -38,6 +38,14 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-12-17)=
+
+## 1.12.17 · 23 settembre 2026
+
+### Correzioni
+
+- **Le illustrazioni d'apertura, ridisegnate.** Ognuna mostra ora un solo oggetto, al centro della pagina, al posto delle scene affollate della versione precedente.
+
 (v1-12-16)=
 
 ## 1.12.16 · 23 settembre 2026

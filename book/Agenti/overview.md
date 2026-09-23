@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/agenti.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un meccanismo a ingranaggi con una ruota rotta, una chiave inglese e un cacciavite che la riparano; accanto una griglia di quadratini quasi tutti pieni.
+:alt: Una chiave inglese che fa girare un ingranaggio.
 ```
 
 ```{image} ../figures/aperture/agenti-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un meccanismo a ingranaggi con una ruota rotta, una chiave inglese e un cacciavite che la riparano; accanto una griglia di quadratini quasi tutti pieni.
+:alt: Una chiave inglese che fa girare un ingranaggio.
 ```
 
 Fra rispondere bene a una domanda e portare a termine un lavoro c'è un salto, e

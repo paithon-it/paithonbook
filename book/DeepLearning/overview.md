@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/deep-learning.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un gatto di profilo guarda una barra di luce inclinata proiettata dentro una cornice.
+:alt: Tre lastre sovrapposte: nella più bassa poche linee inclinate, in quella di mezzo angoli e curve, in cima il muso di un gatto composto da quei tratti.
 ```
 
 ```{image} ../figures/aperture/deep-learning-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un gatto di profilo guarda una barra di luce inclinata proiettata dentro una cornice.
+:alt: Tre lastre sovrapposte: nella più bassa poche linee inclinate, in quella di mezzo angoli e curve, in cima il muso di un gatto composto da quei tratti.
 ```
 
 Nel 1959 due neuroscienziati, David Hubel e Torsten Wiesel

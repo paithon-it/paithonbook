@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/world-models.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un gatto acquattato su un tavolo sta per saltare su una mensola alta, e un arco a puntini traccia il salto che ha già immaginato.
+:alt: Un gatto acquattato su un tavolino sta per saltare su una mensola, e un arco a puntini traccia il salto che ha già immaginato.
 ```
 
 ```{image} ../figures/aperture/world-models-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un gatto acquattato su un tavolo sta per saltare su una mensola alta, e un arco a puntini traccia il salto che ha già immaginato.
+:alt: Un gatto acquattato su un tavolino sta per saltare su una mensola, e un arco a puntini traccia il salto che ha già immaginato.
 ```
 
 Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque

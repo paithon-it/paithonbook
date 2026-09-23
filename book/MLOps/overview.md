@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/mlops.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un minuscolo rettangolo nero al centro, circondato da scatole molto più grandi collegate da tubi e fili.
+:alt: Una scatolina nera al centro, circondata da scatole molto più grandi collegate da tubi.
 ```
 
 ```{image} ../figures/aperture/mlops-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un minuscolo rettangolo nero al centro, circondato da scatole molto più grandi collegate da tubi e fili.
+:alt: Una scatolina nera al centro, circondata da scatole molto più grandi collegate da tubi.
 ```
 
 C'è una figura, in un articolo del 2015, che vale da sola un capitolo intero.

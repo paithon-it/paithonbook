@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/pinn.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un cannocchiale ottocentesco puntato verso il cielo, e il pennino di una stilografica che traccia un'orbita ellittica fino a un piccolo pianeta.
+:alt: Un cannocchiale su un treppiede puntato verso il cielo, con un'orbita che finisce su un piccolo pianeta.
 ```
 
 ```{image} ../figures/aperture/pinn-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un cannocchiale ottocentesco puntato verso il cielo, e il pennino di una stilografica che traccia un'orbita ellittica fino a un piccolo pianeta.
+:alt: Un cannocchiale su un treppiede puntato verso il cielo, con un'orbita che finisce su un piccolo pianeta.
 ```
 
 La notte del 23 settembre 1846 l'astronomo Johann Galle punta il telescopio

@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/verosimiglianza-esatta.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Una vecchia bilancia a due piatti pesa un piccolo quadro contro una pila di pesi d'ottone.
+:alt: Una bilancia a due piatti pesa un piccolo quadro contro una pila di pesi.
 ```
 
 ```{image} ../figures/aperture/verosimiglianza-esatta-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Una vecchia bilancia a due piatti pesa un piccolo quadro contro una pila di pesi d'ottone.
+:alt: Una bilancia a due piatti pesa un piccolo quadro contro una pila di pesi.
 ```
 
 Il generatore di volti del {doc}`capitolo sulle GAN </GAN/overview>` sforna a

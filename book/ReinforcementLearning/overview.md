@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/reinforcement-learning.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un bambino muove i primi passi incerti verso un divano, e dietro di lui restano le sagome delle cadute precedenti.
+:alt: Un bambino muove il primo passo con le braccia aperte per stare in equilibrio, e dietro di lui una fila di piccole impronte irregolari.
 ```
 
 ```{image} ../figures/aperture/reinforcement-learning-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un bambino muove i primi passi incerti verso un divano, e dietro di lui restano le sagome delle cadute precedenti.
+:alt: Un bambino muove il primo passo con le braccia aperte per stare in equilibrio, e dietro di lui una fila di piccole impronte irregolari.
 ```
 
 Nessuno insegna a un bambino a camminare elencandogli la sequenza esatta di

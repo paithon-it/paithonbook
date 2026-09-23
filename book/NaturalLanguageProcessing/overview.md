@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/natural-language-processing.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un calcolatore degli anni Cinquanta con file di interruttori e una pila di schede perforate; strisce di carta con segni astratti entrano da una parte ed escono trasformate dall'altra.
+:alt: Due fumetti vuoti uno di fronte all'altro, uniti al centro da un ingranaggio.
 ```
 
 ```{image} ../figures/aperture/natural-language-processing-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un calcolatore degli anni Cinquanta con file di interruttori e una pila di schede perforate; strisce di carta con segni astratti entrano da una parte ed escono trasformate dall'altra.
+:alt: Due fumetti vuoti uno di fronte all'altro, uniti al centro da un ingranaggio.
 ```
 
 Nel 1954 un gruppo di ricercatori di IBM e della Georgetown University

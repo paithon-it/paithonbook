@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/speech-recognition.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un apparecchio da laboratorio degli anni Cinquanta pieno di valvole e relè, un microfono d'epoca sull'asta, e una fila di dieci cerchietti che si accendono uno dopo l'altro.
+:alt: Un microfono d'epoca sull'asta, con le onde della voce che diventano una fila di punti.
 ```
 
 ```{image} ../figures/aperture/speech-recognition-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un apparecchio da laboratorio degli anni Cinquanta pieno di valvole e relè, un microfono d'epoca sull'asta, e una fila di dieci cerchietti che si accendono uno dopo l'altro.
+:alt: Un microfono d'epoca sull'asta, con le onde della voce che diventano una fila di punti.
 ```
 
 Nel 1952, nei laboratori della Bell Telephone, un apparecchio ingombrante

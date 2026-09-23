@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/pytorch.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Una mano passa una fiaccola accesa a un'altra mano, sotto una piccola luna crescente.
+:alt: Una mano regge una fiaccola accesa.
 ```
 
 ```{image} ../figures/aperture/pytorch-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Una mano passa una fiaccola accesa a un'altra mano, sotto una piccola luna crescente.
+:alt: Una mano regge una fiaccola accesa.
 ```
 
 C'è stato un periodo, tra il 2011 e il 2016, in cui per fare deep learning

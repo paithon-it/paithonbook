@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/interpretabilita.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un lupo sulla neve e un husky sull'erba; una grande lente d'ingrandimento è puntata sulla neve invece che sugli animali.
+:alt: Un lupo sulla neve, e una lente d'ingrandimento che esamina la neve invece del lupo.
 ```
 
 ```{image} ../figures/aperture/interpretabilita-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un lupo sulla neve e un husky sull'erba; una grande lente d'ingrandimento è puntata sulla neve invece che sugli animali.
+:alt: Un lupo sulla neve, e una lente d'ingrandimento che esamina la neve invece del lupo.
 ```
 
 Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro,

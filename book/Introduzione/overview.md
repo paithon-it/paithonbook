@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/introduzione.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Una telescrivente degli anni Sessanta con un lungo rotolo di carta che si arriccia; accanto, un sipario scostato a metà lascia vedere gli ingranaggi nascosti dietro.
+:alt: Un cilindro da prestigiatore da cui, al posto del coniglio, escono degli ingranaggi.
 ```
 
 ```{image} ../figures/aperture/introduzione-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Una telescrivente degli anni Sessanta con un lungo rotolo di carta che si arriccia; accanto, un sipario scostato a metà lascia vedere gli ingranaggi nascosti dietro.
+:alt: Un cilindro da prestigiatore da cui, al posto del coniglio, escono degli ingranaggi.
 ```
 
 Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e

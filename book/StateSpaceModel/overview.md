@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/state-space-model.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: La Terra e la Luna unite da una traiettoria a puntini, con una piccola capsula spaziale in viaggio; in basso il quadrante di uno strumento a lancetta.
+:alt: Una capsula spaziale che segue una traiettoria a puntini verso una falce di Luna.
 ```
 
 ```{image} ../figures/aperture/state-space-model-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: La Terra e la Luna unite da una traiettoria a puntini, con una piccola capsula spaziale in viaggio; in basso il quadrante di uno strumento a lancetta.
+:alt: Una capsula spaziale che segue una traiettoria a puntini verso una falce di Luna.
 ```
 
 C'è un'idea che l'ingegneria usa da oltre mezzo secolo per descrivere

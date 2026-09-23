@@ -48,6 +48,16 @@
 
 versioni:
 
+- versione: "1.12.17"
+  data: 2026-09-23
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Le illustrazioni d'apertura, ridisegnate.** Ognuna mostra ora un solo
+      oggetto, al centro della pagina, al posto delle scene affollate della
+      versione precedente.
+
 - versione: "1.12.16"
   data: 2026-09-23
   voci:

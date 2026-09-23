@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/matematica.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Una linea del telegrafo con i suoi isolatori, e accanto una clessidra in cui le perline ordinate in alto cadono in disordine in basso.
+:alt: Una clessidra: in alto le perline sono disposte in ordine, in basso ricadono in disordine.
 ```
 
 ```{image} ../figures/aperture/matematica-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Una linea del telegrafo con i suoi isolatori, e accanto una clessidra in cui le perline ordinate in alto cadono in disordine in basso.
+:alt: Una clessidra: in alto le perline sono disposte in ordine, in basso ricadono in disordine.
 ```
 
 ```{epigraph}

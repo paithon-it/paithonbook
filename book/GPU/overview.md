@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/gpu.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: A sinistra un metronomo solo e grande; a destra una griglia di centinaia di metronomi minuscoli che battono insieme; in basso un piatto vuoto e una forchetta.
+:alt: Una griglia di tanti piccoli metronomi identici che oscillano insieme.
 ```
 
 ```{image} ../figures/aperture/gpu-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: A sinistra un metronomo solo e grande; a destra una griglia di centinaia di metronomi minuscoli che battono insieme; in basso un piatto vuoto e una forchetta.
+:alt: Una griglia di tanti piccoli metronomi identici che oscillano insieme.
 ```
 
 Per trent'anni i programmatori hanno goduto di un privilegio che sembrava una

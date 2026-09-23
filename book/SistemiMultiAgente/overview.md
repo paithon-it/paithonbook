@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/sistemi-multi-agente.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un grande stormo di storni disegna una forma fluida nel cielo al tramonto, sopra i pini a ombrello di Roma e la sagoma di una cupola.
+:alt: Un grande stormo di storni disegna una forma fluida nel cielo, sopra i pini a ombrello e la sagoma di una cupola.
 ```
 
 ```{image} ../figures/aperture/sistemi-multi-agente-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un grande stormo di storni disegna una forma fluida nel cielo al tramonto, sopra i pini a ombrello di Roma e la sagoma di una cupola.
+:alt: Un grande stormo di storni disegna una forma fluida nel cielo, sopra i pini a ombrello e la sagoma di una cupola.
 ```
 
 Chi attraversa Roma in un pomeriggio d'inverno lo ha visto almeno una volta:

@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/modelli-diffusione.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Una goccia d'inchiostro cade in un bicchiere d'acqua e si apre in volute e filamenti.
+:alt: Una goccia d'inchiostro cade in un bicchiere d'acqua e si apre in volute.
 ```
 
 ```{image} ../figures/aperture/modelli-diffusione-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Una goccia d'inchiostro cade in un bicchiere d'acqua e si apre in volute e filamenti.
+:alt: Una goccia d'inchiostro cade in un bicchiere d'acqua e si apre in volute.
 ```
 
 Versa una goccia d'inchiostro in un bicchiere d'acqua e guarda. Prima un

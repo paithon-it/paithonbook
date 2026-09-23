@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/visione-artificiale.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Una telecamera degli anni Sessanta su un treppiede puntata su una natura morta di blocchi di legno, collegata con un cavo a un calcolatore; da una finestra entra il sole d'estate.
+:alt: Una telecamera degli anni Sessanta su un treppiede, puntata su un blocco di legno.
 ```
 
 ```{image} ../figures/aperture/visione-artificiale-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Una telecamera degli anni Sessanta su un treppiede puntata su una natura morta di blocchi di legno, collegata con un cavo a un calcolatore; da una finestra entra il sole d'estate.
+:alt: Una telecamera degli anni Sessanta su un treppiede, puntata su un blocco di legno.
 ```
 
 Nel 1966, al MIT, Seymour Papert affidò a un gruppo di studenti un compito per

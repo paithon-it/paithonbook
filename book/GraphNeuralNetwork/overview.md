@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/graph-neural-network.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: La pianta di una città attraversata da un fiume, e sopra un grafo: cerchi sulle terre e linee sui ponti.
+:alt: Quattro nodi collegati da sette archi sopra un fiume: i sette ponti di Königsberg disegnati come grafo.
 ```
 
 ```{image} ../figures/aperture/graph-neural-network-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: La pianta di una città attraversata da un fiume, e sopra un grafo: cerchi sulle terre e linee sui ponti.
+:alt: Quattro nodi collegati da sette archi sopra un fiume: i sette ponti di Königsberg disegnati come grafo.
 ```
 
 Nella Königsberg del primo Settecento (oggi Kaliningrad, in Russia) c'era un

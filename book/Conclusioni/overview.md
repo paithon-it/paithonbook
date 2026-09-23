@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/conclusioni.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un palcoscenico con il sipario tutto aperto: al centro un meccanismo di ingranaggi e leve, e a terra il cilindro vuoto di un prestigiatore.
+:alt: Un piccolo palcoscenico con il sipario tutto aperto: in scena, un meccanismo di ingranaggi.
 ```
 
 ```{image} ../figures/aperture/conclusioni-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un palcoscenico con il sipario tutto aperto: al centro un meccanismo di ingranaggi e leve, e a terra il cilindro vuoto di un prestigiatore.
+:alt: Un piccolo palcoscenico con il sipario tutto aperto: in scena, un meccanismo di ingranaggi.
 ```
 
 Siamo partiti, nell'introduzione, da una frase di Joseph Weizenbaum: «si dice

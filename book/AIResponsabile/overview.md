@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/ai-responsabile.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Una bilancia della giustizia e un martelletto sul banco di un tribunale, e sopra un quadrante a lancetta, un punteggio di rischio.
+:alt: Una bilancia della giustizia con sopra un quadrante a lancetta.
 ```
 
 ```{image} ../figures/aperture/ai-responsabile-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Una bilancia della giustizia e un martelletto sul banco di un tribunale, e sopra un quadrante a lancetta, un punteggio di rischio.
+:alt: Una bilancia della giustizia con sopra un quadrante a lancetta.
 ```
 
 Nel maggio del 2016 la redazione investigativa di ProPublica pubblica

@@ -3,13 +3,13 @@
 ```{image} ../figures/aperture/efficienza.png
 :class: pt-apertura only-light
 :width: 100%
-:alt: Un bruco su una foglia e, accanto, lo stesso animale diventato una falena in volo.
+:alt: Una falena che esce dal bozzolo appeso a un ramoscello.
 ```
 
 ```{image} ../figures/aperture/efficienza-scura.png
 :class: pt-apertura only-dark
 :width: 100%
-:alt: Un bruco su una foglia e, accanto, lo stesso animale diventato una falena in volo.
+:alt: Una falena che esce dal bozzolo appeso a un ramoscello.
 ```
 
 Molti insetti vivono due vite in un corpo solo. La larva è fatta per mangiare:
