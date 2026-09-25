@@ -46,6 +46,8 @@ RADICE = pathlib.Path(__file__).resolve().parents[1]
 LIBRO = RADICE / "book"
 SEGNALE = "\x00PT\x00"
 ATTESA = 900          # secondi per capitolo: qui dentro ci sono addestramenti
+ATTESA_LENTI = 4000   # con --anche-lenti: i blocchi `pt-lento` di PINN, da soli,
+                      # sono diciotto addestramenti e una ventina di minuti
 
 # Due macchine sommano in ordine diverso, e i numeri del libro se ne accorgono.
 # Le librerie di calcolo portano piu' implementazioni della stessa routine, una
@@ -303,6 +305,11 @@ def main() -> None:
                     help="esegue anche i blocchi `pt-lento`, che la CI salta "
                          "(scaricano modelli: serve la rete, e del tempo)")
     args = ap.parse_args()
+    if args.anche_lenti:
+        # un TIMEOUT e' un cronometro, non un guasto: con i blocchi lenti il
+        # tetto di sempre scade prima che il capitolo abbia finito
+        global ATTESA
+        ATTESA = ATTESA_LENTI
 
     tutti = GN.capitoli()
     scelti = {k: v for k, v in tutti.items()

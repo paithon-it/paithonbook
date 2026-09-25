@@ -460,17 +460,18 @@ leggendo.
 Mamba-3 introduce **transizioni a valori complessi**: la dinamica dello stato
 non è più un semplice decadimento reale, ma una moltiplicazione per un numero
 complesso, che ha un modulo (il decadimento, come prima) e una fase (una
-rotazione). Nel piano complesso, moltiplicare per $e^{i\theta}$ è ruotare di
-un angolo $\theta$; ripetendo il passo, lo stato percorre un cerchio. Per la
-parità basterebbe un autovalore reale negativo, $-1$, che rovescia il
-segno a ogni passo: Grazzi e colleghi {cite}`grazzi2025unlocking` dimostrano
-che una ricorrenza lineare a precisione finita con autovalori della transizione
-tutti positivi, come l’$e^{\Delta_t a} \in (0,1)$ di Mamba-2, la parità non la
-risolve, e che per contare modulo $3$ serve una transizione non triangolare. La
-rotazione copre il caso generale: con angolo $2\pi/m$ lo stato torna al punto di
-partenza ogni $m$ passi e conta modulo $m$, cosa che un fattore reale, anche
-negativo, sa fare solo per $m = 2$. Il paper documenta un netto miglioramento
-sui compiti di state tracking.
+rotazione). Nel piano complesso, moltiplicare per $e^{i\theta}$ è ruotare di un
+angolo $\theta$; ripetendo il passo, lo stato percorre un cerchio. Per la
+parità basterebbe un autovalore reale negativo, $-1$, che rovescia il segno a
+ogni passo: Grazzi e colleghi {cite}`grazzi2025unlocking` dimostrano che una
+ricorrenza lineare a precisione finita con autovalori della transizione tutti
+positivi, come l’$e^{\Delta_t a} \in (0,1)$ di Mamba-2, la parità non la
+risolve, e che per contare modulo $3$ serve che una transizione, o un prodotto
+di transizioni, abbia un autovalore non reale: una triangolare a elementi reali
+non basta. La rotazione è proprio questo: con angolo $2\pi/m$ lo stato torna al
+punto di partenza ogni $m$ passi e conta modulo $m$, cosa che un fattore reale,
+anche negativo, sa fare solo per $m = 2$. Il paper documenta un netto
+miglioramento sui compiti di state tracking.
 
 Il legame con i Transformer è preciso. Il paper mostra che l'SSM complesso
 equivale a un **RoPE data-dipendente** applicato alle matrici $\mathbf{B}$ e

@@ -197,17 +197,22 @@ $$
 C(\hat\pi) \;\le\; C(\pi^\star) + u\,T\,\epsilon_N + O(1),
 $$
 
-dove $C$ è il costo atteso di una politica sull'orizzonte $T$, cioè un
-danno da contenere e non un ritorno da massimizzare: per questo $C(\hat\pi)$
-sta a sinistra della disuguaglianza (nel lavoro originale è chiamato $J$).
-Quanto a $\epsilon_N$, è l'errore della migliore politica *col senno di poi* e
-non l’$\epsilon$ misurato sotto la distribuzione dell'esperto: misurato sulla
-media di tutte le distribuzioni di stati accumulate nei $N$ giri. Che quel
-numero sia piccolo non è gratis: lo garantisce il fatto che i giri si
-comportino come un algoritmo *no-regret*, e servono $N$ dell'ordine di $u\,T$
-perché il resto sia davvero $O(1)$. La garanzia, poi, copre la migliore delle
-politiche prodotte lungo la sequenza e non necessariamente l'ultima, ed è il
-motivo per cui in pratica si sceglie su un insieme di validazione quale tenere.
+dove $C$ è il costo atteso di una politica sull'orizzonte $T$, cioè un danno da
+contenere e non un ritorno da massimizzare: per questo $C(\hat\pi)$ sta a
+sinistra della disuguaglianza (nel lavoro originale è chiamato $J$). Quanto a
+$\epsilon_N$, è l'errore della migliore politica *col senno di poi* e non
+l’$\epsilon$ misurato sotto la distribuzione dell'esperto: misurato sulla media
+di tutte le distribuzioni di stati accumulate nei $N$ giri, ed è piccolo solo
+se la classe di politiche ne contiene una che imita l'esperto anche sugli stati
+che le politiche apprese visitano. Che le politiche prodotte arrivino vicino a
+quel numero non è gratis: lo garantisce il fatto che i giri si comportino come
+un algoritmo *no-regret*, cioè a rimpianto medio che tende a zero nel senso
+dell'apprendimento online (la sezione «Imparare un esempio alla volta» di
+{doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`), e servono
+$N$ dell'ordine di $u\,T$ perché il resto sia davvero $O(1)$. La garanzia, poi,
+copre la migliore delle politiche prodotte lungo la sequenza e non
+necessariamente l'ultima, ed è il motivo per cui in pratica si sceglie su un
+insieme di validazione quale tenere.
 
 Quanto a $u$, misura di quanto un singolo errore può peggiorare il
 costo-per-andare dell'esperto. Nei compiti recuperabili $u$ è $O(1)$ e la
@@ -242,9 +247,9 @@ ricompensa addestrato sulle preferenze è, di fatto, una ricompensa inferita da
 comportamento umano.
 
 L'RL inverso classico chiede di risolvere per intero un problema di RL a ogni
-ritocco della ricompensa candidata. GAIL (Ho ed Ermon, 2016) toglie il ciclo
-interno dando all'imitazione la forma di una GAN: un discriminatore $D(s,a)$
-impara a separare le coppie della politica da quelle dell'esperto, e la
+ritocco della ricompensa candidata. GAIL {cite}`ho2016generative` toglie il
+ciclo interno dando all'imitazione la forma di una GAN: un discriminatore
+$D(s,a)$ impara a separare le coppie della politica da quelle dell'esperto, e la
 politica si addestra con un metodo a gradiente di policy usando $-\log D(s,a)$
 come ricompensa,
 
@@ -270,7 +275,8 @@ potential-based* e, quando la ricompensa dipende anche dallo stato d'arrivo,
 una ridistribuzione fra gli stati d'arrivo che non ne cambia il valore
 atteso. Che quel termine di shaping sia innocuo lo dimostrano Ng, Harada e
 Russell {cite}`ng1999policy`; che l'ambiguità si fermi lì è un risultato
-recente sull'identificabilità della ricompensa. È un oggetto che il
+recente sull'identificabilità della ricompensa
+{cite}`skalse2023misspecification`. È un oggetto che il
 capitolo rincontrerà: nella {doc}`sezione sull'esplorazione
 <esplorazione-e-ricompensa>` si dimostra che aggiungere alla ricompensa un
 termine della forma $\gamma\Phi(s')-\Phi(s)$ lascia invariata la policy ottima,
@@ -517,8 +523,8 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   stati è indotta dalla politica e non fissata dal mondo, e quella
   dell'allievo non è quella del maestro.
 - Da qui la composizione degli errori: un errore piccolo porta in uno stato
-  poco familiare, dove l'errore è più grande, e così via. Il costo cresce come
-  $O(\epsilon T^2)$ invece di $O(\epsilon T)$.
+  poco familiare, dove l'errore è più grande, e così via. Nel caso peggiore
+  il costo cresce come $O(\epsilon T^2)$ invece di $O(\epsilon T)$.
 - Il paradosso da ricordare: più l'esperto è bravo, meno insegna a
   rimediare, perché non si trova mai nella condizione di doverlo fare.
 - DAgger rimuove il termine in più iterando: esegui la politica, chiedi
@@ -532,7 +538,8 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   delle reazioni. È la ragione per cui l'RLHF non si ferma alla fase
   supervisionata. È però mal posto: dalla sola politica osservata le
   ricompense compatibili formano un poliedro (la nulla compresa), e anche
-  imponendo di preservare l'ordinamento di *tutte* le politiche non si va oltre
-  una scala positiva e un termine di shaping potential-based.
+  imponendo di preservare l'ordinamento di *tutte* le politiche restano una
+  scala positiva, un termine di shaping potential-based e una ridistribuzione
+  fra gli stati d'arrivo che non ne cambia il valore atteso.
 ```
 `````

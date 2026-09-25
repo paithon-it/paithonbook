@@ -42,35 +42,83 @@ l’archivista.
 
 ## La strozzatura è il compito
 
-Della clessidra, qui, serve la scheda più che la compressione. E la parte
-stretta in mezzo, quella da cui deve passare tutto, si chiama **strozzatura**,
-e la chiameremo anche «il collo stretto», che è la stessa cosa.
+Della clessidra, qui, interessa più la scheda che produce che quanto comprima. E
+la parte stretta in mezzo, quella da cui deve passare tutto, si chiama
+**strozzatura**, e la chiameremo anche «il collo stretto», che è la stessa
+cosa.
 
 `````{tab} Elementare
 
 Due metà e un collo stretto in mezzo. La prima metà, l’archivista, prende il
 quadro e lo riduce a una fila di pochi numeri; la seconda, il copista, da quei
-numeri prova a ritirare fuori il quadro. La pagella è una sola per tutti e due:
-quanto la copia somiglia all’originale. E il voto si dà un quadro alla volta:
-si prende un quadro, si guarda la copia che ne esce, si scrive il voto, si
-passa al successivo. Il cassetto con tutte le schede dentro nessuno lo apre mai
-per vedere come stanno messe.
+numeri prova a ritirare fuori il quadro. La pagella è una sola per tutti e due,
+quanto la copia somiglia all’originale, e si dà un quadro alla volta.
 
 Il collo stretto è la richiesta, non un limite tecnico da subire. Se
 all’archivista fosse concesso scrivere una scheda lunga quanto il quadro, la
 scriverebbe uguale al quadro, il copista la ricopierebbe, e i due avrebbero
-imparato a fotocopiare. È dovendo stare in poche righe che l’archivista è
-costretto a decidere che cosa conta e che cosa no, e quella decisione è tutto
-ciò che ci interessa.
+imparato a fotocopiare. Dovendo stare in poche righe, l’archivista è costretto a
+decidere che cosa conta, ed è quella decisione a interessarci.
 
-Sulla scheda finiscono allora le cose che il copista non saprebbe indovinare da
-sé (che soggetto è, com’è composto, quali colori dominano) e non finiscono
-quelle che sa già (la grana della tela, il modo in cui uno sfondo sfuma):
-spenderci una riga non farebbe guadagnare niente, perché il copista le
-rimetterebbe comunque. Non che se le ricordi: ne mette sempre la stessa, per
-tutti i quadri che gli somigliano, e a nessuno importa che sia proprio quella.
-Il copista non inventa niente, ripete; e in mano non ha mai avuto una scheda
-che non venisse da un quadro vero.
+Il collo stretto è il primo modo di impedire la fotocopia, ma non l’unico. Il
+museo può lasciare la scheda lunga, anche più del quadro, e far pagare
+l’inchiostro: ogni riga scritta costa, e allora ogni quadro ne riempie poche,
+righe diverse per quadri diversi, mentre le altre restano bianche. Questa idea
+ha una storia in tre tappe. Nella prima l’archivista non c’è: per ogni quadro il
+copista prova una scheda dopo l’altra e tiene quella che, con meno inchiostro,
+gli basta a ridipingerlo. Su migliaia di pezzetti di fotografie di boschi e di
+prati questa ricerca dà un risultato che nessuno aveva chiesto: ogni riga
+finisce per descrivere un piccolo contorno inclinato, come quelli a cui
+rispondono le cellule del cervello che vedono. Ma cercare la scheda quadro per
+quadro è lento. Nella seconda tappa, allora, torna un archivista che non cerca:
+guarda il quadro e indovina al primo colpo la scheda che la ricerca del copista
+troverebbe. Nella terza la ricerca sparisce del tutto, e resta l’archivista che
+scrive da solo la scheda, pagando l’inchiostro. Si è tornati a un archivista e a
+un copista, come all’inizio, ma con una regola nuova: la scheda non ha un collo
+stretto, ha un inchiostro che costa.
+
+Un altro modo è sporcare. Il museo mette qualche macchia su ogni quadro prima
+di darlo all’archivista, e il copista prende il voto solo se restituisce il
+quadro pulito: una fotocopia ricopierebbe anche le macchie.
+
+Un altro ancora si capisce con un ritratto. Se la testa gira un po’ a destra, la
+scheda se ne deve accorgere, o la copia avrebbe la testa dritta; se sulla tela
+compare un graffio, la scheda può ignorarlo, perché nessun quadro del museo
+differisce da un altro per un graffio. Il museo allora chiede che la scheda
+cambi meno del quadro, cosa che una fotocopia non sa fare. Da sola la richiesta
+porterebbe a scrivere la stessa scheda per tutti i quadri; il copista, che deve
+ridipingerli diversi, tira dall’altra parte, e la scheda resta sensibile ai
+cambiamenti che portano da un quadro vero a un altro quadro vero, e sorda a
+quelli che nessun pittore farebbe. Vale però solo vicino ai quadri del museo,
+dove si danno i voti: davanti a una tela diversa da tutte la scheda può cambiare
+quanto vuole.
+
+Questa regola, però, si può aggirare. Per scrivere, l’archivista usa una tabella
+che dice quanto ogni punto della tela pesa su ciascuna riga della scheda, e il
+copista, per dipingere, una sua: l’archivista divide per mille tutto quello che
+scrive, la scheda cambia pochissimo qualunque cosa succeda al quadro, e il
+copista moltiplica per mille prima di dipingere. Il rimedio è una tabella sola
+per tutti e due. Chi divide per mille scrivendo divide per mille anche
+dipingendo, e un punto che sulla tela vale 4 diventa 0,004 sulla scheda e
+0,000004 sulla copia, che non somiglia più a niente.
+
+Fra le macchie e la scheda che cambia poco c’è un legame. Per restituire pulito
+un quadro appena macchiato il copista deve fare in modo che la copia cambi meno
+del quadro sporcato: è la stessa richiesta, fatta alla copia invece che alla
+scheda, e vale finché le macchie restano leggere e la copia somiglia già bene al
+quadro.
+
+Il collo stretto, l’inchiostro, le macchie e la scheda che cambia poco hanno una
+cosa in comune: giudicano una scheda alla volta, dal quadro da cui viene. Come
+stanno messe le schede sulla mappa, vicine o lontane, non lo guarda nessuna. E
+quale che sia la regola, sulla scheda finiscono le cose che il copista non
+saprebbe indovinare da sé (che soggetto è, com’è composto, quali colori
+dominano) e non finiscono quelle che sa già (la grana della tela, il modo in cui
+uno sfondo sfuma): spenderci una riga non servirebbe, perché il copista le
+rimette comunque. Non che se le ricordi: ne mette sempre la stessa, per tutti i
+quadri che gli somigliano, e a nessuno importa che sia proprio quella. Dalla
+scheda il copista non inventa niente, ripete; e in mano non ha mai avuto una
+scheda che non venisse da un quadro vero.
 
 `````
 
@@ -87,38 +135,130 @@ $$
 $$
 
 dove $\mathbf{x}_i$ è l’$i$-esimo esempio, $D$ la dimensione del dato, $L$
-quella del codice $\mathbf{z}_i = e_\phi(\mathbf{x}_i)$, $N$ il numero di
-esempi e $\ell$ una misura di scarto fra dato e ricostruzione, sommata sulle
-$D$ componenti (errore quadratico, oppure cross-entropia per componente come
+quella del codice $\mathbf{z}_i = e_\phi(\mathbf{x}_i)$, $N$ il numero di esempi
+e $\ell$ una misura di scarto fra dato e ricostruzione, sommata sulle $D$
+componenti (errore quadratico, oppure cross-entropia per componente come
 nell’addestramento sulle cifre scritte a mano: è la somma sui pixel a fare del
 risultato un costo «per cifra» e non «per pixel»). Il vincolo $L \ll D$ è la
 strozzatura, e senza un vincolo il problema è vuoto: con $L \ge D$ basta
-prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per dire)
-e la loss tocca il suo minimo senza che nessuno abbia imparato niente. La
-strozzatura, però, non è l’unico vincolo possibile, ed è per questo che sta
-fra le condizioni e non nella definizione: il libro ne incontrerà due che di
-strozzatura non ne hanno. Uno chiede che di ogni codice si accendano
-pochissime componenti, e di componenti ne tiene più di quante erano quelle di
-partenza ({doc}`sparse autoencoder
-</Interpretabilita/attribuzione-e-meccanicistica>`); l’altro fa ricostruire il
-dato da una sua copia sporcata di rumore ({doc}`denoising autoencoder
-</ModelliEnergia/oltre-la-partizione>`). Scritti come obiettivi, sono due
-modifiche di $\mathcal{L}$: la sparsità aggiunge un termine
+prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per dire) e
+la loss tocca il suo minimo senza che nessuno abbia imparato niente. La
+strozzatura, però, non è l’unico vincolo possibile, ed è per questo che sta fra
+le condizioni e non nella definizione: ce ne sono altri, che di strozzatura non
+ne hanno. Uno chiede che di ogni codice si accendano pochissime componenti, e di
+componenti ne tiene più di quante erano quelle di partenza
+({doc}`sparse autoencoder </Interpretabilita/attribuzione-e-meccanicistica>`);
+un altro fa ricostruire il dato da una sua copia sporcata di rumore
+({doc}`denoising autoencoder </ModelliEnergia/oltre-la-partizione>`); il terzo
+pretende che il codice cambi poco quando il dato cambia poco, ed è
+l’**autoencoder contrattivo**. Scritti come obiettivi, sono tre modifiche di
+$\mathcal{L}$: la sparsità aggiunge un termine
 $\lambda \sum_j \lvert z_{ij} \rvert$, con $L$ anche maggiore di $D$; il
 denoising sostituisce $\ell(\mathbf{x}_i, d_\theta(e_\phi(\mathbf{x}_i)))$ con
-$\mathbb{E}_{\tilde{\mathbf{x}} \sim C(\tilde{\mathbf{x}} \mid \mathbf{x}_i)}\,
-\ell(\mathbf{x}_i, d_\theta(e_\phi(\tilde{\mathbf{x}})))$, dove $C$ è il
-processo
-che sporca (rumore gaussiano, pixel azzerati) {cite}`vincent2008extracting`. In
-tutti e due i casi l’identità smette di essere una soluzione: nel primo perché
-costa, nel secondo perché il rumore lo lascia dov’è.
+$\mathbb{E}_{\tilde{\mathbf{x}} \sim C(\tilde{\mathbf{x}} \mid \mathbf{x}_i)}\, \ell(\mathbf{x}_i, d_\theta(e_\phi(\tilde{\mathbf{x}})))$,
+dove $C$ è il processo che sporca (rumore gaussiano, pixel azzerati)
+{cite}`vincent2008extracting`; il contrattivo di Rifai e colleghi
+{cite}`rifai2011contractive` aggiunge il quadrato della norma di Frobenius
+dello jacobiano dell’encoder,
+$\lambda\,\lVert \partial e_\phi(\mathbf{x}_i) / \partial \mathbf{x}_i \rVert_F^2$.
+In tutti e tre i casi l’identità smette di essere una soluzione: con la
+sparsità e con la contrazione perché costa, con il rumore perché l’identità lo
+lascia dov’è.
 
-Due osservazioni che tornano utili subito. La prima: in questa scrittura non
-compare nessuna distribuzione. Non c’è un $p(\mathbf{x})$, non c’è un
-$p(\mathbf{z})$, non c’è niente da cui campionare; c’è una funzione che
-comprime, una che decomprime e uno scarto da minimizzare. La seconda: la loss
-vincola i codici solo uno per uno, tramite la propria ricostruzione, e non
-dice nulla su come i codici stiano fra loro. Nessuna delle due è una
+La versione sparsa ha un antenato senza encoder, la **codifica sparsa** di
+Olshausen e Field {cite}`olshausen1996emergence`: un decoder lineare
+$\mathbf{B} \in \mathbb{R}^{D \times L}$, il dizionario, anche sovracompleto,
+e per ogni dato il codice
+
+$$
+\mathbf{z}^\star(\mathbf{x}) = \arg\min_{\mathbf{z}}\;
+\tfrac12\,\lVert \mathbf{x} - \mathbf{B}\mathbf{z} \rVert_2^2
++ \lambda \sum_{j=1}^{L} S(z_j),
+$$
+
+dove $S$ è una penalità di sparsità: Olshausen e Field ne provano diverse, fra
+cui $\log(1 + z^2)$ e $\lvert z \rvert$, con risultati qualitativamente simili.
+Con $S(z) = \lvert z \rvert$ il problema in $\mathbf{z}$ è convesso, ed è il
+*basis pursuit denoising* di Chen, Donoho e Saunders {cite}`chen1998atomic`, la
+forma che si usa di solito; il problema congiunto in $\mathbf{z}$ e $\mathbf{B}$
+non lo è, e lo si affronta alternando la ricerca dei codici a dizionario fisso
+con l’aggiornamento del dizionario a codici fissi, come in k-means. Addestrato
+su pezzetti di immagini naturali, il dizionario si riempie di rilevatori di
+bordi localizzati e orientati, simili ai campi recettivi delle cellule semplici
+della corteccia visiva primaria. Il prezzo è l’inferenza, perché ogni codice è
+un’ottimizzazione. La *decomposizione sparsa predittiva* (PSD) di Kavukcuoglu,
+Ranzato e LeCun {cite}`kavukcuoglu2008fast` aggiunge un encoder
+$e_\phi(\mathbf{x}) = \mathbf{G}\tanh(\mathbf{W}\mathbf{x} + \mathbf{c})$, con
+$\mathbf{W} \in \mathbb{R}^{L \times D}$, $\mathbf{c} \in \mathbb{R}^{L}$ e
+$\mathbf{G}$ diagonale, e un termine
+$\alpha\,\lVert \mathbf{z} - e_\phi(\mathbf{x}) \rVert_2^2$ nella stessa
+funzione obiettivo, con $\alpha$ che pesa quanto il codice deve restare vicino
+alla predizione dell’encoder: l’addestramento alterna la minimizzazione in
+$\mathbf{z}$, partendo da $e_\phi(\mathbf{x})$, con un passo di gradiente su
+$\mathbf{B}$ e su $\phi$, e a regime il codice costa una passata in avanti. Con
+$\alpha = 0$ si torna alla codifica sparsa; lo sparse autoencoder è il passo
+successivo, che per produrre il codice tiene soltanto l’encoder (il decoder
+resta, ed è il dizionario) e mette la penalità direttamente sulla sua uscita.
+
+Che cosa impari il contrattivo lo dice un argomento, sostenuto dagli esperimenti
+più che da un teorema. Da sola la penalità darebbe un encoder costante, da sola
+la ricostruzione (con $L \ge D$) l’identità; il compromesso è un encoder che,
+vicino agli esempi di addestramento, contrae in quasi tutte le direzioni e resta
+sensibile soltanto lungo poche, diverse da punto a punto. Se i dati si
+concentrano vicino a una varietà di dimensione bassa (l’*ipotesi della varietà*,
+che qui si assume), quelle poche sono le sue direzioni tangenti, perché lungo di
+esse stanno gli esempi vicini che la ricostruzione deve tenere distinti, e le si
+legge nei vettori singolari destri associati ai pochi valori singolari grandi
+dello jacobiano {cite}`rifai2011contractive,goodfellow2016deep`. Lontano dai
+dati la penalità non viene mai calcolata, e lì l’encoder può anche dilatare. Per
+un encoder di un solo strato a sigmoide,
+$\mathbf{z} = \sigma(\mathbf{W}\mathbf{x} + \mathbf{b})$, lo jacobiano è
+$\operatorname{diag}\big(z_j(1-z_j)\big)\,\mathbf{W}$ e la penalità ha forma
+chiusa, $\sum_{j=1}^{L} \big(z_j(1-z_j)\big)^2 \sum_{k=1}^{D} W_{jk}^2$, con $j$
+sulle componenti del codice e $k$ su quelle del dato. Si calcola in $O(DL)$,
+come l’errore di ricostruzione, e mostra le due vie per contrarre: pesi piccoli
+(con un encoder lineare è la sola, e la penalità si riduce al weight decay
+$\lVert\mathbf{W}\rVert_F^2$) oppure unità sature, dove $z_j(1-z_j)$ si annulla.
+Con un encoder più profondo la forma chiusa non c’è, e lo jacobiano esatto costa
+$L$ passate all’indietro per esempio; Rifai e colleghi lo evitano impilando
+encoder di uno strato, addestrati uno alla volta, ciascuno con la sua forma
+chiusa. Serve però una scala nel decoder, perché un encoder che moltiplica per
+$\epsilon$ e un decoder che divide per $\epsilon$ azzerano la penalità senza
+aver imparato niente: i pesi legati, $\mathbf{W}$ nell’encoder e
+$\mathbf{W}^\top$ nel decoder, lo impediscono.
+
+Il legame con il denoising è stretto. Con rumore gaussiano di deviazione
+standard $s$ piccola ($\sigma$ qui è la sigmoide), errore quadratico e una
+ricostruzione che resta vicina all’identità,
+$d_\theta(e_\phi(\mathbf{x})) = \mathbf{x} + o(1)$ per $s \to 0$, la loss del
+denoising vale l’errore di ricostruzione più $s^2$ volte la stessa penalità,
+calcolata però sullo jacobiano dell’intera ricostruzione $d_\theta \circ e_\phi$
+invece che del solo encoder. Senza l’ultima condizione nello sviluppo resta un
+termine dello stesso ordine $s^2$, proporzionale allo scarto di ricostruzione e
+alle derivate seconde di $d_\theta \circ e_\phi$. E per un autoencoder di
+capacità illimitata la ricostruzione ottima sposta ogni punto in cui la densità
+è positiva di $s^2\,\nabla_{\mathbf{x}} \log p(\mathbf{x})$, cioè lungo lo
+*score*, il gradiente del logaritmo della densità: lo stesso oggetto che il
+denoising score matching dei {doc}`modelli a energia
+</ModelliEnergia/oltre-la-partizione>` stima per costruzione, e che per un
+denoising di forma particolare aveva già trovato Vincent
+{cite}`vincent2011connection`. Tutte e due le affermazioni valgono a meno di
+termini $o(s^2)$ {cite}`alain2014regularized`. Lo score, poi, basta a generare,
+ma non pescando un codice, bensì camminando nello spazio dei dati con una catena
+di Markov guidata da $d_\theta(e_\phi(\mathbf{x})) - \mathbf{x}$, che gli stessi
+Alain e Bengio costruiscono con Metropolis-Hastings.
+
+Due osservazioni che tornano utili subito. La prima: nella definizione di
+$\mathcal{L}$ non compare nessuna distribuzione. Il $p(\mathbf{x})$ di poco fa
+si legge nell’ottimo, non sta scritto nella loss, e non c’è un $p(\mathbf{z})$,
+né niente da cui pescare un codice; c’è una funzione che comprime, una che
+decomprime e uno scarto da minimizzare. La seconda: la loss vincola i codici
+solo uno per uno, tramite la propria ricostruzione, e non dice nulla su come i
+codici stiano fra loro; e dove il codice tace il decoder non inventa, perché con
+errore quadratico, e con la cross-entropia per componente, il decoder ottimo a
+encoder fissato restituisce la {doc}`media condizionata
+</RetiNeurali/da-dove-viene-la-loss>` $\mathbb{E}[\mathbf{x} \mid \mathbf{z}]$,
+la stessa per tutti i dati che hanno quel codice. Nessuna delle due è una
 dimenticanza da correggere in un secondo momento: sono la definizione, e da lì
 discende tutto il resto della sezione.
 
@@ -539,14 +679,16 @@ verosimiglianza dei dati.
 Prima di tirare le somme, una precisazione su che cosa non è in discussione. La
 clessidra resta il modo giusto di comprimere, ed è così che il libro la usa
 quando le chiede di comprimere: nel {doc}`capitolo sull’audio
-</Audio/overview>` per fabbricare un alfabeto del suono, e più avanti per
-rimpicciolire un’immagine di quarantotto volte. (In quei due posti la clessidra
-ha in più qualcosa che qui non c’è, e non è la stessa cosa nei due: per
-l’immagine il pezzo che aggiunge la sezione seguente, per il suono la scheda
-fatta di simboli dell’ultima. Il mestiere che le si chiede, però, è questo.) Il
-difetto misurato qui riguarda un mestiere diverso, fabbricare dati nuovi, che a
-un compressore nessuno ha mai chiesto e che nessuna quantità di addestramento
-gli fa venire.
+</Audio/overview>` per fabbricare un alfabeto del suono, e nella {doc}`sezione
+su Stable Diffusion </ModelliDiffusione/stable-diffusion>` per rimpicciolire
+un’immagine di quarantotto volte. (In quei due posti la clessidra ha in più
+qualcosa che qui non c’è, e non è la stessa cosa nei due: per l’immagine il
+pezzo che aggiunge la sezione seguente, per il suono la scheda fatta di
+simboli del {doc}`latente che si usa </ModelliLatenti/il-latente-che-si-usa>`.
+Il mestiere che le si chiede, però, è questo.) Il difetto misurato qui riguarda
+un mestiere diverso, fabbricare dati nuovi a partire da un codice sorteggiato,
+che a un compressore nessuno ha mai chiesto e che nessuna quantità di
+addestramento gli fa venire.
 
 `````{tab} Elementare
 
@@ -557,12 +699,15 @@ gli fa venire.
   il dato dalla sola scheda, e il voto è uno solo, quanto la copia somiglia
   all’originale.
 - La strozzatura è la richiesta, non un limite: potendo scrivere una scheda
-  lunga quanto il quadro, i due imparerebbero a fotocopiare.
+  lunga quanto il quadro, i due imparerebbero a fotocopiare. Altre regole
+  fanno lo stesso lavoro senza collo stretto: l’inchiostro che si paga, quadri
+  sporcati da ripulire, una scheda che cambia meno del quadro.
 - Comprimere funziona: otto numeri bastano a rifare una cifra scritta a mano in
   modo che si riconosca.
-- Generare no. Camminando in linea retta fra due schede vere si incontrano
-  punti che non vogliono dire niente, e pescando una scheda a caso si finisce,
-  di norma, a più del doppio della distanza che separa due schede vere.
+- Generare a partire da una scheda no. Camminando in linea retta fra due schede
+  vere si incontrano punti che non vogliono dire niente, e pescando una scheda a
+  caso si finisce, di norma, a più del doppio della distanza che separa due
+  schede vere.
 - La colpa non è dell’archivista: nella sua pagella non compariva l’ordine del
   cassetto. Quello che manca è una regola su dove vanno messe le schede, ed
   è fatta di due pezzi, una forma decisa in anticipo per il cassetto e un voto
@@ -578,8 +723,8 @@ gli fa venire.
 - Un autoencoder addestra $e_\phi$ e $d_\theta$ sulla sola ricostruzione, e
   nella sua definizione non compare nessuna distribuzione. La strozzatura
   $L \ll D$ è uno dei vincoli che gli impediscono di fotocopiare, non la
-  definizione: al suo posto vanno la sparsità del codice o il rumore
-  sull’ingresso.
+  definizione: al suo posto vanno la sparsità del codice, il rumore
+  sull’ingresso o la penalità contrattiva sullo jacobiano dell’encoder.
 - Con $e_\phi$ e $d_\theta$ affini ed errore quadratico ritrova il
   sottospazio affine che passa per la media dei dati ed è generato dalle prime
   $L$ componenti principali {cite}`bourlard1988auto,baldi1989neural`, a meno

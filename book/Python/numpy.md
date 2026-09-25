@@ -368,9 +368,10 @@ lungo quale asse ridurre, e quell'asse sparisce dalla forma: su `X` di forma
 $(n, d)$, `X.mean(axis=0)` ha forma $(d,)$ e si allinea da destra con
 $(n, d)$. La media di riga, `X.mean(axis=1)`, ha forma $(n,)$, e per
 sottrarla serve `keepdims=True`, che lascia l'asse con lunghezza $1$ e dà
-$(n, 1)$; senza, le forme non combaciano e NumPy si ferma, tranne quando
-$n = d$, dove si allinea in silenzio sull'asse sbagliato. Lo stesso silenzio
-rende cara la regola: una previsione di forma $(n, 1)$ meno un bersaglio di
+$(n, 1)$; senza, le forme non combaciano e NumPy si ferma, tranne in due
+casi: con $n = d$ si allinea in silenzio sull'asse sbagliato, e con $d = 1$
+allarga tutte e due le forme e restituisce una matrice $(n, n)$. È il secondo a
+rendere cara la regola: una previsione di forma $(n, 1)$ meno un bersaglio di
 forma $(n,)$ dà una matrice $(n, n)$, e l'errore quadratico medio calcolato
 sopra restituisce un numero sbagliato senza nessun avviso.
 

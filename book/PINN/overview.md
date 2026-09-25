@@ -64,9 +64,10 @@ questo: una regola sul cambiamento che, partendo da una condizione iniziale (80
 curve che obbediscono alla regola sarebbero infinite: l'80 sceglie la nostra.
 Che una partenza basti a scegliere una storia sola, però, lo si sa dimostrare
 per le regole semplici come quella del caffè, e non per tutte: per le equazioni
-che descrivono un fluido che scorre nessuno ci è ancora riuscito, ed è uno dei
-grandi problemi aperti della matematica. Le leggi di Newton che Le Verrier stava
-applicando sono regole così, con la gravità al posto del caffè.
+che descrivono un fluido che scorre in tre dimensioni, e per tutto il tempo che
+si vuole, nessuno ci è ancora riuscito, ed è uno dei grandi problemi aperti
+della matematica. Le leggi di Newton che Le Verrier stava applicando sono regole
+così, con la gravità al posto del caffè.
 
 Quel conto minuto per minuto è il metodo classico: dagli anni Cinquanta i
 calcolatori risolvono così le equazioni differenziali, un passettino alla
@@ -366,12 +367,14 @@ solutore maturo impiega millisecondi, e a volte fallisce senza preavviso
 ## La legge dentro la loss, e i suoi limiti
 
 Dalla cornice al banco di lavoro. Nella prossima sezione costruiremo il metodo
-per intero, con una PINN scritta in PyTorch, e il banco di prova sarà una
-molla che oscilla e si smorza: la rete, la misura di quanto viola la
-regola, il punteggio che mette insieme i due controlli, e infine il problema
-inverso, con un pezzo di legge che fingeremo di non conoscere. Chiuderemo con
-le applicazioni reali (il sangue nelle arterie, i materiali, il clima) e una
-mappa onesta dei limiti: quando convengono, quando no.
+per intero, con una PINN scritta in PyTorch, e il banco di prova sarà una molla
+che oscilla e si smorza: la rete, la misura di quanto viola la regola, il
+punteggio che mette insieme i due controlli, e infine il problema inverso, con
+un pezzo di legge che fingeremo di non conoscere. Poi, per le equazioni che
+diffondono, una seconda lettura che aggira la griglia: la soluzione come media
+su cammini casuali. Chiuderemo con le applicazioni reali (il sangue nelle
+arterie, i materiali, il clima) e una mappa onesta dei limiti: quando
+convengono, quando no.
 
 `````{tab} Elementare
 

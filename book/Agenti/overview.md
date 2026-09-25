@@ -298,8 +298,9 @@ Tre dei quattro ingredienti appena elencati (qualcosa che decide, degli
 strumenti, un ciclo che li mette in moto) non sono un'idea nuova.
 L'intelligenza artificiale classica, quella fatta di regole scritte a mano da
 un programmatore, costruiva agenti così già fra gli anni Sessanta e Settanta.
-Due di loro, ELIZA e GUS, arrivano fra poche righe, e con loro il quarto
-ingrediente, la memoria, che quei sistemi avevano in forma minima.
+Due di loro, ELIZA e GUS, tornano più avanti, con i chatbot a regole, e con
+loro il quarto ingrediente, la memoria, che quei sistemi avevano in forma
+minima.
 
 Perché allora gli agenti *basati su LLM* nascono solo ora? Le tre lettere
 stanno per *large language model*, «grande modello di linguaggio», e sono la

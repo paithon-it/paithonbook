@@ -184,27 +184,31 @@ termini si conta con la stessa formula, mettendo tutte le $p_t$ a uno: per
 quasi ventiquattro miliardi sui cinquanta che quella parola occupa davvero. La
 somma si calcola comunque in tempo $O(T \cdot U)$ (lineare nella lunghezza
 dell'audio, a trascrizione fissata) per programmazione dinamica sul reticolo
-della trascrizione estesa $y' = (\varnothing, y_1, \varnothing, y_2, \dots, y_U,
-\varnothing)$, lunga $2U+1$. Sia $\alpha_t(s)$ la probabilità totale dei
-prefissi di percorso lunghi $t$ che collassano in $y'_{1:s}$ e finiscono su
-$y'_s$. Si parte da $\alpha_1(1) = p_1(\varnothing \mid \mathbf{X})$,
+della trascrizione estesa
+$y' = (\varnothing, y_1, \varnothing, y_2, \dots, y_U, \varnothing)$, lunga
+$2U+1$. Sia $\alpha_t(s)$ la probabilità totale dei prefissi di percorso lunghi
+$t$ che finiscono su $y'_s$ e, collassati, danno il prefisso di $y$ che
+$y'_{1:s}$ contiene. Si parte da
+$\alpha_1(1) = p_1(\varnothing \mid \mathbf{X})$,
 $\alpha_1(2) = p_1(y_1 \mid \mathbf{X})$, zero altrove, e si avanza con
 
 $$
 \alpha_t(s) = \Big(\alpha_{t-1}(s) + \alpha_{t-1}(s-1) + \mathbb{1}\big[y'_s \neq \varnothing,\ y'_s \neq y'_{s-2}\big]\,\alpha_{t-1}(s-2)\Big)\, p_t(y'_s \mid \mathbf{X}),
 $$
 
-dove il terzo addendo è il salto che scavalca un vuoto, vietato fra due
-simboli uguali; alla fine $p(y \mid \mathbf{X}) = \alpha_T(2U+1) +
-\alpha_T(2U)$, perché il percorso può chiudere sull'ultimo vuoto o sull'ultima
-lettera. È la ricorsione *forward* degli HMM di {doc}`POS tagging ed entità
-</NaturalLanguageProcessing/etichettare-sequenze>`, con la somma al posto del
-massimo di Viterbi; la gemella all'indietro $\beta_t(s)$ dà, col prodotto
-$\alpha_t(s)\beta_t(s)$, la massa dei percorsi che passano per $(t, s)$, e da
-lì il gradiente rispetto a ogni uscita $p_t(k \mid \mathbf{X})$
-{cite}`graves2006connectionist`. Su mille frame un prodotto di probabilità
-scende sotto la precisione di macchina, e per questo la ricorsione si fa in
-log, o riscalando ogni colonna come nel paper. Si addestra minimizzando
+dove il terzo addendo è il salto che scavalca un vuoto, vietato fra due simboli
+uguali; alla fine $p(y \mid \mathbf{X}) = \alpha_T(2U+1) + \alpha_T(2U)$, perché
+il percorso può chiudere sull'ultimo vuoto o sull'ultima lettera. È la
+ricorsione *forward* degli HMM di
+{doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`,
+con la somma al posto del massimo di Viterbi; la gemella all'indietro
+$\beta_t(s)$, che nel paper conta anche lei il voto al frame $t$, dà con
+$\alpha_t(s)\beta_t(s)/p_t(y'_s \mid \mathbf{X})$ la massa dei percorsi che
+passano per $(t, s)$, e da lì il gradiente rispetto a ogni uscita
+$p_t(k \mid \mathbf{X})$ {cite}`graves2006connectionist`. Su mille frame un
+prodotto di probabilità scende sotto il più piccolo numero che il formato sa
+scrivere, e per questo la ricorsione si fa in log, o riscalando ogni colonna
+come nel paper. Si addestra minimizzando
 $\mathcal{L} = -\log p(y \mid \mathbf{X})$.
 
 Due limiti strutturali. Il primo è una conseguenza diretta della formula: la
@@ -478,10 +482,13 @@ esempio azzera alcune bande di frequenza contigue e alcuni tratti di frame
 contigui (e, nella versione originale, deforma leggermente l'asse del tempo),
 con larghezze estratte a caso entro un tetto. Il modello impara a trascrivere
 anche quando un pezzo dell'immagine manca, che è la condizione di un fonema
-coperto da un rumore o di una banda tagliata da un microfono, e a LAS bastò
-questo per il miglior risultato pubblicato di allora su LibriSpeech, senza
-cambiare una riga dell'architettura. È lo stesso gesto del mascheramento di
-wav2vec 2.0, usato qui come regolarizzatore invece che come compito.
+coperto da un rumore o di una banda tagliata da un microfono. Con quel guasto
+nell'ingresso, e con la stessa architettura resa più grande e addestrata più a
+lungo, LAS arrivò al miglior risultato pubblicato di allora su LibriSpeech:
+l'aumento dei dati, scrivono gli autori, trasforma un problema di overfitting in
+uno di underfitting, e a quel punto una rete più grande torna a rendere. È il
+gesto che wav2vec 2.0 riprenderà un anno dopo, dichiarandolo simile a questo,
+per farne un compito invece che un regolarizzatore.
 
 ## Il trasduttore: tenersi tutte e due le cose
 
@@ -564,15 +571,15 @@ forma che si è imposta dopo, ed è quella che si trova nelle librerie.
 
 Lo spazio degli allineamenti non è più una sequenza di $T$ etichette ma un
 reticolo: emettere un token muove di uno in verticale, emettere il vuoto muove
-di uno in orizzontale, e ogni cammino monotono che copre tutti i frame ed
-emette tutti i token è un allineamento valido. L'ultimo simbolo è sempre un
-vuoto, quello che chiude l'ultimo frame, quindi liberi da disporre restano
-$T-1$ vuoti e $U$ token: i cammini sono $\binom{T+U-1}{U}$, cioè $3\,162\,510$
-per `PALLA` sui cinquanta frame di prima, e non i $3\,478\,761$ di
-$\binom{T+U}{U}$, che è la forma che si scrive dimenticando il vuoto finale. La
-probabilità della trascrizione è ancora la somma su tutti i cammini. Con
-$\alpha(t,u)$ la massa dei cammini che hanno consumato $t$ frame ed emesso i
-primi $u$ token,
+di uno in orizzontale, e ogni cammino monotono che copre tutti i frame ed emette
+tutti i token è un allineamento valido. L'ultimo simbolo è sempre un vuoto,
+quello che chiude l'ultimo frame, quindi liberi da disporre restano $T-1$ vuoti
+e $U$ token: i cammini sono $\binom{T+U-1}{U}$, cioè $3\,162\,510$ per `PALLA`
+sui cinquanta frame di prima, e non i $3\,478\,761$ di $\binom{T+U}{U}$, che è
+la forma che si scrive dimenticando il vuoto finale. La probabilità della
+trascrizione è ancora la somma su tutti i cammini. Con $\alpha(t,u)$ la massa
+dei cammini che sono arrivati al frame $t$ (ne hanno chiusi $t-1$, un vuoto per
+ciascuno) dopo aver emesso i primi $u$ token,
 
 $$
 \alpha(t,u) = \alpha(t-1,u)\,p(\varnothing \mid t-1,u)
@@ -769,25 +776,24 @@ Quello che dice il suono, da solo, non basta mai. In italiano «l'ago» e
 sequenze di parole sono frasi plausibili e sposta la trascrizione verso ciò
 che «suona» come italiano corretto.
 
-Il modo di farlo entrare cambia con l'epoca. Nei sistemi classici il modello
-di linguaggio non si affiancava al riconoscitore. Quei sistemi, prima di
-ascoltare, componevano in un unico grafo pesato tutto
-ciò che si poteva dire: un trasduttore a stati finiti pesato (WFST) che porta
-dagli stati degli HMM ai fonemi, dai fonemi alle parole attraverso il
-dizionario di pronuncia e dalle parole alle frasi attraverso il modello di
-linguaggio, con un costo su ogni arco, il meno logaritmo di una probabilità.
-Trascrivere voleva dire cercare in quel grafo, con Viterbi e un fascio, il
-cammino di costo minimo. Il modello di linguaggio non arrivava dopo:
-i suoi giudizi erano già scritti nei costi delle strade, insieme al dizionario
-di pronuncia, e una manopola regolava quanto contassero rispetto al parere
-dell'orecchio.
+Il modo di farlo entrare cambia con l'epoca. Nei sistemi classici il modello di
+linguaggio non si affiancava al riconoscitore. Quei sistemi, prima di ascoltare,
+componevano in un unico grafo pesato tutto ciò che si poteva dire: un
+trasduttore a stati finiti pesato (WFST) che porta dagli stati degli HMM ai
+fonemi, dai fonemi alle parole attraverso il dizionario di pronuncia e dalle
+parole alle frasi attraverso il modello di linguaggio, con un costo su ogni
+arco, il meno logaritmo di una probabilità. Trascrivere voleva dire cercare in
+quel grafo, con Viterbi e un fascio, il cammino di costo minimo. Il modello di
+linguaggio non arrivava dopo: i suoi giudizi erano già scritti nei costi degli
+archi, insieme al dizionario di pronuncia, e una manopola regolava quanto
+contassero rispetto al parere dell'orecchio.
 
-Nei modelli end-to-end quella mappa non si costruisce più, e lo stesso effetto
-si ottiene in due modi. O si somma il
-punteggio di un modello di linguaggio esterno a quello del riconoscitore a
-ogni passo della ricerca a fascio (si chiama *shallow fusion*, «fusione
-superficiale» {cite}`kannan2018analysis`), o si lascia finire la ricerca e si
-riordinano con il modello di linguaggio le prime $n$ ipotesi che ha prodotto.
+Nei modelli end-to-end quel grafo non si costruisce più, e lo stesso effetto si
+ottiene in due modi. O si somma il punteggio di un modello di linguaggio esterno
+a quello del riconoscitore a ogni passo della ricerca a fascio (si chiama
+*shallow fusion*, «fusione superficiale» {cite}`kannan2018analysis`), o si
+lascia finire la ricerca e si riordinano con il modello di linguaggio le prime
+$n$ ipotesi che ha prodotto.
 
 Quanto serva, però, dipende da quale modello si sta usando, e le due famiglie
 non stanno affatto sulla stessa barca. Un modello che scrive rileggendosi,
@@ -877,20 +883,20 @@ print(round(wer("il gatto nero salta sul muro",
 
 Il WER è comodo ma fragile, prima ancora che grezzo. Conta le parole come
 stringhe, quindi «9:30» contro «nove e trenta», una maiuscola o una virgola
-valgono un errore ciascuna anche quando la trascrizione è giusta: ogni
-confronto presuppone una normalizzazione del testo, di riferimento e ipotesi,
-identica per tutti i sistemi, che è la normalizzazione della sintesi vocale
-percorsa al contrario. Gli autori di Whisper ne hanno scritta una apposta, e
-riportano raccolte su cui cambiarla basta a dimezzare il WER
+valgono un errore ciascuna anche quando la trascrizione è giusta: ogni confronto
+presuppone una normalizzazione del testo, di riferimento e ipotesi, identica per
+tutti i sistemi, che è la normalizzazione della sintesi vocale percorsa al
+contrario. Gli autori di Whisper ne hanno scritta una apposta, e riportano
+raccolte (WSJ, CallHome, Switchboard) su cui la loro, al posto di una scritta da
+altri, abbassa il WER di Whisper di circa il trenta per cento
 {cite}`radford2022robust`: un WER riportato senza dire come è stato normalizzato
 il testo non si confronta con niente. E anche normalizzato resta grezzo. Pesa
-allo stesso modo un errore grave e uno banale,
-e tratta male le lingue che attaccano le parole fra loro: in tedesco
-*Geschwindigkeitsbegrenzung* («limite di velocità») è una parola sola, quindi
-sbagliarne una sillaba conta come sbagliarla tutta, mentre in italiano lo
-stesso inciampo ne intaccherebbe una su tre.
-Per questo, accanto al WER, si riporta spesso il *Character Error Rate* (CER),
-che conta gli stessi errori a livello di carattere. Nessuna misura, però,
+allo stesso modo un errore grave e uno banale, e tratta male le lingue che
+attaccano le parole fra loro: in tedesco *Geschwindigkeitsbegrenzung* («limite
+di velocità») è una parola sola, quindi sbagliarne una sillaba conta come
+sbagliarla tutta, mentre in italiano lo stesso inciampo ne intaccherebbe una su
+tre. Per questo, accanto al WER, si riporta spesso il *Character Error Rate*
+(CER), che conta gli stessi errori a livello di carattere. Nessuna misura, però,
 cattura del tutto ciò che conta davvero: se la frase trascritta, letta da un
 essere umano, significa ancora la cosa giusta.
 

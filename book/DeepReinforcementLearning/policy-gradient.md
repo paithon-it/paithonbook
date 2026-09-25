@@ -8,9 +8,10 @@ griglia, e vince chi circonda più territorio.) Era invece una mossa che, second
 le stime del programma stesso, un umano avrebbe giocato circa una volta su
 diecimila. Lee Sedol si alza dal tavolo per un quarto d'ora. Quella stima la
 dava la rete che AlphaGo aveva addestrato a imitare le partite umane; la mossa
-la trovò la ricerca, guidata da una rete di valore che aveva imparato su
-milioni di partite giocate dal programma contro sé stesso, con una *strategia*
-affinata proprio con il metodo raccontato qui.
+la trovò la ricerca, guidata da una rete di valore allenata su partite che il
+programma giocava contro sé stesso. Nella versione descritta pochi mesi prima,
+quelle partite le giocava una *strategia* affinata proprio con il metodo
+raccontato qui.
 
 Come si insegna a una macchina una strategia? Nei metodi basati sul valore,
 che abbiamo incontrato con il Q-learning, impariamo a stimare *quanto vale una
@@ -195,7 +196,8 @@ con $\alpha$ il passo di apprendimento. E qui c'è un'avvertenza di rigore,
 perché l'aggiornamento appena scritto non è la formula del teorema: il
 $\gamma^{\,t}$ davanti a ciascun addendo è sparito. Ometterlo è la prassi, ed è
 la prassi che seguiamo anche noi, e costa: la direzione che si ottiene non è
-più $\nabla_\theta J(\theta)$, e Nota e Thomas hanno mostrato che non è il
+più $\nabla_\theta J(\theta)$, e Nota e Thomas {cite}`nota2020policy` hanno
+mostrato che non è il
 gradiente di nessuna funzione, per cui le garanzie della salita del gradiente
 non la coprono (esiste un esempio costruito in cui converge a una politica
 pessima). In pratica la si usa perché non soffoca il segnale dei passi lontani

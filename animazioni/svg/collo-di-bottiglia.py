@@ -6,9 +6,10 @@ matrice di adiacenza normalizzata con i cappi. Qui u e v stanno in due gruppi
 densi collegati da un ponte, e quell'elemento è piccolo; il ponte è l'arco con
 la curvatura più negativa, ed è lì che il rewiring aggiunge un arco.
 
-I numeri li calcola il generatore: la curvatura di Forman di ogni arco
-(4 - d_i - d_j + 3 * triangoli, la versione con i triangoli), l'elemento
-(A^K)_vu prima e dopo l'arco aggiunto. Gli `assert` difendono quello che la
+I numeri li calcola il generatore: la curvatura Balanced Forman di Topping e
+colleghi per ogni arco (la stessa che il testo nomina e che guida il loro
+rewiring; qui i termini sui quadrilateri senza diagonali valgono zero, e un
+`assert` lo controlla), l'elemento (A^K)_vu prima e dopo l'arco aggiunto. Gli `assert` difendono quello che la
 figura promette: il ponte è l'arco più curvo in negativo, e l'arco aggiunto
 fa crescere (A^K)_vu.
 """
@@ -49,10 +50,22 @@ def normalizzata(A):
     return At / np.sqrt(np.outer(d, d))
 
 
-def forman(A, i, j):
+def balanced_forman(A, i, j):
+    """Curvatura Balanced Forman (Topping e colleghi, Def. 1) dell'arco (i, j).
+
+    Si calcola la parte con gradi e triangoli; i termini sui quadrilateri senza
+    diagonali qui non servono, e l'assert si ferma se un grafo li avesse."""
     d = A.sum(1)
-    triangoli = int((A[i] * A[j]).sum())
-    return int(4 - d[i] - d[j] + 3 * triangoli)
+    di, dj = d[i], d[j]
+    triangoli = (A[i] * A[j]).sum()
+    for k in np.nonzero(A[i])[0]:
+        if k == j or A[j, k]:
+            continue
+        for w in np.nonzero(A[j])[0]:
+            if w != i and not A[i, w] and A[k, w]:
+                raise AssertionError(f"quadrilatero senza diagonali su {i}-{j}")
+    return (2 / di + 2 / dj - 2 + 2 * triangoli / max(di, dj)
+            + triangoli / min(di, dj))
 
 
 def distanza(A, s, t):
@@ -69,7 +82,7 @@ A1 = adiacenza(archi([AGGIUNTO]))
 K = distanza(A0, U, V)
 PRIMA = np.linalg.matrix_power(normalizzata(A0), K)[V, U]
 DOPO = np.linalg.matrix_power(normalizzata(A1), K)[V, U]
-CURV = {e: forman(A0, *e) for e in archi()}
+CURV = {e: balanced_forman(A0, *e) for e in archi()}
 if min(CURV, key=CURV.get) != PONTE:
     raise AssertionError("il ponte non è l'arco con la curvatura più negativa")
 if DOPO <= 1.5 * PRIMA:
@@ -91,6 +104,10 @@ def cifra(x):
     m, e = f"{x:.1e}".split("e")
     apici = str.maketrans("0123456789-", "⁰¹²³⁴⁵⁶⁷⁸⁹⁻")
     return f"{m.replace('.', ',')} · 10{str(int(e)).translate(apici)}"
+
+
+def decimale(x):
+    return f"{x:.1f}".replace(".", ",").replace("-", "−")
 
 
 def costruisci() -> Figura:
@@ -115,7 +132,7 @@ def costruisci() -> Figura:
     (x1, y1), (x2, y2) = pos[PONTE[0]], pos[PONTE[1]]
     c.append(f'<text class="lbs" x="{(x1 + x2) / 2:.0f}" y="{y1 - 16:.0f}" '
              f'text-anchor="middle">ponte, curvatura '
-             f'{str(CURV[PONTE]).replace("-", "−")}</text>')
+             f'{decimale(CURV[PONTE])}</text>')
     (x1, y1), (x2, y2) = pos[AGGIUNTO[0]], pos[AGGIUNTO[1]]
     c.append(f'<text class="lbs nuovo-t" x="{(x1 + x2) / 2:.0f}" '
              f'y="{max(y1, y2) + 64:.0f}" text-anchor="middle">'
@@ -130,7 +147,7 @@ def costruisci() -> Figura:
         larghezza=720, altezza=ly + 44,
         alt=f"Due gruppi di cinque nodi, ognuno collegato al proprio interno, "
             f"uniti da un solo arco, il ponte, che ha la curvatura più negativa "
-            f"del grafo ({CURV[PONTE]}). Il nodo u sta a sinistra e v a destra, "
+            f"del grafo ({decimale(CURV[PONTE])}). Il nodo u sta a sinistra e v a destra, "
             f"a {K} passi. Un arco tratteggiato, aggiunto dal rewiring accanto al "
             f"ponte, apre una seconda strada e fa crescere il limite sulla "
             f"sensibilità di v a u da {cifra(PRIMA)} a {cifra(DOPO)}.",

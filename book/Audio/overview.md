@@ -104,14 +104,14 @@ $\hat{W}$. I compiti dell'audio generale hanno firme diverse:
 
 La radice comune è che le rappresentazioni tempo–frequenza restano quelle: la
 costruzione dello spettrogramma e della scala mel è la stessa per un colpo di
-tamburo e per una vocale, e a cambiare sono i parametri (la finestra standard di
-25 ms è tarata sul parlato: abbastanza corta perché
-il tratto vocale si possa considerare fermo, abbastanza lunga da contenere due o
-tre periodi della fondamentale; chi lavora sulla musica allunga la finestra, per
-separare note vicine, e alza il numero di bande). Cambia poi tutto a valle
-(l'obiettivo, la funzione di perdita,
-l'architettura), perché la struttura statistica di musica e suoni ambientali non
-è quella, quasi-periodica e vincolata dal tratto vocale, del parlato.
+tamburo e per una vocale, e a cambiare sono i parametri (la finestra standard
+di 25 ms è tarata sul parlato: abbastanza corta perché il tratto vocale si
+possa considerare fermo, abbastanza lunga da contenere almeno due o tre periodi
+della fondamentale; chi lavora sulla musica allunga la finestra, per separare
+note vicine, e alza il numero di bande). Cambia poi tutto a valle (l'obiettivo,
+la funzione di perdita, l'architettura), perché la struttura statistica di
+musica e suoni ambientali non è quella, quasi-periodica e vincolata dal tratto
+vocale, del parlato.
 
 `````
 

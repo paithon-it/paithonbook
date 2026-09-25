@@ -152,9 +152,10 @@ quattrocentonovantanove di prima. Ma di ciascuna di quelle parole serve un
 riassunto che era già stato calcolato quando è stata scritta, quindi invece di
 rifarlo lo si tiene da parte, come si tiene un segnalibro invece di rileggere
 il libro da capo a ogni pagina. Quel deposito di riassunti si chiama cache
-delle chiavi e dei valori, e lo costruisce il {doc}`capitolo sui Transformer
-</Transformers/overview>`, l’architettura di cui quei modelli sono fatti,
-perché è lì che si capisce che cosa siano chiavi e valori. Non risolve il
+delle chiavi e dei valori, e lo costruisce la {doc}`sezione sui grandi modelli
+linguistici </Transformers/llm>`, nel capitolo sui Transformer (l’architettura
+di cui quei modelli sono fatti), perché è lì che si capisce che cosa siano
+chiavi e valori. Non risolve il
 problema della tabella dei conti per byte: sposta il traffico dai pesi al
 deposito, che cresce a ogni parola scritta.
 
@@ -221,8 +222,9 @@ in cui il modello grande la taglia.
   contrario: toglie i conti del ricalcolo e aggiunge i byte della cache, che
   cresce con il contesto, quindi abbassa l'intensità aritmetica del passo di
   decodifica invece di alzarla. Resta un affare perché per ogni posizione del
-  contesto toglie proiezioni dell'ordine di $d^2$ operazioni e aggiunge la
-  lettura di due vettori dell'ordine di $d$ numeri.
+  contesto toglie proiezioni dell'ordine di $n^2$ operazioni e aggiunge la
+  lettura di due vettori dell'ordine di $n$ numeri, con $n$ la larghezza dello
+  strato.
 - Nessuna delle tre appartiene a questo capitolo, perché nessuna cambia il
   modello. La cache la costruisce la {doc}`sezione sui grandi modelli
   linguistici </Transformers/llm>`; il raggruppamento delle richieste e la
@@ -241,6 +243,7 @@ tutti gli errori del maestro. Il
 prezzo cambia da un modello all'altro, e chi ne adotta una senza misurarlo sul
 proprio sta scegliendo alla cieca.
 
-Tutto questo presuppone di sapere già com'è fatta una rete profonda, e perché
-molti strati sottili valgano più di uno solo largo: è la domanda da cui
-riparte il {doc}`capitolo sul deep learning </DeepLearning/overview>`.
+Una domanda è rimasta sottintesa, perché i conti delle tre leve la usavano
+senza farla: perché una rete sia fatta di molti strati sottili invece che di
+uno solo largo. È la domanda del {doc}`capitolo sul deep learning
+</DeepLearning/overview>`.

@@ -281,15 +281,17 @@ un obiettivo stazionario che scende con la discesa del gradiente come
 qualunque problema supervisionato, senza equilibri da inseguire.
 
 **Diversità.** Il minimo della loss quadratica è la media condizionata
-$\mathbb{E}[\boldsymbol{\epsilon} \mid \mathbf{x}_t]$, che è definita per *ogni* esempio del
-dataset a *ogni* livello di rumore: un modello che coprisse solo alcuni modi
-della distribuzione pagherebbe su tutti gli altri, e non ha modo di compensare
-la perdita. Il *mode collapse*, patologia strutturale del gioco avversario,
-qui non ha un meccanismo con cui manifestarsi. Dhariwal e Nichol
-{cite}`dhariwal2021diffusion` lo confermano misurando, oltre alla qualità,
-anche la copertura della distribuzione dei dati. (Attenzione a non appoggiare
-questo argomento al limite variazionale: la loss che si usa davvero non è un
-bound, come vedremo nella prossima sezione. Regge da sé.)
+$\mathbb{E}[\boldsymbol{\epsilon} \mid \mathbf{x}_t]$ (la dimostrazione sta
+nella {doc}`sezione sulla loss </RetiNeurali/da-dove-viene-la-loss>`), che è
+definita per *ogni* esempio del dataset a *ogni* livello di rumore: un modello
+che coprisse solo alcuni modi della distribuzione pagherebbe su tutti gli
+altri, e non ha modo di compensare la perdita. Il *mode collapse*, patologia
+strutturale del gioco avversario, qui non ha un meccanismo con cui
+manifestarsi. Dhariwal e Nichol {cite}`dhariwal2021diffusion` lo confermano
+misurando, oltre alla qualità, anche la copertura della distribuzione dei dati.
+(Attenzione a non appoggiare questo argomento al limite variazionale: la loss
+che si usa davvero non è un bound, come vedremo nella prossima sezione. Regge
+da sé.)
 
 **Costo di campionamento.** Una GAN genera con una valutazione della rete;
 un DDPM ne richiede $T$ (mille, in origine), perché il campionamento percorre
@@ -364,13 +366,15 @@ applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
   restauratore ripete il suo giro centinaia di volte. È un baratto e non una
   classifica: tempo in cambio di stabilità e varietà.
 - Nel resto del capitolo: DDPM in dettaglio; i mille gradini resi
-    infinitamente piccoli, che fanno della scala una rampa; il flow matching,
-    che la strada fra rumore e immagine la sceglie dritta invece di ereditarla;
-    il trucco che fa lavorare la rete su una versione compressa della fotografia
-    invece che sui pixel, ed è il motivo per cui Stable Diffusion gira in casa;
-    un Transformer, cioè
-  l'architettura del capitolo che porta quel nome, messo al posto della rete di
-  visione; e i modelli che con la stessa ricetta generano video.
+  infinitamente piccoli, che fanno della scala una rampa; il flow matching, che
+  la strada fra rumore e immagine la sceglie dritta invece di ereditarla; il
+  trucco che fa lavorare la rete su una versione compressa della fotografia
+  invece che sui pixel, ed è il motivo per cui Stable Diffusion gira in casa;
+  un Transformer, cioè l'architettura del capitolo che porta quel nome, messo
+  al posto della rete di visione, e i modelli che con la stessa ricetta
+  generano video; i modi di ridurre i passi a qualche decina, e poi a uno solo;
+  la manopola che decide quanto il risultato obbedisca alla richiesta; e la
+  stessa ricetta applicata al testo.
 ```
 
 `````

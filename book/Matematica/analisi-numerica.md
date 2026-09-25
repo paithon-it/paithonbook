@@ -440,12 +440,11 @@ di codice specializzato per il ferro su cui deve girare.
 
 Una libreria di algebra lineare non contiene una sola implementazione di
 ciascuna routine: ne contiene molte, compilate ciascuna per un insieme di
-istruzioni vettoriali, cioè per una delle SIMD di cui parla il
-{doc}`sezione su NumPy </Python/numpy>`. Su un processore x86 sono
-generazioni successive, e a distinguerle è la
-larghezza dei registri su cui lavorano: 128 bit per SSE2, 256 per AVX2, 512
-per AVX-512, dove il numero nel nome è proprio quella larghezza. In doppia
-precisione vuol dire due, quattro e otto numeri per istruzione.
+istruzioni vettoriali, cioè per una delle SIMD di cui parla la {doc}`sezione su
+NumPy </Python/numpy>`. Su un processore x86 sono generazioni successive, e a
+distinguerle è la larghezza dei registri su cui lavorano: 128 bit per SSE2, 256
+per AVX2, 512 per AVX-512, dove il numero nel nome è proprio quella larghezza.
+In doppia precisione vuol dire due, quattro e otto numeri per istruzione.
 
 Al caricamento la libreria sceglie la variante adatta a quello che la CPU
 dichiara di saper fare: in OpenBLAS il meccanismo si chiama `DYNAMIC_ARCH`.
@@ -476,14 +475,13 @@ macchine diverse si confrontano con una tolleranza, non con l’uguaglianza.
 
 `````
 
-Una differenza nella sedicesima cifra sembra irrilevante, e quasi sempre lo
-è. Smette di esserlo quando quel numero non è il risultato ma l’ingresso di un
-calcolo lungo: se su quei valori si fa una discesa del gradiente, cioè
-migliaia di passi in cui ognuno riparte da dove è arrivato il precedente, due
-traiettorie che partono a distanza $10^{-16}$ si separano, e alla fine la
-differenza non è più nell’ultima cifra ma nel primo decimale: un'accuratezza
-finale può cambiare di mezzo punto fra due processori, con lo stesso codice e
-lo stesso punto di partenza.
+Una differenza nella sedicesima cifra sembra irrilevante, e quasi sempre lo è.
+Smette di esserlo quando quel numero non è il risultato ma l’ingresso di un
+calcolo lungo: se su quei valori si fa una discesa del gradiente, cioè migliaia
+di passi in cui ognuno riparte da dove è arrivato il precedente, due traiettorie
+che partono a distanza $10^{-16}$ si separano, e alla fine la differenza non è
+più nell’ultima cifra ma nel primo decimale, con lo stesso codice e lo stesso
+punto di partenza.
 
 Da qui tre abitudini che costano poco. Un numero che esce da un calcolo lungo
 si racconta con le cifre che reggono, non con tutte quelle che il calcolatore
@@ -651,20 +649,25 @@ condizionamento del problema, non sull'algoritmo.
 Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
 prodotti dentro la rete stanno su scale lontanissime (invito all'overflow) e la
 superficie della *loss* si allunga in una valle stretta, mal condizionata. La
-discesa del gradiente vi rimbalza da una parete all'altra a zig-zag,
-convergendo con lentezza esasperante. Standardizzare rende le curve di livello
-molto più tonde: il gradiente punta quasi dritto verso il minimo
+discesa del gradiente vi rimbalza da una parete all'altra a zig-zag, convergendo
+con lentezza esasperante. Standardizzare rende le curve di livello molto più
+tonde: il gradiente punta quasi dritto verso il minimo
 ({numref}`fig-condizionamento`). Detto con il numero di condizionamento: per un
-modello lineare con perdita quadratica l'hessiana è
-$\mathbf{X}^\top\mathbf{X}/n$, e dopo la standardizzazione diventa la matrice
-di correlazione delle feature, con diagonale di soli $1$. Il suo
-$\kappa=\lambda_{\max}/\lambda_{\min}$ fissa il fattore di contrazione
-$(\kappa-1)/(\kappa+1)$ della discesa del gradiente visto nella {doc}`sezione
-su analisi e ottimizzazione <analisi-ottimizzazione>`. Che la riduzione sia
-quasi la migliore possibile, anche se non garantita, lo dice un teorema di van
-der Sluis: fra tutte le riscalature diagonali delle colonne di $\mathbf{X}$,
-quella che le rende di norma uguale ha un $\kappa_2$ al più $\sqrt{p}$ volte
-l'ottimo, con $p$ il numero di colonne {cite}`higham2002accuracy`.
+modello lineare con $m$ esempi e perdita
+$\frac{1}{2m}\lVert\mathbf{X}\mathbf{w}-\mathbf{y}\rVert^2$ l'hessiana è
+$\mathbf{X}^\top\mathbf{X}/m$, e dopo la standardizzazione diventa la matrice di
+correlazione delle feature, con diagonale di soli $1$ (senza il $\tfrac12$ è il
+doppio, e $\kappa$ non cambia). Il suo $\kappa=\lambda_{\max}/\lambda_{\min}$
+fissa il fattore di contrazione $(\kappa-1)/(\kappa+1)$ della discesa del
+gradiente visto nella {doc}`sezione su analisi e ottimizzazione
+<analisi-ottimizzazione>`. Che la riduzione sia quasi la migliore possibile,
+anche se non garantita, lo dice un teorema di van der Sluis: fra tutte le
+riscalature diagonali delle colonne di $\mathbf{X}$, già centrate, quella che le
+rende di norma uguale ha un $\kappa_2(\mathbf{X})$ al più $\sqrt{p}$ volte
+l'ottimo, con $p$ il numero di colonne, e quindi un'hessiana con $\kappa$ al più
+$p$ volte l'ottimo, perché
+$\kappa(\mathbf{X}^\top\mathbf{X})=\kappa_2(\mathbf{X})^2$
+{cite}`higham2002accuracy`.
 
 Non è una cura completa, perché mette tutte le feature sulla stessa scala ma
 non cambia la loro correlazione: se due di esse crescono e calano quasi
@@ -743,10 +746,10 @@ euro.
 - La softmax e le verosimiglianze si calcolano nel dominio logaritmico con il
   trucco log-sum-exp (sottrai il massimo) per evitare che gli esponenziali
   straripino.
-- Condizionamento e stabilità sono due cause indipendenti di un
-  risultato sbagliato: il primo è del problema ($\kappa_2 =
-  \sigma_{\max}/\sigma_{\min}$), la seconda dell'algoritmo, e l'errore finale
-  è al più il prodotto delle due.
+- Condizionamento e stabilità sono due cause indipendenti di un risultato
+  sbagliato: il primo è del problema ($\kappa_2 = \sigma_{\max}/\sigma_{\min}$),
+  la seconda dell'algoritmo, e finché il loro prodotto resta piccolo l'errore
+  finale è circa $\kappa$ per l'errore all'indietro.
 - Standardizzare i dati non è solo buona educazione statistica: riduce il
   condizionamento del problema e fa convergere l'ottimizzazione molto più in
   fretta.

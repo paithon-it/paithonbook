@@ -728,20 +728,20 @@ l'istante $t$ delle feature, le ultime $h$ righe di training hanno un bersaglio
 $y_{t+h}$ che cade oltre l'ultimo istante che la prima riga di test conosce. Si
 tagliano via quelle righe, ed è un'operazione che ha un nome, la purga, preso
 dal capitolo settimo di *Advances in Financial Machine Learning* di Marcos López
-de Prado
-{cite}`lopezdeprado2018advances`, intitolato appunto alla cross-validation in
-finanza. Quante siano discende dalla regola stessa. La prima riga di test,
-all'istante $t_0+1$, usa osservazioni fino a $y_{t_0}$, che è quanto il
-previsore sa quando la emette; una riga di training all'istante $t$ è lecita
-se il suo bersaglio era già noto a quel punto, cioè se $t + h \le t_0$, e le
-righe da togliere in fondo al training sono esattamente $h$. Ritardi e
+de Prado {cite}`lopezdeprado2018advances`, intitolato appunto alla
+cross-validation in finanza. Quante siano discende dalla regola stessa. La prima
+riga di test, all'istante $t_0+1$, usa osservazioni fino a $y_{t_0}$, che è
+quanto il previsore sa quando la emette; una riga di training all'istante $t$ è
+lecita se il suo bersaglio era già noto a quel punto, cioè se $t + h \le t_0$, e
+le righe da togliere in fondo al training sono esattamente $h$. Ritardi e
 finestre mobili non allungano il conto: che una riga di training abbia per
-bersaglio un valore che la prima riga di test legge fra le sue feature non è
-una fuga, perché quando si prevede quel valore è già osservato, e in
-produzione il modello lo avrebbe in mano allo stesso modo. Togliere anche
-quelle righe butterebbe via dati leciti e renderebbe la stima pessimista
-invece che onesta. È anche il criterio di López de Prado: si purgano le
-osservazioni il cui *bersaglio* si sovrappone nel tempo a quello di test.
+bersaglio un valore che la prima riga di test legge fra le sue feature non è una
+fuga, perché quando si prevede quel valore è già osservato, e in produzione il
+modello lo avrebbe in mano allo stesso modo. Togliere anche quelle righe
+butterebbe via dati leciti e renderebbe la stima pessimista invece che onesta. È
+anche il criterio di López de Prado, per il quale l'etichetta di una riga occupa
+il tratto che va dall'istante della riga al suo bersaglio: si purgano le righe
+di training il cui tratto si sovrappone a quello di una riga di test.
 
 Quanto costa tenersele, quelle righe, dipende da quanto è lungo il training:
 su una serie fortemente autocorrelata e con un orizzonte di una settimana la
@@ -814,15 +814,19 @@ Volendo prevedere $H$ passi $\hat{y}_{t+1}, \dots, \hat{y}_{t+H}$:
 - Ricorsiva (o *iterata*): si stima un solo modello a un passo
   $\hat{y}_{t+1}=f(y_t, y_{t-1}, \dots)$ e lo si applica in cascata, reinserendo
   le proprie previsioni come input, $\hat{y}_{t+2}=f(\hat{y}_{t+1}, y_t, \dots)$.
-  Gli errori si propagano e si compongono lungo l'orizzonte, gonfiando la
-  varianza sui passi lontani.
+  Se il modello a un passo è approssimato, lo sbaglio si riapplica a ogni
+  passo; se è lineare e ben specificato, la ricorsione è la previsione ottima.
 - Diretta: si addestra un modello distinto $f_h$ per ciascun orizzonte
-  $h=1,\dots,H$, con $\hat{y}_{t+h}=f_h(y_t, y_{t-1}, \dots)$. Nessun errore
-  ereditato, ma $H$ modelli da stimare e nessuna coerenza imposta tra i passi.
+  $h=1,\dots,H$, con $\hat{y}_{t+h}=f_h(y_t, y_{t-1}, \dots)$. Nessuno sbaglio
+  di specificazione ereditato, ma $H$ modelli da stimare, più varianza e
+  nessuna coerenza imposta tra i passi.
 - Multi-output (MIMO): un'unica funzione a valori vettoriali
   $(\hat{y}_{t+1}, \dots, \hat{y}_{t+H}) = f(y_t, y_{t-1}, \dots)$, che
   modella congiuntamente le dipendenze tra gli orizzonti (la forma tipica
   delle reti neurali, con $H$ neuroni in uscita).
+
+L'incertezza che cresce con l'orizzonte non distingue fra le tre: fra $t$ e
+$t+h$ cadono $h$ innovazioni ancora da osservare, qualunque strategia si scelga.
 
 `````
 
@@ -1005,9 +1009,10 @@ vale più della pigrizia, purché si dichiari quale pigrizia.
   termini di Fourier) riduce il forecasting a un problema supervisionato
   tabellare, senza mai usare informazione dal futuro, comprese le statistiche
   usate per scalare le colonne.
-- Per il multi-step si sceglie tra strategia ricorsiva (economica, ma
-  l'errore si accumula), diretta (un modello per orizzonte) e multi-output
-  (un solo modello, tutti i passi).
+- Per il multi-step si sceglie tra strategia ricorsiva (economica, ottima se
+  il modello a un passo è ben specificato, ma se non lo è lo sbaglio si
+  riapplica a ogni passo), diretta (un modello per orizzonte, più varianza) e
+  multi-output (un solo modello, tutti i passi).
 - Le bande di previsione escono sistematicamente troppo strette, e a stringerle
   è una sola delle due comodità su cui poggiano: i parametri sono trattati come
   noti mentre sono stimati. La seconda, la normalità degli scarti, tira

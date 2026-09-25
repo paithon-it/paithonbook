@@ -105,8 +105,8 @@ di grigi, "srotolata", è un vettore di $\mathbb{R}^{784}$.
 
 È l'operazione che ritorna più spesso in tutto il machine learning: un
 neurone artificiale, in fondo, non fa altro che calcolare un prodotto
-scalare. Il nome arriva dal
-{doc}`capitolo sulle reti neurali </RetiNeurali/percettrone>` e qui basta
+scalare. Il nome arriva dalla
+{doc}`sezione sul percettrone </RetiNeurali/percettrone>` e qui basta
 sapere cosa indica: il mattone
 elementare di cui una rete è fatta, un pezzetto di calcolo che riceve una
 lista di numeri, la confronta con una lista di numeri propri e restituisce un
@@ -200,9 +200,13 @@ $$
 = \lVert\mathbf{a}\rVert\,\lVert\mathbf{b}\rVert\cos\theta,
 $$
 
-dove $\theta$ è l'angolo tra i due vettori. La seconda uguaglianza è la
-chiave: il prodotto scalare misura l'allineamento. Da qui la **similarità del
-coseno**, onnipresente nel NLP per confrontare *embedding*:
+dove $\theta$ è l'angolo tra i due vettori e l'apice $\top$ si legge
+«trasposto»: $\mathbf{a}^\top$ è la colonna $\mathbf{a}$ scritta in riga, e il
+prodotto di una riga per una colonna è la somma dei prodotti delle componenti
+corrispondenti (la trasposta di una matrice qualsiasi sta nel paragrafo sulle
+matrici). La seconda uguaglianza è la chiave: il prodotto scalare misura
+l'allineamento. Da qui la **similarità del coseno**, onnipresente nel NLP per
+confrontare *embedding*:
 
 $$
 \cos\theta = \frac{\mathbf{a}^\top \mathbf{b}}
@@ -253,21 +257,54 @@ prezzi, e si somma.
 - comodità: $0\cdot 75 + 1\cdot 3 + 5\cdot 2 = 0 + 3 + 10 = 13$.
 
 Il risultato è la lista $(180,\ 13)$. Tre numeri sono entrati, due ne sono
-usciti, e sono due misture nuove invece degli stessi tre riordinati, ciascuna
-decisa da una riga della tabella. Questo è tutto ciò che significa
-moltiplicare i dati per una matrice, e lo si può ripetere: la lista che esce
-può entrare in un'altra tabella. È così che ogni strato di una rete neurale
-"riscrive" ciò che riceve prima di passarlo allo strato dopo, e i pesi delle
-righe sono esattamente ciò che l'addestramento va a regolare.
+usciti, e ciascuno è una mistura nuova, decisa da una riga della tabella. Questo
+è tutto ciò che significa moltiplicare i dati per una matrice, e lo si può
+ripetere: la lista che esce può entrare in un'altra tabella. È così che ogni
+strato di una rete neurale "riscrive" ciò che riceve prima di passarlo allo
+strato dopo, e i pesi delle righe sono esattamente ciò che l'addestramento va a
+regolare.
 
-Il conto appena fatto porta con sé due avvertenze. Ogni riga di pesi deve
-avere un numero per ciascuna voce dell'appartamento, né uno di più né uno di
-meno: una riga scritta per quattro voci non si combina con una lista di tre,
-come uno scontrino con un prezzo a cui non corrisponde nessuna quantità, e il
-totale non si chiude. E quando le tabelle si mettono in fila, l'ordine conta:
-passare i dati prima in una tabella e poi nell'altra, o al contrario, dà quasi
-sempre risultati diversi, come vestirsi (le calze prima delle scarpe funziona,
-nell'ordine inverso no).
+Il conto appena fatto porta con sé due avvertenze. Ogni riga di pesi deve avere
+un numero per ciascuna voce dell'appartamento, né uno di più né uno di meno: una
+riga scritta per quattro voci non si combina con una lista di tre, come una
+spina a tre poli in una presa da due: il polo in più non ha dove attaccarsi. E
+quando le tabelle si mettono in fila, l'ordine conta. Passare i dati prima in
+una tabella e poi nell'altra, o al contrario, dà quasi sempre risultati diversi,
+e spesso al contrario non si può nemmeno, perché le misure non combaciano: come
+vestirsi, dove le calze prima delle scarpe funziona e nell'ordine inverso no.
+
+Una tabella, poi, non ha un verso di lettura obbligato. Letta per colonne, la
+colonna «mq» dice quanto pesano i metri quadri in ciascuno dei due punteggi: 2
+nell'ampiezza, 0 nella comodità. Riscriverla scambiando righe e colonne si
+chiama **trasporre**: la tabella da due righe e tre colonne diventa una da tre
+righe e due colonne, e la riga «ampiezza», $(2,\ 10,\ 0)$, diventa la sua
+prima colonna:
+
+$$
+\begin{array}{lcc}
+ & \text{ampiezza} & \text{comodità}\\
+\text{mq} & 2 & 0\\
+\text{stanze} & 10 & 1\\
+\text{piano} & 0 & 5
+\end{array}
+$$
+
+I numeri restano gli stessi, cambia solo il verso in cui si leggono.
+
+A che cosa serve girarla? I programmi tengono gli esempi uno per riga, come
+nella tabella dei 100 appartamenti, e allora il conto va fatto partendo dalla
+riga dei dati: ogni appartamento deve incontrare le liste di pesi messe per
+colonna, cioè la tabella girata. Prima la tabella stava davanti e ogni sua riga
+incontrava l'appartamento; adesso davanti c'è l'appartamento, $(75,\ 3,\ 2)$, e
+incontra ciascuna colonna. La prima colonna è $(2,\ 10,\ 0)$, e
+$2\cdot 75 + 10\cdot 3 + 0\cdot 2$ fa di nuovo $180$; la seconda, $(0,\ 1,\ 5)$,
+dà di nuovo $13$. Senza girare la tabella non si potrebbe fare, perché le sue
+colonne hanno due numeri e l'appartamento tre: è la spina che non entra nella
+presa. Con cento appartamenti è lo stesso conto ripetuto per ogni riga dei dati,
+e ne esce una tabella di cento righe e due colonne, i due punteggi di ciascuno.
+Lo scontrino era già questo conto in piccolo: una riga sola di quantità,
+$(4,\ 2)$, contro una colonna sola di prezzi, $(1,\ 3)$, e ne esce un numero
+solo, i 10 euro del totale.
 
 `````
 
@@ -297,12 +334,47 @@ $$
 
 Non è commutativo ($\mathbf{A}\mathbf{B}\neq\mathbf{B}\mathbf{A}$ in generale)
 e le dimensioni "interne" devono combaciare. Uno strato *fully-connected* di
-una rete non è altro che
-$\mathbf{h} = \sigma(\mathbf{W}\mathbf{x}+\mathbf{b})$: una moltiplicazione
-per la matrice dei pesi $\mathbf{W}$, seguita da una non linearità $\sigma$.
-Il fatto che tante operazioni si riducano a prodotti tra matrici è ciò che
-rende le GPU (nate per fare in parallelo lo stesso conto su milioni di pixel)
-così efficaci nel deep learning.
+una rete non è altro che $\mathbf{h} = \sigma(\mathbf{W}\mathbf{x}+\mathbf{b})$:
+una moltiplicazione per la matrice dei pesi $\mathbf{W}$, seguita da una non
+linearità $\sigma$. Il fatto che tante operazioni si riducano a prodotti tra
+matrici è ciò che rende le GPU (nate per fare in parallelo lo stesso conto su
+milioni di pixel) così efficaci nel deep learning.
+
+La **trasposta** di $\mathbf{A}\in\mathbb{R}^{m\times n}$ è
+$\mathbf{A}^\top\in\mathbb{R}^{n\times m}$, che scambia righe e colonne:
+$(\mathbf{A}^\top)_{ij}=A_{ji}$. Un vettore di $\mathbb{R}^n$ è una matrice
+$n\times 1$ e la sua trasposta una riga $1\times n$, quindi il prodotto
+scalare $\mathbf{a}^\top\mathbf{b}$ è il prodotto di una matrice $1\times n$
+per una $n\times 1$: una matrice $1\times 1$, cioè un numero. Nell'ordine
+opposto, $\mathbf{a}\mathbf{b}^\top$ è una matrice $n\times n$ con elementi
+$a_i b_j$, il *prodotto esterno*, che si definisce allo stesso modo fra vettori
+di lunghezze diverse: $\mathbf{u}\in\mathbb{R}^m$ e
+$\mathbf{v}\in\mathbb{R}^n$ danno una matrice $m\times n$. Con il prodotto,
+la trasposta inverte l'ordine dei fattori: per
+$\mathbf{A}\in\mathbb{R}^{m\times k}$ e $\mathbf{B}\in\mathbb{R}^{k\times n}$
+come nel prodotto fra matrici,
+
+$$
+(\mathbf{A}\mathbf{B})^\top = \mathbf{B}^\top\mathbf{A}^\top ,
+$$
+
+perché l'elemento $(i,j)$ di tutti e due i lati vale
+$\sum_{r=1}^{k} A_{jr}B_{ri}$. Le dimensioni lo confermano, dato che
+$\mathbf{B}^\top$ è $n\times k$ e $\mathbf{A}^\top$ è $k\times m$, mentre
+nell'ordine $\mathbf{A}^\top\mathbf{B}^\top$ combaciano solo se $m = n$, e anche
+allora, in generale, il prodotto è un altro. E siccome un numero coincide con il
+proprio trasposto, $\mathbf{a}^\top\mathbf{b} = \mathbf{b}^\top\mathbf{a}$.
+
+Il caso più frequente è $(\mathbf{W}\mathbf{x})^\top =
+\mathbf{x}^\top\mathbf{W}^\top$: con gli esempi impilati uno per riga in una
+matrice $\mathbf{X}$, come lavorano le librerie, lo strato
+$\mathbf{W}\mathbf{x}$ applicato a tutti insieme si scrive
+$\mathbf{X}\mathbf{W}^\top$. E $\mathbf{W}^\top$ torna nel passo
+all'indietro: se $\boldsymbol{\delta}$ è il gradiente della loss rispetto
+all'uscita $\mathbf{W}\mathbf{x}+\mathbf{b}$, quello rispetto all'ingresso è
+$\mathbf{W}^\top\boldsymbol{\delta}$ e quello rispetto ai pesi è il prodotto
+esterno $\boldsymbol{\delta}\mathbf{x}^\top$, come ricava la {doc}`sezione sul
+backpropagation </RetiNeurali/backpropagation>`.
 
 `````
 
@@ -515,8 +587,9 @@ autovalori $\ge 0$; per $\sigma_i>0$ si pone
 $\mathbf{u}_i=\mathbf{A}\mathbf{v}_i/\sigma_i$, e si verifica che questi
 vettori sono ortonormali. Una matrice simmetrica è semidefinita positiva se e
 solo se i suoi autovalori sono $\ge 0$, e definita positiva se sono $>0$: le
-matrici di covarianza sono della prima specie, e un'hessiana definita positiva
-in un punto stazionario garantisce un minimo locale stretto.
+{doc}`matrici di covarianza </Matematica/probabilita-statistica>` sono della
+prima specie, e un’{doc}`hessiana </Matematica/analisi-ottimizzazione>` definita
+positiva in un punto stazionario garantisce un minimo locale stretto.
 
 L'iterazione chiarisce il resto: su un autovettore $\mathbf{A}^k\mathbf{v} =
 \lambda^k\mathbf{v}$, quindi il comportamento asintotico di un sistema che
@@ -548,6 +621,207 @@ esplodono o svaniscono è quindi la norma del prodotto, cioè i valori
 singolari, ed è il conto che rifà il capitolo sulle reti neurali.
 
 `````
+
+## Ricorrenze lineari: i conigli di Leonardo Pisano
+
+Nel *Liber abaci*, scritto nel 1202 e arrivato fino a noi nella redazione del
+1228, Leonardo Pisano, il Fibonacci, propone un problema di allevamento. Una
+coppia di conigli è chiusa in un recinto; ogni coppia ne genera una nuova ogni
+mese, e le coppie nuove cominciano a generare dal secondo mese, mentre quella
+di partenza genera già nel primo. Quante coppie ci sono dopo un anno? Leonardo
+fa il conto mese per mese sommando ogni volta i due numeri precedenti, scrive
+in margine la fila 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, e avverte
+che così si può andare avanti per quanti mesi si vuole {cite}`pisano1857liber`.
+
+Una regola in cui ogni termine è una combinazione fissa dei precedenti si
+chiama **ricorrenza lineare**, e si risolve con gli autovalori: gli ultimi
+termini si mettono in un vettore, il passo da un mese al successivo diventa una
+matrice, e il mese $n$ è quella matrice applicata $n$ volte.
+
+`````{tab} Elementare
+
+Il recinto, mese per mese, si descrive con due numeri: le coppie che ci sono
+adesso e quelle che c’erano un mese fa. Il mese dopo, le coppie sono quelle di
+adesso più una nuova per ogni coppia che c’era già un mese fa, che ormai ha
+l’età per generare; e le coppie «di un mese fa» diventano quelle di adesso.
+Scritta come tabella, la regola ha due righe: 1 e 1, che somma i due numeri, e
+1 e 0, che copia il primo. È una tabella due per due come quelle delle sezioni
+sulle matrici, e il recinto dopo un anno è quella tabella applicata mese dopo
+mese.
+
+Anche questa tabella ha le sue venature. Una è la proporzione fra le coppie di
+adesso e quelle di un mese fa che il mese dopo si ritrova identica, soltanto
+ingrandita. Se un mese fa c’era 1 e adesso c’è $f$, il mese dopo, per restare
+in proporzione, ci deve essere $f$ per $f$; ma per la regola ci sono $f$ più 1.
+Il fattore giusto è quello per cui $f$ per $f$ fa $f$ più 1, e vale 1,618:
+1,618 per 1,618 fa 2,618. Un recinto nella proporzione di 1,618 a 1, un mese
+dopo, è lo stesso recinto ingrandito di 1,618 volte, e nient’altro.
+
+C’è un secondo numero con la stessa proprietà, $-0{,}618$ ($-0{,}618$ per
+$-0{,}618$ fa 0,382, cioè $-0{,}618$ più 1), ed è la seconda venatura. Non è un
+recinto vero, perché ha un numero negativo: è un correttivo, che serve a
+scrivere qualunque recinto vero come somma di due pezzi, e che ogni mese si
+accorcia e cambia segno.
+
+Il recinto alla fine del primo mese, 2 coppie e 1 il mese prima, è 1,17 volte
+la prima venatura e $-0{,}17$ volte la seconda. Mese dopo mese la prima parte
+cresce di 1,618 volte e la seconda si riduce, fino a non contare più niente: il
+recinto si mette da solo nella proporzione giusta, e da lì cresce di 1,618
+volte al mese. Nel conto di Leonardo si vede già: 377 diviso 233 fa 1,61803.
+
+Ne esce anche una scorciatoia, perché i due pezzi si sanno calcolare per
+qualunque mese senza passare per quelli intermedi: il numero di coppie al mese
+$n$ è 1,17 per 1,618 moltiplicato per sé stesso $n$ volte (come l’1,1 delle
+cento tavole), più il pezzo della seconda venatura, che al dodicesimo mese vale
+poco più di mezzo millesimo e si arrotonda via.
+
+Due cose possono guastare il quadro. La prima è che le due venature abbiano lo
+stesso fattore. La regola «il numero nuovo è due volte il precedente meno
+quello prima» ha un fattore solo, 1, che direbbe «resta com’è»; eppure,
+partendo da 1 e 2, dà 3, 4, 5, 6: una crescita di uno a ogni passo che il
+fattore da solo non vede. La seconda è che le venature non ci siano, come nella
+tabella che fa girare tutte le frecce: allora i numeri non crescono in
+proporzione ma oscillano, positivi e negativi a turno. La regola «il numero
+nuovo è il precedente meno metà di quello prima» è di queste: a ogni passo gira
+di un ottavo di giro e si accorcia a sette decimi circa, e infatti, partendo da
+1 e 1, passa per zero ogni quattro passi, e ogni otto, un giro intero,
+l’ampiezza si divide per sedici.
+
+`````
+
+`````{tab} Superiore
+
+Una ricorrenza lineare omogenea a coefficienti costanti, di ordine $p$, è
+
+$$
+z_n = c_1 z_{n-1} + c_2 z_{n-2} + \dots + c_p z_{n-p}, \qquad c_p \neq 0,
+$$
+
+con i valori iniziali $z_0, \dots, z_{p-1}$ assegnati. Con il vettore di
+stato $\mathbf{s}_n = (z_n, z_{n-1}, \dots, z_{n-p+1})^\top$ il passo diventa
+$\mathbf{s}_{n+1} = \mathbf{M}\mathbf{s}_n$, dove $\mathbf{M}$ è la **matrice
+compagna**
+
+$$
+\mathbf{M} =
+\begin{pmatrix}
+c_1 & c_2 & \cdots & c_{p-1} & c_p \\
+1 & 0 & \cdots & 0 & 0 \\
+0 & 1 & \cdots & 0 & 0 \\
+\vdots & & \ddots & & \vdots \\
+0 & 0 & \cdots & 1 & 0
+\end{pmatrix},
+$$
+
+e quindi $\mathbf{s}_n = \mathbf{M}^{\,n-p+1}\mathbf{s}_{p-1}$. Il
+polinomio caratteristico di $\mathbf{M}$, con la convenzione
+$\det(\mathbf{M} - \lambda\mathbf{I})$ di prima, è
+$(-1)^p\,(\lambda^p - c_1\lambda^{p-1} - \dots - c_p)$, e le sue radici sono
+quelle che si trovano cercando
+soluzioni della forma $z_n = \lambda^n$. Se le sue $p$ radici
+$\lambda_1, \dots, \lambda_p$ sono distinte, $\mathbf{M}$ è diagonalizzabile e
+
+$$
+z_n = \sum_{i=1}^{p} \alpha_i \lambda_i^{\,n},
+$$
+
+con i coefficienti $\alpha_i$ fissati dai $p$ valori iniziali attraverso un
+sistema di Vandermonde, invertibile proprio perché le radici sono distinte.
+Per i conigli $p = 2$ e $c_1 = c_2 = 1$: l’equazione $\lambda^2 - \lambda - 1
+= 0$ dà $\varphi = (1+\sqrt5)/2 \approx 1{,}618$ e $\psi = (1-\sqrt5)/2
+\approx -0{,}618$, e con $F_0 = 0$, $F_1 = 1$ si ottiene la formula di Binet
+$F_n = (\varphi^n - \psi^n)/\sqrt5$. Siccome $|\psi^n|/\sqrt5 < 1/2$ per ogni
+$n \ge 0$, $F_n$ è l’intero più vicino a $\varphi^n/\sqrt5$. (La fila di
+Leonardo, che parte da 1 e 2, è $F_{n+2}$.)
+
+Se una radice ha modulo strettamente maggiore delle altre (con coefficienti
+reali è necessariamente reale, perché le complesse vanno in coppie coniugate di
+pari modulo) e il suo coefficiente non è nullo, $z_n \sim \alpha_1\lambda_1^n$ e
+$z_{n+1}/z_n \to \lambda_1$, con velocità $|\lambda_2/\lambda_1|^n$: è
+$\mathbf{A}^k\mathbf{v} = \lambda^k\mathbf{v}$ letto su una successione, e il
+raggio spettrale di $\mathbf{M}$ è il tasso di crescita.
+
+Le due eccezioni sono quelle della diagonalizzazione. La matrice compagna ha
+un solo autovettore per ogni autovalore distinto, quindi una radice di
+molteplicità $m$ le dà un blocco di Jordan di taglia $m$ e contribuisce con i
+termini $\lambda^n, n\lambda^n, \dots, n^{m-1}\lambda^n$: un fattore
+polinomiale che il modulo della radice non vede, parente del transitorio
+delle matrici non normali. E con coefficienti reali le radici complesse
+vanno in coppie coniugate $\rho\, e^{\pm i\theta}$, la cui somma nella formula
+chiusa è il termine reale $\rho^n (a \cos n\theta + b \sin n\theta)$:
+un’oscillazione di periodo $2\pi/\theta$ dentro un inviluppo $\rho^n$. Per
+$z_n = z_{n-1} - z_{n-2}/2$ le radici sono $(1 \pm i)/2$, con
+$\rho = 1/\sqrt2$ e $\theta = \pi/4$: periodo otto, e in otto passi
+l’inviluppo si riduce di $\rho^8 = 1/16$. È la forma della discesa con il
+momento: sulle quadratiche, lungo ogni autodirezione dell’hessiana, è una
+ricorrenza del secondo ordine, e la {doc}`sezione di analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>` ne ricava così la velocità.
+
+`````
+
+Il conto rifà il recinto con la matrice, ne prende gli autovalori, ricostruisce
+tutti i mesi con la formula chiusa, e poi fa girare in frazioni esatte la
+regola che oscilla.
+
+```python
+from fractions import Fraction
+
+import numpy as np
+
+# il recinto di Leonardo: lo stato di un mese è (coppie ora, coppie un mese fa)
+M = np.array([[1, 1],
+              [1, 0]])
+s = np.array([2, 1])                    # fine del primo mese: 2 coppie, e 1 prima
+coppie = [1, 2]
+for mese in range(2, 13):
+    s = M @ s
+    coppie.append(int(s[0]))
+print("coppie, dall'inizio al dodicesimo mese:", coppie)
+
+lam, _ = np.linalg.eig(M)
+lam = lam[np.argsort(-np.abs(lam))]     # la radice dominante per prima
+print(f"autovalori della matrice: {lam[0]:.4f} e {lam[1]:.4f}")
+
+# formula chiusa: coppie al mese n = a1 * lam1^n + a2 * lam2^n,
+# con a1 e a2 fissati dai primi due mesi
+V = np.array([[1.0, 1.0], lam])
+a = np.linalg.solve(V, np.array(coppie[:2], dtype=float))
+print(f"coefficienti delle due radici: {a[0]:.4f} e {a[1]:.4f}")
+chiusa = [a[0] * lam[0] ** n + a[1] * lam[1] ** n for n in range(13)]
+print("la formula chiusa rifà tutti i mesi:", np.allclose(chiusa, coppie))
+print(f"377 / 233 = {coppie[12] / coppie[11]:.5f}; "
+      f"parte della seconda radice al mese 12: {a[1] * lam[1] ** 12:+.5f}")
+
+# radici complesse: z_n = z_(n-1) - z_(n-2) / 2, fatta con le frazioni esatte
+r = np.roots([1, -1, 0.5])[0]
+print(f"radici di r^2 - r + 1/2: modulo {abs(r):.4f}, "
+      f"angolo {abs(np.angle(r)) / np.pi:.2f} pi greco")
+z = [Fraction(1), Fraction(1)]
+for n in range(2, 17):
+    z.append(z[-1] - z[-2] / 2)
+print("z_0 ... z_16:", " ".join(str(v) for v in z))
+```
+
+```text
+coppie, dall'inizio al dodicesimo mese: [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377]
+autovalori della matrice: 1.6180 e -0.6180
+coefficienti delle due radici: 1.1708 e -0.1708
+la formula chiusa rifà tutti i mesi: True
+377 / 233 = 1.61803; parte della seconda radice al mese 12: -0.00053
+radici di r^2 - r + 1/2: modulo 0.7071, angolo 0.25 pi greco
+z_0 ... z_16: 1 1 1/2 0 -1/4 -1/4 -1/8 0 1/16 1/16 1/32 0 -1/64 -1/64 -1/128 0 1/256
+```
+
+La matrice rifà la fila di Leonardo fino alle 377 coppie, e i suoi due
+autovalori sono $1{,}618$ e $-0{,}618$, con coefficienti $1{,}1708$ e
+$-0{,}1708$ per il recinto di partenza. La formula chiusa ricostruisce ogni mese
+senza passare per i precedenti; al dodicesimo mese la seconda radice pesa poco
+più di cinque decimillesimi, e il rapporto fra due mesi di fila coincide già con
+il fattore dominante fino alla quarta cifra decimale. La regola che oscilla fa
+quello che promettono le sue due radici, lunghe $0{,}7071$ e girate di un quarto
+di $\pi$, cioè di un ottavo di giro: torna a zero ogni quattro passi, cambia
+segno ogni quattro, e fra $z_0 = 1$ e $z_8 = 1/16$, come fra $z_8$ e
+$z_{16} = 1/256$, l’ampiezza si divide per sedici.
 
 ## Norme: misurare lunghezze ed errori
 
@@ -644,7 +918,8 @@ matrice srotolata, e la norma spettrale
 $\lVert\mathbf{A}\rVert_2=\max_{\lVert\mathbf{x}\rVert_2=1}\lVert\mathbf{A}\mathbf{x}\rVert_2=\sigma_1$,
 che soddisfa
 $\lVert\mathbf{A}\mathbf{B}\rVert_2\le\lVert\mathbf{A}\rVert_2\lVert\mathbf{B}\rVert_2$
-ed è la norma con cui si misurano i gradienti che esplodono.
+ed è la norma con cui si misura quanto una catena di jacobiane può far
+esplodere un gradiente.
 
 `````
 
@@ -667,11 +942,21 @@ np.linalg.norm(a)         # norma euclidea di a -> 4.472...
 W = np.array([[0.2, 0.8],
               [-0.5, 0.1]])
 W @ a                     # prodotto matrice-vettore -> array([2.4, -1.8])
+
+x = np.array([75, 3, 2])  # l'appartamento: mq, stanze, piano
+pesi = np.array([[2, 10, 0],
+                 [0, 1, 5]])
+pesi @ x                  # i due punteggi -> array([180,  13])
+x @ pesi.T                # la tabella girata -> array([180,  13])
+np.outer(a, b)            # i prodotti a_i b_j -> array([[ 4, 12], [ 2,  6]])
+a @ b.T                   # ancora 10: .T non gira un array 1-D
 ```
 
 L'operatore `@` è il prodotto matriciale: la stessa notazione vale per
 prodotto scalare, matrice-vettore e matrice-matrice, perché per NumPy sono
-tutti casi della stessa operazione.
+tutti casi della stessa operazione. Un array a una dimensione, però, non è né
+una riga né una colonna, e `.T` lo lascia com'è: la tabella di tutti i prodotti
+$a_i b_j$ si chiede con `np.outer`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -693,6 +978,11 @@ tutti casi della stessa operazione.
   esplodere tutto, uno appena sotto lo fa svanire. In una rete vera le matrici
   sono diverse a ogni strato, quindi va tenuta l'idea (gli effetti si
   moltiplicano lungo la catena) e non il numero.
+- Una regola che fa ogni numero dai precedenti con pesi fissi, come i conigli
+  di Leonardo, è una tabella applicata mese dopo mese: le sue venature danno
+  la crescita (1,618 volte al mese per i conigli) e una scorciatoia per
+  qualunque mese. Quando due venature hanno lo stesso fattore compare una
+  crescita in più, e quando mancano i numeri oscillano.
 - La norma è la lunghezza di una freccia (il teorema di Pitagora sulle sue
   componenti) e serve soprattutto a misurare l’errore di un modello:
   quanto è lunga la differenza fra la risposta giusta e la previsione. La
@@ -708,12 +998,21 @@ tutti casi della stessa operazione.
   esempi oppure trasforma i dati.
 - Il prodotto scalare misura l'allineamento tra due vettori ed è il cuore
   del singolo neurone: $\mathbf{w}^\top\mathbf{x}+b$.
+- La trasposta scambia righe e colonne e rovescia l'ordine dei prodotti,
+  $(\mathbf{A}\mathbf{B})^\top=\mathbf{B}^\top\mathbf{A}^\top$:
+  $\mathbf{a}^\top\mathbf{b}$ è il prodotto scalare,
+  $\mathbf{u}\mathbf{v}^\top$ il prodotto esterno.
 - Gli autovettori sono le direzioni che una matrice non devia
   ($\mathbf{A}\mathbf{v}=\lambda\mathbf{v}$), e i loro autovalori dicono
   di quanto le allunga. Iterando *la stessa* matrice
   ($\mathbf{A}^k\mathbf{v}=\lambda^k\mathbf{v}$) comanda il raggio spettrale;
   per un prodotto di matrici diverse, come le Jacobiane di una rete, il
   raggio spettrale non basta e la grandezza da guardare è la norma.
+- Una ricorrenza lineare di ordine $p$ è un passo di matrice compagna:
+  con radici distinte $z_n = \sum_i \alpha_i \lambda_i^n$ (Binet per
+  Fibonacci), la radice dominante dà il tasso di crescita, una radice
+  multipla aggiunge i fattori $n^k$, una coppia complessa oscilla con
+  inviluppo $\rho^n$ (è la forma del momento sulle quadratiche).
 - Ogni matrice, anche rettangolare, si decompone come
   $\mathbf{A}=\mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$ (SVD): i
   valori singolari $\sigma_i$ dicono di quanto la matrice allunga al

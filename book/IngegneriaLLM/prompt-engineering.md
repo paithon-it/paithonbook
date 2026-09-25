@@ -5,14 +5,13 @@ sbloccano il 90% delle capacità nascoste del modello», corsi che promettono di
 farti diventare *prompt engineer* in un weekend, immagini di istruzioni lunghe
 una pagina spacciate come formule alchemiche. È l'equivalente moderno delle
 parole magiche: si crede che esista *la* frase giusta, e che chi la conosce
-comandi la macchina. Che quella frase non esista lo diceva già Karpathy;
-smontando il singolo
-messaggio si vede perché. Il prompt è il
-primo livello con cui si programma un modello di
-linguaggio: il più immediato, quello che vedi e scrivi nella casella della
-chat. Sopra di esso, come si è anticipato in apertura, ci sono
-il contesto e il loop; ma è da qui che si comincia, perché è qui che nascono
-quasi tutti i malintesi.
+comandi la macchina. Che quella frase non esista lo lascia già intendere la
+definizione di Karpathy, che parla di riempire una finestra e non di trovare una
+formula; smontando il singolo messaggio si vede perché. Il prompt è il primo
+livello con cui si programma un modello di linguaggio: il più immediato, quello
+che vedi e scrivi nella casella della chat. Sopra di esso, come si è anticipato
+in apertura, ci sono il contesto e il loop; ma è da qui che si comincia, perché
+è qui che nascono quasi tutti i malintesi.
 
 Guardiamo dentro il singolo messaggio: com'è fatto, quali leve ha, e quali
 tecniche (dagli esempi al ragionamento a voce alta) spostano davvero la
@@ -741,11 +740,130 @@ risposta strutturata è la cerniera fra il modello, che parla in lingua
 naturale, e il resto del programma, che ha bisogno di caselle: è ciò che rende
 il prompt un mattone di software vero, non un giocattolo conversazionale.
 
+## Far scrivere il prompt a un modello
+
+Se un prompt si giudica da quello che fa rispondere, lo si può anche cercare,
+come si cercano le impostazioni migliori di un modello: si propongono istruzioni
+candidate, le si prova su un banco di domande con la risposta nota, e si tiene
+la migliore. Il passo in più è far proporre le candidate a un modello
+linguistico, ed è quello che va sotto il nome di **ottimizzazione del prompt**.
+«Meta prompting», il nome che circola più spesso (meta come «un gradino sopra»:
+un prompt che riguarda altri prompt), copre due cose diverse, e conviene tenerle
+separate: un modello che scrive i prompt per un altro, e un modello che si
+divide in un direttore e in una squadra di esperti, tutti copie di sé stesso.
+
+`````{tab} Elementare
+
+Una maestra deve scrivere la consegna di un compito, e vuole quella con cui la
+classe sbaglia di meno. Invece di scriverla lei, la chiede a un collega: gli
+mostra qualche compito svolto bene e gli domanda quale consegna li avrebbe
+fatti nascere così. Il collega ne propone venti. Lei le prova, ognuna su un
+gruppo di alunni, conta i compiti giusti e tiene la consegna col conto più
+alto.
+
+C’è anche una seconda maniera, più paziente. Al collega si consegna ogni volta
+la lista delle consegne già provate, ciascuna col suo voto, e gli si chiede di
+scriverne una migliore. Lui guarda che cosa hanno in comune quelle con i voti
+alti e ne scrive di nuove in quella direzione; le nuove si provano, finiscono
+nella lista con il loro voto, e si ricomincia. Nessuno spiega al collega
+perché una consegna funziona: lo capisce dalla lista.
+
+In tutte e due le maniere la consegna vincitrice ha un voto troppo bello. Con
+venti consegne provate su cinquanta alunni ciascuna, qualcuna è capitata con gli
+alunni migliori, e il suo voto mescola il merito con la fortuna, come succede a
+chiunque scelga il migliore fra tanti tentativi misurati su pochi casi. Con
+cinquecento alunni la fortuna pesa meno, ma non sparisce. Il voto da credere è
+quello che la vincitrice prende su una classe nuova, che nessuno ha usato per
+scegliere.
+
+L’altro senso di «meta» è un’organizzazione del lavoro: un collega fa da
+coordinatore, spezza il compito, affida ogni pezzo a un esperto con istruzioni
+su misura, e rimette insieme e controlla le risposte. Solo che coordinatore ed
+esperti sono la stessa persona, che cambia cappello.
+
+`````
+
+`````{tab} Superiore
+
+Dati un modello bersaglio $M$, un insieme di esempi con risposta nota
+$D = \{(x_j, y_j)\}$ e un’istruzione $\rho$ (una stringa), il punteggio è
+$\hat f(\rho) = \frac{1}{|D|}\sum_j \mathbb{1}[M(\rho, x_j) = y_j]$ e si cerca
+$\rho^\star = \arg\max_\rho \hat f(\rho)$ in uno spazio discreto, senza
+gradiente. APE (*Automatic Prompt Engineer*) usa un modello linguistico come
+distribuzione di proposta: dagli esempi ricava le istruzioni che li avrebbero
+prodotti, le valuta su $D$ e tiene le migliori, eventualmente ricampionando
+varianti attorno alle migliori {cite}`zhou2023large`. OPRO (*Optimization by
+PROmpting*) mette nella richiesta l’intera storia della ricerca: il
+*meta-prompt* contiene la descrizione del compito e la traiettoria delle coppie
+$(\rho, \hat f(\rho))$ già valutate, ordinate per punteggio, e a ogni passo il
+modello genera nuove istruzioni che vengono valutate e aggiunte alla traiettoria
+{cite}`yang2024large`. È ottimizzazione a scatola nera in cui l’operatore di
+proposta è appreso implicitamente dal pre-addestramento.
+
+La selezione eredita l’ottimismo della {doc}`ricerca degli iperparametri
+</MachineLearning/iperparametri>`: se le stime sono corrette,
+$\mathbb{E}[\max_i \hat f(\rho_i)] \ge \max_i f(\rho_i)$, e l’errore standard
+di un’accuratezza $p$ misurata su $|D|$ domande è
+$\sqrt{p(1-p)/|D|}$, circa $0{,}065$ per $p = 0{,}7$ e $|D| = 50$, contro
+differenze vere fra candidate che spesso sono di pochi punti. Per questo APE
+riporta l’accuratezza dell’istruzione scelta su esempi tenuti da parte, e il
+numero da credere è quello.
+
+Il *meta-prompting* di Suzgun e Kalai è un’altra cosa: un’impalcatura in cui
+lo stesso modello fa da direttore, scompone il compito, interroga istanze di
+sé con istruzioni specifiche da «esperto» e ne integra e verifica le risposte
+{cite}`suzgun2024meta`. Non cerca un’istruzione migliore: organizza molte
+chiamate dello stesso modello.
+
+`````
+
+Il conto simula la selezione senza nessun modello linguistico: venti istruzioni
+candidate con accuratezze vere fra $0{,}66$ e $0{,}74$, provate su un banco di
+cinquanta domande e poi di cinquecento, duemila volte. Stampa il voto con cui
+vince la vincitrice, quanto vale davvero, quante volte è davvero la migliore, e
+l’errore standard di un’accuratezza di $0{,}7$ misurata su quel banco.
+
+```python
+import numpy as np
+
+# venti istruzioni candidate, con accuratezze vere fra 0,66 e 0,74;
+# la migliore davvero è l'ultima
+vere = np.linspace(0.66, 0.74, 20)
+rng = np.random.default_rng(0)
+
+for domande in (50, 500):
+    voti = rng.binomial(domande, vere, size=(2000, len(vere))) / domande
+    # a pari voto decide il caso, non l'ordine della lista
+    scelta = (voti + rng.uniform(0, 1e-6, voti.shape)).argmax(axis=1)
+    print(f"{domande} domande: voto della vincitrice "
+          f"{voti[np.arange(len(voti)), scelta].mean():.3f}, "
+          f"accuratezza vera {vere[scelta].mean():.3f}, "
+          f"è la migliore davvero {np.mean(scelta == len(vere) - 1):.0%} delle volte")
+    print(f"  errore standard di un'accuratezza di 0,7 su {domande} domande: "
+          f"{np.sqrt(0.7 * 0.3 / domande):.3f}")
+```
+
+```text
+50 domande: voto della vincitrice 0.824, accuratezza vera 0.716, è la migliore davvero 13% delle volte
+  errore standard di un'accuratezza di 0,7 su 50 domande: 0.065
+500 domande: voto della vincitrice 0.757, accuratezza vera 0.731, è la migliore davvero 30% delle volte
+  errore standard di un'accuratezza di 0,7 su 500 domande: 0.020
+```
+
+Con cinquanta domande la vincitrice dichiara $0{,}824$ e vale $0{,}716$: più di
+dieci punti di fortuna, e la migliore vera vince poco più di una volta su dieci.
+Con cinquecento lo scarto scende a meno di tre punti, ma la migliore vera vince
+ancora meno di una volta su tre, perché le candidate sono vicine fra loro: due
+punti di errore standard contro otto punti di distanza fra la prima e l’ultima,
+e meno di mezzo punto fra due vicine. La ricerca automatica del prompt funziona
+se il banco su cui si sceglie è grande rispetto alle differenze che si cercano,
+e se il voto finale viene da domande che la ricerca non ha mai visto.
+
 ## Che cosa regge, quando qualcuno lo misura
 
 ```{figure} ../figures/prompt-engineering-le-prove.svg
 :name: fig-prove-prompting
-:alt: "Le tecniche di prompting divise in tre fasce secondo cosa dicono le misure. In alto, da sola, l'unica che regge su compiti e modelli diversi: mostrare esempi svolti, il few-shot. In mezzo quelle che reggono solo sui compiti di ragionamento, catena di pensiero e self-consistency, con accanto la misura della sola catena: dodici e quattordici punti su matematica e simbolico, e altrove quasi niente. In fondo quelle provate in studi controllati e risultate senza effetto: mance e minacce, cortesia. Più si sale, meno cose ci arrivano."
+:alt: "Le tecniche di prompting divise in tre fasce secondo cosa dicono le misure. In alto, da sola, l'unica che regge su compiti e modelli diversi: mostrare esempi svolti, il few-shot. In mezzo quelle che reggono solo sui compiti di ragionamento, catena di pensiero e self-consistency, con accanto la misura della sola catena: dodici e quattordici punti su matematica e simbolico, e altrove quasi niente. In fondo quelle provate in studi controllati e risultate senza effetto: mance e minacce, cortesia, un ruolo messo in testa al messaggio («sei un esperto»). Più si sale, meno cose ci arrivano."
 :width: 92%
 
 Non tutte le tecniche hanno lo stesso sostegno, e la scala non è «quanto sono
@@ -773,6 +891,19 @@ come essere gentili con l'AI, non hanno un valore universale»
 misurata è una scommessa aperta, una tecnica misurata e risultata nulla in
 media è una scommessa che non paga, e continuare a ripeterla costa token a ogni
 chiamata.
+
+Il ruolo nel messaggio di sistema, il «sei un esperto di…» o il «sei un
+assistente disponibile» che quasi tutte le applicazioni mettono in testa, è
+stato misurato allo stesso modo. Zheng e colleghi hanno provato 162 ruoli
+diversi, dai rapporti fra persone ai campi di competenza, su quattro famiglie di
+modelli e 2410 domande di fatto: rispetto a nessun ruolo, aggiungerne uno non
+migliora le risposte, e l’effetto di ciascuno è in gran parte casuale
+{cite}`zheng2024helpful`. Resta un dettaglio: scegliendo per ogni domanda il
+ruolo migliore l’accuratezza salirebbe, ma nessuna delle strategie provate per
+indovinarlo in anticipo fa sensibilmente meglio di una scelta a caso. Il ruolo
+resta quello che il messaggio di sistema è, un modo di fissare tono e stile;
+come leva sull’accuratezza nelle domande di fatto sta nella fascia bassa di
+{numref}`fig-prove-prompting`.
 
 La fascia di mezzo dice l'altra metà della storia, ed è la più facile da
 leggere male. La catena di pensiero non «fa ragionare» il modello in generale.
@@ -892,6 +1023,12 @@ chiamate in un ciclo che si corregge) vivono ai livelli sopra, il {doc}`contesto
   caselle aiutano dove basta sceglierne una fra poche; dove c'è da fare un
   conto tolgono lo spazio per farlo, e allora conviene lasciar raccontare
   prima e riempirle dopo.
+- Anche il messaggio si può far scrivere a un modello: gliene si fanno
+  proporre tanti, li si prova su domande con la risposta nota e si tiene il
+  migliore. Il suo voto però è troppo bello, come quello di ogni vincitore di
+  una gara con molti concorrenti, e quello da credere viene da domande nuove.
+  Mettere un ruolo in testa («sei un esperto») sulle domande di fatto, in
+  media, non aiuta.
 - Tre cose da sapere e non temere: nel testo che gli dai possono nascondersi
   istruzioni scritte da altri, le regole di sicurezza si possono aggirare con
   formulazioni astute, e un modello inventa con la stessa sicurezza con cui
@@ -938,6 +1075,12 @@ chiamate in un ciclo che si corregge) vivono ai livelli sopra, il {doc}`contesto
   il vincolo di formato costa accuratezza {cite}`tam2024format`. E ricorda
   i rischi (prompt injection, jailbreak, allucinazioni) che riprenderemo
   nella sezione su LLMOps.
+- L’ottimizzazione del prompt (APE {cite}`zhou2023large`, OPRO
+  {cite}`yang2024large`) cerca $\arg\max_\rho \hat f(\rho)$ con un modello come
+  operatore di proposta; il vincitore eredita l’ottimismo di ogni selezione,
+  $\mathbb{E}[\max_i \hat f(\rho_i)] \ge \max_i f(\rho_i)$, e si valuta su esempi
+  tenuti da parte. Un ruolo nel system prompt non migliora in media
+  l’accuratezza su domande di fatto {cite}`zheng2024helpful`.
 ```
 
 `````

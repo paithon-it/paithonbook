@@ -986,11 +986,13 @@ cambio di variabile, non dal modello. Su una serie positiva il confronto grezzo
 è dominato dal termine jacobiano $2\sum_t \log x_t$, che nasce dal cambio di
 variabile e va rimesso al suo posto prima di sottrarre i due AIC. Per duecento
 punti che crescono in proporzione costante da un centinaio a circa settecento
-vale circa $2.230$, cioè più di mille volte la soglia delle due unità, e dipende
-solo da quanto sono grandi i numeri della serie, non da come si comportano.
-Tolto quel termine, il vantaggio del logaritmo, se c'è, torna della grandezza di
-una differenza fra modelli: il confronto grezzo stava misurando l'unità di
-misura.
+vale circa $2\,230$ (su una crescita in proporzione costante la media dei
+logaritmi è quella dei due estremi:
+$2 \cdot 200 \cdot \tfrac12(\log 100 + \log 700)$), cioè più di mille volte la
+soglia delle due unità, e dipende solo da quanto sono grandi i numeri della
+serie, non da come si comportano. Tolto quel termine, il vantaggio del
+logaritmo, se c'è, torna della grandezza di una differenza fra modelli: il
+confronto grezzo stava misurando l'unità di misura.
 
 **3. Verificare i residui.** Se il modello ha catturato la struttura, i residui
 $\hat\varepsilon_t = x_t - \hat x_t$ devono essere rumore bianco: media

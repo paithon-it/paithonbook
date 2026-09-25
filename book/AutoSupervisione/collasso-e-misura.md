@@ -154,9 +154,10 @@ certificata non supera $\log N$. Se l'informazione mutua vera è molto maggiore
 (e fra due viste della stessa immagine ad alta risoluzione lo è di parecchio),
 il limite non dice più niente di interessante: è vero e inservibile.
 
-Ne seguono due conseguenze, da tenere separate. La prima è tecnica: la
-dimensione del batch entra nella *garanzia*, non solo nel costo, il che spiega
-perché in questi metodi $N$ conti tanto. La seconda è di
+Ne seguono due conseguenze, da tenere separate. La prima è tecnica: il numero
+$N$ dei candidati, e con lui il batch da cui si pescano, entra nella
+*garanzia*, non solo nel costo, ed è per questo che in questi metodi i batch si
+fanno enormi. La seconda è di
 interpretazione, ed è la più importante: la massimizzazione dell'informazione
 mutua non può essere la spiegazione del successo di questi metodi. Due risultati
 lo mostrano direttamente. Michael Tschannen e colleghi

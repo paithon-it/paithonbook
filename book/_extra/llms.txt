@@ -23,6 +23,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 - [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il capostipite dei chatbot: un programma con cui si poteva conversare…
   - [Python e l'AI](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
+  - [Che cosa si può calcolare](https://book.paithon.it/main/Introduzione/calcolabile.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
   - [Conclusione](https://book.paithon.it/main/Introduzione/conclusione.html)
 - [Python](https://book.paithon.it/main/Python/overview.html): Nel Natale del 1989 un programmatore olandese, Guido van Rossum, si annoia. Gli uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le feste, e lui riempie il tempo scrivendo, per…
@@ -59,6 +60,11 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Valutare un raggruppamento](https://book.paithon.it/main/MachineLearning/valutare-un-raggruppamento.html)
   - [Quando i dati cambiano](https://book.paithon.it/main/MachineLearning/dati-che-cambiano.html)
   - [Processi gaussiani](https://book.paithon.it/main/MachineLearning/processi-gaussiani.html)
+- [Teoria dell'apprendimento](https://book.paithon.it/main/TeoriaApprendimento/overview.html): Per tutta la vita, ogni mattina, un pollo ha visto arrivare l'uomo che lo accudisce con il mangime; una mattina l'uomo arriva e gli tira il collo.
+  - [Apprendimento PAC](https://book.paithon.it/main/TeoriaApprendimento/pac.html)
+  - [La dimensione VC](https://book.paithon.it/main/TeoriaApprendimento/dimensione-vc.html)
+  - [Rademacher e margine](https://book.paithon.it/main/TeoriaApprendimento/rademacher-margine.html)
+  - [Garanzie e reti neurali](https://book.paithon.it/main/TeoriaApprendimento/garanzie-e-reti.html)
 - [Reti neurali](https://book.paithon.it/main/RetiNeurali/overview.html): C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella del cervello. Miliardi di cellule che si scambiano segnali, e da quel brulichio emergono la memoria, il linguaggio, il…
   - [Il percettrone](https://book.paithon.it/main/RetiNeurali/percettrone.html)
   - [Funzioni di attivazione](https://book.paithon.it/main/RetiNeurali/funzioni-attivazione.html)
@@ -259,6 +265,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Forecasting neurale](https://book.paithon.it/main/SerieTemporali/forecasting-neurale.html)
 - [PINN: reti e fisica](https://book.paithon.it/main/PINN/overview.html): La notte del 23 settembre 1846 l'astronomo Johann Galle punta il telescopio dell'Osservatorio di Berlino verso un punto preciso del cielo, indicato in una lettera arrivata quel giorno da Parigi.
   - [La legge dentro la loss](https://book.paithon.it/main/PINN/come-funziona.html)
+  - [Un'equazione come media](https://book.paithon.it/main/PINN/equazioni-come-medie.html)
   - [Dove la fisica aiuta](https://book.paithon.it/main/PINN/applicazioni-limiti.html)
 
 ## Produzione e responsabilità

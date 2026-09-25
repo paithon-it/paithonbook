@@ -365,8 +365,8 @@ limitato fra $-1$ e $1$ e nullo soltanto quando la predizione è giusta e
 sicura. Una softmax in più nel modello li rompe tutti e due: la loss riceve
 probabilità in $[0, 1]$ e le tratta come logit, quindi anche la predizione
 perfetta vale $-1 + \log(e + K - 1)$, cioè $1{,}46$ con $K = 10$, e sotto quel
-pavimento non si scende; e il gradiente attraversa la Jacobiana della seconda
-softmax, che si annulla proprio dove il modello è sicuro. Per questo l'ultimo
+pavimento non si scende; e il gradiente attraversa la Jacobiana della softmax
+in più, che si annulla proprio dove il modello è sicuro. Per questo l'ultimo
 strato del modello non deve avere la softmax. Se servono le
 probabilità (per leggere l'output, non per addestrare), si applica
 `torch.softmax(logits, dim=1)` a valle. Con etichette intere il target ha

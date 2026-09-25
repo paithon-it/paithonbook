@@ -11,15 +11,16 @@ tabella.
 Quell'operazione, nelle librerie di calcolo (le raccolte di pezzi di programma
 già scritti e collaudati, che chiunque richiama invece di riscriverseli), porta
 da decenni una sigla: **GEMM**, *GEneral Matrix Multiply*. Il «generale» non
-riguarda l'operazione ma la *matrice*: nello schema con cui le BLAS (le
-librerie che dal 1979 fissano i nomi e le firme delle operazioni di algebra
-lineare) battezzano le proprie routine dice che le due tabelle sono qualunque,
-mentre altre sigle sono riservate ai casi speciali (simmetrica, triangolare, a
-banda), dove si risparmia: su una triangolare i conti si dimezzano, su una
-simmetrica si dimezza quello che si legge, su una a banda si risparmia molto di
-più. È probabilmente il pezzo di codice più ottimizzato della storia
-dell'informatica: a ogni generazione di hardware qualcuno lo riscrive da capo
-per spremerne l'ultima goccia.
+riguarda l'operazione ma la *matrice*: nello schema con cui le BLAS (le librerie
+che dal 1979 fissano i nomi e le firme delle operazioni di algebra lineare;
+quelle fra matrici, GEMM compresa, arrivano nel 1990) battezzano le proprie
+routine dice che le due tabelle sono qualunque, mentre altre sigle sono
+riservate ai casi speciali (simmetrica, triangolare, a banda), dove si
+risparmia: su una triangolare i conti si dimezzano, su una simmetrica si dimezza
+quello che si legge, su una a banda si risparmia molto di più. È probabilmente
+il pezzo di codice più ottimizzato della storia dell'informatica: a ogni
+generazione di hardware qualcuno lo riscrive da capo per spremerne l'ultima
+goccia.
 
 E la ragione c'è. Nella sezione {doc}`Prestazioni e scala
 </PyTorch/prestazioni>` abbiamo detto che una rete neurale, vista
@@ -132,32 +133,31 @@ finché non hanno servito tutti i prodotti della tessera che la squadra sta
 calcolando. Ogni numero arriva una volta e viene riusato molte volte prima di
 essere buttato.
 
-Più grande la cassetta, più piatti escono da ogni viaggio, e sul ripiano ci sta
-una cassetta e poco più. Il conto dice quanto: i numeri portati crescono come
-il lato della tessera al quadrato, i conti che se ne ricavano come il lato al
-cubo, quindi a ogni raddoppio del lato ogni numero lavora il doppio. Con una
-tessera da trentadue caselle di lato ogni
-viaggio porta duemilaquarantotto numeri, due blocchetti da trentadue per
-trentadue, e da quei numeri escono trentaduemilasettecentosessantotto
-moltiplicazioni con altrettante somme: trentadue conti per ogni numero portato,
-e siccome un numero pesa quattro byte, otto conti per ogni byte che ci si è
-fatti portare. Non basta: il pareggio fra magazzino e cuochi, quello stabilito
-nella sezione sulla memoria, sta a dieci, e i cuochi restano un po’ fermi ad
-aspettare. Qualche casella in più colmerebbe il divario, e in effetti una
-cassetta da centoquarantaquattro caselle di lato arriva a trentasei, cioè quel
-pareggio lo supera di tre volte e mezzo.
+Più grande la cassetta, più piatti escono da ogni viaggio. Il conto dice quanto:
+i numeri portati crescono come il lato della tessera al quadrato, i conti che se
+ne ricavano come il lato al cubo, quindi a ogni raddoppio del lato ogni numero
+lavora il doppio. Con una tessera da trentadue caselle di lato ogni viaggio
+porta duemilaquarantotto numeri, due blocchetti da trentadue per trentadue, e da
+quei numeri escono trentaduemilasettecentosessantotto moltiplicazioni con
+altrettante somme: trentadue conti per ogni numero portato, e siccome un numero
+pesa quattro byte, otto conti per ogni byte che ci si è fatti portare. Non
+basta: il pareggio fra magazzino e cuochi, quello stabilito nella sezione sulla
+memoria, sta a dieci, e i cuochi restano un po’ fermi ad aspettare. Qualche
+casella in più colmerebbe il divario, e in effetti una cassetta da
+centoquarantaquattro caselle di lato arriva a trentasei, cioè quel pareggio lo
+supera di tre volte e mezzo.
 
 Solo che la soglia non sta ferma. Le unità costruite apposta per moltiplicare
-tabelloni lavorano con numeri corti, che pesano due byte invece di quattro:
-ogni byte porta allora il doppio dei conti, ma il pareggio da tenere sale oltre
-il centocinquanta. In quella valuta la cassetta da trentadue fa sedici, e una
-da duecento caselle di lato arriva a poco più di cento: sotto di un buon terzo.
-E più grande non si va, ma non per colpa del ripiano: i risultati parziali
-della tessera, uno per casella, restano in mano ai cuochi per tutto il lavoro,
-come la penna, e le mani sono poche. Allargare la tessera, poi, rende meno di
-quanto prometta, perché la cassetta è un
-quadrato: per fare il doppio dei conti su ogni byte deve diventare quattro
-volte più grande.
+tabelloni lavorano con numeri corti, che pesano due byte invece di quattro: ogni
+byte porta allora il doppio dei conti, ma il pareggio da tenere sale oltre il
+centocinquanta. In quella valuta la cassetta da trentadue fa sedici, quella da
+centoventotto dei programmi veri sessantaquattro, e nemmeno la più grande
+immaginabile, duecentocinquantasei di lato, ci arriva: si ferma a centoventotto.
+A fermarla non è il ripiano: i risultati parziali della tessera, uno per
+casella, restano in mano ai cuochi per tutto il lavoro, come la penna, e le mani
+sono poche. Allargare la tessera, poi, rende meno di quanto prometta, perché la
+cassetta è un quadrato: per fare il doppio dei conti su ogni byte deve diventare
+quattro volte più grande.
 
 Come mai, allora, le moltiplicazioni vere volano? Perché in fondo al corridoio
 non ci va quasi nessuno. Le squadre che lavorano fianco a fianco chiedono
@@ -484,7 +484,10 @@ indirizzare: il movimento dei dati è cablato nella topologia. Che cosa stia
 fermo e che cosa scorra, però, è la scelta di **dataflow**, e cambia la
 macchina. I nomi con cui queste
 scelte si chiamano oggi vengono dalla tassonomia di Chen, Emer e Sze
-{cite}`chen2016eyeriss`, non dagli array sistolici originali.
+{cite}`chen2016eyeriss`, non dagli array sistolici originali; per le
+convoluzioni i tre ne propongono un'altra, la *row stationary*, che la
+{doc}`sezione sulle reti convoluzionali </DeepLearning/reti-convoluzionali>`
+racconta accanto all'algoritmo di Winograd.
 
 Nella variante *output stationary* è il totale a restare nell'elemento (un
 accumulatore interno) mentre entrambi gli operandi scorrono. Nella variante
@@ -622,19 +625,19 @@ pagina.
   in dispensa a riprendere gli stessi ingredienti centinaia di volte. I conti
   che si fanno a ogni viaggio sono pochi, i viaggi tantissimi: si finisce
   bloccati dal magazzino.
-- La cura è il tiling: portare sul tavolo di lavoro un blocchetto di
-  ciascuna tabella e usarlo per tutti i prodotti che può servire prima di
-  buttarlo. Un viaggio invece di cento. Più grande il blocchetto, meglio è, ma
-  sul tavolo ci sta poco. I programmi veri lo fanno allora due volte, a due
-  scale: blocchetti grandi sul tavolo, che tagliano i viaggi in dispensa, e
-  blocchetti piccolissimi in mano a ciascun lavoratore, che di viaggi non ne
+- La cura è il tiling: portare sul tavolo di lavoro un blocchetto di ciascuna
+  tabella e usarlo per tutti i prodotti che può servire prima di buttarlo. Un
+  viaggio invece di cento. Più grande il blocchetto, meglio è, ma le mani che
+  tengono i conti a metà sono poche. I programmi veri lo fanno allora due volte,
+  a due scale: blocchetti grandi sul tavolo, che tagliano i viaggi in dispensa,
+  e blocchetti piccolissimi in mano a ciascun lavoratore, che di viaggi non ne
   tolgono nemmeno uno ma sciolgono la fila al tavolo.
-- Il tiling da solo, però, non basta: la tessera più grande che sul tavolo ci
-  sta supera il pareggio dei calcolatori ordinari, ma a quello molto più alto
-  che pretendono le unità costruite per moltiplicare tabelloni resta sotto di
-  un buon terzo. A far volare le
-  moltiplicazioni vere è il cassetto comune fra le squadre (la *cache L2*),
-  dove la cassetta che una ordina la ritrovano tutte le altre.
+- Il tiling da solo, però, non basta: supera il pareggio dei calcolatori
+  ordinari, ma a quello molto più alto che pretendono le unità costruite per
+  moltiplicare tabelloni non arriva nessuna tessera, perché i risultati parziali
+  restano in mano ai cuochi e le mani sono poche. A far volare le
+  moltiplicazioni vere è il cassetto comune fra le squadre (la *cache L2*), dove
+  la cassetta che una ordina la ritrovano tutte le altre.
 - I tensor core sono il timbro che stampa un pezzo intero di tabellina in
   un colpo solo, sessantaquattro moltiplicazioni per battito, con i numeri
   arrotondati ma il totale tenuto preciso. È il pezzo di silicio più veloce di

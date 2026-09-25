@@ -34,6 +34,8 @@ parts:
     sections:
     - file: Introduzione/massimo_comune_divisore.ipynb
       title: Python e l'AI
+    - file: Introduzione/calcolabile.md
+      title: Che cosa si può calcolare
     - file: Introduzione/applicazioni.md
       title: Robotica e AI
     - file: Introduzione/conclusione.md
@@ -106,6 +108,17 @@ parts:
       title: Quando i dati cambiano
     - file: MachineLearning/processi-gaussiani.md
       title: Processi gaussiani
+  - file: TeoriaApprendimento/overview.md
+    title: Teoria dell'apprendimento
+    sections:
+    - file: TeoriaApprendimento/pac.md
+      title: Apprendimento PAC
+    - file: TeoriaApprendimento/dimensione-vc.md
+      title: La dimensione VC
+    - file: TeoriaApprendimento/rademacher-margine.md
+      title: Rademacher e margine
+    - file: TeoriaApprendimento/garanzie-e-reti.md
+      title: Garanzie e reti neurali
   - file: RetiNeurali/overview.md
     title: Reti neurali
     sections:
@@ -512,6 +525,8 @@ parts:
     sections:
     - file: PINN/come-funziona.md
       title: La legge dentro la loss
+    - file: PINN/equazioni-come-medie.md
+      title: Un'equazione come media
     - file: PINN/applicazioni-limiti.md
       title: Dove la fisica aiuta
 

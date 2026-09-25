@@ -422,18 +422,19 @@ tutto ciò che si è visto. Attenzione al nome del parametro: il `momentum` di
 l'opposto del $\beta_1$ di Adam, dove $0{,}9$ è il peso della storia.
 
 Quale delle due statistiche si usa lo decide lo stato del modulo: dopo
-`model.train()` lo strato normalizza con $(\mu_{\mathcal{B}},
-\sigma^2_{\mathcal{B}})$ e aggiorna le medie mobili, dopo `model.eval()` usa le
-medie mobili e non le tocca più. Dimenticare `eval()` in valutazione fa
-dipendere la predizione di un esempio dagli altri del batch, ed è il guasto più
-frequente di questo strato. In addestramento PyTorch normalizza con la varianza
-distorta (divisa per $m$, la taglia del batch) e aggiorna la media mobile con
-quella corretta (divisa per $m-1$). E il gradiente attraversa anche
-$\mu_{\mathcal{B}}$ e $\sigma_{\mathcal{B}}$, che dipendono da tutti gli esempi
-del batch: ogni esempio riceve un gradiente che dipende dagli altri, e con
-batch di pochi esempi le stime sono così rumorose che lo strato peggiora
-l'addestramento. È la ragione per cui altrove si normalizza sul singolo
-esempio, come fa la layer normalization dei Transformer.
+`model.train()` lo strato normalizza con
+$(\mu_{\mathcal{B}}, \sigma^2_{\mathcal{B}})$ e aggiorna le medie mobili, dopo
+`model.eval()` usa le medie mobili e non le tocca più. Dimenticare `eval()` in
+valutazione fa dipendere la predizione di un esempio dagli altri del batch, ed è
+il guasto più frequente di questo strato. In addestramento PyTorch normalizza
+con la varianza distorta, divisa per il numero di valori che entrano nella stima
+($|\mathcal{B}|$ in una rete densa, $N\,H\,W$ per canale in una convoluzionale),
+e aggiorna la media mobile con quella corretta, divisa per quel numero meno uno.
+E il gradiente attraversa anche $\mu_{\mathcal{B}}$ e $\sigma_{\mathcal{B}}$,
+che dipendono da tutti gli esempi del batch: ogni esempio riceve un gradiente
+che dipende dagli altri, e con batch di pochi esempi le stime sono così rumorose
+che lo strato peggiora l'addestramento. È la ragione per cui altrove si
+normalizza sul singolo esempio, come fa la layer normalization dei Transformer.
 
 `````
 
@@ -912,17 +913,19 @@ $$
 $$
 
 che partono da $\mathbf{v}_0 = \mathbf{s}_0 = \mathbf{0}$, e quella partenza le
-tira verso il basso. Svolgendo la ricorrenza, $\mathbf{s}_t =
-(1-\beta_2)\sum_{\tau=1}^{t}\beta_2^{\,t-\tau}\,\mathbf{g}_\tau\odot\mathbf{g}_\tau$,
+tira verso il basso. Svolgendo la ricorrenza,
+$\mathbf{s}_t = (1-\beta_2)\sum_{\tau=1}^{t}\beta_2^{\,t-\tau}\,\mathbf{g}_\tau\odot\mathbf{g}_\tau$,
 e se i gradienti hanno momento secondo costante si ottiene
-$\mathbb{E}[\mathbf{s}_t] =
-(1-\beta_2^{\,t})\,\mathbb{E}[\mathbf{g}\odot\mathbf{g}]$, e lo stesso per
-$\mathbf{v}_t$ con $\beta_1$. Da qui la correzione del bias,
-$\hat{\mathbf{v}}_t = \mathbf{v}_t/(1-\beta_1^t)$ e $\hat{\mathbf{s}}_t =
-\mathbf{s}_t/(1-\beta_2^t)$, che conta nei primi passi: senza, con i default,
-al primo passo il rapporto $\mathbf{v}_1/\sqrt{\mathbf{s}_1}$ vale
-$0{,}1/\sqrt{0{,}001} \approx 3{,}16$ volte il segno del gradiente, cioè un
-passo più che triplo proprio quando le stime sono peggiori. L'aggiornamento è:
+$\mathbb{E}[\mathbf{s}_t] = (1-\beta_2^{\,t})\,\mathbb{E}[\mathbf{g}\odot\mathbf{g}]$,
+e lo stesso per $\mathbf{v}_t$ con $\beta_1$. Da qui la correzione del bias,
+$\hat{\mathbf{v}}_t = \mathbf{v}_t/(1-\beta_1^t)$ e
+$\hat{\mathbf{s}}_t = \mathbf{s}_t/(1-\beta_2^t)$, che conta per centinaia di
+passi: senza, con i default e un gradiente costante, il rapporto
+$\mathbf{v}_t/\sqrt{\mathbf{s}_t}$ vale $(1-\beta_1^t)/\sqrt{1-\beta_2^t}$ volte
+il segno del gradiente, cioè $0{,}1/\sqrt{0{,}001} \approx 3{,}16$ al primo
+passo, circa $6{,}6$ attorno al dodicesimo e ancora $1{,}26$ al millesimo: passi
+più lunghi del dovuto proprio quando le stime sono peggiori, e per tutto il
+tempo che serve a $\beta_2$. L'aggiornamento è:
 
 $$
 \theta_t = \theta_{t-1}

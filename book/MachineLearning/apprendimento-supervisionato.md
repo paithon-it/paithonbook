@@ -88,7 +88,7 @@ Si legge così: dài la descrizione $\mathbf{x}$ alla regola $f$, e lei ti
 restituisce una risposta. È la stessa scrittura dei tasti di una calcolatrice
 (dài un numero a «radice quadrata» e ottieni un risultato), solo che qui quello
 che entra è un elenco di numeri e la regola è tutta da trovare. Il cappello su
-$\hat{y}$ ricorda che è una *previsione*, non la verità: è la migliore ipotesi
+$\hat{y}$ ricorda che è una *previsione*, non la verità: è la migliore stima
 del modello.
 
 Per dire quanto vale una regola servono due conti, e non sono lo stesso conto.
@@ -102,6 +102,23 @@ migliorando. E capiterà, più avanti, di calcolare quella media su una manciata
 di esempi per volta invece che su tutti. Imparare significa scegliere la $f$
 che rende quella media più piccola che si può sugli esempi già noti, sperando
 che se la cavi bene anche su quelli nuovi.
+
+La $f$, però, non si sceglie fra tutte le regole immaginabili. Si sceglie dentro
+un catalogo deciso prima di guardare gli esempi (per il prezzo delle case, le
+sole regole «tanto al metro quadro, più un tanto fisso», che su un foglio a
+quadretti disegnano delle rette), e quel catalogo si chiama **spazio delle
+ipotesi**. Decide che cosa il modello potrà mai imparare, e sbagliarlo costa in
+due modi opposti. Se è troppo povero, la regola buona non c'è, e nessuna
+quantità di esempi la fa comparire: fra le rette non si trova una curva. Se è
+troppo ricco, ci sono dentro anche regole che azzeccano gli esempi noti per pura
+coincidenza (una formula tutta curve che passa esattamente per i prezzi delle
+dieci case note, e sull'undicesima sbaglia di centomila euro), e scegliendo la
+migliore sugli esempi si rischia di prendere una di quelle. È la stessa cosa che
+succede quando mille persone lanciano una moneta dieci volte: qualcuna fa dieci
+teste, sembra un campione, e alla prova successiva fa come tutti; più persone ci
+sono, più è facile trovarne una. Il pericolo cala con il numero degli esempi,
+perché una coincidenza che regge su dieci case regge molto più di rado su
+diecimila.
 
 `````
 
@@ -133,6 +150,45 @@ $\mathcal{L}$ tornerà utile più avanti, quando il gradiente si calcolerà su u
 sottoinsieme di esempi invece che su tutti. La natura di $\mathcal{Y}$
 distingue i due problemi cardine: continuo per la regressione, discreto per la
 classificazione.
+
+La minimizzazione non corre su tutte le funzioni da $\mathcal{X}$ a
+$\mathcal{Y}$, ma su una famiglia fissata prima dei dati, lo **spazio delle
+ipotesi** $\mathcal{H} = \{f_\theta : \theta\in\Theta\}$: le funzioni affini
+per la regressione lineare, gli alberi di profondità limitata, le reti di una
+data architettura. Il principio si chiama *minimizzazione del rischio
+empirico*, e la scelta di $\mathcal{H}$ è un'ipotesi sul problema presa prima
+di vedere un solo esempio, la forma più netta del *bias induttivo* del modello
+(l'altra è la preferenza fra funzioni della stessa famiglia, come quella che
+esprime una penalità; e non ha niente in comune con il termine noto $b$ delle
+rette, che più avanti si chiama anch'esso bias). Il suo effetto si divide in due
+errori {cite}`mohri2018foundations`. Con
+$R(f) = \mathbb{E}\big[\ell(f(\mathbf{x}), y)\big]$ il costo atteso sulla
+distribuzione, di cui $\mathcal{L}$ è la media campionaria (il *rischio
+empirico*), e $R_{\min}$ il più piccolo costo atteso fra tutte le funzioni,
+
+$$
+R(f_{\theta^\star}) - R_{\min}
+= \underbrace{R(f_{\theta^\star}) - \inf_{f\in\mathcal{H}} R(f)}_{\text{errore di stima}}
++ \underbrace{\inf_{f\in\mathcal{H}} R(f) - R_{\min}}_{\text{errore di approssimazione}} .
+$$
+
+Se $\mathcal{H}$ non contiene niente di vicino alla relazione vera, l’*errore di
+approssimazione* resta, e nessuna quantità di dati lo toglie. Se $\mathcal{H}$ è
+ricca, la funzione che minimizza il costo sul campione può costare, sulla
+distribuzione, parecchio più della migliore di $\mathcal{H}$, e l’*errore di
+stima* cresce. Quando tutti i costi empirici distano al più $\varepsilon$ dai
+veri, la funzione scelta perde al più $2\varepsilon$ rispetto alla migliore; e
+per $\mathcal{H}$ finita, esempi i.i.d. e perdita $\ell$ limitata, la
+disuguaglianza dell'unione della {doc}`sezione sulla concentrazione
+</Matematica/concentrazione>` (dove il numero di esempi si chiama $n$) dà
+$\varepsilon$ dell'ordine di $\sqrt{\log\lvert\mathcal{H}\rvert / m}$. È un
+limite superiore, che cresce con la ricchezza di $\mathcal{H}$ e cala con $m$.
+Le famiglie appena elencate però sono infinite, e il conto che per loro
+sostituisce $\log\lvert\mathcal{H}\rvert$ con la {doc}`dimensione VC
+</TeoriaApprendimento/dimensione-vc>` sta nel capitolo sulla {doc}`teoria
+dell'apprendimento </TeoriaApprendimento/pac>`; perché per le reti la lettura
+«più ricca, più errore» non basti lo mostra la {ref}`doppia discesa
+<sec-doppia-discesa>`.
 
 `````
 
@@ -316,44 +372,93 @@ numeri la risposta: siccome un modello lavora solo su numeri, decidiamo per
 convenzione che «no» si scrive $0$ e «sì» si scrive $1$ (è una nostra scelta di
 scrittura, non una proprietà del mondo, e nulla cambierebbe scambiandole).
 Fatto questo, la differenza salta all'occhio: un prezzo può valere
-$310\,000$, mentre «spam sì/no» sta solo fra $0$ e $1$. La **regressione
+$310\,000$, mentre «spam sì/no» vale solo $0$ o $1$. La **regressione
 logistica** (che, malgrado il nome, classifica: il nome le è rimasto addosso
 perché il conto che fa dentro è ancora quello della regressione) risolve il
 problema in due mosse.
 
 `````{tab} Elementare
 
-**Prima mossa: un punteggio.** Si moltiplica ogni caratteristica per il suo
-peso, si somma tutto e si aggiunge il numero di partenza, esattamente come per
-la retta di prima. Ne esce un numero solo, che può essere qualsiasi cosa,
-$-7$ o $+412$.
+**Prima mossa: un punteggio.** Di un'email si guardano alcune caratteristiche,
+per esempio quante volte compare la parola «offerta», quanti collegamenti
+contiene, se il mittente è in rubrica. Si moltiplica ciascuna per il suo peso,
+si somma tutto e si aggiunge il numero di partenza, esattamente come per la
+retta di prima. Ne esce un numero solo, che può essere qualsiasi cosa, $-7$ o
+$+412$.
 
 **Seconda mossa: schiacciarlo.** Quel numero passa dentro una funzione a forma
-di «S», la **sigmoide**, che qualunque cosa le si dia restituisce un valore
-compreso fra $0$ e $1$. Un punteggio molto positivo esce vicino a $1$ («quasi
-certo spam»), uno molto negativo vicino a $0$, e lo zero cade esattamente a
-metà, $0{,}5$.
+di «S» (una funzione è una regola che a ogni numero ne fa corrispondere un
+altro), la **sigmoide**, che qualunque cosa le si dia restituisce un valore
+compreso fra $0$ e $1$. Per farlo usa le potenze di un numero fisso,
+$e \approx 2{,}718$ (lo racconta la {doc}`sezione su analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>`): al punteggio $2$ dà $0{,}88$, allo zero
+esattamente la metà, $0{,}5$, a $-2$ dà $0{,}12$.
 
-Quel numero fra zero e uno lo leggiamo come una probabilità: non la
-probabilità del lancio di un dado, ma la sicurezza del modello. $0{,}9$ vuol
-dire «ci scommetterei»; $0{,}52$ vuol dire «non ne ho idea, ma se proprio devo
-dico sì».
+Quel numero fra zero e uno lo leggiamo come una probabilità: non la probabilità
+del lancio di un dado, ma la sicurezza del modello. $0{,}9$ vuol dire «ci
+scommetterei»; $0{,}52$ vuol dire «non ne ho idea, ma se proprio devo dico sì».
 
-Restano da trovare i pesi, e si cerca ancora il punto più basso di una
-collina, ma l'altezza del terreno adesso si misura in un altro modo: conta
-quanto il modello è sicuro della risposta sbagliata. Dare $0{,}6$ a un'email
-che spam non era costa poco, darle $0{,}99$ costa cinque volte tanto, e chi
-dicesse «sicuro al cento per cento» sbagliando pagherebbe un prezzo senza
-fondo. Il cambio serve anche a chi cammina nella nebbia. Misurare l'errore come
-si faceva per la retta, con la media degli scarti al quadrato, farebbe prendere
-a questa collina gobbe e ripiani, e la discesa si fermerebbe dove il terreno è
-piatto per caso; con la sicurezza sbagliata la scodella dal fondo solo torna, e
-si arriva sempre in fondo.
+Restano da trovare i pesi, e si cerca ancora il punto più basso di una collina,
+ma l'altezza del terreno adesso si misura come in una scommessa: il modello
+punta la sua sicurezza, e se sbaglia paga una multa tanto più salata quanto più
+era sicuro. La multa sale di un gradino ogni volta che la sicurezza lasciata
+alla risposta giusta si divide per dieci, e mezzo gradino ogni volta che si
+divide per tre, circa, perché tre per tre fa quasi dieci. Dare $0{,}6$ a
+un'email che spam non era lascia $0{,}4$ al «no», cioè uno diviso due volte e
+mezza, e costa meno di mezzo gradino; darle $0{,}99$ lascia $0{,}01$, cioè uno
+diviso due volte per dieci, e costa due gradini, cinque volte tanto; chi
+puntasse tutto sbagliando pagherebbe senza fondo. Con la media degli scarti al
+quadrato, la misura della retta, il terreno farebbe gobbe e ripiani: quando il
+modello è sicurissimo e sbaglia, la S è già piatta, spostare i pesi quasi non
+cambia la sua sicurezza, e il terreno sembra in piano proprio dove l'errore è
+più grande. Con la multa torna una scodella con un fondo solo. Tranne in un
+caso: se esiste un confine che mette da una parte tutte le spam e dall'altra
+tutte le altre, senza nemmeno un'eccezione, al modello conviene essere sempre
+più sicuro, e per esserlo gli basta ingrandire i pesi. Il terreno allora scende
+senza fine, e un fondo non c'è.
 
 E la risposta secca, quando serve? La si ottiene con una terza mossa che
 facciamo noi, non il modello: si fissa un valore di taglio, per abitudine
-$0{,}5$, e si risponde «sì» sopra e «no» sotto. Dove mettere quel taglio è una
-decisione con conseguenze, meno innocente di quanto sembri.
+$0{,}5$, e si risponde «sì» sopra e «no» sotto.
+
+Con più di due risposte possibili, per esempio in quale cartella mettere
+un'email (lavoro, amici, promozioni), la ricetta si allarga senza cambiare
+natura. Ogni cartella ha i suoi pesi e il suo punteggio. I punteggi vanno resi
+tutti positivi, perché una sicurezza sotto zero non esiste, e lo si fa elevando
+alla potenza del punteggio lo stesso $e$ della S (con un altro numero
+cambierebbe solo la scala dei pesi): il più alto resta il più alto, e anche un
+punteggio negativo diventa un numero piccolo ma positivo. Poi ciascuno si divide
+per la somma di tutti, così le sicurezze sommano a uno. Con $2$ per il lavoro,
+$1$ per gli amici e $0$ per le promozioni vengono $7{,}39$, $2{,}72$ e $1$, che
+sommano a $11{,}11$, e le sicurezze sono $0{,}67$, $0{,}24$ e $0{,}09$.
+
+Alzare di uno tutti i punteggi non cambia niente. Con $3$, $2$ e $1$ i numeri
+sono tutti moltiplicati per $e$, $20{,}09$, $7{,}39$ e $2{,}72$, la somma pure,
+$30{,}19$, e nella divisione il fattore si semplifica come in una frazione.
+Conta solo la distanza fra i punteggi. Per chi cerca i pesi è un fastidio: fra
+infinite versioni pari merito non si sa dove fermarsi. Si fa come con un
+termometro, che per misurare le temperature ha bisogno di uno zero: si decide
+che il punteggio delle promozioni sta sempre a zero, e gli altri si misurano da
+lì. Un $2$ per il lavoro vuol dire allora che il lavoro è $e^2 \approx 7{,}39$
+volte più probabile delle promozioni, non due volte. Con due sole cartelle, una
+ferma a zero, si ritrova la S di prima: con $2$ contro $0$ vengono $7{,}39$ e
+$1$, e $7{,}39$ diviso $8{,}39$ fa $0{,}88$, lo stesso numero della S al
+punteggio $2$. Il conto delle potenze divise per il totale si chiama *softmax*,
+e il modello intero regressione logistica multinomiale, cioè a più risposte.
+
+Alla stessa ricetta si arriva anche da un'altra strada, che le dà un secondo
+nome, **massima entropia**: entropia è il nome che la {doc}`teoria
+dell'informazione </Matematica/teoria-informazione>` dà alla misura
+dell'incertezza. L'idea è non credere più di quanto i dati dicano. Se fra le
+email d'esempio con la parola «offerta» sette su dieci erano promozioni, il
+modello deve dare in media sette su dieci alle promozioni su quelle email; per
+il resto, meno convinzioni si inventa meglio è, perché una convinzione che i
+dati non sostengono sbaglia sulle email nuove. Senza nessun fatto, la scelta più
+onesta è un terzo a testa. Con i fatti, la ricetta meno convinta che li rispetta
+tutti, fatti i conti, è proprio quella delle potenze di $e$. E se i fatti sono
+netti, perché tutte le email con «offerta» erano promozioni, la meno convinta
+compatibile con loro è la certezza: è di nuovo il confine senza eccezioni, e i
+pesi crescono senza fine.
 
 `````
 
@@ -396,6 +501,57 @@ sicurezza, e la discesa si ferma dove l'errore è massimo. Non c'è forma chiusa
 si risolve con il metodo di Newton (l'IRLS dei modelli lineari generalizzati) o
 con L-BFGS, che è il `solver` di default di scikit-learn.
 
+Con $K$ classi la **regressione logistica multinomiale** assegna a ogni classe
+un vettore di pesi e pone
+
+$$
+P(y = k \mid \mathbf{x}) =
+\frac{e^{\mathbf{w}_k^\top \mathbf{x} + b_k}}{\sum_{j=1}^{K} e^{\mathbf{w}_j^\top \mathbf{x} + b_j}} ,
+$$
+
+cioè la funzione softmax dei punteggi (la {doc}`sezione sulle funzioni di
+attivazione </RetiNeurali/funzioni-attivazione>` la riprende come ultimo strato
+di una rete). Aggiungere lo stesso vettore a tutti i $\mathbf{w}_k$, e lo stesso
+numero a tutti i $b_k$, non cambia le probabilità, quindi i parametri si
+identificano fissando una classe di riferimento: con $\mathbf{w}_K = \mathbf{0}$
+e $b_K = 0$, i log-odds
+$\log\big(P(y=k\mid\mathbf{x})/P(y=K\mid\mathbf{x})\big) = \mathbf{w}_k^\top\mathbf{x} + b_k$
+sono lineari. Per $K = 2$, nella parametrizzazione libera, si ritrova la
+sigmoide di $P(y=1\mid\mathbf{x})$, con
+$\mathbf{w} = \mathbf{w}_1 - \mathbf{w}_2$ e $b = b_1 - b_2$. In scikit-learn,
+come nell'ultimo strato di una rete, restano tutti i $K$ vettori senza nessuna
+classe fissata, e a sceglierne il rappresentante è la penalità $\ell_2$ della
+libreria, che porta a $\sum_k \mathbf{w}_k = \mathbf{0}$. La loss è la
+cross-entropy categorica,
+$\mathcal{L} = -\frac{1}{m}\sum_{i} \log P(y = y^{(i)} \mid \mathbf{x}^{(i)})$,
+ancora convessa, con gradiente
+
+$$
+\nabla_{\mathbf{w}_k}\mathcal{L} = \frac{1}{m}\sum_{i=1}^{m}
+\Big(P\big(y=k\mid\mathbf{x}^{(i)}\big) - \mathbb{1}\big[y^{(i)}=k\big]\Big)\,
+\mathbf{x}^{(i)} ,
+$$
+
+e all'ottimo il modello riproduce sul campione, classe per classe, le medie
+empiriche delle $x_s\,\mathbb{1}[y=k]$, con $x_s$ la componente $s$ di
+$\mathbf{x}$. Sono i vincoli del problema di **massima entropia** condizionata
+{cite}`berger1996maximum`. Fra le $P(y \mid \mathbf{x})$ che riproducono sul
+campione i valori attesi empirici di un insieme di feature $f_r(\mathbf{x}, y)$,
+quella di {doc}`entropia condizionata </Matematica/teoria-informazione>` massima
+ha la forma log-lineare
+$P(y\mid\mathbf{x}) \propto \exp\big(\sum_r \lambda_r f_r(\mathbf{x}, y)\big)$,
+e i moltiplicatori $\lambda_r$ sono le stime di massima verosimiglianza di quel
+modello, perché i due problemi sono duali. Con le feature $x_s\,\mathbb{1}[y=k]$
+e $\mathbb{1}[y=k]$ l'esponente vale $\mathbf{w}_y^\top\mathbf{x} + b_y$, e la
+forma log-lineare diventa la softmax. Per questo nella letteratura sul
+linguaggio lo stesso classificatore circola con due nomi. La dualità chiede però
+che la verosimiglianza abbia un massimo. Sotto separazione perfetta la soluzione
+di massima entropia esiste ancora, ma è soltanto il limite di modelli
+log-lineari con moltiplicatori che divergono. Mohri e colleghi (teorema 13.1)
+allentano i vincoli e ottengono come duale la verosimiglianza con penalità
+$\ell_1$; la penalità $\ell_2$ di scikit-learn è la loro variante del §13.8
+{cite}`mohri2018foundations`.
+
 `````
 
 ```{figure} ../figures/regressione-logistica.svg
@@ -437,13 +593,14 @@ freno è ciò che dice «basta così».
 
 Il freno si vede nei numeri. Su quattro punti messi in modo che una linea li
 separi senza incertezze, il peso che esce con le impostazioni di fabbrica vale
-circa $1$, e chiedendo di togliere il freno diventa quasi nove volte tanto,
-mentre il confine fra le due classi resta esattamente dov'era. La manopola si
-chiama `C`, e ha un verso che confonde, perché il numero da scrivere dice
-quanto freno si toglie: più è grande, meno freno c'è. È comunque il tipo di
-dettaglio che va saputo, perché il modello che gira non è quello della
-definizione, e chi
-confronta quei due pesi senza saperlo pensa di aver sbagliato i conti.
+circa $1$, e chiedendo di togliere il freno diventa quasi nove volte tanto, ma
+solo perché a un certo punto il calcolo smette di cercare: chiedendogli più
+precisione, il peso cresce ancora. Il confine fra le due classi, intanto, resta
+esattamente dov'era. La manopola si chiama `C`, e ha un verso che confonde,
+perché il numero da scrivere dice quanto freno si toglie: più è grande, meno
+freno c'è. È comunque il tipo di dettaglio che va saputo, perché il modello che
+gira non è quello della definizione, e chi confronta quei due pesi senza saperlo
+pensa di aver sbagliato i conti.
 
 `````
 
@@ -457,14 +614,35 @@ forza del freno, come nelle SVM). Il modello che esce, quindi, minimizza la
 cross-entropy più quella penalità, e la differenza non è cosmetica: sui
 quattro punti $x = -2, -1, 1, 2$ con etichette $0, 0, 1, 1$ (una dimensione,
 linearmente separabili) il coefficiente
-stimato vale $1{,}01$ con i default e $8{,}85$ chiedendo `C=np.inf`. Il secondo
-non è il numero «giusto»: sotto separazione perfetta il massimo di
-verosimiglianza
-non esiste, i pesi vorrebbero andare all'infinito, e ciò che li ferma è
-proprio il freno. Chi vuole la stima non regolarizzata deve chiederla
+stimato vale $1{,}01$ con i default, e chiedendo `C=np.inf` vale $8{,}85$, un
+numero che non ha niente di speciale: è dove L-BFGS si ferma con la tolleranza
+di default, e con `tol=1e-8` sale a $17{,}86$. Sotto separazione perfetta il
+massimo di verosimiglianza non esiste e i pesi vorrebbero andare all'infinito:
+con i default li ferma il freno, senza li ferma soltanto il criterio
+d'arresto. Chi vuole la stima non regolarizzata deve chiederla
 sapendo che cosa sta chiedendo.
 
 `````
+
+I quattro punti, con il freno e senza:
+
+```python
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+X = np.array([-2.0, -1.0, 1.0, 2.0]).reshape(-1, 1)
+y = np.array([0, 0, 1, 1])
+print(LogisticRegression().fit(X, y).coef_[0, 0].round(2))   # con il freno
+for tol in (1e-4, 1e-8):
+    senza = LogisticRegression(C=np.inf, tol=tol).fit(X, y)
+    print(tol, senza.coef_[0, 0].round(2))    # senza: dipende dalla tolleranza
+```
+
+```text
+1.01
+0.0001 8.85
+1e-08 17.86
+```
 
 ## Lineare, logistica, Poisson: una famiglia sola
 
@@ -516,12 +694,10 @@ La seconda mossa è dove le tre risposte si separano. Per un prezzo il punteggio
 si legge così com'è. Per un sì o no lo si schiaccia fra zero e uno con la curva
 a esse. Per un conteggio si fa una terza cosa: si prende quel punteggio come
 logaritmo del numero di clienti, e per tornare al numero si fa il conto
-all'incontrario, cioè si eleva a quel punteggio il numero $e$ (che vale circa
-$2{,}718$, e che la {doc}`sezione su analisi e ottimizzazione
-</Matematica/analisi-ottimizzazione>` racconta insieme al logaritmo). Il
-vantaggio è immediato: un numero positivo elevato a qualunque cosa resta
-positivo, anche a un esponente negativo, quindi la previsione non può più
-essere meno tre clienti.
+all'incontrario, cioè si eleva a quel punteggio il numero $e$, lo stesso che
+rendeva positivi i punteggi delle risposte multiple. Il vantaggio è immediato:
+un numero positivo elevato a qualunque cosa resta positivo, anche a un esponente
+negativo, quindi la previsione non può più essere meno tre clienti.
 
 Il prezzo di questa scelta va detto subito, perché cambia il senso dei pesi.
 Nel punteggio i pesi si sommano, come sempre; ma disfare un logaritmo
@@ -934,9 +1110,14 @@ per tutto il resto del libro.
 - Ogni colonna della tabella è una direzione, ogni riga un punto in
   quello spazio. Con due colonne il disegno sta su un foglio; con cento no, ma
   i conti sono gli stessi, e «vicini» continua a voler dire «simili».
+- La regola si cerca dentro un catalogo scelto prima: troppo povero, la regola
+  buona non c'è; troppo ricco, se ne prende una che azzecca gli esempi per
+  coincidenza.
 - Se la risposta è un numero si cerca una retta che passi *in mezzo* ai
   punti; se è un sì o no si cerca una linea che li *separi*, dopo aver
-  trasformato il punteggio in una probabilità e aver scelto dove tagliare.
+  trasformato il punteggio in una probabilità e aver scelto dove tagliare. Con
+  più di due risposte la ricetta è la stessa: $e$ elevato a ciascun punteggio,
+  diviso per la somma di tutti.
 - E se la risposta è un conteggio («quante volte») non va bene nessuna
   delle due: il punteggio si legge come il logaritmo del numero atteso, così la
   previsione non può venire negativa e i pesi moltiplicano invece di sommare.
@@ -963,8 +1144,16 @@ per tutto il resto del libro.
 - Supervisionato significa imparare $f:\mathcal{X}\to\mathcal{Y}$ da esempi
   già etichettati, minimizzando una loss $\mathcal{L}$ su $m$ coppie
   $(\mathbf{x}^{(i)}, y^{(i)})$.
-- Regressione = uscita continua (MSE, retta di best fit); classificazione
-  = uscita discreta (sigmoide, confine di decisione $\mathbf{w}^\top\mathbf{x}+b=0$).
+- La minimizzazione corre su uno spazio delle ipotesi $\mathcal{H}$ fissato
+  prima dei dati: un $\mathcal{H}$ povero lascia un errore di approssimazione
+  che i dati non tolgono, uno ricco un errore di stima, limitato da
+  $O\big(\sqrt{\log\lvert\mathcal{H}\rvert/m}\big)$ per $\mathcal{H}$ finita e
+  perdita limitata.
+- Regressione = uscita continua (MSE, retta di best fit); classificazione =
+  uscita discreta (sigmoide, confine di decisione
+  $\mathbf{w}^\top\mathbf{x}+b=0$; con $K$ classi softmax, cioè logistica
+  multinomiale, duale della massima entropia condizionata quando la
+  verosimiglianza ha un massimo).
 - I modelli lineari generalizzati {cite}`nelder1972generalized` mettono i
   due casi (e la Poisson per i conteggi) sotto un solo impianto:
   distribuzione nella famiglia esponenziale, predittore lineare

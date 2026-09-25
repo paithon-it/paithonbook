@@ -135,8 +135,9 @@ $\mathrm{CHAIR}_s = \lvert\{\text{descrizioni con almeno un oggetto
 assente}\}\rvert / \lvert\{\text{descrizioni}\}\rvert$,
 dove «assente» vuol dire fuori dall'elenco di quel che c'è nella fotografia,
 scritto a mano da chi le ha preparate (nel lavoro originale, le 80 categorie di
-COCO). Il secondo numero è sempre il più severo, perché basta una forchetta a
-bocciare tutta la descrizione.
+COCO). Il secondo numero di solito è il più severo, perché basta una forchetta a
+bocciare tutta la descrizione; non sempre, perché una descrizione che inventa
+tre oggetti pesa tre volte nel primo e una volta sola nel secondo.
 Funziona, è stata la prima misura del campo, ed è il capostipite della famiglia
 che guarda quel che il modello scrive di sua iniziativa invece di interrogarlo.
 Porta però con sé quattro fragilità che non si possono togliere.

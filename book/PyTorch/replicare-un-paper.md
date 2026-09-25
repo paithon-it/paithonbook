@@ -509,8 +509,11 @@ $T_w$ passi seguito da decadimento a coseno fino a zero. Il valore di picco non
 {cite}`goyal2017accurate` prescrive $\eta \propto B$ per SGD, con un warmup che
 la tiene stabile nei primi passi, e vale finché $B$ resta sotto una soglia
 oltre la quale il guadagno si ferma; con Adam e AdamW l'analisi via equazioni
-differenziali stocastiche suggerisce invece $\eta \propto \sqrt{B}$, che è la
-regola da cui si parte e da ricontrollare sul proprio problema. Un paper che
+differenziali stocastiche {cite}`malladi2022sdes` suggerisce invece
+$\eta \propto \sqrt{B}$, insieme a memorie più corte per le due medie:
+moltiplicando il batch per $\kappa$, $\eta$ si moltiplica per $\sqrt{\kappa}$
+e $1-\beta_1$, $1-\beta_2$ per $\kappa$. È la regola da cui si parte, da
+ricontrollare sul proprio problema. Un paper che
 riporta solo $\eta$ senza $B$, warmup e schedule non è replicabile alla
 lettera.
 

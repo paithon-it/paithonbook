@@ -38,6 +38,26 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-13-0)=
+
+## 1.13.0 · 25 settembre 2026
+
+### Sezioni nuove
+
+- {doc}`Teoria dell'apprendimento </TeoriaApprendimento/overview>`. **Un capitolo nuovo: perché gli esempi bastano.** Il modello PAC, la dimensione VC, la complessità di Rademacher e i margini, e che cosa queste garanzie dicono, e non dicono, delle reti profonde.
+- {doc}`Che cosa si può calcolare </Introduzione/calcolabile>` (Introduzione). **Che cosa si può calcolare.** La macchina di Turing, animata, il problema della fermata e che cosa ne resta per l'intelligenza artificiale.
+- {doc}`Un'equazione come media </PINN/equazioni-come-medie>` (PINN: reti e fisica). **Quando un'equazione è una media.** Risolvere un'equazione alle derivate parziali contando cammini a caso, con i cammini animati.
+
+### Pagine ampliate
+
+- **Machine learning, più strumenti.** Lo spazio delle ipotesi, la logistica multinomiale e la massima entropia, la stima di densità e Fisher nella scena delle monete, la LDA come regressione, la regressione a nucleo, l'ICA, il lasso a gruppi e la selezione per passi, l'apprendimento un esempio alla volta, la curva di validazione, la media armonica della F1.
+- **Matematica per chi legge il resto.** Contare i casi e il coefficiente binomiale, la trasposta, le ricorrenze lineari di Leonardo Pisano, la stima bayesiana, e il fattore del momento ricavato.
+- **Nuove sezioni in quasi ogni parte del libro.** Fra le altre: la perdita quadratica e la media condizionata, Winograd e il flusso row stationary, ControlNet, l'autoencoder contrattivo, le reti prototipiche, i modelli grafici non orientati, RuleFit, prototipi e critiche, l'effetto Rashomon, la somma cumulata di Page, SAGAN e BigGAN, ELMo, il Nim e i giochi imparziali, riassumere più di una finestra.
+
+### Correzioni
+
+- **Correzioni di teoria in tutto il libro.** Formule con le ipotesi che mancavano, affermazioni riportate alla misura delle fonti, e numeri che ora stampa il codice della pagina; fra le correzioni più grandi, la lezione del peso sui dati iniziali delle PINN, provata ora su dieci semi, e la garanzia di MMD-critic, che non regge dove era promessa. Nel PDF le formule più larghe della pagina ora vanno a capo.
+
 (v1-12-17)=
 
 ## 1.12.17 · 23 settembre 2026

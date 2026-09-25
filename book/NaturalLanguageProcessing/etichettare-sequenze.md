@@ -480,10 +480,17 @@ $\beta_n(s) = 1$, dà le probabilità a posteriori
 $P(t_i = s \mid w_{1:n}) = \alpha_i(s)\,\beta_i(s) / P(w_{1:n})$: è il
 **forward-backward**. Serve dove i conteggi non si possono fare: senza un corpus
 annotato l'algoritmo di Baum–Welch, un caso dell'EM, usa quelle probabilità come
-conteggi attesi e non fa mai scendere la verosimiglianza da un'iterazione
-all'altra, fino a un massimo locale {cite}`rabiner1989tutorial`. Nel caso
-sommato l'underflow si evita riscalando le $\alpha_i$ a ogni passo, perché il
-logaritmo di una somma non è una somma.
+conteggi attesi delle emissioni e, per le transizioni, le probabilità a coppie
+
+$$
+\xi_i(s', s) = \frac{\alpha_i(s')\,P(s \mid s')\,P(w_{i+1} \mid s)\,
+\beta_{i+1}(s)}{P(w_{1:n})},
+$$
+
+e non fa mai scendere la verosimiglianza da un'iterazione all'altra, fino a un
+massimo locale {cite}`rabiner1989tutorial`. Nel caso sommato l'underflow si
+evita riscalando le $\alpha_i$ a ogni passo, perché il logaritmo di una somma
+non è una somma.
 
 `````
 
@@ -521,8 +528,9 @@ intero può valere poco anche se ogni suo incrocio era obbligato.
 Per imparare, si cercano i pesi che rendono più probabili i percorsi giusti
 degli esempi, e la ricerca ha una sola cima, senza cime false dove fermarsi per
 errore. Nella versione con le reti, i punteggi fra parole ed etichette li
-calcola una rete ricorrente che legge nei due sensi, e al CRF restano da
-imparare soltanto quelli fra un'etichetta e la successiva.
+calcola una rete ricorrente che legge nei due sensi, imparata insieme a tutto il
+resto, e al CRF restano come pesi propri soltanto quelli fra un'etichetta e la
+successiva; con la rete in mezzo, però, la cima unica non è più garantita.
 
 `````
 
@@ -543,16 +551,18 @@ dove $\mathbf{f}$ è un vettore di caratteristiche che possono guardare l'intera
 frase (maiuscola, suffissi, parole vicine) e $\theta$ i loro pesi. La
 normalizzazione è **globale**: $Z$ somma su tutte le $T^n$ sequenze e si calcola
 con l'algoritmo forward in $O(n\,T^2)$. È questo a separare il CRF dai MEMM che
-lo precedono, normalizzati passo per passo: lì ogni stato distribuisce una
-massa unitaria fra i successori qualunque sia la parola, e uno stato con pochi
+lo precedono, normalizzati passo per passo: lì ogni stato distribuisce una massa
+unitaria fra i successori qualunque sia la parola, e uno stato con pochi
 successori ignora di fatto l'osservazione, il *label bias* che
 {cite}`lafferty2001conditional` mostrano e che il CRF elimina. L'addestramento
 massimizza la log-verosimiglianza condizionata, concava in $\theta$, il cui
 gradiente è la differenza fra i conteggi empirici delle caratteristiche e quelli
 attesi sotto il modello, calcolati col forward-backward. La decodifica resta
 Viterbi sui punteggi $\theta^\top\mathbf{f}$. Nella versione neurale le
-caratteristiche di emissione le produce una BiLSTM, e restano da apprendere le
-sole transizioni fra etichette.
+caratteristiche di emissione le produce una BiLSTM, addestrata insieme alle
+transizioni sulla stessa log-verosimiglianza condizionata: al CRF restano come
+parametri propri le sole transizioni fra etichette, e la concavità, che valeva a
+caratteristiche fissate, si perde.
 
 `````
 
@@ -582,28 +592,32 @@ class TaggerBiLSTM(nn.Module):
                             bidirectional=True)     # legge nei due sensi
         self.out = nn.Linear(2 * hidden, num_tag)   # un logit per etichetta
 
-    def forward(self, x):          # x: (batch, lunghezza), indici di parole
+    def forward(self, x, lunghezze):  # lunghezze: parole vere per frase
         e = self.embedding(x)      # (batch, lunghezza, dim)
-        h, _ = self.lstm(e)        # (batch, lunghezza, 2*hidden)
+        p = nn.utils.rnn.pack_padded_sequence(
+            e, lunghezze.cpu(), batch_first=True, enforce_sorted=False)
+        h, _ = self.lstm(p)        # ogni direzione legge solo la sua frase
+        h, _ = nn.utils.rnn.pad_packed_sequence(
+            h, batch_first=True, total_length=x.size(1))
         return self.out(h)         # logit per OGNI parola, non solo l'ultima
 ```
 
 Confrontalo con il classificatore di sentiment della sezione sui modelli di
-sequenza: là si teneva solo l'ultimo stato (`h[:, -1]`), un'etichetta per
-frase; qui si tengono tutti, un'etichetta per parola. La misura dell'errore è
-quella di sempre, la cross-entropia (quanto la previsione si discosta
-dall'etichetta giusta), applicata però parola per parola, e con un
-accorgimento: le frasi di un gruppo hanno lunghezze diverse e si pareggiano
-riempiendo le più corte con caselle vuote (il *padding*), che vanno escluse dal
-conto, altrimenti la rete si metterebbe a imparare il vuoto. Il `-100` passato
-a `CrossEntropyLoss` è la marca convenzionale che dice «questa casella non
-conta». Escluderle dal conto, però, non basta: la LSTM che legge all'indietro
-comincia dall'ultima casella, quindi attraversa i riempitivi prima di arrivare
-alle parole vere, e l'etichetta di «porta» cambierebbe con il numero di caselle
-vuote in coda. Per questo il lotto, prima della LSTM, si impacchetta con
-`nn.utils.rnn.pack_padded_sequence`, passando le lunghezze vere, e dopo si
-srotola con `pad_packed_sequence`: così ciascuna direzione legge soltanto la
-propria frase. Lo schema del ciclo resta questo:
+sequenza: là si teneva solo l'ultimo stato (`h[:, -1]`), un'etichetta per frase;
+qui si tengono tutti, un'etichetta per parola. La misura dell'errore è quella di
+sempre, la cross-entropia (quanto la previsione si discosta dall'etichetta
+giusta), applicata però parola per parola, e con un accorgimento: le frasi di un
+gruppo hanno lunghezze diverse e si pareggiano riempiendo le più corte con
+caselle vuote (il *padding*), che vanno escluse dal conto, altrimenti la rete si
+metterebbe a imparare il vuoto. Il `-100` passato a `CrossEntropyLoss` è la
+marca convenzionale che dice «questa casella non conta». Escluderle dal conto,
+però, non basta: la LSTM che legge all'indietro comincia dall'ultima casella,
+quindi attraversa i riempitivi prima di arrivare alle parole vere, e l'etichetta
+di «porta» cambierebbe con il numero di caselle vuote in coda. Per questo il
+lotto, prima della LSTM, si impacchetta con `nn.utils.rnn.pack_padded_sequence`,
+passando le lunghezze vere, e dopo si srotola con `pad_packed_sequence`: così
+ciascuna direzione legge soltanto la propria frase, ed è quello che fa il
+`forward` del tagger. Lo schema del ciclo è questo:
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -611,8 +625,9 @@ propria frase. Lo schema del ciclo resta questo:
 modello = TaggerBiLSTM()
 perdita = nn.CrossEntropyLoss(ignore_index=-100)  # -100 = padding da ignorare
 
-# frasi: (batch, lunghezza), indici di parole; tag: stessa forma, -100 sul padding
-logits = modello(frasi)                    # (batch, lunghezza, 17)
+# frasi: (batch, lunghezza), indici di parole; tag: stessa forma, -100 sul
+# padding; lunghezze: (batch,), quante parole vere ha ciascuna frase
+logits = modello(frasi, lunghezze)         # (batch, lunghezza, 17)
 loss = perdita(logits.reshape(-1, 17),     # una riga per token
                tag.reshape(-1))            # un'etichetta per token
 loss.backward()                            # poi optimizer.step(), come sempre
@@ -625,16 +640,96 @@ niente. Nei sistemi di punta si aggiunge allora in cima uno strato CRF, che
 rimette in gioco le transizioni fra etichette e sa che certe successioni sono
 impossibili.
 
-Oggi però lo standard del NER è un'altra strada: prendere un modello già
-addestrato su montagne di testo, come BERT {cite}`devlin2019bert`, appoggiargli
-sopra la stessa testa che assegna un punteggio a ogni etichetta, e proseguire
-l'addestramento per pochi giri sul compito specifico. Questa seconda fase corta
-si chiama fine-tuning, «rifinitura»: non si riparte da zero, si parte da un
-modello che la lingua la sa già e gli si insegna soltanto il mestiere nuovo,
-con una frazione dei dati e del tempo. Ne parla il {doc}`capitolo sui
-Transformer </Transformers/overview>`, dove la lettura nei due sensi, che qui
-abbiamo dovuto costruire a
-mano con due reti affiancate, viene da sé.
+### Vettori che cambiano con la frase: ELMo
+
+Il tagger comincia con un embedding che dà a ogni parola un vettore solo, lo
+stesso in ogni frase, come quelli di word2vec: la BiLSTM deve poi imparare da
+capo, sui pochi esempi etichettati, che cosa vuol dire una parola in quel
+contesto. **ELMo** di Peters e colleghi {cite}`peters2018deep` sposta quel
+lavoro prima, su testo senza etichette: addestra una coppia di LSTM come modello
+di linguaggio nei due versi, e consegna al tagger, per ogni parola, un vettore
+che dipende dall'intera frase.
+
+`````{tab} Elementare
+
+Nella frase «la partita di calcio è finita tardi» e in «il latte porta calcio
+alle ossa» la parola è la stessa, e il vettore di word2vec anche. Per averne due
+diversi serve qualcuno che abbia letto la frase intera. ELMo mette al lavoro due
+lettori su milioni di frasi senza nessuna etichetta: uno legge da sinistra e a
+ogni parola cerca di indovinare la successiva, l'altro legge da destra e cerca
+di indovinare la precedente. Per indovinare bene devono capire il contesto, e
+quello che ciascuno ha in testa quando arriva su «calcio» è una fila di numeri
+che dipende da tutta la frase.
+
+Il tagger prende quelle file di numeri come ingredienti, accanto al suo
+embedding, e i due lettori restano come sono: non li si riaddestra. Ogni
+lettore è fatto di più strati, uno sopra l'altro, e ciascuno rilavora quello che
+gli passa lo strato di sotto; gli strati non sanno le stesse cose: quelli bassi
+sono più bravi con la grammatica (che ruolo ha la parola), quelli alti con il
+significato (quale calcio). Così ogni compito impara la propria ricetta, quanto
+prendere da ogni strato, e una manopola che alza o abbassa il tutto, come un
+volume.
+
+I limiti sono due. I lettori sono fermi, quindi il compito non può correggerli
+per le proprie esigenze; e ciascuno dei due vede un lato solo della frase,
+perché le due letture si incontrano soltanto alla fine, quando si mettono
+accanto i loro risultati.
+
+`````
+
+`````{tab} Superiore
+
+Il modello di linguaggio bidirezionale di ELMo massimizza, su $N$ token,
+
+$$
+\sum_{k=1}^{N} \Big[\log p(w_k \mid w_1, \dots, w_{k-1})
++ \log p(w_k \mid w_{k+1}, \dots, w_N)\Big],
+$$
+
+con un LSTM per direzione e i parametri della rappresentazione d'ingresso e
+della softmax condivisi fra le due. L'ingresso è calcolato dai caratteri con una
+rete convoluzionale; ogni direzione ha $L = 2$ strati LSTM da 4096 unità con
+proiezioni a 512 dimensioni e una connessione residua fra il primo e il secondo
+strato. Per il token $k$ si ottengono così $L + 1$ rappresentazioni
+$\mathbf{h}_{k,j}$: lo strato d'ingresso, calcolato dai caratteri e condiviso
+fra le due direzioni, e i due strati LSTM, in ciascuno dei quali si concatenano
+gli stati delle due direzioni. Il compito ne usa la combinazione
+
+$$
+\mathrm{ELMo}_k = \gamma \sum_{j=0}^{L} s_j\, \mathbf{h}_{k,j},
+$$
+
+con pesi $s_j$ normalizzati da una softmax e uno scalare $\gamma$, appresi
+entrambi sul compito, mentre i pesi del modello di linguaggio restano congelati.
+Il vettore si concatena all'ingresso del modello del compito, e in alcuni
+compiti anche alla sua uscita. (Il lavoro affina anche il modello di linguaggio
+sul testo del compito, senza etichette, prima di congelarlo: è un adattamento al
+dominio, non il fine-tuning supervisionato di cui si dice sotto.) L'analisi
+degli strati conferma la divisione del lavoro: il primo strato serve meglio
+l'etichettatura grammaticale, l'ultimo la disambiguazione del senso delle
+parole. Con questo schema ELMo migliorò sei compiti diversi, dalle domande e
+risposte all'implicazione testuale, dai ruoli semantici alla coreferenza, dal
+NER al sentiment. BERT lo chiama approccio *feature-based*, in cui le
+rappresentazioni preaddestrate entrano come ingressi aggiuntivi, per
+distinguerlo dal *fine-tuning*, in cui si riaddestra tutto il modello sul
+compito; e ne critica la bidirezionalità, che definisce una concatenazione
+superficiale di due modelli di linguaggio, uno per direzione, addestrati
+ciascuno sul proprio lato {cite}`devlin2019bert`. La critica riguarda come le
+due direzioni si combinano (si affiancano alla fine, senza parlarsi dentro gli
+strati), non l'obiettivo, che come si è visto le addestra insieme.
+
+`````
+
+Oggi lo standard del NER fa il passo che ELMo non faceva: prendere un modello
+già addestrato su montagne di testo, come BERT {cite}`devlin2019bert`,
+appoggiargli sopra la stessa bilancia che assegna un punteggio a ogni etichetta,
+e proseguire l'addestramento del modello intero per pochi giri sul compito
+specifico. Questa seconda fase corta si chiama fine-tuning, «rifinitura»: non si
+riparte da zero, si parte da un modello che la lingua la sa già e gli si insegna
+soltanto il mestiere nuovo, con una frazione dei dati e del tempo. Ne parla il
+{doc}`capitolo sui Transformer </Transformers/overview>`, dove la lettura nei
+due sensi, che qui abbiamo dovuto costruire a mano con due reti affiancate,
+viene da sé.
 
 ## Misurare bene: token o entità?
 
@@ -764,8 +859,10 @@ imparato a mettere.
   percorso migliore, però, chiamano ancora il navigatore.
 - Il tagger neurale legge la frase nei due sensi e produce un'etichetta per
   ogni parola, non una per l'intera frase; leggere anche all'indietro è lecito
-  perché il testo è già lì tutto intero. Oggi il NER migliore si ottiene
-  rifinendo un modello già addestrato (BERT).
+  perché il testo è già lì tutto intero. ELMo gli dà in più, per ogni parola,
+  un vettore che cambia con la frase, preso da due lettori addestrati su testo
+  senza etichette a indovinare la parola dopo e quella prima. Oggi il NER
+  migliore si ottiene rifinendo un modello già addestrato (BERT).
 - Come si dà il voto: per le parti del discorso si contano le parole
   etichettate bene, ma il numero va letto sapendo da dove si parte. Un sistema
   che dà a ogni parola la sua etichetta più frequente, senza guardare il
@@ -797,7 +894,10 @@ imparato a mettere.
   la variante discriminativa.
 - Il tagger neurale è una BiLSTM con testa lineare per token e
   cross-entropia per token: la bidirezionalità è legittima perché il testo
-  è tutto disponibile. Oggi il NER di punta è fine-tuning di BERT.
+  è tutto disponibile. ELMo vi aggiunge rappresentazioni contestuali da un
+  modello di linguaggio bidirezionale congelato, combinate per strato
+  ($\gamma \sum_j s_j \mathbf{h}_{k,j}$): è l'approccio *feature-based*. Oggi il
+  NER di punta è fine-tuning di BERT.
 - Valutazione: accuratezza per token per il POS (con baseline già oltre il
   92%), F1 a livello di entità con exact match per il NER; perché mezza
   entità è un'entità sbagliata.

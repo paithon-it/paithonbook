@@ -89,12 +89,9 @@ mette sul tavolo.
 I Transformer sono importanti, ma non sono magia: dentro ci sono
 tabelle di numeri e operazioni che si fanno con carta e penna, montate in un
 ordine particolarmente felice. Chi ha letto la {doc}`matematica di un modello
-linguistico
-</Matematica/matematica-llm>` ritroverà lì lo stesso meccanismo per intero, con
-altri nomi (le tre proiezioni si chiamavano $\mathbf{W}^A$, $\mathbf{W}^B$,
-$\mathbf{W}^C$): qui lo si rivede con il vocabolario standard, query, key e
-value, e con i pezzi che là restavano fuori, le maschere e l'architettura che
-li monta.
+linguistico </Matematica/matematica-llm>` ne conosce già il meccanismo, con
+altri nomi; qui arrivano il vocabolario standard, query, key e value, e i pezzi
+che là restavano fuori, le maschere e l'architettura che li monta.
 
 Il capitolo segue la scia dell'articolo del 2017. Si comincia dal meccanismo
 di attenzione: cos'è, come si calcola, perché funziona. Poi si monta

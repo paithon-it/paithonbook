@@ -94,8 +94,10 @@ solito $k$ vale 1, 3 o 10); per entrambe, più alto è meglio. L'impostazione
 note, perché un modello che mette al primo posto un'altra risposta giusta non va
 punito {cite}`bordes2013translating`. Il protocollo ha anche una storia da
 conoscere: nei banchi FB15k e WN18 molte triple di test erano l'inversa di una
-tripla d'addestramento, tanto che una regola banale li risolveva quasi per
-intero, e le versioni ripulite FB15k-237 e WN18RR sono nate per toglierla
+tripla d'addestramento, tanto che una regola banale, che rovescia le triple
+note, metteva la risposta giusta al primo posto nel 95% dei casi su WN18 e nel
+66% su FB15k, alla pari con i modelli migliori di allora, e le versioni
+ripulite FB15k-237 e WN18RR sono nate per toglierla
 {cite}`toutanova2015observed,dettmers2018convolutional`.
 
 `````

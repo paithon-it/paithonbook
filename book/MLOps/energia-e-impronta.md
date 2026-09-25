@@ -118,20 +118,22 @@ sola volta a decine di unità di calcolo.
 
 Da qui, la prima stima grossolana ma utile, in due forme. A consuntivo,
 l'energia di un carico di lavoro si approssima come potenza media
-dell'acceleratore per tempo di esecuzione. A preventivo, si parte dai FLOP: un
+dell'acceleratore per tempo di esecuzione: è grossolana perché la potenza
+dipende da *cosa* si sta calcolando, ma ha il pregio di essere misurabile con
+strumenti che esistono già (`nvidia-smi` espone la potenza istantanea, i
+contatori RAPL fanno lo stesso per la CPU). A preventivo, si parte dai FLOP: un
 addestramento costa circa $6ND$ FLOP ($N$ parametri, $D$ token, come nella
 {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`), e
 $E \approx 6ND / (\text{MFU}\cdot \phi)$, dove $\phi$ sono i FLOP per joule di
-picco della scheda e MFU la frazione di picco davvero sfruttata. Con
-$N = 7\cdot10^9$, $D = 10^{12}$, una scheda da circa $10^{15}$ FLOP/s a 700 W e
-MFU del $40\%$, sono $4{,}2\cdot10^{22}$ FLOP, circa $7\cdot10^{10}$ J, cioè una
-ventina di MWh sulle sole schede, e con PUE $1{,}1$ e $400$ g/kWh circa nove
-tonnellate di CO₂e. Il conto sottostima (CPU, rete e memoria dei nodi non ci
-sono), ma dice dove guardare: l'MFU pesa quanto l'hardware. È
-grossolana perché la potenza dipende da *cosa* si sta calcolando, ma ha il
-pregio di essere misurabile con strumenti che esistono già
-(`nvidia-smi` espone la potenza istantanea, i contatori RAPL fanno lo stesso
-per la CPU).
+picco della scheda (i FLOP al secondo di picco divisi per la sua potenza di
+targa) e MFU la frazione di picco davvero sfruttata. Con $N = 7\cdot10^9$,
+$D = 10^{12}$, una scheda da circa $10^{15}$ FLOP/s a 700 W e MFU del $40\%$,
+sono $4{,}2\cdot10^{22}$ FLOP, circa $7\cdot10^{10}$ J, cioè una ventina di MWh
+sulle sole schede, e con PUE $1{,}1$ e $400$ g/kWh circa nove tonnellate di
+CO₂e. Il conto fa assorbire alla scheda la sua potenza di targa per tutto il
+tempo, che è un tetto e non una media, e lascia fuori CPU, rete e memoria dei
+nodi: i due errori vanno in versi opposti, ma il conto dice dove guardare,
+perché l'MFU pesa quanto l'hardware.
 
 `````
 
@@ -249,16 +251,16 @@ Addestrare è un costo che si paga una volta sola: grande, ben visibile, si può
 misurare, si può datare, si può scrivere in un articolo scientifico. Rispondere
 è un costo minuscolo moltiplicato per un numero enorme: una singola risposta
 consuma pochissimo, ma se il modello risponde a milioni di richieste al giorno
-per due anni, il totale supera facilmente l'addestramento che l'ha prodotto. Il
-pareggio ha una forma semplice: $N^\ast = E_{\text{add}}/e_{\text{inf}}$
+per due anni, il totale supera facilmente l'addestramento che l'ha prodotto.
+C'è quindi un momento, nella vita di un modello, in cui la somma di tutte le
+risposte date fin lì raggiunge il costo di averlo costruito: è il **punto di
+pareggio**, e ha una forma semplice, $R^\ast = E_{\text{add}}/e_{\text{inf}}$
 richieste, dove $E_{\text{add}}$ è l'energia dell'addestramento ed
 $e_{\text{inf}}$ quella media di una risposta; a $r$ richieste al giorno lo si
-raggiunge in $N^\ast/r$ giorni. Le misure dirette del costo per richiesta,
+raggiunge in $R^\ast/r$ giorni. Le misure dirette del costo per richiesta,
 compito per compito, mostrano che per i modelli generativi $e_{\text{inf}}$ sta
 ordini di grandezza sopra quello di un classificatore dedicato
-{cite}`luccioni2024power`. C'è quindi un momento, nella vita di un modello, in
-cui la somma di tutte le risposte date fin lì raggiunge il costo di averlo
-costruito: è il **punto di pareggio**. Dove cada non è un numero universale (con
+{cite}`luccioni2024power`. Dove cada non è un numero universale (con
 numeri di fantasia: se addestrare è costato quanto dieci milioni di risposte e
 il modello ne dà un milione al giorno, il pareggio arriva al decimo giorno, e
 dopo due anni l'addestramento pesa poco più dell'uno per cento del totale), e un

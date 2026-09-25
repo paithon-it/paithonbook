@@ -252,25 +252,26 @@ anche gli altri settecentosettantotto, che lo studente non può usare perché
 non ne ha l’etichetta, se ne guadagnano altri 3,2.
 
 Quindi la spiegazione bella («il maestro dice dieci cose per esempio invece di
-una») è vera e vale meno della metà del risultato. L’altra metà è più
-prosaica: il maestro trasforma esempi di cui lo studente non ha l’etichetta in
-esempi utilizzabili. Con una riserva che l’impianto porta scritta addosso:
-quelle settecentosettantotto etichette il maestro le ha viste, perché è stato
+una») è vera e vale meno della metà del risultato. L’altra metà è più prosaica:
+il maestro trasforma esempi di cui lo studente non ha l’etichetta in esempi
+utilizzabili. Con una riserva che l’impianto porta scritta addosso: quelle
+settecentosettantotto etichette il maestro le ha viste, perché è stato
 addestrato su tutte, e i suoi commenti su quegli esempi sono anche un modo
-indiretto di passarle allo studente. Con un maestro che la seconda metà dei
-dati non l’ha mai vista, il guadagno dei dubbi resta quasi dov’è e quello degli
-esempi in più si riduce di molto: la cifra che il conto attribuisce ai dati
-non etichettati, qui, è un tetto.
-Le due cose insieme fanno la distillazione, e chi ne racconta solo la prima
-attribuisce a un meccanismo elegante un guadagno che viene soprattutto da un
-meccanismo banale.
+indiretto di passarle allo studente. Con un maestro che la seconda metà dei dati
+non l’ha mai vista, il guadagno dei dubbi resta quasi dov’è e quello degli
+esempi in più si riduce di molto (chi vuole vederlo addestra il maestro sulla
+sola prima metà di `X` e `y` e rilancia il conto, sapendo che anche il maestro
+ne esce un po’ più debole): la cifra che il conto attribuisce ai dati non
+etichettati, qui, è un tetto. Le due cose insieme fanno la distillazione, e chi
+ne racconta solo la prima attribuisce a un meccanismo elegante un guadagno che
+viene soprattutto da un meccanismo banale.
 
-E conviene dire anche che cosa il conto non dimostra: non dimostra che
-imitare sia meglio che imparare. Se allo studente si dessero tutte e
-ottocentonovantotto le etichette vere, il vantaggio si assottiglierebbe fino a
-sparire nel rumore. Chi vuole vederlo cambia un solo numero nel codice qui
-sopra, `POCHI`, portandolo da 120 a `len(X)`: le ultime due righe diventano
-allora lo stesso esperimento, e le loro etichette vanno lette così.
+E conviene dire anche che cosa il conto non dimostra: non dimostra che imitare
+sia meglio che imparare. Se allo studente si dessero tutte e ottocentonovantotto
+le etichette vere, il vantaggio si assottiglierebbe fino a sparire nel rumore.
+Chi vuole vederlo cambia un solo numero nel codice della distillazione, `POCHI`,
+portandolo da 120 a `len(X)`: le ultime due righe diventano allora lo stesso
+esperimento, e le loro etichette vanno lette così.
 
 `````{tab} Elementare
 

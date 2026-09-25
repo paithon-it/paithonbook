@@ -57,23 +57,25 @@ spostato) e vada rifatta a metà strada.
 
 `````{tab} Superiore
 
-ReAct intreccia ragionamento e azione a ogni passo: la policy sceglie
-$a_t$ guardando solo lo stato corrente $s_t$, senza un piano globale
-esplicito. È reattivo (si adatta bene alle sorprese) ma su orizzonti lunghi
-tende a perdere coerenza, ripetere azioni o divagare. Il pattern
-plan-and-execute separa due ruoli: un *pianificatore* produce in un colpo
-solo una sequenza di sotto-obiettivi $g_1, \dots, g_k$ che decompongono il
-compito, e un *esecutore* li affronta uno per uno (spesso con un mini-loop
-ReAct dentro ciascuno). Il piano dà struttura, coerenza globale e spesso
-meno chiamate al modello per il ragionamento di alto livello. ReWOO
-{cite}`xu2023rewoo` ne dà una misura: scrive il piano una volta sola, con
-segnaposto al posto delle osservazioni ancora da ottenere (il passo 2 usa «il
-risultato del passo 1» senza conoscerlo), fa eseguire gli strumenti e chiama il
-modello un'ultima volta per comporre la risposta; su HotpotQA dichiara un
-consumo di token circa cinque volte minore di un ciclo intercalato alla ReAct e
-quattro punti di accuratezza in più. Il risparmio viene dal non rileggere a ogni
-passo prompt e cronologia; il prezzo è che il piano non vede le osservazioni
-mentre le raccoglie, e un'osservazione inattesa la paga tutta il re-planning.
+ReAct intreccia ragionamento e azione a ogni passo: la policy sceglie $a_t$
+guardando solo lo stato corrente $s_t$, senza un piano globale esplicito. È
+reattivo (si adatta bene alle sorprese) ma su orizzonti lunghi tende a perdere
+coerenza, ripetere azioni o divagare. Il pattern plan-and-execute separa due
+ruoli: un *pianificatore* produce in un colpo solo una sequenza di
+sotto-obiettivi $g_1, \dots, g_k$ che decompongono il compito, e un *esecutore*
+li affronta uno per uno (spesso con un mini-loop ReAct dentro ciascuno). Il
+piano dà struttura, coerenza globale e spesso meno chiamate al modello per il
+ragionamento di alto livello. ReWOO {cite}`xu2023rewoo` ne dà una misura: scrive
+il piano una volta sola, con segnaposto al posto delle osservazioni ancora da
+ottenere (il passo 2 usa «il risultato del passo 1» senza conoscerlo), fa
+eseguire gli strumenti e chiama il modello un'ultima volta per comporre la
+risposta; su HotpotQA dichiara un consumo di token circa cinque volte minore di
+un ciclo intercalato alla ReAct, con un'accuratezza di poco più alta (42,4
+contro 40,8: il «4%» dell'abstract è un guadagno relativo, e la corrispondenza
+esatta scende anzi di quasi due punti). Il risparmio viene dal non rileggere a
+ogni passo prompt e cronologia; il prezzo è che il piano non vede le
+osservazioni mentre le raccoglie, e un'osservazione inattesa la paga tutta il
+re-planning.
 
 Il compromesso è netto e va dichiarato. Pianificare in anticipo conviene
 quando il compito è *decomponibile* e l'ambiente *prevedibile*: il piano regge
@@ -406,15 +408,17 @@ più volte sullo stesso compito, perché l'ambiente non sta fermo: accanto alla
 media si riporta la dispersione fra le ripetizioni, senza la quale non si sa
 se una differenza fra due agenti esista davvero. Le ripetizioni si riassumono
 con due stimatori che rispondono a domande opposte. Se su un compito si fanno
-$n$ tentativi indipendenti e $c$ riescono, la probabilità che almeno uno fra
+$n$ tentativi indipendenti (qui $n$ conta i tentativi, non i passi della
+traiettoria di poco sopra) e $c$ riescono, la probabilità che almeno uno fra
 $k \le n$ tentativi riesca si stima senza distorsione con
 
 $$
 \text{pass@}k = \mathbb{E}_{\text{compiti}}\!\left[1 - \binom{n-c}{k}\Big/\binom{n}{k}\right]
 $$
 
-{cite}`chen2021evaluating`, e dice quanto rende un verificatore che sceglie fra
-$k$ proposte; la probabilità che riescano tutti e $k$ si stima con
+{cite}`chen2021evaluating`, e dice quanto rende un verificatore perfetto che
+sceglie fra $k$ proposte (con un verificatore vero è un tetto); la probabilità
+che riescano tutti e $k$ si stima con
 
 $$
 \text{pass}^k = \mathbb{E}_{\text{compiti}}\!\left[\binom{c}{k}\Big/\binom{n}{k}\right]

@@ -82,10 +82,12 @@ $\mathbf{H}^{(0)} = \sqrt{d_{\text{model}}}\,\mathbf{X}_{\text{emb}} +
 prima di sommare la codifica di posizione), lo strato $\ell$ calcola
 
 $$
-\mathbf{U}^{(\ell)} = \text{LayerNorm}\big(\mathbf{H}^{(\ell-1)} +
-\text{MultiHead}(\mathbf{H}^{(\ell-1)})\big), \qquad
-\mathbf{H}^{(\ell)} = \text{LayerNorm}\big(\mathbf{U}^{(\ell)} +
+\begin{aligned}
+\mathbf{U}^{(\ell)} &= \text{LayerNorm}\big(\mathbf{H}^{(\ell-1)} +
+\text{MultiHead}(\mathbf{H}^{(\ell-1)})\big),\\
+\mathbf{H}^{(\ell)} &= \text{LayerNorm}\big(\mathbf{U}^{(\ell)} +
 \text{FFN}(\mathbf{U}^{(\ell)})\big).
+\end{aligned}
 $$
 
 Bias e normalizzazioni esclusi, uno strato di encoder ha $4d^2$ parametri
@@ -335,19 +337,25 @@ $\mathbf{q}_m \mapsto \mathbf{R}_{m}\,\mathbf{q}_m$ e
 $\mathbf{k}_n \mapsto \mathbf{R}_{n}\,\mathbf{k}_n$, dove
 $\mathbf{R}_m = \operatorname{diag}\big(\mathbf{R}(m\omega_0), \dots,
 \mathbf{R}(m\omega_{d_k/2-1})\big)$ è diagonale a blocchi di rotazioni piane
-$2 \times 2$ e $\omega_i = 10000^{-2i/d_k}$ sono le frequenze delle sinusoidi.
-Poiché rotazioni nello stesso piano commutano, nel prodotto scalare le due si
-compongono, $\mathbf{R}_m^\top \mathbf{R}_n = \mathbf{R}_{n-m}$, e il punteggio
+$2 \times 2$ e $\omega_i = 10000^{-2i/d_k}$: la stessa legge delle sinusoidi,
+calcolata però sulla larghezza $d_k$ di una testa invece che su
+$d_{\text{model}}$. Poiché $\mathbf{R}(\alpha)^\top = \mathbf{R}(-\alpha)$ e
+due rotazioni nello stesso piano si compongono sommando gli angoli, nel
+prodotto scalare le due si riducono a una,
+$\mathbf{R}_m^\top \mathbf{R}_n = \mathbf{R}_{n-m}$, e il punteggio
 $\mathbf{q}_m^\top \mathbf{R}_{n-m}\,\mathbf{k}_n$ dipende dalle posizioni
 soltanto attraverso la distanza $n-m$. Ogni vettore è ruotato secondo la
 posizione assoluta in cui sta, e l'attenzione vede solo le posizioni relative.
 
 La stessa idea, scrivere nei punteggi la distanza invece della posizione, ha
-altre due forme. Shaw e colleghi {cite}`shaw2018self` e poi T5
-{cite}`raffel2020exploring` sommano ai punteggi un termine appreso che dipende
-da $j - i$ (in T5 uno scalare per testa e per fascia di distanza); ALiBi
-{cite}`press2022train` somma una penalità fissa e lineare, $-m_h\,(i-j)$, con
-una pendenza $m_h$ diversa per ogni testa, e nessuna codifica all'ingresso. Gli
+altre due forme. Shaw e colleghi {cite}`shaw2018self` sommano alla chiave un
+vettore appreso per ogni distanza $j - i$ (tagliata oltre una soglia), così che
+ai punteggi arrivi un termine che dipende dalla query e dalla distanza; T5
+{cite}`raffel2020exploring` lo riduce a uno scalare per testa e per fascia di
+distanza; ALiBi {cite}`press2022train` somma una penalità fissa e lineare,
+$-\lambda_h\,(i-j)$, con una pendenza $\lambda_h$ diversa per ogni testa (la
+$m$ dell'articolo, che qui è già la posizione della RoPE), e nessuna codifica
+all'ingresso. Gli
 schemi si separano sull'estrapolazione: oltre la lunghezza vista in
 addestramento la RoPE incontra angoli mai visti e degrada se non se ne
 riscalano le frequenze, mentre ALiBi è stato costruito per reggere contesti

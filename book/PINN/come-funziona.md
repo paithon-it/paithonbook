@@ -70,22 +70,24 @@ vincoli:
 
 Il professore corregge in modo semplice e spietato: controlla la partenza, poi
 punta il dito su una manciata di istanti e lì verifica la regola; ogni
-violazione costa punti. La partenza la controlla sempre, perché è l'unica cosa
-che distingue la curva giusta da tutte le altre che rispettano la regola; e la
-pesa molto più delle altre voci per una ragione diversa, di strategia. È un
-istante solo contro un foglio intero, e uno studente che ritocca la curva per
-recuperare i punti persi finirebbe per badare quasi soltanto al foglio: il peso
-in più non gli dice dove arrivare, gli dice da che parte cominciare. Quegli
-istanti li ha sorteggiati una volta sola, all'inizio, e da lì in poi controlla
-sempre quelli: sembra un dettaglio da bidello, e sarà la chiave di tutto. Lo
+violazione costa punti. Quegli istanti li ha sorteggiati una volta sola,
+all'inizio, e da lì in poi controlla sempre quelli: sembra un dettaglio da
+bidello, e sarà la chiave di tutto. La partenza la controlla sempre, perché è
+l'unica cosa che distingue la curva giusta dalle altre che rispettano la regola:
+anche una riga piatta sul riposo la rispetta (un corpo fermo al centro resta
+fermo), ma parte dal punto sbagliato. E la fa pesare molto più delle altre voci,
+perché è un istante solo contro un foglio intero. È una scommessa, però, e non
+una garanzia. La partenza lo studente la rispetta comunque; il rischio è che,
+per sistemare il resto del foglio, gli convenga scivolare subito dopo verso la
+riga piatta, e il peso in più non basta sempre a tenerlo sulla strada giusta. Lo
 studente ritocca la curva e riconsegna, ancora e ancora, finché i punti persi
 non si riducono a briciole. E qui sta la stranezza: *nessuno dei due conosce la
-soluzione*. Il professore sa solo verificare la regola. Eppure alla fine la
-curva giusta salta fuori, perché tra tutte le curve possibili quella vera è
-l'unica che parte così *e* rispetta la regola dappertutto. Una PINN è
-esattamente questo studente: la curva è la rete, i punti persi sono la loss, e
-gli istanti su cui il professore punta il dito si chiamano punti di
-collocazione.
+soluzione*. Il professore sa solo verificare la partenza e la regola. Eppure,
+quando lo studente non prende la scorciatoia, alla fine la curva giusta salta
+fuori, perché tra tutte le curve possibili quella vera è l'unica che parte così
+*e* rispetta la regola dappertutto. Una PINN è esattamente questo studente: la
+curva è la rete, i punti persi sono la loss, e gli istanti su cui il professore
+punta il dito si chiamano punti di collocazione.
 
 Su quel «dappertutto» conviene tenere un dito, perché è la parola su cui si
 gioca tutto. La curva vera rispetta la regola in ogni singolo punto del
@@ -151,12 +153,12 @@ abbastanza fitti rispetto alle scale della soluzione, e perché fra poche
 pagine vedremo una rete addestrata così infilare un picco di residuo proprio
 nel buco fra due punti di controllo.
 
-Perché allora in pratica si sceglie $\lambda_0$ ben maggiore di 1? Non per
-selezionare il minimo, ma per raggiungerlo: i due termini non pesano allo
-stesso modo sulla discesa, e il rischio è che i pesi si muovano quasi solo
-nella direzione dettata dalla fisica, trascurando l'unico ancoraggio che c'è.
-Le ragioni per cui succede sono due, e conviene tenerle distinte perché non
-agiscono sempre insieme.
+Perché allora in pratica si sceglie $\lambda_0$ ben maggiore di 1? La ragione
+che se ne dà non è selezionare il minimo, ma raggiungerlo: i due termini non
+pesano allo stesso modo sulla discesa, e il rischio è che i pesi si muovano
+quasi solo nella direzione dettata dalla fisica, trascurando l'unico ancoraggio
+che c'è. Le ragioni per cui succede sono due, e conviene tenerle distinte perché
+non agiscono sempre insieme.
 
 La prima è l’ampiezza dei gradienti. Il residuo si ottiene applicando alla
 rete degli operatori differenziali, e i gradienti che tornano indietro da quel
@@ -184,20 +186,29 @@ piatta. L'informazione di $u(0)=1$ dovrebbe invece propagarsi in avanti
 attraverso il residuo, un tratto dopo l'altro, e la discesa del gradiente non ha
 alcun motivo di rispettare quell'ordine. Wang, Sankaran e Perdikaris lo chiamano
 violazione della causalità, e lo correggono pesando il residuo di ogni istante
-con $w_j = \exp\!\big(-\varepsilon \sum_{t_k < t_j} r_\theta(t_k)^2\big)$, così
-che un istante conti solo quando quelli che lo precedono sono già risolti
-{cite}`wang2024respecting`. Infittire i punti di collocazione non sposta questa
-bilancia (entrambi i termini restano medie); la sposta l'ordine in cui i
+con $w_j = \exp\!\big(-\varepsilon \sum_{t_k < t_j} r_\theta(t_k)^2\big)$,
+calcolati a gradiente fermo (in PyTorch con `.detach()`: se il gradiente li
+attraversasse, la discesa spegnerebbe un istante alzando i residui di quelli
+prima), così che un istante conti solo quando quelli che lo precedono sono già
+risolti {cite}`wang2024respecting`. Infittire i punti di collocazione non sposta
+questa bilancia (entrambi i termini restano medie); la sposta l'ordine in cui i
 vincoli vengono soddisfatti.
 
-In tutti e due i casi il rimedio è lo stesso, dare voce al termine debole; e
-in tutti e due i casi il valore giusto va scelto a mano, provando. È il primo
-dei limiti che la prossima sezione mette in fila.
+Nel primo caso il rimedio è dare voce al termine debole con un peso più grande;
+nel secondo è cambiare l'ordine in cui la discesa soddisfa i vincoli, e un peso
+sulla sola partenza non basta a imporlo. E in tutti e due i casi la manopola
+($\lambda_0$, o la $\varepsilon$ dei pesi causali) si sceglie a mano, provando.
+È il primo dei limiti che la sezione su {doc}`dove la fisica aiuta e dove no
+</PINN/applicazioni-limiti>` mette in fila.
 
-Attenzione però a non dare per scontato l'effetto: quando fra poche pagine
-misureremo che cosa succede davvero a $\lambda_0 = 1$, la rete rispetterà le
-condizioni iniziali lo stesso, e sbaglierà per un'altra strada. Il peso, su
-questo problema, non compra l'ancoraggio: compra il percorso che ci arriva.
+Attenzione però a non dare per scontato l'effetto. Sull'oscillatore il
+moltiplicatore non compra l'ancoraggio, perché a $\lambda_0 = 1$ la rete
+rispetta le condizioni iniziali lo stesso, e non compra nemmeno il percorso:
+sugli stessi dieci semi le corse che collassano sono cinque con $\lambda_0 = 1$
+e cinque con $\lambda_0 = 100$, e la migliore delle riuscite sbaglia di
+$5 \cdot 10^{-3}$ con 1 e di $0{,}15$ con 100 (lo stampa il confronto fra semi).
+Un peso grande sulla partenza, qui, costa precisione senza ridurre i fallimenti:
+è una regola d'uso da verificare caso per caso, non una garanzia.
 
 `````
 
@@ -424,7 +435,7 @@ infatti è la scelta standard delle PINN; funzionano anche il seno e la
 softplus (una versione arrotondata della ReLU), perché il requisito, qui, è la
 regolarità. Il che non vuol dire che siano intercambiabili: le attivazioni
 periodiche cambiano quali frequenze la rete impara in fretta, ed è un effetto
-di cui la prossima sezione si serve come rimedio.
+di cui la sezione sui limiti si serve come rimedio.
 
 `````
 
@@ -539,10 +550,10 @@ ferma sullo zero per sempre (un corpo fermo al centro, senza nessuno che lo
 sposti, resta fermo, e la regola dice proprio questo). A distinguere la nostra
 traiettoria da tutte le altre ci sono soltanto le due condizioni di partenza,
 che però da sole tirano poco, perché riguardano un istante mentre l'altro
-termine tira sull'intera curva. Moltiplicarle per 100 serve a dare loro voce.
-Un moltiplicatore messo lì per bilanciare due termini di una loss si chiama
-**peso**, come i pesi della rete e come il corpo appeso alla molla: la parola
-è la stessa e le tre cose non c'entrano niente l'una con l'altra, quindi
+termine tira sull'intera curva. Moltiplicarle per 100 è il modo abituale di dare
+loro voce. Un moltiplicatore messo lì per bilanciare due termini di una loss si
+chiama **peso**, come i pesi della rete e come il corpo appeso alla molla: la
+parola è la stessa e le tre cose non c'entrano niente l'una con l'altra, quindi
 conviene tenerle separate a mente.
 
 Che la faccenda sia seria si tocca con mano abbassando quel moltiplicatore a 1.
@@ -567,10 +578,13 @@ va a misurare in cinquecento istanti che non aveva mai visto, stesi fitti e in
 fila lungo tutto l'intervallo (una griglia, come quella dei metodi
 classici, ma qui usata solo per controllare, non per calcolare), il suo
 residuo vale $2{,}8$: più di centomila volte quello dei suoi duecento punti.
-Il $100$, insomma, non serve a tenere la curva
-attaccata alla partenza, perché lì ci resta comunque: serve a rendere meno
-conveniente quella scorciatoia. E la rende meno conveniente, non la vieta:
-fra poche pagine ne vedremo la prova.
+Il $100$, insomma, non serve a tenere la curva attaccata alla partenza, perché
+lì ci resta comunque. Verrebbe da concludere che serva a rendere meno
+conveniente quella scorciatoia, ma il seme è uno solo. Nel confronto su dieci
+semi, con il moltiplicatore a 1 e a 100 le corse che collassano sono cinque per
+parte, e la migliore con 1 sbaglia di cinque millesimi, contro i quindici
+centesimi della migliore con 100: su questo problema il moltiplicatore non
+compra la strada giusta, e quando la strada è giusta costa precisione.
 
 Trentamila epoche dopo, ecco il verdetto. A guidare l'addestramento è Adam
 {cite}`kingma2015adam`, la nostra scelta di partenza dalla
@@ -637,8 +651,9 @@ errore massimo                       : 0.154
   sugli ultimi 5 secondi             : 0.154
 ```
 
-Nelle stampe `7.77e-03` sta per $7{,}77 \cdot 10^{-3}$, la notazione dei
-{doc}`richiami di analisi numerica </Matematica/analisi-numerica>`.
+Nelle stampe `7.77e-03` sta per $7{,}77 \cdot 10^{-3}$: il punto fa da virgola,
+e la `e` è il «per dieci alla» che la sezione {doc}`dal notebook agli script
+</PyTorch/dal-notebook-agli-script>` ha sciolto per `1e-3`.
 
 Le stampe si fermano a 25 000 perché arrivano ogni cinquemila epoche e
 l'ultima cade lì; l'addestramento prosegue fino a 30 000, e le cinque righe
@@ -905,7 +920,7 @@ nostra fra le infinite soluzioni, ma agisce su un singolo istante, e
 $\lambda_0 = 100$ rende quella scorciatoia meno attraente, non la vieta:
 la rete infatti la paga per intero, $u_\theta(0) = 0{,}9993$, e si tiene il
 residuo quasi nullo nei punti in cui viene interrogata. È il fenomeno che la
-prossima sezione chiamerà mancanza di ordine causale: la loss somma
+sezione sui limiti chiamerà mancanza di ordine causale: la loss somma
 residui su punti sparsi nel dominio e nulla obbliga la rete a propagare in
 avanti nel tempo l'informazione della partenza.
 
@@ -936,12 +951,15 @@ che infittendo i punti la cosa si chiude, non che sia già chiusa.
 
 Il seme 7 non è nemmeno un caso isolato. Rilanciamo lo stesso programma sei
 volte, cambiando ogni volta soltanto il seme. Di ciascuna corsa prendiamo il
-residuo sui suoi duecento punti, quello della prima riga del confronto qui
-sopra, e mettiamo le sei in fila dal punteggio migliore al peggiore. Lo stesso
-blocco rilancia il seme 42 con il moltiplicatore delle condizioni iniziali a 1,
+residuo sui suoi duecento punti, quello della prima riga del confronto fra il
+seme 42 e il seme 7, e mettiamo le sei in fila dal punteggio migliore al
+peggiore. Lo stesso blocco rilancia il seme 42 con il moltiplicatore delle
+condizioni iniziali a 1; mette a confronto i due moltiplicatori, 1 e 100, sugli
+stessi dieci semi, contando le corse che collassano, cioè quelle che sbagliano
+di più di 0,45, la soglia che il primo addestramento usava per dire collassata;
 e misura sui semi da 0 a 19 il rapporto fra i gradienti dei due termini
-all'avvio: sono i numeri che la discussione del moltiplicatore ha anticipato.
-Sono quattro addestramenti in più, e su CPU chiedono qualche minuto.
+all'avvio. Sono i numeri che la discussione del moltiplicatore ha anticipato, e
+chiedono diciotto addestramenti in più, una ventina di minuti su CPU.
 
 ```{code-block} python
 :class: pt-lento
@@ -973,6 +991,19 @@ with torch.no_grad():
 print(f"\npeso 1: residuo sui punti {res_punti_1:.2e}, "
       f"sulla griglia {res_griglia_1:.2e}")
 print(f"        errore vero {errore_1.max():.3f}, u(0) = {u0_1:.4f}")
+
+# i due moltiplicatori, 1 e 100, sugli stessi dieci semi
+semi = (0, 1, 2, 3, 4, 5, 6, 7, 8, 42)
+for seme in (4, 5, 6, 8):
+    risultati[seme] = addestra(seme, verboso=False)
+con_peso_1 = {42: (rete_1, t_c1)}
+for seme in semi[:-1]:
+    con_peso_1[seme] = addestra(seme, peso=1.0, verboso=False)
+print()
+for peso, corse in ((1, con_peso_1), (100, risultati)):
+    err = np.array([diagnosi(*corse[s])[2].max() for s in semi])
+    print(f"peso {peso:3d}: collassano {(err > 0.45).sum()} corse su 10, "
+          f"la migliore sbaglia di {err.min():.3f}")
 
 def rapporto_gradienti(seme):
     """Ampiezza media dei gradienti della fisica contro quelli delle
@@ -1020,8 +1051,10 @@ seme   residuo   errore   zeri
 peso 1: residuo sui punti 1.94e-05, sulla griglia 2.78e+00
         errore vero 0.729, u(0) = 0.9994
 
+peso   1: collassano 5 corse su 10, la migliore sbaglia di 0.005
+peso 100: collassano 5 corse su 10, la migliore sbaglia di 0.154
+
 rapporto fra i gradienti all'avvio: mediana 2.4, rovesciato in 4 semi su 20
-seme 42: k stimato 3.95, scarto massimo dalla curva vera 0.064, misura peggiore 0.114
 ```
 
 Le due corse con il residuo più basso in assoluto sono le due sbagliate, e
@@ -1064,8 +1097,8 @@ senso opposto: quattro corse su sei ricostruiscono un'oscillazione smorzata
 riconoscibile, partendo da un punto e da una regola, il che resta notevole. Ma
 «di solito funziona» non è una garanzia, e su un problema da manuale, con
 soluzione nota, tre parametri e una sola variabile, a separare la corsa buona
-da quella fallita è stato il seme del generatore casuale. È il motivo per cui
-nella prossima sezione la rassegna dei limiti è più lunga di quella delle
+da quella fallita è stato il seme del generatore casuale. È il motivo per cui,
+nella sezione sui limiti, la rassegna dei limiti è più lunga di quella delle
 applicazioni.
 
 ## Non unire i puntini, non calcolarli: una terza via
@@ -1101,11 +1134,12 @@ dati e legge vanno mescolati, come vedremo tra un attimo.
 
 [^tolleranze]: Quei cinque centomiliardesimi non sono un record del metodo: a un
     solutore si dice in anticipo quanta precisione si vuole, e qui gliene
-    abbiamo chiesta moltissima. Chiedendone meno, lo scarto sale a quasi due
-    milionesimi, che resta comunque quasi centomila volte più piccolo del
-    nostro 0,15. Chi confronta due metodi deve dire anche quanta precisione ha
-    chiesto a ciascuno: se lo tace, il confronto può cambiare di migliaia di
-    volte.
+    abbiamo chiesta moltissima (`solve_ivp` di SciPy con `rtol=1e-10` e
+    `atol=1e-12`). Lasciando `atol` al valore di fabbrica lo scarto sale a
+    quasi due milionesimi; lasciandoli tutti e due, a un millesimo scarso, che
+    resta più di cento volte sotto il nostro 0,15. Chi confronta due metodi
+    deve dire anche quanta precisione ha chiesto a ciascuno: se lo tace, il
+    confronto può cambiare di molti ordini di grandezza.
 
 `````
 
@@ -1154,7 +1188,7 @@ soluzione banale non è più raggiungibile. È il vincolo imposto *a priori*; la
 PINN, come la formulazione del 1994, lo impone invece come penalità, una
 scelta che tiene il metodo generale (una forma così va riscritta per ogni
 geometria e ogni tipo di condizione) ma che, come abbiamo appena visto con il
-seme sfortunato e come vedremo nella prossima sezione, ha un costo. Ma nel
+seme sfortunato e come vedremo fra i limiti, ha un costo. Ma nel
 1994 le derivate della rete andavano ricavate con formule scritte a mano,
 caso per caso, e l'ottimizzazione girava su CPU dell'epoca: l'idea restò di
 nicchia per un quarto di secolo. Quando Maziar Raissi, Paris Perdikaris e
@@ -1203,8 +1237,8 @@ loss = loss_fisica + 100.0 * loss_dati
 ```
 
 dove `t_oss` e `u_oss` sono le colonne di numeri con gli istanti e le misure.
-Il programma completo, con le misure fabbricate e i due semi di cui si parla
-più sotto, è questo (due addestramenti, qualche minuto su CPU):
+Il programma completo, con le misure fabbricate e due semi diversi, è questo
+(due addestramenti, qualche minuto su CPU):
 
 ```{code-block} python
 :class: pt-lento
@@ -1313,7 +1347,7 @@ tutto il capitolo in un numero.
 Sembra poco: tre modifiche. È moltissimo: è il medico legale che risale all'ora
 del decesso, il geofisico che deduce la struttura del sottosuolo dalle onde
 sismiche, l'ingegnere che stima l'usura di un componente dai sensori. È la
-famiglia di problemi in cui le PINN danno il meglio, e la prossima sezione è
+famiglia di problemi in cui le PINN danno il meglio, e la sezione sui limiti è
 dedicata a loro; con l'avvertenza, che là svilupperemo, che «il meglio delle
 PINN» non vuol dire «meglio di tutti».
 
@@ -1330,10 +1364,12 @@ PINN» non vuol dire «meglio di tutti».
   istanti di controllo scelti a caso (i punti di collocazione) e gli scarti
   sulla partenza, cioè il punto da cui si parte e la pendenza con cui si parte
   (dove conta anche lo spazio, come nella sbarra che si scalda, entra qui pure
-  quello che succede ai bordi). Alla partenza si dà più peso non
-  perché altrimenti la si perda (con un peso qualsiasi la curva ci resta
-  attaccata), ma perché senza quel peso l'addestramento imbocca più facilmente
-  la strada sbagliata.
+  quello che succede ai bordi). Alla partenza si dà di solito più peso, qui
+  cento volte le altre voci, perché è un punto solo contro una curva intera. Ma
+  su dieci ripartenze il peso cento e il peso uno sbagliano strada lo stesso
+  numero di volte, e con il peso uno le corse riuscite arrivano di solito molto
+  più vicine alla curva vera: quel peso si sceglie provando, e non garantisce la
+  strada giusta.
 - La curva dev'essere liscia: se è fatta di segmenti dritti incollati uno
   dopo l'altro, come quelli che escono dalla ReLU, non ha curvatura da nessuna
   parte, e il professore non vedrebbe più il pezzo più importante della
@@ -1379,9 +1415,11 @@ PINN» non vuol dire «meglio di tutti».
 - Il colpo di scena tecnico: le stesse derivate automatiche usate finora sui
   pesi, calcolate rispetto all'input, rendono la rete $u_\theta$ una
   funzione derivabile su cui si può imporre un'equazione differenziale.
-- La loss di una PINN somma: media dei residui sui punti di
-  collocazione (la fisica) + scarti su condizioni iniziali/al contorno
-  (+ eventuali dati), con pesi che proteggono i pochi ancoraggi.
+- La loss di una PINN somma: media dei residui sui punti di collocazione (la
+  fisica) + scarti su condizioni iniziali/al contorno (+ eventuali dati), con
+  pesi sugli ancoraggi da scegliere provando: sull'oscillatore $\lambda_0 = 100$
+  non riduce le corse che collassano rispetto a $\lambda_0 = 1$, e costa
+  precisione.
 - `tanh`, non ReLU: la ReLU ha derivata seconda nulla quasi ovunque e
   renderebbe cieco il residuo; servono attivazioni lisce.
 - `create_graph=True` è la chiave pratica: mantiene derivabile la

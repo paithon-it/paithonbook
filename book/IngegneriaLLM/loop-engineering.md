@@ -308,13 +308,15 @@ a sé stesso, cioè della catena di pensiero della sezione sul prompt
 
 Questo non vuol dire che ReAct vinca sempre, e sono gli stessi autori a
 misurarlo. Sulle domande che obbligano a incrociare più fatti la catena di
-pensiero resta
-di poco avanti, sulle affermazioni da verificare contro una fonte passa avanti
-ReAct, e il risultato migliore, in tutti e due i casi, viene dai due metodi in
-coppia, con l'uno che subentra quando l'altro si arena; i numeri e la regola
-del cambio di turno stanno nella {doc}`sezione sul ciclo dell'agente
-</Agenti/agenti-e-tool-use>`. Quello che resta è che l'ordine giusto lo detta
-il compito.
+pensiero resta di poco avanti (29,4 risposte esatte su cento contro 27,4);
+sulle affermazioni da verificare contro una fonte passa avanti ReAct (60,9
+contro 56,3). Il risultato migliore, in tutti e due i casi, viene dai due
+metodi in coppia, con l'uno che subentra quando l'altro si arena, e a cambiare
+è chi parte: sulle domande conviene partire con ReAct (35,1), sulle
+affermazioni con la catena di pensiero a voto di maggioranza (64,6). La regola
+del cambio di turno sta nella {doc}`sezione sul ciclo dell'agente
+</Agenti/agenti-e-tool-use>`. Sono misure di un modello del 2022; quello che
+non invecchia è che l'ordine giusto lo detta il compito.
 
 Il secondo lavoro si chiama Reflexion {cite}`shinn2023reflexion`, e aggiunge
 il tassello mancante: dopo un fallimento l'agente riflette a parole sul

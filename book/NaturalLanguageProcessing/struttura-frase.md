@@ -568,14 +568,14 @@ informazione. Il punto sta tutto nel «minuscolo». Se la sonda fosse una rete
 grande, potrebbe imparare il compito per conto suo, e allora non avremmo
 scoperto niente sul modello: avremmo scoperto che una rete grande impara la
 grammatica, cosa che già sapevamo. Se invece la sonda è tenuta piccola e ci
-riesce lo
-stesso, la spiegazione più semplice è che l'informazione nei numeri di partenza
-ci fosse già, e alla sonda sia bastato andarla a leggere. Più semplice, non
-unica: anche una sonda lineare, su numeri abbastanza ricchi, impara etichette
-assegnate a caso, e il controllo proposto da Hewitt e Liang
-{cite}`hewitt2019control` consiste proprio nel rifare l'addestramento su
-un'etichettatura casuale e guardare lo scarto, come racconta la
-{doc}`sezione sull'interpretabilità
+riesce lo stesso, la spiegazione più semplice è che l'informazione nei numeri di
+partenza ci fosse già, e alla sonda sia bastato andarla a leggere. Più semplice,
+non unica: anche una sonda lineare, su numeri abbastanza ricchi, impara
+etichette sorteggiate a caso, purché ogni parola riceva sempre la stessa, perché
+le basta riconoscere la parola. Il controllo proposto da Hewitt e Liang
+{cite}`hewitt2019control` consiste proprio nel rifare l'addestramento con
+un'etichetta sorteggiata una volta per ogni parola del vocabolario e guardare lo
+scarto, come racconta la {doc}`sezione sull'interpretabilità
 </Interpretabilita/attribuzione-e-meccanicistica>`.
 
 Hewitt e Manning, nel 2019 {cite}`hewitt2019structural`, provano a ricavarne
@@ -644,9 +644,11 @@ differenza pesa parecchio.
   testi in cui ogni frase è stata analizzata a mano, e da lì i programmi
   imparano. Per
   l'italiano quello di riferimento è ISDT, di circa quattordicimila frasi.
-- I modelli giganti l'analisi logica non la fanno, e nessuno gliel'ha
-  insegnata; ma andando a guardare dentro di loro si ritrova qualcosa che le
-  somiglia. È un indizio, non una prova.
+- I modelli giganti non analizzano la frase mentre la leggono, e nessuno
+  glielo ha insegnato; se glielo si chiede, un albero lo scrivono come
+  qualunque altro testo, senza garanzia che stia in piedi. Andando a guardare
+  dentro di loro, però, si ritrova qualcosa che somiglia all'analisi logica. È
+  un indizio, non una prova.
 ```
 `````
 
@@ -672,10 +674,11 @@ differenza pesa parecchio.
   classificatore neurale.
 - I parser si addestrano sui treebank, il Penn Treebank per i costituenti,
   le UD (per l'italiano: ISDT) per le dipendenze.
-- I LLM non producono alberi, ma il probing suggerisce che una parte
-  della struttura sintattica emerga nelle loro rappresentazioni; il parsing
-  esplicito resta utile a linguistica, correzione grammaticale e lingue a
-  poche risorse.
+- I LLM non costruiscono alberi mentre leggono (un albero richiesto lo generano
+  come testo, senza garanzia che sia ben formato), ma il probing suggerisce che
+  una parte della struttura sintattica emerga nelle loro rappresentazioni; il
+  parsing esplicito resta utile a linguistica, correzione grammaticale e lingue
+  a poche risorse.
 ```
 `````
 

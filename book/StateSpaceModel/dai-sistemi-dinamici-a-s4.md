@@ -550,12 +550,17 @@ l'attenzione, costando molto meno.
 Prima ancora c'è un passo che Mamba darà per scontato: togliere a S4 la
 correzione di rango basso. DSS {cite}`gupta2022dss` e poi S4D {cite}`gu2022s4d`
 mostrano che con $\mathbf{A}$ soltanto diagonale la qualità resta vicina a
-quella di S4, purché l'inizializzazione conservi lo spettro di HiPPO: la parte
-normale di LegS, $a_n = -\tfrac12 + i\pi n$ (S4D-Lin), o i reali $a_n =
--(n+1)$ (S4D-Real), cioè gli autovalori stessi di LegS. Il kernel diventa una
-somma di $N$ esponenziali, $\bar K_j = \sum_n C_n\, e^{j\Delta a_n}\, \bar
-b_n$, calcolabile con una matrice di Vandermonde, senza Cauchy né Woodbury. La
-$\mathbf{A}$ diagonale e reale di Mamba viene da qui.
+quella di S4, purché l'inizializzazione sia scelta con cura. Reggono la parte
+normale di LegS (S4D-LegS), con parte reale $-\tfrac12$ e parti immaginarie
+che vanno come l'inverso dell'indice, e la più semplice
+$a_n = -\tfrac12 + i\pi n$ (S4D-Lin), che prende le frequenze di Fourier di
+un'altra matrice HiPPO, FouT. Conservare lo spettro, invece, non basta: i reali
+$a_n = -(n+1)$ (S4D-Real), che sono proprio gli autovalori di LegS, nelle
+ablazioni di S4D perdono cinque punti su sCIFAR e dieci su Speech Commands
+rispetto a S4D-Lin. Il kernel diventa una somma di $N$ esponenziali,
+$\bar K_j = \sum_n C_n\, e^{j\Delta a_n}\, \bar b_n$, calcolabile con una
+matrice di Vandermonde, senza Cauchy né Woodbury. La $\mathbf{A}$ diagonale e
+reale di Mamba è l'inizializzazione di S4D-Real, e viene da qui.
 
 S5 (Smith, Warrington e Linderman, ICLR 2023, {cite}`smith2023s5`)
 semplifica S4 su due fronti. Primo: usa un unico SSM **MIMO** (a più ingressi

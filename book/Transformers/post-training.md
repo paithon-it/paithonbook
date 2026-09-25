@@ -385,9 +385,11 @@ $$
 \mathcal{L}_{\text{RM}}(\phi) = -\mathbb{E}_{(x,y_w,y_l)\sim\mathcal{D}}\big[\log\sigma\big(r_\phi(x,y_w) - r_\phi(x,y_l)\big)\big].
 $$
 
-In InstructGPT ogni annotatore ordina da 4 a 9 risposte allo stesso prompt, e
-i $\binom{K}{2}$ confronti che ne escono entrano insieme nello stesso batch,
-pesati $1/\binom{K}{2}$ per non sovra-adattarsi. La loss vede solo differenze:
+In InstructGPT ogni annotatore ordina $K$ risposte allo stesso prompt, con $K$
+da 4 a 9, e i $\binom{K}{2}$ confronti che ne escono formano un solo elemento
+del batch, pesati $1/\binom{K}{2}$: rimescolati uno per uno nel dataset,
+confronti così correlati facevano sovra-adattare il reward model in una sola
+passata. La loss vede solo differenze:
 sommare a $r_\phi$ una qualunque funzione del solo prompt non la cambia, e per
 questo il punteggio va tarato a parte prima del rinforzo. Tornerà utile nella
 DPO.
@@ -410,33 +412,34 @@ modello SFT), $D_{\mathrm{KL}}$ è la divergenza di Kullback–Leibler
 {cite}`kullback1951information` vista nella {doc}`sezione sulla teoria
 dell'informazione </Matematica/teoria-informazione>` (là scritta in bit, qui in
 logaritmi naturali, che è la base con cui la forma chiusa di poco più avanti
-torna) e $\beta > 0$ regola la forza del vincolo. Si noti che entrambi i
-termini stanno dentro la stessa aspettazione sui prompt: la deriva si penalizza
-in media sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un
-prompt lasciato libero, altrimenti l'espressione non sarebbe funzione dei soli
-$\theta$ e non ci sarebbe niente da massimizzare. (InstructGPT la scrive in
-forma campionata, con $-\beta\log\frac{\pi_\theta(y\mid
-x)}{\pi_{\text{ref}}(y\mid x)}$ dentro l'aspettazione del termine di rinforzo,
-e le aggiunge un terzo termine,
+torna) e $\beta > 0$ regola la forza del vincolo. Si noti che entrambi i termini
+stanno dentro la stessa aspettazione sui prompt: la deriva si penalizza in media
+sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un prompt
+lasciato libero, altrimenti l'espressione non sarebbe funzione dei soli $\theta$
+e non ci sarebbe niente da massimizzare. (InstructGPT la scrive in forma
+campionata, con
+$-\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}$ dentro
+l'aspettazione del termine di rinforzo, e le aggiunge un terzo termine,
 $\gamma\,\mathbb{E}_{x\sim\mathcal{D}_{\text{pretrain}}}[\log\pi_\theta(x)]$,
-che rimescola nel gradiente un po' di pre-addestramento per non perdere
-prestazioni sui compiti classici; la variante si chiama PPO-ptx.) La penalità KL
-serve a due cose: impedisce alla policy di
-derivare verso le zone in cui $r_\phi$ (addestrato su dati limitati) estrapola
-male (il *reward hacking* su cui torneremo), e preserva la fluidità linguistica
-accumulata nel pre-addestramento. Questa forma non è soltanto un espediente
-pratico: massimizzare una ricompensa restando vicini a una distribuzione di
-riferimento è formalmente la stessa cosa che fare inferenza bayesiana, con
-$\pi_{\text{ref}}$ nel ruolo del priore {cite}`korbak2022rl`. La sezione
-sull'inferenza attiva, nel capitolo sui *world model*, riprende quell'identità
-e ne mostra la conseguenza: il termine che qui trattiene la policy è, letto
-dall'altra parte, lo stesso che altrove spinge un agente a cercare
-informazione. L'ottimizzazione usa PPO {cite}`schulman2017proximal`,
-l'algoritmo a gradiente di policy che hai visto sviluppato, insieme a tutta la
-famiglia dei *policy gradient*, nel {doc}`capitolo sul Deep Reinforcement
-Learning </DeepReinforcementLearning/overview>`: l'idea in una riga è aumentare
-la probabilità delle risposte con ricompensa alta, a piccoli passi controllati
-per non destabilizzare la policy.
+con $\gamma$ il suo peso e $x$, solo qui, un testo del pre-addestramento invece
+di un prompt, che rimescola nel gradiente un po' di pre-addestramento per non
+perdere prestazioni sui compiti classici; la variante si chiama PPO-ptx.) La
+penalità KL serve a due cose: impedisce alla policy di derivare verso le zone in
+cui $r_\phi$ (addestrato su dati limitati) estrapola male (il *reward hacking*
+su cui torneremo), e preserva la fluidità linguistica accumulata nel
+pre-addestramento. Questa forma non è soltanto un espediente pratico:
+massimizzare una ricompensa restando vicini a una distribuzione di riferimento è
+formalmente la stessa cosa che fare inferenza bayesiana, con $\pi_{\text{ref}}$
+nel ruolo del priore {cite}`korbak2022rl`. La sezione sull'inferenza attiva, nel
+capitolo sui *world model*, riprende quell'identità e ne mostra la conseguenza:
+il termine che qui trattiene la policy è, letto dall'altra parte, lo stesso che
+altrove spinge un agente a cercare informazione. L'ottimizzazione usa PPO
+{cite}`schulman2017proximal`, l'algoritmo a gradiente di policy che hai visto
+sviluppato, insieme a tutta la famiglia dei *policy gradient*, nel
+{doc}`capitolo sul Deep Reinforcement Learning
+</DeepReinforcementLearning/overview>`: l'idea in una riga è aumentare la
+probabilità delle risposte con ricompensa alta, a piccoli passi controllati per
+non destabilizzare la policy.
 
 `````
 
@@ -470,8 +473,8 @@ fatti con gli stessi ingredienti possono finire uno bene e uno male. Nel 2023
 Rafailov e colleghi
 {cite}`rafailov2023direct` mostrano che si può arrivare quasi allo stesso punto
 con un normale addestramento supervisionato, senza reinforcement learning: non
-su esempi svolti come il tirocinio di poco fa, ma sulle coppie, alzando la
-preferita e abbassando insieme la scartata. Il
+su esempi svolti come il tirocinio di poco fa, ma sulle coppie, allargando il
+distacco fra la preferita e la scartata. Il
 sottotitolo del loro articolo è già la tesi: *Your Language Model is Secretly a
 Reward Model*, il tuo modello di linguaggio è, a sua insaputa, già un giudice.
 
@@ -503,7 +506,10 @@ ricetta in modo da spostarla di un passo verso il piatto preferito e di un
 passo via da quello scartato. E il ritocco è dosato con intelligenza: se il
 cuoco *già* favorisce il piatto giusto, il confronto non insegna quasi nulla e
 la correzione è minima; se invece è ancora in pareggio, o peggio sta dalla
-parte sbagliata, la correzione è energica. Anche la regola d'oro sopravvive,
+parte sbagliata, la correzione è energica. Quello che il ritocco sorveglia,
+però, è il distacco fra i due piatti, non il gradimento di ciascuno: può finire
+che il cuoco creda un po’ meno in tutti e due, purché nello scartato creda molto
+meno. Anche la regola d'oro sopravvive,
 incorporata nel metodo: i ritocchi si misurano sempre *rispetto alla ricetta di
 partenza*, così il cuoco migliora senza stravolgere. Stessa destinazione
 dell'RLHF sulla carta, e senza il cantiere. Nei fatti le due strade non
@@ -532,9 +538,11 @@ distribuzione. Il conto è breve. Per un prompt fissato, raccogliendo i due
 termini sotto la stessa aspettazione,
 
 $$
+\begin{aligned}
 \mathbb{E}_{y\sim\pi}[r(x,y)] - \beta D_{\mathrm{KL}}(\pi\|\pi_{\text{ref}})
-= -\beta\,\mathbb{E}_{y\sim\pi}\Big[\log\frac{\pi(y\mid x)}{\pi_{\text{ref}}(y\mid x)\,e^{r(x,y)/\beta}/Z(x)}\Big] + \beta\log Z(x)
-= -\beta D_{\mathrm{KL}}(\pi\|\pi^*) + \beta\log Z(x).
+&= -\beta\,\mathbb{E}_{y\sim\pi}\Big[\log\frac{\pi(y\mid x)}{\pi_{\text{ref}}(y\mid x)\,e^{r(x,y)/\beta}/Z(x)}\Big] + \beta\log Z(x)\\
+&= -\beta D_{\mathrm{KL}}(\pi\|\pi^*) + \beta\log Z(x).
+\end{aligned}
 $$
 
 Il secondo addendo non dipende da $\pi$, e la KL è nulla se e solo se
@@ -589,10 +597,11 @@ $$
 ogni coppia pesa quanto la ricompensa implicita la ordina male, e i confronti
 già «vinti» contribuiscono poco. La loss chiede solo che il margine cresca, non
 che la preferita diventi più probabile: in pratica possono scendere tutte e
-due, la scartata di più. E se le preferenze sono quasi deterministiche, il
-margine ottimo è infinito qualunque sia $\beta$, e il vincolo verso il
-riferimento smette di trattenere; è il difetto da cui parte IPO
-{cite}`azar2023general`.
+due, la scartata di più {cite}`pal2024smaug`. E se le preferenze sono
+deterministiche (e con un solo giudizio per coppia, nei dati lo sono sempre),
+il margine ottimo è infinito qualunque sia $\beta$, e il vincolo verso il
+riferimento smette di trattenere; più le preferenze vi si avvicinano, meno
+trattiene. È il difetto da cui parte IPO {cite}`azar2023general`.
 Niente reward model esplicito, niente campionamento, niente PPO: un normale
 addestramento supervisionato su coppie. L'equivalenza con l'RLHF è esatta
 solo in quel limite non parametrico, e sulla distribuzione delle coppie
@@ -878,8 +887,9 @@ garanzie sul risultato.
   cucina: restare vicini alla ricetta di partenza, perché il giudice è
   un'imitazione e ha i suoi punti ciechi.
 - Saltare il giudice {cite}`rafailov2023direct`: dagli stessi confronti si
-  può imparare direttamente, rendendo un po’ più probabile la risposta
-  preferita e un po’ meno quella scartata, e misurando sempre i ritocchi
+  può imparare direttamente, allargando il distacco fra la risposta preferita
+  e la scartata (a volte scendono tutte e due, la scartata di più), e
+  misurando sempre i ritocchi
   rispetto alla ricetta di partenza. Stessa destinazione sulla carta, senza il
   cantiere: nei fatti i due metodi divergono, perché il quaderno dei confronti è
   fermo e il palato artificiale no.

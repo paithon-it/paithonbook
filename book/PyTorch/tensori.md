@@ -435,22 +435,24 @@ Nella forma vettoriale ci sono due cose che una catena a un solo cammino non
 direbbe, e sono esattamente le due che contano nella pratica. La prima è la
 trasposta: la modalità reverse non costruisce mai la Jacobiana, calcola
 direttamente il prodotto fra la sua trasposta e il vettore che arriva da valle
-(un *vector-Jacobian product*, uno per nodo). Una passata all'indietro dà
-quindi un prodotto $\mathbf{v}^\top \mathbf{J}$, una combinazione delle righe
-della Jacobiana per ogni vettore $\mathbf{v}$ scelto in partenza: con $m$
-uscite ne servirebbero $m$ per averla tutta, e con la loss $m = 1$, quindi ne
-basta una, al costo di un piccolo multiplo della passata in avanti, qualunque
-sia il numero $p$ dei parametri. La modalità diretta fa il conto simmetrico,
-un prodotto $\mathbf{J}\mathbf{u}$ per passata (un *Jacobian-vector product*,
+(un *vector-Jacobian product*, uno per nodo). Se $\mathbf{J}$ è la Jacobiana
+dell'intera funzione, dai $p$ parametri alle sue $q$ uscite, una passata
+all'indietro dà un prodotto $\mathbf{v}^\top \mathbf{J}$, cioè una combinazione
+delle righe di $\mathbf{J}$ per ogni vettore $\mathbf{v}$ scelto in partenza:
+per averla tutta ne servirebbero $q$, e con la loss $q = 1$, quindi ne basta
+una, al costo di un piccolo multiplo della passata in avanti, qualunque sia il
+numero $p$ dei parametri. La modalità diretta fa il conto simmetrico, un
+prodotto $\mathbf{J}\mathbf{u}$ per passata (un *Jacobian-vector product*,
 `torch.func.jvp`), e per il gradiente ne vorrebbe $p$, una per parametro. Il
-vettore di partenza, con la loss, è $\partial \mathcal{L}/\partial
-\mathcal{L} = 1$, e `backward()` lo mette da sé; su un tensore $\mathbf{y}$
-non scalare si rifiuta di partire («*grad can be implicitly created only for
-scalar outputs*») finché non glielo si passa: `y.backward(gradient=v)` calcola
+vettore di partenza, con la loss, è
+$\partial \mathcal{L}/\partial \mathcal{L} = 1$, e `backward()` lo mette da sé;
+su un tensore $\mathbf{y}$ non scalare si rifiuta di partire («*grad can be
+implicitly created only for scalar outputs*») finché non glielo si passa:
+`y.backward(gradient=v)` calcola
 $\mathbf{v}^\top\, \partial \mathbf{y}/\partial \mathbf{x}$. La seconda è la
-sommatoria: un parametro che alimenta più rami riceve un contributo per
-ramo, e i contributi si sommano. È la ragione strutturale per cui `.grad` è un
-`+=` e non un `=`, e il punto in cui il grafo smette di essere una catena.
+sommatoria: un parametro che alimenta più rami riceve un contributo per ramo, e
+i contributi si sommano. È la ragione strutturale per cui `.grad` è un `+=` e
+non un `=`, e il punto in cui il grafo smette di essere una catena.
 
 Quattro dettagli operativi che incontreremo di continuo. I gradienti si
 accumulano: una `backward()` successiva, su un nuovo forward, somma in
@@ -486,7 +488,7 @@ contro calcolo, è il *gradient checkpointing*:
 `torch.utils.checkpoint.checkpoint(blocco, x, use_reentrant=False)` non
 conserva le attivazioni interne del blocco e le ricalcola durante il ritorno,
 al prezzo di una passata in avanti in più per quel blocco. L'argomento
-`use_reentrant` va scritto: la libreria avvisa a ogni chiamata che lo si passi
+`use_reentrant` va scritto: la libreria avvisa finché non lo si passa
 esplicito, e la variante consigliata è `False`.
 
 `````

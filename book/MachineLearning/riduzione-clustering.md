@@ -374,6 +374,234 @@ steso, è un foglio piatto e semplicissimo, ma la PCA sa solo schiacciarlo, e
 schiacciandolo ci appiccica sopra strati che erano lontani. Per
 quei casi servono metodi non lineari.
 
+## ICA: separare le voci che si sono mescolate
+
+La PCA ha un secondo limite, che con la curvatura non ha niente a che fare.
+Cerca le direzioni in cui i dati variano di più, e le coordinate dei punti lungo
+quelle direzioni sono *incorrelate*: quando una sale, l'altra non tende né a
+salire né a scendere. Ma incorrelato non vuol dire indipendente: un numero preso
+a caso fra $-1$ e $1$ e il suo quadrato sono incorrelati, eppure conoscere il
+primo dice tutto del secondo. E quando i dati nascono mescolando segnali
+indipendenti fra loro, le *sorgenti*, la PCA restituisce altre miscele. Colin
+Cherry chiamò problema del *cocktail party* il capire che cosa dice una persona
+mentre altre parlano insieme {cite}`cherry1953experiments`; nella versione per
+le macchine due persone parlano nella stessa stanza, due microfoni in punti
+diversi registrano ciascuno un miscuglio delle due voci, e si vogliono riavere
+le voci separate senza sapere come i microfoni le hanno mescolate. L’**analisi
+delle componenti indipendenti** (*Independent Component Analysis*, ICA) risolve
+questo problema sotto ipotesi precise. È nata a metà degli anni Ottanta con la
+separazione cieca delle sorgenti di Hérault, Jutten e Ans, pubblicata per esteso
+da Jutten e Hérault {cite}`jutten1991blind`, e l'ha messa in forma Comon
+{cite}`comon1994independent`.
+
+`````{tab} Elementare
+
+Ogni microfono sente le due voci insieme, in proporzioni diverse. Mettiamo che
+Anna e Bruno parlino allo stesso volume, che il primo microfono senta Anna
+intera e metà di Bruno, e il secondo metà di Anna e Bruno intero. *Combinare* le
+due registrazioni vuol dire prenderne un po' dell'una, più o meno un po'
+dell'altra, e la combinazione giusta cancella una voce. Il primo meno metà del
+secondo fa (Anna più metà di Bruno) meno (un quarto di Anna più metà di Bruno),
+cioè tre quarti di Anna e niente Bruno. Ma quel «metà» nessuno lo conosce. La
+PCA prende la combinazione in cui il suono è più forte, cioè più sparpagliato,
+che qui è la somma dei due microfoni, una volta e mezza Anna più una volta e
+mezza Bruno: un altro miscuglio.
+
+Il trucco dell'ICA viene dai dadi del {doc}`teorema del limite centrale
+</Matematica/probabilita-statistica>`, dove si conta quante volte esce ogni
+totale. Un dado dà una forma piatta, la somma di due dadi un triangolo (il 7
+esce sei volte più spesso del 2), quella di dieci già una campana. Sommare cose
+indipendenti, di norma, porta verso la campana, che è anche la forma del rumore
+di fondo, somma di mille piccoli suoni. Una registrazione è una linea che sale e
+scende attorno allo zero, come quella di un messaggio vocale, e se ne conta allo
+stesso modo quante volte sta a ciascun livello, senza guardare in che ordine ci
+arriva. Una voce sta quasi sempre vicino allo zero, nelle pause, e ogni tanto
+schizza lontano, nei picchi, e il disegno che ne esce è una punta stretta con le
+code lunghe; due voci mescolate somigliano già di più alla campana. Allora, fra
+tutte le combinazioni, si cerca quella che le somiglia *di meno*, ed è quella in
+cui è rimasta una voce sola.
+
+La ricerca si fa in due tempi. Il primo, che fa la PCA, porta i due miscugli
+allo stesso volume e fa in modo che non salgano e scendano insieme, così che poi
+resti da girare una manopola sola. La seconda combinazione della PCA è la
+differenza dei due microfoni, mezza Anna meno mezzo Bruno; divisa la somma per
+uno e mezzo e la differenza per mezzo, vengono Anna più Bruno e Anna meno Bruno,
+allo stesso volume. La manopola dice in che proporzione prenderle, da tutta la
+prima a tutta la seconda, e a metà corsa le due insieme fanno due volte Anna.
+L'ICA gira la manopola finché la forma è la più lontana dalla campana.
+
+Lo stesso conto dice che cosa l'ICA non può sapere. Esce due volte Anna, e non
+Anna, perché chi parla forte lontano dal microfono e chi parla piano da vicino
+lasciano la stessa registrazione. Girando ancora, la differenza meno la somma fa
+meno due volte Bruno, cioè Bruno capovolto, che scende dove saliva e
+all'orecchio suona identico. E quale voce sia la prima nessuno lo dice. Il
+trucco si rompe in tre casi. Se le voci fossero già due soffi di rumore a forma
+di campana, a ogni posizione della manopola uscirebbe la stessa campana, e l'ICA
+ne sceglierebbe una a caso. Se le voci sono più dei microfoni, una combinazione
+ne cancella una sola: con due microfoni e tre voci ne restano due mescolate. E
+il conto suppone che ogni microfono senta le voci nello stesso istante; nella
+stanza vera il suono arriva un po' prima al microfono più vicino, e con l'eco
+ogni microfono sente anche le voci di un attimo prima, e allora il miscuglio non
+è più una semplice somma.
+
+`````
+
+`````{tab} Superiore
+
+Il modello è $\mathbf{x} = \mathbf{A}\mathbf{s}$: $n$ sorgenti $\mathbf{s} \in
+\mathbb{R}^n$ a componenti indipendenti, altrettanti sensori, e $\mathbf{A}$
+quadrata e invertibile, la *matrice di miscelazione*. Gli $m$ campioni di
+$\mathbf{x}$ si trattano come estrazioni indipendenti: l'ordine nel tempo non
+conta, e di ogni sorgente conta soltanto la distribuzione dei valori. Con più
+sensori che sorgenti basta che $\mathbf{A}$ abbia rango pieno di colonna, e la
+PCA riduce prima a $n$ dimensioni; con meno sensori che sorgenti nessuna matrice
+le ricostruisce tutte. Comon ha dimostrato che, se al più una delle componenti
+di $\mathbf{s}$ è gaussiana, $\mathbf{A}$ è identificabile a meno di una
+permutazione e di una scala delle sue colonne {cite}`comon1994independent`:
+ordine, ampiezza e segno delle sorgenti restano indeterminati, il resto no.
+
+Il primo passo è lo **sbiancamento**, la PCA con le componenti riscalate a
+varianza unitaria: $\mathbf{z} =
+\boldsymbol{\Lambda}^{-1/2}\mathbf{U}^\top(\mathbf{x} - \boldsymbol{\mu})$, con
+$\boldsymbol{\mu} = \mathbb{E}[\mathbf{x}]$ e
+$\mathbf{U}\boldsymbol{\Lambda}\mathbf{U}^\top$ la decomposizione della
+covarianza. Dopo, $\mathbb{E}[\mathbf{z}\mathbf{z}^\top] = \mathbf{I}$, e se le
+sorgenti hanno varianza unitaria (lo si può sempre supporre, perché la loro
+scala è comunque indeterminata e finisce nelle colonne di $\mathbf{A}$) la
+miscela residua $\mathbf{z} = \tilde{\mathbf{A}}\mathbf{s}$ ha
+$\tilde{\mathbf{A}}\tilde{\mathbf{A}}^\top = \mathbf{I}$: resta da trovare una
+rotazione, cioè $n(n-1)/2$ angoli invece degli $n^2$ numeri di una matrice
+qualunque (le riflessioni le assorbe l'indeterminazione di segno). È qui che la
+gaussiana si tira fuori da sola: una gaussiana sbiancata è isotropa, ogni
+rotazione la lascia identica, e nessun criterio che guardi la distribuzione dei
+valori può sceglierne una. Con una sola sorgente gaussiana la rotazione è
+fissata lo stesso, dalle altre $n-1$ direzioni per ortogonalità; con due o più
+resta libera la rotazione nel loro sottospazio. Se invece le sorgenti hanno
+spettri diversi, l'ordine nel tempo basta a separarle anche gaussiane, con le
+sole covarianze a ritardo {cite}`belouchrani1997blind`: è un altro modello, che
+l'ICA non usa.
+
+La rotazione si trova massimizzando la non gaussianità delle proiezioni
+$y = \mathbf{w}^\top\mathbf{z}$ con $\|\mathbf{w}\| = 1$, che hanno media
+nulla e varianza unitaria. L'intuizione viene dal {doc}`teorema del limite
+centrale </Matematica/probabilita-statistica>`: una combinazione di sorgenti
+indipendenti è di solito più vicina a una gaussiana delle sorgenti che mescola
+{cite}`hyvarinen2000independent`. Le misure usuali sono il valore assoluto (o il
+quadrato) della curtosi, $|\mathbb{E}[y^4] - 3|$, perché una sorgente può stare
+dall'una o dall'altra parte della gaussiana (una sinusoide ha curtosi
+$-1{,}5$, un segnale che salta fra $\pm 1$ ha $-2$, una laplaciana $+3$), e la
+negentropia $J(y) = h(y_{\mathcal{N}}) - h(y)$, dove $h$ è
+l’{doc}`entropia differenziale </Matematica/teoria-informazione>` e
+$y_{\mathcal{N}}$ una gaussiana con la stessa varianza di $y$. La negentropia è
+la divergenza KL fra $y$ e quella gaussiana, quindi mai negativa e nulla solo
+per la gaussiana, e rende esatta l'intuizione. Per la disuguaglianza della
+potenza entropica, se $y = \sum_i q_i s_i$ con $\sum_i q_i^2 = 1$, vale
+$J(y) \le \sum_i q_i^2 J(s_i) \le \max_i J(s_i)$: una miscela non supera mai la
+sorgente più lontana dalla gaussiana, e può invece superare una sorgente quasi
+gaussiana, che è la ragione del «di solito». In pratica la negentropia si
+approssima, a meno di una costante positiva, con
+$\big(\mathbb{E}[G(y)] - \mathbb{E}[G(y_{\mathcal{N}})]\big)^2$ e
+$G(u) = \log\cosh u$, che cresce più piano della quarta potenza e risente meno
+di una manciata di campioni nelle code. L'algoritmo FastICA
+aggiorna
+
+$$
+\mathbf{w} \leftarrow \mathbb{E}\big[\mathbf{z}\,g(\mathbf{w}^\top\mathbf{z})\big]
+- \mathbb{E}\big[g'(\mathbf{w}^\top\mathbf{z})\big]\,\mathbf{w},
+\qquad \mathbf{w} \leftarrow \mathbf{w}/\|\mathbf{w}\|,
+$$
+
+con $g = G'$ (qui $g = \tanh$), e per più componenti decorrela i vettori fra un
+passo e l'altro. È un passo di Newton approssimato sulla condizione di ottimo
+vincolato $\mathbb{E}[\mathbf{z}\,g(\mathbf{w}^\top\mathbf{z})] =
+\beta\,\mathbf{w}$, in cui lo jacobiano $\mathbb{E}[\mathbf{z}\mathbf{z}^\top
+g'(\mathbf{w}^\top\mathbf{z})]$ si approssima con
+$\mathbb{E}[g'(\mathbf{w}^\top\mathbf{z})]\,\mathbf{I}$ perché i dati sono
+sbiancati; sotto il modello converge in modo cubico, o almeno quadratico
+{cite}`hyvarinen2000independent`, e ogni passo costa $O(mn)$ per componente. Lo
+stesso problema scritto come massima verosimiglianza, o come massimo passaggio
+di informazione in una rete (l’*infomax* di Bell e Sejnowski
+{cite}`bell1995information`), porta alla stessa famiglia di soluzioni, a una
+condizione: la non linearità della rete dev'essere la funzione di ripartizione
+della densità supposta per le sorgenti, e basta indovinarne il tipo, sub o
+super gaussiano. La sigmoide logistica di Bell e Sejnowski le suppone super
+gaussiane, e su una sinusoide e un'onda quadra, che sono sub gaussiane, la
+separazione fallisce; la ripara l'infomax esteso di Lee, Girolami e Sejnowski,
+che stima il tipo di ciascuna sorgente {cite}`lee1999independent`. Il modello
+chiede miscele istantanee: con ritardi ed eco la miscela diventa una
+convoluzione, e servono varianti convolutive.
+
+`````
+
+Il blocco mescola due segnali, uno che oscilla e uno che salta fra due valori,
+come farebbero due microfoni, e misura quanto la PCA e l'ICA li ritrovano con la
+correlazione, in valore assoluto, fra ogni voce vera e la stima che le somiglia
+di più: $1$ vuol dire ritrovata, a meno di volume e segno. Poi ripete venti
+volte la separazione con voci diverse, e venti volte con due voci gaussiane,
+cioè due soffi di rumore a forma di campana.
+
+```python
+import warnings
+import numpy as np
+from sklearn.decomposition import PCA, FastICA
+
+A = np.array([[1.0, 0.6],                      # come i due microfoni
+              [0.5, 1.0]])                     # mescolano le due voci
+t = np.linspace(0, 8, 2000)
+
+def voci_e_microfoni(rng, gaussiane=False):
+    if gaussiane:
+        voci = rng.standard_normal((2000, 2))
+    else:
+        voci = np.column_stack([                   # una voce che oscilla
+            np.sin(3 * t + rng.uniform(0, 6)),     # e una che salta fra
+            np.sign(np.sin(5 * t + rng.uniform(0, 6)))])        # due valori
+    return voci, voci @ A.T + 0.02 * rng.standard_normal((2000, 2))
+
+def somiglianza(stime, voci):
+    """Per ogni voce vera, la correlazione (in valore assoluto) con la stima che
+    le somiglia di più: 1 vuol dire ritrovata, a meno di scala e segno."""
+    return np.abs(np.corrcoef(stime.T, voci.T)[:2, 2:]).max(axis=0)
+
+def ica(x, seme):
+    with warnings.catch_warnings():            # sui dati gaussiani FastICA
+        warnings.simplefilter("ignore")        # a volte non converge
+        return FastICA(2, whiten="unit-variance", algorithm="parallel",
+                       random_state=seme).fit_transform(x)
+
+voci, microfoni = voci_e_microfoni(np.random.default_rng(0))
+print("PCA:", np.round(somiglianza(PCA(2).fit_transform(microfoni), voci), 2))
+print("ICA:", np.round(somiglianza(ica(microfoni, 0), voci), 2))
+
+for gaussiane in (False, True):
+    peggiore = []
+    for k in range(20):                        # venti miscele diverse
+        voci, microfoni = voci_e_microfoni(np.random.default_rng(k), gaussiane)
+        peggiore.append(somiglianza(ica(microfoni, k), voci).min())
+    nome = "voci gaussiane" if gaussiane else "voci non gaussiane"
+    print(f"{nome}: separate tutte e venti? {min(peggiore) > 0.98};",
+          f"la peggiore: {min(peggiore):.2f}")
+```
+
+```text
+PCA: [0.81 0.85]
+ICA: [1. 1.]
+voci non gaussiane: separate tutte e venti? True; la peggiore: 1.00
+voci gaussiane: separate tutte e venti? False; la peggiore: 0.72
+```
+
+La PCA restituisce due miscugli, con una correlazione di 0,81 e 0,85 con le
+voci vere; l'ICA le ritrova intere in tutte e venti le miscele. Con due voci
+gaussiane, invece, la peggiore delle venti scende a 0,72, a un passo dal minimo
+possibile, $1/\sqrt{2} \approx 0{,}71$, che è la correlazione di una stima
+ruotata di 45°, cioè di una che prende le due voci in parti uguali: l'algoritmo
+si ferma su una rotazione qualunque, perché non ce n'è una migliore delle
+altre.
+
+Resta il limite da cui si era partiti. PCA e ICA sanno soltanto ruotare,
+riscalare e proiettare: se la struttura interessante dei dati è curva, nessuna
+delle due la stende.
+
 ## t-SNE e UMAP: vedere in due dimensioni ciò che vive in mille
 
 Quando l'obiettivo è soltanto guardare dati ad alta dimensione (non
@@ -998,10 +1226,12 @@ La proprietà che rende EM un algoritmo e non un'euristica è la monotonia, e
 la prova sta in una riga. Per qualunque distribuzione $q$ sulle $z^{(i)}$,
 
 $$
+\begin{gathered}
 \log p(\mathbf{X}\mid\theta) = \mathcal{E}(q,\theta)
 + \sum_{i}\mathrm{KL}\bigl(q(z^{(i)})\,\Vert\,p(z^{(i)}\mid\mathbf{x}^{(i)},\theta)\bigr),
-\qquad
+\\[4pt]
 \mathcal{E}(q,\theta) = \sum_i \mathbb{E}_{q}\bigl[\log p(\mathbf{x}^{(i)}, z^{(i)}\mid\theta) - \log q(z^{(i)})\bigr],
+\end{gathered}
 $$
 
 e siccome la KL non è mai negativa, $\mathcal{E}$ sta sotto la
@@ -1210,6 +1440,11 @@ criterio invece che con un giudizio a occhio su un grafico.
   le altre: è la fotografia dello stormo scattata dal lato giusto. Serve a
   comprimere, a disegnare in due dimensioni ciò che ne ha cento, e a ripulire
   dal rumore.
+- Quando i dati sono voci mescolate, la PCA restituisce altri miscugli; l'ICA
+  cerca la combinazione che somiglia di meno alla campana del rumore di fondo,
+  ed è quella con dentro una voce sola. Non sa l'ordine, il volume, né se una
+  voce va presa dritta o capovolta; con voci che sono già rumore a forma di
+  campana non separa niente, e servono almeno tanti microfoni quante voci.
 - t-SNE e UMAP disegnano mappe bellissime, dove chi si somigliava
   finisce vicino. Ma sono ottime per l'occhio e pessime per il righello: la
   distanza fra due isole, la loro grandezza e quanto sono fitte non vogliono
@@ -1241,6 +1476,12 @@ criterio invece che con un giudizio a occhio su un grafico.
 - La PCA trova le direzioni di massima varianza (autovettori della
   matrice di covarianza) e vi proietta i dati; è lineare, ottima per
   compressione, visualizzazione e denoising.
+- L'ICA stima $\mathbf{x} = \mathbf{A}\mathbf{s}$ con sorgenti indipendenti:
+  sbianca con la PCA, poi cerca la rotazione che massimizza la non gaussianità
+  (valore assoluto della curtosi, negentropia; FastICA). Identifica
+  $\mathbf{A}$ a meno di ordine e scala (segno compreso) se al più una sorgente
+  è gaussiana, tratta i campioni come indipendenti, ignorandone l'ordine nel
+  tempo, e chiede miscele istantanee.
 - t-SNE e UMAP visualizzano dati ad alta dimensione preservando la
   vicinanza locale: sulle loro mappe distanze globali, densità e dimensioni
   dei cluster non sono affidabili.

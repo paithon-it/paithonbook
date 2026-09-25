@@ -206,7 +206,8 @@ metà dei rami li sceglie qualcuno che vuole il contrario di quello che
 vogliamo noi. Ne escono il modo di ragionare sui giochi a due, la potatura che
 permette di ignorare interi rami senza guardarli, e il difetto che tutte le
 ricerche a profondità limitata si portano dietro: il disastro che sta un passo
-oltre l’ultimo che si è guardato.
+oltre l’ultimo che si è guardato. In fondo c’è un gioco, il Nim, in cui quel
+difetto non esiste, perché il giudizio sulla posizione si scrive esatto.
 
 La terza fa una cosa sola, e la fa alla fine perché prima non si poteva: mette
 in chiaro le cose che le prime due hanno dato per scontate, e le toglie una per

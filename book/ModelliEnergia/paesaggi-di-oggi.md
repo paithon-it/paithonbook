@@ -21,8 +21,8 @@ e rumore vengono scelti ciascuno per conto suo (passo 10, rumore di deviazione
 standard 0,005), mentre la ricetta di Langevin lega il secondo alla radice del
 primo. Quella catena è una discesa con un filo di rumore, fermata dopo qualche
 decina di passi, e non campiona la distribuzione del modello: Erik Nijkamp e
-colleghi ne fanno un generatore a sé, che chiamano MCMC a corto raggio
-{cite}`nijkamp2019learning`.
+colleghi ne fanno un generatore a sé, che chiamano *short-run MCMC*, catene di
+pochi passi {cite}`nijkamp2019learning`.
 
 A calcolare l'altezza del paesaggio, cioè a dare il voto a ogni immagine, c'è
 una rete convoluzionale come quelle del {doc}`capitolo sul deep learning </DeepLearning/overview>`: il

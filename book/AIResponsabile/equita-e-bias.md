@@ -16,7 +16,7 @@ passato dell'azienda e riproposta come profezia.
 **Bias**, qui, vuol dire *pregiudizio*: quello della storia di Amazon, un
 trattamento sistematicamente peggiore riservato a un gruppo di persone.
 
-Nel libro la stessa parola ha già fatto altri due mestieri, e vanno tenuti
+La stessa parola ha già fatto altri due mestieri, e vanno tenuti
 distinti: non è il bias del neurone (il termine $b$ che nel capitolo
 sulle reti neurali si somma ai pesi e sposta la soglia), e non è il bias del
 compromesso bias-varianza (l'errore sistematico di un modello troppo semplice,
@@ -108,8 +108,9 @@ Conviene distinguere le sorgenti, perché richiedono rimedi diversi
 - **Bias di rappresentazione (campionamento).** La distribuzione dei dati di
   addestramento $P_{\text{train}}$ differisce dalla popolazione bersaglio
   $P_{\text{test}}$, e in particolare sotto-rappresenta alcuni gruppi. È il caso
-  di *Gender Shades* citato nell'apertura del capitolo: pochi volti scuri nei
-  set di addestramento, quindi errore molto più alto su quel gruppo.
+  di *Gender Shades* citato nell'apertura del capitolo: pochi volti scuri negli
+  archivi più usati per valutare l'analisi dei volti, ed errore molto più alto
+  su quel gruppo nei sistemi commerciali verificati.
 - **Bias di misura (etichette).** L'etichetta osservata è un *proxy* del
   costrutto d'interesse: si misura «arresto» per «reato», «voto del manager» per
   «rendimento». Se il proxy è più rumoroso o più severo per un gruppo, il bias
@@ -125,6 +126,125 @@ raccogliendo o correggendo i dati; il bias storico e quello di misura no,
 perché il difetto è nella definizione stessa dell'obiettivo.
 
 `````
+
+### Una scheda tecnica per ogni dataset
+
+Le quattro sorgenti di bias si vedono solo se qualcuno ha scritto come i dati
+sono stati fatti. Timnit Gebru e colleghi {cite}`gebru2021datasheets` hanno
+proposto di accompagnare ogni dataset con una **scheda tecnica** (*datasheet*),
+come quella che nell'elettronica accompagna ogni componente, e Margaret Mitchell
+e colleghi {cite}`mitchell2019model` la stessa cosa per i modelli, con le *model
+card*.
+
+`````{tab} Elementare
+
+Ogni transistor venduto arriva con un foglio che dice a che cosa serve, come è
+stato collaudato, in quali condizioni funziona e in quali no. Un dataset, che
+decide il comportamento di un modello molto più di quanto un transistor decida
+quello di un circuito, di solito arriva con un nome e un indirizzo da cui
+scaricarlo.
+
+La scheda tecnica di un dataset è una serie di domande a cui chi lo costruisce
+risponde per iscritto: perché è stato fatto e da chi; che cosa contiene, e chi
+ci manca o ci sta in pochi; come sono stati raccolti i dati e chi ha messo le
+etichette, e che cosa misurano davvero; per quali usi va bene e per quali no;
+chi lo distribuisce e chi lo aggiornerà. Ogni domanda guarda una delle porte:
+«chi ci sta in pochi» è la porta del campione, «che cosa misura l'etichetta» è
+quella della misura, «per quali usi no» mette per iscritto dove la storia che i
+dati si portano dietro farebbe danni (uno storico di assunzioni decise da capi
+di parte non va usato per scegliere chi assumere), «chi lo aggiornerà» tiene
+d'occhio l'anello che si richiude su sé stesso. Per un testo scritto o parlato
+si aggiunge in quale lingua o dialetto è, e chi l'ha detto, trascritto e scelto.
+E chi la legge decide con quelle risposte se il dataset fa al caso suo. Lo
+studio *Gender Shades* {cite}`buolamwini2018gender` trovò che due archivi molto
+usati per provare i sistemi di analisi dei volti avevano pochi volti scuri: è la
+risposta che la domanda su chi ci sta in pochi avrebbe messo in prima pagina.
+
+Lo stesso vale per un modello: la sua scheda dice a che cosa serve e,
+soprattutto, quanto sbaglia gruppo per gruppo, non solo in media, perché una
+media alta può nascondere un gruppo su cui il modello tira a indovinare. Le
+schede però non aggiustano niente: rendono visibile. Non si possono compilare in
+automatico, perché il loro scopo è far riflettere chi le scrive; non
+garantiscono che i dati siano giusti; e costano tempo. Il regolamento europeo
+sull'intelligenza artificiale, l'AI Act, le ha rese in parte un obbligo: per i
+sistemi ad alto rischio chiede di documentare da dove vengono i dati e come sono
+stati preparati, e il testo italiano chiama quei documenti proprio «schede
+tecniche».
+
+`````
+
+`````{tab} Superiore
+
+Il *datasheet* di Gebru e colleghi {cite}`gebru2021datasheets` è organizzato in
+sette gruppi di domande, uno per fase della vita del dataset: *Motivation*
+(scopo, autori, finanziatori), *Composition* (che cosa rappresentano le istanze,
+se il dataset identifica sottopopolazioni e con quale distribuzione, se contiene
+dati riservati), *Collection Process* (come è stato acquisito ogni dato, con
+quale campionamento, con quale revisione etica), *Preprocessing, cleaning,
+labeling* (e se il dato grezzo è stato conservato), *Uses* (usi già fatti e usi
+da evitare), *Distribution* e *Maintenance*. I destinatari sono due: chi crea il
+dataset, a cui la compilazione impone di riflettere su ipotesi e rischi, e chi
+lo usa, a cui dà gli elementi per decidere. Le quattro sorgenti di bias viste
+sopra, che non sono una categoria degli autori, si leggono sulle domande del
+datasheet: il bias di rappresentazione nella composizione, quello di misura
+nella raccolta e nell'etichettatura, quello storico negli usi da evitare, quello
+di feedback nella manutenzione. Gli autori escludono esplicitamente la
+compilazione automatica, avvertono che la scheda non è una soluzione completa ai
+danni e ai bias, e che ha un costo per chi la scrive. Le *model card*
+{cite}`mitchell2019model` fanno lo stesso per i modelli (uso previsto, fattori,
+metriche, dati di valutazione e di addestramento, considerazioni etiche,
+avvertenze) e chiedono analisi quantitative *disaggregate* per i fattori
+rilevanti, per esempio età, genere e tipo di pelle nella scala di Fitzpatrick
+per i modelli di visione sulle persone; i *data statement* di Bender e Friedman
+{cite}`bender2018data` aggiungono per il linguaggio la varietà linguistica e chi
+ha parlato, annotato e curato i dati. Il regolamento europeo {cite}`euaiact2024`
+chiede per i sistemi ad alto rischio pratiche di governance dei dati che
+riguardano, fra l'altro, i processi di raccolta e l'origine dei dati e le
+operazioni di preparazione (articolo 10, paragrafo 2, lettere b e c), e nella
+documentazione tecnica (allegato IV, punto 2, lettera d) i requisiti sui dati
+«mediante schede tecniche»; il quadro complessivo sta nella sezione sulla
+{doc}`governance </AIResponsabile/allineamento-e-governance>`.
+
+`````
+
+Il blocco mostra perché una scheda di modello chiede i conti gruppo per gruppo.
+Costruisce dati in cui un gruppo, un decimo del totale, lega la risposta a
+un'altra colonna, addestra un solo modello su tutti e ne misura l'accuratezza in
+media e per gruppo.
+
+```python
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+rng = np.random.default_rng(0)
+n = 10000
+gruppo = np.where(rng.random(n) < 0.1, "B", "A")        # B è un decimo dei dati
+x = rng.normal(size=(n, 2))
+# nel gruppo B la stessa risposta dipende da un'altra colonna
+segnale = np.where(gruppo == "A", x[:, 0], x[:, 1])
+y = (segnale + 0.5 * rng.normal(size=n) > 0).astype(int)
+addestra, prova = np.arange(n) < n // 2, np.arange(n) >= n // 2
+
+modello = LogisticRegression().fit(x[addestra], y[addestra])
+giusto = modello.predict(x[prova]) == y[prova]
+print("quote nel dataset:", {g: round(float(np.mean(gruppo == g)), 2) for g in ("A", "B")})
+print(f"accuratezza complessiva {giusto.mean():.3f}")
+for g in ("A", "B"):
+    print(f"  gruppo {g}: {giusto[gruppo[prova] == g].mean():.3f}")
+```
+
+```text
+quote nel dataset: {'A': 0.9, 'B': 0.1}
+accuratezza complessiva 0.820
+  gruppo A: 0.851
+  gruppo B: 0.545
+```
+
+In media il modello indovina l'82% delle volte, e sul gruppo grande l'85%; sul
+gruppo piccolo il 54,5%, poco più di una moneta. La media assomiglia al gruppo
+grande perché è fatta soprattutto di lui, e la quota nel dataset, la prima riga
+stampata, è la domanda sulla composizione della scheda tecnica: senza quella,
+e senza il conto per gruppo, il 54,5% non compare da nessuna parte.
 
 ## Misurare l'equità guardando i gruppi
 
@@ -177,9 +297,10 @@ richieste distinte.
   uomini, deve approvare il 40% delle donne: a prescindere da tutto il resto. E
   il «a prescindere» va preso alla lettera: la richiesta resta soddisfatta
   anche scegliendo i migliori fra gli uomini e tirando a sorte fra le donne.
-- Stessi errori per tutti, in gergo *equalized odds* (alla lettera
-    «probabilità pareggiate»: sono i due tassi di errore del modello, da
-    rendere uguali nei due gruppi). Sono due condizioni in una: il
+- Stessi errori per tutti, in gergo *equalized odds* (alla lettera «quote
+  pareggiate», dal gergo delle scommesse; qui però le quote non c'entrano:
+  sono i due tassi di errore del modello, da rendere uguali nei due gruppi).
+  Sono due condizioni in una: il
   modello deve prendere la stessa quota di persone a cui l'esito è poi capitato
   davvero, e dare la stessa quota di falsi allarmi su chi non c'entrava nulla.
   È la richiesta che la {numref}`fig-equita-tassi` mostra violata: stesso
@@ -240,20 +361,21 @@ $\text{FPR}_a=0{,}10 \neq \text{FPR}_b=0{,}30$. La versione più debole
 appropriata quando il costo asimmetrico ricade su chi *meritava* l'esito
 positivo e viene mancato.
 
-**Calibrazione per gruppo** (*sufficiency*, $Y \perp A \mid S$): a parità di
-punteggio la probabilità reale dell'esito è la stessa,
+**Calibrazione per gruppo**: il punteggio è la probabilità dell'esito, e lo è
+in ogni gruppo,
 
 $$
-P(Y=1 \mid S=s,\, A=a) \;=\; P(Y=1 \mid S=s,\, A=b) \qquad \forall\, s.
+P(Y=1 \mid S=s,\, A=a) \;=\; s \qquad \forall\, s,\ \forall\, a.
 $$
 
-Qui $s$ è il valore del punteggio; la condizione dice che uno stesso $s$
-«significa» la stessa cosa in ogni gruppo. A rigore è la *sufficiency*, più
-debole della calibrazione per gruppo in senso proprio, che chiede anche che quel
-significato sia il numero stesso: $P(Y=1 \mid S=s,\, A=a) = s$ per ogni $a$ e
-ogni $s$. Un punteggio calibrato per gruppo è sufficiente; il contrario non
+Qui $s$ è il valore del punteggio, e la condizione dice che «70» vuol dire
+settanta su cento di qua e di là. Il criterio della terna è un po’ più debole,
+la *sufficiency* ($Y \perp A \mid S$): chiede soltanto che uno stesso $s$
+significhi la stessa cosa in ogni gruppo,
+$P(Y=1 \mid S=s,\, A=a) = P(Y=1 \mid S=s,\, A=b)$, senza pretendere che quella
+cosa sia $s$. Un punteggio calibrato per gruppo è sufficiente; il contrario non
 vale, ma basta ritarare $S$ con una stessa funzione per tutti i gruppi per
-passare dall'uno all'altro. I teoremi che seguono usano la versione forte. Si
+passare dall'uno all'altro. I teoremi che seguono usano la calibrazione. Si
 noti che è una proprietà di $S$, non di $\hat{Y}$: cambiare la soglia non tocca
 la calibrazione.
 
@@ -425,14 +547,15 @@ d'errore. Con quei nomi il teorema precedente si rilegge così: calibrazione ed
 equalized odds *generalizzato* non stanno insieme, salvo prevalenze uguali o
 predittore perfetto. Pleiss e colleghi {cite}`pleiss2017fairness` (fra gli
 autori ci sono Kleinberg e Raghavan) lo riconoscono come risultato di Kleinberg
-e lo estendono: due vincoli di costo distinti qualsiasi, insieme alla
-calibrazione, impongono il predittore perfetto. La parte nuova è l'altra metà,
-quella costruttiva. Un vincolo alla volta, o i falsi negativi o i falsi positivi
-generalizzati, si ottiene conservando la calibrazione: nel gruppo che sbaglia
-meno si sostituisce, con una certa probabilità, la predizione con il tasso di
-base $\mu_a$, che è calibrata e non informa. E qualunque algoritmo che rispetti
-quel vincolo, dimostrano, non fa meglio di questa randomizzazione di una quota
-delle predizioni: il prezzo lo paga in accuratezza il gruppo avvantaggiato.
+e lo estendono: con prevalenze diverse, due vincoli di costo distinti qualsiasi,
+insieme alla calibrazione, impongono il predittore perfetto. La parte nuova è
+l'altra metà, quella costruttiva. Un vincolo alla volta, o i falsi negativi o i
+falsi positivi generalizzati, si ottiene conservando la calibrazione: nel gruppo
+che sbaglia meno si sostituisce, con una certa probabilità, la predizione con la
+prevalenza $p_a$ del gruppo, che è calibrata e non informa. E qualunque
+algoritmo che rispetti quel vincolo, dimostrano, non fa meglio di questa
+randomizzazione di una quota delle predizioni: il prezzo lo paga in accuratezza
+il gruppo avvantaggiato.
 Sull'ipotesi conviene essere precisi, perché non è quella che verrebbe da
 immaginare: non si chiede affatto che il classificatore sia uno solo, dato che
 nel loro impianto ce n'è già uno per gruppo, e il rimedio che propongono ne
@@ -898,6 +1021,11 @@ privacy e la robustezza dei modelli; e chi vuole lo strumento che rende queste s
   scritto nei dati non è la cosa che credevamo («arrestato» al posto di «ha
   commesso un reato»); e il modello si morde la coda, perché le sue decisioni
   di oggi diventano i dati di domani.
+- Le porte si vedono solo se qualcuno scrive come i dati sono stati fatti: la
+  scheda tecnica di un dataset risponde per iscritto a chi l'ha fatto e perché,
+  chi c'è e chi manca, come sono state messe le etichette, per quali usi va
+  bene. Quella di un modello dice quanto sbaglia gruppo per gruppo, perché una
+  media alta può nascondere un gruppo piccolo su cui tira a indovinare.
 - Per misurarlo si usa la tabella a quattro caselle del capitolo di Machine
   Learning, compilata un gruppo alla volta, e si confrontano due numeri:
   quanti dei casi veri il modello prende, e quanti falsi allarmi dà.
@@ -933,11 +1061,16 @@ privacy e la robustezza dei modelli; e chi vuole lo strumento che rende queste s
 - Il bias non nasce nel codice ma a monte, nei dati: passato iniquo,
   campione non rappresentativo, etichette-proxy distorte e *feedback loop* che
   si auto-conferma. *Bias in, bias out* {cite}`mehrabi2021survey`.
+- Datasheet {cite}`gebru2021datasheets` e model card {cite}`mitchell2019model`
+  documentano dataset e modelli per fasi (motivazione, composizione, raccolta,
+  etichettatura, usi, distribuzione, manutenzione) e con analisi disaggregate
+  per gruppo; non correggono il bias, lo rendono ispezionabile. L'AI Act chiede
+  per l'alto rischio la documentazione di origine e preparazione dei dati.
 - L'equità di gruppo si misura riusando la matrice di confusione del capitolo
   di Machine Learning, ma *separatamente per gruppo*. Tre criteri: parità
   demografica (stessa quota di sì), equalized odds (stessi TPR e FPR)
-  {cite}`hardt2016equality`, calibrazione (stesso significato del punteggio,
-  proprietà di $S$ e non di $\hat{Y}$).
+  {cite}`hardt2016equality`, calibrazione (il punteggio è la probabilità
+  dell'esito in ogni gruppo, proprietà di $S$ e non di $\hat{Y}$).
 - Tre risultati di impossibilità distinti, da non confondere:
   Chouldechova {cite}`chouldechova2017fair`, parità del valore predittivo
   più i due tassi d'errore, due su tre; Kleinberg, Mullainathan e Raghavan

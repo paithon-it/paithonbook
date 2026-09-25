@@ -596,8 +596,8 @@ guarda il fotogramma e un predittore
 $\hat{\mathbf{z}}_t \sim p_\phi(\hat{\mathbf{z}}_t \mid \mathbf{h}_t)$ che lo
 indovina senza guardarlo, ed è quello che gira nel sogno; teste separate
 predicono osservazione, ricompensa e continuazione $c_t$ dell'episodio. La loss
-è un ELBO sequenziale, in cui DreamerV3 spezza il KL fra $q_\phi$ e $p_\phi$ in
-due termini con lo stop-gradient $\mathrm{sg}$ su lati opposti:
+è una variante dell'ELBO sequenziale, in cui DreamerV3 spezza il KL fra $q_\phi$
+e $p_\phi$ in due termini con lo stop-gradient $\mathrm{sg}$ su lati opposti:
 $\max\big(1, D_{\mathrm{KL}}[\mathrm{sg}(q_\phi) \,\|\, p_\phi]\big)$ addestra
 il predittore,
 $\max\big(1, D_{\mathrm{KL}}[q_\phi \,\|\, \mathrm{sg}(p_\phi)]\big)$, con un
@@ -611,9 +611,9 @@ con $R^\lambda_T = v(\mathbf{s}_T)$ e
 $\mathbf{s}_t = (\mathbf{h}_t, \mathbf{z}_t)$, che mescola la ricompensa sognata
 con il valore stimato oltre l'orizzonte. L'attore si aggiorna per
 retropropagazione attraverso la dinamica nella prima versione, con REINFORCE
-sulle sole azioni discrete in DreamerV2, con REINFORCE su tutte in DreamerV3.
-Gli stessi iperparametri reggono su domini diversi grazie a tre accorgimenti di
-scala: osservazioni vettoriali passate per
+sulle sole azioni discrete in DreamerV2 {cite}`hafner2021mastering`, con
+REINFORCE su tutte in DreamerV3. Gli stessi iperparametri reggono su domini
+diversi grazie a tre accorgimenti di scala: osservazioni vettoriali passate per
 $\mathrm{symlog}(x) = \mathrm{sign}(x)\ln(|x|+1)$; ricompense e valori predetti
 come distribuzione categoriale su intervalli spaziati in modo esponenziale, con
 il bersaglio spartito fra i due intervalli adiacenti (codifica *two-hot*);

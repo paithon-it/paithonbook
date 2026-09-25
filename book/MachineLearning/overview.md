@@ -409,14 +409,16 @@ Le ragioni identificate sono strutturali, non contingenti:
    split assiali approssima bene;
 2. le reti sono sensibili alle feature non informative, di cui una tabella
    reale abbonda, mentre gli alberi le ignorano per costruzione;
-3. l'addestramento di un MLP è invariante per rotazione: se le colonne si
-   ruotano con una matrice ortogonale, le previsioni che se ne ottengono
-   restano le stesse in distribuzione, quindi la procedura non può sfruttare
-   la base in cui la tabella è scritta; e una tabella invece ha una base
-   naturale, la sua: colonne con significati diversi, che una mescolanza
-   cancella. È anche il legame con il punto precedente, perché una procedura
-   invariante per rotazione ha bisogno di un numero di esempi che cresce
-   almeno linearmente col numero di feature irrilevanti {cite}`ng2004feature`.
+3. l'addestramento di un MLP con la discesa del gradiente, partendo da pesi
+   a simmetria sferica (per esempio gaussiani indipendenti), è invariante per
+   rotazione: se le colonne si ruotano con una matrice ortogonale, le
+   previsioni che se ne ottengono restano le stesse in distribuzione, quindi
+   la procedura non può sfruttare la base in cui la tabella è scritta; e una
+   tabella invece ha una base naturale, la sua: colonne con significati
+   diversi, che una mescolanza cancella. È anche il legame con il punto
+   precedente, perché una procedura invariante per rotazione ha bisogno, nel
+   caso peggiore, di un numero di esempi che cresce almeno linearmente col
+   numero di feature irrilevanti {cite}`ng2004feature`.
 
 Il corollario pratico riguarda il costo: un gradient boosting si addestra
 in minuti su CPU e si mette in produzione senza GPU. Prima di pagare il conto

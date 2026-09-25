@@ -337,17 +337,17 @@ $K = 1024$ voci ($10$ bit) a $f_r = 75$ frame al secondo: con $N = 8$
 quantizzatori si ottengono $8 \cdot 10 \cdot 75 = 6000$ bit/s, cioè 6 kbps.
 Variando $N$ si sceglie il compromesso: da $1{,}5$ kbps ($N=2$) fino a $24$ kbps
 ($N=32$), e con un modello solo. In addestramento il numero di stadi si estrae a
-caso a ogni batch (SoundStream lo chiama *quantizer dropout*), così i primi
-codebook imparano a bastare da soli e gli ultimi a rifinire, e in uso si tronca
-la cascata dove il canale lo chiede {cite}`zeghidour2021soundstream`. La
-formula dà poi il bitrate *nominale*, quello di un indice scritto sempre con
-$\log_2 K$ bit. Gli indici però non sono equiprobabili, e un codice a lunghezza
-variabile li scrive con un numero medio di bit vicino alla loro entropia:
-EnCodec addestra a questo scopo un piccolo Transformer che predice il token
-successivo, e il suo modello a 48 kHz, a 6 kbps nominali, ne occupa $4{,}2$ una
-volta codificato {cite}`defossez2023high`. Una voce di codebook che nessuno
-sceglie è il caso estremo dello stesso fatto: bit pagati per un simbolo che non
-esce mai.
+caso esempio per esempio (SoundStream lo chiama *quantizer dropout*; EnCodec
+pesca fra le cinque bande da $1{,}5$ a $24$ kbps), così i primi codebook
+imparano a bastare da soli e gli ultimi a rifinire, e in uso si tronca la
+cascata dove il canale lo chiede {cite}`zeghidour2021soundstream`. La formula dà
+poi il bitrate *nominale*, quello di un indice scritto sempre con $\log_2 K$
+bit. Gli indici però non sono equiprobabili, e un codice a lunghezza variabile
+li scrive con un numero medio di bit vicino alla loro entropia: EnCodec addestra
+a questo scopo un piccolo Transformer che predice il token successivo, e il suo
+modello a 48 kHz, a 6 kbps nominali, ne occupa $4{,}2$ una volta codificato
+{cite}`defossez2023high`. Una voce di codebook che nessuno sceglie è il caso
+estremo dello stesso fatto: bit pagati per un simbolo che non esce mai.
 
 Due cautele sui numeri, perché è facile ricordarseli storti. La prima riguarda
 il paragone con l'MP3, che si legge dappertutto: la parità a 64 kbps è del

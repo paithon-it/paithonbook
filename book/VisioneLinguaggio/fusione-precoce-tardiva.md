@@ -184,11 +184,11 @@ prossima sezione, sulla risoluzione).
 Con i token visivi in mano possiamo dare alle due parole del titolo un
 significato preciso. Delle tre strade dell'apertura del capitolo qui ne bastano
 due: la mappa di CLIP e l'occhio innestato stanno tutti e due dal lato tardivo,
-perché in entrambi due modelli cresciuti separati si incontrano tardi, e quel
-che ne esce è soltanto testo. La differenza fra fusione tardiva e fusione
-precoce non sta in quanta informazione si scambiano immagine e testo, ma in
-quanto presto cominciano a scambiarsela, e se a maneggiarle sia un pezzo solo
-di rete o due pezzi diversi, cresciuti separati.
+perché in entrambi immagine e testo passano per due reti distinte che si
+incontrano solo in fondo, e nessuno dei due sa produrre un'immagine. La
+differenza fra fusione tardiva e fusione precoce non sta in quanta informazione
+si scambiano immagine e testo, ma in quanto presto cominciano a scambiarsela, e
+se a maneggiarle sia un pezzo solo di rete o due pezzi diversi.
 
 `````{tab} Elementare
 
@@ -280,18 +280,17 @@ A leggerla così, la fusione precoce sembra la cosa ovvia da fare, e viene da
 chiedersi perché la strada battuta sia stata a lungo l'altra. Le ragioni sono
 due, ed entrambe dicono qualcosa sui modelli in generale.
 
-L'idea in sé è vecchia quanto CLIP: DALL·E {cite}`ramesh2021zero`, nel
-2021, metteva già 256 token di testo e 1.024 token d'immagine, da un codebook
-di 8.192 voci, in un unico Transformer, ma solo per generare immagini dal
-testo. Estenderla a un modello che legga e scriva entrambe le cose, in ordine
-qualsiasi, si è scontrato con due ostacoli. Il primo è economico ed è il più
-banale: la fusione tardiva riusa. Un encoder
-visivo pre-addestrato e un modello di linguaggio pre-addestrato esistono già,
-sono costati a qualcun altro, e il connettore che li unisce si addestra con
-risorse alla portata di un laboratorio universitario. La fusione precoce non
-riusa niente, perché il suo vocabolario non è quello di nessun modello
-esistente: il pre-addestramento va rifatto da zero, su migliaia di miliardi di
-token.
+L'idea in sé è vecchia quanto CLIP: DALL·E {cite}`ramesh2021zero`, nel 2021,
+metteva già 256 token di testo e 1.024 token d'immagine, da un codebook di 8.192
+voci, in un unico Transformer, ma solo per generare immagini dal testo.
+Estenderla a un modello che legga e scriva entrambe le cose, in ordine
+qualsiasi, si è scontrato proprio con quelle due ragioni. La prima è economica
+ed è la più banale: la fusione tardiva riusa. Un encoder visivo pre-addestrato e
+un modello di linguaggio pre-addestrato esistono già, sono costati a qualcun
+altro, e il connettore che li unisce si addestra con risorse alla portata di un
+laboratorio universitario. La fusione precoce non riusa niente, perché il suo
+vocabolario non è quello di nessun modello esistente: il pre-addestramento va
+rifatto da zero, su migliaia di miliardi di token.
 
 La seconda è più interessante, ed è che il modello che ne esce è più difficile
 da addestrare. Non «più lento»: instabile. Qui «costo» smette di voler dire

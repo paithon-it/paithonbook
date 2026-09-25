@@ -336,20 +336,21 @@ non una matrice di dati), $\mathbf{w}_i \in \mathbb{R}^n$ è il vettore dei
 pesi del neurone $i$-esimo, $b_i$ il suo bias e $v_i$ il peso con cui
 contribuisce all'uscita.
 
-Due avvertenze sul quantificatore, che è dove il teorema promette meno di
-quanto sembri. La prima: è un risultato di **esistenza**, cioè di densità. Dice
-che la rete c'è, non che la discesa del gradiente la trovi, né quanti esempi
-servano per impararla. La seconda: il teorema da solo non dà nessun limite su
-$N$, il numero di neuroni. Quel limite dipende dalla classe di funzioni che si
-vuole approssimare. Per le classi definite dalla sola regolarità (derivate
-limitate fino a un certo ordine) il numero di neuroni cresce esponenzialmente
-nella dimensione dell'ingresso, ed è la maledizione della dimensionalità, che
-colpisce qualunque schema di approssimazione lineare e non le reti in
-particolare. Ma non è una legge universale: Barron {cite}`barron1993universal`
-individua una classe più ristretta, definita da una condizione sulla
-trasformata di Fourier, per cui l'errore quadratico scende come $O(1/N)$ senza
-dipendere dalla dimensione. La crescita esponenziale è una proprietà della
-classe di funzioni, non delle reti a uno strato in quanto tali.
+Due avvertenze sul quantificatore, che è dove il teorema promette meno di quanto
+sembri. La prima: è un risultato di **esistenza**, cioè di densità. Dice che la
+rete c'è, non che la discesa del gradiente la trovi, né quanti esempi servano
+per impararla. La seconda: il teorema da solo non dà nessun limite su $N$, il
+numero di neuroni. Quel limite dipende dalla classe di funzioni che si vuole
+approssimare. Per le classi definite dalla sola regolarità (derivate limitate
+fino a un certo ordine) il numero di neuroni cresce esponenzialmente nella
+dimensione dell'ingresso, ed è la maledizione della dimensionalità, che colpisce
+qualunque schema di approssimazione lineare e non le reti in particolare. Ma non
+è una legge universale: Barron {cite}`barron1993universal`, già incontrato nella
+{doc}`panoramica sulle reti neurali </RetiNeurali/overview>`, individua una
+classe più ristretta, definita da una condizione sulla trasformata di Fourier,
+per cui l'errore quadratico scende come $O(1/N)$ senza dipendere dalla
+dimensione. La crescita esponenziale è una proprietà della classe di funzioni,
+non delle reti a uno strato in quanto tali.
 
 Sulla profondità, invece, le separazioni sono nette e dimostrate. Per ogni
 intero $k$ esistono reti ReLU con $\Theta(k^3)$ strati e $\Theta(1)$ neuroni

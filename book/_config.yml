@@ -117,6 +117,7 @@ sphinx:
       - GraphNeuralNetwork
       - IngegneriaLLM
       - Interpretabilita
+      - Introduzione
       - MLOps
       - MachineLearning
       - Matematica
@@ -135,6 +136,7 @@ sphinx:
       - SistemiRaccomandazione
       - SpeechRecognition
       - StateSpaceModel
+      - TeoriaApprendimento
       - Transformers
       - VerosimiglianzaEsatta
       - VisioneArtificiale

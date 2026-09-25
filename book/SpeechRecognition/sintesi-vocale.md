@@ -123,24 +123,23 @@ ancora a mano, regola per regola, invece di darlo a una rete.
 Formalmente la normalizzazione è una trasduzione testo→testo: mappare le
 **classi semiotiche** (cardinali, ordinali, date, orari, valute, unità di
 misura, sigle) nella loro forma pronunciabile. Storicamente si fa con regole e
-trasduttori a stati finiti pesati (WFST), che restano lo standard nei sistemi
-di produzione; gli approcci seq2seq neurali sbagliano poco in media e male nei
-casi che
-contano. Sproat e Jaitly lo misurano su un grande corpus allineato:
+trasduttori a stati finiti pesati (WFST), che restano lo standard nei sistemi di
+produzione; gli approcci seq2seq neurali sbagliano poco in media e male nei casi
+che contano. Sproat e Jaitly lo misurano su un grande corpus allineato:
 l'accuratezza complessiva è alta, ma gli errori residui sono quelli che loro
 stessi chiamano «sciocchi», concentrati nelle classi semiotiche, come una cifra
 cambiata in una data o un orario letto come un altro, cioè un testo scorrevole
 che dice un'altra cosa e che chi ascolta non ha modo di accorgersi di aver
 sentito male {cite}`sproat2016rnn`. Il rimedio che propongono è ibrido: la rete
 propone, e un filtro a stati finiti scritto a mano, che elenca le letture
-ammissibili di ogni classe, scarta le proposte impossibili, così che «1901»
-possa diventare un anno o un numero di interno ma mai *millenovecentodieci*. Il
-secondo fronte sono gli **omografi
-eterofoni**: *àncora/ancóra*, *sùbito/subìto*, *lèggere/leggère*. La grafia non
-basta: serve la categoria grammaticale, cioè il POS tagging visto nel capitolo
-NLP, o un contesto più ampio. La normalizzazione è la parte meno glamour della
-pipeline e una delle più costose da fare bene: è qui, non nella rete, che un
-sistema commerciale si gioca le figuracce.
+ammissibili di una classe (loro lo scrivono per misure e valute), scarta le
+proposte impossibili; esteso agli anni, farebbe sì che «1901» possa diventare un
+anno o un numero di interno ma mai *millenovecentodieci*. Il secondo fronte sono
+gli **omografi eterofoni**: *àncora/ancóra*, *sùbito/subìto*, *lèggere/leggère*.
+La grafia non basta: serve la categoria grammaticale, cioè il POS tagging visto
+nel capitolo NLP, o un contesto più ampio. La normalizzazione è la parte meno
+glamour della pipeline e una delle più costose da fare bene: è qui, non nella
+rete, che un sistema commerciale si gioca le figuracce.
 `````
 
 ## Dal grafema al fonema
@@ -251,23 +250,22 @@ voce umana) ma le giunture si sentono, e il sistema è rigido: per cambiare
 stile, o anche solo correggere un'intonazione, bisogna tornare in studio di
 registrazione.
 
-Fra la seconda e la terza c'è una generazione che le storie brevi saltano, e
-che per quindici anni ha tenuto il campo accanto alla concatenativa: la
-**sintesi parametrica statistica**. Un modello impara dalle registrazioni la
-distribuzione dei parametri acustici (inviluppo spettrale, $F_0$, durate) di
-ciascun fonema nel suo contesto, e un vocoder a regole li rende udibili: prima
-con modelli di Markov nascosti {cite}`zen2009statistical`, dal 2013 con reti
-neurali profonde {cite}`zen2013statistical`. Suonava più liscia e più ovattata
-della concatenativa (nel confronto di Tacotron 2 prende $3{,}49$ contro
-$4{,}17$), ma si ritoccava cambiando un numero invece che tornando in studio. Le
-reti neurali entrano nella sintesi da lì; la generazione che le mette al centro
-comincia nel 2016 con WaveNet {cite}`oord2016wavenet`, che fa una cosa che
-nessuno credeva possibile:
+Fra la seconda e la terza c'è una generazione che le storie brevi saltano, e che
+per quindici anni ha tenuto il campo accanto alla concatenativa: la **sintesi
+parametrica statistica**. Un modello impara dalle registrazioni la distribuzione
+dei parametri acustici (inviluppo spettrale, $F_0$, durate) di ciascun fonema
+nel suo contesto, e un vocoder a regole li rende udibili: prima con modelli di
+Markov nascosti {cite}`zen2009statistical`, dal 2013 con reti neurali profonde
+{cite}`zen2013statistical`. Suonava più liscia e più ovattata della
+concatenativa (nei test d'ascolto con cui la confrontano gli autori di Tacotron
+2 prende $3{,}49$ contro $4{,}17$, su una scala da 1 a 5), ma si ritoccava
+cambiando un numero invece che tornando in studio. Le reti neurali entrano nella
+sintesi da lì; la generazione che le mette al centro comincia nel 2016 con
+WaveNet {cite}`oord2016wavenet`, che fa una cosa che nessuno credeva possibile:
 fabbrica l'onda sonora un campione alla volta, sedicimila al secondo, con una
-rete sola e una qualità mai sentita prima. Dimostrato che si poteva,
-restava il problema che ci metteva un'eternità, ed è per aggirarlo che nel
-giro di due anni la ricetta si assesta nella forma a due stadi che è ancora
-quella di oggi.
+rete sola e una qualità mai sentita prima. Dimostrato che si poteva, restava il
+problema che ci metteva un'eternità, ed è per aggirarlo che nel giro di due anni
+la ricetta si assesta nella forma a due stadi che è ancora quella di oggi.
 
 ## Il TTS neurale, in due stadi
 
@@ -402,24 +400,21 @@ Il mel-spettrogramma è il progetto della casa; il vocoder è l'impresa che la
 costruisce mattone su mattone. WaveNet (l'abbiamo già incontrata in
 {doc}`Generare suono e musica </Audio/generazione-audio>`, quando generava
 musica) lavora come un amanuense: scrive l'onda un campione alla volta,
-sedicimila al secondo, decidendo ognuno sulla base di quelli che ha già
-scritto. Qualità mai sentita prima, ma con la lentezza proverbiale già
-cronometrata in
-{doc}`Generare suono e musica </Audio/generazione-audio>`: più di due minuti di
-calcolo per un secondo di parlato. **HiFi-GAN** risolve il problema con una gara
-fra
-falsario ed esperti d'arte. È l'idea delle GAN, le reti
-avversarie generative, a cui più avanti è dedicato un capitolo intero: qui
-basta il gioco. Una rete-falsario impara a produrre l'onda intera
-in un colpo solo, e delle reti-esperto provano a distinguere l'audio vero da
-quello fabbricato. Gli esperti sono parecchi, perché uno solo si farebbe
-fregare: un difetto che si sente al rallentatore può sparire a velocità
-normale e viceversa. Ognuno ascolta l'onda a modo suo, e il falsario deve
-ingannarli tutti. C'è poi un controllo in più: dall'onda appena fabbricata si
-ridisegna l'immagine a bande e la si confronta con quella di partenza, così il
-falsario non può cavarsela con una voce bellissima che dice un'altra frase.
-Falsario ed esperti si allenano a vicenda finché il falso non si distingue
-più.
+sedicimila al secondo, decidendo ognuno sulla base di quelli che ha già scritto.
+Qualità mai sentita prima, ma una lentezza proverbiale: nella versione a
+ventiquattromila campioni al secondo, sulla scheda grafica di allora, un secondo
+di parlato chiedeva più di due minuti di calcolo. **HiFi-GAN** risolve il
+problema con una gara fra falsario ed esperti d'arte. È l'idea delle GAN, le
+reti avversarie generative, a cui più avanti è dedicato un capitolo intero: qui
+basta il gioco. Una rete-falsario impara a produrre l'onda intera in un colpo
+solo, e delle reti-esperto provano a distinguere l'audio vero da quello
+fabbricato. Gli esperti sono parecchi, perché uno solo si farebbe fregare: un
+difetto che si sente al rallentatore può sparire a velocità normale e viceversa.
+Ognuno ascolta l'onda a modo suo, e il falsario deve ingannarli tutti. C'è poi
+un controllo in più: dall'onda appena fabbricata si ridisegna l'immagine a bande
+e la si confronta con quella di partenza, così il falsario non può cavarsela con
+una voce bellissima che dice un'altra frase. Falsario ed esperti si allenano a
+vicenda finché il falso non si distingue più.
 
 Risultato: qualità paragonabile a WaveNet, ma molto più veloce del tempo
 reale, che vuol dire questo: per fabbricare un secondo di parlato ci mette
@@ -665,11 +660,11 @@ quando chiedi «che ore sono?» al telefono, e una voce sintetica ti risponde.
   fonemi, e il passaggio si chiama G2P: la c di *casa* e la c di
   *ciao* sono la stessa lettera e due fonemi diversi. E sopra tutto c'è la
   prosodia, la musica della frase: pause, durate, intonazione.
-- Tre generazioni di macchine parlanti: quella per formanti (fabbrica i
-  suoni da zero seguendo regole, ed è la voce robotica di Hawking), quella
-  concatenativa (ritagli di voce vera ricuciti insieme), quella
-  neurale, di oggi; in mezzo, per quindici anni, quella parametrica, che
-  impara dalle registrazioni i numeri di ogni suono.
+- Le generazioni delle macchine parlanti: quella per formanti (fabbrica i suoni
+  da zero seguendo regole, ed è la voce robotica di Hawking), quella
+  concatenativa (ritagli di voce vera ricuciti insieme), quella neurale, di
+  oggi; in mezzo, per quindici anni, quella parametrica, che impara dalle
+  registrazioni i numeri di ogni suono.
 - Oggi il lavoro è diviso in due: un modello scrive l'immagine del suono
   (Tacotron 2 una colonna alla volta, FastSpeech 2 tutte insieme e
   senza balbettare) e un secondo modello, il vocoder, la trasforma in
@@ -700,10 +695,10 @@ quando chiedi «che ore sono?» al telefono, e una voce sintetica ti risponde.
   contesto; il G2P converte i grafemi in fonemi (la c di *casa* è
   /k/, quella di *ciao* è /tʃ/): facile in italiano, difficile in inglese.
   Sopra tutto c'è la prosodia: intonazione, durate, pause.
-- Tre generazioni: sintesi per formanti (robotica: le regole di Klatt, il
+- Le generazioni: sintesi per formanti (robotica: le regole di Klatt, il
   DECtalk, e il CallText 5010 che dava la voce a Hawking), concatenativa
-  (ritagli di voce vera ricuciti), neurale; in mezzo la parametrica
-  statistica, con HMM e poi reti profonde a stimare i parametri acustici.
+  (ritagli di voce vera ricuciti), neurale; in mezzo la parametrica statistica,
+  con HMM e poi reti profonde a stimare i parametri acustici.
 - Il TTS neurale lavora in due stadi: un modello acustico testo→mel
   (Tacotron 2, seq2seq con attenzione; FastSpeech 2, parallelo e più
   stabile, ma con le durate fornite da un allineatore forzato esterno) e un

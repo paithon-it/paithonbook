@@ -171,13 +171,15 @@ $$
 \mathrm{FL}(p_t) = -\alpha_t\,(1 - p_t)^{\gamma} \log p_t ,
 $$
 
-dove $\alpha_t$ è un peso fisso per classe (il $\lambda_{\text{noobj}}$ di YOLO
-ne è un antenato) e il fattore $(1 - p_t)^{\gamma}$ è quello nuovo, perché
-dipende da quanto l'esempio è già risolto. Con $\gamma = 2$ un esempio con
-$p_t = 0{,}9$ pesa cento volte meno che nella cross-entropy, uno con
-$p_t \approx 0{,}968$ mille volte meno; il lavoro usa $\gamma = 2$ e
-$\alpha = 0{,}25$, e divide la somma per il numero delle sole ancore
-positive.
+dove $\alpha_t$ vale $\alpha$ sulle ancore positive e $1 - \alpha$ sullo
+sfondo, un peso fisso per classe come il $\lambda_{\text{noobj}}$ di YOLO, e il
+fattore $(1 - p_t)^{\gamma}$ è quello nuovo, perché dipende da quanto l'esempio
+è già risolto. Con $\gamma = 2$ un esempio con $p_t = 0{,}9$ pesa cento volte
+meno che nella cross-entropy, uno con $p_t \approx 0{,}968$ mille volte meno.
+Il lavoro usa $\gamma = 2$ e $\alpha = 0{,}25$, cioè pesa gli oggetti un terzo
+dello sfondo, al rovescio di $\lambda_{\text{noobj}}$: spenti i negativi facili
+dal fattore focale, sono i positivi a chiedere meno enfasi. La somma si divide
+per il numero delle sole ancore positive.
 
 `````
 
@@ -310,13 +312,15 @@ Diciamo che siano giuste la prima e le ultime due: le fermate sono tre, 1 su 1,
 cioè 1; poi 2 su 4, cioè 0,50; poi 3 su 5, cioè 0,60. I tre numeri ballano,
 perché ogni cornice sbagliata li tira giù e la giusta che viene dopo li rialza,
 su e giù come i denti di una sega. Prima di sommarli il correttore li
-appiattisce, e la regola sta in una riga: al posto del numero di quel momento
-si prende il più alto fra quello e tutti quelli che vengono dopo. I tre
-diventano 1, 0,60 e 0,60. Così il voto non dipende dal caso: basta che due
-cornici quasi ugualmente sicure si scambino di posto nella fila perché i denti
-della sega si spostino, mentre il più alto fra adesso e dopo resta quasi fermo.
-Ed è un conto onesto, perché è la precisione migliore che il correttore
-troverebbe accettando di andare un po’ più avanti nella fila.
+appiattisce, e la regola sta in una riga: al posto del numero di quel momento si
+prende il più alto fra quello e tutti quelli che vengono dopo. I tre diventano
+1, 0,60 e 0,60. Così il voto dipende meno dal caso: basta che due cornici quasi
+ugualmente sicure si scambino di posto nella fila perché i denti della sega si
+spostino, mentre il più alto fra adesso e dopo spesso resta dov'era. Non sempre:
+se le prime due cornici si scambiassero, la prima fermata cadrebbe a 1 su 2, e
+appiattita varrebbe 0,60 invece di 1. Ed è un conto onesto, perché è la
+precisione migliore che il correttore troverebbe accettando di andare un po’ più
+avanti nella fila.
 
 La somma fa 2,20, e si divide per tre, cioè per i cani che c'erano davvero, non
 per le cinque cornici disegnate: 0,73. Un cane che nessuna cornice avesse
@@ -343,25 +347,24 @@ $$
 $$
 
 Fissata una soglia (ad esempio $\text{IoU} \ge 0{,}5$), le predizioni si
-scorrono in ordine di confidenza decrescente: una predizione è un vero
-positivo se supera la soglia con un oggetto reale non ancora assegnato, e
-quell'oggetto viene «consumato». Ogni oggetto reale si accoppia cioè a una
-sola predizione, e i duplicati, per quanto ben sovrapposti, contano come
-falsi positivi. Da qui si costruisce la curva
-*precision–recall* per ciascuna classe: l'area sotto la sua interpolata
-(l'inviluppo monotono decrescente, campionato a 11 punti di recall nel VOC fino
-al 2009, a tutti i cambi di recall dal 2010, a 101 punti in COCO) è l’**Average
-Precision** (AP). La curva grezza è a denti di sega, e basta che due predizioni
-di
-confidenza quasi uguale si scambino di posto perché i denti si spostino:
-l'inviluppo, che a ogni recall prende la precisione migliore ottenibile a
-recall uguale o maggiore, rende la misura stabile rispetto a queste piccole
-variazioni di ordinamento {cite}`everingham2010pascal`. Le convenzioni di
-campionamento restano però diverse, e un AP a 11 punti non si confronta con uno
-a 101. La **mean Average Precision** (mAP) ne fa la media sulle
-classi. Il benchmark COCO irrigidisce la metrica mediando la mAP su dieci soglie
-di IoU, da $0{,}5$ a $0{,}95$ a passi di $0{,}05$: premia i modelli che
-localizzano con precisione, non solo che indovinano la classe.
+scorrono in ordine di confidenza decrescente: una predizione è un vero positivo
+se supera la soglia con un oggetto reale non ancora assegnato, e quell'oggetto
+viene «consumato». Ogni oggetto reale si accoppia cioè a una sola predizione, e
+i duplicati, per quanto ben sovrapposti, contano come falsi positivi. Da qui si
+costruisce la curva *precision–recall* per ciascuna classe: l'area sotto la sua
+interpolata (l'inviluppo monotono decrescente, campionato a 11 punti di recall
+nel VOC fino al 2009, a tutti i cambi di recall dal 2010, a 101 punti in COCO) è
+l’**Average Precision** (AP). La curva grezza è a denti di sega, e basta che due
+predizioni di confidenza quasi uguale si scambino di posto perché i denti si
+spostino. L'inviluppo, che a ogni recall prende la precisione migliore
+ottenibile a recall uguale o maggiore, ne attenua l'effetto
+{cite}`everingham2010pascal`: uno scambio che non tocca quel massimo non sposta
+niente, uno che lo tocca sposta l'AP come prima. Le convenzioni di campionamento
+restano però diverse, e un AP a 11 punti non si confronta con uno a 101. La
+**mean Average Precision** (mAP) ne fa la media sulle classi. Il benchmark COCO
+irrigidisce la metrica mediando la mAP su dieci soglie di IoU, da $0{,}5$ a
+$0{,}95$ a passi di $0{,}05$: premia i modelli che localizzano con precisione,
+non solo che indovinano la classe.
 
 `````
 
@@ -395,8 +398,9 @@ rimaste sono premiate per dire «qui non c'è niente». Chi produce un doppione
 viene quindi punito mentre impara, non ripulito dopo, e alla fine
 dell'addestramento i doppioni non li produce più. Spariscono così sia le
 cornici di partenza sia la fase di pulizia. Il prezzo è stato un addestramento
-molto più lungo (500 epoche, contro le 36 del Faster R-CNN con cui il lavoro
-si confronta) e risultati peggiori sugli oggetti piccoli.
+molto più lungo (500 epoche, contro le 109 del Faster R-CNN che il lavoro
+riallena per un confronto alla pari, e le 36 della sua versione di serie) e
+risultati peggiori sugli oggetti piccoli.
 
 ## La famiglia YOLO: le impalcature tolte una alla volta
 
@@ -413,18 +417,18 @@ posto della softmax mette tanti classificatori indipendenti, uno per classe,
 perché la stessa figura può essere insieme «persona» e «pedone».
 
 Poi la famiglia si divide. Dal 2020 il nome lo portano due linee parallele:
-articoli di gruppi diversi (YOLOv4 nel 2020, YOLOv7 nel 2022, YOLOv10 nel 2024)
-e il software della società Ultralytics {cite}`jocher2026ultralytics`, la cui
-storia si legge nei registri delle versioni invece che negli articoli. YOLOv5
-arriva così, libreria PyTorch senza paper; YOLOv8, nel 2023, toglie le ancore,
-predicendo direttamente centro e distanze dai bordi, come i rilevatori detti
-*anchor-free*; e YOLO26, all'inizio del 2026, toglie anche la NMS, punendo i
-doppioni durante l'addestramento con la stessa idea dell'abbinamento uno a uno
-di DETR, che nella famiglia era entrata con YOLOv10, un lavoro dell'Università
-Tsinghua: quello che la rete produce è già il risultato finale. Le due
-impalcature del mestiere, le ancore e la pulizia dei doppioni, la famiglia le ha
-prima usate e poi tolte tutte e due; restano la griglia, la passata unica e il
-nome.
+articoli di gruppi di ricerca (YOLOv4 nel 2020 e YOLOv7 nel 2022, degli stessi
+autori, e YOLOv10 nel 2024) e il software della società Ultralytics
+{cite}`jocher2026ultralytics`, la cui storia si legge nei registri delle
+versioni invece che negli articoli. YOLOv5 arriva così, libreria PyTorch senza
+paper; YOLOv8, nel 2023, toglie le ancore, predicendo direttamente centro e
+distanze dai bordi, come i rilevatori detti *anchor-free*; e YOLO26, all'inizio
+del 2026, toglie anche la NMS, punendo i doppioni durante l'addestramento con la
+stessa idea dell'abbinamento uno a uno di DETR, che nella famiglia era entrata
+con YOLOv10, un lavoro dell'Università Tsinghua: quello che la rete produce è
+già il risultato finale. Le due impalcature del mestiere, le ancore e la pulizia
+dei doppioni, la famiglia le ha prima usate e poi tolte tutte e due; restano la
+griglia, la passata unica e il nome.
 
 Provare l'ultima versione costa cinque righe. La libreria si installa con
 `pip install ultralytics`, scarica i pesi alla prima esecuzione e porta con sé
@@ -543,11 +547,12 @@ $$
 = \frac{2\,\mathrm{IoU}}{1 + \mathrm{IoU}},
 $$
 
-che è la F1 calcolata sui pixel e ordina le predizioni come la IoU; la sua
-versione continua, con le probabilità al posto delle maschere binarie, si usa
-anche come loss, perché non si lascia sommergere dai moltissimi pixel di sfondo
-quando la lesione ne occupa pochi. Per l'istanza si riusa la mAP, con la IoU fra
-maschere al posto di quella fra riquadri.
+che è la F1 calcolata sui pixel e, maschera per maschera, ordina le predizioni
+come la IoU (le medie invece possono invertirsi); la sua versione continua, con
+le probabilità al posto delle maschere binarie, si usa anche come loss, perché
+non si lascia sommergere dai moltissimi pixel di sfondo quando la lesione ne
+occupa pochi. Per l'istanza si riusa la mAP, con la IoU fra maschere al posto di
+quella fra riquadri.
 
 `````
 
@@ -732,8 +737,9 @@ fino al contorno esatto.
   capire che cosa c'è, si risale per dire dove, e a ogni gradino della risalita
   si ripassa quello che si era visto scendendo.
 - Nessuno di questi sistemi è infallibile, e il margine è di due tipi: contorni
-  approssimati, e oggetti mancati del tutto (che nel punteggio della
-  sovrapposizione non compaiono nemmeno).
+  approssimati, e oggetti mancati del tutto (che nella sovrapposizione di una
+  coppia non compaiono, e che il voto complessivo invece conta, perché divide
+  per gli oggetti veri).
 ```
 
 `````

@@ -516,6 +516,9 @@ di ieri, dal più semplice al più raffinato.
 
 `````{tab} Elementare
 
+```{table}
+:widths: 26 74
+
 | Modello | Che cosa fa della memoria di ieri |
 | :--- | :--- |
 | Attenzione lineare | La tiene tutta, intatta, e ci somma sopra la voce nuova. |
@@ -523,6 +526,7 @@ di ieri, dal più semplice al più raffinato.
 | GLA | La sbiadisce zona per zona, ogni zona al suo ritmo, poi ci somma sopra la voce nuova. |
 | DeltaNet | Non la sbiadisce, ma prima di scrivere sbianchetta la vecchia voce proprio dell'etichetta che sta per riscrivere, tanto quanto dice la manopola, e al suo posto scrive la nuova, nella stessa misura. |
 | Gated DeltaNet | Le due cose insieme: sbiadisce tutto, e in più cancella e riscrive la voce di turno. |
+```
 
 Cinque righe, una storia sola: cambia soltanto la prima mossa, quella che
 decide che cosa resta di ciò che si era scritto prima. Tutto il resto (la

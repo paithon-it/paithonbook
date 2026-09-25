@@ -48,6 +48,233 @@ $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.
 
 `````
 
+### Contare i casi
+
+«Casi favorevoli su casi possibili» funziona finché i casi si lasciano contare,
+e contarli è meno ovvio di quanto sembri. Il problema della posta interrotta,
+da cui era partita la corrispondenza fra Pascal e Fermat, si risolve così.
+Fermat contò tutti i modi in cui sarebbero potuti andare i turni rimasti,
+giocandoli fino in fondo anche quando la partita sarebbe già stata decisa, e
+Pascal ne scrisse la soluzione generale con il triangolo aritmetico, quello che
+in Italia si chiama di Tartaglia. Le regole per contare formano il **calcolo
+combinatorio**, e il numero che ne esce più spesso ha un simbolo suo, il
+**coefficiente binomiale** $\binom{n}{k}$: quanti gruppi diversi di $k$
+oggetti si formano da $n$, senza badare all'ordine. Serve ogni volta che si
+contano coppie, squadre o gruppi: quante coppie si formano con mille esempi, in
+quanti modi una giuria di sette può trovarsi in maggioranza dalla parte giusta,
+che è il conto dietro il {doc}`teorema della giuria di Condorcet
+</SistemiMultiAgente/protocolli-e-consenso>`.
+
+`````{tab} Elementare
+
+Dieci amici devono scegliere un capitano e un vice. Per il capitano ci sono
+dieci possibilità, e per ciascuna ne restano nove per il vice: $10\cdot 9 = 90$
+coppie capitano-vice. È la regola che regge tutto il resto: quando si sceglie
+una cosa dopo l'altra, le possibilità si moltiplicano.
+
+Se invece devono formare una coppia per il doppio a ping-pong, dove nessuno
+comanda, il conto di prima conta ogni coppia due volte. Anna capitano con Bruno
+vice e Bruno capitano con Anna vice, al tavolo, sono la stessa coppia. Le coppie
+sono quindi $90/2 = 45$.
+
+Con una squadra di tre i doppioni sono di più. Scegliendoli in fila si hanno
+$10\cdot 9\cdot 8 = 720$ terne ordinate, ma ogni squadra compare tante volte
+quanti sono i modi di mettere in fila i suoi tre membri: tre per il primo posto,
+due per il secondo, uno per l'ultimo, $3\cdot 2\cdot 1 = 6$ (Anna, Bruno, Carlo
+è la stessa squadra di Anna, Carlo, Bruno, di Bruno, Anna, Carlo, e così via).
+Le squadre sono $720/6 = 120$. Il prodotto $3\cdot 2\cdot 1$ si scrive $3!$ e si
+legge «tre fattoriale»; il numero delle squadre si scrive $\binom{10}{3}$ e si
+legge «dieci su tre», anche se non è una divisione. (Scegliere i tre che giocano
+è come scegliere i sette che restano in panchina, e infatti anche le panchine da
+sette sono $120$.)
+
+Si può contare anche in un altro modo, ed è un buon controllo. Anna o è nella
+squadra, o non c'è. Se c'è, restano da scegliere due compagni fra gli altri
+nove, $9\cdot 8/2 = 36$ squadre; se non c'è, servono tre persone fra quei nove,
+$9\cdot 8\cdot 7/6 = 84$. E $36 + 84 = 120$.
+
+Adesso ciascuno lancia una moneta. Le file possibili di testa e croce sono
+$2^{10} = 1024$ (due possibilità per ciascuno, moltiplicate dieci volte), tutte
+ugualmente probabili se le monete sono oneste. Quante hanno esattamente tre
+teste? Tante quante i modi di scegliere *chi* fa testa, cioè ancora $120$. La
+probabilità è $120/1024$, circa l’$11{,}7\%$: il conto delle squadre e quello
+delle monete sono lo stesso conto.
+
+La ricetta però vale solo se i casi contati sono ugualmente probabili, e
+sbagliare è facile. Nel 1754 Jean-Baptiste Le Rond d'Alembert, uno dei
+matematici più celebri del suo secolo, sostenne che lanciando due volte una
+moneta la probabilità di vedere almeno una testa fosse $2/3$. Pensava al gioco
+che si ferma appena esce testa: i casi, diceva, sono tre (testa al primo lancio,
+e il secondo non serve; croce e poi testa; due croci), e due su tre vanno bene.
+Ma quei tre casi non si equivalgono, perché «testa subito» raccoglie due file,
+testa-testa e testa-croce: il secondo lancio, anche se non lo si fa, sarebbe
+potuto andare in due modi. Contando le file, che sono quattro e ugualmente
+probabili, quelle con almeno una testa sono tre, e la probabilità è $3/4$.
+Pascal e Fermat, un secolo prima, avevano evitato proprio questo errore: per
+dividere la posta giocavano sulla carta anche i turni che non servivano più.
+
+E i casi crescono in fretta. I modi di mettere in fila i dieci amici sono già
+$10! = 3\,628\,800$, e quelli di mescolare un mazzo da 52 carte formano un
+numero di sessantotto cifre. Quando i casi sono troppi per elencarli, se ne
+guarda una parte estratta a caso, un campione, e si stima: lo si vedrà fare, per
+esempio, per dividere il merito di una previsione fra le informazioni su cui si
+è basata, nelle {doc}`spiegazioni locali
+</Interpretabilita/spiegazioni-locali>`.
+
+`````
+
+`````{tab} Superiore
+
+Il **principio del prodotto** dice che se una prima scelta si fa in $a$ modi e,
+per ciascuno, una seconda in $b$ modi, le coppie sono $ab$ anche quando le
+seconde scelte possibili dipendono dalla prima: se $A$ è l'insieme delle prime e
+$B_x$ quello delle seconde dopo la scelta $x$, con $|A| = a$ e $|B_x| = b$, le
+coppie sono $\sum_{x\in A}|B_x| = ab$; quando $B_x = B$ per ogni $x$ è la
+cardinalità del prodotto cartesiano, $|A\times B| = |A|\,|B|$. Iterandolo, le
+sequenze di $k$ elementi distinti presi da $n$ (le *disposizioni semplici*, per
+$0\le k\le n$) sono
+
+$$
+n(n-1)\cdots(n-k+1) = \frac{n!}{(n-k)!},
+$$
+
+con $n! = n(n-1)\cdots 1$ e $0! = 1$ (un solo modo di mettere in fila zero
+oggetti, ed è la scelta che fa valere la formula anche per $k = n$); per $k = n$
+sono le $n!$ permutazioni. Se invece lo stesso elemento si può riprendere, le
+sequenze sono $n^k$, le *disposizioni con ripetizione*: le file di $n$ lanci di
+una moneta sono $2^n$. Ogni sottoinsieme di taglia $k$ corrisponde a esattamente
+$k!$ disposizioni, i suoi ordinamenti, quindi i sottoinsiemi sono
+
+$$
+\binom{n}{k} = \frac{n!}{k!\,(n-k)!},
+$$
+
+simmetrico per $k \leftrightarrow n-k$ (scegliere chi entra è scegliere chi
+resta fuori). Vale la **regola di Pascal**, quella del triangolo (ogni numero è
+la somma dei due che gli stanno sopra),
+
+$$
+\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k},
+$$
+
+valida per $n\ge 1$ con la convenzione $\binom{n}{k} = 0$ fuori da
+$0\le k\le n$, e con una dimostrazione biiettiva che non chiede conti: fissato
+un elemento, i sottoinsiemi di taglia $k$ si dividono in quelli che lo
+contengono (e scelgono gli altri $k-1$ fra i restanti $n-1$) e quelli che non lo
+contengono (e li scelgono tutti e $k$ fra i restanti). Il nome viene dal teorema
+del binomio, $(x+y)^n = \sum_{k=0}^{n}\binom{n}{k}x^k y^{n-k}$, dove il
+coefficiente di $x^k y^{n-k}$ conta da quali $k$ degli $n$ fattori si prende la
+$x$; con $x = y = 1$ dà $\sum_k \binom{n}{k} = 2^n$, il numero dei sottoinsiemi.
+Le scelte in cui conta solo quante volte compare ciascun elemento, le
+*combinazioni con ripetizione*, sono $\binom{n+k-1}{k}$ ($k$ segni e $n-1$
+separatori messi in fila, e si sceglie dove stanno i segni): tanti quanti i
+monomi di grado $k$ in $n$ variabili, cioè le coordinate di grado $k$ dello
+spazio che il {doc}`kernel polinomiale </MachineLearning/svm-kernel>` usa senza
+calcolarle.
+
+Per $n$ lanci indipendenti di una moneta onesta le $2^n$ sequenze sono
+equiprobabili, e quelle con $k$ teste corrispondono una a una ai sottoinsiemi
+di $k$ lanci, quelli che fanno testa: $P(k \text{ teste}) = \binom{n}{k}/2^n$.
+Con una moneta che dà testa con probabilità $p$ e lanci indipendenti, ogni
+sequenza con $k$ teste ha probabilità $p^k(1-p)^{n-k}$, e sommando sulle
+$\binom{n}{k}$ sequenze il numero $X$ di teste ha
+
+$$
+P(X = k) = \binom{n}{k}\,p^k (1-p)^{n-k}, \qquad k = 0,\dots,n,
+$$
+
+che è la **distribuzione binomiale**: il teorema del binomio con $x = p$ e
+$y = 1-p$ la normalizza a uno. È la distribuzione del conteggio di successi su
+cui poggiano il test binomiale esatto e l'intervallo di Clopper-Pearson.
+
+Il punto debole della definizione classica, $P(A) = |A|/|\Omega|$, è l'ipotesi
+che gli esiti elementari siano equiprobabili, e da come si sceglie lo spazio
+dipende il risultato. D'Alembert, nella voce «Croix ou pile» dell’*Encyclopédie*
+(1754), diede $2/3$ alla probabilità di almeno una testa in due lanci perché
+prese come equiprobabili gli esiti del gioco che si ferma alla prima testa ($T$,
+$CT$, $CC$) invece delle quattro sequenze complete; la risposta è $3/4$. È
+l'obiezione che Roberval aveva mosso al metodo di Fermat, e che Pascal riferisce
+nella lettera del 24 agosto 1654: la partita vera si ferma appena qualcuno ha
+vinto. Giocare anche i turni che non servono non cambia il vincitore, e rende
+equiprobabili le sequenze. Si conta su uno spazio in cui la simmetria del
+meccanismo rende gli esiti equiprobabili, e solo dopo si passa alle probabilità.
+
+Resta la crescita. La formula di Stirling, $n! \sim \sqrt{2\pi n}\,(n/e)^n$
+(il rapporto fra i due lati tende a $1$, e a $n = 52$ la sottostima è appena
+dello $0{,}16\%$), dà per il coefficiente centrale $\binom{2m}{m} \sim
+4^m/\sqrt{\pi m}$: con $n = 2m$, i soli sottoinsiemi di taglia $n/2$ sono $2^n$
+diviso appena $\sqrt{\pi n/2}$. Enumerare i sottoinsiemi di $n$ elementi costa
+dunque $2^n$ anche fermandosi a una taglia sola, e smette di essere praticabile
+già per qualche decina di elementi. Le grandezze definite come somme su tutti i
+sottoinsiemi o su tutti gli ordinamenti, come i valori di Shapley delle
+{doc}`spiegazioni locali </Interpretabilita/spiegazioni-locali>`, si calcolano
+quindi esatte solo per $n$ piccolo, e altrimenti si stimano campionando
+sottoinsiemi o ordinamenti.
+
+`````
+
+I conti delle squadre, delle monete e di d'Alembert si possono rifare senza
+formule, elencando i casi uno per uno. L'elenco però non sceglie lo spazio: a
+partire dai tre casi di d'Alembert restituisce di nuovo $2/3$. A dire quali casi
+si equivalgono è il gioco stesso, e lo si interroga giocandolo: su centomila
+partite simulate, fermandosi alla prima testa, almeno una testa esce tre volte
+su quattro. Il blocco confronta anche $52!$ con la formula approssimata di
+Stirling, che lo stima senza fare tutte le moltiplicazioni.
+
+```python
+import random
+from itertools import combinations, permutations, product
+from math import comb, e, factorial, pi, sqrt
+
+amici = "ABCDEFGHIL"                      # dieci amici, "A" è Anna
+print("capitano e vice:", len(list(permutations(amici, 2))))
+print("coppie per il doppio:", len(list(combinations(amici, 2))))
+print("terne ordinate:", len(list(permutations(amici, 3))),
+      "| squadre da tre:", len(list(combinations(amici, 3))), "=", comb(10, 3),
+      "| panchine da sette:", len(list(combinations(amici, 7))))
+con_anna = sum("A" in s for s in combinations(amici, 3))
+senza_anna = sum("A" not in s for s in combinations(amici, 3))
+print("squadre con Anna:", con_anna, "=", comb(9, 2),
+      "| senza Anna:", senza_anna, "=", comb(9, 3))
+
+file = list(product("TC", repeat=10))    # tutte le file di dieci lanci
+tre_teste = sum(f.count("T") == 3 for f in file)
+print(f"file di dieci lanci: {len(file)}, con tre teste: {tre_teste}"
+      f" ({tre_teste / len(file):.1%})")
+
+# d'Alembert: l'elenco restituisce la risposta dello spazio che riceve
+due = list(product("TC", repeat=2))
+print("almeno una testa, file complete:",
+      sum("T" in f for f in due), "su", len(due))
+print("almeno una testa, casi di d'Alembert:",
+      sum("T" in c for c in ("T", "CT", "CC")), "su 3")
+# il gioco vero: si lancia finché esce testa, al più due volte
+sorte = random.Random(0)
+partite = 100_000
+vinte = sum(sorte.random() < 0.5 or sorte.random() < 0.5
+            for _ in range(partite))
+print(f"in {partite} partite, almeno una testa nel {vinte / partite:.0%}")
+
+print("10! =", factorial(10))
+n = 52
+stirling = sqrt(2 * pi * n) * (n / e)**n
+print(f"52! ha {len(str(factorial(n)))} cifre;"
+      f" Stirling la sottostima dello {1 - stirling / factorial(n):.2%}")
+```
+
+```text
+capitano e vice: 90
+coppie per il doppio: 45
+terne ordinate: 720 | squadre da tre: 120 = 120 | panchine da sette: 120
+squadre con Anna: 36 = 36 | senza Anna: 84 = 84
+file di dieci lanci: 1024, con tre teste: 120 (11.7%)
+almeno una testa, file complete: 3 su 4
+almeno una testa, casi di d'Alembert: 2 su 3
+in 100000 partite, almeno una testa nel 75%
+10! = 3628800
+52! ha 68 cifre; Stirling la sottostima dello 0.16%
+```
+
 ## Variabili aleatorie
 
 Lanciare dieci monete e guardare come sono venute è una cosa; contare quante
@@ -539,10 +766,11 @@ $$
 
 L'errore cala come $1/\sqrt{n}$, non come $1/n$: per dimezzare l'incertezza
 servono quattro volte i dati. Vale per qualunque grandezza che si stimi come
-media di osservazioni indipendenti, e quindi per ogni metrica misurata su un
-test set. L'errore di un modello addestrato segue invece curve di
-apprendimento proprie, con esponenti che dipendono dal compito e in genere
-differiscono da $1/2$, anche se la tendenza ai rendimenti decrescenti è la
+media di osservazioni indipendenti, e quindi per ogni metrica che sia una media
+sugli esempi di un test set, come l'accuratezza. L'errore di un modello
+addestrato segue invece curve di apprendimento proprie, con esponenti che
+dipendono dal compito e in genere sono più piccoli di $1/2$
+{cite}`kaplan2020scaling`, anche se la tendenza ai rendimenti decrescenti è la
 stessa.
 
 L'ipotesi i.i.d. è quella che si rompe più spesso nella pratica: dati correlati
@@ -1310,6 +1538,147 @@ distribuzione qualsiasi, è
 
 `````
 
+### Con un'opinione di partenza: la stima bayesiana
+
+La massima verosimiglianza tratta il parametro come un numero da trovare e
+basta. Il teorema di Bayes della sezione «Aggiornare le credenze» permette di
+fare di più: dare al parametro $\theta$ (per la moneta, la probabilità di testa)
+una **distribuzione a priori** $p(\theta)$, in breve la *priore*, che dice che
+cosa se ne pensa prima dei dati, e ottenere con i dati $\mathcal{D}$ la
+**distribuzione a posteriori** $p(\theta \mid \mathcal{D})$, la *posteriore*,
+dove la barra si legge «sapendo che». Da lì escono la stima **MAP** (*maximum a
+posteriori*, il punto più alto della posteriore) e, quando la priore è
+**coniugata** alla verosimiglianza, una posteriore della stessa famiglia della
+priore, che si aggiorna sommando dei conteggi.
+{numref}`fig-credenza-che-si-stringe` mostra l'aggiornamento sulla moneta, un
+lancio dopo l'altro.
+
+```{figure} ../figures/credenza-che-si-stringe.svg
+:name: fig-credenza-che-si-stringe
+:alt: Animazione su un asse orizzontale che va da 0 a 1, la probabilità di testa, con una linea verticale tratteggiata sul valore vero 0,7. Una curva terracotta bassa e larga, la credenza prima dei lanci, lascia il posto tappa dopo tappa a curve sempre più alte e strette, dopo 1, 3, 10, 30 e 100 lanci; ognuna resta come traccia sbiadita, e l'ultima, piena, sta stretta attorno al valore vero. Una scritta in alto a sinistra dice quanti lanci e quante teste si sono visti.
+:width: 92%
+
+La credenza sulla probabilità di testa, prima dei lanci e dopo 1, 3, 10, 30 e
+100 lanci di una moneta che fa testa il 70% delle volte: a ogni tappa la curva
+si alza e si stringe, e alla fine sta attorno al valore vero.
+```
+
+`````{tab} Elementare
+
+Chi prende in mano una moneta qualunque, prima di lanciarla, un'idea ce l'ha:
+non sa se fa testa esattamente metà delle volte, ma non scommetterebbe che la
+faccia nove volte su dieci. Quell'idea si può scrivere come lanci immaginati,
+per esempio come se si fossero già viste due teste e due croci. Poi arrivano i
+lanci veri, e si sommano a quelli immaginati: dopo 7 teste su 10, la stima (il
+baricentro della curva di cui si dice subito sotto) diventa
+$(2 + 7)/(4 + 10) = 9/14 \approx 0{,}64$, un po' più vicina a metà del $0{,}7$
+dei soli lanci veri, perché i quattro immaginati tirano verso il centro.
+
+Il risultato non è un numero ma una curva, che dice quanto è credibile ogni
+valore della moneta. All'inizio è bassa e larga; con i lanci si alza e si
+stringe, e i lanci immaginati pesano sempre meno: dopo 70 teste su 100 la stima
+è $(2 + 70)/(4 + 100) = 72/104 \approx 0{,}69$, quasi la proporzione osservata.
+Una curva si può riassumere in due modi, con il suo punto più alto o con il suo
+baricentro, e con pochi lanci i due differiscono un poco; con tanti coincidono.
+E il punto più alto è la massima verosimiglianza con in più una spinta verso
+l'opinione di partenza: la {doc}`regolarizzazione
+</MachineLearning/overfitting-validazione>`, nel capitolo sul Machine Learning,
+userà proprio questo gesto per trattenere un modello che esagera.
+
+Il prezzo è l'opinione di partenza, che bisogna scegliere. Con quattro lanci
+immaginati conta poco e presto; con mille lanci immaginati tutti a metà, cento
+teste di fila sposterebbero la stima soltanto da $0{,}50$ a $0{,}55$ (cioè
+$600/1100$), e sarebbe la testardaggine di chi l'ha scelta, non la prudenza.
+
+`````
+
+`````{tab} Superiore
+
+Per il teorema di Bayes,
+$p(\theta \mid \mathcal{D}) \propto p(\mathcal{D} \mid \theta)\, p(\theta)$,
+e la stima MAP è
+
+$$
+\hat{\theta}_{\text{MAP}} = \arg\max_{\theta}\ \Big[\log p(\mathcal{D} \mid \theta) + \log p(\theta)\Big]:
+$$
+
+la massima verosimiglianza più un termine che dipende solo dal parametro. Con
+una priore gaussiana $\theta_j \sim \mathcal{N}(0, \tau^2)$ quel termine è
+$-\sum_j \theta_j^2 / (2\tau^2)$, che corrisponde, a meno di un fattore
+positivo, alla penalità $\ell_2$ del Ridge della {doc}`regolarizzazione
+</MachineLearning/overfitting-validazione>`; con una priore di Laplace è la
+$\ell_1$ del Lasso. La stima bayesiana completa, invece, tiene tutta la
+posteriore: ne ricava la media, un intervallo di credibilità, la predittiva
+$p(x \mid \mathcal{D}) = \int p(x \mid \theta)\, p(\theta \mid \mathcal{D})\, d\theta$.
+
+Una priore è coniugata a una verosimiglianza quando la posteriore sta nella sua
+stessa famiglia. Per $k$ teste su $n$ lanci di Bernoulli la coniugata è la Beta:
+da $\mathrm{Beta}(a, b)$ si passa a $\mathrm{Beta}(a + k,\, b + n - k)$, con
+moda $(a + k - 1)/(a + b + n - 2)$ e media $(a + k)/(a + b + n)$, e $a$, $b$ si
+leggono come conteggi fittizi per la media (per la moda i conteggi sono $a - 1$
+e $b - 1$). Per la media $\mu$ di una gaussiana con varianza $\sigma^2$ nota, la
+coniugata è gaussiana: con priore $\mathcal{N}(\mu_0, \tau_0^2)$ e $n$
+osservazioni di media $\bar{x}$,
+
+$$
+\frac{1}{\tau_n^2} = \frac{1}{\tau_0^2} + \frac{n}{\sigma^2}, \qquad
+\mu_n = \tau_n^2 \left( \frac{\mu_0}{\tau_0^2} + \frac{n \bar{x}}{\sigma^2} \right),
+$$
+
+una media pesata con le precisioni, in cui il peso della priore resta fisso e
+quello dei dati cresce con $n$: per $n \to \infty$ la media tende a $\bar{x}$ e
+la varianza a posteriori scende come $\sigma^2/n$. I limiti: la coniugazione
+esiste per le famiglie esponenziali con priori scelte apposta, e altrove la
+posteriore si approssima, campionando con le catene di Markov della
+{doc}`sezione sul MCMC </Matematica/catene-di-markov>` o con metodi
+variazionali; con pochi dati la priore pesa, e va giustificata; e la MAP, a
+differenza della massima verosimiglianza, dipende da come si parametrizza
+$\theta$, perché una densità cambia forma sotto un cambio di variabile e il suo
+massimo si sposta.
+
+`````
+
+Il blocco calcola sulla moneta, con la priore $\mathrm{Beta}(2, 2)$, la massima
+verosimiglianza, la MAP, la media a posteriori e l'intervallo al 95% (la fascia
+centrale che contiene il 95% della credenza, detto intervallo di credibilità)
+dopo 7 teste su 10 e dopo 70 su 100; poi ricostruisce la prima posteriore su una
+griglia, moltiplicando verosimiglianza e priore, e la confronta con la formula
+della coniugata.
+
+```python
+import numpy as np
+from scipy.stats import beta
+
+a0, b0 = 2, 2                                   # la credenza di partenza: Beta(2, 2)
+for teste, lanci in [(7, 10), (70, 100)]:
+    a, b = a0 + teste, b0 + lanci - teste       # la coniugata: ai parametri si sommano i conteggi
+    mle = teste / lanci
+    map_ = (a - 1) / (a + b - 2)                # il punto più alto della posteriore
+    media = a / (a + b)                         # il suo baricentro
+    basso, alto = beta.ppf([0.025, 0.975], a, b)
+    print(f"{teste:2}/{lanci:3}: massima verosimiglianza {mle:.3f}, MAP {map_:.3f}, "
+          f"media {media:.3f}, intervallo al 95% da {basso:.3f} a {alto:.3f}")
+
+# la stessa posteriore senza la formula: verosimiglianza per prior, su una griglia
+p = np.linspace(0.0005, 0.9995, 1000)
+posteriore = p**7 * (1 - p)**3 * beta.pdf(p, a0, b0)
+posteriore /= posteriore.sum() * (p[1] - p[0])
+print("coincide con la Beta(9, 5):", np.allclose(posteriore, beta.pdf(p, 9, 5), rtol=1e-3))
+```
+
+```text
+ 7/ 10: massima verosimiglianza 0.700, MAP 0.667, media 0.643, intervallo al 95% da 0.386 a 0.861
+70/100: massima verosimiglianza 0.700, MAP 0.696, media 0.692, intervallo al 95% da 0.601 a 0.777
+coincide con la Beta(9, 5): True
+```
+
+Con dieci lanci la priore si sente: la MAP scende da $0{,}700$ a $0{,}667$ e la
+media a $0{,}643$, e l'intervallo va da $0{,}386$ a $0{,}861$, largo quasi metà
+dell'asse. Con cento lanci le tre stime stanno fra $0{,}692$ e $0{,}700$ e
+l'intervallo si è ristretto a poco più di un sesto dell'asse, da $0{,}601$ a
+$0{,}777$. La griglia, che non sa niente di coniugate, dà la stessa
+$\mathrm{Beta}(9, 5)$ della formula.
+
 ## In pratica, con NumPy
 
 Poche righe traducono in codice tutto ciò che abbiamo visto: media e varianza di
@@ -1342,6 +1711,10 @@ print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
   numero (le teste su dieci lanci), e per riassumerla bastano quasi sempre due
   cose: il risultato medio che ci si aspetta a lungo andare e quanto
   tipicamente ci si allontana da quel centro.
+- Contare i casi vuol dire moltiplicare le scelte e dividere per i modi di
+  mettere in fila che non contano: dieci amici formano $\binom{10}{3} = 120$
+  squadre da tre. Il conto diventa una probabilità solo se i casi contati sono
+  ugualmente probabili, ed è lì che sbagliò d'Alembert.
 - La curva a campana compare ovunque perché tante piccole cause casuali che
   si sommano la producono da sé, anche partendo da dadi in cui nessuna faccia è
   favorita. Regola pratica: circa il $68\%$ dei casi cade entro uno scarto
@@ -1392,6 +1765,11 @@ print(posterior)       # ~0.167: solo il 17% dei positivi è davvero malato
   con la sua stima dal campione: quest'ultima è non distorta solo
   dividendo per $n-1$ (correzione di Bessel), e le librerie scelgono
   default diversi.
+- $\binom{n}{k} = n!/(k!\,(n-k)!)$ conta i sottoinsiemi di taglia $k$, e
+  $\binom{n}{k}p^k(1-p)^{n-k}$, la binomiale, è la probabilità di $k$ successi
+  in $n$ prove indipendenti con la stessa probabilità $p$; la probabilità
+  classica «favorevoli su possibili» vale solo su uno spazio di esiti
+  equiprobabili.
 - La normale compare ovunque per il teorema del limite centrale; la regola
   68–95 lega la deviazione standard $\sigma$ alle probabilità.
 - Il teorema di Bayes aggiorna le credenze alla luce dei dati: con classi

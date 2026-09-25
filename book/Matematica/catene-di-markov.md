@@ -171,17 +171,17 @@ Il calcolo si può fare in tre modi, tutti usati:
   fattorizzare è fuori discussione e moltiplicare per una matrice sparsa costa
   poco.
 
-L'equilibrio è dinamico: la catena continua a saltare da uno stato
-all'altro, ed è il flusso complessivo a pareggiarsi. Una condizione più forte,
-il **bilancio dettagliato** $P_{ij}\pi_j = P_{ji}\pi_i$, chiede che si pareggi
-ogni singola coppia di stati. È sufficiente, e lo si vede sommando su $j$:
-$\sum_j P_{ij}\pi_j=\pi_i\sum_j P_{ji}=\pi_i$. Non è necessaria, ed è questo a
-renderla comoda: per costruire una catena con una stazionaria assegnata basta
-imporre una condizione locale fra coppie di stati, senza risolvere nessun
-sistema. È la proprietà su cui si costruiscono i campionatori usati nei
-{doc}`modelli a energia </ModelliEnergia/overview>`. Una catena che la
-soddisfa si dice *reversibile*, e ne segue un fatto spettrale: posto
-$\mathbf{D}=\operatorname{diag}(\boldsymbol{\pi})$, la matrice
+L'equilibrio è dinamico: la catena continua a saltare da uno stato all'altro, ed
+è il flusso complessivo a pareggiarsi. Una condizione più forte, il **bilancio
+dettagliato** $P_{ij}\pi_j = P_{ji}\pi_i$, chiede che si pareggi ogni singola
+coppia di stati. È sufficiente, e lo si vede sommando su $j$:
+$\sum_j P_{ij}\pi_j=\pi_i\sum_j P_{ji}=\pi_i$. Non è necessaria, ma è comoda:
+per costruire una catena con una stazionaria assegnata basta imporre una
+condizione locale fra coppie di stati, senza risolvere nessun sistema. È la
+proprietà su cui si costruiscono i campionatori usati nei {doc}`modelli a
+energia </ModelliEnergia/overview>`. Una catena che la soddisfa si dice
+*reversibile*, e ne segue un fatto spettrale: posto
+$\mathbf{D}=\operatorname{diag}(\boldsymbol{\pi})$, con $\pi_i>0$, la matrice
 $\mathbf{D}^{-1/2}\mathbf{P}\mathbf{D}^{1/2}$ è simmetrica, quindi gli
 autovalori di $\mathbf{P}$ sono tutti reali. Gli autovalori complessi della
 catena del PageRank, e la rotazione che producono, sono la firma di una catena
@@ -322,11 +322,15 @@ $$
 
 governa il **tempo di mescolamento**. Con la distanza in variazione totale
 $\lVert\boldsymbol{\mu}-\boldsymbol{\nu}\rVert_{TV}=\tfrac12\sum_i|\mu_i-\nu_i|$
-e il caso peggiore sulla partenza,
-$d(t)=\max_{\mathbf{x}_0}\lVert\mathbf{P}^t\mathbf{x}_0-\boldsymbol{\pi}\rVert_{TV}$,
-si pone $t_{\text{mix}}(\varepsilon)=\min\{t: d(t)\le\varepsilon\}$. Per una
-catena reversibile (quella in bilancio dettagliato), irriducibile e aperiodica
-valgono le due stime {cite}`levin2017markov`
+e il caso peggiore sulla partenza, si pone
+
+$$
+t_{\text{mix}}(\varepsilon)=\min\Big\{t:\max_{\mathbf{x}_0}
+\lVert\mathbf{P}^t\mathbf{x}_0-\boldsymbol{\pi}\rVert_{TV}\le\varepsilon\Big\} .
+$$
+
+Per una catena reversibile (quella in bilancio dettagliato), irriducibile e
+aperiodica valgono le due stime {cite}`levin2017markov`
 
 $$
 \left(\frac{1}{1-|\lambda_2|}-1\right)\log\frac{1}{2\varepsilon}
@@ -335,11 +339,13 @@ $$
 $$
 
 con $|\lambda_2|$ il più grande modulo fra gli autovalori diversi da $1$ e
-$\pi_{\min}=\min_i\pi_i$. Il fattore $\log(1/\pi_{\min})$ non è innocuo: per
-il mazzo di carte $\pi_{\min}=1/52!$, e il logaritmo vale circa $156$. Per una
-catena non reversibile, come la matrice di Google, lo spettro da solo non
-basta nemmeno a questa maggiorazione, perché conta anche quanto sono vicini
-fra loro gli autovettori.
+$\pi_{\min}=\min_i\pi_i$. Il fattore $\log(1/\pi_{\min})$ non è innocuo: con la
+stazionaria uniforme sui $52!$ ordini di un mazzo vale circa $156$ (il
+mescolamento a intreccio non è reversibile, e la stima non gli si applica alla
+lettera, ma il prezzo del numero degli stati è quello). Per una catena non
+reversibile, come la matrice di Google, lo spettro da solo non basta nemmeno a
+questa maggiorazione, perché conta anche quanto sono vicini fra loro gli
+autovettori.
 
 Il logaritmo dice che guadagnare una cifra decimale costa sempre lo stesso
 numero di passi, e il fattore davanti dice quanti. Attenzione però a come si
@@ -508,22 +514,25 @@ quella, e si misura sull'inviluppo, mai su un passo solo.
 
 Sotto nomi diversi, è sempre la stessa struttura. I {doc}`modelli n-gram
 </NaturalLanguageProcessing/modelli-ngram>` sono catene di Markov sulle parole,
-con lo stato allargato alle ultime $n-1$. I {doc}`processi decisionali di
-Markov </ReinforcementLearning/mdp-valore>` del reinforcement learning sono
-catene in cui a ogni passo qualcuno sceglie. Fissata la politica, l'equazione
-di Bellman per il suo valore è un sistema lineare come quelli visti,
-$(\mathbf{I}-\gamma\mathbf{P}_\pi^\top)\mathbf{v}=\mathbf{r}$, invertibile per
-ogni $\gamma<1$ perché lo spettro di $\mathbf{P}_\pi$ sta nel disco unitario;
+con lo stato allargato alle ultime $n-1$. I {doc}`processi decisionali di Markov
+</ReinforcementLearning/mdp-valore>` del reinforcement learning sono catene in
+cui a ogni passo qualcuno sceglie. Fissata la politica, l'equazione di Bellman
+per il suo valore è un sistema lineare come quelli visti,
+$(\mathbf{I}-\gamma\mathbf{P}_\pi^\top)\mathbf{v}=\mathbf{r}$, dove qui $\pi$ è
+la politica e non la stazionaria, $\mathbf{P}_\pi$ la matrice di transizione che
+induce, $\mathbf{r}$ la ricompensa attesa in ogni stato, $\mathbf{v}$ il valore
+cercato e $\gamma\in[0,1)$ lo sconto sul futuro. Il sistema è invertibile perché
+lo spettro di $\gamma\mathbf{P}_\pi$ sta nel disco di raggio $\gamma<1$;
 l'equazione di ottimalità, con il massimo sulle azioni, lineare non è più. I
 campionatori dei {doc}`modelli a energia </ModelliEnergia/overview>`
 costruiscono una catena apposta perché la sua stazionaria sia la distribuzione
-che si vuole campionare, e ne aspettano il mescolamento. E il processo di
-andata dei {doc}`modelli di diffusione </ModelliDiffusione/overview>`, che
-aggiunge rumore un passo alla volta, è una catena di Markov su uno spazio
-continuo, con una regola che cambia a ogni passo, quindi fuori dal teorema di
-Perron-Frobenius per le catene finite. La sua distribuzione tende comunque al
-rumore puro, una gaussiana standard, e tutta la difficoltà di quei modelli sta
-nel percorrerla al contrario.
+che si vuole campionare, e ne aspettano il mescolamento. E il processo di andata
+dei {doc}`modelli di diffusione </ModelliDiffusione/overview>`, che aggiunge
+rumore un passo alla volta, è una catena di Markov su uno spazio continuo, con
+una regola che cambia a ogni passo, quindi fuori dal teorema di Perron-Frobenius
+per le catene finite. La sua distribuzione tende comunque al rumore puro, una
+gaussiana standard, e tutta la difficoltà di quei modelli sta nel percorrerla al
+contrario.
 
 ## In pratica, con NumPy
 
@@ -596,9 +605,13 @@ dell'autovettore, quello che è davvero una distribuzione.
   $\mathbf{P}=\mathbf{I}$ rompe la prima ipotesi,
   $\begin{pmatrix}0&1\\1&0\end{pmatrix}$ la seconda.
 - La velocità è il gap spettrale $1-|\lambda_2|$: lo scarto decade come
-  $|\lambda_2|^t$ e $t_{\text{mix}}(\varepsilon)=O\big(\log(1/\varepsilon)/
-  (1-|\lambda_2|)\big)$. Alcune famiglie mostrano cutoff, cioè un crollo in
-  una finestra stretta, e lì $|\lambda_2|$ da solo descrive male il transitorio.
+  $|\lambda_2|^t$ (con un fattore polinomiale se $\mathbf{P}$ non è
+  diagonalizzabile) e, per una catena reversibile,
+  $t_{\text{mix}}(\varepsilon)\le\log\big(1/(\varepsilon\,\pi_{\min})\big)/(1-|\lambda_2|)$,
+  dove $\log(1/\pi_{\min})$ cresce con il numero degli stati; per una catena
+  non reversibile lo spettro da solo non basta. Alcune famiglie mostrano
+  cutoff, cioè un crollo in una finestra stretta, e lì $|\lambda_2|$ da solo
+  descrive male il transitorio.
 - PageRank: $\mathbf{G}=d\mathbf{M}+\frac{1-d}{n}\mathbf{1}\mathbf{1}^\top$
   è positiva, quindi la stazionaria esiste ed è unica; e
   $|\lambda_2(\mathbf{G})|\le d$ indipendentemente dal grafo, il che rende

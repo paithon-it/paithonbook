@@ -470,31 +470,30 @@ stesso e va un
 po’ peggio, tanto più quanto più le liste sono lunghe, e non se ne accorge
 nessuno perché niente si rompe.
 
-Il terzo sbaglia anch'esso l'ordine dei gesti, e consiste nel colorare prima
-e cancellare dopo: la riga resta con meno di un'unità di colore,
-e il miscuglio esce sbiadito.
+Il terzo sbaglia l'ordine dei gesti: colorare prima e cancellare dopo. La riga
+resta con meno di un'unità di colore, e il miscuglio esce sbiadito.
 
 Il quarto è il tabellone dato per quadrato. Quando chi chiede e chi risponde
 sono due liste
 di lunghezza diversa, la regola «cancella tutto quello che sta sopra la
 diagonale» va riscritta dicendo da che parte le due liste sono allineate.
 
-Gli ultimi due stanno nei taccuini e in quello che se ne consegna. Il primo è
-contare i lettori al posto dei taccuini: da quando i lettori condividono gli
-appunti i due numeri sono diversi, e una stima di quanta carta serve fatta
-contando i lettori sbaglia in eccesso, cioè nella direzione che non fa mai
-suonare nessun allarme.
+Gli altri tre stanno nei taccuini, in quello che se ne consegna e nel conto
+della carta. Il primo è contare i lettori al posto dei taccuini: da quando i
+lettori condividono gli appunti i due numeri sono diversi, e una stima di quanta
+carta serve fatta contando i lettori sbaglia in eccesso, cioè nella direzione
+che non fa mai suonare nessun allarme.
 
-L'altro è consegnare le intensità del colore al posto del miscuglio. Le
+Il secondo è consegnare le intensità del colore al posto del miscuglio. Le
 intensità servono
 a decidere le proporzioni e poi escono di scena; quello che si consegna al
 piano dopo è la miscela delle informazioni, che ha tutt'altra forma e tutt'altro
 significato.
 
-Due misure di memoria confrontate senza dire che cosa ci si è messo dentro. I
-numeri del modello, il tabellone di passaggio, i taccuini e tutto quello che il
-calcolatore tiene aperto per lavorare sono cose distinte, e due conti che non
-dichiarano quali voci comprendono non si possono paragonare.
+Il terzo sono due misure di memoria confrontate senza dire che cosa ci si è
+messo dentro. I numeri del modello, il tabellone di passaggio, i taccuini e
+tutto quello che il calcolatore tiene aperto per lavorare sono cose distinte, e
+due conti che non dichiarano quali voci comprendono non si possono paragonare.
 `````
 
 `````{tab} Superiore

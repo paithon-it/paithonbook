@@ -381,7 +381,7 @@ chiavi sono sei, dalla più efficace alla più illusoria.
    finché non scotta e tornando un filo indietro: una corsa breve in cui il
    passo cresce a ogni giro, e si prende il valore poco prima che l'errore si
    impenni.
-5.  I freni, che rendono la vita più difficile al modello mentre studia, apposta
+5. I freni, che rendono la vita più difficile al modello mentre studia, apposta
    perché non si limiti a memorizzare (*dropout* e *weight decay*, spiegati nel
    {doc}`capitolo sul deep learning </DeepLearning/overview>`). Si mettono solo
    se la distanza fra l'errore in addestramento e quello in validazione si

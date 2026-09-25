@@ -17,7 +17,7 @@ biologici, e dal 1980 insegnava al California Institute of Technology.
 Non parte da un foglio bianco, ed è giusto dirlo. Memorie che si interrogano
 per contenuto circolavano già da un decennio, costruite legando fra loro i
 pezzi che nei ricordi vanno d'accordo: le propongono, tutti nel 1972 e ognuno
-per conto suo, Teuvo Kohonen, Kaoru Nakano, James Anderson e Shun-ichi Amari,
+per conto suo, Teuvo Kohonen, Kaoru Nakano, James Anderson e Shun-ichi Amari
 {cite}`amari1972learning`. E nel 1974
 William Little descrive una rete in cui i neuroni si accendono tutti nello
 stesso istante, ciascuno con una probabilità che cresce con la spinta

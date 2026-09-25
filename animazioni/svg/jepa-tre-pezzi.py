@@ -1,11 +1,12 @@
-"""I tre pezzi che tengono una JEPA lontana dal collasso, e quale si può togliere.
+"""I tre pezzi che tengono una JEPA lontana dal collasso, e quale a volte si toglie.
 
 Figura ferma, un diagramma. Due rami: il contesto passa per l'encoder e per il
 predictor, il bersaglio per una copia dell'encoder aggiornata come media
 mobile (EMA) e mai toccata dal gradiente. La perdita confronta i due embedding.
 La figura marca i tre pezzi dell'asimmetria e dice quale regge il muro:
-stop-gradient e predictor insieme, mentre l'EMA si può togliere (SimSiam lo
-fa, e la mini-JEPA della pagina anche).
+stop-gradient e predictor insieme, mentre l'EMA a certe condizioni si può
+togliere (SimSiam lo fa perdendo qualche punto, la mini-JEPA della pagina anche;
+BYOL senza EMA collassa, se non si accelera il predictor).
 """
 
 from paithon_svg import *
@@ -49,7 +50,7 @@ def costruisci() -> Figura:
     c += scatola(20, yb, 120, h, "bersaglio", "dato")
     c += freccia(140, yb + h / 2, 190, yb + h / 2)
     c += scatola(190, yb, 120, h, "encoder EMA", "copia",
-                 "copia lenta: si può togliere")
+                 "copia lenta: a volte si toglie")
     c += [f'<line class="fl sg" x1="310" y1="{yb + h / 2:.0f}" x2="600" '
           f'y2="{yb + h / 2:.0f}"/>']
     c += [f'<text class="lbs sgt" x="455" y="{yb + h / 2 - 10:.0f}" '
@@ -81,7 +82,8 @@ def costruisci() -> Figura:
         alt="Due rami. In alto il contesto passa per l'encoder e poi per il "
             "predictor, che esiste su un ramo solo ed è necessario. In basso il "
             "bersaglio passa per una copia dell'encoder aggiornata come media "
-            "mobile dei pesi, che si può togliere; la sua uscita va alla perdita "
+            "mobile dei pesi, che a certe condizioni si può togliere; la sua uscita "
+            "va alla perdita "
             "con uno stop-gradient, anch'esso necessario, segnato da una croce "
             "sulla freccia. La perdita misura la distanza fra i due embedding.",
         corpo="".join(c),

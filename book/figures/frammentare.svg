@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura: tre punti frantumati da una retta, quattro no.
+  In alto le otto colorazioni di tre punti non allineati, ciascuna con una
+  retta che separa i due colori. In basso i due casi di quattro punti in cui
+  una colorazione non si separa: le diagonali di un quadrilatero e un punto
+  dentro il triangolo degli altri tre.
+  Palette-locked, fondo trasparente (light e dark).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img"
+     aria-label="In alto otto riquadri, uno per ciascuna colorazione di tre punti disposti a triangolo: in ognuno una retta tratteggiata separa i due colori, o lascia tutti i punti dalla stessa parte quando il colore è uno solo. In basso due riquadri con quattro punti ciascuno, in cui nessuna retta separa i colori: nel primo i quattro punti stanno ai vertici di un quadrilatero e hanno lo stesso colore a due a due sulle diagonali; nel secondo un punto sta dentro il triangolo formato dagli altri tre e ha un colore diverso dal loro.">
+  <style>
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+  </style>
+    <text class="ttl" x="360.0" y="26" text-anchor="middle">Tre punti: tutte e otto le colorazioni si separano con una retta</text>
+  <rect x="22" y="44" width="76" height="76" rx="5" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <line x1="66.0" y1="47.0" x2="95.0" y2="76.0" stroke="#C9A961" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+  <circle cx="60.0" cy="57.7" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="35.7" cy="103.3" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="84.3" cy="103.3" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <rect x="110" y="44" width="76" height="76" rx="5" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <line x1="178.0" y1="47.0" x2="140.7" y2="117.0" stroke="#C9A961" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+  <circle cx="148.0" cy="57.7" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="123.7" cy="103.3" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="172.3" cy="103.3" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <rect x="198" y="44" width="76" height="76" rx="5" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <line x1="206.0" y1="47.0" x2="243.3" y2="117.0" stroke="#C9A961" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+  <circle cx="236.0" cy="57.7" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="211.7" cy="103.3" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="260.3" cy="103.3" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <rect x="286" y="44" width="76" height="76" rx="5" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <line x1="289.0" y1="80.5" x2="359.0" y2="80.5" stroke="#C9A961" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+  <circle cx="324.0" cy="57.7" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="299.7" cy="103.3" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="348.3" cy="103.3" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <rect x="374" y="44" width="76" height="76" rx="5" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <line x1="377.0" y1="80.5" x2="447.0" y2="80.5" stroke="#C9A961" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+  <circle cx="412.0" cy="57.7" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="387.7" cy="103.3" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="436.3" cy="103.3" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <rect x="462" y="44" width="76" height="76" rx="5" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <line x1="470.0" y1="47.0" x2="507.3" y2="117.0" stroke="#C9A961" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+  <circle cx="500.0" cy="57.7" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="475.7" cy="103.3" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="524.3" cy="103.3" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <rect x="550" y="44" width="76" height="76" rx="5" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <line x1="618.0" y1="47.0" x2="580.7" y2="117.0" stroke="#C9A961" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+  <circle cx="588.0" cy="57.7" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="563.7" cy="103.3" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="612.3" cy="103.3" r="6.5" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <rect x="638" y="44" width="76" height="76" rx="5" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <line x1="682.0" y1="47.0" x2="711.0" y2="76.0" stroke="#C9A961" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+  <circle cx="676.0" cy="57.7" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="651.7" cy="103.3" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="700.3" cy="103.3" r="6.5" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <text class="ttl" x="360.0" y="168" text-anchor="middle">Quattro punti: c’è sempre una colorazione che nessuna retta separa</text>
+  <rect x="150" y="186" width="130" height="130" rx="6" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <circle cx="176.0" cy="212.0" r="8" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="254.0" cy="212.0" r="8" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="254.0" cy="290.0" r="8" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="176.0" cy="290.0" r="8" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <text class="lbs" x="215.0" y="338" text-anchor="middle">quattro in giro: le diagonali</text>
+  <rect x="440" y="186" width="130" height="130" rx="6" fill="none" stroke="#C5BEAA" stroke-width="1.5"/>
+  <circle cx="505.0" cy="201.6" r="8" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="455.6" cy="296.5" r="8" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="554.4" cy="296.5" r="8" fill="#B5532C" stroke="#F8F5EE" stroke-width="1"/>
+  <circle cx="505.0" cy="264.0" r="8" fill="#2D5A5C" stroke="#F8F5EE" stroke-width="1"/>
+  <text class="lbs" x="505.0" y="338" text-anchor="middle">uno dentro il triangolo degli altri</text>
+</svg>

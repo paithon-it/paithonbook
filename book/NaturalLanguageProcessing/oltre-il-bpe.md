@@ -25,12 +25,13 @@ niente: capita perché entrambe sono parole comunissime. «Acqua» seguito da
 «minerale» prima c'era «acqua». La seconda coppia dice qualcosa; la prima è
 rumore di fondo.
 
-WordPiece fa esattamente questa distinzione. Invece di chiedersi «quante volte
-questi due pezzi si trovano attaccati?», si chiede: «si trovano attaccati più
-di quanto capiterebbe per caso?». Il conto è semplice: si prende quante volte
-la coppia compare e la si divide per quanto sono comuni i due pezzi presi
-singolarmente. Un pezzo che è dappertutto viene penalizzato, e le sue coppie
-devono essere davvero frequenti per vincere.
+WordPiece, almeno nella ricostruzione che circola (la ricetta con cui Google ha
+addestrato BERT non è mai stata pubblicata), fa proprio questa distinzione.
+Invece di chiedersi «quante volte questi due pezzi si trovano attaccati?», si
+chiede: «si trovano attaccati più di quanto capiterebbe per caso?». Il conto è
+semplice: si prende quante volte la coppia compare e la si divide per quanto
+sono comuni i due pezzi presi singolarmente. Un pezzo che è dappertutto viene
+penalizzato, e le sue coppie devono essere davvero frequenti per vincere.
 
 Nel nostro corpus di cinque parole, con questo criterio, la prima fusione non è
 più `ss` ma `ba`, e il conto si può rifare a mano con due divisioni. Nei 146
@@ -67,11 +68,13 @@ $P(x) = \prod_i p(x_i)$ con $p$ stimata per frequenza relativa. Sotto questo
 modello, il guadagno esatto di log-verosimiglianza di una fusione cresce
 (circa) come $\mathrm{freq}(ab)$ volte il logaritmo di quanto la coppia è più
 frequente del previsto: pesa cioè anche *quante volte* la fusione si applica.
-L'implementazione con cui Google ha addestrato il vocabolario di BERT non è
-mai stata pubblicata, e il criterio che circola è una ricostruzione dalla
-letteratura, quella della libreria `tokenizers` di Hugging Face. Quel criterio
-lascia cadere il peso e valuta il guadagno *per occorrenza*; un'euristica
-ispirata alla verosimiglianza, più che una sua conseguenza:
+L'implementazione con cui Google ha addestrato il vocabolario di BERT non è mai
+stata pubblicata, e il criterio che circola è una ricostruzione dalla
+letteratura, proposta nel corso di Hugging Face sui tokenizzatori. La loro
+libreria `tokenizers` non la usa: il suo addestratore WordPiece fonde per
+frequenza, come BPE, e aggiunge soltanto il prefisso `##` ai pezzi non iniziali.
+La ricostruzione lascia cadere il peso e valuta il guadagno *per occorrenza*;
+un'euristica ispirata alla verosimiglianza, più che una sua conseguenza:
 
 $$
 (a^\star, b^\star) \;=\;
@@ -260,13 +263,15 @@ copertura universale non è gratis: si paga in lunghezza di sequenza, sempre
 per le lingue meno rappresentate nel corpus di addestramento del
 tokenizzatore. Il vocabolario di GPT-2 conta 50 257 voci: i 256 byte, 50 000
 fusioni e un simbolo di fine testo. Prima di fondere, un'espressione regolare
-separa lettere, cifre, punteggiatura e spazi, così che nessuna fusione
-attraversi due categorie. SentencePiece arriva allo stesso risultato per
-un'altra strada, l'opzione `byte_fallback`, spenta per default. Senza, i
-caratteri che coprono l'ultimo $0{,}05\%$ del corpus
-(`character_coverage=0.9995`) diventano `<unk>`; con l'opzione accesa si
-scrivono con i loro byte, e il vocabolario resta a sotto-parole di carattere
-per tutto il resto.
+separa lettere, cifre e punteggiatura, così che nessuna fusione attraversi due
+categorie, con un'eccezione che gli autori dichiarano: lo spazio che precede una
+parola le resta attaccato, ed è da lì che vengono i token con lo spazio in
+testa. Anche le contrazioni inglesi (`'s`, `'ll`, `'re`) si staccano a parte.
+SentencePiece toglie gli `<unk>` per un'altra strada, l'opzione `byte_fallback`,
+spenta per default. Senza, i caratteri che coprono l'ultimo $0{,}05\%$ del
+corpus (`character_coverage=0.9995`) diventano `<unk>`; con l'opzione accesa si
+scrivono con i loro byte, e il vocabolario resta a sotto-parole di carattere per
+tutto il resto.
 
 `````
 
@@ -409,25 +414,27 @@ tokenizzazione del testo, la soluzione è diversa perché diversa è la materia
 prima.
 
 E la domanda che resta aperta, in entrambi i casi, è se il testo e il suono
-debbano passare per dei simboli scelti prima dell'addestramento. Per il testo
-la strada senza tokenizzatore esiste già. ByT5 legge e scrive direttamente i
-byte UTF-8 {cite}`xue2022byt5` e paga il conto previsto: sequenze circa quattro
-volte più lunghe di quelle a sotto-parole. I modelli successivi riducono il
-conto raggruppando i byte dentro la rete, in blocchi di taglia fissa (MEGABYTE
+debbano passare per dei simboli scelti prima dell'addestramento. Per il testo la
+strada senza tokenizzatore esiste già. ByT5 legge e scrive direttamente i byte
+UTF-8 {cite}`xue2022byt5` e paga il conto previsto: sequenze circa quattro volte
+più lunghe di quelle a sotto-parole. I modelli successivi riducono il conto
+raggruppando i byte dentro la rete, in blocchi di taglia fissa (MEGABYTE
 {cite}`yu2023megabyte`) oppure in blocchi che si allungano dove il byte
 successivo è facile da prevedere e si accorciano dove è incerto (il Byte Latent
-Transformer {cite}`pagnoni2024byte`). La segmentazione resta, ma passa dentro
-il modello e si impara con il resto dei pesi, invece di stare in un file
-fissato prima. Se il tokenizzatore resiste, la ragione è economica più che
-teorica: i simboli accorciano le sequenze, e la lunghezza delle sequenze è ciò
-che si paga.
+Transformer {cite}`pagnoni2024byte`, dove l'incertezza la misura un piccolo
+modello di linguaggio sui byte, addestrato a parte). La segmentazione resta, e
+non sta più in un vocabolario fissato prima: nel primo caso è una regola, nel
+secondo la decide un modello, ma non si impara insieme al resto dei pesi, e gli
+autori del secondo lo indicano come direzione futura. Se il tokenizzatore
+resiste, la ragione è economica più che teorica: i simboli accorciano le
+sequenze, e la lunghezza delle sequenze è ciò che si paga.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- WordPiece cambia una cosa sola rispetto a BPE: non incolla la coppia più
-  frequente, ma quella che sta insieme più di quanto ci si aspetterebbe per
-  caso («acqua minerale» contro «di un»).
+- WordPiece, nella ricostruzione che circola, cambia una cosa sola rispetto a
+  BPE: non incolla la coppia più frequente, ma quella che sta insieme più di
+  quanto ci si aspetterebbe per caso («acqua minerale» contro «di un»).
 - SentencePiece tratta il testo come una collana ininterrotta di simboli,
   con lo spazio scritto come `▁`: non c'è bisogno di tagliarlo prima in
   parole, che per cinese e giapponese, dove gli spazi non ci sono, è l'unica
@@ -447,8 +454,9 @@ che si paga.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- WordPiece {cite}`schuster2012japanese` ha la stessa struttura di BPE; la
-  ricostruzione oggi in uso sceglie la coppia che massimizza
+- WordPiece {cite}`schuster2012japanese` ha la stessa struttura di BPE; il
+  criterio con cui Google ha addestrato BERT non è pubblico, e la ricostruzione
+  che circola sceglie la coppia che massimizza
   $\mathrm{freq}(ab)/(\mathrm{freq}(a)\,\mathrm{freq}(b))$: non ciò che ricorre,
   ma ciò che ricorre più di quanto ci si aspetterebbe dal caso.
 - SentencePiece {cite}`kudo2018sentencepiece` tratta il testo come flusso

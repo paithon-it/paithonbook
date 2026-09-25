@@ -23,5 +23,7 @@
   <text x="192" y="414" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">mance e minacce</text>
   <rect x="294" y="392" width="116" height="34" rx="17" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
   <text x="352" y="414" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">cortesia</text>
+  <rect x="426" y="392" width="228" height="34" rx="17" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="540" y="414" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">un ruolo («sei un esperto»)</text>
   <text x="90" y="482" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5A524A">In fondo non ci sono tecniche non verificate: ci sono tecniche verificate che non funzionano.</text>
 </svg>

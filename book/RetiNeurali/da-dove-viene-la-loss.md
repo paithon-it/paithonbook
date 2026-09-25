@@ -57,45 +57,52 @@ La presentazione in questa forma di procedura è di Prince
 
 `````{tab} Elementare
 
-C'è un gioco che si fa con dieci gettoni. A ogni turno viene fuori qualcosa (il
-numero di panini venduti oggi, se domani piove, quale delle cinque squadre
-vince) e tu non devi dire la risposta: devi distribuire i gettoni sulle
-risposte possibili, prima di sapere com'è andata. Poi si scopre la verità, e
-tu vieni pagato in base a quanti gettoni avevi messo proprio lì.
+C'è un gioco che si fa con dieci gettoni, per cento turni. A ogni turno viene
+fuori qualcosa (il numero di panini venduti oggi, se domani piove, quale delle
+cinque squadre vince) e tu non devi dire la risposta: devi distribuire i gettoni
+sulle risposte possibili, prima di sapere com'è andata. Poi si scopre la verità,
+e la tua vincita è la parte dei dieci gettoni che avevi messo proprio lì: tre
+gettoni su dieci valgono 0,3, dieci su dieci valgono 1.
 
 Le regole sono quattro, e la prima è disegnare il tavolo. Se la risposta è un
 sì o un no bastano due caselle; se è una fra cinque squadre, cinque caselle; se
-è un numero qualunque non ci sono caselle affatto, c'è un righello lungo, e
-allora i gettoni si spargono a mucchietto. Su un righello non ha senso chiedere
-quanti gettoni stanno esattamente sul punto giusto (di punti ce n'è un'infinità
-e su ciascuno ne cadrebbe zero): quello che conta è quanto è spesso il
-mucchio lì, cioè quanti gettoni per centimetro. Schiacciandoli tutti in un
-centimetro, lì lo strato è altissimo.
+è un numero qualunque non ci sono caselle affatto, c'è un righello lungo, e i
+dieci gettoni vanno sbriciolati in sabbia e sparsi. Allora non si chiede quanta
+sabbia sta esattamente su un punto, che è niente, ma quanto è alto lo strato
+lì, cioè quanti gettoni per centimetro. E lo strato può superare di molto il
+dieci: dieci gettoni schiacciati in un millimetro fanno cento gettoni per
+centimetro.
 
 La seconda regola è che a distribuire i gettoni non sei tu a mano: lo fa la
 rete, e lo fa dopo aver guardato l'indizio di quel turno. A ogni turno
 l'indizio cambia, e cambia anche il modo in cui i gettoni finiscono sul tavolo.
 
-La terza è il punteggio. Alla fine di cento turni il punteggio è il prodotto
-di tutte le cento vincite: chi ha messo tanti gettoni su ciò che poi è
-successo, ogni volta, moltiplica numeri grandi. Moltiplicarle così vuol dire
-avere dato per buone due cose: che il tavolo è sempre lo stesso, turno dopo
-turno, e che ogni turno si conta per sé, senza che com'è andata ieri cambi il
-punteggio di oggi.
+La terza è il punteggio. I cento turni si vincono tutti insieme, come cento
+scommesse che devono riuscire tutte, e il punteggio è il prodotto delle cento
+vincite. Basta un turno con zero gettoni sulla risposta uscita, e il prodotto fa
+zero: partita persa. Moltiplicare, come si fa con le probabilità di cose che non
+si influenzano, vuol dire avere dato per buone due cose: che le regole sono
+sempre le stesse, turno dopo turno (cambiano l'indizio e dove finiscono i
+gettoni, non il tavolo né il modo in cui la rete li distribuisce), e che ogni
+turno si conta per sé, senza che com'è andata ieri cambi il punteggio di oggi.
 
-La quarta è una comodità di conti. Cento numeri minori di uno moltiplicati fra
-loro danno una cifra così piccola che il calcolatore la confonde con lo zero,
-quindi si smette di moltiplicare vincite e si comincia a sommare penalità: a
-ogni turno una multa, piccola se avevi messo tanti gettoni sulla
-risposta uscita, grande se ne avevi messi pochi. Il logaritmo è esattamente la
-funzione che trasforma un prodotto in una somma, e il segno meno trasforma la
-vincita in una multa. Il totale delle multe è quello che la rete deve far
-scendere.
+La quarta è una comodità di conti. Cento vincite minori di uno moltiplicate fra
+loro danno una cifra minuscola: cento volte 0,5 fa un numero con trenta zeri
+dopo la virgola, e il calcolatore lo confonde con lo zero. Allora si passa ai
+logaritmi. Il logaritmo in base dieci conta gli zeri: 1000 dà 3, 100 dà 2, e
+1000 per 100, cioè 100 000, dà 5, cioè 3 più 2. Il prodotto è diventato una
+somma, e chi vinceva prima vince ancora, perché il logaritmo tiene i numeri
+nello stesso ordine. Sotto l'uno i conti si rovesciano: 1 dà zero, 0,1 dà meno
+uno, 0,01 meno due. Col segno cambiato, ogni turno diventa una multa: zero se
+avevi messo tutti i gettoni sulla risposta uscita, un gradino se ci avevi messo
+un decimo, due gradini se un centesimo. Il totale delle multe è quello che la
+rete deve far scendere.
 
 E c'è un vincolo, uno solo, senza il quale il gioco non starebbe in piedi: i
 gettoni sono dieci e non uno di più. Per metterne di più su una risposta
-bisogna toglierli a un'altra, ed è da questo vincolo che escono, una dopo
-l'altra, tutte le penalità che seguono.
+bisogna toglierli a un'altra. Senza questo vincolo basterebbe coprire di
+gettoni tutto il tavolo per vincere sempre, ed è da qui che escono, una dopo
+l'altra, tutte le multe che seguono.
 
 `````
 
@@ -165,32 +172,63 @@ Le tira fuori la stessa procedura, cambiando una riga sola.
 
 `````{tab} Elementare
 
-Il tavolo è il righello, e sul righello i gettoni si spargono con uno stampo
+Il tavolo è il righello, e sul righello la sabbia si sparge con uno stampo
 fisso, sempre della stessa larghezza: la campana. Alla rete resta una cosa sola
-da decidere, dove mettere il centro. E il centro può cadere in qualunque punto
-del righello, quindi alla rete non si chiede nessuna acrobazia per farcelo
-stare: qualunque numero le esca va bene così com'è.
+da decidere, dove mettere il centro. Se la risposta fosse una probabilità,
+chiusa fra 0 e 1, la rete dovrebbe restare dentro quei limiti; qui il centro
+può cadere in qualunque punto del righello, e qualunque numero le esca va bene
+così com'è.
 
 Adesso guarda che multa esce. Lo stampo è più spesso al centro e si assottiglia
-allontanandosi, e si assottiglia in un modo particolare: lo spessore cala come
-l'esponenziale della distanza al quadrato. La multa è il logaritmo di quello
-spessore, cambiato di segno, e il logaritmo di un esponenziale è l'esponente:
-resta la distanza al quadrato, divisa per un numero fisso che dipende solo
-dalla larghezza dello stampo.
+allontanandosi, in un modo particolare: a un passo dal centro lo spessore si è
+diviso una volta per un numero fisso, che dipende da quanto è largo lo stampo, a
+due passi quattro volte, a tre passi nove volte. Le volte sono la distanza al
+quadrato. E il logaritmo, col segno cambiato, conta proprio quante volte lo
+spessore è stato diviso dal centro in giù, come il logaritmo di 1000 conta le
+tre volte del 10: quella parte della multa è la distanza al quadrato, in una
+scala che dipende solo dalla larghezza dello stampo.
 
-Ecco il pagamento. Siccome lo stampo non cambia mai larghezza, quel numero
-fisso è lo stesso a ogni turno, e lo è anche la parte di multa che si paga
-comunque, perché anche l'altezza del mucchio al centro è sempre la stessa.
-Quindi confrontare due reti guardando le loro multe totali equivale a
-confrontarle guardando la somma delle distanze al quadrato.
-Cioè: chi minimizza l'errore quadratico sta giocando questo gioco con la
-campana, che lo sappia o no. Il quadrato viene di lì, dalla forma dello
-stampo, e punire di più gli sbagli grossi ne è la conseguenza.
+Ecco il pagamento. La multa ha anche un pezzo fisso, che si paga pure centrando
+in pieno: al centro lo strato non è infinitamente alto, e il suo logaritmo col
+segno cambiato non è zero. Più la campana è larga, più il centro è basso e più
+quel pezzo pesa; ma siccome lo stampo non cambia mai larghezza, quel pezzo e la
+scala sono gli stessi a ogni turno e per ogni rete. Quindi confrontare due reti
+guardando le loro multe totali equivale a confrontarle guardando la somma delle
+distanze al quadrato. Cioè: chi minimizza l'errore quadratico sta giocando
+questo gioco con la campana, che lo sappia o no. Il quadrato viene di lì, dalla
+forma dello stampo, e punire di più gli sbagli grossi ne è la conseguenza.
 
-E si vede subito che cosa lo renderebbe la scelta sbagliata. Se ogni tanto
-capita un turno stravagante, un numero lontanissimo da tutti gli altri, quel
-turno da solo tira il centro verso di sé, perché la multa cresce col quadrato
-e una distanza doppia ne pesa quattro. E se i panini
+Dove va messo, allora, il centro? Se in tre giornate con lo stesso indizio
+(poniamo tre lunedì di sole) i panini venduti sono stati $10$, $10$ e $40$, le
+distanze al quadrato dal centro, sommate sui tre turni, fanno
+$10^2 + 10^2 + 20^2 = 600$ con il centro a $20$, la media, e
+$0 + 0 + 30^2 = 900$ con il centro a $10$. Spostandolo un po' attorno alla media
+va peggio in tutti e due i versi (a $15$ e a $25$ si paga $675$), e nessun punto
+fa meglio della media. La multa che resta anche lì, i $600$ del centro migliore,
+non la toglie nessuna rete: davanti allo stesso indizio una rete deve dare lo
+stesso centro, e le tre giornate sono diverse fra loro.
+
+Con un'altra multa vince un altro centro. Se la multa è la distanza senza
+quadrato (anche lei viene da uno stampo, più appuntito della campana), il centro
+a $10$ costa $0 + 0 + 30 = 30$ e quello a $20$ costa $10 + 10 + 20 = 40$, e
+vince il valore di mezzo delle tre risposte messe in fila, la mediana. Se la
+multa è tutto o niente, un premio solo quando si indovina esatto (lo stampo è
+una puntina, tutti i gettoni su un numero solo), il centro a $10$ indovina due
+giornate su tre e quello a $20$ nessuna: vince il valore più frequente, la moda,
+e ha senso perché i panini si contano e lo stesso numero può ripetersi. (Qui
+mediana e moda cadono per caso sullo stesso $10$.) E il centro migliore per
+l'errore quadratico, $20$ panini, non si è visto in nessuna delle tre giornate.
+La media può non somigliare a nessuna delle giornate da cui viene, e per i
+panini non è un male. Lo diventa quando la risposta è un disegno: chi prova a
+disegnare come andrà a finire una scena che può finire in molti modi disegna la
+media di tutti, una foto sfocata, come racconta la {doc}`sezione sul predire
+nello spazio delle idee </WorldModels/jepa>`.
+
+E si vede subito che cosa renderebbe il quadrato la scelta sbagliata. Se ogni
+tanto capita un turno stravagante, un numero lontanissimo da tutti gli altri,
+quel turno da solo tira il centro verso di sé, perché la multa cresce col
+quadrato e una distanza doppia ne pesa quattro (è quello che ha fatto il $40$
+delle tre giornate, tirando il centro da $10$ a $20$). E se i panini
 venduti sono sempre o pochissimi o moltissimi, e quasi mai una via di mezzo, un
 mucchietto solo, per quanto ben centrato, mette il grosso dei gettoni proprio
 nella zona dove non succede mai niente. La campana è simmetrica e ha una sola
@@ -234,8 +272,59 @@ varianza finita, il minimo dell'errore quadratico atteso è la media
 condizionata $\mathbb{E}[y \mid \mathbf{x}]$, e su un modello lineare basta che
 i residui abbiano media nulla, varianza costante e siano incorrelati (il
 teorema di Gauss-Markov): la gaussianità serve a fare della somma dei quadrati
-la stima migliore in assoluto e a dare agli intervalli la loro forma esatta,
-non a centrare la media.
+la migliore fra tutte le stime non distorte, lineari o no, e a dare agli
+intervalli la loro forma esatta, non a centrare la media.
+
+Che il minimo sia la media condizionata si dimostra in una riga, ed è il punto
+di partenza della teoria statistica della decisione {cite}`hastie2009elements`.
+Fissato $\mathbf{x}$, per ogni previsione costante $c$,
+
+$$
+\mathbb{E}\big[(y-c)^2 \mid \mathbf{x}\big]
+= \mathrm{Var}(y \mid \mathbf{x}) + \big(\mathbb{E}[y \mid \mathbf{x}] - c\big)^2 ,
+$$
+
+perché nello sviluppo del quadrato attorno a $\mathbb{E}[y \mid \mathbf{x}]$ il
+doppio prodotto ha media condizionata nulla. Il primo addendo non dipende da
+$c$, il secondo si annulla solo per $c = \mathbb{E}[y \mid \mathbf{x}]$. Il
+rischio di una funzione $f$ è la media su $\mathbf{x}$ di questi rischi
+condizionati, e mediando la stessa identità
+
+$$
+\mathbb{E}\big[(y - f(\mathbf{x}))^2\big]
+= \mathbb{E}_{\mathbf{x}}\big[\mathrm{Var}(y \mid \mathbf{x})\big]
++ \mathbb{E}_{\mathbf{x}}\big[(f^*(\mathbf{x}) - f(\mathbf{x}))^2\big],
+\qquad f^*(\mathbf{x}) = \mathbb{E}[y \mid \mathbf{x}] .
+$$
+
+Fra tutte le funzioni vince $f^*$, e l'errore che resta è la varianza
+condizionata, che con quegli ingressi nessun modello toglie. Una rete di
+capacità finita, che $f^*$ in generale non la contiene, ha come minimo del
+rischio la funzione della sua famiglia più vicina a $f^*$ in media quadratica.
+Per un'uscita vettoriale il conto vale componente per componente. Cambiando la
+perdita cambia il funzionale che si stima. L'errore assoluto porta a una mediana
+condizionata, che esiste sempre e può non essere unica; perché il rischio da
+minimizzare sia finito serve $\mathbb{E}[|y|\mid\mathbf{x}]<\infty$. Quando $y$
+prende valori in un insieme discreto (le classi della Bernoulli e della
+categorica, o un conteggio), la perdita 0-1 porta alla moda, cioè alla classe
+più probabile (il classificatore di Bayes). Per una $y$ continua la perdita 0-1
+esatta non seleziona niente, perché ogni valore singolo ha probabilità nulla. La
+log-verosimiglianza negativa che la ricetta dà per le famiglie discrete, invece,
+non sceglie un valore. Se $q$ è la distribuzione che il modello dichiara per un
+certo $\mathbf{x}$ e $P_{\mathbf{x}}$ quella vera di $y$ dato $\mathbf{x}$,
+
+$$
+\mathbb{E}_{y \sim P_{\mathbf{x}}}\big[-\log q(y)\big]
+= H(P_{\mathbf{x}}) + D_{KL}(P_{\mathbf{x}}\,\|\,q) ,
+$$
+
+che è minima solo per $q = P_{\mathbf{x}}$: stima la distribuzione intera, ed è
+una {doc}`regola di punteggio propria </MachineLearning/metriche>`. E la media
+condizionata ha una conseguenza che torna nei {doc}`limiti del VAE
+</ModelliLatenti/il-salto-probabilistico>` e nella {doc}`predizione video
+</WorldModels/jepa>`: quando per lo stesso $\mathbf{x}$ il futuro può andare in
+modi molto diversi, il predittore ottimo in senso quadratico ne restituisce la
+media, che può non somigliare a nessuno di loro.
 
 Quali sono i punti di rottura si legge dalle ipotesi, una per una. Se la
 distribuzione condizionata vera ha code più pesanti di una gaussiana, un
@@ -575,6 +664,9 @@ dati sono stati generati, $0{,}1$ e $0{,}6$.
   viene la distanza al quadrato, cioè l'errore quadratico di sempre. Con i
   gettoni nelle caselle viene la cross-entropia, che punisce la sicurezza
   sbagliata molto più dell'incertezza.
+- Con l'errore quadratico il centro migliore è la media delle risposte, con
+  la distanza semplice è la mediana: e la media può non somigliare a nessuno
+  dei casi da cui viene.
 - La funzione che sta in fondo alla rete (la sigmoide con due risposte, la
   softmax con molte) serve a rendere valida la distribuzione dei gettoni:
   niente quantità negative, e il totale che torna.
@@ -601,6 +693,13 @@ dati sono stati generati, $0{,}1$ e $0{,}6$.
   cross-entropia multiclasse. Le ipotesi sotto cui i minimi quadrati sono di
   massima verosimiglianza sono quindi tre, e vanno dichiarate: gaussianità,
   indipendenza condizionata, varianza costante.
+- Indipendentemente dalla gaussianità, il rischio quadratico è minimizzato da
+  $\mathbb{E}[y\mid\mathbf{x}]$ (con errore residuo la varianza condizionata,
+  e in una famiglia che non la contiene dalla funzione più vicina in media
+  quadratica), quello assoluto da una mediana condizionata, la perdita 0-1 su
+  $y$ discreta dalla moda, la log-verosimiglianza negativa dalla distribuzione
+  condizionata intera; la media di esiti molto diversi può non somigliare a
+  nessuno.
 - La funzione sull'ultimo strato la detta il dominio del parametro: nessuna
   per $\mu \in \mathbb{R}$, sigmoide per $[0,1]$, softmax per il simplesso.
 - La regressione eteroschedastica fa predire anche $\sigma$, e la loss

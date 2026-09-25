@@ -165,7 +165,8 @@ PINN» non vuol dire «senza rivali».
 
 `````
 
-In codice si fa come nella sezione precedente, e non importa quale sia il
+In codice si fa come nella {doc}`legge dentro la loss </PINN/come-funziona>`,
+e non importa quale sia il
 numero della fisica che manca. Là era la rigidezza di una molla, qui prendiamo
 la diffusività di un materiale, cioè quanto in fretta il calore ci si propaga
 dentro: in tutti e due i casi quel numero diventa una manopola come le altre e
@@ -177,7 +178,7 @@ finisce nella lista di quelle che l'addestramento gira.
 # Il parametro fisico ignoto (qui la diffusivita', cioe' quanto in fretta
 # il calore si propaga nel materiale) diventa una manopola addestrabile,
 # indistinguibile da un peso qualsiasi della rete. `rete` e' la candidata
-# soluzione della sezione precedente.
+# soluzione della PINN della molla.
 alpha = torch.nn.Parameter(torch.tensor(0.5))          # valore iniziale di comodo
 ottimizzatore = torch.optim.Adam(                      # ottimizzato insieme ai pesi
     list(rete.parameters()) + [alpha], lr=1e-3
@@ -263,17 +264,19 @@ incolla alle misure sporche e se ne infischia della legge. La soluzione buona
 sta dove le due forze si bilanciano, e trovare quel punto è un'arte: nessuna
 formula dà il valore giusto, e si procede provando, oppure lasciando che sia
 l'addestramento a ristimarlo guardando quanto strattona ciascuna squadra. Sulla
-molla l'abbiamo
-fatto: con la manopola su 1 la curva finiva lontana dalla risposta, con 100
-molto più vicina, e il solo modo di saperlo era che lì la risposta la
-conoscevamo.
+molla l'abbiamo fatto, e su dieci ripartenze la manopola su 1 e quella su 100
+hanno sbagliato strada lo stesso numero di volte, cinque; il solo modo di
+saperlo era che lì la risposta la conoscevamo.
 
-E no, non si può lasciarla girare all'addestramento come si fa con la
-rigidezza della molla nel problema inverso, anche se la parola «manopola» è la
-stessa. L'addestramento gira le manopole nella direzione che abbassa il
-punteggio, e questa la porterebbe subito a zero, perché azzerare una delle due
-squadre è il modo più rapido di far scendere il totale. Chi prende il voto non
-decide come si dà il voto.
+E no, non si può lasciarla girare all'addestramento come si fa con la rigidezza
+della molla nel problema inverso, anche se la parola «manopola» è la stessa.
+L'addestramento gira le manopole nella direzione che abbassa il punteggio, e
+questa la porterebbe subito a zero, perché azzerare una delle due squadre è il
+modo più rapido di far scendere il totale. Chi prende il voto non decide come si
+dà il voto. Si può, invece, affidarla a un secondo giocatore che la gira al
+contrario: alza la manopola dei punti dove la rete sbaglia di più, mentre la
+rete cerca di sbagliare di meno, e chi dà il voto e chi lo prende tirano da
+parti opposte.
 
 Nelle formule scritte da altri quella manopola porta per nome la lettera greca
 «lambda», e la si trova davanti all'una o all'altra squadra: a contare è il
@@ -309,25 +312,29 @@ condizioni iniziali, bordo),
 $$
 \hat{\lambda}_i = \frac{\max_\theta \big|\nabla_\theta
 \mathcal{L}_{\text{fisica}}\big|}{\overline{\big|\nabla_\theta
-\mathcal{L}_i\big|}}, \qquad \lambda_i \leftarrow (1-\alpha)\,\lambda_i +
-\alpha\,\hat{\lambda}_i,
+\mathcal{L}_i\big|}}, \qquad \lambda_i \leftarrow (1-\rho)\,\lambda_i +
+\rho\,\hat{\lambda}_i,
 $$
 
 dove il massimo e la media (la barra) sono presi sulle componenti del gradiente
-rispetto ai pesi e $\alpha = 0{,}9$; qui il peso sta sui termini di dati, che
-sono quelli da rialzare. Costa una backward in più per termine. Un'altra
-strada, dello stesso gruppo, pesa ogni termine con la traccia del suo nucleo
-tangente {cite}`wang2022when`; un'altra ancora fa girare i pesi
-all'addestramento, ma in *salita*, come un problema di punto di sella in cui la
-rete minimizza e i pesi massimizzano (le *self-adaptive PINN*
-{cite}`mcclenny2023self`). Peggio: il termine fisico contiene operatori
-differenziali di ordine alto (derivate seconde, a volte quarte) che rendono il
-problema mal condizionato, nel senso preciso dei {doc}`richiami di analisi
-numerica </Matematica/analisi-numerica>`, e la discesa rallenta o si blocca. De
-Ryck e colleghi individuano la radice del guasto non nell'ottimizzatore ma in
-un operatore preciso, che mette insieme il **quadrato hermitiano**
-dell'operatore della PDE e il nucleo tangente del modello: se quello è mal
-condizionato l'addestramento è lento o impraticabile
+rispetto ai pesi e $\rho = 0{,}9$ (nel lavoro originale è $\alpha$, che in
+questa pagina è il parametro fisico ignoto); qui il peso sta sui termini di
+dati, che sono quelli da rialzare. Costa una backward in più per termine.
+Un'altra strada, dello stesso gruppo, dà a ogni termine un peso inversamente
+proporzionale alla traccia del suo blocco del nucleo tangente,
+$\lambda_i = \mathrm{Tr}(\mathbf{K}) / \mathrm{Tr}(\mathbf{K}_{ii})$, così che i
+termini convergano a velocità simili {cite}`wang2022when`; un'altra ancora dà un
+peso a ogni singolo punto e lo fa girare all'addestramento, ma in *salita*, come
+un problema di punto di sella in cui la rete minimizza e i pesi massimizzano,
+così che i punti dove il residuo resta alto contino sempre di più (le
+*self-adaptive PINN* {cite}`mcclenny2023self`). Peggio: il termine fisico
+contiene operatori differenziali di ordine alto (derivate seconde, a volte
+quarte) che rendono il problema mal condizionato, nel senso preciso dei
+{doc}`richiami di analisi numerica </Matematica/analisi-numerica>`, e la discesa
+rallenta o si blocca. De Ryck e colleghi individuano la radice del guasto non
+nell'ottimizzatore ma in un operatore preciso, che mette insieme il **quadrato
+hermitiano** dell'operatore della PDE e il nucleo tangente del modello: se
+quello è mal condizionato l'addestramento è lento o impraticabile
 {cite}`deryck2024operator`. Nel regime in cui la rete si comporta come un
 modello lineare quell'operatore ha lo stesso numero di condizionamento
 dell'Hessiano della loss, ed è da questa lettura che gli autori ricavano il
@@ -398,20 +405,25 @@ Va però tenuto distinto da un altro terreno ostile con cui viene spesso
 confuso, quello delle PDE **stiff**. La rigidezza è un rapporto fra autovalori
 dell'operatore, e la componente «veloce» di un sistema stiff è tipicamente un
 modo fortemente *smorzato*, cioè un decadimento rapido, non un'oscillazione
-rapida: esaurito il transitorio, la soluzione di un problema stiff è liscia e
-a bassa frequenza, ed è precisamente per questo che i metodi impliciti possono
+rapida: esaurito il transitorio, la soluzione di un problema stiff è liscia e a
+bassa frequenza, ed è precisamente per questo che i metodi impliciti possono
 farci passi enormi. Si costruisce senza fatica un problema la cui rigidezza
 cresce di cinque ordini di grandezza mentre il contenuto in frequenza della
 soluzione non si muove di un millimetro. Alle PINN i problemi stiff danno
 comunque filo da torcere, ma per la ragione vista poco sopra, non per lo
-spectral bias: Wang, Teng e Perdikaris riconoscono il modo di fallire nello
-squilibrio fra i rami della loss, che rende rigida la discesa stessa (la loro
-«rigidezza» è quella del flusso del gradiente nello spazio dei pesi, non
-quella dell'equazione) {cite}`wang2021understanding`, De Ryck e colleghi nel
-condizionamento dell'operatore {cite}`deryck2024operator`. Quel che lo
-spectral bias spiega davvero sono i fronti ripidi e gli strati limite, che
-sono *localmente* ad alta frequenza, e fra questi il transitorio iniziale di
-un problema stiff.
+spectral bias. Wang, Teng e Perdikaris misurano una rigidezza diversa da quella
+dell'equazione: quella del flusso del gradiente nello {doc}`spazio dei
+parametri </RetiNeurali/backpropagation>`, cioè dell'equazione $\dot\theta =
+-\nabla_\theta\mathcal{L}$ di cui la discesa del gradiente è il passo di Eulero
+esplicito, stabile solo per $\eta < 2/\lambda_{\max}$ dell'hessiana. La trovano
+dominata dal residuo della PDE, e ne fanno discendere lo squilibrio fra i rami
+della loss; che legame ci sia fra la rigidezza di un'equazione e quella del
+flusso della sua PINN lo lasciano come domanda aperta
+{cite}`wang2021understanding`. De Ryck e colleghi portano la difficoltà nel
+condizionamento dell'operatore {cite}`deryck2024operator`. Quel che lo spectral
+bias spiega davvero sono i fronti ripidi e gli strati limite, che sono
+*localmente* ad alta frequenza, e fra questi il transitorio iniziale di un
+problema stiff.
 
 C'è poi un caso che lo spectral bias non copre affatto, ed è il più duro: quando
 la soluzione ha una discontinuità vera, come l'urto di una legge di
@@ -433,8 +445,12 @@ Parente stretto, ma solo per i problemi che derivano da un principio
 variazionale, è il *Deep Ritz* di E e Yu {cite}`e2018deep`: per l'equazione di
 Poisson $-\Delta u = q$ la loss non è un residuo ma l'energia
 $\int_\Omega \big(\tfrac{1}{2}|\nabla u_\theta|^2 - q\,u_\theta\big)\mathrm{d}\mathbf{x}$,
-il cui minimo è la soluzione, e l'ordine delle derivate richieste scende da due
-a uno.
+il cui minimo fra le funzioni nulle sul bordo è la soluzione, e l'ordine delle
+derivate richieste scende da due a uno. Senza il vincolo al bordo l'energia non
+ha minimo (con $\int_\Omega q \neq 0$ una costante la manda a $-\infty$), ed E e
+Yu lo impongono con una penalità,
+$\beta \int_{\partial\Omega} u_\theta^2\,\mathrm{d}s$, cioè in forma *soft*,
+come le PINN.
 
 Sugli orizzonti temporali lunghi agisce invece un guasto tutto suo, da tenere
 distinto dallo spectral bias: è un meccanismo indipendente, non quello detto in
@@ -449,8 +465,8 @@ dinamica banale, plausibile punto per punto e sbagliata nel complesso. Lo
 correggono la decomposizione sequenziale nel tempo di Krishnapriyan et al.,
 vista poco sopra, che addestra una finestra temporale per volta, e i pesi
 causali di Wang, Sankaran e Perdikaris {cite}`wang2024respecting`, che dentro
-un'unica ottimizzazione fanno contare il residuo di un istante solo quando
-quelli che lo precedono sono già piccoli.
+un'unica ottimizzazione, e calcolati a gradiente fermo, fanno contare il residuo
+di un istante solo quando quelli che lo precedono sono già piccoli.
 
 `````
 
@@ -721,13 +737,13 @@ troppo vicino per vedersi.
 - Limiti onesti {cite}`krishnapriyan2021characterizing`: le PINN falliscono
   anche su PDE semplici; la loss multi-obiettivo è un tiro alla fune da
   bilanciare, provando o ristimando i pesi dalle statistiche dei gradienti; lo
-  spectral bias frena fronti ripidi e strati limite;
-  le PDE stiff sono ostili per lo squilibrio dei gradienti e il
-  condizionamento dell'operatore {cite}`wang2021understanding`,
-  {cite}`deryck2024operator`, non per lo spectral bias; sugli orizzonti lunghi
-  manca l'ordine causale, e residuo piccolo non implica soluzione corretta
-  (lo si è misurato sulla molla della sezione precedente). Sui problemi
-  standard i solutori classici vincono quasi sempre in velocità e garanzie.
+  spectral bias frena fronti ripidi e strati limite; le PDE stiff sono ostili
+  per il condizionamento, non per lo spectral bias {cite}`deryck2024operator`, e
+  il flusso del gradiente di una PINN è rigido di suo, con i gradienti dei
+  termini squilibrati {cite}`wang2021understanding`; sugli orizzonti lunghi
+  manca l'ordine causale, e residuo piccolo non implica soluzione corretta (lo
+  si è misurato sulla molla della legge dentro la loss). Sui problemi standard i
+  solutori classici vincono quasi sempre in velocità e garanzie.
 - Gli operatori neurali imparano il mestiere, non il compito: la mappa
   condizioni → soluzione, riusabile senza riaddestrare (DeepONet
   {cite}`lu2021learning` e Fourier Neural Operator {cite}`li2021fourier`). Gli

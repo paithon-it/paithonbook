@@ -130,7 +130,7 @@ sul prato».
 Il numero di contesti di lunghezza $m$ su un vocabolario di cardinalità
 $|\mathcal{V}|$ è $|\mathcal{V}|^m$: con $|\mathcal{V}| = 5 \cdot 10^4$ e $m =
 10$ si ottiene $9{,}8 \cdot 10^{46}$. Una stima tabellare (la massima
-verosimiglianza per conteggi, cioè i {doc}`modelli $n$-gram
+verosimiglianza per conteggi, cioè i {doc}`modelli n-gram
 </NaturalLanguageProcessing/modelli-ngram>`) è impraticabile ben prima: il
 numero di parametri cresce esponenzialmente in $m$, e la matrice dei conteggi
 diventa quasi ovunque nulla.
@@ -668,18 +668,20 @@ $$
 Ponendo $k = d/H$ il costo totale resta quello di una singola aggregazione a
 dimensione piena. Nei modelli attuali $H$ va tipicamente da 12 a 96.
 
-Il conto, per uno strato e una sequenza di $n$ posizioni, contando
-moltiplicazioni e somme: le tre proiezioni e la riproiezione $\mathbf{W}^O$
-costano $4nd^2$; i punteggi di tutte le coppie costano $n^2k$ per relazione,
-cioè $n^2d$ in tutto, e altrettanto la media pesata; la parte non lineare, che
-si allarga a $4d$, costa $8nd^2$. In totale $12nd^2+2n^2d$ (la maschera
-causale dimezza le coppie). Il primo termine è lineare nella lunghezza, il
-secondo quadratico, e la memoria segue la stessa sorte, perché le matrici dei
-pesi $\alpha_{ij}$ hanno $n^2$ elementi per relazione. Il termine quadratico
-supera l'altro solo per $n>6d$: per GPT-3, con $n=2048$ e $d=12\,288$, vale
-meno del $3\%$ del conto, e il costo per token è di circa due operazioni per
-parametro {cite}`kaplan2020scaling`. Il quadrato morde sui contesti lunghi, e
-lo discute la {doc}`sezione sull'attenzione in pratica
+Il conto, per uno strato e una sequenza di $n$ posizioni, contando ogni
+moltiplicazione insieme alla somma che la segue (sono due operazioni in virgola
+mobile): le tre proiezioni e la riproiezione $\mathbf{W}^O$ costano $4nd^2$; i
+punteggi di tutte le coppie costano $n^2k$ per relazione, cioè $n^2d$ in tutto,
+e altrettanto la media pesata; la parte non lineare, che si allarga a $4d$,
+costa $8nd^2$. In totale $12nd^2+2n^2d$ (la maschera causale dimezza le coppie).
+Il primo termine è lineare nella lunghezza, il secondo quadratico, e la memoria
+segue la stessa sorte, perché le matrici dei pesi $\alpha_{ij}$ hanno $n^2$
+elementi per relazione. Il termine quadratico supera l'altro solo per $n>6d$:
+per GPT-3, con $n=2048$ e $d=12\,288$, vale meno del $3\%$ del conto. Per token
+il primo termine vale $12d^2$, una moltiplicazione con somma per ciascuno dei
+$12d^2$ parametri dello strato, cioè due operazioni per parametro
+{cite}`kaplan2020scaling`. Il quadrato morde sui contesti lunghi, e lo discute
+la {doc}`sezione sull'attenzione in pratica
 </Transformers/attenzione-in-pratica>`.
 
 Conviene tenere separato ciò che è progettato da ciò che è scoperto. La
@@ -847,10 +849,10 @@ Un secondo intervento riguarda invece la direzione del tempo. Poiché il compito
 posizioni ma solo quelle già viste, da lì all'indietro: altrimenti il modello,
 per indovinare la parola dopo, se la leggerebbe. Questa maschera, a differenza
 dei punteggi, l'ordine lo conosce: la posizione $i$ fa la media su $i$
-vettori, la prima su uno solo. Per questo un modello causale addestrato senza
-nessuna codifica di posizione riesce comunque a ricavarne una
-{cite}`haviv2022transformer`, e la codifica esplicita resta il modo diretto di
-dargliela.
+vettori, la prima su uno solo. Un modello causale addestrato senza nessuna
+codifica di posizione riesce comunque a ricavarne una, ed è probabilmente per
+questo {cite}`haviv2022transformer`; la codifica esplicita resta il modo
+diretto di dargliela.
 
 ## Dall'ultimo vettore alla parola dopo
 
@@ -1093,13 +1095,14 @@ dell'oggetto.
 Il modello impara da testo e basta: non ha modo di verificare un'affermazione
 contro il mondo, e ottimizza la verosimiglianza, non la verità. Genera
 volentieri frasi plausibili e false, perché plausibile è esattamente ciò che
-l'obiettivo premia. Niente, nella forma dell'obiettivo, lo obbliga a
-eseguire deduzioni: premia chi riproduce bene gli schemi di ragionamento
-rappresentati nei dati, il che è utilissimo e non è detto che sia la stessa
-cosa. E infatti le prestazioni su problemi di matematica e di logica calano, a
-volte di molto, quando se ne cambiano i nomi e i numeri o li si immerge in una
-storia insolita {cite}`mirzadeh2025gsmsymbolic`. E vede solo dentro una finestra di
-contesto fissata a progetto: quello che sta prima, semplicemente, non c'è.
+l'obiettivo premia. Niente, nella forma dell'obiettivo, lo obbliga a eseguire
+deduzioni: premia chi riproduce bene gli schemi di ragionamento rappresentati
+nei dati, il che è utilissimo e non è detto che sia la stessa cosa. E infatti le
+prestazioni su problemi di aritmetica scolastica calano quando se ne cambiano
+soltanto i numeri, e crollano, fino al $65\%$, quando vi si aggiunge una frase
+che sembra pertinente e non serve al conto {cite}`mirzadeh2025gsmsymbolic`. E
+vede solo dentro una finestra di contesto fissata a progetto: quello che sta
+prima, semplicemente, non c'è.
 
 Resta la domanda aperta, che è anche la più interessante. Nessuna di quelle
 formule menziona la sintassi, i concetti o le relazioni fra concetti, eppure al crescere di dati e parametri la qualità delle previsioni

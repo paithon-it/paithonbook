@@ -176,9 +176,9 @@ anno prima Nal Kalchbrenner e Phil Blunsom {cite}`kalchbrenner2013recurrent`,
 con una rete convoluzionale come encoder. La forma interamente ricorrente arriva
 nel 2014 con due lavori: quello di Kyunghyun Cho e colleghi a Montréal
 {cite}`cho2014learning`, che è lo stesso articolo in cui nasce la GRU e che la
-usa per dare un voto alle coppie di frasi di un sistema statistico, e quello di
-Ilya Sutskever, Oriol Vinyals e Quoc Le a Google {cite}`sutskever2014sequence`,
-che la usa per tradurre da sola.
+usa per dare un voto alle coppie di segmenti (le *phrase*) nella tabella di un
+sistema statistico, e quello di Ilya Sutskever, Oriol Vinyals e Quoc Le a Google
+{cite}`sutskever2014sequence`, che la usa per tradurre da sola.
 
 Il decoder, mentre scrive, fa esattamente quello che fa un modello di
 linguaggio: scommette sulla parola successiva. Con una differenza: la sua
@@ -478,25 +478,27 @@ $$
 $$
 
 dove $\alpha_{ij}$ è quanto il passo di decodifica $i$ «guarda» la parola
-sorgente $j$ (i pesi sommano a 1) e $\mathbf{c}_i$ è la media pesata degli
-stati dell'encoder, che entra nel calcolo di $\mathbf{s}_i$ e della parola
-successiva. Il costo è di $n$ punteggi per ciascuno degli $m$ passi di
-decodifica, $O(n\,m)$ valutazioni della piccola rete: quadratico nella
-lunghezza quando le due frasi si somigliano, ed è il prezzo del collo di
-bottiglia tolto. L'anno dopo Luong, Pham e Manning {cite}`luong2015effective`
-confrontano forme più economiche del punteggio, il prodotto scalare
-$e_{ij} = \mathbf{s}_i^{\top}\mathbf{h}_j$ e la forma bilineare
-$e_{ij} = \mathbf{s}_i^{\top}\mathbf{W}_a\mathbf{h}_j$, calcolate con lo stato
-corrente $\mathbf{s}_i$ invece che con $\mathbf{s}_{i-1}$: è l'attenzione
-*moltiplicativa*, la famiglia da cui il Transformer prenderà la sua. La matrice
-dei pesi $\alpha_{ij}$, visualizzata, si legge di solito
-come una mappa di allineamento fra le due frasi, appresa senza alcuna
-supervisione esplicita. Di solito e non sempre: misurata contro un allineatore
-automatico su sei coppie di lingue, la sovrapposizione sta fra il $72$ e il
-$78\%$ in cinque casi e crolla al $15\%$ sul tedesco-inglese, che gli autori
-registrano come un caso isolato {cite}`koehn2017six`. Chi vuole l'allineamento,
-e non solo l'intuizione, addestra l'attenzione con l'allineamento come
-bersaglio, cioè con la supervisione che qui non c'è.
+sorgente $j$ (i pesi sommano a 1) e $\mathbf{c}_i$ è la media pesata degli stati
+dell'encoder, che entra nel calcolo di $\mathbf{s}_i$ e della parola successiva.
+Il costo è di $n$ punteggi per ciascuno degli $m$ passi di decodifica, $O(n\,m)$
+valutazioni della piccola rete: quadratico nella lunghezza quando le due frasi
+si somigliano, ed è il prezzo del collo di bottiglia tolto. L'anno dopo Luong,
+Pham e Manning {cite}`luong2015effective` confrontano forme più economiche del
+punteggio: il prodotto scalare $e_{ij} = \mathbf{s}_i^{\top}\mathbf{h}_j$, che
+chiede allo stato del decoder e agli stati dell'encoder la stessa dimensione
+(nel loro modello l'encoder legge in un verso solo), e la forma bilineare
+$e_{ij} = \mathbf{s}_i^{\top}\mathbf{W}_a\mathbf{h}_j$, che non la chiede e dove
+$\mathbf{W}_a$ è una matrice diversa da quella dell'attenzione additiva, tutte e
+due calcolate con lo stato corrente $\mathbf{s}_i$ invece che con
+$\mathbf{s}_{i-1}$: è l'attenzione *moltiplicativa*, la famiglia da cui il
+Transformer prenderà la sua. La matrice dei pesi $\alpha_{ij}$, visualizzata, si
+legge di solito come una mappa di allineamento fra le due frasi, appresa senza
+alcuna supervisione esplicita. Di solito e non sempre: misurata contro un
+allineatore automatico su sei coppie di lingue, la sovrapposizione sta fra il
+$72$ e il $78\%$ in cinque casi e crolla al $15\%$ sul tedesco-inglese, che gli
+autori registrano come un caso isolato {cite}`koehn2017six`. Chi vuole
+l'allineamento, e non solo l'intuizione, addestra l'attenzione con
+l'allineamento come bersaglio, cioè con la supervisione che qui non c'è.
 
 `````
 

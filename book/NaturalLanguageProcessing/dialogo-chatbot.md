@@ -359,17 +359,20 @@ Il modello è un seq2seq: si massimizza $P(y \mid x)$, dove $x$ è la storia del
 dialogo e $y$ la risposta, con la stessa fattorizzazione autoregressiva della
 traduzione {cite}`sutskever2014sequence`. Uno dei primi chatbot neurali
 end-to-end è quello di Vinyals e Le (2015), addestrato su log di assistenza
-tecnica e sottotitoli di film. Il difetto emerse subito: massima
-verosimiglianza e beam search privilegiano risposte ad alta probabilità
-*marginale*, generiche per costruzione («I don't know»). Li e colleghi
-{cite}`li2016diversity` sostituiscono l'obiettivo di decodifica con una mutua
-informazione pesata,
+tecnica e sottotitoli di film. Il difetto emerse subito: massima verosimiglianza
+e beam search privilegiano risposte ad alta probabilità *marginale*, generiche
+per costruzione («I don't know»). Li e colleghi {cite}`li2016diversity`
+sostituiscono l'obiettivo di decodifica con una mutua informazione pesata,
 $\hat{y} = \arg\max_y \big[\log P(y \mid x) - \lambda \log P(y)\big]$, dove il
 secondo termine, stimato da un modello di linguaggio sulle sole risposte, toglie
 punti alle risposte probabili a prescindere dal contesto: con $\lambda = 1$ è la
-mutua informazione puntuale, in pratica si usa $\lambda < 1$ e la si applica
-riordinando le $N$ migliori ipotesi del beam, perché dentro la ricerca
-premierebbe frasi sgrammaticate.
+mutua informazione puntuale, e in pratica si usa $\lambda < 1$. Dentro la
+ricerca, però, quel termine toglie punti anche alle frasi fluenti e finisce per
+premiare quelle sgrammaticate: gli autori lo applicano allora ai soli primi
+token della risposta, dove si decide se sarà generica. La variante con il
+modello inverso, $(1-\lambda)\log P(y \mid x) + \lambda \log P(x \mid y)$, non
+si può calcolare prima che la risposta sia finita, e la si applica riordinando
+le $N$ migliori ipotesi del beam.
 
 Il salto di qualità arriva con la scala (modelli decoder-only pre-addestrati
 su corpora web {cite}`brown2020language`) ma soprattutto con il

@@ -402,9 +402,9 @@ denaro, memoria e tempo.
 
 I percentili li abbiamo imparati in «Servire un modello»: la p95 è il tempo
 entro cui è servito il 95% delle richieste, la p99 quello entro cui ne è
-servito il 99%, e la promessa si scrive su quelli e non sulla media. Manca
-solo un nome, che da qui in poi torna in ogni paragrafo: il gruppetto di
-richieste sfortunate che resta *oltre* il percentile si chiama la coda.
+servito il 99%, e la promessa si scrive su quelli e non sulla media. Il nome
+che da qui in poi torna in ogni paragrafo è quello del gruppetto di richieste
+sfortunate che resta *oltre* il percentile: la coda.
 Attenzione, perché poche pagine fa la stessa parola voleva dire la fila di
 richieste che aspettano il turno. Qui è l'altra coda, quella della cometa: la
 striscia di ritardatarie che si allunga dietro a tutte le altre. Sono poche,

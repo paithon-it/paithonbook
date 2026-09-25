@@ -944,7 +944,8 @@ provarla. Negli anni successivi, sempre con Chervonenkis, costruì la teoria che
 stabilisce *quando* un modello che ha imparato bene sugli esempi visti
 continuerà a funzionare su quelli nuovi {cite}`vapnik1971uniform`: è ciò che
 oggi si chiama teoria dell'apprendimento statistico, e la sua misura di
-complessità, la dimensione VC, porta le iniziali dei due. In Occidente, per
+complessità, la {doc}`dimensione VC </TeoriaApprendimento/dimensione-vc>`,
+porta le iniziali dei due. In Occidente, per
 vent'anni, quel lavoro non lo lesse quasi nessuno.
 
 Nel 1990 Vapnik emigra negli Stati Uniti e finisce ai laboratori Bell di

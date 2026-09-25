@@ -476,17 +476,226 @@ curvatura della funzione, e i coefficienti possono restare grandi quanto
 vogliono purché la curva risultante sia dolce. Sono due modi diversi di dire
 «non esagerare», e il secondo è quello che si può disegnare.
 
+(sec-regressione-a-nucleo)=
+## Una media che scivola: la regressione a nucleo
+
+Il listello di Schoenberg è una curva sola che deve andare bene dappertutto. Si
+può anche rinunciare a una formula unica per tutta la curva, e rispondere punto
+per punto: per stimare la funzione in un punto $x_0$ si fa la media delle $y$
+degli esempi, pesando ciascuno con una campana di pesi centrata in $x_0$, così
+che i vicini contino molto e i lontani quasi niente. È la **regressione a
+nucleo**, proposta indipendentemente da Èlizbar Nadaraya e da Geoffrey Watson
+nel 1964 {cite}`nadaraya1964estimating,watson1964smooth`, e la campana si
+chiama *nucleo*, in inglese *kernel*. Il nome è lo stesso del nucleo di una
+matrice della {doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>`,
+con cui non ha niente a che fare, e del kernel che tornerà nella
+{doc}`sezione sul kernel trick <svm-kernel>`, di cui la campana gaussiana è
+invece parente stretta. La larghezza della campana, $h$, è la manopola.
+
+`````{tab} Elementare
+
+Per stimare quanto vale una casa di 80 metri quadri si guardano le case
+vendute. Quelle di 79 o di 81 metri contano quasi come se fossero la casa da
+stimare; quelle di 70 un po’ meno; quelle di 150 non dicono niente. La stima è
+la media dei prezzi, dove ogni prezzo pesa tanto quanto la sua casa somiglia
+per superficie a quella da stimare: ogni prezzo si moltiplica per il suo peso,
+e il totale si divide per la somma dei pesi invece che per il numero delle
+case. Con due case da 79 e 81 metri vendute a 200 e 210 mila euro, che contano
+per intero, e una da 70 metri venduta a 180 mila, che conta per metà, il conto
+è $(200 + 210 + 0{,}5 \times 180) / (1 + 1 + 0{,}5) = 500 / 2{,}5 = 200$ mila
+euro. Poi si fa lo stesso per 81 metri, per 82, e così via: la finestra dei
+«simili» scivola lungo i metri quadri, e la stima disegna una curva
+({numref}`fig-media-che-scivola`). È una finestra dai bordi sfumati, e nella
+figura il peso che cala ha la forma di una campana.
+
+Quanto larga fare quella finestra è tutta la questione. Se si considerano simili
+solo le case identiche, ogni stima si appoggia su una o due vendite e salta
+qua e là a ogni affare fortunato. Se si considerano simili tutte le case fino a
+cento metri di differenza, la stima diventa la media di tutto il quartiere, la
+stessa dappertutto, e perde la forma che si cercava. In mezzo c'è una
+larghezza che sbaglia meno delle altre, ed è lo stesso compromesso fra una
+risposta nervosa e una troppo piatta che nel listello regolava la manopola della
+rigidità. Per trovarla non serve conoscere il prezzo giusto: si nasconde a turno
+ogni casa venduta, la si stima con le altre, e si tiene la larghezza con cui
+quelle stime cadono più vicino ai prezzi veri. Con più vendite la finestra si
+può stringere, perché anche stretta ne trova abbastanza, e la stima migliora;
+ma più piano che se si sapesse già che il prezzo sale in linea retta con i metri
+quadri.
+
+C'è un punto in cui la media inganna: il bordo. Per la casa più piccola del
+quartiere tutte le vicine sono più grandi, e di solito più care; la finestra le
+prende solo da una parte, e la media tira la stima verso l'alto, tanto più
+quanto più è larga la finestra e ripida la discesa dei prezzi verso le case
+piccole. Il rimedio è tracciare, dentro la finestra, un piccolo pezzo di retta
+che passi il più vicino possibile ai prezzi, contando di più le case più simili,
+e leggere la stima sulla retta, all'altezza della casa da stimare. La retta si
+accorge che i prezzi vanno giù, e lo tiene in conto anche dove i vicini stanno
+tutti da un lato. Vale però solo se la finestra non è troppo stretta: una retta
+tirata su due o tre case sole punta dove vuole, e al bordo sbaglia più della
+media che doveva correggere.
+
+E c'è un punto in cui la finestra non basta più: quando le caratteristiche
+sono tante. Case simili per superficie ce ne sono sempre; case simili per
+superficie, piano, anno, quartiere, esposizione e dieci altre cose insieme non
+ce ne sono quasi mai, e la finestra resta vuota.
+
+`````
+
+`````{tab} Superiore
+
+Lo stimatore di Nadaraya-Watson, con un nucleo $K$ (qui la gaussiana,
+$K(u) = e^{-u^2/2}/\sqrt{2\pi}$) e larghezza di banda $h$, è
+
+$$
+\hat f(x_0) = \frac{\sum_{i=1}^{m} K_h(x_0 - x_i)\, y_i}{\sum_{i=1}^{m} K_h(x_0 - x_i)},
+\qquad K_h(u) = \frac{1}{h}K\!\left(\frac{u}{h}\right),
+$$
+
+cioè la soluzione di $\min_{c}\sum_i K_h(x_0 - x_i)(y_i - c)^2$: un modello
+costante adattato con pesi locali. Sostituendo la costante con una retta,
+$\min_{a,b}\sum_i K_h(x_0 - x_i)\,\big(y_i - a - b(x_i - x_0)\big)^2$ e $\hat
+f(x_0) = \hat a$, si ottiene la **regressione lineare locale** (la base del
+LOWESS di Cleveland {cite}`cleveland1979robust`). All'interno la distorsione di
+entrambe è $O(h^2)$ e la varianza $O\big(1/(mh)\big)$, quindi la banda ottima
+va come $m^{-1/5}$ e l'errore quadratico come $m^{-4/5}$, più lento del
+$m^{-1}$ di un modello parametrico corretto. Sono conti asintotici, per $h \to
+0$ e $mh \to \infty$, con $f$ due volte derivabile con continuità, densità
+degli $x_i$ positiva attorno a $x_0$ e rumore di varianza finita; il termine
+della distorsione proporzionale a $h\,f'(x_0)$ all'interno sparisce perché il
+nucleo è simmetrico. Al bordo i dati stanno da una parte sola, quel termine non
+si cancella più, e la distorsione di Nadaraya-Watson sale a $O(h)$ (nel punto
+estremo, con nucleo gaussiano e dati uniformi, circa $0{,}8\,h\,\lvert
+f'(x_0)\rvert$), mentre quella lineare locale resta $O(h^2)$: la retta corregge
+al primo ordine l'asimmetria del vicinato {cite}`hastie2009elements`. Il prezzo
+è la varianza, che nel punto estremo, con le stesse ipotesi, è circa tripla di
+quella della media pesata: con una banda stretta la retta poggia su pochi punti
+tutti da un lato, e al bordo sbaglia più della media che doveva correggere. La
+stessa idea, massimizzare una verosimiglianza pesata attorno a $x_0$, dà la
+*verosimiglianza locale*, che porta la regressione logistica o di Poisson in
+versione locale.
+
+Come la smoothing spline, lo stimatore è lineare nelle risposte,
+$\hat{\mathbf{y}} = \mathbf{S}_h\mathbf{y}$ con
+$S_{h,ij} = K_h(x_i - x_j)/\sum_l K_h(x_i - x_l)$, quindi la banda si sceglie
+con la stessa scorciatoia *leave-one-out*, che qui è esatta, e
+$\operatorname{tr}(\mathbf{S}_h)$ ne misura i gradi di libertà effettivi. A
+differenza della spline, però, lo stimatore tiene con sé tutti gli esempi, e
+ogni stima costa $O(m)$ nella forma diretta.
+
+In $d$ dimensioni la varianza diventa $O\big(1/(m h^d)\big)$ e la velocità
+$m^{-4/(4+d)}$, che per funzioni due volte derivabili nessuno stimatore può
+battere {cite}`stone1982optimal`. È la maledizione della dimensionalità del
+{doc}`k-NN <apprendimento-supervisionato>`, che è a sua volta una media locale
+con un nucleo uniforme e una banda che si adatta per contenere $k$ punti.
+
+Il nucleo gaussiano è anche il ponte con un meccanismo che arriva molto più
+avanti. Se le chiavi $\mathbf{k}_i$ hanno tutte la stessa norma,
+$\exp\big(-\lVert\mathbf{q}-\mathbf{k}_i\rVert^2/(2h^2)\big) \propto
+\exp(\mathbf{q}^\top\mathbf{k}_i/h^2)$ (la norma di $\mathbf{q}$ non conta: il
+fattore $e^{-\lVert\mathbf{q}\rVert^2/(2h^2)}$ è comune a tutti i pesi e la
+normalizzazione lo cancella), e la media pesata
+$\sum_i \mathrm{softmax}_i(\mathbf{q}^\top\mathbf{k}_i/h^2)\,\mathbf{v}_i$
+è lo stimatore di Nadaraya-Watson con il punto $\mathbf{q}$, gli esempi
+$\mathbf{k}_i$ e le risposte $\mathbf{v}_i$. Con $h^2 = \sqrt{d_k}$, dove
+$d_k$ è la lunghezza di query e chiavi, è
+l’{doc}`attenzione </Transformers/attenzione>` dei Transformer: il suo fattore
+$1/\sqrt{d_k}$ fa la parte della larghezza della campana, e la similarità, a
+differenza della campana, si impara, attraverso le proiezioni che producono
+$\mathbf{q}$ e $\mathbf{k}_i$.
+
+`````
+
+```{figure} ../figures/media-che-scivola.svg
+:name: fig-media-che-scivola
+:alt: "Animazione: cento punti sparsi attorno a un'onda sinusoidale tratteggiata. Una campana ocra scorre da sinistra a destra lungo l'asse orizzontale, e mentre avanza si traccia dietro di lei una curva terracotta, la media dei punti pesata dalla campana. La curva segue l'onda all'interno e se ne stacca ai due estremi, dove la campana ha punti da una parte sola: all'estremo sinistro resta sopra l'onda, all'estremo destro sotto."
+:width: 92%
+
+La campana ocra decide quanto pesa ogni punto nella media, e mentre scorre la
+media disegna la curva terracotta. All'interno la curva segue l'onda vera
+(tratteggiata); ai due estremi la campana ha punti da una parte sola, e la curva
+se ne stacca: a sinistra i vicini stanno tutti più in alto e la tirano su, a
+destra stanno tutti più in basso e la tirano giù.
+```
+
+Il codice misura il compromesso sulla larghezza e il difetto del bordo
+ripetendo la prova duecento volte, ogni volta con cento esempi rumorosi nuovi
+presi dalla stessa onda ($\sin 2\pi x$ su $[0, 1]$, rumore di deviazione
+standard $0{,}3$), perché su una prova sola il rumore dei pochi punti ai bordi
+basta a far vincere, per caso, il metodo che in media sbaglia di più. Quello che
+stampa è la radice dell'errore quadratico medio rispetto all'onda vera, su
+tutta la griglia, all'interno e nel 10% vicino agli estremi.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+vera = lambda x: np.sin(2 * np.pi * x)            # la funzione da ritrovare
+griglia = np.linspace(0, 1, 201)                   # dove si stima
+bordo = (griglia < 0.05) | (griglia > 0.95)        # il 10% vicino agli estremi
+
+def pesi(x, h):
+    """Una campana larga h attorno a ogni punto della griglia."""
+    return np.exp(-0.5 * ((griglia[:, None] - x[None, :]) / h) ** 2)
+
+def nadaraya_watson(x, y, h):
+    w = pesi(x, h)
+    return (w * y).sum(axis=1) / w.sum(axis=1)     # media pesata delle y
+
+def retta_locale(x, y, h):
+    """Minimi quadrati pesati di una retta attorno a ogni punto, valutata lì."""
+    w, d = pesi(x, h), x[None, :] - griglia[:, None]
+    s0, s1, s2 = w.sum(1), (w * d).sum(1), (w * d * d).sum(1)
+    t0, t1 = (w * y).sum(1), (w * d * y).sum(1)
+    return (s2 * t0 - s1 * t1) / (s0 * s2 - s1 ** 2)
+
+errori = {}
+for _ in range(200):                               # duecento campioni
+    x = np.sort(rng.random(100))
+    y = vera(x) + rng.normal(0, 0.3, size=100)
+    stime = [(f"media pesata, h = {h}", nadaraya_watson(x, y, h))
+             for h in (0.005, 0.02, 0.05, 0.1, 0.3)]
+    stime += [(f"retta locale, h = {h}", retta_locale(x, y, h))
+              for h in (0.02, 0.05)]
+    for nome, stima in stime:
+        errori.setdefault(nome, []).append((stima - vera(griglia)) ** 2)
+for nome, e in errori.items():
+    e = np.array(e)
+    print(f"{nome:<23}: errore {np.sqrt(e.mean()):.3f}  (dentro"
+          f" {np.sqrt(e[:, ~bordo].mean()):.3f}, ai bordi {np.sqrt(e[:, bordo].mean()):.3f})")
+```
+
+```text
+media pesata, h = 0.005: errore 0.229  (dentro 0.228, ai bordi 0.239)
+media pesata, h = 0.02 : errore 0.125  (dentro 0.120, ai bordi 0.159)
+media pesata, h = 0.05 : errore 0.107  (dentro 0.089, ai bordi 0.202)
+media pesata, h = 0.1  : errore 0.181  (dentro 0.147, ai bordi 0.357)
+media pesata, h = 0.3  : errore 0.459  (dentro 0.466, ai bordi 0.392)
+retta locale, h = 0.02 : errore 0.138  (dentro 0.123, ai bordi 0.231)
+retta locale, h = 0.05 : errore 0.091  (dentro 0.082, ai bordi 0.146)
+```
+
+L'errore scende e poi risale al crescere della larghezza: $0{,}229$ con la
+finestra strettissima, che insegue il rumore, $0{,}107$ con $h = 0{,}05$,
+$0{,}459$ con una campana larga $0{,}3$, quasi un terzo dell'intervallo, che
+appiattisce l'onda (e che ai bordi sbaglia meno che all'interno solo perché lì
+l'onda vale zero, come la curva appiattita). Alla migliore delle cinque
+larghezze la media pesata sbaglia ai bordi più del doppio che all'interno
+($0{,}202$ contro $0{,}089$), e la retta locale porta il bordo a $0{,}146$
+migliorando un poco anche l'interno. Con la finestra stretta di $h = 0{,}02$,
+invece, al bordo la retta sbaglia più della media ($0{,}231$ contro $0{,}159$):
+pochi punti tutti da un lato non bastano a fissarne la pendenza.
+
 ## Da una curva a molte: i modelli additivi
 
-Tutto questo vale per una variabile. Con dieci colonne non si può fare la
-stessa cosa, perché una superficie flessibile in dieci dimensioni ha bisogno di
-una quantità di dati che nessuno ha: è la maledizione della dimensionalità
-incontrata a proposito del {doc}`k-NN <apprendimento-supervisionato>`, vista
-qui dal lato di chi deve
-stimare, e conviene dirla nei suoi termini. Per riempire una griglia a $10$
-caselle per lato in una dimensione bastano dieci punti; in dieci dimensioni le
-caselle sono $10^{10}$, e per averne uno per casella servirebbero dieci
-miliardi di esempi.
+Spline e medie che scivolano danno il meglio con una variabile sola. Con dieci
+colonne, cioè dieci caratteristiche, non si può fare la stessa cosa, perché una
+funzione flessibile di dieci variabili insieme ha bisogno di una quantità di
+dati che nessuno ha: è la maledizione della dimensionalità incontrata a
+proposito del {doc}`k-NN <apprendimento-supervisionato>` e appena ritrovata per
+la media che scivola. Conviene dirla nei suoi termini. Per riempire una griglia
+a $10$ caselle per lato in una dimensione bastano dieci punti; in due le
+caselle sono già $100$, in tre $1000$, in dieci $10^{10}$, e per averne uno per
+casella servirebbero dieci miliardi di esempi.
 
 La via d'uscita è una rinuncia dichiarata, e si chiama **modello additivo
 generalizzato** (*Generalized Additive Model*, GAM), proposto da Trevor Hastie e
@@ -688,6 +897,11 @@ altri modelli.
   che passa per ogni punto a righello che non si piega. Girata tutta verso il
   rigido dà una retta, e il conto lo mostra: la flessibilità che resta è
   $2{,}0026$ contro il $2$ tondo di una retta vera.
+- La media che scivola stima il valore in un punto con la media dei vicini,
+  pesati da una campana. La larghezza della campana è la manopola (stretta
+  insegue il rumore, larga appiattisce), e ai bordi, dove i vicini stanno da
+  una parte sola, la media si storce: una retta locale al posto della media
+  ne toglie gran parte, purché la finestra prenda abbastanza case.
 - Un GAM somma una curva per colonna: si vede la forma di ogni effetto, uno
   per uno. La rinuncia dichiarata è che gli effetti non si parlano fra loro: se
   nei dati due colonne contano insieme, il GAM non se ne accorge.
@@ -712,6 +926,14 @@ altri modelli.
   dimensione infinita è una spline cubica naturale con nodi nei dati. La
   complessità si misura con i gradi di libertà effettivi
   $\operatorname{tr}(\mathbf{S}_\lambda)$, che vanno da $m$ a $2$.
+- La regressione a nucleo di Nadaraya-Watson è una media pesata, con pesi dati
+  da una campana di larghezza $h$ centrata in $x_0$: distorsione $O(h^2)$ e
+  varianza $O\big(1/(mh)\big)$ danno $h \propto m^{-1/5}$ ed errore quadratico
+  $m^{-4/5}$. Al bordo la distorsione sale a $O(h)$; la regressione lineare
+  locale la riporta a $O(h^2)$, pagandola in varianza (circa il triplo nel
+  punto estremo). Con nucleo gaussiano, chiavi di norma comune e
+  $h^2 = \sqrt{d_k}$ è l'attenzione dei Transformer, che in più impara le
+  proiezioni da cui escono query e chiavi.
 - Un GAM pone
   $g(\mathbb{E}[y \mid \mathbf{x}]) = \theta_0 + \sum_j f_j(x_j)$: costo lineare
   nel numero di colonne invece che esponenziale, al prezzo di escludere le
@@ -731,7 +953,9 @@ vettori di supporto delle sezioni che seguono, ed è la domanda su quanta
 struttura mettere nel modello prima di guardare i dati. La retta ne mette
 troppa e non si piega; il polinomio ne toglie troppa e si piega dove non deve;
 la spline la rimette al posto giusto, dicendo che la curva deve essere dolce ma
-non dicendo che forma abbia. Il GAM fa lo stesso un gradino più su, sulle
-colonne. È lo stesso mestiere che gli alberi della prossima sezione faranno con
-un attrezzo opposto, spezzando la linea a gradini invece di piegarla, e che le
-macchine a vettori di supporto faranno curvando lo spazio sotto di essa.
+non dicendo che forma abbia, e la media che scivola chiede la stessa dolcezza
+per un'altra strada, pesando i vicini invece di penalizzare le pieghe. Il GAM
+fa lo stesso un gradino più su, sulle colonne. È lo stesso mestiere che gli
+alberi della prossima sezione faranno con un attrezzo opposto, spezzando la
+linea a gradini invece di piegarla, e che le macchine a vettori di supporto
+faranno curvando lo spazio sotto di essa.

@@ -114,12 +114,14 @@ $$
 
 con $\sigma$ fra il 10 e il 20% dell'escursione dei pixel e $N \approx 50$: è la
 stima Monte Carlo del gradiente di $S_c$ convoluto con una gaussiana, cioè di
-una versione lisciata della funzione, e costa $N$ backward invece di una.
-L'altra variante, che tornerà nei controlli di sanità, è **gradient $\odot$
-input**, $\mathbf{X} \odot \partial S_c/\partial\mathbf{X}$: per un modello
-lineare senza bias restituisce esattamente il contributo $w_i x_i$ di ciascun
-ingresso, ed equivale agli Integrated Gradients con baseline nulla e un solo
-passo di integrazione, valutato all'arrivo.
+una versione lisciata della funzione, e costa $N$ passate avanti e indietro
+invece di una; la mappa è poi il modulo di $\hat{\mathbf{M}}$. L'altra variante,
+che tornerà nei controlli di sanità, è **gradient $\odot$ input**,
+$\mathbf{X} \odot \partial S_c/\partial\mathbf{X}$: per un modello lineare senza
+bias restituisce esattamente il contributo $w_i x_i$ di ciascun ingresso, ed
+equivale agli Integrated Gradients (il metodo che integra il gradiente lungo un
+cammino da una baseline all'ingresso) con baseline nulla e un solo passo di
+integrazione, valutato all'arrivo.
 
 `````
 
@@ -513,11 +515,114 @@ possa farlo fallire, esattamente come un modello.
 
 `````
 
-Il che non rende inutili le mappe: le ricolloca. Servono a esplorare (dove
-guardare, quale ipotesi farsi, quale scorciatoia sospettare in una raccolta di
-dati) e non a certificare che un modello funzioni. E lo stesso dubbio, tale e
-quale, si è poi posto per un altro oggetto, che a differenza delle mappe non
-bisogna nemmeno costruire, perché nel modello c'è già.
+Alla domanda sul «che cosa», quella di Rudin, si può rispondere cambiando
+oggetto: invece di
+chiedere quali pixel contano per una risposta, si chiede a ogni unità interna
+della rete (in uno strato convoluzionale, un filtro) che cosa la accende. È la
+**dissezione della rete** (*network dissection*) di Bau e colleghi
+{cite}`bau2017network`: per ogni filtro di uno strato convoluzionale si cerca,
+in un archivio di immagini segnate a mano con i loro concetti, quello con cui le
+zone più accese del filtro coincidono meglio.
+
+`````{tab} Elementare
+
+L'archivio è fatto di tantissime fotografie in cui qualcuno ha colorato a mano,
+punto per punto, dove c'è un cane, dove c'è erba, dove c'è il colore rosso,
+dove c'è una finestra: più di mille concetti, dai colori agli oggetti alle
+scene intere. Le trame (una stoffa a righe) e le scene (una cucina, una
+spiaggia) fanno eccezione, e sono segnate sull'intera fotografia, non punto per
+punto. Si prende un filtro della rete, lo stampino che scorre sull'immagine
+delle {doc}`reti convoluzionali </DeepLearning/reti-convoluzionali>` (ogni
+faretto di Grad-CAM è quello che uno stampino accende), e gli si fanno guardare
+tutte le foto. Di tutti i punti di tutte le foto si tengono solo quelli in cui
+il filtro si accende di più, i primi cinque su mille (su un milione di punti, i
+cinquemila più accesi). Poi si confrontano quei punti con le zone colorate di
+ogni concetto: quanta parte hanno in comune, rispetto a tutta l'area che le due
+zone coprono insieme, contando una volta sola i punti in comune (se ne hanno
+trenta in comune e insieme ne coprono cento, la parte in comune vale trenta su
+cento). Il concetto che ne ha in comune di più, se supera una soglia, dà il
+nome al filtro: «rilevatore di cani», «rilevatore di erba». Due filtri possono
+avere lo stesso nome, e quello che si conta, per dire quanto uno strato è
+leggibile, è quanti nomi diversi ci compaiono.
+
+Il risultato si legge a strati. Nei primi i filtri che hanno un nome sono
+rilevatori di colori e di trame; salendo compaiono parti di oggetti, e negli
+strati alti oggetti interi. E quanti nomi diversi si trovano cambia con il modo
+in cui la rete è stata addestrata: una rete che ha imparato senza etichette,
+per esempio, ha meno rilevatori di oggetti, perché nessuno le ha mai chiesto di
+distinguere un cane da un gatto.
+
+Il nome però dice meno di quanto sembri. Viene dall'archivio, e un concetto che
+l'archivio non contiene non si può trovare, quindi un filtro senza nome non è
+detto che non faccia niente. E si può rimescolare uno strato. Al posto di due
+filtri A e B se ne mettono due nuovi, «A più B» e «A meno B»: sembrano diversi,
+ma sommandoli e sottraendoli si ritrovano A e B tali e quali, quindi la rete sa
+esattamente le stesse cose. Solo che nessuno dei due nuovi si accende più sui
+cani e basta. Rimescolando così tutti i filtri di uno strato, in un esperimento
+degli stessi autori su una rete che riconosce luoghi, i nomi diversi che si
+riescono a dare calano di quattro quinti: i nomi dipendono da come il sapere è
+spartito fra i filtri, non soltanto da che cosa la rete sa (e c'è chi, per
+questo, cerca i concetti in una combinazione di filtri invece che in uno solo).
+E un filtro che si accende sui cani non dimostra che la rete lo usi per dire
+«cane»: magari si accende sul pelo, e la rete lo usa per dire «animale». Per
+saperlo bisogna spegnerlo e guardare che cosa cambia.
+
+`````
+
+`````{tab} Superiore
+
+Sia $\mathbf{A}_k(\mathbf{x})$ la mappa di attivazione dell'unità $k$
+sull'immagine $\mathbf{x}$, con $a_k$ il valore in una posizione. La soglia $T_k$
+è il quantile superiore per cui $P(a_k > T_k) = 0{,}005$, calcolato su tutte le
+posizioni di tutte le immagini dell'archivio; poi la mappa si riporta per
+interpolazione alla risoluzione dell'ingresso, $\mathbf{S}_k(\mathbf{x})$, e la
+maschera binaria è $\mathbf{M}_k(\mathbf{x}) = \mathbf{S}_k(\mathbf{x}) \ge T_k$.
+Con $\mathbf{G}_c(\mathbf{x})$ la maschera vera del concetto $c$ nell'archivio
+Broden (sei categorie, dai colori alle scene, annotate per pixel, tranne scene e
+trame, che valgono per l'immagine intera; è la $L_c$ del lavoro originale,
+ribattezzata perché $\mathbf{L}^c$ è già la mappa di Grad-CAM), il punteggio è
+l'intersezione sull'unione, con le somme estese alle immagini $\mathcal{D}_c$
+dell'archivio che portano almeno un'annotazione della stessa categoria di $c$
+(non a tutte: le trame, per esempio, sono annotate solo su una parte delle
+immagini, e sulle altre ogni pixel acceso conterebbe come un errore),
+
+$$
+\mathrm{IoU}_{k,c} = \frac{\sum_{\mathbf{x}\in\mathcal{D}_c} \big|\mathbf{M}_k(\mathbf{x}) \cap \mathbf{G}_c(\mathbf{x})\big|}
+{\sum_{\mathbf{x}\in\mathcal{D}_c} \big|\mathbf{M}_k(\mathbf{x}) \cup \mathbf{G}_c(\mathbf{x})\big|},
+$$
+
+e l'unità è un rilevatore del concetto di punteggio massimo se questo supera
+$0{,}04$ (la soglia sposta quante unità passano, ma gli autori riportano che
+l'ordine fra le reti resta lo stesso). Il numero di rilevatori unici diventa
+così una misura dell'interpretabilità di uno strato, confrontabile fra
+architetture e regimi di addestramento: gli strati alti hanno più rilevatori di
+oggetti, l'addestramento auto-supervisionato ne produce meno, e la batch
+normalization, scrivono gli autori, sembra ridurre l'interpretabilità in modo
+sensibile. Il risultato più istruttivo è negativo: applicando allo strato conv5
+di un'AlexNet addestrata su Places205 una rotazione ortogonale casuale, che
+lascia intatto il potere discriminante della rappresentazione, i rilevatori
+unici calano dell'80%. L'interpretabilità misurata così dipende dalla base,
+cioè dall'allineamento dei concetti con le singole unità, e non è una proprietà
+dell'informazione contenuta. È lo stesso problema, visto da un'altra parte, di
+quello che la sezione sull'interpretabilità meccanicistica, più avanti, chiama
+*sovrapposizione* (*superposition*): niente obbliga i concetti a stare ciascuno
+su un asse. I limiti sono quelli della definizione, cioè la copertura
+dell'archivio, una soglia scelta a mano, e una misura di co-occorrenza e non di
+causalità, che il lavoro successivo dello stesso gruppo affronta intervenendo:
+spegne unità in un classificatore e misura che cosa smette di riconoscere, le
+accende in un generatore e guarda che cosa compare nell'immagine
+{cite}`bau2020understanding`. Chi cerca i concetti come direzioni invece che
+come unità singole trova la stessa domanda nei vettori di concetto di TCAV
+{cite}`kim2018interpretability`.
+
+`````
+
+Niente di questo rende inutili le mappe, né i nomi dei filtri: li ricolloca.
+Servono a esplorare (dove guardare, quale ipotesi farsi, quale scorciatoia
+sospettare in una raccolta di dati) e non a certificare che un modello funzioni.
+E lo stesso dubbio, tale e quale, si è poi posto per un altro oggetto, che a
+differenza delle mappe non bisogna nemmeno costruire, perché nel modello c'è
+già.
 
 ## L'attenzione è una spiegazione?
 
@@ -667,12 +772,12 @@ l’**interpretabilità meccanicistica**.
 
 `````{tab} Elementare
 
-Finora abbiamo trattato la rete come una scatola su cui bussare da fuori: le
-mostri un ingresso, guardi l'uscita, misuri le reazioni. L'interpretabilità
-meccanicistica apre la scatola e prova a leggere il circuito dentro.
-L'obiettivo è ricostruire i **circuiti**: piccoli gruppi di neuroni collegati
-che, insieme, svolgono un compito riconoscibile (un rilevatore di curve, un
-pezzo che tiene il conto delle parentesi aperte in un testo).
+Finora abbiamo chiesto alla rete, da fuori o dai suoi strati, che cosa conta
+per una risposta: le mostri un ingresso, guardi l'uscita, misuri le reazioni.
+L'interpretabilità meccanicistica apre la scatola e prova a leggere il circuito
+dentro. L'obiettivo è ricostruire i **circuiti**: piccoli gruppi di neuroni
+collegati che, insieme, svolgono un compito riconoscibile (un rilevatore di
+curve, un pezzo che tiene il conto delle parentesi aperte in un testo).
 
 C'è però un ostacolo curioso. La rete ha meno neuroni dei concetti che deve
 rappresentare, e allora fa come chi ha poche scatole e troppa roba: mette più
@@ -740,11 +845,11 @@ individuando *feature* (direzioni nello spazio delle attivazioni che codificano
 un concetto) e i *circuiti* che le collegano; sottografi di neuroni e pesi che
 implementano un calcolo interpretabile, come i rilevatori di curve nelle prime
 reti di visione. Nei Transformer il circuito più studiato è la *induction head*
-{cite}`olsson2022induction`: due teste in strati consecutivi, la prima scrive
-in ogni posizione l'identità del token precedente, la seconda cerca nel
-contesto un token uguale a quello corrente e ne copia il successore,
-completando lo schema $[A][B]\dots[A] \to [B]$; la sua comparsa durante
-l'addestramento coincide con un salto nell'apprendimento in contesto. Lo
+{cite}`olsson2022induction`: due teste in due strati diversi, la prima più in
+basso, che scrive in ogni posizione l'identità del token precedente, e la
+seconda, che cerca nel contesto un token uguale a quello corrente e ne copia il
+successore, completando lo schema $[A][B]\dots[A] \to [B]$; la sua comparsa
+durante l'addestramento coincide con un salto nell'apprendimento in contesto. Lo
 strumento che trasforma un'ipotesi così in una prova è l’*activation
 patching*: si esegue il modello su un ingresso pulito e su uno corrotto che ne
 cambia la risposta, si sostituisce nella corsa corrotta l'attivazione di un
@@ -763,8 +868,8 @@ ciascuna feature sia rara. La conseguenza pratica è la polisemanticità: un
 singolo neurone risponde a stimoli non correlati, e diventa illeggibile. Bricken
 e colleghi, in *Towards Monosemanticity* (Anthropic, 2023), affrontano il
 problema con uno **sparse autoencoder** {cite}`bricken2023monosemanticity`: le
-attivazioni $\mathbf{x} \in \mathbb{R}^{d}$ di uno strato vengono ricodificate
-in un dizionario **sovracompleto** di $F \gg d$ unità,
+attivazioni $\mathbf{x} \in \mathbb{R}^{n}$ di uno strato vengono ricodificate
+in un dizionario **sovracompleto** di $F \gg n$ unità,
 
 $$
 \mathbf{f}(\mathbf{x}) = \mathrm{ReLU}\big(\mathbf{W}_e(\mathbf{x} -
@@ -778,7 +883,7 @@ con le colonne di $\mathbf{W}_d$ vincolate a norma unitaria, perché la penalit�
 non si possa aggirare rimpicciolendo le attivazioni e ingrandendo le colonne.
 Ogni colonna di $\mathbf{W}_d$ è la direzione di una feature nello spazio delle
 attivazioni, e $f_i(\mathbf{x})$ dice quanta ce n'è; nel lavoro di Bricken il
-rapporto $F/d$ va da 1 a 256, sullo strato MLP da 512 neuroni di un Transformer
+rapporto $F/n$ va da 1 a 256, sullo strato MLP da 512 neuroni di un Transformer
 a uno strato solo. La norma $L_1$ è un surrogato della sparsità vera, e ha un
 prezzo noto: schiaccia verso zero anche le attivazioni che dovrebbero restare
 grandi (*shrinkage*). Le feature così estratte risultano in buona parte
@@ -936,6 +1041,164 @@ $f(x) - f(\text{baseline}) = 0{,}9951$: la completezza è verificata. Notate anc
 il segno: la prima variabile ($w_1 = 2 > 0$) spinge il punteggio in alto, la
 seconda ($w_2 = -1 < 0$) lo tira giù, esattamente come ci si aspetta.
 
+## Tre famiglie sullo stesso neurone: gradiente, propagazione, perturbazione
+
+Le mappe di attribuzione, a guardarle da vicino, rispondono a domande diverse, e
+si dividono in tre famiglie secondo la domanda. I metodi **a gradiente** (la
+salienza, i gradienti integrati, e il *gradiente per ingresso*, cioè la pendenza
+moltiplicata per il valore della variabile) chiedono di quanto cambierebbe
+l’uscita muovendo di poco l’ingresso, o sommano questa pendenza lungo un
+cammino. I metodi **a propagazione** (LRP, DeepLIFT) prendono l’uscita e la
+ridistribuiscono all’indietro strato per strato, con una regola che ne conserva
+la somma. I metodi **a perturbazione** (l’occlusione) tolgono un pezzo
+dell’ingresso e guardano quanto l’uscita cambia. Il neurone saturo dell’esempio
+eseguibile, $f(\mathbf{x}) = \tanh(\mathbf{w}^\top\mathbf{x})$ in
+$\mathbf{x} = (2, 1)$, basta a farle litigare.
+
+`````{tab} Elementare
+
+Una squadra vince 5 a 0, e si vuole sapere chi ha fatto la vittoria. Le domande
+possibili sono tre, e danno risposte diverse.
+
+La prima chiede che cosa sarebbe cambiato se un giocatore avesse corso un
+filo di più. Sul 5 a 0, niente: la partita è già vinta, e un piccolo cambio non
+sposta il risultato. È la domanda del gradiente, e davanti a un risultato già
+saturo dice che non ha contato nessuno.
+
+La seconda toglie un giocatore e rigioca la partita. In squadra c’è anche un
+difensore che ogni tanto sbaglia e regala la palla agli avversari. Senza il
+centravanti la squadra non pareggia: perde, perché gli errori del difensore
+restano e nessuno li rimedia. Il merito del centravanti, contato così, è più
+grande di tutta la vittoria, dato che la sua assenza porta sotto lo zero a zero.
+Senza il difensore, invece, la vittoria resta quella di prima, perché era già
+piena, e il suo demerito sparisce. È l’occlusione: dice qualcosa di vero su
+ciascuno, ma i meriti dei giocatori, sommati, non fanno la vittoria.
+
+La terza parte dal risultato e lo divide all’indietro. Il 5 a 0 si spartisce fra
+le azioni, e il merito di ogni azione fra chi ha toccato palla, in proporzione a
+quanto ciascuno ci ha messo: chi ha spinto verso la porta ne prende, chi ha
+regalato la palla agli avversari ne perde. Qui i conti tornano per come è fatto
+il metodo, perché si divide la vittoria e non si rigioca niente: i meriti
+sommati fanno esattamente la differenza fra la partita giocata e una partita a
+squadra vuota. È la propagazione, che ha due varianti, ciascuna con il suo nome,
+LRP e DeepLIFT; e la stessa somma la danno i gradienti integrati, che invece di
+dividere il risultato accompagnano la squadra da vuota a completa e sommano i
+piccoli cambi strada facendo.
+
+Su una partita sola, chi divide il risultato all’indietro e chi accompagna la
+squadra da vuota a completa arrivano agli stessi meriti. Quando il risultato
+passa per più fasi, un girone che decide chi va in finale e poi la finale, i due
+conti cominciano a dare meriti diversi, pur sommando entrambi alla stessa
+vittoria. Nessuna delle tre è quella vera. Il gradiente parla dei ritocchi,
+l’occlusione dell’assenza di un giocatore, la propagazione di come spartire il
+risultato rispetto alla squadra vuota. E proprio quella squadra vuota, il punto
+di partenza, è una scelta: cambiandola cambiano i meriti.
+
+`````
+
+`````{tab} Superiore
+
+Sia $f: \mathbb{R}^d \to \mathbb{R}$ il punteggio e $\bar{\mathbf{x}}$ una
+baseline. **Gradiente per ingresso**: $a_i = x_i\,\partial f/\partial x_i$.
+**Occlusione** {cite}`zeiler2014visualizing`: $a_i = f(\mathbf{x}) -
+f(\mathbf{x}_{[i \leftarrow \bar{x}_i]})$, dove sulle immagini si sostituisce una
+pezza di pixel invece di una componente; è agnostica rispetto al modello, costa
+una passata in avanti per pezza, e non gode di completezza, perché in presenza
+di interazioni $\sum_i a_i \neq f(\mathbf{x}) - f(\bar{\mathbf{x}})$.
+**LRP** {cite}`bach2015pixel` ridistribuisce il punteggio dall’uscita
+all’ingresso con regole locali; nella regola $\varepsilon$, per uno strato con
+pre-attivazioni $z_j = \sum_i x_i w_{ij}$,
+$R_i = \sum_j \frac{x_i w_{ij}}{z_j + \varepsilon\,\mathrm{sign}(z_j)}\,R_j$,
+che senza bias e con $\varepsilon \to 0$ conserva la somma delle rilevanze
+strato per strato; la rilevanza $R_i$ di un ingresso è la sua attribuzione
+$a_i$. **DeepLIFT** {cite}`shrikumar2017learning` confronta ogni
+attivazione con la sua attivazione di riferimento (quella prodotta dalla
+baseline), e nella regola *Rescale* sostituisce la derivata di ogni
+non-linearità con il rapporto incrementale
+$\big(f(z) - f(\bar z)\big)/(z - \bar z)$, sicché su un neurone solo
+$a_i = w_i (x_i - \bar{x}_i)\,\big(f(z) - f(\bar z)\big)/(z - \bar z)$; in una
+rete a strati senza interazioni moltiplicative vale per costruzione
+$\sum_i a_i = f(\mathbf{x}) - f(\bar{\mathbf{x}})$, che Ancona e colleghi
+mostrano invece violabile dove due ingressi si moltiplicano (i cancelli di una
+LSTM).
+
+Le famiglie non sono indipendenti. Ancona e colleghi {cite}`ancona2018towards`
+dimostrano che la regola $\varepsilon$ di LRP coincide con gradiente per
+ingresso se le non-linearità sono tutte ReLU, e con DeepLIFT a baseline zero
+se la rete non ha bias additivi e le non-linearità soddisfano $f(0) = 0$
+(ReLU, $\tanh$); e che nel caso lineare tutti questi metodi coincidono. Su un
+neurone solo, $f(\mathbf{x}) = \tanh(z)$ con $z = \mathbf{w}^\top\mathbf{x}$ e
+baseline nulla, coincidono anche con i gradienti integrati
+{cite}`sundararajan2017axiomatic`: tutti e tre danno
+$a_i = \frac{w_i x_i}{z}\tanh(z)$, perché
+$\int_0^1 \tanh'(\alpha z)\,d\alpha = \tanh(z)/z$ è proprio il rapporto
+incrementale di DeepLIFT. Gradiente per ingresso vale invece
+$w_i x_i \tanh'(z)$, che in saturazione tende a zero.
+
+Sul costo: il gradiente chiede una passata all’indietro, LRP e DeepLIFT una
+passata all’indietro con le regole modificate, i gradienti integrati $m$
+passate lungo il cammino, l’occlusione una passata in avanti per ogni pezza.
+L’occlusione di una variabile per volta prende il contributo marginale di $i$
+rispetto alla coalizione di tutte le altre, dove i valori di Shapley della
+{doc}`sezione su SHAP </Interpretabilita/spiegazioni-locali>` fanno la media
+su tutte le coalizioni. E ogni metodo ha una baseline, anche quando non la
+scrive: il gradiente per ingresso è uno sviluppo al primo ordine rispetto
+all’ingresso nullo. Tutti ne ereditano l’arbitrio: la scelta di
+$\bar{\mathbf{x}}$ (nero, grigio, rumore, un’immagine sfocata) cambia le
+attribuzioni.
+
+`````
+
+Il conto prende il neurone dell’esempio eseguibile e calcola le attribuzioni
+delle tre famiglie, con la loro somma accanto alla differenza
+$f(\mathbf{x}) - f(\mathbf{0})$ che i metodi completi devono restituire.
+
+```python
+import numpy as np
+
+w = np.array([2.0, -1.0])
+x = np.array([2.0, 1.0])
+f = lambda v: np.tanh(w @ v)
+z, zi = w @ x, w * x                    # la somma pesata e i suoi due pezzi
+delta = f(x) - f(np.zeros(2))           # quanto l'uscita si allontana dalla baseline
+
+grad_per_ingresso = x * (1 - np.tanh(z) ** 2) * w
+occlusione = np.array([f(x) - f(np.where(np.arange(2) == i, 0.0, x))
+                       for i in range(2)])     # si azzera una variabile per volta
+lrp = zi / z * f(x)                             # regola epsilon, con epsilon -> 0
+deeplift = (f(x) - f(np.zeros(2))) / (z - 0.0) * zi   # rapporto incrementale
+m = 200
+alphas = (np.arange(1, m + 1) - 0.5) / m
+ig = x * np.mean([(1 - np.tanh(a * z) ** 2) * w for a in alphas], axis=0)
+
+print("somma pesata:", z, "  senza la prima:", w[1] * x[1],
+      "  senza la seconda:", w[0] * x[0])
+for nome, a in [("gradiente per ingresso", grad_per_ingresso),
+                ("occlusione", occlusione), ("LRP", lrp),
+                ("DeepLIFT", deeplift), ("gradienti integrati", ig)]:
+    print(f"{nome:23s} {np.round(a, 4)}  somma {a.sum():.4f}")
+print(f"{'f(x) - f(0)':23s} {delta:.4f}")
+```
+
+```text
+somma pesata: 3.0   senza la prima: -1.0   senza la seconda: 4.0
+gradiente per ingresso  [ 0.0395 -0.0099]  somma 0.0296
+occlusione              [ 1.7566 -0.0043]  somma 1.7524
+LRP                     [ 1.3267 -0.3317]  somma 0.9951
+DeepLIFT                [ 1.3267 -0.3317]  somma 0.9951
+gradienti integrati     [ 1.3267 -0.3317]  somma 0.9951
+f(x) - f(0)             0.9951
+```
+
+Gradiente per ingresso vede il neurone saturo e dà quasi zero a tutti e due.
+L’occlusione dà alla prima variabile più di tutta la differenza da spiegare,
+$1{,}757$ contro $0{,}995$, perché togliendola la somma pesata passa da $3$ a
+$-1$ e la $\tanh$ attraversa tutta la sua parte ripida; alla seconda quasi
+niente, perché togliendola la somma sale da $3$ a $4$, dove la curva è piatta.
+Le tre attribuzioni complete coincidono fino al quarto decimale e sommano alla
+differenza giusta: su un neurone solo sono la stessa formula scritta in tre
+modi, e si separano soltanto su reti con più strati.
+
 ## Uno sketch di Grad-CAM in PyTorch
 
 Su una rete vera, Grad-CAM si costruisce agganciando due *hook* allo stadio
@@ -999,8 +1262,9 @@ valori fra $0$ e $1$ per poterli disegnare (il $10^{-8}$ evita una divisione per
 zero nel caso, raro ma possibile su una classe non predetta, in cui `relu`
 azzeri tutta la mappa). Qui l'immagine è rumore tirato a caso (`torch.randn`):
 basta a controllare le forme dei numeri, ma non dà una mappa da guardare. Su una
-vera foto di cane la macchia calda cadrebbe sul muso; su un husky delle venti
-foto truccate, sulla neve, ed è precisamente questo che volevamo poter vedere.
+vera foto di cane la macchia calda cadrebbe sul muso; sull'husky fotografato
+nella neve, quello che il modello dell'apertura del capitolo scambiava per un
+lupo, cadrebbe sulla neve, ed è precisamente questo che volevamo poter vedere.
 
 `````{tab} Elementare
 
@@ -1027,6 +1291,11 @@ foto truccate, sulla neve, ed è precisamente questo che volevamo poter vedere.
   punto si parta, quindi che torni non dimostra che il punto di partenza sia
   quello giusto; e di ciò che era già nero in partenza non si misura nessun
   contributo, nemmeno se era la ragione della decisione.
+- Le mappe rispondono a tre domande diverse: che cosa cambierebbe con un
+  ritocco (il gradiente), che cosa succede togliendo un pezzo (l'occlusione,
+  i cui meriti sommati non fanno il risultato), come si divide il risultato
+  all'indietro (la propagazione, che torna al centesimo come i gradienti
+  integrati). Sullo stesso neurone saturo danno numeri diversissimi.
 - Una mappa dice dove, non che cosa (Cynthia Rudin): sapere quale zona
   la rete guarda non dice che cosa ci trovi. E i controlli di sanità
   (Adebayo e colleghi, 2018) mostrano che, cancellando ciò che il modello ha
@@ -1037,6 +1306,11 @@ foto truccate, sulla neve, ed è precisamente questo che volevamo poter vedere.
   *Guided Grad-CAM*; e gli Integrated Gradients stanno in mezzo, perché la mappa
   cambia ma la sagoma della foto resta lì a farla sembrare sensata. Una
   spiegazione che sembra sensata non è per questo fedele.
+- Dare un nome a ogni filtro con un archivio di foto colorate a mano (la
+  dissezione della rete) risponde al «che cosa» per quel filtro, ma il nome dice
+  con che cosa il filtro coincide, non che cosa la rete ne fa; e rimescolando i
+  filtri di uno strato in modo reversibile i nomi diversi calano di quattro
+  quinti, senza che la rete sappia una cosa in meno.
 - Le quote di attenzione dei Transformer sono un indizio, non una prova:
   quote molto diverse possono portare alla stessa risposta, con l'avvertenza che
   quel risultato viene da modelli con un solo strato di attenzione e non da una
@@ -1077,6 +1351,12 @@ foto truccate, sulla neve, ed è precisamente questo che volevamo poter vedere.
   però per qualunque baseline: $\mathbf{x}'$ è il grado di libertà che gli
   assiomi non vincolano, e ogni componente uguale alla baseline riceve
   attribuzione nulla per costruzione {cite}`sturmfels2020baselines`.
+- Tre famiglie: gradiente, propagazione (LRP {cite}`bach2015pixel`, DeepLIFT
+  {cite}`shrikumar2017learning`), perturbazione (occlusione, senza
+  completezza). Con sole ReLU $\varepsilon$-LRP è gradiente per ingresso,
+  senza bias e con $f(0) = 0$ è DeepLIFT a baseline zero
+  {cite}`ancona2018towards`; su un neurone solo coincidono con IG, su più
+  strati no.
 - Una mappa dice dove, non che cosa {cite}`rudin2019stop`, e i
   controlli di sanità {cite}`adebayo2018sanity` mostrano che per diversi
   metodi popolari la mappa cambia pochissimo randomizzando i pesi del modello:
@@ -1086,6 +1366,10 @@ foto truccate, sulla neve, ed è precisamente questo che volevamo poter vedere.
   Integrated Gradients) cambiano, anche di segno, ma conservano visibile la
   struttura dell'ingresso. La plausibilità visiva di una spiegazione
   non è una prova della sua fedeltà.
+- La dissezione della rete {cite}`bau2017network` dà a ogni unità il concetto
+  di Broden con IoU massimo; i rilevatori unici calano dell'80% sotto una
+  rotazione ortogonale casuale di conv5, quindi sono una proprietà della base,
+  non dell'informazione, e misurano co-occorrenza, non causa.
 - I pesi di attenzione non sono di per sé una spiegazione affidabile
   (dibattito *«Attention is not Explanation»*, {cite}`jain2019attention` e
   {cite}`wiegreffe2019attention`, con l'avvertenza che quegli esperimenti sono

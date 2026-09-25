@@ -232,7 +232,7 @@ feed-forward $5120$ token invece di $4096$, cioè paga di più sul termine che
 domina. Rifacendo il conto per intero con la stessa contabilità di prima
 ($24Nd^2 + 4N^2d$ per strato), il lavoro totale cala di $1{,}24$ volte a $d =
 768$, di $1{,}14$ a $d = 1024$ e di $1{,}06$ a $d = 1408$, e con l'encoder di
-InternVL, largo $d = 3200$, si rovescia: a riquadri costa l'8% in più. Il
+InternVL, largo $d = 3200$, si rovescia: a riquadri costa l'8,5% in più. Il
 guadagno immediato va da un quinto a niente, e diventa una perdita quanto più
 l'encoder è largo. (Attenzione a non leggere il rapporto come una percentuale:
 dividere per $1{,}24$ vuol dire risparmiare il 19%, non il 24%.) In cambio i
@@ -242,19 +242,20 @@ finiscono nella stessa sequenza del modello di linguaggio, dove l'attenzione è
 di nuovo quadratica su tutto.
 
 Gli argomenti che reggono di più, quindi, sono gli altri due, e non sono
-computazionali. Esiste però una strada che li supera entrambi senza tagliare:
-addestrare l'encoder a risoluzione nativa, con codifiche di posizione relative
-che non hanno una griglia fissa da interpolare (la RoPE in due dimensioni) e
-impacchettando nello stesso batch immagini di forme diverse
-{cite}`dehghani2023navit`. Qwen2-VL {cite}`wang2024qwen2vl` la adotta: nessun
-riquadro, nessuna miniatura, e un'immagine $224 \times 224$ che, dopo una
-fusione $2 \times 2$ dei token, ne costa $66$. Il prezzo è che l'encoder va
-riaddestrato. Gli embedding di posizione
-dell'encoder restano validi, quindi non vanno interpolati su una griglia più
-grande, operazione che degrada e in genere chiede un riaddestramento; e il
-sistema resta indifferente alle proporzioni, perché una schermata panoramica e
-una pagina verticale ricevono griglie diverse invece di finire schiacciate
-entrambe in un quadrato.
+computazionali. Gli embedding di posizione dell'encoder restano validi, quindi
+non vanno interpolati su una griglia più grande, operazione che degrada e in
+genere chiede un riaddestramento; e il sistema resta indifferente alle
+proporzioni, perché una schermata panoramica e una pagina verticale ricevono
+griglie diverse invece di finire schiacciate entrambe in un quadrato.
+
+Tutti e due si possono avere anche senza tagliare, a un altro prezzo:
+addestrare l'encoder a risoluzione nativa, impacchettando nello stesso batch
+immagini di forme diverse {cite}`dehghani2023navit`, con codifiche di posizione
+che non hanno una griglia fissa da interpolare. Qwen2-VL
+{cite}`wang2024qwen2vl` usa la RoPE in due dimensioni: nessun riquadro, nessuna
+miniatura, e un'immagine $224 \times 224$ che, dopo una fusione $2 \times 2$
+dei token, ne costa $64$, più i due segnaposto che la aprono e la chiudono. Il
+prezzo è che l'encoder va riaddestrato.
 
 I limiti sono altrettanto netti. Un oggetto o una riga di testo che attraversano
 il taglio finiscono in due passaggi indipendenti dell'encoder, che non si vedono

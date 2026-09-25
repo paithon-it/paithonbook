@@ -174,15 +174,15 @@ il cambio proprio per coprire i tempi morti.
 `````{tab} Superiore
 È il contrasto fra un'architettura *latency-oriented* e una
 *throughput-oriented*, e lo misura la legge di Little: per tenere occupata una
-risorsa che consegna $X$ operazioni per ciclo con latenza $\lambda$ cicli
-servono $X \cdot \lambda$ operazioni indipendenti in volo. La CPU spende il
-silicio per abbassare $\lambda$ (cache grandi, predizione dei salti,
-esecuzione fuori ordine) e le bastano poche operazioni in volo; la GPU accetta
-un $\lambda$ di centinaia di cicli verso la memoria e alza il numero di
-operazioni in volo, con decine di warp residenti per SM e centinaia di migliaia
-di thread sul chip. Paga solo se il problema offre quel parallelismo, e le reti
-neurali lo offrono: il prodotto di due matrici $(M,K)$ e $(K,N)$ costa circa
-$2MNK$ operazioni, raccolte in $MN$ prodotti scalari indipendenti. La
+risorsa che consegna $X$ operazioni per ciclo con una latenza di $t_\text{lat}$
+cicli servono $X \cdot t_\text{lat}$ operazioni indipendenti in volo. La CPU
+spende il silicio per abbassare $t_\text{lat}$ (cache grandi, predizione dei
+salti, esecuzione fuori ordine) e le bastano poche operazioni in volo; la GPU
+accetta un $t_\text{lat}$ di centinaia di cicli verso la memoria e alza il
+numero di operazioni in volo, con decine di warp residenti per SM e centinaia di
+migliaia di thread sul chip. Paga solo se il problema offre quel parallelismo, e
+le reti neurali lo offrono: il prodotto di due matrici $(M,K)$ e $(K,N)$ costa
+circa $2MNK$ operazioni, raccolte in $MN$ prodotti scalari indipendenti. La
 {doc}`sezione sull'architettura <architettura-gpu>` ne scioglie i pezzi:
 Streaming Multiprocessor, warp, SIMT, occupancy.
 `````

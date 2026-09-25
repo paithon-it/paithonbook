@@ -275,13 +275,13 @@ matematico, per quanto la si usi come misura di dissimilarità.
 Il legame con il codice è un teorema. Per la disuguaglianza di Kraft esiste un
 codice prefisso con lunghezze $\ell_i$ se e solo se $\sum_i 2^{-\ell_i}\le 1$.
 Scegliendo $\ell_i=\lceil-\log_2 q_i\rceil$ la condizione è soddisfatta, e se
-gli esiti escono secondo $p$ la lunghezza media sta fra $H(p,q)$ e
-$H(p,q)+1$ bit. Con $q=p$ è il teorema della codifica di sorgente di Shannon,
+gli esiti escono secondo $p$ la lunghezza media sta fra $H(p,q)$ e $H(p,q)+1$
+bit. Con $q=p$ è il teorema della codifica di sorgente di Shannon,
 $H(p)\le\mathbb{E}[\ell]<H(p)+1$ per il codice migliore; con $q\ne p$ il
-sovrapprezzo rispetto al codice giusto è $D_{KL}(p\,\|\,q)$, a meno di quel
-bit di arrotondamento, che si diluisce codificando i simboli a blocchi.
-$H(p,q)$ è quindi, alla lettera, la lunghezza media dei messaggi scritti con
-il codice tarato sulla distribuzione sbagliata.
+sovrapprezzo rispetto al codice giusto è $D_{KL}(p\,\|\,q)$, a meno di quel bit
+di arrotondamento, che si diluisce codificando i simboli a blocchi. $H(p,q)$ è
+quindi, a meno di quel bit, la lunghezza media dei messaggi scritti con il
+codice tarato sulla distribuzione sbagliata.
 
 `````
 
@@ -335,11 +335,12 @@ zero. Le due affermazioni convivono, e spiegano una cosa che si osserva
 addestrando. Anche la loss di *validazione* si calcola su bersagli certi,
 un'etichetta per esempio; ma su esempi nuovi la sua media tende a
 $\mathbb{E}_{\mathbf{x}}\big[H(p(\cdot\mid\mathbf{x}))+D_{KL}\big(p(\cdot\mid\mathbf{x})\,\|\,q_\theta(\cdot\mid\mathbf{x})\big)\big]$,
-il pavimento vero più l'errore del modello. Sul *training* set, invece, un
-modello abbastanza ricco può dare probabilità quasi $1$ proprio all'etichetta
-che ogni esempio ha ricevuto, rumore compreso: la loss scende quasi a zero
-perché il modello ha memorizzato quelle estrazioni, non perché il processo sia
-diventato certo.
+il pavimento vero più l'errore del modello (in bit: la loss delle librerie usa
+il logaritmo naturale, e misura le stesse quantità in nat, cioè moltiplicate per
+$\ln 2$). Sul *training* set, invece, un modello abbastanza ricco può dare
+probabilità quasi $1$ proprio all'etichetta che ogni esempio ha ricevuto, rumore
+compreso: la loss scende quasi a zero perché il modello ha memorizzato quelle
+estrazioni, non perché il processo sia diventato certo.
 
 Inoltre, sulla
 distribuzione empirica del training set la cross-entropia coincide con la
@@ -398,15 +399,14 @@ Succede sempre così quando le due cose non hanno niente a che fare l'una con
 l'altra, e solo allora.
 
 Il punto di rottura sta in una parola sola, «in media». Un esame per una
-malattia che colpisce una persona su cento: prima dell'esame il dubbio è
-minimo, quasi certamente sei sano (circa $0{,}08$ bit). Se l'esame risulta
-positivo, la probabilità di essere malato sale a una su sei, e il dubbio
-cresce otto volte, a $0{,}65$ bit: quella notizia ti ha confuso le idee invece
-di schiarirle. Ma un positivo capita di rado, e un negativo, che capita quasi
-sempre, azzera il dubbio residuo. Contando tutte e due le risposte con la
-loro frequenza, l'esame dimezza l'incertezza: dopo restano $0{,}04$ bit. Una
-singola notizia può aumentare il dubbio; una fonte di notizie, in media, non
-lo aumenta mai.
+malattia che colpisce una persona su cento: prima dell'esame il dubbio è minimo,
+quasi certamente sei sano (circa $0{,}08$ bit). Se l'esame risulta positivo, la
+probabilità di essere malato sale a una su sei, e il dubbio cresce otto volte, a
+$0{,}65$ bit: quella notizia ti ha confuso le idee invece di schiarirle. Ma un
+positivo capita di rado, e un negativo, che capita quasi sempre, lo riduce quasi
+a zero. Contando tutte e due le risposte con la loro frequenza, l'esame dimezza
+l'incertezza: dopo restano $0{,}04$ bit. Una singola notizia può aumentare il
+dubbio; una fonte di notizie, in media, non lo aumenta mai.
 
 E le notizie non si moltiplicano passando di bocca in bocca. Se l'amico
 riferisce la sua frase a un terzo, e il terzo la riferisce a te, del dado puoi
@@ -442,14 +442,14 @@ I(X;Y)=D_{KL}\big(p(x,y)\,\|\,p(x)\,p(y)\big)
 =\mathbb{E}_{p(x,y)}\!\left[\log_2\frac{p(x,y)}{p(x)\,p(y)}\right]\ge 0,
 $$
 
-quindi per la disuguaglianza di Gibbs è non negativa, e nulla se e solo se
-$X$ e $Y$ sono indipendenti. Ne segue $H(Y\mid X)\le H(Y)$: condizionare non
-aumenta l'entropia *in media*. Per un singolo valore invece
-$H(Y\mid X=x)>H(Y)$ è possibile, e l'esame lo mostra: con prevalenza $0{,}01$,
-sensibilità $0{,}99$ e falsi positivi al $5\%$, $H(Y)\approx 0{,}081$ bit,
-$H(Y\mid X=+)\approx 0{,}650$, $H(Y\mid X)\approx 0{,}040$ e
-$I(X;Y)\approx 0{,}041$ bit. Allo stesso modo la quantità dentro il valore
-atteso, l’**informazione mutua puntuale**
+quindi per la disuguaglianza di Gibbs è non negativa, e nulla se e solo se $X$ e
+$Y$ sono indipendenti. Ne segue $H(Y\mid X)\le H(Y)$: condizionare non aumenta
+l'entropia *in media*. Per un singolo valore invece $H(Y\mid X=x)>H(Y)$ è
+possibile, e l'esame lo mostra: con $Y$ lo stato di salute e $X$ l'esito
+dell'esame, prevalenza $0{,}01$, sensibilità $0{,}99$ e falsi positivi al $5\%$,
+$H(Y)\approx 0{,}081$ bit, $H(Y\mid X=+)\approx 0{,}650$,
+$H(Y\mid X)\approx 0{,}040$ e $I(X;Y)\approx 0{,}041$ bit. Allo stesso modo la
+quantità dentro il valore atteso, l’**informazione mutua puntuale**
 $\operatorname{pmi}(x,y)=\log_2\frac{p(x,y)}{p(x)\,p(y)}$, può essere negativa,
 mentre la sua media non lo è mai {cite}`cover2006elements`.
 
@@ -487,6 +487,11 @@ esame = np.array([[(1 - prev) * (1 - fp), (1 - prev) * fp],
                   [prev * (1 - sens),     prev * sens]])
 print(round(H(esame.sum(axis=1)), 4), round(info_mutua(esame), 4))
 # -> 0.0808 0.0407
+positivo = esame[:, 1] / esame[:, 1].sum()      # P(Y | X = +)
+negativo = esame[:, 0] / esame[:, 0].sum()      # P(Y | X = -)
+print(round(H(positivo), 4), round(H(negativo), 4),
+      round(H(esame.sum(axis=1)) - info_mutua(esame), 4))
+# -> 0.65 0.0016 0.0401
 ```
 
 `````

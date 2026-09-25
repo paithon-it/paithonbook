@@ -318,16 +318,17 @@ due, spesso combinate:
   *ripiegare* sull'ordine inferiore altrimenti. Nella forma classica è il
   backoff di Katz (1987), e i fattori in gioco sono due, con due mestieri
   distinti. Il primo è lo sconto di Good e Turing: con $N_r$ il numero di
-  bigrammi distinti visti esattamente $r$ volte, un conteggio $r$ si ri-stima
-  in $r^* = (r+1)\,N_{r+1}/N_r$, e la massa lasciata agli eventi mai visti è
-  $N_1$ diviso il totale dei bigrammi osservati, cioè la frazione di eventi
-  incontrati una volta sola. Katz lo applica ai soli conteggi piccoli
-  ($r \le 5$), dove è affidabile. Il secondo è un peso di ripiego
-  $\alpha(w_{t-1})$ che distribuisce quella massa sulle continuazioni mai viste
-  in proporzione a $P(w_t)$, rimettendo la probabilità totale a 1. La variante a
-  sconto costante, quella che serve a Kneser–Ney, si chiama
-  invece sconto assoluto: si toglie sempre la stessa quantità, qualunque sia
-  il conteggio di partenza.
+  bigrammi distinti visti esattamente $r$ volte, un conteggio $r$ si ri-stima in
+  $r^* = (r+1)\,N_{r+1}/N_r$, e la massa lasciata agli eventi mai visti è $N_1$
+  diviso il totale dei bigrammi osservati, cioè la frazione di eventi incontrati
+  una volta sola. Katz lo applica ai soli conteggi piccoli ($r \le 5$), dove è
+  affidabile. Il secondo è un peso di ripiego $\alpha(w_{t-1})$: dopo lo sconto,
+  le probabilità dei bigrammi visti dopo $w_{t-1}$ sommano a meno di 1, e il
+  peso ridistribuisce proprio quel resto, che cambia da un contesto all'altro,
+  sulle continuazioni mai viste dopo $w_{t-1}$, in proporzione a $P(w_t)$,
+  rimettendo la probabilità totale a 1. La variante a sconto costante, quella
+  che serve a Kneser–Ney, si chiama invece sconto assoluto: si toglie sempre la
+  stessa quantità, qualunque sia il conteggio di partenza.
 
 Il confronto sistematico tra queste famiglie è lo studio empirico di Chen e
 Goodman {cite}`chen1999empirical`, per anni la bussola di chi costruiva

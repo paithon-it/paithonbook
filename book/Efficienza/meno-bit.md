@@ -84,10 +84,10 @@ numero. (Troncare $q$ all’intervallo rappresentabile è una prudenza che con l
 scala presa dal massimo non scatta mai: serve soltanto se la scala viene da
 altro, per esempio da una calibrazione fatta su dati diversi.)
 
-Quello che conta però è l’errore sull’uscita, non quello sul peso. Se il
-passo è piccolo rispetto alla dispersione dei pesi, l’errore di arrotondamento
-$e = \hat{w} - w$ si comporta come una variabile uniforme su
-$[-s/2,\, s/2]$, indipendente dal peso, con
+Quello che conta però è l’errore sull’uscita, non quello sul peso. Se il passo
+non supera un paio di deviazioni standard dei pesi, l’errore di arrotondamento
+$e = \hat{w} - w$ si comporta come una variabile uniforme su $[-s/2,\, s/2]$,
+indipendente dal peso, con
 
 $$
 \mathbb{E}[e] = 0, \qquad \operatorname{Var}(e) = \frac{1}{s}\int_{-s/2}^{s/2} u^2\,\mathrm{d}u = \frac{s^2}{12}.
@@ -106,10 +106,11 @@ $$
 che non dipende da $n$ e si dimezza a ogni bit in più (i circa sei decibel per
 bit della teoria del segnale). La formula anticipa la tabella degli errori per
 numero di bit: su $256 \times 512$ pesi gaussiani il massimo vale circa
-$4{,}6\,\sigma_w$, e a quattro bit dà $4{,}6/(7\sqrt{12}) \approx 19\%$; con una
-scala ogni sessantaquattro pesi al massimo globale si sostituisce quello tipico
-di un gruppo, circa $2{,}6\,\sigma_w$, e il rapporto fra i due è il fattore
-costante fra le due colonne.
+$4{,}6\,\sigma_w$ (lo stampa il conto con le due scale), e a quattro bit dà
+$4{,}6/(7\sqrt{12}) \approx 19\%$; con una scala ogni sessantaquattro pesi al
+massimo globale si sostituisce quello tipico di un gruppo, circa
+$2{,}6\,\sigma_w$, e il rapporto fra i due è il fattore costante fra le due
+colonne.
 
 Perché l’errore relativo non si accumuli serve però che anche il segnale
 cresca come $\sqrt{n}$, e questa è un’ipotesi sugli ingressi, non sugli
@@ -122,11 +123,12 @@ migliora; quando invece l’ingresso è quasi ortogonale ai pesi il segnale
 quasi si annulla e l’errore relativo peggiora di molto: fra i due estremi, a
 parità di errore sui pesi, ci sono due ordini di grandezza.
 
-L’ipotesi di media nulla sugli arrotondamenti invece regge finché il passo è
-piccolo rispetto alla dispersione dei pesi, e a quattro o tre bit lo è:
-l’errore resta centrato, scorrelato dal peso e con la varianza $s^2/12$ del
-modello uniforme. Cade quando i livelli sono così pochi che l’arrotondamento
-diventa una funzione del peso: a due bit i livelli sono $-s$, $0$ e $s$, quasi
+L’ipotesi di media nulla sugli arrotondamenti invece regge finché il passo non
+supera un paio di deviazioni standard dei pesi, e a quattro bit (due terzi di
+deviazione) come a tre (una e mezza) è così: l’errore resta centrato, scorrelato
+dal peso e con la varianza $s^2/12$ del modello uniforme. Cade quando i livelli
+sono così pochi che l’arrotondamento diventa una funzione del peso: a due bit i
+livelli sono $-s$, $0$ e $s$, il passo vale più di quattro deviazioni, quasi
 tutti i pesi finiscono sullo zero e l’errore è in pratica $-w$, fortemente
 anticorrelato con il peso; ma a due bit è già crollato tutto.
 
@@ -213,6 +215,13 @@ print(f"{'bit':>4} {'una scala per tutto':>21} {'una scala ogni 64 pesi':>24}")
 for bit in (8, 6, 4, 3):
     print(f"{bit:>4} {errore(quantizza(W, bit)):>20.2f}% "
           f"{errore(quantizza(W, bit, 64)):>23.2f}%")
+
+# i due massimi da cui passa il conto del modello uniforme
+sigma = W.std()
+gruppi = W.reshape(256, -1, 64).abs().amax(-1)
+print(f"massimo di tutta la matrice: {W.abs().max() / sigma:.2f} sigma")
+print(f"massimo di un gruppo da 64, in media quadratica: "
+      f"{gruppi.pow(2).mean().sqrt() / sigma:.2f} sigma")
 ```
 
 ```text
@@ -221,6 +230,8 @@ for bit in (8, 6, 4, 3):
    6                 4.22%                    2.43%
    4                18.71%                   10.77%
    3                43.36%                   24.96%
+massimo di tutta la matrice: 4.56 sigma
+massimo di un gruppo da 64, in media quadratica: 2.63 sigma
 ```
 
 Otto bit costano l’uno per cento, e a sei bit si è ancora sotto il cinque: fin
@@ -505,8 +516,9 @@ due salti.
 ```{admonition} Da ricordare
 :class: important
 - Quantizzazione simmetrica a $b$ bit: $\hat{w} = s\,\mathrm{round}(w/s)$ con
-  $s = \max|w| / (2^{b-1}-1)$. L’errore per elemento è limitato da $s/2$,
-  uniforme, di varianza $s^2/12$;
+  $s = \max|w| / (2^{b-1}-1)$. L’errore per elemento è limitato da $s/2$ e,
+  finché il passo non supera un paio di deviazioni standard dei pesi, è
+  uniforme di varianza $s^2/12$;
   sull’uscita di un prodotto scalare gli errori indipendenti crescono come
   $\sqrt{n}$. Che l’errore relativo non si accumuli richiede in più che
   cresca così anche il segnale, ed è un’ipotesi sugli ingressi, non sugli

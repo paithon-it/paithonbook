@@ -1,12 +1,11 @@
 # Le architetture lineari: RetNet, RWKV, xLSTM
 
-Il trucco del kernel, i gate e la delta rule hanno smontato i *meccanismi*: il
-modo di riassumere
-che trasforma l'attenzione in una memoria di taglia fissa, gli interruttori che
-la fanno sbiadire, la regola che corregge una voce invece di sommarci sopra.
-Erano pezzi sciolti su un tavolo. Adesso li vediamo montati in macchine intere:
-le architetture che, tra il 2023 e il 2025, hanno provato a fare concorrenza al
-Transformer sul suo stesso terreno.
+Il trucco del kernel, i gate e la delta rule sono i *meccanismi*: il modo di
+riassumere che trasforma l'attenzione in una memoria di taglia fissa, gli
+interruttori che la fanno sbiadire, la regola che corregge una voce invece di
+sommarci sopra. Erano pezzi sciolti su un tavolo. Adesso li vediamo montati in
+macchine intere: le architetture che, tra il 2023 e il 2025, hanno provato a
+fare concorrenza al Transformer sul suo stesso terreno.
 
 Ne guardiamo tre, scelte perché raccontano tre strade diverse verso la stessa
 meta: **RetNet**, nata fra un laboratorio industriale e un'università attorno a
@@ -341,7 +340,8 @@ l'altra, ed è la differenza che gli autori sottolineano contro i lavori
 precedenti.
 
 La capacità nuova, però, non viene da lì. Viene dal fattore di rango uno. In
-DeltaNet $\mathbf{I} - \beta_t \mathbf{k}_t\mathbf{k}_t^\top$ è una Householder
+DeltaNet, con chiavi di norma unitaria,
+$\mathbf{I} - \beta_t \mathbf{k}_t\mathbf{k}_t^\top$ è una Householder
 *generalizzata* con $\beta_t \in (0,1)$: un autovalore vale $1-\beta_t \in
 (0,1)$, gli altri $1$, e uno negativo non compare mai (la riflessione vera, con
 autovalore $-1$, si avrebbe solo a $\beta_t = 2$). In RWKV-7 il termine di

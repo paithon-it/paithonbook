@@ -134,8 +134,17 @@ dimensionalità, dati che cambiano.</span> </a> <a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-MachineLearning.pdf"
 aria-label="Scarica in PDF il capitolo «Machine Learning»" title="«Machine
 Learning» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
-href="RetiNeurali/overview.html"> <span class="pt-card-num"></span> <span
-class="pt-card-title">Reti Neurali</span> <span class="pt-card-desc">Dal
+href="TeoriaApprendimento/overview.html"> <span class="pt-card-num"></span>
+<span class="pt-card-title">Teoria dell'apprendimento</span> <span
+class="pt-card-desc">Perché gli esempi bastano: apprendimento PAC, dimensione
+VC, complessità di Rademacher e margine, e che cosa le garanzie non spiegano
+delle reti profonde.</span> </a> <a class="pt-card-pdf"
+href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-TeoriaApprendimento.pdf"
+aria-label="Scarica in PDF il capitolo «Teoria dell'apprendimento»"
+title="«Teoria dell'apprendimento» in PDF">PDF</a></div> <div
+class="pt-cella"><a class="pt-card" href="RetiNeurali/overview.html"> <span
+class="pt-card-num"></span> <span class="pt-card-title">Reti Neurali</span>
+<span class="pt-card-desc">Dal
 percettrone alla backpropagation: come una rete impara davvero.</span> </a> <a
 class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-RetiNeurali.pdf"
@@ -507,7 +516,8 @@ $2^{-L/2}$: su cinquanta strati $2^{-25} \approx 3 \cdot 10^{-8}$, sette ordini
 e mezzo di attenuazione, e il doppio della varianza giusta dà lo stesso fattore
 all'insù. Il fattore resta $1$ solo con $\sigma_w^2 = 2/n$, la scala di He
 {cite}`he2015delving`, il cui $2$ compensa proprio la metà delle unità che la
-ReLU azzera {cite}`glorot2010understanding`.
+ReLU azzera; quella di Xavier l'avevano ricavata Glorot e Bengio per la
+tangente iperbolica {cite}`glorot2010understanding`.
 
 In $x = 0$ la funzione non è derivabile (il grafico ha un punto angoloso); il sottodifferenziale è l'intervallo $[0, 1]$ e nella pratica, PyTorch compreso, si adotta la convenzione $f'(0) = 0$.
 

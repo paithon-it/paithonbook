@@ -51,9 +51,10 @@ niente che allontani; a impedire il collasso è che le due reti non sono
 intercambiabili: una sola riceve il gradiente, l'altra fa da bersaglio
 fermo. Come si rompa la simmetria cambia da metodo a metodo: in BYOL il
 bersaglio è una copia lenta, e solo il ramo che impara ha un passaggio in più
-prima del confronto; in SimSiam le due reti hanno gli stessi pesi e basta
-fermare il gradiente su un ramo; in DINO le architetture sono identiche e il
-lavoro lo fanno la centratura e l'affilatura dell'insegnante.
+prima del confronto; in SimSiam le due reti hanno gli stessi pesi, e servono
+insieme quel passaggio in più su un ramo e il gradiente fermato sull'altro
+(tolto l'uno o l'altro, collassa); in DINO le architetture sono identiche, e
+servono la copia lenta, la centratura e l'affilatura dell'insegnante.
 
 È la famiglia della distillazione, perché una rete impara da quello che
 dice l'altra, e anche questa è già stata percorsa in «Imparare a vedere senza

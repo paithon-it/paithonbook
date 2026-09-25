@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../row-stationary.svg
+-->
+<!--
+  paithon book, figura: il flusso row stationary di Eyeriss su una matrice di
+  3 x 4 elementi di calcolo, per un filtro di tre righe e una mappa d'uscita di
+  quattro righe. Contando da uno, l'elemento (i, j) tiene la riga i del filtro e
+  riceve la riga i + j - 1 dell'immagine. Le righe del filtro scorrono in orizzontale (terracotta),
+  le righe dell'immagine si ripetono lungo le diagonali (teal), le somme
+  parziali scendono in verticale (ocra) e in fondo a ogni colonna esce una riga
+  della mappa d'uscita. Palette-locked. Backing cream.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 470" role="img" aria-label="Una matrice di tre righe per quattro colonne di elementi di calcolo. Ogni riga della matrice riceve da sinistra una riga del filtro, che la attraversa tutta: la prima riga del filtro serve i quattro elementi della prima riga, e così via. Ogni elemento riceve anche una riga dell'immagine, e la stessa riga dell'immagine arriva a tutti gli elementi di una diagonale: la terza riga, per esempio, va all'elemento in alto nella terza colonna, a quello di mezzo nella seconda e a quello in basso nella prima. Le somme parziali scendono lungo ogni colonna, e in fondo alla colonna j esce la riga j della mappa d'uscita.">
+  <style>
+    .pe   { fill:#0E0C0A; stroke:#F4ECDD; stroke-opacity:0.6; stroke-width:1.5; }
+    .fil  { stroke:#E27B52; stroke-width:3; fill:none; }
+    .imm  { stroke:#5BA39C; stroke-width:2.2; stroke-dasharray:6 5; fill:none; opacity:0.85; }
+    .ps   { stroke:#DDB874; stroke-width:3.2; fill:none; }
+    .t1   { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#E27B52; }
+    .t2   { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#5BA39C; }
+    .t3   { font-family:Inter, system-ui, sans-serif; font-size:12px; font-weight:700; fill:#F4ECDD; opacity:0.75; }
+    .lbl  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#F4ECDD; opacity:0.8; }
+  </style>
+  <defs>
+    <marker id="rs-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#E27B52"/></marker>
+    <marker id="rs-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#DDB874"/></marker>
+  </defs>
+  <rect x="6" y="6" width="688" height="458" rx="14" fill="#0E0C0A" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
+  <line class="imm" x1="394" y1="99" x2="216" y2="247"/>
+  <line class="imm" x1="512" y1="99" x2="216" y2="351"/>
+  <line class="imm" x1="630" y1="99" x2="334" y2="351"/>
+  <line class="imm" x1="630" y1="203" x2="452" y2="351"/>
+  <line class="fil" x1="130" y1="121" x2="660" y2="121" marker-end="url(#rs-t)"/>
+  <text class="t1" x="126" y="113" text-anchor="end">riga 1</text>
+  <text class="t1" x="126" y="129" text-anchor="end">del filtro</text>
+  <line class="fil" x1="130" y1="225" x2="660" y2="225" marker-end="url(#rs-t)"/>
+  <text class="t1" x="126" y="217" text-anchor="end">riga 2</text>
+  <text class="t1" x="126" y="233" text-anchor="end">del filtro</text>
+  <line class="fil" x1="130" y1="329" x2="660" y2="329" marker-end="url(#rs-t)"/>
+  <text class="t1" x="126" y="321" text-anchor="end">riga 3</text>
+  <text class="t1" x="126" y="337" text-anchor="end">del filtro</text>
+  <line class="ps" x1="246" y1="150" x2="246" y2="392" marker-end="url(#rs-o)"/>
+  <text class="t3" x="246" y="412" text-anchor="middle">riga 1</text>
+  <text class="t3" x="246" y="427" text-anchor="middle">dell'uscita</text>
+  <line class="ps" x1="364" y1="150" x2="364" y2="392" marker-end="url(#rs-o)"/>
+  <text class="t3" x="364" y="412" text-anchor="middle">riga 2</text>
+  <text class="t3" x="364" y="427" text-anchor="middle">dell'uscita</text>
+  <line class="ps" x1="482" y1="150" x2="482" y2="392" marker-end="url(#rs-o)"/>
+  <text class="t3" x="482" y="412" text-anchor="middle">riga 3</text>
+  <text class="t3" x="482" y="427" text-anchor="middle">dell'uscita</text>
+  <line class="ps" x1="600" y1="150" x2="600" y2="392" marker-end="url(#rs-o)"/>
+  <text class="t3" x="600" y="412" text-anchor="middle">riga 4</text>
+  <text class="t3" x="600" y="427" text-anchor="middle">dell'uscita</text>
+  <rect class="pe" x="200" y="92" width="92" height="58" rx="6"/>
+  <text class="t1" x="246" y="115" text-anchor="middle">filtro 1</text>
+  <text class="t2" x="246" y="133" text-anchor="middle">immagine 1</text>
+  <rect class="pe" x="318" y="92" width="92" height="58" rx="6"/>
+  <text class="t1" x="364" y="115" text-anchor="middle">filtro 1</text>
+  <text class="t2" x="364" y="133" text-anchor="middle">immagine 2</text>
+  <rect class="pe" x="436" y="92" width="92" height="58" rx="6"/>
+  <text class="t1" x="482" y="115" text-anchor="middle">filtro 1</text>
+  <text class="t2" x="482" y="133" text-anchor="middle">immagine 3</text>
+  <rect class="pe" x="554" y="92" width="92" height="58" rx="6"/>
+  <text class="t1" x="600" y="115" text-anchor="middle">filtro 1</text>
+  <text class="t2" x="600" y="133" text-anchor="middle">immagine 4</text>
+  <rect class="pe" x="200" y="196" width="92" height="58" rx="6"/>
+  <text class="t1" x="246" y="219" text-anchor="middle">filtro 2</text>
+  <text class="t2" x="246" y="237" text-anchor="middle">immagine 2</text>
+  <rect class="pe" x="318" y="196" width="92" height="58" rx="6"/>
+  <text class="t1" x="364" y="219" text-anchor="middle">filtro 2</text>
+  <text class="t2" x="364" y="237" text-anchor="middle">immagine 3</text>
+  <rect class="pe" x="436" y="196" width="92" height="58" rx="6"/>
+  <text class="t1" x="482" y="219" text-anchor="middle">filtro 2</text>
+  <text class="t2" x="482" y="237" text-anchor="middle">immagine 4</text>
+  <rect class="pe" x="554" y="196" width="92" height="58" rx="6"/>
+  <text class="t1" x="600" y="219" text-anchor="middle">filtro 2</text>
+  <text class="t2" x="600" y="237" text-anchor="middle">immagine 5</text>
+  <rect class="pe" x="200" y="300" width="92" height="58" rx="6"/>
+  <text class="t1" x="246" y="323" text-anchor="middle">filtro 3</text>
+  <text class="t2" x="246" y="341" text-anchor="middle">immagine 3</text>
+  <rect class="pe" x="318" y="300" width="92" height="58" rx="6"/>
+  <text class="t1" x="364" y="323" text-anchor="middle">filtro 3</text>
+  <text class="t2" x="364" y="341" text-anchor="middle">immagine 4</text>
+  <rect class="pe" x="436" y="300" width="92" height="58" rx="6"/>
+  <text class="t1" x="482" y="323" text-anchor="middle">filtro 3</text>
+  <text class="t2" x="482" y="341" text-anchor="middle">immagine 5</text>
+  <rect class="pe" x="554" y="300" width="92" height="58" rx="6"/>
+  <text class="t1" x="600" y="323" text-anchor="middle">filtro 3</text>
+  <text class="t2" x="600" y="341" text-anchor="middle">immagine 6</text>
+  <text class="t2" x="646" y="70" text-anchor="end">le righe dell'immagine si ripetono lungo le diagonali</text>
+</svg>

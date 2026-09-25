@@ -40,7 +40,8 @@ Con questa disposizione, `torchvision` fa tutto da sé:
 from torchvision import datasets, transforms
 
 preparazione = transforms.Compose([
-    transforms.Resize((224, 224)),   # tutte le immagini della stessa misura
+    transforms.Resize(256),          # il lato corto a 256, proporzioni intatte
+    transforms.CenterCrop(224),      # poi il quadrato che serve alla rete
     transforms.ToTensor(),           # da immagine a tensore (un canale per
                                      # colore, poi altezza e larghezza) con i
                                      # valori portati fra 0 e 1
@@ -207,7 +208,7 @@ from torchvision import transforms
 
 # ADDESTRAMENTO: prepara e moltiplica
 train_tf = transforms.Compose([
-    transforms.Resize((256, 256)),
+    transforms.Resize(256),                        # stessa geometria della valutazione
     transforms.RandomCrop(224),                    # ritaglio casuale
     transforms.RandomHorizontalFlip(p=0.5),        # specchiatura casuale
     transforms.ColorJitter(brightness=0.2, contrast=0.2),
@@ -220,7 +221,7 @@ train_tf = transforms.Compose([
 test_tf = transforms.Compose([
     transforms.Resize(256),                        # il lato corto a 256, senza
                                                    # schiacciare le proporzioni
-    transforms.CenterCrop(224),                    # ritaglio deterministico
+    transforms.CenterCrop(224),                    # ritaglio sempre al centro
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406],
                          std=[0.229, 0.224, 0.225]),
@@ -228,11 +229,28 @@ test_tf = transforms.Compose([
 ```
 
 `````{tab} Elementare
-All'esame le domande sono uguali per tutti. Specchiare, ritagliare e schiarire
-le fotografie serve mentre si studia, e insegna al modello che un gatto
-capovolto è ancora un gatto. Farlo durante la prova vorrebbe dire sorteggiare
+All'esame le domande sono uguali per tutti. Specchiare le fotografie,
+schiarirle, ritagliarle ogni volta in un punto diverso serve mentre si studia,
+e insegna al modello che un gatto rivolto a sinistra è lo stesso gatto rivolto
+a destra. Farlo durante la prova vorrebbe dire sorteggiare
 domande diverse per ogni studente, e un voto così non si confronta con niente,
 né con quello di ieri né con quello di un altro.
+
+Prima di tutto, però, le foto vanno portate alla stessa misura, perché la rete
+le riceve a mucchi, e un mucchio ordinato si fa solo con fogli della stessa
+misura. C'è un modo sbrigativo di farlo: schiacciarle a forza dentro un
+quadrato, che in una foto larga fa di una pizza tonda un ovale. Il modo giusto
+porta il lato più corto a 256 pixel (i puntini di cui è fatta un'immagine) e
+cambia l'altro nella stessa proporzione, così una foto di 400 per 300 diventa di
+circa 341 per 256; poi ritaglia il quadrato di 224 che la rete si aspetta. Si
+perde un po’ di bordo, ma le proporzioni restano quelle vere. Il primo passo è
+identico mentre si studia e all'esame. Il quadrato invece si ritaglia ogni volta
+in un punto diverso mentre si studia, e il margine fra 256 e 224 serve proprio a
+lasciargli spazio per spostarsi, mentre all'esame si ritaglia sempre al centro.
+Chi studia su pizze ovali e poi le trova tonde alla prova ha imparato a
+riconoscere una forma che all'esame non c'è. E schiacciare in tutte e due le
+occasioni non basta a rimediare quando si parte da un modello che ha già
+studiato altrove, come si fa quasi sempre: quello le pizze le ha viste tonde.
 
 Un professore che racconta com'è andata la verifica non elenca ventidue voti,
 dice «due sopra la media» e «uno sotto». I numeri diventano piccoli, e la
@@ -283,11 +301,36 @@ normalizzazione lavora su tensori, quindi va dopo `ToTensor()`, mentre le
 trasformazioni geometriche e fotometriche lavorano tradizionalmente su PIL e
 vanno prima.
 
+`Resize(256)`, con un intero, scala l'immagine in modo che il lato corto misuri
+256 pixel e conserva il rapporto d'aspetto; `Resize((256, 256))`, con una
+coppia, impone la risoluzione e deforma ogni immagine non quadrata. Il ritaglio
+successivo (`CenterCrop` in valutazione, `RandomCrop` in addestramento) porta al
+quadrato che la rete si aspetta sacrificando una fascia di bordo su ogni lato,
+più larga lungo il lato lungo. `RandomResizedCrop` è un'altra cosa: sorteggia
+sull'immagine originale un ritaglio di area (dall'8% al 100%) e di rapporto
+d'aspetto (da 3/4 a 4/3) casuali e lo riporta alla misura richiesta, cioè fa da
+sé ridimensionamento e ritaglio e si usa al posto di tutti e due, non dopo un
+`Resize`. La deformazione delle proporzioni che introduce è casuale e cambia
+verso da un ritaglio all'altro. L'ingrandimento invece ha un verso solo, perché
+un ritaglio più piccolo dell'immagine, riportato a 224, mostra gli oggetti più
+grandi di quanto faccia la pipeline di valutazione: con i valori di default,
+nel conto di Touvron e colleghi, un oggetto visto in valutazione è in media
+l'80% di come lo si vede in addestramento, e valutare a una risoluzione più
+alta recupera accuratezza {cite}`touvron2019fixing`. Le due pipeline devono
+quindi condividere la geometria, o sapere dove non la condividono. Una
+deformazione presente solo in addestramento è uno spostamento sistematico fra
+la distribuzione su cui si addestra e quella su cui si valuta, introdotto da chi
+prepara i dati; e anche una deformazione simmetrica ha un prezzo quando si
+parte da pesi pre-addestrati, che hanno visto le proporzioni vere, perché lo
+stesso spostamento cade allora fra i dati del pre-addestramento e i propri.
+
 Le statistiche giuste sono quelle del dataset su cui il modello è stato
 addestrato: se si fa transfer learning da pesi ImageNet si usano quelle di
 ImageNet, e la scorciatoia più sicura è chiederle direttamente ai pesi;
 `torchvision.models.EfficientNet_B0_Weights.DEFAULT.transforms()` restituisce
-la pipeline esatta con cui quei pesi sono stati prodotti. Da `torchvision`
+la pipeline di valutazione con cui quei pesi sono stati misurati (lato corto a
+256 con interpolazione bicubica, ritaglio centrale a 224, le statistiche di
+ImageNet), che è quella da replicare quando li si usa. Da `torchvision`
 0.15 esiste `torchvision.transforms.v2`, che accetta anche box, maschere e
 video insieme all'immagine (necessario per detection e segmentazione, dove la
 trasformazione geometrica va applicata *coerentemente* a immagine ed
@@ -403,13 +446,16 @@ far ripartire il programma, e Python lo ferma sul nascere con un
 `drop_last=True` scarta l'ultimo batch quando non è pieno. Su un batch corto la
 media per canale della `BatchNorm` resta non distorta e diventa solo più
 dispersa; la varianza no, perché in addestramento la normalizzazione usa lo
-stimatore distorto (divide per $b$, non per $b-1$), il cui valore atteso è
-$\frac{b-1}{b}\sigma^2$: sul $6\%$ basso con $16$ esempi, sul $3\%$ con $32$, e
-l'ultimo batch corto viene normalizzato un po' più forte degli altri; il caso
-netto è il batch da un elemento, su cui la varianza campionaria non esiste e
-`nn.BatchNorm1d` in `train()` alza `ValueError: Expected more than 1 value per
-channel`. Con $n$ esempi e batch $b$ succede quando $n \bmod b = 1$, che capita
-più spesso di quanto sembri.
+stimatore distorto, che divide per il numero $m$ di valori per canale e non per
+$m-1$, e il cui valore atteso è $\frac{m-1}{m}\sigma^2$. In una `BatchNorm1d` su
+vettori $m$ è la taglia del batch: $6\%$ sotto con $16$ esempi, $3\%$ con $32$,
+e l'ultimo batch corto viene normalizzato un po' più forte degli altri. In una
+`BatchNorm2d` è la taglia del batch per $H\,W$, un valore per pixel di ogni
+esempio, e la distorsione si perde nel rumore. Il caso netto è il batch da un
+elemento, su cui la varianza campionaria non esiste e `nn.BatchNorm1d` in
+`train()` alza `ValueError: Expected more than 1 value per channel`. Con $n$
+esempi e batch $b$ succede quando $n \bmod b = 1$, che capita più spesso di
+quanto sembri.
 
 Infine `shuffle=True` e l'argomento `sampler` sono mutuamente esclusivi:
 `shuffle` è di fatto una scorciatoia per `RandomSampler`. Chi passa un sampler
@@ -687,8 +733,12 @@ del calcolo.
   I nomi delle classi li assegna in ordine alfabetico: vanno riletti da
   lui, mai riscritti a mano in un altro ordine.
 - Le trasformazioni servono a due cose: preparare (stessa misura, stessa
-  scala di numeri) e moltiplicare (girare, specchiare, schiarire). Si
-  moltiplica solo in addestramento, mai durante l'esame.
+  scala di numeri) e moltiplicare (specchiare, schiarire, ritagliare in un
+  punto a caso). Si moltiplica solo in addestramento, mai durante l'esame.
+- Per portare le foto alla stessa misura si porta il lato corto alla misura
+  giusta, nello stesso modo durante lo studio e all'esame, e poi si ritaglia un
+  quadrato, senza schiacciare: in un punto a caso mentre si studia, al centro
+  all'esame.
 - Il `DataLoader` si regola con pochi argomenti, e il primo è il numero di
   aiutanti che preparano i vassoi in parallelo; e una regola: o si mescola
   a caso, o si passa un modo di pescare proprio, non tutti e due.
@@ -717,6 +767,11 @@ del calcolo.
 - Le trasformazioni preparano (resize, `ToTensor`, `Normalize`) e
   moltiplicano (augmentation): moltiplicare solo in addestramento, mai in
   valutazione.
+- `Resize(256)` conserva il rapporto d'aspetto, `Resize((256, 256))` deforma:
+  addestramento e valutazione devono condividere la geometria, o la
+  deformazione diventa uno spostamento sistematico fra le due distribuzioni.
+  `RandomResizedCrop` la condivide solo in parte: in addestramento mostra gli
+  oggetti in media più grandi.
 - Nel `DataLoader` contano `num_workers`, `pin_memory`, `drop_last`,
   `persistent_workers`; `shuffle` e `sampler` si escludono a vicenda.
 - Con esempi di lunghezza diversa serve un `collate_fn` che imbottisce e

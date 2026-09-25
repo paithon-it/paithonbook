@@ -526,14 +526,17 @@ $$
 \hat{w} = \arg\max_{w \in \mathcal{C}(x)} P(x \mid w)\,P(w),
 $$
 
-dove $P(w)$ è il modello della lingua (il primo voto) e $P(x \mid w)$ il
-modello del canale (il secondo). È la regola di Bayes con il denominatore
-$P(x)$ tolto, perché uguale per tutti i candidati. Kernighan, Church e Gale
-stimano il canale con quattro matrici di confusione, una per mossa
-(sostituzione, cancellazione, inserimento, scambio), contate su coppie di
-refusi e correzioni. La scelta guarda la parola da sola, quindi «case» e «cane»
-si decidono senza leggere la frase: è il limite che toglieranno i
-{doc}`modelli n-gram </NaturalLanguageProcessing/modelli-ngram>`.
+dove $P(w)$ è il modello della lingua (il primo voto) e $P(x \mid w)$ il modello
+del canale (il secondo). È la regola di Bayes con il denominatore $P(x)$ tolto,
+perché uguale per tutti i candidati. Kernighan, Church e Gale ammettono soltanto
+i candidati a una mossa sola, e stimano il canale con quattro matrici di
+confusione, una per mossa (sostituzione, cancellazione, inserimento, scambio).
+Refusi già corretti a mano non ne avevano: partono da confusioni tutte
+ugualmente probabili, correggono con quelle i refusi di un anno di notizie
+d'agenzia, ricontano le correzioni scelte e ripetono. La scelta guarda la parola
+da sola, quindi «case» e «cane» si decidono senza leggere la frase: è il limite
+che toglieranno i {doc}`modelli n-gram
+</NaturalLanguageProcessing/modelli-ngram>`.
 
 È un'idea messa in pratica già nel 1990 da Mark Kernighan, Kenneth Church e
 William Gale, con un correttore che non conteneva nemmeno una regola di

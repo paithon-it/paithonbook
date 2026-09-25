@@ -555,9 +555,14 @@ esponenziale di parametro $\mu-\lambda$, quindi $W = 1/(\mu-\lambda)$ e
 $p_{99} = \ln(100)\,W \approx 4{,}6\,W$, che vale solo se
 $\rho = \lambda/\mu < 1$. A $\mu = 100$ richieste al secondo, $W$ passa da 20 ms
 a $\lambda=50$, a 100 ms a $\lambda=90$, a un secondo a $\lambda=99$: la latenza
-non cresce col carico, esplode vicino a $\rho=1$, e oltre non esiste più. Il
-batching alza $\mu$ e allunga il servizio del singolo: è per questo che batch
-più grandi alzano il throughput ma allungano la coda della latenza. Il terzo è
+cresce piano finché il carico è basso, esplode vicino a $\rho=1$, e oltre non
+esiste più. Il batching esce da questo modello, perché il servente lavora a
+mazzi, e tira in due versi: alza la capacità, cioè $\mu$, che allontana il
+muro, e fa aspettare ogni richiesta finché il suo mazzo non è pieno e poi per
+tutta la sua durata. Finché la capacità non copre il carico vince il primo
+effetto, e un mazzo più grande migliora tutte e due le grandezze; oltre quel
+punto vince il secondo, ed è lì che batch più grandi alzano il throughput ma
+allungano la p99 (sono le tre situazioni del forno). Il terzo è
 economico, il **costo per richiesta** (tempo di calcolo moltiplicato per il
 prezzo orario dell'hardware) che spesso è il vero vincolo di progetto: un
 modello che rispetta lo SLO ma costa dieci volte troppo per richiesta non è

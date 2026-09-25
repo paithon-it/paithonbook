@@ -574,11 +574,14 @@ $$
 \text{precision@}j \cdot \mathrm{rel}_j ,
 $$
 
-cioè la media delle precision misurate nelle sole posizioni in cui cade un
-item rilevante; mediata sugli utenti diventa la MAP@$k$. Premia anch'essa i
-successi in cima, con uno sconto implicito diverso da quello logaritmico della
-NDCG, e il denominatore cambia fra le implementazioni ($|\mathrm{Ril}_u|$
-oppure $\min(|\mathrm{Ril}_u|,k)$), quindi va dichiarato. Con un solo item
+cioè la somma delle precision misurate nelle posizioni in cui cade un item
+rilevante, divisa per quanti rilevanti potevano stare nei primi $k$: un
+rilevante rimasto fuori conta come una precision nulla. Mediata sugli utenti
+diventa la MAP@$k$. Premia anch'essa i successi in cima, con uno sconto
+implicito diverso da quello logaritmico della NDCG, e il denominatore cambia fra
+le implementazioni ($|\mathrm{Ril}_u|$, $\min(|\mathrm{Ril}_u|,k)$, o il numero
+di rilevanti trovati, che dà la media sulle sole posizioni colpite e non punisce
+chi ne trova pochi), quindi va dichiarato. Con un solo item
 rilevante la AP@$k$ si riduce al reciproco del rango, $1/\mathrm{rank}_u$ (zero
 se l'item è fuori dai primi $k$), e la NDCG@$k$ a $1/\log_2(\mathrm{rank}_u+1)$.
 

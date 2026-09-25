@@ -148,7 +148,7 @@ J(\theta)=\mathbb{E}_{s\sim\mathcal{D}}[Q_\phi(s,\mu_\theta(s))]$ la regola
 della catena dà:
 
 $$
-\nabla_\theta J(\theta) =
+\nabla_\theta \hat J(\theta) =
 \mathbb{E}_{s\sim \mathcal{D}}\Big[\,
 \nabla_a Q_\phi(s,a)\big|_{a=\mu_\theta(s)}\;
 \nabla_\theta \mu_\theta(s)

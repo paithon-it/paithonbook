@@ -226,11 +226,12 @@ Il calcolo di GPT-3, $6 \times 175\cdot10^9 \times 300\cdot10^9 \approx
 3{,}2\cdot10^{23}$, sarebbe stato speso al meglio su circa 51 miliardi di
 parametri e mille miliardi di token; tenuti fissi i 175 miliardi, la regola ne
 chiederebbe 3.500. Kaplan prescriveva invece $N_{\text{opt}} \propto
-C^{0{,}73}$; la differenza viene in buona parte da come erano stati misurati i
-modelli piccoli (programma del learning rate non adattato alla durata,
-embedding esclusi dal conteggio). Hoffmann adatta la forma
-$\bar{\mathcal{L}}(N,D) = E + A/N^{a} + B/D^{b}$, con $E \approx 1{,}69$ il
-termine irriducibile e $a \approx 0{,}34$, $b \approx 0{,}28$. Il rapporto 20
+C^{0{,}73}$; la differenza, secondo Hoffmann e colleghi, viene in buona parte
+dal programma del learning rate, che Kaplan teneva uguale per tutti i modelli
+invece di adattarlo alla durata di ciascun addestramento. Hoffmann adatta la
+forma $\bar{\mathcal{L}}(N,D) = E + A/N^{a} + B/D^{b}$, con $E \approx 1{,}69$
+il termine irriducibile, $A$ e $B$ due costanti di adattamento e
+$a \approx 0{,}34$, $b \approx 0{,}28$. Il rapporto 20
 minimizza il costo dell'addestramento e non quello dell'uso: chi prevede di
 servire molte richieste addestra di proposito un modello più piccolo su molti
 più token.
@@ -517,7 +518,8 @@ probabile, di fatto lo esegue. Il prompt è diventato un'interfaccia di
 programmazione in linguaggio naturale: si "programma" il modello scrivendo, e
 l’*in-context learning* (imparare dal contesto della singola richiesta) non
 era un obiettivo di progetto: nessuna loss lo chiede, e migliora con la scala,
-anche se i suoi circuiti elementari compaiono già in modelli piccolissimi.
+anche se i suoi circuiti elementari compaiono già in modelli piccolissimi
+{cite}`olsson2022induction`.
 
 L'onestà impone però di dire che questa "programmazione" è fragile.
 Riformulare la stessa domanda con parole diverse può cambiare la risposta;

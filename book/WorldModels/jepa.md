@@ -1,17 +1,17 @@
 # La via di LeCun: predire nello spazio delle idee
 
 Il documento di LeCun che l'apertura del capitolo ha nominato ha una data
-precisa: il 27 giugno 2022 Yann LeCun lo deposita su OpenReview (la piattaforma
-dove di solito si caricano gli articoli in attesa di revisione) un documento di
-62 pagine intitolato *A Path Towards Autonomous Machine Intelligence*
-{cite}`lecun2022path`. Già il sottotitolo è insolito: «versione 0.9.2», come
-un software non ancora finito. E insolito è tutto il resto: non è un paper di
-risultati, con esperimenti e tabelle, ma un documento di posizione (la
-visione dell'autore su come costruire macchine intelligenti nei prossimi dieci
-anni) messo online apposta perché chiunque potesse commentarlo, criticarlo,
-smontarlo pubblicamente. Un premio Turing che espone il proprio programma di
-ricerca, in bozza dichiarata, alle obiezioni di tutti: in un'epoca in cui si
-tende a mostrare solo ciò che già funziona, è una mossa da notare.
+precisa: il 27 giugno 2022 Yann LeCun deposita su OpenReview (la piattaforma
+dove di solito si caricano gli articoli in attesa di revisione) 62 pagine
+intitolate *A Path Towards Autonomous Machine Intelligence*
+{cite}`lecun2022path`. Già il sottotitolo è insolito: «versione 0.9.2», come un
+software non ancora finito. E insolito è tutto il resto: non è un paper di
+risultati, con esperimenti e tabelle, ma un documento di posizione (la visione
+dell'autore su come costruire macchine intelligenti nei prossimi dieci anni)
+messo online apposta perché chiunque potesse commentarlo, criticarlo, smontarlo
+pubblicamente. Un premio Turing che espone il proprio programma di ricerca, in
+bozza dichiarata, alle obiezioni di tutti: in un'epoca in cui si tende a
+mostrare solo ciò che già funziona, è una mossa da notare.
 
 Dentro c'è il disegno di una macchina autonoma, fatta di sei pezzi che si
 passano il lavoro. La percezione guarda i sensori e ricostruisce com'è
@@ -86,17 +86,18 @@ manopola non c'è, e la risposta resta una sola.
 `````{tab} Superiore
 
 Se si addestra un predittore $g$ a minimizzare l'errore quadratico
-$\mathbb{E}\,\lVert \mathbf{y} - g(\mathbf{x}) \rVert^2$ su un futuro $\mathbf{y}$ intrinsecamente
-stocastico, l'ottimo è la media condizionata $g^*(\mathbf{x}) = \mathbb{E}[\mathbf{y} \mid \mathbf{x}]$:
-quando i modi della distribuzione sono molti e distinti, la loro media è
-un'immagine sfocata che non corrisponde a *nessun* futuro reale; è la ragione
-per cui la predizione video nei pixel produce fantasmi lattiginosi. La
-proposta di {cite}`lecun2022path` è la JEPA (*Joint-Embedding Predictive
+$\mathbb{E}\,\lVert \mathbf{y} - g(\mathbf{x}) \rVert^2$ su un futuro
+$\mathbf{y}$ intrinsecamente stocastico, l'ottimo è la {doc}`media condizionata
+</RetiNeurali/da-dove-viene-la-loss>` $g^*(\mathbf{x}) = \mathbb{E}[\mathbf{y}
+\mid \mathbf{x}]$: quando i modi della distribuzione sono molti e distinti, la
+loro media è un'immagine sfocata che non corrisponde a *nessun* futuro reale; è
+la ragione per cui la predizione video nei pixel produce fantasmi lattiginosi.
+La proposta di {cite}`lecun2022path` è la JEPA (*Joint-Embedding Predictive
 Architecture*): due encoder mappano contesto e target nello spazio delle
-rappresentazioni, $\mathbf{s}_x = f_\phi(\mathbf{x})$ e
-$\mathbf{s}_y = \bar{f}_{\bar{\phi}}(\mathbf{y})$ (la barra dice che il secondo
-encoder è una copia dell'altro tenuta indietro, e la sezione sul collasso
-spiega perché), e un predictor $g_\theta$ opera interamente lì:
+rappresentazioni, $\mathbf{s}_x = f_\phi(\mathbf{x})$ e $\mathbf{s}_y =
+\bar{f}_{\bar{\phi}}(\mathbf{y})$ (la barra dice che il secondo encoder è una
+copia dell'altro tenuta indietro, e la sezione sul collasso spiega perché), e
+un predictor $g_\theta$ opera interamente lì:
 
 $$
 E(\mathbf{x}, \mathbf{y}, \mathbf{z}) = \big\lVert\, g_\theta(\mathbf{s}_x, \mathbf{z}) - \mathbf{s}_y \,\big\rVert_2^2,
@@ -210,13 +211,13 @@ I suoi pezzi sono tre, e non pesano uguale
 
 ```{figure} ../figures/jepa-tre-pezzi.svg
 :name: fig-jepa-tre-pezzi
-:alt: "Due rami. In alto il contesto passa per l'encoder e poi per il predictor, che esiste su un ramo solo ed è necessario. In basso il bersaglio passa per una copia dell'encoder aggiornata come media mobile dei pesi, che si può togliere; la sua uscita va alla perdita con uno stop-gradient, anch'esso necessario, segnato da una croce sulla freccia. La perdita misura la distanza fra i due embedding."
+:alt: "Due rami. In alto il contesto passa per l'encoder e poi per il predictor, che esiste su un ramo solo ed è necessario. In basso il bersaglio passa per una copia dell'encoder aggiornata come media mobile dei pesi, che a certe condizioni si può togliere; la sua uscita va alla perdita con uno stop-gradient, anch'esso necessario, segnato da una croce sulla freccia. La perdita misura la distanza fra i due embedding."
 :width: 100%
 
 I tre pezzi dell'asimmetria. Il predictor, che sta su un ramo solo, e lo
 stop-gradient sul ramo del bersaglio servono insieme; la copia lenta
-dell'encoder, aggiornata come media mobile dei pesi, si può togliere senza che
-il sistema collassi.
+dell'encoder, aggiornata come media mobile dei pesi, a certe condizioni si può
+togliere senza che il sistema collassi.
 ```
 
 `````{tab} Elementare
@@ -248,7 +249,7 @@ dell'insegnante non salta a 20, diventa 10,04, cioè copre quattro millesimi dei
 dieci di divario. Per raggiungerlo davvero gli servono centinaia di passi, e nel
 frattempo il bersaglio cambia idea solo al ritmo a cui l'allievo migliora
 *davvero*; verso la fine il dosaggio scende a zero, e l'insegnante non cambia
-più idea affatto. Delle tre accortezze, quella di cui si fa a meno è la
+più idea affatto. Delle tre accortezze, quella di cui a volte si fa a meno è la
 lentezza: su un esercizio in miniatura la si può togliere e la truffa non
 ricomincia. Chi ha costruito questi sistemi la lentezza non la toglie e la
 dichiara necessaria; altri, su sistemi altrettanto veri, l'hanno tolta e la
@@ -281,27 +282,28 @@ pezzo, che si dimentica volentieri perché sta dalla parte dell'allievo: il
 predictor, che esiste su un ramo solo ed è ciò che rende l'asimmetria
 un'asimmetria vera. I paper della famiglia li nominano tutti e tre insieme.
 
-Dei tre, l'EMA è quello sacrificabile: nella mini-JEPA in PyTorch, toglierla
-e tenere il resto non produce alcun collasso (la varietà delle
-rappresentazioni, anzi, sale da 1,0 a 1,6). Stop-gradient e predictor servono
-invece insieme: in SimSiam togliere l'uno o l'altro fa collassare
-{cite}`chen2021exploring`, e la dinamica del predictor che lo spiega l'hanno
-analizzata Tian, Chen e Ganguli {cite}`tian2021understanding`. Da un giocattolo
-ai sistemi veri, però, il passo non è automatico: I-JEPA chiama l'EMA
-«essenziale per addestrare» architetture come questa, e la difesa dal collasso
-la attribuisce all'asimmetria fra i due rami nel suo insieme. Fuori dalla
-famiglia JEPA la copia lenta è però già stata tolta senza che niente
-collassasse, ed è SimSiam {cite}`chen2021exploring`, che la
+Dei tre, l'EMA è quello a cui si può rinunciare, ma a certe condizioni. Nella
+mini-JEPA in PyTorch toglierla e tenere il resto non produce alcun collasso (la
+varietà delle rappresentazioni, anzi, sale da 1,0 a 1,6), e SimSiam, che la
 {doc}`sezione sull'imparare a vedere senza etichette
-</VisioneArtificiale/senza-etichette>` ha già raccontato. È
-comunque la stessa scoperta empirica che aveva sorpreso la comunità con BYOL
-nel 2020 {cite}`grill2020bootstrap`: niente coppie negative, niente termini
-contrastivi, eppure niente collasso. Una comprensione teorica
-completa del *perché* manca ancora, ed è giusto dirlo; il documento del 2022
-{cite}`lecun2022path` discute anche l'alternativa esplicitamente regolarizzata
-(varianza mantenuta sopra una soglia, covarianze fuori diagonale penalizzate,
-alla VICReg {cite}`bardes2022vicreg`), ma I-JEPA e V-JEPA, nei paper, si
-affidano all'asimmetria EMA.
+</VisioneArtificiale/senza-etichette>` ha già raccontato, ne fa a meno pagando
+qualche punto di accuratezza (71,3% contro il 74,3% di BYOL, a 800 epoche)
+{cite}`chen2021exploring`. BYOL invece, tolta la media mobile con i suoi
+iperparametri, collassa (0,3% di accuratezza), e torna al 66,9% solo dando al
+predictor un tasso di apprendimento dieci volte più alto
+{cite}`grill2020bootstrap`; e I-JEPA chiama l'EMA «essenziale per addestrare»
+architetture come questa, attribuendo la difesa dal collasso all'asimmetria fra
+i due rami nel suo insieme {cite}`assran2023self`. Stop-gradient e predictor
+servono invece insieme: in SimSiam togliere l'uno o l'altro fa collassare
+{cite}`chen2021exploring`, e la dinamica del predictor che lo spiega l'hanno
+analizzata Tian, Chen e Ganguli {cite}`tian2021understanding`. Che un sistema
+senza coppie negative né termini contrastivi potesse non collassare era stata la
+scoperta empirica di BYOL nel 2020, e aveva sorpreso la comunità. Una
+comprensione teorica completa del *perché* manca ancora, ed è giusto dirlo; il
+documento del 2022 {cite}`lecun2022path` discute anche l'alternativa
+esplicitamente regolarizzata (varianza mantenuta sopra una soglia, covarianze
+fuori diagonale penalizzate, alla VICReg {cite}`bardes2022vicreg`), ma I-JEPA e
+V-JEPA, nei paper, si affidano all'asimmetria EMA.
 
 `````
 
@@ -752,10 +754,10 @@ for p in encoder_target.parameters():
 @torch.no_grad()
 def aggiorna_target(m=0.996):
     """EMA: il target insegue lentamente l'encoder, e non ne riceve mai
-    il gradiente. Quel 'mai', con il predictor su un ramo solo, e' la difesa dal
-    collasso: senza gradiente
-    il target non può accordarsi con l'encoder per appiattire tutti gli
-    embedding sulla stessa costante. L'EMA aggiunge la lentezza."""
+    il gradiente. Quel 'mai', con il predictor su un ramo solo, è la difesa
+    dal collasso: senza gradiente il target non può accordarsi con l'encoder
+    per appiattire tutti gli embedding sulla stessa costante. L'EMA aggiunge
+    la lentezza."""
     for p, p_t in zip(encoder.parameters(), encoder_target.parameters()):
         p_t.mul_(m).add_((1.0 - m) * p)
 
@@ -871,10 +873,12 @@ ingegneria; la logica è tutta in queste righe.
   l'energia è l'errore di predizione tra embedding.
 - Il pericolo è il solito collasso (embedding costanti, energia bassa
   ovunque); la difesa dei sistemi reali è l'asimmetria fra i due rami, fatta
-  di tre pezzi (EMA, stop-gradient, predictor su un ramo solo). L'EMA è
-  sacrificabile: SimSiam la toglie senza conseguenze. Stop-gradient e
-  predictor servono invece insieme: in SimSiam togliere l'uno o l'altro fa
-  collassare {cite}`chen2021exploring,tian2021understanding`.
+  di tre pezzi (EMA, stop-gradient, predictor su un ramo solo). All'EMA si
+  rinuncia a certe condizioni: SimSiam la toglie senza collassare, con qualche
+  punto di accuratezza in meno, mentre BYOL senza EMA collassa se non si
+  accelera il predictor. Stop-gradient e predictor servono invece insieme: in
+  SimSiam togliere l'uno o l'altro fa collassare
+  {cite}`chen2021exploring,tian2021understanding`.
 - I-JEPA {cite}`assran2023self` (CVPR 2023): un ViT predice le
   rappresentazioni di quattro blocchi mascherati dal contesto; niente
   augmentation artigianali; con l’1% delle etichette di ImageNet batte i

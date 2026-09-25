@@ -288,7 +288,9 @@ gioco sono due affermazioni diverse, e vanno tenute separate.
 La differenza fra le due sta in che cosa si predice. L'errore di un predittore
 nasce dalla scarsità di dati attorno a uno stato, che è la novità da premiare,
 e dalla casualità dell'ambiente, che nessun addestramento riduce. ICM predice
-lo stato successivo e resta esposto al rumore che le azioni controllano: un
+le feature dello stato successivo, imparate in modo da tenere solo ciò su cui
+l'agente agisce: filtra il rumore che non controlla e resta esposto a quello che
+controlla. Un
 televisore con il telecomando, dove ogni cambio di canale dà un'immagine
 imprevedibile, inchioda l'agente davanti allo schermo. RND predice $f(s_t)$,
 funzione deterministica dello stato osservato: il caso della transizione non

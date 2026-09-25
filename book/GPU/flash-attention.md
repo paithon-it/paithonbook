@@ -158,15 +158,15 @@ tabella dei punteggi. E allora perché scriverla? L'algoritmo è **IO-aware**
 ottimizza il movimento dei dati, non i conti, e (dettaglio cruciale) dà il
 risultato esatto, non un'approssimazione.
 
-Due ingredienti lo rendono possibile ({numref}`fig-flash-attention`). Il primo
-è il tiling, cioè lo stesso «carica una tessera, riusala» della sezione
+Due ingredienti lo rendono possibile ({numref}`fig-flash-attention`). Il primo è
+il tiling, cioè lo stesso «carica una tessera, riusala» della sezione
 precedente. Qui le tessere si ritagliano non nella tabella dei confronti, che
 non esisterà mai, ma nell'elenco delle parole di partenza: si tiene ferma una
-manciata di parole e si fa scorrere davanti a loro tutto il resto, un
-blocchetto per volta. Il secondo ingrediente è la **online softmax**, proposta
-nel 2018 da Milakov e Gimelshein per calcolare la softmax in una passata sola
-{cite}`milakov2018online`, che permette di calcolare le percentuali *a pezzi*
-invece che tutte insieme.
+manciata di parole e si fa scorrere davanti a loro tutto il resto, un blocchetto
+per volta. Il secondo ingrediente è la **online softmax**, proposta nel 2018 da
+Milakov e Gimelshein per calcolare in una passata sola il massimo e il totale
+che la softmax chiede {cite}`milakov2018online`, e che permette di calcolare le
+percentuali *a pezzi* invece che tutte insieme.
 
 ```{figure} ../figures/flash-attention-tiling.svg
 :name: fig-flash-attention

@@ -268,8 +268,9 @@ $$
 
 è non distorto per l'errore medio su *tutte* le coppie, osservate e no, a due
 condizioni: che ogni coppia abbia $P_{ui}>0$ (una cella che la politica non
-mostra mai non si recupera con nessun peso) e che le $P_{ui}$ siano note o
-stimate bene {cite}`schnabel2016recommendations`. Il prezzo è la varianza: le
+mostra mai non si recupera con nessun peso) e che le $P_{ui}$ siano quelle
+vere: con propensità stimate la distorsione torna, nella misura dell'errore di
+stima {cite}`schnabel2016recommendations`. Il prezzo è la varianza: le
 coppie mostrate di rado entrano con pesi enormi, e in pratica si tronca $P_{ui}$
 dal basso o si normalizza per la somma dei pesi, cedendo un po' di distorsione
 in cambio di molta meno varianza.

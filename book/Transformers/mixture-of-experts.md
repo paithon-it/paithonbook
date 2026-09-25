@@ -155,9 +155,13 @@ $d_{\text{ff}}$ di ciascun esperto, così che due esperti dimezzati costino
 quanto una FFN intera. Mixtral 8x7B {cite}`jiang2024mixtral` ha scelto l'altra
 strada: $k = 2$ su $N = 8$ esperti SwiGLU di taglia piena
 ($d_{\text{ff}} = 14\,336$), su 32 strati con $d_{\text{model}} = 4096$. La
-stessa formula dà circa 46,7 miliardi di parametri totali e 12,9 attivi. Il
-nome suggerirebbe $8 \times 7 = 56$, ma l'attenzione e gli embedding non si
-moltiplicano: si moltiplicano solo le FFN.
+stessa formula, con tre matrici per esperto invece di due, dà circa 47,2
+miliardi di parametri totali e 13,4 attivi. Le cifre dichiarate, 46,7 e 12,9,
+sono un po’ più basse perché Mixtral usa la {doc}`GQA <attenzione-in-pratica>`
+(otto teste di chiave e valore per trentadue di query: 42 M per strato invece
+di 67), e contano anche gli embedding. Il nome suggerirebbe
+$8 \times 7 = 56$, ma l'attenzione e gli embedding non si moltiplicano: si
+moltiplicano solo le FFN.
 
 Il router, in tutto questo, è rumore di fondo: una matrice
 $\mathbf{W}_g \in \mathbb{R}^{N \times d_{\text{model}}}$ per strato, cioè
@@ -444,32 +448,32 @@ parametri del router, e quando l'instradamento cambia cambia anche il
 coefficiente della penalità, il che riporta il paesaggio della loss ausiliaria
 fra le cose che si osservano, non fra quelle che si dimostrano. Due correttivi
 successivi rispondono ai suoi difetti. La *router z-loss* di ST-MoE
-{cite}`zoph2022stmoe` aggiunge
+{cite}`zoph2022stmoe` aggiunge, con peso $10^{-3}$,
 $\frac{1}{T}\sum_{\mathbf{x}}\big(\log\sum_j
 e^{(\mathbf{W}_g\mathbf{x})_j}\big)^2$,
 che tiene piccoli i logit del router e con essi gli errori di arrotondamento.
-DeepSeek-V3 {cite}`liu2024deepseekv3` toglie invece del tutto la loss
-ausiliaria, che spinge anche contro la qualità: somma a ogni punteggio un bias
-$b_i$ usato solo per scegliere i $k$ esperti e non per pesarli, e dopo ogni
-passo lo abbassa di poco agli esperti sovraccarichi e lo alza a quelli scarichi.
-Il bilanciamento passa dalla loss a una regola di controllo, e il gradiente
-della cross-entropia resta pulito.
+DeepSeek-V3 {cite}`liu2024deepseekv3` sposta invece quasi tutto il
+bilanciamento fuori dalla loss ausiliaria, che spinge anche contro la qualità,
+e ne tiene solo una versione per sequenza con un peso minimo ($10^{-4}$), contro
+gli squilibri estremi dentro uno stesso testo. Il resto lo fa un bias $b_i$
+sommato a ogni punteggio, usato solo per scegliere i $k$ esperti e non per
+pesarli: dopo ogni passo lo si abbassa di poco agli esperti sovraccarichi e lo
+si alza a quelli scarichi. Il bilanciamento passa così, per la parte maggiore,
+dalla loss a una regola di controllo, e il gradiente della cross-entropia ne
+resta quasi libero.
 
 `````
 
 ### La capacità, e i token che cadono
 
 Il bilanciamento è una spinta statistica, non una garanzia: in un mucchietto di
-token qualunque (nel gergo un batch, cioè il gruppo di esempi che il
-modello elabora in una volta sola) un esperto può comunque ricevere più token
-di quanti ne possa elaborare. Per questo l'implementazione fissa in anticipo
-una **capacità**, cioè il numero massimo di token che ciascun esperto accetta
-per batch. Al tavolo dello sport arrivano cinque pezzi, ma chi ci siede ne può
-rileggere
-tre: due restano fuori. La ricetta per fissare il tetto è
-semplice: si conta quanti token toccherebbero a testa
-in un mondo perfettamente equo, si aggiunge un margine di sicurezza, e si
-arrotonda per eccesso.
+token qualunque (nel gergo un batch, cioè il gruppo di esempi che il modello
+elabora in una volta sola) un esperto può comunque ricevere più token di quanti
+ne possa elaborare. Per questo l'implementazione fissa in anticipo una
+**capacità**, cioè il numero massimo di token che ciascun esperto accetta per
+batch. La ricetta per fissare il tetto è semplice: si conta quanti token
+toccherebbero a testa in un mondo perfettamente equo, si aggiunge un margine di
+sicurezza, e si arrotonda per eccesso.
 
 $$
 \text{capacità} = \left\lceil \frac{T}{N} \cdot c \right\rceil,

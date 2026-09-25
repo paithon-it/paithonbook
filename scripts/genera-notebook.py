@@ -95,7 +95,10 @@ RINVIATI = {
     # comportamento su silicio: prestazioni, scelta del backend, esecuzione
     # distribuita. E comunque, a prescindere: il capitolo ha due sole celle
     # eseguibili contro MINIMO_CELLE = 3, quindi un notebook non nascerebbe in
-    # ogni caso. La copertura del suo codice si fa a mano.
+    # ogni caso. La copertura del suo codice si fa a mano. (Dal settembre 2026
+    # le celle sono cinque, con il conto del calcolo in memoria, e il notebook
+    # resta rinviato per la ragione di sopra: i numeri stampati del capitolo li
+    # controlla `verifica-uscite.py GPU`.)
     "GPU": "silicio vero, e solo per il comportamento a runtime",
 }
 

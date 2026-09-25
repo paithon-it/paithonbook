@@ -7,12 +7,16 @@ riga tirata su quel foglio le divide. Qui
 entra in gioco l'idea più affascinante di tutta la storia delle SVM, quella
 che le ha rese celebri: il **kernel trick**.
 
-Una parola, però, prima di cominciare. *Kernel* nel libro si è già visto due
-volte, e ogni volta voleva dire un'altra cosa: il programma che tiene lo stato
-di un notebook, e il pezzo di codice specializzato per il ferro su cui gira,
-quello che una libreria sceglie per il processore e che sulla scheda grafica ha
-il suo {doc}`corrispettivo </GPU/kernel-e-cuda>`. Qui non c'entra né con l'uno
-né con l'altro: è una regola che dice quanto due punti si somigliano.
+Una parola, però, prima di cominciare. *Kernel* nel libro si è già visto tre
+volte: il programma che tiene lo stato di un notebook; il pezzo di codice
+specializzato per il ferro su cui gira, quello che una libreria sceglie per il
+processore; e la campana della {doc}`regressione a nucleo
+<curve-al-posto-di-rette>`. Il secondo, sulla scheda grafica, ha un
+{doc}`corrispettivo </GPU/kernel-e-cuda>` che arriverà più avanti. Con i primi
+due qui non c'entra. Con la campana sì: anche qui il kernel è una regola che
+dice quanto due punti si somigliano, e il kernel gaussiano che arriva fra poco è
+la stessa campana. Cambia il mestiere, perché là pesava una media e qui fa da
+prodotto scalare.
 
 `````{tab} Elementare
 
@@ -114,10 +118,12 @@ k(\cdot,\mathbf{x})$. Il teorema di Mercer, con cui la condizione viene spesso
 confusa, è il caso di un $k$ continuo su un dominio compatto, dove $\phi$ si
 scrive con autovalori e autofunzioni dell'operatore integrale
 {cite}`scholkopf2002learning`. Dallo stesso spazio viene il **teorema del
-rappresentante** (Kimeldorf e Wahba, 1971): per qualunque perdita $\ell$, il
-problema $\min_{f \in \mathcal{H}_k} \sum_{i=1}^{m} \ell\bigl(y_i,
-f(\mathbf{x}_i)\bigr) + \lambda\lVert f\rVert^2_{\mathcal{H}_k}$ ha soluzione
-della forma $f = \sum_i \alpha_i\, k(\cdot, \mathbf{x}_i)$, che estende a ogni
+rappresentante**, di Kimeldorf e Wahba (1971) per la perdita quadratica, esteso
+poi a perdite qualsiasi (nella forma generale da Schölkopf, Herbrich e Smola
+{cite}`scholkopf2001generalized`): il problema $\min_{f \in \mathcal{H}_k}
+\sum_{i=1}^{m} \ell\bigl(y_i, f(\mathbf{x}_i)\bigr) + \lambda\lVert
+f\rVert^2_{\mathcal{H}_k}$ ha un minimo della forma $f = \sum_i \alpha_i\,
+k(\cdot, \mathbf{x}_i)$, che estende a ogni
 perdita il $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ della strada più
 larga. Ed è la condizione di semidefinitezza la ragione per cui i kernel non si
 inventano a piacere. Se $k$ non lo è, il duale smette di essere concavo e il
@@ -248,9 +254,12 @@ cresce linearmente. Con due slack per esempio, una per chi sporge sopra il
 tubo e una per chi sporge sotto, il problema è
 
 $$
+\begin{gathered}
 \min_{\mathbf{w},\,b,\,\xi,\,\xi^*}\ \tfrac12\lVert\mathbf{w}\rVert^2 + C\sum_{i=1}^{m}(\xi_i+\xi_i^*)
-\quad\text{con}\quad
+\\[2pt]
+\text{con}\quad
 y_i - f(\mathbf{x}_i) \le \epsilon + \xi_i,\ \ f(\mathbf{x}_i) - y_i \le \epsilon + \xi_i^*,\ \ \xi_i,\,\xi_i^* \ge 0,
+\end{gathered}
 $$
 
 e i vettori di supporto sono i punti sul bordo del tubo o fuori. Da qui anche
@@ -453,8 +462,9 @@ su griglia con la cross-validation della {doc}`sezione sull'overfitting
 
 `````
 
-Fin qui ogni classificatore ha imparato a tracciare un confine, dritto o
-piegato dal kernel, guardando soltanto dove le classi si toccano. C'è un'altra
-strada, che il confine non lo cerca: impara com'è fatta ciascuna classe per
-intero, e il confine viene dopo, per conseguenza. È la strada dei
-{doc}`modelli generativi <modelli-generativi>`.
+Le SVM hanno imparato a tracciare un confine, dritto o piegato dal kernel,
+guardando soltanto dove le classi si toccano. C'è un'altra strada, che il
+confine non lo cerca: impara com'è fatta ciascuna classe per intero, e il
+confine viene dopo, per conseguenza. È la strada dei {doc}`modelli generativi
+<modelli-generativi>`, e il Bayes ingenuo del confronto fra ensemble ne era già
+un esempio.

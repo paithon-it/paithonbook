@@ -27,17 +27,20 @@ intero, con le tre proiezioni chiamate $\mathbf{W}^A$, $\mathbf{W}^B$,
 $\mathbf{W}^C$: qui lo si rivede con il vocabolario standard e con i pezzi che
 là restavano fuori.
 
-Ed è esattamente quello che l'attenzione fa. Per ogni parola da elaborare
-guarda tutte le altre parole della frase, decide quanto ciascuna conta per
-capire quella, e ne mescola le liste in quella proporzione. Il risultato è una
-versione della parola arricchita dal contesto: non più «salta» in astratto, ma
-«salta» in *questa* frase. L'operazione ha un nome ordinario, media pesata,
-e una proprietà che la rende diversa da tutte le medie pesate che si incontrano
-altrove: i pesi non stanno scritti in nessun regolamento, li produce la frase
-stessa, parola per parola. Di qui il nome tecnico dell'oggetto,
-aggregazione pesata dipendente dal contenuto.
+Una media del genere è esattamente quello che l'attenzione fa. Per ogni parola
+da elaborare guarda tutte le altre parole della frase, decide quanto ciascuna
+conta per capire quella, e ne mescola i vettori in quella proporzione. Il
+risultato è una versione della parola arricchita dal contesto: non più «salta»
+in astratto, ma «salta» in *questa* frase. L'operazione ha un nome ordinario,
+media pesata, e una proprietà che la distingue dalle medie pesate di tutti i
+giorni: i pesi non stanno scritti in nessun regolamento, li produce la frase
+stessa, parola per parola. Di qui il nome tecnico dell'oggetto, aggregazione
+pesata dipendente dal contenuto. Una media con pesi decisi dalla somiglianza
+c'era già, nella {ref}`regressione a nucleo <sec-regressione-a-nucleo>`; là però
+il modo di misurare la somiglianza era fissato in partenza, una campana sulla
+distanza, qui lo impara la rete.
 
-Il problema che questa idea viene a risolvere è il collo di bottiglia del
+Il problema che l'attenzione viene a risolvere è il collo di bottiglia del
 traduttore a due metà, che la {doc}`sezione sulla traduzione con le reti
 </NaturalLanguageProcessing/seq2seq-traduzione>` ha raccontato insieme alla
 soluzione di Bahdanau: l'encoder, la parte che legge, comprimeva la frase in un
@@ -97,15 +100,15 @@ chiave-valore $(\mathbf{k}_j, \mathbf{v}_j)$, e restituisce una
 combinazione dei valori. Per una sola query:
 
 $$
-s_j = \frac{\mathbf{q}^\top \mathbf{k}_j}{\sqrt{d_k}}, \qquad
-a_j = \frac{e^{s_j}}{\sum_{r} e^{s_r}}, \qquad
+\tilde{z}_j = \frac{\mathbf{q}^\top \mathbf{k}_j}{\sqrt{d_k}}, \qquad
+a_j = \frac{e^{\tilde{z}_j}}{\sum_{r} e^{\tilde{z}_r}}, \qquad
 \mathbf{o} = \sum_j a_j \mathbf{v}_j ,
 $$
 
-dove $s_j$ è il punteggio di compatibilità fra la query e la $j$-esima chiave,
-$d_k$ è la dimensione di query e chiavi, $a_j$ è il peso che la softmax ricava
-dai punteggi, e $\mathbf{o}$ è l'uscita, un vettore nello stesso spazio dei
-$\mathbf{v}_j$. La somma corre sulle sole chiavi permesse.
+dove $\tilde{z}_j$ è il punteggio di compatibilità fra la query e la $j$-esima
+chiave, $d_k$ è la dimensione di query e chiavi, $a_j$ è il peso che la softmax
+ricava dai punteggi, e $\mathbf{o}$ è l'uscita, un vettore nello stesso spazio
+dei $\mathbf{v}_j$. La somma corre sulle sole chiavi permesse.
 
 Tre osservazioni tengono in piedi tutto il resto. La prima: quella
 compatibilità è appresa, perché $\mathbf{q}$ e $\mathbf{k}_j$ non sono i
@@ -124,7 +127,7 @@ ed è un uso corrente; ma il meccanismo è il
 prodotto scalare fra due proiezioni apprese, non un dialogo. E il prodotto
 scalare non c'era fin dall'inizio: nel lavoro del 2014 il punteggio lo
 calcolava una piccola rete a sé (l'attenzione *additiva*). La forma
-moltiplicativa compare nel 2015 per due strade: nelle end-to-end memory
+moltiplicativa si afferma nel 2015 per due strade: nelle end-to-end memory
 network {cite}`sukhbaatar2015end`, che pesano ogni fatto $\mathbf{m}_i$ in
 memoria con $\operatorname{softmax}(\mathbf{u}^\top \mathbf{m}_i)$, dove
 $\mathbf{u}$ è la domanda, e nella traduzione con Luong, Pham e Manning
@@ -428,17 +431,16 @@ presenta così {cite}`vaswani2017attention`.
 
 Che cosa il fattore evita, allora. Con logit di grande modulo la softmax entra
 in regime saturo: un peso vicino a 1 e gli altri vicini a 0. Lì lo jacobiano
-della softmax, $\partial a_i / \partial s_j = a_i(\delta_{ij} - a_j)$, ha tutti
-i termini che tendono a zero, quindi il gradiente che arriva ai punteggi
-svanisce, e con esso quello che arriva a $\mathbf{W}^Q$ e $\mathbf{W}^K$. Il
-fattore non impedisce la saturazione: con componenti di varianza diversa
-da 1 la softmax satura lo stesso, a qualunque dimensione. Ne toglie la
-dipendenza da $d_k$, cioè permette di allargare le teste senza che il
-regime cambi per
-quel solo motivo. E una precisazione che evita una confusione frequente: quel
-fattore non normalizza $\mathbf{Q}$ e $\mathbf{K}$ a vettori unitari, che
-sarebbe un'altra operazione e cambierebbe i punteggi in modo diverso da riga
-a riga.
+della softmax, $\partial a_i / \partial \tilde{z}_j = a_i(\delta_{ij} - a_j)$,
+ha tutti i termini che tendono a zero, quindi il gradiente che arriva ai
+punteggi svanisce, e con esso quello che arriva a $\mathbf{W}^Q$ e
+$\mathbf{W}^K$. Il fattore non impedisce la saturazione: con componenti di
+varianza diversa da 1 la softmax satura lo stesso, a qualunque dimensione. Ne
+toglie la dipendenza da $d_k$, cioè permette di allargare le teste senza che il
+regime cambi per quel solo motivo. E una precisazione che evita una confusione
+frequente: quel fattore non normalizza $\mathbf{Q}$ e $\mathbf{K}$ a vettori
+unitari, che sarebbe un'altra operazione e cambierebbe i punteggi in modo
+diverso da riga a riga.
 `````
 
 ## Le maschere: quali collegamenti sono permessi
@@ -521,9 +523,10 @@ giusto: una riga in cui tutte le posizioni sono vietate (per esempio la prima
 posizione di riempimento quando il padding sta a sinistra e la maschera è
 causale) ha denominatore $\sum_j e^{-\infty} = 0$. La softmax scritta a mano
 restituisce `nan`, che può propagarsi nel passo all'indietro; le
-implementazioni di libreria trattano il caso a parte, e in PyTorch
-`scaled_dot_product_attention` su quella riga restituisce zeri, quindi un
-confronto fra la versione a mano e quella di libreria diverge proprio lì.
+implementazioni di libreria trattano il caso a parte, e nelle versioni recenti
+di PyTorch `scaled_dot_product_attention` su quella riga restituisce zeri (non
+da sempre, e non su ogni backend), quindi un confronto fra la versione a mano
+e quella di libreria diverge proprio lì.
 
 Resta la finezza dell'allineamento, che il caso quadrato nasconde. Con
 $L \neq S$ l'espressione «triangolare inferiore» è ambigua finché non si
@@ -862,8 +865,9 @@ codifica posizionale non fa parte dell'attenzione: modifica le rappresentazioni,
 o l'interazione fra query e chiavi, in modo che l'attenzione possa usare la
 posizione. E la maschera causale introduce una direzione, e con essa un segnale
 di posizione indiretto: la riga $i$ fa la media su esattamente $i$ vettori, e
-un modello causale addestrato senza codifica esplicita impara a ricavarne dove
-si trova {cite}`haviv2022transformer`, come ha già notato la
+un modello causale addestrato senza codifica esplicita impara lo stesso dove si
+trova, con ogni probabilità proprio da quel conteggio
+{cite}`haviv2022transformer`, come ha già notato la
 {doc}`matematica di un modello linguistico </Matematica/matematica-llm>`. Un
 encoder bidirezionale non ha nemmeno questo appiglio, e per tutti e due la
 codifica esplicita resta il modo diretto di dare l'ordine.
@@ -945,11 +949,12 @@ per token e senza guardare il resto del batch:
 $$
 \text{LayerNorm}(\mathbf{x}) = \boldsymbol{\gamma} \odot
 \frac{\mathbf{x} - \mu\,\mathbf{1}}{\sqrt{\sigma^2 + \epsilon}} + \boldsymbol{\beta},
-\qquad \mu = \frac{1}{d}\sum_{i=1}^{d} x_i, \qquad
-\sigma^2 = \frac{1}{d}\sum_{i=1}^{d} (x_i - \mu)^2 ,
+\qquad \mu = \frac{1}{d}\sum_{c=1}^{d} x_c, \qquad
+\sigma^2 = \frac{1}{d}\sum_{c=1}^{d} (x_c - \mu)^2 ,
 $$
 
-dove $\boldsymbol{\gamma}, \boldsymbol{\beta} \in \mathbb{R}^d$ sono guadagno e
+dove $d = d_{\text{model}}$, $c$ corre sulle coordinate,
+$\boldsymbol{\gamma}, \boldsymbol{\beta} \in \mathbb{R}^d$ sono guadagno e
 traslazione appresi ed $\epsilon$ una costante piccola che evita la divisione
 per zero. Non usando statistiche del batch, si comporta allo stesso modo in
 addestramento e in inferenza e con sequenze di lunghezza qualsiasi, cosa che la
@@ -972,7 +977,7 @@ alleggerita: al posto della LayerNorm c'è quasi sempre la **RMSNorm**
 vettore per la sua radice quadratica media e lo riscala con un guadagno
 appreso,
 $\mathbf{x} \mapsto \boldsymbol{\gamma} \odot \mathbf{x}/\mathrm{RMS}(\mathbf{x})$
-con $\mathrm{RMS}(\mathbf{x}) = \sqrt{\tfrac{1}{d}\sum_i x_i^2 + \epsilon}$:
+con $\mathrm{RMS}(\mathbf{x}) = \sqrt{\tfrac{1}{d}\sum_c x_c^2 + \epsilon}$:
 meno conti
 per strato, e in pratica la stessa stabilità.
 `````
@@ -1126,9 +1131,9 @@ non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nom
   ($h = 8$ nel modello originale) e ricompone con $\mathbf{W}^O$; le semantiche
   delle teste sono emergenti e non garantite.
 - La self-attention senza maschera è equivariante alle permutazioni: la
-  posizione va aggiunta da fuori, e la maschera causale ne dà soltanto un
-  segnale indiretto, non
-  una distanza.
+  posizione va aggiunta da fuori. La maschera causale ne dà un segnale
+  indiretto (la riga $i$ media su $i$ vettori), da cui un modello causale
+  riesce comunque a ricavarsi dove si trova.
 - Residual connection e layer normalization tengono addestrabili le
   pile profonde di blocchi. L'articolo del 2017 le combina come
   $\text{LayerNorm}(\mathbf{x} + \text{SubLayer}(\mathbf{x}))$ (*Post-LN*); i

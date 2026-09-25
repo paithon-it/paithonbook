@@ -178,15 +178,16 @@ cioè da quali sono le componenti che si accendono e si spengono. Cambia la
 segmentazione, cambia la spiegazione, e la segmentazione la sceglie chi usa lo
 strumento. La spiegazione dipende quindi da scelte che l'utente raramente
 controlla. E c'è un quarto limite, che nasce dal campionamento e vale anche per
-KernelSHAP: i punti perturbati cadono in buona parte fuori dal supporto dei
-dati, e un modello li può riconoscere. Slack e colleghi
-{cite}`slack2020fooling` costruiscono un classificatore che sui dati veri
-decide in base a un attributo protetto e sui campioni perturbati risponde con
-una regola innocua: LIME e KernelSHAP riportano la regola innocua, e
-l'attributo protetto sparisce dalla spiegazione. Un'attribuzione per
-campionamento certifica il modello sui punti che ha interrogato, non sui
-clienti veri. Sono motivi per affiancarle un metodo dai fondamenti più solidi,
-sapendo che l'ultimo dei quattro insidia anche quello.
+KernelSHAP, la stima per campionamento dei valori di Shapley che arriva con
+SHAP: i punti perturbati cadono in buona parte fuori dal supporto dei dati, e un
+modello li può riconoscere. Slack e colleghi {cite}`slack2020fooling`
+costruiscono un classificatore che sui dati veri decide in base a un attributo
+protetto e sui campioni perturbati risponde con una regola innocua: LIME e
+KernelSHAP riportano la regola innocua, e l'attributo protetto sparisce dalla
+spiegazione. Un'attribuzione per campionamento certifica il modello sui punti
+che ha interrogato, non sui clienti veri. Sono motivi per affiancarle un metodo
+dai fondamenti più solidi, sapendo che l'ultimo dei quattro insidia anche
+quello.
 
 `````
 
@@ -536,15 +537,15 @@ $$
 
 dove il primo termine spinge la predizione verso il valore-bersaglio $y'$ (la
 soglia di approvazione) e $d$ misura quanto $\mathbf{x}_{\mathrm{cf}}$ si
-discosta da $\mathbf{x}_0$: nel
-paper è una distanza di Manhattan ($L_1$) in cui ogni feature è divisa per la
-propria deviazione assoluta mediana: favorisce modifiche sparse e rende
-confrontabili scale diverse. Il moltiplicatore $\lambda$ non è un compromesso
-da regolare a mano: lo si fa crescere finché la predizione non rientra in
-una tolleranza fissata attorno a $y'$, così che il primo termine agisca da
-vincolo e, sotto quel vincolo, si minimizzi la distanza. Estensioni successive
-aggiungono vincoli di plausibilità (restare sul supporto dei dati) e di
-azionabilità (non modificare feature immutabili come l'età o l'etnia).
+discosta da $\mathbf{x}_0$: nel paper è una distanza di Manhattan ($L_1$) in cui
+ogni feature è divisa per la propria deviazione assoluta mediana (MAD):
+favorisce modifiche sparse e rende confrontabili scale diverse. Il
+moltiplicatore $\lambda$ non è un compromesso da regolare a mano: lo si fa
+crescere finché la predizione non rientra in una tolleranza fissata attorno a
+$y'$, così che il primo termine agisca da vincolo e, sotto quel vincolo, si
+minimizzi la distanza. Estensioni successive aggiungono vincoli di plausibilità
+(restare sul supporto dei dati) e di azionabilità (non modificare feature
+immutabili come l'età o l'etnia).
 
 C'è poi un parallelo tecnico esatto. Cercare la perturbazione minima di
 $\mathbf{x}_0$ che cambia l'uscita del modello è, formalmente, lo stesso
@@ -558,6 +559,163 @@ offrire una via d'azione. Lo stesso strumento può violare o servire l'interesse
 di chi subisce una decisione, a seconda di come lo si usa.
 
 `````
+
+### Uno o molti: la diversità dei controfattuali
+
+Un controfattuale solo mostra una strada sola, e non è detto che chi lo riceve
+possa percorrerla. Mothilal, Sharma e Tan {cite}`mothilal2020explaining`
+propongono di restituirne un piccolo insieme, scelto perché sia valido, vicino
+alla situazione reale e **vario**, con un metodo noto come DiCE (*Diverse
+Counterfactual Explanations*, dal nome della libreria che lo implementa), e
+misurano la varietà con un determinante, un numero che vale quasi zero quando
+due risposte coincidono.
+
+`````{tab} Elementare
+
+Alla richiedente del prestito la ricerca del controfattuale più vicino dice una
+cosa sola: guadagna seimila euro in più all’anno. È la risposta più economica
+sulla carta, e per lei può essere la più impossibile, se ha appena cambiato
+lavoro e lo stipendio per un anno non si muove. Le sarebbe servito sapere che
+c’erano anche altre strade: ridurre di trecento euro al mese le rate dei debiti,
+oppure aspettare altri sei anni nell’impiego attuale, arrivando a otto invece di
+due.
+
+La ricerca ne trova una sola, e sempre sulla stessa voce, per come conta il
+costo: ogni voce si misura in «quanto si sposta rispetto a quanto varia di
+solito fra le persone», e vince la più conveniente. Mescolare le voci non aiuta:
+se ogni passo verso il sì costa meno fatto con il reddito che fatto con la rata,
+qualunque pezzo di strada affidato alla rata costa più dello stesso pezzo fatto
+con il reddito. Chiedendo tre risposte senza chiedere che siano diverse, se ne
+avrebbero tre versioni della stessa: seimila euro in più, o qualche centinaio
+sopra.
+
+Per avere tre strade davvero diverse bisogna premiare la differenza. Si dà un
+voto all’insieme delle risposte: vicine alla situazione reale, sì, ma anche
+sparpagliate fra loro. Tre risposte quasi uguali prendono un voto di varietà
+quasi nullo, tre leve diverse un voto alto; e nel conto le tre leve, un po’
+più lontane in media ma molto più varie, battono le tre varianti del reddito.
+
+La varietà però si paga in vicinanza, e non basta che le risposte siano diverse:
+devono restare possibili. Le voci che non si possono cambiare, come l’età, si
+tolgono dalla ricerca in partenza; gli anni di lavoro non si comprano, si
+aspettano; e certe voci vanno insieme, perché sei anni di lavoro in più portano
+con sé anche sei anni d’età in più, e un voto che guarda le voci una per una non
+lo sa.
+
+`````
+
+`````{tab} Superiore
+
+Dati il modello $f$, l’istanza $\mathbf{x}_0$ e l’esito desiderato, DiCE cerca
+$k$ controfattuali insieme minimizzando
+
+$$
+\frac1k\sum_{i=1}^{k} \ell\big(f(\mathbf{c}_i)\big)
++ \frac{\lambda_1}{k}\sum_{i=1}^{k} d(\mathbf{c}_i, \mathbf{x}_0)
+- \lambda_2 \det\mathbf{K},
+\qquad
+K_{ij} = \frac{1}{1 + d(\mathbf{c}_i, \mathbf{c}_j)},
+$$
+
+con $\ell$ una perdita a cerniera sul logit, $\max\big(0,\, 1 - z\cdot
+\mathrm{logit}\,f(\mathbf{c})\big)$ con $z = \pm 1$ secondo la classe voluta,
+che si annulla solo quando il controfattuale sta dalla parte giusta con un
+margine; $d$ la distanza $L_1$ pesata di Wachter; e il determinante del nucleo
+di un processo puntuale determinantale come misura della diversità: $\det
+\mathbf{K}$ tende a $1$ quando i controfattuali si allontanano fra loro
+($\mathbf{K} \to \mathbf{I}$) e si annulla quando due coincidono (due righe
+uguali). Il paper sceglie $\lambda_1 = 0{,}5$ e $\lambda_2 = 1$ su una griglia
+(pesi fissi, a differenza del $\lambda$ di Wachter, che cresce fino a imporre
+il vincolo), accetta vincoli di intervallo e l’elenco delle voci modificabili,
+e con una passata finale ripristina, una alla volta e finché la classe non
+cambia, le voci il cui scarto sta sotto una soglia, per la sparsità.
+
+Che il singolo controfattuale di Wachter non basti si vede già con un modello
+lineare. Con la distanza $L_1$ pesata il problema è un programma lineare, il
+minimo sta su un vertice, e si muove la sola voce che sposta il logit al costo
+più basso, cioè quella con $|w_j|\,\mathrm{MAD}_j$ massimo; vale con voci
+continue, senza vincoli di intervallo attivi e senza pareggi fra i
+$|w_j|\,\mathrm{MAD}_j$. La risposta è sempre la stessa leva, e $k$ risposte
+senza il termine di diversità ne sono $k$ varianti. Resta aperto quello che il
+determinante non vede: due controfattuali diversi possono essere entrambi
+irrealizzabili, e la diversità misurata sulle voci non dice niente sulle
+dipendenze fra le voci stesse.
+
+`````
+
+Il conto usa un modello lineare, cioè un punteggio che è una somma pesata di tre
+voci (reddito, rata dei debiti e anni nell’impiego attuale), e la richiedente a
+un passo dal sì. Per ogni voce trova lo spostamento che porta il punteggio a
+zero (il logit, che a zero vale una probabilità del 50%) e il suo costo; poi
+confronta, con l’obiettivo di DiCE, l’insieme delle tre leve con tre varianti
+della leva più vicina.
+
+```python
+import numpy as np
+
+# un modello lineare per il prestito: reddito (migliaia di euro l'anno),
+# rata dei debiti (centinaia di euro al mese), anni nell'impiego attuale
+nomi = ["reddito", "rata", "anni di lavoro"]
+w = np.array([1 / 6, -1 / 3, 1 / 6])
+x0 = np.array([24.0, 6.0, 2.0])
+b = -1.0 - w @ x0                        # la richiedente sta a logit -1: negato
+mad = np.array([8.0, 3.0, 4.0])          # deviazione assoluta mediana di ogni voce
+
+
+def costo(c, x):
+    """Distanza L1 pesata con la MAD, quella di Wachter e colleghi."""
+    return np.sum(np.abs(c - x) / mad)
+
+
+# con un modello lineare il controfattuale più vicino muove una voce sola:
+# per ciascuna, quanto va spostata perché il logit arrivi a zero
+leve = []
+for j in range(3):
+    c = x0.copy()
+    c[j] += -(w @ x0 + b) / w[j]
+    leve.append(c)
+    print(f"solo {nomi[j]:15s} -> {c[j]:5.1f}   costo {costo(c, x0):.2f}")
+piu_vicino = int(np.argmin([costo(c, x0) for c in leve]))
+print("il controfattuale più vicino muove:", nomi[piu_vicino])
+
+
+def diversita(insieme):
+    """Il determinante di K, con K_ij = 1 / (1 + distanza fra c_i e c_j)."""
+    K = np.array([[1 / (1 + costo(ci, cj)) for cj in insieme] for ci in insieme])
+    return np.linalg.det(K)
+
+
+def perdita(insieme, l1=0.5, l2=1.0):
+    """L'obiettivo di DiCE: cerniera sul logit, distanza media, meno la diversità."""
+    cerniera = np.mean([max(0.0, 1 - (w @ c + b)) for c in insieme])
+    distanza = np.mean([costo(c, x0) for c in insieme])
+    return cerniera + l1 * distanza - l2 * diversita(insieme)
+
+
+varianti = [x0 + [d, 0, 0] for d in (6.0, 6.5, 7.0)]   # tre volte la stessa leva
+for nome, insieme in [("tre leve diverse", leve), ("tre volte il reddito", varianti)]:
+    print(f"{nome:21s} distanza media {np.mean([costo(c, x0) for c in insieme]):.4f}, "
+          f"diversità {diversita(insieme):.4f}, perdita {perdita(insieme):.4f}")
+```
+
+```text
+solo reddito         ->  30.0   costo 0.75
+solo rata            ->   3.0   costo 1.00
+solo anni di lavoro  ->   8.0   costo 1.50
+il controfattuale più vicino muove: reddito
+tre leve diverse      distanza media 1.0833, diversità 0.7554, perdita 0.7863
+tre volte il reddito  distanza media 0.8125, diversità 0.0130, perdita 1.3099
+```
+
+La leva più economica è il reddito, da $24$ a $30$ migliaia di euro, e da sola è
+tutto quello che il controfattuale più vicino restituisce. Le tre varianti del
+reddito stanno più vicine in media, $0{,}8125$ contro $1{,}0833$, ma la loro
+diversità è quasi nulla, $0{,}0130$ contro $0{,}7554$, e l’obiettivo, che si
+minimizza, le scarta: $1{,}3099$ contro $0{,}7863$. Il termine che penalizza chi
+non ha passato il confine con un margine, la perdita a cerniera, non si annulla
+per nessuno, perché si azzera solo oltre un logit di $1$: le leve si fermano
+esattamente sul confine, dove vale $1$, e le varianti del reddito lo superano di
+poco.
 
 ## Regole invece di pesi: gli anchor
 
@@ -878,7 +1036,8 @@ però, è questa.
 - I controfattuali dicono la modifica più piccola che avrebbe ribaltato la
   risposta («se il tuo reddito fosse stato 30 000 invece di 24 000»): una via
   d'uscita concreta, purché resti vicina alla situazione reale e riguardi
-  qualcosa su cui si può davvero agire.
+  qualcosa su cui si può davvero agire. Da solo, però, indica sempre la
+  stessa leva: conviene chiederne alcuni, premiando quelli diversi fra loro.
 - Gli anchor sostituiscono i numeri con una regola («finché il reddito
   supera 30 000, è sì») e ne dichiarano i limiti: la precisione, quanto
   spesso azzecca la risposta del modello, e la copertura, su quanti casi si
@@ -923,7 +1082,9 @@ però, è questa.
 - I controfattuali {cite}`wachter2017counterfactual` indicano la modifica
   minima e azionabile che ribalterebbe la decisione; sono lo stesso problema
   matematico degli esempi avversari {cite}`goodfellow2015explaining`, con
-  intento opposto: spiegare invece di ingannare.
+  intento opposto: spiegare invece di ingannare. Con distanza $L_1$ e modello
+  lineare il minimo muove una voce sola; DiCE {cite}`mothilal2020explaining`
+  ne cerca $k$ insieme, premiando la diversità con $\det\mathbf{K}$.
 - Gli anchor {cite}`ribeiro2018anchors` sostituiscono i pesi con una
   regola e ne dichiarano i limiti: *precisione* (quanto spesso la regola
   azzecca il modello) e *copertura* (su quanti casi si applica). Dicono fin

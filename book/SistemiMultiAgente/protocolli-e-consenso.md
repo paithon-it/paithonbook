@@ -314,10 +314,10 @@ l'accuratezza della maggioranza e ne diventa un limite inferiore, perché i voti
 sbagliati si disperdono invece di sommarsi su un'unica risposta falsa. E si
 sposta anche la soglia. Con voto di pluralità e voti indipendenti, se ciascuno
 sceglie la risposta giusta con probabilità $p$ e la più probabile fra le
-sbagliate con probabilità $q$, la pluralità tende alla verità per
-$n \to \infty$ non appena $p > q$, anche con $p < 1/2$ (List e Goodin, 2001):
-una risposta giusta al 40% batte dieci risposte sbagliate al 6% ciascuna. La
-dicotomia con la soglia a $1/2$ che segue è quella del caso binario.
+sbagliate con probabilità $q$, la pluralità tende alla verità per $n \to \infty$
+non appena $p > q$, anche con $p < 1/2$ {cite}`list2001epistemic`: una risposta
+giusta al 40% batte dieci risposte sbagliate al 6% ciascuna. La dicotomia con la
+soglia a $1/2$ che segue è quella del caso binario.
 
 Il teorema ha due parti: per $p > 1/2$ la successione $P_n$, letta
 sui valori dispari di $n$, è crescente e tende a $1$; per $p < 1/2$ è
@@ -830,7 +830,7 @@ che si *fermano*, non processi che mentono, e per questo bastano $n \ge 2f+1$
 repliche: due maggioranze qualsiasi hanno sempre un membro in comune. Il caso
 bizantino in sincronia parziale richiede di nuovo $n \ge 3f+1$, e qui le firme
 non lo abbassano, perché con ritardi senza limite noto un leale non distingue
-un traditore da un compagno lento (Dwork, Lynch e Stockmeyer, 1988); il suo
+un traditore da un compagno lento {cite}`dwork1988consensus`; il suo
 algoritmo classico è PBFT di Castro e Liskov (1999). La soglia $n \ge f+2$ dei
 messaggi firmati è, insomma, un risultato sincrono.
 
@@ -929,9 +929,9 @@ converge in silenzio sulla risposta sbagliata.
   offerta, aggiudicazione.
 - Condorcet: se tre persone ci prendono sette volte su dieci ciascuna e
   decidono a maggioranza, il gruppo ci prende quasi otto volte su dieci, e con
-  nove il novanta per cento. Ma se ciascuna ci prende meno della metà delle
-  volte, votare *peggiora* le cose. Il voto non aggiunge competenza: amplifica
-  quella che c'è, nel bene e nel male.
+  nove il novanta per cento. Ma se le risposte possibili sono due e ciascuna
+  ci prende meno della metà delle volte, votare *peggiora* le cose. Il voto
+  non aggiunge competenza: amplifica quella che c'è, nel bene e nel male.
 - Fra agenti identici l'ipotesi crolla. Dieci copie dello stesso modello con
   le stesse istruzioni valgono un votante interrogato dieci
   volte: sulle domande che mandano fuori strada quel modello sbagliano tutte

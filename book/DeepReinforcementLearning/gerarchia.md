@@ -139,7 +139,9 @@ le scorciatoie, sempre.
 Da quest'ultimo viene la sola scelta sensata: gli schemi si aggiungono al
 gioco libero e non lo sostituiscono. Chi ha in mano tutti e due chiama lo
 schema quando il campo è chiuso e va da solo quando la strada è aperta, e così
-quel terzo costo non lo paga più.
+quel terzo costo non è più costretto a pagarlo. Non vuol dire che smetta: se lo
+schema porta abbastanza bene, la squadra si abitua a chiamarlo, e la scorciatoia
+che avrebbe trovato da sola non la prova più.
 
 `````
 
@@ -371,9 +373,33 @@ angolo di stanza, dove nessuna opzione conduce, e l'agente a sole opzioni
 non ci arriva mai: i suoi $300{,}5$ passi sono la sbarra che il conto si dà
 per non girare all'infinito (poco più di trecento, perché la sbarra ferma
 l'agente alla fine dell'opzione in corso e non nel mezzo). Chi ha le mosse
-insieme alle opzioni arriva, e con la politica migliore delle tre ($17{,}2$),
-perché le opzioni gli sono servite a propagare i valori fra le stanze e le
-mosse a coprire l'ultimo tratto.
+insieme alle opzioni arriva, e con la politica migliore delle tre (dopo
+trecento episodi, $17{,}2$), perché le opzioni gli sono servite a propagare i
+valori fra le stanze e le mosse a coprire l'ultimo tratto.
+
+Trecento episodi, però, fotografano la partenza. Lasciati imparare più a
+lungo, i due agenti che hanno le mosse si scambiano di posto:
+
+```python
+for nome, meta in (("una porta", PORTE[3]), ("un angolo", (11, 11))):
+    for etichetta, usa in (("solo le quattro mosse", M_MOSSE),
+                           ("mosse piu' opzioni", M_MOSSE | M_OPZ)):
+        _, finale = allena(meta, usa, episodi=1000)
+        print(f"{nome:10s} {etichetta:22s} dopo mille episodi: {finale:5.1f}")
+```
+
+```text
+una porta  solo le quattro mosse  dopo mille episodi:   8.6
+una porta  mosse piu' opzioni     dopo mille episodi:  14.0
+un angolo  solo le quattro mosse  dopo mille episodi:  10.6
+un angolo  mosse piu' opzioni     dopo mille episodi:  13.3
+```
+
+Chi ha solo le mosse arriva a un decimo di passo dal minimo; chi ha anche le
+opzioni resta tre o cinque passi sopra. Le opzioni che l'hanno fatto partire
+adesso lo trattengono: portano abbastanza bene, l'agente le chiama, e le visite
+che avrebbero rivelato la strada corta non arrivano. Aggiungere le opzioni
+lascia raggiungibile la strada migliore, ma non garantisce che la si trovi.
 
 ## Dove i sotto-obiettivi non li dà nessuno
 
@@ -438,7 +464,10 @@ gli obiettivi ci sono; trovarli resta il compito dell'altra famiglia.
   sostituiscono: chi ha in mano tutti e due chiama lo schema quando serve e va
   da solo quando la strada è aperta. Nelle quattro stanze si vede in numeri:
   chi ha solo gli schemi impara prima di tutti, ma se il traguardo è in un
-  punto dove nessuno schema conduce non ci arriva mai.
+  punto dove nessuno schema conduce non ci arriva mai; e chi ha schemi e mosse
+  parte più in fretta, ma alla lunga resta qualche passo sopra chi ha solo le
+  mosse, perché gli schemi che portano abbastanza bene gli tolgono la voglia
+  di cercare la scorciatoia.
 ```
 `````
 
@@ -459,7 +488,10 @@ gli obiettivi ci sono; trovarli resta il compito dell'altra famiglia.
 - Il costo che si dimentica è la qualità: una politica con macro può essere
   peggiore di una di sole azioni elementari, perché scavalca percorsi più corti.
   Per questo le opzioni si aggiungono all'insieme delle azioni invece di
-  rimpiazzarlo, e l'ottimo raggiungibile resta quello di prima.
+  rimpiazzarlo, e l'ottimo raggiungibile resta quello di prima; ma
+  raggiungibile non vuol dire raggiunto, perché un'opzione che porta
+  abbastanza bene sottrae le visite che servivano a scoprire la strada corta
+  (nelle quattro stanze, a mille episodi, 14,0 passi contro 8,6).
 - Trovare i sotto-obiettivi è il problema aperto: l’option-critic
   {cite}`bacon2017optioncritic` impara sotto-politiche e terminazioni con un
   teorema del gradiente di policy per le opzioni, chiedendo solo *quante*

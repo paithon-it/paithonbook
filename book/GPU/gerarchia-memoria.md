@@ -402,10 +402,10 @@ cuochi mentre lavorano. Per tabelloni di quella taglia sul tavolo non ci sta, e
 qualche viaggio in più si fa comunque: settecento è il massimo sperabile, e la
 cucina vera resta un po’ sotto.
 
-In mezzo c'è il pareggio, che su una scheda di qualche anno fa sta intorno ai
-dieci conti per byte: sotto comanda il magazzino, sopra comandano i cuochi. È
-un numero che si sposta, e sempre nella stessa direzione. Accendi le unità
-costruite apposta per moltiplicare due tabelloni, i *tensor core*, e il
+In mezzo c'è il pareggio, il ginocchio, che su una scheda di qualche anno fa sta
+intorno ai dieci conti per byte: sotto comanda il magazzino, sopra comandano i
+cuochi. È un numero che si sposta, e sempre nella stessa direzione. Accendi le
+unità costruite apposta per moltiplicare due tabelloni, i *tensor core*, e il
 pareggio sale oltre i centocinquanta: i cuochi sono diventati sedici volte più
 svelti, mentre il magazzino consegna alla stessa velocità di prima. Da qui la
 cura, per chi sta sotto: fare più conti con gli stessi ingredienti prima di
@@ -496,6 +496,164 @@ destra possibile sul roofline; FlashAttention {cite}`dao2022flashattention`
 riorganizzare il calcolo per non sprecare banda. Sotto nomi diversi, la domanda
 è sempre la stessa: sto tenendo la bestia sfamata?
 
+## Portare i conti dove stanno i dati
+
+Le cure viste finora cambiano il programma perché faccia più conti per ogni
+byte portato. C'è anche la cura opposta, che lascia il programma com'è e sposta
+l'hardware, e mette unità di calcolo dentro la memoria o subito accanto, così
+che i dati non debbano più attraversare il collegamento fra la memoria e il
+processore che fa i conti. Si chiama **elaborazione in memoria**
+(*processing-in-memory*, PIM), e ha due forme: dentro l'array, usando le celle
+stesse (le caselle che tengono ciascuna un bit) per calcolare, oppure accanto
+alla memoria, su un die che tocca le celle o sotto la pila, ed è il
+*near-memory computing*. Un esempio del secondo tipo, progettato per le reti
+neurali, è il Neurocube {cite}`kim2016neurocube`, disegnato in
+{numref}`fig-neurocube-pila`. Stava dentro una memoria costruita a piani,
+l’*Hybrid Memory Cube* (oggi fuori produzione, e il meccanismo è passato ad
+altre memorie): più *die* di DRAM (le piastrine di silicio che portano le celle
+di memoria) impilati uno sull'altro e attraversati da collegamenti verticali,
+sopra uno strato di circuiti che li governa, lo strato logico. La pila è divisa
+in colonne indipendenti, i *vault*, e nello strato alla base il Neurocube mette
+un elemento di calcolo per colonna.
+
+```{figure} ../figures/neurocube-pila.svg
+:name: fig-neurocube-pila
+:alt: Vista di fianco di una pila di memoria Hybrid Memory Cube con il Neurocube. Quattro die di DRAM sono impilati uno sopra l'altro e divisi in colonne verticali, i vault, dei sedici ne sono disegnati quattro; uno è evidenziato. Vie verticali attraverso il silicio (TSV) collegano ogni colonna allo strato logico alla base, dove sta un elemento di calcolo (PE) per ciascun vault. A sinistra, fuori dalla pila, il processore è collegato allo strato logico da un collegamento, che porta la configurazione di ogni strato ma non i dati di ogni conto.
+:width: 85%
+
+Il Neurocube nello strato logico di un Hybrid Memory Cube: sopra, i die di
+DRAM divisi in vault; sotto, un elemento di calcolo per vault, che legge la
+propria colonna senza passare dal processore. Dal processore arriva solo la
+configurazione, una volta per ogni strato della rete neurale.
+```
+
+`````{tab} Elementare
+
+La ricetta delle mille scatolette lasciava i cuochi fermi ad aspettare il
+fattorino. Invece di riscrivere la ricetta perché faccia più conti con gli
+stessi ingredienti, si può mandare qualche aiutante a lavorare dentro il
+magazzino. Il magazzino è un palazzo di quattro piani, e ogni corsia è una
+colonna di scaffali che sale per tutti i piani con il suo montacarichi; in
+fondo a ogni colonna, al piano terra, lavora un aiutante con un piccolo banco,
+che apre le scatolette dove stanno e manda in cucina (il processore) solo il
+risultato. Il fattorino fa molti meno viaggi, e le corsie lavorano ciascuna per
+conto suo, tutte insieme. Non è che le corsie, tutte insieme, aprano più
+scatolette al minuto di quante il fattorino ne porterebbe in cucina: il
+guadagno è la strada che ogni scatoletta non fa più, e la fatica di farla,
+mentre i cuochi restano liberi per il resto.
+
+Gli aiutanti del magazzino, però, non sono i cuochi della cucina. Hanno banchi
+piccoli e attrezzi semplici, e soprattutto non devono scaldare l'ambiente: il
+magazzino è una cella frigorifera, e se si scalda la roba si guasta prima e va
+controllata più spesso, un lavoro che toglie tempo a tutto il resto. Per questo
+lì dentro si fanno solo i lavori semplici e ripetitivi, e i piatti elaborati
+restano in cucina. Ogni aiutante deve poi trovare nella propria corsia quello
+che gli serve, perché se deve andare a prendere le scatolette in un'altra
+corsia si torna a camminare. E non conviene per tutte le ricette: per il brodo
+che sobbolle su pochi ingredienti gli aiutanti non servono, perché lì il collo
+di bottiglia erano già i cuochi, e sui banchi piccoli del magazzino quel lavoro
+verrebbe anzi più lento.
+
+Un'ultima cosa cambia il modo di lavorare. In cucina ogni ingrediente arriva
+perché qualcuno lo ha chiesto; nel magazzino l'aiutante riceve la ricetta una
+volta, e sa da solo quale scaffale aprire dopo, senza aspettare un ordine per
+ogni scatoletta, che costerebbe ogni volta un viaggio dalla cucina.
+
+`````
+
+`````{tab} Superiore
+
+Nell’*Hybrid Memory Cube* (HMC) le vie verticali attraverso il silicio (TSV)
+collegano i die di DRAM allo strato logico. La memoria è divisa in sedici
+*vault*, colonne
+verticali della pila, ciascuna con il proprio controllore nello strato logico,
+e a ogni vault è collegato un elemento di calcolo, fatto nel progetto valutato
+di sedici unità di moltiplicazione e accumulo in virgola fissa a 16 bit. I dati
+di ogni conto non attraversano più i collegamenti seriali verso il processore,
+e i sedici vault si leggono in parallelo. La mossa architetturale è il
+*programmable neurosequence generator*: l'host scrive una volta per strato la
+descrizione della rete nei registri di configurazione, e da lì in poi la
+sequenza degli indirizzi la genera l'hardware, senza un'istruzione per ogni
+accesso. Gli autori lo chiamano calcolo *memory-centric*: a guidarlo è la
+memoria, non un programma.
+
+Sul roofline il calcolo in memoria può alzare il tratto inclinato, perché
+cambia il collegamento su cui si contano i byte: con molte unità che leggono in
+parallelo, ciascuna dal proprio banco, la banda complessiva cresce con quante
+sono. Nel Neurocube però non succede: i sedici vault, a 10 GB/s l'uno, fanno
+160 GB/s, e i collegamenti esterni ne portano fino a 320 (nella Tabella I del
+lavoro, moltiplicando la banda per canale per il numero di canali; il sistema
+valutato ne ha quattro, cioè 160). Il guadagno è in energia, non in banda:
+nella stessa tabella un bit che sale per le TSV costa 3,7 pJ, uno che esce dai
+collegamenti esterni 10, e la potenza è il vincolo di tutta la pila. Il
+vantaggio sta nel non far viaggiare ogni dato fino al processore, che resta
+libero e riceve solo la configurazione. Per un kernel a sinistra del ginocchio
+(un prodotto matrice-vettore, un'operazione elemento per elemento) è la leva
+giusta; per un GEMM grande, già limitato dal calcolo, non serve, e le unità
+semplici della memoria anzi lo rallenterebbero. È un'inferenza dal modello,
+coerente con le misure su un sistema commerciale dello stesso genere, con i
+processori sul die della DRAM (UPMEM), dove i carichi che convengono sono
+quelli limitati dalla memoria, con aritmetica semplice e poca comunicazione fra
+le unità {cite}`gomezluna2021benchmarking`. I limiti sono fisici e di
+programmazione. La logica sotto la pila scalda la DRAM, che a temperatura più
+alta trattiene la carica per meno tempo e va rinfrescata più spesso, quindi il
+bilancio termico decide quanto calcolo ci sta; lo strato logico ha un bilancio
+di area e di potenza limitato, quindi unità semplici; e i dati vanno
+distribuiti fra i vault in modo che ciascuno lavori su ciò che ha, perché
+spostarli da un vault all'altro passa per la rete sul die logico, e nel lavoro
+quel traffico laterale costa fino a un sesto della velocità sugli strati densi:
+gli autori lo evitano duplicando in ogni vault i dati di confine, e lo pagano
+in memoria.
+
+`````
+
+Il conto che rende attraente il calcolo in memoria è quello di uno strato
+lineare (un vettore, cioè una lista di numeri, moltiplicato per una matrice di
+pesi, il mattone delle reti) applicato a pochi vettori alla volta, come quando
+un modello di linguaggio genera il testo una parola dopo l'altra e ogni parola
+è un vettore. Per $\mathbf{Y} = \mathbf{X}\mathbf{W}$ con
+$\mathbf{X} \in \mathbb{R}^{b \times n}$ e $\mathbf{W} \in \mathbb{R}^{n \times n}$
+i conti sono $2bn^2$ e i byte, a due l'uno, $2(n^2 + 2nb)$: l'intensità è
+$I(b) = bn/(n + 2b)$, dove $n$ è la larghezza dello strato e $b$ quanti vettori
+passano insieme, e vale circa 1 per $b = 1$ e non supera mai $n/2$. Il blocco
+la calcola con numeri in `float16` al crescere di $b$, e la confronta con il
+ginocchio di una scheda NVIDIA A100 con i tensor core accesi, poco più di 161
+conti per byte.
+
+```python
+from math import ceil
+
+n = 4096                              # uno strato lineare con una matrice di pesi n x n
+ginocchio = 312e12 / 1.935e12         # A100 80 GB PCIe, tensor core in float16
+for b in (1, 8, 64, 512):             # quanti vettori passano insieme per lo strato
+    flop = 2 * n * n * b              # una moltiplicazione e una somma per peso e vettore
+    byte = 2 * (n * n + 2 * n * b)    # pesi, vettori in ingresso e in uscita, 2 byte l'uno
+    intensita = flop / byte
+    print(f"b = {b:3}: {intensita:6.1f} FLOP per byte, "
+          f"{min(1, intensita / ginocchio):6.1%} del picco di calcolo al massimo")
+# il pareggio: I(b) = b n / (n + 2 b) raggiunge il ginocchio per b = g n / (n - 2 g)
+print(f"ginocchio a {ginocchio:.0f} FLOP per byte: lo si supera da b = "
+      f"{ceil(ginocchio * n / (n - 2 * ginocchio))} vettori in su")
+```
+
+```text
+b =   1:    1.0 FLOP per byte,   0.6% del picco di calcolo al massimo
+b =   8:    8.0 FLOP per byte,   4.9% del picco di calcolo al massimo
+b =  64:   62.1 FLOP per byte,  38.5% del picco di calcolo al massimo
+b = 512:  409.6 FLOP per byte, 100.0% del picco di calcolo al massimo
+ginocchio a 161 FLOP per byte: lo si supera da b = 176 vettori in su
+```
+
+Con un vettore solo l'intensità è di un conto per byte, e al massimo si usa lo
+$0{,}6\%$ del picco. Ogni peso arriva, serve per una moltiplicazione e una
+somma, e se ne va. Solo da centosettantasei vettori insieme in su l'intensità
+supera il ginocchio. Il vettore solo è il caso in cui portare i conti dentro la
+memoria vale di più; l'altra strada, per chi serve un modello di linguaggio, è
+raccogliere le richieste di molti utenti in lotti, così che ogni peso arrivato
+serva a molti vettori. È il conto che il {doc}`capitolo sull'efficienza
+</Efficienza/far-rispondere-in-fretta>` riprende per un modello che scrive una
+parola alla volta.
+
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
@@ -504,13 +662,13 @@ riorganizzare il calcolo per non sprecare banda. Sotto nomi diversi, la domanda
   fa arrivare i dati più in fretta: quanti ne consegna la memoria al secondo
   (la banda) è un tetto che non si alza. Le due misure vanno tenute distinte,
   perché una si copre e l'altra no.
-- La memoria è una scrivania: la penna in mano (i *registri*, privatissimi
-  e minuscoli), i fogli sul piano (la *shared memory*, il tavolo della
-  squadra), il cassetto grande (la *cache L2*), l'armadio dall'altra parte
-  della stanza (la memoria grande della scheda, la *HBM*, quella che in tutto
-  il capitolo si chiama «il magazzino») e il deposito in un altro edificio (la
-  memoria del computer). Fra la penna e il deposito non c'è il doppio di
-  distanza: ce n'è migliaia di volte.
+- La memoria è una scrivania: la penna in mano (i *registri*, privatissimi e
+  minuscoli), i fogli sul piano (la *shared memory*, il tavolo della squadra),
+  il cassetto grande (la *cache L2*), l'armadio dall'altra parte della stanza
+  (la memoria grande della scheda, la *HBM*, quella che nel capitolo si chiama
+  «il magazzino» o «la dispensa») e il deposito in un altro edificio (la memoria
+  del computer). Fra la penna e il deposito non c'è il doppio di distanza: ce
+  n'è migliaia di volte.
 - Conta anche come si chiedono i dati, non solo dove stanno. Trentadue
   pacchi sulla stessa via si consegnano in quattro giri di furgone pieno; gli
   stessi trentadue sparsi per la città vogliono trentadue viaggi quasi vuoti:
@@ -528,6 +686,10 @@ riorganizzare il calcolo per non sprecare banda. Sotto nomi diversi, la domanda
 - Più i «cuochi» diventano veloci di generazione in generazione, più è facile
   ritrovarsi bloccati dal magazzino: è la ragione per cui tutto il capitolo
   parla di byte e non di conti.
+- Si può anche portare il lavoro nel magazzino: aiutanti con banchi piccoli,
+  uno per corsia, che fanno i lavori semplici dove stanno le scatolette.
+  Conviene per le ricette bloccate dal magazzino, non per quelle bloccate dai
+  cuochi, e solo se ogni aiutante trova nella sua corsia quello che gli serve.
 ```
 `````
 
@@ -558,5 +720,9 @@ riorganizzare il calcolo per non sprecare banda. Sotto nomi diversi, la domanda
   core alzano il picco di calcolo e spostano il ginocchio a destra (da
   $\approx 10$ FLOP/byte con i CUDA core a $\approx 160$ su A100 in `float16`),
   rendendo la banda ancora più decisiva.
+- Il calcolo in memoria (PIM; il Neurocube lo mette nello strato logico di un
+  HMC) toglie il collegamento verso il processore dal conto dei byte: aiuta i
+  kernel memory-bound con aritmetica semplice e dati ripartiti fra le unità,
+  non un GEMM grande.
 ```
 `````

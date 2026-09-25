@@ -689,7 +689,8 @@ dice senza esitare che l'auto sta più indietro dell'albero; se siano a dieci
 metri o a cento, e di quante volte l'una sia più lontana dell'altra, non lo
 dice. A dirlo può essere soltanto quello che si sa del mondo, come la taglia di
 una porta o di un'auto, e allora la risposta vale quanto quel ricordo: un
-plastico fatto bene la manda fuori strada di un fattore dieci.
+plastico fatto bene la manda fuori strada di tante volte quante il plastico è
+più piccolo del vero.
 
 `````
 
@@ -697,18 +698,18 @@ plastico fatto bene la manda fuori strada di un fattore dieci.
 
 Il problema è mal posto in senso stretto: infinite scene generano la stessa
 immagine, e la classe di ambiguità include almeno la scala globale. Un modello
-monoculare non risolve la geometria: impara dai dati la distribuzione della
-profondità data l'immagine, e ne restituisce la statistica che la loss sceglie
-(la media con l'errore quadratico, la mediana con quello assoluto). La
-distinzione terminologica che ne discende è utile: si parla di profondità
-relativa (l'ordinamento, oppure l'inversa della profondità a meno di scala e
-offset, che è ciò che predice MiDaS; uno spostamento costante della disparità
-non è uno spostamento costante della profondità, e dal risultato non si
-ricavano nemmeno i rapporti fra le distanze) contro profondità metrica (in
-metri). La seconda chiede che il prior contenga anche le taglie degli oggetti e
-che la focale sia nota, perché la stessa scena ripresa con un grandangolo o con
-un teleobiettivo suggerisce distanze diverse; con più viste bastano invece la
-base nota o un sensore inerziale.
+monoculare non risolve la geometria: della distribuzione della profondità data
+l'immagine stima soltanto la statistica che la loss premia (la media con
+l'errore quadratico, la mediana con quello assoluto). La distinzione
+terminologica che ne discende è utile: si parla di profondità relativa
+(l'ordinamento, oppure l'inversa della profondità a meno di scala e offset, che
+è ciò che predice MiDaS; uno spostamento costante della disparità non è uno
+spostamento costante della profondità, e dal risultato non si ricavano nemmeno
+i rapporti fra le distanze) contro profondità metrica (in metri). La seconda
+chiede che il prior contenga anche le taglie degli oggetti e che la focale sia
+nota o stimata, perché la stessa scena ripresa con un grandangolo o con un
+teleobiettivo suggerisce distanze diverse; con più viste bastano invece la base
+nota o un sensore inerziale.
 
 Il progresso decisivo è stato di dati, non di architettura. **MiDaS** mostra
 che mescolando dataset molto diversi (scansioni 3D, stereo da film, ricostruzioni
@@ -829,11 +830,13 @@ Ecco la conversione promessa: è un numero algebrico e non una distanza, e per
 farne pixel va diviso per la lunghezza dei soli due primi coefficienti della
 retta $l = \mathbf{F}\tilde{\mathbf{x}}_L$, cioè per $\sqrt{a^2+b^2}$, che qui
 vale circa $4 \cdot 10^{-4}$; dividerlo per la lunghezza di tutti e tre darebbe
-un numero quasi trecento volte più piccolo e senza significato. Un residuo di
+un numero da cento a quattrocento volte più piccolo, secondo il punto, e senza
+significato. Un residuo di
 $0{,}3$ vorrebbe dire settecento pixel fuori posto su un sensore largo
 seicentoquaranta (il centro dell'immagine, nel programma, sta a $320$), cioè
 dall'altra parte dell'immagine: è il metro con cui guardare il risultato. Il
-residuo misurato vale invece $3 \cdot 10^{-14}$ pixel, cioè zero. Per ognuno
+residuo, diviso per quella lunghezza, resta dell'ordine di $10^{-14}$ pixel,
+cioè zero. Per ognuno
 degli otto punti il pixel nella seconda immagine sta esattamente sulla retta
 calcolata dalla prima. Nessuna rete, nessun dato: è un'identità algebrica che
 dipende solo da come è fatta la proiezione, ed è la ragione per cui questa

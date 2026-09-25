@@ -127,10 +127,10 @@ $$
                     {\max(\mathrm{RI}) - \mathbb{E}[\mathrm{RI}]},
 $$
 
-dove $\max(\mathrm{RI})$ non è il massimo davvero raggiungibile ma un limite
-superiore, che con taglie diverse nelle due partizioni non si tocca. Sulla
-tabella di contingenza $n_{ij}$ (i punti che stanno nel gruppo $i$ di $C$ e nel
-gruppo $j$ di $T$), con $u_i$ e $v_j$ i totali di riga e di colonna,
+dove $\max(\mathrm{RI})$ vale $1$: non è il massimo davvero raggiungibile ma un
+limite superiore, che con taglie diverse nelle due partizioni non si tocca.
+Sulla tabella di contingenza $n_{ij}$ (i punti che stanno nel gruppo $i$ di $C$
+e nel gruppo $j$ di $T$), con $u_i$ e $v_j$ i totali di riga e di colonna,
 
 $$
 \mathrm{ARI} = \frac{\sum_{ij}\binom{n_{ij}}{2} - t}
@@ -140,7 +140,8 @@ t = \frac{\sum_i\binom{u_i}{2}\,\sum_j\binom{v_j}{2}}{\binom{m}{2}},
 $$
 
 dove $t$ è il numero atteso di coppie tenute insieme da entrambe sotto il
-modello di permutazione, e il denominatore sostituisce $1$. L'indice vale $1$
+modello di permutazione, e il primo termine del denominatore è quell’$1$,
+contato in coppie. L'indice vale $1$
 per l'accordo perfetto, $0$ in media sul caso casuale, e può essere negativo
 per un accordo peggiore del caso. L'alternativa dal versante informazionale è
 l’NMI, informazione mutua fra le due partizioni normalizzata dalle rispettive
@@ -255,12 +256,14 @@ sbagliato produce scaffalature che cambiano ogni volta che cambiano i libri.
 Rifare il conto su un'altra pescata è la mossa del bootstrap, qui al servizio di
 un'altra domanda.
 
-Attenzione a una trappola: dividere in
-pochissimi gruppi regge quasi sempre, anche quando è la risposta sbagliata,
-perché un taglio grossolano viene quasi sempre uguale. Il modo di accorgersene è
-guardare non solo quanto le prove vanno d'accordo in media, ma anche se vanno
-d'accordo tutte le volte. La prova serve dunque a scartare i numeri che non
-tengono, non a incoronare il più stabile.
+Attenzione a una trappola: dividere in pochissimi gruppi regge spesso anche
+quando è la risposta sbagliata, perché se un taglio grossolano conviene più di
+tutti gli altri esce sempre uguale. A volte ci si accorge guardando non solo
+quanto le prove vanno d'accordo in media, ma se vanno d'accordo tutte le volte:
+quando due tagli costano uguale, ogni tanto le due metà ne scelgono due
+diversi. Se il taglio che conviene è uno solo, le prove vanno d'accordo sempre,
+e la prova non se ne accorge. Serve dunque a scartare i numeri che non tengono,
+non a incoronare il più stabile.
 
 `````
 
@@ -273,13 +276,12 @@ l'accordo fra le due assegnazioni con un indice esterno (l'ARI, appunto, perché
 l'accordo fra due partizioni è esattamente ciò che misura). Ripetuto e mediato,
 dà $\mathrm{stab}(k)$, e si sceglie il $k$ che la massimizza.
 
-Il criterio ha un limite che è un teorema. Per $k$-means, quando il minimo
-dell'inerzia è unico, la stabilità tende a $1$ al crescere dei dati qualunque
-sia $k$, giusto o sbagliato, e scende sotto $1$ solo quando i minimi
-equivalenti sono più d'uno, cioè per una simmetria dei dati
-{cite}`bendavid2006sober`. La stabilità va quindi letta come un vincolo
-(scarta i $k$ instabili),
-non come una funzione da massimizzare alla cieca.
+Il criterio ha un limite che è un teorema. Per un $k$-means che trovi il minimo
+globale dell'inerzia, quando quel minimo è unico, la stabilità tende a $1$ al
+crescere dei dati qualunque sia $k$, giusto o sbagliato, e scende sotto $1$ solo
+quando i minimi equivalenti sono più d'uno, cioè per una simmetria dei dati
+{cite}`bendavid2006sober`. La stabilità va quindi letta come un vincolo (scarta
+i $k$ instabili), non come una funzione da massimizzare alla cieca.
 
 `````
 
@@ -343,11 +345,11 @@ Il perché sta nella geometria. Quattro mucchi ai vertici di un quadrato si
 possono tagliare in due in due modi che costano esattamente uguale, in
 orizzontale o in verticale; quasi ogni volta le due metà dei dati scelgono lo
 stesso, e ogni tanto no. È la simmetria a far ballare il $k = 2$, e qui ci
-salva. Basta allungare il quadrato in un rettangolo perché il taglio che separa
-i due mucchi in basso dai due in alto diventi l'unico ottimo: allora il $k = 2$
-sbagliato esce stabile quanto il $k = 4$ giusto, e né la media né la
-dispersione se ne accorgono. La stabilità dice se il raggruppamento migliore è
-unico, e sulla sua correttezza tace.
+salva. Basta allungare il quadrato in altezza, facendone un rettangolo, perché
+il taglio che separa i due mucchi in basso dai due in alto diventi l'unico
+ottimo: allora il $k = 2$ sbagliato esce stabile quanto il $k = 4$ giusto, e né
+la media né la dispersione se ne accorgono. La stabilità dice se il
+raggruppamento migliore è unico, e sulla sua correttezza tace.
 
 Ecco perché la stabilità serve a scartare i valori che non tengono (qui il
 $3$, con $0{,}655 \pm 0{,}238$: un raggruppamento in tre parti di quattro mucchi
@@ -481,9 +483,10 @@ Che è, poi, la storia di Plutone: alla fine si vota.
   casuali dà $\mathrm{RI} = 0{,}500$ contro $\mathrm{ARI} = +0{,}0003$.
 - Stabilità: due sottocampioni, due adattamenti a $k$ gruppi, accordo
   misurato con l'ARI sull'intersezione. Criterio applicabile senza etichette; da
-  usare per scartare i $k$ instabili, perché i $k$ piccoli sono stabili quasi
-  per costruzione ($0{,}960$ a $k=2$ contro $1{,}000$ a $k=4$ sulle quattro
-  nuvole).
+  usare per scartare i $k$ instabili e non per scegliere il più stabile: con un
+  minimo unico dell'inerzia ogni $k$, giusto o sbagliato, tende a stabilità
+  $1$, e sotto $1$ la porta solo una simmetria dei dati ($0{,}960$ a $k=2$
+  contro $1{,}000$ a $k=4$ sulle quattro nuvole disposte in quadrato).
 - Teorema di impossibilità di Kleinberg {cite}`kleinberg2002impossibility`:
   nessuna funzione di clustering soddisfa insieme invarianza di scala, ricchezza
   e coerenza. Gli algoritmi noti sono i rami della rinuncia, non approssimazioni

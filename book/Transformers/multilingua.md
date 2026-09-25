@@ -126,10 +126,6 @@ sulla sua lingua anche a parità di dati.
 
 ## L'allineamento che nessuno ha chiesto
 
-Nessuno ha mai mostrato al modello una frase accanto alla sua traduzione.
-Eppure, a fine addestramento, succede una cosa che è facile dare per scontata
-dopo averla sentita raccontare.
-
 Nel procedimento appena descritto non c'è nulla che chieda al modello di
 mettere vicine le traduzioni. Nessuno gli mostra mai «il gatto nero salta sul
 muro» accanto a «the black cat jumps on the wall». Eppure, a fine
@@ -483,11 +479,12 @@ comuni. Una regolazione giusta in assoluto non esiste; esiste quella giusta
 rispetto alle lingue che interessano.
 
 Nessuno ha sbagliato niente: la coperta è corta. L'unico modo di aggiungere
-lingue senza perderci niente è ingrandire il modello, e il resto sono rimedi
-parziali. I due migliori: fare un modello per una famiglia di lingue vicine, che
-ha molto meno da spartire, e mettere una lingua che ha già un buon modello tutto
-suo a fare da maestra a quello multilingue, che copiandole le risposte recupera
-un pezzo del divario. Ed è lo stesso argomento, girato, di quello che
+lingue senza perderci niente è ingrandire il modello, e la strada più diretta è
+dare a ogni lingua, a ogni piano, un pezzetto di macchina tutto suo, che si
+accende solo sui suoi testi, lasciando in comune il resto: il modello cresce con
+le lingue, ma ogni frase ne attraversa sempre la stessa quantità. Più antico è
+fare un modello per una famiglia di lingue vicine, che ha molto meno da
+spartire. Ed è lo stesso argomento, girato, di quello che
 spiegava perché l'allineamento emerge: condividere è economico finché la
 scarsità costringe a condividere, e diventa un impaccio quando quello che
 serviva era distinguere.

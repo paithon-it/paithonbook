@@ -121,12 +121,11 @@ nella {doc}`sezione su come funziona la diffusione
 $\alpha_t = 1-\beta_t$ era il fattore di un solo passo e $\sigma_t$ la
 deviazione standard del rumore fresco del passo inverso. Il dizionario è
 $\alpha_t = \sqrt{\bar{\alpha}_t}$ e $\sigma_t = \sqrt{1-\bar{\alpha}_t}$, e da
-qui in avanti nel capitolo valgono le lettere nuove. La conseguenza operativa ha
-un nome, ed è il motivo per
-cui questi modelli si addestrano in tempi umani: il campionamento è **senza
-simulazione** (*simulation-free*). Per avere $\mathbf{x}_t$ a un istante
-qualsiasi non serve integrare l'equazione passo per passo, basta sorteggiare
-$\boldsymbol{\epsilon}$ e scrivere
+qui in avanti, nel tempo continuo, valgono le lettere nuove. La conseguenza
+operativa ha un nome, ed è il motivo per cui questi modelli si addestrano in
+tempi umani: il campionamento è **senza simulazione** (*simulation-free*). Per
+avere $\mathbf{x}_t$ a un istante qualsiasi non serve integrare l'equazione
+passo per passo, basta sorteggiare $\boldsymbol{\epsilon}$ e scrivere
 $\mathbf{x}_t = \alpha_t\mathbf{x}_0 + \sigma_t\boldsymbol{\epsilon}$.
 
 `````
@@ -611,8 +610,9 @@ $$
 $$
 
 e ogni scelta di parametrizzazione equivale a una scelta di $w(t)$ nella
-formulazione sul rumore. Con $\mathrm{SNR}(t) = \alpha_t^2/\sigma_t^2$ i conti
-stanno in una riga:
+formulazione sul rumore. Con $\mathrm{SNR}(t) = \alpha_t^2/\sigma_t^2$, il
+rapporto fra le potenze come lo scrive la letteratura (il quadrato di
+$\alpha_t/\sigma_t$, quello fra le ampiezze), i conti stanno in una riga:
 $\lVert\hat{\mathbf{x}}_0 - \mathbf{x}_0\rVert^2 =
 \lVert\hat{\boldsymbol{\epsilon}} -
 \boldsymbol{\epsilon}\rVert^2/\mathrm{SNR}(t)$,
@@ -674,7 +674,7 @@ quella di partenza. Le quattro domande sono la stessa domanda.
 - La strada del ritorno esiste ed è la stessa equazione con un termine in
   più, la spinta verso le zone dense. Quella spinta è l'unica cosa ignota, e
   la rete impara solo quella. Andando all'indietro il tremore c'è ancora ma si
-  spegne piano piano, come una temperatura che si abbassa.
+  spegne piano piano, mentre il bersaglio si stringe attorno ai dati.
 - Accanto alla strada casuale ce n'è una deterministica che attraversa le
   stesse nuvole negli stessi istanti. Si percorre nei due sensi (quindi ogni
   immagine ha il suo rumore, e si può modificare un'immagine esistente),

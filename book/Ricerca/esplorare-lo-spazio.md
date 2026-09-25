@@ -297,14 +297,15 @@ $O(b^{1+\lfloor C^*/\varepsilon \rfloor})$ in tempo e in memoria, dove $C^*$ è
 il costo della soluzione ottima: con passi piccoli rispetto a $C^*$ è molto più
 di $b^d$ {cite}`russell2020artificial`. Quanto A\* faccia meglio si misura col
 **fattore di ramificazione effettivo** $b^*$, quello di un albero uniforme
-profondo $d$ con tanti nodi quanti la ricerca ne ha aperti: sul rompicapo delle
-otto tessere, con $d = 20$ e i conteggi stampati dal blocco sul rompicapo, vale
-circa $1{,}64$ senza stima, $1{,}42$ con le tessere fuori posto e $1{,}22$ con
-la distanza a isolati. Con un'euristica consistente A\* è anche *ottimamente
-efficiente*: ogni algoritmo che estende cammini dalla radice con la stessa
-euristica deve aprire tutti i nodi con $f(n) < C^*$, che sono quelli che A\*
-apre; e non per questo smette di essere esponenziale, perché quei nodi possono
-essere esponenzialmente tanti.
+profondo $d$ con tanti nodi quanti la ricerca ne ha aperti (la definizione di
+Nilsson, quella del manuale appena citato, conta invece i nodi generati, e dà
+valori un poco più alti): sul rompicapo delle otto tessere, con $d = 20$ e i
+conteggi stampati dal blocco sul rompicapo, vale circa $1{,}64$ senza stima,
+$1{,}42$ con le tessere fuori posto e $1{,}22$ con la distanza a isolati. Con
+un'euristica consistente A\* è anche *ottimamente efficiente*: ogni algoritmo
+che estende cammini dalla radice con la stessa euristica deve aprire tutti i
+nodi con $f(n) < C^*$, che sono quelli che A\* apre; e non per questo smette di
+essere esponenziale, perché quei nodi possono essere esponenzialmente tanti.
 
 Il prezzo, che la tabella di ampiezza e profondità non dice, è scomodo: A\*
 tiene in memoria tutti i nodi generati, esattamente come la ricerca in

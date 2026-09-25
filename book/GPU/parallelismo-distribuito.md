@@ -171,20 +171,21 @@ Quando diventa un elenco telefonico da mille pagine, non c'è tasca che tenga.
 `````{tab} Superiore
 
 Con $K$ repliche, la libreria di *collettive* di NVIDIA, **NCCL** (*NVIDIA
-Collective Communications Library*), sceglie fra più algoritmi in base a
-taglia del messaggio e topologia; quello classico è lo schema
-**ring all-reduce**: le GPU formano un anello logico e ogni GPU comunica
-soltanto con i due vicini, in due fasi (*reduce-scatter* e poi *all-gather*).
-Nel modello a latenza e banda, con $\alpha$ il costo fisso di un messaggio,
-$\beta$ la banda del collegamento e $n$ i byte del gradiente, l'anello costa
+Collective Communications Library*), sceglie fra più algoritmi in base a taglia
+del messaggio e topologia; quello classico è lo schema **ring all-reduce**: le
+GPU formano un anello logico e ogni GPU comunica soltanto con i due vicini, in
+due fasi (*reduce-scatter* e poi *all-gather*). Nel modello a latenza e banda,
+con $\alpha$ il costo fisso di un messaggio, $\beta$ la banda del collegamento e
+$n$ i byte del gradiente, l'anello costa
 $T_\text{ring} = 2(K-1)\,\alpha + 2\frac{K-1}{K}\,\frac{n}{\beta}$. Il secondo
-termine è il volume trasmesso da ciascuna GPU, $2\frac{K-1}{K}$ volte il
-gradiente: tende a $2n/\beta$, che è il minimo per qualunque all-reduce, cioè
-l'anello è ottimale in banda. Il primo termine, la latenza, cresce invece
-linearmente con $K$. È
-proprio quella latenza, proporzionale a $K$, il motivo per cui a molti nodi
-NCCL abbandona l'anello per schemi ad albero (*double binary tree*), che la
-contengono senza sacrificare la banda.
+termine è il tempo per spedire il volume che ciascuna GPU trasmette,
+$2\frac{K-1}{K}$ volte il gradiente, ed è esattamente il minimo che qualunque
+all-reduce deve far passare da almeno un nodo {cite}`patarasuk2009bandwidth`:
+l'anello è ottimale in banda per ogni $K$, e al crescere di $K$ quel costo sale
+verso $2n/\beta$ senza mai superarlo. Il primo termine, la latenza, cresce
+invece linearmente con $K$. È proprio quella latenza, proporzionale a $K$, il
+motivo per cui a molti nodi NCCL abbandona l'anello per schemi ad albero
+(*double binary tree*), che la contengono senza sacrificare la banda.
 
 L'anello ha preso il posto di un altro schema, e il confronto spiega la sua
 fortuna. Quello di prima era il **parameter server**
@@ -280,21 +281,21 @@ $$
            + \mathrm{GeLU}(\mathbf{X}\mathbf{A}_2)\,\mathbf{B}_2,
 $$
 
-dove $\mathbf{A}_i$ e $\mathbf{B}_i$ sono le porzioni assegnate alla GPU $i$.
-La somma dei due addendi richiede una sola collettiva (un all-reduce) in avanti
-e una all'indietro, per blocco: per strato di Transformer, contando anche
-l'attenzione, sono quattro all-reduce, ciascuno sulle attivazioni di $b \cdot s
-\cdot h$ numeri ($b$ esempi, $s$ posizioni, $h$ dimensione del modello). Il
-traffico cresce con il batch e con la lunghezza del testo, e si ripete a ogni
-strato; quello del parallelismo dati dipende solo dal numero di parametri, e si
-paga una volta per passo. Nell'attenzione multi-testa il taglio è ancora più
-naturale: teste diverse su GPU diverse. Il costo è la comunicazione: le
-collettive sulle *attivazioni* si ripetono a ogni blocco, sono sincrone e
-stanno sul cammino critico (il calcolo non può proseguire finché non finiscono,
-quindi non si nascondono dietro di esso, come invece fa l'all-reduce dei
-gradienti). Per questo il tensor parallelism vive di norma dentro un singolo
-nodo, dove le GPU sono collegate da NVLink a centinaia di GB/s, e non tra nodi
-diversi.
+dove $\mathbf{A}_i$ e $\mathbf{B}_i$ sono le porzioni assegnate alla GPU $i$. La
+somma dei due addendi richiede una sola collettiva (un all-reduce) in avanti e
+una all'indietro, per blocco: per strato di Transformer, contando anche
+l'attenzione, sono quattro all-reduce, ciascuno sulle attivazioni di
+$b \cdot s \cdot d_{\text{model}}$ numeri ($b$ esempi, $s$ posizioni,
+$d_{\text{model}}$ la larghezza del modello). Il traffico cresce con il batch e
+con la lunghezza del testo, e si ripete a ogni strato; quello del parallelismo
+dati dipende solo dal numero di parametri, e si paga una volta per passo.
+Nell'attenzione multi-testa il taglio è ancora più naturale: teste diverse su
+GPU diverse. Il costo è la comunicazione: le collettive sulle *attivazioni* si
+ripetono a ogni blocco, sono sincrone e stanno sul cammino critico (il calcolo
+non può proseguire finché non finiscono, quindi non si nascondono dietro di
+esso, come invece fa l'all-reduce dei gradienti). Per questo il tensor
+parallelism vive di norma dentro un singolo nodo, dove le GPU sono collegate da
+NVLink a centinaia di GB/s, e non tra nodi diversi.
 
 `````
 
@@ -493,8 +494,8 @@ solo reduce-scatter, perché a ogni GPU serve soltanto la fetta di gradiente che
 le compete; in cambio i parametri vanno radunati con un all-gather nel
 `forward` e con un altro nel `backward`. Anche così è quasi sempre un buon
 affare, perché quella comunicazione si sovrappone al calcolo. In codice, FSDP
-somiglia molto a DDP: si lancia con `torchrun` e il training loop resta
-identico.
+somiglia molto a DDP: si lancia con `torchrun` e il training loop resta lo
+stesso, con un'accortezza, l'ottimizzatore creato dopo aver spartito il modello.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -519,8 +520,12 @@ for blocco in model.blocchi:
 # invece di REPLICARE il modello (come DDP), FSDP ne SPARTISCE i parametri.
 fully_shard(model)
 
-# training loop IDENTICO: FSDP raduna (all-gather) i pesi di ogni blocco
-# appena prima di usarlo, e li ri-spartisce subito dopo, in automatico.
+# l'ottimizzatore si crea DOPO fully_shard: i parametri sono diventati
+# DTensor, e uno creato prima aggiornerebbe tensori che non si usano più
+optimizer = torch.optim.AdamW(model.parameters())
+
+# il training loop resta quello di DDP: FSDP raduna (all-gather) i pesi di
+# ogni blocco appena prima di usarlo, e li ri-spartisce subito dopo.
 ```
 
 `````

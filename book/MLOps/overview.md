@@ -325,7 +325,7 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
   davvero «veloce» quando la risposta non arriva tutta insieme ma una parola
   alla volta: quanto si aspetta la prima, con che ritmo scorrono le altre, e
   perché le medie mentono.
--  {doc}`Il conto in energia </MLOps/energia-e-impronta>`, l'unica voce che non
+- {doc}`Il conto in energia </MLOps/energia-e-impronta>`, l'unica voce che non
   si dichiara quasi mai: dove finisce la corrente (quando si genera una parola
   alla volta, più nei viaggi dei dati che nei conti), come si arriva
   dall'energia ai grammi di anidride carbonica, e perché in un modello che resta

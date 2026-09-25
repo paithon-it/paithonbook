@@ -322,9 +322,11 @@ $\beta = \sum_x \min\bigl(p_{\text{b}}(x), p_{\text{t}}(x)\bigr)$ la probabilit�
 di accettare; allora $\sum_x [p_{\text{t}}(x)-p_{\text{b}}(x)]_+ = 1-\beta$ e
 
 $$
-P(x) = p_{\text{b}}(x)\min\Bigl(1,\tfrac{p_{\text{t}}(x)}{p_{\text{b}}(x)}\Bigr)
-+ (1-\beta)\,\frac{[p_{\text{t}}(x)-p_{\text{b}}(x)]_+}{1-\beta}
-= \min(p_{\text{b}},p_{\text{t}}) + \max(0, p_{\text{t}}-p_{\text{b}}) = p_{\text{t}}(x).
+\begin{aligned}
+P(x) &= p_{\text{b}}(x)\min\Bigl(1,\tfrac{p_{\text{t}}(x)}{p_{\text{b}}(x)}\Bigr)
++ (1-\beta)\,\frac{[p_{\text{t}}(x)-p_{\text{b}}(x)]_+}{1-\beta}\\
+&= \min(p_{\text{b}},p_{\text{t}}) + \max(0, p_{\text{t}}-p_{\text{b}}) = p_{\text{t}}(x).
+\end{aligned}
 $$
 
 La distribuzione dei token emessi è quindi identica a quella del solo modello
@@ -332,7 +334,8 @@ target, qualunque sia il modello bozza: un modello bozza peggiore abbassa
 $\beta$ e con esso la velocità, mai la qualità. L'uscita è la stessa, solo più
 in fretta, senza nessuno scambio fra qualità e velocità.
 
-Il guadagno dipende dal **tasso di accettazione** $\alpha$: sotto l'ipotesi
+Il guadagno dipende dal **tasso di accettazione** $\alpha$, la media di
+$\beta$ sulle posizioni: sotto l'ipotesi
 semplificatrice (dichiarata dagli autori) che le accettazioni siano
 indipendenti con tasso costante $\alpha$, il numero atteso di token per
 passata è

@@ -97,8 +97,12 @@ $K$ strati, il sottografo che alimenta un nodo ha al più $S^K$ foglie, comunque
 grande sia il grafo. E poiché $\mathbf{W}^{(k)}$ e le funzioni di aggregazione
 non dipendono da *quali* nodi si stia guardando ma solo dalle loro feature, il
 modello si applica di peso a nodi e grafi mai visti: l'inferenza su un nuovo
-nodo richiede solo di conoscerne il vicinato, non di riaddestrare. Due dettagli
-dell'algoritmo completano il quadro. Dopo ogni strato lo stato si normalizza,
+nodo richiede solo di conoscerne il vicinato, non di riaddestrare. La stessa
+condivisione dei pesi c'è anche nella GCN, che infatti si può applicare a nodi
+nuovi; la differenza sta nell'addestramento, che GraphSAGE fa su vicinati
+campionati invece che sul grafo intero, e che abitua i pesi a pezzi di grafo
+sempre diversi. Due dettagli dell'algoritmo completano il quadro. Dopo ogni
+strato lo stato si normalizza,
 $\mathbf{h}_v^{(k)} \leftarrow \mathbf{h}_v^{(k)} / \lVert \mathbf{h}_v^{(k)} \rVert_2$.
 E in assenza di etichette la rete si addestra con la loss di skip-gram sui
 cammini casuali,
@@ -450,23 +454,25 @@ mostrare dove le GNN, oggi, fanno la differenza.
 
 **Chimica e farmaci.** È il terreno naturale delle GNN: una molecola *è* un
 grafo (atomi nei nodi, legami negli archi) e prevederne una proprietà è un
-compito a livello di grafo. Le prime reti su grafo provate sulle molecole sono
-quelle ricordate in apertura del capitolo: i modelli di Scarselli e di Micheli
-erano già misurati su dati chimici, come mutagenicità, tossicità e proprietà di
-alcani
-{cite}`scarselli2009graph,micheli2009neural`. A rendere l'idea corrente nella
-chimica computazionale sono stati i *fingerprint molecolari neurali* di Duvenaud
-e colleghi del 2015 {cite}`duvenaud2015convolutional`. Le caratteristiche di una
-molecola da dare in pasto a un modello (quanti anelli, quali gruppi chimici, che
-peso) fino ad allora si sceglievano quasi sempre a mano, o si calcolavano con
-impronte fisse come le circolari ECFP; qui le trova la rete, che dalla struttura
-della molecola ricava da sé la fila di numeri che la descrive. La punta di
-diamante è halicin, la molecola con cui si è aperto il capitolo. Conviene
-aggiungere solo quello che lì non era stato detto: la rete che l'ha pescata è
-una rete a message passing come quelle di queste pagine, e la molecola non
-funziona su un batterio soltanto, ma su batteri molto diversi fra loro (fra gli
-altri il bacillo della tubercolosi e alcuni ceppi intestinali che ai farmaci più
-recenti non rispondono più).
+compito a livello di grafo. Sulle molecole le reti su grafo sono state provate
+fin dall'inizio: le reti ricorsive ricordate in apertura del capitolo
+prevedevano già nel 2000 la temperatura di ebollizione degli alcani e
+l'attività delle benzodiazepine, trattando ogni molecola come un albero
+{cite}`bianucci2000application`, e i modelli di Scarselli e di Micheli, che
+reggono grafi qualunque, erano misurati su mutagenicità, tossicità e proprietà
+di alcani {cite}`scarselli2009graph,micheli2009neural`. A rendere l'idea
+corrente nella chimica computazionale sono stati i *fingerprint molecolari
+neurali* di Duvenaud e colleghi del 2015 {cite}`duvenaud2015convolutional`. Le
+caratteristiche di una molecola da dare in pasto a un modello (quanti anelli,
+quali gruppi chimici, che peso) fino ad allora si sceglievano quasi sempre a
+mano, o si calcolavano con impronte fisse come le circolari ECFP; qui le trova
+la rete, che dalla struttura della molecola ricava da sé la fila di numeri che
+la descrive. La punta di diamante è halicin, la molecola con cui si è aperto il
+capitolo. Conviene aggiungere solo quello che lì non era stato detto: la rete
+che l'ha pescata è una rete a message passing come quelle di queste pagine, e
+la molecola non funziona su un batterio soltanto, ma su batteri molto diversi
+fra loro (fra gli altri il bacillo della tubercolosi e alcuni ceppi intestinali
+che ai farmaci più recenti non rispondono più).
 
 **Raccomandazione su grafo.** Il caso industriale più celebre è **PinSage**, il
 sistema che Pinterest mette in produzione nel 2018
@@ -578,15 +584,17 @@ amici hanno gusti simili). Dove vale il contrario, e chi è connesso è
   bottiglia topologici, penalizzando i compiti a lungo raggio. Profondità e
   portata sono così in tensione: servirebbero più strati per raggiungere nodi
   lontani, ma più strati innescano l'oversmoothing. La versione misurabile è di
-  Topping e colleghi: se le derivate delle funzioni di messaggio e di
-  aggiornamento sono limitate da due costanti $c_1$ e $c_2$, la sensibilità
+  Topping e colleghi: in un MPNN che pesa i messaggi dei vicini con
+  $\hat{\mathbf{A}}$, l'adiacenza normalizzata con i cappi, se le derivate delle
+  funzioni di messaggio e di aggiornamento sono limitate da due costanti $c_1$ e
+  $c_2$, la sensibilità
   dello stato di $v$ alla feature di un nodo $u$ a distanza $K$ soddisfa
   $\big\lVert \partial \mathbf{h}_v^{(K)} / \partial \mathbf{x}_u \big\rVert
   \le (c_1 c_2)^K \big(\hat{\mathbf{A}}^K\big)_{vu}$, e quell'elemento di
   $\hat{\mathbf{A}}^K$ è piccolo proprio quando i cammini fra i due passano per
-  pochi archi. Ne ricavano una curvatura degli archi che individua i colli di
-  bottiglia, e un *rewiring* che aggiunge archi dove la curvatura è più
-  negativa {cite}`topping2022oversquashing`.
+  pochi archi. Ne ricavano una curvatura degli archi, la *Balanced Forman*, che
+  individua i colli di bottiglia, e un *rewiring* che aggiunge archi dove la
+  curvatura è più negativa {cite}`topping2022oversquashing`.
 - **Scalabilità.** Il campionamento di GraphSAGE e PinSage attenua il costo, ma
   addestrare su grafi da miliardi di nodi resta un problema aperto di sistemi,
   non solo di modelli.
@@ -603,7 +611,7 @@ L'over-squashing ha una forma che si disegna in poche linee
 
 ```{figure} ../figures/collo-di-bottiglia.svg
 :name: fig-collo-di-bottiglia
-:alt: "Due gruppi di cinque nodi, ognuno collegato al proprio interno, uniti da un solo arco, il ponte, che ha la curvatura più negativa del grafo (-6). Il nodo u sta a sinistra e v a destra, a 3 passi. Un arco tratteggiato, aggiunto dal rewiring accanto al ponte, apre una seconda strada e fa crescere il limite sulla sensibilità di v a u da 5,6 · 10⁻³ a 1,1 · 10⁻²."
+:alt: "Due gruppi di cinque nodi, ognuno collegato al proprio interno, uniti da un solo arco, il ponte, che ha la curvatura più negativa del grafo (−1,2). Il nodo u sta a sinistra e v a destra, a 3 passi. Un arco tratteggiato, aggiunto dal rewiring accanto al ponte, apre una seconda strada e fa crescere il limite sulla sensibilità di v a u da 5,6 · 10⁻³ a 1,1 · 10⁻²."
 :width: 100%
 
 Due gruppi di cinque nodi uniti da un ponte. Il ponte ha la curvatura più

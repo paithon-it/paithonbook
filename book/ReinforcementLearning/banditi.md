@@ -410,10 +410,12 @@ $$
 $$
 
 dove $\nu_a$ è la distribuzione delle ricompense della leva $a$ e $a^*$ la leva
-migliore: perdere qualcosa è inevitabile, e la costante dice quanto costa
-distinguere ogni leva dalla migliore. Auer, Cesa-Bianchi e Fischer
-{cite}`auer2002finite` mostrano che UCB1, con ricompense in $[0,1]$, garantisce
-a ogni $T$ finito
+migliore, prese entrambe da una famiglia parametrica nota in anticipo (tutte
+Bernoulli, per esempio: è l'ipotesi del teorema; su una classe più larga, come
+«qualunque distribuzione in $[0,1]$», il denominatore e la costante cambiano).
+Perdere qualcosa è inevitabile, e la costante dice quanto costa distinguere ogni
+leva dalla migliore. Auer, Cesa-Bianchi e Fischer {cite}`auer2002finite`
+mostrano che UCB1, con ricompense in $[0,1]$, garantisce a ogni $T$ finito
 
 $$
 \mathcal{R}_T \le 8 \sum_{a:\,\Delta_a > 0} \frac{\ln T}{\Delta_a}
@@ -525,10 +527,12 @@ mille a tutte non cambia la policy). L'aggiornamento è una salita stocastica
 sul gradiente della ricompensa attesa:
 
 $$
-H_{t+1}(A_t) = H_t(A_t) + \alpha\,\big(R_t - \bar{R}_t\big)\big(1 - \pi_t(A_t)\big),
-\qquad
-H_{t+1}(a) = H_t(a) - \alpha\,\big(R_t - \bar{R}_t\big)\,\pi_t(a)
+\begin{aligned}
+H_{t+1}(A_t) &= H_t(A_t) + \alpha\,\big(R_t - \bar{R}_t\big)\big(1 - \pi_t(A_t)\big),
+\\
+H_{t+1}(a) &= H_t(a) - \alpha\,\big(R_t - \bar{R}_t\big)\,\pi_t(a)
 \;\; \forall a \neq A_t ,
+\end{aligned}
 $$
 
 dove $\bar{R}_t$ è la media delle ricompense incassate prima di $t$, cioè

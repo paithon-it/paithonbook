@@ -197,28 +197,27 @@ $$
 
 un prodotto di $k$ fattori, e l'ordine conta perché le jacobiane non commutano.
 Per la rete di Elman ciascun fattore si scrive per esteso,
-$\partial \mathbf{h}_s / \partial \mathbf{h}_{s-1} = \mathrm{diag}\big(1 -
-\mathbf{h}_s \odot \mathbf{h}_s\big)\,\mathbf{W}_{hh}$,
+$\partial \mathbf{h}_s / \partial \mathbf{h}_{s-1} = \mathrm{diag}\big(1 - \mathbf{h}_s \odot \mathbf{h}_s\big)\,\mathbf{W}_{hh}$,
 e poiché la derivata della $\tanh$ non supera $1$ vale
-$\big\|\partial \mathbf{h}_t / \partial \mathbf{h}_{t-k}\big\| \le
-\|\mathbf{W}_{hh}\|^{k}$,
+$\big\|\partial \mathbf{h}_t / \partial \mathbf{h}_{t-k}\big\| \le \|\mathbf{W}_{hh}\|^{k}$,
 con $\|\cdot\|$ la norma spettrale: se il massimo valore singolare di
 $\mathbf{W}_{hh}$ è minore di $1$ il gradiente svanisce in modo esponenziale
 (*vanishing gradient*), e la diagonale, che tende a zero quando le unità
 saturano, lo spinge ancora più giù. Il maggiorante non dice invece quando il
 gradiente esplode: un valore singolare maggiore di $1$ è condizione necessaria,
-non sufficiente {cite}`pascanu2013difficulty`. Per l'esplosione il rimedio
-proposto nello stesso lavoro è il *gradient clipping*: se
-$\|\mathbf{g}\| > \tau$ si riscala
+non sufficiente {cite}`pascanu2013difficulty`. Per l'esplosione lo stesso lavoro
+propone di tagliare la norma del gradiente (*gradient clipping*; Mikolov lo
+faceva già, componente per componente): detto $\mathbf{g}$ il gradiente di tutti
+i parametri messi in fila, se $\|\mathbf{g}\| > \tau$ si riscala
 $\mathbf{g} \leftarrow \tau\,\mathbf{g}/\|\mathbf{g}\|$ (in PyTorch
 `torch.nn.utils.clip_grad_norm_`), che cura l'esplosione e non tocca la
-scomparsa. Che una rete ricorrente «semplice»
-faccia fatica su molti passi è un risultato del 1994 di Yoshua Bengio, Patrice
-Simard e Paolo Frasconi {cite}`bengio1994learning`, e va enunciato per quello
-che è: un compromesso, non un divieto. Se la rete conserva l'informazione in
-modo robusto, cioè in modo che un disturbo non la cancelli, allora il gradiente
-svanisce in modo esponenziale; e quindi è la discesa del gradiente a non
-riuscire a trovare quei legami, non la rete a non poterli rappresentare.
+scomparsa. Che una rete ricorrente «semplice» faccia fatica su molti passi è un
+risultato del 1994 di Yoshua Bengio, Patrice Simard e Paolo Frasconi
+{cite}`bengio1994learning`, e va enunciato per quello che è: un compromesso, non
+un divieto. Se la rete conserva l'informazione in modo robusto, cioè in modo che
+un disturbo non la cancelli, allora il gradiente svanisce in modo esponenziale;
+e quindi è la discesa del gradiente a non riuscire a trovare quei legami, non la
+rete a non poterli rappresentare.
 
 `````
 
@@ -357,19 +356,24 @@ $$
 \mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{c}_t),
 $$
 
-dove $\tilde{\mathbf{c}}_t =
-\tanh(\mathbf{W}_c[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_c)$ è la memoria
-candidata e $\odot$ è il prodotto elemento per elemento. Il perché si legge
-nella derivata lungo la strada della memoria: trascurando la dipendenza dei
-gate da $\mathbf{h}_{t-1}$, $\partial \mathbf{c}_t / \partial \mathbf{c}_{t-1}
-= \mathrm{diag}(\mathbf{f}_t)$, una diagonale che la rete porta vicino a $1$
-quando deve ricordare, al posto del fattore fisso $\mathrm{diag}(1 -
-\mathbf{h}_s \odot \mathbf{h}_s)\,\mathbf{W}_{hh}$ della rete semplice. Nel
-1997 quel fattore era l'identità per costruzione, il *constant error carousel*
-di Hochreiter e Schmidhuber; per la stessa ragione il bias di $\mathbf{f}_t$ si
-inizializza di solito a $1$ {cite}`jozefowicz2015empirical`. La **GRU** (*Gated
-Recurrent Unit*, {cite}`cho2014learning`) fonde stato e memoria in un solo
-vettore e usa due gate, *update* $\mathbf{z}_t$ e *reset* $\mathbf{r}_t$:
+dove
+$\tilde{\mathbf{c}}_t = \tanh(\mathbf{W}_c[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_c)$
+è la memoria candidata e $\odot$ è il prodotto elemento per elemento. Il perché
+si legge nella derivata lungo la strada della memoria: trascurando la dipendenza
+da $\mathbf{h}_{t-1}$ dei gate e della candidata,
+$\partial \mathbf{c}_t / \partial \mathbf{c}_{t-1} = \mathrm{diag}(\mathbf{f}_t)$,
+una diagonale che la rete porta vicino a $1$ quando deve ricordare, al posto del
+fattore $\mathrm{diag}(1 - \mathbf{h}_s \odot \mathbf{h}_s)\,\mathbf{W}_{hh}$
+della rete semplice, dove la matrice è la stessa a ogni passo e nessun cancello
+tiene la diagonale vicina a $1$. Nel 1997 quel fattore era l'identità per
+costruzione, il *constant error carousel* di Hochreiter e Schmidhuber; per la
+stessa ragione conviene inizializzare a $1$ il bias di $\mathbf{f}_t$, che con i
+pesi piccoli di partenza terrebbe il cancello intorno a $0{,}5$ e dimezzerebbe
+il gradiente a ogni passo: Jozefowicz e colleghi lo raccomandano notando che
+pochi lo facevano {cite}`jozefowicz2015empirical`, e `nn.LSTM` di PyTorch non lo
+fa da sé. La **GRU** (*Gated Recurrent Unit*, {cite}`cho2014learning`) fonde
+stato e memoria in un solo vettore e usa due gate, *update* $\mathbf{z}_t$ e
+*reset* $\mathbf{r}_t$:
 
 $$
 \mathbf{z}_t = \sigma(\mathbf{W}_z[\mathbf{h}_{t-1},\mathbf{x}_t]+\mathbf{b}_z), \quad
@@ -384,8 +388,11 @@ $$
 L'update gate fa insieme il lavoro del forget e dell'input della LSTM, legati in
 modo da sommare a uno; il reset decide quanta parte dello stato passato entra
 nella candidata. Con tre blocchi di pesi invece di quattro la GRU ha tre quarti
-dei parametri della LSTM a parità di dimensione, e i confronti sistematici non
-trovano un vincitore netto fra le due {cite}`greff2017lstm`.
+dei parametri della LSTM a parità di dimensione. I confronti sistematici non
+danno un vincitore netto: il verdetto fra le due cambia con il compito e con
+l'inizializzazione del forget gate {cite}`jozefowicz2015empirical`, e legare
+forget e input come fa la GRU non peggiora la LSTM in modo significativo
+{cite}`greff2017lstm`.
 
 `````
 
@@ -424,14 +431,16 @@ class ClassificatoreSentiment(nn.Module):
 Una cosa il blocco la dà per buona, e in un programma vero non lo è: `h[:, -1]`
 prende l'ultimo posto della fila. Quando le frasi di un lotto hanno lunghezze
 diverse le si allunga tutte alla stessa misura con dei riempitivi, e allora
-l'ultimo posto è l'ultimo riempitivo, non l'ultima parola: lo stato che si
-legge dipende da quanti se ne sono aggiunti. Con il riempimento si passa per
-`pack_padded_sequence`, e allora lo stato da leggere è il secondo valore che la
-rete restituisce, `h_n` (per la LSTM la coppia `h_n, c_n`), che per ciascuna
-frase si ferma alla sua ultima parola vera: `h[:, -1]` sulla sequenza srotolata
-con `pad_packed_sequence` darebbe invece un vettore di zeri per ogni frase più
-corta del lotto. Senza impacchettare, lo stato giusto si prende all'indice
-della lunghezza vera meno uno di ciascuna frase.
+l'ultimo posto è l'ultimo riempitivo, non l'ultima parola: lo stato che si legge
+dipende da quanti se ne sono aggiunti. Con il riempimento si passa per
+`pack_padded_sequence` (con `enforce_sorted=False` se il lotto non è ordinato
+per lunghezza decrescente), e allora lo stato da leggere è il secondo valore che
+la rete restituisce, `h_n` (per la LSTM la coppia `h_n, c_n`), che per ciascuna
+frase si ferma alla sua ultima parola vera; va preso come `h_n[-1]`, perché la
+sua prima dimensione sono gli strati anche con `batch_first=True`. `h[:, -1]`
+sulla sequenza srotolata con `pad_packed_sequence` darebbe invece un vettore di
+zeri per ogni frase più corta del lotto. Senza impacchettare, lo stato giusto si
+prende all'indice della lunghezza vera meno uno di ciascuna frase.
 
 Il ciclo di addestramento è quello che conosciamo dal {doc}`capitolo su PyTorch
 </PyTorch/overview>`. E provare, come si è detto, costa una parola: si scambia
@@ -489,11 +498,15 @@ conto è $O(n\,d^2)$ operazioni in $O(n)$ passi sequenziali; l'autoattenzione
 paga $O(n^2 d)$ operazioni, ma in $O(1)$ passi sequenziali e con un cammino di
 lunghezza $O(1)$ fra due posizioni qualsiasi, e costa meno finché $n$ resta
 sotto $d$ {cite}`vaswani2017attention`. La sequenzialità, del resto, è un
-vincolo
-delle ricorrenze non lineari: se l'aggiornamento è lineare in $\mathbf{h}_{t-1}$
-la composizione dei passi è associativa e si calcola con una scansione parallela
-in $O(\log n)$ passi, la strada presa dai {doc}`modelli a spazio di stati
-</StateSpaceModel/overview>`.
+vincolo delle ricorrenze non lineari. Se l'aggiornamento è lineare in
+$\mathbf{h}_{t-1}$, $\mathbf{h}_t = \mathbf{A}_t\mathbf{h}_{t-1} + \mathbf{b}_t$
+con $\mathbf{A}_t$ e $\mathbf{b}_t$ che dipendono solo dall'ingresso, due passi
+consecutivi si fondono in un passo della stessa forma,
+$(\mathbf{A}_2\mathbf{A}_1,\ \mathbf{A}_2\mathbf{b}_1 + \mathbf{b}_2)$; la
+fusione è associativa, e si calcola con una scansione parallela in $O(\log n)$
+passi. Perché convenga, $\mathbf{A}_t$ si prende diagonale: con una matrice
+piena ogni fusione costa $O(d^3)$. È la strada presa dai {doc}`modelli a spazio
+di stati </StateSpaceModel/mamba>`.
 
 `````
 
@@ -542,7 +555,8 @@ corrente poca.
   invece di due.
 - Il limite che resta è di tempo: una rete ricorrente legge in fila, e per
   fare il passo cento deve aver fatto il novantanove. È una catena di montaggio
-  con una postazione sola, e non c'è computer che la possa mandare più veloce.
+  con una postazione sola, e finché ogni gesto guarda il foglietto per decidere
+  come riscriverlo non c'è computer che la possa mandare più veloce.
   La fila lunga si paga due volte, perché per legare la riga cento con la riga
   uno la correzione deve risalire tutte quelle di mezzo. È il collo di
   bottiglia che i Transformer toglieranno di mezzo.
@@ -565,7 +579,8 @@ corrente poca.
   dimenticare, proteggendo la memoria. L'architettura del 1997
   {cite}`hochreiter1997long` ne aveva due; il *forget gate* è del 2000
   {cite}`gers2000learning`.
-- Il limite residuo è la sequenzialità (poca parallelizzazione): è ciò che
-  i Transformer, con l'attenzione, superano.
+- Il limite residuo è la sequenzialità delle ricorrenze non lineari (poca
+  parallelizzazione): i Transformer la superano con l'attenzione, i modelli a
+  spazio di stati rendendo lineare la ricorrenza.
 ```
 `````

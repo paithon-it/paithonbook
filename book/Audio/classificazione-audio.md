@@ -124,25 +124,27 @@ $$
 $$
 
 dove $z_c$ è il logit della classe $c$, $\hat{y}_c \in (0,1)$ la probabilità
-*indipendente* che quel suono sia presente e $y_c \in \{0,1\}$ l'etichetta
-vera. Nessun vincolo di somma: più classi possono essere «accese» insieme. Il
+*indipendente* che quel suono sia presente e $y_c \in \{0,1\}$ l'etichetta vera.
+Nessun vincolo di somma: più classi possono essere «accese» insieme. Il
 **rilevamento degli eventi sonori** (*sound event detection*, il cuore delle
 sfide DCASE, la gara annuale sul rilevamento e la classificazione di scene ed
 eventi acustici) spinge oltre, chiedendo una predizione per ogni istante (un
-tagging *frame
-per frame* con i confini temporali di ogni evento) e si valuta con metriche che
-confrontano gli intervalli predetti con quelli veri. Il nodo è che le etichette
-sono quasi sempre della clip e non del frame, cioè *deboli*: è apprendimento a
-istanze multiple, dove la clip è un sacco di frame e l'etichetta dice soltanto
-se nel sacco c'è almeno un evento. Il modello produce allora probabilità per
-frame $\hat{y}_{c,t}$, una funzione di *pooling* le riduce a una probabilità di
-clip, e su quella si calcola la BCE. Il massimo $\max_t \hat{y}_{c,t}$ è fedele
-alla definizione ma passa il gradiente a un frame solo; la media lo spalma su
-tutti e premia gli eventi lunghi; la *linear softmax*
-$\sum_t \hat{y}_{c,t}^2 / \sum_t \hat{y}_{c,t}$ sta in mezzo, come le varianti
-ad attenzione che imparano quali frame pesare. Da quella scelta dipende se i
-confini temporali che escono dal modello valgono qualcosa, visto che nessuno
-glieli ha mai mostrati {cite}`wang2019comparison`.
+tagging *frame per frame* con i confini temporali di ogni evento) e si valuta
+con metriche che confrontano gli intervalli predetti con quelli veri. Il nodo è
+che le etichette sono quasi sempre della clip e non del frame, cioè *deboli*: è
+apprendimento a istanze multiple, dove la clip è un sacco di frame e l'etichetta
+dice soltanto se nel sacco c'è almeno un evento. Il modello produce allora
+probabilità per frame $\hat{y}_{c,t}$, una funzione di *pooling* le riduce a una
+probabilità di clip, e su quella si calcola la BCE. Il massimo
+$\max_t \hat{y}_{c,t}$ è fedele alla definizione ma passa il gradiente a un
+frame solo, e lascia spenti gli altri frame dell'evento; la media lo spalma su
+tutti, e sulle clip positive accende anche i frame dove l'evento non c'è. La
+*linear softmax* $\sum_t \hat{y}_{c,t}^2 / \sum_t \hat{y}_{c,t}$ sta in mezzo, e
+nel confronto di Wang e colleghi è la sola delle cinque funzioni a localizzare
+bene: l'attenzione, che impara quali frame pesare, sulle clip negative finisce
+per pesare proprio quelli a probabilità bassa, e lascia accesi gli altri. Da
+quella scelta dipende se i confini temporali che escono dal modello valgono
+qualcosa, visto che nessuno glieli ha mai mostrati {cite}`wang2019comparison`.
 
 `````
 
@@ -170,10 +172,10 @@ Il catalogo però non si riempie in modo uniforme. La musica e il parlato
 compaiono ovunque; il verso di un uccello raro sta in un centinaio di frammenti
 su due milioni. E il modello lo si giudica categoria per categoria, facendo poi
 la media dei voti, quindi quelle caselle quasi vuote pesano quanto la musica.
-Un modello bravissimo sulla musica e sordo agli uccelli rari prende un voto
-mediocre, anche se ha ragione su quasi tutti i frammenti: la media per
-categoria è fatta apposta per non lasciarsi abbagliare dalle caselle affollate,
-e costringe a imparare anche quelle con pochi esempi.
+Un modello bravissimo sulla musica e sordo alle centinaia di categorie rare
+prende un voto mediocre, anche se ha ragione su quasi tutti i frammenti: la
+media per categoria è fatta apposta per non lasciarsi abbagliare dalle caselle
+affollate, e costringe a imparare anche quelle con pochi esempi.
 
 `````
 

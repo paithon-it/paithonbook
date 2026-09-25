@@ -1454,7 +1454,11 @@ def main():
             return "\n".join(fuori)
 
         formule = re.compile(r"\$\$.*?\$\$|\$[^$]+?\$", re.S)
+        FORMULA_A_CAPO = re.compile(
+            r"[ \t]*(?:[-+*][ \t]|\d+[.)][ \t]|>|#+[ \t])")
         testuale = re.compile(r"\\(?:text|textrm|textit|textbf|mbox)\{[^{}]*\}")
+        LINK_TESTO = re.compile(r"\{(?:doc|ref|numref)\}`([^`]*)`"
+                                r"|\[([^\]\n]*(?:\n[^\]\n]*)?)\]\(")
         for f, t in sorted(testi.items()):
             if not f.endswith(".md"):
                 continue
@@ -1467,6 +1471,40 @@ def main():
                         estratto = " ".join(m.group(0).split())[:70]
                         problemi["segni di prosa dentro una formula"].append(
                             f"{f}:{n}  {ch}  {SEGNI[ch]}\n      {estratto}")
+            # Una formula in linea che va a capo su una riga che comincia
+            # con `- `, `+ `, `* `, `1. `, `>` o `# ` non e' piu' una
+            # formula: Markdown legge quell'inizio di riga come una voce
+            # d'elenco, una citazione o un titolo, e la spezza in due. Online
+            # e in stampa escono il sorgente grezzo, un pallino e la frase
+            # dopo in corsivo matematico, e la build non protesta. La cura e'
+            # sempre la stessa: il segno in coda alla riga prima, o l'a capo
+            # in un altro punto. Una coppia di `$` che scavalca una riga vuota
+            # non e' una formula ma due dollari spaiati, e si salta.
+            for m in formule.finditer(prosa):
+                if m.group(0).startswith("$$"):
+                    continue
+                if re.search(r"\n[ \t]*\n", m.group(0)):
+                    continue
+                corpo = m.group(0)
+                for k in [i for i, ch in enumerate(corpo) if ch == "\n"]:
+                    resto = corpo[k + 1:]
+                    if FORMULA_A_CAPO.match(resto):
+                        n = prosa.count("\n", 0, m.start() + k) + 2
+                        estratto = resto.lstrip()[:60].split("\n")[0]
+                        problemi["formula in linea spezzata da un a capo"
+                                 ].append(f"{f}:{n}  {estratto}")
+            # Il testo di un rimando ({doc}, {ref}, un link Markdown) e' testo
+            # letterale: una `$n$` li' dentro non si compone, e in pagina e
+            # sul sito escono i dollari. Si scrive senza matematica («modelli
+            # n-gram»), o la formula si porta fuori dal link.
+            for m in LINK_TESTO.finditer(prosa):
+                etichetta = m.group(1) if m.group(1) is not None \
+                    else m.group(2)
+                etichetta = etichetta.split("<")[0]
+                if "$" in etichetta:
+                    n = prosa.count("\n", 0, m.start()) + 1
+                    problemi["formula dentro il testo di un rimando"].append(
+                        f"{f}:{n}  {' '.join(etichetta.split())[:60]}")
 
     if "doppioni" in attivi:
         # Due finestre di otto parole identiche a meno di novanta parole di
@@ -1654,6 +1692,8 @@ def main():
               "fermi immagine orfani",
               "figure che non dichiarano i font del brand",
               "segni di prosa dentro una formula",
+              "formula in linea spezzata da un a capo",
+              "formula dentro il testo di un rimando",
               "rimandi all'indietro che puntano in avanti",
               "rimandi in avanti che puntano indietro",
               "rimandi in avanti (da leggere)"]

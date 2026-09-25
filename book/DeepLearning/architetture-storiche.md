@@ -411,24 +411,23 @@ $$
 
 dove $\mathbf{x}$ è l'input del blocco, $\{\mathbf{W}_i\}$ i suoi pesi e
 $\mathbf{y}$ l'uscita (a cui si applica poi la non-linearità). Il blocco
-apprende il residuo $\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) -
-\mathbf{x}$ rispetto alla mappa desiderata $\mathcal{H}$: azzerare
-$\mathcal{F}$ per ottenere l'identità è facile, ricostruire l'identità da zero
-no. In più il termine additivo apre una via diretta al gradiente: lo jacobiano
-del blocco è $\mathbf{I} + \partial\mathcal{F}/\partial\mathbf{x}$, quindi
-$\partial\mathcal{L}/\partial\mathbf{x} =
-\partial\mathcal{L}/\partial\mathbf{y} +
-(\partial\mathcal{F}/\partial\mathbf{x})^{\top}\,\partial\mathcal{L}/\partial\mathbf{y}$,
+apprende il residuo
+$\mathcal{F}(\mathbf{x}) = \mathcal{H}(\mathbf{x}) - \mathbf{x}$ rispetto alla
+mappa desiderata $\mathcal{H}$: azzerare $\mathcal{F}$ per ottenere l'identità è
+facile, ricostruire l'identità da zero no. In più il termine additivo apre una
+via diretta al gradiente: lo jacobiano del blocco è
+$\mathbf{I} + \partial\mathcal{F}/\partial\mathbf{x}$, quindi
+$\partial\mathcal{L}/\partial\mathbf{x} = \partial\mathcal{L}/\partial\mathbf{y} + (\partial\mathcal{F}/\partial\mathbf{x})^{\top}\,\partial\mathcal{L}/\partial\mathbf{y}$,
 e il primo addendo arriva intatto qualunque cosa faccia $\mathcal{F}$. Il conto
 vale se fra una somma e la successiva non c'è altro: la ReLU applicata dopo
 l'addizione, come nella forma originale, interrompe la via diretta. Per questo
 la versione successiva degli stessi autori (*Identity Mappings in Deep Residual
-Networks*, 2016) sposta normalizzazione e attivazione dentro il ramo
-$\mathcal{F}$, la forma *pre-activation*: lungo una pila di blocchi
-$\mathbf{x}_L = \mathbf{x}_\ell +
-\sum_{i=\ell}^{L-1}\mathcal{F}(\mathbf{x}_i)$, e il gradiente in
-$\mathbf{x}_\ell$ contiene sempre $\partial\mathcal{L}/\partial\mathbf{x}_L$
-senza nessun fattore moltiplicativo.
+Networks*, 2016) {cite}`he2016identity` sposta normalizzazione e attivazione
+dentro il ramo $\mathcal{F}$, la forma *pre-activation*: lungo una pila di
+blocchi
+$\mathbf{x}_L = \mathbf{x}_\ell + \sum_{i=\ell}^{L-1}\mathcal{F}(\mathbf{x}_i)$,
+e il gradiente in $\mathbf{x}_\ell$ contiene sempre
+$\partial\mathcal{L}/\partial\mathbf{x}_L$ senza nessun fattore moltiplicativo.
 
 Quella somma ha però una precondizione che l'equazione nasconde:
 $\mathcal{F}(\mathbf{x})$ e $\mathbf{x}$ devono avere la stessa forma.

@@ -418,12 +418,12 @@ $$
 con $\sigma$ la sigmoide e $c_1, \dots, c_k$ le intruse pescate. Due
 accorgimenti completano la ricetta. Le parole frequentissime si scartano a caso
 prima di formare le coppie, ciascuna occorrenza di $w$ con probabilità
-$1 - \sqrt{t/f(w)}$, dove $f(w)$ è la frequenza relativa e $t \approx 10^{-5}$
-una soglia. La finestra, poi, ha una larghezza sorteggiata a ogni posizione,
-così che i vicini stretti contino più dei lontani. Che cosa calcoli davvero
-questo obiettivo lo hanno mostrato Levy e Goldberg {cite}`levy2014neural`: se
-$d$ è abbastanza grande da lasciare liberi tutti i prodotti scalari, e il
-rumore segue l'unigramma dei contesti, l'ottimo soddisfa
+$1 - \sqrt{t/\hat{p}(w)}$, dove $\hat{p}(w)$ è la frequenza relativa di $w$ e
+$t \approx 10^{-5}$ una soglia. La finestra, poi, ha una larghezza sorteggiata a
+ogni posizione, così che i vicini stretti contino più dei lontani. Che cosa
+calcoli davvero questo obiettivo lo hanno mostrato Levy e Goldberg
+{cite}`levy2014neural`: se $d$ è abbastanza grande da lasciare liberi tutti i
+prodotti scalari, e il rumore segue l'unigramma dei contesti, l'ottimo soddisfa
 
 $$
 \mathbf{u}_c^\top \mathbf{v}_w = \operatorname{pmi}(w, c) - \log k ,
@@ -453,14 +453,15 @@ f(x) = \begin{cases} (x / x_{\max})^{\alpha} & x < x_{\max} \\ 1 & \text{altrime
 $$
 
 con $x_{\max} = 100$ e $\alpha = 3/4$ nel lavoro originale. Le coppie mai viste
-restano così fuori ($f(0)=0$ rende coerente l'esclusione del $\log 0$), e
-quelle frequentissime non dominano il conto. Il bersaglio $\log X_{ij}$ viene
-da una richiesta sui rapporti: se $\mathbf{v}_i^\top\tilde{\mathbf{v}}_j$
-riproduce $\log P(j \mid i)$ a meno dei bias, le differenze fra vettori
-catturano i rapporti $P(k \mid i)/P(k \mid j)$, che sono ciò che distingue due
-parole. Come embedding finale si usa la somma $\mathbf{v}_i +
-\tilde{\mathbf{v}}_i$ delle due copie. Da $\mathbb{R}^{|V|}$ sparso si passa a
-$\mathbb{R}^{d}$ denso: meno dimensioni, ma cariche di struttura semantica.
+restano così fuori ($f(0)=0$ rende coerente l'esclusione del $\log 0$), e quelle
+frequentissime non dominano il conto. Il bersaglio $\log X_{ij}$ viene da una
+richiesta sui rapporti: se $\mathbf{v}_i^\top\tilde{\mathbf{v}}_j$ riproduce
+$\log P(j \mid i)$ a meno dei bias, le differenze fra vettori catturano i
+rapporti $P(m \mid i)/P(m \mid j)$ per ogni terza parola $m$, che sono ciò che
+distingue due parole. Come embedding finale si usa la somma
+$\mathbf{v}_i + \tilde{\mathbf{v}}_i$ delle due copie. Da $\mathbb{R}^{|V|}$
+sparso si passa a $\mathbb{R}^{d}$ denso: meno dimensioni, ma cariche di
+struttura semantica.
 
 `````
 

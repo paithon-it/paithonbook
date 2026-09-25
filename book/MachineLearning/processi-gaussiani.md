@@ -17,8 +17,8 @@ indica un'intera famiglia di quantità imparentate fra loro, qui i valori che la
 curva vera può assumere in ogni punto.
 
 L'idea ha più di una radice, e quella che le ha dato il nome non è la più
-vecchia: la previsione con processi gaussiani risale a Kolmogorov (1941) e a
-Wiener (1949), che la studiavano sulle serie temporali
+vecchia: la previsione con processi gaussiani risale almeno a Kolmogorov
+(1941) e a Wiener (1949), che la studiavano sulle serie temporali
 {cite}`rasmussen2006gaussian`. Il nome, però, viene dalle miniere. Nel 1951
 Danie Krige, un giovane ingegnere sudafricano, affrontava il problema più
 costoso delle miniere d'oro del Witwatersrand: ogni carotaggio (un pozzo di
@@ -248,8 +248,9 @@ Siano $\mathbf{X}$ gli $m$ punti di addestramento
 $\mathbf{x}_1, \dots, \mathbf{x}_m$ con osservazioni rumorose $\mathbf{y}$ (la
 solita $m$ del capitolo: il numero di esempi), e $\mathbf{X}_*$ gli $m_*$ punti
 dove vogliamo predire. Il conto è un condizionamento gaussiano. Per
-definizione di processo gaussiano, osservazioni e valori nuovi sono
-congiuntamente gaussiani,
+definizione di processo gaussiano, con un prior a media nulla e un rumore di
+misura gaussiano e indipendente da un punto all'altro, osservazioni e valori
+nuovi sono congiuntamente gaussiani,
 
 $$
 \begin{pmatrix}\mathbf{y}\\ \mathbf{f}_*\end{pmatrix}
@@ -480,6 +481,9 @@ Fin qui la forma del modello l'abbiamo scelta noi, una per problema: una retta,
 un albero, un confine largo, un fascio di curve, dei gruppi trovati senza
 etichette. Cambiava il problema e si cambiava attrezzo, e cambiava anche il
 metro, perché dove una risposta giusta non esiste il voto si dichiara invece di
-calcolarlo. Resta uguale la pretesa di un conto onesto, e va portata intatta
-in {doc}`Reti neurali </RetiNeurali/overview>`, dove invece l'attrezzo è uno
-solo e prende la forma che serve impilando pezzi tutti uguali.
+calcolarlo. Resta uguale la pretesa di un conto onesto; e prima di cambiare
+attrezzo c'è da capire perché un conto fatto sugli esempi dovrebbe valere su
+quelli nuovi, e fin dove: lo dice la {doc}`teoria dell'apprendimento
+</TeoriaApprendimento/overview>`. Quella pretesa va poi portata intatta in
+{doc}`Reti neurali </RetiNeurali/overview>`, dove l'attrezzo è uno solo e prende
+la forma che serve impilando pezzi tutti uguali.

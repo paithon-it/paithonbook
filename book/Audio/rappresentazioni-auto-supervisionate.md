@@ -240,25 +240,23 @@ $$
 $$
 
 dove $\bar{\mathbf{p}}_g$ è la softmax dei logit del gruppo $g$ mediata sui
-frame
-del batch, $H$ l'entropia e $\alpha = 0{,}1$: minimizzare $\mathcal{L}_d$ vuol
-dire massimizzare l'entropia dell'uso medio, che tocca il massimo $\log V$
+frame del batch, $H$ l'entropia e $\alpha = 0{,}1$: minimizzare $\mathcal{L}_d$
+vuol dire massimizzare l'entropia dell'uso medio, che tocca il massimo $\log V$
 quando le $V$ voci sono scelte con la stessa frequenza. La misura è di batch: al
 singolo frame si chiede una scelta netta, al batch di spenderle tutte. Il
 mascheramento ha due numeri soli: si estrae come inizio di un tratto il
-$6{,}5\%$
-dei passi ($p = 0{,}065$) e da ciascuno si coprono i dieci successivi
-($M = 10$), con sovrapposizioni ammesse, sicché resta coperto circa il $49\%$
-dei passi, in tratti lunghi in media $299$ ms. A
-valle, con una testa CTC su pochissime etichette, la versione grande di wav2vec
-2.0 raggiunge un tasso di errore sulle parole (in sigla WER, *word error rate*:
-la quota di parole da correggere per rimettere a posto la trascrizione, e il
-capitolo sullo Speech Recognition la costruisce da capo) di $4{,}8/8{,}2$ usando
-10 minuti di parlato trascritto e 53.000 ore non etichettate, che vengono da un
-corpus di audiolibri più grande di quello di prova {cite}`baevski2020wav2vec`. I
-due numeri sono le due prove d'esame di Librispeech, *test-clean* e
-*test-other*: la seconda è quella difficile, con registrazioni e accenti più
-ostici, e infatti l'errore è quasi sempre più alto.
+$6{,}5\%$ dei passi, e da ciascuno si coprono i dieci successivi, con
+sovrapposizioni ammesse, sicché resta coperto circa il $49\%$ dei passi, in
+tratti lunghi in media $299$ ms. A valle, con una testa CTC su pochissime
+etichette, la versione grande di wav2vec 2.0 raggiunge un tasso di errore sulle
+parole (in sigla WER, *word error rate*: la quota di parole da correggere per
+rimettere a posto la trascrizione, e il capitolo sullo Speech Recognition la
+costruisce da capo) di $4{,}8/8{,}2$ usando 10 minuti di parlato trascritto e
+53.000 ore non etichettate, che vengono da un corpus di audiolibri più grande di
+quello di prova {cite}`baevski2020wav2vec`. I due numeri sono le due prove
+d'esame di Librispeech, *test-clean* e *test-other*: la seconda è quella
+difficile, con registrazioni e accenti più ostici, e infatti l'errore è quasi
+sempre più alto.
 
 Quel numero però va letto per intero, ed è la cifra più citata del paper: lo
 stesso abstract la dà senza dire che è ottenuta decodificando con un modello

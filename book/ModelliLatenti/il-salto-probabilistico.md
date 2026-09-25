@@ -28,7 +28,6 @@ sono infiniti.
 
 `````{tab} Elementare
 
-L’apertura del capitolo lo aveva anticipato, e adesso lo si guarda da vicino.
 L’istinto dice: se sommare tutto non si può, si tira a sorte. Pesco mille
 schede a caso, guardo quanto ciascuna spiega bene la cifra che ho in mano,
 faccio la media, e ho una stima. È un metodo onesto e in tanti problemi
@@ -167,7 +166,7 @@ compatibili con *questa* cifra, cioè la posterior
 $p_\theta(\mathbf{z} \mid \mathbf{x})$. Calcolarla non si può, ma la si può
 approssimare con una rete che guarda $\mathbf{x}$ e propone una distribuzione
 sul latente: l’encoder, che qui si scrive $q_\phi(\mathbf{z} \mid \mathbf{x})$,
-e che nella scheda di chi legge per immagini è l’archivista.
+e che qui chiamiamo l’archivista.
 
 Ecco allora la mossa, prima in italiano che in formule.
 Invece di sorteggiare schede alla cieca, chiediamo all’archivista di
@@ -186,10 +185,11 @@ quartiere abita?», andare lì, e cercare in quel quartiere.
 
 Cercando solo dove ha detto lui non si perde niente: il conto si corregge
 apposta per il fatto che si è guardato in una fetta sola, e resta giusto. (Serve
-una sola condizione: che il conoscente non mandi mai a cercare in un
-quartiere dove, secondo la mappa della città, la persona non potrebbe proprio
-abitare. Qui la mappa non esclude nessun quartiere, e la condizione vale
-sempre.) Quello che ne esce, però, è una **stima prudente** e non
+una sola condizione: che il conoscente non escluda mai del tutto un quartiere
+dove la persona potrebbe abitare, perché lì nessuno andrebbe a cercarla e il
+conto non se ne accorgerebbe. Qui il suo consiglio è una zona sfumata, che si
+dirada allontanandosi ma non chiude fuori nessun quartiere, e la condizione
+vale sempre.) Quello che ne esce, però, è una **stima prudente** e non
 la probabilità vera, cioè un numero che sta sicuramente sotto a quello giusto.
 
 Perché sotto e non sopra? Non per via della fetta, ma per l’ordine di due
@@ -308,9 +308,23 @@ riconoscerà l’oggetto. E chi arriva dalla {doc}`sezione su riduzione e
 clustering </MachineLearning/riduzione-clustering>` riconosce la struttura
 dell’algoritmo EM, che alterna il miglioramento del bound rispetto a $q$ e
 rispetto a $\theta$; la differenza è che qui $q$ non si calcola in forma
-chiusa, si apprende.
+chiusa, si apprende.[^mcem]
 
 `````
+
+[^mcem]: Un terzo modo rinuncia alla forma chiusa senza rinunciare alla
+    posteriore esatta: è il *Monte Carlo EM* di Wei e Tanner
+    {cite}`wei1990monte`. La posteriore si sa campionare (spesso con una
+    catena di Markov) ma l’attesa del passo E non ha forma chiusa, e la si
+    sostituisce con la media su un campione di latenti; il passo M resta
+    quello. Il prezzo è doppio. La monotonia si perde, perché il rumore del
+    campione può far scendere la verosimiglianza da un’iterazione all’altra, e
+    per convergere il campione deve crescere con le iterazioni. E ogni dato
+    chiede la sua catena a ogni iterazione, quindi il metodo non lavora a
+    piccoli lotti: Kingma e Welling lo mettono a confronto con il VAE e notano
+    che sull’intero MNIST non si applica in modo efficiente
+    {cite}`kingma2014auto`, ed è la ragione pratica per cui la $q$ si
+    apprende.
 
 ```{figure} ../figures/elbo-il-divario.svg
 :name: fig-elbo-divario
@@ -353,9 +367,9 @@ Seconda voce: quanto costa scrivere la scheda. Qui c’è la novità, ed è la
 regola che mancava. Un **vocabolario comune** è stato fissato prima che i due
 cominciassero, e non lo decidono loro: è la «forma decisa in anticipo per il
 cassetto» che alla clessidra mancava, la stessa preferenza per il centro del
-righello con cui il capitolo si apre, vista stavolta da chi scrive la scheda. un
-modo standard di descrivere un
-quadro, che vale per tutti i quadri e non è stato adattato a nessuno. Quando
+righello con cui il capitolo si apre, vista stavolta da chi scrive la scheda.
+È un modo standard di descrivere un quadro, che vale per tutti i quadri e non è
+stato adattato a nessuno. Quando
 l’archivista scrive una scheda, paga solo per quello che si discosta da quel
 vocabolario. Descrivere un quadro come «uno dei soliti» non costa niente;
 descriverlo nel dettaglio, con precisione al millimetro, costa molto.
@@ -893,7 +907,10 @@ possibile un quadro che non esisterebbe mai. Le due pene non sono pari, e
 allora conviene abbondare: dichiarare possibile più di quel che serve, e in
 dubbio coprire. Un archivio che copre più di quello che c’è produce quadri che
 somigliano un po’ a tutto e precisamente a niente, ed è quello che sullo
-schermo si legge come sfocatura.
+schermo si legge come sfocatura. C’è poi una seconda ragione, che qualcuno
+ritiene quella vera: quando la stessa scheda può venire da quadri molto diversi,
+il copista, che deve dipingerne uno solo, ne dipinge la media, e la media di
+tanti quadri diversi è morbida.
 
 L’archivista può decidere di non scrivere niente. Se il copista se la cava
 già bene da solo, o se all’inizio dell’addestramento la ricostruzione conta
@@ -933,9 +950,12 @@ ciò che $\mathbf{z}$ non determina viene trattato come rumore indipendente
 pixel per pixel, e la media $\mathbb{E}[\mathbf{x} \mid \mathbf{z}]$ che si
 disegna è una media su tutte le immagini compatibili con quel codice, sfocata
 per costruzione; campionando invece di prendere la media esce rumore, non
-dettaglio. Le due cause pesano insieme {cite}`zhao2017towards`, ed è per questo
-che i VAE più nitidi hanno decoder autoregressivi, latenti gerarchici o latenti
-discreti.
+dettaglio. Zhao, Song ed Ermon {cite}`zhao2017towards` indicano questa
+seconda causa come quella vera: in certe condizioni, mostrano, la sfocatura non
+viene dalla massima verosimiglianza, ma da una $q_\phi$ che manda sullo stesso
+codice immagini troppo diverse perché una gaussiana fattorizzata le
+rappresenti. Per questo i VAE più nitidi hanno decoder autoregressivi, latenti
+gerarchici o latenti discreti.
 
 **Collasso della posterior.** All’inizio dell’addestramento il termine di
 ricostruzione è debole, e $q_\phi(\mathbf{z} \mid \mathbf{x}) \approx
@@ -1033,11 +1053,12 @@ Qual è, lo dice la sezione seguente.
   $\mathbf{z} = \boldsymbol{\mu}_\phi + \boldsymbol{\sigma}_\phi \odot
   \boldsymbol{\epsilon}$ con $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0},
   \mathbf{I})$. Sposta il caso fuori dal grafo delle derivate; nell'esempio ha
-  varianza 22
-  volte minore dello stimatore a punteggio (REINFORCE), 9,5 con la migliore
-  linea di base costante, che però si
-  applica anche ai latenti discreti, dove la riparametrizzazione non arriva.
-- Limiti strutturali: sfocatura (direzione della KL, quindi copertura),
+  varianza 22 volte minore dello stimatore a punteggio (REINFORCE), 9,5 se a
+  quello si toglie la migliore linea di base costante. Lo stimatore a
+  punteggio, però, si applica anche ai latenti discreti, dove la
+  riparametrizzazione non arriva.
+- Limiti strutturali: sfocatura (la direzione della KL per Kingma e Welling,
+  il decoder fattorizzato che fa la media per Zhao e colleghi),
   collasso della posterior {cite}`bowman2016generating,kingma2016improved`
   e scarto fra prior e posterior aggregata
   {cite}`hoffman2016elbo,rosca2018distribution`.

@@ -239,8 +239,8 @@ dove la sua stessa
 chiave non c'è. Il Reformer usa quindi la stessa proiezione per entrambe
 (*shared-QK*), rinunciando alla distinzione fra il cercare e l'essere trovati
 su cui si regge la {numref}`fig-qkv`; gli autori non trovano perdite
-sui due compiti su cui la provano (testo a livello di carattere e immagini a
-64 pixel), il che è di per sé un'informazione interessante. Fatto
+sui due compiti su cui la provano (testo a livello di carattere e immagini di
+$64 \times 64$ pixel), il che è di per sé un'informazione interessante. Fatto
 questo, si raggruppano query e chiavi per secchiello, si calcola l'attenzione
 piena solo dentro ciascun secchiello, e il costo scende da $O(n^2)$ a
 $O(n \log n)$. Il prezzo ulteriore è che l'hashing sbaglia: si ripete con più

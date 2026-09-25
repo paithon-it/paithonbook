@@ -376,7 +376,7 @@ l'algoritmo diventa inefficace nel trovare gli ottimi globali. È la stessa
 ragione dell'evaporazione delle formiche, in veste meccanica: un sistema che va
 solo dove è già andato bene smette di cercare.
 
-La stabilità ha una risposta chiusa (Clerc e Kennedy, 2002). Con
+La stabilità ha una risposta chiusa {cite}`clerc2002particle`. Con
 $\varphi = c_1 + c_2 > 4$ e il fattore di costrizione
 
 $$
@@ -387,8 +387,10 @@ l'aggiornamento
 $\mathbf{v}_i \leftarrow \chi\,[\mathbf{v}_i + c_1\mathbf{r}_1 \odot
 (\mathbf{p}_i - \mathbf{x}_i) + c_2\mathbf{r}_2 \odot (\mathbf{g} -
 \mathbf{x}_i)]$
-tiene le traiettorie limitate e le fa convergere. Con $\varphi = 4{,}1$ si ha
-$\chi \approx 0{,}7298$, cioè $w \approx 0{,}73$ e
+tiene le traiettorie limitate e le fa convergere, nel modello semplificato che
+l'analisi studia (attrattori fermi, niente sorteggio): a un punto fra
+$\mathbf{p}_i$ e $\mathbf{g}$, che non è per forza un ottimo. Con
+$\varphi = 4{,}1$ si ha $\chi \approx 0{,}7298$, cioè $w \approx 0{,}73$ e
 $c_1 = c_2 = 2{,}05\,\chi \approx 1{,}50$; con $w = 1$ e senza costrizione le
 velocità crescono invece senza limite.
 
@@ -711,11 +713,11 @@ gruppo si limita a rifinire un valore già piccolissimo.
 Quanto costa? Ogni giro lo sciame misura la quota nei trenta punti in cui si
 trovano le sue particelle; i giri sono sessanta, più la misura iniziale, quindi
 in tutto milleottocentotrenta misure. In due dimensioni sono niente. In mille
-dimensioni sarebbero ancora milleottocentotrenta, e non basterebbero: per
-capire da che parte si scende servirebbero almeno mille misure a ogni passo,
-cioè quasi tutto il bilancio speso per un passo solo.
+dimensioni sarebbero ancora milleottocentotrenta, e non basterebbero: per capire
+da che parte si scende servirebbero almeno mille misure a ogni passo, cioè più
+di metà del bilancio per un passo solo.
 
-E il risultato non è garantito. Il programma qui sopra parte da posizioni
+E il risultato non è garantito. Il programma dello sciame parte da posizioni
 sorteggiate, e ripetendolo con sorteggi diversi le cose vanno diversamente. Se
 lo si rifà trecento volte, cambiando ogni volta soltanto il sorteggio, lo sciame
 arriva al fondo vero in duecentosettantasette casi su trecento: poco più di nove
@@ -983,8 +985,9 @@ orientato in cui un arco unisce due agenti che si conoscono a vicenda, con
 densità $\operatorname{dens}(G) = 2|E| / \bigl(|V|(|V|-1)\bigr)$, che sale da
 $0{,}167$ a $0{,}74$. Il **coordinamento**: dei dodici invitati alla festa se ne
 presentano cinque. Le prime due misure si leggono intervistando gli agenti, e
-quindi ereditano le loro allucinazioni (l’1,3% delle risposte sulle conoscenze
-reciproche era inventato).
+per questo gli autori riscontrano ogni risposta affermativa nell'archivio di
+ricordi dell'agente: su festa e candidatura nessuna era inventata, sulle
+conoscenze reciproche sei su 453 (l’1,3%).
 
 `````
 

@@ -148,15 +148,14 @@ $$
 $$
 
 con $\beta_t = 1 - \bar{\alpha}_t/\bar{\alpha}_{t-1}$ troncato a $0{,}999$
-perché
-l'ultimo passo non esploda: $\bar{\alpha}_t$ scende quasi linearmente nel tratto
-centrale e resta piatto ai due capi. Nello stesso lavoro la varianza del passo
-inverso smette di essere fissata e si apprende come interpolazione in scala
-logaritmica fra $\beta_t$ e $\tilde{\beta}_t$, il che migliora la
-verosimiglianza e regge il campionamento con meno passi.
+perché l'ultimo passo non esploda: $\bar{\alpha}_t$ scende quasi linearmente nel
+tratto centrale e resta piatto ai due capi. Nello stesso lavoro la varianza del
+passo inverso smette di essere fissata e si apprende come interpolazione in
+scala logaritmica fra $\beta_t$ e la varianza del posteriore $\tilde{\beta}_t$,
+il che migliora la verosimiglianza e regge il campionamento con meno passi.
 
-Definendo $\alpha_t = 1-\beta_t$ e $\bar{\alpha}_t = \prod_{s=1}^{t}
-\alpha_s$, la catena ammette una forma chiusa che salta direttamente da
+Definendo $\alpha_t = 1-\beta_t$ e $\bar{\alpha}_t = \prod_{i=1}^{t}
+\alpha_i$, la catena ammette una forma chiusa che salta direttamente da
 $\mathbf{x}_0$ a qualunque $\mathbf{x}_t$:
 
 $$
@@ -247,50 +246,46 @@ l'abbiamo fabbricato noi un istante fa.
 La rete guarda il fronte e propone la sua risposta, cioè un numero per ogni
 pixel. Il voto si dà così: per ogni pixel si guarda di quanto la risposta della
 rete è lontana da quella giusta, si elevano al quadrato tutte queste distanze
-(perché contino uguale se si sbaglia in più o in meno) e se ne fa la media. Un
-solo numero, che vale zero se la rete ha indovinato tutto e cresce quanto più
-sbaglia; il mestiere dell'addestramento è farlo scendere, ritoccando poco alla
-volta i pesi, cioè i milioni di numeri che la rete si porta dentro e che
-decidono le sue risposte. Milioni di carte dopo, la rete ha imparato a
-rispondere a ogni livello di rovina.
+(perché contino uguale se si sbaglia in più o in meno) e se ne fa la media: se
+per un pixel la rete dice 0,3 e la risposta giusta è 0,5, la distanza è 0,2, e
+al quadrato 0,04. Un solo numero, che vale zero se la rete ha indovinato tutto e
+cresce quanto più sbaglia; il mestiere dell'addestramento è farlo scendere,
+ritoccando poco alla volta i pesi, cioè i milioni di numeri che la rete si porta
+dentro e che decidono le sue risposte. Milioni di carte dopo, la rete ha
+imparato a rispondere a ogni livello di rovina.
 
-Ma perché chiedere il disturbo e non direttamente la foto pulita? Prova a
-metterti nei panni della rete al passo 900, davanti a una schermata fatta
-quasi tutta di rumore: «dimmi la foto originale» è una richiesta da veggente,
-perché dovrebbe inventare di sana pianta dettagli che nel rumore non ci sono
-più.
+Ma perché chiedere il disturbo e non direttamente la foto pulita? La prima
+impressione è che la foto sia la domanda più difficile: al passo 900, davanti a
+una schermata quasi tutta di rumore, «dimmi la foto originale» sembra una
+richiesta da veggente, perché i dettagli nel rumore non ci sono più. A guardarci
+meglio, però, le due domande sono difficili allo stesso modo. Chi conosce il
+disturbo, e sa a quale tacca della manopola si trova, ricava la foto: basta
+togliere il disturbo e ingrandire quello che resta, i due gesti dell'andata
+rifatti al contrario. Al passo 900, quindi, il veggente servirebbe per tutte e
+due, e la rete non indovina né l'una né l'altra: dà la risposta migliore che
+può, e sbaglia un po'.
 
-«Dimmi il disturbo» è invece un compito dello stesso formato a ogni livello.
-Il pulviscolo, a qualunque tacca della manopola, è sempre fatto allo stesso
-modo: i suoi numeri sono sparsi attorno allo zero (tanti in più quanti in meno,
-e quindi in media si annullano) e la loro ampiezza tipica è sempre la stessa,
-al passo 10 come al passo 990. Cambia quanto il pulviscolo pesa *rispetto* alla
-foto sotto, non com'è fatto lui. È come interrogare uno studente sempre con
-domande della stessa forma: alcune restano più difficili di altre, ma la
-risposta ha sempre la stessa taglia, e uno sa almeno che cosa scrivere.
+La differenza sta in quanto vale quello sbaglio quando lo si porta da una
+domanda all'altra, come un prezzo che cambia quando lo si converte da una moneta
+a un'altra. Per ricavare la foto dal disturbo bisogna dividere per la parte di
+disegno sopravvissuta, e al passo 1000 ne sopravvivono poco più di sei
+millesimi: dividere per sei millesimi vuol dire moltiplicare per quasi
+centosessanta, e un errore piccolo sul disturbo diventa un errore quasi
+centosessanta volte più grosso sulla foto. Al passo 1 il cambio va al contrario.
+Di disturbo ne è stato aggiunto appena un centesimo, e per ricavarlo dalla foto
+bisogna dividere per quel centesimo: un errore piccolo sulla foto diventa un
+errore cento volte più grosso sul disturbo.
 
-Qui però va sciolto un nodo, perché a rigore le due domande sono impossibili
-allo stesso modo. Chi conosce il disturbo e sa a quale tacca della manopola si
-trova può ricavare la foto pulita (basta togliere il disturbo e riportare in
-scala quello che resta, i due gesti dell'andata rifatti al contrario), quindi
-saper rispondere all'una vorrebbe dire saper rispondere all'altra, e al passo
-900 sono tutte e due da veggente.
-
-La differenza non sta nella risposta esatta, che nessuno può dare, ma
-nell’errore. Alla rete non chiediamo di indovinare: chiediamo la migliore
-approssimazione che sa dare, e le due approssimazioni si comportano in modo
-diverso. Quella sul disturbo ha un tetto: non può sbagliare di più della taglia
-del
-disturbo stesso, che è la stessa a ogni passo. Sotto quel tetto sbaglia molto
-dove il disturbo è poco (al passo 10 ne resta una traccia minuscola, e
-indovinarlo vuol dire conoscere la foto quasi al puntino) e quasi niente dove la
-schermata è quasi tutta disturbo. Quella sulla foto pulita non ha tetto: per
-ricavare la foto bisogna dividere per la parte di disegno sopravvissuta, e al
-passo 1000 ne è sopravvissuto sei millesimi, quindi lo stesso errore sull'una
-diventa un errore centocinquanta volte più grosso sull'altra. E siccome la
-risposta non serve per saltare in fondo ma per fare un solo piccolo passo (lo
-vedremo fra poco), una stima imprecisa ma con un errore sempre contenuto è
-esattamente quello che serve.
+Il voto, però, si dà sulla domanda che si è scelta, e pesa allo stesso modo
+tutti i passi. Se si chiede il disturbo, uno sbaglio minimo al passo 1000, che
+sulla foto costerebbe carissimo, nel voto conta quanto uno sbaglio minimo al
+passo 10; se si chiede la foto, succede il contrario. Chiedendo il disturbo,
+quindi, il voto bada di più ai passi poco rovinati, dove la foto si può davvero
+ricostruire, e perdona gli sbagli sulla foto nei passi molto rovinati, dove
+comunque non si potrebbe fare di meglio. Fra le scelte che DDPM ha provato, con
+quel voto, quella sul disturbo ha dato le immagini migliori; chiedendo la foto,
+ma contando i livelli di rovina in un altro modo nel voto, si può fare
+altrettanto bene.
 
 `````
 
@@ -342,22 +337,31 @@ $$
 \big) \big\rVert^2 \,\right],
 $$
 
-dove $\mathbf{x}_0$ è un dato del training set, $t$ è uniforme su $\{1, \dots,
-T\}$ e $\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$: si
-campiona una tripla, si costruisce $\mathbf{x}_t$ in un colpo solo con la forma
-chiusa (senza percorrere la catena), e si confrontano rumore vero e rumore
-predetto. Si noti che predire $\boldsymbol{\epsilon}$, predire
-$\boldsymbol{\mu}$ e predire il dato pulito sono formulazioni legate da
-relazioni affini (dato $\mathbf{x}_t$, l'una si ricava dall'altra: per esempio
-$\hat{\mathbf{x}}_0 = (\mathbf{x}_t -
-\sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta)/\sqrt{\bar{\alpha}_t}$),
+dove $\mathbf{x}_0$ è un dato del training set, $t$ è uniforme su
+$\{1, \dots, T\}$ e
+$\boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$: si campiona
+una tripla, si costruisce $\mathbf{x}_t$ in un colpo solo con la forma chiusa
+(senza percorrere la catena), e si confrontano rumore vero e rumore predetto. Si
+noti che predire $\boldsymbol{\epsilon}$, predire $\boldsymbol{\mu}$ e predire
+il dato pulito sono formulazioni legate da relazioni affini (dato
+$\mathbf{x}_t$, l'una si ricava dall'altra: per esempio
+$\hat{\mathbf{x}}_0 = (\mathbf{x}_t - \sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}_\theta)/\sqrt{\bar{\alpha}_t}$),
 ma non equivalenti come problemi di regressione. Il bersaglio
 $\boldsymbol{\epsilon}$ ha distribuzione $\mathcal{N}(\mathbf{0}, \mathbf{I})$
-*a ogni* $t$, quindi il suo errore quadratico per componente non supera 1:
-vicino a 1 per $t$ piccolo, dove il rumore è una traccia minuscola, vicino a 0
-per $t$ grande. Lo stesso errore, riportato su $\hat{\mathbf{x}}_0$, viene
-moltiplicato per $(1-\bar{\alpha}_t)/\bar{\alpha}_t$, che a $t = T$ vale circa
-$2{,}5 \cdot 10^4$ (il quadrato del fattore $157$).
+*a ogni* $t$, quindi il suo errore quadratico ottimo per componente non supera
+1: vicino a 1 per $t$ piccolo, dove il rumore è una traccia minuscola, vicino a
+0 per $t$ grande. Un tetto ce l'ha anche il dato pulito, la varianza dei dati,
+che è l'errore di chi risponde con la media. A distinguere le due regressioni è
+il cambio fra i due errori,
+
+$$
+\lVert\mathbf{x}_0 - \hat{\mathbf{x}}_0\rVert^2 = \frac{1-\bar{\alpha}_t}{\bar{\alpha}_t}\,
+\lVert\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta\rVert^2 ,
+$$
+
+che vale circa $10^{-4}$ a $t = 1$ e $2{,}5 \cdot 10^4$ a $t = T$, circa
+$157^2$: un errore piccolo sul rumore a $t$ grande è un errore grosso sul dato,
+e un errore piccolo sul dato a $t$ piccolo è un errore grosso sul rumore.
 
 L'ablazione di DDPM su questo punto va letta con attenzione, perché dice
 qualcosa di più stretto del solito «predire il rumore è meglio». A parità di
@@ -715,14 +719,15 @@ modelli di diffusione producono campioni migliori dei modelli che ottimizzano
 la verosimiglianza, pur avendo verosimiglianze peggiori.
 
 **Cosa impara la rete.** Dalla forma chiusa dell'andata segue
-$\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t \mid \mathbf{x}_0) = -\boldsymbol{\epsilon} / \sqrt{1-\bar{\alpha}_t}$: il
-rumore iniettato è, a meno di un fattore, il punteggio della densità
-*condizionata al dato di partenza*. Il passaggio alla densità marginale
-$q(\mathbf{x}_t)$ non è un corollario ma un risultato a sé: il minimo della loss
-quadratica è la media condizionata
-$\boldsymbol{\epsilon}^*(\mathbf{x}_t, t) = \mathbb{E}[\boldsymbol{\epsilon} \mid \mathbf{x}_t]$, e si può dimostrare (è
-il *denoising score matching* di Vincent {cite}`vincent2011connection`) che
-essa vale
+$\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t \mid \mathbf{x}_0) =
+-\boldsymbol{\epsilon} / \sqrt{1-\bar{\alpha}_t}$: il rumore iniettato è, a
+meno di un fattore, il punteggio della densità *condizionata al dato di
+partenza*. Il passaggio alla densità marginale $q(\mathbf{x}_t)$ non è un
+corollario ma un risultato a sé: il minimo della loss quadratica è la
+{doc}`media condizionata </RetiNeurali/da-dove-viene-la-loss>`
+$\boldsymbol{\epsilon}^*(\mathbf{x}_t, t) = \mathbb{E}[\boldsymbol{\epsilon}
+\mid \mathbf{x}_t]$, e si può dimostrare (è il *denoising score matching* di
+Vincent {cite}`vincent2011connection`) che essa vale
 
 $$
 \boldsymbol{\epsilon}^*(\mathbf{x}_t, t) = -\sqrt{1-\bar{\alpha}_t}\;
@@ -743,6 +748,20 @@ score-based si rivelano così discretizzazioni di due SDE della stessa famiglia:
 DDPM di quella che conserva la varianza (VP), Song ed Ermon di quella che la
 lascia esplodere (VE), e le due si convertono l'una nell'altra riscalando lo
 stato. Una sola teoria, due dialetti.
+
+Per linearità della media condizionata, dalla stessa $\boldsymbol{\epsilon}^*$
+si legge anche la media a posteriori del dato di partenza,
+
+$$
+\mathbb{E}[\mathbf{x}_0 \mid \mathbf{x}_t] = \frac{\mathbf{x}_t -
+\sqrt{1-\bar{\alpha}_t}\,\boldsymbol{\epsilon}^*(\mathbf{x}_t, t)}
+{\sqrt{\bar{\alpha}_t}} ,
+$$
+
+ed è ciò che darebbe un salto all'arrivo in un passo solo. A $t$ grande è
+un'immagine sfocata, perché mescola tutti i dati compatibili con
+$\mathbf{x}_t$, e il campionamento ne prende a ogni passo solo un pezzo, poi
+rimescola.
 
 `````
 
@@ -912,8 +931,7 @@ immagini; cambia solo la taglia.
 
 I quattro blocchi sono, nell'ordine, i quattro pezzi del meccanismo: i dati
 con la forma chiusa dell'andata, la rete $\boldsymbol{\epsilon}_\theta$, il ciclo
-che minimizza $\mathcal{L}_{\text{semplice}}$, il campionamento ancestrale, e
-fra un blocco e l'altro il testo dice che cosa fa ciascuno.
+che minimizza $\mathcal{L}_{\text{semplice}}$ e il campionamento ancestrale.
 
 Prima i dati e la ricetta dell'andata:
 
@@ -1100,11 +1118,12 @@ invece di coppie).
   lascia il posto a uno di latte. Dopo mille giri resta solo pulviscolo,
   e c'è una scorciatoia per arrivare a un livello di rovina qualsiasi senza
   ripercorrere i passi uno per uno.
-- La rete impara a indicare il disturbo, non l'immagine pulita, e non il
-  pizzico dell'ultimo passo ma tutto quello accumulato dalla foto pulita in
-  poi. È una domanda dello stesso tipo a ogni livello di rovina, e la risposta
-  esatta la conosciamo sempre, perché il disturbo l'abbiamo fabbricato noi (il
-  mazzo di carte con le soluzioni sul retro).
+- La rete impara a indicare il disturbo, non l'immagine pulita, e non il pizzico
+  dell'ultimo passo ma tutto quello accumulato dalla foto pulita in poi.
+  Chiedere il disturbo invece della foto decide quali livelli di rovina contano
+  di più nel voto (i passi poco rovinati), e con quel voto ha dato le immagini
+  migliori; la risposta esatta la conosciamo sempre, perché il disturbo
+  l'abbiamo fabbricato noi (il mazzo di carte con le soluzioni sul retro).
 - Generare vuol dire partire da un pulviscolo mai visto e
   ripetere mille volte tre mosse: cancella la scheggia di disturbo che la rete
   ti indica, alza il volume di tutto quello che resta, getta sopra una
@@ -1182,9 +1201,9 @@ invece di coppie).
   DDPM e modelli score-based discretizzano due SDE della stessa famiglia (VP e VE)
   {cite}`song2021score`.
 - DDIM {cite}`song2021denoising`: stesso modello, campionamento
-    deterministico ($\eta = 0$) su qualche decina di passi (la qualità dei
-    mille passi si raggiunge verso i cento; a venti è già degradata); possibile
-    perché la loss dipende
+  deterministico ($\eta = 0$) su qualche decina di passi (su CIFAR-10 la
+  qualità dei mille passi si raggiunge verso i cento, sui volti di CelebA
+  nemmeno lì; a venti è già degradata); possibile perché la loss dipende
   solo dalle marginali $q(\mathbf{x}_t \mid \mathbf{x}_0)$, non dalla catena
   markoviana. Con $\eta = 1$ si ritrova il campionatore ancestrale nella
   variante $\sigma_t^2 = \tilde{\beta}_t$, non in quella

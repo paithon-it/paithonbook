@@ -146,8 +146,8 @@ valore basta da sola: è la stessa tappa in cui spariscono le partite umane, e
 non è una coincidenza, perché entrambe le cose diventano superflue quando la
 rete è abbastanza buona da giudicare da sé.
 
-Da AlphaGo Zero {cite}`silver2017mastering` in poi la ricerca entra
-anche nell'addestramento. La distribuzione delle visite alla radice,
+Con AlphaGo Zero {cite}`silver2017mastering` la ricerca fa anche da maestro
+alla rete di policy. La distribuzione delle visite alla radice,
 normalizzata (così com'è nelle prime trenta mosse della partita, poi
 concentrata sulla più visitata), è una policy $\boldsymbol{\pi}$ migliorata
 rispetto a $P(s,\cdot)$, e diventa il bersaglio della rete
@@ -361,13 +361,13 @@ Quindi la mossa che esce dalla ricerca è quasi sempre migliore di quella che
 la rete avrebbe scelto da sola, ed è un esempio su cui la rete può allenarsi.
 
 Ecco la fonte di supervisione interna: non serve un maestro, basta giocare
-contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo
-questo giro lo faceva solo a metà: la rete di policy aveva imparato prima a
-imitare le partite umane e poi si era affinata giocando contro sé stessa; la
-rete di valore invece si era allenata soltanto su posizioni prese da quelle
-partite contro sé stessa, perché sulle partite umane, dove posizioni
-consecutive quasi identiche condividono lo stesso esito, imparava a memoria i
-risultati invece di stimarli.
+contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo,
+nella versione pubblicata quell'anno, questo giro lo faceva solo a metà: la
+rete di policy aveva imparato prima a imitare le partite umane e poi si era
+affinata giocando contro sé stessa; la rete di valore invece si era allenata
+soltanto su posizioni prese da quelle partite contro sé stessa, perché sulle
+partite umane, dove posizioni consecutive quasi identiche condividono lo stesso
+esito, imparava a memoria i risultati invece di stimarli.
 
 Un anno dopo, **AlphaGo Zero** {cite}`silver2017mastering` elimina persino le
 partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
@@ -443,8 +443,9 @@ perché da sola non basta.
 - AlphaGo e AlphaZero uniscono la strategia, la stima di chi sta
   vincendo e quella esplorazione ad albero. Nel 2016 la ricerca si fidava a
   metà della rete e a metà delle partite tirate a caso; solo con AlphaGo Zero,
-  l'anno dopo, la rete basta da sola. Con l’RLHF lo stesso meccanismo,
-  guidato dalle preferenze delle persone, allinea i modelli linguistici.
+  l'anno dopo, la rete basta da sola. Con l’RLHF la stessa coppia di
+  strategia e giudice, con il giudice addestrato sulle preferenze delle
+  persone, allinea i modelli linguistici.
 ```
 `````
 

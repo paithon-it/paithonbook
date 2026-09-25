@@ -230,6 +230,172 @@ più. In un filtro antispam è il contrario: un falso positivo butta nel cestino
 un'email importante, quindi si privilegia la precision, tollerando che
 qualche spam passi. Stessa matrice, priorità opposte.
 
+### Perché la media armonica: la catena delle medie
+
+La $F_1$ è una media di precision e recall, ma non quella che si fa di solito:
+è la media **armonica**, il reciproco della media dei reciproci. Le medie di
+due numeri sono più d’una (armonica, geometrica, aritmetica, quadratica),
+stanno sempre nello stesso ordine, e la scelta decide quanto il voto dia retta
+al numero peggiore.
+
+`````{tab} Elementare
+
+Il filtro prudente ha precision 0,9 e recall 0,4. La media che si fa a scuola,
+la somma divisa per due, dà 0,65. La media geometrica è il numero che,
+moltiplicato per sé stesso, dà il prodotto dei due: 0,9 per 0,4 fa 0,36, e 0,6
+per 0,6 fa proprio 0,36, quindi la geometrica è 0,6. La media armonica è la F1,
+e si calcola come due volte il prodotto diviso la somma: 0,72 diviso 1,3, cioè
+0,55. E ce n’è una che sta sopra tutte, la quadratica, che fa la media dei
+quadrati e ne prende la radice: 0,81 e 0,16 fanno in media 0,485, e la radice è
+poco meno di 0,7, perché 0,7 per 0,7 fa 0,49.
+
+Stanno sempre in quest’ordine, dall’armonica alla quadratica, e tutte fra il più
+piccolo e il più grande dei due numeri. Il perché, in breve, è in che cosa
+ciascuna fa pesare di più: la quadratica lavora sui quadrati, dove il numero
+grande si ingrandisce ancora; l’armonica lavora sui rovesci (1 diviso il
+numero), dove è il numero piccolo a diventare grosso. Coincidono soltanto quando
+i due numeri sono uguali, e più i due voti sono lontani, più si aprono a
+ventaglio.
+
+Quello che conta è verso chi pendono. L’aritmetica non scende mai sotto metà del
+voto migliore: un filtro con precision 0,9 e recall 0,05, che lascia passare
+diciannove spam su venti, prende 0,475, un voto che sembra quasi dignitoso.
+L’armonica sta dall’altra parte: non va mai sotto il voto peggiore e non supera
+mai il suo doppio. Con una recall di 0,4 la F1 non passa 0,8, qualunque sia la
+precision, e con 0,05 non arriva a 0,1: il voto cattivo comanda.
+
+E proprio l’armonica è quella giusta, per una ragione che sta nei conteggi. Il
+filtro prudente ha preso 36 spam, ne ha cestinati 40 e ce n’erano 90: la
+precision è 36 su 40, la recall 36 su 90, stesso numero sopra e due numeri
+diversi sotto. La media armonica lavora sui rovesci, e i rovesci sono 40 su 36 e
+90 su 36: la loro media è 65 su 36, e rovesciata di nuovo dà 36 su 65. Con lo
+stesso numero sopra, insomma, la media armonica è la frazione che sotto ha la
+media dei due numeri di sotto; e 36 su 65 è 72 su 130, gli spam presi contati
+due volte e divisi per sé stessi più tutti gli errori, i 4 falsi allarmi e i 54
+spam mancati. La F1, insomma, è un conto unico sugli stessi casi, e non una
+media di due voti fatta dopo.
+
+`````
+
+`````{tab} Superiore
+
+Per $a, b > 0$ le medie armonica, geometrica, aritmetica e quadratica
+
+$$
+H = \frac{2ab}{a+b}, \qquad G = \sqrt{ab}, \qquad A = \frac{a+b}{2}, \qquad
+Q = \sqrt{\frac{a^2+b^2}{2}}
+$$
+
+sono i casi $p = -1, 0, 1, 2$ della media di potenza
+$M_p = \big((a^p + b^p)/2\big)^{1/p}$, con $M_0 = \lim_{p\to 0} M_p = G$.
+$M_p$ è non decrescente in $p$ e tende a $\min(a,b)$ per $p \to -\infty$ e a
+$\max(a,b)$ per $p \to +\infty$, da cui la catena
+
+$$
+\min(a,b) \le H \le G \le A \le Q \le \max(a,b),
+$$
+
+con uguaglianza in ogni passo se e solo se $a = b$. Per due numeri bastano due
+quadrati: $A - G = (\sqrt a - \sqrt b)^2/2 \ge 0$ e
+$Q^2 - A^2 = (a - b)^2/4 \ge 0$; e siccome $H = 2ab/(a+b) = ab/A = G^2/A$, da
+$G \le A$ segue $H \le G$.
+
+Per la $F_1$, con $a = P$ la precision e $b = R$ la recall, contano i due
+estremi. Da $H = 2ab/(a+b) \le 2ab/\max(a,b)$ segue $H \le 2\min(a,b)$, quindi
+
+$$
+\min(P, R) \le F_1 \le 2\min(P, R),
+$$
+
+e a meno di un fattore due la $F_1$ è la peggiore delle due. La media
+aritmetica invece soddisfa $A \ge \max(a,b)/2$, e con $P = 0{,}9$ e
+$R = 0{,}05$ vale $0{,}475$ contro una $F_1$ di $0{,}095$.
+
+La ragione per scegliere proprio $H$ sta nei conteggi. Precision e recall sono
+$\mathrm{VP}/(\mathrm{VP}+\mathrm{FP})$ e
+$\mathrm{VP}/(\mathrm{VP}+\mathrm{FN})$, con lo stesso numeratore, e la media
+armonica di due rapporti con lo stesso numeratore è il rapporto con la media
+aritmetica dei denominatori:
+
+$$
+F_1 = \frac{2\,\mathrm{VP}}{2\,\mathrm{VP} + \mathrm{FP} + \mathrm{FN}} .
+$$
+
+La $F_\beta$ è la media armonica pesata:
+
+$$
+\frac{1}{F_\beta} = \frac{1}{1+\beta^2}\,\frac1P + \frac{\beta^2}{1+\beta^2}\,\frac1R,
+\qquad
+F_\beta = \frac{(1+\beta^2)\,\mathrm{VP}}
+{(1+\beta^2)\,\mathrm{VP} + \beta^2\,\mathrm{FN} + \mathrm{FP}},
+$$
+
+e nei conteggi i mancati pesano $\beta^2$ volte i falsi allarmi. La forma nei
+conteggi ha anche il pregio di restare definita dove quella con $P$ e $R$ si
+inceppa: con $\mathrm{VP} = 0$ dà $0$, mentre $2PR/(P+R)$ con $P = R = 0$
+sarebbe $0/0$; resta indefinita solo senza positivi né veri né predetti, e lì
+scikit-learn restituisce il valore del parametro `zero_division`. La media
+geometrica delle stesse due quantità ha anche lei un nome, l’indice di Fowlkes e
+Mallows, nato per confrontare due raggruppamenti contando le coppie di punti
+messe insieme {cite}`fowlkes1983method`.
+
+`````
+
+Il conto ricostruisce il filtro prudente dai suoi conteggi, calcola le quattro
+medie e la $F_1$ di scikit-learn, e controlla la catena e i due estremi su
+centomila coppie di numeri a caso.
+
+```python
+import numpy as np
+from sklearn.metrics import f1_score, precision_score, recall_score
+
+# il filtro prudente: 36 spam presi, 4 email buone cestinate, 54 spam passati
+VP, FP, FN, VN = 36, 4, 54, 6
+y_vero = np.array([1] * VP + [0] * FP + [1] * FN + [0] * VN)
+y_filtro = np.array([1] * VP + [1] * FP + [0] * FN + [0] * VN)
+P, R = precision_score(y_vero, y_filtro), recall_score(y_vero, y_filtro)
+print(f"precision {P:.2f}, recall {R:.2f}")
+
+medie = {
+    "armonica": 2 * P * R / (P + R),
+    "geometrica": np.sqrt(P * R),
+    "aritmetica": (P + R) / 2,
+    "quadratica": np.sqrt((P ** 2 + R ** 2) / 2),
+}
+print("  ".join(f"{nome} {valore:.4f}" for nome, valore in medie.items()))
+print(f"f1_score di scikit-learn: {f1_score(y_vero, y_filtro):.4f}; "
+      f"2VP / (2VP + FP + FN) = {2 * VP / (2 * VP + FP + FN):.4f}")
+print(f"con recall 0,05: aritmetica {(0.9 + 0.05) / 2:.3f}, "
+      f"armonica {2 * 0.9 * 0.05 / (0.9 + 0.05):.3f}")
+
+# la catena e i due estremi su centomila coppie a caso
+rng = np.random.default_rng(0)
+a, b = rng.uniform(0.001, 1, (2, 100_000))
+H, G = 2 * a * b / (a + b), np.sqrt(a * b)
+A, Q = (a + b) / 2, np.sqrt((a ** 2 + b ** 2) / 2)
+lo, hi, eps = np.minimum(a, b), np.maximum(a, b), 1e-12
+catena = np.all((lo <= H + eps) & (H <= G + eps) & (G <= A + eps)
+                & (A <= Q + eps) & (Q <= hi + eps))
+print(f"min <= H <= G <= A <= Q <= max in tutte: {catena}; "
+      f"H <= 2 min: {np.all(H <= 2 * lo + eps)}; "
+      f"A >= max / 2: {np.all(A >= hi / 2 - eps)}")
+```
+
+```text
+precision 0.90, recall 0.40
+armonica 0.5538  geometrica 0.6000  aritmetica 0.6500  quadratica 0.6964
+f1_score di scikit-learn: 0.5538; 2VP / (2VP + FP + FN) = 0.5538
+con recall 0,05: aritmetica 0.475, armonica 0.095
+min <= H <= G <= A <= Q <= max in tutte: True; H <= 2 min: True; A >= max / 2: True
+```
+
+Le quattro medie escono nell’ordine della catena, e la $F_1$ di scikit-learn è
+la media armonica e insieme il conto unico sui conteggi, alla quarta cifra.
+Con la recall a $0{,}05$ la media aritmetica resta vicina a metà, mentre
+l’armonica scende sotto un decimo. Il controllo sulle centomila coppie non
+sostituisce la dimostrazione: fa vedere che la catena e i due estremi reggono
+anche lontano dall’esempio.
+
 ## La curva ROC e l'AUC
 
 Ecco il numero che sposta la bilancia. Come si è visto parlando di regressione
@@ -715,7 +881,7 @@ tabella(p_te, y_te, "come esce")
 al_sicuro = lambda v: np.clip(v, 1e-12, 1 - 1e-12)
 logit = lambda v: np.log(al_sicuro(v) / (1 - al_sicuro(v)))
 L_cal, L_te = logit(p_cal).reshape(-1, 1), logit(p_te).reshape(-1, 1)
-# Platt senza i bersagli ammorbiditi: con 3 750 casi di calibrazione
+# Platt senza i bersagli ammorbiditi: con 7 500 casi di calibrazione
 # la differenza cade alla quarta cifra dell'ECE
 convertite = {nome: LogisticRegression(**opz).fit(L_cal, y_cal)
                                         .predict_proba(L_te)[:, 1]

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GENERATO da scripts/genera-figure-scure.py: non modificare a mano.
+  La prossima rigenerazione cancella qualunque cosa venga scritta
+  qui dentro. La palette e' quella del blocco [data-theme=dark]
+  di book/_static/brand/tokens.css.
+  fonte: ../neurocube-pila.svg
+-->
+<!--
+  paithon book, figura: il Neurocube nello strato logico di un Hybrid Memory
+  Cube, vista di fianco. Quattro die di DRAM impilati sopra lo strato logico,
+  divisi in colonne verticali (i vault: qui quattro dei sedici), collegati da
+  vie verticali attraverso il silicio (TSV). Nello strato logico, un elemento
+  di calcolo (PE) per vault, che legge i dati della propria colonna. A sinistra
+  il processore, collegato allo strato logico da un collegamento che porta la
+  configurazione di ogni strato e non piu' i dati di ogni conto. Un vault e' evidenziato. Palette-locked: ocra per
+  la DRAM, teal per lo strato logico e le TSV, terracotta per i PE. Backing
+  cream. Nessun colore fuori palette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" role="img"
+     aria-label="Vista di fianco di una pila di memoria Hybrid Memory Cube con il Neurocube. Quattro die di DRAM sono impilati uno sopra l'altro e divisi in colonne verticali, i vault, dei sedici ne sono disegnati quattro; uno è evidenziato. Vie verticali attraverso il silicio (TSV) collegano ogni colonna allo strato logico alla base, dove sta un elemento di calcolo (PE) per ciascun vault. A sinistra, fuori dalla pila, il processore è collegato allo strato logico da un collegamento, che porta la configurazione di ogni strato ma non i dati di ogni conto.">
+  <style>
+    .dram  { fill:#DDB874; fill-opacity:0.22; stroke:#F4ECDD; stroke-opacity:0.55; stroke-width:1.4; }
+    .logica { fill:#5BA39C; fill-opacity:0.14; stroke:#5BA39C; stroke-width:1.8; }
+    .vsep  { stroke:#F4ECDD; stroke-width:1.3; stroke-dasharray:4 5; opacity:0.45; }
+    .tsv   { stroke:#5BA39C; stroke-width:2.6; stroke-linecap:round; }
+    .pe    { fill:#E27B52; stroke:#F4ECDD; stroke-opacity:0.35; stroke-width:1; }
+    .vault { fill:none; stroke:#5BA39C; stroke-width:2.4; stroke-dasharray:7 5; }
+    .host  { fill:#0E0C0A; stroke:#F4ECDD; stroke-opacity:0.7; stroke-width:1.6; }
+    .link  { stroke:#F4ECDD; stroke-width:2; opacity:0.6; }
+    .lbl   { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:600; fill:#F4ECDD; opacity:0.8; }
+    .lbl2  { font-family:Inter, system-ui, sans-serif; font-size:11.5px; fill:#F4ECDD; opacity:0.65; }
+    .lblt  { font-family:Inter, system-ui, sans-serif; font-size:12.5px; font-weight:700; fill:#5BA39C; }
+    .pet   { font-family:Inter, system-ui, sans-serif; font-size:13px; font-weight:700; fill:#0E0C0A; }
+  </style>
+
+  <!-- backing cream -->
+  <rect x="6" y="6" width="688" height="408" rx="14" fill="#0E0C0A" stroke="#F4ECDD" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- quattro die di DRAM -->
+  <rect class="dram" x="260" y="64"  width="380" height="42" rx="3"/>
+  <rect class="dram" x="260" y="116" width="380" height="42" rx="3"/>
+  <rect class="dram" x="260" y="168" width="380" height="42" rx="3"/>
+  <rect class="dram" x="260" y="220" width="380" height="42" rx="3"/>
+
+  <!-- strato logico alla base -->
+  <rect class="logica" x="260" y="292" width="380" height="58" rx="3"/>
+
+  <!-- separatori fra i vault -->
+  <line class="vsep" x1="355" y1="58" x2="355" y2="356"/>
+  <line class="vsep" x1="450" y1="58" x2="450" y2="356"/>
+  <line class="vsep" x1="545" y1="58" x2="545" y2="356"/>
+
+  <!-- TSV: due per colonna, dalla DRAM allo strato logico -->
+  <line class="tsv" x1="298" y1="70" x2="298" y2="304"/>
+  <line class="tsv" x1="317" y1="70" x2="317" y2="304"/>
+  <line class="tsv" x1="393" y1="70" x2="393" y2="304"/>
+  <line class="tsv" x1="412" y1="70" x2="412" y2="304"/>
+  <line class="tsv" x1="488" y1="70" x2="488" y2="304"/>
+  <line class="tsv" x1="507" y1="70" x2="507" y2="304"/>
+  <line class="tsv" x1="583" y1="70" x2="583" y2="304"/>
+  <line class="tsv" x1="602" y1="70" x2="602" y2="304"/>
+
+  <!-- un elemento di calcolo per vault -->
+  <rect class="pe" x="280" y="304" width="56" height="34" rx="4"/>
+  <rect class="pe" x="375" y="304" width="56" height="34" rx="4"/>
+  <rect class="pe" x="470" y="304" width="56" height="34" rx="4"/>
+  <rect class="pe" x="565" y="304" width="56" height="34" rx="4"/>
+  <text class="pet" x="308" y="326" text-anchor="middle">PE</text>
+  <text class="pet" x="403" y="326" text-anchor="middle">PE</text>
+  <text class="pet" x="498" y="326" text-anchor="middle">PE</text>
+  <text class="pet" x="593" y="326" text-anchor="middle">PE</text>
+
+  <!-- un vault evidenziato -->
+  <rect class="vault" x="358" y="56" width="89" height="300" rx="6"/>
+  <text class="lblt" x="402" y="44" text-anchor="middle">un vault</text>
+  <text class="lblt" x="336" y="286" text-anchor="middle">TSV</text>
+
+  <!-- etichette della pila -->
+  <text class="lbl" x="246" y="160" text-anchor="end">quattro die</text>
+  <text class="lbl" x="246" y="176" text-anchor="end">di DRAM</text>
+  <line x1="252" y1="64" x2="252" y2="262" stroke="#F4ECDD" stroke-opacity="0.45" stroke-width="1.4"/>
+  <text class="lbl" x="450" y="378" text-anchor="middle">strato logico: un elemento di calcolo per vault</text>
+  <text class="lbl2" x="450" y="396" text-anchor="middle">(quattro dei sedici vault disegnati)</text>
+
+  <!-- il processore, fuori dalla pila -->
+  <rect class="host" x="36" y="298" width="140" height="46" rx="6"/>
+  <text class="lbl" x="106" y="326" text-anchor="middle">processore</text>
+  <line class="link" x1="176" y1="321" x2="260" y2="321"/>
+  <text class="lbl2" x="218" y="360" text-anchor="middle">configurazione</text>
+  <text class="lbl2" x="218" y="375" text-anchor="middle">di ogni strato</text>
+</svg>

@@ -126,6 +126,121 @@ sono altro che GAN (o modelli generativi) condizionati su un input sempre più
 ricco (da un'etichetta discreta a un'intera frase).
 `````
 
+## SAGAN e BigGAN: guardare lontano, poi crescere
+
+Condizionare sulla classe non basta, da solo, a far disegnare bene mille classi
+diverse. Nel 2018 due lavori sulle GAN condizionate di ImageNet (la raccolta di
+oltre un milione di fotografie divise in mille classi su cui si addestrano i
+classificatori d’immagini) lo affrontano uno dopo l’altro. La **SAGAN**
+(*Self-Attention GAN*) di Zhang, Goodfellow, Metaxas e Odena mette l’attenzione
+dentro il generatore e il discriminatore {cite}`zhang2019self`; **BigGAN**, di
+Brock, Donahue e Simonyan, prende la SAGAN come punto di partenza, la
+ingrandisce, e introduce un modo di scegliere al momento del campionamento
+quanto le immagini debbano essere belle e quanto varie: il *truncation trick*
+{cite}`brock2019large`.
+
+`````{tab} Elementare
+
+La classe qui è l’etichetta della conditional GAN: «cane», «montagna»,
+«tazza», una per ciascuna delle mille categorie di ImageNet. Le GAN di prima
+dipingevano con il naso sulla tela. Ogni strato della rete guarda un pezzetto
+dell’immagine e i suoi vicini, e le cose lontane si parlano solo passando di
+strato in strato. Il risultato era riconoscibile: cieli, mari e paesaggi, che
+sono fatti di trama, venivano bene; i cani avevano un pelo perfetto ma zampe
+confuse, perché quattro zampe vanno messe d’accordo fra loro e con il corpo, e
+sono lontane. L’attenzione della SAGAN dà a ogni punto la possibilità di
+guardare tutta la tela, e di pesare quanto gli servono i punti lontani. Serve
+anche all’esperto che giudica: può controllare che una zampa in basso a
+sinistra vada d’accordo con quella in alto a destra. E la rete impara per
+gradi: all’inizio la manopola dell’attenzione è a zero e dipinge come prima,
+poi la alza quando le conviene.
+
+BigGAN fa la cosa che sembra la meno ingegnosa, e rende di più: tutto più
+grande. A ogni passo guarda otto volte più immagini, e ogni gruppo così contiene
+più tipi diversi di immagine, quindi la correzione che le due reti ne ricavano è
+più affidabile; e le reti sono più larghe, cioè con più filtri per strato, più
+cose guardate in parallelo. L’accorgimento più curioso riguarda il pugno di
+numeri a caso da cui ogni immagine parte, una fila di più di cento numeri.
+Durante l’addestramento sono estratti come sempre, quasi tutti vicini allo zero
+e qualcuno lontano, e siccome capitano soprattutto vicino allo zero è lì che la
+rete si è esercitata di più. Al momento di generare, invece, BigGAN ripesca ogni
+numero che esce da una soglia, finché non ci rientra: le immagini che nascono da
+numeri tranquilli sono le più tipiche. Abbassando la soglia ogni immagine
+diventa più bella e tutte insieme più simili, fino a disegnare sempre lo stesso
+cane della classe. Diventa una manopola fra qualità e varietà, da girare dopo
+l’addestramento.
+
+La manopola ha un guasto, e sta nella fila intera. Durante l’addestramento
+ogni numero, da solo, stava spesso vicino allo zero, ma in ogni fila qualcuno
+era lontano: una fila tutta tranquilla la rete non l’aveva mai vista. Alcune
+reti, davanti a file così, rispondono con colori sparati e pezzi saturi.
+BigGAN ci rimedia con una regola durante l’addestramento che obbliga i filtri
+di ogni strato a non somigliarsi fra loro, e che rende la rete più docile:
+piccoli cambi nei numeri di partenza danno piccoli cambi nell’immagine, anche
+nelle zone che ha visto poco. Non funziona sempre: fra le reti che gli autori
+hanno addestrato con impostazioni diverse, con la regola reggeva la manopola
+poco più della metà, senza una su sei.
+
+`````{tab} Superiore
+
+Il blocco di SAGAN adatta l’operazione *non-local* all’interno di una GAN. Date
+le feature $\mathbf{x} \in \mathbb{R}^{C \times N}$ di uno strato ($N$
+posizioni, $C$ canali), tre proiezioni $1\times1$,
+$f(\mathbf{x}) = \mathbf{W}_f\mathbf{x}$,
+$g(\mathbf{x}) = \mathbf{W}_g\mathbf{x}$ e
+$h(\mathbf{x}) = \mathbf{W}_h\mathbf{x}$, fanno da chiave, query e valore (qui
+la posizione che guarda è $j$ e quella guardata è $i$, al contrario della
+convenzione $z_{ij} = \mathbf{q}_i^\top\mathbf{k}_j$ del capitolo sui
+Transformer):
+
+$$
+\beta_{j,i} = \frac{\exp(s_{ij})}{\sum_{i=1}^{N}\exp(s_{ij})},\quad
+s_{ij} = f(\mathbf{x}_i)^\top g(\mathbf{x}_j),\qquad
+\mathbf{o}_j = \mathbf{W}_v \sum_{i=1}^{N}\beta_{j,i}\,h(\mathbf{x}_i),
+$$
+
+e l’uscita è $\mathbf{y}_i = \gamma\,\mathbf{o}_i + \mathbf{x}_i$ con $\gamma$
+scalare appreso e inizializzato a zero, così che la rete parta locale e aggiunga
+la dipendenza a lunga distanza quando conviene. Il blocco sta in $G$ e in $D$, e
+costa un tempo quadratico in $N$. SAGAN applica anche la normalizzazione
+spettrale {cite}`miyato2018spectral` al generatore oltre che al discriminatore,
+e usa learning rate diversi per le due reti (la *two time-scale update rule* di
+Heusel e colleghi {cite}`heusel2017gans`), che rende superflui i turni
+sbilanciati, più aggiornamenti del discriminatore per ogni aggiornamento del
+generatore.
+
+BigGAN parte dall’architettura SAGAN e la scala: *batch* otto volte più grande
+(2048), canali più larghi del 50%, un’immersione della classe condivisa e
+proiettata sui guadagni e sugli scostamenti della normalizzazione condizionata
+di ogni strato, e *skip-z*, cioè $\mathbf{z}$ spezzato in parti date ai diversi
+livelli del generatore. Il *truncation trick* lavora al campionamento:
+addestrato con $\mathbf{z} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$, il
+generatore riceve $\mathbf{z}$ da una normale troncata, in cui le componenti di
+modulo oltre una soglia $\tau$ vengono ricampionate. Abbassando $\tau$ i
+campioni si avvicinano al modo della distribuzione d’uscita: l’Inception Score,
+che nei modelli condizionati non penalizza la mancanza di varietà, sale in modo
+monotono, mentre il FID prima migliora e poi peggiora, e gli autori ne leggono
+una curva fra fedeltà e varietà parente di quella fra precision e recall.
+Osservazioni vicine c’erano già {cite}`marchesi2017megapixel`; la trattazione
+sistematica e il nome sono di BigGAN. La troncatura sposta però la distribuzione
+d’ingresso rispetto all’addestramento, e i generatori mal condizionati
+rispondono con artefatti di saturazione. Il rimedio è una regolarizzazione
+ortogonale rilassata,
+
+$$
+R(\mathbf{W}) = \lambda\,\lVert \mathbf{W}^\top\mathbf{W} \odot
+(\mathbf{1} - \mathbf{I}) \rVert_F^2 ,
+$$
+
+con $\lambda = 10^{-4}$ (nel paper il coefficiente si chiama $\beta$, che qui è
+già il peso dell’attenzione), che penalizza la somiglianza fra filtri senza
+vincolarne la norma: sulle configurazioni provate, la frazione di modelli che
+reggono la troncatura passa dal 16% al 60%. StyleGAN applicherà la stessa idea
+nello spazio $\mathcal{W}$, come interpolazione verso lo stile medio, e lì la
+troncatura regge in modo affidabile senza modificare la funzione di perdita.
+
+`````
+
 ## StyleGAN: il fotorealismo
 
 È la tecnologia dietro i volti impossibili da smascherare a occhio, ed è quella
@@ -136,20 +251,20 @@ impianto per farsi guidare; poi disegna anche meglio, ma quello viene in
 aggiunta.
 
 `````{tab} Elementare
-StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli,
-dal grossolano al fine. Gli strati iniziali decidono posa e forma del viso,
-quelli intermedi i lineamenti, quelli finali dettagli come lentiggini e
-ciocche di capelli. A ogni livello consegna uno "stile", che è una fila di
-manopole: una manciata di numeri che invece di stare tutta all'ingresso arriva
-al singolo livello e decide come quel livello lavorerà. Le manopole non escono
-grezze dai numeri casuali di partenza: fra i due c'è una piccola rete che li
-traduce, e serve a sbrogliarli, perché nel mazzo grezzo posa, età e taglio di
-capelli sono aggrovigliati, e girando una manopola se ne muovono tre. (Il
-{doc}`capitolo sui modelli latenti </ModelliLatenti/overview>` ha mostrato che
-senza aiuti questa separazione non si ottiene; qui l'aiuto c'è ed è l'impianto
-stesso, perché ogni fila di numeri arriva a un livello diverso. Quello che si
-separa bene è il grossolano dal fine; posa, età e capelli si sbrogliano meglio
-di prima, non del tutto.)
+StyleGAN non "disegna" il volto tutto in una volta: lo costruisce a livelli, dal
+grossolano al fine. Gli strati iniziali decidono posa e forma del viso, quelli
+intermedi i lineamenti, quelli finali dettagli come lentiggini e ciocche di
+capelli. A ogni livello consegna uno "stile", che è una fila di manopole: una
+manciata di numeri che invece di stare tutta all'ingresso arriva al singolo
+livello e decide come quel livello lavorerà. Le manopole non escono grezze dai
+numeri casuali di partenza: fra i due c'è una piccola rete che li traduce, e
+serve a sbrogliarli, perché nel mazzo grezzo posa, età e taglio di capelli sono
+aggrovigliati, e girando una manopola se ne muovono tre. (La
+{doc}`sezione sul latente che si usa </ModelliLatenti/il-latente-che-si-usa>` ha
+mostrato che senza aiuti questa separazione non si ottiene; qui l'aiuto c'è ed è
+l'impianto stesso, perché ogni fila di numeri arriva a un livello diverso.
+Quello che si separa bene è il grossolano dal fine; posa, età e capelli si
+sbrogliano meglio di prima, non del tutto.)
 
 Cambiando le manopole dei primi livelli cambia la posa; cambiando quelle degli
 ultimi cambiano le lentiggini. Per questo si mescolano tratti di volti diversi:
@@ -177,15 +292,19 @@ uno spazio latente intermedio $\mathcal{W}$, più disaccoppiato; i vettori di
 stile $\mathbf{w}$ modulano ogni strato del generatore via *adaptive instance
 normalization* (AdaIN); rumore stocastico separato controlla i dettagli ad alta
 frequenza. Il risultato è il controllo *scale-specific*. La rete di mapping è un
-percettrone a 8 strati, con $\mathbf{z}$ e $\mathbf{w}$ a 512 componenti;
-durante l’addestramento una quota delle immagini è generata con due vettori
-$\mathbf{w}$, passando dal primo al secondo a un livello scelto a caso (*style
-mixing*), e questo impedisce agli strati di assumere che stili contigui siano
-correlati. In generazione si usa il *truncation trick* in $\mathcal{W}$:
+percettrone multistrato a 8 strati, con $\mathbf{z}$ e $\mathbf{w}$ a 512
+componenti; durante l’addestramento una quota delle immagini è generata con due
+vettori $\mathbf{w}$, passando dal primo al secondo a un livello scelto a caso
+(*style mixing*), e questo impedisce agli strati di assumere che stili contigui
+siano correlati. In generazione si usa il *truncation trick* di BigGAN,
+spostato in $\mathcal{W}$:
 $\mathbf{w}' = \bar{\mathbf{w}} + \psi\,(\mathbf{w} - \bar{\mathbf{w}})$, con
 $\bar{\mathbf{w}}$ la media degli stili e $\psi < 1$, che avvicina i campioni
-alle regioni dense e compra fedeltà al prezzo della varietà: è la stessa
-rinuncia che un FID calcolato su campioni troncati nasconde.
+alle regioni dense e compra fedeltà al prezzo della varietà. Il FID quella
+rinuncia la fa pagare: nel confronto di Kynkäänniemi e colleghi
+{cite}`kynkaanniemi2019improved` la configurazione di StyleGAN più troncata, con
+volti belli e tutti simili, ha un FID di $91{,}7$ contro il $4{,}5$ di quella
+ottimizzata per il FID.
 
 La risoluzione $1024\times1024$, invece, StyleGAN la eredita: viene dalla
 Progressive GAN dello stesso gruppo {cite}`karras2018progressive`, che
@@ -791,6 +910,10 @@ duello, e conviene ripassarle così.
 - La conditional GAN aggiunge il timone: insieme al rumore si consegna
   un'etichetta ("voglio un 7"), e la ricevono tutti e due, perché anche
   l'esperto deve poter dire "sarà pure un bel disegno, ma non è un 7".
+- La SAGAN dà a ogni punto dell'immagine la possibilità di guardare quelli
+  lontani, e le zampe tornano al loro posto; BigGAN la ingrandisce, e al
+  momento di generare ripesca i numeri di partenza troppo estremi: immagini
+  più belle e meno varie, una manopola che non tutte le reti reggono.
 - StyleGAN costruisce il volto a livelli e consegna a ciascun livello la
   propria manopola: da lì il controllo separato di posa, lineamenti e
   lentiggini. La risoluzione da fotografia, invece, era già stata conquistata
@@ -836,6 +959,11 @@ duello, e conviene ripassarle così.
   salvo lo strato d'uscita di $G$ e quello d'ingresso di $D$, $\tanh$ in uscita);
   la conditional GAN aggiunge il controllo tramite una variabile ausiliaria
   $y$ passata a entrambe le reti.
+- SAGAN {cite}`zhang2019self` aggiunge l'auto-attenzione (blocco *non-local*
+  con $\gamma$ inizializzato a zero) a $G$ e $D$ e la normalizzazione spettrale
+  anche a $G$; BigGAN {cite}`brock2019large` la scala e introduce il
+  *truncation trick* (normale troncata al campionamento), fedeltà contro
+  varietà, reso praticabile dalla regolarizzazione ortogonale.
 - StyleGAN introduce lo spazio latente intermedio $\mathcal{W}$, la
   modulazione per strato via AdaIN {cite}`huang2017arbitrary` e il rumore
   per-livello: il suo contributo è il controllo *scale-specific*, mentre la

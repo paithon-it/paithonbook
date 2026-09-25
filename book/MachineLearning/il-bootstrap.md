@@ -160,11 +160,13 @@ $$
 \bigl(\hat\theta^{*}_{b} - \bar{\theta^{*}}\bigr)^2},
 $$
 
-e presa alla lettera, la sostituzione dà l'intervallo *basic*: se $\hat\theta^* -
-\hat\theta$ cade fra $\hat\theta^{*}_{(\alpha)} - \hat\theta$ e
-$\hat\theta^{*}_{(1-\alpha)} - \hat\theta$, allora $\theta$ cade in
-$[\,2\hat\theta - \hat\theta^{*}_{(1-\alpha)},\ 2\hat\theta -
-\hat\theta^{*}_{(\alpha)}\,]$, con i quantili ribaltati attorno alla stima.
+e presa alla lettera, la sostituzione dà l'intervallo *basic*. Con probabilità
+$1-2\alpha$ lo scarto simulato $\hat\theta^* - \hat\theta$ cade fra
+$\hat\theta^{*}_{(\alpha)} - \hat\theta$ e $\hat\theta^{*}_{(1-\alpha)} -
+\hat\theta$; la sostituzione dice che lo stesso vale per lo scarto ignoto
+$\hat\theta - \theta$, e allora $\theta$ cade in $[\,2\hat\theta -
+\hat\theta^{*}_{(1-\alpha)},\ 2\hat\theta - \hat\theta^{*}_{(\alpha)}\,]$,
+con i quantili ribaltati attorno alla stima.
 L'intervallo **percentile** al livello $1-2\alpha$ prende invece i quantili
 così come sono, $[\hat\theta^{*}_{(\alpha)},\, \hat\theta^{*}_{(1-\alpha)}]$:
 coincide col *basic* quando la distribuzione bootstrap è simmetrica attorno a
@@ -193,12 +195,11 @@ $\hat z_0 = \Phi^{-1}\bigl(\#\{b : \hat\theta^*_b < \hat\theta\}/B\bigr)$
 misura la distorsione mediana e l'accelerazione $\hat a$ si stima col
 jackknife; con $\hat z_0 = \hat a = 0$ si torna al percentile. L'errore di
 ciascun estremo scende all'ordine $m^{-1}$, e lo stesso ordine lo dà il
-$t$-bootstrap, al prezzo di una stima dell'errore standard dentro ogni replica
-(sui sessanta stipendi `scipy.stats.bootstrap` con `method="BCa"` sposta
-l'estremo inferiore da $25\,720$ a $25\,774$). Sul massimo, invece, non c'è
+$t$-bootstrap, al prezzo di una stima dell'errore standard dentro ogni
+replica. Sul massimo, invece, non c'è
 correzione che tenga: la distribuzione bootstrap non converge a quella vera
 {cite}`bickel1981some`, e il rimedio è ricampionare $r$ punti invece di $m$,
-con $r/m \to 0$. Su dati simulati, dove il
+con $r \to \infty$ e $r/m \to 0$. Su dati simulati, dove il
 valore vero si conosce, la sotto-copertura si può misurare.
 
 `````
@@ -334,7 +335,7 @@ Alla seconda («è esatto?») risponde di no, ma la risposta va letta con la ter
 riga in mano, ed è per averla che quel numero è stampato con due decimali
 invece di uno. Anche il $94{,}27\%$ è una stima, ottenuta da quattromila prove
 e non da infinite, quindi balla pure lui, fra $93{,}56\%$ e $94{,}99\%$: è
-l'intervallo di Wald (la stima, più o meno due errori standard) della
+l'intervallo di Wald (la stima, più o meno $1{,}96$ errori standard) della
 {doc}`sezione sugli intervalli di confidenza
 </Matematica/probabilita-statistica>`, applicato a $3771$ successi su $4000$. Il
 $95\%$ promesso resta fuori da quell'intervallo, e ci resta per mezzo

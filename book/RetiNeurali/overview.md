@@ -373,27 +373,26 @@ non linearità nascosta (tipicamente ReLU) e $\varphi$ l'attivazione d'uscita
 strato, e resta questo per tutto il libro: la parentesi tonda serve per
 distinguere gli esempi, come in $\hat{y}^{(i)}$.
 
-È l'impilamento di trasformazioni lineari e non lineari
-a dare la potenza: il *teorema di approssimazione universale* garantisce che
-una rete con un solo strato nascosto abbastanza ampio può approssimare, con
-errore arbitrariamente piccolo, qualunque funzione continua su un insieme
-compatto. Dimostrato prima per attivazioni limitate, come la sigmoide
-({cite}`cybenko1989approximation`; {cite}`hornik1991approximation`), vale per
-ogni $\sigma$ non polinomiale, ReLU compresa ({cite}`leshno1993multilayer`).
-È però un teorema di esistenza: dice che i pesi giusti ci sono, non che la
-discesa del gradiente li trovi. E c'è una seconda cosa che non dice, altrettanto
-importante: quanto ampio. Nell'enunciato "abbastanza ampio" non è
-quantificato, e nel caso peggiore il conto è proibitivo: per approssimare a
-meno di $\varepsilon$ ogni funzione di $d$ variabili con $s$ derivate limitate
-servono dell'ordine di $\varepsilon^{-d/s}$ neuroni, esponenziale in $d$, e per
-una funzione generica il conto è fuori portata già per un'immagine piccola. Non
-per tutte, però: se la trasformata di Fourier della funzione ha primo momento
-finito $C_f$, Barron {cite}`barron1993universal` mostra che $n$ neuroni
-sigmoidali danno un errore quadratico dell'ordine di $C_f^2/n$, senza
-esponenziale in $d$ (la dipendenza dalla dimensione si sposta dentro
-$C_f$). È il vero motivo per cui il teorema
-consola meno di quanto suoni. La non linearità $\sigma$ è essenziale: senza
-di essa, due strati lineari collasserebbero in uno solo.
+È l'impilamento di trasformazioni lineari e non lineari a dare la potenza: il
+*teorema di approssimazione universale* garantisce che una rete con un solo
+strato nascosto abbastanza ampio può approssimare, con errore arbitrariamente
+piccolo, qualunque funzione continua su un insieme compatto. Dimostrato prima
+per attivazioni limitate, come la sigmoide ({cite}`cybenko1989approximation`;
+{cite}`hornik1991approximation`), vale per ogni $\sigma$ non polinomiale, ReLU
+compresa ({cite}`leshno1993multilayer`). È però un teorema di esistenza: dice
+che i pesi giusti ci sono, non che la discesa del gradiente li trovi. E c'è una
+seconda cosa che non dice, altrettanto importante: quanto ampio. Nell'enunciato
+"abbastanza ampio" non è quantificato, e nel caso peggiore il conto è
+proibitivo: per approssimare a meno di $\varepsilon$ ogni funzione di $d$
+variabili con $s$ derivate limitate servono dell'ordine di $\varepsilon^{-d/s}$
+neuroni, esponenziale in $d$, e per una funzione generica il conto è fuori
+portata già per un'immagine piccola, ed è il vero motivo per cui il teorema
+consola meno di quanto suoni. Non per tutte, però: se la trasformata di Fourier
+della funzione ha primo momento finito $C_f$, Barron {cite}`barron1993universal`
+mostra che $n$ neuroni sigmoidali danno un errore quadratico dell'ordine di
+$C_f^2/n$, senza esponenziale in $d$ (la dipendenza dalla dimensione si sposta
+dentro $C_f$). La non linearità $\sigma$ è essenziale: senza di essa, due strati
+lineari collasserebbero in uno solo.
 
 Come leggere allora {numref}`fig-confini-multistrato`? Non con il teorema di
 approssimazione universale, che sull'efficienza non dice niente: dice solo che

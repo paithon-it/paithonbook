@@ -64,8 +64,9 @@ con $D$ il numero di componenti del dato ($D = 32 \times 32 \times 3 = 3.072$
 per un'immagine di CIFAR-10) e $p$ una probabilità sui valori interi, oppure una
 densità sui pixel dequantizzati nella loro scala originale $[0, 256)^D$. Se il
 modello lavora sui pixel riscalati in $[0, 1]$, al numeratore si aggiunge
-$D \ln 256$, cioè otto bit per dimensione, che è il determinante del
-riscalamento; senza quel termine i numeri escono irrisori o negativi. Per la
+$D \ln 256$, cioè otto bit per dimensione: è il logaritmo del fattore $256^D$
+di cui il riscalamento restringe il volume, e senza quel termine i numeri
+escono irrisori o negativi. Per la
 stessa ragione la log-densità delle due lune, misurata su coordinate
 standardizzate, non ha un equivalente in bit. Su CIFAR-10, che è il banco di
 prova storico della famiglia: NICE $4{,}48$; RealNVP $3{,}49$; Glow $3{,}35$;

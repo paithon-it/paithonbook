@@ -149,11 +149,11 @@ di più all'ancora $\mathbf{z}_i$, cioè quelli che alla gemella contendono il
 posto. La somma corre sulle altre $2N-1$ viste del batch, cioè la gemella
 $\mathbf{z}_j$ e le $2N-2$ che fanno da negativi. La perdita totale è la media
 di $\ell_{i,j}$ su tutte le $2N$ coppie ordinate. È la stessa InfoNCE con cui
-il {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>`
-allinea immagini e didascalie, con una differenza sostanziale: là il positivo è
-la didascalia scritta da una persona, qui è una seconda copia deformata della
-stessa immagine. La supervisione non viene dal linguaggio, viene dalla
-trasformazione.
+il {doc}`capitolo su visione e linguaggio
+</VisioneLinguaggio/allineare-due-spazi>` allinea immagini e didascalie, con
+una differenza sostanziale: là il positivo è la didascalia scritta da una
+persona, qui è una seconda copia deformata della stessa immagine. La
+supervisione non viene dal linguaggio, viene dalla trasformazione.
 
 Il ruolo di $\tau$ si legge nel gradiente. Posto
 $s_{ik} = \mathrm{sim}(\mathbf{z}_i, \mathbf{z}_k)$ e detto $p_{ik}$ il peso che
@@ -168,9 +168,12 @@ ogni negativo è respinto con una forza proporzionale a $p_{ik}$, e al calare di
 $\tau$ quella massa si concentra sui negativi più simili all'ancora, i
 *negativi difficili*, mentre il fattore $1/\tau$ amplifica il tutto. La
 InfoNCE ha poi una lettura informativa: con $K$ candidati fra cui riconoscere
-il positivo vale $I(\mathbf{z}; \mathbf{z}') \geq \log K - \mathcal{L}$
-{cite}`oord2018representation`, dove $I$ è l'informazione mutua e qui
-$K = 2N - 1$. Il limite non supera mai $\log K$: con pochi candidati la perdita
+il positivo, e negativi indipendenti, vale
+$I(\mathbf{z}; \mathbf{z}') \geq \log K - \mathcal{L}$
+{cite}`oord2018representation`, dove $I$ è l'informazione mutua, $\mathcal{L}$
+il valore atteso di $\ell_{i,j}$ e qui $K = 2N - 1$ (in SimCLR i negativi
+vengono a coppie dalla stessa immagine, e il limite va letto come ordine di
+grandezza). Il limite non supera mai $\log K$: con pochi candidati la perdita
 non può certificare molta informazione, ed è una ragione in più per cui i
 negativi contano.
 
@@ -486,24 +489,26 @@ $\xi \leftarrow m\, \xi + (1-m)\, \theta$, con $m$ inizializzato a $0{,}996$ e
 portato verso uno durante l'addestramento.
 
 Il punto è che la soluzione costante, pur essendo un minimo della perdita,
-empiricamente non viene mai raggiunta, e a tenerne lontana la dinamica sono, per
-quanto mostrano le analisi teoriche disponibili (condotte su modelli lineari
-semplificati {cite}`tian2021understanding`), due asimmetrie. La prima: il ramo
-target non riceve gradiente (**stop-gradient**), non può «accordarsi» con
-l'altro e si limita a inseguirlo in ritardo. La seconda: la testa $q_\theta$ è
-presente da un lato solo, quindi l'obiettivo effettivo dell'encoder online è
-produrre qualcosa da cui $q_\theta$ *possa predire* $\mathbf{z}'_\xi$, e non
-$\mathbf{z}'_\xi$ stesso, che è un vincolo più debole. Un lavoro successivo, SimSiam
-{cite}`chen2021exploring`, ha tolto la media mobile dall'elenco delle cose
-necessarie, tenendo le altre due: senza stop-gradient, o senza la testa di
-predizione, la soluzione collassa; e una prima spiegazione
-molto discussa, che attribuiva l'anti-collasso alla batch normalization
-(statistiche calcolate sul batch, quindi un contrasto implicito fra immagini), è
-stata smentita dagli autori stessi di BYOL, riaddestrandolo con una
-normalizzazione che del batch non sa nulla {cite}`richemond2020byol`. Il
-meccanismo, per quanto se ne è capito, è dinamico: non una forza repulsiva, ma
-una traiettoria di ottimizzazione che, nei fatti, non passa per il punto
-degenere; una dimostrazione per il caso generale ancora non c'è.
+empiricamente non viene mai raggiunta, e a tenerne lontana la dinamica sono,
+per quanto mostrano le analisi teoriche disponibili (condotte su modelli
+lineari semplificati {cite}`tian2021understanding`), due asimmetrie. La prima:
+il ramo target non riceve gradiente (**stop-gradient**), non può «accordarsi»
+con l'altro e si limita a inseguirlo in ritardo. La seconda: la testa
+$q_\theta$ è presente da un lato solo, quindi l'obiettivo effettivo
+dell'encoder online è produrre qualcosa da cui $q_\theta$ *possa predire*
+$\mathbf{z}'_\xi$, e non $\mathbf{z}'_\xi$ stesso, che è un vincolo più debole.
+Un lavoro successivo, SimSiam {cite}`chen2021exploring`, ha tolto la media
+mobile dall'elenco delle cose necessarie a evitare il collasso (con la testa di
+predizione ben regolata, e qualche punto di accuratezza in meno), tenendo le
+altre due: senza stop-gradient, o senza la testa di predizione, la soluzione
+collassa; e una prima spiegazione molto discussa, che attribuiva
+l'anti-collasso alla batch normalization (statistiche calcolate sul batch,
+quindi un contrasto implicito fra immagini), è stata smentita dagli autori
+stessi di BYOL, riaddestrandolo con una normalizzazione che del batch non sa
+nulla {cite}`richemond2020byol`. Il meccanismo, per quanto se ne è capito, è
+dinamico: non una forza repulsiva, ma una traiettoria di ottimizzazione che,
+nei fatti, non passa per il punto degenere; una dimostrazione per il caso
+generale ancora non c'è.
 
 `````
 
@@ -877,7 +882,8 @@ qualcuno, pubblicando quell'immagine, ci ha scritto accanto che cosa c'era.
   restano numerosi e coerenti nel tempo; BYOL {cite}`grill2020bootstrap` li
   elimina e non collassa, e a tenerlo lontano dal collasso sono le due
   asimmetrie fra le reti, la testa di predizione da un lato e lo stop-gradient
-  dall'altro (la media mobile aiuta, ma SimSiam mostra che non serve). Il
+  dall'altro (la media mobile aiuta, e SimSiam mostra che se ne può fare a
+  meno, con qualche punto di accuratezza in meno). Il
   risultato è solido; una spiegazione per il caso generale non c'è ancora.
 - DINO {cite}`caron2021emerging` distilla lo studente da una copia lenta di
   sé, con centering e sharpening che si bilanciano contro le due forme

@@ -71,11 +71,14 @@ $$
 \mathrm{SNR} = 10\log_{10}\frac{A^2/2}{\Delta^2/12} = 6{,}02\,b + 1{,}76\ \text{dB},
 $$
 
-circa $98$ dB a $16$ bit e $50$ a $8$: ogni bit vale sei decibel. Il modello
-uniforme cade dove il segnale è debole, perché un sussurro occupa pochi livelli
-e l'errore smette di somigliare a un rumore indipendente; è il difetto che la
-compansione $\mu$-law di {doc}`Generare suono e musica
-</Audio/generazione-audio>` corregge.
+circa $98$ dB a $16$ bit e $50$ a $8$: ogni bit vale sei decibel. Il conto però
+è a piena scala. Il rumore $\Delta^2/12$ resta lo stesso qualunque sia il
+segnale, quindi un suono dieci volte più debole perde $20$ dB di SNR, e un
+sussurro a $8$ bit finisce sotto il rumore del gradino; a livelli così bassi
+l'errore smette anche di somigliare a un rumore indipendente, e il modello
+uniforme non vale più. È il difetto che la compansione $\mu$-law di
+{doc}`Generare suono e musica </Audio/generazione-audio>` corregge, spendendo i
+livelli dove l'ampiezza è piccola perché l'SNR resti quasi costante.
 
 `````
 
@@ -309,10 +312,11 @@ quanto si allarga la macchia che la finestra lascia nel tempo e nelle note (la
 stessa idea della deviazione standard di {doc}`Probabilità e statistica
 </Matematica/probabilita-statistica>`). Con la finestra da 25 millesimi di
 secondo il quando si mette a fuoco entro 3,5 millesimi, la nota entro 23
-oscillazioni al secondo. Il primo numero è più piccolo della finestra perché la
-finestra, gonfia in mezzo e a zero ai bordi, pesa quasi tutto nei pochi
-millesimi attorno al centro: quello che capita ai margini conta poco, e la
-macchia nel tempo resta stretta.
+oscillazioni al secondo. Il primo numero è più piccolo della finestra per due
+ragioni. Uno sparpagliamento non è una lunghezza, e anche una finestra piatta
+lascerebbe una macchia più stretta di sé; e questa, gonfia in mezzo e a zero ai
+bordi, pesa quasi tutto nei millesimi attorno al centro, quindi quello che
+capita ai margini conta poco, e la macchia nel tempo resta stretta.
 
 Il secondo va preso con cautela: 23 è quanto una nota sola si spalma, non la
 distanza minima fra due note che si riescano ancora a separare. Quella è più

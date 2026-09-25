@@ -341,35 +341,36 @@ perché i tuoi compagni studiano.
 
 Il quadro formale generalizza l'MDP a un **gioco stocastico** (qui e altrove
 $\pi$ è la policy, e non ha niente a che vedere con il $3{,}14$ della
-circonferenza): $N$ agenti, uno
-spazio di stati $\mathcal{S}$, spazi di azione
-$\mathcal{A}^1, \dots, \mathcal{A}^N$, una transizione
-$P(s' \mid s, a)$ che dipende dall'azione **congiunta**
-$a = (a^1, \dots, a^N)$ e una ricompensa $r^i$ per ciascun agente. Se
-$r^i = r$ per ogni $i$ il gioco è cooperativo; se $N = 2$ e $r^1 + r^2 = 0$ si
-ricade nel caso a somma zero, che è la forma minimax della GAN (con la
-*loss* non-saturante che si usa in pratica la somma non è più zero, e la
-{doc}`sezione su come funziona una GAN </GAN/come-funziona>` spiega perché),
-dove l'obiettivo non è un minimo di
-$\mathcal{L}$ ma un **equilibrio di Nash**: un profilo $(\pi^1, \dots, \pi^N)$
-tale che per ogni agente $i$, ogni policy alternativa $\tilde{\pi}^i$ e ogni
-stato $s$ valga $V^i_{(\pi^i,\pi^{-i})}(s) \ge
-V^i_{(\tilde{\pi}^i,\pi^{-i})}(s)$,
-dove $V^i$ è il ritorno atteso scontato di $i$ e $\pi^{-i}$ le policy degli
-altri. Con stati e azioni finiti un equilibrio in policy stazionarie esiste
-(Shapley, 1953, per la somma zero; Fink, 1964, in generale), ma di solito non
-è unico e non è per forza un buon esito. Nel **dilemma del prigioniero**
-(ricompense $(3,3)$ se cooperano entrambi, $(5,0)$ o $(0,5)$ se defeziona uno
-solo, $(1,1)$ se defezionano entrambi) defezionare è la miglior risposta a
-qualunque mossa dell'altro: l'unico equilibrio è $(1,1)$, ed è anche l'unico
-esito non **Pareto-ottimo**, cioè migliorabile per qualcuno senza peggiorarlo
-per nessuno. Nel caso cooperativo il profilo ottimo è un equilibrio, ma
-accanto a equilibri peggiori, e scegliere fra loro è un problema a sé. Ne segue
-che il caso multi-agente non è quello singolo ripetuto $N$
-volte: per l'agente $i$ l'ambiente comprende le policy $\pi^{-i}$ degli altri,
-che cambiano durante l'addestramento, quindi il processo che $i$ osserva non
-è stazionario e le garanzie di convergenza del Q-learning, che presuppongono
-un MDP fisso, decadono. Lo affronta la sezione «Imparare insieme».
+circonferenza): $N$ agenti, uno spazio di stati $\mathcal{S}$, spazi di azione
+$\mathcal{A}^1, \dots, \mathcal{A}^N$, una transizione $P(s' \mid s, a)$ che
+dipende dall'azione **congiunta** $a = (a^1, \dots, a^N)$ e una ricompensa $r^i$
+per ciascun agente. Se $r^i = r$ per ogni $i$ il gioco è cooperativo; se $N = 2$
+e $r^1 + r^2 = 0$ si ricade nel caso a somma zero, che è la forma minimax della
+GAN (con la *loss* non-saturante che si usa in pratica la somma non è più zero,
+e la {doc}`sezione su come funziona una GAN </GAN/come-funziona>` spiega
+perché), dove l'obiettivo non è un minimo di $\mathcal{L}$ ma un **equilibrio di
+Nash**: un profilo $(\pi^1, \dots, \pi^N)$ tale che per ogni agente $i$, ogni
+policy alternativa $\tilde{\pi}^i$ e ogni stato $s$ valga
+$V^i_{(\pi^i,\pi^{-i})}(s) \ge V^i_{(\tilde{\pi}^i,\pi^{-i})}(s)$, dove $V^i$ è
+il ritorno atteso scontato di $i$ e $\pi^{-i}$ le policy degli altri. Con stati
+e azioni finiti e ritorno scontato un equilibrio in policy stazionarie esiste
+(per la somma zero {cite}`shapley1953stochastic`, in generale
+{cite}`fink1964equilibrium`), ma le policy sono in generale stocastiche: in
+sasso, carta e forbici l'unico equilibrio gioca ogni mossa un terzo delle volte,
+mentre con un agente solo una policy ottima deterministica c'è sempre. Di
+solito, poi, l'equilibrio non è unico e non è per forza un buon esito. Nel
+**dilemma del prigioniero** (ricompense $(3,3)$ se cooperano entrambi, $(5,0)$ o
+$(0,5)$ se defeziona uno solo, $(1,1)$ se defezionano entrambi) defezionare è la
+miglior risposta a qualunque mossa dell'altro: l'unico equilibrio è $(1,1)$, ed
+è anche l'unico esito non **Pareto-ottimo**, cioè migliorabile per qualcuno
+senza peggiorarlo per nessuno. Nel caso cooperativo il profilo ottimo è un
+equilibrio, ma accanto a equilibri peggiori, e scegliere fra loro è un problema
+a sé. Ne segue che il caso multi-agente non è quello singolo ripetuto $N$ volte:
+per l'agente $i$ l'ambiente comprende le policy $\pi^{-i}$ degli altri, che
+cambiano durante l'addestramento, quindi il processo che $i$ osserva non è
+stazionario e le garanzie di convergenza del Q-learning, che presuppongono un
+MDP fisso, decadono. Lo affronta la sezione su {doc}`imparare insieme
+<imparare-insieme>`.
 
 `````
 

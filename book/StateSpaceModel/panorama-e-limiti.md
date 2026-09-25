@@ -165,11 +165,13 @@ $\alpha_t$ e $\beta_t$ è il caso di ogni gradino della fila. La cura costa una
 riga: $\beta_t \in (0,2)$ invece di $(0,1)$, così che l'autovalore
 $1-\beta_t\lVert\mathbf{k}_t\rVert^2$ possa scendere fino a $-1$ (e, per
 Mamba, $\bar a_t \in (-1,1)$). Con transizioni che sono prodotti di fattori di
-questo tipo, ciascuno con autovalori in $[-1,1]$, una ricorrenza lineare
-riconosce qualunque linguaggio regolare; per contare modulo $3$, invece, una
-transizione triangolare non basta. È lo stesso segno meno che dà la sua
-capacità a RWKV-7, e la stessa esigenza a cui Mamba-3 risponde con le
-rotazioni.
+questo tipo, ciascuno con autovalori in $[-1,1]$, una pila di ricorrenze
+lineari, con tanti strati quanti ne chiede l'automa, riconosce qualunque
+linguaggio regolare; per contare modulo $3$ serve invece un autovalore non
+reale, e una transizione triangolare a elementi reali non basta. È lo stesso
+segno meno, insieme a una transizione che copia una colonna dello stato su
+un'altra, che dà la sua capacità a RWKV-7, e l'autovalore non reale è
+l'esigenza a cui Mamba-3 risponde con le rotazioni.
 
 **3. Il grado di dipendenza dai dati.** La transizione può essere fissa
 (scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
@@ -264,23 +266,23 @@ singolo dettaglio.
 
 `````{tab} Superiore
 
-La ragione è di capacità d'informazione. Uno stato $\mathbf{S} \in \mathbb{R}^{d\times
-d}$ ha un numero finito di gradi di libertà: come osservato già nel lavoro sui
-*fast weight programmer* {cite}`schlag2021linear`, in dimensione $d$ non
-esistono più di $d$ direzioni mutuamente ortogonali. Attenzione a come si legge
-questo limite, perché la lettura sbagliata è la più comoda: l'interferenza fra
-associazioni non aspetta una soglia per comparire. Come si è visto nel capitolo
-precedente, con chiavi casuali il *crosstalk* cresce da subito, come
-$\sqrt{N/d}$ nel numero $N$ di coppie scritte (in questa formula, e solo qui,
+La ragione è di capacità d'informazione. Uno stato
+$\mathbf{S} \in \mathbb{R}^{d\times d}$ ha un numero finito di gradi di libertà:
+come osservato già nel lavoro sui *fast weight programmer*
+{cite}`schlag2021linear`, in dimensione $d$ non esistono più di $d$ direzioni
+mutuamente ortogonali. Attenzione a come si legge questo limite, perché la
+lettura sbagliata è la più comoda: l'interferenza fra associazioni non aspetta
+una soglia per comparire. Come si è visto nel capitolo precedente, con chiavi
+casuali il *crosstalk* cresce da subito, come $\sqrt{N/d}$ nel numero $N$ di
+coppie scritte (in questa formula e nel limite di Arora e colleghi più avanti,
 $N$ conta le coppie: non è la dimensione dello stato di un SSM, che nel resto
-del capitolo porta la stessa lettera), e intorno a $N \approx d$ vale
-ormai quanto il valore che si sta cercando. Non c'è un punto in cui la memoria
-«si riempie»: c'è un degrado continuo, che a un certo punto diventa
-intollerabile per il compito che si ha davanti. L'attenzione piena non ha
-questo tetto: la sua «memoria» è la KV
-cache, che conserva tutte le coppie chiave-valore dei token passati, al
-prezzo di crescere linearmente con la lunghezza (ed è quel prezzo a rendere il
-costo complessivo quadratico).
+del capitolo porta la stessa lettera), e intorno a $N \approx d$ vale ormai
+quanto il valore che si sta cercando. Non c'è un punto in cui la memoria «si
+riempie»: c'è un degrado continuo, che a un certo punto diventa intollerabile
+per il compito che si ha davanti. L'attenzione piena non ha questo tetto: la sua
+«memoria» è la KV cache, che conserva tutte le coppie chiave-valore dei token
+passati, al prezzo di crescere linearmente con la lunghezza (ed è quel prezzo a
+rendere il costo complessivo quadratico).
 
 Questo divario si misura con i benchmark di recall. Nel *needle in a
 haystack* si nasconde un fatto preciso (l'ago) in un contesto molto lungo (il
@@ -469,7 +471,10 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   inferenza ricorrente a memoria costante per token. Le due eccezioni ritagliate
   dal capitolo precedente restano fuori: la RWKV-4, il cui stato è un vettore
   per canale, e la cella sLSTM, che il mescolamento fra celle rende
-  ricorrente e non parallelizzabile.
+  ricorrente e non parallelizzabile. Resta fuori anche Mamba-1: il suo
+  decadimento è un gate elemento per elemento,
+  $\mathbf{S}_t = \mathbf{G}_t \odot \mathbf{S}_{t-1} + \dots$, che nessun
+  fattore a destra riproduce; è Mamba-2 a riportarlo nella forma.
 - Tre manopole di progetto: la dimensione dello stato (capacità), la
   struttura della transizione ($\mathbf{I} \to \alpha_t \mathbf{I} \to
   \mathrm{Diag}(\boldsymbol{\alpha}_t) \to \mathbf{I}-\beta_t \mathbf{k}_t \mathbf{k}_t^\top

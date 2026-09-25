@@ -617,8 +617,8 @@ la stessa con cui si insegna a un computer a dare dei numeri alle parole di una
 lingua o ai nodi di un grafo: gli si mostrano accostamenti veri e accostamenti
 inventati, e gli si chiede di distinguerli. Per le parole sono i *word
 embedding* della {doc}`sezione su come si rappresenta il testo
-</NaturalLanguageProcessing/rappresentare-testo>`; nel {doc}`capitolo sulle
-Graph Neural Network </GraphNeuralNetwork/overview>`, più avanti nel libro, la
+</NaturalLanguageProcessing/rappresentare-testo>`; nella {doc}`sezione sul
+mondo come grafo </GraphNeuralNetwork/dati-a-grafo>`, più avanti nel libro, la
 stessa mossa si ritroverà col suo nome inglese, *negative sampling*. La famiglia
 è più larga di quanto il nome lasci pensare.
 
@@ -656,20 +656,21 @@ $$
 
 con $h_\theta(\mathbf{x}) = P(\text{dati} \mid \mathbf{x})$ come sopra. Se $p_n$
 è positiva dove lo è $p_{\text{dati}}$ e il modello contiene la distribuzione
-vera, lo stimatore è consistente per ogni $\nu$; la sua varianza asintotica cala
-al crescere di $\nu$ e tende a quella della massima verosimiglianza per
-$\nu \to \infty$, e gli autori raccomandano un rumore il più possibile simile ai
-dati, perché a $\nu$ fissato è quello che rende la classificazione informativa
-{cite}`gutmann2012noise`. La mossa decisiva è che $\log Z$ viene trattata come
-un parametro in più, stimato insieme agli altri: il modello non normalizzato
+vera, lo stimatore è consistente per ogni $\nu$; per $\nu \to \infty$ la sua
+varianza asintotica smette di dipendere dal rumore e, se il modello è già
+normalizzato, raggiunge quella della massima verosimiglianza. A $\nu$ fissato
+gli autori consigliano un rumore che somigli ai dati almeno in qualche aspetto,
+per esempio nella covarianza, perché con un rumore troppo diverso la
+classificazione è facile e insegna poco {cite}`gutmann2012noise`. La mossa
+decisiva è che $\log Z$ viene trattata come un parametro in più, stimato insieme
+agli altri: il modello non normalizzato
 $\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - c$ impara anche $c$, perché
 al classificatore la costante *serve* per calibrarsi. Con la massima
 verosimiglianza la stessa mossa è impossibile, non soltanto inutile: lasciando
 $c$ libero, la verosimiglianza si fa crescere quanto si vuole mandando
 $c \to -\infty$, cioè dichiarando una densità sempre più alta in ogni punto, e
 il problema non ha soluzione. È il vincolo di normalizzazione a impedirlo, ed è
-esattamente ciò a cui NCE rinuncia
-{cite}`gutmann2010noise`.
+esattamente ciò a cui NCE rinuncia {cite}`gutmann2010noise`.
 
 Il discriminatore delle GAN è cugino stretto di NCE: tutti e due imparano un
 rapporto fra densità, non una densità. Il *negative sampling* di word2vec

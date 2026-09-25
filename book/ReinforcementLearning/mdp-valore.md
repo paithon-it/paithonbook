@@ -87,6 +87,9 @@ scontato riprende per esteso. Le transizioni
 possono essere stocastiche, cioè la stessa azione può condurre in stati
 diversi; il caso deterministico, come l'MDP in miniatura di qualche riga più
 avanti, è il caso particolare in cui $P(s'\mid s,a)$ vale $1$ su un solo stato.
+Né $P$ né $r$ dipendono dal tempo $t$: l'MDP è *stazionario*, ed è l'ipotesi
+che cade quando nell'ambiente ci sono {doc}`altri agenti che a loro volta
+imparano </SistemiMultiAgente/imparare-insieme>`.
 
 `````
 
@@ -234,6 +237,21 @@ così, e per quanti termini si aggiungano il totale non supera $100$). Nelle
 partite che a un certo punto finiscono il problema non si pone, perché i premi
 da sommare finiscono anche loro: lì lo sconto si può lasciare da parte.
 
+Oltre allo sconto conta un'altra cosa, quando la partita dura un numero fisso
+di turni: la mossa giusta può dipendere anche da quanti ne restano. Al minuto
+89, in vantaggio di un gol, una squadra butta la palla in tribuna; al minuto 10,
+dallo stesso punto del campo, non lo farebbe mai. Stessa posizione, mossa
+diversa, perché è cambiato il tempo che resta sull'orologio. Una policy, cioè
+un'abitudine, che guarda solo dove ci si trova e non l'orologio basta a giocare
+al meglio le partite senza fine, perché lì dopo ogni passo il futuro che resta è
+lungo quanto prima (infinito meno uno è ancora infinito). Basta anche per quelle
+che finiscono all'arrivo a un traguardo, senza una scadenza, come il labirinto
+del robot: lì quanti passi mancano all'uscita dipende da dove ci si trova, non
+da quanti turni si sono già giocati, purché girare a vuoto costi (nel labirinto
+ci pensa il $-1$ di ogni passo). Per quelle a durata fissa, in generale, no, e
+il rimedio è quello degli scacchi: nella foto si scrive anche quanti turni
+mancano.
+
 `````
 
 `````{tab} Superiore
@@ -254,6 +272,28 @@ esempi classici, compreso il *cliff walking* che incontreremo nella
 sezione sul Q-learning. Nell'uno e nell'altro caso $\gamma$ non è un semplice
 trucco matematico: codifica *quanto lontano* nel futuro all'agente conviene
 guardare.
+
+La lunghezza dell'orizzonte decide anche la forma della policy ottima. Una
+policy $\pi(a\mid s)$ che non dipende dal tempo, ma solo dallo stato in cui ci
+si trova, si dice **stazionaria**. A *orizzonte finito* $H$, cioè con episodi
+che durano esattamente $H$ passi, la policy ottima in generale non lo è: il
+miglior ritorno atteso da $s$ dipende anche dai passi che mancano, $h = H - t$,
+e la policy ottima è una successione $\pi^*_h(a\mid s)$, indicizzata anch'essa
+da $h$, che nello stesso stato può scegliere azioni diverse con $h = 2$ e con
+$h = 100$ {cite}`russell2020artificial`. Equivalentemente, è stazionaria sullo
+stato allargato $(s, h)$. A *orizzonte infinito* scontato, con stati e azioni
+finiti, esiste sempre una policy ottima stazionaria e deterministica, perché
+dopo ogni passo il problema che resta è identico a quello di partenza. Gli
+episodi che finiscono in uno stato terminale senza una scadenza fissata, come il
+labirinto e il *cliff walking*, stanno da questa parte: quanto resta da giocare
+dipende dallo stato in cui ci si trova, non dall'orologio. Con $\gamma < 1$
+basta il risultato scontato, perché lo stato terminale è uno stato da cui non si
+esce e che non paga più niente; con $\gamma = 1$, come nel *cliff walking*,
+servono le ipotesi dei problemi di cammino minimo stocastico, richiamate più
+avanti a proposito della value iteration. È la ragione per cui la policy si
+scrive di solito $\pi(a\mid s)$, senza indice di tempo, e per cui i
+{doc}`risultati sugli equilibri fra più agenti </SistemiMultiAgente/overview>`
+parlano di policy stazionarie.
 
 `````
 
@@ -816,8 +856,10 @@ esemplare più famoso è il Q-learning, con cui il capitolo si chiude.
   sceglie azioni, transita fra stati e raccoglie ricompense.
 - La proprietà di Markov: il futuro dipende solo dallo stato presente, non
   dall'intera storia.
-- La policy $\pi(a\mid s)$ è la strategia; il ritorno scontato $G_t$
-  pesa il futuro con $\gamma$.
+- La policy $\pi(a\mid s)$ è la strategia, e senza indice di tempo basta a
+  orizzonte infinito o senza scadenza (a orizzonte finito $H$ la policy ottima
+  dipende dai passi che mancano); il ritorno scontato $G_t$ pesa il futuro con
+  $\gamma$.
 - $V^\pi$ e $Q^\pi$ misurano il ritorno *atteso*; l’equazione di Bellman li
   definisce in modo ricorsivo, ed è la base di ogni algoritmo di RL.
 - Con il modello ($P$ e $r$) noto, value iteration e policy iteration

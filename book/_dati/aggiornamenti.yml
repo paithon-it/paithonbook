@@ -48,6 +48,63 @@
 
 versioni:
 
+- versione: "1.13.0"
+  data: 2026-09-25
+  voci:
+
+  - tipo: nuovo
+    pagina: TeoriaApprendimento/overview.md
+    testo: >
+      **Un capitolo nuovo: perché gli esempi bastano.** Il modello PAC, la
+      dimensione VC, la complessità di Rademacher e i margini, e che cosa
+      queste garanzie dicono, e non dicono, delle reti profonde.
+
+  - tipo: nuovo
+    pagina: Introduzione/calcolabile.md
+    testo: >
+      **Che cosa si può calcolare.** La macchina di Turing, animata, il
+      problema della fermata e che cosa ne resta per l'intelligenza
+      artificiale.
+
+  - tipo: nuovo
+    pagina: PINN/equazioni-come-medie.md
+    testo: >
+      **Quando un'equazione è una media.** Risolvere un'equazione alle derivate
+      parziali contando cammini a caso, con i cammini animati.
+
+  - tipo: ampliato
+    testo: >
+      **Machine learning, più strumenti.** Lo spazio delle ipotesi, la
+      logistica multinomiale e la massima entropia, la stima di densità e
+      Fisher nella scena delle monete, la LDA come regressione, la regressione
+      a nucleo, l'ICA, il lasso a gruppi e la selezione per passi,
+      l'apprendimento un esempio alla volta, la curva di validazione, la media
+      armonica della F1.
+
+  - tipo: ampliato
+    testo: >
+      **Matematica per chi legge il resto.** Contare i casi e il coefficiente
+      binomiale, la trasposta, le ricorrenze lineari di Leonardo Pisano, la
+      stima bayesiana, e il fattore del momento ricavato.
+
+  - tipo: ampliato
+    testo: >
+      **Nuove sezioni in quasi ogni parte del libro.** Fra le altre: la perdita
+      quadratica e la media condizionata, Winograd e il flusso row stationary,
+      ControlNet, l'autoencoder contrattivo, le reti prototipiche, i modelli
+      grafici non orientati, RuleFit, prototipi e critiche, l'effetto Rashomon,
+      la somma cumulata di Page, SAGAN e BigGAN, ELMo, il Nim e i giochi
+      imparziali, riassumere più di una finestra.
+
+  - tipo: corretto
+    testo: >
+      **Correzioni di teoria in tutto il libro.** Formule con le ipotesi che
+      mancavano, affermazioni riportate alla misura delle fonti, e numeri che
+      ora stampa il codice della pagina; fra le correzioni più grandi, la
+      lezione del peso sui dati iniziali delle PINN, provata ora su dieci
+      semi, e la garanzia di MMD-critic, che non regge dove era promessa. Nel
+      PDF le formule più larghe della pagina ora vanno a capo.
+
 - versione: "1.12.17"
   data: 2026-09-23
   voci:

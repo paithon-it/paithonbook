@@ -224,7 +224,55 @@ def errori_veri(log: pathlib.Path) -> list[str]:
     altri = [r for r in righe if "Missing character" not in r]
     if mancanti:
         altri.append(f"{len(mancanti)} caratteri che i font non hanno")
-    return altri
+    return altri + troppo_larghe(testo, log.with_suffix(".tex"))
+
+
+# Una formula o una riga di tabella piu' larga della colonna esce dal margine,
+# o taglia il bordo del riquadro in cui sta, e per LaTeX e' solo un avviso
+# (`Overfull \hbox`): la build riesce lo stesso. Online non succede, perche'
+# li' la formula scorre, quindi nel sorgente non si vede. La cura sta quasi
+# sempre nel sorgente: una formula lunga si spezza con `aligned` o `gathered`,
+# una tabella stretta si allarga con `:widths:`. Le soglie: una formula
+# esposta si segnala da 1 pt, un capoverso da 3 pt (sotto i tre punti la riga
+# sborda di un millimetro, e non si vede). Resta fuori l'indice, le cui righe
+# sbordano per i puntini di guida e non in pagina, e il fregio della
+# copertina, largo quanto il foglio per scelta.
+def troppo_larghe(testo: str, tex: pathlib.Path) -> list[str]:
+    if not tex.exists():
+        return []
+    righe = tex.read_text(encoding="utf-8", errors="ignore").split("\n")
+    fuori = []
+    for m in re.finditer(r"Overfull \\hbox \(([\d.]+)pt too wide\) "
+                         r"(?:detected at line (\d+)"
+                         r"|in paragraph at lines (\d+)--(\d+))", testo):
+        largo = float(m.group(1))
+        if m.group(2):
+            n = int(m.group(2))
+            if largo < 1 or not righe[n - 1].startswith(
+                    ("\\end{equation", "\\end{align")):
+                continue
+            i = n - 1
+            while i > 0 and not righe[i].startswith("\\begin{equation"):
+                i -= 1
+            pezzo = " ".join(r.strip() for r in righe[i + 1:n - 1])
+            pezzo = pezzo.replace("\\begin{split}", "").strip()
+        else:
+            a, b = int(m.group(3)), int(m.group(4))
+            pezzo = " ".join(righe[a - 1:b])
+            if largo < 3 or any("\\paperwidth" in r
+                                for r in righe[max(0, a - 4):b]):
+                continue
+            if pezzo.startswith("\\end{tabul"):
+                # Una tabella si compone tutta alla sua chiusura: il log da'
+                # quella riga, e per ritrovarla serve la sua intestazione.
+                i = a - 1
+                while i > 0 and not righe[i].startswith("\\begin{tabul"):
+                    i -= 1
+                testa = [r for r in righe[i:a] if r and r[0] not in "\\&%"]
+                pezzo = "tabella che comincia con " + " | ".join(testa[:2])
+        fuori.append(f"riga piu' larga della colonna di {largo:.0f} pt: "
+                     f"{pezzo[:70]}")
+    return fuori
 
 
 def compila(cartella: pathlib.Path, passate: int = 3,

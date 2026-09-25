@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Paithon Book, figura animata: una macchina di Turing somma uno
+  Generata da animazioni/svg/nastro-e-testina.py: non modificare a mano.
+  Palette-locked, fondo trasparente, animazione in CSS puro (nessuno script).
+  Lo stato di riposo è quello finale: chi non anima (stampa, PDF,
+  prefers-reduced-motion) vede la figura conclusa.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 250"
+     role="img" aria-label="Animazione: un nastro di caselle con scritto 1011; una testina a triangolo si sposta di casella in casella verso destra fino alla prima casella bianca, poi torna indietro trasformando i due 1 finali in 0 e lo 0 in 1. Sotto il nastro il nome dello stato cambia da vai a riporto a fine. Alla fine sul nastro c'è 1100 e la testina è ferma sulla seconda casella.">
+  <style>
+    svg  { --d: 9.9s; }
+    .ax  { stroke:#C5BEAA; stroke-width:2; fill:none; }
+    .axc { stroke:#E2DCC9; stroke-width:1.5; }
+    .lbl { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#1A1A1A; }
+    .lbs { font-family:Inter, system-ui, sans-serif; font-size:13px; fill:#5A524A; }
+    .ttl { font-family:Fraunces, Georgia, serif; font-size:16px; font-style:italic; fill:#1A1A1A; }
+    .cella   { fill:none; stroke:#1A1A1A; stroke-width:1.6; }
+    .sim     { font-family:Inter, system-ui, sans-serif; font-size:30px; font-weight:700; fill:#2D5A5C; }
+    .testina { fill:#B5532C; }
+    .stato   { font-family:Inter, system-ui, sans-serif; font-size:17px; font-weight:700; fill:#B5532C; }
+    .passo   { font-family:Inter, system-ui, sans-serif; font-size:15px; fill:#5A524A; }
+        @keyframes s20{0.00%{opacity:1}88.29%{opacity:1}88.89%{opacity:0}100.00%{opacity:0}}
+    @keyframes s21{0.00%{opacity:0}88.29%{opacity:0}88.89%{opacity:1}100.00%{opacity:1}}
+    @keyframes s30{0.00%{opacity:0}77.18%{opacity:0}77.78%{opacity:1}100.00%{opacity:1}}
+    @keyframes s31{0.00%{opacity:1}77.18%{opacity:1}77.78%{opacity:0}100.00%{opacity:0}}
+    @keyframes s40{0.00%{opacity:0}66.07%{opacity:0}66.67%{opacity:1}100.00%{opacity:1}}
+    @keyframes s41{0.00%{opacity:1}66.07%{opacity:1}66.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes testina{0.00%{transform:translateX(-60px)}9.61%{transform:translateX(-60px)}12.61%{transform:translateX(0px)}20.72%{transform:translateX(0px)}23.72%{transform:translateX(60px)}31.83%{transform:translateX(60px)}34.83%{transform:translateX(120px)}42.94%{transform:translateX(120px)}45.94%{transform:translateX(180px)}54.06%{transform:translateX(180px)}57.06%{transform:translateX(120px)}65.17%{transform:translateX(120px)}68.17%{transform:translateX(60px)}76.28%{transform:translateX(60px)}79.28%{transform:translateX(0px)}87.39%{transform:translateX(0px)}90.39%{transform:translateX(0px)}100.00%{transform:translateX(0px)}}
+    @keyframes stvai{0.00%{opacity:1}54.96%{opacity:1}55.56%{opacity:0}100.00%{opacity:0}}
+    @keyframes striporto{0.00%{opacity:0}54.96%{opacity:0}55.56%{opacity:1}88.29%{opacity:1}88.89%{opacity:0}100.00%{opacity:0}}
+    @keyframes stfine{0.00%{opacity:0}88.29%{opacity:0}88.89%{opacity:1}100.00%{opacity:1}}
+    @keyframes p0{0.00%{opacity:1}10.51%{opacity:1}11.11%{opacity:0}100.00%{opacity:0}}
+    @keyframes p1{0.00%{opacity:0}10.51%{opacity:0}11.11%{opacity:1}21.62%{opacity:1}22.22%{opacity:0}100.00%{opacity:0}}
+    @keyframes p2{0.00%{opacity:0}21.62%{opacity:0}22.22%{opacity:1}32.73%{opacity:1}33.33%{opacity:0}100.00%{opacity:0}}
+    @keyframes p3{0.00%{opacity:0}32.73%{opacity:0}33.33%{opacity:1}43.84%{opacity:1}44.44%{opacity:0}100.00%{opacity:0}}
+    @keyframes p4{0.00%{opacity:0}43.84%{opacity:0}44.44%{opacity:1}54.96%{opacity:1}55.56%{opacity:0}100.00%{opacity:0}}
+    @keyframes p5{0.00%{opacity:0}54.96%{opacity:0}55.56%{opacity:1}66.07%{opacity:1}66.67%{opacity:0}100.00%{opacity:0}}
+    @keyframes p6{0.00%{opacity:0}66.07%{opacity:0}66.67%{opacity:1}77.18%{opacity:1}77.78%{opacity:0}100.00%{opacity:0}}
+    @keyframes p7{0.00%{opacity:0}77.18%{opacity:0}77.78%{opacity:1}88.29%{opacity:1}88.89%{opacity:0}100.00%{opacity:0}}
+    @keyframes p8{0.00%{opacity:0}88.29%{opacity:0}88.89%{opacity:1}100.00%{opacity:1}}
+    @media (prefers-reduced-motion:reduce) { .sim, .testina, .stato, .passo { animation:none !important; } }
+  </style>
+  <rect class="cella" x="110" y="70" width="60" height="60"/><rect class="cella" x="170" y="70" width="60" height="60"/><text class="sim" x="200" y="111" text-anchor="middle" style="">1</text><rect class="cella" x="230" y="70" width="60" height="60"/><text class="sim" x="260" y="111" text-anchor="middle" style="animation:s20 var(--d) infinite;opacity:0">0</text><text class="sim" x="260" y="111" text-anchor="middle" style="animation:s21 var(--d) infinite;opacity:1">1</text><rect class="cella" x="290" y="70" width="60" height="60"/><text class="sim" x="320" y="111" text-anchor="middle" style="animation:s30 var(--d) infinite;opacity:1">0</text><text class="sim" x="320" y="111" text-anchor="middle" style="animation:s31 var(--d) infinite;opacity:0">1</text><rect class="cella" x="350" y="70" width="60" height="60"/><text class="sim" x="380" y="111" text-anchor="middle" style="animation:s40 var(--d) infinite;opacity:1">0</text><text class="sim" x="380" y="111" text-anchor="middle" style="animation:s41 var(--d) infinite;opacity:0">1</text><rect class="cella" x="410" y="70" width="60" height="60"/><rect class="cella" x="470" y="70" width="60" height="60"/><path class="testina" d="M260,140 L247,160 L273,160 Z" style="animation:testina var(--d) infinite"/><text class="stato" x="110" y="200" style="animation:stvai var(--d) infinite;opacity:0">stato: vai</text><text class="stato" x="110" y="200" style="animation:striporto var(--d) infinite;opacity:0">stato: riporto</text><text class="stato" x="110" y="200" style="animation:stfine var(--d) infinite;opacity:1">stato: fine</text><text class="passo" x="110" y="48" style="animation:p0 var(--d) infinite;opacity:0">all’inizio</text><text class="passo" x="110" y="48" style="animation:p1 var(--d) infinite;opacity:0">dopo il passo 1</text><text class="passo" x="110" y="48" style="animation:p2 var(--d) infinite;opacity:0">dopo il passo 2</text><text class="passo" x="110" y="48" style="animation:p3 var(--d) infinite;opacity:0">dopo il passo 3</text><text class="passo" x="110" y="48" style="animation:p4 var(--d) infinite;opacity:0">dopo il passo 4</text><text class="passo" x="110" y="48" style="animation:p5 var(--d) infinite;opacity:0">dopo il passo 5</text><text class="passo" x="110" y="48" style="animation:p6 var(--d) infinite;opacity:0">dopo il passo 6</text><text class="passo" x="110" y="48" style="animation:p7 var(--d) infinite;opacity:0">dopo il passo 7</text><text class="passo" x="110" y="48" style="animation:p8 var(--d) infinite;opacity:1">dopo il passo 8</text>
+</svg>

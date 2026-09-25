@@ -711,10 +711,11 @@ reti più difficili da addestrare, e tre problemi ricorrono.
   vive su una varietà di dimensione bassa immersa nello spazio dei dati: con
   $\mathbf{z} \in \mathbb{R}^{100}$ e immagini $1024\times1024$ a colori, il supporto di
   $p_G$ ha dimensione al più $100$ dentro $\mathbb{R}^{3\,145\,728}$. Se anche
-  $p_{\text{dati}}$ vive vicino a una varietà di dimensione bassa
-    (l’ipotesi della varietà, che Arjovsky e Bottou assumono senza
-    dimostrarla), due varietà così, salvo allineamenti perfetti, hanno
-    supporti quasi certamente disgiunti (o intersecantisi in
+  $p_{\text{dati}}$ è concentrata su una varietà di dimensione bassa
+    (l’ipotesi della varietà, che Arjovsky e Bottou assumono senza dimostrarla,
+    e che chiede di starci sopra, non soltanto vicino), due varietà così, salvo
+    allineamenti perfetti, hanno supporti quasi certamente disgiunti (o
+    intersecantisi in
   un insieme di misura nulla), un discriminatore perfetto esiste, e su supporti
   disgiunti la $\mathrm{JSD}$ vale $\log 2$ qualunque sia la distanza fra le
   due distribuzioni. Il gradiente è nullo, e non soltanto piccolo, e resta
@@ -885,20 +886,22 @@ del falsario vale di più, fra $0{,}84$ e $0{,}94$. Un criterio di arresto che
 aspettasse la loss più bassa avrebbe fermato tutto al primo giro, con un
 generatore buono a niente.
 
-Fra un addestramento e l'altro, poi, le loss e la qualità non vanno insieme. Il
-seme con la loss del falsario più bassa, $0{,}84$, è anche quello con più punti
-a segno, l’$82\%$; ma quello con la loss più alta, $0{,}94$, ne ha il $76\%$, e
-in mezzo $0{,}91$ e $0{,}92$ danno $78\%$ e $77\%$: un ordine che la loss non
-avrebbe permesso di prevedere, su scarti così piccoli. E un generatore perfetto
-ne metterebbe a segno circa il $99\%$: tutti e quattro sono lontani dalla meta
-con loss che non lo dicono.
+Fra un addestramento e l'altro, invece, sui quattro semi l'ordine torna: la loss
+del falsario più bassa, $0{,}84$, va con più punti a segno, l’$82\%$, la più
+alta, $0{,}94$, con meno, il $76\%$, e in mezzo $0{,}91$ e $0{,}92$ danno il
+$78\%$ e il $77\%$. A parità di compito, di reti e di durata, un esperto che si
+confonde di più ha davanti falsi migliori, e la loss lo registra. Quello che non
+dice è quanto manca: un generatore perfetto ne metterebbe a segno circa il
+$99\%$, e tutti e quattro ne sono lontani con loss che non lo lasciano
+indovinare.
 
 Resta da dire che cosa questo esperimento *non* mostra. Il mode collapse, con
 queste reti piccole e questi otto mucchietti ben separati, non si presenta in
 nessuno dei quattro addestramenti: il falsario li copre tutti ogni volta. È il
 guasto più temuto delle GAN, e servono compiti più duri per farlo comparire; il
-punto qui è un altro, e i numeri lo reggono da soli: le loss non misurano la
-qualità, misurano chi dei due sta vincendo in quel momento.
+punto qui è un altro, e i numeri lo reggono da soli: dentro un addestramento le
+loss non misurano la qualità, misurano chi dei due sta vincendo in quel momento,
+e nessuna dice quanto si è lontani dalla meta.
 
 Serve una misura che giudichi un insieme di immagini invece di una sola:
 in gergo, la loro *distribuzione*, cioè come si spartiscono fra i vari tipi
@@ -1021,23 +1024,23 @@ esempio costruito apposta lo mostra bene, e sta in una dimensione sola: i dati
 reali sono la mistura in parti uguali di $\mathcal{N}(-3,\,1)$ e
 $\mathcal{N}(+3,\,1)$, il generatore emette la sola $\mathcal{N}(0,\,10)$, che
 di quella mistura ha esattamente la media e la varianza. Per costruzione il FID
-fra le due è zero, e su un campione finito di $50\,000$ punti per parte
-resta dell'ordine di un millesimo o meno, cioè indistinguibile da zero. Eppure quel
+fra le due è zero, e su un campione finito di $50\,000$ punti per parte resta
+dell'ordine di un millesimo o meno, cioè indistinguibile da zero. Eppure quel
 generatore ha perso per strada l'intera struttura a due modi, e riempie di
 campioni proprio la voragine che li separa: nella fascia $|x| < 1$ finisce il
 $25\%$ delle sue uscite contro il $2{,}3\%$ dei dati reali. Il termine sulle
 covarianze smaschera il collasso su un punto; la perdita di modi a momenti
 invariati, no. La risposta della letteratura è separare le due cose che il FID
-fonde in un numero: la precisione, quanta parte dei campioni generati cade nel
-supporto stimato dei dati, e il richiamo, quanta parte dei dati cade nel
-supporto stimato dei generati
-{cite}`sajjadi2018assessing,kynkaanniemi2019improved`;
-un generatore che abbandona un soggetto perde richiamo, uno che sporca le
-immagini perde precisione. Ma guardano il supporto e non quanta massa ci sta
-sopra, e nel controesempio della mistura, dove i due supporti coincidono, non
-vedono niente nemmeno loro. Per la distorsione con pochi campioni c’è invece il
-KID {cite}`binkowski2018demystifying`, uno stimatore non distorto della
-discrepanza fra le due popolazioni di attivazioni.
+fonde in un numero {cite}`sajjadi2018assessing`. Nella versione che si è imposta
+{cite}`kynkaanniemi2019improved` la precisione è quanta parte dei campioni
+generati cade nel supporto stimato dei dati, e il richiamo quanta parte dei dati
+cade nel supporto stimato dei generati; un generatore che abbandona un soggetto
+perde richiamo, uno che sporca le immagini perde precisione. Ma così si guarda
+il supporto e non quanta massa ci sta sopra, e nel controesempio della mistura,
+dove i due supporti coincidono, non si vede niente nemmeno così. Per la
+distorsione con pochi campioni c’è invece il KID
+{cite}`binkowski2018demystifying`, uno stimatore non distorto della discrepanza
+fra le due popolazioni di attivazioni.
 
 `````
 
@@ -1126,16 +1129,15 @@ $$
 $$
 
 con $\lambda = 10$: il critico ottimo ha gradiente di norma unitaria sui
-segmenti fra campioni accoppiati, e la penalità lo chiede soltanto lì, perché
-imporlo ovunque è intrattabile. La terza via, la normalizzazione spettrale
-{cite}`miyato2018spectral`, divide ogni matrice di pesi per la sua norma
-spettrale $\sigma(\mathbf{W})$, stimata con un passo di iterazione di potenza
-per
-aggiornamento: con attivazioni 1-lipschitziane la costante della rete è al più
-$\prod_l \sigma(\mathbf{W}_l)$, cioè al più 1. Non costa passaggi all'indietro
-in
-più, e si usa come stabilizzatore anche per discriminatori che non stimano
-nessuna $W_1$.
+segmenti fra i campioni che il piano di trasporto ottimo accoppia; quel piano
+non si conosce, e la penalità lo chiede allora lungo segmenti fra un vero e un
+falso estratti a caso, perché imporlo ovunque è intrattabile. La terza via, la
+normalizzazione spettrale {cite}`miyato2018spectral`, divide ogni matrice di
+pesi per la sua norma spettrale $\sigma(\mathbf{W})$, stimata con un passo di
+iterazione di potenza per aggiornamento: con attivazioni 1-lipschitziane la
+costante della rete è al più $\prod_l \sigma(\mathbf{W}_l)$, cioè al più 1. Non
+costa passaggi all'indietro in più, e si usa come stabilizzatore anche per
+discriminatori che non stimano nessuna $W_1$.
 `````
 
 

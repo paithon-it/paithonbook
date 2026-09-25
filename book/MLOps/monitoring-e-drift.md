@@ -344,14 +344,32 @@ $n = 2000$ scende a $0{,}043$: meno della metà della soglia di ampiezza
 disegnata, e già sotto il $D$ del mese 1, che vale $0{,}060$. Cioè il test
 rifiuta quando l'occhio non vede ancora niente.
 
-Il conto, su quel mese (due normali di uguale varianza sfalsate di $0{,}15$
-deviazioni standard, che è lo scostamento del mese 1; duemila osservazioni per
-finestra, duemila ripetizioni): il rifiuto al cinque per cento
-arriva in circa il $99\%$ delle prove, con un $p$ mediano dell'ordine di
-$10^{-4}$. Alla stessa identica deriva, con cinquecento osservazioni per
-finestra, il rifiuto scende a poco più della metà delle prove e il $p$ mediano
-risale attorno a $5\cdot 10^{-2}$. Non è cambiato lo
-scostamento: è cambiata la taglia del campione, e con essa la potenza del test.
+Il conto, su quel mese: due normali di uguale varianza sfalsate di $0{,}15$
+deviazioni standard, che è lo scostamento del mese 1, duemila ripetizioni, con
+duemila e poi con cinquecento osservazioni per finestra.
+
+```python
+import numpy as np
+from scipy.stats import ks_2samp
+
+rng = np.random.default_rng(0)
+for n in (2000, 500):
+    p = np.array([ks_2samp(rng.normal(0, 1, n), rng.normal(0.15, 1, n)).pvalue
+                  for _ in range(2000)])
+    print(f"n = {n}: rifiuti al 5% = {(p < 0.05).mean():.1%}, "
+          f"p mediano = {np.median(p):.1e}")
+```
+
+```text
+n = 2000: rifiuti al 5% = 98.7%, p mediano = 8.3e-05
+n = 500: rifiuti al 5% = 52.7%, p mediano = 5.0e-02
+```
+
+Con duemila osservazioni il test rifiuta quasi sempre, con un $p$ mediano
+dell'ordine di $10^{-4}$; alla stessa identica deriva, con cinquecento, il
+rifiuto scende a poco più della metà delle prove e il $p$ mediano risale
+attorno a $5\cdot 10^{-2}$. Non è cambiato lo scostamento: è cambiata la
+taglia del campione, e con essa la potenza del test.
 
 `````
 
@@ -454,8 +472,10 @@ colonna sola, cioè il livello del caso, a `AUC = 0.698` quando lo stesso
 scostamento tocca tutte e quaranta, e lì l'allarme scatta. Sommare quaranta
 indizi piccoli gli dà quello che nessuno dei quaranta, da solo, poteva dargli.
 Attenzione a non leggerla come una gara alla pari: nella seconda prova a
-muoversi sono quaranta colonne invece di una, quindi il mondo si è spostato
-quaranta volte tanto, e non è la deriva di prima divisa fra più colonne. È
+muoversi sono quaranta colonne invece di una, quindi il mondo si è spostato di
+più (la distanza fra i centri delle due nuvole cresce come la radice del numero
+di colonne: $0{,}15\sqrt{40} \approx 0{,}95$ deviazioni standard invece di
+$0{,}15$), e non è la deriva di prima divisa fra più colonne. È
 proprio il caso che interessa, perché una deriva vera si presenta così, un po'
 dappertutto; il merito del detective sta nel raccoglierla mentre il controllo
 colonna per colonna, davanti allo stesso identico movimento, non vede niente.
@@ -507,10 +527,375 @@ tre casi le etichette vere del terzo livello restano la prova. Per il label
 shift, però, bastano le predizioni: se $P(X\mid y)$ non cambia, la distribuzione
 delle classi predette in produzione è la matrice di confusione del modello
 (stimata su dati etichettati di validazione) applicata alle nuove prevalenze, e
-invertendola le si stima senza nessuna etichetta nuova
+invertendola, se è invertibile, cioè se il modello distingue le classi, le si
+stima senza nessuna etichetta nuova
 {cite}`lipton2018detecting`, come in {doc}`Quando i dati cambiano
 </MachineLearning/dati-che-cambiano>`. Il
 monitoraggio statistico è un allarme precoce, non un verdetto.
+
+### Quanta strada, e quanto bene ordina
+
+Il KS guarda lo scarto più grande fra le due curve cumulate, ed è cieco a
+quanto lontano i dati si sono spostati. La **distanza di Wasserstein**, già
+incontrata nelle {doc}`GAN </GAN/come-funziona>` come la fatica di rifare un
+mucchio di sabbia con un altro, misura proprio quello. E quando le etichette
+arrivano, la deriva si misura sulla prestazione, con indici che nel credito
+hanno nomi propri: il KS fra i punteggi dei buoni e dei cattivi pagatori, e il
+**Gini**, che con l'indice di Gini degli
+{doc}`alberi di decisione </MachineLearning/alberi-ensemble>` condivide il nome
+e l'autore, non il mestiere.
+
+`````{tab} Elementare
+
+Il segmento del KS guarda un punto solo, quello in cui le due curve sono più
+lontane. Un'altra misura guarda tutta la striscia fra le due curve e ne prende
+l'area: è il movimento terra delle GAN, quanta strada dovrebbero fare in media i
+dati di oggi per tornare dove stavano ieri, e si misura nell'unità della
+colonna, in euro se la colonna è un importo. Le due misure vedono cose diverse.
+Se tutti i clienti spendono un po' di più, le curve si scostano un poco lungo
+tutto il percorso, e il KS lo vede. Se due clienti su cento cominciano a
+spendere cifre lontanissime da quelle di prima, le curve restano quasi
+sovrapposte, perché a muoversi sono pochi, e il KS quasi non se ne accorge; la
+strada, invece, può essere la stessa del primo caso, perché quei pochi vanno
+lontano. Per la stessa ragione, però, basta un solo valore assurdo, come un
+importo scritto con sei zeri di troppo, a gonfiarla.
+
+Poi arrivano le risposte vere, e si guarda la prestazione, fetta per fetta dei
+clienti. Nel credito le domande sono due. La prima: il modello mette ancora i
+cattivi pagatori in cima alla lista? È l'AUC, la probabilità che un cattivo
+pagatore preso a caso abbia un punteggio più alto di un buono preso a caso; e il
+mestiere la scrive riscalata, due volte l'AUC meno uno, così che un modello che
+tira a caso faccia zero e uno perfetto faccia uno. Quel numero si chiama Gini, e
+si vede anche su un disegno: si mettono in fila i clienti dal punteggio più alto
+al più basso, e si segna quanti cattivi pagatori si sono già presi dopo il primo
+dieci per cento della fila, dopo il primo venti, e così via. È la curva CAP. Un
+modello perfetto li prende tutti in testa, uno che tira a caso li prende in
+proporzione; il Gini è quanta area la curva guadagna sul caso, divisa per quella
+che guadagnerebbe il modello perfetto. La seconda: quanto sono separati i
+punteggi dei buoni da quelli dei cattivi? È lo stesso KS di prima, messo fra due
+gruppi di clienti invece che fra ieri e oggi, e guarda il punto della lista in
+cui i due gruppi sono più separati, mentre l'AUC e il Gini guardano la lista
+intera.
+
+Quel Gini non ha niente a che fare con il Gini degli alberi di decisione, che
+misura quanto è mescolato un gruppo. Hanno in comune il nome, e l'uomo: Corrado
+Gini, statistico italiano, che nel 1912 propose la formula dell'uno per
+misurare quanto è vario un carattere come il colore degli occhi, e due anni
+dopo il rapporto fra aree da cui prende la forma l'altro.
+
+`````
+
+`````{tab} Superiore
+
+Per due distribuzioni su $\mathbb{R}$ con funzioni di ripartizione $F$ e $G$,
+
+$$
+W_1(F, G) = \int_{-\infty}^{+\infty} \lvert F(x) - G(x) \rvert \, dx,
+$$
+
+mentre il KS è $\sup_x \lvert F(x) - G(x) \rvert$: la stessa differenza,
+integrata invece che massimizzata {cite}`ramdas2017wasserstein`. In una
+dimensione il trasporto più economico abbina i quantili nello stesso ordine, e
+l'estremo inferiore sui piani di trasporto della Wasserstein GAN si riduce a
+questo integrale. $W_1$ si misura nell'unità della colonna e cresce con la
+distanza a cui la massa si sposta, quindi sente le code, e per lo stesso motivo
+non ha un tetto: un solo valore aberrante può dominarlo. Il KS è adimensionale,
+limitato a uno, invariante per trasformazioni monotone della colonna, e vede la
+frazione di massa spostata, non la distanza. Per confrontare $W_1$ fra colonne
+diverse lo si divide per una scala di riferimento, per esempio la deviazione
+standard nella finestra di riferimento, e la soglia, che a differenza di quelle
+del PSI non ha un valore di mestiere, si decide sul significato pratico della
+colonna; `scipy.stats.wasserstein_distance` calcola l'integrale sulle
+ripartizioni empiriche.
+
+Con le etichette, la deriva delle prestazioni si misura per sottopopolazione.
+Siano $s$ il punteggio, $F_1$ e $F_0$ le sue ripartizioni fra i cattivi e fra
+i buoni pagatori. L'AUC è $P(s^{(1)} > s^{(0)})$, con metà peso ai pari merito.
+Il KS di un modello di punteggio è $\max_t \lvert F_1(t) - F_0(t) \rvert$,
+cioè $\max_t\,\big(\mathrm{TPR}(t) - \mathrm{FPR}(t)\big)$ quando i cattivi
+stanno in alto: la massima distanza verticale della curva ROC dalla diagonale,
+una soglia sola. Il Gini del credito è l’*accuracy ratio* della curva CAP
+(quota di cattivi intercettati contro quota di clienti scartati, partendo dal
+punteggio più alto): l'area fra la curva del modello e la diagonale, divisa per
+quella del modello perfetto. Vale $2\,\mathrm{AUC} - 1$
+{cite}`engelmann2003measuring`, e ricalca il rapporto di concentrazione che
+Gini definì sulla curva di Lorenz {cite}`gini1914misura`, trasportato dalla
+distribuzione dei redditi a quella dei cattivi pagatori. Con l'impurità degli
+alberi, $1 - \sum_k p_k^2$, condivide l'autore: è l'indice di mutabilità che
+Gini aveva proposto nel 1912 per i caratteri qualitativi
+{cite}`gini1912variabilita`. AUC, Gini e KS crescono tutti con la separazione
+fra le classi, ma non sono intercambiabili: i primi due guardano l'ordinamento
+su tutte le soglie, il terzo la soglia migliore.
+
+`````
+
+Il blocco confronta con il KS e con Wasserstein le due derive dell'esempio, su
+una colonna già riscalata in modo che la sua larghezza tipica, la deviazione
+standard, valga uno: tutti i clienti spostati di due decimi, oppure due su cento
+spostati di dieci; poi, su un modello di punteggio con un cattivo
+pagatore su dieci, calcola l'AUC, il Gini come $2\,\mathrm{AUC} - 1$ e come
+rapporto di aree della curva CAP, e il KS fra i punteggi delle due classi.
+
+```python
+import numpy as np
+from scipy.stats import ks_2samp, wasserstein_distance
+from sklearn.metrics import roc_auc_score
+
+rng = np.random.default_rng(0)
+n = 20000
+riferimento = rng.normal(0, 1, n)                  # una colonna già riscalata: l'unità è la deviazione standard
+# due derive diverse: tutti un po' più in là, oppure pochi molto lontano
+tutti_poco = riferimento + 0.2
+pochi_molto = riferimento.copy()
+pochi_molto[: n // 50] += 10                       # due clienti su cento, dieci unità più in là
+for nome, corrente in [("tutti di 0,2", tutti_poco), ("il 2% di 10", pochi_molto)]:
+    print(f"{nome:13}: KS {ks_2samp(riferimento, corrente).statistic:.3f},"
+          f" Wasserstein {wasserstein_distance(riferimento, corrente):.3f}")
+
+# prestazioni, quando arrivano le etichette: punteggi dei buoni e dei cattivi pagatori
+cattivo = rng.random(n) < 0.1
+punteggio = rng.normal(0, 1, n) + 1.2 * cattivo
+auc = roc_auc_score(cattivo, punteggio)
+# il Gini del credito dalla curva CAP: quota di cattivi presi contro quota di clienti scartati
+ordine = np.argsort(-punteggio)
+presi = np.r_[0, np.cumsum(cattivo[ordine])] / cattivo.sum()
+scartati = np.linspace(0, 1, n + 1)
+area = np.sum((presi[1:] + presi[:-1]) / 2 * np.diff(scartati)) - 0.5   # sopra la diagonale
+perfetta = 0.5 * (1 - cattivo.mean())                                      # il modello perfetto
+print(f"AUC {auc:.4f}; 2 AUC - 1 = {2 * auc - 1:.4f}; Gini dalla curva CAP = {area / perfetta:.4f}")
+print(f"KS fra i punteggi dei buoni e dei cattivi: "
+      f"{ks_2samp(punteggio[cattivo], punteggio[~cattivo]).statistic:.3f}")
+```
+
+```text
+tutti di 0,2 : KS 0.082, Wasserstein 0.200
+il 2% di 10  : KS 0.020, Wasserstein 0.200
+AUC 0.8083; 2 AUC - 1 = 0.6166; Gini dalla curva CAP = 0.6166
+KS fra i punteggi dei buoni e dei cattivi: 0.469
+```
+
+Le due derive costano la stessa strada, $0{,}200$ deviazioni standard in tutti
+e due i casi, e il KS le vede in modo diverso: $0{,}082$ la prima, $0{,}020$ la
+seconda, quattro volte meno per lo stesso spostamento complessivo. Un allarme
+fondato sul solo KS dormirebbe mentre due clienti su cento si sono spostati di
+dieci deviazioni standard. Sulle prestazioni, il Gini calcolato con le aree
+della curva CAP coincide con $2\,\mathrm{AUC} - 1$ fino all'ultima cifra
+stampata, $0{,}6166$; il KS fra le due classi, $0{,}469$, misura la stessa
+separazione guardando la soglia migliore invece di tutte.
+
+### Quando è cambiato: la somma che si accumula
+
+Le due finestre rispondono alla domanda «le due settimane sono diverse?», e ci
+rispondono tardi, quando la finestra corrente si è riempita di dati nuovi. Per
+accorgersi del *momento* in cui qualcosa cambia serve un altro attrezzo, che
+guarda i dati uno alla volta man mano che arrivano: è il **rilevamento dei
+cambi** (*change-point detection*), che coglie un {doc}`cambio di regime
+</SerieTemporali/overview>`, il momento in cui una serie cambia comportamento e
+resta cambiata, mentre avviene. Nasce dal controllo di qualità in fabbrica,
+dove le carte di controllo di Shewhart, grafici su cui si segnava la misura di
+ogni lotto di pezzi, giudicavano ogni lotto da solo
+{cite}`shewhart1931economic`, e il suo strumento classico è la somma cumulata
+(*CUSUM*, da *cumulative sum*), che Ewan Page propose nel 1954 per accumulare
+l'evidenza da un lotto all'altro {cite}`page1954continuous`.
+
+`````{tab} Elementare
+
+Ogni sera il gestore di un servizio guarda di quanto l'errore del modello ha
+superato il livello che considera normale, ne toglie un piccolo margine di
+tolleranza e annota il risultato su un registro che tiene il totale. Se il
+normale è 10, stasera l'errore è 11 e il margine è un quarto, annota 0,75; se
+domani l'errore è 9,5, annota 9,5 meno 10 meno un quarto, cioè meno 0,75, e il
+totale torna a zero. Una sera buona dà un numero negativo, una cattiva un
+numero positivo, con una sola regola in più: il registro non scende mai sotto
+zero, così un mese tranquillo non mette da parte un credito da spendere quando
+le cose peggiorano. Quando il totale supera una soglia, suona l'allarme
+({numref}`fig-somma-che-si-accumula`). E quando il mondo è cambiato davvero, il
+registro dice anche da quando: dalla sera dopo l'ultima volta in cui stava a
+zero, perché da lì non ci è più tornato.
+
+Se la risposta giusta arriva dopo settimane, gli errori della sera non si
+possono contare, e il registro si tiene su una spia che si vede subito, per
+esempio la lunghezza media delle email arrivate: di quanto supera la normale,
+meno il margine.
+
+Il registro fa una cosa che un'occhiata al giorno non sa fare. Una serata storta
+isolata aggiunge qualcosa, e le sere normali che seguono la riassorbono, perché
+ognuna toglie il margine di tolleranza. Un peggioramento piccolo ma costante,
+che nessuna sera singola lascerebbe vedere, aggiunge invece un poco ogni sera, e
+il totale sale finché suona. Il margine va scelto sulla misura del peggioramento
+che interessa cogliere, e ne è la metà. Se si vuole accorgersi di un errore
+salito di mezzo punto (un punto, qui, è quanto oscillano di solito le sere
+normali, la loro larghezza tipica: la deviazione standard), il margine è un
+quarto di punto, a metà strada fra il normale e il peggiorato: in una sera
+normale il registro perde in media un quarto di punto, quindi resta vicino a
+zero, in una sera peggiorata ne guadagna in media un quarto, e sale. Un
+peggioramento più piccolo del margine, invece, in media non lo fa salire: il
+registro finisce per suonare come suona un falso allarme, per una serie di sere
+sfortunate, soltanto più spesso che quando tutto va bene.
+
+Dove mettere la soglia è una scelta che costa da tutte e due le parti. Bassa,
+l'allarme suona presto quando qualcosa cambia davvero, ma suona anche per una
+serie sfortunata di sere normali; alta, i falsi allarmi diventano rari ma il
+vero arriva tardi. E i due lati non si muovono alla stessa velocità: alzando la
+soglia i falsi allarmi calano molto in fretta, il ritardo cresce piano e con
+regolarità. In un esperimento al calcolatore, con mille registri tenuti su
+serate inventate, portare la soglia da quattro a otto punti moltiplica quasi per
+dieci il tempo fra un falso allarme e l'altro, e fa poco più che raddoppiare il
+ritardo. E un registro più svelto non esiste: è un teorema, e dice che a parità
+di falsi allarmi nessun'altra regola si accorge prima di un peggioramento di
+quella misura, nel caso peggiore.
+
+Il registro si fida di tre cose che gli dice il gestore: il normale, letto su un
+periodo tranquillo; quanto oscillano di solito le sere; e che ogni sera faccia
+storia a sé. Sull'oscillazione basta poco per sbagliare di molto: se le sere
+oscillano un po' più di quanto il gestore crede, è come avere la soglia più
+bassa, e i falsi allarmi crescono in fretta. E in una settimana di festa, dove
+le sere storte arrivano tutte insieme per una ragione che passerà, il registro,
+che somma, suona: gli errori sono saliti davvero, ma il registro non sa
+distinguere una serie storta dalla serie di un mondo cambiato.
+
+`````
+
+`````{tab} Superiore
+
+Siano $x_1, x_2, \dots$ osservazioni indipendenti di una statistica del flusso
+(l'errore giornaliero, quando le etichette arrivano in tempo, o una statistica
+del secondo livello, che non le aspetta), con densità $p_0$ prima del cambio e
+$p_1$ dopo, a partire da un istante ignoto $\nu$. La statistica CUSUM accumula
+il logaritmo del rapporto di verosimiglianza,
+$z_t = \log\big(p_1(x_t)/p_0(x_t)\big)$, riportandola a zero quando
+scenderebbe sotto zero ({numref}`fig-somma-che-si-accumula`):
+
+$$
+S_t = \max\big(0,\; S_{t-1} + z_t\big), \qquad S_0 = 0,
+\qquad \tau = \inf\{t : S_t > h\}.
+$$
+
+Per osservazioni gaussiane di varianza nota $\sigma^2$ e un aumento della media
+da $\mu_0$ a $\mu_0+\delta$,
+$z_t = (\delta/\sigma^2)\,(x_t - \mu_0 - \delta/2)$. Dividendo per
+$\delta/\sigma^2$ sia la somma sia la soglia, la regola diventa
+$S_t = \max\big(0, S_{t-1} + x_t - \mu_0 - k\big)$ con $k = \delta/2$ (il
+*valore di riferimento*), e la soglia passa nell'unità di $x$: nel blocco che
+misura il prezzo della soglia, $h = 8$ in unità di $x$ vale $4$ sulla scala del
+rapporto di verosimiglianza. Le due grandezze che si scambiano sono la durata
+media fino a un falso allarme (*average run length*),
+$\mathrm{ARL}_0 = \mathbb{E}_\infty[\tau]$, dove il pedice dice che il cambio
+non arriva mai, e il ritardo nel caso peggiore sull'istante del cambio e sulla
+storia che lo precede,
+
+$$
+\bar{\mathbb{E}}_1[\tau] = \sup_{\nu \ge 1}\;\operatorname{ess\,sup}\;
+\mathbb{E}_\nu\big[(\tau - \nu + 1)^+ \mid x_1, \dots, x_{\nu-1}\big].
+$$
+
+Lorden {cite}`lorden1971procedures` ha mostrato che, fra le procedure con
+$\mathrm{ARL}_0 \ge \gamma$, questo ritardo non scende sotto
+$(\log\gamma / I)\,\big(1+o(1)\big)$ per $\gamma \to \infty$, con
+$I = \mathrm{KL}(p_1\,\|\,p_0) = \delta^2/(2\sigma^2)$ nel caso gaussiano, e che
+la CUSUM lo raggiunge; Moustakides {cite}`moustakides1986optimal` ne ha provato
+l'ottimalità esatta, per ogni $\gamma$, secondo lo stesso criterio. Per la CUSUM
+il caso peggiore è il cambio che arriva con la somma a zero. Il ritardo cresce
+dunque come il logaritmo di $\mathrm{ARL}_0$: la soglia $h$ entra linearmente
+nel ritardo ed esponenzialmente in $\mathrm{ARL}_0$.
+
+La stessa regola si scrive anche come la somma cumulata degli scarti,
+$m_t = \sum_{s \le t}(x_s - \mu_0 - k)$, meno il suo minimo storico,
+$S_t = m_t - \min_{0 \le s \le t} m_s$ con $m_0 = 0$: è la forma che porta il
+nome di Page e Hinkley, e sui flussi di dati la si usa di solito con la media
+progressiva delle osservazioni viste fin lì,
+$\bar{x}_t = \frac{1}{t}\sum_{s \le t} x_s$, al posto di $\mu_0$, così da non
+doverla conoscere in anticipo. Il prezzo è che dopo il cambio $\bar{x}_t$ si
+sposta verso la media nuova e assorbe una parte dello scarto, tanto più quanto
+prima il cambio arriva nel flusso. Questa forma risponde anche alla domanda del
+titolo. Quando l'allarme scatta a $\tau$, con $p_0$ e $p_1$ noti, la stima di
+massima verosimiglianza dell'istante del cambio è il giorno dopo l'ultimo
+minimo, $\hat\nu = 1 + \arg\min_{0 \le s < \tau} m_s$, cioè il giorno dopo
+l'ultima volta in cui $S$ era a zero, ed è la stima di cui Hinkley ha studiato
+la distribuzione {cite}`hinkley1971inference`.
+
+I punti di rottura sono le ipotesi. Serve $\delta$, perché $k$ va tarato sulla
+misura del cambio da cogliere: un cambio più piccolo di $k$ dà alla somma una
+deriva negativa, e l'allarme arriva solo per le fluttuazioni, come un falso
+allarme più frequente, con un ritardo che cresce esponenzialmente in $h$.
+Servono $\mu_0$ e $\sigma$, stimati sulla finestra di riferimento. Nella
+ricorsione $\sigma$ non compare, ma è su di esso che si tara $h$, e
+$\mathrm{ARL}_0$ cresce esponenzialmente con $2kh/\sigma^2$, che è la soglia
+nella scala del rapporto di verosimiglianza, quindi un errore piccolo su
+$\sigma$ lo sposta di un fattore grande. E serve l'indipendenza: con
+un'autocorrelazione positiva le somme parziali hanno più varianza di quella su
+cui la soglia è tarata ($(1+\phi)/(1-\phi)$ volte, per un AR(1) di coefficiente
+$\phi$), le escursioni si allungano e i falsi allarmi si moltiplicano; una
+negativa fa il contrario.
+
+`````
+
+```{figure} ../figures/somma-che-si-accumula.svg
+:name: fig-somma-che-si-accumula
+:alt: "Animazione in due fasce sovrapposte. In alto, un giorno dopo l'altro compaiono puntini teal che oscillano attorno a una linea, e dopo una linea verticale segnata qui cambia si spostano appena verso l'alto; in basso, una spezzata terracotta traccia la somma cumulata, che prima del cambio sale e ricade restando sotto una linea tratteggiata, la soglia, e dopo il cambio, tornata a zero un'ultima volta, sale fino a oltrepassarla, dove compare un segno di allarme."
+:width: 92%
+
+In alto l'errore di ogni giorno, in basso la somma cumulata, che non scende mai
+sotto zero. Finché il modello va come sempre la somma sale e ricade senza
+arrivare alla soglia; dopo il cambio il peggioramento è piccolo giorno per
+giorno ma si accumula, e la somma supera la soglia qualche settimana più tardi.
+Dopo il cambio torna a zero un'ultima volta, perché il peggioramento è piccolo e
+ogni tanto l'errore resta basso: da lì non ci torna più, e quel giorno è la
+stima dell'inizio del cambio, qui qualche giorno dopo quello vero. È un flusso
+costruito con gli stessi parametri dell'esperimento sulla soglia, con la soglia
+$h$ a otto punti.
+```
+
+Il blocco misura il prezzo della soglia su mille flussi simulati: quanto si
+aspetta in media un falso allarme quando niente è cambiato, e quanto ci mette
+l'allarme a suonare quando la media è salita di mezza deviazione standard.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+
+def cusum(X, k, h):
+    """Somma cumulata di Page su molte serie insieme (una per riga):
+    S_t = max(0, S_{t-1} + x_t - k), allarme al primo S_t > h.
+    Restituisce, per ogni serie, il giorno dell'allarme contato da 1
+    (-1 se non scatta)."""
+    S = np.zeros(X.shape[0])
+    allarme = np.full(X.shape[0], -1)
+    for t in range(X.shape[1]):
+        S = np.maximum(0.0, S + X[:, t] - k)
+        allarme[(S > h) & (allarme < 0)] = t + 1
+    return allarme
+
+K = 0.25                              # metà del peggioramento da cogliere (0,5)
+for h in (2, 4, 8):
+    quiete = rng.normal(0, 1, size=(1000, 5000))      # niente è cambiato
+    falsi = cusum(quiete, K, h)
+    tra_un_falso_e_laltro = np.where(falsi < 0, 5000, falsi).mean()
+    dopo = rng.normal(0.5, 1, size=(1000, 1000))      # la media è salita di 0,5
+    ritardo = cusum(dopo, K, h)
+    assert (ritardo >= 0).all()                       # dopo il cambio suona sempre
+    print(f"soglia h = {h}: un falso allarme ogni {tra_un_falso_e_laltro:4.0f} giorni"
+          f" in media; dopo il cambio suona in {ritardo.mean():4.1f} giorni")
+```
+
+```text
+soglia h = 2: un falso allarme ogni   18 giorni in media; dopo il cambio suona in  6.4 giorni
+soglia h = 4: un falso allarme ogni   72 giorni in media; dopo il cambio suona in 13.6 giorni
+soglia h = 8: un falso allarme ogni  706 giorni in media; dopo il cambio suona in 27.6 giorni
+```
+
+Da $h = 4$ a $h = 8$ i giorni fra un falso allarme e l'altro passano da $72$ a
+$706$, quasi dieci volte tanto, mentre il ritardo passa da $13{,}6$ a $27{,}6$
+giorni, poco più del doppio: i falsi allarmi si diradano in fretta, il ritardo
+cresce piano. È il verso del limite di Lorden, in cui il ritardo cresce come il
+logaritmo di $\mathrm{ARL}_0$, e il ritardo del blocco ne è proprio il caso
+peggiore, perché ogni flusso parte con la somma a zero. Il limite però vale per
+soglie molto alte: preso alla lettera con i numeri del blocco, $\log\gamma/I$
+supera il ritardo misurato, perché a queste soglie il fattore $1+o(1)$ pesa
+ancora. Quale soglia scegliere non lo dice la statistica, lo dice quanto costa
+un falso allarme (una persona svegliata di notte, un modello ritirato senza
+motivo) contro quanto costa una settimana in più di modello peggiorato.
 
 ## Rispondere al drift
 
@@ -643,12 +1028,17 @@ distinguere sei da sette. È il test *A/B*.
 E *quando* si usa quale? I primi due rispondono soprattutto a una domanda, «il
 piatto nuovo fa danni?»: l'ombra quando non ci si fida affatto, i pochi tavoli
 quando ci si fida abbastanza da servirlo ma si vuole poter tornare indietro
-subito. Il terzo risponde a un'altra domanda, «il piatto nuovo è *migliore*?»,
-e quando quella domanda si può decidere soltanto servendolo davvero è l'unico
-che può rispondere: nel piatto in ombra nessuno lo assaggia, quindi di chi
-l'avrebbe finito non si sa niente. Dove invece il giudizio non dipende
-dall'averlo servito, l'ombra risponde anche a questa. Di solito si fanno tutti
-e tre in fila, in quest'ordine.
+subito. Il terzo risponde a un'altra domanda, «il piatto nuovo è *migliore*?», e
+quando quella domanda si può decidere soltanto servendolo davvero è l'unico che
+può rispondere: il piatto in ombra nessun cliente lo assaggia, quindi di chi
+l'avrebbe finito non si sa niente. Dove invece il giudizio non ha bisogno del
+cliente (lo chef assaggia in cucina e dice se è cotto al punto giusto), l'ombra
+risponde anche a questa, e con meno serate. Vecchio e nuovo sono preparati per
+tutte le stesse comande, quindi ogni comanda giudica tutti e due i piatti invece
+di uno solo; e si confrontano comanda per comanda, contando soltanto quelle in
+cui uno dei due è venuto bene e l'altro no: che una comanda fosse facile o
+difficile non pesa più, perché i due piatti l'hanno avuta uguale. Di solito si
+fanno tutti e tre in fila, in quest'ordine.
 
 `````
 
@@ -661,7 +1051,28 @@ Le tre tecniche, in ordine crescente di esposizione {cite}`huyen2022designing`:
   mai servite all'utente; si registrano e si confrontano offline con quelle
   del modello in carica. Rischio per l'utente nullo; costo: si paga il calcolo
   doppio e non si misurano gli effetti sul comportamento reale (nessuno
-  *agisce* sulle predizioni ombra).
+  *agisce* sulle predizioni ombra). Quando però la qualità si giudica senza
+  servire la risposta (un'etichetta che arriva dopo, un controllo offline),
+  l'ombra dà un confronto appaiato: i due modelli rispondono alle stesse
+  richieste, la variabilità fra una richiesta e l'altra si elide, e si decide
+  con il test di McNemar sulle sole discordanze {cite}`mcnemar1947note`
+  ({doc}`probabilità e statistica </Matematica/probabilita-statistica>`),
+  nella sua versione esatta quando le discordanze sono poche. A parità di
+  richieste in arrivo, $N$, l'ombra vince due volte. Le usa tutte per
+  giudicare entrambi i modelli, dove un A/B le spartisce fra due gruppi; con
+  $p_A$ e $p_B$ le accuratezze e $e_A, e_B \in \{0, 1\}$ gli esiti dei due
+  modelli sulla stessa richiesta (1 se giusto), la varianza della differenza
+  stimata vale
+
+  $$
+  \frac{p_A(1-p_A) + p_B(1-p_B) - 2\operatorname{Cov}(e_A, e_B)}{N}
+  \quad\text{contro}\quad
+  \frac{2\,[p_A(1-p_A) + p_B(1-p_B)]}{N},
+  $$
+
+  e la prima è la metà della seconda già a covarianza nulla. E siccome i due
+  modelli tendono a sbagliare sulle stesse richieste, la covarianza è positiva
+  e il vantaggio cresce ancora.
 - **Canary release**: il modello nuovo serve davvero, ma solo una piccola
   quota del traffico (l'1%, il 5%). Si sorvegliano le metriche sulla quota
   canary e, se reggono, si aumenta gradualmente fino al
@@ -726,6 +1137,18 @@ finché il modello serve.
 - Il detective dice *che* qualcosa è cambiato, non *cosa* e nemmeno *se è
   grave*. Soprattutto, non vede il caso peggiore: quello in cui le richieste
   sembrano identiche a quelle di ieri ma è cambiata la risposta giusta.
+- Lo scarto più grande fra le due curve (il KS) non vede quanto lontano vanno i
+  dati: pochi clienti spostati molto lo lasciano quasi fermo, mentre la
+  distanza di Wasserstein, la strada da fare, se ne accorge. Quando arrivano le
+  risposte vere, nel credito si guarda il Gini, cioè due volte l'AUC meno uno:
+  stesso nome e stesso autore dell'indice degli alberi, ma un altro mestiere.
+- Per sapere *quando* qualcosa è cambiato si tiene un registro: ogni sera si
+  aggiunge di quanto l'errore supera il normale, meno un margine pari a metà
+  del peggioramento da cogliere, e il totale non scende mai sotto zero. Una
+  sera storta si riassorbe, un peggioramento piccolo e costante si accumula
+  finché suona, e la sera dopo l'ultimo zero dice da quando; alzare la soglia
+  rende i falsi allarmi molto più rari e il ritardo solo un po' più lungo,
+  finché le sere normali sono quelle che si crede e ognuna fa storia a sé.
 - Quando suona, si risponde per gradi, come con la spia dell'olio: prima si
   guarda, poi si controlla, poi semmai si riaddestra, e solo in emergenza si
   torna al modello vecchio. Rispondere sempre col gesto più drastico è come
@@ -764,6 +1187,17 @@ finché il modello serve.
   shift che vive nella struttura congiunta lascia tutte le marginali intatte, e
   uno shift diffuso le muove tutte di un'inezia, ciascuna sotto la propria
   soglia, mentre l'indicatore globale che le somma suona.
+- $W_1 = \int \lvert F - G \rvert$ integra la differenza che il KS massimizza:
+  sente le code e non ha tetto, e va normalizzato per confrontare colonne. La
+  deriva delle prestazioni si misura per sottopopolazione con AUC, KS fra le
+  classi e Gini $= 2\,\mathrm{AUC} - 1$, l'accuracy ratio della curva CAP.
+- Per il *quando*, la CUSUM di Page accumula il logaritmo del rapporto di
+  verosimiglianza, $S_t = \max(0, S_{t-1} + x_t - \mu_0 - k)$ con
+  $k = \delta/2$ nel caso gaussiano: la soglia scambia $\mathrm{ARL}_0$,
+  esponenziale in $h$, con il ritardo, lineare in $h$, ed è ottima nel caso
+  peggiore (Lorden, Moustakides) finché $\mu_0$, $\sigma$ e $\delta$ sono
+  giusti e le osservazioni indipendenti. L'ultimo zero prima dell'allarme
+  stima l'istante del cambio.
 - La risposta è una piramide proporzionata: allarme → indagine → retraining →
   rollback. Retraining periodico (a cadenza fissa) o innescato (a
   soglia); i sistemi reali fanno entrambi.

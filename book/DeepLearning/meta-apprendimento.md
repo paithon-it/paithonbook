@@ -16,10 +16,10 @@ partenza da cui il compito successivo si impara in fretta.
 
 ## La posizione di partenza, invece della risposta
 
-L'algoritmo che ha dato forma canonica a questa idea si chiama **MAML**, e la
-sua mossa sta tutta in che cosa sceglie di misurare. Si paga con un conto in
-più: per correggere il punto di partenza bisogna seguire anche l'effetto dei
-passi di adattamento.
+L'algoritmo che ha dato forma canonica a questa idea si chiama **MAML** (da
+*Model-Agnostic Meta-Learning*), e la sua mossa sta tutta in che cosa sceglie di
+misurare. Si paga con un conto in più: per correggere il punto di partenza
+bisogna seguire anche l'effetto dei passi di adattamento.
 
 `````{tab} Elementare
 
@@ -80,44 +80,51 @@ $\mathcal{T}_i$ e presi $k$ suoi esempi, si fanno uno o pochi passi di discesa
 a partire dai parametri correnti $\theta$:
 
 $$
-\theta_i' = \theta - \alpha \nabla_\theta \mathcal{L}_{\mathcal{T}_i}(\theta) ,
+\theta_i' = \theta - \alpha \nabla_\theta \mathcal{L}^{\text{s}}_{\mathcal{T}_i}(\theta) ,
 $$
 
-dove $\alpha$ è il passo interno. Il **ciclo esterno** aggiorna $\theta$
+dove $\alpha$ è il passo interno e $\mathcal{L}^{\text{s}}_{\mathcal{T}_i}$ la
+perdita sui $k$ esempi con cui ci si adatta. Il **ciclo esterno** aggiorna $\theta$
 guardando quanto valgono i parametri adattati, e non $\theta$ stesso:
 
 $$
 \theta \leftarrow \theta - \beta \nabla_\theta
 \sum_{\mathcal{T}_i \sim p(\mathcal{T})}
-\mathcal{L}_{\mathcal{T}_i}(\theta_i') ,
+\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta_i') ,
 $$
 
-con $\beta$ il passo esterno. Qui sta tutto: il gradiente si prende rispetto a
-$\theta$ di una perdita valutata in $\theta_i'$, che di $\theta$ è funzione.
-Derivare attraverso il passo di adattamento chiama in causa le derivate
-seconde, ed è il costo dell'algoritmo. Per un passo interno la regola della
-catena dà
+con $\beta$ il passo esterno e $\mathcal{L}^{\text{q}}_{\mathcal{T}_i}$ la
+perdita su esempi nuovi dello stesso compito. Qui sta tutto: il gradiente si
+prende rispetto a $\theta$ di una perdita valutata in $\theta_i'$, che di
+$\theta$ è funzione. Derivare attraverso il passo di adattamento chiama in causa
+le derivate seconde, ed è il costo dell'algoritmo. Per un passo interno la
+regola della catena dà
 
 $$
-\nabla_\theta\,\mathcal{L}_{\mathcal{T}_i}(\theta_i') = \big(\mathbf{I} - \alpha\,\nabla^2_\theta \mathcal{L}_{\mathcal{T}_i}(\theta)\big)\,\nabla_{\theta'}\mathcal{L}_{\mathcal{T}_i}(\theta')\big|_{\theta' = \theta_i'},
+\nabla_\theta\,\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta_i') = \big(\mathbf{I} - \alpha\,\nabla^2_\theta \mathcal{L}^{\text{s}}_{\mathcal{T}_i}(\theta)\big)\,\nabla_{\theta'}\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta')\big|_{\theta' = \theta_i'},
 $$
 
-dove $\nabla^2_\theta$ è l'hessiana della perdita interna. L'hessiana non si
-forma mai, basta il suo prodotto per un vettore, che costa un secondo passaggio
-all'indietro; ma per derivare attraverso $m$ passi interni bisogna tenere in
-memoria il grafo di tutti e $m$, e la memoria cresce linearmente con $m$. La
-versione del primo ordine, già provata nel lavoro originale, butta via il
-termine con l'hessiana e usa
-$\nabla_{\theta'}\mathcal{L}_{\mathcal{T}_i}(\theta_i')$ come se $\theta_i'$
-non dipendesse da $\theta$: sulle immagini gli autori la trovano quasi
-equivalente e più veloce. Reptile (Nichol, Achiam e Schulman, 2018) rinuncia
-anche a quel gradiente e sposta $\theta$ verso i parametri adattati, $\theta
-\leftarrow \theta + \beta\,(\theta_i' - \theta)$. Le due perdite, infine, non
-si calcolano sugli stessi esempi: quella del ciclo interno sull'insieme di
+dove $\nabla^2_\theta$ è l'hessiana della perdita interna, quella di
+adattamento, mentre il gradiente a destra è della perdita esterna. L'hessiana
+non si forma mai, basta il suo prodotto per un vettore, che costa un secondo
+passaggio all'indietro; ma per derivare attraverso $m$ passi interni bisogna
+tenere in memoria il grafo di tutti e $m$, e la memoria cresce linearmente con
+$m$. La versione del primo ordine, già provata nel lavoro originale, butta via
+il termine con l'hessiana e usa
+$\nabla_{\theta'}\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta_i')$ come se
+$\theta_i'$ non dipendesse da $\theta$: sulle immagini gli autori la trovano
+quasi equivalente e più veloce. Reptile {cite}`nichol2018first` rinuncia anche a
+quel gradiente: fa $m > 1$ passi interni e sposta $\theta$ verso i parametri che
+ne escono, $\theta \leftarrow \theta + \beta\,(\theta_i^{(m)} - \theta)$. Il
+numero di passi non è un dettaglio: con uno solo la mossa diventa
+$\theta - \alpha\beta\,\nabla_\theta\mathcal{L}_{\mathcal{T}_i}(\theta)$, la
+discesa del gradiente sulla perdita media dei compiti, e sono i passi successivi
+a portare dentro i termini che premiano l'adattamento. Le due perdite, infine,
+non si calcolano sugli stessi esempi: quella del ciclo interno sull'insieme di
 supporto, quella del ciclo esterno sull'insieme di interrogazione, come nel
-codice sulle sinusoidi. L'obiettivo che ne esce si legge «$\theta$ è un punto
-da cui pochi passi bastano», e non «$\theta$ è bravo sui compiti visti»: sono
-due proprietà diverse, e la prima si ottiene solo scrivendola nella funzione
+codice sulle sinusoidi. L'obiettivo che ne esce si legge «$\theta$ è un punto da
+cui pochi passi bastano», e non «$\theta$ è bravo sui compiti visti»: sono due
+proprietà diverse, e la prima si ottiene solo scrivendola nella funzione
 obiettivo.
 
 La valutazione ha una forma sua, **$N$-way $k$-shot**: si costruisce un compito
@@ -320,6 +327,207 @@ La tabella riporta mediane, e non medie, perché con passi di dimensione
 fissa capita che su qualche onda i cinque passi non convergano affatto: basta
 uno di quei casi, e la media di cento numeri la decide lui.
 
+## Confrontare invece di adattare
+
+MAML, davanti al compito nuovo, adatta: fa qualche passo di aggiustamento, cioè
+di discesa del gradiente, a partire da un punto scelto bene. Per la
+classificazione con pochi esempi c’è un’altra famiglia di metodi, che al momento
+della prova non adatta niente. Impara prima uno spazio in cui le classi si
+riconoscono per vicinanza, e il compito nuovo lo risolve confrontando. La forma
+più semplice sono le **reti prototipiche** di Snell, Swersky e Zemel
+{cite}`snell2017prototypical`: ogni classe è rappresentata dalla media dei suoi
+esempi di supporto nello spazio appreso, il suo *prototipo*, e un esempio nuovo
+va alla classe del prototipo più vicino. L’allenamento a episodi, cioè su
+compiti $N$-way $k$-shot sorteggiati come quelli della prova, viene dalle
+*matching networks* di Vinyals e colleghi {cite}`vinyals2016matching`.
+
+`````{tab} Elementare
+
+Il portiere di un grande albergo ha visto passare migliaia di facce, e ha
+imparato che cosa guardare: la distanza fra gli occhi, la forma del naso e del
+mento. Ha imparato anche che cosa lasciar perdere: i capelli, che la gente
+cambia; gli occhiali, che si tolgono; la luce della hall, che non è mai la
+stessa. Stamattina arrivano cinque ospiti nuovi, e di ciascuno vede la faccia
+una volta sola, al banco. Nel pomeriggio uno rientra, e il portiere lo saluta
+per nome. Non ha imparato niente di nuovo: ha confrontato. Un portiere al primo
+giorno confronterebbe tutto, e un ospite che rientra con il cappello e il sole
+alle spalle gli sembrerebbe un’altra persona. Detto con i numeri: di una faccia
+si possono prendere quaranta misure, e l’occhio allenato ne guarda poche. È come
+se mettesse le facce in fila per somiglianza, vicine quelle che si somigliano
+nelle cose che contano e lontane le altre, e questa sistemazione delle facce si
+chiama *spazio appreso*.
+
+Se di un ospite ha visto la faccia più volte, se ne fa un ritratto medio, e chi
+entra va all’ospite il cui ritratto gli somiglia di più; con una faccia sola il
+ritratto è quella faccia. Fra due ospiti il confine cade a metà strada fra i due
+ritratti.
+
+Quell’occhio si è allenato facendo tante volte la prova vera: cinque facce a
+caso, viste una volta (gli *esempi di supporto*), poi altre facce da assegnare.
+Ogni prova così si chiama *episodio*. Ogni volta che sbagliava, a correggersi
+non era quello che sapeva di quelle cinque persone, che il giorno dopo erano
+partite, ma quello che guardava. Per questo funziona anche con gli ospiti di
+domani, purché si distinguano per le stesse cose.
+
+Il confine è quel «purché». Davanti a due gemelle identiche che si distinguono
+soltanto per il taglio di capelli, il portiere guarda con grande sicurezza le
+cose sbagliate, e fa peggio del principiante, che almeno guardava tutto.
+
+`````
+
+`````{tab} Superiore
+
+Sia $f_\theta : \mathbb{R}^d \to \mathbb{R}^{d'}$ la rete che porta un esempio
+nello spazio appreso. In un episodio con insieme di supporto $S_j$ per ciascuna
+delle $N$ classi, il prototipo della classe $j$ è
+
+$$
+\mathbf{c}_j = \frac{1}{\lvert S_j \rvert}
+\sum_{\mathbf{x} \in S_j} f_\theta(\mathbf{x}),
+$$
+
+e un esempio d’interrogazione riceve
+
+$$
+p_\theta(y = j \mid \mathbf{x}) =
+\frac{\exp\big(-\lVert f_\theta(\mathbf{x}) - \mathbf{c}_j \rVert^2\big)}
+{\sum_{j'=1}^{N}
+\exp\big(-\lVert f_\theta(\mathbf{x}) - \mathbf{c}_{j'} \rVert^2\big)} .
+$$
+
+Si minimizza $-\log p_\theta(y \mid \mathbf{x})$ sulle domande di episodi
+sorteggiati fra le classi di addestramento, nello stesso formato $N$-way
+$k$-shot della prova {cite}`snell2017prototypical`; al momento della prova non
+c’è nessun passo di gradiente, solo $N$ medie e $N$ distanze. Da MAML cambia il
+costo, perché non ci sono né ciclo interno né derivate seconde, e cambia il
+perimetro: il metodo è fatto per la classificazione, mentre MAML si applica
+anche alla regressione e al rinforzo.
+
+Con la distanza euclidea al quadrato il classificatore è lineare nello spazio
+appreso. Posto $\mathbf{z} = f_\theta(\mathbf{x})$,
+
+$$
+-\lVert\mathbf{z} - \mathbf{c}_j\rVert^2 = 2\,\mathbf{c}_j^{\!\top}\mathbf{z}
+- \lVert\mathbf{c}_j\rVert^2 - \lVert\mathbf{z}\rVert^2 ,
+$$
+
+e l’ultimo termine è uguale per tutte le classi, quindi il confine fra due
+classi è l’iperpiano che biseca il segmento fra i loro prototipi. La non
+linearità, se serve, sta tutta in $f_\theta$. Gli autori giustificano la media
+come prototipo con le divergenze di Bregman, di cui l’euclidea al quadrato è un
+caso, e trovano che rende molto più del coseno: la ragione, che danno come
+congettura, è che il coseno non è una divergenza di Bregman. Con $k = 1$ il
+prototipo è l’esempio stesso, e il metodo diventa equivalente alle matching
+networks.
+
+Nel codice l’embedding è lineare, $f_\theta(\mathbf{x}) = \mathbf{W}\mathbf{x}$,
+e il gradiente si scrive in forma chiusa (è la ragione per cui qui non serve
+autograd). Con $\mathbf{u}_{qj}$ lo scarto fra la domanda $q$ e la media del
+supporto della classe $j$, misurati tutti e due nello spazio di partenza, il
+logit è $-\lVert\mathbf{W}\mathbf{u}_{qj}\rVert^2$ e
+
+$$
+\nabla_{\mathbf{W}}\mathcal{L} = -2\,\mathbf{W} \sum_{q,j} g_{qj}\,
+\mathbf{u}_{qj}\mathbf{u}_{qj}^{\!\top},
+$$
+
+dove $g_{qj}$ è la derivata della perdita rispetto al logit, cioè la
+probabilità meno l’indicatrice della classe giusta, divisa per il numero di
+domande. Imparare $\mathbf{W}$ vuol dire imparare la metrica
+$\mathbf{W}^{\!\top}\mathbf{W}$.
+
+Il punto di rottura è quello di MAML, spostato dall’inizializzazione allo
+spazio. $f_\theta$ impara le direzioni che separano le classi della
+distribuzione di addestramento, e su classi che si separano lungo altre
+direzioni può aver schiacciato proprio quelle che servono.
+
+`````
+
+Il blocco costruisce una famiglia di classi in cui la cosa da imparare è chiara:
+quaranta misure, di cui contano quattro direzioni. I centri delle classi stanno
+lungo quelle quattro, il rumore su tutte e quaranta. Lo spazio appreso è una
+tabella di numeri, la matrice $\mathbf{W}$, che trasforma le quaranta misure di
+ogni esempio. La si allena a episodi da cinque classi con un esempio ciascuna
+(5-way 1-shot) su 64 classi, sempre con un esempio anche quando la prova ne darà
+cinque, e poi la si prova su 64 classi mai viste della stessa famiglia e su 64
+di una famiglia diversa, che ha le sue quattro direzioni altrove.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+d, r = 40, 4                   # quaranta misure, e contano quattro direzioni
+# le direzioni che contano, e quelle di un'altra famiglia
+famiglia = np.linalg.qr(rng.normal(size=(d, r)))[0]
+altra = np.linalg.qr(rng.normal(size=(d, r)))[0]
+
+def classi(n, direzioni):
+    """n centri di classe, sparsi soltanto lungo le direzioni date."""
+    return rng.normal(0, 3, (n, r)) @ direzioni.T
+
+def episodio(centri, k, q=5, N=5):
+    """N classi a caso, k esempi di supporto e q domande per ciascuna."""
+    scelte = centri[rng.choice(len(centri), N, replace=False)]
+    # il rumore sta su tutte le misure
+    supporto = scelte[:, None] + rng.normal(0, 1, (N, k, d))
+    domande = scelte[:, None] + rng.normal(0, 1, (N, q, d))
+    return supporto, domande.reshape(-1, d), np.repeat(np.arange(N), q)
+
+def accuratezza(W, centri, k, episodi=1000):
+    giuste = totale = 0
+    for _ in range(episodi):
+        S, Q, y = episodio(centri, k)
+        prototipi = S.mean(1) @ W.T            # nello spazio appreso
+        dist = (((Q @ W.T)[:, None] - prototipi[None]) ** 2).sum(-1)
+        giuste, totale = giuste + (dist.argmin(1) == y).sum(), totale + len(y)
+    return giuste / totale
+
+base = classi(64, famiglia)                    # le classi dell'addestramento
+W = np.eye(d)                     # si parte dalle misure così come sono
+for _ in range(2000):             # addestramento a episodi, 5-way 1-shot
+    S, Q, y = episodio(base, 1)
+    U = Q[:, None, :] - S.mean(1)[None]        # domanda meno prototipo
+    logit = -((U @ W.T) ** 2).sum(-1)
+    p = np.exp(logit - logit.max(1, keepdims=True))
+    p /= p.sum(1, keepdims=True)
+    p[np.arange(len(y)), y] -= 1               # g: probabilità meno indicatrice
+    M = np.einsum("qk,qki,qkj->ij", p / len(y), U, U)
+    W += 0.01 * 2 * W @ M                      # il gradiente è -2 W M
+
+nuove, estranee = classi(64, famiglia), classi(64, altra)
+for nome, centri in [("classi nuove, stessa famiglia", nuove),
+                     ("classi di un'altra famiglia", estranee)]:
+    for k in (1, 5):
+        grezze = accuratezza(np.eye(d), centri, k)
+        apprese = accuratezza(W, centri, k)
+        print(f"{nome}, {k}-shot: misure grezze {grezze:.1%},"
+              f" spazio appreso {apprese:.1%}")
+resto = np.linalg.svd(famiglia, full_matrices=True)[0][:, r:]   # le altre 36
+dentro = np.linalg.norm(W @ famiglia) / np.sqrt(r)
+fuori = np.linalg.norm(W @ resto) / np.sqrt(d - r)
+print(f"fattore medio: {dentro:.2f} sulle 4 direzioni che contano,"
+      f" {fuori:.2f} sulle altre 36")
+```
+
+```text
+classi nuove, stessa famiglia, 1-shot: misure grezze 76.1%, spazio appreso 88.6%
+classi nuove, stessa famiglia, 5-shot: misure grezze 91.2%, spazio appreso 95.6%
+classi di un'altra famiglia, 1-shot: misure grezze 79.1%, spazio appreso 64.7%
+classi di un'altra famiglia, 5-shot: misure grezze 92.3%, spazio appreso 80.6%
+fattore medio: 0.53 sulle 4 direzioni che contano, 0.17 sulle altre 36
+```
+
+Sulle classi nuove della stessa famiglia lo spazio appreso porta il
+riconoscimento da un esempio solo da 76,1% a 88,6%, e da cinque esempi da 91,2%
+a 95,6%: con un esempio solo il rumore pesa di più, ed è lì che togliere quello
+che non conta rende di più. L’ultima riga dice che cosa è stato imparato, senza
+che nessuno lo avesse detto alla matrice: le differenze lungo le quattro
+direzioni che contano escono moltiplicate in media per 0,53, quelle lungo le
+altre trentasei per 0,17, cioè circa tre volte più piccole. Sulle classi
+dell’altra famiglia lo stesso schiacciamento cade sulle direzioni sbagliate, e
+lo spazio appreso fa peggio delle misure grezze: 64,7% contro 79,1% da un
+esempio, 80,6% contro 92,3% da cinque.
+
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
@@ -340,6 +548,11 @@ uno di quei casi, e la media di cento numeri la decide lui.
 - Il confine è la famiglia: una buona posizione di partenza lo è per gli
   strumenti che le somigliano. Su un compito che sta fuori non aiuta, e può
   perfino portarsi dietro abitudini da disimparare.
+- L’altra strada non adatta niente: impara che cosa guardare, e davanti alle
+  classi nuove confronta. Ogni classe diventa il ritratto medio dei suoi
+  esempi, e la cosa nuova va al ritratto più somigliante. Funziona per le
+  classi della stessa famiglia; con classi che si distinguono per altre cose,
+  guarda nel posto sbagliato.
 ```
 `````
 
@@ -348,10 +561,10 @@ uno di quei casi, e la media di cento numeri la decide lui.
 :class: important
 - MAML {cite}`finn2017maml` ottimizza un'inizializzazione $\theta$ a due
   livelli: il ciclo interno adatta,
-  $\theta_i' = \theta - \alpha\nabla_\theta\mathcal{L}_{\mathcal{T}_i}(\theta)$,
-  e il ciclo esterno aggiorna $\theta$ sul valore di $\mathcal{L}$ calcolata in
-  $\theta_i'$. Derivare attraverso l'adattamento chiama le derivate seconde: è
-  il costo del metodo.
+  $\theta_i' = \theta - \alpha\nabla_\theta\mathcal{L}^{\text{s}}_{\mathcal{T}_i}(\theta)$,
+  e il ciclo esterno aggiorna $\theta$ sul valore della perdita calcolata in
+  $\theta_i'$ su esempi nuovi dello stesso compito. Derivare attraverso
+  l'adattamento chiama le derivate seconde: è il costo del metodo.
 - L'obiettivo ottimizzato è la prestazione dopo l'adattamento, che è una
   proprietà diversa dalla prestazione tout court, e la si ottiene solo
   scrivendola nella funzione obiettivo.
@@ -363,6 +576,11 @@ uno di quei casi, e la media di cento numeri la decide lui.
   adattamento e non la generalizzazione ordinaria.
 - Il punto di rottura sta nella distribuzione $p(\mathcal{T})$: fuori da essa
   l'inizializzazione non ha ragione di aiutare, e può nuocere.
+- Le reti prototipiche imparano $f_\theta$ a episodi e classificano al
+  prototipo più vicino, la media del supporto: nessun ciclo interno, un
+  classificatore lineare nello spazio appreso con la distanza euclidea al
+  quadrato, e lo stesso punto di rottura di MAML, le classi fuori dalla
+  distribuzione di addestramento {cite}`snell2017prototypical`.
 ```
 `````
 

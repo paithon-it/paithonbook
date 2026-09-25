@@ -544,16 +544,17 @@ gli ha assegnato un premio come uno dei lavori migliori dell'anno.
 Il vaglio, quindi, c'è stato.
 
 Di nodi aperti, però, ne restano due. Lo *scan* selettivo non sfruttava appieno
-le unità di calcolo matriciale delle GPU: un dettaglio ingegneristico che
-sembra minore e in pratica pesa parecchio. E lo stato di dimensione fissa, che
-è la forza di Mamba in efficienza, resta il suo limite quando serve ritrovare
-un dettaglio preciso in un contesto molto lungo. Sono proprio questi i nodi che
-scioglie Mamba-2: Mamba-2 riscrive il
-selective scan come una moltiplicazione di matrici (recuperando i *tensor
-core* della GPU) e, nel farlo, svela una parentela inattesa. Perché dietro
-l'SSM selettivo, vedremo, si nasconde di nuovo l'attenzione: le due famiglie
-che abbiamo raccontato da capitoli diversi sono, alla fine, due viste della
-stessa cosa.
+le unità di calcolo matriciale delle GPU: un dettaglio ingegneristico che sembra
+minore e in pratica pesa parecchio. E lo stato di dimensione fissa, che è la
+forza di Mamba in efficienza, resta il suo limite quando serve ritrovare un
+dettaglio preciso in un contesto molto lungo. Il primo nodo lo scioglie Mamba-2,
+che riscrive il selective scan come una moltiplicazione di matrici (recuperando
+i *tensor core* della GPU); il secondo lo allenta soltanto, perché con i tensor
+core uno stato più grande costa poco, ma nessuno stato di taglia fissa lo
+toglie. E riscrivendo lo scan, Mamba-2 svela una parentela inattesa. Perché
+dietro l'SSM selettivo, vedremo, si nasconde di nuovo l'attenzione: le due
+famiglie che abbiamo raccontato da capitoli diversi sono, alla fine, due viste
+della stessa cosa.
 
 `````{tab} Elementare
 

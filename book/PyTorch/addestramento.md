@@ -559,23 +559,29 @@ perché un file per riprendere è un fascicolo, con dentro più di una cosa.
 
 `````{tab} Superiore
 Con SGD nudo la questione è marginale; con `optim.Adam`, quello del programma
-su MNIST, i momenti $m$ e $v$ *sono* stato, e
-ripartire senza di essi non riprende la stessa traiettoria. La parte
-strutturale, quella che vale su qualunque problema, è questa: la correzione
-del bias riparte da $t = 1$, e a $t = 1$ il rapporto
-$\hat{m}/(\sqrt{\hat{v}} + \varepsilon)$ vale $\pm 1$ per costruzione, quindi
-il primo aggiornamento sposta ogni coordinata di $\eta$ esatto. Non è un tetto:
-a regime il rapporto può superare $1$, fino a
-$(1-\beta_1)/\sqrt{1-\beta_2} \approx 3{,}16$ con i valori di default, quando
-un gradiente grande arriva dopo una lunga serie di gradienti quasi nulli
-{cite}`kingma2015adam`. Vicino a un minimo, con gradienti che si smorzano e
-cambiano segno, succede il contrario: $|\hat{m}|$ cala più in fretta di
-$\sqrt{\hat{v}}$, e il passo della corsa non interrotta è più corto di
-$\eta$. Qui $\hat{m}$ e $\hat{v}$ sono i due momenti corretti per il
-bias ($m$ e $v$ divisi per $1-\beta_1^t$ e $1-\beta_2^t$) ed $\varepsilon$ è il
-termine minuscolo che evita la divisione per zero: a $t = 1$ quelle correzioni
-danno $\hat{m} = g$ e $\hat{v} = g^2$, con $g$ il gradiente, da cui il rapporto
-$\pm 1$. Ricaricando lo stato, invece, il passo coincide
+su MNIST, i momenti *sono* stato. Sono due medie mobili tenute per ogni peso,
+$m \leftarrow \beta_1 m + (1-\beta_1)\,g$ dei gradienti e
+$v \leftarrow \beta_2 v + (1-\beta_2)\,g^2$ dei loro quadrati, con $g$ il
+gradiente ($\beta_1 = 0{,}9$ e $\beta_2 = 0{,}999$ di default, cioè memorie di
+circa dieci e mille passi), e il passo è
+$\eta\,\hat{m}/(\sqrt{\hat{v}}+\varepsilon)$, dove $\hat{m}$ e $\hat{v}$ sono
+le due medie corrette per il bias ($m$ e $v$ divisi per $1-\beta_1^t$ e
+$1-\beta_2^t$) ed $\varepsilon$ è il termine minuscolo che evita la divisione
+per zero. Ripartire senza di esse non riprende la stessa traiettoria. La parte
+strutturale, quella che vale su qualunque problema, è questa: la correzione del
+bias riparte da $t = 1$, dove dà $\hat{m} = g$ e $\hat{v} = g^2$, quindi il
+rapporto $\hat{m}/(\sqrt{\hat{v}} + \varepsilon)$ vale $\pm 1$ per
+costruzione e il primo aggiornamento sposta ogni coordinata di $\eta$, a meno
+del minuscolo $\varepsilon$. A regime il rapporto però non ha $1$ per tetto.
+Gli autori indicano come caso estremo un gradiente grande dopo una lunga serie
+di gradienti nulli, che con i valori di default dà
+$(1-\beta_1)/\sqrt{1-\beta_2} \approx 3{,}16$ {cite}`kingma2015adam`; ma
+nemmeno quello è un tetto: gradienti che crescono del $2\%$ a ogni passo per un
+paio di centinaia di passi portano il rapporto sopra $5$, e crescendo di circa
+l’$11\%$ a passo lo si spinge fino a $7{,}3$. Vicino a un minimo, con
+gradienti che si smorzano e cambiano segno, succede il contrario: $|\hat{m}|$
+cala più in fretta di $\sqrt{\hat{v}}$, e il passo della corsa non interrotta
+è più corto di $\eta$. Ricaricando lo stato, invece, il passo coincide
 esattamente con quello della traiettoria mai interrotta.
 
 Di quanto sia più lungo dipende dal problema, e quindi va detto su quale è

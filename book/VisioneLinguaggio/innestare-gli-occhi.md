@@ -10,9 +10,8 @@ che il vivaista fabbrica davvero.
 L'architettura che segue è un innesto in senso letterale: il portainnesto è il
 modello di linguaggio, già radicato e capace di parlare; la marza è l'encoder
 visivo, che porta l'occhio; la saldatura è il pezzo in mezzo, l'interprete
-dell'apertura del capitolo, ed è l'unica cosa che si fabbrica davvero. Fra le
-giunzioni che sono state provate ha resistito la più semplice, non la più
-ingegnosa.
+dell'apertura del capitolo. Fra le giunzioni che sono state provate ha resistito
+la più semplice, non la più ingegnosa.
 
 ## La domanda che genera l'architettura
 
@@ -421,11 +420,11 @@ nota a piè di pagina, a pagina dodici, il riassunto non solo non lo contiene:
 non c'è modo di andarlo a prendere, perché il fascicolo il collega se l'è
 portato via.
 
-I connettori che comprimono sono il collega efficiente, e il riassunto lo
-scrivono sempre uguale, prima di sentire la domanda. Il proiettore è il
-fascicolo lasciato sulla scrivania: costa contesto (576 tessere occupano posto e
-tempo di calcolo) ma non butta via niente, e la selezione la fa l'attenzione del
-modello di linguaggio, quando la domanda è già arrivata.
+I connettori che comprimono sono il collega efficiente, e nella versione di
+base il riassunto lo scrivono sempre uguale, prima di sentire la domanda. Il
+proiettore è il fascicolo lasciato sulla scrivania: costa contesto (576 tessere
+occupano posto e tempo di calcolo) ma non butta via niente, e la selezione la
+fa l'attenzione del modello di linguaggio, quando la domanda è già arrivata.
 
 Il fascicolo sulla scrivania, però, regge finché sono quaranta pagine. Se ne
 fossero quattromila (una fotografia enorme, oppure un'ora di video, un fotogramma
@@ -507,14 +506,17 @@ pochissimo materiale.
 
 `````{tab} Elementare
 
-Perché due fasi e non una sola? Perché sono due lezioni diverse, e mescolarle
-significa non impararne bene nessuna.
+Perché due fasi e non una sola? Perché sono due lezioni diverse, e la prima
+toglie un rischio alla seconda.
 
 La prima è di traduzione pura: il connettore deve capire dove mettere le cose.
-Se qui lasciassi libero anche il modello di linguaggio, quello si adatterebbe ai
-vettori sgangherati che il connettore gli manda all'inizio; e allora il
-connettore non avrebbe mai il motivo di mandarli fatti bene. È come insegnare a
-un principiante lasciando che sia l'orchestra ad aggiustarsi sui suoi errori.
+Se qui lasciassi libero anche il modello di linguaggio, potrebbe adattarsi ai
+vettori sgangherati che il connettore gli manda all'inizio, e il connettore non
+avrebbe più motivo di mandarli fatti bene, come un'orchestra che si aggiusta
+sugli errori del principiante invece di aspettare che impari. Quando però si è
+provato con cura a fare le due lezioni insieme, ha reso lo stesso ed è costato
+un quinto in meno: l'ordine resta un'abitudine prudente, da verificare caso per
+caso.
 
 La seconda è di comportamento: rispondere alla domanda, e non limitarsi a
 descrivere la foto. Qui il modello di linguaggio deve poter cambiare, perché il
@@ -673,8 +675,9 @@ qui.
 - Al pezzo in mezzo si chiedono due cose insieme: tradurre la descrizione di
   una tessera d'immagine nel formato che il modello di linguaggio si aspetta, e
   decidere quante tessere consegnargli. La seconda pesa quanto la prima: ogni
-  tessera occupa posto come una parola, e il lavoro dell'attenzione cresce con
-  il quadrato dei pezzi messi in fila.
+  tessera occupa posto come una parola e resta in memoria per tutta la
+  risposta, mentre i confronti, a qualche centinaio di pezzi, sono ancora una
+  briciola del conto.
 - Strati nuovi dentro il modello congelato {cite}`alayrac2022flamingo`: si
   inseriscono strati in cui il testo chiede e l'immagine risponde, collegati con
   una manopola del volume che parte da zero, così al primo istante il modello
@@ -688,16 +691,17 @@ qui.
   {cite}`liu2023visual`: una tessera entra, un token esce, nessun riassunto
   (circa quattro milioni di caselle, poi una ventina di milioni con due tabelle
   in fila).
-- Ha prevalso il più semplice, e la ragione è di principio: riassumere vuol
-  dire scegliere prima di sapere qual è la domanda. Meglio il fascicolo intero
-  lasciato sulla scrivania, finché lo si può sfogliare: si paga in posto
-  occupato, ma a scegliere è il modello di linguaggio, quando la domanda è già
-  arrivata.
+- Ha prevalso il più semplice, e la ragione più solida è contro il riassunto:
+  riassumere vuol dire scegliere prima di sapere qual è la domanda. Meglio il
+  fascicolo intero lasciato sulla scrivania, finché lo si può sfogliare: si paga
+  in posto occupato, ma a scegliere è il modello di linguaggio, quando la
+  domanda è già arrivata.
 - L'addestramento è in due tempi: prima il solo connettore su coppie
   immagine-didascalia (imparare dove scrivere), poi dialoghi sulle immagini, con
-  il modello di linguaggio libero di cambiare. I dialoghi del primo LLaVA li ha
-  scritti un modello di solo testo, che le foto non le aveva mai viste: materiale
-  inventato che ha funzionato, ma che passa anche i difetti di chi l'ha scritto.
+  il modello di linguaggio libero di cambiare; fatto tutto insieme, con cura,
+  rende lo stesso. I dialoghi del primo LLaVA li ha scritti un modello di solo
+  testo, che le foto non le aveva mai viste: materiale inventato che ha
+  funzionato, ma che passa anche i difetti di chi l'ha scritto.
 ```
 
 `````
@@ -712,8 +716,9 @@ qui.
   dimenticanza catastrofica.
 - Deve fare due cose insieme: cambiare spazio (da $d_v$ a $d_t$) e
   decidere quanti token visivi entrano nel contesto. Il secondo pesa quanto
-  il primo: il costo dell'attenzione cresce con il quadrato della lunghezza
-  della sequenza.
+  il primo: ogni token occupa contesto e cache, che crescono linearmente, e il
+  termine quadratico dell'attenzione a qualche centinaio di token pesa pochi
+  punti percentuali.
 - Cross-attention gated {cite}`alayrac2022flamingo`: strati nuovi inseriti
   fra i blocchi congelati, con un gate $\tanh(\alpha)$ e $\alpha$ inizializzato
   a zero, così all'inizio il modello è *esattamente* quello di prima; un
@@ -724,18 +729,21 @@ qui.
   di addestramento). Proiettore {cite}`liu2023visual`: una matrice, poi un
   MLP a due strati, e una patch resta un token (4 milioni di parametri la
   sola matrice, 21 con l'MLP).
-- Ha prevalso il più semplice, e la ragione è di principio: comprimere
-  significa scegliere prima di conoscere la domanda. Quando il collo di
-  bottiglia è l'informazione e non il calcolo, conviene rimandare la selezione
-  al punto in cui il condizionamento è massimo, cioè all'attenzione del modello
-  di linguaggio. Il prezzo è il contesto occupato, e su immagini ad alta
-  risoluzione, documenti e video quel collo di bottiglia torna a essere
-  computazionale: lì la compressione ha di nuovo senso.
+- Ha prevalso il più semplice. La ragione di principio vale contro la
+  compressione (comprimere significa scegliere prima di conoscere la domanda), e
+  a parità di token il tipo di connettore conta poco {cite}`mckinzie2024mm1`.
+  Quando il collo di bottiglia è l'informazione e non il calcolo, conviene
+  rimandare la selezione al punto in cui il condizionamento è massimo, cioè
+  all'attenzione del modello di linguaggio. Il prezzo è il contesto occupato, e
+  su immagini ad alta risoluzione, documenti e video quel collo di bottiglia
+  torna a essere computazionale: lì la compressione ha di nuovo senso.
 - L'addestramento è in due tempi: prima il solo connettore su coppie
   immagine-didascalia, poi instruction tuning visivo con il modello di
-  linguaggio scongelato. I dati di istruzione del primo LLaVA furono generati da
-  un modello di solo testo a partire da didascalie e riquadri: dati sintetici
-  che funzionano, ma che trasmettono anche i difetti del generatore.
+  linguaggio scongelato. Con una buona ricetta un tempo solo rende altrettanto e
+  costa un quinto in meno {cite}`karamcheti2024prismatic`. I dati di istruzione
+  del primo LLaVA furono generati da un modello di solo testo a partire da
+  didascalie e riquadri: dati sintetici che funzionano, ma che trasmettono anche
+  i difetti del generatore.
 ```
 
 `````

@@ -116,13 +116,12 @@ ma che sia nel posto sbagliato: va bene per rifinire una policy quando la
 comprensione del mondo è già stata costruita altrove, e non va bene come modo
 di costruirla.
 
-Questa posizione è già comparsa, con il suo perché detto in breve. Nel
-{doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` c'è l'elenco
-delle quattro rinunce che LeCun ripete nelle sue conferenze, e la quarta dice:
-abbandonare l'apprendimento per
-rinforzo in favore del **controllo predittivo basato su modello**, cioè
-costruirsi un modello di come va il mondo, pianificare dentro quello, e ricorrere
-ai tentativi soltanto per correggere il modello quando la previsione sbaglia.
+Nel {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>` c'è
+l'elenco delle quattro rinunce che LeCun ripete nelle sue conferenze, e la
+quarta dice: abbandonare l'apprendimento per rinforzo in favore del **controllo
+predittivo basato su modello**, cioè costruirsi un modello di come va il mondo,
+pianificare dentro quello, e ricorrere ai tentativi soltanto per correggere il
+modello quando la previsione sbaglia.
 
 Quel conto sui bit è il perché di quella riga. Se ogni interazione col
 mondo vero paga pochi bit, allora un sistema che impara *soltanto* interagendo è

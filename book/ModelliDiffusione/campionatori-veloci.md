@@ -76,9 +76,10 @@ sta nell'integrale, cioè nella sola parte che dipende dalla rete.
 Questa è la definizione di **integratore esponenziale**, una famiglia di metodi
 sviluppata per i problemi *stiff*, quelli con costanti di tempo molto più corte
 del passo che si vorrebbe usare. Nella PF-ODE, però, la rigidità sta nel termine
-della rete vicino a $t = 0$, e il coefficiente lineare ne è quasi esente:
-$f(t) = -\tfrac12\beta(t)$ resta fra $-0{,}05$ e $-10$, e con otto passi
-uniformi Eulero su quel solo termine è già stabile ($|1 + hf| \le 0{,}25$). Con
+della rete vicino a $t = 0$, e il coefficiente lineare ne è esente:
+$f(t) = -\tfrac12\beta(t)$ resta fra $-0{,}05$ e $-10$, e all'indietro, nel
+verso della generazione, allarga invece di smorzare, con $|hf| \le 1{,}25$ a
+otto passi uniformi: nessun modo da inseguire più in fretta del passo. Con
 $\boldsymbol{\epsilon}_\theta \approx (\mathbf{x} - \alpha_t\mathbf{x}_0)/\sigma_t$,
 invece, la derivata del termine della rete rispetto a $\mathbf{x}$ vale circa
 $g^2(t)/(2\sigma_t^2)$, che sul banco di prova passa da $10$ a $t = 1$ a circa

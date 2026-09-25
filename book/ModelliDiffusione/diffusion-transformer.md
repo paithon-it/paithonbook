@@ -200,7 +200,9 @@ di scala e traslazione è nullo e a muoversi è solo il gate. Il gradiente del
 gate no, perché vale il prodotto scalare fra ciò che il sotto-strato ha prodotto
 e la direzione in cui l'uscita andrebbe spostata: il blocco impara quanto
 aprirsi pur non contribuendo ancora, e la rete, che comincia come un tubo vuoto,
-riceve gradiente su tutti i gate insieme fin dal primo passo. L'idea di modulare
+riceve gradiente su tutti i gate insieme (dal secondo passo nell'implementazione
+di riferimento, che azzera anche lo strato d'uscita e al primo passo muove solo
+quello). L'idea di modulare
 le normalizzazioni ha un precedente illustre che conosciamo: l'AdaIN con cui
 StyleGAN {cite}`karras2019style` inietta lo stile nel generatore. Nelle
 ablazioni del paper adaLN-zero batte sia i token in-context sia la
@@ -517,7 +519,7 @@ strada, perché la strada è dritta.
 
 Su una strada così non serve fermarsi mille volte a ricontrollare la mappa, e
 nemmeno le cinquanta delle scorciatoie: ne bastano poche decine, e con qualche
-accorgimento anche meno. A una sola fermata, però, non si arriva.
+accorgimento anche meno.
 
 Le strade che la rete impara, però, non escono mai perfettamente dritte. Le
 linee tracciate in addestramento sono milioni, una per ogni coppia (questo
@@ -526,6 +528,9 @@ in direzioni diverse. La rete, che in quel punto deve dare una risposta sola, d�
 la media, e la media di direzioni diverse non è nessuna delle direzioni di
 partenza. Qualche controllo lungo il percorso serve quindi ancora, ma è la
 differenza fra un tornante di montagna e una provinciale con qualche curva.
+Le curve si possono raddrizzare ancora, rifacendo l'addestramento sulle coppie
+che la rete stessa collega (questo rumore, e l'immagine a cui arriva la sua
+strada): su strade quasi dritte basta anche una fermata sola.
 
 `````
 

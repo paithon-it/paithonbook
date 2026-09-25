@@ -157,3 +157,39 @@ istanti = [0.45, 0.70, 0.96]
 # di mezzo mostrava tre riquadri vuoti accanto a una somma che non c'e'. I tre
 # istanti nuovi cadono uno per stato: i pesi arrivati e le bozze ancora da
 # scrivere, le tre bozze scritte, la somma composta.
+
+[somma-che-si-accumula]
+istanti = [0.45, 0.70, 0.95]
+# perche': il ritaglio parte all'8% del ciclo, quindi al 10% dei default la
+# scena e' vuota. Il cambio cade al 57% e l'allarme all'82%: il primo fermo
+# mostra la somma che sale e ricade prima del cambio, il secondo la salita dopo
+# il cambio con la soglia ancora lontana, il terzo l'allarme acceso.
+
+[bersaglio-che-si-sposta]
+istanti = [0.35, 0.60, 0.95]
+# perche': il ritaglio scorre lineare dal 6% al 90% del ciclo, e il cambio di
+# regola cade a meta' dell'asse, cioe' al 48%. Il primo fermo mostra la fase
+# tranquilla (il passo che si accorcia gia' piu' vicino), il secondo il salto
+# con il passo fisso gia' rientrato e l'altro ancora in discesa, il terzo le
+# due curve intere.
+
+[miscele-di-winograd]
+istanti = [0.30, 0.60, 0.95]
+# perche': i quattro tempi durano un quarto del ciclo ciascuno, e il 50% dei
+# default cade proprio sull'accensione dei prodotti, a meta' dissolvenza. Il
+# primo fermo mostra le miscele, il secondo i prodotti, il terzo le uscite.
+
+[cammini-che-fanno-la-media]
+istanti = [0.05, 0.45, 0.95]
+# perche': dieci gruppi da un decimo del ciclo, quindi il 10%, il 50% e il 90%
+# dei default cadono tutti su un confine fra due gruppi, a meta' dissolvenza, e
+# due scritte del contatore si sovrappongono. Si prendono il primo gruppo (20
+# cammini), il quinto (100) e l'ultimo (200).
+
+[credenza-che-si-stringe]
+istanti = [0.30, 0.62, 0.95]
+# perche': le sei tappe si accendono una dopo l'altra fra il 4% e l'88% del
+# ciclo, una ogni 14%. Al 10% dei default c'e' ancora la sola credenza di
+# partenza; al 30% la tappa del primo lancio accanto alla traccia di partenza,
+# al 62% quella dei 30 lanci con le tracce delle precedenti, al 95% l'ultima,
+# piena, sui 100 lanci.

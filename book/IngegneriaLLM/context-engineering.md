@@ -194,6 +194,136 @@ corta (comprimere), fuori e affidata a qualcun altro che ha un bordo suo
 (isolare). La finestra resta grande quanto era: quello che cambia è la
 disciplina con cui la si riempie.
 
+### Comprimere più di una finestra: riassumere a pezzi
+
+La compressione ha un caso limite: il documento da riassumere è più lungo della
+finestra stessa, e il riassunto non si può chiedere in una chiamata sola. Allora
+lo si spezza, e i modi di rimettere insieme i pezzi sono due. Il primo è il
+**riassunto in fila** (*refine*, o aggiornamento incrementale): un sunto
+corrente che si riscrive pezzo dopo pezzo. Il secondo è il **riassunto ad
+albero** (*map-reduce*, o fusione gerarchica): ogni pezzo riassunto da solo, poi
+i riassunti riassunti fra loro, fino a uno.
+
+`````{tab} Elementare
+
+Sulla scrivania arriva un fascicolo di duecento pagine, e sul tavolo ne stanno
+sei alla volta. Nella prima maniera lo si legge in fila tenendo accanto una
+scheda di mezza pagina: si leggono le pagine che ci stanno, si scrive la scheda;
+si leggono le successive, si riscrive la scheda tenendo conto di quello che
+c’era; e così fino in fondo. La scheda occupa mezza pagina del tavolo, quindi di
+pagine nuove ne entrano cinque e mezza per volta, e fra la prima scheda e le sue
+riscritture se ne scrivono trentasette. È lavoro per una persona sola, perché
+ogni scheda nuova ha bisogno di quella vecchia, e quello che si è letto
+all’inizio arriva in fondo solo passando per tutte le riscritture.
+
+Nella seconda maniera il fascicolo si divide fra i colleghi, sei pagine a testa,
+e ognuno restituisce la sua scheda: trentaquattro schede. Sul tavolo ne stanno
+dodici alla volta (dodici mezze pagine fanno sei pagine), quindi si raggruppano
+a dodici, e un altro giro di tre colleghi fa le schede delle schede; le tre
+schede che ne escono stanno insieme sul tavolo, e un ultimo collega ne fa quella
+finale. Il lavoro si fa in pochi giri, perché in ogni giro i colleghi lavorano
+insieme, e dall’inizio del fascicolo alla scheda finale ci sono pochi passaggi.
+Il prezzo è che ogni collega legge le sue sei pagine senza sapere che cosa c’era
+prima: se a pagina 150 torna un personaggio presentato a pagina 3, chi ha pagina
+150 non sa chi sia.
+
+Nessuna delle due vince su tutto, e la misura smentisce in parte quello che la
+scena fa aspettare. Chi ha messo a confronto le due maniere su cento libri ha
+trovato che la scheda in fila esce più ricca di dettagli, ma quella ad albero
+più coerente: a conti fatti, sulla coerenza i collegamenti persi fra un pezzo e
+l’altro pesano meno degli errori che la scheda in fila fa da sé.
+
+`````
+
+`````{tab} Superiore
+
+Siano $n$ i token del documento, $w$ quelli di testo che una chiamata può
+leggere (la finestra meno le istruzioni e lo spazio per la risposta) e $s$ la
+lunghezza di un riassunto, supposta la stessa a ogni livello qualunque cosa
+condensi, che è la semplificazione del conto. Se $n \le w$ basta una chiamata
+sola, che nel lessico di LangChain si chiama *stuff*.
+
+Il riassunto in fila mantiene uno stato, il sunto corrente di al più $s$
+token, e a ogni chiamata legge lo stato e $w - s$ token nuovi: servono
+$m = \lceil n/(w-s) \rceil$ chiamate, tutte sequenziali. È una ricorrenza con
+uno stato di taglia fissa, e ne eredita il
+{doc}`collo di bottiglia sequenziale
+</NaturalLanguageProcessing/modelli-sequenza>`:
+l’informazione del primo pezzo raggiunge l’uscita attraverso $m$ riscritture,
+mentre ogni chiamata vede, compresso, tutto ciò che la precede.
+
+Il riassunto ad albero fa $\lceil n/w \rceil$ chiamate indipendenti sui pezzi
+(la fase *map*), poi raggruppa i riassunti a $k = \lfloor w/s \rfloor$ per
+chiamata e ripete (*reduce*), finché ne resta uno; serve $k \ge 2$, cioè un
+riassunto lungo al più metà di quello che legge, o l’albero non converge. I
+livelli sono circa $1 + \lceil \log_k \lceil n/w \rceil \rceil$, le chiamate in
+tutto circa $\lceil n/w \rceil \cdot k/(k-1)$, e il cammino critico, cioè il
+numero di turni che non si possono sovrapporre, è pari ai livelli: logaritmico
+invece che lineare. Il prezzo è simmetrico: nella fase *map* ogni chiamata vede
+un pezzo solo, e un riferimento che attraversa il confine fra due pezzi (un nome
+introdotto prima, un pronome) non si può risolvere lì.
+
+È la decomposizione ricorsiva con cui Wu e colleghi hanno riassunto romanzi
+interi con un modello addestrato sul giudizio umano: prima sezioni brevi, poi
+riassunti dei riassunti {cite}`wu2021recursively`. Il confronto controllato fra
+le due strategie è di Chang e colleghi, su riassunti di cento libri usciti di
+recente (per non trovarli già nei dati di addestramento), con 1193 annotazioni
+umane: l’aggiornamento incrementale produce più errori di coerenza ma più
+dettaglio, la fusione gerarchica meno errori e meno dettaglio, e gli annotatori
+a volte preferiscono il primo compromesso {cite}`chang2024booookscore`. Il
+confine fra i pezzi farebbe prevedere il contrario sulla coerenza, e la misura
+lo smentisce. È una misura di qualità, riportata e non rifatta qui; il conto
+sulle chiamate misura soltanto quante sono e quanto devono aspettarsi.
+
+`````
+
+Il conto prende un documento da duecentomila token, pezzi da seimila e
+riassunti da cinquecento, e conta le chiamate delle due strategie, livello per
+livello, e i turni che devono aspettarsi l’un l’altro.
+
+```python
+from math import ceil
+
+documento = 200_000     # token del documento
+pezzo = 6_000           # token di testo letti da una chiamata
+sunto = 500             # token del riassunto restituito
+
+
+def ad_albero(n_token):
+    """Chiamate per livello: i pezzi, poi i riassunti raggruppati, fino a uno."""
+    livelli = [ceil(n_token / pezzo)]
+    while livelli[-1] > 1:
+        livelli.append(ceil(livelli[-1] * sunto / pezzo))
+    return livelli
+
+
+def in_fila(n_token):
+    """Una chiamata per pezzo, in fila: ognuna legge il sunto e il testo nuovo."""
+    return ceil(n_token / (pezzo - sunto))
+
+
+livelli = ad_albero(documento)
+print(f"ad albero: chiamate per livello {livelli}, in tutto {sum(livelli)}, "
+      f"turni in fila {len(livelli)}")
+print(f"in fila: {in_fila(documento)} chiamate, e altrettanti turni in fila")
+letti_albero = documento + sum(livelli[:-1]) * sunto
+letti_fila = documento + (in_fila(documento) - 1) * sunto
+print(f"token letti in tutto: ad albero {letti_albero}, in fila {letti_fila}")
+```
+
+```text
+ad albero: chiamate per livello [34, 3, 1], in tutto 38, turni in fila 3
+in fila: 37 chiamate, e altrettanti turni in fila
+token letti in tutto: ad albero 218500, in fila 218000
+```
+
+Le chiamate sono quasi le stesse, trentotto contro trentasette, e i token letti
+differiscono di cinquecento su più di duecentomila. Cambia il tempo: l’albero ha
+tre turni, perché le trentaquattro chiamate del primo livello partono insieme,
+mentre la fila ne ha trentasette, uno dopo l’altro. E cambia la strada che fa
+l’informazione del primo pezzo prima di arrivare al riassunto finale: tre
+riassunti in un caso, trentasette passaggi di scheda nell’altro.
+
 ## Come si guasta un contesto
 
 Un contesto più lungo non è un contesto migliore. Anzi: quasi tutti i modi in

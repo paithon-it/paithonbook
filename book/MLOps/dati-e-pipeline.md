@@ -259,9 +259,11 @@ categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
 timestamp) prima ancora della compressione generica. Rispetto al CSV equivalente
 il guadagno è di qualche volta, e a decidere quante è la codifica a dizionario.
 I numeri che seguono vengono da tabelle di duecentomila righe, scritte con le
-impostazioni di serie; per gli istanti conta anche la risoluzione con cui sono
-memorizzati (in microsecondi gli scarti sono piccoli interi, in nanosecondi
-mille volte più grandi, e la delta rende la metà). Sei colonne di categorie con
+impostazioni di serie, che la delta non la usano: la si chiede colonna per
+colonna, e allora conta anche la risoluzione degli istanti (in nanosecondi gli
+scarti sono mille volte più grandi che in microsecondi, costano una decina di
+bit in più ciascuno, e il file esce fra una volta e mezza e quasi il doppio più
+grosso). Sei colonne di categorie con
 sei valori distinti (nomi di città) stanno in un file diciotto volte più
 piccolo, perché il dizionario sostituisce ogni stringa con un indice, e quante
 volte lo decide la lunghezza delle stringhe. Sei colonne di numeri casuali con
@@ -621,6 +623,155 @@ dichiarare cosa ci si aspetta dai dati, e verificarlo prima di fidarsene.
 Trattare i dati da cittadini di prima classe significa, alla fine, esattamente
 questo: dargli un contratto, e farlo rispettare.
 
+## Collaudare il modello, non solo i dati
+
+La validazione ferma alla porta i dati malformati. Resta da collaudare il
+modello, e l'accuratezza su un insieme di prova tenuto da parte non basta:
+misura quanto spesso il modello indovina su esempi simili a quelli
+dell'addestramento, e tace su che cosa fa davanti a quelli che l'addestramento
+non conteneva. Il **collaudo comportamentale** guarda il modello dall'esterno:
+gli si danno ingressi scelti apposta e si controlla che cosa esce, senza
+guardare come è fatto dentro, come chi scrive programmi fa con il *black-box
+testing*. Il metodo più noto è CheckList, di Ribeiro, Wu, Guestrin e Singh
+{cite}`ribeiro2020beyond`.
+
+`````{tab} Elementare
+
+Un'officina che collauda un'auto non si ferma a contare i chilometri fatti senza
+guasti: prova i freni sul bagnato, la tenuta in curva, l'accensione a freddo.
+Ogni prova chiede una cosa sola, e la chiede apposta.
+
+Con un modello che legge le recensioni di un ristorante si fa lo stesso, con
+tre tipi di prova. La prima è il minimo indispensabile: frasi semplicissime di
+cui si sa la risposta, come «il servizio non era buono», che deve uscire
+negativa. La seconda è l'indifferenza: si cambia un dettaglio che non deve
+contare, come la città, e la risposta non deve muoversi. La terza è la
+direzione: si aggiunge una lamentela a una lode, e il giudizio non deve salire.
+Le frasi non si scrivono a mano una per una: si prepara un modulo con degli
+spazi vuoti («il ___ non era ___») e lo si riempie con elenchi di parole, così
+una prova diventa centinaia di frasi. E le prove dell'indifferenza e della
+direzione non hanno nemmeno bisogno di sapere la risposta giusta: basta
+confrontare la risposta prima e dopo il ritocco, quindi si fanno anche su
+recensioni vere che nessuno ha mai etichettato.
+
+Il collaudo trova quello che il voto medio nasconde. Un modello può azzeccare
+tutte le recensioni del suo archivio e sbagliare ogni negazione, se
+nell'archivio le negazioni non c'erano: il voto medio misura il modello sugli
+esempi che somigliano a quelli già visti, le prove sulle capacità che si decide
+di chiedere. E chi collauda così trova di più: in un esperimento con persone
+del mestiere, chi aveva le prove e i moduli ha scritto più del doppio dei test
+e trovato quasi il triplo dei difetti di chi lavorava senza. I limiti sono
+quelli dell'officina: le prove trovano solo i difetti che qualcuno ha pensato
+di cercare; quante prove falliscono non dice quante volte il modello sbaglierà
+davvero, perché le frasi sono scelte apposta e non pescate da quelle che
+arrivano; e una prova superata dice che quei casi passano, non che la capacità
+ci sia.
+
+`````
+
+`````{tab} Superiore
+
+CheckList organizza il collaudo in una matrice. Sulle righe stanno le
+*capacità* (vocabolario, tassonomia, robustezza, entità nominate, equità,
+tempo, negazione, coreferenza, ruoli semantici, logica, un elenco che gli
+autori dichiarano non esaustivo), sulle colonne tre tipi di test. Il *Minimum
+Functionality Test* (MFT) è un insieme di esempi semplici con l'etichetta
+attesa, l'analogo del test di unità, e serve a scoprire quando il modello
+aggira una capacità con una scorciatoia. L’*Invariance test* (INV) applica una
+perturbazione che conserva l'etichetta (un nome di luogo, un refuso) e pretende
+che la previsione non cambi; il *Directional Expectation test* (DIR) applica
+una perturbazione con un effetto atteso e pretende che la previsione si muova
+solo in quel verso. Gli esempi si generano da template riempiti con lessici,
+come prodotto cartesiano, e i riempimenti possono essere suggeriti da un
+modello di linguaggio mascherato (nel lavoro originale RoBERTa, una versione di
+BERT addestrata più a lungo e su più dati). INV e DIR non richiedono
+un'etichetta di partenza, perché confrontano due previsioni fra loro: si
+possono generare anche perturbando dati reali non annotati, in quantità che gli
+MFT non permettono.
+
+La premessa è che misurare l'accuratezza su dati tenuti da parte sovrastima
+spesso le prestazioni, perché quei dati non coprono tutti i casi e condividono
+i bias dell'insieme di addestramento. Sull'analisi del sentiment il metodo ha
+trovato fallimenti frequenti su capacità elementari, come la negazione, sia in
+servizi commerciali sia in modelli di ricerca affinati con accuratezze oltre il
+90% sul proprio insieme di prova; in uno studio con utenti, chi lo usava ha
+scritto più del doppio dei test e trovato quasi il triplo dei difetti gravi. I
+limiti sono di costruzione: i test coprono le capacità che qualcuno ha
+pensato, un tasso di fallimento su casi costruiti non stima la frequenza
+dell'errore in produzione, perché i casi non sono campionati dal traffico, e
+superare un template non garantisce la capacità fuori da quel template. Nella
+rubrica di Breck e colleghi {cite}`breck2017ml` i test del modello sono un asse
+a sé, fra cui la qualità su tutte le fette importanti dei dati; il collaudo
+comportamentale, venuto dopo e in modo indipendente, affronta con uno strumento
+più specifico un'esigenza che quell'asse aveva già individuato.
+
+`````
+
+Il blocco addestra un piccolo classificatore di recensioni su frasi costruite
+senza negazioni, lo misura sul suo insieme di prova e poi lo collauda con i tre
+tipi di test.
+
+```python
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
+
+rng = np.random.default_rng(0)
+positivi = ["ottimo", "buono", "delizioso", "gentile", "pulito", "rapido"]
+negativi = ["pessimo", "cattivo", "freddo", "scortese", "sporco", "lento"]
+cose = ["il servizio", "il piatto", "il cameriere", "il locale", "il conto", "il vino"]
+citta = ["Milano", "Roma", "Napoli", "Torino", "Bari", "Genova"]
+
+def frase(cosa, aggettivo, luogo):
+    return f"a {luogo} {cosa} era {aggettivo}"
+
+def campione(k):
+    """Recensioni come quelle che arrivano davvero: nessuna con una negazione."""
+    testi, etichette = [], []
+    for _ in range(k):
+        buona = rng.random() < 0.5
+        agg = rng.choice(positivi if buona else negativi)
+        testi.append(frase(rng.choice(cose), agg, rng.choice(citta)))
+        etichette.append(int(buona))
+    return testi, np.array(etichette)
+
+X_tr, y_tr = campione(400)
+X_te, y_te = campione(200)
+vett = CountVectorizer().fit(X_tr)
+modello = LogisticRegression().fit(vett.transform(X_tr), y_tr)
+prevedi = lambda testi: modello.predict(vett.transform(testi))
+print(f"accuratezza sul test: {(prevedi(X_te) == y_te).mean():.2f}")
+
+# 1) funzionalità minima: la negazione rovescia il giudizio
+negate = [frase(c, "non " + a, "Roma") for c in cose for a in positivi]
+print(f"negazioni classificate negative: {(prevedi(negate) == 0).mean():.2f}")
+# 2) invarianza: cambiare città non deve cambiare niente
+base = [frase(c, a, "Milano") for c in cose for a in positivi + negativi]
+altre = [frase(c, a, "Bari") for c in cose for a in positivi + negativi]
+print(f"stessa risposta cambiando città: {(prevedi(base) == prevedi(altre)).mean():.2f}")
+# 3) aspettativa direzionale: una lamentela in più deve abbassare il giudizio
+p = lambda testi: modello.predict_proba(vett.transform(testi))[:, 1]
+lodi = [frase(c, a, "Torino") for c in cose for a in positivi]
+con_lamentela = [t + ", ma il conto era " + n for t, n in zip(lodi, negativi * 6)]
+print(f"lodi che con una lamentela calano: {(p(con_lamentela) < p(lodi)).mean():.2f}")
+```
+
+```text
+accuratezza sul test: 1.00
+negazioni classificate negative: 0.00
+stessa risposta cambiando città: 1.00
+lodi che con una lamentela calano: 1.00
+```
+
+Sul suo insieme di prova il modello non sbaglia niente, e il collaudo trova un
+difetto che quel voto non poteva vedere. Nessuna negazione esce negativa:
+nell'addestramento «non» non c'era, e una parola mai vista il modello la scarta;
+anche avendola vista, poi, un modello che conta le parole senza guardarne
+l'ordine non saprebbe a quale aggettivo attaccarla. Le altre due prove passano:
+cambiare città non sposta nessuna risposta, e una lamentela fatta di parole
+note abbassa ogni lode. L'accuratezza piena e il collaudo misurano due cose
+diverse, e solo il secondo dice dove il modello si rompe.
+
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
@@ -653,6 +804,12 @@ questo: dargli un contratto, e farlo rispettare.
   invece che dentro il modello. E il guardiano va scritto con cura, perché
   chiedere «è un numero?» lascia passare anche un «vero», che sotto sotto un
   numero lo è.
+- Anche il modello va collaudato, e non basta il voto medio sugli esempi messi
+  da parte: si preparano prove che chiedono una cosa sola (una negazione deve
+  uscire negativa, cambiare città non deve contare, una lamentela non deve far
+  salire il giudizio), e si trovano i difetti che il voto medio nasconde. Ma
+  solo quelli che qualcuno ha pensato di cercare, e una prova superata non
+  dimostra che la capacità ci sia.
 ```
 `````
 
@@ -695,5 +852,9 @@ questo: dargli un contratto, e farlo rispettare.
   sfumano nel monitoraggio del *dataset shift* {cite}`quinonero2009dataset`.
   Attenzione al controllo di tipo: `isinstance` accetta i sottotipi, e in
   Python `bool` è un `int`.
+- Il collaudo comportamentale (CheckList {cite}`ribeiro2020beyond`) incrocia
+  capacità e tre tipi di test (MFT, INV, DIR) generati da template: trova
+  quello che l'accuratezza su dati tenuti da parte non vede, ma solo sulle
+  capacità che qualcuno ha pensato di chiedere.
 ```
 `````

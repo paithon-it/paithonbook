@@ -51,8 +51,9 @@ variabili, anche punti di sella). Se $f$ è derivabile in un punto interno di
 minimo, lì $f'(x)=0$ (teorema di Fermat); la condizione è necessaria e non
 sufficiente, e i candidati al minimo di una loss sono i punti stazionari più
 quelli in cui la derivata non esiste, come lo zero di una ReLU o di un valore
-assoluto, dove le librerie usano per convenzione una delle due derivate
-laterali.
+assoluto. Lì le librerie mettono per convenzione un valore compreso fra le due
+derivate laterali (un sottogradiente): PyTorch dà $0$ sia alla ReLU sia al
+valore assoluto, che in $0$ ha derivate laterali $-1$ e $+1$.
 
 `````
 
@@ -279,9 +280,11 @@ $$
 e da qui la condizione del secondo ordine: in un punto stazionario,
 $\mathbf{H}$ definita positiva (autovalori tutti $>0$) dà un minimo locale
 stretto, definita negativa un massimo, con autovalori di segni opposti una
-sella; con autovalori nulli il test tace. Gli autovalori di $\mathbf{H}$ sono
-le curvature lungo i suoi autovettori, e il loro rapporto
-$\kappa=\lambda_{\max}/\lambda_{\min}$, il numero di condizionamento, misura
+sella, anche se ce ne sono di nulli; il test tace solo quando i non nulli hanno
+tutti lo stesso segno e almeno uno è zero. Gli autovalori di $\mathbf{H}$ sono
+le curvature lungo i suoi autovettori, e dove $\mathbf{H}$ è definita positiva
+il loro rapporto $\kappa=\lambda_{\max}/\lambda_{\min}$, il numero di
+condizionamento, misura
 quanto sono schiacciati gli anelli di {numref}`fig-curve-di-livello`: è lui a
 produrre lo zigzag della valle stretta {cite}`goodfellow2016deep`.
 
@@ -448,21 +451,22 @@ $$
 
 Qui $\theta$ sono i parametri, $\nabla\mathcal{L}(\theta)$ il gradiente della
 loss e $\eta > 0$ il **learning rate**, che dosa l'ampiezza del passo. Nella
-pratica il gradiente non si calcola su tutti gli $m$ esempi a ogni passo, ma
-su un lotto $\mathcal{B}$ di $b$ esempi estratti a caso (*mini-batch*):
+pratica il gradiente non si calcola su tutti gli $m$ esempi a ogni passo, ma su
+un lotto $\mathcal{B}$ di $b$ esempi estratti a caso (*mini-batch*): se
+$\mathcal{L}=\frac1m\sum_{i=1}^m\ell_i$, con $\ell_i$ la perdita del solo
+esempio $i$, allora
 $\mathbf{g}=\frac{1}{b}\sum_{i\in\mathcal{B}}\nabla\ell_i(\theta)$ è uno
 stimatore non distorto di $\nabla\mathcal{L}(\theta)$, con varianza che cala
-come $1/b$. È la discesa stocastica del gradiente (SGD): un passo costa $b/m$
-di un passo pieno, e in cambio, con $\eta$ fisso, il rumore impedisce di
-posarsi esattamente sul minimo, per cui la teoria classica chiede passi
-decrescenti con $\sum_t\eta_t=\infty$ e $\sum_t\eta_t^2<\infty$ (Robbins e
-Monro, 1951). Il momento della valle stretta si scrive
-$\mathbf{v}\leftarrow\beta\mathbf{v}+\mathbf{g}$,
+come $1/b$ (esattamente se si estrae con reimmissione). È la discesa stocastica
+del gradiente (SGD): un passo costa $b/m$ di un passo pieno, e in cambio, con
+$\eta$ fisso, il rumore impedisce di posarsi esattamente sul minimo, per cui la
+teoria classica chiede passi decrescenti con $\sum_t\eta_t=\infty$ e
+$\sum_t\eta_t^2<\infty$ (Robbins e Monro, 1951). Il momento della valle stretta
+si scrive $\mathbf{v}\leftarrow\beta\mathbf{v}+\mathbf{g}$,
 $\theta\leftarrow\theta-\eta\,\mathbf{v}$, con $\beta\in[0,1)$, tipicamente
 $0{,}9$: $\mathbf{v}$ somma i gradienti passati con pesi $\beta^k$ che decadono
-in progressione geometrica, e sulle componenti che cambiano segno a ogni
-passo i contributi si elidono. Adam aggiunge a tutto questo una scala per
-coordinata.
+in progressione geometrica, e sulle componenti che cambiano segno a ogni passo i
+contributi si elidono. Adam aggiunge a tutto questo una scala per coordinata.
 
 `````
 
@@ -498,18 +502,26 @@ c'è modo di distinguerlo, dall'esterno, da un problema difficile.
 
 `````{tab} Elementare
 
-Dipende dal paesaggio. Se è una scodella liscia, con un'unica valle, non ci
-sono conche secondarie in cui restare intrappolati: da qualunque punto si
-parta si scende verso quell'unico fondo, purché il passo non sia troppo lungo.
-È il caso convesso, il più comodo. Due guasti restano possibili anche
-qui. Se lontano dal centro le pareti si impennano
-sempre di più, partire troppo in alto rovina tutto: il passo si allunga dove
-è più ripido, quindi il primo balzo scavalca l'intera conca e atterra sul
-fianco opposto, ancora più su. Da lì il balzo dopo è più lungo ancora, e ogni
-rimbalzo allontana dal fondo. Quanto sia «troppo lungo» un passo, insomma,
-dipende anche da dove si parte. E la discesa deve avere un fondo: una rampa
-che scende per sempre, spianandosi senza mai finire, si percorre in eterno
-senza arrivare da nessuna parte.
+Dipende dal paesaggio. Se è una scodella liscia, con un'unica valle, non ci sono
+conche secondarie in cui restare intrappolati: da qualunque punto si parta si
+scende verso quell'unico fondo, purché il passo non sia troppo lungo. È il caso
+convesso, il più comodo, anche se non sempre il più veloce: in una valle stretta
+e lunga il passo va tenuto corto per non sbattere contro le pareti ripide, e con
+quel passo corto il fondo lungo e quasi piatto si percorre a fatica. La pallina
+con il momento fa meglio perché si porta dietro un po’ dei passi di prima: a
+ogni passo conserva una parte della velocità che aveva (nove decimi, di solito),
+e quello che perde fa da attrito. Di traverso oscilla, ma con l’attrito ogni
+oscillazione si accorcia della stessa frazione della precedente, mentre lungo la
+valle la velocità si accumula; e con l’attrito regolato bene quella frazione è
+la stessa in ogni direzione, dalla più dolce alla più ripida. Due guasti restano
+possibili anche qui. Se lontano dal centro le pareti si impennano sempre di più,
+partire troppo in alto rovina tutto: il passo si allunga dove è più ripido,
+quindi il primo balzo scavalca l'intera conca e atterra sul fianco opposto,
+ancora più su. Da lì il balzo dopo è più lungo ancora, e ogni rimbalzo allontana
+dal fondo. Quanto sia «troppo lungo» un passo, insomma, dipende anche da dove si
+parte. E la discesa deve avere un fondo: una rampa che scende per sempre,
+spianandosi senza mai finire, si percorre in eterno senza arrivare da nessuna
+parte.
 
 Se invece il paesaggio è una catena montuosa piena
 di conche, si può finire intrappolati in una conca che non è la più profonda:
@@ -554,10 +566,33 @@ La velocità la decide la curvatura minima. Se $\mathcal{L}$ è anche
 $\mu$-fortemente convessa, con $\eta=2/(L+\mu)$ la distanza dal minimo si
 contrae a ogni passo del fattore $(\kappa-1)/(\kappa+1)$, con $\kappa=L/\mu$:
 per $\kappa=100$ vale $99/101$, e servono circa $350$ passi per ridurre la
-distanza di un fattore mille. Sulle quadratiche il momento porta il fattore a
-$(\sqrt{\kappa}-1)/(\sqrt{\kappa}+1)$, che per lo stesso $\kappa$ vale
-$9/11$: è la ragione quantitativa per cui la traiettoria con il momento, nella
-valle stretta, arriva prima {cite}`goodfellow2016deep`.
+distanza di un fattore mille. Sulle quadratiche il momento fa meglio, e il
+conto è una {doc}`ricorrenza lineare </Matematica/algebra-lineare>` del secondo
+ordine. Per $\mathcal{L}(\theta) = \tfrac12(\theta-\theta^*)^\top
+\mathbf{H}\,(\theta-\theta^*)$, con gli autovalori di $\mathbf{H}$ in
+$[\mu, L]$, l'aggiornamento $\mathbf{v}\leftarrow\beta\mathbf{v}+\mathbf{g}$,
+$\theta\leftarrow\theta-\eta\,\mathbf{v}$ si separa lungo gli autovettori di
+$\mathbf{H}$: chiamata $u_t$ la componente dell'errore $\theta - \theta^*$ al
+passo $t$ lungo un autovettore di autovalore $\lambda$,
+
+$$
+u_{t+1} = (1 + \beta - \eta\lambda)\,u_t - \beta\,u_{t-1},
+$$
+
+con polinomio caratteristico $r^2 - (1+\beta-\eta\lambda)\,r + \beta$ (la
+radice qui si chiama $r$, perché $\lambda$ è già l'autovalore dell'hessiana). Il
+prodotto delle due radici è $\beta$, quindi quando sono complesse coniugate
+hanno entrambe modulo $\sqrt\beta$, qualunque sia $\lambda$. Con la scelta
+che rende minimo il fattore nel caso peggiore su $[\mu, L]$,
+$\eta = 4/(\sqrt L+\sqrt\mu)^2$ e
+$\sqrt\beta = (\sqrt\kappa-1)/(\sqrt\kappa+1)$,
+il discriminante si annulla in $\lambda = \mu$ e in $\lambda = L$ ed è negativo
+in mezzo, e ogni componente si contrae del fattore
+$(\sqrt{\kappa}-1)/(\sqrt{\kappa}+1)$ a ogni passo {cite}`polyak1964some`, che
+per lo stesso $\kappa$ vale $9/11$: è la ragione quantitativa per cui la
+traiettoria con il momento, nella valle stretta, arriva prima. Nei due estremi
+la radice è doppia, e il termine $t\,r^t$ della radice doppia aggiunge un
+fattore lineare in $t$ che il solo modulo non vede.
 
 Le loss del deep learning, poi, sono quasi sempre non convesse: nessuna
 garanzia. La buona
@@ -600,6 +635,59 @@ via anziché avvicinarsi, saltando a ogni passo da una parte all'altra del
 minimo e sempre più lontano: dopo venti passi vale $-265{,}363$. È la stessa
 dinamica, in scala minima, che governa l'addestramento di una rete con miliardi
 di pesi.
+
+La valle stretta si misura allo stesso modo. Il blocco costruisce una scodella
+cento volte più ripida di traverso che per il lungo, conta quanti passi servono
+alla discesa semplice e a quella con il momento, ciascuna regolata al meglio,
+per avvicinarsi mille volte al fondo, e controlla, su mille pendenze fra la più
+dolce e la più ripida, di quanto si accorciano le oscillazioni a ogni passo.
+
+```python
+# una valle stretta: curvatura 1 lungo la valle e 100 di traverso
+mu, L = 1.0, 100.0
+kappa = L / mu
+H = np.diag([mu, L])                    # l'hessiana; il minimo è nell'origine
+
+eta_gd = 2 / (L + mu)                   # il passo migliore della discesa semplice
+eta = 4 / (np.sqrt(L) + np.sqrt(mu)) ** 2
+beta = ((np.sqrt(kappa) - 1) / (np.sqrt(kappa) + 1)) ** 2
+
+
+def passi(eta, beta, partenza=(1.0, 1.0), soglia=1e-3, massimo=10_000):
+    """Quanti passi perché la distanza dal minimo scenda sotto soglia."""
+    theta, v = np.array(partenza), np.zeros(2)
+    d0 = np.linalg.norm(theta)
+    for t in range(1, massimo + 1):
+        v = beta * v + H @ theta        # il gradiente di theta^T H theta / 2
+        theta = theta - eta * v
+        if np.linalg.norm(theta) < soglia * d0:
+            return t
+    return None
+
+
+print(f"discesa semplice: fattore {(kappa - 1) / (kappa + 1):.4f}, "
+      f"passi per dividere la distanza per mille: {passi(eta_gd, 0.0)}")
+moduli = [np.abs(np.roots([1, -(1 + beta - eta * lam), beta])).max()
+          for lam in np.linspace(mu, L, 1001)]
+print(f"momento: accorciamento per passo fra {min(moduli):.4f} e "
+      f"{max(moduli):.4f}, radice di beta {np.sqrt(beta):.4f}, "
+      f"passi: {passi(eta, beta)}")
+solo_fattore = int(np.ceil(np.log(1000) / -np.log(np.sqrt(beta))))
+print(f"passi che chiederebbe il solo fattore: {solo_fattore}")
+```
+
+```text
+discesa semplice: fattore 0.9802, passi per dividere la distanza per mille: 346
+momento: accorciamento per passo fra 0.8182 e 0.8182, radice di beta 0.8182, passi: 56
+passi che chiederebbe il solo fattore: 35
+```
+
+La discesa semplice perde un cinquantesimo della distanza a ogni passo e ne
+impiega $346$. Con il momento ogni pendenza, dalla più dolce alla più ripida, si
+accorcia dello stesso fattore a ogni passo, $9/11 \approx 0{,}8182$, e i passi
+scendono a $56$: più dei $35$ che quel fattore da solo prometterebbe, perché
+nelle due direzioni estreme l’accorciamento parte in ritardo, ma più di sei
+volte meno della discesa semplice.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

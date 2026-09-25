@@ -123,12 +123,19 @@ cifra in sé conta poco: se tutte le penalità si dimezzassero, resterebbe
 identico quale sbaglio costa più di quale, e la rete andrebbe a finire nello
 stesso posto.
 
-Più la previsione è vicina al vero, più la loss è piccola; se fossero
-identiche, la loss sarebbe zero. E le case non sono una sola: la penalità si
-calcola su tante case, una alla volta, e poi se ne prende la media. È
-quella media a dipendere dalle manopole, perché sono loro a decidere le
-risposte: girarle cambia le previsioni, e quindi cambia il numero. Tutto
-l'addestramento è una caccia a quel numero più basso.
+Più la previsione è vicina al vero, più la loss è piccola; se fossero identiche,
+la loss sarebbe zero. E le case non sono una sola: la penalità si calcola su
+tante case, una alla volta, e poi se ne prende la media. È quella media a
+dipendere dalle manopole, perché sono loro a decidere le risposte: girarle
+cambia le previsioni, e quindi cambia il numero. Tutto l'addestramento è una
+caccia a quel numero più basso. Ogni modo di regolare tutte le manopole insieme
+è un punto di un paesaggio, lo stesso fatto di colline e conche (le buche del
+terreno) della
+{doc}`matematica dell'ottimizzazione </Matematica/analisi-ottimizzazione>`, e la
+media delle penalità è l'altezza del terreno in quel punto. Con due manopole il
+paesaggio è un terreno vero, due direzioni in cui camminare più l'altezza; con
+mille manopole le direzioni sono mille, e nessuno riesce a figurarselo, ma il
+conto per scendere si fa nello stesso modo.
 
 Quando la risposta non è un prezzo ma un sì o un no (gatto oppure non gatto),
 il conto cambia forma. La rete dichiara quanto ci crede, un numero fra zero e
@@ -170,10 +177,16 @@ Per la classificazione si preferisce la cross-entropia, che confronta la
 distribuzione prevista $\hat{\mathbf{y}}$ con l'etichetta $\mathbf{y}$:
 $\mathcal{L} = -\sum_{k} y_k \log \hat{y}_k$, dove $k$ scorre le classi, $y_k$
 vale $1$ per quella giusta e $0$ per tutte le altre, e $\hat{y}_k$ è la
-probabilità che il modello le assegna. In entrambi i casi $\mathcal{L}$ è
-una funzione dei parametri
-$\theta = \{\mathbf{W}^{[l]}, \mathbf{b}^{[l]}\}$: cambiando i pesi
-cambia la loss, e il nostro obiettivo è trovare i $\theta$ che la minimizzano.
+probabilità che il modello le assegna. In entrambi i casi $\mathcal{L}$ è una
+funzione dei parametri $\theta = \{\mathbf{W}^{[l]}, \mathbf{b}^{[l]}\}$:
+cambiando i pesi cambia la loss, e il nostro obiettivo è trovare i $\theta$ che
+la minimizzano. Messi in fila tutti i pesi e tutti i bias, $\theta$ è un vettore
+di $\mathbb{R}^d$, con $d$ il numero totale di parametri, e $\mathcal{L}$ è una
+funzione $\mathbb{R}^d\to\mathbb{R}$ su questo **spazio dei parametri**: il
+paesaggio di colline e conche di {doc}`Analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>`, con $d = \sum_{l=1}^{L}
+n_l\,(n_{l-1}+1)$, che per una rete vera va dalle migliaia a oltre mille
+miliardi.
 
 Che per la classificazione si «preferisca» la cross-entropia ha una ragione in
 più di quella probabilistica da cui la si è ricavata, e questa è meccanica:
@@ -382,7 +395,7 @@ Che il verso giusto sia questo ha una ragione, ed è il contenuto della
 differenziazione automatica. Derivare automaticamente si può in due modi. Nel
 **modo diretto** si propaga in avanti, insieme al calcolo, la derivata rispetto
 a una direzione fissata dei parametri: una passata dà la derivata lungo
-*quella* direzione, e per il gradiente completo servono $n$ passate, una per
+*quella* direzione, e per il gradiente completo servono $d$ passate, una per
 parametro. Nel **modo inverso** si propaga all'indietro dall'uscita, e una
 passata sola le dà tutte quante. Quando l'uscita è una sola (la loss è uno
 scalare) e gli ingressi sono milioni, il verso conveniente è ovviamente il
@@ -553,17 +566,19 @@ matematica si dice *stocastico*: **discesa del gradiente stocastica** (SGD,
 *Stochastic Gradient Descent*).
 
 Il risultato è che la discesa non scivola liscia, traballa. E quel traballare,
-che sembrerebbe un difetto, è utile, anche se non per la ragione che si
-racconta più spesso. Si sente dire che serva a scavalcare i **minimi locali**,
-cioè le conche poco profonde in cui la discesa si può fermare credendo di
-essere arrivata in fondo; ma nelle reti profonde quelle conche sono rare
+che sembrerebbe un difetto, è utile, anche se non per la ragione che si racconta
+più spesso. Si sente dire che serva a scavalcare i **minimi locali**, cioè le
+conche poco profonde in cui la discesa si può fermare credendo di essere
+arrivata in fondo; ma nelle reti profonde quelle conche sono rare
 {cite}`dauphin2014identifying`. Serve piuttosto a staccarsi dai tratti piatti e
 dalle selle di poco fa, dove la pendenza vera è quasi zero. Un algoritmo
-perfettamente preciso, partito da un punto a caso, da una sella che abbia
-almeno una direzione in discesa finisce per uscire {cite}`lee2016gradient`, ma
-può metterci un numero di passi che cresce esponenzialmente con la dimensione
-{cite}`du2017gradient`; un po’ di imprecisione accorcia di molto quell'attesa
-{cite}`jin2017escape`.
+perfettamente preciso, partito da un punto a caso, da una sella che abbia almeno
+una direzione in discesa finisce per uscire {cite}`lee2016gradient`, ma può
+metterci un numero di passi che cresce esponenzialmente con la dimensione
+{cite}`du2017gradient`; un po’ di rumore accorcia di molto quell'attesa. Lo si è
+dimostrato per una discesa a cui si aggiunge apposta una piccola spinta casuale
+quando la pendenza si fa quasi nulla {cite}`jin2017escape`, che del traballare
+dei gruppetti è la versione controllata.
 
 Si racconta anche che i gruppetti piccoli portino a fermarsi in valli larghe
 invece che in fessure strette, e che sia un bene: una soluzione che regge

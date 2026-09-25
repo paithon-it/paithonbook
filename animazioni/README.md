@@ -197,11 +197,13 @@ nota, e costa meno di un minuto.
 | `svg/assi-girati.py` | `fig-assi-girati` | `ModelliLatenti/il-latente-che-si-usa.md` |
 | `svg/attesa-che-si-copre.py` | `fig-attesa-coperta` | `GPU/overview.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
+| `svg/bersaglio-che-si-sposta.py` | `fig-bersaglio-che-si-sposta` | `MachineLearning/dati-che-cambiano.md` |
 | `svg/bootstrap-si-accumula.py` | `fig-bootstrap-accumula` | `MachineLearning/il-bootstrap.md` |
 | `svg/boosting-si-somma.py` | `fig-boosting-si-somma` | `MachineLearning/alberi-ensemble.md` |
 | `svg/bozza-che-si-corregge.py` | `fig-bozza-che-si-corregge` | `MLOps/llmops.md` |
 | `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
 | `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
+| `svg/cammini-che-fanno-la-media.py` | `fig-cammini-che-fanno-la-media` | `PINN/equazioni-come-medie.md` |
 | `svg/cammino-latente.py` | `fig-cammino-latente` | `ModelliLatenti/il-salto-probabilistico.md` |
 | `svg/campo-cieco.py` | `fig-campo-cieco` | `VerosimiglianzaEsatta/pixel-per-pixel.md` |
 | `svg/catena-si-assesta.py` | `fig-catena-si-assesta` | `Matematica/catene-di-markov.md` |
@@ -211,6 +213,7 @@ nota, e costa meno di un minuto.
 | `svg/collo-di-bottiglia.py` | `fig-collo-di-bottiglia` | `GraphNeuralNetwork/architetture-applicazioni.md` |
 | `svg/copia-che-scivola.py` | `fig-copia-che-scivola` | `SerieTemporali/overview.md` |
 | `svg/corrimano-e-taratura.py` | `fig-corrimano-taratura` | `Transformers/attenzione.md` |
+| `svg/credenza-che-si-stringe.py` | `fig-credenza-che-si-stringe` | `Matematica/probabilita-statistica.md` |
 | `svg/credito-spalmato.py` | `fig-credito-spalmato` | `AutoSupervisione/dibattito-rl.md` |
 | `svg/ctc-collassa.py` | `fig-ctc-allineamento` | `SpeechRecognition/modelli-asr.md` |
 | `svg/decodifica-per-differenza.py` | `fig-decodifica-per-differenza` | `VisioneLinguaggio/vedere-quel-che-non-ce.md` |
@@ -238,6 +241,9 @@ nota, e costa meno di un minuto.
 | `svg/learning-rate.py` | `fig-learning-rate` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/linee-di-base.py` | `fig-linee-di-base` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/lune-si-raddrizzano.py` | `fig-flusso-lune` | `VerosimiglianzaEsatta/flussi.md` |
+| `svg/media-che-scivola.py` | `fig-media-che-scivola` | `MachineLearning/curve-al-posto-di-rette.md` |
+| `svg/miscele-di-winograd.py` | `fig-miscele-di-winograd` | `DeepLearning/reti-convoluzionali.md` |
+| `svg/nastro-e-testina.py` | `fig-nastro-e-testina` | `Introduzione/calcolabile.md` |
 | `svg/nastro-si-riavvolge.py` | `fig-nastro-autograd` | `PyTorch/tensori.md` |
 | `svg/ogni-turno-costa-uguale.py` | `fig-torneo-costo-piatto` | `MachineLearning/iperparametri.md` |
 | `svg/origine-mobile.py` | `fig-walk-forward-validazione` | `SerieTemporali/validazione-e-feature.md` |
@@ -257,6 +263,8 @@ nota, e costa meno di un minuto.
 | `svg/quattro-ingredienti.py` | `fig-quattro-ingredienti` | `PINN/applicazioni-limiti.md` |
 | `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |
 | `svg/scossa-che-resta.py` | `fig-scossa-che-resta` | `SerieTemporali/componenti-e-classici.md` |
+| `svg/soglie-che-sopravvivono.py` | `fig-soglie-sopravvivono` | `TeoriaApprendimento/pac.md` |
+| `svg/somma-che-si-accumula.py` | `fig-somma-che-si-accumula` | `MLOps/monitoring-e-drift.md` |
 | `svg/somma-pesata-passaggi.py` | `fig-somma-pesata-passaggi` | `Transformers/rag.md` |
 | `svg/spartito-in-fila.py` | `fig-spartito-in-fila` | `Audio/generazione-audio.md` |
 | `svg/temperature-top-p.py` | `fig-due-manopole` | `IngegneriaLLM/prompt-engineering.md` |

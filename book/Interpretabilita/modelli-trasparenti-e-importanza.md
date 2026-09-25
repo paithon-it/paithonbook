@@ -124,12 +124,15 @@ confrontabili tra loro solo se le feature sono **standardizzate** (stessa
 scala): un $w_j$ grande può riflettere semplicemente un'unità di misura piccola.
 Secondo, l'inciso «a parità di tutte le altre» è fragile quando le feature sono
 correlate, e la fragilità si misura. Per i minimi quadrati con rumore
-omoschedastico di varianza $\sigma^2$ vale
-$\operatorname{Var}(\hat{\mathbf{w}}) = \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}$,
+omoschedastico di varianza $\sigma_\varepsilon^2$ (la varianza del rumore, da
+non confondere con la sigmoide $\sigma$ di poco sopra) vale
+$\operatorname{Var}(\hat{\mathbf{w}}) =
+\sigma_\varepsilon^2(\mathbf{X}^\top\mathbf{X})^{-1}$,
 e per la singola componente
 
 $$
-\operatorname{Var}(\hat{w}_j) = \frac{\sigma^2}{\sum_i (x_{ij} - \bar{x}_j)^2}
+\operatorname{Var}(\hat{w}_j) =
+\frac{\sigma_\varepsilon^2}{\sum_i (x_{ij} - \bar{x}_j)^2}
 \cdot \frac{1}{1 - R_j^2},
 $$
 
@@ -223,6 +226,218 @@ E ci sono i **sistemi a regole**, elenchi di condizioni del tipo «SE il reddito
 è sotto 20 000 E il contratto è a termine ALLORA nega il prestito», che decidono
 in un modo che si può leggere riga per riga.
 
+Un sistema a regole si può anche far scrivere ai dati. **RuleFit**, di Jerome
+Friedman e Bogdan Popescu {cite}`friedman2008predictive`, prende un insieme di
+alberi già addestrato, ne smonta ogni percorso in una regola del tipo «SE … E …»
+e fa scegliere a un Lasso, la regolarizzazione L1 della {doc}`sezione
+sull'overfitting </MachineLearning/overfitting-validazione>`, le poche regole
+che servono, accanto a un termine lineare per ogni colonna.
+
+`````{tab} Elementare
+
+Una banca ha un modello fatto di cinquanta alberi, che decide bene e che nessuno
+sa leggere: ogni risposta è la somma di cinquanta percorsi, uno per albero, e
+nessuno li segue tutti. Ogni strada che scende dalla cima di un albero fino a
+uno dei suoi bivi è però una frase che si legge: «SE l'età è sopra 0,6 E il
+reddito è sotto 0,4», con età e reddito riportati su una scala da 0 a 1, dove 0
+è il cliente più giovane (o più povero) e 1 il più anziano (o più ricco).
+Valgono anche le strade che si fermano a metà, al primo o al secondo bivio: sono
+frasi più corte, che riguardano più clienti. Da cinquanta alberi escono
+centinaia di frasi, troppe per chiunque.
+
+Allora si scrive un modello che dà punti, e il totale dei punti è la sua
+risposta (per la banca, quanto il cliente è rischioso). A ogni frase vera per un
+cliente si aggiungono i punti di quella frase, e per ogni colonna qualche punto
+per unità, come in una ricevuta. I punti li sceglie la regola del Lasso. Ogni
+punto dato costa, e costa uguale che sia il primo o l'ultimo, e lo si compra
+solo se migliora le risposte più di quanto costa; a una frase che aiuta poco,
+allora, non conviene darne nemmeno uno, e chi non serve riceve zero punti e
+sparisce dall'elenco. Quanto conta una frase dipende sia dai suoi punti sia da
+quanti clienti riguarda. Una frase vera per tutti dà a tutti gli stessi punti e
+non distingue nessuno, una vera per un cliente su mille ne sposta uno solo.
+Resta una ricevuta corta, e le frasi con più di una condizione dicono le cose
+che nessun termine per colonna saprebbe dire, come «l'età conta solo se il
+reddito è basso».
+
+Proprio perché ogni punto costa, il Lasso è avaro anche con le frasi utili, e i
+punti che assegna escono un po' più bassi del vero. Due frasi quasi uguali si
+possono dividere i punti che spetterebbero a una sola. E se la regola vera non
+ha soglie nette ma cresce piano, servono molte frasi per imitarla, e la ricevuta
+torna lunga. RuleFit non promette di battere gli alberi da cui nasce: promette
+di dire con poche frasi quello che loro dicono con centinaia.
+
+`````
+
+`````{tab} Superiore
+
+Il modello è
+
+$$
+F(\mathbf{x}) = a_0 + \sum_{k=1}^{K} a_k\, r_k(\mathbf{x}) + \sum_{j=1}^{d} b_j\, l_j(x_j),
+\qquad
+r_k(\mathbf{x}) = \prod_{m \in P_k} \mathbb{1}\big[x_{j_m} \in S_m\big],
+$$
+
+dove $K$ è il numero di regole estratte e ogni regola $r_k$ è il prodotto degli
+indicatori delle condizioni lungo il percorso $P_k$ dalla radice a un nodo di
+uno degli alberi; la condizione $m$ chiede che la colonna $x_{j_m}$ cada
+nell'intervallo $S_m$. Contano tutti i nodi tranne la radice, non solo le
+foglie, quindi un albero con $t$ foglie dà $2(t-1)$ regole. Il termine lineare
+$l_j$ della colonna $j$ (con $d$ il numero di colonne e $b_j$ il suo
+coefficiente, da non confondere con l'intercetta $a_0$) è la colonna
+*winsorizzata*, con i valori oltre i quantili $\beta$ e $1-\beta$
+($\beta \approx 0{,}025$) riportati a quei quantili, e poi riscalata a
+$0{,}4\,l_j/\mathrm{sd}(l_j)$. Il $0{,}4$ è la deviazione standard media di una
+regola con supporto uniforme ($\mathbb{E}\sqrt{s(1-s)} = \pi/8$ per
+$s \sim U(0,1)$), e mette il termine lineare alla pari con un indicatore davanti
+alla penalità. Le regole invece si lasciano come sono, di proposito, e così a
+parità di effetto sulle previsioni paga di più, perché le serve un coefficiente
+più grande, una regola con supporto vicino a $0$ o a $1$, che è stimata su pochi
+esempi. L'insieme di alberi viene da un procedimento che gli autori chiamano
+ISLE, di cui il gradient boosting è un caso, con sottocampionamento e un numero
+di foglie casuale per albero, e i coefficienti si stimano con una penalità L1,
+
+$$
+\min_{a, b}\ \sum_{i} \ell\big(y_i, F(\mathbf{x}_i)\big) + \lambda\Big(\sum_k |a_k| + \sum_j |b_j|\Big),
+$$
+
+con $\ell$ il costo di una previsione e $\lambda$ scelto per validazione
+incrociata. L'importanza di una regola di supporto $s_k$ (la frazione di esempi
+su cui è vera) è $|a_k|\sqrt{s_k(1 - s_k)}$, cioè il coefficiente per la
+deviazione standard dell'indicatore; quella di un termine lineare è $|b_j|$ per
+la deviazione standard di $l_j$. Le regole con due o più condizioni sono le
+interazioni, e si leggono direttamente. I limiti vengono dal Lasso e dalla base.
+Il Lasso restringe i coefficienti verso lo zero, e fra regole quasi collineari
+(o fra un termine lineare e le regole a soglia sulla stessa colonna) spartisce
+il peso in modo instabile da un campione all'altro; la base è fatta di gradini e
+di rette, e una funzione vera liscia e curva chiede molte regole, cioè una lista
+lunga.
+
+`````
+
+Il blocco costruisce dati in cui la risposta nasconde una regola a soglia fra
+due colonne, che quando è vera aggiunge $3$, più una terza colonna che conta in
+proporzione, $2$ per unità, e un rumore. Addestra un {doc}`gradient boosting
+</MachineLearning/alberi-ensemble>` (alberi costruiti uno dopo l'altro,
+ciascuno a correggere gli errori dei precedenti) di cinquanta alberi tutti di
+due livelli (il lavoro originale ne varia la grandezza), ne estrae le regole e
+le fa scegliere al Lasso. Poi confronta sui dati di prova tre modelli, la sola
+somma pesata delle colonne (la regressione lineare), il boosting e RuleFit, con
+l’$R^2$, che vale $1$ per chi indovina ogni risposta e $0$ per chi risponde
+sempre la media; e stampa l’$R^2$ della regola vera, il tetto che il rumore
+lascia a chiunque.
+
+```python
+import numpy as np
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import LassoCV, LinearRegression
+from sklearn.metrics import r2_score
+
+rng = np.random.default_rng(0)
+n, nomi = 3000, ["età", "reddito", "anzianità", "rate", "figli"]
+X = rng.uniform(0, 1, size=(n, 5))
+# la regola nascosta: un'interazione a soglia, più un effetto lineare
+y = 3.0 * ((X[:, 0] > 0.6) & (X[:, 1] < 0.4)) + 2.0 * X[:, 2] + rng.normal(0, 0.3, n)
+X_tr, X_te, y_tr, y_te = X[:2000], X[2000:], y[:2000], y[2000:]
+
+foresta = GradientBoostingRegressor(n_estimators=50, max_depth=2, learning_rate=0.1,
+                                    subsample=0.5, random_state=0).fit(X_tr, y_tr)
+
+def regole(albero):
+    """Ogni nodo che non è la radice è una regola: le condizioni del percorso."""
+    t, trovate = albero.tree_, []
+    def scendi(nodo, condizioni):
+        if t.children_left[nodo] == -1:
+            return
+        # soglie arrotondate al centesimo e condizioni in ordine fisso:
+        # la stessa regola trovata da alberi diversi diventa una sola
+        j, s = t.feature[nodo], round(float(t.threshold[nodo]), 2)
+        for figlio, segno in ((t.children_left[nodo], "<="), (t.children_right[nodo], ">")):
+            nuove = condizioni + ((j, segno, s),)
+            trovate.append(tuple(sorted(nuove)))
+            scendi(figlio, nuove)
+    scendi(0, ())
+    return trovate
+
+tutte = sorted({r for stima in foresta.estimators_[:, 0] for r in regole(stima)})
+def vale(regola, X):
+    ok = np.ones(len(X), bool)
+    for j, segno, s in regola:
+        ok &= (X[:, j] <= s) if segno == "<=" else (X[:, j] > s)
+    return ok.astype(float)
+# i termini lineari, riscalati come nel lavoro originale: 0,4 / deviazione standard
+# (la winsorizzazione qui si omette: dati uniformi in [0, 1] non hanno code)
+scala = 0.4 / X_tr.std(axis=0)
+def colonne(A):
+    return np.column_stack([vale(r, A) for r in tutte] + [A * scala])
+R_tr, R_te = colonne(X_tr), colonne(X_te)
+lasso = LassoCV(cv=5).fit(R_tr, y_tr)
+
+# attivi i coefficienti non nulli; secondo il processore alcuni zeri escono
+# come residui di arrotondamento dell'ordine di 1e-17, e non vanno contati
+attive = np.flatnonzero(np.abs(lasso.coef_) > 1e-10)
+print(f"regole candidate: {len(tutte)}, termini tenuti dal Lasso: {len(attive)}")
+for nome, modello, A in [("lineare", LinearRegression().fit(X_tr, y_tr), X_te),
+                         ("boosting", foresta, X_te),
+                         ("RuleFit", lasso, R_te)]:
+    print(f"R^2 sul test, {nome:8}: {r2_score(y_te, modello.predict(A)):.2f}")
+# il tetto: la regola vera senza il rumore, che nessun modello può battere
+vera = 3.0 * ((X_te[:, 0] > 0.6) & (X_te[:, 1] < 0.4)) + 2.0 * X_te[:, 2]
+print(f"R^2 sul test, la regola vera: {r2_score(y_te, vera):.2f}")
+testo = lambda r: " E ".join(f"{nomi[j]} {s_} {v:.2f}" for j, s_, v in r)
+pesi = [(abs(lasso.coef_[k]) * R_tr[:, k].std(), k) for k in attive]
+tot = sum(p for p, _ in pesi)
+print(f"peso dei tre termini più importanti: {sum(p for p, _ in sorted(pesi, reverse=True)[:3]) / tot:.0%}")
+for _, k in sorted(pesi, reverse=True)[:3]:
+    if k < len(tutte):
+        print(f"{lasso.coef_[k]:+.2f}  SE {testo(tutte[k])}")
+    else:                                  # riportato all'unità della colonna
+        j = k - len(tutte)
+        print(f"{lasso.coef_[k] * scala[j]:+.2f}  per ogni unità di {nomi[j]}")
+# l'anzianità non sta solo nel suo termine lineare: di quanto sale in tutto la
+# previsione per un'unità in più (da 0,05 a 0,95, sui dati di prova)
+alto, basso = X_te.copy(), X_te.copy()
+alto[:, 2], basso[:, 2] = 0.95, 0.05
+salto = lasso.predict(colonne(alto)) - lasso.predict(colonne(basso))
+salita = salto.mean() / 0.9
+sola = sum(1 for k in attive
+           if k < len(tutte) and all(j == 2 for j, _, _ in tutte[k]))
+print(f"regole sulla sola anzianità: {sola};",
+      f"in tutto, per unità: {salita:+.2f}")
+```
+
+```text
+regole candidate: 239, termini tenuti dal Lasso: 18
+R^2 sul test, lineare : 0.47
+R^2 sul test, boosting: 0.92
+R^2 sul test, RuleFit : 0.95
+R^2 sul test, la regola vera: 0.95
+peso dei tre termini più importanti: 92%
++2.81  SE età > 0.60 E reddito <= 0.40
++1.64  per ogni unità di anzianità
++0.11  SE età > 0.59 E reddito <= 0.40
+regole sulla sola anzianità: 10; in tutto, per unità: +1.94
+```
+
+Delle 239 regole candidate (i 300 percorsi dei cinquanta alberi, sei per albero,
+meno quelli che coincidono una volta arrotondate le soglie al centesimo) e dei
+cinque termini lineari il Lasso tiene diciotto termini, e i primi tre portano
+più di nove decimi del peso. In testa c'è la regola nascosta, «età sopra 0,6 E
+reddito sotto 0,4», con $2{,}81$ punti contro i $3$ veri. Una gemella che
+l'arrotondamento non ha fuso, con la soglia a $0{,}59$, se ne prende $0{,}11$, e
+i pochi centesimi che mancano ancora vanno ad altre gemelle minori e al
+restringimento del Lasso. Sull'anzianità si vede l'altro limite. Il suo termine
+lineare vale $1{,}64$ contro $2$, e il restringimento c'entra poco: dieci
+piccole regole a soglia sulla stessa colonna si spartiscono il resto della
+pendenza, che in tutto fa $1{,}94$, e con un altro campione la spartizione
+cambia, e il termine lineare con lei. RuleFit arriva al tetto che il rumore
+consente, lo stesso $R^2$ della regola vera, e supera il boosting da cui nasce
+perché i dati hanno proprio la forma del modello, una regola più una retta, e la
+retta il boosting la può solo imitare a gradini; sulle funzioni simulate del
+lavoro originale il vantaggio medio c'è, ma è piccolo. Il modello lineare si
+ferma a $0{,}47$ perché una regola a soglia fra due colonne non è una somma di
+rette.
+
 Aleggia però un pregiudizio diffuso: che la trasparenza si paghi in
 accuratezza, che per essere bravi si debba per forza essere oscuri. È vero solo
 in parte.
@@ -261,20 +476,23 @@ utile restando ispezionabile. Il gradient boosting con centinaia di alberi resta
 fuori: è anzi la scatola nera tipica delle tabelle. Lo diventa se lo si
 costringe alla forma additiva, addestrando per boosting un albero minuscolo alla
 volta su una feature sola, a turno, e sommando gli alberi di ogni feature in una
-curva $f_j$: è il GA²M di Lou, Caruana e Gehrke {cite}`lou2013accurate`, che a
-$\sum_j f_j(x_j)$ aggiunge pochi termini a coppie $f_{jk}(x_j, x_k)$ scelti con
-un test statistico, e che la libreria InterpretML distribuisce col nome di
+curva $f_j$: è il GA²M di Lou e colleghi {cite}`lou2013accurate`, che a
+$\sum_j f_j(x_j)$ aggiunge pochi termini a coppie $f_{jk}(x_j, x_k)$, scelti fra
+tutte le coppie con una graduatoria rapida (FAST) di quanto ciascuna, su una
+griglia grossolana, riduce l'errore residuo, e che la libreria InterpretML
+distribuisce col nome di
 *Explainable Boosting Machine*. Con un modello di questa famiglia Caruana e
 colleghi hanno riletto il caso della polmonite e dell'asma
 {cite}`caruana2015intelligible`: la curva dell'asma si poteva guardare, e
 correggere a mano.
 
 Ne discende una gerarchia metodologica: preferire un modello intrinsecamente
-interpretabile quando le prestazioni sono comparabili, e riservare gli
-strumenti *post-hoc* (importanza delle feature, PDP, e i metodi locali che
-vedremo più avanti nel capitolo) ai casi in cui la scatola nera è davvero
-necessaria. Gli strumenti post-hoc spiegano il modello *dall'esterno* e sono
-approssimazioni: non sostituiscono la trasparenza di progetto.
+interpretabile quando le prestazioni sono comparabili, e riservare gli strumenti
+*post-hoc* (importanza delle feature, PDP, e i metodi delle
+{doc}`spiegazioni locali </Interpretabilita/spiegazioni-locali>`) ai casi in cui
+la scatola nera è davvero necessaria. Gli strumenti post-hoc spiegano il modello
+*dall'esterno* e sono approssimazioni: non sostituiscono la trasparenza di
+progetto.
 
 `````
 
@@ -350,7 +568,7 @@ l'altra colonna e il calo resta piccolo. Quel numero basso è vero se la domanda
 è di che cosa il modello ha bisogno, perché gli basta una delle due colonne;
 inganna chi ci legge quanta informazione porti il reddito, che ne porta eccome.
 È il bivio dell'apertura, quello fra spiegare il programma e spiegare il mondo,
-che torna qui per la prima volta.
+che torna qui con un numero.
 
 C'è poi il guasto opposto, e viene dal rimescolamento stesso: si fabbricano
 clienti impossibili, un ventenne con la pensione di un ex dirigente. Su gente
@@ -684,11 +902,11 @@ Prima di leggere la classifica, i tre numeri che la compongono, uno alla volta.
 Il primo dice quanto è bravo il modello, ed è costruito su una scala con due
 paletti. Da una parte c'è chi risponde sempre la media, senza nemmeno guardare
 il paziente: quello prende zero. Dall'altra c'è chi indovina la progressione
-esatta di ogni paziente: quello prende uno. (E si può anche andare sotto
-zero, facendo peggio di chi risponde sempre la media.) Il nostro modello prende
+esatta di ogni paziente: quello prende uno. (E si può anche andare sotto zero,
+facendo peggio di chi risponde sempre la media.) Il nostro modello prende
 $0{,}315$, cioè sta a poco meno di un terzo del cammino fra il pigro e
-l'indovino. Quella misura si chiama $R^2$, e il numero va tenuto a mente:
-l'importanza che stiamo per leggere descrive *questo* modello,
+l'indovino. Quella misura è l’$R^2$, già incontrato con RuleFit, e il numero va
+tenuto a mente: l'importanza che stiamo per leggere descrive *questo* modello,
 che non è bravissimo, non la verità clinica.
 
 Il secondo, la colonna dell'impurità, è il merito accumulato dai tagli. È
@@ -756,17 +974,221 @@ righe di prova non serve più. Due meccanismi diversi, sommati dentro un numero
 solo che non dice quanto spetti a ciascuno, ed è per questo che quella colonna
 non va letta come una classifica.
 
+## Spiegare con gli esempi: prototipi e critiche
+
+Le spiegazioni viste finora parlano di colonne. Un'altra strada parla di
+esempi: per far capire che cosa c'è in un insieme di dati si mostrano pochi casi
+**prototipi**, che lo rappresentano bene, e qualche **critica**, i casi che i
+prototipi rappresentano male. MMD-critic di Kim, Khanna e Koyejo
+{cite}`kim2016examples` sceglie gli uni e gli altri con la *maximum mean
+discrepancy* (MMD), una distanza fra due distribuzioni, cioè fra due modi di
+spargersi dei dati, la stessa con cui il {doc}`monitoraggio della deriva
+</MLOps/monitoring-e-drift>` confronta la finestra di riferimento con quella
+corrente; qui le due distribuzioni sono quella dei dati e quella dei soli
+prototipi. Con un modello la sintesi lavora in due modi. I prototipi possono
+diventare essi stessi un classificatore, che risponde col prototipo più vicino e
+si spiega mostrandolo; oppure si guardano le risposte di una scatola nera
+proprio su prototipi e critiche, dove una lacuna dei dati si fa vedere.
+
+`````{tab} Elementare
+
+Chi deve capire in fretta che cosa c'è in un archivio di diecimila foto di
+animali non vuole le medie dei pixel: vuole dieci foto scelte bene. Le dieci
+foto devono stare dove le foto sono tante, e distribuirsi come l'archivio: se
+metà dell'archivio sono cani, metà delle foto scelte sono cani.
+
+Per misurare quanto la selezione somiglia all'archivio si dispongono le foto su
+un grande tavolo, quelle che si somigliano vicine fra loro. Poi si passa in
+rassegna ogni zona del tavolo, e in ciascuna si confronta quante foto
+dell'archivio le stanno vicine con quante della selezione, in proporzione (se
+attorno a una zona sta il 30% dell'archivio, lì dovrebbero cadere tre delle
+dieci foto scelte). La differenza, elevata al quadrato e sommata su tutte le
+zone, è la MMD al quadrato, che fa zero solo se le due raccolte si spargono sul
+tavolo allo stesso modo.
+
+Tutto dipende da che cosa vuol dire «vicino». Con una misura troppo larga ogni
+foto è vicina a ogni altra, e dieci foto qualunque sembrano rappresentare tutto;
+con una troppo stretta ogni foto è un caso a sé, e dieci non bastano mai.
+
+Si sceglie una foto alla volta, ogni volta quella che abbassa di più la
+differenza. Scegliere così non garantisce la migliore selezione possibile. La
+garanzia che accompagna il metodo vale solo col «vicino» più stretto, quello in
+cui ogni foto è un caso a sé, e lì non dice niente, perché dieci foto qualunque
+valgono dieci altre. Con un «vicino» che serve davvero la scelta una alla volta
+va senza garanzie, e si usa perché in pratica se la cava bene.
+
+Poi si cercano le critiche. La stessa differenza, zona per zona e senza il
+quadrato, dice dove l'archivio ha più foto di quante la selezione lasci
+immaginare: si chiama funzione testimone, perché è la prova, punto per punto,
+che le due raccolte non sono uguali, e le critiche sono le foto dove è più
+alta. Un piccolo gruppo di animali rari, poniamo duecento foto su diecimila, può
+restare senza nessuna delle dieci foto scelte: ognuna ne rappresenta in media un
+migliaio, e a ogni passo una foto in più fra i cani abbassa la differenza più di
+una foto fra i rari. Ed è proprio lì che le critiche puntano. Mostrare solo i
+prototipi darebbe un'idea troppo pulita dell'archivio: le critiche dicono dove
+la sintesi tace. Le critiche, poi, si vogliono diverse fra loro, perché tre
+foto dello stesso animale raro direbbero tre volte la stessa cosa. E si guarda
+anche il verso opposto, le zone dove la selezione promette più foto di quante
+l'archivio ne abbia.
+
+`````
+
+`````{tab} Superiore
+
+Siano $X = \{\mathbf{x}_1, \dots, \mathbf{x}_n\}$ i dati in $\mathbb{R}^d$, $Z$
+un insieme di prototipi scelti fra loro e $k$ il nucleo gaussiano di larghezza
+$\sigma$,
+$k(\mathbf{x}, \mathbf{x}') = \exp\big(-\lVert\mathbf{x} - \mathbf{x}'\rVert^2 / (2\sigma^2)\big)$.
+La stima dell'MMD al quadrato fra la distribuzione empirica dei dati e quella
+dei prototipi è
+
+$$
+\mathrm{MMD}^2(X, Z) = \frac{1}{|Z|^2}\sum_{\mathbf{z}, \mathbf{z}' \in Z} k(\mathbf{z}, \mathbf{z}')
+- \frac{2}{|Z|\,n}\sum_{\mathbf{z} \in Z}\sum_{i} k(\mathbf{z}, \mathbf{x}_i)
++ \frac{1}{n^2}\sum_{i,j} k(\mathbf{x}_i, \mathbf{x}_j).
+$$
+
+Con il nucleo gaussiano è, a meno del fattore $(2\pi\sigma^2)^{d/2}$,
+l'integrale del quadrato della differenza fra le due distribuzioni lisciate con
+una gaussiana di larghezza $\sigma/\sqrt{2}$, e si annulla solo quando le due
+coincidono, perché il nucleo gaussiano è caratteristico. I prototipi si scelgono
+in modo avido, aggiungendo a ogni passo quello che abbassa di più
+$\mathrm{MMD}^2$, cioè che alza di più $J(Z)$, l'opposto di $\mathrm{MMD}^2$
+senza il termine fra i soli dati, che non dipende dalla scelta. Gli autori
+enunciano che $J$ è monotona e submodulare se la matrice del nucleo ha diagonale
+costante $k^*$ e termini fuori diagonale fra $0$ e $k^*/(n^3 + 2n^2 - 2n - 3)$,
+e ne ricavano, con il risultato classico sulle funzioni submodulari
+{cite}`nemhauser1978analysis`, che la scelta avida arriverebbe almeno a
+$1 - 1/e \approx 0{,}63$ del valore ottimo di $J$ fra gli insiemi della stessa
+taglia. Quella condizione però fa del nucleo quasi l'identità (con un nucleo
+gaussiano chiede una larghezza sotto la distanza fra i due punti più vicini
+divisa per circa $\sqrt{2\ln n^3}$), e lì $J(Z) = k^*\,(2/n - 1/|Z|)$ a meno di
+$O(k^* n^{-3})$, per qualunque $Z$. Gli insiemi della stessa taglia si
+equivalgono, e per $|Z| < n/2$ il valore è negativo, sotto $J(\emptyset) = 0$:
+la monotonia cade al primo passo, e un rapporto fra due valori negativi non
+promette niente. Nell'uso la scelta avida è un'euristica senza garanzia, che gli
+autori difendono col buon comportamento pratico dell'avido sui problemi
+submodulari. Le critiche vengono dalla **funzione testimone**,
+
+$$
+\psi(\mathbf{x}) = \frac{1}{n}\sum_{i} k(\mathbf{x}, \mathbf{x}_i)
+- \frac{1}{|Z|}\sum_{\mathbf{z} \in Z} k(\mathbf{x}, \mathbf{z}),
+$$
+
+positiva dove i dati sono più densi di quanto i prototipi dicano, negativa dove
+i prototipi li sovrarappresentano; la sua media sui dati meno la sua media sui
+prototipi è di nuovo $\mathrm{MMD}^2$. La $\mathrm{MMD}$ chiede ai prototipi di
+riprodurre le proporzioni dei dati, non di coprirne lo spazio: un gruppo piccolo
+può restare senza prototipi, perché ogni prototipo in più dove la massa è grande
+abbassa $\mathrm{MMD}^2$ di più (un clustering che minimizza le distanze, come
+il $k$-means, al gruppo lontano un centro lo darebbe), ed è lì che $\psi$ è
+positiva e grande. Il lavoro originale sceglie un insieme di critiche $C$ che
+massimizza $\sum_{\mathbf{x} \in C} |\psi(\mathbf{x})|$ più il log-determinante
+del nucleo ristretto a $C$, un termine che le vuole diverse fra loro; i due
+termini si sommano senza un peso, e la scelta è di nuovo avida. La matrice del
+nucleo costa $O(n^2)$ valutazioni, e la larghezza decide tutto: troppo larga e
+ogni insieme sembra rappresentativo, troppo stretta e nessuno lo è. Negli
+esperimenti degli autori il parametro del nucleo si sceglie con la validazione
+incrociata del classificatore al prototipo più vicino.
+
+`````
+
+Il blocco rifà la scena in piccolo, con punti su un piano al posto delle foto:
+due gruppi grandi di duecento punti e uno raro di venti. Sceglie dieci prototipi
+uno alla volta, ogni volta il migliore (la scelta *avida*), con un nucleo
+gaussiano di larghezza $\sigma = 1$ a fare da «vicino», e poi cerca le critiche.
+Per semplicità le critiche sono prima i tre punti con la funzione testimone più
+alta, cioè dove i dati superano di più i prototipi; poi il blocco rifà la scelta
+come il metodo originale, che guarda anche il verso opposto, col valore
+assoluto, e le vuole diverse fra loro.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+# due gruppi grandi e un gruppetto raro, che una sintesi per medie rischia di perdere
+grande_a = rng.normal([0, 0], 0.5, size=(200, 2))
+grande_b = rng.normal([4, 0], 0.5, size=(200, 2))
+raro = rng.normal([2, 3], 0.3, size=(20, 2))
+X = np.vstack([grande_a, grande_b, raro])
+gruppo = np.array(["a"] * 200 + ["b"] * 200 + ["raro"] * 20)
+
+def nucleo(A, B, larghezza=1.0):
+    d2 = ((A[:, None, :] - B[None, :, :]) ** 2).sum(-1)
+    return np.exp(-d2 / (2 * larghezza ** 2))
+
+K = nucleo(X, X)
+media_dati = K.mean(axis=1)                  # quanto ogni punto somiglia ai dati, in media
+
+def mmd2(scelti):
+    """MMD al quadrato fra i dati e i soli prototipi scelti (a meno della costante dei dati)."""
+    S = np.array(scelti)
+    return K[np.ix_(S, S)].mean() - 2 * media_dati[S].mean()
+
+prototipi = []
+for _ in range(10):                          # scelta avida: il prototipo che abbassa di più l'MMD
+    candidati = [i for i in range(len(X)) if i not in prototipi]
+    prototipi.append(min(candidati, key=lambda i: mmd2(prototipi + [i])))
+print("prototipi per gruppo:", {g: int((gruppo[prototipi] == g).sum()) for g in ("a", "b", "raro")})
+
+# la funzione testimone: dove i dati sono più fitti dei prototipi (positiva) o meno (negativa)
+testimone = media_dati - K[:, prototipi].mean(axis=1)
+critiche = np.argsort(-testimone)[:3]         # dove i dati sono più fitti di quanto i prototipi dicano
+print("critiche:", [str(gruppo[i]) for i in critiche])
+print(f"testimone più alta, nel gruppo raro {testimone[gruppo == 'raro'].max():.3f},"
+      f" fuori {testimone[gruppo != 'raro'].max():.3f}")
+distanza = max(np.linalg.norm(X[i] - X[j]) for i in critiche for j in critiche)
+print(f"distanza massima fra le tre critiche: {distanza:.2f}")
+
+# il metodo originale: la testimone in valore assoluto più il log-determinante
+# del nucleo sulle critiche scelte, che le vuole lontane fra loro
+def punteggio(scelte):
+    return (np.abs(testimone[scelte]).sum()
+            + np.linalg.slogdet(K[np.ix_(scelte, scelte)])[1])
+
+fuori = [i for i in range(len(X)) if i not in prototipi]
+diverse = []
+for _ in range(3):                           # di nuovo una alla volta
+    diverse.append(max((i for i in fuori if i not in diverse),
+                       key=lambda i: punteggio(diverse + [i])))
+print("critiche col log-determinante:",
+      [f"{gruppo[i]} {testimone[i]:+.3f}" for i in diverse])
+```
+
+```text
+prototipi per gruppo: {'a': 5, 'b': 5, 'raro': 0}
+critiche: ['raro', 'raro', 'raro']
+testimone più alta, nel gruppo raro 0.043, fuori 0.014
+distanza massima fra le tre critiche: 0.14
+critiche col log-determinante: ['raro +0.043', 'b -0.041', 'a +0.014']
+```
+
+I dieci prototipi si dividono in parti uguali fra i due gruppi grandi, e il
+gruppo raro, venti punti su quattrocentoventi, non ne riceve nessuno: a ogni
+passo un prototipo in più in uno dei gruppi grandi abbassa l'MMD più di uno fra
+i rari. Le tre critiche cadono tutte lì, dove la funzione testimone supera il
+suo massimo fuori dal gruppo raro, cioè proprio nel posto che la sola lista dei
+prototipi avrebbe nascosto. Ma senza un termine che le voglia diverse cadono
+anche tutte nello stesso gruppetto, a non più di $0{,}14$ l'una dall'altra, e
+dicono tre volte la stessa cosa. Il metodo originale le vuole diverse col
+log-determinante, e lo somma alla testimone senza un peso. Il log-determinante
+di due punti vicini vale qualche unità sotto zero, la testimone qualche
+centesimo, e su questi dati decide lui: la prima critica resta nel gruppo raro,
+la seconda va in un punto dove la testimone è negativa, cioè dove i prototipi
+promettono più punti di quanti ce ne siano, e la terza in un gruppo grande.
+
 ## Che una feature conti, non come, né perché
 
-Chiudiamo con l'avvertenza più importante, la stessa della storia degli
-asmatici. L'importanza delle feature (per rimescolamento o da impurità) dice che
-una colonna pesa sulle risposte del modello. Non dice come agisce (per quello
-servono le curve di poco fa), non dice se l'effetto sia lo stesso per tutti (lo
-dicono le curve ICE, e caso per caso i metodi della sezione seguente), e
-soprattutto non dice che quella colonna sia la causa di niente. Attenzione a
-questa parola, che somiglia a un'altra usata qui di continuo: «casuale» vuol
-dire tirato a sorte, «causale» vuol dire che una cosa ne provoca un'altra, ed è
-la seconda che qui stiamo negando.
+Chiudiamo tornando alle colonne, con l'avvertenza più importante, la stessa
+della storia degli asmatici. L'importanza delle feature (per rimescolamento o da
+impurità) dice che una colonna pesa sulle risposte del modello. Non dice come
+agisce (per quello servono le curve di poco fa), non dice se l'effetto sia lo
+stesso per tutti (lo dicono le curve ICE, e caso per caso i metodi delle
+{doc}`spiegazioni locali </Interpretabilita/spiegazioni-locali>`), e soprattutto
+non dice che quella colonna sia la causa di niente. Attenzione a questa parola,
+che somiglia a un'altra usata qui di continuo: «casuale» vuol dire tirato a
+sorte, «causale» vuol dire che una cosa ne provoca un'altra, ed è la seconda che
+qui stiamo negando.
 
 Un esempio, e sta tutto nella storia degli asmatici di apertura. Là l'asma
 risultava importante, e chi avesse letto quel numero come una causa avrebbe
@@ -789,7 +1211,9 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   albero la spiegazione è il percorso di domande che porta alla risposta. Sono
   di questa famiglia anche i modelli additivi generalizzati, che al posto di
   un cartellino fisso mettono una curva leggibile per ogni caratteristica, e i
-  sistemi a regole.
+  sistemi a regole, che si possono anche far scrivere ai dati: RuleFit smonta
+  gli alberi di un modello in frasi «SE … E …» e tiene soltanto quelle che
+  valgono i punti che costano.
 - Il presunto scambio fra accuratezza e chiarezza non vale sempre, e sui
   dati a righe e colonne spesso non vale affatto.
 - L’importanza per rimescolamento (Breiman, 2001; in inglese *permutation
@@ -821,6 +1245,11 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   e la curva che ne esce inganna. In quel caso si usa l’ALE, che confronta
   solo valori vicini fra chi quei valori li ha davvero, senza inventare
   nessuno.
+- Un insieme di dati si spiega anche con pochi esempi. I prototipi si
+  scelgono uno alla volta perché si spargano come i dati; le critiche sono i
+  casi che i prototipi rappresentano male, come un gruppo raro rimasto senza
+  prototipo, e si vogliono diverse fra loro. Tutto dipende da che cosa vuol
+  dire «vicino».
 - L'importanza dice che una colonna pesa sulle risposte, non come agisce
   né che ne sia la causa: è l'errore della regola sugli asmatici, dove a
   proteggere non era l'asma ma la corsia in cui l'asma faceva finire. Il
@@ -833,10 +1262,12 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
 
 ```{admonition} Da ricordare
 :class: important
-- I modelli trasparenti (lineari/logistici, alberi, GAM, regole) sono la
-  propria spiegazione: nella regressione lineare ogni coefficiente $w_j$ è
-  l'effetto marginale della feature $j$. Il presunto compromesso
-  accuratezza/interpretabilità non vale sempre, specie sui dati tabellari.
+- I modelli trasparenti (lineari/logistici, alberi, GAM, regole, anche estratte
+  da un insieme di alberi con RuleFit, dove un Lasso sceglie regole e termini
+  lineari) sono la propria spiegazione: nella regressione lineare ogni
+  coefficiente $w_j$ è l'effetto marginale della feature $j$. Il presunto
+  compromesso accuratezza/interpretabilità non vale sempre, specie sui dati
+  tabellari.
 - La permutation importance {cite}`breiman2001random` mescola i valori di
   una sola colonna e misura il calo di performance ($\mathrm{FI}_j =
   e_{\pi_j} - e_{\text{orig}}$): è model-agnostic, va calcolata su dati
@@ -852,6 +1283,12 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
 - PDP mostra l'effetto marginale *medio* di una feature, ICE una curva
   per istanza (rivela le interazioni che il PDP media via); con feature
   correlate il PDP estrapola e inganna: meglio ALE.
+- MMD-critic {cite}`kim2016examples` sceglie i prototipi in modo avido
+  abbassando $\mathrm{MMD}^2$ fra dati e prototipi, che riproduce le proporzioni
+  dei dati e non ne copre lo spazio; le critiche stanno dove la funzione
+  testimone è grande in valore assoluto, rese diverse da un log-determinante.
+  La scelta avida non ha una garanzia utile, e la larghezza del nucleo decide
+  tutto.
 - L'importanza dice che una feature conta, non come né se è causale.
   Correlazione nel modello non è causazione nel mondo. Panoramica completa in
   Molnar {cite}`molnar2022interpretable`.

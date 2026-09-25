@@ -366,8 +366,12 @@ dell'apprendimento, dove $k$ è la cardinalità della classe di ipotesi: la
 garanzia peggiora come la radice del logaritmo del numero di funzioni fra cui
 si sceglie, ed è la ragione formale per cui una classe troppo ricca smette di
 dare garanzie. Il caso in cui la classe è infinita si tratta sostituendo il
-conteggio con una misura di complessità, e il {doc}`capitolo sul machine
-learning </MachineLearning/overview>` lo affronta dal lato pratico parlando di
+conteggio con una misura di complessità, la {doc}`dimensione VC
+</TeoriaApprendimento/dimensione-vc>` o la {doc}`complessità di Rademacher
+</TeoriaApprendimento/rademacher-margine>`, e lo
+svolge per intero il capitolo sulla {doc}`teoria dell'apprendimento
+</TeoriaApprendimento/overview>`; il {doc}`capitolo sul machine learning
+</MachineLearning/overview>` lo affronta prima dal lato pratico, parlando di
 sovradattamento.
 
 Una precisazione che evita un errore frequente: la correzione va applicata al

@@ -492,6 +492,95 @@ in versione moderna la libreria di riferimento è Optuna, in cui lo spazio
 di ricerca si descrive direttamente nel codice e le prove peggiori vengono
 interrotte in corsa.
 
+### Una manopola alla volta: la curva di validazione
+
+Prima di cercare in più dimensioni conviene guardare una manopola sola. La
+**curva di validazione** riporta, al variare di un iperparametro e con tutto il
+resto fermo, il punteggio sugli esempi di addestramento e quello di
+validazione. È parente delle
+{doc}`curve di apprendimento </MachineLearning/overfitting-validazione>`, che
+sull'asse orizzontale hanno invece il numero di esempi, e risponde a un'altra
+domanda: non se servono dati, ma dove mettere la manopola.
+
+`````{tab} Elementare
+
+Si gira la manopola dal minimo al massimo, e a ogni posizione si segnano due
+voti: quello sugli esempi di studio e quello sugli esempi di prova (non quelli
+d'esame, che restano chiusi). Il disegno che esce dice da che parte si sbaglia.
+Dove i due voti sono bassi tutti e due, il modello è troppo rigido per il
+problema, e sbaglia anche dove ha studiato. Dove il voto di studio è pieno e
+quello di prova crolla, il modello sta imparando a memoria. In mezzo c'è la
+posizione giusta, quella con il voto di prova più alto, e la distanza fra i due
+voti dice quanto si è vicini al precipizio.
+
+Il limite è nel «tutto il resto fermo». Le manopole non sono indipendenti: la
+posizione migliore di una dipende da dove stanno le altre, e girandole una alla
+volta si trova il meglio di una fetta, non del tutto. Per questo la curva serve
+a capire, e la ricerca a scegliere. E anche scegliere guardando il disegno è una
+piccola ricerca: il voto di prova della posizione scelta porta con sé la stessa
+fortuna di cui dice l'ultima avvertenza.
+
+`````
+
+`````{tab} Superiore
+
+Per una coordinata $\lambda_j$ della configurazione, con le altre fissate, la
+curva di validazione riporta $\hat{E}_{\text{train}}(\lambda_j)$ e
+$\hat{E}_{\text{val}}(\lambda_j)$, stimati in cross-validation; la curva di
+apprendimento riporta invece gli stessi due errori in funzione della taglia $m$
+del training, a configurazione fissata. Nella regione di bias alto i due errori
+sono entrambi alti e vicini; in quella di varianza alta l'errore di
+addestramento è piccolo e il divario grande; il minimo di
+$\hat{E}_{\text{val}}$ è il compromesso della curva a U, letto su un asse
+concreto. In scikit-learn la calcola `validation_curve`, che di default riporta
+il punteggio del modello e non l'errore: per un classificatore è l'accuratezza,
+cioè $1 - \hat{E}$ con la perdita 0-1, e il compromesso diventa un massimo. Due
+limiti: la curva è una sezione dello spazio degli iperparametri, condizionata
+ai valori fissati degli altri, quindi non vede le interazioni (il $\gamma$
+migliore di una SVM dipende da $C$); e scegliere $\lambda_j$ guardando la curva
+consuma la validazione come qualunque ricerca, con l'ottimismo di cui dice
+l'ultima avvertenza.
+
+`````
+
+Il blocco fa girare il `gamma` della stessa SVM sulle cifre manoscritte, da
+$10^{-6}$ a $10^{-1}$, con `C` fermo a $10$, e stampa per ogni valore
+l'accuratezza media sugli esempi di addestramento e su quelli di validazione
+dei cinque blocchi.
+
+```python
+import numpy as np
+from sklearn.datasets import load_digits
+from sklearn.model_selection import StratifiedKFold, validation_curve
+from sklearn.svm import SVC
+
+X, y = load_digits(return_X_y=True)
+valori = np.logspace(-6, -1, 6)                 # una manopola sola: gamma, da 0,000001 a 0,1
+blocchi = StratifiedKFold(5, shuffle=True, random_state=0)   # blocchi rimescolati, come nella ricerca
+addestramento, validazione = validation_curve(SVC(C=10), X, y, param_name="gamma",
+                                              param_range=valori, cv=blocchi)
+for g, a, v in zip(valori, addestramento.mean(axis=1), validazione.mean(axis=1)):
+    print(f"gamma {g:.0e}: addestramento {a:.3f}, validazione {v:.3f}")
+```
+
+```text
+gamma 1e-06: addestramento 0.914, validazione 0.908
+gamma 1e-05: addestramento 0.979, validazione 0.969
+gamma 1e-04: addestramento 0.997, validazione 0.986
+gamma 1e-03: addestramento 1.000, validazione 0.988
+gamma 1e-02: addestramento 1.000, validazione 0.840
+gamma 1e-01: addestramento 1.000, validazione 0.106
+```
+
+Con `gamma` piccolo il modello è troppo liscio: $0{,}914$ sugli esempi di
+addestramento e $0{,}908$ in validazione, vicini e bassi. Salendo, tutti e due
+i voti crescono fino a $10^{-3}$, dove la validazione tocca il massimo,
+$0{,}988$, con l'addestramento già al completo: è il valore che la griglia aveva
+scelto, e il voto è in linea con il suo $0{,}9896$. Oltre, l'addestramento resta
+a $1{,}000$ e la validazione crolla, a $0{,}840$ e poi a $0{,}106$, quasi il
+caso su dieci cifre: ogni esempio di addestramento è diventato un'isola, e il
+modello non riconosce più niente che non abbia già visto.
+
 ## Le avvertenze sul foglietto
 
 Tre avvertenze, prima di chiudere.
@@ -547,18 +636,67 @@ Sconti non ce ne sono.
 
 `````{tab} Superiore
 
-Il massimo di $N$ stime rumorose è uno stimatore distorto verso l'alto del
-vero massimo: selezionando la configurazione con il miglior punteggio di
-validazione si eredita anche il suo errore di stima favorevole, e la
-distorsione cresce con $N$. In altre parole, una ricerca abbastanza lunga fa
-overfitting *sul validation set*. Le contromisure: riservare il test a
-un'unica valutazione finale; riportare media e deviazione standard sui fold,
-non il solo massimo; nei confronti metodologici, usare la *nested
-cross-validation* (un anello esterno per la stima onesta dell'errore, un
-anello interno per la selezione degli iperparametri) accettandone il costo,
-che è il prodotto dei due anelli.
+Sia $\hat{v}_i$ il punteggio di validazione della configurazione $\lambda_i$,
+e sia una stima corretta del punteggio vero $v_i$: $\mathbb{E}[\hat{v}_i] =
+v_i$. Siccome $\max_i \hat{v}_i \ge \hat{v}_k$ per ogni $k$, passando ai
+valori attesi
+
+$$
+\mathbb{E}\Big[\max_{i \le N} \hat{v}_i\Big] \;\ge\; \max_{i \le N} v_i ,
+$$
+
+cioè il punteggio della vincitrice è ottimista in media anche se nessuna stima,
+presa da sola, lo è: selezionando la migliore si eredita anche il suo errore di
+stima favorevole. Aggiungere configurazioni non può abbassare il membro di
+sinistra, quindi a parità di vero massimo la distorsione non diminuisce con $N$.
+In altre parole, una ricerca abbastanza lunga fa overfitting *sul validation
+set* {cite}`cawley2010overfitting`. Le contromisure: riservare il test a
+un'unica valutazione finale; riportare media e deviazione standard sui fold, non
+il solo massimo; nei confronti metodologici, usare la *nested cross-validation*
+(un anello esterno per la stima onesta dell'errore, un anello interno per la
+selezione degli iperparametri) accettandone il costo, che è il prodotto dei due
+anelli.
 
 `````
+
+L'ottimismo si misura facilmente dove si sa già la risposta, ed è la prova di
+Varma e Simon {cite}`varma2006bias`, in piccolo. Il blocco costruisce dieci
+archivi di puro rumore, in cui nessun modello può fare meglio del $50\%$, e su
+ciascuno cerca trenta configurazioni della SVM; poi rifà la stessa ricerca
+dentro ognuno dei cinque blocchi di una cross-validation esterna, misurando ogni
+vincitrice sul blocco che la sua ricerca non ha visto.
+
+```python
+import numpy as np
+from scipy.stats import loguniform
+from sklearn.model_selection import RandomizedSearchCV, cross_val_score
+from sklearn.svm import SVC
+
+vincitrici, annidate = [], []
+for seme in range(10):                          # dieci archivi di rumore puro
+    rng = np.random.default_rng(seme)
+    X = rng.normal(size=(200, 20))
+    y = rng.integers(0, 2, 200)                 # etichette a caso: il meglio possibile è 0,5
+    ricerca = RandomizedSearchCV(SVC(), {"C": loguniform(1e-2, 1e3), "gamma": loguniform(1e-4, 1e1)},
+                                 n_iter=30, cv=5, random_state=0)
+    vincitrici.append(ricerca.fit(X, y).best_score_)             # il voto della vincitrice
+    annidate.append(cross_val_score(ricerca, X, y, cv=5).mean())  # la ricerca rifatta dentro ogni blocco
+print(f"voto della vincitrice, in media: {np.mean(vincitrici):.4f} (sempre sopra 0,5: {min(vincitrici) > 0.5})")
+errore_standard = np.std(annidate, ddof=1) / np.sqrt(len(annidate))
+print(f"stima annidata, in media: {np.mean(annidate):.4f} (errore standard {errore_standard:.3f})")
+```
+
+```text
+voto della vincitrice, in media: 0.5695 (sempre sopra 0,5: True)
+stima annidata, in media: 0.5160 (errore standard 0.014)
+```
+
+Il voto della vincitrice supera il caso in tutti e dieci gli archivi, e in media
+dice $0{,}5695$, quasi sette punti sopra quello che nessun modello può
+superare: è il premio della ricerca, non del modello. La stima annidata scende a
+$0{,}5160$, con un errore standard di $0{,}014$: poco più di un errore standard
+sopra il caso, cioè compatibile con il caso, e quello che resta è rumore di
+stima su archivi di duecento righe.
 
 Le tre avvertenze hanno un'unica morale, ed è il modo migliore di chiudere il
 cerchio aperto da Rahimi: una ricerca degli iperparametri è essa stessa un
@@ -589,7 +727,12 @@ danno.
   un po’ dove la mappa è ancora bianca.
 - Il punteggio del vincitore è troppo bello: fra mille che lanciano una
   moneta, qualcuno fa nove teste per fortuna. Il numero da raccontare al mondo
-  si misura una volta sola, alla fine, sui dati d'esame rimasti intatti.
+  si misura una volta sola, alla fine, sui dati d'esame rimasti intatti. Su
+  dati di puro rumore la vincitrice di trenta prove sembra brava; rifacendo la
+  ricerca dentro ogni blocco, il voto torna quello del caso.
+- Una manopola alla volta si guarda con la curva di validazione: dove i due
+  voti sono bassi il modello è troppo rigido, dove quello di studio è pieno e
+  quello di prova crolla impara a memoria, in mezzo c'è la posizione giusta.
 ```
 
 `````
@@ -611,8 +754,14 @@ danno.
 - L’ottimizzazione bayesiana usa un surrogato (tipicamente un processo
   gaussiano) e una funzione di acquisizione per imparare dalle prove passate
   {cite}`snoek2012practical`.
-- Il punteggio del vincitore è ottimista: numero finale solo dal test
-  intatto, seed fissati, spazio e budget dichiarati.
+- Il punteggio del vincitore è ottimista in media anche quando ogni stima è
+  corretta, $\mathbb{E}[\max_i \hat{v}_i] \ge \max_i v_i$: numero finale solo
+  dal test intatto, seed fissati, spazio e budget dichiarati. La nested CV
+  misura la procedura di scelta: su rumore puro riporta il voto al caso.
+- Curva di validazione: $\hat{E}_{\text{train}}$ e $\hat{E}_{\text{val}}$ in
+  funzione di un iperparametro a parità del resto (la curva di apprendimento
+  li dà in funzione di $m$); è una sezione condizionata, cieca alle
+  interazioni.
 ```
 
 `````

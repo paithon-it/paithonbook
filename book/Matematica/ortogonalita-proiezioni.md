@@ -2,19 +2,33 @@
 
 Dall'osservatorio di Palermo, nella prima notte dell'Ottocento, Giuseppe
 Piazzi punta il telescopio verso il Toro e nota un puntino che nelle carte non
-c'è. Lo segue per una quarantina di notti, prende ventiquattro misure di
-posizione, poi il corpo celeste passa dietro il Sole e sparisce. Per ritrovarlo
-bisogna prevedere dove riemergerà, e per prevederlo bisogna ricavarne l'orbita
-da quelle ventiquattro misure.
+c'è. Lo segue fino all'11 febbraio, e in quelle sei settimane lo misura
+ventiquattro volte; diciannove misure sono complete, con le due coordinate che
+fissano un punto sulla volta celeste. Poi Piazzi si ammala, e l'astro (lo
+chiamerà Cerere) si avvicina al Sole fino a perdersi nel suo chiarore. Per
+ritrovarlo bisogna prevedere dove riemergerà, e per prevederlo bisogna
+ricavarne l'orbita da un arco di appena tre gradi.
 
-Il problema è sovradeterminato. Un'orbita si descrive con sei numeri, e
-ciascuna delle ventiquattro misure dà due coordinate sulla volta celeste:
-quarantotto equazioni per sei incognite, e nessuna orbita passa esattamente
-per tutti i punti osservati, perché ogni misura porta
-con sé il suo errore. Il ventiquattrenne Carl Friedrich Gauss risolve il
-problema cambiando la domanda: se nessuna orbita azzera gli scarti, si prende
-quella che rende minima la somma dei loro quadrati. Cerere viene ritrovata
-in dicembre, quasi dove il conto diceva.
+Un'orbita si descrive con sei numeri, e tre posizioni complete danno sei
+coordinate, quante ne servono. Il ventiquattrenne Carl Friedrich Gauss,
+nell'autunno del 1801, trova un modo di calcolare un'orbita da tre sole
+osservazioni, quelle del 2 e del 22 gennaio e dell'11 febbraio. Con tutte le
+misure, però, il problema è sovradeterminato: le diciannove posizioni complete
+danno trentotto equazioni per sei incognite, e nessuna orbita passa esattamente
+per tutti i punti osservati, perché ogni misura porta con sé il suo errore.
+
+Gauss ritocca allora l'orbita finché gli scarti restano piccoli e non mostrano
+più alcuna regolarità. Nella nota in cui riassume il metodo, pubblicata solo
+nel 1809, riduce il ritocco a un sistema lineare in sei correzioni, e aggiunge
+che i valori più adatti si potrebbero trovare con una regola di calcolo, ma che
+«un certo tatto» guida con altrettanta sicurezza. Il 7 dicembre Franz Xaver
+von Zach, a Gotha, annota fra le stelline del campo proprio Cerere, anche se ne
+sarà certo solo il 31; la notte del primo gennaio 1802 la ritrova Wilhelm
+Olbers a Brema. Stava a meno di mezzo grado da dove il conto diceva.
+
+In quella nota la regola non c'è, e quella che si imporrà pochi anni dopo
+cambia la domanda: se nessuna orbita azzera gli scarti, si prende quella che
+rende minima la somma dei loro quadrati.
 
 Il metodo, pubblicato da Adrien-Marie Legendre nel 1805 e da Gauss nel 1809,
 si chiama dei **minimi quadrati**, ed è il primo attrezzo statistico della
@@ -274,10 +288,12 @@ dieci dati sbagliati di poco. In compenso i quadrati danno l'ombra, cioè una
 risposta con una formula chiusa e una geometria limpida, mentre i valori
 assoluti non hanno né l'una né l'altra.
 
-Ed è per questa strada che il problema dell'orbita di Cerere si chiude. Le
-misure di Piazzi sono la freccia che sporge, le orbite possibili sono il piano,
-e l'orbita di Gauss è l'ombra: quella che lascia uno scarto perpendicolare a
-tutte le orbite disponibili, cioè uno scarto che nessun ritocco può ridurre.
+Ed è per questa strada che il problema dell'orbita di Cerere si chiude, rifatto
+con la regola dei quadrati. Finché i ritocchi sono piccoli, le orbite che si
+ottengono ritoccando quella di partenza stanno su un piano; le misure di Piazzi
+sono la freccia che sporge, e l'orbita migliore è la sua ombra: quella che
+lascia uno scarto perpendicolare a tutti i ritocchi possibili, cioè uno scarto
+che nessun ritocco può ridurre.
 
 `````
 

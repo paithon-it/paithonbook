@@ -132,8 +132,10 @@ i colpi. Solo allora i tre pezzi si sommano davvero, e quella media si spacca
 in tre addendi puliti: quello del mirino, quello della mano, quello del vento.
 Sulle distanze nude la somma non torna. Il quadrato di una somma si apre in
 pezzi, i quadrati dei tre scarti più i loro prodotti a due a due, e i prodotti
-misti, in media su molti colpi, fanno zero, perché mirino, mano e vento non si
-parlano fra loro: resta la somma dei tre quadrati. È la stessa aritmetica che
+misti, in media su molti colpi, fanno zero: quelli con la mano perché il
+tremore, misurato dal punto medio dei colpi, in media si annulla da sé, e
+quelli con il vento perché il vento non sa niente né del mirino né della mano.
+Resta la somma dei tre quadrati. È la stessa aritmetica che
 rende il quadrato scomodo da leggere a renderlo scomponibile.
 
 Letto così, il quadro è semplice. Un modello rigido ha molto bias e poca
@@ -174,8 +176,9 @@ Un'avvertenza sull'ambito di validità, perché il vocabolario viaggia più
 lontano del teorema. La decomposizione è un’identità della loss quadratica:
 per la loss 0-1 dei classificatori manca una scomposizione additiva con
 termini di segno fisso: in quella proposta da Domingos
-{cite}`domingos2000unified` la varianza entra col segno più dove la
-previsione media è giusta e col segno meno dove è sbagliata, e in generale non
+{cite}`domingos2000unified`, per due classi, la varianza entra col segno più
+dove la previsione più frequente fra i possibili addestramenti coincide con
+quella ottima e col segno meno dove non coincide, e in generale non
 esiste una scomposizione additiva
 analoga {cite}`wood2023unified`, e più varianza può perfino *ridurre* l'errore
 quando il bias sta dalla parte sbagliata della soglia. Da qui in avanti «bias» e
@@ -656,13 +659,14 @@ gesto della collina nella nebbia: gli assi non portano più i dati, portano le
 manopole del modello, e ogni punto del piano è una scelta possibile dei due
 numeri. Far pagare un prezzo alla spesa in pesi e mettere un tetto a quella
 spesa sono due modi di dire la stessa cosa: a ogni prezzo corrisponde il tetto
-che porta alla stessa soluzione, e viceversa. Il tetto conviene perché si
-disegna: è una regione attorno all'origine, e il modello deve restare dentro.
-Se la spesa si conta sommando i valori
-assoluti (la L1), il recinto è un rombo con le punte sugli assi: per star
-dentro basta che $|w_1| + |w_2|$ non superi il budget, e i due estremi sono
-spendere tutto su un peso solo, che sono appunto le punte. Se si conta
-sommando i quadrati (la L2) il recinto è un cerchio.
+che porta alla stessa soluzione, e viceversa (chi paga un prezzo per ogni unità
+di spesa finisce per spendere una certa cifra, e con quella cifra come tetto
+avrebbe scelto lo stesso). Il tetto conviene perché si disegna: è una regione
+attorno all'origine, e il modello deve restare dentro. Se la spesa si conta
+sommando i valori assoluti (la L1), il recinto è un rombo con le punte sugli
+assi: per star dentro basta che $|w_1| + |w_2|$ non superi il budget, e i due
+estremi sono spendere tutto su un peso solo, che sono appunto le punte. Se si
+conta sommando i quadrati (la L2) il recinto è un cerchio.
 
 E l'errore? Fuori dal recinto l'errore ha la forma di una conca, con il
 punto più basso dove starebbe la soluzione senza freni. Disegniamo su questa
@@ -688,7 +692,7 @@ punte non ne ha e non privilegia nessuna direzione.
 Un anello che si allarga incontra un rombo in una punta, come mostra
 {numref}`fig-l1-l2`, e le punte del rombo stanno sugli assi, cioè in punti dove
 uno dei due pesi vale esattamente zero. Succede tanto più spesso quanto più
-stretto è il budget, ed è la ragione per cui il Lasso azzera di più quando il
+stretto è il budget, ed è la ragione per cui la L1 azzera di più quando il
 freno è tirato di più. Un cerchio invece non ha punte, e il primo contatto
 cade in un posto qualunque del bordo, dove entrambi i pesi sono piccoli ma
 nessuno è nullo. Ecco perché sommare i valori assoluti seleziona le
@@ -697,11 +701,12 @@ recinto.
 
 `````{tab} Elementare
 
-La regolarizzazione è un budget di spesa sui pesi del modello. Senza limiti,
-per passare su ogni punto il modello gonfia i suoi pesi a dismisura, ed è così
-che nasce la curva contorta; con un tetto alla spesa totale deve essere sobrio,
-e le curve sobrie sono più morbide. I due modi di contare la spesa portano un
-nome ciascuno.
+La regolarizzazione è un budget di spesa sui pesi del modello. Senza limiti, per
+passare su ogni punto la curva deve piegarsi di scatto, e le pieghe brusche si
+fanno solo con pesi enormi di segno opposto, come $+1000$ e $-999$, che quasi si
+annullano a vicenda: è così che nasce la curva contorta. Con un tetto alla spesa
+totale il modello deve essere sobrio, e le curve sobrie sono più morbide. I due
+modi di contare la spesa portano un nome ciascuno.
 
 - **Ridge** (la L2): si paga la *somma dei quadrati* dei pesi. Li rimpicciolisce
   tutti dolcemente, senza azzerarne nessuno. Il quadrato punisce pochissimo chi
@@ -714,26 +719,61 @@ nome ciascuno.
   geometria.
 
 Quanto stringere il budget è la manopola con cui si sceglie fra i due modi di
-sbagliare visti al poligono. Tirata a fondo, con la spesa quasi vietata, tutti
-i pesi vanno a zero e il modello risponde sempre la stessa cosa: stabile e
-storto. Lasciata andare, si torna alla curva che si contorce. Il valore giusto
-sta in mezzo e non si indovina: se ne provano parecchi, e a dire quale tenere
-sono i cinque compiti in classe della cross-validation.
+sbagliare visti al poligono. Tirata a fondo, con la spesa quasi vietata, tutti i
+pesi vanno a zero e il modello risponde sempre la stessa cosa: stabile e storto.
+Lasciata andare, si torna alla curva che si contorce. Il valore giusto sta in
+mezzo e non si indovina: se ne provano parecchi, e a dire quale tenere sono i
+cinque compiti in classe della cross-validation.
 
-Il budget dà per scontate due cose. La prima: si paga per i pesi delle
-caratteristiche, non per la quota fissa che il modello somma a ogni previsione.
-Se si pagasse anche quella, misurare le temperature in gradi Kelvin invece che
-in Celsius cambierebbe il modello scelto, e sarebbe assurdo che lo cambiasse.
-La seconda: perché un prezzo unico sia giusto, le colonne devono essere già
-state rimesse tutte sulla stessa scala. Se una è in euro e l'altra in
-percentuale, lo stesso prezzo risulta proibitivo per una e simbolico per
-l'altra, e il freno stringe la colonna sbagliata.
+Un budget ha senso se si paga per le cose giuste, e con la stessa moneta per
+tutte. Non si paga per la quota fissa che il modello somma a ogni previsione:
+chi prevede le temperature in gradi Kelvin, che sono i Celsius più 273, ha
+bisogno di una quota fissa più alta di 273, e se la pagasse il modello
+cambierebbe per una semplice scelta di unità. E la moneta è la stessa solo se le
+colonne sono misurate sulla stessa scala. Un reddito di $30\,000$ euro porta
+$30$ punti con un peso di $0{,}001$, una percentuale del $5$ ne vuole uno di $6$
+per portarne altrettanti, e allo stesso prezzo per peso il freno lascerebbe in
+pace il reddito e strangolerebbe la percentuale. Per questo, prima, ogni colonna
+si misura in quanto si scosta dal suo solito.
 
-Il Lasso, infine, ha un capriccio da conoscere. Fra due colonne che dicono
-quasi la stessa cosa ne tiene una e butta l'altra, e quale delle due è quasi un
-sorteggio: cambia il campione e cambia la scelta. Quando le colonne che si
-somigliano sono tante, come capita sui dati veri, si fa pagare un po’ in un
-modo e un po’ nell'altro, e le gemelle entrano o escono insieme.
+Il Lasso ha anche un capriccio. Fra due colonne gemelle, che dicono quasi la
+stessa cosa, ne tiene una e butta l'altra, e quale delle due è quasi un
+sorteggio: cambia il campione e cambia la scelta. Con il quadrato, invece,
+dividere un peso a metà fra le due gemelle costa meno che darlo tutto a una
+($0{,}5^2 + 0{,}5^2$ fa $0{,}5$, contro $1$), e allora, facendo pagare un po’ in
+un modo e un po’ nell'altro, le gemelle entrano o escono insieme.
+
+A volte le colonne vanno in gruppo per costruzione. Il colore di un'auto, con
+quattro valori possibili, entra nel modello come quattro colonne sì o no, una
+per colore, e il Lasso le tratta una per una: può tenere «rosso» e buttare
+«verde», come se il colore contasse per le auto rosse e non per le verdi. Lo
+stesso colore si può scrivere anche con tre colonne sole, togliendo quella del
+verde: un'auto verde ha allora tutte e tre le colonne a no, e il peso del rosso
+dice quanto una rossa vale più di una verde. Il verde fa da zero, come lo zero
+di un termometro, e gli altri colori si misurano da lì. I dati sono gli stessi,
+eppure scritti così il Lasso può buttare colori diversi. La conclusione
+dipendeva dalla scrittura, non dai dati.
+
+Il **lasso a gruppi** fa pagare ogni gruppo come un pacchetto, secondo la sua
+lunghezza, che si trova come l'ipotenusa di Pitagora, con quanti cateti servono:
+si sommano i quadrati dei pesi e si prende la radice. Due pesi da $0{,}3$ e
+$0{,}4$ fanno $0{,}09 + 0{,}16 = 0{,}25$, cioè un pacchetto lungo $0{,}5$. Il
+conto toglie poi a ogni pacchetto un pezzo fisso di lunghezza, come il Lasso
+toglie a ogni peso lo stesso tanto: il pacchetto più corto di quel pezzo
+sparisce tutto, quello più lungo resta, ed è per questo che entra intero o resta
+fuori intero. Dentro, i pesi si spartiscono la spesa come nel Ridge, e nessuno
+viene azzerato da solo. Il pezzo tolto, però, non è uguale per tutti: cresce con
+la radice di quanti pesi il pacchetto contiene, e per quattro pesi è il doppio.
+Anche una colonna inutile riceve dal caso un pesetto, e quattro pesetti fanno un
+pacchetto più lungo di uno solo: con lo stesso pezzo per tutti, un pacchetto di
+colonne inutili entrerebbe soltanto perché è grosso.
+
+I pacchetti li decide chi scrive il modello, e il metodo li prende per buoni.
+Chi mette nello stesso pacchetto il colore e l'età dell'auto se li vede entrare
+e uscire insieme, anche se conta soltanto il colore. E se il pacchetto dell'età
+contiene l'età, il suo quadrato e il suo cubo, e conta solo l'età, chi vuole
+poter scartare il quadrato e il cubo aggiunge un po’ del prezzo del Lasso: il
+pacchetto entra, ma dentro i pesi inutili possono ancora andare a zero.
 
 `````
 
@@ -786,20 +826,20 @@ si ottiene Ridge con $\lambda = \sigma^2/(m\tau^2)$, e con un prior di Laplace
 si ottiene il Lasso, che non ha forma chiusa e in scikit-learn si risolve per
 discesa coordinata.
 
-Due cose le formule le dicono in silenzio.
-La prima è che l'indice $j$ corre da $1$ a $n$, cioè sulle sole
-caratteristiche: l’intercetta non è penalizzata. Se lo fosse, il modello
-dipenderebbe dall'origine scelta per $y$, e sommare mille a tutte le etichette
-(misurare in gradi Kelvin invece che in Celsius) cambierebbe la soluzione, il
-che non ha senso. La seconda è che la penalità mette sullo stesso piano pesi
-che vivono su scale diverse, e quindi presuppone feature standardizzate: il
-peso che moltiplica un reddito in euro è piccolo per forza, e la penalità lo
-lascerebbe in pace mentre schiaccia quello di una percentuale. Vale qui la
-stessa avvertenza del k-NN e delle SVM, con la differenza
-che qui è meno visibile, perché un modello mal regolarizzato funziona
-comunque, solo peggio: `Ridge` e `Lasso` non standardizzano da soli, e vanno
-messi dietro uno `StandardScaler` dentro una `Pipeline`, la catena di passaggi
-che scikit-learn tratta come se fosse un modello solo.
+Due cose le formule le dicono in silenzio. La prima è che l'indice $j$ corre da
+$1$ a $n$, cioè sulle sole caratteristiche: l’intercetta non è penalizzata. Se
+lo fosse, il modello dipenderebbe dall'origine scelta per $y$, e sommare una
+costante a tutte le etichette (per esempio misurarle in gradi Kelvin invece che
+in Celsius, cioè aggiungere $273{,}15$) cambierebbe la soluzione, il che non ha
+senso. La seconda è che la penalità mette sullo stesso piano pesi che vivono su
+scale diverse, e quindi presuppone feature standardizzate: il peso che
+moltiplica un reddito in euro è piccolo per forza, e la penalità lo lascerebbe
+in pace mentre schiaccia quello di una percentuale. Vale qui la stessa
+avvertenza del k-NN e delle SVM, con la differenza che qui è meno visibile,
+perché un modello mal regolarizzato funziona comunque, solo peggio: `Ridge` e
+`Lasso` non standardizzano da soli, e vanno messi dietro uno `StandardScaler`
+dentro una `Pipeline`, la catena di passaggi che scikit-learn tratta come se
+fosse un modello solo.
 
 L’**Elastic Net** somma le due penalità,
 $\lambda\big(\alpha\sum_j|\theta_j| + \tfrac{1-\alpha}{2}\sum_j\theta_j^2\big)$,
@@ -824,7 +864,338 @@ A parità di soluzione, $\lambda = \texttt{alpha}/m$ per la prima e
 $\lambda = 2\,\texttt{alpha}$ per la seconda. Sono due tradizioni che si sono incrociate su una lettera sola:
 conviene guardare che cosa fa il parametro, non come si chiama.
 
+Quando i gruppi sono noti in anticipo (le colonne indicatrici di una variabile
+categorica, i termini di un polinomio nella stessa variabile) il Lasso li
+spezza: sulle indicatrici tiene alcuni livelli e ne azzera altri, e quali
+dipende dalla codifica, per esempio dal livello scelto come riferimento, che è
+una convenzione e non un fatto dei dati. Il **group lasso**, proposto da Bakin
+{cite}`bakin1999adaptive` e studiato da Yuan e Lin {cite}`yuan2006model`, impone
+i gruppi, con i coefficienti divisi in blocchi $\theta_g$ di $p_g$ elementi e
+$\mathbf{X}_g$ le colonne del blocco $g$:
+
+$$
+\mathcal{L}_{\text{gruppi}}(\theta)
+= \frac{1}{m}\sum_{i=1}^{m}\big(\hat{y}^{(i)}-y^{(i)}\big)^2
++ \lambda\sum_{g}\sqrt{p_g}\,\lVert\theta_g\rVert_2 .
+$$
+
+La norma $\ell_2$ non elevata al quadrato ha uno spigolo nell'origine di ogni
+blocco, e lo spigolo annulla il blocco intero; dentro il blocco la norma è
+rotonda e non azzera nessuna componente da sola. Il fattore $\sqrt{p_g}$ tiene
+alla pari i blocchi di taglia diversa. Un blocco resta a zero finché
+$\tfrac{2}{m}\lVert\mathbf{X}_g^\top\mathbf{r}_{-g}\rVert_2$ non supera
+$\lambda\sqrt{p_g}$, dove $\mathbf{r}_{-g}$ è il residuo lasciato dagli altri
+blocchi; se le colonne del blocco non contano, il membro di sinistra cresce per
+puro caso come $\sqrt{p_g}$, e senza il fattore un blocco grande entrerebbe più
+spesso solo perché è grande. Con colonne ortonormali la condizione, elevata al
+quadrato, confronta con una soglia la somma dei quadrati spiegata dal blocco
+divisa per $p_g$, come il test $F$ dell'analisi della varianza, ed è la ragione
+per cui Yuan e Lin scelgono questo fattore. E $p_g$ coefficienti tutti uguali ad
+$a$ hanno norma $a\sqrt{p_g}$, quindi pagano $p_g a$, quanto il Lasso li farebbe
+pagare uno per uno.
+
+Se le colonne di ogni blocco sono ortonormali nella scala della media
+($\mathbf{X}_g^\top\mathbf{X}_g = m\,\mathbf{I}$) e i blocchi sono ortogonali
+fra loro, la soluzione si scrive blocco per blocco, a partire dalla stima dei
+minimi quadrati $\hat{\theta}_g$, come
+$\big(1 - \lambda\sqrt{p_g}/(2\lVert\hat{\theta}_g\rVert_2)\big)_+\,\hat{\theta}_g$:
+è il *soft thresholding* del Lasso applicato alla lunghezza del blocco invece
+che al singolo coefficiente. L'ortonormalità dentro i blocchi, che Yuan e Lin
+assumono in tutto il lavoro, fa più che semplificare i conti. La norma
+$\lVert\theta_g\rVert_2$ non cambia se la base del blocco ruota, ma cambia sotto
+un cambio di base qualsiasi, e solo con blocchi ortonormalizzati la soluzione
+dipende dallo spazio generato dalle colonne e non dai contrasti con cui si è
+scritta la variabile; una variabile a quattro livelli ha tre gradi di libertà, e
+il suo $p_g$ è $3$. Su blocchi non ortonormali il metodo prende ancora il blocco
+intero o niente, ma il $\lambda$ a cui lo prende torna a dipendere dalla
+codifica. Con la sola ortonormalità dentro i blocchi, la stessa formula
+applicata a turno a ogni blocco, sul residuo lasciato dagli altri, è l'algoritmo
+di Yuan e Lin; nel caso generale la si usa come passo di un metodo del gradiente
+prossimale, con soglia $\lambda\sqrt{p_g}$ moltiplicata per il passo.
+
+Il punto di rottura è la partizione, che il metodo prende per vera: un blocco
+sbagliato entra o esce intero, e se in un blocco conta un solo termine del
+polinomio entra lo stesso il blocco intero. Lo *sparse group lasso*
+{cite}`simon2013sparse` ci rimedia mescolando le due penalità con un rapporto di
+miscela, come l'Elastic Net,
+
+$$
+\lambda\Big((1-\alpha)\sum_g\sqrt{p_g}\,\lVert\theta_g\rVert_2
++ \alpha\lVert\theta\rVert_1\Big),
+$$
+
+così che dentro un blocco acceso le singole componenti si possano ancora
+azzerare. Sulle indicatrici di una variabile categorica il rimedio va letto con
+cautela, perché lì uno zero dentro il blocco dice che quel livello non si
+distingue dal livello di base, e quale sia la base dipende di nuovo dalla
+codifica.
+
 `````
+
+Il blocco costruisce una risposta che dipende da una variabile numerica e dal
+colore (quattro valori, quindi quattro colonne sì/no), mentre un'altra variabile
+numerica e la regione di provenienza (altre quattro colonne) non contano. Poi
+guarda, per trenta intensità del freno, se il Lasso prende qualche gruppo a
+metà, e quali colori tiene a un'intensità intermedia; e prova a tre intensità il
+lasso a gruppi, scritto in poche righe come discesa del gradiente seguita
+dall'accorciamento di ogni blocco.
+
+```python
+import numpy as np
+from sklearn.linear_model import Lasso
+
+rng = np.random.default_rng(0)
+m = 400
+def a_colonne(etichette, k):
+    """Una variabile a k valori spezzata in k colonne sì/no, centrate (a media zero)."""
+    D = np.eye(k)[etichette]
+    return D - D.mean(axis=0)
+colore = rng.integers(0, 4, m)                    # conta: rosso, verde, blu, giallo
+regione = rng.integers(0, 4, m)                   # non conta
+x1, x2 = rng.standard_normal(m), rng.standard_normal(m)
+X = np.column_stack([x1, x2, a_colonne(colore, 4), a_colonne(regione, 4)])
+gruppi = [[0], [1], [2, 3, 4, 5], [6, 7, 8, 9]]  # un gruppo per variabile
+nomi = ["x1", "x2", "colore", "regione"]
+y = 1.5 * x1 + np.array([0.0, 1.0, -1.0, 0.5])[colore] + rng.normal(0, 1, m)
+y = y - y.mean()
+
+def lasso_a_gruppi(X, y, lam, passi=3000):
+    """Discesa del gradiente in cui, dopo ogni passo, ogni gruppo si accorcia per
+    intero, e sotto una soglia sparisce (il block soft-thresholding): la penalità
+    è lam per la radice della taglia del gruppo per la lunghezza dei suoi pesi."""
+    theta = np.zeros(X.shape[1])
+    # il passo è l'inverso della costante di Lipschitz del gradiente, 2 ||X||^2 / m:
+    # con un passo così la discesa non diverge
+    passo = len(y) / (2 * np.linalg.norm(X, 2) ** 2)
+    for _ in range(passi):
+        z = theta - passo * 2 * X.T @ (X @ theta - y) / len(y)
+        for g in gruppi:
+            norma = np.linalg.norm(z[g])
+            soglia = passo * lam * np.sqrt(len(g))       # la penalità, scalata dallo stesso passo
+            theta[g] = 0.0 if norma <= soglia else (1 - soglia / norma) * z[g]
+    return theta
+
+def a_meta(theta):
+    """I gruppi di più colonne presi a metà: qualche colonna dentro, qualcuna fuori."""
+    return [nomi[i] for i, g in enumerate(gruppi) if len(g) > 1
+            and 0 < np.count_nonzero(theta[g]) < len(g)]
+
+presi_a_meta = set()
+for alpha in np.logspace(-3, 0, 30):              # trenta intensità, dal freno lieve al forte
+    theta = Lasso(alpha=alpha, fit_intercept=False).fit(X, y).coef_
+    presi_a_meta |= set(a_meta(theta))
+print("Lasso: gruppi presi a metà per qualche intensità:", sorted(presi_a_meta))
+theta = Lasso(alpha=0.1, fit_intercept=False).fit(X, y).coef_
+colori = ["rosso", "verde", "blu", "giallo"]
+print("Lasso con alpha 0.1, colori tenuti:",
+      [c for c, t in zip(colori, theta[2:6]) if t != 0])
+for lam in (0.01, 0.1, 1.0):
+    theta = lasso_a_gruppi(X, y, lam)
+    dentro = ", ".join(f"{nomi[i]} {np.linalg.norm(theta[g]):.2f}"   # la lunghezza del gruppo
+                       for i, g in enumerate(gruppi) if np.any(theta[g] != 0))
+    print(f"lasso a gruppi, lambda {lam}: dentro {dentro}; a metà {a_meta(theta)}")
+```
+
+```text
+Lasso: gruppi presi a metà per qualche intensità: ['colore', 'regione']
+Lasso con alpha 0.1, colori tenuti: ['verde', 'blu']
+lasso a gruppi, lambda 0.01: dentro x1 1.56, x2 0.02, colore 1.49, regione 0.10; a metà []
+lasso a gruppi, lambda 0.1: dentro x1 1.52, colore 1.13; a metà []
+lasso a gruppi, lambda 1.0: dentro x1 1.08; a metà []
+```
+
+Il Lasso, per qualche intensità del freno, tiene alcune colonne del colore e
+ne butta altre, e fa lo stesso con la regione, che non conta affatto. Con
+`alpha` a $0{,}1$ tiene il verde e il blu, una selezione che dice «il verde e il
+blu contano, il rosso e il giallo no», mentre nei dati ogni colore sposta la
+risposta di un tanto suo. Il lasso a gruppi, per costruzione, non prende mai un
+gruppo a metà. Con il freno lieve tiene dentro tutto, i due gruppi che non
+contano con lunghezze piccole ($0{,}02$ e $0{,}10$); al crescere di $\lambda$
+escono prima quei due, poi il colore, e ogni gruppo esce intero. La lunghezza di
+chi resta cala a ogni stretta del freno: è il restringimento, lo stesso del
+Lasso, applicato al blocco. Il blocco non ortonormalizza i gruppi, per restare
+vicino alle colonne sì/no, e al colore dà quattro colonne dove ne basterebbero
+tre: la regola del tutto o niente non ne risente, le intensità a cui i gruppi
+escono sì.
+
+### A salti o a poco a poco: scegliere le colonne
+
+Prima dei freni continui le colonne si sceglievano a salti: si provano dei
+sottoinsiemi e si tiene il migliore. La **selezione del sottoinsieme migliore**
+(*best subset selection*) li prova tutti, e con $p$ colonne sono $2^p$ (ogni
+colonna dentro o fuori, due scelte per ciascuna), più di un milione già con
+venti colonne; la **selezione in avanti** (*forward stepwise selection*) ne
+costruisce una catena, aggiungendo a ogni passo la colonna che riduce di più
+l'errore, e quante tenerne lo decide la cross-validation. Il confronto con il
+Lasso dice quando il freno continuo conviene, e quando no.
+
+`````{tab} Elementare
+
+Scegliere a salti è come convocare una squadra: per ogni giocatore si decide
+dentro o fuori, e chi è dentro gioca tutta la partita. Il freno continuo del
+Lasso concede invece a ciascuno dei minuti, e li toglie un po' alla volta.
+
+Il difetto dei salti è che una convocazione cambia per poco. Basta qualche
+esempio diverso perché fra due giocatori simili entri l'altro, e con lui cambia
+di colpo il modello intero, come una formazione che per un solo cambio
+ridistribuisce i ruoli di tutti: la scelta a salti è nervosa, e il nervosismo si
+paga in errore sui dati nuovi. Anche il Lasso, da un campione all'altro, può
+cambiare quale di due colonne gemelle tiene, ed è il suo capriccio; ma quando i
+dati si spostano di poco i minuti passano dall'una all'altra poco alla volta, e
+siccome le gemelle dicono quasi la stessa cosa la previsione si sposta appena.
+Può ballare l'elenco dei convocati, mentre la previsione resta quasi ferma.
+
+Ma il freno ha un prezzo suo, perché fa due mestieri con una manopola sola:
+toglie minuti a tutti e decide chi resta in panchina. Tirato quanto serve per
+lasciare fuori le riserve, toglie troppi minuti ai titolari; allentato per far
+giocare i titolari, lascia entrare qualche riserva che non servirebbe. C'è poi
+un costo nascosto nella convocazione, ed è la trappola delle mille persone che
+lanciano la moneta: chi prova migliaia di squadre sugli stessi dati ne trova
+sempre una che su quei dati va bene per caso, e il merito che le si attribuisce
+è gonfiato dalla ricerca stessa, anche se alla fine i convocati sono pochi,
+perché a pesare non è quanti giocano ma quante squadre si sono provate per
+sceglierli. Quando i dati sono chiari, con poco rumore, la squadra convocata
+bene è la più precisa, perché chi gioca gioca a pieno; quando il rumore è tanto
+conviene il freno, perché una convocazione fatta sul rumore sbaglia di più.
+Nessuno dei due vince sempre, e la via di mezzo se la cava bene dappertutto: si
+convoca con il freno, e poi ai convocati lo si allenta.
+
+`````
+
+`````{tab} Superiore
+
+La selezione del sottoinsieme migliore risolve
+$\min_\theta \lVert \mathbf{y} - \mathbf{X}\theta\rVert^2$ con il vincolo
+$\lVert\theta\rVert_0 \le k$, il numero di coefficienti non nulli: un problema
+combinatorio, NP-difficile in generale, che la programmazione intera mista
+risolve con ottimalità certificata quando le colonne sono centinaia e gli esempi
+migliaia, in minuti per ogni $k$ secondo gli autori {cite}`bertsimas2016best`,
+spesso in un'ora o più per chiudere il certificato secondo chi ha rifatto le
+prove {cite}`hastie2020best`. La selezione in avanti lo approssima in modo
+avido, con $O(p^2)$ adattamenti ai minimi quadrati lungo il cammino, e il Lasso
+ne è il rilassamento convesso, con $\lVert\theta\rVert_1$ al posto di
+$\lVert\theta\rVert_0$. Breiman ha mostrato, con un argomento euristico e con
+simulazioni, che la selezione del sottoinsieme è *instabile* (cambiare pochi
+esempi può cambiare il sottoinsieme scelto) mentre la regressione ridge è
+stabile, e che l'instabilità si paga nella scelta della complessità: con la
+sfera di cristallo, cioè scegliendo $k$ sull'errore vero, il sottoinsieme
+batteva spesso la ridge, e perdeva il vantaggio quando $k$ andava scelto sui
+dati {cite}`breiman1996heuristics`. Il Lasso sta dalla parte della ridge: a
+$\lambda$ fissato la sua previsione $\mathbf{X}\hat{\theta}$ è una funzione
+continua di $\mathbf{y}$, mentre quella del sottoinsieme migliore e della
+selezione in avanti, a $k$ fissato, salta quando $\mathbf{y}$ attraversa il
+confine fra due insiemi attivi {cite}`hastie2020best`.
+
+Il confronto sistematico di Hastie, Tibshirani e Tibshirani
+{cite}`hastie2020best`, nato per verificare le simulazioni di Bertsimas e
+colleghi in cui il sottoinsieme migliore vinceva sempre, ha precisato il
+quadro. A rapporto segnale/rumore alto la selezione del sottoinsieme migliore e
+quella in avanti, che si comportano in modo simile, battono il Lasso, che per
+non restringere troppo i coefficienti veri sceglie un $\lambda$ piccolo e
+accetta qualche falso positivo; a rapporto basso vince il Lasso. Il sorpasso
+cade attorno a $1{,}2$ con cento esempi e dieci colonne, attorno a $0{,}4$ con
+cinquecento esempi e cento colonne, e gli autori avvertono che su dati
+osservazionali già un rapporto di $1$, cioè un modello che spiega metà della
+varianza di $y$, è raro, e uno di $6$ è inaudito. Il *relaxed lasso*, che usa
+il Lasso per scegliere e poi restringe meno, è competitivo dappertutto. C'è
+anche un costo nascosto nella scelta a salti. I gradi di libertà effettivi di
+un modello (la somma delle covarianze fra ciascuna previsione e la sua
+etichetta, divisa per $\sigma^2$, che per i minimi quadrati su $k$ colonne
+fissate vale esattamente $k$) superano di molto i $k$ coefficienti che restano
+quando le colonne le ha scelte una ricerca, perché la ricerca stessa ha
+guardato i dati; quelli del Lasso valgono invece il numero atteso di
+coefficienti non nulli {cite}`hastie2020best`.
+
+`````
+
+Il blocco mette alla prova le due strade su cento esempi con venti colonne, di
+cui cinque contano, correlate fra loro tanto più quanto sono vicine
+($0{,}5^{|i-j|}$), a tre rapporti segnale/rumore (quanto è sparpagliata la
+parte di $y$ che le colonne spiegano, divisa per quanto lo è il rumore: le
+varianze dei dati, non quella del modello), trenta campioni per ciascuno. La
+selezione in avanti sceglie quante colonne tenere con una cross-validation a
+cinque blocchi, come fa `LassoCV` per l'intensità del freno, e nessuno dei due
+stima un'intercetta, che i dati non hanno. L'errore è misurato su dati nuovi e
+diviso per la varianza del rumore, quindi $1$ è il meglio possibile, perché il
+rumore nessun modello lo può prevedere; accanto, il blocco stampa lo scarto fra
+i due con il suo errore standard, e quante colonne tiene in media ciascuno.
+
+```python
+import numpy as np
+from sklearn.linear_model import LassoCV
+from sklearn.model_selection import KFold
+
+m, p = 100, 20
+S = 0.5 ** np.abs(np.subtract.outer(np.arange(p), np.arange(p)))   # correlazioni fra colonne vicine
+beta = np.r_[np.ones(5), np.zeros(p - 5)]                          # contano le prime cinque
+
+def dati(snr, rng):
+    """m esempi per stimare, 2000 per misurare, rapporto segnale/rumore snr."""
+    # Cholesky: trasforma colonne indipendenti in colonne con le correlazioni di S
+    X = rng.standard_normal((m + 2000, p)) @ np.linalg.cholesky(S).T
+    sigma = np.sqrt(beta @ S @ beta / snr)
+    y = X @ beta + sigma * rng.standard_normal(m + 2000)
+    return X[:m], y[:m], X[m:], y[m:], sigma
+
+def minimi_quadrati(X, y, colonne):
+    return np.linalg.lstsq(X[:, colonne], y, rcond=None)[0]
+
+def in_avanti(X, y):
+    """L'ordine in cui le colonne entrano: a ogni passo quella che riduce di più l'errore."""
+    dentro, fuori = [], list(range(p))
+    for _ in range(p):
+        errori = [((y - X[:, dentro + [j]] @ minimi_quadrati(X, y, dentro + [j])) ** 2).sum()
+                  for j in fuori]
+        dentro.append(fuori.pop(int(np.argmin(errori))))
+    return dentro
+
+def in_avanti_cv(X, y):
+    """In avanti, con il numero di colonne scelto dalla cross-validation."""
+    errore = np.zeros(p)
+    for tr, va in KFold(5).split(X):
+        ordine = in_avanti(X[tr], y[tr])
+        for k in range(1, p + 1):
+            b = minimi_quadrati(X[tr], y[tr], ordine[:k])
+            errore[k - 1] += ((y[va] - X[va][:, ordine[:k]] @ b) ** 2).sum()
+    colonne = in_avanti(X, y)[:int(np.argmin(errore)) + 1]
+    return colonne, minimi_quadrati(X, y, colonne)
+
+print("rapporto   in avanti   Lasso   scarto           colonne tenute")
+for snr in (0.25, 1.0, 6.0):
+    avanti, lasso, n_avanti, n_lasso = [], [], [], []
+    for r in range(30):                                  # trenta campioni per ogni rapporto
+        X, y, Xt, yt, sigma = dati(snr, np.random.default_rng(r))
+        colonne, b = in_avanti_cv(X, y)
+        avanti.append(((yt - Xt[:, colonne] @ b) ** 2).mean() / sigma ** 2)
+        # senza intercetta, come la selezione in avanti: i dati non ne hanno
+        las = LassoCV(cv=5, fit_intercept=False).fit(X, y)
+        lasso.append(((yt - las.predict(Xt)) ** 2).mean() / sigma ** 2)
+        n_avanti.append(len(colonne))
+        n_lasso.append(np.count_nonzero(las.coef_))
+    d = np.array(avanti) - np.array(lasso)   # lo scarto, campione per campione
+    es = d.std(ddof=1) / np.sqrt(len(d))     # e il suo errore standard
+    print(f"{snr:8}{np.mean(avanti):12.2f}{np.mean(lasso):8.2f}",
+          f"  {d.mean():+.3f} ± {es:.3f}",
+          f"  {np.mean(n_avanti):.1f} contro {np.mean(n_lasso):.1f}")
+```
+
+```text
+rapporto   in avanti   Lasso   scarto           colonne tenute
+    0.25        1.13    1.09   +0.039 ± 0.010   2.2 contro 6.3
+     1.0        1.19    1.12   +0.071 ± 0.011   5.1 contro 8.4
+     6.0        1.09    1.12   -0.038 ± 0.011   5.6 contro 8.9
+```
+
+Con molto rumore e con rumore medio il Lasso sbaglia meno ($1{,}09$ contro
+$1{,}13$, $1{,}12$ contro $1{,}19$); con i dati quasi puliti il sorpasso si
+rovescia, e la selezione in avanti arriva a $1{,}09$ contro $1{,}12$. Su questi
+trenta campioni ogni scarto vale più di tre volte il suo errore standard.
+L'ultima colonna dice perché il Lasso perde dove i dati sono chiari: tiene in
+media quasi nove colonne, quando quelle che contano sono cinque, mentre la
+selezione in avanti ne tiene poco più di cinque. È, in piccolo, quello che
+Hastie, Tibshirani e Tibshirani trovano su un confronto molto più ampio: il
+freno continuo conviene quando il rumore rende nervosa ogni convocazione, la
+scelta a salti quando i dati sono abbastanza chiari da convocare bene.
 
 ## Il rasoio di Occam
 
@@ -837,11 +1208,13 @@ per noi: a parità di capacità di spiegare i dati, scegli
 il modello più semplice.
 
 La regolarizzazione non è altro che il rasoio di Occam scritto in formule: la
-manopola $\lambda$ è il prezzo che facciamo pagare alla complessità, così che il
-modello la compri solo quando serve davvero. La curva morbida del pannello
-centrale vince non perché sia la più elaborata, ma perché è la più semplice tra
-quelle che rendono conto dei dati. La semplicità, in machine learning, è ciò
-che permette di generalizzare.
+manopola $\lambda$ è il prezzo che facciamo pagare alla complessità, così che
+il modello la compri solo quando serve davvero. La curva morbida del pannello
+centrale di {numref}`fig-overfitting` vince non perché sia la più elaborata, ma
+perché è la più semplice tra quelle che rendono conto dei dati. La semplicità,
+in machine learning, è ciò che permette di generalizzare.
+
+(sec-doppia-discesa)=
 
 ## Quando la U non basta: la doppia discesa
 
@@ -929,11 +1302,14 @@ punto di interpolazione, aggiungere dati può peggiorare il test error.
 
 Il rasoio di Occam regge, se si cambia che cosa si misura. Il numero di
 parametri è un pessimo proxy della complessità di una rete, e la candidata più
-studiata al suo posto è una misura di norma della soluzione trovata. In due
-casi il legame con l'algoritmo è un teorema: sui minimi quadrati con più
-parametri che esempi la discesa del gradiente partita da zero converge alla
-soluzione interpolante di norma $\ell_2$ minima, e sulla regressione logistica
-con dati separabili la direzione dei pesi converge a quella di massimo margine
+studiata al suo posto è una misura di norma della soluzione trovata, la
+stessa da cui partono i {doc}`bound di norma della teoria dell'apprendimento
+</TeoriaApprendimento/garanzie-e-reti>`. In due casi il
+legame con l'algoritmo è un teorema: sui minimi quadrati con più parametri che
+esempi la discesa del gradiente partita da zero converge alla soluzione
+interpolante di norma $\ell_2$ minima, un fatto classico dell'algebra lineare, e
+sulla regressione logistica con dati separabili la direzione dei pesi converge
+a quella di massimo margine, come hanno dimostrato Soudry e colleghi
 {cite}`soudry2018implicit`. Sulle reti profonde lo stesso *bias implicito* è
 un'ipotesi con buone prove sperimentali: che «semplice» non si conti in
 parametri è assodato, in che cosa si conti no.
@@ -1096,7 +1472,13 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
 - Per frenare la memorizzazione si mette un prezzo alla complessità: il
   modello può usare pesi grandi solo se ne conviene. Contando la spesa a
   valori assoluti alcuni pesi vanno esattamente a zero (le caratteristiche
-  inutili spariscono), contandola a quadrati si rimpiccioliscono tutti.
+  inutili spariscono), contandola a quadrati si rimpiccioliscono tutti. Le
+  colonne che vanno in gruppo si fanno pagare come un pacchetto, che entra o
+  esce intero, e i pacchetti li sceglie chi scrive il modello.
+- Scegliere le colonne a salti (dentro o fuori) è nervoso: basta poco per
+  cambiare la scelta. Conviene quando i dati sono chiari, mentre con tanto
+  rumore vince il freno continuo, e convocare con il freno per poi allentarlo
+  va bene quasi sempre.
 - Il principio antico è il rasoio di Occam: a parità di spiegazione dei
   dati, vince la spiegazione più semplice. Il principio regge anche per la
   doppia discesa, dove oltre il punto in cui il modello impara tutto a
@@ -1136,7 +1518,15 @@ restano esattamente ciò che erano, e sono le cose da portarsi via.
   con righe raggruppate per soggetto servono `GroupKFold`, con righe ordinate
   nel tempo `TimeSeriesSplit`.
 - La regolarizzazione (Ridge $\ell_2$, Lasso $\ell_1$) frena la complessità
-  con una penalità $\lambda$ sui pesi; il Lasso azzera le feature inutili.
+  con una penalità $\lambda$ sui pesi; il Lasso azzera le feature inutili, il
+  group lasso ($\sum_g\sqrt{p_g}\lVert\theta_g\rVert_2$) interi blocchi
+  dichiarati in anticipo, indipendentemente dalla codifica solo se i blocchi
+  sono ortonormalizzati.
+- La selezione discreta (sottoinsieme migliore, selezione in avanti) è
+  instabile, e la sua previsione salta dove quella del Lasso è continua: a
+  rapporto segnale/rumore basso vince il Lasso, a rapporto alto (raro sui dati
+  osservazionali) la selezione; il relaxed lasso è competitivo in tutti e due i
+  regimi.
 - Il rasoio di Occam regge se la complessità non si conta in parametri: sui
   modelli lineari la discesa del gradiente ha un *bias implicito* dimostrato
   verso soluzioni di norma piccola, sulle reti profonde è l'ipotesi più

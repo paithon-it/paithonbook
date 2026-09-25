@@ -69,7 +69,9 @@ certezza vuol dire riaddestrare senza di lui. Il riaddestramento si può
 rendere meno caro, dividendo i dati in blocchi addestrati ciascuno per conto
 proprio e rifacendo solo quello che conteneva il dato da togliere
 {cite}`bourtoule2021machine`; ci sono poi metodi approssimati che ritoccano i
-pesi senza ripartire da zero, ma della loro riuscita esistono misure, non prove.
+pesi senza ripartire da zero: per i modelli lineari la rimozione si può
+certificare {cite}`guo2020certified`, per le reti profonde della loro riuscita
+esistono misure, non prove.
 È il motivo per cui il diritto alla cancellazione, che esiste ed è esercitabile,
 è tecnicamente scomodo proprio nel punto in cui servirebbe di più. La
 conseguenza pratica per chi usa questi sistemi è meno consolante di quanto
@@ -137,7 +139,8 @@ d'età, l'indirizzo diventa la città. La forma rigorosa di quello smusso è del
 le caselle finché ogni riga non risulta indistinguibile da almeno altre
 $k-1$, così che nessuna resti da sola a farsi riconoscere: con $k = 5$, ogni
 combinazione di fascia d'età e città deve comparire almeno cinque volte, e chi
-cerca una persona si ritrova davanti cinque righe uguali.
+cerca una persona si ritrova davanti almeno cinque righe che su quelle colonne
+coincidono.
 
 Regge finché chi guarda ha davanti quella tabella e nient'altro. Il guasto
 arriva quando le tabelle sono due, e il caso che lo ha reso evidente è la gara
@@ -253,21 +256,7 @@ piccolissimo e di norma ben sotto $1/n$, dove $n$ è il numero di individui (con
 $\delta$ dell'ordine di $1/n$ sarebbe ammesso il meccanismo che pubblica per
 intero una riga a caso). Si legge informalmente come una piccola probabilità
 di eccezione (la lettura precisa è un po’ più debole di così), ed è la
-versione che serve per il **meccanismo gaussiano** del deep learning: a $f$ si
-somma rumore $\mathcal{N}(\mathbf{0}, \sigma^2\mathbf{I})$ tarato sulla
-sensibilità in norma $\ell_2$, $\Delta_2 f$, e per $\varepsilon < 1$ basta
-$\sigma \ge \Delta_2 f\,\sqrt{2\ln(1{,}25/\delta)}\,/\,\varepsilon$
-{cite}`dwork2014algorithmic`. Le garanzie si compongono: $k$ meccanismi
-$(\varepsilon_j,\delta_j)$ sugli stessi dati danno al più
-$\big(\sum_j \varepsilon_j,\ \sum_j \delta_j\big)$-DP, e la composizione
-avanzata migliora il conto, per $k$ meccanismi uguali, a
-
-$$
-\big(\varepsilon\sqrt{2k\ln(1/\delta')} + k\varepsilon(e^{\varepsilon}-1),
-\ k\delta + \delta'\big):
-$$
-
-per $\varepsilon$ piccolo il budget cresce come $\sqrt{k}$ invece che come $k$.
+versione di cui ha bisogno il rumore gaussiano del deep learning.
 
 Come si ottiene? Con il **meccanismo di Laplace**. Data una funzione numerica
 $f$, se ne misura la *sensibilità*
@@ -288,6 +277,30 @@ $$
 rumore estratto da una distribuzione di Laplace di scala $b = \Delta f/\varepsilon$.
 Più il calcolo è sensibile al singolo, o più $\varepsilon$ è piccolo, più rumore
 va aggiunto. Il risultato garantisce esattamente $\varepsilon$-DP.
+
+Il **meccanismo gaussiano** somma invece rumore
+$\mathcal{N}\big(\mathbf{0},\ \sigma^2 (\Delta_2 f)^2\,\mathbf{I}\big)$,
+dove $\Delta_2 f$ è la stessa sensibilità misurata in norma $\ell_2$ invece
+che $\ell_1$, e $\sigma$ è il *moltiplicatore di rumore*, la deviazione
+standard contata in unità di sensibilità: è il $\sigma$ che tornerà in DP-SGD.
+Per $\varepsilon < 1$ basta
+$\sigma \ge \sqrt{2\ln(1{,}25/\delta)}\,/\,\varepsilon$
+{cite}`dwork2014algorithmic`, e la garanzia è $(\varepsilon,\delta)$, non
+$\varepsilon$ pura. Le garanzie si compongono: $m$ meccanismi
+$(\varepsilon_j,\delta_j)$ sugli stessi dati danno al più
+$\big(\sum_j \varepsilon_j,\ \sum_j \delta_j\big)$-DP, e per $m$ meccanismi
+uguali la composizione avanzata dà
+
+$$
+\big(\varepsilon\sqrt{2m\ln(1/\delta')} + m\varepsilon(e^{\varepsilon}-1),
+\ m\delta + \delta'\big).
+$$
+
+Al prezzo di un $\delta' > 0$, finché $m$ resta sotto
+$2\ln(1/\delta')/\varepsilon^2$ il budget cresce come $\sqrt{m}$ invece che
+come $m$; oltre, il secondo termine, che è lineare, prende il sopravvento, e per
+pochi meccanismi la somma semplice resta la migliore. Per la
+$\varepsilon$-DP pura, senza $\delta'$, la somma è il conto giusto.
 
 `````
 
@@ -457,9 +470,10 @@ loro somma, con la memoria e il tempo del passo che crescono di conseguenza. Il
 **compromesso privacy/utilità** è concreto: Abadi e colleghi addestrano su MNIST
 con un budget dell'ordine di $\varepsilon \approx 8$ (per la precisione
 $(8,\,10^{-5})$-DP: è la versione rilassata di poco fa, e il $\delta$ va sempre
-chiesto insieme all’$\varepsilon$) arrivando attorno al $97\%$ di accuratezza,
-poco più di un punto sotto la stessa architettura senza privacy ($98{,}3\%$), e
-la qualità cala via via che si stringe $\varepsilon$ ($95\%$ a
+chiesto insieme all’$\varepsilon$; sui $60\,000$ esempi di MNIST quel $\delta$
+vale $0{,}6/n$, sotto $1/n$ ma non di molto) arrivando attorno al $97\%$ di
+accuratezza, poco più di un punto sotto la stessa architettura senza privacy
+($98{,}3\%$), e la qualità cala via via che si stringe $\varepsilon$ ($95\%$ a
 $\varepsilon = 2$, $90\%$ a $\varepsilon = 0{,}5$).
 
 Quel $\varepsilon \approx 8$ va letto con cura, perché è lì che la
@@ -650,14 +664,15 @@ $\min_\theta \mathbb{E}_{(\mathbf{x},y)}\big[\max_{\boldsymbol{\delta} \in \math
 in cui l'attaccante (il $\max$ interno, risolto da PGD) e il difensore (il
 $\min$ esterno, l'addestramento) giocano l'uno contro l'altro. Che si possa
 addestrare con il gradiente calcolato nel punto trovato dall'attacco lo
-giustifica il teorema di Danskin: se il massimo interno fosse risolto
-esattamente, quel gradiente sarebbe una direzione di discesa del problema
-esterno. Il costo è di $K$ passi di PGD per ogni passo di addestramento, circa
-$K+1$ volte l'addestramento normale; e il compromesso si misura: su CIFAR-10 con
+giustifica il teorema di Danskin, per funzioni con derivata continua (una rete
+con ReLU, a rigore, non lo è): se il massimo interno fosse risolto esattamente,
+quel gradiente sarebbe una direzione di discesa del problema esterno. Il costo è
+di $K$ passi di PGD per ogni passo di addestramento, circa $K+1$ volte
+l'addestramento normale; e il compromesso si misura. Su CIFAR-10 con
 $\rho = 8/255$ la rete di Madry e colleghi resta corretta sul $45{,}8\%$ degli
-esempi attaccati con PGD, contro l’$87{,}3\%$ sugli esempi intatti, mentre la
-stessa rete addestrata normalmente, sotto lo stesso attacco, non ne salva quasi
-nessuno.
+esempi attaccati con PGD e sull’$87{,}3\%$ di quelli intatti; la stessa
+architettura addestrata normalmente arriva al $95{,}2\%$ sugli intatti e, sotto
+lo stesso attacco, scende al $3{,}5\%$.
 
 `````
 
@@ -762,8 +777,8 @@ dove $\Phi^{-1}$ è l'inversa della funzione di ripartizione normale standard.
 Il raggio cresce con $\sigma$ e con la nettezza del voto, ma la stessa $\sigma$
 che lo allarga sporca di più gli input e abbassa l'accuratezza. Su ImageNet gli
 autori certificano il $49\%$ di accuratezza top-1 entro norma $\ell_2$ pari a
-$0{,}5$; tradotta in $\ell_\infty$ su un'immagine di $d$ pixel, la stessa
-garanzia si restringe di un fattore $\sqrt{d}$.
+$0{,}5$; tradotta in $\ell_\infty$ su un'immagine di $d$ componenti (i pixel
+per i canali), la stessa garanzia si restringe di un fattore $\sqrt{d}$.
 
 Anche qui la garanzia va letta per quello che è. Il teorema riguarda il
 classificatore lisciato, non quello di partenza; e siccome il lisciato non è
@@ -805,13 +820,15 @@ confine diritto fra due classi ({numref}`fig-palla-certificata`).
 
 ```{figure} ../figures/palla-certificata.svg
 :name: fig-palla-certificata
-:alt: "Un piano con un confine diritto fra due classi e un punto x. Attorno a x, 400 copie sporcate di rumore gaussiano, colorate secondo la classe che il classificatore dà loro: la classe di x prende 0,83 dei voti. Un cerchio attorno a x, di raggio 0,47, è la palla certificata: tocca il confine senza superarlo, perché con un confine diritto il raggio certificato è esattamente la distanza dal confine."
+:alt: "Un piano con un confine diritto fra due classi e un punto x. Attorno a x, 400 copie sporcate di rumore gaussiano, colorate secondo la classe che il classificatore dà loro: la classe di x prende 0,83 dei voti. Un cerchio attorno a x, di raggio 0,47, è il raggio che dà la probabilità esatta del voto: tocca il confine senza superarlo, perché con un confine diritto quel raggio è esattamente la distanza dal confine. Un cerchio tratteggiato più piccolo, di raggio 0,37, è il raggio garantito dai soli 400 voti con una probabilità di errore di un millesimo."
 :width: 100%
 
 Il randomized smoothing su un confine diritto. Le copie di x sporcate di
-rumore votano, e la classe di x prende la maggioranza; il raggio certificato che
-ne esce è il cerchio, che tocca il confine senza superarlo: con un confine
-diritto la garanzia è esattamente la distanza dal confine.
+rumore votano, e la classe di x prende la maggioranza. Il cerchio è il raggio
+che dà la probabilità esatta del voto, e con un confine diritto coincide con la
+distanza dal confine: la palla lo tocca senza superarlo. Dai soli 400 voti, con
+il margine d'errore che la certificazione pretende, il raggio garantito esce più
+piccolo.
 ```
 
 ## Marchiare il sintetico: watermarking e provenienza
@@ -844,7 +861,7 @@ quel sorteggio la persona non lo conosceva.
 E il limite si legge nella figura stessa, in filigrana: quello che si misura è
 una proporzione, quindi serve abbastanza testo perché lo sbilanciamento si
 distingua dal caso. Su una frase corta non c'è niente da misurare, e riscrivere
-il brano con parole proprie diluisce l'eccesso fino a cancellarlo.
+il brano con parole proprie diluisce l'eccesso, e su un brano corto lo cancella.
 
 `````{tab} Elementare
 
@@ -908,10 +925,15 @@ z = \frac{|s|_G - \gamma T}{\sqrt{T\gamma(1-\gamma)}},
 $$
 
 dove $T$ è il numero di token esaminati e $|s|_G$ quanti di essi cadono nella
-lista verde; nell'esempio del lavoro originale ($\gamma = 0{,}5$, mille token)
-per portare $z$ sotto la soglia bisogna toccare all'incirca un token su
-quattro. Una finestra di contesto più larga rende le liste più difficili da
-ricostruire per chi attacca e, in cambio, più fragili alle modifiche.
+lista verde. Nell'esempio del lavoro originale (mille token tutti verdi,
+$\gamma = 0{,}5$, e un attaccante che conosce le liste e sceglie ogni
+sostituzione nel modo peggiore, così che ciascuna costi due verdi) per portare
+$z$ sotto la soglia bisogna toccare all'incirca un token su quattro. Con una
+marca morbida i verdi di partenza sono meno, e ne bastano meno; chi le liste
+non le conosce, invece, ne deve toccare di più, perché ogni sostituzione gli
+rende in media un rosso solo. Una finestra di contesto più larga rende le liste
+più difficili da ricostruire per chi attacca e, in cambio, più fragili alle
+modifiche.
 
 E c'è un limite più strutturale, perché non dipende
 dall'attaccante ma dal testo: la marca si può nascondere soltanto dove il
@@ -1016,6 +1038,8 @@ print(f"spinta: {rho} per caratteristica; lunghezza complessiva"
 segni = np.sign((p_tutti - y)[:, None] * w)
 p_adv = sigmoid((X + rho * segni) @ w + b)
 ribaltati = azzeccati & ((p_adv > 0.5) != (y == 1))
+soglia = sigmoid(rho * np.abs(w).sum())   # sopra questa fiducia non si ribalta
+print(f"soglia di fiducia: {soglia:.4f}")
 print(f"ribaltati {ribaltati.sum()} dei {azzeccati.sum()} esempi classificati bene"
       f" ({100 * ribaltati.sum() / azzeccati.sum():.0f}%)")
 ```
@@ -1025,11 +1049,12 @@ esempio scelto: i = 1,  vera etichetta y = 1
 originale:  p(classe 1) = 0.890  ->  predice 1  (corretto)
 avversario: p(classe 1) = 0.190  ->  predice 0  (SBAGLIATO)
 spinta: 0.15 per caratteristica; lunghezza complessiva 0.82 contro 6.00 dell'input
+soglia di fiducia: 0.9717
 ribaltati 183 dei 443 esempi classificati bene (41%)
 ```
 
 Il modello passa da una fiducia dell’$89\%$ nella risposta giusta a una
-risposta sbagliata. E la terza riga dice quanto è costato: la spinta
+risposta sbagliata. E la quarta riga dice quanto è costato: la spinta
 complessiva vale $0{,}82$ contro il $6{,}00$ dell'esempio di partenza, cioè
 meno di un settimo. Attenzione però a come si sommano quelle spinte, perché
 $0{,}82$ non è trenta volte $0{,}15$, che farebbe $4{,}5$. Le trenta spinte
@@ -1044,7 +1069,8 @@ questa taglia l'attacco ribalta il $41\%$ degli esempi che il modello
 classificava bene: è una frazione, non una certezza. Gli altri resistono tutti
 per la stessa ragione, e la soglia è netta: la spinta sposta ogni esempio della
 stessa quantità, quindi si ribaltano tutti e soli quelli che il modello
-classificava con una fiducia sotto il $97\%$, e nessuno di quelli sopra. Il
+classificava con una fiducia sotto il $97{,}17\%$ (la soglia della penultima
+riga), e nessuno di quelli sopra. Il
 fenomeno è reale e non ha bisogno di essere gonfiato: che quattro casi su dieci
 si ribaltino con una spinta invisibile è già una notizia.
 
@@ -1116,8 +1142,9 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
   stranamente sicuro proprio sui suoi esempi.
 - In Europa una legge dice cosa si può fare con i dati di una persona, e le dà
   il diritto di sapere quali dati ci sono, farli correggere e farli cancellare.
-  Il punto scomodo è che dai pesi del modello, una volta addestrato, non si
-  tolgono senza rifare tutto: si cancellano dagli archivi, non da lì.
+  Il punto scomodo è che dai pesi di un modello già addestrato si tolgono con
+  certezza solo riaddestrando, tutto o almeno la parte che li aveva visti:
+  dagli archivi si cancellano con un clic, da lì no.
 - Il trucco della moneta lanciata prima di rispondere protegge la singola
   persona e lascia leggere il totale: si aggiunge un po’ di caso, in quantità
   nota. Una manopola decide quanto: più caso, più protezione e meno precisione.
@@ -1183,7 +1210,8 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
 - Sul lato dell'output, il watermarking del testo sbilancia la scelta dei
   token verso una lista pseudo-casuale e si rileva con un test d'ipotesi
   {cite}`kirchenbauer2023watermark`: regge dove l'entropia è alta, non sul
-  testo quasi obbligato, e una parafrasi lo cancella; il C2PA allega invece
+  testo quasi obbligato, e una parafrasi lo erode fino a cancellarlo sui brani
+  corti; il C2PA allega invece
   una provenienza firmata, che uno screenshot toglie. Nessun watermark può
   essere insieme impercettibile e robusto {cite}`zhang2023watermarks`: alza il
   costo del falso, non stabilisce che cosa è vero.

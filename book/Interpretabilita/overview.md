@@ -236,6 +236,57 @@ regolatore.
 
 `````
 
+Che forma debba avere una spiegazione per chi la riceve lo dicono anche le
+scienze sociali. Tim Miller {cite}`miller2019explanation` ha passato in
+rassegna quello che la filosofia, la psicologia e le scienze cognitive sanno su
+come le persone chiedono e danno spiegazioni, e ne ha tratto quattro fatti che
+chi costruisce spiegazioni automatiche tende a ignorare.
+
+`````{tab} Elementare
+
+Chi chiede «perché mi hanno rifiutato il prestito?» di solito intende un'altra
+domanda: perché a me no, quando al mio collega, che guadagna come me, sì?
+Anzitutto, quindi, una spiegazione è un confronto fra quello che è successo e
+quello che ci si aspettava, e un elenco di tutte le colonne con il loro peso non
+risponde a nessun confronto. Poi è una scelta: delle mille cause di una
+decisione le persone ne vogliono una o due, e le scelgono con preferenze
+prevedibili, per esempio per le cause insolite rispetto a quelle ordinarie. Le
+probabilità, poi, contano, ma convincono meno di una causa: «nove clienti su
+dieci come te non restituiscono il prestito» spiega meno di «la rata supera
+metà del tuo reddito». E infine una spiegazione è un pezzo di conversazione: si
+adatta a quello che chi ascolta sa già, e se non basta si fa un'altra domanda.
+
+Tutto questo dice che cosa le persone trovano soddisfacente, non che cosa sia
+vero del modello: una spiegazione può avere tutte e quattro le qualità ed essere
+falsa.
+
+`````
+
+`````{tab} Superiore
+
+Miller {cite}`miller2019explanation` riassume la letteratura in quattro
+risultati. Le spiegazioni sono *contrastive*, nel senso della filosofia della
+spiegazione e non dell'apprendimento contrastivo: la domanda non è «perché
+$P$?» ma «perché $P$ invece di $Q$?», dove $Q$, il *foil* nella terminologia di
+Lipton, è spesso implicito, e la risposta cita una differenza causale fra la
+storia di $P$ e quella di non-$Q$. Sono *selezionate*: le persone scelgono una o
+due cause fra molte, con distorsioni documentate (per esempio a favore delle
+cause anomale). Le probabilità contano, ma riferirsi a probabilità o a
+regolarità statistiche spiega meno che riferirsi a cause, e una
+generalizzazione statistica senza un meccanismo causale che la sostenga
+soddisfa poco. E sono *sociali*: un trasferimento di conoscenza dentro una
+conversazione, calibrato su quello che chi spiega crede che l'altro sappia. Ne
+discendono requisiti per i metodi: rispondere a domande contrastive, come fanno
+le spiegazioni controfattuali delle
+{doc}`spiegazioni locali </Interpretabilita/spiegazioni-locali>`, scegliere
+poche cause invece di distribuire il merito su tutte, e permettere domande di
+seguito. Il limite dell'argomento è che descrive che cosa soddisfa chi riceve
+la spiegazione, non che cosa è fedele al modello: le due proprietà sono
+indipendenti, ed è il tema della sezione «Una spiegazione può convincere ed
+essere falsa».
+
+`````
+
 ## Una mappa delle spiegazioni
 
 I metodi per spiegare un modello sono decine, e presi in blocco sembrano un
@@ -577,6 +628,135 @@ nessuno si sognerebbe di dichiarare senza dire su quali casi l'ha contata. Non
 esistono spiegazioni «gratis»: esistono spiegazioni verificate e spiegazioni
 che ci raccontiamo.
 
+Resta da dire perché, sui dati in tabella, lo scambio fra accuratezza e
+chiarezza manchi così spesso. La ragione ha un nome preso dal cinema, **effetto
+Rashomon**, e Leo Breiman lo mise al centro di un saggio del 2001
+{cite}`breiman2001statistical`.
+
+`````{tab} Elementare
+
+Nel film *Rashomon* di Akira Kurosawa quattro testimoni raccontano lo stesso
+delitto, riferiscono gli stessi fatti, e ne danno quattro storie diverse. Con i
+dati succede qualcosa di simile: modelli diversi spiegano gli stessi esempi
+quasi con la stessa bravura (per dire, il 79,7% di risposte giuste l'uno e il
+79,65% l'altro), e raccontano storie diverse su che cosa conta. Se il reddito e
+la spesa mensile vanno quasi sempre insieme, un modello può appoggiarsi al
+reddito e un altro alla spesa, e sbagliare quasi lo stesso numero di volte:
+chiedere a ciascuno quale colonna conta dà due risposte opposte, tutte e due
+vere per quel modello.
+
+Da qui due conseguenze. La prima è un'avvertenza: la spiegazione di un modello
+dice come ragiona quel modello, non come sono fatti i dati. Per dire quanto una
+colonna conta davvero bisogna guardare tutto il gruppo dei modelli quasi
+migliori, e allora la risposta è un intervallo: per il reddito, da niente a
+molto. La seconda è l'argomento di Cynthia Rudin: se i modelli quasi migliori
+sono tanti, è probabile che fra loro ce ne sia uno semplice da leggere, e
+conviene cercare quello invece di spiegare il più complicato. Probabile, non
+garantito: quando i modelli buoni sono pochi, quello semplice può mancare.
+
+`````
+
+`````{tab} Superiore
+
+Breiman chiama effetto Rashomon la molteplicità dei buoni modelli: nel suo
+esempio, fra i circa $140\,000$ sottoinsiemi di cinque variabili su trenta di
+una regressione lineare, ce ne sono di solito parecchi con la somma dei
+quadrati dei residui entro l'uno per cento della minima, e ciascuno racconta
+una storia diversa su quali variabili contano {cite}`breiman2001statistical`.
+In forma generale, dati uno spazio di ipotesi $\mathcal{F}$, una perdita
+empirica $\hat{\mathcal{L}}$ e il suo minimizzatore $\hat{f}$, il *Rashomon
+set* con una soglia $\theta$ è
+
+$$
+\hat{R}(\mathcal{F}, \theta) = \{ f \in \mathcal{F} : \hat{\mathcal{L}}(f) \le \hat{\mathcal{L}}(\hat{f}) + \theta \}.
+$$
+
+La definizione, in questa forma, è di Semenova, Rudin e Parr
+{cite}`semenova2022existence`, che ne misurano anche la taglia con il *Rashomon
+ratio*, la frazione dello spazio (in volume, sotto un prior uniforme) che cade
+nel set, e sostengono che quando il rapporto è grande è probabile che il set
+contenga modelli quasi ottimi di una classe più semplice: è la ragione tecnica
+della tesi di Rudin {cite}`rudin2019stop`, e resta un argomento probabilistico,
+non una garanzia. L'altra faccia riguarda l'importanza: Fisher, Rudin e Dominici
+{cite}`fisher2019models` definiscono la *model class reliance* come l'intervallo
+fra il minimo e il massimo della *model reliance* di una variabile sui modelli
+del Rashomon set (che definiscono rispetto a un modello di riferimento), e
+mostrano come stimarlo. L'importanza calcolata su un solo modello è un punto di
+quell'intervallo, e con variabili correlate l'intervallo può andare da zero a
+molto. Rapporto e intervallo dipendono tutti e due dalla classe $\mathcal{F}$ e
+dalla soglia scelte.
+
+`````
+
+Il blocco costruisce dati in cui la risposta dipende dal reddito e dall'età,
+con una spesa che è quasi una copia del reddito, e confronta tre modelli: due
+regressioni logistiche (il modello che somma punti per colonna e ne fa una
+probabilità), una sul reddito e una sulla spesa, e un boosting (una somma di
+molti alberi piccoli) su tutte e tre le colonne. Per ciascuno stampa
+l'accuratezza su dati nuovi e l'importanza di reddito e spesa, misurata come
+calo di accuratezza rimescolando la colonna, in media su venti rimescolamenti;
+in fondo prova il boosting anche con sei regolazioni diverse e tiene la
+migliore.
+
+```python
+import numpy as np
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+
+rng = np.random.default_rng(0)
+n = 4000
+reddito = rng.normal(size=n)
+spesa = reddito + 0.1 * rng.normal(size=n)          # quasi una copia del reddito
+eta = rng.normal(size=n)
+y = (reddito + eta + rng.normal(size=n) > 0).astype(int)
+X = np.column_stack([reddito, spesa, eta])
+X_tr, X_te, y_tr, y_te = X[:2000], X[2000:], y[:2000], y[2000:]
+nomi = ["reddito", "spesa", "età"]
+
+def importanza(modello, colonne, j, ripetizioni=20):
+    """Quanto cala l'accuratezza rimescolando la colonna j, in media su più rimescolamenti
+    (zero se il modello non la usa)."""
+    if j not in colonne:
+        return 0.0
+    base, cali = modello.score(X_te[:, colonne], y_te), []
+    for r in range(ripetizioni):
+        A = X_te.copy()
+        A[:, j] = np.random.default_rng(r).permutation(A[:, j])
+        cali.append(base - modello.score(A[:, colonne], y_te))
+    return float(np.mean(cali))
+
+modelli = {"logistica su reddito ed età": (LogisticRegression(), [0, 2]),
+           "logistica su spesa ed età": (LogisticRegression(), [1, 2]),
+           "boosting su tutte e tre": (GradientBoostingClassifier(random_state=0), [0, 1, 2])}
+for nome, (m, colonne) in modelli.items():
+    m.fit(X_tr[:, colonne], y_tr)
+    imp = ", ".join(f"{nomi[j]} {importanza(m, colonne, j):.3f}" for j in (0, 1))
+    print(f"{nome:28}: accuratezza {m.score(X_te[:, colonne], y_te):.4f}; importanza {imp}")
+
+# il boosting regolato: la migliore di sei combinazioni di profondità e passo
+migliore = max(GradientBoostingClassifier(max_depth=d, learning_rate=lr, random_state=0)
+               .fit(X_tr, y_tr).score(X_te, y_te)
+               for d in (1, 2, 3) for lr in (0.03, 0.1))
+print(f"boosting regolato, il migliore di sei: accuratezza {migliore:.4f}")
+```
+
+```text
+logistica su reddito ed età : accuratezza 0.7970; importanza reddito 0.158, spesa 0.000
+logistica su spesa ed età   : accuratezza 0.7965; importanza reddito 0.000, spesa 0.157
+boosting su tutte e tre     : accuratezza 0.7825; importanza reddito 0.126, spesa 0.004
+boosting regolato, il migliore di sei: accuratezza 0.7930
+```
+
+Le due regressioni logistiche sono buone uguali ($0{,}7970$ e $0{,}7965$) e
+raccontano storie opposte: per la prima conta il reddito e la spesa niente, per
+la seconda il contrario, con quasi la stessa importanza passata da una colonna
+all'altra ($0{,}158$ e $0{,}157$). Se ci si fermasse a una sola, si direbbe che
+una delle due colonne è inutile; sull'insieme dei modelli buoni, l'importanza
+del reddito va da zero a $0{,}158$. E il modello più complicato fa un po'
+peggio dei due semplici, $0{,}7825$ così com'è e $0{,}7930$ con la migliore
+delle sei regolazioni: su dati come questi lo scambio fra accuratezza e
+chiarezza non c'è.
+
 ## Dai modelli trasparenti ai circuiti
 
 Cominceremo dai modelli trasparenti, quelli che si leggono senza aiuto:
@@ -636,7 +816,9 @@ guardarci dentro.
   equità, per scoprire cose nuove e perché a volte lo impone la
   legge. E la spiegazione buona dipende da chi la riceve: al cliente serve
   sapere cosa cambiare, all'ingegnere quali colonne pesano, all'ufficio che
-  vigila che il sistema non discrimini.
+  vigila che il sistema non discrimini. E chi chiede «perché?» vuole un
+  confronto («perché a me no e a lui sì?»), una o due cause e non tutte, cause
+  più che probabilità, e la possibilità di chiedere ancora.
 - Tre domande ordinano tutti i metodi del capitolo: il modello si legge da sé
   o va interrogato dopo? vuoi capire il modello intero o una risposta
   sola? lo strumento serve un solo tipo di modello o va bene per
@@ -658,6 +840,10 @@ guardarci dentro.
   usare un modello trasparente invece di appiccicare una spiegazione a una
   scatola nera. Su foto, testo e suoni, però, la scatola nera resta la più
   brava, e la spiegazione appiccicata dopo è l'unica finestra che abbiamo.
+- L'effetto Rashomon: modelli quasi ugualmente bravi possono appoggiarsi a
+  colonne diverse, quindi la spiegazione di un modello racconta quel modello,
+  e l'importanza vera di una colonna è un intervallo sui modelli buoni. Se i
+  modelli buoni sono tanti, è probabile che uno sia semplice da leggere.
 ```
 
 `````
@@ -671,7 +857,9 @@ guardarci dentro.
   correlazioni spurie, l'interpretabilità sì.
 - Si spiega per fiducia, debug, equità, scoperta scientifica e obblighi
   normativi; la spiegazione «buona» dipende da a chi serve:
-  sviluppatore, utente finale, regolatore vogliono cose diverse.
+  sviluppatore, utente finale, regolatore vogliono cose diverse. Le
+  spiegazioni umane (Miller) sono contrastive, selezionate, causali più che
+  probabilistiche, e sociali.
 - Tre assi ordinano il campo: intrinseca vs post-hoc, globale vs locale,
   model-specific vs model-agnostic. Sono largamente indipendenti. A essi si
   affianca una domanda che non è un asse ma decide quale risposta sia corretta:
@@ -686,6 +874,10 @@ guardarci dentro.
   ad alto rischio invece di spiegare scatole nere; sui dati non strutturati il
   post-hoc resta l'unica finestra. In ogni caso, spiegazioni valutate con
   rigore (Doshi-Velez & Kim), non rassicurazioni qualitative.
+- Effetto Rashomon (Breiman): il Rashomon set dei modelli entro una soglia
+  dall'ottimo è spesso grande, e allora contiene probabilmente modelli
+  semplici (Semenova, Rudin, Parr); l'importanza di una variabile va letta come
+  model class reliance, l'intervallo sul set (Fisher, Rudin, Dominici).
 ```
 
 `````

@@ -377,6 +377,32 @@ le une dalle altre. Le regole non le scrive nessuno: emergono dai dati. È
 questo che significa, in questo libro, dire che un programma *impara*, ed è la
 ragione per cui qui i dati contano quanto il codice.
 
+C’è una vecchia obiezione a questa idea, cioè un argomento per dire che non può
+funzionare, ed è stata scritta quasi due secoli fa; un pezzo della sua storia si
+è svolto in Italia, a Torino. Nel 1840 il matematico inglese Charles Babbage vi
+presentò il progetto della sua *macchina analitica*, un calcolatore fatto di
+ingranaggi che avrebbe dovuto eseguire in fila le istruzioni scritte su schede
+di cartone perforate, un po’ come oggi un computer esegue un programma. Non fu
+mai costruita. A descriverla, in un articolo in francese, fu Luigi Federico
+Menabrea, un ufficiale del genio che insegnava all’Accademia militare di Torino
+e che quasi trent’anni dopo sarebbe diventato capo del governo italiano. La
+matematica inglese Ada Lovelace tradusse l’articolo e lo accompagnò con note
+lunghe più del doppio, in cui mostrava fra l’altro come istruire la macchina,
+passo per passo, a eseguire un calcolo lungo. In una di quelle note scrisse che
+la macchina «non pretende affatto di creare qualcosa da sé: può fare qualunque
+cosa noi sappiamo ordinarle di eseguire» {cite}`menabrea1843sketch`.
+
+Nello stesso articolo del 1950 in cui proponeva il suo test, Turing mise quella
+frase fra le obiezioni alle macchine pensanti e la chiamò «obiezione di Lady
+Lovelace» (Lady è il titolo nobiliare: è la stessa Ada Lovelace). Qualche pagina
+più avanti ci tornò sopra, e la sua proposta è l’idea degli esempi detta con
+un’altra immagine: invece di costruire una mente adulta, con tutte le regole già
+scritte dentro, costruirne una da bambino, «qualcosa come un quaderno appena
+comprato in cartoleria», poco meccanismo e molti fogli bianchi, e poi educarla
+{cite}`turing1950computing`. Il quaderno bianco è il programma prima di vedere
+le fotografie; l’educazione sono le migliaia di fotografie con scritto accanto
+«gatto» oppure «non gatto».
+
 Qui nascono due parole che sentirai dappertutto, e tanto vale prenderle subito.
 La fase in cui il programma guarda gli esempi e aggiusta se stesso si chiama
 **addestramento**; quello che ne esce, cioè il programma già aggiustato e

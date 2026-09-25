@@ -79,8 +79,8 @@ un insieme finito di episodi (l'aggiornamento *batch*), Monte Carlo si ferma
 sui valori che minimizzano l'errore quadratico sui ritorni osservati; TD(0) si
 ferma invece sul valore esatto dell'MDP di massima verosimiglianza stimato da
 quegli episodi, la stima di *certainty equivalence*. Se il processo è davvero
-markoviano la seconda generalizza meglio, ed è una ragione, oltre alla
-varianza, per cui TD impara spesso più in fretta.
+markoviano ci si aspetta che la seconda sbagli meno sui dati futuri, ed è una
+ragione, oltre alla varianza, per cui TD impara spesso più in fretta.
 
 `````
 

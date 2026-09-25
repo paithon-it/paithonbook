@@ -212,9 +212,10 @@ determinante di una matrice qualunque, si costruisce la trasformazione in modo
 che il suo determinante sia già scritto.
 
 La ricetta si chiama **strato di accoppiamento**, e il gesto è questo: si
-spaccano le coordinate in due metà. La prima metà passa intatta, non la si
-tocca. La seconda metà viene scalata e traslata, e i numeri con cui la si scala
-e la si trasla sono decisi dalla prima metà, quella che è passata intatta.
+spaccano le coordinate, cioè i numeri della fotografia, in due metà. La prima
+metà passa intatta, non la si tocca. La seconda metà viene scalata e traslata
+(moltiplicata per un numero e spostata di un altro), e quei numeri li decide
+una rete che guarda la prima metà, quella che è passata intatta.
 Poi si scambiano i ruoli e si ripete, così che tutte le coordinate prima o poi
 vengano trasformate e prima o poi facciano da guida.
 
@@ -225,33 +226,41 @@ un solo strato di scala in cima alla pila. La scala, che è quella che rende il
 fattore interessante, arriva con RealNVP {cite}`dinh2017density`, ed è la forma
 che si usa oggi e che il flusso sulle due lune mette in pratica.
 
-Tre proprietà cadono tutte insieme, ed è per questo che la ricetta ha vinto.
+Tre proprietà cadono tutte insieme: si torna indietro senza invertire la rete,
+il fattore di stiramento si legge sulle scale, e la rete che le decide può
+essere complicata quanto si vuole. È per questo che, fra le ricette per un
+determinante a buon mercato, è questa che si usa.
 
-Si inverte a occhio. Per tornare indietro serve sapere con che cosa si è
-scalato e traslato, e quei numeri dipendono solo dalla prima metà, che è
-arrivata intatta: si legge, si ricalcolano scala e traslazione, si disfa. Non
-serve invertire nessuna rete.
+`````{tab} Elementare
 
-Il determinante è gratis. La prima metà non cambia, quindi la parte
-corrispondente della tabella delle derivate è l'identità; la seconda metà
-dipende dalla prima in un modo complicatissimo, ma quel blocco della tabella
-sta tutto da una parte della diagonale, e dall'altra parte ci sono soltanto
-zeri. Una tabella fatta così si chiama *triangolare*, e il suo determinante è
-il prodotto di quello che sta *sulla* diagonale, senza nessun altro conto. Cioè:
-il determinante è il prodotto delle scale, che sono numeri che abbiamo già in
-mano. Da un miliardo di operazioni a una moltiplicazione per ogni coordinata
-scalata, e le coordinate scalate sono metà: sulla figurina di 32 pixel per lato
-di poco fa, cinquecentododici invece di un miliardo.
+Una fotografia è una fila di numeri, uno per pixel, e la macchina la taglia in
+due metà. La prima passa com'è. Una rete la guarda e decide, per ogni numero
+dell'altra metà, di quanto moltiplicarlo e di quanto spostarlo: se per un
+pixel dice «per 2, più 3», un 4 diventa 11. Per tornare indietro non serve
+capire la rete. La prima metà è arrivata intatta: la si rilegge, si chiede di
+nuovo alla rete i suoi due numeri, che sono gli stessi dell'andata, e si disfa
+il conto, 11 meno 3 fa 8, diviso 2 fa 4. Per questo la rete non deve saper
+andare al contrario e può essere complicata quanto si vuole: la macchina si
+rovescia per come i pezzi sono montati, non per il pezzo che impara.
 
-La rete che decide non ha vincoli. Ed è il punto più bello, quello che sfugge a
-una prima lettura: la rete che, guardando la prima metà, produce scala e
-traslazione non deve essere invertibile, e infatti non lo è. Può essere
-qualunque cosa, profonda quanto si vuole, con le funzioni di attivazione che si
-vogliono. L'invertibilità del flusso non sta nel pezzo che impara: sta nel modo
-in cui i pezzi sono montati.
+E il fattore di stiramento, che costava un miliardo di operazioni, qui si legge
+da solo. Torniamo al tavolo e all'acqua. Lungo la prima metà il tavolo non si
+allarga, perché quei numeri non si muovono. Lungo l'altra si allarga di quanto
+dice la moltiplicazione: un pixel moltiplicato per 2 raddoppia il suo pezzo di
+tavolo, e lo spostamento non allarga niente, come spingere il tavolo senza
+cambiarne la misura. L'acqua si abbassa soltanto per le moltiplicazioni, e il
+fattore è il loro prodotto: un pixel moltiplicato per 2 e un altro per 3
+allargano il tavolo di 2 per 3, cioè 6 volte. Sono numeri che la rete ha appena
+dato, comunque complicato sia il modo in cui li ha calcolati, e sulla figurina
+di 32 pixel per lato fanno cinquecentododici moltiplicazioni invece di un
+miliardo.
 
-In formule, con $\mathbf{x} = (\mathbf{x}_a, \mathbf{x}_b)$ e
-$\mathbf{s}, \mathbf{t}$ due reti qualsiasi che leggono $\mathbf{x}_a$:
+`````
+
+`````{tab} Superiore
+
+Con $\mathbf{x} = (\mathbf{x}_a, \mathbf{x}_b)$ e $\mathbf{s}, \mathbf{t}$ due
+reti qualsiasi che leggono $\mathbf{x}_a$ (non serve che siano invertibili):
 
 $$
 \mathbf{z}_a = \mathbf{x}_a, \qquad
@@ -276,10 +285,12 @@ estremo di una famiglia più larga, i flussi autoregressivi: se ogni coordinata 
 scalata e traslata in funzione di tutte quelle che la precedono,
 $z_i = x_i\,e^{s_i(\mathbf{x}_{<i})} + t_i(\mathbf{x}_{<i})$, la jacobiana è
 triangolare per intero e il determinante resta il prodotto delle scale. È la
-fattorizzazione della sezione precedente riletta come flusso (il MAF di
-Papamakarios e colleghi {cite}`papamakarios2017masked`): valutare costa un
-passaggio, generare ne costa $D$, e l'IAF {cite}`kingma2016improved` scambia i
-due costi.
+fattorizzazione di {doc}`un pixel alla volta <pixel-per-pixel>` riletta come
+flusso (il MAF di Papamakarios e colleghi {cite}`papamakarios2017masked`):
+valutare costa un passaggio, generare ne costa $D$ (il numero di coordinate), e
+l'IAF {cite}`kingma2016improved` scambia i due costi.
+
+`````
 
 ## Un flusso vero, sulle due lune
 
@@ -477,22 +488,24 @@ modo di dividere le coordinate. Con la stessa ricetta escono i volti a
 $256 \times 256$ del 2018, quelli che si trasformano l'uno nell'altro tirando
 una riga nello spazio latente.
 
-Sulle immagini, però, i flussi hanno perso la corsa, e il vincolo di partenza
-lo spiega meno di quanto sembri. Una trasformazione invertibile conserva la
+Sulle immagini, però, i flussi hanno perso la corsa, e il vincolo di partenza lo
+spiega meno di quanto sembri. Una trasformazione invertibile conserva la
 dimensione, quindi un flusso sui pixel di una fotografia di $512 \times 512$ a
 colori lavora su 786.432 numeri, senza poterne buttare via uno. La dimensione
 però la conserva anche la diffusione: il latente rumoroso ha la forma di quello
 pulito, e i 16.384 numeri della diffusione latente del capitolo precedente
 (quarantotto volte meno, lo stesso fattore 48 che quel capitolo aveva già
 contato) li ottiene l'autoencoder messo davanti. Lo stesso autoencoder si può
-mettere davanti a un flusso, ed è la strada con cui STARFlow, nel 2025, ha
-portato un flusso vicino alla qualità della diffusione {cite}`gu2025starflow`;
-il prezzo è quello del trasloco sui token della sezione precedente, una
-verosimiglianza che vale per il latente e non più per l'immagine. Il costo vero
-del vincolo è l'espressività di ogni strato: un passo invertibile, con un
-determinante che si legge, deforma poco, e per piegare una gaussiana in una
-distribuzione di fotografie ne servono pile lunghe e costose. È il prezzo
-dell'esattezza, e si paga in profondità più che in dimensione.
+mettere davanti a un flusso, ed è una delle mosse con cui STARFlow, nel 2025, ha
+portato un flusso vicino alla qualità della diffusione, accanto a
+un'architettura che concentra la capacità in un blocco profondo e a una guida
+nuova in generazione {cite}`gu2025starflow`; il prezzo è quello del trasloco sui
+token di {doc}`un pixel alla volta <pixel-per-pixel>`, una verosimiglianza che
+vale per il latente e non più per l'immagine. Il costo vero del vincolo è
+l'espressività di ogni strato: un passo invertibile, con un determinante che si
+legge, deforma poco, e per piegare una gaussiana in una distribuzione di
+fotografie ne servono pile lunghe e costose. È il prezzo dell'esattezza, e si
+paga in profondità più che in dimensione.
 
 `````{tab} Elementare
 
@@ -512,9 +525,13 @@ dell'esattezza, e si paga in profondità più che in dimensione.
   passano intatte, l'altra metà viene scalata e traslata in base alla prima. E
   il pezzo che decide come, cioè la rete che impara, non ha nessun vincolo:
   l'invertibilità sta nel montaggio, non nel motore.
-- Il prezzo lo si paga sulla taglia: una macchina che si usa nei due sensi non
-  può buttare via niente, quindi non può comprimere. Sulle fotografie, dove
-  comprimere è tutto, questa famiglia ha perso la corsa. Il numero esatto che
+- Il prezzo lo si paga in profondità. Una macchina che si usa nei due sensi
+  non può buttare via niente, ma da solo questo non la condanna: anche la
+  diffusione esce con tanti numeri quanti ne sono entrati, e a tutte e due si
+  può mettere davanti un compressore. Quello che pesa è che ogni passo, per
+  restare invertibile e con il fattore già scritto, deforma lo spazio di poco,
+  e per arrivare da una nuvola a una fotografia ne servono pile lunghissime.
+  Sulle fotografie questa famiglia ha perso la corsa; il numero esatto che
   restituisce, però, serve ancora, ed è la prossima sezione.
 ```
 
@@ -533,25 +550,30 @@ dell'esattezza, e si paga in profondità più che in dimensione.
   $\mathcal{O}(D^3)$ in generale.
 - Strato di accoppiamento: partizione $\mathbf{x} = (\mathbf{x}_a,
   \mathbf{x}_b)$, con $\mathbf{z}_a = \mathbf{x}_a$ e $\mathbf{z}_b =
-  \mathbf{x}_b \odot \exp(s(\mathbf{x}_a)) + t(\mathbf{x}_a)$, con $\exp$
-  elemento per elemento. La forma
-  additiva ($s \equiv 0$) è di NICE {cite}`dinh2015nice` ed è a volume
+  \mathbf{x}_b \odot \exp(\mathbf{s}(\mathbf{x}_a)) + \mathbf{t}(\mathbf{x}_a)$,
+  con $\exp$ elemento per elemento. La forma additiva
+  ($\mathbf{s} \equiv \mathbf{0}$) è di NICE {cite}`dinh2015nice` ed è a volume
   costante, $\det \mathbf{J} = 1$; la scala è di RealNVP
   {cite}`dinh2017density`. La jacobiana è triangolare a blocchi con identità in
   alto a sinistra, quindi $\log\lvert\det\rvert = \sum_{i \in b}
-  s_i(\mathbf{x}_a)$, perché $s$ è il *logaritmo* della scala: costo lineare. L'inversa è esplicita, e $s, t$ possono essere reti arbitrarie
-  e non invertibili.
+  s_i(\mathbf{x}_a)$, perché $\mathbf{s}$ è il *logaritmo* della scala:
+  costo lineare. L'inversa è esplicita, e $\mathbf{s}, \mathbf{t}$ possono
+  essere reti arbitrarie e non invertibili.
 - Glow {cite}`kingma2018glow` sostituisce la permutazione fissa fra i due
   blocchi con una convoluzione $1\times1$ invertibile, il cui determinante
   costa $\mathcal{O}(c^3)$ nei soli canali (e si abbatte ulteriormente con la
   parametrizzazione LU).
-- Il limite strutturale è la conservazione della dimensione: nessun
-  collo di bottiglia, quindi nessuna compressione. Su $512\times512\times3$
-  sono $786.432$ dimensioni anche in uscita, contro le $16.384$ del latente
-  di Stable Diffusion (il fattore 48 già contato nel capitolo precedente). È la
-  ragione per cui la famiglia è marginale nella
-  generazione di immagini e resta viva nella stima di densità, nell'inferenza
-  variazionale e come base teorica dei metodi continui.
+- $f$ conserva la dimensione: su $512\times512\times3$ sono $786.432$
+  dimensioni anche in uscita. Non è questo a separare i flussi dalla
+  diffusione, che la conserva anch'essa e lavora sulle $16.384$ del latente di
+  Stable Diffusion (il fattore 48 del capitolo precedente) grazie
+  all'autoencoder messo davanti; lo stesso si fa con un flusso
+  {cite}`gu2025starflow`, e la verosimiglianza vale allora per il latente. Il
+  limite strutturale è l'espressività di ciascuno strato invertibile con un
+  determinante trattabile, che si paga in profondità: è la ragione per cui la
+  famiglia è marginale nella generazione di immagini e resta viva nella stima
+  di densità, nell'inferenza variazionale e come base teorica dei metodi
+  continui.
 ```
 
 `````

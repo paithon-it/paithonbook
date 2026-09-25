@@ -240,17 +240,17 @@ $$
 \mathcal{L}_{\text{stile}} = \sum_{l} \frac{w_l}{4 N_l^2 M_l^2} \sum_{i,j} \left( G^{(l)}_{ij} - A^{(l)}_{ij} \right)^2 ,
 $$
 
-dove $\mathbf{G}^{(l)}$ e $\mathbf{A}^{(l)}$ sono le Gram dell'immagine
-generata e del quadro di stile allo strato $l$, $w_l$ è il peso dello strato
-(nel paper $1/5$ per ciascuno dei cinque) e il fattore $1/(4 N_l^2 M_l^2)$
-rende confrontabili strati di taglia diversa: ogni entrata della Gram è una
-somma su $M_l$ posizioni, quindi il suo scarto al quadrato cresce come $M_l^2$,
-e le entrate sono $N_l^2$. La scelta della Gram ha una lettura precisa.
-Trattando le $M_l$ colonne di $\mathbf{F}^{(l)}$ come campioni di una
-distribuzione di feature, $\mathbf{G}^{(l)}/M_l$ ne è il momento secondo non
-centrato, e il termine di stile di uno strato è, a meno della costante
-$1/(4N_l^2)$, la *maximum mean discrepancy* al quadrato fra le feature
-dell'immagine generata e quelle del quadro, con il nucleo polinomiale
+dove $\mathbf{G}^{(l)}$ e $\mathbf{A}^{(l)}$ sono le Gram dell'immagine generata
+e del quadro di stile allo strato $l$, $w_l$ è il peso dello strato (nel paper
+$1/5$ per ciascuno dei cinque) e il fattore $1/(4 N_l^2 M_l^2)$ rende
+confrontabili strati di taglia diversa: ogni entrata della Gram è una somma su
+$M_l$ posizioni, quindi il suo scarto al quadrato cresce come $M_l^2$, e le
+entrate sono $N_l^2$. La scelta della Gram ha una lettura precisa. Trattando le
+$M_l$ colonne di $\mathbf{F}^{(l)}$ come campioni di una distribuzione di
+feature, $\mathbf{G}^{(l)}/M_l$ ne è il momento secondo non centrato, e se le
+due immagini hanno la stessa taglia il termine di stile di uno strato è, a meno
+della costante $1/(4N_l^2)$, la *maximum mean discrepancy* al quadrato fra le
+feature dell'immagine generata e quelle del quadro, con il nucleo polinomiale
 $k(\mathbf{a}, \mathbf{b}) = (\mathbf{a}^\top \mathbf{b})^2$
 {cite}`li2017demystifying`. Lo stile, in questo senso, è una distribuzione di
 feature a cui si è tolta la posizione, confrontata sui soli momenti del secondo
@@ -283,8 +283,8 @@ vgg = vgg.features.to(device).eval()
 for p in vgg.parameters():
     p.requires_grad_(False)
 
-STRATI_STILE = [0, 5, 10, 19, 28]   # conv1_1 ... conv5_1, letti dopo la ReLU
-STRATO_CONTENUTO = 21               # conv4_2
+STRATI_STILE = [1, 6, 11, 20, 29]   # conv1_1 ... conv5_1, dopo la loro ReLU
+STRATO_CONTENUTO = 22               # conv4_2, dopo la sua ReLU
 
 def attivazioni(x):
     stile, contenuto = [], None
@@ -295,7 +295,7 @@ def attivazioni(x):
         elif i == STRATO_CONTENUTO:
             contenuto = x
         if i == STRATI_STILE[-1]:
-            break                    # oltre conv5_1 non serve
+            break                    # oltre la ReLU di conv5_1 non serve
     return stile, contenuto
 
 def gram(f):
@@ -357,19 +357,19 @@ leggermente più gradevoli, e le immagini famose sono fatte così. Qui usiamo la
 ## L'eredità: da minuti a millisecondi
 
 Il limite del metodo di Gatys è strutturale: ogni immagine è un problema di
-ottimizzazione a sé, centinaia di passi di gradiente ogni volta. Johnson,
-Alahi e Fei-Fei {cite}`johnson2016perceptual` lo aggirarono con una mossa
-elegante: usare la loss di Gatys non per generare un'immagine, ma per
-addestrare una rete feed-forward che trasforma qualunque foto in un dato
-stile. L'ottimizzazione costosa si paga una volta sola, in fase di
-addestramento; dopo, applicare lo stile è una singola passata in avanti: circa
-mille volte più veloce (tre ordini di grandezza), abbastanza per un video in
-tempo reale. È la
-famiglia di tecniche che ha reso possibili app come Prisma, con il compromesso
-di una rete da addestrare *per ciascuno stile*. Il compromesso è durato un
-anno. Huang e Belongie {cite}`huang2017arbitrary` hanno osservato che per
-trasferire uno stile qualunque basta allineare, canale per canale, media e
-deviazione standard delle attivazioni del contenuto a quelle dello stile,
+ottimizzazione a sé, centinaia di passi di gradiente ogni volta. Johnson, Alahi
+e Fei-Fei {cite}`johnson2016perceptual` lo aggirarono con una mossa elegante:
+usare la loss di Gatys non per generare un'immagine, ma per addestrare una rete
+feed-forward che trasforma qualunque foto in un dato stile. L'ottimizzazione
+costosa si paga una volta sola, in fase di addestramento; dopo, applicare lo
+stile è una singola passata in avanti: circa mille volte più veloce (tre ordini
+di grandezza), abbastanza per un video in tempo reale. È la famiglia di tecniche
+che ha reso possibili app come Prisma, con il compromesso di una rete da
+addestrare *per ciascuno stile*. Il compromesso è durato poco: già nel 2016
+c'erano reti capaci di più stili, e la forma rimasta è quella di Huang e
+Belongie {cite}`huang2017arbitrary`: per trasferire uno stile qualunque basta
+allineare, canale per canale, media e deviazione standard delle attivazioni del
+contenuto a quelle dello stile,
 
 $$
 \mathrm{AdaIN}(\mathbf{x}, \mathbf{s}) = \sigma(\mathbf{s})\,

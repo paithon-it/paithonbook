@@ -209,12 +209,15 @@ che era partito resta un milionesimo.
 
 Il rimedio che viene in mente per primo, alzare i pesi per compensare, non
 funziona. Pesi più grandi ingrandiscono i numeri che entrano nella funzione, e
-ingrandirli li spinge proprio verso le code, dove la curva è ancora più
-piatta. Su una rete di venti strati, moltiplicando per quattro tutti i pesi,
-la parte di messaggio che sopravvive a ogni strato sale da $0{,}24$ a $0{,}6$.
-Si guadagna qualcosa, e non basta: $0{,}6$ moltiplicato venti volte per sé
-stesso vale circa un decimillesimo. Il messaggio si spegne comunque, solo un
-po’ più in là.
+ingrandirli li spinge proprio verso le code, dove la curva è ancora più piatta.
+Su una rete di venti strati, moltiplicando per quattro tutti i pesi, la parte di
+messaggio che sopravvive a ogni strato sale da $0{,}24$ a poco più di $0{,}6$.
+Si guadagna qualcosa, e non basta: un fattore così, moltiplicato venti volte per
+sé stesso, vale circa un decimillesimo. Il messaggio si spegne comunque, solo un
+po’ più in là. Alzandoli di dodici volte smette di spegnersi, ma solo perché più
+di metà dei neuroni si è bloccata su uno dei due estremi, dove la curva è
+piatta, e il messaggio passa per i pochi rimasti nel mezzo: si è cambiato
+guasto, non lo si è riparato.
 
 `````
 
@@ -242,15 +245,16 @@ positiva), il che rallenta la convergenza della discesa del gradiente.
 
 La via d'uscita che viene in mente per prima non funziona, e la porta va chiusa
 subito: non si rimedia alzando i pesi per compensare il fattore $1/4$. Pesi più
-grandi spingono $z$ nelle code, dove $\sigma'$ è ancora più piccola, e i due
-effetti si mangiano a vicenda. Si prende una rete di venti strati da $128$
-unità, pesi estratti con l'inizializzazione di Glorot e ingressi normali
-standard, e si chiama «fattore» il rapporto fra la norma del gradiente che esce
-da uno strato verso l'ingresso e quella del gradiente che vi è entrato
+grandi spingono $z$ nelle code, dove $\sigma'$ è ancora più piccola, e a scale
+moderate i due effetti si mangiano a vicenda. Si prende una rete di venti strati
+da $128$ unità, pesi estratti con l'inizializzazione di Glorot e ingressi
+normali standard, e si chiama «fattore» il rapporto fra la norma del gradiente
+che esce da uno strato verso l'ingresso e quella del gradiente che vi è entrato
 dall'uscita, mediato sugli strati. Il fattore medio per strato viene $0{,}24$,
-in linea con il tetto di $1/4$; quadruplicando la scala dei pesi sale soltanto
-a $0{,}63$, perché nel frattempo $\mathbb{E}[\sigma'(z)]$ scende da $0{,}23$ a
-$0{,}13$.
+in linea con il tetto di $1/4$; quadruplicando la scala dei pesi sale soltanto a
+$0{,}63$, perché nel frattempo $\mathbb{E}[\sigma'(z)]$ scende da $0{,}23$ a
+$0{,}13$. Il blocco prova anche una scala dodici volte più grande, e conta le
+unità sature, quelle con $\sigma'(z) < 0{,}01$.
 
 ```python
 import numpy as np
@@ -267,26 +271,34 @@ def fattore_medio(scala, strati=20, n=128, esempi=256, seme=0):
         z = a @ Wl.T
         zeta.append(z)
         a = sigmoide(z)
-    g, fattori, pendenze = rng.normal(size=(esempi, n)), [], []
+    g, fattori, pendenze, sature = rng.normal(size=(esempi, n)), [], [], []
     for Wl, z in zip(reversed(W), reversed(zeta)):  # ritorno: W^T (g * sigma')
         d = sigmoide(z) * (1 - sigmoide(z))
         nuovo = (g * d) @ Wl
         fattori.append(np.linalg.norm(nuovo) / np.linalg.norm(g))
         pendenze.append(d.mean())
+        sature.append((d < 0.01).mean())            # unità quasi piatte
         g = nuovo
-    return np.mean(fattori), np.mean(pendenze)
+    return np.mean(fattori), np.mean(pendenze), np.mean(sature)
 
-for scala in (1, 4):
-    f, p = fattore_medio(scala)
-    print(f"pesi x{scala}: fattore per strato {f:.2f}, E[sigma'(z)] {p:.2f}")
+for scala in (1, 4, 12):
+    f, p, s = fattore_medio(scala)
+    print(f"pesi x{scala}: fattore per strato {f:.2f}, E[sigma'(z)] {p:.2f},",
+          f"sature {s:.0%}")
 ```
 
 ```text
-pesi x1: fattore per strato 0.24, E[sigma'(z)] 0.23
-pesi x4: fattore per strato 0.63, E[sigma'(z)] 0.13
+pesi x1: fattore per strato 0.24, E[sigma'(z)] 0.23, sature 0%
+pesi x4: fattore per strato 0.63, E[sigma'(z)] 0.13, sature 7%
+pesi x12: fattore per strato 1.08, E[sigma'(z)] 0.05, sature 57%
 ```
- Si guadagna sul modulo di $\mathbf{W}$ e si perde sulla saturazione,
-e il fattore resta sotto $1$ comunque: la sigmoide perde da entrambi i lati.
+
+Si guadagna sul modulo di $\mathbf{W}$ e si perde sulla saturazione, ma non in
+pari misura: a dodici volte la scala il fattore per strato supera già $1$. Non è
+un rimedio, però. A quella scala più di metà delle unità ha $\sigma'(z)$ sotto
+un centesimo, la rete lavora quasi a gradini, e il gradiente che sopravvive
+passa per la minoranza di unità rimaste a metà della curva. Si è barattato lo
+svanire con la saturazione, e oltre quella scala con l'esplosione.
 
 `````
 

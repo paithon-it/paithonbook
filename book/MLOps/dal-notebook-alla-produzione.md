@@ -242,7 +242,8 @@ def fissa_seed(seed: int = 42) -> None:
     #   rng = np.random.default_rng(seed)
     # il DataLoader che mescola pesca dal seme globale; un generator
     # proprio lo isola dagli altri consumi (worker_init_fn serve solo per
-    # generatori costruiti a mano dentro i worker):
+    # i generatori che il loader non semina, come un np.random.Generator
+    # creato a livello di modulo, che ogni worker riceverebbe identico):
     #   DataLoader(dati, shuffle=True,
     #              generator=torch.Generator().manual_seed(seed))
 ```

@@ -113,9 +113,10 @@ il meccanismo, ed è fisica ottocentesca invece che una rete: per la precisione
 la legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
 nomi di Beer e Lambert e ha quasi due secoli.
 
-Differenziabile vuol dire che autograd attraversa l'intera catena, dal
-pixel reso fino ai pesi della rete: nessun passo fa un salto brusco o prende
-una decisione secca del tipo «qui mi fermo», che interromperebbe il gradiente.
+Differenziabile vuol dire che autograd attraversa l'intera catena, dal pixel
+reso fino ai pesi della rete: lungo quella strada nessun passo fa un salto
+brusco o prende una decisione secca del tipo «qui mi fermo», che
+interromperebbe il gradiente.
 
 ```{figure} ../figures/nerf-campo-di-radianza.svg
 :name: fig-nerf-rendering
@@ -296,16 +297,19 @@ $$
 
 applicata a ciascuna delle tre coordinate (con $L = 10$ nel lavoro originale) e
 alle componenti della direzione (con $L = 4$). Non è un espediente. Nel regime
-del **neural tangent kernel**, dove una rete larga addestrata a passi piccoli
-si comporta come una regressione a nucleo, l'errore lungo ogni autovettore del
-nucleo cala con una velocità proporzionale al suo autovalore; per un MLP con
-ingresso a bassa dimensione gli autovalori calano rapidamente con la frequenza,
-e le alte frequenze richiedono un numero di passi impraticabile. Tancik e
-colleghi mostrano che le *Fourier features* rendono il nucleo stazionario, con
-una banda che si regola scegliendo le frequenze {cite}`tancik2020fourier`. La
-mappa presuppone coordinate normalizzate, in NeRF dentro $[-1, 1]$: la
-frequenza più alta, $2^{L-1}\pi$, fissa la scala più fine rappresentabile, e
-una $L$ troppo grande produce rumore ad alta frequenza invece che dettaglio.
+del **neural tangent kernel**, dove una rete larga addestrata a passi piccoli si
+comporta come una regressione con un nucleo fisso nel senso del {doc}`kernel
+trick </MachineLearning/svm-kernel>` (il prodotto scalare fra i gradienti della
+rete nei due punti, non la media pesata di Nadaraya-Watson), l'errore lungo ogni
+autovettore del nucleo cala con una velocità proporzionale al suo autovalore;
+per un MLP con ingresso a bassa dimensione gli autovalori calano rapidamente con
+la frequenza, e le alte frequenze richiedono un numero di passi impraticabile.
+Tancik e colleghi mostrano che le *Fourier features* rendono il nucleo
+stazionario, con una banda che si regola scegliendo le frequenze
+{cite}`tancik2020fourier`. La mappa presuppone coordinate normalizzate, in NeRF
+dentro $[-1, 1]$: la frequenza più alta, $2^{L-1}\pi$, fissa la scala più fine
+rappresentabile, e una $L$ troppo grande produce rumore ad alta frequenza invece
+che dettaglio.
 
 Il legame con i Transformer non è un'analogia vaga: la forma è la stessa,
 sinusoidi a frequenze geometricamente scalate, e il ruolo è lo stesso, rendere
@@ -440,32 +444,31 @@ coefficienti di armoniche sferiche per il colore dipendente dalla direzione
 {cite}`kerbl20233d`.
 
 La proiezione di una gaussiana 3D sul piano immagine è ancora, con buona
-approssimazione, una gaussiana 2D, il che rende il rendering una
-rasterizzazione invece di un *ray marching*: si ordina per profondità e si
-compone con la stessa somma
-$\hat{C} = \sum_i \mathbf{c}_i\, \alpha_i \prod_{j<i} (1 - \alpha_j)$, dove però
-l'opacità non viene da una densità integrata lungo il raggio ma dalla gaussiana
-proiettata valutata nel pixel $\mathbf{u}$,
-$\alpha_i = o_i \exp\!\big(-\tfrac{1}{2}(\mathbf{u} - \boldsymbol{\mu}'_i)^\top
+approssimazione, una gaussiana 2D, il che rende il rendering una rasterizzazione
+invece di un *ray marching*: si ordina per profondità e si compone con la stessa
+somma $\hat{C} = \sum_i \mathbf{c}_i\, \alpha_i \prod_{j<i} (1 - \alpha_j)$,
+dove però l'opacità non viene da una densità integrata lungo il raggio ma dalla
+gaussiana proiettata valutata nel pixel $\mathbf{u}$, $\alpha_i = o_i
+\exp\!\big(-\tfrac{1}{2}(\mathbf{u} - \boldsymbol{\mu}'_i)^\top
 \boldsymbol{\Sigma}'^{-1}_i (\mathbf{u} - \boldsymbol{\mu}'_i)\big)$, con $o_i$
 l'opacità appresa e $\boldsymbol{\mu}'_i$, $\boldsymbol{\Sigma}'_i$ centro e
-covarianza proiettati. L'ordinamento si fa una volta per tile di
-$16 \times 16$ pixel, sui centri delle gaussiane, e non pixel per pixel: dove
-due gaussiane si compenetrano l'ordine può scattare fra un fotogramma e
-l'altro. Le gaussiane infine non partono a caso: nascono sulla nuvola di punti
-che la structure from motion produce insieme alle pose, e il rendering sfrutta
-appieno l'hardware grafico. Con una
-precisazione che il metodo non nasconde: sotto la prospettiva vera, che divide
-per $Z$, l'immagine di una gaussiana non è una gaussiana. Lo diventa se la
-proiezione si linearizza localmente, e la covarianza proiettata è allora
-$\boldsymbol{\Sigma}' = \mathbf{J}\mathbf{W}\boldsymbol{\Sigma}\mathbf{W}^\top
-\mathbf{J}^\top$, dove $\mathbf{W}$ è la trasformazione di vista e $\mathbf{J}$
-lo jacobiano dell'approssimazione affine della proiezione (è la ricetta dello
-*splatting* con filtro ellittico della grafica volumetrica). Lo scarto si vede
-ai bordi dell'inquadratura, dove la linearizzazione è peggiore. Gli
-autori riportano sintesi di nuove viste in tempo reale ($\geq$ 30 fotogrammi
-al secondo) a risoluzione 1080p, con qualità pari a quella dei migliori campi di
-radianza allora pubblicati e tempi di addestramento competitivi.
+covarianza proiettati. L'ordinamento si fa una volta per tile di $16 \times 16$
+pixel, sui centri delle gaussiane, e non pixel per pixel: dove due gaussiane si
+compenetrano l'ordine può scattare fra un fotogramma e l'altro. Le gaussiane
+infine, nelle scene reali, non partono a caso: nascono sulla nuvola di punti che
+la structure from motion produce insieme alle pose, e il rendering sfrutta
+appieno l'hardware grafico. Con una precisazione che il metodo non nasconde:
+sotto la prospettiva vera, che divide per $Z$, l'immagine di una gaussiana non è
+una gaussiana. Lo diventa se la proiezione si linearizza localmente, e la
+covarianza proiettata è allora $\boldsymbol{\Sigma}' =
+\mathbf{J}\mathbf{W}\boldsymbol{\Sigma}\mathbf{W}^\top \mathbf{J}^\top$, dove
+$\mathbf{W}$ è la trasformazione di vista e $\mathbf{J}$ lo jacobiano
+dell'approssimazione affine della proiezione (è la ricetta dello *splatting* con
+filtro ellittico della grafica volumetrica). Lo scarto si vede ai bordi
+dell'inquadratura, dove la linearizzazione è peggiore. Gli autori riportano
+sintesi di nuove viste in tempo reale ($\geq$ 30 fotogrammi al secondo) a
+risoluzione 1080p, con qualità pari a quella dei migliori campi di radianza
+allora pubblicati e tempi di addestramento competitivi.
 
 L'ottimizzazione alterna discesa del gradiente sui parametri e un
 **controllo adattivo della densità**: le gaussiane con gradiente di posizione

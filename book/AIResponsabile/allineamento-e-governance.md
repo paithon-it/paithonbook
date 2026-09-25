@@ -110,33 +110,37 @@ se il prompt dice che l'anno è il 2023, vulnerabile se dice 2024) e mostrano ch
 fine-tuning supervisionato, RLHF e addestramento avversariale di sicurezza non
 la rimuovono; l'ultimo, anzi, insegna al modello a riconoscere meglio l'innesco
 e a nasconderla. Sugli stessi modelli, una sonda lineare sulle attivazioni
-interne, costruita con due sole domande generiche di contrasto, separa i prompt
-che fanno scattare la backdoor dagli altri con AUROC sopra il $99\%$
+interne, costruita con un'unica domanda generica e le sue due risposte opposte
+(«sì» e «no»), che non dicono nulla né dell'innesco né del comportamento, separa
+i prompt che fanno scattare la backdoor dagli altri con AUROC sopra il $99\%$
 {cite}`macdiarmid2024probes`. Il limite lo dichiarano gli autori: la backdoor
 l'hanno inserita loro, e che la stessa sonda trovi un obiettivo sbagliato nato
-da sé durante l'addestramento resta da dimostrare. Sul primo pesa la legge di
-Goodhart, nella formulazione resa celebre da Marilyn Strathern
-{cite}`strathern1997improving`: «quando una misura diventa un obiettivo, cessa
-di essere una buona misura». Formalmente, ottimizziamo un proxy
-$\tilde{r} \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e $\arg\max_y r^*(y)$ in
-generale non coincidono, e la differenza $\tilde{r} - r^*$, piccola dove il
-proxy è stato stimato (i comportamenti tipici, quelli su cui esistevano dati),
-viene *amplificata* proprio dalla ricerca del massimo, che spinge il sistema
-fuori da quella regione, dove il proxy sovrastima. Qui $r^*$ è l'obiettivo vero
-(non osservabile direttamente), $\tilde{r}$ è il surrogato che ottimizziamo (un
-punteggio del gioco, un reward model), e $y$ è il comportamento prodotto.
-L'allineamento è, in questa lettura, il problema di rendere piccola quella
-differenza *dove conta*: non in media, ma nel punto in cui l'ottimizzatore andrà
-a cercare. Quanto si sia spinta l'ottimizzazione si misura con la divergenza di
-Kullback-Leibler fra la policy ottimizzata e quella di partenza, e Gao, Schulman
-e Hilton {cite}`gao2023scaling` trovano che la qualità vera, in funzione di
+da sé durante l'addestramento resta da dimostrare. Sull'outer alignment, il
+primo dei due sottoproblemi, pesa la legge di Goodhart, nella formulazione resa
+celebre da Marilyn Strathern {cite}`strathern1997improving`: «quando una misura
+diventa un obiettivo, cessa di essere una buona misura». Formalmente,
+ottimizziamo un proxy $\tilde{r} \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e
+$\arg\max_y r^*(y)$ in generale non coincidono, e la differenza
+$\tilde{r} - r^*$, piccola dove il proxy è stato stimato (i comportamenti
+tipici, quelli su cui esistevano dati), viene *amplificata* proprio dalla
+ricerca del massimo, che spinge il sistema fuori da quella regione, dove il
+proxy sovrastima. Qui $r^*$ è l'obiettivo vero (non osservabile direttamente),
+$\tilde{r}$ è il surrogato che ottimizziamo (un punteggio del gioco, un reward
+model), e $y$ è il comportamento prodotto. L'allineamento è, in questa lettura,
+il problema di rendere piccola quella differenza *dove conta*: non in media, ma
+nel punto in cui l'ottimizzatore andrà a cercare. Quanto si sia spinta
+l'ottimizzazione si misura con la divergenza di Kullback-Leibler fra la policy
+ottimizzata e quella di partenza, e Gao, Schulman e Hilton
+{cite}`gao2023scaling` trovano che la qualità, in funzione di
 $d = \sqrt{D_{\mathrm{KL}}(\pi \,\|\, \pi_{\text{ref}})}$, segue $d\,(a - b\,d)$
 quando si sceglie il migliore fra $k$ candidati e $d\,(a - b \log d)$ con il
 reinforcement learning, con coefficienti $a$ e $b$ che dipendono dalla taglia
-del reward model. Per la scelta fra $k$ candidati la formula d'uso della
-divergenza, $\log k - (k-1)/k$, ne è a rigore un limite superiore: vale $1{,}40$
-nat a $k = 10$ e $5{,}91$ a $k = 1000$, la stessa unità in cui si misura la
-penalità dell'RLHF.
+del reward model. Quella qualità, nel loro esperimento, è il voto di un reward
+model più grande che fa la parte delle persone: le curve vengono da un banco
+sintetico, non da giudizi umani. Per la scelta fra $k$ candidati la formula
+d'uso della divergenza, $\log k - (k-1)/k$, ne è a rigore un limite superiore
+{cite}`beirami2025theoretical`: vale $1{,}40$ nat a $k = 10$ e $5{,}91$ a
+$k = 1000$, la stessa unità in cui si misura la penalità dell'RLHF.
 
 `````
 
@@ -859,11 +863,12 @@ noi.
   lettera dell'obiettivo. *Specification gaming* / reward hacking e legge di
   Goodhart (il proxy $\tilde{r}$ diverge dal vero $r^*$ proprio dove
   l'ottimizzatore cerca il massimo); si distinguono *outer* e *inner* alignment.
-- La curva dell’overottimizzazione non è monotona: al crescere della
-  pressione la qualità vera prima sale, poi ripiega e scende sotto il punto di
-  partenza, mentre il punteggio surrogato continua a salire
-  {cite}`gao2023scaling`. La penalità KL dell'RLHF è la difesa contro questo, e
-  insieme l'ammissione che il reward model è un surrogato.
+- La curva dell’overottimizzazione non è monotona: al crescere della pressione
+  la qualità (nel loro esperimento, il voto di un giudice più grande) prima
+  sale, poi ripiega e scende sotto il punto di partenza, mentre il punteggio
+  surrogato continua a salire {cite}`gao2023scaling`. La penalità KL dell'RLHF è
+  la difesa contro questo, e insieme l'ammissione che il reward model è un
+  surrogato.
 - Allineare gli LLM: RLHF {cite}`christiano2017deep`,
   {cite}`ouyang2022training` (reward model dalle preferenze + PPO sotto vincolo
   KL); DPO {cite}`rafailov2023direct` (stesso *ottimo*, sotto le ipotesi di

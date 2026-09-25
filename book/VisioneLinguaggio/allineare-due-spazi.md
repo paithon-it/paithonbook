@@ -397,23 +397,22 @@ avvicinano mai.
 Il secondo parametro strutturale è $B$. Il denominatore della InfoNCE somma sui
 candidati del batch: i negativi *sono* il batch, non un insieme costruito a
 parte. Con $B$ piccolo il compito è banale (la baseline casuale è $\log B$, e
-con $B = 4$ vale $1{,}39$) e il segnale di apprendimento è povero; al
-crescere di $B$ il compito diventa un ago in un pagliaio. La ragione
-formale è il risultato con cui la InfoNCE è nata {cite}`oord2018representation`:
-per ogni ancora vale
-$\mathcal{I}(\mathbf{u}; \mathbf{v}) \ge \log B - \mathcal{L}_{\text{InfoNCE}}$,
-quindi minimizzare la perdita alza un limite inferiore sulla mutua
-informazione fra immagine e didascalia, ma quel limite non può superare
-$\log B$. Con $B = 4$ il tetto è $1{,}39$ nat, con $B = 32\,768$ è circa
-$10{,}4$: il batch fissa quanta informazione la perdita può certificare, ed è
-anche la ragione per cui il guadagno cresce solo come il logaritmo di $B$. CLIP
-addestra con batch da $32\,768$ coppie, distribuiti su
-centinaia di GPU. Il prezzo è la struttura stessa della loss: la matrice di
-similarità è $B \times B$, il suo costo cresce con il quadrato del batch, e la
-normalizzazione della softmax richiede che ogni riga veda *tutte* le colonne,
-quindi che gli embedding di tutti i dispositivi vengano radunati insieme a ogni
-passo. Torneremo su questo punto fra poco, perché è esattamente il vincolo che
-una variante successiva scioglie.
+con $B = 4$ vale $1{,}39$) e il segnale di apprendimento è povero; al crescere
+di $B$ il compito diventa un ago in un pagliaio. La ragione formale è il
+risultato con cui la InfoNCE è nata {cite}`oord2018representation`: in valore
+atteso sui batch vale $\mathcal{I}(\mathbf{u}; \mathbf{v}) \ge \log B -
+\mathcal{L}_{\text{InfoNCE}}$, quindi minimizzare la perdita alza un limite
+inferiore sulla mutua informazione fra immagine e didascalia, ma quel limite non
+può superare $\log B$. Con $B = 4$ il tetto è $1{,}39$ nat, con $B = 32\,768$ è
+circa $10{,}4$: il batch fissa quanta informazione la perdita può certificare, e
+raddoppiarlo alza quel tetto di appena $\log 2 \approx 0{,}69$ nat. CLIP
+addestra con batch da $32\,768$ coppie, distribuiti su centinaia di GPU. Il
+prezzo è la struttura stessa della loss: la matrice di similarità è $B \times
+B$, il suo costo cresce con il quadrato del batch, e la normalizzazione della
+softmax richiede che ogni riga veda *tutte* le colonne, quindi che gli embedding
+di tutti i dispositivi vengano radunati insieme a ogni passo. Torneremo su
+questo punto fra poco, perché è esattamente il vincolo che una variante
+successiva scioglie.
 
 `````
 

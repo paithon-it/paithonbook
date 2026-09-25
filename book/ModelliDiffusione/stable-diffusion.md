@@ -376,13 +376,15 @@ entrano nella U-Net tramite strati di cross-attention inseriti a più
 risoluzioni, la stessa identica formula del capitolo sui Transformer:
 
 $$
+\begin{gathered}
 \mathrm{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) =
 \mathrm{softmax}\!\left(\frac{\mathbf{Q}\mathbf{K}^\top}{\sqrt{d_k}}\right)
 \mathbf{V},
-\qquad
+\\[4pt]
 \mathbf{Q} = h(\mathbf{z}_t)\, \mathbf{W}_Q, \quad
 \mathbf{K} = \tau(c)\, \mathbf{W}_K, \quad
 \mathbf{V} = \tau(c)\, \mathbf{W}_V,
+\end{gathered}
 $$
 
 dove $h(\mathbf{z}_t)$ sono le mappe di attivazione intermedie della U-Net
@@ -631,26 +633,272 @@ picco scende di molto.
 
 Il rilascio dei pesi ha fatto qualcosa che nessuna API può fare: ha permesso a
 chiunque di *modificare* il modello. Nel giro di mesi è nato un ecosistema di
-personalizzazioni leggere. Con LoRA {cite}`hu2022lora`, una tecnica nata
-per i modelli di linguaggio, si specializza il modello su uno stile o un
-soggetto senza toccarlo tutto: accanto ai pesi originali, che restano fermi, si
+personalizzazioni leggere. Con LoRA {cite}`hu2022lora`, una tecnica nata per i
+modelli di linguaggio, si specializza il modello su uno stile o un soggetto
+senza toccarlo tutto: accanto ai pesi originali, che restano fermi, si
 addestrano due tabelle di numeri molto più piccole che ne correggono l'uscita.
-Il file da condividere pesa qualche megabyte invece di qualche gigabyte, ed è
-la ragione per cui gli stili si sono messi a circolare come circolano le
-canzoni. Con **ControlNet** {cite}`zhang2023adding` si vincola invece la
-generazione a uno schizzo, una posa o una mappa di profondità forniti
-dall'utente. Non li approfondiremo, ma sono il motivo per cui attorno a Stable
-Diffusion esiste una comunità e non solo un'utenza.
+Il file da condividere pesa qualche megabyte invece di qualche gigabyte, ed è la
+ragione per cui gli stili si sono messi a circolare come circolano le canzoni.
+Con **ControlNet** {cite}`zhang2023adding` si vincola invece la generazione a
+uno schizzo, una posa o una mappa di profondità (un'immagine in cui ogni pixel
+dice quanto è lontano quel punto) forniti dall'utente. LoRA è la stessa del
+{doc}`post-training dei Transformer </Transformers/post-training>`; ControlNet
+affianca alla U-Net una copia allenabile di metà di sé stessa, collegata
+all'originale da connessioni che partono da zero. Sono tutte e due il motivo per
+cui attorno a Stable Diffusion esiste una comunità e non solo un'utenza.
 
 Le versioni successive raccontano una traiettoria che qui interessa per una
 ragione sola: dice dove è andata a finire l'architettura. Le prime rifiniscono
 la ricetta senza cambiarla; poi la si ingrandisce, con una rete più capiente,
 due lettori di testo invece di uno e una risoluzione nativa doppia; infine, nel
 2024, si butta la U-Net e le si mette al posto un Transformer. Chi ha letto il
-{doc}`capitolo sui Transformer </Transformers/overview>` se lo aspettava, perché la stessa sostituzione era già
-avvenuta nella traduzione e nella visione; ma che funzionasse anche qui non era
-affatto scontato, e come e perché sia successo è la storia della prossima
-sezione.
+{doc}`capitolo sui Transformer </Transformers/overview>` se lo aspettava, perché
+la stessa sostituzione era già avvenuta nella traduzione e nella visione; ma che
+funzionasse anche qui non era affatto scontato.
+
+## Un controllo che parte da zero
+
+Una richiesta scritta dice che cosa disegnare, non dove: «un gatto che salta su
+un muro» lascia al modello la posa del gatto, l'inquadratura e la forma del
+muro. ControlNet, di Lvmin Zhang, Anyi Rao e Maneesh Agrawala
+{cite}`zhang2023adding`, aggiunge a un modello già addestrato un secondo
+ingresso, un'immagine di controllo (i contorni di uno schizzo, lo scheletro di
+una posa, una mappa di profondità), senza cambiare nemmeno uno dei suoi pesi.
+Le mosse sono due. La prima è una **copia allenabile** di metà della U-Net. La
+U-Net, come racconta la {doc}`sezione su come funziona la diffusione
+</ModelliDiffusione/come-funziona>`, lavora in due fasi: una metà rimpicciolisce
+via via la griglia del latente, da $64\times64$ a $8\times8$, l'altra la riporta
+a $64\times64$, e dei ponti, le connessioni di salto, passano dall'una all'altra
+i dettagli di ogni livello. ControlNet copia la prima metà, quella che
+rimpicciolisce, e le fa leggere in più l'immagine di controllo. Quella metà si
+chiama anche codificatore della U-Net, ma con l'encoder del VAE non ha niente in
+comune: quello sta fuori dalla U-Net e trasforma l'immagine in latente prima che
+tutto cominci. La seconda mossa sono le **convoluzioni a zero**, strati i cui
+pesi all'inizio valgono zero, attraverso i quali le uscite della copia entrano
+nella rete originale sui ponti.
+
+`````{tab} Elementare
+
+Il restauratore è bravissimo, e non lo si vuole rimandare a scuola: costerebbe
+tantissimo, e ritoccando tutti i suoi numeri su pochi esempi nuovi, un quadro
+ciascuno con il suo schizzo, si guasterebbero anche quelli che gli servono per
+il resto. Si vuole soltanto che segua uno schizzo. Il suo lavoro ha due fasi:
+prima si allontana dalla scheda e ne vede le forme grandi, poi si riavvicina per
+scrivere la risposta punto per punto, e dei ponti gli riportano gli appunti
+presi a ogni distanza. Gli si affianca allora un apprendista che è la sua copia
+esatta nella prima fase, quella che si allontana, e che in più guarda lo
+schizzo, rimpicciolito alla taglia di una scheda. Una copia, e non un
+apprendista nuovo, perché così parte già sapendo guardare una scheda, e gli
+resta da imparare soltanto lo schizzo. Su ogni ponte l'apprendista aggiunge i
+suoi appunti a quelli del restauratore.
+
+Su ogni ponte c'è una manopola del volume per gli appunti dell'apprendista, e
+all'inizio sono tutte a zero: sono le convoluzioni a zero. Un'altra manopola,
+anche lei a zero, dosa lo schizzo che entra nell'apprendista. Il primo giorno,
+quindi, il restauratore lavora esattamente come prima, e niente di quello che sa
+viene sporcato da un apprendista che dello schizzo non sa ancora niente.
+
+Al primo ritocco si muovono soltanto le manopole dei ponti. L'apprendista sta
+già parlando, perché è una copia e dice cose sensate, solo che nessuno lo sente;
+per ora ripete quasi quello che sa il restauratore, e alzarlo non basta a fare
+il quadro giusto. Basta però a dare all'addestramento, che confronta il quadro
+che esce con quello che doveva uscire, una direzione da cui cominciare: per ogni
+manopola vede da che parte girarla perché il quadro si avvicini, e la gira di un
+filo. Se l'apprendista stesse zitto, girare la manopola non cambierebbe niente,
+e l'addestramento non saprebbe da che parte girarla. Con i volumi aperti di un
+filo, dal secondo ritocco l'apprendista si fa sentire, e cominciano a imparare
+anche lui e la manopola dello schizzo. Se invece le manopole partissero da
+posizioni a caso, il restauratore non si guasterebbe, perché i suoi numeri non
+si toccano, ma i suoi quadri uscirebbero sporcati da appunti a caso, e le
+correzioni che ne vengono arriverebbero all'apprendista a caso anche loro,
+rovinando proprio quello che sapeva: essere una buona copia.
+
+Siccome parte già sapendo guardare una scheda, all'apprendista bastano
+relativamente pochi esempi: da qualche decina di migliaia di quadri con il loro
+schizzo in su, contro le centinaia di milioni di immagini da cui ha imparato il
+restauratore. Ogni ritocco è un passo dell'addestramento, su una manciata di
+quegli esempi. Ci si aspetterebbe che migliori a poco a poco; invece, raccontano
+gli autori, per qualche migliaio di ritocchi sembra non servire a niente, e poi
+di colpo il restauratore segue lo schizzo. Perché succeda di colpo, gli autori
+non lo spiegano. Intanto i quadri restano buoni per tutto il tempo. Il
+restauratore non cambia mai, e togliendo l'apprendista lo si riavrebbe com'era.
+
+In questo addestramento, metà delle volte la commissione viene tolta e resta
+solo lo schizzo. Non è il trucco della volta su dieci con cui il modello di
+partenza aveva imparato a disegnare anche senza indicazioni: qui serve a
+costringere l'apprendista a leggere lo schizzo, invece di lasciare che il
+restauratore indovini tutto dalla frase. E più apprendisti, uno per la posa e
+uno per la profondità, possono lavorare insieme, ciascuno sommando i suoi
+appunti sugli stessi ponti.
+
+Il limite è che l'apprendista aggiunge appunti e basta, e la seconda fase resta
+del restauratore. L'apprendista gli dice dove e con che forma mettere ciò che sa
+già fare, e per uno stile nuovo si usa di solito LoRA. Se schizzo e commissione
+non si accordano esce un compromesso: negli esempi degli autori, uno schizzo di
+casa con la commissione «una torta squisita» dà torte a forma di casa.
+
+`````
+
+`````{tab} Superiore
+
+Sia $\mathcal{F}(\cdot\,;\Theta)$ un blocco della rete pre-addestrata, con
+$\Theta$ congelati, e $\mathcal{F}(\cdot\,;\Theta_c)$ una sua copia con
+$\Theta_c$ inizializzati a $\Theta$. Una convoluzione a zero
+$\mathcal{Z}(\cdot\,;\Theta_z)$ è una convoluzione $1\times1$ con pesi e bias
+posti a zero. Con $\mathbf{x}$ l'ingresso del blocco e $\mathbf{c}_f$ il
+controllo, già portato alla forma di $\mathbf{x}$ (la somma lo richiede),
+
+$$
+\mathbf{y}_c = \mathcal{F}(\mathbf{x};\Theta)
++ \mathcal{Z}\Big(\mathcal{F}\big(\mathbf{x} + \mathcal{Z}(\mathbf{c}_f;\Theta_{z1});\,\Theta_c\big);\,\Theta_{z2}\Big),
+$$
+
+e all'inizializzazione $\mathbf{y}_c = \mathcal{F}(\mathbf{x};\Theta)$: il
+modello parte esattamente dal comportamento pre-addestrato, e nei primi passi
+la copia non riceve gradienti rumorosi che ne guasterebbero i pesi, mentre il
+congelamento di $\Theta$ protegge l'originale dall'oblio e dal sovradattamento
+ai pochi esempi nuovi. Che lo zero serva lo mostra l'ablazione degli autori:
+con convoluzioni di collegamento inizializzate a caso la qualità scende a
+quella di ControlNet-lite, una variante che al posto della copia ha un solo
+strato convoluzionale per blocco, cioè la copia perde quello che sapeva.
+
+Nulla però resta bloccato. In ogni posizione $p$ della griglia la
+convoluzione d'uscita è una mappa lineare sui canali,
+$\mathbf{v}_p = \mathbf{W}_z\mathbf{u}_p + \mathbf{b}_z$, con
+$\Theta_{z2} = (\mathbf{W}_z, \mathbf{b}_z)$ e $\mathbf{u}_p$ l'uscita della
+copia, quindi
+
+$$
+\frac{\partial\mathcal{L}}{\partial\mathbf{W}_z}
+= \sum_p \frac{\partial\mathcal{L}}{\partial\mathbf{v}_p}\,\mathbf{u}_p^\top ,
+$$
+
+con la somma su tutte le posizioni (e su tutti gli esempi), in generale diversa
+da zero perché $\mathbf{u}_p$ non è nulla; mentre
+$\partial\mathbf{v}_p/\partial\mathbf{u}_p = \mathbf{W}_z = \mathbf{0}$, quindi
+al primo passo la copia e la convoluzione a zero d'ingresso hanno gradiente
+nullo. Dopo il primo aggiornamento $\mathbf{W}_z \neq \mathbf{0}$ e il
+gradiente arriva anche a loro.
+
+In Stable Diffusion la copia è quella dei 12 blocchi del codificatore della
+U-Net e del blocco centrale, e le sue uscite, passate per convoluzioni a zero,
+si sommano alle 12 connessioni di salto e all'uscita del blocco centrale della
+U-Net congelata. Il controllo, un'immagine a piena risoluzione, viene portato
+alla forma del latente da una piccola rete convoluzionale, ed è la sua uscita il
+$\mathbf{c}_f$ dell'equazione; stando prima della convoluzione a zero
+d'ingresso, quella rete riceve gradiente solo dal terzo passo. L'obiettivo è la
+stessa perdita di denoising, condizionata su testo e controllo,
+$\mathbb{E}\,\|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t, \tau(c), \mathbf{c}_f)\|^2$
+(con $\tau(c)$ gli embedding del prompt, come nella ricetta), minimizzata
+rispetto ai soli parametri nuovi, cioè $\Theta_c$, $\Theta_{z1}$ e $\Theta_{z2}$
+di ogni blocco e quelli della piccola rete, mentre i $\theta$ della U-Net
+restano fermi. Metà delle richieste è sostituita a caso dalla stringa vuota,
+perché la rete impari a ricavare il contenuto dal solo controllo. Gli autori
+riportano una *convergenza improvvisa*, che osservano senza spiegarla: per tutto
+l'addestramento le immagini restano di buona qualità, grazie alle convoluzioni a
+zero, e la rete non impara il controllo a poco a poco, ma comincia a seguirlo di
+colpo, di solito in meno di diecimila passi. L'addestramento è stabile tanto con
+meno di cinquantamila coppie quanto con più di un milione (non collassa nemmeno
+con mille, e migliora con i dati), perché la copia parte da pesi che sanno già
+leggere un'immagine. Su una A100, per passo di addestramento, gli autori
+misurano circa il 23% di memoria e il 34% di tempo in più che per addestrare
+Stable Diffusion senza ControlNet. Più controlli si combinano sommando i loro
+residui, senza coefficienti di miscela.
+
+È la stessa mossa di {doc}`LoRA </Transformers/post-training>`, dove
+$\mathbf{B} = \mathbf{0}$ all'inizio e quindi $\Delta\mathbf{W} = \mathbf{0}$:
+un ramo nuovo che all'inizio restituisce esattamente il modello originale.
+Anche la cascata è la stessa. Al primo passo riceve gradiente solo
+$\mathbf{B}$, perché quello di $\mathbf{A}$ passa per
+$\mathbf{B}^\top = \mathbf{0}$, come qui la sola convoluzione d'uscita. Il
+limite è di progetto: il controllo entra solo come somma alle connessioni di
+salto e al blocco centrale, mentre il decodificatore della U-Net, il text
+encoder e il VAE restano quelli del modello congelato. Serve a disporre nello
+spazio ciò che il modello sa già generare, e per uno stile o un soggetto nuovi
+si ricorre di solito a LoRA; fin dove la copia possa spingersi oltre, il lavoro
+originale non lo misura. E testo e controllo possono chiedere cose
+incompatibili. Con lo schizzo di una casa e il prompt «delicious cake», negli
+esempi degli autori escono torte a forma di casa, la forma dal controllo e il
+contenuto dal testo.
+
+`````
+
+Un blocco convoluzionale «originale» congelato, la sua copia e le due
+convoluzioni a zero bastano a controllare in piccolo le tre affermazioni: al
+primo passo l'uscita è quella dell'originale; solo la convoluzione a zero
+d'uscita riceve un segnale per correggersi, il gradiente; e dopo
+l'addestramento il controllo ha imparato la regola, anche su esempi che non ha
+mai visto, senza che un peso dell'originale sia cambiato.
+
+```python
+import copy
+import torch
+from torch import nn
+
+torch.manual_seed(0)
+
+# il blocco del modello già addestrato: resta fermo
+originale = nn.Sequential(nn.Conv2d(4, 16, 3, padding=1), nn.SiLU(),
+                          nn.Conv2d(16, 16, 3, padding=1))
+originale.requires_grad_(False)
+
+# la copia allenabile, che parte dagli stessi pesi, e le due convoluzioni a zero
+copia = copy.deepcopy(originale).requires_grad_(True)
+zero_in, zero_out = nn.Conv2d(4, 4, 1), nn.Conv2d(16, 16, 1)
+for z in (zero_in, zero_out):
+    nn.init.zeros_(z.weight)
+    nn.init.zeros_(z.bias)
+
+def controllato(x, c_f):
+    return originale(x) + zero_out(copia(x + zero_in(c_f)))
+
+x = torch.randn(8, 4, 16, 16)                  # il latente rumoroso
+c_f = torch.randn(8, 4, 16, 16)                # il controllo (schizzo, posa)
+guida = nn.Conv2d(4, 16, 3, padding=1)         # la regola che il controllo deve insegnare
+with torch.no_grad():
+    bersaglio = originale(x) + guida(c_f)
+
+print("al primo passo l'uscita è quella dell'originale:",
+      torch.equal(controllato(x, c_f), originale(x)))
+perdita = (controllato(x, c_f) - bersaglio).pow(2).mean()
+perdita.backward()
+for nome, modulo in [("convoluzione a zero in uscita", zero_out),
+                     ("copia allenabile", copia),
+                     ("convoluzione a zero in ingresso", zero_in)]:
+    g = sum(p.grad.abs().sum() for p in modulo.parameters())
+    print(f"gradiente sulla {nome:32}: {'diverso da zero' if g > 0 else 'zero'}")
+
+allenabili = [*copia.parameters(), *zero_in.parameters(), *zero_out.parameters()]
+ottimizzatore = torch.optim.Adam(allenabili, lr=1e-2)
+iniziale, prima = perdita.item(), [p.clone() for p in originale.parameters()]
+for passo in range(500):
+    ottimizzatore.zero_grad()
+    perdita = (controllato(x, c_f) - bersaglio).pow(2).mean()
+    perdita.backward()
+    ottimizzatore.step()
+print("dopo 500 passi la perdita è sotto un decimo di quella iniziale:",
+      perdita.item() < iniziale / 10)
+print("l'originale è rimasto identico:",
+      all(torch.equal(a, b) for a, b in zip(prima, originale.parameters())))
+
+with torch.no_grad():                          # esempi mai visti
+    x_nuovo, c_nuovo = torch.randn(64, 4, 16, 16), torch.randn(64, 4, 16, 16)
+    atteso = originale(x_nuovo) + guida(c_nuovo)
+    errore = (controllato(x_nuovo, c_nuovo) - atteso).pow(2).mean()
+    senza = guida(c_nuovo).pow(2).mean()       # l'errore del solo originale
+print("su esempi nuovi l'errore è sotto un decimo di quello senza controllo:",
+      bool(errore < senza / 10))
+```
+
+```text
+al primo passo l'uscita è quella dell'originale: True
+gradiente sulla convoluzione a zero in uscita   : diverso da zero
+gradiente sulla copia allenabile                : zero
+gradiente sulla convoluzione a zero in ingresso : zero
+dopo 500 passi la perdita è sotto un decimo di quella iniziale: True
+l'originale è rimasto identico: True
+su esempi nuovi l'errore è sotto un decimo di quello senza controllo: True
+```
 
 ## Le domande che restano aperte
 
@@ -718,7 +966,11 @@ tecnica.
   «sovracotta».
 - I pesi aperti hanno generato una comunità e non solo un'utenza: sono nate
   tecniche per specializzare il modello con file da pochi megabyte, o per
-  costringerlo a seguire uno schizzo.
+  fargli seguire uno schizzo. Per lo schizzo, al restauratore che non si vuole
+  toccare si affianca un apprendista, copia della sua prima fase, che guarda
+  anche lo schizzo ed è collegato con manopole che partono da zero: all'inizio
+  il restauratore lavora come prima, e le manopole si aprono già dal primo
+  ritocco. Se schizzo e commissione non si accordano, esce un compromesso.
 - Restano aperti i problemi del consenso di chi finisce ritratto, dei
   diritti sulle immagini con cui questi modelli sono addestrati e della
   provenienza, cioè del riuscire a dire se un'immagine è stata generata.
@@ -763,7 +1015,13 @@ tecnica.
 - I pesi aperti (agosto 2022) hanno generato un ecosistema (LoRA
   {cite}`hu2022lora`, ControlNet {cite}`zhang2023adding`, interfacce di
   comunità) e una traiettoria che finisce col sostituire la U-Net con un
-  Transformer (prossima sezione).
+  Transformer (i Diffusion Transformer).
+- ControlNet: copia allenabile del codificatore della U-Net, collegata con
+  convoluzioni $1\times1$ inizializzate a zero (inizializzate a caso, la copia
+  perde ciò che sapeva). All'inizio
+  $\mathbf{y}_c = \mathcal{F}(\mathbf{x};\Theta)$, al primo passo riceve
+  gradiente solo la convoluzione a zero d'uscita, e i pesi originali non
+  cambiano mai: la stessa mossa di LoRA, con $\mathbf{B} = \mathbf{0}$.
 - Restano aperti i nodi di consenso, diritti sui dati di addestramento e
   provenienza delle immagini: paralleli ai bias e alle allucinazioni dei
   modelli di linguaggio, e altrettanto strutturali.

@@ -112,10 +112,12 @@ biglietti, e sono 4 acquirenti; in quello dei «no» ne finiscono 6, e uno solo
 ha comprato.
 
 $$
-\text{Gini}_\text{sì} = 1 - \left(\tfrac{4}{4}\right)^2 - \left(\tfrac{0}{4}\right)^2 = 0 ,
-\qquad
-\text{Gini}_\text{no} = 1 - \left(\tfrac{1}{6}\right)^2 - \left(\tfrac{5}{6}\right)^2
+\begin{aligned}
+\text{Gini}_\text{sì} &= 1 - \left(\tfrac{4}{4}\right)^2 - \left(\tfrac{0}{4}\right)^2 = 0 ,
+\\
+\text{Gini}_\text{no} &= 1 - \left(\tfrac{1}{6}\right)^2 - \left(\tfrac{5}{6}\right)^2
 = 1 - \tfrac{1}{36} - \tfrac{25}{36} = 1 - \tfrac{26}{36} \approx 0{,}278 .
+\end{aligned}
 $$
 
 Nel primo barattolo non si sbaglia più, nel secondo quasi mai. Per sapere
@@ -596,7 +598,9 @@ l'albero aveva già messo nella foglia. Con la log-loss no, i due valori sono
 diversi, e la log-loss è il default di `GradientBoostingClassifier`, che quel
 minimo non lo cerca esattamente: lo approssima con un solo passo di Newton,
 $\gamma_{jt} = \sum_{i \in R_{jt}} r_i \big/ \sum_{i \in R_{jt}}
-\hat{p}_i(1-\hat{p}_i)$, come l'algoritmo di Friedman.
+\hat{p}_i(1-\hat{p}_i)$, con $y_i \in \{0,1\}$ e
+$\hat{p}_i = \sigma\big(F_{t-1}(\mathbf{x}_i)\big)$, come l'algoritmo di
+Friedman.
 
 XGBoost {cite}`chen2016xgboost` porta il secondo ordine dentro la costruzione
 dell'albero. Dette $g_i$ e $s_i$ la derivata prima e seconda di
@@ -609,20 +613,21 @@ $$
 + c\,T + \tfrac{1}{2}\lambda\sum_{j=1}^{T} w_j^2 ,
 $$
 
-dove $T$ è il numero di foglie, $w_j$ il valore della foglia $j$, $c$ il
-prezzo di una foglia (il `gamma` della libreria) e $\lambda$ il freno $\ell_2$
-sui valori (`reg_lambda`). Con $G_j$ e $S_j$ le somme di $g_i$ e $s_i$ sulla
-foglia, il valore ottimo è $w_j^\star = -G_j/(S_j+\lambda)$, cioè il passo di
-Newton di Friedman ristretto verso zero, e con la loss quadratica ($s_i = 1$)
-la media dei residui ristretta verso zero. Uno split si accetta solo se il
-guadagno
+dove $T$ è il numero di foglie, $w_j$ il valore della foglia $j$, $c$ il prezzo
+di una foglia e $\lambda$ il freno $\ell_2$ sui valori (`reg_lambda`). Con
+$G_j$ e $S_j$ le somme di $g_i$ e $s_i$ sulla foglia, il valore ottimo è
+$w_j^\star = -G_j/(S_j+\lambda)$, cioè il passo di Newton di Friedman ristretto
+verso zero, e con la loss quadratica ($s_i = 1$) la media dei residui ristretta
+verso zero. Uno split si accetta solo se il guadagno
 
 $$
 \tfrac{1}{2}\left[\frac{G_L^2}{S_L+\lambda} + \frac{G_R^2}{S_R+\lambda}
 - \frac{(G_L+G_R)^2}{S_L+S_R+\lambda}\right] - c
 $$
 
-è positivo: la potatura è incorporata nella crescita.
+è positivo: la potatura è incorporata nella crescita. La soglia della libreria,
+`gamma`, vale $2c$, perché la libreria la confronta con la parentesi quadra
+senza il suo $\tfrac{1}{2}$.
 
 `````
 
@@ -1142,7 +1147,8 @@ foreste e questi boosting cedono il passo alle reti.
   diverso: per la loss quadratica l'errore della media è l'errore medio dei
   membri meno la loro diversità (Krogh–Vedelsby), quindi la media non è
   mai peggiore del membro medio; sul membro migliore non c'è nessuna
-  garanzia, e per un voto contato a maggioranza non c'è nemmeno la prima.
+  garanzia, e sull'accuratezza non c'è nemmeno la prima, neanche col voto
+  morbido, che media le probabilità ma poi sceglie una classe.
   Un componente debole il voto a pesi fissi se lo porta appresso, lo stacking
   impara a pesarlo poco.
 ```

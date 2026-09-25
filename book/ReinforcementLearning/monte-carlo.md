@@ -358,11 +358,17 @@ Il primo è l'ipotesi degli inizi esplorativi: ogni episodio comincia da una
 coppia $(s,a)$ estratta a caso, con probabilità non nulla per tutte. È comoda
 nella teoria e quasi sempre inapplicabile, perché richiede di poter piazzare
 l'agente dove si vuole. E anche dove si può, la teoria è meno solida di quanto
-sembri: che l'alternanza valuta-migliora, fatta episodio per episodio, non
-possa fermarsi su una policy subottima si vede in una riga; che arrivi davvero
-a quella ottima Sutton e Barto lo indicano come una delle questioni teoriche
-aperte più importanti della materia, risolta solo in parte
-{cite}`sutton2018reinforcement`.
+sembri. Che l'alternanza valuta-migliora, fatta episodio per episodio, non possa
+fermarsi su una policy subottima si vede in una riga: se si fermasse, i valori
+tenderebbero a quelli di quella policy, e il miglioramento la cambierebbe. Ma
+può non fermarsi affatto. Sutton e Barto indicano la convergenza come una delle
+questioni teoriche aperte più importanti della materia
+{cite}`sutton2018reinforcement`, e la risposta dipende da come si sorteggiano
+gli inizi: se li si sceglie in modo arbitrario, purché ogni coppia torni
+infinite volte, esiste un controesempio in cui l'alternanza non converge
+{cite}`bertsekas1996neuro`; con il ritorno scontato e ogni coppia che apre gli
+episodi con la stessa frequenza, la convergenza all'ottimo è dimostrata
+{cite}`tsitsiklis2002convergence`, e fuori da questi casi resta una domanda.
 
 Il secondo, praticabile, è restare su policy **$\varepsilon$-soft**, cioè con
 $\pi(a\mid s) \ge \varepsilon/|\mathcal{A}|$ per ogni azione: la

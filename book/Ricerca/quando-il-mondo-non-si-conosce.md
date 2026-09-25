@@ -288,12 +288,12 @@ ci hanno tolto.
 
 ```{admonition} Da ricordare
 :class: important
-- Le ipotesi implicite della ricerca classica sono cinque, e qui se ne
-  tolgono tre: modello interrogabile ($\mathrm{ris}$ e $c$ disponibili a costo
-  nullo), test di terminazione definito, valutazione degli stati intermedi
-  scrivibile. Le altre due sono azioni deterministiche e stato pienamente
-  osservabile: senza la prima il minimax diventa expectiminimax, con nodi di
-  caso che fanno la media; senza la seconda si cerca nello spazio delle
+- Fra le ipotesi implicite della ricerca classica, qui ne cadono tre: modello
+  interrogabile ($\mathrm{ris}$ e $c$ disponibili a costo nullo), test di
+  terminazione definito, valutazione degli stati intermedi scrivibile. Altre
+  due sono azioni dall'esito certo e stato pienamente osservabile: senza la
+  prima, nei giochi, il minimax diventa expectiminimax, con nodi di caso che
+  fanno la media; senza la seconda si cerca nello spazio delle
   distribuzioni sugli stati, il *belief state* del POMDP della
   {doc}`sezione sugli MDP </ReinforcementLearning/mdp-valore>`.
 - Cade la valutazione: si sostituisce $\mathrm{ev}(s)$ con una stima

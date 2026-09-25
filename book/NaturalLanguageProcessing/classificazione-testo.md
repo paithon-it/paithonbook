@@ -38,12 +38,12 @@ testo </NaturalLanguageProcessing/rappresentare-testo>` abbiamo imparato a
 trasformare un documento in un vettore di numeri: il *bag-of-words* dei
 conteggi, o la sua versione tarata TF-IDF, costruito sui token che la
 tokenizzazione ci ha dato. Qui aggiungiamo il pezzo mancante: due modelli che,
-dato quel vettore, emettono il verdetto. Il primo, Naive Bayes, è il
-discendente diretto del metodo di Mosteller e Wallace; il secondo, la
-regressione logistica, l'abbiamo già incontrata nel {doc}`capitolo sul machine
-learning </MachineLearning/overview>` e qui la mettiamo al lavoro sul testo. Il
-confronto tra i due, vedremo, insegna una distinzione che attraversa tutto il
-machine learning.
+dato quel vettore, emettono il verdetto. Il primo, Naive Bayes, è il discendente
+diretto del metodo di Mosteller e Wallace; il secondo, la regressione logistica,
+l'abbiamo già incontrata nella {doc}`sezione sull'apprendimento supervisionato
+</MachineLearning/apprendimento-supervisionato>` e qui la mettiamo al lavoro sul
+testo. Il confronto tra i due, vedremo, insegna una distinzione che attraversa
+tutto il machine learning.
 
 ## Naive Bayes: indizi che votano
 
@@ -176,19 +176,19 @@ minuscole va in *underflow*, perciò in pratica si lavora nello spazio dei
 logaritmi, massimizzando $\log P(c) + \sum_i \log P(w_i \mid c)$; il prodotto
 diventa una somma e l'argmax non cambia, perché il logaritmo è monotono.
 
-Una precisazione sul modello, perché la formula di Bayes ne individua uno solo
-di due. Dividendo le occorrenze di $w$ per il totale dei token della classe
-si ottiene il Naive Bayes multinomiale, quello che il codice sulle recensioni
-usa (`MultinomialNB`) e quello adatto quando conta *quante volte* una
-parola compare. Esiste anche la variante di Bernoulli, in cui $P(w \mid c)$
-è la frazione di documenti della classe che contengono $w$, e ogni parola
-del vocabolario porta un contributo anche quando è assente. È lo stimatore che
-si ottiene contando in quante email della classe una parola compare («gratis»
-in 3 spam su 4) e non quante occorrenze ha sul totale dei token delle spam: due
-ricette diverse, e i numeri di un conto non si ottengono con la formula
-dell'altro. La variante di Bernoulli è preferibile quando interessa la presenza
-e non la quantità (testi molto corti, vocabolari piccoli) e in `scikit-learn`
-si chiama `BernoulliNB`.
+Una precisazione sul modello, perché la stima di $P(w \mid c)$ per frequenze
+relative ne individua uno solo di due. Dividendo le occorrenze di $w$ per il
+totale dei token della classe si ottiene il Naive Bayes multinomiale, quello che
+il codice sulle recensioni usa (`MultinomialNB`) e quello adatto quando conta
+*quante volte* una parola compare. Esiste anche la variante di Bernoulli, in cui
+$P(w \mid c)$ è la frazione di documenti della classe che contengono $w$, e ogni
+parola del vocabolario porta un contributo anche quando è assente. È lo
+stimatore che si ottiene contando in quante email della classe una parola
+compare («gratis» in 3 spam su 4) e non quante occorrenze ha sul totale dei
+token delle spam: due ricette diverse, e i numeri di un conto non si ottengono
+con la formula dell'altro. La variante di Bernoulli è preferibile quando
+interessa la presenza e non la quantità (testi molto corti, vocabolari piccoli)
+e in `scikit-learn` si chiama `BernoulliNB`.
 
 `````
 
@@ -221,7 +221,8 @@ Lo studio che aprì il filone è del 2002, e lo firmano Bo Pang, Lillian Lee e
 Shivakumar Vaithyanathan {cite}`pang2002thumbs`. Presero 1.400 recensioni di
 film, 700 entusiaste e 700 stroncature, e ci misero alla prova tre giudici
 automatici diversi: Naive Bayes; un modello a massima entropia, che è la
-regressione logistica sotto un altro nome; e le *support vector machine*, che
+{doc}`regressione logistica </MachineLearning/apprendimento-supervisionato>`
+sotto un altro nome; e le *support vector machine*, che
 cercano il confine più largo possibile fra due gruppi di esempi e hanno una
 {doc}`sezione tutta loro </MachineLearning/svm>` nel machine learning.
 
@@ -272,13 +273,10 @@ visto nella sezione sulla rappresentazione del testo.
 ## La regressione logistica: pesare gli indizi
 
 Naive Bayes conta le parole dentro ciascuna delle due etichette possibili
-(«classe» è il nome tecnico per «etichetta», e da qui in avanti si trovano
-tutti e due) e lascia che la regola di Bayes tiri le somme. C'è un'alternativa
-più diretta: imparare, per ogni parola, un peso che dica quanto spinge
-verso un'etichetta o l'altra, e sommare le spinte. Si chiama regressione
-logistica, il {doc}`capitolo sul machine learning </MachineLearning/overview>`
-la presenta fra i modelli supervisionati, e qui la mettiamo al lavoro sul
-testo.
+(«classe» è il nome tecnico per «etichetta», e da qui in avanti si trovano tutti
+e due) e lascia che la regola di Bayes tiri le somme. C'è un'alternativa più
+diretta: imparare, per ogni parola, un peso che dica quanto spinge verso
+un'etichetta o l'altra, e sommare le spinte. È la regressione logistica.
 
 `````{tab} Elementare
 
@@ -295,7 +293,7 @@ piatto prima ancora di leggere la recensione. Se nell'archivio le stroncature
 fossero il doppio delle recensioni entusiaste, l'ago partirebbe già inclinato
 verso il negativo, e alle parole toccherebbe spingere più forte per
 raddrizzarlo. Con entusiaste e stroncature in parità l'ago parte in piano, e il
-totale è la somma dei soli pesetti delle parole, come nel conto dei pesetti.
+totale è la somma dei soli pesetti delle parole, come nel $3{,}5$ di poco fa.
 
 C'è poi una regola che tiene i pesetti moderati, e serve soprattutto contro le
 parole rare. Una parola comparsa in una recensione sola, entusiasta, se la
@@ -414,26 +412,29 @@ $$
 + \sum_{w\in V} x_w \log\frac{P(w\mid c_1)}{P(w\mid c_0)},
 $$
 
-dove $x_w$ è il conteggio di $w$ in $d$. È una funzione lineare di
-$\mathbf{x}$, della stessa forma $\mathbf{w}^\top\mathbf{x}+b$ della
-regressione logistica. Cambia come si scelgono i pesi: per conteggio, parola
-per parola, oppure per massima verosimiglianza condizionata, tutti insieme. Ng
-e Jordan {cite}`ng2001discriminative` ne ricavano il compromesso che segue: il
-generativo si avvicina al proprio errore asintotico con un numero di esempi che
-cresce come il logaritmo del numero di feature, il discriminativo linearmente,
-ma l'asintoto del discriminativo è più basso (il confronto è rifatto in
-{doc}`Modelli generativi </MachineLearning/modelli-generativi>`). Le
-conseguenze pratiche: quando le feature sono correlate (e nel testo lo sono
-sempre) Naive Bayes moltiplica evidenze non indipendenti e produce probabilità
-mal calibrate, schiacciate verso 0 o 1 (la *decisione* spesso resta giusta, la
-*confidenza* no); la regressione logistica, ottimizzando i pesi congiuntamente,
-ripartisce il credito tra feature correlate. In cambio, Naive Bayes ha stime a
-bassa varianza che convergono con pochi dati e si addestra in un solo
-passaggio; la regressione logistica tende a vincere quando gli esempi
-abbondano. Già nei confronti di Pang, Lee e Vaithyanathan sulle recensioni di
-film i modelli discriminativi tendevano a superare Naive Bayes, ma di poco
-{cite}`pang2002thumbs`: su compiti lessicali con dati scarsi, l'ingenuo resta
-un avversario dignitoso.
+dove $x_w$ è il conteggio di $w$ in $d$. È una funzione lineare di $\mathbf{x}$,
+della stessa forma $\mathbf{w}^\top\mathbf{x}+b$ della regressione logistica: il
+peso della parola $w$ è il logaritmo del rapporto fra le sue due probabilità, e
+$b$ quello fra le priori. Cambia come si scelgono i pesi: per conteggio, parola
+per parola, oppure per massima verosimiglianza condizionata, tutti insieme. Ng e
+Jordan {cite}`ng2001discriminative` ne ricavano un compromesso, dimostrato per
+feature binarie (il Naive Bayes di Bernoulli) e per feature gaussiane: l'errore
+asintotico del discriminativo non supera mai quello del generativo, e coincide
+con esso quando l'ipotesi di indipendenza è vera; il generativo, però, può
+avvicinarsi al proprio asintoto con un numero di esempi che cresce come il
+logaritmo del numero di feature, dove al discriminativo ne serve, nel caso
+peggiore, un numero lineare (il confronto è rifatto in {doc}`Modelli generativi
+</MachineLearning/modelli-generativi>`). Le conseguenze pratiche: quando le
+feature sono correlate (e nel testo lo sono sempre) Naive Bayes moltiplica
+evidenze non indipendenti e produce probabilità mal calibrate, schiacciate verso
+0 o 1 (la *decisione* spesso resta giusta, la *confidenza* no); la regressione
+logistica, ottimizzando i pesi congiuntamente, ripartisce il credito tra feature
+correlate. In cambio, Naive Bayes ha stime a bassa varianza che convergono con
+pochi dati e si addestra in un solo passaggio; la regressione logistica tende a
+vincere quando gli esempi abbondano. Già nei confronti di Pang, Lee e
+Vaithyanathan sulle recensioni di film i modelli discriminativi tendevano a
+superare Naive Bayes, ma di poco {cite}`pang2002thumbs`: su compiti lessicali
+con dati scarsi, l'ingenuo resta un avversario dignitoso.
 
 `````
 

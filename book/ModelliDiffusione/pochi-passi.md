@@ -402,7 +402,7 @@ print(np.round(z + (T_MIN - 1.0) * campo(z, 1.0), 4))
 # -> [ 0.1258 -0.1322  0.6408  0.105  -0.536   0.3618  1.3047  0.9476]
 ```
 
-La prima riga non verifica niente, ed è bene dirlo: la velocità media è stata
+La prima riga non verifica niente: la velocità media è stata
 ricavata dalla destinazione, quindi un passo con essa la riproduce per identità
 algebrica, $\mathbf{z} + (s-t)\,(\Phi - \mathbf{z})/(s-t) = \Phi$. Stampa la
 definizione, e fissa che cosa una rete a un passo deve imparare. La seconda è la

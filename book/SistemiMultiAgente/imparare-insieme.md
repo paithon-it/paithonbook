@@ -487,11 +487,11 @@ agente non appena le ricompense non coincidono, cioè in ogni scenario
 competitivo o misto.
 
 Il termine di paragone di tutta la famiglia è l’**independent Q-learning**
-(Tan, 1993): ogni agente esegue il Q-learning sulla propria
+{cite}`tan1993multi`: ogni agente esegue il Q-learning sulla propria
 $Q^i(\bar{o}^i, a^i)$ e tratta gli altri come parte dell'ambiente, cioè ignora
 proprio la non stazionarietà di $P^i_t$. Non ha garanzie, eppure resta una base
 sorprendentemente robusta, e il lavoro su QMIX la usa come tale. Un passo oltre
-sta **VDN** (Sunehag e colleghi, 2018), che impara le $Q^i$ dalla sola
+sta **VDN** {cite}`sunehag2018value`, che impara le $Q^i$ dalla sola
 ricompensa di squadra imponendo $Q_{tot} = \sum_i Q^i$: la somma rende banale
 l'argmax congiunto e insieme restringe la classe rappresentabile alle funzioni
 additive. **QMIX** {cite}`rashid2018qmix` allarga quella classe e affronta così
@@ -900,7 +900,8 @@ $\min_x \max_y\, xy$, con unico equilibrio in $(0,0)$. La discesa-ascesa
 simultanea, $x \leftarrow x - \eta\,y$ e $y \leftarrow y + \eta\,x$, è una mappa
 lineare i cui autovalori $1 \pm i\eta$ hanno modulo $\sqrt{1+\eta^2} > 1$: a
 ogni passo la coppia ruota e si allontana dall'equilibrio, per qualunque
-$\eta > 0$. Nel limite continuo percorre cerchi chiusi, le orbite di Volterra;
+$\eta > 0$. Nel limite continuo percorre cerchi chiusi, orbite dello stesso
+genere di quelle di Volterra (le sue, vicino all'equilibrio, diventano ellissi);
 aggiornando i due giocatori in alternanza le orbite restano limitate ma non
 convergono al centro. L'oscillazione appartiene dunque alla dinamica del
 gradiente sui giochi prima che alle reti. Il **collasso dei modi** è il
@@ -910,8 +911,8 @@ tasso di successo altissimo, e perde tutto il resto del supporto (che è, parola
 per parola, il «batte l'ultima versione, perde contro quella di due generazioni
 fa»). Non stupisce allora che fra le contromisure note ce ne sia una che qui si
 riconosce a colpo d'occhio, e che il capitolo sulle GAN non elenca fra le
-proprie: mostrare al discriminatore anche campioni prodotti da versioni
-passate del generatore. È una lega in miniatura, con la stessa motivazione.
+proprie: mostrare al discriminatore anche campioni prodotti da versioni passate
+del generatore. È una lega in miniatura, con la stessa motivazione.
 
 `````
 

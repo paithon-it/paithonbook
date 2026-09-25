@@ -56,11 +56,13 @@ nessuna casella del dato e servono alla rete per annotare regolarità sue
 Imparare diventa un confronto fra due modi di stare al mondo. Nella *veglia* la
 macchina guarda i dati veri e segna quali coppie di caselle si accendono
 insieme. Le coppie, e non altro: i suoi legami collegano due caselle per volta,
-e non sa segnare altro. Una regola come «la riga in cima è tutta accesa o tutta
-spenta» riguarda cinque caselle insieme, e con legami a due a due fra caselle
-non si scrive. È qui che i taccuini si guadagnano il posto: ogni taccuino ha un
-legame con ciascuna casella del disegno, si accende quando quelle cinque vanno
-d'accordo, e così una regolarità che riguarda parecchie caselle insieme la
+e non sa segnare altro. Una regola come «nella riga in cima le caselle accese
+sono sempre in numero pari» riguarda cinque caselle insieme, e con legami a due
+a due non si scrive: prese a due a due, quelle caselle si accendono insieme né
+più né meno che in un disegno a caso, e i legami non hanno niente da segnare. È
+qui che i taccuini si guadagnano il posto: ogni taccuino ha un legame con
+ciascuna casella del disegno, qualche taccuino insieme tiene il conto di quante
+se ne accendono, e così una regolarità che riguarda parecchie caselle insieme la
 macchina la impara appoggiandola lì. Nel *sogno* la si lascia inventare
 configurazioni per conto suo, e si segna la stessa cosa.
 
@@ -247,8 +249,8 @@ la sigmoide senza fattore 2 delle unità in $\{0,1\}$. Quindi la fase positiva h
 forma chiusa, e ogni strato si campiona in blocco, in parallelo. Il gradiente
 della log-verosimiglianza rispetto ai pesi è
 $\mathbb{E}_{\text{dati}}\big[\mathbf{v}\,\mathbb{E}[\mathbf{h} \mid
-\mathbf{v}]^\top\big]
-- \mathbb{E}_{p(\mathbf{v}, \mathbf{h})}\big[\mathbf{v}\mathbf{h}^\top\big]$,
+\mathbf{v}]^\top\big] -
+\mathbb{E}_{p(\mathbf{v}, \mathbf{h})}\big[\mathbf{v}\mathbf{h}^\top\big]$,
 e CD-$k$ sostituisce il secondo termine con la catena di Gibbs fermata dopo
 $k$ passaggi alternati partendo dal dato $\mathbf{v}^{(0)}$:
 
@@ -337,15 +339,173 @@ assestare: si calcola tutto in un colpo solo. Il secondo costo, il sogno, è
 quello che la contrastive divergence di poco fa ha già accorciato. Insieme, le
 due mosse rendono praticabile ciò che nel 1985 non lo era.
 
+Quella riga (taccuini non collegati fra loro, e con i dati davanti ciascuno
+dipende soltanto dai dati) vale per ogni disegno di legami, non solo per quello
+potato. Una distribuzione su variabili unite da legami senza verso, che dicono
+soltanto che due variabili si influenzano e non quale delle due influenzi
+l’altra, si chiama **modello grafico non orientato**, o *campo aleatorio di
+Markov*. La macchina di Boltzmann ne è uno, e il suo disegno si legge come un
+elenco di indipendenze: chi dipende da chi, e dato che cosa
+{cite}`hastie2009elements`.
+
+`````{tab} Elementare
+
+Il disegno dei legami funziona come un passaparola. Due caselle legate si
+influenzano direttamente; due che non lo sono possono influenzarsi soltanto
+passando per altre, lungo una strada di legami. E se ogni strada dall’una
+all’altra passa per variabili che si conoscono già, le due non hanno più niente
+da dirsi: tutto quello che una potrebbe raccontare dell’altra è già scritto in
+quelle che stanno in mezzo.
+
+Nella rete ristretta ogni strada fra due taccuini passa per le caselle dei dati.
+Con i dati davanti, allora, i taccuini non si dicono niente, ed è la ragione per
+cui ognuno decide da sé; lo stesso vale al contrario, per le caselle, quando i
+taccuini sono fissati. Ma non bisogna leggerci più di questo. Senza guardare i
+dati i taccuini non sono affatto indipendenti: se due taccuini sono legati alla
+stessa casella, uno acceso rende più probabile che quella casella sia accesa, e
+la casella accesa rende più probabile che si accenda anche l’altro. Il
+passaparola si interrompe solo quando chi sta in mezzo è già noto. E dove fra
+due variabili c’è una strada sola, allungando la strada il passaparola non
+arriva mai più forte, e di solito arriva più debole.
+
+Il disegno dice anche come è fatto il paesaggio. L’altezza di ogni punto si
+scrive come una somma di termini, e ciascun termine può guardare soltanto
+variabili collegate tutte fra loro. Tre caselle legate a due a due potrebbero
+avere anche un termine che le guarda tutte e tre insieme, per esempio uno che
+abbassa il paesaggio quando se ne accendono esattamente due; la macchina di
+Boltzmann non se lo concede e si ferma alle coppie, un termine per legame. È lo
+stesso motivo per cui, senza taccuini, la regola del numero pari su cinque
+caselle non si poteva scrivere.
+
+`````
+
+`````{tab} Superiore
+
+Un grafo non orientato $G = (V, E)$ sulle variabili $\mathbf{s}$ è un *grafo di
+Markov* per $p$ (qui la $p$ minuscola della letteratura sui grafi: con $T = 1$ è
+la $P$ di Boltzmann-Gibbs) se l’assenza di un arco vuol dire indipendenza
+condizionale dato tutto il resto:
+$s_i \perp s_j \mid \mathbf{s}_{V \setminus \{i,j\}}$ per $(i, j) \notin E$
+(proprietà di Markov a coppie). Per distribuzioni strettamente positive questa
+equivale alla proprietà globale: se $C$ separa $A$ da $B$, cioè ogni cammino fra
+i due passa per $C$, allora $\mathbf{s}_A \perp \mathbf{s}_B \mid \mathbf{s}_C$.
+Ed equivale, per il teorema di Hammersley e Clifford, alla fattorizzazione sulle
+cricche massimali $\mathcal{C}$, i sottoinsiemi di nodi tutti adiacenti fra
+loro:
+
+$$
+p(\mathbf{s}) = \frac{1}{Z} \prod_{C \in \mathcal{C}} \psi_C(\mathbf{s}_C)
+= \frac{1}{Z} \exp\Big(-\sum_{C \in \mathcal{C}} E_C(\mathbf{s}_C)\Big),
+\qquad \psi_C > 0,
+$$
+
+cioè un modello a energia con un termine per cricca e la sua funzione di
+partizione {cite}`hastie2009elements`. Il grafo non fissa però l’ordine delle
+interazioni: su un triangolo stanno sia tre potenziali a coppie sia uno solo a
+tre. La macchina di Boltzmann è la scelta a coppie, la più parsimoniosa, con un
+parametro per legame: $E(\mathbf{s}) = -\sum_{(i,j) \in E} w_{ij}\, s_i s_j$ più
+le soglie, che sono termini su una variabile sola; per questo una dipendenza di
+ordine più alto fra le visibili, come la parità, entra solo marginalizzando
+delle nascoste.
+
+Nell’RBM il grafo è bipartito: $\mathbf{v}$ separa ogni coppia di nascoste, da
+cui $p(\mathbf{h} \mid \mathbf{v}) = \prod_j p(h_j \mid \mathbf{v})$, e
+simmetricamente per le visibili dato $\mathbf{h}$. La separazione però vale
+solo condizionando. Marginalizzando $\mathbf{v} \in \{0,1\}^{n_v}$,
+
+$$
+p(\mathbf{h}) \propto e^{\mathbf{b}^{\!\top}\mathbf{h}}
+\prod_{i=1}^{n_v} \big(1 + e^{a_i + (\mathbf{W}\mathbf{h})_i}\big),
+$$
+
+e ogni fattore dipende da tutte le $h_j$ legate alla visibile $i$: le nascoste
+si accoppiano attraverso le visibili che condividono. Quanto la dipendenza si
+attenui lungo un cammino il grafo da solo non lo dice. Su un albero, dove il
+cammino fra due nodi è unico, ogni nodo intermedio li separa, e l’informazione
+mutua non può crescere allontanandosi (è la disuguaglianza di elaborazione dei
+dati); con cicli e accoppiamenti forti questa garanzia non c’è.
+
+`````
+
+Il conto prende una rete ristretta minuscola, tre caselle e due taccuini, con i
+legami scelti a mano: la prima casella è legata a tutti e due i taccuini, la
+seconda solo al primo, la terza solo al secondo. Con così poche variabili la
+distribuzione si calcola per intero, $Z$ compresa, e le indipendenze si misurano
+invece di supporle. La misura è la correlazione, che vale zero quando una
+variabile non dice niente dell’altra, uno quando si accendono e si spengono
+sempre insieme, ed è negativa quando vanno in senso opposto.
+
+```python
+import itertools
+import numpy as np
+
+# tre caselle e due taccuini; i legami esistono solo fra caselle e taccuini
+W = np.array([[3.0, 3.0],     # la prima casella è legata ai due taccuini
+              [3.0, 0.0],     # la seconda solo al primo
+              [0.0, 3.0]])    # la terza solo al secondo
+a, b = np.full(3, -2.0), np.full(2, -2.0)          # le soglie: spenti, da soli
+
+# la distribuzione intera, stato per stato, con la sua Z
+P = np.zeros((2,) * 5)
+for s in itertools.product([0, 1], repeat=5):
+    v, h = np.array(s[:3]), np.array(s[3:])
+    P[s] = np.exp(a @ v + b @ h + v @ W @ h)
+P /= P.sum()
+
+def correlazione(Q):
+    """Correlazione fra le due variabili di una tabella 2 x 2 di probabilità."""
+    Q = Q / Q.sum()
+    p, q = Q[1, :].sum(), Q[:, 1].sum()
+    return (Q[1, 1] - p * q) / np.sqrt(p * (1 - p) * q * (1 - q))
+
+tutte = list(itertools.product([0, 1], repeat=3))
+ignorate = lambda assi: correlazione(P.sum(axis=assi))   # sommando via il resto
+fissate = max(abs(correlazione(P[v])) for v in tutte)
+print(f"i due taccuini, caselle fissate:  {fissate:.3f} nel caso peggiore")
+print(f"i due taccuini, caselle ignorate: {ignorate((0, 1, 2)):.3f}")
+fissati = max(abs(correlazione(P[:, :, :, i, j].sum(axis=2)))
+              for i in (0, 1) for j in (0, 1))
+print(f"caselle 1 e 2, taccuini fissati:  {fissati:.3f} nel caso peggiore")
+print(f"caselle 1 e 2, taccuini ignorati: {ignorate((2, 3, 4)):.3f}")
+print(f"caselle 2 e 3, taccuini ignorati: {ignorate((0, 3, 4)):.3f}")
+```
+
+```text
+i due taccuini, caselle fissate:  0.000 nel caso peggiore
+i due taccuini, caselle ignorate: 0.277
+caselle 1 e 2, taccuini fissati:  0.000 nel caso peggiore
+caselle 1 e 2, taccuini ignorati: 0.256
+caselle 2 e 3, taccuini ignorati: 0.065
+```
+
+Con le caselle fissate la correlazione fra i due taccuini è zero anche nel caso
+peggiore, cioè nella combinazione di caselle accese e spente in cui si allontana
+di più da zero; e lo stesso vale per le caselle 1 e 2 con i taccuini fissati.
+Ignorandoli, i taccuini si correlano a 0,277, perché sono legati alla stessa
+prima casella, e le caselle 1 e 2 a 0,256, perché condividono il primo taccuino.
+Le caselle 2 e 3 non hanno nessun vicino in comune, e la strada più corta fra
+loro passa per tutti e due i taccuini e per la prima casella: la loro
+correlazione è 0,065, più debole ma non nulla.
+
 Fu proprio la coppia RBM più contrastive divergence, con più reti impilate una
-sopra l'altra a formare gli strati di una rete profonda
-{cite}`hinton2006fast`, a rimettere in moto il deep learning a metà anni
-Duemila, quando addestrare reti profonde sembrava impossibile. Si sgrossava la
-rete uno strato alla volta prima di addestrarla per intero, ed è il
-*pre-training* di cui si parlava allora. È un ruolo
+sopra l'altra a formare gli strati di una rete profonda {cite}`hinton2006fast`,
+a rimettere in moto il deep learning a metà anni Duemila, quando addestrare reti
+profonde sembrava impossibile. Si sgrossava la rete uno strato alla volta prima
+di addestrarla per intero, ed è il *pre-training* di cui si parlava allora. La
+ricetta, detta *greedy layer-wise* (avida, strato per strato), va così: si
+addestra il primo strato senza etichette a descrivere i dati; lo si congela, e i
+suoi taccuini, accesi o spenti dai dati, diventano le caselle su cui si addestra
+il secondo, e così via; e solo alla fine si rifinisce l’intera rete con le
+etichette. Bengio e colleghi mostrarono che lo stesso schema funziona con gli
+autoencoder, le reti che imparano a ricostruire i propri dati, al posto delle
+RBM {cite}`bengio2007greedy`, ed Erhan e colleghi misero alla prova il perché:
+il pre-addestramento senza etichette porta la discesa verso valli della funzione
+di perdita che generalizzano meglio, cioè funziona soprattutto come un
+regolarizzatore, che tiene la rete lontana dalle soluzioni imparate a memoria,
+più che come un aiuto a scendere più in basso {cite}`erhan2010why`. È un ruolo
 storico che va riconosciuto con onestà, insieme al suo epilogo: di lì a pochi
-anni le ReLU, le GPU e archivi di dati più grandi avrebbero reso superfluo
-quel modo di partire, e oggi le RBM non si usano quasi più.
+anni le ReLU, le GPU e archivi di dati più grandi avrebbero reso superfluo quel
+modo di partire, e oggi le RBM non si usano quasi più.
 
 Il modo di ragionare con cui erano state costruite, invece, è vivo e vegeto:
 nella prossima sezione si vede perché, e quanto costi davvero misurare il
@@ -374,6 +534,11 @@ paesaggio intero, cioè il gesto che trasforma un'altezza in una percentuale.
   Funziona, ma è una scorciatoia, non una soluzione: il numero che dice quanto
   la macchina sta sbagliando resta fuori portata, e nel caso più studiato si è
   dimostrato che i ritocchi che fa non sono la discesa di nessun numero.
+- Il disegno dei legami dice chi dipende da chi: due variabili non collegate
+  si influenzano solo attraverso quelle in mezzo, e se quelle sono note non si
+  dicono più niente. Con i dati davanti i taccuini decidono ognuno per conto
+  suo; senza guardare i dati, due taccuini legati alla stessa casella vanno
+  d'accordo.
 - Da qui in avanti l'altezza del paesaggio diventa una percentuale, e per
   trasformarla bisognerebbe aver misurato il paesaggio intero, valle per
   valle. È il conto che l'apertura del capitolo chiamava funzione di
@@ -405,5 +570,10 @@ paesaggio intero, cioè il gesto che trasforma un'altezza in una percentuale.
   ruolo storico nel
   far ripartire il deep learning, e oggi sono quasi solo storia; il linguaggio
   dell'energia no.
+- La macchina di Boltzmann è un campo aleatorio di Markov a potenziali di
+  coppia: la separazione nel grafo dà l'indipendenza condizionale (proprietà
+  globale), che per distribuzioni positive equivale alla proprietà a coppie e
+  alla fattorizzazione sulle cricche (Hammersley e Clifford). Nell'RBM $p(\mathbf{h} \mid \mathbf{v})$ si
+  fattorizza, $p(\mathbf{h})$ no.
 ```
 `````

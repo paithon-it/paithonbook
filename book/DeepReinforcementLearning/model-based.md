@@ -336,7 +336,8 @@ formalmente la scelta di tenerlo corto: si sfrutta il modello dove aiuta, lo
 si evita dove mente.
 
 L'ensemble viene da PETS (*Probabilistic Ensembles with Trajectory Sampling*,
-Chua e colleghi, 2018), che il modello lo usa per pianificare senza nessuna
+Chua e colleghi {cite}`chua2018deep`), che il modello lo usa per pianificare
+senza nessuna
 policy appresa. Ogni rete predice una gaussiana sullo stato successivo, la cui
 varianza rappresenta il rumore dell'ambiente (incertezza aleatoria), mentre il
 disaccordo fra le reti rappresenta ciò che i dati non hanno ancora fissato
@@ -344,7 +345,8 @@ disaccordo fra le reti rappresenta ciò che i dati non hanno ancora fissato
 sequenza di azioni migliore su un orizzonte $H$, valutandola con traiettorie
 propagate nell'ensemble; si esegue la sola prima azione e si ricomincia, cioè
 *model predictive control*. Il costo si sposta dall'addestramento alla
-decisione: centinaia di sequenze di $H$ passi per ogni azione.
+decisione: per ogni azione qualche migliaio di sequenze di $H$ passi, ciascuna
+propagata su una ventina di traiettorie.
 
 `````
 

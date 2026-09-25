@@ -369,8 +369,9 @@ riaddestrarlo, moltiplicando le posteriori per
 $\pi_{\text{test}}(y)/\pi_{\text{train}}(y)$ e rinormalizzando (per la malattia
 passata da uno su mille a uno su cinquanta, $20$ sui positivi e $0{,}98/0{,}999
 \approx 0{,}98$ sui negativi). Resta da stimare $\pi_{\text{test}}$, che senza
-etichette nuove si ricava con un EM sulle posteriori o invertendo la matrice di
-confusione del modello {cite}`lipton2018detecting`. Complementare a tutto
+etichette nuove si ricava con un EM sulle posteriori
+{cite}`saerens2002adjusting` o invertendo la matrice di confusione del modello
+{cite}`lipton2018detecting`. Complementare a tutto
 questo è l’**out-of-distribution detection**: riconoscere gli input troppo
 lontani dalla distribuzione di addestramento e, invece di predire con finta
 sicurezza, astenersi o segnalare; un problema particolarmente delicato per le
@@ -443,6 +444,309 @@ lanciasse una monetina. Il primo, $0{,}736$, è l'allarme: una sola
 caratteristica scivolata di un'unità e mezza basta perché l'epoca di
 provenienza diventi in buona parte indovinabile.
 
+## Imparare un esempio alla volta
+
+Riaddestrare a intervalli rifà la fotografia da capo, e fra una fotografia e
+l'altra il modello resta fermo. L'alternativa è non fermarlo mai: il modello si
+aggiorna a ogni esempio, appena ne conosce la risposta giusta, senza aspettare
+di averne raccolto un mucchio, e può farlo tenendo soltanto i propri
+parametri, senza conservare gli esempi già visti (che col tempo non starebbero
+più da nessuna parte). È l’**apprendimento online** (*online learning*), e
+cambia la domanda di partenza, che non è più quanto il modello sbaglierà su
+esempi della stessa urna, perché non suppone che gli esempi vengano da
+un'urna fissa. Il metro del successo diventa
+il **rimpianto** (*regret*): quanto si è perso rispetto alla migliore scelta
+fissa, fatta col senno di poi su tutti gli esempi arrivati.
+
+`````{tab} Elementare
+
+Il filtro antispam impara una email alla volta. Arriva un messaggio, il filtro
+dà il suo verdetto, e poco dopo l'utente gli dice se aveva ragione, lasciando
+l'email dov'è o ripescandola dal cestino. A quel punto il filtro corregge un
+poco le sue regole, nella direzione che su quell'email avrebbe ridotto l'errore,
+e passa alla successiva. È la discesa del gradiente, fatta un esempio alla
+volta. Le email vecchie non le tiene, perché gli bastano le regole che ha
+adesso, e le tiene dentro limiti fissati (tutti i pesi insieme non possono
+crescere oltre una certa misura), perché una parola che compare in mille spam
+non finisca per pesare all'infinito.
+
+Quanto correggere ogni volta è la scelta che decide tutto. Correzioni grandi
+inseguono ogni singola email; correzioni piccole imparano con lentezza. La
+ricetta che funziona meglio sta nel mezzo e cambia col tempo: la
+correzione si accorcia man mano che le email si accumulano, come uno diviso la
+radice di quante ne sono arrivate, e alla centesima vale un decimo della prima.
+
+Il filtro si giudica a fine anno. Con tutte le email dell'anno davanti si cerca
+il miglior filtro fisso, quello che, applicato dal primo giorno, avrebbe
+sbagliato meno di tutti; il rimpianto è quanto il filtro che ha imparato strada
+facendo ha sbagliato in più. La garanzia dice che il rimpianto cresce al più
+come la radice del numero di email, cioè più piano delle email stesse, e che
+quindi il rimpianto per email tende a zero. Più piano della radice, in generale,
+non si può promettere: se le email fossero decise a testa o croce nessun filtro
+potrebbe indovinarle, eppure col senno di poi uno dei filtri fissi sembrerebbe
+più bravo degli altri filtri fissi, per pura fortuna, di una quantità che
+cresce proprio come la radice (lanciando cento monete ci si aspettano
+cinquanta teste, e cinquantacinque sono normali; con diecimila, cinquemila più
+o meno cinquanta). Si fa meglio solo se il problema aiuta: quando ogni email
+punisce con decisione qualunque filtro lontano dal migliore, con un errore che
+sale come una conca ripida e non come un fondovalle piatto, la correzione si
+può accorciare più in fretta, come uno diviso il numero di email, e il
+rimpianto cresce appena come il logaritmo, cioè quasi niente. E la garanzia non
+chiede niente alle email, e vale anche se chi le scrive prova apposta a
+ingannare il filtro, perché il paragone è sempre con il miglior filtro fisso su
+quelle stesse email.
+
+Se poi le email vengono davvero tutte dalla stessa urna, c'è un regalo in più.
+Si prende la media dei filtri usati giorno per giorno, regola per regola (il
+peso medio che ogni parola ha avuto lungo l'anno), e il filtro che ne esce va
+bene su email nuove quasi quanto il miglior filtro fisso, che con un'urna
+fissa è il migliore in assoluto, senza aver mai tenuto da parte il mucchio
+intero. La media e non l'ultimo filtro, perché il rimpianto è una somma su
+tutti i giorni, e la media dei filtri è quella che ne eredita la garanzia.
+
+Il punto di rottura sta nel paragone. Il rimpianto si misura contro il miglior
+filtro *fisso*, e se a metà anno gli spammer cambiano trucco nessun filtro fisso
+va bene per tutto l'anno: un rimpianto piccolo, allora, promette poco. Peggio,
+le correzioni che si accorciano rendono il filtro sempre più lento a seguire:
+dopo diecimila email ogni correzione vale un centesimo della prima, e un cambio
+di regola lo trova testardo. Con correzioni di misura fissa il filtro resta
+pronto a seguire, e lo paga oscillando anche quando non cambia niente, perché
+ogni email lo strattona della stessa misura anche quando aveva già ragione. Quale
+misura scegliere dipende da quanto spesso cambia il mondo, che non si sa in
+anticipo. C'è anche chi cambia il paragone: invece del miglior filtro fisso, il
+miglior filtro a cui è permesso cambiare qualche volta durante l'anno, e contro
+quello il rimpianto torna a promettere qualcosa.
+
+`````
+
+`````{tab} Superiore
+
+Il quadro è l’*online convex optimization*. A ogni turno $t = 1, \dots, T$
+l'algoritmo sceglie $\mathbf{w}_t$ in un insieme convesso $\mathcal{K}$ di
+diametro $D$, poi viene rivelata una perdita convessa $\ell_t$ e l'algoritmo
+paga $\ell_t(\mathbf{w}_t)$. Sulle $\ell_t$ non si fa nessuna ipotesi
+statistica, e può sceglierle un avversario che conosce l'algoritmo. Il
+rimpianto confronta con il miglior punto fisso col senno di poi,
+
+$$
+R_T = \sum_{t=1}^{T} \ell_t(\mathbf{w}_t)
+- \min_{\mathbf{w}\in\mathcal{K}} \sum_{t=1}^{T} \ell_t(\mathbf{w}),
+$$
+
+e un algoritmo è *senza rimpianto* (*no-regret*) se $R_T = o(T)$, cioè se il
+rimpianto medio $R_T/T$ tende a zero. L'idea di competere con la migliore
+strategia fissa col senno di poi viene dai giochi ripetuti
+{cite}`hannan1957approximation`.
+
+La **discesa del gradiente online** {cite}`zinkevich2003online` fa un passo di
+gradiente sulla perdita appena pagata e proietta su $\mathcal{K}$,
+
+$$
+\mathbf{w}_{t+1} = \Pi_{\mathcal{K}}\big(\mathbf{w}_t - \eta_t\,\nabla \ell_t(\mathbf{w}_t)\big),
+$$
+
+e con $\|\nabla \ell_t\| \le G$ e $\eta_t = D/(G\sqrt{t})$ garantisce
+$R_T \le \tfrac{3}{2}\,GD\sqrt{T}$ {cite}`hazan2016introduction`. L'ordine
+$\sqrt{T}$ non si migliora senza altre ipotesi: con perdite lineari scelte a
+caso ogni algoritmo subisce un rimpianto atteso $\Omega(GD\sqrt{T})$. Con più
+struttura sì: se le $\ell_t$ sono $\alpha$-fortemente convesse, il passo
+$\eta_t = 1/(\alpha t)$ porta il rimpianto a
+$O\big((G^2/\alpha)\log T\big)$ {cite}`hazan2007logarithmic`.
+
+Quando invece i dati sono i.i.d., il rimpianto diventa una garanzia statistica.
+Con una perdita convessa nel primo argomento e a valori in $[0,1]$, il punto
+medio $\bar{\mathbf{w}} = \frac{1}{T}\sum_t \mathbf{w}_t$ ha, con probabilità
+almeno $1-\delta$, rischio al più la perdita media pagata online più
+$\sqrt{2\ln(1/\delta)/T}$ {cite}`cesabianchi2004generalization`, dove il
+rischio $L(\mathbf{w}) = \mathbb{E}[\ell(\mathbf{w};\mathbf{x},y)]$ è la
+perdita attesa su un esempio nuovo. La perdita media online supera di $R_T/T$
+quella del miglior punto fisso sul campione, che a sua volta non supera la
+perdita empirica del minimizzatore del rischio, e questa, per la disuguaglianza
+di Hoeffding, sta entro $\sqrt{\ln(1/\delta)/(2T)}$ dal suo rischio: messi
+insieme, con probabilità almeno $1-2\delta$ il rischio di $\bar{\mathbf{w}}$
+resta entro $\min_{\mathbf{w}\in\mathcal{K}} L(\mathbf{w}) + R_T/T +
+O\big(\sqrt{\ln(1/\delta)/T}\big)$. È la conversione *online-to-batch*, in cui
+il rimpianto medio fa la parte dell'errore di stima.
+
+Il punto di rottura è il confronto con un punto fisso. Se il bersaglio si
+muove, il metro giusto è il rimpianto dinamico contro una successione
+$\mathbf{u}_1, \dots, \mathbf{u}_T$, di lunghezza di cammino
+$P_T = \sum_t \|\mathbf{u}_{t+1} - \mathbf{u}_t\|$; con passo fisso $\eta$ la
+discesa online lo tiene sotto
+$\frac{7D^2}{4\eta} + \frac{D\,P_T}{\eta} + \frac{\eta\,G^2 T}{2}$
+{cite}`zinkevich2003online`. Il terzo termine è il prezzo del passo fisso, che
+si paga anche quando niente si muove; il secondo punisce il passo piccolo
+quando il bersaglio si sposta, e il passo che bilancia i due,
+$\eta \propto \sqrt{(D^2 + D\,P_T)/(G^2 T)}$, dipende da $P_T$, che non si
+conosce in anticipo. Nel caso a esperti lo stesso problema ha la risposta di
+Herbster e Warmuth, che confrontano con il miglior esperto autorizzato a
+cambiare un numero fissato di volte {cite}`herbster1998tracking`.
+
+`````
+
+Il rimpianto torna più avanti in due posti. Nell'apprendimento per imitazione è
+la proprietà che la garanzia di DAgger chiede alla successione delle politiche,
+nella sezione sull’{doc}`imitazione </DeepReinforcementLearning/imitazione>`; e
+misurato in bit, come lunghezza di un file compresso rispetto al miglior
+compressore possibile, regge l'argomento di
+{doc}`Capire è accorciare </AutoSupervisione/capire-e-accorciare>`, nel capitolo
+sull'auto-supervisione.
+
+Il primo esperimento misura il rimpianto su flussi sempre più lunghi. Il modello
+è la regressione logistica, che si corregge dopo ogni esempio con passo
+$1/\sqrt{t}$ (il passo del teorema di Zinkevich; con $D/(G\sqrt{t})$ si
+ottiene la costante $\tfrac32 GD$) e riporta i pesi dentro una palla di raggio
+$5$ se ne escono, come chiede la garanzia: sono i «limiti fissati» della scena,
+la lunghezza dell'elenco dei pesi che non supera $5$. La perdita è la sua
+cross-entropy (o *log-loss*), il modo della regressione logistica di contare
+quanto ha sbagliato. Il miglior modello fisso col senno di poi si trova
+risolvendo la regressione sull'intero flusso (il suo minimo cade dentro la
+palla, quindi è anche il migliore in $\mathcal{K}$), e il rimpianto è la
+differenza fra le due perdite totali.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+w_vero = np.array([2.0, -1.5, 1.0, 0.5, -0.5])   # la regola che genera le risposte
+RAGGIO = 5.0                                      # K: i pesi di norma al più 5
+
+def perdita(w, X, y):
+    """La cross-entropy della regressione logistica, esempio per esempio (y vale 0 o 1)."""
+    z = X @ w
+    return np.logaddexp(0, z) - y * z
+
+def online(X, y):
+    """Discesa del gradiente online, passo 1/radice(t): risponde, paga, corregge."""
+    w = np.zeros(X.shape[1])
+    pagato = 0.0
+    for t in range(len(y)):
+        z = X[t] @ w
+        pagato += np.logaddexp(0, z) - y[t] * z       # prima risponde, poi scopre y
+        w -= (1 / np.sqrt(t + 1)) * (1 / (1 + np.exp(-z)) - y[t]) * X[t]
+        if np.linalg.norm(w) > RAGGIO:                # la proiezione su K
+            w *= RAGGIO / np.linalg.norm(w)
+    return pagato
+
+def col_senno_di_poi(X, y, passi=25):
+    """La perdita del miglior w fisso sull'intero flusso (metodo di Newton)."""
+    w = np.zeros(X.shape[1])
+    for _ in range(passi):
+        p = 1 / (1 + np.exp(-X @ w))
+        w -= np.linalg.solve((X * (p * (1 - p))[:, None]).T @ X, X.T @ (p - y))
+    return perdita(w, X, y).sum()
+
+for T in (1_000, 10_000, 100_000):
+    X = rng.uniform(-1, 1, size=(T, 5))
+    y = (rng.random(T) < 1 / (1 + np.exp(-X @ w_vero))).astype(float)
+    R = online(X, y) - col_senno_di_poi(X, y)
+    print(f"T = {T:>6}: rimpianto {R:5.1f}   per esempio {R / T:.4f}"
+          f"   diviso la radice di T {R / np.sqrt(T):.2f}")
+```
+
+```text
+T =   1000: rimpianto  20.0   per esempio 0.0200   diviso la radice di T 0.63
+T =  10000: rimpianto  27.6   per esempio 0.0028   diviso la radice di T 0.28
+T = 100000: rimpianto  63.2   per esempio 0.0006   diviso la radice di T 0.20
+```
+
+Il rimpianto cresce, da $20$ a $63$, mentre gli esempi crescono di cento volte,
+e per esempio scende da due centesimi a sei decimillesimi. Anche diviso per
+$\sqrt{T}$ scende. Il $\sqrt{T}$ della garanzia è il caso peggiore, quello di un
+avversario, e su esempi estratti da un'urna fissa il rimpianto può crescere più
+piano, come fa qui; ma nessuna delle garanzie appena viste lo promette per
+questo algoritmo: quella logaritmica chiede perdite fortemente convesse
+dappertutto, la conca ripida della scena, e la cross-entropy non lo è. E tre
+flussi estratti una volta sola non bastano a dire con quale legge cresca.
+
+Il secondo esperimento mette alla prova il punto di rottura. Venti flussi di
+ventimila esempi, con la regola che a metà cambia; quattro allievi: uno
+addestrato sui primi duemila esempi e poi lasciato fermo, e tre che imparano
+online con passi diversi. Per ciascuno si misura la perdita in più rispetto a
+chi conosce la regola vera, prima del cambio, subito dopo e alla fine.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+FLUSSI, T, CAMBIO = 20, 20_000, 10_000
+w_prima = np.array([2.0, -1.5, 1.0, 0.5, -0.5])
+w_dopo = np.array([-1.0, -1.5, 2.0, 0.5, 1.5])    # a metà flusso la regola cambia
+RAGGIO = 5.0                                       # K: i pesi di norma al più 5
+
+X = rng.uniform(-1, 1, size=(FLUSSI, T, 5))
+Z = np.where(np.arange(T) < CAMBIO, X @ w_prima, X @ w_dopo)   # i punteggi veri
+y = (rng.random((FLUSSI, T)) < 1 / (1 + np.exp(-Z))).astype(float)
+perdita = lambda z, y: np.logaddexp(0, z) - y * z
+minima = perdita(Z, y)          # quello che paga chi conosce la regola, istante per istante
+
+def online(passo):
+    """Venti flussi insieme, uno per riga: la perdita pagata a ogni esempio."""
+    w = np.zeros((FLUSSI, 5))
+    pagata = np.empty((FLUSSI, T))
+    for t in range(T):
+        z = (X[:, t] * w).sum(axis=1)
+        pagata[:, t] = perdita(z, y[:, t])            # prima risponde, poi scopre y
+        w -= passo(t + 1) * (1 / (1 + np.exp(-z)) - y[:, t])[:, None] * X[:, t]
+        norme = np.sqrt((w * w).sum(axis=1, keepdims=True))
+        w *= np.minimum(1.0, RAGGIO / norme)          # la proiezione su K
+    return pagata
+
+def fermo():
+    """Addestrato una volta sui primi 2000 esempi di ogni flusso, e mai più toccato."""
+    pagata = np.empty((FLUSSI, T))
+    for f in range(FLUSSI):
+        A, b, w = X[f, :2000], y[f, :2000], np.zeros(5)
+        for _ in range(25):                           # metodo di Newton
+            p = 1 / (1 + np.exp(-A @ w))
+            w -= np.linalg.solve((A * (p * (1 - p))[:, None]).T @ A, A.T @ (p - b))
+        pagata[f] = perdita(X[f] @ w, y[f])
+    return pagata
+
+finestre = {"prima del cambio": slice(5_000, CAMBIO),
+            "i 1000 dopo": slice(CAMBIO, CAMBIO + 1_000),
+            "gli ultimi 2000": slice(T - 2_000, T)}
+print(" " * 22 + "".join(f"{nome:>18}" for nome in finestre))
+for nome, pagata in [("fermo", fermo()),
+                     ("passo 1/radice(t)", online(lambda t: 1 / np.sqrt(t))),
+                     ("passo fisso 0,05", online(lambda t: 0.05)),
+                     ("passo fisso 0,2", online(lambda t: 0.2))]:
+    in_piu = pagata - minima      # la perdita in più rispetto a chi conosce la regola
+    print(f"{nome:22}" + "".join(f"{in_piu[:, s].mean():18.4f}" for s in finestre.values()))
+```
+
+```text
+                        prima del cambio       i 1000 dopo   gli ultimi 2000
+fermo                             0.0012            0.3884            0.3894
+passo 1/radice(t)                 0.0008            0.2246            0.0010
+passo fisso 0,05                  0.0033            0.0678            0.0031
+passo fisso 0,2                   0.0138            0.0303            0.0133
+```
+
+Il modello fermo è buono finché il mondo resta quello dei suoi duemila esempi,
+e dopo il cambio paga $0{,}39$ in più a ogni esempio, per sempre. Fra gli
+allievi online l'ordine si rovescia da una colonna all'altra. Nei periodi
+tranquilli il passo che si accorcia è il più preciso, con $0{,}0008$ contro i
+$0{,}0138$ del passo fisso più lungo; subito dopo il cambio è il più lento, con
+$0{,}2246$ contro $0{,}0303$, più di sette volte tanto. Il passo fisso più
+corto sta in mezzo in tutte le colonne, ed è il compromesso fra prontezza e
+precisione, e nessun passo fisso lo scioglie. La figura segue due degli allievi
+su un solo flusso, e invece della perdita misura quanto i loro pesi (le regole
+del filtro, il peso di ogni parola) distano da quelli della regola vera
+({numref}`fig-bersaglio-che-si-sposta`).
+
+```{figure} ../figures/bersaglio-che-si-sposta.svg
+:name: fig-bersaglio-che-si-sposta
+:alt: "Animazione: due curve avanzano da sinistra a destra, la distanza fra i pesi di due modelli e quelli della regola vera, esempio dopo esempio. La curva teal, col passo che si accorcia, scende presto e resta bassa e liscia; la curva terracotta, col passo fisso, scende altrettanto presto ma resta più alta e tremolante. A metà, dove una linea verticale segna il cambio della regola, tutte e due saltano in alto, perché la regola vera si è spostata: la terracotta torna giù in poche centinaia di esempi, la teal ridiscende lentamente per migliaia. Alla fine la teal è di nuovo la più bassa."
+:width: 92%
+
+La distanza fra i pesi di due allievi online e quelli della regola vera, su un
+flusso come quelli dell'esperimento. Col passo che si accorcia la distanza
+scende e resta bassa, ma quando a metà la regola cambia ci mette migliaia di
+esempi a riavvicinarsi; col passo fisso da $0{,}2$ si riavvicina in poche
+centinaia, e in cambio non smette mai di oscillare.
+```
+
 ## Quando è il modello a cambiare i dati
 
 C'è un ultimo caso, il più sottile: quello in cui i dati non cambiano
@@ -489,6 +793,12 @@ un effetto collaterale ma la struttura stessa del problema.
   modello mentre lavora (gli ingressi somigliano a quelli di ieri? le risposte
   sono cambiate di colpo?), riaddestrarlo ogni tanto su dati recenti,
   giudicarlo su dati freschi. E dargli il permesso di dire «non lo so».
+- Un modello può anche imparare mentre lavora, un esempio alla volta. Lo si
+  giudica col rimpianto, quanto sbaglia in più del miglior modello fisso
+  scelto col senno di poi, e la garanzia vale qualunque cosa facciano i dati;
+  ma se il mondo cambia a metà strada un rimpianto piccolo promette poco,
+  correzioni che si accorciano lo rendono lento davanti al cambio, e
+  correzioni di misura fissa lo fanno oscillare sempre.
 - Attenzione a quando è il modello stesso a fabbricare i dati di domani: se
   mostra solo certi contenuti, vedrà solo clic su quelli; se nega il prestito,
   non saprà mai chi avrebbe restituito. Da lì in avanti non guarda più il
@@ -517,6 +827,12 @@ un effetto collaterale ma la struttura stessa del problema.
 - Rimedi onesti: monitoraggio in produzione, retraining periodico,
   validazione su dati freschi; l’*importance weighting* corregge il
   covariate shift ma solo con supporti sovrapposti e densità stimabili.
+- Apprendimento online: su perdite convesse, la discesa del gradiente online ha
+  rimpianto $O(GD\sqrt{T})$ senza ipotesi statistiche sui dati, e con dati
+  i.i.d. la media degli iterati eredita la garanzia (*online-to-batch*). Contro
+  un bersaglio che si muove il passo decrescente è lento e il passo fisso paga
+  $\eta G^2 T/2$ anche da fermo: il passo giusto dipende da quanto si muove il
+  mondo.
 - Attenzione ai feedback loop: quando le decisioni del modello generano i
   dati futuri (raccomandazioni, credito), il modello smette di osservare il
   mondo e inizia a osservare se stesso.

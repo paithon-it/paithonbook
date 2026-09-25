@@ -137,11 +137,10 @@ delicate, dove quello a tacche uguali la affoga nel fruscio.
 Il rovescio della medaglia insegna qualcosa sulle misure. Sui picchi le tacche
 della $\mu$-law sono larghe, e sul singolo errore più grosso di tutto il brano
 il righello a tacche uguali è cinque volte migliore: quattro millesimi
-dell'altezza massima contro due centesimi, su una nota di pianoforte che
-sfuma. Una misura peggiora di cinque
-volte, e il suono migliora lo stesso: perché quell'errore più grosso capita
-dove c'è un colpo forte, e un colpo forte copre da sé il proprio difetto,
-mentre nel silenzio non c'è niente che copra niente.
+dell'altezza massima contro due centesimi, su una nota sintetica che sfuma. Una
+misura peggiora di cinque volte, e il suono migliora lo stesso: perché
+quell'errore più grosso capita dove c'è un colpo forte, e un colpo forte copre
+da sé il proprio difetto, mentre nel silenzio non c'è niente che copra niente.
 
 Per WaveNet, infine, c'è un guadagno pratico. Indovinare ogni puntino
 scegliendolo fra $256$ possibilità è un test a crocette gestibile, e $256$ è

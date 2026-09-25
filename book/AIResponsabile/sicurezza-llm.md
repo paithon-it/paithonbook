@@ -637,9 +637,9 @@ robusto il modello. Due cose però la limitano, e vanno dette insieme alla
 promessa. La prima è che l'invariante vale rispetto alle regole scritte e alle
 etichette messe: se una sorgente non è marcata, o una regola manca, il cancello
 lascia passare senza accorgersi di niente. La seconda è il prezzo in compiti
-che non arrivano in fondo: sul banco di prova per agenti AgentDojo, il lavoro
-che ha proposto questa difesa ne porta a termine il 77% con la garanzia contro
-l'84% senza {cite}`debenedetti2025camel`.
+che non arrivano in fondo: sul banco di prova per agenti AgentDojo, CaMeL, un
+sistema costruito su questo principio, ne porta a termine il 77% con la
+garanzia contro l'84% senza {cite}`debenedetti2025camel`.
 
 Il modo di ottenerlo è vecchio quanto la sicurezza dei sistemi: privilegio
 minimo (l'agente ha solo i permessi che servono al compito, non quelli

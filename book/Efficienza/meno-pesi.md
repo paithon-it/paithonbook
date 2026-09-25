@@ -355,6 +355,354 @@ Da qui la distinzione operativa:
 
 `````
 
+### Un chip che guarda i numeri
+
+La via di mezzo a densità fissa è un compromesso per chi moltiplica griglie
+piene. Un acceleratore costruito solo per far rispondere un modello già
+addestrato può spingersi oltre, e saltare gli zeri dovunque stiano: nei pesi,
+che la potatura ha azzerato, e negli ingressi di ogni strato, che dopo una ReLU
+(la funzione che lascia passare i positivi e azzera i negativi) sono zero
+spesso per metà o più. EIE di Han e colleghi {cite}`han2016eie` lo fa
+per il prodotto fra una griglia di pesi e un vettore, SCNN di Parashar e
+colleghi {cite}`parashar2017scnn` per le convoluzioni, lo strato delle reti per
+immagini che la
+{doc}`sezione sulle reti convoluzionali </DeepLearning/reti-convoluzionali>`
+racconta per esteso.
+
+`````{tab} Elementare
+
+Il calcolatore di prima non guardava i numeri. Un chip fatto apposta, come EIE,
+li guarda, e prima di cominciare riscrive la griglia dei pesi colonna per
+colonna, tenendo solo i numeri diversi da zero, ciascuno con un'etichetta che
+dice quante caselle vuote lo precedono. L'etichetta è corta, quattro cifre
+binarie, cioè sedici combinazioni, da zero a quindici: se le caselle vuote di
+fila sono di più, si scrive uno zero finto che fa da segnaposto. Nemmeno i pesi
+sono scritti per intero: al posto di ciascuno c'è un altro codice di quattro
+cifre, che sceglie uno di sedici valori in una tavola comune a tutta la griglia.
+
+Poi arriva la fila di numeri da moltiplicare per la griglia, il *vettore*
+d'ingresso. I suoi zeri non partono nemmeno; ogni
+numero diverso da zero va a tutti i banchi del chip insieme, e ogni banco lo
+moltiplica soltanto per i pesi non nulli della colonna corrispondente che tiene
+nella propria parte di griglia. Zero per qualcosa, qui, non si calcola mai,
+tranne gli zeri finti dei segnaposto.
+
+Tenere l'ordine ha un prezzo. Le etichette stanno in memoria e vanno lette
+anche loro, così il risparmio vero resta molto sotto quello che il conto delle
+sole moltiplicazioni prometterebbe. E i banchi non finiscono insieme: a uno
+toccano più pesi non nulli che a un altro, e chi è in anticipo resterebbe ad
+aspettare gli altri se una coda di lavoro non lo tenesse occupato.
+
+Per le reti che guardano le immagini c'è una variante, ed è SCNN. Lì ogni peso
+incontra quasi ogni numero dell'ingresso, e allora si moltiplicano a blocchi
+tutte le coppie di numeri non nulli, e poi si spedisce ogni prodotto nella
+casella giusta del risultato. Lo smistamento diventa la parte costosa: due
+prodotti che vogliono la stessa casella nello stesso istante fanno la fila, e
+per ridurre gli ingorghi le caselle si raddoppiano. E qui il conto si rovescia
+quando gli zeri sono pochi: davanti a un'immagine quasi piena, o con troppo
+pochi pesi non nulli per riempire un blocco, lo smistamento costa più di quanto
+fa risparmiare, e un chip che moltiplica tutto va più veloce.
+
+`````
+
+`````{tab} Superiore
+
+EIE {cite}`han2016eie` esegue $\mathbf{o} = \mathbf{W}\mathbf{a}$ per uno strato
+completamente connesso potato. I pesi stanno in formato per colonne (CSC): per
+ogni colonna $\mathbf{W}_{:,j}$ un vettore dei valori non nulli e uno di indici
+relativi a 4 bit, il numero di zeri che precede ogni voce, con uno zero
+esplicito inserito dopo quindici zeri consecutivi; il valore stesso è un indice
+a 4 bit in un dizionario di sedici pesi condivisi. Le attivazioni restano in
+formato denso: una rete di rilevamento degli elementi non nulli (*leading
+non-zero detection*) trova gli $a_j \neq 0$ e li trasmette in broadcast ai 64
+elementi di calcolo, a cui le righe di $\mathbf{W}$ sono assegnate a turno
+(riga $i$ all'elemento $i \bmod 64$); ciascuno scorre la propria parte della
+colonna $j$ e accumula. Il lavoro è proporzionale al numero di pesi non nulli
+nelle colonne con $a_j \neq 0$ invece che a tutta la griglia: con pesi al 10% e
+attivazioni al 30% di densità si fanno circa tre moltiplicazioni su cento. I
+costi sono gli indici (il lavoro attribuisce anche a loro un risparmio
+energetico reale circa dieci volte sotto quello teorico) e lo sbilanciamento
+del carico fra elementi, assorbito da code di profondità otto.
+
+SCNN {cite}`parashar2017scnn` porta l'idea alle convoluzioni, con pesi e
+attivazioni compressi entrambi. Il flusso *planar-tiled, input-stationary,
+Cartesian product* sfrutta il fatto che, a passo unitario, ogni peso di un
+filtro si moltiplica per ogni attivazione di una tessera del piano d'ingresso
+(ai bordi della tessera servono anche valori delle tessere vicine, che il
+lavoro scambia a parte):
+ogni elemento prende un vettore di $F = 4$ pesi non nulli e uno di $I = 4$
+attivazioni non nulle, ne calcola tutti i sedici prodotti e li disperde,
+attraverso una crossbar, verso banchi di accumulatori scelti dalle coordinate
+d'uscita, che si ricavano dagli indici dei due fattori. I banchi sono il doppio
+dei prodotti ($A = 2FI$) per contenere le collisioni. Il punto di rottura è la
+densità: a parità di moltiplicatori con un acceleratore denso, e con più area
+per crossbar e accumulatori, SCNN è più veloce solo sotto l'85% circa di
+densità, e più efficiente in energia sotto l'83% contro il denso semplice e
+sotto il 60% contro uno che spegne già le moltiplicazioni per zero e comprime
+il traffico verso la memoria. Rende poco
+anche quando i fattori non nulli sono troppo pochi per riempire l'array
+$4 \times 4$ (i filtri $1 \times 1$) e sugli strati d'ingresso, densi al 100%.
+
+`````
+
+Il blocco scrive una griglia potata al 90% nel formato per colonne con le
+etichette a 4 bit, la moltiplica per un vettore passato da una ReLU saltando gli
+zeri, e conta.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+n = 512
+W = rng.normal(size=(n, n)) * (rng.random((n, n)) < 0.1)   # potata: nove pesi su dieci a zero
+a = np.maximum(rng.normal(size=n), 0)                      # dopo una ReLU: circa metà a zero
+
+# per ogni colonna i soli pesi non nulli, ciascuno con quante righe vuote lo
+# precedono scritto in 4 bit: più di 15 righe vuote di fila vogliono uno zero di riempimento
+colonne = []
+for j in range(n):
+    voci, ultima = [], -1
+    for i in np.flatnonzero(W[:, j]):
+        while i - ultima > 16:
+            ultima += 16
+            voci.append((ultima, 0.0))
+        voci.append((i, W[i, j]))
+        ultima = i
+    colonne.append(voci)
+
+o, moltiplicazioni, a_vuoto = np.zeros(n), 0, 0
+for j in np.flatnonzero(a):                  # gli zeri dell'ingresso non partono nemmeno
+    for i, w in colonne[j]:
+        o[i] += w * a[j]
+        moltiplicazioni += 1
+        a_vuoto += w == 0                    # un riempimento si moltiplica come gli altri
+print("uguale al prodotto denso:", np.allclose(o, W @ a))
+print(f"pesi nulli: {np.mean(W == 0):.0%}, ingressi nulli: {np.mean(a == 0):.0%}")
+print(f"moltiplicazioni: {n * n} nel prodotto denso, {moltiplicazioni} saltando gli zeri"
+      f" ({moltiplicazioni / (n * n):.1%}), {a_vuoto} delle quali sugli zeri di riempimento")
+voci = sum(len(c) for c in colonne)
+riempimento = sum(1 for c in colonne for _, w in c if w == 0)
+print(f"voci del formato compresso: {voci}, di cui {riempimento} zeri di riempimento")
+```
+
+```text
+uguale al prodotto denso: True
+pesi nulli: 90%, ingressi nulli: 49%
+moltiplicazioni: 262144 nel prodotto denso, 16407 saltando gli zeri (6.3%), 3009 delle quali sugli zeri di riempimento
+voci del formato compresso: 31964, di cui 5797 zeri di riempimento
+```
+
+Il risultato è quello del prodotto denso, con il 6,3% delle moltiplicazioni. Un
+peso su dieci per un ingresso su due ne farebbe sperare il 5%, e la differenza
+sono gli zeri di riempimento, che si moltiplicano come gli altri: quasi seimila
+voci su trentaduemila, il prezzo delle etichette corte, pagato in memoria e in
+conti.
+
+### Spegnere invece di saltare
+
+Saltare gli zeri fa risparmiare tempo ed energia insieme, e costa etichette,
+code e smistamento. Una strada più economica rinuncia al tempo e tiene
+l’energia: il ciclo passa lo stesso, ma la parte di circuito che non ha niente
+da fare non si muove. È il **gating** (da *gate*, cancello: se ne chiude uno
+davanti a un pezzo di circuito), e ha tre gradi: fermare i dati che entrano in
+un moltiplicatore quando un operando è zero (*data gating*), fermare il clock di
+un blocco inattivo (*clock gating*), staccarne l’alimentazione (*power gating*).
+Quanto rende ciascuno lo dice la formula della potenza di un circuito digitale,
+la stessa che sta dietro il *power wall* del {doc}`capitolo sulle GPU
+</GPU/overview>`.
+
+`````{tab} Elementare
+
+Dentro un chip l’energia se ne va quasi tutta in un gesto: un filo che cambia
+valore. Ogni filo è un secchiello, che per passare da zero a uno va riempito
+fino all’orlo e per tornare a zero si svuota, e quell’acqua è persa. Un
+secchiello più grande costa di più; alzare l’orlo costa due volte, perché ci
+vuole più acqua e la si deve portare più in alto, così a orlo doppio la fatica è
+quattro volte tanto. Il metronomo del chip batte il tempo, e a ogni battito si
+riempiono i secchielli dei fili che cambiano: più battiti al secondo, più
+secchielli, ma a ogni battito solo quelli dei fili che cambiano davvero, perché
+un filo che resta com’era non costa niente. E c’è un’acqua che se ne va sempre,
+anche da un banco che non fa nulla: i rubinetti gocciolano, ed è la
+*dispersione*.
+
+A un banco, uno dei tanti piccoli moltiplicatori di cui il chip è fatto, arriva
+uno zero. Il risultato si sa già, zero per qualunque peso fa zero, e al totale
+non si aggiunge niente. Il banco allora non tira fuori il peso dal cassetto e
+non tocca la calcolatrice: i suoi fili restano come stavano e nessun secchiello
+si riempie. Su un chip per le reti che guardano le immagini questo solo
+accorgimento ha tolto quasi metà dell’energia spesa nei banchi. Il battito però
+passa lo stesso, e il banco lo passa fermo: si risparmia acqua, non tempo. Per
+risparmiare anche il battito bisogna sapere prima dove stanno gli zeri, ed è il
+mestiere delle etichette di EIE.
+
+Un banco che per un intero strato non ha niente da fare smette di sentire il
+metronomo. Non si muove più niente, nemmeno i fili che portano il battito, che
+cambiano a ogni battito senza eccezioni e sono fra i più cari del chip. Anche
+questo ha un prezzo: il battito arriva al banco passando per un cancello in più,
+cioè un filo in ritardo rispetto agli altri banchi, e chi progetta il chip deve
+rimettere tutti a tempo. E i rubinetti gocciolano ancora.
+
+Per fermare anche le gocce si chiude la valvola del banco, e chiuderla ha tre
+prezzi. Quello che il banco aveva sul tavolo si perde, a meno di metterlo prima
+in un cassetto che resta collegato. Riaprire vuol dire riempire di nuovo i
+secchielli del banco, cioè acqua, e un po’ di attesa prima di ripartire. E se
+tutti i banchi riaprissero insieme la pressione cadrebbe per tutti, così le
+valvole si riaprono una alla volta. Chiudere conviene solo se la pausa è lunga:
+se il banco perde una goccia a battito e riaprire costa quanto trenta gocce, una
+pausa di meno di trenta battiti costa più di quanto fa risparmiare. Per questo
+le due cose si fanno insieme: orecchie tappate per le pause brevi, dove non si
+perde niente e si riparte subito, e valvola chiusa per quelle lunghe.
+
+Quanto durerà una pausa, però, non lo sa nessuno, e la regola pratica è
+aspettare qualche battito prima di chiudere. Se le pause sono di due specie,
+tante brevissime e poche lunghe, un banco fermo da quindici battiti è molto
+probabilmente in una pausa lunga, e chiuderlo conviene. Se invece a ogni battito
+il lavoro ha la stessa probabilità di tornare, aspettare non insegna niente. È
+come tirare un dado a ogni battito e far tornare il lavoro quando esce il sei:
+dopo dieci tiri senza sei, il sei non è più vicino di prima, perché il dado non
+si ricorda i tiri passati. Una pausa che dura da quindici battiti ha allora
+davanti a sé, in media, la stessa strada di una appena cominciata, e o conviene
+chiudere subito, o non conviene mai.
+
+`````
+
+`````{tab} Superiore
+
+La potenza media di un circuito CMOS si scompone così
+{cite}`chandrakasan1994low`:
+
+$$
+P = p_{01}\, C_L\, V_{dd}^2\, f_{clk} + I_{sc}\, V_{dd} + I_{leak}\, V_{dd},
+$$
+
+dove $C_L$ è la capacità caricata, $V_{dd}$ la tensione di alimentazione,
+$f_{clk}$ la frequenza del clock e $p_{01}$ il fattore di attività (in
+letteratura spesso $\alpha$), la probabilità che il nodo compia in un ciclo una
+transizione $0 \to 1$, che preleva $C_L V_{dd}^2$ dall’alimentazione quando
+l’escursione del nodo è piena, pari a $V_{dd}$, come nella logica CMOS
+ordinaria. $I_{sc}$ è la corrente di cortocircuito durante le commutazioni, che
+il gating non tocca, e $I_{leak}$ la dispersione, che scorre anche a circuito
+fermo; le correnti statiche dei circuiti polarizzati, assenti nella logica CMOS
+ordinaria, si trascurano. Lo scaling di Dennard abbassava $C_L$ e $V_{dd}$ a
+ogni generazione, e $f_{clk}$ poteva salire a densità di potenza costante: il
+muro è arrivato quando $V_{dd}$ ha smesso di scendere.
+
+**Data gating.** Se un operando è zero il prodotto è noto, e basta non
+propagare niente. Eyeriss {cite}`chen2017eyeriss`, l’acceleratore del flusso
+*row stationary* che la {doc}`sezione sulle reti convoluzionali
+</DeepLearning/reti-convoluzionali>` descrive, tiene in ogni elemento di calcolo
+un *zero buffer* di 12 bit con le posizioni degli zeri fra le attivazioni
+d’ingresso; su uno zero, la logica di gating disabilita la lettura del peso
+dalla memoria locale e impedisce al datapath della moltiplicazione-accumulo di
+commutare, cioè azzera il $p_{01}$ di quel pezzo di circuito per quel ciclo.
+Rispetto allo stesso elemento senza gating la potenza scende del 45%, e su
+AlexNet la potenza del chip cala strato dopo strato, man mano che le attivazioni
+si riempiono di zeri. Il ciclo però si consuma e il throughput non cambia:
+recuperarlo vuol dire sapere in anticipo dove stanno i non nulli, cioè i
+formati compressi di EIE e SCNN con il loro costo in indici.
+
+**Clock gating.** Il clock di un blocco passa per una porta comandata da un
+segnale di abilitazione: a blocco disabilitato i registri non caricano, la
+logica a valle vede ingressi fermi, e si ferma anche il ramo dell’albero di
+clock, che commuta a ogni ciclo ($p_{01} = 1$) e ha una capacità grande. Toglie il
+termine dinamico del blocco, non la dispersione; il prezzo è nel progetto
+dell’albero, dove la porta aggiunge ritardo e sfasamento fra i rami
+{cite}`chandrakasan1994low`. Eyeriss spegne così, strato per strato, gli
+elementi che la mappatura lascia senza lavoro, e nella ripartizione della
+potenza del chip la rete del clock sta, con le memorie locali, fra le voci che
+dominano.
+
+**Power gating.** Un transistor di sospensione, un PMOS verso l’alimentazione
+(*header*) o un NMOS verso massa (*footer*), stacca il blocco su
+un’alimentazione virtuale, e la sua dispersione crolla. I prezzi sono tre: lo
+stato si perde, salvo tenerlo in registri di ritenzione alimentati a parte; il
+risveglio costa tempo ed energia, perché le capacità del blocco vanno
+ricaricate; e chiudere tutti gli interruttori insieme richiama una corrente di
+spunto (*in-rush*) che disturba l’alimentazione, per cui li si chiude in
+sequenza. Per questo i due si usano insieme: il clock gating, che non perde lo
+stato e riparte subito, sulle pause brevi, e il power gating su quelle lunghe.
+
+Quanto lunghe lo dice un bilancio. Se $E_{ov}$ è l’energia di uno spegnimento
+con il suo risveglio ed $E_{leak} = I_{leak}V_{dd}/f_{clk}$ la dispersione in un
+ciclo, staccare una pausa di $D$ cicli rende $E_{leak}\,D - E_{ov}$, positivo
+solo sopra il pareggio $D^* = E_{ov}/E_{leak}$. È un modello lineare: Hu e
+colleghi ricavano il pareggio da un modello fisico della scarica
+dell’alimentazione virtuale, più fine di questa divisione, e con quello
+confrontano le politiche che decidono quando staccare
+{cite}`hu2004microarchitectural`. Quella a tempo, che stacca dopo $\tau$ cicli
+di inattività, tiene spente le unità in virgola mobile di un processore
+superscalare fuori ordine fino al 28% dei cicli, con il 2% di prestazioni perse
+nei risvegli. Quale $\tau$ scegliere lo dice il bilancio stesso: arrivati a
+$\tau$ cicli di pausa, staccare rende in media
+$E_{leak}\,\mathbb{E}[D - \tau \mid D > \tau] - E_{ov}$, quindi conviene se la
+vita residua media $\mathbb{E}[D - \tau \mid D > \tau]$ supera $D^*$. Se questa
+cresce con $\tau$, come quando le pause sono di due specie, l’attesa filtra le
+brevi; se $D$ è geometrica non dipende da $\tau$, e conviene staccare sempre o
+mai.
+
+`````
+
+Il blocco mette alla prova la politica a tempo su pause di forma nota, nove su
+dieci brevi (quattro cicli in media) e una su dieci lunga (quattrocento), con il
+pareggio a trenta cicli; e poi su pause con la stessa media, ma senza memoria.
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(0)
+n = 100_000
+# le pause di un'unità di calcolo, in cicli: nove su dieci brevi, una lunga
+lunga = rng.random(n) < 0.1
+due_specie = np.where(lunga, rng.geometric(1 / 400, n), rng.geometric(1 / 4, n))
+# stessa media, ma ogni ciclo fermo ha la stessa probabilità di essere l'ultimo
+senza_memoria = rng.geometric(1 / due_specie.mean(), n)
+
+fuga = 1.0       # dispersione in un ciclo passato acceso e fermo
+costo = 30.0     # energia per staccare l'unità e riattaccarla
+print(f"pausa media {due_specie.mean():.2f} cicli,"
+      f" pareggio {costo / fuga:.0f} cicli")
+
+def risparmio(pause, attesa):
+    """Stacca dopo `attesa` cicli fermi: dispersione risparmiata, al netto."""
+    staccate = pause > attesa
+    netto = fuga * (pause[staccate] - attesa).sum() - costo * staccate.sum()
+    return netto / (fuga * pause.sum()), staccate.mean()
+
+for nome, pause in [("due specie", due_specie),
+                    ("senza memoria", senza_memoria)]:
+    print(nome)
+    for attesa in [0, 10, 30, 100]:
+        r, quota = risparmio(pause, attesa)
+        print(f"  attesa {attesa:3d}: risparmiato {r:6.1%} della dispersione,"
+              f" staccate {quota:6.1%} delle pause")
+    migliore = max(range(301), key=lambda a: risparmio(pause, a)[0])
+    print(f"  attesa migliore fra 0 e 300 cicli: {migliore}")
+```
+
+```text
+pausa media 44.47 cicli, pareggio 30 cicli
+due specie
+  attesa   0: risparmiato  32.5% della dispersione, staccate 100.0% delle pause
+  attesa  10: risparmiato  79.9% della dispersione, staccate  15.2% delle pause
+  attesa  30: risparmiato  78.9% della dispersione, staccate   9.5% delle pause
+  attesa 100: risparmiato  66.3% della dispersione, staccate   7.9% delle pause
+  attesa migliore fra 0 e 300 cicli: 15
+senza memoria
+  attesa   0: risparmiato  32.5% della dispersione, staccate 100.0% delle pause
+  attesa  10: risparmiato  26.0% della dispersione, staccate  79.5% delle pause
+  attesa  30: risparmiato  16.6% della dispersione, staccate  50.5% delle pause
+  attesa 100: risparmiato   3.4% della dispersione, staccate  10.2% delle pause
+  attesa migliore fra 0 e 300 cicli: 0
+```
+
+Staccare subito rende il 32,5% in tutti e due i casi, perché dipende soltanto
+dalla media: ogni pausa paga trenta cicli e ne risparmia in media 44,47. Con le
+pause di due specie, aspettare dieci cicli porta il risparmio al 79,9% staccando
+il 15,2% delle pause, cioè con un risveglio ogni sette pause circa invece che a
+ogni pausa. L’attesa migliore è di quindici cicli; oltre si ricomincia a
+perdere, perché anche le pause lunghe vengono staccate tardi. Senza memoria,
+invece, aspettare peggiora soltanto, e l’attesa migliore è zero.
+
 ## Il biglietto della lotteria, e perché non ci salva
 
 C’è una domanda che a questo punto viene naturale, e il libro l’ha già
@@ -469,6 +817,14 @@ basso, e in mezzo c’è un calcolatore che quella promessa non la sa incassare.
   tempo bisogna togliere i pesi a blocchi (un neurone intero, cioè una riga
   intera della griglia): allora la rete è davvero più piccola, ma si buttano
   via anche pesi utili che stavano nella riga sbagliata.
+- Un chip fatto apposta può invece saltare gli zeri, nei pesi e negli
+  ingressi, se li tiene in un formato con le etichette delle posizioni. Paga
+  in etichette, zeri di riempimento, code e smistamento, e quando gli zeri sono
+  pochi un chip che moltiplica tutto va più veloce.
+- Lo zero si può anche solo spegnere: il banco che lo riceve non si muove, e si
+  risparmia energia ma non tempo. Un banco senza lavoro può smettere di sentire
+  il battito, o farsi chiudere anche l’acqua, che ferma le gocce ma conviene
+  solo per pause più lunghe del pareggio.
 - Il biglietto della lotteria, che la {doc}`sezione su overfitting e
   validazione </MachineLearning/overfitting-validazione>` ha già raccontato,
   dice qui una cosa sola: per sapere quali collegamenti tenere
@@ -501,6 +857,17 @@ basso, e in mezzo c’è un calcolatore che quella promessa non la sa incassare.
   unità intere e dà un guadagno reale su qualunque macchina, a un costo
   maggiore in accuratezza. Gli schemi a densità fissa locale sono il
   compromesso imposto dall’hardware.
+- Gli acceleratori sparsi saltano gli zeri in hardware: EIE
+  {cite}`han2016eie` con i pesi in CSC a indici relativi di 4 bit e le
+  attivazioni non nulle in broadcast, SCNN {cite}`parashar2017scnn` con il
+  prodotto cartesiano dei non nulli e una crossbar verso gli accumulatori. Il
+  prezzo è negli indici e nella dispersione, e a densità alta (sopra l'85%
+  circa, per SCNN) un acceleratore denso con gli stessi moltiplicatori vince.
+- Il gating risparmia energia, non cicli: data gating sugli operandi nulli
+  (Eyeriss, potenza dell’elemento di calcolo giù del 45%), clock gating sul
+  termine $p_{01} C_L V_{dd}^2 f_{clk}$ dei blocchi fermi, power gating sulla
+  dispersione, conveniente solo oltre il pareggio $D^* = E_{ov}/E_{leak}$; la
+  politica a tempo rende se la vita residua delle pause cresce con l’attesa.
 - L’ipotesi del biglietto della lotteria {cite}`frankle2019lottery` sta nel
   capitolo sul machine learning, con i suoi due limiti. Quello che conta qui è
   quello pratico: la maschera si ottiene addestrando la rete densa, quindi il
