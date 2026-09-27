@@ -453,6 +453,23 @@ di tipo, allocazione di oggetti e dispatch dinamico. La forma vettorizzata
 sposta il ciclo dentro codice C compilato che opera su memoria contigua, con
 buona località di cache e, dove disponibile, vettorizzazione SIMD.
 
+La località di cache è la ragione per cui la contiguità conta anche dentro il
+C. La memoria centrale consegna i dati a blocchi, le *righe di cache*, di
+solito da 64 byte, cioè otto `float64` consecutivi, e li consegna a una
+gerarchia di memorie piccole e veloci vicine al processore. La L1 tiene
+qualche decina di kilobyte e risponde in un nanosecondo circa, la L2 qualche
+centinaio di kilobyte o pochi megabyte, la L3 (condivisa fra i core) decine di
+megabyte, con latenze che salgono fino alla decina di nanosecondi, mentre la
+DRAM ne chiede un centinaio. Chi scorre un blocco contiguo usa tutti gli otto
+numeri di ogni riga caricata, e il *prefetcher* dell'hardware, che riconosce
+l'accesso sequenziale, porta le righe successive prima che servano, così la
+latenza della DRAM si nasconde. Chi salta con passo di otto elementi usa un
+numero su otto di ogni riga e muove otto volte i byte; una lista Python, con
+gli oggetti sparsi nella memoria, paga in più un salto imprevedibile per ogni
+elemento. È la stessa piramide che la {doc}`sezione sulla memoria della GPU
+</GPU/gerarchia-memoria>` percorre con altri numeri, e con lo stesso principio:
+il costo sta nello spostare i dati più che nel calcolarci sopra.
+
 Le ultime due misure servono a isolare quale dei due fattori pesi, ed è la
 domanda su cui la conclusione sbagliata è a portata di mano. Lo stesso
 ciclo Python, che legge un elemento per volta, impiega dal doppio al triplo del

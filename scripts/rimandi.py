@@ -202,9 +202,9 @@ def candidati(percorso, overview):
 def main():
     scrivi = "--scrivi" in sys.argv
     verifica = "--verifica" in sys.argv
-    # `--solo <Cartella>`: serve nei worktree, dove una sessione lavora a un
-    # capitolo solo e non deve toccare i file degli altri. Senza, `--scrivi`
-    # riscrive tutto il libro, che con piu' sessioni in volo e' un conflitto.
+    # `--solo <Cartella>`: serve quando si lavora a un capitolo solo e non si
+    # devono toccare i file degli altri. Senza, `--scrivi` riscrive tutto il
+    # libro, che con altri lavori in corso e' un conflitto.
     solo = None
     if "--solo" in sys.argv:
         solo = sys.argv[sys.argv.index("--solo") + 1]

@@ -547,6 +547,10 @@ parts:
       title: LLMOps
     - file: MLOps/metriche-di-servizio.md
       title: Misurare un servizio
+    - file: MLOps/capacita-e-costo.md
+      title: Capacità e costo
+    - file: MLOps/gateway-e-affidabilita.md
+      title: Davanti ai modelli
     - file: MLOps/energia-e-impronta.md
       title: Il conto in energia
   - file: Interpretabilita/overview.md

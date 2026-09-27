@@ -170,8 +170,8 @@
    * tutte le pagine.
    *
    * Da sapere se un giorno un capitolo non si chiamera' `overview.md`: quel
-   * capitolo resterebbe senza numero, in silenzio. La convenzione e' scritta
-   * in CLAUDE.md, ma qui non c'e' niente che la faccia rispettare.
+   * capitolo resterebbe senza numero, in silenzio: la convenzione c'e', ma
+   * qui non c'e' niente che la faccia rispettare.
    */
   function numeraCapitoli() {
     const indice = document.querySelector('nav.bd-links');

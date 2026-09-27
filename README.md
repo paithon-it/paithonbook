@@ -98,7 +98,7 @@ che spezzano l'indice per aree.
 | 33 | **Sistemi di Raccomandazione** | Dal Netflix Prize alla matrix factorization e alla raccomandazione neurale |
 | 34 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
 | 35 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
-| 36 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, metriche di servizio (TTFT, TPOT, goodput), monitoraggio del drift, LLMOps e deploy, il conto in energia |
+| 36 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, metriche di servizio (TTFT, TPOT, goodput), autoscaling e costo per token, gateway e affidabilità (rate limit, ritentativi, routing, chaos engineering), monitoraggio del drift, LLMOps e deploy, il conto in energia |
 | 37 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
 | 38 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, sicurezza degli LLM (prompt injection, jailbreak, red teaming), allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
 | 39 | **Conclusioni** | Bilancio e letture per proseguire |

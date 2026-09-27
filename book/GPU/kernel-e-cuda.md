@@ -328,11 +328,7 @@ poi fondere ancora non rende più niente.
 Ci sono due costi sovrapposti. Il primo è il **launch overhead**: ogni
 invocazione di kernel richiede alla CPU di preparare e inviare il lancio alla
 GPU, un costo dell'ordine dei microsecondi che, moltiplicato per una catena di
-molte operazioni leggere, diventa visibile. Ha una cura sua, indipendente
-dalla fusione: i *CUDA Graphs*, che registrano una volta la sequenza di lanci
-e la rieseguono con una sola chiamata dalla CPU, ed è quello che accende
-`torch.compile(mode="reduce-overhead")`. Tolgono i lanci, non i viaggi in
-memoria. Il secondo, più pesante, è il
+molte operazioni leggere, diventa visibile. Il secondo, più pesante, è il
 traffico di memoria. Le operazioni *elemento-per-elemento* hanno intensità
 aritmetica bassissima: come calcolato nel roofline della sezione precedente,
 una somma vettoriale fa circa $1$ FLOP ogni $12$ byte spostati (profondamente
@@ -400,6 +396,89 @@ scritti nel linguaggio che abbiamo appena letto.
 
 `````
 
+La fusione accorpa le operazioni che si lasciano accorpare, ma molte restano
+kernel a sé (le moltiplicazioni fra matrici affidate alle librerie del
+costruttore, l'attenzione, le normalizzazioni fra l'una e l'altra), e ciascuna
+è ancora un lancio. Quando i kernel rimasti sono tanti e ciascuno fa poco
+lavoro, è il lancio a comandare il tempo, e ha una cura sua, i **CUDA Graphs**:
+*graph* qui è il grafo, la rete delle operazioni con i loro collegamenti, e
+non un grafico. È il caso tipico di un modello linguistico non troppo grande
+che genera una parola alla volta per poche persone insieme, che la
+{doc}`sezione sui grandi modelli linguistici </Transformers/llm>` e quella su
+{doc}`LLMOps </MLOps/llmops>` raccontano per esteso.
+
+`````{tab} Elementare
+
+Con un fornitore da cui si compra ogni giorno la stessa lista, telefonare una
+voce alla volta, come nella scena di prima, è tempo buttato. Si fa una cosa più
+furba: la si detta una volta, per intero, e il fornitore la registra come
+ordine ricorrente. Da lì in poi basta una telefonata di tre secondi, «il
+solito», e parte tutto. Registrare la lista si chiama catturare il grafo, e «il
+solito» è il CUDA Graph.
+
+Quanto si guadagna dipende da quanto pesa la telefonata rispetto alla merce. Se
+ogni voce è un camion di mattoni, il tempo dei camion è molto più lungo di
+quello del telefono, e l'ordine ricorrente fa risparmiare poco. Se la lista è
+fatta di trecento voci da una scatoletta ciascuna, chi deve lavorare la merce
+resta con le mani in mano fra una scatoletta e l'altra ad aspettare la
+telefonata dopo: lì «il solito» cambia tutto. Un modello non troppo grande che
+genera una parola alla volta per poche persone è una lista del secondo tipo,
+centinaia di operazioni piccole per ogni parola, e la scheda passa il tempo ad
+aspettare il processore che gliele detta.
+
+L'ordine ricorrente ha però una regola ferrea: il solito è sempre lo stesso.
+Le quantità sono quelle registrate, e anche il magazzino dove scaricare (nella
+scheda, i posti della memoria dove stanno i dati), quindi la merce nuova va
+portata lì prima di dire «il solito». Se un giorno di ogni voce servono nove
+pezzi invece di otto (con un modello, nove persone da servire insieme invece di
+otto), «il solito» non va bene. Allora si registrano alcuni ordini ricorrenti di
+taglie diverse, per quattro, per otto, per sedici, e ogni volta si chiede
+quello appena più grande di quanto serve, accettando di ricevere qualche pezzo
+in più. Una lista che cambia a ogni giro, come la lettura di testi sempre di
+lunghezza diversa, si continua a dettare.
+
+E i camion restano. L'ordine ricorrente toglie le telefonate che la fusione ha
+lasciato, non i viaggi in memoria: per quelli serve fondere, e le due cure si
+sommano.
+
+`````
+
+`````{tab} Superiore
+
+Il costo di lancio si vede in un profilo temporale (`torch.profiler`, o Nsight
+Systems di NVIDIA) come spazi vuoti fra un kernel e l'altro sulla linea della
+GPU: il carico è **launch-bound** quando la CPU impiega a preparare e accodare
+i lanci più tempo di quanto la GPU impieghi a eseguirli. È il regime della
+generazione autoregressiva a mazzo piccolo. Un passo di un Transformer da
+$n_\ell$ strati esegue almeno una decina di kernel per strato (con i kernel
+fusi di un motore di serving; eseguito operazione per operazione, ne esegue
+alcune decine), e con $n_\ell = 32$ e qualche microsecondo di preparazione per
+lancio (un ordine di grandezza, che dipende dal framework, dalla CPU e dal
+driver) la sola CPU spende attorno a un millisecondo per passo. Un modello da un
+miliardo di parametri in 16 bit legge 2 GB di pesi a passo, circa 0,6 ms su una
+scheda da 3,35 TB/s: lì il collo di bottiglia è la CPU.
+
+Un CUDA Graph registra una volta (*cattura*) la sequenza di kernel con i
+loro argomenti e gli indirizzi di memoria, e la riesegue (*replay*) con un solo
+lancio dalla CPU: le dipendenze fra i nodi del grafo sono note in anticipo, e
+il driver le soddisfa senza tornare alla CPU fra un kernel e l'altro. Il prezzo
+è la staticità. Il grafo fissa le forme dei tensori, gli indirizzi e il flusso
+di controllo, quindi un ramo che dipende dai dati o una dimensione che cambia
+vogliono un grafo diverso, e i dati nuovi vanno copiati nei tensori su cui il
+grafo è stato catturato prima di ogni replay. Ogni grafo tiene inoltre
+riservata la memoria dei tensori su cui è stato catturato, e dentro la cattura
+non possono esserci sincronizzazioni con la CPU (un `.item()`, per esempio).
+`torch.compile(mode="reduce-overhead")` fa la cattura e il replay, e registra un
+grafo nuovo per ogni forma nuova che incontra. I motori di serving vanno oltre:
+catturano un grafo per ciascuna di una serie di taglie di mazzo, fino a qualche
+centinaio di sequenze, ed eseguono ogni passo di generazione con il grafo della
+taglia immediatamente superiore, riempiendo i posti vuoti; la lettura iniziale
+di un prompt lungo resta fuori, o vi entra a pezzi con l'attenzione eseguita
+fuori dal grafo. Il meccanismo è indipendente dalla fusione: il grafo toglie i
+lanci, la fusione i viaggi in memoria.
+
+`````
+
 Con questo il quadro è completo: sappiamo *chi* esegue (le officine e i plotoni
 da 32), *da dove* arrivano i dati (la piramide della memoria) e *che cosa* si
 esegue (il kernel).
@@ -443,6 +522,10 @@ loro due tabelloni di numeri. È la prossima sezione.
   molto da calcolare, fondere non cambierebbe niente. È il grosso di quello
   che fa quella riga di `torch.compile` vista nella sezione
   {doc}`«Prestazioni e scala» </PyTorch/prestazioni>`.
+- Le telefonate che la fusione lascia si tolgono con l'ordine ricorrente, «il
+  solito»: si registra una volta la lista dei lanci e la si fa ripartire con
+  una chiamata sola. Vale solo per liste sempre uguali, e per questo si
+  registra in poche taglie; toglie le telefonate, non i viaggi.
 ```
 `````
 
@@ -467,5 +550,11 @@ loro due tabelloni di numeri. È la prossima sezione.
 - In eager ogni op è un kernel a sé (cuBLAS/cuDNN per matmul e convoluzioni,
   kernel elementwise per il resto); con `torch.compile` le catene elementwise
   vengono fuse in kernel Triton, riducendo lanci e traffico di memoria.
+- Un carico è launch-bound quando la CPU impiega più a preparare i lanci che
+  la GPU a eseguirli (il decode a mazzo piccolo). Un CUDA Graph cattura la
+  sequenza di kernel una volta e la riesegue con un lancio solo, a forme,
+  indirizzi e flusso di controllo fissati. `mode="reduce-overhead"` registra un
+  grafo per ogni forma nuova; i motori di serving catturano una serie di taglie
+  di mazzo e riempiono i posti vuoti.
 ```
 `````

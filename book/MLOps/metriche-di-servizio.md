@@ -568,6 +568,133 @@ quante cifre avevano i suoi numeri. Se il magazzino non tiene conto di tutte
 e tre, consegna a un
 modello gli appunti presi da un altro, e nessuno se ne accorge.
 
+## Quando la memoria finisce
+
+Riusare il prefisso e riempire il mazzo chiedono la stessa risorsa, la memoria
+per la KV cache, e la memoria finisce in due momenti. Durante la generazione,
+quando le risposte in corso hanno occupato tutti i blocchi di memoria e una di
+loro ne chiede un altro per il token che sta scrivendo; e nella cache dei
+prefissi, quando per far posto si butta un prefisso che qualcuno chiederà di
+nuovo fra un'ora. In tutti e due i casi la domanda è la stessa: dove mettere
+gli appunti che non stanno più, e se valga la pena conservarli invece di
+rifarli.
+
+`````{tab} Elementare
+
+Lo scaffale del copista sta accanto al tavolo, nella stessa stanza, e la stanza
+è quella: più posto allo scaffale vuol dire meno tavolo. Quando lo scaffale si
+riempie, i fascicoli che nessuno chiede da più tempo non vanno per forza al
+macero: si possono portare in archivio, al piano di sotto o più giù ancora, in
+cantina (nel calcolatore, la memoria del computer che ospita la scheda e il suo
+disco). Più si scende più c'è posto, e più ci vuole a riprenderli. Portarli giù
+conviene se scendere a riprendere un fascicolo costa meno che ricopiarlo. E
+siccome tutti e due i tempi crescono con le pagine, a decidere è quanto sono
+lente le scale rispetto alla mano del copista, e non quanto è lungo il
+fascicolo: se scendere costa un minuto a pagina e ricopiare due, vince lo
+scendere con dieci pagine come con cento. Vale finché i fascicoli non diventano
+lunghissimi: lì ricopiare una pagina costa sempre di più, perché ogni riga
+nuova va confrontata con tutte quelle prima, e conservare conviene sempre di
+più. Dal piano di sotto conviene quasi sempre, dalla cantina a volte si fa
+prima a ricopiare, e conta anche come li si porta: dieci scatoloni pieni fanno
+le scale più in fretta di cento cartelline sciolte. In uno studio con molti
+copisti, poi, conviene dare ogni atto nuovo a chi ha già in archivio le
+premesse giuste, a meno che non sia sommerso di lavoro.
+
+Lo stesso problema si presenta sul tavolo, mentre si lavora. Lì il copista non
+copia: scrive gli atti nuovi, una riga alla volta, e per ciascuno tiene accanto
+i suoi appunti, che crescono a ogni riga. Quando il tavolo è pieno e un atto ha
+bisogno di spazio per un appunto in più, qualcuno deve lasciare il tavolo, e lo
+lascia l'ultimo arrivato, perché chi aspetta da più tempo ha la precedenza.
+L'atto esce con tutti i suoi appunti: con metà degli appunti altrove non si
+può continuare.
+
+Al suo ritorno ci sono le stesse due strade. Gli appunti si possono riprendere
+dall'archivio, oppure si buttano e si rifanno dalle righe già scritte, che
+restano e occupano poco. Rifarli va molto più in fretta di quanto sia servito la
+prima volta: allora ogni riga aspettava la precedente, perché la si stava
+componendo, adesso le righe ci sono tutte e gli appunti si rifanno di fila, in
+un colpo solo. È per questo che rifare, a volte, batte conservare.
+
+Quale strada convenga dipende anche da quanto sono fitti gli appunti, e questo
+lo decide com'è costruito il modello. Rifarli costa lo stesso comunque, perché
+si rifanno dalle righe; portarli su e giù costa tanto più quanto più pesano.
+Con appunti fitti le due strade si equivalgono, o rifarli vince di poco; con
+appunti corti conservarli vince nettamente.
+
+`````
+
+`````{tab} Superiore
+
+Quando i blocchi liberi finiscono, lo scheduler descritto dagli autori di vLLM
+{cite}`kwon2023efficient` sospende (*preempt*) delle sequenze in ordine inverso
+d'arrivo, per restare fedele alla politica FCFS (chi aspetta da più tempo ha la
+precedenza, e nessuno resta indietro per sempre), e le sfratta per intero,
+tutti i blocchi o nessuno, perché una sequenza con parte della cache fuori
+dalla GPU non può avanzare. Al ritorno le ripristina in uno di due modi. Con lo
+**swap** i blocchi vengono copiati nella memoria dell'host e riportati
+indietro; con il **ricalcolo** vengono buttati e ricostruiti, e il ricalcolo
+costa meno di quanto sembri: i token già generati si concatenano al prompt e
+l'intera cache si ricostruisce con un solo prefill, parallelo, invece di rifare
+uno per uno i passi di decode. Per un contesto di $L$ token, in prima
+approssimazione,
+
+$$
+t_{\text{ricalcolo}} \approx \frac{2 N_p L}{P_{\text{eff}}}, \qquad
+t_{\text{swap}} \approx \frac{L\, m_{\text{kv}}}{B_{\text{host}}}, \qquad
+\frac{t_{\text{ricalcolo}}}{t_{\text{swap}}} =
+\frac{2 N_p B_{\text{host}}}{P_{\text{eff}}\, m_{\text{kv}}},
+$$
+
+con $m_{\text{kv}}$ i byte di KV cache per token, $P_{\text{eff}}$ i FLOP al
+secondo che la scheda tiene davvero in prefill e $B_{\text{host}}$ la banda
+effettiva fra host e scheda. Le ipotesi sono tre. Il prefill è compute-bound,
+cioè $L$ supera il ginocchio del roofline (qualche centinaio di token): sotto,
+il ricalcolo costa almeno la lettura dei pesi, e il rapporto torna a dipendere
+da $L$. Il termine quadratico dell'attenzione resta minoritario rispetto a
+quello lineare. E si conta un solo attraversamento del PCIe, il rientro,
+supponendo che l'uscita al momento della sospensione si sovrapponga al calcolo;
+se non si sovrappone, $t_{\text{swap}}$ raddoppia. Con numeri tondi,
+$B_{\text{host}} = 25$ GB/s (un PCIe di quarta generazione) e
+$P_{\text{eff}} = 5 \cdot 10^{14}$ FLOP/s, un modello da $7 \cdot 10^9$
+parametri con attenzione multi-testa piena ($m_{\text{kv}} = 512$ KiB per
+token, il conto di {doc}`L'attenzione in pratica
+</Transformers/attenzione-in-pratica>`) dà
+$2 \cdot 7\cdot10^9 \cdot 2{,}5\cdot10^{10} / (5\cdot10^{14} \cdot 524\,288)
+\approx 1{,}3$, praticamente la parità; lo stesso modello con GQA a otto teste di
+chiavi e valori ($m_{\text{kv}} = 128$ KiB, la riga GQA della stessa tabella) dà
+circa 5,3, e lo swap vince nettamente. Contando anche l'uscita, i due rapporti
+diventano 0,67 e 2,7: con l'attenzione piena passa avanti il ricalcolo, con
+GQA resta avanti lo swap. La seconda ipotesi cede con i contesti lunghi: per
+quel modello il costo dell'attenzione causale nel prefill eguaglia quello degli
+strati densi attorno ai 53 mila token, e oltre il ricalcolo costa per token
+sempre di più, quindi conservare conviene sempre di più.
+
+La banda effettiva, poi, dipende dalla granularità: con blocchi piccoli i
+trasferimenti sono tanti e minuti e la banda del PCIe crolla. Gli autori di
+vLLM misurano, su OPT-13B (attenzione multi-testa piena, cioè il primo dei due
+casi) e su una A100, che il ricalcolo conviene con blocchi piccoli, lo swap con
+blocchi grandi, e che fra 16 e 64 token per blocco i due si equivalgono. Nella
+versione più recente di vLLM il ricalcolo è diventato il comportamento di
+default, perché nella nuova architettura costa meno.
+
+Lo stesso conto governa la cache dei prefissi quando la si estende oltre la
+GPU. I blocchi sfrattati dall'albero dei prefissi, invece di essere scartati,
+scendono in una gerarchia: la memoria dell'host, gli SSD locali, e in un
+cluster la memoria e i dischi di altre macchine raggiunti via rete. Un colpo in
+un livello di banda $B_{\text{liv}}$ conviene se
+$L\, m_{\text{kv}}/B_{\text{liv}} < 2N_pL/P_{\text{eff}}$, cioè se ricaricare
+costa meno che rifare il prefill, e il margine si stringe a ogni livello.
+Mooncake {cite}`qin2025mooncake`, la piattaforma che serve il chatbot Kimi, è
+costruita attorno a questa idea: separa prefill e decode, mette in comune la
+DRAM, gli SSD e le schede di rete poco usati del cluster in una cache globale
+di KV, e ha uno scheduler che sceglie dove mandare ogni richiesta pesando il
+prefisso già presente contro il carico delle istanze, e che può anche spostare
+la cache o ricalcolarla. Su tracce reali gli autori riportano una capacità
+effettiva più alta del 59-498% rispetto ai sistemi di riferimento, a seconda
+della soglia imposta alla pausa fra un token e l'altro.
+
+`````
+
 ## Misurare in venti righe
 
 Venti righe bastano a prendere, per ogni richiesta arrivata in dieci secondi,
@@ -671,6 +798,12 @@ sbagliata non produce un fallimento rumoroso, produce un successo apparente.
   anormalmente rapida rivela che qualcun altro aveva già inviato quel testo. Si
   tengono separati per cliente e si condivide solo ciò che è dichiaratamente
   pubblico.
+- Quando la memoria degli appunti finisce, quelli che non stanno più si
+  portano in archivio, al piano di sotto o in cantina, oppure si buttano e si
+  rifanno dalle righe già scritte, che per una risposta a metà va molto più in
+  fretta della prima volta, perché si fa tutto di fila. Quale strada convenga
+  lo decidono la lentezza delle scale e quanto sono fitti gli appunti, non la
+  lunghezza del fascicolo, finché i fascicoli non sono lunghissimi.
 ```
 `````
 
@@ -710,5 +843,13 @@ sbagliata non produce un fallimento rumoroso, produce un successo apparente.
 - La cache condivisa è però una superficie fra utenti: un TTFT anormalmente
   basso rivela che quel prefisso era già stato inviato da qualcuno. Si partiziona
   per cliente e si condividono solo i prefissi pubblici.
+- Quando i blocchi finiscono, vLLM sospende le sequenze arrivate per ultime e le
+  ripristina con lo swap sulla memoria dell'host o con il ricalcolo, che rifà
+  la cache in un solo prefill. Il rapporto fra i due tempi,
+  $2N_pB_{\text{host}}/(P_{\text{eff}} m_{\text{kv}})$, non dipende dalla
+  lunghezza del contesto finché il prefill è compute-bound e l'attenzione
+  resta minoritaria; con i contesti molto lunghi conservare conviene sempre di
+  più. Lo stesso conto decide se una cache dei prefissi estesa a host, SSD e
+  cluster {cite}`qin2025mooncake` convenga più del prefill rifatto.
 ```
 `````

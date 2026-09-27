@@ -277,6 +277,8 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Monitoraggio e drift](https://book.paithon.it/main/MLOps/monitoring-e-drift.html)
   - [LLMOps](https://book.paithon.it/main/MLOps/llmops.html)
   - [Misurare un servizio](https://book.paithon.it/main/MLOps/metriche-di-servizio.html)
+  - [Capacità e costo](https://book.paithon.it/main/MLOps/capacita-e-costo.html)
+  - [Davanti ai modelli](https://book.paithon.it/main/MLOps/gateway-e-affidabilita.html)
   - [Il conto in energia](https://book.paithon.it/main/MLOps/energia-e-impronta.html)
 - [Interpretabilità](https://book.paithon.it/main/Interpretabilita/overview.html): Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro, Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)

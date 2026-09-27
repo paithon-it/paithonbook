@@ -3,18 +3,12 @@
 # Perche' esiste, visto che c'e' gia' l'immagine ufficiale `manimcommunity/manim`.
 # Perche' quella e' un ambiente generico e questo e' l'ambiente **del libro**:
 # porta dentro le versioni con cui le clip sono state fatte, e soprattutto porta
-# dentro la conoscenza che altrimenti va riscoperta ogni volta. In questa
-# macchina `manim` non c'era, il pip diretto falliva in compilazione, e per
-# arrivare a un render funzionante sono serviti quattro pacchetti di sviluppo e
-# un LaTeX: mezz'ora buttata, e la prossima volta sarebbe stata la stessa
-# mezz'ora. Qui quella mezz'ora e' scritta.
+# dentro la conoscenza che altrimenti va riscoperta ogni volta: `pip install
+# manim` da nudo fallisce in compilazione, e per arrivare a un render
+# funzionante servono quattro pacchetti di sviluppo e un LaTeX, divisi qui
+# sotto per gruppo.
 #
 #   docker build -t paithon-manim animazioni/
-#   PAITHON_MANIM_IMAGE=paithon-manim \
-#       python3 .claude/skills/anima-manim/driver.py render animazioni/<scena>.py
-#
-# Oppure a mano, che e' utile sapere perche' il driver non e' sempre disponibile:
-#
 #   docker run --rm -u $(id -u):$(id -g) \
 #       -v "$PWD:/work" -v "$PWD/book/_static/brand:/brand:ro" -w /work \
 #       -e PYTHONPATH=/brand/motion -e HOME=/tmp \
@@ -23,8 +17,7 @@
 #
 # Il `-u` non e' un vezzo: senza, i file escono di root e il repo si sporca; e
 # con l'immagine ufficiale succede il contrario (il container gira come uid
-# 1000 e non riesce a scrivere in una cache creata da root). E' il difetto per
-# cui il driver falliva con «/manim/media: permesso negato».
+# 1000 e non riesce a scrivere in una cache creata da root).
 
 FROM python:3.12-slim-bookworm
 
@@ -36,8 +29,8 @@ FROM python:3.12-slim-bookworm
 #  2. comporre le formule: manim scrive LaTeX, lo compila e converte il dvi in
 #     svg con dvisvgm. `texlive-latex-extra` serve per la classe `standalone`,
 #     che e' quella che manim usa;
-#  3. scrivere i video: ffmpeg. Manim >= 0.19 scrive gli mp4 con PyAV, ma GIF e
-#     striscia per la stampa le fa ffmpeg, e le ricette stanno in `driver.py`.
+#  3. scrivere i video: ffmpeg. Manim >= 0.19 scrive gli mp4 con PyAV, ma le
+#     GIF le fa ffmpeg.
 RUN apt-get update && apt-get install --no-install-recommends -y \
         build-essential pkg-config \
         libcairo2-dev libpango1.0-dev libgirepository1.0-dev \

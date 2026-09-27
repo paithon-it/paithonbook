@@ -27,20 +27,10 @@ Lo stile (palette, font, ritmo, firma) vive nel brand, in
 `book/_static/brand/motion/` — la stessa cartella che usa il sito, così le clip
 del libro e quelle degli articoli sono coerenti. Si modifica nel repo `brand`.
 
-Non si renderizza a mano: se ne occupa il driver della skill, che gira Manim
-nell'immagine Docker ufficiale e converte in GIF con l'`ffmpeg` dell'host.
-
-```bash
-# nuova animazione da template
-python3 .claude/skills/anima-manim/driver.py nuova "regola della catena"
-
-# render (l'output finisce in book/figures/, come le SVG)
-python3 .claude/skills/anima-manim/driver.py render animazioni/regola-della-catena.py
-```
-
-Istruzioni complete, regole di composizione e gotchas:
-[`.claude/skills/anima-manim/SKILL.md`](../.claude/skills/anima-manim/SKILL.md).
-Esempi di riferimento: `.claude/skills/anima-manim/esempi/`.
+Il render gira nell'immagine Docker del libro, `animazioni/Dockerfile`, che
+porta le versioni con cui le clip sono state fatte (come costruirla e
+lanciarla sta in testa al file); il video diventa una GIF con l'`ffmpeg`
+dell'host, e la GIF va in `book/figures/`, accanto alle SVG.
 
 ## La strada SVG
 
@@ -70,8 +60,7 @@ solo» per Manim, ma verificato dalla struttura invece che a occhio.
 
 `genera.py` scrive anche un **provino** PNG in `~/.cache/paithon-svg/`:
 è lo stato di riposo rasterizzato, cioè esattamente ciò che vedrà la stampa.
-Va aperto con `Read` prima di pubblicare — ha già intercettato un errore di
-segno che avrebbe mandato in stampa una retta con la pendenza sbagliata.
+Va aperto e guardato prima di pubblicare.
 
 `scrivi()` rifiuta il file se contiene colori fuori palette, uno `<script>` o
 XML malformato.
@@ -155,21 +144,14 @@ che ferma l'animazione CSS su un istante preciso). Gli istanti di default sono
 10%, 50% e 90% del ciclo; dove non rendono giustizia si scrive in
 `fermi.toml`, dopo aver guardato il provino.
 
-Il vecchio `--striscia` non c'è più: faceva metà di questo lavoro, per le sole
-GIF, con un meccanismo suo.
-
 ## Le animazioni del libro
 
 Si anima solo dove **il tempo è il contenuto**, cioè dove una figura ferma perde
 davvero informazione. Architetture, tassonomie e confronti restano SVG. Il tetto
 è **5–10 clip per capitolo**, un tetto, non una quota da riempire.
 
-**Chi manca non si scrive qui, si conta.** Fino ad agosto 2026 questa riga
-diceva «i capitoli non ancora coperti sono la lista dei prossimi», e la lista
-era in testa a chi l'aveva scritta: nel frattempo il libro è passato da quindici
-capitoli a trentacinque e le clip sono rimaste quindici, tutte nella metà
-vecchia. Chi leggeva la parte nuova non ne vedeva nessuna. Adesso lo dice il
-controllo, che non può dimenticarsene:
+**Chi manca non si scrive qui, si conta.** Un elenco scritto a mano resta
+indietro appena il libro cresce; il controllo no:
 
 ```bash
 python3 scripts/coerenza.py --solo animazioni
@@ -183,31 +165,30 @@ contenuto.
 Sembra una formalità e non lo è, perché la distinzione che conta non è fra un
 capitolo animato e uno fermo (fermo può essere la scelta giusta, e per le
 Conclusioni lo è): è fra **essersela chiesta e non essersela chiesta**, e
-dall'esterno le due cose si somigliano al punto da confondersi. Elencare e
-basta non è bastato: la prima versione di questa riga diceva «è un elenco da
-guardare», e infatti nessuno l'ha guardato. Una riga da scrivere invece si
-nota, e costa meno di un minuto.
+dall'esterno le due cose si somigliano al punto da confondersi. Un elenco da
+guardare non lo guarda nessuno; una riga da scrivere si nota, e costa meno di
+un minuto.
 
 | Sorgente | Figura nel libro | Sezione |
 |---|---|---|
 | `svg/alfabeta-pota.py` | `fig-alfabeta-pota` | `Ricerca/giocare-contro-qualcuno.md` |
 | `svg/anello-somma.py` | `fig-anello-somma` | `GPU/parallelismo-distribuito.md` |
 | `svg/apertura-flusso.py` | `fig-apertura-flusso` | `VisioneArtificiale/geometria-e-profondita.md` |
-| `svg/attacco-epsilon.py` | `fig-attacco-epsilon` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/assi-girati.py` | `fig-assi-girati` | `ModelliLatenti/il-latente-che-si-usa.md` |
+| `svg/attacco-epsilon.py` | `fig-attacco-epsilon` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/attesa-che-si-copre.py` | `fig-attesa-coperta` | `GPU/overview.md` |
 | `svg/autovettori.py` | `fig-autovettori` | `Matematica/algebra-lineare.md` |
 | `svg/bersaglio-che-si-sposta.py` | `fig-bersaglio-che-si-sposta` | `MachineLearning/dati-che-cambiano.md` |
-| `svg/bootstrap-si-accumula.py` | `fig-bootstrap-accumula` | `MachineLearning/il-bootstrap.md` |
 | `svg/boosting-si-somma.py` | `fig-boosting-si-somma` | `MachineLearning/alberi-ensemble.md` |
+| `svg/bootstrap-si-accumula.py` | `fig-bootstrap-accumula` | `MachineLearning/il-bootstrap.md` |
 | `svg/bozza-che-si-corregge.py` | `fig-bozza-che-si-corregge` | `MLOps/llmops.md` |
 | `svg/bpe-fusioni.py` | `fig-bpe-fusioni` | `NaturalLanguageProcessing/tokenizzatori.md` |
 | `svg/broadcasting-si-stende.py` | `fig-broadcasting-si-stende` | `Python/numpy.md` |
 | `svg/cammini-che-fanno-la-media.py` | `fig-cammini-che-fanno-la-media` | `PINN/equazioni-come-medie.md` |
 | `svg/cammino-latente.py` | `fig-cammino-latente` | `ModelliLatenti/il-salto-probabilistico.md` |
 | `svg/campo-cieco.py` | `fig-campo-cieco` | `VerosimiglianzaEsatta/pixel-per-pixel.md` |
-| `svg/catena-si-assesta.py` | `fig-catena-si-assesta` | `Matematica/catene-di-markov.md` |
 | `svg/cancello-che-respinge.py` | `fig-cancello-che-respinge` | `IngegneriaLLM/loop-engineering.md` |
+| `svg/catena-si-assesta.py` | `fig-catena-si-assesta` | `Matematica/catene-di-markov.md` |
 | `svg/ciclo-addestramento.py` | `fig-ciclo-addestramento` | `PyTorch/addestramento.md` |
 | `svg/ciclo-agente.py` | `fig-ciclo-agente` | `Agenti/agenti-e-tool-use.md` |
 | `svg/collo-di-bottiglia.py` | `fig-collo-di-bottiglia` | `GraphNeuralNetwork/architetture-applicazioni.md` |
@@ -222,8 +203,8 @@ nota, e costa meno di un minuto.
 | `svg/dqn-stabilita.py` | `fig-dqn-stabilita` | `DeepReinforcementLearning/dqn.md` |
 | `svg/dropout.py` | `fig-dropout` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
 | `svg/euclide-scende.py` | `fig-euclide-scende` | `Introduzione/overview.md` |
-| `svg/finestra-spettrogramma.py` | `fig-finestra-spettrogramma` | `Audio/dal-suono-alle-feature.md` |
 | `svg/filtro-alto-quanto-le-mappe.py` | `fig-filtro-mazzo` | `DeepLearning/reti-convoluzionali.md` |
+| `svg/finestra-spettrogramma.py` | `fig-finestra-spettrogramma` | `Audio/dal-suono-alle-feature.md` |
 | `svg/flash-attention-blocchi.py` | `fig-flash-attention-blocchi` | `GPU/flash-attention.md` |
 | `svg/formiche-feromone.py` | `fig-formiche-feromone` | `SistemiMultiAgente/sciami-e-simulazioni.md` |
 | `svg/frontiera-che-si-allarga.py` | `fig-frontiera` | `Ricerca/esplorare-lo-spazio.md` |
@@ -236,6 +217,7 @@ nota, e costa meno di un minuto.
 | `svg/i-lettori-restano-otto.py` | `fig-teste-e-taccuini` | `Transformers/attenzione-in-pratica.md` |
 | `svg/il-codice-si-accorcia.py` | `fig-il-codice-si-accorcia` | `AutoSupervisione/capire-e-accorciare.md` |
 | `svg/il-picco-che-schiaccia.py` | `fig-picco-schiaccia` | `GAN/applicazioni-evoluzioni.md` |
+| `svg/interferenza-da-subito.py` | `fig-interferenza-da-subito` | `StateSpaceModel/panorama-e-limiti.md` |
 | `svg/jepa-tre-pezzi.py` | `fig-jepa-tre-pezzi` | `WorldModels/jepa.md` |
 | `svg/kmeans-converge.py` | `fig-kmeans-converge` | `MachineLearning/riduzione-clustering.md` |
 | `svg/learning-rate.py` | `fig-learning-rate` | `DeepLearning/ottimizzazione-regolarizzazione.md` |
@@ -246,8 +228,8 @@ nota, e costa meno di un minuto.
 | `svg/nastro-e-testina.py` | `fig-nastro-e-testina` | `Introduzione/calcolabile.md` |
 | `svg/nastro-si-riavvolge.py` | `fig-nastro-autograd` | `PyTorch/tensori.md` |
 | `svg/ogni-turno-costa-uguale.py` | `fig-torneo-costo-piatto` | `MachineLearning/iperparametri.md` |
-| `svg/origine-mobile.py` | `fig-walk-forward-validazione` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/orbite-che-non-cadono.py` | `fig-orbite-chiuse` | `SistemiMultiAgente/imparare-insieme.md` |
+| `svg/origine-mobile.py` | `fig-walk-forward-validazione` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/palla-certificata.py` | `fig-palla-certificata` | `AIResponsabile/privacy-e-robustezza.md` |
 | `svg/pandas-selezione-filtri-groupby.py` | `fig-split-apply-combine` | `Python/pandas-matplotlib.md` |
 | `svg/pandas-series-dataframe.py` | `fig-series-dataframe` | `Python/pandas-matplotlib.md` |
@@ -261,22 +243,23 @@ nota, e costa meno di un minuto.
 | `svg/purga-al-confine.py` | `fig-purga-al-confine` | `SerieTemporali/validazione-e-feature.md` |
 | `svg/quasi-perpendicolari.py` | `fig-quasi-perpendicolari` | `Matematica/ortogonalita-proiezioni.md` |
 | `svg/quattro-ingredienti.py` | `fig-quattro-ingredienti` | `PINN/applicazioni-limiti.md` |
+| `svg/ramo-contestato.py` | `fig-ramo-contestato` | `SistemiMultiAgente/protocolli-e-consenso.md` |
+| `svg/repliche-in-ritardo.py` | `fig-repliche-in-ritardo` | `MLOps/capacita-e-costo.md` |
 | `svg/scan-parallelo.py` | `fig-scan-parallelo` | `StateSpaceModel/mamba.md` |
 | `svg/scossa-che-resta.py` | `fig-scossa-che-resta` | `SerieTemporali/componenti-e-classici.md` |
 | `svg/soglie-che-sopravvivono.py` | `fig-soglie-sopravvivono` | `TeoriaApprendimento/pac.md` |
+| `svg/sogno-diverge.py` | `fig-sogno-diverge` | `WorldModels/mondi-in-miniatura.md` |
 | `svg/somma-che-si-accumula.py` | `fig-somma-che-si-accumula` | `MLOps/monitoring-e-drift.md` |
 | `svg/somma-pesata-passaggi.py` | `fig-somma-pesata-passaggi` | `Transformers/rag.md` |
 | `svg/spartito-in-fila.py` | `fig-spartito-in-fila` | `Audio/generazione-audio.md` |
 | `svg/temperature-top-p.py` | `fig-due-manopole` | `IngegneriaLLM/prompt-engineering.md` |
+| `svg/tempesta-che-resta.py` | `fig-tempesta-che-resta` | `MLOps/gateway-e-affidabilita.md` |
 | `svg/tracce-illuminano.py` | `fig-tracce-illuminano` | `ReinforcementLearning/q-learning.md` |
 | `svg/trapezio-e-il-peso.py` | `fig-trapezio-e-il-peso` | `StateSpaceModel/dualita-e-mamba-2-3.md` |
 | `svg/vetrina-si-ordina.py` | `fig-vetrina-si-ordina` | `SistemiRaccomandazione/raccomandazione-neurale.md` |
 | `svg/voto-che-retrocede.py` | `fig-voto-che-retrocede` | `ReinforcementLearning/q-learning.md` |
-| `svg/sogno-diverge.py` | `fig-sogno-diverge` | `WorldModels/mondi-in-miniatura.md` |
 | `svg/xor-non-separabile.py` | `fig-xor-non-separabile` | `RetiNeurali/percettrone.md` |
 | `svg/xor-si-piega.py` | `fig-xor-si-piega` | `RetiNeurali/percettrone.md` |
-| `svg/ramo-contestato.py` | `fig-ramo-contestato` | `SistemiMultiAgente/protocolli-e-consenso.md` |
-| `svg/interferenza-da-subito.py` | `fig-interferenza-da-subito` | `StateSpaceModel/panorama-e-limiti.md` |
 | `attenzione-mascherata.py` | `fig-attenzione-mascherata` | `Transformers/architettura.md` |
 | `backpropagation.py` | `fig-backpropagation-animata` | `RetiNeurali/backpropagation.md` |
 | `convoluzione.py` | `fig-convoluzione-animata` | `DeepLearning/reti-convoluzionali.md` |

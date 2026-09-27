@@ -221,6 +221,120 @@ coda della latenza; il punto di equilibrio dipende dal prodotto.
 
 `````
 
+Resta il caso in cui il modello, alla precisione a cui lo si vuole servire, non
+entra in una scheda sola: settanta miliardi di parametri a sedici bit sono 140
+gigabyte, più degli 80 di molte schede da centro dati (a quattro bit ci
+starebbero, con il prezzo in qualità di «Comprimere per servire»). Allora lo si
+spezza su più schede, con gli stessi tagli che la {doc}`sezione sul
+parallelismo distribuito </GPU/parallelismo-distribuito>` ha visto per
+l'addestramento. Quando il modello risponde, però, conviene tagliare in un
+altro modo, perché la grandezza da proteggere è il tempo di ogni token e non la
+durata di un passo di addestramento.
+
+`````{tab} Elementare
+
+Due contabili che si dividono il registro per il lungo, come nella
+{doc}`sezione sul parallelismo distribuito </GPU/parallelismo-distribuito>`,
+finiscono ogni pagina in metà tempo, perché ciascuno scorre metà delle
+colonne. Per chi aspetta una parola alla volta è proprio quello che serve: il
+tempo di ogni parola se ne va a rileggere il registro, e rileggerne metà a testa
+lo dimezza. Il prezzo è la sosta a ogni pagina per mettere insieme i conti,
+brevissima (un foglietto con pochi numeri), e le pagine sono due per strato: un
+modello così ha ottanta strati, cioè centosessanta soste per ogni parola. Allo
+stesso tavolo non si sentono; fra due edifici diventano la spesa principale.
+
+La catena di montaggio fa un altro mestiere. Mettere metà degli strati su una
+scheda e metà sull'altra non fa arrivare prima nessuna parola, che deve comunque
+passare per tutte le postazioni, una dopo l'altra, con il viaggio fra l'una e
+l'altra in più. E c'è un vincolo che nell'addestramento non c'era: la parola
+successiva di una risposta non entra in catena prima che la precedente ne sia
+uscita, perché dipende da lei. Una risposta sola occupa una postazione alla
+volta, e le altre stanno ferme. La catena lavora piena solo se ci sono in
+viaggio tante risposte diverse, una per postazione: aumenta le risposte servite,
+non la velocità di ciascuna. In compenso ci si ferma a passare il lavoro solo
+al cambio di postazione, e non a ogni pagina come i contabili: le postazioni
+possono stare in capannoni diversi.
+
+Da qui la disposizione che si trova quasi sempre. Una macchina contiene di
+solito otto schede, unite da una linea velocissima, e dentro la macchina si
+divide il registro. Quando il modello non entra nemmeno in tutte le schede di
+una macchina, fra le macchine, collegate dalla rete, si divide la catena.
+
+I modelli fatti di tanti esperti hanno un problema loro. Ogni parola chiede
+pochi esperti, e con poche richieste in corso ogni esperto riceve una parola
+ogni tanto: una rilettura intera per pochissimo lavoro. Se ogni gruppo di
+schede tenesse tutti gli esperti, ciascun esperto vedrebbe soltanto le parole
+delle richieste di quel gruppo. Conviene il contrario: un esperto per scheda,
+su moltissime schede, e a ciascuna vengono mandate le parole che scelgono il
+suo esperto da tutte le richieste di tutto il gruppo, così che il mazzo di ogni
+esperto sia abbastanza grande da valere la rilettura. Gli esperti più richiesti
+si copiano su più schede, perché nessuna resti indietro mentre le altre
+aspettano.
+
+`````
+
+`````{tab} Superiore
+
+Nel decode il tempo di un passo è dominato dalla lettura dei pesi,
+$t \approx M_w/B$, con $M_w$ i byte dei pesi e $B$ la banda della memoria. Con
+un parallelismo tensoriale di grado $g_{\text{tp}}$ (il taglio di Megatron
+{cite}`shoeybi2019megatron`) ogni scheda legge $M_w/g_{\text{tp}}$, e
+
+$$
+t_{\text{TP}} \approx \frac{M_w}{g_{\text{tp}}\,B} + 2\, n_\ell\; t_{\text{ar}}\bigl(b\,d_{\text{model}}\bigr),
+$$
+
+dove $n_\ell$ è il numero di strati, $t_{\text{ar}}(n)$ il tempo di un
+all-reduce su un messaggio di $n$ numeri, e i due all-reduce per strato agiscono
+sulle attivazioni di $b$ sequenze per un token ciascuna, cioè $b\,d_{\text{model}}$
+numeri. Nel decode quel messaggio è minuscolo (16 KB a $b = 1$ e
+$d_{\text{model}} = 8192$ in 16 bit), quindi l'all-reduce paga la latenza di
+avvio e non la banda: una manciata di microsecondi su NVLink, molto di più
+attraverso la rete fra nodi. Per un modello da $70 \cdot 10^9$ parametri,
+$M_w = 140$ GB, su $g_{\text{tp}} = 8$ schede da 3 TB/s la lettura scende a
+$140/24\,000 \approx 5{,}8$ ms per passo, e i 160 all-reduce degli 80 strati
+aggiungono da uno a tre millisecondi, secondo quanto costa un all-reduce breve
+(da una manciata a una ventina di microsecondi). La formula tace un terzo
+termine, il lancio: con kernel otto volte più piccoli, gli ottocento lanci
+circa di un passo, a qualche microsecondo ciascuno, valgono fra un terzo e due
+terzi della lettura, e senza i CUDA Graphs di
+{doc}`Kernel e CUDA </GPU/kernel-e-cuda>` si mangiano buona parte del guadagno.
+Con i lanci coperti, dentro il nodo il parallelismo tensoriale abbassa il TPOT
+di un fattore vicino a $g_{\text{tp}}$, anche se non proporzionale.
+
+Il parallelismo a pipeline su $g_{\text{pp}}$ stadi {cite}`huang2019gpipe` non
+accorcia la latenza di un token, che attraversa gli stadi in sequenza:
+$t_{\text{PP}} \approx g_{\text{pp}} \cdot M_w/(g_{\text{pp}}B) +
+(g_{\text{pp}}-1)\,t_{\text{salto}} = M_w/B + (g_{\text{pp}}-1)\,t_{\text{salto}}$,
+con $t_{\text{salto}}$ il passaggio delle attivazioni da uno stadio al
+successivo. Il decode di una sequenza, inoltre, è strettamente sequenziale,
+perché il token in posizione $i+1$ non entra nel primo stadio prima che quello
+in posizione $i$ sia uscito dall'ultimo: una sequenza sola tiene occupato uno
+stadio su $g_{\text{pp}}$, la bolla $(g_{\text{pp}}-1)/g_{\text{pp}}$ dello
+schema di GPipe con un solo micro-batch. La pipeline si riempie con
+$g_{\text{pp}}$ micro-batch di sequenze diverse in volo, e allora moltiplica il
+throughput, non la velocità di ciascuna richiesta. Ha però il traffico più
+leggero, $b\,d_{\text{model}}$ numeri per passo a ogni confine fra stadi invece
+che due volte per strato, ed è il taglio che si usa fra nodi,
+su InfiniBand, quando il modello non entra nella memoria di un nodo solo. La
+disposizione tipica di un modello servito su più nodi è quindi parallelismo
+tensoriale dentro ogni nodo e pipeline fra i nodi.
+
+Per una mixture of experts il taglio naturale è il parallelismo sugli esperti,
+con due all-to-all per strato MoE, lo smistamento dei token verso gli esperti e
+il ritorno delle uscite. In inferenza lo si spinge per aumentare i token per
+esperto. Nel deployment di DeepSeek-V3 {cite}`liu2024deepseekv3` l'unità minima
+per il decode è di 40 nodi e 320 schede: l'attenzione usa un parallelismo
+tensoriale di grado 4 con un parallelismo dati di grado 80, la parte MoE un
+parallelismo sugli esperti di grado 320, con un esperto per scheda e 64 schede
+per l'esperto condiviso e per copie ridondanti degli esperti più carichi, scelte
+periodicamente dalle statistiche del traffico; al prefill, che ha già mazzi
+grandi, bastano 32 schede. Il principio è quello del batching: la lettura di un
+esperto si ammortizza sui token che lo scelgono, e per averne abbastanza bisogna
+raccoglierli da molte richieste.
+
+`````
+
 ## Speculative decoding: far indovinare a un modello piccolo
 
 C'è una seconda strada per accelerare la generazione, e vive dove il batching
@@ -349,7 +463,7 @@ pratica si osservano accelerazioni di 2–3 volte. Il modello bozza dev'essere
 molto più economico del target e allineato nella distribuzione, altrimenti
 $\alpha$ crolla e il costo delle bozze rifiutate mangia il guadagno.
 
-Le varianti che evitano di mantenere un secondo modello (in letteratura
+Le varianti che evitano un secondo modello completo (in letteratura
 *self-drafting*, da non confondere con il *self-speculative decoding*, che è un
 metodo preciso e fa la bozza saltando strati del modello stesso) vanno
 distinte proprio sulla proprietà appena rivendicata. Alcune cambiano solo chi
@@ -368,6 +482,105 @@ Un avvertimento pratico: il metodo aiuta nel regime memory-bound, cioè
 batch piccoli e bassa latenza. A batch molto grandi la GPU è già satura di
 lavoro utile e il vantaggio si assottiglia: si combina male, non bene, con la
 spinta al throughput del batching visto poco sopra.
+
+`````
+
+Il modello bozza, però, è un secondo modello da scegliere, tenere in memoria e
+mantenere: deve spezzare il testo negli stessi token del grande, e ogni volta
+che il grande cambia va riaddestrato o cercato di nuovo. Due varianti molto
+usate lo sostituiscono con qualcosa di molto più piccolo, appoggiato al modello
+grande, che ne usa gli stati interni e il vocabolario: anche questo si addestra
+una volta per ogni modello, ma costa una frazione di un modello bozza, e cambia
+soprattutto il modo di fare la bozza.
+
+`````{tab} Elementare
+
+Lo stagista ha un costo che non si vede finché non lo si assume: va scelto e
+pagato a parte, deve usare le stesse abbreviazioni del revisore, e se arriva un
+revisore nuovo va cercato o istruito da capo, perché il suo mestiere è tirare a
+indovinare come lui. Ci sono due modi di rendere la bozza meno cara.
+
+Il primo fa a meno dello stagista: il revisore stesso, mentre scrive una riga,
+annota a margine come secondo lui continueranno le tre dopo, tirando a
+indovinare dall'idea che ha in testa in quel momento, senza riaprire il
+manuale. Per ogni riga a margine segna due o tre possibilità, e alla verifica le
+prova tutte insieme, come i rami di un albero: la prima riga ha due versioni,
+ciascuna può proseguire con tre seconde righe, e la rilettura unica sceglie il
+ramo più lungo che regge, confrontando quanto il revisore è convinto adesso con
+quanto lo era scrivendo a margine. Il limite è la distanza. La terza riga a
+margine è scritta senza sapere che cosa diranno la prima e la seconda, e più la
+riga è lontana più l'indovinello è cieco. È il metodo chiamato Medusa.
+
+Il secondo tiene uno stagista, ma gli cambia il materiale. Invece di indovinare
+le parole, legge l'idea che il revisore aveva in testa per la riga appena
+finita, prima ancora delle parole, e da quella ricava l'idea della riga dopo,
+poi di quella dopo ancora. Le idee si indovinano meglio delle parole, perché
+cambiano poco da una riga all'altra mentre le parole saltano (due frasi con
+parole diverse possono dire la stessa cosa). Da sola, però, l'idea lascia un
+dubbio: «il treno è arrivato» può proseguire con «in ritardo» o con «alle
+nove», e quale delle due strade sia stata presa lo dice solo la parola che il
+revisore ha davvero scritto. Per questo allo stagista si passa anche quella. È
+uno stagista che costa poco e impara in fretta, perché non deve leggere il
+testo da capo: parte da un'idea che il revisore ha già. È il metodo chiamato
+EAGLE.
+
+In tutti e due i casi la verifica resta del revisore, e se la verifica è quella
+di sempre il testo che esce è il suo, solo più in fretta. Medusa, però, nella
+versione che i suoi autori hanno misurato, chiude un occhio sulla verifica in
+cambio di qualche riga in più; e in una delle sue due versioni rimette a
+studiare anche il revisore, che da quel momento scrive in modo un po’ diverso.
+
+`````
+
+`````{tab} Superiore
+
+Medusa {cite}`cai2024medusa` aggiunge al modello target $K$ teste di
+decodifica sull'ultimo stato nascosto $\mathbf{h}_i$, quello da cui la testa
+originale ricava il token in posizione $i+1$. La testa $k$ predice il token in
+posizione $i+k+1$ con uno strato solo e una connessione residua,
+
+$$
+p^{(k)}_i = \mathrm{softmax}\Bigl(\mathbf{W}_2^{(k)}\bigl(
+\mathrm{SiLU}(\mathbf{W}_1^{(k)}\mathbf{h}_i) + \mathbf{h}_i\bigr)\Bigr),
+$$
+
+dove $\mathbf{W}_1^{(k)} \in \mathbb{R}^{d_{\text{model}}\times d_{\text{model}}}$,
+$\mathbf{W}_2^{(k)} \in \mathbb{R}^{V\times d_{\text{model}}}$ e $V$ è il
+vocabolario; $\mathbf{W}_2^{(k)}$ parte dalla testa originale e
+$\mathbf{W}_1^{(k)}$ da zero, così che all'inizio ogni testa ripeta la
+predizione del modello. I candidati nascono dai primi $s_k$ token di ciascuna
+testa, combinati in un albero (il prodotto cartesiano nella forma più semplice,
+un albero sfoltito di qualche decina di nodi nelle configurazioni misurate), e
+si verificano in una sola passata con una **tree attention**: una maschera per
+cui ogni candidato vede soltanto i propri antenati, con gli indici di posizione
+riallineati sul ramo. Medusa-1 addestra le sole teste su un modello congelato,
+con il costo $\ell_k = -\log p^{(k)}_i(y_{i+k+1})$ sul token vero
+$y_{i+k+1}$, e lascia intatto il modello: con la verifica per rifiuto il testo
+resta esattamente il suo. Medusa-2 addestra le teste insieme al modello, con
+una ricetta apposta per non degradarlo, e ne cambia quindi i pesi: il testo che
+esce è quello di un modello diverso, qualunque sia la verifica. Gli autori
+riportano accelerazioni di circa 2,2× per la prima e fra 2,3× e 2,8× per la
+seconda, fino a 3,6× su una categoria di prompt. Il limite è strutturale: la
+testa $k$ vede solo $\mathbf{h}_i$ e non i token $i+1, \dots, i+k$, e gli autori
+osservano che $\ell_k$ cresce con $k$.
+
+EAGLE {cite}`li2024eagle` fa l'autoregressione sulle rappresentazioni. Parte
+dallo stesso stato $\mathbf{h}_j$ di Medusa, quello da cui la testa del modello
+ricava $p_{j+1} = \mathrm{LMHead}(\mathbf{h}_j)$ (gli autori lo chiamano la
+rappresentazione del penultimo strato, contando come ultimo la testa). La bozza
+riusa lo strato di embedding e la testa del target, e fra i due mette un solo
+strato di decoder, con uno strato lineare che ne riduce l'ingresso (sotto il
+miliardo di parametri per un target da 70 miliardi); da $\mathbf{h}_{1:j}$ e dai
+token $x_{2:j+1}$, cioè la sequenza avanzata di un passo, predice
+$\hat{\mathbf{h}}_{j+1}$, la testa ne ricava la distribuzione del token
+successivo, il token campionato rientra nella bozza, e si prosegue. L'argomento
+degli autori è doppio: l'autoregressione sulle rappresentazioni è più facile di
+quella sui token, ma porta un'incertezza sua, perché la stessa $\mathbf{h}_j$ è
+compatibile con token campionati diversi, e ciascuno cambia $\mathbf{h}_{j+1}$;
+dare in ingresso il token effettivo la risolve. La bozza è ad albero, e la
+verifica è il campionamento speculativo esteso agli alberi, che resta esatto:
+la distribuzione del target è conservata. Su LLaMA2-Chat 70B gli autori
+misurano un'accelerazione della latenza fra 2,7× e 3,5×.
 
 `````
 
@@ -522,6 +735,105 @@ quasi più.
 
 `````
 
+### Anche gli appunti con meno cifre
+
+I pesi non sono l'unica cosa che la scheda rilegge a ogni token. Con molte
+conversazioni aperte e contesti lunghi, la KV cache pesa quanto i pesi o di più
+(è il conto di {doc}`L'attenzione in pratica
+</Transformers/attenzione-in-pratica>`), e si può comprimere anche lei. Le
+varianti dell'attenzione che condividono chiavi e valori fra le teste ne
+riducono il numero, e le sceglie chi progetta il modello; la quantizzazione ne
+riduce le cifre, e si fa dopo. In memoria le due riduzioni si moltiplicano, ma
+non sono indipendenti: su un modello che ha già una sola testa di chiavi e
+valori, ogni cifra tolta pesa di più.
+
+`````{tab} Elementare
+
+Gli appunti del modello sono due tabelle che crescono di una riga a ogni
+parola: una di chiavi, che serve a decidere quali righe guardare, e una di
+valori, che dice che cosa prendere da ciascuna. Scriverle con meno cifre ha lo
+stesso problema dei pesi, il numero grande che allarga il passo per tutti, ma
+qui i numeri grandi hanno un'abitudine precisa, e la si sfrutta.
+
+Nella tabella delle chiavi i numeri enormi stanno sempre nelle stesse colonne,
+riga dopo riga, come in un registro delle spese dove la colonna dell'affitto ha
+sempre cifre grandi e quella del caffè sempre cifre piccole. Arrotondando riga
+per riga, con un passo solo per tutta la riga, l'affitto detta il passo e il
+caffè sparisce. Arrotondando colonna per colonna, ciascuna col suo passo,
+l'affitto resta affitto e il caffè resta caffè.
+
+Nella tabella dei valori quell'abitudine non c'è, eppure conviene arrotondare
+al contrario, riga per riga. La ragione sta in come la risposta usa la tabella:
+prende quasi tutto da poche righe, quelle a cui il modello presta attenzione, e
+il resto quasi lo ignora. Arrotondando per colonna, il passo di quelle poche
+righe importanti lo deciderebbero anche tutte le altre; arrotondando per riga
+ognuna ha il suo, e l'errore delle righe che non contano resta dove non conta.
+
+Le ultime righe, in tutte e due le tabelle, si tengono per esteso: un po’ perché
+per arrotondare una colonna serve un gruppo di righe, un po’ perché sono le più
+guardate mentre il modello scrive. E decidono la qualità: senza, sui compiti in
+cui il modello ragiona a lungo, l'errore si sente.
+
+Con due cifre binarie per numero, più le etichette che dicono come è stato
+arrotondato ciascun gruppo e le ultime righe per esteso, gli appunti diventano
+da tre a quattro volte più piccoli, non otto. Nella stessa memoria entrano
+allora molte più conversazioni, e il mazzo più grande serve più persone con la
+stessa scheda. Due cifre però sono poche: sui modelli che tengono già un solo
+foglio di appunti per tutte le teste ne servono quattro. La via più prudente
+sono otto cifre con la virgola, che dimezzano gli appunti con un rischio molto
+minore, ma chiedono di tarare prima l'unità di misura su qualche esempio.
+
+`````
+
+`````{tab} Superiore
+
+KIVI {cite}`liu2024kivi` parte da un'analisi degli elementi della cache di
+Llama-2-13B e Falcon-7B. Nella cache delle chiavi pochi canali fissi portano
+elementi molto più grandi degli altri, per tutti i token: la quantizzazione va
+fatta *per canale*, raggruppando lungo la dimensione dei token (gruppi di 32),
+così che l'errore resti confinato in ciascun canale. Ogni gruppo è quantizzato
+in modo asimmetrico, $Q(\mathbf{x}) = \lfloor (\mathbf{x} - z)/s \rceil$ con
+$z = \min \mathbf{x}$ e $s = (\max \mathbf{x} - \min \mathbf{x})/(2^b - 1)$,
+scala e minimo in 16 bit. La cache dei valori non ha anomalie così marcate, ed
+entra nell'uscita dell'attenzione come $\mathbf{o} = \sum_j a_j \mathbf{v}_j$,
+dove $a_j$ è il peso che la softmax dà al token $j$ per la query corrente e
+$\mathbf{v}_j$ la riga $j$ della cache dei valori. L'errore d'uscita è
+$\sum_j a_j \mathbf{e}_j$ con qualunque schema; quello che lo schema decide è
+$\mathbf{e}_j$, che per token dipende dalla sola riga $j$ e per canale anche
+dagli altri token del gruppo. Siccome l'attenzione è sparsa (nelle misure degli
+autori poche posizioni prendono quasi tutto il peso), l'uscita la fanno poche
+righe, e la quantizzazione per token rende la loro precisione indipendente da
+quella di tutte le altre.
+
+In tutte e due le cache gli ultimi token restano in 16 bit, in una coda di al più
+128 (32 nelle misure di velocità): per le chiavi perché servono gruppi da
+riempire, per tutte e due perché la coda regge la qualità. Gli autori lo
+mostrano su GSM8K: senza la coda, Llama-2-13B a 2 bit scende da 22,7 a 12,2,
+con la coda si ferma a 20,8. Nell'attenzione i punteggi della parte quantizzata
+e della coda si concatenano prima di un'unica softmax, e i prodotti con la
+parte quantizzata fondono la dequantizzazione nel kernel. Con 2 bit e nessuna
+calibrazione la qualità resta quasi invariata su Llama e Mistral, mentre su
+Falcon-7B, che ha una sola testa di chiavi e valori, servono 4 bit. Contando
+scala e minimo per gruppo i bit effettivi sono circa 3, e con la coda in 16 bit
+la cache si riduce di tre-quattro volte, non di otto. Su Llama-2-7B e una A100,
+contro un'implementazione a 16 bit della stessa libreria, gli autori riportano
+con la coda da 32 token un picco di memoria 2,6 volte più basso (pesi compresi)
+e batch fino a 4 volte più grandi, e un throughput maggiore di 2,35 volte con la
+coda da 128 e di 3,47 volte con quella da 32.
+
+La via più prudente è la cache a 8 bit, in particolare in FP8 con un fattore di
+scala, il formato di {doc}`Meno bit </Efficienza/meno-bit>`: dimezza la memoria
+rispetto ai 16 bit con un errore relativo limitato finché i valori restano nel
+campo normale, ma chiede scale tarate su un insieme di dati, per tensore o per
+testa. Il kernel dell'attenzione di solito riporta i valori a 16 bit nei
+registri; alcuni fanno il prodotto direttamente in FP8, quantizzando anche le
+query. In tutti i casi il guadagno è di memoria e di banda, cioè di token al
+secondo nel regime memory-bound, e il degrado va misurato soprattutto sui
+compiti che generano a lungo, come il ragionamento matematico: nelle misure di
+KIVI i compiti a contesto lungo perdono quasi niente.
+
+`````
+
 ### L'altra leva: togliere pesi invece di accorciarli
 
 La quantizzazione scrive gli stessi pesi con meno cifre. La potatura
@@ -534,7 +846,7 @@ LLM un caso a sé.
 
 `````{tab} Elementare
 
-Comprimere i numeri è come riscrivere gli stessi appunti con una grafia più
+Comprimere i numeri è come riscrivere lo stesso quaderno con una grafia più
 piccola: ci sono ancora tutti. Potare è strappare delle pagine. Su una rete
 piccola si può strappare e poi rileggere tutto da capo per rimettere insieme
 il
@@ -739,6 +1051,10 @@ comporre più passi in un agente. È il
 - Per far entrare il modello nella memoria si comprime: si arrotondano i
   numeri, o se ne buttano via una parte. Ma alcuni numeri sono fragili e
   portanti, come i bicchieri buoni in un trasloco, e vanno trattati a parte.
+  Anche gli appunti si possono arrotondare, le chiavi colonna per colonna e i
+  valori riga per riga, tenendo per esteso le ultime righe: da tre a quattro
+  volte più piccoli, ma sui modelli con un solo foglio di appunti per tutte le
+  teste due cifre non bastano.
 - Giudicare un testo aperto non ha una risposta esatta: si usa un altro
   modello come esaminatore, comodo ed economico, sapendo che ha sempre le
   stesse due manie, il tema che ha letto per primo e quello più lungo.
@@ -766,9 +1082,10 @@ comporre più passi in un agente. È il
   throughput a parità di latenza.
 - Lo speculative decoding è esatto grazie alla regola di
   accettazione-rifiuto {cite}`leviathan2023fast`, e non tutte le sue varianti
-  lo restano: EAGLE e il *prompt lookup* sì, Medusa no, perché la *typical
+  lo restano: EAGLE e il *prompt lookup* sì; Medusa solo nella versione che
+  lascia intatto il modello e verifica per rifiuto, perché la *typical
   acceptance* scambia la distribuzione del target per un tasso di accettazione
-  più alto.
+  più alto, e Medusa-2 riaddestra il modello stesso {cite}`cai2024medusa`.
 - Comprimere per servire: quantizzazione *post-training* (riaddestrare è
   fuori portata) con la mappa affine $r = S(q - Z)$ della sezione sul
   deployment, ma per gruppi di pesi, non per tensore: a 4 bit i bit
@@ -782,6 +1099,10 @@ comporre più passi in un agente. È il
   chi arrotonda senza guardare i dati: i metodi che si tarano su un insieme di
   calibrazione restano fuori da quella misura, e sotto i 4 bit la partita resta
   aperta.
+- Anche la KV cache si quantizza: KIVI {cite}`liu2024kivi` a 2 bit, chiavi per
+  canale e valori per token, con gli ultimi token in 16 bit, che reggono la
+  qualità; circa 3 bit effettivi, quasi senza perdite su Llama e Mistral, ma su
+  un modello MQA ne servono 4. La via prudente è l'FP8 con scale tarate.
 - Valutare l'invalutabile: la perplessità non basta e i benchmark si
   contaminano; per l'output aperto si usa LLM-as-a-judge, che sui soli voti
   non pari concorda con l’uomo l’85% delle volte contro l’81% fra due

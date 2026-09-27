@@ -339,8 +339,8 @@ funziona sempre ti sta vendendo qualcosa.
 Tre proprietà rendono l'attività ingegneristica e non magica. Primo, i vincoli
 sono reali e quantificabili: la finestra ha un tetto di token, e ogni token
 pesa su latenza, memoria (la KV cache vista nel capitolo sui Transformer) e
-denaro, e del costo per token si occupa la {doc}`sezione su LLMOps
-</MLOps/llmops>`. Non si ottimizza «la qualità» in astratto ma la qualità
+denaro, e del costo per token si occupa la {doc}`sezione su capacità e costo
+</MLOps/capacita-e-costo>`. Non si ottimizza «la qualità» in astratto ma la qualità
 *sotto vincolo di budget*. Secondo, si misura: una versione del prompt o della
 politica di contesto si valuta su una batteria di casi e si confronta sugli
 stessi casi con la precedente prima di sostituirla; senza misura non c'è

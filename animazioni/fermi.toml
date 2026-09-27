@@ -193,3 +193,19 @@ istanti = [0.30, 0.62, 0.95]
 # partenza; al 30% la tappa del primo lancio accanto alla traccia di partenza,
 # al 62% quella dei 30 lanci con le tracce delle precedenti, al 95% l'ultima,
 # piena, sui 100 lanci.
+
+[repliche-in-ritardo]
+istanti = [0.34, 0.42, 0.95]
+# perche': il ritaglio scopre l'ora dell'evento fra l'8% e l'88% del ciclo,
+# quindi al 10% di default il pannello di destra era vuoto e al 50% e al 90%
+# i due fermi uscivano quasi uguali. Cosi' il primo e' il minuto prima del
+# salto (le due scale ancora insieme), il secondo cade dentro gli otto minuti
+# (il traffico e' salito, il calendario anche, chi insegue no), il terzo e' la
+# figura intera.
+
+[tempesta-che-resta]
+istanti = [0.30, 0.50, 0.95]
+# perche': al 10% di default si vedevano quattro secondi e nient'altro. Il
+# primo fermo cade subito dopo il guasto, quando i tentativi in arrivo sono gia'
+# sopra i trecento; il secondo quando chi non ritenta si e' ripreso e chi
+# ritenta e' ancora a zero; il terzo e' la figura intera.

@@ -51,7 +51,7 @@ IMMAGINE = "paithon-manim"
 
 
 def scene() -> list[tuple[Path, str]]:
-    """(file, nome della classe) per ogni scena. Una scena per file, come da CLAUDE.md."""
+    """(file, nome della classe) per ogni scena. Una scena per file."""
     fuori = []
     for f in sorted(QUI.glob("*.py")):
         if f.name in ("collaudo.py",):

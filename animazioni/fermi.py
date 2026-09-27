@@ -45,8 +45,8 @@ controllo passava e sul runner dichiarava «22 fermi immagine piu' vecchi
 dell'animazione» su un albero che nessuno aveva toccato.
 
 La **data del commit** e' meglio ma non basta: se i PNG e la loro animazione
-finiscono in due commit diversi (succede quando un `git add` largo di un'altra
-sessione porta dentro i file a meta' lavoro), i fermi possono risultare
+finiscono in due commit diversi (succede quando un `git add` largo porta
+dentro i file a meta' lavoro), i fermi possono risultare
 committati *prima* della figura da cui sono stati generati, e il controllo
 grida al lupo su una terzina perfettamente allineata.
 
@@ -263,8 +263,8 @@ def verifica() -> list[str]:
         for orfano in sorted(FERMI.glob("*.png")):
             # i file nascosti sono i fogli a contatto che scrive `--provino`,
             # gia' gitignorati: contarli come orfani vuol dire che guardare il
-            # provino (cosa che CLAUDE.md raccomanda) fa fallire il controllo, e
-            # quel controllo sta nel cancello di `pubblica.py`. E' successo.
+            # provino, che e' il modo di controllarli, fa fallire il controllo
+            # prima di pubblicare.
             if orfano.name.startswith("."):
                 continue
             if orfano.name not in viste:

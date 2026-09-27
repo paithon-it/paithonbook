@@ -38,6 +38,19 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-14-0)=
+
+## 1.14.0 · 27 settembre 2026
+
+### Sezioni nuove
+
+- {doc}`Capacità e costo </MLOps/capacita-e-costo>` (MLOps). **Quante repliche accendere.** Quanto regge una replica, perché l'autoscaler arriva in ritardo e come si rimedia, quanto costa un token e quanta parte della scheda si usa davvero.
+- {doc}`Davanti ai modelli </MLOps/gateway-e-affidabilita>` (MLOps). **Che cosa sta davanti ai modelli.** Limitare le richieste, ritentare senza scatenare una tempesta, scegliere a quale modello mandare una domanda, seguire il tempo di una richiesta e provare a rompere il servizio prima che si rompa da solo.
+
+### Pagine ampliate
+
+- **L'inferenza, più da vicino.** I CUDA Graphs, un modello su più schede durante la generazione, Medusa ed EAGLE, la KV cache con meno bit, che cosa succede quando la memoria finisce, l'FP8, la sparsità due su quattro e le righe di cache della CPU.
+
 (v1-13-0)=
 
 ## 1.13.0 · 25 settembre 2026

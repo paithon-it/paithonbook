@@ -198,6 +198,37 @@ def sorgenti() -> dict[str, str]:
             if "_static" not in p.parts and "_build" not in p.parts}
 
 
+def schede_non_chiuse(testo: str) -> list[int]:
+    """Le righe in cui una `{tab}` si apre dentro un'altra ancora aperta.
+
+    Succede quando una riscrittura toglie la chiusura di una scheda: la
+    Superiore finisce annidata dentro l'Elementare, e la chiusura che segue
+    chiude la scheda esterna. Nel sorgente si legge quasi bene, la build non
+    protesta, e nessun altro controllo lo vedeva: le due schede contano come
+    una sola linguetta, quindi l'asse delle schede contigue resta muto. Il caso
+    vero (GPU/kernel-e-cuda.md, 2026-09-27) l'ha trovato un lettore, non una
+    macchina. Una `{tab}` dentro un'altra con lo STESSO numero di backtick non
+    e' mai voluta: per annidare si allunga la recinzione esterna.
+    """
+    apre = re.compile(r"^(`{4,})\{tab\}")
+    righe, fuori = testo.split("\n"), []
+    i = 0
+    while i < len(righe):
+        m = apre.match(righe[i])
+        if not m:
+            i += 1
+            continue
+        tick = m.group(1)
+        j = i + 1
+        while j < len(righe) and righe[j].rstrip() != tick:
+            dentro = apre.match(righe[j])
+            if dentro and dentro.group(1) == tick:
+                fuori.append(j + 1)
+            j += 1
+        i = j + 1
+    return fuori
+
+
 def pagine_del_toc() -> list[Path]:
     """Le pagine del libro, in ordine di lettura, prese dal `_toc.yml`.
 
@@ -715,6 +746,9 @@ def main():
                     j += 1
                 i = j + 1
             resoconto()
+            for riga in schede_non_chiuse(t):
+                problemi["scheda non chiusa, un'altra si apre dentro"].append(
+                    f"{f}:{riga}")
 
         # E il difetto speculare, che nessuno cercava perche' nel sorgente si
         # legge benissimo: una Elementare e la sua Superiore separate da un

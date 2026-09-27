@@ -307,7 +307,7 @@ sbagliata.
 Una via di mezzo esiste, e taglia a gruppi minuscoli invece che a righe intere.
 Non la sceglie chi addestra: la decide chi disegna le macchine. Certe schede
 grafiche sanno saltare gli zeri, a una condizione: che stiano al loro posto. Di
-ogni quattro pesi in fila due devono essere zero e due no, sempre, in tutta la
+ogni quattro pesi in fila almeno due devono essere zero, sempre, in tutta la
 griglia. Il conto resta ordinato
 abbastanza da correre veloce, e chi taglia resta libero abbastanza da non dover
 buttare via righe intere. Il vincolo però non si tratta: dove di pesi utili ce
@@ -355,6 +355,83 @@ Da qui la distinzione operativa:
 
 `````
 
+### Due su quattro
+
+Lo schema a densità fissa più diffuso è il **2:4**: in ogni gruppo di quattro
+pesi consecutivi, almeno due sono zero. È abbastanza regolare perché i tensor
+core di {doc}`GEMM e tensor core </GPU/gemm-e-tensor-core>` lo eseguano con
+un'aggiunta sola, un selettore guidato da piccoli indici, senza rinunciare alle
+piastrelle regolari, e abbastanza libero perché dentro ogni gruppo la potatura
+scelga quali pesi tenere.
+
+`````{tab} Elementare
+
+Si prende la griglia dei pesi e la si divide, riga per riga, in gruppetti di
+quattro caselle. La regola è una sola, e vale dappertutto: in ogni gruppetto
+sopravvivono al più due numeri, di solito i due più grandi, e gli altri
+diventano zero. Scriverla costa poco più della metà, perché di ogni gruppetto
+si tengono solo i due sopravvissuti, ciascuno con un'etichetta minuscola che
+dice in quale delle quattro caselle stava: bastano due cifre binarie, perché le
+caselle sono quattro.
+
+Poi il chip moltiplica. Di ogni gruppetto legge i due numeri rimasti, guarda le
+etichette, e fra i numeri d'ingresso prende soltanto i due che andrebbero
+moltiplicati proprio con quelle caselle; gli altri due non li tocca, perché
+andrebbero moltiplicati per zero. Due moltiplicazioni invece di quattro, in
+ogni gruppetto, e quindi metà del lavoro. E siccome la regola è la stessa per
+tutti i gruppetti, ogni pezzo del chip ha esattamente lo stesso lavoro degli
+altri, e nessuno resta ad aspettare.
+
+Il prezzo è quello del vincolo, già detto: il gruppetto con tre pesi utili ne
+perde uno, e la rete ci rimette. Per questo, dopo aver azzerato, la si fa
+studiare di nuovo, per tutto il tempo che era servito la prima volta, e i pesi
+rimasti imparano a coprire quelli tolti: così torna quasi dov'era. Dove
+ripetere l'addestramento costerebbe troppo, come con i modelli linguistici
+grandi, la regola dei due su quattro costa più di una potatura libera che tolga
+la stessa metà dei pesi dove vuole; un ripasso breve recupera buona parte della
+differenza, senza colmarla. E la velocità doppia vale per le moltiplicazioni: i
+numeri da portare dalla memoria non si dimezzano, e l'intero calcolo accelera
+meno di due volte.
+
+`````
+
+`````{tab} Superiore
+
+Lo schema delle Sparse Tensor Core di NVIDIA {cite}`mishra2021accelerating`
+impone che in ogni gruppo di quattro pesi consecutivi lungo la dimensione di
+riduzione almeno due siano nulli. Una matrice $R \times C$ si memorizza
+compressa come $R \times C/2$ valori e, per ciascuno, un indice di 2 bit con la
+sua posizione nel gruppo: il sovraccarico dei metadati è del 12,5% sui valori a
+16 bit e del 25% su quelli a 8. Il tensor core usa gli indici per prelevare
+dall'altra matrice i soli due elementi corrispondenti di ogni gruppo, ed esegue
+metà delle moltiplicazioni: il picco aritmetico è il doppio di quello denso.
+L'accelerazione di un GEMM intero resta sotto il doppio e dipende dalla forma e
+dall'intensità aritmetica: si dimezzano i prodotti, non i byte da muovere, e i
+pesi compressi con i loro indici pesano più della metà. Il vincolo è locale e
+uniforme, quindi conserva le due proprietà che la sparsità non strutturata
+distrugge, la regolarità dell'accesso e il riempimento delle unità di calcolo,
+e in più bilancia il carico per costruzione.
+
+La ricetta degli autori è addestrare il modello denso, potarlo a 2:4 per
+modulo (in ogni gruppo si tengono i due pesi più grandi) e riaddestrarlo con lo
+stesso ottimizzatore e lo stesso calendario, per lo stesso numero di epoche,
+cioè con un secondo addestramento intero. Su un'ampia gamma di reti di visione e
+di linguaggio questo recupera l'accuratezza del denso, con eccezioni che gli
+autori riportano: le reti già snelle, come MobileNet, vogliono prima una
+permutazione dei canali, e alcune reti generative perdono qualcosa. Sui modelli
+linguistici grandi, dove un secondo addestramento costa troppo, si pota dopo:
+Wanda {cite}`sun2024simple` toglie i pesi con il prodotto
+$|W_{ij}|\,\lVert\mathbf{X}_j\rVert_2$ più piccolo senza aggiornare gli altri,
+SparseGPT {cite}`frantar2023sparsegpt` aggiorna i superstiti strato per strato
+con la stessa ricostruzione del secondo ordine di GPTQ. Nelle tabelle di Wanda,
+su LLaMA e LLaMA-2, l'accuratezza media su sette compiti affrontati senza esempi
+scende con il vincolo 2:4 di qualche punto in più che con il 50% libero, sia
+con Wanda sia con SparseGPT, perché il vincolo esclude configurazioni buone; un
+fine-tuning breve con LoRA ne recupera buona parte, senza colmare il divario con
+il 50% libero sottoposto allo stesso fine-tuning.
+
+`````
+
 ### Un chip che guarda i numeri
 
 La via di mezzo a densità fissa è un compromesso per chi moltiplica griglie
@@ -371,7 +448,8 @@ racconta per esteso.
 
 `````{tab} Elementare
 
-Il calcolatore di prima non guardava i numeri. Un chip fatto apposta, come EIE,
+Il calcolatore che moltiplica griglie piene non guarda i numeri, e anche quello
+dei due su quattro guarda solo le etichette. Un chip fatto apposta, come EIE,
 li guarda, e prima di cominciare riscrive la griglia dei pesi colonna per
 colonna, tenendo solo i numeri diversi da zero, ciascuno con un'etichetta che
 dice quante caselle vuote lo precedono. L'etichetta è corta, quattro cifre
@@ -855,8 +933,10 @@ basso, e in mezzo c’è un calcolatore che quella promessa non la sa incassare.
   conviene o no a seconda della densità e dell’hardware (misurato su CPU: il
   pareggio è intorno al venti per cento di densità). Strutturata: rimuove
   unità intere e dà un guadagno reale su qualunque macchina, a un costo
-  maggiore in accuratezza. Gli schemi a densità fissa locale sono il
-  compromesso imposto dall’hardware.
+  maggiore in accuratezza. Gli schemi a densità fissa locale, come il 2:4
+  {cite}`mishra2021accelerating`, sono il compromesso imposto dall’hardware:
+  raddoppiano il picco delle moltiplicazioni ma accelerano un GEMM intero meno
+  di due volte, e senza riaddestramento costano più del 50% non strutturato.
 - Gli acceleratori sparsi saltano gli zeri in hardware: EIE
   {cite}`han2016eie` con i pesi in CSC a indici relativi di 4 bit e le
   attivazioni non nulle in broadcast, SCNN {cite}`parashar2017scnn` con il

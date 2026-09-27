@@ -414,6 +414,145 @@ soltanto quanto vale, e non nella formula dell’arrotondamento.
 
 `````
 
+## Otto bit con la virgola
+
+Fin qui si è arrotondato sui gradini di una scala uniforme: un passo solo,
+uguale per i numeri piccoli e per quelli grandi, e gradini che si contano con
+numeri interi (è il formato `int8`). Con gli stessi otto bit si può fare
+un'altra scelta, che le schede con i tensor core adatti eseguono direttamente:
+un numero in virgola mobile, come il `float32` e il `bfloat16` di
+{doc}`Prestazioni e scala </PyTorch/prestazioni>`, solo molto più corto. È
+l’**FP8**.
+
+`````{tab} Elementare
+
+Un nastro per misurare ha 255 tacche, sempre quelle, e prima di cominciare lo
+si stende fino alla cosa più lunga del mucchio. Se nel mucchio ci sono solo
+bottoni, le tacche sono fitte e i bottoni si misurano bene. Basta un tavolo nel
+mucchio perché ogni tacca diventi di mezzo centimetro, anche per i bottoni. È il
+modo di arrotondare visto fin qui: un passo solo per tutto il gruppo, e a
+dettarlo è il più grande.
+
+Le persone, quando dicono una misura, fanno un'altra cosa: tengono sempre
+poche cifre e spostano la virgola. Tre centimetri e mezzo, un metro e settanta,
+quattro chilometri e mezzo: l'errore è sempre una piccola parte della misura,
+qualunque sia la misura, e non importa che cosa ci sia accanto nel mucchio. Il
+passo cresce con il numero, stretto sulle cose piccole e largo sulle grandi.
+
+Otto bit si possono spendere così: uno per il segno, quattro per dire dove va
+la virgola, tre per le cifre che contano. Con tre bit di cifre un numero non
+sbaglia mai più di un sedicesimo di sé stesso, poco più del 6%, e in media
+sbaglia molto meno, attorno al 2,6%. Chi ha bisogno di arrivare più lontano
+sposta un bit dalle cifre alla virgola: arriva più lontano, e sbaglia al più di
+un ottavo, il 12,5%. Le correzioni che la rete calcola mentre impara, che
+variano di moltissimi ordini di grandezza, si scrivono di solito nel secondo
+modo; i pesi e i numeri che passano da uno strato all'altro nel primo, anche
+durante l'addestramento.
+
+Anche la virgola ha un limite: con quattro bit si sposta solo di tanti posti, e
+un numero può andare da un sessantaquattresimo a 448 volte l'unità. Si sceglie
+allora per tutto il gruppo l'unità di misura, millimetri o chilometri, in modo
+che il più grande resti sotto 448: è il fattore di scala. Finché il più piccolo
+non scende sotto il sessantaquattresimo, ogni numero conserva il suo errore
+piccolo.
+
+Il confronto dice quando conviene. Sui bottoni soli il nastro vince, perché le
+sue tacche fitte sbagliano meno delle tre cifre fisse. Con un tavolo nel mucchio
+vince la virgola. E c'è una terza strada, già vista: tanti nastri corti, uno
+ogni sessantaquattro oggetti, così che il tavolo allarghi le tacche soltanto
+del suo gruppetto.
+
+`````
+
+`````{tab} Superiore
+
+Nel campo normale un numero a otto bit in virgola mobile vale
+$v = \pm\, 2^{\,k - \beta}\,(1 + m/2^{M})$, con il segno nel primo bit,
+l’esponente $k$ su $E$ bit, lo scostamento (*bias*) $\beta$ e la mantissa $m$ su
+$M$ bit. I due formati proposti da Micikevicius e colleghi
+{cite}`micikevicius2022fp8` sono E4M3 ($E = 4$, $M = 3$, $\beta = 7$) ed E5M2
+($E = 5$, $M = 2$, $\beta = 15$). E4M3 rinuncia agli infiniti e riserva al NaN la
+sola configurazione con esponente e mantissa tutti a uno (una per segno), così
+che il massimo sale da 240 a $1{,}75 \cdot 2^8 = 448$, con minimo normale
+$2^{-6}$ e subnormali fino a $2^{-9}$; E5M2 segue le convenzioni IEEE e arriva a
+$1{,}75 \cdot 2^{15} = 57\,344$, con minimo normale $2^{-14}$. Nel campo normale
+l’errore relativo dell’arrotondamento al più vicino è limitato da $2^{-(M+1)}$,
+il 6,25% per E4M3 e il 12,5% per E5M2, indipendentemente dalla grandezza del
+numero, e il suo valore quadratico medio, con una mantissa distribuita in modo
+log-uniforme, è circa $0{,}21 \cdot 2^{-M}$: il 2,6% per E4M3, il 5,3% per E5M2.
+Nella quantizzazione intera simmetrica è limitato invece l’errore assoluto, da
+$s/2$ con $s = \max|w|/127$, e quello relativo sale fino al 100% sui valori
+piccoli, perché tutto ciò che sta sotto $s/2$ finisce sullo zero. Il suo valore
+quadratico medio relativo è $s/(\sqrt{12}\,\sigma_w)$, cioè
+$(\max|w|/\sigma_w)/(127\sqrt{12}) \approx (\max|w|/\sigma_w)/440$: l’intero
+con una scala per tensore batte l’E4M3 finché il massimo resta sotto una
+dozzina di deviazioni standard, $\max|w|/\sigma_w \lesssim 11{,}7$.
+
+Gli autori raccomandano E4M3 per pesi e attivazioni, che chiedono precisione, ed
+E5M2 per i gradienti, che chiedono intervallo. L’intervallo di un FP8 resta
+comunque stretto rispetto a quello di un `bfloat16`, e in pratica si accompagna
+sempre a un fattore di scala, $\hat{w} = s\,\mathrm{fp8}(w/s)$ con
+$s = \max|w| / 448$ per E4M3, dove $\mathrm{fp8}(\cdot)$ è l’arrotondamento al
+valore rappresentabile più vicino (che in PyTorch, per E4M3, satura a $\pm 448$),
+calcolato per tensore o per blocco. La proprietà del formato vale finché il
+rapporto fra il più grande e il più piccolo valore del gruppo sta dentro
+l’intervallo: oltre, i piccoli scendono fra i subnormali o a zero. È la ragione
+per cui l’addestramento di DeepSeek-V3 usa scale per tessere di $1 \times 128$
+elementi sulle attivazioni e per blocchi di $128 \times 128$ sui pesi, e con
+quelle adotta E4M3 su tutti i tensori, gradienti compresi
+{cite}`liu2024deepseekv3`. Il vantaggio pratico è dell’hardware: sui tensor core
+che lo supportano un prodotto fra matrici in FP8 ha un picco doppio di quello a
+16 bit, con l’accumulo dichiarato in precisione più alta; sulle H800 gli stessi
+autori misurano che il tensor core ne conserva circa 14 bit, e riversano le
+somme parziali in FP32 ogni 128 elementi.
+
+`````
+
+Il confronto si fa sulla matrice `W` e sugli ingressi `x` della prima misura:
+la matrice così com'è, e la stessa con un peso su cento moltiplicato per venti.
+Per ciascuna si stampano il rapporto fra il peso più grande e la deviazione
+standard, e l'errore sull'uscita con l'intero a una scala sola, con l'intero a
+una scala ogni 64 pesi, e con i due FP8 a una scala sola.
+
+```python
+def in_fp8(w, formato):
+    s = w.abs().max() / torch.finfo(formato).max  # la scala porta il massimo al tetto
+    return (w / s).to(formato).to(torch.float32) * s
+
+caso = torch.Generator().manual_seed(1)           # un sorteggio a parte, per non
+pochi = torch.rand(W.shape, generator=caso) < 0.01  # spostare quelli delle altre pagine
+con_grandi = W.clone()
+con_grandi[pochi] *= 20                           # un peso su cento, venti volte più grande
+
+print(f"{'pesi':<14}{'max/sigma':>10}{'int8':>8}{'int8/64':>9}{'e4m3':>8}{'e5m2':>8}")
+for nome, pesi in (("tutti simili", W), ("pochi grandi", con_grandi)):
+    esatto = pesi @ x
+    err = lambda q: ((q @ x - esatto).norm() / esatto.norm() * 100).item()
+    print(f"{nome:<14}{(pesi.abs().max() / pesi.std()).item():10.1f}"
+          f"{err(quantizza(pesi, 8)):7.2f}%{err(quantizza(pesi, 8, 64)):8.2f}%"
+          f"{err(in_fp8(pesi, torch.float8_e4m3fn)):7.2f}%"
+          f"{err(in_fp8(pesi, torch.float8_e5m2)):7.2f}%")
+```
+
+```text
+pesi           max/sigma    int8  int8/64    e4m3    e5m2
+tutti simili         4.6   1.04%    0.60%   2.66%   5.22%
+pochi grandi        34.5   7.83%    1.55%   2.50%   5.25%
+```
+
+Sui pesi così come sono vince l’intero, 1,04% contro 2,66%, gli stessi numeri
+della prima tabella: con il massimo a 4,6 deviazioni standard il passo comune è
+fitto, e sbaglia meno delle tre cifre fisse dell’E4M3. Con un peso su cento
+venti volte più grande il massimo sale a 34,5 deviazioni standard, e l’intero a
+una scala sola sale al 7,83%, quasi esattamente il 34,5 diviso 440 della
+formula; i due FP8 restano dove erano (2,50% e 5,25%), perché il loro errore è
+una frazione di ciascun numero e non dipende da chi altro c’è nel gruppo. Ma
+l’intero con una scala ogni 64 pesi resta il più preciso di tutti (1,55%): i
+pesi grandi allargano il passo soltanto del loro gruppetto. Anche qui, quindi,
+decide chi condivide il passo più che il formato: la virgola conviene quando i
+valori anomali sono tanti e sparsi, e tenere una scala per ogni gruppetto costa
+più che scriverla dentro ciascun numero.
+
 ## Arrotondare dopo, o saperlo già durante
 
 C’è un’ultima distinzione, ed è quella che separa due mestieri.
@@ -481,8 +620,9 @@ Messe in fila, le cose di questa sezione dicono una cosa sola, e conviene
 tenersi quella invece dell’elenco: la domanda giusta non è quanti bit, è chi
 condivide il passo. Cambiando chi lo condivide si passa dal 18,7% al 10,8% a
 parità di bit; togliendo dal gruppo tre numeri su cinquecentododici si passa
-dal 7,28% allo 0,20%. Il numero di bit, da solo, non ha spiegato nessuno dei
-due salti.
+dal 7,28% allo 0,20%. E a parità di otto bit, scrivere ciascun numero con la
+propria virgola porta l’errore dal 7,83% al 2,50% quando qualche peso è grande.
+Il numero di bit, da solo, non ha spiegato nessuno dei tre salti.
 
 `````{tab} Elementare
 
@@ -504,6 +644,13 @@ due salti.
 - Nei modelli linguistici poche componenti valgono decine di volte le altre e
   rovinano il passo per tutti. Tenendo intere tre componenti su
   cinquecentododici l’errore passa dal 7,28% allo 0,20%.
+- Con otto bit si può anche tenere la virgola: poche cifre fisse e una virgola
+  che si sposta, come quando si dice una misura. L’errore non supera mai un
+  sedicesimo del numero, poco più del 6% (in media meno della metà), purché il
+  numero stia fra un sessantaquattresimo e 448 volte l’unità scelta: sui pesi
+  ordinati l’intero sbaglia meno (1,04% contro 2,66%), con qualche peso grande
+  la virgola batte l’intero a scala sola (2,50% contro 7,83%), e una scala ogni
+  sessantaquattro pesi batte tutti e due (1,55%).
 - Si può arrotondare a modello finito (economico, e per otto bit basta) oppure
   dirlo alla rete mentre impara, così si sposta da sola dove l’arrotondamento
   le fa meno male (costa un addestramento intero).
@@ -530,6 +677,12 @@ due salti.
 - Le caratteristiche anomale dei Transformer {cite}`dettmers2022llmint8`
   dettano la scala e schiacciano tutto il resto. La decomposizione a precisione
   mista le tiene fuori: 7,28% contro 0,20% sullo stesso prodotto.
+- L’FP8 {cite}`micikevicius2022fp8` (E4M3, massimo 448; E5M2, massimo
+  $57\,344$) limita nel campo normale l’errore relativo, $2^{-(M+1)}$ con $M$ i
+  bit di mantissa, dove l’`int8` limita quello assoluto; a scala unica l’`int8`
+  vince finché $\max|w|/\sigma_w \lesssim 11{,}7$ (1,04% contro 2,66%), e perde
+  con i valori anomali (7,83% contro 2,50%), ma una scala ogni 64 pesi lo
+  riporta davanti (1,55%). L’FP8 vuole una scala per tensore o per blocco.
 - Sotto gli otto bit servono metodi che non trattino l’arrotondamento come
   locale: GPTQ {cite}`frantar2023gptq` compensa sull’uscita l’errore già
   commesso, AWQ {cite}`lin2024awq` protegge i canali che moltiplicano le

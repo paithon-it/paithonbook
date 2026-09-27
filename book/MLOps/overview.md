@@ -325,6 +325,15 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
   davvero «veloce» quando la risposta non arriva tutta insieme ma una parola
   alla volta: quanto si aspetta la prima, con che ritmo scorrono le altre, e
   perché le medie mentono.
+- {doc}`Capacità e costo </MLOps/capacita-e-costo>`, quante copie del modello
+  tenere accese mentre il traffico sale e scende: come si misura quanto regge
+  una copia, che cosa guardare per decidere di accenderne altre, quanto ci
+  mette una copia nuova a partire, e quanto costa ogni token servito.
+- {doc}`Davanti ai modelli </MLOps/gateway-e-affidabilita>`, la porta da cui
+  passano tutte le chiamate: chi passa e quanto, che cosa fare quando un
+  modello non risponde senza peggiorare le cose, a quale modello mandare
+  ciascuna richiesta, e come si prova che tutto questo regge rompendolo
+  apposta.
 - {doc}`Il conto in energia </MLOps/energia-e-impronta>`, l'unica voce che non
   si dichiara quasi mai: dove finisce la corrente (quando si genera una parola
   alla volta, più nei viaggi dei dati che nei conti), come si arriva
