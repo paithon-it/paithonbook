@@ -88,6 +88,15 @@ KERNEL_FISSI = {
 # runner di GitHub sono di due tipi, ciascuno deterministico, e l'ultima cifra
 # di un addestramento in virgola mobile dipende da quale ti tocca.
 INSTABILI = {
+    # Misurato sui commit pubblici 31f6d655, f8e455f5 e aced2372: ciascuno ha
+    # avuto un run verde e uno rosso, e il rosso sempre negli stessi due punti
+    # con gli stessi valori. Le conclusioni dei due blocchi reggono su tutti e
+    # due i runner (MAML migliora 77 onde su 100 in entrambi); cambiano le
+    # cifre.
+    "DeepLearning":
+        "MAML dopo cinque passi di adattamento da' 1.74 su un tipo di runner"
+        " e 1.94 sull'altro, e l'errore del multi-compito con l'ausiliario di"
+        " rumore cade sul confine di arrotondamento della percentuale",
     "Efficienza":
         "pota e riaddestra una rete, e quantizza: l'accuratezza dopo la"
         " potatura cambia di un punto fra un runner e l'altro",
