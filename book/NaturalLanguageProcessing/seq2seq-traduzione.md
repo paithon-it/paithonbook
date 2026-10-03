@@ -8,11 +8,10 @@ traduzione prende il *senso* di una sequenza e lo riscrive in un'altra
 sequenza, invece di sostituire una parola per volta: di lunghezza diversa e
 con un ordine diverso.
 
-Nella sezione precedente abbiamo costruito gli attrezzi: RNN, LSTM, GRU. In
-questa li mettiamo alla prova sul compito che più di ogni altro ha spinto
-avanti l'NLP: la traduzione automatica. È una storia da seguire da vicino,
-perché è proprio qui, tra il 2014 e il 2017, che nasce il meccanismo di
-attenzione: il ponte diretto verso il {doc}`capitolo sui Transformer
+La traduzione automatica è il compito su cui le reti ricorrenti dei
+{doc}`modelli di sequenza <modelli-sequenza>` sono state messe alla prova più a
+fondo, ed è su questo compito che, fra il 2014 e il 2017, nasce il meccanismo di
+attenzione, il passaggio che porta al {doc}`capitolo sui Transformer
 </Transformers/overview>`.
 
 ## Scommettere sulla prossima parola
@@ -38,16 +37,14 @@ stesso gioco parola per parola: si scommette sulla prima, poi sulla seconda
 sapendo la prima, poi sulla terza sapendo le prime due, fino in fondo. Quanto
 la frase suona giusta lo dicono tutte quelle scommesse messe insieme.
 
-Come misurare se scommette bene? Con la
-perplessità, che abbiamo incontrato nei richiami di matematica e già
-usata come pagella per gli *n-gram*: dice *come se* il modello, a ogni
-parola, tirasse un dado con un
-certo numero di facce. Perplessità 20 = incerto come un dado a 20 facce;
-perplessità 5 = quasi sicuro, il dado ha solo 5 facce. Più bassa, meglio è: il
-modello ha capito la lingua abbastanza da restringere le alternative. Agli
-estremi, chi indovina sempre ha un dado a una faccia sola e perplessità 1;
-chi tira a caso fra le cinquantamila parole che conosce ha un dado da
-cinquantamila facce, e perplessità cinquantamila.
+Come misurare se scommette bene? Con la stessa pagella degli *n-gram*, la
+perplessità, che viene dalla {doc}`teoria dell'informazione
+</Matematica/teoria-informazione>`: il numero di facce del dado che il modello
+sembra tirare a ogni parola. Perplessità 20 vuol dire incerto come un dado a 20
+facce, perplessità 5 quasi sicuro; più bassa, meglio è, perché il modello ha
+ristretto le alternative. Agli estremi, chi indovina sempre ha un dado a una
+faccia sola e perplessità 1, chi tira a caso fra le cinquantamila parole che
+conosce ha perplessità cinquantamila.
 
 `````
 
@@ -68,8 +65,9 @@ $P(w_t = v \mid w_{<t}) =
 \big[\mathrm{softmax}(\mathbf{W}_{hy}\,\mathbf{h}_{t-1} + \mathbf{b}_y)\big]_v$,
 cioè la componente $v$ del vettore che esce dalla softmax.
 L'addestramento è la cross-entropia sulla parola successiva, e la qualità si
-misura con la perplessità per parola, vista nella sezione di teoria
-dell'informazione e già usata per valutare i modelli *n-gram*:
+misura con la perplessità per parola, vista nella {doc}`sezione sulla teoria
+dell'informazione </Matematica/teoria-informazione>` e già usata per valutare i
+modelli *n-gram*:
 
 $$
 \mathrm{PP} = 2^{H},
@@ -86,12 +84,14 @@ vocabolario di $50\,000$ parole avrebbe $\mathrm{PP}=50\,000$.
 
 ## Leggere in due direzioni
 
-Le RNN della sezione precedente leggono da sinistra a destra. Ma il senso di
-una parola dipende anche da ciò che viene *dopo*: in «La pesca era la sua
-passione» e «La pesca era matura», al momento in cui leggi «pesca» non puoi
-ancora sapere se si parla di ami o di frutta. Lo scopri solo alla fine. Da qui
-un'idea degli anni Novanta {cite}`schuster1997bidirectional`: le **RNN
-bidirezionali**.
+Prima di tradurre una frase bisogna leggerla tutta, e chi la legge tutta può
+leggerla nei due versi: è l'attrezzo che manca alla rete che, in una
+traduzione, legge la frase di partenza. Le RNN dei {doc}`modelli di sequenza
+<modelli-sequenza>` leggono da sinistra a destra. Ma il senso di una parola
+dipende anche da ciò che viene *dopo*: in «La pesca era la sua passione» e «La
+pesca era matura», al momento in cui leggi «pesca» non puoi ancora sapere se si
+parla di ami o di frutta. Lo scopri solo alla fine. Da qui un'idea degli anni
+Novanta {cite}`schuster1997bidirectional`: le **RNN bidirezionali**.
 
 `````{tab} Elementare
 
@@ -111,13 +111,14 @@ essere bidirezionale, ma chi la *scrive* procede sempre in avanti.
 `````{tab} Superiore
 
 Una RNN bidirezionale mantiene due catene di stati indipendenti: una in avanti,
-$\overrightarrow{\mathbf{h}}_t = f(\overrightarrow{\mathbf{h}}_{t-1}, x_t)$, e
-una all'indietro,
-$\overleftarrow{\mathbf{h}}_t = f'(\overleftarrow{\mathbf{h}}_{t+1}, x_t)$. La
-rappresentazione della posizione $t$ è la concatenazione
+$\overrightarrow{\mathbf{h}}_t = f(\overrightarrow{\mathbf{h}}_{t-1}, \mathbf{x}_t)$,
+e una all'indietro,
+$\overleftarrow{\mathbf{h}}_t = f'(\overleftarrow{\mathbf{h}}_{t+1}, \mathbf{x}_t)$,
+con due celle $f$ e $f'$ che non condividono i pesi. La rappresentazione della
+posizione $t$ è la concatenazione
 
 $$
-\mathbf{h}_t = [\overrightarrow{\mathbf{h}}_t ; \overleftarrow{\mathbf{h}}_t],
+\mathbf{h}_t = \overrightarrow{\mathbf{h}}_t \oplus \overleftarrow{\mathbf{h}}_t,
 $$
 
 che condensa l'intera frase *vista da quella posizione*: prefisso e suffisso.
@@ -132,12 +133,13 @@ fa da input allo strato $\ell$, per rappresentazioni via via più astratte.
 
 `````
 
-In PyTorch la lettura nei due sensi si chiede scrivendo `bidirectional=True`
-quando si costruisce la rete, e non c'è altro da fare. Nella stessa riga
-compare anche `num_layers=2`, che chiede due celle impilate una sopra l'altra:
-la seconda non legge le parole, legge quello che ha capito la prima. Sono i due
-modi in cui una rete ricorrente si può far crescere, in larghezza (le due
-direzioni) e in altezza (gli strati):
+In PyTorch la lettura nei due sensi si chiede con `bidirectional=True` quando si
+costruisce la rete. Nella stessa chiamata compare anche `num_layers=2`, che
+impila due celle una sopra l'altra: la seconda non legge le parole, legge quello
+che ha capito la prima. Sono i due modi in cui una rete ricorrente si può far
+crescere, in larghezza (le due direzioni) e in altezza (gli strati), e tutti e
+due cambiano le dimensioni di ciò che la rete restituisce, come mostrano le due
+forme stampate:
 
 ```python
 import torch
@@ -156,42 +158,52 @@ print(out.shape)  # torch.Size([1, 6, 256]): 2 direzioni x 128 per ogni parola
 print(h.shape)    # torch.Size([4, 1, 128]): 2 strati x 2 direzioni
 ```
 
+```text
+torch.Size([1, 6, 256])
+torch.Size([4, 1, 128])
+```
+
+La prima forma dice che per ognuna delle sei parole esce un vettore di 256
+numeri: i 128 della lettura in avanti accostati ai 128 di quella all'indietro.
+Chi mette uno strato lineare sopra questa rete lo deve quindi far partire da
+256 numeri, non da 128. La seconda dice che gli stati finali sono quattro, da
+128 numeri ciascuno: uno per ogni coppia di strato e direzione.
+
 ## Comprimere una frase in un vettore
 
 Torniamo alla traduzione. Nel 2014 due gruppi di ricerca arrivano, per strade
-loro, alla stessa idea, e l'idea è di una semplicità disarmante: due reti
-ricorrenti, una di fronte all'altra. La prima legge la frase da tradurre e
-non scrive niente; la seconda scrive la traduzione e non legge l'originale. Fra
-le due passa una fila di numeri, e basta.
+loro, alla stessa architettura: due reti ricorrenti in serie, che si chiamano
+**encoder–decoder**, o **seq2seq**. La prima, l’*encoder* («chi codifica»),
+legge la frase di partenza $x_1, \dots, x_n$ e non scrive niente: la riduce a un
+vettore di dimensione fissa, il **vettore di contesto** $\mathbf{c}$, che è il
+suo ultimo stato nascosto, $\mathbf{c} = \mathbf{h}_n$. La seconda, il
+*decoder* («chi decodifica»), riceve dall'encoder soltanto $\mathbf{c}$, e da lì
+genera la frase d'arrivo una parola per volta.
 
-La prima si chiama *encoder*, «chi codifica», e il suo mestiere è ridurre la
-frase di partenza a quel pacchetto di numeri; la seconda si chiama *decoder*,
-«chi decodifica», e il suo mestiere è srotolare il pacchetto in una frase
-dell'altra lingua, una parola per volta. Il pacchetto ha un nome, **vettore di
-contesto**, e non è altro che l'ultimo riassunto scritto dall'encoder: quello
-che gli resta in mano dopo aver letto l'ultima parola. L'architettura si chiama
-**encoder–decoder**, o **seq2seq**. L'idea di comprimere la frase intera in un
-vettore e di ricavarne la traduzione con una rete ricorrente l'avevano avuta un
-anno prima Nal Kalchbrenner e Phil Blunsom {cite}`kalchbrenner2013recurrent`,
-con una rete convoluzionale come encoder. La forma interamente ricorrente arriva
-nel 2014 con due lavori: quello di Kyunghyun Cho e colleghi a Montréal
-{cite}`cho2014learning`, che è lo stesso articolo in cui nasce la GRU e che la
-usa per dare un voto alle coppie di segmenti (le *phrase*) nella tabella di un
-sistema statistico, e quello di Ilya Sutskever, Oriol Vinyals e Quoc Le a Google
-{cite}`sutskever2014sequence`, che la usa per tradurre da sola.
+L'idea di comprimere la frase intera in un vettore e di ricavarne la traduzione
+con una rete ricorrente l'avevano avuta un anno prima Nal Kalchbrenner e Phil
+Blunsom {cite}`kalchbrenner2013recurrent`, con una rete convoluzionale come
+encoder. La forma interamente ricorrente arriva nel 2014 con due lavori. Quello
+di Kyunghyun Cho e colleghi a Montréal {cite}`cho2014learning`, lo stesso
+articolo in cui nasce la GRU, non traduce ancora da solo: usa
+l'encoder–decoder come aiutante di un traduttore statistico, per dare un
+punteggio alle coppie di frammenti di frase che quel traduttore tiene in
+tabella. Quello di Ilya Sutskever, Oriol Vinyals e Quoc Le a Google
+{cite}`sutskever2014sequence` lo usa invece per tradurre da solo.
 
 Il decoder, mentre scrive, fa esattamente quello che fa un modello di
 linguaggio: scommette sulla parola successiva. Con una differenza: la sua
-scommessa non parte dal nulla, parte dal pacchetto ricevuto. Si dice allora che
-è **condizionato** dalla frase di partenza, che è il modo tecnico di dire «gli
-è stato detto di che cosa deve parlare».
+scommessa non parte dal nulla, parte dal vettore di contesto. Si dice allora che
+è un modello di linguaggio **condizionato** dalla frase di partenza, che è il
+modo tecnico di dire «gli è stato detto di che cosa deve parlare».
 
 ```{figure} ../figures/seq2seq-2014.svg
 :name: fig-encoder-decoder
 :alt: "Schema encoder-decoder: l'encoder legge una a una le tre parole della frase inglese «the cat sleeps» e le comprime in un unico vettore di contesto; da quel vettore il decoder genera la traduzione francese «le chat dort», una parola dopo l'altra."
 :width: 100%
 
-Due reti e un vettore in mezzo. L'encoder finisce di leggere prima che il
+Due reti e un vettore in mezzo, su una frase inglese tradotta in francese, il
+compito dell'articolo di Google. L'encoder finisce di leggere prima che il
 decoder cominci a scrivere: fra i due passa solo quel vettore, e nient'altro.
 ```
 
@@ -211,57 +223,60 @@ Gli altri esistono, sono già stati calcolati, e vengono buttati via.
 
 `````{tab} Elementare
 
-All'interprete del convegno togliamo il blocco per gli appunti: ascolta
-l'intervento intero, lo tiene tutto a memoria e solo alla fine lo ripete in
-italiano. L'encoder è l'ascolto, il vettore di contesto è ciò che gli resta in
-testa, il decoder è la resa in italiano. Nell'articolo di Google c'è un
-dettaglio curioso: dare all'encoder la frase di partenza al contrario
-(«muro sul salta nero gatto Il») migliorava nettamente le traduzioni. Perché?
-Così l’*inizio* della frase (la prima cosa che il decoder deve tradurre) viene
-letto per *ultimo*, ed è il ricordo più fresco. Un trucco che rivela il
-difetto di fondo: se la qualità dipende da quale parola è stata ascoltata più
-di recente, la memoria unica è troppo stretta. Sulle frasi brevi regge; su un
-discorso lungo l'interprete arranca, perché tutto non entra in un solo
-ricordo.
+Un interprete, a un convegno, ascolta chi parla e ripete in un'altra lingua
+quello che ha detto; di solito, mentre ascolta, prende appunti. Togliamogli il
+blocco: ascolta l'intervento intero, in italiano, lo tiene tutto a memoria e
+solo alla fine lo ripete in inglese. L'encoder è l'ascolto, il vettore di
+contesto è ciò che gli resta in testa, il decoder è la resa in inglese.
 
-«Migliorava nettamente» qualcuno l'ha dovuto misurare, e il modo assomiglia
-alla correzione di un compito di traduzione. Accanto alla versione della
-macchina si mette quella di un traduttore in carne e ossa, e si guarda quanto
-si somigliano. Non contano solo le parole singole che coincidono, ma anche le
-coppie, le terne e le quaterne di parole consecutive, perché è lì che si vede
-se anche l'ordine è giusto. Un conteggio così si lascerebbe imbrogliare in due
-modi, e il metro si difende da tutti e due. Chi scrivesse «il il il il»
-avrebbe quattro parole su quattro presenti nella versione umana, e allora ogni
-parola vale al massimo il numero di volte che compare davvero là dentro, e le
-ripetizioni in più non contano niente. Chi consegnasse due parole sole, scelte
-bene, avrebbe tutto giusto senza aver tradotto, e allora una traduzione più
-corta di quella di riferimento paga una penalità, tanto più pesante quanto più
-è corta.
-Questo metro si chiama **BLEU**, ed è quello con cui la traduzione automatica
-ha fatto i conti per vent'anni.
+Nell'articolo di Google c'è un dettaglio curioso: far sentire all'interprete la
+frase al contrario («muro sul salta nero gatto Il») migliorava nettamente le
+traduzioni. Perché? Così l’*inizio* della frase, la prima cosa che dovrà dire, è
+l'ultima che ha sentito, ed è il ricordo più fresco. Il trucco tradisce il
+difetto di fondo: se la resa dipende da che cosa ha sentito per ultimo, la
+memoria unica è stretta. Nello stesso anno, a Montréal, chi misurò interpreti di
+questo tipo senza il trucco li trovò bravi sulle frasi brevi e sempre più in
+difficoltà man mano che il discorso si allungava, perché tutto non entra in un
+solo ricordo. Quello di Google, con il trucco e un cervello molto grande,
+reggeva anche le frasi lunghe.
 
-Resta un metro grezzo, e ha tre punti ciechi che conviene chiamare per nome.
-**La frase sola**: va usato su un pacco intero di frasi, perché su una frase
-corta basta una quaterna che manca per mandare il voto a zero. **I sinonimi**:
-non riconosce le parafrasi, quindi una traduzione giusta che sceglie parole
-diverse da quelle del traduttore umano prende comunque un voto basso. E
-**il saltare**, che si vede tornando all'interprete: questo metro guarda le
-parole che l'interprete ha detto e va a cercarle in quelle del traduttore
-umano, quindi castiga chi si inventa un pezzo, mentre chi salta il
-capoverso che contava lo castiga poco, e solo di rimbalzo, perché una versione
-più corta paga la penalità sulla lunghezza. Ma il giorno in cui alla macchina si
-chiede di riassumere invece che di tradurre, saltare diventa il peccato
-principale, e il metro si gira: si prendono le parole del riassunto umano e si
-va a vedere quante sono finite in quello della macchina. Il voto che ne esce si
-chiama **ROUGE** {cite}`lin2004rouge`, e nella pratica di oggi i due versi di
-uno stesso conteggio, quello che castiga l'inventare e quello che castiga il
-saltare, si mettono insieme con la media prudente dell’$F_1$ della
-{doc}`sezione sulle metriche </MachineLearning/metriche>`, quella in cui un
+«Migliorava nettamente» qualcuno l'ha dovuto misurare, e lo si fa come si
+corregge un compito: si mette per iscritto quello che l'interprete ha detto
+accanto alla versione di un traduttore in carne e ossa, e si contano le parole
+che coincidono, poi le coppie, le terne e le quaterne di parole consecutive, che
+dicono se anche l'ordine è giusto. Un interprete furbo potrebbe imbrogliare in
+due modi, e il correttore li para tutti e due. Chi dicesse «il il il il» avrebbe
+quattro parole su quattro presenti nella versione del traduttore: allora ogni
+parola vale al massimo quante volte compare là dentro, e le ripetizioni in più
+non contano. Chi dicesse due parole sole, scelte bene, avrebbe tutto giusto
+senza aver tradotto: allora chi resta più corto del traduttore paga una
+penalità, tanto più pesante quanto più è corto. Questo voto si chiama **BLEU**,
+ed è quello con cui la traduzione automatica ha fatto i conti per vent'anni. Nel
+2014 le reti di Google (cinque, addestrate ciascuna per conto suo e fatte votare
+insieme su ogni traduzione) superano di poco il sistema statistico preso come
+termine di paragone, e restano sotto ai sistemi migliori dell'anno. La
+traduzione neurale non ha ancora vinto; ha fatto vedere che può.
+
+Il correttore, però, è di grana grossa. Lo si fa lavorare su un pacco intero di
+frasi, perché i voti dei quattro conteggi si moltiplicano fra loro, e su una
+frase corta basta una quaterna mancata per azzerare tutto. Non conosce i
+sinonimi: l'interprete che dice «automobile» dove il traduttore ha scritto
+«macchina» perde punti pur avendo ragione. Cambia voto secondo come conta le
+parole (se «l'uomo» ne fa una o due), quindi due voti si confrontano solo se
+dati con le stesse regole e gli stessi traduttori accanto. E cerca nella
+versione del traduttore le parole dell'interprete, quindi castiga chi si inventa
+un pezzo, mentre chi salta un capoverso lo castiga poco, solo con la penalità
+sulla lunghezza.
+
+Quando all'interprete si chiede un riassunto, invece, il peccato da temere è
+proprio saltare, e il conto si gira: si va a vedere quante parole del riassunto
+scritto da una persona sono finite nel suo. Questo voto si chiama **ROUGE**
+{cite}`lin2004rouge`, e da solo si fa imbrogliare dall'altro verso: chi ricopia
+mezzo intervento le ritrova quasi tutte, e prende il massimo. Per questo oggi i
+due conteggi, quello che castiga l'inventare e quello che castiga il saltare, si
+mettono insieme con la media armonica della
+{doc}`sezione sulle metriche </MachineLearning/metriche>`, la $F_1$, in cui un
 voto basso non si può nascondere dietro un voto alto.
-Con questo metro, nel 2014, cinque di queste
-reti messe insieme superano di poco il sistema statistico preso come termine
-di paragone, e restano sotto ai sistemi migliori dell'anno. La traduzione
-neurale non ha ancora vinto; ha fatto vedere che può.
 
 `````
 
@@ -271,16 +286,18 @@ Il modello fattorizza la probabilità della frase di arrivo
 $y = (y_1, \dots, y_m)$ data quella di partenza $x = (x_1, \dots, x_n)$ come
 
 $$
-P(y \mid x) = \prod_{t=1}^{m} P(y_t \mid y_1, \dots, y_{t-1}, \mathbf{c}),
+P(y \mid x) = \prod_{i=1}^{m+1} P(y_i \mid y_{<i}, \mathbf{c}),
 \qquad
 \mathbf{c} = \mathbf{h}_n,
 $$
 
-dove $\mathbf{c}$ è il vettore di contesto (lo stato finale dell'encoder) e
-ogni fattore è calcolato dal decoder, una RNN condizionata da $\mathbf{c}$ con
-softmax sul vocabolario di arrivo: in Sutskever $\mathbf{c}$ ne è lo stato
-iniziale, in Cho entra come ingresso a ogni passo,
-$\mathbf{s}_t = f(\mathbf{s}_{t-1}, y_{t-1}, \mathbf{c})$.
+dove $y_{<i} = (y_1, \dots, y_{i-1})$, $y_{m+1} = \texttt{</s>}$ è il token di
+fine frase, che rende $P(\cdot \mid x)$ una distribuzione sulle frasi di ogni
+lunghezza, e $\mathbf{c}$ è il vettore di contesto (lo stato finale
+dell'encoder). Ogni fattore è calcolato dal decoder, una RNN condizionata da
+$\mathbf{c}$ con softmax sul vocabolario di arrivo: in Sutskever $\mathbf{c}$
+ne è lo stato iniziale, in Cho entra come ingresso a ogni passo,
+$\mathbf{s}_i = f(\mathbf{s}_{i-1}, y_{i-1}, \mathbf{c})$.
 
 I risultati che seguono si misurano in **BLEU** {cite}`papineni2002bleu`, il
 metro con cui la traduzione automatica si è confrontata per vent'anni, e torna
@@ -310,9 +327,11 @@ leggere i punteggi di Sutskever: BLEU è definito sul corpus e non sulla
 singola frase (le $p_n$ si accumulano su tutto il test set, e su una frase sola
 un 4-gramma mancante manda il punteggio a zero); dipende dalla tokenizzazione e
 dal numero di riferimenti, tanto che due punteggi si confrontano solo a
-protocollo identico, ed è la ragione per cui esiste `sacrebleu`; ed è cieco
-alla parafrasi corretta. Un punto di differenza è un segnale, non una
-sentenza.
+protocollo identico, ed è la ragione per cui esiste `sacrebleu`: Matt Post
+misura fino a 1,8 punti di differenza fra configurazioni d'uso comune, e
+indica come prima causa la tokenizzazione e la normalizzazione applicate ai
+riferimenti {cite}`post2018call`; ed è cieco alla parafrasi corretta. Un punto
+di differenza è un segnale, non una sentenza.
 
 Quel «un termine di *recall* non c'è» è la porta da cui entra il metro gemello.
 **ROUGE** {cite}`lin2004rouge` (l'acronimo, coniato da Chin-Yew Lin, sta per
@@ -359,23 +378,29 @@ E questa è la ragione per cui oggi si riportano quasi sempre le $F_1$, cioè
 precisione e richiamo insieme: un richiamo puro non cala mai allungando il
 candidato, quindi da solo premia chi ricopia mezzo articolo.
 
-Sutskever et al. usano LSTM a 4 strati con stati da
-1000 dimensioni e riportano, sul benchmark WMT'14 inglese→francese, un BLEU di
+Sutskever et al. usano LSTM a 4 strati con stati da 1000 dimensioni e
+riportano, sul benchmark WMT'14 (il *Workshop on Machine Translation* del
+2014) inglese→francese, un BLEU di
 $34{,}8$ (con un ensemble di cinque modelli) contro il $33{,}3$ del sistema
 statistico a frasi di riferimento. Il confronto va letto per quello che è: il
 $33{,}3$ è il sistema di *riferimento*, non lo stato dell'arte, che su quel
 compito stava a $37{,}0$; la rete pura non lo raggiunge, e ci si avvicina
 ($36{,}5$) solo quando la si usa per riordinare le mille ipotesi prodotte dal
 sistema statistico. Nel 2014 il neurale non ha ancora vinto: la data del
-sorpasso è il 2016. L'aneddoto
-dell'inversione è invece documentato
-nei numeri: invertire l'ordine delle parole sorgente fa scendere la
-perplessità di test da $5{,}8$ a $4{,}7$ e salire il BLEU da $25{,}9$ a
-$30{,}6$, perché accorcia le dipendenze tra le prime parole di $x$ e le prime
-di $y$, semplificando l'ottimizzazione. Ma il limite strutturale resta:
-qualunque sia $n$, tutta l'informazione su $x$ deve passare per un vettore di
-dimensione fissa. È un collo di bottiglia, e le prestazioni degradano
-visibilmente al crescere della lunghezza della frase.
+sorpasso è il 2016. L'aneddoto dell'inversione è invece documentato nei numeri:
+invertire l'ordine delle parole sorgente fa scendere la perplessità di test da
+$5{,}8$ a $4{,}7$ e salire il BLEU da $25{,}9$ a $30{,}6$. Gli autori, che
+dichiarano di non averne una spiegazione completa, lo attribuiscono alle molte
+dipendenze brevi introdotte fra le prime parole di $x$ e le prime di $y$, che
+semplificano l'ottimizzazione. Ma il limite strutturale resta: qualunque sia
+$n$, tutta l'informazione su $x$ deve passare per un vettore di dimensione
+fissa. Con un encoder–decoder di questo tipo la qualità cala rapidamente al
+crescere della lunghezza della frase, come misurano nello stesso anno Cho e
+colleghi {cite}`cho2014properties` (su modelli addestrati con frasi fino a
+trenta parole) e come mostra la curva di RNNencdec nella figura 2 di
+{cite}`bahdanau2015neural`. La LSTM profonda di Sutskever e colleghi fa
+eccezione, e gli autori attribuiscono la sua tenuta sulle frasi lunghe proprio
+all'inversione della sorgente.
 
 `````
 
@@ -387,18 +412,18 @@ Yoshua Bengio {cite}`bahdanau2015neural`, e nasce da una domanda tanto ovvia
 quanto ben posta: perché costringere il decoder a lavorare a memoria, se i
 riassunti intermedi ci sono già?
 
-Ricordate: l'encoder ne aveva prodotto uno per parola, e li avevamo buttati via
-tutti tranne l'ultimo. Smettiamo di buttarli. Teniamoli lì tutti, in fila, e
-lasciamo che il decoder, ogni volta che deve scrivere una parola, li guardi
-tutti quanti e decida da sé a quali dare retta adesso. Non «guarda solo il
-quinto»: dà a ciascuno un voto, alto per quelli che gli servono, basso per gli
-altri, e poi li mescola in proporzione ai voti. Quei voti sono l’**attenzione**:
-un numero per ogni parola della frase di partenza, ricalcolato da capo a ogni
-parola prodotta.
+L'encoder calcola uno stato $\mathbf{h}_j$ per ogni parola $j$ della frase di
+partenza, e il vettore di contesto ne conserva soltanto l'ultimo. Si possono
+tenere tutti. A ogni parola $i$ da produrre il decoder assegna a ciascuno stato
+un peso $\alpha_{ij}$, non negativo, con somma uno sulle parole di partenza, e
+usa come contesto la media pesata degli stati,
+$\mathbf{c}_i = \sum_j \alpha_{ij}\,\mathbf{h}_j$. Il meccanismo si chiama
+**attenzione**: i pesi dicono quali parole di partenza contano per la parola
+che si sta scrivendo, e si ricalcolano da capo a ogni parola prodotta.
 
 ```{figure} ../figures/attention-prima-dei-transformer.svg
 :name: fig-allineamento-traduzione
-:alt: "Due file di parole, una sopra l'altra: in alto la frase inglese «the black cat sleeps», in basso la traduzione italiana «il gatto nero dorme». Delle linee collegano le parole delle due file, e il loro spessore è il peso dell'attenzione. Le linee spesse legano «the» a «il» e «sleeps» a «dorme» senza incrociarsi, mentre al centro si incrociano: «black» va a «nero» e «cat» a «gatto». Due linee sottili, fra le stesse parole del centro, sono i pesi piccoli rimasti."
+:alt: "Due file di parole, una sopra l'altra: in alto la frase italiana «il gatto nero dorme», in basso la traduzione inglese «the black cat sleeps». Delle linee collegano le parole delle due file, e il loro spessore è il peso dell'attenzione. Le linee spesse legano «il» a «the» e «dorme» a «sleeps» senza incrociarsi, mentre al centro si incrociano: «nero» va a «black» e «gatto» a «cat». Due linee sottili, fra le stesse parole del centro, sono i pesi piccoli rimasti."
 :width: 88%
 
 L'allineamento che nessuno ha annotato. Le linee dicono, per ogni parola
@@ -406,9 +431,10 @@ prodotta, dove il modello ha guardato: nessuno gliel'ha insegnato, si leggono
 a posteriori dai pesi che si è dato da solo.
 ```
 
-Il fatto che le due linee centrali di {numref}`fig-allineamento-traduzione` si
-incrocino è la notizia, non un difetto: in inglese l'aggettivo precede il nome,
-in italiano lo segue, e il modello va a prendersi le parole fuori ordine, terza
+Il fatto che le due linee centrali di {numref}`fig-allineamento-traduzione`,
+nella stessa direzione dell'esempio del capitolo, dall'italiano all'inglese, si
+incrocino è la notizia, non un difetto: in italiano l'aggettivo segue il nome,
+in inglese lo precede, e il modello va a prendersi le parole fuori ordine, terza
 prima e seconda dopo. È la cosa che con il vettore unico non si poteva fare, e
 non perché fosse difficile: perché nel vettore unico l'informazione su dove
 stava ciascuna parola era già stata schiacciata via.
@@ -418,40 +444,51 @@ stava ciascuna parola era già stata schiacciata via.
 :alt: "Encoder-decoder con attenzione: in basso sei stati dell'encoder bidirezionale per «Il gatto nero salta sul muro», in alto il decoder che genera «The black cat»; mentre produce «cat», frecce di spessore diverso collegano ogni parola sorgente al decoder, e la più spessa parte da «gatto»."
 :width: 100%
 
-Mentre genera «cat», il decoder consulta *tutti* gli stati dell'encoder: lo
-spessore di ogni freccia è il peso di attenzione, massimo su «gatto».
+Mentre genera «cat», il decoder (in alto, i suoi stati $\mathbf{s}_1$,
+$\mathbf{s}_2$, $\mathbf{s}_3$) consulta *tutti* gli stati dell'encoder
+$\mathbf{h}_1, \dots, \mathbf{h}_6$: lo spessore di ogni freccia è il peso di
+attenzione, massimo su «gatto», e $\mathbf{c}_3$ è la media pesata degli stati.
 ```
 
-Come mostra {numref}`fig-seq2seq-attenzione`, mentre produce *«cat»* il
-decoder dà il voto più alto a «gatto» (0,62), tiene d'occhio «nero» (0,20) e
-quasi ignora il resto. E a ogni passo la mappa cambia: per *«wall»* il voto
-grosso si sposterà su «muro».
+Nella {numref}`fig-seq2seq-attenzione`, i cui pesi sono disegnati a scopo
+illustrativo e non calcolati da un modello, mentre produce *«cat»* il decoder dà
+il peso più alto a «gatto» ($0{,}62$), un peso ancora apprezzabile a «nero»
+($0{,}20$) e poco al resto. A ogni passo il profilo cambia: per *«wall»* il peso
+maggiore andrà su «muro».
 
-(Nella figura quei voti sono chiamati pesi, ed è il termine che si usa
-ovunque, ma attenzione a non confonderli con i pesi della sezione precedente,
-quelli che una rete impara e si tiene: questi cambiano a ogni parola prodotta e
-sono roba che il modello *decide sul momento*, non roba che possiede.)
+(I pesi di attenzione non vanno confusi con i pesi della rete. Quelli della
+rete, le matrici che si imparano in addestramento, restano fissi una volta
+addestrato il modello; gli $\alpha_{ij}$ invece si calcolano dall'ingresso, e
+cambiano a ogni parola prodotta.)
 
 Con questo, il collo di bottiglia del vettore unico sparisce: nessuna fila di
 numeri di lunghezza fissa deve più contenere l'intera frase. Resta invece
-intatto l'altro collo di bottiglia, quello della sezione precedente, cioè il
-fatto che tutto questo si legge e si scrive in fila, un passo dopo l'altro. Due
-strozzature diverse: l'attenzione ne toglie una, e sarà il capitolo dopo a
-togliere l'altra.
+intatto il collo di bottiglia sequenziale dei {doc}`modelli di sequenza
+<modelli-sequenza>`: tutto questo si legge e si scrive in fila, un passo dopo
+l'altro. Due strozzature diverse: l'attenzione ne toglie una, e sarà il capitolo
+dopo a togliere l'altra.
 
 `````{tab} Elementare
 
-Il nostro interprete adesso ha il testo dell'intervento sul tavolo. Mentre
-traduce non recita più a memoria: per ogni parola che pronuncia dà un'occhiata
-al foglio, e l'occhio cade sul punto che serve in quel momento, come un
-evidenziatore che si sposta man mano che la traduzione avanza. Non c'è nessuna
-regola scritta a mano che dica dove guardare: la rete impara da sola, durante
-l'addestramento, che quando sta per dire *cat* conviene pesare molto «gatto».
-Sorpresa in regalo: disegnando dove cade l'evidenziatore si ottiene, quasi
-sempre, l'allineamento tra le parole delle due lingue («cat» ↔ «gatto», «wall»
-↔ «muro») che nessuno aveva chiesto al modello di imparare. Quasi sempre, non
-sempre: c'è almeno una coppia di lingue su cui l'evidenziatore cade altrove e
-il disegno non somiglia a nessun allineamento.
+Il nostro interprete adesso ha di nuovo il blocco, con un appunto per ogni
+parola ascoltata. Mentre traduce non recita più a memoria: per ogni parola che
+pronuncia ripassa tutti gli appunti e dà a ciascuno un voto, alto a quelli che
+gli servono in quel momento, basso agli altri. I voti si spartiscono un totale
+fisso, come l'attenzione di una persona: se ne dà di più a un appunto, ne resta
+di meno per gli altri, esattamente come quando in classe ascolti il professore
+e allora non senti chi ti parla da dietro. Poi mescola gli appunti in
+proporzione ai voti, e da quella miscela tira fuori la parola.
+
+A dare i voti è un piccolo aiutante, che guarda un appunto e il punto in cui è
+arrivata la traduzione. Nessuno gli ha scritto dove guardare: durante
+l'addestramento ha imparato da sé che, quando sta per arrivare *cat*, conviene
+votare molto «gatto». Il prezzo è che a ogni parola tradotta gli appunti da
+votare sono tutti, e più il discorso è lungo, più voti servono. Sorpresa in
+regalo: disegnando dove cadono i voti si ottiene, quasi sempre, l'allineamento
+tra le parole delle due lingue («cat» ↔ «gatto», «wall» ↔ «muro») che nessuno
+aveva chiesto al modello di imparare. Quasi sempre, non sempre: c'è almeno una
+coppia di lingue su cui i voti cadono altrove e il disegno non somiglia a nessun
+allineamento.
 
 `````
 
@@ -502,112 +539,119 @@ l'allineamento come bersaglio, cioè con la supervisione che qui non c'è.
 
 `````
 
-Questa è la stessa attenzione dei Transformer, ed è il ponte verso il
-{doc}`capitolo che porta il loro nome </Transformers/overview>`. Siccome è
-l'idea che di là diventa tutto, conviene
-guardarla una volta con i numeri sotto gli occhi.
+È la stessa attenzione del {doc}`capitolo sui Transformer
+</Transformers/overview>`, dove diventa l'architettura intera. Vediamola
+all'opera su tre riassunti soltanto, di tre numeri ciascuno:
 
-Immaginiamo che i riassunti siano corti, tre numeri l'uno, e che ce ne siano
-tre soltanto:
-
-| riassunto | numeri | voto |
+| riassunto | numeri | peso $\alpha$ |
 |---|---|---|
 | dopo «il» | `2, 0, 1` | 0,10 |
 | dopo «il gatto» | `0, 4, 2` | 0,70 |
 | dopo «il gatto nero» | `1, 1, 0` | 0,20 |
 
-I voti li ha decisi il decoder, guardando che cosa gli serve *adesso*, e sono
-tre numeri positivi che sommano a uno: si spartiscono un totale fisso, proprio
-come si spartisce l'attenzione di una persona. Se ne do di più a uno, ne resta
-di meno per gli altri, esattamente come quando in classe ascolto il professore
-e allora non sento chi mi parla da dietro.
+I pesi li ha decisi il decoder in base a ciò che gli serve in questo passo, e
+sono tre numeri positivi che sommano a uno (li produce una softmax, a partire
+da un punteggio per ogni riassunto): darne di più a uno ne toglie agli altri.
 
 Adesso si mescola. Per la prima casella: $0{,}10 \times 2 + 0{,}70 \times 0 +
 0{,}20 \times 1 = 0{,}4$. Per la seconda: $0{,}10 \times 0 + 0{,}70 \times 4 +
 0{,}20 \times 1 = 3{,}0$. Per la terza: $0{,}10 \times 1 + 0{,}70 \times 2 +
 0{,}20 \times 0 = 1{,}5$. Il risultato è una fila di numeri nuova, `0,4 · 3,0 ·
 1,5`, e si vede a occhio che somiglia molto al secondo riassunto e poco agli
-altri: è il riassunto che il decoder aveva votato di più. Questa operazione,
-mescolare più file di numeri dando a ciascuna un peso, si chiama media
-pesata, ed è tutta l'attenzione. La fila che ne esce va dritta al decoder, che
-la usa per scrivere la parola successiva: al posto del solito pacchetto sempre
-uguale, adesso ne riceve uno confezionato apposta per il passo che sta facendo.
+altri: è il riassunto che il decoder aveva pesato di più. Questa operazione,
+mescolare più file di numeri dando a ciascuna un peso, si chiama media pesata,
+ed è il modo in cui l'attenzione legge gli stati; i pesi si calcolano a parte.
+La fila che ne esce va al decoder, che la usa per scrivere la parola
+successiva: al posto del solito vettore di contesto sempre uguale, ne riceve
+uno fatto apposta per il passo che sta facendo.
 
-Cambieranno due cose, nel capitolo dopo. La prima è come si decidono i
-voti. Qui li calcola un pezzo di rete apposito, addestrato insieme al resto:
-gli si danno il riassunto e lo stato del decoder, e sputa fuori un numero. Là
-il conto sarà diretto e molto più economico, fatto sulle due file di numeri
-senza nessun pezzo in mezzo. La seconda è che cadrà tutta l'impalcatura
-ricorrente attorno: resterà solo l'attenzione, che qui nasce come rattoppo per
-la traduzione e là diventa l'architettura intera.
+Nel capitolo sui Transformer cambiano due cose. I punteggi da cui nascono i
+pesi non vengono più da una piccola rete addestrata insieme al resto, che
+riceve un riassunto dell'encoder e lo stato del decoder (l'attenzione
+*additiva*), ma da un prodotto scalare fra due vettori, molto più economico
+(l'attenzione *moltiplicativa*). E sparisce la ricorrenza attorno:
+l'attenzione, che qui è un accessorio del decoder, diventa l'intera
+architettura.
 
-## Con la soluzione accanto: il teacher forcing
+## Addestrare il decoder: teacher forcing ed exposure bias
 
 Il decoder scrive una parola alla volta, e ogni parola la decide guardando
-quella che l'ha preceduta. Quale, però? Mentre si addestra ce ne sono due
-disponibili, la parola che il decoder ha appena prodotto e quella che la
-traduzione di riferimento ha in quel punto, e non sono la stessa parola.
-Prendere la seconda si chiama *teacher forcing*, alla lettera «imporre quella
-del maestro».
+quella che l'ha preceduta. Quale, però? Mentre si addestra le candidate sono
+due, la parola che il decoder ha appena prodotto e quella che la traduzione di
+riferimento ha in quel punto, e le due possono non coincidere. Prendere la
+seconda si chiama *teacher forcing*, alla lettera «imporre quella del maestro».
+A generazione, però, la traduzione di riferimento non c'è, e il decoder
+continua dalle parole che ha scritto lui, compresi i suoi errori: lo scarto fra
+le due situazioni si chiama **exposure bias**.
 
 `````{tab} Elementare
 
-Per insegnarti a tradurre, il professore ha un metodo. Ti dà la frase inglese,
-tu scrivi la prima parola italiana, lui te la segna se è sbagliata (è da quel
+Per insegnarti a tradurre, il professore ha un metodo. Ti dà la frase italiana,
+tu scrivi la prima parola inglese, lui te la segna se è sbagliata (è da quel
 segno che imparerai) e poi, prima di chiederti la seconda, cancella la tua e ci
-mette la parola giusta. Poi ti chiede la seconda, e rifà lo stesso. Ogni
-parola la scrivi partendo da un inizio corretto, anche quando la tua era
-sbagliata. Il foglio delle soluzioni è la traduzione umana che sta nei dati, e
-il professore è il conto che confronta la tua parola con quella.
+mette la parola giusta; e così via fino in fondo. Ogni parola la scrivi partendo
+da un inizio corretto, anche quando la tua era sbagliata. Il foglio delle
+soluzioni è la traduzione umana che sta nei dati, e il professore è il conto che
+confronta la tua parola con quella.
 
-Il metodo ha un vantaggio che non è la gentilezza. Il professore conosce tutte
-le venti domande prima che tu cominci, perché l'inizio di ognuna sta già
-scritto sulla soluzione; se invece dovesse partire dalle tue parole, la settima
-domanda non saprebbe formularla finché non hai finito la sesta. Avere le domande
-tutte pronte in anticipo è un guadagno enorme per una macchina, che così
-organizza il lavoro in blocco invece di fermarsi venti volte, ed è la ragione
-per cui a questo metodo nessuno rinuncia. Quanto grande sia il guadagno dipende
-da com'è fatta la rete: qui, dove ogni parola aspetta comunque il riassunto di
-quella prima, resta un risparmio; nel capitolo che segue, dove quell'attesa
-sparisce, diventa un unico passaggio per la frase intera.
+Correggere così è anche il modo esatto di misurare quello che il professore
+vuole davvero: quanto è probabile che tu, lasciato fare, scriva la soluzione
+intera. Per scriverla tutta devi azzeccare la prima parola, poi la seconda dopo
+una prima giusta, poi la terza dopo due giuste, e così fino in fondo: sono
+proprio le domande che lui ti fa, ognuna a partire da un inizio corretto, e
+messe insieme misurano quella probabilità per intero, senza approssimarla.
+
+Il metodo ha poi un vantaggio che non è la gentilezza. Il professore conosce
+tutte le venti domande prima che tu cominci, perché l'inizio di ognuna sta già
+scritto sulla soluzione; se partisse dalle tue parole, la settima domanda non
+saprebbe formularla finché non hai finito la sesta. Con le domande tutte pronte
+una macchina lavora in blocco, invece di fermarsi venti volte, ed è anche per
+questo che al metodo nessuno rinuncia. In una rete ricorrente, dove ogni parola
+aspetta comunque il riassunto di quella prima, il guadagno resta un risparmio;
+nel capitolo che segue, dove quell'attesa sparisce, diventa un unico passaggio
+per la frase intera.
 
 Poi arriva il compito in classe, e lì nessuno cancella niente. Scrivi «The», e
 la seconda parola la scrivi partendo dal tuo «The». Se in quel punto il
 professore avrebbe messo «A», stai continuando da un inizio su cui non ti sei
 mai esercitato.
 
-Da lì in poi peggiora, e questa è la parte che sorprende. L'errore non resta
-soltanto scritto: cambia anche tutte le domande che vengono dopo, perché ogni
-parola successiva la scegli guardando un foglio che nell'esercizio non è mai
-comparso. Il modo in cui si continua una frase già sgangherata non l'hai mai
-provato, perché nei compiti di esercizio la frase era sempre a posto. Questo
-scarto fra come si impara e come si lavora ha un nome, **exposure bias**: alla
-lettera «distorsione da esposizione», perché durante l'esercizio si è stati
+Da lì in poi peggiora, e questa è la parte che sorprende. Ogni parola successiva
+la scegli guardando una frase già sgangherata, che nell'esercizio non hai mai
+visto, quindi una parola storta rende più probabile che sia storta anche la
+successiva. Questo scarto fra come si impara e come si lavora è l'exposure bias:
+alla lettera «distorsione da esposizione», perché durante l'esercizio si è stati
 esposti solo ai testi giusti.
 
-I rimedi che si usano sono due, e nessuno dei due lo risolve del tutto. Il
-primo, quello che viene in mente subito, è ammorbidire il metodo: ogni tanto il
-professore lasci stare la tua parola invece di correggerla, di rado all'inizio e
-sempre più spesso man mano che migliori. Così ogni tanto ti eserciti anche a
-continuare da un inizio tuo.
+I rimedi che si usano sono due, e nessuno dei due lo risolve del tutto. Il primo
+è ammorbidire il metodo: ogni tanto il professore lascia stare la tua parola
+invece di correggerla, di rado all'inizio del corso e sempre più spesso man mano
+che migliori. Così ogni tanto ti eserciti anche a continuare da un inizio tuo.
 
 Il secondo rimedio smette di correggere parola per parola: consegni la
 traduzione intera e il professore le dà un voto, con uno dei metri automatici
-già visti, BLEU o ROUGE, con tutti i limiti che quei metri hanno. Il voto arriva
-alla fine e non dice quale parola fosse sbagliata, che è la situazione di chi
-impara per tentativi da una ricompensa, cioè il
+già visti, BLEU o ROUGE, e con tutti i loro limiti. Il voto arriva alla fine e
+non dice quale parola fosse sbagliata, e tu impari per tentativi da una
+ricompensa, come nel
 {doc}`reinforcement learning </ReinforcementLearning/overview>`, che ha un
-capitolo suo. Anche questo rimedio, però, parte dal primo metodo e lo
-tiene: si comincia correggendo parola per parola, e solo dopo si passa al voto
-sul risultato, prima sulla coda della frase e via via su tutta.
+capitolo suo. Anche così il professore non abbandona il suo metodo: comincia
+correggendo parola per parola, poi vota soltanto le ultime parole della frase,
+mentre le altre le corregge ancora una per una, e il pezzo votato si allunga
+finché copre tutta la frase.
 
 Il primo rimedio ha però un buco, e si vede guardando che cosa quell'esercizio
 premia davvero. La parola che il professore si aspetta è sempre quella che
 segue sulla soluzione, qualunque cosa tu abbia scritto un attimo prima. Ma
 allora, per prendere il massimo dei voti, la tua frase non serve nemmeno
-guardarla: basta tenere il conto di quante parole sono passate e ricopiare la
-soluzione da lì in poi. Chi vince quell'esercizio può farlo ignorando quello che
-sta scrivendo, ed è esattamente quello che un traduttore non può fare.
+guardarla: basta tenere il conto di quante parole sono passate e scrivere quella
+che, a quel punto della frase, le soluzioni mettono più spesso. Chi vince
+quell'esercizio può farlo ignorando quello che sta scrivendo, ed è esattamente
+quello che un traduttore non può fare.
+
+Chi ha trovato il buco, però, non assolve nemmeno il metodo di partenza: anche
+correggere parola per parola, secondo lui, insegna a dare ragione alle soluzioni
+più che a scrivere frasi che suonino vere. Gli esercizi sono due, e nessuno dei
+due è proprio quello che si vorrebbe.
 
 `````
 
@@ -648,7 +692,16 @@ questa discrepanza come *exposure bias*, che si verifica quando un modello è
 esposto soltanto alla distribuzione dei dati di addestramento invece che alle
 proprie predizioni».
 
-Il danno non è la composizione di un tasso d'errore costante. La conditional
+È lo stesso spostamento di distribuzione della clonazione comportamentale, che
+il {doc}`capitolo sull'apprendimento per imitazione
+</DeepReinforcementLearning/imitazione>` tratta per esteso: il decoder è una
+politica che imita le dimostrazioni dei dati, e a generazione visita stati, i
+prefissi, che le dimostrazioni non contengono. Per la clonazione comportamentale
+Ross e Bagnell danno il limite: un modello che sbaglia con probabilità
+$\epsilon$ per passo sotto la distribuzione dei dati può accumulare, su un
+orizzonte di $m$ passi, un costo $O(\epsilon\,m^2)$ invece dell’$O(\epsilon\,m)$
+di un problema supervisionato ordinario, ed è un limite stretto
+{cite}`ross2010efficient`. Il meccanismo, visto da vicino: la conditional
 $P_\theta(y_i \mid y_{<i}, x)$ è stimata bene dove i prefissi abbondano, cioè
 sul supporto dei dati; fuori di lì non c'è nessuna garanzia, perché i dati non
 permettono di distinguere fra ipotesi che coincidono sul supporto e divergono
@@ -667,8 +720,10 @@ e colleghi, ottimizza la metrica di valutazione con il gradiente di policy di
 {doc}`REINFORCE </DeepReinforcementLearning/policy-gradient>`, ma parte da un
 modello già addestrato con l'entropia incrociata, tiene le due perdite mescolate
 e sposta il confine fra le due un pezzo di frase alla volta: gli autori
-insistono che entrambi gli ingredienti sono necessari, e chiamano curriculum
-anche il proprio.
+insistono che entrambi gli ingredienti sono necessari, chiamano curriculum
+anche il proprio, e dichiarano di prendere idee tanto dallo scheduled sampling
+quanto da DAgger {cite}`ross2011reduction`, il rimedio che per l'imitazione
+riporta il limite a lineare in $m$.
 
 Il punto di rottura sta sul primo rimedio. Huszár {cite}`huszar2015how` mostra
 che l'obiettivo dello scheduled sampling è improprio, e che il suo ottimo
@@ -684,19 +739,21 @@ vero.
 
 `````
 
-Che cosa succeda al tasso d'errore si può guardare senza addestrare niente.
-Serve una lingua giocattolo di dieci parole, numerate da 0 a 9, in cui l'unica
-frase legale è contare: dopo lo 0 viene 1, dopo il 7 viene 8, dopo il 9 si
-ricomincia da 0. E serve un modello che, come i decoder veri, guardi due
-parole per scegliere la terza, mentre a questa lingua ne basterebbe una: è
-questa sovrabbondanza a creare le coppie di parole che i dati non contengono
-mai. Sulle coppie che i dati contengono il modello sbaglia una volta su cento;
-sugli
-altri tira a caso fra le dieci parole, e non perché la regola là non valga (vale
-identica) ma perché nei dati «la successiva della seconda» e «la seconda dopo la
-prima» sono la stessa cosa, e quale delle due il modello abbia imparato si vede
-soltanto fuori. La terza riga stampata è la controprova: la stessa cosa, con un
-modello che quelle coppie le sappia continuare.
+Quanto costi l'exposure bias si può misurare senza addestrare niente, contando
+quante parole il modello sbaglia quando riparte ogni volta dall'inizio giusto e
+quante quando continua dalle sue. Serve una lingua giocattolo di dieci parole,
+numerate da 0 a 9, in cui l'unica frase legale è contare: dopo lo 0 viene 1,
+dopo il 7 viene 8, dopo il 9 si ricomincia da 0. E serve un modello che, come i
+decoder veri, guardi due parole per scegliere la terza, mentre a questa lingua
+ne basterebbe una: è questa sovrabbondanza a creare coppie di parole che i dati
+non contengono mai, come «3 7». Sulle coppie che i dati contengono il modello
+sbaglia una volta su cento; sulle altre tira a caso fra le dieci parole. La
+regola, là, varrebbe identica: sono i dati a non dire quale regola sia. Nei
+dati, dopo «3 4» viene sempre «5», che è insieme la parola dopo il 4 e la
+seconda dopo il 3; le due regole si separano solo su una coppia come «3 7», dove
+la prima direbbe «8» e la seconda «5», e quella coppia nei dati non c'è. Le
+ultime due righe stampate sono la controprova: lo stesso conto con un modello
+che quelle coppie le sappia continuare.
 
 ```python
 import numpy as np
@@ -782,30 +839,29 @@ per intero, le frasi su cui il modello non si è mai esercitato.
 
 ## Generare la frase: greedy e beam search
 
-Resta un problema che finora abbiamo dato per scontato. Il decoder, a ogni
-passo, non sceglie una parola: dà un voto a tutte le parole che conosce, decine
-di migliaia di numeri fra zero e uno che sommano a uno. Come si passa da
-quell'elenco a una parola sola? L'istinto dice: prendi la più alta e vai
-avanti. È la strategia *greedy*, la stessa parola avida dell'agente della
-{doc}`sezione sui banditi </ReinforcementLearning/banditi>`, e qui è quello che
-fa chiunque abbia fretta. Ma la parola migliore *adesso* non porta sempre alla
-frase migliore *alla fine*.
+Resta un problema che finora abbiamo dato per scontato. A ogni passo il decoder
+non produce una parola: produce una distribuzione $P(y_i \mid y_{<i}, x)$ su
+tutto il vocabolario, decine di migliaia di probabilità che sommano a uno. Per
+ottenere una frase serve una regola di decodifica, e la più semplice è la
+ricerca *greedy*, che a ogni passo prende la parola più probabile: come l'agente
+avido della {doc}`sezione sui banditi </ReinforcementLearning/banditi>`,
+massimizza il guadagno immediato. Ma la parola migliore *adesso* non porta
+sempre alla frase migliore *alla fine*.
 
-(E chi gli dice di smettere? Fra le voci del suo elenco ce n'è una che non è
+(E chi gli dice di smettere? Fra le voci del vocabolario ce n'è una che non è
 una parola, ma il segnale di fine frase, lo stesso `</s>` incontrato con gli
-n-gram. Quando il decoder scommette su quello, ha deciso che la traduzione è
-finita, e ci si ferma. È una scommessa come le altre, e come le altre può
-sbagliare: un modello che lo tira fuori troppo presto tronca la frase, uno che
-non lo tira fuori mai continua a scrivere finché qualcuno non lo interrompe.)
+n-gram. Quando il decoder sceglie quello, ha deciso che la traduzione è finita,
+e ci si ferma. È una scelta come le altre, e come le altre può sbagliare: un
+modello che lo tira fuori troppo presto tronca la frase, uno che non lo tira
+fuori mai continua a scrivere finché qualcuno non lo interrompe.)
 
 `````{tab} Elementare
 
-Un vocabolario da cinquantamila parole apre cinquantamila strade a ogni passo,
-e dopo dieci passi le frasi che si possono comporre sono un numero di
-quarantasette cifre; nessun calcolatore le percorrerà mai tutte per tenere la
-migliore. La frase si costruisce un pezzo alla volta, come un cammino deciso
-bivio per bivio, e la sola domanda è quanto guardare avanti prima di
-impegnarsi.
+Un vocabolario da cinquantamila parole apre cinquantamila strade a ogni passo, e
+dopo dieci passi le frasi che si possono comporre sono un numero di
+quarantasette cifre: nessun calcolatore le percorrerà mai tutte per tenere la
+migliore. La frase si costruisce allora bivio per bivio, e la sola domanda è
+quanto guardare avanti prima di impegnarsi.
 
 Al primo bivio i cartelli che contano sono due: «A» promette 0,50, «The»
 promette 0,40, e il terzo, «One», sta a 0,04 e non se lo fila nessuno. Chi ha
@@ -820,38 +876,48 @@ dopo «A», «black» promette 0,30, e la strada «A black» vale
 
 Chi non vuole cadere nella trappola manda avanti più esploratori invece di uno,
 e la mossa si chiama **beam search**, «ricerca a fascio». Quanti mandarne si
-decide prima, e quel numero si chiama $k$: con $k=2$ restano in piedi sia «A»
-sia «The», al bivio successivo si scopre che «The black» è in testa, e si
-prosegue di lì fino a «The black cat…». Le strade lasciate cadere per via si
-dicono potate, come i rami di un albero, perché dal tronco parte ogni
-continuazione possibile e a ogni bivio se ne tagliano quasi tutte.
+decide prima, e quel numero si chiama $k$. A ogni bivio gli esploratori guardano
+tutte le strade che si aprono e tengono le $k$ migliori; le altre si dicono
+potate, come i rami di un albero. Con $k=2$ restano in piedi sia «A» sia «The»,
+al bivio successivo si scopre che «The black» è in testa, e si prosegue di lì
+fino a «The black cat…».
 
 Il confronto finale, però, ha un difetto, e si vede dai numeri dei cartelli.
 Sono tutti minori di uno, quindi ogni moltiplicazione rimpicciolisce il
-punteggio: la strada vincente vale $0{,}40$ al primo bivio, $0{,}24$ al
-secondo, $0{,}19$ al terzo. Un cammino lungo scende sempre, anche quando sta
-andando benissimo. Ed è un guaio perché i cammini da confrontare, alla fine,
-lunghi uguali non sono: un esploratore che scommette sul segnale di fine frase
-si ferma dove è arrivato e va messo da parte, e il suo punteggio, fatto di due
-soli passi, batte quello di chi ha lavorato per dieci. Chi confronta i totali
-nudi sceglie il più corto, e la traduzione esce troncata a metà.
+punteggio: la strada vincente vale $0{,}40$ al primo bivio, $0{,}24$ al secondo,
+$0{,}19$ al terzo. Un cammino lungo scende sempre, anche quando sta andando
+benissimo. E alla fine i cammini da confrontare non sono lunghi uguali: un
+esploratore che imbocca il cartello di fine frase si ferma lì e lo si mette da
+parte, e il suo punteggio, fatto di due soli passi, batte quello di chi ha
+camminato per dieci. Chi confronta i totali nudi sceglie il più corto, e la
+traduzione esce troncata a metà.
 
-Si rimedia mettendo i cammini sullo stesso metro: si divide il punteggio per la
+Si rimedia mettendo i cammini sullo stesso metro: si tiene conto della
 lunghezza, così che a contare sia quanto vale un passo e non quanti passi ci
-sono. In pratica si divide per una potenza della lunghezza minore di uno,
-perché dividere per la lunghezza intera corregge troppo e finisce per preferire
-sempre le frasi lunghe. Questa correzione si chiama **penalità di lunghezza**,
-e toglie alle frasi brevi un vantaggio che non si sono guadagnate.
+sono. La correzione però non si fa per intero. Il gruppo di Google che ha
+messo la traduzione neurale in produzione era partito proprio da lì, dal valore
+medio di un passo, e ha trovato che le traduzioni venivano meglio compensando la
+lunghezza un po’ meno; la dose giusta l'ha cercata provando.
+Questa correzione si chiama **penalità di lunghezza**, e toglie alle frasi
+brevi un vantaggio che non si sono guadagnate.
 
 Resta da decidere quanti esploratori mandare. Con uno solo si torna alla fretta
 del primo bivio. Con due, o con dieci, la strada migliore in assoluto può
 restare fuori lo stesso: se parte da un cartello che sembrava mediocre, è stata
 abbandonata lì, e nessuno torna indietro a riprenderla. Ogni esploratore in più
-costa, perché è un cammino da seguire fino in fondo, e qui viene la sorpresa:
-oltre una certa quota la traduzione non migliora, peggiora. Con il fascio
-largo il modello trova strade che giudica migliori in assoluto, e quelle strade
-sono più corte del dovuto. In traduzione ne bastano quasi sempre una manciata,
-e non più di qualche decina.
+costa un cammino da seguire fino in fondo, e la sorpresa è che oltre una certa
+quota la traduzione non migliora, peggiora. La penalità di lunghezza attenua il
+guaio delle frasi corte ma non lo toglie, perché a preferirle è il modello
+stesso: più esploratori si mandano, più è facile che uno trovi una frase corta
+che al modello piace più di tutte. Se si potessero provare proprio tutte le
+strade, per molte frasi quella preferita dal modello sarebbe la traduzione
+vuota. In traduzione di esploratori ne bastano quasi sempre una manciata, e non
+più di qualche decina.
+
+Mandare esploratori a cercare la strada migliore ha senso quando una traduzione
+giusta c'è. In una chiacchierata o in un racconto la strada preferita dal
+modello è spesso la più banale, e allora gli esploratori restano a casa: la
+parola si tira a sorte fra quelle che i cartelli danno per buone.
 
 `````
 
@@ -876,9 +942,14 @@ traduzione oltre un certo punto. Koehn e Knowles misurano che «in quasi tutti i
 casi si trovano traduzioni peggiori oltre un'ampiezza ottima», che sulle otto
 coppie di lingue che provano va da $4$ a circa $30$, e che la causa è che con
 il fascio largo vincono le traduzioni corte {cite}`koehn2017six`; la
-normalizzazione per lunghezza attenua il fenomeno senza toglierlo. È un
-risultato che va letto per quello che dice: a sbagliare è l'obiettivo, non il
-fascio, perché il massimo del modello premia il troppo corto. Un dettaglio
+normalizzazione per lunghezza attenua il fenomeno senza toglierlo (l'ampiezza
+ottima sale fra $30$ e $50$, ma oltre la qualità cala ancora). È un risultato
+che va letto per quello che dice, e lo dice per intero una ricerca esatta:
+Stahlberg e Byrne trovano che per il $51{,}8\%$ delle frasi del test WMT'15
+inglese→tedesco la traduzione di punteggio massimo, per un Transformer base, è
+quella vuota {cite}`stahlberg2019nmt`. A sbagliare è l'obiettivo, perché il
+massimo del modello premia il troppo corto, e un fascio stretto ripara senza
+volerlo l'errore del modello. Un dettaglio
 pratico: essendo una somma di logaritmi negativi, il punteggio penalizza le
 frasi lunghe, e il decoder tenderebbe a traduzioni troppo corte. Si corregge
 con una **length penalty**, per esempio dividendo il punteggio per
@@ -892,6 +963,12 @@ partenza, ed è da tenere a mente prima di citare «l’$\alpha$ di GNMT». Alla
 correzione di lunghezza affiancano poi un secondo termine, che premia le
 traduzioni i cui pesi di attenzione hanno coperto tutte le parole di
 partenza.
+
+La ricerca del massimo ha senso quando c'è una traduzione giusta da avvicinare.
+Nella generazione aperta (il dialogo, il racconto) è la scelta sbagliata, per lo
+stesso motivo: il massimo del modello è spesso generico o ripetitivo, e si
+campiona invece dalla distribuzione, con la temperatura e con i tagli top-$k$ e
+top-$p$ della {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`.
 
 `````
 
@@ -931,48 +1008,54 @@ un'architettura propria ed è diventata una delle cose che un modello
 generalista sa fare. Qui però siamo alla terza tappa, ed è quella che ha
 portato la traduzione neurale in produzione.
 
-Questa storia ha una data di consegna. Nel settembre 2016 Google annuncia GNMT
-(*Google Neural Machine Translation*) {cite}`wu2016google`: un encoder–decoder
-con l'attenzione, esattamente la ricetta appena vista, ma in grande: otto
-strati di celle impilate per l'encoder e altrettanti per il decoder. L'idea
-dell'impilamento è che il primo strato legge le parole, il secondo legge quello
-che ha capito il primo, e così via, ogni piano un po’ più astratto del
-precedente.
+Nel settembre 2016 Google annuncia GNMT (*Google Neural Machine Translation*)
+{cite}`wu2016google`, un encoder–decoder con attenzione costruito sulla ricetta
+appena vista, con le aggiunte che servono a farlo reggere in grande: encoder e
+decoder sono pile di otto strati LSTM legati da connessioni residue, e le parole
+sono spezzate in pezzi più piccoli, i *wordpiece*. L'idea dell'impilamento è
+che il primo strato legge le parole, il secondo legge quello che ha capito il
+primo, e così via, ogni piano un po’ più astratto del precedente.
 
-Questa rete prende il posto del sistema che Google usava davvero, quello dietro
-al bottone «traduci» che chiunque poteva premere: un sistema statistico che
-lavorava a pezzi di frase, imparando da montagne di testi già tradotti quali
-gruppi di parole si scambiano con quali. Aveva retto per un decennio. Si parte
-dalla coppia cinese-inglese, circa 18 milioni di traduzioni al giorno.
+GNMT prende il posto del sistema statistico che alimentava Google Translate, uno
+che traduceva a pezzi di frase imparando da grandi raccolte di testi già
+tradotti da persone quali gruppi di parole si scambiano con quali. Si parte
+dalla coppia cinese→inglese, circa 18 milioni di traduzioni al giorno.
 
-E il miglioramento non è misurato con un punteggio calcolato da un programma,
-ma da esseri umani. Google mette delle persone a dare un voto alla stessa
-frase tradotta dal vecchio sistema e dal nuovo, e nel mucchio ci mette anche
-una traduzione fatta da traduttori che conoscono bene tutte e due le lingue,
-che prende il voto più alto di tutti ed è il metro di riferimento. Il
-risultato: della distanza che separava il vecchio sistema dal traduttore
-umano, il nuovo ne recupera fra il 58 e l'87 per cento a seconda della
-coppia di lingue, che gli autori riassumono in una riduzione media degli errori
-del sessanta per cento. Per la prima volta le reti
-ricorrenti che abbiamo studiato traducono, ogni giorno, per centinaia di
-milioni di persone.
+Il confronto con il vecchio sistema lo fanno delle persone, e non un punteggio
+calcolato da un programma (l'articolo riporta anche il BLEU sui banchi di prova
+pubblici). Per ogni frase i valutatori danno un voto da 0 a 6 a tre traduzioni
+messe fianco a fianco: quella del sistema statistico, quella di GNMT e quella di
+un traduttore umano che conosce bene le due lingue. Della distanza fra il
+sistema statistico e il traduttore umano, GNMT ne recupera fra il 58%
+(inglese→cinese) e l'87% (inglese→spagnolo), secondo la coppia di lingue; gli
+autori la chiamano riduzione degli errori, e nell'abstract la riassumono in un
+60% medio. La misura vale per le frasi su cui è fatta: 500 per coppia di
+lingue, isolate, prese da Wikipedia e da siti di notizie, e che gli autori
+stessi definiscono semplici. Da quel momento le reti ricorrenti che abbiamo
+studiato traducono ogni giorno per un servizio di massa, e non sono le sole:
+altri sistemi neurali entrano in produzione negli stessi mesi
+{cite}`koehn2017six`.
 
-Questa storia ha anche un seguito che il capitolo sui Transformer riprende per
-intero. Pochi mesi dopo, invece di un modello per coppia di lingue, lo stesso
-gruppo ne addestra uno solo su tutte le coppie insieme, e scopre che
-traduce anche fra due lingue che non ha mai visto appaiate
-{cite}`johnson2017google`: è il primo indizio che dentro una rete addestrata su
-molte lingue si formi qualcosa di simile a una lingua franca interna.
+Questa storia ha anche un seguito, che la {doc}`sezione sui modelli multilingue
+</Transformers/multilingua>` riprende per intero. Pochi mesi dopo, invece di un
+modello per coppia di lingue, lo stesso gruppo ne addestra uno solo su tutte le
+coppie insieme, e scopre che traduce anche fra due lingue che non ha mai visto
+appaiate {cite}`johnson2017google`: è un indizio che dentro una rete addestrata
+su molte lingue si formi qualcosa di simile a una lingua franca interna.
 
-Ma il rattoppo si stava già mangiando il vestito. Se l'attenzione permette a
-ogni parola generata di guardare direttamente tutte le parole sorgente, a cosa
-serve ancora far scorrere uno stato passo dopo passo? Nel 2017 un gruppo di
-ricercatori di Google si fa esattamente questa domanda, e la risposta si
-intitola *Attention Is All You Need* {cite}`vaswani2017attention`:
-l'attenzione è tutto ciò che serve. Via la
-ricorrenza, resta solo il meccanismo che avete appena visto nascere, promosso
-da comprimario a protagonista. Come, di preciso, è il tema del capitolo sui
-Transformer.
+Il passo successivo arriva nel 2017 {cite}`vaswani2017attention`. Se
+l'attenzione collega direttamente ogni parola generata a tutte le parole di
+partenza, lo stato che scorre passo dopo passo non serve più, e una rete di sola
+attenzione si addestra in parallelo sull'intera frase: è l'architettura del
+{doc}`capitolo sui Transformer </Transformers/overview>`.
+
+Prima di arrivarci restano tre compiti in cui la frase non si traduce in
+un'altra lingua: assegnare un'etichetta a ogni parola ({doc}`etichettatura di
+sequenze <etichettare-sequenze>`), ricostruire la struttura della frase
+({doc}`sintassi e parsing <struttura-frase>`) e sostenere una conversazione
+({doc}`dialogo e chatbot <dialogo-chatbot>`). La loro storia comincia prima di
+quella delle reti neurali, e per raccontarla si torna indietro di qualche
+decennio.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -988,28 +1071,32 @@ Transformer.
   l'intera frase di partenza e la tiene in un unico ricordo, una seconda (il
   decoder) la ridice nell'altra lingua partendo da lì. Se la frase è lunga,
   in quel ricordo non ci sta tutto: è il collo di bottiglia.
-- L’attenzione di Bahdanau mette il testo sul tavolo dell'interprete: per
-  ogni parola che pronuncia, un'occhiata al punto che serve adesso, con
-  un'attenzione che si sposta a ogni passo e che nessuno gli ha insegnato dove
-  posare. Quasi in regalo si ottiene l'allineamento fra le parole delle due
-  lingue (quasi: su qualche coppia di lingue l'attenzione guarda altrove), ed è
-  la stessa idea che nei Transformer diventerà protagonista.
+- L’attenzione di Bahdanau restituisce all'interprete i suoi appunti, uno per
+  parola ascoltata: per ogni parola che pronuncia dà a ciascun appunto un voto,
+  e i voti si spartiscono un totale fisso; poi mescola gli appunti in
+  proporzione ai voti. Dove guardare nessuno gliel'ha insegnato, e quasi in
+  regalo si ottiene l'allineamento fra le parole delle due lingue (quasi: su
+  qualche coppia di lingue i voti cadono altrove). È la stessa idea che nei
+  Transformer diventerà protagonista.
 - Mentre impara, il decoder riparte dopo ogni parola da quella giusta invece
   che dalla propria (*teacher forcing*), e per questo tutte le domande della
   frase sono note in anticipo, il che fa risparmiare molto lavoro. Quando poi
   lavora da sé quella correzione non c'è, e da un inizio sbagliato continua come
-  non si è mai esercitato a fare: sbaglia nove parole su cento dove in
-  addestramento ne sbagliava una, ed è lì, in quello scarto, che sta tutto il
-  danno. Le frasi ancora senza errori continuano invece a sbagliarne una su
-  cento, e quel nove è la media fra loro e quelle già uscite di strada. Si
+  non si è mai esercitato a fare: nella lingua giocattolo di dieci parole
+  sbaglia nove parole su cento dove in addestramento ne sbagliava una, ed è lì,
+  in quello scarto, che sta tutto il danno. Le frasi ancora senza errori
+  continuano invece a sbagliarne una su cento, e quel nove è la media fra loro
+  e quelle già uscite di strada. Si
   rimedia lasciandogli ogni tanto la propria parola già mentre impara, oppure
   dandogli un voto sulla traduzione intera; il primo rimedio però si può vincere
   ignorando quello che si è appena scritto, che è la cosa che un traduttore non
   può fare.
 - Prendere ogni volta la parola più probabile è miope, perché la strada
   che parte peggio può arrivare meglio: la beam search tiene aperte le
-  poche strade più promettenti e decide qualche passo più avanti (con una
-  correzione che le impedisce di preferire sempre le frasi corte).
+  poche strade più promettenti e decide qualche passo più avanti, con una
+  correzione per la lunghezza che attenua senza toglierla la preferenza del
+  modello per le frasi corte. Per questo, oltre una certa quota, più
+  esploratori danno traduzioni peggiori.
 - Un testo generato si giudica confrontandolo con quello di una persona, e il
   verso del confronto dipende da quale errore costa. In traduzione costa
   inventare, e si guarda quante parole della macchina stanno nella versione
@@ -1017,8 +1104,8 @@ Transformer.
   della versione umana stanno in quella della macchina (ROUGE). Chi legge
   un punteggio senza sapere in che verso è fatto legge un numero e basta.
 - Nel 2016 la traduzione neurale entra in produzione con GNMT di Google; nel
-  2017 *Attention Is All You Need* manda in soffitta la lettura passo dopo
-  passo e tiene solo l'attenzione.
+  2017 il Transformer manda in soffitta la lettura passo dopo passo e tiene
+  solo l'attenzione.
 ```
 `````
 
@@ -1033,7 +1120,9 @@ Transformer.
   decoder è unidirezionale per costruzione).
 - Seq2seq: un encoder comprime la frase sorgente in un vettore di
   contesto, un decoder la riscrive nell'altra lingua. Il vettore fisso è un
-  collo di bottiglia sulle frasi lunghe.
+  collo di bottiglia: la qualità dell'encoder–decoder di base cala con la
+  lunghezza della frase (la LSTM profonda di Sutskever, con la sorgente
+  invertita, fa eccezione).
 - L’attenzione di Bahdanau lo elimina: a ogni passo il decoder rivede
   *tutti* gli stati dell'encoder con pesi $\alpha_{ij}$ appresi; è il
   precursore diretto della *scaled dot-product attention* dei Transformer.
@@ -1043,7 +1132,8 @@ Transformer.
   RNN restano comunque $m$ passi in sequenza, con una maschera causale il
   passaggio diventa uno solo. In generazione il condizionamento è su
   $\hat{y}_{<i}$, cioè su prefissi fuori dal supporto dei dati: è l’exposure
-  bias {cite}`ranzato2016sequence`, e si misura come scarto fra l'errore per
+  bias {cite}`ranzato2016sequence`, lo spostamento di distribuzione della
+  clonazione comportamentale, e si misura come scarto fra l'errore per
   token con prefisso vero e quello con prefisso proprio, non sulla quota di
   sequenze intatte, che scende uguale anche senza. Rimedi: *scheduled sampling*
   {cite}`bengio2015scheduled`, il cui obiettivo è però improprio e lo stimatore
@@ -1053,7 +1143,9 @@ Transformer.
   aperte le $k$ ipotesi migliori (con una *length penalty* per non penalizzare
   le frasi lunghe). Allargare il fascio riduce gli errori di ricerca ma oltre
   un'ampiezza ottima la traduzione peggiora, perché il massimo del modello
-  premia il troppo corto {cite}`koehn2017six`.
+  premia il troppo corto {cite}`koehn2017six`, fino alla traduzione vuota
+  {cite}`stahlberg2019nmt`. Nella generazione aperta il massimo è generico, e
+  si campiona.
 - BLEU {cite}`papineni2002bleu` è precisione di $n$-grammi con *clipping*,
   frenata dalla *brevity penalty*: definito sul corpus, dipendente dal
   protocollo, cieco alla parafrasi. Nel 2014 la rete pura ($34{,}8$) supera il
@@ -1066,7 +1158,8 @@ Transformer.
   usa la sottosequenza comune più lunga, che vede l'ordine senza pretendere la
   contiguità e non chiede di fissare $n$; si riportano le $F_1$ perché un
   richiamo puro premia il candidato lungo.
-- Nel 2016 la traduzione neurale entra in produzione con GNMT; nel 2017
-  *Attention Is All You Need* fa cadere la ricorrenza.
+- Nel 2016 la traduzione neurale entra in produzione con GNMT (valutazione
+  umana su frasi semplici e isolate); nel 2017 il Transformer fa cadere la
+  ricorrenza.
 ```
 `````

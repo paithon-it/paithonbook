@@ -1,10 +1,14 @@
 # Piegare la generazione: guida, vincoli, preferenze
 
 Il sorpasso sulle GAN del 2021 lo firmano Prafulla Dhariwal e Alex Nichol
-{cite}`dhariwal2021diffusion`, e lo devono per metà a un'architettura migliore
-e per metà a un'aggiunta che, a leggerla, sembra un espediente: si addestra un
-classificatore a riconoscere le categorie su immagini rumorose, e durante
-la generazione si spinge l'immagine, a ogni passo, nella direzione che al
+{cite}`dhariwal2021diffusion`, con due ingredienti che pesano diversamente a
+seconda del compito. Uno è un'architettura migliore, che da sola basta quando
+si genera senza indicare che cosa. L'altro, quando si chiede una categoria, è
+un'aggiunta che a leggerla sembra un espediente: su ImageNet $256\times256$
+l'architettura senza aggiunte arriva a un FID di $10{,}94$, peggio dei $6{,}95$
+della migliore GAN, e con l'aggiunta scende a $4{,}59$. Si addestra un
+classificatore a riconoscere le categorie su immagini rumorose, e durante la
+generazione si spinge l'immagine, a ogni passo, nella direzione che al
 classificatore piace di più.
 
 L'espediente non era un espediente. Discendeva da una riga di teorema di
@@ -32,12 +36,12 @@ più la direzione verso «cose che a un riconoscitore di gatti sembrano gatti».
 Due bussole che si sommano, e la somma è la strada.
 
 Da qui le due ricette. La prima, quella del 2021, prende la seconda bussola da
-un riconoscitore addestrato a parte: si guarda quanto il riconoscitore è
-convinto, si calcola in che direzione ritoccare i pixel per convincerlo di
-più, e si somma. Funziona, e ha due costi: bisogna avere un riconoscitore, e
-bisogna averlo addestrato su immagini rumorose, perché è su quelle che verrà
-interrogato (un riconoscitore normale, davanti a un'immagine mezza distrutta,
-risponde a caso).
+un riconoscitore addestrato a parte (in gergo, un classificatore): si guarda
+quanto il riconoscitore è convinto, si calcola in che direzione ritoccare i
+pixel per convincerlo di più, e si somma. Funziona, e ha due costi: bisogna
+avere un riconoscitore, e bisogna averlo addestrato su immagini rumorose, perché
+è su quelle che verrà interrogato (un riconoscitore normale, davanti a
+un'immagine mezza distrutta, risponde a caso).
 
 La seconda ricetta, quella che si usa oggi, si accorge che il riconoscitore si
 può togliere: la stessa rete, interrogata due volte (con e senza la richiesta),
@@ -97,6 +101,16 @@ $$
 - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t,\varnothing)\big) .
 $$
 
+Riscritta sui punteggi, con la convenzione $w = 1$ per la condizionata, la
+combinazione è $(1-w)\,\mathbf{s}_\varnothing + w\,\mathbf{s}_c$, il
+punteggio formale di $p(\mathbf{x}\mid c)^w\,p(\mathbf{x})^{1-w} \propto
+p(\mathbf{x})\,p(c\mid\mathbf{x})^w$: per $w > 1$ l'esponente della non
+condizionata è negativo, ed è questo che si chiama estrapolazione. La guida
+costa due valutazioni della rete per passo, e si può anche distillare nel
+modello: una rete che riceve $w$ come ingresso e restituisce in una sola
+valutazione la predizione guidata {cite}`meng2023distillation`, che è la
+strada dei generatori a pochi passi.
+
 **Il punto che va dichiarato.** Per $w=1$ questa è esattamente
 $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,c)$, cioè il campionamento dalla
 condizionata vera, e la formula di Bayes è rispettata; per $w>1$ non lo è più,
@@ -119,12 +133,13 @@ differenza si misura.
 
 ## Che cosa la guida fa davvero alla distribuzione
 
-Il banco di prova è quello che il capitolo usa da qualche sezione, e qui
-guadagna una cosa. Al posto delle immagini ci sono numeri su una riga,
-raccolti in due mucchietti, e adesso ogni mucchietto ha anche una sua
-larghezza, così si può misurare di quanto la guida lo stringe. Delle due
-bussole si conosce la formula esatta, quindi quello che si misura è la guida e
-non gli errori di una rete.
+Il banco di prova è quello che il capitolo usa da qualche sezione, con una
+modifica: ogni classe è una gaussiana di deviazione $0{,}5$ attorno al suo
+centro, $-1{,}5$ o $+1{,}5$, così si può misurare anche di quanto la guida
+restringe la distribuzione. Il punteggio condizionato e quello libero (la
+miscela delle due classi) hanno forma chiusa, quindi quello che si misura è la
+guida e non gli errori di una rete: nella scena delle bussole, sono le due
+bussole esatte.
 
 ```python
 import numpy as np
@@ -183,14 +198,14 @@ for forza in (1.0, 3.0, 7.5):
 `````{tab} Elementare
 
 I dati veri, per la classe scelta, hanno centro in $1{,}5$ e larghezza $0{,}5$.
-Con la forza a uno il campionatore li ritrova, e l'ultimo millesimo di scarto è
-l'errore dei passi finiti: è la riga di controllo che dice che il conto è
-giusto.
+Con la forza a uno il campionatore li ritrova ($1{,}499$ e $0{,}498$: il
+millesimo che manca è l'errore dei passi finiti), ed è il controllo che dice
+che il conto è giusto.
 
-La colonna di destra è la previsione. C'è una formula che circola e che dice
-quanto la guida dovrebbe spostare le cose, e quella colonna la applica: prevede
-che alzando la forza fino a sette e mezzo il centro si sposti di otto millesimi
-e la larghezza cali di un centesimo, cioè quasi niente.
+C'è poi una formula che circola e che dice quanto la guida dovrebbe spostare le
+cose. Applicata a questo caso, prevede che alzando la forza fino a sette e
+mezzo il centro si sposti di otto millesimi e la larghezza cali di un
+centesimo, cioè quasi niente.
 
 Quello che succede davvero è un'altra storia, e sono due cose insieme. La
 distribuzione si restringe: da $0{,}5$ scende a $0{,}31$ e poi a $0{,}25$,
@@ -242,7 +257,9 @@ La ragione è che l'operazione di inclinazione e quella di diffusione non
 commutano. Il punteggio inclinato al tempo $t$,
 $\nabla\log p_t + w\nabla\log p_t(c\mid\cdot)$, non è il punteggio al tempo $t$
 della distribuzione che si otterrebbe diffondendo $q_w$: l'errore si accumula a
-ogni passo e produce una deriva sistematica verso l'esterno del supporto.
+ogni passo. Sul banco di prova, con due classi simmetriche e ciascuna
+gaussiana, l'effetto è una deriva verso l'esterno, lontano dall'altra classe;
+in generale la direzione della deriva dipende dalla geometria delle classi.
 
 Le mitigazioni in uso derivano tutte da questa diagnosi:
 
@@ -297,8 +314,8 @@ mano, ma alla stima dell'immagine pulita che il modello sa già produrre in
 ogni istante. Un misuratore di qualità estetica davanti a un'immagine mezza
 distrutta risponde a caso, e la sua indicazione sarebbe rumore; davanti alla
 stima di come quell'immagine finirà, risponde sensatamente. È il motivo per cui
-i metodi che aggiungono vincoli a un modello di diffusione hanno tutti la
-stessa forma, e passano tutti da quella stima.
+la maggior parte dei metodi che aggiungono vincoli a un modello di diffusione,
+senza riaddestrarlo, passa da quella stima.
 
 C'è un caso in cui questa sola idea copre una famiglia intera di problemi.
 Ricostruire la parte mancante di una foto, tirar fuori i dettagli da
@@ -498,12 +515,12 @@ for da, a in ((0.8, 1.0), (0.6, 0.8), (0.4, 0.6), (0.2, 0.4), (0.0, 0.2)):
 
 La misura dice una cosa netta e una che il banco di prova non può dire.
 
-Quella netta: il danno si fa in mezzo alla strada, e le due colonne di
-destra si muovono insieme. Accendendo la guida soltanto nel primo quinto, dove
-il rumore è massimo, il centro si sposta di $0{,}161$, e le due bussole lì
-distano $0{,}028$; soltanto nell'ultimo, dove i dati sono vicini, lo
-spostamento è $0{,}046$ e la distanza $0{,}027$. Nella fascia fra $0{,}4$ e
-$0{,}6$ la distanza sale a $0{,}203$ e lo spostamento a $0{,}699$. La ragione è
+Quella netta: il danno si fa a metà strada. Accesa soltanto nel primo quinto,
+dove il rumore è massimo, la guida sposta il centro di $0{,}161$; soltanto
+nell'ultimo, dove i dati sono vicini, di $0{,}046$; nella fascia fra $0{,}4$ e
+$0{,}6$ di $0{,}699$. E lo spostamento (la colonna «scarto») va di pari passo
+con la distanza fra le due bussole (la colonna «divario»): $0{,}028$ nel primo
+quinto, $0{,}027$ nell'ultimo, $0{,}203$ in mezzo. La ragione è
 tutta lì: a rumore massimo l'immagine è ancora tutta grana, la classe non si
 vede, le due bussole indicano quasi la stessa direzione, e moltiplicare per
 sette e mezzo una differenza che è quasi zero non sposta niente; alla fine il

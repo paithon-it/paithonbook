@@ -5,7 +5,7 @@
   di book/_static/brand/tokens.css.
   fonte: ../fine-tuning-rag-o-prompt.svg
 -->
-<svg viewBox="0 0 720 620" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Albero di decisione: si parte sempre dal prompt, che è la leva più economica; se non basta e al modello mancano fatti o documenti propri si aggiunge il RAG; se non basta e serve un comportamento costante su molti casi si passa al fine-tuning; altrimenti si torna a riscrivere il prompt e a misurare">
+<svg viewBox="0 0 720 620" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Albero di decisione: si parte sempre dal prompt, che è la strada più economica; se non basta e al modello mancano fatti o documenti propri si aggiunge il RAG; se non basta e serve un comportamento costante su molti casi si passa al fine-tuning; altrimenti si torna a riscrivere il prompt e a misurare">
   <rect x="0" y="0" width="720" height="620" fill="#0E0C0A"/>
   <text x="360" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Da dove cominciare, e quando salire</text>
 

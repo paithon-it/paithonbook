@@ -24,8 +24,8 @@ si legge affatto, e interrogarlo da fuori: gli si passano dei casi, si guardano
 le risposte, e si deduce il resto. È la scatola nera dell'apertura del
 capitolo; un modello che si legge, per contrasto, si dice scatola bianca.
 
-Questa sezione percorre la prima strada per intero, e poi imbocca la seconda
-con il primo attrezzo che vi si incontra: una classifica delle colonne dei dati,
+La prima strada si percorre per intero; della seconda si prende il primo
+attrezzo che vi si incontra: una classifica delle colonne dei dati,
 ordinate per quanto pesano sulle risposte. Le colonne di una tabella di dati si
 chiamano feature, e quella classifica si chiama quindi **importanza delle
 feature**. Per un panorama sistematico dell'intero campo il riferimento è il
@@ -41,8 +41,9 @@ modelli incontrati nella {doc}`sezione sull'apprendimento supervisionato
 lineare (quando la risposta è una quantità, un prezzo) e regressione logistica
 (quando è un sì o un no). Quei numeri, uno per colonna, si chiamano pesi
 (o, con la parola che si usa più spesso in statistica, **coefficienti**: sono
-la stessa cosa), e una somma fatta così si dice pesata. Il punto è che quei
-pesi *sono* la storia che il modello racconta: non c'è altro da sapere.
+la stessa cosa), e una somma fatta così si dice pesata. Quei pesi descrivono
+per intero come il modello calcola la risposta: non c'è un altro conto
+nascosto da qualche parte.
 
 ```{figure} ../figures/regressione-lineare.svg
 :name: fig-retta-residui
@@ -56,13 +57,16 @@ li rende complessivamente più piccoli, e li lascia tutti in bella vista.
 ```
 
 C'è una qualità di {numref}`fig-retta-residui` che un modello con milioni di
-numeri dentro non ha, ed è il motivo di questa sezione: la regola che ha
-prodotto quella retta si legge per intero, ed è una riga sola di somma. I
+numeri dentro non ha, ed è la ragione per cui si comincia da qui: la regola che
+ha prodotto quella retta si legge per intero, ed è una riga sola di somma. I
 residui, invece, si misurano per qualunque modello, perché basta confrontare la
-risposta con la verità. Quello che con un modello opaco non si può fare è
-aprire la regola e vedere quale pezzo del conto ha prodotto proprio quella
-risposta. Trasparente non vuol dire accurato: vuol dire che non c'è niente da
-scoprire dopo.
+risposta con la verità. Quello che con un modello opaco non si può fare è aprire
+la regola e vedere quale pezzo del conto ha prodotto proprio quella risposta.
+Un modello è trasparente quando una persona può leggere per intero la
+procedura con cui calcola la risposta, e questo vale finché il modello resta
+piccolo: pochi coefficienti, un albero poco profondo. Una somma con diecimila
+voci o un albero con trenta livelli di domande sono fatti allo stesso modo, ma
+nessuno li legge più. E trasparente, comunque, non vuol dire accurato.
 
 `````{tab} Elementare
 
@@ -92,7 +96,10 @@ ogni 30 metri quadri, il cartellino del metro quadro può scendere di 100 € e
 quello della stanza salire di $3\,000$ €, e il totale resta $210\,000$ €
 (novanta metri fanno $-9\,000$ €, tre stanze $+9\,000$ €), e resta quasi uguale
 su tutte le case fatte così. Il prezzo finale regge; quale
-delle due righe se lo meriti, non lo dice più nessuno.
+delle due righe se lo meriti, non lo dice più nessuno. È il limite della
+ricevuta: quando due voci vanno sempre insieme, i dati fissano bene il loro
+totale e male la spartizione, e i due cartellini, letti uno per uno, possono
+raccontare una storia che con un altro campione di case sarebbe diversa.
 
 Vale lo stesso per la regressione logistica, che al posto di una quantità dà
 una probabilità: non «sì» o «no» secchi, ma «questo cliente restituirà il
@@ -101,7 +108,9 @@ probabilità: un totale può venire enorme o negativo, mentre una probabilità s
 fra zero e uno, e un ultimo passaggio lo schiaccia dentro quell'intervallo. I
 pesi si leggono comunque uno per uno, e il segno dice da che parte tira
 ciascuno, verso il sì o verso il no. Un modello così si stampa su mezza pagina
-e si discute con chi non ha mai visto una formula.
+e si discute con chi non ha mai visto una formula, finché le voci sono poche:
+una ricevuta di diecimila righe si legge riga per riga, ma tutta insieme non la
+tiene in testa nessuno.
 
 `````
 
@@ -146,6 +155,16 @@ stessa multicollinearità che rende preziosa la regolarizzazione Ridge e Lasso
 della {doc}`sezione sull'overfitting
 </MachineLearning/overfitting-validazione>`,
 al prezzo di una stima distorta.
+
+Che cosa voglia dire «trasparente» lo precisa Lipton {cite}`lipton2018mythos`,
+che ne distingue tre livelli: un modello è *simulabile* se una persona può
+eseguirne a mente il calcolo per intero, *scomponibile* se ogni sua parte (un
+coefficiente, una soglia) ha un'interpretazione, *algoritmicamente
+trasparente* se si capisce come l'addestramento ci arriva. Il primo livello
+dipende dalla dimensione e non dalla famiglia: una regressione su migliaia di
+feature, una lista di regole ingestibile o un albero profondo smettono di
+essere simulabili, ed è per questo che Lipton nega che lineari, regole e alberi
+siano interpretabili di per sé.
 
 `````
 
@@ -229,9 +248,11 @@ in un modo che si può leggere riga per riga.
 Un sistema a regole si può anche far scrivere ai dati. **RuleFit**, di Jerome
 Friedman e Bogdan Popescu {cite}`friedman2008predictive`, prende un insieme di
 alberi già addestrato, ne smonta ogni percorso in una regola del tipo «SE … E …»
-e fa scegliere a un Lasso, la regolarizzazione L1 della {doc}`sezione
-sull'overfitting </MachineLearning/overfitting-validazione>`, le poche regole
-che servono, accanto a un termine lineare per ogni colonna.
+e fa scegliere a un Lasso le poche regole che servono, accanto a un termine
+lineare per ogni colonna. Il Lasso è una regressione che fa pagare ogni
+coefficiente diverso da zero, e per questo ne azzera molti: è la
+regolarizzazione L1 della {doc}`sezione sull'overfitting
+</MachineLearning/overfitting-validazione>`.
 
 `````{tab} Elementare
 
@@ -259,10 +280,10 @@ Resta una ricevuta corta, e le frasi con più di una condizione dicono le cose
 che nessun termine per colonna saprebbe dire, come «l'età conta solo se il
 reddito è basso».
 
-Proprio perché ogni punto costa, il Lasso è avaro anche con le frasi utili, e i
-punti che assegna escono un po' più bassi del vero. Due frasi quasi uguali si
-possono dividere i punti che spetterebbero a una sola. E se la regola vera non
-ha soglie nette ma cresce piano, servono molte frasi per imitarla, e la ricevuta
+Proprio perché ogni punto costa, il Lasso ne dà un po' meno del giusto anche
+alle frasi che servono. Due frasi quasi uguali si dividono i punti che
+spetterebbero a una sola. E se la regola vera non scatta d'un colpo ma cresce
+piano, per imitarla servono tante frasi, una per ogni gradino, e la ricevuta
 torna lunga. RuleFit non promette di battere gli alberi da cui nasce: promette
 di dire con poche frasi quello che loro dicono con centinaia.
 
@@ -419,39 +440,51 @@ peso dei tre termini più importanti: 92%
 regole sulla sola anzianità: 10; in tutto, per unità: +1.94
 ```
 
-Delle 239 regole candidate (i 300 percorsi dei cinquanta alberi, sei per albero,
-meno quelli che coincidono una volta arrotondate le soglie al centesimo) e dei
-cinque termini lineari il Lasso tiene diciotto termini, e i primi tre portano
-più di nove decimi del peso. In testa c'è la regola nascosta, «età sopra 0,6 E
-reddito sotto 0,4», con $2{,}81$ punti contro i $3$ veri. Una gemella che
-l'arrotondamento non ha fuso, con la soglia a $0{,}59$, se ne prende $0{,}11$, e
-i pochi centesimi che mancano ancora vanno ad altre gemelle minori e al
-restringimento del Lasso. Sull'anzianità si vede l'altro limite. Il suo termine
-lineare vale $1{,}64$ contro $2$, e il restringimento c'entra poco: dieci
-piccole regole a soglia sulla stessa colonna si spartiscono il resto della
-pendenza, che in tutto fa $1{,}94$, e con un altro campione la spartizione
-cambia, e il termine lineare con lei. RuleFit arriva al tetto che il rumore
-consente, lo stesso $R^2$ della regola vera, e supera il boosting da cui nasce
-perché i dati hanno proprio la forma del modello, una regola più una retta, e la
-retta il boosting la può solo imitare a gradini; sulle funzioni simulate del
-lavoro originale il vantaggio medio c'è, ma è piccolo. Il modello lineare si
-ferma a $0{,}47$ perché una regola a soglia fra due colonne non è una somma di
-rette.
+Delle 239 regole candidate (i 300 percorsi dei cinquanta alberi, sei per
+albero, meno quelli che coincidono una volta arrotondate le soglie al
+centesimo) e dei cinque termini lineari il Lasso tiene diciotto termini, e i
+primi tre portano più di nove decimi del peso. In testa c'è la regola nascosta,
+«età sopra 0,6 E reddito sotto 0,4», con $2{,}81$ punti contro i $3$ veri. Una
+parte di quelli che mancano va a una regola quasi identica, con la soglia a
+$0{,}59$ invece che a $0{,}60$, che l'arrotondamento non ha fuso con la prima e
+che si prende $0{,}11$; il resto va ad altre regole quasi uguali, più piccole,
+e al Lasso stesso, che fa pagare ogni punto e quindi ne dà un po' meno del
+giusto. Sull'anzianità si vede l'altro limite. Il suo termine lineare, cioè i
+punti per ogni unità di anzianità, vale $1{,}64$ contro i $2$ veri, e qui
+l'avarizia del Lasso c'entra poco: dieci piccole regole a soglia sulla sola
+anzianità aggiungono ciascuna un gradino, e gradini e termine lineare insieme
+fanno salire la previsione di $1{,}94$ per unità. Con un altro campione la
+spartizione fra gradini e retta cambierebbe, e il termine lineare con lei.
+RuleFit arriva al tetto che il rumore consente, lo stesso $R^2$ della regola
+vera, e supera il boosting da cui nasce perché i dati hanno proprio la forma
+del modello, una regola più una retta, e la retta il boosting la può solo
+imitare a gradini; sulle funzioni simulate del lavoro originale il vantaggio
+medio c'è, ma è piccolo. Il modello lineare si ferma a $0{,}47$ perché una
+regola a soglia fra due colonne non è una somma di rette.
 
-Aleggia però un pregiudizio diffuso: che la trasparenza si paghi in
-accuratezza, che per essere bravi si debba per forza essere oscuri. È vero solo
-in parte.
+Si sente dire che la trasparenza si paghi in accuratezza. Dipende dai dati, e
+l'apertura del capitolo ha già detto dove: su tabelle con colonne che hanno un
+senso il divario fra un modello trasparente ben costruito e una scatola nera è
+spesso piccolo o nullo, su immagini, testo e suoni le reti profonde sono
+nettamente più accurate. Resta da vedere come si costruisce, su una tabella, un
+modello trasparente che regga il confronto con quello che lì va più forte.
 
 `````{tab} Elementare
 
-Della sostanza si è già detto nell'apertura del capitolo, sui fiori: su tanti
-problemi a righe e colonne un modello trasparente ben costruito arriva
-vicinissimo, a volte alla pari, con la scatola nera, mentre su immagini, testo e
-suoni le reti profonde vincono senza rivali. La differenza sta nel materiale. In
-una tabella clinica le colonne hanno già un senso, l'età è l'età e la pressione
-è la pressione; in una fotografia ci sono soltanto milioni di puntini colorati,
-e prima di riconoscere un gatto il modello deve scoprire da solo che cosa
-guardare.
+Sulle tabelle il modello da battere è di solito il boosting: centinaia di
+alberi costruiti uno dopo l'altro, ciascuno a correggere gli errori dei
+precedenti, e nessuno sa leggerlo. Lo si può però costringere a lavorare in un
+altro modo. A ogni giro un alberello minuscolo che guarda una colonna sola, a
+turno: prima l'età, poi il reddito, poi la pressione, e di nuovo da capo. Alla
+fine tutti gli alberelli dell'età si sommano in una curva sola, quanto pesa
+l'età a ogni età, e lo stesso per ogni colonna. È di nuovo una ricevuta, una
+voce per colonna, solo che al posto del cartellino fisso c'è una curva; ci si
+aggiungono poche voci a due colonne, per le coppie che contano davvero insieme,
+scelte provandole tutte in fretta.
+
+Con un modello di questo tipo Caruana e colleghi sono tornati sui pazienti con
+la polmonite dell'apertura: la voce dell'asma abbassava il rischio, si vedeva a
+occhio, e una volta vista la si è potuta correggere a mano.
 
 Ne segue un consiglio pratico, di buon senso: parti dal modello trasparente e
 misura quanto perdi davvero passando a uno più complicato, invece di darlo
@@ -503,11 +536,10 @@ sia. La prima domanda, la più naturale, è: su quali colonne si regge?
 Vogliamo cioè una classifica delle feature, ordinate per quanto contano nelle
 risposte.
 
-Prima di costruirla, conviene togliere di mezzo un equivoco. Chi misura quanto
-contano le colonne, di solito, lo fa per poi buttarne via qualcuna: si
-misura, si tira una riga, e le colonne che restano sotto si eliminano dai dati.
-Quel secondo passo si chiama **selezione delle feature**, viene subito dopo il
-primo e per questo lo si confonde con lui, ma è un'altra cosa.
+Spesso la classifica si misura per buttare via qualche colonna: si tira una
+riga, e le colonne che restano sotto si eliminano dai dati. Quel secondo passo
+si chiama **selezione delle feature**, e viene così subito dopo il primo che lo
+si confonde con lui.
 
 ```{figure} ../figures/feature-selection.svg
 :name: fig-feature-selection
@@ -519,22 +551,21 @@ punteggio scritto sotto è uno dei tanti possibili. A destra si è deciso, e son
 rimaste tre colonne su otto.
 ```
 
-La differenza fra i due passi che {numref}`fig-feature-selection` affianca è di
-natura, non di ordine. Una classifica è un fatto misurabile: si misura, e viene
-quel che viene. La riga tratteggiata invece non la dice nessun dato, la decide
-una persona, e va giustificata con qualcosa d'altro: il costo di raccogliere
-una colonna, un vincolo di leggibilità, una prova che il modello ridotto non
-peggiora. Quello di cui parliamo da qui in avanti è la classifica, non la riga
-tratteggiata.
+I due passi che {numref}`fig-feature-selection` affianca sono di natura
+diversa. Una classifica si misura, e viene quel che viene. La riga tratteggiata
+invece non la dice nessun dato: la decide una persona, e va giustificata con
+qualcosa d'altro, il costo di raccogliere una colonna, un vincolo di
+leggibilità, una prova che il modello ridotto non peggiora. Qui interessa la
+classifica.
 
-Cominciamo dal modo più generale e più solido di costruirla. È un metodo che non
-guarda dentro il modello: lo tratta da scatola nera, gli passa dei casi e si
-tiene solo le risposte, quindi funziona con qualunque cosa.
+Cominciamo dal modo più generale di costruirla. È un metodo che non guarda
+dentro il modello: lo tratta da scatola nera, gli passa dei casi e si tiene
+solo le risposte, quindi funziona con qualunque modello.
 
 ### L'importanza per rimescolamento
 
-L'ha proposto Leo Breiman nel 2001, insieme alle foreste casuali, ed è di una
-semplicità che quasi offende.
+L'ha proposto Leo Breiman nel 2001 per le foreste casuali, e Fisher, Rudin e
+Dominici l'hanno poi formalizzato per un modello qualsiasi.
 
 `````{tab} Elementare
 
@@ -561,14 +592,16 @@ Rimescolare i valori di una colonna, in matematica, si dice **permutarli**: da
 qui il nome con cui il metodo si trova nelle librerie, *permutation
 importance*.
 
-C'è un caso in cui quel calo va letto con attenzione, ed è quando due colonne
-dicono quasi la stessa cosa. Se la tabella tiene anche quanto il cliente versa
-ogni mese sul conto, rimescolare il reddito non fa danni: il modello legge
-l'altra colonna e il calo resta piccolo. Quel numero basso è vero se la domanda
-è di che cosa il modello ha bisogno, perché gli basta una delle due colonne;
-inganna chi ci legge quanta informazione porti il reddito, che ne porta eccome.
-È il bivio dell'apertura, quello fra spiegare il programma e spiegare il mondo,
-che torna qui con un numero.
+C'è un caso in cui quel calo va letto con attenzione, ed è quello delle
+colonne gemelle dell'apertura. Se la tabella tiene, accanto al reddito
+dell'anno, anche lo stipendio del mese, rimescolare il reddito non fa danni: il
+modello legge l'altra colonna e il calo resta piccolo. Quel numero basso è vero
+se la domanda è di che cosa il modello ha bisogno, perché gli basta una delle
+due colonne; inganna chi ci legge quanta informazione porti il reddito, che ne
+porta eccome. È il bivio dell'apertura, quello fra spiegare il programma e
+spiegare il mondo, che torna qui con un numero. Il rimedio è rimescolare le due
+gemelle insieme, con lo stesso giro di carte: il calo che ne esce dice quanto
+valgono le due assieme, comunque il modello se le sia spartite.
 
 C'è poi il guasto opposto, e viene dal rimescolamento stesso: si fabbricano
 clienti impossibili, un ventenne con la pensione di un ex dirigente. Su gente
@@ -618,40 +651,41 @@ combinazioni irrealistiche, ma accentua la sottostima, perché a ciascuna delle
 due colonne gemelle resta soltanto l'informazione che aggiunge all'altra. E la
 sottostima pesa su chi chiede «quanta informazione porta *questa colonna*»; a
 chi chiede «di che cosa ha bisogno *questo modello*» quel valore basso risponde
-il vero, ed è la forcella vista in apertura di capitolo.
+il vero, ed è la forcella vista in apertura di capitolo. Il rimedio pratico
+alla sottostima è l'importanza *di gruppo*: si applica la stessa permutazione
+delle righe a tutte le colonne di un gruppo correlato e si legge l'importanza
+dell'insieme, che non dipende da come il modello si è spartito il lavoro fra
+loro. Quanto all'incertezza, la deviazione standard che accompagna
+$\mathrm{FI}_j$ misura la variabilità dei rimescolamenti, non quella del
+campione di valutazione: con poche righe di prova sottostima l'incertezza
+vera.
 
 `````
 
 ### Importanza da impurità (e la sua distorsione)
 
-C'è un secondo modo di fare la classifica, e viene gratis con gli alberi. Per
-capirlo bisogna sapere come un albero sceglie le sue domande.
+C'è un secondo modo di fare la classifica, e viene gratis con gli alberi.
 
-Un albero decide dove tagliare guardando quanto un taglio *ordina* le risposte.
-Prima del taglio un gruppo di esempi tiene dentro risposte mescolate; il taglio
-lo divide in due gruppi, e il taglio buono è quello che rende i due gruppi il
-più possibile omogenei. Quanto un gruppo è mescolato si chiama **impurità**, e
-si misura con formule dai nomi tecnici (l'indice di Gini, l'entropia) che non
-cambiano l'idea: massima quando le risposte dentro il gruppo sono di tutti i
-tipi, zero quando sono tutte uguali. Ogni taglio (in inglese split) fa
-scendere l'impurità di un tanto, e quel tanto è il merito che si accredita alla
-colonna su cui il taglio è stato fatto. Il taglio, si badi, è una domanda con un
-numero dentro: «il reddito supera i 30 000?». Quel numero si chiama soglia,
-e per una colonna con tanti valori diversi le soglie fra cui scegliere sono
-tantissime.
+Ogni taglio di un albero (in inglese *split*) è una domanda con una soglia
+dentro, «il reddito supera i 30 000?», e l'albero sceglie la colonna e la
+soglia che rendono più omogenei i due gruppi di esempi in cui il taglio divide
+il nodo. Quanto un gruppo è mescolato si chiama **impurità**, e si misura con
+l'indice di Gini o con l'entropia, già incontrati nella {doc}`sezione su alberi
+e metodi ensemble </MachineLearning/alberi-ensemble>`: è massima quando nel
+gruppo ci sono risposte di tutti i tipi, zero quando sono tutte uguali. Il calo
+d'impurità che un taglio produce è il merito che si accredita alla colonna su
+cui il taglio è stato fatto. E per una colonna con tanti valori
+diversi le soglie fra cui scegliere sono tantissime.
 
-L'albero, dunque, mentre impara tiene già il conto di questi meriti. Basta
-sommarli, e la classifica è fatta senza fare nient'altro. Lo stesso vale per
-una foresta casuale, i cui alberi sono già stati incontrati in apertura di
-capitolo: sono centinaia, e ciascuno cresce su un campione diverso delle
-righe, estratto a sorte, e a seconda delle impostazioni anche su un
-sottoinsieme diverso delle colonne. Da lì il «casuale». Le loro risposte si
-mettono ai voti, e i meriti si sommano su tutti gli alberi. Questa misura si
-chiama, con la sigla inglese che si trova ovunque, **MDI** (*mean decrease in
-impurity*, cioè calo medio dell'impurità), ed è quella che nella sezione sugli
-alberi e gli insiemi di modelli del capitolo sul machine learning si leggeva
-da `feature_importances_`. È rapidissima, perché non c'è niente da calcolare
-dopo, ma va letta con prudenza, per due ragioni da rendere esplicite.
+L'albero, dunque, mentre impara tiene già il conto di questi meriti, e basta
+sommarli per avere la classifica. In una foresta casuale, come quella
+dell'apertura del capitolo, i meriti si sommano su tutti gli alberi, che sono
+centinaia e crescono ciascuno su un campione delle righe estratto a sorte (e,
+a seconda delle impostazioni, su un sottoinsieme a sorte delle colonne). Questa
+misura si chiama, con la sigla inglese che si trova ovunque, **MDI** (*mean
+decrease in impurity*, cioè calo medio dell'impurità), ed è quella che
+`scikit-learn` restituisce in `feature_importances_`. È rapidissima, perché non
+c'è niente da calcolare dopo, ma va letta con prudenza, per due ragioni.
 
 `````{tab} Elementare
 
@@ -678,11 +712,34 @@ memoria una
 particolarità di quei dati che non si ripeterà altrove (si dice che il modello
 sovradatta). Il merito resta accreditato lo stesso. Il rimescolamento, che
 si può misurare su esempi che il modello non ha mai visto, di questo problema
-non soffre: ed è la ragione per cui, dovendo scegliere, ci si fida di quello.
+non soffre: a una colonna inutile dà zero in media, anche se su quelle con
+tanti valori, che gli alberi usano di più, il risultato oscilla di più da una
+prova all'altra. Ed è la ragione per cui, dovendo scegliere, ci si fida di
+quello.
 
 `````
 
 `````{tab} Superiore
+
+Prima la definizione. Nell'albero $t$ ogni nodo interno $v$ divide i suoi $n_v$
+esempi in un figlio sinistro $L$ e uno destro $R$, con una riduzione di
+impurità pesata
+$\Delta i(v) = i(v) - \frac{n_L}{n_v}\,i(L) - \frac{n_R}{n_v}\,i(R)$, dove $i$
+è l'indice di Gini o l'entropia in classificazione e la varianza in
+regressione. L'importanza della feature $j$ nell'albero è la somma dei
+$\frac{n_v}{n}\,\Delta i(v)$ sui nodi $v$ che tagliano su $j$, con $n$ gli
+esempi alla radice; `scikit-learn` la normalizza perché sommi a uno su tutte le
+feature dell'albero, e poi media sui $T$ alberi:
+
+$$
+\mathrm{MDI}_j = \frac{1}{T}\sum_{t=1}^{T}
+\frac{\sum_{v \in t:\, j(v) = j} \frac{n_v}{n}\,\Delta i(v)}
+     {\sum_{v \in t} \frac{n_v}{n}\,\Delta i(v)},
+$$
+
+con $j(v)$ la feature su cui taglia il nodo $v$ (in una foresta $n_v$ conta gli
+esempi del campione bootstrap, ripetizioni comprese). Poiché $i$ è concava,
+$\Delta i(v) \ge 0$ per ogni taglio: la MDI non può essere negativa.
 
 Il bias della MDI è verso le feature ad alta cardinalità e quelle
 continue, ed è stato stabilito da Strobl, Boulesteix, Zeileis e Hothorn
@@ -694,8 +751,9 @@ tagli equivale a un test statistico con molte comparazioni (una feature
 puramente casuale ma continua ottiene, in aspettazione, un guadagno positivo
 per sovradattamento locale). La seconda sta nel campionamento bootstrap con
 reimmissione, che è il default di `RandomForestRegressor`: pescare con
-ripetizione induce fra le variabili associazioni che nella popolazione non ci
-sono, e l'effetto è tanto più marcato quanti più valori la variabile ha. A
+ripetizione induce fra le feature e la risposta associazioni che nella
+popolazione non ci sono, e l'effetto è tanto più marcato quanti più valori la
+feature ha. A
 queste si aggiunge il fatto, indipendente dai due, che la stessa documentazione
 di `scikit-learn` ricorda: `feature_importances_` è calcolata sul *training
 set*, quindi ogni colonna su cui gli alberi hanno tagliato accumula merito
@@ -705,14 +763,18 @@ Rispetto alla permutation importance, la MDI ha due svantaggi: è legata alla
 struttura interna del modello (vale solo per gli alberi) ed è misurata sui dati
 di addestramento. La permutazione, calcolata su un *hold-out*, è model-agnostic
 e riflette la generalizzazione; è la stima che la sezione sugli alberi e gli
-ensemble già raccomandava di preferire. Con una precisazione che il lavoro di
-Strobl impone:
-la permutazione non è immune per natura al secondo meccanismo, e la loro
-soluzione completa prevede alberi a selezione non distorta *più* subsampling
-senza reimmissione. Quello che mette al riparo la stima raccomandata qui è che
-`sklearn.inspection.permutation_importance` si calcola su un hold-out
-indipendente, non OOB sui campioni bootstrap: è la circostanza che toglie di
-mezzo il meccanismo, non una proprietà della permutazione in sé. Entrambe,
+ensemble già raccomandava di preferire. Nemmeno la permutazione, però, esce
+indenne dal lavoro di Strobl. Calcolata come nelle foreste di Breiman, sugli
+esempi rimasti fuori dal campione bootstrap di ciascun albero, sulle colonne
+inutili ha media vicina a zero, come deve, ma una dispersione che cresce con il
+numero di valori distinti, perché gli alberi le usano di più: in una singola
+prova una colonna con tanti valori può risultare sopra o sottostimata per puro
+caso. La loro soluzione completa prevede alberi a selezione non distorta *più*
+sottocampionamento senza reimmissione. Su un campione di prova indipendente,
+poi, una colonna di puro rumore, indipendente dalla risposta e dalle altre
+colonne, ha importanza attesa esattamente nulla per qualunque modello fissato,
+comunque gli alberi l'abbiano usata: rimescolarla non cambia la distribuzione
+congiunta dei dati, quindi in media non può cambiare l'errore. Entrambe,
 comunque, restano misure di importanza globale: dicono quanto una feature
 conta *in media su tutto il dataset*, non per la singola predizione.
 
@@ -765,7 +827,9 @@ avere quarantun anni, non cinquanta.
 Poi quegli scalini si sommano uno dopo l'altro, dal primo all'ultimo (ecco gli
 «accumulati»): il primo parte da zero, il secondo si appoggia sul primo, e la
 scaletta che viene fuori è la curva. Si preferisce al PDP proprio quando le
-colonne si muovono insieme.
+colonne si muovono insieme. Una scaletta per l'età, però, racconta l'età da
+sola: se l'età conta in un modo per chi guadagna poco e in un altro per chi
+guadagna tanto, per vederlo serve una scaletta a due colonne insieme.
 
 `````
 
@@ -809,7 +873,12 @@ esempi, così che l'effetto medio sia nullo. Ogni esempio viene spostato solo
 fino ai bordi del proprio intervallo, mai fino a un valore lontano, e lì sta la
 protezione dall'estrapolazione; il prezzo è una curva che dipende dal numero di
 intervalli e che, con pochi esempi per intervallo, si fa rumorosa. È la scelta
-da preferire quando le feature sono marcatamente correlate. La scelta fra i due
+da preferire quando le feature sono marcatamente correlate. Costa anche meno:
+PDP e ICE su una griglia di $G$ valori interrogano il modello $G\,m$ volte,
+l'ALE $2m$ volte, perché ogni esempio si porta soltanto ai due estremi del suo
+intervallo. La curva ALE di primo ordine descrive però l'effetto principale di
+$x_j$, e le interazioni con un'altra feature chiedono gli effetti di secondo
+ordine, definiti dagli stessi autori su coppie di feature. La scelta fra i due
 non è fra un metodo giusto e uno sbagliato, ma è di nuovo la forcella
 dell'apertura: il PDP marginale risponde a «che cosa farebbe *questo modello* se
 gli riscrivessi una colonna», l'ALE condizionato a «come si comporta la
@@ -819,8 +888,8 @@ predizione lungo i dati che esistono davvero».
 
 ## In pratica: rimescolamento contro impurità
 
-Torniamo alle due classifiche, quelle di due sezioni fa, e mettiamole a
-confronto su dati veri. Le curve appena viste rispondevano a «come agisce una
+Torniamo alle due classifiche, per rimescolamento e da impurità, e mettiamole
+a confronto su dati veri. Le curve appena viste rispondevano a «come agisce una
 colonna»; adesso si torna alla domanda di prima, «quanto conta», e si guarda
 quale dei due modi di misurarla è affidabile. Ne useremo una raccolta che si
 studia da decenni, distribuita insieme alla libreria `scikit-learn` e che si
@@ -831,12 +900,10 @@ La cosa da prevedere, in ogni riga, è quanto la malattia sarà progredita dopo 
 anno; la colonna da prevedere si chiama, in gergo, il target, ed è l'unica
 che il modello non riceve in ingresso.
 
-I 442 pazienti li dividiamo in due mucchi, come si fa sempre: circa il 70% (309
-righe) serve al modello per imparare, e su quelle diremo che il modello si
-addestra; il restante 30% (133 righe) resta da parte, e il modello lo vedrà
-solo alla fine, per essere messo alla prova su casi che non ha mai incontrato.
-Il primo mucchio si chiama insieme di addestramento, il secondo insieme di
-prova, o *test*. La distinzione fra i due mucchi è metà della morale.
+I 442 pazienti li dividiamo in un insieme di addestramento, circa il 70% (309
+righe), su cui il modello impara, e in un insieme di prova, o *test*, il
+restante 30% (133 righe), che il modello vede solo alla fine, su casi che non
+ha mai incontrato. La distinzione fra i due è metà della morale.
 
 E poi un accorgimento, che è il vero esperimento: aggiungiamo alla tabella
 due colonne inventate, riempite di numeri tirati a sorte e senza alcun
@@ -845,8 +912,9 @@ fra loro), una binaria (soltanto 0 o 1). Sappiamo per costruzione che non
 valgono niente, tutte e due allo stesso modo, e proprio per questo servono:
 sono il metro con cui leggere ciò che le due misure diranno. Su questa tabella a
 dodici colonne facciamo crescere una foresta casuale, e poi chiediamo a
-entrambe le tecniche quali colonne contano. La stampa ordina le dodici
-colonne per importanza da impurità e affianca quella per rimescolamento.
+entrambe le tecniche quali colonne contano. Il programma stampa le dodici
+colonne ordinate per importanza da impurità, con accanto quella per
+rimescolamento.
 
 ```python
 import numpy as np
@@ -899,15 +967,13 @@ rumore_cont   0.0467      +0.004 +/- 0.012     309
 
 Prima di leggere la classifica, i tre numeri che la compongono, uno alla volta.
 
-Il primo dice quanto è bravo il modello, ed è costruito su una scala con due
-paletti. Da una parte c'è chi risponde sempre la media, senza nemmeno guardare
-il paziente: quello prende zero. Dall'altra c'è chi indovina la progressione
-esatta di ogni paziente: quello prende uno. (E si può anche andare sotto zero,
-facendo peggio di chi risponde sempre la media.) Il nostro modello prende
-$0{,}315$, cioè sta a poco meno di un terzo del cammino fra il pigro e
-l'indovino. Quella misura è l’$R^2$, già incontrato con RuleFit, e il numero va
-tenuto a mente: l'importanza che stiamo per leggere descrive *questo* modello,
-che non è bravissimo, non la verità clinica.
+Il primo è l’$R^2$ del modello sui dati di prova, già incontrato con RuleFit:
+vale $1$ per chi indovina la progressione di ogni paziente, $0$ per chi
+risponde sempre la media, e scende sotto zero per chi fa peggio della media. Il
+nostro modello prende $0{,}315$, cioè spiega circa un terzo della variabilità
+della progressione, e il numero va tenuto a mente: l'importanza che stiamo per
+leggere descrive *questo* modello, che non è molto accurato, non la verità
+clinica.
 
 Il secondo, la colonna dell'impurità, è il merito accumulato dai tagli. È
 distribuito su tutte le colonne come una torta: i dodici numeri sommano a 1, e
@@ -950,7 +1016,9 @@ che affermata.
 E il rimescolamento, sulle stesse due colonne inventate, dà $+0{,}004$ e
 $-0{,}002$: zero entrambe, come dev'essere. Su questo non si fa ingannare dal
 numero di valori, perché non guarda le soglie: guarda soltanto se il modello
-peggiora.
+peggiora. Il numero di valori si vede semmai nell'oscillazione, $\pm 0{,}012$
+per la colonna continua, che gli alberi usano di più, contro $\pm 0{,}002$ per
+la binaria.
 
 La riga di `sex`, invece, va letta con prudenza. È una colonna vera, non
 inventata da noi, ed è ferma a $0{,}0075$, cioè al livello del rumore binario, e
@@ -971,24 +1039,26 @@ scegliere bastano perché una colonna debole si guadagni comunque un po’ di
 merito. La seconda è che i meriti sono accreditati sulle stesse 309 righe da
 cui gli alberi hanno imparato: là un taglio su `s3` sembrava utile, sulle 133
 righe di prova non serve più. Due meccanismi diversi, sommati dentro un numero
-solo che non dice quanto spetti a ciascuno, ed è per questo che quella colonna
-non va letta come una classifica.
+solo che non dice quanto spetti a ciascuno: è per questo che la colonna
+dell'impurità non va letta come una classifica.
 
 ## Spiegare con gli esempi: prototipi e critiche
 
-Le spiegazioni viste finora parlano di colonne. Un'altra strada parla di
-esempi: per far capire che cosa c'è in un insieme di dati si mostrano pochi casi
-**prototipi**, che lo rappresentano bene, e qualche **critica**, i casi che i
-prototipi rappresentano male. MMD-critic di Kim, Khanna e Koyejo
-{cite}`kim2016examples` sceglie gli uni e gli altri con la *maximum mean
-discrepancy* (MMD), una distanza fra due distribuzioni, cioè fra due modi di
-spargersi dei dati, la stessa con cui il {doc}`monitoraggio della deriva
+Le spiegazioni viste finora parlano di colonne: quali contano e come agiscono.
+Si può spiegare anche con degli esempi, come fa chi, per far capire che cosa
+c'è in un archivio, ne mostra pochi pezzi scelti bene. Sono i **prototipi**,
+pochi casi che rappresentano bene l'insieme dei dati, accompagnati da qualche
+**critica**, i casi che i prototipi rappresentano male. MMD-critic di Kim,
+Khanna e Koyejo {cite}`kim2016examples` sceglie gli uni e gli altri con la
+*maximum mean discrepancy* (MMD): un numero che dice quanto due raccolte di
+punti si spargono in modo diverso, e che vale zero quando si spargono allo
+stesso modo. È la stessa misura con cui il {doc}`monitoraggio della deriva
 </MLOps/monitoring-e-drift>` confronta la finestra di riferimento con quella
-corrente; qui le due distribuzioni sono quella dei dati e quella dei soli
-prototipi. Con un modello la sintesi lavora in due modi. I prototipi possono
-diventare essi stessi un classificatore, che risponde col prototipo più vicino e
-si spiega mostrandolo; oppure si guardano le risposte di una scatola nera
-proprio su prototipi e critiche, dove una lacuna dei dati si fa vedere.
+corrente; qui le due raccolte sono i dati e i soli prototipi. Con un modello la
+sintesi lavora in due modi. I prototipi possono diventare essi stessi un
+classificatore, che risponde col prototipo più vicino e si spiega mostrandolo;
+oppure si guardano le risposte di una scatola nera proprio su prototipi e
+critiche, dove una lacuna dei dati si fa vedere.
 
 `````{tab} Elementare
 
@@ -1011,16 +1081,16 @@ foto è vicina a ogni altra, e dieci foto qualunque sembrano rappresentare tutto
 con una troppo stretta ogni foto è un caso a sé, e dieci non bastano mai.
 
 Si sceglie una foto alla volta, ogni volta quella che abbassa di più la
-differenza. Scegliere così non garantisce la migliore selezione possibile. La
-garanzia che accompagna il metodo vale solo col «vicino» più stretto, quello in
-cui ogni foto è un caso a sé, e lì non dice niente, perché dieci foto qualunque
-valgono dieci altre. Con un «vicino» che serve davvero la scelta una alla volta
-va senza garanzie, e si usa perché in pratica se la cava bene.
+differenza. È un modo svelto, e non promette di trovare la selezione migliore.
+La garanzia che il metodo dichiara vale solo con un «vicino» così stretto che
+ogni foto è un caso a sé, e lì non serve, perché tutte le selezioni di dieci
+foto si equivalgono. Con un «vicino» utile si va senza garanzie, e si sceglie
+così perché in pratica funziona.
 
-Poi si cercano le critiche. La stessa differenza, zona per zona e senza il
-quadrato, dice dove l'archivio ha più foto di quante la selezione lasci
-immaginare: si chiama funzione testimone, perché è la prova, punto per punto,
-che le due raccolte non sono uguali, e le critiche sono le foto dove è più
+Poi si cercano le critiche. La stessa differenza, zona per zona e senza elevarla
+al quadrato, dice dove l'archivio ha più foto di quante la selezione ne lasci
+immaginare: si chiama funzione testimone, perché testimonia, punto per punto,
+dove le due raccolte differiscono, e le critiche sono le foto dove è più
 alta. Un piccolo gruppo di animali rari, poniamo duecento foto su diecimila, può
 restare senza nessuna delle dieci foto scelte: ognuna ne rappresenta in media un
 migliaio, e a ogni passo una foto in più fra i cani abbassa la differenza più di
@@ -1094,13 +1164,16 @@ incrociata del classificatore al prototipo più vicino.
 `````
 
 Il blocco rifà la scena in piccolo, con punti su un piano al posto delle foto:
-due gruppi grandi di duecento punti e uno raro di venti. Sceglie dieci prototipi
-uno alla volta, ogni volta il migliore (la scelta *avida*), con un nucleo
-gaussiano di larghezza $\sigma = 1$ a fare da «vicino», e poi cerca le critiche.
-Per semplicità le critiche sono prima i tre punti con la funzione testimone più
-alta, cioè dove i dati superano di più i prototipi; poi il blocco rifà la scelta
-come il metodo originale, che guarda anche il verso opposto, col valore
-assoluto, e le vuole diverse fra loro.
+due gruppi grandi di duecento punti e uno raro di venti. Il «vicino» è una
+campana: due punti coincidenti si somigliano per $1$, e la somiglianza cala in
+fretta man mano che si allontanano (è il nucleo gaussiano, con larghezza
+$\sigma = 1$). Il blocco sceglie dieci prototipi uno alla volta, ogni volta
+quello che abbassa di più la differenza (la scelta che si dice *avida*: prende
+il meglio subito, senza guardare avanti), e poi cerca le critiche in due modi.
+Prima i tre punti dove la funzione testimone è più alta, cioè dove i dati
+superano di più i prototipi; poi come il metodo originale, che guarda anche il
+verso opposto (dove i prototipi promettono più punti di quanti ce ne siano) e
+vuole le critiche diverse fra loro.
 
 ```python
 import numpy as np
@@ -1139,6 +1212,8 @@ print(f"testimone più alta, nel gruppo raro {testimone[gruppo == 'raro'].max():
       f" fuori {testimone[gruppo != 'raro'].max():.3f}")
 distanza = max(np.linalg.norm(X[i] - X[j]) for i in critiche for j in critiche)
 print(f"distanza massima fra le tre critiche: {distanza:.2f}")
+vicine = np.linalg.slogdet(K[np.ix_(critiche, critiche)])[1]
+print(f"log-determinante del nucleo sulle tre critiche: {vicine:.2f}")
 
 # il metodo originale: la testimone in valore assoluto più il log-determinante
 # del nucleo sulle critiche scelte, che le vuole lontane fra loro
@@ -1160,6 +1235,7 @@ prototipi per gruppo: {'a': 5, 'b': 5, 'raro': 0}
 critiche: ['raro', 'raro', 'raro']
 testimone più alta, nel gruppo raro 0.043, fuori 0.014
 distanza massima fra le tre critiche: 0.14
+log-determinante del nucleo sulle tre critiche: -12.44
 critiche col log-determinante: ['raro +0.043', 'b -0.041', 'a +0.014']
 ```
 
@@ -1170,12 +1246,19 @@ i rari. Le tre critiche cadono tutte lì, dove la funzione testimone supera il
 suo massimo fuori dal gruppo raro, cioè proprio nel posto che la sola lista dei
 prototipi avrebbe nascosto. Ma senza un termine che le voglia diverse cadono
 anche tutte nello stesso gruppetto, a non più di $0{,}14$ l'una dall'altra, e
-dicono tre volte la stessa cosa. Il metodo originale le vuole diverse col
-log-determinante, e lo somma alla testimone senza un peso. Il log-determinante
-di due punti vicini vale qualche unità sotto zero, la testimone qualche
-centesimo, e su questi dati decide lui: la prima critica resta nel gruppo raro,
-la seconda va in un punto dove la testimone è negativa, cioè dove i prototipi
-promettono più punti di quanti ce ne siano, e la terza in un gruppo grande.
+dicono tre volte la stessa cosa. Il metodo originale le vuole diverse con un
+termine in più, il log-determinante del nucleo sulle critiche scelte: vale zero
+quando sono lontanissime fra loro e scende sotto zero quanto più si somigliano.
+Lo somma alla testimone senza un peso, e su questi dati decide lui: sulle tre
+critiche vicine vale $-12{,}44$, mentre la testimone si muove di qualche
+centesimo. La prima critica resta nel gruppo raro, la seconda va in un punto
+dove la testimone è negativa, cioè dove i prototipi promettono più punti di
+quanti ce ne siano, e la terza in un gruppo grande.
+
+Prototipi e critiche, insieme, sono un riassunto onesto di un insieme di dati:
+i primi dicono che cosa c'è di tipico, le seconde dove la sintesi tace. Ed è
+lì, sul gruppo raro, che conviene guardare che cosa risponde un modello prima
+di fidarsene.
 
 ## Che una feature conti, non come, né perché
 
@@ -1205,15 +1288,13 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
 
 ```{admonition} Da ricordare
 :class: important
-- I modelli trasparenti sono già la propria spiegazione. Nel modello che
-  stima il prezzo di una casa ogni peso è un cartellino col prezzo appeso a una
-  caratteristica, e la risposta si legge come una ricevuta, voce per voce; in un
-  albero la spiegazione è il percorso di domande che porta alla risposta. Sono
-  di questa famiglia anche i modelli additivi generalizzati, che al posto di
-  un cartellino fisso mettono una curva leggibile per ogni caratteristica, e i
-  sistemi a regole, che si possono anche far scrivere ai dati: RuleFit smonta
-  gli alberi di un modello in frasi «SE … E …» e tiene soltanto quelle che
-  valgono i punti che costano.
+- I modelli trasparenti sono già la propria spiegazione, finché restano
+  piccoli. Nel modello che stima il prezzo di una casa ogni peso è un
+  cartellino col prezzo appeso a una caratteristica, e la risposta si legge
+  come una ricevuta, voce per voce; in un albero la spiegazione è il percorso di
+  domande che porta alla risposta. Della famiglia fanno parte anche i modelli
+  additivi generalizzati, con una curva al posto del cartellino fisso, e i
+  sistemi a regole, che si possono anche far scrivere ai dati (RuleFit).
 - Il presunto scambio fra accuratezza e chiarezza non vale sempre, e sui
   dati a righe e colonne spesso non vale affatto.
 - L’importanza per rimescolamento (Breiman, 2001; in inglese *permutation
@@ -1223,9 +1304,9 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   misurata su dati che il modello non ha mai visto in addestramento e ripetuta
   più volte, facendo la media. Vale finché le colonne non dicono la stessa
   cosa: se ce n'è una gemella il modello legge quella, e il calo resta piccolo
-  anche per una colonna che conta eccome. E vale finché il rimescolamento non
-  fabbrica clienti impossibili: su quelli il modello risponde a caso, e il calo
-  si gonfia.
+  anche per una colonna che conta eccome (le gemelle si rimescolano allora
+  insieme). E vale finché il rimescolamento non fabbrica clienti impossibili:
+  su quelli il modello risponde a caso, e il calo si gonfia.
 - L'importanza da impurità degli alberi (l'impurità è quanto sono mescolate
   le risposte dentro un gruppo: l'albero taglia per fare gruppi più omogenei)
   arriva gratis con l'addestramento ma è distorta: premia le colonne con
@@ -1239,17 +1320,14 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   a tutti lo stesso valore («e se aveste tutti quarant'anni?») e fa la media
   delle risposte; l’ICE disegna una curva per ogni esempio e rivela i
   casi in cui l'effetto è opposto da persona a persona e la media lo nasconde.
-  Attenzione quando due colonne vanno sempre insieme (l'altezza e il peso, per
-  dire): riscrivendone una sola, il PDP finisce per chiedere al modello cosa
-  pensa di persone che non esistono, alte due metri e pesanti cinquanta chili,
-  e la curva che ne esce inganna. In quel caso si usa l’ALE, che confronta
-  solo valori vicini fra chi quei valori li ha davvero, senza inventare
-  nessuno.
+  Quando due colonne vanno sempre insieme (l'altezza e il peso), il PDP chiede
+  al modello di persone che non esistono, e la curva inganna; l’ALE confronta
+  solo valori vicini fra chi quei valori li ha davvero.
 - Un insieme di dati si spiega anche con pochi esempi. I prototipi si
   scelgono uno alla volta perché si spargano come i dati; le critiche sono i
   casi che i prototipi rappresentano male, come un gruppo raro rimasto senza
-  prototipo, e si vogliono diverse fra loro. Tutto dipende da che cosa vuol
-  dire «vicino».
+  prototipo, ed è lì che conviene guardare il modello. Tutto dipende da che
+  cosa vuol dire «vicino».
 - L'importanza dice che una colonna pesa sulle risposte, non come agisce
   né che ne sia la causa: è l'errore della regola sugli asmatici, dove a
   proteggere non era l'asma ma la corsia in cui l'asma faceva finire. Il
@@ -1265,15 +1343,17 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
 - I modelli trasparenti (lineari/logistici, alberi, GAM, regole, anche estratte
   da un insieme di alberi con RuleFit, dove un Lasso sceglie regole e termini
   lineari) sono la propria spiegazione: nella regressione lineare ogni
-  coefficiente $w_j$ è l'effetto marginale della feature $j$. Il presunto
-  compromesso accuratezza/interpretabilità non vale sempre, specie sui dati
-  tabellari.
+  coefficiente $w_j$ è l'effetto marginale della feature $j$. La
+  simulabilità (Lipton) cala con la dimensione, non con la famiglia. Il
+  presunto compromesso accuratezza/interpretabilità non vale sempre, specie sui
+  dati tabellari (EBM).
 - La permutation importance {cite}`breiman2001random` mescola i valori di
   una sola colonna e misura il calo di performance ($\mathrm{FI}_j =
   e_{\pi_j} - e_{\text{orig}}$): è model-agnostic, va calcolata su dati
   held-out e mediata su più permutazioni. Con feature correlate il
   numero va letto con la domanda in mano: la gemella non permutata lo
-  sottostima, l'estrapolazione fuori supporto lo sovrastima.
+  sottostima (rimedio: l'importanza di gruppo), l'estrapolazione fuori supporto
+  lo sovrastima.
 - L'importanza da impurità (MDI) negli alberi è gratis ma distorta
   {cite}`strobl2007bias`: gonfia le feature continue e ad alta cardinalità (per
   via del numero di split candidati *e* del bootstrap con reimmissione), ed è
@@ -1282,7 +1362,8 @@ scatola: sta a noi non leggerci dentro più di quel che c'è.
   ricevono MDI in rapporto sette a uno e permutazione nulla entrambe.
 - PDP mostra l'effetto marginale *medio* di una feature, ICE una curva
   per istanza (rivela le interazioni che il PDP media via); con feature
-  correlate il PDP estrapola e inganna: meglio ALE.
+  correlate il PDP estrapola e inganna: meglio ALE, che costa $2m$ valutazioni
+  contro $G\,m$ e vede le interazioni solo al secondo ordine.
 - MMD-critic {cite}`kim2016examples` sceglie i prototipi in modo avido
   abbassando $\mathrm{MMD}^2$ fra dati e prototipi, che riproduce le proporzioni
   dei dati e non ne copre lo spazio; le critiche stanno dove la funzione

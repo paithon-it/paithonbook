@@ -16,9 +16,11 @@ Nel 2016 tre ricercatori dell'Università di Washington (Marco Tulio Ribeiro,
 Sameer Singh e Carlos Guestrin) costruirono di proposito un programma truccato.
 Doveva guardare una fotografia e dire se ritraeva un husky o un lupo, e
 nessuno gliel'aveva insegnato a parole: l'aveva imparato da solo, guardando
-delle foto su cui qualcuno aveva già scritto la risposta giusta: un
-classificatore addestrato come quelli del {doc}`capitolo sul machine learning
-</MachineLearning/overview>`.
+delle foto su cui qualcuno aveva già scritto la risposta giusta. Era un
+classificatore semplice, di quelli del {doc}`capitolo sul machine learning
+</MachineLearning/overview>`, appoggiato sopra una rete per immagini già
+addestrata da altri e lasciata com'era: la parte che imparava dalle foto era
+solo il classificatore in cima.
 
 Il trucco stava nelle foto. Erano venti soltanto, poche apposta, e scelte a mano
 in modo che tutti i lupi comparissero su sfondo innevato e nessun husky lo
@@ -38,73 +40,78 @@ venticinque studenti su ventisette indicarono la neve
 {cite}`ribeiro2016why`. Era una messinscena costruita apposta per dimostrare
 una cosa sola: senza una spiegazione, nemmeno gli addetti ai lavori si
 accorgono di un modello che funziona per la ragione sbagliata. Il metodo che
-disegna quelle macchie lo proposero gli stessi autori insieme all'esperimento,
-e lo vedremo in questo capitolo.
+disegna quelle macchie, LIME, lo proposero gli stessi autori insieme
+all'esperimento, e lo racconta la sezione sulle {doc}`spiegazioni locali
+</Interpretabilita/spiegazioni-locali>`.
 
 La storia ha un antenato illustre. All'inizio del Novecento, a Berlino, un
 cavallo di nome Hans il Sapiente sembrava saper contare: gli si chiedeva
 «quanto fa sette più cinque?» e lui batteva lo zoccolo dodici volte. Nel
 settembre del 1904 una commissione di tredici persone lo esaminò e concluse due
 cose: che imbroglio non ce n'era, e che il caso meritava un'indagine seria.
-L'indagine cominciò poche settimane dopo, all'Istituto di psicologia
-dell'università di Berlino, e a condurla fu lo psicologo Oskar Pfungst: in due
-mesi era finita, e a dicembre si sapeva come stavano le cose. Hans non faceva
-aritmetica, leggeva i movimenti involontari di chi gli poneva la domanda.
-L'esaminatore si irrigidiva appena lo zoccolo raggiungeva il
-numero giusto, e il cavallo si fermava lì. Bastava che l'esaminatore non
+L'indagine cominciò a metà ottobre, condotta dall'Istituto di psicologia
+dell'università di Berlino, e gli esperimenti li fece lo psicologo Oskar
+Pfungst: a fine novembre era finita, e a dicembre si sapeva come stavano le
+cose. Hans non faceva aritmetica, leggeva i movimenti involontari di chi gli
+poneva la domanda. L'esaminatore, chino appena in avanti a guardare lo zoccolo,
+alzava di un nonnulla la testa quando i colpi arrivavano al numero giusto,
+senza accorgersene, e il cavallo si fermava lì. Bastava che l'esaminatore non
 conoscesse la risposta, e Hans sbagliava. Il resoconto per esteso Pfungst lo
 pubblicò in un libro nel 1907, ed è quello che si cita ancora. Da allora si
-chiama **effetto Clever
-Hans** ogni sistema che *sembra* risolvere un problema mentre in realtà ne
-risolve un altro, più facile e nascosto. Il rilevatore di lupi è un Clever
-Hans in silicio: azzeccava quasi sempre, e per la ragione sbagliata.
+chiama **effetto Clever Hans** ogni sistema che *sembra* risolvere un problema
+mentre in realtà ne risolve un altro, più facile e nascosto. Il rilevatore di
+lupi è un Clever Hans in silicio: azzeccava quasi sempre, e per la ragione
+sbagliata.
 
 Il problema è che un modello non ci dice, di suo, *perché* decide come decide.
-È una **scatola nera**: entra una fotografia, esce una risposta, e in mezzo non
-si vede niente.
+È una **scatola nera**: si vedono la fotografia che entra e la risposta che
+esce, e i numeri che stanno in mezzo si possono anche stampare tutti, ma
+nessuno di essi dice qualcosa che una persona sappia leggere.
 
-Quel «in mezzo» merita un momento, perché di solito un
-computer fa quello che qualcuno gli ha scritto di fare, e verrebbe da dire:
-apriamo il programma e leggiamo cosa c'è scritto. Qui non funziona, e la
-ragione è che le regole di questo programma non le ha scritte nessuno. Il
-modello se le è ricavate da solo guardando gli esempi, e ciò che ne è uscito
-non è un elenco di frasi ma una tabella di numeri senza nome: milioni, nei
-modelli di oggi. Sono i parametri della rete a strati che il {doc}`capitolo
-sulle reti neurali </RetiNeurali/overview>` ha montato pezzo per pezzo.
+Le regole di questo programma, del resto, non le ha scritte nessuno: il modello
+se le è ricavate dagli esempi, e sono i parametri della rete a strati che il
+{doc}`capitolo sulle reti neurali </RetiNeurali/overview>` ha montato pezzo per
+pezzo, una tabella di numeri senza nome (milioni, nei modelli di oggi).
 
 Nessuno di quei numeri, preso da solo, significa qualcosa. Il modello non
-risponde «lupo» e basta: risponde con un punteggio, mettiamo 87 su 100 a favore
-del lupo. Quegli 87 non stanno scritti da nessuna parte: sono il risultato di
-milioni di spintarelle minuscole, alcune verso il lupo e altre contro, che si
-compensano quasi tutte fra loro e lasciano quel numero come saldo. Stampare il
-programma non serve a niente, perché il programma *è* quella tabella, e lì
-dentro la parola «neve» non è scritta da nessuna parte. Chiamiamo
-**interpretabilità** la capacità di capire su che cosa si appoggia la risposta
-di un modello, e questo capitolo raccoglie i modi di ottenerla quando il
-modello non la offre da sé.
+risponde «lupo» e basta: risponde con un punteggio, per esempio una probabilità
+di 0,87 che nella foto ci sia un lupo. Quel valore non sta scritto in nessun
+punto del modello: è l'effetto combinato di tutti i parametri, ognuno dei quali
+spinge un poco verso il lupo o contro, e i loro contributi in gran parte si
+compensano fra loro. Stampare il programma non serve a niente, perché il
+programma *è* quella tabella, e lì dentro la parola «neve» non è scritta da
+nessuna parte. Chiamiamo **interpretabilità** la capacità di capire su che cosa
+si appoggia la risposta di un modello, anche quando il modello non la offre da
+sé.
 
-Fin quando la posta in gioco è suggerire un film, poco male. Ma quando un
-modello decide se concedere un mutuo, se un tumore è maligno o se rilasciare un
-imputato, la domanda «perché?» diventa una questione di fiducia e di giustizia.
-
-Da qui in avanti gli esempi cambieranno spesso faccia. Quando non sono
-fotografie, i dati stanno in una tabella: una riga per persona, e una colonna
-per ogni informazione che di lei si conosce, il reddito, l'età, i debiti in
-corso. Sono quelle colonne, le feature, che il capitolo passerà il tempo a
-interrogare.
+Se il modello suggerisce un film, un errore costa poco. Se decide se concedere
+un mutuo, se un tumore è maligno o se rilasciare un imputato, la domanda
+«perché?» diventa una questione di fiducia e di giustizia. E lì gli esempi non
+sono fotografie ma righe di una tabella, una per persona, con le feature in
+colonna (il reddito, l'età, i debiti in corso): è alle colonne che i metodi di
+spiegazione chiedono conto delle risposte.
 
 La domanda «perché?», dicevamo, è anche una questione di legge. Il Regolamento
 generale sulla protezione dei dati europeo (GDPR, applicabile dal 2018) detta
 delle regole sulle decisioni prese da un programma senza che un essere umano ci
-metta mano, e obbliga chi le usa a dare all'interessato «informazioni
-significative sulla logica utilizzata». Che da lì nasca un vero e proprio
-«diritto alla spiegazione» è invece contestato fra i giuristi, e il punto della
-lite è proprio questo: quelle informazioni riguardano il funzionamento del
-sistema in generale, o si può pretendere il motivo della *propria* decisione,
-quella e non un'altra? La differenza fra le due cose, che qui sembra un cavillo
-da tribunale, è invece una delle domande con cui fra poco metteremo ordine fra
-i metodi: spiegare il modello in generale non è la stessa cosa che spiegare una
-sua singola risposta, e non si fa con gli stessi attrezzi.
+metta mano, e obbliga chi le usa a dare all'interessato, cioè alla persona su
+cui la decisione cade, «informazioni significative sulla logica utilizzata».
+Per anni i giuristi hanno discusso se da lì nascesse un vero e proprio
+«diritto alla spiegazione», e il punto della lite era proprio questo: quelle
+informazioni riguardano il funzionamento del sistema in generale, o si può
+pretendere il motivo della *propria* decisione, quella e non un'altra? Nel
+febbraio del 2025 la Corte di giustizia dell'Unione europea (causa C-203/22) ha
+preso la seconda strada: chi decide deve descrivere la procedura e i principi
+che ha applicato davvero, in modo che l'interessato capisca quali dei suoi dati
+sono stati usati e come, e consegnargli l'algoritmo non basta. L'AI Act, il
+regolamento europeo sull'intelligenza artificiale, aggiunge per le decisioni
+prese sulla base di un sistema ad alto rischio il diritto a spiegazioni chiare e
+significative sul ruolo che il sistema ha avuto e sugli elementi principali
+della decisione (art. 86) {cite}`euaiact2024`. Che cosa debba contenere, in
+concreto, una spiegazione così resta aperto, e la differenza fra le due letture
+è una delle domande con cui fra poco metteremo ordine fra i metodi: spiegare il
+modello in generale non è la stessa cosa che spiegare una sua singola risposta,
+e non si fa con gli stessi attrezzi.
 
 `````{tab} Elementare
 
@@ -119,45 +126,50 @@ nessuno gli ha mai dato un motivo per cercarne una migliore.
 
 E funziona anche sui compiti che non aveva mai visto: puoi metterlo alla prova
 quanto vuoi, finché quelli che gli porti vengono da quella classe i voti
-tornano. È il cavallo Hans in cattedra, e nessuno se ne accorge finché non
-arriva uno bravo con una brutta calligrafia, o un somaro ordinatissimo. Lì il
-voto è sbagliato, e nel registro non c'è niente che lo faccia sospettare.
+tornano. Nessuno se ne accorge finché non arriva uno bravo con una brutta
+calligrafia, o un somaro ordinatissimo. Lì il voto è sbagliato, e nel registro
+non c'è niente che lo faccia sospettare.
 
-Aprire la scatola nera vuol dire chiedere al modello non solo *cosa* ha deciso,
-ma *su cosa* si è basato. Nel caso degli husky e dei lupi, guardare le risposte
-non bastava: il modello ne azzeccava tante, e per capire che «vedeva» la neve e
-non il muso bisognava vedere su quali pixel poggiava. Contare quante volte un
-modello ha ragione non dice mai *perché* ha ragione.
+Per scoprirlo non serve contare i voti giusti, che sono tanti: bisogna
+sorprenderlo mentre corregge, e vedere che gli occhi vanno alla calligrafia e
+non al compito. Aprire la scatola nera vuol dire questo: chiedere al modello
+non solo *cosa* ha deciso, ma *su cosa* si è basato.
 
 `````
 
 `````{tab} Superiore
 
-Il fenomeno degli husky ha un nome tecnico: **correlazione spuria** (o
-*shortcut learning*). Il modello minimizza la sua *loss* sui dati disponibili,
-e se una feature accessoria (la neve) è statisticamente associata
-all'etichetta nel training *e* nel test, l'ottimizzazione la sfrutta senza
-scrupoli: è la strategia più economica per abbassare l'errore. La metrica di
-generalizzazione non lo cattura perché il bias è presente in entrambe le
-partizioni, indistinguibili sotto l'ipotesi che siano campionate dalla stessa
-distribuzione. È l'illusione dell'accuratezza: un modello «giusto per la
-ragione sbagliata» collassa appena la distribuzione cambia (un lupo su erba,
-un husky sulla neve), perché la scorciatoia appresa non è la relazione causale
-che ci interessava. L’interpretabilità è lo strumento diagnostico che
-espone la discrepanza tra ciò che il modello *dovrebbe* usare e ciò che *usa*
-davvero, e che l'accuratezza aggregata, per costruzione, non può vedere.
+Il fenomeno degli husky ha un nome tecnico: **correlazione spuria**, e
+l'apprendimento che se ne serve si chiama *shortcut learning*: la scorciatoia è
+una regola di decisione che funziona sui dati di prova estratti come quelli di
+addestramento e fallisce fuori da quella distribuzione
+{cite}`geirhos2020shortcut`. Il modello minimizza la sua *loss* sui
+dati disponibili, e se una feature accessoria (la neve) è statisticamente
+associata all'etichetta nel training *e* nel test, l'ottimizzazione la sfrutta
+senza scrupoli: è la strategia più economica per abbassare l'errore. La metrica
+di generalizzazione non lo cattura perché la correlazione è presente in
+entrambe le partizioni, indistinguibili sotto l'ipotesi che siano campionate
+dalla stessa distribuzione. È l'illusione dell'accuratezza: un modello «giusto
+per la ragione sbagliata» collassa appena la distribuzione cambia (un lupo su
+erba, un husky sulla neve), perché la scorciatoia appresa non è la relazione
+causale che ci interessava. L’interpretabilità è uno degli strumenti
+diagnostici che espongono la discrepanza tra ciò che il modello *dovrebbe*
+usare e ciò che *usa* davvero, che l'accuratezza aggregata, per costruzione,
+non può vedere; gli altri sono le prove mirate, su dati raccolti altrove o
+divisi per sottogruppi.
 
 `````
 
 ## Perché aprire la scatola
 
 Le ragioni per volere una spiegazione non sono una sola, e non hanno tutte lo
-stesso peso. Hanno però una radice comune {cite}`doshi2017towards`: si vuole
-una spiegazione quando il punteggio su cui il modello è stato addestrato non
-riesce a contenere tutto quello che gli chiediamo davvero: «indovina
-l'animale» si scrive in una formula, «guarda l'animale e non lo sfondo» o «non
-discriminare» no. Elencarle conviene lo stesso, perché guidano *che tipo* di
-spiegazione cerchiamo.
+stesso peso. Hanno però una radice comune {cite}`doshi2017towards`. Un modello
+si addestra facendo scendere un solo numero, la perdita, che misura quanto le
+sue risposte sono sbagliate e nient'altro; e si vuole una spiegazione quando
+quel numero non riesce a contenere tutto quello che gli chiediamo davvero:
+«indovina l'animale» si scrive in una formula, «guarda l'animale e non lo
+sfondo» o «non discriminare» no. Elencarle conviene lo stesso, perché guidano
+*che tipo* di spiegazione cerchiamo.
 
 - **Fiducia.** Un medico non delega una diagnosi a un sistema di cui non
   capisce il ragionamento. E senza una spiegazione non può nemmeno fare il
@@ -290,8 +302,10 @@ essere falsa».
 ## Una mappa delle spiegazioni
 
 I metodi per spiegare un modello sono decine, e presi in blocco sembrano un
-elenco senza capo né coda. Tre domande, indipendenti l'una dall'altra, mettono
-ordine e ci accompagneranno per tutto il capitolo.
+elenco senza capo né coda. Tre domande li mettono in ordine, e ci
+accompagneranno per tutto il capitolo. Sono quasi indipendenti l'una
+dall'altra: l'unico legame è che un modello che si legge da sé si legge, per
+costruzione, con un attrezzo fatto per quel tipo di modello.
 
 `````{tab} Elementare
 
@@ -351,12 +365,14 @@ distinguiamo lungo tre assi.
   input→output $f$ e resta valido per qualunque modello, al costo di stimare il
   comportamento per campionamento anziché leggerlo dai parametri.
 
-I tre assi sono largamente indipendenti, e a mostrarlo serve un esempio che li
-separi, perché i due che vengono in mente per primi non lo fanno: LIME, che
-vedremo, è post-hoc, locale e agnostico, e i coefficienti di una regressione
-lineare sono intrinseci, globali e specifici, cioè stanno ai due capi di tutti
-e tre. L'esempio che separa è la *permutation importance* della {doc}`sezione
-su alberi e metodi ensemble </MachineLearning/alberi-ensemble>`, che mescola a
+I tre assi sono largamente indipendenti (fa eccezione l'interpretabilità
+intrinseca, che per definizione è sempre specifica del modello
+{cite}`molnar2022interpretable`), e a mostrarlo serve un esempio che li separi,
+perché i due che vengono in mente per primi non lo fanno: LIME, che vedremo, è
+post-hoc, locale e agnostico, e i coefficienti di una regressione lineare sono
+intrinseci, globali e specifici, cioè stanno ai due capi di tutti e tre.
+L'esempio che separa è la *permutation importance* della {doc}`sezione su
+alberi e metodi ensemble </MachineLearning/alberi-ensemble>`, che mescola a
 caso una colonna e guarda di quanto il modello peggiora: post-hoc come LIME,
 agnostica come LIME, e però globale, perché quel che restituisce vale su tutti
 gli esempi insieme e non su una risposta sola.
@@ -368,39 +384,43 @@ gli esempi insieme e non su una risposta sola.
 :alt: "Tre assi orizzontali sovrapposti, ognuno con un capo a sinistra e uno a destra: si legge da sé (trasparente) contro si spiega dopo (post-hoc); tutto il modello (globale) contro una risposta sola (locale); un tipo di modello (specifico) contro qualunque modello (agnostico). Su ogni asse sono appoggiati tre metodi, ciascuno con il suo colore e una spezzata che unisce le sue tre scelte. I coefficienti di una regressione lineare stanno a sinistra su tutti e tre gli assi e la loro spezzata è diritta; LIME, il metodo che spiega una risposta per volta, sta a destra su tutti e tre e anche la sua è diritta; rimescolare una colonna per vedere quanto peggiora il modello sta a destra sul primo asse, a sinistra sul secondo e a destra sul terzo, e la sua spezzata zigzaga."
 :width: 100%
 
-Le tre domande in fila, con tre metodi appoggiati sopra. Che le tre scelte si
-facciano davvero una per una lo dice la spezzata di mezzo, la sola che cambia
-lato: rimescolare una colonna per vedere quanto il modello peggiora si fa a
-modello già addestrato e va bene su qualunque modello, ma quello che ne esce
-riguarda il modello intero e non una risposta sola.
+Le tre domande in fila, con tre metodi appoggiati sopra: ogni metodo ha il suo
+colore, e una linea a segmenti unisce le sue tre risposte. Che le tre scelte si
+facciano davvero una per una lo dice la linea di mezzo, la sola che cambia
+lato. È quella dell'importanza per rimescolamento, che mescola a caso i valori
+di una colonna e guarda quanto il modello peggiora: si fa a modello già
+addestrato e va bene su qualunque modello, ma quello che ne esce riguarda il
+modello intero e non una risposta sola.
 ```
 
 Le tre domande, e la {numref}`fig-interpretabilita-assi` con loro, dicono
 *come* lavora un metodo, non che cosa restituisce. E qui c'è una trappola,
-perché sotto la parola «spiegazione» questo capitolo mette oggetti di forma
+perché sotto la parola «spiegazione» stanno oggetti di forma
 diversissima:
 
 - una classifica delle colonne, valida per tutti gli esempi insieme: «in
   questo modello il reddito conta più dell'età, e il colore preferito non conta
-  niente»;
+  niente» (è l'importanza delle feature);
 - un conto per un caso solo, che è un'altra cosa: non l'ordine delle
-  colonne, ma di quanto ciascuna ha spinto *questa* risposta. Spinto rispetto a
-  che cosa? Rispetto alla risposta che il modello darebbe di un cliente di cui
-  non sapesse niente. Ed è un conto vero e proprio, nel senso che le quote
-  devono sommare esattamente alla distanza fra le due risposte, senza avanzi;
+  colonne, ma di quanto ciascuna ha spinto *questa* risposta rispetto a una
+  risposta di riferimento, per esempio quella che il modello dà in media. In
+  alcuni metodi le quote sommano esattamente alla distanza fra le due risposte,
+  senza avanzi (è il caso dei valori di Shapley); in altri il conto torna solo
+  in parte;
 - una regola scritta: «finché il reddito supera 30 000 e non ci sono
-  ritardi di pagamento, la risposta è sì»;
+  ritardi di pagamento, la risposta è sì» (un *anchor*);
 - un altro caso, quasi identico, in cui la risposta cambia: «con 6 000 euro
-  di reddito in più sarebbe stato un sì»;
+  di reddito in più sarebbe stato un sì» (un controfattuale);
 - una macchia colorata sopra una fotografia, come quella che ha smascherato
-  la neve;
+  la neve (una mappa di salienza, o di attribuzione);
 - un pezzo del modello indicato col dito: la soglia su cui un albero si
   biforca, il gruppetto di neuroni che insieme fanno una cosa riconoscibile. È
   la sola delle sei che si legge *dentro* il modello invece di ricavarla dalle
   sue risposte, e per questo vale soltanto per il tipo di modello che si sta
   aprendo, mai per uno qualsiasi
-  {cite}`molnar2022interpretable`. È la forma che restituisce la
-  {doc}`sezione su attribuzione e meccanicistica
+  {cite}`molnar2022interpretable`. È la forma dei modelli trasparenti e,
+  dentro le reti, dell'interpretabilità meccanicistica della {doc}`sezione su
+  attribuzione e meccanicistica
   </Interpretabilita/attribuzione-e-meccanicistica>`.
 
 Sei cose che non si assomigliano per niente, e la prima e la seconda si
@@ -412,9 +432,10 @@ C'è poi una quarta domanda, che non riguarda il funzionamento di un metodo ma
 decide quale risposta sia quella giusta: si vuole spiegare il modello, o il
 mondo? Sembra la stessa cosa e non lo è, e su un caso si vede.
 
-Mettiamo che nella tabella ci siano due colonne che dicono quasi la stessa cosa:
-lo stipendio del mese e il reddito dichiarato in un anno. Chi ha l'uno alto ha
-alto anche l'altro, quindi al modello ne basta una, e mettiamo che abbia scelto
+Mettiamo che nella tabella ci siano due colonne che dicono quasi la stessa cosa,
+due colonne gemelle: lo stipendio del mese e il reddito dichiarato in un anno.
+Chi ha l'uno alto ha alto anche l'altro, quindi al modello ne basta una, e
+mettiamo che abbia scelto
 lo stipendio e ignorato il reddito annuo. Adesso chiediamoci quanto vale
 ciascuna delle due colonne, e notiamo che ci sono due domande diverse, non una.
 
@@ -437,11 +458,12 @@ due metodi entrambi ragionevoli daranno due numeri diversi per lo stesso caso.
 
 ## Un modello che si spiega da sé
 
-Basta di teoria: guardiamone uno. Della prima delle tre domande abbiamo detto
-che alcuni modelli si leggono da sé e altri no; ecco in concreto che aspetto ha
-un modello del primo tipo. Ricordiamo il nome che gli diamo:
-**trasparente**, e nel resto del capitolo si dirà anche che è interpretabile
-in modo intrinseco, che è la stessa cosa detta col termine di mestiere.
+Un modello che si legge da sé si capisce meglio in un caso concreto. Della
+prima delle tre domande abbiamo detto che alcuni modelli si leggono da sé e
+altri no; ecco che aspetto ha un modello del primo tipo. Ricordiamo il nome che
+gli diamo: **trasparente**, e nel resto del capitolo si dirà anche che è
+interpretabile in modo intrinseco, che è la stessa cosa detta col termine di
+mestiere.
 
 L'esempio più pulito è l'albero di decisione già incontrato, tenuto basso, con
 poche domande, e costruito davvero con qualche riga di codice.
@@ -499,33 +521,38 @@ albero_alto = DecisionTreeClassifier(max_depth=3, random_state=0)
 foresta = RandomForestClassifier(n_estimators=300, random_state=0)
 for nome, m in [("alberello", albero), ("alberello più alto", albero_alto),
                 ("foresta casuale", foresta)]:
-    print(f"{nome:18} {cross_val_score(m, X, y, cv=10).mean():.1%}")
+    giusti = cross_val_score(m, X, y, cv=10).mean()
+    print(f"{nome:18} {giusti:.1%}, "
+          f"cioè {round(giusti * len(y))} fiori su {len(y)}")
 ```
 
 ```text
-alberello          94.7%
-alberello più alto 96.0%
-foresta casuale    96.0%
+alberello          94.7%, cioè 142 fiori su 150
+alberello più alto 96.0%, cioè 144 fiori su 150
+foresta casuale    96.0%, cioè 144 fiori su 150
 ```
 
-Tanti pareri sbagliano meno di uno, e infatti la foresta indovina un po’ più
-dell'alberello: la differenza è di un punto e tre. In cambio, la logica
-della foresta non si stampa più, perché sono centinaia di ricette che votano
-invece di una sola. I metodi del capitolo servono quando questo scambio c'è
-davvero, cioè quando il modello che non si legge indovina parecchio di più di
-quello che si legge.
+Una foresta mette ai voti molti alberi cresciuti su campioni diversi, e il voto
+sbaglia meno del singolo albero quando gli errori dei singoli non vanno tutti
+nella stessa direzione. Qui la foresta indovina il 96,0% contro il 94,7%
+dell'alberello, ma su 150 fiori sono due fiori di differenza, troppo pochi per
+dire che sia davvero più brava. In cambio, la logica della foresta non si
+stampa più, perché sono centinaia di ricette che votano invece di una sola. I
+metodi del capitolo servono quando questo scambio c'è davvero, cioè quando il
+modello che non si legge indovina parecchio di più di quello che si legge.
 
-Quel punto e tre, però, misura il tetto che all'albero abbiamo messo noi per
+E i due fiori, poi, misurano il tetto che all'albero abbiamo messo noi per
 farlo stare in sette righe, non il prezzo della leggibilità. Concedendogli una
 domanda in più, un albero di profondità tre, che si stampa ancora tutto in una
-schermata, arriva dove arriva la foresta. Su questi fiori lo scambio non c'è.
+schermata, indovina gli stessi 144 fiori della foresta. Su questi fiori lo
+scambio non c'è.
 
 ## Una spiegazione può convincere ed essere falsa
 
 C'è una trappola, e i ricercatori ci sono caduti più di una volta. Una
-spiegazione che arriva dopo, a decisione presa, è un racconto su quello che è
-successo. Non è la cosa che è successa. E un racconto può essere convincente e
-falso insieme.
+spiegazione ricavata dopo, a decisione presa, descrive dall'esterno il calcolo
+che il modello ha fatto, e una descrizione può essere convincente e sbagliata
+insieme.
 
 `````{tab} Elementare
 
@@ -577,15 +604,18 @@ $$
 $$
 
 dove $\pi_{\mathbf{x}_0}$ è un peso di prossimità, grande sui punti
-$\mathbf{z}$ vicini a $\mathbf{x}_0$ e quasi nullo su quelli lontani, e $\ell$
-una loss adatta al tipo di uscita: l'indicatrice di disaccordo per etichette
-discrete, uno scarto quadratico per probabilità o punteggi continui. La
-quantità cresce quando la fedeltà cala: tanto più è piccola, tanto più $g$ è
+$\mathbf{z}$ vicini a $\mathbf{x}_0$ e quasi nullo su quelli lontani; le
+$\mathbf{z}$ sono perturbazioni estratte da una distribuzione di campionamento
+che sceglie chi usa il metodo (in LIME, sui dati in tabella, quella dei dati di
+addestramento, sicché la località la porta soltanto $\pi_{\mathbf{x}_0}$); e
+$\ell$ è una loss adatta al tipo di uscita: l'indicatrice di disaccordo per
+etichette discrete, uno scarto quadratico per probabilità o punteggi continui.
+La quantità cresce quando la fedeltà cala: tanto più è piccola, tanto più $g$ è
 fedele a $f$ in quell'intorno (all'estremo, vale zero se il surrogato riproduce
 esattamente la scatola nera sui punti campionati). Una fedeltà alta
-*sull'intorno* non garantisce nulla *globalmente*, ed è del tutto
-scorrelata dalla **plausibilità**: quanto la spiegazione appare sensata a un
-umano. Nulla vieta a un surrogato di essere plausibile e infedele, o fedele e
+*sull'intorno* non garantisce nulla *globalmente*, ed è del tutto scorrelata
+dalla **plausibilità**: quanto la spiegazione appare sensata a un umano. Nulla
+vieta a un surrogato di essere plausibile e infedele, o fedele e
 controintuitivo. È il difetto costitutivo dei metodi a surrogato: approssimano,
 e un'approssimazione può ingannare. Non tutto il post-hoc è fatto così
 (l'importanza per permutazione, i controfattuali e le attribuzioni che vedremo
@@ -594,13 +624,14 @@ plausibilità e fedeltà vale per ogni spiegazione, comunque prodotta.
 
 `````
 
-Da qui uno dei dibattiti più aspri della materia, e per capirlo serve prima
-mettere sul tavolo la convinzione che mette in discussione. La convinzione è
-questa: che chiarezza e bravura si paghino l'una con l'altra, cioè che un
-modello leggibile sia per forza più scarso di uno oscuro, e che quindi
-l'oscurità sia un prezzo che si paga volentieri per avere ragione più spesso.
-Chiamiamolo il presunto **scambio fra accuratezza e chiarezza**; sui fiori di
-poco fa non lo abbiamo trovato.
+Su questo punto la letteratura è divisa, e per capire perché serve prima la
+convinzione che il dibattito mette in discussione: che chiarezza e bravura si
+paghino l'una con l'altra, cioè che un modello leggibile sia per forza più
+scarso di uno oscuro, e che quindi l'oscurità sia un prezzo che si paga
+volentieri per avere ragione più spesso. La bravura qui si misura con
+l'accuratezza, la quota di risposte giuste, e chiamiamo quella convinzione il
+presunto **scambio fra accuratezza e chiarezza**; sui fiori di poco fa non lo
+abbiamo trovato.
 
 Cynthia Rudin {cite}`rudin2019stop` sostiene una tesi tagliente: per le
 decisioni che pesano davvero (giustizia, sanità, credito) si dovrebbe
@@ -616,15 +647,21 @@ contropartita: si paga e non si compra niente.
 Non tutti concordano, e la ragione è che non tutti i dati stanno in una
 tabella. Su fotografie, testi e suoni, dove le colonne di partenza sono i pixel
 o le lettere e presi uno per uno non significano nulla, le reti profonde
-restano di gran lunga le più brave, e rinunciarvi non è un'opzione: lì una
-spiegazione appiccicata dopo è l'unica finestra che abbiamo.
+restano di gran lunga le più accurate. Lì le strade sono due: spiegare la rete
+dopo, con i metodi dell'ultima sezione del capitolo, oppure costruirla
+leggibile per progetto. Rudin stessa porta l'esempio delle reti che finiscono
+con uno strato di prototipi, e decidono confrontando parti dell'immagine da
+classificare con parti di immagini viste in addestramento (la testa di questo
+uccello somiglia alla testa tipica di quella specie), così che la spiegazione
+coincida con il calcolo {cite}`rudin2019stop`. È una strada più giovane, e la
+spiegazione dopo resta la più battuta.
 
 Su una cosa, però, le due fazioni concordano, e l'hanno scritta nel 2017 due
 ricercatrici, Finale Doshi-Velez e Been Kim {cite}`doshi2017towards`: una
 spiegazione è una cosa da misurare, non da esibire. Chi la produce deve
 dichiarare che cosa ha misurato e con quale esperimento, esattamente come si fa
-per l’accuratezza di un modello, che è la quota di risposte giuste e che
-nessuno si sognerebbe di dichiarare senza dire su quali casi l'ha contata. Non
+per l’accuratezza di un modello, che nessuno si sognerebbe di dichiarare senza
+dire su quali casi l'ha contata. Non
 esistono spiegazioni «gratis»: esistono spiegazioni verificate e spiegazioni
 che ci raccontiamo.
 
@@ -639,9 +676,10 @@ Nel film *Rashomon* di Akira Kurosawa quattro testimoni raccontano lo stesso
 delitto, riferiscono gli stessi fatti, e ne danno quattro storie diverse. Con i
 dati succede qualcosa di simile: modelli diversi spiegano gli stessi esempi
 quasi con la stessa bravura (per dire, il 79,7% di risposte giuste l'uno e il
-79,65% l'altro), e raccontano storie diverse su che cosa conta. Se il reddito e
-la spesa mensile vanno quasi sempre insieme, un modello può appoggiarsi al
-reddito e un altro alla spesa, e sbagliare quasi lo stesso numero di volte:
+79,65% l'altro), e raccontano storie diverse su che cosa conta. Se il reddito
+dell'anno e lo stipendio del mese vanno quasi sempre insieme, un modello può
+appoggiarsi al reddito e un altro allo stipendio, e sbagliare quasi lo stesso
+numero di volte:
 chiedere a ciascuno quale colonna conta dà due risposte opposte, tutte e due
 vere per quel modello.
 
@@ -689,29 +727,32 @@ dalla soglia scelte.
 `````
 
 Il blocco costruisce dati in cui la risposta dipende dal reddito e dall'età,
-con una spesa che è quasi una copia del reddito, e confronta tre modelli: due
-regressioni logistiche (il modello che somma punti per colonna e ne fa una
-probabilità), una sul reddito e una sulla spesa, e un boosting (una somma di
-molti alberi piccoli) su tutte e tre le colonne. Per ciascuno stampa
-l'accuratezza su dati nuovi e l'importanza di reddito e spesa, misurata come
-calo di accuratezza rimescolando la colonna, in media su venti rimescolamenti;
-in fondo prova il boosting anche con sei regolazioni diverse e tiene la
-migliore.
+con uno stipendio mensile che è quasi una copia del reddito annuo, e confronta
+tre modelli: due regressioni logistiche (il modello che somma punti per colonna
+e ne fa una probabilità), una sul reddito e una sullo stipendio, e un boosting
+(una somma di molti alberi piccoli) su tutte e tre le colonne. Per ciascuno
+stampa l'accuratezza su dati nuovi e l'importanza di reddito e stipendio,
+misurata come calo di accuratezza rimescolando la colonna, in media su venti
+rimescolamenti. In fondo regola il boosting, scegliendo fra sei combinazioni di
+profondità degli alberi e passo di apprendimento quella che va meglio con la
+validazione incrociata sui soli dati di addestramento, e conta su quanti casi
+di prova il boosting regolato e la prima logistica non sono d'accordo.
 
 ```python
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_score
 
 rng = np.random.default_rng(0)
 n = 4000
 reddito = rng.normal(size=n)
-spesa = reddito + 0.1 * rng.normal(size=n)          # quasi una copia del reddito
+stipendio = reddito + 0.1 * rng.normal(size=n)  # quasi una copia del reddito
 eta = rng.normal(size=n)
 y = (reddito + eta + rng.normal(size=n) > 0).astype(int)
-X = np.column_stack([reddito, spesa, eta])
+X = np.column_stack([reddito, stipendio, eta])
 X_tr, X_te, y_tr, y_te = X[:2000], X[2000:], y[:2000], y[2000:]
-nomi = ["reddito", "spesa", "età"]
+nomi = ["reddito", "stipendio", "età"]
 
 def importanza(modello, colonne, j, ripetizioni=20):
     """Quanto cala l'accuratezza rimescolando la colonna j, in media su più rimescolamenti
@@ -726,25 +767,41 @@ def importanza(modello, colonne, j, ripetizioni=20):
     return float(np.mean(cali))
 
 modelli = {"logistica su reddito ed età": (LogisticRegression(), [0, 2]),
-           "logistica su spesa ed età": (LogisticRegression(), [1, 2]),
+           "logistica su stipendio ed età": (LogisticRegression(), [1, 2]),
            "boosting su tutte e tre": (GradientBoostingClassifier(random_state=0), [0, 1, 2])}
 for nome, (m, colonne) in modelli.items():
     m.fit(X_tr[:, colonne], y_tr)
     imp = ", ".join(f"{nomi[j]} {importanza(m, colonne, j):.3f}" for j in (0, 1))
-    print(f"{nome:28}: accuratezza {m.score(X_te[:, colonne], y_te):.4f}; importanza {imp}")
+    print(f"{nome:30}: accuratezza {m.score(X_te[:, colonne], y_te):.4f}; "
+          f"importanza {imp}")
 
-# il boosting regolato: la migliore di sei combinazioni di profondità e passo
-migliore = max(GradientBoostingClassifier(max_depth=d, learning_rate=lr, random_state=0)
-               .fit(X_tr, y_tr).score(X_te, y_te)
-               for d in (1, 2, 3) for lr in (0.03, 0.1))
-print(f"boosting regolato, il migliore di sei: accuratezza {migliore:.4f}")
+# il boosting regolato: profondità e passo scelti con la validazione incrociata
+# sui soli dati di addestramento, perché i dati di prova servono a giudicare
+griglia = [(d, lr) for d in (1, 2, 3) for lr in (0.03, 0.1)]
+def boosting(d, lr):
+    return GradientBoostingClassifier(max_depth=d, learning_rate=lr,
+                                      random_state=0)
+voti = [cross_val_score(boosting(d, lr), X_tr, y_tr, cv=5).mean()
+        for d, lr in griglia]
+d, lr = griglia[int(np.argmax(voti))]
+regolato = boosting(d, lr).fit(X_tr, y_tr)
+print(f"boosting regolato (profondità {d}, passo {lr}): "
+      f"accuratezza {regolato.score(X_te, y_te):.4f}")
+
+# quanto è netta la differenza: i casi di prova su cui i due non sono d'accordo
+logistica = modelli["logistica su reddito ed età"][0]
+giusta_l = logistica.predict(X_te[:, [0, 2]]) == y_te
+giusta_b = regolato.predict(X_te) == y_te
+print(f"casi indovinati solo dalla logistica: {np.sum(giusta_l & ~giusta_b)}, "
+      f"solo dal boosting regolato: {np.sum(~giusta_l & giusta_b)}")
 ```
 
 ```text
-logistica su reddito ed età : accuratezza 0.7970; importanza reddito 0.158, spesa 0.000
-logistica su spesa ed età   : accuratezza 0.7965; importanza reddito 0.000, spesa 0.157
-boosting su tutte e tre     : accuratezza 0.7825; importanza reddito 0.126, spesa 0.004
-boosting regolato, il migliore di sei: accuratezza 0.7930
+logistica su reddito ed età   : accuratezza 0.7970; importanza reddito 0.158, stipendio 0.000
+logistica su stipendio ed età : accuratezza 0.7965; importanza reddito 0.000, stipendio 0.157
+boosting su tutte e tre       : accuratezza 0.7825; importanza reddito 0.126, stipendio 0.004
+boosting regolato (profondità 2, passo 0.03): accuratezza 0.7855
+casi indovinati solo dalla logistica: 65, solo dal boosting regolato: 42
 ```
 
 Le due regressioni logistiche sono buone uguali ($0{,}7970$ e $0{,}7965$) e
@@ -752,44 +809,59 @@ raccontano storie opposte: per la prima conta il reddito e la spesa niente, per
 la seconda il contrario, con quasi la stessa importanza passata da una colonna
 all'altra ($0{,}158$ e $0{,}157$). Se ci si fermasse a una sola, si direbbe che
 una delle due colonne è inutile; sull'insieme dei modelli buoni, l'importanza
-del reddito va da zero a $0{,}158$. E il modello più complicato fa un po'
-peggio dei due semplici, $0{,}7825$ così com'è e $0{,}7930$ con la migliore
-delle sei regolazioni: su dati come questi lo scambio fra accuratezza e
-chiarezza non c'è.
+del reddito va da zero a $0{,}158$. E il modello più complicato non fa meglio
+dei due semplici: $0{,}7825$ così com'è e $0{,}7855$ regolato, contro $0{,}7970$
+e $0{,}7965$. Quanto sia netta la differenza lo dicono i casi in cui i modelli
+non sono d'accordo, perché su tutti gli altri sbagliano o indovinano insieme:
+su 2000 casi di prova, 65 li indovina solo la logistica e 42 solo il boosting.
+Basta per dire che il boosting non fa meglio; per dire di quanto fa peggio,
+poco più di cento disaccordi sono pochi. Su dati come questi lo scambio fra
+accuratezza e chiarezza non c'è.
 
 ## Dai modelli trasparenti ai circuiti
 
-Cominceremo dai modelli trasparenti, quelli che si leggono senza aiuto:
-l'albero di poco fa, e i modelli che rispondono facendo una somma, tanti punti
-per il reddito, tanti per l'età. Li abbiamo già incontrati nel capitolo sul
-Machine Learning, e qui li rileggiamo con un'altra domanda in testa, quanto sono
-leggibili. Vengono poi i modi di misurare su che cosa un modello si appoggia in
-media, su tutti gli esempi insieme: è la classifica delle colonne, e si chiama
-importanza delle feature.
+Il percorso ha tre tappe. Prima i modelli che si leggono da sé, e le misure che
+valgono per un modello qualsiasi preso nel suo insieme; poi le spiegazioni di
+una risposta sola; infine le reti profonde, guardate prima dall'esterno, pixel
+per pixel, e poi dall'interno.
 
-Passeremo quindi alle spiegazioni che riguardano una risposta sola, le
-spiegazioni locali, e ne vedremo tre. La prima costruisce, lì attorno al
-caso da spiegare e solo lì, un modellino semplice che imita quello vero: una
-copia leggibile buona in quel punto, che si chiama surrogato locale; il
-metodo che la costruisce si chiama LIME, ed è quello che disegnò le macchie
-sulla neve. La seconda spartisce fra le colonne il merito di una risposta. La
-regola per farlo non nasce nell'informatica: viene da un problema del 1953, come
-dividere in modo equo il guadagno di un'impresa fra i soci che ci hanno
-lavorato. Quelle quote si chiamano valori di Shapley, e il modo di
-calcolarle in fretta si chiama SHAP. La terza
-risponde alla domanda più pratica di tutte, «che cosa sarebbe dovuto essere
-diverso perché la risposta cambiasse?», e sono le spiegazioni
-controfattuali.
+La prima tappa riparte dai modelli trasparenti: l'albero di poco fa, e i
+modelli che rispondono facendo una somma, tanti punti per il reddito, tanti per
+l'età. Li abbiamo già incontrati nel capitolo sul Machine Learning, e qui li
+rileggiamo con un'altra domanda in testa, quanto sono leggibili. Vengono poi i
+modi di misurare su che cosa un modello qualsiasi si appoggia in media, su
+tutti gli esempi insieme: la classifica delle colonne, che si chiama importanza
+delle feature, e le curve che mostrano *come* agisce una colonna, oltre a
+quanto. Chiude un modo di spiegare un'intera raccolta di dati con pochi esempi
+scelti bene, i prototipi, accompagnati dai casi che quegli esempi rappresentano
+male.
 
-Chiuderemo dentro le reti profonde. Lì la domanda diventa quanto ogni pezzo
-dell'ingresso, ogni singolo pixel, ha contribuito a una risposta: quella quota
-di merito si chiama attribuzione, e la cartina che la disegna sopra la foto
-si chiama mappa di salienza. Quelle mappe promettono più di quanto
-mantengano, e la stessa domanda vale per i pesi di attenzione della
-{doc}`sezione sul meccanismo di attenzione </Transformers/attenzione>`:
-sembrano una spiegazione già pronta e non lo sono. E finiremo con il tentativo
-più ambizioso e più giovane, quello di smontare una rete pezzo per pezzo come
-un ingegnere apre un chip per capire che cosa fa ciascun componente: si chiama
+La seconda tappa riguarda una risposta sola, ed è quella delle spiegazioni
+locali. Il primo metodo costruisce, attorno al caso da spiegare e solo lì, un
+modellino semplice che imita quello vero, un surrogato locale: si chiama LIME,
+ed è quello che disegnò le macchie sulla neve. Il secondo spartisce fra le
+colonne il merito di una risposta, con una regola che viene da un problema del
+1953: come dividere in modo equo il guadagno di un'impresa fra i soci che ci
+hanno lavorato. Quelle quote sono i valori di Shapley, e il modo di calcolarle
+in fretta si chiama SHAP. Il terzo risponde alla domanda più pratica di tutte,
+«che cosa sarebbe dovuto essere diverso perché la risposta cambiasse?», e sono
+le spiegazioni controfattuali. La stessa domanda locale ammette poi altre due
+risposte: una regola che dice fin dove la risposta resta quella, e ciò che
+manca e che, se ci fosse, la cambierebbe.
+
+La terza tappa entra nelle reti profonde. Lì la domanda diventa quanto ogni
+pezzo dell'ingresso, ogni singolo pixel, ha contribuito a una risposta: quella
+quota di merito si chiama attribuzione, e la cartina che la disegna sopra la
+foto si chiama mappa di salienza. I metodi che la disegnano sono di tre
+famiglie (chi misura una pendenza, chi divide il risultato all'indietro, chi
+toglie un pezzo e guarda che cosa cambia), e non tutti superano le prove con cui
+si controlla se una mappa descrive davvero il modello. La stessa domanda vale
+per i pesi di attenzione della {doc}`sezione sul meccanismo di attenzione
+</Transformers/attenzione>`: sembrano una spiegazione già pronta, e sono un
+indizio. Poi si guarda dentro la rete: a che cosa risponde ciascun filtro,
+quale informazione è scritta a ciascun piano, e infine il tentativo più
+ambizioso e più giovane, quello di smontare una rete pezzo per pezzo come un
+ingegnere apre un chip per capire che cosa fa ciascun componente. Si chiama
 interpretabilità meccanicistica, e i pezzi che prova a isolare, piccoli gruppi
 di neuroni che insieme svolgono un compito riconoscibile, si chiamano circuiti.
 
@@ -797,28 +869,29 @@ Un filo, sopra a tutto, tiene insieme il capitolo con quello sull’AI
 responsabile: aprire la scatola nera non è un vezzo accademico, ma il primo
 passo per costruire sistemi di cui potersi fidare, e da poter contestare
 quando sbagliano. Il rilevatore di lupi era stato truccato apposta, per
-dimostrare quanto è facile non accorgersene: i modelli veri
-arrivano da soli alla stessa scorciatoia, e l'unico modo di scoprirlo è
-guardarci dentro.
+dimostrare quanto è facile non accorgersene. I modelli addestrati su dati veri
+imparano scorciatoie dello stesso tipo senza che nessuno le costruisca, e
+un'accuratezza alta sui dati di prova non le rivela: le scoprono le prove
+mirate, su dati raccolti altrove o divisi per gruppi di persone, e lo sguardo
+su che cosa il modello si appoggia.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
 - Un modello può indovinare tantissimo e farlo per la ragione sbagliata: il
-  cavallo Hans leggeva la faccia di chi chiedeva, il riconoscitore di lupi
+  cavallo Hans leggeva i movimenti di chi chiedeva, il riconoscitore di lupi
   guardava la neve. Contare quante volte ha ragione non lo smaschera; guardare
-  su che cosa si appoggia sì. Questo è l’interpretabilità.
+  su che cosa si appoggia sì. Questa è l’interpretabilità.
 - Dentro un modello non c'è un programma da leggere: ci sono milioni di numeri
   che nessuno ha scritto a mano e che il modello si è ricavato dagli esempi.
-  Per questo serve un capitolo intero invece di una stampa.
 - Si chiede una spiegazione per fidarsi, per trovare i difetti, per
-  equità, per scoprire cose nuove e perché a volte lo impone la
-  legge. E la spiegazione buona dipende da chi la riceve: al cliente serve
-  sapere cosa cambiare, all'ingegnere quali colonne pesano, all'ufficio che
-  vigila che il sistema non discrimini. E chi chiede «perché?» vuole un
-  confronto («perché a me no e a lui sì?»), una o due cause e non tutte, cause
-  più che probabilità, e la possibilità di chiedere ancora.
+  equità, per scoprire cose nuove e perché la legge lo chiede. E la
+  spiegazione buona dipende da chi la riceve: al cliente serve sapere cosa
+  cambiare, all'ingegnere quali colonne pesano, all'ufficio che vigila che il
+  sistema non discrimini. Chi chiede «perché?» vuole un confronto («perché a
+  me no e a lui sì?»), una o due cause e non tutte, e la possibilità di
+  chiedere ancora.
 - Tre domande ordinano tutti i metodi del capitolo: il modello si legge da sé
   o va interrogato dopo? vuoi capire il modello intero o una risposta
   sola? lo strumento serve un solo tipo di modello o va bene per
@@ -838,8 +911,9 @@ guardarci dentro.
   foresta, e resta leggibile). Per le decisioni che pesano
   davvero (giustizia, sanità, credito) Cynthia Rudin dice quindi che è meglio
   usare un modello trasparente invece di appiccicare una spiegazione a una
-  scatola nera. Su foto, testo e suoni, però, la scatola nera resta la più
-  brava, e la spiegazione appiccicata dopo è l'unica finestra che abbiamo.
+  scatola nera. Su foto, testo e suoni le reti profonde restano le più brave,
+  e si possono spiegare dopo oppure costruire leggibili per progetto; la
+  spiegazione dopo è oggi la strada più battuta.
 - L'effetto Rashomon: modelli quasi ugualmente bravi possono appoggiarsi a
   colonne diverse, quindi la spiegazione di un modello racconta quel modello,
   e l'importanza vera di una colonna è un intervallo sui modelli buoni. Se i
@@ -854,14 +928,19 @@ guardarci dentro.
 :class: important
 - Un modello accurato può esserlo per la ragione sbagliata (effetto *Clever
   Hans*, la neve al posto del lupo): l'accuratezza aggregata non smaschera le
-  correlazioni spurie, l'interpretabilità sì.
+  correlazioni spurie (*shortcut learning*); le smascherano le prove fuori
+  distribuzione e l'interpretabilità.
 - Si spiega per fiducia, debug, equità, scoperta scientifica e obblighi
-  normativi; la spiegazione «buona» dipende da a chi serve:
+  normativi (GDPR, letto dalla Corte di giustizia nel 2025 come diritto a
+  conoscere procedura e principi applicati al proprio caso; art. 86 dell'AI
+  Act per i sistemi ad alto rischio); la spiegazione «buona» dipende da a chi
+  serve:
   sviluppatore, utente finale, regolatore vogliono cose diverse. Le
   spiegazioni umane (Miller) sono contrastive, selezionate, causali più che
   probabilistiche, e sociali.
 - Tre assi ordinano il campo: intrinseca vs post-hoc, globale vs locale,
-  model-specific vs model-agnostic. Sono largamente indipendenti. A essi si
+  model-specific vs model-agnostic. Sono largamente indipendenti, salvo che
+  l'intrinseca è sempre specifica del modello. A essi si
   affianca una domanda che non è un asse ma decide quale risposta sia corretta:
   si sta spiegando il modello o il fenomeno? (Due colonne quasi
   ridondanti di cui il modello ne usa una: la prima domanda attribuisce tutto a
@@ -872,7 +951,8 @@ guardarci dentro.
   modello vero ma una sua copia semplificata.
 - Il dibattito: Rudin invita a usare modelli interpretabili per le decisioni
   ad alto rischio invece di spiegare scatole nere; sui dati non strutturati il
-  post-hoc resta l'unica finestra. In ogni caso, spiegazioni valutate con
+  post-hoc è la via più usata, accanto alle reti interpretabili per
+  costruzione (lo strato di prototipi). In ogni caso, spiegazioni valutate con
   rigore (Doshi-Velez & Kim), non rassicurazioni qualitative.
 - Effetto Rashomon (Breiman): il Rashomon set dei modelli entro una soglia
   dall'ottimo è spesso grande, e allora contiene probabilmente modelli

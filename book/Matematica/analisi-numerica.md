@@ -1,6 +1,6 @@
 # Analisi numerica: quando i numeri hanno precisione finita
 
-Apri un terminale Python e prova la cosa più innocente del mondo:
+Apri un terminale Python e somma due decimali semplici:
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -9,41 +9,42 @@ Apri un terminale Python e prova la cosa più innocente del mondo:
 0.30000000000000004
 ```
 
-Succede su qualunque calcolatore, e non per un difetto di Python. Un computer non
-conserva i numeri reali, ma loro approssimazioni con un numero finito di
-cifre. Di solito la differenza è invisibile; a volte no. Il 4 giugno 1996 un
-numero troppo grande, convertito in un formato più piccolo, "straripò" a bordo
-del razzo europeo Ariane 5: successe $37$ secondi dopo l'accensione dei
-motori, e due secondi più tardi il lanciatore, ormai fuori assetto, si
-disintegrò e fu fatto esplodere dal sistema di autodistruzione
-{cite}`lions1996ariane`. Un errore di rappresentazione da centinaia di milioni
-di dollari. L'analisi numerica studia questi limiti e insegna a conviverci.
-Nel machine learning se ne accorge chiunque abbia visto un addestramento
-fermarsi su `NaN`, che è la sigla con cui un
-calcolatore segnala «questo non è un numero» (dall'inglese *not a number*) ed
-è ciò che resta quando un conto è andato a finire fuori strada, per esempio
-dividendo zero per zero.
+Succede in qualunque linguaggio che usi i numeri binari in virgola mobile (lo
+standard IEEE 754), e non per un difetto di Python. Un computer non conserva i
+numeri reali, ma loro approssimazioni con un numero finito di cifre. Di solito
+la differenza è invisibile; a volte no. Il 4 giugno 1996 un numero troppo
+grande, convertito in un formato più piccolo, "straripò" a bordo del razzo
+europeo Ariane 5: successe $37$ secondi dopo l'avvio della sequenza di
+accensione del motore principale, e due secondi più tardi il lanciatore, ormai
+fuori assetto, si disintegrò e fu fatto esplodere dal sistema di
+autodistruzione {cite}`lions1996ariane`. Un errore di conversione numerica da
+centinaia di milioni di dollari. L'analisi numerica studia questi limiti e
+insegna a conviverci. Nel machine learning se ne accorge chiunque abbia visto
+un addestramento fermarsi su `NaN`, che è la sigla con cui un calcolatore
+segnala «questo non è un numero» (dall'inglese *not a number*) ed è ciò che
+resta quando un conto è andato a finire fuori strada, per esempio dividendo
+zero per zero.
 
 ## La virgola mobile: un budget fisso di cifre
 
-Un calcolatore conserva ogni numero in una fila di bit, cioè di caselle che
-possono valere solo $0$ o $1$. È lo stesso bit della sezione sulla teoria
-dell'informazione, guardato dal lato della memoria invece che da quello della
-sorpresa: una casella che vale $0$ o $1$ risponde esattamente a una domanda sì
-o no. La fila ha una lunghezza fissata: trentadue caselle per il formato che si
-usa più spesso, che infatti si chiama `float32`, sedici per i formati
-ridotti. Quelle caselle vengono spartite in tre gruppi, come nella
-notazione scientifica che si impara a scuola quando si scrive $3{,}0\cdot10^8$
-invece di $300\,000\,000$:
+Un calcolatore conserva ogni numero in una sequenza di cifre binarie, i *bit*,
+ciascuna con valore $0$ o $1$. Il bit di memoria e il bit della {doc}`teoria
+dell'informazione <teoria-informazione>` coincidono quando le due cifre sono
+ugualmente probabili; in generale una cifra binaria porta al più un bit di
+informazione. La sequenza ha lunghezza fissata: trentadue bit nel formato
+`float32`, il più usato nel deep learning (Python e NumPy usano invece
+`float64`, a sessantaquattro), sedici nei formati ridotti. I bit sono spartiti
+in tre campi, come nella notazione scientifica $3{,}0\cdot10^8$, qui con la
+base due al posto della dieci:
 
-- una casella sola per il segno, positivo o negativo;
-- un gruppo per l’esponente, cioè il «per dieci alla…» che dice fin
-  dove si può arrivare, verso il grandissimo e verso il piccolissimo;
-- il gruppo più lungo per la mantissa, cioè le cifre significative
-  ($3{,}0$ nell'esempio), che dicono con quanta finezza il numero è
+- un bit di segno, positivo o negativo;
+- un campo per l'esponente, la potenza di due per cui si moltiplica, che fissa
+  la portata, cioè quanto grande e quanto piccolo può essere il numero;
+- il campo più lungo per la mantissa, le cifre significative ($3{,}0$
+  nell'esempio), che fissa la precisione, cioè con quanta finezza il numero è
   descritto.
 
-Spartire le caselle è un baratto: quelle date all'esponente non sono date alla
+Spartire i bit è un baratto: quelli dati all'esponente non sono dati alla
 mantissa.
 
 ```{figure} ../figures/float16-precisione-stabilita-numerica.svg
@@ -64,11 +65,11 @@ La distinzione di {numref}`fig-formati-virgola-mobile` fra **portata** e
 **precisione** attraversa tutto quello che segue. Sono due budget separati, e i
 guai di cui parleremo nascono dall'esaurirsi ora dell'uno (si finisce fuori
 dai numeri rappresentabili) ora dell'altro (restano troppo poche cifre buone).
-Il `bfloat16` della terza barra è nato apposta per il deep learning: rinuncia
-a due terzi delle cifre significative (sette bit di mantissa contro
-ventitré) pur di tenere la stessa portata del `float32`, perché in un
-addestramento le cifre oltre la terza non fanno quasi mai danno e finire fuori
-scala sì.
+Il `bfloat16` della terza barra ha lo stesso esponente del `float32`, e quindi
+la stessa portata, e sette bit di mantissa invece di ventitré: un terzo della
+precisione, contando anche l'uno implicito (otto bit contro ventiquattro). Per
+l'addestramento conviene conservare la portata, perché i gradienti coprono
+molti ordini di grandezza.
 
 `````{tab} Elementare
 
@@ -80,8 +81,11 @@ fisso di cifre per ogni numero.
 Con questo budget si scrive un numero come nella notazione scientifica ("tante
 cifre significative, moltiplicate per una potenza"), così lo stesso formato
 copre sia $0{,}0000001$ sia $10^{30}$. Il prezzo è che tra due numeri vicini
-resta sempre un piccolo "gradino" vuoto: $0{,}1 + 0{,}2$ cade tra due gradini
-e viene arrotondato, ed ecco lo `0.30000000000000004`.
+resta sempre un piccolo "gradino" vuoto. E un numero come $0{,}1$, semplice da
+scrivere in decimale, in binario non finisce mai, come $1/3$ in decimale: il
+computer ne tiene un pezzo, quindi già $0{,}1$ e $0{,}2$ sono un poco diversi
+da quelli veri. Sommati, cadono tra due gradini e vengono arrotondati, ed ecco
+lo `0.30000000000000004`.
 
 `````
 
@@ -121,6 +125,16 @@ calcola in `float16` e moltiplica la loss per un fattore di scala prima della
 retropropagazione, per poi dividerlo via dai gradienti
 {cite}`micikevicius2018mixed`. Col `bfloat16` quel fattore di norma non
 serve, ed è la ragione pratica per cui lo si preferisce.
+
+L'esempio $0{,}1+0{,}2$ si spiega per intero. In `float64`, $0{,}1$ e $0{,}2$
+non sono rappresentabili (il loro sviluppo binario è periodico) e diventano
+$0{,}1000000000000000055511\ldots$ e $0{,}2000000000000000111022\ldots$. La
+loro somma esatta, $0{,}3000000000000000166533\ldots$, sta esattamente a metà
+fra i due numeri rappresentabili vicini, $0{,}29999999999999998889\ldots$ e
+$0{,}30000000000000004441\ldots$; l'arrotondamento al pari sceglie il secondo,
+che ha la mantissa pari, ed è quello che Python stampa come
+`0.30000000000000004`. Il numero $0{,}3$ scritto nel codice è invece il primo
+dei due.
 
 `````
 
@@ -237,13 +251,11 @@ logaritmico, dove i prodotti diventano somme.
 
 ## Il trucco log-sum-exp
 
-Nessuna funzione soffre di questi problemi quanto la **softmax**. È l'ultimo
-passaggio di quasi ogni modello che deve scegliere fra alternative: gli strati
-sputano fuori un punteggio grezzo per ciascuna alternativa, un numero qualsiasi
-che di per sé non vuol dire niente (per tradizione si chiamano *logit*), e la
-softmax li rimette in riga come probabilità, tutte positive e a somma uno. La
-sua definizione contiene esponenziali, e gli esponenziali straripano. La cura è
-un'idea semplice ed elegante.
+La **softmax** trasforma i punteggi grezzi che escono dagli ultimi strati di un
+modello che sceglie fra alternative (i *logit*, logaritmi delle probabilità a
+meno di una costante) in una distribuzione di probabilità: componenti positive
+e somma uno. Contiene esponenziali, che in `float32` vanno in overflow già per
+punteggi sopra $88{,}7$. Una riscrittura esatta lo evita.
 
 `````{tab} Elementare
 
@@ -306,9 +318,10 @@ che torna nella {doc}`sezione sul training loop </PyTorch/addestramento>`).
 
 ## Arrotondamento e cancellazione
 
-Ogni operazione arrotonda, e di solito gli errori sono trascurabili. C'è però
-un caso in cui esplodono: la **cancellazione**, cioè la sottrazione di due
-numeri quasi uguali.
+Ogni operazione arrotonda, e di solito l'errore relativo resta dell'ordine
+dell'epsilon macchina. La **cancellazione** fa eccezione: sottraendo due numeri
+quasi uguali le cifre significative comuni si annullano, e l'errore che i due
+operandi già portavano diventa grande rispetto al risultato.
 
 `````{tab} Elementare
 
@@ -364,16 +377,13 @@ scrivono in modo stabile la *softplus* e la perdita logistica.
 Stesso codice, stessi dati, stesso seme del generatore casuale, librerie alla
 stessa versione fino all'ultima cifra: su due calcolatori diversi i numeri
 stampati possono non combaciare. Quasi sempre la differenza resta in fondo,
-nella quindicesima o sedicesima cifra, e non se ne accorge nessuno. Ogni tanto
-arriva davanti, e allora conviene sapere da dove viene. Il fenomeno si
-riproduce anche su una macchina sola, cambiando soltanto l'ordine in cui si
-somma.
-
-Il colpevole è una proprietà che a scuola si dà per acquisita e in virgola
-mobile è falsa: l’addizione non è associativa. $(a+b)+c$ e $a+(b+c)$ sono
-lo stesso numero in matematica e due numeri diversi nel calcolatore, perché
-ogni somma parziale viene arrotondata al gradino più vicino, e i gradini non
-cadono negli stessi punti.
+nella quindicesima o sedicesima cifra significativa. Se arriva alle prime
+cifre, serve capire da dove viene. Il fenomeno si riproduce anche su una
+macchina sola, cambiando soltanto l'ordine in cui si somma, perché l'addizione
+in virgola mobile non è associativa: $(a+b)+c$ e $a+(b+c)$ sono lo stesso
+numero in matematica e in generale due numeri diversi nel calcolatore, perché
+ogni somma parziale viene arrotondata e le somme parziali dei due ordini sono
+diverse.
 
 ```python
 import numpy as np
@@ -403,27 +413,25 @@ uguali? False
 differenza:   4.547e-12
 ```
 
-Gli addendi sono gli stessi e cambia solo l’ordine, ma il totale cambia nella
-dodicesima cifra. (Il ciclo è scritto a mano per una ragione: da Python 3.12 la
-funzione `sum()` applica ai numeri in virgola mobile la somma compensata di
-Neumaier, che recupera le cifre perse, e con lei i due totali tornerebbero
-uguali.)
+Gli addendi sono gli stessi e cambia solo l’ordine: i due totali differiscono
+di $4{,}5\cdot10^{-12}$, cioè di cinque unità dell'ultima cifra. (Il ciclo è
+scritto a mano per una ragione: da Python 3.12 la funzione `sum()` applica ai
+numeri in virgola mobile la somma compensata di Neumaier, che recupera le cifre
+perse, e con lei i due totali tornerebbero uguali.)
 
 Resta da spiegare perché due calcolatori dovrebbero sommare in ordine diverso,
 visto che il programma è lo stesso.
 
 `````{tab} Elementare
 
-Un negozio deve totalizzare uno scontrino lunghissimo, e la cassa lavora al
-centesimo: ogni volta che aggiorna un totale, arrotonda. Due cassiere fanno lo
-stesso conto in due modi. La prima somma gli articoli uno dopo l’altro,
-tenendo un totale solo. La seconda divide lo scontrino in otto colonne, fa il
-totale di ogni colonna e alla fine somma gli otto totali. Stessi prezzi, e
-perfino lo stesso numero di addizioni; ma gli arrotondamenti non cadono negli
-stessi punti, e i due totali possono differire di un centesimo. (Il caso
-limite è lo stesso: se fra i prezzi ce n’è uno enorme e uno da un centesimo,
-il centesimo può sparire del tutto nell’arrotondamento, come sparisce un
-numero piccolo sommato a uno grande.)
+Un negozio vende a peso, con prezzi al millesimo di euro, e deve totalizzare
+uno scontrino lunghissimo; la cassa arrotonda al centesimo ogni volta che
+aggiorna un totale. Due cassiere fanno lo stesso conto in due modi. La prima
+somma gli articoli uno dopo l’altro, tenendo un totale solo. La seconda divide
+lo scontrino in otto colonne, fa il totale di ogni colonna e alla fine somma
+gli otto totali. Stessi prezzi, e perfino lo stesso numero di addizioni; ma gli
+arrotondamenti non cadono negli stessi punti, e i due totali possono differire
+di un centesimo.
 
 Nel calcolatore i centesimi sono l’ultima cifra che il formato riesce a
 tenere, e a decidere in quante colonne si divide la somma è il processore: le
@@ -431,8 +439,8 @@ sue istruzioni lavorano su due, quattro o otto numeri per volta, e la
 libreria di calcolo, appena parte, sceglie la versione fatta apposta per il
 processore che si trova sotto. Quella versione ha un nome: si chiama
 kernel, la stessa parola che il {doc}`capitolo sulle GPU </GPU/overview>`
-usa per il programma che gira sulla scheda grafica. Il senso è quello: un pezzo
-di codice specializzato per il ferro su cui deve girare.
+userà per il programma che gira sulla scheda grafica. Il senso è quello: un
+pezzo di codice specializzato per la macchina su cui deve girare.
 
 `````
 
@@ -443,7 +451,8 @@ ciascuna routine: ne contiene molte, compilate ciascuna per un insieme di
 istruzioni vettoriali, cioè per una delle SIMD di cui parla la {doc}`sezione su
 NumPy </Python/numpy>`. Su un processore x86 sono generazioni successive, e a
 distinguerle è la larghezza dei registri su cui lavorano: 128 bit per SSE2, 256
-per AVX2, 512 per AVX-512, dove il numero nel nome è proprio quella larghezza.
+per AVX2, 512 per AVX-512 (solo in quest'ultimo il numero nel nome è la
+larghezza; negli altri due indica la generazione).
 In doppia precisione vuol dire due, quattro e otto numeri per istruzione.
 
 Al caricamento la libreria sceglie la variante adatta a quello che la CPU
@@ -465,23 +474,34 @@ La scelta si può fissare dall’esterno, con `OPENBLAS_CORETYPE` per OpenBLAS e
 d'accordo la parte di conto che passa da quelle due strade.
 
 Non basta però a garantire l'accordo in generale, ed è la metà che conta di
-più. I prodotti fra matrici di PyTorch non passano da
-OpenBLAS ma da un’altra libreria ancora, che quelle variabili non toccano; e
-basta una terza macchina, con le stesse due variabili fissate, perché
-l’ultima cifra ricominci a discostarsi. La riproducibilità bit a bit fra calcolatori
-diversi non è una casella da spuntare: si perde di nuovo appena un pezzo del
-conto sceglie una strada per conto proprio, e per questo due esecuzioni su
-macchine diverse si confrontano con una tolleranza, non con l’uguaglianza.
+più. I prodotti fra matrici di PyTorch su CPU x86 non passano da OpenBLAS ma da
+Intel MKL, che quelle variabili non toccano e che ha le sue (per la
+riproducibilità condizionale, `MKL_CBWR`); e basta una terza macchina, con le
+stesse variabili fissate, perché l’ultima cifra ricominci a discostarsi. La
+riproducibilità bit a bit fra calcolatori diversi non è una casella da
+spuntare: si perde di nuovo appena un pezzo del conto sceglie una strada per
+conto proprio, e per questo due esecuzioni su macchine diverse si confrontano
+con una tolleranza, non con l’uguaglianza.
+
+Quanto può cambiare, una somma, cambiando ordine? Nel caso peggiore l'errore
+della somma in fila di $n$ numeri è al più circa $(n-1)\,u\sum_i|x_i|$; la
+somma a coppie, che è quella di `np.sum`, lo riduce a circa
+$\log_2 n\cdot u\sum_i|x_i|$, e la somma compensata (Kahan, Neumaier) a circa
+$2u\,|s|$ più termini di ordine $u^2$, indipendente da $n$
+{cite}`higham2002accuracy`. Con i diecimila numeri del blocco, la cui somma dei
+valori assoluti è circa $5\cdot10^3$, il caso peggiore in fila sarebbe
+$5\cdot10^{-9}$; la differenza misurata è $4{,}5\cdot10^{-12}$.
 
 `````
 
-Una differenza nella sedicesima cifra sembra irrilevante, e quasi sempre lo è.
-Smette di esserlo quando quel numero non è il risultato ma l’ingresso di un
-calcolo lungo: se su quei valori si fa una discesa del gradiente, cioè migliaia
-di passi in cui ognuno riparte da dove è arrivato il precedente, due traiettorie
-che partono a distanza $10^{-16}$ si separano, e alla fine la differenza non è
-più nell’ultima cifra ma nel primo decimale, con lo stesso codice e lo stesso
-punto di partenza.
+Una differenza nella sedicesima cifra è quasi sempre irrilevante. Smette di
+esserlo quando il numero serve da ingresso a un calcolo lungo che amplifica le
+differenze. La discesa del gradiente su una funzione convessa le smorza: due
+traiettorie partite a distanza $10^{-16}$ restano a quella distanza.
+Nell'addestramento di una rete, che non è convesso, possono invece separarsi di
+molti ordini di grandezza in migliaia di passi, e due esecuzioni con lo stesso
+codice e gli stessi dati arrivano a pesi che differiscono molto più
+dell'ultima cifra.
 
 Da qui tre abitudini che costano poco. Un numero che esce da un calcolo lungo
 si racconta con le cifre che reggono, non con tutte quelle che il calcolatore
@@ -494,10 +514,12 @@ un’informazione sul problema.
 
 ## Condizionamento: quanto un problema amplifica gli errori
 
-C'è una parola che riassume tutto quello che è successo finora, e conviene
-isolarla. Un problema è **ben condizionato** se piccole variazioni dell'input
-producono piccole variazioni dell'output; è **mal condizionato** se le
-amplifica a dismisura.
+Il condizionamento misura quanto un problema amplifica le perturbazioni
+dell'input. Un problema è **ben condizionato** se a piccole variazioni
+dell'input corrispondono piccole variazioni dell'output, **mal condizionato** se
+le amplifica molto. È una proprietà del problema e non dell'algoritmo: la
+cancellazione ne è un esempio (la sottrazione di numeri vicini è mal
+condizionata), mentre l'overflow della softmax è un difetto dell'algoritmo.
 
 `````{tab} Elementare
 
@@ -519,10 +541,13 @@ Quando un risultato numerico esce sbagliato, le cause possibili sono due e si
 confondono spesso. Una è che il problema amplifichi gli errori per conto suo,
 e allora non c'è programma che tenga: bisogna cambiare domanda. L'altra è che
 il programma sia scritto male e ne introduca di suoi, e allora si riscrive il
-programma (la softmax senza il trucco del massimo è esattamente questo).
-«Evita di calcolare una quantità piccola come differenza di due quantità
-grandi» è una cura del secondo tipo; standardizzare i dati è una cura del
-primo.
+programma (la softmax senza il trucco del massimo è esattamente questo). La
+regola «evita di calcolare una quantità piccola come differenza di due
+quantità grandi» funziona nei due modi: se le due quantità sono dati misurati,
+come le due pesate, la cura è cambiare misura (pesare il capitano da solo); se
+sono risultati intermedi del programma, la cura è riscrivere il programma.
+Standardizzare i dati è una cura del primo tipo, il trucco del massimo nella
+softmax del secondo.
 
 `````
 
@@ -587,7 +612,8 @@ $$
 Un algoritmo stabile all'indietro ha $\eta=O(u)$: la fattorizzazione QR di
 Householder lo è sempre, l'eliminazione di Gauss con pivoting parziale lo è in
 pratica. Con loro l'errore relativo finale è dell'ordine di
-$\kappa(\mathbf{A})\,u$, e per fare di meglio bisogna cambiare problema
+$\kappa(\mathbf{A})\,u$, e per fare di meglio bisogna cambiare problema oppure
+calcolare il residuo in precisione più alta, come fa il raffinamento iterativo
 {cite}`higham2002accuracy`.
 
 Sono due cause indipendenti. Welford e il *log-sum-exp* curano la seconda, non
@@ -597,21 +623,23 @@ la prima; standardizzare i dati cura la prima, non la seconda.
 
 ## Perché normalizzare i dati aiuta
 
-Ed è qui che i conti si ricongiungono alla pratica quotidiana, con
-l'operazione che si fa più spesso prima di dare dei dati a un modello.
+Il condizionamento ha una conseguenza pratica immediata: la standardizzazione
+dei dati prima dell'addestramento.
 
 `````{tab} Elementare
 
-L'appartamento di sempre, descritto questa volta da prezzo in euro, metri
-quadri e numero di stanze, porta con sé un problema che non si vede a occhio:
-quei tre numeri vivono su scale lontanissime. Il prezzo è nell'ordine delle
-centinaia di migliaia, le stanze sono tre. Ciascuna di queste caratteristiche
-(in gergo si dicono *feature*, «caratteristiche» appunto) parla una lingua sua.
+L'appartamento di sempre, descritto questa volta dal valore catastale in euro,
+dai metri quadri e dal numero di stanze, porta con sé un problema che non si
+vede a occhio: quei tre numeri vivono su scale lontanissime. Il valore
+catastale è nell'ordine delle centinaia di migliaia, le stanze sono tre.
+Ciascuna di queste caratteristiche (in gergo si dicono *feature*,
+«caratteristiche» appunto) parla una lingua sua.
 
 Per il modello è un guaio, ed è esattamente il guaio del condizionamento
 appena visto.
 Il modello moltiplica ogni caratteristica per un peso, e il peso è una delle
-sue manopole. Ma il prezzo arriva in centinaia di migliaia, quindi al suo peso
+sue manopole. Ma il valore catastale arriva in centinaia di migliaia, quindi al
+suo peso
 basta muoversi di un pelo perché il risultato cambi moltissimo; il numero di
 stanze arriva in unità, quindi al suo peso tocca muoversi parecchio per farsi
 sentire. Una manopola sensibilissima e una insensibile, da regolare insieme e
@@ -625,9 +653,9 @@ Il rimedio si chiama **standardizzare** e consiste in due gesti su ciascuna
 colonna di dati, presa una alla volta: togliere a tutti i valori la loro media,
 così che il nuovo centro sia lo zero, e poi dividerli tutti per lo scarto
 tipico, così che sparpagliamenti diversi diventino confrontabili. Alla fine
-ogni caratteristica è centrata sullo zero e larga circa uno, e i prezzi in euro
-e il numero di stanze sono finalmente sulla stessa scala. La valle diventa
-molto più tonda e la discesa punta quasi dritta al fondo.
+ogni caratteristica è centrata sullo zero e larga circa uno, e gli euro del
+valore catastale e il numero di stanze sono finalmente sulla stessa scala. La
+valle diventa molto più tonda e la discesa punta quasi dritta al fondo.
 
 Non è una cura completa. Mette tutte le caratteristiche sulla stessa scala, ma
 non cambia il modo in cui si somigliano fra loro: se due di esse crescono e
@@ -643,8 +671,8 @@ Prima di dare i dati a un modello quasi sempre li standardizziamo,
 sottraendo la media e dividendo per la deviazione standard: al posto di ogni
 valore $x$ si scrive $(x - \mu)/\sigma$, dove $\mu$ e $\sigma$ sono la media e
 la deviazione standard della colonna. Così ogni caratteristica (*feature*) ha
-media $0$ e scala $1$. Il motivo è la stabilità: è un intervento sul
-condizionamento del problema, non sull'algoritmo.
+media $0$ e scala $1$. Il motivo è il condizionamento: è un intervento sul
+problema, non sull'algoritmo.
 
 Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
 prodotti dentro la rete stanno su scale lontanissime (invito all'overflow) e la
@@ -692,14 +720,15 @@ rimbalza a zig-zag; standardizzando (destra) le curve di livello diventano
 molto più tonde e la discesa punta quasi dritta al minimo.
 ```
 
-In pratica sono le due righe promesse, con i tre appartamenti dell'esempio
-messi in tabella (una riga per appartamento, una colonna per caratteristica):
+Con tre appartamenti in tabella (una riga per appartamento, una colonna per
+caratteristica), la standardizzazione è una riga di `scikit-learn`:
 
 ```python
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-# tre feature su scale lontanissime: euro, metri quadri, numero di stanze
+# tre feature su scale lontanissime: valore catastale in euro, metri quadri,
+# numero di stanze
 X = np.array([[250_000, 75, 3], [180_000, 62, 2], [410_000, 120, 5]])
 
 scaler = StandardScaler()
@@ -711,8 +740,8 @@ print(X_std.round(2))
 ```
 
 Le tre colonne, che prima andavano da $2$ a $410\,000$, ora vivono tutte nello
-stesso intervallo: il prezzo non domina più il conto solo perché è scritto in
-euro.
+stesso intervallo: il valore catastale non domina più il conto solo perché è
+scritto in euro.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -733,7 +762,9 @@ euro.
   svelta.
 - Lo stesso programma, sugli stessi dati, può stampare ultime cifre diverse su
   due calcolatori diversi, e non è un guasto: cambia l’ordine in cui il
-  processore somma. Un numero che cambia solo in fondo non è cambiato.
+  processore somma. Un numero che cambia solo in fondo di solito non è
+  cambiato, a meno che non serva da ingresso a un calcolo lungo che amplifica
+  le differenze.
 ```
 `````
 
@@ -759,3 +790,6 @@ euro.
   risultati si confrontano con una tolleranza, non con `==`.
 ```
 `````
+
+Con l'analisi numerica gli attrezzi sono al completo. Resta da vederli
+lavorare insieme su un oggetto solo, un modello linguistico.

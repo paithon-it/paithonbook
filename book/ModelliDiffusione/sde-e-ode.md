@@ -1,18 +1,21 @@
 # Il limite continuo: una sola equazione, in avanti e all'indietro
 
 Nel 1982 Brian Anderson, ingegnere del controllo automatico, pubblica su una
-rivista di processi stocastici un articolo di quattordici pagine intitolato
-*Reverse-time diffusion equation models* {cite}`anderson1982reverse`. Il
-problema che aveva per le mani era di tutt'altro genere: dato un segnale
+rivista di processi stocastici (cioè casuali) un articolo di quattordici pagine
+intitolato *Reverse-time diffusion equation models* {cite}`anderson1982reverse`.
+Il problema che aveva per le mani era di tutt'altro genere: dato un segnale
 rumoroso osservato fino a un certo istante, stimare che cosa fosse successo
-prima. Il risultato che ottiene è generale: un processo casuale che si
-diffonde in avanti nel tempo si può percorrere all'indietro, e l'equazione
-che lo descrive è la stessa di prima più un termine correttivo.
+prima. Il risultato che ottiene è generale: un processo casuale che si diffonde
+in avanti nel tempo si può percorrere all'indietro, e l'equazione che descrive
+il ritorno è quella dell'andata più un termine correttivo.
 
-Quel termine correttivo dice, in ogni punto, da che parte stanno le zone dove i
-dati sono più fitti: è il gradiente della log-densità, cioè quel «verso
-della salita» che la rete di DDPM impara senza saperlo. Per quasi quarant'anni
-l'articolo resta un risultato tecnico citato da poche decine di lavori; poi nel
+Quel termine correttivo è il gradiente del logaritmo della densità dei dati
+rumorosi, $\nabla_{\mathbf{x}}\log p_t(\mathbf{x})$, detto **punteggio**
+(*score*): in ogni punto indica la direzione in cui la densità cresce più in
+fretta, cioè da che parte stanno i dati più fitti, ed è il «verso della salita»
+della mappa di colline. È la stessa quantità che la rete di DDPM stima, a meno
+di un fattore, quando predice il rumore. Per quasi quarant'anni l'articolo di
+Anderson resta un risultato tecnico citato da poche decine di lavori; poi nel
 2020 qualcuno si accorge che rovinare un'immagine con del rumore è esattamente
 una diffusione in avanti, che generare è percorrerla all'indietro, e che quel
 termine correttivo è la sola cosa che una rete debba imparare
@@ -49,13 +52,19 @@ chiama equazione differenziale: la sua soluzione non è un numero, come per le
 equazioni di scuola, ma un intero percorso.
 
 Sul tremore serve una precisazione, perché è controintuitiva. Gli scossoni non
-si accumulano come uno spostamento normale: sommando cento scossoni a caso, chi
-va a destra e chi a sinistra si compensano parecchio, e quello che resta cresce
-come la radice del numero di scossoni, non come il numero. Ecco perché
-nella ricetta il tremore compare con una radice quadrata del passo, mentre la
-deriva compare con il passo intero. È lo stesso fatto della legge dei grandi
-numeri, visto al contrario: la media di tante prove si stabilizza come uno
-diviso radice di enne, e la loro somma si sparpaglia come radice di enne.
+si accumulano come uno spostamento normale: è il conto dei mille passi a caso,
+che portano a una trentina di metri e non a un chilometro. Cento scossoni da un
+centimetro allontanano di una decina di centimetri, non di un metro: chi va a
+destra e chi a sinistra si compensano parecchio, e quello che resta cresce come
+la radice quadrata del numero di scossoni (la radice di cento è dieci), non
+come il numero. Ecco perché nella ricetta il tremore di un passo compare con la
+radice quadrata della sua durata, mentre la deriva compare con la durata
+intera: spezzando lo stesso tratto di tempo in passetti sempre più corti, le
+derive si sommano fino a dare sempre lo stesso spostamento, e gli scossoni,
+che si sommano «a radice», danno sempre lo stesso tremore complessivo, né nullo
+né infinito. È la stessa regola che fa stabilizzare la media di tante misure:
+la loro somma si sparpaglia come la radice del loro numero, e la media, che è
+la somma divisa per quel numero, si stringe come uno diviso la radice.
 
 Il gioco vale la candela per una ragione pratica: nel continuo la ricetta si
 descrive con due sole funzioni del tempo, e tutte le varianti che negli anni
@@ -119,7 +128,8 @@ del rumore accumulato. Sono le lettere della letteratura sul tempo continuo, e
 nella {doc}`sezione su come funziona la diffusione
 </ModelliDiffusione/come-funziona>` facevano un altro mestiere: là
 $\alpha_t = 1-\beta_t$ era il fattore di un solo passo e $\sigma_t$ la
-deviazione standard del rumore fresco del passo inverso. Il dizionario è
+deviazione standard del rumore fresco del passo inverso. Per il processo di
+DDPM (della famiglia VP, quella che conserva la varianza) il dizionario è
 $\alpha_t = \sqrt{\bar{\alpha}_t}$ e $\sigma_t = \sqrt{1-\bar{\alpha}_t}$, e da
 qui in avanti, nel tempo continuo, valgono le lettere nuove. La conseguenza
 operativa ha un nome, ed è il motivo per cui questi modelli si addestrano in
@@ -142,7 +152,8 @@ La prima famiglia non tocca l'immagine e ci versa sopra rumore sempre più
 forte. Non c'è nessuna deriva: il dato resta dov'è, e attorno a esso la
 nuvola si allarga senza limite. Alla fine il rumore è così forte che
 dell'immagine non si distingue più niente, ma tecnicamente c'è ancora, sepolta.
-Il nome dice il comportamento: la varianza esplode.
+Il nome dice il comportamento: la varianza (la larghezza della nuvola, misurata
+al quadrato) esplode.
 
 La seconda famiglia invece restringe l'immagine mentre aggiunge rumore, e
 lo fa con un dosaggio preciso: quanto toglie di segnale, tanto aggiunge di
@@ -206,12 +217,14 @@ $g^2(t)=\beta(t)\,(1-\alpha_t^4)$, da cui $\sigma_t^2=(1-\alpha_t^2)^2$: la
 varianza resta sotto quella della VP a ogni istante, e nell'articolo che la
 introduce dà verosimiglianze migliori della VP.
 
-Il rapporto $\alpha_t/\sigma_t$ è il **rapporto segnale-rumore**, e le tre
-famiglie si distinguono soltanto per come lo fanno scendere e per come
+Il rapporto fra le ampiezze $\alpha_t/\sigma_t$ dice quanto segnale resta
+rispetto al rumore, e la letteratura chiama **rapporto segnale-rumore** il suo
+quadrato, il rapporto fra le potenze, $\mathrm{SNR}(t) = \alpha_t^2/\sigma_t^2$.
+Le tre famiglie si distinguono soltanto per come lo fanno scendere e per come
 riscalano lo stato lungo la strada. Questa osservazione è il punto di partenza
 della riformulazione di Karras e colleghi {cite}`karras2022elucidating`, che
-tratta la scala come una riparametrizzazione libera e riscrive tutte le
-varianti in un unico spazio di progetto.
+tratta la scala come una riparametrizzazione libera e riscrive tutte le varianti
+in un unico spazio di progetto.
 
 `````
 
@@ -258,9 +271,9 @@ for t, xs in fotografie.items():
 ```
 
 Media e larghezza coincidono a ogni istante, e la seconda colonna si ottiene
-senza fare mille passi: una moltiplicazione e una somma. La deviazione a
-$t=0{,}25$ vale $1{,}28$ e non $1$ perché i dati di partenza hanno già una
-larghezza loro, essendo due punti a distanza tre.
+senza fare mille passi: una moltiplicazione e una somma. La larghezza
+(deviazione standard) a $t=0{,}25$ vale $1{,}28$ e non $1$ perché i dati di
+partenza hanno già una larghezza loro, essendo due punti a distanza tre.
 
 ## L'equazione all'indietro, e il suo unico ingrediente ignoto
 
@@ -276,7 +289,7 @@ scintille distribuite esattamente come quelle vere.
 
 L'equazione all'indietro ha la stessa forma di quella in avanti, con un termine
 in più: in ogni punto, oltre alla deriva e al tremore, c'è una spinta che punta
-verso le zone dove i dati sono più densi. Quella spinta è il **punteggio**, il
+verso le zone dove i dati sono più densi. Quella spinta è il punteggio, il
 verso della salita di cui si parlava, e la cosa importante è che è l'unica
 cosa ignota. Deriva e tremore li abbiamo scelti noi quando abbiamo deciso
 come rovinare le immagini: sono nostri, li conosciamo esattamente. Della strada
@@ -287,11 +300,14 @@ rumore. Sembra assurdo, visto che si sta cercando di ripulire; e invece i due
 termini lavorano insieme. La spinta verso le zone dense tira verso i dati, il
 rumore permette di esplorare invece di precipitare sul primo posto buono, e il
 tremore si spegne man mano che si procede: all'inizio del ritorno è forte e
-si vaga, verso la fine è quasi nullo e comanda solo la spinta. È parente della
-ricetta con cui i fisici campionano una distribuzione
-complicata: qui però a stringersi piano piano è il bersaglio stesso, la folla
-che si raccoglie verso i dati mentre la mappa delle zone dense si fa più
-nitida.
+si vaga, verso la fine è quasi nullo e comanda solo la spinta. È parente di un
+procedimento classico per pescare punti da una distribuzione complicata, la
+dinamica di Langevin: si cammina verso le zone dense tremando un po', e alla
+lunga i punti visitati si distribuiscono come si voleva. Qui però la mappa
+delle zone dense non resta ferma: all'inizio del ritorno è larga e sfocata,
+perché i dati sono ancora coperti di rumore, e si fa più nitida man mano che il
+rumore cala, così che la folla si raccoglie verso i dati mentre la mappa si
+stringe attorno a loro.
 
 `````
 
@@ -389,11 +405,13 @@ lo si può trovare percorrendo la strada all'incontrario. È così che si modifi
 un'immagine esistente invece di generarne una da zero: la si porta indietro
 fino al suo rumore, si cambia qualcosa nella richiesta, e la si riporta avanti.
 
-*Si può dire quanto è probabile ciò che si è generato.* Lungo una strada
-tracciata si può tenere il conto di quanto lo spazio si allarga e si stringe, e
-quel conto è precisamente il {doc}`determinante
-</Matematica/determinante-e-volume>`, cioè quanto una trasformazione gonfia lo
-spazio. Con la strada casuale quel conto non si può fare.
+*Si può dire quanto è probabile un'immagine.* Lungo una strada tracciata si
+può tenere il conto di quanto lo spazio si allarga e si stringe, e quel conto è
+precisamente il {doc}`determinante </Matematica/determinante-e-volume>`, cioè
+quanto una trasformazione gonfia lo spazio. Serve a dare un voto al modello
+intero: davanti a fotografie vere che non ha mai visto, il modello migliore è
+quello che le giudica più probabili. Con la strada casuale quel conto non si
+può fare.
 
 *Servono meno passi.* Le traiettorie senza tremore sono lisce, e una curva
 liscia si approssima bene con pochi segmenti. Le traiettorie casuali sono
@@ -401,18 +419,20 @@ frastagliate e chiedono passi corti. Quasi tutti i generatori veloci di oggi
 percorrono la strada deterministica, e la {doc}`sezione sui campionatori veloci
 </ModelliDiffusione/campionatori-veloci>` racconta come.
 
-Il prezzo si vede solo quando la spinta non è quella esatta ma quella che la
-rete ha imparato, cioè sempre. Sulla strada tracciata un errore commesso a metà
-percorso resta lì e si porta avanti fino in fondo; su quella casuale il
-barcollamento rimescola a ogni passo, e ogni rimescolamento riporta la folla
-verso la densità che dovrebbe avere in quel momento, cancellando in parte gli
-errori vecchi. Con la spinta esatta e passi infinitamente piccoli le due strade
-darebbero lo stesso risultato (con passi veri la casuale arriva un po' più
-sparpagliata, perché continua a tremare fino all'ultimo passo, ed è quello che
-la prova con i due soli valori $\pm 1{,}5$ fa vedere); con una spinta
-approssimata la casuale arriva più vicino, ed è per
-questo che chi vuole il massimo della qualità visiva usa spesso un misto, con
-del caso all'inizio e nessuno alla fine.
+Il prezzo si vede quando la spinta non è quella esatta ma quella che la rete
+ha imparato, cioè sempre. Sulla strada tracciata un errore commesso a metà
+percorso resta lì e si porta fino in fondo; su quella casuale il barcollamento
+rimescola a ogni passo, e ogni rimescolamento riporta la folla un po' più
+vicino alla densità che dovrebbe avere in quel momento, cancellando in parte
+gli errori vecchi. Per questo, con una spinta imperfetta, la strada casuale
+arriva spesso più vicino alla folla vera, e chi vuole il massimo della qualità
+usa un misto: un po' di caso in un tratto del percorso, nessuno alla fine.
+
+Con la spinta esatta, invece, le due strade portano alla stessa folla, e il
+barcollamento costa soltanto passi in più: con passi non abbastanza piccoli la
+casuale arriva un po' più sparpagliata attorno alla meta, perché trema fino
+all'ultimo. La prova con i due soli valori $\pm 1{,}5$ fa vedere proprio
+questo.
 
 `````
 
@@ -430,36 +450,68 @@ p_t(\tilde{\mathbf{x}}(t)) .
 $$
 
 Il confronto con la SDE all'indietro mostra le due sole differenze: il termine
-di rumore è sparito, e il coefficiente del punteggio è dimezzato. Non è una
-coincidenza dei conti: l'una e l'altra soddisfano la stessa equazione di
-evoluzione per la densità, e il fattore $\tfrac12$ è esattamente quanto serve a
-compensare il contributo diffusivo che si è tolto.
+di rumore è sparito, e il coefficiente del punteggio è dimezzato. La ragione
+sta nell'equazione che governa la densità: quella della SDE in avanti è
+l'equazione di Fokker-Planck,
+
+$$
+\partial_t p_t = -\nabla\!\cdot\!\big(\mathbf{f}\,p_t\big)
++ \tfrac12 g^2(t)\,\Delta p_t ,
+$$
+
+e poiché $\Delta p_t = \nabla\!\cdot\!\big(p_t\nabla\log p_t\big)$ la si
+può riscrivere come
+
+$$
+\partial_t p_t = -\nabla\!\cdot\!\Big[\big(\mathbf{f}
+- \tfrac12 g^2(t)\,\nabla\log p_t\big)\,p_t\Big] ,
+$$
+
+che è l'equazione di continuità di un flusso deterministico con velocità
+$\mathbf{f} - \tfrac12 g^2\nabla\log p_t$: la PF-ODE, che quindi ha le stesse
+marginali. Il fattore $\tfrac12$ è esattamente quanto serve a far rientrare nel
+trasporto il termine diffusivo che si è tolto. La stessa riscrittura, spezzando
+$\tfrac12 g^2\Delta p_t$ in $g^2\Delta p_t - \tfrac12 g^2\Delta p_t$ e
+invertendo il tempo, dà la SDE all'indietro di Anderson {cite}`song2021score`.
 
 Le tre conseguenze, in forma precisa:
 
 - Invertibilità. La PF-ODE definisce un flusso deterministico
-  $\Phi_{t\to s}$, quindi una biiezione fra la distribuzione dei dati e il
-  prior. Da qui l’*inversione DDIM*, che serve a editing, interpolazione nello
-  spazio del rumore e attribuzione.
+  $\Phi_{t\to s}$ che, se il campo è lipschitziano in $\mathbf{x}$ (e quindi
+  la soluzione è unica), è una biiezione fra gli *stati* e trasporta
+  $p_{\text{dati}}$ in $p_T$. Da qui l’*inversione DDIM*, cioè integrare la ODE
+  dall'immagine al suo rumore, che serve a editing e interpolazione nello
+  spazio del rumore. Per un campo stimato da una rete la condizione regge; per
+  il punteggio esatto può cadere vicino a $t = 0$, dove i dati si concentrano.
 - Verosimiglianza esatta. Trattando la PF-ODE come un
   {doc}`flusso normalizzante continuo </VerosimiglianzaEsatta/a-che-serve>` si
   ottiene
   $\log p_0(\mathbf{x}_0) = \log p_T(\mathbf{x}_T) + \int_0^T
   \nabla\!\cdot\!\mathbf{v}_t(\mathbf{x}_t)\,\mathrm{d}t$,
-  con $\mathbf{v}_t$ il campo di velocità della ODE e la divergenza stimata
-  alla Hutchinson. È il conto che la SDE non permette.
+  con $\mathbf{v}_t$ il campo di velocità della ODE e la divergenza stimata a
+  caso con lo stimatore di Hutchinson {cite}`hutchinson1989stochastic`, come fa
+  FFJORD nella stessa sezione sui flussi continui. È il conto che la SDE non
+  permette.
 - Errore di discretizzazione. Un integratore di ordine $p$ su una
   traiettoria liscia accumula errore $O(h^p)$ con $h$ il passo; le traiettorie
   della SDE hanno regolarità di Hölder $1/2$ e i metodi stocastici si fermano a
   ordini bassi. È la ragione strutturale per cui i campionatori a pochi passi
   lavorano sulla ODE.
 
-Il rovescio, misurato in letteratura e riconoscibile a occhio nei campioni: a
-parità di modello la SDE produce campioni più diversi e spesso migliori sui
-punteggi percettivi, perché la stocasticità corregge in corsa gli errori del
-punteggio stimato, mentre la ODE li integra fedelmente. Da qui i campionatori
-ibridi, che usano rumore nella prima parte del percorso e la sola ODE nella
-seconda.
+Il rovescio, misurato in letteratura. Con il punteggio esatto SDE e ODE hanno
+le stesse marginali, quindi la stessa qualità e la stessa varietà; con un
+punteggio stimato la SDE dà spesso campioni migliori, perché la componente di
+Langevin che contiene riporta a ogni passo il campione verso la marginale
+giusta e corregge in parte gli errori dei passi precedenti, mentre la ODE li
+integra fedelmente {cite}`karras2022elucidating`. Il vantaggio ha due limiti.
+Discretizzare la parte stocastica introduce un errore suo, e troppo rumore
+aggiunto e tolto impoverisce i dettagli, tanto che Karras e colleghi
+accendono la stocasticità soltanto in una fascia di livelli di rumore e ne
+tarano la dose caso per caso; e il guadagno si assottiglia al migliorare del
+modello: su CIFAR-10, con il loro addestramento migliore, qualunque dose di
+rumore peggiora il risultato, mentre su ImageNet $64\times64$ resta utile.
+Da qui i campionatori ibridi, che iniettano rumore in un tratto del percorso e
+seguono la sola ODE nel resto.
 
 `````
 
@@ -537,7 +589,11 @@ cercano di ridurre a parità di passi.
 ## Quattro modi di dire la stessa cosa
 
 Chi legge il codice di più di una libreria incontra reti che predicono cose
-apparentemente diverse. Sono la stessa rete.
+apparentemente diverse. Predicono la stessa informazione, scritta in quattro
+modi: da una qualsiasi delle quattro uscite le altre tre si ricavano per
+conversione algebrica, e la scelta cambia il condizionamento numerico e il peso
+che la loss dà ai livelli di rumore, mentre ciò che c'è da imparare resta lo
+stesso.
 
 `````{tab} Elementare
 
@@ -561,7 +617,7 @@ funziona male quando di disturbo ce n'è pochissimo, perché di quel disturbo
 nell'immagine resta una traccia minuscola e va indovinato tutto a partire da
 lì; chiedere l'immagine pulita funziona male dall'altra parte, dove di immagine
 non c'è quasi più niente. La quarta domanda, la velocità, è stata inventata
-proprio per questo: mescola le due in modo da restare ben posta a tutti e due
+proprio per questo: mescola le due in modo da restare affidabile a tutti e due
 gli estremi, ed è quella che si usa quando il percorso deve essere accorciato a
 pochi passi.
 
@@ -610,9 +666,9 @@ $$
 $$
 
 e ogni scelta di parametrizzazione equivale a una scelta di $w(t)$ nella
-formulazione sul rumore. Con $\mathrm{SNR}(t) = \alpha_t^2/\sigma_t^2$, il
-rapporto fra le potenze come lo scrive la letteratura (il quadrato di
-$\alpha_t/\sigma_t$, quello fra le ampiezze), i conti stanno in una riga:
+formulazione sul rumore. Con il rapporto segnale-rumore
+$\mathrm{SNR}(t) = \alpha_t^2/\sigma_t^2$, fra le potenze, i conti stanno in
+una riga:
 $\lVert\hat{\mathbf{x}}_0 - \mathbf{x}_0\rVert^2 =
 \lVert\hat{\boldsymbol{\epsilon}} -
 \boldsymbol{\epsilon}\rVert^2/\mathrm{SNR}(t)$,
@@ -678,8 +734,10 @@ quella di partenza. Le quattro domande sono la stessa domanda.
 - Accanto alla strada casuale ce n'è una deterministica che attraversa le
   stesse nuvole negli stessi istanti. Si percorre nei due sensi (quindi ogni
   immagine ha il suo rumore, e si può modificare un'immagine esistente),
-  permette di dire quanto è probabile ciò che si genera, e si accorcia con meno
-  passi. In cambio dà campioni un po' meno vari.
+  permette di dire quanto è probabile un'immagine, e si percorre con meno
+  passi. In cambio non corregge per strada gli errori della rete: con una
+  spinta imperfetta, la strada casuale arriva spesso più vicino alla folla
+  vera.
 - Le quattro cose che una rete può predire (il disturbo, l'immagine pulita, la
   direzione di salita, la velocità) sono la stessa informazione: sapendone
   una si ricavano le altre tre. Cambia solo dove i conti restano precisi.
@@ -707,9 +765,11 @@ quella di partenza. Le quattro domande sono la stessa domanda.
   $\tau(s)=\tfrac12 g^2(T-s)$ che non è una temperatura.
 - PF-ODE: $\dot{\tilde{\mathbf{x}}} = \mathbf{f} -
   \tfrac12 g^2\nabla\log p_t$, stesse marginali, traiettorie deterministiche.
-  Dà invertibilità, verosimiglianza esatta alla Hutchinson e traiettorie lisce
-  (quindi integratori di ordine alto). La SDE resta preferibile per la
-  diversità, perché la stocasticità corregge gli errori del punteggio stimato.
+  Dà invertibilità (con un campo lipschitziano), verosimiglianza esatta con
+  lo stimatore di Hutchinson e traiettorie lisce (quindi integratori di ordine
+  alto). Con un punteggio stimato la SDE dà spesso campioni migliori, perché la
+  stocasticità corregge in parte gli errori dei passi precedenti; il vantaggio
+  si assottiglia al migliorare del modello.
 - Le quattro parametrizzazioni sono legate da
   $\hat{\mathbf{x}}_0 = (\mathbf{x}_t-\sigma_t\hat{\boldsymbol{\epsilon}})/
   \alpha_t$, $\mathbf{s}=-\hat{\boldsymbol{\epsilon}}/\sigma_t$,
@@ -723,6 +783,8 @@ quella di partenza. Le quattro domande sono la stessa domanda.
 La diffusione ha smesso di essere una ricetta e ha una struttura: si sceglie
 come rovinare, il ritorno è determinato, e l'unica cosa da imparare è una
 funzione. Resta però una domanda che l'impianto lascia aperta. Il percorso è
-stato costruito rovinando i dati con del rumore gaussiano, e sono quelle nuvole
-gaussiane a decidere la forma delle traiettorie: c'è un modo di scegliere il
-percorso invece di ereditarlo, e magari di sceglierlo dritto?
+stato costruito rovinando i dati con rumore gaussiano, secondo un dosaggio che
+cambia istante per istante, e quella scelta fissa la forma delle traiettorie
+della ODE, che in generale sono curve; e una curva, per seguirla, chiede molti
+passi. C'è un modo di scegliere il percorso invece di ereditarlo, e magari di
+sceglierlo dritto?

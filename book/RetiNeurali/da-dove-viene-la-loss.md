@@ -23,13 +23,13 @@ emette i parametri di una distribuzione sull'uscita, al posto del valore.
 
 Finora la rete ha risposto con un numero: questa casa vale $210.000$ euro,
 questa foto è un gatto. La mossa che apre tutto il discorso sulle loss è
-cambiare l'oggetto della risposta. La rete riceve $\mathbf{x}$ e restituisce
-i parametri $\boldsymbol{\lambda}$ di una distribuzione di probabilità
-$p(y \mid \boldsymbol{\lambda})$ definita sul dominio delle risposte
-possibili. (Questa $\boldsymbol{\lambda}$ raccoglie i parametri di una
-distribuzione, ed è in grassetto perché di solito ha più di una componente;
-altrove nel libro la stessa lettera, tonda, è il coefficiente di una
-penalità, e le due cose non hanno niente in comune.)
+cambiare l'oggetto della risposta. La rete riceve $\mathbf{x}$ e restituisce i
+parametri $\boldsymbol{\lambda}$ di una distribuzione di probabilità
+$p(y \mid \boldsymbol{\lambda})$ sulle risposte possibili, cioè i numeri che la
+fissano: per una campana, dove sta il centro e quanto è larga. La sbarra si
+legge «dato», e $\boldsymbol{\lambda}$ è in grassetto perché di solito ha più di
+una componente. L'insieme delle risposte su cui la distribuzione è definita è il
+suo **dominio**.
 
 Il valore singolo non sparisce: si recupera quando serve, prendendo il punto
 in cui la distribuzione dichiarata è più alta. Quello che si guadagna è tutto
@@ -47,7 +47,8 @@ più avanti.
 - **la consegna alla rete**: i parametri di quella distribuzione diventano
   l'uscita della rete, $\boldsymbol{\lambda} = f_\theta(\mathbf{x})$;
 - **la verosimiglianza**: si cercano i pesi $\theta$ che rendono massima la
-  probabilità congiunta delle risposte osservate nei dati di addestramento;
+  probabilità congiunta delle risposte osservate nei dati di addestramento,
+  cioè la probabilità che escano tutte insieme;
 - **il segno e il logaritmo**: per convenienza numerica si passa alla
   log-verosimiglianza cambiata di segno, e quella somma è la loss
   $\mathcal{L}(\theta)$ da minimizzare.
@@ -59,50 +60,55 @@ La presentazione in questa forma di procedura è di Prince
 
 C'è un gioco che si fa con dieci gettoni, per cento turni. A ogni turno viene
 fuori qualcosa (il numero di panini venduti oggi, se domani piove, quale delle
-cinque squadre vince) e tu non devi dire la risposta: devi distribuire i gettoni
-sulle risposte possibili, prima di sapere com'è andata. Poi si scopre la verità,
-e la tua vincita è la parte dei dieci gettoni che avevi messo proprio lì: tre
-gettoni su dieci valgono 0,3, dieci su dieci valgono 1.
+cinque squadre vince), e tu, prima di sapere com'è andata, non dici la risposta:
+distribuisci i gettoni sulle risposte possibili. Poi si scopre la verità, e
+vinci la parte dei dieci gettoni che avevi messo proprio lì: tre gettoni su
+dieci valgono 0,3, dieci su dieci valgono 1.
 
-Le regole sono quattro, e la prima è disegnare il tavolo. Se la risposta è un
-sì o un no bastano due caselle; se è una fra cinque squadre, cinque caselle; se
-è un numero qualunque non ci sono caselle affatto, c'è un righello lungo, e i
-dieci gettoni vanno sbriciolati in sabbia e sparsi. Allora non si chiede quanta
-sabbia sta esattamente su un punto, che è niente, ma quanto è alto lo strato
-lì, cioè quanti gettoni per centimetro. E lo strato può superare di molto il
-dieci: dieci gettoni schiacciati in un millimetro fanno cento gettoni per
-centimetro.
+Le regole sono quattro, una per mossa della ricetta. La prima, la famiglia, è
+disegnare il tavolo. Per un sì o un no bastano due caselle, per cinque squadre
+ne servono cinque; per un numero qualunque le caselle non ci sono, c'è un
+righello lungo, e i dieci gettoni vanno sbriciolati in sabbia e sparsi. Su un
+punto solo, allora, di sabbia non ce n'è: si guarda quanto è alto lo strato lì,
+cioè quanti gettoni per centimetro. E lo strato può superare di molto il dieci:
+dieci gettoni schiacciati in un millimetro fanno cento gettoni per centimetro.
 
-La seconda regola è che a distribuire i gettoni non sei tu a mano: lo fa la
-rete, e lo fa dopo aver guardato l'indizio di quel turno. A ogni turno
-l'indizio cambia, e cambia anche il modo in cui i gettoni finiscono sul tavolo.
+La seconda regola, la consegna alla rete: i gettoni non li distribuisci tu a
+mano, li distribuisce la rete, dopo aver guardato l'indizio del turno. Cambia
+l'indizio, e cambia il modo in cui i gettoni finiscono sul tavolo.
 
 La terza è il punteggio. I cento turni si vincono tutti insieme, come cento
 scommesse che devono riuscire tutte, e il punteggio è il prodotto delle cento
-vincite. Basta un turno con zero gettoni sulla risposta uscita, e il prodotto fa
-zero: partita persa. Moltiplicare, come si fa con le probabilità di cose che non
-si influenzano, vuol dire avere dato per buone due cose: che le regole sono
-sempre le stesse, turno dopo turno (cambiano l'indizio e dove finiscono i
-gettoni, non il tavolo né il modo in cui la rete li distribuisce), e che ogni
-turno si conta per sé, senza che com'è andata ieri cambi il punteggio di oggi.
+vincite, cioè la probabilità di tutto quello che è uscito secondo i gettoni
+della rete. È la verosimiglianza, lo stesso conto che nella {doc}`sezione su
+probabilità e statistica </Matematica/probabilita-statistica>` dava la
+probabilità di sette teste su dieci lanci di una moneta. Basta un turno con zero
+gettoni sulla risposta uscita, e il prodotto fa zero: partita persa. E le
+vincite si moltiplicano, come le probabilità di cose che non si influenzano,
+solo grazie a due regole della casa: il tavolo è lo stesso a ogni turno
+(cambiano l'indizio e dove finiscono i gettoni, non il tavolo né il modo in cui
+la rete li distribuisce), e ogni turno si conta per sé, senza che com'è andata
+ieri cambi il punteggio di oggi.
 
-La quarta è una comodità di conti. Cento vincite minori di uno moltiplicate fra
-loro danno una cifra minuscola: cento volte 0,5 fa un numero con trenta zeri
-dopo la virgola, e il calcolatore lo confonde con lo zero. Allora si passa ai
+La quarta, il segno e il logaritmo, è una comodità di conti. Cento vincite
+minori di uno, moltiplicate fra loro, danno una cifra minuscola: cento volte 0,5
+fa un numero con trenta zeri dopo la virgola, e diecimila volte 0,5 (la taglia
+di un insieme di dati modesto) ne fa più di tremila, troppi anche per il
+calcolatore, che a quel punto lo confonde con lo zero. Allora si passa ai
 logaritmi. Il logaritmo in base dieci conta gli zeri: 1000 dà 3, 100 dà 2, e
 1000 per 100, cioè 100 000, dà 5, cioè 3 più 2. Il prodotto è diventato una
 somma, e chi vinceva prima vince ancora, perché il logaritmo tiene i numeri
 nello stesso ordine. Sotto l'uno i conti si rovesciano: 1 dà zero, 0,1 dà meno
 uno, 0,01 meno due. Col segno cambiato, ogni turno diventa una multa: zero se
-avevi messo tutti i gettoni sulla risposta uscita, un gradino se ci avevi messo
-un decimo, due gradini se un centesimo. Il totale delle multe è quello che la
-rete deve far scendere.
+avevi messo tutti i gettoni sulla risposta uscita, un gradino se ce n'era un
+decimo, due gradini se un centesimo. Il totale delle multe, quello che la rete
+deve far scendere, è la log-verosimiglianza negativa, che nel codice si chiama
+con la sigla inglese NLL.
 
 E c'è un vincolo, uno solo, senza il quale il gioco non starebbe in piedi: i
-gettoni sono dieci e non uno di più. Per metterne di più su una risposta
-bisogna toglierli a un'altra. Senza questo vincolo basterebbe coprire di
-gettoni tutto il tavolo per vincere sempre, ed è da qui che escono, una dopo
-l'altra, tutte le multe che seguono.
+gettoni sono dieci e non uno di più, e per metterne di più su una risposta
+bisogna toglierli a un'altra. Altrimenti basterebbe coprire di gettoni tutto il
+tavolo per vincere sempre.
 
 `````
 
@@ -139,11 +145,14 @@ $$
 = \arg\min_{\theta} \mathcal{L}(\theta) .
 $$
 
-Quella somma è la **log-verosimiglianza negativa**, ed è la loss. Il vantaggio
-numerico è che si sommano logaritmi invece di moltiplicare $m$ numeri minori
-di uno, che in virgola mobile finirebbero a zero; il vantaggio concettuale è
-che ogni esempio contribuisce con un addendo proprio, cioè con il costo
-$\ell$ di una singola predizione.
+Quella somma è la **log-verosimiglianza negativa**, ed è la loss. Divisa per $m$
+diventa la media del {doc}`capitolo sul machine learning
+</MachineLearning/apprendimento-supervisionato>`: il minimo è lo stesso, e la
+media è la forma che si usa per addestrare, perché non fa dipendere il passo dal
+numero degli esempi. Il vantaggio numerico è che si sommano logaritmi invece di
+moltiplicare $m$ numeri minori di uno, che in virgola mobile finirebbero a zero;
+il vantaggio concettuale è che ogni esempio contribuisce con un addendo proprio,
+cioè con il costo $\ell$ di una singola predizione.
 
 Il vincolo che rende il gioco non banale è la normalizzazione: per ogni
 $\boldsymbol{\lambda}$ vale $\sum_y p(y \mid \boldsymbol{\lambda}) = 1$, o
@@ -364,12 +373,14 @@ fa una volta sola: chi lo rifà una seconda volta ridistribuisce gettoni già
 distribuiti, e il tavolo che ne esce non è più quello che voleva.
 
 La multa, poi, si legge da sola. Alla fine del turno esce una casella, e la
-multa dipende solo da quanti gettoni c'erano lì dentro: nessuno se ne
-avevi messi dieci, tantissimi se ne avevi messi quasi zero. Il nome tecnico è
-cross-entropia, e la lettura è questa: la rete paga la sicurezza sbagliata
-molto più cara dell'incertezza. Dichiarare novantanove su cento e prendere
-l'altra costa un'enormità; dichiarare cinquanta e cinquanta costa poco, e costa
-poco sempre, anche quando si indovina.
+multa dipende solo da quanti gettoni c'erano lì dentro: nessuno se ne avevi
+messi dieci, tantissimi se ne avevi messi quasi zero. Il nome tecnico è
+cross-entropia, e la lettura è questa: la rete paga la sicurezza sbagliata molto
+più cara dell'incertezza. Dichiarare novantanove su cento e prendere l'altra
+lascia un centesimo sulla risposta giusta e costa due gradini, quasi sette volte
+un cinquanta e cinquanta, che costa poco meno di un terzo di gradino, e costa
+sempre quello, anche quando si indovina. Dichiarare cento su cento e sbagliare
+costa senza limite: è il turno a zero gettoni che fa perdere la partita.
 
 Ed è il vincolo dei dieci gettoni a impedire la furbizia ovvia. Se si potessero
 riempire tutte le caselle, la strategia migliore sarebbe metterne tante
@@ -452,18 +463,19 @@ cambiando la sola riga in cui si sceglie la famiglia.
 Il catalogo di {numref}`fig-dominio-distribuzione`, dominio per dominio, è di
 Prince {cite}`prince2023understanding`, e va letto con una cautela: dice quali
 distribuzioni *possono* stare su quel dominio, e fra quelle non sceglie. Sulla
-retta intera ci vive anche la Laplace, che dà l'errore assoluto invece del
-quadrato, e ci vive una mistura di gaussiane; a decidere fra le tre sono i
-dati che si hanno.
+retta intera ci vive anche la distribuzione di Laplace, una campana appuntita
+che dà l'errore assoluto invece del quadrato, e ci vive una mistura di
+gaussiane; a decidere fra le tre sono i dati che si hanno.
 
 Lo stesso gesto, senza reti, è quello dei {doc}`modelli lineari generalizzati
 </MachineLearning/apprendimento-supervisionato>`: scelgono anche loro una
 distribuzione, e un punteggio lineare gliene fornisce il parametro passando per
-una funzione di legame. Qui il punteggio lineare
+una funzione di legame, la funzione che collega il parametro al punteggio (per
+la Poisson il punteggio è il logaritmo della media). Qui il punteggio lineare
 diventa una rete, e la funzione dell'ultimo strato fa il mestiere del legame
-percorso all'incontrario, dal punteggio grezzo al parametro. Lineare,
-logistica e Poisson erano già la stessa macchina con tre impostazioni: il
-resto della ricetta non è cambiato.
+percorso all'incontrario, dal punteggio grezzo al parametro. Lineare, logistica
+e Poisson erano già la stessa macchina con tre impostazioni: il resto della
+ricetta non è cambiato.
 
 ## Quando l'incertezza cambia da punto a punto
 
@@ -566,12 +578,13 @@ e con la stessa faccia sicura che ha altrove.
 
 ## In pratica, con NumPy
 
-Tre affermazioni si controllano in un blocco solo. Che a varianza fissa la
-log-verosimiglianza negativa sia l'errore quadratico più una costante; che la
-larghezza scelta dalla verosimiglianza sia lo scarto quadratico medio, con un
-costo che sale allargando e stringendo; e che due modelli con lo stesso centro,
-quindi con lo stesso errore quadratico, si distinguano appena si guarda
-l'incertezza dichiarata.
+Tre affermazioni si controllano in un blocco solo, dove NLL è la sigla inglese
+della log-verosimiglianza negativa e SSE quella della somma dei quadrati dei
+residui. Che a varianza fissa la log-verosimiglianza negativa sia l'errore
+quadratico più una costante; che la larghezza scelta dalla verosimiglianza sia
+lo scarto quadratico medio, con un costo che sale allargando e stringendo; e che
+due modelli con lo stesso centro, quindi con lo stesso errore quadratico, si
+distinguano appena si guarda l'incertezza dichiarata.
 
 ```python
 import numpy as np

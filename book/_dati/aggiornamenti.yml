@@ -48,6 +48,36 @@
 
 versioni:
 
+- versione: "1.14.1"
+  data: 2026-10-03
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **Il testo comune ai due livelli, riscritto.** Ogni cosa ha il suo nome
+      e la sua notazione al primo uso, e i capitoli si passano il filo l'uno
+      all'altro, dall'apertura al congedo.
+
+  - tipo: corretto
+    testo: >
+      **Correzioni di fatto in tutto il libro.** Attribuzioni, date e
+      affermazioni riportate alla misura delle fonti, e le schede Elementari
+      che promettevano più di quanto il livello Superiore sostiene,
+      riallineate; fra le altre, l'AI Act e il GDPR letti sul testo.
+
+  - tipo: ampliato
+    testo: >
+      **Più rigore nel livello Superiore.** Condizioni, dimostrazioni e casi in
+      cui il metodo si rompe; fra le aggiunte, il k-anonimato e il conteggio
+      con il rumore di Laplace, la dualità fra Fokker-Planck e Feynman-Kac,
+      Orca e il continuous batching, SMOTE e la curva precision-recall.
+
+  - tipo: corretto
+    testo: >
+      **I numeri li stampa il codice.** Blocchi nuovi per i numeri che il testo
+      commenta, dalla regolarizzazione nei sistemi di raccomandazione ai
+      minimi quadrati contro la PINN, e il lettore si chiama «tu» ovunque.
+
 - versione: "1.14.0"
   data: 2026-09-27
   voci:
@@ -3859,8 +3889,8 @@ versioni:
   - tipo: ampliato
     pagina: Python/pandas-matplotlib.md
     testo: >
-      I quattro tipi di join fra due tabelle e la griglia di subplot, due cose
-      che il capitolo usava senza averle spiegate.
+      I quattro tipi di join fra due tabelle, che il capitolo usava senza
+      averli spiegati.
 
   - tipo: ampliato
     testo: >

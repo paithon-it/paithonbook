@@ -16,7 +16,7 @@
 
   <!-- script -->
   <rect x="250" y="112" width="180" height="36" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
-  <text x="340" y="135" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">collaudo.py</text>
+  <text x="340" y="135" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">primo.py</text>
   <rect x="250" y="156" width="180" height="36" rx="6" fill="#F8F5EE" stroke="#C9A961" stroke-width="2"/>
   <text x="340" y="179" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#1A1A1A" text-anchor="middle">requirements.txt</text>
 

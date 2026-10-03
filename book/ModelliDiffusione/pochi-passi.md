@@ -6,16 +6,19 @@ gioca un migliaio di partite e il principiante le studia tutte, può arrivare a
 riconoscere le posizioni e a fare la mossa giusta senza calcolare niente: ha
 sostituito il ragionamento con la memoria della sua conclusione.
 
-Questi metodi fanno esattamente questo. C'è un modello che sa percorrere bene
-la traiettoria, un passo alla volta, e ce n'è un altro che impara a saltare
-da un capo all'altro. Il mestiere si chiama distillazione, come nella
+Con i modelli di diffusione si fa lo stesso: un modello che integra la
+traiettoria in molti passi, il maestro, insegna a un altro, lo studente, a
+produrre lo stesso risultato in pochi passi o in uno. Il mestiere si chiama
+distillazione, come nella
 {doc}`sezione sul modello piccolo che imita
 </Efficienza/un-modello-piccolo-che-imita>`, con una differenza da mettere
 subito in chiaro: là a rimpicciolire era la rete, qui la rete resta grande
 uguale e a rimpicciolire è il numero di passi. Non si tratta di percorrere
 meglio, che era il mestiere della {doc}`sezione sui campionatori veloci
-</ModelliDiffusione/campionatori-veloci>` e ha un limite invalicabile: si
-tratta di cambiare l'oggetto che si impara. E il risultato è che oggi
+</ModelliDiffusione/campionatori-veloci>` e ha un limite pratico (sotto le
+dieci valutazioni la qualità dei solutori cala in modo netto): si tratta di
+cambiare l'oggetto che si impara. Non tutte le ricette che seguono hanno un
+maestro da imitare, ma tutte fanno questo, e il risultato è che oggi
 un'immagine può uscire da una sola valutazione della rete.
 
 ## Insegnare a fare in un passo quello che il maestro fa in due
@@ -37,11 +40,13 @@ poche piegature, e gli strati sono tantissimi.
 Due cose vanno dette perché il metodo si capisca davvero.
 
 La prima è che ogni giro è un addestramento a sé, non una rifinitura, con il
-maestro da interrogare due volte per ogni esempio. I giri però si accorciano
-man mano, perché a ogni passaggio ci sono meno passi da imitare, e Salimans e
-Ho riportano che l'intera catena non costa più che addestrare il modello di
-partenza. Il metodo trasforma tempo di generazione in tempo di addestramento, a
-un cambio conveniente, ed è per questo che si è diffuso.
+maestro da interrogare due volte per ogni esempio. I giri non si accorciano (gli
+ultimi due, anzi, durano il doppio), e il conto torna lo stesso per due ragioni:
+ogni esempio chiede al maestro soltanto due passi, per quanti passi sappia fare,
+e per passare da mille a uno bastano una decina di giri. Così Salimans e Ho
+riportano che arrivare a quattro passi non costa più che addestrare il modello
+di partenza. Il metodo trasforma tempo di generazione in tempo di addestramento,
+a un cambio conveniente, ed è per questo che si è diffuso.
 
 La seconda è che il modo in cui la rete descrive la propria risposta diventa
 importante. Chiedendole «qual era il disturbo?» si ottiene una risposta da cui
@@ -52,8 +57,9 @@ moltiplicato. All'altro capo succede il rovescio: lì di disturbo ne è rimasto
 quasi niente, e chi risponde «com'era l'immagine pulita?» lascia da ricavare il
 disturbo, dividendo di nuovo per quel quasi niente. Chi fa passi lunghi
 attraversa tutti e due gli estremi in un colpo solo, e gli serve una descrizione
-che regga a tutti e due: quella che mescola disturbo e immagine pulita è nata
-proprio per questo, insieme a questo metodo.
+che regga a tutti e due: è la velocità, la quarta domanda della {doc}`sezione
+sul limite continuo </ModelliDiffusione/sde-e-ode>`, che mescola disturbo e
+immagine pulita ed è nata proprio per questo, insieme a questo metodo.
 
 `````
 
@@ -72,6 +78,19 @@ $$
 \Psi^{(1)}_{t\to t''}(\mathbf{x}_t;\phi)
 - \mathbf{x}_{t''}^{\text{obiettivo}}\big\rVert^2\Big] .
 $$
+
+Il peso $w(t)$ dipende da come si scrive la perdita. Salimans e Ho la
+scrivono nello spazio del dato, $w(\lambda_t)\lVert\tilde{\mathbf{x}} -
+\hat{\mathbf{x}}_\phi(\mathbf{x}_t)\rVert^2$, con il bersaglio
+$\tilde{\mathbf{x}}$ scelto in modo che un passo DDIM dello studente da
+$\mathbf{x}_t$ atterri esattamente su $\Psi^{(2)}_{t\to t''}(\mathbf{x}_t)$;
+scrivere la perdita sul punto d'arrivo, come sopra, equivale a moltiplicarla
+per $(\alpha_{t''} - \sigma_{t''}\alpha_t/\sigma_t)^2$. Come peso nello
+spazio del dato confrontano lo SNR troncato, $\max(\alpha_t^2/\sigma_t^2, 1)$,
+e lo SNR più uno, $1 + \alpha_t^2/\sigma_t^2$, che è quello implicito nella
+$\mathbf{v}$-prediction. Nelle loro prove reggono tutte le combinazioni
+proposte, tranne la predizione di $\boldsymbol{\epsilon}$ pesata con lo SNR
+troncato, che è instabile.
 
 Terminato il giro, lo studente diventa il maestro e si ripete: $K$ giri
 riducono i passi di un fattore $2^K$, quindi dieci giri portano da $1024$ a
@@ -128,11 +147,16 @@ Come si misuri se due mucchi di immagini sono distribuiti allo stesso modo è il
 problema tecnico, e le risposte sono due. La prima usa un giudice che impara a
 distinguere le immagini vere da quelle dello studente, che è l'idea delle
 {doc}`reti avversarie </GAN/overview>`. La seconda, più stabile, confronta le
-due distribuzioni attraverso la loro freccia, quella che in ogni punto indica da
-che parte le immagini si fanno più credibili: si tiene un modello che conosce la
-freccia dei dati veri (è il maestro stesso) e uno che impara quella delle
-immagini dello studente, e si spinge lo studente finché le due frecce non
-indicano dappertutto la stessa direzione.
+due distribuzioni attraverso il loro verso della salita, il punteggio, quello
+che in ogni punto indica da che parte le immagini si fanno più credibili: si
+tiene un modello che conosce il verso della salita dei dati veri (è il maestro
+stesso) e uno che impara quello delle immagini dello studente, e si spinge lo
+studente finché i due non indicano dappertutto la stessa direzione. Il modo in
+cui lo si spinge ha però una preferenza: punisce lo studente quando disegna
+dove il maestro non disegnerebbe mai, molto più di quando dimentica un tipo di
+immagine che il maestro sa fare. Le due risposte si usano spesso insieme, e
+il giudice serve proprio a portare lo studente a guardare anche le fotografie
+vere.
 
 `````
 
@@ -163,9 +187,21 @@ $$
 Il primo punteggio è il maestro; il secondo si stima con un modello di
 diffusione ausiliario addestrato in linea sui campioni dello studente. Il
 gradiente si annulla quando i due punteggi coincidono, cioè quando le due
-distribuzioni sono uguali. In pratica si aggiunge un termine di ricostruzione su
-un piccolo insieme di coppie per ancorare lo studente, e spesso un
-discriminatore avversario che accelera la convergenza. La *adversarial diffusion
+distribuzioni sono uguali. La direzione della KL conta: quella inversa
+penalizza lo studente che mette massa dove il maestro non ne ha, e lascia
+quasi impunito quello che ignora qualche modo del maestro. È *mode-seeking*, e
+spiega perché questi metodi concentrano la distribuzione, con qualità alta e
+copertura più bassa. In DMD la stabilità la dà una perdita di regressione su
+coppie rumore-immagine generate in anticipo dal maestro: per CIFAR-10 costano
+meno dell'uno per cento dell'addestramento, per Stable Diffusion 1.5 sono dodici
+milioni, e legano lo studente alle traiettorie del maestro. DMD2
+{cite}`yin2024improved` toglie la regressione e rimedia all'instabilità
+aggiornando il modello del punteggio dello studente più spesso del generatore
+(*two time-scale update rule*); aggiunge poi una perdita avversaria con un
+discriminatore che confronta i campioni dello studente con immagini vere, così
+che lo studente impari anche dai dati e non solo dal punteggio, imperfetto,
+del maestro. Ne esce uno studente a un passo con FID $1{,}28$ su ImageNet
+$64\times64$, che supera il maestro. La *adversarial diffusion
 distillation* di Sauer e colleghi {cite}`sauer2024adversarial` fa del
 discriminatore il pezzo principale: lo studente, inizializzato dal maestro, è
 giudicato da un discriminatore che lavora sulle caratteristiche di una rete
@@ -200,7 +236,8 @@ una funzione da imparare. Si chiede a una rete di rispondere «dove si va a
 finire da qui», e si pretende che risponda la stessa cosa per tutti i punti
 di una stessa traiettoria. Una rete che soddisfa questa richiesta è, per
 definizione, un generatore a un passo: le si dà un rumore qualsiasi e risponde
-direttamente l'immagine.
+direttamente l'immagine. Una rete così si chiama *consistency model*, modello
+di consistenza.
 
 La cosa notevole è che la richiesta si può imporre senza sapere quale sia la
 risposta giusta. Basta prendere due punti vicini della stessa traiettoria e
@@ -257,12 +294,12 @@ rumore lognormale, e l'addestramento da zero supera la distillazione a uno e a
 due passi.
 
 Il campionamento a un passo è
-$\mathbf{x}_\varepsilon = \mathbf{f}_\phi(\mathbf{x}_T,T)$.
-Quello a pochi passi alterna salto e re-iniezione di rumore: si salta a
-$\hat{\mathbf{x}}_0$, si riporta il risultato al livello di rumore $\tau_k$
-sorteggiando, si salta di nuovo. Due o quattro giri di questo tipo recuperano
-gran parte del divario con il maestro, ed è il regime in cui questi modelli si
-usano davvero.
+$\mathbf{x}_\varepsilon = \mathbf{f}_\phi(\mathbf{x}_T,T)$. Quello a pochi passi
+alterna salto e re-iniezione di rumore: si salta a $\hat{\mathbf{x}}_0$, si
+riporta il risultato a un livello di rumore intermedio $\tau_k$, preso da una
+sequenza decrescente fissata in partenza, sommando rumore sorteggiato, e si
+salta di nuovo. Due o quattro giri di questo tipo recuperano gran parte del
+divario con il maestro, ed è il regime in cui questi modelli si usano davvero.
 
 `````
 
@@ -303,7 +340,8 @@ corto.
 
 `````{tab} Superiore
 
-Il quadro unificante è quello delle **mappe di flusso** (*flow maps*). Un
+Il quadro unificante è quello delle **mappe di flusso** (*flow maps*)
+{cite}`boffi2025flow`. Un
 modello di diffusione ordinario apprende il campo istantaneo
 $\mathbf{u}_t(\mathbf{x})$, e la generazione richiede di integrarlo. I metodi a
 pochi passi apprendono invece direttamente l'operatore di soluzione
@@ -328,7 +366,10 @@ singolo passo di Eulero con la velocità media è esatto, mentre lo stesso
 passo con la velocità istantanea ha errore $O((s-t)^2)$. Tutto il guadagno
 sta in questa sostituzione, e tutto il costo sta nel fatto che
 $\bar{\mathbf{u}}$ dipende da due tempi invece che da uno, quindi la rete ha un
-ingresso in più e un problema più difficile da approssimare.
+ingresso in più e un problema più difficile da approssimare. Il consistency
+trajectory model è di Kim e colleghi {cite}`kim2024consistency`; il mean flow
+è di Geng e colleghi {cite}`geng2025mean`, del 2025, e il suo posto nella
+pratica è ancora da stabilire.
 
 La consistenza in tempo continuo si scrive come una condizione differenziale
 sulla mappa,
@@ -415,11 +456,14 @@ media.
 Il conto va chiuso onestamente, perché i modelli a pochi passi hanno tre costi
 che i confronti pubblicati non sempre mettono in evidenza.
 
-Il primo è la varietà. Comprimere mille passi in uno significa affidare a
-una sola valutazione tutta la scelta, e le distribuzioni che ne escono sono
-sistematicamente più concentrate: i giudizi sulla qualità visiva restano buoni,
-ma il modello copre meno tipi di immagine diversi. Sui volti la cosa si vede a
-occhio, generando qualche centinaio di campioni.
+Il primo è la varietà, e il guaio dipende dal criterio più che dal numero di
+passi. I metodi che fanno combaciare le distribuzioni minimizzano una KL
+inversa o una perdita avversaria, che puniscono lo studente quando genera dove
+il maestro non ha massa più di quando ne ignora una parte: la distribuzione che
+ne esce è più concentrata, con buona qualità visiva e meno tipi di immagine
+diversi. Per la distillazione progressiva e i consistency model, che inseguono
+la traiettoria, il prezzo di una sola valutazione si paga piuttosto nella
+qualità del singolo campione, che a un passo scende.
 
 Il secondo è la controllabilità. Le tecniche della {doc}`sezione su guida e
 allineamento </ModelliDiffusione/guida>` agiscono modificando la direzione a
@@ -438,13 +482,15 @@ dichiarano.
 :class: important
 - La prima ricetta è la distillazione progressiva: uno studente impara a
   fare in un passo quello che il maestro fa in due, poi diventa maestro a sua
-  volta. Dieci giri portano da mille passi a uno, e nel complesso costano
-  quanto addestrare il modello di partenza; lo studente però non può superare
-  il maestro, perché ne copia i tratti.
+  volta. Dieci giri portano da mille passi a uno, e arrivare a quattro passi
+  costa quanto addestrare il modello di partenza; lo studente però non può
+  superare il maestro, perché ne copia i tratti.
 - La seconda chiede una cosa più debole sul singolo caso e più forte
   nell'insieme: che le immagini prodotte siano distribuite come quelle del
   maestro. Così lo studente può risultare migliore, perché non è obbligato a
-  copiarne gli errori.
+  copiarne gli errori; in cambio tende a dimenticare qualche tipo di immagine,
+  perché il modo in cui lo si corregge punisce più chi disegna dove il maestro
+  non disegnerebbe che chi dimentica.
 - La terza parte da un'ovvietà: da qualunque punto di una traiettoria, la
   destinazione è la stessa. Chiedere a una rete di rispondere sempre la stessa
   cosa lungo una traiettoria la trasforma in un generatore a un passo, e
@@ -454,9 +500,11 @@ dichiarano.
   imparano qualcosa che contiene già l'integrale, cioè la destinazione o la
   velocità media sul tratto. Un passo con la velocità media è esatto per
   definizione; con quella istantanea non lo è, e il conto lo mostra.
-- I costi: meno varietà nelle immagini, guida più difficile da applicare
-  dopo, e confronti che vanno letti a parità di valutazioni della rete e non
-  di passi.
+- I costi: meno varietà nelle immagini (soprattutto per chi fa combaciare le
+  distribuzioni; chi insegue le traiettorie perde piuttosto in qualità della
+  singola immagine),
+  guida più difficile da applicare dopo, e confronti che vanno letti a parità
+  di valutazioni della rete e non di passi.
 ```
 `````
 
@@ -472,7 +520,10 @@ dichiarano.
   $D_{\mathrm{KL}}(p_\phi\|p_\theta)$, il cui gradiente dipende dalle due
   distribuzioni solo attraverso i punteggi; il secondo si stima con un modello
   ausiliario addestrato in linea. Il vincolo è distribuzionale, quindi lo
-  studente può superare il maestro.
+  studente può superare il maestro; la KL inversa è *mode-seeking*, e
+  concentra la distribuzione. DMD2 toglie la regressione sulle coppie del
+  maestro, aggiorna il punteggio dello studente più spesso del generatore e
+  aggiunge una perdita avversaria su immagini vere.
 - Consistency model: $\mathbf{f}_\phi(\mathbf{x}_t,t)=
   \mathbf{f}_\phi(\mathbf{x}_s,s)$ lungo la PF-ODE, con
   $\mathbf{f}_\phi(\mathbf{x},\varepsilon)=\mathbf{x}$ imposta dalla
@@ -485,14 +536,19 @@ dichiarano.
   consistenza in tempo continuo è
   $\partial_t\Phi + (\nabla_{\mathbf{x}}\Phi)\mathbf{u}_t=\mathbf{0}$, un
   prodotto Jacobiano-vettore.
-- I costi da dichiarare: copertura delle modalità inferiore, guida da
-  incorporare nella distillazione, e confronti da fare a parità di valutazioni
-  della rete.
+- I costi da dichiarare: copertura delle modalità inferiore per chi fa
+  combaciare le distribuzioni (qualità del singolo campione, per chi insegue
+  le traiettorie),
+  guida da incorporare nella distillazione, e confronti da fare a parità di
+  valutazioni della rete.
 ```
 `````
 
-Resta l'ultima domanda pratica, quella che separa un generatore da uno
-strumento: come si dice a un modello che cosa generare. Fin qui il modello
-produce campioni dalla distribuzione che ha imparato, e basta; la sezione su
-guida e allineamento mostra come si piega quella distribuzione verso ciò che si
-vuole, e quanto è possibile piegarla prima che si rompa.
+Resta aperta una domanda che il capitolo ha lasciato in sospeso dalla
+{doc}`sezione su Stable Diffusion </ModelliDiffusione/stable-diffusion>`. La
+guida, il peso per cui si moltiplica la differenza fra la risposta con la
+richiesta e quella senza, è ciò che rende utilizzabili i modelli che
+disegnano su richiesta; ma ha un costo sulla distribuzione dei risultati, e con
+un passo solo non la si può più applicare a ogni passo. La {doc}`sezione su
+guida e allineamento </ModelliDiffusione/guida>` misura quel costo, e mostra
+come si piega il modello stesso invece della generazione.

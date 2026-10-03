@@ -2,10 +2,11 @@
 
 «La vecchia porta la sbarra». Leggi la frase una prima volta: c'è un'anziana
 signora («la vecchia»), e sta trasportando («porta») una sbarra di ferro. Ora
-rileggila cambiando i ruoli: c'è una porta malandata («la vecchia porta») che
-sbarra il passaggio («la sbarra») a una donna, e quel «la» adesso è lei e non
-più un articolo. Nessun trucco di punteggiatura: le stesse cinque parole, nello
-stesso ordine, formano due frasi italiane complete e sensate.
+rileggila cambiando i ruoli: c'è una porta malandata, «la vecchia porta», che a
+una donna sbarra il passaggio. In «la sbarra», adesso, «la» è lei e non più un
+articolo, e «sbarra» è un verbo. Nessun trucco di punteggiatura: le stesse
+cinque parole, nello stesso ordine, formano due frasi italiane complete e
+sensate.
 
 Il bivio è tutto grammaticale, e sta in quattro parole su cinque: «vecchia» può
 essere nome o aggettivo, «porta» nome o verbo, «la» articolo o pronome,
@@ -18,18 +19,19 @@ ruolo. È il **part-of-speech tagging** (POS, etichettatura delle parti del
 discorso), uno dei compiti più antichi del NLP; suo cugino stretto è il
 **riconoscimento di entità nominate**, che tutti chiamano con la sigla inglese
 **NER**, da *named entity recognition*, e che abbiamo già incontrato nella
-panoramica del capitolo. Li raccontiamo insieme perché condividono la forma
-(un'etichetta per ogni parola) e la stessa storia: prima i modelli
-probabilistici degli anni Novanta, la seconda tappa della parabola
-storica del capitolo, poi le reti ricorrenti delle sezioni precedenti.
+{doc}`panoramica del capitolo <overview>`. Li raccontiamo insieme perché
+condividono la forma (un'etichetta per ogni parola) e la stessa storia, che
+comincia prima delle reti neurali: i modelli probabilistici, dagli HMM della
+fine degli anni Ottanta ai CRF del 2001, poi le reti ricorrenti dei
+{doc}`modelli di sequenza <modelli-sequenza>`.
 
-## Il mestiere di ogni parola
+## Le parti del discorso
 
 A scuola si chiamava analisi grammaticale: articolo, nome, verbo, aggettivo…
 Il POS tagging è la stessa cosa, fatta da un algoritmo su milioni di frasi.
 Il risultato si scrive attaccando a ogni parola la sua etichetta con una barra,
 e per l'esempio ricorrente del libro viene così (una avvertenza prima di
-leggerlo: la frase dice «sul», e qui trovate «su» e «il» separati, perché
+leggerlo: la frase dice «sul», e qui trovi «su» e «il» separati, perché
 l'italiano fonde preposizione e articolo in una parola sola e chi analizza li
 riapre):
 
@@ -52,9 +54,9 @@ testi veri e ci scrivono sopra, parola per parola, l'analisi giusta (si dice
 che li annotano), sempre con gli stessi criteri e nella stessa notazione.
 Alla presentazione del 2016 le lingue erano 33; oggi sono più di
 centocinquanta. Il nome parla di «dipendenze» e non di categorie perché il
-grosso di quel lavoro riguarda un piano più su, quello della struttura della
-frase, che è il tema della prossima sezione; le diciassette etichette sono le
-fondamenta su cui quella struttura si appoggia.
+grosso di quel lavoro riguarda un piano più su, quello della
+{doc}`struttura della frase <struttura-frase>`; le diciassette etichette sono
+le fondamenta su cui quella struttura si appoggia.
 
 `````{tab} Elementare
 
@@ -68,9 +70,10 @@ pronunci *àncora* e un avverbio se la pronunci *ancóra*. Sulla pagina le due
 Etichettare le parti del discorso è proprio questo: guardare il contesto e
 decidere, parola per parola, quale mestiere è in servizio.
 
-Le parole a doppio mestiere sono poche: apri il vocabolario a caso e quasi
-ogni voce ne ha uno solo. Sono però quelle che tornano di continuo («porta»,
-«ancora», «la»), e in una frase qualsiasi ne incontri più d'una.
+Le parole a doppio mestiere sono poche, se le si conta sul vocabolario: aprilo
+a caso e quasi ogni voce ne ha uno solo. Sono però quelle che tornano di
+continuo («porta», «ancora», «la»), e in una frase qualsiasi ne incontri più
+d'una.
 
 I linguisti del progetto Universal Dependencies hanno stilato una lista di 17
 mestieri che funziona per l'italiano come per il finlandese o il giapponese:
@@ -87,11 +90,13 @@ a inventare un articolo. Cambiano le parole, non l'elenco dei mestieri.
 Formalmente il POS tagging è un problema di **etichettatura di sequenze**:
 data la frase $w_1, \dots, w_n$, produrre la sequenza di etichette
 $t_1, \dots, t_n$, una per token, dalla stessa lunghezza dell'input. È una
-struttura più semplice della traduzione vista nella sezione precedente
-(niente riordini, niente lunghezze diverse), ma la difficoltà si concentra
+struttura più semplice della {doc}`traduzione <seq2seq-traduzione>` (niente
+riordini, niente lunghezze diverse), ma la difficoltà si concentra
 nell'ambiguità: le parole ambigue sono una minoranza del vocabolario, però
-sono tra le più frequenti, tanto che in un testo inglese corrente oltre la
-metà delle occorrenze ammette più di un'etichetta.
+sono tra le più frequenti. Con il tagset del Penn Treebank, 45 etichette per
+l'inglese, le ambigue sono il 14–15% dei tipi di parola ma il 55–67% delle
+occorrenze nei testi correnti; con un altro tagset, come le 17 etichette
+universali, le percentuali cambiano.
 
 Lo standard di riferimento è il tagset universale di Universal
 Dependencies {cite}`nivre2016universal`, 17 categorie valide per tutte le
@@ -118,8 +123,9 @@ valutazione.
 
 E a che cosa serve, oggi, un'etichetta grammaticale? A tre cose almeno.
 
-Alla lemmatizzazione, che abbiamo incontrato nella prima sezione: ricondurre
-una parola alla forma con cui la si cerca sul vocabolario, il suo *lemma*. Per
+Alla lemmatizzazione, che abbiamo incontrato nella {doc}`cassetta degli
+attrezzi <strumenti-classici>`: ricondurre una parola alla forma con cui la si
+cerca sul vocabolario, il suo *lemma*. Per
 «porta» le forme di dizionario sono due, e per scegliere devi sapere prima se
 è il nome (e allora il lemma è *porta*) o il verbo (e allora è *portare*).
 
@@ -130,8 +136,9 @@ automatico davanti ad «ancora» deve scegliere
 tra *àncora* e *ancóra*, e l'accento giusto lo decide la categoria
 grammaticale.
 
-E all’analisi sintattica: le etichette POS sono i mattoni con cui, nella
-prossima sezione, si costruisce l'impalcatura della frase.
+E all’analisi sintattica: le etichette POS sono i mattoni con cui si costruisce
+l'impalcatura della frase, che è il tema della {doc}`sezione sulla sintassi
+<struttura-frase>`.
 
 ## Chi, dove, quando: le entità nominate
 
@@ -154,10 +161,10 @@ un'etichetta a ogni parola, e l'etichetta dice se lì un segmento *comincia*,
 se lo *continua*, o se lì fuori non c'è niente. Le tre lettere sono le
 iniziali inglesi di quelle tre parole (*begin*, *inside*, *outside*). Lo schema
 nasce nel 1995 con il lavoro di Lance Ramshaw e Mitchell Marcus sugli spezzoni
-di frase, e nella versione che si usa oggi il segnale di «comincia» si mette in
-testa a ogni entità, anche quando non ce ne sarebbe bisogno per distinguerla
-dalla precedente: costa un'etichetta in più e in cambio rende ogni parola
-leggibile per conto suo.
+di frase, dove il segnale di «comincia» compariva solo quando serviva a separare
+un'entità da quella subito prima. Nella versione oggi più diffusa lo si mette in
+testa a ogni entità, anche quando non ce ne sarebbe bisogno: costa
+un'etichetta in più e in cambio rende ogni parola leggibile per conto suo.
 
 `````{tab} Elementare
 
@@ -178,6 +185,12 @@ Comincio e continuo si portano dietro il colore, e così le combinazioni
 diverse diventano sette: due per ciascuno dei tre evidenziatori, più la penna
 sollevata, che è una sola perché fuori dalle evidenziature il colore non c'è.
 Con un quarto evidenziatore sarebbero nove: due per colore, più uno.
+
+Una cosa sola questi segnali non la sanno dettare: un'evidenziatura dentro
+un'altra. Con un quarto colore per le organizzazioni, in «l'Università di Roma»
+tutta l'università andrebbe in quel colore, e «Roma», lì dentro, in azzurro; ma
+ogni parola riceve un segnale solo, e allora o si evidenzia l'università o si
+evidenzia Roma. Nelle raccolte di testi annotati si sceglie la più grande.
 
 `````
 
@@ -202,17 +215,24 @@ chiamato **IOB1**) la `B` era parsimoniosa: compariva solo quando un
 segmento ne seguiva immediatamente un altro dello stesso tipo, cioè solo dove
 serviva davvero a separarli. Sotto IOB1 la frase di Fermi si etichetta
 `I-PER I-PER`, non `B-PER I-PER`, e la `B` fa esattamente e soltanto il lavoro
-di garantire l'invertibilità. La variante che ha vinto, **IOB2** (la introduce
-Adwait Ratnaparkhi nel 1998; il confronto sistematico fra le varianti in
-circolazione è di Tjong Kim Sang e Veenstra, 1999), mette la `B` in testa a
+di garantire l'invertibilità. La variante oggi più diffusa, **IOB2** (la
+introduce Adwait Ratnaparkhi nel 1998; il confronto sistematico fra le varianti
+in circolazione è di Tjong Kim Sang e Veenstra, 1999), mette la `B` in testa a
 ogni segmento senza eccezioni: costa un'etichetta in più dove non servirebbe,
 e in cambio rende l'etichetta di un token indipendente da ciò che lo precede,
-il che semplifica sia l'annotazione sia l'apprendimento. È quella usata nello
-schema qui sopra e in tutti i corpora moderni. Esistono varianti
-più ricche (BIOES aggiunge etichette esplicite di fine
-segmento e di entità a token singolo), ma l'idea non cambia: una volta ridotto
-il NER a un'etichetta per token, *qualunque* modello di etichettatura di
-sequenze (HMM, CRF, BiLSTM, Transformer) lo può affrontare.
+il che semplifica sia l'annotazione sia l'apprendimento. È la variante
+dell'esempio di Fermi e di molti corpora recenti, ma non dei dati originali del
+CoNLL-2003, il riferimento per il NER inglese e tedesco, che sono in IOB1: lì
+la `B-X` compare solo fra due entità dello stesso tipo che si toccano, ed è per
+questo che lo script di valutazione di quella campagna legge una `I-X` dopo una
+`O` come l'inizio di un'entità. Esistono varianti più ricche (BIOES aggiunge
+etichette esplicite di fine segmento e di entità a token singolo), ma l'idea non
+cambia: una volta ridotto il NER a un'etichetta per token, qualunque modello di
+etichettatura di sequenze (HMM, CRF, BiLSTM, Transformer) lo può affrontare, a
+una condizione. Le entità devono essere piatte e non sovrapposte: un'entità
+dentro un'altra («Università di Roma» contiene «Roma») non entra in uno schema
+con un'etichetta sola per token, e infatti i dati del CoNLL-2003 dichiarano di
+annotare, in quel caso, soltanto l'entità più esterna.
 
 `````
 
@@ -222,11 +242,11 @@ Come si insegna a una macchina a etichettare? La risposta classica, cuore
 della stagione statistica del NLP, è un modello dal nome intimidatorio e
 dall'idea limpida: lo **Hidden Markov Model** (HMM, modello di Markov
 nascosto). Il nome si scioglie pezzo per pezzo. *Markov* è il matematico russo
-che nella sezione sui modelli n-gram contava le lettere dell’*Onegin*, e la
-parola richiama il suo patto: quello che succede adesso dipende solo da
-quello che è successo
-subito prima. *Model*, modello, perché è appunto una descrizione semplificata
-di come nasce una frase. E *hidden*, nascosto, che è l'aggettivo importante: le
+che nella {doc}`sezione sui modelli n-gram <modelli-ngram>` contava le lettere
+dell’*Onegin*, e la parola richiama il suo patto: quello che succede adesso
+dipende solo da quello che è successo subito prima. *Model*, modello, perché è
+appunto una descrizione semplificata di come nasce una frase. E *hidden*,
+nascosto, che è l'aggettivo importante: le
 categorie grammaticali non si vedono mai, perché sulla pagina ci sono soltanto
 parole, eppure sono loro a governare quali parole compaiono e in che ordine.
 
@@ -236,15 +256,20 @@ La tenda del palcoscenico resta chiusa per tutta la recita, e in platea
 arrivano solo le battute degli attori. Gli attori sono le *categorie
 grammaticali*, che si passano la scena secondo abitudini precise (dopo
 l'ARTICOLO entra quasi sempre il NOME, diciamo 7 volte su 10, e raramente il
-VERBO), e ognuna ha il suo
-copione di parole tipiche (quando è in scena l'ARTICOLO senti «la», «il»,
-«un»…). Un HMM è questo teatro: due libretti di abitudini (*chi passa la scena
-a chi* e *chi dice che cosa*) imparati contando su migliaia di frasi già
-etichettate a mano. Etichettare una frase nuova è un ragionamento da
-detective: sentite le battute «la porta cigola», qual è la sfilata di attori
-dietro la tenda che le spiega meglio? Certezze non ce ne sono («porta»
-potrebbe dirla il NOME o il VERBO) ma puoi calcolare quale storia è più
-probabile, ed è quella che scrivi.
+VERBO), e ognuna ha il suo copione di parole tipiche (quando è in scena
+l'ARTICOLO senti «la», «il», «un»…). Un HMM è questo teatro: due libretti di
+abitudini (*chi passa la scena a chi* e *chi dice che cosa*) imparati contando
+su migliaia di frasi già etichettate a mano. Etichettare una frase nuova è un
+ragionamento da detective: dopo aver sentito le battute «la porta cigola», qual
+è la sfilata di attori dietro la tenda che le spiega meglio? Certezze non ce ne
+sono («porta» potrebbe dirla il NOME o il VERBO) ma puoi calcolare quale storia
+è più probabile, ed è quella che scrivi.
+
+E se in platea arriva una battuta che nessun copione contiene, come «googlare»?
+A contare, nessun attore l'ha mai detta, e qualunque storia che la contenga
+varrebbe zero. I sistemi veri tengono allora un copione di riserva, che indovina
+l'attore dalla fine della parola (*-are* fa pensare a un verbo) e dalla
+maiuscola.
 
 `````
 
@@ -264,7 +289,13 @@ $$
 dove $P(t_i \mid t_{i-1})$ sono le probabilità di **transizione** tra
 etichette (con $t_0$ simbolo convenzionale di inizio frase) e
 $P(w_i \mid t_i)$ le probabilità di **emissione** delle parole; entrambe si
-stimano contando su un corpus annotato. Il tagging è la ricerca della
+stimano come frequenze relative su un corpus annotato,
+$P(t_i \mid t_{i-1}) = C(t_{i-1}, t_i)/C(t_{i-1})$ e
+$P(w \mid t) = C(t, w)/C(t)$, dove $C$ conta le occorrenze. Una parola mai vista
+in addestramento ha $P(w \mid t) = 0$ per ogni $t$, e azzererebbe la probabilità
+di qualunque sequenza la contenga: i tagger reali la trattano con un modello a
+parte per le parole sconosciute, costruito sulle ultime lettere e sulla
+maiuscola, come in TnT {cite}`brants2000tnt`. Il tagging è la ricerca della
 sequenza di stati più probabile date le parole,
 
 $$
@@ -279,21 +310,17 @@ d'obbligo resta il tutorial di Rabiner {cite}`rabiner1989tutorial`.
 
 `````
 
-Questa macchina, del resto, non è nata per la grammatica. Lo scritto che l'ha
-resa popolare è del 1989, lo firma Lawrence Rabiner {cite}`rabiner1989tutorial`
-e parla di riconoscimento del parlato: gli HMM hanno retto la trascrizione
-automatica per trent'anni, e li ritroveremo nel {doc}`capitolo sul
-riconoscimento del parlato </SpeechRecognition/overview>`.
-
-Cambia solo il cast della recita, e conviene vedere come. Dietro la tenda non
-ci sono più le categorie grammaticali, ci sono i suoni elementari della
-lingua, quelli che distinguono «pane» da «cane»: loro sono gli attori. E in
-platea non arrivano parole, arriva il suono, che un programma taglia in
-fettine da pochi millesimi di secondo e riduce a un pugno di numeri per fetta,
-tipo «quanta energia c'è sui toni bassi, quanta sugli alti»: quelle sono le
-battute. Il resto è identico: si sente una fila di battute, si cerca la
-sfilata di attori che le spiega meglio, e a trovarla è lo stesso navigatore
-che vedremo fra poco.
+L'HMM, del resto, non è nato per la grammatica. L'articolo che lo ha reso
+popolare è del 1989, lo firma Lawrence Rabiner {cite}`rabiner1989tutorial` e
+parla di riconoscimento del parlato. Lì gli stati nascosti sono i fonemi, i
+suoni elementari della lingua, quelli che distinguono «pane» da «cane»; le
+osservazioni sono vettori di pochi numeri calcolati sul suono, uno per ogni
+fettina di qualche millesimo di secondo («quanta energia c'è sui toni bassi,
+quanta sugli alti»); e la sequenza di fonemi più probabile si trova con lo
+stesso algoritmo che, sulle parole, trova la sequenza di categorie, quello di
+Viterbi. Gli HMM hanno retto la trascrizione automatica per circa trent'anni, e
+li ritroveremo nel {doc}`capitolo sul riconoscimento del parlato
+</SpeechRecognition/overview>`.
 
 ## Viterbi, o l'arte di non provarle tutte
 
@@ -316,8 +343,9 @@ sapere, per ciascuna delle 17 categorie possibili, qual era il modo migliore
 di arrivarci alla parola 11. Tutto il resto si può buttare, perché non
 influenzerà nulla di ciò che viene dopo. Questo modo di procedere (calcolare
 una volta sola ogni pezzo che servirà più volte, e tenerselo da parte invece
-di rifarlo) si chiama programmazione dinamica, e nel libro torna spesso:
-la griglia della distanza di edit, nella prima sezione, era la stessa idea.
+di rifarlo) si chiama programmazione dinamica, e torna spesso: la griglia della
+distanza di edit, nella {doc}`cassetta degli attrezzi <strumenti-classici>`,
+era la stessa idea.
 
 L'algoritmo che la applica qui porta il nome di Andrew Viterbi
 {cite}`viterbi1967error`, nato Andrea a Bergamo nel 1935 ed emigrato bambino
@@ -325,41 +353,42 @@ negli Stati Uniti, che lo propose nel 1967 non per la grammatica ma per
 decifrare segnali arrivati storti lungo un canale disturbato: lo stesso
 algoritmo ha poi viaggiato dentro i telefoni cellulari di mezzo mondo.
 
-Facciamo i conti fino in fondo su un modello giocattolo: tre categorie
-(`DET`, `NOME`, `VERBO`) e la frase «la porta cigola», dove «porta» ha la
-stessa doppiezza di «porta» nella frase d'apertura. I numeri delle due tabelle
-di probabilità sono inventati per l'esempio, scelti tondi perché i conti si
-possano rifare a mente: in un sistema vero verrebbero dai conteggi su un
-corpus già etichettato, come si è detto poco fa.
+Facciamo i conti fino in fondo su un modello giocattolo: tre categorie (`DET`,
+l'articolo; `NOUN`, il nome; `VERB`, il verbo: le sigle del tagset universale) e
+la frase «la porta cigola», dove «porta» ha la stessa doppiezza di «porta» nella
+frase d'apertura. I numeri delle due tabelle di probabilità sono inventati per
+l'esempio, scelti tondi perché i conti si possano rifare a mente: in un sistema
+vero verrebbero dai conteggi su un corpus già etichettato, come si è detto poco
+fa.
 
-Ecco il primo dei due libretti, quello che dice chi passa la scena a chi.
-Si legge riga per riga: la riga «inizio frase» dice che sei frasi su dieci
-cominciano con un articolo, tre con un nome e una con un verbo; la riga `DET`
-dice che dopo un articolo arriva un nome sette volte su dieci, un verbo due e
-un altro articolo una.
+La prima tabella, quella che dice quale categoria segue quale, contiene le
+probabilità di transizione $P(t_i \mid t_{i-1})$. Si legge riga per riga: la
+riga «inizio frase» dice che sei frasi su dieci cominciano con un articolo, tre
+con un nome e una con un verbo; la riga `DET` dice che dopo un articolo arriva
+un nome sette volte su dieci, un verbo due e un altro articolo una.
 
-| da ↓ verso → | `DET` | `NOME` | `VERBO` |
+| categoria precedente ↓, successiva → | `DET` | `NOUN` | `VERB` |
 |---|---|---|---|
 | inizio frase | 0,6 | 0,3 | 0,1 |
 | `DET` | 0,1 | 0,7 | 0,2 |
-| `NOME` | 0,2 | 0,3 | 0,5 |
-| `VERBO` | 0,4 | 0,4 | 0,2 |
+| `NOUN` | 0,2 | 0,3 | 0,5 |
+| `VERB` | 0,4 | 0,4 | 0,2 |
 
-E il secondo libretto, quello che dice chi pronuncia che cosa. Si chiama
-delle *emissioni*, perché quelle sono le parole che ciascun attore emette
-quando è in scena:
+La seconda, quella che dice con quali parole si presenta ciascuna categoria,
+contiene le probabilità di emissione $P(w_i \mid t_i)$, che si chiamano così
+perché ogni categoria «emette» le sue parole:
 
-| chi è in scena ↓ | dice «la» | dice «porta» | dice «cigola» |
+| categoria ↓ | emette «la» | emette «porta» | emette «cigola» |
 |---|---|---|---|
 | `DET` | 0,5 | 0 | 0 |
-| `NOME` | 0 | 0,2 | 0 |
-| `VERBO` | 0 | 0,2 | 0,3 |
+| `NOUN` | 0 | 0,2 | 0 |
+| `VERB` | 0 | 0,2 | 0,3 |
 
 Nessuna di queste righe somma a uno, e non è un errore: il resto della
 probabilità va a tutte le altre parole della lingua, che in questo esempio non
 compaiono. E siccome siamo in un modello giocattolo con tre sole categorie, il
 pronome non c'è: qui «la» la può dire solo l'articolo, anche se in italiano
-vero, come si è visto in apertura di sezione, potrebbe essere un pronome.
+vero, come in «La vecchia porta la sbarra», potrebbe essere un pronome.
 
 Nota infine il punto delicato: la parola «porta», da sola, *non decide*, perché
 il nome e il verbo la pronunciano con la stessa frequenza, 0,2 contro 0,2.
@@ -369,12 +398,14 @@ l'algoritmo valuta.
 
 ```{figure} ../figures/viterbi-traliccio.svg
 :name: fig-viterbi-traliccio
-:alt: Traliccio di Viterbi per la frase «la porta cigola» con tre stati DET, NOME e VERBO per colonna. Il cammino ottimo DET, NOME, VERBO è in terracotta con le probabilità parziali 0,30, 0,042 e 0,0063; il cammino alternativo che passa da VERBO su «porta» è in grigio; i cammini a probabilità zero sono tratteggiati.
+:alt: Traliccio di Viterbi per la frase «la porta cigola» con tre stati DET, NOUN e VERB per colonna. Il cammino ottimo DET, NOUN, VERB è in terracotta con le probabilità parziali 0,30, 0,042 e 0,0063; il cammino alternativo che passa da VERB su «porta» è in grigio; i cammini a probabilità zero sono tratteggiati.
 :width: 100%
 
 Il traliccio di Viterbi su «la porta cigola»: in ogni casella sopravvive
 solo il migliore dei cammini che vi arrivano, e alla fine si risale
-all'indietro lungo la strada in terracotta.
+all'indietro lungo la strada in terracotta. Nel disegno π sono le probabilità
+di cominciare la frase con ciascuna categoria (la riga «inizio frase» della
+prima tabella), e $v_1$, $v_2$, $v_3$ i punteggi delle caselle, uno per parola.
 ```
 
 `````{tab} Elementare
@@ -402,18 +433,9 @@ possibilità, e quella entrata con meno punteggio non recupera più. Poi
 moltiplica per lo $0{,}3$ con cui un verbo dice «cigola», e l’incrocio chiude a
 $0{,}0063$.
 
-Se a ogni incrocio il navigatore sommasse i punteggi delle strade che arrivano,
-invece di tenere la migliore, a «cigola» troverebbe
-$0{,}0063 + 0{,}0024 \times 0{,}3 = 0{,}0063 + 0{,}00072 = 0{,}00702$: la
-probabilità della frase, sommata su tutte le strade che la possono produrre. La
-strada migliore ne porta circa nove decimi. Lo stesso giro fatto dalla fine
-verso l'inizio, e combinato con questo, dice per ogni parola quanto è probabile
-ciascuna categoria tenendo conto di tutte le strade; e sono quelle probabilità
-a permettere di imparare le tabelle da un testo che nessuno ha etichettato.
-
-A ogni strada tenuta il navigatore si era segnato su un foglietto da dove
-veniva. Adesso rilegge i foglietti all’indietro: verbo ← nome ← articolo. La
-frase esce così: *la*/articolo *porta*/nome *cigola*/verbo.
+A ogni strada tenuta il navigatore si era annotato da dove veniva. Adesso
+rilegge gli appunti all’indietro: verbo ← nome ← articolo. La frase esce così:
+*la*/articolo *porta*/nome *cigola*/verbo.
 
 Tre parole e tre corsie si contano sulle dita. Con 17 categorie e 20 parole i
 percorsi interi sarebbero quei quattro milioni di miliardi di miliardi, ma gli
@@ -421,15 +443,29 @@ incroci restano 20, con 17 corsie ciascuno: 17 × 20 = 340 in tutto. Un pugno di
 moltiplicazioni per corsia, e il percorso migliore in assoluto salta fuori
 comunque, garantito.
 
-Sulle frasi lunghe il foglietto si guasta. Ogni incrocio moltiplica per un
-numero minore di uno, e il punteggio si assottiglia in fretta: 0,30, poi 0,042,
-poi 0,0063, e dopo la virgola gli zeri si accumulano. Le caselle del foglietto
-però sono un numero fisso, come le cifre di un calcolatore, e dopo qualche
-decina di incroci non ci resta che zero: due percorsi diversi finiscono segnati
+Sulle frasi lunghe, però, i punteggi si guastano. Ogni incrocio moltiplica per
+un numero minore di uno, e il punteggio si assottiglia in fretta: 0,30, poi
+0,042, poi 0,0063, e dopo la virgola gli zeri si accumulano. Per scriverlo il
+navigatore ha un numero fisso di cifre, come un calcolatore, e dopo qualche
+decina di incroci non gli resta che zero: due percorsi diversi finiscono segnati
 con lo stesso zero, e la gara non si può più giudicare. Il rimedio è cambiare
 unità di misura. Invece di moltiplicare i punteggi si contano gli zeri, che a
 ogni incrocio si sommano tranquillamente; alla fine vince il percorso che ne ha
 di meno.
+
+C'è anche un secondo navigatore, che a ogni incrocio, invece di tenere la strada
+migliore, somma i punteggi di tutte le strade che arrivano. A «cigola» trova
+$0{,}0063 + 0{,}0024 \times 0{,}3 = 0{,}0063 + 0{,}00072 = 0{,}00702$: la
+probabilità della frase, sommata su tutte le strade che la possono produrre, di
+cui la strada migliore porta circa nove decimi. Fatto lo stesso giro anche dalla
+fine verso l'inizio, i due conti insieme dicono, per ogni parola, quanto è
+probabile ciascuna categoria tenendo conto di tutte le strade. Servono quando
+non ci sono frasi etichettate a mano su cui contare i due libretti: si parte da
+libretti tirati a indovinare, si usano quelle probabilità al posto dei
+conteggi, e si ripete, e a ogni giro i libretti spiegano le frasi un po' meglio.
+Per le parti del discorso, però, i libretti imparati così funzionano peggio di
+quelli contati su frasi etichettate, e conviene etichettarne a mano più che si
+può.
 
 `````
 
@@ -453,19 +489,20 @@ proviene il massimo. Sul modello giocattolo la tabella dei massimi è:
 | stato | «la» | «porta» | «cigola» |
 |---|---|---|---|
 | `DET` | **0,30** | 0 | 0 |
-| `NOME` | 0 | **0,042** ← `DET` | 0 |
-| `VERBO` | 0 | 0,012 ← `DET` | **0,0063** ← `NOME` |
+| `NOUN` | 0 | **0,042** ← `DET` | 0 |
+| `VERB` | 0 | 0,012 ← `DET` | **0,0063** ← `NOUN` |
 
-Al termine si prende lo stato finale con $v_n$ massimo (qui `VERBO`, con
-$0{,}0063$) e si segue $\psi$ a ritroso: `DET` → `NOME` → `VERBO`. Il cammino
-alternativo completo `DET` → `VERBO` → `VERBO` vale
+Al termine si prende lo stato finale con $v_n$ massimo (qui `VERB`, con
+$0{,}0063$) e si segue $\psi$ a ritroso: `DET` → `NOUN` → `VERB`. Il cammino
+alternativo completo `DET` → `VERB` → `VERB` vale
 $0{,}012 \times 0{,}2 \times 0{,}3 = 0{,}00072$: quasi nove volte meno. Detto
 $T$ il numero di etichette possibili, il costo è $O(n\,T^2)$ (per ognuna delle
 $n$ parole, per ognuno dei $T$ stati, un massimo su $T$
 predecessori) contro gli $O(T^n)$ cammini della forza bruta: con $T = 17$ e
 $n = 20$, poche migliaia di operazioni al posto di $10^{24}$, e con la
-garanzia dell'ottimo globale; a differenza della *beam search* della sezione
-precedente, che è un'euristica. In pratica si lavora con i logaritmi, sommando
+garanzia dell'ottimo globale; a differenza della *beam search* della
+{doc}`traduzione <seq2seq-traduzione>`, che è un'euristica. In pratica si lavora
+con i logaritmi, sommando
 invece di moltiplicare, per evitare l'underflow.
 
 Sostituendo il massimo con una somma, la stessa ricorrenza diventa
@@ -488,49 +525,62 @@ $$
 $$
 
 e non fa mai scendere la verosimiglianza da un'iterazione all'altra, fino a un
-massimo locale {cite}`rabiner1989tutorial`. Nel caso sommato l'underflow si
-evita riscalando le $\alpha_i$ a ogni passo, perché il logaritmo di una somma
-non è una somma.
+punto stazionario, di norma un massimo locale {cite}`rabiner1989tutorial`. Per
+il POS tagging, però, più verosimiglianza non vuol dire più accuratezza:
+Merialdo trova che le iterazioni di Baum–Welch su testo non annotato,
+partendo da un modello stimato su frasi annotate, in genere peggiorano
+l'etichettatura, tranne quando le frasi annotate sono pochissime
+{cite}`merialdo1994tagging`. Per questo i tagger si stimano su corpora annotati,
+e Baum–Welch serve soprattutto dove l'annotazione manca, come nel riconoscimento
+del parlato. Nel caso sommato l'underflow si evita riscalando le $\alpha_i$ a
+ogni passo, perché il logaritmo di una somma non è una somma.
 
 `````
 
-Una riga di storia successiva. Agli HMM sono succeduti i **Conditional Random
-Field** (CRF) {cite}`lafferty2001conditional`, che rinunciano a raccontare come
-parole ed etichette nascano insieme e si addestrano soltanto a scegliere
-l'etichetta giusta. È la stessa distinzione dei due periti della sezione sulla
-classificazione, quello che studia lo stile di ciascun pittore e quello che
-impara solo i dettagli che li distinguono: generativo il primo,
-discriminativo il secondo, e qui applicata alle sequenze invece che ai
-documenti. Il guadagno è che un CRF può guardare indizi che a un HMM sfuggono,
-per esempio la maiuscola iniziale, le ultime tre lettere della parola, la
-presenza di un trattino; e per oltre un decennio sono stati il modo migliore di
-fare NER. Per trovare il percorso migliore, però, chiamano sempre Viterbi.
+Un HMM è un modello *generativo*: stima la probabilità congiunta $P(t, w)$ di
+etichette e parole, cioè racconta come nascono insieme. Dal 2001 gli si
+affiancano i **Conditional Random Field** (CRF, alla lettera «campi casuali
+condizionati») {cite}`lafferty2001conditional`, modelli *discriminativi* che
+stimano direttamente $P(t \mid w)$, la probabilità delle etichette date le
+parole, e si addestrano soltanto a scegliere l'etichetta giusta. È la stessa
+distinzione che separa Naive Bayes e regressione logistica nella
+{doc}`sezione sulla classificazione <classificazione-testo>`, applicata alle
+sequenze invece che ai documenti. Il guadagno è che un CRF, non dovendo
+spiegare come nascono le parole, può guardare indizi che un HMM non sa usare:
+la maiuscola iniziale, le ultime tre lettere della parola, la presenza di un
+trattino, le parole vicine. Per anni i CRF sono stati il modello di riferimento
+per il NER, e per trovare la sequenza migliore usano ancora l'algoritmo di
+Viterbi.
 
 `````{tab} Elementare
 
-Fra l'HMM e il CRF c'è stato un modello di mezzo, più furbo dell'HMM sugli
-indizi ma ancora abituato a giudicare la sfilata un passo alla volta. A ogni
-incrocio doveva distribuire tutto il suo punteggio fra le strade che ripartono
-da lì, e la parola serviva solo a decidere come spartirlo. Il guaio si vede a
-un incrocio con una sola uscita: la strada va presa per forza, con tutto il
-punteggio, qualunque parola arrivi, e la parola non ha modo di protestare.
-(Nell'HMM questo non succede, perché la parola entra come un voto a parte; ma
-l'HMM gli indizi non li sa usare.)
+Fra l'HMM e il CRF c'è stato un modello di mezzo, il MEMM, che gli indizi li
+sapeva già usare ma giudicava la sfilata un incrocio alla volta. A ogni incrocio
+il navigatore del MEMM sceglie come un classificatore qualunque, e le
+probabilità di una scelta fanno uno: ha un punto intero da spartire fra le
+strade che ripartono da lì, e guarda la parola solo per decidere come
+spartirlo. Il guaio
+si vede a un incrocio con una sola uscita: quella strada riceve per forza il
+punto intero, qualunque parola arrivi, e anche una parola che urlasse «qui c'è
+un errore» non cambierebbe niente. (Nell'HMM questo non succede, perché la
+parola entra come un voto a parte; ma l'HMM gli indizi non li sa usare.)
 
 Un CRF aspetta la fine. Dà un punteggio a ogni percorso intero, sommando quanto
 ogni etichetta sta bene con le parole (una maiuscola in testa, una desinenza
 in *-mente*) e quanto sta bene con l'etichetta che la precede, e solo alla fine
 divide per la somma dei punteggi di tutti i percorsi possibili. Quella somma
-sembra impossibile, perché i percorsi sono miliardi di miliardi, ma si fa con
-lo stesso traliccio di Viterbi, sommando invece di scegliere. Così un percorso
-intero può valere poco anche se ogni suo incrocio era obbligato.
+sembra impossibile, perché i percorsi sono miliardi di miliardi, ma la fa il
+secondo navigatore, quello che somma invece di scegliere, sullo stesso
+traliccio. Così un percorso intero può valere poco anche se ogni suo incrocio
+era obbligato.
 
 Per imparare, si cercano i pesi che rendono più probabili i percorsi giusti
 degli esempi, e la ricerca ha una sola cima, senza cime false dove fermarsi per
 errore. Nella versione con le reti, i punteggi fra parole ed etichette li
-calcola una rete ricorrente che legge nei due sensi, imparata insieme a tutto il
-resto, e al CRF restano come pesi propri soltanto quelli fra un'etichetta e la
-successiva; con la rete in mezzo, però, la cima unica non è più garantita.
+calcola una rete ricorrente che legge nei due sensi, come quella che nella
+traduzione leggeva la frase di partenza, imparata insieme a tutto il resto, e al
+CRF restano come pesi propri soltanto quelli fra un'etichetta e la successiva;
+con la rete in mezzo, però, la cima unica non è più garantita.
 
 `````
 
@@ -550,35 +600,44 @@ $$
 dove $\mathbf{f}$ è un vettore di caratteristiche che possono guardare l'intera
 frase (maiuscola, suffissi, parole vicine) e $\theta$ i loro pesi. La
 normalizzazione è **globale**: $Z$ somma su tutte le $T^n$ sequenze e si calcola
-con l'algoritmo forward in $O(n\,T^2)$. È questo a separare il CRF dai MEMM che
-lo precedono, normalizzati passo per passo: lì ogni stato distribuisce una massa
-unitaria fra i successori qualunque sia la parola, e uno stato con pochi
-successori ignora di fatto l'osservazione, il *label bias* che
-{cite}`lafferty2001conditional` mostrano e che il CRF elimina. L'addestramento
+con l'algoritmo forward in $O(n\,T^2)$. È questo a separare il CRF dai **MEMM**
+(*maximum-entropy Markov model*) {cite}`mccallum2000maximum`, che lo precedono
+e normalizzano passo per passo: $P(t_i \mid t_{i-1}, w_{1:n})$ somma a uno su
+ogni stato, qualunque sia la parola, quindi uno stato con un solo successore non
+può che passare a quello, e uno con pochi successori ignora di fatto
+l'osservazione. Lafferty e colleghi chiamano questo difetto *label bias*, e la
+normalizzazione globale del CRF lo elimina {cite}`lafferty2001conditional`.
+L'addestramento
 massimizza la log-verosimiglianza condizionata, concava in $\theta$, il cui
 gradiente è la differenza fra i conteggi empirici delle caratteristiche e quelli
 attesi sotto il modello, calcolati col forward-backward. La decodifica resta
 Viterbi sui punteggi $\theta^\top\mathbf{f}$. Nella versione neurale le
 caratteristiche di emissione le produce una BiLSTM, addestrata insieme alle
-transizioni sulla stessa log-verosimiglianza condizionata: al CRF restano come
-parametri propri le sole transizioni fra etichette, e la concavità, che valeva a
-caratteristiche fissate, si perde.
+transizioni sulla stessa log-verosimiglianza condizionata
+{cite}`huang2015bidirectional`: al CRF restano come parametri propri le sole
+transizioni fra etichette, e la concavità, che valeva a caratteristiche fissate,
+si perde. Lample e colleghi completano l'ingresso della BiLSTM con una
+rappresentazione di ogni parola costruita dai suoi caratteri
+{cite}`lample2016neural`; e un livello di punteggi di transizione addestrato
+sulla verosimiglianza della frase intera, sopra una rete neurale, c'era già nel
+lavoro di Collobert e colleghi {cite}`collobert2011natural`, che per il NER
+usavano una rete a finestra fissa di parole invece di una ricorrente.
 
 `````
 
 ## La via neurale: una BiLSTM per etichettare
 
-E le reti ricorrenti? Nella sezione sulla traduzione abbiamo stabilito una
-regola: la lettura bidirezionale vale solo per *capire* un testo che
-esiste già tutto intero, non per generarlo. L'etichettatura è il caso ideale:
-la frase è lì, completa, e per decidere l'etichetta di «porta» servono tanto
-le parole prima quanto quelle dopo («la porta cigola» contro «la porta a
-scuola»). Un etichettatore neurale minimo (in gergo lo si chiama *tagger*,
-dall'inglese *tag*, cartellino) è quindi fatto di tre pezzi, tutti già
-incontrati: si trasforma ogni parola nella sua fila di numeri (l'embedding), la
-si dà in pasto a una LSTM che legge nei due sensi, e in cima si mette una
-bilancia che per ogni parola assegna un punteggio a ciascuna delle 17
-etichette possibili. Vince l'etichetta col punteggio più alto.
+E le reti ricorrenti? Nella {doc}`sezione sulla traduzione <seq2seq-traduzione>`
+abbiamo stabilito una regola: la lettura bidirezionale vale solo per *capire*
+un testo che esiste già tutto intero, non per generarlo. L'etichettatura è il
+caso ideale: la frase è lì, completa, e per decidere l'etichetta di «porta»
+servono tanto le parole prima quanto quelle dopo («la porta cigola» contro «la
+porta a scuola»). Un etichettatore neurale minimo (un *tagger*, dall'inglese
+*tag*, cartellino) ha tre componenti, tutti già incontrati: uno strato di
+embedding, che trasforma ogni parola nel suo vettore; una LSTM bidirezionale,
+che per ogni parola produce uno stato che dipende dall'intera frase, 128 numeri
+per direzione e 256 in tutto; e uno strato lineare, che trasforma quello stato
+in 17 punteggi, uno per etichetta. Vince l'etichetta col punteggio più alto.
 
 ```python
 import torch
@@ -602,22 +661,25 @@ class TaggerBiLSTM(nn.Module):
         return self.out(h)         # logit per OGNI parola, non solo l'ultima
 ```
 
-Confrontalo con il classificatore di sentiment della sezione sui modelli di
-sequenza: là si teneva solo l'ultimo stato (`h[:, -1]`), un'etichetta per frase;
-qui si tengono tutti, un'etichetta per parola. La misura dell'errore è quella di
-sempre, la cross-entropia (quanto la previsione si discosta dall'etichetta
-giusta), applicata però parola per parola, e con un accorgimento: le frasi di un
-gruppo hanno lunghezze diverse e si pareggiano riempiendo le più corte con
-caselle vuote (il *padding*), che vanno escluse dal conto, altrimenti la rete si
-metterebbe a imparare il vuoto. Il `-100` passato a `CrossEntropyLoss` è la
-marca convenzionale che dice «questa casella non conta». Escluderle dal conto,
-però, non basta: la LSTM che legge all'indietro comincia dall'ultima casella,
-quindi attraversa i riempitivi prima di arrivare alle parole vere, e l'etichetta
-di «porta» cambierebbe con il numero di caselle vuote in coda. Per questo il
-lotto, prima della LSTM, si impacchetta con `nn.utils.rnn.pack_padded_sequence`,
-passando le lunghezze vere, e dopo si srotola con `pad_packed_sequence`: così
-ciascuna direzione legge soltanto la propria frase, ed è quello che fa il
-`forward` del tagger. Lo schema del ciclo è questo:
+Confrontalo con il classificatore di sentiment dei {doc}`modelli di sequenza
+<modelli-sequenza>`: là si teneva solo l'ultimo stato (`h[:, -1]`),
+un'etichetta per frase; qui si tengono tutti, un'etichetta per parola. La misura
+dell'errore è quella di sempre, la cross-entropia (quanto la previsione si
+discosta dall'etichetta giusta), applicata però parola per parola, e con un
+accorgimento. Le frasi di un mini-batch hanno lunghezze diverse, e si pareggiano
+riempiendo le più corte con caselle vuote (il *padding*), che vanno escluse dal
+conto, altrimenti la rete si metterebbe a imparare il vuoto. In PyTorch lo fa
+la funzione di perdita, `CrossEntropyLoss`: salta le caselle la cui etichetta
+vale `-100`, il valore convenzionale che vuol dire «questa casella non conta»,
+e basta scriverlo nelle etichette del riempimento. Escluderle dal conto, però,
+non basta: la LSTM che legge all'indietro comincia dall'ultima casella, quindi
+attraversa i riempitivi prima di arrivare alle parole vere, e l'etichetta di
+«porta» cambierebbe con il numero di caselle vuote in coda. Per questo il
+mini-batch, prima della LSTM, si impacchetta con
+`nn.utils.rnn.pack_padded_sequence`, passando le lunghezze vere, e dopo si
+srotola con `pad_packed_sequence`: così ciascuna direzione legge soltanto la
+propria frase, ed è quello che fa il `forward` del tagger. Lo schema del ciclo
+è questo:
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -633,12 +695,16 @@ loss = perdita(logits.reshape(-1, 17),     # una riga per token
 loss.backward()                            # poi optimizer.step(), come sempre
 ```
 
-Questa ricetta ha però un buco: decide ogni parola per conto suo, senza
-guardare che cosa ha deciso per quella prima. Può quindi scrivere un
-«continuo l'evidenziatura» subito dopo un «penna sollevata», che non vuol dire
-niente. Nei sistemi di punta si aggiunge allora in cima uno strato CRF, che
-rimette in gioco le transizioni fra etichette e sa che certe successioni sono
-impossibili.
+Questa ricetta ha però un buco: le etichette sono scelte una indipendentemente
+dall'altra, senza guardare che cosa si è deciso per la parola prima. Possono
+quindi comparire successioni che nello schema BIO dell'esempio di Fermi non
+vogliono dire niente, come un `I-PER` (dentro una persona) subito dopo una `O`
+(fuori da ogni entità). Si aggiunge allora in cima uno strato CRF
+{cite}`huang2015bidirectional`: i punteggi fra parole ed etichette sono quelli
+della BiLSTM, quelli fra un'etichetta e la successiva sono parametri propri, e
+la decodifica con Viterbi sceglie la sequenza migliore nel suo insieme, che può
+escludere del tutto le successioni vietate (basta un punteggio $-\infty$ sulla
+transizione da `O` a `I-PER`).
 
 ### Vettori che cambiano con la frase: ELMo
 
@@ -659,7 +725,9 @@ lettori su milioni di frasi senza nessuna etichetta: uno legge da sinistra e a
 ogni parola cerca di indovinare la successiva, l'altro legge da destra e cerca
 di indovinare la precedente. Per indovinare bene devono capire il contesto, e
 quello che ciascuno ha in testa quando arriva su «calcio» è una fila di numeri
-che dipende da tutta la frase.
+che dipende dal pezzo di frase che ha letto: il primo da quello prima, il
+secondo da quello dopo. Messe accanto, le due file dipendono da tutta la
+frase.
 
 Il tagger prende quelle file di numeri come ingredienti, accanto al suo
 embedding, e i due lettori restano come sono: non li si riaddestra. Ogni
@@ -709,7 +777,12 @@ degli strati conferma la divisione del lavoro: il primo strato serve meglio
 l'etichettatura grammaticale, l'ultimo la disambiguazione del senso delle
 parole. Con questo schema ELMo migliorò sei compiti diversi, dalle domande e
 risposte all'implicazione testuale, dai ruoli semantici alla coreferenza, dal
-NER al sentiment. BERT lo chiama approccio *feature-based*, in cui le
+NER al sentiment. Sul NER del CoNLL-2003, aggiunto a una BiLSTM-CRF, porta la
+$F_1$ da $90{,}15$ a $92{,}22$ (media su cinque semi), cioè il 21% di errore
+relativo in meno; il miglior risultato precedente era $91{,}93$
+{cite}`peters2018deep`. Con il fine-tuning, sullo stesso test, BERT-large
+arriva a $92{,}8$ {cite}`devlin2019bert`. BERT chiama lo schema di ELMo
+approccio *feature-based*, in cui le
 rappresentazioni preaddestrate entrano come ingressi aggiuntivi, per
 distinguerlo dal *fine-tuning*, in cui si riaddestra tutto il modello sul
 compito; e ne critica la bidirezionalità, che definisce una concatenazione
@@ -720,16 +793,17 @@ strati), non l'obiettivo, che come si è visto le addestra insieme.
 
 `````
 
-Oggi lo standard del NER fa il passo che ELMo non faceva: prendere un modello
-già addestrato su montagne di testo, come BERT {cite}`devlin2019bert`,
-appoggiargli sopra la stessa bilancia che assegna un punteggio a ogni etichetta,
-e proseguire l'addestramento del modello intero per pochi giri sul compito
-specifico. Questa seconda fase corta si chiama fine-tuning, «rifinitura»: non si
-riparte da zero, si parte da un modello che la lingua la sa già e gli si insegna
-soltanto il mestiere nuovo, con una frazione dei dati e del tempo. Ne parla il
-{doc}`capitolo sui Transformer </Transformers/overview>`, dove la lettura nei
-due sensi, che qui abbiamo dovuto costruire a mano con due reti affiancate,
-viene da sé.
+Il passo che ELMo non faceva lo fa BERT {cite}`devlin2019bert`: si prende un
+modello già addestrato su grandi quantità di testo non annotato, gli si mette
+sopra lo stesso strato lineare per parola del tagger, e si prosegue
+l'addestramento di tutti i parametri sul compito, per poche passate sui dati e
+con un tasso di apprendimento piccolo. Questa seconda fase corta si chiama
+fine-tuning, «rifinitura»: il modello parte da rappresentazioni della lingua già
+apprese, e il compito si impara con i pochi dati etichettati che ci sono. La
+lettura nei due sensi, che qui richiede due reti affiancate, in BERT sta dentro
+ogni strato, perché il suo preaddestramento nasconde alcune parole e le fa
+indovinare dal contesto dei due lati; se ne parla nel {doc}`capitolo sui
+Transformer </Transformers/overview>`.
 
 ## Misurare bene: token o entità?
 
@@ -745,13 +819,13 @@ Prova a immaginare il sistema più stupido possibile: per ogni parola guarda
 qual è il mestiere che quella parola fa più spesso nei testi già etichettati,
 e scrive sempre quello, senza mai guardare il contesto. Un sistema così, che
 non ha capito niente di niente, sull'inglese dei giornali azzecca già
-92 parole su cento, perché tantissime parole sono facili: «il» è quasi
-sempre un articolo, «velocemente» quasi sempre un avverbio. Le parole ambigue
-sono meno numerose, ma sono quelle che si usano di più, e in un testo vero
-coprono più della metà delle parole scritte. I sistemi seri stanno oltre il
-97. Ecco perché quei numeri vanno letti sapendo da dove si parte: fra il 92
-e il 97 c'è tutto il lavoro, e ci sono tutte le parole ambigue, cioè le uniche
-su cui valga la pena discutere.
+92 parole su cento, perché tantissime parole sono facili: «the» è sempre un
+articolo, «quickly» quasi sempre un avverbio (come da noi «il» e
+«velocemente»). Le parole ambigue sono meno numerose, ma sono quelle che si
+usano di più, e in un testo inglese di giornale coprono più della metà delle
+parole scritte. I sistemi seri stanno oltre il 97. Ecco perché quei numeri vanno
+letti sapendo da dove si parte: fra il 92 e il 97 c'è tutto il lavoro, e ci sono
+tutte le parole ambigue, cioè le uniche su cui valga la pena discutere.
 
 Per le entità quel voto diventa una trappola. Prendi un testo di 100 parole
 che contiene una sola entità, «Enrico Fermi». Un sistema pigro che non
@@ -762,10 +836,12 @@ giudica a evidenziature intere (vale solo il segmento completo, del colore
 giusto) e con due domande: di quello che hai evidenziato, quanto era giusto? E
 di quello che andava evidenziato, quanto ne hai trovato? Sono la precisione e
 il richiamo della {doc}`sezione sulle metriche </MachineLearning/metriche>`,
-usati nella sezione sulla classificazione, dove si chiamavano con i loro nomi
-inglesi, *precision* e *recall*: sono la stessa identica coppia di domande. Il
-voto unico $F_1$ le riunisce con la media severa già vista là: si moltiplicano
-i due voti, si raddoppia il prodotto, e lo si divide per la somma dei due voti.
+usati nella {doc}`sezione sulla classificazione <classificazione-testo>`, dove
+si chiamavano con i loro nomi inglesi, *precision* e *recall*: sono la stessa
+identica coppia di domande. Il voto unico $F_1$ le riunisce con la media
+armonica già vista là, quella in cui un voto basso non si nasconde dietro uno
+alto: si moltiplicano i due voti, si raddoppia il prodotto, e lo si divide per
+la somma dei due voti.
 
 Prova con un testo che contiene dieci entità e un sistema che ne evidenzia una
 sola, azzeccandola. Primo voto: $1{,}0$, perché tutto quello che ha segnalato
@@ -780,9 +856,10 @@ raddoppiato $0{,}20$, diviso la somma $1{,}1$, fa $0{,}18$. E ha ragione lei.
 Per il POS tagging la metrica è l’**accuratezza per token**,
 $\text{acc} = \frac{\#\{i : \hat{t}_i = t_i\}}{n}$. Va letta contro una base
 di confronto onesta: il baseline «assegna a ogni parola la sua etichetta più
-frequente nel corpus» supera già il 92% sull'inglese giornalistico, quindi lo
-spazio reale di miglioramento (dal 92% al 97% e oltre) sta tutto nelle
-occorrenze ambigue, le più difficili.
+frequente nel corpus» arriva già al 92% sull'inglese giornalistico (con il
+tagset Penn, sul *Wall Street Journal*), quindi lo spazio reale di
+miglioramento, dal 92% al 97% che sui treebank inglesi raggiungono HMM, CRF e
+BERT allo stesso modo, sta tutto nelle occorrenze ambigue, le più difficili.
 
 Per il NER si usano precisione, richiamo e F1 a livello di entità, con
 il criterio dell’*exact match* reso standard dalle campagne di valutazione
@@ -825,9 +902,9 @@ tagger sceglie la lettura più probabile secondo la sua esperienza: quasi
 certamente la signora con la sbarra, perché le statistiche della lingua
 pendono da quella parte. Ma sapere che «porta» è un verbo non dice ancora *chi
 fa che cosa a chi*: per questo bisogna salire di un piano, dalle etichette
-alla struttura della frase. È l'analisi sintattica, tema della prossima
-sezione, e i suoi mattoni sono esattamente le etichette POS che abbiamo
-imparato a mettere.
+alla struttura della frase. È l’{doc}`analisi sintattica <struttura-frase>`, e
+i suoi mattoni sono esattamente le etichette POS che abbiamo imparato a
+mettere.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -841,6 +918,7 @@ imparato a mettere.
   il modo di dettare al telefono dove passa l'evidenziatore, con tre soli
   segnali per parola (qui comincio, qui continuo, qui la penna è sollevata):
   così due persone di fila restano due persone e non diventano una sola.
+  Un'evidenziatura dentro un'altra, però, non si sa dettare.
 - Lo HMM è la recita dietro la tenda: le parole sono le battute che senti,
   le categorie grammaticali gli attori che non vedi, e si passano la scena
   secondo abitudini fisse, ciascuno con il proprio copione di parole tipiche.
@@ -852,11 +930,13 @@ imparato a mettere.
   tutti, che sono quei quattro milioni di miliardi di miliardi, ne visita poche
   centinaia di caselle, e trova comunque
   il percorso migliore in assoluto, garantito.
-- Alla recita dietro la tenda sono poi succeduti metodi che non raccontano più
+- Alla recita dietro la tenda sono poi succeduti i CRF, che non raccontano più
   come parole ed etichette nascano insieme: si allenano soltanto a scegliere
   l'etichetta giusta, e possono guardare indizi che alla recita sfuggono (la
-  maiuscola iniziale, la fine della parola, un trattino). Per trovare il
-  percorso migliore, però, chiamano ancora il navigatore.
+  maiuscola iniziale, la fine della parola, un trattino). Danno il punteggio al
+  percorso intero, e non incrocio per incrocio come il modello di mezzo che li
+  aveva preceduti. Per trovare il percorso migliore, però, chiamano ancora il
+  navigatore.
 - Il tagger neurale legge la frase nei due sensi e produce un'etichetta per
   ogni parola, non una per l'intera frase; leggere anche all'indietro è lecito
   perché il testo è già lì tutto intero. ELMo gli dà in più, per ogni parola,
@@ -882,24 +962,28 @@ imparato a mettere.
   vocabolario ma frequentissime nei testi: decide il contesto.
 - Il NER trova persone, luoghi, organizzazioni e date; lo schema
   BIO (`B-X`, `I-X`, `O`) lo trasforma in un'etichetta per token e tiene
-  distinte le entità adiacenti.
+  distinte le entità adiacenti, purché siano piatte e non sovrapposte. La
+  variante IOB2 mette la `B` su ogni entità, la IOB1 dei dati originali del
+  CoNLL-2003 solo fra due entità contigue dello stesso tipo.
 - Lo HMM è un modello generativo con stati nascosti (le etichette) e
   osservazioni (le parole):
   $P(t,w) = \prod_i P(t_i \mid t_{i-1}) P(w_i \mid t_i)$; transizioni ed
-  emissioni si contano su un corpus annotato. La stessa macchina, con i suoni
+  emissioni si stimano come frequenze relative su un corpus annotato, con un
+  modello a parte per le parole sconosciute. La stessa macchina, con i suoni
   al posto delle etichette, regge il riconoscimento vocale storico.
 - L'algoritmo di Viterbi trova la sequenza di stati ottima con la
   programmazione dinamica sul traliccio: $O(n\,T^2)$ invece di $O(T^n)$,
   tenendo in ogni casella solo il miglior cammino in arrivo. I CRF sono
-  la variante discriminativa.
+  la variante discriminativa, e la loro normalizzazione globale evita il
+  *label bias* dei MEMM.
 - Il tagger neurale è una BiLSTM con testa lineare per token e
   cross-entropia per token: la bidirezionalità è legittima perché il testo
   è tutto disponibile. ELMo vi aggiunge rappresentazioni contestuali da un
   modello di linguaggio bidirezionale congelato, combinate per strato
   ($\gamma \sum_j s_j \mathbf{h}_{k,j}$): è l'approccio *feature-based*. Oggi il
   NER di punta è fine-tuning di BERT.
-- Valutazione: accuratezza per token per il POS (con baseline già oltre il
-  92%), F1 a livello di entità con exact match per il NER; perché mezza
-  entità è un'entità sbagliata.
+- Valutazione: accuratezza per token per il POS (con un baseline già al 92%
+  sull'inglese, tagset Penn), F1 a livello di entità con exact match per il
+  NER; perché mezza entità è un'entità sbagliata.
 ```
 `````

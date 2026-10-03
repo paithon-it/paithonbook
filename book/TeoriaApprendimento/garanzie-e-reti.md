@@ -2,10 +2,10 @@
 
 Le garanzie viste fin qui hanno tutte la stessa forma: l'errore vero sta sotto
 l'errore sugli esempi più un termine che misura la ricchezza della famiglia di
-regole. Per una rete neurale quel termine si può stimare con la {doc}`prova
-delle monete <rademacher-margine>`, e il risultato di quella prova, fatta sul
-serio su reti vere, è l'esperimento più discusso della teoria
-dell'apprendimento recente.
+regole. Per una rete neurale quel termine si può stimare con la
+{doc}`complessità di Rademacher <rademacher-margine>`, cioè addestrandola su
+etichette tirate a sorte, e il risultato di quella prova, fatta sul serio su
+reti vere, è l'esperimento più discusso della teoria dell'apprendimento recente.
 
 Nel 2017 Chiyuan Zhang, Samy Bengio, Moritz Hardt, Benjamin Recht e Oriol
 Vinyals presero le reti neurali più brave a classificare le immagini e le
@@ -63,44 +63,45 @@ SGD, stabiliscono tre cose, e le si legge meglio nelle loro parole. Le reti
 «adattano facilmente un'etichettatura casuale dei dati di addestramento» fino
 all'errore zero, e lo fanno anche sostituendo le immagini con rumore privo di
 struttura; su ImageNet, con un milione di etichette casuali su mille classi,
-Inception v3 arriva al $95{,}2\%$ senza nessuna taratura. L'ottimizzazione
-resta facile, e il tempo di addestramento cresce «solo di un piccolo fattore
-costante» rispetto alle etichette vere. E la regolarizzazione esplicita «può
-migliorare la generalizzazione, ma non è né necessaria né da sola sufficiente
-a controllarla». Accanto agli esperimenti, una costruzione: una rete ReLU a
-due strati con $2n+d$ pesi realizza qualunque etichettatura di $n$ esempi in
-$d$ dimensioni, e per i trecento esempi dell'esperimento sulle cifre ne
-bastano $664$, dove la rete ne ha $38\,410$.
+Inception v3 arriva al $95{,}2\%$ senza nessuna taratura. L'ottimizzazione resta
+facile, e il tempo di addestramento cresce «solo di un piccolo fattore costante»
+rispetto alle etichette vere. E la regolarizzazione esplicita «può migliorare la
+generalizzazione, ma non è né necessaria né da sola sufficiente a controllarla».
+Accanto agli esperimenti, una costruzione: una rete ReLU a due strati con $2m+n$
+pesi realizza qualunque etichettatura di $m$ esempi in $\mathbb{R}^n$ (nel loro
+teorema 1 gli esempi si chiamano $n$ e la dimensione $d$), e per i trecento
+esempi dell'esperimento sulle cifre, in $\mathbb{R}^{64}$, ne bastano $664$,
+dove la rete ne ha $38\,410$.
 
 La conseguenza per le garanzie viste fin qui è immediata. Se l'architettura
 realizza qualunque etichettatura di $S$, allora per la famiglia $\mathcal{H}$
 delle funzioni che essa calcola il sup in $\hat{\mathfrak{R}}_S(\mathcal{H})$
 vale $1$ per ogni $\boldsymbol\sigma$, e $\hat{\mathfrak{R}}_S(\mathcal{H})=1$:
 il bound di Rademacher diventa $R(h)\le\hat{R}_S(h)+1+\dots$, vuoto. Lo stesso
-vale per il bound VC, perché una famiglia che realizza tutte le etichettature
-di $m$ punti li frantuma, e ha quindi dimensione VC almeno $m$. La dimensione
-di un'architettura fissata resta finita per le attivazioni in uso (per le ReLU
-è $\Theta(WL\log W)$, con $W$ pesi e $L$ strati
-{cite}`bartlett2019nearly`; per la rete del blocco, $38\,410$ pesi su $300$
-esempi, è dell'ordine del milione), e il teorema fondamentale continua a
-valere: la famiglia è apprendibile, ma la garanzia chiede esempi in numero
-proporzionale alla dimensione, che supera già quelli a disposizione. E il punto
-decisivo non è che i bound siano larghi, ma che sono **gli stessi** per le
-etichette vere e per quelle casuali, perché dipendono solo da $\mathcal{H}$ e
-da $S$: non possono distinguere il caso in cui la rete generalizza da quello in
-cui non lo fa. Una spiegazione deve quindi dipendere dall'ipotesi $h_S$
-effettivamente trovata, cioè dall'algoritmo, o dalla distribuzione che ha
-prodotto le etichette.
+vale per il bound VC, perché una famiglia che realizza tutte le etichettature di
+$m$ punti li frantuma, e ha quindi dimensione VC almeno $m$. La dimensione di
+un'architettura fissata resta finita per le attivazioni in uso (per le ReLU è al
+più dell'ordine di $WL\log W$, con $W$ pesi e $L$ strati, e ci sono architetture
+che arrivano a $WL\log(W/L)$ {cite}`bartlett2019nearly`; per la rete del blocco,
+$38\,410$ pesi in $L=2$ strati su $300$ esempi, $WL\log_2 W$ vale circa un
+milione, costanti a parte), e il teorema fondamentale continua a valere: la
+famiglia è apprendibile, ma la garanzia chiede esempi in numero proporzionale
+alla dimensione, che supera già quelli a disposizione. E il punto decisivo non è
+che i bound siano larghi, ma che sono **gli stessi** per le etichette vere e per
+quelle casuali, perché dipendono solo da $\mathcal{H}$ e da $S$: non possono
+distinguere il caso in cui la rete generalizza da quello in cui non lo fa. Una
+spiegazione deve quindi dipendere dall'ipotesi $h_S$ effettivamente trovata,
+cioè dall'algoritmo, o dalla distribuzione che ha prodotto le etichette.
 
 `````
 
-Il blocco rifà l'esperimento in piccolo, con una rete a un solo strato
-nascosto di 512 unità (il modello del {doc}`capitolo sulle reti neurali
-</RetiNeurali/overview>`, qui preso già fatto dalla libreria) su trecento
-cifre scritte a mano, e la addestra finché non indovina tutti gli esempi. Lo fa
-con le etichette vere, con le stesse etichette rimescolate, con etichette
-scelte sbagliate apposta, e infine con segni $\pm1$ tirati a sorte, che sono la
-prova delle monete in senso stretto.
+Il blocco rifà l'esperimento in piccolo, con una rete a un solo strato nascosto
+di 512 unità (il modello del {doc}`capitolo sulle reti neurali
+</RetiNeurali/overview>`, qui preso già fatto dalla libreria) su trecento cifre
+scritte a mano, e la addestra finché non indovina tutti gli esempi. Lo fa con le
+etichette vere, con le stesse etichette rimescolate, con etichette scelte
+sbagliate apposta, e infine con segni $\pm1$ tirati a sorte, da cui si stima la
+complessità di Rademacher della rete.
 
 ```python
 import numpy as np
@@ -149,18 +150,19 @@ etichette sempre sbagliate: addestramento 100.0%, prova 1.9%, 42 epoche
 correlazione con i segni casuali, tre sorteggi: [1. 1. 1.]
 ```
 
-Con le etichette vere la rete impara in sette epoche (un'epoca è un passaggio
-su tutti i trecento esempi) e sui dati nuovi indovina il $95{,}2\%$; con quelle
+Con le etichette vere la rete impara in sette epoche (un'epoca è un passaggio su
+tutti i trecento esempi) e sui dati nuovi indovina il $95{,}2\%$; con quelle
 rimescolate impara lo stesso tutto, in sei volte il tempo, e sui dati nuovi
 scende all’$11{,}8\%$, appena sopra il dieci per cento del caso perché
 l’$11{,}7\%$ delle etichette era rimasto giusto. Con le etichette sempre
 sbagliate scende all’$1{,}9\%$, sotto il caso. L'ultima riga è la complessità di
 Rademacher della rete su quei trecento esempi, stimata sui tre sorteggi: vale
-$1$, il massimo possibile, con le monete inseguite tutte, e a quel valore ogni
-garanzia che dipenda solo dalla famiglia diventa vuota. Per molte famiglie
-trovare la regola migliore su segni tirati a sorte è un conto intrattabile; per
-una famiglia così ricca è facile, perché la rete trova da sola una regola
-perfetta per ogni sorteggio, e il massimo è raggiunto.
+$1$, il massimo possibile, con i segni casuali inseguiti tutti, e a quel valore
+ogni garanzia che dipenda solo dalla famiglia diventa vuota. Per molte famiglie
+trovare la regola migliore su segni tirati a sorte è un conto intrattabile, cioè
+troppo lungo per farlo davvero; per una famiglia così ricca è facile, perché la
+rete trova da sola una regola perfetta per ogni sorteggio, e il massimo è
+raggiunto.
 
 ## Dove cercare la spiegazione
 
@@ -171,14 +173,18 @@ cui l'algoritmo ci arriva, e nessuna è ancora una risposta completa.
 
 `````{tab} Elementare
 
-Una pista guarda la fatica. Per il foglio vero allo studente bastano
-poche regole semplici, perché le risposte giuste seguono un criterio; per il
-foglio rimescolato deve ricordare trecento risposte una per una. Misurare
-quanto è complicata la soluzione che ha trovato, e non quanto avrebbe potuto
-esserlo, distingue i due casi. È l'idea della strada larga delle SVM portata
-dentro una rete: là contava quanto la strada fosse larga rispetto all'ingombro
-dei punti, qui quanto i pesi della rete siano piccoli rispetto al margine con
-cui separa le risposte, e la misura è più grande per le risposte a caso.
+Una pista guarda la fatica. Per il foglio vero allo studente bastano poche
+regole semplici, perché le risposte giuste seguono un criterio; per il foglio
+rimescolato deve ricordare trecento risposte una per una. Misurare quanto è
+complicata la soluzione che ha trovato, e non quanto avrebbe potuto esserlo,
+distingue i due casi. È l'idea della strada larga delle SVM portata dentro una
+rete. La rete dà un punteggio a ogni risposta possibile, e su una domanda il suo
+margine è di quanto la risposta giusta stacca la migliore delle sbagliate. Nella
+SVM contava la larghezza della strada rispetto all'ingombro dei punti; qui conta
+quel distacco rispetto a quanto sono grandi i numeri che l'addestramento regola
+dentro la rete, i pesi, che possono gonfiare ogni distacco. Per staccare allo
+stesso modo le risposte a caso i pesi devono crescere molto di più, e la misura
+viene più grande.
 
 Un'altra guarda quanto la preparazione è salda. Se si prende lo studente e lo
 si confonde un po', cambiandogli qualche ricordo a caso, e continua ad andare
@@ -203,37 +209,55 @@ congettura con buone prove, non una cosa dimostrata.
 
 **Bound di norma e di margine.** Bartlett, Foster e Telgarsky
 {cite}`bartlett2017spectrally` dimostrano un bound di generalizzazione
-multiclasse che scala con la *complessità spettrale* della rete normalizzata
-per il margine: il prodotto delle norme spettrali delle matrici dei pesi (una
+multiclasse che scala con la *complessità spettrale* della rete normalizzata per
+il margine: il prodotto delle norme spettrali delle matrici dei pesi (una
 costante di Lipschitz della rete) per un fattore correttivo, diviso per il
 margine di classificazione. È la generalizzazione del bound di margine delle
 funzioni lineari nella linea aperta da Bartlett nel 1998, quando mostrò che a
-contare è la taglia dei pesi e non quella della rete
-{cite}`bartlett1998sample`, e ha la proprietà che ai bound visti fin qui
-mancava, perché dipende dai pesi trovati.
-Sperimentalmente, su AlexNet addestrata con SGD su MNIST e CIFAR-10, il bound,
-le costanti di Lipschitz e l'eccesso di rischio sono direttamente correlati, e
-con etichette casuali crescono tutti: SGD sceglie predittori la cui
-complessità scala con la difficoltà del compito. Il valore numerico del bound
-resta però lontano dall'errore osservato.
+contare è la taglia dei pesi e non quella della rete {cite}`bartlett1998sample`,
+e ha la proprietà che ai bound visti fin qui mancava, perché dipende dai pesi
+trovati. Sperimentalmente, su AlexNet addestrata con SGD su MNIST e CIFAR-10, il
+bound, le costanti di Lipschitz e l'eccesso di rischio sono direttamente
+correlati, e con etichette casuali crescono tutti, il che suggerisce che SGD
+scelga predittori la cui complessità cresce con la difficoltà del compito. Il
+valore numerico del bound resta però lontano dall'errore osservato.
 
 **PAC-Bayes.** Invece di una sola ipotesi si considera una distribuzione $Q$
 sui pesi, e il bound PAC-Bayes, proposto da McAllester alla fine degli anni
-Novanta {cite}`mcallester1999some` e raffinato in molte varianti, controlla
-$\mathbb{E}_{h\sim Q}[R(h)]$ con $\mathbb{E}_{h\sim Q}[\hat{R}_S(h)]$ più un
-termine che cresce con la divergenza di Kullback-Leibler fra $Q$ e una
-distribuzione a priori fissata prima dei dati. Una rete i cui pesi si possono
-perturbare parecchio senza che l'errore empirico salga ammette una $Q$ larga e
-quindi un termine piccolo. Dziugaite e Roy {cite}`dziugaite2017computing`,
-ottimizzando direttamente il bound, hanno ottenuto il primo bound non vacuo per
-una rete profonda stocastica con molti più parametri che esempi. Su MNIST a due
-classi con etichette vere, per una rete con uno strato nascosto di seicento
-unità, l'errore garantito della rete stocastica è $0{,}161$, mentre sui dati di
-prova quella rete sbaglia il $3{,}4\%$ (e la rete deterministica da cui nasce
-l’$1{,}8\%$): non vacuo, e ancora parecchie volte sopra la realtà. Con le
-etichette casuali lo stesso bound vale $1{,}352$, cioè si rifiuta di garantire
-qualunque cosa, ed è il comportamento che ci si aspetta da una misura che
-dipende dall'ipotesi trovata.
+Novanta {cite}`mcallester1999some` e raffinato in molte varianti, controlla il
+rischio medio della rete stocastica con il suo rischio empirico medio. Nella
+forma che usano Dziugaite e Roy {cite}`dziugaite2017computing`, con probabilità
+almeno $1-\delta$, per ogni $Q$ insieme,
+
+$$
+\mathrm{kl}\Big(\mathbb{E}_{h\sim Q}\big[\hat{R}_S(h)\big]\,\Big\|\,
+\mathbb{E}_{h\sim Q}\big[R(h)\big]\Big)
+\le \frac{D_{KL}(Q\,\|\,P)+\log\frac{m}{\delta}}{m-1},
+$$
+
+dove $P$ è una distribuzione a priori fissata prima dei dati e
+$\mathrm{kl}(q\,\|\,p)$ la divergenza fra due Bernoulli di parametri $q$ e $p$.
+Per la disuguaglianza di Pinsker, $\mathrm{kl}(q\,\|\,p)\ge 2(q-p)^2$, ne
+discende la forma con la radice,
+
+$$
+\mathbb{E}_{h\sim Q}\big[R(h)\big]
+\le \mathbb{E}_{h\sim Q}\big[\hat{R}_S(h)\big]
++ \sqrt{\frac{D_{KL}(Q\,\|\,P)+\log\frac{m}{\delta}}{2(m-1)}} .
+$$
+
+Una rete i cui pesi si possono perturbare parecchio senza che l'errore empirico
+salga ammette una $Q$ larga e quindi un termine piccolo. Dziugaite e Roy,
+ottimizzando direttamente il bound e invertendo numericamente la forma con
+$\mathrm{kl}$, hanno ottenuto il primo bound non vacuo per una rete profonda
+stocastica con molti più parametri che esempi. Su MNIST a due classi con
+etichette vere, per una rete con uno strato nascosto di seicento unità, l'errore
+garantito della rete stocastica, con probabilità $0{,}965$, è $0{,}161$, mentre
+sui dati di prova quella rete sbaglia il $3{,}4\%$ (e la rete deterministica da
+cui nasce l’$1{,}8\%$): non vacuo, e ancora parecchie volte sopra la realtà. Con
+le etichette casuali lo stesso bound vale $1{,}352$, cioè si rifiuta di
+garantire qualunque cosa, ed è il comportamento che ci si aspetta da una misura
+che dipende dall'ipotesi trovata.
 
 **Il bias implicito dell'algoritmo.** La discesa del gradiente non esplora
 $\mathcal{H}$ in modo uniforme. Sui minimi quadrati sovraparametrizzati, partita
@@ -288,8 +312,9 @@ lo si continua a misurare su esempi tenuti da parte.
   VC è vuoto: i bound che dipendono solo da $\mathcal{H}$ e $S$ non
   distinguono etichette vere e casuali.
 - Piste dipendenti da $h_S$: norme spettrali normalizzate per il margine,
-  PAC-Bayes (primo bound non vacuo, $0{,}161$ contro un errore osservato di
-  pochi punti), bias implicito della discesa del gradiente; nessuna predice
+  PAC-Bayes (primo bound non vacuo, $0{,}161$ con probabilità $0{,}965$,
+  contro un errore osservato di pochi punti), bias implicito della discesa del
+  gradiente; nessuna predice
   ancora l'errore con precisione.
 ```
 `````

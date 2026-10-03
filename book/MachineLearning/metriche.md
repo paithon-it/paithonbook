@@ -92,20 +92,14 @@ il senso: sulla diagonale le risposte giuste, fuori gli errori.
 
 ## Perché l'accuratezza inganna
 
-Torniamo al modello che dice sempre "sano". Su 100 pazienti, 99 sani e 1
-malato, fa $\text{VN}=99$, $\text{FN}=1$, e $\text{VP}=\text{FP}=0$:
-accuratezza del 99%, eppure zero malati trovati. Quando le classi sono
-sbilanciate (una molto più frequente dell'altra), l'accuratezza premia chi
-si limita a predire sempre la classe maggioritaria. È il tranello più comune,
-e la ragione per cui non ci si ferma mai alla sola accuratezza. Servono
-metriche che guardino separatamente ai due tipi di errore.
-
-L'analogia che chiarisce la posta in gioco è una guardia notturna valutata
-sul numero di notti "gestite correttamente". Se i furti avvengono una notte su
-cento, la guardia che dorme sempre ottiene una valutazione del $99\%$:
-identica sulla carta a quella di un collega scrupoloso, e del tutto inutile
-nell'unica notte che conta. Il valore della guardia sta tutto nel caso raro;
-la metrica lo pesa come un centesimo del totale.
+Torniamo al modello che dice sempre "sano". Su 100 pazienti, 99 sani e 1 malato,
+fa $\text{VN}=99$, $\text{FN}=1$, e $\text{VP}=\text{FP}=0$: accuratezza del
+99%, eppure zero malati trovati. Quando le classi sono sbilanciate (una molto
+più frequente dell'altra), l'accuratezza premia chi si limita a predire sempre
+la classe maggioritaria. È il tranello più comune: l'accuratezza pesa il caso
+raro per la sua frequenza, cioè come un centesimo del totale, anche quando è il
+solo che interessa. Servono metriche che guardino separatamente ai due tipi di
+errore.
 
 ## Precision e recall: due domande diverse
 
@@ -128,13 +122,12 @@ azzecca quasi sempre, mentre parecchi malati escono dall'ambulatorio senza che
 nessuno si sia accorto di niente. Sono i due piatti di una bilancia, e a
 spostarla basta un numero.
 
-La **F1** è il voto unico che tiene conto di tutti e due i piatti, e resta
-alto solo quando lo sono entrambi. I due numeri devono uscire dallo stesso
-modello sulle stesse prove, e l'otto su dieci del cestino e il quindici su
-venti dell'ambulatorio vengono da macchine diverse e non si mescolano.
-Prendiamo un filtro prudente, che azzecca nove volte su dieci quando cestina
-ma di spam ne pesca solo quattro su dieci, cioè precision $0{,}9$ e recall
-$0{,}4$. La sua F1 vale $0{,}55$. Non $0{,}65$, che è la media dei due, ma
+La **F1** è il voto unico che tiene conto di tutti e due i piatti, e resta alto
+solo quando lo sono entrambi. I due numeri devono uscire dallo stesso modello
+sulle stesse prove. Prendiamo un filtro prudente, che azzecca nove volte su
+dieci quando cestina ma di spam ne pesca solo quattro su dieci, cioè precision
+$0{,}9$ e recall $0{,}4$. La sua F1 vale $0{,}55$ (due volte il prodotto diviso
+la somma: $0{,}72$ diviso $1{,}3$). Non $0{,}65$, che è la media dei due, ma
 molto più vicina al piatto peggiore. Se la recall crollasse a $0{,}1$, la F1
 crollerebbe con lei anche con la precision al massimo.
 
@@ -398,12 +391,14 @@ anche lontano dall’esempio.
 
 ## La curva ROC e l'AUC
 
-Ecco il numero che sposta la bilancia. Come si è visto parlando di regressione
-logistica, molti classificatori non restituiscono un secco «sì/no» ma una
-probabilità, un numero fra $0$ e $1$; siamo noi a fissare la soglia oltre
-la quale dichiararlo positivo, e per abitudine si parte da $0{,}5$. Cambiare
-soglia cambia l'equilibrio tra i due errori, senza toccare il modello, e la
-curva ROC li mostra tutti in un colpo solo.
+Precision e recall dipendono da un numero che il modello non contiene: la
+soglia. Come si è visto parlando di regressione logistica, molti classificatori
+non restituiscono un secco «sì/no» ma una probabilità, un numero fra $0$ e $1$;
+siamo noi a fissare la soglia oltre la quale dichiararlo positivo, e per
+abitudine si parte da $0{,}5$. Cambiare soglia cambia l'equilibrio tra i due
+errori senza toccare il modello, e la curva ROC (dall'inglese *receiver
+operating characteristic*, un nome ereditato dai radar) li mostra tutti in un
+colpo solo.
 
 ```{figure} ../figures/roc-auc-valutare-a-ogni-soglia.svg
 :name: fig-curva-roc
@@ -500,10 +495,10 @@ limite, perché la precision invece ne dipende, $\text{precision} =
 prevalenza: con $\pi = 0{,}01$, un FPR del $5\%$ a recall piena vuol dire una
 precision di $0{,}17$. Per questo su dati molto sbilanciati si guarda la curva
 *precision–recall* e il suo riassunto, l’*average precision*, $\text{AP} =
-\sum_n \big(\text{Rec}_n - \text{Rec}_{n-1}\big)\,\text{Prec}_n$, con
-$\text{Prec}_n$ e $\text{Rec}_n$ precision e recall alla $n$-esima soglia (è
-l’`average_precision_score` di scikit-learn); più alta è meglio, e il termine
-di paragone è la prevalenza e non $0{,}5$, perché un modello che tira a caso fa
+\sum_t \big(\text{Rec}_t - \text{Rec}_{t-1}\big)\,\text{Prec}_t$, con
+$\text{Prec}_t$ e $\text{Rec}_t$ precision e recall alla $t$-esima soglia (è
+l’`average_precision_score` di scikit-learn); più alta è meglio, e il termine di
+paragone è la prevalenza e non $0{,}5$, perché un modello che tira a caso fa
 $\text{AP} \approx \pi$.
 
 `````
@@ -524,70 +519,98 @@ gli era stata chiesta di trovare.
 ```
 
 {numref}`fig-classi-sbilanciate` rende visibile perché l'accuratezza non sia
-sbagliata, ma inservibile qui: misura una media su cento casi, mentre il
-valore del modello si gioca tutto su uno. Le metriche delle pagine precedenti
-servivano proprio a guardare quel punto invece della media; ora la domanda
-diventa che cosa farci. Ci sono quattro leve, e conviene provarle in
-quest'ordine, perché è l'ordine che va dalla più economica alla più invasiva.
+sbagliata, ma inservibile qui: misura una media su cento casi, mentre il valore
+del modello si gioca tutto su uno. Le metriche delle pagine precedenti servivano
+proprio a guardare quel punto invece della media; ora la domanda diventa che
+cosa farci. Ci sono quattro leve, in ordine dalla più economica alla più
+invasiva.
 
 `````{tab} Elementare
 
 Sul tavolo di chi dà la caccia alle frodi arrivano ogni mattina le operazioni
-che il modello ha segnalato, e vanno aperte a una a una.
+che il modello ha segnalato, e l'analista le apre a una a una.
 
 La prima leva costa zero e cambia solo il voto: al posto dell'accuratezza, la
 recall, la F1 e soprattutto la curva **precision-recall**, che si costruisce
-come la ROC spostando la soglia, ma i due numeri segnati sono la recall e la
-precision. Con sbilanciamenti estremi dice di più, e si capisce guardando quel
-tavolo. La ROC conta i falsi allarmi in rapporto a tutti i conti tranquilli,
-che sono novantanove su cento, e mille segnalazioni a vuoto su centomila le
-sembrano una quisquilia; sul tavolo sono mille pratiche da aprire a mano. La
-precision le conta rispetto alle sole operazioni segnalate, e il disastro si
-vede.
+come la ROC spostando la soglia, ma segna la recall e la precision. Con
+sbilanciamenti estremi dice di più, e lo si capisce dal tavolo. La ROC conta i
+falsi allarmi rispetto a tutti i conti tranquilli, che sono novantanove su
+cento, e mille segnalazioni a vuoto su centomila le sembrano una quisquilia; per
+l'analista sono mille pratiche da aprire a mano. La precision le conta rispetto
+alle sole operazioni segnalate, e il disastro si vede.
 
 Poi c'è la soglia. Il modello non risponde «frode» o «niente», dà una
 probabilità, e quel $0{,}5$ da cui si parte per abitudine non ha niente di
-sacro. Portarlo a $0{,}2$ vuol dire segnalare anche i casi dubbi, e allora il
-tavolo si riempie, la recall sale e la precision scende. Dove metterlo dipende
-da quanto costa una pratica aperta per niente rispetto a una frode che passa,
-ed è una decisione di chi dirige la banca, non dello statistico. E il conto si
-fa davvero. Se una frode mancata costa cento volte un falso allarme, la soglia
-scende attorno a un sospetto su cento ($0{,}01$), lontanissima dal mezzo di
-partenza. Regge finché rispondere giusto non costa e non rende niente, e allo
-sportello non è mai così, perché un prestito concesso a chi poi restituisce
-rende, e la visita fatta a un sano si paga comunque. Allora nel conto entra
-anche la differenza fra il guadagno di chi azzecca e la perdita di chi
-sbaglia.
+sacro. Se lo si porta a $0{,}2$ arrivano anche i casi dubbi: il tavolo si
+riempie, la recall sale e la precision scende. Dove metterlo lo decide chi
+dirige la banca, non lo statistico, perché dipende da quanto costa una pratica
+aperta per niente rispetto a una frode che passa, e il conto si fa davvero. Se
+una frode mancata costa cento volte un falso allarme, aprire una pratica
+sospetta al $p$ costa un falso allarme quasi sempre, e lasciarla passare costa
+cento falsi allarmi con probabilità $p$: i due conti si pareggiano a
+$p = 1/101$, e la soglia scende attorno a un sospetto su cento ($0{,}01$),
+lontanissima dal mezzo di partenza. Regge finché rispondere giusto non costa e
+non rende niente, e allo sportello non è mai così: un prestito concesso a chi
+poi restituisce rende, e la visita fatta a un sano si paga comunque. Allora nel
+conto entra anche la differenza fra il guadagno di chi azzecca e la perdita di
+chi sbaglia.
 
-La terza leva è il peso delle classi. Addestrare vuol dire far scendere un
-numero, quello che conta quanto il modello sbaglia. Dire che una frode mancata
-conta cento volte tanto cambia quel conteggio, e con esso cosa al modello
-conviene fare. In scikit-learn si scrive `class_weight="balanced"`, ed è
-spesso la prima cosa da provare. Il prezzo lo pagano le percentuali che il
-modello annuncia, gonfiate tutte insieme: dove diceva «quattro su cento»
-arriva a «venticinque su cento», e le frodi nel frattempo non sono aumentate.
-Chi le legge come probabilità vere si sbaglia, e lo stesso gonfiaggio, tale e
-quale, arriva anche duplicando i casi rari.
+La terza leva è il peso delle classi. Mentre impara, il modello fa scendere un
+numero che conta quanto sbaglia; dirgli che una frode mancata conta cento volte
+tanto cambia quel numero, e con esso quello che gli conviene fare. In
+scikit-learn si scrive `class_weight="balanced"`, ed è la più comoda fra le
+correzioni che toccano l'addestramento. Il prezzo arriva sul tavolo, dove le
+percentuali stampate sulle pratiche si gonfiano tutte insieme: al posto di
+«quattro su cento» compare «venticinque su cento», e le frodi nel frattempo non
+sono aumentate. Chi le legge come probabilità vere si sbaglia, e la soglia di un
+sospetto su cento, messa su percentuali gonfiate, cade nel posto sbagliato. Lo
+stesso gonfiaggio, tale e quale, arriva anche duplicando i casi rari.
 
-Solo come quarta mossa si toccano i dati. L’*oversampling* aumenta il numero
-di esempi rari, duplicandoli oppure inventandone di nuovi ma verosimili. La
-ricetta più nota si chiama **SMOTE** (è il nome di un metodo, non di un
-programma): per fabbricare una frode nuova ne prende due che si somigliano e
-ne costruisce una intermedia, come se fra due clienti di 40 e 50 anni ne
-spuntasse uno di 45, con gli altri valori a metà strada (si dice
-*interpolare*). L’*undersampling* fa il contrario, scarta operazioni della
-classe frequente e butta via informazione.
+Solo come quarta mossa si toccano i dati. L’*oversampling* aumenta il numero di
+esempi rari, duplicandoli oppure inventandone di nuovi ma verosimili. La ricetta
+più nota si chiama **SMOTE** (è il nome di un metodo, non di un programma): per
+fabbricare una frode nuova ne prende due che si somigliano e ne costruisce una
+in un punto a caso fra le due: fra due clienti di 40 e 50 anni ne può spuntare
+uno di 43, con gli altri valori spostati della stessa frazione del tragitto (si
+dice *interpolare*). L’*undersampling* fa il contrario: scarta operazioni della
+classe frequente, e butta via informazione.
 
-Sui casi fabbricati c'è un ordine da rispettare, o si rovina tutto il resto.
-Si aggiungono dopo aver messo da parte le operazioni con cui si darà il voto,
-mai prima. Altrimenti le copie di una stessa frode finiscono metà fra gli
-esercizi e metà fra le domande d'esame, e all'esame il modello ritrova facce
-già viste e prende un voto che non ha meritato. Il guasto non lascia tracce,
-perché i conti tornano, e tornano troppo belli.
+Le frodi fabbricate si aggiungono dopo aver messo da parte le operazioni con cui
+si darà il voto, mai prima. Altrimenti le copie di una stessa frode finiscono
+metà fra gli esercizi e metà fra le domande d'esame, e all'esame il modello
+ritrova facce già viste e prende un voto che non ha meritato. Il guasto non
+lascia tracce, perché i conti tornano, e tornano troppo belli.
 
 `````
 
 `````{tab} Superiore
+
+La prima leva è la metrica, e non costa niente. Il tasso di falsi positivi
+$\text{FPR} = \text{FP}/(\text{FP} + \text{TN})$ ha al denominatore tutti i
+negativi, e se questi sono molti più dei positivi resta piccolo anche quando i
+falsi positivi superano di molto i veri: la curva ROC si schiaccia contro
+l'asse verticale e sembra eccellente. La precision,
+$\text{TP}/(\text{TP} + \text{FP})$, mette i falsi positivi a confronto con i
+soli casi segnalati e dipende dalla prevalenza, che TPR e FPR ignorano; per
+questo con una classe rara la curva precision-recall e l'AP dicono di più.
+Saito e Rehmsmeier lo mostrano su classificatori simulati: rendendo
+sbilanciato il campione, la ROC e la sua AUC restano identiche, mentre la curva
+precision-recall si abbassa {cite}`saito2015precision`.
+
+Fra i ricampionamenti, SMOTE {cite}`chawla2002smote` fabbrica esempi invece di
+copiarli. Parte da un esempio $\mathbf{x}_i$ della classe rara, sceglie a caso
+uno dei suoi $k$ vicini più prossimi nella stessa classe,
+$\mathbf{x}_{\text{nn}}$, e genera
+
+$$
+\tilde{\mathbf{x}} = \mathbf{x}_i + \lambda\,(\mathbf{x}_{\text{nn}} - \mathbf{x}_i),
+$$
+
+con $\lambda$ estratto uniformemente fra $0$ e $1$, lo stesso per tutte le
+coordinate: un punto a caso sul segmento che unisce i due esempi. Le copie
+esatte stringono la regione di decisione della classe rara attorno ai punti
+già visti, che il modello impara a memoria; i punti interpolati la allargano
+allo spazio fra un esempio raro e l'altro.
 
 Sul ricampionamento vale un'avvertenza che si dimentica spesso: va applicato
 solo al training set, dentro la cross-validation. Ricampionare prima dello
@@ -602,32 +625,33 @@ scikit-learn, da sola, non ammette passi che cambiano il numero di esempi.
 Un secondo punto: il ricampionamento distorce le probabilità predette. Un
 modello addestrato su dati riequilibrati stima $P(y=1\mid x)$ rispetto alla
 distribuzione riequilibrata, non a quella reale. La tentazione, a questo punto,
-è di cavarsela preferendo i pesi di classe al ricampionamento, e non funziona:
-i pesi distorcono allo stesso modo, perché fanno la stessa cosa (contare la
-classe rara più di quanto sia). Su una regressione logistica addestrata su
-`make_classification(n_samples=5000, n_features=10, n_informative=5,
-weights=[0.966], flip_y=0.01, random_state=0)`, che dà una prevalenza reale
-del $3{,}9\%$, la probabilità media prevista vale $0{,}039$
-lasciando il modello com'è (cioè esattamente la prevalenza, com'è giusto che
-sia), $0{,}252$
-con `class_weight="balanced"` e $0{,}253$ duplicando i positivi fino a
-pareggiare le due classi: le due correzioni
-sono indistinguibili. Se servono probabilità calibrate (per una soglia basata
-sui costi, o per combinarle con altre stime) va ricalibrato in ogni caso; in
-alternativa si lascia il modello sbilanciato com'è e si sposta la soglia
-secondo i costi.
+è di cavarsela preferendo i pesi di classe al ricampionamento, e non funziona: i
+pesi distorcono allo stesso modo, perché fanno la stessa cosa (contare la classe
+rara più di quanto sia). Lo mostra la tabella «come esce» della sezione sulla
+calibrazione: con `class_weight="balanced"` la probabilità media prevista è del
+$28{,}3\%$ contro una prevalenza del $4{,}2\%$, mentre un modello lasciato com'è
+la riproduce in media. Duplicare i positivi fino a pareggiare le due classi
+gonfia le probabilità allo stesso modo, e le due correzioni sono
+indistinguibili. Se servono probabilità calibrate (per una soglia basata sui
+costi, o per combinarle con altre stime) va ricalibrato in ogni caso; in
+alternativa si lascia il modello sbilanciato com'è e si sposta la soglia secondo
+i costi.
 
-Infine il criterio decisionale corretto quando i costi sono noti: non "massimizza
-F1" ma minimizza il costo atteso. Con $c_{\text{FN}}$ e $c_{\text{FP}}$ i costi
-dei due errori, e posto a zero il costo delle due decisioni corrette, la
-soglia ottimale è
+Infine il criterio decisionale corretto quando i costi sono noti: non
+«massimizza F1» ma minimizza il costo atteso. Con $c_{\text{FN}}$ e
+$c_{\text{FP}}$ i costi dei due errori, e posto a zero il costo delle due
+decisioni corrette, prevedere «positivo» costa in media $(1-\hat
+p)\,c_{\text{FP}}$ e prevedere «negativo» costa $\hat p\,c_{\text{FN}}$, con
+$\hat p$ la probabilità vera di essere positivo. Si prevede «positivo» quando il
+primo costo è minore del secondo, cioè per $\hat p > \tau^\star$ con
 
 $$
 \tau^\star = \frac{c_{\text{FP}}}{c_{\text{FP}} + c_{\text{FN}}} ,
 $$
 
-che per $c_{\text{FN}} = 100\,c_{\text{FP}}$ dà $\tau^\star \approx 0{,}01$:
-molto lontano dal $0{,}5$ di default.
+valida solo se $\hat p$ è calibrata (un modello ricampionato o pesato, come
+sopra, non lo è). Per $c_{\text{FN}} = 100\,c_{\text{FP}}$ dà $\tau^\star
+\approx 0{,}01$: molto lontano dal $0{,}5$ di default.
 
 Quell'ipotesi va detta, perché nei domini in cui la soglia serve davvero è
 quasi sempre falsa: un fido concesso a chi restituisce *rende*, uno screening
@@ -693,13 +717,13 @@ stesse su cui ha imparato, gli si starebbe chiedendo di correggere il proprio
 compito con le risposte in mano), si guarda cassetto per cassetto quanto
 sbaglia, e si scrive la regola che porta il detto sul vero: dove dice
 novantaquattro, il cassetto di sopra dice che le frodi erano sessantuno, e
-sessantuno si scrive. Le forme di quella tavola sono due. La prima è una
-curva liscia con due manopole, una che allarga o stringe la scala e una che
-la sposta tutta in su o in giù (e ne esiste una versione ridotta, con la sola
-prima manopola); la seconda è una scaletta libera di salire come vuole,
-purché salga sempre. La scaletta si adatta meglio, ma con poche operazioni su
-cui impararla copia le loro coincidenze invece della regola, e allora conviene
-la curva.
+sessantuno si scrive. Le forme di quella tavola sono due. La prima è una curva
+liscia con due numeri da imparare, uno che allarga o stringe la scala e uno che
+la sposta tutta in su o in giù (e ne esiste una versione ridotta, con il solo
+primo numero); la seconda è una scaletta libera di salire come vuole, purché
+salga sempre. La scaletta si adatta meglio, ma con poche operazioni su cui
+impararla copia le loro coincidenze invece della regola, e allora conviene la
+curva.
 
 Il pregio della conversione è che non scavalca: quello che stava sopra resta
 sopra, quindi l'operazione più sospetta di tutte resta la più sospetta.
@@ -741,13 +765,13 @@ centro della valutazione di un previsore accanto alla capacità di discriminare
 calibrazione**
 
 $$
-\mathrm{ECE} = \sum_{b=1}^{M} \frac{n_b}{n}\,\big|\bar{p}_b - \bar{y}_b\big| ,
+\mathrm{ECE} = \sum_{b=1}^{M} \frac{m_b}{m}\,\big|\bar{p}_b - \bar{y}_b\big| ,
 $$
 
-dove $n_b$ sono le osservazioni cadute nel $b$-esimo intervallo e $n$ il
-totale. La formula è quella del binning bayesiano {cite}`naeini2015obtaining`,
-che però partiziona a massa uguale; a fette uguali della scala, come qui e come
-nella maggior parte del deep learning, la convenzione è quella di Guo e colleghi
+dove $m_b$ sono le osservazioni cadute nel $b$-esimo intervallo e $m$ il totale.
+La formula è quella del binning bayesiano {cite}`naeini2015obtaining`, che però
+partiziona a massa uguale; a fette uguali della scala, come qui e come nella
+maggior parte del deep learning, la convenzione è quella di Guo e colleghi
 {cite}`guo2017calibration`. Ed è una stima distorta in due versi opposti: con
 pochi casi per intervallo il rumore di conteggio la fa crescere anche su un
 modello impeccabile, mentre con intervalli larghi la media dentro l'intervallo
@@ -756,19 +780,17 @@ uguali a masse uguali, il numero cambia: va dichiarato con la sua partizione o
 non è confrontabile.
 
 Le tre ricalibrazioni post-hoc sono tutte trasformazioni monotone del punteggio
-$f(\mathbf{x})$, stimate su un insieme indipendente da quello di
-addestramento. Lo **scaling di Platt** {cite}`platt1999probabilistic` adatta
-una sigmoide $\sigma(a f + b)$ per massima verosimiglianza su bersagli
-leggermente ammorbiditi ($(N_++1)/(N_++2)$ al posto di $1$, e simmetricamente
-per gli zeri), che sono il freno al sovradattamento incorporato nel metodo: due
-parametri.
-Lo **scaling di temperatura** {cite}`guo2017calibration` ne fissa uno,
-$\sigma(f / T)$, e si estende al caso multiclasse dividendo per lo stesso $T$
-tutti i punteggi che entrano nella softmax (i *logit*): è la ricetta oggi più
-usata sulle reti profonde. Non può correggere uno spostamento sistematico,
-perché $\sigma(0/T) = 1/2$ per ogni $T>0$: il centro della scala è un punto
-fisso che nessuna temperatura sposta, e quella manopola stringe o allarga
-soltanto. La
+$f(\mathbf{x})$, stimate su un insieme indipendente da quello di addestramento.
+Lo **scaling di Platt** {cite}`platt1999probabilistic` adatta una sigmoide
+$\sigma(a f + b)$ per massima verosimiglianza su bersagli leggermente
+ammorbiditi ($(N_++1)/(N_++2)$ al posto di $1$, e simmetricamente per gli zeri),
+che sono il freno al sovradattamento incorporato nel metodo: due parametri. Lo
+**scaling di temperatura** {cite}`guo2017calibration` ne fissa uno, $\sigma(f /
+T)$, e si estende al caso multiclasse dividendo per lo stesso $T$ tutti i
+punteggi che entrano nella softmax (i *logit*): è la ricetta oggi più usata
+sulle reti profonde. Non può correggere uno spostamento sistematico, perché
+$\sigma(0/T) = 1/2$ per ogni $T>0$: il centro della scala è un punto fisso che
+nessuna temperatura sposta, e quel parametro stringe o allarga soltanto. La
 **regressione isotonica** {cite}`zadrozny2002transforming` cerca invece una
 qualunque funzione non decrescente, con l'algoritmo *pool adjacent violators*:
 più espressiva, e più incline a sovradattarsi quando i dati di calibrazione
@@ -808,17 +830,18 @@ coppia sui punteggi propri per le previsioni con banda.
 Quel criterio si misura con una **regola di punteggio propria**, cioè una
 perdita il cui valore atteso è minimo solo quando la probabilità dichiarata è
 quella vera. Le due classiche sono la log-loss,
-$-\frac{1}{n}\sum_i\big[y_i\log\hat{p}_i + (1-y_i)\log(1-\hat{p}_i)\big]$, e il
-**punteggio di Brier** {cite}`brier1950verification`,
-$\mathrm{BS} = \frac{1}{n}\sum_i(\hat{p}_i - y_i)^2$: per tutte e due più basso
-è meglio, e premiano insieme calibrazione e finezza, che l'ECE e l'AUC
-misurano separatamente. Raggruppando le previsioni negli stessi $M$ intervalli
-dell'ECE, Brier si scompone {cite}`murphy1973new` in
+$-\frac{1}{m}\sum_i\big[y_i\log\hat{p}_i + (1-y_i)\log(1-\hat{p}_i)\big]$, e il
+**punteggio di Brier** {cite}`brier1950verification`, $\mathrm{BS} =
+\frac{1}{m}\sum_i(\hat{p}_i - y_i)^2$: per tutte e due più basso è meglio, e
+premiano insieme calibrazione e finezza, che l'ECE e l'AUC misurano
+separatamente. Raggruppando le previsioni negli stessi $M$ intervalli dell'ECE,
+Brier si scompone {cite}`murphy1973new` in
 
 $$
-\mathrm{BS} \approx \underbrace{\sum_{b} \tfrac{n_b}{n}\big(\bar{p}_b - \bar{y}_b\big)^2}_{\text{affidabilità}}
-\;-\; \underbrace{\sum_{b} \tfrac{n_b}{n}\big(\bar{y}_b - \bar{y}\big)^2}_{\text{risoluzione}}
-\;+\; \underbrace{\bar{y}\,(1-\bar{y})}_{\text{incertezza}},
+\mathrm{BS} \approx \underbrace{\sum_{b} \tfrac{m_b}{m}\big(\bar{p}_b -
+\bar{y}_b\big)^2}_{\text{affidabilità}} \;-\; \underbrace{\sum_{b}
+\tfrac{m_b}{m}\big(\bar{y}_b - \bar{y}\big)^2}_{\text{risoluzione}} \;+\;
+\underbrace{\bar{y}\,(1-\bar{y})}_{\text{incertezza}},
 $$
 
 con $\bar{y}$ la frequenza di base, e l'uguaglianza è esatta quando dentro
@@ -831,10 +854,10 @@ modello onesto e inutile, scritto in una formula.
 `````
 
 La prova si fa sul modello riequilibrato con i pesi di classe, in tre passi:
-guardare i dieci cassetti, costruire la tavola di conversione su dati mai
-visti, riguardare i cassetti. Il voto unico, quello che pesa ogni cassetto per
-quanto è pieno, nelle tabelle si scrive `ECE`, dall'inglese *expected
-calibration error*.
+guardare i dieci intervalli di probabilità (*bin*), costruire la trasformazione
+di calibrazione su dati mai visti dal modello, riguardare gli intervalli. Il
+numero unico, che pesa ogni intervallo per quanti esempi contiene, nelle tabelle
+si scrive `ECE`, dall'inglese *expected calibration error*; più basso è meglio.
 
 ```python
 import numpy as np
@@ -844,8 +867,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.isotonic import IsotonicRegression
 from sklearn.metrics import roc_auc_score
 
-# la ricetta dei dati sbilanciati, con piu' esempi: la tavola di conversione
-# vuole un mazzo suo, che il modello non abbia mai visto
+# la ricetta dei dati sbilanciati, con più esempi: la trasformazione di
+# calibrazione vuole un insieme suo, che il modello non abbia mai visto
 X, y = make_classification(n_samples=30000, n_features=10, n_informative=5,
                            weights=[0.966], flip_y=0.01, random_state=0)
 X_tr, X_resto, y_tr, y_resto = train_test_split(X, y, test_size=0.5,
@@ -853,16 +876,16 @@ X_tr, X_resto, y_tr, y_resto = train_test_split(X, y, test_size=0.5,
 X_cal, X_te, y_cal, y_te = train_test_split(X_resto, y_resto, test_size=0.5,
                                             random_state=0)
 
-def cassetti(p, M=10):           # M cassetti, a fette uguali della scala
+def intervalli(p, M=10):         # M intervalli, a fette uguali della scala
     return np.clip((p * M).astype(int), 0, M - 1)
 
 def ece(p, y, M=10):             # distanza media fra il detto e il vero
-    c = cassetti(p, M)
+    c = intervalli(p, M)
     return sum((c == k).mean() * abs(p[c == k].mean() - y[c == k].mean())
                for k in range(M) if (c == k).any())
 
 def tabella(p, y, titolo):
-    c = cassetti(p)
+    c = intervalli(p)
     print(f"{titolo:>12s}   quante    detto     vero")
     for k in range(10):
         m = c == k
@@ -877,7 +900,7 @@ p_cal = modello.predict_proba(X_cal)[:, 1]
 p_te = modello.predict_proba(X_te)[:, 1]
 tabella(p_te, y_te, "come esce")
 
-# la tavola di conversione, imparata sul mazzo che il modello non ha visto
+# la trasformazione di calibrazione, imparata su dati che il modello non ha visto
 al_sicuro = lambda v: np.clip(v, 1e-12, 1 - 1e-12)
 logit = lambda v: np.log(al_sicuro(v) / (1 - al_sicuro(v)))
 L_cal, L_te = logit(p_cal).reshape(-1, 1), logit(p_te).reshape(-1, 1)
@@ -908,7 +931,7 @@ print(f"{'costante':12s} ECE {ece(costante, y_te):.4f}   "
 # e lo stesso conto con altre partizioni: il voto si muove, e l'ordine pure
 print()
 for M in (5, 10, 15, 30):
-    print(f"con {M:2d} cassetti   Platt {ece(convertite['Platt'], y_te, M):.4f}"
+    print(f"con {M:2d} intervalli   Platt {ece(convertite['Platt'], y_te, M):.4f}"
           f"   isotonica {ece(convertite['isotonica'], y_te, M):.4f}")
 ```
 
@@ -945,63 +968,62 @@ temperatura  ECE 0.2221   AUC 0.9064
 isotonica    ECE 0.0035   AUC 0.9050
 costante     ECE 0.0059   AUC 0.5000   dice 0.0364, vere 0.0423
 
-con  5 cassetti   Platt 0.0036   isotonica 0.0033
-con 10 cassetti   Platt 0.0047   isotonica 0.0035
-con 15 cassetti   Platt 0.0038   isotonica 0.0040
-con 30 cassetti   Platt 0.0063   isotonica 0.0055
+con  5 intervalli   Platt 0.0036   isotonica 0.0033
+con 10 intervalli   Platt 0.0047   isotonica 0.0035
+con 15 intervalli   Platt 0.0038   isotonica 0.0040
+con 30 intervalli   Platt 0.0063   isotonica 0.0055
 ```
 
-Nella prima tabella le due colonne non si somigliano in nessuno dei dieci
-cassetti, e sbagliano tutte nello stesso verso: dove il modello annuncia il
-$44{,}7\%$ le frodi sono l’$1{,}1\%$, dove annuncia il $93{,}7\%$ sono il
-$61{,}3\%$. In fondo, sul mazzo intero, promette il $28{,}3\%$ e di frodi ce
-n'è il $4{,}2\%$: è il gonfiaggio che i pesi di classe avevano introdotto.
+Nella prima tabella le due colonne non si somigliano in nessun intervallo, e
+sbagliano tutte nello stesso verso: dove il modello annuncia il $44{,}7\%$ le
+frodi sono l’$1{,}1\%$, dove annuncia il $93{,}7\%$ sono il $61{,}3\%$.
+Sull'intero campione promette il $28{,}3\%$ e di frodi ce n'è il $4{,}2\%$: è la
+distorsione che i pesi di classe avevano introdotto.
 
 Nella seconda le stesse due colonne si somigliano quasi ovunque, e il totale
-scende al $4{,}0\%$ contro un $4{,}2\%$ vero. Va guardata anche la colonna
-delle quantità, perché racconta l'altra metà: dopo la conversione i cassetti
-alti si svuotano (undici operazioni nel penultimo, una nell'ultimo), e lo
-scarto più grosso che resta è proprio nel penultimo, $0{,}842$ contro
-$0{,}636$, cioè su undici casi. Il voto scende da $0{,}2409$ a $0{,}0047$ con
-la curva liscia (il metodo di Platt) e a $0{,}0035$ con la scaletta (la
-regressione isotonica), e con la curva l'AUC resta $0{,}9064$, identica,
-perché una conversione che non scavalca non riordina niente; la scaletta ne
-perde un pelo ($0{,}9050$), ed è il prezzo dei pari merito che introduce.
+scende al $4{,}0\%$ contro un $4{,}2\%$ vero. Va guardata anche la colonna delle
+quantità, perché racconta l'altra metà: dopo la calibrazione gli intervalli alti
+si svuotano (undici operazioni nel penultimo, una nell'ultimo), e lo scarto più
+grosso che resta è proprio nel penultimo, $0{,}842$ contro $0{,}636$, cioè su
+undici casi. Il voto scende da $0{,}2409$ a $0{,}0047$ con il metodo di Platt
+(una curva liscia) e a $0{,}0035$ con la regressione isotonica (una funzione a
+gradini), e con Platt l'AUC resta $0{,}9064$, identica, perché una
+trasformazione crescente non riordina niente; l'isotonica ne perde un pelo
+($0{,}9050$), ed è il prezzo dei pari merito che introduce.
 
 Fra $0{,}0047$ e $0{,}0035$, però, non si può scegliere, e le ultime righe
 stampate dicono perché: rifacendo lo stesso conto con cinque, quindici e trenta
-cassetti i due voti si muovono entrambi, e a quindici l'ordine si rovescia
+intervalli i due voti si muovono entrambi, e a quindici l'ordine si rovescia
 ($0{,}0038$ contro $0{,}0040$). A questa distanza dallo zero il numero misura
 anche il rumore del conteggio, non solo il modello: sotto una certa soglia le
-due tavole di conversione vanno dichiarate pari, ed è la riserva che la
-formula si porta dietro.
+due calibrazioni vanno dichiarate pari, ed è la riserva che la formula dell'ECE
+si porta dietro.
 
-Due righe vanno lette insieme. La versione a una manopola sola, che si chiama
-scaling di temperatura ed è la ricetta standard sulle reti che il libro
-incontrerà a partire dal {doc}`capitolo sulle reti neurali
-</RetiNeurali/overview>`, qui non serve quasi a
-niente ($0{,}2221$ contro $0{,}2409$): stringe o allarga la sicurezza, mentre
-il guasto era uno spostamento di tutta la scala, e per raddrizzarlo serve la
-seconda manopola. E il modello costante, che risponde $0{,}0364$ a chiunque,
+Due righe vanno lette insieme. La versione con un parametro solo, che si chiama
+scaling di temperatura ed è la ricetta standard sulle reti del {doc}`capitolo
+sulle reti neurali </RetiNeurali/overview>` e dei successivi, qui non serve
+quasi a niente ($0{,}2221$ contro $0{,}2409$): stringe o allarga la sicurezza,
+mentre il guasto era uno spostamento di tutta la scala, e per raddrizzarlo serve
+il secondo parametro. E il modello costante, che risponde $0{,}0364$ a chiunque,
 prende $0{,}0059$, cioè è calibrato quaranta volte meglio del modello di
 partenza, con un'AUC di $0{,}5000$: non distingue niente. Quel $0{,}0059$, poi,
 è esattamente $0{,}0423 - 0{,}0364$, la distanza fra quello che dice e quello
-che c'è: con un cassetto solo il voto è quella sottrazione e nient'altro. Chi
-scegliesse un modello guardando la sola calibrazione sceglierebbe quello.
+che c'è: con un intervallo solo il voto è quella sottrazione e nient'altro. Sta
+nello stesso ordine di grandezza dei due modelli ricalibrati ($0{,}0047$ e
+$0{,}0035$), che il conto sopra dichiara indistinguibili fra loro: la sola
+calibrazione non separa il modello utile da quello che non distingue niente.
 
-Le probabilità, adesso, sono numeri di cui fidarsi, e servono a decidere: la
-soglia che pareggia i costi si può finalmente calcolare, perché quel conto
-presuppone che le probabilità dicano la verità. Resta da
-vedere che cosa cambia quando la risposta da prevedere non è un sì o un no ma
-un numero.
+Le probabilità ricalibrate si possono usare per decidere: la soglia che pareggia
+i costi si calcola, perché quel conto presuppone probabilità calibrate, entro il
+rumore di stima che la tabella ha appena mostrato. Resta da vedere che cosa
+cambia quando la risposta da prevedere non è un sì o un no ma un numero.
 
 ## Quando il target è un numero: le metriche di regressione
 
-Prima una parola sul nome che compare nel titolo: la risposta da prevedere si
-chiama spesso **target** (in inglese: il bersaglio). È la stessa cosa che
-finora abbiamo chiamato «etichetta» o «la risposta giusta», e nelle formule
-$y$: tre nomi per un oggetto solo, e conviene riconoscerli tutti perché il
-libro e le librerie li usano tutti.
+La risposta da prevedere si chiama spesso **target** (in inglese, il bersaglio):
+è il valore $y$ che il modello deve riprodurre, lo stesso oggetto che finora
+abbiamo chiamato «etichetta» o «risposta giusta», con un terzo nome che usano le
+librerie.
 
 Se il modello non classifica ma prevede una quantità continua (il prezzo di
 una casa, la temperatura di domani), la matrice di confusione non serve:
@@ -1022,13 +1044,16 @@ radice serve a rimettere il numero nell'unità di
 partenza, perché senza di lei avremmo euro al quadrato. Ecco perché MAE e RMSE
 si leggono entrambi in euro.
 
-L’**R²** invece è un voto, e si legge «erre quadro». Vale $1$ se la
-previsione è perfetta e $0$ se il modello non fa meglio di chi risponde sempre
-la media di tutti i valori; e sì, può anche scendere sotto zero, se fa
-peggio di così. Un esempio: se rispondendo sempre la media si sbaglia in media
-di $40\,000$ € al quadrato e il modello scende a $10\,000$, ne ha risparmiati
-tre quarti e l'R² vale $0{,}75$. È il vantaggio dell'R² sulle altre due: non è
-in euro, quindi si può confrontare fra problemi diversi.
+L’**R²** invece è un voto, e si legge «erre quadro». Vale $1$ se la previsione è
+perfetta e $0$ se il modello non fa meglio di chi risponde sempre la media di
+tutti i valori; e sì, può anche scendere sotto zero, se fa peggio di così. Un
+esempio: se rispondendo sempre la media si sbaglia in media di $40\,000$ € al
+quadrato e il modello scende a $10\,000$, ne ha risparmiati tre quarti e l'R²
+vale $0{,}75$. È il vantaggio dell'R² sulle altre due: non dipende dall'unità di
+misura, quindi non cambia passando dagli euro alle migliaia di euro. Dipende
+però da quanto sono sparpagliati i valori veri nei dati su cui si misura: lo
+stesso modello dà un R² alto su un campione molto vario e basso su uno poco
+vario, e per questo non serve a confrontare problemi diversi.
 
 `````
 
@@ -1046,7 +1071,42 @@ $$
 
 L'MSE eleva al quadrato gli scarti, quindi pesa di più gli errori grandi ed è
 più sensibile agli *outlier*; la radice (RMSE) riporta il valore nell'unità del
-target. Il coefficiente di determinazione $R^2$ confronta l'errore del
+target.
+
+MSE e MAE hanno minimizzatori diversi. Fra tutte le costanti $c$,
+$\sum_i(y_i-c)^2$ è minima nella media e $\sum_i|y_i-c|$ nella mediana; per
+un modello la perdita quadratica stima la media condizionata
+$\mathbb{E}[y\mid\mathbf{x}]$ e quella assoluta la mediana condizionata
+{cite}`hastie2009elements`. Per questo un solo valore anomalo sposta la retta ai
+minimi quadrati e lascia quasi ferma quella ai valori assoluti
+(`QuantileRegressor` con `quantile=0.5` e `alpha=0.0` minimizza la somma dei
+valori assoluti):
+
+```python
+import numpy as np
+from sklearn.linear_model import LinearRegression, QuantileRegressor
+
+rng = np.random.default_rng(0)
+x = np.linspace(0, 10, 50).reshape(-1, 1)
+y = 2 * x.ravel() + 1 + rng.normal(0, 1, 50)   # pendenza 2, intercetta 1
+y_anomalo = y.copy()
+y_anomalo[-1] += 40                            # un solo valore anomalo, in fondo
+
+print("                 minimi quadrati   valori assoluti")
+for nome, dati in (("senza anomalo", y), ("con un anomalo", y_anomalo)):
+    qua = LinearRegression().fit(x, dati)
+    ass = QuantileRegressor(quantile=0.5, alpha=0.0, solver="highs").fit(x, dati)
+    print(f"{nome:15s}  {qua.coef_[0]:.2f} x {qua.intercept_:+.2f}      "
+          f"{ass.coef_[0]:.2f} x {ass.intercept_:+.2f}")
+```
+
+```text
+                 minimi quadrati   valori assoluti
+senza anomalo    2.12 x +0.55      2.13 x +0.44
+con un anomalo   2.58 x -0.96      2.13 x +0.44
+```
+
+Il coefficiente di determinazione $R^2$ confronta l'errore del
 modello con quello del predittore banale "media di $y$":
 
 $$
@@ -1177,6 +1237,61 @@ precision, recall, F1 o AUC? E dei due errori, quale costa di più: un falso
 allarme o un caso mancato? La metrica è la definizione stessa di "successo" che
 diamo al modello, e la si sceglie prima di addestrarlo.
 
+Scelta la metrica, resta da dire quanto fidarsi del numero che dà.
+
+`````{tab} Elementare
+
+Un'accuratezza del novanta per cento misurata su mille esempi è un sondaggio
+fatto su mille persone, e come ogni sondaggio ha il suo margine: circa un punto
+in più o in meno, come racconta la {doc}`sezione su probabilità e statistica
+</Matematica/probabilita-statistica>`. Per la recall, però, gli intervistati
+sono soltanto i positivi. Se la cosa cercata è rara, uno su cento, su mille
+esempi i positivi sono una decina, e una recall di otto su dieci è un sondaggio
+su dieci persone: il valore vero può stare quasi ovunque fra la metà e quasi
+tutto. Il numero si scrive quindi con il suo margine, contato sui casi che
+contano davvero. E due modelli provati sugli stessi esempi si confrontano
+guardando gli esempi su cui si comportano in modo diverso, non mettendo uno
+accanto all'altro i due margini.
+
+`````
+
+`````{tab} Superiore
+
+Ogni metrica calcolata su un test finito è una stima e ha il suo margine.
+L'accuratezza su $m_{\text{te}}$ esempi indipendenti ha errore standard
+$\sqrt{p(1-p)/m_{\text{te}}}$, cioè circa un punto attorno al $90\%$ con
+mille esempi. Per la recall il campione che conta è il numero dei positivi,
+non quello degli esempi: con prevalenza dell’$1\%$ e mille esempi i positivi
+sono una decina, e una recall di $0{,}8$ ha errore standard
+$\sqrt{0{,}8\cdot 0{,}2/10}\approx 0{,}13$; a così pochi casi
+l'approssimazione normale non regge, e l'intervallo di Wilson di 8 su 10 va da
+$0{,}49$ a $0{,}94$. Il numero si riporta quindi con il suo intervallo (di
+Wilson per le proporzioni, per bootstrap per l'AUC e per le metriche composte
+come l’$F_1$), e due modelli valutati sullo stesso test si confrontano sugli
+esempi in cui si comportano in modo diverso, con il test di McNemar
+{cite}`mcnemar1947note`, non sovrapponendo i due intervalli.
+
+```python
+import numpy as np
+from scipy.stats import binomtest
+
+def errore_standard(p, n):    # deviazione standard di una proporzione su n esempi
+    return np.sqrt(p * (1 - p) / n)
+
+print(f"accuratezza 0,90 su 1000 esempi: {errore_standard(0.90, 1000):.4f}")
+print(f"recall 0,80 su 10 positivi:      {errore_standard(0.80, 10):.3f}")
+wilson = binomtest(8, 10).proportion_ci(method="wilson")
+print(f"intervallo di Wilson di 8 su 10: da {wilson.low:.2f} a {wilson.high:.2f}")
+```
+
+```text
+accuratezza 0,90 su 1000 esempi: 0.0095
+recall 0,80 su 10 positivi:      0.126
+intervallo di Wilson di 8 su 10: da 0.49 a 0.94
+```
+
+`````
+
 ## Dopo il numero: guardare dove sbaglia
 
 Una metrica riassume in un numero il comportamento del modello su migliaia di
@@ -1199,8 +1314,8 @@ un numero che dice quanto quella risposta è stata sbagliata, e basta metterli i
 fila dal peggiore. In cima si trovano le due cose di prima: esempi la cui
 etichetta è sbagliata (il modello ha ragione e il dato ha torto) ed esempi
 genuinamente difficili, che dicono dove serve altro materiale. E si trova
-qualcosa di più: sono pochissimi, e trovarli a mano sarebbe impossibile, mentre
-metterli in fila li porta tutti nelle prime posizioni.
+qualcosa di più: sono pochissimi, e trovarli a mano costerebbe ore, mentre la
+graduatoria li concentra in cima.
 
 `````
 
@@ -1208,12 +1323,11 @@ metterli in fila li porta tutti nelle prime posizioni.
 
 La quantità è la **perdita per esempio**, cioè il termine che la funzione di
 costo somma o media prima di restituire un numero solo. Per un classificatore
-probabilistico è la log-loss del singolo campione,
-$\ell_i = -\log \hat{p}_i(y_i)$, cioè la sorpresa del modello davanti
-all'etichetta vera: cresce senza limite man mano che la probabilità assegnata a
-quella classe tende a zero, e per questo pone in cima alla graduatoria gli
-esempi su cui il modello ha sbagliato con convinzione, che sono i soli
-informativi.
+probabilistico è la log-loss del singolo campione, $\ell_i = -\log
+\hat{p}_i(y_i)$, cioè la sorpresa del modello davanti all'etichetta vera: cresce
+senza limite man mano che la probabilità assegnata a quella classe tende a zero,
+e per questo pone in cima alla graduatoria gli esempi su cui il modello ha
+sbagliato con convinzione.
 
 L'ordinamento per $\ell_i$ decrescente separa due popolazioni che si
 riconoscono aprendo gli esempi:
@@ -1230,8 +1344,13 @@ minima sono quelli su cui il modello è più sicuro, e una $\ell_i$ quasi nulla
 su un esempio che *dovrebbe* essere difficile è la firma di una perdita di
 informazione dal futuro, cioè di una feature che contiene il bersaglio.
 
-Il costo del gesto è nullo: la perdita per esempio è già stata calcolata per
-ottenere la metrica, e l'unica cosa che si aggiunge è non sommarla.
+La graduatoria è informativa solo se la perdita è calcolata su esempi che il
+modello non ha usato per imparare, cioè sulla validazione o su previsioni fuori
+campione (*out-of-fold*): un modello che interpola, come un albero non potato,
+ha perdita zero su tutti gli esempi di addestramento, etichette sbagliate
+comprese. Il costo è quasi nullo, perché la perdita per esempio è già stata
+calcolata per ottenere la metrica e l'unica cosa che si aggiunge è non sommarla.
+Il metodo si chiama *confident learning* {cite}`northcutt2021confident`.
 
 `````
 
@@ -1266,13 +1385,13 @@ print(f"accuratezza sulla validazione: {accuracy_score(yva, mod.predict(Xva)):.3
 print(f"etichette sbagliate nella validazione: {gva.sum()} su {len(gva)}"
       f" ({100 * gva.mean():.1f}%)")
 
-# la perdita di OGNI esempio, invece della loro media: e' tutto il gesto
+# la perdita di OGNI esempio, invece della loro media: è tutto il gesto
 p = mod.predict_proba(Xva)
 perdita = np.array([log_loss([v], [pi], labels=[0, 1]) for v, pi in zip(yva, p)])
 ordine = np.argsort(-perdita)
 
 for k in (10, 25, 50):
-    print(f"   fra i {k:3d} con la perdita piu' alta: {gva[ordine[:k]].sum():3d}"
+    print(f"   fra i {k:3d} con la perdita più alta: {gva[ordine[:k]].sum():3d}"
           f" sbagliate  ({100 * gva[ordine[:k]].mean():5.1f}%)")
 print(f"   in tutta la validazione ({len(gva)}):   {gva.sum():3d} sbagliate"
       f"  ({100 * gva.mean():5.1f}%)")
@@ -1281,18 +1400,18 @@ print(f"   in tutta la validazione ({len(gva)}):   {gva.sum():3d} sbagliate"
 ```text
 accuratezza sulla validazione: 0.899
 etichette sbagliate nella validazione: 22 su 800 (2.8%)
-   fra i  10 con la perdita piu' alta:   8 sbagliate  ( 80.0%)
-   fra i  25 con la perdita piu' alta:  14 sbagliate  ( 56.0%)
-   fra i  50 con la perdita piu' alta:  20 sbagliate  ( 40.0%)
+   fra i  10 con la perdita più alta:   8 sbagliate  ( 80.0%)
+   fra i  25 con la perdita più alta:  14 sbagliate  ( 56.0%)
+   fra i  50 con la perdita più alta:  20 sbagliate  ( 40.0%)
    in tutta la validazione (800):    22 sbagliate  (  2.8%)
 ```
 
 Le etichette guaste sono il $2{,}8\%$ della validazione, e pescando a caso
 sarebbe quella la probabilità di incontrarne una. Fra i dieci esempi con la
-perdita più alta sono l’$80\%$: ventotto volte più dense. E il numero che
-serve davvero a chi deve decidere quanto tempo spenderci è l'ultimo:
-aprendone cinquanta se ne ritrovano venti su ventidue, cioè il novanta per
-cento delle etichette guaste in un'ora di lavoro invece che ottocento.
+perdita più alta sono l’$80\%$: circa ventinove volte più dense. E il numero che
+serve davvero a chi deve decidere quanto tempo spenderci è l'ultimo: aprendone
+cinquanta se ne ritrovano venti su ventidue, cioè il $91\%$ delle etichette
+guaste guardando cinquanta esempi invece di ottocento.
 
 L'accuratezza, intanto, dice $0{,}899$ e non dice niente di tutto questo. Non è
 un difetto della metrica, che sta facendo il suo mestiere: è che il suo mestiere
@@ -1340,9 +1459,12 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
 - Tutto parte dal contare i quattro esiti del rilevatore di fumo: allarme
   giusto, falso allarme, incendio mancato, silenzio giusto. Da quei quattro
   numeri si ricava ogni altra misura.
-- La percentuale di risposte giuste (l’accuratezza) inganna quando una
-  risposta è molto più frequente dell'altra: la guardia che dorme sempre prende
-  99 su 100 e non ha mai fermato un ladro.
+- La percentuale di risposte giuste (l’accuratezza) inganna quando una risposta
+  è molto più frequente dell'altra: il modello che dice sempre «sano» prende 99
+  su 100 e non ha mai trovato un malato. Con un caso raro le leve sono quattro,
+  dalla più economica: cambiare il voto (recall, F1, curva precision-recall),
+  spostare la soglia, pesare di più la classe rara, toccare i dati (solo dopo
+  aver messo da parte quelli del voto).
 - Due domande diverse: *quando dice sì, quanto spesso ci azzecca?* (la
   precision) e *di tutti i casi veri, quanti ne trova?* (la recall).
   Alzare l'una abbassa l'altra; la F1 è un voto unico, alto solo se lo sono
@@ -1355,16 +1477,23 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
 - Un «novantaquattro per cento» non si giudica su un caso solo, si giudica sul
   gruppo: si mettono i casi in dieci cassetti secondo quello che il modello ha
   detto e si conta, cassetto per cassetto, quanti lo erano davvero. È la
-  calibrazione, e si ripara senza riaddestrare, con una tavola di
-  conversione imparata su casi mai visti, che non scavalca e quindi lascia la
-  graduatoria com'era (la scaletta a gradini può però creare dei pari merito).
-  Chi risponde sempre lo stesso numero è calibrato e inutile: onestà e capacità
-  di distinguere sono due virtù separate.
+  calibrazione, e si ripara senza riaddestrare, con una tavola di conversione
+  imparata su casi mai visti, che non scavalca e quindi lascia la graduatoria
+  com'era (la scaletta a gradini può però creare dei pari merito). Chi risponde
+  sempre lo stesso numero è calibrato e inutile: onestà e capacità di
+  distinguere sono due virtù separate.
 - Se la risposta è un numero: MAE e RMSE dicono di quanto sbagliamo,
   nella stessa unità del target (euro, gradi), e l'RMSE è più severo con i
   grandi svarioni; di questi due si cerca il valore più basso. L’R²
   invece dice quanto siamo meglio di chi risponde sempre la media, e lì si
   cerca il più alto.
+- Per una risposta in fila (fasce d'età) l'accuratezza può premiare il modello
+  che sbaglia di più: si pesa ogni errore per quanto è lontano.
+- Ogni metrica è un sondaggio e ha il suo margine, che dipende da quanti casi
+  contano davvero: per la recall, i soli positivi.
+- Mettere in fila gli esempi dal peggiore fa trovare le etichette sbagliate,
+  purché la perdita sia calcolata su esempi che il modello non ha usato per
+  imparare.
 - La metrica si sceglie prima di addestrare, guardando quale dei due errori
   costa di più. È il modo in cui diciamo al modello che cosa significa
   «riuscire».
@@ -1391,8 +1520,8 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
   $P(s^+>s^-) + \tfrac12 P(s^+=s^-)$: il mezzo punto sui pareggi non è
   opzionale.
 - Con costi noti la soglia ottimale è $c_{\text{FP}}/(c_{\text{FP}} +
-  c_{\text{FN}})$ se le decisioni corrette non costano né rendono nulla;
-  altrimenti contano le differenze fra costi e guadagni.
+  c_{\text{FN}})$ se le decisioni corrette non costano né rendono nulla e $\hat
+  p$ è calibrata; altrimenti contano le differenze fra costi e guadagni.
 - Calibrazione: $P(y=1\mid\hat{p}=q)=q$, stimata a intervalli con il
   diagramma di affidabilità e riassunta dall'ECE, che dipende dalla partizione
   e va dichiarato insieme a essa. Si corregge dopo, su dati indipendenti
@@ -1407,6 +1536,11 @@ print("R2 :", r2_score(y_test_reg, y_pred_reg))
   massimizza, ed è negativo se il modello fa peggio della media.
 - Per un target ordinale, kappa di Cohen pesato quadraticamente, ricordando
   che dipende dalle marginali e non si confronta fra popolazioni diverse.
+- Ogni metrica su un test finito è una stima: la recall ha per campione i soli
+  positivi, si riporta con il suo intervallo (Wilson, bootstrap), e due modelli
+  sullo stesso test si confrontano con McNemar sui disaccordi.
+- La graduatoria delle perdite per esempio trova il rumore d'etichetta solo se
+  la perdita è fuori campione (*confident learning*).
 - La metrica va scelta *prima*, in base al problema e al costo degli errori.
 ```
 

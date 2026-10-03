@@ -56,6 +56,9 @@ triton==3.7.1
 # --- calcolo, dati, grafici ---
 numpy==2.4.6
 pandas==3.0.5
+# per il formato a colonne di `MLOps/dati-e-pipeline.md` (Parquet): pandas
+# lo legge e lo scrive solo con un motore installato a parte
+pyarrow==25.0.1
 matplotlib==3.11.1
 scipy==1.18.0
 scikit-learn==1.9.0

@@ -1,15 +1,17 @@
 """La purga al confine fra training e test: quante righe, e perché proprio quelle.
 
 Figura ferma. Ogni riga della tabella di una serie temporale guarda indietro
-(la finestra delle feature) e avanti (il bersaglio, h passi dopo). Al confine
-del training si buttano le righe il cui bersaglio cade oltre l'ultimo istante
-che la prima riga di test conosce, cioè esattamente h. La figura mostra anche
+(la finestra delle feature) e avanti (il bersaglio, h passi dopo). La riga di
+un istante legge fino a quell'istante compreso, che è quanto si sa quando si
+emette la previsione. Al confine del training si buttano le righe il cui
+bersaglio cade oltre l'ultimo istante che la prima riga di test conosce, cioè
+h - 1. La figura mostra anche
 il caso che fa sbagliare il conto: la prima riga di test legge fra le sue
 feature valori che sono bersagli di righe di training tenute, e non c'è fuga,
 perché quando si prevede quei valori sono già osservati.
 
 La regola non è disegnata a mano: `purgate()` la applica agli indici, e gli
-`assert` controllano che le righe tolte siano h e che nessuna riga tenuta
+`assert` controllano che le righe tolte siano h - 1 e che nessuna riga tenuta
 abbia un bersaglio oltre il confine.
 """
 
@@ -20,30 +22,32 @@ TITOLO = "la purga al confine fra training e test"
 
 H = 7          # orizzonte: una settimana d'anticipo
 R = 7          # quanto guarda indietro una riga (medie a sette giorni)
-T0 = 0         # ultimo istante del training (gli indici sono relativi)
-RIGHE = list(range(T0 - 9, T0 + 1))    # le ultime dieci righe di training
-TEST = T0 + 1                          # la prima riga di test
+T0 = 0         # la prima riga di test: l'origine della previsione
+RIGHE = list(range(T0 - 10, T0))       # le ultime dieci righe di training
+TEST = T0                              # la prima riga di test
 
 
 def purgate(righe, h, t0):
-    """Le righe di training il cui bersaglio y[t+h] cade dopo t0."""
+    """Le righe di training il cui bersaglio y[t+h] cade dopo t0, l'ultimo
+    istante che la prima riga di test conosce."""
     return [t for t in righe if t + h > t0]
 
 
 TOLTE = purgate(RIGHE, H, T0)
-if len(TOLTE) != H:
-    raise AssertionError(f"la purga toglie {len(TOLTE)} righe invece di h = {H}")
+if len(TOLTE) != H - 1:
+    raise AssertionError(f"la purga toglie {len(TOLTE)} righe "
+                         f"invece di h - 1 = {H - 1}")
 if any(t + H > T0 for t in RIGHE if t not in TOLTE):
     raise AssertionError("una riga tenuta ha il bersaglio oltre il confine")
 # il caso che la figura esiste per mostrare: la prima riga di test legge
 # bersagli di righe tenute, e questo è lecito
-LETTI = [t for t in RIGHE if t not in TOLTE and TEST - R <= t + H <= TEST - 1]
+LETTI = [t for t in RIGHE if t not in TOLTE and TEST - R + 1 <= t + H <= TEST]
 if not LETTI:
     raise AssertionError("la riga di test non legge nessun bersaglio di training")
 
 
 def costruisci() -> Figura:
-    primo = min(RIGHE) - R
+    primo = min(RIGHE) - R + 1
     ultimo = TEST + H
     x0, cella, alt_riga = 150.0, 17.0, 22.0
     sx = lambda i: x0 + (i - primo) * cella
@@ -54,22 +58,21 @@ def costruisci() -> Figura:
         y = y0 + k * alt_riga + (10 if tipo == "test" else 0)
         tolta = tipo == "train" and t in TOLTE
         cls = "tolta" if tolta else ""
-        nome = (f"test t₀+1" if tipo == "test"
-                else (f"t₀−{T0 - t}" if t != T0 else "t₀"))
+        nome = "test t₀" if tipo == "test" else f"t₀−{T0 - t}"
         corpo.append(f'<text class="lbs {cls}" x="{x0 - 12:.0f}" y="{y + 14:.0f}" '
                      f'text-anchor="end">{nome}</text>')
         g = f'<g class="{cls}">' if tolta else "<g>"
         corpo.append(g)
-        # la finestra delle feature: da t-R a t-1
+        # la finestra delle feature: da t-R+1 a t compreso
         corpo.append(f'<rect class="feat{" feat-test" if tipo == "test" else ""}" '
-                     f'x="{sx(t - R):.1f}" y="{y + 4:.0f}" '
+                     f'x="{sx(t - R + 1):.1f}" y="{y + 4:.0f}" '
                      f'width="{R * cella - 2:.1f}" height="{alt_riga - 8:.0f}"/>')
         # il bersaglio, h passi dopo
         corpo.append(f'<rect class="bers" x="{sx(t + H):.1f}" y="{y + 4:.0f}" '
                      f'width="{cella - 2:.1f}" height="{alt_riga - 8:.0f}"/>')
         corpo.append("</g>")
         if tolta:
-            corpo.append(f'<line class="barra" x1="{sx(t - R) - 4:.1f}" '
+            corpo.append(f'<line class="barra" x1="{sx(t - R + 1) - 4:.1f}" '
                          f'y1="{y + 11:.0f}" x2="{sx(t + H) + cella + 2:.1f}" '
                          f'y2="{y + 11:.0f}"/>')
     fondo = y0 + len(tutte) * alt_riga + 16
@@ -89,19 +92,21 @@ def costruisci() -> Figura:
                      f'{testo}</text>')
     corpo.append(f'<text class="lbs" x="{x0:.0f}" y="{ly + 24:.0f}">'
                  f'barrate: le {len(TOLTE)} righe tolte, il cui bersaglio cade oltre '
-                 f'il confine (h = {H})</text>')
+                 f'il confine (h − 1, con h = {H})</text>')
     corpo.append(f'<text class="lbs" x="{x0:.0f}" y="{ly + 44:.0f}">'
                  f'la riga di test legge {len(LETTI)} bersagli di righe tenute: '
                  f'è lecito, quei giorni sono già passati</text>')
     return Figura(
         larghezza=max(sx(ultimo + 1) + 20, 780), altezza=ly + 60,
         alt=f"Le ultime dieci righe di training e la prima di test, una per "
-            f"riga. Ogni riga ha a sinistra la finestra di {R} giorni che legge "
-            f"e a destra il bersaglio, {H} giorni dopo. Una linea verticale "
-            f"segna il confine. Le {len(TOLTE)} righe più vicine al confine hanno "
-            f"il bersaglio oltre il confine e sono barrate: sono quelle da "
-            f"togliere, esattamente h. La riga di test legge {len(LETTI)} giorni "
-            f"che sono bersagli di righe tenute, e non è una fuga.",
+            f"riga. Ogni riga ha a sinistra la finestra di {R} giorni che legge, "
+            f"fino al proprio giorno compreso, e a destra il bersaglio, {H} giorni "
+            f"dopo. Una linea verticale segna il confine, subito dopo l'ultimo "
+            f"giorno che la riga di test conosce. Le {len(TOLTE)} righe più vicine "
+            f"al confine hanno il bersaglio oltre il confine e sono barrate: sono "
+            f"quelle da togliere, una meno dei giorni d'anticipo. La riga di test "
+            f"legge {len(LETTI)} giorni che sono bersagli di righe tenute, e non "
+            f"è una fuga.",
         corpo="".join(corpo),
         stile=f"""    .feat {{ fill:{TEAL}; opacity:.35; }}
     .feat-test {{ fill:{OCRA}; opacity:.7; }}

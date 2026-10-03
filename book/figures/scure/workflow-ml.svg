@@ -52,7 +52,7 @@
   <!-- Valutazione -->
   <rect class="box" x="442" y="56" width="120" height="58" rx="6" stroke="#5BA39C" stroke-width="2.5"/>
   <text class="name" x="502" y="82"  text-anchor="middle">Valutazione</text>
-  <text class="desc" x="502" y="100" text-anchor="middle">test &#183; metriche</text>
+  <text class="desc" x="502" y="100" text-anchor="middle">su validazione</text>
 
   <!-- Deploy (passo finale, bordo tratteggiato) -->
   <rect class="box" x="602" y="56" width="110" height="58" rx="6" stroke="#F4ECDD" stroke-width="2.5" stroke-dasharray="5 4"/>

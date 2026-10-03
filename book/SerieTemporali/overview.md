@@ -12,40 +12,41 @@
 :alt: Una macchina di pulegge e corde che traccia una linea ondulata su una striscia di carta.
 ```
 
-Negli anni Settanta dell'Ottocento William Thomson, professore a Glasgow (il
-mondo lo avrebbe conosciuto come Lord Kelvin), fece costruire a Londra una
-macchina di ottone, corde e pulegge che prevedeva le maree. Non con la magia:
-osservando anni di misure del livello del mare, Kelvin lo aveva scomposto
-nella somma di tante oscillazioni regolari (quella lunare, quella solare,
-quelle più sottili) e la macchina, girando una manovella, sommava
+Una macchina di ottone, corde e pulegge che prevedeva le maree: la fece
+costruire a Londra, negli anni Settanta dell'Ottocento, William Thomson,
+professore a Glasgow (il mondo lo avrebbe conosciuto come Lord Kelvin). Non con
+la magia: osservando anni di misure del livello del mare, Kelvin lo aveva
+scomposto nella somma di tante oscillazioni regolari (quella lunare, quella
+solare, quelle più sottili) e la macchina, girando una manovella, sommava
 meccanicamente quelle onde per *disegnare la marea di un anno intero prima che
-accadesse*. È la stessa idea che regge tutto questo capitolo: il futuro si
-stima dal passato, purché il passato conservi delle regolarità.
+accadesse*. È la stessa idea che regge tutta la previsione delle serie
+temporali: il futuro si stima dal passato, purché il passato conservi delle
+regolarità.
 
 Prevedere è un mestiere antico. Il contadino che legge il cielo per decidere
 quando seminare, il mercante che anticipa il prezzo del grano, il meteorologo
 che stende le isobare (le linee che uniscono i punti di uguale pressione, e da
 cui si legge dove sta andando il tempo): tutti fanno lo stesso gesto, guardare
 la storia di un fenomeno per indovinarne il seguito. In inglese quel gesto si
-chiama **forecasting**, la parola che dà il titolo a questo capitolo: vuol dire
-previsione, e nel campo si usa così spesso che conviene farci subito
-l'orecchio.
+chiama **forecasting**, ed è la parola che si trova nella letteratura e nel
+codice.
 
 Come metodo sistematico la disciplina nasce nel 1970, con un libro di George
 Box e Gwilym Jenkins destinato a diventare un classico dell'econometria (la
 statistica applicata ai fenomeni economici) e dell'ingegneria
 {cite}`box2015time`. La loro ricetta sta in tre mosse: identificare che forma
 ha la serie, stimare i numeri del modello, verificare che il modello non abbia
-lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare un
-valore con quelli che lo precedono, e cioè l’**autoregressione**, la faceva già
-George Udny Yule nel 1927, sulle macchie solari. È però la prima procedura che
-dica come scegliere il modello, invece di lasciare che se ne inventi uno diverso
-ogni volta. Dal 1982 lo statistico greco Spyros Makridakis mette alla prova quei
-metodi su larga scala con le **competizioni M**, gare pubbliche di previsione su
-un migliaio di serie reali nella prima edizione e su centomila nella quarta, del
-2018 {cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto
-morale: si prevede, sì, ma con umiltà. Nessun modello domina sempre, e
-dichiarare *quanto* siamo incerti conta quanto la previsione stessa.
+lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare
+un valore con quelli che lo precedono, e cioè l’**autoregressione**, la faceva
+già George Udny Yule nel 1927, sulle macchie solari. Il contributo di Box e
+Jenkins è una procedura completa, che dice come scegliere il modello invece di
+lasciare che se ne inventi uno diverso ogni volta. Dal 1982 lo statistico greco
+Spyros Makridakis mette alla prova quei metodi su larga scala con le
+**competizioni M**, gare pubbliche di previsione su un migliaio di serie reali
+nella prima edizione e su centomila nella quarta, del 2018
+{cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto morale:
+si prevede, sì, ma con umiltà. Nessun modello domina sempre, e dichiarare
+*quanto* siamo incerti conta quanto la previsione stessa.
 
 ## Che cos'è una serie temporale
 
@@ -59,14 +60,15 @@ temperatura misurata ogni ora, il numero di scontrini di un negozio giorno per
 giorno. Una **serie temporale** è esattamente questo: una fila di numeri con
 accanto un orologio.
 
-La differenza con gli altri dati del libro è sottile ma decisiva. Quando
-abbiamo parlato di apprendimento supervisionato (riconoscere gatti, filtrare
-lo spam), gli esempi erano come palline in un sacchetto: potevi rimescolarle a
-piacere senza perdere nulla, l'ordine non contava. Con una serie temporale non
-puoi. La temperatura di oggi somiglia a quella di ieri; se mescoli le date,
-distruggi proprio l'informazione che ti serve. L'ordine *è* il dato.
+La differenza con gli altri dati del libro è sottile ma decisiva.
+Nell'apprendimento supervisionato (riconoscere gatti, filtrare lo spam) gli
+esempi erano palline pescate da un'urna, come nella {doc}`sezione sui dati che
+cambiano </MachineLearning/dati-che-cambiano>`: potevi rimescolarle a piacere
+senza perdere nulla, l'ordine non contava. Con una serie temporale non puoi. La
+temperatura di oggi somiglia a quella di ieri; se mescoli le date, distruggi
+proprio l'informazione che ti serve. L'ordine *è* il dato.
 
-E c'è una seconda differenza. Le palline uscivano tutte dallo stesso sacchetto,
+E c'è una seconda differenza. Le palline uscivano tutte dalla stessa urna,
 oggi come l'anno scorso; il negozio del diario invece cambia mentre lo guardi:
 apre una filiale, gli mettono un concorrente di fronte, e da lì in poi gli
 scontrini seguono un'altra regola.
@@ -189,17 +191,33 @@ e resta robusta dove la ricorsiva si allontana. In cambio la diretta paga in
 varianza (un modello per orizzonte, nessun vincolo di coerenza fra orizzonti
 vicini) e non sfugge all'errore di stima: il coefficiente $\hat\phi_h$ di una
 regressione di $x_{t+h}$ su $x_t$ è distorto in campione finito come lo è
-$\hat\phi^{\,h}$, e nessun campionamento lo corregge. Sui modelli ben
-specificati tende a vincere la ricorsiva, su quelli approssimati la diretta.
+$\hat\phi^{\,h}$, e nessun campionamento lo corregge. La ricorsiva è la più
+efficiente quando il modello a un passo è ben specificato, la diretta la più
+robusta quando non lo è, e quale delle due vinca sui dati veri è una questione
+empirica {cite}`marcellino2006comparison`.
 
 Questa distorsione va tenuta separata dalla ragione per cui l'incertezza cresce
 con l'orizzonte, che è un'altra e vale per tutte le strategie, diretta
 compresa: fra $T$ e $T+h$ cadono $h$ innovazioni ancora da osservare, e i loro
-contributi si sommano, pesati da coefficienti che decadono
-{cite}`hyndman2021forecasting`. Su un processo stazionario quella somma
-converge a un valore finito, e la banda di previsione smette di
-allargarsi; a crescere senza fermarsi è l'incertezza delle serie non
-stazionarie.
+contributi si sommano. Un processo lineare causale si scrive
+$x_t = \mu + \sum_{j\ge0}\psi_j\,\varepsilon_{t-j}$, con $\psi_0 = 1$ ed
+$\varepsilon_t$ rumore bianco di varianza $\sigma^2$ (è la sua
+rappresentazione a media mobile infinita, $\mathrm{MA}(\infty)$). A parametri
+noti, l'errore della migliore previsione lineare a $h$ passi è
+$e_{T+h} = \sum_{j=0}^{h-1}\psi_j\,\varepsilon_{T+h-j}$, e la sua varianza
+
+$$
+\mathrm{Var}(e_{T+h}) = \sigma^2 \sum_{j=0}^{h-1} \psi_j^2
+$$
+
+non decresce mai con $h$ {cite}`hyndman2021forecasting`. Se
+$\sum_j \psi_j^2 < \infty$, cioè se il processo è stazionario, converge a
+$\mathrm{Var}(x_t)$ e la banda di previsione smette di allargarsi; altrimenti
+cresce senza limite. Per un AR(1) i pesi sono $\psi_j = \phi^j$ e la varianza
+vale $\sigma^2(1-\phi^{2h})/(1-\phi^2)$; per la passeggiata aleatoria sono
+tutti uguali a uno, la varianza vale $h\sigma^2$ e la banda si allarga come
+$\sqrt{h}$. Con innovazioni gaussiane la banda al livello $1-\alpha$ è
+$\hat{x}_{T+h} \pm z_{1-\alpha/2}\,\sigma\big(\sum_{j<h}\psi_j^2\big)^{1/2}$.
 
 `````
 
@@ -209,17 +227,35 @@ Se le serie temporali meritano un capitolo a sé, e non un paragrafo dentro il
 Machine Learning, è perché ognuna delle loro proprietà rompe qualcosa che
 altrove davamo per scontato.
 
-La prima è l’**autocorrelazione**. Prendi la serie, fanne una copia e falla
-scivolare indietro di un giorno, di due, di dodici: le due si somigliano, e
-quella somiglianza è il legame della serie con il proprio passato. Il numero di
-passi di cui si è spostata la copia si chiama **ritardo**; in inglese *lag*, ed
-è la parola che si trova nel codice e nei manuali (qui ritardo e lag sono la
-stessa cosa). La somiglianza si misura mettendo le due file di numeri a coppie,
-il primo con il primo, il secondo con il secondo, e guardando se salgono e
-scendono insieme: quello che ne esce è un numero solo, il coefficiente di
-autocorrelazione, ed è il modo più diretto di vedere quanto una serie sia
-lontana dai dati indipendenti del resto del libro. Il conto si fa su una serie
-inventata da noi, che sale piano e ha un ciclo di dodici passi.
+La prima è l’**autocorrelazione**: la correlazione fra la serie e sé stessa
+spostata indietro di $k$ passi, che si scrive $\rho_k$. Il numero $k$ si chiama
+**ritardo**, in inglese *lag*, ed è la parola che si trova nel codice e nei
+manuali. Il conto è quello di una correlazione fra due file di numeri, la serie
+e la sua copia spostata, messe a coppie, il primo con il primo e il secondo con
+il secondo. Stimato su $n$ punti di media $\bar{x}$, è
+
+$$
+\hat\rho_k = \frac{\sum_{t=k+1}^{n} (x_t - \bar{x})(x_{t-k} - \bar{x})}
+{\sum_{t=1}^{n} (x_t - \bar{x})^2} .
+$$
+
+In parole: si toglie la media a ogni valore, si moltiplicano a due a due i
+valori che distano $k$ passi, si somma, e si divide per la somma dei quadrati,
+che tiene il risultato fra $-1$ e $+1$. Sulla serie $2, 4, 2, 4, 2, 4$, di
+media $3$ e scarti $-1, +1, -1, +1, -1, +1$, a un passo di ritardo ogni scarto
+finisce accanto a uno di segno opposto: i cinque prodotti valgono tutti $-1$,
+e $\hat\rho_1 = -5/6 \approx -0{,}83$, un legame rovesciato (a un valore alto
+segue regolarmente un valore basso). A due passi ogni scarto ritrova il
+proprio segno, i quattro prodotti valgono $+1$, e
+$\hat\rho_2 = 4/6 \approx 0{,}67$. È il modo più diretto di vedere quanto una
+serie sia lontana dai dati indipendenti del resto del libro.
+
+Il codice fa il conto su una serie inventata da noi, che sale piano e ha un
+ciclo di dodici passi, e stampa sei righe: il coefficiente a un passo sulla
+serie così com'è; lo stesso a uno, sei e dodici passi dopo averle tolto la
+salita (la serie `detrend` è la serie meno la retta che ne segue la crescita);
+quello a un passo con le date rimescolate; e quanto oscilla un coefficiente
+nato dal solo caso.
 
 ```python
 import numpy as np
@@ -264,13 +300,6 @@ lag 1, date rimescolate:    0.143
 oscillazione del caso:      0.070   (1 diviso radice di n: 0.071)
 ```
 
-I numeri vanno letti sapendo che scala hanno. Una correlazione vale al massimo
-$+1$, e allora i due profili salgono e scendono insieme, perfettamente; vale $0$
-quando non c'è nessun legame; e arriva a $-1$ quando si muovono capovolti, cioè
-quando a un valore alto dell'uno corrisponde regolarmente un valore basso
-dell'altro. È in questo senso che una somiglianza può essere «negativa»: non
-vuol dire che non c'è, vuol dire che è rovesciata.
-
 Sulla serie ordinata l'autocorrelazione a un passo vale $0{,}94$, cioè quasi il
 massimo: ogni valore anticipa quasi perfettamente il successivo. Una parte di
 quel numero, per onestà, la mette la salita: in una serie che cresce sempre due
@@ -290,18 +319,24 @@ passi di ritardo, cioè un ciclo intero, torna alta, $0{,}83$, perché il
 fenomeno è tornato dov'era.
 
 Rimescoliamo adesso le date: teniamo gli stessi duecento numeri e li rimettiamo
-in fila a caso. Il coefficiente crolla a $0{,}14$. Non è esattamente zero, e non
-poteva esserlo: rimescolando duecento numeri qualche somiglianza per puro caso
-ci scappa sempre. Quanta, lo dice il rimescolamento rifatto duemila volte invece
-di una: il coefficiente oscilla di sette centesimi, che è uno diviso la radice
-del numero di punti. Ecco allora il metro per leggere qualunque coefficiente:
-sotto il doppio di quell'oscillazione, qui quattordici centesimi, un numero non
-si distingue dal caso, ed è la fascia che i programmi di statistica disegnano in
-grigio attorno allo zero. Il nostro $0{,}14$ cade proprio sul bordo della
+in fila a caso. Il coefficiente crolla a $0{,}14$. Non è esattamente zero, e
+non poteva esserlo: rimescolando duecento numeri qualche somiglianza per puro
+caso ci scappa sempre. Quanta, lo dice il rimescolamento rifatto duemila volte
+invece di una: il coefficiente oscilla attorno a zero con una deviazione
+standard di $0{,}070$, e la teoria la prevede in $1/\sqrt{n}$, cioè $0{,}071$
+con duecento punti. È la legge con cui cala l'errore di ogni media, quella
+della {doc}`sezione su probabilità e statistica
+</Matematica/probabilita-statistica>`, e vale anche qui perché su una serie
+senza memoria $\hat\rho_1$ è, in sostanza, la media di $n$ prodotti incorrelati
+fra loro. Ecco allora il metro per leggere qualunque coefficiente: dentro $\pm
+2/\sqrt{n}$, qui quattordici centesimi, un valore non si distingue dal caso, ed
+è la fascia che i programmi di statistica disegnano attorno allo zero nel
+grafico dei coefficienti. Il nostro $0{,}14$ cade proprio sul bordo della
 fascia: è il genere di somiglianza che il caso da solo produce, ogni tanto,
 rimescolando duecento numeri. Di quel $0{,}94$, invece, non è rimasto niente.
-Gli stessi identici valori, in un altro ordine, non prevedono più niente: quello
-che rendeva prevedibile la serie non stava nei numeri, stava nel loro ordine.
+Gli stessi identici valori, in un altro ordine, non prevedono più niente:
+quello che rendeva prevedibile la serie non stava nei numeri, stava nel loro
+ordine.
 
 Tre ritardi sono tre assaggi, e il metro del caso vale per tutti: la
 {numref}`fig-copia-che-scivola` li mette in fila dal primo al ventiquattresimo,
@@ -358,10 +393,13 @@ alto per sempre, una linea da tirare non c'è: lasci perdere il livello e guardi
 di quanto è cambiato da ieri. Sul fiume delle piene la linea non basta: il
 letto continua a spostarsi sotto.
 
-Quale dei due casi hai davanti lo dicono delle prove sui dati, da leggere in
-coppia perché fanno domande opposte. Che il fiume sia stabile, però, non lo
-certificano: come un esame trova la malattia e non dichiara la salute, dicono
-solo se l'acqua misurata dà motivi per credere di no.
+Quale dei due casi hai davanti lo dicono due prove sui dati, che si chiamano
+ADF e KPSS e si leggono in coppia, perché partono da sospetti opposti: l'ADF
+dal sospetto che il letto si sposti, il KPSS da quello che il fiume sia
+stabile. Nessuna delle due, però, certifica qualcosa. Funzionano come un esame
+del sangue, che può trovare un valore fuori posto ma non può dichiarare che tu
+stia bene: ciascuna dice soltanto se l'acqua misurata dà motivi per
+abbandonare il proprio sospetto.
 
 `````
 
@@ -398,24 +436,30 @@ seguente mostra perché scambiare le due non è affatto neutro. Per decidere
 esistono test appositi, ADF e KPSS, che hanno ipotesi nulle opposte e vanno
 letti insieme; li usa, al suo primo passo, la procedura in tre tempi di Box e
 Jenkins nella forma in cui la si pratica oggi. Nessuno dei due, però,
-«dimostra» la stazionarietà, esattamente come nessuna diagnostica dimostra che
-un modello sia giusto: dicono soltanto se i dati contengono prove contro di
-essa.
+«dimostra» qualcosa, esattamente come nessuna diagnostica dimostra che un
+modello sia giusto: ciascuno dice soltanto se i dati contengono prove contro
+la propria ipotesi nulla, che per l'ADF è la radice unitaria e per il KPSS la
+stazionarietà.
 
 `````
 
-Autocorrelazione, non stazionarietà, cambi di regime, ordine che conta: sono
-modi diversi di dire una cosa sola. In una serie temporale l’indipendenza
-tra gli esempi (la comoda finzione su cui abbiamo costruito il resto del
-machine learning supervisionato) semplicemente non c'è, e ogni metodo del
-capitolo è un modo diverso di prenderla sul serio.
+Autocorrelazione e non stazionarietà sono due rotture distinte della stessa
+comodità, quella su cui abbiamo costruito il resto del machine learning
+supervisionato: che gli esempi siano indipendenti fra loro e vengano tutti
+dalla stessa distribuzione. L'autocorrelazione rompe l'indipendenza; la non
+stazionarietà, e il cambio di regime che ne è la forma brusca, rompe la
+distribuzione unica. Una serie può avere l'una senza l'altra (una serie
+stazionaria può essere fortemente autocorrelata), e ogni metodo del capitolo è
+un modo di fare i conti con tutte e due.
 
 ## Dai modelli classici alle reti
 
-Prevedere una serie si è sempre fatto in due modi, i classici e le reti, e in
-quest'ordine sono anche la storia della disciplina. Fra i due sta il mestiere
-che dice quale dei due stia funzionando, cioè dare un voto a una previsione
-senza barare col futuro.
+Per prevedere una serie ci sono due grandi famiglie di metodi, i modelli
+statistici classici e le reti neurali, e in quest'ordine sono anche la storia
+della disciplina; una terza, i modelli additivi come Prophet, sta a metà
+strada e si incontra insieme alle reti. In mezzo, nell'ordine del capitolo,
+sta il mestiere che dice quale metodo stia funzionando, cioè dare un voto a una
+previsione senza barare col futuro.
 
 1. **Componenti e modelli classici**, come scomporre una serie in tendenza,
    stagionalità e residuo, e i due cavalli di battaglia storici: la famiglia
@@ -434,24 +478,26 @@ senza barare col futuro.
    giorni, una per il giorno della settimana, e a quel punto la sanno leggere
    tutti i modelli del
    {doc}`capitolo sul Machine Learning </MachineLearning/overview>`.
-3. **Forecasting neurale**: le reti che possono guardare solo all'indietro
-   (TCN), quelle che invece di un numero prevedono un ventaglio di futuri
-   possibili (DeepAR), i Transformer adattati alle serie, e infine i
-   foundation model (come Chronos), addestrati una volta sola su
-   collezioni sterminate di serie e poi capaci di prevedere fenomeni che non
-   hanno mai visto.
+3. **Forecasting neurale e modelli additivi**: i modelli additivi come
+   Prophet, che disegnano la serie sul calendario; le reti convoluzionali che
+   possono guardare solo all'indietro (TCN); quelle che invece di un numero
+   prevedono un ventaglio di futuri possibili (DeepAR); le reti fatte di soli
+   strati densi (N-BEATS); i Transformer adattati alle serie, e il modello
+   lineare che li ha messi in discussione; e infine i foundation model (come
+   Chronos), addestrati una volta sola su grandi collezioni di serie e poi
+   usati su fenomeni che non hanno mai visto.
 
-La storia del forecasting è una lunga convivenza fra due famiglie: i metodi
-statistici classici, trasparenti e sorprendentemente difficili da battere, e i
-metodi neurali, che hanno fame di dati ma sanno cogliere regolarità più
-intricate e, guardando insieme migliaia di serie diverse, portare a ciascuna
-quello che hanno imparato dalle altre. La grande lezione delle competizioni M è
-che la rivalità fra le due è meno netta di quanto sembri. Nella quarta
-edizione, la M4, correvano centomila serie e sessantuno metodi, e a vincere non
-fu né la statistica pura né il deep learning puro: fu un ibrido, cioè una rete
-neurale montata sopra uno dei metodi classici della prossima sezione, in modo
-che ciascuno dei due facesse il pezzo in cui era più bravo. Dietro, a fare
-meglio dei singoli concorrenti, c'erano le combinazioni, cioè la media delle
+I metodi statistici classici sono trasparenti e sorprendentemente difficili da
+battere; quelli neurali hanno fame di dati, ma colgono regolarità più intricate
+e, guardando insieme migliaia di serie diverse, portano a ciascuna quello che
+hanno imparato dalle altre. La lezione delle competizioni M è che la rivalità
+fra le due famiglie è meno netta di quanto sembri. Nella quarta edizione, la
+M4, correvano centomila serie e sessantuno metodi, e a vincere non fu né la
+statistica pura né il deep learning puro: fu un ibrido, l'ES-RNN di Slawek
+Smyl, in cui per ogni serie il lisciamento esponenziale della prossima sezione
+stima livello e stagionalità, e una rete ricorrente addestrata su tutte le
+serie insieme prevede il resto {cite}`smyl2020hybrid`. Fra i primi, a fare
+meglio dei metodi singoli, c'erano poi le combinazioni, cioè la media delle
 previsioni di più metodi messi insieme {cite}`makridakis2020m4`.
 
 Attraversa tutte e tre le sezioni un filo rosso, ed è quella stessa lezione: la
@@ -460,20 +506,21 @@ modello che dice «domani 24 gradi» vale meno di uno che dice «domani fra 22 e
 gradi, e sono sicuro all'80%», dove quell'80% vuol dire: otto volte su dieci il
 valore vero cade dentro la forbice. Il secondo sa quanto poco sa.
 
-Su questo, però, quasi tutti i metodi del capitolo barano un po’, e senza
-volerlo: quel «fra 22 e 26» tende a essere più stretto di quanto sarebbe
-onesto, e la forbice che promette di contenere il valore vero otto volte su
-dieci lo contiene un po’ meno spesso. Non è una fatalità. Quanto stretta sia di
-troppo si misura, e la sezione sulla validazione mostra come.
+Su questo, però, le bande dei metodi del capitolo, come la maggior parte delle
+bande di previsione, tendono a uscire più strette del dovuto
+{cite}`hyndman2021forecasting`: la forbice che promette di contenere il valore
+vero otto volte su dieci lo contiene meno spesso. Non è una fatalità. Quanto
+sia stretta di troppo si misura, e la {doc}`sezione sulla validazione
+</SerieTemporali/validazione-e-feature>` mostra come.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
 - Una serie temporale è un diario di numeri con la data accanto. A
-  differenza degli esempi del resto del libro, che erano palline in un sacchetto
-  e si potevano rimescolare, qui l'ordine *è* l'informazione: se mescoli le date
-  distruggi proprio quello che rendeva la serie prevedibile.
+  differenza degli esempi del resto del libro, che si potevano rimescolare,
+  qui l'ordine *è* l'informazione: se mescoli le date distruggi proprio quello
+  che rendeva la serie prevedibile.
 - Il compito principale è la previsione (*forecasting*): dire come andrà
   avanti la serie, guardando una grandezza sola o molte insieme, per il solo
   giorno dopo o per l'intera settimana. Più lontano guardi, più cose ancora da
@@ -482,11 +529,10 @@ troppo si misura, e la sezione sulla validazione mostra come.
   non ce l'ha. Accanto ci sono altri tre
   compiti: dire che tipo di serie è, trovarci dentro i punti anomali, e
   ricostruire i valori mancanti.
-- La difficoltà nasce dal fatto che i valori sono legati fra loro. Ogni valore
-  somiglia a quelli vicini (l’autocorrelazione), le regole del gioco
-  cambiano nel tempo (una tendenza che sale, una stagione che torna, o
-  un cambio improvviso), e nessuna di queste cose capitava con le palline nel
-  sacchetto. Una serie si dice stabile (i tecnici dicono *stazionaria*)
+- La difficoltà ha due facce, e non sono la stessa: ogni valore somiglia a
+  quelli vicini (l’autocorrelazione), e le regole del gioco cambiano nel tempo
+  (una tendenza che sale, una stagione che torna, o un cambio improvviso).
+  Una serie si dice stabile (i tecnici dicono *stazionaria*)
   quando balla sempre attorno allo stesso valore, con la stessa ampiezza, e
   quando due giorni si somigliano in base a quanto distano fra loro e non a
   quando cadono nel calendario.
@@ -494,8 +540,9 @@ troppo si misura, e la sezione sulla validazione mostra come.
   sul prima e si verifica sul dopo, sempre.
 - Il capitolo procede in tre tappe: i modelli classici, come si valuta
   onestamente una previsione e come si trasforma una serie in una tabella, e
-  infine le reti neurali. Con un filo comune: prevedere vuol dire anche
-  dichiarare quanto poco si sa.
+  infine le reti neurali, con accanto i modelli che disegnano la serie sul
+  calendario. Con un filo comune: prevedere vuol dire anche dichiarare quanto
+  poco si sa.
 ```
 
 `````
@@ -511,23 +558,24 @@ troppo si misura, e la sezione sulla validazione mostra come.
 - I compiti principali sono forecasting (uni/multivariato, a passo singolo o
   a più passi), classificazione di serie, rilevamento di anomalie e imputazione.
   Nel multi-step l'incertezza cresce con l'orizzonte perché si sommano i
-  contributi delle $h$ innovazioni non ancora osservate, pesati da coefficienti
-  che decadono, e su un processo stazionario quella somma converge, cioè la
-  banda smette di allargarsi;
-  l’*error compounding* della strategia ricorsiva è un fenomeno distinto, e
-  riguarda la distorsione che la reiniezione introduce con modelli stimati o
-  non lineari.
-- Ciò che rende il problema difficile è la rottura dell'indipendenza:
-  autocorrelazione, non stazionarietà (tendenza, stagionalità),
-  cambi di regime. Un processo è stazionario in senso debole se media e
+  contributi delle $h$ innovazioni non ancora osservate: la varianza
+  dell'errore a $h$ passi è $\sigma^2\sum_{j<h}\psi_j^2$, non decresce mai, e
+  su un processo stazionario converge alla varianza del processo, cioè la
+  banda smette di allargarsi; l’*error compounding* della strategia ricorsiva
+  è un fenomeno distinto, e riguarda la distorsione che la reiniezione
+  introduce con modelli stimati o non lineari.
+- Ciò che rende il problema difficile è che l'ipotesi i.i.d. cade in due modi
+  distinti: dipendenza fra le osservazioni (autocorrelazione) e distribuzione
+  che cambia nel tempo (non stazionarietà: tendenza, stagionalità, cambi di
+  regime). Un processo è stazionario in senso debole se media e
   varianza sono costanti e l'autocovarianza fra due istanti dipende solo dal
   loro divario $k$, non dalla loro posizione assoluta.
 - Nella validazione non si mescolano futuro e passato: si addestra sul
   passato e si verifica sul futuro, sempre.
 - Il capitolo procede in tre tappe, modelli classici (ARIMA, Holt-Winters),
-  validazione temporale e feature, forecasting neurale (TCN, DeepAR,
-  Transformer, foundation model), con un filo comune: prevedere significa
-  anche dichiarare la propria incertezza.
+  validazione temporale e feature, forecasting neurale e modelli additivi
+  (Prophet, TCN, DeepAR, N-BEATS, Transformer, foundation model), con un filo
+  comune: prevedere significa anche dichiarare la propria incertezza.
 ```
 
 `````

@@ -9,24 +9,25 @@ trentaquattro; uno di prima, due di seconda e tre di terza ne rendono
 ventisei. Quanto rende un covone di ciascuna qualità?
 
 Il procedimento che il libro insegna è disporre i numeri in colonne su un
-tavoliere e sottrarre ripetutamente una colonna dall'altra, finché in fondo
-non resta una qualità sola. Duemila anni dopo si chiama **eliminazione**, dal
-nome di Carl Friedrich Gauss che la sistemò all'inizio dell'Ottocento
-lavorando sulle orbite dei pianetini; e per governare quelle sottrazioni il
-testo cinese si trova costretto a maneggiare quantità negative, che in Europa
-avrebbero atteso il Rinascimento {cite}`shen1999nine`.
+tavoliere e sottrarre ripetutamente una colonna dall'altra, finché in fondo non
+resta una qualità sola. Quasi diciotto secoli dopo porta il nome di
+**eliminazione di Gauss**, che la sistemò all'inizio dell'Ottocento lavorando
+sulle orbite dei pianetini; e per governare quelle sottrazioni il testo cinese
+si trova costretto a maneggiare quantità negative, che in Europa avrebbero
+atteso il Rinascimento {cite}`shen1999nine`.
 
-Il conto in sé oggi lo fa una libreria in un microsecondo. Guardarci dentro
-serve a un'altra cosa: lo stesso procedimento che trova la
-risposta dice anche quando la risposta non c'è, e quando invece ce ne sono
-infinite. In machine learning si vive quasi sempre in uno di quei due casi, e
-riconoscerli è metà del mestiere.
+Oggi il conto lo fa una libreria in pochi microsecondi. Guardarci dentro serve a
+un'altra cosa: lo stesso procedimento che trova la risposta dice anche quando la
+risposta non c'è, e quando invece ce ne sono infinite. Sono i due casi tipici
+del machine learning: con più equazioni che incognite, come in una regressione,
+di norma non c'è una soluzione esatta; con più incognite che equazioni, come in
+una rete che ha più parametri che esempi, ce ne sono infinite.
 
 ## Le due letture di uno stesso sistema
 
-Scrivere le tre pesate dei *Nove capitoli* con dei simboli al posto delle
-parole dà tre equazioni. Chiamando $x$, $y$, $z$ la resa di un covone di prima,
-seconda e terza qualità:
+Scrivere le tre rese dei *Nove capitoli* con dei simboli al posto delle parole
+dà tre equazioni. Chiamando $x$, $y$, $z$ la resa di un covone di prima, seconda
+e terza qualità:
 
 $$
 \begin{cases}
@@ -37,46 +38,55 @@ $$
 $$
 
 Ogni riga somma dei prodotti fra un numero noto e un'incognita, e nient'altro:
-niente incognite moltiplicate fra loro, niente quadrati, niente seni. È questo
-che le rende lineari, ed è la ragione per cui si maneggiano con le matrici
-della sezione precedente.
+niente incognite moltiplicate fra loro, niente quadrati, niente radici. È questo
+che le rende lineari, ed è la ragione per cui si maneggiano con le matrici della
+{doc}`sezione sull'algebra lineare <algebra-lineare>`.
 
-Lo stesso mucchio di numeri si può leggere in due modi, e conviene averli
-tutti e due in testa, perché rispondono a domande diverse.
+Con le matrici il sistema diventa $\mathbf{A}\mathbf{x} = \mathbf{b}$, dove la
+matrice $\mathbf{A}$ raccoglie i coefficienti, il vettore $\mathbf{x}$ le
+incognite e il vettore $\mathbf{b}$ i termini noti. Qui
+$\mathbf{A}=\begin{pmatrix}3&2&1\\2&3&1\\1&2&3\end{pmatrix}$,
+$\mathbf{x}=(x,y,z)^\top$ e $\mathbf{b}=(39,34,26)^\top$, e il prodotto
+$\mathbf{A}\mathbf{x}$ dà, una riga dopo l'altra, i tre membri sinistri. Il
+sistema si legge in due modi, per righe e per colonne, e le due letture
+rispondono a domande diverse.
 
 `````{tab} Elementare
 
 Immagina un colorificio. Sul bancone ci sono tre barattoli di tinta base, e un
-cliente porta un campione di colore da riprodurre. La domanda è: quante parti
-di ciascun barattolo?
+cliente porta un colore da riprodurre. La domanda è: quante parti di ciascun
+barattolo?
 
 Prima lettura, una riga per volta. Ogni riga del sistema è una promessa da
-mantenere. Il campione contiene una certa quantità di rosso, e la miscela che
-prepari dovrà contenerne esattamente altrettanto: ecco la prima equazione. Poi
-c'è il giallo, e viene la seconda. Poi il blu. Tre pigmenti, tre promesse,
-tutte da mantenere insieme. Risolvere vuol dire trovare le dosi che le tengono
-tutte e tre in piedi contemporaneamente.
+mantenere. Il colore del cliente contiene una certa quantità di rosso, e la
+miscela che prepari dovrà contenerne esattamente altrettanto: ecco la prima
+equazione. Poi c'è il giallo, e viene la seconda. Poi il blu. Tre pigmenti, tre
+promesse, tutte da mantenere insieme. Risolvere vuol dire trovare le dosi che le
+tengono tutte e tre in piedi contemporaneamente.
 
-Seconda lettura, una colonna per volta. Ogni barattolo ha una sua
-composizione fissa, che è una colonna della tabella: tanto rosso, tanto
-giallo, tanto blu. Versare mezzo litro del primo barattolo significa prendere
-metà di quella colonna. La miscela finale è la somma dei tre versamenti, cioè
-una mescolanza delle colonne, e le dosi sono i numeri per cui le
-moltiplichi. La domanda diventa: con quali dosi la mescolanza dei tre
-barattoli fa esattamente il colore del campione?
+Seconda lettura, una colonna per volta. Ogni barattolo ha una sua composizione
+fissa, che è una colonna della tabella: tanto rosso, tanto giallo, tanto blu.
+Versare mezzo litro del primo barattolo significa prendere metà di quella
+colonna. La miscela finale è la somma dei tre versamenti, cioè una mescolanza
+delle colonne, e le dosi sono i numeri per cui le moltiplichi. La domanda
+diventa: con quali dosi la mescolanza dei tre barattoli fa esattamente il colore
+del cliente?
 
-Le due letture descrivono lo stesso bancone. La prima guarda i pigmenti e
-chiede se i conti tornano voce per voce; la seconda guarda i barattoli e
-chiede se, dosandoli, ci si arriva. La seconda è quella che porta più lontano,
-perché rende visibile un caso che la prima nasconde: se i tre barattoli fossero
-tutti sfumature di verde, nessuna dose, per quanto astuta, tirerebbe fuori un
-rosso. Il colore chiesto sarebbe fuori portata, e il fallimento non
-dipenderebbe dalla bravura di chi mescola ma da che cosa c'è sul bancone.
+Le due letture descrivono lo stesso bancone. La prima guarda i pigmenti e chiede
+se i conti tornano voce per voce; la seconda guarda i barattoli e chiede se,
+dosandoli, ci si arriva. La seconda è quella che porta più lontano, perché rende
+visibile un caso che la prima nasconde. Se il terzo barattolo fosse una miscela
+dei primi due (un blu e un giallo, per esempio, e un verde fatto mescolando quei
+due), non aggiungerebbe nessun colore nuovo: con tre barattoli si farebbero le
+stesse tinte che si fanno con due, e un colore fuori da quel repertorio non
+uscirebbe con nessuna dose. Il colore chiesto sarebbe fuori portata, e il
+fallimento non dipenderebbe dalla bravura di chi mescola ma da che cosa c'è sul
+bancone.
 
-Torniamo al grano. I «barattoli» sono le tre qualità, e ciascuna ha una
-colonna che dice quanti covoni di quella qualità entrano in ciascuna delle tre
-pesate. Il «campione da riprodurre» è la lista delle tre rese osservate, $39$,
-$34$ e $26$. Le dosi che cerchi sono le rese per covone.
+Torniamo al grano. I «barattoli» sono le tre qualità, e ciascuna ha una colonna
+che dice quanti covoni di quella qualità entrano in ciascuna delle tre
+combinazioni. Il «colore da riprodurre» è la lista delle tre rese osservate,
+$39$, $34$ e $26$. Le dosi che cerchi sono le rese per covone.
 
 `````
 
@@ -150,12 +160,15 @@ tutto il lavoro. Chi soddisfa la prima promessa e la seconda soddisfa anche
 la loro somma; e siccome la mossa si può disfare (basta
 risottrarre), non si è perso niente per strada.
 
-Il gioco consiste nello scegliere i multipli in modo da far sparire le
-incognite una alla volta. Nel problema del grano si toglie la $x$ dalla
-seconda e dalla terza riga, poi la $y$ dalla terza: a quel punto l'ultima riga
-parla di una sola incognita, la si ricava, la si porta su nella penultima, e
-si risale fino in cima. Il tavoliere alla fine ha la forma di una scaletta:
-la prima riga con tre incognite, la seconda con due, l'ultima con una.
+Il gioco consiste nello scegliere i multipli in modo da far sparire le incognite
+una alla volta. Nel problema del grano conviene partire dalla terza promessa,
+che ha un solo covone di prima qualità: tolta tre volte dalla prima e due volte
+dalla seconda, la $x$ sparisce da entrambe, e restano $-4y - 8z = -39$ e $-y -
+5z = -18$. Tolta quattro volte la seconda di queste dalla prima, sparisce anche
+la $y$: resta $12z = 33$, cioè $z = 2{,}75$. Da lì si risale: la $z$ nota dà $y
+= 4{,}25$, e le due insieme danno $x = 9{,}25$. Il tavoliere alla fine ha la
+forma di una scaletta: la prima riga con tre incognite, la seconda con due,
+l'ultima con una.
 
 Il costo si conta a occhio. Per far sparire un'incognita da una riga servono
 tanti prodotti quante sono le colonne; le righe da ripulire sono quasi tutte,
@@ -177,13 +190,14 @@ grosso.
 `````{tab} Superiore
 
 Le tre operazioni elementari di riga (scambio $R_i\leftrightarrow R_j$,
-scalatura $R_i \leftarrow \alpha R_i$ con $\alpha\neq 0$, combinazione
-$R_i \leftarrow R_i + \alpha R_j$) sono invertibili, quindi preservano
-l'insieme delle soluzioni. Si applicano alla matrice aumentata
+scalatura $R_i \leftarrow \alpha R_i$ con $\alpha\neq 0$, combinazione $R_i
+\leftarrow R_i + \alpha R_j$) sono invertibili, quindi preservano l'insieme
+delle soluzioni. Si applicano alla matrice aumentata
 $[\,\mathbf{A}\mid\mathbf{b}\,]\in\mathbb{R}^{m\times(n+1)}$ e la portano in
-forma a scala ridotta per righe: in ogni riga non nulla il primo
-coefficiente diverso da zero vale $1$ (si chiama **pivot**), sta a destra del
-pivot della riga sopra, ed è l'unico elemento non nullo della sua colonna.
+forma a scala per righe: in ogni riga non nulla il primo coefficiente diverso da
+zero (il **pivot**) sta a destra del pivot della riga sopra. Nella forma
+ridotta, a cui si arriva proseguendo l'eliminazione verso l'alto (Gauss-Jordan),
+ogni pivot vale $1$ ed è l'unico elemento non nullo della sua colonna.
 
 Il numero di pivot è un invariante della matrice, e prende il nome di
 **rango**. Le colonne senza pivot corrispondono alle variabili libere:
@@ -215,8 +229,8 @@ covone, la seconda $4\tfrac{1}{4}$, la terza $2\tfrac{3}{4}$.
 ```python
 import numpy as np
 
-# I "Nove capitoli", problema 8.1. Una riga per pesata, una colonna per
-# qualita' di grano; a destra le rese osservate.
+# I "Nove capitoli", problema 8.1. Una riga per resa, una colonna per
+# qualità di grano; a destra le rese osservate.
 A = np.array([[3.0, 2.0, 1.0],
               [2.0, 3.0, 1.0],
               [1.0, 2.0, 3.0]])
@@ -227,13 +241,14 @@ print(x)                          # -> [9.25 4.25 2.75]
 print(np.allclose(A @ x, b))      # rimessa dentro, la soluzione torna -> True
 ```
 
-## Tre esiti, e quello di mezzo è il più interessante
+## Una soluzione, nessuna, infinite
 
-Un sistema lineare può comportarsi in tre modi soltanto, e un quarto non
-esiste: o c'è esattamente una soluzione, o non ce n'è nessuna, o ce ne sono
-infinite. Non capita mai che ce ne siano due e basta, e la ragione si vede
-bene: se $\mathbf{u}$ e $\mathbf{v}$ risolvono, risolve anche ogni punto della
-retta che le congiunge.
+Un sistema lineare può comportarsi in tre modi soltanto, e un quarto non esiste:
+o c'è esattamente una soluzione, o non ce n'è nessuna, o ce ne sono infinite.
+Non capita mai che ce ne siano due e basta, perché $\mathbf{A}$ è lineare: se
+$\mathbf{A}\mathbf{u}=\mathbf{b}$ e $\mathbf{A}\mathbf{v}=\mathbf{b}$, ogni
+punto $t\mathbf{u}+(1-t)\mathbf{v}$ della retta che li congiunge dà
+$t\mathbf{b}+(1-t)\mathbf{b}=\mathbf{b}$.
 
 `````{tab} Elementare
 
@@ -328,15 +343,16 @@ un problema di algebra lineare a uno di programmazione lineare, e da lì al
 trasporto fra distribuzioni.
 
 Questo schema, dove si osservano i marginali di una tabella e si vorrebbe
-ricostruire la tabella, ricompare in tutto il libro sotto altri nomi: è la
-ragione per cui conoscere due distribuzioni separate non determina la loro
-congiunta, ed è la struttura del problema che la {doc}`sezione sul flow
-matching </ModelliDiffusione/flow-matching>` incontrerà nella forma del
+ricostruire la tabella, ricompare sotto altri nomi, per esempio nel trasporto
+fra distribuzioni: è la ragione per cui conoscere due distribuzioni separate non
+determina la loro congiunta, ed è la struttura del problema che la {doc}`sezione
+sul flow matching </ModelliDiffusione/flow-matching>` incontrerà nella forma del
 trasporto fra due distribuzioni.
 
 `````
 
 ```python
+import numpy as np
 # La tabella dell'editore: quattro caselle, quattro vincoli.
 # Ordine delle incognite: x11, x12, x21, x22.
 M = np.array([[1.0, 1.0, 0.0, 0.0],    # titolo 1: x11 + x12 = 90
@@ -358,21 +374,24 @@ for s in (40.0, 55.0):
 
 ## Dove la matrice arriva, e che cosa lascia indietro
 
-Le due domande di poco fa (esiste una soluzione? è una sola?) si decidono
-guardando la sola matrice: è lei a dire quali termini noti ammettono una
-risposta, e quante ne ammettono quando ne ammettono. Sono due insiemi, e
-stanno da parti opposte: uno vive nello spazio di arrivo, l'altro in quello di
-partenza.
+Le due domande di poco fa (esiste una soluzione? è una sola?) dipendono dalla
+matrice $\mathbf{A}\in\mathbb{R}^{m\times n}$ attraverso due sottospazi: la sua
+immagine, in $\mathbb{R}^m$, dice quali termini noti $\mathbf{b}$ ammettono
+almeno una soluzione; il suo nucleo, in $\mathbb{R}^n$, dice quante ne ammettono
+quando ne ammettono una.
 
 ```{figure} ../figures/immagine-e-nucleo.svg
 :name: fig-immagine-nucleo
-:alt: "Il sole in alto a sinistra, con i suoi raggi paralleli; al centro un cubo di filo che rappresenta lo spazio di partenza con le sue tre direzioni, a destra il muro dello spazio di arrivo. Un raggio di luce attraversa il cubo: due punti distinti che stanno sullo stesso raggio cadono in un unico punto del muro, e la freccia che li unisce porta l'etichetta «nucleo». Sul muro una regione ovale in verde petrolio è marcata «immagine, le ombre che si possono fare», mentre più in basso una crocetta segna una sagoma fuori portata. In fondo il conto: tre direzioni di partenza uguale due che arrivano sul muro più una che si perde nel nucleo."
+:alt: "Il sole in alto a sinistra, con i suoi raggi paralleli; al centro un cubo di filo che rappresenta lo spazio di partenza con le sue tre direzioni, a destra il muro dello spazio di arrivo. Un raggio di luce attraversa il cubo: due punti distinti che stanno sullo stesso raggio cadono in un unico punto del muro, e la freccia che li unisce porta l'etichetta «nucleo». Il muro intero, in verde petrolio, è marcato «immagine: il piano del muro», mentre davanti al muro, fuori dal suo piano, una crocetta segna un punto che non è l'ombra di niente. In fondo il conto: tre direzioni di partenza uguale due che danno il muro, cioè l'immagine, più una che si perde nel nucleo."
 :width: 88%
 
-L'immagine e il nucleo di una trasformazione, disegnati come l'ombra di un
-oggetto su un muro. Sul muro esiste una regione che si può raggiungere e una
-che resta fuori portata; nello spazio dell'oggetto esiste una direzione lungo
-cui ci si può spostare senza che l'ombra cambi di un millimetro.
+Immagine e nucleo di una trasformazione lineare dello spazio in sé, di rango
+due, disegnati come l'ombra di un punto su un muro. Il sole proietta ogni punto
+sul piano del muro lungo raggi paralleli. L'immagine è l'insieme dei punti che
+stanno sul muro, un piano dentro lo spazio a tre dimensioni: un punto che sta
+davanti al muro non è l'ombra di niente. Il nucleo è la direzione dei raggi: due
+punti sullo stesso raggio hanno la stessa ombra, e spostarsi lungo il raggio non
+la muove.
 ```
 
 `````{tab} Elementare
@@ -381,14 +400,11 @@ Al sole, metti un oggetto davanti a un muro: sul muro compare un'ombra. La
 trasformazione che una matrice compie assomiglia molto a questo, e
 {numref}`fig-immagine-nucleo` la disegna così.
 
-Che cosa si può ottenere sul muro. Muovendo l'oggetto in tutti i modi
-possibili si ottengono tante ombre diverse, ma non tutte le sagome
-immaginabili: la direzione dei raggi e la forma dell'oggetto decidono un
-repertorio, e
-fuori da quello non si va. Se il cliente porta una sagoma che nel repertorio
-non c'è, non esiste posizione dell'oggetto che la produca. Questo repertorio
-è l’**immagine** della trasformazione, ed è la risposta alla prima domanda:
-il sistema ha soluzione soltanto se il termine noto sta lì dentro.
+Che cosa si può ottenere sul muro. Ogni punto dello spazio ha la sua ombra, e le
+ombre stanno tutte sul piano del muro: un punto che sta davanti o dietro il muro
+non è l'ombra di niente. Il piano del muro è l’**immagine** della
+trasformazione, ed è la risposta alla prima domanda: il sistema ha soluzione
+soltanto se il termine noto sta lì sopra.
 
 Che cosa il muro non registra. Fissa un punto dell'oggetto e fallo scorrere
 lungo il raggio di sole che lo illumina: la sua ombra resta inchiodata
@@ -403,11 +419,10 @@ punto avrebbe la sua direzione invisibile, e l'ombra smetterebbe di essere una
 trasformazione di questo tipo.
 
 Le due cose stanno in un rapporto stretto, e il conto è il seguente. Un punto
-può scorrere in tre direzioni indipendenti (avanti, di lato, in alto); se una
-di queste è invisibile, sul muro se ne vedono due, e le ombre che si possono
-ottenere coprono una superficie piatta e non di più. Le direzioni di partenza si
-ripartiscono fra quelle che si perdono e quelle che arrivano, e la somma torna
-sempre: due più uno fa tre.
+può scorrere in tre direzioni indipendenti (avanti, di lato, in alto); se una di
+queste è invisibile, sul muro se ne vedono due, e sono le due direzioni del
+piano del muro. Le direzioni di partenza si ripartiscono fra quelle che si
+perdono e quelle che arrivano, e la somma torna sempre: due più uno fa tre.
 
 Dalla scena si porta via una morale che vale ben oltre le ombre. Se una
 direzione finisce nel nucleo, nessuna quantità di osservazioni la potrà mai
@@ -441,8 +456,8 @@ $$
 
 Entrambi contengono l'origine e sono chiusi rispetto a somma e moltiplicazione
 per uno scalare, cioè sono sottospazi vettoriali a pieno titolo. Nel disegno di
-{numref}`fig-immagine-nucleo` il primo è la regione raggiungibile del muro, il
-secondo la direzione lungo il raggio di luce.
+{numref}`fig-immagine-nucleo` il primo è il piano del muro, il secondo la
+direzione lungo il raggio di luce.
 
 Con questi due oggetti le domande di prima diventano enunciati secchi. Il
 sistema è compatibile se e solo se $\mathbf{b}\in\operatorname{im}(\mathbf{A})$.
@@ -484,9 +499,11 @@ aggiuntiva, non un risultato.
 
 ## Il rango: quante direzioni davvero diverse
 
-Sotto tutti i ragionamenti fatti finora c'è un numero solo, e adesso merita di
-essere guardato per sé: è la grandezza che il resto del libro nomina più
-spesso.
+Un numero torna in tutto quello che segue: il rango della matrice, cioè il
+massimo numero di colonne linearmente indipendenti, quante ne restano scartando,
+una alla volta, quelle che si ottengono combinando le precedenti. Dice in quante
+direzioni indipendenti varia una tabella di dati, e per questo torna ogni volta
+che una tabella va compressa.
 
 `````{tab} Elementare
 
@@ -513,9 +530,10 @@ di conseguenza: una tabella di duecento righe per trecento colonne ne contiene
 sessantamila, ma se la si ottiene facendo passare i dati per una strettoia a
 quattro corsie i numeri diventano duemila, trenta volte di meno.
 
-È esattamente la mossa con cui oggi si adattano i modelli linguistici a un
-compito nuovo senza riaddestrarli: si lasciano fermi i numeri già imparati e
-si affianca loro una correzione che passa per una strettoia stretta. La
+È la mossa su cui si regge LoRA, uno dei modi di adattare un modello linguistico
+a un compito nuovo senza riaddestrarlo tutto: si lasciano fermi i numeri già
+imparati e si affianca loro una correzione che passa per una strettoia stretta.
+La
 {doc}`sezione su ciò che viene dopo il pre-addestramento
 </Transformers/post-training>` la racconta per esteso; qui interessa il conto
 che la rende possibile, e il conto è tutto qui.
@@ -563,9 +581,9 @@ $$
 
 che è la disuguaglianza dietro ogni collo di bottiglia: fattorizzando
 $\mathbf{W}\in\mathbb{R}^{m\times n}$ come $\mathbf{B}\mathbf{A}$ con
-$\mathbf{B}\in\mathbb{R}^{m\times r}$ e $\mathbf{A}\in\mathbb{R}^{r\times n}$
-si passa da $mn$ parametri a $r(m+n)$, e in cambio si rinuncia a tutte le
-matrici di rango maggiore di $r$. È l'aritmetica di LoRA, delle
+$\mathbf{B}\in\mathbb{R}^{m\times r}$ e $\mathbf{A}\in\mathbb{R}^{r\times n}$ si
+passa da $mn$ parametri a $r(m+n)$, e in cambio si rinuncia a tutte le matrici
+di rango maggiore di $r$. È l'aritmetica di LoRA {cite}`hu2022lora`, delle
 raccomandazioni per fattorizzazione e degli autoencoder lineari.
 
 Nell'aritmetica in virgola mobile il rango così definito è una quantità
@@ -581,6 +599,7 @@ teorema dell’{doc}`approssimazione di rango basso
 `````
 
 ```python
+import numpy as np
 # rango pieno, rango carente, e il collo di bottiglia
 rng = np.random.default_rng(0)
 
@@ -589,7 +608,7 @@ print(W_stretta.shape, np.linalg.matrix_rank(W_stretta))   # -> (200, 300) 4
 
 print(200 * 300, 200 * 4 + 4 * 300)   # numeri da regolare -> 60000 2000
 
-# la terza riga e' la somma delle prime due: tre righe, due direzioni
+# la terza riga è la somma delle prime due: tre righe, due direzioni
 T = np.array([[1.0, 2.0, 3.0],
               [0.0, 1.0, 1.0],
               [1.0, 3.0, 4.0]])
@@ -601,17 +620,20 @@ print(np.linalg.matrix_rank(T.T))     # -> 2
 
 ## Quando le equazioni sono più delle incognite
 
-Nei problemi visti finora i vincoli erano pochi o giusti. Nel machine
-learning il caso normale è l'opposto: le equazioni sono migliaia (una per
-esempio osservato) e le incognite poche (i parametri del modello). Un sistema
-del genere non ha quasi mai soluzione, perché i dati portano rumore e nessuna
-retta passa esattamente per mille punti sparsi.
+Nei problemi visti finora i vincoli erano pochi o giusti. Nel machine learning
+classico (regressione, modelli lineari e additivi) il caso frequente è
+l'opposto: le equazioni sono migliaia (una per esempio osservato) e le incognite
+poche (i parametri del modello). Un sistema del genere non ha quasi mai
+soluzione, perché i dati portano rumore e nessuna retta passa esattamente per
+mille punti sparsi. In una rete che ha più parametri che esempi accade il
+contrario: le soluzioni esatte sono infinite.
 
 Rinunciare sarebbe assurdo, e la domanda si cambia: se non si può azzerare
 l'errore, si cerca la scelta che lo rende più piccolo possibile. La
 {doc}`sezione su ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`
-risponde a questa domanda, e la risposta ha una forma geometrica sorprendente,
-che è poi la stessa ombra del sole sul muro.
+risponde a questa domanda, e la risposta è una costruzione geometrica: il punto
+dell'immagine di $\mathbf{A}$ più vicino a $\mathbf{b}$ è la sua proiezione
+ortogonale, l'ombra che darebbe un sole a picco.
 
 ## In pratica, con NumPy
 
@@ -625,16 +647,37 @@ b = np.array([39.0, 34.0, 26.0])
 
 np.linalg.solve(A, b)        # sistema quadrato non singolare
 np.linalg.matrix_rank(A)     # rango numerico -> 3
-np.linalg.lstsq(A, b, rcond=None)[0]   # funziona anche se A e' singolare
+np.linalg.lstsq(A, b, rcond=None)[0]   # funziona anche se A è singolare
                                        # o rettangolare: minimi quadrati
 ```
 
-`solve` pretende una matrice quadrata e invertibile, e su una matrice
-singolare solleva `LinAlgError`. `lstsq` non si ferma mai: restituisce una
-soluzione anche quando ce ne sono infinite (sceglie quella di norma minima) e
-anche quando non ce n'è nessuna (sceglie quella che minimizza l'errore). È
-comodo e va saputo, perché una risposta arriva comunque e sta a chi legge
-sapere a quale delle tre situazioni corrisponde.
+`solve` pretende una matrice quadrata e invertibile, cioè con il nucleo ridotto
+al solo zero (una matrice che non lo è si dice *singolare*), e solleva l'errore
+`LinAlgError` solo se durante la fattorizzazione incontra un pivot esattamente
+nullo: su una matrice singolare a meno degli arrotondamenti, la situazione
+normale con dati reali, non dice niente e restituisce un vettore enorme. `lstsq`
+non si ferma mai: restituisce una soluzione anche quando ce ne sono infinite
+(sceglie quella di norma minima) e anche quando non ce n'è nessuna (sceglie
+quella che minimizza l'errore). È comodo e va saputo, perché una risposta arriva
+comunque e sta a chi legge sapere a quale delle tre situazioni corrisponde. Due
+colonne uguali a meno di un'unità di macchina bastano a vederlo:
+
+```python
+import numpy as np
+u = 2.0 ** -52                                  # un'unità di macchina
+A = np.array([[1.0, 1.0], [1.0, 1.0 + u]])      # due colonne quasi uguali
+b = np.array([1.0, 2.0])
+print(np.linalg.matrix_rank(A))                 # rango numerico
+print(np.linalg.solve(A, b))                    # nessun errore, numeri enormi
+x = np.linalg.lstsq(A, b, rcond=None)[0]
+print(np.round(x, 2), round(np.linalg.norm(A @ x - b), 2))  # e il suo residuo
+```
+
+```text
+1
+[-4.50359963e+15  4.50359963e+15]
+[0.75 0.75] 0.71
+```
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -647,15 +690,16 @@ sapere a quale delle tre situazioni corrisponde.
   cambiano le risposte: scambiare due equazioni, moltiplicarne una per un
   numero diverso da zero, sommare a una il multiplo di un'altra. Si fanno
   sparire le incognite una alla volta finché non resta una scaletta.
-- Gli esiti sono tre e solo tre: una soluzione, nessuna, oppure infinite.
-  Quando le equazioni si ripetono travestite (i totali di riga e di colonna di
-  una tabella sono un caso classico) restano dei gradi di libertà, e i dati da
-  soli non bastano a scegliere.
-- L’immagine è il repertorio delle ombre ottenibili, e dice se una
-  richiesta si può soddisfare; il nucleo è la direzione lungo cui l'oggetto
-  si sposta senza che l'ombra cambi, e dice che quell'informazione all'arrivo
-  è perduta per sempre. Le direzioni di partenza si dividono fra le due, e la
-  somma torna.
+- Gli esiti sono tre e solo tre: una soluzione, nessuna, oppure infinite. Quando
+  le equazioni si ripetono travestite (i totali di riga e di colonna di una
+  tabella sono un caso classico) restano delle scelte libere, e i dati da soli
+  non bastano a scegliere.
+- Quando le equazioni sono più delle incognite, di solito una soluzione esatta
+  non c'è, e si cerca quella che sbaglia di meno.
+- L’immagine è il piano delle ombre ottenibili, e dice se una richiesta si può
+  soddisfare; il nucleo è la direzione lungo cui l'oggetto si sposta senza che
+  l'ombra cambi, e dice che quell'informazione all'arrivo è perduta per sempre.
+  Le direzioni di partenza si dividono fra le due, e la somma torna.
 - Il rango conta quante righe (o colonne, che è lo stesso) portano
   qualcosa di nuovo. Una tabella grande di rango basso è grande solo
   all'apparenza: si riscrive come un passaggio attraverso una strettoia, e i
@@ -671,7 +715,7 @@ sapere a quale delle tre situazioni corrisponde.
   come combinazione lineare delle colonne). La seconda lettura risponde da
   sola all'esistenza.
 - L’eliminazione di Gauss applica operazioni di riga invertibili alla
-  matrice aumentata e la porta in forma a scala ridotta; costa
+  matrice aumentata e la porta in forma a scala; costa
   $\Theta(n^3)$, richiede pivoting parziale per stabilità, e va preferita al
   calcolo esplicito di $\mathbf{A}^{-1}$.
 - Rouché–Capelli: il sistema è compatibile se e solo se
@@ -692,9 +736,9 @@ sapere a quale delle tre situazioni corrisponde.
 ```
 `````
 
-Con i sistemi lineari l'algebra lineare smette di essere solo un modo di
-impacchettare i dati e diventa un modo di interrogarli: che cosa questa
-trasformazione può produrre, che cosa perde, quante informazioni davvero
-distinte contiene. Restava sospesa una domanda, quella dei sistemi con troppe
-equazioni, e la risposta cambia geometria: invece di cercare il punto esatto
-si cerca il più vicino, che è il mestiere delle proiezioni.
+I sistemi lineari hanno dato tre domande da porre a una trasformazione: che cosa
+produce (l'immagine), che cosa perde (il nucleo), quante direzioni indipendenti
+conserva (il rango). Resta il caso più comune nei dati, quello con più equazioni
+che incognite, dove nessuna soluzione esatta esiste: invece di cercare il punto
+che soddisfa $\mathbf{A}\mathbf{x}=\mathbf{b}$ si cerca il punto dell'immagine
+di $\mathbf{A}$ più vicino a $\mathbf{b}$, ed è il mestiere delle proiezioni.

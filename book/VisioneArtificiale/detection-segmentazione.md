@@ -5,8 +5,8 @@ classificazione, di quelle viste finora, sa dirle una cosa sola:
 *nell'immagine c'è un pedone*. Vero, ma inutile. Per frenare in tempo l'auto
 deve sapere dove si trova quel pedone, se è uno o sono tre, se quello a
 destra è un ciclista, e (al limite) quale sagoma esatta occupa sull'asfalto.
-La classificazione risponde alla domanda «cosa»; qui impariamo a rispondere
-anche a «dove» e «quali contorni».
+La classificazione risponde alla domanda «che cosa»; il rilevamento e la
+segmentazione rispondono anche a «dove, nella foto» e «con quali contorni».
 
 ## Dalla classificazione al riquadro
 
@@ -22,15 +22,14 @@ un riquadro e un'etichetta.
 
 Stessa foto, tre uscite: classificazione, rilevamento e segmentazione
 semantica, cioè tre dei quattro compiti classici. Salendo da sinistra a destra
-cresce la precisione della risposta e, con essa, il costo di annotare i dati
-per addestrarla.
+cresce la precisione della risposta.
 ```
 
-La progressione di {numref}`fig-tre-uscite` va letta anche al contrario, cioè
-dal lato dei dati. Un'etichetta per foto la scrive chiunque in un secondo; un
-riquadro richiede di trascinare il mouse; una maschera pixel per pixel costa
-minuti a immagine. È spesso questo, e non l'architettura, a decidere quale dei
-tre compiti si può davvero affrontare.
+La progressione di {numref}`fig-tre-uscite` ha un prezzo, già messo in fila fra
+i {doc}`compiti della visione <overview>`: un'etichetta per foto si scrive in
+un secondo, un riquadro va trascinato col mouse, una maschera pixel per pixel
+costa minuti a immagine. È spesso questo, e non l'architettura, a decidere
+quale dei tre compiti si può davvero affrontare.
 
 `````{tab} Elementare
 
@@ -48,14 +47,15 @@ guardare non lo sa. Allora tiene pronte tantissime cornici sparse su tutta la
 foto e le riempie tutte, sapendo che per la stragrande maggioranza la risposta
 giusta è "qui non c'è niente".
 
-Chi lo corregge, mentre impara, somma tre penalità: la cornice storta, il nome
-sbagliato, la sicurezza fuori posto. E non pesano uguale, perché il rapporto si
-sceglie prima di cominciare: in uno dei primi rilevatori era di dieci a uno fra
-una cornice storta attorno a un oggetto vero e un pizzico di sicurezza
-dichiarato su un pezzo di asfalto vuoto. I pezzi di asfalto vuoto sono
-migliaia, e se contassero quanto gli altri il rilevatore imparerebbe la
-scorciatoia più comoda del mondo, cioè rispondere "niente" dappertutto e avere
-quasi sempre ragione.
+Mentre impara, a ogni foto il rilevatore riceve tre penalità e le somma: una per
+la cornice storta, una per il nome sbagliato, una per la sicurezza fuori posto,
+cioè per aver detto «qui c'è qualcosa» dove c'era soltanto asfalto, o il
+contrario. Le tre non pesano uguale, e il rapporto si sceglie prima di
+cominciare: in uno dei primi rilevatori l'errore sulla cornice di un oggetto
+vero contava dieci volte più di un po’ di sicurezza spesa su una casella vuota.
+Le caselle vuote sono migliaia, e se contassero quanto le altre il rilevatore
+imparerebbe la scorciatoia più comoda del mondo, cioè rispondere "niente"
+dappertutto e avere quasi sempre ragione.
 
 `````
 
@@ -97,9 +97,10 @@ questa cardinalità ignota è il vero nodo architetturale della detection.
 ## Due stadi contro uno stadio
 
 Storicamente i rilevatori si dividono in due famiglie, e la differenza è un
-classico compromesso tra accuratezza e velocità. Semplificando: gli uni
-guardano l'immagine due volte, prima per capire dove conviene guardare e poi
-per guardarci davvero; gli altri una volta sola.
+classico compromesso tra accuratezza e velocità. Gli uni procedono in due passi:
+prima propongono le zone dove conviene guardare, poi esaminano ciascuna zona per
+dire che cosa contiene e correggerne la cornice. Gli altri fanno tutto in un
+passo solo.
 
 ```{figure} ../figures/yolo-2016.svg
 :name: fig-yolo
@@ -111,15 +112,14 @@ L'approccio a stadio singolo, cioè una sola passata sull'immagine. La griglia
 ```
 
 Guardiamo la seconda famiglia, quella della passata unica, perché
-{numref}`fig-yolo` rende evidente cosa si guadagna e cosa si perde. Guardare
-l'immagine una volta sola è quello che rende possibile il tempo reale; il prezzo
-lo si legge nella griglia disegnata sopra la foto. Quella griglia è una
-divisione del lavoro decisa prima di guardare, in cui ogni
-casella (una cella) si prende la responsabilità degli oggetti che le cadono
-dentro. E siccome a ogni cella si concede in partenza un numero fisso di
-riquadri, di solito due, oggetti piccoli e ammassati nella stessa cella se li
-contendono: il terzo passerotto dello stormo non ha una cornice a
-disposizione.
+{numref}`fig-yolo` rende evidente cosa si guadagna e cosa si perde. Fare tutto
+in una passata sola è quello che rende possibile il tempo reale; il prezzo lo si
+legge nella griglia disegnata sopra la foto. Quella griglia è una divisione del
+lavoro decisa prima di guardare, in cui ogni casella (una cella) si prende la
+responsabilità degli oggetti che le cadono dentro. E siccome a ogni cella si
+concede in partenza un numero fisso di riquadri, due nel primo YOLO, oggetti
+piccoli e ammassati nella stessa cella se li contendono: il terzo passerotto
+dello stormo non ha una cornice a disposizione.
 
 `````{tab} Elementare
 
@@ -133,30 +133,41 @@ sull'immagine sputa fuori direttamente cornici ed etichette. A lungo sono stati
 meno precisi sui casi difficili, ma abbastanza rapidi da lavorare in tempo
 reale su un video, ed è per questo che si chiama YOLO, *You Only Look Once*.
 
-La ragione di quella minore precisione sta in un conto. Chi guarda una volta
-sola deve dare una risposta per ogni casella dell'immagine, e le caselle
-con dentro un oggetto sono una manciata contro decine di migliaia di asfalto,
-cielo e muro. Alla correzione arrivano così diecimila risposte quasi tutte
-uguali e quasi tutte facili: sommate, seppelliscono le poche difficili, e il
-rilevatore impara benissimo a dire "niente" e molto peggio tutto il resto.
-Abbassare in blocco il peso di tutte le risposte vuote, come si faceva
-all'inizio, aiuta e non basta: fra quelle vuote ce ne sono migliaia di ovvie e
-qualcuna insidiosa, e un peso unico le tratta allo stesso modo. Il rimedio,
-trovato nel 2017, cambia il modo di correggere invece dell'architettura: una
-risposta facile, di quelle su cui il rilevatore ha già ragione ed è pure sicuro,
-conta quasi zero, e a decidere la lezione restano i pochi casi su cui sta
-ancora sbagliando. Da lì lo svantaggio in precisione si è in gran parte chiuso,
-e fra le due famiglie è rimasta soprattutto la differenza di velocità.
+La ragione di quella minore precisione sta in un conto. Il revisore in due tempi
+esamina con calma soltanto le zone sospette, e quasi tutto lo sfondo l'ha già
+scartato al primo passaggio. Chi guarda una volta sola deve invece dare una
+risposta per ogni casella dell'immagine, e le caselle con dentro un oggetto sono
+una manciata contro decine di migliaia di asfalto, cielo e muro. Alla correzione
+arrivano così diecimila risposte quasi tutte uguali e quasi tutte facili:
+sommate, seppelliscono le poche difficili, e il rilevatore impara benissimo a
+dire "niente" e molto peggio tutto il resto. Abbassare in blocco il peso di
+tutte le risposte vuote, come si faceva all'inizio, aiuta e non basta: fra
+quelle vuote ce ne sono migliaia di ovvie e qualcuna insidiosa, e un peso unico
+le tratta allo stesso modo. Il rimedio, trovato nel 2017, cambia il modo di
+correggere invece dell'architettura: una risposta facile, di quelle su cui il
+rilevatore ha già ragione ed è pure sicuro, conta quasi zero, e a decidere la
+lezione restano i pochi casi su cui sta ancora sbagliando. Da lì lo svantaggio
+in precisione si è in gran parte chiuso, e fra le due famiglie è rimasta
+soprattutto la differenza di velocità.
 
 `````
 
 `````{tab} Superiore
 
-La famiglia a due stadi nasce con R-CNN {cite}`girshick2014rich` e matura
-con Faster R-CNN {cite}`ren2015faster`, che introduce la *Region Proposal
-Network*: uno
-stadio propone regioni candidate, il secondo le classifica e ne raffina i
-riquadri. Accuratezza elevata, ma latenza maggiore.
+La famiglia a due stadi nasce con R-CNN {cite}`girshick2014rich`, che fa passare
+nella rete, una per una, le circa duemila regioni proposte per ogni immagine da
+un algoritmo esterno. Fast R-CNN {cite}`girshick2015fast` calcola le mappe di
+feature una volta sola sull'immagine intera e ne ritaglia le regioni con un *RoI
+pooling*, che porta ciascuna a una taglia fissa; Faster R-CNN
+{cite}`ren2015faster` sostituisce le proposte esterne con la *Region Proposal
+Network*, che lavora sulle stesse mappe. Uno stadio propone regioni candidate,
+il secondo le classifica e ne raffina i riquadri, e le mappe dell'immagine si
+calcolano una volta sola per tutti e due. Accuratezza elevata, ma latenza
+maggiore, perché il secondo stadio lavora regione per regione. Lo squilibrio fra
+oggetti e sfondo i due stadi lo aggirano per costruzione: il primo riduce le
+posizioni candidate da circa centomila a uno o duemila, scartando quasi tutto lo
+sfondo, e nel secondo si campiona un rapporto fisso fra oggetti e sfondo (uno a
+tre) oppure si scelgono gli esempi più difficili {cite}`lin2017focal`.
 
 La famiglia a uno stadio (YOLO {cite}`redmon2016you` e SSD
 {cite}`liu2016ssd`) elimina la fase di proposta: una sola rete convoluzionale
@@ -185,12 +196,13 @@ per il numero delle sole ancore positive.
 
 ## Le ancore: non partire da zero
 
-Le due famiglie condividono un problema, e la soluzione. Nello stesso punto
-dell'immagine possono trovarsi oggetti dalle forme opposte: un pedone alto e
-stretto, un'auto bassa e larga, un pallone quasi quadrato. Chiedere alla rete
-di disegnare il riquadro giusto partendo dal nulla è chiederle molto. La
-scorciatoia si chiama **anchor box**, l’"ancora": un riquadro di partenza già
-pronto, da correggere invece che da inventare.
+Le due famiglie condividono un problema, e per anni hanno condiviso anche la
+soluzione (il primo YOLO non l'aveva ancora, le versioni recenti l'hanno tolta).
+Nello stesso punto dell'immagine possono trovarsi oggetti dalle forme opposte:
+un pedone alto e stretto, un'auto bassa e larga, un pallone quasi quadrato.
+Chiedere alla rete di disegnare il riquadro giusto partendo dal nulla è
+chiederle molto. La scorciatoia si chiama **anchor box**, l’"ancora": un
+riquadro di partenza già pronto, da correggere invece che da inventare.
 
 ```{figure} ../figures/anchor-boxes.svg
 :name: fig-anchor-boxes
@@ -222,11 +234,11 @@ centimetri manderebbero la cornice del passerotto lontano dal passerotto e
 quella del camion appena appena, e la rete dovrebbe imparare un ritocco diverso
 per ogni taglia.
 
-Il confronto con il quadro, però, il corniciaio può farlo solo in bottega, sui
-quadri di prova di cui conosce già la cornice giusta: è lì che impara quale
-formato scegliere e di quanto ritoccarlo. Davanti a un quadro nuovo la cornice
-giusta non la conosce nessuno, e infatti la rete ritocca tutte le sue cornici,
-dicendo per ciascuna quanto è sicura che lì dentro ci sia qualcosa: alla fine
+Per imparare quale formato scegliere e di quanto ritoccarlo, il corniciaio ha
+bisogno di quadri di prova di cui conosce già la cornice giusta: mette la sua
+accanto a quella, e corregge la mano. Davanti a un quadro nuovo la cornice
+giusta non la conosce nessuno: allora la rete ritocca tutte le sue cornici,
+dicendo per ciascuna quanto è sicura che lì dentro ci sia qualcosa, e alla fine
 restano solo le più convinte.
 
 `````
@@ -267,9 +279,11 @@ produrre riquadri di ogni forma.
 
 ## Quanto è buona una predizione? IoU e mAP
 
-Un riquadro predetto non è mai esattamente sovrapposto a quello vero. Serve una
-misura numerica di "quanto ci ha preso". Quella misura è l’**Intersection over
-Union**.
+Un riquadro predetto non è mai esattamente sovrapposto a quello vero, e la
+misura di quanto ci ha preso è quella già incontrata fra i compiti della
+visione: l’**Intersection over Union**, l'area in comune divisa per l'area
+coperta in tutto. Qui serve a qualcosa di più, il voto complessivo di un
+rilevatore.
 
 ```{figure} ../figures/iou.svg
 :name: fig-iou
@@ -294,11 +308,9 @@ toccano nemmeno.
 
 Il correttore deve stabilire a che punto una cornice vale come buona. La regola
 solita è la metà: da 0,5 in su passa. Quella metà l'ha fissata una convenzione,
-e sposta i verdetti. Portandola a 0,7 o a 0,9 la classifica fra due rilevatori
-può ribaltarsi, perché chi azzecca sempre il nome ma disegna cornici
-approssimative crolla molto più in fretta di chi le disegna precise. Nelle gare
-serie il correttore rifà quindi il conto con dieci soglie, da 0,5 a 0,95, e fa
-la media dei dieci verdetti: nessuno si presenta col metro tagliato su misura.
+e sposta i verdetti: portata a 0,7 o a 0,9, la classifica fra due rilevatori può
+ribaltarsi, perché chi azzecca sempre il nome ma disegna cornici approssimative
+crolla molto più in fretta di chi le disegna precise.
 
 Mettiamo che in una foto i cani siano tre, e che il rilevatore consegni cinque
 cornici in fila, dalla più sicura alla meno sicura. Il correttore le prende in
@@ -312,29 +324,33 @@ Diciamo che siano giuste la prima e le ultime due: le fermate sono tre, 1 su 1,
 cioè 1; poi 2 su 4, cioè 0,50; poi 3 su 5, cioè 0,60. I tre numeri ballano,
 perché ogni cornice sbagliata li tira giù e la giusta che viene dopo li rialza,
 su e giù come i denti di una sega. Prima di sommarli il correttore li
-appiattisce, e la regola sta in una riga: al posto del numero di quel momento si
-prende il più alto fra quello e tutti quelli che vengono dopo. I tre diventano
-1, 0,60 e 0,60. Così il voto dipende meno dal caso: basta che due cornici quasi
-ugualmente sicure si scambino di posto nella fila perché i denti della sega si
-spostino, mentre il più alto fra adesso e dopo spesso resta dov'era. Non sempre:
-se le prime due cornici si scambiassero, la prima fermata cadrebbe a 1 su 2, e
-appiattita varrebbe 0,60 invece di 1. Ed è un conto onesto, perché è la
-precisione migliore che il correttore troverebbe accettando di andare un po’ più
-avanti nella fila.
+appiattisce: al posto del numero di quel momento prende il più alto fra quello e
+tutti quelli che vengono dopo. I tre diventano 1, 0,60 e 0,60. È la precisione
+migliore che troverebbe accettando di andare un po’ più avanti nella fila, fino
+a una cornice giusta successiva. E rende il voto meno capriccioso: se due
+cornici quasi ugualmente sicure si scambiano di posto, i denti della sega si
+spostano, mentre il più alto fra adesso e dopo spesso resta dov'era. Spesso, non
+sempre: se si scambiassero le prime due cornici, la prima fermata cadrebbe a 1
+su 2, e appiattita varrebbe 0,60 invece di 1.
 
 La somma fa 2,20, e si divide per tre, cioè per i cani che c'erano davvero, non
 per le cinque cornici disegnate: 0,73. Un cane che nessuna cornice avesse
 cerchiato non aggiungerebbe niente alla somma e resterebbe comunque nel
-divisore. Chi disegna una
-cornice sola, la più sicura di tutte, tiene la precisione altissima e porta a
-casa un voto basso; chi ne disegna mille li cerchia tutti e tre e paga a ogni
-fermata gli errori che ha lasciato dietro. Quel 0,73 è il voto sui cani.
+divisore. Chi disegna una cornice sola, la più sicura di tutte, tiene la
+precisione altissima e porta a casa un voto basso; chi ne disegna mille li
+cerchia tutti e tre e paga a ogni fermata gli errori che ha lasciato dietro.
+Quel 0,73 è il voto sui cani, e si chiama **Average Precision** (AP), precisione
+media: è già una media, fatta sui cani veri. Non tutti i correttori, però, si
+fermano dove si ferma lui: c'è chi guarda la fila in undici punti fissati prima,
+e chi in centouno, e due voti contati con regole diverse non si mettono a
+confronto.
 
 Poi si rifà tutto sulle auto, sui semafori, sulle biciclette, e si fa la media
-di quei voti. È la seconda media, quella che dà la «m» di *mean* alla **mAP**.
-Ne esce un numero fra 0 e 1: più è alto, più spesso il rilevatore azzecca
-insieme la cornice e il nome, ed è il numero con cui due rilevatori si
-confrontano.
+dei voti delle varie categorie: è la «m» di *mean* della **mAP**, la media delle
+AP. Ne esce un numero fra 0 e 1: più è alto, più spesso il rilevatore azzecca
+insieme la cornice e il nome. Nelle gare serie il correttore rifà poi l'intero
+conto con dieci soglie, da 0,5 a 0,95, e fa la media delle dieci mAP: nessuno si
+presenta col metro tagliato su misura.
 
 `````
 
@@ -364,43 +380,62 @@ restano però diverse, e un AP a 11 punti non si confronta con uno a 101. La
 **mean Average Precision** (mAP) ne fa la media sulle classi. Il benchmark COCO
 irrigidisce la metrica mediando la mAP su dieci soglie di IoU, da $0{,}5$ a
 $0{,}95$ a passi di $0{,}05$: premia i modelli che localizzano con precisione,
-non solo che indovinano la classe.
+non solo che indovinano la classe. Per la stessa ragione, la scelta di una
+soglia sola pesa sulla classifica. Alzandola, una predizione che indovina la
+classe con un riquadro approssimativo, accettata a $0{,}5$, diventa un falso
+positivo e lascia il suo oggetto senza abbinamento; chi produce riquadri così
+perde AP più in fretta di chi localizza con precisione, e due rilevatori
+possono scambiarsi di posto, il primo avanti in $\text{AP}_{50}$, il secondo in
+$\text{AP}_{75}$ (l'AP alle soglie $0{,}5$ e $0{,}75$).
 
 `````
 
-Prima del verdetto, però, serve un passaggio di pulizia. La rete non produce un
-riquadro per oggetto: ne produce migliaia. In ogni punto della griglia tiene
-pronte le sue cornici di partenza, e i punti della griglia sono a loro volta
-migliaia. Il risultato è che attorno a ogni oggetto se ne accumulano decine
-quasi identiche, ciascuna con la sua **confidenza**, cioè il numero da 0 a 1
-con cui la rete dichiara quanto è sicura che lì dentro un oggetto ci sia
-davvero.
+Le predizioni che arrivano a questo conto, però, sono già state ripulite. La
+rete non produce un riquadro per oggetto: ne produce migliaia. In ogni punto
+della griglia tiene pronte le sue cornici di partenza, e i punti della griglia
+sono a loro volta migliaia. Il risultato è che attorno a ogni oggetto se ne
+accumulano decine quasi identiche, ciascuna con la sua **confidenza**, cioè il
+numero da 0 a 1 con cui la rete dichiara quanto è sicura che lì dentro un
+oggetto ci sia davvero.
 
 La **non-maximum suppression** (alla lettera «soppressione di ciò che non è il
-massimo», e in genere la si chiama NMS) le sfoltisce con una regola semplice:
-si ordinano i riquadri per confidenza, si tiene il più sicuro e si scartano
-tutti quelli che gli si sovrappongono troppo, poi si ripete sui rimasti finché
-non c'è più niente da esaminare. È il passo finale, quasi mai disegnato negli
+massimo», e in genere la si chiama NMS) le sfoltisce con una regola semplice,
+una classe alla volta: si ordinano i riquadri per confidenza, si tiene il più
+sicuro e si scartano tutti quelli che gli si sovrappongono oltre una soglia di
+IoU fissata in partenza (di solito fra 0,3 e 0,7), poi si ripete sui rimasti
+finché non c'è più niente da esaminare. Siccome ogni riquadro tenuto si
+confronta con tutti quelli rimasti, nel caso peggiore il lavoro cresce col
+quadrato del numero di riquadri. È il passo finale, quasi mai disegnato negli
 schemi, di praticamente ogni rilevatore delle due famiglie: senza, ogni oggetto
 arriverebbe alla valutazione con un grappolo di doppioni, e tutti tranne uno
 conterebbero come errori.
 
+Il suo punto debole sono le folle. Due persone vere, una un po’ dietro
+l'altra, hanno riquadri molto sovrapposti, e la regola cancella la meno sicura
+come se fosse un doppione. La Soft-NMS, invece di scartare, abbassa la
+confidenza dei riquadri sovrapposti tanto più quanto più si sovrappongono, e
+una persona vera parzialmente coperta ha così ancora una possibilità
+{cite}`bodla2017softnms`.
+
 C'è però una terza via, che il problema lo toglie invece di risolverlo. Una
 famiglia di rilevatori inaugurata nel 2020 da DETR {cite}`carion2020end` (sta
 per *detection transformer*) chiede alla rete un numero fisso di risposte, per
-esempio cento, e durante l'addestramento le abbina agli oggetti veri una a una:
-fra tutte le assegnazioni possibili sceglie quella di costo minimo (un
-*abbinamento bipartito*, che l’*algoritmo ungherese* trova in tempo
-polinomiale), dove il costo di una coppia premia la probabilità che la risposta
-dà alla classe giusta e punisce la distanza fra i due riquadri. Gli oggetti
-veri si completano con «nessun oggetto» fino a cento, e tutte le risposte
-rimaste sono premiate per dire «qui non c'è niente». Chi produce un doppione
-viene quindi punito mentre impara, non ripulito dopo, e alla fine
-dell'addestramento i doppioni non li produce più. Spariscono così sia le
-cornici di partenza sia la fase di pulizia. Il prezzo è stato un addestramento
-molto più lungo (500 epoche, contro le 109 del Faster R-CNN che il lavoro
-riallena per un confronto alla pari, e le 36 della sua versione di serie) e
-risultati peggiori sugli oggetti piccoli.
+esempio cento, e durante l'addestramento le abbina agli oggetti veri una a una,
+come si assegnano i posti a tavola: ogni oggetto vero riceve una risposta sola,
+nessuna risposta serve due oggetti, e fra tutte le assegnazioni possibili si
+sceglie quella che nel complesso sbaglia meno. Il costo di una coppia premia la
+probabilità che la risposta dà alla classe giusta e punisce la distanza fra i
+due riquadri. In gergo è un *abbinamento bipartito*, e l’*algoritmo ungherese*
+lo trova senza provare tutte le combinazioni, con un lavoro che cresce come il
+cubo del numero di risposte. Gli oggetti veri si completano con «nessun
+oggetto» fino a cento, e tutte le risposte rimaste sono premiate per dire «qui
+non c'è niente». Chi produce un doppione viene quindi punito mentre impara, non
+ripulito dopo, e alla fine dell'addestramento i doppioni non li produce più.
+Spariscono così sia le cornici di partenza sia la fase di pulizia. Il prezzo è
+stato un addestramento molto più lungo (500 epoche, contro le 109 del
+rilevatore a due stadi di riferimento, Faster R-CNN, che il lavoro riallena per
+un confronto alla pari, e le 36 della sua versione di serie) e risultati
+peggiori sugli oggetti piccoli.
 
 ## La famiglia YOLO: le impalcature tolte una alla volta
 
@@ -416,18 +451,20 @@ anche l'oggetto piccolo trova una griglia abbastanza fitta da vederlo, e al
 posto della softmax mette tanti classificatori indipendenti, uno per classe,
 perché la stessa figura può essere insieme «persona» e «pedone».
 
-Poi la famiglia si divide. Dal 2020 il nome lo portano due linee parallele:
-articoli di gruppi di ricerca (YOLOv4 nel 2020 e YOLOv7 nel 2022, degli stessi
-autori, e YOLOv10 nel 2024) e il software della società Ultralytics
-{cite}`jocher2026ultralytics`, la cui storia si legge nei registri delle
-versioni invece che negli articoli. YOLOv5 arriva così, libreria PyTorch senza
-paper; YOLOv8, nel 2023, toglie le ancore, predicendo direttamente centro e
-distanze dai bordi, come i rilevatori detti *anchor-free*; e YOLO26, all'inizio
-del 2026, toglie anche la NMS, punendo i doppioni durante l'addestramento con la
-stessa idea dell'abbinamento uno a uno di DETR, che nella famiglia era entrata
-con YOLOv10, un lavoro dell'Università Tsinghua: quello che la rete produce è
-già il risultato finale. Le due impalcature del mestiere, le ancore e la pulizia
-dei doppioni, la famiglia le ha prima usate e poi tolte tutte e due; restano la
+Poi la famiglia si divide, e il filo da tenere è uno: le due impalcature del
+mestiere, le ancore e la pulizia dei doppioni, la famiglia le ha prima adottate
+e poi tolte tutte e due. Dal 2020 il nome lo portano due linee parallele. Da una
+parte ci sono articoli di gruppi di ricerca (YOLOv4 nel 2020 e YOLOv7 nel 2022,
+degli stessi autori, e YOLOv10 nel 2024); dall'altra il software della società
+Ultralytics {cite}`jocher2026ultralytics`, la cui storia si legge soprattutto
+nei registri delle versioni: YOLOv5, una libreria PyTorch, un articolo non l'ha
+mai avuto, e quello di YOLO26 è uscito mesi dopo il software
+{cite}`jocher2026yolo26`. YOLOv8, nel 2023, toglie le ancore, predicendo
+direttamente centro e distanze dai bordi, come i rilevatori detti
+*anchor-free*. YOLO26, all'inizio del 2026, toglie anche la NMS: punisce i
+doppioni durante l'addestramento con la stessa idea dell'abbinamento uno a uno
+di DETR, che nella famiglia era entrata con YOLOv10, un lavoro dell'Università
+Tsinghua, e quello che la rete produce è già il risultato finale. Restano la
 griglia, la passata unica e il nome.
 
 Provare l'ultima versione costa cinque righe. La libreria si installa con
@@ -469,16 +506,17 @@ Il riquadro è comodo ma grossolano: attorno a un pedone c'è sempre un rettango
 pieno di sfondo. Quando serve il contorno esatto, pixel per pixel, si passa alla
 segmentazione. Qui vanno distinti due sapori.
 
-Prima però conviene guardare la forma che quasi tutte le reti di segmentazione
-hanno preso, e che si chiama **U-Net** perché sullo schema disegna una U. Il
-problema da risolvere è questo: per capire *che cosa* c'è in una zona bisogna
-allontanarsi dai pixel e guardare largo, mentre per disegnarne il contorno
-esatto bisogna starci attaccati. Sono due esigenze opposte, e la U-Net non
-sceglie. Prima scende, rimpicciolendo l'immagine e capendo sempre meglio che
-cosa c'è; poi risale, tornando alla risoluzione di partenza per dire dove; e a
-ogni gradino della risalita si fa ripassare quello che aveva visto allo stesso
-gradino durante la discesa. Sono le connessioni orizzontali della figura, le
-**skip connection**: senza di quelle, il contorno tornerebbe su sfocato.
+Prima, però, una forma che molte reti di segmentazione condividono: un ramo che
+riassume l'immagine e uno che la ricostruisce, e la più nota si chiama **U-Net**
+{cite}`ronneberger2015u` perché sullo schema disegna una U. Il problema da
+risolvere è questo: per capire *che cosa* c'è in una zona bisogna allontanarsi
+dai pixel e guardare largo, mentre per disegnarne il contorno esatto bisogna
+starci attaccati. Sono due esigenze opposte, e la U-Net non sceglie. Prima
+scende, rimpicciolendo l'immagine e capendo sempre meglio che cosa c'è; poi
+risale, tornando alla risoluzione di partenza per dire dove; e a ogni gradino
+della risalita si fa ripassare quello che aveva visto allo stesso gradino
+durante la discesa. Sono le connessioni orizzontali della figura, le **skip
+connection**: senza di quelle, il contorno tornerebbe su sfocato.
 
 ```{figure} ../figures/u-net-clessidra-con-skip.svg
 :name: fig-unet
@@ -490,8 +528,8 @@ perde *dove*; le connessioni orizzontali riportano il «dove» dal ramo di
 discesa a quello di risalita.
 ```
 
-Le linee tratteggiate di {numref}`fig-unet` sono esattamente quel rammendo: la
-rete fa le due cose incompatibili su due rami, e li ricuce a ogni livello.
+In {numref}`fig-unet` le skip connection sono le linee tratteggiate: la rete fa
+le due cose incompatibili su due rami, e a ogni livello li ricuce.
 
 `````{tab} Elementare
 
@@ -519,8 +557,8 @@ La segmentazione semantica assegna a ogni pixel una classe. La svolta è la
 *Fully Convolutional Network* {cite}`long2015fully`, che sostituisce
 gli strati densi finali con convoluzioni e *upsampling* per produrre una mappa
 di classi a piena risoluzione, e che già introduce le *skip connections*: la
-sua seconda metà si intitola «Combining what and where» e fonde la predizione
-grossolana con gli strati a stride più fine (sono le varianti FCN-16s e FCN-8s,
+sua sezione «Combining what and where» fonde la predizione grossolana con gli
+strati a stride più fine (sono le varianti FCN-16s e FCN-8s,
 che dal modello base si distinguono solo per quante skip hanno). U-Net
 {cite}`ronneberger2015u`, nata per l'imaging biomedico e dello stesso anno, ne
 generalizza la forma: un decoder simmetrico che a ogni livello concatena
@@ -682,32 +720,37 @@ ordinaria.
 
 ## Dove serve davvero
 
-Questi strumenti non sono un esercizio accademico. Nella guida autonoma,
-detection e segmentazione insieme dicono al veicolo dove sono i pedoni e dove
-finisce la carreggiata. Nell’imaging medico, U-Net e derivati delimitano un
-nodulo o un organo su una TAC, misurandone il volume con una precisione che a
-occhio si perderebbe. Nell’industria, un rilevatore su una linea di
-produzione individua il graffio o il pezzo mal assemblato prima che arrivi al
-cliente.
+Nella guida autonoma, detection e segmentazione insieme dicono al veicolo dove
+sono i pedoni e dove finisce la carreggiata. Nell’imaging medico, U-Net e
+derivati delimitano un nodulo (un piccolo addensamento di tessuto, che può
+essere un tumore) o un organo su una TAC, la radiografia che ricostruisce il
+corpo a fette, e ne misurano il volume con una precisione che a occhio si
+perderebbe. Nell’industria, un rilevatore su una linea di produzione individua
+il graffio o il pezzo mal assemblato prima che arrivi al cliente.
 
-Nessuno di questi sistemi è infallibile, e conviene dire con precisione dove
-sta il margine, perché la sovrapposizione non è un tasso di errore. Una
-maschera con IoU $0{,}9$ è una maschera buona, e vuol dire che di dieci
-quadretti coperti in tutto, nove sono in comune e uno no: un decimo dell'area
-cade nel posto sbagliato, per eccesso o per difetto. Su un nodulo quel decimo
-può anche non cambiare il volume misurato, perché la parte in più e quella in
-meno si compensano; a spostarsi è il contorno, che in qualche punto entra nel
-tessuto sano e in qualche altro lascia fuori del tumore. E soprattutto restano
-gli oggetti mancati del tutto, che nella IoU di una coppia non compaiono
-affatto: quella si calcola confrontando due cornici, quindi esiste solo dove il
-sistema una cornice l'ha disegnata, e una media delle IoU sulle sole coppie
-trovate non peggiora di niente per un pedone che il rilevatore non ha visto. Lo
-vedono invece le misure che contano anche gli assenti: la mAP, che divide per
-gli oggetti veri, e la IoU per classe della segmentazione, dove i pixel di un
-nodulo mancato entrano nell'unione e abbassano il voto. In medicina o alla
-guida sono le due cose insieme, il contorno approssimato e l'oggetto non visto,
-a chiedere un occhio umano. Ma la traiettoria è chiara: dal *cosa*, al *dove*,
-fino al contorno esatto.
+Nessuno di questi sistemi è infallibile, e il margine va detto con precisione,
+perché la sovrapposizione non conta gli errori: dice quanto una maschera
+combacia con quella vera. Una maschera con IoU $0{,}9$ è una maschera buona, e
+vuol dire che di dieci quadretti coperti in tutto, nove sono in comune e uno no:
+un decimo dell'area cade nel posto sbagliato, per eccesso o per difetto. Su un
+nodulo quel decimo può anche non cambiare il volume misurato, perché la parte in
+più e quella in meno si compensano; a spostarsi è il contorno, che in qualche
+punto entra nel tessuto sano e in qualche altro lascia fuori del tumore.
+
+E soprattutto restano gli oggetti mancati del tutto. La IoU si calcola fra due
+cornici, quella vera e quella disegnata, quindi per un pedone che il rilevatore
+non ha visto non c'è nessuna coppia da confrontare, e una media delle IoU sulle
+sole coppie trovate non peggiora di niente. Lo vedono invece le misure che
+contano anche gli assenti: la mAP, che divide per gli oggetti veri, e la IoU per
+classe della segmentazione, dove i pixel di un nodulo mancato entrano
+nell'unione e abbassano il voto. In medicina o alla guida sono le due cose
+insieme, il contorno approssimato e l'oggetto non visto, a chiedere un occhio
+umano.
+
+Resta una domanda che nessuno di questi strumenti si pone: a quanti metri sta
+l'oggetto. Il riquadro e la maschera stanno nel piano della foto, e la distanza
+si ricostruisce con altri mezzi, quelli della {doc}`sezione su geometria e
+profondità <geometria-e-profondita>`.
 
 `````{tab} Elementare
 
@@ -731,6 +774,7 @@ fino al contorno esatto.
 - Attorno a ogni oggetto la rete produce decine di cornici quasi uguali: prima
   del verdetto si tiene la più sicura e si buttano quelle che le si
   sovrappongono troppo, altrimenti i doppioni conterebbero tutti come errori.
+  Nelle folle, però, così si rischia di buttare una persona vera.
 - Quando la cornice non basta e serve la sagoma esatta si passa alla
   segmentazione: colorare ogni pixel con la sua categoria, o addirittura
   distinguere un pedone dall'altro. La forma tipica è la U: si scende per
@@ -764,7 +808,10 @@ fino al contorno esatto.
   complessiva del rilevatore, e nel farlo accoppia ogni oggetto a una sola
   predizione: i doppioni contano come errori.
 - Prima della valutazione la non-maximum suppression sfoltisce i doppioni:
-  si tiene il riquadro più confidente e si scartano quelli troppo sovrapposti.
+  si tiene il riquadro più confidente e si scartano quelli sovrapposti oltre
+  una soglia di IoU, a un costo quadratico nel caso peggiore; nelle scene
+  affollate sopprime anche oggetti veri, e la Soft-NMS ne abbassa la
+  confidenza invece di scartarli.
 - Semantica (FCN, U-Net) etichetta ogni pixel; istanza (Mask R-CNN)
   separa anche i singoli oggetti. Le *skip connection* fra encoder e decoder
   nascono con la FCN; la U-Net ne generalizza la forma concatenando a ogni

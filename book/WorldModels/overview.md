@@ -14,30 +14,37 @@
 
 Un gatto di casa ha molto più senso comune e comprensione del mondo di qualunque
 modello di linguaggio. A ripeterlo da anni, con poche variazioni, in conferenze
-e interviste, non è uno scettico qualsiasi ma Yann LeCun, premio Turing 2018 (il
-riconoscimento che in informatica vale quanto un Nobel) e uno dei padri del deep
-learning. Mentre mezzo mondo si stupiva di ciò che sanno scrivere i grandi
-modelli di linguaggio (gli LLM, *Large Language Model*, i programmi che
-compongono un testo indovinando una parola dopo l'altra), uno dei loro nonni
-intellettuali indicava un gatto. Provocazione calcolata, certo. Ma proviamo a
-prenderla sul serio: che cosa sa fare, un gatto? Non risolve integrali e non
-scrive sonetti; però salta sul mobile calibrando la traiettoria al primo colpo,
-prevede da che parte sbucherà il gomitolo rotolato sotto il divano, e se una
-mossa è finita male non la ripete tale e quale.
+e interviste, non è uno scettico qualsiasi ma Yann LeCun, premio Turing 2018 e
+uno dei padri del deep learning. Mentre mezzo mondo si stupiva di ciò che sanno
+scrivere i grandi modelli di linguaggio, uno dei loro nonni intellettuali
+indicava un gatto. Provocazione calcolata, certo. Ma proviamo a prenderla sul
+serio: che cosa sa fare, un gatto? Non risolve integrali e non scrive sonetti;
+però salta sul mobile calibrando la traiettoria al primo colpo, prevede da che
+parte sbucherà il gomitolo rotolato sotto il divano, e se una mossa è finita
+male non la ripete tale e quale.
 
-E prima del gatto, il bambino. A pochi mesi di vita un neonato si stupisce (lo
-si misura da quanto a lungo guarda), quando un giocattolo nascosto da uno
-schermo, una volta abbassato lo schermo, non c'è più: ha già capito che gli
-oggetti non svaniscono. Entro il primo anno si stupisce se un oggetto resta
-sospeso a mezz'aria invece di cadere. Nessuno gli ha spiegato la permanenza
-degli oggetti o la gravità; nessuno gli ha mostrato milioni di esempi con la
-risposta giusta scritta accanto (in gergo: esempi *etichettati*, come le foto
-con sotto il nome dell'animale che ritraggono). Ha guardato, e guardando si è
-costruito dentro qualcosa che gli
-permette di *aspettarsi* il mondo: un modello. Questo capitolo racconta il
-tentativo di dare alle macchine qualcosa di simile (un **world model**, un
-modello del mondo) e il dibattito, tuttora aperto, su quanto sia davvero il
-pezzo mancante dell'intelligenza artificiale.
+E prima del gatto, il bambino. A pochi mesi di vita un neonato si stupisce
+quando un giocattolo nascosto da uno schermo, una volta abbassato lo schermo,
+non c'è più; entro il primo anno si stupisce se un oggetto resta sospeso a
+mezz'aria invece di cadere. Lo stupore si misura da quanto a lungo guarda la
+scena impossibile rispetto a una possibile (è il metodo della *violazione
+dell'aspettativa*), e quello che misura è l'attesa, non la sua origine. Nessuno
+gli ha spiegato la permanenza degli oggetti o la gravità, e nessuno gli ha
+mostrato milioni di esempi etichettati; quanto di quell'attesa venga dal
+guardare e quanto sia già lì alla nascita, però, gli psicologi dello sviluppo
+lo discutono, e c'è chi sostiene che i primi sistemi con cui il bambino si
+rappresenta gli oggetti siano innati {cite}`spelke2007core`. LeCun scommette
+sulla prima lettura: guardando, il bambino si costruisce dentro qualcosa che
+gli permette di *aspettarsi* il mondo, cioè un modello.
+
+Col metro del {doc}`dibattito sul rinforzo </AutoSupervisione/dibattito-rl>`,
+quanta informazione porta il segnale, il bambino che guarda ne ha uno
+ricchissimo e gratuito: a ogni istante il mondo gli dice se aveva previsto
+bene. Dare alle macchine qualcosa di simile, un **world model** (modello del
+mondo), vuol dire dar loro lo stesso maestro: prevedere che cosa succede dopo
+e, per chi deve agire, che cosa succede dopo un'azione. È un tentativo in
+corso, e resta aperto il dibattito su quanto sia davvero il pezzo mancante
+dell'intelligenza artificiale.
 
 ## Un modello in scala ridotta della realtà
 
@@ -54,17 +61,16 @@ simulatore interno che serve a prevedere («cosa succede se lascio il
 bicchiere?») e quindi a pianificare, senza dover provare tutto per
 davvero.
 
-Su quella parola, «simulatore», bisogna intendersi, perché torna spesso e i
-mestieri non sono lo stesso. Il simulatore di volo su cui
-si esercitano i piloti l'hanno scritto degli ingegneri che le equazioni
-dell'aria le conoscevano già: la fisica, lì dentro, ce l'ha messa qualcuno, una
-regola alla volta. Un modello del mondo no: nessuno gliel'ha scritto, se lo
-costruisce guardando, e resta per sempre una copia approssimata. Quando qui un
-world model viene chiamato «simulatore» si intende questo, un simulatore
-*imparato*: serve alla stessa cosa (esercitarsi senza conseguenze), ma nessuno
-ne ha scritto le regole. E siccome le ha indovinate da sé, può sbagliare in
-modi che un simulatore scritto a mano non sbaglierebbe. Mezzo capitolo parla
-proprio di quegli sbagli.
+Su quella parola, «simulatore», bisogna intendersi, perché torna spesso. Il
+simulatore di volo su cui si esercitano i piloti l'hanno scritto degli
+ingegneri, un'equazione dell'aria alla volta, ed è anch'esso un modello del
+mondo nel senso di Craik. Nella letteratura che segue, però, «world model»
+indica un simulatore *appreso*: le regole le ricava dai dati, e resta sempre
+una copia approssimata. Serve alla stessa cosa (esercitarsi senza conseguenze),
+ma sbaglia per ragioni diverse: un simulatore scritto a mano sbaglia dove le
+sue equazioni semplificano, uno appreso dove i dati non l'hanno mai portato.
+Che forma prendano quegli sbagli lo racconta la {doc}`sezione sui mondi in
+miniatura </WorldModels/mondi-in-miniatura>`.
 
 `````{tab} Elementare
 
@@ -137,17 +143,20 @@ fuori) è una delle domande centrali del capitolo.
 
 ## Immaginare costa meno che provare
 
-La prima ragione per volere un world model è il conto della spesa, e il
-{doc}`capitolo sul Deep Reinforcement
-Learning </DeepReinforcementLearning/overview>` lo ha già pagato. Là il DQN
-(*Deep Q-Network*, la rete che impara da sé quanto vale ogni mossa) arrivava al
-livello di un giocatore umano sui vecchi videogiochi Atari. Ci arrivava però
-dopo decine di milioni di fotogrammi per titolo, cioè settimane di gioco senza
-mai staccare {cite}`mnih2015human`. A una persona, per capire *Breakout* (la
-pallina che rimbalza su una racchetta e sbriciola un muro di mattoni), bastano
-pochi minuti. Il vocabolario tecnico per questa differenza esiste da decenni
-{cite}`sutton2018reinforcement`: gli algoritmi model-free provano tutto
-per davvero, quelli model-based provano nella propria immaginazione.
+La prima ragione per volere un world model si chiama efficienza nei campioni
+(*sample efficiency*): quante interazioni con l'ambiente servono per imparare un
+compito. Il {doc}`capitolo sul Deep Reinforcement
+Learning </DeepReinforcementLearning/overview>` ne ha mostrato il prezzo. Il DQN
+arrivava al livello di un collaudatore umano professionista su molti dei 49
+giochi Atari del confronto, ma dopo decine di milioni di fotogrammi per titolo,
+più di un mese di gioco senza mai staccare; il collaudatore con cui era
+misurato si era esercitato circa due ore per gioco {cite}`mnih2015human`. Il
+vocabolario per questa differenza esiste da decenni
+{cite}`sutton2018reinforcement`. I metodi *model-free* imparano valori o
+strategia direttamente dall'esperienza, e ogni aggiornamento consuma
+interazione vera; i metodi *model-based* imparano anche un modello di come
+l'ambiente risponde alle azioni, e lo usano per pianificare o per generare
+esperienza simulata, che costa soltanto calcolo.
 
 `````{tab} Elementare
 
@@ -184,17 +193,21 @@ notoriamente il suo tallone d'Achille. Un metodo model-based apprende
 prima $p_\theta(s_{t+1} \mid s_t, a_t)$ e poi lo usa in due modi: per
 pianificare (cercare azioni buone dentro il modello, come la value
 iteration faceva sul modello vero) o per generare esperienza sintetica su
-cui allenare valori e policy (l'idea dell'architettura Dyna di Sutton, che già
-negli anni Novanta alternava passi vissuti e passi immaginati
-{cite}`sutton2018reinforcement`). Il prezzo è il model bias: l'errore di
-predizione si compone lungo l'orizzonte, quindi una predizione appena
-imprecisa a un passo può essere pessima a $k$ passi; peggio, una policy
-ottimizzata dentro il modello impara a sfruttarne i difetti (*model
-exploitation*), ottenendo ritorni immaginari che l'ambiente vero non paga.
-Gran parte del capitolo è il racconto di come la ricerca ha negoziato questo
-compromesso: quanta fiducia concedere al sogno, e per quanti passi. *Quanto in
-fretta* l'errore si componga, però, non è una costante: dipende da quanto la
-dinamica amplifica le perturbazioni.
+cui allenare valori e policy (l'architettura Dyna di Sutton, che già nel 1990
+alternava passi vissuti e passi immaginati {cite}`sutton1990integrated`, e che
+la {doc}`sezione sul reinforcement learning basato su modello
+</DeepReinforcementLearning/model-based>` tratta per esteso). Il prezzo è il
+*model bias*. Se la dinamica vera è $L$-Lipschitz nello stato e il modello
+sbaglia al più di $\epsilon$ in ogni stato raggiunto, a parità di azioni lo
+scarto $e_k$ fra stato immaginato e stato vero soddisfa
+$e_k \le \epsilon + L\,e_{k-1}$ con $e_0 = 0$, quindi
+$e_k \le \epsilon \sum_{i=0}^{k-1} L^{i}$: cresce esponenzialmente per $L > 1$,
+linearmente per $L = 1$, e resta sotto $\epsilon/(1-L)$ per $L < 1$ (la
+derivazione, con i suoi limiti, è nella sezione appena citata). Peggio, una
+policy ottimizzata dentro il modello impara a sfruttarne i difetti (*model
+exploitation*), ottenendo ritorni immaginari che l'ambiente vero non paga. Gran
+parte del capitolo è il racconto di come la ricerca ha negoziato questo
+compromesso: quanta fiducia concedere al sogno, e per quanti passi.
 
 `````
 
@@ -203,12 +216,13 @@ comune** che LeCun rivendica al gatto non è un elenco di fatti, ma un
 repertorio di previsioni: le cose non sostenute cadono, ciò che è nascosto
 continua a esistere, i liquidi si versano, gli oggetti spinti si muovono. È la
 *fisica intuitiva* che il neonato dell'incipit costruisce guardando, senza
-etichette: il segnale di apprendimento è la sorpresa, lo scarto tra ciò che il
-suo modello prevedeva e ciò che accade. Quella è una lezione
-auto-supervisionata: la risposta giusta su cui correggersi (in gergo il
-bersaglio) non la scrive nessuno, è il futuro stesso che arriva. Se il
-senso comune è fatto così, inseguirlo significa costruire macchine che imparano
-a prevedere il mondo, non a memorizzarlo.
+etichette, e il segnale di cui si nutre è la sorpresa, nel senso che
+l’{doc}`apertura del capitolo sull'auto-supervisione
+</AutoSupervisione/overview>` le ha dato: quanto era improbabile, per il
+modello che il bambino si è fatto, quello che poi accade. È una lezione
+auto-supervisionata, perché il bersaglio non lo scrive nessuno: è il futuro
+stesso che arriva. Se il senso comune è fatto così, inseguirlo significa
+costruire macchine che imparano a prevedere il mondo, non a memorizzarlo.
 
 ## La scommessa di LeCun (e chi non è d'accordo)
 
@@ -223,23 +237,18 @@ etichette. La tesi
 ha una faccia costruttiva (come *dovrebbe* essere fatta un'intelligenza
 artificiale che capisce il mondo) e una polemica: i modelli di linguaggio
 autoregressivi, addestrati solo a indovinare la parola successiva, per quanto
-grandi non basteranno. Che LeCun ci creda davvero lo dice la biografia: a fine
-2025 ha lasciato Meta (dove nel 2013 aveva fondato il laboratorio di ricerca
-FAIR) per avviare una startup dedicata proprio ai world model.
+grandi non basteranno. LeCun ha legato a questa tesi anche la propria carriera:
+alla fine del 2025 ha lasciato Meta, dove nel 2013 aveva fondato il laboratorio
+di ricerca FAIR, per fondare una società dedicata ai world model.
 
-Dentro quel programma c'è anche una retrocessione, ed è quella che di solito
-si ricorda per prima. In una conferenza del 2016 LeCun disse che se
-l'intelligenza è una torta, il grosso della torta è l'apprendimento senza
-etichette, la glassa è l'apprendimento dalle etichette e la ciliegina è
-l'apprendimento per rinforzo {cite}`lecun2016cake`. Due capitoli sono dedicati
-a quella ciliegina, e conviene dire subito che la battuta ha un argomento
-sotto, non è uno sfottò: riguarda quanta informazione porta la correzione
-con cui un sistema impara, e chi impara per tentativi ne riceve pochissima. La
-{doc}`sezione sul dibattito attorno al
-rinforzo </AutoSupervisione/dibattito-rl>` lo misura e riporta anche chi la
-pensa diversamente; qui basta sapere che è da lì che viene la proposta di
-sostituire i tentativi con la pianificazione dentro un modello del mondo,
-che è esattamente l'oggetto delle pagine che seguono.
+Dentro quel programma c'è anche la retrocessione dell'apprendimento per
+rinforzo a «ciliegina sulla torta» {cite}`lecun2016cake`, che il dibattito sul
+rinforzo ha appena pesato con il suo contraddittorio. L'argomento è il criterio
+da cui il capitolo è partito: chi impara per tentativi riceve una correzione
+poverissima, un «bravo» a fine giornata, mentre chi prevede il mondo ne riceve
+una a ogni istante. Da lì viene la proposta di sostituire i tentativi con la
+pianificazione dentro un modello del mondo, che è l'oggetto delle pagine che
+seguono.
 
 `````{tab} Elementare
 
@@ -262,9 +271,9 @@ migliorare. E che rileggere, un po’, quei programmi lo fanno: capita che si
 accorgano dello sbaglio e lo aggiustino nella frase dopo, e allora la catena
 non si spezza. Su questo c'è perfino un esperimento pensato per decidere la
 questione con i dati invece che con gli slogan, condotto su un gioco da tavolo:
-lo raccontiamo per intero nell'ultima sezione del capitolo, perché è la prova
-più pulita che il dibattito abbia prodotto. Chi ha ragione si vedrà; questo
-capitolo serve ad avere gli strumenti per seguire la partita.
+lo racconta per intero la {doc}`sezione sui simulatori e il dibattito
+</WorldModels/simulatori-e-dibattito>`, perché è la prova più pulita che il
+dibattito abbia prodotto. Chi abbia ragione è ancora da vedere.
 
 `````
 
@@ -281,66 +290,73 @@ decade come $(1-\epsilon)^n$: con $\epsilon = 0{,}01$ e $n = 500$ ne resta
 appena $0{,}99^{500} \approx 0{,}007$, meno dell'1%. Le obiezioni colpiscono
 proprio le ipotesi: gli errori non sono né indipendenti né irrecuperabili (i
 modelli, empiricamente, si correggono), e nulla fissa $\epsilon$ costante al
-crescere di scala e addestramento {cite}`kaplan2020scaling`. Esperimenti di *probing*,
-inoltre, indicano che reti addestrate solo su sequenze di mosse (l'esempio
-celebre è il gioco dell'Otello) sviluppano rappresentazioni interne dello
-stato della scacchiera: un world model implicito, per quanto rudimentale,
-emerso dalla sola predizione del token successivo. La proposta alternativa di
+crescere di scala e addestramento {cite}`kaplan2020scaling`. Esperimenti di
+*probing*, inoltre, indicano che un GPT a 8 strati addestrato soltanto su
+sequenze di mosse dell'Otello (20 milioni di partite sintetiche) sviluppa una
+rappresentazione interna dello stato della scacchiera, e che intervenire su di
+essa cambia le mosse proposte {cite}`li2023emergent`: un world model implicito,
+per quanto rudimentale, emerso dalla sola predizione del token successivo, in
+un mondo di 64 caselle con regole fisse. Misure e limiti sono nella
+{doc}`sezione sui simulatori e il dibattito
+</WorldModels/simulatori-e-dibattito>`. La proposta alternativa di
 {cite}`lecun2022path` (predire non nello spazio dei token o dei pixel ma in
 uno spazio di rappresentazioni astratte, con architetture *joint-embedding*
-addestrate a energia) è esattamente ciò che studieremo nella sezione sulla
-JEPA, nel linguaggio del capitolo sui modelli a energia.
+addestrate a energia) è ciò che studia la {doc}`sezione sulla JEPA
+</WorldModels/jepa>`, nel linguaggio del {doc}`capitolo sui modelli a energia
+</ModelliEnergia/overview>`.
 
 `````
 
-## Mondi in miniatura, e chi li abita
+## Quattro risposte alla stessa domanda
 
-Quattro tappe.
+Come si dà a una macchina un modello del mondo, e che cosa ci deve stare
+dentro? Le risposte che il capitolo segue vengono da strade diverse.
 
 La prima sono i mondi in miniatura. Nel 2018 David Ha e Jürgen Schmidhuber
-addestrano un agente, cioè un programma che guarda e sceglie le mosse, a
-giocare a un vecchio sparatutto: schivare palle di fuoco in *Doom*. E lo
-addestrano *dentro il suo stesso sogno*, che è il nome che gli autori danno
-alla simulazione del gioco che il programma si è costruito da sé. A raccontargli
-come prosegue la partita è una rete ricorrente, cioè una rete che legge una
-cosa alla volta portandosi dietro un riassunto di quel che ha già visto: le
-basta quel riassunto, e la strategia dell'agente (in gergo la sua *policy*) si
-allena lì dentro senza mai toccare il gioco vero.
-Quella linea di ricerca arriva ai Dreamer di Danijar Hafner e colleghi
-(dal 2020, con l'ultima versione uscita su *Nature* nel 2025), che imparano
-quasi soltanto immaginando, fino a ottenere un diamante in *Minecraft* senza
-dimostrazioni umane: il primo algoritmo, dichiarano, a riuscirci partendo da
-zero.
+addestrano un agente a schivare palle di fuoco in un livello di *Doom*, e lo
+addestrano *dentro il suo stesso sogno*: è il nome che danno alla simulazione
+del gioco che il programma si è costruito da sé, guardando partite giocate a
+caso. A far proseguire la partita sognata è una rete ricorrente, che legge un
+fotogramma compresso alla volta portandosi dietro un riassunto di quel che ha
+visto, e la policy dell'agente si allena lì dentro senza toccare il gioco vero.
+Dal 2020 quella linea di ricerca arriva ai Dreamer di Danijar Hafner e
+colleghi. DreamerV3, uscito su *Nature* nel 2025 {cite}`hafner2023mastering`,
+ottiene un diamante in *Minecraft* senza dimostrazioni umane: il primo
+algoritmo a riuscirci partendo da zero, dichiarano gli autori, a condizioni che
+la sezione dedicata racconta. Dreamer 4, nel settembre dello stesso anno, ci
+arriva senza mai giocare durante l'addestramento: il modello del mondo lo
+impara da registrazioni di partite giocate da persone, la strategia soltanto
+dentro il modello {cite}`hafner2025training`.
 
-Seconda tappa, la via di LeCun. Invece di immaginare il mondo puntino per
-puntino, lo immagina per idee: prevede a grandi linee che cosa ci sarà, non
-ogni singolo dettaglio dello schermo. Le architetture che lo fanno si chiamano
-JEPA (*Joint-Embedding Predictive Architecture*, «architettura che predice
-fra due riassunti»): una rete riassume il presente, un'altra riassume il
-futuro, e la previsione avviene fra i due riassunti. Ce ne sono due versioni,
-I-JEPA per le immagini e V-JEPA per i video, e tutte e due lavorano nello
-spazio delle rappresentazioni, che è poi lo «spazio delle idee» del titolo
-di quella sezione: il posto in cui una scena è già diventata un riassunto e non
-è più un mosaico di puntini colorati. Qui il {doc}`capitolo sui modelli a energia </ModelliEnergia/overview>`
-torna utile
-per intero, perché una JEPA è un modello a energia: la stessa idea del
-buttafuori che assegna un voto di compatibilità, e lo stesso pericolo, che le
-due reti si mettano d'accordo per dare a ogni cosa lo stesso riassunto (è il
-collasso, e lo riprende la {doc}`sezione sulle JEPA </WorldModels/jepa>`).
+Seconda risposta, la via di LeCun: prevedere nello spazio delle
+rappresentazioni invece che in quello dei pixel, cioè prevedere il riassunto di
+quel che verrà e non ogni puntino dello schermo. Le architetture che lo fanno si
+chiamano JEPA (*Joint-Embedding Predictive Architecture*, architettura
+predittiva a rappresentazioni congiunte): un encoder riassume la parte vista, un
+secondo encoder la parte da prevedere, e un predittore stima il secondo
+riassunto a partire dal primo, nello stesso spazio. Le generazioni costruite
+finora sono tre: I-JEPA per le immagini, V-JEPA per i video e V-JEPA 2, che con
+lo stesso schema guida un braccio robotico. Una JEPA è un modello a energia nel
+senso del {doc}`capitolo dedicato </ModelliEnergia/overview>`, e ne eredita il
+pericolo principale, il collasso: le due reti possono mettersi d'accordo per
+dare a ogni cosa lo stesso riassunto. Come lo si eviti lo racconta la
+{doc}`sezione sulle JEPA </WorldModels/jepa>`.
 
-Terza tappa, l’inferenza attiva, e qui si cambia disciplina: è la risposta
-che alla stessa domanda danno le neuroscienze teoriche. La tesi è che percepire
-e agire non siano due mestieri ma lo stesso, in due direzioni: davanti a uno
-scarto fra quel che ti aspettavi e quel che trovi, o cambi idea o cambi il
-mondo. E che imparare sia ancora la stessa cosa, più lenta. Ne esce un sistema
-in cui non c'è nessun premio scritto a parte, perché quello che l'organismo
-desidera sta nello stesso posto in cui sta quello che si aspetta.
+Terza risposta, l’inferenza attiva, che cambia disciplina: viene dalle
+neuroscienze teoriche. La tesi è che percezione, azione e apprendimento
+minimizzino la stessa quantità, l’energia libera variazionale, che fa da tetto
+alla sorpresa di ciò che si osserva: la percezione aggiorna le credenze,
+l'azione cambia le osservazioni, l'apprendimento cambia il modello, più
+lentamente. Ne esce un sistema senza una ricompensa scritta a parte, perché le
+preferenze dell'organismo stanno nei priori del modello, accanto a quello che
+si aspetta.
 
-Ultima tappa, i simulatori generativi di video (Sora di OpenAI, presentato
-nel 2024 come passo verso «simulatori di mondo», e Genie di Google DeepMind,
-che genera ambienti interattivi giocabili) e la domanda con cui il capitolo
-chiude, onestamente aperta: generare video plausibili significa aver capito la
-fisica, o soltanto saperla imitare?
+Ultima risposta, i simulatori generativi di video: Sora di OpenAI, presentato
+nel febbraio 2024 come passo verso «simulatori di mondo»
+{cite}`brooks2024video`, e la famiglia Genie di Google DeepMind, che dal 2024
+genera ambienti in cui si può giocare {cite}`bruce2024genie`. Con loro arriva la
+domanda con cui il capitolo si chiude, ed è onestamente aperta: generare video
+plausibili significa aver capito la fisica, o soltanto saperla imitare?
 
 `````{tab} Elementare
 
@@ -353,16 +369,17 @@ fisica, o soltanto saperla imitare?
   Kenneth Craik (1943).
 - Chi non ha il simulatore impara schiantandosi nel mondo vero; chi ce l'ha si
   allena nella propria immaginazione, come i piloti prima di salire su un
-  aereo. La seconda strada costa incomparabilmente meno esperienza (ai
-  programmi che imparano a giocare senza simulatore servono settimane di
-  *Breakout* giocato senza mai fermarsi, a te bastano pochi minuti), ma ha un
-  prezzo: se il simulatore è impreciso ci si allena a vincere un gioco che non
-  esiste, e in un mondo che non si rimette in assetto da sé l'imprecisione si
-  somma quanto più lontano si prova a guardare.
+  aereo. La seconda strada costa molta meno esperienza (al programma che
+  impara i giochi Atari senza simulatore serve più di un mese di gioco per
+  titolo, alla persona con cui è confrontato bastavano un paio d'ore di
+  pratica), ma ha un prezzo: se il simulatore è impreciso ci si allena a
+  vincere un gioco che non esiste, e in un mondo che non si rimette in assetto
+  da sé l'imprecisione si somma quanto più lontano si prova a guardare.
 - Il senso comune è un repertorio di previsioni e non un elenco di fatti
   (le cose non sostenute cadono, quel che è nascosto continua a esistere) che
-  i bambini costruiscono guardando. Nessuno etichetta niente: il maestro è il
-  futuro, e la lezione arriva quando il mondo smentisce la previsione.
+  i bambini costruiscono guardando, anche se quanto ne abbiano già alla
+  nascita è discusso. Nessuno etichetta niente: il maestro è il futuro, e la
+  lezione arriva quando il mondo smentisce la previsione.
 - Per LeCun un modello che indovina una parola alla volta non basta: serve un
   sistema che immagini il mondo, non solo il racconto del mondo. È una
   posizione autorevole dentro un dibattito aperto, non un verdetto: altri
@@ -372,13 +389,10 @@ fisica, o soltanto saperla imitare?
   premi, dice LeCun, è «la ciliegina sulla torta», e al suo posto va la
   pianificazione dentro un modello del mondo. Il motivo è un conto e non il
   disprezzo: chi impara per tentativi riceve una correzione pochissimo
-  informativa, una specie di «bravo» a fine giornata.
-- Le quattro tappe: i mondi in miniatura, dove un programma impara a giocare
-  dentro il proprio sogno; la strada di LeCun, che il mondo lo immagina per
-  idee e non puntino per puntino; l’inferenza attiva, dove percepire e
-  agire sono la stessa cosa in due direzioni; e i programmi che generano video,
-  con la domanda su cui il capitolo si chiude: chi sa girare il filmato giusto
-  ha capito come funziona il mondo, o è solo bravissimo a imitarlo?
+  informativa, una specie di «bravo» a fine giornata, mentre chi prevede il
+  mondo viene corretto a ogni istante.
+- La domanda con cui il capitolo si chiude: chi sa girare il filmato giusto ha
+  capito come funziona il mondo, o è solo bravissimo a imitarlo?
 ```
 
 `````
@@ -392,13 +406,17 @@ fisica, o soltanto saperla imitare?
   azioni diverse senza farle per davvero. L'idea del «modello in scala
   ridotta della realtà» risale a Kenneth Craik (1943).
 - Model-free prova nel mondo, model-based prova nell'immaginazione: il
-  secondo promette enorme efficienza nei campioni (DQN: decine di milioni di
-  fotogrammi; un umano: minuti), al prezzo del *model bias*; l'errore del
-  modello si accumula lungo l'orizzonte, tanto più in fretta quanto più la
-  dinamica amplifica le perturbazioni.
+  secondo promette di ridurre le interazioni necessarie (il DQN ne usa decine
+  di milioni di fotogrammi per gioco, il collaudatore umano con cui è
+  confrontato circa due ore di pratica), al prezzo del *model bias*. Con
+  dinamica $L$-Lipschitz ed errore del modello al più $\epsilon$, lo scarto
+  dopo $k$ passi è maggiorato da $\epsilon \sum_{i<k} L^{i}$: esponenziale per
+  $L > 1$, limitato da $\epsilon/(1-L)$ per $L < 1$.
 - Il senso comune è un repertorio di previsioni (fisica intuitiva) che i
   bambini costruiscono guardando, senza etichette: apprendimento
-  auto-supervisionato, dove il bersaglio è il futuro stesso.
+  auto-supervisionato, dove il bersaglio è il futuro stesso. Gli esperimenti
+  di violazione dell'aspettativa misurano l'attesa, non la sua origine, e la
+  quota innata è discussa.
 - Per LeCun {cite}`lecun2022path` gli LLM autoregressivi non bastano: serve
   un world model che predica in uno spazio di rappresentazioni. È una
   posizione autorevole dentro un dibattito aperto, non un consenso: altri
@@ -407,15 +425,16 @@ fisica, o soltanto saperla imitare?
   torta» {cite}`lecun2016cake`, in favore del controllo predittivo su modello.
   L'argomento è l'informazione del bersaglio (uno scalare per episodio contro
   ordini di grandezza in più nel pre-addestramento) e l'assegnazione del credito
-  lungo la traiettoria: il capitolo sull'auto-supervisione lo quantifica, con il
-  contraddittorio.
-- Il percorso del capitolo: mondi in miniatura (Ha & Schmidhuber, Dreamer) →
-  JEPA → inferenza attiva (percezione, azione e apprendimento come
-  minimizzazioni della stessa energia libera, con le preferenze nei priori
-  invece che in una ricompensa) → simulatori video generativi e dibattito. Il
-  linguaggio dell'energia, su cui poggia la JEPA, è quello del capitolo sui
-  modelli a energia, e non è la stessa «energia» dell'inferenza attiva: la
-  sezione lo dice apertamente.
+  lungo la traiettoria: la {doc}`sezione sul dibattito attorno al rinforzo
+  </AutoSupervisione/dibattito-rl>` lo quantifica, con il contraddittorio.
+- Il percorso del capitolo: mondi in miniatura (Ha & Schmidhuber, la linea
+  Dreamer fino a Dreamer 4) → JEPA (I-JEPA, V-JEPA, V-JEPA 2) → inferenza
+  attiva (percezione, azione e apprendimento come minimizzazioni della stessa
+  energia libera, con le preferenze nei priori invece che in una ricompensa) →
+  simulatori video generativi e dibattito. Il linguaggio dell'energia, su cui
+  poggia la JEPA, è quello del capitolo sui modelli a energia, e non è la
+  stessa «energia» dell'inferenza attiva: la sezione sull'inferenza attiva lo
+  dice apertamente.
 ```
 
 `````

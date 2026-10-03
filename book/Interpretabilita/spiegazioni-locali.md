@@ -5,9 +5,9 @@ finendo il dottorato, si pose una domanda che con l'intelligenza artificiale
 non c'entrava nulla: se un gruppo di persone collabora a un'impresa e ne ricava
 un guadagno, come si divide il merito «in modo equo» tra chi ha partecipato?
 Alcuni contano di più, alcuni solo in combinazione con altri; non basta guardare
-cosa fa ciascuno da solo. Shapley rispose fissando pochi requisiti così
-ragionevoli che nessuno li discuterebbe, e dimostrando che un solo modo di
-dividere li rispetta tutti. Nel 2012 avrebbe vinto il premio Nobel per
+cosa fa ciascuno da solo. Shapley rispose fissando pochi requisiti che a
+chiunque sembrano ragionevoli, e dimostrando che un solo modo di dividere li
+rispetta tutti. Nel 2012 avrebbe vinto il premio Nobel per
 l'economia, per un altro filone dei suoi studi. Non poteva immaginare che questa
 sua formula sarebbe diventata, più di sessant'anni dopo, uno degli strumenti
 più usati per spiegare la singola decisione di una rete neurale.
@@ -69,10 +69,9 @@ Il primo attrezzo è **LIME** (*Local Interpretable Model-agnostic
 Explanations*) proposto nel 2016 da Marco Tulio Ribeiro, Sameer Singh e Carlos
 Guestrin {cite}`ribeiro2016why`, gli stessi dell'esperimento con cui si è aperto
 il capitolo, quello del riconoscitore di lupi che in realtà guardava la neve.
-L'idea è disarmante nella sua semplicità: se il modello è troppo complicato da
-capire tutto, costruiamone una copia *facile* che gli somigli solo qui
-vicino, attorno al caso da spiegare. Del modello vero non apriremo niente: gli
-faremo solo delle domande, come si fa con una scatola chiusa.
+L'idea è approssimare il modello, attorno al caso da spiegare e solo lì, con
+un modello che si legge: un surrogato locale. Del modello vero non si apre
+niente: gli si fanno solo delle domande, come a una scatola chiusa.
 
 `````{tab} Elementare
 
@@ -90,12 +89,13 @@ che vanno ugualmente bene si prende quella con meno voci.
 C'è però una regola in più, ed è quella che fa tutto il lavoro: nel conto, i
 fantasmi più simili alla pratica vera di Maria contano di più, quelli
 lontani quasi niente. Un conto così, in cui ogni voce entra con un'importanza
-sua, si dice pesato. E quando i dati stanno in una tabella, il «solo qui
-vicino» sta tutto in quel conteggio e non nella fabbrica: i fantasmi nascono
-sparsi un po’ dappertutto, presi dai valori che quelle colonne hanno negli
-altri clienti, ed è soltanto quando si tirano le somme che quelli lontani
-vengono messi a tacere. Più caselle ha la pratica, però, meno fantasmi le
-somigliano davvero, e il conto finisce per reggersi su una manciata di casi.
+sua, si dice pesato. Quando i dati stanno in una tabella, però, i fantasmi
+non nascono vicini a Maria: LIME li fabbrica pescando per ogni casella un
+valore a caso fra quelli degli altri clienti, e quindi escono sparsi un po'
+dappertutto. A renderli «vicini» è solo il peso, che fa contare poco quelli
+lontani. E più caselle ha la pratica, più è raro che un fantasma pescato così
+somigli a Maria in tutte: il conto finisce per reggersi su una manciata di
+fantasmi che pesano davvero.
 
 I numeri di quella somma *sono* la spiegazione: «il reddito basso ha spinto
 verso il no di tanto, i debiti di tanto, l'anzianità di lavoro ha spinto un po’
@@ -119,7 +119,9 @@ quanto largo prendere il «qui vicino», e, se al posto della pratica di Maria c
 una fotografia, in quali pezzi spezzettarla prima di spegnerli a turno. Ognuna di
 quelle scelte sposta i numeri della spiegazione. In più i fantasmi si fabbricano
 a caso, quindi rilanciando LIME sullo stesso caso escono numeri un po’ diversi:
-si dice che il metodo è **instabile**.
+si dice che il metodo è **instabile**. Per sapere quanto, lo si rilancia una
+decina di volte e si guarda se in cima alla spiegazione restano sempre le
+stesse voci.
 
 `````
 
@@ -166,21 +168,34 @@ globalmente cadono davvero vicino a $\mathbf{x}_0$, e in alta dimensione sono
 pochi.
 
 Tre limiti vanno dichiarati. Primo, l’instabilità: campionamento casuale e
-scelta del kernel rendono la spiegazione sensibile ai dettagli; rieseguire
-LIME sullo stesso punto può dare coefficienti diversi, ed è in buona parte una
-conseguenza del punto appena visto. Secondo, la larghezza
+scelta del kernel rendono la spiegazione sensibile ai dettagli; rieseguire LIME
+sullo stesso punto può dare coefficienti diversi, ed è in buona parte una
+conseguenza del punto appena visto. Si misura rilanciando il metodo con semi
+diversi e confrontando, fra due rilanci, gli insiemi $\mathcal{K}_1$ e
+$\mathcal{K}_2$ delle $k$ feature in testa con l'indice di Jaccard
+$|\mathcal{K}_1 \cap \mathcal{K}_2| / |\mathcal{K}_1 \cup \mathcal{K}_2|$:
+lontano da $1$, la spiegazione dipende dal sorteggio, e più campioni la
+stabilizzano, al prezzo di una valutazione del modello per campione. Una
+richiesta più forte è che punti vicini ricevano spiegazioni vicine:
+Alvarez-Melis e Jaakkola la misurano con una stima locale della costante di
+Lipschitz della spiegazione $\boldsymbol{\phi}$, il massimo di $\lVert
+\boldsymbol{\phi}(\mathbf{x}_i) - \boldsymbol{\phi}(\mathbf{x}_j)\rVert_2 /
+\lVert \mathbf{x}_i - \mathbf{x}_j \rVert_2$ sui punti $\mathbf{x}_j$ di una
+piccola palla attorno a $\mathbf{x}_i$, e trovano che i metodi diffusi per lo
+più non la soddisfano, e quelli per perturbazione come LIME e SHAP meno ancora
+di quelli a gradiente {cite}`alvarezmelis2018robustness`. Secondo, la larghezza
 del vicinato $\sigma$ è un iperparametro senza una regola universale: un
 intorno troppo ampio linearizza una zona in cui $f$ non è affatto lineare
 (bassa fedeltà), uno troppo stretto lascia troppo pochi campioni informativi.
 Terzo, e più insidioso perché non si presenta nemmeno come un parametro da
-tarare: la spiegazione dipende da come si è deciso di segmentare l'input,
-cioè da quali sono le componenti che si accendono e si spengono. Cambia la
+tarare: la spiegazione dipende da come si è deciso di segmentare l'input, cioè
+da quali sono le componenti che si accendono e si spengono. Cambia la
 segmentazione, cambia la spiegazione, e la segmentazione la sceglie chi usa lo
 strumento. La spiegazione dipende quindi da scelte che l'utente raramente
 controlla. E c'è un quarto limite, che nasce dal campionamento e vale anche per
 KernelSHAP, la stima per campionamento dei valori di Shapley che arriva con
-SHAP: i punti perturbati cadono in buona parte fuori dal supporto dei dati, e un
-modello li può riconoscere. Slack e colleghi {cite}`slack2020fooling`
+SHAP: i punti perturbati cadono in buona parte fuori dal supporto dei dati, e
+un modello li può riconoscere. Slack e colleghi {cite}`slack2020fooling`
 costruiscono un classificatore che sui dati veri decide in base a un attributo
 protetto e sui campioni perturbati risponde con una regola innocua: LIME e
 KernelSHAP riportano la regola innocua, e l'attributo protetto sparisce dalla
@@ -196,112 +211,100 @@ quello.
 LIME risponde alla domanda, ma il modo in cui lo fa poggia su una lunga catena
 di scelte fatte da chi lo usa: quanti casi-fantasma fabbricare, quanto contare
 quelli lontani, come spezzettare l'ingresso. Rilanciandolo si ottengono numeri
-un po’ diversi. Viene voglia di un metodo che, data la domanda, abbia una
-risposta sola e dimostrabile. Quel metodo esiste, ed è la formula di Shapley del
-1953. Il salto sta nel
-guardare una risposta del modello come il bottino di una squadra. Le colonne
-sono i giocatori; il bottino da spartire non è il punteggio che il modello ha
-dato a Maria, ma di quanto quel punteggio si scosta dalla risposta che il
-modello darebbe senza sapere niente di lei. Quella risposta a vuoto la
-chiameremo, qui e per tutto il resto del capitolo, la **risposta base**. La
-domanda «quanto ha contribuito il reddito a questo rifiuto?» diventa così la
-vecchia domanda di Shapley: «quanto merito spetta a questo giocatore?».
+un po’ diversi. Serve un metodo in cui il modo di dividere il merito sia
+fissato prima, da proprietà dichiarate, e lo dà la teoria dei giochi
+cooperativi con la formula di Shapley del 1953. Le colonne sono i giocatori, e
+il guadagno da spartire non è il punteggio che il modello ha dato a Maria, ma
+di quanto quel punteggio si scosta dalla risposta che il modello darebbe senza
+sapere niente di lei. Quella risposta a vuoto la chiameremo, qui e per tutto il
+resto del capitolo, la **risposta base**. La domanda «quanto ha contribuito il
+reddito a questo rifiuto?» diventa così la vecchia domanda di Shapley: «quanto
+merito spetta a questo giocatore?». Una scelta, però, resta anche qui, ed è
+proprio che cosa voglia dire per il modello «non sapere niente» di una
+colonna.
 
 `````{tab} Elementare
 
 Il punto delicato è che i giocatori non agiscono da soli: contano anche le
 combinazioni. Prendiamo due colonne sole, per tenere il conto piccolo: il
 *reddito* e i *pagamenti passati*, cioè se in passato il cliente ha pagato
-puntuale. Chiediamoci quanto vale ciascuna. L'idea di Shapley è: proviamo tutti
-gli ordini in cui le colonne possono «entrare in campo» e, per ognuna,
-misuriamo quanto aggiunge nel momento in cui entra. Poi facciamo la media.
+puntuale. Il modello dà a ogni cliente un punteggio da 0 a 100, e sopra i 35 il
+prestito è approvato. Senza sapere niente del nostro cliente parte dalla
+risposta base, che vale 10. Se conosce solo il reddito, sale a 30; se conosce
+solo i pagamenti passati, sale a 20; se conosce entrambe le cose, arriva a 50,
+cioè al sì.
 
-Prima però va sciolto un dubbio ragionevole: che cosa vuol dire far girare il
-modello «senza» una colonna? Il modello vuole tutte le sue caselle piene, non
-gli si può lasciare una casella vuota. Quello che si fa è riempirla con
-qualcosa di neutro: il valore medio di quella colonna su tutti i clienti, o un
-valore preso a caso da un altro cliente, oppure uno zero, messo lì per
-convenzione a significare «niente». È una scelta, non un fatto, e sposta i numeri:
-cambiando ciò che si mette al posto del valore vero cambia la risposta del
-modello quando non sa niente, e siccome tutti i meriti sono la ripartizione
-della distanza *da quella risposta lì*, cambiano anche loro. Per ora basta
-tenere presente che «il modello non sa il reddito» significa «al posto del
-reddito c'è qualcosa che non dice niente».
+Guardiamo quanto aggiunge ciascuna colonna da sola: il reddito porta da 10 a 30,
+cioè aggiunge 20; i pagamenti portano da 10 a 20, cioè aggiungono 10. Sommati
+fanno 30, e partendo da 10 dovremmo arrivare a 40. Invece si arriva a 50. Ci
+sono dieci punti in più che non appartengono a nessuna delle due colonne:
+nascono dall'averle tutte e due. Ed è ragionevole, perché guadagnare tanto conta
+poco se non hai mai dimostrato di saper pagare, e aver sempre pagato conta poco
+se guadagni una miseria. Le due cose si rinforzano a vicenda, e un guadagno che
+nasce così si chiama **interazione**. Con un'interazione di mezzo, la domanda
+«quanto vale ciascuna?» smette di avere una risposta ovvia.
 
-Diciamo allora che il modello dà a ogni cliente un punteggio da 0 a 100, e che
-sopra i 35 il prestito è approvato. Senza sapere niente del nostro cliente
-parte dalla risposta base, che vale 10. Se conosce solo il reddito,
-sale a 30; se conosce solo i pagamenti passati, sale a 20; se conosce
-entrambe le cose, arriva a 50, cioè al sì.
+L'idea di Shapley è far entrare in campo le colonne una alla volta, in tutti gli
+ordini possibili, segnare per ognuna quanto aggiunge nel momento in cui entra, e
+poi fare la media. La media serve perché nessun ordine è quello vero: le colonne
+non entrano davvero una dopo l'altra, ci sono tutte insieme, e non c'è ragione
+di preferire un ordine agli altri. Si tengono tutti: è l'idea di equità di
+Shapley.
 
-Prima di fare il conto, una cosa da notare, perché è il motivo per cui
-l'esempio è costruito così. Guardiamo quanto aggiunge ciascuna colonna da sola:
-il reddito porta da 10 a 30, cioè aggiunge 20; i pagamenti portano da 10 a
-20, cioè aggiungono 10. Sommati fanno 30, e partendo da 10 dovremmo arrivare
-a 40. Invece si arriva a 50. Ci sono dieci punti in più che non appartengono a
-nessuna delle due colonne: nascono dall'averle tutte e due, ed è ragionevole che
-sia così, perché guadagnare tanto conta poco se non hai mai dimostrato di saper
-pagare, e aver sempre pagato conta poco se guadagni una miseria. Le due cose si
-rinforzano a vicenda, e un guadagno che nasce così si chiama **interazione**. È
-il caso in cui la domanda «quanto vale ciascuna?» smette di avere una risposta
-ovvia.
+Con due colonne gli ordini sono due. Se entra prima il reddito, porta il
+punteggio da 10 a 30 e aggiunge 20; poi entrano i pagamenti, da 30 a 50, e
+aggiungono 20. Se entrano prima i pagamenti, portano da 10 a 20 e aggiungono 10;
+poi entra il reddito, da 20 a 50, e aggiunge 30. Il merito del reddito è la
+media di quanto aggiunge nei due ordini, $(20 + 30)/2 = 25$; quello dei
+pagamenti, $(20 + 10)/2 = 15$. E il conto torna: $25 + 15 = 40$, esattamente
+quanto separa il punteggio finale (50) dalla risposta base (10). Tutto il
+bottino è stato ripartito, senza avanzi: nessun merito inventato, nessuno perso
+per strada.
 
-Con due colonne gli ordini possibili sono due, prima il reddito, oppure prima i
-pagamenti:
+E i dieci punti dell'interazione? Se li prende tutti chi entra per secondo: nel
+primo ordine i pagamenti, che da soli valevano 10 e lì aggiungono 20; nel
+secondo il reddito, che da solo valeva 20 e lì aggiunge 30. Ciascuno dei due
+arriva secondo in metà degli ordini, e intasca quei dieci una volta su due:
+cinque a testa. Infatti il reddito prende 25, i suoi 20 più cinque, e i
+pagamenti 15, i loro 10 più cinque.
 
-- *Prima il reddito*: entra e porta il punteggio da 10 a 30, quindi aggiunge
-  20. Poi entrano i pagamenti e lo portano da 30 a 50, aggiungono 20.
-- *Prima i pagamenti*: entrano e portano da 10 a 20, aggiungono 10. Poi
-  entra il reddito e porta da 20 a 50, aggiunge 30.
+Per tutto il conto al modello sono bastati quattro punteggi, uno per ogni gruppo
+di colonne che conosce: nessuna, solo il reddito, solo i pagamenti, tutte e due.
+Ogni colonna in più raddoppia i gruppi da provare.
 
-Il merito del reddito è la media di quanto aggiunge nei due ordini:
-$(20 + 30)/2 = 25$. Quello dei pagamenti: $(20 + 10)/2 = 15$. E il conto torna:
-$25 + 15 = 40$, esattamente quanto separa il punteggio finale (50) dalla
-risposta base (10). Tutto il bottino è stato ripartito, senza avanzi: nessun
-merito inventato, nessuno perso per strada.
+Resta in sospeso che cosa voglia dire che il modello «conosce solo il reddito».
+Il modello vuole tutte le sue caselle piene, e quella dei pagamenti non la si
+può lasciare vuota: ci si mette qualcosa al posto del valore vero. Si possono
+pescare i pagamenti di tanti altri clienti presi a caso, e fare la media delle
+risposte; pescarli solo fra i clienti che guadagnano quanto il nostro; oppure
+mettere un valore fisso, la media della colonna su tutti i clienti o uno zero,
+che per convenzione vuol dire «niente». Il primo modo dice su che cosa si
+appoggia il modello, il secondo che cosa dice il dato. Ed è una scelta che
+sposta i numeri: cambiando ciò che si mette al posto del valore vero cambia la
+risposta del modello quando non sa niente, e siccome tutti i meriti sono la
+ripartizione della distanza *da quella risposta lì*, cambiano anche loro.
 
-E i dieci punti dell'interazione? Sono stati divisi a metà, e il modo in cui è
-successo si legge nei due ordini qui sopra. Chi entra per
-secondo se li prende tutti e dieci: nel primo ordine sono i pagamenti (che
-da soli valevano 10 e lì aggiungono 20), nel secondo è il reddito (che da solo
-valeva 20 e lì aggiunge 30). Siccome ciascuno dei due arriva secondo in metà
-degli ordini, ciascuno intasca quei dieci una volta su due: cinque a testa.
-Infatti il reddito prende 25, che è i suoi 20 più cinque, e i pagamenti 15, che
-sono i loro 10 più cinque.
+Il modo di dividere segue quattro richieste di buon senso, e ognuna ha il suo
+nome. Che il conto torni senza avanzi, come qui $25 + 15 = 50 - 10$, è
+l’**efficienza**. Che due colonne che fanno esattamente lo stesso mestiere
+ricevano lo stesso merito è la **simmetria**. Nel conto intero reddito e
+pagamenti non fanno lo stesso mestiere (da soli valgono 20 e 10), e infatti
+prendono 25 e 15; lo fanno dentro l'interazione, dove nessuno dei due vale
+niente senza l'altro, ed è per questo che quei dieci punti si sono divisi a
+metà. Che una colonna che non aggiunge mai niente, in nessun ordine, prenda zero
+è il **giocatore nullo**. E poi c'è l’**additività**, la meno intuitiva delle
+quattro e la più utile: se il punteggio del cliente fosse la somma di due
+punteggi calcolati a parte, il merito di una colonna sul totale sarebbe la somma
+dei due meriti che si prende su ciascuno. Un conto complicato lo si spezza, si
+fanno i conti sui pezzi e si sommano, ed è così che si tengono in piedi i conti
+sui modelli in cui a rispondere sono centinaia di alberi che votano.
 
-Perché fare la media su tutti gli ordini, e non prendere il primo che
-capita? Perché nessun ordine è quello vero. Le colonne non entrano davvero una
-dopo l'altra, ci sono tutte insieme; gli ordini sono un espediente per misurare
-i contributi, e siccome non c'è ragione di preferirne uno, si tengono tutti e si
-fa la media. È esattamente l'idea di equità di Shapley.
-
-Le quattro proprietà che fissano quel modo di dividere sono
-cose ovvie come quella appena vista tornare, e ognuna ha il suo nome.
-
-- Che il conto torni senza avanzi, come qui $25 + 15 = 50 - 10$, si chiama
-  **efficienza**.
-- Che due colonne che fanno esattamente lo stesso mestiere ricevano lo stesso
-  merito si chiama **simmetria**: dentro l'interazione reddito e pagamenti sono
-  intercambiabili (nessuno dei due vale niente senza l'altro), ed è per questo
-  che i dieci punti si sono divisi a metà. Sul conto intero non lo sono, e
-  infatti prendono 25 e 15.
-- Che una colonna che non aggiunge mai niente, in nessun ordine, prenda zero si
-  chiama **giocatore nullo**. Sembra una banalità e invece torna comoda: quando
-  in un conto c'è una colonna che non c'entra, la si può togliere di mezzo e
-  fare i conti sulle altre.
-- E poi c'è l’**additività**, la meno intuitiva delle quattro e la più utile. Se
-  il punteggio di Maria fosse la somma di due punteggi calcolati a parte, il
-  merito di una colonna sul totale sarebbe la somma dei due meriti che si prende
-  su ciascuno: un conto complicato lo si spezza, si fanno i conti sui pezzi e si
-  sommano. È quello che tiene in piedi i conti sui modelli in cui a rispondere
-  sono centinaia di alberi che votano.
-
-Sono quattro richieste che nessuno discuterebbe, e la cosa notevole (il motivo
-per cui questa formula del 1953 è ancora qui) è che c'è un solo modo di dividere
-il merito che le soddisfa tutte e quattro insieme. Uno solo, però, a partire dai
-numeri che si hanno in mano: che cosa risponde il modello quando una colonna non
-gliela si fa sapere resta una scelta di chi fa il conto, e nessuna delle quattro
-richieste dice quale sia quella giusta.
+Sono richieste che sembrano ragionevoli a chiunque (anche se c'è chi discute che
+siano quelle giuste per spiegare un modello), e il motivo per cui la formula del
+1953 è ancora qui è che c'è un solo modo di dividere il merito che le soddisfa
+tutte e quattro insieme. Uno solo, però, una volta deciso che cosa risponde il
+modello quando una colonna non gliela si fa sapere: quella decisione resta di
+chi fa il conto, e nessuna delle quattro richieste dice quale sia quella giusta.
 
 `````
 
@@ -333,9 +336,17 @@ soddisfa quattro assiomi:
   ($v(S \cup \{i\}) = v(S \cup \{j\})$ per ogni $S$ che non contiene né $i$
   né $j$), allora $\phi_i = \phi_j$.
 - **Giocatore nullo** (*dummy*): una feature che non cambia mai il valore
-  ($v(S \cup \{i\}) = v(S)$ per ogni $S$) riceve $\phi_i = 0$.
+  ($v(S \cup \{i\}) = v(S)$ per ogni $S$) riceve $\phi_i = 0$, e la si può
+  togliere dal gioco: per ogni altra feature il contributo a una coalizione che
+  contiene $i$ è lo stesso che senza, quindi i valori delle altre non cambiano.
 - **Additività**: i valori di Shapley di una somma di modelli sono la somma
   dei valori; è la proprietà che rende trattabili gli ensemble.
+
+Che questi siano gli assiomi giusti per spiegare un modello è discusso: Kumar e
+colleghi mostrano che, usati come misura d'importanza, i valori di Shapley
+pongono problemi matematici il cui rimedio richiede di ragionare sulle cause,
+e che non rispondono in modo naturale a quello che una persona chiede a una
+spiegazione {cite}`kumar2020problems`.
 
 Un'avvertenza che la letteratura ha imparato a proprie spese: la funzione $v$
 non è data, va scelta, e la scelta conta. Le feature fuori da $S$ si
@@ -349,7 +360,13 @@ assioma dice quale dei tre sia quello da giocare. Non è un difetto della
 formula, è di nuovo la forcella dell'apertura
 di capitolo: la variante interventista risponde a «su che cosa si appoggia
 *questo modello*», quella condizionale a «che cosa dice *il dato*», e sono due
-domande diverse a cui è giusto rispondere con due numeri diversi.
+domande diverse a cui è giusto rispondere con due numeri diversi. Janzing,
+Minorics e Blöbaum leggono la variante interventista in termini causali:
+togliere una feature è un intervento sull'ingresso del modello nel senso di
+Pearl, e per questo la ritengono la nozione giusta quando la domanda riguarda
+il modello {cite}`janzing2020feature`. La causalità di cui parlano sta dentro
+il modello: nessuna delle due varianti dice che cosa provochi che cosa fra le
+grandezze del mondo.
 
 Sull'esempio dei due giocatori, con $v(\varnothing)=10$, $v(\{1\})=30$,
 $v(\{2\})=20$, $v(\{1,2\})=50$, la formula dà $\phi_1 = 25$ e $\phi_2 = 15$, in
@@ -366,17 +383,20 @@ oltre poche decine di feature. È il problema che SHAP risolve.
 
 Calcolare i valori di Shapley esatti richiede di provare tutte le
 **coalizioni**, cioè tutti i gruppi di feature che si possono formare. Ogni
-colonna può esserci o non esserci, quindi i gruppi si contano moltiplicando due
-per sé stesso una volta per colonna: con trenta colonne fa oltre un miliardo di
-gruppi. L'idea di usarli per spiegare la singola predizione, stimandoli per
-campionamento degli ordini, è di Erik Štrumbelj e Igor Kononenko
-{cite}`strumbelj2014explaining`; nel 2017 Scott Lundberg e Su-In Lee
-{cite}`lundberg2017unified` hanno mostrato come stimarli in modo efficiente,
-unificando sotto un'unica teoria (**SHAP**, *SHapley Additive exPlanations*)
-metodi fino ad allora scollegati. Anche LIME rientra in quella teoria, come caso
-particolare: ha la stessa forma, e a distinguerlo è come conta la
-somiglianza fra i casi-fantasma, che LIME fissa a occhio e SHAP invece deriva
-dalla formula di Shapley. Da qui SHAP è diventato uno degli strumenti più
+colonna può esserci o non esserci, quindi con $n$ colonne i gruppi sono $2^n$:
+con trenta colonne, oltre un miliardo. L'idea di usarli per spiegare la
+singola predizione, stimandoli su un campione di ordini estratti a caso invece
+che su tutti, è di Erik Štrumbelj e Igor Kononenko, che la proposero nel 2010
+{cite}`strumbelj2010efficient` e la estesero nel 2014
+{cite}`strumbelj2014explaining`. Nel 2017 Scott Lundberg e Su-In Lee
+{cite}`lundberg2017unified` hanno messo sei metodi esistenti, LIME e DeepLIFT
+compresi, dentro una sola famiglia, quella che spiega una risposta come somma
+di contributi delle feature (**SHAP**, *SHapley Additive exPlanations*), e
+hanno mostrato che in quella famiglia una sola soluzione rispetta le proprietà
+richieste, i valori di Shapley, e come stimarla in modo efficiente. LIME ha la
+stessa forma, e a distinguerlo è come conta la somiglianza fra i
+casi-fantasma, che LIME fissa a occhio e SHAP invece deriva dalla formula di
+Shapley. Da qui SHAP è diventato uno degli strumenti più
 usati per spiegare una decisione dall'esterno, a modello già addestrato.
 
 `````{tab} Elementare
@@ -391,8 +411,8 @@ scelti a occhio: li dà la formula di Shapley, ed è questo che garantisce di
 puntare ai numeri giusti.
 
 Se invece il modello è fatto di alberi di decisione, quelli a catena di domande
-sì/no della sezione precedente, si usa **TreeSHAP**, che sfrutta la forma
-dell'albero per calcolare i meriti esatti senza provare niente a caso.
+sì/no della sezione sui modelli trasparenti, si usa **TreeSHAP**, che sfrutta
+la forma dell'albero per calcolare i meriti esatti senza provare niente a caso.
 Esatti, s'intende, rispetto al modo che si è scelto per «spegnere» una colonna:
 quella resta una scelta anche qui.
 
@@ -403,10 +423,12 @@ chiedere al modello che cosa direbbe di chi guadagna mille euro al mese e
 centomila all'anno, un cliente che non esiste; e il merito va tutto alla casella
 guardata, zero all'altra, che per Maria diceva la stessa identica cosa.
 
-Quello che si guadagna rispetto ad altri metodi è una garanzia: se il modello
-viene cambiato in modo che una colonna aggiunga di più in ogni gruppo in cui
-entra, il suo merito non può scendere. Con l'importanza da impurità degli
-alberi questo non era garantito.
+Quello che si guadagna rispetto ad altri metodi è una garanzia, e la si vede
+con due versioni dello stesso modello. Se nella seconda il reddito aggiunge più
+punti che nella prima in ogni gruppo in cui entra (da solo, con i pagamenti,
+con qualunque altra colonna), il merito del reddito nella seconda non può
+risultare più basso che nella prima. Sembra ovvio, eppure l'importanza da
+impurità degli alberi questa garanzia non la dà.
 
 Il risultato si legge nel grafico a cascata della
 {numref}`fig-shap-contributi`: si parte dalla risposta base e si impilano i
@@ -452,12 +474,12 @@ riferimento esplicito.
 Il vantaggio teorico appartiene ai valori di Shapley, e quindi a ogni loro
 calcolo esatto: è la **consistenza**. Se si modifica il modello così che una
 feature contribuisca di più in ogni coalizione, il suo valore SHAP non può
-diminuire; è una monotonia che l'importanza da impurità della prima sezione
-*non* garantisce. Oltre al waterfall (una predizione), i grafici tipici sono
-il *force plot*, che dispone gli stessi contributi come forze contrapposte
-lungo una retta, e soprattutto il **beeswarm**: impilando i valori SHAP di
-migliaia di istanze, una riga per feature, si ricostruisce una vista
-globale (quali feature contano e in che direzione) a partire da tante
+diminuire; è una monotonia che l'importanza da impurità della sezione sui
+modelli trasparenti *non* garantisce. Oltre al waterfall (una predizione), i
+grafici tipici sono il *force plot*, che dispone gli stessi contributi come
+forze contrapposte lungo una retta, e soprattutto il **beeswarm**: impilando i
+valori SHAP di migliaia di istanze, una riga per feature, si ricostruisce una
+vista globale (quali feature contano e in che direzione) a partire da tante
 spiegazioni locali. È il ponte tra il locale e il globale che rende SHAP così
 usato.
 
@@ -493,8 +515,15 @@ LIME e SHAP rispondono a «perché questa decisione?». Ma a chi si è visto neg
 un prestito interessa spesso un'altra domanda, più pratica: «cosa devo cambiare
 perché la prossima volta sia un sì?». È la spiegazione **controfattuale**,
 formalizzata nel 2017 da Sandra Wachter, Brent Mittelstadt e Chris Russell
-{cite}`wachter2017counterfactual` proprio pensando al «diritto alla spiegazione»
-del GDPR europeo, discusso nell'introduzione del capitolo.
+{cite}`wachter2017counterfactual` come risposta al dibattito sul «diritto alla
+spiegazione» del GDPR, discusso nell'apertura del capitolo. Gli autori
+sostenevano che un diritto vincolante a farsi spiegare il funzionamento del
+modello il GDPR non lo dà, e proponevano il controfattuale come la spiegazione
+che serve comunque all'interessato: capire la decisione, contestarla e sapere
+che cosa cambiare, senza aprire il modello. Nel 2025 la Corte di giustizia,
+nella sentenza ricordata in apertura, ha indicato proprio questa forma fra
+quelle che possono bastare: dire all'interessato come una variazione dei suoi
+dati avrebbe portato a un risultato diverso.
 
 `````{tab} Elementare
 
@@ -550,9 +579,10 @@ immutabili come l'età o l'etnia).
 C'è poi un parallelo tecnico esatto. Cercare la perturbazione minima di
 $\mathbf{x}_0$ che cambia l'uscita del modello è, formalmente, lo stesso
 problema degli esempi avversari: le impercettibili modifiche d'input che
-ingannano una rete, studiate da Goodfellow, Shlens e Szegedy
-{cite}`goodfellow2015explaining` e riprese nel {doc}`capitolo sull'AI
-responsabile </AIResponsabile/overview>`. La matematica è la medesima,
+ingannano una rete, scoperte da Szegedy e colleghi {cite}`szegedy2014intriguing`
+e spiegate da Goodfellow, Shlens e Szegedy {cite}`goodfellow2015explaining`;
+il {doc}`capitolo sull'AI responsabile </AIResponsabile/privacy-e-robustezza>`
+le tratta nella sezione che porta il loro nome. La matematica è la medesima,
 l'intento opposto: un esempio avversario nasconde la perturbazione per
 ingannare il modello; un controfattuale la esibisce per spiegarlo e
 offrire una via d'azione. Lo stesso strumento può violare o servire l'interesse
@@ -566,28 +596,29 @@ Un controfattuale solo mostra una strada sola, e non è detto che chi lo riceve
 possa percorrerla. Mothilal, Sharma e Tan {cite}`mothilal2020explaining`
 propongono di restituirne un piccolo insieme, scelto perché sia valido, vicino
 alla situazione reale e **vario**, con un metodo noto come DiCE (*Diverse
-Counterfactual Explanations*, dal nome della libreria che lo implementa), e
-misurano la varietà con un determinante, un numero che vale quasi zero quando
-due risposte coincidono.
+Counterfactual Explanations*, e con lo stesso nome ne esiste la libreria).
+Misurano quanto le risposte sono varie con un solo numero, che vale quasi zero
+quando due di esse coincidono e cresce man mano che si allontanano: è il
+determinante di una tabella delle loro somiglianze.
 
 `````{tab} Elementare
 
-Alla richiedente del prestito la ricerca del controfattuale più vicino dice una
-cosa sola: guadagna seimila euro in più all’anno. È la risposta più economica
-sulla carta, e per lei può essere la più impossibile, se ha appena cambiato
-lavoro e lo stipendio per un anno non si muove. Le sarebbe servito sapere che
-c’erano anche altre strade: ridurre di trecento euro al mese le rate dei debiti,
-oppure aspettare altri sei anni nell’impiego attuale, arrivando a otto invece di
-due.
+A Maria la ricerca del controfattuale più vicino dice una cosa sola: guadagna
+seimila euro in più all’anno. È la risposta più economica sulla carta, e per
+lei può essere la più impossibile, se ha appena cambiato lavoro e lo stipendio
+per un anno non si muove. Le sarebbe servito sapere che c’erano anche altre
+strade: ridurre di trecento euro al mese le rate dei debiti, oppure aspettare
+altri sei anni nell’impiego attuale, arrivando a otto invece di due.
 
 La ricerca ne trova una sola, e sempre sulla stessa voce, per come conta il
-costo: ogni voce si misura in «quanto si sposta rispetto a quanto varia di
-solito fra le persone», e vince la più conveniente. Mescolare le voci non aiuta:
-se ogni passo verso il sì costa meno fatto con il reddito che fatto con la rata,
-qualunque pezzo di strada affidato alla rata costa più dello stesso pezzo fatto
-con il reddito. Chiedendo tre risposte senza chiedere che siano diverse, se ne
-avrebbero tre versioni della stessa: seimila euro in più, o qualche centinaio
-sopra.
+costo. Ogni voce si misura in «quanto si sposta rispetto a quanto varia di
+solito fra le persone», e così misurato ogni passo verso il sì ha un prezzo
+diverso a seconda della voce: per Maria il reddito è la voce dove il sì costa
+meno. Mescolare le voci non aiuta, perché ogni pezzo di strada fatto con la
+rata costerebbe più dello stesso pezzo fatto con il reddito; conviene fare
+tutta la strada col reddito. Chiedendo tre risposte senza chiedere che siano
+diverse, se ne avrebbero tre versioni della stessa: seimila euro in più, o
+qualche centinaio sopra.
 
 Per avere tre strade davvero diverse bisogna premiare la differenza. Si dà un
 voto all’insieme delle risposte: vicine alla situazione reale, sì, ma anche
@@ -600,7 +631,9 @@ devono restare possibili. Le voci che non si possono cambiare, come l’età, si
 tolgono dalla ricerca in partenza; gli anni di lavoro non si comprano, si
 aspettano; e certe voci vanno insieme, perché sei anni di lavoro in più portano
 con sé anche sei anni d’età in più, e un voto che guarda le voci una per una non
-lo sa.
+lo sa. E ogni strada vale per il modello che l'ha indicata: un altro modello,
+bravo quasi uguale, o lo stesso modello riaddestrato l'anno dopo, potrebbe
+chiedere a Maria un'altra cosa.
 
 `````
 
@@ -639,16 +672,24 @@ $|w_j|\,\mathrm{MAD}_j$. La risposta è sempre la stessa leva, e $k$ risposte
 senza il termine di diversità ne sono $k$ varianti. Resta aperto quello che il
 determinante non vede: due controfattuali diversi possono essere entrambi
 irrealizzabili, e la diversità misurata sulle voci non dice niente sulle
-dipendenze fra le voci stesse.
+dipendenze fra le voci stesse. E il controfattuale vale per il modello che lo ha
+prodotto. Modelli quasi equivalenti sui dati, l'effetto Rashomon dell'apertura,
+possono trattare diversamente la stessa persona, e un controfattuale valido per
+uno non esserlo per un altro, o per lo stesso modello riaddestrato: Pawelczyk,
+Broelemann e Kasneci danno un limite superiore al costo dei controfattuali in
+questa molteplicità, e trovano che quelli che restano vicini ai dati reali
+reggono meglio dei più sparsi, a un costo maggiore sotto il singolo modello
+{cite}`pawelczyk2020counterfactual`.
 
 `````
 
 Il conto usa un modello lineare, cioè un punteggio che è una somma pesata di tre
-voci (reddito, rata dei debiti e anni nell’impiego attuale), e la richiedente a
-un passo dal sì. Per ogni voce trova lo spostamento che porta il punteggio a
-zero (il logit, che a zero vale una probabilità del 50%) e il suo costo; poi
-confronta, con l’obiettivo di DiCE, l’insieme delle tre leve con tre varianti
-della leva più vicina.
+voci (reddito, rata dei debiti e anni nell’impiego attuale), e Maria a un passo
+dal sì: il suo punteggio vale $-1$, e il prestito si concede da $0$ in su. (Il
+punteggio è il logit, e un logit zero corrisponde a una probabilità del 50%.)
+Per ogni voce il blocco trova lo spostamento che porta il punteggio a zero e il
+suo costo; poi confronta, con l’obiettivo di DiCE, l’insieme delle tre leve con
+tre varianti della leva più economica.
 
 ```python
 import numpy as np
@@ -658,7 +699,7 @@ import numpy as np
 nomi = ["reddito", "rata", "anni di lavoro"]
 w = np.array([1 / 6, -1 / 3, 1 / 6])
 x0 = np.array([24.0, 6.0, 2.0])
-b = -1.0 - w @ x0                        # la richiedente sta a logit -1: negato
+b = -1.0 - w @ x0                        # Maria sta a logit -1: negato
 mad = np.array([8.0, 3.0, 4.0])          # deviazione assoluta mediana di ogni voce
 
 
@@ -711,17 +752,17 @@ La leva più economica è il reddito, da $24$ a $30$ migliaia di euro, e da sola
 tutto quello che il controfattuale più vicino restituisce. Le tre varianti del
 reddito stanno più vicine in media, $0{,}8125$ contro $1{,}0833$, ma la loro
 diversità è quasi nulla, $0{,}0130$ contro $0{,}7554$, e l’obiettivo, che si
-minimizza, le scarta: $1{,}3099$ contro $0{,}7863$. Il termine che penalizza chi
-non ha passato il confine con un margine, la perdita a cerniera, non si annulla
-per nessuno, perché si azzera solo oltre un logit di $1$: le leve si fermano
-esattamente sul confine, dove vale $1$, e le varianti del reddito lo superano di
-poco.
+minimizza, le scarta: $1{,}3099$ contro $0{,}7863$. Il primo termine
+dell'obiettivo, quello che punisce chi non ha passato il confine con un
+margine (la perdita a cerniera), non si annulla per nessuno: si azzera solo
+quando il punteggio supera $1$, e le leve si fermano esattamente a zero, dove
+vale $1$; le varianti del reddito vanno un poco oltre, e lo pagano meno.
 
 ## Regole invece di pesi: gli anchor
 
 LIME e SHAP consegnano un elenco di colonne con dei numeri accanto, e per
-leggerlo bisogna saper interpretare dei numeri. C'è una forma di spiegazione locale
-che non chiede questo sforzo, ed è la più antica che esista: una regola.
+leggerlo bisogna saper interpretare dei numeri. C'è una forma di spiegazione
+locale che non chiede questo sforzo: una regola.
 
 `````{tab} Elementare
 
@@ -754,9 +795,11 @@ decidere che cosa sia una condizione, cioè tornare a spezzettare l'immagine com
 fa LIME.
 
 E quanto alta debba essere quella precisione non lo dicono i dati: lo decide chi
-usa lo strumento, di solito molto in alto, per esempio al 95%. Quel 95% promette
-che la regola descrive bene il modello, non che il modello abbia ragione: un
-anchor precisissimo su un modello sbagliato descrive perfettamente uno sbaglio.
+usa lo strumento, di solito molto in alto, per esempio al 95%. La precisione,
+poi, non si conosce esatta: si stima provando la regola su un campione di casi,
+quindi si chiede che superi il 95% con buona sicurezza. E promette che la
+regola descrive bene il modello, non che il modello abbia ragione: un anchor
+precisissimo su un modello sbagliato descrive perfettamente uno sbaglio.
 
 `````
 
@@ -778,14 +821,18 @@ $$
 $$
 
 tipicamente con $\tau = 0{,}95$, soglia scelta da chi analizza e non dedotta
-dai dati. Fra tutti i predicati che soddisfano il
+dai dati. Poiché $\operatorname{prec}(A)$ per un modello qualsiasi non si
+calcola esattamente, il vincolo che si impone è probabilistico,
+$P\big(\operatorname{prec}(A) \ge \tau\big) \ge 1 - \delta$, e la precisione
+si stima per campionamento. Fra tutti i predicati che soddisfano il
 vincolo si cerca quello di copertura massima,
 $\operatorname{cov}(A) =
 \mathbb{E}_{\mathbf{z}\sim\mathcal{P}}[\mathbb{1}[A(\mathbf{z})]]$. La
 ricerca procede aggiungendo una condizione alla volta e stimando la precisione
 per campionamento; poiché ogni valutazione costa, il problema di quale
 candidato affinare è formulato come *best-arm identification*, cioè quello che
-risolvono i {doc}`bandit a più braccia </ReinforcementLearning/banditi>`.
+risolvono i {doc}`bandit a più braccia </ReinforcementLearning/banditi>`, con
+l'algoritmo KL-LUCB a dare intervalli di confidenza sulla precisione.
 
 Il guadagno rispetto a LIME è la fedeltà dichiarata: un anchor non
 approssima, delimita, e la sua precisione è un numero misurato invece che una
@@ -869,12 +916,12 @@ minima dell'input che conserva la classe da sola.
 ## In pratica: i valori di Shapley calcolati da zero
 
 Esistono librerie che calcolano tutto questo in due righe. Qui il conto si fa
-da zero, provando tutti gli ordini a uno a uno, esattamente come si è fatto con
-10, 30, 20 e 50 di qualche pagina fa; e poi si rifà per intero a mano, con
-carta e penna. Stavolta però con tre colonne invece che due, il che cambia
-una cosa sola e conviene dirla subito: con due colonne gli ordini erano due,
-con tre diventano sei (la prima entrata si può scegliere in tre modi, la
-seconda nei due rimasti, la terza è obbligata: $3 \times 2 \times 1$).
+da zero, provando tutti gli ordini a uno a uno, come nell'esempio con 10, 30,
+20 e 50; e poi si rifà per intero a mano, con carta e penna. Stavolta però con
+tre colonne invece che due, il che cambia una cosa sola e conviene dirla
+subito: con due colonne gli ordini erano due, con tre diventano sei (la prima
+entrata si può scegliere in tre modi, la seconda nei due rimasti, la terza è
+obbligata: $3 \times 2 \times 1$).
 
 Il modellino su cui lo faremo è una formula inventata, con tre colonne che
 chiameremo $x_0$, $x_1$ e $x_2$: si numera da zero perché così fa Python, quindi
@@ -950,7 +997,8 @@ dopo l'altra.
 Si comincia dall’additività, quella dei due punteggi calcolati a parte: un
 conto che è una somma si può spezzare, fare i conti sui pezzi e sommare i
 risultati. Qui i pezzi sono i tre addendi, e su ciascuno il merito si vede a
-occhio.
+occhio. I tre numeri fra parentesi sono i meriti delle tre colonne,
+nell'ordine.
 
 - $x_0$ da solo. Accendere la prima colonna porta questo addendo da $0$ a $1$,
   in qualunque ordine, e le altre due colonne non lo toccano mai. Meriti:
@@ -973,14 +1021,11 @@ stampati dal programma, ottenuti senza programma. E la terza colonna, che nella
 formula non aveva un numero suo, prende comunque mezzo punto: se l'è guadagnato
 tutto nell'interazione.
 
-Poi la simmetria, e conviene vedere dove è entrata:
-nel terzo pezzo, e solo lì. Dentro $x_0x_2$ le due colonne fanno esattamente
-lo stesso mestiere (nessuna delle due vale niente senza l'altra), e chi
-contribuisce allo stesso modo riceve lo stesso: da qui il mezzo punto a testa.
-Applicarla al conto intero sarebbe invece un errore, perché lì le due
-colonne non fanno affatto lo stesso mestiere, e infatti prendono $1{,}5$ e
-$0{,}5$. È l'additività a permettere di spezzare, ed è solo dopo aver spezzato
-che la simmetria si può usare, nel pezzo in cui vale.
+La simmetria è entrata nel terzo pezzo, e solo lì: dentro $x_0x_2$ le due
+colonne fanno lo stesso mestiere, da qui il mezzo punto a testa, mentre nel
+conto intero no, e infatti prendono $1{,}5$ e $0{,}5$. È l'additività a
+permettere di spezzare, ed è solo dopo aver spezzato che la simmetria si può
+usare, nel pezzo in cui vale.
 
 Resta l’efficienza, che è quella che il programma verifica nelle
 ultime due righe: $1{,}5 + 2{,}0 + 0{,}5 = 4{,}0$, che è
@@ -1007,13 +1052,12 @@ però, è questa.
 - LIME fabbrica tanti casi-fantasma, chiede al modello che cosa
   risponderebbe per ciascuno, e su quella nuvola costruisce un modellino a
   somma, contando di più i fantasmi più simili al caso da spiegare. Su una
-  tabella il «solo qui vicino» sta tutto in quel conteggio, non nel modo in cui
-  i fantasmi sono nati; su una fotografia i fantasmi sono la stessa immagine
-  con qualche pezzo spento, e nascono vicini per costruzione. I numeri di
-  quella somma sono la spiegazione. Funziona con qualunque
-  modello, ma è instabile: rilanciato sullo stesso caso dà numeri diversi, e
-  cambia anche a seconda di quanto largo si prende il vicinato e di come si è
-  deciso di spezzettare il caso in parti.
+  tabella i fantasmi nascono sparsi, e a renderli vicini è solo quel peso; su
+  una fotografia sono la stessa immagine con qualche pezzo spento. I numeri di
+  quella somma sono la spiegazione. Funziona con qualunque modello, ma è
+  instabile: rilanciato sullo stesso caso dà numeri diversi, e cambia anche a
+  seconda di quanto largo si prende il vicinato e di come si è deciso di
+  spezzettare il caso in parti.
 - I valori di Shapley (una formula del 1953, nata per dividere fra i soci
   il guadagno di un'impresa) ripartiscono fra le colonne lo scarto fra la
   risposta su questo caso e la risposta base, cioè quella che il modello dà
@@ -1038,6 +1082,7 @@ però, è questa.
   d'uscita concreta, purché resti vicina alla situazione reale e riguardi
   qualcosa su cui si può davvero agire. Da solo, però, indica sempre la
   stessa leva: conviene chiederne alcuni, premiando quelli diversi fra loro.
+  E vale per il modello che l'ha prodotto, non per un altro bravo uguale.
 - Gli anchor sostituiscono i numeri con una regola («finché il reddito
   supera 30 000, è sì») e ne dichiarano i limiti: la precisione, quanto
   spesso azzecca la risposta del modello, e la copertura, su quanti casi si
@@ -1057,13 +1102,14 @@ però, è questa.
 :class: important
 - Una spiegazione locale riguarda *una* predizione $f(\mathbf{x}_0)$, non l'intero
   modello: risponde a «perché *questo* caso?» dove l'importanza globale della
-  sezione precedente rispondeva a «cosa conta in media?».
+  sezione sui modelli trasparenti rispondeva a «cosa conta in media?».
 - LIME {cite}`ribeiro2016why` approssima il modello con un surrogato lineare
   definito su una rappresentazione interpretabile binaria (superpixel, parole,
   intervalli) e adattato a punti perturbati pesati per prossimità: la località
   la porta il peso $\pi_{\mathbf{x}_0}$, non il campionamento. È model-agnostic
   ma instabile, sensibile alla larghezza del vicinato e alla segmentazione
-  scelta.
+  scelta; l'instabilità si misura rilanciandolo e confrontando le feature in
+  testa.
 - I valori di Shapley (teoria dei giochi, 1953) ripartiscono fra le feature
   lo scarto fra la predizione $f(\mathbf{x}_0)$ e un valore base, cioè quanto
   risponde il modello quando delle feature non sa nulla; la quota di ciascuna è
@@ -1084,11 +1130,14 @@ però, è questa.
   matematico degli esempi avversari {cite}`goodfellow2015explaining`, con
   intento opposto: spiegare invece di ingannare. Con distanza $L_1$ e modello
   lineare il minimo muove una voce sola; DiCE {cite}`mothilal2020explaining`
-  ne cerca $k$ insieme, premiando la diversità con $\det\mathbf{K}$.
+  ne cerca $k$ insieme, premiando la diversità con $\det\mathbf{K}$. Sotto
+  molteplicità predittiva un controfattuale può non valere per un modello quasi
+  equivalente {cite}`pawelczyk2020counterfactual`.
 - Gli anchor {cite}`ribeiro2018anchors` sostituiscono i pesi con una
   regola e ne dichiarano i limiti: *precisione* (quanto spesso la regola
-  azzecca il modello) e *copertura* (su quanti casi si applica). Dicono fin
-  dove la risposta non cambia, cosa che LIME non fa.
+  azzecca il modello, garantita con confidenza $1 - \delta$) e *copertura* (su
+  quanti casi si applica). Dicono fin dove la risposta non cambia, cosa che
+  LIME non fa.
 - Il CEM {cite}`dhurandhar2018explanations` distingue i positivi
   pertinenti (che cosa basta perché la risposta sia questa) dai negativi
   pertinenti (che cosa, assente, la tiene ferma). Il negativo pertinente è un

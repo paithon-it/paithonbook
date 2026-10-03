@@ -2,17 +2,19 @@
 
 Una griglia di numeri che può essere una fila, una tabella, o una pila di
 tabelle. Si chiama **array N-dimensionale**, in breve `ndarray`, ed è
-l'oggetto su cui poggia, direttamente o no, ogni pezzo dell'ecosistema
-scientifico di Python: Pandas, scikit-learn, PyTorch, TensorFlow. È il ponte
-fra la matematica dei vettori e delle matrici e il codice che addestra i
-modelli.
+l'oggetto su cui poggiano Pandas, Matplotlib e scikit-learn, e il formato in
+cui anche PyTorch e TensorFlow, che hanno un motore di calcolo proprio, si
+scambiano i dati con il resto dell'ecosistema scientifico di Python. È il
+ponte fra la matematica dei vettori e delle matrici (elenchi e tabelle di
+numeri, che la {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`
+tratta per esteso) e il codice che addestra i modelli.
 
-Nasce da una riappacificazione. Nel 2005 Travis Oliphant unisce due librerie
-rivali, *Numeric* e *Numarray*, in un solo progetto, che l'anno seguente
-rilascia come NumPy 1.0: una di quelle scelte silenziose che cambiano un
-intero campo, perché mettono tutti a parlare la stessa lingua. Quanto a
-*vettorizzato*, che sta nel titolo, per ora vuol dire fare un conto su un
-blocco intero di numeri in una volta sola invece che su un numero per volta.
+NumPy nasce nel 2005, quando Travis Oliphant riunisce in un solo progetto due
+librerie concorrenti, *Numeric* e *Numarray*; il progetto esce come NumPy 1.0
+l'anno seguente. Da allora gli strumenti scientifici di Python si scambiano i
+dati nello stesso formato, l’`ndarray`. Quanto a *vettorizzato*, che sta nel
+titolo, per ora vuol dire fare un conto su un blocco intero di numeri in una
+volta sola invece che su un numero per volta.
 
 ## L'ndarray: perché non basta una lista
 
@@ -20,24 +22,22 @@ Python ha già le liste. Perché inventare un altro contenitore di numeri?
 
 ```{figure} ../figures/numpy-array-vs-liste.svg
 :name: fig-array-vs-lista
-:alt: "Due rappresentazioni della memoria a confronto. In alto una lista Python: una sequenza di rimandi, ciascuno dei quali indica un oggetto numerico collocato altrove, sparso nella memoria. In basso un array NumPy: i valori sono scritti uno dopo l'altro in un blocco contiguo, senza intermediari."
+:alt: "Due rappresentazioni della memoria a confronto. In alto una lista Python: una sequenza di riferimenti (puntatori), ciascuno dei quali indica un oggetto numerico collocato altrove, sparso nella memoria. In basso un array NumPy: i valori sono scritti uno dopo l'altro in un blocco contiguo, senza intermediari."
 :width: 92%
 
 Dove stanno davvero i numeri. Nella lista ogni numero è un pacchetto a sé,
-sparso nella memoria, e per raggiungerlo si segue un rimando per volta;
+sparso nella memoria, e per raggiungerlo si segue un riferimento per volta;
 nell'array i valori stanno di fila, e il processore può leggerli a blocchi.
 ```
 
-Quel che {numref}`fig-array-vs-lista` mostra è il motivo per cui l'array
-esiste: scorrere valori messi di fila è l'operazione per cui un processore è
-costruito, mentre inseguire un **rimando** alla volta (un rimando è un
-bigliettino che invece del numero porta scritto l'indirizzo in cui il numero
-si trova) è quella che gli riesce peggio. Su chi ne beneficia bisogna però
-essere precisi, perché la confusione è facile e costa cara: la compattezza
-serve al motore interno di NumPy, che è scritto in
-C (un linguaggio molto più vicino alla macchina di Python, veloce da
-eseguire e scomodo da scrivere) e che attraversa l'array tutto insieme; non
-serve a un ciclo scritto in Python.
+La {numref}`fig-array-vs-lista` mostra il motivo per cui l'array esiste: un
+processore è costruito per scorrere valori messi di fila, e se la cava peggio
+quando deve seguire un **riferimento** alla volta (un riferimento, o
+puntatore, porta scritto l'indirizzo in cui si trova il numero, invece del
+numero). Va però precisato chi ne beneficia: la compattezza serve al motore
+interno di NumPy, scritto in C (un linguaggio molto più vicino alla macchina
+di Python, veloce da eseguire e scomodo da scrivere), che attraversa l'array
+tutto insieme; non serve a un ciclo scritto in Python.
 
 Una nota di passaggio, perché è la domanda che viene subito: in Python il `+`
 fra due liste non somma i numeri, attacca la seconda in coda alla prima
@@ -58,19 +58,20 @@ stanno uno accanto all'altro in un blocco compatto di memoria. Perde la
 libertà di mescolare tipi diversi, ma in cambio le operazioni sui numeri
 diventano corte da scrivere e molto più veloci da eseguire.
 
-Insieme al blocco viene il passo con cui percorrerlo. Per leggere una colonna
-di una tabella non serve spostare nessun numero: si cammina sugli stessi
-valori a passi più lunghi, saltando quelli in mezzo. Così prendere una colonna
-o una fetta non costruisce niente di nuovo: cambia solo il percorso sul blocco
-che c'è già.
+Insieme al blocco viene il passo con cui percorrerlo. In memoria i numeri di
+una tabella stanno scritti in fila, una riga dopo l'altra: per leggere una riga
+si va avanti di uno in uno, per leggere una colonna di una tabella larga
+cinque si salta di cinque in cinque, e nessun numero va spostato. Così
+prendere una colonna o una fetta non costruisce niente di nuovo: cambia solo il
+percorso sul blocco che c'è già.
 
 `````
 
 `````{tab} Superiore
 
-Un `ndarray` è una vista tipizzata su un blocco di memoria: un `dtype`
-omogeneo (per esempio `float64` o `int32`), una *forma* (`shape`) e un insieme
-di *stride* che dicono di quanti byte spostarsi per passare all'elemento
+Un `ndarray` è una vista tipizzata su un blocco di memoria: un `dtype` omogeneo
+(per esempio `float64` o `int32`), una *forma* (`shape`) e un insieme di
+*stride* che dicono di quanti byte spostarsi per passare all'elemento
 successivo lungo ogni asse. Quando gli stride sono esattamente quelli che si
 ricavano dalla forma, l'array è **contiguo** (in ordine C per righe, in ordine
 Fortran per colonne) e un ciclo in C può scorrerlo di fila; la contiguità è
@@ -78,17 +79,18 @@ quindi una proprietà del modo in cui l'array guarda il buffer, non una sua
 definizione, ed è verificabile con `.flags` (`C_CONTIGUOUS`, `F_CONTIGUOUS`).
 La distinzione conta: una colonna estratta da una matrice, `M[:, 0]`, è un
 `ndarray` perfettamente legittimo e non contiguo, e la trasposta `M.T` è
-F-contigua ma non C-contigua. Questa struttura permette due cose.
-Primo: slice e trasposizione sono sempre *viste*, ricalcoli di stride a costo
-zero senza copia dei dati (ed è proprio perché la contiguità non è garantita
-che gli stride esistono); `reshape` è una vista quando gli stride della forma
-nuova si possono ricavare da quelli vecchi, e altrimenti copia. Secondo: le
-operazioni elemento-per-elemento sono delegate a cicli in C compilati e
-vettorizzati (istruzioni SIMD), che saltano l’*overhead* dell'interprete su
-ogni iterazione; l'algebra lineare vera e propria (i prodotti tra matrici)
-passa invece per librerie BLAS ottimizzate. È la differenza fra un milione di
-numeri ciascuno impacchettato nel proprio oggetto, sparsi dove capita, e un
-array C nudo.
+F-contigua ma non C-contigua. Questa struttura permette due cose. Primo: slice
+e trasposizione sono sempre *viste*, ricalcoli di stride a costo zero senza
+copia dei dati (ed è proprio perché la contiguità non è garantita che gli
+stride esistono); `reshape` è una vista quando gli stride della forma nuova si
+possono ricavare da quelli vecchi, e altrimenti copia. Secondo: le operazioni
+elemento-per-elemento sono delegate a cicli in C compilati e vettorizzati
+(istruzioni SIMD), che saltano l’*overhead* dell'interprete su ogni iterazione;
+l'algebra lineare vera e propria (i prodotti tra matrici di decimali o
+complessi) passa invece per librerie BLAS ottimizzate; sugli interi NumPy usa
+un ciclo C semplice, molto più lento. È la differenza fra un milione di numeri
+ciascuno impacchettato nel proprio oggetto, sparsi dove capita, e un array C
+nudo.
 
 Il `dtype` fisso ha però conseguenze che una lista non ha. Gli interi hanno
 larghezza finita e traboccano in silenzio, in aritmetica modulare:
@@ -103,8 +105,13 @@ I decimali nascono `float64`, mentre PyTorch lavora di norma in `float32`: un
 tensore ricavato con `torch.from_numpy` conserva il `float64`, e dato a uno
 strato in `float32` si ferma con `mat1 and mat2 must have the same dtype`. E
 quando due dtype si incontrano valgono le regole di NumPy 2 (NEP 50): un
-numero Python non allarga il dtype dell'array (`np.float32(1) + 1.0` resta
-`float32`), uno scalare o un array NumPy sì.
+numero Python è «debole» e adotta il dtype dell'array se è dello stesso
+genere, intero con intero o decimale con decimale (`np.float32(1) + 1.0` resta
+`float32`); se il genere cambia, vince il dtype predefinito del nuovo genere
+(un array `int8` più `1.0` dà `float64`), e un intero Python che non sta nel
+dtype dell'array solleva `OverflowError` invece di allargarlo (`a + 200`, con
+`a` di `int8`). Uno scalare o un array NumPy è invece «forte»: `float32` più
+`float64` dà `float64`.
 
 `````
 
@@ -129,8 +136,10 @@ Nell'ultima riga `size=(2, 2)` è un argomento passato con il suo nome, la
 scrittura vista nella sezione sulle funzioni: dice quanto dev'essere grande il
 risultato. E «a campana» è la forma che si vede disegnando quanti numeri escono
 vicino a ciascun valore: quasi tutti vicino allo zero, sempre meno man mano che
-ci si allontana, in modo simmetrico. È la distribuzione più comune in natura e
-in statistica: si chiama **distribuzione normale**, o gaussiana, e la
+ci si allontana, in modo simmetrico. È la distribuzione che torna più spesso in
+statistica, perché descrive bene le grandezze che nascono sommando tanti
+piccoli effetti che non dipendono l'uno dall'altro, come il totale di molti
+lanci di dado: si chiama **distribuzione normale**, o gaussiana, e la
 {doc}`sezione di probabilità e statistica </Matematica/probabilita-statistica>`
 le dedica la formula e il grafico.
 
@@ -149,26 +158,29 @@ dimensione la forma è un numero solo e le parentesi doppie non servono, da cui
 `np.ones(4)`. L'ordine è sempre quello: prima le righe, poi le colonne. A un
 array già fatto la forma si può anche chiedere, e si scrive `M.shape`.
 
-Due dettagli importanti: `arange` è pensato per interi e passi, `linspace` per
+Due dettagli importanti: `arange` è pensato per interi e passi (con un passo
+decimale la lunghezza dipende dagli arrotondamenti: `np.arange(0.1, 0.4, 0.1)`
+contiene anche `0.4`, l'estremo che dovrebbe restare fuori), `linspace` per
 dividere un intervallo in un numero *esatto* di punti (è quello giusto per
 disegnare curve). E il generatore casuale moderno si costruisce con
 `default_rng(seme)`: fissare il seme rende l'esperimento ripetibile, requisito
-minimo di ogni lavoro scientifico serio. Non è una contraddizione: un computer
-non sa fare niente a caso, e quei numeri li calcola con una formula che li fa
+minimo di ogni lavoro scientifico serio. Non è una contraddizione: un programma
+deterministico non produce numeri casuali, li calcola con una formula che li fa
 *sembrare* casuali (si dicono infatti *pseudo-casuali*). Il seme è il numero da
 cui la formula parte: stesso seme, stessa sequenza, oggi e sulla macchina di un
-altro; seme diverso, sequenza diversa. La promessa vale a parità di versione di
-NumPy, che si riserva di cambiare la formula quando ne trova una migliore, e lo
-dichiara. Chi deve ritrovare gli stessi numeri fra dieci anni scrive nel lavoro
-anche la versione. Zero è solo il primo numero che viene in mente, e qualunque
-altro andrebbe uguale.
+altro; seme diverso, sequenza diversa. Senza seme, NumPy parte da un valore
+preso dal sistema operativo, e ogni esecuzione è diversa. La promessa vale a
+parità di versione di NumPy, che si riserva di cambiare la formula quando ne
+trova una migliore, e lo dichiara. Chi deve ritrovare gli stessi numeri fra
+dieci anni scrive nel lavoro anche la versione. Il valore 0 è una scelta
+qualunque: un altro seme darebbe un'altra sequenza, ugualmente valida.
 
 ## Indicizzazione e slicing
 
-Su un array si "affonda la mano" con le stesse parentesi quadre delle liste
-(`numeri[0]` è il primo elemento), ma con più potenza: si indicizzano più
-**assi** insieme, separati da virgola, dove gli assi sono le direzioni lungo
-cui l'array si estende (in una tabella: le righe e le colonne).
+Un array si indicizza con le stesse parentesi quadre delle liste (`numeri[0]`
+è il primo elemento), ma si possono indicizzare più **assi** insieme, separati
+da virgola: gli assi sono le direzioni lungo cui l'array si estende (in una
+tabella, le righe e le colonne).
 
 ```{figure} ../figures/numpy-indexing-reshape-vettoriale.svg
 :name: fig-slicing-numpy
@@ -197,9 +209,9 @@ vista[0] = 999
 vettore                     # -> array([ 10, 999,  30,  40])   l'array è cambiato
 ```
 
-Non è un difetto, è il motivo per cui NumPy è veloce: una fetta di un array da
-un milione di elementi non costa niente, perché non si porta via niente. Ma se
-ti serve una copia vera devi chiederla, e si chiede con `.copy()`.
+Non è un difetto: una fetta di un array da un milione di elementi non costa
+niente, perché non copia niente, e questo tiene bassi tempo e memoria. Se
+invece serve una copia vera va chiesta, con `.copy()`.
 
 ```python
 x = np.array([10, 20, 30, 40, 50])
@@ -222,12 +234,14 @@ negativo conta dalla fine, e `x[-1]` è l'ultimo qualunque sia la lunghezza. E
 in una *slice* il secondo estremo è escluso (`x[1:4]` dà tre elementi): vale la
 stessa regola delle liste, e per la stessa ragione.
 
-Sulla forma di ciò che viene stampato: `np.int64(10)` non è un numero
-strano, è il modo in cui NumPy 2 *mostra* un suo numero intero quando lo si
-scrive all'interprete, per dire di che tipo è (`x[0]` è a tutti gli effetti il
-numero 10, e `print(x[0])` stampa proprio `10`). Chi arriva da un tutorial
-scritto per NumPy 1, dove usciva `10` e basta, si trova la differenza qui e in
-tutti i punti in cui da un array si estrae un valore singolo.
+Sulla forma di ciò che viene stampato: `np.int64(10)` non è un numero strano, è
+il modo in cui NumPy 2 *mostra* un suo numero intero quando lo si scrive
+all'interprete, per dire di che tipo è (`x[0]` è un intero a 64 bit che nei
+conti si comporta come il numero 10, ma non è un `int` di Python: dove serve un
+`int`, per esempio per `json`, si scrive `int(x[0])`; `print(x[0])` stampa
+proprio `10`). Chi arriva da un tutorial scritto per NumPy 1, dove usciva `10`
+e basta, si trova la differenza qui e in tutti i punti in cui da un array si
+estrae un valore singolo.
 
 C'è poi un'indicizzazione che in Python puro richiederebbe un ciclo con `if`.
 
@@ -294,9 +308,10 @@ sostituisce interi cicli con un'unica espressione dichiarativa.
 
 ## Broadcasting: sommare forme diverse senza cicli
 
-Cosa succede se provi a sommare una riga e una colonna di dimensioni diverse?
-In quasi ogni linguaggio, un errore. In NumPy, il **broadcasting**: le forme
-"più piccole" vengono espanse virtualmente finché combaciano
+Cosa succede se si sommano una riga e una colonna di dimensioni diverse? Per
+le regole dell'algebra lineare l'operazione non è definita, e molti linguaggi
+la rifiutano. NumPy la definisce con una regola, il **broadcasting**: le forme
+più piccole vengono espanse virtualmente finché combaciano
 ({numref}`fig-broadcasting`).
 
 ```{figure} ../figures/broadcasting-numpy.svg
@@ -304,7 +319,8 @@ In quasi ogni linguaggio, un errore. In NumPy, il **broadcasting**: le forme
 :alt: Una riga 1×4 si ripete verso il basso e una colonna 3×1 verso destra, sommandosi in una matrice 3×4.
 :width: 90%
 
-Broadcasting: una riga $(1\times 4)$ e una colonna $(3\times 1)$ si espandono
+Broadcasting: una riga $(1\times 4)$, cioè una riga per quattro colonne, e una
+colonna $(3\times 1)$ si espandono
 virtualmente ciascuna lungo la dimensione mancante e si sommano in una matrice
 $(3\times 4)$. Nessun dato viene davvero copiato in memoria.
 ```
@@ -356,7 +372,8 @@ $$
 
 L'asse mancante di $a$ viene inserito a sinistra come $1$, poi ogni asse-$1$ è
 trasmesso lungo l'altra dimensione. Il risultato è equivalente a
-$C_{ij}=a_j+b_i$ ma è calcolato in C, senza materializzare le copie: gli stride
+$S_{ij}=a_j+b_i$, dove $S$ è il risultato di forma $(3,4)$, ma è calcolato in
+C, senza materializzare le copie: gli stride
 del lato "trasmesso" sono posti a $0$, così lo stesso dato viene riletto più
 volte. Con stride nullo più celle guardano lo stesso byte, e da qui la vista
 che `np.broadcast_to` restituisce è in sola lettura: assegnarci dentro
@@ -395,7 +412,10 @@ stende viene riletto invece che ricopiato.
 ## Vettorizzazione: quanto conta davvero
 
 Il motivo per cui tutto questo esiste è la velocità. "Vettorizzare" significa
-sostituire un ciclo Python con un'operazione sull'intero array.
+sostituire un ciclo Python con un'operazione sull'intero array, e il blocco che
+segue misura quanto si guadagna con `%timeit`, un comando dei notebook che
+cronometra la riga scritta accanto (qui il `%` non è il resto della
+divisione).
 
 ```python
 import numpy as np
@@ -418,12 +438,11 @@ lista = x.tolist()              # gli stessi numeri, in una lista Python
 %timeit [2 * v for v in x]      # ~85 millisecondi: stesso ciclo, altro contenitore
 ```
 
-`%timeit` non è un'istruzione del linguaggio. È un comando dei notebook (una
-*magic* di IPython, il motore che sta sotto le celle) che cronometra
-l'istruzione scritta accanto, ripetendola molte volte e riportando il tempo
-medio e di quanto le singole ripetizioni se ne scostano (`mean ± std. dev.`),
-insieme al numero di ripetizioni. In un normale file `.py` non funziona: lì si
-usa il modulo `timeit` della libreria standard.
+`%timeit` appartiene a IPython, il motore che sta sotto le celle dei
+notebook, e non al linguaggio (in gergo è una *magic*): ripete l'istruzione
+molte volte e riporta il tempo medio, di quanto le singole ripetizioni se ne
+scostano (`mean ± std. dev.`) e il numero di ripetizioni. In un normale file
+`.py` non funziona: lì si usa il modulo `timeit` della libreria standard.
 
 `````{tab} Elementare
 
@@ -481,10 +500,18 @@ al ciclo in C e non a quello in Python: un `ndarray` è veloce quando lo si
 tocca tutto in una volta, e chi "ottimizza" un ciclo Python convertendo la
 lista in array lo rallenta.
 
-Non è comunque gratis all'infinito: la vettorizzazione può aumentare l'uso di
-memoria (array temporanei intermedi) e non copre bene ogni algoritmo
-intrinsecamente sequenziale, ma per l'algebra dei dati è quasi sempre la scelta
-giusta.
+Il meccanismo che sta sotto si chiama *ufunc* (*universal function*):
+`np.add`, `np.multiply`, `np.sqrt` e gli operatori che le richiamano applicano
+una funzione compilata a tutti gli elementi, con broadcasting, e accettano
+`out=` per scrivere il risultato in un array già allocato invece di crearne
+uno nuovo. Vettorizzare ha due costi: gli array intermedi (un’espressione come
+`a * b + c` può crearne, e `out=` serve a evitarli) e gli algoritmi
+intrinsecamente sequenziali, in cui ogni passo dipende dal precedente e non
+c'è un'operazione sull'intero array da scrivere. Attenzione a `np.vectorize`:
+non vettorizza niente, è un ciclo Python che chiama la funzione su ogni
+elemento (la documentazione dice che serve per comodità, non per velocità), e
+su un milione di elementi impiega quanto il ciclo scritto a mano, centinaia di
+volte più di `2 * x`.
 
 `````
 
@@ -495,7 +522,9 @@ basta questo, e che cosa siano davvero, insieme ai conti che ci si fanno
 sopra, lo spiegherà la {doc}`sezione di algebra lineare
 </Matematica/algebra-lineare>`. Quello che conta adesso è una cosa sola: ogni
 operazione è una riga. Prodotto scalare, prodotto matrice-vettore e prodotto
-fra matrici sono tutti l'operatore `@`, e `np.linalg` raccoglie il resto.
+fra matrici sono tutti l'operatore `@`, e `np.linalg` raccoglie il resto. Il
+prodotto con `*` è un'altra cosa: moltiplica elemento per elemento ($\odot$),
+come la somma, e `A * A` non è `A @ A`.
 
 ```python
 A = np.array([[1., 2.],
@@ -515,10 +544,11 @@ I due numeri di `A @ v` si leggono a occhio, e conviene farlo: $3$ è
 $1 + 2$, $7$ è $3 + 4$, cioè ogni riga di `A` moltiplicata voce per voce per
 `v` e poi sommata.
 
-Un'avvertenza che torna spesso: per risolvere un sistema
-$\mathbf{A}\mathbf{z} = \mathbf{v}$ si usa
-`np.linalg.solve`, non `inv(A) @ v`. Il primo è più preciso e più veloce;
-calcolare l'inversa esplicita è quasi sempre uno spreco, e la
+Un'avvertenza che torna spesso: per risolvere un sistema di equazioni
+$\mathbf{A}\mathbf{z} = \mathbf{v}$, cioè trovare lo $\mathbf{z}$ che
+moltiplicato per $\mathbf{A}$ dà $\mathbf{v}$, si usa `np.linalg.solve`, non
+`inv(A) @ v`. Il primo è più preciso e più veloce; calcolare l'inversa
+esplicita è quasi sempre uno spreco, e la
 {doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>` dice quanto
 costa. Con questi mattoni (array, broadcasting, vettorizzazione, algebra
 lineare), abbiamo il vocabolario per esprimere in poche righe ciò che un
@@ -578,7 +608,9 @@ modello, sotto, fa milioni di volte.
 `````
 
 Un array però è una griglia di numeri e basta: non sa che la terza colonna è
-l'età e la quinta la spesa, non sa che a una riga manca un dato, e se le
-colonne sono di tipi diversi non le può nemmeno tenere insieme. Sui dati veri,
-che arrivano con nomi, buchi e tipi misti, serve qualcosa che poggi sull'array
-e ci metta sopra le etichette.
+l'età e la quinta la spesa, non sa che a una riga manca un dato (per i decimali
+c'è `NaN`, per gli interi niente) e ha un solo `dtype` per tutti i valori:
+mettere testo e numeri nella stessa tabella li riduce a stringhe, e
+`np.array([["Ada", 34]])` contiene la stringa `"34"` al posto del numero. Sui
+dati veri, che arrivano con nomi, buchi e tipi misti, serve qualcosa che poggi
+sull'array e ci metta sopra le etichette.

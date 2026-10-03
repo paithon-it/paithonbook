@@ -195,7 +195,7 @@ def costruisci() -> Figura:
     corpo.append(f'<text class="ttl" x="{DES.x:.1f}" y="{DES.y - 34:.1f}">'
                  f'tutte le riletture</text>')
     corpo.append(f'<text class="lbs" x="{DES.x:.1f}" y="{DES.y - 16:.1f}">'
-                 f'media su {PROVE} estrazioni per ogni punto</text>')
+                 f'media su {PROVE} sorteggi per ogni punto</text>')
     corpo.append(f'<text class="lbs" transform="rotate(-90 {DES.x - 14:.1f} '
                  f'{DES.y + DES.alt / 2:.1f})" x="{DES.x - 14:.1f}" '
                  f'y="{DES.y + DES.alt / 2:.1f}" text-anchor="middle">'
@@ -230,8 +230,8 @@ def costruisci() -> Figura:
                  f'scritta, e a un quarto delle caselle è già a metà '
                  f'strada.</text>')
     corpo.append(f'<text class="lbs" x="{SIN.x:.1f}" y="{ALT - 14:.1f}">'
-                 f'Chiavi e valori sorteggiati, memoria fatta di somme di '
-                 f'prodotti esterni: nessun addestramento, solo algebra.</text>')
+                 f'Chiavi e valori sorteggiati, memoria fatta di voci '
+                 f'sommate una sull\'altra: nessun addestramento, solo algebra.</text>')
 
     disegno = "".join(corpo)
     verifica_testi(disegno)

@@ -5,7 +5,7 @@
   di book/_static/brand/tokens.css.
   fonte: ../gestire-dati-mancanti.svg
 -->
-<svg viewBox="0 0 740 396" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La stessa tabella di cinque righe e tre colonne (eta, acquisti, spesa), con due caselle vuote, gli acquisti della seconda riga e la spesa della terza, trattata in tre modi affiancati. Nel primo le due righe incomplete sono barrate: con loro se ne vanno 4 numeri buoni e restano tre righe su cinque. Nel secondo i due buchi sono riempiti con la media della loro colonna, 4,8 acquisti e 159,2 di spesa, uguale per chiunque. Nel terzo il valore si ricostruisce dalle altre colonne della stessa riga, e due frecce tratteggiate orizzontali entrano in ciascun buco partendo dalle celle che gli stanno accanto: chi ha fatto nove acquisti prende 347 di spesa invece di 159,2, e chi ha speso 240 prende 6,2 acquisti invece di 4,8. In fondo, la regola d'oro: il valore con cui si riempie si calcola solo sui dati con cui il modello impara.">
+<svg viewBox="0 0 740 396" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La stessa tabella di cinque righe e tre colonne (eta, acquisti, spesa), con due caselle vuote, gli acquisti della seconda riga e la spesa della terza, trattata in tre modi affiancati. Nel primo le due righe incomplete sono barrate: con loro se ne vanno 4 numeri buoni e restano tre righe su cinque. Nel secondo i due buchi sono riempiti con la media della loro colonna, 4,75 acquisti e 159,25 di spesa, uguale per chiunque. Nel terzo il valore si ricostruisce dalle altre colonne della stessa riga, e due frecce tratteggiate orizzontali entrano in ciascun buco partendo dalle celle che gli stanno accanto: chi ha fatto nove acquisti prende 347 di spesa invece di 159,25, e chi ha speso 240 prende 6,2 acquisti invece di 4,75. In fondo, la regola d'oro: il valore con cui si riempie si calcola solo sui dati con cui il modello impara.">
   <defs><marker id="ft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5BA39C"/></marker></defs>
   <rect x="0" y="0" width="740" height="396" fill="#0E0C0A"/>
   <text x="370.0" y="30" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#F4ECDD" font-weight="bold">La stessa tabella bucata, tre strategie</text>
@@ -65,7 +65,7 @@
   <rect x="288" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="314.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">41</text>
   <rect x="340" y="144" width="52" height="26" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.2"/>
-  <text x="366.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#0E0C0A" font-weight="bold">4,8</text>
+  <text x="366.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#0E0C0A" font-weight="bold">4,75</text>
   <rect x="392" y="144" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="418.0" y="161" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">240</text>
   <rect x="288" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
@@ -73,7 +73,7 @@
   <rect x="340" y="170" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="366.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">9</text>
   <rect x="392" y="170" width="52" height="26" fill="#DDB874" stroke="#F4ECDD" stroke-width="1.2"/>
-  <text x="418.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#0E0C0A" font-weight="bold">159,2</text>
+  <text x="418.0" y="187" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#0E0C0A" font-weight="bold">159,25</text>
   <rect x="288" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>
   <text x="314.0" y="213" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" fill="#F4ECDD">23</text>
   <rect x="340" y="196" width="52" height="26" fill="#0E0C0A" stroke="#F4ECDD" stroke-width="1.2"/>

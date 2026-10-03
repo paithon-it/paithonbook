@@ -48,17 +48,20 @@ volte, e che poi in campo esce come un gesto solo.
 
 Uno schema ha tre cose. C'è un momento in cui lo si può chiamare, e non è
 sempre: a metà campo, con la palla in mano, mentre dalla propria area non
-avrebbe senso. C'è quello che succede dentro, la sequenza di tagli e blocchi
-che ognuno conosce a memoria. E c'è un modo di finire, deciso in anticipo: il
-tiro parte, oppure lo schema si rompe e si torna a giocare a braccio. Le prime
-due cose ce le ha anche una sequenza di mosse qualunque; la terza no, ed è
-quella che fa la differenza, perché consente di chiamare lo schema e poi
-smettere di pensarci, sapendo che a un certo punto qualcuno dirà che è finito.
+avrebbe senso. C'è quello che succede dentro, i passaggi e i movimenti senza
+palla che ognuno ha provato in settimana. E c'è un modo di finire, deciso in
+anticipo: il tiro parte, oppure lo schema si rompe e si torna a giocare a
+braccio. Una sequenza di mosse imparata a memoria ed eseguita sempre uguale ha
+anche lei un inizio, un corpo e una fine; lo schema vero, invece, guarda il
+campo mentre lo si esegue, adatta i movimenti a come si mette la difesa, e
+finisce prima o dopo a seconda di come va. È questo che consente di chiamarlo e
+poi smettere di pensarci, sapendo che sarà lui a dire quando è finito.
 
 Chi chiama lo schema decide di rado, una volta ogni dieci secondi invece che
-dieci volte al secondo, e i suoi dieci secondi sono un gesto solo anche per
-lui: ha chiamato una cosa, e quella cosa o riesce o no. Chi sta dentro lo
-schema, in quei dieci secondi, non decide affatto: esegue.
+dieci volte al secondo, e i suoi dieci secondi sono un gesto solo anche per lui:
+ha chiamato una cosa, e quella cosa o riesce o no. Chi sta dentro lo schema, in
+quei dieci secondi, non sceglie che cosa giocare: esegue, e si adatta soltanto a
+quello che vede.
 
 `````
 
@@ -77,10 +80,14 @@ tripla. Un'opzione $\omega = \langle I_\omega, \pi_\omega, \beta_\omega\rangle$
 
 L'agente ha quindi due politiche a due livelli: una **politica sulle opzioni**
 $\pi_\Omega(\omega \mid s)$, che sceglie quale opzione avviare, e le
-sotto-politiche $\pi_\omega$, che la eseguono. La terza componente è ciò che
-distingue un'opzione da una macro generica: una macro è un gruppo di azioni
-qualunque, un'opzione è un gruppo di azioni che sa dire quando è finito, ed è
-quel «sa dire» a renderla innestabile in un MDP.
+sotto-politiche $\pi_\omega$, che la eseguono. La differenza con una macro
+classica sta nel ciclo chiuso. Una macro è una sequenza fissa di azioni
+elementari, eseguita senza guardare; un'opzione ha una sotto-politica che
+guarda lo stato a ogni passo e una terminazione che dipende dallo stato (anche
+in modo stocastico), quindi reagisce a ciò che succede e finisce quando serve.
+La sequenza fissa resta un caso particolare di opzione, quello in cui
+sotto-politica e terminazione guardano soltanto quanti passi sono trascorsi
+{cite}`sutton1999options`.
 
 Innestabile, ma non a costo zero. Un'opzione dura $k$ passi, e $k$ è una
 variabile casuale: gli istanti in cui si decide non sono più equispaziati, e il
@@ -100,14 +107,21 @@ quell'esponente: lo sconto si applica $k$ volte invece che una, perché fra le
 due decisioni è passato $k$ e non $1$.
 
 Da qui i problemi che il campo si porta dietro, e conviene tenerli distinti
-perché hanno risposte diverse: trovare i sotto-obiettivi, trovare la
-politica sulle opzioni, trovare le sotto-politiche.
+perché hanno risposte diverse: trovare i sotto-obiettivi, trovare la politica
+sulle opzioni, trovare le sotto-politiche. Per i sotto-obiettivi le risposte
+standard sono di specie diversa: cercare gli stati-collo di bottiglia, per cui
+passano molte delle traiettorie che arrivano a destinazione (le porte di una
+pianta a stanze sono l'esempio da manuale) {cite}`mcgovern2001automatic`;
+imparare abilità senza ricompensa, massimizzando l'informazione mutua fra
+l'abilità scelta e gli stati che visita {cite}`eysenbach2019diversity`; oppure
+lasciar perdere i sotto-obiettivi espliciti e imparare le opzioni insieme alla
+politica che le sceglie, come fa l'option-critic {cite}`bacon2017optioncritic`.
 
 `````
 
-Quel pezzo di comportamento, nel gergo del campo, si chiama **opzione**, ed è
-la parola che da qui in avanti userà tutta la sezione: dove sopra si legge
-«schema», nella letteratura e nel codice si legge *option*.
+Quel pezzo di comportamento, nel gergo della ricerca, si chiama **opzione** (in
+inglese *option*, il nome che si legge nella letteratura e nel codice), e lo
+schema della pallacanestro ne è un esempio.
 
 ## Quello che si guadagna, e quello che si paga
 
@@ -137,11 +151,12 @@ sarebbe potuto arrivare da solo in due passi. Giocare a gesti grossi fa perdere
 le scorciatoie, sempre.
 
 Da quest'ultimo viene la sola scelta sensata: gli schemi si aggiungono al
-gioco libero e non lo sostituiscono. Chi ha in mano tutti e due chiama lo
-schema quando il campo è chiuso e va da solo quando la strada è aperta, e così
-quel terzo costo non è più costretto a pagarlo. Non vuol dire che smetta: se lo
-schema porta abbastanza bene, la squadra si abitua a chiamarlo, e la scorciatoia
-che avrebbe trovato da sola non la prova più.
+gioco libero e non lo sostituiscono. Una squadra che ha in mano tutti e due
+chiama lo schema quando il campo è chiuso e va da sola quando la strada è
+aperta, e così quel terzo costo non è più costretta a pagarlo. Non vuol dire
+che smetta di pagarlo: se lo schema porta abbastanza bene, la squadra si
+abitua a chiamarlo, e la scorciatoia che avrebbe trovato da sola non la prova
+più.
 
 `````
 
@@ -176,6 +191,16 @@ I costi sono di tre specie, e l'ultima è quella che si dimentica.
   arriva all'ottimo più tardi, o non ci si arriva; che il saldo sia positivo
   dipende da quanto le opzioni sono adatte al compito.
 
+Che troppe opzioni costino lo dice già il lavoro che ha fondato il quadro:
+possono rallentare anche la pianificazione, come i macro-operatori
+usati senza misura (l’*utility problem*) {cite}`sutton1999options`, e Jong,
+Hester e Stone trovano che aggiungerle alle azioni aiuta solo in contesti
+limitati e può peggiorare l'apprendimento, perché distorce l'esplorazione
+{cite}`jong2008utility`. Dal lato del guadagno, il risparmio di campioni viene
+in buona parte dall'apprendimento *intra-option*: ogni azione eseguita
+aggiorna il valore di tutte le opzioni che in quello stato l'avrebbero scelta,
+non solo di quella in corso {cite}`sutton1999options`.
+
 `````
 
 ### In pratica: quattro stanze, con e senza opzioni
@@ -189,10 +214,13 @@ alla sua porta per la via più breve dentro la stanza, e finisce lì.
 Poi si allenano tre agenti sullo stesso problema, dando a ogni passo elementare
 una ricompensa di $-1$: il segno negativo fa sì che l'agente, cercando il
 massimo, cerchi la strada più corta, e i valori che impara si leggono come
-«quanti passi mi mancano, cambiato di segno». Il primo agente ha le sole
-quattro mosse, il secondo le mosse più le opzioni, il terzo le sole
-opzioni. Ogni episodio parte da una casella sorteggiata e finisce quando
-l'agente tocca il traguardo.
+«quanti passi mi mancano, cambiato di segno». Il primo agente ha le sole quattro
+mosse, il secondo le mosse più le opzioni, il terzo le sole opzioni. Ogni
+episodio parte da una casella sorteggiata e finisce quando l'agente tocca il
+traguardo. Tutti e tre esplorano a caso il $10\%$ delle volte, correggono le
+stime con un passo di $0{,}25$, non scontano il futuro (il compito finisce
+sempre) e partono pessimisti, con un valore di $-60$ per ogni azione, molto
+sotto quelli veri.
 
 ```python
 import numpy as np
@@ -282,7 +310,7 @@ def allena(meta, usa, episodi=300, semi=5, tetto=300):
     costo_iniziale, costo_finale = [], []
     for seme in range(semi):
         rng = np.random.default_rng(seme)
-        Q = np.where(ammesse, -60.0, -np.inf)
+        Q = np.where(ammesse, -60.0, -np.inf)    # partenza molto pessimista
         storia = []
         for _ in range(episodi):
             s, tot = int(rng.integers(N)), 0
@@ -293,7 +321,8 @@ def allena(meta, usa, episodi=300, semi=5, tetto=300):
                 s2, k = int(dove[s, a]), int(passi[s, a])
                 tot += k
                 futuro = 0.0 if s2 == fine else Q[s2, ammesse[s2]].max()
-                # l'aggiornamento semi-MDP: -k perche' ogni passo costa 1
+                # l'aggiornamento semi-MDP: -k perche' ogni passo costa 1;
+                # gamma = 1, perche' il compito finisce sempre
                 Q[s, a] += 0.25 * (-k + futuro - Q[s, a])
                 s = s2
             storia.append(tot)
@@ -349,9 +378,11 @@ traguardo: un angolo di stanza (11, 11)   (il minimo possibile e' 10.4 passi)
    solo le opzioni         primi 50 episodi:  303.6 passi   politica finale:  300.5
 ```
 
-Tutti i numeri sono medie sulle centoquattro caselle di partenza, e vanno letti
-con questo in mente: il minimo possibile di $8{,}5$ vuol dire che un agente
-perfetto, partendo da una casella sorteggiata, ci mette in media otto passi e
+La politica finale e il minimo possibile sono medie sulle centoquattro caselle
+di partenza (la prima anche sui cinque semi); i primi cinquanta episodi sono
+invece medie su partenze sorteggiate, cinquanta per ciascun seme, e contano
+anche i passi spesi a esplorare. Il minimo di $8{,}5$ vuol dire che un agente
+perfetto, partendo da una casella qualsiasi, ci mette in media otto passi e
 mezzo.
 
 Nella prima tabella il traguardo è una porta, cioè esattamente ciò che le
@@ -368,14 +399,14 @@ ferma appena ci arriva, e anche con le sole opzioni la strada da $8{,}5$ esiste.
 È l'apprendimento a non arrivarci, e in trecento episodi non ci arriva nessuno
 dei tre: le opzioni comprano velocità, non un cammino più corto.
 
-Il prezzo del repertorio lo dice la seconda tabella. Il traguardo è in un
-angolo di stanza, dove nessuna opzione conduce, e l'agente a sole opzioni
-non ci arriva mai: i suoi $300{,}5$ passi sono la sbarra che il conto si dà
-per non girare all'infinito (poco più di trecento, perché la sbarra ferma
-l'agente alla fine dell'opzione in corso e non nel mezzo). Chi ha le mosse
-insieme alle opzioni arriva, e con la politica migliore delle tre (dopo
-trecento episodi, $17{,}2$), perché le opzioni gli sono servite a propagare i
-valori fra le stanze e le mosse a coprire l'ultimo tratto.
+Il prezzo del repertorio lo dice la seconda tabella. Il traguardo è in un angolo
+di stanza, dove nessuna opzione conduce, e l'agente a sole opzioni non ci arriva
+mai: i suoi $300{,}5$ passi sono il tetto che il conto si dà per non girare
+all'infinito (poco più di trecento, perché il tetto ferma l'agente alla fine
+dell'opzione in corso e non nel mezzo). Chi ha le mosse insieme alle opzioni
+arriva, e con la politica migliore delle tre (dopo trecento episodi, $17{,}2$),
+perché le opzioni gli sono servite a propagare i valori fra le stanze e le mosse
+a coprire l'ultimo tratto.
 
 Trecento episodi, però, fotografano la partenza. Lasciati imparare più a
 lungo, i due agenti che hanno le mosse si scambiano di posto:
@@ -395,67 +426,87 @@ un angolo  solo le quattro mosse  dopo mille episodi:  10.6
 un angolo  mosse piu' opzioni     dopo mille episodi:  13.3
 ```
 
-Chi ha solo le mosse arriva a un decimo di passo dal minimo; chi ha anche le
-opzioni resta tre o cinque passi sopra. Le opzioni che l'hanno fatto partire
-adesso lo trattengono: portano abbastanza bene, l'agente le chiama, e le visite
-che avrebbero rivelato la strada corta non arrivano. Aggiungere le opzioni
-lascia raggiungibile la strada migliore, ma non garantisce che la si trovi.
+Chi ha solo le mosse arriva a meno di mezzo passo dal minimo; chi ha anche le
+opzioni resta sopra di cinque passi e mezzo sulla porta e di quasi tre
+sull'angolo. Le opzioni che l'hanno fatto partire adesso lo trattengono, e la
+spiegazione più plausibile è quella del costo che si dimentica: portano
+abbastanza bene, l'agente le chiama, e le visite che avrebbero rivelato la
+strada corta non arrivano. L'esperimento misura il ritardo, non la sua causa.
+Aggiungere le opzioni lascia raggiungibile la strada migliore, ma non
+garantisce che la si trovi.
 
 ## Dove i sotto-obiettivi non li dà nessuno
 
 Nel banco di prova delle quattro stanze i sotto-obiettivi, cioè le porte, li ha
 trovati una regola di due righe: sono le caselle con due soli vicini. È un
 lusso della pianta a stanze. Nel mondo vero il repertorio non lo detta nessuno,
-e trovarlo è il problema, non il preliminare. Le risposte si dividono in due
-famiglie, e si distinguono per chi decide che cosa.
+e trovarlo è il problema, non il preliminare. Le architetture che se ne fanno
+carico si dividono in due famiglie, e si distinguono per chi decide che cosa.
 
-La prima famiglia non decide niente in anticipo: fa imparare le opzioni
-insieme alla politica che le sceglie. L’**option-critic**
-{cite}`bacon2017optioncritic` applica alle opzioni il metodo del
-{doc}`gradiente di policy </DeepReinforcementLearning/policy-gradient>`, e lo
-usa per aggiustare tre cose alla volta: che cosa fa
-un'opzione, quando finisce, e quale opzione conviene chiamare. Nessuno deve
-scrivere un sotto-obiettivo; bisogna solo dire quante opzioni si vogliono. Il
-gradiente della terminazione si legge da solo,
-$-\,\partial\beta_{\omega,\vartheta}(s')/\partial\vartheta\,\big(Q_\Omega(s',\omega) -
-V_\Omega(s')\big)$: l'opzione si allunga dove continuarla vale più della
-media delle alternative e si chiude dove vale meno. Lasciate libere, però,
-le terminazioni degenerano in opzioni da un passo o in un'opzione sola che
-fa tutto, e in pratica si aggiunge un costo per ogni cambio di opzione.
+La prima famiglia non decide niente in anticipo: fa imparare le opzioni insieme
+alla politica che le sceglie. L’**option-critic** {cite}`bacon2017optioncritic`
+applica alle opzioni il metodo del {doc}`gradiente di policy
+</DeepReinforcementLearning/policy-gradient>`, e lo usa per aggiustare tre cose
+alla volta: che cosa fa un'opzione, quando finisce, e quale opzione conviene
+chiamare. Nessuno deve scrivere un sotto-obiettivo; bisogna solo dire quante
+opzioni si vogliono. Il gradiente che regola la terminazione, cioè quando
+un'opzione finisce, dice una cosa semplice: l'opzione si allunga dove
+continuarla vale più della media delle alternative, e si chiude dove vale meno.
+In formule, rispetto ai parametri $\vartheta$ della terminazione,
 
-La seconda famiglia divide i compiti: il livello alto nomina un obiettivo,
-il livello basso lo raggiunge come crede. L'immagine è quella di un feudo, dove
-il signore assegna il territorio e non entra nel merito di come lo si lavora, e
-il nome se lo portano dietro le **FeUdal Networks** {cite}`vezhnevets2017feudal`,
-che lo riprendono da Dayan e Hinton:
-un modulo *manager* lavora a passo lento e fissa obiettivi, un modulo *worker*
-li traduce in azioni elementari a ogni passo dell'ambiente. Il manager non
-dice mai come fare: dice dove andare.
+$$
+-\,\frac{\partial\beta_{\omega,\vartheta}(s')}{\partial\vartheta}\,
+\big(Q_\Omega(s',\omega) - V_\Omega(s')\big),
+$$
 
-Che le due famiglie si incontrino proprio dove la ricompensa arriva di rado ha
-una ragione. L’**h-DQN** {cite}`kulkarni2016hdqn` mette insieme le due metà del
-problema: un livello alto sceglie un obiettivo (in un gioco, «arriva alla
-scala», «prendi la chiave»), un livello basso sceglie le mosse per
-raggiungerlo, e il premio che tiene in piedi il livello basso se lo dà l'agente
-stesso quando l'obiettivo è raggiunto. Senza quel premio interno il livello
-basso non avrebbe niente da inseguire, perché il punteggio del gioco può
-arrivare migliaia di passi dopo, quando la porta attraversata è dimenticata da
-un pezzo. Gli obiettivi, però, l'h-DQN non li trova da sé: su *Montezuma's
-Revenge* li prende da un rivelatore di oggetti scritto a mano (la scala, la
-chiave, la porta), cioè riceve dall'esterno proprio ciò che si stava cercando.
-Mostra che due livelli e un premio interno superano le ricompense rade quando
-gli obiettivi ci sono; trovarli resta il compito dell'altra famiglia.
+dove $Q_\Omega(s,\omega)$ è il valore di proseguire con l'opzione $\omega$
+dallo stato $s$ e
+$V_\Omega(s)=\sum_{\omega}\pi_\Omega(\omega\mid s)\,Q_\Omega(s,\omega)$ la
+sua media sulle opzioni che la politica di alto livello sceglierebbe lì.
+Lasciate libere, però, le terminazioni degenerano in opzioni da un passo o in
+un'opzione sola che fa tutto, e in pratica si aggiunge un piccolo costo per ogni
+cambio di opzione {cite}`harb2018waiting`.
+
+La seconda famiglia divide i compiti: il livello alto nomina un obiettivo, il
+livello basso lo raggiunge come crede, ed è questa divisione in livelli, uno che
+decide di rado e uno che esegue, a dare il nome all'apprendimento per rinforzo
+*gerarchico*. L'immagine è quella di un feudo, dove il signore assegna il
+territorio e non entra nel merito di come lo si lavora, e il nome se lo portano
+dietro le **FeUdal Networks** {cite}`vezhnevets2017feudal`, che lo riprendono da
+Dayan e Hinton: un modulo *manager* lavora a passo lento e fissa obiettivi, un
+modulo *worker* li traduce in azioni elementari a ogni passo dell'ambiente. Il
+manager non dice mai come fare: dice dove andare.
+
+Le due famiglie si incontrano dove la ricompensa arriva di rado, che è il caso
+per cui la gerarchia serve di più: un gesto grosso copre in una decisione sola
+un tratto che a passi elementari richiederebbe una fortuna rara. Nella seconda
+famiglia, però, il problema si ripresenta un livello più giù, perché un livello
+basso che impara a raggiungere un obiettivo ha bisogno di sapere quando ci è
+arrivato, e il punteggio del gioco può arrivare migliaia di passi dopo, quando
+la porta attraversata è dimenticata da un pezzo. L’**h-DQN**
+{cite}`kulkarni2016hdqn` affronta proprio questo punto: un livello alto sceglie
+un obiettivo (in un gioco, «arriva alla scala», «prendi la chiave»), un livello
+basso sceglie le mosse per raggiungerlo, e quando l'obiettivo è raggiunto
+l'agente stesso dà al livello basso un premio interno. Quel premio non entra nel
+punteggio del gioco: serve soltanto a dire al livello basso «ci sei arrivato».
+Gli obiettivi, però, l'h-DQN non li trova da sé: su *Montezuma's Revenge* li
+prende da un rivelatore di oggetti scritto a mano (la scala, la chiave, la
+porta), cioè riceve dall'esterno proprio ciò che si stava cercando. Mostra che
+due livelli e un premio interno superano le ricompense rade quando gli obiettivi
+ci sono; trovarli resta il compito dell'altra famiglia.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - Un’opzione è un pezzo di comportamento che si chiama per nome, come uno
   schema in una partita: si sa da dove lo si può far partire, che cosa succede
-  dentro, e soprattutto quando è finito. È quest'ultima cosa a distinguerlo
-  da una sequenza di mosse qualunque.
-- Chi comanda decide di rado (quale schema), chi esegue non decide affatto,
-  e il guadagno sta tutto lì: un pezzo imparato una volta si riusa per obiettivi
-  diversi, invece di rimpararlo da capo a ogni cambio di traguardo.
+  dentro e quando è finito. A distinguerlo da una sequenza di mosse imparata a
+  memoria è che guarda il campo mentre lo si esegue: si adatta a come si mette
+  la difesa, e finisce quando serve.
+- Chi comanda decide di rado (quale schema), chi esegue non sceglie che cosa
+  giocare, e il guadagno sta tutto lì: un pezzo imparato una volta si riusa
+  per obiettivi diversi, invece di rimpararlo da capo a ogni cambio di
+  traguardo.
 - Il conto da pagare ha tre voci: qualcuno gli schemi li deve inventare;
   provarli tutti è impossibile; e chi gioca a gesti grossi perde le
   scorciatoie, perché lo schema porta dove porta anche quando bastavano due
@@ -466,8 +517,8 @@ gli obiettivi ci sono; trovarli resta il compito dell'altra famiglia.
   chi ha solo gli schemi impara prima di tutti, ma se il traguardo è in un
   punto dove nessuno schema conduce non ci arriva mai; e chi ha schemi e mosse
   parte più in fretta, ma alla lunga resta qualche passo sopra chi ha solo le
-  mosse, perché gli schemi che portano abbastanza bene gli tolgono la voglia
-  di cercare la scorciatoia.
+  mosse, probabilmente perché gli schemi che portano abbastanza bene gli
+  tolgono la voglia di cercare la scorciatoia.
 ```
 `````
 
@@ -476,22 +527,26 @@ gli obiettivi ci sono; trovarli resta il compito dell'altra famiglia.
 :class: important
 - Un’opzione {cite}`sutton1999options` è la tripla
   $\omega = \langle I_\omega, \pi_\omega, \beta_\omega\rangle$: insieme di
-  avvio, sotto-politica, condizione di terminazione. L'agente ha due livelli,
-  la politica sulle opzioni $\pi_\Omega(\omega \mid s)$ e le sotto-politiche
-  $\pi_\omega(a \mid s)$.
+  avvio, sotto-politica, condizione di terminazione. È a ciclo chiuso
+  (sotto-politica e terminazione guardano lo stato), e la macro classica,
+  sequenza fissa di azioni, ne è il caso particolare cieco. L'agente ha due
+  livelli, la politica sulle opzioni $\pi_\Omega(\omega \mid s)$ e le
+  sotto-politiche $\pi_\omega(a \mid s)$.
 - Un'opzione dura $k$ passi con $k$ casuale, quindi il processo visto dall'alto
   è un semi-MDP e l'aggiornamento porta $\gamma^{k}$ al posto di $\gamma$,
   con le ricompense del tratto accumulate e scontate.
 - I guadagni sono l’efficienza in campioni (una sotto-politica appresa una
   volta si riusa e si trasferisce) e l’esplorazione, perché avviare opzioni
   copre distanze che una passeggiata di azioni elementari non copre.
-- Il costo che si dimentica è la qualità: una politica con macro può essere
-  peggiore di una di sole azioni elementari, perché scavalca percorsi più corti.
+- Il costo che si dimentica è la qualità: una politica che sceglie solo fra
+  opzioni può essere peggiore di una di sole azioni elementari, perché
+  scavalca percorsi più corti.
   Per questo le opzioni si aggiungono all'insieme delle azioni invece di
   rimpiazzarlo, e l'ottimo raggiungibile resta quello di prima; ma
   raggiungibile non vuol dire raggiunto, perché un'opzione che porta
-  abbastanza bene sottrae le visite che servivano a scoprire la strada corta
-  (nelle quattro stanze, a mille episodi, 14,0 passi contro 8,6).
+  abbastanza bene sottrae le visite che servivano a scoprire la strada corta,
+  che è la spiegazione più plausibile del ritardo misurato nelle quattro stanze
+  (a mille episodi, 14,0 passi contro 8,6).
 - Trovare i sotto-obiettivi è il problema aperto: l’option-critic
   {cite}`bacon2017optioncritic` impara sotto-politiche e terminazioni con un
   teorema del gradiente di policy per le opzioni, chiedendo solo *quante*
@@ -503,10 +558,11 @@ gli obiettivi ci sono; trovarli resta il compito dell'altra famiglia.
 
 La gerarchia, insomma, cambia l'unità di misura del tempo: il livello alto vede
 una partita fatta di poche mosse grosse, e quanto duri ciascuna glielo dice il
-livello basso. Resta in piedi il punto su cui l'h-DQN si appoggia, cioè la
-ricompensa che l'agente si dà da sé, comparsa qui senza spiegazioni. È il
-problema della {doc}`sezione sull'esplorazione <esplorazione-e-ricompensa>`, e
-senza risolverlo la gerarchia non parte: un
-livello basso che deve imparare a raggiungere una porta ha bisogno di sapere
-subito se ci è arrivato, mentre il punteggio dell'ambiente, nei giochi a
-ricompensa rada, può tardare migliaia di passi.
+livello basso. Resta aperto il punto su cui l'h-DQN si appoggia: la ricompensa
+interna che l'agente si dà quando raggiunge l'obiettivo assegnato. Nelle
+quattro stanze non serviva, perché il $-1$ a ogni passo è un segnale continuo;
+serve dove la ricompensa dell'ambiente è rada, perché un livello basso che deve
+imparare a raggiungere una porta ha bisogno di sapere subito se ci è arrivato,
+mentre il punteggio può tardare migliaia di passi. Premi che l'agente si dà da
+sé, per la novità e per la sorpresa, sono il cuore della
+{doc}`sezione sull'esplorazione <esplorazione-e-ricompensa>`.

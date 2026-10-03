@@ -21,6 +21,6 @@
   <path d="M 300 200 C 280 250 180 250 130 200" fill="none" stroke="#2D5A5C" stroke-width="2"/>
   <polygon points="130,200 141,202 137,211" fill="#2D5A5C"/>
   <text x="215" y="270" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#2D5A5C" text-anchor="middle">3. risposta finale in linguaggio naturale</text>
-  <text x="30" y="46" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">Il modello non esegue mai nulla: chiede. L'esecuzione resta nel vostro codice,</text>
+  <text x="30" y="46" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">Il modello non esegue mai nulla: chiede. L'esecuzione resta nel tuo codice,</text>
   <text x="30" y="64" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#5E5852">e il giro 1→2 può ripetersi più volte prima della risposta (3).</text>
 </svg>

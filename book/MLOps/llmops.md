@@ -28,17 +28,16 @@ Il token, prima di tutto, perché da qui in avanti si conta tutto così, i
 tempi come i costi: è il pezzetto di testo (una parola corta, o un frammento di
 parola) che il modello legge e scrive come unità.
 
-Detto questo, il baricentro si sposta, e conviene essere precisi su cosa si
-sposta dove. Fin qui il problema era caricare i pesi dal disco
-alla memoria: si fa una volta all'avvio, poi non ci si pensa più. Qui il
-problema è un altro viaggio, molto più corto ma molto più frequente: portare
-quei pesi dalla memoria ai circuiti che fanno i conti, e questo viaggio va
-rifatto per intero a ogni singolo token. Il modello scrive la risposta un
-token alla volta, e ogni token lo decide guardando tutti quelli già scritti (è
-il modo di generare, *autoregressivo*, studiato nei
-{doc}`grandi modelli linguistici </Transformers/llm>`);
-a ogni giro, tutti i miliardi di numeri devono ripassare dalla memoria ai
-circuiti. È lì che se ne va il tempo, ed è lì che se ne va la bolletta.
+Con un LLM il collo di bottiglia si sposta. Fin qui il problema era caricare
+i pesi dal disco alla memoria: si fa una volta all'avvio, poi non ci si pensa
+più. Qui il problema è un altro viaggio, molto più corto ma molto più
+frequente: portare quei pesi dalla memoria della scheda alle unità che fanno i
+conti, e questo viaggio va rifatto per intero a ogni singolo token. Il modello
+scrive la risposta un token alla volta, e ogni token lo decide guardando tutti
+quelli già scritti (è il modo di generare, *autoregressivo*, studiato nei
+{doc}`grandi modelli linguistici </Transformers/llm>`); a ogni passo tutti i
+miliardi di parametri vengono riletti. Finché le richieste servite insieme
+sono poche, è questa lettura a decidere il tempo e il costo di ogni token.
 
 ```{figure} ../figures/modelli-locali-memoria.svg
 :name: fig-cosa-entra-in-memoria
@@ -75,52 +74,73 @@ richiede tempo e spazio: non lo parcheggi in garage, non lo giri in una
 stradina. Servirlo non è più una questione di *accenderlo*, ma di
 *manovrarlo*: dove lo ormeggi (quanta memoria serve per ospitarlo), quanti
 passeggeri imbarchi in una volta sola per far quadrare i conti, come eviti che
-resti fermo in rada a bruciare carburante mentre aspetta. E c'è un dettaglio
-contro l'intuizione: la parte lenta non è pensare, è *ricordare*. A ogni nuova
-parola il modello deve rileggere l'intera stiva dei suoi numeri, e quella
-rilettura (non il calcolo) è ciò che scandisce il ritmo.
+resti fermo al largo a bruciare carburante mentre aspetta. E c'è un dettaglio
+contro l'intuizione: a scandire il ritmo, più che il pensare, è il
+*ricordare*. A ogni nuova parola il modello deve rileggere l'intero carico dei
+suoi numeri, e finché a bordo ci sono pochi passeggeri è quella rilettura, più
+del calcolo, a decidere quanto si va veloci. Quando la nave è piena, il calcolo
+torna a pesare: ogni passeggero in più chiede i suoi conti, mentre la
+rilettura resta una sola per tutti.
 
 `````
 
 `````{tab} Superiore
 
-La generazione autoregressiva rende l'inferenza di un LLM memory-bound,
-non compute-bound. Per produrre un solo token il modello deve leggere *tutti*
-i suoi pesi dalla memoria della GPU. In una
-{doc}`mixture of experts </Transformers/mixture-of-experts>` ne legge i soli
+Nella fase di decodifica, quando le sequenze in volo sono poche, la generazione
+autoregressiva rende l'inferenza di un LLM *memory-bound*: per produrre un solo
+token il modello deve leggere *tutti* i suoi pesi dalla memoria della GPU, e
+l'aritmetica che ci fa sopra non basta a tenere occupate le unità di calcolo. In
+una {doc}`mixture of experts </Transformers/mixture-of-experts>` ne legge i soli
 parametri attivi, e con poche sequenze in volo il risparmio è reale: i totali
 dicono se il modello ci sta, gli attivi quanto costa un token. Appena il mazzo
 di richieste si riempie, però, token diversi chiamano esperti diversi e la
 lettura torna quasi completa. L'aritmetica per token è modesta, il traffico di
-memoria è enorme. Un conto d'ordine di grandezza lo rende
-concreto: un modello da 7 miliardi di parametri in 16 bit pesa circa 14 GB, e
-una GPU con banda di memoria attorno a 2 TB/s impiega
-$14/2000 \approx 0{,}007$ s, cioè circa 7 ms, solo per far scorrere quei
-pesi. Una singola sequenza è così limitata a circa $1/0{,}007 \approx 140$
-token al secondo, mentre le unità di calcolo restano quasi inattive. A questo
-si somma la KV cache vista nel capitolo sui Transformer (key e value dei
-token già letti, tenuti in memoria per non ricalcolarli) che cresce con la
-lunghezza del contesto e va sommata ai pesi. Due grandezze, quindi, governano
-tutto: la memoria (contiene pesi e cache) e la sua banda (limita quanti
-token al secondo si producono). Buona parte dell'ingegneria di LLMOps è lotta
-contro questi due limiti.
+memoria è enorme. Un conto d'ordine di grandezza lo rende concreto: un modello
+da 7 miliardi di parametri in 16 bit pesa circa 14 GB, e una GPU con banda di
+memoria attorno a 2 TB/s impiega $14/2000 \approx 0{,}007$ s, cioè circa 7 ms,
+solo per far scorrere quei pesi. Una singola sequenza è così limitata a circa
+$1/0{,}007 \approx 140$ token al secondo, mentre le unità di calcolo restano
+quasi inattive.
+
+La condizione si scrive in una riga. Con $N$ parametri che occupano $M_w$ byte,
+banda $B$ e potenza di calcolo di picco $F$, un passo di decodifica su $b$
+sequenze legge i pesi in un tempo $M_w/B$ e fa circa $2Nb$ operazioni in un
+tempo $2Nb/F$: i due si equivalgono per $b^\ast = F M_w/(2NB)$, che in 16 bit,
+dove $M_w = 2N$, vale $F/B$, circa 150 sequenze per una scheda da 312 TFLOP/s e
+2 TB/s di banda e circa 300 per una da 989 TFLOP/s e 3,35 TB/s. Sotto $b^\ast$
+la lettura domina e aggiungere sequenze costa quasi niente; sopra, il limite
+diventa il calcolo. Il *prefill*, che elabora tutti i token del prompt in
+parallelo, ha già molti token per ogni lettura dei pesi, ed è limitato dal
+calcolo fin dall'inizio.
+
+A questo si somma la KV cache vista nel capitolo sui Transformer (key e value
+dei token già letti, tenuti in memoria per non ricalcolarli), che a differenza
+dei pesi è di ciascuna sequenza e non si ammortizza sul batch. Per token tiene
+$2\,n_\ell\,h_{kv}\,d_k$ numeri, con $n_\ell$ strati, $h_{kv}$ teste di chiave e
+valore e $d_k$ la loro dimensione, due byte ciascuno in 16 bit (il conto di
+{doc}`L'attenzione in pratica </Transformers/attenzione-in-pratica>`): per un
+modello da 70 miliardi con 80 strati, 8 teste di chiave e valore da 128 e 16 bit
+sono $327\,680$ byte per token, cioè circa 1,3 GB a $4\,000$ token di contesto e
+42 GB a $128\,000$, per una sequenza sola. Due grandezze, quindi, governano
+tutto: la memoria (contiene pesi e cache) e la sua banda (limita quanti token al
+secondo si producono). Buona parte dell'ingegneria di LLMOps è lotta contro
+questi due limiti.
 
 `````
 
 ## Servire un LLM
 
-Riprendiamo la cosa che si è appena detta, perché tutto quello che segue ne
-discende: a fare da freno è il ricordare. Per scrivere un token il
-modello deve rileggersi tutti i suoi numeri, e quella rilettura costa più del
-calcolo che ci fa sopra.
-
-Se è così, però, c'è una conseguenza che salva i conti. La rilettura è la
-stessa qualunque cosa il modello stia scrivendo. Farla per servire una persona
-sola, o per servirne cento nello stesso istante, costa quasi uguale: i pesi
-passano una volta e si usano per tutte e cento le risposte in corso. È lo
+Tutto quello che segue discende dalla lettura dei pesi, che a ogni token costa
+più del calcolo che ci si fa sopra. E da lì viene anche la conseguenza che
+salva i conti: la lettura è la stessa qualunque cosa il modello stia
+scrivendo. Farla per servire una persona sola, o per servirne cento nello
+stesso istante, costa quasi uguale, finché le richieste in volo restano sotto
+la soglia in cui il calcolo prende il sopravvento: i pesi passano una volta e
+si usano per tutte e cento le risposte in corso. Vale per i pesi e non per la
+KV cache, che ogni risposta si porta dietro e si rilegge per conto suo. È lo
 stesso mazzo di richieste, il *batch*, che la {doc}`sezione sul servire un
 modello </MLOps/deployment-e-serving>` usava per tenere occupata la scheda; qui
-quel mazzo è il motivo per cui un LLM è economicamente sostenibile, e non
+quel mazzo è il motivo per cui un LLM è economicamente sostenibile, più che
 un'ottimizzazione fra le altre.
 
 Solo che formare il mazzo, qui, è molto più difficile, e per due ragioni.
@@ -131,13 +151,15 @@ Solo che formare il mazzo, qui, è molto più difficile, e per due ragioni.
 :width: 100%
 
 Quattro posti sulla stessa GPU e una coda di dieci richieste, sullo stesso
-orologio. Il batching statico non rinnova il mazzo finché la risposta più lunga
-non ha finito, e alla dodicesima iterazione ha tre richieste concluse, tre posti
-fermi e la coda intatta. Il continuous batching, il mazzo continuo, riprende
-ogni posto all'iterazione dopo che si è liberato: alla stessa iterazione ne ha
-concluse cinque, i quattro posti pieni e la coda quasi finita. Contando i posti
-tenuti per un'iterazione, il primo ne usa 28 su 48 e il secondo tutti e 48,
-senza contare quel che costa far entrare una richiesta nel mazzo.
+orologio, che batte un’*iterazione* a ogni giro in cui ogni posto occupato
+scrive un token. Il batching statico non rinnova il mazzo finché la risposta
+più lunga non ha finito, e alla dodicesima iterazione ha tre richieste
+concluse, tre posti fermi e la coda intatta. Il continuous batching, il mazzo
+continuo, riprende ogni posto all'iterazione dopo che si è liberato: alla
+stessa iterazione ne ha concluse cinque, i quattro posti pieni e la coda quasi
+finita. In dodici iterazioni quattro posti offrono 48 turni di lavoro: il primo
+ne usa 28, il secondo tutti e 48, senza contare quel che costa far entrare una
+richiesta nel mazzo.
 ```
 
 Una è quella che {numref}`fig-continuous-batching` mette in evidenza: le
@@ -207,17 +229,20 @@ mappa posizioni logiche a fisiche. Lo spreco
 scende sotto il 4%, e i blocchi possono perfino essere condivisi tra
 sequenze (un prompt comune, o le ipotesi di una beam search) senza duplicarli.
 
-L'altra metà è il **continuous batching** (o *in-flight batching*): invece di
+L'altra metà è il **continuous batching** (o *in-flight batching*), proposto da
+Orca con il nome di *iteration-level scheduling* {cite}`yu2022orca`: invece di
 attendere che tutte le sequenze di un batch finiscano (costringendo le più
 brevi ad aspettare la più lunga) lo scheduler lavora a livello di singola
 iterazione, e appena una sequenza emette il suo token di fine, un'altra
 richiesta ne prende il posto nel batch. Finché c'è una coda, la sala resta
-piena. Insieme, PagedAttention e continuous batching permettono batch molto più
-grandi a parità di memoria: nella misura riportata dagli autori, contro i
-sistemi che c'erano allora, un throughput da due a quattro volte maggiore a
-parità di latenza. Resta il compromesso di fondo, già incontrato nella sezione
-sul servire un modello: batch più grandi alzano il throughput ma allungano la
-coda della latenza; il punto di equilibrio dipende dal prodotto.
+piena. vLLM usa tutti e due, e con la PagedAttention il batch può crescere a
+parità di memoria: nella misura degli autori serve da due a quattro volte più
+richieste a parità di latenza, contro FasterTransformer e contro Orca, cioè
+contro un sistema che il continuous batching lo aveva già. Quel guadagno è
+quindi soprattutto della gestione della memoria. Resta il compromesso di fondo,
+già incontrato nella sezione sul servire un modello: batch più grandi alzano il
+throughput ma allungano la coda della latenza; il punto di equilibrio dipende
+dal prodotto.
 
 `````
 
@@ -239,9 +264,10 @@ finiscono ogni pagina in metà tempo, perché ciascuno scorre metà delle
 colonne. Per chi aspetta una parola alla volta è proprio quello che serve: il
 tempo di ogni parola se ne va a rileggere il registro, e rileggerne metà a testa
 lo dimezza. Il prezzo è la sosta a ogni pagina per mettere insieme i conti,
-brevissima (un foglietto con pochi numeri), e le pagine sono due per strato: un
-modello così ha ottanta strati, cioè centosessanta soste per ogni parola. Allo
-stesso tavolo non si sentono; fra due edifici diventano la spesa principale.
+brevissima (un foglietto con pochi numeri), e le pagine sono due per strato:
+un modello da settanta miliardi di numeri ha ottanta strati, quindi le soste
+sono centosessanta per ogni parola. Fra due contabili seduti allo stesso tavolo
+non si sentono; fra due edifici diventano la spesa principale.
 
 La catena di montaggio fa un altro mestiere. Mettere metà degli strati su una
 scheda e metà sull'altra non fa arrivare prima nessuna parola, che deve comunque
@@ -299,8 +325,10 @@ termine, il lancio: con kernel otto volte più piccoli, gli ottocento lanci
 circa di un passo, a qualche microsecondo ciascuno, valgono fra un terzo e due
 terzi della lettura, e senza i CUDA Graphs di
 {doc}`Kernel e CUDA </GPU/kernel-e-cuda>` si mangiano buona parte del guadagno.
-Con i lanci coperti, dentro il nodo il parallelismo tensoriale abbassa il TPOT
-di un fattore vicino a $g_{\text{tp}}$, anche se non proporzionale.
+Con i lanci coperti, dentro il nodo il parallelismo tensoriale abbassa il
+tempo per token in uscita (il TPOT, *time per output token*, cioè il tempo
+medio fra due token successivi della stessa risposta) di un fattore vicino a
+$g_{\text{tp}}$, anche se non proporzionale.
 
 Il parallelismo a pipeline su $g_{\text{pp}}$ stadi {cite}`huang2019gpipe` non
 accorcia la latenza di un token, che attraversa gli stadi in sequenza:
@@ -376,9 +404,10 @@ stesse continuazioni con le stesse probabilità. Cambia il tempo, non il testo.
 
 La regola di accettazione, parola per parola. Della proposta della bozza resta
 la parte che il modello grande condivide; quando la proposta è scartata si
-sorteggia dal residuo, e il residuo riempie esattamente quello che mancava:
-ogni barra finisce alta quanto la probabilità del modello grande, e le
-frequenze di un sorteggio vero lo confermano.
+sorteggia fra le parole a cui il grande dava più fiducia della bozza (il
+*residuo*), e il residuo riempie esattamente quello che mancava: ogni barra
+finisce alta quanto la probabilità del modello grande, e le frequenze di un
+sorteggio vero lo confermano.
 ```
 
 `````{tab} Elementare
@@ -458,10 +487,21 @@ $$
 \frac{1-\alpha^{\gamma+1}}{1-\alpha},
 $$
 
-che per $\alpha=0{,}8$ e $\gamma=4$ dà circa $3{,}4$ token contro $1$. In
-pratica si osservano accelerazioni di 2–3 volte. Il modello bozza dev'essere
-molto più economico del target e allineato nella distribuzione, altrimenti
-$\alpha$ crolla e il costo delle bozze rifiutate mangia il guadagno.
+che per $\alpha=0{,}8$ e $\gamma=4$ dà circa $3{,}4$ token contro $1$. Il
+tempo, però, dipende anche da quanto costa la bozza. Detto $c$ il rapporto fra
+il tempo di una passata della bozza e quello di una del target, e supponendo
+che le $\gamma+1$ valutazioni parallele del target costino quanto una, il
+fattore di accelerazione atteso è
+
+$$
+\frac{1-\alpha^{\gamma+1}}{(1-\alpha)(\gamma c+1)},
+$$
+
+che con gli stessi $\alpha$ e $\gamma$ vale circa $2{,}8$ per $c = 0{,}05$ e
+$1{,}5$ per $c = 0{,}3$ {cite}`leviathan2023fast`. In pratica si osservano
+accelerazioni di 2–3 volte. Il modello bozza dev'essere quindi molto più
+economico del target e allineato nella distribuzione, altrimenti $\alpha$
+crolla e il costo delle bozze rifiutate mangia il guadagno.
 
 Le varianti che evitano un secondo modello completo (in letteratura
 *self-drafting*, da non confondere con il *self-speculative decoding*, che è un
@@ -503,13 +543,15 @@ indovinare come lui. Ci sono due modi di rendere la bozza meno cara.
 Il primo fa a meno dello stagista: il revisore stesso, mentre scrive una riga,
 annota a margine come secondo lui continueranno le tre dopo, tirando a
 indovinare dall'idea che ha in testa in quel momento, senza riaprire il
-manuale. Per ogni riga a margine segna due o tre possibilità, e alla verifica le
-prova tutte insieme, come i rami di un albero: la prima riga ha due versioni,
-ciascuna può proseguire con tre seconde righe, e la rilettura unica sceglie il
-ramo più lungo che regge, confrontando quanto il revisore è convinto adesso con
-quanto lo era scrivendo a margine. Il limite è la distanza. La terza riga a
-margine è scritta senza sapere che cosa diranno la prima e la seconda, e più la
-riga è lontana più l'indovinello è cieco. È il metodo chiamato Medusa.
+manuale. (Per il modello, «l'idea che ha in testa» è l'ultima fila di numeri
+che calcola dentro di sé, un attimo prima di scegliere la parola.) Per ogni
+riga a margine segna due o tre possibilità, e alla verifica le prova tutte
+insieme, come i rami di un albero: la prima riga ha due versioni, ciascuna può
+proseguire con tre seconde righe, e la rilettura unica sceglie il ramo più
+lungo che regge, confrontando quanto il revisore è convinto adesso con quanto
+lo era scrivendo a margine. Il limite è la distanza. La terza riga a margine è
+scritta senza sapere che cosa diranno la prima e la seconda, e più la riga è
+lontana più l'indovinello è cieco. È il metodo chiamato Medusa.
 
 Il secondo tiene uno stagista, ma gli cambia il materiale. Invece di indovinare
 le parole, legge l'idea che il revisore aveva in testa per la riga appena
@@ -642,26 +684,28 @@ pigia insieme agli altri, e occupano poco lo stesso. E c'è chi schiaccia un
 oggetto per volta, risistemando dopo ognuno quelli che restano, così
 l'ammaccatura non si accumula tutta sull'ultimo.
 
-Il guadagno non arriva a quattro volte esatte, e la colpa è delle etichette.
-Ogni scatolone ne porta una che dice come è stato chiuso, e occupa spazio anche
-lei. Scatoloni più piccoli vogliono dire etichette più fitte, quindi meno
-spazio guadagnato e meno roba rotta, e si resta poco sotto le quattro volte.
-All'arrivo le scatole delicate si aprono per controllare.
+Il guadagno non arriva a quattro volte esatte, e la colpa è dei biglietti
+d'istruzioni. Ogni scatolone ne porta uno che dice come è stato chiuso, per
+poterlo riaprire, e occupa spazio anche lui. Scatoloni più piccoli vogliono
+dire biglietti più fitti, quindi meno spazio guadagnato e meno roba rotta, e
+si resta poco sotto le quattro volte. All'arrivo le scatole delicate si aprono
+per controllare.
 
-E perché proprio quattro volte, e non otto? Perché il furgone è quello che è, e
-quello che conta è quanta roba arriva intera a destinazione. Stringendo,
-nel furgone ci sta più roba, e fino a un certo punto ne arriva intera di più;
-stringendo ancora, si rompe più di quanto se ne guadagni, e il furgone arriva
-pieno di cocci. Il punto in cui la bilancia si rovescia è stato cercato, ed è
-lì, alle quattro volte. Con la premessa che si stia imballando a occhio: chi
-guarda prima che cosa sta mettendo in scatola riesce a stringere un po' di
-più.
+E perché proprio quattro volte, e non otto? Perché il furgone è quello che è:
+la memoria della scheda non si allarga, e quello che conta è quanta roba
+arriva intera a destinazione. Stringendo, nel furgone ci sta più roba, e fino
+a un certo punto ne arriva intera di più; stringendo ancora, si rompe più di
+quanto se ne guadagni, e il furgone arriva pieno di cocci. Due ricercatori
+hanno cercato il punto in cui la bilancia si rovescia, provando molti
+traslochi di misura diversa, e l'hanno trovato lì, alle quattro volte. Con la
+premessa che si stia imballando a occhio: chi guarda prima che cosa sta
+mettendo in scatola riesce a stringere un po' di più.
 
 `````
 
 `````{tab} Superiore
 
-La mappa affine $r = S\,(q - Z)$ della sezione sul deployment vale qui
+La mappa affine $\hat{w} = s\,(q - z)$ della sezione sul deployment vale qui
 identica, e il principio che la regge, guardare che cosa un peso fa invece di
 quanto vale, lo costruisce {doc}`Meno bit </Efficienza/meno-bit>`: qui
 interessa che cosa cambia quando il modello non si può riaddestrare. Tre metodi
@@ -774,7 +818,7 @@ per arrotondare una colonna serve un gruppo di righe, un po’ perché sono le p
 guardate mentre il modello scrive. E decidono la qualità: senza, sui compiti in
 cui il modello ragiona a lungo, l'errore si sente.
 
-Con due cifre binarie per numero, più le etichette che dicono come è stato
+Con due cifre binarie per numero, più i biglietti che dicono come è stato
 arrotondato ciascun gruppo e le ultime righe per esteso, gli appunti diventano
 da tre a quattro volte più piccoli, non otto. Nella stessa memoria entrano
 allora molte più conversazioni, e il mazzo più grande serve più persone con la
@@ -792,9 +836,10 @@ Llama-2-13B e Falcon-7B. Nella cache delle chiavi pochi canali fissi portano
 elementi molto più grandi degli altri, per tutti i token: la quantizzazione va
 fatta *per canale*, raggruppando lungo la dimensione dei token (gruppi di 32),
 così che l'errore resti confinato in ciascun canale. Ogni gruppo è quantizzato
-in modo asimmetrico, $Q(\mathbf{x}) = \lfloor (\mathbf{x} - z)/s \rceil$ con
-$z = \min \mathbf{x}$ e $s = (\max \mathbf{x} - \min \mathbf{x})/(2^b - 1)$,
-scala e minimo in 16 bit. La cache dei valori non ha anomalie così marcate, ed
+in modo asimmetrico, $Q(\mathbf{x}) = \lfloor (\mathbf{x} - m)/s \rceil$ con
+$m = \min \mathbf{x}$ e $s = (\max \mathbf{x} - \min \mathbf{x})/(2^b - 1)$,
+scala e minimo in 16 bit (il minimo fa la parte dello zero-point della mappa
+affine, $m = -s\,z$). La cache dei valori non ha anomalie così marcate, ed
 entra nell'uscita dell'attenzione come $\mathbf{o} = \sum_j a_j \mathbf{v}_j$,
 dove $a_j$ è il peso che la softmax dà al token $j$ per la query corrente e
 $\mathbf{v}_j$ la riga $j$ della cache dei valori. L'errore d'uscita è
@@ -855,19 +900,30 @@ rilettura costerebbe quanto costruirlo, e nessuno la fa dopo un rilascio. Per
 questo qui si strappa molto meno, e si sceglie con cura: le pagine da togliere
 sono quelle scritte in piccolo *e* che nessuno rilegge mai, non quelle scritte
 in piccolo e basta. Con questa cautela si arriva a buttarne circa metà senza danni
-evidenti; oltre, il conto si fa salato.
+evidenti; oltre, il conto si fa salato. E un quaderno con metà pagine strappate
+qua e là non si legge in metà tempo: chi lo sfoglia deve comunque passare di
+buco in buco. Si guadagna tempo solo se si strappa con una regola fissa che il
+lettore conosce in anticipo, due fogli su ogni quattro, e anche così il senso
+ne soffre un po' di più che strappando dove si vuole.
 
 `````
 
 `````{tab} Superiore
 
 Sugli LLM la potatura post-training è più delicata che sulle reti di visione,
-perché non si può riaddestrare. **SparseGPT** e **Wanda** affrontano proprio
-questo: il secondo, in particolare, sceglie cosa togliere pesando ogni peso
-per la norma dell'attivazione corrispondente; lo stesso principio di AWQ, che
-i pesi importanti si riconoscono guardando cosa ci passa attraverso, non
-quanto sono grandi. Con questi metodi il $50\%$ di sparsità è raggiungibile
-senza riaddestramento e con degrado contenuto; oltre, il conto si fa salato.
+perché non si può riaddestrare. **SparseGPT** {cite}`frantar2023sparsegpt` e
+**Wanda** {cite}`sun2024simple` affrontano proprio questo: il secondo, in
+particolare, sceglie cosa togliere pesando ogni peso per la norma
+dell'attivazione corrispondente; lo stesso principio di AWQ, che i pesi
+importanti si riconoscono guardando cosa ci passa attraverso, non quanto sono
+grandi. Con questi metodi il $50\%$ di sparsità è raggiungibile senza
+riaddestramento e con degrado contenuto; oltre, il conto si fa salato. Metà dei
+pesi a zero, però, non vuol dire metà del tempo per token: la sparsità non
+strutturata riduce i parametri e non il tempo, perché una GPU non sa saltare
+zeri sparsi a caso, e il servizio accelera soltanto con la sparsità strutturata
+2:4 sull'hardware che la esegue, che perde qualche punto in più del $50\%$
+libero e accelera meno del doppio, perché i byte da leggere non si dimezzano.
+Le misure sono in {doc}`Meno pesi </Efficienza/meno-pesi>`.
 
 `````
 
@@ -885,8 +941,8 @@ aggregata lo nasconde.
 
 ## Valutare l'invalutabile
 
-Un modello servito e compresso va poi tenuto d'occhio: funziona ancora bene? E
-qui casca l'asino, perché tutti i modi consueti di dargli un voto si rompono.
+Un modello servito e compresso va poi tenuto d'occhio: funziona ancora bene?
+I modi consueti di dargli un voto qui mostrano tutti un limite.
 
 Il primo è la misura che il modello porta con sé, la perplessità, vista nel
 capitolo sui Transformer: dice quanto il modello è indeciso a ogni token, ed è
@@ -916,16 +972,22 @@ risposta è corretta: dice quale delle due preferisce, ed è una domanda a cui
 si può rispondere anche quando la prima non ha risposta.
 ```
 
-Il cambio di domanda in {numref}`fig-llm-giudice` è ciò che rende praticabile
-il metodo, che si chiama LLM-as-a-judge, «il modello che fa da giudice», e
-insieme ciò che ne fissa i limiti. Un ordine fra due risposte si
-può stabilire senza un riferimento assoluto. Ma un giudice che *preferisce*
-porta con sé i propri gusti, e due di quei gusti si ripetono sempre uguali:
-premia chi gli è stato presentato per primo, e premia chi scrive di più. Un
-terzo, la simpatia per chi scrive come scriverebbe lui, è sospettato e non
-dimostrato. Non sono errori di programmazione, che qualcuno prima o
-poi correggerà: sono la conseguenza di aver chiesto una preferenza invece di
-una verifica.
+Il cambio di domanda in {numref}`fig-llm-giudice` è ciò che rende praticabile il
+metodo, che si chiama LLM-as-a-judge, «il modello che fa da giudice», e insieme
+ciò che ne fissa i limiti. Un ordine fra due risposte si può stabilire senza un
+riferimento assoluto. Ma un giudice che *preferisce* porta con sé i propri
+gusti, e due di quei gusti ricorrono in tutti i giudici misurati, con intensità
+diverse: premia chi gli è stato presentato per primo, e premia chi scrive di
+più. Un terzo, la simpatia per chi scrive come scriverebbe lui, Zheng e
+colleghi non riuscivano a stabilirlo con i loro dati {cite}`zheng2023judging`;
+lo hanno misurato in seguito Panickssery e colleghi, sui riassunti, anche con un
+giudice che non sa quale testo sia suo {cite}`panickssery2024selfpreference`.
+Il legame con l'auto-riconoscimento resta una correlazione, e un giudice di
+un'altra famiglia sposta il problema più che toglierlo, perché un modello
+premia anche i testi che somigliano ai propri. Questi pregiudizi si attenuano
+scambiando l'ordine, con giudici più forti, con istruzioni di valutazione più
+precise, ma nessuna delle misure li azzera: chiedere una preferenza invece di
+una verifica lascia al giudice lo spazio per usare i suoi.
 
 `````{tab} Elementare
 
@@ -935,25 +997,35 @@ arrivano migliaia al minuto, e un insegnante costa tempo. La scorciatoia è
 promuovere a esaminatore uno studente molto bravo, che legge e dà il voto in un
 lampo, a costo quasi nullo.
 
-Il suo voto vale qualcosa? Messo a scegliere il migliore fra due temi, va
-d'accordo con un insegnante in carne e ossa più di quattro volte su cinque, che
-è quanto due insegnanti vanno d'accordo fra loro. Per quello che costa, è un
-ottimo affare.
+Il suo voto vale qualcosa? Messo a scegliere il migliore fra due temi, quando
+anche l'insegnante in carne e ossa ha un preferito, va d'accordo con lui più di
+quattro volte su cinque, quanto due insegnanti fra loro. Se si contano anche le
+volte in cui uno dei due dà pari, l'accordo scende a due volte su tre, e anche
+quello è l'accordo fra due insegnanti. Per quello che costa, è un ottimo
+affare.
 
 Ha però le sue manie, sempre le stesse. A parità di tutto il resto dà il voto
 più alto al tema che ha letto per primo. Premia il tema lungo, scambiando
 l'abbondanza di parole per competenza, anche quando una risposta breve e
 centrata sarebbe migliore; i più svegli ci cascano molto meno, ma nessuno ne è
-immune. Si sospetta che apprezzi anche chi scrive come scrive lui, ma i temi
-raccolti non bastano a dirlo. Contro la mania
-dell'ordine un rimedio c'è: dargli i due temi anche nell'ordine opposto, e
+immune. Apprezza anche chi scrive come scrive lui: con i temi raccolti la prima
+volta non lo si poteva dire, misure successive lo hanno trovato, e più
+l'esaminatore riconosce un tema come suo, più lo premia. Cambiare esaminatore
+aiuta poco, perché ognuno premia i temi che somigliano ai propri. Contro la
+mania dell'ordine un rimedio c'è: dargli i due temi anche nell'ordine opposto, e
 tenere per buono solo chi vince tutte e due le volte; se i due giri si
-contraddicono, è pari. La mania del tema lungo resta.
+contraddicono, è pari. La mania del tema lungo resta. E sui compiti di
+matematica, se non ha la soluzione davanti, si lascia convincere da un risultato
+sbagliato più spesso che no; con la soluzione accanto sbaglia di rado. Prima di
+affidargli una classe, quindi, lo si mette alla prova su un mucchio di temi già
+corretti da un insegnante.
 
 Il guaio grosso arriva se la classe capisce come ragiona l'esaminatore. Da quel
 momento tutti scrivono lungo, e per primi quando possono: i voti salgono e i
-temi peggiorano. Quel voto serve a tenere d'occhio la classe, non a decidere
-che cosa si insegna.
+temi peggiorano. È lo stesso guaio del palato artificiale che votava i piatti al
+posto dell'assaggiatore in {doc}`Dopo il pre-addestramento
+</Transformers/post-training>`. Quel voto serve a tenere d'occhio la classe, non
+a decidere che cosa si insegna.
 
 `````
 
@@ -979,64 +1051,97 @@ provati (ci casca nell'8,7% dei casi, contro il 91,3%). Il terzo, il
 **self-enhancement bias**, gli autori lo osservano senza poterlo dimostrare,
 perché qualche giudice preferisce sé stesso (GPT-4 di dieci punti di *win
 rate*, Claude-v1 di venticinque) ma preferisce anche modelli diversi da sé, e
-GPT-3.5 non preferisce sé stesso. Il position bias si mitiga chiamando il
-giudice due volte a ordini scambiati e dichiarando vincitore solo chi vince in
-tutti e due i giri, pari quando i due giri si contraddicono; il resto non
-sparisce. È la stessa lezione del reward model del capitolo sui Transformer: un
-giudice appreso è un surrogato del giudizio umano, e ottimizzare troppo contro
-un surrogato porta al *reward hacking*.
+GPT-3.5 non preferisce sé stesso; lo hanno misurato poi Panickssery e colleghi,
+sui riassunti, e il giudice riconosce i propri testi tanto più spesso quanto
+più li preferisce {cite}`panickssery2024selfpreference`. Il position bias si
+mitiga chiamando il giudice due volte a ordini scambiati e dichiarando
+vincitore solo chi vince in tutti e due i giri, pari quando i due giri si
+contraddicono; il resto non sparisce. Un giudice senza riferimento, poi, non
+verifica la correttezza: su dieci problemi di matematica, giudicati due volte a
+ordini scambiati, GPT-4 promuove la risposta sbagliata 14 volte su 20 con il
+prompt di serie, 6 chiedendogli di ragionare per passi e 3 dandogli la
+soluzione di riferimento. E quelle cifre stanno su campioni piccoli: l'8,7%
+dell'attacco alla verbosità sono 2 risposte su 23. Un giudice usato in
+produzione si valida quindi sul proprio compito, misurandone l'accordo con
+etichette umane su un campione, con una statistica corretta per il caso come il
+$\kappa$ di Cohen, $\kappa = (p_o - p_e)/(1 - p_e)$ con $p_o$ l'accordo
+osservato e $p_e$ quello atteso per caso, e con un intervallo di confidenza,
+perché l'accordo misurato per GPT-4 su MT-Bench non si trasferisce da sé a un
+altro giudice o a un altro compito. È la stessa lezione del reward model del
+capitolo sui Transformer: un giudice appreso è un surrogato del giudizio umano,
+e ottimizzare troppo contro un surrogato porta al *reward hacking*.
 
 `````
 
 Alla valutazione si affianca, quando il servizio è acceso, la sicurezza di ciò
 che esce. Al modello, durante l'addestramento, si è già insegnato quali
-risposte sono preferibili e quali no: sono le due tecniche del capitolo sui
-Transformer che là si chiamano per sigla, RLHF e DPO. Quell'insegnamento lo
-rende meno incline a rispondere in modo dannoso, ma non offre garanzie: resta
-una disposizione appresa, e una disposizione si aggira. Per questo i sistemi
-reali aggiungono dei guardrail, che in italiano sono proprio i guard rail
-dell'autostrada: filtri e classificatori indipendenti dal modello, che
-ispezionano quello che entra e quello che esce. Servono a bloccare contenuti
-dannosi e dati personali, ma anche due mosse che hanno un nome preciso: le
-istruzioni nascoste dentro un testo che il modello deve leggere, scritte
-apposta perché le prenda per ordini (la *prompt injection*), e i tentativi di
-farsi dire ciò che il modello non dovrebbe dire, aggirandone le regole (il
-*jailbreak*). Nessuno di questi strumenti è perfetto; messi insieme, riducono
-il rischio senza azzerarlo.
+risposte sono preferibili e quali no, a partire da coppie di risposte di cui
+delle persone avevano indicato la migliore: sono le due tecniche del capitolo
+sui Transformer che là si chiamano per sigla, RLHF e DPO. Quell'insegnamento
+lo rende meno incline a rispondere in modo dannoso, ma non offre garanzie:
+resta una disposizione appresa, e una disposizione si aggira. Per questo i
+sistemi reali aggiungono dei *guardrail*, filtri e classificatori indipendenti
+dal modello che esaminano quello che entra e quello che esce. Servono a
+bloccare contenuti dannosi e dati personali, ma anche due mosse che hanno un
+nome preciso: le istruzioni nascoste dentro un testo che il modello deve
+leggere, scritte apposta perché le prenda per ordini (la *prompt injection*),
+e i tentativi di farsi dire ciò che il modello non dovrebbe dire, aggirandone
+le regole (il *jailbreak*). Nessuno di questi strumenti è perfetto; messi
+insieme, riducono il rischio senza azzerarlo. Quanto lo riducano si misura
+come il resto, con una batteria di attacchi noti (iniezioni dirette e nascoste
+nei documenti che il modello legge {cite}`greshake2023not`, tentativi di
+jailbreak) che gira a ogni cambio di prompt o di modello e conta quanti ne
+passano. Il filtro, però, non sostituisce il confine vero, che sta nei
+permessi dati al sistema: come si attacca e come si difende un modello di
+linguaggio lo racconta {doc}`Attaccare e difendere un modello di linguaggio
+</AIResponsabile/sicurezza-llm>`, nel capitolo sull'AI responsabile.
 
 ## Il ciclo LLMOps
 
-Tirando le somme: l'anello dell'MLOps torna intatto (dati,
-addestramento, valutazione, consegna, sorveglianza), ma con gli LLM cambia
-quello che ci gira dentro, cioè le cose di cui si conserva ogni versione.
-Spesso non sono i pesi, che arrivano già fatti da qualcun altro: è il
-prompt, la riga d'istruzione con cui si spiega al modello che cosa deve
-fare. Quella riga è codice a tutti gli effetti, ed è fragile come abbiamo visto
-nel capitolo sui Transformer, dove basta una parola diversa per cambiare la
-risposta: quindi se ne conserva ogni versione, la si prova, e prima di
-sostituirla si mettono in campo la vecchia e la nuova su due metà del pubblico
-per vedere quale funziona meglio (è il test *A/B* della sezione sul
-monitoraggio). Il
-monitoraggio, a sua volta, insegue bersagli nuovi: le allucinazioni
+L'anello dell'MLOps resta quello di sempre (dati, addestramento, valutazione,
+consegna, sorveglianza), ma con gli LLM cambia quello che ci gira dentro, cioè
+le cose di cui si conserva ogni versione. Spesso non sono i pesi, che arrivano
+già fatti da qualcun altro: è il prompt, la riga d'istruzione con cui si
+spiega al modello che cosa deve fare. Quella riga è codice a tutti gli
+effetti, ed è fragile come abbiamo visto nel capitolo sui Transformer, dove
+basta una parola diversa per cambiare la risposta. Si versiona quindi come il
+codice: un identificativo (l'impronta del testo e dei parametri di
+generazione, come quella della configurazione in
+{doc}`Dal notebook alla produzione </MLOps/dal-notebook-alla-produzione>`),
+il modello fissato alla versione con cui è stato provato, e la batteria di casi
+che lo ha approvato. Una versione nuova si prova prima fuori linea, su quella
+batteria, e solo se supera quella in uso si mette alla prova sul pubblico, con
+un test *A/B* come in {doc}`Sorvegliare un modello vivo
+</MLOps/monitoring-e-drift>`. Con un modello offerto da terzi il rischio è
+doppio, perché anche sotto lo stesso nome il servizio cambia versione, e il
+comportamento cambia con lei: le versioni di marzo e di giugno 2023 di GPT-3.5
+e GPT-4 rispondevano in modo diverso alle stesse domande, dal riconoscere un
+numero primo al formato del codice prodotto {cite}`chen2024chatgpt`.
+
+Il monitoraggio, a sua volta, insegue bersagli nuovi: le allucinazioni
 (risposte sicure di sé e sbagliate), la deriva dell'uso rispetto a ciò per
 cui il sistema era tarato, e il costo per token, che scala con quanto
 testo entra ed esce; un prompt gonfio è una bolletta più salata. E poiché il
 testo aperto non si collauda con i test unitari del software classico, serve
-una **valutazione continua**: una batteria di esempi che gira a ogni cambio di
-prompt o di modello, spesso con l'LLM-as-a-judge a fare da metro automatico.
+una **valutazione continua**: la batteria di esempi che gira a ogni cambio di
+prompt o di modello, spesso con l'LLM-as-a-judge a fare da metro automatico, e
+che con un modello di terzi fa anche da sensore della sua deriva.
 
 Resta fuori, di proposito, tutto ciò che sta *sopra* il modello: ancorare le
-risposte a documenti recuperati al momento (il *retrieval-augmented
-generation* nella sua forma avanzata), far usare al modello strumenti esterni,
-comporre più passi in un agente. È il
-{doc}`capitolo sugli Agenti </Agenti/overview>`, che abbiamo già percorso.
+risposte a documenti recuperati al momento ({doc}`Cercare per rispondere
+</Transformers/rag>`, e nella forma avanzata il
+{doc}`capitolo sugli Agenti </Agenti/overview>`), comporre prompt, contesto e
+cicli di lavoro ({doc}`Prompt, contesto e loop </IngegneriaLLM/overview>`),
+far usare al modello strumenti esterni e comporre più passi in un agente, di
+nuovo negli Agenti. Sono capitoli che abbiamo già percorso.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Con un grande modello linguistico la parte lenta è la rilettura: per
-  scrivere una sola parola il modello deve rileggersi tutti i
-  suoi numeri, e sono miliardi. Il calcolo, in confronto, è quasi fermo.
+- Con un grande modello linguistico, finché le richieste servite insieme sono
+  poche, la parte lenta è la rilettura: per scrivere una sola parola il
+  modello deve rileggersi tutti i suoi numeri, e sono miliardi. Il calcolo, in
+  confronto, è quasi fermo.
 - La prima domanda è quale ci sta nella
   memoria che si ha, prima ancora di quale sia migliore: se non ci sta, non è
   lento, proprio non parte.
@@ -1049,15 +1154,19 @@ comporre più passi in un agente. È il
   Serve però quando le richieste sono poche: con la sala piena il grande ha già
   da fare per conto suo.
 - Per far entrare il modello nella memoria si comprime: si arrotondano i
-  numeri, o se ne buttano via una parte. Ma alcuni numeri sono fragili e
-  portanti, come i bicchieri buoni in un trasloco, e vanno trattati a parte.
+  numeri, o se ne buttano via una parte (e buttarne metà qua e là non fa
+  andare più veloci). Ma alcuni numeri sono fragili e portanti, come i
+  bicchieri buoni in un trasloco, e vanno trattati a parte.
   Anche gli appunti si possono arrotondare, le chiavi colonna per colonna e i
   valori riga per riga, tenendo per esteso le ultime righe: da tre a quattro
   volte più piccoli, ma sui modelli con un solo foglio di appunti per tutte le
   teste due cifre non bastano.
 - Giudicare un testo aperto non ha una risposta esatta: si usa un altro
-  modello come esaminatore, comodo ed economico, sapendo che ha sempre le
-  stesse due manie, il tema che ha letto per primo e quello più lungo.
+  modello come esaminatore, comodo ed economico, sapendo che ha le sue manie
+  (il tema che ha letto per primo, quello più lungo e, come hanno mostrato
+  misure successive, il proprio) e che senza la soluzione davanti si fa
+  convincere da conti sbagliati. Prima di fidarsene lo si prova su temi già
+  corretti.
 - E quello che il modello scrive va comunque filtrato all'ingresso e
   all'uscita: quel che ha imparato a non dire è una disposizione, e una
   disposizione si aggira.
@@ -1071,23 +1180,30 @@ comporre più passi in un agente. È il
 ```{admonition} Da ricordare
 :class: important
 - Con gli LLM il collo di bottiglia si sposta sulla generazione
-  autoregressiva: l'inferenza è memory-bound (leggere i pesi domina sul
-  calcolo), e la KV cache vista nel capitolo sui Transformer occupa memoria
-  che cresce col contesto.
+  autoregressiva: la decodifica è memory-bound finché il batch resta sotto
+  $b^\ast = F M_w/(2NB)$ ($F/B$ in 16 bit, circa 150 sequenze su una scheda da
+  312 TFLOP/s e 2 TB/s), mentre il prefill è limitato dal calcolo; e la KV
+  cache, $2\,n_\ell\,h_{kv}\,d_k$ numeri per token, cresce col contesto ed è di
+  ciascuna sequenza, quindi non si ammortizza sul batch.
 - Servire un LLM significa batchare tante richieste per ammortizzare
   la lettura dei pesi: la PagedAttention di vLLM pagina la KV cache come un
   sistema operativo, e lo spreco passa dal 60–80% a meno del 4%
-  {cite}`kwon2023efficient`; il continuous batching tiene il batch sempre
-  pieno. Insieme, nella misura degli autori, da due a quattro volte di
-  throughput a parità di latenza.
+  {cite}`kwon2023efficient`; il continuous batching, l’*iteration-level
+  scheduling* di Orca {cite}`yu2022orca`, tiene il batch sempre pieno. Contro
+  FasterTransformer e contro Orca stesso, vLLM serve da due a quattro volte più
+  richieste a parità di latenza: un guadagno soprattutto della gestione della
+  memoria.
 - Lo speculative decoding è esatto grazie alla regola di
   accettazione-rifiuto {cite}`leviathan2023fast`, e non tutte le sue varianti
   lo restano: EAGLE e il *prompt lookup* sì; Medusa solo nella versione che
   lascia intatto il modello e verifica per rifiuto, perché la *typical
   acceptance* scambia la distribuzione del target per un tasso di accettazione
   più alto, e Medusa-2 riaddestra il modello stesso {cite}`cai2024medusa`.
+  L'accelerazione attesa è
+  $(1-\alpha^{\gamma+1})/\big((1-\alpha)(\gamma c+1)\big)$, con $c$ il costo
+  relativo della bozza, e si assottiglia a batch grandi.
 - Comprimere per servire: quantizzazione *post-training* (riaddestrare è
-  fuori portata) con la mappa affine $r = S(q - Z)$ della sezione sul
+  fuori portata) con la mappa affine $\hat{w} = s\,(q - z)$ della sezione sul
   deployment, ma per gruppi di pesi, non per tensore: a 4 bit i bit
   effettivi sono circa 4,2. I tre metodi guardano tutti le attivazioni e ne
   fanno cose diverse: LLM.int8() ci isola le dimensioni anomale
@@ -1098,7 +1214,8 @@ comporre più passi in un agente. È il
   occupati e sulla sola accuratezza zero-shot {cite}`dettmers2023case`, e per
   chi arrotonda senza guardare i dati: i metodi che si tarano su un insieme di
   calibrazione restano fuori da quella misura, e sotto i 4 bit la partita resta
-  aperta.
+  aperta. La potatura al 50% (SparseGPT, Wanda) riduce i parametri ma accelera
+  il servizio solo nella forma strutturata 2:4.
 - Anche la KV cache si quantizza: KIVI {cite}`liu2024kivi` a 2 bit, chiavi per
   canale e valori per token, con gli ultimi token in 16 bit, che reggono la
   qualità; circa 3 bit effettivi, quasi senza perdite su Llama e Mistral, ma su
@@ -1106,12 +1223,19 @@ comporre più passi in un agente. È il
 - Valutare l'invalutabile: la perplessità non basta e i benchmark si
   contaminano; per l'output aperto si usa LLM-as-a-judge, che sui soli voti
   non pari concorda con l’uomo l’85% delle volte contro l’81% fra due
-  umani {cite}`zheng2023judging`, coi suoi bias di posizione e di verbosità
-  (l'auto-preferenza gli autori non riescono a dimostrarla). In produzione
-  servono guardrail su ingresso e uscita.
-- Il ciclo LLMOps versiona i prompt come codice e monitora
-  allucinazioni, deriva e costo per token, con valutazione
-  continua. RAG avanzato, *tool use* e agenti hanno un capitolo dedicato,
-  che abbiamo già percorso.
+  umani {cite}`zheng2023judging`, coi suoi bias di posizione e di verbosità;
+  l'auto-preferenza, che i dati di Zheng e colleghi non bastavano a
+  dimostrare, l'hanno misurata poi Panickssery e colleghi come correlazione con
+  l'auto-riconoscimento {cite}`panickssery2024selfpreference`. Senza una
+  soluzione di riferimento il giudice non verifica la correttezza, e va
+  validato sul proprio compito (accordo con etichette umane, corretto per il
+  caso). In produzione servono guardrail su ingresso e uscita, misurati con
+  batterie di attacchi noti; il confine vero sono i permessi dati al sistema.
+- Il ciclo LLMOps versiona i prompt come codice (impronta, modello fissato
+  alla versione, batteria di casi), li prova fuori linea prima dell'A/B, e
+  monitora allucinazioni, deriva (anche quella del fornitore, quando il
+  modello è di terzi {cite}`chen2024chatgpt`) e costo per token, con
+  valutazione continua. RAG, ingegneria di prompt e contesto, *tool use* e
+  agenti hanno capitoli loro, che abbiamo già percorso.
 ```
 `````

@@ -48,12 +48,10 @@ prendendone una non perdi l'altra.
 
 :::{only} html
 E «due volte» ha un secondo senso, che riguarda come queste pagine sono
-scritte. Le stende un'intelligenza artificiale; le rilegge un'altra AI,
-che alla stesura non ha partecipato e ha un compito solo, cercare l'errore;
-e alla fine passano da me, ed è quel passaggio a decidere che cosa resta.
-Questo libro è, alla lettera, l'AI che spiega se stessa. Perché il metodo
-è severo, su che cosa il libro scommette, e perché il segno qui sopra è un
-triangolo impossibile, sta nella {doc}`Prefazione </prefazione>`.
+scritte: una prima AI le stende, una seconda le rilegge in cerca dell'errore, e
+alla fine passano da me, ed è quel passaggio a decidere che cosa resta. Perché
+il metodo è severo, su che cosa il libro scommette, e perché il segno qui sopra
+è un triangolo impossibile, sta nella {doc}`Prefazione </prefazione>`.
 :::
 
 :::{only} html
@@ -73,7 +71,17 @@ in un colpo solo, e si cambia quando vuoi.
 :::
 
 :::{only} html
-Questa versione online del libro è gratuita ed è in continuo aggiornamento per stare al passo con le innovazioni di questa materia: aggiungiamo regolarmente sezioni, argomenti ed esempi in Python. Il codice usa PyTorch, NumPy e scikit-learn, e per provarlo non devi installare niente. Dove in alto compare **Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che fa girare il codice su una macchina di Google (serve un account Google). Qualche pagina è essa stessa un notebook, e si riconosce dal razzo 🚀 fra i comandi in cima alla pagina: lì il codice si esegue restando nel libro. Altrove si legge qui e si copia dove preferisci.
+Questa versione online del libro è gratuita ed è in continuo aggiornamento per
+stare al passo con le innovazioni di questa materia: aggiungo regolarmente
+sezioni, argomenti ed esempi in Python. Il codice usa PyTorch, NumPy e
+scikit-learn, e per provarlo non devi installare niente. Dove in alto compare
+**Esegui il codice**, quel capitolo ha un *notebook*: una copia della pagina in
+cui i blocchi di codice, invece di stare lì solo da leggere, si eseguono uno
+dopo l'altro. Il collegamento lo apre su Google Colab, un servizio gratuito che
+fa girare il codice su una macchina di Google (serve un account Google).
+Qualche pagina è essa stessa un notebook, e si riconosce dal razzo 🚀 fra i
+comandi in cima alla pagina: lì il codice si esegue restando nel libro. Altrove
+si legge qui e si copia dove preferisci.
 
 Che cosa è cambiato, e quando, sta scritto: {doc}`Aggiornamenti </aggiornamenti>` è il registro delle sezioni nuove e delle correzioni, una voce per pubblicazione, con il link alla pagina toccata. Questa è la versione {{ versione }} ({{ data_versione }}).
 :::
@@ -106,8 +114,9 @@ Tutti i capitoli in un file solo, impaginato per la lettura e per la stampa. Dov
 <div class="pt-chapters"> <div class="pt-cella"><a class="pt-card"
 href="Introduzione/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Introduzione</span> <span class="pt-card-desc">Che cos'è
-l'intelligenza artificiale, da ELIZA a oggi, e il primo programma da
-eseguire.</span> </a> <a class="pt-card-pdf"
+l'intelligenza artificiale, da ELIZA a oggi; il primo programma da eseguire;
+che cosa si può calcolare e che cosa no; la robotica.</span> </a> <a
+class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Introduzione.pdf"
 aria-label="Scarica in PDF il capitolo «Introduzione»" title="«Introduzione» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
@@ -118,14 +127,14 @@ href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon
 aria-label="Scarica in PDF il capitolo «Python»" title="«Python» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Matematica/overview.html"> <span class="pt-card-num"></span> <span
-class="pt-card-title">Richiami di matematica</span> <span
+class="pt-card-title">Matematica</span> <span
 class="pt-card-desc">Algebra lineare, sistemi e proiezioni, ottimizzazione,
 probabilità e concentrazione, catene di Markov, teoria dell'informazione,
 analisi numerica e la matematica di un LLM.</span> </a> <a
 class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Matematica.pdf"
-aria-label="Scarica in PDF il capitolo «Richiami di matematica»"
-title="«Richiami di matematica» in PDF">PDF</a></div> <div class="pt-cella"><a
+aria-label="Scarica in PDF il capitolo «Matematica»"
+title="«Matematica» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="MachineLearning/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Machine Learning</span>
 <span class="pt-card-desc">Imparare dai dati: apprendimento supervisionato,
@@ -167,7 +176,7 @@ aria-label="Scarica in PDF il capitolo «GPU e calcolo parallelo»" title="«GPU
 calcolo parallelo» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="Efficienza/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Efficienza</span> <span
-class="pt-card-desc">Il modello che si addestra non è quello che si usa:
+class="pt-card-desc">Il modello che si addestra e quello che si usa:
 quantizzazione e componenti anomale, potatura e biglietto della lotteria,
 distillazione, e perché starci in memoria non è rispondere in fretta.</span>
 </a> <a class="pt-card-pdf"
@@ -223,13 +232,13 @@ href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon
 aria-label="Scarica in PDF il capitolo «Natural Language Processing»"
 title="«Natural Language Processing» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="Transformers/overview.html"> <span
-class="pt-card-num"></span> <span class="pt-card-title">Transformers</span>
+class="pt-card-num"></span> <span class="pt-card-title">Transformer</span>
 <span class="pt-card-desc">L'architettura che ha cambiato tutto:
 self-attention, GPT e BERT, i grandi modelli linguistici, Mixture of Experts,
 il post-addestramento (RLHF, DPO), retrieval e RAG, multimodalità e
 multilingua.</span> </a> <a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Transformers.pdf"
-aria-label="Scarica in PDF il capitolo «Transformers»" title="«Transformers» in
+aria-label="Scarica in PDF il capitolo «Transformer»" title="«Transformer» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="AttenzioneLineare/overview.html"> <span class="pt-card-num"></span> <span
 class="pt-card-title">Attenzione lineare</span> <span
@@ -254,12 +263,12 @@ href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon
 aria-label="Scarica in PDF il capitolo «Visione e linguaggio»" title="«Visione
 e linguaggio» in PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Agenti/overview.html"> <span class="pt-card-num"></span> <span
-class="pt-card-title">Agenti e applicazioni LLM</span> <span
+class="pt-card-title">Agenti</span> <span
 class="pt-card-desc">Quando gli LLM agiscono: tool use e ReAct, RAG avanzato,
 context engineering, valutazione.</span> </a> <a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Agenti.pdf"
-aria-label="Scarica in PDF il capitolo «Agenti e applicazioni LLM»"
-title="«Agenti e applicazioni LLM» in PDF">PDF</a></div> <div
+aria-label="Scarica in PDF il capitolo «Agenti»"
+title="«Agenti» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="IngegneriaLLM/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">Prompt, contesto e
 loop</span> <span class="pt-card-desc">Programmare gli LLM a parole su tre
@@ -378,20 +387,21 @@ aria-label="Scarica in PDF il capitolo «Physics-Informed Neural Networks»"
 title="«Physics-Informed Neural Networks» in PDF">PDF</a></div> <div
 class="pt-cella"><a class="pt-card" href="MLOps/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">MLOps</span> <span
-class="pt-card-desc">Dal notebook alla produzione: versioning, serving,
-monitoraggio del drift, LLMOps e deploy.</span> </a> <a class="pt-card-pdf"
-href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-MLOps.pdf"
+class="pt-card-desc">Dal notebook alla produzione: versioning e pipeline dei
+dati, serving, monitoraggio del drift, LLMOps, metriche di servizio, capacità e
+costo, gateway e affidabilità, il conto in energia.</span> </a> <a
+class="pt-card-pdf" href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-MLOps.pdf"
 aria-label="Scarica in PDF il capitolo «MLOps»" title="«MLOps» in
 PDF">PDF</a></div> <div class="pt-cella"><a class="pt-card"
 href="Interpretabilita/overview.html"> <span class="pt-card-num"></span> <span
-class="pt-card-title">Interpretabilità e XAI</span> <span
+class="pt-card-title">Interpretabilità</span> <span
 class="pt-card-desc">Aprire la scatola nera: modelli trasparenti e importanza
 delle feature, spiegazioni locali (LIME, SHAP, controfattuali), attribuzione
 (Grad-CAM, integrated gradients) e interpretabilità meccanicistica.</span> </a>
 <a class="pt-card-pdf"
 href="https://github.com/paithon-it/paithonbook/releases/latest/download/paithon-book-Interpretabilita.pdf"
-aria-label="Scarica in PDF il capitolo «Interpretabilità e XAI»"
-title="«Interpretabilità e XAI» in PDF">PDF</a></div> <div class="pt-cella"><a
+aria-label="Scarica in PDF il capitolo «Interpretabilità»"
+title="«Interpretabilità» in PDF">PDF</a></div> <div class="pt-cella"><a
 class="pt-card" href="AIResponsabile/overview.html"> <span
 class="pt-card-num"></span> <span class="pt-card-title">AI responsabile</span>
 <span class="pt-card-desc">Equità e bias algoritmico, privacy (differential
@@ -466,8 +476,9 @@ $$
 E perché occuparsene? Perché un filtro così banale, ripetuto milioni di volte,
 è uno dei mattoni delle reti neurali: è la regola che decide quali segnali
 proseguono dentro la rete e quali si fermano lì. Il {doc}`capitolo sulle reti
-neurali </RetiNeurali/funzioni-attivazione>` racconta perché proprio questa
-funzioni meglio di alternative in apparenza più raffinate.
+neurali </RetiNeurali/funzioni-attivazione>` racconta perché negli strati
+nascosti si parte quasi sempre da questa, invece che da alternative in
+apparenza più raffinate.
 
 `````
 
@@ -491,12 +502,17 @@ $$
 
 Questa funzione prende un input $x$ e restituisce $x$ se $x$ è positivo;
 altrimenti, restituisce zero. La ReLU è ampiamente utilizzata nelle reti
-neurali perché introduce una non linearità essenziale e la sua derivata vale
-esattamente $1$ per $x > 0$: durante la *backpropagation*, lungo i cammini
-attivi, il gradiente non si attenua per colpa dell'attivazione, e per $x > 0$
-sparisce la saturazione che affligge sigmoide e tangente iperbolica. Per $x <
-0$ la derivata è invece nulla: un'unità la cui preattivazione resta negativa su
-tutti gli esempi non riceve più gradiente e non si riaccende (la *dying ReLU*,
+neurali perché introduce la non linearità senza cui una composizione di strati
+lineari resterebbe una sola trasformazione lineare
+($\mathbf{W}_2(\mathbf{W}_1\mathbf{x}) = (\mathbf{W}_2\mathbf{W}_1)\mathbf{x}$;
+con la ReLU una rete calcola una funzione continua lineare a tratti), e perché
+la sua derivata vale esattamente $1$ per $x > 0$
+{cite}`nair2010rectified,glorot2011deep`: durante la *backpropagation*, lungo i
+cammini attivi, il gradiente non si attenua per colpa dell'attivazione, e per
+$x > 0$ sparisce la saturazione che affligge sigmoide e tangente iperbolica.
+Per $x < 0$ la derivata è invece nulla: un'unità la cui preattivazione resta
+negativa su tutti gli esempi non riceve più gradiente sui propri pesi, che
+smettono di aggiornarsi (la *dying ReLU*,
 di cui tratta la {doc}`sezione sulle funzioni di attivazione
 </RetiNeurali/funzioni-attivazione>`).
 
@@ -536,8 +552,10 @@ una mano:
     <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="paithon.it" data-color="#B5532C" data-emoji="🔋"  data-font="Cookie" data-text="Ricarica la mia energia" data-outline-color="#1A1A1A" data-font-color="#ffffff" data-coffee-color="#C9A961" ></script>
 </span>
 
-- Aiutaci a scoprire errori e migliorare il progetto: selezionando un pezzo di testo in qualunque pagina compare un pulsante che apre una segnalazione (una *issue*) già compilata su GitHub, dove la correzione viene discussa, e chi ha segnalato l'errore è citato nel
-commit che la applica.
+- Aiutami a scoprire errori e migliorare il progetto: selezionando un pezzo di
+  testo in qualunque pagina compare un pulsante che apre una segnalazione (una
+  *issue*) già compilata su GitHub, dove la correzione viene discussa, e chi ha
+  segnalato l'errore è citato nel commit che la applica.
 - Manda i tuoi commenti ✉ a *info@paithon.it*. Servono solo a migliorare il
   libro.
 :::
@@ -545,7 +563,7 @@ commit che la applica.
 :::{only} latex
 - Metti una stella al progetto su GitHub e condividilo:
   `github.com/paithon-it/paithonbook`.
-- Aiutaci a scoprire gli errori: ogni pagina del libro online ha un modo
+- Aiutami a scoprire gli errori: ogni pagina del libro online ha un modo
   rapido per aprire una segnalazione, e chi segnala un errore viene citato
   nel commit che lo corregge.
 - Manda i tuoi commenti a *info@paithon.it*. Servono solo a migliorare il

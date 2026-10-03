@@ -1,10 +1,12 @@
 # Algebra lineare: vettori, matrici, prodotti
 
-Tutto, nel machine learning, comincia con l'idea di mettere i numeri in fila.
-Un'email è una lista di parole, una foto è una griglia di pixel, un cliente è
-una scheda di attributi (età, acquisti, città). In tutti questi casi facciamo
-la stessa mossa: impilare i numeri in un **vettore**, e impilare i vettori in
-una **matrice**. L'algebra lineare è la grammatica di queste pile.
+Prima di arrivare a un modello, un dato diventa una fila ordinata di numeri. Un
+cliente diventa la lista dei suoi attributi numerici (età, acquisti, anni di
+iscrizione). Una foto è una griglia di intensità dei pixel, che si legge riga
+per riga come una fila sola. Un'email, contate le parole che contiene, diventa
+un elenco di conteggi. Quella fila si chiama **vettore**, e più vettori impilati
+formano una **matrice**. L'algebra lineare studia i vettori e le trasformazioni
+lineari che li mandano in altri vettori, di cui le matrici sono la scrittura.
 
 ## Vettori: dati e direzioni
 
@@ -19,10 +21,10 @@ fa $[4,5]$) e fare prima uno spostamento e poi l'altro sono la stessa
 operazione: si arriva nello stesso punto.
 ```
 
-La doppia lettura di {numref}`fig-somma-vettori` è il motivo per cui l'algebra
-lineare serve al machine learning. I dati arrivano come liste di numeri, e
-appena li si guarda come frecce diventano disponibili parole che sui numeri
-non avevano senso: direzione, distanza, angolo.
+La doppia lettura di {numref}`fig-somma-vettori` è il primo motivo per cui
+l'algebra lineare serve al machine learning. I dati arrivano come liste di
+numeri, e appena li si guarda come frecce diventano disponibili parole che sui
+numeri non avevano senso: direzione, distanza, angolo.
 
 `````{tab} Elementare
 
@@ -103,38 +105,34 @@ di grigi, "srotolata", è un vettore di $\mathbb{R}^{784}$.
 
 ## Il prodotto scalare: quanto due vettori "vanno d'accordo"
 
-È l'operazione che ritorna più spesso in tutto il machine learning: un
-neurone artificiale, in fondo, non fa altro che calcolare un prodotto
-scalare. Il nome arriva dalla
-{doc}`sezione sul percettrone </RetiNeurali/percettrone>` e qui basta
-sapere cosa indica: il mattone
-elementare di cui una rete è fatta, un pezzetto di calcolo che riceve una
-lista di numeri, la confronta con una lista di numeri propri e restituisce un
-numero solo.
+È l'operazione che ritorna più spesso nel machine learning: un neurone
+artificiale, il mattone di cui una rete è fatta, calcola il prodotto scalare fra
+i propri pesi e i numeri che riceve, vi somma un termine costante e applica una
+funzione non lineare, come spiega la {doc}`sezione sul percettrone
+</RetiNeurali/percettrone>`.
 
-Conviene rendersi conto della scala. Ogni volta che un modello linguistico
-genera una singola parola, da qualche parte in un datacenter vengono eseguiti
-miliardi di esemplari della stessa operazione: prendere due liste di numeri,
-moltiplicarle voce per voce, sommare tutto. Due vettori entrano, un numero solo
-esce. Occupa mezza riga in un libro di matematica ed è, con ogni probabilità,
-l'operazione aritmetica più eseguita sul pianeta in questo momento.
+Per produrre un solo token un modello linguistico da sette miliardi di parametri
+esegue circa sette miliardi di moltiplicazioni con somma, raccolte in oltre un
+milione di prodotti scalari fra vettori di migliaia di componenti. Due vettori
+entrano, un numero esce: il calcolo occupa mezza riga in un libro di matematica
+ed è fra i più eseguiti del mondo.
 
 ```{figure} ../figures/prodotto-scalare.svg
 :name: fig-prodotto-scalare
 :alt: "Proiezione geometrica: il vettore a proiettato sul vettore b, con l'angolo theta e la perpendicolare tratteggiata; la lunghezza della proiezione evidenziata in terracotta"
 :width: 85%
 
-La proiezione di $\mathbf{a}$ su $\mathbf{b}$ è l’«ombra» che $\mathbf{a}$
-getta sulla direzione di $\mathbf{b}$. Il prodotto scalare è la lunghezza di
-quest'ombra moltiplicata per la lunghezza di $\mathbf{b}$, e l'angolo fra le
-due frecce (nel disegno la lettera greca $\theta$, si legge «theta») decide se
-il risultato è grande, nullo o negativo. Nella formula del disegno, le
-stanghette $\lvert\mathbf{a}\rvert$ vogliono dire «lunghezza di $\mathbf{a}$»
-e $\cos\theta$, il *coseno* dell'angolo, è semplicemente un numero fra $-1$ e
-$1$ che misura l'accordo fra le due direzioni: vale $1$ se puntano dalla
-stessa parte, $0$ se sono perpendicolari, $-1$ se sono opposte. Non serve
-saperlo calcolare per leggere il resto: qui il coseno è solo il nome di quel
-numero.
+La proiezione di $\mathbf{a}$ su $\mathbf{b}$ è l’«ombra» che $\mathbf{a}$ getta
+sulla direzione di $\mathbf{b}$. Il prodotto scalare è la lunghezza di
+quest'ombra moltiplicata per la lunghezza di $\mathbf{b}$, e l'angolo fra le due
+frecce (nel disegno la lettera greca $\theta$, si legge «theta») decide se il
+risultato è grande, nullo o negativo. Nella formula del disegno, le doppie
+stanghette $\lVert\mathbf{a}\rVert$ vogliono dire «lunghezza di $\mathbf{a}$»
+(la norma, che si incontra fra poco) e $\cos\theta$, il *coseno* dell'angolo, è
+semplicemente un numero fra $-1$ e $1$ che misura l'accordo fra le due
+direzioni: vale $1$ se puntano dalla stessa parte, $0$ se sono perpendicolari,
+$-1$ se sono opposte. Non serve saperlo calcolare per leggere il resto: qui il
+coseno è solo il nome di quel numero.
 ```
 
 `````{tab} Elementare
@@ -166,7 +164,9 @@ picco ({numref}`fig-prodotto-scalare`). L'ombra sull'asfalto è la parte di
 bastone che va dove va la strada, e il prodotto scalare è la sua lunghezza
 moltiplicata per quella della strada. Se il bastone pende anche di lato l'ombra
 cade di sbieco, e nel conto entra soltanto quanto ne avanza lungo la
-carreggiata.
+carreggiata. Ed è lo stesso numero dello scontrino, fatto in un altro modo: con
+il bastone $(4,2)$ e la strada $(1,3)$ l'ombra è lunga circa $3{,}16$, la strada
+pure, e $3{,}16\cdot3{,}16$ fa di nuovo $10$.
 
 Bastone quasi sdraiato sulla strada, ombra lunga, numero grande e positivo.
 Dritto in piedi, ombra ridotta a un punto, zero. Inclinato all'indietro, ombra
@@ -213,20 +213,27 @@ $$
 {\lVert\mathbf{a}\rVert\,\lVert\mathbf{b}\rVert}\in[-1,1].
 $$
 
-Due vettori sono ortogonali quando $\mathbf{a}^\top\mathbf{b}=0$. Un
-singolo neurone artificiale calcola esattamente $\mathbf{w}^\top\mathbf{x}+b$:
-il prodotto scalare tra i pesi $\mathbf{w}$ e l'input $\mathbf{x}$, più un
-termine di bias.
+La formula vale per $\mathbf{a},\mathbf{b}\neq\mathbf{0}$. In $\mathbb{R}^2$ e
+$\mathbb{R}^3$ la seconda uguaglianza è un teorema; per $n>3$ è la definizione
+di $\theta$, lecita perché la disuguaglianza di Cauchy-Schwarz, che si ricava
+parlando di norme, garantisce
+$|\mathbf{a}^\top\mathbf{b}|\le\lVert\mathbf{a}\rVert\lVert\mathbf{b}\rVert$,
+cioè $\cos\theta\in[-1,1]$. Due vettori sono ortogonali quando
+$\mathbf{a}^\top\mathbf{b}=0$. Un singolo neurone artificiale calcola
+$\sigma(\mathbf{w}^\top\mathbf{x}+b)$: il prodotto scalare fra i pesi
+$\mathbf{w}$ e l'input $\mathbf{x}$, più un termine di bias $b$, a cui si
+applica una funzione non lineare $\sigma$ (la funzione di attivazione).
 
 `````
 
 ## Matrici: trasformazioni di interi insiemi di dati
 
-Un vettore descrive un esempio; ma gli esempi sono cento, o un milione, e
-prima o poi bisogna metterli tutti insieme. Basta impilare le liste una sotto
-l'altra e viene fuori una tabella. Da lì nasce la seconda cosa che si fa con
-una tabella di numeri, meno ovvia della prima e molto più importante: non solo
-tenere fermi i dati, ma trasformarli.
+Un vettore descrive un esempio, ma gli esempi sono cento, o un milione. Impilati
+uno sotto l'altro formano la matrice dei dati $\mathbf{X}$, con una riga per
+esempio e una colonna per caratteristica: $m$ esempi descritti da $d$ numeri
+ciascuno danno una matrice $m \times d$. Da lì nasce la seconda cosa che si fa
+con una matrice, meno ovvia della prima e molto più importante: non solo tenere
+fermi i dati, ma trasformarli.
 
 `````{tab} Elementare
 
@@ -332,10 +339,15 @@ $$
 C_{ij} = \sum_{r=1}^{k} A_{ir} B_{rj} .
 $$
 
-Non è commutativo ($\mathbf{A}\mathbf{B}\neq\mathbf{B}\mathbf{A}$ in generale)
-e le dimensioni "interne" devono combaciare. Uno strato *fully-connected* di
-una rete non è altro che $\mathbf{h} = \sigma(\mathbf{W}\mathbf{x}+\mathbf{b})$:
-una moltiplicazione per la matrice dei pesi $\mathbf{W}$, seguita da una non
+È associativo e distributivo rispetto alla somma, e costa $mkn$ moltiplicazioni
+per $\mathbf{A}\in\mathbb{R}^{m\times k}$ e $\mathbf{B}\in\mathbb{R}^{k\times
+n}$; l'associatività non cambia il risultato ma cambia il costo, e con un
+vettore in fondo conviene $\mathbf{A}(\mathbf{B}\mathbf{x})$, che costa $kn+mk$,
+invece di $(\mathbf{A}\mathbf{B})\mathbf{x}$, che costa $mkn+mn$. Non è
+commutativo ($\mathbf{A}\mathbf{B}\neq\mathbf{B}\mathbf{A}$ in generale) e le
+dimensioni "interne" devono combaciare. Uno strato *fully-connected* di una rete
+non è altro che $\mathbf{h} = \sigma(\mathbf{W}\mathbf{x}+\mathbf{b})$: una
+moltiplicazione per la matrice dei pesi $\mathbf{W}$, seguita da una non
 linearità $\sigma$. Il fatto che tante operazioni si riducano a prodotti tra
 matrici è ciò che rende le GPU (nate per fare in parallelo lo stesso conto su
 milioni di pixel) così efficaci nel deep learning.
@@ -369,23 +381,20 @@ Il caso più frequente è $(\mathbf{W}\mathbf{x})^\top =
 \mathbf{x}^\top\mathbf{W}^\top$: con gli esempi impilati uno per riga in una
 matrice $\mathbf{X}$, come lavorano le librerie, lo strato
 $\mathbf{W}\mathbf{x}$ applicato a tutti insieme si scrive
-$\mathbf{X}\mathbf{W}^\top$. E $\mathbf{W}^\top$ torna nel passo
-all'indietro: se $\boldsymbol{\delta}$ è il gradiente della loss rispetto
-all'uscita $\mathbf{W}\mathbf{x}+\mathbf{b}$, quello rispetto all'ingresso è
+$\mathbf{X}\mathbf{W}^\top$. E $\mathbf{W}^\top$ torna nel passo all'indietro:
+se $\boldsymbol{\delta}$ è il gradiente della loss rispetto all'uscita
+$\mathbf{W}\mathbf{x}+\mathbf{b}$, quello rispetto all'ingresso è
 $\mathbf{W}^\top\boldsymbol{\delta}$ e quello rispetto ai pesi è il prodotto
-esterno $\boldsymbol{\delta}\mathbf{x}^\top$, come ricava la {doc}`sezione sul
-backpropagation </RetiNeurali/backpropagation>`.
+esterno $\boldsymbol{\delta}\mathbf{x}^\top$, come ricava la {doc}`sezione sulla
+backpropagation
+</RetiNeurali/backpropagation>`.
 
 `````
 
-Un caso merita di essere guardato da vicino: quello in cui i numeri che escono
-sono tanti quanti quelli che entrano, e in particolare due e due, perché
-allora si può disegnare. L'ingresso è una freccia sul foglio, l'uscita è
-un'altra freccia sullo stesso foglio, e la matrice diventa un gesto: prende
-ogni punto del piano e lo sposta altrove. Applicandola a molte frecce insieme
-si vede che cosa fa davvero quella tabella di numeri, e di solito fa due cose
-in una: gira le frecce e le stira, allungandone alcune e accorciandone
-altre.
+Il caso più semplice da disegnare è quello di una matrice quadrata $2\times 2$:
+manda ogni freccia del piano in un'altra freccia dello stesso piano,
+$\mathbf{x}\mapsto\mathbf{A}\mathbf{x}$. Applicata a molte frecce insieme, di
+solito le gira e le stira: ne allunga alcune, ne accorcia altre.
 
 Ma non tutte le direzioni vengono girate: alcune resistono.
 
@@ -405,22 +414,12 @@ quella freccia dà la stessa freccia moltiplicata per un numero», e quel numero
 è il $3$ o l’$1$.
 ```
 
-Il $3$ e l’$1$ si verificano a mano con il prodotto matrice-vettore, una riga
-alla volta. Nella didascalia la tabella è scritta stretta fra due
-parentesi, che è il modo consueto di scriverla: la prima riga è $2$ e $1$, la
-seconda è $1$ e $2$. E la diagonale che sale è la freccia $(1,1)$, cioè quella
-che avanza di un passo verso destra e di uno verso l'alto, così che i due
-numeri restino uguali.
-
-Applicarle la tabella vuol dire fare due prodotti scalari, uno per riga:
-prima riga,
-$2\cdot 1 + 1\cdot 1 = 3$; seconda riga, $1\cdot 1 + 2\cdot 1 = 3$. Ne esce
-$(3,3)$, che è la stessa freccia moltiplicata per tre. La diagonale che scende
-è $(1,-1)$, un passo a destra e uno in basso: prima riga,
-$2\cdot 1 + 1\cdot(-1) = 1$; seconda riga, $1\cdot 1 + 2\cdot(-1) = -1$. Ne
-esce $(1,-1)$, cioè sé stessa. Provando invece una freccia qualsiasi, per dire
-$(1,0)$, si ottiene $(2,1)$, che punta da un'altra parte: quella è stata
-girata.
+I valori della figura si verificano con due prodotti scalari, uno per riga di
+$\mathbf{A}$. Per la diagonale che sale, $\mathbf{v}=(1,1)$:
+$\mathbf{A}\mathbf{v}=(2\cdot1+1\cdot1,\ 1\cdot1+2\cdot1)=(3,3)=3\mathbf{v}$.
+Per quella che scende, $\mathbf{w}=(1,-1)$: $\mathbf{A}\mathbf{w}=(2-1,\
+1-2)=(1,-1)=\mathbf{w}$. Una freccia qualsiasi, come $(1,0)$, va in $(2,1)$ e
+punta da un'altra parte.
 
 ## Autovalori e autovettori: le direzioni che resistono
 
@@ -434,12 +433,12 @@ traverso. Le venature stanno nella tavola, decise dall'albero molto prima che
 qualcuno la segasse, e non si spostano a seconda di dove batti. A cambiare è
 soltanto *come* la tavola risponde.
 
-La matrice è la tavola, e la freccia a cui la applichiamo è il punto in cui
-batti. Le venature di una matrice si chiamano autovettori e stanno nella
-tabella di numeri una volta per tutte. Lungo una venatura la trasformazione si
-riduce a moltiplicare la freccia per un numero, e lo stirare di qua e il
-comprimere di là spariscono. La freccia può allungarsi, accorciarsi, perfino
-ribaltarsi, ma dalla sua retta non esce.
+La matrice è la tavola, e la freccia a cui la applichiamo è la direzione del
+colpo. Le venature di una matrice si chiamano autovettori e stanno nella tabella
+di numeri una volta per tutte. Lungo una venatura la trasformazione si riduce a
+moltiplicare la freccia per un numero, e lo stirare di qua e il comprimere di là
+spariscono. La freccia può allungarsi, accorciarsi, perfino ribaltarsi, ma dalla
+sua retta non esce.
 
 Quel fattore di allungamento si chiama autovalore e si scrive con la lettera
 greca $\lambda$ (si legge «lambda»). Un $\lambda$ sopra $1$ allunga tutto ciò
@@ -455,32 +454,34 @@ risposta la danno lo stesso, con numeri di un'altra specie che qui non servono.
 Le tabelle che il machine learning incontra più spesso sono venate, e con le
 venature perpendicolari fra loro.
 
-Il guaio comincia con cento tavole tagliate dallo stesso tronco, venate tutte
-uguali, che il colpo attraversa una dopo l'altra, come un segnale che ripassa
-cento volte per lo stesso strato. Gli allungamenti si moltiplicano fra loro. Un
-$1{,}1$ ripetuto cento volte fa $13\,781$, un $0{,}9$ fa $0{,}000027$, numeri
-enormi da un capo e indistinguibili da zero dall'altro.
+Il guaio, cioè la ragione per cui questo interessa chi addestra reti, arriva con
+cento tavole tagliate dallo stesso tronco, venate tutte uguali, che il colpo
+attraversa una dopo l'altra, come un segnale che ripassa cento volte per lo
+stesso strato. Gli allungamenti si moltiplicano fra loro. Un $1{,}1$ ripetuto
+cento volte fa $13\,781$, un $0{,}9$ fa $0{,}000027$, numeri enormi da un capo e
+indistinguibili da zero dall'altro.
 
 Una rete profonda è una pila di cento tavole incollate una sull'altra.
 All'andata il colpo entra dalla prima e attraversa tutta la pila, in fondo si
-confronta il pezzo finito con quello che si voleva ottenere, e la correzione
-di quello scarto risale tavola per
-tavola dicendo a ognuna come dovrà essere venata la prossima volta. Quel
-messaggio di ritorno si chiama *gradiente*, ed è l'argomento della sezione
-sull'analisi. Moltiplicato a ogni tavola per poco più di uno, alla prima arriva
-gonfiato a dismisura; per poco meno di uno non ci arriva affatto. In gergo i
-gradienti esplodono o svaniscono, ed è fra le prime cose che si guardano
-quando un addestramento smette di migliorare.
+confronta il pezzo finito con quello che si voleva ottenere, e la correzione di
+quello scarto risale tavola per tavola dicendo a ognuna come dovrà essere fatta
+la prossima volta. Quel messaggio di ritorno si chiama *gradiente*, ed è
+l'argomento della {doc}`sezione su analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>`. Moltiplicato a ogni tavola per poco più
+di uno, alla prima arriva gonfiato a dismisura; per poco meno di uno non ci
+arriva affatto. In gergo i gradienti esplodono o svaniscono, ed è fra le prime
+cose che si guardano quando un addestramento smette di migliorare.
 
 Le cento tavole, però, non hanno la stessa venatura, ed è qui che l'immagine
 viene usata a sproposito più spesso. È anche il modo in cui si fa il compensato
 vero, girando la venatura di uno strato rispetto al successivo, e in una rete
-succede lo stesso: ogni strato ha la sua matrice, e quello che si accumula non
-è un solo $\lambda$ elevato a cento ma il prodotto di cento allungamenti
-diversi. Resta vera l'idea generale, che in una catena lunga basta poco perché
-cento moltiplicazioni portino lontanissimo; il numero da guardare non è
-l'autovalore di una singola matrice, ed è un conto che il capitolo sulle reti
-neurali rifà per esteso.
+succede lo stesso: ogni strato ha la sua matrice, e quello che si accumula non è
+un solo $\lambda$ elevato a cento ma il prodotto di cento allungamenti diversi.
+Resta vera l'idea generale, che in una catena lunga basta poco perché cento
+moltiplicazioni portino lontanissimo; il numero da guardare è quanto allunga il
+prodotto delle cento matrici, non l'autovalore di una singola, ed è un conto che
+la {doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>` rifà per
+esteso.
 
 `````
 
@@ -494,10 +495,11 @@ $$
 $$
 
 Riscrivendo come $(\mathbf{A}-\lambda \mathbf{I})\mathbf{v}=\mathbf{0}$, dove
-$\mathbf{I}$ è la matrice identità (uno sulla diagonale e zero altrove:
-quella che moltiplicando non cambia niente), la soluzione non banale esiste
-solo se $\mathbf{A}-\lambda \mathbf{I}$ è singolare, cioè non invertibile,
-cioè se
+$\mathbf{I}$ è la matrice identità (uno sulla diagonale e zero altrove: quella
+che moltiplicando non cambia niente), la soluzione non banale esiste solo se
+$\mathbf{A}-\lambda \mathbf{I}$ è singolare, cioè non invertibile, cioè se il
+suo determinante (definito nella {doc}`sezione sul determinante
+</Matematica/determinante-e-volume>`) si annulla:
 
 $$
 \det(\mathbf{A} - \lambda \mathbf{I}) = 0 .
@@ -547,29 +549,30 @@ con $\mathbf{U}\in\mathbb{R}^{m\times m}$ e $\mathbf{V}\in\mathbb{R}^{n\times
 n}$ ortogonali e $\boldsymbol{\Sigma}$ "diagonale" con elementi
 $\sigma_1\ge\sigma_2\ge\dots\ge 0$, i **valori singolari**. È la decomposizione
 ai valori singolari (*singular value decomposition*, SVD). Letta a
-destra-verso-sinistra dice che ogni trasformazione lineare è una rotazione,
-seguita da una dilatazione lungo assi ortogonali, seguita da un'altra
-rotazione. I due valori estremi hanno un significato immediato: $\sigma_1 =
+destra-verso-sinistra dice che ogni trasformazione lineare è una trasformazione
+ortogonale (una rotazione, eventualmente con una riflessione), seguita da una
+dilatazione lungo assi ortogonali, seguita da un'altra trasformazione
+ortogonale. I due valori estremi hanno un significato immediato: $\sigma_1 =
 \max_{\lVert\mathbf{x}\rVert=1}\lVert\mathbf{A}\mathbf{x}\rVert$ è di quanto al
 massimo la matrice allunga un vettore, $\sigma_{\min}$ di quanto al minimo (per
 una matrice con almeno tante righe quante colonne: altrimenti c'è sempre una
-direzione che viene annullata), e il rango è il numero dei $\sigma_i$ non
-nulli (la {doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>` lo
+direzione che viene annullata), e il rango è il numero dei $\sigma_i$ non nulli
+(la {doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>` lo
 definisce da capo, e mostra le altre tre facce equivalenti dello stesso
 conteggio). Per una matrice simmetrica i valori singolari sono i moduli degli
 autovalori; per una matrice quadrata qualsiasi le due famiglie non coincidono,
 ma non sono nemmeno estranee: il prodotto dei moduli è lo stesso (entrambe le
 famiglie danno $|\det\mathbf{A}|$) e soprattutto
 $\sigma_{\max}\ge|\lambda|_{\max}$, cioè l'allungamento massimo non è mai
-inferiore al modulo dell'autovalore più grande. È una disuguaglianza che
-può essere larghissima, e proprio in quella distanza sta il fenomeno più
+inferiore al modulo dell'autovalore più grande. È una disuguaglianza che può
+essere larghissima, e proprio in quella distanza sta il fenomeno più
 interessante. Il rapporto $\sigma_{\max}/\sigma_{\min}$ è il numero di
-condizionamento della {doc}`sezione di analisi numerica <analisi-numerica>`; la
-stessa disuguaglianza torna nella {doc}`sezione sul backpropagation
-</RetiNeurali/backpropagation>`, dove misura la "grandezza" di una Jacobiana,
+condizionamento della {doc}`sezione di analisi numerica <analisi-numerica>`; i
+valori singolari tornano nella {doc}`sezione sulla backpropagation
+</RetiNeurali/backpropagation>`, dove misurano la "grandezza" di una jacobiana,
 e in quella sul {doc}`filtraggio collaborativo
-</SistemiRaccomandazione/filtraggio-collaborativo>`, dove regge
-l'approssimazione di rango basso di una matrice di valutazioni.
+</SistemiRaccomandazione/filtraggio-collaborativo>`, dove il teorema di Eckart e
+Young regge l'approssimazione di rango basso di una matrice di valutazioni.
 
 Il legame fra valori singolari e autovalori è diretto:
 $\mathbf{A}^\top\mathbf{A}=\mathbf{V}\boldsymbol{\Sigma}^\top\boldsymbol{\Sigma}\mathbf{V}^\top$
@@ -663,11 +666,13 @@ recinto vero, perché ha un numero negativo: è un correttivo, che serve a
 scrivere qualunque recinto vero come somma di due pezzi, e che ogni mese si
 accorcia e cambia segno.
 
-Il recinto alla fine del primo mese, 2 coppie e 1 il mese prima, è 1,17 volte
-la prima venatura e $-0{,}17$ volte la seconda. Mese dopo mese la prima parte
-cresce di 1,618 volte e la seconda si riduce, fino a non contare più niente: il
-recinto si mette da solo nella proporzione giusta, e da lì cresce di 1,618
-volte al mese. Nel conto di Leonardo si vede già: 377 diviso 233 fa 1,61803.
+Il recinto alla fine del primo mese, 2 coppie e 1 il mese prima, è 1,17 volte la
+prima venatura e $-0{,}17$ volte la seconda: i due pesi si trovano come in un
+sistema di due equazioni, chiedendo che i due pezzi sommati diano 2 coppie
+adesso e 1 un mese fa. Mese dopo mese la prima parte cresce di 1,618 volte e la
+seconda si riduce, fino a non contare più niente: il recinto si mette da solo
+nella proporzione giusta, e da lì cresce di 1,618 volte al mese. Nel conto di
+Leonardo si vede già: 377 diviso 233 fa 1,61803.
 
 Ne esce anche una scorciatoia, perché i due pezzi si sanno calcolare per
 qualunque mese senza passare per quelli intermedi: il numero di coppie al mese
@@ -676,16 +681,17 @@ cento tavole), più il pezzo della seconda venatura, che al dodicesimo mese vale
 poco più di mezzo millesimo e si arrotonda via.
 
 Due cose possono guastare il quadro. La prima è che le due venature abbiano lo
-stesso fattore. La regola «il numero nuovo è due volte il precedente meno
-quello prima» ha un fattore solo, 1, che direbbe «resta com’è»; eppure,
-partendo da 1 e 2, dà 3, 4, 5, 6: una crescita di uno a ogni passo che il
-fattore da solo non vede. La seconda è che le venature non ci siano, come nella
-tabella che fa girare tutte le frecce: allora i numeri non crescono in
-proporzione ma oscillano, positivi e negativi a turno. La regola «il numero
-nuovo è il precedente meno metà di quello prima» è di queste: a ogni passo gira
-di un ottavo di giro e si accorcia a sette decimi circa, e infatti, partendo da
-1 e 1, passa per zero ogni quattro passi, e ogni otto, un giro intero,
-l’ampiezza si divide per sedici.
+stesso fattore. La regola «il numero nuovo è due volte il precedente meno quello
+prima» ha un fattore solo, 1, che direbbe «resta com’è»; eppure, partendo da 1 e
+2, dà 3, 4, 5, 6: una crescita di uno a ogni passo che il fattore da solo non
+vede. La seconda è che le venature non ci siano, come nella tabella che fa
+girare tutte le frecce: allora i numeri non crescono in proporzione ma
+oscillano, positivi e negativi a turno. La regola «il numero nuovo è il
+precedente meno metà di quello prima» è di queste: a ogni passo la coppia di
+numeri (quello nuovo e quello prima), vista come una freccia, gira di un ottavo
+di giro e si accorcia a sette decimi circa, e infatti, partendo da 1 e 1, passa
+per zero ogni quattro passi, e ogni otto, un giro intero, l’ampiezza si divide
+per sedici.
 
 `````
 
@@ -825,12 +831,12 @@ $z_{16} = 1/256$, l’ampiezza si divide per sedici.
 
 ## Norme: misurare lunghezze ed errori
 
-Torniamo alla lunghezza di una freccia, incontrata parlando del prodotto
-scalare senza darle un nome. La risposta è più utile di quanto sembri. Un
-modello che deve indovinare un prezzo, o tre prezzi insieme, non risponde con
-un'etichetta ma con dei numeri: la sua risposta è una lista, e lo è anche
-quella giusta. La stessa domanda, fatta alla freccia che va dall'una all'altra,
-misura di quanto il modello ha sbagliato.
+La lunghezza di un vettore, già comparsa nel prodotto scalare, si chiama norma e
+si scrive $\lVert\mathbf{x}\rVert$. Serve a misurare l'errore di un modello che
+risponde con più numeri insieme (tre prezzi, per esempio): se $\hat{\mathbf{y}}$
+è la risposta del modello e $\mathbf{y}$ quella giusta, la norma della
+differenza, $\lVert\hat{\mathbf{y}}-\mathbf{y}\rVert$, dice di quanto ha
+sbagliato.
 
 `````{tab} Elementare
 
@@ -936,40 +942,49 @@ import numpy as np
 a = np.array([4, 2])
 b = np.array([1, 3])
 
-a @ b                     # prodotto scalare -> 10
-np.linalg.norm(a)         # norma euclidea di a -> 4.472...
-
 W = np.array([[0.2, 0.8],
               [-0.5, 0.1]])
-W @ a                     # prodotto matrice-vettore -> array([2.4, -1.8])
-
 x = np.array([75, 3, 2])  # l'appartamento: mq, stanze, piano
 pesi = np.array([[2, 10, 0],
                  [0, 1, 5]])
-pesi @ x                  # i due punteggi -> array([180,  13])
-x @ pesi.T                # la tabella girata -> array([180,  13])
-np.outer(a, b)            # i prodotti a_i b_j -> array([[ 4, 12], [ 2,  6]])
-a @ b.T                   # ancora 10: .T non gira un array 1-D
+
+print(a @ b, np.linalg.norm(a))          # prodotto scalare e norma di a
+print(W @ a)                             # prodotto matrice-vettore
+print(pesi @ x, x @ pesi.T)              # i due punteggi, in due modi
+print(np.outer(a, b).tolist())           # la tabella dei prodotti a_i b_j
+print(a @ b.T)                           # .T non gira un array 1-D: di nuovo 10
 ```
 
-L'operatore `@` è il prodotto matriciale: la stessa notazione vale per
-prodotto scalare, matrice-vettore e matrice-matrice, perché per NumPy sono
-tutti casi della stessa operazione. Un array a una dimensione, però, non è né
-una riga né una colonna, e `.T` lo lascia com'è: la tabella di tutti i prodotti
-$a_i b_j$ si chiede con `np.outer`.
+```text
+10 4.47213595499958
+[ 2.4 -1.8]
+[180  13] [180  13]
+[[4, 12], [2, 6]]
+10
+```
+
+L'operatore `@` è il prodotto matriciale: la stessa notazione vale per prodotto
+scalare, matrice-vettore e matrice-matrice, perché per NumPy sono tutti casi
+della stessa operazione. Un array con un solo asse (forma `(n,)`), però, non è
+né una riga né una colonna, e `.T` lo lascia com'è: la tabella di tutti i
+prodotti $a_i b_j$ si chiede con `np.outer`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - Un vettore è una lista ordinata di numeri che descrive un esempio
-  (l'appartamento: metri quadri, stanze, piano); una matrice è una tabella
-  che impila tanti esempi oppure li trasforma, ed è la mossa che ogni strato di
-  una rete ripete sui dati che riceve.
-- Il prodotto scalare moltiplica due liste voce per voce e somma tutto,
-  come lo scontrino della spesa (le quantità per i prezzi, e viene fuori il
-  totale). Il numero che ne esce dice se i due vettori vanno d'accordo: grande
-  se puntano dalla stessa parte, zero se sono perpendicolari, negativo se
-  opposti. È il conto che fa un singolo neurone.
+  (l'appartamento: metri quadri, stanze, piano); una matrice è una tabella che
+  impila tanti esempi oppure li trasforma, ed è la mossa che ogni strato di una
+  rete ripete sui dati che riceve.
+- Tabelle e liste si combinano solo se le misure combaciano (una riga di pesi
+  per tre voci vuole una lista di tre numeri), e quando le tabelle si mettono in
+  fila l'ordine conta. Scambiare righe e colonne di una tabella si chiama
+  trasporre.
+- Il prodotto scalare moltiplica due liste voce per voce e somma tutto, come lo
+  scontrino della spesa (le quantità per i prezzi, e viene fuori il totale). Il
+  numero che ne esce dice se i due vettori vanno d'accordo: grande se puntano
+  dalla stessa parte, zero se sono perpendicolari, negativo se opposti. È il
+  conto che fa un singolo neurone.
 - Gli autovettori sono le venature del legno di una matrice: le direzioni
   che la trasformazione non devia, e lungo cui si limita ad allungare o
   accorciare di un fattore fisso, l’autovalore $\lambda$. Applicando cento
@@ -1025,8 +1040,8 @@ $a_i b_j$ si chiede con `np.outer`.
 `````
 
 Vettori, matrici, autovettori e norme sono il vocabolario: dicono di che cosa
-sono fatti i dati e che cosa una trasformazione fa loro. Non dicono ancora
-niente sulla domanda che arriva appena i dati cominciano a imporre delle
-condizioni, cioè che cosa succede quando le condizioni sono tante e vanno
-tenute tutte insieme, e che cosa succede quando non bastano. È il mestiere dei
-sistemi lineari.
+sono fatti i dati e che cosa una trasformazione fa loro. Resta il problema
+inverso: dati $\mathbf{A}$ e $\mathbf{b}$, trovare i vettori $\mathbf{x}$ tali
+che $\mathbf{A}\mathbf{x}=\mathbf{b}$, e capire che cosa succede quando le
+condizioni sono troppe, troppo poche o incompatibili. È il mestiere dei sistemi
+lineari.

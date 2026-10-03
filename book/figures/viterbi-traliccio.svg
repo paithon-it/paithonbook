@@ -44,25 +44,25 @@
   <rect x="209" y="64" width="92" height="44" rx="8" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2.5"/>
   <text x="255" y="91" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">DET</text>
   <rect x="209" y="184" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
-  <text x="255" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">NOME</text>
+  <text x="255" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">NOUN</text>
   <rect x="209" y="304" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
-  <text x="255" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">VERBO</text>
+  <text x="255" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">VERB</text>
 
   <!-- colonna 2: porta -->
   <rect x="429" y="64" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
   <text x="475" y="91" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">DET</text>
   <rect x="429" y="184" width="92" height="44" rx="8" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2.5"/>
-  <text x="475" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">NOME</text>
+  <text x="475" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">NOUN</text>
   <rect x="429" y="304" width="92" height="44" rx="8" fill="#2D5A5C" fill-opacity="0.12" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="475" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">VERBO</text>
+  <text x="475" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#1A1A1A">VERB</text>
 
   <!-- colonna 3: cigola -->
   <rect x="649" y="64" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
   <text x="695" y="91" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">DET</text>
   <rect x="649" y="184" width="92" height="44" rx="8" fill="none" stroke="#2D5A5C" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="5 4"/>
-  <text x="695" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">NOME</text>
+  <text x="695" y="211" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#5E5852">NOUN</text>
   <rect x="649" y="304" width="92" height="44" rx="8" fill="#2D5A5C" fill-opacity="0.15" stroke="#2D5A5C" stroke-width="2.5"/>
-  <text x="695" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">VERBO</text>
+  <text x="695" y="331" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">VERB</text>
 
   <!-- probabilita' parziali sotto i nodi vivi -->
   <text x="255" y="128" text-anchor="middle" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" fill="#1A1A1A">v&#8321; = 0,30</text>

@@ -15,52 +15,42 @@
 Fra rispondere bene a una domanda e portare a termine un lavoro c'è un salto, e
 qualcuno ha provato a misurarlo con una gara di riparazioni. La gara prende
 2.294 segnalazioni di errore vere, di quelle che gli utenti scrivono agli autori
-di un programma quando qualcosa non funziona, e le usa come compiti d'esame: al
-sistema si dà la segnalazione insieme al codice del progetto, e deve produrre la
-correzione. Si chiama **SWE-bench** {cite}`jimenez2024swebench`.
+di un programma quando qualcosa non funziona, tratte da dodici progetti open
+source scritti in Python, e le usa come compiti d'esame: al sistema si dà la
+segnalazione insieme al codice del progetto, e deve produrre la correzione. Si
+chiama **SWE-bench** {cite}`jimenez2024swebench`.
 
 A dire se ha funzionato non c'è una persona, ma i **test** del progetto: pezzi
 di programma che gli sviluppatori scrivono apposta per controllare il proprio
-lavoro, e che a ogni modifica rispondono «a posto» oppure «rotto». Sono gli
-stessi test che avevano approvato la correzione scritta, a suo tempo, da uno
-sviluppatore in carne e ossa. È un compito che nessun completamento di testo,
-per quanto fluente, chiude in un colpo solo: bisogna trovare i file giusti,
-provare, sbagliare, rileggere il messaggio d'errore, correggere. I primi
-sistemi ci riuscivano in una piccola frazione dei casi, pochi punti
-percentuali. Un numero così basso è la notizia, non la delusione: è la misura
-che ha reso visibile a tutti quanto costi tenere insieme molte mosse di fila.
-Sull'affidabilità di quella misura, però, l'ultima sezione avrà qualcosa da
-ridire: si scoprirà che una parte di quei pochi successi non era stata
-guadagnata sul campo.
+lavoro, e che a ogni modifica rispondono «a posto» oppure «rotto». Sono quelli
+che avevano approvato la correzione scritta, a suo tempo, da uno sviluppatore
+in carne e ossa, e sono di due specie: quelli che falliscono finché l'errore
+c'è e passano quando è corretto, e quelli che passavano già e devono continuare
+a passare, perché la correzione non rompa altro. Il sistema non li vede, e la
+segnalazione conta come risolta solo se li supera tutti. È un compito che
+nessun completamento di testo, per quanto scorrevole, chiude in un colpo solo:
+bisogna trovare i file giusti, provare, sbagliare, rileggere il messaggio
+d'errore, correggere. Nell'articolo che presentava la gara, nell'ottobre 2023,
+il migliore dei modelli provati, Claude 2, ne risolveva l'1,96%. Un numero così
+basso misura quanto costi tenere insieme molte mosse di fila. E la misura
+stessa, si scoprirà nella {doc}`sezione sul valutare un agente
+</Agenti/architetture-e-valutazione>`, andava presa con le pinze: rileggendo a
+mano i successi del sistema che nel 2024 guidava la classifica, una parte non
+era stata guadagnata sul campo.
 
-Quel salto, però, non è il salto fra dire e fare. Il {doc}`capitolo su visione e
-linguaggio </VisioneLinguaggio/overview>` si è appena chiuso su un modello che *fa*: se si tagliano i comandi
-di un braccio robotico in gradini, muovere la mano diventa scrivere sette parole
-di fila, e la stessa macchina che compone frasi compone movimenti. Quel modello
-nel mondo ci mette le mani sul serio. Quello che non fa è decidere: l'obiettivo
-glielo consegna qualcun altro («prendi la tazza»), e la mossa la sceglie
-guardando soltanto la fotografia di adesso e l'istruzione ricevuta. Da un
-comando al successivo non si porta dietro il ricordo di che cosa ha già provato.
+Che un modello possa agire, del resto, lo ha già mostrato la {doc}`sezione sul
+passaggio dalla percezione
+all'azione </VisioneLinguaggio/vedere-quel-che-non-ce>`: un braccio robotico
+comandato a token, che nel mondo ci mette le mani sul serio, ma l'obiettivo lo
+riceve da qualcun altro («prendi la tazza»).
 
-È lì che si apre lo spazio di questo capitolo. La domanda non è se un modello
-possa agire, ma chi decide quando agire e con quale strumento, chi sceglie
-la sequenza delle mosse, e chi tiene il conto di quello che è già
-successo mentre il lavoro va avanti.
+Fra il 2023 e il 2024 si diffondono i sistemi che decidono da sé quando
+smettere di scrivere e andare a guardare: cercano sul web una notizia di ieri,
+eseguono un pezzo di codice per controllare se gira, compilano un modulo,
+prenotano, propongono una correzione a un programma vero. È il mondo di
+SWE-bench, ed è il mondo degli agenti.
 
-Un esempio piccolo lo dice meglio di una definizione. Se chiedi a un modello che
-tempo farà domani a Roma non ne ha idea, perché quel dato non esisteva nei mesi
-in cui ha studiato (in gergo si dice che è stato addestrato: gli si è fatta
-leggere una montagna di testo finché non ha imparato a proseguirlo). Può
-inventare la risposta, con la stessa sicurezza con cui ne direbbe una vera,
-oppure fermarsi a metà, andare a *guardare* il meteo e riprendere da lì. La
-seconda strada è una decisione presa nel mezzo di una frase, e non più fluenza.
-
-Fra il 2023 e il 2024 si diffondono i sistemi che quella decisione la prendono
-di continuo: cercano sul web una notizia di ieri, eseguono un pezzo di codice per
-controllare se gira, compilano un modulo, prenotano, propongono una correzione a
-un programma vero. È il mondo di SWE-bench, ed è il mondo di questo capitolo.
-
-Prima di andare avanti, mettiamo un paletto che vale per tutto il capitolo. Un
+Prima di andare avanti, un paletto che vale per tutto quel che segue. Un
 modello è la rete che, dato un testo, ne predice la continuazione: quello che
 abbiamo studiato nel {doc}`capitolo sui Transformer </Transformers/overview>`.
 Un agente è un *sistema* costruito attorno a un modello: un programma che
@@ -68,17 +58,16 @@ guarda l'ambiente, lascia che il modello decida la mossa successiva, la esegue
 davvero, osserva com'è andata e ricomincia. L’ambiente è tutto ciò su cui
 l'agente può mettere le mani e da cui può ricevere notizie: le pagine del web,
 i file di un computer, i servizi a cui si può chiedere qualcosa. Il modello
-sceglie la mossa; l'agente è tutto il resto, cioè il programma che
-gli prepara il contesto, esegue la mossa scelta, ne raccoglie l'esito e decide
-quando fermarsi. È di quel resto che si parla qui.
+sceglie la mossa; l'agente è tutto il resto, cioè il programma che gli prepara
+il contesto (il testo che il modello legge prima di scegliere: la richiesta, le
+mosse già fatte, i loro esiti), esegue la mossa scelta, ne raccoglie l'esito e
+decide quando fermarsi.
 
 ## Dal completare testo all'agire
 
-Il primo passo di un modello fuori da se stesso è stato piccolo e si è visto
-nella sezione {doc}`«Cercare per rispondere» </Transformers/rag>`: prima di
-rispondere, il modello va a cercare qualcosa in un archivio di documenti e se
-lo rilegge. Quella mossa ha un nome, RAG, e {numref}`fig-rag-lewis` è lo
-schema con cui è stata presentata al mondo.
+Il primo passo fuori dal modello è stato piccolo, e si è visto nella sezione
+{doc}`«Cercare per rispondere» </Transformers/rag>`. Ha un nome, RAG, e
+{numref}`fig-rag-lewis` è lo schema con cui è stato presentato al mondo.
 
 ```{figure} ../figures/rag-lewis-2020.svg
 :name: fig-rag-lewis
@@ -86,38 +75,38 @@ schema con cui è stata presentata al mondo.
 :width: 96%
 
 Il disegno ha tre pezzi: chi cerca nell'archivio (in inglese il *retriever*,
-il cercatore), l'archivio stesso e chi scrive la risposta, il generatore. La
-domanda entra da sinistra, passa dal cercatore e arriva a chi scrive insieme
-ai pochi brani che il cercatore ha pescato. La conoscenza, così, non sta più
-tutta dentro il modello.
+il cercatore), l'archivio stesso, che nell'articolo è fatto di ventun milioni
+di brani di Wikipedia, e chi scrive la risposta, il generatore. La domanda
+entra da sinistra, passa dal cercatore e arriva a chi scrive insieme ai pochi
+brani che il cercatore ha pescato, i primi $k$ della sua classifica. Le due
+sigle sul disegno, DPR e BART, sono i nomi dei due modelli che l'articolo usa
+per cercare e per scrivere. La conoscenza, così, non sta più tutta dentro il
+modello.
 ```
 
 Le tre lettere stanno per *Retrieval-Augmented Generation*, cioè «generazione
 aiutata da un recupero», e sono di Lewis e colleghi {cite}`lewis2020retrieval`.
-Il nome dice poco; quel che fa, invece, si dice in una riga: il modello
-sospende la risposta, va a prendere qualcosa fuori di sé, e solo dopo
-conclude. È già qualcosa che il completamento puro non sa fare, ed è il
-precedente diretto di tutto questo capitolo.
+Quel che fa si dice in una riga: prima di scrivere la risposta, il sistema va a
+prendere da un archivio i brani che riguardano la domanda e li mette davanti al
+modello. È il primo passo del modello fuori da sé, ma la catena resta fissa:
+cerca sempre, una volta sola, e poi scrive. Che sia il modello a decidere se e
+quando cercare è la novità degli agenti.
 
-Il «fuori di sé» va preso alla lettera, e conviene fermarsi un istante, perché
-è la frattura da cui nasce tutto il resto. Quello che un modello sa lo tiene
-in un enorme mucchio di numeri, fissati durante l'addestramento e non più
-modificabili: si chiamano i pesi, e sono la sua memoria di fabbrica. La
-RAG è la prima volta che una parte della conoscenza esce da lì e va a vivere
-in un archivio che si può correggere e aggiornare senza riaddestrare niente.
+Il «fuori di sé» va preso alla lettera. Quello che un modello sa sta nei suoi
+pesi, fissati dall'addestramento e invariati finché lo si usa: è la sua
+*memoria parametrica*, e aggiornarla vuol dire riaddestrare. La RAG sposta una
+parte della conoscenza in un archivio esterno, una memoria non parametrica, che
+si corregge e si aggiorna senza toccare i pesi.
 
-Perché il completamento di testo, da solo, non basta? Perché rispondere è un
-atto unico e chiuso, mentre agire nel mondo è un processo: richiede più mosse
-in sequenza, ognuna decisa alla luce di come è andata la precedente. Comprare
-un biglietto significa cercare i treni, confrontare gli orari, scegliere,
-pagare, ricevere conferma, e se a metà strada il treno scelto risulta pieno,
-tornare indietro e riprovare. Un oracolo che sputa una risposta e si spegne
-non può fare niente di tutto questo.
+Perché il completamento di testo, da solo, non basta? Perché agire è un
+processo: richiede più mosse in sequenza, ciascuna scelta in base all'esito
+della precedente. Comprare un biglietto significa cercare i treni, confrontare
+gli orari, scegliere, pagare, ricevere la conferma, e se a metà strada il treno
+scelto risulta pieno, tornare indietro e riprovare. Una risposta sola, scritta
+tutta d'un fiato, non può farlo.
 
 Quell'andirivieni (una mossa, il suo esito, la mossa seguente decisa alla luce
-dell'esito) è la cosa che d'ora in poi chiameremo il **ciclo** dell'agente. È
-il pezzo che torna in ogni pagina del capitolo, e conviene averlo in mente
-sotto questo nome fin da subito.
+dell'esito) si chiama **ciclo** dell'agente.
 
 `````{tab} Elementare
 
@@ -139,6 +128,10 @@ che sa a che punto è arrivato. E si ferma in due casi: quando ti mette il
 biglietto in mano, oppure quando le telefonate diventano troppe e torna da te
 a mani vuote invece di andare avanti all'infinito.
 
+Quell'elenco è tutto ciò che sa del lavoro in corso. Se diventa troppo lungo e
+lo riduce a un riassunto, quello che ha cancellato non lo sa più: alla
+telefonata dopo decide su quello che è rimasto.
+
 Se lavora male non lo rimandi a scuola: gli spieghi come vuoi che lavori
 («prima il preventivo, poi la prenotazione») e il giorno dopo si comporta in
 un altro modo. Quello che sa non è cambiato di una virgola.
@@ -148,12 +141,18 @@ un altro modo. Quello che sa non è cambiato di una virgola.
 `````{tab} Superiore
 
 Formalmente, un agente è un ciclo di controllo (**osserva → ragiona → agisci →
-osserva**) in cui il modello ricopre il ruolo di *policy*: la funzione che,
-dato lo stato corrente, sceglie l'azione. È la stessa nozione di policy vista
-nel capitolo sul reinforcement learning, ma qui lo «stato» è una sequenza di
-testo (il contesto accumulato: la richiesta, le mosse fatte, i loro risultati)
-e l’«azione» è, tipicamente, l'invocazione di uno strumento oppure la risposta
-finale. A ogni passo:
+osserva**) in cui il modello fa da *policy*: dato il contesto $s_t$ campiona
+l'azione, $a_t \sim \pi_\theta(\cdot \mid s_t)$, con $\theta$ i pesi del
+modello. È la stessa nozione di policy vista nel capitolo sul reinforcement
+learning, ma qui lo «stato» è una sequenza di testo (il contesto accumulato: la
+richiesta, le mosse fatte, i loro risultati) e l’«azione» è, tipicamente,
+l'invocazione di uno strumento oppure la risposta finale. Lo $s_t$ non è lo
+stato del mondo, che l'agente non vede: è la storia di ciò che ha osservato e
+fatto, quindi il problema è un {doc}`POMDP </ReinforcementLearning/mdp-valore>`,
+in cui la storia completa basta a decidere finché entra tutta nella finestra.
+Quando il contesto viene troncato o riassunto, come nella {doc}`sezione sul
+contesto </Agenti/context-engineering>`, quella proprietà cade, e la policy
+decide su un riassunto della storia. A ogni passo:
 
 1. il sistema fornisce al modello lo stato $s_t$ (il contesto);
 2. il modello genera un'azione $a_t$, per esempio «cerca sul web *X*»;
@@ -172,51 +171,51 @@ istruzioni in linguaggio naturale: non si aggiornano i pesi, si scrive il
 
 `````
 
-Un ingrediente aiuta il ciclo: far «ragionare ad alta voce» il modello prima
-di agire. Invece di saltare all'azione, il modello scrive il proprio
-ragionamento (*«prima di correggere devo capire quale pezzo del programma si è
-lamentato»*) e solo dopo sceglie la mossa. Questa catena di ragionamento
-scritta ha un nome inglese che incontrerai dappertutto, chain-of-thought
-{cite}`wei2022chain`, e nel capitolo sui Transformer l'abbiamo vista far
-salire il numero di risposte giuste sui problemi che richiedono più passaggi.
+Al ciclo si aggiunge spesso un accorgimento: far «ragionare ad alta voce» il
+modello prima di agire. Invece di saltare all'azione, il modello scrive il
+proprio ragionamento (*«prima di correggere devo capire quale pezzo del
+programma si è lamentato»*) e solo dopo sceglie la mossa. Questa catena di
+ragionamento scritta ha un nome inglese che incontrerai dappertutto,
+chain-of-thought {cite}`wei2022chain`, e nel capitolo sui Transformer l'abbiamo
+vista far salire il numero di risposte giuste sui problemi che richiedono più
+passaggi.
 
-Conviene però dire subito dove quel guadagno è stato misurato davvero, perché
-è più stretto di come lo si racconta di solito. Una rassegna che rimette
-insieme i risultati di oltre cento lavori lo trova concentrato sui compiti
+Quel guadagno, però, è più circoscritto di come lo si racconta di solito: una
+rassegna dei risultati di oltre cento studi lo trova concentrato sui compiti
 matematici e simbolici, quelli in cui si manipolano numeri e regole (un
 conto, un'espressione algebrica, un problema di logica), e piccolo altrove
-{cite}`sprague2025cot`. In un agente il pensiero scritto serve soprattutto a
-un'altra cosa: dare al modello un posto dove annotare a che punto è del
-compito, prima di scegliere la mossa. È il collante fra il pensare e il fare,
-non una cura generale.
+{cite}`sprague2025cot`. In un agente la traccia scritta ha altre funzioni, che
+gli autori di ReAct hanno elencato guardando le tracce dei loro esperimenti:
+scomporre l'obiettivo in un piano, estrarre da un'osservazione la parte che
+serve, tenere il conto dei progressi, correggere il piano quando qualcosa va
+storto {cite}`yao2023react`.
 
 ## L'anatomia di un agente
 
 Smontiamo l'agente. Al di là delle mille varianti, ogni agente ha quattro
 ingredienti, e conviene tenerli distinti perché ognuno ha problemi suoi.
 
-- Il modello è il cervello: legge il contesto, ragiona, decide la prossima
-  azione. È l'unico pezzo che «pensa»; tutto il resto è impalcatura attorno.
-- Gli **strumenti** (in inglese *tool*) sono le mani: una ricerca sul web, un
-  programma che esegue del codice al posto suo, un'interrogazione a un archivio
-  di dati, la richiesta a un servizio esterno. Quest'ultima passa da uno
-  sportello: un programma si presenta a un altro con una domanda in un formato
-  concordato e ne riceve una risposta, senza sapere niente di come sia fatto
-  dentro. Quello sportello si chiama **API** (dall'inglese *application
-  programming interface*). Gli strumenti sono ciò che permette all'agente di
-  *toccare* il mondo: leggere dati freschi e produrre effetti.
+- Il modello legge il contesto e sceglie la prossima azione: è il
+  componente che decide, e tutto il resto è codice che gli sta attorno.
+- Gli **strumenti** (in inglese *tool*) sono le funzioni che l'agente può far
+  eseguire: una ricerca sul web, un programma che esegue del codice al posto
+  suo, una ricerca in un archivio di dati, la richiesta a un servizio esterno.
+  Quest'ultima passa dalla sua **API** (dall'inglese *application programming
+  interface*): l'insieme delle domande, scritte in un formato concordato, con
+  cui un programma ne interroga un altro senza sapere niente di come sia fatto
+  dentro. Gli strumenti sono ciò che permette all'agente di *toccare* il mondo:
+  leggere dati freschi e produrre effetti.
 - Il **ciclo di controllo** è il metodo di lavoro: il programma che alterna
   percezione e azione, passa il contesto al modello, esegue l'azione scelta,
   raccoglie il risultato e decide se continuare o fermarsi. In inglese si dice
   *loop*, ed è la parola che si sente più spesso.
 - La **memoria** è ciò che l'agente si porta dietro. Nel breve termine è la
-  finestra di contesto: quanto testo il modello riesce a tenere davanti
-  agli occhi in una volta sola, prima di scrivere. È larga ma finita, e nel
-  capitolo sui Transformer l'abbiamo studiata da vicino, insieme al segnalibro
-  con cui il modello evita di rileggere ogni volta da capo ciò che ha già letto
-  (là si chiama KV cache). Nel lungo termine è invece una memoria
-  *esterna*: un archivio di documenti o di ricordi passati da cui pescare
-  quando serve, senza tenere tutto in testa.
+  finestra di contesto: la quantità di testo, misurata in token, che il modello
+  elabora in una volta sola, con dentro tutto quello che ha letto e scritto
+  finora. È larga ma finita, e ogni token che ci entra si paga in memoria, in
+  tempo e in denaro. Nel lungo termine è invece una memoria *esterna*: un
+  archivio di documenti o di ricordi passati da cui pescare quando serve, senza
+  tenere tutto in testa.
 
 ```{figure} ../figures/agente-anatomia.svg
 :name: fig-agente-anatomia
@@ -259,9 +258,12 @@ riporta i risultati, che il modello ritrova nel contesto al giro dopo, come il
 cuoco ritrova le uova sul bancone.
 
 Chi esce in sala decide anche che cosa non fare: se sul foglietto c'è «svuota
-la cassa», il cameriere resta fermo, perché le chiavi ce le ha lui. E il
-bancone ha una misura: foglietti e piatti consegnati restano lì tutti, e a
-fine serata non c'è più posto per appoggiare niente.
+la cassa», il cameriere resta fermo, perché le chiavi della cassa ce le ha lui
+e non il cuoco. Con un agente è il programma, e non il modello, a decidere che
+cosa si esegue davvero. E il bancone ha una misura: foglietti e piatti
+consegnati restano lì tutti, e a fine serata non c'è più posto per appoggiare
+niente. Il bancone del modello è la sua finestra di contesto, e ogni chiamata
+la riempie un po'.
 
 `````
 
@@ -295,21 +297,21 @@ riempie in fretta, ed è il problema da cui parte la {doc}`sezione sul contesto
 ## Perché adesso
 
 Tre dei quattro ingredienti appena elencati (qualcosa che decide, degli
-strumenti, un ciclo che li mette in moto) non sono un'idea nuova.
-L'intelligenza artificiale classica, quella fatta di regole scritte a mano da
-un programmatore, costruiva agenti così già fra gli anni Sessanta e Settanta.
-Due di loro, ELIZA e GUS, tornano più avanti, con i chatbot a regole, e con
-loro il quarto ingrediente, la memoria, che quei sistemi avevano in forma
-minima.
+strumenti, un ciclo che li mette in moto) non sono un'idea nuova. Alla fine
+degli anni Sessanta, allo Stanford Research Institute, il robot Shakey è stato
+il primo a mettere insieme percezione, pianificazione ed esecuzione
+{cite}`russell2020artificial`: osservava la stanza, pianificava le mosse con il
+pianificatore STRIPS {cite}`fikes1971strips`, le eseguiva e ne sorvegliava
+l'esito, rifacendo il piano quando il mondo non era come previsto. Era un agente
+a tutti gli effetti, con regole e simboli scritti a mano da un programmatore.
+Quello che gli mancava era un modo di capire una consegna che nessuno avesse
+tradotto prima in simboli.
 
-Perché allora gli agenti *basati su LLM* nascono solo ora? Le tre lettere
-stanno per *large language model*, «grande modello di linguaggio», e sono la
-sigla con cui d'ora in poi chiameremo il modello che completa il testo: quando
-leggi «LLM» pensa sempre a quello. La risposta è una capacità che questi
-modelli hanno acquisito da poco: capire ed eseguire una consegna scritta come
-la scriveresti a una persona, cioè in linguaggio naturale (che è il modo in
-cui i tecnici chiamano l'italiano, l'inglese e le altre lingue che parliamo,
-per distinguerle dai linguaggi di programmazione).
+Perché allora gli agenti *basati su LLM*, sui grandi modelli linguistici
+(*large language model*), nascono solo ora? Perché questi modelli hanno
+acquisito da poco proprio quella capacità: capire ed eseguire una consegna
+scritta come la si scriverebbe a una persona, in linguaggio naturale, senza che
+qualcuno ne programmi i casi uno per uno.
 
 `````{tab} Elementare
 
@@ -329,8 +331,10 @@ negozio nuovo, lo metti al lavoro con mezza pagina di istruzioni sul bancone:
 «se chiedono una taglia che non c'è, guarda nel magazzino di sotto», e sotto
 un caso capitato ieri con la sua soluzione. Legge, e lavora così da subito.
 Nessun corso, nessun apprendistato: quelle righe sono bastate. Con il modello
-vale uguale, e quelle righe sono tutto quello che gli diamo. Sono state loro a
-rendere possibili gli agenti, non un trucco di programmazione in più.
+vale uguale: il mestiere l'ha imparato prima, durante l'addestramento, e
+quelle righe gli dicono soltanto come si lavora in questo negozio. Senza
+quell'addestramento a seguire istruzioni nessun foglio sul bancone
+basterebbe; con quello, basta il foglio.
 
 `````
 
@@ -348,39 +352,36 @@ l'obiettivo»: il prompt diventa la specifica del comportamento dell'agente.
 
 `````
 
-Due avvertenze prima di andare avanti, e sono l'onestà su cui insiste il resto
-del libro. La prima: gli agenti sono un campo giovane e in rapido
-movimento {cite}`xi2023rise`. Non c'è una teoria consolidata sotto, ci sono
-ricette che qualcuno ha provato e che sembrano funzionare (di una ricetta così,
-che non garantisce niente ma spesso va, si dice che è un’euristica).
+Due avvertenze, prima di andare avanti. La prima: gli agenti basati su LLM
+sono un campo giovane e in rapido movimento {cite}`xi2023rise`. Manca una
+teoria che ne preveda il comportamento, e le pratiche in uso sono procedure
+provate su casi particolari, senza garanzia di funzionare altrove.
 
 La seconda avvertenza è un problema strutturale: gli errori si sommano lungo
 il ciclo. Se il modello sbaglia una mossa su dieci, dieci mosse di fila
-senza un solo inciampo gli riescono poco più di una volta su tre. Il conto si
-può fare a mano: su cento tentativi il primo passo ne lascia
-passare novanta, il secondo nove decimi di quei novanta (ottantuno), il terzo
-nove decimi di ottantuno (circa settantatré), e ogni passo perde un decimo di
-quelli rimasti, finché dopo dieci passi ne restano trentacinque. In simboli,
-chiamiamo $p$ la probabilità di sbagliare un passo e $n$ il numero di passi, e
-la probabilità di attraversarli tutti senza errori vale
-$(1-p)^n$, che con $p = 0{,}1$ e $n = 10$ fa $0{,}9^{10} \approx 0{,}35$. Il
-conto vale finché ogni passo va per conto suo, senza che sbagliare il primo
-renda più probabile sbagliare il secondo; nella realtà non è proprio così, e ci
-torneremo nell'ultima sezione. Ma la sostanza tiene: non basta essere bravi a
-un passo, bisogna esserlo per molti passi di seguito, ed è una delle ragioni
-per cui compiti lunghi come quelli di SWE-bench {cite}`jimenez2024swebench`
-restano difficili.
+senza un solo inciampo gli riescono poco più di una volta su tre. Su cento
+tentativi il primo passo ne lascia passare novanta, il secondo ottantuno, il
+terzo circa settantatré, e dopo dieci passi ne restano trentacinque. In
+simboli: se ogni passo sbaglia con probabilità $p$ e gli errori sono
+indipendenti, cioè sbagliare un passo non rende più probabile sbagliare il
+successivo, la probabilità di attraversare $n$ passi senza errori è
+$(1-p)^n$, che con $p = 0{,}1$ e $n = 10$ fa $0{,}9^{10} \approx 0{,}35$.
+L'indipendenza è un'ipotesi comoda e poco realistica, e la {doc}`sezione sul
+valutare un agente </Agenti/architetture-e-valutazione>` mostra che cosa
+cambia quando cade. La sostanza però tiene: non basta essere bravi a un passo,
+bisogna esserlo per molti passi di seguito, ed è una delle ragioni per cui
+compiti lunghi come quelli di SWE-bench {cite}`jimenez2024swebench` sono
+difficili.
 
 ## Un antenato: i chatbot a regole
 
-L'idea di un sistema che percepisce, decide e agisce non nasce con gli LLM. Nel
-capitolo sul Natural Language Processing, parlando di {doc}`dialogo e chatbot
+Un antenato più vicino agli assistenti di oggi sta nel dialogo. Nel capitolo
+sul Natural Language Processing, parlando di {doc}`dialogo e chatbot
 </NaturalLanguageProcessing/dialogo-chatbot>`, abbiamo incontrato i primi
 programmi capaci di sostenere una conversazione.
 
 Il primo è ELIZA, che negli anni Sessanta rispondeva rigirando le parole
-dell'interlocutore con schemi scritti a mano, del tipo «se la frase
-contiene *mia madre*, rispondi *mi parli della sua famiglia*». Il secondo è
+dell'interlocutore con schemi scritti a mano. Il secondo è
 GUS, del 1977, che faceva l'agente di viaggio: conduceva la conversazione
 riempiendo le caselle di un modulo (*dove*, *quando*, *quanti*) con domande
 mirate, e a modulo completo prenotava. I sistemi fatti così si chiamano a
@@ -391,9 +392,10 @@ all'altra.
 Erano già agenti, a modo loro. Avevano una percezione, cioè quello che arriva
 dall'esterno; avevano delle azioni, cioè le risposte da dare e la prenotazione
 da fare; e in mezzo avevano una regola che, vista la situazione, sceglieva la
-mossa successiva. Quella regola si chiama politica (in inglese *policy*),
-ed è la stessa parola del {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`, l'apprendimento
-per tentativi e ricompense.
+mossa successiva. Quella regola si chiama politica, nel senso di linea di
+condotta (in inglese *policy*), ed è la stessa parola del {doc}`capitolo sul
+reinforcement learning </ReinforcementLearning/overview>`, l'apprendimento per
+tentativi e ricompense.
 
 `````{tab} Elementare
 
@@ -441,27 +443,26 @@ un po’ di quelle garanzie.
 
 ## Dal ciclo alla valutazione
 
-Le prossime quattro sezioni sviluppano, una alla volta, le parti che qui
-abbiamo solo montato insieme.
+Le quattro sezioni che seguono riprendono uno per uno i pezzi montati fin qui.
 
-- **Il ciclo dell'agente**, come un modello chiama davvero gli strumenti e
-  compone le azioni in sequenza: lo schema ragiona-agisci-osserva in pratica,
-  con il codice che lo fa girare.
-- **RAG avanzato**, cioè il recupero dei documenti giusti *prima* di
-  rispondere, oltre la forma base già vista nel capitolo sui Transformer:
-  interrogazioni multiple, ri-ordinamento dei risultati, recupero guidato
-  dall'agente stesso.
-- **Il contesto è l'interfaccia**, cioè l'arte di riempire bene la finestra di
-  contesto (in gergo, il *context engineering*): cosa metterci e cosa lasciare
-  fuori, cosa comprimere, cosa far sopravvivere da un passo all'altro quando lo
-  spazio è poco.
-- **Architetture e valutazione**, cioè come si compongono più agenti in un
-  sistema, e il problema aperto di dare loro un voto. È lì che finisce il
-  discorso su SWE-bench {cite}`jimenez2024swebench` cominciato in apertura. Il
+- {doc}`Il ciclo dell'agente </Agenti/agenti-e-tool-use>`: come un modello
+  chiama davvero gli strumenti e compone le azioni in sequenza (tool use,
+  ReAct, la riflessione sugli errori), con il codice di un agente giocattolo.
+- {doc}`RAG avanzato </Agenti/rag-avanzato>`: il recupero dei documenti
+  giusti *prima* di rispondere, oltre la forma base già vista nel capitolo sui
+  Transformer (riscrivere la domanda prima di cercare, rimettere in ordine i
+  risultati con un secondo giudice più attento, lasciare che sia l'agente a
+  decidere quando cercare).
+- {doc}`Il contesto è l'interfaccia </Agenti/context-engineering>`: la
+  finestra di contesto vista da un agente, cioè quanto se ne mangiano gli
+  strumenti e la traccia, dove si tiene quello che non ci sta più, quanto costa
+  far pensare il modello a voce alta.
+- {doc}`Architetture e valutazione </Agenti/architetture-e-valutazione>`: come
+  si compongono più agenti in un sistema, e il problema aperto di dare loro un
+  voto, dove si chiude il discorso su SWE-bench {cite}`jimenez2024swebench`. Il
   problema gemello, come si dà un voto a un modello che si limita a rispondere
-  quando non esiste una risposta giusta sola, ha invece un posto suo più
-  avanti: il {doc}`capitolo su MLOps </MLOps/overview>`, che è il mestiere di
-  portare un modello dal laboratorio all'uso di tutti i giorni.
+  quando non esiste una risposta giusta sola, ha un posto suo più avanti, con
+  {doc}`LLMOps </MLOps/llmops>`.
 
 
 
@@ -495,11 +496,9 @@ abbiamo solo montato insieme.
   fuori.
   L'agente guadagna versatilità e perde prevedibilità: è uno scambio, non un
   regalo.
-- Nel resto del capitolo: come il modello chiama davvero gli strumenti, come si
-  recuperano i documenti giusti prima di rispondere, come si riempie bene la
-  finestra di contesto, e come si dà un voto a un agente. Su quest'ultimo punto
-  SWE-bench {cite}`jimenez2024swebench` è il banco di prova su compiti veri, e
-  vedremo che perfino un banco di prova va messo alla prova.
+- Per dare un voto a un agente su lavoro vero c'è SWE-bench
+  {cite}`jimenez2024swebench`: segnalazioni di errore reali, giudicate dai test
+  del progetto. Anche quel voto, però, va controllato.
 ```
 
 `````
@@ -512,15 +511,19 @@ abbiamo solo montato insieme.
   *sistema* che gli mette attorno strumenti e un ciclo di controllo, così che
   non risponda soltanto ma agisca: cerchi, esegua, prenoti, corregga il
   codice.
-- Il cuore è un ciclo osserva → ragiona → agisci → osserva, con l'LLM nel
-  ruolo di *policy*: sceglie l'azione dato il contesto. Farlo «ragionare ad alta
-  voce» (chain-of-thought {cite}`wei2022chain`) aiuta, ma i guadagni
-  misurati si concentrano su matematica e ragionamento simbolico
-  {cite}`sprague2025cot`.
-- I quattro ingredienti: il modello (il cervello), gli strumenti (le
-  mani: web, codice, API), il loop di controllo (percezione-azione) e la
-  memoria (contesto + memoria esterna). Il modello *propone* le azioni; il
-  runtime le *esegue*.
+- Il cuore è un ciclo osserva → ragiona → agisci → osserva, con l'LLM nel ruolo
+  di *policy*: campiona l'azione dato il contesto,
+  $a_t \sim \pi_\theta(\cdot \mid s_t)$, e il contesto è la storia delle
+  osservazioni e delle azioni, non lo stato del mondo (un POMDP, che finché la
+  storia entra nella finestra si decide sulla storia intera). Farlo «ragionare
+  ad alta voce» (chain-of-thought
+  {cite}`wei2022chain`) aiuta, ma i guadagni misurati si concentrano su
+  matematica e ragionamento simbolico {cite}`sprague2025cot`; in un agente la
+  traccia scompone il compito, estrae dalle osservazioni, tiene il conto dei
+  progressi {cite}`yao2023react`.
+- I quattro ingredienti: il modello, gli strumenti (web, codice, API), il loop
+  di controllo (percezione-azione) e la memoria (contesto + memoria esterna).
+  Il modello *propone* le azioni; il runtime le *esegue*.
 - Gli agenti diventano possibili adesso perché gli LLM istruiti sanno
   seguire una consegna in linguaggio naturale: instruction tuning e
   in-context learning rendono eseguibile «usa questo strumento». È però
@@ -530,9 +533,11 @@ abbiamo solo montato insieme.
   </NaturalLanguageProcessing/dialogo-chatbot>` (ELIZA, sistemi a frame) sono
   gli antenati rigidi: l'agente LLM generalizza la stessa idea con un motore
   linguistico flessibile, guadagnando versatilità e perdendo prevedibilità.
-- Nel resto del capitolo: tool use, RAG avanzato, context
-  engineering, architetture e valutazione; di quest'ultima, SWE-bench
-  {cite}`jimenez2024swebench` è un banco di prova su compiti reali.
+- SWE-bench {cite}`jimenez2024swebench` misura un agente su compiti reali: 2.294
+  segnalazioni di errore da dodici progetti Python, risolte solo se passano
+  tutti i test del progetto, che il sistema non vede (nel 2023 il migliore dei
+  modelli provati ne risolveva l'1,96%). Anche quella misura va messa alla
+  prova.
 ```
 
 `````

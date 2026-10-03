@@ -4,8 +4,8 @@
   <text x="360" y="30" font-family="Inter, system-ui, sans-serif" font-size="15" fill="#1A1A1A" text-anchor="middle" font-weight="bold">Cella LSTM</text>
   <!-- cell state top line -->
   <line x1="20" y1="90" x2="700" y2="90" stroke="#2D5A5C" stroke-width="2"/>
-  <text x="30" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">C(t-1)</text>
-  <text x="655" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">C(t)</text>
+  <text x="30" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C"><tspan font-weight="700">c</tspan><tspan font-size="10" dy="4">t-1</tspan></text>
+  <text x="655" y="78" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C"><tspan font-weight="700">c</tspan><tspan font-size="10" dy="4">t</tspan></text>
   <!-- forget gate -->
   <rect x="130" y="180" width="110" height="56" fill="#B5532C" stroke="#1A1A1A" stroke-width="1.5" rx="8"/>
   <text x="185" y="204" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F8F5EE" text-anchor="middle">forget gate</text>
@@ -34,10 +34,10 @@
   <line x1="620" y1="130" x2="620" y2="320" stroke="#2D5A5C" stroke-width="1.5"/>
   <line x1="620" y1="320" x2="700" y2="320" stroke="#2D5A5C" stroke-width="1.5"/>
   <polygon points="700,320 690,315 690,325" fill="#2D5A5C"/>
-  <text x="660" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C">h(t)</text>
+  <text x="660" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#2D5A5C"><tspan font-weight="700">h</tspan><tspan font-size="10" dy="4">t</tspan></text>
   <!-- input bottom line -->
   <line x1="20" y1="320" x2="360" y2="320" stroke="#1A1A1A" stroke-width="1.5"/>
-  <text x="26" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A">x(t), h(t-1)</text>
+  <text x="26" y="308" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A"><tspan font-weight="700">x</tspan><tspan font-size="10" dy="4">t</tspan><tspan dy="-4">, </tspan><tspan font-weight="700">h</tspan><tspan font-size="10" dy="4">t-1</tspan></text>
   <line x1="185" y1="320" x2="185" y2="236" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="360" y1="320" x2="360" y2="236" stroke="#1A1A1A" stroke-width="1.5"/>
   <line x1="360" y1="320" x2="535" y2="320" stroke="#1A1A1A" stroke-width="1.5"/>

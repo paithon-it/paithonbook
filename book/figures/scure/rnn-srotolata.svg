@@ -42,11 +42,11 @@
   <!-- input -->
   <circle cx="190" cy="320" r="9" fill="#DDB874"/>
   <line x1="190" y1="311" x2="190" y2="228" stroke="#F4ECDD" stroke-width="2" marker-end="url(#ah-dark)"/>
-  <text x="190" y="347" font-size="15" text-anchor="middle" fill="#F4ECDD">x<tspan font-size="11" dy="5">t-1</tspan></text>
+  <text x="190" y="347" font-size="15" text-anchor="middle" font-weight="700" fill="#F4ECDD">x<tspan font-size="11" dy="5">t-1</tspan></text>
   <!-- output -->
   <line x1="190" y1="150" x2="190" y2="95" stroke="#5BA39C" stroke-width="2" marker-end="url(#ah-teal)"/>
   <circle cx="190" cy="85" r="9" fill="#5BA39C"/>
-  <text x="190" y="64" font-size="15" text-anchor="middle" fill="#5BA39C">&#375;<tspan font-size="11" dy="5">t-1</tspan></text>
+  <text x="190" y="64" font-size="15" text-anchor="middle" font-weight="700" fill="#5BA39C">&#375;<tspan font-size="11" dy="5">t-1</tspan></text>
   <!-- cella -->
   <rect x="150" y="150" width="80" height="76" rx="9" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2.5"/>
   <text x="190" y="193" font-size="15" text-anchor="middle" fill="#5BA39C" font-weight="700">RNN</text>
@@ -54,20 +54,20 @@
   <!-- ===== COLONNA t (centro x=390) ===== -->
   <circle cx="390" cy="320" r="9" fill="#DDB874"/>
   <line x1="390" y1="311" x2="390" y2="228" stroke="#F4ECDD" stroke-width="2" marker-end="url(#ah-dark)"/>
-  <text x="390" y="347" font-size="15" text-anchor="middle" fill="#F4ECDD">x<tspan font-size="11" dy="5">t</tspan></text>
+  <text x="390" y="347" font-size="15" text-anchor="middle" font-weight="700" fill="#F4ECDD">x<tspan font-size="11" dy="5">t</tspan></text>
   <line x1="390" y1="150" x2="390" y2="95" stroke="#5BA39C" stroke-width="2" marker-end="url(#ah-teal)"/>
   <circle cx="390" cy="85" r="9" fill="#5BA39C"/>
-  <text x="390" y="64" font-size="15" text-anchor="middle" fill="#5BA39C">&#375;<tspan font-size="11" dy="5">t</tspan></text>
+  <text x="390" y="64" font-size="15" text-anchor="middle" font-weight="700" fill="#5BA39C">&#375;<tspan font-size="11" dy="5">t</tspan></text>
   <rect x="350" y="150" width="80" height="76" rx="9" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2.5"/>
   <text x="390" y="193" font-size="15" text-anchor="middle" fill="#5BA39C" font-weight="700">RNN</text>
 
   <!-- ===== COLONNA t+1 (centro x=590) ===== -->
   <circle cx="590" cy="320" r="9" fill="#DDB874"/>
   <line x1="590" y1="311" x2="590" y2="228" stroke="#F4ECDD" stroke-width="2" marker-end="url(#ah-dark)"/>
-  <text x="590" y="347" font-size="15" text-anchor="middle" fill="#F4ECDD">x<tspan font-size="11" dy="5">t+1</tspan></text>
+  <text x="590" y="347" font-size="15" text-anchor="middle" font-weight="700" fill="#F4ECDD">x<tspan font-size="11" dy="5">t+1</tspan></text>
   <line x1="590" y1="150" x2="590" y2="95" stroke="#5BA39C" stroke-width="2" marker-end="url(#ah-teal)"/>
   <circle cx="590" cy="85" r="9" fill="#5BA39C"/>
-  <text x="590" y="64" font-size="15" text-anchor="middle" fill="#5BA39C">&#375;<tspan font-size="11" dy="5">t+1</tspan></text>
+  <text x="590" y="64" font-size="15" text-anchor="middle" font-weight="700" fill="#5BA39C">&#375;<tspan font-size="11" dy="5">t+1</tspan></text>
   <rect x="550" y="150" width="80" height="76" rx="9" fill="#0E0C0A" stroke="#5BA39C" stroke-width="2.5"/>
   <text x="590" y="193" font-size="15" text-anchor="middle" fill="#5BA39C" font-weight="700">RNN</text>
 

@@ -5,19 +5,24 @@ modello di diffusione che abbiamo incontrato (il DDPM del 2020, lo Stable
 Diffusion del 2022) è la U-Net {cite}`ronneberger2015u`: un'architettura nata
 nel 2015 a Friburgo per segmentare cellule al microscopio, come ricordiamo
 dalla {doc}`sezione su detection e segmentazione
-</VisioneArtificiale/detection-segmentazione>`. Per anni nessuno l'ha messa in
-discussione: le si è aggiunta un po’ di attenzione, le si è appesa l'etichetta
-con il numero del passo, ma l'impalcatura (guardare da lontano e poi da vicino,
-con i ponti diretti fra le due viste) è rimasta quella del microscopio.
+</VisioneArtificiale/detection-segmentazione>`. Per anni è rimasta il cuore
+dei modelli di diffusione: le si è aggiunta un po’ di attenzione, le si è
+appesa l'etichetta con il numero del passo, ma l'impalcatura (guardare da
+lontano e poi da vicino, con i ponti diretti fra le due viste) è rimasta quella
+del microscopio.
 
-Alla fine del 2022 William Peebles, allora dottorando a Berkeley, e Saining
-Xie, professore alla New York University, si fanno la domanda che a questo punto suona familiare: la U-Net serve *davvero*? O anche qui, come
-era successo nel 2017 per la traduzione con la caduta delle reti ricorrenti,
-vale il titolo di quel paper: *attention is all you need*
-{cite}`vaswani2017attention`? La loro risposta si chiama **DiT**, *Diffusion
-Transformer* {cite}`peebles2023scalable`, presentata alla International
-Conference on Computer Vision del 2023. E la storia ha un seguito che ne
-misura il peso: poco più di un anno dopo ritroveremo lo stesso Peebles,
+Nel 2022 si cominciano a cercare alternative. A settembre Fan Bao e colleghi
+propongono U-ViT, un Transformer che riceve come token i pezzetti dell'immagine
+e insieme il tempo e la condizione, e della U-Net tiene soltanto i ponti lunghi
+fra l'inizio e la fine della rete {cite}`bao2023all`. Alla fine dello stesso
+anno William Peebles, allora dottorando a Berkeley, e Saining Xie, professore
+alla New York University, fanno la domanda nella sua forma più netta: la U-Net
+serve *davvero*? O anche qui, come era successo nel 2017 per la traduzione con
+la caduta delle reti ricorrenti, vale il titolo di quel paper: *attention is all
+you need* {cite}`vaswani2017attention`? La loro risposta si chiama **DiT**,
+*Diffusion Transformer* {cite}`peebles2023scalable`, presentata alla
+International Conference on Computer Vision del 2023. E la storia ha un seguito
+che ne misura il peso: poco più di un anno dopo ritroveremo lo stesso Peebles,
 insieme a Tim Brooks, alla guida di un progetto chiamato Sora.
 
 ## Affettare la scheda: le tessere come parole
@@ -30,12 +35,12 @@ cambiare è solo la rete $\boldsymbol{\epsilon}_\theta(\mathbf{z}_t, t)$ che
 stima il rumore a ogni passo: via la U-Net, dentro un Transformer. L'obiettivo
 di addestramento e il campionatore restano identici.
 
-Un Transformer, però, mangia sequenze: parole in fila, una dopo l'altra, che in
-gergo si chiamano token. Una scheda invece è una griglia di caselle. Come si dà
-in pasto una griglia a chi sa leggere solo in fila? La mossa è già nel nostro
-repertorio: è la stessa, identica, del Vision Transformer incontrato nel
+Un Transformer, però, elabora sequenze di vettori, i token, mentre il latente
+è un tensore $4\times32\times32$ organizzato in griglia. Come si passa
+dall'uno all'altro? Con la mossa del Vision Transformer incontrato nel
 {doc}`capitolo sui Transformer </Transformers/overview>`
-{cite}`dosovitskiy2021image`.
+{cite}`dosovitskiy2021image`: si divide la griglia in tessere quadrate, le
+*patch*, e ciascuna diventa un token.
 
 `````{tab} Elementare
 
@@ -127,29 +132,31 @@ La U-Net aveva un modo semplice di riceverle, appenderle come un'etichetta; con
 le tessere in fila si aprono più strade, e Peebles e Xie le mettono a
 confronto. Potrebbero accodare le due informazioni come parole in più della
 frase, o farle consultare a parte, come fa Stable Diffusion con la richiesta
-scritta. Vince invece la soluzione più discreta, battezzata **adaLN-zero**: il
-condizionamento non entra nella conversazione, regola le manopole. Il nome è
-una sigla e conviene scioglierla subito, perché torna spesso: *ada* sta per
-adattivo, cioè che si regola secondo il momento; *LN* è il nome di
-un'operazione che i Transformer hanno dentro, la *layer normalization*, cioè
-la taratura che rimette i numeri in un ordine di grandezza maneggevole prima
-di ogni passaggio, con accanto una manopola imparata che li riallarga o li
-restringe; e *zero* è il modo in cui si parte, che vedremo fra poco.
+scritta. Vince invece la soluzione più economica, battezzata **adaLN-zero**:
+il condizionamento non entra come token nella sequenza, ma modula la
+normalizzazione di ogni blocco. Il nome è una sigla e conviene scioglierla
+subito, perché torna spesso. *LN* è la *layer normalization*, l'operazione con
+cui il Transformer, prima di ogni sotto-strato, riporta ciascun token a media
+zero e varianza uno e poi lo riscala con un guadagno e uno spostamento
+appresi; *ada* sta per adattiva, perché guadagno e spostamento diventano
+funzioni del condizionamento invece di parametri fissi; e *zero* è il modo in
+cui si parte, l'inizializzazione, che conta più di quanto sembri.
 
 `````{tab} Elementare
 
 La torre ha una regia, e a ogni piano c'è un tecnico che la ascolta in
 auricolare: il messaggio è lo stesso per tutti, ma ognuno ne ricava le
 regolazioni buone per il proprio piano. La regia non suggerisce parole: dà
-istruzioni di *regolazione*, e le manopole sono tre, divise fra i due capi del
-piano. Due sono all'ingresso, e dicono quanto alzare o abbassare il volume di
-ciò che arriva e come spostarne il tono: cambiano quello che il piano si trova
-davanti da leggere. La terza è all'uscita, e dice quanto di ciò che il piano ha
-prodotto va aggiunto a quello che c'era prima: a fondo scala il piano interviene
-a piena forza, a zero il suo lavoro resta nel cassetto e quello che era arrivato
-prosegue intatto. Le istruzioni dipendono dal momento: se siamo ai primi passi
-della pulitura (quasi tutto rumore) o agli ultimi ritocchi, se si sta disegnando
-un gatto o un faro.
+istruzioni di *regolazione*. Ogni piano ha due metà, la prima in cui ogni
+tessera guarda le altre e la seconda in cui rielabora per conto suo, e ciascuna
+metà ha tre manopole, divise fra i suoi due capi. Due sono all'ingresso, e
+dicono quanto alzare o abbassare il volume di ciò che arriva e come spostarne il
+tono: cambiano quello che quella metà si trova davanti da leggere. La terza è
+all'uscita, e dice quanto di ciò che la metà ha prodotto va aggiunto a quello
+che c'era prima: a fondo scala interviene a piena forza, a zero il suo lavoro
+resta nel cassetto e quello che era arrivato prosegue intatto. Le istruzioni
+dipendono dal momento: se siamo ai primi passi della pulitura (quasi tutto
+rumore) o agli ultimi ritocchi, se si sta disegnando un gatto o un faro.
 
 Il "-zero" del nome è un'astuzia da cantiere: il primo giorno di addestramento
 tutte le manopole d'uscita sono a zero, e quindi nessun piano tocca niente. Il
@@ -158,7 +165,11 @@ imparano: a fine giornata si guarda quanto sarebbe servito dare retta a
 ciascuno, e ognuno alza la propria manopola di conseguenza. Sembra pigrizia,
 ma è il modo
 più stabile di cominciare: nessun piano rovina il lavoro degli altri prima
-di aver imparato il proprio.
+di aver imparato il proprio. È lo stesso trucco delle manopole a zero con cui
+ControlNet, nella {doc}`sezione su Stable Diffusion
+</ModelliDiffusione/stable-diffusion>`, affianca l'apprendista al restauratore:
+un pezzo nuovo che all'inizio tace, e impara proprio da quanto sarebbe servito
+ascoltarlo.
 
 `````
 
@@ -202,7 +213,8 @@ e la direzione in cui l'uscita andrebbe spostata: il blocco impara quanto
 aprirsi pur non contribuendo ancora, e la rete, che comincia come un tubo vuoto,
 riceve gradiente su tutti i gate insieme (dal secondo passo nell'implementazione
 di riferimento, che azzera anche lo strato d'uscita e al primo passo muove solo
-quello). L'idea di modulare
+quello; dal primo nel `MiniDiT` di «Un DiT in miniatura», che quello strato
+non lo azzera, come mostra la sua ultima stampa). L'idea di modulare
 le normalizzazioni ha un precedente illustre che conosciamo: l'AdaIN con cui
 StyleGAN {cite}`karras2019style` inietta lo stile nel generatore. Nelle
 ablazioni del paper adaLN-zero batte sia i token in-context sia la
@@ -228,14 +240,11 @@ di linguaggio (le regolarità con cui la qualità di un modello cresce al
 crescere della sua taglia, dei suoi dati e del calcolo speso)
 {cite}`kaplan2020scaling,hoffmann2022training`.
 
-Due parole sulle unità di misura, perché da qui in avanti torneranno spesso. Il
-lavoro si conta in Gflops, i miliardi di operazioni che costa far passare
-un'immagine dall'ingresso all'uscita; la grandezza si conta in parametri,
-cioè quanti numeri interni ha la rete; e la qualità delle immagini si misura
-con il FID incontrato all'apertura del capitolo, che confronta il mucchio delle
-immagini generate con il mucchio di quelle vere. Il FID è una distanza, quindi
-va letto al rovescio delle altre due: più è basso e meglio è, e una qualità
-che migliora si vede come un numero che scende.
+Si misurano tre grandezze. Il lavoro si conta in Gflops, i miliardi di
+operazioni che costa una passata della rete, dall'ingresso all'uscita; la
+grandezza in parametri, i numeri interni della rete; la qualità con il FID
+dell'apertura del capitolo, che è una distanza fra il mucchio delle immagini
+generate e quello delle vere, quindi più è basso, meglio è.
 
 Va detto subito che cosa questo non significa, perché è il passo che si fa
 più facilmente ed è sbagliato: non significa che l'architettura non conti più.
@@ -254,15 +263,23 @@ finita.
 In cima alla curva sta il modello più grande con le tessere più piccole, che
 nel paper si chiama DiT-XL/2 (XL è la taglia della torre, il 2 è il lato della
 tessera in caselle): un Transformer da seicentosettantacinque milioni di
-numeri interni che, generando immagini a partire dalla categoria richiesta («un
-cane», «un faro»), raggiunge la qualità dei migliori modelli con U-Net del periodo,
-compresi quelli di Dhariwal e Nichol {cite}`dhariwal2021diffusion` e il latent
-diffusion di Rombach e colleghi {cite}`rombach2022high`. La U-Net, dunque, non
-era essenziale. Il suo vantaggio di partenza (sapere già in fabbrica che i
-pixel vicini contano più di quelli lontani) si può comprare con dati e calcolo,
-e oltre una certa scala il Transformer cresce meglio. È la stessa storia già
-vista nel {doc}`capitolo sui Transformer </Transformers/overview>`, dove le reti di visione classiche avevano
-ceduto il passo ai Vision Transformer, e adesso si ripete dentro la diffusione.
+numeri interni che genera immagini a partire dalla categoria richiesta («un
+cane», «un faro»). Con la classifier-free guidance e dopo sette milioni di
+passi di addestramento arriva a un FID di $2{,}27$ su ImageNet $256\times256$,
+contro $3{,}60$ del latent diffusion di Rombach e colleghi
+{cite}`rombach2022high`, che con la sua U-Net spende $103{,}6$ Gflops contro i
+$118{,}6$ di DiT, e $3{,}94$ della U-Net di Dhariwal e Nichol
+{cite}`dhariwal2021diffusion`, che lavora sui pixel e di Gflops ne spende fra
+742 e 1120: il migliore fra i modelli di diffusione allora noti, alla pari con
+la GAN più forte del momento, StyleGAN-XL ($2{,}30$). La U-Net, dunque, non era
+essenziale. Il suo vantaggio di partenza (sapere già in fabbrica che i pixel
+vicini contano più di quelli lontani) si può comprare con dati e calcolo, e a
+calcolo quasi pari il Transformer arriva più in alto; che la distanza cresca
+con la scala, il lavoro non lo misura, perché una curva di scala la traccia
+solo per i DiT. È la stessa storia già vista nel {doc}`capitolo sui
+Transformer </Transformers/overview>`, dove le reti di visione classiche
+avevano ceduto il passo ai Vision Transformer, e adesso si ripete dentro la
+diffusione.
 
 `````{tab} Elementare
 
@@ -358,12 +375,12 @@ alla torre, esattamente come prima. L'addestramento avviene su video e
 immagini di durate, risoluzioni e proporzioni diverse. E la qualità cresce
 «sensibilmente» al crescere del lavoro speso ad addestrare: il confronto
 mostrato è fra lo stesso modello addestrato con il lavoro base, poi con
-quattro volte tanto, poi con trentadue volte tanto. Quel lavoro è una grandezza
-diversa da quella dei dodici DiT, e conviene non scambiarle: là si contavano
-le operazioni di una passata sola e si misurava il FID, qui si conta il calcolo
-speso ad addestrare e i tre filmati si confrontano a occhio. Sono due membri
-della stessa famiglia, quella delle leggi di scala dei modelli di linguaggio,
-su due assi diversi. Ed è la ricetta DiT
+quattro volte tanto, poi con trentadue volte tanto. Questo lavoro si misura in
+un altro modo rispetto ai dodici DiT: là si contavano le operazioni di una
+passata sola e la qualità era un numero, il FID; qui si conta il calcolo speso
+per addestrare, e i tre filmati si confrontano a occhio. Sono due facce della
+stessa regolarità, le leggi di scala dei modelli di linguaggio, misurate su due
+assi diversi. Ed è la ricetta DiT
 estesa di una dimensione: dove il Vision Transformer affettava un'immagine,
 qui si affetta un blocco di fotogrammi.
 
@@ -485,10 +502,11 @@ tanti e piccoli.
 
 {numref}`fig-traiettorie-dritte` mostra la cosa in un colpo d'occhio, e dice
 anche dove sta il guadagno: nel tempo che serve a fare l'immagine, non
-nella bellezza dell'immagine che ne esce. Il numero di fermate necessarie non
-dipende da quanto la meta sia lontana, ma da quanto la strada curvi:
-raddrizzarla non cambia dove si arriva, cambia quante volte bisogna fermarsi a
-chiedere la direzione.
+nella bellezza dell'immagine che ne esce. Il numero di fermate necessarie
+dipende soprattutto da quanto la strada curvi, e meno da quanto la meta sia
+lontana (su una retta un solo passo arriva dove deve arrivare): raddrizzarla
+non cambia dove si arriva, cambia quante volte bisogna fermarsi a chiedere la
+direzione.
 
 `````{tab} Elementare
 
@@ -498,39 +516,29 @@ il sentiero che la catena di rumore ha tracciato all'andata curva da sé, e il
 rimescolamento a ogni tappa lo scuote ancora. Per questo le tappe devono essere
 tante e corte: chi tiene la direzione per troppo tempo esce di strada.
 
-L'idea l'abbiamo già incontrata nella {doc}`sezione sul flow matching
-</ModelliDiffusione/flow-matching>` sotto il nome di flusso rettificato, ed è
-quasi insolente: perché seguire una strada tortuosa? Prendi la
-scheda tutta rumore e la scheda dell'immagine finita, traccia una linea
-dritta tra le due, e insegna alla rete una sola cosa: in ogni punto della
-linea, *in che direzione si cammina*. La lezione è facile da preparare, perché
-la risposta giusta la sappiamo già: la linea l'abbiamo tracciata noi, e la sua
-direzione è sempre la stessa.
+Stable Diffusion 3 prende la strada del flusso rettificato, quella della
+{doc}`sezione sul flow matching </ModelliDiffusione/flow-matching>`: una linea
+dritta fra la scheda tutta rumore e la scheda dell'immagine finita, e alla
+rete si insegna una cosa sola, in ogni punto della linea *in che direzione si
+cammina*.
 
 Facciamo i conti su un numero solo. Non un pixel, che qui non si tocca: uno
 dei numeri di una casella della scheda, su un intervallo che per comodità
 prendiamo da 0 a 1. Nella scheda tutta rumore vale 0,2; nella scheda
 dell'immagine finita vale 0,8. A metà strada vale la media: 0,5. La marcia,
-quindi, va sempre in su, e di
-quanto lo dice la differenza fra i due estremi: $0{,}8 - 0{,}2 = 0{,}6$ da
-guadagnare in tutto. Se decidiamo di farlo in dieci tappe, ogni tappa sale
-sempre della stessa quantità, $0{,}6 : 10 = 0{,}06$. Nessuna sorpresa lungo la
-strada, perché la strada è dritta.
+quindi, va sempre in su, e di quanto lo dice la differenza fra i due estremi:
+$0{,}8 - 0{,}2 = 0{,}6$ da guadagnare in tutto. Se decidiamo di farlo in dieci
+tappe, ogni tappa sale sempre della stessa quantità, $0{,}6 : 10 = 0{,}06$.
+Nessuna sorpresa lungo la strada, perché la strada è dritta.
 
 Su una strada così non serve fermarsi mille volte a ricontrollare la mappa, e
-nemmeno le cinquanta delle scorciatoie: ne bastano poche decine, e con qualche
-accorgimento anche meno.
-
-Le strade che la rete impara, però, non escono mai perfettamente dritte. Le
-linee tracciate in addestramento sono milioni, una per ogni coppia (questo
-rumore, questa immagine), e molte passano vicinissime le une alle altre andando
-in direzioni diverse. La rete, che in quel punto deve dare una risposta sola, dà
-la media, e la media di direzioni diverse non è nessuna delle direzioni di
-partenza. Qualche controllo lungo il percorso serve quindi ancora, ma è la
-differenza fra un tornante di montagna e una provinciale con qualche curva.
-Le curve si possono raddrizzare ancora, rifacendo l'addestramento sulle coppie
-che la rete stessa collega (questo rumore, e l'immagine a cui arriva la sua
-strada): su strade quasi dritte basta anche una fermata sola.
+nemmeno le cinquanta delle scorciatoie: ne bastano poche decine. Dritta, però,
+per modo di dire, come si è visto con il flusso rettificato: le strade che la
+rete impara sono la media di milioni di linee che si incrociano, e curvano un
+po'. È la differenza fra un tornante di montagna e una provinciale con qualche
+curva. Raddrizzarle ancora, rifacendo l'addestramento sulle coppie che la rete
+stessa collega, porterebbe fino a una fermata sola; Stable Diffusion 3 non lo
+fa, e si ferma a qualche decina.
 
 `````
 
@@ -597,8 +605,9 @@ Come per la spirale di punti con cui abbiamo smontato DDPM, il modo migliore di
 fissare l'architettura è costruirla in piccolo. Il codice che segue è un DiT
 completo ma in miniatura: si taglia una scheda finta in tessere, le si fa
 passare per i piani della torre con l'attenzione e le manopole della regia, e si
-ricompone il risultato. Le stampe da guardare sono tre: la forma del risultato,
-il numero di pesi e la prova che le manopole partono davvero da zero. Non c'è
+ricompone il risultato. Le stampe da guardare sono quattro: la forma del
+risultato, il numero di pesi, la prova che le manopole partono davvero da zero
+e quali manopole cominciano a muoversi per prime. Non c'è
 addestramento (servirebbero i dati e le ore di calcolo su GPU) ma tutte le
 misure tornano, e il ciclo di addestramento sarebbe *lo stesso* visto per DDPM:
 cambia solo la rete interrogata.
@@ -678,10 +687,16 @@ print(sum(p.numel() for p in modello.parameters()))  # 1225616: ~1.2 milioni
 # appena inizializzati ogni blocco deve essere l'identita', per qualunque c
 blocco, x, c = modello.blocchi[0], torch.randn(2, 256, 128), torch.randn(2, 128)
 print((blocco(x, c) - x).abs().max().item())   # 0.0
+
+# e chi comincia a imparare: dopo un passo all'indietro, quali delle sei
+# manopole del primo blocco (b1, g1, a1, b2, g2, a2) ricevono gradiente
+modello(z, t, y).pow(2).mean().backward()
+g = modello.blocchi[0].manopole.weight.grad.view(6, 128, 128).abs().sum((1, 2))
+print([int(v > 0) for v in g])                 # [0, 0, 1, 0, 0, 1]: i due gate
 ```
 
-Quell'ultima riga vale più delle due che la precedono, e conviene dire perché.
-La prima stampa le misure del risultato, e resterebbe identica anche
+Le ultime due righe valgono più delle prime due, e conviene dire perché. La
+prima stampa le misure del risultato, e resterebbe identica anche
 togliendo tutti e quattro i piani della torre, o cambiando il passo e la
 classe: dice che i tubi sono collegati, non che l'acqua ci passi giusta. La
 seconda conta i numeri interni, e almeno cambierebbe togliendo dei piani, ma
@@ -693,7 +708,12 @@ esattamente quello che ha ricevuto, per qualunque istruzione arrivi dalla
 regia: la differenza fra uscita e ingresso deve essere zero, ed è quello che
 la riga stampa. È un controllo che chi scrive codice fa di solito a mente
 (in gergo un *desk-check*), e qui è stato reso eseguibile: se un giorno quello
-zero smette di uscire, vuol dire che l'inizializzazione si è rotta.
+zero smette di uscire, vuol dire che l'inizializzazione si è rotta. La
+quarta controlla l'altra metà della promessa: dopo un passo all'indietro, delle
+sei manopole del primo piano ricevono una correzione soltanto le due d'uscita,
+quelle che dosano quanto il piano si fa sentire. Le altre quattro restano
+ferme finché le prime due sono a zero, perché il lavoro del piano non arriva
+ancora all'uscita.
 
 Il DiT vero differisce dal nostro nei numeri (nella taglia più grande, 28
 piani e appunti da 1152 numeri per tessera, contro i nostri 4 e 128), nel fatto
@@ -703,16 +723,14 @@ passo (i parametri della covarianza), e nel modo di dire a ogni tessera dove si
 trova nella griglia, che nel DiT è una tabella di posizioni fissata in partenza
 invece dei nostri numeri appresi. Ma non nella logica: quella sta tutta qui.
 
-## Il conto, in due colonne
-
+## Addestrare e usare
 
 Addestrare questi modelli è fuori dalla portata individuale, e la direzione è
 quella di un rincaro: già lo Stable Diffusion del 2022 chiedeva le
 centocinquantamila ore di calcolo che sappiamo, i suoi successori a miliardi di
 numeri interni ne chiedono un multiplo che nessuno dichiara, e su Sora OpenAI
-non pubblica né costi né dimensioni. La grandezza
-è diventata un ingrediente della ricetta, e le curve di Peebles e Xie lo
-dicono senza giri di parole.
+non pubblica né costi né dimensioni. La grandezza è diventata un ingrediente
+della ricetta, ed è quello che le curve di Peebles e Xie misurano.
 
 Usare un modello già addestrato, però, è un'altra storia, e in gergo si chiama
 inferenza, che vuol dire semplicemente far girare un modello già fatto
@@ -729,15 +747,15 @@ quattro mattoni presi da scaffali diversi. L'autoencoder variazionale è del
 sorteggiando una scheda a caso e facendola ridipingere al copista. Qui gli
 tocca il ruolo del compressore, e a inventare pensa qualcun altro. La U-Net
 è del 2015 ed era nata per i microscopi {cite}`ronneberger2015u`. L'attenzione
-nasce nel 2015 per tradurre da una lingua all'altra e diventa protagonista nel
-2017 {cite}`vaswani2017attention`. Le tessere sono quelle di un Vision
-Transformer del 2021 nato per riconoscere il contenuto delle fotografie
-{cite}`dosovitskiy2021image`. Nessuno di questi pezzi era stato progettato per
-generare immagini, e sono stati ricombinati con pazienza da gruppi diversi in
-anni diversi. Chi ti racconta questa storia come una successione di rivoluzioni
-improvvise te la racconta male: è una storia di ricombinazioni, e il prossimo
-mattone, con ogni probabilità, è già su uno scaffale che abbiamo attraversato
-senza fermarci.
+nasce nel 2014 per tradurre da una lingua all'altra
+{cite}`bahdanau2015neural` e diventa protagonista nel 2017
+{cite}`vaswani2017attention`. Le tessere sono quelle di un Vision Transformer
+del 2021 nato per riconoscere il contenuto delle fotografie
+{cite}`dosovitskiy2021image`. Tre di questi pezzi non erano nati per generare
+immagini, e il quarto, il VAE, era nato per generarle e qui comprime; tutti e
+quattro sono stati ricombinati con pazienza da gruppi diversi in anni diversi.
+Più che una successione di rivoluzioni improvvise, è una storia di
+ricombinazioni.
 
 `````{tab} Elementare
 
@@ -820,11 +838,13 @@ senza fermarci.
 `````
 
 La ricetta sta in tre gesti (comprimere, sporcare di rumore, insegnare a
-ripulire), ma quello che serve più avanti è l'abitudine con cui è stata letta,
-guardare un'architettura nuova cercandoci dentro i mattoni vecchi. Il rectified
-flow ha appena legato il numero di fermate a quanto la strada curvi, e non a
-quanto sia lunga. Quella è una risposta di disegno, e ne esiste un'altra: la
-{doc}`sezione che risolve l'equazione invece di simularla
-</ModelliDiffusione/campionatori-veloci>` prende la stessa domanda dall'altro
-capo, e chiede quanto si può scendere con la rete che si ha già, senza
-riaddestrare niente.
+ripulire), ma quello che servirà di nuovo, quando Sora tornerà fra i
+{doc}`simulatori del mondo </WorldModels/simulatori-e-dibattito>`, è
+l'abitudine con cui è stata letta: guardare un'architettura nuova cercandoci
+dentro i mattoni vecchi. Il rectified flow ha appena legato il numero di
+fermate soprattutto a quanto la strada curvi. Quella è una risposta di disegno,
+che cambia il modello, e ne esiste un'altra: la {doc}`sezione sui campionatori
+veloci </ModelliDiffusione/campionatori-veloci>` prende la stessa domanda
+dall'altro capo, e chiede quanto si può ridurre il numero di passi con la rete
+che si ha già, senza riaddestrare niente, scegliendo meglio come percorrere la
+strada.

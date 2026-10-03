@@ -45,7 +45,7 @@ def conta():
     v = 2.0 * X                     # ramo lineare
     y = u + v
 
-    # gli appunti: il numero che ogni stazione deve tenere da parte per
+    # gli appunti: il numero che ogni operazione deve tenere da parte per
     # sapere, al ritorno, per quanto moltiplicare
     appunto_quadrato = X            # d(x·x)/dx = 2x, e serve x
     appunto_lineare = 2.0           # d(2x)/dx = 2, e serve il 2
@@ -265,7 +265,7 @@ def costruisci() -> Figura:
         "andata: x entra nei due rami",
         "andata: i rami si ritrovano, e y vale " + n(y),
         "ritorno: si riparte dalla fine, dove la derivata vale 1",
-        "ritorno: ogni stazione rilegge il proprio appunto e lo consuma",
+        "ritorno: ogni operazione rilegge il proprio appunto e lo consuma",
         f"il ramo del quadrato deposita {n(ramo_q)}",
         f"il ramo lineare deposita {n(ramo_l)}, e si somma al primo",
         f"x.grad vale {n(grad)}: un contributo per ramo, sommati",
@@ -295,10 +295,10 @@ def costruisci() -> Figura:
         larghezza=LARG, altezza=ALT,
         alt="Il grafo del conto y uguale a x al quadrato più due x, con x che "
             "vale 3. A sinistra il riquadro di x, da cui partono due frecce "
-            "verso due stazioni: quella in alto moltiplica x per x, quella in "
+            "verso due operazioni: quella in alto moltiplica x per x, quella in "
             "basso moltiplica x per 2; le due si ritrovano nel riquadro di y a "
             "destra. All'andata lungo le frecce compaiono i valori 3 e 3, poi "
-            "9 e 6, e y vale 15; sotto ciascuna stazione compare un appunto "
+            "9 e 6, e y vale 15; sotto ciascuna operazione compare un appunto "
             "tratteggiato, 3 per il quadrato e 2 per il ramo lineare. Al "
             "ritorno le frecce si percorrono al contrario partendo da 1 dal "
             "fondo, e ogni appunto lascia il posto al proprio conto: uno per "

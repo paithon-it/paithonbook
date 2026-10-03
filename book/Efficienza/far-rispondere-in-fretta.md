@@ -2,18 +2,18 @@
 
 Le tre leve del capitolo hanno stretto il modello. Un modello stretto ci sta in
 memoria, e questo era il problema del conto in apertura. Ma «ci sta» e
-«risponde in fretta» sono due domande diverse, e la seconda non si risolve
-rimpicciolendo.
+«risponde in fretta» sono due domande diverse, e la seconda non si risolve del
+tutto rimpicciolendo.
 
-Le risposte alla seconda domanda non toccano il modello, e stanno nel
-{doc}`capitolo sui Transformer </Transformers/overview>` e in quello su
-{doc}`MLOps </MLOps/overview>`, ciascuno per una ragione sua. Prima serve
-vedere perché le due domande siano diverse.
+Tre risposte importanti alla seconda domanda non toccano il modello, e stanno
+nella {doc}`sezione sui grandi modelli linguistici </Transformers/llm>` e in
+quella su {doc}`LLMOps </MLOps/llmops>`, il mestiere di mettere in servizio
+quei modelli. Prima serve vedere perché le due domande siano diverse.
 
 ## Perché rispondere è un problema di traffico
 
-Il conto che segue non misura niente e non dipende da nessuna macchina: è
-aritmetica sul lavoro che c’è da fare.
+La risposta sta in un conto che non misura niente e non dipende da nessuna
+macchina: è aritmetica sul lavoro che c’è da fare.
 
 `````{tab} Elementare
 
@@ -27,16 +27,17 @@ coperti. Se apparecchi per uno, scendi una volta lo stesso, e quella fatica se
 la prende un coperto solo. E se ti tocca scendere una volta per ogni coperto,
 passi la giornata sulle scale e in cucina non fai niente.
 
-Sulle scale o ai fornelli, dove ti si ferma la giornata lo decide il paragone
-fra due conti: quanti coperti apparecchieresti nel tempo di un viaggio, e
-quanti coperti ti dà davvero un viaggio. Se nel tempo di un viaggio ne
-apparecchi cento e da ogni viaggio ne esce uno, comandano le scale. Se da un
-viaggio ne escono duecento, mentre apparecchi c’è tutto il tempo per il viaggio
-dopo, e a comandare tornano le mani. Quel confine dipende dalla casa, e con
-scale più corte, o mani più lente, si sposta.
+Sulle scale o in cucina, dove ti si ferma la giornata lo decide un paragone fra
+due numeri: quanti coperti riesci ad apparecchiare nel tempo di un viaggio in
+cantina, e quanti coperti servi con quello che porti su in un viaggio. Se nel
+tempo di un viaggio ne apparecchieresti cento e con il carico ne servi uno,
+comandano le scale. Se con il carico ne servi duecento, mentre apparecchi c’è
+tutto il tempo per il viaggio dopo, e a comandare tornano le mani. Quel confine
+dipende dalla casa, e con scale più corte, o mani più lente, si sposta.
 
 Un calcolatore fa esattamente questo. I pesi del modello stanno «in cantina»,
-cioè nella memoria, e per farci un conto qualunque bisogna portarli su. Sono
+cioè nella memoria, e per farci un conto qualunque bisogna portarli su; i
+coperti sono le cose che si elaborano insieme con gli stessi pesi. I pesi sono
 tanti (in un modello vero, gigabyte) e il viaggio costa uguale che li si usi
 per una cosa sola o per duecento insieme.
 
@@ -55,8 +56,8 @@ prometta. Il conto tiene finché i coperti sono pochi rispetto a quanto pesano
 le casse.
 
 Quindi la domanda che decide tutto è quanti conti si riescono a fare per ogni
-viaggio in cantina, più che quanti conti ci siano da fare. La tabella che
-segue è quella domanda, messa in numeri.
+viaggio in cantina, più che quanti conti ci siano da fare. La tabella dei conti
+per byte è quella domanda, messa in numeri.
 
 `````
 
@@ -83,14 +84,16 @@ calcolo) lo decide il confronto fra $I$ e il rapporto fra prestazione di picco
 e banda della macchina. Con pesi in sedici bit si semplifica in $I = k$, che è
 la colonna di destra della tabella dei conti per byte.
 
-Semplificandosi, $n$ nasconde due cose. La prima:
-$I$ non dipende dalla larghezza dello strato, ma solo perché si stanno contando
-i byte dei pesi e non quelli di ingressi e uscite, che sono $n k b / 8$
-ciascuno; l’approssimazione vale per $k \ll n$ e all’ultima riga della tabella
-($k = 256$ contro $n = 4096$) sbaglia già del dodici per cento. La seconda, che
-è la conseguenza più utile di tutto il conto: dimezzare $b$ raddoppia $I$,
-quindi in regime legato alla banda quantizzare non fa solo stare il modello in
-memoria, lo fa anche rispondere il doppio più in fretta.
+Il conto dice due cose. La prima: $I$ non dipende dalla larghezza dello strato,
+ma solo perché si stanno contando i byte dei pesi e non quelli di ingressi e
+uscite, che sono $n k b / 8$ ciascuno; l’approssimazione vale per $k \ll n$ e
+all’ultima riga della tabella ($k = 256$ contro $n = 4096$) sbaglia già del
+dodici per cento. La seconda, che è la conseguenza più utile: dimezzare $b$
+raddoppia $I$, quindi in regime legato alla banda, e finché il traffico è fatto
+dai soli pesi, quantizzare non fa solo stare il modello in memoria ma dimezza
+al più il tempo di ogni passo. Al più, perché la cache e gli ingressi non si
+dimezzano, e riportare i pesi corti alla precisione del calcolo costa conti in
+più.
 
 `````
 
@@ -116,26 +119,32 @@ for k in (1, 4, 16, 64, 256):
 ```
 
 La colonna dei byte letti non si muove mai: sono sempre gli stessi
-trentaquattro megabyte di pesi, che è la cassa da portare su dalla cantina.
-Quella dei conti si moltiplica. L’ultima colonna è il rapporto fra le due,
-cioè quanti conti si fanno per ogni byte che si va a prendere, e nel capitolo
-sulla GPU ha un nome, intensità aritmetica. Quando è bassa il processore
-sta fermo ad aspettare i dati, e avere un processore veloce non serve a niente;
-quando è alta i dati fanno in tempo ad arrivare e il processore lavora.
+trentaquattro megabyte di pesi, da leggere dalla memoria a ogni passo. Quella
+dei conti si moltiplica. L’ultima colonna è il rapporto fra le due, cioè quanti
+conti si fanno per ogni byte letto, e nella {doc}`sezione sulla gerarchia della
+memoria </GPU/gerarchia-memoria>` ha un nome, intensità aritmetica. Quando è
+bassa il processore resta fermo ad aspettare i dati, e un processore più veloce
+non cambia il tempo; quando è alta i dati fanno in tempo ad arrivare e il
+processore lavora.
 
 E adesso il punto. Quando un modello legge una domanda, la legge tutta
-insieme: se la domanda è di duecento parole, le cose insieme sono duecento, e
-l’ultima riga della tabella è il regime in cui ci si trova. Quando scrive
-la risposta, la scrive una parola alla volta, perché per scegliere la parola
-dopo deve aver scelto quella prima: le cose insieme sono una, ed è la
+insieme: se la domanda è di duecento parole (più esattamente token, i pezzi in
+cui il modello divide il testo), le cose insieme sono duecento, vicino
+all’ultima riga della tabella. Che quel regime sia legato al calcolo dipende dal
+ginocchio della macchina: a sedici bit l’intensità vale il numero di cose
+insieme, e il ginocchio sta a 161 conti per byte su una A100 e a 295 su una
+H100, quindi servono domande di centinaia di token, non di decine. Quando
+scrive la risposta, la scrive una parola alla volta, perché per scegliere la
+parola dopo deve aver scelto quella prima: le cose insieme sono una, ed è la
 prima riga.
 
 Sono la stessa moltiplicazione con lo stesso modello, e stanno ai due estremi
 opposti della tabella. Il rapporto fra le due efficienze è, a meno dei byte
 degli ingressi che il conto trascura, la lunghezza della domanda: con duecento
-parole, scrivere è quasi duecento volte meno efficiente che leggere. E non perché l’operazione sia più difficile: perché è
-la stessa lettura di trentaquattro megabyte di pesi, spesa per una parola sola
-invece che per duecento.
+parole, scrivere è quasi duecento volte meno efficiente che leggere. E non
+perché l’operazione sia più difficile: perché è la stessa lettura di
+trentaquattro megabyte di pesi, spesa per una parola sola invece che per
+duecento.
 
 Questo è il motivo per cui rimpicciolire il modello aiuta anche il tempo di
 risposta (meno pesi da leggere è meno traffico), ma non basta: finché si scrive
@@ -144,20 +153,22 @@ dimensione del modello.
 
 ## Le tre risposte, e dove stanno
 
-Da qui nascono tre idee, e nessuna delle tre tocca il modello.
+Tre idee rispondono alla seconda domanda senza toccare il modello. Due vengono
+dalla tabella, perché alzano il numero di cose insieme; la prima viene da
+un’altra parte, dal lavoro che altrimenti si rifarebbe.
 
-Non rifare due volte lo stesso lavoro. I modelli che scrivono testo, per
-scegliere la parola numero cinquecento, rimettono in conto tutte le
-quattrocentonovantanove di prima. Ma di ciascuna di quelle parole serve un
-riassunto che era già stato calcolato quando è stata scritta, quindi invece di
-rifarlo lo si tiene da parte, come si tiene un segnalibro invece di rileggere
-il libro da capo a ogni pagina. Quel deposito di riassunti si chiama cache
-delle chiavi e dei valori, e lo costruisce la {doc}`sezione sui grandi modelli
-linguistici </Transformers/llm>`, nel capitolo sui Transformer (l’architettura
-di cui quei modelli sono fatti), perché è lì che si capisce che cosa siano
-chiavi e valori. Non risolve il
-problema della tabella dei conti per byte: sposta il traffico dai pesi al
-deposito, che cresce a ogni parola scritta.
+Non rifare due volte lo stesso lavoro. Un modello che scrive testo, per
+scegliere la parola numero cinquecento, rimetterebbe in conto tutte le
+quattrocentonovantanove di prima. Ma di ciascuna di quelle parole gli serve
+soltanto una coppia di vettori per strato, la chiave e il valore, già calcolata
+quando la parola è stata scritta, quindi invece di rifarla la si conserva, come
+si tiene un segnalibro invece di rileggere il libro da capo a ogni pagina. Quel
+deposito si chiama cache delle chiavi e dei valori, e lo costruisce la
+{doc}`sezione sui grandi modelli linguistici </Transformers/llm>`, nel capitolo
+sui Transformer (l’architettura di cui quei modelli sono fatti), perché è lì
+che si capisce che cosa siano chiavi e valori. Non risolve il problema della
+tabella dei conti per byte: sposta il traffico dai pesi al deposito, che cresce
+a ogni parola scritta.
 
 Riempire la riga. Se scrivere una parola per un solo utente sta nella prima
 riga, scriverla per duecentocinquantasei utenti insieme sta nell’ultima: i pesi si
@@ -167,14 +178,26 @@ risponde a molti costa, a testa, molto meno di uno che risponde a uno, e la
 gestiscono le richieste che arrivano insieme e la memoria che ciascuna si
 porta dietro.
 
-Indovinare avanti e farsi correggere. Un modello piccolo butta giù qualche
-parola di seguito, tirando a indovinare; il modello grande le controlla tutte
-in una passata sola, cioè su tutta la bozza insieme invece che su una
-parola sola. Se la bozza era giusta si sono scritte più parole al
-prezzo di una; se era sbagliata si è buttato via il tempo del modello piccolo,
-che è poco. È la **decodifica speculativa**, e sta nella {doc}`sezione su
-LLMOps </MLOps/llmops>`, con la figura che mostra la bozza accettata e il punto
-in cui il modello grande la taglia.
+Indovinare avanti e farsi correggere. Un modello piccolo propone qualche parola
+di seguito; il modello grande le verifica tutte in una passata sola, cioè su
+tutta la bozza insieme invece che su una parola sola, ne accetta un tratto, e
+alla prima che rifiuta ne mette una sua. Ogni passata produce almeno una parola
+e, se la bozza è buona, parecchie al prezzo di una; il tempo del modello
+piccolo che si butta via è poco, e il testo che ne esce ha la stessa
+distribuzione di quello che avrebbe scritto il solo modello grande. È la
+**decodifica speculativa**, e sta nella {doc}`sezione su LLMOps
+</MLOps/llmops>`, con la figura che mostra la bozza accettata e il punto in cui
+il modello grande la taglia.
+
+Non sono le sole risposte. Altre toccano il modello o il modo di calcolarlo:
+l’attenzione con meno teste per chiavi e valori rimpicciolisce la cache
+({doc}`sezione sull’attenzione in pratica
+</Transformers/attenzione-in-pratica>`), la mixture of experts fa attraversare
+a ogni parola solo una parte dei parametri ({doc}`sezione sulla mixture of
+experts </Transformers/mixture-of-experts>`), FlashAttention riduce i byte che
+l’attenzione sposta ({doc}`sezione su FlashAttention </GPU/flash-attention>`).
+E le tre leve del capitolo tornano, applicate al servizio, nella sezione
+«Comprimere per servire» di {doc}`LLMOps </MLOps/llmops>`.
 
 `````{tab} Elementare
 
@@ -207,12 +230,12 @@ in cui il modello grande la taglia.
   byte dei pesi no. Non dipende da $n$ solo finché si trascurano i byte di
   ingressi e uscite, il che vale per $k \ll n$.
 - Scrivere una parola alla volta (la generazione autoregressiva) impone
-  $k = 1$ per passo, quindi è strutturalmente legata alla banda (a sedici
-  bit $I = 1$, contro un
-  ginocchio che sugli acceleratori sta nell’ordine delle centinaia); l’elaborazione del testo in ingresso
-  ha $k$ pari alla lunghezza della sequenza ed è legata al calcolo. Sono lo
-  stesso modello nei due regimi opposti, ed è la ragione per cui le due fasi si
-  misurano con due grandezze separate.
+  $k = 1$ per passo, quindi è strutturalmente legata alla banda: a sedici bit
+  $I = 1$, contro un ginocchio che sugli acceleratori sta nell’ordine delle
+  centinaia (161 su A100, 295 su H100). L’elaborazione del testo in ingresso
+  ha $k$ pari alla lunghezza della sequenza, ed è legata al calcolo solo quando
+  $k$ supera il ginocchio. Sono lo stesso modello in due regimi diversi, ed è la
+  ragione per cui le due fasi si misurano con due grandezze separate.
 - Le tre mosse a modello invariato abbassano il costo di ogni parola
   scritta, ma da lati diversi del rapporto $I$. Il raggruppamento delle
   richieste e la decodifica speculativa alzano $k$ a parità di byte dei pesi
@@ -225,25 +248,30 @@ in cui il modello grande la taglia.
   contesto toglie proiezioni dell'ordine di $n^2$ operazioni e aggiunge la
   lettura di due vettori dell'ordine di $n$ numeri, con $n$ la larghezza dello
   strato.
-- Nessuna delle tre appartiene a questo capitolo, perché nessuna cambia il
-  modello. La cache la costruisce la {doc}`sezione sui grandi modelli
-  linguistici </Transformers/llm>`; il raggruppamento delle richieste e la
-  decodifica speculativa la sezione su LLMOps; e il modo di misurare
-  separatamente i due regimi la sezione sulle metriche di servizio, tutte e due
-  in MLOps.
+- Nessuna delle tre cambia il modello, e per questo stanno altrove: la cache
+  la costruisce la {doc}`sezione sui grandi modelli linguistici
+  </Transformers/llm>`; il raggruppamento delle richieste e la decodifica
+  speculativa la {doc}`sezione su LLMOps </MLOps/llmops>`; il modo di misurare
+  separatamente i due regimi la {doc}`sezione sulle metriche di servizio
+  </MLOps/metriche-di-servizio>`, tutte e due in MLOps. Altre risposte toccano
+  il modello o il kernel: l’attenzione con meno teste per chiavi e valori, la
+  mixture of experts, FlashAttention.
 ```
 
 `````
 
-Le tre leve si pagano, ed è la cosa da portarsi dietro più dell’elenco
-delle tecniche. Arrotondare a otto bit costa l’uno per cento e a quattro molto
-di più; potare novanta pesi su cento costa un punto di accuratezza e, sul conto
-che quasi tutti eseguono, non regala un millisecondo; imitare un maestro costa
-tutti gli errori del maestro. Il
-prezzo cambia da un modello all'altro, e chi ne adotta una senza misurarlo sul
-proprio sta scegliendo alla cieca.
+Le tre leve si pagano, e il prezzo conta più dell’elenco delle tecniche.
+Arrotondare a otto bit sposta l’uscita di uno strato dell’uno per cento e a
+quattro molto di più, e quanto costi in accuratezza lo dice soltanto la prova
+sul modello; potare novanta pesi su cento costa un punto di accuratezza e,
+sulla moltiplicazione densa che quasi tutti eseguono, non regala un
+millisecondo; imitare un maestro vuol dire prenderne anche gli errori, e un
+maestro sbagliato fa peggio di nessuno. Il prezzo cambia da un modello
+all'altro, e chi ne adotta una senza misurarlo sul proprio sta scegliendo alla
+cieca.
 
-Una domanda è rimasta sottintesa, perché i conti delle tre leve la usavano
-senza farla: perché una rete sia fatta di molti strati sottili invece che di
-uno solo largo. È la domanda del {doc}`capitolo sul deep learning
-</DeepLearning/overview>`.
+La tabella dei conti per byte guarda uno strato solo, e un modello vero ne
+mette in fila decine, uno dopo l’altro. Perché una rete sia fatta di molti
+strati sottili invece che di uno solo largo è la domanda del {doc}`capitolo sul
+deep learning </DeepLearning/overview>`, che ci risponde fin dalla sua prima
+pagina, sotto il titolo «Profondo, non solo largo».

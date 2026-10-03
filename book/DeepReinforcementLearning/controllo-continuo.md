@@ -1,16 +1,17 @@
 # Controllo continuo: DDPG, TD3, SAC
 
 Messa da parte la ricerca che pensa prima di muovere, si torna alle mosse
-decise d'istinto. Un joystick Atari ha nove posizioni: su, giù, sinistra,
-destra, le quattro diagonali, il centro. Il Deep Q-Network sceglie fra queste
-guardando i voti di tutte e nove e tenendo il più alto: nel codice l'operazione
-si chiama `argmax`, e restituisce *quale* voce ha il voto massimo, non il voto.
-Ma prova a immaginare un braccio robotico con sette articolazioni, o un robot a
-quattro zampe che deve imparare a camminare. A ogni istante il controllore non
-decide "sinistra o destra": decide *quanta spinta* dare a ciascun motore, un
-numero con la virgola, magari negativo per frenare, magari $3{,}4$, magari
-$3{,}41$. Non c'è un menu di mosse da scorrere, ma un continuo di forze da
-dosare.
+decise d'istinto. Un joystick Atari ha nove posizioni (su, giù, sinistra,
+destra, le quattro diagonali, il centro), che con il pulsante diventano
+diciotto azioni, e molti giochi ne usano meno: *Breakout* quattro. Il Deep
+Q-Network sceglie fra le azioni del gioco guardando il valore di ciascuna e
+tenendo il più alto: nel codice l'operazione si chiama `argmax`, e restituisce
+*quale* voce ha il valore massimo, non il valore. Ma prova a immaginare un
+braccio robotico con sette giunti, le sue articolazioni, o un robot a quattro
+zampe che deve imparare a camminare. A ogni istante chi lo comanda non decide
+"sinistra o destra": decide *quanta spinta* dare a ciascun motore, un numero
+con la virgola, magari negativo per frenare, magari $3{,}4$, magari $3{,}41$.
+Non c'è un menu di mosse da scorrere, ma un continuo di forze da dosare.
 
 È lo scoglio annunciato in fondo alla {doc}`sezione su DQN <dqn>`. Prendere il
 voto più alto vuol dire scorrere le mosse una per una: con un joystick si può,
@@ -18,20 +19,18 @@ con uno sterzo, un acceleratore o sette giunti che si muovono insieme le
 combinazioni sono infinite e non si scorre più niente.
 
 I metodi a {doc}`gradiente di policy <policy-gradient>` (REINFORCE,
-attore-critico, A3C, PPO) su questo non hanno problemi: imparano a decidere,
-non a votare, e una quantità da dosare la sanno produrre. Ma hanno due difetti
-loro. Il primo: imparano soltanto dalla strategia che stanno giocando in quel
-momento (in gergo sono *on-policy*, il contrario dell’*off-policy* di DQN), e
-quindi ogni esperienza serve finché la strategia che l'ha prodotta è ancora
-quella di adesso, cioè per pochi aggiornamenti (PPO la ripassa qualche volta,
-non di più), e poi si butta. Il secondo: il loro
-apprendimento
-balla, cioè la stessa strategia, rigiocata, dà correzioni molto diverse fra
-loro. Per un robot vero, dove ogni tentativo costa secondi di usura reale, sono
-due lussi che non ci si può permettere.
+attore-critico, A3C, PPO) su questo non hanno problemi: imparano direttamente
+la policy, e una quantità da dosare la sanno produrre. Hanno però due limiti.
+Sono *on-policy*, il contrario dell’*off-policy* di DQN: ogni esperienza serve
+finché la policy che l'ha prodotta è ancora quella di adesso, cioè per pochi
+aggiornamenti (PPO la riusa per qualche passata, non di più), e poi si butta.
+E le loro stime hanno varianza alta: la stessa policy, rigiocata, dà gradienti
+molto diversi fra loro. Su un robot vero, dove ogni tentativo costa tempo e
+usura, sono due costi pesanti.
 
-Servono metodi che uniscano le due virtù: mosse da dosare, come nei gradienti di
-policy, e riuso delle esperienze passate, come nel quaderno di DQN.
+Servono metodi che uniscano le due virtù: azioni da dosare, come nei gradienti
+di policy, e riuso delle esperienze passate con la memoria di replay, come in
+DQN.
 
 ## Il problema del controllo continuo
 
@@ -64,25 +63,37 @@ Nel controllo continuo lo spazio delle azioni è $\mathcal{A}\subseteq
 sterzo, l'accelerazione). Il Q-learning sceglie l'azione con
 
 $$
-a^\star = \arg\max_{a\in\mathcal{A}} Q(s,a),
+\mathbf{a}^\star = \arg\max_{\mathbf{a}\in\mathcal{A}} Q(s,\mathbf{a}),
 $$
 
 un problema di ottimizzazione da risolvere *a ogni passo* e per ogni stato. Con
 $\mathcal{A}$ discreto e piccolo è una scansione; con $\mathcal{A}$ continuo è
-un'ottimizzazione non convessa in $\mathbb{R}^n$, impraticabile *online*. La
-soluzione è approssimare quel massimo con una policy parametrica $\mu_\theta(s)$
-che restituisce direttamente l'azione, addestrata in modo che $\mu_\theta(s)
-\approx \arg\max_a Q(s,a)$. Vogliamo inoltre un metodo *off-policy*, che riusi
-un buffer di esperienze passate come DQN {cite}`mnih2015human`, per essere
-campione-efficiente {cite}`sutton2018reinforcement`.
+un'ottimizzazione non convessa in $\mathbb{R}^n$, impraticabile *online*. Le
+alternative che conservano l’$\arg\max$ lo rendono trattabile in due modi:
+restringendo $Q$ a una forma quadratica nell'azione, dove il massimo si scrive
+in forma chiusa (NAF {cite}`gu2016continuous`), oppure cercandolo per
+campionamento con il *cross-entropy method* (QT-Opt
+{cite}`kalashnikov2018qtopt`); discretizzare ciascuna delle $n$ componenti in
+$k$ valori, invece, dà $k^n$ azioni da scorrere. La via più seguita è un'altra:
+approssimare quel massimo con una policy parametrica
+$\boldsymbol{\mu}_\theta(s)$ che restituisce direttamente l'azione, addestrata
+in modo che
+$\boldsymbol{\mu}_\theta(s) \approx \arg\max_{\mathbf{a}} Q(s,\mathbf{a})$.
+Vogliamo inoltre un metodo *off-policy*, che riusi un buffer di esperienze
+passate come DQN {cite}`mnih2015human`, per essere campione-efficiente
+{cite}`sutton2018reinforcement`.
 
 `````
 
 ## DDPG: un attore deterministico guidato dal critico
 
-Il primo algoritmo a tenere insieme le due virtù appena chieste è **DDPG**,
+Il primo algoritmo a tenere insieme le due virtù appena chieste con reti
+profonde, su compiti di controllo con molti gradi di libertà, è **DDPG**,
 *Deep Deterministic Policy Gradient*, presentato da Lillicrap e colleghi di
-DeepMind nel 2016 {cite}`lillicrap2016continuous`.
+DeepMind nel 2016 {cite}`lillicrap2016continuous`. L'attore-critico con
+policy deterministica esisteva già, anche con reti neurali piccole; il
+contributo di DDPG è averlo reso stabile su reti profonde portandoci gli
+accorgimenti di DQN.
 
 L'idea è tenere due reti che collaborano. L’attore guarda la situazione e
 propone un'azione precisa: non un ventaglio di possibilità con le loro
@@ -133,31 +144,37 @@ garantisce: è una scelta pratica.
 
 `````{tab} Superiore
 
-In simboli: l'attore è una policy deterministica $\mu_\theta(s)$, che
-restituisce direttamente il vettore delle azioni invece di una distribuzione su
-di esse; il critico è $Q_\phi(s,a)$, con l'azione fra gli ingressi. L'obiettivo
-vero è il ritorno atteso di $\mu_\theta$, e il **deterministic policy gradient
-theorem** {cite}`silver2014deterministic` ne dà il gradiente come
-$\mathbb{E}_{s\sim\rho^{\mu}}\big[\nabla_a Q^{\mu}(s,a)\big|_{a=\mu_\theta(s)}
-\nabla_\theta\mu_\theta(s)\big]$, con $\rho^\mu$ la distribuzione scontata
-degli stati che $\mu_\theta$ visita e $Q^\mu$ il suo valore vero: come nel
-teorema del gradiente di policy stocastico, la dipendenza degli stati visitati
-da $\theta$ non va derivata. DDPG sostituisce $Q^\mu$ con il critico e
-$\rho^\mu$ con il buffer, e sul surrogato $\hat
-J(\theta)=\mathbb{E}_{s\sim\mathcal{D}}[Q_\phi(s,\mu_\theta(s))]$ la regola
-della catena dà:
+In simboli: l'attore è una policy deterministica $\boldsymbol{\mu}_\theta(s)$,
+che restituisce direttamente il vettore delle azioni invece di una distribuzione
+su di esse; il critico è $Q_\phi(s,\mathbf{a})$, con l'azione fra gli ingressi.
+L'obiettivo vero è il ritorno atteso di $\boldsymbol{\mu}_\theta$, e il
+**deterministic policy gradient theorem** {cite}`silver2014deterministic` ne dà
+il gradiente come
+$\mathbb{E}_{s\sim\rho^{\mu}}\big[\nabla_{\mathbf{a}} Q^{\mu}(s,\mathbf{a})
+\big|_{\mathbf{a}=\boldsymbol{\mu}_\theta(s)}
+\nabla_\theta\boldsymbol{\mu}_\theta(s)\big]$,
+con $\rho^\mu$ la distribuzione scontata degli stati che
+$\boldsymbol{\mu}_\theta$ visita e $Q^\mu$ il suo valore vero: come nel teorema
+del gradiente di policy stocastico, la dipendenza degli stati visitati da
+$\theta$ non va derivata. DDPG sostituisce $Q^\mu$ con il critico e $\rho^\mu$
+con il buffer, e sul surrogato
+$\hat J(\theta)=
+\mathbb{E}_{s\sim\mathcal{D}}[Q_\phi(s,\boldsymbol{\mu}_\theta(s))]$
+la regola della catena dà:
 
 $$
 \nabla_\theta \hat J(\theta) =
 \mathbb{E}_{s\sim \mathcal{D}}\Big[\,
-\nabla_a Q_\phi(s,a)\big|_{a=\mu_\theta(s)}\;
-\nabla_\theta \mu_\theta(s)
+\nabla_{\mathbf{a}} Q_\phi(s,\mathbf{a})
+\big|_{\mathbf{a}=\boldsymbol{\mu}_\theta(s)}\;
+\nabla_\theta \boldsymbol{\mu}_\theta(s)
 \,\Big].
 $$
 
-Il primo fattore, $\nabla_a Q_\phi$, è la pendenza del critico *rispetto
-all'azione*: dice come cambiare $a$ per aumentare il valore. Il secondo,
-$\nabla_\theta \mu_\theta$, propaga quella direzione ai parametri dell'attore.
+Il primo fattore, $\nabla_{\mathbf{a}} Q_\phi$, è la pendenza del critico
+*rispetto all'azione*: dice come cambiare $\mathbf{a}$ per aumentare il valore.
+Il secondo, $\nabla_\theta \boldsymbol{\mu}_\theta$, propaga quella direzione ai
+parametri dell'attore.
 
 Un passaggio, qui, è un'approssimazione e non un'uguaglianza, e conviene non
 farselo scivolare addosso. Il teorema vale per stati distribuiti secondo
@@ -168,25 +185,25 @@ regola della catena: è una scelta, ed è la stessa che si fa in tutti i metodi
 attore-critico off-policy. Il critico si addestra sul bersaglio di Bellman
 
 $$
-y = r + \gamma\, Q_{\phi'}\!\big(s', \mu_{\theta'}(s')\big),
+y = r + \gamma\, Q_{\phi'}\!\big(s', \boldsymbol{\mu}_{\theta'}(s')\big),
 $$
 
-dove $\phi'$ e $\theta'$ sono i parametri delle reti target, aggiornate con
-uno scorrimento lento (*Polyak averaging*) $\phi' \leftarrow \tau\phi +
-(1-\tau)\phi'$, con $\tau\ll 1$ (questo $\tau$ è un numero, il peso dello
-scorrimento, e non ha niente a che vedere con la traiettoria $\tau$ del
-gradiente di policy). L'esplorazione avviene aggiungendo rumore
-all'azione in fase di raccolta, $a = \mu_\theta(s) + \epsilon$: nel paper
-originale $\epsilon$ è un processo di Ornstein-Uhlenbeck (rumore temporalmente
-correlato, utile in sistemi con inerzia), ma nella pratica un semplice rumore
-gaussiano indipendente funziona altrettanto bene.
+dove $\phi'$ e $\theta'$ sono i parametri delle reti target, aggiornate con uno
+scorrimento lento (*Polyak averaging*)
+$\phi' \leftarrow \tau\phi + (1-\tau)\phi'$, con $\tau\ll 1$ (questo $\tau$ è un
+numero, il peso dello scorrimento, e non ha niente a che vedere con la
+traiettoria $\tau$ del gradiente di policy). L'esplorazione avviene aggiungendo
+rumore all'azione in fase di raccolta,
+$\mathbf{a} = \boldsymbol{\mu}_\theta(s) + \boldsymbol{\epsilon}$: nel paper
+originale $\boldsymbol{\epsilon}$ è un processo di Ornstein-Uhlenbeck (rumore
+temporalmente correlato, utile in sistemi con inerzia), ma nella pratica un
+semplice rumore gaussiano indipendente funziona altrettanto bene.
 
 `````
 
 ## Perché DDPG è fragile
 
-DDPG funziona, ma chi lo ha usato sul serio lo descrive come nervoso. Due
-problemi ne minano la stabilità.
+DDPG funziona, ma è fragile, e due problemi ne minano la stabilità.
 
 Il primo è la sovrastima del valore, lo stesso male che affliggeva DQN. Il
 critico ha errori di stima in ogni direzione; l'attore, addestrato a cercare le
@@ -198,8 +215,11 @@ manopole che si decidono prima di cominciare e non si imparano: la velocità con
 cui le reti si correggono, quanto rumore aggiungere, quanto farle grandi.
 Ritoccarne una di poco può fare la differenza fra un agente che impara a
 camminare e uno che crolla a terra. E non serve nemmeno ritoccarla: basta
-rilanciare lo stesso identico addestramento cambiando il seme, cioè il numero da
-cui parte il sorteggio interno, e i risultati possono essere molto diversi.
+rilanciare lo stesso identico addestramento cambiando soltanto il seme, e i
+risultati possono essere molto diversi. Lo hanno misurato Henderson e colleghi
+mettendo a confronto DDPG, TRPO, PPO e ACKTR: a parità di tutto il resto, gruppi
+di semi diversi danno curve di apprendimento statisticamente diverse
+{cite}`henderson2018deep`.
 
 ## TD3: tre correzioni chirurgiche
 
@@ -216,8 +236,8 @@ Due giudici, non uno. Il primo trucco combatte l'ottimismo del critico
 tenendo *due* critici invece di uno, e fidandosi sempre del più prudente: per
 calcolare il valore di riferimento si prende il minimo dei due voti. Se un
 giudice si è illuso e ha dato un voto troppo alto, l'altro fa da freno. È come
-chiedere un preventivo a due meccanici e regolarsi sul più cauto: si sbaglia
-meno per eccesso.
+far stimare la propria casa da due agenti immobiliari e fidarsi di quello che
+dice la cifra più bassa: ci si illude di meno.
 
 E vale l'avvertenza già vista per il Double DQN, perché è la stessa: i due
 giudici non sono estranei fra loro, hanno studiato sugli stessi dati e inseguito
@@ -251,42 +271,45 @@ addestrati sullo stesso bersaglio, costruito con il *minimo* delle due reti
 target:
 
 $$
-y = r + \gamma \min_{i=1,2} Q_{\phi'_i}\!\big(s', \tilde a'\big),
+y = r + \gamma \min_{i=1,2} Q_{\phi'_i}\!\big(s', \tilde{\mathbf{a}}'\big),
 $$
 
-dove $\tilde a'$ è l'azione dell'attore target *sfumata dal rumore*, definita
-poco più sotto dal *target policy smoothing*.
+dove $\tilde{\mathbf{a}}'$ è l'azione dell'attore target *sfumata dal rumore*,
+definita poco più sotto dal *target policy smoothing*.
 
 Prendere il minimo introduce un bias *pessimista* che compensa la sovrastima:
 poiché l'errore che si propaga è il più piccolo dei due, il valore tende a non
 gonfiarsi. Vale però lo stesso caveat visto per il Double DQN, ed è la stessa
-ragione: i due critici sono addestrati sullo stesso bersaglio e sugli
-stessi dati, quindi i loro errori sono correlati, e il minimo di due stime
-correlate non elimina il bias, lo sposta, scambiando tipicamente una sovrastima
-con una moderata sottostima. È un correttivo che funziona in pratica, non una
-cura. **(b) Delayed policy updates.** L'attore e le reti target si aggiornano
-ogni $d$ passi del critico (tipicamente $d=2$): riducendo la frequenza degli
+ragione: i due critici sono addestrati sullo stesso bersaglio e sugli stessi
+dati, quindi i loro errori sono correlati, e il minimo di due stime correlate
+non elimina il bias, lo sposta, scambiando tipicamente una sovrastima con una
+moderata sottostima. È un correttivo che funziona in pratica, non una cura.
+**(b) Delayed policy updates.** L'attore e le reti target si aggiornano ogni $d$
+passi del critico (tipicamente $d=2$): riducendo la frequenza degli
 aggiornamenti dell'attore si abbassa la varianza e si evita che insegua stime
-ancora immature. **(c) Target policy smoothing.** L'azione target è
-"regolarizzata" da rumore troncato,
+ancora immature. L'attore, poi, sale lungo il gradiente di $Q_{\phi_1}$
+soltanto, non del minimo dei due critici. **(c) Target policy smoothing.**
+L'azione target è "regolarizzata" da rumore troncato,
 
 $$
-\tilde a' = \mu_{\theta'}(s') + \epsilon,
-\qquad \epsilon \sim \operatorname{clip}\big(\mathcal{N}(0,\sigma^2),\,-c,\,c\big),
+\tilde{\mathbf{a}}' = \boldsymbol{\mu}_{\theta'}(s') + \boldsymbol{\epsilon},
+\qquad \boldsymbol{\epsilon} \sim
+\operatorname{clip}\big(\mathcal{N}(\mathbf{0},\sigma^2\mathbf{I}),
+\,-c,\,c\big),
 $$
 
 dove $\sigma$ è l'ampiezza del rumore e $c$ la soglia oltre la quale viene
-troncato (nel paper $\sigma = 0{,}2$ e $c = 0{,}5$), così che il bersaglio sia
-liscio rispetto all'azione: previene lo
-sfruttamento, da parte dell'attore, di picchi acuti ed erronei nella superficie
-del critico. Dei due problemi di DDPG, TD3 attacca frontalmente la sovrastima,
-con il clipped double-Q e il target smoothing; il *delayed policy update* cura
-un problema che nell'elenco non c'era e va aggiunto, cioè
-l'attore che insegue stime ancora immature. Sull'ipersensibilità agli
-iperparametri, invece, TD3 non promette nulla: ne attenua i sintomi perché
-l'addestramento è meno nervoso, non perché il problema sia risolto. Il valore
-dell'algoritmo sta tutto lì: resta concettualmente DDPG, e dove DDPG è nervoso in
-genere non lo è.
+troncato (nel paper $\sigma = 0{,}2$ e $c = 0{,}5$; nell'implementazione degli
+autori l'azione così ottenuta viene anche riportata dentro l'intervallo delle
+azioni ammesse), così che il bersaglio sia liscio rispetto all'azione: previene
+lo sfruttamento, da parte dell'attore, di picchi acuti ed erronei nella
+superficie del critico. Dei due problemi di DDPG, TD3 attacca frontalmente la
+sovrastima, con il clipped double-Q e il target smoothing; il *delayed policy
+update* cura un problema che nell'elenco non c'era e va aggiunto, cioè l'attore
+che insegue stime ancora immature. Sull'ipersensibilità agli iperparametri,
+invece, TD3 non promette nulla: ne attenua i sintomi perché l'addestramento è
+meno nervoso, non perché il problema sia risolto. Il valore dell'algoritmo sta
+tutto lì: resta concettualmente DDPG, e dove DDPG è nervoso in genere non lo è.
 
 `````
 
@@ -334,13 +357,16 @@ pesca prima un numero da un sacchetto, poi applica la sua regola a quel numero
 e ne ricava il percorso del giorno. Con il numero tenuto fermo la domanda ha
 una risposta, e la regola si può ritoccare nella direzione giusta.
 
-C'è poi un tetto alla deviazione: oltre un certo giro si arriva tardi, e la
-regola riporta dentro il tetto qualunque numero le venga passato. Ma riportare
-dentro ammucchia: due numeri molto diversi, se sono tutti e due grandi, danno
-quasi lo stesso giro largo. Il pendolare sembra allora più vario di quanto sia,
-perché la varietà dei numeri pescati non è più quella dei percorsi che fa. Chi
-la conta sui numeri gira la manopola della temperatura leggendo un valore
-falso, e guasta proprio la cosa per cui SAC è stato inventato.
+C'è poi un tetto alla deviazione, perché oltre un certo giro si arriva tardi: la
+regola schiaccia sotto il tetto qualunque numero le venga passato, e i numeri
+grandi finiscono tutti a ridosso del limite. Due numeri molto diversi, se sono
+tutti e due grandi, danno quasi lo stesso giro largo. Il pendolare sembra allora
+più vario di quanto sia: i numeri pescati dal sacchetto sono vari, i percorsi
+no. Chi misura la varietà sui numeri, invece che sui percorsi, gira la manopola
+della temperatura leggendo un valore falso, e guasta proprio la cosa per cui SAC
+è stato inventato. Il rimedio è un conto in più: si toglie dalla misura la parte
+di varietà che il tetto ha schiacciato, e si torna a contare quella dei
+percorsi.
 
 `````
 
@@ -364,9 +390,9 @@ prematuramente su un'unica azione, migliorando l'esplorazione e la robustezza.
 Il critico impara un *soft* Q-value con bersaglio
 
 $$
-y = r + \gamma\Big(\min_{i=1,2} Q_{\phi'_i}(s', a') - \alpha \log
-\pi_\theta(a'\mid s')\Big),
-\qquad a' \sim \pi_\theta(\cdot\mid s'),
+y = r + \gamma\Big(\min_{i=1,2} Q_{\phi'_i}(s', \mathbf{a}') - \alpha \log
+\pi_\theta(\mathbf{a}'\mid s')\Big),
+\qquad \mathbf{a}' \sim \pi_\theta(\cdot\mid s'),
 $$
 
 che usa, come TD3, il minimo dei due critici e aggiunge il termine di entropia
@@ -385,14 +411,17 @@ $$
 $$
 
 così il caso sta tutto in $\boldsymbol{\epsilon}$ e il gradiente scorre lungo
-$\boldsymbol{\mu}_\theta$ e $\boldsymbol{\sigma}_\theta$; è lo stesso trucco con
-cui si addestra il VAE nei {doc}`modelli latenti </ModelliLatenti/overview>`.
-La $\tanh$ schiaccia l'azione nell'intervallo ammesso, e
-non è gratis: cambia la densità, e nel $\log\pi_\theta$ va sottratto il
-termine di correzione $\sum_j \log\big(1-\tanh^2(u_j)\big)$, dove
-$\mathbf{u}$ è l'azione prima dello schiacciamento. Dimenticarlo è l'errore
-d'implementazione classico di SAC, e cade nel punto peggiore: falsa
-l'entropia, cioè proprio il termine che l'algoritmo esiste per dosare.
+$\boldsymbol{\mu}_\theta$ e $\boldsymbol{\sigma}_\theta$, che qui sono media e
+deviazione della gaussiana e non più, come in DDPG, l'intera policy. È lo stesso
+trucco con cui si addestra il VAE, che il capitolo sui modelli latenti deriverà
+nella {doc}`sezione sul salto probabilistico
+</ModelliLatenti/il-salto-probabilistico>`. La $\tanh$ schiaccia l'azione
+nell'intervallo ammesso, e non è gratis: cambia la densità, e nel
+$\log\pi_\theta$ va sottratto il termine di correzione
+$\sum_j \log\big(1-\tanh^2(u_j)\big)$, dove $\mathbf{u}$ è l'azione prima dello
+schiacciamento. Dimenticarlo è l'errore d'implementazione classico di SAC, e
+cade nel punto peggiore: falsa l'entropia, cioè proprio il termine che
+l'algoritmo esiste per dosare.
 
 La temperatura $\alpha$ non va fissata a mano: nella versione matura di SAC
 {cite}`haarnoja2018applications` è auto-regolata dal problema vincolato che
@@ -405,17 +434,25 @@ alza $\alpha$ quando l'entropia scende sotto la soglia e la abbassa quando la
 supera; l'attore intanto minimizza
 $\mathbb{E}_{s\sim\mathcal{D},\,\boldsymbol{\epsilon}}\big[\alpha\log
 \pi_\theta(\mathbf{a}_\theta\mid s) - \min_{i=1,2}Q_{\phi_i}(s,
-\mathbf{a}_\theta)\big]$, con $\mathbf{a}_\theta$ l'azione riparametrizzata. Il
-risultato è un algoritmo robusto e campione-efficiente, e la ragione della sua
-fortuna è precisamente questa: l'esplorazione smette di essere un parametro da
-indovinare a mano e diventa una conseguenza dell'obiettivo.
+\mathbf{a}_\theta)\big]$, con $\mathbf{a}_\theta$ l'azione riparametrizzata.
+
+Che cosa si sa garantire? Nel caso tabellare, con $|\mathcal{A}|$ finito,
+alternare valutazione e miglioramento *soft* della policy converge alla policy
+ottima di massima entropia {cite}`haarnoja2018soft`; con azioni continue e reti
+non c'è garanzia, e il vantaggio di SAC su DDPG è empirico: gli autori lo
+trovano più stabile, con risultati simili fra semi diversi. La prima versione
+chiedeva di tarare soprattutto la scala delle ricompense, che però equivale a
+una scelta della temperatura, e la temperatura regolata in automatico la rende
+superflua. La ragione della sua fortuna è questa: l'esplorazione smette di
+essere un parametro da indovinare a mano e diventa una conseguenza
+dell'obiettivo.
 
 `````
 
 ## Lo scheletro dell'aggiornamento, in PyTorch
 
 I tre algoritmi condividono lo stesso ciclo off-policy: si pesca un pugno di
-esperienze passate dal quaderno del replay, si aggiorna il critico verso il
+esperienze passate dalla memoria di replay, si aggiorna il critico verso il
 bersaglio che insegue e l'attore verso l'azione che il critico premia. Ecco il
 cuore nella variante DDPG, senza gli orpelli; TD3 aggiunge il secondo critico e
 il rumore sul bersaglio, SAC il premio alla varietà, che in termini tecnici è
@@ -435,16 +472,17 @@ import torch.nn.functional as F
 # --- bersaglio di Bellman: non si deriva, usa le reti target ---
 with torch.no_grad():
     a_next = mu_target(s_next)                     # azione greedy dell'attore target
-    q_next = q_target(s_next, a_next)              # Q^-(s', mu^-(s'))
-    y = r + gamma * q_next * (1 - fine)            # se terminale resta solo r
+    q_next = q_target(s_next, a_next).squeeze(-1)  # Q^-(s', mu^-(s')): (B,)
+    y = r + gamma * q_next * (1 - fine)            # (B,): se finisce, solo r
 
 # --- aggiornamento del critico: avvicina Q(s, a) al bersaglio ---
-q = q_net(s, a)                                    # Q sulle azioni realmente eseguite
-# ATTENZIONE alla forma: q e y devono essere entrambi (B,). Se q_net restituisce
-# (B, 1) e y e' (B,), mse_loss non solleva niente: stampa un UserWarning, fa
-# broadcasting a (B, B) e minimizza la loss sbagliata. E chi non legge i warning
-# non se ne accorge: e' l'errore piu' comune nelle implementazioni di DDPG.
-perdita_critico = F.mse_loss(q.squeeze(-1), y)
+q = q_net(s, a).squeeze(-1)                   # Q delle azioni eseguite: (B,)
+# ATTENZIONE alla forma: q e y devono essere entrambi (B,). Se si schiaccia solo
+# uno dei due, il broadcasting porta il confronto a (B, B): mse_loss non solleva
+# niente, stampa un UserWarning e minimizza la loss sbagliata. Chi non legge i
+# warning non se ne accorge: e' l'errore piu' comune nelle implementazioni di
+# DDPG.
+perdita_critico = F.mse_loss(q, y)
 opt_critico.zero_grad()
 perdita_critico.backward()
 opt_critico.step()
@@ -463,28 +501,29 @@ with torch.no_grad():
         p_t.mul_(1 - tau).add_(tau * p)
 ```
 
-Il segno meno nella `perdita_attore` è tutto ciò che serve. L'ottimizzatore (il
-pezzo di libreria che ritocca i pesi a ogni passo, qui `opt_attore`) sa fare una
-cosa sola, *far scendere* il numero che gli si dà: quindi per far salire il voto
-del critico gli si dà da far scendere quel voto cambiato di segno. Il resto lo fa la
-retropropagazione, cioè il meccanismo con cui una rete si corregge partendo
-dall'errore in uscita e risalendo verso i pesi: qui parte dal voto, attraversa
-il critico, arriva all'azione, e da lì entra nei parametri dell'attore. È
-esattamente il meccanismo raccontato all'inizio della sezione, quello per cui il
-critico non dice solo *quanto vale* l'azione ma anche *da che parte* spostarla
-per farla valere di più.
+Il segno meno nella `perdita_attore` è tutto ciò che serve: l'ottimizzatore
+minimizza, e minimizzare $-Q_\phi(s,\boldsymbol{\mu}_\theta(s))$ vuol dire far
+salire il valore che il critico dà all'azione dell'attore. La retropropagazione
+parte da quel valore, attraversa il critico, arriva all'azione e da lì entra nei
+parametri dell'attore: è la regola della catena del gradiente deterministico di
+policy, calcolata dalla libreria, ed è il motivo per cui il critico non dice
+solo *quanto vale* l'azione ma anche *da che parte* spostarla per farla valere
+di più.
 
 ## Onestà sui limiti
 
-Questi tre metodi hanno un pregio grosso: riusano ogni esperienza molte volte,
-pescandola dal quaderno, e quindi imparano da molte meno prove nel mondo. È
-decisivo quando ogni tentativo consuma un robot vero. Il prezzo è la
-stabilità. DDPG, in particolare, è fragile e capriccioso; TD3 e SAC lo
-domano, ma restano più delicati da mettere a punto di un PPO ben tarato (PPO è
-l'algoritmo del gradiente di policy che «perdona» gli errori di
-taratura), e per questo spesso si preferisce lui. Non esiste il vincitore
-assoluto: la scelta dipende da quanto costa una prova e da quanta cura si può
-dedicare alla messa a punto.
+Questi tre metodi riusano ogni esperienza molte volte, pescandola dalla memoria
+di replay, e quindi imparano da molte meno prove nel mondo: è decisivo quando
+ogni tentativo consuma un robot vero. Il prezzo è un addestramento più delicato
+da mettere a punto, perché oltre agli iperparametri della rete contano il
+rapporto fra aggiornamenti e passi di raccolta, la scala delle ricompense e il
+rumore di esplorazione; DDPG è il più fragile dei tre, TD3 e SAC lo sono meno.
+Dove i campioni costano poco, invece, il vantaggio conta meno: con migliaia di
+robot simulati in parallelo si usa spesso PPO, che quell'esperienza fresca la
+consuma tutta, e Rudin e colleghi insegnano così a camminare a un robot a
+quattro zampe in meno di venti minuti di addestramento
+{cite}`rudin2022learning`. Non esiste il vincitore assoluto: la scelta dipende
+da quanto costa una prova e da quanta cura si può dedicare alla messa a punto.
 
 C'è poi un limite che nessuno di questi algoritmi risolve da sé, il
 **sim-to-real gap**, lo scarto fra simulazione e mondo fisico. Addestrare un
@@ -534,18 +573,21 @@ che porta un robot a muoversi nel mondo.
 ```{admonition} Da ricordare
 :class: important
 - Nel controllo continuo l'azione è un vettore reale: l’`argmax` di DQN è
-  intrattabile. La soluzione è un attore $\mu_\theta(s)$ che propone
-  l'azione e un critico $Q_\phi(s,a)$ che la valuta, in impianto off-policy.
+  intrattabile. La soluzione è un attore $\boldsymbol{\mu}_\theta(s)$ che
+  propone l'azione e un critico $Q_\phi(s,\mathbf{a})$ che la valuta, in
+  impianto off-policy.
 - DDPG addestra l'attore deterministico con il *deterministic policy
   gradient* (il gradiente del critico rispetto all'azione), riusando replay
   buffer e reti target ereditati da DQN; esplora aggiungendo rumore all'azione.
-- TD3 attenua la sovrastima di DDPG con tre accorgimenti: *twin critics*
-  (minimo dei due $Q$), *delayed policy updates* e *target policy smoothing*;
+- TD3 attenua la sovrastima di DDPG con due accorgimenti, *twin critics*
+  (minimo dei due $Q$) e *target policy smoothing*, e con il terzo, i *delayed
+  policy updates*, evita che l'attore insegua stime ancora immature;
   sull'ipersensibilità agli iperparametri non promette nulla.
 - SAC adotta un attore stocastico e l'obiettivo di massima entropia
   (premio + entropia, con temperatura $\alpha$ spesso auto-regolata su un
-  vincolo di entropia media minima): esplora meglio ed è robusto e
-  campione-efficiente.
+  vincolo di entropia media minima): esplora meglio, è campione-efficiente ed
+  empiricamente più stabile di DDPG; la convergenza è garantita solo nel caso
+  tabellare.
 - Off-policy significa efficienza nei campioni ma minore stabilità di
   PPO; e resta il sim-to-real gap, lo scarto tra simulazione e mondo fisico.
 ```

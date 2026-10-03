@@ -7,52 +7,56 @@ ne lamenta, perché la domanda a cui il conto a mente serve a rispondere («ci
 sto dentro?») non è cambiata.
 
 Un modello fa la stessa cosa, e per la stessa ragione. Ogni peso è un numero
-con sette o otto cifre decimali, ma quel numero non serve a nessuno preso da
-solo: serve come uno degli addendi di una somma lunga migliaia di termini, e a
-valle di quella somma c’è una decisione. Tenere tutte le cifre di ciascun
-addendo è come contare i centesimi.
+con circa sette cifre significative, ma quel numero non serve a nessuno preso
+da solo: serve come uno degli addendi di una somma lunga migliaia di termini, e
+dopo quella somma c’è una decisione. Tenere tutte le cifre di ciascun addendo è
+come contare i centesimi.
 
 ## Arrotondare, e di quanto si sbaglia
 
-Arrotondare vuol dire decidere una volta per tutte di quanto si è disposti a
-sbagliare su ogni numero, non approssimare alla buona. Quel «di quanto» ha una
-regola sola, e da lì viene tutto il resto della sezione.
+Arrotondare ai multipli di un **passo** $s$ vuol dire sbagliare al più $s/2$
+su ogni numero: scegliere il passo è scegliere di quanto si è disposti a
+sbagliare, e da questa scelta discende tutto il resto.
 
 `````{tab} Elementare
 
 Un pacco di riso da 1,29 lo segni 1,50, e una confezione d’acqua da 3,60 la
-segni 3,50: il **passo** che ti sei dato è mezzo euro, e ammetti solo i suoi
+segni 3,50: il passo che ti sei dato è mezzo euro, e ammetti solo i suoi
 multipli. Ogni prezzo scivola su quello più vicino, quindi sbagli al massimo
 venticinque centesimi, metà passo: venticinque sul riso da poco più di un euro,
 venticinque su una bottiglia di champagne da cento.
 
 Su trenta prodotti arrotondi in su e in giù senza una regola, così il peggio
-possibile, sette euro e mezzo, non ti capita mai: il totale sbaglia attorno al
-mezzo euro. E cresce piano. Per far diventare l’errore dieci volte tanto non
-bastano dieci prodotti, ce ne vogliono cento. Una rete neurale non usa mai un
-peso alla volta, ne somma centinaia, ed è nella somma che gli arrotondamenti si
+possibile, sette euro e mezzo, non ti capita mai: il totale sbaglia di qualche
+decina di centesimi. E cresce piano. Con dieci volte tanti prodotti l’errore
+diventa poco più di tre volte tanto, e per farlo diventare dieci volte tanto di
+prodotti ne servono cento volte tanti. Una rete neurale non usa mai un peso
+alla volta, ne somma centinaia, ed è nella somma che gli arrotondamenti si
 mangiano a vicenda.
 
 Regge finché il totale è grosso. Nella lista però ci sono anche i resi, che
 tolgono invece di aggiungere. Trenta importi da una decina di euro fanno
-trecento euro, e mezzo euro non lo nota nessuno. Con metà resi paghi quaranta
-euro, e il mezzo euro comincia a vedersi. Con i resi che coprono quasi tutta la
-spesa paghi un euro, e l’errore, rimasto identico, vale metà di quello che
-paghi. L’arrotondamento è lo stesso di prima; a essersi ristretto è il totale.
-In una rete succede uguale quando i numeri che somma si elidono quasi tutti: il
-risultato esce piccolo e l’errore ci pesa sopra.
+trecento euro, e mezzo euro non lo nota nessuno. Se metà sono resi, acquisti e
+resi quasi si pareggiano e il totale si fa piccolo, poniamo quaranta euro: il
+mezzo euro comincia a vedersi. Con i resi che coprono quasi tutta la spesa paghi
+un euro, e l’errore, rimasto identico, vale metà di quello che paghi.
+L’arrotondamento è lo stesso di prima; a essersi ristretto è il totale. In una
+rete succede uguale quando i numeri che somma si cancellano quasi tutti a
+vicenda: il risultato esce piccolo e l’errore ci pesa sopra.
 
 Il passo però non lo scegli tu fino in fondo. Quattro bit sono sedici importi in
-tutto, e otto se ne vanno sotto lo zero per i resi, perché un reso da mille euro
-è lontano dallo zero quanto una spesa da mille: dallo zero in su ne restano
-sette. Se il prodotto più caro costa tremilacinquecento euro il gradino vale
-cinquecento, e più stretto non può essere, o la scala finisce prima della cima e
-quel prezzo non lo sai proprio scrivere. È il più caro a decidere il passo di
-tutti gli altri.
+tutto. Uno è lo zero; otto se ne vanno sotto lo zero per i resi, perché un reso
+da mille euro è lontano dallo zero quanto una spesa da mille; sopra lo zero ne
+restano sette. Se il prodotto più caro costa tremilacinquecento euro, per
+arrivare fin lassù il gradino deve valere cinquecento: è il più caro a decidere
+il passo di tutti gli altri. Un gradino più stretto lascerebbe quel prezzo oltre
+l’ultimo gradino, e andrebbe segnato più basso di com’è; conviene soltanto
+quando i prezzi oltre la cima sono pochi e di poco, perché in cambio tutti gli
+altri si arrotondano più fini.
 
 Quando nel carrello non c’è nemmeno un reso, gli otto gradini sotto lo zero
-restano vuoti e metà scala non serve a niente. Allora la sposti tutta da una
-parte e ti segni quale gradino vale zero: i gradini utili passano da sette a
+restano vuoti, e metà dei gradini non serve a niente. Allora li sposti tutti da
+una parte e ti segni quale gradino vale zero: i gradini utili passano da sette a
 quindici senza aggiungere un bit. In cambio quel gradino, quello dello zero, te
 lo devi ricordare e portare dietro.
 
@@ -80,9 +84,20 @@ $$
 
 L’errore di arrotondamento su ciascun peso è limitato da
 $|w - \hat{w}| \le s/2$, e non dipende da $w$: è una proprietà del passo, non del
-numero. (Troncare $q$ all’intervallo rappresentabile è una prudenza che con la
-scala presa dal massimo non scatta mai: serve soltanto se la scala viene da
-altro, per esempio da una calibrazione fatta su dati diversi.)
+numero.
+
+Prendere la scala dal massimo, però, è una scelta, e a pochi bit non è la
+migliore. Con un tetto $c < \max_i |w_i|$ si pone $s = c/(2^{b-1}-1)$ e si
+tronca $q$ a $\pm(2^{b-1}-1)$: i pochi pesi oltre il tetto sbagliano di
+$|w| - c$ (l’errore di *saturazione*), e tutti gli altri si arrotondano con un
+passo più fine. Il tetto che minimizza l’errore quadratico bilancia le due
+parti, e per distribuzioni note Banner e colleghi lo ricavano in forma chiusa
+{cite}`banner2019post`; più avanti, nel conto su quanti bit servono, lo si
+cerca sui pesi della prova a ogni numero di bit. Il taglio rende perché i
+valori sacrificati sono pochi e non portano niente di speciale. Quando sono
+proprio loro a portare l’informazione, come le componenti anomale delle
+attivazioni dei modelli linguistici, tagliarli vuol dire sbagliare i numeri che
+contano.
 
 Quello che conta però è l’errore sull’uscita, non quello sul peso. Se il passo
 non supera un paio di deviazioni standard dei pesi, l’errore di arrotondamento
@@ -132,13 +147,14 @@ livelli sono $-s$, $0$ e $s$, il passo vale più di quattro deviazioni, quasi
 tutti i pesi finiscono sullo zero e l’errore è in pratica $-w$, fortemente
 anticorrelato con il peso; ma a due bit è già crollato tutto.
 
-Il punto delicato è la definizione della scala, perché $s$ è fissata dal
-massimo in valore assoluto del gruppo di numeri che condividono la scala. Un
-singolo elemento molto più grande degli altri allarga $s$ per tutti, e ogni
-altro elemento del gruppo perde risoluzione in proporzione. Finché si arrotonda
-un numero alla volta il rimedio è uno solo, cambiare chi condivide la
-scala: si restringe il gruppo, o se ne tengono fuori i pochi elementi
-anomali.
+Il punto delicato è la definizione della scala. Presa dal massimo in valore
+assoluto del gruppo di numeri che la condividono, la detta un elemento solo: se
+è molto più grande degli altri allarga $s$ per tutti, e ogni altro elemento del
+gruppo perde risoluzione in proporzione. Finché ogni numero
+si arrotonda al livello più vicino, indipendentemente dagli altri
+(*round-to-nearest*, RTN), i rimedi agiscono tutti sulla scala: la si prende da
+un tetto invece che dal massimo, oppure si cambia chi la condivide, restringendo
+il gruppo o tenendone fuori i pochi elementi anomali.
 
 Questa è la forma simmetrica, che dà per scontato che i numeri stiano
 attorno allo zero. Dove non è così (le uscite di una ReLU, per dire, sono tutte
@@ -147,8 +163,15 @@ non negative, e metà dei livelli andrebbe sprecata) si usa la forma
 che rappresenta il valore reale zero:
 
 $$
-\hat{w} = s\,(q - z), \qquad q = \mathrm{round}(w/s) + z .
+\hat{w} = s\,(q - z), \qquad q = \mathrm{round}(w/s) + z ,
 $$
+
+con $s = (\max_i w_i - \min_i w_i)/(2^b - 1)$,
+$z = \mathrm{round}(-\min_i w_i / s)$ e $q$ troncato a $[0,\, 2^b - 1]$. Su
+valori tutti non negativi la forma simmetrica usa soltanto i livelli da $0$ a
+$2^{b-1}-1$, quella asimmetrica tutti i $2^b$: il passo scende da
+$\max_i w_i/(2^{b-1}-1)$ a $\max_i w_i/(2^b-1)$, cioè poco meno della metà, ed
+è come avere un bit in più.
 
 Il meccanismo è lo stesso e il passo lo dettano sempre gli estremi del gruppo
 (nella forma simmetrica basta il più grande in valore assoluto, qui servono
@@ -168,11 +191,9 @@ Si prende una matrice di pesi, la si arrotonda a un certo numero di bit, e si
 guarda di quanto cambia il risultato della moltiplicazione, che è l’unica
 cosa che il resto della rete vedrà.
 
-Da qui in avanti il passo ha il suo nome tecnico, **scala**: è la
-stessa identica cosa, la larghezza di un gradino, e la parola serve perché
-adesso comincia a contare chi la condivide. Il conto si fa in due modi: con
-una scala sola per tutta la matrice, e con una scala ogni sessantaquattro
-pesi.
+Il passo si chiama anche **scala**, e da qui in avanti conta chi la condivide:
+il conto si fa con una scala sola per tutta la matrice e con una scala ogni
+sessantaquattro pesi.
 
 ```python
 import torch
@@ -184,21 +205,24 @@ torch.set_num_threads(1)
 
 
 def quantizza(t, bit, gruppo=None):
-    """Porta i numeri su 2**bit livelli interi e li riporta indietro.
+    """Porta i numeri sui 2**bit - 1 livelli interi da -livello a livello, e
+    li riporta indietro.
 
     Con `gruppo` la scala non e' una per tutto il tensore, ma una ogni
     `gruppo` numeri consecutivi lungo l'ultima dimensione."""
-    q = 2 ** (bit - 1) - 1
+    livello = 2 ** (bit - 1) - 1          # il passo e' massimo / livello
     if gruppo is None:
-        s = t.abs().max()
-        return torch.round(t / s * q).clamp(-q - 1, q) * s / q
+        massimo = t.abs().max()
+        return (torch.round(t / massimo * livello).clamp(-livello - 1, livello)
+                * massimo / livello)
     f = t.reshape(*t.shape[:-1], -1, gruppo)
     # il `clamp` sul denominatore non e' pedanteria: se un gruppo e' tutto di
-    # zeri la scala vale zero e la divisione restituisce `nan` senza avvisare.
+    # zeri il massimo vale zero e la divisione restituisce `nan` senza avvisare.
     # Non succede sui pesi di una rete addestrata; succede eccome su una rete
-    # potata, che e' esattamente la cosa che il capitolo invita a comporre
-    s = f.abs().amax(-1, keepdim=True).clamp(min=1e-12)
-    return (torch.round(f / s * q).clamp(-q - 1, q) * s / q).reshape(t.shape)
+    # potata, come mostra la sezione sulla potatura
+    massimo = f.abs().amax(-1, keepdim=True).clamp(min=1e-12)
+    return (torch.round(f / massimo * livello).clamp(-livello - 1, livello)
+            * massimo / livello).reshape(t.shape)
 
 
 W = torch.randn(256, 512)
@@ -216,7 +240,12 @@ for bit in (8, 6, 4, 3):
     print(f"{bit:>4} {errore(quantizza(W, bit)):>20.2f}% "
           f"{errore(quantizza(W, bit, 64)):>23.2f}%")
 
-# i due massimi da cui passa il conto del modello uniforme
+quattro = quantizza(W, 4) @ x - vero      # gli errori a quattro bit, scala sola
+print(f"a 4 bit, uscite che sbagliano piu' del proprio valore: "
+      f"{(quattro.abs() > vero.abs()).float().mean() * 100:.1f}%")
+
+# i due massimi che dettano il passo: di tutta la matrice e, in media, di un
+# gruppo da 64
 sigma = W.std()
 gruppi = W.reshape(256, -1, 64).abs().amax(-1)
 print(f"massimo di tutta la matrice: {W.abs().max() / sigma:.2f} sigma")
@@ -230,12 +259,13 @@ print(f"massimo di un gruppo da 64, in media quadratica: "
    6                 4.22%                    2.43%
    4                18.71%                   10.77%
    3                43.36%                   24.96%
+a 4 bit, uscite che sbagliano piu' del proprio valore: 11.9%
 massimo di tutta la matrice: 4.56 sigma
 massimo di un gruppo da 64, in media quadratica: 2.63 sigma
 ```
 
-Otto bit costano l’uno per cento, e a sei bit si è ancora sotto il cinque: fin
-lì si può dire che arrotondare sia quasi gratis. A quattro bit no, ed è la
+A otto bit l’uscita dello strato si sposta dell’uno per cento, e a sei bit si è
+ancora sotto il cinque: fin lì arrotondare costa poco. A quattro bit no, ed è la
 riga da guardare due volte.
 
 Quel diciotto e sette per cento conviene tradurlo, perché da solo non dice
@@ -244,42 +274,93 @@ vettore dei risultati veri, e vuol dire che l’uscita tipica dello strato è
 lontana quasi un quinto dal valore che avrebbe dovuto avere. È uno scostamento
 grosso e non un arrotondamento all’ultima cifra, e la rete lo userà come se
 fosse il risultato buono. E la distribuzione è peggiore di quel che il
-numero lascia intendere: misurato, più di un’uscita su nove sbaglia di più
-del proprio valore, e sono le più piccole, cioè proprio quelle su cui una
-decisione si gioca per poco. E lo strato dopo prende quei numeri per veri e ci
+numero lascia intendere: più di un’uscita su nove, l’11,9%, sbaglia di più del
+proprio valore, e sono le più piccole, cioè proprio quelle su cui una decisione
+si gioca per poco. E lo strato dopo prende quei numeri per veri e ci
 aggiunge il suo errore. Non c’è una formula semplice per dire quanto lo
 scostamento cresca lungo una rete di trenta strati (dipende da che cosa
-ciascuno fa), ma la direzione è una sola, e non è verso il basso.
+ciascuno fa), ma la direzione è una sola, e non è verso il basso. Quanto costi
+in accuratezza, però, lo strato da solo non lo dice, perché dipende da quanto
+sono strette le decisioni che seguono, e si misura sul modello: la rete di
+cifre della {doc}`sezione sulla potatura <meno-pesi>`, arrotondata a quattro
+bit con una scala ogni sessantaquattro pesi, classifica come prima.
 
 Quindi la frase che si sente dire, «i modelli girano a quattro bit», non
-significa che quattro bit bastino ad arrotondare. Significa che a quattro bit
-si arriva facendo qualcosa di più che arrotondare, e il resto della sezione
-è quel qualcosa.
+significa che a quattro bit basti arrotondare con una scala sola. Significa che
+a quattro bit si arriva facendo qualcosa di più, e il resto della sezione è quel
+qualcosa.
 
 La colonna di destra è il primo pezzo, ed è il più economico: invece di una
 scala sola per centotrentamila pesi se ne tiene una ogni sessantaquattro. Il
 costo si conta: a quattro bit, sessantaquattro pesi occupano trentadue byte, e
 una scala in sedici bit ne occupa due, cioè il sei per cento in più. In cambio
 l’errore si divide per un fattore 1,74, e con una costanza notevole: è lo
-stesso a otto bit come a tre.
-La ragione è quella del carrello: più piccolo è il gruppo che condivide il
+stesso a otto bit come a tre. La ragione è quella del carrello, e la dicono i
+due massimi stampati in fondo: il passo di tutta la matrice lo detta un peso a
+4,56 deviazioni standard, quello di un gruppo da sessantaquattro, in media, uno
+a 2,63, e 4,56 diviso 2,63 fa 1,73. Più piccolo è il gruppo che condivide il
 passo, meno un elemento grande può rovinare i suoi vicini.
+
+C’è un secondo modo di stringere il passo, senza scale in più: prenderlo più
+corto di quanto chiederebbe il peso più grande. I pochi pesi oltre il tetto
+finiscono schiacciati sull’ultimo gradino, e in cambio tutti gli altri si
+arrotondano più fini. Il tetto si cerca sui soli pesi, provando quelli fra una e
+cinque deviazioni standard e tenendo quello che li sbaglia di meno, e poi si
+guarda che cosa fa all’uscita.
+
+```python
+def tagliata(t, bit, tetto):
+    """Una scala sola, presa dal tetto invece che dal peso piu' grande:
+    quello che sta oltre il tetto finisce sull'ultimo gradino."""
+    livello = 2 ** (bit - 1) - 1
+    passo = tetto / livello
+    return torch.round(t / passo).clamp(-livello, livello) * passo
+
+
+print(f"{'bit':>4} {'tetto migliore':>16} {'errore':>8}")
+for bit in (8, 6, 4, 3):
+    tetti = [k / 100 * sigma for k in range(100, 501)]    # da 1 a 5 sigma
+    tetto = min(tetti, key=lambda c: (tagliata(W, bit, c) - W).pow(2).sum())
+    print(f"{bit:>4} {tetto / sigma:>10.2f} sigma "
+          f"{errore(tagliata(W, bit, tetto)):>7.2f}%")
+```
+
+```text
+ bit   tetto migliore   errore
+   8       4.00 sigma    0.95%
+   6       3.28 sigma    3.31%
+   4       2.47 sigma   11.42%
+   3       1.95 sigma   21.44%
+```
+
+A quattro bit il tetto a due deviazioni standard e mezzo porta l’errore dal
+18,7% all’11,4%, quasi quanto una scala ogni sessantaquattro pesi e senza
+nessuna scala in più da tenere; a tre bit fa meglio dei gruppi. A otto bit serve
+poco, perché il tetto migliore sta appena sotto il peso più grande. Funziona
+finché quello che si taglia è poco e non conta: se il peso più grande è il
+televisore del carrello, tagliarlo vuol dire sbagliare proprio il numero che
+decide il conto, ed è il caso delle componenti enormi.
 
 ## Le poche componenti enormi
 
-Sui pesi il problema del carrello si vede poco, perché i pesi di una rete
-addestrata sono distribuiti in modo abbastanza regolare. Sulle attivazioni,
-cioè sui numeri che scorrono da uno strato all’altro, no: nei modelli
-linguistici grandi ci sono poche componenti (una componente è uno dei
-numeri della fila che passa da uno strato al successivo, sempre nella stessa
-posizione) che arrivano a valere fino a venti volte tutte le altre
-{cite}`dettmers2022llmint8`. Nell’esperimento qui sotto il rapporto è tarato
-più in alto ancora, a trentasei volte, per rendere visibile in dieci righe un
-effetto che nei modelli veri si accumula su molti strati.
+Sui pesi dei modelli linguistici grandi il problema del carrello si vede poco:
+si arrotondano a otto bit senza difficoltà {cite}`xiao2023smoothquant`. Non
+vale per tutte le reti. Nelle reti piccole i pesi di canali diversi possono
+avere intervalli che differiscono di oltre cento volte, e qualche peso anomalo
+rende meno precisi tutti gli altri {cite}`jacob2018quantization`: è il carrello
+col televisore, e il rimedio è una scala per canale invece che per tutto lo
+strato. Sulle attivazioni dei modelli linguistici grandi, cioè sui numeri che
+scorrono da uno strato all’altro, il problema invece c’è eccome: ci sono poche
+componenti (una componente è uno dei numeri della fila che passa da uno strato
+al successivo, sempre nella stessa posizione) che arrivano a valere fino a venti
+volte tutte le altre {cite}`dettmers2022llmint8`. Nell’esperimento che segue il
+rapporto è tarato più in alto ancora, a trentasei volte, per rendere visibile in
+dieci righe un effetto che nei modelli veri si accumula su molti strati.
 
-Sono il prodotto da tremila euro dentro il carrello della spesa. E il rimedio è
-quello che verrebbe in mente a chiunque alla cassa: quel prodotto lì lo si
-conta a parte, per esteso, e si arrotonda tutto il resto.
+Sono le componenti anomale (in inglese *outlier*), il prodotto da tremila euro
+dentro il carrello della spesa. E il rimedio è quello che verrebbe in mente a
+chiunque alla cassa: quel prodotto lì lo si conta a parte, per esteso, e si
+arrotonda tutto il resto.
 
 ```python
 X = torch.randn(64, 512)
@@ -313,10 +394,11 @@ la componente enorme piu' grande vale  167.6
 
 Tre colonne su cinquecentododici, cioè lo 0,6 per cento dei numeri, tenute per
 esteso invece che arrotondate, e l’errore passa da poco più del sette per cento
-a due decimi. È la differenza fra un modello che funziona e uno che farnetica,
-e non una rifinitura: che quelle componenti siano poche e sempre nelle stesse
-posizioni è la ragione per cui `int8` è diventato praticabile sui modelli
-linguistici {cite}`dettmers2022llmint8`.
+a due decimi. Sui modelli linguistici dai 6,7 miliardi di parametri in su è la
+differenza fra arrotondare a otto bit anche le attivazioni senza perdere
+accuratezza e perderne molta {cite}`dettmers2022llmint8`, e che quelle
+componenti siano poche e sempre nelle stesse posizioni è ciò che rende
+economico tenerle a parte.
 
 `````{tab} Elementare
 
@@ -336,7 +418,11 @@ posizioni tendono a essere sempre le stesse, ed è questo a rendere il rimedio
 economico; ma è una tendenza osservata, non una lista fissa da cui si parte.
 
 Il rimedio ha due metà: stringere il gruppo che condivide il passo, e tenere
-fuori dal gruppo le poche componenti larghe.
+fuori dal gruppo le poche componenti larghe. C’è anche chi non le tiene fuori,
+e prima di arrotondare trasforma i numeri in un modo di cui il risultato finale
+non si accorge: sposta una parte della loro grandezza nei pesi per cui vengono
+moltiplicate, che la reggono meglio, oppure la spalma un poco su tutte le altre
+componenti, così che nessuna resti enorme.
 
 Sotto gli otto bit non bastano nemmeno le due insieme, e i metodi che reggono
 cambiano il gesto dell’arrotondare. Uno arrotonda un prezzo alla volta e tiene
@@ -355,16 +441,18 @@ guardano che cosa quel numero combina nel conto, e non soltanto quanto vale.
 `````{tab} Superiore
 
 L’osservazione empirica è che nei Transformer, oltre una certa scala, compaiono
-**caratteristiche anomale sistematiche**: un numero piccolo di dimensioni del
-canale nascosto assume valori di ordini di grandezza superiori alle altre, in
-modo consistente fra token e fra ingressi. Che esistessero si sapeva già; del
+**caratteristiche anomale sistematiche** (*outlier features*): un numero piccolo
+di dimensioni del canale nascosto assume valori fino a venti volte più grandi
+delle altre, in modo consistente fra token e fra ingressi. Che esistessero si
+sapeva già {cite}`kovaleva2021bert,bondarenko2021understanding`; del
 lavoro che ha reso `int8` praticabile {cite}`dettmers2022llmint8` sono la
 misura alla scala (la transizione è netta e cade intorno ai 6,7 miliardi di
 parametri, dove le anomale invadono tutti gli strati concentrandosi in sei
-dimensioni) e il metodo qui sotto. Poiché la scala di quantizzazione è fissata
-dal massimo, quelle dimensioni comprimono tutte le altre in pochi livelli.
+dimensioni) e il metodo per aggirarle. Poiché la scala di quantizzazione è
+fissata dal massimo, quelle dimensioni comprimono tutte le altre in pochi
+livelli.
 
-Il metodo che ne è nato ha due parti. La prima è la stretta sulla granularità:
+Il metodo ha due parti. La prima è la stretta sulla granularità:
 si abbandona la scala unica e se ne tiene una per ogni riga di $\mathbf{X}$
 (una per token) e una per ogni colonna di $\mathbf{W}^{\top}$ (una per unità
 d’uscita), e ogni elemento del prodotto si riporta in virgola mobile
@@ -386,20 +474,48 @@ per tutte. Il costo è che una
 frazione minuscola del prodotto resta in virgola mobile; il guadagno è che la
 scala del resto non è più dettata da loro.
 
+La decomposizione tiene a parte le anomale; altre due strade le tolgono di mezzo
+prima di arrotondare, con una trasformazione che lascia invariato il prodotto.
+SmoothQuant {cite}`xiao2023smoothquant` divide ogni canale $j$ di $\mathbf{X}$
+per un fattore $s_j$ e moltiplica per lo stesso fattore la colonna $j$ di
+$\mathbf{W}$,
+
+$$
+\mathbf{X}\mathbf{W}^{\top} =
+\big(\mathbf{X}\,\mathrm{diag}(\mathbf{s})^{-1}\big)
+\big(\mathbf{W}\,\mathrm{diag}(\mathbf{s})\big)^{\top},
+$$
+
+così parte della difficoltà passa dalle attivazioni ai pesi, che la reggono
+meglio, e tutti e due si arrotondano a otto bit. Una rotazione ortogonale
+$\mathbf{Q}$, con $\mathbf{X}\mathbf{W}^{\top} = (\mathbf{X}\mathbf{Q})
+(\mathbf{W}\mathbf{Q})^{\top}$, sparpaglia invece ogni anomala su tutte le
+componenti: è la mossa che FlashAttention-3 fa in FP8 su query e chiavi, con una
+trasformata di Hadamard a segni casuali {cite}`shah2024flashattention3` (la
+racconta la {doc}`sezione su FlashAttention </GPU/flash-attention>`).
+
 Sotto gli otto bit la decomposizione non basta più, e i metodi che funzionano
 smettono di trattare l’arrotondamento come un’operazione locale. **GPTQ**
 {cite}`frantar2023gptq` cerca, strato per strato, i pesi quantizzati che
-riproducono meglio l’uscita su un piccolo insieme di dati di calibrazione
-$\mathbf{X}$ (una colonna per esempio), $\arg\min_{\hat{\mathbf{W}}} \lVert
-\mathbf{W}\mathbf{X} - \hat{\mathbf{W}}\mathbf{X}\rVert_2^2$. Il problema si
-separa riga per riga, e tutte le righe hanno la stessa matrice del secondo
-ordine $\mathbf{H} = 2\mathbf{X}\mathbf{X}^\top$. Il metodo quantizza una
-colonna alla volta, nello stesso ordine per tutte le righe, e dopo ogni colonna
-$q$ corregge i pesi $F$ non ancora quantizzati con l’aggiornamento di *Optimal
-Brain Surgeon*,
+riproducono meglio l’uscita su un piccolo insieme di $m$ esempi di calibrazione,
+raccolti nelle righe di
+$\mathbf{X}_{\text{cal}} \in \mathbb{R}^{m \times d_{\text{in}}}$ come i token
+nelle righe di $\mathbf{X}$ nella decomposizione:
 
 $$
-\boldsymbol{\delta}_F = -\frac{w_q - \mathrm{quant}(w_q)}{[\mathbf{H}_F^{-1}]_{qq}}\,(\mathbf{H}_F^{-1})_{:,q},
+\arg\min_{\hat{\mathbf{W}}} \big\lVert \mathbf{X}_{\text{cal}}\mathbf{W}^{\top}
+- \mathbf{X}_{\text{cal}}\hat{\mathbf{W}}^{\top}\big\rVert_F^2 .
+$$
+
+Il problema si separa per righe di $\mathbf{W}$ (una per unità d’uscita), e
+tutte le righe hanno la stessa matrice del secondo ordine
+$\mathbf{H} = 2\mathbf{X}_{\text{cal}}^{\top}\mathbf{X}_{\text{cal}}$. Il metodo
+quantizza una colonna alla volta, nello stesso ordine per tutte le righe, e
+dopo ogni colonna $j$ corregge i pesi $F$ non ancora quantizzati con
+l’aggiornamento di *Optimal Brain Surgeon*,
+
+$$
+\boldsymbol{\delta}_F = -\frac{w_j - \mathrm{quant}(w_j)}{[\mathbf{H}_F^{-1}]_{jj}}\,(\mathbf{H}_F^{-1})_{:,j},
 $$
 
 che sposta il resto della riga in modo da compensare, al secondo ordine,
@@ -422,7 +538,8 @@ numeri interi (è il formato `int8`). Con gli stessi otto bit si può fare
 un'altra scelta, che le schede con i tensor core adatti eseguono direttamente:
 un numero in virgola mobile, come il `float32` e il `bfloat16` di
 {doc}`Prestazioni e scala </PyTorch/prestazioni>`, solo molto più corto. È
-l’**FP8**.
+l’**FP8**, che la {doc}`sezione su GEMM e tensor core </GPU/gemm-e-tensor-core>`
+nomina fra i formati con cui i tensor core arrivano al loro picco.
 
 `````{tab} Elementare
 
@@ -508,11 +625,14 @@ somme parziali in FP32 ogni 128 elementi.
 
 `````
 
-Il confronto si fa sulla matrice `W` e sugli ingressi `x` della prima misura:
-la matrice così com'è, e la stessa con un peso su cento moltiplicato per venti.
-Per ciascuna si stampano il rapporto fra il peso più grande e la deviazione
-standard, e l'errore sull'uscita con l'intero a una scala sola, con l'intero a
-una scala ogni 64 pesi, e con i due FP8 a una scala sola.
+I due modi di spendere gli otto bit si chiamano con i bit che danno alla virgola
+e alle cifre: E4M3 ne dà quattro all’esponente, cioè alla virgola, e tre alla
+mantissa, cioè alle cifre; E5M2 cinque e due. Il confronto si fa sulla matrice
+`W` e sugli ingressi `x` della prima misura: la matrice così com'è, e la stessa
+con un peso su cento moltiplicato per venti. Per ciascuna si stampano il
+rapporto fra il peso più grande e la deviazione standard, e l'errore sull'uscita
+con l'intero a una scala sola, con l'intero a una scala ogni 64 pesi, e con i
+due FP8 a una scala sola.
 
 ```python
 def in_fp8(w, formato):
@@ -543,15 +663,17 @@ pochi grandi        34.5   7.83%    1.55%   2.50%   5.25%
 Sui pesi così come sono vince l’intero, 1,04% contro 2,66%, gli stessi numeri
 della prima tabella: con il massimo a 4,6 deviazioni standard il passo comune è
 fitto, e sbaglia meno delle tre cifre fisse dell’E4M3. Con un peso su cento
-venti volte più grande il massimo sale a 34,5 deviazioni standard, e l’intero a
-una scala sola sale al 7,83%, quasi esattamente il 34,5 diviso 440 della
-formula; i due FP8 restano dove erano (2,50% e 5,25%), perché il loro errore è
+venti volte più grande il massimo sale a 34,5 deviazioni standard, sette volte e
+mezzo più di prima, e l’errore dell’intero a una scala sola sale con lui, al
+7,83%; i due FP8 restano dove erano (2,50% e 5,25%), perché il loro errore è
 una frazione di ciascun numero e non dipende da chi altro c’è nel gruppo. Ma
 l’intero con una scala ogni 64 pesi resta il più preciso di tutti (1,55%): i
 pesi grandi allargano il passo soltanto del loro gruppetto. Anche qui, quindi,
-decide chi condivide il passo più che il formato: la virgola conviene quando i
-valori anomali sono tanti e sparsi, e tenere una scala per ogni gruppetto costa
-più che scriverla dentro ciascun numero.
+decide chi condivide il passo più che il formato. La virgola batte l’intero a
+una scala sola soltanto quando il peso più grande sta molto sopra tutti gli
+altri, come nella seconda riga, e il suo vantaggio vero è un altro: sulle
+schede che la supportano un prodotto in FP8 può andare fino al doppio della
+velocità di uno a sedici bit.
 
 ## Arrotondare dopo, o saperlo già durante
 
@@ -559,18 +681,20 @@ C’è un’ultima distinzione, ed è quella che separa due mestieri.
 
 `````{tab} Elementare
 
-Tutto quello che si è visto finora si fa a modello già addestrato: si prende
-una rete che esiste, si arrotondano i suoi numeri, si misura quanto si è perso.
-È il modo economico, si fa in minuti, e per otto bit basta quasi sempre.
+Quasi tutto quello che si è visto finora si fa a modello già addestrato: si
+prende una rete che esiste, si arrotondano i suoi numeri, si misura quanto si è
+perso. È il modo economico, si fa in minuti, e per otto bit basta quasi sempre.
+Fa eccezione l’FP8, che si usa anche mentre la rete impara.
 
 L’altro modo è dire alla rete, mentre impara, che alla fine i suoi pesi
 verranno arrotondati: come un negozio che sa già che la cassa accetta soltanto
 i mezzi euro, e i prezzi li sceglie di conseguenza invece di lasciarli a due e
 novantasette. La rete tiene i numeri precisi da una parte e fa i conti con
 quelli arrotondati, e così si accorge di quando un peso sta in bilico fra due
-gradini e lo sposta dove l’arrotondamento gli fa meno male. Costa un
-addestramento intero, e per questo si fa solo quando si scende in basso coi bit
-e arrotondare a cose fatte non regge.
+gradini e lo sposta dove l’arrotondamento gli fa meno male. Costa un altro
+addestramento, intero o almeno un lungo ripasso della rete già addestrata, e
+per questo si fa solo quando si scende in basso coi bit e arrotondare a cose
+fatte non regge.
 
 C’è una difficoltà, ed è graziosa: arrotondare è un’operazione a gradini, e una
 funzione a gradini è piatta dappertutto tranne che nei salti. Una rete
@@ -579,7 +703,7 @@ da seguire: il segnale d’apprendimento morirebbe subito. Il rimedio è una
 piccola finzione: si fanno i conti in avanti con i valori arrotondati e
 all’indietro si fa finta che l’arrotondamento non ci sia. Fanno eccezione i
 numeri finiti fuori dalla scala, ai quali il segnale non arriva proprio. Non è
-matematicamente pulito, e funziona.
+matematicamente pulito, e se la finzione è scelta bene funziona.
 
 `````
 
@@ -608,21 +732,31 @@ $$
 \end{cases}
 $$
 
-È un gradiente sbagliato per costruzione, e la giustificazione è empirica:
-punta nella direzione giusta abbastanza spesso da far convergere
-l’ottimizzazione. Il costo di QAT è un addestramento completo, e la regola
-pratica è la solita: si usa PTQ, si misura, e si passa a QAT solo quando la
-misura dice che non basta.
+È un gradiente sbagliato per costruzione, e a lungo la sua giustificazione è
+stata solo empirica. Per una classe semplice di reti esiste però una
+dimostrazione. Su una rete a due strati lineari con attivazione ReLU
+binarizzata e ingressi gaussiani, se lo stimatore è scelto bene il gradiente
+che produce (il *coarse gradient*) correla in media positivamente con il
+gradiente della perdita di popolazione, il suo opposto è una direzione di
+discesa e l’algoritmo converge a un punto critico; uno stimatore scelto male
+rende l’addestramento instabile vicino a certi minimi locali
+{cite}`yin2019understanding`. Il costo di QAT è un altro addestramento, completo
+o come rifinitura di una rete già addestrata, e la regola pratica è la solita:
+si usa PTQ, si misura, e si passa a QAT solo quando la misura dice che non
+basta.
 
 `````
 
-Messe in fila, le cose di questa sezione dicono una cosa sola, e conviene
-tenersi quella invece dell’elenco: la domanda giusta non è quanti bit, è chi
-condivide il passo. Cambiando chi lo condivide si passa dal 18,7% al 10,8% a
-parità di bit; togliendo dal gruppo tre numeri su cinquecentododici si passa
-dal 7,28% allo 0,20%. E a parità di otto bit, scrivere ciascun numero con la
-propria virgola porta l’errore dal 7,83% al 2,50% quando qualche peso è grande.
-Il numero di bit, da solo, non ha spiegato nessuno dei tre salti.
+Messi in fila, questi risultati dicono una cosa sola, ed è quella da tenere
+invece dell’elenco. Il numero di bit fissa l’ordine di grandezza dell’errore:
+ogni bit in meno lo raddoppia circa, e da otto a quattro bit lo moltiplica per
+diciotto. A parità di bit, però, il modo in cui si sceglie e si condivide il
+passo lo sposta quanto parecchi bit. Una scala ogni sessantaquattro pesi porta
+il 18,7% al 10,8%, e un tetto scelto bene all’11,4%; togliere dal gruppo tre
+numeri su cinquecentododici porta il 7,28% allo 0,20%, quanto cinque bit in
+più; e a parità di otto bit, scrivere ciascun numero con la propria virgola
+porta il 7,83% al 2,50% quando qualche peso è grande. Nessuno di questi salti
+l’ha fatto il numero di bit.
 
 `````{tab} Elementare
 
@@ -632,28 +766,30 @@ Il numero di bit, da solo, non ha spiegato nessuno dei tre salti.
   massimo metà passo, e sommando tanti numeri gli errori vanno in su e in
   giù e si compensano. Una rete somma sempre tanti numeri insieme, e questa
   è la sua fortuna.
-- Il passo lo decide il numero più grande del gruppo che lo condivide.
-  Quindi la domanda vera è chi condivide il passo, più che «quanti bit»:
-  misurato, una scala ogni sessantaquattro pesi taglia l’errore di un fattore
-  1,74 rispetto a una scala sola per tutta la matrice, e lo stesso fattore vale
-  a otto bit come a tre.
-- Otto bit costano circa l’uno per cento e si possono considerare gratis.
-  Quattro bit, arrotondando e basta, costano quasi il venti: chi dice che i
-  modelli girano a quattro bit sta parlando di metodi che fanno molto più che
-  arrotondare.
-- Nei modelli linguistici poche componenti valgono decine di volte le altre e
-  rovinano il passo per tutti. Tenendo intere tre componenti su
-  cinquecentododici l’errore passa dal 7,28% allo 0,20%.
+- Ogni bit in meno raddoppia circa l’errore. A parità di bit, però, conta
+  moltissimo il passo, e di solito a deciderlo è il numero più grande del
+  gruppo che lo condivide: una scala ogni sessantaquattro pesi taglia l’errore
+  di un fattore 1,74 rispetto a una scala sola per tutta la matrice, lo stesso a
+  otto bit come a tre, e schiacciare sull’ultimo gradino i pochi pesi più
+  grandi fa quasi altrettanto.
+- A otto bit l’uscita di uno strato si sposta di circa l’uno per cento; a
+  quattro bit, con una scala sola, di quasi il venti. Quanto questo costi in
+  accuratezza lo dice soltanto la prova sul modello, e chi dice che i modelli
+  girano a quattro bit sta parlando di metodi che fanno più che arrotondare
+  con una scala sola.
+- Nei modelli linguistici grandi poche componenti delle attivazioni valgono
+  molte volte le altre e rovinano il passo per tutti. Tenendo intere tre
+  componenti su cinquecentododici l’errore passa dal 7,28% allo 0,20%.
 - Con otto bit si può anche tenere la virgola: poche cifre fisse e una virgola
   che si sposta, come quando si dice una misura. L’errore non supera mai un
-  sedicesimo del numero, poco più del 6% (in media meno della metà), purché il
-  numero stia fra un sessantaquattresimo e 448 volte l’unità scelta: sui pesi
-  ordinati l’intero sbaglia meno (1,04% contro 2,66%), con qualche peso grande
-  la virgola batte l’intero a scala sola (2,50% contro 7,83%), e una scala ogni
-  sessantaquattro pesi batte tutti e due (1,55%).
-- Si può arrotondare a modello finito (economico, e per otto bit basta) oppure
-  dirlo alla rete mentre impara, così si sposta da sola dove l’arrotondamento
-  le fa meno male (costa un addestramento intero).
+  sedicesimo del numero, purché il numero stia fra un sessantaquattresimo e 448
+  volte l’unità scelta. Sui pesi ordinati l’intero sbaglia meno; la virgola
+  batte l’intero a scala sola quando pochi pesi sono molto più grandi degli
+  altri; e una scala ogni sessantaquattro pesi batte tutti e due.
+- Si può arrotondare a modello finito (economico, e per otto bit basta quasi
+  sempre) oppure dirlo alla rete mentre impara, così si sposta da sola dove
+  l’arrotondamento le fa meno male (costa un altro addestramento, intero o
+  almeno un lungo ripasso).
 ```
 
 `````
@@ -670,19 +806,25 @@ Il numero di bit, da solo, non ha spiegato nessuno dei tre salti.
   $\sqrt{n}$. Che l’errore relativo non si accumuli richiede in più che
   cresca così anche il segnale, ed è un’ipotesi sugli ingressi, non sugli
   arrotondamenti.
-- La granularità della scala è la leva più economica: per tensore, per riga,
-  per gruppo di $g$ elementi. Misurato su un prodotto $256 \times 512$ per
-  $512 \times 64$: a quattro bit, 18,71% con una scala per tutto e 10,77% con
-  una scala ogni 64.
+- La scala è la leva più economica, in due modi: la granularità (per tensore,
+  per riga, per gruppo di $g$ elementi) e il tetto da cui la si prende, che a
+  pochi bit conviene tenere sotto il massimo {cite}`banner2019post`. Sul
+  prodotto $256 \times 512$ per $512 \times 64$, a quattro bit: 18,71% con una
+  scala per tutto presa dal massimo, 11,42% con il tetto ottimo, 10,77% con una
+  scala ogni 64.
 - Le caratteristiche anomale dei Transformer {cite}`dettmers2022llmint8`
   dettano la scala e schiacciano tutto il resto. La decomposizione a precisione
-  mista le tiene fuori: 7,28% contro 0,20% sullo stesso prodotto.
+  mista le tiene fuori (7,28% contro 0,20% sullo stesso prodotto); SmoothQuant
+  {cite}`xiao2023smoothquant` le sposta nei pesi riscalando i canali, una
+  rotazione ortogonale le sparpaglia, e in tutti e due i casi il prodotto non
+  cambia.
 - L’FP8 {cite}`micikevicius2022fp8` (E4M3, massimo 448; E5M2, massimo
   $57\,344$) limita nel campo normale l’errore relativo, $2^{-(M+1)}$ con $M$ i
   bit di mantissa, dove l’`int8` limita quello assoluto; a scala unica l’`int8`
   vince finché $\max|w|/\sigma_w \lesssim 11{,}7$ (1,04% contro 2,66%), e perde
-  con i valori anomali (7,83% contro 2,50%), ma una scala ogni 64 pesi lo
-  riporta davanti (1,55%). L’FP8 vuole una scala per tensore o per blocco.
+  con pochi valori anomali grandi (7,83% contro 2,50%), ma una scala ogni 64
+  pesi lo riporta davanti (1,55%). L’FP8 vuole una scala per tensore o per
+  blocco, e il suo vantaggio è il picco doppio dei tensor core che lo eseguono.
 - Sotto gli otto bit servono metodi che non trattino l’arrotondamento come
   locale: GPTQ {cite}`frantar2023gptq` compensa sull’uscita l’errore già
   commesso, AWQ {cite}`lin2024awq` protegge i canali che moltiplicano le
@@ -690,13 +832,14 @@ Il numero di bit, da solo, non ha spiegato nessuno dei tre salti.
 - PTQ contro QAT: la seconda mette la quantizzazione nel passaggio in
   avanti durante l’addestramento e aggira la derivata nulla di
   $\mathrm{round}$ con lo stimatore diretto
-  {cite}`bengio2013estimating`, cioè un gradiente deliberatamente sbagliato che
-  funziona.
+  {cite}`bengio2013estimating`, cioè un gradiente deliberatamente sbagliato che,
+  scelto bene, su reti semplici ha garanzie di convergenza
+  {cite}`yin2019understanding`.
 ```
 
 `````
 
-Questa leva lascia la rete esattamente com’è: stessi collegamenti, stessa
-forma, numeri scritti più corti. La leva che segue fa il contrario, e va a
+Questa leva lascia intatta l’architettura: stessi collegamenti, stessa forma,
+numeri scritti più corti. La leva che segue fa il contrario, e va a
 toccare i collegamenti: ne toglie una parte e lascia gli altri dove sono, che è
 una promessa più grande e, come si vedrà, molto più difficile da riscuotere.

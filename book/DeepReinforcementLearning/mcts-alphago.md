@@ -1,26 +1,27 @@
 # Pensare prima di agire: la ricerca ad albero Monte Carlo
 
-Finora la strategia ha sempre risposto d'istinto: la situazione entra da un lato
-della rete, la mossa esce dall'altro, e in mezzo non c'è nessuna riflessione. Ma
-un giocatore forte, prima di muovere, pensa: prova mentalmente qualche
-continuazione, valuta dove porta, sceglie.
+Finora la policy ha sempre risposto d'istinto: una funzione dallo stato
+all'azione, che la rete calcola in un solo passaggio, senza guardare avanti.
+Un giocatore forte, invece, prima di muovere prova qualche continuazione e ne
+valuta l'esito.
 
-Quel pensare ha un algoritmo, e si chiama ricerca ad albero Monte Carlo
-(MCTS, dalle iniziali inglesi; e «Monte Carlo», come al casinò, è il nome che
-i matematici danno ai metodi che fanno i conti tirando a sorte). Torna in
-AlphaGo, in AlphaZero, in MuZero, e in alcuni esperimenti sui modelli
-linguistici (i programmi che scrivono testo, come quelli dietro agli
-assistenti conversazionali) che esplorano più ragionamenti prima di
-rispondere. Lo si vede qui una volta per
-bene, anche perché è un vecchio amico travestito.
+Quel calcolo ha un algoritmo, la ricerca ad albero Monte Carlo (*Monte Carlo
+tree search*, MCTS). Torna in AlphaGo e nei suoi successori, AlphaZero e
+MuZero, e in alcuni esperimenti sui modelli linguistici (i programmi che
+scrivono testo, come quelli dietro agli assistenti conversazionali) che
+esplorano più ragionamenti prima di rispondere. E sotto c'è un vecchio amico: a
+ogni bivio dell'albero si ripresenta il dilemma della
+{doc}`sezione sui bandit </ReinforcementLearning/banditi>`, provare ciò che
+promette o ciò che si conosce poco.
 
 La {doc}`sezione sulle tre cose che la ricerca dava per scontate
 </Ricerca/quando-il-mondo-non-si-conosce>` aveva lasciato la faccenda
 esattamente qui: la ricerca classica, per fermarsi a metà albero, ha bisogno di
-una formula che dia un voto alla posizione, e nel Go quella formula nessuno è
-mai riuscito a scriverla. La via d'uscita era smettere di giudicare e mettersi
-a contare, cioè giocare da lì un mucchio di partite a caso e guardare come
-finiscono. Quello che segue è il seguito di quella frase.
+una formula che dia un voto alla posizione, e nel Go nessuno è mai riuscito a
+scriverla a mano. La via d'uscita era smettere di giudicare e mettersi a
+contare, cioè giocare da lì un mucchio di partite a caso e guardare come
+finiscono: un'idea semplice, che però va organizzata, perché le partite
+possibili sono troppe per giocarle tutte.
 
 `````{tab} Elementare
 
@@ -34,8 +35,9 @@ bandito con una leva sola, e qui di leve ce ne sono tante), che si ripresenta in
 ogni stanza.
 
 Chi esplora si porta un blocchetto di foglietti. Ne appende uno accanto a ogni
-leva che prova, e ci tiene due numeri: quante volte l'ha tirata, e come è andata
-in media da lì in avanti. Poi torna all'ingresso e ricomincia, migliaia di volte.
+leva che prova, e ci tiene due cose: una tacca per ogni volta che l'ha tirata, e
+come è andata in media da lì in avanti. Poi torna all'ingresso e ricomincia,
+migliaia di volte.
 
 Ogni giro sono quattro gesti. Finché trova foglietti, sceglie la leva che mette
 d'accordo il buon rendimento e le poche tacche, ed è la **selezione**; quanto
@@ -73,11 +75,13 @@ si è mai entrati non si sa niente.
 
 `````{tab} Superiore
 
-La formulazione standard è **UCT** (*Upper Confidence bounds applied to
-Trees*), di Kocsis e Szepesvári {cite}`kocsis2006bandit`, costruita sopra il
-framework di ricerca di Coulom {cite}`coulom2006efficient`. L'idea è di
-trattare ogni nodo come un bandit indipendente sulle sue mosse, e in fase
-di selezione scegliere
+La formulazione standard è **UCT** (*Upper Confidence bounds applied to Trees*),
+di Kocsis e Szepesvári {cite}`kocsis2006bandit`, che porta UCB1
+{cite}`auer2002finite` dentro la pianificazione per simulazioni. Nello stesso
+anno, e indipendentemente, Coulom aveva proposto la ricerca in cui l'albero
+cresce insieme alle simulazioni, e le aveva dato il nome di *Monte Carlo tree
+search* {cite}`coulom2006efficient`. L'idea di UCT è di trattare ogni nodo come
+un bandit indipendente sulle sue mosse, e in fase di selezione scegliere
 
 $$
 a^\star = \arg\max_a \left[\, Q(s,a) + c \sqrt{\frac{\ln N(s)}{N(s,a)}}
@@ -90,10 +94,12 @@ $c>0$ la costante che decide quanto pesa il secondo termine. È
 letteralmente UCB1, la formula della
 {doc}`sezione sui bandit </ReinforcementLearning/banditi>`, applicata a ogni
 bivio: stesso ottimismo di fronte all'incertezza, stesso decadimento
-logaritmico. Il contributo di UCT è mostrare che applicandola ricorsivamente
-la stima alla radice converge a quella minimax, con garanzie asintotiche
-sull'errore di campionamento. Asintotiche va preso alla lettera: sono garanzie
-sul limite, non sul caso peggiore. Coquelin e Munos
+logaritmico. Il contributo di UCT è mostrare che, applicandola ricorsivamente,
+la stima alla radice converge al valore ottimo: lo scarto della stima va come
+$O(\log n / n)$ e la probabilità di scegliere alla radice un'azione non ottima
+tende a zero con velocità polinomiale nel numero $n$ di simulazioni. Sono
+garanzie asintotiche, e va preso alla lettera: valgono nel limite, non nel caso
+peggiore. Coquelin e Munos
 {cite}`coquelin2007bandit` mostrarono l'anno dopo che l'ottimismo di UCT può
 costare, in alberi profondi e ostili, un numero di simulazioni proibitivo prima
 che la ricerca trovi il ramo buono, e proposero una variante con intervallo di
@@ -119,7 +125,9 @@ così che la ricerca guardi per prime le mosse che la rete considera plausibili
 invece di trattarle tutte alla pari; $c_{\text{puct}}$ ha qui il ruolo che $c$
 aveva in UCT. La probabilità a priori pesa soprattutto all'inizio: il
 denominatore $1 + N(s,a)$ ne diluisce il contributo man mano che le visite vere
-si accumulano, e da lì in poi a decidere è $Q(s,a)$.
+si accumulano, e da lì in poi a decidere è $Q(s,a)$. (MuZero moltiplica il
+termine per un fattore che cresce, lentamente, col logaritmo delle visite al
+nodo.)
 
 Il secondo cambiamento riguarda la valutazione della foglia, e avviene in due
 tappe da non confondere. AlphaGo (2016) non butta via la
@@ -161,35 +169,42 @@ $$
 dove $z \in \{-1, +1\}$ è l'esito della partita di self-play e $c$ il peso
 della regolarizzazione. Alla radice il prior riceve del rumore di Dirichlet,
 senza il quale la ricerca tornerebbe sempre sulle mosse che la rete preferisce
-già. Il termine PUCT, a differenza di UCB1, non ha il logaritmo e non eredita
-la garanzia di UCT: è un'euristica tarata sui dati. MCTS, in questa lettura, è
-un
-operatore di miglioramento della policy: lo stesso ruolo che nella
+già. Il termine PUCT di AlphaGo Zero, a differenza di UCB1, non ha il
+logaritmo e non eredita la garanzia di UCT: è un'euristica tarata sui dati, e
+sullo stesso albero profondo e ostile di Coquelin e Munos anche le varianti di
+AlphaGo e AlphaZero possono richiedere un numero di simulazioni doppiamente
+esponenziale nella profondità prima di raggiungere la foglia migliore
+{cite}`orseau2024super`. MCTS, in questa lettura, è un operatore di
+miglioramento della policy: lo stesso ruolo che nella
 programmazione dinamica ha il passo di *policy improvement*, ottenuto con la
 ricerca invece che con un massimo esatto.
 
 `````
 
 L'idea è più generale del gioco da tavolo, ed è il motivo per cui conviene
-averla in tasca: quando si può simulare, si può pensare. Il programma
-MuZero, per esempio, la usa senza nemmeno conoscere le regole del gioco: se le
-costruisce da solo, guardando le partite. E il modello che si costruisce non
-ridisegna la scacchiera pezzo per pezzo, ne tiene solo un riassunto interno, il
-minimo che serve per pianificarci dentro. La {doc}`sezione sul RL basato su
-modello <model-based>` ci torna sopra. Ai modelli linguistici l'idea è
-stata applicata anche alla lettera, con una ricerca ad albero sulle catene di
-ragionamento guidata da un giudice appreso; i modelli che ragionano a lungo e
-di cui si conosce la ricetta, però, si addestrano per lo più con il gradiente
-di policy su catene generate una dopo l'altra, senza albero.
+averla in tasca: quando si può simulare, si può pensare. Il programma MuZero
+{cite}`schrittwieser2020mastering`, per esempio, la usa senza nemmeno
+conoscere le regole del gioco: se le costruisce da solo, guardando le partite.
+E il modello che si costruisce non ridisegna la scacchiera pezzo per pezzo, ne
+tiene solo un riassunto interno, il minimo che serve per pianificarci dentro.
+La {doc}`sezione sul RL basato su modello <model-based>` ci torna sopra. Ai
+modelli linguistici l'idea è stata applicata anche alla lettera: una ricerca ad
+albero fra i passi possibili di un ragionamento, con una rete addestrata a
+giudicare quali promettono. I modelli che ragionano a lungo e di cui si conosce
+la ricetta, però, si addestrano per lo più con il gradiente di policy, su
+ragionamenti scritti un passo dopo l'altro, senza albero.
 
 ## In pratica: le visite si concentrano
 
-Che l'albero cresca storto non è un modo di dire, ed è la cosa più facile da
-verificare. Prendiamo un albero giocattolo: due strade a ogni bivio e quattro
+Che la ricerca concentri le visite dove il gioco promette, e che l'albero cresca
+quindi storto, profondo da una parte e appena accennato dall'altra, si verifica
+facilmente. Prendiamo un albero giocattolo: due strade a ogni bivio e quattro
 bivi in fila, cioè $2\times2\times2\times2 = 16$ finali possibili, ognuno con il
 suo valore. Un valore alto lo piantiamo noi, nascosto in mezzo agli altri, e
 qual è il migliore dei sedici lo sappiamo comunque: l'algoritmo no, e il gioco
-è vedere se ci arriva.
+è vedere se ci arriva. A giocare è uno solo, quindi nella risalita lo stesso
+ritorno si somma a tutti i nodi del cammino, senza il cambio di segno dei giochi
+a due.
 Due parole di gergo, che tornano nel codice e nei risultati: la radice è il
 punto di partenza dell'albero, le foglie sono le sue punte, cioè i sedici
 finali.
@@ -302,8 +317,10 @@ print(f"          in quei semi la foglia migliore batte l'altro ramo di "
 ```
 
 Sul seme $7$, quello dell'esempio, il ramo che porta alla foglia buona riceve
-1922 visite su 2000 e l'altro $78$: dopo poche decine di prove la ricerca ha
-smesso di sprecare tempo di là. In fondo all'albero, il $58\%$ di tutte le
+1922 visite su 2000 e l'altro $78$. La ricerca ha concentrato le visite, ma non
+ha mai smesso di guardare di là: il termine di esplorazione di UCB1 cresce col
+logaritmo delle visite al padre, e un ramo trascurato abbastanza a lungo torna
+prima o poi in cima alla lista. In fondo all'albero, il $58\%$ di tutte le
 visite finisce sulla foglia migliore, contro il $6{,}2\%$ che le toccherebbe
 tirando a caso, cioè una foglia su sedici.
 
@@ -316,9 +333,10 @@ radice non è quello che contiene la foglia migliore. Guardati da vicino, però,
 quei nove sono pareggi e non errori. Là dove la regola «si gioca la mossa
 più visitata» sceglie l'altro ramo, la foglia migliore lo batte di $0{,}004$,
 contro lo $0{,}032$ mediano su tutte e sessanta le prove: la ricerca sta
-scegliendo fra due rami che valgono quasi lo stesso. Che sia una regola pratica
-e non un teorema resta vero, ma a dirlo è la garanzia asintotica, non questi
-nove semi.
+scegliendo fra due rami che valgono quasi lo stesso. Che «si gioca la mossa
+più visitata» resti una regola pratica, e non una certezza, non lo dicono
+questi nove semi: lo dice il fatto che la garanzia di UCT vale soltanto alla
+lunga, con un numero di simulazioni che cresce senza limite.
 
 La quota oscilla, la forma no: l'albero
 cresce storto su tutti e sessanta i semi, e mai una volta le visite si
@@ -336,11 +354,10 @@ una rete di valore che stimava chi fosse in vantaggio, e la ricerca ad albero
 Monte Carlo appena vista, che usava entrambe per esplorare in profondità solo
 le linee più sensate.
 
-Con una prudenza che oggi fa sorridere. Per giudicare una posizione raggiunta in
-fondo alla ricerca, AlphaGo non si affidava soltanto alla rete di valore: ne
-faceva la media, mezzo e mezzo, con l'esito di una partita tirata avanti alla
-svelta e quasi a caso fino alla fine. Nel 2016 della rete non ci si fidava
-ancora abbastanza; un anno dopo basterà da sola.
+Per giudicare una posizione raggiunta in fondo alla ricerca, AlphaGo (2016) non
+si affidava soltanto alla rete di valore: ne faceva la media, a parti uguali,
+con l'esito di una partita tirata avanti alla svelta fino alla fine. Con AlphaGo
+Zero, l'anno dopo, basterà la rete da sola.
 
 ```{figure} ../figures/alphago-2016.svg
 :name: fig-alphago
@@ -354,11 +371,12 @@ primo che i successori toglieranno.
 
 Il ciclo di {numref}`fig-alphago` è il motivo per cui i successori di AlphaGo
 poterono fare a meno delle partite umane, e poggia su un fatto da enunciare da
-solo: la ricerca gioca meglio delle due reti che la guidano. Se ci si
-pensa è quasi ovvio. La rete propone di getto, guardando la posizione; la
-ricerca, prima di decidere, prova per davvero migliaia di continuazioni.
-Quindi la mossa che esce dalla ricerca è quasi sempre migliore di quella che
-la rete avrebbe scelto da sola, ed è un esempio su cui la rete può allenarsi.
+solo: la ricerca gioca meglio delle due reti che la guidano. La rete propone
+guardando la sola posizione; la ricerca, prima di decidere, prova davvero
+migliaia di continuazioni (AlphaGo Zero ne fa $1600$ per mossa, circa quattro
+decimi di secondo di calcolo). Con abbastanza simulazioni la mossa che esce
+dalla ricerca è migliore di quella che la rete avrebbe scelto da sola, ed è un
+esempio su cui la rete può allenarsi.
 
 Ecco la fonte di supervisione interna: non serve un maestro, basta giocare
 contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo,
@@ -382,7 +400,8 @@ apprendimento per rinforzo, ricerca ad albero e reti profonde.
 ## Un ultimo salto: allineare i modelli linguistici
 
 Lo stesso meccanismo (aumentare la probabilità di ciò che riceve un giudizio
-positivo) è oggi al cuore dell'addestramento dei modelli linguistici.
+positivo) è oggi al cuore della fase di allineamento dei modelli linguistici,
+quella che segue il loro addestramento sui testi.
 
 Allineare un modello vuol dire portarlo a fare ciò che chi lo interroga
 intende davvero. Non è scontato, perché un modello linguistico nasce sapendo
@@ -412,10 +431,10 @@ risposte del modello sono l’"azione", dei valutatori umani indicano quali
 preferiscono, e le loro preferenze addestrano un *modello di ricompensa*, che
 da lì in poi assegna il premio a ogni risposta. Con PPO si ritocca poi la
 policy del modello (la sua tendenza a produrre certe risposte), verso ciò che
-gli umani apprezzano: il critico di PPO resta una rete a parte, e una penalità
-in divergenza di Kullback-Leibler tiene la policy vicina al modello di
-partenza, che la {doc}`sezione sul post-addestramento
-</Transformers/post-training>` scrive per intero. La stessa idea
+gli umani apprezzano, e una penalità tiene la policy vicina al modello di
+partenza; la misura di quella distanza (la divergenza di Kullback-Leibler) e il
+resto dei dettagli li scrive per intero la {doc}`sezione sul
+post-addestramento </Transformers/post-training>`. La stessa idea
 che ha portato una macchina a giocare la mossa 37 aiuta oggi un assistente a
 rispondere in modo utile e onesto.
 

@@ -81,6 +81,6 @@
     <circle cx="635" cy="340" r="13"/>
     <circle cx="700" cy="340" r="13"/>
   </g>
-  <text x="560" y="392" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">lo stato scorre; un filtro sceglie cosa tenere</text>
+  <text x="560" y="392" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#F4ECDD">lo stato scorre; un selettore sceglie cosa tenere</text>
   <text x="560" y="410" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#5BA39C">costo ∝ n</text>
 </svg>

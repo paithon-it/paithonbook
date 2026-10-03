@@ -42,6 +42,14 @@ fondo non ci arriva nessuno. Quello che ti consegna è il migliore fra quelli
 che ha guardato, e nessuno può giurare che più indietro non ce ne fosse uno
 più adatto. Il risparmio sulle percentuali è vero; la fila, però, si paga.
 
+Il buttafuori e la carta in rilievo dell'inizio del capitolo sono la stessa
+cosa vista da vicino. Il suo giudizio su una coppia è l'altezza di quella
+coppia sul paesaggio, bassa se i due stanno bene insieme; scorrere la fila per
+tenersi il migliore è cercare il punto più basso. E quando i candidati sono
+tanti e simili fra loro, come i punti di una carta, invece di guardarli uno a
+uno si lascia rotolare una pallina: arriva in fretta in una valle, che però è
+la più vicina e non sempre la più bassa.
+
 C'è poi un pericolo, e ha un nome preciso: il collasso. Il buttafuori pigro
 ha scoperto la scorciatoia perfetta: dire sempre sì. Chiunque si presenti,
 passa. Nessuna coppia si lamenta mai, e il suo giudizio non vale più niente. Se
@@ -92,6 +100,23 @@ pianificare serve solo l’$\arg\min$, che di $Z$ non ha alcun bisogno:
 rinunciare alla normalizzazione non è una perdita ma un vantaggio
 computazionale.
 
+Due esempi fissano il vocabolario, e sono quelli del tutorial stesso. Un
+classificatore a $K$ classi con logit $f_\theta(\mathbf{x}) \in \mathbb{R}^K$ è
+l'energia $E_\theta(\mathbf{x}, y) = -f_\theta(\mathbf{x})[y]$: l’$\arg\min_y E$
+è la classe col logit più alto, e la distribuzione di Gibbs con $\beta = 1$ è
+la softmax. Lì la partizione condizionata
+$Z_\theta(\mathbf{x}) = \sum_{y=1}^{K} e^{f_\theta(\mathbf{x})[y]}$ ha $K$
+termini, e il muro non c'è: costa poco perché $\mathcal{Y}$ è piccolo e
+discreto. Una regressione è
+$E_\theta(\mathbf{x}, y) = \lVert y - g_\theta(\mathbf{x}) \rVert^2$, con
+$\arg\min_y E = g_\theta(\mathbf{x})$. Quando c'è anche una variabile latente
+$\mathbf{z}$ che nessuno osserva, la si elimina con il minimo,
+$E_\theta(\mathbf{x}, y) = \min_{\mathbf{z}} E_\theta(\mathbf{x}, y,
+\mathbf{z})$, oppure, a temperatura finita, con l’*energia libera*
+$F_\beta(\mathbf{x}, y) = -\tfrac{1}{\beta} \log \int e^{-\beta
+E_\theta(\mathbf{x}, y, \mathbf{z})}\, d\mathbf{z}$, che per $\beta \to \infty$
+tende al minimo {cite}`lecun2006tutorial`.
+
 `````
 
 Due modelli già incontrati stanno dentro questa cornice, e i due casi sono
@@ -99,14 +124,11 @@ diversi. La macchina di Boltzmann
 è quello facile: sull'energia si costruisce una probabilità, ed è proprio il
 caso da cui la cornice si libera.
 
-La memoria di Hopfield è più sottile. Lì l'energia non giudica una coppia:
-guarda una cosa sola, la configurazione della rete. Il frammento rovinato che
-le diamo in pasto non entra nel conto dell'energia e non sposta il paesaggio
-di un millimetro, sceglie soltanto il punto da cui far partire la discesa. E
-la risposta non è il fondovalle più basso di tutti: se lo fosse, quella rete
-restituirebbe sempre lo stesso ricordo qualunque indizio le si desse, e non
-sarebbe una memoria. La risposta è il fondovalle in cui si finisce partendo di
-lì.
+La memoria di Hopfield ci sta anche lei, con una differenza. La sua energia
+guarda una cosa sola, lo stato della rete, e l'indizio rovinato non entra nel
+conto: decide soltanto da dove parte la discesa. E la risposta è il fondovalle
+in cui si finisce partendo di lì, non il più basso di tutti, perché altrimenti
+la rete restituirebbe sempre lo stesso ricordo qualunque indizio le si desse.
 
 Che la risposta possa non essere la migliore in assoluto non è un imbarazzo,
 ed è l'articolo stesso a metterlo in conto: in molte situazioni reali un
@@ -116,24 +138,28 @@ essere il fondovalle più basso di tutti oppure no.
 ## Il collasso, e le due famiglie di rimedi
 
 Il collasso, cioè l'energia bassa dappertutto e il sì a qualunque cosa, si
-previene in un posto solo, il modo in cui si addestra il modello. Gli si
-mostra una coppia, si guarda che voto le dà, e si ritocca il modello perché
-quel voto somigli di più a quello che volevamo. La regola con cui si decide
-«di quanto ha sbagliato» è una scelta, e di regole possibili ce ne sono
-parecchie: sono quelle a decidere se il collasso è possibile oppure no.
+previene in due posti: nella forma del modello, e nel modo in cui lo si
+addestra. Addestrarlo vuol dire mostrargli una coppia, guardare che voto le dà,
+e ritoccarlo perché quel voto somigli di più a quello che volevamo. La regola
+con cui si decide «di quanto ha sbagliato», la funzione di perdita, è una
+scelta, e di regole possibili ce ne sono parecchie: con un modello di forma
+qualunque, sono loro a decidere se il collasso è possibile oppure no.
 
-L'articolo di LeCun le mette in fila in una tabella e accanto a ciascuna
-scrive una cosa sola: con quale dislivello fra una coppia giusta e una
-sbagliata quella regola basta a tenere lontano il collasso. Quel dislivello ha
-un nome, margine: una superficie piatta non ha dislivelli, quindi una
-regola che ne pretende uno qualunque la rifiuta per costruzione.
+L'articolo di LeCun le passa in rassegna una per una e per ciascuna dice una
+cosa sola: con quale dislivello fra una coppia giusta e una sbagliata quella
+regola basta a tenere lontano il collasso. Quel dislivello ha un nome, margine:
+una superficie piatta non ha dislivelli, quindi una regola che ne pretende uno
+qualunque la rifiuta per costruzione.
 
-La prima regola della lista è anche la più ingenua, quella che si limita ad
-abbassare l'energia sui dati veri senza mai guardare nient'altro. Nella sua
-casella del margine c'è scritto «none», nessuno {cite}`lecun2006tutorial`,
-cioè con un'architettura qualunque non protegge affatto (l'articolo mostra poi
-qualche architettura speciale in cui va bene lo stesso). È la prima riga della
-tabella, non un difetto sottile da manuale avanzato.
+La prima regola della rassegna è anche la più ingenua, quella che si limita ad
+abbassare l'energia sui dati veri senza mai guardare nient'altro. Alla voce
+«margine» l'articolo scrive «none», nessuno {cite}`lecun2006tutorial`, cioè con
+un'architettura qualunque non protegge affatto (l'articolo mostra poi qualche
+architettura speciale in cui va bene lo stesso). È la prima regola della
+rassegna, non un difetto sottile da manuale avanzato. La questione del collasso
+torna, con le misure che permettono di accorgersene, nella sezione
+{doc}`Perché non collassa, e come si fa a saperlo
+</AutoSupervisione/collasso-e-misura>`.
 
 `````{tab} Elementare
 
@@ -159,7 +185,11 @@ costa quanto rispondere a una domanda.
 Il secondo: cambiare la porta invece di istruire il buttafuori. Se al posto
 della porta c'è una fessura, di là non passa una folla qualunque cosa lui
 dica: si costruisce il modello in modo che il numero di risposte a cui *può*
-dare energia bassa sia limitato in partenza. Nessun controesempio da andare a
+dare energia bassa sia limitato in partenza. Un modo concreto è obbligarlo a
+riassumere ogni coppia in un disegno di dieci tratti e a lasciarla entrare solo
+se, dal riassunto, riesce a rifarla somigliante. Con dieci tratti si rifanno
+bene le coppie viste mille volte, e tutte le altre vengono male per forza:
+dire di sì a tutti, anche volendo, non può. Nessun controesempio da andare a
 cercare.
 
 E il fatto che il primo metodo non regga quando le risposte possibili sono
@@ -189,17 +219,24 @@ $$
 dove $m > 0$ è il margine preteso fra coppia giusta e coppia sbagliata. E qui
 c'è un costo che di solito passa sotto silenzio: $\bar{y}$ è a sua volta un
 $\arg\min$ su $\mathcal{Y}$, cioè un'inferenza completa a ogni passo di
-addestramento. Il problema dei metodi contrastivi sta soprattutto nel fatto
-che trovarne uno *buono* costa quanto rispondere, prima ancora che nel loro
-numero. La massima verosimiglianza appartiene alla stessa famiglia: il suo
+addestramento. I difetti dei metodi contrastivi sono quindi due: in alta
+dimensione i controesempi non bastano mai, e trovarne uno *buono* costa quanto
+rispondere. La massima verosimiglianza appartiene alla stessa famiglia: il suo
 termine contrastivo è la log-partizione, che solleva l'energia di *ogni*
 risposta con forza proporzionale alla sua verosimiglianza, e nel limite $\beta
 \to \infty$ la loss NLL degenera nella loss del percettrone generalizzata, che
 ne solleva una sola, quella a energia minima {cite}`lecun2006tutorial`.
 Contrastive divergence, NCE e le loss a margine sono tutte varianti di una
-stessa domanda: quali risposte tirare su, e con che forza. Il male comune,
-in alta dimensione, è che i controesempi non bastano mai a puntellare un'intera
-superficie.
+stessa domanda: quali risposte tirare su, e con che forza. Nella tabella delle
+loss del tutorial la energy loss ha margine «none», il percettrone
+generalizzato e LVQ2 hanno margine nullo, e tutte le altre (la hinge con
+margine $m$, la log-verosimiglianza negativa per ogni $\beta$) un margine
+strettamente positivo {cite}`lecun2006tutorial`. Il percettrone alza
+l'energia della risposta che il modello dà, eppure non crea nessun dislivello
+fra quella giusta e le altre, e l'articolo avverte che, come la energy loss,
+può produrre superfici piatte se l'architettura lo permette. A proteggere dal
+collasso, quindi, è il margine positivo: alzare altre energie da solo non
+basta.
 
 I **metodi regolarizzati o architetturali** impediscono il collasso per
 costruzione, limitando il *volume* dello spazio a bassa energia invece di
@@ -209,10 +246,10 @@ di sparsità, quantizzazione dei codici (il {doc}`VQ-VAE dei codec neurali
 o decorrelazione alle rappresentazioni. L'intuizione è che un modello con pochi
 gradi di libertà non *può* dare energia bassa a tutto, e allora non serve alcun
 controesempio a impedirglielo. È la famiglia su cui LeCun scommette per i world
-model. Lì la cornice si allarga con una variabile latente $\mathbf{z}$ che
-assorbe la parte imprevedibile della risposta, e l'energia della coppia
-diventa $\min_{\mathbf{z}} E_\theta(\mathbf{x}, y, \mathbf{z})$: limitare il
-contenuto informativo di $\mathbf{z}$ è a sua volta un vincolo di volume. La
+model. Lì la variabile latente $\mathbf{z}$ assorbe la parte imprevedibile
+della risposta, e l'energia della coppia è il minimo su $\mathbf{z}$ visto
+sopra: limitare il contenuto informativo di $\mathbf{z}$ è a sua volta un
+vincolo di volume. La
 {doc}`sezione sulla JEPA </WorldModels/jepa>` ne scrive l'energia e mostra come
 si difende dal collasso senza fabbricare un solo controesempio.
 
@@ -221,7 +258,8 @@ si difende dal collasso senza fabbricare un solo controesempio.
 Due strade, dunque, e quale sia quella giusta non è affatto deciso. La
 questione compare anche nell'elenco che LeCun ripete nelle sue conferenze,
 quello delle quattro cose a cui il campo dovrebbe rinunciare: è la terza delle
-quattro, e la sezione che segue la riprende per l'ultima volta insieme alle
+quattro, e la sezione sui {doc}`paesaggi di oggi
+</ModelliEnergia/paesaggi-di-oggi>` la riprende per l'ultima volta insieme alle
 altre.
 
 `````{tab} Elementare
@@ -242,9 +280,10 @@ altre.
 - I rimedi sono due, e la scelta fra loro è una discussione ancora aperta:
   mostrargli anche le coppie sbagliate e pretendere che le respinga, oppure
   stringere la porta, cioè costruirlo in modo che dire sì a tutti gli sia
-  fisicamente impossibile. Il primo va in crisi quando le coppie sbagliate
-  sono troppe da mostrare, ed è quasi sempre il caso; il secondo è la
-  scommessa di LeCun per i modelli del mondo.
+  fisicamente impossibile. Il primo ha due difetti: le coppie sbagliate sono
+  troppe da mostrare, ed è quasi sempre il caso, e trovare quelle che
+  insegnano qualcosa costa quanto rispondere. Il secondo è la scommessa di
+  LeCun per i modelli del mondo.
 ```
 `````
 
@@ -262,8 +301,9 @@ altre.
 - Due famiglie di rimedi: contrastivi (alzare l'energia su risposte
   sbagliate, a partire dalla *most offending incorrect answer*) e
   regolarizzati/architetturali (limitare per costruzione il volume dello
-  spazio a bassa energia). I primi non scalano in alta dimensione; i secondi
-  sono la scommessa di LeCun per i world model.
+  spazio a bassa energia). I primi pagano due volte in alta dimensione,
+  perché i controesempi non bastano mai e ciascuno costa un'inferenza; i
+  secondi sono la scommessa di LeCun per i world model.
 - Vista da qui, la massima verosimiglianza è un metodo contrastivo: solleva
   l'energia di tutte le risposte, pesandole con la loro probabilità. Da cui
   il costo, e da cui l'idea di sostituirla.

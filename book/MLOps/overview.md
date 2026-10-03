@@ -14,17 +14,16 @@
 
 C'è una figura, in un articolo del 2015, che vale da sola un capitolo intero.
 La disegnano alcuni ingegneri di Google (D. Sculley e colleghi) per una
-conferenza di apprendimento automatico {cite}`sculley2015hidden`. Al centro
-del foglio c'è un rettangolino nero, minuscolo, con dentro due parole: *codice
-ML*. È l'unico pezzo di cui parlano di solito i libri, i corsi, i paper: il
-modello, l'algoritmo, la rete che impara. Tutto intorno, a soffocarlo, ci sono
-scatole molto più grandi: raccogliere i dati, controllarli, ricavarne le
-grandezze su cui il modello ragiona (le *feature*), tenere in ordine le
-impostazioni, far girare la macchina che riceve le domande e restituisce le
-risposte (in gergo il *serving*), sorvegliare, analizzare, e amministrare i
-computer che fanno i conti. La morale della figura è brutale e onesta:
-addestrare il modello è la parte più piccola del lavoro. Tutto il resto (il
-grosso) è il sistema che gli sta intorno.
+conferenza di apprendimento automatico {cite}`sculley2015hidden`. Al centro del
+foglio c'è un rettangolino nero, minuscolo, con dentro due parole: *codice ML*.
+È l'unico pezzo di cui parlano di solito i libri, i corsi, i paper: il modello,
+l'algoritmo, la rete che impara. Tutto intorno, a soffocarlo, ci sono scatole
+molto più grandi: raccogliere i dati, controllarli, ricavarne le feature,
+tenere in ordine le impostazioni, far girare la macchina che riceve le domande
+e restituisce le risposte (in gergo il *serving*), sorvegliare, analizzare, e
+amministrare i computer che fanno i conti. La figura dice che addestrare il
+modello è la parte più piccola del lavoro, e che il resto è il sistema che gli
+sta intorno.
 
 Si ripete spesso che moltissimi modelli non arrivino mai **in produzione**,
 cioè davanti a persone vere che li usano ogni giorno: è un'osservazione
@@ -35,21 +34,20 @@ percorso che porta un modello dal prototipo al servizio: raccogliere e
 verificare i dati, consegnare il modello al mondo reale (il *deployment*),
 sorvegliarlo, mantenerlo {cite}`paleyes2022challenges`. Non è che i modelli
 sbaglino le predizioni in laboratorio. È che nessuno aveva pensato a come
-alimentarli, aggiornarli, tenerli d'occhio. Questo capitolo parla esattamente
-di quel «tutto il resto». Il suo nome, ormai, è **MLOps**: *ML* per machine
+alimentarli, aggiornarli, tenerli d'occhio. Quel «tutto il resto» ha ormai un
+nome, **MLOps**: *ML* per machine
 learning, *Ops* per le operazioni, cioè il mestiere di tenere in funzione ciò
 che è in funzione.
 
-## Il modello è la punta dell'iceberg
+## Il modello è la parte piccola del sistema
 
 L'errore di prospettiva è comprensibile: fino a qui, in tutto il libro, «fare
 machine learning» ha significato scegliere un modello, addestrarlo, misurarne
-l'accuratezza. E tutto questo si fa in un **notebook**, che qui vuol dire una
-pagina su cui il programma si scrive a pezzetti, uno
-sotto l'altro, e ogni pezzetto lo si può far partire da solo vedendo subito che
-cosa combina. È comodissimo per
-provare, ed è lì che nasce quasi ogni modello. Sul proprio computer il lavoro
-sembra finito quando la metrica sui dati di prova è buona.
+l'accuratezza. E tutto questo si fa in un **notebook**, un documento
+interattivo fatto di pezzetti di programma (le *celle*) che si eseguono uno
+alla volta, con il risultato mostrato subito sotto ciascuno. È comodo per
+sperimentare, ed è lì che di solito nasce un modello. Sul proprio computer il
+lavoro sembra finito quando la metrica sui dati di prova è buona.
 
 Ma un modello che nessuno usa non serve a niente. E la distanza fra «funziona
 nel mio notebook» e «funziona per migliaia di persone, ogni giorno, per anni»
@@ -71,14 +69,15 @@ prima hai comprato un freezer di seconda mano: il giorno che lo installi non lo
 paghi, lo paghi ogni sera d'estate in cui si ferma e il piatto migliore del
 mondo resta in cucina. Le scorciatoie della fretta si pagano a rate, per anni.
 
-C'è poi una cosa che rende questa cucina più insidiosa di una vera. Se il
-fornitore cambia i pomodori, tu ti aspetti che cambi il sapore dei piatti col
-pomodoro; qui invece cambia anche il sapore di piatti che il pomodoro non lo
-contengono affatto. Il motivo è che il modello non impara una regola per volta:
-impara un equilibrio fra tutto quello che gli è stato dato. Cambia una sola
-delle informazioni in ingresso e l'equilibrio si rifà da capo, e le risposte si
-spostano anche dove non te lo aspettavi. È la ragione per cui un impianto del
-genere si tiene d'occhio invece di darlo per finito.
+C'è poi una cosa che rende questa cucina più insidiosa di una vera. Le sue
+ricette formano un equilibrio solo, con le dosi di tutti i piatti tarate insieme
+sugli ingredienti che c'erano, invece di essere scritte una per piatto. Se il
+fornitore cambia i pomodori e si ritarano le ricette sui pomodori nuovi (per il
+modello, lo si riaddestra), si ritarano tutte, e le dosi si spostano anche nei
+piatti che il pomodoro non lo contengono affatto. E anche senza ritarare niente
+il pomodoro nuovo cambia ogni piatto in cui entra, ma di quanto dipende da tutti
+gli altri ingredienti del piatto, che con lui si mescolano. È la ragione per cui
+un impianto del genere si tiene d'occhio invece di darlo per finito.
 
 `````
 
@@ -97,11 +96,17 @@ risorse: il codice di addestramento è una frazione minima del totale.
 Il debito più caratteristico è l’**entanglement**, riassunto dal principio
 **CACE**: *Changing Anything Changes Everything*. In un modello di ML nessuna
 *feature* è davvero indipendente. Cambiare la distribuzione di un solo
-ingresso, aggiungerne o toglierne uno, ritoccare un iperparametro: ognuna di
-queste mosse ripesa tutte le altre e sposta le predizioni ovunque, in modi non
-locali e difficili da prevedere. È l'opposto della modularità a cui
-l'ingegneria del software tradizionale ci ha abituati, ed è la ragione per cui
-un sistema di ML non si governa con le sole pratiche del software classico.
+ingresso, aggiungerne o toglierne uno, ritoccare un iperparametro: al
+riaddestramento successivo ognuna di queste mosse ripesa tutte le altre,
+perché i pesi di tutte le feature si stimano insieme, e una feature che cambia
+ridistribuisce il contributo di quelle correlate con lei, come i coefficienti
+di una regressione con predittori correlati. A modello fermo cambia soltanto
+l'ingresso, ma l'effetto sull'uscita dipende ancora dai valori di tutte le
+altre feature, salvo nei modelli additivi, dove ogni feature contribuisce per
+conto suo. In tutti e due i casi le predizioni si spostano in modi non locali e
+difficili da prevedere. È l'opposto della modularità a cui l'ingegneria del
+software tradizionale ci ha abituati, ed è la ragione per cui un sistema di ML
+non si governa con le sole pratiche del software classico.
 
 `````
 
@@ -161,8 +166,14 @@ accorgersi in tempo se qualcosa va storto.
 
 `````{tab} Superiore
 
-La definizione operativa poggia su una tripletta versionata: dati + codice +
-modello {cite}`kreuzberger2023machine`. Rendere un esperimento riproducibile
+Kreuzberger e colleghi definiscono MLOps come una pratica d'ingegneria che
+unisce machine learning, ingegneria del software (DevOps in particolare) e
+ingegneria dei dati, e ne elencano i principi: automazione CI/CD,
+orchestrazione dei flussi di lavoro, riproducibilità, versionamento di dati,
+modello e codice, addestramento e valutazione continui, tracciamento dei
+metadati, monitoraggio continuo e anelli di retroazione
+{cite}`kreuzberger2023machine`. Il nucleo operativo è la tripletta versionata
+dati + codice + modello. Rendere un esperimento riproducibile
 significa poter ricostruire una predizione a partire da (a) la versione esatta
 del dataset di addestramento, (b) la versione del codice e degli
 iperparametri, (c) i pesi del modello che ne sono risultati. Da qui le
@@ -175,22 +186,26 @@ L'obiettivo non è la sofisticazione, ma l’automazione e la
 tracciabilità: ridurre il lavoro che si rifà a mano ogni volta, rendere
 ogni rilascio ripetibile e ogni predizione riconducibile agli artefatti che
 l'hanno prodotta. È la tesi di fondo dei testi che hanno sistematizzato la
-disciplina, *Designing Machine Learning Systems* fra i primi
-{cite}`huyen2022designing`: un modello in produzione è un
-processo da tenere in vita, più che un risultato.
+disciplina, a cominciare da *Designing Machine Learning Systems*, che già nel
+sottotitolo chiama la costruzione di un sistema di ML un processo iterativo (*an
+iterative process*): il rilascio di un modello non chiude il lavoro, perché le
+sue prestazioni degradano nel tempo e vanno sorvegliate e aggiornate di continuo
+{cite}`huyen2022designing`.
 
 `````
 
 ## Il ciclo di vita di un modello
 
-Ed è proprio la parola «processo» a segnare la differenza più importante.
-Siamo abituati a pensare al machine learning come a una linea retta: si
-raccolgono i dati, si addestra, si valuta, si consegna. Fine. Ma la consegna
-è il punto in cui il modello incontra il mondo reale, e il
+Qui sta la differenza più importante con il software che si consegna una volta
+sola: un modello in produzione è un processo da tenere in vita più che un
+risultato da archiviare. Siamo abituati a pensare al machine learning come a
+una linea retta: si raccolgono i dati, si addestra, si valuta, si consegna.
+Fine. Ma la consegna è il punto in cui il modello incontra il mondo reale, e il
 mondo reale cambia. Un modello in produzione va sorvegliato, perché prima o
 poi i dati che incontra smettono di somigliare a quelli su cui è stato
-addestrato. Quello scivolamento lento ha un nome inglese che useremo sempre,
-*drift*, e vuol dire deriva: è la stessa cosa di cui parla
+addestrato. Quello spostamento, che può essere lento o improvviso
+{cite}`gama2014survey`, ha un nome inglese, *drift*, e vuol dire deriva: è la
+stessa cosa di cui parla
 {doc}`Quando i dati cambiano </MachineLearning/dati-che-cambiano>`, lì misurata
 con gli strumenti della statistica, qui affrontata da chi il servizio lo deve
 tenere acceso.
@@ -210,26 +225,28 @@ ciclo ricomincia.
 
 `````{tab} Elementare
 
-Il quadro lo appendi al muro e te ne dimentichi. Un modello somiglia piuttosto
-a un giardino: lo pianti (i dati), lo fai crescere (l'addestramento), controlli
-che sia sano (la valutazione), lo apri al pubblico (il deploy), e poi ci torni
-ogni giorno ad annaffiare, potare, guardare se una pianta si ammala (il
-monitoraggio). Le stagioni cambiano, il terreno si impoverisce, e ciò che
+Un quadro, una volta appeso al muro, non chiede più niente. Un modello somiglia
+piuttosto a un giardino: lo pianti (i dati), lo fai crescere (l'addestramento),
+controlli che sia sano (la valutazione), lo apri al pubblico (il deploy), e poi
+ci torni ogni giorno ad annaffiare, potare, guardare se una pianta si ammala
+(il monitoraggio). Le stagioni cambiano, il terreno si impoverisce, e ciò che
 andava bene a maggio non basta a novembre. Il giardino peggiora anche nell'anno
-in cui tu non hai toccato niente: si sono mossi il tempo e la terra. Ripiantare,
-per un giardiniere, è ordinaria amministrazione, e nessuno lo chiama una
-sconfitta.
+in cui tu non hai toccato niente: si sono mossi il tempo e la terra.
+Ripiantare, per un giardiniere, è ordinaria amministrazione, e nessuno lo
+chiama una sconfitta.
 
 Piantare, far crescere, controllare, aprire al pubblico: questi gesti li
 conosci già. Il gesto nuovo è tornare a guardare, e quando l'occhio in
 produzione vede che i dati sono cambiati tira la freccia che riporta
-all'inizio. E le strade di ritorno del giardino sono parecchie. Il basilico
-cresce e non profuma (il modello passa la prova ma risponde male): potare,
-cioè riaddestrare, non serve, quel guaio si ripara a monte, nel terreno e nella
-scelta dei semi (quali dati e quali informazioni gli si danno). Trovi i
-sacchetti dei semi con le etichette scambiate (esempi con la risposta giusta
-sbagliata): quello che è cresciuto è rigoglioso e inservibile, e si ricomincia
-dal sacchetto. Ogni freccia indietro torna al punto in cui il guaio è nato.
+all'inizio.
+
+Non tutte le frecce, però, tornano al primo passo: ognuna torna al punto in
+cui il guaio è nato. Se il basilico cresce ma non profuma (il modello supera la
+prova e poi risponde male), potare, cioè riaddestrare, non serve: il guaio sta
+più a monte, nel terreno e nella scelta dei semi, cioè in quali dati e quali
+informazioni gli si danno. Se invece i sacchetti dei semi avevano le etichette
+scambiate (esempi con la risposta giusta sbagliata), quello che è cresciuto è
+rigoglioso e inservibile, e si ricomincia dai sacchetti.
 
 `````
 
@@ -258,23 +275,24 @@ questa la ragione strutturale per cui il ciclo è un anello e non un segmento.
 Il notebook, si è detto, è dove il modello nasce. Il guaio è che di solito lo
 si scambia anche per il posto dove il lavoro finisce, e in realtà è la prima
 casella di cinque ({numref}`fig-cinque-tappe`): dopo di lui il modello deve
-uscire dal foglio, farsi raggiungere da altri programmi, girare uguale su
-computer che non sono il proprio, e poi restare sotto controllo per anni.
+uscire dal foglio, farsi raggiungere da altri programmi, portarsi dietro su
+computer che non sono il proprio lo stesso ambiente in cui è nato, e poi
+restare sotto controllo per anni.
 
 ```{figure} ../figures/dal-notebook-alla-produzione.svg
 :name: fig-cinque-tappe
-:alt: "Cinque tappe in fila dal notebook alla produzione: l'esperimento nel notebook, l'estrazione in programmi di cui si conserva ogni versione, il rilascio dietro uno sportello a cui altri programmi possono rivolgersi, il confezionamento in una scatola che si comporta uguale su qualsiasi computer e infine la sorveglianza continua. Una freccia tratteggiata torna dall'ultima tappa alla prima. Solo la prima è quella che di solito si considera «il lavoro»."
+:alt: "Cinque tappe in fila dal notebook alla produzione: l'esperimento nel notebook, l'estrazione in programmi di cui si conserva ogni versione, il rilascio dietro uno sportello a cui altri programmi possono rivolgersi, il confezionamento in una scatola che porta con sé lo stesso ambiente su ogni computer e infine la sorveglianza continua. Una freccia tratteggiata torna dall'ultima tappa alla prima. Solo la prima è quella che di solito si considera «il lavoro»."
 :width: 100%
 
 Il notebook è la prima delle cinque caselle, non l'ultima. Dopo di lui il
 codice esce dal foglio e diventa un programma di cui si conserva ogni versione
 (`Git`); il programma viene messo dietro uno sportello a cui altri programmi
-possono bussare (l’*API*); lo sportello viene chiuso in una scatola che si
-comporta uguale su qualsiasi computer (il *container*); e solo allora si apre
-al pubblico, sorvegliato. Le quattro tappe che seguono la prima non aggiungono
-intelligenza al modello: aggiungono le condizioni perché quell'intelligenza
-serva a qualcuno. E la freccia che torna indietro in fondo è l'anello: da lì
-si ricomincia.
+possono bussare (l’*API*); lo sportello viene chiuso in una scatola che porta
+con sé, su ogni computer, lo stesso ambiente (il *container*); e solo allora si
+apre al pubblico, sorvegliato. Le quattro tappe che seguono la prima non
+aggiungono intelligenza al modello: aggiungono le condizioni perché
+quell'intelligenza serva a qualcuno. E la freccia che torna indietro in fondo è
+l'anello: da lì si ricomincia.
 ```
 
 Quattro caselle su cinque vengono *dopo* il notebook, ed è la proporzione da
@@ -343,8 +361,8 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Addestrare un modello è la punta dell'iceberg: è il piatto del cuoco, e
-  il ristorante è tutto il resto (le forniture, la cucina, il servizio in
+- Addestrare un modello è la parte piccola del lavoro: è il piatto del cuoco,
+  e il ristorante è tutto il resto (le forniture, la cucina, il servizio in
   sala). Nel disegno del 2015 di Sculley e colleghi, il pezzo di cui parlano i
   libri è un rettangolino, e tutto intorno ci sono scatole più grandi.
 - In produzione vuol dire che il modello ha smesso di essere un
@@ -353,9 +371,10 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
 - Ci sono tre cose da conservare, non una: il programma, i dati e il
   modello addestrato. Nel software normale basta il primo, ed è per questo che
   gli strumenti del software normale qui non bastano.
-- Nulla è davvero separato da nulla: cambiare un ingrediente sposta il
-  risultato ovunque, anche dove non te lo aspetti. È il motivo per cui un
-  sistema del genere si sorveglia invece di darlo per finito.
+- Nulla è davvero separato da nulla: quando si ritarano le ricette su un
+  ingrediente cambiato, si spostano le dosi di tutti i piatti, anche dove non
+  te lo aspetti. È il motivo per cui un sistema del genere si sorveglia
+  invece di darlo per finito.
 - Il percorso non è una linea con un traguardo ma un anello: dati,
   addestramento, valutazione, apertura al pubblico, sorveglianza, e da lì di
   nuovo ai dati. Un modello è un giardino, non un quadro appeso.
@@ -365,17 +384,20 @@ Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Addestrare un modello è la punta dell'iceberg: nel sistema reale il
-  «codice ML» è un rettangolino minuscolo circondato da dati, feature,
-  serving, monitoraggio e configurazione {cite}`sculley2015hidden`. Portare un
-  modello dal prototipo al servizio reale è un problema d'ingegneria a sé,
-  costellato di ostacoli a ogni tappa {cite}`paleyes2022challenges`.
+- Addestrare un modello è una frazione piccola del sistema: nel disegno di
+  Sculley e colleghi il «codice ML» è un rettangolino minuscolo circondato da
+  dati, feature, serving, monitoraggio e configurazione
+  {cite}`sculley2015hidden`. Portare un modello dal prototipo al servizio
+  reale è un problema d'ingegneria a sé, costellato di ostacoli a ogni tappa
+  {cite}`paleyes2022challenges`.
 - MLOps porta la cultura DevOps (automazione, CI/CD, monitoraggio) al
   ciclo di vita del ML, aggiungendo i dati e il modello come artefatti
   da versionare accanto al codice {cite}`kreuzberger2023machine`.
 - Il debito tecnico del ML è aggravato dall’entanglement (principio
   CACE: *Changing Anything Changes Everything*): nessuna feature è davvero
-  indipendente dalle altre.
+  indipendente dalle altre, perché al riaddestramento i loro pesi si stimano
+  insieme, e anche a modello fermo, fuori dai modelli additivi, l'effetto di
+  ciascuna dipende dalle altre.
 - Il ciclo di vita è un anello, non una linea: dati → addestramento →
   valutazione → deploy → monitoraggio → (drift) → di nuovo dati. Lo studio di
   Microsoft lo descrive in nove fasi con molte retroazioni

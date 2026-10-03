@@ -1,19 +1,19 @@
 # Apprendimento supervisionato: regressione e classificazione
 
-Immagina di affiancare per una settimana un agente immobiliare esperto. Non ti
-spiega nessuna formula: ti mostra centinaia di case già vendute (metri quadri,
-numero di stanze, quartiere) e accanto a ciascuna il prezzo finale. Dopo un
-po’, davanti a un appartamento mai visto, sai già sparare una cifra
-ragionevole. Hai imparato dagli esempi etichettati. È, in una frase, ciò
-che fa l'apprendimento supervisionato: mostra a un modello abbastanza coppie
-*domanda–risposta* e imparerà a rispondere da solo.
+Chi affianca per una settimana un agente immobiliare esperto non impara
+nessuna formula: vede centinaia di case già vendute (metri quadri, numero di
+stanze, quartiere) e accanto a ciascuna il prezzo finale. Dopo un po’, davanti
+a un appartamento mai visto, sa già proporre una cifra ragionevole. Ha
+imparato dagli esempi etichettati, ed è, in una frase, ciò che fa
+l'apprendimento supervisionato: mostrare a un modello abbastanza coppie
+*domanda–risposta* perché impari a rispondere da solo.
 
 ## Imparare una funzione dagli esempi
 
 I dati di partenza sono quasi sempre una tabella: una riga per esempio (un
-appartamento, un'email, un paziente) e una colonna per caratteristica. Ma non
-tutte le colonne sono fatte della stessa pasta, e la differenza sta in che cosa
-ha senso farci sopra:
+appartamento, un'email, un paziente) e una colonna per caratteristica. Le
+colonne però non sono tutte dello stesso tipo, e il tipo decide che cosa ha
+senso farci sopra:
 
 - una colonna **numerica** contiene numeri veri, su cui somme, differenze e
   medie hanno un senso: i metri quadri di una casa, la sua età;
@@ -35,43 +35,49 @@ l'errore che porta un modello a calcolare la media fra «Milano» e «Roma».
 ```
 
 Stabilire di quale dei tre tipi sia ciascuna colonna, come in
-{numref}`fig-tipi-di-feature`, è la prima decisione di ogni progetto, e non la
-prende il modello: la
-prende chi prepara i dati. Se al quartiere «Milano» assegniamo il numero 1 e a
-«Roma» il 2 per poterli dare in pasto a un programma (si dice codificare
-una colonna), quella colonna per il modello è numerica a tutti gli effetti: ci
-farà sopra medie e differenze, e crederà che Roma sia il doppio di Milano e che
-fra le due ci sia qualcosa a 1,5. È un ordine, e sono delle distanze, che
-nessuno intendeva metterci.
+{numref}`fig-tipi-di-feature`, è la prima decisione di ogni progetto, e la
+prende chi prepara i dati, non il modello. Se al quartiere «Milano» si assegna
+il numero 1 e a «Roma» il 2 per poterli passare a un programma (*codifica a
+interi*), la colonna diventa numerica a tutti gli effetti: un modello lineare o
+basato sulle distanze tratta Roma come il doppio di Milano e ammette un valore
+intermedio a 1,5, cioè un ordine e delle distanze che nessuno voleva introdurre.
+Il rimedio è la codifica *one-hot*, già incontrata con le parole di un
+vocabolario nella {doc}`sezione sulla matematica di un modello linguistico
+</Matematica/matematica-llm>`: una colonna sì/no per ogni valore, in modo che
+nessun valore risulti più grande o più vicino di un altro.
 
-Di ogni appartamento teniamo tre numeri in fila (metri quadri, stanze, piano):
-un elenco ordinato di numeri si chiama vettore, ed è lo stesso oggetto della
+Di ogni appartamento teniamo tre numeri in fila (metri quadri, stanze, piano; il
+quartiere, che è una categoria, entrerebbe con la codifica one-hot): un elenco
+ordinato di numeri si chiama vettore, ed è lo stesso oggetto della
 {doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>`. Lo scriviamo
 $\mathbf{x}$, in grassetto minuscolo, proprio per ricordare che non è un numero
 solo. A ciascun appartamento associamo poi un'etichetta $y$ (il prezzo). Il
-"supervisore" è proprio quella $y$ nota: qualcuno, in passato, ha già
-registrato la risposta giusta.
+"supervisore" è proprio quella $y$ nota: qualcuno, in passato, ha già registrato
+la risposta giusta. Messi uno sotto l'altro, i vettori di tutti gli appartamenti
+formano la matrice dei dati $\mathbf{X}$ della sezione sull'algebra lineare, una
+riga per esempio e una colonna per caratteristica, e le etichette il vettore
+$\mathbf{y}$.
 
 ```{admonition} Una colonna è una direzione, un esempio è un punto
 :class: tip
 
 
-Prendi una tabella con due sole colonne: metri quadri e prezzo. Puoi disegnarla
-su un foglio a quadretti, con i metri quadri sull'asse orizzontale e il prezzo
-su quello verticale: ogni appartamento diventa un punto, e la tabella
-diventa una nuvola di punti. Con tre colonne servirebbe una scatola invece di
-un foglio, e i punti starebbero sospesi in aria. Con quattro colonne non
-riusciamo più a disegnarla, e tuttavia i conti si fanno lo stesso, identici a
-prima: si continua a parlare di punti, di distanze fra punti, di rette che li
-separano.
+Prendi una tabella con due sole colonne: metri quadri e stanze. Puoi disegnarla
+su un foglio a quadretti, con i metri quadri sull'asse orizzontale e le stanze
+su quello verticale: ogni appartamento diventa un punto, e la tabella diventa
+una nuvola di punti. Con tre colonne servirebbe una scatola invece di un foglio,
+e i punti starebbero sospesi in aria. Con quattro colonne non riusciamo più a
+disegnarla, e tuttavia i conti si fanno lo stesso, identici a prima: si continua
+a parlare di punti, di distanze fra punti, di iperpiani che li separano (rette,
+in due dimensioni).
 
-Quindi: ogni colonna della tabella è una direzione dello spazio, ogni riga è
-un punto in quello spazio. Una tabella con cento colonne descrive punti in
-uno spazio a cento dimensioni, e «dimensione» vuol dire esattamente questo,
-niente di più misterioso. Ridurre le dimensioni vorrà dire togliere direzioni;
-«spazio delle caratteristiche» sarà il nome di quello spazio lì; e frasi come
-«due esempi vicini» vorranno dire «due punti vicini», cioè due appartamenti
-simili in tutte le colonne insieme.
+Quindi: ogni colonna della tabella è una direzione dello spazio, ogni riga è un
+punto in quello spazio. Una tabella con cento colonne descrive punti in uno
+spazio a cento dimensioni: «dimensione» indica una colonna, e nient'altro.
+Ridurre le dimensioni vorrà dire togliere direzioni; «spazio delle
+caratteristiche» sarà il nome di quello spazio lì; e frasi come «due esempi
+vicini» vorranno dire «due punti vicini», cioè due appartamenti simili in tutte
+le colonne insieme.
 ```
 
 `````{tab} Elementare
@@ -93,13 +99,15 @@ del modello.
 
 Per dire quanto vale una regola servono due conti, e non sono lo stesso conto.
 Il primo guarda un esempio alla volta e dice quanto quella singola risposta è
-sbagliata. Il secondo mette insieme tutti i primi e ne fa la media, come il
-voto di un compito che nasce dai punteggi delle sue domande. Con dieci esempi
-ci sono dieci errori singoli e un solo numero riassuntivo, con diecimila
-esempi diecimila e uno. I due servono in momenti diversi: l'errore singolo
-dice dove la regola sta sbagliando, la media dice se nel suo insieme sta
-migliorando. E capiterà, più avanti, di calcolare quella media su una manciata
-di esempi per volta invece che su tutti. Imparare significa scegliere la $f$
+sbagliata. Il secondo mette insieme tutti i primi e ne fa la media, come il voto
+di un compito che nasce dai punteggi delle sue domande. Con dieci esempi ci sono
+dieci errori singoli e un solo numero riassuntivo, con diecimila esempi
+diecimila e uno. I due servono in momenti diversi: l'errore singolo dice dove la
+regola sta sbagliando, la media dice se nel suo insieme sta migliorando. Quella
+media è la *loss*, e si può anche calcolare su una manciata di esempi per volta
+invece che su tutti, per risparmiare conti, come fa la discesa stocastica della
+{doc}`sezione su analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>`. Imparare significa scegliere la $f$
 che rende quella media più piccola che si può sugli esempi già noti, sperando
 che se la cavi bene anche su quelli nuovi.
 
@@ -115,10 +123,11 @@ coincidenza (una formula tutta curve che passa esattamente per i prezzi delle
 dieci case note, e sull'undicesima sbaglia di centomila euro), e scegliendo la
 migliore sugli esempi si rischia di prendere una di quelle. È la stessa cosa che
 succede quando mille persone lanciano una moneta dieci volte: qualcuna fa dieci
-teste, sembra un campione, e alla prova successiva fa come tutti; più persone ci
-sono, più è facile trovarne una. Il pericolo cala con il numero degli esempi,
-perché una coincidenza che regge su dieci case regge molto più di rado su
-diecimila.
+teste e sembra bravissima, ma alla prova successiva fa come tutti. Le persone
+sono le regole del catalogo e i dieci lanci le dieci case note: più regole ci
+sono, più è facile che una le azzecchi tutte per caso. Il pericolo cala con il
+numero degli esempi, perché una coincidenza che regge su dieci case regge molto
+più di rado su diecimila.
 
 `````
 
@@ -153,18 +162,22 @@ classificazione.
 
 La minimizzazione non corre su tutte le funzioni da $\mathcal{X}$ a
 $\mathcal{Y}$, ma su una famiglia fissata prima dei dati, lo **spazio delle
-ipotesi** $\mathcal{H} = \{f_\theta : \theta\in\Theta\}$: le funzioni affini
-per la regressione lineare, gli alberi di profondità limitata, le reti di una
-data architettura. Il principio si chiama *minimizzazione del rischio
-empirico*, e la scelta di $\mathcal{H}$ è un'ipotesi sul problema presa prima
-di vedere un solo esempio, la forma più netta del *bias induttivo* del modello
-(l'altra è la preferenza fra funzioni della stessa famiglia, come quella che
-esprime una penalità; e non ha niente in comune con il termine noto $b$ delle
-rette, che più avanti si chiama anch'esso bias). Il suo effetto si divide in due
-errori {cite}`mohri2018foundations`. Con
-$R(f) = \mathbb{E}\big[\ell(f(\mathbf{x}), y)\big]$ il costo atteso sulla
-distribuzione, di cui $\mathcal{L}$ è la media campionaria (il *rischio
-empirico*), e $R_{\min}$ il più piccolo costo atteso fra tutte le funzioni,
+ipotesi** $\mathcal{H} = \{f_\theta : \theta\in\Theta\}$: le funzioni affini per
+la regressione lineare, gli alberi di profondità limitata, le reti di una data
+architettura. Il principio si chiama *minimizzazione del rischio empirico*. La
+scelta di $\mathcal{H}$ è un'ipotesi sul problema presa prima di vedere un solo
+esempio, ed è la forma più netta del *bias induttivo* del modello (*restriction
+bias*); l'altra forma è la preferenza fra funzioni della stessa famiglia, per
+esempio quella espressa da una penalità (*preference bias*)
+{cite}`mitchell1997machine`. Nulla di questo ha a che fare con il termine noto
+$b$ delle rette, che si chiama anch'esso *bias*. L'effetto della scelta di
+$\mathcal{H}$ si divide in due errori {cite}`mohri2018foundations`. Con $R(f) =
+\mathbb{E}\big[\ell(f(\mathbf{x}), y)\big]$ il costo atteso sulla distribuzione,
+di cui $\mathcal{L}$ è la media campionaria (il *rischio empirico*), e
+$R_{\min}$ il più piccolo costo atteso fra tutte le funzioni (nella notazione
+dell'Introduzione, dove si massimizzava un'utilità $U=-\ell$, $R$ è $-J$ e
+$\mathcal{L}$ è $-\hat J$; il numero degli esempi, che lì si chiamava $n$, qui
+si chiama $m$, e $n$ conta le caratteristiche),
 
 $$
 R(f_{\theta^\star}) - R_{\min}
@@ -178,29 +191,30 @@ ricca, la funzione che minimizza il costo sul campione può costare, sulla
 distribuzione, parecchio più della migliore di $\mathcal{H}$, e l’*errore di
 stima* cresce. Quando tutti i costi empirici distano al più $\varepsilon$ dai
 veri, la funzione scelta perde al più $2\varepsilon$ rispetto alla migliore; e
-per $\mathcal{H}$ finita, esempi i.i.d. e perdita $\ell$ limitata, la
+per $\mathcal{H}$ finita, esempi i.i.d. e perdita $\ell$ in $[0,1]$, la
 disuguaglianza dell'unione della {doc}`sezione sulla concentrazione
-</Matematica/concentrazione>` (dove il numero di esempi si chiama $n$) dà
-$\varepsilon$ dell'ordine di $\sqrt{\log\lvert\mathcal{H}\rvert / m}$. È un
-limite superiore, che cresce con la ricchezza di $\mathcal{H}$ e cala con $m$.
-Le famiglie appena elencate però sono infinite, e il conto che per loro
-sostituisce $\log\lvert\mathcal{H}\rvert$ con la {doc}`dimensione VC
-</TeoriaApprendimento/dimensione-vc>` sta nel capitolo sulla {doc}`teoria
-dell'apprendimento </TeoriaApprendimento/pac>`; perché per le reti la lettura
-«più ricca, più errore» non basti lo mostra la {ref}`doppia discesa
+</Matematica/concentrazione>` (dove il numero di esempi si chiama $n$) dà, con
+probabilità almeno $1-\delta$, $\varepsilon =
+\sqrt{\big(\log\lvert\mathcal{H}\rvert + \log(2/\delta)\big)/(2m)}$, cioè
+$\varepsilon$ dell'ordine di $\sqrt{\log\lvert\mathcal{H}\rvert / m}$ a $\delta$
+fissato. È un limite superiore, che cresce con la ricchezza di $\mathcal{H}$ e
+cala con $m$. Le famiglie appena elencate però sono infinite, e il conto che per
+loro sostituisce $\log\lvert\mathcal{H}\rvert$ con la {doc}`dimensione VC
+</TeoriaApprendimento/dimensione-vc>` è il tema del {doc}`capitolo sulla teoria
+dell'apprendimento </TeoriaApprendimento/overview>`; perché per le reti la
+lettura «più ricca, più errore» non basti lo mostra la {ref}`doppia discesa
 <sec-doppia-discesa>`.
 
 `````
 
 ## Due domande, due problemi
 
-Ciò che cambia tutto è il *tipo* di risposta. "Quanto costa questa casa?"
-chiede un numero su una scala continua: è **regressione**. "Questa email è
-spam, sì o no?" chiede un'etichetta da un insieme finito: è
+Ciò che distingue i due problemi è il *tipo* di risposta. "Quanto costa questa
+casa?" chiede un numero su una scala continua: è **regressione**. "Questa email
+è spam, sì o no?" chiede un'etichetta da un insieme finito: è
 **classificazione**, e le etichette possibili si chiamano **classi** (spam e non
-spam sono due classi). Stesso impianto, imparare $f$ da coppie
-$(\mathbf{x}, y)$, due
-geometrie diverse, come mostra {numref}`fig-regr-classif`: a sinistra
+spam sono due classi). Stesso impianto, imparare $f$ da coppie $(\mathbf{x},
+y)$, due geometrie diverse, come mostra {numref}`fig-regr-classif`: a sinistra
 cerchiamo una linea che *segua* i punti, a destra una linea che li *separi*.
 
 ```{figure} ../figures/regressione-vs-classificazione.svg
@@ -224,100 +238,98 @@ attaccata alla tecnica invece che al fenomeno; nomi più onesti sarebbero stati
 
 ## La regressione lineare: la retta di best fit
 
-Il modello più semplice, e sorprendentemente utile, ipotizza che ogni
-caratteristica spinga la risposta in proporzione: raddoppia i metri quadri e,
-grosso modo, il prezzo raddoppia; una stanza in più vale sempre lo stesso
-tanto, che sia la seconda o la quinta.
+Il modello più semplice, e spesso sorprendentemente efficace, assume che ogni
+caratteristica sposti la risposta di una quantità proporzionale al suo valore:
+dieci metri quadri in più aggiungono sempre la stessa cifra, a qualunque
+superficie si parta, e una stanza in più vale sempre lo stesso tanto, che sia la
+seconda o la quinta.
 
-Il conto allora è di quelli che si fanno a mano. A ogni caratteristica si
-attacca un numero che dice quanto quella caratteristica conta: si chiama
-peso, e non ha niente a che vedere con i chili. Poi si moltiplica ogni
-caratteristica per il suo peso, si sommano i risultati, e la somma è la
-risposta. Nient'altro: niente potenze, niente caratteristiche moltiplicate fra
-loro. Una risposta ottenuta così, moltiplicando e sommando e basta, in gergo si
-chiama combinazione lineare delle caratteristiche, e la parola «lineare»
-tornerà spessissimo con questo significato.
+Il conto si fa a mano. A ogni caratteristica $x_j$ si associa un numero $w_j$,
+il suo peso, che dice di quanto quella caratteristica sposta la risposta; si
+moltiplica ogni caratteristica per il suo peso, si sommano i prodotti e si
+aggiunge un termine fisso $b$, il punto di partenza. Con $n$ caratteristiche:
+
+$$
+\hat{y} = w_1 x_1 + w_2 x_2 + \dots + w_n x_n + b .
+$$
+
+Niente potenze, niente caratteristiche moltiplicate fra loro. Una risposta
+ottenuta così, moltiplicando e sommando e basta, è una combinazione lineare
+delle caratteristiche più un termine costante: in senso stretto una funzione
+affine, che in machine learning si chiama comunque lineare. La parola «lineare»
+indica sempre questo.
 
 `````{tab} Elementare
 
-Guardando i soli metri quadri, l'agente se la cava con una regola sola:
-duemila euro al metro quadro più cinquantamila di partenza. Un appartamento di
-$80$ m² viene $2\,000 \cdot 80 + 50\,000 = 210\,000$ €. Con le lettere, quella
-regola è una retta:
+Guardando i soli metri quadri, l'agente se la cava con una regola sola: duemila
+euro al metro quadro più cinquantamila di partenza. Un appartamento di $80$ m²
+viene $2\,000 \cdot 80 + 50\,000 = 210\,000$ €. Con le lettere, quella regola è
+una retta:
 
 $$
 \hat{y} = w\,x + b
 $$
 
 dove $w$ è la pendenza (quanto sale il prezzo per ogni metro quadro in più) e
-$b$ il punto di partenza. Di rette ce ne sono infinite, e vogliamo quella che
-passa più in mezzo alle case già vendute, la *retta di best fit*
+$b$ il punto di partenza. Di rette ce ne sono infinite, e l'agente vuole quella
+che passa più in mezzo alle case già vendute, la *retta di best fit*
 (l'espressione inglese vuol dire «che si adatta meglio», e in italiano si dice
 anche retta di regressione).
 
-Se questa valga lo dice l'archivio. Gli $80$ m² sono andati proprio a
-$210\,000$ €, scarto zero; un $60$ m² è stato venduto a $160\,000$ € e la
-regola ne chiede $170\,000$, diecimila di troppo; un $100$ m² è andato a
-$260\,000$ € e la regola ne chiede $250\,000$, diecimila in meno. Sommati come
-stanno, il $+10\,000$ e il $-10\,000$ si cancellano, il totale viene zero e la
-regola sembra perfetta dopo aver mancato due case su tre. Allora gli scarti si
-elevano al quadrato, che li rende tutti positivi, e se ne fa la media: in
-migliaia di euro sono $0$, $+10$ e $-10$, al quadrato $0$, $100$ e $100$, e la
-media è $(0 + 100 + 100)/3 \approx 67$. Avendo elevato al quadrato, quel $67$
-non è in euro ma in migliaia di euro al quadrato, e serve solo a dire quale
-retta batte quale, e più è piccolo, migliore è la retta. Il quadrato fa anche
-un secondo mestiere, voluto: uno scarto doppio pesa quattro volte tanto ($10$
-al quadrato fa $100$, $20$ ne fa $400$), e quel conto preferisce la retta che
-sbaglia poco su molte case a quella che le azzecca quasi tutte e prende un
-abbaglio su una.
+Per trovarla apre l'archivio. Gli $80$ m² sono andati proprio a $210\,000$ €,
+scarto zero; un $60$ m² è stato venduto a $160\,000$ € e la regola ne chiede
+$170\,000$, diecimila di troppo; un $100$ m² è andato a $260\,000$ € e la regola
+ne chiede $250\,000$, diecimila in meno. Sommati come stanno, il $+10\,000$ e il
+$-10\,000$ si cancellano, e la regola sembra perfetta dopo aver mancato due case
+su tre. Allora l'agente eleva gli scarti al quadrato, che li rende tutti
+positivi, e ne fa la media: in migliaia di euro, $0$, $+10$ e $-10$ diventano
+$0$, $100$ e $100$, e la media è $(0 + 100 + 100)/3 \approx 67$. Quel $67$ è in
+migliaia di euro al quadrato, quindi non è un prezzo: serve a dire quale retta
+batte quale, e più è piccolo, migliore è la retta. Il quadrato fa anche un
+secondo mestiere, voluto: uno scarto doppio pesa quattro volte tanto ($10$ al
+quadrato fa $100$, $20$ ne fa $400$), e vince la retta che sbaglia poco su molte
+case, non quella che le azzecca quasi tutte e prende un abbaglio su una. Lo
+stesso mestiere ha un rovescio: una casa sola registrata a un prezzo assurdo
+(un affare fra parenti, uno zero di troppo) ha uno scarto enorme, e il
+quadrato lo ingigantisce: uno scarto dieci volte più grande pesa cento volte
+tanto. Per non pagarlo, la retta si piega verso quella casa sola.
 
-Provarle tutte non si può, e allora se ne prende una qualsiasi e la si
-aggiusta a piccoli passi, come chi scende da un fianco di collina nella
-nebbia: il fondovalle non si vede, ma il piede sente da che parte cala il
-terreno, si fa un passo di là, poi un altro da lì, finché non c'è più discesa.
-La collina è l'errore, la coppia $(w, b)$ è la posizione sul fianco, e
-l'altezza del terreno è quanto quella retta sbaglia sulle case dell'archivio.
-Camminare vuol dire cambiare $w$ e $b$, scendere vuol dire sbagliare meno. Il
-piede, qui, si risparmia: l'errore è scritto in una formula, e da una formula
-la pendenza si calcola stando fermi, come l'inclinazione di una rampa dalle
-sue misure. La direzione di massima discesa si chiama gradiente, e la
-camminata che ripete il passo discesa del gradiente. La lunghezza del
-passo la decidiamo noi, e cambia tutto, perché a passi corti ci si mette
-un'eternità e a passi lunghi si scavalca il fondovalle e si rimbalza da un
-fianco all'altro. Si
-chiama learning rate (il *tasso di apprendimento*), e a come si sceglie è
-dedicata una sezione intera.
+Provarle tutte non si può. L'agente ne prende una qualsiasi e la aggiusta a
+piccoli passi, come chi scende da una collina nella nebbia: un passo dalla parte
+in cui il terreno cala, poi un altro da lì, finché non c'è più discesa. La
+posizione sul fianco è la coppia $(w, b)$, l'altezza è quanto quella retta
+sbaglia sulle case dell'archivio. Il piede, qui, non serve: l'errore è scritto
+in una formula, e la pendenza si calcola stando fermi, come quella di una rampa
+dalle sue misure. La direzione in cui il terreno sale più ripido si chiama
+gradiente, e camminare nel verso opposto, passo dopo passo, è la discesa del
+gradiente. La lunghezza del passo la decide chi cammina, e cambia tutto: a passi
+corti ci si mette un'eternità, a passi lunghi si scavalca il fondovalle e si
+rimbalza da un fianco all'altro. Si chiama learning rate (il *tasso di
+apprendimento*, $\eta$), e come si sceglie lo spiega la {doc}`sezione su discesa
+del gradiente e learning rate </RetiNeurali/backpropagation>`.
 
-Nella nebbia ci si ferma nella prima conca, senza sapere mai che dietro il
-crinale ce n'era una più profonda. Con la media degli scarti al quadrato non
-capita, perché quella collina ha la forma di una scodella, con un fondo solo,
-e da qualunque retta si parta si finisce lì, purché i passi non siano troppo
-lunghi. La garanzia riguarda la retta e
-non ogni modello, e le reti neurali camminano su terreni
-molto più accidentati. Per una retta, poi, si può anche non camminare, perché
-un conto diretto dà i pesi migliori in un colpo solo, e finché i dati stanno
-comodi si usa quello. Con milioni di case e centinaia di colonne quel conto
-costa più della passeggiata, e si torna a scendere a piccoli passi.
+Nella nebbia, di solito, ci si ferma nella prima conca, senza sapere che dietro
+il crinale ce n'era una più profonda. Qui no: con la media degli scarti al
+quadrato la collina è una scodella con un fondo solo, e da qualunque retta si
+parta si arriva lì, purché i passi non siano troppo lunghi. Vale per la retta e
+non per ogni modello: le reti neurali camminano su terreni molto più
+accidentati. E per una retta si può anche non camminare, perché un conto diretto
+dà i pesi migliori in un colpo solo; si usa finché i dati stanno comodi, e con
+migliaia di colonne, o con tanti esempi da non stare in memoria, la passeggiata
+torna a costare meno.
 
-Un guasto, però, la nebbia non lo spiega. In archivio la superficie è finita
-due volte, in metri quadri da una fonte e in centimetri quadrati da un'altra,
-e il fondo della scodella si allunga in un fondovalle piatto. Duemila euro al
-metro quadro e niente all'altra colonna, oppure mille euro al metro quadro e
-dieci centesimi al centimetro quadrato, su ogni casa danno lo stesso identico
-prezzo (su una casa di $80$ m², che sono $800\,000$ cm², la superficie porta
-$160\,000$ € in tutti e due i modi). Chi
-cammina si ferma dove capita lungo quel fondo, due colleghi partiti da punti
-diversi arrivano a due regole diverse, e il conto diretto si inceppa, perché
-gli chiediamo il punto più basso e di punti più bassi ce n'è una fila intera.
-I prezzi restano buoni, ma i pesi non si possono più leggere, e la frase «i
-metri quadri contano duemila euro» perde senso. Stessa storia quando le
-colonne sono più delle case in archivio, con tante manopole e poche vendite da
-rispettare.
-
-Quella passeggiata a piccoli passi è il motore di quasi tutto l'apprendimento
-automatico, reti neurali comprese, ed è la ragione per cui la parola
-«errore» torna a ogni passaggio: non dà solo un voto alla regola, le dice da
-che parte andare.
+Un guasto, però, la nebbia non lo spiega. In archivio la superficie è finita due
+volte, in metri quadri da una fonte e in centimetri quadrati da un'altra, e il
+fondo della scodella si allunga in un fondovalle piatto: duemila euro al metro
+quadro e niente all'altra colonna, oppure mille euro al metro quadro e dieci
+centesimi al centimetro quadrato, danno su ogni casa lo stesso prezzo (su
+$80$ m², cioè $800\,000$ cm², la superficie porta $160\,000$ € nei due modi).
+Due colleghi partiti da punti diversi si fermano in due punti diversi di quel
+fondo, con due regole diverse, e il conto diretto si inceppa, perché di punti
+più bassi ce n'è una fila intera. I prezzi restano buoni, ma i pesi non si
+leggono più, e la frase «i metri quadri contano duemila euro» perde senso. Lo
+stesso succede quando le colonne sono più delle case in archivio: tanti pesi,
+poche vendite da rispettare.
 
 `````
 
@@ -353,112 +365,124 @@ dei dati con in più la colonna di uni, la soluzione è $(\hat{\mathbf{w}},
 (\tilde{\mathbf{X}}^\top\tilde{\mathbf{X}})^{-1}\tilde{\mathbf{X}}^\top\mathbf{y}$,
 e la {doc}`sezione su ortogonalità e proiezioni
 </Matematica/ortogonalita-proiezioni>` spiega perché la si calcola con una
-fattorizzazione QR invece di invertire. Il costo è $O(mn^2 + n^3)$, contro
-$O(mn)$ per un passo di discesa del gradiente: con $n$ nell'ordine delle
-migliaia, o con dati che non stanno in memoria, si passa all'iterativo.
+fattorizzazione QR invece di invertire. Le equazioni normali si ottengono
+annullando il gradiente, $\nabla_{\theta}\mathcal{L} =
+\tfrac{2}{m}\tilde{\mathbf{X}}^\top(\tilde{\mathbf{X}}\theta - \mathbf{y}) =
+\mathbf{0}$, con $\theta = (\mathbf{w}, b)$, cioè
+$\tilde{\mathbf{X}}^\top\tilde{\mathbf{X}}\,\theta =
+\tilde{\mathbf{X}}^\top\mathbf{y}$: i residui sono ortogonali a ogni colonna,
+compresa quella costante. Il costo è $O(mn^2 + n^3)$, contro $O(mn)$ per un
+passo di discesa del gradiente: con $n$ nell'ordine delle migliaia, o con dati
+che non stanno in memoria, si passa all'iterativo, $\theta \leftarrow \theta -
+\eta\,\nabla_\theta\mathcal{L}(\theta)$, con $\eta$ il tasso di apprendimento,
+il primo degli iperparametri di cui tratta la {doc}`sezione sulla loro ricerca
+</MachineLearning/iperparametri>`.
 Minimizzare l'MSE equivale poi alla stima di massima verosimiglianza sotto il
 modello $y = \mathbf{w}^\top\mathbf{x} + b + \varepsilon$ con $\varepsilon \sim
 \mathcal{N}(0,\sigma^2)$ indipendenti: è l'ipotesi che si firma usando questa
-loss, e i modelli lineari generalizzati la allentano. Elevare al quadrato
-penalizza fortemente gli errori grossi e rende la loss differenziabile ovunque:
-due proprietà che tornano comode.
+loss, e i modelli lineari generalizzati la allentano. Elevare al quadrato rende
+la loss differenziabile ovunque, e ha un prezzo, la sensibilità ai valori
+anomali: il minimo della perdita quadratica rispetto a una costante è la media,
+quello della perdita assoluta è la mediana, e un solo punto molto lontano sposta
+la retta ai minimi quadrati molto più di quella che minimizza l'errore assoluto.
+La perdita di Huber, quadratica vicino a zero e lineare lontano, sta in mezzo.
 
 `````
 
+La discesa del gradiente, qui al lavoro su una retta sola, è il metodo con cui
+si addestrano quasi tutti i modelli che hanno una loss derivabile, reti neurali
+comprese. Per questo la loss fa due mestieri: dà un voto alla regola e, con il
+suo gradiente, le indica in che verso spostare i parametri. In una rete, dove i
+parametri possono essere milioni, quel gradiente lo calcola un procedimento
+apposito, la {doc}`backpropagation </RetiNeurali/backpropagation>`.
+
 ## La regressione logistica: dal numero alla probabilità
 
-Per la classificazione la retta da sola non basta. Cominciamo col mettere in
-numeri la risposta: siccome un modello lavora solo su numeri, decidiamo per
-convenzione che «no» si scrive $0$ e «sì» si scrive $1$ (è una nostra scelta di
-scrittura, non una proprietà del mondo, e nulla cambierebbe scambiandole).
-Fatto questo, la differenza salta all'occhio: un prezzo può valere
-$310\,000$, mentre «spam sì/no» vale solo $0$ o $1$. La **regressione
-logistica** (che, malgrado il nome, classifica: il nome le è rimasto addosso
-perché il conto che fa dentro è ancora quello della regressione) risolve il
-problema in due mosse.
+Per la classificazione la retta da sola non basta. Siccome un modello lavora su
+numeri, le due risposte si scrivono per convenzione $0$ («no») e $1$ («sì»): è
+una scelta di notazione, e scambiarle cambia solo il segno dei pesi, non le
+previsioni. Fatto questo, la differenza con la regressione salta all'occhio: un
+prezzo può valere $310\,000$, mentre «spam sì/no» vale solo $0$ o $1$. La
+**regressione logistica** (il nome è storico: serve a classificare) risolve il
+problema in due mosse: calcola un punteggio lineare delle caratteristiche e lo
+converte in una probabilità.
 
 `````{tab} Elementare
 
-**Prima mossa: un punteggio.** Di un'email si guardano alcune caratteristiche,
-per esempio quante volte compare la parola «offerta», quanti collegamenti
-contiene, se il mittente è in rubrica. Si moltiplica ciascuna per il suo peso,
-si somma tutto e si aggiunge il numero di partenza, esattamente come per la
-retta di prima. Ne esce un numero solo, che può essere qualsiasi cosa, $-7$ o
-$+412$.
+Arriva un'email, e il filtro ne guarda alcune caratteristiche: quante volte
+compare la parola «offerta», quanti collegamenti contiene, se il mittente è in
+rubrica. Moltiplica ciascuna per il suo peso, somma tutto e aggiunge il numero
+di partenza, come per la retta. Ne esce un punteggio che può valere qualsiasi
+cosa, $-7$ o $+412$.
 
-**Seconda mossa: schiacciarlo.** Quel numero passa dentro una funzione a forma
-di «S» (una funzione è una regola che a ogni numero ne fa corrispondere un
-altro), la **sigmoide**, che qualunque cosa le si dia restituisce un valore
-compreso fra $0$ e $1$. Per farlo usa le potenze di un numero fisso,
-$e \approx 2{,}718$ (lo racconta la {doc}`sezione su analisi e ottimizzazione
-</Matematica/analisi-ottimizzazione>`): al punteggio $2$ dà $0{,}88$, allo zero
-esattamente la metà, $0{,}5$, a $-2$ dà $0{,}12$.
+Poi lo schiaccia dentro una regola a forma di «S», la **sigmoide**, che di
+qualunque numero ne fa uno compreso fra $0$ e $1$. Per farlo usa le potenze di
+un numero fisso, $e \approx 2{,}718$ (lo racconta la {doc}`sezione su analisi e
+ottimizzazione </Matematica/analisi-ottimizzazione>`): al punteggio $2$ dà
+$0{,}88$, allo zero esattamente la metà, $0{,}5$, a $-2$ dà $0{,}12$. Quel
+numero si legge come una probabilità, cioè come la sicurezza del filtro che
+l'email sia spam: $0{,}9$ vuol dire «ci scommetterei», $0{,}52$ «non ne ho idea,
+ma se proprio devo dico sì». La risposta secca il filtro non la dà da solo: la
+dà un taglio fissato da chi lo usa, per abitudine $0{,}5$, con «sì» sopra e «no»
+sotto.
 
-Quel numero fra zero e uno lo leggiamo come una probabilità: non la probabilità
-del lancio di un dado, ma la sicurezza del modello. $0{,}9$ vuol dire «ci
-scommetterei»; $0{,}52$ vuol dire «non ne ho idea, ma se proprio devo dico sì».
+I pesi si trovano scendendo di nuovo una collina, ma l'altezza adesso si misura
+come in una scommessa: il filtro punta la sua sicurezza, e se sbaglia paga una
+multa tanto più salata quanto più era sicuro. La multa sale di un gradino ogni
+volta che la sicurezza lasciata alla risposta giusta si divide per dieci, e di
+circa mezzo gradino quando si divide per tre, perché tre per tre fa quasi dieci
+(contare le divisioni per dieci è il logaritmo della {doc}`sezione su analisi e
+ottimizzazione </Matematica/analisi-ottimizzazione>`). Dare $0{,}6$ a un'email
+che spam non era lascia $0{,}4$ al «no», uno diviso due volte e mezza: meno di
+mezzo gradino. Darle $0{,}99$ lascia $0{,}01$, uno diviso due volte per dieci:
+due gradini, cinque volte tanto. Chi puntasse tutto sbagliando pagherebbe senza
+fondo.
 
-Restano da trovare i pesi, e si cerca ancora il punto più basso di una collina,
-ma l'altezza del terreno adesso si misura come in una scommessa: il modello
-punta la sua sicurezza, e se sbaglia paga una multa tanto più salata quanto più
-era sicuro. La multa sale di un gradino ogni volta che la sicurezza lasciata
-alla risposta giusta si divide per dieci, e mezzo gradino ogni volta che si
-divide per tre, circa, perché tre per tre fa quasi dieci. Dare $0{,}6$ a
-un'email che spam non era lascia $0{,}4$ al «no», cioè uno diviso due volte e
-mezza, e costa meno di mezzo gradino; darle $0{,}99$ lascia $0{,}01$, cioè uno
-diviso due volte per dieci, e costa due gradini, cinque volte tanto; chi
-puntasse tutto sbagliando pagherebbe senza fondo. Con la media degli scarti al
-quadrato, la misura della retta, il terreno farebbe gobbe e ripiani: quando il
-modello è sicurissimo e sbaglia, la S è già piatta, spostare i pesi quasi non
-cambia la sua sicurezza, e il terreno sembra in piano proprio dove l'errore è
-più grande. Con la multa torna una scodella con un fondo solo. Tranne in un
-caso: se esiste un confine che mette da una parte tutte le spam e dall'altra
-tutte le altre, senza nemmeno un'eccezione, al modello conviene essere sempre
-più sicuro, e per esserlo gli basta ingrandire i pesi. Il terreno allora scende
-senza fine, e un fondo non c'è.
+Con la media degli scarti al quadrato della retta, invece, il terreno farebbe
+gobbe e ripiani. Quando il filtro è sicurissimo e sbaglia, la S è già piatta:
+spostare i pesi quasi non cambia la sua sicurezza, e il terreno sembra in piano
+proprio dove l'errore è più grande. La multa rende una scodella con un fondo
+solo, tranne in un caso. Se un confine mette da una parte tutte le spam e
+dall'altra tutte le altre, senza nemmeno un'eccezione, al filtro conviene essere
+sempre più sicuro, e gli basta ingrandire i pesi: il terreno scende senza fine,
+e un fondo non c'è.
 
-E la risposta secca, quando serve? La si ottiene con una terza mossa che
-facciamo noi, non il modello: si fissa un valore di taglio, per abitudine
-$0{,}5$, e si risponde «sì» sopra e «no» sotto.
-
-Con più di due risposte possibili, per esempio in quale cartella mettere
-un'email (lavoro, amici, promozioni), la ricetta si allarga senza cambiare
-natura. Ogni cartella ha i suoi pesi e il suo punteggio. I punteggi vanno resi
-tutti positivi, perché una sicurezza sotto zero non esiste, e lo si fa elevando
-alla potenza del punteggio lo stesso $e$ della S (con un altro numero
-cambierebbe solo la scala dei pesi): il più alto resta il più alto, e anche un
-punteggio negativo diventa un numero piccolo ma positivo. Poi ciascuno si divide
-per la somma di tutti, così le sicurezze sommano a uno. Con $2$ per il lavoro,
-$1$ per gli amici e $0$ per le promozioni vengono $7{,}39$, $2{,}72$ e $1$, che
-sommano a $11{,}11$, e le sicurezze sono $0{,}67$, $0{,}24$ e $0{,}09$.
+Con più di due risposte, per esempio la cartella in cui mettere l'email (lavoro,
+amici, promozioni), ogni cartella ha i suoi pesi e il suo punteggio. Il filtro
+rende i punteggi positivi, perché una sicurezza sotto zero non esiste, elevando
+a ciascuno lo stesso $e$ della S (con un altro numero cambierebbe solo la scala
+dei pesi): il più alto resta il più alto, e anche un punteggio negativo diventa
+un numero piccolo ma positivo. Poi divide ciascuno per la somma di tutti, così
+le sicurezze sommano a uno. Con $2$ per il lavoro, $1$ per gli amici e $0$ per
+le promozioni vengono $7{,}39$, $2{,}72$ e $1$, che sommano a $11{,}11$: le
+sicurezze sono $0{,}67$, $0{,}24$ e $0{,}09$.
 
 Alzare di uno tutti i punteggi non cambia niente. Con $3$, $2$ e $1$ i numeri
 sono tutti moltiplicati per $e$, $20{,}09$, $7{,}39$ e $2{,}72$, la somma pure,
 $30{,}19$, e nella divisione il fattore si semplifica come in una frazione.
-Conta solo la distanza fra i punteggi. Per chi cerca i pesi è un fastidio: fra
-infinite versioni pari merito non si sa dove fermarsi. Si fa come con un
-termometro, che per misurare le temperature ha bisogno di uno zero: si decide
-che il punteggio delle promozioni sta sempre a zero, e gli altri si misurano da
-lì. Un $2$ per il lavoro vuol dire allora che il lavoro è $e^2 \approx 7{,}39$
-volte più probabile delle promozioni, non due volte. Con due sole cartelle, una
-ferma a zero, si ritrova la S di prima: con $2$ contro $0$ vengono $7{,}39$ e
-$1$, e $7{,}39$ diviso $8{,}39$ fa $0{,}88$, lo stesso numero della S al
-punteggio $2$. Il conto delle potenze divise per il totale si chiama *softmax*,
-e il modello intero regressione logistica multinomiale, cioè a più risposte.
+Conta solo la distanza fra i punteggi, e chi cerca i pesi trova infinite
+versioni pari merito senza sapere dove fermarsi. Si fa come con un termometro,
+che per misurare ha bisogno di uno zero: le promozioni stanno sempre a zero, e
+le altre cartelle si misurano da lì. Un $2$ per il lavoro vuol dire allora che
+il lavoro è $e^2 \approx 7{,}39$ volte più probabile delle promozioni, non due
+volte. Con due sole cartelle, una ferma a zero, torna la S: $2$ contro $0$ dà
+$7{,}39$ e $1$, e $7{,}39$ diviso $8{,}39$ fa $0{,}88$, lo stesso numero della S
+al punteggio $2$. Il conto delle potenze divise per il totale si chiama
+*softmax*, e il modello intero regressione logistica multinomiale, cioè a più
+risposte.
 
 Alla stessa ricetta si arriva anche da un'altra strada, che le dà un secondo
-nome, **massima entropia**: entropia è il nome che la {doc}`teoria
+nome, **massima entropia** (entropia è il nome che la {doc}`teoria
 dell'informazione </Matematica/teoria-informazione>` dà alla misura
-dell'incertezza. L'idea è non credere più di quanto i dati dicano. Se fra le
-email d'esempio con la parola «offerta» sette su dieci erano promozioni, il
-modello deve dare in media sette su dieci alle promozioni su quelle email; per
-il resto, meno convinzioni si inventa meglio è, perché una convinzione che i
-dati non sostengono sbaglia sulle email nuove. Senza nessun fatto, la scelta più
-onesta è un terzo a testa. Con i fatti, la ricetta meno convinta che li rispetta
-tutti, fatti i conti, è proprio quella delle potenze di $e$. E se i fatti sono
-netti, perché tutte le email con «offerta» erano promozioni, la meno convinta
-compatibile con loro è la certezza: è di nuovo il confine senza eccezioni, e i
-pesi crescono senza fine.
+dell'incertezza). L'idea è non credere più di quanto dicano i dati. Se fra le
+email d'esempio con «offerta» sette su dieci erano promozioni, il filtro deve
+dare in media sette su dieci alle promozioni su quelle email; per il resto, meno
+convinzioni si inventa meglio è, perché una convinzione che i dati non
+sostengono sbaglia sulle email nuove. Senza nessun fatto, la scelta più onesta è
+un terzo a testa; con i fatti, la ricetta meno convinta che li rispetta tutti è
+proprio quella delle potenze di $e$. E se i fatti sono netti, perché tutte le
+email con «offerta» erano promozioni, la meno convinta compatibile con loro è la
+certezza: di nuovo il confine senza eccezioni, e pesi che crescono senza fine.
 
 `````
 
@@ -683,69 +707,60 @@ come logaritmo della risposta) e la regola con cui si misura lo scarto.
 
 `````{tab} Elementare
 
-Il farmacista vuole sapere quanti clienti aspettarsi alle nove del mattino, e
-ha le colonne di sempre: che giorno è, che tempo fa, se c'è una promozione in
-corso, quanto siamo dentro la stagione dell'influenza. La prima mossa è quella
-già vista: si moltiplica ogni colonna per il suo peso, si somma tutto, e ne
-esce un punteggio, che come sempre può valere qualsiasi cosa, meno sette o più
-quattrocento.
+Il farmacista vuole sapere quanti clienti aspettarsi alle nove del mattino, e ha
+le colonne di sempre: che giorno è, che tempo fa, se c'è una promozione in
+corso, quanto si è dentro la stagione dell'influenza. Moltiplica ogni colonna
+per il suo peso, somma tutto, e ottiene il solito punteggio, che può valere
+qualsiasi cosa, meno sette o più quattrocento.
 
-La seconda mossa è dove le tre risposte si separano. Per un prezzo il punteggio
-si legge così com'è. Per un sì o no lo si schiaccia fra zero e uno con la curva
-a esse. Per un conteggio si fa una terza cosa: si prende quel punteggio come
-logaritmo del numero di clienti, e per tornare al numero si fa il conto
-all'incontrario, cioè si eleva a quel punteggio il numero $e$, lo stesso che
-rendeva positivi i punteggi delle risposte multiple. Il vantaggio è immediato:
-un numero positivo elevato a qualunque cosa resta positivo, anche a un esponente
-negativo, quindi la previsione non può più essere meno tre clienti.
+Qui le tre risposte si separano. Per un prezzo il punteggio si legge così com'è;
+per un sì o no lo si schiaccia fra zero e uno con la curva a esse. Il farmacista
+fa una terza cosa: prende il punteggio come logaritmo del numero di clienti, e
+per tornare ai clienti fa il conto all'incontrario, elevando a quel punteggio il
+numero $e$, lo stesso che rendeva positivi i punteggi delle cartelle. Un numero
+positivo elevato a qualunque cosa resta positivo, anche a un esponente negativo,
+quindi la previsione non può più dire meno tre clienti.
 
-Il prezzo di questa scelta va detto subito, perché cambia il senso dei pesi.
-Nel punteggio i pesi si sommano, come sempre; ma disfare un logaritmo
-trasforma le somme in prodotti, e quindi sui clienti quei pesi
-moltiplicano. Un peso che vale un mezzo non aggiunge mezzo cliente:
-moltiplica per la radice quadrata di $2{,}718$ (elevare a un mezzo è fare la
-radice quadrata, perché due mezzi fanno uno), cioè per $1{,}65$. Il sabato
-non aggiunge dodici clienti: il sabato raddoppia.
+Cambia però il senso dei pesi. Nel punteggio si sommano, come sempre, ma disfare
+un logaritmo trasforma le somme in prodotti, e sui clienti i pesi moltiplicano.
+Un peso che vale un mezzo non aggiunge mezzo cliente: moltiplica per la radice
+quadrata di $2{,}718$ (elevare a un mezzo è fare la radice quadrata, perché due
+mezzi fanno uno), cioè per $1{,}65$. Il sabato non aggiunge dodici clienti: il
+sabato raddoppia.
 
-C'è anche una cosa da sistemare prima di cominciare, e riguarda il tempo. Un
-conteggio non vuol dire niente se non si sa su quanto tempo è stato fatto:
-dodici clienti in un'ora e dodici in una giornata sono due fatti diversi. Se le
-finestre non sono tutte uguali, la durata entra nel conto come un ingrediente
-con il peso già deciso e non da imparare, e quello che il modello stima diventa
-il ritmo, cioè i clienti per ora.
+Il farmacista deve anche guardare l'orologio. Dodici clienti in un'ora e dodici
+in una giornata sono due fatti diversi, e se le finestre contate non durano
+tutte uguale, la durata entra nel conto come un ingrediente con il peso già
+deciso, che il modello non impara: quello che stima diventa il ritmo, cioè i
+clienti per ora.
 
-Resta la terza mossa, che riguarda quanto oscillano i conteggi: cambia la
-regola con cui si misura lo scarto. Un conteggio non si sparpaglia come un
-prezzo. Se in media entrano due clienti l'ora, i giorni oscillano fra zero e
-cinque; se ne entrano cento, oscillano fra ottanta e centoventi. In proporzione
-l'oscillazione si stringe, e in valore assoluto cresce come la radice della
-media: da due a cento la media si moltiplica per cinquanta e l'oscillazione per
-poco più di sette, che è la radice di cinquanta. È la regola dei conteggi che
-capitano ciascuno per conto proprio, quella che porta il nome di Poisson, e
-prendere quella invece della curva a campana chiude la terza differenza.
+Resta la regola con cui si misura lo scarto, perché un conteggio non si
+sparpaglia come un prezzo. Se in media entrano due clienti l'ora, i giorni
+oscillano fra zero e cinque; se ne entrano cento, fra ottanta e centoventi. In
+proporzione l'oscillazione si stringe, e in valore assoluto cresce come la
+radice della media: da due a cento la media si moltiplica per cinquanta e
+l'oscillazione per poco più di sette, che è la radice di cinquanta. È la regola
+dei conteggi che capitano ciascuno per conto proprio, e porta il nome di
+Poisson: prenderla al posto della curva a campana completa la ricetta.
 
-Le tre risposte, allora, sono la stessa macchina con tre impostazioni: il
-punteggio si costruisce sempre allo stesso modo, e cambiano solo come lo si
-legge e con che regola si misura lo scarto. Cambia poco anche il modo di
-imparare: si guarda la differenza fra quello che è successo e quello che il
-modello si aspettava, e si spingono i pesi in quella direzione. Uguale per
-tutte e tre.
+Prezzo, sì o no, clienti: la stessa macchina con tre impostazioni, che cambiano
+solo come si legge il punteggio e con che regola si misura lo scarto. Anche il
+modo di imparare è uno solo: si guarda la differenza fra i clienti venuti e
+quelli attesi, e si spingono i pesi in quella direzione.
 
-E i due modi di sbagliare. Il primo: leggere il punteggio come un logaritmo è
-una scelta di chi costruisce il modello, e dice che gli effetti si
-moltiplicano. Se nel negozio in questione il sabato aggiunge davvero dodici
-clienti invece di raddoppiarli, quella lettura è la lettura sbagliata, e i pesi
-che ne escono raccontano una storia che non c'è. Il secondo morde più spesso: i
-conteggi veri sono quasi sempre più irregolari di quanto la regola prometta.
-Basta che i clienti arrivino a gruppetti, perché scende un autobus o perché è
-finita la messa, e l'oscillazione diventa il doppio di quella prevista. I pesi
-non se ne vanno lontano dal vero, ma la fiducia che il modello dichiara sì, ed
-è troppa: chi la prende per buona prepara i turni su un'oscillazione che non
-esiste. La cura più leggera è correggere la fiducia dichiarata, lasciando i
-pesi dove sono; quella che cambia modello è una versione con una manopola in
-più, che regola l'irregolarità separatamente dalla media, e si chiama
-binomiale negativa.
-
+I modi di sbagliare sono due. Leggere il punteggio come un logaritmo è una
+scelta di chi costruisce il modello, e dice che gli effetti si moltiplicano: se
+in quella farmacia il sabato aggiunge davvero dodici clienti invece di
+raddoppiarli, la lettura è sbagliata, e i pesi che ne escono raccontano una
+storia che non c'è. Il secondo guaio morde più spesso, perché i conteggi veri
+sono quasi sempre più irregolari di quanto la regola prometta. Basta che i
+clienti arrivino a gruppetti, perché scende un autobus o è finita la messa, e
+l'oscillazione diventa il doppio di quella prevista. I pesi restano vicini al
+vero; la fiducia che il modello dichiara, invece, è troppa, e il farmacista che
+le crede prepara i turni su un'oscillazione che non esiste. La cura più leggera
+corregge la fiducia dichiarata e lascia i pesi dove sono; quella che cambia
+modello aggiunge un numero da stimare, che regola l'irregolarità separatamente
+dalla media, e si chiama binomiale negativa.
 
 `````
 
@@ -842,8 +857,9 @@ appena definito). Torna come distribuzione di uscita di una rete nella
 
 `````
 
-I due difetti della retta sui conteggi si vedono in un blocco solo, insieme
-al modo in cui il legame logaritmico li ripara e al limite che resta dopo.
+I due difetti della retta sui conteggi si vedono in un blocco solo, insieme al
+modo in cui leggere il punteggio come logaritmo (il *legame* logaritmico) li
+ripara, e al limite che resta dopo.
 
 ```python
 import numpy as np
@@ -920,23 +936,24 @@ il conto diretto della retta risolve in un colpo solo.
 Le ultime due righe sono il limite, e il conto è questo: si prende ogni scarto,
 lo si divide per la radice del numero atteso, e si guarda quanto quei rapporti
 si sparpagliano. Se l'oscillazione cresce davvero come la radice della media,
-come Poisson promette, quel valore deve venire circa uno, e sui dati generati
-da una Poisson viene $1{,}0224$. Rifacendo tutto su conteggi generati con la
-versione a due manopole, la binomiale negativa, i pesi restano quelli
+come Poisson promette, quel valore deve venire circa uno, e sui dati generati da
+una Poisson viene $1{,}0224$. Rifacendo tutto su conteggi generati con la
+versione a due parametri, la binomiale negativa, i pesi restano quelli
 ($0{,}4086$ e $1{,}499$) ma lo stesso valore sale a $3{,}84$. Il numero che
-conta per chi deve decidere è la sua radice, $1{,}96$: le oscillazioni vere
-sono quasi il doppio di quelle che il modello annuncia, e il farmacista che gli
-crede prepara i turni per un sabato tranquillo che non arriverà.
+conta per chi deve decidere è la sua radice, $1{,}96$, perché la dispersione
+misura le varianze e le oscillazioni si leggono nella loro radice: le
+oscillazioni vere sono quasi il doppio di quelle che il modello annuncia, e il
+farmacista che gli crede prepara i turni per un sabato tranquillo che non
+arriverà.
 
 
 ## k-NN: chiedi ai vicini
 
-Non tutti i modelli imparano dei parametri. Alcuni si limitano a *ricordare*, e
-il capostipite è il **k-NN** (dall'inglese *k-nearest neighbors*, i $k$ vicini
-più prossimi): tiene da parte tutti gli esempi che ha visto e, davanti a un
-caso nuovo, va a cercare i $k$ che gli somigliano di più e li fa votare. Quel
-$k$, cioè quanti vicini interpellare, è la scelta che decide tutto, e va fatta
-prima di cominciare.
+Non tutti i modelli imparano dei parametri. Alcuni memorizzano gli esempi, e il
+più semplice è il **k-NN** (dall'inglese *k-nearest neighbors*, i $k$ vicini più
+prossimi): davanti a un caso nuovo cerca fra gli esempi visti i $k$ più simili e
+li fa votare. Il numero $k$ di vicini da interpellare è un iperparametro, e va
+fissato prima di cominciare.
 
 ```{figure} ../figures/knn-classificare-per-somiglianza.svg
 :name: fig-knn
@@ -949,18 +966,16 @@ cinque vicini vince la classe di sinistra, tre voti a due, ma il vicino più
 prossimo di tutti è dell'altra, e con un vicino solo la risposta si ribalta.
 ```
 
-Il cerchio disegnato in {numref}`fig-knn` è tutta la scelta: allargandolo si
-interpellano vicini via via più lontani, e la risposta diventa più stabile
-(pochi voti strani non la ribaltano) ma anche più grossolana, perché smette di
-accorgersi delle particolarità di quel pezzetto di quartiere. Con $k=1$ il
-modello ripete pari pari il vicino più prossimo, rumore compreso. Conviene
-fermarsi su questa parola, perché da qui in avanti torna in ogni sezione: il
-rumore non ha niente a che fare con il suono, è tutto ciò che nei dati è
-accidente invece che regola. L'errore di chi ha misurato, la casa venduta a
-poco perché il proprietario aveva fretta, la giornata storta: cose che sono
-successe davvero e che non si ripeteranno. Con $k$ pari al numero di esempi,
-all'estremo opposto, votano tutti e il modello risponde sempre la stessa cosa,
-cioè la classe più frequente.
+Il cerchio disegnato in {numref}`fig-knn` è il parametro principale del metodo:
+allargandolo si interpellano vicini via via più lontani, e la risposta diventa
+più stabile (pochi voti anomali non la ribaltano) ma più grossolana, perché
+smette di seguire le variazioni locali. Con $k=1$ il modello ripete il vicino
+più prossimo, rumore compreso. Il *rumore* è la parte della risposta che le
+caratteristiche non spiegano: l'errore di chi ha misurato, la casa venduta a
+poco perché il proprietario aveva fretta, la giornata storta, cose successe
+davvero che non si ripeteranno. Con $k$ pari al numero di esempi, all'estremo
+opposto, votano tutti e il modello risponde sempre la stessa cosa: la classe più
+frequente, o in regressione la media di tutti gli $y$.
 
 `````{tab} Elementare
 
@@ -983,34 +998,38 @@ E «simili» va deciso con attenzione, perché la somiglianza si calcola sommand
 gli scarti di tutte le colonne, e le colonne non hanno la stessa taglia. Una
 casa da $100$ m² con tre stanze, e due case che si contendono il posto di
 vicina. La prima ha $108$ m² e una stanza sola, la seconda $115$ m² e tre
-stanze. Sommando gli
-scarti così come sono, $8$ metri quadri contro $2$ stanze, vince la prima, e il
+stanze. Sommando gli scarti così come sono, la prima dista $8 + 2 = 10$ (otto
+metri quadri e due stanze), la seconda $15 + 0 = 15$, e vince la prima: il
 numero di stanze non conta quasi niente, perché la superficie si muove fra $40$
 e $200$ mentre le stanze stanno fra $1$ e $5$. Rimettendo le due colonne sulla
 stessa taglia, cioè contando ogni scarto in rapporto all'intervallo che la sua
-colonna copre ($8$ su $160$ fa un ventesimo, $2$ su $4$ fa metà), l'ordine si
-rovescia, e la vicina diventa la seconda, quella con lo stesso numero di
-stanze. Chi fa votare i vicini senza questa precauzione lascia decidere tutto
-alla colonna con i numeri più grandi.
+colonna copre, la prima dista $8/160 + 2/4 = 0{,}55$ e la seconda $15/160
+\approx 0{,}09$, e l'ordine si rovescia, e la vicina diventa la seconda, quella
+con lo stesso numero di stanze. Chi fa votare i vicini senza questa precauzione
+lascia decidere tutto alla colonna con i numeri più grandi.
 
 `````
 
 `````{tab} Superiore
 
 Dato un punto $\mathbf{x}$, si ordinano gli esempi di addestramento per
-distanza, tipicamente euclidea,
-$\lVert \mathbf{x} - \mathbf{x}^{(i)}\rVert_2$, e si prendono i $k$ più
-vicini. In classificazione si assegna la classe di maggioranza; in regressione
-si fa la media dei loro $y^{(i)}$. Non esiste una fase di ottimizzazione: il
-costo si sposta interamente sulla previsione, ed è $O(mn)$ per query nella
-versione ingenua, non $O(m)$: le distanze da calcolare sono $m$, una per
-esempio, ma ciascuna costa $n$ operazioni, una per colonna. Quel fattore $n$
-conta due volte, perché il numero di colonne pesa sul costo e decide anche se
-il metodo funziona, e la {doc}`sezione su riduzione e clustering
-<riduzione-clustering>` lo mette al centro. Il valore di $k$ regola il
-compromesso: $k$ piccolo segue il rumore, $k$ grande liscia troppo. La
-distanza euclidea, inoltre, impone di normalizzare le feature, altrimenti
-quella con la scala più ampia domina il conto.
+distanza, tipicamente euclidea, $\lVert \mathbf{x} - \mathbf{x}^{(i)}\rVert_2$,
+e si prendono i $k$ più vicini. In classificazione si assegna la classe di
+maggioranza; in regressione si fa la media dei loro $y^{(i)}$. Non esiste una
+fase di ottimizzazione: il costo si sposta interamente sulla previsione, ed è
+$O(mn)$ per query nella versione ingenua: $m$ distanze, ciascuna da $n$
+operazioni, una per colonna. Quel fattore $n$ conta due volte, perché il numero
+di colonne pesa sul costo e decide anche se il metodo funziona, e la
+{doc}`sezione su riduzione e clustering
+<riduzione-clustering>` lo mette al centro. Con $m\to\infty$ e dimensione
+fissata, l'errore del 1-NN tende a un valore non superiore a
+$2R^\star(1-R^\star)$ per due classi, dove $R^\star$ è l'errore di Bayes
+{cite}`cover1967nearest`, e il $k$-NN è consistente se $k\to\infty$ e $k/m\to 0$
+{cite}`stone1977consistent`: converge all'ottimo senza assumere una famiglia di
+funzioni, a prezzo di una velocità che peggiora con la dimensione dei dati. Il
+valore di $k$ regola il compromesso: $k$ piccolo segue il rumore, $k$ grande
+liscia troppo. La distanza euclidea, inoltre, impone di normalizzare le feature,
+altrimenti quella con la scala più ampia domina il conto.
 
 Due raffinamenti sono già in scikit-learn. Il voto pesato
 (`weights="distance"`) fa contare di più i vicini più prossimi invece di dare
@@ -1045,27 +1064,45 @@ come chiedere a qualcuno di indicare il migliore amico in una folla dove tutti
 stanno esattamente alla stessa distanza: la domanda perde senso, e il voto dei
 $k$ vicini diventa un voto casuale.
 
-Per questo k-NN va quasi sempre preceduto da un lavoro che riduca le colonne,
-o tenendo solo quelle che servono o riassumendole in poche. Il fenomeno, con i
-conti, è la maledizione della dimensionalità, ed è il punto di partenza
-della sezione su riduzione e clustering.
+Per questo il k-NN sulle colonne grezze regge quando i dati occupano in realtà
+uno spazio di dimensione molto minore di quella nominale (con le $64$ colonne
+delle cifre manoscritte arriva al $96\%$ di risposte esatte), e soffre quando le
+colonne sono molte e quasi indipendenti fra loro: in quel caso si riducono le
+colonne, tenendo quelle che servono o riassumendole in poche. Il fenomeno, con i
+conti, è la maledizione della dimensionalità, ed è il punto di partenza della
+{doc}`sezione su riduzione e clustering
+</MachineLearning/riduzione-clustering>`.
+```
+
+Le cifre manoscritte che scikit-learn distribuisce sono immagini di $8\times 8$
+pixel, cioè $64$ colonne, ma i pixel vicini si muovono insieme e i dati occupano
+uno spazio di dimensione molto minore: il k-NN con cinque vicini, provato su
+immagini tenute da parte (a turno, un quinto alla volta), le riconosce quasi
+tutte.
+
+```python
+from sklearn.datasets import load_digits
+from sklearn.model_selection import cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+
+X_cifre, y_cifre = load_digits(return_X_y=True)     # 1797 immagini, 64 colonne
+print(cross_val_score(KNeighborsClassifier(5), X_cifre, y_cifre, cv=5)
+      .mean().round(3))
+```
+
+```text
+0.963
 ```
 
 ## Un'ombra all'orizzonte: l'overfitting
 
-C'è un tranello in agguato. Un modello abbastanza flessibile (cioè capace
-di piegarsi a qualsiasi forma: una curva contorta lo è, una retta no) può
-imparare *a memoria* gli esempi di addestramento, rumore compreso, e poi
-fallire su dati nuovi. Attenzione a non confonderlo con lo studente con cui la
-panoramica presentava l'apprendimento supervisionato, quello che studia con le
-soluzioni a fianco: là
-guardare le soluzioni era il metodo giusto, qui il guaio è ricopiarle senza
-averle capite, e accorgersene è possibile solo interrogandolo su un esercizio
-che non ha mai visto.
-È l’overfitting, il problema centrale del machine learning applicato, e lo
-prende di petto la {doc}`sezione su overfitting e validazione
-</MachineLearning/overfitting-validazione>`, insieme all'idea di tenere sempre
-da parte dati che il modello non ha mai visto per misurarne l'onestà.
+Un modello abbastanza flessibile (capace di adattarsi a forme arbitrarie: una
+curva contorta lo è, una retta no) può adattarsi agli esempi di addestramento,
+rumore compreso, e poi sbagliare su dati nuovi. È l’*overfitting*, il problema
+centrale del machine learning applicato, e si scopre solo misurando l'errore su
+dati che il modello non ha usato per imparare. La {doc}`sezione su overfitting e
+validazione </MachineLearning/overfitting-validazione>` lo tratta per intero,
+insieme al modo di tenere da parte i dati con cui giudicare.
 
 ## In pratica, con scikit-learn
 
@@ -1091,9 +1128,8 @@ knn = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_spam)
 etichetta = knn.predict(X_nuovo)
 ```
 
-La stessa forma (`fit` per imparare, `predict` per rispondere) vale per quasi
-tutti i modelli della libreria: è la grammatica comune che ci porteremo dietro
-per tutto il resto del libro.
+`fit` per imparare e `predict` per rispondere: l'interfaccia è la stessa per
+quasi tutti i modelli di scikit-learn.
 
 `````{tab} Elementare
 
@@ -1102,11 +1138,12 @@ per tutto il resto del libro.
 - Supervisionato vuol dire imparare da esempi che portano già con sé la
   risposta giusta: tante coppie *(descrizione, risposta)*, e una regola da
   trovare che leghi le une alle altre.
-- Non tutte le colonne sono della stessa pasta: su alcune i numeri sono numeri
+- Non tutte le colonne sono dello stesso tipo: su alcune i numeri sono numeri
   veri, su altre sono nomi senza ordine (Milano, Roma) e su altre ancora sono
   una fila di gradini di cui non si sa la distanza. Quale sia quale non lo
   decide il modello, lo decide chi prepara i dati: dare $1$ a Milano e $2$ a
-  Roma vuol dire dirgli che Roma è il doppio e che a metà strada c'è qualcosa.
+  Roma vuol dire dirgli che Roma è il doppio e che a metà strada c'è qualcosa;
+  il rimedio è una colonna sì/no per ogni valore.
 - Ogni colonna della tabella è una direzione, ogni riga un punto in
   quello spazio. Con due colonne il disegno sta su un foglio; con cento no, ma
   i conti sono gli stessi, e «vicini» continua a voler dire «simili».
@@ -1124,13 +1161,18 @@ per tutto il resto del libro.
   Le tre risposte sono la stessa macchina con tre impostazioni. Attenzione però
   ai conteggi veri, che quasi sempre oscillano più di quanto quel modello
   ammetta: i pesi restano giusti, la fiducia dichiarata no.
-- La retta buona si può trovare con un conto diretto, che però con tanti dati
-  costa più della passeggiata: allora si parte da una qualsiasi e la si sposta
-  a piccoli passi nella direzione in cui l'errore cala (la discesa del
-  gradiente), decidendo quanto lunghi sono i passi.
-- Il k-NN non impara niente: tiene in memoria tutti gli esempi e, alla
-  domanda, fa votare i $k$ più simili. Semplicissimo, ma va in crisi quando le
-  colonne sono troppe, perché allora tutti i punti sono lontani uguale.
+- La retta buona si può trovare con un conto diretto, che però con moltissime
+  colonne (o troppi dati per la memoria) costa più della passeggiata: allora si
+  parte da una qualsiasi e la si sposta a piccoli passi nella direzione in cui
+  l'errore cala (la discesa del gradiente), decidendo quanto lunghi sono i
+  passi.
+- `LogisticRegression()` di scikit-learn aggiunge di suo un freno sui pesi: il
+  modello che gira non è quello della definizione, e senza freno, con dati
+  separabili, i pesi crescono senza fine.
+- Il k-NN non impara niente: tiene in memoria tutti gli esempi e, alla domanda,
+  fa votare i $k$ più simili. Semplicissimo, ma tende a soffrire quando le
+  colonne sono moltissime e quasi indipendenti fra loro, perché allora i punti
+  sono quasi tutti alla stessa distanza.
 - L'insidia di tutto il capitolo è imparare a memoria invece che capire
   (l’*overfitting*): è la prossima sezione.
 ```
@@ -1146,8 +1188,8 @@ per tutto il resto del libro.
   $(\mathbf{x}^{(i)}, y^{(i)})$.
 - La minimizzazione corre su uno spazio delle ipotesi $\mathcal{H}$ fissato
   prima dei dati: un $\mathcal{H}$ povero lascia un errore di approssimazione
-  che i dati non tolgono, uno ricco un errore di stima, limitato da
-  $O\big(\sqrt{\log\lvert\mathcal{H}\rvert/m}\big)$ per $\mathcal{H}$ finita e
+  che i dati non tolgono, uno ricco un errore di stima, che con alta probabilità
+  è $O\big(\sqrt{\log\lvert\mathcal{H}\rvert/m}\big)$ per $\mathcal{H}$ finita e
   perdita limitata.
 - Regressione = uscita continua (MSE, retta di best fit); classificazione =
   uscita discreta (sigmoide, confine di decisione
@@ -1168,8 +1210,9 @@ per tutto il resto del libro.
 - k-NN è non parametrico: non stima parametri, ricorda i dati e li fa votare.
   Costo $O(mn)$ per query ($m$ distanze da $n$ coordinate ciascuna), che gli
   indici spaziali (KD-tree, ball-tree) portano a circa $O(n\log m)$ sotto le
-  poche decine di dimensioni; sopra, la concentrazione delle distanze affossa
-  gli indici e il metodo insieme.
+  poche decine di dimensioni; sopra, se le coordinate variano in modo quasi
+  indipendente, la concentrazione delle distanze affossa gli indici e il metodo
+  insieme.
 - Attenzione all’overfitting: imparare a memoria non è capire. Ne parliamo
   nella sezione dedicata.
 ```

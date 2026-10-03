@@ -5,37 +5,28 @@ rossi a destra) e traccia una retta che li separi. Facile. Ora traccia
 *un'altra* retta che li separi lo stesso, e poi un'altra ancora: se le due
 nuvole sono ben distinte, di rette buone ce ne sono infinite. Quale scegliere?
 La regressione logistica della {doc}`sezione sull'apprendimento supervisionato
-</MachineLearning/apprendimento-supervisionato>` ne sceglie una, e nemmeno si
-pone la domanda. La **Support Vector Machine** (SVM) invece sì, e con una
-risposta di netta eleganza geometrica: tra tutte le rette che separano, scegli
-la più *prudente* (quella che lascia il corridoio più largo possibile tra le
-due classi).
-
-L'idea del margine massimo è vecchia, e non nasce dove si crede: nasce a Mosca,
-all'Istituto di Problemi di Controllo, dove dal 1962 Vladimir Vapnik ne
-discuteva con Alexander Lerner e Alexey Chervonenkis. Il nome era *metodo
-del ritratto generalizzato*, e lo pubblicano Vapnik e Lerner nel 1963
-{cite}`vapnik1963pattern`; l'anno dopo Vapnik e Chervonenkis ne ricavano il
-classificatore lineare a margine rigido. Quello che nasce trent'anni dopo nei
-laboratori Bell sono i due innesti che la rendono praticabile: il kernel trick
-(Boser, Guyon e Vapnik, 1992 {cite}`boser1992training`) e il margine morbido
-(Cortes e Vapnik, 1995 {cite}`cortes1995support`). Un algoritmo che ha
-aspettato trent'anni due idee.
-
-Per un decennio, prima dell'ondata del deep
-learning, le SVM sono state il classificatore di riferimento: matematicamente
-solide, sorprendentemente efficaci su dataset di dimensioni medie, e ancora
-oggi una scelta sensata quando gli esempi sono poche migliaia.
+</MachineLearning/apprendimento-supervisionato>` non se la pone: cerca i pesi
+che rendono più probabili le etichette osservate, e su nuvole che si separano
+quella probabilità cresce senza fine allungando i pesi, quindi la retta che se
+ne ricava dipende da quanto la si frena e da quando ci si ferma. La **Support
+Vector Machine** (SVM) sceglie invece per costruzione: tra tutte le rette che
+separano, la più *prudente*, quella che lascia il corridoio più largo possibile
+tra le due classi.
 
 ## La retta più prudente
 
-Il criterio si scrive in una riga. Presa una frontiera che divide le due
-classi, si guarda quanto dista dall'esempio più vicino di ciascuna: quella
-distanza è il **margine**, e fra tutte le frontiere possibili la SVM prende
-quella di margine massimo. Il motivo è la robustezza.
-Una frontiera che passa rasente agli esempi già visti sbaglia il primo esempio
-nuovo che cade poco più in là; una che li tiene tutti lontani ha del gioco
-prima di sbagliare, e quanto gioco lo dice il margine stesso.
+Il criterio si scrive in una riga. Presa una frontiera che divide le due classi,
+si guarda quanto dista dall'esempio più vicino di ciascuna: quella distanza è il
+**margine**, e il corridoio che la frontiera lascia libero è largo il doppio.
+Fra tutte le frontiere possibili la SVM prende quella di margine massimo. Il
+motivo è la robustezza. Una frontiera che passa rasente agli esempi già visti
+sbaglia il primo esempio nuovo che cade poco più in là; una che li tiene tutti
+lontani ha del gioco prima di sbagliare. La versione quantitativa è un limite
+all'errore sugli esempi nuovi che dipende dal rapporto fra il margine e
+l'ingombro dei dati, e non dal numero delle dimensioni: lo dimostra la
+{doc}`sezione su Rademacher e il margine
+</TeoriaApprendimento/rademacher-margine>`, ed è la ragione per cui una SVM
+generalizza anche negli spazi enormi in cui la porta il kernel.
 
 ```{figure} ../figures/svm-margine.svg
 :name: fig-svm-margine
@@ -43,34 +34,53 @@ prima di sbagliare, e quanto gioco lo dice il margine stesso.
 :width: 80%
 
 Tra le infinite rette che separano le due classi, la SVM sceglie quella che
-massimizza il margine: la larghezza del corridoio tra i punti più vicini. Solo
-quei punti (i vettori di supporto, cerchiati in ocra) determinano la soluzione.
+massimizza il margine, cioè la distanza dai punti più vicini: il corridoio è
+largo il doppio. Solo quei punti (i vettori di supporto, cerchiati in ocra)
+determinano la soluzione.
 ```
 
-Come mostra {numref}`fig-svm-margine`, la soluzione poggia su pochissimi
-punti: quelli che toccano i bordi del corridoio. Tutti gli altri, per quanto
-numerosi, sono irrilevanti: potresti spostarli o cancellarli e il confine non
-si muoverebbe di un millimetro. Sono i punti sul bordo a «reggere» la
-frontiera, e per questo si chiamano **vettori di supporto**. Il «supporto» è
-questo, e il «vettore» viene da come li scriviamo: un esempio è un elenco
-ordinato di numeri, uno per colonna, e un elenco del genere si chiama vettore
-(lo abbiamo incontrato nella sezione sull'apprendimento supervisionato). Un
-vettore di supporto, insomma, è semplicemente uno dei pochi esempi appoggiati
-al bordo del corridoio.
+Come mostra {numref}`fig-svm-margine`, la soluzione poggia sui punti che toccano
+i bordi del corridoio. Tutti gli altri, per quanto numerosi, sono irrilevanti
+finché restano fuori dalla fascia: potresti cancellarli, o spostarli senza farli
+entrare nel corridoio, e il confine non si muoverebbe di un millimetro. Sono i
+punti sul bordo a reggere la frontiera, e per questo si chiamano **vettori di
+supporto**: «vettori» perché ogni esempio è un vettore di caratteristiche
+$\mathbf{x}_i$, «di supporto» perché la soluzione poggia su di loro.
 
-È una
-differenza sostanziale rispetto alla regressione logistica, la cui frontiera
-dipende (sia pur poco) da *tutti* i dati.
+È una differenza sostanziale rispetto alla regressione logistica, la cui
+frontiera dipende (sia pur poco) da *tutti* i dati.
+
+L'idea del margine massimo è vecchia, e non nasce dove si crede: nasce a Mosca,
+all'Istituto di Problemi di Controllo, dove dal 1962 Vladimir Vapnik ne
+discuteva con Alexander Lerner e Alexey Chervonenkis. Il nome era *metodo del
+ritratto generalizzato*, e lo pubblicano Vapnik e Lerner nel 1963
+{cite}`vapnik1963pattern`; l'anno dopo Vapnik e Chervonenkis ne ricavano il
+classificatore a margine massimo per dati separabili. Quello che arriva
+trent'anni dopo, dai laboratori Bell, sono i due innesti che lo rendono
+praticabile: i kernel, che piegano la frontiera dritta (Boser, Guyon e Vapnik,
+1992 {cite}`boser1992training`), e il margine morbido, che tollera i punti fuori
+posto (Cortes e Vapnik, 1995 {cite}`cortes1995support`). Un algoritmo che ha
+aspettato trent'anni due idee.
+
+Per un decennio, prima dell'ondata del deep learning, le SVM sono state il
+classificatore di riferimento: un problema convesso con una soluzione unica, una
+garanzia sull'errore di generalizzazione, e risultati fra i migliori del tempo
+su problemi come le cifre scritte a mano e la classificazione dei testi. Restano
+una scelta sensata fino a qualche decina di migliaia di esempi, perché
+l'addestramento con un kernel costa fra $O(m^2)$ e $O(m^3)$ nel numero $m$ di
+esempi.
 
 ## Il classificatore a massimo margine
 
-Adesso mettiamo in numeri la geometria del corridoio. La frontiera è quello che
-in matematica si chiama un iperpiano, e la parola spaventa più della cosa:
-in due dimensioni è una retta, in tre un piano, e in cento dimensioni è
-l'oggetto che fa lo stesso mestiere, cioè taglia lo spazio in due metà, solo
-che non lo possiamo disegnare. Sta sempre una dimensione sotto lo spazio che
-divide: una retta (una dimensione) in un piano (due), un piano (due) in una
-scatola (tre).
+Adesso mettiamo in numeri la geometria del corridoio. La frontiera è un
+iperpiano, l'insieme dei punti $\mathbf{x}$ che soddisfano
+$\mathbf{w}^\top\mathbf{x} + b = 0$: in due dimensioni una retta, in tre un
+piano, in $d$ dimensioni un oggetto di dimensione $d-1$ che divide lo spazio
+nelle due metà $\mathbf{w}^\top\mathbf{x} + b > 0$ e
+$\mathbf{w}^\top\mathbf{x} + b < 0$. Il vettore $\mathbf{w}$ è perpendicolare
+all'iperpiano e ne fissa l'orientamento, $b$ ne fissa la posizione, e un punto
+$\mathbf{x}$ dista dall'iperpiano $\lvert\mathbf{w}^\top\mathbf{x} +
+b\rvert/\lVert\mathbf{w}\rVert$.
 
 `````{tab} Elementare
 
@@ -82,38 +92,35 @@ arrivare senza scombinare niente. Il corridoio di
 {numref}`fig-svm-margine` è quel prato, e mettere in numeri quel «nel mezzo»
 è tutto il mestiere della SVM.
 
-L'iperpiano è l'insieme dei punti $\mathbf{x}$ che soddisfano l'equazione
-
-$$
-\mathbf{w}^\top \mathbf{x} + b = 0,
-$$
-
-ed è lo stesso conto che faceva la regressione logistica prima di schiacciare
-il risultato nella curva a S: moltiplica ogni caratteristica del punto per il
-suo peso, somma tutto, aggiungi il numero di partenza $b$, e guarda che segno
-ha il risultato. Positivo di qua, negativo di là, e zero esattamente sul
-confine. Nella scrittura, $\mathbf{w}$ è l'elenco dei pesi (che dà
-l'orientamento della frontiera), $\mathbf{x}$ l'elenco delle caratteristiche
-del punto, e la scrittura $\mathbf{w}^\top \mathbf{x}$ è solo un modo compatto
-di dire «moltiplica a coppie e somma»; $b$ sposta la frontiera avanti o
-indietro. La novità della SVM sta nel criterio con cui sceglie $\mathbf{w}$ e
-$b$: non una frontiera qualsiasi, ma quella che lascia il vuoto più ampio
-attorno a sé. Più il corridoio è largo, più il classificatore è robusto.
+L'equazione dell'iperpiano, $\mathbf{w}^\top \mathbf{x} + b = 0$, è lo stesso
+conto che faceva la regressione logistica prima di schiacciare il risultato
+nella curva a S: moltiplica ogni caratteristica del punto per il suo peso, somma
+tutto, aggiungi il numero di partenza $b$, e guarda che segno ha il risultato.
+Positivo di qua, negativo di là, e zero esattamente sul confine. Nella
+scrittura, $\mathbf{w}$ è l'elenco dei pesi (che dà l'orientamento della
+frontiera), $\mathbf{x}$ l'elenco delle caratteristiche del punto, e la
+scrittura $\mathbf{w}^\top \mathbf{x}$ è solo un modo compatto di dire
+«moltiplica a coppie e somma»; $b$ sposta la frontiera avanti o indietro. La
+novità della SVM sta nel criterio con cui sceglie $\mathbf{w}$ e $b$: non una
+frontiera qualsiasi, ma quella che lascia il vuoto più ampio attorno a sé. Più
+il corridoio è largo, più il classificatore è robusto.
 
 Su «largo», però, serve un'intesa, perché dipende da come lo si misura e il
 righello ce lo diamo noi. Diciamo che il corridoio è la fascia dove quel conto
-sta fra $-1$ e $+1$: i due bordi sono le righe dove vale esattamente
-$-1$ e $+1$, e il confine, dove vale zero, corre nel mezzo. Ne discende una
-regola sola, uguale per tutti: ogni punto di cui già conosciamo la classe deve
-stare dalla parte sua e fuori dalla fascia.
+(i pesi per le caratteristiche, sommati, più $b$) sta fra $-1$ e $+1$: i due
+bordi sono le righe dove vale esattamente $-1$ e $+1$, e il confine, dove vale
+zero, corre nel mezzo. Ne discende una regola sola, uguale per tutti: ogni punto
+di cui già conosciamo la classe deve stare dalla parte sua e fuori dalla fascia.
 
 Scelto il righello, la larghezza non si misura più sul disegno: viene fuori dai
 pesi, e vale $2$ diviso la lunghezza dell'elenco $\mathbf{w}$ (la lunghezza di
 un elenco di numeri si trova con Pitagora, come la diagonale di un rettangolo).
-Corridoio largo vuol dire allora elenco corto, e «trova il corridoio più largo»
-diventa «accorcia $\mathbf{w}$ il più possibile, senza infrangere quella
-regola». Di risposte migliori di tutte ce n'è una e una sola, e cercandola non
-ci si impantana in un falso fondo.
+In una dimensione sola, con il peso $1$, il conto passa da $-1$ a $+1$ in due
+passi, e il corridoio è largo $2$; con il peso $2$ ci passa in un passo solo, e
+il corridoio si stringe a $1$. Corridoio largo vuol dire allora elenco corto, e
+«trova il corridoio più largo» diventa «accorcia $\mathbf{w}$ il più possibile,
+senza infrangere quella regola». Di risposte migliori di tutte ce n'è una e una
+sola, e cercandola non ci si impantana in un falso fondo.
 
 `````
 
@@ -129,11 +136,12 @@ $$
 y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1, \qquad i = 1, \dots, m.
 $$
 
-La distanza di un punto sul margine dall'iperpiano è $1/\lVert \mathbf{w}\rVert$,
-quindi la larghezza totale del corridoio (da un bordo all'altro) è
+La distanza di un punto sul margine dall'iperpiano è il margine, $M = 1/\lVert
+\mathbf{w}\rVert$, quindi la larghezza totale del corridoio (da un bordo
+all'altro) è
 
 $$
-\text{margine} = \frac{2}{\lVert \mathbf{w}\rVert}.
+\text{larghezza} = 2M = \frac{2}{\lVert \mathbf{w}\rVert}.
 $$
 
 Il conto che porta a questa formula occupa due righe, e l'approccio della
@@ -149,13 +157,19 @@ $$
 y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1 \ \ \forall i,
 $$
 
-dove $\mathbf{w}$ è il vettore dei pesi, $b$ il termine di bias,
-$\mathbf{x}_i$ l’$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È
-un problema di programmazione quadratica *convesso*, con obiettivo strettamente
-convesso in $\mathbf{w}$: se i dati sono separabili la soluzione
-$(\mathbf{w}, b)$ esiste ed è unica, e non ci sono minimi locali in cui
-restare intrappolati; se non lo sono, nessuna coppia rispetta tutti i vincoli e
-il problema non ha soluzione.
+dove $\mathbf{w}$ è il vettore dei pesi, $b$ il termine di bias, $\mathbf{x}_i$
+l’$i$-esimo esempio e $y_i \in \{-1,+1\}$ la sua etichetta. È un problema di
+programmazione quadratica *convesso*, con obiettivo strettamente convesso in
+$\mathbf{w}$: se i dati sono separabili la soluzione $(\mathbf{w}, b)$ esiste ed
+è unica, e non ci sono minimi locali in cui restare intrappolati; se non lo
+sono, nessuna coppia rispetta tutti i vincoli e il problema non ha soluzione.
+
+Sui dati separabili la regressione logistica non ha un massimo della
+verosimiglianza, e la discesa del gradiente fa crescere la norma dei pesi come
+$\log t$, con $t$ il numero di passi, mentre la loro direzione converge a quella
+del margine rigido {cite}`soudry2018implicit`. È il legame fra i due modelli: il
+margine massimo è la soluzione verso cui la logistica tende quando non la si
+ferma.
 
 `````
 
@@ -166,21 +180,21 @@ classe, tutti su una diagonale.
 
 `````{tab} Elementare
 
-Quattro case lungo una strada in diagonale: due del quartiere blu, a $(0,0)$ e
+Quattro case in fila lungo una diagonale: due del quartiere blu, a $(0,0)$ e
 $(-1,-1)$, e due del quartiere rosso, a $(2,2)$ e $(3,3)$. Le due case più
-vicine fra loro, una per quartiere, sono $(0,0)$ e $(2,2)$: sono loro a
-decidere tutto. Il corridoio più largo possibile è quello che va dall'una
-all'altra, e il confine passa esattamente a metà strada, per il punto
-$(1,1)$, messo di traverso rispetto alla diagonale.
+vicine fra loro, una per quartiere, sono $(0,0)$ e $(2,2)$: sono loro a decidere
+tutto. Il corridoio più largo possibile è quello che va dall'una all'altra, e il
+confine passa esattamente a metà strada, per il punto $(1,1)$, messo di traverso
+rispetto alla diagonale.
 
-Quanto è largo il corridoio? Qui è la distanza fra le due case, e si calcola
-con Pitagora: da $(0,0)$ a $(2,2)$ ci sono $2$ passi in orizzontale e $2$ in
+Quanto è largo il corridoio? Qui è la distanza fra le due case, e si calcola con
+Pitagora: da $(0,0)$ a $(2,2)$ ci sono $2$ passi in orizzontale e $2$ in
 verticale, quindi $\sqrt{2^2 + 2^2} = \sqrt{8} \approx 2{,}8$. Attenzione però,
 qui va bene perché le due case sono messe proprio l'una di fronte all'altra
-attraverso la strada; se fossero sfalsate, la distanza fra loro conterebbe
-anche un pezzo di cammino *lungo* la strada, che con la larghezza non c'entra.
-A togliere quel pezzo di troppo è il conto con i pesi, che misura in
-perpendicolare ai marciapiedi.
+attraverso il corridoio; se fossero sfalsate, la distanza fra loro conterebbe
+anche un pezzo di cammino *lungo* il corridoio, che con la larghezza non
+c'entra. A togliere quel pezzo di troppo è il conto con i pesi, che misura di
+traverso al corridoio.
 
 Proviamo con i pesi. Per questo confine vanno bene $0{,}5$ e $0{,}5$, con
 numero di partenza $-1$. Sulla casa in $(0,0)$ il conto dà
@@ -267,9 +281,10 @@ mondo reale le classi si sovrappongono quasi sempre. La risposta di Cortes e
 Vapnik {cite}`cortes1995support` è il **margine morbido** (*soft margin*):
 concedere qualche violazione, pagandola.
 
-Quanto paga un punto dipende da un numero solo,
-$y_i(\mathbf{w}^\top\mathbf{x}_i + b)$: vale $1$ per un punto appoggiato al
-bordo del corridoio, cresce allontanandosi dalla parte giusta e diventa
+Quanto paga un punto dipende da un numero solo, il suo **margine funzionale**
+$y_i(\mathbf{w}^\top\mathbf{x}_i + b)$, dove $y_i$ è l'etichetta del punto, $+1$
+per una classe e $-1$ per l'altra: il prodotto vale $1$ per un punto appoggiato
+al bordo del corridoio, cresce allontanandosi dalla parte giusta e diventa
 negativo dalla parte sbagliata.
 
 ```{figure} ../figures/tre-perdite-e-il-margine.svg
@@ -278,9 +293,10 @@ negativo dalla parte sbagliata.
 :width: 88%
 
 La multa di un punto dipende solo da dove sta rispetto al corridoio. Quella
-della SVM va a zero appena il punto è fuori, e da lì in poi quel punto non
-conta più; quella della regressione logistica si abbassa e basta, e vale
-ancora $0{,}45$ sul bordo e $0{,}07$ tre volte più in là.
+della SVM va a zero appena il punto è fuori, e da lì in poi quel punto non conta
+più; quella della regressione logistica si abbassa e basta, e vale ancora
+$0{,}45$ sul bordo e $0{,}07$ tre volte più in là (in base 2, cioè divisa per
+$\ln 2$, perché valga $1$ nell'origine come la perdita 0-1).
 ```
 
 `````{tab} Elementare
@@ -374,16 +390,17 @@ curva di $C$ conviene guardare quale delle due convenzioni segue.
 
 ## L'approccio della strada più larga
 
-Fin qui abbiamo chiesto fiducia su due cose e non ne abbiamo dimostrata
-nessuna: che si sappia calcolare quanto è larga la strada (ci serve, visto
-che vogliamo la più larga di tutte), e che a reggere la frontiera siano
-soltanto pochi punti, i vettori di supporto.
+Fin qui abbiamo chiesto fiducia su due cose e non ne abbiamo dimostrata nessuna:
+che si sappia calcolare quanto è larga la strada (ci serve, visto che vogliamo
+la più larga di tutte), e che a reggere la frontiera siano soltanto i punti sul
+bordo, i vettori di supporto.
 
 Adesso le dimostriamo tutte e due, e lungo il percorso salterà fuori una terza
 cosa che nessuno aveva cercato: il problema si può riscrivere in una forma in
-cui gli esempi non compaiono più uno per uno, ma soltanto a coppie, e di
-ogni coppia serve un numero solo. Sembra un dettaglio contabile ed è il perno di
-tutto il resto della sezione, kernel trick compreso.
+cui gli esempi non compaiono più uno per uno, ma soltanto a coppie, e di ogni
+coppia serve un numero solo. Sembra un dettaglio contabile ed è il perno del
+{doc}`kernel trick
+<svm-kernel>`.
 
 La strada per arrivarci è corta, sta in una pagina di algebra, e lungo il
 percorso succede due volte una cosa che all'inizio non era prevedibile.
@@ -653,11 +670,12 @@ Teniamo il conto: caffè numero uno.
 
 `````{tab} Elementare
 
-Da tre secoli il punto più basso di un prato lo si trova camminando finché il
-terreno smette di scendere: il fondo di una conca è piatto. Il nostro prato
-però ha una staccionata, fatta delle regole di poco fa, un paletto per ogni
-casa, e il fondo vero cade dall'altra parte. Il punto più basso che ci è
-concesso sta appoggiato ai paletti, e lì il terreno scende ancora.
+Da tre secoli il punto più basso di una valle lo si trova camminando finché il
+terreno smette di scendere: il fondo di una conca è piatto. Qui la quota del
+terreno è quello che vogliamo rendere minimo, il quadrato della lunghezza della
+freccia, e la nostra valle ha una staccionata, fatta delle regole di poco fa, un
+paletto per ogni casa: il fondo vero cade dall'altra parte. Il punto più basso
+che ci è concesso sta appoggiato ai paletti, e lì il terreno scende ancora.
 
 Il modo di togliere la staccionata ha più di due secoli e porta il nome di
 Joseph-Louis Lagrange, nato a Torino nel 1736 come Giuseppe Lodovico
@@ -668,26 +686,28 @@ cammina paga la quota del terreno più i pedaggi dei caselli che ha
 oltrepassato, e quel conto si chiama **lagrangiana**: dentro non c'è più
 nemmeno un paletto.
 
-Il recinto sparisce, il divieto resta. Il casellante decide da sé il prezzo e
-lo tira su più che può: a chi è passato dalla parte proibita lo alza senza
-limite, fino a mangiarsi qualunque guadagno di quota. Uscire smette di
-convenire, e allora il fondo si può cercare camminando dove pare, sicuri che
+Il recinto sparisce, il divieto resta, ed è il casellante a tenerlo: fissa il
+prezzo contro chi cammina, e lo vuole più alto possibile. Davanti a chi è
+rimasto dalla parte permessa un pedaggio diventerebbe uno sconto, e allora lo
+lascia a zero; a chi è passato dalla parte proibita lo alza senza limite, fino a
+mangiarsi qualunque guadagno di quota. Contro un avversario così uscire non
+conviene mai, e allora il fondo si può cercare camminando dove pare, sicuri che
 cadrà là dove i paletti ci avrebbero lasciato stare.
 
 I caselli davanti alle case lontane dalla strada non li oltrepassa nessuno, e
 chi non fa passare nessuno non ha niente da farsi pagare: il loro cartellino
 segna zero. A pagare sono soltanto le case appoggiate al marciapiede, e sono
-quelle poche a reggere la frontiera, i vettori di supporto.
+loro a reggere la frontiera, i vettori di supporto.
 
 Adesso camminiamo finché il terreno è piatto, e arriva la prima cosa non
 prevedibile. La freccia $\mathbf{w}$, cioè la frontiera stessa, viene fuori
 dalle case: ognuna tira con la forza scritta sul proprio cartellino, i più da
-una parte e i meno dall'altra, e la freccia è la somma di quelle tirate.
-Sommare due case vuol dire mettere in fila i loro elenchi di numeri e sommarli
+una parte e i meno dall'altra, e la freccia è la somma di quelle tirate. Sommare
+due case vuol dire mettere in fila i loro elenchi di numeri e sommarli
 coordinata per coordinata, come si fa con due frecce. Da un conto del genere
 poteva uscire di tutto, e di solito esce qualcosa di intrattabile. Invece è
-uscita una somma di case: la frontiera è fatta dei dati, e siccome quasi tutti
-i cartellini segnano zero, di case ne entrano pochissime.
+uscita una somma di case: la frontiera è fatta dei dati, e siccome i cartellini
+delle case lontane segnano zero, ne entrano soltanto quelle sul bordo.
 
 Dallo stesso terreno piatto esce una seconda condizione, molto più modesta: i
 due quartieri pagano lo stesso totale. Con un esempio a parte, per capirci:
@@ -704,7 +724,7 @@ Si costruisce la lagrangiana, associando a ogni vincolo un moltiplicatore
 $\alpha_i \ge 0$:
 
 $$
-\mathcal{L}(\mathbf{w}, b, \alpha)
+\mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha})
 = \tfrac{1}{2}\lVert \mathbf{w}\rVert^2
 - \sum_{i=1}^{m} \alpha_i\Big[\,y_i(\mathbf{w}^\top\mathbf{x}_i + b) - 1\,\Big],
 $$
@@ -723,8 +743,9 @@ che conviene è zero. La sparsità è già lì, in nuce.
 
 Ora si annullano le derivate. Rispetto a $\mathbf{w}$, che è un vettore, si
 deriva componente per componente e il risultato ha la stessa forma del caso
-scalare (è la convenzione di layout dichiarata nel {doc}`capitolo di matematica
-</Matematica/overview>`):
+scalare (è la convenzione di layout al denominatore dichiarata nella
+{doc}`sezione su analisi e ottimizzazione
+</Matematica/analisi-ottimizzazione>`):
 
 $$
 \frac{\partial \mathcal{L}}{\partial \mathbf{w}}
@@ -762,21 +783,25 @@ dice l'ultima parte della sezione.
 
 ### Quinto passo: il duale, e la seconda sorpresa
 
-Abbiamo scoperto come è fatta la freccia $\mathbf{w}$. La mossa che resta è
-ovvia e faticosa: rimettere quella scoperta dentro la funzione «quota più
-pedaggi» del passo precedente, e vedere che aspetto prende il problema quando
-$\mathbf{w}$ non compare più.
+Il quinto passo sostituisce $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$
+nella lagrangiana, e ne esce il **problema duale**: ha per incognite i soli
+moltiplicatori $\alpha_i$, e la stessa soluzione del problema di partenza, il
+*primale*.
 
 `````{tab} Elementare
 
-È solo algebra: sostituzioni e raccoglimenti, niente idee nuove. Quello che
-conta è il risultato, che è la seconda cosa non prevedibile del percorso.
+Si rimette la freccia appena trovata dentro il conto «quota più pedaggi» del
+passo prima. È solo algebra: sostituzioni e raccoglimenti, niente idee nuove.
+Quello che conta è il risultato, che è la seconda cosa non prevedibile del
+percorso.
 
 Dopo la sostituzione, dei dati non restano né le coordinate né le distanze dalla
 frontiera. Se ne va anche la soglia, portata via dal pareggio dei prezzi trovato
 un attimo fa. Resta una cosa sola: per ogni coppia di case, l'ombra dell'una
 sulla freccia dell'altra. Il problema da risolvere e la regola per classificare
-un punto nuovo si scrivono entrambi usando soltanto quelle ombre a due a due.
+un punto nuovo si scrivono entrambi usando soltanto quelle ombre a due a due. Il
+problema riscritto in questa forma è il duale del nostro: stessa risposta, altre
+incognite, i cartellini al posto della freccia.
 
 Detto altrimenti: della mappa del quartiere si può buttare via tutto, tenendo
 solo una tabella che per ogni coppia di case dice quanto si «vedono». Con quella
@@ -814,7 +839,7 @@ dentro la parentesi quadra. Sommando i primi due (uno con $1/2$, l'altro intero,
 di segno opposto) resta metà del secondo, cambiata di segno:
 
 $$
-\max_{\alpha}\ \mathcal{L}(\alpha)
+\max_{\boldsymbol{\alpha}}\ g(\boldsymbol{\alpha})
 = \sum_{i=1}^{m}\alpha_i
 - \tfrac{1}{2}\sum_{i,j}\alpha_i\alpha_j\, y_i y_j\,
   \mathbf{x}_i^\top\mathbf{x}_j
@@ -822,7 +847,7 @@ $$
 \alpha_i \ge 0,\ \ \sum_{i=1}^{m}\alpha_i y_i = 0 .
 $$
 
-È il **problema duale**: non contiene più né $\mathbf{w}$ né $b$, solo gli $m$
+È il problema duale: non contiene più né $\mathbf{w}$ né $b$, solo gli $m$
 moltiplicatori. Resta una programmazione quadratica, ma con un dettaglio che
 vale tutta la fatica. Riscriviamo anche la regola di decisione del primo passo
 sostituendoci $\mathbf{w}$:
@@ -839,19 +864,19 @@ servono le coordinate, non serve la dimensione dello spazio, non serve nemmeno
 sapere che cosa siano gli $\mathbf{x}_i$: serve una tabella di prodotti scalari.
 Da questa osservazione, e da nient'altro, nasce il kernel trick.
 
-Resta da dire perché il duale si *massimizzi*. Fissati gli $\alpha_i \ge 0$,
-il minimo della lagrangiana su $(\mathbf{w}, b)$ è la funzione duale
-$g(\alpha)$, e per ogni $\mathbf{w}$ ammissibile vale
-$g(\alpha) \le \tfrac12\lVert\mathbf{w}\rVert^2$, perché il termine sottratto
-non è mai negativo: ogni $\alpha$ dà un limite inferiore al primale (dualità
-debole), e il più stretto si cerca massimizzando. Qui il limite si tocca
-(dualità forte), perché l'obiettivo è convesso e i vincoli sono affini e
-soddisfacibili, che è la condizione di Slater nella forma per vincoli lineari.
-Trovati gli $\alpha_i$, $b$ si ricava da un qualunque vettore di supporto con
-$\alpha_i > 0$ (con $0 < \alpha_i < C$ nel margine morbido), che sta sul
-marciapiede: $b = y_i - \mathbf{w}^\top\mathbf{x}_i$, e in pratica si fa la
-media su tutti. Sull'esempio dei quattro punti, da $\mathbf{x}_2$ viene
-$b = 1 - 2 = -1$.
+Resta da dire perché il duale si *massimizzi*. Fissati gli $\alpha_i \ge 0$, il
+minimo della lagrangiana su $(\mathbf{w}, b)$ è la funzione duale
+$g(\boldsymbol{\alpha})$, e per ogni $\mathbf{w}$ ammissibile vale
+$g(\boldsymbol{\alpha}) \le \tfrac12\lVert\mathbf{w}\rVert^2$, perché il termine
+sottratto non è mai negativo: ogni $\boldsymbol{\alpha}$ dà un limite inferiore
+al primale (dualità debole), e il più stretto si cerca massimizzando. Qui il
+limite si tocca (dualità forte), perché l'obiettivo è convesso e i vincoli sono
+affini e soddisfacibili, che è la condizione di Slater nella forma per vincoli
+lineari. Trovati gli $\alpha_i$, $b$ si ricava da un qualunque vettore di
+supporto con $\alpha_i > 0$ (con $0 < \alpha_i < C$ nel margine morbido), che
+sta sul marciapiede: $b = y_i - \mathbf{w}^\top\mathbf{x}_i$, e in pratica si fa
+la media su tutti. Sull'esempio dei quattro punti, da $\mathbf{x}_2$ viene $b =
+1 - 2 = -1$.
 
 Due note a margine. La prima: la funzione obiettivo del duale è concava e
 il dominio è convesso, quindi ogni massimo locale è anche globale e non ci sono
@@ -863,11 +888,13 @@ spingere un singolo punto. Tutto il resto, kernel compreso, resta identico.
 
 `````
 
-### Perché i vettori di supporto sono pochi
+### Perché contano solo i vettori di supporto
 
-Che i punti che contano siano pochi lo abbiamo detto fin dalla prima pagina, e
-finora era una promessa. Adesso si dimostra in due righe, e discende dal
-percorso appena fatto: è una conseguenza, non un'osservazione fatta provando.
+Che a determinare la soluzione siano solo gli esempi sul margine o dentro la
+fascia lo abbiamo detto fin dall'inizio, e finora era una promessa. Adesso si
+dimostra in due righe, e discende dal percorso appena fatto: è una conseguenza,
+non un'osservazione fatta provando. Quanti siano dipende dai dati: pochi se le
+classi sono ben separate, una frazione stabile del campione se si sovrappongono.
 
 `````{tab} Elementare
 
@@ -893,7 +920,7 @@ un quarto ciascuna, le due arretrate zero; la casa in $(0,0)$ sta nell'origine
 e non sposta niente, e un quarto della casa in $(2,2)$ fa $(0{,}5;\ 0{,}5)$,
 cioè esattamente la freccia del confine trovato prima a occhio.
 
-È il motivo per cui la SVM, alla fine, si porta appresso solo i pochi punti che
+È il motivo per cui la SVM, alla fine, si porta appresso solo i punti che
 spingono e può dimenticare tutti gli altri, anche se erano un milione.
 
 `````
@@ -910,11 +937,29 @@ $$
 
 (qui già nella forma a margine morbido, con la variabile di slack $\xi_i$; per
 il margine rigido basta porre $\xi_i = 0$). Se un punto è strettamente fuori dal
-margine, la parentesi quadra è diversa da zero, e allora deve essere
-$\alpha_i = 0$: quel punto sparisce dalla somma
-$\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$ che ricostruisce la soluzione.
-Restano solo i punti *sul* margine o dentro la fascia, cioè i vettori di
-supporto.
+margine, la parentesi quadra è diversa da zero, e allora deve essere $\alpha_i =
+0$: quel punto sparisce dalla somma $\mathbf{w} = \sum_i \alpha_i y_i
+\mathbf{x}_i$ che ricostruisce la soluzione. Restano solo i punti *sul* margine
+o dentro la fascia, cioè i vettori di supporto.
+
+Le condizioni KKT complete del margine morbido dividono gli esempi in tre casi,
+con $f(\mathbf{x}) = \mathbf{w}^\top\mathbf{x} + b$:
+
+$$
+\alpha_i = 0 \;\Rightarrow\; y_i f(\mathbf{x}_i) \ge 1, \qquad
+0 < \alpha_i < C \;\Rightarrow\; y_i f(\mathbf{x}_i) = 1, \qquad
+\alpha_i = C \;\Rightarrow\; y_i f(\mathbf{x}_i) \le 1 ,
+$$
+
+cioè fuori dal corridoio e senza peso, sul marciapiede, e dentro il corridoio o
+dalla parte sbagliata con il peso massimo e $\xi_i = 1 - y_i f(\mathbf{x}_i)$.
+Dal secondo caso si ricava $b$. Il numero dei vettori di supporto ha anche un
+significato statistico: togliendo un esempio con $\alpha_i = 0$ la soluzione non
+cambia e l'esempio resta classificato bene, quindi nella validazione
+leave-one-out si possono sbagliare solo vettori di supporto, e l'errore
+leave-one-out è al più la loro frazione, $\#\mathrm{SV}/m$
+{cite}`vapnik1995nature`. Pochi vettori di supporto danno una garanzia stretta;
+quando le classi si sovrappongono e diventano molti, la garanzia si allenta.
 
 Sui quattro punti dell'esempio numerico i conti si chiudono in una riga. La
 condizione $\sum_i \alpha_i y_i = 0$ e la ricostruzione di $\mathbf{w}$ danno
@@ -927,9 +972,9 @@ $$
 esattamente la soluzione trovata per via geometrica. Come controprova vale
 l'identità $\sum_i \alpha_i = \lVert\mathbf{w}\rVert^2$, che discende
 dall'uguaglianza fra primale e duale all'ottimo: qui $0{,}25 + 0{,}25 = 0{,}5$ e
-$\lVert\mathbf{w}\rVert^2 = 0{,}25 + 0{,}25 = 0{,}5$, e il margine
-$2/\lVert\mathbf{w}\rVert = 2/\sqrt{0{,}5} \approx 2{,}83$ coincide con la
-larghezza già misurata sugli stessi quattro punti.
+$\lVert\mathbf{w}\rVert^2 = 0{,}25 + 0{,}25 = 0{,}5$, e la larghezza
+$2/\lVert\mathbf{w}\rVert = 2/\sqrt{0{,}5} \approx 2{,}83$ coincide con quella
+già misurata sugli stessi quattro punti.
 
 `````
 
@@ -944,26 +989,30 @@ provarla. Negli anni successivi, sempre con Chervonenkis, costruì la teoria che
 stabilisce *quando* un modello che ha imparato bene sugli esempi visti
 continuerà a funzionare su quelli nuovi {cite}`vapnik1971uniform`: è ciò che
 oggi si chiama teoria dell'apprendimento statistico, e la sua misura di
-complessità, la {doc}`dimensione VC </TeoriaApprendimento/dimensione-vc>`,
-porta le iniziali dei due. In Occidente, per
-vent'anni, quel lavoro non lo lesse quasi nessuno.
+complessità, la {doc}`dimensione VC </TeoriaApprendimento/dimensione-vc>`, porta
+le iniziali dei due. L'articolo del 1971 esce anche in inglese, e a fine anni
+Settanta le classi di Vapnik e Chervonenkis entrano nella teoria dei processi
+empirici {cite}`dudley1978central`; nell'apprendimento automatico occidentale la
+dimensione VC arriva alla fine degli anni Ottanta, con Blumer, Ehrenfeucht,
+Haussler e Warmuth {cite}`blumer1989learnability`. Quello che in Occidente restò
+quasi sconosciuto fino agli anni Novanta fu il ritratto generalizzato, cioè la
+SVM.
 
 Nel 1990 Vapnik emigra negli Stati Uniti e finisce ai laboratori Bell di
 Holmdel, nel New Jersey, dove si lavorava al riconoscimento delle cifre scritte
-a mano. È lì che, nel 1992, nasce il kernel {cite}`boser1992training`: si
-prende la tabella delle ombre a due a due appena trovata e si cambia il modo di
-riempirla. Winston fa notare per
-inciso il vantaggio di
-studiare cose fatte da gente ancora viva: a Fourier non si può telefonare per
-chiedergli come gli sia venuta, a Vapnik sì. E il seguito lo racconta così. Gli
-articoli mandati alla conferenza NIPS quell'anno furono respinti tutti. Vapnik
-aveva un'opinione bassissima delle reti neurali, e scommise una cena con un
-collega che le SVM le avrebbero battute sulla scrittura a mano. Fu il collega a
-mettersi alla prova: usò un kernel appena appena curvo (un polinomio di grado
-due, cioè la più timida delle frontiere non dritte) e funzionò al primo colpo. A
-Napoleone si attribuisce l'osservazione che un soldato si batte a lungo e con
-ferocia per un pezzetto di nastro colorato; ecco,
-commenta Winston, questo è il pezzetto di nastro, ed era una cena.
+a mano. È lì che, nel 1992, il kernel entra nelle SVM {cite}`boser1992training`:
+si prende la tabella delle ombre a due a due appena trovata e si cambia il modo
+di riempirla. Winston fa notare per inciso il vantaggio di studiare cose fatte
+da gente ancora viva: a Fourier non si può telefonare per chiedergli come gli
+sia venuta, a Vapnik sì. E il seguito lo racconta così. Gli articoli mandati
+alla conferenza NIPS quell'anno furono respinti tutti. Vapnik aveva un'opinione
+bassissima delle reti neurali, e scommise una cena con un collega che le SVM le
+avrebbero battute sulla scrittura a mano. Fu il collega a mettersi alla prova:
+usò un kernel appena appena curvo (un polinomio di grado due, cioè la più timida
+delle frontiere non dritte) e funzionò al primo colpo. A Napoleone si
+attribuisce l'osservazione che un soldato si batte a lungo e con ferocia per un
+pezzetto di nastro colorato; ecco, commenta Winston, questo è il pezzetto di
+nastro, ed era una cena.
 
 Il kernel Vapnik ce l'aveva già nella tesi. Non aveva mai pensato che fosse
 importante, e furono i risultati sulle cifre a fargli cambiare idea. Fra il
@@ -984,15 +1033,15 @@ volta più indietro.
 :class: important
 - La SVM sceglie, tra le infinite linee che separano due classi, la più
   prudente: quella che lascia il corridoio più largo possibile fra i due
-  quartieri. A reggere il confine sono solo i pochi punti che ne toccano i
-  bordi, i vettori di supporto: gli altri si possono cancellare dal foglio
-  e il confine non si sposta di un millimetro.
-- Il margine morbido mette in conto qualche sconfinamento, e una manopola
-  decide quanto è severa: severa, il corridoio si stringe pur di accontentare
-  quasi tutti (e si rischia di inseguire il rumore); indulgente, il corridoio
-  si allarga ed è più robusto. I punti già comodamente fuori dal corridoio non
-  pesano affatto: a reggere il confine restano sempre e solo le poche case sul
-  bordo.
+  quartieri. A reggere il confine sono solo i punti che ne toccano i bordi, i
+  vettori di supporto: gli altri si possono cancellare dal foglio e il confine
+  non si sposta di un millimetro.
+- Il margine morbido mette in conto qualche sconfinamento, e una manopola decide
+  quanto è severa: severa, il corridoio si stringe pur di accontentare quasi
+  tutti (e si rischia di inseguire il rumore); indulgente, il corridoio si
+  allarga ed è più robusto. I punti già comodamente fuori dal corridoio non
+  pesano affatto: a reggere il confine restano solo le case sul bordo o dentro
+  il corridoio.
 - La strada più larga si ricava in cinque passi, e due volte lungo il
   percorso salta fuori qualcosa che nessuno aveva chiesto: che la frontiera è
   fatta dei dati stessi, sommati con un peso, e che i dati entrano nel conto
@@ -1006,11 +1055,11 @@ volta più indietro.
 
 ```{admonition} Da ricordare
 :class: important
-- La SVM sceglie, tra le infinite frontiere che separano due classi, quella
-  a margine massimo: il corridoio $2/\lVert \mathbf{w}\rVert$ più largo.
-  L'idea è di Vapnik, con Lerner nel 1963 e con Chervonenkis nel 1964; dai
-  laboratori Bell arrivano trent'anni dopo il kernel trick e il margine
-  morbido.
+- La SVM sceglie, tra le infinite frontiere che separano due classi, quella a
+  margine massimo $M = 1/\lVert \mathbf{w}\rVert$, cioè il corridoio di
+  larghezza $2/\lVert \mathbf{w}\rVert$ più largo. L'idea è di Vapnik, con
+  Lerner nel 1963 e con Chervonenkis nel 1964; dai laboratori Bell arrivano,
+  trent'anni dopo, i kernel applicati al margine massimo e il margine morbido.
 - La derivazione («l'approccio della strada più larga») va dalla regola di
   decisione $\mathbf{w}^\top\mathbf{u}+b\ge 0$ ai vincoli
   $y_i(\mathbf{w}^\top\mathbf{x}_i+b)-1\ge 0$, da lì a
@@ -1021,11 +1070,12 @@ volta più indietro.
   $\sum_i\alpha_i-\frac12\sum_{i,j}\alpha_i\alpha_jy_iy_j\,\mathbf{x}_i^\top\mathbf{x}_j$,
   concavo, in cui gli esempi compaiono solo dentro prodotti scalari: da qui,
   e da nient'altro, il kernel trick.
-- La soluzione dipende solo dai vettori di supporto, e non è
-  un'osservazione ma un corollario: la complementarità KKT
+- La soluzione dipende solo dai vettori di supporto, e non è un'osservazione ma
+  un corollario: la complementarità KKT
   $\alpha_i[y_i(\mathbf{w}^\top\mathbf{x}_i+b)-1+\xi_i]=0$ annulla $\alpha_i$
   per ogni punto fuori dal margine, e $\mathbf{w}=\sum_i\alpha_iy_i\mathbf{x}_i$
-  non lo contiene.
+  non lo contiene. Quanti siano dipende dai dati, e la loro frazione maggiora
+  l'errore leave-one-out.
 - Il margine morbido ammette violazioni $\xi_i$ pagate dal parametro $C$,
   l’inverso della forza di regolarizzazione: $C$ grande → margine stretto
   (overfitting), $C$ piccolo → margine largo. La perdita è la hinge loss,
@@ -1034,7 +1084,7 @@ volta più indietro.
 
 `````
 
-Quel mezzo giro di vite ha un nome, il [kernel trick](svm-kernel.md): prende
-la frontiera dritta costruita fin qui e la piega, cambiando del conto una riga
-sola. È la storia in cui il duale, percorso passo per passo, ripaga il
-biglietto.
+Quel mezzo giro di vite ha un nome, il {doc}`kernel trick <svm-kernel>`: prende
+la frontiera dritta costruita fin qui e la piega, cambiando una riga sola del
+conto, cioè il modo di riempire la tabella dei prodotti scalari. È lì che il
+duale, ricavato passo per passo, diventa necessario.

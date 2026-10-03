@@ -1,22 +1,23 @@
 # Quanto può sbagliare una media: le disuguaglianze di concentrazione
 
-Nel 1853 Irénée-Jules Bienaymé pubblica una disuguaglianza che sta in mezza
-pagina e che al tempo passa quasi inosservata. Dice che una quantità casuale
-finisce lontano dalla propria media solo di rado, e lo dice senza sapere
-niente di come quella quantità è fatta: nessuna campana, nessuna forma,
-nessuna ipotesi sul meccanismo che la genera. Bastano due numeri, il centro e
-la larghezza. Quattordici anni dopo Pafnutij Čebyšëv la ritrova per conto suo
-e ne fa lo strumento con cui dimostra, in tre righe, la legge dei grandi
-numeri; da allora in Francia si chiama disuguaglianza di Bienaymé-Čebyšëv, e
-altrove porta il solo nome del secondo.
+Una quantità casuale finisce lontano dalla propria media solo di rado, e lo si
+può dire senza sapere niente di come quella quantità è fatta: nessuna campana,
+nessuna forma, nessuna ipotesi sul meccanismo che la genera. Bastano due
+numeri, il centro e la larghezza. È la disuguaglianza che Irénée-Jules Bienaymé
+pubblica nel 1853, dove «disuguaglianza» vuol dire una regola della forma «la
+probabilità di questo non supera quel numero». Quattordici anni dopo Pafnutij
+Čebyšëv la ritrova per conto suo e ne fa lo strumento con cui dimostra, in tre
+righe, la legge dei grandi numeri; da allora in Francia si chiama
+disuguaglianza di Bienaymé-Čebyšëv, e altrove porta il solo nome del secondo.
 
-Chi lavora con i dati la incontra ogni giorno senza chiamarla per nome. Ogni
-volta che ci si chiede quante prove servano per fidarsi di una percentuale,
-quanto sia grande il rumore di una stima o se due modelli siano davvero
-diversi, la risposta viene da una disuguaglianza di questa famiglia. E la loro
-qualità migliore è che non chiedono di sapere che forma abbiano i dati: la
-curva a campana della {doc}`sezione su probabilità e statistica
-</Matematica/probabilita-statistica>` descrive tante situazioni e non tutte,
+Chi lavora con i dati la incontra ogni giorno senza chiamarla per nome. Quante
+prove servono per fidarsi di una percentuale? Quanto può sbagliare una media?
+Le **disuguaglianze di concentrazione**, che dicono quanto una media resta
+concentrata intorno al proprio valore atteso, rispondono con limiti validi per
+ogni numero di prove $n$, e non solo in approssimazione come il teorema
+centrale del limite. Non chiedono di conoscere la forma dei dati: la curva a
+campana della {doc}`sezione su probabilità e statistica
+</Matematica/probabilita-statistica>` descrive molte situazioni e non tutte,
 mentre queste valgono qualunque sia la forma. Qualcosa la chiedono comunque, e
 ciascuna dichiara che cosa.
 
@@ -30,8 +31,9 @@ persone possono guadagnarne trecentomila?
 Al massimo una su dieci, e il ragionamento sta in una riga: se fossero anche
 solo undici su cento, quelle undici da sole porterebbero il totale della sala
 sopra trentamila euro a testa, e la media sarebbe più alta di quella che ci
-hanno detto. La regola generale è questa: la frazione di casi che supera una
-certa soglia non può essere più grande della media divisa per la soglia. Qui
+hanno detto. La regola generale è questa: la frazione di casi che raggiunge o
+supera una certa soglia non può essere più grande della media divisa per la
+soglia. Qui
 trentamila diviso trecentomila fa un decimo.
 
 Due cose dicono che tipo di strumento sia.
@@ -44,7 +46,7 @@ regola sarebbe falsa.
 *La stima è generosa, e a volte è esatta.* Si può costruire una sala in cui la
 disuguaglianza è un'uguaglianza: dieci persone, una che guadagna trecentomila
 euro e nove che non guadagnano niente. Media trentamila, e proprio uno su dieci
-sopra la soglia. Il che vuol dire che la regola non si può migliorare senza
+alla soglia. Il che vuol dire che la regola non si può migliorare senza
 sapere qualcosa in più. Ed è anche la sua debolezza: sapendo solo la media, di
 più non si può dire, e quel «uno su dieci» è di solito enormemente peggiore
 della verità.
@@ -83,23 +85,29 @@ disuguaglianze più forti si ottengono chiedendo di sapere qualcosa in più.
 
 ## Con media e larghezza: la disuguaglianza di Čebyšëv
 
-Il salto che rende utile la famiglia consiste nell'applicare la regola di
-Markov non alla quantità stessa, ma al quadrato della sua distanza dalla
-media. È una mossa da guardare da vicino, perché ritorna identica in mezza
-statistica.
+La disuguaglianza di Markov usa la sola media. Applicata al quadrato dello
+scarto dalla media, $(X-\mu)^2$, che non è mai negativo e ha per media la
+varianza, dà un limite che usa anche la varianza. La stessa mossa, applicare
+Markov a una funzione crescente della variabile, regge anche la dimostrazione
+di Hoeffding, più avanti, dove la funzione è un esponenziale.
 
 `````{tab} Elementare
 
 Lo scarto dalla media può essere positivo o negativo, quindi la regola di
-prima non gli si applica. Elevandolo al quadrato però diventa sempre positivo,
+prima non gli si applica. Elevandolo al quadrato però non è mai negativo,
 e in più i valori lontani pesano molto di più dei vicini, che è esattamente
 quello che serve per parlare di code. E il valore medio di quello scarto al
 quadrato è una grandezza che si conosce già: la varianza, cioè la larghezza al
 quadrato.
 
-Fatto il conto viene fuori una regola che si ricorda a memoria. Qualunque sia
-la forma dei dati, almeno tre quarti di essi stanno entro due larghezze dalla
-media, e almeno otto su nove entro tre. Non si è chiesto niente:
+Il conto è la regola della sala applicata allo scarto al quadrato. Essere
+lontani almeno due larghezze vuol dire avere lo scarto al quadrato almeno
+quattro volte la varianza: la frazione di casi che ci arriva non supera la
+media dello scarto al quadrato, cioè la varianza, divisa per quattro volte la
+varianza, cioè un quarto. Con tre larghezze la soglia diventa nove volte la
+varianza, e resta al più un nono. Ne viene una regola che si ricorda a memoria:
+qualunque sia la forma dei dati, almeno tre quarti di essi stanno entro due
+larghezze dalla media, e almeno otto su nove entro tre. Non si è chiesto niente:
 niente campana, niente simmetria, niente code sottili. Vale per i redditi, per
 i tempi di risposta di un server, per gli errori di un modello.
 
@@ -115,9 +123,10 @@ sul tavolo.
 C'è però una situazione in cui la garanzia debole è esattamente quello che
 succede, e serve a capire che non si può fare di meglio a scatola chiusa. Se un
 ottavo dei dati vale meno due, un ottavo vale più due e i restanti tre quarti
-valgono zero, la media è zero, la larghezza è uno, e fuori da due larghezze c'è
-precisamente un quarto dei dati. La regola diventa un'uguaglianza, e chi
-sperasse in un numero migliore avrebbe torto.
+valgono zero, la media è zero; la varianza è un ottavo per quattro più un
+ottavo per quattro, cioè uno, e quindi anche la larghezza è uno; e a due
+larghezze o più dalla media c'è precisamente un quarto dei dati. La regola
+diventa un'uguaglianza, e chi sperasse in un numero migliore avrebbe torto.
 
 `````
 
@@ -138,8 +147,8 @@ $\Pr[|X-\mu|\ge\varepsilon] \le \sigma^2/\varepsilon^2$.
 
 Per $k=2$ dà $\Pr \le 1/4$, per $k=3$ dà $\Pr\le 1/9$, contro le code esatte
 di una gaussiana, che valgono $0{,}0455$ e $0{,}0027$: un fattore cinque e mezzo
-nel primo caso, quarantuno nel secondo. La perdita misura esattamente quanto
-vale l'ipotesi di normalità.
+nel primo caso, quarantuno nel secondo: è quanto si guadagna, sulle code,
+sapendo che la distribuzione è gaussiana.
 
 Anche questa disuguaglianza è stretta, e il testimone è una distribuzione a tre
 punti: $X=\pm\sigma k$ ciascuno con probabilità $1/(2k^2)$ e $X=0$ con la
@@ -171,11 +180,13 @@ accanto a $n$.
 
 ## Quando i valori stanno in un intervallo: Hoeffding
 
-La garanzia di Čebyšëv cala come $1/n$, che è lento. Sapendo una cosa in più,
-molto facile da verificare, la garanzia cala esponenzialmente in $n$, e il
-risparmio cresce con la sicurezza che si chiede: con una probabilità di errore
-di uno su venti gli esempi necessari si dividono per meno di tre, con uno su
-mille per circa sessantacinque.
+Il limite di Čebyšëv alla probabilità di un errore grande cala come $1/n$, con
+$n$ il numero di prove, e $1/n$ cala lentamente. Se in più i valori stanno in un
+intervallo noto, il limite cala esponenzialmente in $n$, e il vantaggio cresce
+con la sicurezza richiesta. Per una variabile in $[0,1]$, a parità di
+tolleranza, con una probabilità di errore ammessa di uno su venti gli esempi
+necessari si dividono per 2,7 rispetto a Čebyšëv (con $\sigma^2\le 1/4$), con
+uno su mille per circa 66.
 
 `````{tab} Elementare
 
@@ -186,18 +197,19 @@ completamente le garanzie, perché toglie di mezzo lo scenario che rovina tutto,
 quello in cui un solo caso mostruoso sposta la media da solo.
 
 Con i valori limitati, la probabilità di sbagliare di tanto non cala in
-proporzione al numero di prove: crolla, come cala una potenza quando si
-alza l'esponente. Il risultato pratico si legge sulla domanda che ogni persona
-si fa prima di preparare un banco di prova: quante domande servono per
-misurare l'accuratezza a meno di due punti percentuali, sbagliando al massimo
-una volta su venti?
+proporzione al numero di prove: crolla, perché ogni prova in più la moltiplica
+per una frazione fissa minore di uno. Il risultato pratico si legge sulla
+domanda che ogni persona si fa prima di preparare un banco di prova: quante
+domande servono perché l'accuratezza misurata stia a meno di due punti
+percentuali da quella vera (la *tolleranza*), con il rischio di mancare quel
+bersaglio al più una volta su venti, la stessa volta su venti che i sondaggi
+mettono in conto?
 
-- non sapendo niente della forma, la sola larghezza chiede dodicimilacinquecento
-  domande;
-- sapendo che le risposte valgono zero oppure uno, ne bastano
-  quattromilaseicentododici;
+- non sapendo niente della forma, la sola larghezza chiede 12 500 domande;
+- sapendo che le risposte valgono zero oppure uno, ne bastano 4 612;
 - dando per buona la curva a campana, che qui è un'approssimazione ragionevole
-  ma resta un'approssimazione, duemilaquattrocentouno.
+  ma resta un'approssimazione, 2 401: è il conto dei sondaggi, cento diviso la
+  radice delle interviste, perché cento diviso 49 fa circa due punti.
 
 Tre numeri per la stessa domanda, e la differenza fra loro è tutta nelle
 ipotesi che si è disposti a fare. Il secondo è quello onesto nella maggior
@@ -209,7 +221,8 @@ domande vengono estratte. Per misurare l'accuratezza di un modello su un
 miliardo di casi possibili servono le stesse quattromilaseicento domande che
 servirebbero se i casi fossero centomila, purché siano sorteggiate davvero a
 caso. È uno dei fatti più controintuitivi della statistica, e uno dei più
-utili.
+utili, e somiglia a un gesto di cucina: un cucchiaio basta a sapere quanto è
+salata la minestra, sia la pentola piccola o grande, purché sia mescolata.
 
 `````
 
@@ -250,8 +263,17 @@ dall'altra coda. Il procedimento (Markov su $e^{sX}$, poi il migliore $s$) è il
 metodo di Chernoff, lo stampo dell'intera famiglia. Della variabile Hoeffding
 usa soltanto l'ampiezza dell'intervallo, e ignora la varianza: quando questa è
 molto più piccola di $(b-a)^2/4$ (un'accuratezza vicina al $99\%$, per
-esempio) la disuguaglianza di Bernstein, che la mette in conto, dà intervalli
-molto più stretti.
+esempio) conviene la disuguaglianza di Bernstein, che la mette in conto: se
+$|X_i-\mu|\le M$ e $\mathrm{Var}(X_i)\le\sigma^2$,
+
+$$
+\Pr\big[\,|\bar{X}_n-\mu|\ge\varepsilon\,\big]\;\le\;2\exp\!\left(-\frac{n\,\varepsilon^2}{2\sigma^2+\tfrac23 M\varepsilon}\right).
+$$
+
+Per un'accuratezza vera del $99\%$ ($\sigma^2\le 0{,}01$, $M\le1$),
+$\varepsilon=0{,}01$ e $\delta=0{,}05$ bastano $984$ esempi, contro i
+$18\,445$ di Hoeffding. La varianza vera non si conosce, e si usa un suo
+maggiorante.
 
 Invertendo per $n$ si ottiene la formula che serve davvero, cioè quanti esempi
 mettere in un insieme di prova:
@@ -264,13 +286,23 @@ con $\varepsilon$ la tolleranza e $\delta$ la probabilità di sbagliare. Per
 $[a,b]=[0,1]$, $\varepsilon = 0{,}02$ e $\delta = 0{,}05$ si ottiene
 $n\ge 4612$. La stessa domanda posta a Čebyšëv (con $\sigma^2\le 1/4$, il
 massimo per una variabile in $[0,1]$) dà $n\ge 12\,500$; l'approssimazione
-normale, $n\ge (1{,}96)^2\cdot 0{,}25/\varepsilon^2 = 2401$.
+normale, $n\ge (1{,}96)^2\cdot 0{,}25/\varepsilon^2 = 2401$. Per l'accuratezza,
+che è la media di una variabile di Bernoulli, esiste anche l'intervallo esatto
+di Clopper-Pearson: nel caso peggiore ($p=1/2$) chiede circa la metà degli
+esempi di Hoeffding, e l'approssimazione normale con $2401$ è già leggermente
+ottimista. Hoeffding chiede di più perché usa soltanto l'intervallo $[0,1]$ e
+non sa che la variabile è di Bernoulli: è lo strumento giusto per variabili
+limitate qualsiasi (punteggi, perdite limitate), meno per contare risposte
+esatte.
 
 Due osservazioni che cambiano il modo di progettare una valutazione. La prima:
-$n$ non dipende dalla cardinalità della popolazione, solo dalla precisione
-voluta. La seconda: $\varepsilon$ compare al quadrato, quindi dimezzare la
-tolleranza quadruplica il costo, ed è la stessa tassa $1/\sqrt{n}$ vista
-altrove, qui in forma esplicita.
+$n$ non dipende dalla cardinalità della popolazione, ma solo da $\varepsilon$ e
+$\delta$; vale anche per un sorteggio senza reinserimento da una popolazione
+finita, che non è indipendente (Hoeffding 1963, teorema 4), e se la popolazione
+è più piccola di $n$ il conto non serve, perché la si misura tutta. La seconda:
+$\varepsilon$ compare al quadrato, quindi dimezzare la tolleranza quadruplica
+il costo, ed è la stessa tassa $1/\sqrt{n}$ vista altrove, qui in forma
+esplicita.
 
 `````
 
@@ -298,13 +330,23 @@ for k in (2, 3):
 
 # dimezzare la tolleranza quadruplica il costo
 print(hoeffding(0.01, 0.05), hoeffding(0.02, 0.05))   # -> 18445.0 4612.0
+
+# con un'accuratezza vicina al 99% la varianza è al più 0,01, e Bernstein
+# la mette in conto
+def bernstein(eps, delta, var_max, M=1.0):
+    return np.ceil((2 * var_max + 2 * M * eps / 3) * np.log(2 / delta) / eps**2)
+
+print(bernstein(0.01, 0.05, var_max=0.01), hoeffding(0.01, 0.05))
+# -> 984.0 18445.0
 ```
 
 ## Il prezzo di guardare molte volte
 
-Tutte le garanzie viste finora valgono per una misura sola, decisa in anticipo.
-Il modo in cui si lavora davvero, però, consiste nel provare molte varianti e
-tenere la migliore, e in quel gesto la garanzia si rompe.
+Le garanzie precedenti valgono per una misura sola, decisa prima di guardare i
+dati. Se si confrontano molte varianti sullo stesso insieme di prova e si tiene
+la migliore, la stima della vincitrice è distorta verso l'alto (è la
+maledizione del vincitore, *winner's curse*) e la garanzia a singola misura non
+vale più.
 
 `````{tab} Elementare
 
@@ -312,13 +354,18 @@ Cento varianti di un modello, tutte identiche nella sostanza, tutte con la
 stessa accuratezza vera dell'ottanta per cento. Si misurano tutte sullo stesso
 insieme di prova da mille esempi e si tiene la migliore.
 
-La migliore risulterà sopra l'ottanta per cento, e non di poco: ripetendo
-l'esperimento duecento volte la vincitrice sta tipicamente intorno a $83$, e in
-una singola prova può arrivare a $84{,}2$, cioè oltre quattro punti sopra il
-vero.
-Nessuna delle cento è migliore delle altre, e la differenza è tutta fortuna:
-ognuna ha ricevuto un insieme di domande che per lei girava un po' meglio o un
-po' peggio, e scegliendo la più fortunata si è scelta esattamente la fortuna.
+Su mille domande un modello da ottanta per cento non ne azzecca esattamente
+ottocento, come cento lanci di moneta non danno cinquanta teste spaccate: ogni
+variante sbaglia domande un po' diverse, e il suo punteggio cade un po' sopra
+o un po' sotto. La migliore risulterà sopra l'ottanta per cento, e non di
+poco: ripetendo al calcolatore l'intero esperimento duecento volte, la
+vincitrice sta tipicamente intorno a $83$, e in una singola prova può arrivare
+a $84{,}2$, cioè oltre quattro punti sopra il vero. Nessuna delle cento è
+migliore delle altre, e la differenza è tutta fortuna: scegliendo la più
+fortunata si è scelta esattamente la fortuna. È la scatola delle mille monete
+della {doc}`sezione su probabilità e statistica
+</Matematica/probabilita-statistica>`, in cui qualcuna fa dieci teste di
+fila senza essere truccata.
 
 Il meccanismo si capisce contando le occasioni. Ogni singola variante ha una
 probabilità piccola di sembrare molto meglio di quel che è; con cento varianti
@@ -370,14 +417,18 @@ conteggio con una misura di complessità, la {doc}`dimensione VC
 </TeoriaApprendimento/dimensione-vc>` o la {doc}`complessità di Rademacher
 </TeoriaApprendimento/rademacher-margine>`, e lo
 svolge per intero il capitolo sulla {doc}`teoria dell'apprendimento
-</TeoriaApprendimento/overview>`; il {doc}`capitolo sul machine learning
-</MachineLearning/overview>` lo affronta prima dal lato pratico, parlando di
-sovradattamento.
+</TeoriaApprendimento/overview>`; la {doc}`sezione su overfitting e
+validazione </MachineLearning/overfitting-validazione>` lo affronta dal lato
+pratico, parlando di sovradattamento.
 
 Una precisazione che evita un errore frequente: la correzione va applicata al
 numero di confronti effettivamente fatti, non a quelli dichiarati. Chi
 prova venti configurazioni, ne riporta una e chiama le altre esplorazione
-preliminare ha comunque fatto venti confronti.
+preliminare ha comunque fatto venti confronti. La cura alternativa è un
+secondo insieme di prova mai guardato durante la selezione: la vincitrice è
+allora un modello fissato, indipendente da quell'insieme, e vale la garanzia a
+singola misura, $k=1$, cioè $\varepsilon=\sqrt{\log(2/\delta)/(2n)}$, senza il
+termine $\log k$.
 
 `````
 
@@ -391,13 +442,13 @@ stime = rng.binomial(n_prova, vera, size=k) / n_prova
 print(round(stime.mean(), 4), stime.max())      # -> 0.8009 0.842
 print(round(np.sqrt(vera * (1 - vera) / n_prova), 5))   # scarto tipico -> 0.01265
 
-# ripetendo l'esperimento, la vincitrice e' quasi sempre gonfiata
+# ripetendo l'esperimento, la vincitrice è quasi sempre gonfiata
 massimi = [(rng.binomial(n_prova, vera, size=k) / n_prova).max()
            for _ in range(200)]
 print(round(float(np.median(massimi)), 4))      # -> 0.83
 
 # di quanto va allargata la tolleranza, in funzione di quante varianti si
-# sono provate: cresce come la radice del logaritmo, cioe' pianissimo
+# sono provate: cresce come la radice del logaritmo, cioè pianissimo
 def tolleranza(k, n=1000, delta=0.05):
     return np.sqrt(np.log(2 * k / delta) / (2 * n))
 
@@ -444,7 +495,8 @@ metterla in difficoltà.
 ```{admonition} Da ricordare
 :class: important
 - Sapendo solo la media di una quantità che non può essere negativa, la
-  frazione di casi sopra una soglia non supera la media divisa per la soglia:
+  frazione di casi che raggiungono una soglia non supera la media divisa per la
+  soglia:
   in una sala con reddito medio trentamila euro, al più uno su dieci ne
   guadagna trecentomila.
 - Sapendo anche la larghezza, almeno tre quarti dei dati stanno entro due

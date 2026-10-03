@@ -1,22 +1,22 @@
 # Servire un modello: dal file all'API
 
 Alla fine di tutto, un modello addestrato è un file. Qualche centinaio di
-megabyte di numeri su un disco (i pesi che nella sezione *Dal notebook alla
-produzione* abbiamo imparato a versionare e archiviare) e nient'altro. Da solo
-non fa niente: è inerte come uno spartito senza orchestra. «Metterlo in
-produzione» significa esattamente dargli l'orchestra: un modo di ricevere
-richieste dal mondo e di rispondere, in fretta e in modo affidabile, migliaia
-di volte al minuto.
+megabyte di numeri su un disco (i pesi che
+{doc}`Dal notebook alla produzione </MLOps/dal-notebook-alla-produzione>` ha
+insegnato a versionare e archiviare) e nient'altro. Da solo non fa niente: è
+inerte come uno spartito senza orchestra. Metterlo in produzione vuol dire
+costruirgli intorno un servizio che riceve richieste dal mondo, esegue il
+modello e risponde, in fretta e in modo affidabile, migliaia di volte al
+minuto.
 
-Le due sezioni precedenti (*Dal notebook alla produzione* e *Dati e pipeline*)
-si sono fermate sul punto in cui i tre pezzi (dati, codice, pesi) sono
-tracciabili e riproducibili. Questa affronta il passo successivo, il quarto
-nodo dell'anello: consegnare il modello
-al mondo, cioè metterlo in un posto dove chi ne ha il diritto possa
-interrogarlo. In inglese consegnarlo si dice *deployment*; tenere acceso quel
-posto, giorno dopo giorno, si dice *serving*. Sono le due parole che nel gergo
-del mestiere coprono tutto quello che segue, e conviene averle in mano prima di
-cominciare.
+Con dati, codice e pesi tracciabili e riproducibili (è il punto a cui sono
+arrivate {doc}`Dal notebook alla produzione
+</MLOps/dal-notebook-alla-produzione>` e {doc}`Dati e pipeline
+</MLOps/dati-e-pipeline>`), il passo successivo, il quarto nodo dell'anello, è
+consegnare il modello al mondo, cioè metterlo in un posto dove chi ne ha il
+diritto possa interrogarlo. In inglese consegnarlo si dice *deployment*; tenere
+acceso quel posto, giorno dopo giorno, si dice *serving*. Sono le due parole
+che nel gergo del mestiere coprono tutto quello che segue.
 
 È una questione tanto ingegneristica quanto di aspettative, perché metà del
 lavoro è decidere *che cosa promettere* a chi userà il servizio. E per una
@@ -120,12 +120,16 @@ preciso a cui si bussa si chiama **endpoint**, che alla lettera è «il capo
 della linea»: l'API è lo sportello, l'endpoint è la targa con il numero civico.
 
 Solo che l'indirizzo, da solo, non basta: dietro ci dev'essere una macchina su
-cui il modello gira, e quella macchina deve comportarsi allo stesso modo
+cui il modello gira, e il software di quella macchina deve essere lo stesso
 ovunque, altrimenti si torna al «sul mio computer funzionava». La risposta del
 mestiere è chiudere il modello dentro una scatola che contiene anche tutto ciò
 che gli serve per funzionare: il sistema, l'interprete Python, la versione
-esatta di ogni libreria, i pesi. Sigillata la scatola, quella scatola si
-comporta uguale su qualunque computer.
+esatta di ogni libreria, e spesso i pesi. Sigillata la scatola, il software
+dentro è lo stesso su qualunque computer. Restano fuori due cose, che la
+scatola prende in prestito dal computer che la ospita: il nucleo del sistema
+operativo e l'hardware. Un'immagine costruita per un tipo di processore non
+gira su un altro senza un emulatore, e una scheda grafica la si usa con il
+driver installato sulla macchina, non con uno portato da casa.
 
 Le tre parole che servono per parlarne sono in
 {numref}`fig-immagine-container-volume`. La scatola sigillata, che nessuno
@@ -185,9 +189,13 @@ modello dipende da una versione precisa di PyTorch, delle librerie di
 pre-processing, perfino di CUDA: la stessa trappola del «sul mio computer
 funzionava» vista in *Dal notebook alla produzione*, spostata
 dall'addestramento al servizio. La risposta standard è la
-**containerizzazione**: un'immagine Docker
-che congela sistema, interprete Python, dipendenze e pesi in un artefatto unico e
-avviabile ovunque allo stesso modo. Il container è ciò che si versiona e si
+**containerizzazione**: un'immagine Docker che congela sistema, interprete
+Python, dipendenze e, se si vuole, i pesi (che spesso stanno invece in un
+archivio a parte e si scaricano all'avvio) in un artefatto unico, avviabile allo
+stesso modo su qualunque host con la stessa architettura di CPU. Il container
+condivide però il kernel dell'host, e per la GPU usa il driver dell'host:
+l'immagine contiene le librerie CUDA, non il driver, che deve essere
+compatibile con loro. Il container è ciò che si versiona e si
 distribuisce; l'orchestrazione di più container (scalare le repliche sotto
 carico) è il livello successivo, di competenza dell'infrastruttura.
 
@@ -196,32 +204,68 @@ carico) è il livello successivo, di competenza dell'infrastruttura.
 Lo scheletro di un servizio d'inferenza, tolto tutto ciò che riguarda il
 traffico in arrivo, sta in poche righe. La sostanza è tutta in tre gesti:
 caricare i pesi una volta sola, dire alla rete che ha finito di studiare, e
-spegnere il meccanismo che le serviva solo per imparare.
+spegnere il meccanismo che le serviva solo per imparare. La rete è piccola e i
+suoi pesi sono quelli iniziali, salvati in un file tenuto in memoria al posto
+di quello che l'addestramento lascerebbe su disco: la risposta non vuol dire
+niente, conta il percorso che la produce.
 
-```{code-block} python
-:class: pt-non-eseguibile
+```python
+import io
 
 import torch
+import torch.nn as nn
+
+
+class MiaRete(nn.Module):  # la stessa classe usata in addestramento
+    def __init__(self):
+        super().__init__()
+        self.strati = nn.Sequential(
+            nn.Linear(4, 16), nn.BatchNorm1d(16), nn.ReLU(), nn.Dropout(0.2),
+            nn.Linear(16, 3),
+        )
+
+    def forward(self, x):
+        return self.strati(x)
+
+
+def preprocessa(richiesta: dict) -> torch.Tensor:
+    """Dal JSON al tensore d'ingresso: un batch di una riga sola."""
+    return torch.tensor([richiesta["x"]], dtype=torch.float32)
+
+
+# al posto del file "pesi.pt" lasciato dall'addestramento, un file in memoria
+torch.manual_seed(0)
+file_pesi = io.BytesIO()
+torch.save(MiaRete().state_dict(), file_pesi)
+file_pesi.seek(0)
 
 # Caricamento UNA VOLTA all'avvio del servizio, non a ogni richiesta
-modello = MiaRete()                        # la classe nn.Module usata in addestramento
-modello.load_state_dict(torch.load("pesi.pt", map_location="cpu"))
-modello.eval()                             # modalità inferenza: niente dropout, BatchNorm congelata
+modello = MiaRete()
+modello.load_state_dict(torch.load(file_pesi, map_location="cpu"))
+modello.eval()             # inferenza: niente dropout, BatchNorm congelata
 
-@torch.no_grad()                           # niente autograd: meno memoria, più veloce
+
+@torch.no_grad()           # niente autograd: meno memoria, più veloce
 def predici(richiesta: dict) -> dict:
-    x = preprocessa(richiesta)             # dal JSON al tensore d'ingresso (batch di 1)
-    logit = modello(x)                     # forward: logit grezzi, come in PyTorch
-    prob = torch.softmax(logit, dim=1)     # logit -> probabilità
+    x = preprocessa(richiesta)
+    logit = modello(x)     # forward: logit grezzi, come in PyTorch
+    prob = torch.softmax(logit, dim=1)
     return {
         "classe": int(prob.argmax(dim=1).item()),
-        "confidenza": float(prob.max().item()),
+        "confidenza": round(float(prob.max().item()), 3),
     }
+
+
+print(predici({"x": [0.1, 0.2, 0.3, 0.4]}))
 ```
 
-Il primo gesto, caricare i pesi all'avvio, l'abbiamo già visto con l'impiegato
-che si siede una volta sola. Gli altri due sono una riga di codice ciascuno, e
-sono i due che si dimenticano più spesso.
+```text
+{'classe': 0, 'confidenza': 0.356}
+```
+
+Il primo gesto, caricare i pesi all'avvio, è quello del model server appena
+descritto. Gli altri due sono una riga di codice ciascuno, e sono i due che si
+dimenticano più spesso.
 
 `````{tab} Elementare
 
@@ -229,14 +273,21 @@ Il secondo gesto è dire alla rete che ha finito di studiare. Sembra strano
 doverglielo dire, e invece serve, perché alcuni suoi pezzi si comportano in due
 modi diversi a seconda che stiano imparando o rispondendo.
 
-Uno di questi pezzi, mentre la rete studia, ne spegne a caso dei pezzetti a
-ogni ripetizione: è un trucco d'allenamento, serve a non farle imparare le
-risposte a memoria, come un insegnante che copre a caso qualche riga del testo.
-Un altro si regola guardando il gruppo di esempi che ha davanti, e con un
-esempio solo non saprebbe che pesci pigliare: quando risponde deve smettere di
-guardarsi intorno e usare la media che ha messo da parte studiando. Se nessuno
-gli dice che l'allenamento è finito, quei pezzi continuano a comportarsi da
-studenti, e le risposte escono sbagliate senza che niente segnali l'errore.
+Il primo di questi pezzi, mentre la rete studia, spegne a caso una parte dei
+suoi neuroni a ogni ripetizione: è un trucco d'allenamento, il *dropout*,
+e serve a non farle imparare le risposte a memoria, come un insegnante che
+copre a caso qualche riga del testo. Quando la rete risponde, invece, deve
+usarli tutti.
+
+Il secondo, la *BatchNorm*, riporta su una scala comune i numeri che lo
+attraversano, e per farlo guarda il gruppo di esempi che ha davanti: ne
+calcola la media e di quanto si sparpagliano. Studiando, intanto, tiene da parte
+una media di quelle medie, raccolta su tutto l'allenamento. Quando risponde ha
+davanti un esempio solo, di cui non ha senso fare la media, e deve usare quella
+messa da parte. Se nessuno gli dice che l'allenamento è finito, fa due danni:
+calcola la scala su un gruppo che non c'è, e continua ad aggiornare la sua
+media con le domande che arrivano, così che il modello cambia un po' a ogni
+richiesta. Le risposte escono sbagliate senza che niente segnali l'errore.
 
 Il terzo gesto è spegnere il taccuino. Mentre impara, la rete annota ogni
 singola operazione che fa, perché le servirà per tornare indietro e correggersi.
@@ -257,6 +308,10 @@ solo predizioni sbagliate. L'errore si fa sentire solo quando per canale resta
 un valore solo (una `BatchNorm1d` su un batch di uno, o una `BatchNorm2d` su
 mappe $1\times1$ con un batch di uno): lì la statistica del batch non descrive
 più niente e il modulo si rifiuta di calcolarla; il dropout invece tace sempre.
+E in modalità di addestramento la BatchNorm aggiorna anche `running_mean` e
+`running_var` con i dati di produzione, perfino dentro `torch.no_grad()`, che
+spegne i gradienti e non le statistiche: il modello in memoria si sposta a ogni
+richiesta, e smette di essere quello che è stato validato.
 
 La seconda, `torch.no_grad()`, disattiva la costruzione del grafo delle
 operazioni che l’*autograd* userebbe per la retropropagazione. In inferenza
@@ -289,6 +344,16 @@ mazzetto e lo passa al modello in un colpo solo. Chi era arrivato per primo
 aspetta quei pochi millisecondi in più; in cambio, nello stesso secondo, il
 sistema ne serve molte di più.
 
+Il batching dinamico ha anche un prezzo che non si vede nei tempi. Il modo in
+cui una libreria somma i numeri dipende dalla forma dei dati che le arrivano,
+e la forma qui la decide quante richieste capitano nello stesso mazzetto:
+due chiamate identiche, finite in mazzetti diversi, possono differire nelle
+ultime cifre {cite}`he2025nondeterminism`. È la ripetibilità bit a bit a cui
+{doc}`Dal notebook alla produzione </MLOps/dal-notebook-alla-produzione>`
+diceva che il servizio rinuncia. Per i modelli che generano testo, poi, il
+mazzetto non si chiude e si riapre a ogni richiesta, ma si ricompone a ogni
+token: è il *continuous batching* di {doc}`LLMOps </MLOps/llmops>`.
+
 La seconda leva è ridurre la precisione dei numeri, cioè scriverli con meno
 cifre. Dentro un calcolatore ogni informazione è fatta di cifre binarie, i
 *bit*, che valgono zero o uno, e un numero con la virgola di solito ne occupa
@@ -296,24 +361,29 @@ trentadue. Scendendo a sedici (è la scrittura che il capitolo PyTorch chiamava
 `float16`, e usarla per una parte dei conti e non per tutti è la *precisione
 mista* che là serviva ad addestrare più in fretta) si dimezza lo spazio
 occupato, e con esso la quantità di byte da far scorrere fra memoria e
-processore: i numeri restano tanti quanti erano, sono più corti. Ed è proprio
-lo scorrere dei byte, quasi sempre, il vero collo di bottiglia. Si perde
-qualche cifra dopo la virgola, ed è quasi gratis.
+processore: i numeri restano tanti quanti erano, sono più corti. Con mazzetti
+piccoli è proprio lo scorrere dei byte il collo di bottiglia, e dimezzarli
+dimezza quasi il tempo; con mazzetti grandi il limite diventa il calcolo, e il
+guadagno si riduce. Il prezzo è qualche cifra dopo la virgola, e con `float16`
+anche un pezzo di intervallo: il numero più grande che si scrive è $65\,504$, e
+dove i valori lo superano si usa il `bfloat16` del capitolo PyTorch, che tiene
+l'intervallo dei trentadue bit e rinuncia a qualche cifra in più.
 
 La terza leva spinge oltre, fino agli interi: la quantizzazione a
 `int8` {cite}`jacob2018quantization`. I suoi guadagni non si sommano a quelli
-della seconda leva, perché è la stessa manopola girata più in là: si decide
-quanti bit dare a ogni numero, e il conto si fa sempre rispetto ai trentadue di
-partenza, sedici bit due volte più leggeri, otto bit quattro volte. Col batching
-invece sì, perché mazzetti più grandi e numeri più corti sono due guadagni
-indipendenti.
+della seconda leva, perché è la stessa leva spinta più in là: in tutte e due si
+decide quanti bit dare a ogni numero, e il conto si fa sempre rispetto ai
+trentadue di partenza, sedici bit due volte più leggeri, otto bit quattro
+volte. Con quelli del batching, invece, si combinano, perché mazzetti più
+grandi e numeri più corti sono due guadagni indipendenti.
 
 `````{tab} Elementare
 
-È il trucco di quando mandi una foto su una chat: l'app la spedisce un po’
-sgranata. Non la rimpicciolisce, i pixel restano tutti al loro posto: sono i
-colori a diventare più grossolani, e a occhio quasi non si vede. In cambio
-il file pesa un quarto e parte in un lampo.
+È il trucco delle immagini GIF, quelle delle animazioni che girano nelle
+chat. Una foto normale può usare milioni di sfumature; una GIF ne sceglie
+soltanto 256, e a ogni pixel dà quella più vicina. I pixel restano tutti al
+loro posto: sono i colori a diventare più grossolani, e a occhio quasi non si
+vede. In cambio il file pesa molto meno.
 
 Quantizzare un modello è la stessa idea applicata ai suoi numeri: restano
 tutti, ma ciascuno è scritto peggio. Un peso può valere qualunque numero, con
@@ -322,9 +392,12 @@ soltanto 256, come i gradini di una scala. Il 256 non è scelto a caso: le
 macchine maneggiano i bit a gruppi di otto, e con otto bit si scrivono
 $2^8 = 256$ valori diversi. Ogni peso sale sul gradino più vicino, e al suo
 posto si scrive il numero del gradino, che è un intero piccolo. Della scala
-vanno segnate due cose, o non la si sa più rileggere: quanto è alto un gradino
-e quale gradino vale zero, perché i pesi scendono anche sotto. Nessun peso si
-sposta più di mezzo gradino: quello è tutto l'errore che si fa.
+vanno segnate due cose, o non la si sa più rileggere: quanto è alto un gradino,
+e quale gradino corrisponde allo zero. Per i pesi, che sono numeri positivi e
+negativi, lo zero si mette a metà scala; per numeri che stanno tutti da una
+parte dello zero lo si sposta in fondo, così nessun gradino resta inutilizzato.
+Nessun peso si sposta più di mezzo gradino: quello è tutto l'errore che si
+fa.
 
 Ogni numero passa da trentadue bit a otto: quattro volte più leggero, spesso
 molto più veloce, un pizzico meno preciso.
@@ -344,12 +417,12 @@ quanto cali si scopre soltanto misurandolo su quel modello lì.
 
 La forma più economica è la **quantizzazione post-training** (*PTQ*): si prende
 un modello già addestrato in `float32` e se ne convertono i pesi in interi,
-senza riaddestrare. Il meccanismo (la mappa affine $r = S(q - Z)$ fra il numero
-reale $r$ e l'intero $q$, con $S$ la larghezza di un gradino e $Z$ il livello
-che rappresenta lo zero; l'errore limitato a mezzo gradino; e soprattutto il
-fatto che
-la larghezza del gradino la detti l'elemento più grande fra quelli che
-condividono la scala) è costruito per esteso in
+senza riaddestrare. Il meccanismo (la mappa affine $\hat{w} = s\,(q - z)$ fra
+l'intero $q$ e il valore reale ricostruito $\hat{w}$, con $s$ la larghezza di
+un gradino e $z$, lo *zero-point*, il livello che rappresenta lo zero; l'errore
+limitato a mezzo gradino; e soprattutto il fatto che la larghezza del gradino la
+dettino gli elementi più estremi fra quelli che condividono la scala) è
+costruito per esteso in
 {doc}`Meno bit </Efficienza/meno-bit>`
 {cite}`jacob2018quantization`, insieme alle due conseguenze che qui si danno
 per acquisite: che la granularità della scala sia la leva più economica, e
@@ -379,13 +452,15 @@ torch.onnx.export(modello, (esempio,), "modello.onnx")  # lo stesso, in ONNX
 
 La `quantize_dynamic` è la variante più indolore (nessun dato di calibrazione
 richiesto, adatta agli strati lineari), e va usata sapendo due cose. La prima è
-che sui pesi PyTorch adotta lo schema **simmetrico**, cioè quello con lo
-zero-point fissato a zero (sulle attivazioni, quantizzate al volo, no): è il
-caso particolare della mappa affine, quello in cui la scala basta da sola, ed è
-anche la forma su cui il capitolo sull’efficienza costruisce tutto il
-meccanismo. La seconda è che quell'API è dichiarata in uscita (il messaggio di
-deprecazione rimanda a `torchao` e alla sua `quantize_`), quindi è materia da
-ricontrollare a ogni aggiornamento invece che da imparare a memoria.
+che usa le due forme della mappa insieme. I pesi, in `int8` con segno, hanno
+$z = 0$: è la forma *simmetrica*, il caso particolare in cui la scala basta da
+sola e che {doc}`Meno bit </Efficienza/meno-bit>` sviluppa per il resto del suo
+percorso. Le attivazioni invece si quantizzano al volo in interi senza segno,
+con $s$ e $z$ ricalcolati su ogni batch dal suo minimo e dal suo massimo: è la
+forma *asimmetrica*, che non spreca livelli quando i valori stanno quasi tutti
+da una parte dello zero. La seconda è che quell'API è dichiarata in uscita (il
+messaggio di deprecazione rimanda a `torchao` e alla sua `quantize_`), quindi è
+materia da ricontrollare a ogni aggiornamento invece che da imparare a memoria.
 
 Sull'esportazione, invece, è cambiato il rapporto fra i due strumenti.
 `torch.export` cattura il grafo del modello staccandolo dal codice Python che
@@ -421,8 +496,9 @@ cinque minuti, e se si sfora il biglietto viene rimborsato.
 
 La prima è la grandezza che si misura, e in gergo si chiama **SLI**,
 *Service Level Indicator*. Sceglierla è già una decisione: la latenza media è
-un indicatore legittimo ed è quello sbagliato, per una ragione che arriva fra
-poco, e al suo posto si prende il tempo entro cui risponde la stragrande
+un indicatore legittimo e di solito quello sbagliato, perché nasconde la coda,
+cioè i pochi casi lenti, che sono proprio quelli che l'utente nota. Al suo
+posto si prende un *percentile* alto, il tempo entro cui risponde la stragrande
 maggioranza delle richieste, per esempio il 99%.
 
 La seconda è il bersaglio che i tecnici si danno da soli su quella
@@ -433,9 +509,9 @@ La terza è il contratto firmato con il cliente, che su quel bersaglio si
 appoggia e stabilisce il rimborso se la promessa salta: lo **SLA**, *Service
 Level Agreement*.
 
-Qui parliamo dello SLO, del bersaglio che il team si dà, e il punto delicato è
-proprio quale grandezza mettere nel mirino: la media, come indicatore, è una
-bugia gentile.
+Fra le tre, quella su cui il team lavora ogni giorno è lo SLO, e un buon SLO
+tiene insieme le due grandezze, quanto si fa aspettare chi chiede e quanti se
+ne servono ({numref}`fig-latenza-throughput`).
 
 ```{figure} ../figures/latency-vs-throughput.svg
 :name: fig-latenza-throughput
@@ -462,34 +538,36 @@ il modello a rispondere una volta che alla richiesta è arrivato il turno. Ma
 ciò che l'utente vive è l'attesa in fila sommata al servizio, e la fila non
 compare nella curva.
 
-Prendiamo un forno, stavolta di giorno, col negozio aperto e la gente in fila
-davanti al bancone: il lavoro pianificato di notte serve apposta a non far
-aspettare nessuno, qui invece l'attesa è tutto il problema. E con dei numeri.
-Un'infornata da una pagnotta sola richiede mezz'ora, quindi il forno ne sforna
-due all'ora; una da cento richiede quaranta minuti, un po’ di più, ma di
-pagnotte ne consegna centocinquanta all'ora. Adesso mettiamo che i clienti che
-entrano nel negozio siano sessanta all'ora.
+Con la fila nel conto le situazioni sono tre. Finché la capacità del servizio
+non copre il carico, cioè finché le richieste arrivano più in fretta di quanto
+escano, la fila cresce senza limite, e ingrandire il mazzetto migliora tutte e
+due le grandezze: alza il throughput e accorcia l'attesa. Quando la capacità ha
+superato il carico comincia il compromesso vero: un mazzetto più grande serve
+qualcosa in più e fa aspettare qualcosa in più. Nel tratto piatto della curva,
+infine, la capacità non cresce più e si allunga soltanto l'attesa. È anche la
+ragione per cui in un servizio molto sollecitato il batching dinamico non è un
+lusso: spesso è l'unica configurazione stabile.
+
+`````{tab} Elementare
+
+Prendiamo il forno del panificio, stavolta di giorno, col negozio aperto e la
+gente in fila davanti al bancone: il pane della notte serve apposta a non far
+aspettare nessuno, qui invece l'attesa è tutto il problema. Un'infornata da una
+pagnotta sola richiede mezz'ora, quindi il forno ne sforna due all'ora; una da
+cento richiede quaranta minuti, un po’ di più, ma di pagnotte ne consegna
+centocinquanta all'ora. I clienti che entrano nel negozio sono sessanta
+all'ora.
 
 Con il forno da una pagnotta la fila non smette mai di allungarsi: entrano
 sessanta persone e ne escono due, quindi ogni ora ne restano dentro
 cinquantotto in più, e chi arriva alle undici aspetta più di chi è arrivato
 alle dieci, per sempre. Con il forno da cento, che ne fa centocinquanta contro
 sessanta, la fila si smaltisce e nessuno aspetta più di due infornate. La
-singola infornata è più lenta, e ciononostante tutti aspettano meno.
-
-Ci sono quindi tre situazioni, non due, e conviene tenerle distinte. Finché il
-forno non sta dietro ai clienti, ingrandire l'infornata migliora tutto: sforna
-di più *e* fa aspettare meno. Quando il forno ha superato la richiesta,
-comincia il vero compromesso: allargare ancora fa sfornare qualcosa in più e
-fa aspettare qualcosa in più, e sta a chi decide capire se lo scambio
-conviene. Ancora oltre, nel tratto piatto della curva, il forno non sforna più
-niente in più e si continua solo ad aspettare: lì non si scambia niente, si
-perde e basta.
-
-È anche la ragione per cui in un servizio molto sollecitato il batching dinamico
-non è un lusso: spesso è l'unica configurazione stabile.
-
-`````{tab} Elementare
+singola infornata è più lenta, e ciononostante tutti aspettano meno. Finché il
+forno non sta dietro ai clienti, insomma, ingrandire l'infornata migliora tutto;
+quando ci sta dietro, allargarla ancora fa sfornare qualcosa in più e aspettare
+qualcosa in più, e sta al fornaio decidere se lo scambio conviene; e oltre una
+certa misura il forno non sforna più niente in più, e si aspetta e basta.
 
 Alla posta, su cento clienti, ottanta escono dall’ufficio due minuti dopo
 esserci entrati, quindici ci mettono dieci minuti e cinque restano impantanati
@@ -506,23 +584,26 @@ dieci minuti», ed è una frase verificabile, perché gli ottanta in due minuti
 più i quindici in dieci fanno novantacinque. Restano fuori i cinque sfortunati,
 e sono loro il problema del direttore dell'ufficio: potrebbe aprire dieci
 sportelli e far uscire tutti in due minuti, e non lo fa perché dieci impiegati
-costano.
+costano. Quei cinque su cento sono anche il suo margine: finché la settimana ne
+lascia fuori meno, può permettersi di provare una novità allo sportello; quando
+li ha già spesi tutti, smette di provare e sistema quello che c'è.
 
 Quei cinque pesano più di quanto sembri, perché una pratica raramente si sbriga
 a uno sportello solo. Se per finirla ne servono tre, basta che uno sia di
 quelli lenti: con cinque lenti su cento per sportello, che vadano bene tutti e
 tre capita a ottantasei persone su cento ($0{,}95$ moltiplicato per sé stesso
-tre volte), e le altre quattordici ne incontrano almeno uno.
+tre volte), e le altre quattordici ne incontrano almeno uno. Con i modelli
+succede lo stesso, perché una richiesta passa quasi sempre per più servizi (chi
+legge i dati, chi calcola le feature, chi fa la predizione), e i tre sportelli
+sono loro.
 
-Con i modelli è identico: si promette non il tempo medio, ma il tempo entro cui
-risponde la *stragrande maggioranza*. Il cliente scontento sta nel gruppetto
-lento.
-
-Quel «novantacinque su cento entro dieci minuti» ha un nome: si chiama
-percentile. La **p95** è il tempo entro cui è servito il 95% delle
-richieste, cioè il caso peggiore su venti; la **p99** è il caso peggiore su
-cento. Quale dei due mettere nel mirino è una scelta di severità: la p99 è più
-difficile da rispettare, perché lascia fuori cinque volte meno gente della p95.
+Per questo, con i modelli, si promette non il tempo medio ma il tempo entro cui
+risponde la *stragrande maggioranza*, e quel «novantacinque su cento entro dieci
+minuti» ha un nome: si chiama percentile. La **p95** è il tempo entro cui è
+servito il 95% delle richieste: su venti richieste, una sola ci mette di più.
+La **p99** lascia fuori una richiesta su cento. Quale dei due mettere nel mirino
+è una scelta di severità: la p99 è più difficile da rispettare, perché lascia
+fuori cinque volte meno gente della p95.
 
 `````
 
@@ -533,7 +614,11 @@ Si descrive la latenza con i suoi percentili, non con la media. La p50
 p99 i tempi entro cui ne risponde il 95% e il 99%. La *coda* della
 distribuzione, la p99, la p99.9: è ciò che governa l'esperienza reale sotto
 carico, perché in un sistema che compone più servizi anche una piccola
-frazione di richieste lente si propaga e degrada l'insieme. Uno SLO serio si
+frazione di richieste lente si propaga e degrada l'insieme. Se una richiesta
+attraversa $k$ chiamate indipendenti, ciascuna lenta con probabilità $p$, è
+lenta con probabilità $1-(1-p)^k$: con $p = 0{,}05$ e $k = 3$ è il 14%, con
+$p = 0{,}01$ e $k = 100$ chiamate in parallelo il 63% {cite}`dean2013tail`. Uno
+SLO serio si
 scrive sui percentili alti: «p99 sotto i 200 ms», non «latenza media 80 ms»,
 che nasconde la coda. Uno SLO del $99{,}9\%$ definisce anche il suo
 complemento, il **budget d'errore**: $1 - 0{,}999$ degli eventi della finestra
@@ -548,33 +633,37 @@ sull'affidabilità.
 Il secondo numero da promettere è il throughput sostenibile (richieste al
 secondo), e lo lega alla latenza la legge di Little, $L = \lambda W$: il numero
 medio di richieste nel sistema è il tasso d'arrivo per il tempo medio di
-permanenza, qualunque sia la distribuzione (è la stessa legge del
-{doc}`capitolo sulle GPU </GPU/overview>`). Con arrivi poissoniani e un
-servente esponenziale di tasso $\mu$ (la coda M/M/1) il tempo di permanenza è
-esponenziale di parametro $\mu-\lambda$, quindi $W = 1/(\mu-\lambda)$ e
+permanenza, qualunque sia la distribuzione (è la stessa legge del {doc}`capitolo
+sulle GPU </GPU/overview>`), purché il sistema sia stabile. Con arrivi
+poissoniani, un servente solo esponenziale di tasso $\mu$ e la fila servita in
+ordine d'arrivo (la coda M/M/1 FIFO) il tempo di permanenza è esponenziale di
+parametro $\mu-\lambda$, quindi $W = 1/(\mu-\lambda)$ e
 $p_{99} = \ln(100)\,W \approx 4{,}6\,W$, che vale solo se
 $\rho = \lambda/\mu < 1$. A $\mu = 100$ richieste al secondo, $W$ passa da 20 ms
 a $\lambda=50$, a 100 ms a $\lambda=90$, a un secondo a $\lambda=99$: la latenza
 cresce piano finché il carico è basso, esplode vicino a $\rho=1$, e oltre non
-esiste più. Il batching esce da questo modello, perché il servente lavora a
-mazzi, e tira in due versi: alza la capacità, cioè $\mu$, che allontana il
-muro, e fa aspettare ogni richiesta finché il suo mazzo non è pieno e poi per
-tutta la sua durata. Finché la capacità non copre il carico vince il primo
-effetto, e un mazzo più grande migliora tutte e due le grandezze; oltre quel
-punto vince il secondo, ed è lì che batch più grandi alzano il throughput ma
-allungano la p99 (sono le tre situazioni del forno). Il terzo è
-economico, il **costo per richiesta** (tempo di calcolo moltiplicato per il
-prezzo orario dell'hardware) che spesso è il vero vincolo di progetto: un
-modello che rispetta lo SLO ma costa dieci volte troppo per richiesta non è
-dispiegabile
-{cite}`huyen2022designing`.
+esiste più. Il batching cambia modello, perché il servente lavora a mazzi (è una
+coda a servizio di gruppo), e tira in due versi: alza la capacità, cioè $\mu$,
+che allontana il muro, e fa aspettare ogni richiesta finché il suo mazzo non è
+pieno e poi per tutta la sua durata. Finché la capacità non copre il carico
+vince il primo effetto, e un mazzo più grande migliora tutte e due le grandezze;
+oltre quel punto vince il secondo, ed è lì che batch più grandi alzano il
+throughput ma allungano la p99 (sono le tre situazioni della curva). Il terzo
+numero è economico, il **costo per richiesta**, che spesso è il vero vincolo di
+progetto. Con il batching una richiesta non occupa l'hardware da sola, quindi il
+suo costo è il prezzo orario diviso per le richieste servite in un'ora,
+$c = \text{prezzo orario}/(3600\,X)$ con $X$ il throughput in richieste al
+secondo; moltiplicare il prezzo per il tempo di calcolo della singola richiesta
+lo sovrastimerebbe di un fattore pari alla taglia del mazzo. È per questo che il
+batching lo abbassa. Un modello che rispetta lo SLO ma costa dieci volte troppo
+per richiesta non si può mettere in produzione {cite}`huyen2022designing`.
 
 `````
 
 C'è infine una cautela che riguarda *come* si sostituisce un modello con uno
 nuovo, senza rompere niente. Non si spegne la versione vecchia e si accende la
-nuova sperando bene: si procede per gradi, e i gradi sono tre, in ordine di
-quanto si sta esponendo il pubblico.
+nuova sperando bene: si procede per passi, prima due gradi di esposizione del
+pubblico e poi un confronto.
 
 Il primo grado non espone nessuno. In modalità *shadow*, cioè «in ombra», la
 nuova versione riceve una copia delle richieste vere e produce le sue risposte,
@@ -586,8 +675,10 @@ risponde davvero, ma solo a una piccola frazione delle richieste, e la quota si
 allarga solo se i numeri tengono; il nome viene dal canarino che i minatori
 portavano sottoterra per accorgersi del gas prima degli uomini.
 
-Il terzo grado espone metà. Un test *A/B* divide gli utenti in due gruppi e
-misura su richieste vere quale delle due versioni funziona meglio.
+Il terzo passo è un esperimento. Un test *A/B* assegna gli utenti a caso alle
+due versioni, nelle proporzioni scelte, e confronta una metrica fissata in
+anticipo. Shadow e canary dicono se la versione nuova si può servire senza
+danni; l'A/B dice se è migliore.
 
 Le tre tornano in {doc}`Sorvegliare un modello vivo
 </MLOps/monitoring-e-drift>`, dove si vede a quale domanda risponde ciascuna. È
@@ -605,23 +696,28 @@ misurare prima di fidarsi.
   sapere che cosa c'è dietro. E l'impiegato allo sportello si siede una volta
   sola la mattina: i pesi si caricano all'avvio del servizio, non a ogni
   richiesta.
-- Perché lo sportello funzioni uguale ovunque, il modello si chiude in una
-  scatola sigillata con dentro tutto quello che gli serve (l’immagine); una
-  sua copia in funzione (il container) è usa e getta, e ciò che deve
+- Perché dietro lo sportello giri lo stesso software su ogni macchina, il
+  modello si chiude in una scatola sigillata con dentro tutto quello che gli
+  serve (l’immagine), tranne il nucleo del sistema operativo e l'hardware;
+  una sua copia in funzione (il container) è usa e getta, e ciò che deve
   sopravvivere si tiene fuori.
 - Per andare più veloci: servire più richieste in un colpo solo, scrivere i
   numeri con meno cifre, e al limite arrotondarli ai 256 gradini di una scala
-  (la quantizzazione, come l'app che manda la foto un po’ sgranata senza
-  toglierle un pixel). Quattro volte più leggero, un pizzico meno preciso, da
+  (la quantizzazione, come una GIF che usa 256 colori invece di milioni senza
+  togliere un pixel). Quattro volte più leggero, un pizzico meno preciso, da
   misurare ogni volta.
+- Servire a mazzi fa aspettare di più ogni singola richiesta, ma finché il
+  servizio non sta dietro alle richieste fa aspettare tutti di meno, come il
+  forno che con l'infornata grande smaltisce la fila.
 - Non si promette il tempo medio di risposta, che non lo vive quasi
   nessuno: si promette il caso quasi peggiore, «il 95% entro dieci minuti».
   Quel numero si chiama percentile, e il cliente scontento è quello del
   gruppetto lento, non quello medio.
 - Una versione nuova non si accende di colpo per tutti, ma per gradi: prima la
   si fa girare in ombra, senza servirne le risposte a nessuno; poi la si fa
-  provare a pochi; e infine si dividono gli utenti in due gruppi, si dà a
-  ciascun gruppo una versione diversa, e si guarda quale va meglio.
+  provare a pochi. E per sapere se è davvero migliore si tirano a sorte gli
+  utenti, si dà a ciascun gruppo una versione diversa, e si guarda quale va
+  meglio.
 ```
 `````
 
@@ -634,19 +730,23 @@ misurare prima di fidarsi.
   {cite}`huyen2022designing`.
 - Nel serving online il modello vive dietro un endpoint gestito da un model
   server che carica i pesi una volta sola; il container Docker congela
-  l'ambiente e lo rende riproducibile {cite}`kreuzberger2023machine`.
+  l'ambiente e lo rende riproducibile {cite}`kreuzberger2023machine` sugli host
+  con la stessa architettura di CPU, mentre kernel e driver della GPU restano
+  quelli dell'host.
 - Lo scheletro d'inferenza corretto in PyTorch è: `load_state_dict` all'avvio,
-  `model.eval()` (per *dropout* e *BatchNorm*), `torch.no_grad()` per non costruire
+  `model.eval()` (per *dropout* e *BatchNorm*, che in modo train aggiornerebbe
+  le sue medie con i dati di produzione), `torch.no_grad()` per non costruire
   il grafo del backward.
 - Le leve per accelerare sono il batching dinamico, la riduzione di
   precisione (`float16`, come nel capitolo PyTorch) e la quantizzazione a
-  `int8` con la mappa affine $r = S(q - Z)$, cioè scala e livello dello zero
-  {cite}`jacob2018quantization`: circa 4× di memoria in meno sui pesi che si
-  quantizzano (con `quantize_dynamic` e i soli `nn.Linear`, su una rete mista
-  il guadagno complessivo è molto minore), al prezzo di un piccolo calo di
-  accuratezza, da
-  misurare sempre. La scala per canale costa una manciata di scalari per
-  strato ed evita che un solo canale anomalo allarghi il gradino di tutti.
+  `int8` con la mappa affine $\hat{w} = s\,(q - z)$, cioè scala e livello
+  dello zero {cite}`jacob2018quantization` (in `quantize_dynamic`, $z = 0$ sui
+  pesi e $z$ ricalcolato a ogni batch sulle attivazioni): circa 4× di memoria
+  in meno sui pesi che si quantizzano (con i soli `nn.Linear`, su una rete
+  mista il guadagno complessivo è molto minore), al prezzo di un piccolo calo
+  di accuratezza, da misurare sempre. La scala per canale costa una manciata
+  di scalari per strato ed evita che un solo canale anomalo allarghi il
+  gradino di tutti.
 - L'esportazione stacca il modello dal codice che l'ha addestrato:
   `torch.export` cattura il grafo, e da PyTorch 2.9 l'esportatore ONNX passa
   di lì invece di essere la sua alternativa (serve `onnxscript`, che non è più
@@ -660,7 +760,8 @@ misurare prima di fidarsi.
   capacità copre il carico: sotto quel punto la coda è instabile, e batch più
   grandi migliorano tutte e due le grandezze insieme.
 - Le nuove versioni si rilasciano per gradi di esposizione (*shadow*, che
-  non serve nessuno; *canary*, che serve pochi; A/B, che divide il traffico a
-  metà) per non rompere niente in produzione.
+  non serve nessuno; *canary*, che serve pochi) per non rompere niente in
+  produzione; l'A/B, che confronta due versioni su gruppi di utenti assegnati
+  a caso, risponde a un'altra domanda, cioè quale delle due sia migliore.
 ```
 `````

@@ -12,19 +12,19 @@
 :alt: Due figure a un tavolino: una dipinge un quadro, l'altra lo esamina con una lente d'ingrandimento.
 ```
 
-L'idea delle GAN è nata, dice la leggenda (perché ormai è
-una leggenda), in un bar di Montréal, «Les 3 Brasseurs», nel 2014. Ian
-Goodfellow, dottorando nel laboratorio di Yoshua Bengio, festeggia con alcuni
-colleghi. Gli raccontano a che cosa stanno lavorando: vogliono una rete che
-generi fotografie realistiche, e il loro metodo è misurare a una a una le
-regolarità delle immagini vere (quanto spesso due pixel vicini hanno lo stesso
-colore, quali sfumature si accompagnano a quali) per poi costruire un'immagine
-nuova che le rispetti tutte. Il lavoro non finisce mai, perché le regolarità
-sono troppe, e lì si sono arenati. Goodfellow obietta che così non
-funzionerà, ma tornando a casa gli viene un'idea diversa: e se invece di una
-rete sola ne mettessi *due*, una a fabbricare immagini e una a smascherarle, e
-le facessi combattere? Quella notte scrive il codice. Funziona quasi al primo
-colpo. Ne esce l'articolo *Generative Adversarial Nets*
+L'idea delle GAN nasce in un bar di Montréal, «Les 3 Brasseurs», una sera del
+2014, e a raccontarla è stato lo stesso Ian Goodfellow
+{cite}`giles2018ganfather`. Dottorando nel laboratorio di Yoshua Bengio, sta
+festeggiando un collega che ha appena discusso la tesi, e alcuni amici gli
+chiedono aiuto: vogliono un programma che crei fotografie da sé, e il loro
+metodo è un'analisi statistica degli elementi che compongono una fotografia
+(quanto spesso due pixel vicini hanno lo stesso colore, quali sfumature si
+accompagnano a quali), da cui costruire un'immagine nuova che li rispetti
+tutti. Sarebbe una mole di calcoli senza fine, e Goodfellow obietta che così
+non funzionerà; ma intanto gli viene un'idea diversa: e se invece di una rete
+sola se ne mettessero *due*, una a fabbricare immagini e una a smascherarle, e
+le si facesse combattere? Tornato a casa scrive il codice fino a notte fonda, e
+funziona al primo colpo. Ne esce l'articolo *Generative Adversarial Nets*
 {cite}`goodfellow2014generative`:
 *generative adversarial networks*, alla lettera reti generative avversarie,
 cioè reti che fabbricano qualcosa e che imparano a farlo sfidandosi.
@@ -35,23 +35,22 @@ Abbiamo già incontrato reti che *producono* qualcosa: un modello
 linguistico scrive la parola dopo, un sintetizzatore legge un testo ad alta
 voce. Tutte e due, mentre imparavano, avevano accanto la risposta
 giusta: la parola che veniva davvero dopo, l'onda che quella frase aveva
-davvero. Nel sintetizzatore, e prima ancora nei {doc}`codec neurali
-</Audio/codec-neurali>`, lavorava già anche un falsario sorvegliato da un
-esperto, ma lì l'esperto si aggiungeva al confronto con l'originale e non ne
-prendeva il posto. Chi deve disegnare un gatto mai esistito non ce l'ha e non
-può
-averla: non c'è nessun originale da mettere accanto al risultato per vedere,
-punto per punto, di quanto ci si è allontanati. La domanda di questo capitolo è
+davvero. Nel sintetizzatore vocale, e prima ancora nei {doc}`codec neurali
+</Audio/codec-neurali>`, c'era già una seconda rete addestrata a riconoscere i
+falsi, ma lavorava accanto al confronto con l'onda vera, non al suo posto. Chi
+deve disegnare un gatto mai esistito, invece, una risposta giusta non ce l'ha e
+non può averla: non c'è nessun originale da mettere accanto al risultato per
+vedere, punto per punto, di quanto ci si è allontanati. La domanda delle GAN è
 proprio questa: come si insegna a una rete a fabbricare dati nuovi e
 plausibili quando non c'è niente con cui confrontarli.
 
-Una risposta il libro l'ha appena data, ed è quella del {doc}`capitolo sui modelli
-latenti </ModelliLatenti/overview>`: si scrive una formula che dice quanto è
-probabile un dato come questo, si rinuncia a calcolarla esattamente, e si fa
-salire quel poco che se ne riesce a calcolare. Questo capitolo prende la strada
-opposta, ed è la scelta che spiega tutto il resto: qui quella formula non si
-scrive affatto, e al suo posto si mette qualcuno che guarda il risultato e dice
-se ci crede.
+Una risposta l'ha appena data il {doc}`capitolo sui modelli latenti
+</ModelliLatenti/overview>`: si scrive la verosimiglianza
+$p_\theta(\mathbf{x})$, cioè quanto il modello trova probabile un dato, e
+siccome calcolarla esattamente non si può, se ne fa salire un limite inferiore,
+l'ELBO. Le GAN prendono la strada opposta, ed è la scelta che spiega tutto il
+resto: qui una verosimiglianza non si scrive affatto, e al suo posto si mette
+una seconda rete che guarda il risultato e dice se ci crede.
 
 `````{tab} Elementare
 
@@ -61,45 +60,48 @@ gatto che non è mai esistito: un gatto che nessuna macchina fotografica ha mai
 ripreso. Non ha imparato a mettere un'etichetta: ha imparato la "ricetta" di
 che aspetto ha una foto di gatto, e può cucinarne di nuove all'infinito.
 
-I numeri casuali sono la sua materia prima. Sono una manciata (un centinaio, di
-solito), e glieli diamo noi tirandoli a sorte, quasi tutti piccoli e vicini
-allo zero, con qualcuno più grosso ogni tanto. Che debbano essere diversi
-ogni volta si capisce: ad addestramento finito la rete non cambia più, resta
-quella, e quei numeri sono l'unica cosa che la distingue da una richiesta
-all'altra. È da lì che viene la varietà: numeri diversi in ingresso, gatti
-diversi in uscita.
+I numeri casuali sono la sua materia prima: una manciata (un centinaio, di
+solito), tirati a sorte, quasi tutti piccoli e vicini allo zero e qualcuno più
+grosso ogni tanto. Ad addestramento finito la rete non cambia più, e quei
+numeri sono l'unica cosa che distingue una richiesta dall'altra: numeri diversi
+in ingresso, gatti diversi in uscita.
 
-Che debbano essere a sorte, e non scelti da noi, è una faccenda diversa.
-Durante l'addestramento alla rete arrivano solo manciate sorteggiate così, e
-lei impara a cavarsela dove quelle manciate cadono. Una manciata scelta a mano
-(i numeri tutti uguali, o in fila 1, 2, 3…) cade quasi sempre lontano, in un
-territorio dove la rete non è mai stata, e quello che ne esce non ha nessuna
-ragione di somigliare a un gatto. È la stessa terra mai battuta in cui finivano
-le schede pescate a caso dalla clessidra, nel capitolo sui modelli latenti, e il
-sorteggio sempre uguale è lo stesso vocabolario comune che là rimetteva le cose
-a posto. Il sorteggio è un patto preso in
-addestramento, e va rispettato anche dopo.
+E devono essere tirati a sorte nello stesso modo anche dopo. In addestramento
+alla rete arrivano solo manciate sorteggiate così, e lei impara a cavarsela
+dove quelle manciate cadono. Una manciata scelta a mano (numeri tutti grandi,
+o in fila 1, 2, 3…) cade quasi sempre in un territorio dove la rete non è mai
+stata, e quello che ne esce non ha nessuna ragione di somigliare a un gatto.
 
 `````
 
 `````{tab} Superiore
 
-Un modello discriminativo apprende la probabilità condizionata $p(y \mid \mathbf{x})$
-di un'etichetta $y$ dato l'input $\mathbf{x}$. Un modello generativo apprende,
-esplicitamente o implicitamente, la distribuzione dei dati $p_{\text{dati}}(\mathbf{x})$,
-così da poterne campionare esempi nuovi. Una GAN la apprende in modo
-*implicito*: non stima una densità in forma chiusa, ma costruisce un
-campionatore $G(\mathbf{z})$ che trasforma un rumore semplice $\mathbf{z} \sim p_z$
-(tipicamente gaussiano) in campioni che l'addestramento spinge a diventare
-indistinguibili da quelli reali; la distribuzione da cui questi campioni
-provengono si indica con $p_G$.
+Un modello discriminativo apprende la probabilità condizionata $p(y \mid
+\mathbf{x})$ di un'etichetta $y$ dato l'input $\mathbf{x}$. Un modello
+generativo apprende, esplicitamente o implicitamente, la distribuzione dei dati
+$p_{\text{dati}}(\mathbf{x})$, così da poterne campionare esempi nuovi. Una GAN
+la apprende in modo *implicito*: non stima una densità in forma chiusa, ma
+costruisce un campionatore $G(\mathbf{z})$ che trasforma un rumore semplice
+$\mathbf{z} \sim p_z$ (tipicamente gaussiano) in campioni che l'addestramento
+spinge a diventare indistinguibili da quelli reali; la distribuzione da cui
+questi campioni provengono si indica con $p_G$. In generazione $\mathbf{z}$ si
+estrae dallo stesso $p_z$ dell'addestramento: $G$ è stato addestrato soltanto
+dove $p_z$ ha massa, e quando $p_z$ è la normale standard in $L$ dimensioni
+quella massa sta quasi tutta nel guscio $\lVert\mathbf{z}\rVert \approx
+\sqrt{L}$. Un $\mathbf{z}$ scelto a mano con norma molto diversa (le componenti
+$1, 2, \dots, L$, per esempio) cade dove l'uscita non è controllata.
 
 `````
 
 ## Due reti in competizione
 
-L'intuizione di Goodfellow è tutta in una metafora da tenere a mente per
-l'intero capitolo.
+Le reti sono due e si addestrano l'una contro l'altra: il generatore fabbrica
+dati, il discriminatore li giudica. Il duello si è già visto al lavoro due
+volte: nei {doc}`codec neurali </Audio/codec-neurali>`, dove un discriminatore
+costringe il decoder a produrre audio che suoni vero, e nel vocoder HiFi-GAN
+della {doc}`sintesi vocale </SpeechRecognition/sintesi-vocale>`, dove i
+discriminatori sono parecchi e ascoltano l'onda ciascuno a modo suo. Smontarlo
+serve a vedere a quali condizioni un duello del genere sta in piedi.
 
 `````{tab} Elementare
 
@@ -119,8 +121,9 @@ la stessa differenza che passa fra un professore che scrive "no" in fondo al
 compito e uno che sottolinea le righe da rifare. L'esperto di questa storia
 appartiene al secondo tipo: non dice "falso", dice "falso, e soprattutto per
 via di *questo* qui", indicando col dito, punto per punto del quadro, da che
-parte tirare. Vedremo nella prossima sezione come fa, e perché per riuscirci
-debba essere una rete e non una persona.
+parte tirare. Come faccia, e perché per riuscirci debba essere una rete e non
+una persona, lo racconta la {doc}`sezione sull'addestramento avversario
+</GAN/come-funziona>`.
 
 `````
 
@@ -157,19 +160,18 @@ Lo schema complessivo del gioco è quello di {numref}`fig-gan-gioco`.
 Il gioco avversario. Il generatore trasforma numeri casuali in un'immagine
 falsa; il discriminatore riceve immagini di tutti e due i tipi, una per volta,
 e su ciascuna emette un verdetto. Da come è arrivato al verdetto si ricava una
-correzione, che torna indietro a tutte e due le reti: all'esperto serve per
-sbagliare di meno, al falsario per farlo sbagliare di più. La correzione non è
-il verdetto ed è molto più ricca di quello, ma per capire perché bisogna
+correzione, che torna indietro a tutte e due le reti: al discriminatore serve
+per sbagliare di meno, al generatore per farlo sbagliare di più. La correzione
+non è il verdetto ed è molto più ricca di quello, ma per capire perché bisogna
 arrivare alla sezione seguente.
 ```
 
 ## Il gioco a somma zero
 
-Falsario ed esperto giocano l'uno *contro* l'altro: ciò che è un guadagno per
-il primo è una perdita per il secondo. In teoria dei giochi si chiama gioco a
-somma zero, e si tiene con un punteggio solo: c'è un tabellone unico, uno dei
-due lo vuole più alto possibile e l'altro più basso possibile, e nessuno dei
-due ha un tabellone suo su cui segnare punti per conto proprio.
+Generatore e discriminatore giocano l'uno *contro* l'altro: ciò che guadagna
+uno lo perde l'altro. In teoria dei giochi si chiama gioco a somma zero, e si
+descrive con una sola **funzione di valore**, $V(D,G)$, che il discriminatore
+vuole il più alta possibile e il generatore il più bassa possibile.
 
 `````{tab} Elementare
 
@@ -187,12 +189,14 @@ chiunque possa ottenere quando non c'è più niente da vedere, non un esperto ch
 si è arreso.
 
 Ma perché dovrebbe finire *così*, e non con l'esperto che vince sempre e il
-falsario che resta scarso per sempre? La risposta sta in un dettaglio
-dell'allenamento dell'esperto, e la sezione seguente ci torna sopra per esteso:
-ogni volta che tocca a lui, l'esperto non guarda soltanto dei falsi, guarda
+falsario che resta scarso per sempre? Perché l'esperto, quando boccia un
+quadro, dice anche dove ha visto il falso: finché fra falsi e veri resta una
+differenza da vedere, il falsario ha una strada per correggersi. E quella
+strada porta verso i quadri veri, non verso un quadro qualunque, per via di un
+dettaglio dell'allenamento dell'esperto: ogni volta che tocca a lui guarda
 anche dei quadri autentici, ed è su quelli che viene corretto. È lui il punto
-in cui la realtà entra nel gioco, e finché quel punto c'è, l'unico modo che il
-falsario ha di ingannarlo stabilmente è somigliare davvero ai quadri veri.
+in cui la realtà entra nel gioco. La corsa si ferma solo quando di differenze
+da vedere non ce ne sono più, cioè al pareggio.
 
 Quel pareggio è delicato, e si rompe in due modi. L'esperto può prendere troppo
 vantaggio, e allora il falsario non ha più modo di stargli dietro. Oppure il
@@ -204,7 +208,7 @@ tornano nella stessa sezione.
 
 `````{tab} Superiore
 
-Goodfellow formula l'addestramento come un problema minimax su una funzione
+Goodfellow formula l'addestramento come un problema minimax sulla funzione di
 valore $V(D,G)$:
 
 $$
@@ -213,13 +217,15 @@ $$
 + \mathbb{E}_{\mathbf{z}\sim p_z}\!\big[\log\big(1 - D(G(\mathbf{z}))\big)\big].
 $$
 
-Qui $\mathbf{x}\sim p_{\text{dati}}$ è un campione reale, $\mathbf{z}\sim p_z$ è il rumore in
-ingresso a $G$, $D(\mathbf{x})$ è la probabilità stimata che l'input sia autentico. Il
-discriminatore *massimizza* $V$ (assegna probabilità alta ai veri, bassa ai
-falsi $G(\mathbf{z})$); il generatore *minimizza* il secondo termine, cioè spinge
-$D(G(\mathbf{z}))$ verso $1$. All'ottimo teorico si ha
-$p_G=p_{\text{dati}}$ e $D(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei dati: l'esperto
-non sa più decidere. In pratica l'equilibrio è delicato: instabilità
+Qui $\mathbf{x}\sim p_{\text{dati}}$ è un campione reale, $\mathbf{z}\sim p_z$
+è il rumore in ingresso a $G$, $D(\mathbf{x})$ è la probabilità stimata che
+l'input sia autentico. Il primo termine è l'unico in cui compaiono i dati: è
+attraverso $D$ che $p_{\text{dati}}$ entra nel gioco, e $G$ la vede soltanto di
+riflesso. Il discriminatore *massimizza* $V$ (assegna probabilità alta ai veri,
+bassa ai falsi $G(\mathbf{z})$); il generatore *minimizza* il secondo termine,
+cioè spinge $D(G(\mathbf{z}))$ verso $1$. All'ottimo teorico si ha
+$p_G=p_{\text{dati}}$ e $D(\mathbf{x})=\tfrac{1}{2}$ sul supporto dei dati:
+l'esperto non sa più decidere. In pratica l'equilibrio è delicato: instabilità
 dell'addestramento e *mode collapse* (il generatore che produce sempre la
 stessa immagine vincente) sono i due grattacapi ricorrenti, e la sezione
 sull'addestramento avversario li riprende uno per uno.
@@ -238,29 +244,32 @@ consenso. E arriva l’arte generata, con un ritratto prodotto da una GAN battut
 all'asta da Christie's nel 2018: l'episodio, e la questione di chi ne sia
 l'autore, tornano nella sezione sulle applicazioni.
 
-Uno strumento potente e ambivalente, insomma: capace di fabbricare dataset
-(le raccolte di esempi su cui si addestrano le altre reti),
-restaurare immagini e perfino di proporre molecole nuove (anche una molecola,
-per una macchina, è un disegno con le sue regolarità), ma anche di fabbricare
-falsi convincenti. Ragione in più per capirne bene il funzionamento.
+Uno strumento potente e ambivalente, insomma: capace di fabbricare dataset (le
+raccolte di esempi su cui si addestrano le altre reti), di restaurare immagini
+e perfino di proporre molecole nuove, descritte come grafi (atomi collegati dai
+loro legami), ma anche di fabbricare falsi convincenti. Ragione in più per
+capirne bene il funzionamento.
 
 ## Il duello, e quello che ne è nato
 
-Dall'intuizione passiamo alla pratica. La sezione seguente smonta il
-meccanismo: che cosa entra e che cosa esce da ciascuna delle due reti, come si
-collegano, che cosa esattamente l'una restituisce all'altra, e come da
-quell'unico punteggio ciascuna ricavi la propria loss, cioè il conto del
-proprio errore. Poi il ciclo di addestramento a turni, scritto riga per riga in
-PyTorch, con le sue insidie: il duello che non si stabilizza, e il *mode
-collapse*, cioè il falsario che scopre un solo quadro capace di ingannare
-l'esperto e si limita a rifare sempre quello. Da lì una domanda tutt'altro che
-ovvia, come si faccia a misurare se una GAN sta funzionando, visto che la
-sua loss non lo dice.
+Dall'intuizione si passa al meccanismo. La {doc}`sezione sull'addestramento
+avversario </GAN/come-funziona>` dice che cosa entra e che cosa esce da
+ciascuna delle due reti, che cosa esattamente l'una restituisce all'altra, e
+come dalla funzione di valore ciascuna ricavi la propria loss, cioè il conto
+del proprio errore. Poi il ciclo di addestramento a turni, scritto riga per riga
+in PyTorch, con le sue insidie: il duello che non si stabilizza, e il *mode
+collapse*, il generatore che trova un solo campione capace di ingannare il
+discriminatore e si limita a rifare quello. Da lì due domande. Come si misura
+se una GAN sta funzionando, visto che la sua loss non lo dice: con l'Inception
+Score e soprattutto con il FID, che giudicano un insieme di immagini invece di
+una sola. E come si stabilizza il duello: cambiando la distanza che il gioco
+minimizza (la Wasserstein GAN), vincolando il discriminatore (il gradient
+penalty, la normalizzazione spettrale), oppure le regole dell'addestramento.
 
-L'ultima sezione racconta le varianti che hanno fatto la storia, dalla
-DCGAN alle GAN condizionali fino a StyleGAN, e chiude sul passaggio di
-testimone ai modelli di diffusione. Sono un altro modo di far disegnare le
-macchine: invece di mettere due reti l'una contro l'altra, insegnano a una rete
-sola a partire da una macchia di puntini casuali e a ripulirla un poco alla
-volta finché non ne esce un'immagine. È la famiglia che dal 2021 ha tolto alle
-GAN il primato, e ha un capitolo tutto suo.
+La {doc}`sezione sulle evoluzioni </GAN/applicazioni-evoluzioni>` racconta le
+varianti che hanno fatto la storia, dalla DCGAN alle GAN condizionali fino a
+StyleGAN e ai suoi successori, e chiude sul passaggio di testimone ai modelli
+di diffusione. Quelli generano in un altro modo: addestrano una sola rete a
+togliere il rumore da un'immagine, e ne producono una nuova partendo da rumore
+puro e ripulendolo un passo alla volta. È la famiglia che dal 2021 ha tolto
+alle GAN il primato, e ha un capitolo tutto suo.

@@ -40,9 +40,9 @@ e gli faceva sostenere la conversazione di uno psicoterapeuta: riconosceva nella
 frase dell'utente uno schema noto e gliela rigirava addosso. «Mi sento
 infelice» diventava «pensa che venire qui la aiuterà a non sentirsi infelice?»,
 e alla parola «madre» rispondeva «mi parli della sua famiglia». Nessuna
-comprensione, e come memoria soltanto una pila di risposte già pronte,
-costruite su cose dette prima e tirate fuori quando nella frase nuova non
-c'era nessuno schema a cui agganciarsi.
+comprensione, e come memoria soltanto qualche frase detta prima dall'utente,
+tenuta da parte e ripescata quando nella frase nuova non c'era nessuno schema a
+cui agganciarsi.
 
 Quella separazione fra il motore e il foglio delle regole è il primo passo
 della strada che percorreremo. Nel 1966 le regole le
@@ -53,9 +53,10 @@ raccontano che cosa succede quando quel foglio non lo scrive più nessuno.
 Eppure Weizenbaum voleva dimostrare esattamente il contrario di quello che
 ottenne: voleva far vedere quanto fosse superficiale la comunicazione fra uomo
 e macchina. Rimase sgomento davanti al numero di persone che al suo programma
-attribuivano sentimenti umani. La sua stessa segretaria, che pure sapeva
-benissimo come fosse fatto, gli chiese di uscire dalla stanza per poterci
-parlare in privato {cite}`weizenbaum1976computer`. Ma siamo sicuri che quella
+attribuivano sentimenti umani. La sua stessa segretaria, che l'aveva visto
+lavorare al programma per mesi e sapeva benissimo che era soltanto un
+programma, gli chiese di uscire dalla stanza per poterci parlare in privato
+{cite}`weizenbaum1976computer`. Ma siamo sicuri che quella
 da lui creata sia soltanto una lista di istruzioni? O c'è qualcosa di più? Se è
 un semplice programma, perché attribuirgli una parola così ricca di significato
 come l’*intelligenza*?
@@ -89,26 +90,28 @@ tenuti separati. Il salto che il pubblico ha percepito alla fine del
 *Attention Is All You Need*, «l'attenzione è tutto ciò che serve»
 {cite}`vaswani2017attention`. Da lì è nata la famiglia di programmi con cui
 oggi si conversa, e la descrive il
-{doc}`capitolo sui Transformer </Transformers/overview>`. Nel 2022, cioè, la
-tecnologia sotto il cofano non era nuova: era nuovo il posto in cui la
-incontravamo. Prima stava nascosta dentro servizi
-che facevano altro (traduci questa pagina, suggerisci un film), e nessuno ci
-parlava; da allora è diventata una casella bianca in cui si scrive, e che
-risponde.
+{doc}`capitolo sui Transformer </Transformers/overview>`. Nel 2022, cioè,
+l'architettura aveva cinque anni; di nuovo c'erano l'ultimo tratto
+dell'addestramento, fatto con istruzioni e giudizi di persone
+{cite}`ouyang2022training`, e soprattutto il posto in cui la tecnologia si
+incontrava. Prima stava nascosta dentro servizi che facevano altro (traduci
+questa pagina, suggerisci un film), e nessuno ci parlava; da allora è diventata
+una casella bianca in cui si scrive, e che risponde.
 
 Ma torniamo all'inizio, che è più indietro di quanto sembri: prima dei
-calcolatori c'erano stati duemila anni di gente che pensava alle stesse
-cose {cite}`russell2020artificial`.
+calcolatori c'erano stati duemila anni di filosofi e matematici che si
+ponevano le stesse domande {cite}`russell2020artificial`.
 
 Aristotele, nel IV secolo a.C., è il primo di cui ci sia rimasto un sistema
 scritto delle regole del ragionamento corretto. Si regge sui **sillogismi**:
-catene di tre frasi in cui la terza discende dalle prime due per la sola forma in cui
-sono scritte. L'esempio che sanno tutti è «tutti gli uomini sono mortali;
-Socrate è un uomo; quindi Socrate è mortale». Per tirare la conclusione non
-serve sapere chi fosse Socrate: basta la struttura delle prime due frasi. È
-questo che vuol dire ottenere le conclusioni «meccanicamente», ed è la prima
-volta nella storia che qualcuno prova a scrivere le regole del pensiero come si
-scriverebbero quelle di un gioco.
+catene di tre frasi in cui la terza discende dalle prime due per la sola forma
+in cui sono scritte. L'esempio che sanno tutti (probabilmente di Sesto
+Empirico, non di Aristotele) è «tutti gli
+uomini sono mortali; Socrate è un uomo; quindi Socrate è mortale». Per tirare
+la conclusione non serve sapere chi fosse Socrate: basta la struttura delle
+prime due frasi. È questo che vuol dire ottenere le conclusioni
+«meccanicamente», ed è il più antico tentativo di cui ci resti traccia di
+scrivere le regole del pensiero come si scriverebbero quelle di un gioco.
 
 Poi bisogna aspettare quasi due millenni, e arrivare al Seicento, quando
 compaiono le prime macchine che fanno di conto. Hobbes ipotizzò che ragionare
@@ -130,21 +133,28 @@ conti da quando esiste.
     sono quasi tutto quello che ce ne resta: la macchina andò distrutta in un
     incendio e la sua esistenza si riscoprì solo tre secoli dopo.
 
-I filosofi hanno esplorato la maggior parte dei concetti riguardanti l'AI, ma
-il passaggio a una scienza vera e propria richiedeva qualcosa che i filosofi
-non davano. Una macchina non capisce le frasi, sa soltanto fare conti: perché
-un'idea le arrivi, bisogna prima ridurla a un calcolo, e Aristotele aveva
-scritto quali passaggi fossero leciti, non come farli fare a una macchina.
-A metà del Novecento la matematica aveva già in casa gli strumenti giusti,
-l'algebra e la probabilità, e tre discipline nate per far prendere decisioni.
-La **ricerca operativa** studia come scegliere il piano migliore quando le
-risorse sono poche (quali camion mandare su quali strade); la **teoria del
-controllo** come tenere un sistema sulla rotta voluta, correggendolo di
-continuo, ed è la matematica del termostato e del pilota automatico; la
-**teoria dei giochi** come decidere quando dall'altra parte c'è qualcuno che
-decide a sua volta.
+I filosofi hanno posto quasi tutte le domande dell'AI, ma il passaggio a una
+scienza vera e propria richiedeva qualcosa che i filosofi non davano. Una
+macchina opera su numeri e simboli, non su significati: perché un'idea le
+arrivi, bisogna prima ridurla a un calcolo, e Aristotele aveva scritto quali
+passaggi fossero leciti, non come farli fare a una macchina. Servivano
+strumenti che a metà del Novecento la matematica aveva già
+{cite}`russell2020artificial`. La logica era diventata un calcolo, con simboli
+e regole come l'algebra (Boole nel 1847, Frege nel 1879). La probabilità
+permetteva di ragionare anche quando l'informazione è incerta. E una branca
+nuova, la teoria del calcolo, stabiliva che cosa un procedimento meccanico sa
+calcolare e che cosa no: ha una {doc}`sezione tutta sua <calcolabile>`, perché
+quei limiti riguardano anche i programmi che imparano.
 
-Visti da vicino, i tre facevano in fondo la stessa cosa. Ognuno inventava un
+Accanto a questi c'erano le discipline nate per far prendere decisioni. La
+**ricerca operativa** studia come scegliere il piano migliore quando le risorse
+sono poche (quali camion mandare su quali strade); la **teoria del controllo**
+come tenere un sistema sulla rotta voluta, correggendolo di continuo, ed è la
+matematica del termostato e del pilota automatico; la **teoria dei giochi**
+come decidere quando dall'altra parte c'è qualcuno che decide a sua volta.
+
+Viste da vicino, queste discipline facevano in fondo la stessa cosa. Ognuna
+inventava un
 punteggio che dice come sta andando (quanto costa il giro dei camion, di quanto
 la temperatura si scosta da quella voluta, quanto si guadagna in una partita).
 Il costo e lo scarto si vogliono piccoli, il guadagno grande, ma il mestiere è
@@ -177,12 +187,11 @@ mettere da parte {cite}`turing1950computing`.[^gioco-imitazione]
     tutti chiamano test di Turing è la lettura moderna, non l'esperimento
     originale.
 
-Quel gioco misura una cosa sola, e va detta con precisione: se una
-conversazione regge, non se dall'altra parte qualcuno ha capito qualcosa. Che
-l'asticella sia più bassa di quanto sembri lo abbiamo appena visto con ELIZA,
-che di comprensione non ne aveva nessuna e riusciva lo stesso a commuovere le
-persone; ne riparleremo in
-{doc}`Dialogo e chatbot </NaturalLanguageProcessing/dialogo-chatbot>`.
+Quel gioco misura una cosa sola: se la conversazione regge, non se dall'altra
+parte qualcuno ha capito. ELIZA lo mostra bene. Non comprendeva nulla, eppure
+bastava a far credere il contrario a chi ci parlava, ed è quello che oggi si
+chiama *effetto ELIZA*; ne riparla {doc}`Dialogo e chatbot
+</NaturalLanguageProcessing/dialogo-chatbot>`.
 
 Il termine *intelligenza artificiale* compare per la prima volta nel 1955,
 nella proposta con cui John McCarthy, Marvin Minsky, Nathaniel Rochester e
@@ -190,17 +199,17 @@ Claude Shannon chiedevano i fondi per un seminario estivo al Dartmouth
 College; è quel seminario, nell'estate del 1956, a essere ricordato come
 l'atto di nascita ufficiale della disciplina. Il mestiere della nuova
 disciplina è rendere automatiche
-attività che fino a quel momento richiedevano una testa: riconoscere immagini,
-giocare a scacchi, dimostrare teoremi, guidare un'automobile. Tocca quindi
-potenzialmente ogni angolo del pensiero umano, ed è insieme uno dei campi più
-giovani che esistano: quando nasce, la fisica ha tre secoli di storia alle
-spalle e i calcolatori elettronici sono in circolazione da una decina d'anni.
+attività che fino a quel momento sapeva fare soltanto una persona: riconoscere
+immagini, giocare a scacchi, dimostrare teoremi, guidare un'automobile. Tocca
+quindi, almeno in potenza, ogni attività della mente, ed è insieme uno dei
+campi più giovani: quando nasce, la fisica moderna ha quasi tre secoli di
+storia, dai *Principia* di Newton (1687), e i calcolatori elettronici sono in
+circolazione da una decina d'anni.
 
 Fra il seminario di Dartmouth e i risultati che oggi diamo per scontati, però,
-non c'è una linea che sale. Ci sono due lunghi **inverni**: si chiamano così i
-periodi in cui le promesse non vengono mantenute e i soldi spariscono. Vanno
-raccontati subito: sono l'antidoto migliore sia all'entusiasmo sia alla
-paura.
+non c'è una linea che sale. Ci sono due lunghi **inverni** (*AI winters*),
+periodi in cui le promesse non mantenute fecero tagliare i finanziamenti, e
+conoscerli aiuta a giudicare con calma sia l'entusiasmo sia la paura di oggi.
 
 Il primo arriva negli anni Settanta. Le promesse del decennio precedente (una
 macchina che traduce, che dimostra teoremi, che vede) erano andate a scadenza
@@ -209,24 +218,32 @@ James Lighthill dallo Science Research Council britannico stroncò il campo,
 aprendo la strada ai primi tagli veri ai finanziamenti nel Regno Unito. Il
 secondo arriva a fine anni Ottanta, quando si sgonfia il mercato dei *sistemi
 esperti*: programmi che racchiudevano in migliaia di regole scritte a mano il
-sapere di uno specialista. Funzionavano nel ristretto, costavano moltissimo da
-aggiornare e non reggevano il mondo vero.
+sapere di uno specialista. Dentro il loro campo ristretto funzionavano; appena
+fuori si rompevano, perché ogni caso non previsto chiedeva una regola nuova.
+Chi ci lavorava lo chiamava il collo di bottiglia dell'acquisizione della
+conoscenza: il sapere c'era, nella testa degli specialisti, ma travasarlo in
+regole e tenerle aggiornate costava più di quanto rendesse.
 
 Il modo di lavorare che è succeduto a questo secondo inverno ne è il rovescio
 esatto, e fra poco, quando parleremo di regole che nessuno scrive, si vedrà
-quale. Un inverno tutto loro, intanto, lo hanno avuto le reti neurali, che il
+quale. Oltre ai due inverni di tutto il campo, uno tutto loro lo hanno avuto
+le reti neurali, che il
 {doc}`capitolo che porta il loro nome </RetiNeurali/overview>` racconta per
 esteso. Quell'inverno comincia nel 1969, con *Perceptrons* di Minsky e Papert,
-che dimostrava quanto poco sapesse fare la versione più semplice di quelle
+che dimostrava i limiti del percettrone, la versione più semplice di quelle
 reti {cite}`minsky1969perceptrons`, e si intreccia con l'inverno degli anni
 Settanta, perché i tagli seguiti al rapporto Lighthill colpirono tutto il
-campo. Si scioglie nel 1986, quando un articolo su *Nature* rende finalmente
-pratico un modo di correggerle a partire dai loro errori, che qualcuno aveva
-già formulato dodici anni prima
-{cite}`rumelhart1986learning,werbos1974beyond`.
+campo. Si scioglie nel 1986, quando un articolo su *Nature* di David
+Rumelhart, Geoffrey Hinton e Ronald Williams mostra come addestrare una rete a
+più strati. Il metodo si chiama retropropagazione dell'errore
+(*backpropagation*): calcola, per ciascuno dei numeri regolabili della rete, di
+quanto cambierebbe l'errore ritoccandolo di poco, e quindi in che verso
+correggerlo. Paul Werbos lo aveva formulato dodici anni prima, nella sua tesi
+di dottorato {cite}`rumelhart1986learning,werbos1974beyond`.
 
-Meno noto è che una delle auto che si guidavano da sole
-negli anni Novanta girava sulle strade italiane, su una Lancia Thema. A
+Le regole scritte a mano, intanto, facevano cose notevoli, e non solo in
+laboratorio. Una delle auto che si guidavano da sole negli anni Novanta girava
+sulle strade italiane, su una Lancia Thema. A
 partire dal 1996, all'Università di Parma, un gruppo di ricercatori e
 ingegneri guidato da Alberto Broggi costruì ARGO. Vedeva con due telecamere in
 bianco e nero montate in coppia, come i nostri due occhi, e le sue decisioni
@@ -234,15 +251,15 @@ le prendeva un computer di bordo del tutto ordinario per l'epoca, un Pentium
 200 MMX: un processore incomparabilmente più lento di quello del telefono che
 oggi tieni in tasca. Sapeva sterzare da sola, restare al centro della corsia e
 accorgersi degli ostacoli davanti. Nel giugno 1998, nella prova «MilleMiglia
-in Automatico», percorse quasi 2.000 km sulle autostrade italiane, guidando da
-sola per il 94% del tragitto.
+in Automatico», percorse circa 2.000 km sulle autostrade italiane con lo sterzo
+governato dal programma per oltre il 90% del tragitto; acceleratore e freno
+restavano al guidatore.
 
-Il primato non è di essere arrivati per primi: negli stessi anni la VaMP di
-Ernst Dickmanns girava sulle autostrade europee e la Navlab 5 della Carnegie
-Mellon University, in Pennsylvania, attraversava gli Stati Uniti. Il primato
-sta nel come: la VaMP portava armadi di elettronica costruita apposta, ARGO
-due telecamere e un personal computer da negozio, e dimostrò che per stare in
-corsia poteva bastare molto meno ferro di quanto tutti credessero.
+ARGO non fu la prima: negli stessi anni la VaMP di Ernst Dickmanns girava
+sulle autostrade europee e la Navlab 5 della Carnegie Mellon University, in
+Pennsylvania, attraversava gli Stati Uniti. Colpisce per l'economia dei mezzi:
+dove la VaMP portava armadi di elettronica costruita apposta, ARGO lavorava con
+due telecamere in bianco e nero e un personal computer da negozio.
 
 Dentro ARGO, però, non c'era niente che avesse imparato qualcosa. Le regole
 con cui riconosceva la corsia e gli ostacoli le aveva scritte a mano qualcuno
@@ -251,21 +268,24 @@ regola per volta.
 
 Nel 2010 il gruppo di Broggi è riuscito a far guidare da soli dei furgoni
 elettrici dall'Italia alla Cina. La sfida si chiamava VIAC (VisLab
-Intercontinental Autonomous Challenge): quasi sedicimila chilometri da
-Parma a Shanghai, con
-due veicoli in marcia (più due di riserva) e una regola d'ingaggio da dire,
-perché è la parte interessante. I due procedevano in fila: quello di testa
-apriva la strada e ogni tanto un umano interveniva, per scegliere il percorso
-o togliere le castagne dal fuoco; quello dietro seguiva il primo in completa
-autonomia. Non sedicimila chilometri senza nessuno al volante, dunque, ma
-qualcosa che nel 2010 era comunque senza precedenti.
+Intercontinental Autonomous Challenge): quasi sedicimila chilometri da Parma a
+Shanghai, con due veicoli in marcia (più due di riserva) e una regola
+d'ingaggio da dire, perché è la parte interessante. I due procedevano in fila:
+quello di testa apriva la strada e ogni tanto un umano interveniva, per
+scegliere il percorso o per risolvere le situazioni che il sistema non sapeva
+gestire; quello dietro seguiva il primo in completa autonomia. Non sedicimila
+chilometri senza nessuno al volante, dunque, ma qualcosa che nel 2010 era
+comunque senza precedenti.
 
 ## Che cos'è un algoritmo
 
 Fin qui abbiamo parlato di programmi e di regole scritte a mano, senza mai
 chiamarli con il loro nome. Un **algoritmo**, prima di tutto, è una ricetta:
-una lista finita di passi precisi che, eseguiti nell'ordine giusto, portano a
-un risultato. Uno dei primi della storia si può far risalire a Euclide, che
+una lista finita di passi precisi, che non lasciano dubbi su che cosa fare e
+che, eseguiti nell'ordine giusto, portano a un risultato in un numero finito di
+mosse. La parola viene dal
+nome di al-Khwarizmi, un matematico persiano del IX secolo, ma la cosa è più
+antica. Uno dei primi della storia si può far risalire a Euclide, che
 oltre due millenni fa trovò il modo di calcolare il massimo comune divisore di
 due numeri: applicato a $12$ e $8$, per dire, restituisce $4$. È esattamente il
 procedimento che proveremo a scrivere nel linguaggio Python, appena avremo
@@ -302,7 +322,8 @@ gli atomi dell'intero universo osservabile si stimano intorno a un $1$ seguito
 da ottanta zeri, cioè cento miliardi di miliardi di volte di meno.
 
 Poche, però, non vuol dire poco tempo. Le divisioni crescono con la
-*lunghezza* dei numeri, cinque per ogni cifra in più, e ciascuna, su numeri da
+*lunghezza* dei numeri, al più cinque per ogni cifra in più (in media meno di
+due), e ciascuna, su numeri da
 cento cifre, costa molto più che su numeri da una cifra.
 `````
 
@@ -318,9 +339,15 @@ anche $a \bmod b = a - \lfloor a/b \rfloor\, b$ e che, viceversa, ogni
 divisore comune di $b$ e $a \bmod b$ divide
 $a = \lfloor a/b \rfloor\, b + (a \bmod b)$: i due insiemi di divisori comuni
 coincidono, quindi il massimo è invariante a ogni passo. Per $a=12$, $b=8$:
-$(12, 8) \to (8, 4) \to (4, 0) \Rightarrow 4$. Il numero di passi è
-$O(\log \min(a, b))$: il caso peggiore si ha con due numeri di Fibonacci
-consecutivi (teorema di Lamé, 1844). È per questa efficienza (non solo per
+$(12, 8) \to (8, 4) \to (4, 0) \Rightarrow 4$. Il numero di passi $N$ è
+$O(\log \min(a, b))$. Più precisamente, se $a > b \ge 1$ vale
+$b \ge F_{N+1} \ge \varphi^{N-1}$, con $F_k$ i numeri di Fibonacci e
+$\varphi = (1+\sqrt{5})/2$ (teorema di Lamé, 1844): ne segue
+$N \le 1 + \log_\varphi b$, cioè al più cinque passi per cifra decimale di $b$,
+e il caso peggiore è quello di due numeri di Fibonacci consecutivi, con
+$\log_\varphi 10 \approx 4{,}79$ passi per cifra. In media i passi sono circa
+$\tfrac{12\ln 2}{\pi^2}\ln b$, poco meno di due per cifra
+{cite}`knuth1997seminumerical`. È per questa efficienza (non solo per
 l'età) che l'idea di Euclide è ancora oggi nelle librerie standard di quasi
 tutti i linguaggi (`math.gcd` in Python, `std::gcd` in C++ dal 2017; la
 libreria standard del C non ne ha una). Attenzione però a leggere bene la stima:
@@ -332,8 +359,13 @@ moltiplicate per quelle del divisore; la somma delle cifre di tutti i
 quozienti resta però $O(n)$, perché il prodotto dei quozienti non supera il
 numero di partenza. Da lì il tempo totale
 $O(n^2)$, e non l’$n^3$ che il prodotto ingenuo dei due fattori farebbe
-temere. È il motivo per cui le librerie non eseguono questo ciclo tale e
-quale, ma sue raffinature (l'algoritmo di Lehmer, in CPython).
+temere. Le librerie, però, non eseguono questo ciclo tale e quale. CPython
+usa una sua raffinatura, l'algoritmo di Lehmer, che lavora sulle cifre di testa
+in precisione singola e risparmia molte divisioni su interi lunghi (stessa
+classe $O(n^2)$, costante molto migliore); librerie come GMP, per numeri
+enormi, passano ad algoritmi subquadratici di tipo *half-GCD* (Knuth, 1970;
+Schönhage, 1971), con costo $O(M(n)\log n)$, dove $M(n)$ è il costo di una
+moltiplicazione fra numeri di $n$ cifre.
 `````
 
 La {numref}`fig-euclide-scende` mostra la stessa discesa su un'altra coppia di
@@ -357,25 +389,24 @@ ha capito come si fa e ne ha scritto i passi. Per duemila anni ogni algoritmo
 è stato così, e così è ancora la maggior parte dei programmi che usi ogni
 giorno: chi li ha scritti sapeva già che cosa dovevano fare, riga per riga.
 
-Il salto sta qui, ed è quello che rende necessario tutto il resto. Serve
-prima una cosa che di solito si dà per scontata: per un computer una fotografia
-è un rettangolo di puntini, e ogni puntino (si chiama **pixel**) è una terna di
+Il salto si vede bene su una fotografia. Per un computer è un rettangolo di
+puntini, e ogni puntino (si chiama **pixel**) è una terna di
 numeri che dicono quanto rosso, quanto verde e quanto blu ci sono lì. Una foto
 da telefono ne ha qualche milione.
 
 Adesso prova a scrivere la ricetta per riconoscere un gatto in una fotografia.
 Non può parlare di orecchie a punta: deve dire che cosa fare con quei milioni
 di numeri, e deve funzionare anche col gatto di spalle, in controluce, mezzo
-nascosto dietro una sedia. Nessuno c'è mai riuscito, e non per pigrizia: quella
-ricetta non la sappiamo, per quanto siamo capacissimi di eseguirla con gli
-occhi in un decimo di secondo.
+nascosto dietro una sedia. Nessuno è mai riuscito a scriverne una che regga in
+tutti i casi, e non per pigrizia: quella ricetta non la sappiamo, per quanto
+siamo capacissimi di eseguirla con gli occhi in un decimo di secondo.
 
-E allora si cambia mestiere. Invece di scrivere le regole, si raccolgono gli
+E allora si cambia strada. Invece di scrivere le regole, si raccolgono gli
 **esempi** (migliaia di fotografie con scritto accanto «gatto» oppure «non
 gatto») e si lascia che sia il programma a trovare da solo che cosa distingue
 le une dalle altre. Le regole non le scrive nessuno: emergono dai dati. È
-questo che significa, in questo libro, dire che un programma *impara*, ed è la
-ragione per cui qui i dati contano quanto il codice.
+questo che significa dire che un programma *impara*, e spiega perché, in
+questo modo di lavorare, i dati contano quanto il codice.
 
 C’è una vecchia obiezione a questa idea, cioè un argomento per dire che non può
 funzionare, ed è stata scritta quasi due secoli fa; un pezzo della sua storia si
@@ -403,70 +434,74 @@ comprato in cartoleria», poco meccanismo e molti fogli bianchi, e poi educarla
 le fotografie; l’educazione sono le migliaia di fotografie con scritto accanto
 «gatto» oppure «non gatto».
 
-Qui nascono due parole che sentirai dappertutto, e tanto vale prenderle subito.
-La fase in cui il programma guarda gli esempi e aggiusta se stesso si chiama
-**addestramento**; quello che ne esce, cioè il programma già aggiustato e
-pronto a rispondere su fotografie che non ha mai visto, si chiama **modello**.
-Il «gatto» scritto accanto a ciascuna foto si chiama **etichetta**.
+Qui nascono tre parole che torneranno in quasi tutti i capitoli. La fase in
+cui il programma guarda gli esempi e aggiusta se stesso si chiama
+**addestramento**;
+quello che ne esce, cioè il programma già aggiustato e pronto a rispondere su
+fotografie che non ha mai visto, si chiama **modello**. Il «gatto» scritto
+accanto a ciascuna foto si chiama **etichetta**.
 
 Le fotografie etichettate a mano sono il caso più facile da raccontare, non
 l'unico né il più diffuso. La risposta giusta può essere già dentro il
 materiale che si ha: si nasconde la parola che viene dopo e si chiede al
-programma di indovinarla, e a quel punto le etichette sono infinite e gratuite,
-perché le fornisce il testo stesso. È così che si addestrano i modelli di cui
-oggi si parla di più, e fin d'ora vale la distinzione: «imparare dagli
+programma di indovinarla, e a quel punto le etichette sono tante quante le
+parole del testo e non costano niente, perché le fornisce il testo stesso. È
+così che si fa la prima fase dell'addestramento dei modelli di cui oggi si
+parla di più, e fin d'ora vale la distinzione: «imparare dagli
 esempi» non vuol dire per forza che qualcuno abbia etichettato qualcosa.
 
-Da qui i tre nomi che incontrerai più spesso, in questo libro e fuori, e che a
+Da qui i tre nomi che si incontrano più spesso, e che a
 questo punto si dicono in una riga ciascuno:
 
 - il **machine learning** (apprendimento automatico) è l'idea appena detta:
   ricavare le regole dagli esempi invece di scriverle a mano;
-- il **deep learning** (apprendimento profondo) è il modo di farlo che ha
-  vinto: le **reti neurali**, cioè programmi fatti di molti passaggi
-  elementari disposti in fila per **strati**, dove ogni strato ricava dai
-  numeri dello strato precedente una descrizione un po’ più astratta (dai
-  pixel ai bordi, dai bordi alle forme, dalle forme al gatto). «Profondo» vuol
-  dire proprio questo, e nient'altro: che gli strati sono tanti, uno sopra
-  l'altro, e per questo si dicono anche reti profonde. Qui basta l'idea che
-  siano molti passaggi semplici, uno dopo l'altro, e che nessuno abbia scritto
-  a mano che cosa ciascuno debba cercare;
+- il **deep learning** (apprendimento profondo) è il machine learning fatto
+  con le **reti neurali** (il nome viene dal cervello, che le ha ispirate alla
+  lontana): programmi composti da molti passaggi elementari disposti in fila
+  per **strati**. Ogni strato trasforma i numeri dello strato precedente in una
+  descrizione un po’ più astratta: in una rete che guarda fotografie, dai pixel
+  ai bordi, dai bordi alle forme, dalle forme al gatto. «Profondo» vuol dire
+  soltanto che gli strati sono tanti, uno sopra l'altro, e nessuno scrive a mano
+  che cosa ciascuno debba cercare;
 - il **reinforcement learning** (apprendimento per rinforzo) è il caso in cui
   gli esempi giusti non esistono e il programma impara dalle conseguenze delle
-  proprie azioni: prova, riceve un punteggio, riprova. È quello che
-  incontreremo poco più avanti, nella pagina dedicata alla robotica, con il
+  proprie azioni: prova, riceve un punteggio, riprova. È il caso che
+  incontreremo nella {doc}`sezione sulla robotica <applicazioni>`, con il
   robot che impara a camminare.
 
-Spesso li si vede disegnati come tre cerchi uno dentro l'altro, e non è così.
-Il deep learning è davvero un modo di fare machine learning. Il reinforcement
-learning, invece, è una *situazione* in cui ci si trova, non un attrezzo che si
-sceglie: dice che gli esempi giusti non ci sono e che l'unico giudizio è un
-punteggio, e ci si può stare dentro con le reti profonde o senza. E
-l'intelligenza artificiale è più larga di tutti e tre: comprende anche i
-programmi che ragionano su regole scritte a mano, cioè la sua metà classica,
-quella dei sistemi esperti del secondo inverno.
+Il disegno più diffuso mette l'intelligenza artificiale, il machine learning e
+il deep learning come tre cerchi uno dentro l'altro, e per questi tre è giusto:
+il deep learning è un modo di fare machine learning, e il machine learning un
+modo di fare intelligenza artificiale. Il reinforcement learning è un altro
+tipo di machine learning, diverso dall'imparare da esempi con la risposta
+scritta accanto: l'unico giudizio è un punteggio. Può usare le reti profonde (e
+allora si parla di *deep reinforcement learning*) o farne a meno. E
+l'intelligenza artificiale è più larga di tutto il machine learning: comprende
+anche i programmi che ragionano su regole scritte a mano o che cercano fra le
+mosse possibili, cioè la sua parte classica, quella dei sistemi esperti del
+secondo inverno.
 
-Da qui una definizione da tenersi in tasca, provvisoria come tutte quelle
-buone: l'intelligenza artificiale si occupa dei compiti per cui nessuno sa
-scrivere una ricetta che regga il mondo vero. È la riga che tiene fuori la
+Da qui una definizione pratica, provvisoria come tutte quelle buone:
+l'intelligenza artificiale si occupa dei compiti per cui nessuno sa scrivere a
+mano una ricetta che regga nel mondo reale. È la riga che tiene fuori la
 lavatrice. Anche una lavatrice decide da sola quando fermare il risciacquo, ma
-per quella decisione la ricetta c'è, sta in poche righe e funziona; un tecnico
-ha stabilito quale sensore leggere e sopra quale soglia fermarsi, e non serve
-altro. Riconoscere un gatto, tradurre una frase, tenere in piedi un robot: lì
-quella ricetta non esiste, e va fatta emergere. Ed è anche la riga che tiene
-dentro i sistemi esperti, che a scriverla provavano lo stesso, a mano,
-migliaia di regole per volta. Il loro fallimento è la ragione per cui oggi le
+per quella decisione la ricetta c'è, sta in poche righe e funziona: un tecnico
+ha stabilito quale sensore leggere e sopra quale soglia fermarsi. Riconoscere
+un gatto, tradurre una frase, far camminare un robot su un terreno qualunque:
+lì la ricetta non esiste, e va fatta emergere. Ed è anche la riga che tiene
+dentro i sistemi esperti, che provavano lo stesso a scriverla, a mano, una
+regola alla volta. Il loro fallimento è una delle ragioni per cui oggi le
 regole si ricavano dagli esempi.
 
 Torna così la domanda dell'inizio. ELIZA non aveva niente di più di una lista
-di istruzioni, ed è proprio per questo che il suo incanto si sgretola appena
-lo si spiega. I programmi di cui parla questo libro qualcosa di più ce
-l'hanno, ma è meno misterioso e più scomodo di quanto si immagini: nessuno ha
-scritto le regole che seguono, e quindi nessuno, nemmeno chi li ha costruiti,
-sa elencarle tutte. Da lì vengono sia i risultati sia i guai: dei modi per
-sbirciare comunque là dentro parla
-{doc}`Interpretabilità </Interpretabilita/overview>`, dei danni che quei
-programmi possono fare {doc}`AI responsabile </AIResponsabile/overview>`.
+di istruzioni, ed è proprio per questo che il suo incanto si sgretola appena lo
+si spiega. I programmi che imparano dagli esempi qualcosa di più ce l'hanno, ma
+è meno misterioso e più scomodo di quanto si immagini: nessuno ha scritto le
+regole che seguono e, nei modelli grandi, nessuno sa elencarle tutte, nemmeno
+chi li ha costruiti. Da lì vengono sia i risultati sia i guai: dei modi per
+sbirciare comunque là dentro parla {doc}`Interpretabilità
+</Interpretabilita/overview>`, dei danni che quei programmi possono fare
+{doc}`AI responsabile </AIResponsabile/overview>`.
 
 ## Il punteggio da far salire
 
@@ -478,8 +513,9 @@ salire non è un ingegnere, è l'addestramento.
 
 Quello che l'addestramento tocca, però, è una cosa sola. Dentro un programma
 che impara c'è un elenco di numeri, spesso lunghissimo, e si chiamano
-**parametri**: l'addestramento li cambia, guarda se il punteggio è salito, e
-li cambia ancora. Il comportamento viene dietro.
+**parametri**; tutti insieme si indicano con la lettera greca $\theta$ (theta),
+e la funzione obiettivo, che da loro dipende, si scrive $J(\theta)$.
+L'addestramento cambia soltanto $\theta$; il comportamento viene dietro.
 
 `````{tab} Elementare
 A un robot aspirapolvere assegni un punteggio: $+1$ per ogni
@@ -489,7 +525,8 @@ punti. Quel modo di dare i punti è la sua funzione obiettivo: non gli
 spieghiamo *come* pulire, gli diciamo solo *che punteggio* vogliamo veder
 salire.
 
-Dentro, il robot ha una manciata di manopole: quanto sterzare quando il
+Dentro, il robot ha una manciata di manopole, i suoi parametri: quanto
+sterzare quando il
 sensore davanti si accende, quanto rallentare vicino a un mobile, quanto
 insistere dove il tappeto è sporco. Si girano quelle, si guarda il punteggio,
 si girano ancora. Qualunque giro di manopola che porti il totale medio sopra
@@ -533,7 +570,7 @@ Nell'apprendimento supervisionato $p_\theta = p$ non dipende dai parametri, e
 $\theta$ agisce solo attraverso $U$; nel reinforcement learning le azioni
 decidono quali stati si visitano, $p_\theta$ dipende da $\theta$, ed è questa
 dipendenza a rendere il gradiente di $J$ più difficile da stimare. Massimizzare
-$J$ equivale a minimizzare la perdita (*loss*) $\mathcal{L}(\theta) =
+$J$ equivale a minimizzare la perdita attesa (*loss*) $\mathcal{L}(\theta) =
 -J(\theta)$ e, assumendo che un ottimo esista, si cerca
 
 $$
@@ -549,30 +586,45 @@ addestramento non si ha accesso. In pratica si massimizza la media su $n$
 situazioni già raccolte, $\hat{J}_n(\theta) = \frac{1}{n}\sum_{i=1}^{n}
 U(\theta, \xi_i)$, con le $\xi_i$ estratte in modo indipendente dalla stessa
 $p$ (il caso supervisionato), e si spera che il $\hat{\theta}$ che la
-massimizza valga molto anche per $J$. Per un $\theta$ fissato la legge dei
-grandi numeri garantisce $\hat{J}_n(\theta) \to J(\theta)$; per $\hat{\theta}$
-no, perché è stato scelto guardando proprio quei dati, e in media
-$\hat{J}_n(\hat{\theta})$ sovrastima $J(\hat{\theta})$. Misurare quella
-distanza, e sapere quando fidarsene, è il mestiere del {doc}`capitolo sul
-machine learning </MachineLearning/overview>`.
+massimizza valga molto anche per $J$. Per un $\theta$ fissato, se
+$\mathbb{E}\,|U(\theta,\xi)| < \infty$, la legge dei grandi numeri garantisce
+$\hat{J}_n(\theta) \to J(\theta)$; per $\hat{\theta}$ no, perché è stato scelto
+guardando proprio quei dati, e in media $\hat{J}_n(\hat{\theta})$ sovrastima
+$J(\hat{\theta})$: infatti $\mathbb{E}\,\hat{J}_n(\hat{\theta}) \ge
+\mathbb{E}\,\hat{J}_n(\theta^\star) = J(\theta^\star) \ge
+\mathbb{E}\,J(\hat{\theta})$. Tutto questo presuppone che i dati futuri vengano
+dalla stessa $p$ di quelli raccolti; quando non è così si parla di *dataset
+shift*, il tema della sezione sui {doc}`dati che cambiano
+</MachineLearning/dati-che-cambiano>`.
+
+Massimizzare $\hat{J}_n$ è la minimizzazione del rischio empirico (Vapnik):
+$-\hat{J}_n$ è il rischio empirico, $-J$ il rischio, e la loro distanza è il
+divario di generalizzazione, di cui si occupa la {doc}`teoria
+dell'apprendimento </TeoriaApprendimento/overview>`. Nei modelli
+differenziabili il massimo si cerca salendo lungo il gradiente, $\theta
+\leftarrow \theta + \eta\,\nabla_\theta \hat{J}_n(\theta)$, con $\eta$ il tasso
+di apprendimento; $\hat{J}_n$ in generale non è concava, e la salita si ferma
+su un massimo locale, non per forza su quello globale. Misurare la distanza fra
+$\hat{J}_n$ e $J$, e sapere quando fidarsene, è il mestiere del {doc}`capitolo
+sul machine learning </MachineLearning/overview>`.
 
 È la cornice dell’**agente razionale** {cite}`russell2020artificial`: un
 sistema che sceglie le azioni che massimizzano l'utilità attesa, date le
 informazioni disponibili. Qui l'ottimizzazione agisce sui parametri, non
-direttamente sulle azioni, ma il ponte è corto: $\theta$ determina il
-comportamento del sistema, e la configurazione ottima dei parametri induce le
-scelte migliori. Buona parte del libro è una serie di variazioni su questo
+direttamente sulle azioni: $\theta$ determina il comportamento del sistema, e
+la configurazione ottima dei parametri induce le scelte migliori che la
+famiglia di modelli $\{f_\theta\}$ permette, sempre che l'ottimizzazione trovi
+un ottimo globale. Gran parte dei metodi che seguono sono variazioni su questo
 tema: la regressione minimizza un errore quadratico medio, la classificazione
-una cross-entropy, il reinforcement learning massimizza una ricompensa
-cumulata attesa. Cambiano $\mathcal{L}$ e il modo di calcolare il minimo, non
-lo schema.
+una cross-entropy, il reinforcement learning massimizza una ricompensa cumulata
+attesa. Cambiano $\mathcal{L}$ e il modo di calcolare il minimo, non lo schema.
 
-Le eccezioni si contano, e sono istruttive, perché sono i due modi in cui si
-può uscire dal quadro. Le GAN sostituiscono la minimizzazione di una funzione
+Le eccezioni sono poche e istruttive, e mostrano due modi di uscire dal
+quadro. Le GAN sostituiscono la minimizzazione di una funzione
 con l'equilibrio di un gioco fra due reti in competizione, e allora la loss
 smette di dire se le cose stanno andando bene; i metodi non parametrici come
-il k-NN non hanno una manopola da regolare per addestramento: al posto dei
-parametri conservano i dati stessi. «Non parametrico» significa questo, e non
+il k-NN non hanno parametri da stimare con l'addestramento: conservano i dati
+stessi. «Non parametrico» significa questo, e non
 che non ci siano numeri da scegliere: significa che ciò che il modello si
 porta dietro cresce con i dati, invece di essere fissato in partenza. Va
 aggiunta una crepa che non è un'eccezione ma un limite della cornice,
@@ -586,31 +638,31 @@ a spese del secondo. Il fenomeno si chiama *reward hacking*, e lo tratta
 
 ## Perché proprio adesso
 
-Se le regole si ricavano dagli esempi, servono gli esempi; e servono macchine
-capaci di macinarli. È la risposta alla domanda che tutti fanno, cioè perché
-un campo nato negli anni Cinquanta abbia cominciato a funzionare solo di
-recente: perché servivano tre ingredienti insieme, e per decenni ce n'erano al
-massimo due.
+Se le regole si ricavano dagli esempi, servono molti esempi e macchine capaci
+di elaborarli. È la risposta alla domanda che tutti fanno, cioè perché un campo
+nato negli anni Cinquanta abbia dato i risultati di oggi solo dopo il 2012:
+servivano insieme i dati, la potenza di calcolo e gli algoritmi capaci di
+sfruttarli, e per decenni ne mancava almeno uno.
 
-L'AI è in profondo debito con l'informatica e con l'elettronica, che le hanno
-apparecchiato la tavola. Le hanno dato i linguaggi con cui si scrivono i
-programmi, Python fra questi. Le hanno dato le **librerie**, cioè raccolte di
-codice già scritto e collaudato che si usano invece di rifarlo da capo
-(PyTorch, con cui addestreremo le reti neurali, e TensorFlow, che fa lo stesso
-mestiere ed è nato in Google). E le hanno dato macchine sempre
-più veloci: prima i processori normali, le CPU; poi le schede grafiche, le GPU,
-che erano nate per far girare i videogiochi e si sono rivelate perfette per
-addestrare le reti neurali, perché sanno fare moltissimi conti semplici tutti
-insieme; infine i chip costruiti apposta per questo mestiere, come le TPU di
-Google.
+L'AI deve molto all'informatica e all'elettronica. Le hanno dato i linguaggi
+con cui si scrivono i programmi, Python fra questi. Le hanno dato le
+**librerie**, cioè raccolte di codice già scritto e collaudato che si usano
+invece di rifarlo da capo (PyTorch, con cui addestreremo le reti neurali, e
+TensorFlow, che fa lo stesso mestiere ed è nato in Google). E le hanno dato
+macchine sempre più veloci: prima i processori normali, le CPU; poi le schede
+grafiche, le GPU, che erano nate per far girare i videogiochi e si sono
+rivelate adatte ad addestrare le reti neurali, perché sanno fare moltissimi
+conti semplici tutti insieme; infine i chip costruiti apposta per questo
+mestiere, come le TPU di Google.
 
-Ed è in debito con Internet, che ha fatto molto più che diffondere articoli e
-video: ha reso raccoglibili i dati su cui i modelli si addestrano, dalle
-grandi collezioni di immagini già etichettate, come ImageNet, al testo del web.
-Dati, potenza di calcolo e algoritmi maturi: sono questi a essere arrivati
-insieme, e il {doc}`capitolo sul deep learning </DeepLearning/overview>` li
-riprende uno per uno; quanto pesi ciascuno si può perfino misurare, e lo fa il
-capitolo sui Transformer, i modelli nati da quell'articolo del 2017.
+Ed è in debito con Internet, che ha reso raccoglibili i dati su cui i modelli
+si addestrano, dalle grandi collezioni di immagini già etichettate, come
+ImageNet, al testo del web. Dati, potenza di calcolo e algoritmi: sono questi a
+essere arrivati insieme, e il {doc}`capitolo sul deep learning
+</DeepLearning/overview>` li riprende uno per uno. Di quanto pesino i dati e il
+calcolo, insieme alla taglia del modello, si può anche fare una misura: sono le
+leggi di scala, che racconta la {doc}`sezione sui grandi modelli linguistici
+</Transformers/llm>`.
 
 Su che cosa siano quei dati bisogna fermarsi, perché è la cosa che si
 fraintende più spesso. Il modo di dire corrente li chiama «il petrolio del
@@ -627,8 +679,8 @@ C'è un precedente, ed è successo su scala planetaria. Certi batteri, i
 cianobatteri, impararono a spezzare l'acqua con la luce del sole per prendersi
 la parte che serviva loro a costruirsi il cibo: è la fotosintesi, quella
 che si studia a scuola. Quel che restava lo buttarono via, ed era ossigeno
-{cite}`lyons2014rise`. A loro non serviva a niente. Per la vita di allora era
-anzi un veleno, perché era cresciuta in un mondo che non ne aveva mai avuto.
+{cite}`lyons2014rise`. Per loro era un sottoprodotto; per la vita di allora,
+cresciuta in un mondo che non ne aveva mai avuto, era un veleno.
 
 E per moltissimo tempo non successe niente. I cianobatteri cominciarono forse
 tre miliardi di anni fa, e l'aria restò come prima: l'ossigeno finiva subito,
@@ -643,8 +695,7 @@ respiriamo, alla lettera, il rifiuto di qualcun altro.
 I dati stanno alle macchine come l'ossigeno sta a noi. Sono l'avanzo del nostro
 passaggio nel mondo digitale, prodotto senza volerlo e in quantità che nessuno
 ha deciso; e sopra quell'avanzo è cresciuta una cosa che di lì trae il proprio
-respiro. L'algoritmo è il polmone, i dati sono l'aria, e un polmone nel vuoto
-non è niente. E torna la domanda «perché proprio adesso»: come l'ossigeno, i
+respiro. E torna la domanda «perché proprio adesso»: come l'ossigeno, i
 dati sono rimasti lì un pezzo prima che qualcosa imparasse a respirarli.
 
 C'è però una parte scomoda, e vale quanto l'altra. Quello scarto, prima di
@@ -666,7 +717,10 @@ gestione automatica della memoria. Un programma, mentre gira, chiede
 continuamente al computer un po’ di spazio in cui mettere quello che sta
 maneggiando, e quello spazio prima o poi va restituito, altrimenti si esaurisce
 e tutto si ferma. Per anni tenerne il conto è stato un lavoro di chi
-programmava, e una fonte inesauribile di errori; l'idea che a restituirlo possa
-pensarci il linguaggio da solo è nata studiando l'AI, e oggi è quello che
-Python fa per te senza che tu debba accorgertene. Ed è con Python che
+programmava, e una fonte inesauribile di errori. L'idea che a restituirlo possa
+pensarci il linguaggio da solo, la *garbage collection* («raccolta dei
+rifiuti»), la introdusse intorno al 1959 John McCarthy, uno dei quattro della
+proposta di Dartmouth, per il Lisp, il linguaggio che aveva creato per scrivere
+programmi di intelligenza artificiale; oggi è quello che Python fa per te senza
+che tu debba accorgertene. Ed è con Python che
 scriveremo il primo algoritmo.

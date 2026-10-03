@@ -6,12 +6,16 @@ nessun giocatore professionista avrebbe scelto: i commentatori pensano a un
 errore. (Il Go si gioca appoggiando pietre bianche e nere sugli incroci di una
 griglia, e vince chi circonda più territorio.) Era invece una mossa che, secondo
 le stime del programma stesso, un umano avrebbe giocato circa una volta su
-diecimila. Lee Sedol si alza dal tavolo per un quarto d'ora. Quella stima la
-dava la rete che AlphaGo aveva addestrato a imitare le partite umane; la mossa
-la trovò la ricerca, guidata da una rete di valore allenata su partite che il
-programma giocava contro sé stesso. Nella versione descritta pochi mesi prima,
-quelle partite le giocava una *strategia* affinata proprio con il metodo
-raccontato qui.
+diecimila. Lee Sedol si alza dal tavolo per un quarto d'ora.
+
+AlphaGo aveva due reti e una ricerca. La prima rete proponeva le mosse da
+esaminare, e aveva imparato imitando partite umane: era lei a stimare
+quell'una su diecimila. La seconda, la rete di valore, giudicava chi fosse in
+vantaggio in una posizione. La ricerca provava le continuazioni prima di
+muovere, guidata da tutte e due, e fu lei a trovare la mossa. Il giudizio della
+rete di valore si era formato su partite che il programma giocava contro sé
+stesso, e nella versione descritta pochi mesi prima quelle partite le giocava
+una *strategia* affinata proprio con il metodo raccontato qui.
 
 Come si insegna a una macchina una strategia? Nei metodi basati sul valore,
 che abbiamo incontrato con il Q-learning, impariamo a stimare *quanto vale una
@@ -19,26 +23,35 @@ situazione* e *quanto vale una mossa in quella situazione* (nel capitolo
 precedente le due stime si chiamavano rispettivamente $V$ e $Q$), e poi ne
 ricaviamo l'azione migliore scegliendo di volta in volta quella col valore più
 alto. I metodi a **gradiente di policy** ribaltano la prospettiva: invece di
-valutare e poi decidere, imparano *direttamente a decidere*. Il «gradiente» del
-nome è il modo in cui in matematica si chiama una pendenza: la direzione lungo
-cui una quantità cresce più in fretta, e quindi la direzione in cui conviene
-fare un passo. Qui la quantità che si vuole far crescere è la ricompensa.
+valutare e poi decidere, imparano *direttamente a decidere*. La policy è una
+rete neurale con pesi $\theta$, e la quantità da far crescere è il ritorno
+atteso $J(\theta)$, la somma dei premi che quella policy raccoglie in media. Il
+«gradiente» del nome è $\nabla_\theta J(\theta)$, il vettore delle derivate di
+$J$ rispetto ai pesi, che indica la direzione in cui $J$ cresce più in fretta; e
+l'aggiornamento fa un passo in quella direzione, $\theta \leftarrow \theta +
+\alpha\,\nabla_\theta J(\theta)$, con $\alpha$ il passo di apprendimento.
 
-E a fare il passo sono i pesi di una rete neurale: i numeri, dentro la rete,
-che decidono come una situazione si trasforma in una decisione. In tutta questa
-sezione, quando si dice che «la strategia cambia» o che «si fa un passo», si
-intende sempre questo: qualche milione di numeri che si sposta un pochino.
+Quando si dice che «la strategia cambia» o che «si fa un passo», si intende
+sempre questo: i pesi della rete, i numeri che decidono come una situazione si
+trasforma in una decisione, che si spostano un pochino nella direzione del
+gradiente.
 
 ## Imparare la policy, non il valore
 
-Perché conviene ribaltare così la prospettiva? Per due motivi, e il primo è
-quello che regge mezzo capitolo: dare un voto a ogni mossa e poi prendere la
-migliore funziona finché le mosse si possono contare, e smette di funzionare
-quando la mossa è una quantità da dosare, come di quanto girare uno sterzo. Lì
-non c'è più un elenco da scorrere. Il secondo motivo è di tutt'altro genere: una
-strategia imparata così può *tirare i dadi*, cioè nella stessa situazione fare
-a volte una cosa e a volte un'altra, e contro un avversario che ti studia essere
-prevedibili è una condanna.
+Perché conviene ribaltare così la prospettiva? Per due motivi. Il primo:
+scegliere l'azione con $\arg\max_a Q(s,a)$ richiede di scorrere le azioni una
+per una, e non si può quando l'azione è una quantità da dosare, come l'angolo
+di uno sterzo. Il secondo: la policy migliore può essere *stocastica*, cioè
+fare nella stessa situazione a volte una cosa e a volte un'altra, con
+probabilità precise. Contro un avversario che sfrutta ogni regolarità è
+l'unica che regge (a sasso-carta-forbici, ciascuna mossa con probabilità
+$1/3$), e lo stesso vale quando la situazione si vede solo in parte, come con
+le carte coperte del poker; un metodo che sceglie sempre l'azione di valore
+massimo non ha un modo naturale di trovarla. Si aggiunge un vantaggio
+teorico: le probabilità della policy cambiano con continuità al variare dei
+pesi, mentre l'azione greedy può saltare da una mossa all'altra per una
+variazione minima dei valori, e anche per questo i metodi a gradiente di policy
+hanno garanzie di convergenza più forti {cite}`sutton2018reinforcement`.
 
 `````{tab} Elementare
 
@@ -57,7 +70,8 @@ valgono l'una per l'altra.
 
 Il premio, però, quasi mai arriva subito. In una seduta di addestramento il cane
 fa una decina di cose di fila e il biscotto compare in fondo: quello che si
-vuole far crescere è il bottino di tutta la seduta. Un biscotto che arriva fra
+vuole far crescere è il bottino di tutta la seduta, cioè la somma dei premi,
+che nel capitolo precedente si chiamava *ritorno*. Un biscotto che arriva fra
 dieci mosse conta meno di uno che arriva adesso, perché nel frattempo può
 succedere di tutto, e quanto meno conta lo decidiamo noi. Poi una seduta va bene
 e la successiva male, con lo stesso cane e la stessa tendenza: il conto che
@@ -81,7 +95,17 @@ dove $\tau=(s_0,a_0,r_0,s_1,\dots)$ è una *traiettoria* generata seguendo la
 policy, $r_t$ è la ricompensa al passo $t$ e $\gamma\in[0,1)$ è il fattore di
 sconto, che pesa meno il futuro lontano. Rispetto ai metodi basati sul valore,
 ottimizzare $\pi_\theta$ direttamente gestisce con naturalezza gli spazi di
-azioni continui e le policy stocastiche.
+azioni continui e le policy stocastiche. Per azioni continue basta una
+distribuzione continua, per esempio una gaussiana
+$\pi_\theta(\mathbf{a}\mid s)=\mathcal{N}\big(\boldsymbol{\mu}_\theta(s),\,
+\sigma^2\mathbf{I}\big)$ con la media data dalla rete e $\sigma$ fissato o
+appreso. Il termine che comparirà nel gradiente vale allora
+$\nabla_\theta\log\pi_\theta(\mathbf{a}\mid s)=
+\sigma^{-2}\,\mathbf{J}_\theta(s)^{\top}
+\big(\mathbf{a}-\boldsymbol{\mu}_\theta(s)\big)$,
+con $\mathbf{J}_\theta=\partial\boldsymbol{\mu}_\theta/\partial\theta$ lo
+jacobiano della media: moltiplicato per l'esito, sposta la media verso le
+azioni che hanno reso di più {cite}`sutton2018reinforcement`.
 
 Un avviso sulla notazione, perché da qui in avanti cambia. Questa è la
 convenzione dei lavori di deep RL: $r_t$ è la ricompensa che segue l'azione
@@ -118,7 +142,8 @@ tre mosse pessime che avevi fatto per strada; se hai perso, rende meno probabili
 anche quelle buone. E due partite giocate con la stessa identica strategia
 possono finire in modi opposti per puro caso, con la correzione che cambia
 segno di conseguenza. Il risultato è un apprendimento che balla: va nella
-direzione giusta in media, ma a strattoni, e ci mette moltissimo.
+direzione giusta in media, ma a strattoni, e ci mette moltissimo. Quanto balla,
+come nel capitolo precedente, lo misura la varianza.
 
 Un primo ritocco costa niente. Quando i punti si segnano per strada, e non solo
 alla fine, una mossa non può cambiare quelli già segnati prima di lei: la si
@@ -174,8 +199,10 @@ hanno aspettazione nulla, e a ciascun addendo resta agganciato solo il ritorno
 da lì in avanti, $G_t$.
 
 L'enunciato vale sotto le ipotesi consuete ($\pi_\theta$ differenziabile in
-$\theta$, ritorni limitati, distribuzione stazionaria degli stati ben definita)
-e sotto una in più, che conviene tenere a mente perché tornerà fra poche pagine:
+$\theta$, ricompense limitate, orizzonte finito oppure $\gamma<1$, quanto basta
+per scambiare derivata e valore atteso; la distribuzione stazionaria degli
+stati serve solo nella formulazione a ricompensa media, che qui non si usa) e
+sotto una in più, che conviene tenere a mente perché tornerà fra poche pagine:
 il teorema è on-policy. Nella forma originale al posto di $G_t$ compare
 $Q^\pi(s_t,a_t)$, e sostituirvi il ritorno osservato è lecito solo perché
 $\mathbb{E}[G_t \mid s_t, a_t] = Q^\pi(s_t,a_t)$, il che richiede che il seguito
@@ -215,8 +242,9 @@ rumorose e lente a convergere.
 
 ## Actor-Critic: chi agisce e chi giudica
 
-Come si smorza quell'altalena? L'idea è affiancare al giocatore un giudice
-che commenta le mosse una per una, senza aspettare la fine
+Come si abbassa la varianza di REINFORCE? Affiancando alla policy, che qui
+prende il nome di **attore**, una stima del valore, il **critico**, che giudica
+le mosse una per una senza aspettare la fine dell'episodio
 ({numref}`fig-actor-critic`).
 
 ```{figure} ../figures/actor-critic.svg
@@ -232,7 +260,7 @@ con la situazione successiva e la ricompensa.
 
 `````{tab} Elementare
 
-L’**attore** è chi gioca: decide le mosse. Il **critico** è un allenatore a
+L'attore è chi gioca: decide le mosse. Il critico è un allenatore a
 bordo campo che, mossa dopo mossa, mormora "meglio del previsto" oppure "peggio
 del previsto". L'attore non deve più aspettare la fine della partita per sapere
 com'è andata: riceve un giudizio immediato a ogni passo e corregge subito la
@@ -252,7 +280,7 @@ gioco.
 E l'allenatore si può sbagliare. Il suo «meglio del previsto» vale quanto
 valgono le sue previsioni, e all'inizio non ne sa più del giocatore: sono
 giudizi affrettati presi per buoni. Il verdetto di fine partita, quello, non
-sbagliava mai; era soltanto rumoroso, perché una partita sola dice poco. Si
+sbagliava mai; ballava soltanto, perché una partita sola dice poco. Si
 scambia una cosa con l'altra, commenti immediati in cambio del rischio che siano
 storti, ed è lo scambio su cui si regge il metodo.
 
@@ -332,10 +360,9 @@ affina le sue stime, l'attore le usa come segnale.
 
 `````
 
-## A3C e PPO: gli algoritmi che funzionano davvero
+## A3C e PPO
 
-Su REINFORCE e sull'attore-critico, messi insieme, poggiano i due algoritmi che
-si usano davvero.
+Dall'attore-critico discendono i due algoritmi più diffusi della famiglia.
 
 **A3C** {cite}`mnih2016asynchronous` fa giocare molte copie dell'agente
 insieme, ciascuna la propria partita in una copia sua del gioco. Il guadagno è
@@ -343,44 +370,47 @@ lo stesso della memoria delle esperienze in DQN, ottenuto per un'altra strada.
 Lì si rimescolavano esperienze pescate da momenti lontani fra loro; qui le
 esperienze arrivano già diverse l'una dall'altra, perché nello stesso istante
 ogni copia si trova in un punto diverso della sua partita. La rete non si
-ritrova mai a correggersi dieci volte di fila su
-situazioni quasi identiche, e l'addestramento balla di meno. Come effetto
-collaterale, si usano tutti i processori della macchina invece di uno. La sigla
-sta per *Asynchronous Advantage Actor-Critic*: attore-critico, con il
-vantaggio, e in parallelo senza aspettarsi a vicenda, cioè le tre cose appena
-dette.
+ritrova mai a correggersi dieci volte di fila su situazioni quasi identiche, e
+l'addestramento balla di meno. Come effetto collaterale, si usano tutti i
+processori della macchina invece di uno. La sigla sta per *Asynchronous
+Advantage Actor-Critic*: attore-critico, con il vantaggio, e in parallelo senza
+aspettarsi a vicenda, cioè le tre cose appena dette. Nella pratica di oggi si
+usa quasi sempre la variante sincrona, **A2C**, che aspetta tutte le copie e
+aggiorna i pesi una volta sola: rende altrettanto, e il disordine
+dell'asincronia non si è rivelato un vantaggio {cite}`wu2017baselines`.
 
 **PPO** (*Proximal Policy Optimization* {cite}`schulman2017proximal`) è
-l'algoritmo che oggi si prova per primo, e la ragione è che perdona la
-taratura, più che la potenza: cioè funziona ragionevolmente su una
-gamma larga di problemi senza che qualcuno passi giorni a regolarne le manopole.
+l'algoritmo che oggi si prova per primo. Gli autori lo presentano come una
+versione più semplice di un metodo precedente, TRPO: un normale ottimizzatore
+del primo ordine al posto di un vincolo da risolvere a ogni passo, e nei loro
+esperimenti un'efficienza nei campioni almeno pari. Quanto renda in pratica,
+però, dipende parecchio dai dettagli con cui lo si programma.
 
 ```{figure} ../figures/ppo-2017.svg
 :name: fig-ppo-clipping
 :alt: "Dalla policy vecchia, al centro, si dipartono due frecce. La prima è un passo breve che resta dentro una fascia consentita disegnata attorno al punto di partenza, e viene accettata. La seconda è un salto lungo che esce dalla fascia: l'aggiornamento viene tagliato al bordo, e oltre quel bordo non porta più alcun vantaggio."
 :width: 84%
 
-Il guinzaglio di PPO. Non impedisce di migliorare: toglie il premio a chi prova
-a migliorare troppo in una volta, per tenere l'aggiornamento vicino alla
-strategia che ha generato le partite. È un incentivo e non un divieto, e la
-differenza conta: niente impedisce all'aggiornamento di uscire dalla fascia,
-semplicemente uscirne non frutta più. La sezione ci torna sopra, perché il nome
-promette più di quanto mantenga.
+Il clipping di PPO. Non impedisce di migliorare: toglie il guadagno a chi prova
+a cambiare troppo in una volta la probabilità di una mossa, per tenere
+l'aggiornamento vicino alla policy che ha generato le partite. È un incentivo e
+non un divieto: niente impedisce all'aggiornamento di uscire dalla fascia,
+semplicemente uscirne non frutta più.
 ```
 
-Il guinzaglio di {numref}`fig-ppo-clipping` esiste perché le esperienze
+Il clipping di {numref}`fig-ppo-clipping` esiste perché le esperienze
 invecchiano in fretta. Le partite da cui l'agente sta imparando le ha giocate
 con la strategia di prima, non con quella che sta diventando: dicono in che
 direzione conviene muoversi, ma solo finché le due si somigliano ancora. Con un
 passo troppo lungo quei ricordi finiscono per descrivere il comportamento di
 qualcun altro.
 
-E quanto si somigliano si può misurare, mossa per mossa. Si guarda che
-probabilità le dava la strategia vecchia e che probabilità le dà la nuova, e si
-fa il rapporto fra le due: se la mossa aveva il $10\%$ e adesso ha il $12\%$ il
-rapporto vale $1{,}2$, se non è cambiato niente vale $1$. La fascia disegnata
-nella figura va appunto da $0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto
-in più.
+Quanto le due policy si somigliano su una mossa si misura con il rapporto fra
+le probabilità che le danno la nuova e la vecchia,
+$\rho_t = \pi_\theta(a_t\mid s_t)/\pi_{\theta_{\text{old}}}(a_t\mid s_t)$: se la
+mossa aveva il $10\%$ e adesso ha il $12\%$ il rapporto vale $1{,}2$, se non è
+cambiato niente vale $1$. La fascia disegnata nella figura va appunto da
+$0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto in più.
 
 E che succede fuori da lì? Ricordiamo che tutto questo mestiere consiste nel
 far salire un numero, la ricompensa attesa, spostando i pesi della rete. Ecco:
@@ -397,13 +427,14 @@ cura (*proximal* vuol dire «vicino»): tenere la strategia nuova a poca distanz
 da quella che ha giocato le partite.
 
 Il freno, però, agisce da un lato solo, e quale lato dipende da com'è andata la
-mossa. Su una mossa che era andata bene, il guadagno si ferma quando la si è
-resa molto più probabile di prima: è lì che si rischia di strafare. Se invece
-quella stessa mossa buona è diventata molto meno probabile, il premio a
-rimetterla su resta intero, perché quello non è il pericolo. Sulle mosse andate
-male i due lati si scambiano. Il freno, insomma, non frena la mossa buona
-diventata rara né quella cattiva diventata frequente, e «vicino» resta il
-proposito: quanto le due strategie
+mossa. Prendi una mossa andata bene, che la strategia vecchia sceglieva il
+$10\%$ delle volte. Portarla al $12\%$ frutta; portarla al $15\%$ non frutta
+niente di più, perché oltre il bordo della fascia il guadagno si ferma: è lì
+che si rischia di strafare. Se invece l'aggiornamento l'ha fatta scendere al
+$5\%$, rimetterla su frutta per intero, perché perdere una mossa buona non è il
+pericolo da cui ci si difende. Per una mossa andata male i lati si scambiano:
+farla scendere frutta solo fino all’$8\%$, mentre se è salita, riportarla giù
+frutta sempre. «Vicino», insomma, resta un proposito: quanto le due strategie
 si somiglino davvero, va misurato.
 
 Vietare sul serio i passi lunghi si può, ed è la strada più vecchia, quella che
@@ -419,12 +450,11 @@ riduce a giocare sempre la stessa mossa: serve a non far irrigidire la strategia
 su un'unica risposta prima di aver visto abbastanza.
 
 L'ultima cosa è la meno elegante. Quanto PPO vada meglio della strada più
-vecchia, misurato, dipende poco dal guinzaglio: viene soprattutto da nove
+vecchia, misurato, dipende poco dal freno: viene soprattutto da nove
 accorgimenti di programmazione, del genere di rimettere i numeri sulla stessa
 scala, tagliare quelli fuori misura, scegliere da quali valori far partire la
-rete. Fra
-l'algoritmo raccontato su una pagina e il programma che lo esegue c'è spesso più
-distanza che fra due algoritmi diversi.
+rete. Fra l'algoritmo raccontato su una pagina e il programma che lo esegue c'è
+spesso più distanza che fra due algoritmi diversi.
 
 `````
 
@@ -461,7 +491,40 @@ $A_t=-1$ e $\rho_t=5$, cioè un rapporto più di quattro volte l'estremo
 superiore della fascia ($1{,}2$), l'obiettivo vale $-5$ e la sua derivata rispetto a
 $\rho_t$ vale $-1$: gradiente intero, niente tosatura. Dei quattro casi fuori
 banda (vantaggio positivo o negativo, rapporto sopra o sotto la fascia), in due
-la tosatura non interviene affatto.
+la tosatura non interviene affatto, e la derivazione automatica lo conferma
+caso per caso:
+
+```python
+import torch
+
+eps = 0.2
+print("vantaggio  rapporto  obiettivo  derivata")
+for vantaggio in (+1.0, -1.0):
+    for valore in (0.5, 0.9, 1.1, 1.5, 5.0):
+        rapporto = torch.tensor(valore, requires_grad=True)
+        tosato = torch.clamp(rapporto, 1 - eps, 1 + eps)
+        obiettivo = torch.min(rapporto * vantaggio, tosato * vantaggio)
+        obiettivo.backward()                 # derivata rispetto al rapporto
+        print(f"{vantaggio:+9.1f} {valore:9.1f} {obiettivo.item():10.2f} "
+              f"{rapporto.grad.item():9.1f}")
+```
+
+```text
+vantaggio  rapporto  obiettivo  derivata
+     +1.0       0.5       0.50       1.0
+     +1.0       0.9       0.90       1.0
+     +1.0       1.1       1.10       1.0
+     +1.0       1.5       1.20       0.0
+     +1.0       5.0       1.20       0.0
+     -1.0       0.5      -0.80       0.0
+     -1.0       0.9      -0.90      -1.0
+     -1.0       1.1      -1.10      -1.0
+     -1.0       1.5      -1.50      -1.0
+     -1.0       5.0      -5.00      -1.0
+```
+
+La derivata è nulla solo dove il $\min$ sceglie il termine tosato: sopra la
+fascia con vantaggio positivo, sotto con vantaggio negativo.
 
 Conviene dire con precisione che cosa questo garantisce, perché è meno di quanto
 il nome suggerisca. È un'euristica del primo ordine e per campione, non un
@@ -477,20 +540,24 @@ che confrontano riesce a tenere i rapporti dentro l'intervallo
 $[1-\epsilon,1+\epsilon]$, PPO compreso, che pure è addestrato con un obiettivo
 che quei rapporti li tosa. Attenzione però a quale recinto si sta misurando:
 questo è il vincolo sui rapporti, non la regione di fiducia in divergenza di
-Kullback-Leibler della formula di TRPO, che TRPO impone davvero, quasi per
-costruzione, e che gli stessi autori misurano e trovano rispettata.
+Kullback-Leibler della formula di TRPO. Quella TRPO la impone davvero, quasi
+per costruzione; ma con gli iperparametri migliori la divergenza media resta
+contenuta anche per PPO, e secondo gli autori a tenerla è il modo in cui
+l'obiettivo viene ottimizzato (passo di apprendimento, momento, ottimizzazioni
+di contorno) più che il tosaggio.
 
-Detto così il tosaggio sembra un trucco, e invece è l'approssimazione
-economica di un'idea precisa che lo precede. **TRPO** (*Trust Region Policy Optimization*) {cite}`schulman2015trust` pone
-il problema come massimizzazione vincolata: si
-massimizza lo stesso obiettivo con importance sampling, ma imponendo che la
-nuova policy resti vicina alla vecchia in divergenza di Kullback-Leibler,
+Detto così il tosaggio sembra un trucco; nasce invece come sostituto economico
+di un'idea precisa che lo precede. **TRPO** (*Trust Region Policy
+Optimization*) {cite}`schulman2015trust` pone il problema come massimizzazione
+vincolata: si massimizza lo stesso obiettivo con importance sampling, ma
+imponendo che la nuova policy resti vicina alla vecchia in divergenza di
+Kullback-Leibler,
 
 $$
 \max_\theta\ \mathbb{E}\big[\rho_t A_t\big]
 \quad \text{soggetto a} \quad
 \mathbb{E}\big[D_{\mathrm{KL}}(\pi_{\theta_{\text{old}}} \,\|\, \pi_\theta)\big]
-\le \delta .
+\le \delta ,
 $$
 
 dove $\delta$ è il raggio ammesso, cioè quanto la policy nuova può differire
@@ -500,17 +567,31 @@ del tosaggio, con la differenza che qui è un vincolo e là un incentivo.
 
 Il vincolo definisce una **regione di fiducia**, cioè l'intorno entro il quale
 l'approssimazione lineare dell'obiettivo è ancora credibile. La ragione per cui
-serve è quella che la sezione ha già raccontato con la metafora del
-guinzaglio: una policy non è un modello supervisionato qualunque, perché
-determina i dati che raccoglierà, e un passo troppo lungo non produce un errore
-recuperabile ma una policy che smette di visitare gli stati utili.
+serve è quella detta per il clipping di PPO: una policy non è un modello
+supervisionato qualunque, perché determina i dati che raccoglierà, e un passo
+troppo lungo non produce un errore recuperabile ma una policy che smette di
+visitare gli stati utili.
 
-Il prezzo di TRPO è computazionale: risolvere quel vincolo richiede
-un'approssimazione del secondo ordine con la matrice di informazione di Fisher,
-gestita con gradiente coniugato e ricerca di linea. Funziona, ed è pesante e
-scomodo da implementare. PPO osserva che l'effetto che si vuole (non
-allontanarsi troppo) si ottiene quasi tutto con un `min` e un `clip` dentro un
-normale ottimizzatore del primo ordine.
+Il prezzo di TRPO è computazionale. Linearizzando l'obiettivo attorno a
+$\theta_{\text{old}}$, con gradiente $\mathbf{g}=\nabla_\theta\,
+\mathbb{E}[\rho_tA_t]$, e approssimando la divergenza al secondo ordine,
+$\tfrac12\,\Delta\theta^{\top}\mathbf{F}\,\Delta\theta$ con $\mathbf{F}$ la
+matrice di informazione di Fisher e $\Delta\theta=\theta-\theta_{\text{old}}$,
+il passo vincolato ha forma chiusa,
+
+$$
+\Delta\theta =
+\sqrt{\frac{2\delta}{\mathbf{g}^{\top}\mathbf{F}^{-1}\mathbf{g}}}\;
+\mathbf{F}^{-1}\mathbf{g},
+$$
+
+cioè il gradiente naturale, con il passo scelto per arrivare al bordo del
+raggio $\delta$. Il prodotto $\mathbf{F}^{-1}\mathbf{g}$ si ottiene con il
+gradiente coniugato, senza mai invertire $\mathbf{F}$, e una ricerca di linea
+controlla che il vincolo vero, non approssimato, sia rispettato. Funziona, ed è
+pesante e scomodo da implementare. PPO propone di ottenere l'effetto che si
+vuole (non allontanarsi troppo) con un `min` e un `clip` dentro un normale
+ottimizzatore del primo ordine.
 
 A rigore l'obiettivo che si implementa non è
 solo $L^{\text{CLIP}}$: gli si sommano la perdita del critico e un piccolo
@@ -553,10 +634,10 @@ che lo esegue è spesso più larga della distanza fra due algoritmi.
 
 `````
 
-Con REINFORCE, l'attore-critico e PPO la cassetta degli attrezzi del gradiente
-di policy è completa: una strategia che si aggiorna a piccoli passi, un
-critico che tiene bassa la varianza, e un guinzaglio che impedisce di buttare
-via quello che funzionava.
+Con REINFORCE, l'attore-critico e PPO si ha l'impianto del gradiente di policy:
+una policy che si aggiorna per salita del gradiente, un critico che abbassa la
+varianza della stima, e un obiettivo tosato che scoraggia i passi lunghi senza
+vietarli.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -568,7 +649,7 @@ via quello che funzionava.
   mosse possibili non sono un menu di poche voci.
 - REINFORCE è il "prova e ricorda": si gioca una partita intera e, se è
   andata bene, si rende più probabile tutto ciò che si è fatto. Semplice, ma
-  lento e altalenante, perché il giudizio arriva solo alla fine.
+  lento, e balla parecchio, perché il giudizio arriva solo alla fine.
 - Actor-Critic affianca al giocatore un allenatore a bordo campo che
   commenta ogni mossa ("meglio del previsto", "peggio del previsto"):
   l'apprendimento diventa più rapido e più stabile, al prezzo che finché
@@ -576,7 +657,8 @@ via quello che funzionava.
   molti attori in parallelo; PPO scoraggia i passi lunghi invece di
   vietarli: a chi si allontana troppo dalla strategia che ha giocato le
   partite toglie il premio, non la possibilità. È quello che si prova per
-  primo, perché perdona gli errori di taratura più degli altri.
+  primo, perché è semplice da programmare; ma quanto rende dipende parecchio
+  dai dettagli di come lo si programma.
 ```
 `````
 
@@ -600,4 +682,7 @@ via quello che funzionava.
 Resta il gesto che i giocatori forti fanno prima di muovere: pensare. È la
 {doc}`ricerca ad albero Monte Carlo <mcts-alphago>`, dove la strategia appena
 costruita smette di rispondere d'istinto e diventa il consiglio che orienta una
-ricerca, ed è la strada che porta ad AlphaGo.
+ricerca, ed è la strada che porta ad AlphaGo. In fondo a quella sezione PPO
+ricompare in un altro mestiere, quello con cui si allineano gli assistenti
+conversazionali (l'RLHF), che la {doc}`sezione sul post-addestramento
+</Transformers/post-training>` riprenderà per intero.

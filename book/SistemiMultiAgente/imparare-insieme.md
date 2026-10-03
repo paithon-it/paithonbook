@@ -20,30 +20,32 @@ Alfred Lotka, studiando le reazioni chimiche che oscillano.
 
 La risposta al quesito di D'Ancona c'era, ma la cosa da tenere è un'altra:
 quelle due popolazioni non si fermano mai su un valore di equilibrio, ci
-girano attorno all'infinito. Segnatele su un piano, le prede in orizzontale e
-i predatori in verticale, e gli anni disegnano un anello chiuso che ripassa
-sempre da dove era partito. Ognuna insegue l'altra, e l'altra nel frattempo si
+girano attorno all'infinito. Segnate su un piano, le prede in orizzontale e i
+predatori in verticale, gli anni disegnano un anello chiuso che ripassa sempre
+da dove era partito. Ognuna insegue l'altra, e l'altra nel frattempo si
 è spostata.
 
-Tenete a mente quelle orbite, perché torneranno alla fine della sezione con
-altri nomi. Le sezioni precedenti hanno *progettato* il coordinamento:
-chi parla con chi, con quali messaggi, con quale regola di decisione. Qui il
-coordinamento non lo progetta nessuno: gli agenti devono impararlo, per
-tentativi e ricompense, come il bambino in bicicletta del capitolo sul
-reinforcement learning. E il primo fatto da mettere in chiaro è che quasi tutto
-quello che sappiamo da quel capitolo, in compagnia, smette di valere.
+Quelle orbite torneranno alla fine della sezione, con altri nomi. Le sezioni
+precedenti hanno *progettato* il coordinamento: chi parla con chi, con quali
+messaggi, con quale regola di decisione. Qui il coordinamento non lo progetta
+nessuno: gli agenti devono impararlo, per tentativi e ricompense, come il
+bambino in bicicletta del {doc}`capitolo sul reinforcement learning
+</ReinforcementLearning/mdp-valore>`. E il primo fatto da mettere in chiaro è
+che, con più agenti che imparano insieme, le garanzie di convergenza viste in
+quel capitolo non valgono più.
 
 ## Il terreno si muove sotto i piedi
 
 Il reinforcement learning classico poggia su un'ipotesi precisa: l'ambiente
-è un processo decisionale di Markov *stazionario*, e tutta l'impalcatura sta
-appesa a una parola: fisse. Fisse sono le regole del mondo
-(se faccio questa mossa in questa situazione, quello che succede dopo obbedisce
-sempre alla stessa legge) e fissi sono i premi (la stessa cosa vale sempre
-altrettanto). Su quell'impalcatura si dimostra che imparare per tentativi
-funziona davvero, cioè che provando abbastanza a lungo si arriva alla strategia
-migliore e poi ci si resta. Togliete la parola «fisse» e non crolla un
-dettaglio: crolla la dimostrazione.
+è un processo decisionale di Markov *stazionario*, cioè la transizione
+$P(s' \mid s, a)$ e la ricompensa $r(s, a)$ non cambiano nel tempo. Fisse sono
+le regole del mondo (se faccio questa mossa in questa situazione, quello che
+succede dopo obbedisce sempre alla stessa legge) e fissi sono i premi (la
+stessa cosa vale sempre altrettanto). Su quell'ipotesi si dimostra che il
+Q-learning tabellare converge al valore ottimo, e quindi a una strategia
+ottima, purché ogni mossa venga provata in ogni situazione abbastanza spesso.
+Se l'ambiente cambia mentre si impara, a cadere è proprio quella
+dimostrazione.
 
 `````{tab} Elementare
 
@@ -69,7 +71,7 @@ buona parte, sono loro.
 
 `````{tab} Superiore
 
-Il quadro formale è il gioco stocastico enunciato nell'apertura del
+Il quadro formale è il gioco stocastico enunciato nella pagina d'apertura del
 capitolo: $N$ agenti, uno spazio di stati $\mathcal{S}$, uno spazio di azioni
 per ciascun agente, una transizione $P(s' \mid s, a)$ che dipende dall'azione
 congiunta $a = (a^1, \dots, a^N)$ e una ricompensa $r^i$ per ciascuno. Dal
@@ -130,9 +132,8 @@ fare per ciascuna delle due cose che può aver visto: due casi. Al terzo, per
 ciascuna delle combinazioni di due osservazioni di fila, cioè le due del primo
 passo per le due del secondo: quattro casi. Uno più due più quattro fa sette
 decisioni da prendere, e ognuna è fra due azioni: bisogna quindi moltiplicare
-il due per sé stesso sette volte, e viene centoventotto piani diversi. Per due
-persone insieme le coppie di piani sono centoventotto per centoventotto, cioè
-sedicimilatrecentottantaquattro.
+il due per sé stesso sette volte, e vengono 128 piani diversi. Per due persone
+insieme le coppie di piani sono 128 per 128, cioè 16.384.
 
 Sembra poco. Portiamo i passi da tre a cinque, e le decisioni per persona
 diventano uno più due più quattro più otto più sedici, cioè trentuno: adesso il
@@ -140,12 +141,12 @@ due va moltiplicato per sé stesso trentuno volte, e fa poco più di due miliard
 di piani per una persona sola. Le coppie da confrontare sono due miliardi per
 due miliardi, cioè oltre quattro miliardi di miliardi. E siamo ancora a due
 soccorritori, due cose da vedere, due da fare, cinque passi. Provarli tutti,
-dunque, non si può. E non è che serva un computer più bravo: si è dimostrato
-che di questo problema non esiste una soluzione esatta in tempo utile, e che
-non basta nemmeno accontentarsi di una risposta approssimata con la garanzia
-di sbagliare poco, perché anche quella resta fuori portata. Restano le
-risposte approssimate senza garanzia, che è quello che si fa, ed è il resto
-della sezione.
+dunque, non si può, e un computer più veloce non cambierebbe le cose: i teorici
+della complessità hanno dimostrato che di questo problema non esiste una
+soluzione esatta in tempo utile, e che non basta nemmeno accontentarsi di una
+risposta approssimata con la garanzia di sbagliare poco, perché anche quella
+resta fuori portata {cite}`oliehoek2016concise`. Restano le risposte
+approssimate senza garanzia, che è quello che si fa.
 
 `````
 
@@ -189,24 +190,25 @@ compra un algoritmo trattabile {cite}`oliehoek2016concise`.
 
 `````
 
-Da qui in avanti, quindi, nessuno risolve: tutti approssimano. Il resto della
-sezione è il catalogo delle approssimazioni che reggono e delle ragioni per cui
-reggono, che è più interessante dell'elenco dei loro nomi.
+Nessun metodo, quindi, risolve esattamente un Dec-POMDP: tutti approssimano. I
+metodi che seguono (la baseline controfattuale, l'addestramento centralizzato,
+la fattorizzazione del valore, il self-play) sono approssimazioni diverse, e di
+ciascuna conta l'ipotesi su cui si regge.
 
 ## Chi è stato bravo?
 
 Il libro ha già incontrato l'assegnazione del merito, ma su un altro asse. Nel
 reinforcement learning il problema era temporale: il premio arriva alla fine
 della partita, e bisogna capire quale mossa se lo sia guadagnato. La prima
-risposta era spalmarlo all'indietro su tutte le mosse, contando meno quelle più
-lontane nel tempo.
+risposta era distribuirlo all'indietro sulle mosse della partita, pesando meno
+quelle più lontane nel tempo (lo sconto $\gamma$).
 
-Poi si è affinata nell'architettura **attore-critico** della {doc}`sezione
-sui gradienti di policy </DeepReinforcementLearning/policy-gradient>`:
-l'attore è la policy che sceglie le mosse, il critico una stima del valore
-$V(s)$ che non sceglie niente e fa da termine di paragone, così che l'attore
-venga corretto dal *vantaggio* («hai preso due più di quanto ci si
-aspettasse») invece che dal ritorno grezzo («hai preso otto»).
+Poi si è affinata nell'architettura **attore-critico** della {doc}`sezione sui
+gradienti di policy </DeepReinforcementLearning/policy-gradient>`: l'attore è la
+policy che sceglie le mosse, il critico una stima di quanto valga la situazione
+$s$ in cui ci si trova, il valore $V(s)$: non sceglie niente e fa da termine di
+paragone, così che l'attore venga corretto dal *vantaggio* («hai preso due più
+di quanto ci si aspettasse») invece che dal ritorno grezzo («hai preso otto»).
 
 Con più agenti, al merito nel tempo se ne aggiunge uno **fra compagni**, e la
 domanda cambia di natura: la squadra ha vinto, chi è stato bravo?
@@ -258,18 +260,22 @@ Il segnale che interessa a $i$ è $g^i$ mentre il rumore che gli arriva addosso
 segnale-rumore, misurato in deviazioni standard, vale
 
 $$
-\frac{\sigma}{\sigma\sqrt{N-1}} \;=\; \frac{1}{\sqrt{N-1}},
+\frac{\sigma}{\sigma\sqrt{N-1}} \;=\; \frac{1}{\sqrt{N-1}}
 $$
 
-e sotto quelle ipotesi si degrada come la radice del numero di compagni: con
-nove compagni (dieci agenti in tutto) il segnale utile vale un terzo del rumore
-che lo copre, e con cento compagni un decimo. Il modello additivo è, si noti,
-il caso *facile*, quello in cui il credito sarebbe in linea di principio
-separabile: già lì lo stimatore ingenuo affoga, e nei casi in cui i
-contributi si intrecciano non va meglio. È il **passeggero a scrocco** in
-forma di gradiente, e la cosa da notare è che nessuno bara: il problema sta
-nell'informazione che distinguerebbe l'utile dal passivo e non arriva a
-destinazione.
+(il fattore $\nabla_{\theta^i}\log\pi^i$ moltiplica allo stesso modo il termine
+utile e il resto, e nel rapporto si semplifica: se i contributi dei compagni
+hanno media zero e non dipendono dalle mosse di $i$, la parte che portano nel
+gradiente ha media zero e varianza
+$(N-1)\,\sigma^2\,\mathbb{E}\|\nabla_{\theta^i}\log\pi^i\|^2$), e sotto quelle
+ipotesi si degrada come la radice del numero di compagni: con nove compagni
+(dieci agenti in tutto) il segnale utile vale un terzo del rumore che lo copre,
+e con cento compagni un decimo. Il modello additivo è, si noti, il caso
+*facile*, quello in cui il credito sarebbe in linea di principio separabile: già
+lì lo stimatore ingenuo affoga, e nei casi in cui i contributi si intrecciano
+non va meglio. È il **passeggero a scrocco** in forma di gradiente, e la cosa da
+notare è che nessuno bara: il problema sta nell'informazione che distinguerebbe
+l'utile dal passivo e non arriva a destinazione.
 
 Quel rumore ha un antidoto parziale ma diretto: una **baseline
 controfattuale**. Invece di moltiplicare il gradiente per il ritorno di tutti,
@@ -302,11 +308,12 @@ varianza, non l'isolamento del contributo di $i$.
 `````
 
 La contromisura ovvia, dare a ciascuno un premio suo, sposta il problema invece
-di risolverlo. Premi individuali scritti a mano sono il terreno di coltura di un
-guaio già visto nel deep reinforcement learning, il reward hacking: si trova
-il modo di far salire il proprio punteggio senza fare la cosa per cui il
-punteggio era stato inventato, e un agente che insegue il proprio numero può
-danneggiare la squadra in perfetta buona fede.
+di risolverlo. Premi individuali scritti a mano espongono al *reward hacking*
+della {doc}`sezione su esplorazione e ricompensa
+</DeepReinforcementLearning/esplorazione-e-ricompensa>`: l'agente trova il modo
+di far salire il proprio punteggio senza fare la cosa per cui il punteggio era
+stato inventato, e un agente che insegue il proprio numero può danneggiare la
+squadra in perfetta buona fede.
 
 La strada che ha funzionato è l'opposta: tenere un premio solo e ricavarne
 il merito di ciascuno, invece di dichiararlo in anticipo. Le vie sono due. La
@@ -323,23 +330,25 @@ però, non viene isolato, perché come è andata dipende comunque anche da quell
 che hanno fatto loro.
 
 La seconda impara a **scomporre il risultato**, cioè a stimare quanto ciascuno
-ha contribuito partendo dal solo voto di squadra: è la via che il resto della
-sezione segue, perché si porta dietro anche il modo di addestrare insieme e poi
-giocare ognuno per conto proprio. È lo stesso problema che le topologie avevano
-lasciato aperto, cioè attribuire una colpa lungo un organigramma; ma con una
-differenza che conta. Qui il merito si può inseguire perché c'è un punteggio, e
-un punteggio si può derivare, cioè si può chiedere di quanto cambierebbe
-ritoccando ciascuna manopola. Là la catena era fatta di riassunti in italiano, e
-nessuno di questi metodi vi si trasferisce.
+ha contribuito partendo dal solo voto di squadra, e si porta dietro anche il
+modo di addestrare insieme e poi giocare ognuno per conto proprio. È lo stesso
+problema che la {doc}`sezione sulle topologie <topologie>` aveva lasciato
+aperto, cioè attribuire una colpa lungo un organigramma; ma con una differenza
+che conta. Qui il merito si può inseguire perché c'è un punteggio, e un
+punteggio si può derivare, cioè si può chiedere di quanto cambierebbe
+ritoccando ciascun parametro. Là la catena era fatta di riassunti in italiano,
+e nessuno di questi metodi vi si trasferisce.
 
-## Barare in allenamento, non in partita
+## Addestramento centralizzato, esecuzione decentralizzata
 
 L'asimmetria che salva è questa. Agenti come questi non imparano nel mondo vero,
 imparano dentro un simulatore: un mondo finto costruito al computer, in cui
 si può rigiocare la stessa situazione mille volte senza rompere niente. E quel
 simulatore è nostro, quindi in allenamento possiamo guardarci dentro quanto ci
 pare: la situazione completa, le mosse di tutti, perfino cose che nessun agente
-potrà mai osservare. In partita no, e ciascuno ha soltanto quello che vede lui.
+potrà mai osservare. Usarle è legittimo, perché il simulatore le mette a
+disposizione, ed è un'ipotesi esplicita del metodo. In partita no, e ciascuno ha
+soltanto quello che vede lui.
 
 La ricetta che ne discende si chiama **CTDE**, addestramento centralizzato ed
 esecuzione decentralizzata, e la sua regola d'oro sta in una riga:
@@ -359,66 +368,58 @@ spalle». La domenica il terzino ha soltanto i suoi occhi, e l'allenatore resta
 a bordo campo. Nessuno grida allo scandalo: la ripresa dall'alto serviva
 *prima*.
 
-La prima ricetta è esattamente questa. Ogni agente ha un attore, che guarda
-solo il proprio pezzo di campo e decide; e in allenamento gli sta accanto un
-critico, cioè quello che dà i voti, che invece guarda tutto: la situazione
-completa e la mossa di ciascuno. Così il terreno si muove molto meno, perché un
-voto dato sapendo che cosa hanno fatto *tutti* non scade appena gli altri
-cambiano abitudini: al critico servono le loro mosse, e quelle gliele
-abbiamo messe sul tavolo.
+La prima ricetta (nei lavori si chiama MADDPG) è esattamente questa. Ogni
+agente ha due parti. L'attore è il giocatore in campo, che guarda solo il
+proprio pezzo di campo e decide; il critico, cioè quello che dà i voti, è il
+suo allenatore, che c'è solo in allenamento e ha la ripresa: la situazione
+completa e la mossa di ciascuno. Quando giudica il passaggio sa già dove stava
+correndo il compagno, e quindi il voto non scade appena il compagno cambia
+abitudini. Il terreno si muove molto meno.
 
-Molto meno, però, non vuol dire fermo. Il critico sa che cosa hanno fatto
-tutti adesso, ma il voto che deve dare riguarda come andrà a finire, e come
-andrà a finire dipende da come giocheranno gli altri da qui in poi. Se quelli
-migliorano, lo stesso identico istante di gioco merita un voto diverso. Il
-terreno resta molto più fermo di prima, il che basta a far funzionare la cosa in
-pratica e non basta a garantirla.
+Molto meno, però, non vuol dire fermo: il voto riguarda come va a finire
+l'azione, e quello dipende da come giocheranno gli altri da lì in poi. Se il
+centravanti impara a smarcarsi, lo stesso identico passaggio merita un voto più
+alto. Basta a far funzionare la cosa in pratica; a garantirla, no.
 
-C'è poi un limite di taglia: il critico deve farsi un'idea di ogni combinazione
-di mosse, e le combinazioni si moltiplicano a ogni giocatore in più. Con una
-squadra si fa; con mille droni non c'è stagione abbastanza lunga per vederle
-tutte.
+La ripresa ha poi un limite di taglia. Il critico deve farsi un'idea di ogni
+combinazione di mosse, e le combinazioni si moltiplicano a ogni giocatore in
+più: con una squadra si fa, con mille droni non c'è stagione abbastanza lunga
+per vederle tutte.
 
-La seconda ricetta serve quando la ricompensa è una sola per tutta la squadra.
-Si impara un voto per ogni giocatore e una regola per comporli nel voto di
-squadra, con un vincolo che sembra innocuo: se un giocatore alza il proprio
-voto, il voto di squadra non può scendere. Quel vincolo basta a permettere
-a ciascuno di scegliere da solo la mossa migliore: se il tuo voto sale e quello
-di squadra non può scendere, allora fare del proprio meglio è fare il meglio
-per tutti, e nessuno ha bisogno di consultarsi. Basta, non serve: di regole che
-reggono la scelta da soli ce ne sono anche altre, e questa è quella che si sa
-imparare senza fatica.
+La seconda ricetta (si chiama QMIX) serve quando il premio è uno solo per tutta
+la squadra, il risultato della partita. L'allenatore impara a dare un voto a
+ogni giocatore, scritto soltanto con quello che quel giocatore vedeva, come una
+pagella del lunedì; e impara una regola per comporre le pagelle nel voto di
+squadra, con un vincolo che sembra innocuo: se sale la pagella di un giocatore,
+il voto di squadra non può scendere. Quel vincolo basta, e la domenica nessuno
+ha bisogno di consultarsi: ciascuno fa la mossa che alza la propria pagella, e
+così porta al massimo anche il voto di squadra. Non è l'unica regola che lo
+permette, ma è quella che si impara senza fatica.
 
-Il vincolo però costa, e il conto si vede su quattro numeri. Due agenti, due
-mosse a testa (A e B), e questo punteggio di squadra:
+Il vincolo però costa, e il conto si vede su quattro numeri. Due giocatori
+devono sovrapporsi sulla stessa fascia, e ciascuno sceglie se salire a destra
+(A) o a sinistra (B). Il punteggio di squadra è questo:
 
 |  | l'altro fa A | l'altro fa B |
 |:--|:--:|:--:|
 | **io faccio A** | 2 | 0 |
 | **io faccio B** | 0 | 1 |
 
-Il meglio che può capitare è che vadano tutti e due su A, e vale due. Perché
-ciascuno ci arrivi da solo, dunque, A deve essere la mossa con il voto
-individuale più alto per tutti e due.
+Il meglio è che salgano tutti e due a destra, e vale due. Ora prova a dare le
+pagelle. Se quella del primo dice che A è meglio di B, il vincolo pretende che,
+qualunque cosa faccia il secondo, spostare il primo da B ad A non faccia
+scendere il punteggio di squadra. Ma con il secondo su B la tabella dice il
+contrario: «io A, l'altro B» vale zero, «io B, l'altro B» vale uno. Lo stesso
+vale, scambiando i ruoli, se è il secondo a preferire A. Resta che tutti e due
+preferiscano B, e allora il vincolo pretende che «B, B» valga almeno quanto
+«A, A»: uno contro due, sbagliato di nuovo. In qualunque modo si diano le
+pagelle, quella tabella non si ricopia.
 
-Ma proviamo a crederci e vediamo dove va a finire. Se per il primo agente A vale
-più di B, allora, per la regola, mettendolo su A la squadra non può fare peggio
-che mettendolo su B, a parità di mossa del secondo. Mettiamo il secondo su B: ne
-segue che la casella «io A, l'altro B» dovrebbe valere almeno quanto la casella
-«io B, l'altro B». La tabella dice zero contro uno. Non torna. E l'altra strada,
-dare a B
-il voto individuale più alto per tutti e due, non va meglio: allora la regola
-chiede che «io B, l'altro B» valga almeno quanto «io A, l'altro A», e la
-tabella dice uno contro due. Nessuna scelta dei voti individuali regge, per
-quanto la si faccia bene.
-
-Quello che la tabella dice è preciso, e conviene non chiedergli di più: quel
-punteggio di squadra, con questa ricetta, non si può riprodurre esatto. Sono le
-situazioni in cui bisogna accordarsi su una convenzione arbitraria, come
-guidare tutti a destra o tutti a sinistra, dove la mossa giusta per me dipende
-da quella dell'altro. La ricetta può ancora avvicinarsi, e in pratica su questi
-giochi è dove inciampa; ma il conto appena fatto dimostra l'impossibilità di
-riprodurre, non quella di scegliere bene.
+È il caso in cui bisogna accordarsi su una convenzione arbitraria, tutti a
+destra o tutti a sinistra, e la mossa giusta per me dipende da quella
+dell'altro. Il conto dice soltanto che con questa ricetta quel punteggio non si
+ricopia esatto: QMIX può ancora avvicinarsi, e non è detto che i due finiscano
+per scegliere male; ma in pratica è su questi giochi che inciampa.
 
 `````
 
@@ -436,6 +437,28 @@ dove $x$ raccoglie l'informazione di stato disponibile in addestramento (nel
 caso più semplice la concatenazione delle osservazioni di tutti) e
 $a^1, \dots, a^N$ sono le azioni di tutti gli agenti. L'attore è
 decentralizzato, il critico no, e a fine addestramento il critico si getta.
+L'attore si aggiorna con il gradiente deterministico calcolato sul critico
+centralizzato,
+
+$$
+\nabla_{\theta^i} J(\mu^i) \;=\; \mathbb{E}_{x, a \sim \mathcal{D}}\Big[
+\nabla_{\theta^i}\mu^i_{\theta^i}(o^i)\;
+\nabla_{a^i} Q^i_{\phi^i}(x, a^1, \dots, a^N)\big|_{a^i = \mu^i(o^i)}\Big],
+$$
+
+e il critico minimizza $\big(Q^i_{\phi^i}(x, a^1, \dots, a^N) - y^i\big)^2$
+con il bersaglio
+
+$$
+y^i \;=\; r^i + \gamma\, Q'^{\,i}\big(x', a'^1, \dots, a'^N\big)
+\big|_{a'^j = \mu'^j(o'^j)},
+$$
+
+dove $\mathcal{D}$ è il buffer delle transizioni già giocate, $x'$ e $o'^j$ lo
+stato e le osservazioni al passo dopo, e $Q'$ e $\mu'$ le reti target, copie
+dei parametri aggiornate in ritardo {cite}`lowe2017multi`. Nel bersaglio
+compaiono le policy di tutti, ed è da lì che entra la non stazionarietà che
+resta.
 
 La ragione per cui questo attenua la non stazionarietà si scrive in una
 riga:
@@ -522,60 +545,63 @@ $$
 dove $a = (a^1, \dots, a^N)$ è l'azione congiunta: massimizzare
 individualmente equivale a massimizzare globalmente, e il $\max$ sull'azione
 congiunta, che costerebbe $|\mathcal{A}|^N$, si calcola in $N|\mathcal{A}|$
-operazioni. In esecuzione nessuno consulta nessuno.
+operazioni. In esecuzione nessuno consulta nessuno. La proprietà espressa da
+questa uguaglianza ha preso il nome di IGM (*Individual-Global-Max*) in QTRAN,
+uno degli altri metodi appena ricordati, dove additività e monotonia compaiono
+come due sue condizioni sufficienti {cite}`son2019qtran`.
 
-Ciò di cui il vincolo priva è altrettanto preciso, e va enunciato per quello
-che è: una rappresentazione esatta, non una scelta. Per dimostrarlo basta
-un gioco a due agenti con due azioni a testa. Poniamo $Q_{tot}(A,A)=2$,
+Ciò di cui il vincolo priva è altrettanto preciso, e va enunciato per quello che
+è: una rappresentazione esatta, non una scelta. Per dimostrarlo basta un gioco a
+due agenti con due azioni a testa. Poniamo $Q_{tot}(A,A)=2$,
 $Q_{tot}(A,B)=Q_{tot}(B,A)=0$, $Q_{tot}(B,B)=1$, e supponiamo esista una $f$
 monotona con $Q_{tot}(a^1,a^2) = f\big(Q^1(a^1), Q^2(a^2)\big)$. Se
 $Q^1(A) \ge Q^1(B)$, la monotonia nel primo argomento dà
 $Q_{tot}(A,B) \ge Q_{tot}(B,B)$, cioè $0 \ge 1$: falso, quindi
 $Q^1(A) < Q^1(B)$. Per simmetria $Q^2(A) < Q^2(B)$. Ma allora la monotonia nei
 due argomenti insieme dà $Q_{tot}(A,A) \le Q_{tot}(B,B)$, cioè $2 \le 1$: falso
-di nuovo. Nessuna $f$ monotona rappresenta quella matrice, ed è la stessa
-frase del lavoro originale: una funzione valore in cui la mossa migliore di un
-agente dipende dalle mosse degli altri allo stesso passo «non si fattorizza, e
-quindi non può essere rappresentata *perfettamente* da QMIX». Il coordinamento
-su una convenzione arbitraria ne è il caso da manuale. Il teorema si ferma
-qui: dice che la miscelazione monotona non riproduce quel valore, non che
-l'argmax decomposto scelga male. A far fallire QMIX su quei giochi è la
-dinamica dell'apprendimento, e la distinzione conta: è la ragione per cui
-avvicinarsi di più a quel valore, pur senza riprodurlo, serve a qualcosa.
+di nuovo. Nessuna $f$ monotona rappresenta quella matrice, ed è quanto dice il
+lavoro originale: una funzione valore in cui la mossa migliore di un agente
+dipende dalle mosse degli altri allo stesso passo non si fattorizza in modo
+appropriato, e QMIX non la può rappresentare perfettamente (*cannot be
+represented perfectly*, scrivono gli autori), anche se la approssima meglio di
+VDN {cite}`rashid2018qmix`. Il coordinamento su una convenzione arbitraria ne è
+il caso da manuale. Il teorema si ferma qui: dice che la miscelazione monotona
+non riproduce quel valore, non che l'argmax decomposto scelga male. A far
+fallire QMIX su quei giochi è la dinamica dell'apprendimento, e la distinzione
+conta: è la ragione per cui avvicinarsi di più a quel valore, pur senza
+riprodurlo, serve a qualcosa.
 
 `````
 
 C'è una terza ricetta, e il suo interesse è di metodo prima che tecnico.
-**MAPPO** {cite}`yu2022surprising` non inventa nulla: prende PPO (*proximal
-policy optimization*: MA, nel nome, sta per
-*multi-agent*), cioè l'algoritmo dei
-{doc}`gradienti di policy </DeepReinforcementLearning/policy-gradient>` che a
-ogni aggiornamento impedisce a un agente di cambiare troppo il proprio modo di
-giocare, lascia a
-ciascuno il suo attore che vede solo il proprio pezzo, e gli affianca un
-critico solo per tutta la squadra, che in allenamento guarda tutto. Il
-titolo del lavoro dichiara la sorpresa: un metodo semplice, con le manopole
-girate per bene, regge il confronto con architetture costruite apposta per il
-caso multi-agente. E sono manopole noiose: rimettere i punteggi su una scala
-comune, non insistere troppe volte sugli stessi dati prima di buttarli,
-spostarsi poco per volta. Conviene tenerlo accanto alla regola prudente del
-«Costo del coordinamento»: prima di credere che serva la macchina complicata,
-conviene misurare fin dove arriva quella semplice messa a punto per bene.
+**MAPPO** {cite}`yu2022surprising`, cioè PPO multi-agente, non inventa nulla:
+prende PPO (*proximal policy optimization*), l'algoritmo dei {doc}`gradienti di
+policy </DeepReinforcementLearning/policy-gradient>` che a ogni aggiornamento
+impedisce a un agente di cambiare troppo il proprio modo di giocare, lascia a
+ciascuno il suo attore, che vede solo il proprio pezzo, e gli affianca un
+critico solo per tutta la squadra, che in allenamento guarda tutto. Il titolo
+del lavoro dichiara la sorpresa: un metodo semplice, con le manopole girate per
+bene, regge il confronto con architetture costruite apposta per il caso
+multi-agente. E sono manopole noiose: rimettere i punteggi su una scala comune,
+non insistere troppe volte sugli stessi dati prima di buttarli, spostarsi poco
+per volta. Va tenuto accanto alla regola prudente della {doc}`sezione sul costo
+del coordinamento <costo-del-coordinamento>`: prima di credere che serva la
+macchina complicata, si misura fin dove arriva quella semplice messa a punto per
+bene.
 
-## L'avversario sei tu di ieri
+## Self-play e curriculum
 
-Il programma di dama di Arthur Samuel, con cui si apre il
-{doc}`capitolo sul machine learning </MachineLearning/overview>`, arrivò a
-giocare meglio del suo autore. Il congegno con cui ci riuscì è ancora quello di
-oggi. Il programma giudicava una posizione con una formula che sommava alcune
-caratteristiche (quanti pezzi ho io, quanti ne ha lui, chi controlla il
-centro), ciascuna con un peso che diceva quanto contava; e per allenarlo Samuel
-ne teneva due copie, che chiamava alpha e beta (sono due copie del programma, e
-non hanno niente a che vedere con i due limiti della potatura alfa-beta).
-Alpha aggiustava i propri pesi
-dopo ogni mossa, e ogni tanto buttava via le caratteristiche che sembravano
-non servire sostituendole con altre pescate da una lista di riserva; beta
-teneva la sua formula ferma per tutta la partita.
+Il programma di dama di Arthur Samuel, con cui si apre il {doc}`capitolo sul
+machine learning </MachineLearning/overview>`, arrivò a giocare meglio del suo
+autore. Il congegno con cui ci riuscì è ancora quello di oggi. Il programma
+giudicava una posizione con una formula che sommava alcune caratteristiche
+(quanti pezzi ho io, quanti ne ha lui, chi controlla il centro), ciascuna con un
+peso che diceva quanto contava; e per allenarlo Samuel ne teneva due copie, che
+chiamava alpha e beta (due copie del programma, senza legami con la potatura
+alfa-beta della ricerca nei giochi). Alpha aggiustava i propri pesi dopo ogni
+mossa, e ogni tanto buttava via le caratteristiche che sembravano non servire
+sostituendole con altre pescate da una lista di riserva; beta teneva la sua
+formula ferma per tutta la partita.
 
 Il contrasto è lì, ed è tutto: uno dei due si muove *dentro* la partita, l'altro
 sta fermo finché la partita non è finita, ed è proprio questo a farne un
@@ -612,20 +638,19 @@ troppo spesso, e le partite restano informative. Almeno, finché «più bravo»
 vuol dire qualcosa.
 
 È la linea che porta ad AlphaGo {cite}`silver2016mastering`, già raccontato
-nella sezione {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>`:
-una rete che sceglie la mossa,
-addestrata prima sulle partite dei giocatori umani e poi affinata col gradiente
-di policy contro una versione precedente di sé, sorteggiata ogni volta da un
-archivio invece di prendere sempre l'ultima (per non lasciare che la rete si
-adatti alla sola policy corrente, il guasto che sasso, carta e forbici mostrano
-più avanti), e una rete che dice chi sta vincendo, addestrata proprio
-sulle partite così generate. Le due guidano la ricerca ad albero Monte Carlo di
-quella sezione, che prima di muovere prova a immaginare come proseguirebbe la
-partita. L'anno dopo la stessa squadra
-toglie di mezzo anche il punto di partenza umano: AlphaGo Zero
-{cite}`silver2017mastering` parte dalle sole regole del gioco e da pesi
-casuali, e tutto il suo addestramento è self-play. È la prova più netta del
-punto: le partite umane erano un acceleratore, non un ingrediente necessario.
+nella sezione {doc}`MCTS e AlphaGo </DeepReinforcementLearning/mcts-alphago>`.
+Lì una rete sceglie la mossa: è addestrata prima sulle partite dei giocatori
+umani, poi affinata col gradiente di policy contro una versione precedente di
+sé, sorteggiata ogni volta da un archivio invece di prendere sempre l'ultima,
+perché la rete non si adatti alla sola policy corrente (è il guasto che sasso,
+carta e forbici mostrano fra poco). Una seconda rete dice chi sta vincendo, e si
+addestra proprio sulle partite così generate. Le due guidano la ricerca ad
+albero Monte Carlo, che prima di muovere prova a immaginare come proseguirebbe
+la partita. L'anno dopo la stessa squadra toglie di mezzo anche il punto di
+partenza umano: AlphaGo Zero {cite}`silver2017mastering` parte dalle sole regole
+del gioco e da pesi casuali, e tutto il suo addestramento è self-play. È la
+prova più netta del punto: le partite umane erano un acceleratore, non un
+ingrediente necessario.
 
 ## Quando la scala non esiste
 
@@ -665,33 +690,41 @@ con matrice di payoff antisimmetrica $\mathbf{A}$ ($A_{ij} = -A_{ji}$, il
 guadagno di chi gioca $i$ contro chi gioca $j$), la relazione «$i$ batte $j$»
 può contenere cicli, e quando li contiene non esiste alcuna funzione $f$ su una
 scala reale, nessun punteggio di tipo Elo, tale che
-$A_{ij} > 0 \iff f(i) > f(j)$: un ordine totale semplicemente non c'è.
+$A_{ij} > 0 \iff f(i) > f(j)$: un ordine totale semplicemente non c'è. Quanto
+un gioco sia ciclico si misura: ogni matrice antisimmetrica si scompone in modo
+ortogonale in una parte transitiva, $A_{ij} = r_i - r_j$ per un punteggio $r$
+di tipo Elo, e in una parte ciclica, che nessun punteggio cattura
+{cite}`balduzzi2018reevaluating`, e la scomposizione si estende ai giochi con
+infinite strategie {cite}`balduzzi2019openended`. Più pesa la parte ciclica,
+più il self-play ingenuo rischia di girare in tondo; in sasso-carta-forbici la
+parte transitiva è nulla.
 
 Il self-play ingenuo è, in questa notazione, l'iterazione della miglior risposta
 alla strategia corrente: si sceglie l'indice
 $i_{t+1} \in \arg\max_i (\mathbf{A}\,\boldsymbol{\pi}_t)_i$ e si pone
 $\boldsymbol{\pi}_{t+1} = \mathbf{e}_{i_{t+1}}$, il versore della strategia pura
-corrispondente. In un gioco
-ciclico l'orbita di quell'iterazione è un ciclo, e la quantità che si sta
-massimizzando (il guadagno contro $\boldsymbol{\pi}_t$) resta massima a ogni
-passo mentre la
-quantità che interessa davvero, la sfruttabilità
-$\varepsilon(\boldsymbol{\pi}) = \max_i (\mathbf{A}\,\boldsymbol{\pi})_i$, cioè
-quanto ricava contro $\boldsymbol{\pi}$
-il miglior avversario possibile, resta al valore peggiore. Una strategia pura
-in sasso-carta-forbici ha $\varepsilon = 1$ qualunque essa sia; l'unico
-equilibrio è la miscela uniforme, che ha $\varepsilon = 0$ e che nessuna
-strategia pura realizza, né è il limite della successione qui sopra, la quale
-di vertici è fatta e sui vertici resta. A convergerci è la **frequenza empirica**
-di una successione di strategie pure, ed è precisamente quello che fa il rimedio
-qui sotto.
+corrispondente. In un gioco ciclico l'orbita di quell'iterazione è un ciclo, e
+la quantità che si sta massimizzando (il guadagno contro $\boldsymbol{\pi}_t$)
+resta massima a ogni passo mentre la quantità che interessa davvero, la
+sfruttabilità $\varepsilon(\boldsymbol{\pi}) = \max_i
+(\mathbf{A}\,\boldsymbol{\pi})_i$, cioè quanto ricava contro $\boldsymbol{\pi}$
+il miglior avversario possibile, resta al valore peggiore. Una strategia pura in
+sasso-carta-forbici ha $\varepsilon = 1$ qualunque essa sia; l'unico equilibrio
+è la miscela uniforme, che ha $\varepsilon = 0$ e che nessuna strategia pura
+realizza, né è il limite della successione appena descritta, la quale di vertici
+è fatta e sui vertici resta. A convergerci è la **frequenza empirica** di una
+successione di strategie pure, ed è precisamente quello che fa il rimedio della
+popolazione.
 
-Il rimedio è cambiare l'avversario: non l’ultima versione, ma la
-popolazione di tutte quelle passate. La miglior risposta alla media
-empirica delle versioni precedenti è il **gioco fittizio** di Brown e Robinson,
-di cui è noto che in un gioco a due giocatori e somma zero la frequenza
-empirica converge a un equilibrio di Nash. Sono i due regimi che il codice qui
-sotto mette in colonna.
+Il rimedio è cambiare l'avversario: non l’ultima versione, ma la popolazione di
+tutte quelle passate. La miglior risposta alla media empirica delle versioni
+precedenti è il **gioco fittizio** di Brown, di cui Julia Robinson ha dimostrato
+che in un gioco a due giocatori e somma zero la frequenza empirica converge a un
+equilibrio di Nash {cite}`robinson1951iterative`, anche se lentamente; fuori
+dalla somma zero può non convergere, e Shapley ne dà un controesempio con tre
+strategie per giocatore, in cui la frequenza gira attorno all'equilibrio senza
+raggiungerlo {cite}`shapley1964topics`. Sono i due regimi, l'ultima versione e
+la popolazione, che il programma mette in colonna.
 
 `````
 
@@ -753,24 +786,23 @@ popolazione dopo 2000 generazioni: sasso=0.326 carta=0.335 forbici=0.339
 sfruttabilita' della popolazione:  +0.008
 ```
 
-Conviene leggere le quattro colonne una per una, perché ciascuna è una
-lezione. La prima è la metrica che tutti guardano, ed è una linea piatta di
-vittorie: ogni generazione batte la precedente, sempre, per sempre. La seconda
-è la stessa storia dal lato scomodo: contro la versione di due generazioni
-prima si perde, sempre. La terza dice che contro l'insieme delle versioni
-passate il guadagno resta a zero, con qualche sussulto verso l'alto nelle
-generazioni in cui quell'insieme è sbilanciato. La quarta è la più severa: la
-**sfruttabilità** dell'agente corrente, cioè quanto ci ricava contro di lui il
-miglior avversario possibile (più è alta, più l'agente è facile da battere),
-resta al massimo a ogni generazione. Dopo sei generazioni il campione è
-fragile esattamente quanto il primo giorno, e la colonna dei progressi non lo
-dice.
+Le quattro colonne dicono quattro cose diverse. La prima è la metrica che tutti
+guardano, ed è una linea piatta di vittorie: ogni generazione batte la
+precedente, sempre, per sempre. La seconda è la stessa storia dal lato scomodo:
+contro la versione di due generazioni prima si perde, sempre. La terza dice che
+contro l'insieme delle versioni passate il guadagno resta a zero, con qualche
+sussulto verso l'alto nelle generazioni in cui quell'insieme è sbilanciato. La
+quarta è la più severa: la **sfruttabilità** dell'agente corrente, cioè quanto
+ci ricava contro di lui il miglior avversario possibile (più è alta, più
+l'agente è facile da battere), resta al massimo a ogni generazione. Dopo sei
+generazioni il campione è fragile esattamente quanto il primo giorno, e la
+colonna dei progressi non lo dice.
 
 Le ultime due righe mostrano l'alternativa. Allenandosi contro la media di tutte
 le versioni passate, invece che contro l'ultima, in duemila generazioni la
 popolazione si assesta su un terzo di sasso, un terzo di carta e un terzo di
-forbici: è l'equilibrio, il pareggio di cui parlava l'apertura del capitolo, e
-la sua sfruttabilità scende quasi a zero. Notate però il soggetto della frase,
+forbici: è l'equilibrio di cui parlava la pagina d'apertura del capitolo, e la
+sua sfruttabilità scende quasi a zero. Conta però il soggetto della frase,
 perché è tutta la differenza: a essere imbattibile è la
 popolazione. Il campione da schierare è il mucchio, non l'ultimo nato: si
 scende in campo sorteggiando ogni volta una delle versioni, e a essere difficile
@@ -790,20 +822,26 @@ incontrerebbe mai. E poi ci sono le versioni congelate di tutti costoro,
 che una volta entrate nella lega ci restano per sempre.
 
 La lega però non è gratis: ogni avversario in più è memoria, partite e calcolo,
-e il conto del «Costo del coordinamento» torna a presentarsi qui, sul lato
-dell'addestramento.
+e il conto della sezione sul costo del coordinamento torna a presentarsi qui,
+sul lato dell'addestramento.
 
 E torniamo ai pesci dell'Adriatico. Le orbite chiuse che Volterra trovò nelle
 sue due formule non sono una curiosità zoologica, e il legame è più stretto di
 un'analogia. Nel programma delle generazioni la popolazione salta di colpo da
 una *strategia pura* all'altra, cioè da un modo di giocare che è sempre lo
 stesso a un altro che è sempre lo stesso: tutta sasso e poi tutta carta. Ma si
-può anche lasciarla scivolare con continuità, facendo crescere a poco a poco
-la quota di chi rende di più (è la **dinamica del replicatore**, il modo
-standard di descrivere l'evoluzione di una popolazione di strategie). Fatto
-così, sasso-carta-forbici dà esattamente formule della stessa famiglia di
-quelle di Volterra, con le stesse orbite chiuse attorno all'equilibrio e
-nessuna che ci cada dentro ({numref}`fig-orbite-chiuse`).
+può anche lasciarla scivolare con continuità, facendo crescere a poco a poco la
+quota di chi rende di più: è la **dinamica del replicatore**, il modo standard
+di descrivere l'evoluzione di una popolazione di strategie. Se $x_k$ è la quota
+di giocatori che usano la strategia $k$, $\dot{x}_k =
+x_k\,[(\mathbf{A}\mathbf{x})_k - \mathbf{x}^\top\mathbf{A}\mathbf{x}]$: cresce
+chi rende più della media, e in un gioco a somma zero simmetrico la media
+$\mathbf{x}^\top\mathbf{A}\mathbf{x}$ vale zero. In sasso-carta-forbici il
+prodotto $x_1 x_2 x_3$ resta costante lungo il moto, quindi il punto gira su una
+curva chiusa attorno all'equilibrio e non ci cade mai dentro; ed è un teorema
+che la dinamica del replicatore con $n$ strategie ha le stesse orbite di un
+sistema di Lotka e Volterra con $n-1$ specie {cite}`hofbauer1998evolutionary`
+({numref}`fig-orbite-chiuse`).
 
 ```{figure} ../figures/orbite-che-non-cadono.svg
 :name: fig-orbite-chiuse
@@ -824,16 +862,13 @@ storia, e allenarsi contro tutto il passato è quello che rompe l'orbita.
 
 ## Una GAN è un sistema multi-agente a due
 
-Nell'apertura del capitolo le GAN erano comparse di passaggio: due reti
-che si allenano l'una contro l'altra e che finiscono in un pareggio invece che
-in fondo a una valle. Il {doc}`capitolo sulle GAN </GAN/overview>` le racconta
-per esteso più avanti, ma da qui si riconoscono a colpo d'occhio, e quello che
-serve sta in due righe. Una GAN è una
-coppia di reti che si allenano l'una contro l'altra. La prima, il
-generatore, fabbrica esemplari falsi (di solito immagini) partendo dal caso;
-la seconda, il discriminatore, guarda un esemplare e dice se è vero o falso.
-Il generatore vince quando inganna, il discriminatore quando smaschera.
-Nient'altro.
+Nella pagina d'apertura del capitolo le GAN erano comparse di passaggio: due
+reti che si allenano l'una contro l'altra e che finiscono in un equilibrio
+invece che in fondo a una valle. Il {doc}`capitolo sulle GAN </GAN/overview>`
+le racconta per esteso più avanti; qui servono soltanto i nomi. La prima rete,
+il generatore, fabbrica esemplari falsi (di solito immagini) partendo dal caso;
+la seconda, il discriminatore, guarda un esemplare e dice se è vero o falso. Il
+generatore vince quando inganna, il discriminatore quando smaschera.
 
 Detta così, una GAN è un sistema multi-agente con due soli partecipanti, e
 riconoscerlo non è un gioco di parole: spiega i suoi guasti tipici meglio di
@@ -841,16 +876,16 @@ quanto li spieghi la teoria delle reti.
 
 `````{tab} Elementare
 
-Il traguardo, per cominciare, è quello già incontrato nell'apertura del
-capitolo: non il fondo di una valle, perché ogni passo avanti di uno rende più
-difficile il mestiere dell'altro, ma un pareggio, cioè la situazione in cui a
-nessuno dei due conviene più cambiare mossa da solo.
+Il traguardo, per cominciare, è quello già incontrato nella pagina d'apertura
+del capitolo: non il fondo di una valle, perché ogni passo avanti di uno rende
+più difficile il mestiere dell'altro, ma un equilibrio, cioè la situazione in
+cui a nessuno dei due conviene più cambiare mossa da solo.
 
 Da lì si capiscono i due modi in cui l'addestramento di una GAN va storto, e
-sono due vecchie conoscenze sotto altro nome. Per raccontarli chiamiamo le due
-reti come si chiamano di solito quando si spiega una GAN: il
-**falsario** è quello che fabbrica i falsi, il **poliziotto** è quello che cerca
-di riconoscerli.
+sono due vecchie conoscenze sotto altro nome. Per raccontarli diamo alle due
+reti i nomi che si usano spesso quando si spiega una GAN a chi comincia: il
+**falsario** è il generatore, che fabbrica i falsi, e il **poliziotto** è il
+discriminatore, che cerca di riconoscerli.
 
 Il primo modo è l’**oscillazione**: le due reti girano in tondo invece di
 avvicinarsi, come i pesci dell'Adriatico e come sasso, carta e forbici. Il
@@ -858,15 +893,18 @@ falsario impara a battere il poliziotto di adesso; il poliziotto impara a
 battere quel falsario lì; il falsario cambia di nuovo, e si ricomincia. Ognuno
 insegue l'altro, e l'altro nel frattempo si è spostato.
 
-Il secondo, guardato da qui, è l'allenarsi contro l'ultima versione visto
-dall'altro lato. Il falsario scopre l'unica cosa che riesce a far passare per
-buona al poliziotto del momento (mettiamo: un certo tipo di volto) e si mette a
-produrre soltanto quella. Contro l'avversario corrente vince quasi sempre,
-quindi il suo punteggio è ottimo; ma di tutto il resto ha smesso di saper fare
-qualunque cosa. È, parola per parola, il «batte l'ultima versione e perde contro
-quella di due generazioni fa». Il nome che ha in letteratura è **collasso dei
-modi**, dove i «modi» sono i tipi diversi di immagine che il falsario dovrebbe
-saper fare, e collassare vuol dire che di tutti quei tipi ne è rimasto uno.
+Il secondo somiglia all'allenarsi contro l'ultima versione, visto dall'altro
+lato. Il falsario scopre l'unica cosa che riesce a far passare per buona al
+poliziotto del momento (mettiamo: un certo tipo di volto) e si mette a produrre
+soltanto quella. Contro l'avversario corrente vince quasi sempre, quindi il suo
+punteggio è ottimo; ma di tutto il resto ha smesso di saper fare qualunque cosa.
+Quando il poliziotto lo scopre, il falsario salta a un altro tipo di volto e il
+poliziotto lo insegue, come nel giro di sasso, carta e forbici. Il nome che ha
+in letteratura è **collasso dei modi**, dove i «modi» sono i tipi diversi di
+immagine che il falsario dovrebbe saper fare, e collassare vuol dire che di
+tutti quei tipi ne è rimasto uno. Ci si arriva anche per altre strade, legate
+al modo in cui il falsario viene premiato, e le racconta il capitolo sulle GAN;
+questa è quella che qui si riconosce.
 
 E allora non stupisce che fra le contromisure ce ne sia una che qui si riconosce
 subito, anche se il capitolo sulle GAN non la elenca fra le proprie: far vedere
@@ -883,13 +921,13 @@ giocatori e somma zero esattamente. Il traguardo non è un minimo di
 $\mathcal{L}$ ma un equilibrio di Nash, il punto in cui a nessuno dei due
 conviene più deviare da solo.
 
-Una precisazione che il capitolo sulle GAN paga per intero e che qui non va
-persa: quella formulazione non è quella che si usa. Con la *loss*
-non-saturante, cioè la funzione obiettivo con cui le GAN si addestrano davvero,
-il gioco non è più a somma zero e non si lascia più scrivere con un'unica
-funzione di valore. La lettura come sistema a due giocatori regge comunque; la
-somma zero è una proprietà della sola versione minimax, e va attribuita a
-quella.
+Una precisazione che la {doc}`sezione su come funziona una GAN
+</GAN/come-funziona>` paga per intero e che qui non va persa: quella
+formulazione non è quella che si usa. Con la *loss* non-saturante, cioè la
+funzione obiettivo con cui le GAN si addestrano davvero, il gioco non è più a
+somma zero e non si lascia più scrivere con un'unica funzione di valore. La
+lettura come sistema a due giocatori regge comunque; la somma zero è una
+proprietà della sola versione minimax, e va attribuita a quella.
 
 Riletti da qui, i guasti classici dell'addestramento avversario smettono di
 sembrare capricci di quella famiglia di modelli. L’**oscillazione** è la stessa
@@ -904,12 +942,16 @@ $\eta > 0$. Nel limite continuo percorre cerchi chiusi, orbite dello stesso
 genere di quelle di Volterra (le sue, vicino all'equilibrio, diventano ellissi);
 aggiornando i due giocatori in alternanza le orbite restano limitate ma non
 convergono al centro. L'oscillazione appartiene dunque alla dinamica del
-gradiente sui giochi prima che alle reti. Il **collasso dei modi** è il
-self-play ingenuo visto dall'altro lato: il generatore si specializza sull'unica
-regione dello spazio che inganna l'avversario corrente, ottiene contro di lui un
-tasso di successo altissimo, e perde tutto il resto del supporto (che è, parola
-per parola, il «batte l'ultima versione, perde contro quella di due generazioni
-fa»). Non stupisce allora che fra le contromisure note ce ne sia una che qui si
+gradiente sui giochi prima che alle reti. Il **collasso dei modi** è, in una
+delle sue forme, il self-play ingenuo visto dall'altro lato: il generatore si
+specializza sull'unica regione dello spazio che inganna l'avversario corrente,
+ottiene contro di lui un tasso di successo altissimo e perde il resto del
+supporto; quando il discriminatore lo raggiunge salta su un'altra regione, e
+ruota fra i modi dei dati senza mai coprirli insieme {cite}`metz2017unrolled`.
+Non è l'unico meccanismo: la stessa sezione sulle GAN lo fa discendere anche
+dall'ordine dei quantificatori nell'ottimizzazione alternata e dalla *loss*
+non-saturante, che un modo abbandonato quasi non lo fa pagare. Non stupisce
+allora che fra le contromisure note ce ne sia una che qui si
 riconosce a colpo d'occhio, e che il capitolo sulle GAN non elenca fra le
 proprie: mostrare al discriminatore anche campioni prodotti da versioni passate
 del generatore. È una lega in miniatura, con la stessa motivazione.
@@ -918,17 +960,15 @@ del generatore. È una lega in miniatura, con la stessa motivazione.
 
 ## Il critico che vede tutto
 
-Prima di chiudere si torna per un momento all'allenatore con la
-ripresa dall'alto, per vedere quanto poco codice serva a scrivere CTDE, cioè
-allenarsi guardando tutto e giocare guardando poco. Il programma che segue è lo
-scheletro di MADDPG, la prima delle ricette viste per CTDE: un attore per
-agente, che vede
+Resta da vedere quanto poco codice serva a scrivere CTDE, cioè allenarsi
+guardando tutto e giocare guardando poco. Il programma che segue è lo scheletro
+di MADDPG, la prima delle ricette viste per CTDE: un attore per agente, che vede
 soltanto quello che vedrà anche in partita, e accanto a ciascuno un critico che
 riceve invece le osservazioni e le mosse di tutti. Manca tutto il resto
 (l'archivio delle partite passate da cui si ripescano gli esempi, le copie
-congelate delle reti che servono a tenere fermi i conti mentre si impara, i passi
-di addestramento veri e propri), perché qui il punto è soltanto chi vede che
-cosa.
+congelate delle reti che servono a tenere fermi i conti mentre si impara, i
+passi di addestramento veri e propri), perché qui il punto è soltanto chi vede
+che cosa.
 
 ```python
 import torch
@@ -987,10 +1027,9 @@ print(critici[0](oss, azioni).shape)  # torch.Size([4, 1])
 Due righe raccontano tutta l'architettura. La prima è l'esecuzione:
 `attori[i](oss[i])`, ogni agente con la propria osservazione e nient'altro, ed è
 ciò che girerà sul robot, o dentro il programma vero, a lavoro finito. La
-seconda è l'addestramento:
-`critici[0](oss, azioni)`, dove il primo argomento è la lista di tutte le
-osservazioni e il secondo la lista di tutte le azioni. Quel critico non esiste
-la domenica.
+seconda è l'addestramento: `critici[0](oss, azioni)`, dove il primo argomento è
+la lista di tutte le osservazioni e il secondo la lista di tutte le azioni. In
+esecuzione, quel critico non esiste più.
 
 `````{tab} Elementare
 
@@ -1079,22 +1118,25 @@ la domenica.
   agente un critico che vede le azioni di tutti, e condizionando su quelle la
   transizione non dipende più dalle policy; il bersaglio di regressione
   invece sì, perché è un valore atteso sul futuro, e contro questo residuo il
-    lavoro originale allena più policy per agente e le sorteggia. Le garanzie di
-    convergenza del caso a un agente
-  solo, qui, non si trasferiscono. QMIX {cite}`rashid2018qmix`
-  fattorizza $Q_{tot}$ in modo monotono ($\partial Q_{tot}/\partial Q^i \ge 0$),
-  così l'argmax individuale coincide con quello congiunto; il prezzo è che i
-  giochi non monotoni (accordarsi su una convenzione arbitraria) non si
-  rappresentano. MAPPO {cite}`yu2022surprising` ricorda che un metodo
-  semplice ben regolato va misurato prima di sostituirlo.
+  lavoro originale allena più policy per agente e le sorteggia. Le garanzie di
+  convergenza del caso a un agente solo, qui, non si trasferiscono. QMIX
+  {cite}`rashid2018qmix` fattorizza $Q_{tot}$ in modo monotono
+  ($\partial Q_{tot}/\partial Q^i \ge 0$), così l'argmax individuale coincide
+  con quello congiunto (la condizione IGM, di cui la monotonia è sufficiente e
+  non necessaria {cite}`son2019qtran`); il prezzo è che i giochi non monotoni
+  (accordarsi su una convenzione arbitraria) non si rappresentano esattamente.
+  MAPPO {cite}`yu2022surprising` ricorda che un metodo semplice ben regolato va
+  misurato prima di sostituirlo.
 - Il self-play vale perché il curriculum si genera da solo, restando sempre
   al limite delle proprie capacità: da AlphaGo {cite}`silver2016mastering` ad
   AlphaGo Zero {cite}`silver2017mastering`, che parte dalle sole regole.
-- Ma nei giochi non transitivi (sasso-carta-forbici) non esiste un ordine
-  della bravura, e il self-play ingenuo cicla: vince sempre contro la
-  versione precedente, perde sempre contro quella di due generazioni prima, e la
-  sua sfruttabilità resta al massimo. Il rimedio è allenarsi contro una
-  popolazione, non contro l'ultimo: è la *league* di AlphaStar
+- Ma nei giochi non transitivi (sasso-carta-forbici) non esiste un ordine della
+  bravura (la parte ciclica della matrice dei guadagni lo misura
+  {cite}`balduzzi2018reevaluating`), e il self-play ingenuo cicla: vince sempre
+  contro la versione precedente, perde sempre contro quella di due generazioni
+  prima, e la sua sfruttabilità resta al massimo. Il rimedio è allenarsi contro
+  una popolazione, non contro l'ultimo (il gioco fittizio, che converge nei
+  giochi a somma zero {cite}`robinson1951iterative`): è la *league* di AlphaStar
   {cite}`vinyals2019grandmaster`, con agenti principali, sfruttatori e tutte le
   versioni congelate del passato.
 ```
@@ -1102,6 +1144,9 @@ la domenica.
 `````
 
 Fin qui gli agenti erano pochi, costosi e capaci di imparare. Resta l'estremo
-opposto, quello da cui il capitolo era partito con gli storni: centinaia di
-partecipanti che non ragionano affatto e che, messi insieme, risolvono
-problemi.
+opposto, quello da cui il capitolo era partito con gli storni: popolazioni
+numerose di agenti molto semplici, che non imparano a coordinarsi ma seguono
+regole locali fisse e, messi insieme, risolvono problemi; e accanto a loro le
+popolazioni simulate di agenti linguistici, in cui l'oggetto di studio diventa
+la società che formano. È la {doc}`sezione su sciami e simulazioni
+<sciami-e-simulazioni>`.

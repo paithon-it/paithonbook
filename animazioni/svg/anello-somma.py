@@ -78,6 +78,10 @@ def simula():
         f"alla fine tutte le celle devono valere {K}: {n}"
     assert spediti == [2 * (K - 1)] * K, \
         f"ogni scheda spedisce {2 * (K - 1)} pezzi: {spediti}"
+    # la frase in fondo al disegno: con k schede ognuna spedisce 2(k-1)/k volte
+    # la propria lista, che cresce con k e resta sempre sotto il doppio
+    quote = [2 * (k - 1) / k for k in (K, 8, 40, 1000)]
+    assert quote == sorted(quote) and all(q < 2 for q in quote), quote
 
     stati.append([riga[:] for riga in n])   # il riposo finale, uguale all'ultimo
     return stati, passaggi, spediti[0]
@@ -204,7 +208,7 @@ def costruisci() -> Figura:
                  f'ogni scheda spedisce {spediti} pezzi su {K}, cioè {volte} volte la '
                  f'propria lista,</text>')
     corpo.append(f'<text class="lbs" x="22" y="520">'
-                 f'e il conto non cambia se le schede sono di più</text>')
+                 f'e con più schede cresce di poco, mai fino al doppio</text>')
 
     return Figura(
         larghezza=680, altezza=538,
@@ -217,7 +221,8 @@ def costruisci() -> Figura:
             "celle piene fanno il giro com'erano, e dopo altri tre passaggi "
             "tutte le celle di tutte le schede sono piene. In basso il conto: "
             "ogni scheda spedisce sei pezzi su quattro, cioè una volta e mezza "
-            "la propria lista, e il conto non cambia se le schede sono di più.",
+            "la propria lista, e con più schede il conto cresce di poco, senza "
+            "mai arrivare al doppio della lista.",
         corpo="".join(corpo),
         stile=f"""    .lbl {{ font-size:16px; }}""",
         animazioni=anim,

@@ -5,30 +5,32 @@ giorni. Il 7, nella discussione finale di un incontro sui fondamenti delle
 scienze esatte, un logico dell'Università di Vienna di ventiquattro anni, Kurt
 Gödel, annuncia di passaggio un risultato che quasi nessuno dei presenti
 raccoglie (lo capisce al volo il matematico John von Neumann). Il giorno dopo,
-nella stessa città, David Hilbert, il matematico più influente del suo tempo,
-chiude un discorso trasmesso per radio con una frase che oggi è incisa sulla
+nella stessa città, David Hilbert, uno dei matematici più influenti del suo
+tempo, chiude un discorso, di cui la radio trasmette la parte finale, con una
+frase che oggi è incisa sulla
 sua tomba a Gottinga: «Dobbiamo sapere, sapremo». Il risultato di Gödel,
 annunciato il giorno prima, diceva che quella promessa non si può mantenere del
 tutto: qualunque insieme di regole si scelga per dimostrare le cose dei numeri,
-purché non si contraddica, resteranno affermazioni vere che quelle regole non
-dimostrano.
+purché le regole si possano elencare una per una e non si contraddicano,
+resteranno affermazioni vere che quelle regole non dimostrano.
 
 Hilbert chiedeva, fra le altre cose, un procedimento meccanico capace di
 decidere se un'affermazione scritta nel linguaggio della logica segue dagli
 assiomi, le verità di partenza. Un'affermazione come «ogni numero pari maggiore
-di due è la somma di due numeri primi», per dire: il procedimento avrebbe
+di due è la somma di due numeri primi» (la congettura di Goldbach), per dire: il
+procedimento avrebbe
 dovuto rispondere sì o no, sempre. Lo chiamava il problema della decisione,
 l’*Entscheidungsproblem*, e lo aveva posto con Wilhelm Ackermann nel 1928.
-Rispondere di no chiedeva prima di dire che cosa sia un procedimento meccanico,
-perché per sostenere che nessun procedimento ci riesce bisogna sapere quali
-sono tutti; cioè bisognava dare una definizione precisa dell'algoritmo,
-descritto finora come una ricetta sull'esempio di {doc}`Euclide
+Per rispondere di no bisognava prima dire che cosa sia un procedimento
+meccanico: per sostenere che nessun procedimento ci riesce, occorre sapere
+quali sono tutti. Serviva, cioè, una definizione precisa di algoritmo, che fin
+qui è stato descritto come una ricetta sull'esempio di {doc}`Euclide
 </Introduzione/overview>`. La diede Alan Turing nel 1936, con una macchina
 immaginaria {cite}`turing1936computable`; quasi negli stessi mesi Alonzo Church
-ne diede un'altra, equivalente {cite}`church1936unsolvable`. Da allora si sa
-che cosa una macchina può calcolare, e soprattutto che cosa non può: ed è il
-fondo su cui poggia tutto quello che segue, perché un modello che impara resta
-un programma, e i limiti dei programmi sono anche i suoi.
+ne diede un'altra, equivalente {cite}`church1936unsolvable`. Da allora
+«calcolabile» ha un significato matematico, e si può dimostrare che certi
+problemi non lo sono. Un modello che impara resta un programma, e i limiti dei
+programmi sono anche i suoi.
 
 ## Una macchina con un nastro e una matita
 
@@ -91,10 +93,11 @@ avanti.
 
 `````{tab} Superiore
 
-Una macchina di Turing è una tupla $M=(Q,\Gamma,\sqcup,\delta,q_0,F)$: un
-insieme finito di stati $Q$, un alfabeto finito di nastro $\Gamma$ con il
-simbolo bianco $\sqcup\in\Gamma$, lo stato iniziale $q_0$, gli stati di arresto
-$F\subseteq Q$ e la funzione di transizione (parziale)
+Una macchina di Turing è una tupla $M=(Q,\Sigma,\Gamma,\sqcup,\delta,q_0,F)$: un
+insieme finito di stati $Q$, un alfabeto finito di nastro $\Gamma$ che contiene
+il simbolo bianco $\sqcup$ e l'alfabeto d'ingresso
+$\Sigma\subseteq\Gamma\setminus\{\sqcup\}$, lo stato iniziale $q_0$, gli stati
+di arresto $F\subseteq Q$ e la funzione di transizione (parziale)
 
 $$
 \delta : (Q\setminus F)\times\Gamma \to Q\times\Gamma\times\{-1,0,+1\},
@@ -104,13 +107,14 @@ che a ogni coppia (stato, simbolo letto) associa il nuovo stato, il simbolo da
 scrivere e lo spostamento della testina. Una *configurazione* è la terna
 (stato, contenuto del nastro, posizione), e un passo di calcolo la trasforma
 secondo $\delta$; $M$ si arresta su $x$ se da $(q_0, x, 0)$ raggiunge una
-configurazione in cui $\delta$ non è definita. Una funzione è *calcolabile* se
-una macchina, partendo dalla codifica di $x$, si arresta con la codifica di
-$f(x)$ sul nastro. Nell'articolo del 1936, ricevuto dalla London Mathematical
-Society il 28 maggio e letto il 12 novembre, la prima macchina d'esempio ha
-quattro stati (Turing li chiama *m-configurazioni* e li scrive in fraktur:
-$\mathfrak{b}$, $\mathfrak{c}$, $\mathfrak{e}$, $\mathfrak{k}$) e stampa la
-successione $0\,1\,0\,1\ldots$ senza fermarsi mai.
+configurazione in cui $\delta$ non è definita. Una funzione $f$ è *calcolabile*
+se esiste una macchina che, partendo dalla codifica di $x$ sul nastro, si
+arresta con la codifica di $f(x)$ se e solo se $f(x)$ è definita. Nell'articolo
+del 1936, ricevuto dalla London Mathematical Society il 28 maggio e letto il 12
+novembre, la prima macchina d'esempio ha quattro stati (Turing li chiama
+*m-configurazioni* e li scrive in fraktur: $\mathfrak{b}$, $\mathfrak{c}$,
+$\mathfrak{e}$, $\mathfrak{k}$) e stampa la successione $0\,1\,0\,1\ldots$
+senza fermarsi mai.
 
 Il risultato decisivo è la **macchina universale** $U$: codificata ogni
 macchina come stringa $\langle M\rangle$, esiste $U$ tale che
@@ -212,7 +216,8 @@ print(f"macchina I dopo {passi} passi: {nastro!r}; si è fermata? {fermata}")
 macchina I dopo 16 passi: '0 1 0 1 0 1 0 1'; si è fermata? False
 ```
 
-La seconda macchina, lasciata andare, scriverebbe per sempre. Per lei lo si vede
+La macchina dell'articolo di Turing, lasciata andare, scriverebbe per sempre.
+Per lei lo si vede
 leggendo le sue quattro regole: ciascuna scrive una cifra o salta una casella,
 va a destra e passa allo stato successivo, e dall'ultimo si torna al primo, in
 cerchio, senza mai arrivare in uno stato senza uscita. Per una macchina
@@ -309,13 +314,13 @@ lunghezza del programma più corto che produce una stringa. Che l'arresto sia un
 domanda difficile anche su programmi minuscoli lo mostra la congettura di
 Collatz, ancora aperta: l'iterazione $n\mapsto n/2$ per $n$ pari,
 $n\mapsto 3n+1$ per $n$ dispari, raggiunge $1$ da ogni intero positivo? Al
-calcolatore è verificata per tutti gli interi fino a $2^{68}$
+calcolatore è verificata per tutti gli interi fino ad almeno $2^{68}$
 {cite}`barina2021convergence`, e nessuna dimostrazione.
 
 `````
 
-Ecco quel conto per qualche numero di partenza, e la ricerca, sotto
-diecimila, di quello che ci mette di più.
+Il programma che segue conta i passi di Collatz per qualche numero di partenza,
+e cerca, sotto diecimila, quello che ne richiede di più.
 
 ```python
 def collatz(n):
@@ -371,10 +376,13 @@ raddoppia il numero, e il doppio di un numero è multiplo di tre solo se lo era
 già; la terza ne toglie tre, e togliere tre non cambia il resto della divisione
 per tre. Partendo da una, nessuna di queste mosse porta mai a un numero di I
 che sia multiplo di tre, e MU ne ha zero, che è
-un multiplo di tre. Quindi MU non si raggiunge. Una quantità che nessuna regola
-cambia, come qui il resto del numero di I diviso tre, si chiama **invariante**.
+un multiplo di tre. Quindi MU non si raggiunge. Una proprietà che nessuna
+regola può far perdere, come qui l'essere un numero di I che non è multiplo di
+tre, si chiama **invariante**.
 
-Gödel fa una cosa simile, ma dentro il gioco invece che fuori. Assegna a ogni
+Anche Gödel traduce le frasi in numeri, come quando si contano le I, ma lo fa
+dentro il gioco invece che fuori: è il sistema stesso a parlare di sé.
+Assegna a ogni
 simbolo della matematica un numero, e a ogni frase il numero che si ottiene
 mettendo insieme quelli dei suoi simboli, in modo che dal numero si possa
 sempre risalire alla frase, come dal numero di una scheda si risale al libro
@@ -406,7 +414,8 @@ contraddirsi: la garanzia della propria coerenza deve venire da fuori.
 
 Sia $T$ una teoria del primo ordine con assiomi ricorsivamente enumerabili che
 interpreti l'aritmetica di Robinson. La *numerazione di Gödel* associa a ogni
-simbolo un intero e a ogni sequenza di simboli $s_1\dots s_k$ il numero
+simbolo un intero positivo e a ogni sequenza di simboli $s_1\dots s_k$ il
+numero
 $\prod_{i=1}^{k} p_i^{\,\#s_i}$, con $p_i$ l’$i$-esimo primo; per l'unicità
 della fattorizzazione la codifica è invertibile, e una dimostrazione, sequenza
 di formule, si codifica allo stesso modo. Il predicato «$y$ è il codice di una
@@ -447,9 +456,9 @@ teorema, e MU, che ne ha zero, non lo è.
 
 `````
 
-Al gioco MIU una macchina gioca nell'unico modo che conosce: produce
-tutte le stringhe che le regole raggiungono senza mai superare dodici lettere, e
-poi guarda il resto del numero di I diviso tre.
+Un programma può giocare al MIU soltanto per enumerazione: genera tutte le
+stringhe che le regole raggiungono da MI senza mai superare dodici lettere, e
+per ciascuna calcola il resto del numero di I diviso tre.
 
 ```python
 # il gioco MIU di Hofstadter: si parte da MI e si applicano quattro regole
@@ -483,8 +492,8 @@ resti del numero di I diviso 3, su tutte: [1, 2]
 
 La ricerca non trova MU fra le 216 stringhe, e da sola non potrebbe dire di
 più: una stringa più lunga di dodici lettere, accorciata con le regole III e IV,
-potrebbe ancora arrivarci. A chiudere la questione è l'invariante: la riga
-dopo mostra che su quelle 216 stringhe il resto non vale mai zero, e il
+potrebbe ancora arrivarci. A chiudere la questione è l'invariante: l'ultima riga
+dell'uscita mostra che su quelle 216 stringhe il resto non vale mai zero, e il
 ragionamento sulle regole dice perché non lo varrà mai, su nessuna stringa. La
 ricerca ha visto, l'invariante ha dimostrato.
 
@@ -492,8 +501,9 @@ ricerca ha visto, l'invariante ha dimostrato.
 
 Nel 1961 il filosofo John Lucas sostenne che il teorema di Gödel dimostra che
 la mente umana non è una macchina {cite}`lucas1961minds`, e Roger Penrose ha
-ripreso l'argomento in due libri. Il ragionamento si presenta rigoroso, e per
-questo è fra gli usi sbagliati più diffusi del teorema.
+ripreso l'argomento in due libri. Il ragionamento ha l'aspetto di una
+dimostrazione, ed è fra gli usi impropri più frequenti del teorema
+{cite}`franzen2005godel`.
 
 `````{tab} Elementare
 
@@ -542,15 +552,16 @@ stati soltanto affermati, e quando una macchina sbaglia la domanda critica
 anche esserci altre macchine più brave ancora». Hofstadter, in *Gödel, Escher,
 Bach*, giudica l'argomentazione di Lucas «erronea», ma in un modo che trova
 «affascinante».
-Quello che i teoremi limitativi dicono è che nessun sistema formale coerente e
+
+Quello che dicono i teoremi limitativi è che nessun sistema formale coerente e
 abbastanza ricco decide tutta l'aritmetica, e che nessun programma decide il
-comportamento di tutti i programmi; nulla, in essi, separa le menti dalle
-macchine.
+comportamento di tutti i programmi; nulla, in essi, dimostra una differenza fra
+menti e macchine.
 
 `````
 
-Di questi teoremi sui limiti, che si chiamano teoremi limitativi, resta anche
-una lezione di metodo: a volte la risposta arriva solo guardando il sistema da
+Dei teoremi sui limiti, che si chiamano teoremi limitativi, resta anche una
+lezione di metodo: a volte la risposta arriva solo guardando il sistema da
 fuori, come l'invariante del gioco MIU ha chiuso una domanda che nessuna
 ricerca poteva chiudere.
 
@@ -573,23 +584,30 @@ ricerca poteva chiudere.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Macchina di Turing $M=(Q,\Gamma,\sqcup,\delta,q_0,F)$; esiste la macchina
-  universale; la tesi di Church-Turing identifica il calcolabile effettivo con
-  il Turing-calcolabile (tesi, non teorema).
+- Macchina di Turing $M=(Q,\Sigma,\Gamma,\sqcup,\delta,q_0,F)$; esiste la
+  macchina universale; la tesi di Church-Turing identifica il calcolabile
+  effettivo con il Turing-calcolabile (tesi, non teorema).
 - $\mathrm{HALT}$ è semidecidibile e non decidibile (diagonale), e ne segue il
   no all’*Entscheidungsproblem*; Rice: ogni
   proprietà semantica non banale è indecidibile; la complessità di Kolmogorov
   non è calcolabile.
 - Gödel: $T$ coerente, r.e., che interpreti l'aritmetica, è incompleta
   (Rosser: basta la coerenza) e non dimostra $\mathrm{Con}_T$. L'argomento di
-  Lucas-Penrose presuppone la conoscenza della coerenza che il secondo teorema
-  esclude.
+  Lucas presuppone che la mente conosca la coerenza del sistema che la
+  descrive, che per il secondo teorema quel sistema non dimostra da sé: la
+  premessa contiene la conclusione (Putnam, Benacerraf).
 ```
 `````
 
-Questi limiti non riguardano la potenza di un calcolatore né la bravura di chi
-lo programma: valgono per qualunque procedimento, e quindi anche per i
-programmi che imparano dai dati, che restano programmi. Dentro quei confini,
+Questi limiti non dipendono dalla potenza del calcolatore né dalla bravura di
+chi programma: valgono per ogni procedimento effettivo, compresi i programmi che
+imparano dai dati, che restano programmi. Dicono che non esiste un verificatore
+generale del comportamento di tutti i programmi; non dicono che un modello
+fissato, su ingressi di lunghezza limitata, sia impossibile da controllare. Si
+può, ma in generale costa: verificare una proprietà di una rete neurale con
+attivazioni ReLU è un problema NP-completo {cite}`katz2017reluplex`, cioè di
+quelli per cui ogni metodo noto, nel caso peggiore, ha un costo che cresce in
+modo esponenziale con la taglia della rete. Dentro quei confini,
 però, c'è un territorio vastissimo, ed è lì che lavorano le macchine che si
 muovono nel mondo e decidono dove mettere le ruote, a cui è dedicata la
 sezione sulla {doc}`robotica <applicazioni>`.

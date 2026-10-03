@@ -1,21 +1,24 @@
 # Il determinante: quanto una trasformazione gonfia lo spazio
 
 Il determinante è più vecchio della matrice. Nel 1683 il matematico giapponese
-Seki Takakazu descrive un metodo per decidere se un sistema di equazioni ha
-soluzione, e il metodo consiste nel calcolare un certo numero a partire dai
-coefficienti; dieci anni dopo, in una lettera a l'Hôpital, Leibniz scrive
-qualcosa di equivalente per la stessa ragione. Nessuno dei due ha una parola
-per la tabella di numeri da cui quel valore si ricava: «matrice» la conierà
-James Joseph Sylvester nel 1850, e la teoria arriverà con Arthur Cayley nel
-1858.
+Seki Takakazu calcola quelli che oggi chiamiamo determinanti, fino al quinto
+ordine, per risolvere equazioni; dieci anni dopo, in una lettera a l'Hôpital,
+Leibniz scrive la condizione perché tre equazioni lineari in due incognite
+abbiano una soluzione comune, cioè l'annullarsi di un determinante $3\times 3$.
+Nessuno dei due ha una parola per la tabella di numeri da cui quel valore si
+ricava: «matrice» la conierà James Joseph Sylvester nel 1850, e la teoria
+arriverà con Arthur Cayley nel 1858.
 
 Per un secolo e mezzo, quindi, si è calcolato il determinante di oggetti che
 non avevano nome. La cronologia dice che cosa quel numero è venuto al mondo per
 fare, cioè rispondere alla domanda che la {doc}`sezione sui sistemi lineari
 </Matematica/sistemi-lineari>` ha lasciato aperta: una soluzione esiste, ed è
-una sola? La risposta geometrica, che arriverà molto più tardi, è ancora più
-netta: quel numero misura di quanto la trasformazione gonfia lo spazio, e se
-vale zero lo ha schiacciato.
+una sola? La risposta geometrica è ancora più netta, e più vecchia della parola
+«matrice»: già nel 1773 Lagrange trova che il volume del tetraedro che ha per
+vertici l'origine e tre punti è un sesto di un determinante $3\times 3$ delle
+loro coordinate. In generale quel numero misura di quanto la trasformazione
+moltiplica i volumi (le aree, nel piano), e se vale zero li annulla: lo spazio è
+stato schiacciato.
 
 ## Un numero che misura un'area
 
@@ -24,9 +27,10 @@ vale zero lo ha schiacciato.
 :alt: "Tre riquadri affiancati. Nel primo un quadratino unitario su una griglia, con i due lati disegnati come frecce e l'area annotata uguale a uno. Nel secondo lo stesso quadratino è diventato un parallelogramma di area cinque, e il quadratino di partenza resta tratteggiato accanto per il confronto. Nel terzo le due frecce cadono sulla stessa retta e il quadratino si riduce a un segmento spesso: l'area è zero, e l'annotazione dice che da lì non si torna indietro."
 :width: 92%
 
-Il quadretto di partenza, lo stesso quadretto dopo la trasformazione, e il
-caso in cui la trasformazione lo appiattisce. Il determinante è il rapporto fra
-l'area finale e quella iniziale, e vale zero esattamente quando la figura
+Il quadretto di partenza, lo stesso quadretto dopo la trasformazione, e il caso
+in cui la trasformazione lo appiattisce. Il valore assoluto del determinante è
+il rapporto fra l'area finale e quella iniziale, e il segno dice se la figura è
+stata anche specchiata; il determinante vale zero esattamente quando la figura
 collassa.
 ```
 
@@ -55,8 +59,8 @@ e il valore assoluto resta il fattore di area.
 su una retta manda ogni figura in un segmento: l'area diventa zero. Da un
 segmento non si risale al quadretto di partenza, e in effetti quello è
 esattamente il caso in cui la trasformazione non si può disfare. È la stessa
-cosa che la sezione sui sistemi lineari chiamava avere un nucleo più grande del
-solo zero, guardata da un'altra finestra.
+cosa che la {doc}`sezione sui sistemi lineari <sistemi-lineari>` chiamava avere
+un nucleo più grande del solo zero, guardata da un'altra finestra.
 
 *Due stiramenti di fila moltiplicano i fattori.* Se il primo raddoppia le aree
 e il secondo le triplica, insieme le fanno sei volte. Ne segue subito che
@@ -101,10 +105,10 @@ $$
 \det(\mathbf{A}^\top) = \det\mathbf{A},
 $$
 
-e per uno scalare $\alpha$, in dimensione $n$,
-$\det(\alpha\mathbf{A}) = \alpha^n\det\mathbf{A}$, che è la prima cosa che si
-sbaglia scrivendo a memoria (il fattore va all’$n$-esima potenza perché scala
-tutte e $n$ le direzioni).
+e per uno scalare $\alpha$, in dimensione $n$, $\det(\alpha\mathbf{A}) =
+\alpha^n\det\mathbf{A}$, che è una delle cose che si sbagliano più spesso
+scrivendo a memoria (il fattore va all’$n$-esima potenza perché scala tutte e
+$n$ le direzioni).
 
 La caratterizzazione che lega il determinante al nucleo è
 
@@ -166,30 +170,39 @@ print(np.linalg.det(S), np.linalg.matrix_rank(S))             # -> 0.0 1
 
 ## Come si calcola, e come non si calcola
 
-La regola che si impara a scuola per le matrici piccole si estende a qualunque
-dimensione, ed è la strada sbagliata.
+Lo sviluppo di Laplace, che per una matrice $2\times 2$ o $3\times 3$ si fa a
+mano, vale in ogni dimensione ma costa un numero di operazioni che cresce come
+$n!$: è la strada sbagliata.
 
 `````{tab} Elementare
 
-Lo sviluppo che si insegna a mano funziona benissimo per due o tre righe e
-diventa assurdo appena dopo. Per una tabella di venti righe per venti
-chiederebbe due miliardi di miliardi di moltiplicazioni: una macchina che ne
-fa un miliardo al secondo ci metterebbe settantasette anni. La strada buona è
-la stessa dei sistemi lineari, l'eliminazione: si porta la tabella a scaletta,
-e a quel punto il determinante è il prodotto dei numeri sulla diagonale, con un
-cambio di segno per ogni scambio di righe fatto per strada. Ottomila
-operazioni invece di due miliardi di miliardi, e il conto finisce prima che tu
-abbia alzato gli occhi.
+Per una tabella due per due il conto si fa a mano. Con le righe $(3, 1)$ e $(1,
+2)$ si moltiplicano i due numeri sulla diagonale che scende, $3\cdot 2 = 6$, e
+si toglie il prodotto dei due sull'altra diagonale, $1\cdot 1 = 1$: il
+determinante è $5$, l'area del parallelogramma di
+{numref}`fig-determinante-area`. Per tabelle più grandi c'è un procedimento che
+si insegna a mano, lo sviluppo, che spezza la tabella in tante tabelle più
+piccole e ripete il conto su ciascuna. Funziona benissimo per due o tre righe e
+diventa assurdo appena dopo: per una tabella di venti righe per venti
+chiederebbe più di quattro miliardi di miliardi di moltiplicazioni, e una
+macchina che ne fa un miliardo al secondo ci metterebbe più di un secolo. La
+strada buona è la stessa dei sistemi lineari, l'eliminazione: si porta la
+tabella a scaletta, e a quel punto il determinante è il prodotto dei numeri
+sulla diagonale, con un cambio di segno per ogni scambio di righe fatto per
+strada. Ottomila operazioni invece di quattro miliardi di miliardi, e il conto
+finisce prima che tu abbia alzato gli occhi.
 
 Resta un guaio, e riguarda la grandezza del risultato. Moltiplicare fra loro
 qualche centinaio di numeri dà un valore assurdamente grande o assurdamente
-piccolo: su una tabella di quattrocento righe presa a caso il determinante
-esce dalla scala dei numeri che la macchina sa scrivere, e al posto della
-risposta compare la parola «infinito». La cura è antica e si usa dappertutto:
-invece del prodotto si sommano i logaritmi. Il logaritmo di un numero enorme è
-un numero comodo, e si somma senza problemi. Le librerie offrono la funzione
-apposita, che restituisce due cose separate, il segno e il logaritmo del valore
-assoluto.
+piccolo: su una tabella di quattrocento righe presa a caso il determinante esce
+dalla scala dei numeri che la macchina sa scrivere, e al posto della risposta
+compare la parola «infinito». La cura è antica e si usa dappertutto: invece del
+prodotto si sommano i logaritmi. Il logaritmo conta quante volte si deve
+moltiplicare un numero fisso per ottenerne un altro (quanti raddoppi portano da
+uno a otto? tre), quindi trasforma i prodotti in somme; il logaritmo di un
+numero enorme è un numero comodo, e si somma senza problemi. Le librerie offrono
+la funzione apposita, che restituisce due cose separate, il segno e il logaritmo
+del valore assoluto.
 
 `````
 
@@ -198,15 +211,16 @@ assoluto.
 Lo **sviluppo di Laplace** lungo una riga o una colonna,
 
 $$
-\det\mathbf{A} = \sum_{j=1}^{n} (-1)^{i+j} A_{ij}\,\det \mathbf{M}_{ij},
+\det\mathbf{A} = \sum_{j=1}^{n} (-1)^{i+j} A_{ij}\,\det \mathbf{A}_{(ij)},
 $$
 
-dove $i$ è una riga qualsiasi, tenuta fissa, e $\mathbf{M}_{ij}$ è il minore
-ottenuto cancellando riga $i$ e colonna $j$, ha costo $\Theta(n!)$ e serve solo
-a dimostrare teoremi. La via praticabile è la fattorizzazione
+dove $i$ è una riga qualsiasi, tenuta fissa, e $\mathbf{A}_{(ij)}$ è la
+sottomatrice ottenuta cancellando la riga $i$ e la colonna $j$ (il suo
+determinante è il minore di posto $(i,j)$), ha costo $\Theta(n!)$ e serve solo a
+dimostrare teoremi. La via praticabile è la fattorizzazione
 $\mathbf{P}\mathbf{A}=\mathbf{L}\mathbf{U}$ prodotta dall'eliminazione con
-pivoting: poiché $\det\mathbf{L}=1$ e il determinante di una matrice
-triangolare è il prodotto della diagonale,
+pivoting: poiché $\det\mathbf{L}=1$ e il determinante di una matrice triangolare
+è il prodotto della diagonale,
 
 $$
 \det\mathbf{A} = (-1)^{s}\prod_{i=1}^{n} U_{ii},
@@ -230,6 +244,7 @@ numero enorme per poi prenderne il logaritmo.
 `````
 
 ```python
+import numpy as np
 rng = np.random.default_rng(0)
 M = rng.normal(size=(400, 400))
 
@@ -238,7 +253,7 @@ print(np.linalg.det(M))          # -> -inf, con un avviso di overflow
 segno, log_det = np.linalg.slogdet(M)
 print(segno, round(log_det, 4))  # -> -1.0 998.4819
 
-# su una triangolare il conto e' il prodotto della diagonale, e si vede
+# su una triangolare il conto è il prodotto della diagonale, e si vede
 T = np.tril(rng.normal(size=(5, 5)))
 np.fill_diagonal(T, [1.2, 0.7, 2.0, 0.5, 1.5])
 print(round(np.linalg.det(T), 8), round(np.prod(np.diag(T)), 8))   # -> 1.26 1.26
@@ -315,8 +330,10 @@ dove $\mathbf{J}_{\mathbf{f}}$ è la matrice **jacobiana**, cioè la migliore
 approssimazione lineare di $\mathbf{f}$ attorno a $\mathbf{x}$, e le derivate
 parziali che la compongono arrivano nella {doc}`sezione su analisi e
 ottimizzazione </Matematica/analisi-ottimizzazione>`. La lettura è quella della
-vernice: la massa totale si conserva, quindi la densità va divisa per il
-fattore di volume locale.
+conservazione della massa: la probabilità contenuta in un volumetto attorno a
+$\mathbf{x}$ è la stessa che sta nel volumetto immagine attorno a $\mathbf{y}$,
+che è $\lvert\det\mathbf{J}_{\mathbf{f}}(\mathbf{x})\rvert$ volte più grande,
+quindi la densità si divide per quel fattore.
 
 In forma logaritmica, che è quella che si usa,
 
@@ -325,10 +342,12 @@ $$
 - \log\left|\det \mathbf{J}_{\mathbf{f}}(\mathbf{x})\right| ,
 $$
 
-e componendo $K$ trasformazioni i termini si sommano, perché il determinante di
-un prodotto è il prodotto dei determinanti. È l'ossatura dei flussi
-normalizzanti, i modelli generativi fatti di trasformazioni invertibili messe
-in fila, che la {doc}`sezione sul flusso che si può invertire
+e componendo $K$ trasformazioni i termini si sommano: per la regola della catena
+la jacobiana della composizione è il prodotto delle jacobiane calcolate nei
+punti intermedi, e il determinante di un prodotto è il prodotto dei
+determinanti. È l'ossatura dei flussi normalizzanti, i modelli generativi fatti
+di trasformazioni invertibili messe in fila, che la {doc}`sezione sul flusso che
+si può invertire
 </VerosimiglianzaEsatta/flussi>` costruisce proprio su questa formula.
 
 Il vincolo di progetto discende dal costo. Un determinante generico costa
@@ -342,27 +361,32 @@ $$
 = \sum_{i=1}^{n} \log\left|\frac{\partial f_i}{\partial x_i}\right| ,
 $$
 
-cioè $\Theta(n)$. Lo stesso determinante compare in altri due posti che
-conviene riconoscere come lo stesso conto: nella densità della gaussiana
-multivariata, dove il fattore di normalizzazione contiene
-$(\det\boldsymbol{\Sigma})^{-1/2}$ e misura il volume dell'ellissoide di
-covarianza, e nella verosimiglianza dei processi gaussiani, dove il termine
-$\log\det$ della matrice di covarianza è precisamente il pezzo che rende il
-metodo cubico nel numero di osservazioni.
+cioè $\Theta(n)$. Lo stesso determinante compare in altri due posti che conviene
+riconoscere come lo stesso conto: nella densità della gaussiana multivariata,
+dove il fattore di normalizzazione contiene $(\det\boldsymbol{\Sigma})^{-1/2}$ e
+misura il volume dell'ellissoide di covarianza, e nella verosimiglianza dei
+processi gaussiani, dove $\log\det\boldsymbol{\Sigma}$ e
+$\mathbf{y}^\top\boldsymbol{\Sigma}^{-1}\mathbf{y}$ si ricavano dalla stessa
+fattorizzazione di Cholesky della matrice di covarianza, che costa $\Theta(N^3)$
+nel numero $N$ di osservazioni {cite}`rasmussen2006gaussian`.
 
 `````
 
-Il caso opposto chiude il discorso. Una rete
-neurale ordinaria non è invertibile: la funzione di attivazione, cioè quella
-che piega i numeri fra uno strato e l'altro, nella forma più diffusa manda a
-zero tutti i valori negativi, e da uno zero non si risale al numero di
-partenza. Il determinante che misura quanto la rete deforma lo spazio attorno
-a ogni punto, dilatandolo o comprimendolo, vale zero su intere regioni,
-e quindi la formula del cambio di variabile non si applica; e quando la rete
-manda i dati in uno spazio di dimensione diversa, quel determinante non
-esiste affatto. È il prezzo che
-separa i modelli capaci di dire quanto è probabile ciò che generano da quelli
-che sanno soltanto generare, ed è una scelta di progetto, non una svista.
+Il caso opposto chiude il discorso. Una rete neurale ordinaria in genere non è
+invertibile: la funzione di attivazione, cioè quella che piega i numeri fra uno
+strato e l'altro, nella forma più diffusa (la ReLU) manda a zero tutti i valori
+negativi, e da uno zero non si risale al numero di partenza. Il determinante che
+misura quanto la rete deforma lo spazio attorno a ogni punto, dilatandolo o
+comprimendolo, vale zero su intere regioni, e quindi la formula del cambio di
+variabile non si applica; e quando la rete manda i dati in uno spazio di
+dimensione diversa, quel determinante non esiste affatto. La formula del cambio
+di variabile è il prezzo del calcolo esatto della probabilità per questa strada,
+e i flussi lo pagano con la forma obbligata della trasformazione. Altre famiglie
+arrivano alla probabilità per altre vie (i modelli autoregressivi la scompongono
+in un prodotto di probabilità condizionate, come racconta la {doc}`sezione sul
+generare un pixel alla volta
+</VerosimiglianzaEsatta/pixel-per-pixel>`) o ne danno soltanto un limite
+inferiore, e altre ancora, come le GAN, non la calcolano affatto.
 
 ## In pratica, con NumPy
 
@@ -373,16 +397,14 @@ A = np.array([[3.0, 1.0], [1.0, 2.0]])
 
 np.linalg.det(A)          # il fattore di area, con segno
 np.linalg.slogdet(A)      # (segno, log|det|): la forma da usare quasi sempre
-np.linalg.matrix_rank(A)  # la domanda giusta se la matrice non e' quadrata
+np.linalg.matrix_rank(A)  # la domanda giusta se la matrice non è quadrata
 
 np.linalg.det(2 * A)      # -> 4 volte det(A): il fattore va alla potenza n
 ```
 
-Il determinante della matrice raddoppiata merita un secondo di attenzione,
-perché è la svista più comune: raddoppiare una matrice $2\times 2$ non raddoppia il determinante, lo
-quadruplica, e su una matrice $n\times n$ lo moltiplica per $2^n$. Il motivo è
-geometrico: raddoppiando la matrice si raddoppia ogni lato del
-parallelepipedo, e i lati sono $n$.
+Raddoppiare una matrice $2\times 2$ ne quadruplica il determinante, e su una
+$n\times n$ lo moltiplica per $2^n$: si raddoppiano $n$ lati del
+parallelepipedo.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -396,10 +418,10 @@ parallelepipedo, e i lati sono $n$.
   soluzione.
 - Due trasformazioni di fila moltiplicano i loro fattori, e disfarne una
   divide per il suo.
-- La regola che si impara a scuola su venti righe chiederebbe settantasette
-  anni di conti: si calcola con l'eliminazione, portando la tabella a scaletta
-  e moltiplicando la diagonale. E poiché quel prodotto diventa subito enorme,
-  nel codice si usa il logaritmo del determinante invece del determinante.
+- Lo sviluppo che si fa a mano, su venti righe, chiederebbe più di un secolo di
+  conti: si calcola con l'eliminazione, portando la tabella a scaletta e
+  moltiplicando la diagonale. E poiché quel prodotto diventa subito enorme, nel
+  codice si usa il logaritmo del determinante invece del determinante.
 - Quello che è distribuito nello spazio si assottiglia dove lo spazio si
   allarga, esattamente del fattore dato dal determinante. È il conto che
   permette a certi generatori di dire quanto è probabile ciò che producono, e
@@ -431,15 +453,16 @@ parallelepipedo, e i lati sono $n$.
   le loro jacobiane si costruiscono triangolari, portando il costo da
   $\Theta(n^3)$ a $\Theta(n)$.
 - Lo stesso $\log\det$ compare nella normalizzazione della gaussiana
-  multivariata e nella verosimiglianza dei processi gaussiani, dove è il
-  termine che rende il metodo cubico nel numero di osservazioni.
+  multivariata e nella verosimiglianza dei processi gaussiani, dove la
+  fattorizzazione da cui si ricava rende il metodo cubico nel numero di
+  osservazioni.
 ```
 `````
 
-Con il determinante l'algebra lineare del libro è completa: si sa mettere i
-dati in fila, trasformarli, chiedersi che cosa una trasformazione può produrre
-e che cosa perde, trovare la risposta migliore quando quella esatta non esiste,
-e misurare di quanto lo spazio si è deformato. Manca l'altra metà degli
-attrezzi, quella che non guarda una trasformazione fissa ma il modo in cui una
-quantità cambia quando se ne muove un'altra: sono le derivate, ed è con esse
-che si impara a migliorare.
+Con il determinante i vettori, le matrici e le trasformazioni che le matrici
+rappresentano sono al completo: si sa mettere i dati in fila, trasformarli,
+chiedersi che cosa una trasformazione può produrre e che cosa perde, trovare la
+risposta migliore quando quella esatta non esiste, e misurare come cambiano i
+volumi. Serve ora un altro linguaggio, quello che non guarda una trasformazione
+fissa ma il modo in cui una quantità cambia quando se ne muove un'altra: le
+derivate, da cui si ricava come migliorare un modello.

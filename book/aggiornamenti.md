@@ -38,6 +38,20 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-14-1)=
+
+## 1.14.1 · 3 ottobre 2026
+
+### Pagine ampliate
+
+- **Più rigore nel livello Superiore.** Condizioni, dimostrazioni e casi in cui il metodo si rompe; fra le aggiunte, il k-anonimato e il conteggio con il rumore di Laplace, la dualità fra Fokker-Planck e Feynman-Kac, Orca e il continuous batching, SMOTE e la curva precision-recall.
+
+### Correzioni
+
+- **Il testo comune ai due livelli, riscritto.** Ogni cosa ha il suo nome e la sua notazione al primo uso, e i capitoli si passano il filo l'uno all'altro, dall'apertura al congedo.
+- **Correzioni di fatto in tutto il libro.** Attribuzioni, date e affermazioni riportate alla misura delle fonti, e le schede Elementari che promettevano più di quanto il livello Superiore sostiene, riallineate; fra le altre, l'AI Act e il GDPR letti sul testo.
+- **I numeri li stampa il codice.** Blocchi nuovi per i numeri che il testo commenta, dalla regolarizzazione nei sistemi di raccomandazione ai minimi quadrati contro la PINN, e il lettore si chiama «tu» ovunque.
+
 (v1-14-0)=
 
 ## 1.14.0 · 27 settembre 2026
@@ -242,7 +256,7 @@ piedi.
 - {doc}`Introduzione </Introduzione/overview>`. **Quattro fatti storici rimessi alla loro fonte.** L'epigrafe che apre il libro è ora la prima riga dell'articolo del 1966, presa sul testo originale; la frase di Pascal si legge per intero, e la metà che mancava dice quasi il contrario della prima; ELIZA è il capostipite dei chatbot, non il primo, che è più di quanto le fonti sostengano; e i chilometri di ARGO e del VIAC sono quelli dichiarati da chi c'era.
 - {doc}`Robotica e AI </Introduzione/applicazioni>` (Introduzione). **La definizione di robot, con la clausola che tiene fuori la lavatrice.** La norma ISO 8373 è quella rifatta nel 2021, e chiede che la macchina agisca con un certo grado di autonomia: era il punto del capoverso, e mancava. E sulla somma scontata delle ricompense: che siano limitate basta a farla convergere, ma non è necessario, mentre la pagina lo dava per obbligatorio.
 - {doc}`Conclusione </Introduzione/conclusione>` (Introduzione). **Il confronto fra la rete e i cardiologi, con il suo protocollo vero.** Come era raccontato girava in tondo: gli stessi medici fissavano il riferimento ed erano poi misurati contro di esso. Nello studio i cardiologi del confronto non sono quelli che hanno annotato il riferimento.
-- {doc}`Python e l'AI </Introduzione/massimo_comune_divisore>` (Introduzione). **Il quaderno salva il risultato che il testo commenta.** La cella era archiviata senza la sua uscita, mentre la pagina accanto dice che quel numero è stato stampato: adesso c'è.
+- {doc}`Il primo programma </Introduzione/massimo_comune_divisore>` (Introduzione). **Il quaderno salva il risultato che il testo commenta.** La cella era archiviata senza la sua uscita, mentre la pagina accanto dice che quel numero è stato stampato: adesso c'è.
 - {doc}`Il filtraggio collaborativo </SistemiRaccomandazione/filtraggio-collaborativo>` (Sistemi di raccomandazione). **L'esempio commetteva la fuga di informazione che la pagina denuncia.** Novantuno dei milleduecento voti di prova cadevano su celle già viste in addestramento, e i due errori, sul già visto e sul nuovo, erano mescolati in uno solo: adesso è il blocco a contarli e a tenerli separati. Corretto anche che cosa capita a chi si è appena iscritto: la sua scheda non resta dove il caso l'aveva messa, con i minimi quadrati alternati o con un decadimento dei pesi finisce a zero.
 - {doc}`La raccomandazione neurale </SistemiRaccomandazione/raccomandazione-neurale>` (Sistemi di raccomandazione). **Una citazione appesa al contrario della sua fonte.** Il lavoro citato non mostra che addestrare sul futuro gonfi i numeri: mostra che rende imprevedibile l'ordine fra i metodi, ed è a quello che ora è agganciato. Corretto anche il passaggio sulla ricerca veloce: cercare il massimo prodotto scalare non è cercare il vicino più prossimo, e le due cose coincidono solo se gli item hanno tutti la stessa norma.
 - {doc}`La raccomandazione neurale </SistemiRaccomandazione/raccomandazione-neurale>` (Sistemi di raccomandazione). **Il conto della NDCG si può rifare fino in fondo.** Gli sconti per posizione erano scritti a metà, e senza quelli che mancavano la somma della classifica ideale non si poteva ricostruire. E la figura della vetrina è stata ridisegnata dove il disegno non mostrava il sorpasso che la didascalia promette.
@@ -1008,7 +1022,7 @@ La 1.0.0 non è il primo giorno del libro, che nasce nel 2019 (la storia breve �
 - {doc}`L'addestramento avversario </GAN/come-funziona>` (GAN). Come si misura una GAN, che è la domanda che l'addestramento avversario lascia aperta: Inception Score, FID, e che cosa nessuno dei due vede.
 - {doc}`GEMM e tensor core </GPU/gemm-e-tensor-core>` (GPU e calcolo parallelo). L'array sistolico: la forma di circuito che sta dentro un tensor core, e perché moltiplicare matrici in hardware somiglia a una catena di montaggio.
 - {doc}`I tre errori più comuni </PyTorch/errori-comuni>` (PyTorch). Leggere le curve di addestramento: quali forme dicono overfitting, quali un learning rate sbagliato, quali un errore nei dati.
-- {doc}`Pandas e Matplotlib </Python/pandas-matplotlib>` (Python). I quattro tipi di join fra due tabelle e la griglia di subplot, due cose che il capitolo usava senza averle spiegate.
+- {doc}`Pandas e Matplotlib </Python/pandas-matplotlib>` (Python). I quattro tipi di join fra due tabelle, che il capitolo usava senza averli spiegati.
 - Ogni capitolo si chiude con un riquadro «Da ricordare», scritto sui due livelli come il resto del libro: cinque righe per rileggere un capitolo in un minuto, o per capire se vale la pena aprirlo.
 
 ### Correzioni

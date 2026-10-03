@@ -11,31 +11,41 @@ Sono arrivati fra il 2010 e il 2015, e sono una manciata: inizializzazioni più
 accorte, la *batch normalization* {cite}`ioffe2015batch`, il *dropout*
 {cite}`srivastava2014dropout`, gli ottimizzatori adattivi come Adam
 {cite}`kingma2015adam`. Insieme hanno trasformato le reti profonde da promessa
-fragile a strumento affidabile. Questa sezione li mette in fila: prima il
-problema, poi i rimedi.
+fragile a strumento affidabile.
 
-## Quando il segnale svanisce (o esplode)
+Non rispondono tutti alla stessa domanda. Alcuni servono a far arrivare un
+gradiente utilizzabile dall'uscita fino ai primi strati: l'inizializzazione, la
+scelta dell'attivazione, la batch normalization. Altri decidono come muoversi
+una volta che il gradiente c'è: gli ottimizzatori e il ritmo con cui cambia il
+passo. Altri ancora impediscono alla rete di imparare troppo bene gli esempi
+che ha davanti: il dropout, il weight decay, il bersaglio ammorbidito. Vanno
+presi in fila, prima il problema e poi i rimedi, e in fondo c'è un fenomeno, il
+grokking, che mostra che cosa può succedere quando l'addestramento continua ben
+oltre il punto in cui sembra finito.
+
+## Quando il gradiente svanisce (o esplode)
 
 Una rete impara per correzioni: risponde, si vede dire di quanto ha sbagliato e
-aggiusta i propri pesi. Il numero che dice a ciascun peso in che verso e di
-quanto muoversi si chiama gradiente, e qui lo chiameremo spesso, più alla
-buona, il *segnale di correzione*. La ricetta che lo calcola è
-la retropropagazione (*backpropagation*): parte dall'uscita della rete e
-risale verso l'ingresso, uno strato alla volta.
+aggiusta i propri pesi. La correzione si legge nel gradiente della loss,
+$\nabla_\theta\mathcal{L}$, che ha una componente per peso: dice di quanto la
+loss cresce se quel peso cresce di poco. Ogni peso si sposta nel verso
+opposto, di un passo proporzionale al tasso di apprendimento $\eta$. A
+calcolare il gradiente è la retropropagazione (*backpropagation*): parte
+dall'uscita della rete e risale verso l'ingresso, uno strato alla volta.
 
-A ogni passo indietro quel segnale viene moltiplicato per i pesi dello strato e
-per le derivate delle attivazioni. La derivata è il numero che dice quanto
-l'uscita di un neurone reagisce a una piccola variazione del suo ingresso: è
-grande dove il neurone è reattivo, e piccola dove è pigro, cioè dove muovere
-l'ingresso non cambia quasi niente. Ed è qui che nasce il guaio: moltiplicare
-tante volte per numeri piccoli.
+A ogni passo indietro il gradiente viene moltiplicato per i pesi dello strato e
+per le derivate delle attivazioni. La derivata dell'attivazione dice di quanto
+cambia l'uscita di un neurone per una piccola variazione del suo ingresso, e
+dove l'attivazione è quasi piatta vale poco: muovere l'ingresso non cambia
+quasi niente. Ed è qui che nasce il guaio: moltiplicare tante volte per numeri
+piccoli.
 
 ```{figure} ../figures/gradiente-svanisce.svg
 :name: fig-gradiente-svanisce
 :alt: "Animazione: due file di barre, sigmoide e ReLU. Risalendo dall'uscita verso l'ingresso le barre della sigmoide si accorciano di un fattore quattro per strato, quelle della ReLU restano intere."
 :width: 90%
 
-Quanta parte del segnale di correzione sopravvive al passaggio di ogni strato,
+Quanta parte del gradiente sopravvive al passaggio di ogni strato,
 con due attivazioni diverse: la sigmoide, la curva a S che schiaccia
 qualunque numero dentro l'intervallo fra 0 e 1, e la ReLU, che lascia
 passare i positivi come sono e azzera i negativi. Con la sigmoide ogni strato lo
@@ -57,9 +67,10 @@ punto solo, quello in cui il numero che entra nel neurone vale zero. Altrove è
 molto più piccolo, e il crollo è più rapido.
 
 Verrebbe da concludere che con la ReLU il problema sia chiuso, e non lo è. Le
-derivate sono solo metà della storia: a ogni passo indietro il segnale viene
+derivate sono solo metà della storia: a ogni passo indietro il gradiente viene
 moltiplicato anche per i pesi dello strato, e quelli, all'inizio, non li ha
-ancora sistemati nessuno. È la ragione per cui la sezione continua.
+ancora sistemati nessuno. Da lì comincia il rimedio successivo, la scala dei
+pesi prima del primo passo.
 
 `````{tab} Elementare
 
@@ -68,12 +79,13 @@ la fotocopia di quella. A ogni giro il grigio sbiadisce. Se a ogni passaggio ne
 resta un decimo, dopo dieci copie di quello che c'era scritto è rimasto un
 decimo di miliardesimo: un foglio bianco.
 
-È ciò che succede al segnale di correzione che, dall'uscita della rete, deve
-tornare fino ai primi strati: attraversando molti livelli si assottiglia fino a
-sparire. Gli strati vicini all'ingresso non ricevono quasi nessuna indicazione
-su come cambiare, e di fatto smettono di imparare. Il difetto opposto è pari e
-contrario: se ogni passaggio *ingrandisce* invece di sbiadire, dopo poche
-copie il segnale esplode in numeri enormi e l'addestramento va in tilt.
+È ciò che succede al gradiente, il segnale di correzione che dall'uscita della
+rete deve tornare fino ai primi strati: attraversando molti livelli si
+assottiglia fino a sparire. Gli strati vicini all'ingresso non ricevono quasi
+nessuna indicazione su come cambiare, e di fatto smettono di imparare. Il
+difetto opposto è pari e contrario: se ogni passaggio *ingrandisce* invece di
+sbiadire, dopo poche copie il segnale esplode in numeri enormi e
+l'addestramento va in tilt.
 
 Quanto grigio sopravvive a un passaggio dipende da com'è fatto il neurone che
 lo lascia passare, e cambiare quello è il primo rimedio. La curva a S non ne
@@ -92,45 +104,50 @@ fattori. Chiamiamo $\mathbf{z}_k$ gli ingressi dei neuroni dello strato $k$
 prima dell'attivazione, e $\boldsymbol{\delta}_k = \partial\mathcal{L}/\partial
 \mathbf{z}_k$ il gradiente della loss rispetto a quegli ingressi. La
 retropropagazione è la ricorsione $\boldsymbol{\delta}_{k-1} =
-\operatorname{diag}\!\big(\sigma'(\mathbf{z}_{k-1})\big)\,\mathbf{W}_k^\top
+\operatorname{diag}\!\big(g'(\mathbf{z}_{k-1})\big)\,\mathbf{W}_k^\top
 \boldsymbol{\delta}_k$, e svolgendola dalla cima fino allo strato $\ell$ in una
 rete di $L$ strati si ottiene
 
 $$
 \boldsymbol{\delta}_\ell = \left[\;\prod_{k=\ell+1}^{L}
-\operatorname{diag}\!\big(\sigma'(\mathbf{z}_{k-1})\big)\,
+\operatorname{diag}\!\big(g'(\mathbf{z}_{k-1})\big)\,
 \mathbf{W}_k^\top \right] \boldsymbol{\delta}_L ,
 $$
 
 dove $\mathbf{W}_k$ è la matrice dei pesi dello strato $k$ e
-$\sigma'(\mathbf{z}_{k-1})$ la derivata dell'attivazione calcolata negli
-ingressi dello strato precedente. Il prodotto è ordinato: i fattori vanno
-scritti da sinistra a destra per $k$ crescente e non si possono scambiare,
-perché il prodotto di matrici non commuta. Se i fattori hanno modulo tipico
-minore di $1$, il prodotto tende a $0$ esponenzialmente in $L$ (**vanishing
-gradient**); se maggiore di $1$, diverge (**exploding gradient**).
-
-Una nota sul simbolo, perché fa più di un mestiere. $\sigma$ qui è
-l’attivazione generica, qualunque essa sia, e non la sigmoide, che ne è
-solo un caso particolare e che viene sempre nominata per esteso; più avanti,
-nella batch normalization, $\sigma_{\mathcal{B}}$ sarà invece una deviazione
-standard, come vuole la tradizione statistica. Tre mestieri per una lettera
-sola: il contesto li distingue, ma è meglio saperlo prima che accorgersene.
+$g'(\mathbf{z}_{k-1})$ la derivata della funzione di attivazione $g$ (la
+lettera è quella del {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`;
+la sigmoide, che ne è un caso particolare, si nomina sempre per esteso)
+calcolata negli ingressi dello
+strato precedente. Il prodotto è ordinato: i fattori vanno scritti da sinistra
+a destra per $k$ crescente e non si possono scambiare, perché il prodotto di
+matrici non commuta. Siccome la norma di un prodotto non supera il prodotto
+delle norme, se le norme spettrali dei fattori restano sotto $1$ il prodotto
+tende a $0$ esponenzialmente in $L$ (**vanishing gradient**): è una condizione
+sufficiente. Che qualche norma superi $1$ è invece necessario perché il
+gradiente diverga (**exploding gradient**), ma non basta, perché conta anche
+come i fattori si allineano {cite}`pascanu2013difficulty`.
 
 La sigmoide aggrava il primo caso: la sua derivata non supera $0{,}25$ in
 nessun punto, quindi il solo fattore di attivazione riduce il gradiente di
-almeno quattro volte a ogni strato. Rimedi complementari:
-attivazioni non saturanti come la ReLU ($\sigma'=1$ per input positivi),
-*gradient clipping* per l'esplosione, e (soprattutto) una scelta accurata
-della scala iniziale dei pesi.
+almeno quattro volte a ogni strato. Rimedi complementari: attivazioni non
+saturanti come la ReLU ($g'=1$ per input positivi); il *gradient clipping*
+contro l'esplosione, che quando la norma del gradiente supera una soglia
+fissata lo riscala fino a quella soglia, cambiandone la lunghezza e non la
+direzione {cite}`pascanu2013difficulty` (in PyTorch
+`torch.nn.utils.clip_grad_norm_`); e una scelta accurata della scala iniziale
+dei pesi.
 
 `````
 
 ## Partire col piede giusto: l'inizializzazione
 
-Se il segnale svanisce o esplode a seconda di quanti fattori piccoli lo hanno
-moltiplicato, il punto di partenza conta enormemente. Inizializzare i pesi con
-la scala sbagliata condanna la rete prima ancora del primo aggiornamento.
+Se il gradiente svanisce o esplode a seconda di quanti fattori piccoli lo hanno
+moltiplicato, il punto di partenza conta, e conta tanto di più quanto più la
+rete è profonda. Le due ricette con cui si sceglie la scala iniziale dei pesi,
+Xavier e He, e il fatto che il default di PyTorch non sia nessuna delle due, li
+ha già nominati il {doc}`capitolo su PyTorch </PyTorch/prestazioni>`; qui se
+ne vede la ragione.
 
 Attenzione a una parola che da qui in avanti cambia mestiere. «Attivazione»
 indica due cose diverse: la *funzione* che ogni neurone applica al proprio
@@ -150,14 +167,14 @@ verticale c'è la varianza del segnale, cioè quanto sono sparpagliati i
 numeri che escono da uno strato: grande vuol dire valori forti e distanti fra
 loro, vicina a zero vuol dire valori tutti appiccicati, cioè un segnale ormai
 spento. La curva piatta è l'obiettivo: quell'ampiezza deve attraversare la rete
-senza gonfiarsi né spegnersi.
+senza gonfiarsi né spegnersi, e ci riesce la scala calibrata sull'attivazione,
+Xavier per la tanh e He per la ReLU.
 ```
 
 Il fatto che le tre curve di {numref}`fig-inizializzazione` divergano *prima*
-del primo aggiornamento è ciò che rende l'inizializzazione un problema a sé. Non
-è una scorciatoia per arrivare più in fretta: con la scala sbagliata la rete non
-arriva affatto, perché il segnale che dovrebbe correggerla è già rovinato al
-primo passaggio.
+del primo aggiornamento è ciò che rende l'inizializzazione un problema a sé:
+con la scala sbagliata, in una rete profonda, il gradiente è già svanito o
+esploso al primo passo, prima che l'addestramento possa correggere qualcosa.
 
 `````{tab} Elementare
 
@@ -181,7 +198,7 @@ ascolta e quelle a cui parla. Vale nella stanza in cui tutte le voci
 ripartono, nessuna esclusa: è il caso della *tanh*, la curva a S della sigmoide
 spostata fra $-1$ e $+1$.
 
-He ha in mente una stanza dove metà delle voci non riparte, che è quello
+Kaiming He ha in mente una stanza dove metà delle voci non riparte, che è quello
 che fa la ReLU: sotto zero zittisce tutto. Delle cento ne ripartono cinquanta,
 quindi chi parla si regola su cinquanta e comincia al doppio del volume. Di
 quanti lo ascoltino non si occupa.
@@ -192,17 +209,16 @@ silenzio. Il bias è il numero fisso che ogni neurone somma a quello che ha
 sentito, dovrebbe valere zero all'inizio, perché non c'è ancora ragione di
 preferire un verso, e PyTorch lo sorteggia come i pesi.
 
-Una fila di poche stanze perdona tutto. Quaranta no. Il grido che torna alla
-prima vale ancora quasi mezzo con i pesi alla He; con quelli di PyTorch
-comincia con diciassette zeri dopo la virgola, decine di milioni di miliardi di
-volte più fioco. Non è ancora silenzio, ma tanto vale. A sessanta stanze lo
-diventa: il calcolatore non ha più cifre per scrivere un numero così piccolo, e
-scrive zero. Che a quaranta arrivi ancora qualcosa lo si deve a quei bias
-sorteggiati: un brusio che ognuno aggiunge comunque, anche senza sentire
-niente, ed è la sola cosa che tiene vivo il messaggio mentre i pesi lo
-spengono. Azzerandoli, con i pesi lasciati come sono, il silenzio pieno arriva
-già alla quarantesima stanza. Il volume di partenza lo sceglie chi costruisce
-la rete, prima che faccia un solo passo.
+Il divario si sente presto, e cresce con la fila. Con cinque stanze, il grido
+che torna alla prima con i pesi di PyTorch è già mille volte più fioco che con
+quelli alla He. Con quaranta, alla He vale ancora quasi mezzo; con i pesi di
+PyTorch comincia con diciassette zeri dopo la virgola, decine di milioni di
+miliardi di volte più fioco. A sessanta gli zeri dopo la virgola sono
+venticinque: un grido che nessuno sentirebbe. E se arriva ancora qualcosa, lo
+si deve anche al brusio di quei bias sorteggiati, che ogni stanza aggiunge
+comunque, anche senza sentire niente: è la sola cosa che tiene vivo il
+messaggio mentre i pesi lo spengono. Il volume di partenza lo sceglie chi
+costruisce la rete, prima che faccia un solo passo.
 
 `````
 
@@ -244,7 +260,10 @@ $$
 
 In entrambi i casi $w$ si estrae da una normale (o da una uniforme con
 supporto equivalente) e i bias si pongono a $0$. La regola pratica: He con
-ReLU e varianti, Glorot con tanh e sigmoide.
+ReLU e varianti, Glorot con tanh. Con la sigmoide il conto non regge, perché
+non è simmetrica attorno a zero (in zero vale $1/2$), e Glorot e Bengio stessi
+la sconsigliano nelle reti profonde inizializzate a caso, perché spinge in
+saturazione gli ultimi strati nascosti {cite}`glorot2010understanding`.
 
 Quello che queste due ricette non sono è il comportamento predefinito di
 PyTorch, ed è un equivoco che costa poco credere e parecchio pagare.
@@ -255,22 +274,21 @@ $$
 \operatorname{Var}(w) = \frac{1}{3\,n_{\text{in}}},
 $$
 
-cioè un sesto di He. Su `nn.Linear(100, 100)` la varianza misurata dei pesi
-è $3{,}34\times10^{-3}$ contro i $2{,}00\times10^{-2}$ di He. E i bias non sono
-nulli: escono da una uniforme $\pm 1/\sqrt{n_{\text{in}}}$, la stessa scala dei
-pesi.
+cioè un sesto di He. Su `nn.Linear(100, 100)` fa
+$1/300 \approx 3{,}3\times10^{-3}$, contro i $2/100 = 2{,}00\times10^{-2}$ di
+He. E i bias non sono nulli: escono da una uniforme
+$\pm 1/\sqrt{n_{\text{in}}}$, la stessa scala dei pesi.
 
-Su reti poco profonde la differenza si assorbe. Su una pila di quaranta blocchi
-`Linear(100, 100)` + ReLU no. Il protocollo, perché la misura si possa rifare:
+Su una pila di blocchi `Linear(100, 100)` + ReLU la differenza si misura, e
+cresce con la profondità. Il protocollo, perché la misura si possa rifare:
 ingresso $64\times100$ da una normale standard, loss l'errore quadratico medio
 dell'uscita contro zero, si legge la norma del gradiente sui pesi del primo
 strato, mediana su cinque semi. I bias seguono ciascuno la propria ricetta:
 azzerati con He e con Glorot, come le due prescrivono, e lasciati come li mette
 PyTorch nel caso del default, che è appunto quel che si ottiene senza toccare
-niente. E conta: azzerando anche quelli del default, si arriva a zero esatto
-già a quaranta blocchi invece che a sessanta, perché quei valori
-uniformi sono l'unica cosa che tiene in vita il segnale quando i pesi lo
-spengono. Il conto sta in un blocco:
+niente; la riga `default, bias 0` li azzera anche lì, per vedere quanto
+contano. La norma si calcola in `float64`, e la ragione si vede a sessanta
+blocchi. Il conto sta in un blocco:
 
 ```python
 import statistics
@@ -290,25 +308,39 @@ def norma_primo_strato(ricetta, blocchi, seme):
         elif ricetta == "Glorot":
             nn.init.xavier_normal_(lineare.weight)
             nn.init.zeros_(lineare.bias)
+        elif ricetta == "default, bias 0":
+            nn.init.zeros_(lineare.bias)
         strati += [lineare, nn.ReLU()]
     rete = nn.Sequential(*strati)
     (rete(torch.randn(64, 100)) ** 2).mean().backward()
-    return rete[0].weight.grad.norm().item()
+    # norma in float64: in float32 i quadrati di numeri cosi' piccoli si perdono
+    return rete[0].weight.grad.double().norm().item()
 
-for blocchi in (40, 60):
-    for ricetta in ("He", "Glorot", "default"):
+for blocchi in (5, 10, 40, 60):
+    for ricetta in ("He", "Glorot", "default", "default, bias 0"):
         norme = [norma_primo_strato(ricetta, blocchi, s) for s in range(5)]
-        print(f"{blocchi} blocchi, {ricetta:<8} mediana {statistics.median(norme):.1e}"
+        mediana = statistics.median(norme)
+        print(f"{blocchi:2d} blocchi, {ricetta:<15} mediana {mediana:.1e}"
               f"   (da {min(norme):.1e} a {max(norme):.1e})")
 ```
 
 ```text
-40 blocchi, He       mediana 4.7e-01   (da 8.2e-02 a 9.7e-01)
-40 blocchi, Glorot   mediana 6.1e-13   (da 1.1e-13 a 1.3e-12)
-40 blocchi, default  mediana 9.6e-18   (da 2.2e-18 a 1.5e-17)
-60 blocchi, He       mediana 1.7e-01   (da 4.6e-02 a 1.2e+00)
-60 blocchi, Glorot   mediana 2.1e-19   (da 5.7e-20 a 1.4e-18)
-60 blocchi, default  mediana 0.0e+00   (da 0.0e+00 a 0.0e+00)
+ 5 blocchi, He              mediana 4.6e-01   (da 4.3e-01 a 6.7e-01)
+ 5 blocchi, Glorot          mediana 2.0e-02   (da 1.9e-02 a 3.0e-02)
+ 5 blocchi, default         mediana 4.2e-04   (da 3.3e-04 a 4.6e-04)
+ 5 blocchi, default, bias 0 mediana 1.9e-04   (da 1.5e-04 a 2.0e-04)
+10 blocchi, He              mediana 5.4e-01   (da 4.5e-01 a 7.8e-01)
+10 blocchi, Glorot          mediana 7.5e-04   (da 6.2e-04 a 1.1e-03)
+10 blocchi, default         mediana 3.7e-06   (da 3.0e-06 a 5.8e-06)
+10 blocchi, default, bias 0 mediana 3.2e-08   (da 2.4e-08 a 3.6e-08)
+40 blocchi, He              mediana 4.7e-01   (da 8.2e-02 a 9.7e-01)
+40 blocchi, Glorot          mediana 6.1e-13   (da 1.1e-13 a 1.3e-12)
+40 blocchi, default         mediana 9.6e-18   (da 2.2e-18 a 1.5e-17)
+40 blocchi, default, bias 0 mediana 1.0e-31   (da 1.3e-32 a 3.4e-31)
+60 blocchi, He              mediana 1.7e-01   (da 4.6e-02 a 1.2e+00)
+60 blocchi, Glorot          mediana 2.1e-19   (da 5.7e-20 a 1.4e-18)
+60 blocchi, default         mediana 9.4e-26   (da 2.2e-26 a 1.7e-25)
+60 blocchi, default, bias 0 mediana 0.0e+00   (da 0.0e+00 a 0.0e+00)
 ```
 
 A quaranta blocchi la mediana vale $4{,}7\times10^{-1}$ inizializzando alla He,
@@ -316,22 +348,41 @@ $6{,}1\times10^{-13}$ alla Glorot e $9{,}6\times10^{-18}$ con il default di
 PyTorch: più di sedici ordini di grandezza fra la prima e l'ultima, e
 l'addestramento non è ancora cominciato. La dispersione fra semi è ampia (con
 He il singolo seme va da $8{,}2\times10^{-2}$ a $9{,}7\times10^{-1}$), il
-divario fra le tre no. Portando la pila a sessanta blocchi il default arriva
-esattamente a $0{,}0$, in cinque semi su cinque, e lì lo zero non è un modo di
-dire ma un underflow in `float32`. Che la questione sia nota a chi scrive le
-librerie lo dicono le librerie stesse: la ResNet di `torchvision` non si fida
-del default e reinizializza ogni convoluzione con
-`nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")`.
+divario fra le tre no. E il divario c'è già con pochi strati: a cinque blocchi
+il default arriva al primo strato con un gradiente mille volte più piccolo di
+He ($4{,}2\times10^{-4}$ contro $4{,}6\times10^{-1}$), a dieci più di centomila
+volte ($3{,}7\times10^{-6}$ contro $5{,}4\times10^{-1}$). Con la discesa del
+gradiente semplice, che non riscala niente, il primo strato si muove
+altrettante volte più piano.
+
+I bias del default contano: azzerandoli, a quaranta blocchi la norma scende da
+$9{,}6\times10^{-18}$ a $1{,}0\times10^{-31}$. Sono loro a tenere viva l'uscita
+mentre i pesi la spengono, e dall'uscita riparte il gradiente. A sessanta
+blocchi il default scende a $9{,}4\times10^{-26}$, un numero che `float32` sa
+ancora scrivere (il più piccolo valore normale è circa $10^{-38}$). La norma
+calcolata in `float32`, però, lo perde: eleva al quadrato le componenti,
+dell'ordine di $10^{-27}$, e $10^{-54}$ è sotto anche il più piccolo numero che
+`float32` sappia scrivere (circa $1{,}4\times10^{-45}$), quindi la somma dei
+quadrati fa zero e la norma pure, con un gradiente che zero non è. È la ragione
+per cui il blocco calcola la norma in `float64`. Lo zero di `default, bias 0` a
+sessanta blocchi, invece, è vero: senza il brusio dei bias l'uscita della rete
+è dell'ordine di $10^{-23}$, il gradiente che ne riparte è più piccolo ancora,
+e il loro prodotto, che è il gradiente sui pesi, scende sotto quella soglia già
+mentre lo si calcola. Che la questione sia nota a chi scrive le librerie lo
+dicono le librerie stesse: la ResNet di `torchvision` non si fida del default e
+reinizializza ogni convoluzione con `nn.init.kaiming_normal_(m.weight,
+mode="fan_out", nonlinearity="relu")`.
 
 `````
 
 ## Normalizzare mentre si impara: la batch normalization
 
-Anche partendo bene, i numeri che circolano dentro la rete cambiano scala di
-continuo mentre si impara: ogni aggiornamento modifica ciò che arriva allo
-strato successivo. La *batch normalization* interviene qui, rimettendo in riga
-i numeri che escono da ogni strato, e in pratica rende l'addestramento molto
-più rapido e stabile.
+Una buona inizializzazione vale all'inizio; dopo qualche aggiornamento la scala
+delle attivazioni di ogni strato cambia di nuovo. La *batch normalization*
+{cite}`ioffe2015batch` normalizza le attivazioni di ogni strato con la media e
+la varianza calcolate sul gruppo di esempi in corso, e permette di addestrare
+reti profonde con un passo più lungo e con meno attenzione
+all'inizializzazione.
 
 ```{figure} ../figures/batch-normalization-2015.svg
 :name: fig-batch-norm
@@ -341,12 +392,13 @@ più rapido e stabile.
 Da tre distribuzioni che vagano a una sola. Una distribuzione è la gobba che
 si ottiene segnando quanti numeri cadono in ciascun punto: alta dove i numeri si
 addensano, bassa dove sono rari, e spostata a destra o a sinistra a seconda di
-dove sta il grosso. Nel riquadro di mezzo le tre sono diventate
-indistinguibili invece che sparire, che è esattamente il punto, e per
-questo se ne disegna una. Il terzo riquadro è la coda dell'operazione: due
-manopole, chiamate $\gamma$ (gamma) e $\beta$ (beta), restituiscono alla rete la
-libertà che la normalizzazione le ha appena tolto, la prima riallargando o
-restringendo i numeri, la seconda spostandoli in su o in giù.
+dove sta il grosso. Nel riquadro di mezzo le tre curve, che differivano solo
+per posizione e larghezza, coincidono, e per questo se ne disegna una: la
+normalizzazione fissa la media e la varianza, non la forma. Il terzo riquadro è
+la coda dell'operazione: due parametri, $\gamma$ (gamma) e $\beta$ (beta),
+restituiscono alla rete la libertà che la normalizzazione le ha appena tolto,
+il primo riallargando o restringendo i numeri, il secondo spostandoli in su o
+in giù.
 ```
 
 La coda di {numref}`fig-batch-norm` è la parte che spesso si salta e che
@@ -363,10 +415,14 @@ rete sbaglia su tutti insieme e si fa un'unica correzione. Quel gruppetto si
 chiama mini-batch, o batch per brevità, ed è l'unità di misura
 dell'addestramento.
 
-La batch normalization fa questo: a ogni strato ricentra le attivazioni perché
-abbiano media zero e ampiezza regolare, e la media e l'ampiezza le misura sul
-mini-batch corrente. È come rimettere in scala i numeri a ogni passo, così che
-nessuno strato debba adattarsi a ingressi che cambiano scala di continuo. In
+La batch normalization fa questo: a ogni strato prende i numeri che escono, li
+ricentra perché abbiano media zero e li riscala perché abbiano ampiezza uno, e
+media e ampiezza le misura sul mini-batch corrente. Con tre numeri soli, 2, 4 e
+6, la media è 4, e tolta la media restano $-2$, 0 e 2. L'ampiezza è la
+deviazione standard, la radice della media dei quadrati di quegli scarti:
+$\sqrt{8/3}$, circa 1,63. Divisi per quella, i tre numeri diventano circa
+$-1{,}22$, 0 e $1{,}22$. È come rimettere in scala i numeri a ogni passo, così
+che nessuno strato debba adattarsi a ingressi che cambiano scala di continuo. In
 pratica accelera molto l'addestramento, permette un passo di correzione più
 aggressivo e ha un lieve effetto di regolarizzazione
 (cioè frena l'imparare a memoria), perché ogni gruppetto ha statistiche un po’
@@ -440,15 +496,17 @@ normalizza sul singolo esempio, come fa la layer normalization dei Transformer.
 
 Perché la batch normalization funzioni così bene non lo sa ancora nessuno con
 certezza. Quello che fa è fuori discussione: sottrae la media, divide per la
-dispersione, e lascia alla rete due manopole per rimettere le cose a modo suo.
-Il perché no. Ioffe e Szegedy la introdussero contro l’*internal covariate
-shift*, lo spostarsi della distribuzione dei numeri sotto i piedi di ogni
-strato mentre la rete impara; Santurkar e colleghi
-{cite}`santurkar2018batchnorm` hanno mostrato che quella spiegazione non regge,
-perché si può rimescolare apposta i numeri *dopo* la normalizzazione, cioè far
-spostare la distribuzione ancora di più, e i benefici restano tutti. Quella che
-ha preso il posto della prima (un panorama della loss più liscio, e quindi più
-facile da percorrere) è a sua volta un'ipotesi.
+deviazione standard e lascia alla rete due parametri, $\gamma$ e $\beta$, per
+ripristinare scala e posizione. Il perché è un'altra storia. Ioffe e Szegedy la
+introdussero per ridurre l’*internal covariate shift*, il cambiare della
+distribuzione degli ingressi di uno strato mentre gli strati prima di lui si
+aggiornano. Santurkar e colleghi {cite}`santurkar2018batchnorm` hanno mostrato
+che la riduzione dello shift non spiega il beneficio: iniettando apposta
+rumore *dopo* la normalizzazione, con media e varianza che cambiano a ogni
+passo, la distribuzione si sposta più di prima, e l'addestramento resta rapido
+quasi quanto con la batch normalization pulita. La spiegazione che hanno
+proposto, una superficie della loss più liscia e quindi più facile da
+percorrere, è a sua volta un'ipotesi.
 
 È un motivo per diffidare delle spiegazioni troppo pulite, non per rinunciare
 alla tecnica: nel deep learning capita spesso che una tecnica sia solidissima
@@ -517,36 +575,56 @@ non è la media dell'ensemble di sotto-reti, perché attraversare una
 non-linearità non conserva il valore atteso. Ne è un'approssimazione (della
 media geometrica delle distribuzioni predette), esatta solo per modelli senza
 unità nascoste non lineari e per il resto giustificata dalla sola evidenza
-empirica, che però è schiacciante. Valori tipici: $p \in [0{,}2,\ 0{,}5]$. Non
-si combina bene con la batch normalization sullo stesso strato: spesso si
-sceglie l'una o l'altro.
+empirica, che però è schiacciante. Valori tipici: $p \in [0{,}2,\ 0{,}5]$.
+
+Perché regolarizzi si vede in chiuso su un modello lineare con perdita
+quadratica. Con $\tilde{\mathbf{x}} = (\mathbf{m}\odot\mathbf{x})/(1-p)$ ogni
+componente ha media $x_j$ e varianza $x_j^2\,p/(1-p)$, maschere indipendenti,
+quindi
+
+$$
+\mathbb{E}_{\mathbf{m}}\big[(y - \mathbf{w}^\top\tilde{\mathbf{x}})^2\big]
+= (y - \mathbf{w}^\top\mathbf{x})^2 + \frac{p}{1-p}\sum_j w_j^2\,x_j^2 ,
+$$
+
+cioè, in media, la perdita senza dropout più una penalità $L_2$ in cui ogni peso
+paga in proporzione al quadrato del suo ingresso: una regolarizzazione che si
+adatta ai dati {cite}`srivastava2014dropout`. La stessa varianza spiega
+perché non si combina bene con una batch normalization messa dopo, sullo
+stesso strato. Per un'attivazione $h$ a media nulla, $\tilde h$ ha varianza
+$\operatorname{Var}(h)/(1-p)$ in addestramento e $\operatorname{Var}(h)$ in
+inferenza, e le statistiche che la normalizzazione accumula in addestramento
+sovrastimano la varianza di inferenza di un fattore $1/(1-p)$, il doppio con
+$p = 0{,}5$. È lo spostamento di varianza (*variance shift*) che Li e colleghi
+indicano come causa del disaccordo {cite}`li2019understanding`, e il motivo per
+cui sullo stesso strato si sceglie spesso l'una o l'altro.
 
 `````
 
-Adesso si capisce anche perché il dropout venga descritto come un *ensemble*
-implicito, cioè come una squadra di reti al posto di una sola. I neuroni che si
-possono spegnere sono quelli nascosti, cioè quelli in mezzo, che non
-ricevono i dati e non danno la risposta finale: se sono $n$, le combinazioni
-possibili di acceso e spento sono $2^n$, che già con dieci neuroni fa 1024 reti
-diverse e con venti più di un milione. Ogni passo di addestramento ne allena una
-presa a caso. Quelle reti però non hanno pesi
-propri: sono tutte ritagliate dallo stesso insieme di pesi, e un peso migliorato
-adesso lo ritroveranno migliorato tutte le innumerevoli sotto-reti che lo
-contengono. Non si allenano una alla volta: si allenano tutte, un pezzetto per
-volta.
+Il dropout si descrive spesso come un *ensemble* implicito, cioè come una
+squadra di reti al posto di una sola, e la ragione è nel conto delle reti
+possibili. I neuroni che si possono spegnere sono quelli nascosti, cioè quelli
+in mezzo, che non ricevono i dati e non danno la risposta finale: se sono $n$,
+le combinazioni possibili di acceso e spento sono $2^n$, che già con dieci
+neuroni fa 1024 reti diverse e con venti più di un milione. Ogni passo di
+addestramento ne allena una presa a caso. Quelle reti però non hanno pesi
+propri: sono tutte ritagliate dallo stesso insieme di pesi, e un peso
+aggiornato per la sotto-rete di un passo ha lo stesso valore nuovo in tutte
+quelle che lo contengono. Non si allenano una alla volta: si allenano tutte, un
+pezzetto per volta.
 
 ## Bersagli meno netti: il label smoothing
 
-Il dropout tocca la rete. Il modo che viene adesso tocca invece il bersaglio,
-cioè il foglio delle risposte su cui la rete viene corretta, e in inglese si
-chiama *label smoothing*, «etichette lisciate».
+Il dropout agisce sulla rete; il *label smoothing* («etichette lisciate») agisce
+sul bersaglio, cioè sulle risposte giuste con cui la rete viene corretta.
 
-L'etichetta di un esempio si scrive come una fila di zeri con un uno solo:
-gatto 1, lince 0, cane 0, camion 0, sedia 0. La rete però risponde con una
-softmax, che dei punteggi grezzi dell'ultimo strato fa percentuali, e nessuna di
-quelle percentuali arriva mai a zero tondo né a cento tondo: sono i due valori
-che la softmax sfiora e non tocca. Chiedere quel bersaglio significa mandare la
-rete verso un traguardo che non esiste.
+In classificazione l'etichetta di un esempio è un vettore *one-hot*: un uno
+sulla classe vera e zero sulle altre (gatto 1, lince 0, cane 0, camion 0,
+sedia 0). La rete risponde invece con una softmax, che dai punteggi grezzi
+dell'ultimo strato fa probabilità, e le probabilità della softmax stanno tutte
+strettamente fra zero e uno: nessun valore finito dei punteggi la porta a uno
+sulla classe vera e a zero sulle altre. Con il bersaglio one-hot, quindi, la
+loss non ha un minimo che dei punteggi finiti possano raggiungere.
 
 `````{tab} Elementare
 
@@ -647,8 +725,8 @@ gettone si spartisce in parti uguali: alla lince tanto quanto al camion. Ma
 la lince era quasi giusta e il camion era assurdo, e il bersaglio nuovo cancella
 quel «quasi». Finché si tratta di indovinare l'animale non manca niente. Comincia
 a mancare quando qualcuno impara dai fogli di un compagno più bravo e non dal
-foglio delle soluzioni: è la
-[distillazione](../Efficienza/un-modello-piccolo-che-imita.md), quella del
+foglio delle soluzioni: è la {doc}`distillazione
+</Efficienza/un-modello-piccolo-che-imita>`, quella del
 maestro che scrive «7, ma per un soffio», e lì il «quasi» era proprio la cosa
 che si voleva passare.
 
@@ -675,8 +753,9 @@ dove $\epsilon$ è la frazione di massa ceduta ($0{,}1$ nell'articolo, con $K =
 Attenzione alla lettera: questo $\epsilon$ vale un decimo ed è una frazione di
 probabilità, mentre l’$\epsilon$ della batch normalization e quello degli
 ottimizzatori adattivi sono numeri minuscoli che evitano una divisione per
-zero. In PyTorch si chiamano tutti e tre `eps`, ed è la
-ragione per cui nessuno dei tre si può rinominare. Il bersaglio sulla classe
+zero. In PyTorch i primi due si chiamano `eps`, il terzo `label_smoothing`; la
+lettera $\epsilon$ resta perché è quella dell'articolo di Szegedy e colleghi,
+con cui il parametro si cerca in letteratura. Il bersaglio sulla classe
 corretta è quindi $1-\epsilon+\epsilon/K$, e non $1-\epsilon$: la differenza è
 piccola ma le due convenzioni circolano entrambe.
 
@@ -705,10 +784,12 @@ $$
 
 Con $K = 5$ e $\epsilon = 0{,}1$ fa $\log 46 \approx 3{,}83$; con $K = 1000$ e
 lo stesso $\epsilon$, $\log 9001 \approx 9{,}10$. C'è un punto in cui il
-modello si ferma. Il conto vale per un esempio con i logit liberi: con i
-parametri condivisi fra milioni di esempi quell'ideale non è raggiungibile per
-tutti insieme, e ciò che la rete fa davvero è avvicinarvisi collassando le
-rappresentazioni di ogni classe in un gruppo compatto.
+modello si ferma. Il conto vale per un esempio con i logit liberi. In una rete
+i logit li producono parametri condivisi fra tutti gli esempi, e quello che
+Müller e colleghi osservano è come la rete ci si avvicina: le rappresentazioni
+del penultimo strato si raccolgono in gruppi compatti, uno per classe, ciascuno
+vicino al vettore di pesi della propria classe nell'ultimo strato e alla
+stessa distanza da quelli delle altre.
 
 Il punto di rottura sta nella scelta di $u$ uniforme, che dichiara tutte le
 classi sbagliate sbagliate allo stesso modo. Müller, Kornblith e Hinton
@@ -716,9 +797,9 @@ classi sbagliate sbagliate allo stesso modo. Müller, Kornblith e Hinton
 le rappresentazioni del penultimo strato si stringono in gruppi compatti per
 classe, e da quel collasso sparisce dai logit l'informazione su quanto una
 classe somigli a un'altra; una rete così addestrata fa quindi da cattiva
-maestra nella
-[distillazione](../Efficienza/un-modello-piccolo-che-imita.md), dove quello che
-passa all'allievo è la graduatoria intera e non la sola risposta giusta (il
+maestra nella {doc}`distillazione </Efficienza/un-modello-piccolo-che-imita>`,
+dove quello che passa all'allievo è la graduatoria intera e non la sola
+risposta giusta (il
 loro esperimento è sulle immagini: per la traduzione dichiarano di non sapere
 quale delle due scelte convenga). Il secondo effetto va nella direzione
 opposta: le probabilità dichiarate si avvicinano alle frequenze con cui il
@@ -748,8 +829,8 @@ batch normalization.
 
 Quel distacco si può guardare crescere. Bastano cinque punteggi grezzi liberi,
 senza nessuna rete attorno, corretti un poco per volta verso i due bersagli,
-quello netto e quello morbido; e la correzione da fare vale «percentuale che
-esce meno percentuale che si voleva».
+quello netto e quello morbido. La correzione è il gradiente della loss rispetto
+ai punteggi, la probabilità che esce meno quella che si voleva, $p - q$.
 
 ```python
 import math
@@ -797,27 +878,28 @@ ogni volta che i passi si moltiplicano per dieci ne guadagna circa $2{,}3$, e
 non accenna a fermarsi: per aggiungerne altri due e tre decimi servono dieci
 volte i passi fatti finora, sempre, per quanto lontano si sia arrivati. Con
 quello morbido
-si posa su $3{,}83$ già alla prima misura e ci resta: è il distacco che vale un
-rapporto di quarantasei, cioè proprio i nove gettoni e due decimi contro i due
-decimi del foglio delle risposte, e la percentuale stampata, $92{,}0000\%$, è
-quel nove e due decimi su dieci. La differenza fra i due comportamenti non sta
-nella risposta scelta, che è la stessa: sta nei numeri che la rete dichiara
+si posa su $3{,}83$ già alla prima misura e ci resta: è $\log 46$, il logaritmo
+del rapporto fra la probabilità che il bersaglio morbido chiede per la classe
+vera, $0{,}92$, e quella che chiede per ciascuna delle altre, $0{,}02$; e la
+percentuale stampata, $92{,}0000\%$, è proprio quel $0{,}92$. La differenza fra
+i due comportamenti non sta nella risposta scelta, che è la stessa: sta nei
+numeri che la rete dichiara
 accanto alla risposta, e nel fatto che uno dei due addestramenti sa quando ha
 finito.
 
 
 ## Scendere bene: gli optimizer moderni
 
-Tutti questi accorgimenti stabilizzano il *segnale*; resta da decidere *come*
+Tutti questi accorgimenti stabilizzano il *gradiente*; resta da decidere *come*
 muoversi una volta che lo si è ricevuto.
 
 Per ogni possibile scelta dei pesi si può disegnare quanto la rete sbaglia con
 quei pesi: ne viene fuori un paesaggio, con alture dove sbaglia molto e conche
-dove sbaglia poco. Addestrare vuol dire camminare in quel paesaggio
-cercando il fondo di una conca, e il gradiente è la pendenza sotto i piedi, che
-dice da che parte si scende. È il **panorama della loss**, e la rete ci si muove
-al buio: della pendenza nel punto in cui si trova sa tutto, del resto del
-paesaggio niente.
+dove sbaglia poco. Addestrare vuol dire camminare in quel paesaggio cercando il
+fondo di una conca, e il gradiente è la pendenza sotto i piedi: punta in
+salita, e si scende nel verso opposto. È il **panorama della loss**, e la rete
+ci si muove al buio: della pendenza nel punto in cui si trova sa tutto, del
+resto del paesaggio niente.
 
 Gli algoritmi che decidono come fare il passo si chiamano ottimizzatori, o
 *optimizer*. La discesa del gradiente pura fa un passo proporzionale alla
@@ -839,12 +921,13 @@ direzione utile e smorza le oscillazioni, arrivando più dritto al minimo.
 `````{tab} Elementare
 
 Il momentum è una pallina che rotola in una valle: accumula velocità nella
-direzione giusta e si lascia dietro i rimbalzi laterali. Adagrad aggiunge
-un'idea in più: dare a ogni parametro (i pesi, più i bias: tutti i numeri che
-la rete regola) un passo su misura, più corto dove il terreno è ripido e più
-lungo dove è piatto. Per farlo tiene il conto di tutta la strada già percorsa,
-parametro per parametro: quelli corretti di continuo rallentano, quelli toccati
-di rado conservano passi generosi.
+direzione giusta e si lascia dietro i rimbalzi laterali. Un'altra famiglia di
+ottimizzatori cambia invece la lunghezza del passo, e la cambia per ciascun
+numero della rete. Il primo è Adagrad: dà a ogni parametro (i pesi, più i bias:
+tutti i numeri che la rete regola) un passo su misura, più corto dove il
+terreno è ripido e più lungo dove è piatto. Per farlo tiene il conto di tutta
+la strada già percorsa, parametro per parametro: quelli corretti di continuo
+rallentano, quelli toccati di rado conservano passi generosi.
 
 Toccati di rado capita più spesso di quanto sembri. Quando una rete lavora su un
 testo, per esempio, ogni parola del vocabolario viene trasformata in una fila di
@@ -854,9 +937,9 @@ correzione una volta su mille, ed è ragionevole che quando arriva sia grande. I
 difetto di Adagrad è che quel conto non si azzera mai:
 passo dopo passo la falcata si accorcia, finché la discesa semplicemente si
 ferma. RMSProp rimedia guardando solo al passato recente invece che
-all'intera storia, così il passo non muore mai del tutto. Adam combina
-questo passo adattivo con l'inerzia del momentum, e per questo è oggi la
-scelta predefinita in gran parte delle reti.
+all'intera storia, così il passo non muore mai del tutto. Adam mette insieme le
+due strade, il passo su misura di RMSProp e l'inerzia del momentum, e per
+questo è oggi la scelta predefinita in gran parte delle reti.
 
 `````
 
@@ -872,7 +955,8 @@ $$
 \theta_t = \theta_{t-1} - \eta\,\mathbf{v}_t,
 $$
 
-tipicamente $\beta = 0{,}9$.[^momentum-pytorch] Adagrad
+con $\eta$ il learning rate, cioè la lunghezza del passo, e tipicamente
+$\beta = 0{,}9$.[^momentum-pytorch] Adagrad
 {cite}`duchi2011adaptive` normalizza per la scala di ciascun parametro sommando
 i quadrati di tutti i gradienti visti finora:
 
@@ -958,14 +1042,17 @@ finiscono per fare la stessa cosa. Basta però aggiungere l'inerzia (il
 spinta accumulata e continua a farsi sentire nei passi successivi, invece di
 esaurirsi in quello in cui è stata data. E l'inerzia c'è quasi sempre.
 
-Si misura in due righe. Prendi un peso che vale $1$, mettilo in un punto dove
-il terreno è perfettamente piatto (così l'unica cosa che lo muove è la multa) e
-fagli fare quaranta passi, con una multa che ogni volta gli toglie mezzo
-centesimo. Senza inerzia i due modi lo lasciano tutti e due dove lo lascia il
-conto a mano, $0{,}995$ moltiplicato per sé stesso quaranta volte: $0{,}818$,
-identici come promesso. Con l'inerzia il primo lo porta a $0{,}061$
-e il secondo resta a $0{,}818$, tredici volte più in alto. Nessuno ha cambiato
-l'importo della multa: è cambiato solo che adesso si accumula.
+La differenza si vede con un peso solo. Prendi un peso che vale $1$, mettilo in
+un punto dove il terreno è perfettamente piatto (così l'unica cosa che lo
+muove è la multa) e fagli fare quaranta passi, con una multa che ogni volta gli
+toglie mezzo centesimo. Senza inerzia i due modi lo lasciano tutti e due dove
+lo lascia il conto a mano, $0{,}995$ moltiplicato per sé stesso quaranta volte:
+$0{,}818$, identici come promesso. Con l'inerzia il secondo modo resta a
+$0{,}818$, perché l'accorciamento non passa dalla pallina. Il primo, invece,
+porta il peso a $0{,}061$, tredici volte più in basso: ogni multa entra nella
+spinta, la spinta se la porta dietro, e i passi successivi tolgono ciascuno più
+del loro mezzo centesimo. Nessuno ha cambiato l'importo della multa: è cambiato
+solo che adesso si accumula.
 
 Con Adam la differenza è di un altro tipo ancora, perché Adam ridimensiona ogni
 correzione in base a quanto quel peso è stato corretto di recente, e insieme
@@ -1046,6 +1133,8 @@ viene sganciato, non da ogni fattore esterno. `torch.optim.AdamW` esegue
 SGD. Il conto, con $\eta=0{,}5$, $\lambda=0{,}1$ e gradiente nullo:
 
 ```python
+import torch
+
 for Opt in (torch.optim.SGD, torch.optim.AdamW, torch.optim.Adam):
     p = torch.nn.Parameter(torch.tensor([1.0]))
     opt = Opt([p], lr=0.5, weight_decay=0.1)
@@ -1088,9 +1177,11 @@ non si arriva, troppo lungo e si scappa.
 ```
 
 Il terzo pannello non è una licenza grafica: dietro c'è un conto esatto, e sta
-in una riga. Sulla parabola del disegno la pendenza in un punto vale il doppio
-della distanza dal minimo, quindi ogni passo moltiplica quella distanza per
-$1-2\eta$. Con $\eta = 0{,}4$ quel fattore vale $0{,}2$: a ogni passo
+in una riga. Sulla parabola del disegno, $f(x) = x^2$, la pendenza nel punto
+$x$ vale $2x$, il doppio della distanza dal minimo. Il passo toglie a $x$ la
+pendenza moltiplicata per $\eta$, cioè $2\eta x$, e quello che resta è
+$x(1-2\eta)$: ogni passo moltiplica la distanza dal minimo per $1-2\eta$. Con
+$\eta = 0{,}4$ quel fattore vale $0{,}2$: a ogni passo
 la distanza si riduce a un quinto, e in sei passi non resta quasi niente. Con
 $\eta = 1{,}05$ vale $-1{,}1$, e il segno meno dice solo che si finisce
 dall'altra parte del minimo; quello che conta è che in valore assoluto sia
@@ -1106,9 +1197,12 @@ il paesaggio si muova: se ne sta attraversando un pezzo nuovo.
 `````{tab} Elementare
 
 All'inizio conviene un passo grande: la rete è lontana da qualunque soluzione
-decente e serve coprire strada. Alla fine conviene piccolo, altrimenti si
-continua a scavalcare il punto in cui ci si voleva fermare, come chi cerca di
-infilare la chiave nella toppa muovendo la mano dieci centimetri per volta.
+decente e serve coprire strada. Alla fine conviene piccolo, perché la direzione
+che la rete segue a ogni passo è calcolata su un gruppetto di esempi e non su
+tutti, e quindi trema un poco. Con passi lunghi quel tremito la porta a
+scavalcare il punto in cui voleva fermarsi, una volta di qua e una di là, come
+chi infila la chiave nella toppa con la mano che trema e la muove dieci
+centimetri per volta; accorciando i movimenti, il tremito conta sempre meno.
 
 La ricetta che regola il passo mentre l'addestramento procede si chiama
 **schedule** (è l'inglese per "programma"). Ce ne sono diverse e si assomigliano
@@ -1126,12 +1220,21 @@ l'aggiornamento è $x \leftarrow x(1-2\eta)$, quindi $x_k = x_0\,(1-2\eta)^k$:
 si converge se e solo se $|1-2\eta| < 1$, cioè $0 < \eta < 1$. Il terzo
 pannello usa $\eta = 1{,}05$: fattore $-1{,}1$, e ogni passo scavalca il
 minimo più lontano del precedente. Su una funzione qualunque la soglia dipende
-dalla curvatura, ed è proprio questo che uno schedule insegue mentre la
-curvatura cambia. Un passo grande all'inizio esplora in fretta; lo stesso passo
-verso la fine fa oscillare attorno al minimo senza mai stabilizzarsi. Il
-learning rate schedule riduce progressivamente $\eta$: per esempio con
-decadimento inverso $\eta_t = \eta_0/(1+\kappa t)$, dove $\kappa$ regola quanto
-in fretta cala, a gradini, o con andamento a coseno.
+dalla curvatura: se il gradiente è $L$-lipschitziano, il lemma di discesa
+garantisce che un passo fisso $\eta < 2/L$ abbassa la loss a ogni iterazione, e
+sulla parabola $L = 2$, quindi $2/L = 1$ è la soglia appena trovata (la
+derivazione sta nella {doc}`sezione sulla discesa del gradiente
+</Matematica/analisi-ottimizzazione>`). Uno schedule insegue questa soglia
+mentre la curvatura cambia. C'è poi una seconda ragione per ridurre il passo,
+che con il gradiente esatto non esisterebbe: con gradienti stocastici,
+calcolati su un mini-batch, a passo costante le iterate non si fermano sul
+minimo ma continuano a oscillargli attorno, in un intorno la cui ampiezza
+cresce con $\eta$. Per
+questo un passo grande all'inizio esplora in fretta, e verso la fine va
+accorciato. Le condizioni classiche sono quelle di Robbins e Monro,
+$\sum_t\eta_t=\infty$ e $\sum_t\eta_t^2<\infty$, e il decadimento inverso
+$\eta_t = \eta_0/(1+\kappa t)$, dove $\kappa$ regola quanto in fretta cala, le
+soddisfa; in pratica si usano anche i gradini e l'andamento a coseno.
 
 `````
 
@@ -1239,10 +1342,10 @@ addestramento su larga scala.
 
 ## Quando la generalizzazione arriva tardi: il grokking
 
-La multa sui pesi grandi è comparsa fin qui come un freno: tiene i numeri
-piccoli, e la rete impara un po' meno a memoria. C'è però un regime in cui
-quella multa fa una cosa più interessante, e per vederla bisogna disobbedire
-alla regola che dice di fermarsi quando la validazione smette di migliorare.
+Il weight decay è comparso fin qui come un freno: tiene piccoli i pesi, e la
+rete impara un po’ meno a memoria. C'è però un regime in cui fa una cosa più
+interessante, e per vederla bisogna ignorare la regola che consiglia di
+fermarsi quando la validazione smette di migliorare.
 
 Power e colleghi {cite}`power2022grokking` addestrano reti piccole su compiti
 di aritmetica modulare, cioè somme fatte a orologio su un numero primo di ore.
@@ -1251,7 +1354,9 @@ memorizzato le somme che le hanno mostrato. Quello che succede dopo è che, per
 moltissimi passi, l'accuratezza sulle somme mai viste resta a livello di
 sorteggio. Poi, molto oltre il punto in cui chiunque avrebbe spento
 l'addestramento, sale di colpo fino a sbagliare quasi niente. Il fenomeno ha
-preso il nome di **grokking**, e la sua spiegazione meccanica è arrivata dopo
+preso il nome di **grokking**, da *to grok*, il verbo che Robert Heinlein
+inventò nel 1961 per un romanzo di fantascienza e che vuol dire capire una cosa
+fino in fondo, d'intuito. La spiegazione meccanica è arrivata dopo
 {cite}`nanda2023progress`.
 
 ```{figure} ../figures/grokking-tarda.svg
@@ -1262,7 +1367,7 @@ preso il nome di **grokking**, e la sua spiegazione meccanica è arrivata dopo
 Ventiseimila passi di addestramento su una rete piccola, che deve sommare
 numeri su un orologio a novantasette ore. Le somme che le hanno mostrato le sa
 tutte dopo poche centinaia di passi; su quelle che non ha mai visto sta sotto
-il tiro a indovinare per undicimila passi, e solo allora comincia a
+il tiro a indovinare per quasi dodicimila passi, e solo allora comincia a
 salire. Chi avesse spento l'addestramento a metà avrebbe concluso che non
 c'era altro da imparare.
 ```
@@ -1290,9 +1395,10 @@ stesse. Chi potesse guardargli in testa vedrebbe il quadrante farsi nitido un
 pezzo alla volta, senza nessun salto.
 
 Un quadrante solo, però, non gli basterebbe. Due risposte vicine ci finiscono
-quasi nello stesso punto, e a occhio non le distingue: gliene servono
-qualcuno, che girano a velocità diverse, così che due risposte vicine su uno
-cadano lontane su un altro.
+quasi nello stesso punto, e a occhio non le distingue. Gliene servono alcuni,
+con lancette che girano a velocità diverse: una che fa un giro mentre le ore
+vanno da zero a novantasei, una che ne fa due, una che ne fa tre. Due risposte
+che sul primo quadrante cadono vicine, sul secondo o sul terzo cadono lontane.
 
 E qui entra la multa. La regola in vigore dice che ogni appunto tenuto costa,
 e costa in proporzione a quanto è ingombrante. Il bigliettino è enorme,
@@ -1303,11 +1409,11 @@ regge da sola, tenerlo diventa una spesa senza ritorno, e lui lo butta.
 Da fuori quello è il momento in cui «di colpo ha capito». In realtà aveva già
 capito da un pezzo, e quello che è successo di colpo è la buttata via del
 bigliettino. E si vede che cosa affretta l'intero episodio: se tenere appunti
-costa, il bigliettino prima o poi diventa una spesa senza ritorno e si butta;
-se è gratis può restare lì molto più a lungo, e il quadrante ci mette molto di
-più a venire allo scoperto. La multa non è indispensabile (la curva più famosa
-di questo fenomeno è stata ottenuta senza, lasciando correre l'addestramento
-per un milione di passi), ma è la cosa che anticipa di più il momento.
+costa, prima o poi il bigliettino conviene buttarlo; se è gratis può restare lì
+molto più a lungo, e il quadrante ci mette molto di più a venire allo scoperto.
+La multa non è indispensabile (la curva più famosa di questo fenomeno è stata
+ottenuta senza, lasciando correre l'addestramento per un milione di passi), ma
+è la cosa che anticipa di più il momento.
 
 Da qui la cosa che conta per chi addestra. Mandarlo a casa il giorno in cui il
 bigliettino era completo, perché tanto da fuori non migliorava più, sarebbe
@@ -1326,8 +1432,8 @@ risposte. La **formazione del circuito** costruisce, in parallelo e
 gradualmente, un meccanismo che generalizza: sui compiti di addizione modulare
 la rete calcola una trasformata di Fourier discreta e usa le identità
 trigonometriche per trasformare la somma in una rotazione sul cerchio. La
-**pulizia** rimuove le componenti memorizzanti, e nel loro impianto è la multa
-sui pesi a guidarla, perché il circuito completo risolve il compito con una
+**pulizia** rimuove le componenti memorizzanti, e nel loro impianto è il weight
+decay a guidarla, perché il circuito completo risolve il compito con una
 norma dei pesi più bassa di quella del circuito che memorizza.
 
 Ne segue la conclusione del lavoro di Nanda e colleghi: la transizione che si
@@ -1344,19 +1450,27 @@ possibile. Questo non manda in pensione l'arresto anticipato, che resta la
 scelta giusta quasi ovunque: dice che la sua ipotesi implicita, cioè che una
 validazione ferma significhi che non c'è altro da imparare, è un'ipotesi e non
 un teorema. Vale anche l'avvertenza sul perimetro: il fenomeno è documentato
-su dataset algoritmici piccoli e generati a tavolino, dove il compito ha una
-struttura esatta da scoprire, e quanto si estenda ai dati veri è una domanda
-aperta.
+soprattutto su dataset algoritmici piccoli e generati a tavolino, dove il
+compito ha una struttura esatta da scoprire. Su dati veri è stato indotto, non
+osservato per caso: Liu, Michaud e Tegmark lo ottengono su immagini (MNIST),
+recensioni di film e molecole riducendo il campione e ingrandendo la scala dei
+pesi iniziali, lo trovano meno marcato che sui compiti algoritmici, e lo
+attribuiscono a un disaccordo fra il paesaggio della loss di addestramento e
+quello di prova in funzione della norma dei pesi {cite}`liu2023omnigrok`.
 
 `````
 
 Di quel che succede a curve ferme si può controllare a mano il pezzo
-aritmetico, cioè che una manciata di frequenze, che sono giri a velocità
-diverse sul cerchio delle risposte, basti a scrivere la tavola dell'addizione
-modulare. Il conto costruisce, per ogni risposta possibile $c$, il punteggio
-$s(c) = \sum_k \cos\!\big(2\pi k (a+b-c)/p\big)$, e guarda due cose: se il
-punteggio più alto cade sulla risposta giusta per tutte le coppie, e di quanto
-stacca la seconda.
+aritmetico, cioè che una manciata di *frequenze* basti a scrivere la tavola
+dell'addizione modulare. Una frequenza $k$ è un quadrante su cui la lancetta fa
+$k$ giri mentre le ore vanno da zero a $p - 1$, con $p = 97$ il numero di ore.
+Per ogni coppia di addendi $a, b$ e ogni risposta possibile $c$, il conto
+guarda su ciascun quadrante quanto la lancetta di $a + b$ cade vicino a quella
+di $c$: il coseno di quell'angolo vale $1$ quando le due coincidono e scende
+quando si allontanano. Sommando i quadranti si ottiene il punteggio
+$s(c) = \sum_k \cos\!\big(2\pi k (a+b-c)/p\big)$, e il conto guarda due cose:
+se il punteggio più alto cade sulla risposta giusta per tutte le coppie, e di
+quanto stacca la seconda.
 
 ```python
 import numpy as np
@@ -1400,42 +1514,40 @@ margine sale a $0{,}1147$, più di cinquanta volte tanto, e il meccanismo
 diventa qualcosa su cui si può contare. Non dice però che cinque bastino: il
 margine continua a salire aggiungendone ancora.
 
-Messe in fila, queste tecniche non sono un elenco di trucchi indipendenti:
-rispondono a due domande sole. La prima è come far arrivare un segnale sensato
-dall'uscita fino ai primi strati, e riguarda l'inizializzazione, la scelta
-dell'attivazione e la batch normalization. La seconda è come camminare in quel
-paesaggio una volta ricevuto il segnale: gli ottimizzatori, la lunghezza del
-passo e il modo in cui cambia nel tempo. Il dropout, la multa sui pesi grandi e
-il bersaglio ammorbidito stanno un po’ di traverso rispetto a entrambe, perché
-non servono a far imparare la rete ma a impedirle di imparare *troppo* quello
-che ha davanti; e compaiono qui perché in pratica si montano nello stesso
-punto, dentro lo stesso ciclo di addestramento. Il grokking, che tecnica non
-è, chiude la fila per una ragione: mostra la multa sui pesi al lavoro su una
-scala di tempi che nessuna delle altre lascia sospettare, e ricorda che le due
-curve che si guardano per decidere quando fermarsi non dicono tutto quello che
-la rete sta facendo.
+Rimesse in fila, le tecniche tornano ai loro mestieri. L'inizializzazione, la
+scelta dell'attivazione e la batch normalization fanno arrivare un gradiente
+utilizzabile fino ai primi strati; gli ottimizzatori e il ritmo del passo
+decidono come muoversi nel panorama della loss; il dropout, il weight decay e
+il bersaglio ammorbidito impediscono alla rete di imparare *troppo* bene
+quello che ha davanti, e compaiono accanto agli altri perché in pratica si
+montano nello stesso punto, dentro lo stesso ciclo di addestramento. Il
+grokking, che tecnica non è, chiude la fila per una ragione: mostra il weight
+decay al lavoro su una scala di tempi che nessuna delle altre lascia
+sospettare, e ricorda che le due curve che si guardano per decidere quando
+fermarsi non dicono tutto quello che la rete sta facendo.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Il segnale di correzione che torna indietro si assottiglia o esplode,
-  perché attraversando gli strati viene moltiplicato tante volte: se ogni
-  strato lo riduce di quattro volte, dopo cinque strati ne resta un millesimo.
-- Partire con i pesi della scala giusta (e non è quella che la libreria
-  mette da sé: va bene per le reti corte e affonda quelle lunghe), rimettere in
-  riga i numeri a ogni strato (batch normalization) e spegnere neuroni a
-  caso (dropout) sono i tre accorgimenti che rendono l'addestramento
-  stabile e la rete meno incline a imparare a memoria.
-- Il foglio delle risposte si può ammorbidire (label smoothing): al posto di
-  «tutto al gatto, il resto a zero», «nove decimi al gatto, e il decimo restante
-  spartito in parti uguali fra tutte le risposte, gatto compreso» (con cinque
-  risposte fa il $92\%$ al gatto e il $2\%$ a ciascun'altra). Lo zero la rete
-  non può scriverlo, quindi con il bersaglio netto continua ad alzare i propri
-  numeri per sempre, imparando a memoria e dandosi il $99{,}99\%$ su tutto; con
+- Il gradiente, il segnale di correzione che torna indietro, si assottiglia o
+  esplode, perché attraversando gli strati viene moltiplicato tante volte: se
+  ogni strato lo riduce di quattro volte, dopo cinque strati ne resta un
+  millesimo.
+- Partire con i pesi della scala giusta (e non è quella che la libreria mette
+  da sé, che già con pochi strati fa arrivare ai primi un grido mille volte più
+  fioco, e con tanti lo spegne), rimettere in scala i numeri a ogni strato
+  (batch normalization) e spegnere neuroni a caso (dropout) sono i tre
+  accorgimenti che rendono l'addestramento stabile e la rete meno incline a
+  imparare a memoria.
+- Il foglio delle risposte si può ammorbidire (label smoothing): invece di
+  «tutto al gatto, zero al resto», nove decimi al gatto e il decimo restante
+  spartito in parti uguali fra tutte le risposte (con cinque risposte, il
+  $92\%$ al gatto e il $2\%$ a ciascun'altra). Con il bersaglio netto la rete
+  alza i propri numeri per sempre, perché lo zero non lo può scrivere; con
   quello morbido c'è un punto in cui si ferma. Il prezzo: la briciola è uguale
-  per tutti, e così va perduto che la lince era quasi giusta e il camion no. Che
-  smetta di alzare i numeri è dimostrato; che la rete impari meglio si misura
-  ogni tanto, e nessuno sa perché.
+  per tutti, e si perde che la lince era quasi giusta e il camion no. Che, su
+  un esempio solo, smetta di alzare i numeri è dimostrato; che la rete impari
+  meglio si misura ogni tanto, e nessuno sa perché.
 - Adam è il punto di partenza sensato: mette insieme l'inerzia della
   pallina che rotola e un passo su misura per ogni peso. AdamW se si
   vogliono anche tenere piccoli i pesi.
@@ -1457,7 +1569,9 @@ la rete sta facendo.
 ```{admonition} Da ricordare
 :class: important
 - I gradienti svaniscono o esplodono perché la backpropagation moltiplica
-  tanti fattori: profondità e attivazioni saturanti sono i colpevoli.
+  tanti fattori, uno per strato: con norme spettrali sotto uno il prodotto
+  svanisce, e perché esploda serve almeno una norma sopra uno. Profondità,
+  attivazioni saturanti e pesi della scala sbagliata sono i colpevoli.
 - Inizializzazione giusta (He per ReLU, Glorot per tanh) e scelta a mano,
   perché il default di PyTorch è un sesto di He e i suoi bias non sono nulli;
   batch normalization, che in una CNN normalizza per canale, e dropout
@@ -1470,8 +1584,9 @@ la rete sta facendo.
   raggiungibile, con distacco
   $\log\big((K(1-\epsilon)+\epsilon)/\epsilon\big)$. In cambio l'uniforme
   appiattisce le somiglianze fra classi, e sulle immagini un modello così
-  addestrato distilla peggio. Che smetta di correre è dimostrato; che
-  generalizzi meglio è misurato e non spiegato.
+  addestrato distilla peggio. Che con i logit liberi l'addestramento si
+  fermi è dimostrato; che una rete generalizzi meglio è misurato e non
+  spiegato.
 - Adam (momentum + passo adattivo) è il punto di partenza sensato,
   AdamW se si usa il weight decay (che in `torch.optim` è una penalità L2,
   la quale coincide col decadimento vero solo per l'SGD senza momentum); un
@@ -1488,8 +1603,9 @@ la rete sta facendo.
   circuito che generalizza ha norma dei pesi più bassa di
   quello che memorizza. Ne segue che l'ipotesi implicita dell'arresto
   anticipato, cioè che una validazione ferma voglia dire che non c'è altro da
-  imparare, è un'ipotesi. Documentato su dataset algoritmici piccoli, e quanto
-  si estenda ai dati veri resta aperto.
+  imparare, è un'ipotesi. Documentato su dataset algoritmici piccoli; su dati
+  veri è stato indotto, meno marcato, con un campione ridotto e pesi iniziali
+  più grandi.
 ```
 `````
 

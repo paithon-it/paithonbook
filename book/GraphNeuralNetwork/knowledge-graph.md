@@ -8,19 +8,21 @@ sapere che Torino è una città, che sta in Italia, che ha un fiume, un
 sindaco e una squadra di calcio, e che «Torino» può anche essere quella
 squadra.
 
-L'idea non era nuova. La stessa struttura era già stata proposta tre volte, e
-conviene elencarle. Negli anni Sessanta con le reti semantiche, schemi in
-cui i concetti sono puntini e le linee fra loro dicono «è un», «ha un», «si
-trova in». Dagli anni Ottanta con quei progetti in cui squadre di persone
-scrivevano a mano, un fatto per volta, le ovvietà che tutti sanno e nessuno
-scrive («la pioggia bagna», «chi dorme ha gli occhi chiusi»). E infine con il
-web semantico, che voleva pagine leggibili non solo dalle persone ma anche
-dai programmi. Nuovo era che, per la prima volta, un grafo di fatti abbastanza
-grande da servire a qualcosa si poteva costruire in modo automatico.
+L'idea non era nuova: la stessa struttura era già comparsa tre volte. Negli
+anni Sessanta con le reti semantiche di Ross Quillian, schemi in cui i concetti
+sono puntini e le linee fra loro dicono «è un», «ha un», «si trova in». Dal
+1984 con Cyc, il progetto in cui squadre di persone scrivevano a mano, un fatto
+per volta, le ovvietà che tutti sanno e nessuno scrive («la pioggia bagna»,
+«chi dorme ha gli occhi chiusi»). E nel 2001 con il web semantico proposto da
+Tim Berners-Lee, che voleva pagine leggibili non solo dalle persone ma anche
+dai programmi. Anche i grafi di fatti estratti in modo automatico da
+Wikipedia esistevano già da qualche anno (DBpedia e YAGO sono del 2007). Nuovo
+era metterne uno dietro un motore di ricerca usato ogni giorno da centinaia di
+milioni di persone.
 
-Fin qui il capitolo ha trattato grafi in cui tutti i nodi sono la stessa specie
-di cosa e tutti gli archi vogliono dire la stessa cosa: utenti, atomi,
-articoli. Questa sezione toglie quella comodità.
+Fin qui i grafi avevano nodi tutti della stessa specie e archi che volevano
+dire tutti la stessa cosa: utenti, atomi, articoli. Un knowledge graph toglie
+quella comodità.
 
 ## Una tripla è un fatto
 
@@ -53,11 +55,12 @@ so», non «è falso». Nessuno ha scritto tutti i fatti veri del mondo, e
 nessuno mai lo farà: l'assenza di (Torino, gemellata-con, Salt Lake City) non è
 una smentita, è un silenzio.
 
-Sembra un dettaglio da logici, e invece è il motivo per cui un modello, qui,
-non si può addestrare nel modo consueto. Per imparare a distinguere il vero dal
-falso a un modello servono esempi delle due specie; qui gli esempi di fatti
-veri abbondano, e di fatti falsi non ce n'è nemmeno uno, perché nessuno si
-mette a scrivere le cose che non sono successe.
+Sembra un dettaglio da logici, e invece decide come si addestra un modello che
+impari a indovinare i fatti mancanti, cioè gli archi veri che nessuno ha
+ancora scritto. Per imparare a distinguere il vero dal falso a un modello
+servono esempi delle due specie; qui gli esempi di fatti veri abbondano, e di
+fatti falsi non ce n'è nemmeno uno, perché nessuno si mette a scrivere le cose
+che non sono successe.
 
 `````
 
@@ -100,18 +103,25 @@ note, metteva la risposta giusta al primo posto nel 95% dei casi su WN18 e nel
 ripulite FB15k-237 e WN18RR sono nate per toglierla
 {cite}`toutanova2015observed,dettmers2018convolutional`.
 
+Un'ultima trappola riguarda i pareggi. Un modello che dà lo stesso punteggio a
+molte entità mette la risposta vera al primo posto se i pari merito si
+risolvono a suo favore, quindi il rango va calcolato dichiarando dove la si
+colloca fra i pari (in testa, in coda o a caso). Sun e colleghi hanno trovato
+modelli che su FB15k-237 assegnavano alla tripla vera lo stesso punteggio di
+centinaia di candidate, e dovevano a questo una parte del vantaggio pubblicato
+{cite}`sun2020reevaluation`.
+
 `````
 
 ## Costruirlo è il lavoro
 
-Il grafo non arriva già fatto, e costruirlo è la parte grossa: i modelli che ci
-girano sopra, al confronto, sono la parte facile e divertente. Il percorso da
-un mucchio di testi a un grafo di fatti passa per quattro gradini, e il libro
-ha già affrontato il primo.
+Il grafo non arriva già fatto: costruirlo è la parte più costosa del lavoro, e i
+modelli che vi si applicano ne sono la parte più piccola. Il percorso da
+un mucchio di testi a un grafo di fatti passa per quattro gradini.
 
 Il primo gradino è trovare i nomi: individuare nel testo i pezzi che
-nominano una cosa. Si chiama **riconoscimento delle entità nominate**, ed è la
-sezione
+nominano una cosa. Si chiama **riconoscimento delle entità nominate**, e lo
+tratta la sezione
 {doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`.
 
 Il secondo è capire *quale* cosa. Trovato «Torino» in una frase non si sa
@@ -128,11 +138,11 @@ enorme, ed è la voce su cui chi mantiene un knowledge graph spende gran parte
 del proprio lavoro.
 
 L'ultimo gradino è l’**estrazione di relazioni**: dedurre dal testo che fra due
-entità esiste un certo legame. Oggi si fa in larga parte chiedendolo a un
-grande modello di linguaggio, con tutti i problemi di verifica che il capitolo
-sui Transformer ha già discusso: un modello che inventa una tripla plausibile e
-falsa la inserisce nel grafo con la stessa faccia con cui inserisce quelle
-vere.
+entità esiste un certo legame. Oggi la si affida spesso a un grande modello di
+linguaggio, con i problemi di affidabilità che la {doc}`sezione sui limiti dei
+modelli di linguaggio </Transformers/tendenzefuture>` ha già discusso: un
+modello che inventa una tripla plausibile e falsa la inserisce nel grafo con la
+stessa faccia con cui inserisce quelle vere.
 
 ## Entità come punti, relazioni come frecce
 
@@ -144,58 +154,56 @@ e qui succede una cosa che suonerà familiare.
 
 Nel capitolo sul linguaggio ogni parola era diventata una fila di numeri, cioè
 un punto su una mappa, come una città, e le parole di significato simile
-finivano vicine. Avevano un senso anche gli spostamenti. Quello che separa
-«uomo» da «donna» separa più o meno anche «re» da «regina». Le relazioni
-diventano frecce sulla mappa.
+finivano vicine. Avevano un senso anche gli spostamenti: il passo che porta da
+«uomo» a «donna» porta più o meno anche da «re» a «regina».
 
-Qui la stessa idea diventa l'obiettivo. Ogni entità è un punto, ogni relazione
-è una freccia, sempre la stessa per tutte le coppie che lega. Per ogni fatto
-vero, partire dal soggetto e seguire la freccia deve portare vicino
-all'oggetto: da «Roma», con «capitale-di», si atterra vicino a «Italia»; la
-stessa freccia, da «Parigi», porta vicino a «Francia».
+Su un grafo di fatti quello spostamento diventa la regola. Ogni entità è un
+punto, ogni relazione è una freccia, sempre la stessa per tutte le coppie che
+lega, e per ogni fatto vero partire dal soggetto e seguire la freccia deve
+portare vicino all'oggetto: da «Roma», con «capitale-di», si atterra vicino a
+«Italia»; la stessa freccia, da «Parigi», porta vicino a «Francia». Prevedere un
+fatto mancante diventa un calcolo: prendi «Lisbona», applica la freccia
+«capitale-di», guarda quale entità è più vicina al punto in cui sei arrivato.
 
-Prevedere un fatto mancante diventa un calcolo: prendi «Lisbona», applica la
-freccia «capitale-di», guarda quale entità è più vicina al punto in cui sei
-arrivato.
+Per sistemare punti e frecce bisogna poter dire al modello «questo sì e
+quest'altro no», e qui si paga il debito degli esempi falsi che non esistono: i
+«no» non ce li ha nessuno, e ce li fabbrichiamo guastando i fatti veri. Da
+(Roma, capitale-di, Italia), sostituendo una delle due estremità con un'entità
+pescata a caso, esce (Roma, capitale-di, Portogallo), che quasi certamente è
+falsa. Chiediamo che il fatto vero cada più vicino del suo gemello guastato, e
+non per un pelo: di uno scarto fissato in partenza.
 
-Qui si paga il debito degli esempi falsi che non esistono. Per sistemare punti
-e frecce bisogna poter dire al modello «questo sì e quest'altro no», e i «no»
-non ce li ha nessuno: ce li fabbrichiamo guastando i fatti veri. Da (Roma,
-capitale-di, Italia), sostituendo una delle due estremità con un'entità pescata
-a caso, esce (Roma, capitale-di, Portogallo), che quasi certamente è falsa.
-Chiediamo che il fatto vero cada più vicino del suo gemello guastato, e non per
-un pelo: di uno scarto fissato in partenza.
-
-Una scorciatoia però il modello la trova da solo: allargare la mappa. Se tutti
+Una scorciatoia, però, il modello la trova da solo: allargare la mappa. Se tutti
 i punti si allontanano fra loro, il pelo di vantaggio che il fatto vero aveva
 già diventa da sé lo scarto richiesto, senza che una freccia sia stata puntata
 meglio. Per questo, a ogni passata, i punti vengono rimessi tutti alla stessa
 distanza dal centro.
 
-Restano alcuni fatti che una freccia non sa raccontare. Il primo: una freccia
-porta da un punto a un punto e basta, mentre «ha-recitato-in» lega un attore a
-decine di film, e il modello se la cava ammucchiando quei film nello stesso
-punto, dove diventano indistinguibili.
-
-Il secondo riguarda le relazioni che valgono nei due sensi. L'Italia «confina-con»
-la Francia, e la Francia con l'Italia: la stessa freccia dovrebbe portare di là
+Alcuni fatti una freccia non li sa raccontare. Una freccia porta da un punto a
+un punto e basta, mentre «ha-recitato-in» lega un attore a decine di film: il
+modello se la cava ammucchiando quei film nello stesso punto, dove diventano
+indistinguibili. Altre relazioni valgono nei due sensi: l'Italia «confina-con»
+la Francia, e la Francia con l'Italia. La stessa freccia dovrebbe portare di là
 e riportare indietro, e l'unica che ci riesce è quella lunga zero, che lascia i
-due paesi nello stesso punto.
+due paesi nello stesso punto. Altre ancora si ereditano lungo la catena: se sei
+antenato di mio nonno sei antenato anche mio. La stessa freccia deve valere
+tanto per un passo quanto per due, ma una che sposta di tre, fatta due volte,
+sposta di sei: di nuovo regge soltanto la freccia lunga zero. Incatenare frecce
+*diverse*, invece, funziona benissimo: «fratello-di» seguita da «madre-di» dà
+«zio-di», e basta sommare le due frecce. Il conto non torna soltanto quando la
+relazione da incatenare è sempre la stessa.
 
-Il terzo riguarda le relazioni che si ereditano lungo la catena: se sei antenato di
-mio nonno sei antenato anche mio. La stessa freccia deve valere tanto per un
-passo quanto per due, e una che sposta di tre, fatta due volte, sposta di sei;
-di nuovo regge soltanto la freccia lunga zero. Incatenare frecce *diverse*,
-invece, funziona benissimo: «fratello-di» seguita da «madre-di» dà «zio-di», e
-basta sommare le due frecce. Il conto non torna quando i tre anelli della
-catena sono la stessa relazione.
-
-Da quei guai è nata una lunga discendenza di modelli, che al posto della
-freccia mettono una moltiplicazione o una rotazione: ognuno rimedia a un caso e
-ne rompe un altro, e la rotazione è quella che ne rimette in piedi di più. Per
-l'ereditarietà lungo la catena, che resta fuori anche di lì, servono modelli in
-cui un'entità diventa una regione capace di contenerne un'altra, che è un modo
-molto più naturale di dire «è un caso particolare di».
+Da quei guai è nata una lunga discendenza di modelli che al posto della
+freccia mettono un'altra mossa, e ognuno rimedia a un caso e ne rompe un
+altro. La più riuscita è la rotazione: invece di spostare il punto, lo si fa
+girare attorno al centro. Due quarti di giro fanno mezzo giro, quindi le catene
+di relazioni diverse si compongono come prima; e mezzo giro fatto due volte
+riporta al punto di partenza, che è proprio quello che chiede «confina-con».
+Nemmeno la rotazione, però, regge l'ereditarietà lungo la catena, perché un
+giro che fatto due volte deve dare sé stesso è il giro nullo. Per quella
+servono modelli in cui un'entità diventa una scatola capace di contenerne
+altre, la scatola «città» dentro la scatola «luogo»: un modo molto più naturale
+di dire «è un caso particolare di».
 
 C'è infine una via del tutto diversa: portare su un grafo di fatti il
 passaparola fra vicini. Qui gli archi non sono tutti uguali, e un
@@ -288,7 +296,8 @@ la relazione è antisimmetrica, e l'inversa di una relazione si ottiene
 coniugandone il vettore. La composizione, in quella stessa tassonomia, resta
 fuori tanto da DistMult quanto da ComplEx. RotatE fa di ogni relazione una
 rotazione componente per componente,
-$f(h,r,t) = -\lVert \mathbf{h} \circ \mathbf{r} - \mathbf{t} \rVert$ con
+$f(h,r,t) = -\lVert \mathbf{h} \odot \mathbf{r} - \mathbf{t} \rVert$, con
+$\odot$ il prodotto elemento per elemento e
 $r_k = e^{\mathrm{i}\theta_{r,k}}$: la simmetria corrisponde ad angoli
 $\theta_{r,k} \in \{0, \pi\}$, l'inversa al coniugato, la composizione alla
 somma degli angoli, e le quattro proprietà stanno insieme. La transitività però
@@ -298,6 +307,18 @@ la relazione torna a non spostare niente. A reggere le gerarchie servono
 famiglie di altro tipo, che rappresentano un'entità non come un punto ma come un
 oggetto capace di contenerne un altro (ordini parziali, scatole, spazi
 iperbolici).
+
+I parametri, con embedding di dimensione $d$: TransE e DistMult tengono
+$d(|\mathcal{E}| + |\mathcal{R}|)$ numeri reali, ComplEx il doppio, perché ogni
+componente è complessa, RotatE $2d|\mathcal{E}| + d|\mathcal{R}|$, perché di
+una rotazione basta l'angolo; il modello bilineare pieno, con una matrice
+$d \times d$ per relazione di cui DistMult tiene la sola diagonale, ne tiene
+$d|\mathcal{E}| + d^2|\mathcal{R}|$. E si addestrano in modi diversi: TransE e
+DistMult con la *margin ranking loss* di TransE, ComplEx con la perdita
+logistica su triple vere e corrotte, RotatE con un campionamento dei negativi
+che pesa ogni tripla corrotta secondo quanto il modello stesso la trova
+plausibile (*self-adversarial*), così che i negativi ormai facili smettano di
+contare.
 
 Poi c'è la via del message passing. **R-GCN**
 {cite}`schlichtkrull2018modeling` porta il message passing sui grafi
@@ -318,7 +339,8 @@ imponendo che le $\mathbf{W}_r$ siano combinazioni di poche matrici di base
 condivise, il che è una forma di condivisione dei pesi fra relazioni simili. La
 differenza rispetto a TransE è che qui l'embedding di un'entità si calcola
 dal suo vicinato invece di essere una riga di tabella: è la stessa differenza
-fra DeepWalk e le GNN vista nella sezione «Il mondo come grafo». Il vantaggio
+fra DeepWalk e le GNN vista nella {doc}`sezione «Il mondo come grafo»
+</GraphNeuralNetwork/dati-a-grafo>`. Il vantaggio
 dell'induttività, però, arriva solo se i nodi portano feature proprie da cui
 partire: nel paper originale le entità non ne hanno, lo stato iniziale è a sua
 volta un embedding appreso per ciascuna entità, e senza quella riga di tabella
@@ -337,12 +359,15 @@ La prima è comporre. Se il grafo contiene «il regista di questo film è X»
 e «X è nato in questa città», la domanda «in che città è nato il regista di
 questo film» si risponde percorrendo due archi. Il modo usuale di rispondere a
 una domanda su un archivio di testi è invece cercare i brani più somiglianti
-alla domanda e darli in pasto a un modello di linguaggio: è il retrieval
+alla domanda e passarli a un modello di linguaggio: è il retrieval
 denso della {doc}`sezione su retrieval e RAG </Transformers/rag>`, dove i
 brani non si confrontano parola per parola, ma trasformando ciascuno in una
 fila di numeri e cercando le file più vicine. Se nessun documento contiene
-entrambi i fatti nella stessa frase, quel sistema non li mette insieme: non
-gli è stato chiesto di ragionare, gli è stato chiesto di somigliare.
+entrambi i fatti, la ricerca per somiglianza di solito non porta davanti al
+modello tutti e due i brani, perché ciascuno somiglia alla domanda solo a
+metà, e il modello non può metterli insieme. Recuperare in più passi, usando
+la prima risposta per guidare la ricerca successiva, rimedia in parte, ma ogni
+passo è un altro punto in cui il recupero può sbagliare.
 
 Il secondo vantaggio è che il cammino è la spiegazione. Una ricerca per
 somiglianza restituisce tre paragrafi e una risposta, e per verificarla bisogna
@@ -358,17 +383,20 @@ possa rispondere in modo affidabile, e nemmeno di somiglianza: vuole
 un'interrogazione a un archivio ordinato, e una struttura su cui contare
 davvero.
 
-Messi insieme, i tre vantaggi hanno prodotto un'idea che gira parecchio. Dare
-a un modello di linguaggio dei documenti pescati sul momento, invece di
+Dare a un modello di linguaggio dei documenti pescati sul momento, invece di
 fidarsi di quel che ricorda, si chiama RAG, dalle iniziali di
-*Retrieval-Augmented Generation*, «generazione con recupero». Da qui l'idea di
-fare la stessa cosa con un grafo, e il nome che ne è venuto fuori è
-**GraphRAG**: invece di andare a prendere dei brani di testo si va a prendere
-un **sottografo**, cioè il pezzetto di grafo attorno alle cose nominate nella
-domanda, e si mette quello davanti al modello insieme alla domanda. Le
-varianti differiscono per come si sceglie il pezzetto e per come lo si
-riscrive in frasi (un grafo va disteso in una fila di parole prima di poterlo
-dare a un modello che legge testo), ma il principio è quello.
+*Retrieval-Augmented Generation*, «generazione con recupero». Da qui l'idea,
+diffusa nei sistemi costruiti attorno ai modelli di linguaggio, di fare la
+stessa cosa con un grafo: **GraphRAG**. Nella forma più semplice, invece di
+brani di testo si recupera un **sottografo**, cioè il pezzetto di grafo
+attorno alle cose nominate nella domanda, e lo si mette davanti al modello
+insieme alla domanda. Le varianti differiscono per come si sceglie il
+pezzetto e per come lo si riscrive in frasi (un grafo va disteso in una fila di
+parole prima di poterlo dare a un modello che legge testo). Con lo stesso nome
+circola anche un'idea diversa: il grafo lo costruisce un modello di linguaggio
+a partire dai documenti, lo divide in comunità di entità e scrive un riassunto
+di ciascuna, per rispondere a domande che riguardano l'intera raccolta («quali
+sono i temi principali?») invece di un fatto preciso {cite}`edge2024graphrag`.
 
 ## Quando conviene, e quando no
 
@@ -380,7 +408,7 @@ invecchia peggio di un archivio di documenti, perché sembra ancora autorevole
 mentre è già falso. La domanda da farsi prima di cominciare non è se sarebbe
 utile, ma chi lo aggiornerà fra due anni.
 
-I grandi modelli di linguaggio, inoltre, hanno assorbito buona parte del
+I grandi modelli di linguaggio, inoltre, hanno assorbito una parte del
 mestiere che si affidava ai grafi di fatti: molte domande fattuali ricevono
 oggi una risposta corretta senza che nessun grafo sia stato consultato. Quello
 che i modelli non danno, e che resta la ragione durevole di questa struttura, è
@@ -409,7 +437,7 @@ prezzo di costruirlo.
 - Il lavoro vero è costruirlo: trovare i nomi nel testo, capire di quale
   Torino si parla, accorgersi che «la Juve» e «Juventus Football Club» sono lo
   stesso nodo, ed estrarre dalle frasi i legami fra le cose. I modelli che ci
-  girano sopra sono la parte facile.
+  girano sopra sono la parte più piccola del lavoro.
 - Il modo più semplice di metterlo in numeri è fare di ogni cosa un punto e
   di ogni relazione una freccia sempre uguale: da «Roma», seguendo la
   freccia «capitale-di», si atterra vicino a «Italia». Funziona, ma una freccia
@@ -417,8 +445,10 @@ prezzo di costruirlo.
   reggere le relazioni che si ereditano lungo la catena (se sei antenato di mio
   nonno sei antenato mio): là la freccia dovrebbe valere sia un passo sia due,
   e l'unica freccia che lo fa è quella lunga zero. Da lì una lunga discendenza
-  di modelli che sostituiscono la freccia con qualcosa di più flessibile, senza
-  però che nessuno di loro risolva proprio quest'ultimo caso.
+  di modelli che sostituiscono la freccia con qualcosa di più flessibile (la
+  migliore è una rotazione); quest'ultimo caso però nessuno di loro lo
+  risolve, e servono entità fatte a scatola, che si contengono l'una
+  nell'altra.
 - L'altra via è portare il passaparola delle sezioni precedenti su questo
   grafo, usando una ricetta di riscrittura diversa per ogni tipo di arco: così
   la fila di numeri di un'entità si calcola da quel che le sta intorno invece
@@ -448,7 +478,7 @@ prezzo di costruirlo.
   debbano fabbricare corrompendo le triple vere.
 - Costruirlo è il lavoro: riconoscimento delle entità, collegamento (quale
   Torino?), risoluzione (Juventus e la Juve sono un nodo solo), estrazione
-  di relazioni. La parte modellistica viene dopo, ed è la più facile.
+  di relazioni. La parte modellistica viene dopo, ed è la più piccola.
 - TransE {cite}`bordes2013translating` fa delle relazioni delle
   traslazioni ($\mathbf{h}+\mathbf{r}\approx\mathbf{t}$), cioè prende sul
   serio l'aritmetica delle analogie del capitolo sul linguaggio. Non regge le
@@ -470,3 +500,11 @@ prezzo di costruirlo.
 ```
 
 `````
+
+Un'entità mai vista, con R-GCN, resta fuori se non porta niente di proprio, e
+il problema è più generale: una rete addestrata guardando il grafo intero non
+sa che cosa fare dei nodi che arrivano dopo, né regge grafi da miliardi di
+archi. E i vicini, anche quando gli archi hanno un tipo solo, non contano
+tutti allo stesso modo, mentre la GCN li pesa soltanto secondo i gradi. Da
+queste due domande riparte la {doc}`sezione su GraphSAGE e GAT
+</GraphNeuralNetwork/architetture-applicazioni>`.

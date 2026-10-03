@@ -1,38 +1,44 @@
 # Le famiglie di modelli, e oltre il testo
 
 L'architettura del 2017 era una macchina per tradurre. Quello che è successo
-dopo somiglia a ciò che accadde col motore a scoppio: inventato per la
-carrozza, finì su navi, aerei e generatori. Il Transformer è stato smontato
-nelle sue due torri (la torre che legge, l'encoder, e la torre che scrive, il
-decoder) e ciascuna, presa da sola e ingrandita, è diventata una famiglia di
-modelli: da un lato quelli che *capiscono* il testo, dall'altro quelli che lo
-*generano*. Poi qualcuno ha provato a dargli in pasto le immagini, e ha
+dopo somiglia a ciò che accadde col motore a scoppio: nato come motore fisso
+per le officine, finì su carrozze, navi e aerei. Il Transformer è stato
+scomposto nelle sue due pile, l'encoder che legge e il decoder che scrive, e
+ciascuna, presa da sola e ingrandita, è diventata una famiglia di modelli: da
+un lato quelli che rappresentano il testo per *capirlo*, dall'altro quelli che
+lo *generano*. Poi lo stesso meccanismo è stato applicato alle immagini, e ha
 funzionato anche lì.
 
-## GPT, BERT, T5: tre modi di studiare la lingua
+## GPT, BERT, T5: tre esercizi di pre-addestramento
 
-I tre capostipiti, cioè i modelli da cui discendono tutti gli altri, si
-distinguono soprattutto per l'esercizio che fanno su miliardi di frasi prima
-di essere messi al lavoro. Quella fase di studio generale si chiama
-**pre-addestramento**, e a seconda dell'esercizio scelto ne esce un modello
-bravo a scrivere o uno bravo a capire.
+I capostipiti delle tre famiglie, una per pila e una per la coppia intera, si
+distinguono soprattutto per l'esercizio che fanno su miliardi di frasi prima di
+essere messi al lavoro, cioè per l'obiettivo del pre-addestramento, la fase
+generale che negli {doc}`esempi pratici <esempi>` aveva prodotto i modelli già
+pronti da scaricare. A seconda dell'esercizio scelto ne esce un modello bravo a
+scrivere o uno bravo a capire, e le sigle lo dicono: GPT sta per *Generative
+Pre-trained Transformer*, un Transformer pre-addestrato che genera testo; BERT
+per *Bidirectional Encoder Representations from Transformers*, le
+rappresentazioni che un encoder costruisce guardando nelle due direzioni; T5
+per *Text-to-Text Transfer Transformer*, un Transformer che riscrive ogni
+compito come testo in ingresso e testo in uscita.
 
 ```{figure} ../figures/bert-vs-gpt.svg
 :name: fig-bert-vs-gpt
 :alt: "Confronto fra due matrici di attenzione sulla stessa frase. In BERT l'attenzione è bidirezionale: ogni parola può guardare tutte le altre, prima e dopo di sé, e la matrice è piena. In GPT l'attenzione è causale: ogni parola vede solo sé stessa e quelle che la precedono, e la metà superiore della matrice è oscurata."
 :width: 96%
 
-La stessa frase, due permessi di lettura. Non cambia l'architettura: cambia
-cosa ogni parola ha il diritto di guardare, e da lì discende tutto il resto.
+Lo stesso blocco con due maschere. Non cambia l'architettura del blocco: cambia
+quali posizioni ogni parola può guardare, e da lì discende il resto.
 ```
 
-{numref}`fig-bert-vs-gpt` mostra la sola cosa che distingue i primi due: non
-l'architettura, che per loro è la stessa, ma quali parole ciascuno ha il
-permesso di guardare. BERT può guardare anche le parole che vengono dopo, e
-chi vede tutta la frase la capisce meglio (dire di che parla, trovarci dentro
-una risposta, giudicarla); GPT vede solo le parole che precedono, ed è
-costretto a indovinare come si continua, che è esattamente l'esercizio da fare
-per imparare a scrivere.
+{numref}`fig-bert-vs-gpt` mostra la differenza che conta fra i primi due: lo
+stesso tipo di blocco, con due maschere diverse. BERT usa la self-attention
+bidirezionale, quindi la rappresentazione di ogni parola dipende anche da quello
+che viene dopo, ed è ciò che serve per classificare una frase, trovarci dentro
+una risposta, confrontarla con un'altra; GPT usa la maschera causale e deve
+indovinare come si continua, che è esattamente l'esercizio da fare per
+imparare a scrivere.
 
 `````{tab} Elementare
 Tre studenti si preparano allo stesso esame in tre modi diversi. GPT studia
@@ -40,12 +46,11 @@ coprendo con la mano il resto della pagina. Legge "Il gatto nero salta sul..."
 e prova a indovinare la parola dopo, milioni di volte, e così diventa
 bravissimo a *continuare* un testo, cioè a scrivere. BERT studia con gli
 esercizi a buchi. Riceve "Il gatto ___ salta sul muro" e indovina la parola
-mancante guardando sia prima che dopo il buco; e in più, date due frasi, deve
-dire se la seconda veniva davvero dopo la prima o è stata pescata a caso da
-un'altra pagina. Così diventa bravissimo a *capire* le frasi, meno a
-scriverle. T5 studia con i buchi lunghi: non sparisce una parola sola ma un
-pezzo di frase intero, e al suo posto resta un segnalibro; il compito è
-riscrivere i pezzi tolti, ciascuno dietro il suo segnalibro. Poi trasforma
+mancante guardando sia prima che dopo il buco, e così diventa bravissimo a
+*capire* le frasi, meno a scriverle. T5 studia con i buchi lunghi: non sparisce
+una parola sola ma un pezzo di frase intero, e al suo posto resta un
+segnaposto; il compito è riscrivere i pezzi tolti, ciascuno dietro il suo
+segnaposto. Poi trasforma
 ogni compito in un tema: scrive in cima al foglio "traduci:" oppure
 "riassumi:", e la risposta è sempre un testo, qualunque sia la domanda. Quando
 ChatGPT ti risponde, sotto c'è il metodo di GPT, coprire e indovinare, con
@@ -60,25 +65,18 @@ si impara con pochissimo: qualche esercizio già corretto, a volte solo le
 istruzioni scritte in cima al foglio, e in quel caso senza nemmeno rimettersi a
 studiare.
 
-Al banco di fianco un quarto studente, **ELECTRA**, guarda i quaderni del
-compagno degli esercizi a buchi. I buchi non sono uno per frase. Sparisce circa
-il quindici per cento delle parole, grosso modo una ogni sette, e solo su quelle
-il compagno viene interrogato. Le altre sei su sette servono a capire la frase,
-ma non gli fruttano nessun voto.
-
-Così ELECTRA si fa preparare le pagine da un ragazzo più piccolo, che invece di
-cancellare le parole le *sostituisce* con altre plausibili. Poi fa il correttore
-di bozze, e dice parola per parola se quella è l'originale o un'intrusa. Su ogni
-singola parola la domanda è più povera (sì o no, invece di indovinarne una fra
-decine di migliaia) ma non ne salta nessuna, e a parità di ore passate sui libri
-impara molto di più. Per arrivare dove arrivano i compagni degli esercizi a
-buchi gli basta meno di un quarto delle loro ore.
-
-Il ragazzo più piccolo, intanto, non sta giocando contro di lui. Fa i suoi
-esercizi a buchi come sempre, e se gli capita di rimettere al posto giusto
-proprio la parola che c'era, quella parola conta come originale e non come
-intrusa. Finito lo studio va a casa, e all'esame ci si presenta il correttore di
-bozze.
+Al banco di fianco siede un quarto studente, **ELECTRA**, che negli esercizi a
+buchi vede uno spreco: sparisce circa una parola su sette, e solo su quella si
+viene interrogati, mentre le altre sei non fruttano nessun voto. Così si fa
+preparare le pagine da un compagno più piccolo, che invece di cancellare le
+parole ne *sostituisce* qualcuna con un'altra plausibile, e poi fa il
+controllore: parola per parola, dice se quella è l'originale o un'intrusa. Su
+ogni parola la domanda è più povera (sì o no, invece di indovinarne una fra
+decine di migliaia), ma non ne salta nessuna, e per arrivare dove arrivano i
+compagni degli esercizi a buchi gli basta meno di un quarto delle loro ore. Il
+compagno più piccolo, intanto, non gioca contro di lui: fa i suoi esercizi a
+buchi come sempre, e se rimette per caso la parola che c'era, quella conta come
+originale. Finito lo studio va a casa, e all'esame si presenta il controllore.
 `````
 
 `````{tab} Superiore
@@ -87,7 +85,7 @@ con maschera causale, addestrato come modello di linguaggio autoregressivo:
 massimizza la log-verosimiglianza
 $\sum_t \log p_\theta(x_t \mid x_{t-k}, \dots, x_{t-1})$, dove $x_t$ è il token
 in posizione $t$ e $k$ la lunghezza della finestra di contesto. La linea di
-scala culmina in GPT-3 {cite}`brown2020language` (175 miliardi di parametri),
+scala arriva a GPT-3 {cite}`brown2020language` (175 miliardi di parametri),
 che mostra l'apprendimento *in-context*: adattarsi a un compito mostrato nel
 prompt con pochi esempi svolti (*few-shot*) o soltanto descritto
 (*zero-shot*), senza aggiornare i pesi. BERT {cite}`devlin2019bert`
@@ -95,7 +93,9 @@ prompt con pochi esempi svolti (*few-shot*) o soltanto descritto
 modeling* (si sorteggia il $15\%$ dei token e si chiede di predirli: di quelli
 scelti l’$80\%$ diventa `[MASK]`, il $10\%$ un token a caso e il $10\%$ resta
 com'è) e *next sentence prediction*, cioè dire se la seconda frase segue
-davvero la prima; eccelle nei compiti di comprensione (classificazione,
+davvero la prima, un esercizio che i modelli successivi hanno lasciato cadere
+(RoBERTa lo toglie e sui compiti a valle non perde, anzi migliora di poco
+{cite}`liu2019roberta`); eccelle nei compiti di comprensione (classificazione,
 estrazione di risposte) previo fine-tuning. T5 {cite}`raffel2020exploring`
 (Google, 2019) mantiene l'encoder–decoder completo, e il suo esercizio è un
 *denoising*: si elimina il 15% dei token, a spezzoni contigui di tre in media,
@@ -112,7 +112,8 @@ di ImageNet).
 
 **ELECTRA** {cite}`clark2020electra` attacca l'inefficienza del masked language
 modeling: mascherando il $15\%$ dei token, il segnale di addestramento arriva
-solo da quel $15\%$. La sostituisce con la ***replaced token detection***. Un
+solo da quel $15\%$. Sostituisce l'obiettivo con la ***replaced token
+detection***. Un
 generatore piccolo (un MLM ordinario) rimpiazza i token mascherati con
 campioni plausibili; il discriminatore, che è ELECTRA, riceve la sequenza
 così corrotta e classifica ogni posizione come originale o sostituita. Il
@@ -137,8 +138,7 @@ un'architettura avversaria nella forma e cooperativa nella sostanza, e il
 quelle reti venga proprio dal pezzo che qui è stato tolto.
 `````
 
-Fra i tre, il terzo merita un disegno, perché la sua idea è quella che si è
-presa il futuro.
+Fra i tre, T5 merita un disegno.
 
 ```{figure} ../figures/t5-2019.svg
 :name: fig-t5-text-to-text
@@ -156,21 +156,27 @@ invece anticipa il modo in cui oggi si usano i modelli di linguaggio. Se ogni
 compito si può scrivere come testo in ingresso e testo in uscita, allora
 cambiare compito non richiede di cambiare il modello: basta cambiare quello che
 gli si scrive davanti. Quel «quello che gli si scrive davanti» è il prompt,
-la parola che da qui in avanti tornerà in tutto il capitolo, e che vuol dire
-esattamente questo: le istruzioni e il testo che si consegnano al modello prima
-che risponda. Dentro il prompt ci si può mettere la sola consegna a parole, o
-anche due o tre esercizi già svolti perché il modello capisca che cosa gli si
-sta chiedendo; e la scoperta che quei due o tre esempi bastino, senza toccare
-un solo numero interno del modello, è una delle cose che hanno stupito di più
-chi lavorava su GPT-3.
+la parola che da qui in avanti tornerà in tutto il capitolo: le istruzioni e il
+testo che si consegnano al modello prima che risponda. Dentro il prompt ci si
+può mettere la sola consegna a parole, o anche due o tre esercizi già svolti
+perché il modello capisca che cosa gli si sta chiedendo. Che quei pochi esempi
+bastino a far eseguire un compito, senza aggiornare i parametri, è la scoperta
+di GPT-3 (l’*in-context learning*), dopo che GPT-2 {cite}`radford2019language`
+aveva mostrato lo stesso principio in forma grezza, con «TL;DR:» in coda a un
+articolo per farlo riassumere e coppie «frase inglese = frase francese» per
+farlo tradurre.
 
 ## Oltre il testo: Vision Transformer e modelli multimodali
 
-Fin qui il Transformer ha sempre avuto in pasto delle parole. Ma se si guarda
-bene, l'attenzione non sa niente delle parole: sa solo confrontare liste di
-numeri messe in fila. Qualunque cosa si riesca a ridurre a una fila di liste di
-numeri, allora, può entrarci dentro, e la prima a provarci è stata la
-fotografia.
+Fin qui il Transformer ha sempre elaborato delle parole. Ma se si guarda bene,
+l'attenzione non sa niente delle parole: sa solo confrontare liste di numeri
+messe in fila. Qualunque cosa si riesca a ridurre a una fila di liste di
+numeri, allora, può entrarci dentro, e le immagini sono state fra le prime: nel
+2018 l'Image Transformer {cite}`parmar2018image` le generava pixel dopo pixel
+con l'attenzione, e nel 2020 il Vision Transformer ha mostrato che un encoder
+Transformer puro, senza convoluzioni, regge il confronto con le reti
+convoluzionali nel classificare fotografie, se è pre-addestrato su abbastanza
+dati.
 
 ```{figure} ../figures/vit-transformer-immagini.svg
 :name: fig-vit
@@ -181,17 +187,14 @@ Il Vision Transformer non inventa un meccanismo nuovo: taglia l'immagine in
 tessere e le tratta come parole. Da lì in poi è lo stesso encoder del testo.
 ```
 
-Il passaggio mostrato in {numref}`fig-vit` è meno innocente di quanto sembri.
-Le reti per le immagini del {doc}`capitolo sul deep learning
-</DeepLearning/overview>` (le *convoluzioni*, i filtri che guardano un pezzetto
-di foto alla volta) hanno una regola scritta dentro: i puntini vicini fra loro
-sono imparentati, e vanno guardati insieme. Tagliare la foto in tessere e
-metterle in fila butta via quella regola, perché per l'attenzione due tessere
-lontanissime e due tessere adiacenti sono esattamente sullo stesso piano. La
-parentela fra vicini, allora, il Vision Transformer deve impararla, e imparare
-qualcosa costa esempi: è la ragione per cui regge il confronto solo se gli si
-dà da studiare molta più roba. Quando i dati sono pochi, la regola scritta a
-mano vince.
+Il passaggio di {numref}`fig-vit` ha un costo. Le reti convoluzionali del
+{doc}`capitolo sul deep learning </DeepLearning/overview>`, con i loro filtri
+che guardano un pezzetto di immagine alla volta, portano scritte
+nell'architettura due ipotesi sulle immagini: che i pixel vicini siano legati
+fra loro, e che lo stesso motivo conti dovunque compaia. È il loro *bias
+induttivo*. Con le tessere messe in fila e l'attenzione su tutte, due tessere
+adiacenti e due lontanissime partono alla pari, e la struttura dello spazio va
+imparata dai dati.
 
 `````{tab} Elementare
 E le immagini? Il trucco, che il capitolo su PyTorch ha già messo in codice
@@ -206,9 +209,10 @@ nessuno le ha detto che due posti confinanti abbiano qualcosa a che fare l'uno
 con l'altro: la tessera accanto a quella dell'orecchio e la tessera della coda,
 per il Transformer, sono lontane uguale. Che i puntini vicini vadano insieme
 deve scoprirlo guardando fotografie, e gliene servono a milioni. Con una
-scatola di foto e basta ne esce un pasticcio, e in quel caso conviene ancora il
-metodo che guarda un pezzetto di foto alla volta, che quella regola ce l'ha
-scritta dentro e non deve impararla.
+scatola di foto e basta il risultato è un po' peggiore di quello del metodo che
+guarda un pezzetto di foto alla volta, che quella regola ce l'ha scritta dentro
+e non deve impararla; con qualche accorgimento in più nello studio, la distanza
+si colma.
 
 I modelli **multimodali** fanno il passo successivo: imparano testo e immagini
 insieme, su milioni di fotografie prese ciascuna con la sua didascalia, così
@@ -223,7 +227,11 @@ Il Vision Transformer (ViT {cite}`dosovitskiy2021image`), che la
 costruito riga per riga, suddivide l'immagine in patch (tipicamente
 $16 \times 16$ pixel), le proietta linearmente in embedding e le tratta come
 token, con un token di classe in testa e codifiche di posizione apprese in una
-dimensione sola (le varianti 2-D e relative non fanno differenza). La cosa da
+dimensione sola. Gli embedding appresi ritrovano da soli la topologia
+bidimensionale (le patch della stessa riga o della stessa colonna finiscono con
+embedding simili), ed è per questo che le varianti scritte a mano in due
+dimensioni, o relative, non migliorano; e già dai primi strati alcune teste
+guardano quasi tutta l'immagine, mentre altre restano locali. La cosa da
 portarsi via è la condizione: senza il *bias induttivo* di località delle CNN,
 il ViT dell'articolo regge il confronto solo se pre-addestrato su dataset molto
 grandi (ImageNet-21k, JFT-300M). La soglia però si sposta con la ricetta: con
@@ -234,28 +242,30 @@ La località non è gratis: o la si mette nell'architettura, o la si compra in
 dati. Sul fronte multimodale, **CLIP**
 {cite}`radford2021learning` allinea in uno spazio comune embedding di immagini
 e testi tramite addestramento contrastivo su coppie immagine–didascalia; i
-modelli generativi di immagini come DALL·E e Stable Diffusion usano componenti
-Transformer per condizionare la generazione sul testo; e modelli come GPT-4
-(2023) accettano input misti testo+immagine.
+modelli generativi di immagini usano il Transformer in due modi diversi, perché
+DALL·E {cite}`ramesh2021zero` è esso stesso un Transformer autoregressivo da 12
+miliardi di parametri che genera i token dell'immagine dopo quelli del testo,
+mentre la diffusione latente di Stable Diffusion {cite}`rombach2022high` si
+condiziona sul testo con un encoder Transformer, attraverso la cross-attention;
+e modelli come GPT-4 (2023) accettano input misti testo+immagine.
 `````
 
-Qui ci fermiamo al principio, che è il filo di questo capitolo: tutto ciò che si
-riduce a una fila di mattoncini (i *token*: le parole di una frase, le tessere
-di una foto, gli spezzoni di un suono) è terreno dell'attenzione. Come si
-costruisca davvero un modello che vede e parla è un'altra storia, e ha un
-capitolo suo, {doc}`visione e linguaggio </VisioneLinguaggio/overview>`. Le
-strade sono tre, e basta saperle riconoscere:
-tenere immagini e parole ciascuna nella propria mappa e allenarle a mettere le
-cose corrispondenti nello stesso punto; innestare un occhio su un modello di
-linguaggio già fatto, lasciando comandare il linguaggio; oppure dare a tessere e
-parole un unico vocabolario, come se le tessere fossero le parole di una lingua
-in più. Quale convenga, e che cosa costi ciascuna, lo dice quel capitolo.
+Il principio, ed è il filo di tutto il discorso sui Transformer, è che tutto ciò
+che si riduce a una sequenza di token (le parole di una frase, le tessere di
+una foto, gli spezzoni di un suono) si può elaborare con l'attenzione. Come si
+costruisca davvero un modello che vede e parla ha un capitolo suo,
+{doc}`visione e linguaggio </VisioneLinguaggio/overview>`, che distingue tre
+strade: tenere immagini e parole ciascuna nel proprio spazio e addestrarle a
+mettere le cose corrispondenti nello stesso punto; innestare un encoder visivo
+su un modello di linguaggio già fatto, lasciando comandare il linguaggio;
+oppure dare a tessere e parole un unico vocabolario, come se le tessere fossero
+le parole di una lingua in più. Quale convenga, e che cosa costi ciascuna, lo
+dice quel capitolo.
 
 ## Fuori dal linguaggio: AlphaFold 2 e la forma delle proteine
 
-L'attenzione, però, non è finita a lavorare solo su testi, foto e suoni. Il caso
-più clamoroso è arrivato da una parte che con il linguaggio non c'entra niente:
-la biologia.
+Lo stesso meccanismo lavora anche lontano da testi, foto e suoni, e il caso più
+noto viene da un campo che con il linguaggio non c'entra niente: la biologia.
 
 Le proteine sono le macchine di cui siamo fatti, e ciascuna nasce come una
 catena di mattoncini agganciati in fila, che appena esiste si ripiega su sé
@@ -284,11 +294,11 @@ AlphaFold legge l'allineamento con le proteine imparentate: l'evoluzione ha già
 fatto milioni di esperimenti, e quelli sono i dati.
 ```
 
-Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione fa il suo
-mestiere, ed è facile vedere perché sia lei la persona giusta. Gli anelli della
-catena, in gergo, si chiamano **residui** (la stessa parola indica anche la
-connessione residua, la scorciatoia attorno a un blocco: due cose che non
-c'entrano niente fra loro, e capita). Due residui lontanissimi lungo la catena
+Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione serve di più,
+ed è facile vedere perché. Gli anelli della catena, in gergo, si chiamano
+**residui** (omonimi dei residui della connessione residua, la scorciatoia
+attorno a un blocco, ma senza nessun legame con quelli). Due residui
+lontanissimi lungo la catena
 possono ritrovarsi appiccicati una volta che la catena si è ripiegata: è la
 relazione fra due elementi lontani che i filtri delle reti per immagini
 faticano a vedere, ed è esattamente il caso che l'attenzione tratta come
@@ -327,14 +337,15 @@ modo di accorgersene, e a rispettare la regola ci arriva a forza di esempi, come
 per tutto il resto.
 
 In fondo escono le coordinate di ogni perlina nello spazio, e accanto a ogni
-tratto di collana un voto: quanto il programma si fida di quel pezzo di
-risposta. Dove il voto è basso, spesso, quel tratto una forma fissa non ce l'ha
+perlina un voto da zero a cento: quanto il programma si fida di quel pezzo di
+risposta. Sopra novanta di solito ci ha preso anche nei dettagli; dove il voto
+resta basso per un tratto lungo, spesso quel tratto una forma fissa non ce l'ha
 davvero.
 
-Tutto questo poggia sui parenti. Di una proteina rara, o disegnata da qualcuno
-in laboratorio il mese scorso, cugini in altre specie non ce ne sono. Il primo
-foglio resta quasi vuoto, la traccia da leggere non c'è, e la previsione
-peggiora.
+Tutto questo poggia sui parenti. Di una proteina rara, che esiste in poche
+specie, i cugini da confrontare sono pochi: con meno di una trentina di righe
+nel primo foglio la traccia da leggere quasi non c'è, e la previsione peggiora
+parecchio, mentre oltre il centinaio aggiungerne altre cambia poco.
 
 `````
 
@@ -363,12 +374,19 @@ Il **modulo di struttura** finale produce le coordinate atomiche trattando ogni
 residuo come un sistema di riferimento rigido, e il tutto viene ripassato più
 volte (*recycling*): l'uscita rientra come ingresso e la struttura si affina.
 
-Due conseguenze da tenere a mente. La prima: il modello stima anche la
-propria confidenza (pLDDT), e le regioni a bassa confidenza corrispondono
-spesso a parti realmente disordinate della proteina; un raro caso in cui
-l'incertezza dichiarata ha un significato fisico. La seconda: dipendendo
-dall'MSA, il metodo è più debole dove la storia evolutiva è povera (proteine
-orfane, anticorpi progettati, molecole di sintesi).
+Due conseguenze da tenere a mente. La prima: il modello stima anche la propria
+confidenza, il pLDDT (*predicted local distance difference test*), un numero da
+0 a 100 per ogni residuo che stima quanto la previsione concorderebbe in quel
+punto con la struttura sperimentale (è una stima dell'lDDT-Cα). Sopra 90 la
+previsione è considerata molto accurata, sopra 70 lo scheletro della catena è
+in genere corretto; e le regioni lunghe sotto 50 vanno lette come previsione di
+disordine più che come struttura {cite}`tunyasuvunakool2021highly`, un raro
+caso in cui l'incertezza dichiarata ha un significato fisico. La seconda:
+dipendendo dall'MSA, il metodo è più debole dove l'allineamento è povero.
+Jumper e colleghi riportano che l'accuratezza cala sensibilmente quando la
+profondità mediana dell'allineamento scende sotto una trentina di sequenze,
+mentre oltre un centinaio i miglioramenti sono piccoli: è il caso delle
+proteine orfane, che di parenti ne hanno pochi.
 
 Il database pubblico che ne è seguito copre la quasi totalità di UniProt, cioè
 quasi ogni sequenza proteica catalogata (restano fuori le catene troppo corte o
@@ -380,29 +398,35 @@ servizio di consultazione.
 
 ## Vantaggi e sfide
 
-Il quadro va chiuso con la stessa onestà con cui la sezione sul confronto con
-le reti ricorrenti aveva ammesso il costo quadratico. I vantaggi sono reali:
-questi modelli reggono testi lunghi senza dimenticare l'inizio, si addestrano
-spartendo il lavoro fra migliaia di processori, e una sola architettura basta
-per il testo, le immagini e l'audio. Ma anche le sfide sono reali:
+Il quadro va chiuso con la stessa onestà con cui il {doc}`confronto con i
+modelli precedenti <confronti>` aveva ammesso il costo quadratico. I vantaggi
+sono reali: ogni posizione raggiunge ogni altra in un solo passo,
+l'addestramento si spartisce fra migliaia di processori, e una sola
+architettura serve il testo, le immagini e l'audio. Ma anche le sfide sono
+reali:
 
-- Risorse: addestrare un grande modello richiede centinaia di schede
-  grafiche che lavorano insieme per mesi, con i consumi elettrici che ne
-  seguono; anche solo *eseguirlo* può richiedere macchine fuori dalla portata di
-  un laboratorio piccolo.
+- Risorse: addestrare un grande modello richiede da centinaia a decine di
+  migliaia di acceleratori che lavorano insieme per settimane o mesi (il più
+  grande dei Llama 3 fino a sedicimila schede grafiche
+  {cite}`grattafiori2024llama3`), con i consumi elettrici che ne seguono; anche
+  solo *eseguirlo* può richiedere macchine fuori dalla portata di un
+  laboratorio piccolo.
 - Dati: i *corpora* (cioè le grandi raccolte di testi su cui i modelli
   studiano) da miliardi di parole contengono errori, stereotipi e contenuti
   tossici, e i modelli li assorbono. Se in quei testi le infermiere sono sempre
   donne e gli ingegneri sempre uomini, il modello impara quella regola come
   impara la grammatica: sono i bias, cioè le distorsioni sistematiche dei
   dati, che diventano distorsioni del modello.
-- Affidabilità: un modello autoregressivo (che scrive una parola alla
-  volta, ogni volta scegliendo la continuazione più probabile di quello che ha
-  già scritto) produce la continuazione più plausibile, non necessariamente
-  quella *vera*: le "allucinazioni" (risposte fluenti e sbagliate) sono un
-  limite strutturale, non un incidente: è la conseguenza già vista nella
-  {doc}`matematica di un modello linguistico </Matematica/matematica-llm>`,
-  dove l'obiettivo premia la plausibilità e non la verità.
+- Affidabilità: un modello autoregressivo (che scrive una parola alla volta,
+  ogni volta scegliendo una continuazione di quello che ha già scritto)
+  assegna una probabilità a ogni continuazione e ne produce una, e il suo
+  obiettivo premia la plausibilità del testo, non la verità. Le
+  "allucinazioni" (risposte fluenti e sbagliate) sono quindi una conseguenza
+  dell'obiettivo, come già nella {doc}`matematica di un modello linguistico
+  </Matematica/matematica-llm>`. Per i fatti arbitrari, quelli che nei dati
+  compaiono una volta sola, un modello pre-addestrato e ben calibrato sbaglia
+  con una frequenza vicina alla quota di quei fatti
+  {cite}`kalai2024calibrated`, e a ridurre gli errori serve il post-training.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -416,19 +440,20 @@ per il testo, le immagini e l'audio. Ma anche le sfide sono reali:
   su montagne di testo e senza nessuno che corregga; poi si aggiusta il tiro sul
   compito che serve, con pochi esempi o solo con le istruzioni scritte davanti
   (il *prompt*).
-- ELECTRA cambia l'esercizio invece dell'architettura: fa il correttore di
-  bozze su ogni parola invece di indovinarne una su sette, e a parità di
-  fatica impara molto di più.
+- ELECTRA cambia l'esercizio invece dell'architettura: fa il controllore su
+  ogni parola invece di indovinarne una su sette, e a parità di fatica impara
+  molto di più.
 - Le immagini entrano nello stesso meccanismo tagliandole in tessere e
   mettendole in fila come parole; da lì un modello può guardare una foto e
   rispondere a parole. La comodità si paga in esempi: che due tessere vicine
   siano imparentate va imparato da milioni di fotografie, e quando le foto sono
-  poche conviene ancora il metodo che ne guarda un pezzetto alla volta.
+  poche, senza accorgimenti nello studio, il metodo che ne guarda un pezzetto
+  alla volta resta un po' avanti.
 - Lo stesso meccanismo che pesa le parole di una frase pesa le coppie di
   anelli di una proteina, e AlphaFold prevede come la catena si ripiega
   leggendo la stessa proteina in migliaia di specie: le posizioni che cambiano
-  in coppia sono quelle che si toccano. Dove i parenti mancano la traccia non
-  c'è, e la previsione peggiora.
+  in coppia sono quelle che si toccano. Dove i parenti sono pochi la traccia
+  quasi non c'è, e la previsione peggiora.
 - I limiti vanno messi in conto quanto i pregi: costano moltissimo da
   addestrare, si portano dentro i pregiudizi dei testi su cui hanno studiato, e
   scrivono con la stessa sicurezza cose vere e cose inventate.
@@ -454,9 +479,15 @@ per il testo, le immagini e l'audio. Ma anche le sfide sono reali:
 - AlphaFold 2 tiene in dialogo l'MSA e la rappresentazione di coppia dentro
   l'Evoformer, e la *triangle attention* rende esprimibile, non obbligatoria,
   la disuguaglianza triangolare sulle distanze. Stima la propria confidenza
-  (pLDDT) e dipende dall'MSA, quindi è più debole dove la storia evolutiva è
-  povera.
-- Costi computazionali, bias nei dati e allucinazioni sono limiti
-  strutturali, da mettere in conto quanto i vantaggi.
+  (pLDDT, da 0 a 100 per residuo) e dipende dall'MSA, quindi è più debole dove
+  l'allineamento è povero, sotto una trentina di sequenze.
+- Costi computazionali, bias nei dati e allucinazioni vengono dalla scala e
+  dall'obiettivo, e vanno messi in conto quanto i vantaggi.
 ```
 `````
+
+Dalle immagini e dalle proteine si torna al testo, con una domanda nuova: che
+cosa succede quando lo stesso modello impara cento lingue insieme. È il seguito
+della storia della traduzione, e la {doc}`sezione sui modelli multilingue
+<multilingua>` la riprende dal 2016, dove la {doc}`sezione sulla traduzione con
+le reti </NaturalLanguageProcessing/seq2seq-traduzione>` l'aveva lasciata.

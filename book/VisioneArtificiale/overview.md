@@ -12,22 +12,29 @@
 :alt: Una telecamera degli anni Sessanta su un treppiede, puntata su un blocco di legno.
 ```
 
-Nel 1966, al MIT, Seymour Papert affidò a un gruppo di studenti un compito per
-l'estate: collegare una telecamera a un computer e insegnargli a descrivere
-quello che vedeva. Il progetto si chiamava, con ottimismo, *Summer Vision
-Project*. L'idea di fondo era che un problema tanto naturale (noi vediamo
-senza sforzo, di continuo) si potesse sistemare in una manciata di settimane.
-Mezzo secolo dopo, la visione artificiale è ancora un campo di ricerca vivo e
-aperto. Quella sottovalutazione racconta una verità profonda: vedere ci
-*sembra* facile solo perché il nostro cervello lo fa per noi, in silenzio e in
-pochi millisecondi.
+Un lavoro per l'estate: tanto doveva bastare, secondo il piano che Seymour
+Papert scrisse al MIT nel 1966, il *Summer Vision Project*, perché un gruppo di
+studenti costruisse un sistema capace di separare gli oggetti dallo sfondo in
+un'immagine e di riconoscerli. Dello stesso anno si racconta un aneddoto più
+famoso, e meno documentato: Marvin Minsky avrebbe chiesto a un suo studente,
+Gerald Sussman, di passare l'estate a collegare una telecamera a un computer e
+a fargli descrivere quello che vedeva {cite}`szeliski2022computer`. L'idea di
+fondo, in tutte e due le storie, era che un problema tanto naturale (noi
+vediamo senza sforzo, di continuo) si potesse sistemare in una manciata di
+settimane. Mezzo secolo dopo, la visione artificiale è ancora un campo di
+ricerca vivo e aperto. La sottovalutazione ha una ragione: vedere ci *sembra*
+facile perché il cervello lo fa senza che ce ne accorgiamo, in una frazione di
+secondo.
 
-Questo capitolo parte proprio da lì: da che cosa significhi, per una macchina,
-«vedere». E dalla scoperta, arrivata sul serio solo dopo il 2010, che il modo
-migliore per insegnarglielo non è scrivere regole, ma mostrarle milioni di
-esempi. Il programma che impara così si chiama rete neurale, ed è quello
-che i capitoli precedenti hanno costruito pezzo per pezzo: qui lo mettiamo al
-lavoro sulle immagini, e per brevità lo chiameremo «la rete».
+Si parte proprio da lì: da che cosa significhi, per una macchina, «vedere», e
+dalla scoperta, arrivata sul serio solo dopo il 2010, che il modo migliore per
+insegnarglielo non è scrivere regole ma mostrarle milioni di esempi. Il modello
+che impara così è la {doc}`rete
+convoluzionale </DeepLearning/reti-convoluzionali>` del capitolo sul deep
+learning, che lì ha imparato a dire che cosa c'è in una foto; qui la si prende
+già addestrata e la si piega agli altri mestieri del vedere: riconoscere con
+pochi esempi, dire dov'è una cosa, ritagliarne il contorno, ricostruire la
+profondità della scena.
 
 ## Un'immagine è una griglia di numeri
 
@@ -54,10 +61,11 @@ La scala da $0$ a $255$ è un'unità di misura come i gradi o i centimetri, e si
 può cambiare senza toccare la foto: dividendo ogni numero per $255$ gli stessi
 quadretti diventano valori fra $0$ e $1$, e il grigio di mezzo, $128$, diventa
 poco più di $0{,}5$. È il cambio di scala che si fa quasi sempre prima di dare
-le immagini a una rete, come si converte in euro un conto pieno di valute
-diverse.
+le immagini a una rete: i numeri interni di una rete partono piccoli, tarati
+per ingressi grandi più o meno come uno, e con valori fino a $255$ le prime
+somme uscirebbero centinaia di volte più grandi del previsto.
 
-Il foglio, però, è grande. Una fotina di $224$ quadretti per lato, la taglia con
+Il foglio, però, è grande. Una foto di $224$ quadretti per lato, la taglia con
 cui si lavora di solito, ne conta $224 \times 224 = 50\,176$; a colori sono tre
 numeri per quadretto, cioè $150\,528$ numeri per un'immagine che sullo schermo
 occupa quanto un francobollo. Viene la tentazione di prenderli e metterli tutti
@@ -86,24 +94,25 @@ Le dimensioni crescono in fretta: una modesta immagine
 $3 \times 224 \times 224$ (la taglia d'ingresso classica delle reti addestrate
 su ImageNet) porta $150\,528$ numeri. Trattarla come un vettore
 piatto, ignorando che i pixel vicini sono correlati, è proprio l'errore che le
-reti convoluzionali (costruite nel capitolo precedente, e qui date per
-acquisite) evitano per costruzione.
+{doc}`reti convoluzionali </DeepLearning/reti-convoluzionali>` (costruite nel
+capitolo precedente, e qui date per acquisite) evitano per costruzione.
 
 `````
 
 ## Perché è difficile: la distanza fra pixel e significato
 
-Fra la griglia di numeri e la parola «gatto» c'è un salto, e conviene misurarlo
-prima di provare a colmarlo: ogni tecnica delle prossime sezioni risponde a una
+Fra la griglia di numeri e la parola «gatto» c'è un salto, e va misurato prima
+di provare a colmarlo: ogni tecnica delle prossime sezioni risponde a una
 sua voce precisa.
 
 `````{tab} Elementare
 
 Sulla vetrina del bar c'è l'avviso di un gatto siamese smarrito: la foto, e un
-numero da chiamare. Tanti numeri, da soli, non spaventano nessuno: un computer
-li macina. Il guaio è che lo stesso gatto produce griglie di numeri
+recapito da chiamare. Nel pomeriggio, sul telefono della padrona, arrivano sette
+foto di gatti avvistati in giro, mandate da chi ha letto l'avviso. Per il
+telefono ognuna è una griglia di numeri, e tanti numeri, da soli, non spaventano
+nessuno: un computer li macina. Il guaio è che lo stesso gatto produce griglie
 completamente diverse, e due gatti diversi possono produrne di molto simili.
-Nel pomeriggio ne arrivano sette.
 
 Punto di vista. Uno è preso dal balcone: schiena e coda, mentre sull'avviso
 il gatto è di fronte. Le due griglie non hanno un quadretto in comune.
@@ -118,7 +127,7 @@ Occlusione. In uno metà gatto sta dietro un divano, e la risposta deve
 arrivare lo stesso.
 
 Illuminazione. Uno è in controluce, e i valori dei quadretti si ribaltano;
-al tramonto sarebbero virati tutti all'arancione.
+al tramonto sarebbero diventati tutti più arancioni.
 
 Sfondo confuso. In un altro un tigrato sta su un tappeto a righe: i confini
 che noi vediamo senza pensarci vanno indovinati numero per numero.
@@ -127,38 +136,41 @@ Variazione dentro la classe. L'ultimo ritrae un persiano bianco: col
 siamese dell'avviso condivide l'etichetta e quasi nient'altro.
 
 Dentro il telefono le foto non le guarda nessuno: ci sono solo i numeri. Si
-sovrappongono i due fogli a quadretti e si sommano le differenze quadretto per
-quadretto: ne esce un numero che dice quanto le due foto sono lontane. C'è
-anche una scatola di scatti già etichettati, e la regola più ovvia che esista è
-pescare il più vicino e copiarne l'etichetta. Sui numeri grezzi quella regola
-sbaglia in tutt'e due i versi: lo stesso gatto in controluce e al sole risulta
-lontanissimo da sé, mentre un gatto e un cane fotografati nella stessa stanza
-con la stessa luce risultano vicini. Quel conto misura le luci e gli sfondi,
-non i soggetti.
+sovrappongono i due fogli a quadretti, si fa la differenza quadretto per
+quadretto, la si eleva al quadrato perché un quadretto più chiaro e uno più
+scuro non si cancellino a vicenda, e si somma tutto: ne esce un numero che dice
+quanto le due foto sono lontane. Nel telefono c'è anche un album di scatti già
+etichettati, e la regola più ovvia che esista è pescare il più vicino e copiarne
+l'etichetta. Sui numeri grezzi quella regola sbaglia in tutt'e due i versi: lo
+stesso gatto in controluce e al sole risulta lontanissimo da sé, mentre un gatto
+e un cane fotografati nella stessa stanza con la stessa luce risultano vicini.
+Quel conto misura le luci e gli sfondi, non i soggetti.
 
 Fra i sette manca la variazione più elementare di tutte: *dove* sta il gatto
-nell'inquadratura. Manca perché la risposta è già nel modo in cui la rete è
-fatta dentro, la sua architettura, e in particolare nella convoluzione: sul
-foglio a quadretti passa una lente piccola, il filtro, sempre la stessa, un
-quadretto alla volta, dall'angolo in alto a sinistra fino in fondo. La lente
-non sa in che punto si trova, quindi quello che impara a riconoscere in un
-angolo lo riconosce anche nell'altro, ed è già moltissimo.
+nell'inquadratura. Manca perché a quella pensa già la forma della rete, la sua
+architettura. Sul foglio a quadretti passa una lente piccola, sempre la stessa,
+un quadretto alla volta, dall'angolo in alto a sinistra fino in fondo: è la
+convoluzione, e la lente si chiama filtro. La lente non sa in che punto si
+trova, quindi quello che impara a riconoscere in un angolo lo riconosce anche
+nell'altro, ed è già moltissimo.
 
-Fra uno strato e l'altro, però, la rete ricopia il foglio più piccolo: di ogni
-quadratino tiene il numero più forte e lascia cadere gli altri. Finché il gatto
-si sposta restando dentro lo stesso quadratino il più forte resta quello e la
-mappa non cambia; appena scavalca il confine cambia eccome, e con essa possono
-cambiare tutte le mappe che vengono dopo. La lente è la stessa dappertutto; la
-risposta no, e su una foto vera basta spesso un pixel a farla cambiare, anche
-alle reti convoluzionali grandi.
+Fra uno strato e l'altro, però, la rete ricopia il foglio più piccolo: lo divide
+in quadratini di pochi quadretti, e di ognuno tiene il numero più forte e lascia
+cadere gli altri. Finché il gatto si sposta restando dentro lo stesso quadratino
+il più forte resta quello e la copia non cambia; appena scavalca il confine
+cambia eccome, e con essa possono cambiare tutte le copie che vengono dopo. La
+lente è la stessa dappertutto; la risposta no. Su foto vere basta spostare di
+poco l'inquadratura perché anche una rete convoluzionale grande cambi risposta,
+e non di rado: circa una volta su dieci.
 
 Chi addestra la rete rilegge i sette scatti come una lista di cose da fare: di
-foto del gatto ne ha poche e ne fabbrica centinaia, ruotando (contro il punto
-di vista), ritagliando (contro la scala), coprendo un rettangolo a caso (contro
-l'occlusione), schiarendo e scurendo (contro l'illuminazione). Moltiplicare le
-foto deformandole si chiama data augmentation: ogni gesto risponde a una
-voce, e insieme dicono alla rete quali cambiamenti devono lasciare la risposta
-dov'era.
+foto del gatto ne ha poche e ne fabbrica centinaia, ritagliando (contro la
+scala), coprendo un rettangolo a caso (contro l'occlusione), schiarendo e
+scurendo (contro l'illuminazione). Moltiplicare le foto deformandole si chiama
+data augmentation: ogni gesto risponde a una voce, e insieme dicono alla rete
+quali cambiamenti devono lasciare la risposta dov'era. Una voce resta scoperta,
+il punto di vista: girare la foto imita una fotocamera tenuta storta, ma da uno
+scatto di fronte nessuna deformazione ricava la schiena e la coda.
 
 Lo stesso gesto porta fino a imparare da foto che nessuno ha etichettato. Si
 ritagliano due pezzi dello stesso scatto, la testa e una zampa, e si pretende
@@ -170,8 +182,9 @@ in quel momento, che cosa la rete imparerà a guardare.
 
 `````{tab} Superiore
 
-Il salto si chiama **divario semantico**: fra la rappresentazione numerica
-$\mathbf{X} \in \mathbb{R}^{C\times H\times W}$ e la categoria semantica non c'è nessuna
+Il salto si chiama **divario semantico** (*semantic gap*)
+{cite}`smeulders2000content`: fra la rappresentazione numerica $\mathbf{X} \in
+\mathbb{R}^{C\times H\times W}$ e la categoria semantica non c'è nessuna
 relazione semplice, e in particolare nessuna relazione che si possa scrivere
 guardando i valori dei pixel uno per uno.
 
@@ -188,18 +201,19 @@ furono i filtri disegnati a mano.
 
 Le invarianze si ottengono in tre modi, che il resto del capitolo percorre
 tutti. Per architettura: la condivisione dei pesi della convoluzione dà
-l'equivarianza alla traslazione, e il pooling una tolleranza locale alle
-piccole traslazioni, che però è un'intenzione di progetto più che una proprietà
-ottenuta: il sottocampionamento (max-pool, average-pool, convoluzione con
-stride) ignora il teorema del campionamento, e per aliasing una CNN moderna
-resta sorprendentemente sensibile a uno spostamento di pochi pixel
-{cite}`zhang2019making`. Per dati: la *data augmentation* espone il modello
-alle trasformazioni che deve ignorare, ed è un modo di iniettare
-un'invarianza senza cablarla nell'architettura. Per addestramento:
-l'apprendimento auto-supervisionato costruisce il compito proprio a partire
-dalla scelta di quali trasformazioni debbano lasciare invariata la
-rappresentazione, e lì la scelta delle trasformazioni coincide con la
-definizione del problema.
+l'equivarianza alla traslazione, e il pooling una tolleranza locale alle piccole
+traslazioni, che però è un'intenzione di progetto più che una proprietà
+ottenuta: il sottocampionamento ignora il teorema del campionamento, come si è
+visto parlando del pooling nel capitolo precedente, e per aliasing una CNN
+moderna resta sorprendentemente sensibile a uno spostamento di pochi pixel. Su
+ImageNet una ResNet-50 assegna la stessa classe a due copie della stessa
+immagine spostate a caso nell’$89{,}2\%$ dei casi, e nel resto cambia idea
+{cite}`zhang2019making`. Per dati: la *data augmentation* espone il modello alle
+trasformazioni che deve ignorare, ed è un modo di iniettare un'invarianza senza
+cablarla nell'architettura. Per addestramento: l'apprendimento
+auto-supervisionato costruisce il compito proprio a partire dalla scelta di
+quali trasformazioni debbano lasciare invariata la rappresentazione, e lì la
+scelta delle trasformazioni coincide con la definizione del problema.
 
 `````
 
@@ -208,9 +222,7 @@ definizione del problema.
 Avere i numeri è solo l'inizio. La domanda vera è: *che cosa chiediamo alla
 rete di produrre?* Da qui nascono i quattro compiti fondamentali, che si
 possono leggere come una scala di ambizione crescente
-({numref}`fig-compiti-visione`). Da qui in avanti la rete la chiameremo spesso
-anche modello, che è il nome generico di un programma che ha imparato dai
-dati.
+({numref}`fig-compiti-visione`).
 
 ```{figure} ../figures/compiti-visione.svg
 :name: fig-compiti-visione
@@ -260,11 +272,14 @@ Formalmente, i quattro compiti differiscono per la forma dell'output.
 
 - **Classificazione**: $\hat{y} = \arg\max_{k \in \{1,\dots,K\}} f_k(\mathbf{X})$, una
   sola etichetta su $K$ classi per l'intera immagine.
-- **Rilevamento**: l'output è un insieme di coppie
-  $\{(\hat{c}_i,\ \mathbf{b}_i)\}_{i=1}^{N}$, dove $\hat{c}_i$ è la classe e
-  $\mathbf{b}_i = (x, y, w, h)$ il *bounding box*. La qualità si misura con la
+- **Rilevamento**: l'output è un insieme di terne
+  $\{(\hat{c}_i,\ s_i,\ \mathbf{b}_i)\}_{i=1}^{N}$, con $N$ che cambia da
+  un'immagine all'altra, dove $\hat{c}_i$ è la classe, $s_i \in [0,1]$ la
+  confidenza e $\mathbf{b}_i = (x, y, w, h)$ il *bounding box* (centro,
+  larghezza e altezza). La qualità di un riquadro si misura con la
   *Intersection over Union* $\mathrm{IoU} = \frac{|A \cap B|}{|A \cup B|}$ tra
-  box predetto e reale, aggregata nella *mean Average Precision* (mAP).
+  box predetto e reale; quella del rilevatore con la *mean Average Precision*
+  (mAP), che scorre le predizioni per $s_i$ decrescente.
 - **Segmentazione semantica**: una predizione per ogni pixel,
   $\hat{y}_{i,j} \in \{1,\dots,K\}$. Due istanze della stessa classe condividono
   l'etichetta.
@@ -276,15 +291,15 @@ questione di secondi, tracciare una maschera pixel-perfetta richiede minuti.
 
 `````
 
-Questi quattro compiti hanno una cosa in comune: rispondono tutti alla domanda
-«che cosa», e lo fanno dentro il piano dell'immagine. Il riquadro di un
-rilevatore dice dove sta un oggetto in pixel, non a quanti metri. Esiste però
-una seconda famiglia di domande, che il capitolo affronta più avanti e che
-richiede strumenti diversi: dove sono le cose nello spazio, quanto sono
-lontane, come si muovono, che forma hanno. Lì la risposta non si trova
-guardando meglio una fotografia, perché la profondità è andata perduta nel
-momento dello scatto, e va ricostruita da
-più viste o indovinata con un modello di come è fatto il mondo.
+Questi quattro compiti hanno una cosa in comune: rispondono a domande sul
+contenuto dell'immagine, e anche quando dicono dove sta qualcosa lo dicono
+dentro il piano della foto: il riquadro di un rilevatore dà la posizione in
+pixel, non in metri. Esiste però una seconda famiglia di domande, che il
+capitolo affronta più avanti e che richiede strumenti diversi: dove sono le cose
+nello spazio, quanto sono lontane, come si muovono, che forma hanno. Lì la
+risposta non si trova guardando meglio una fotografia, perché la profondità è
+andata perduta nel momento dello scatto, e va ricostruita da più viste o
+indovinata con un modello di come è fatto il mondo.
 
 ## Dai filtri disegnati a mano alle feature imparate
 
@@ -293,15 +308,16 @@ scrivi tu la regola per trovarlo.
 
 `````{tab} Elementare
 
-L'idea era che un esperto progettasse a mano dei "rilevatori": una formula per
-scovare i bordi (dove il colore cambia bruscamente è probabile ci sia un
-contorno), un'altra per le forme, un'altra per gli angoli. Quei rilevatori non
-decidevano niente da soli: passavano la foto al setaccio e ne tiravano fuori
-una scheda di misure (tanti bordi verticali qui, tanti obliqui là), e a dire
-"gatto" oppure "non gatto" ci pensava un secondo programma, addestrato su
-esempi già etichettati. Imparare dagli esempi si faceva già, insomma; si
-imparava però soltanto l'ultimo passo, e il setaccio restava quello che
-l'esperto aveva costruito a mano.
+È la storia che il {doc}`capitolo sul deep learning </DeepLearning/overview>`
+racconta in generale, e sulle immagini è andata così. Un esperto progettava a
+mano dei "rilevatori": una formula per scovare i bordi (dove il colore cambia
+bruscamente è probabile ci sia un contorno), un'altra per le forme, un'altra per
+gli angoli. Quei rilevatori non decidevano niente da soli: passavano la foto al
+setaccio e ne tiravano fuori una scheda di misure (tanti bordi verticali qui,
+tanti obliqui là), e a dire "gatto" oppure "non gatto" ci pensava un secondo
+programma, addestrato su esempi già etichettati. Imparare dagli esempi si faceva
+già, insomma; si imparava però soltanto l'ultimo passo, e il setaccio restava
+quello che l'esperto aveva costruito a mano.
 
 Funzionava, ma solo fino a un certo punto: ogni nuovo problema richiedeva nuove
 regole cucite a mano, e la realtà (luci, ombre, angolazioni) è troppo varia per
@@ -328,60 +344,61 @@ una SVM).
 
 La rottura arriva con le reti convoluzionali. LeCun e colleghi mostrano già nel
 1998, con LeNet-5, che una CNN può imparare da sola i filtri leggendo cifre
-scritte a mano. Ma è il 2012 lo spartiacque: AlexNet (Krizhevsky, Sutskever,
-Hinton) vince la competizione ImageNet con un *top-5 error* del $15{,}3\%$
-contro il $26{,}2\%$ del secondo classificato. Da allora le feature non si
+scritte a mano. Ma è il 2012 lo spartiacque, con la vittoria di AlexNet
+(Krizhevsky, Sutskever, Hinton) a ImageNet {cite}`krizhevsky2012imagenet`, che
+le {doc}`architetture storiche </DeepLearning/architetture-storiche>`
+raccontano cifra per cifra. Da allora, per il riconoscimento, le feature non si
 disegnano più: si *imparano*, strato dopo strato, direttamente dai pixel.
+Quelle disegnate a mano sopravvivono nella geometria, dove SIFT resta il punto
+di partenza di molte pipeline di ricostruzione tridimensionale.
 
 `````
 
 ## Il carburante: i grandi dataset
 
 Le reti convoluzionali non avrebbero spiccato il volo senza qualcosa su cui
-volare. Il progetto ImageNet, guidato da Fei-Fei Li, viene presentato nel
-2009 con 3,2 milioni di immagini etichettate ed è poi cresciuto fino a oltre
-quattordici milioni; la sua sfida annuale (ILSVRC, *ImageNet Large Scale Visual
+volare. Il progetto ImageNet, guidato da Fei-Fei Li, viene presentato nel 2009
+con 3,2 milioni di immagini etichettate ed è poi cresciuto fino a oltre
+quattordici milioni; la sua gara annuale (la *ImageNet Large Scale Visual
 Recognition Challenge*) usa un sottoinsieme di mille categorie ed è la palestra
-su cui, nel 2012, una rete convoluzionale chiamata AlexNet cambia la storia.
-Poco dopo arriva **COCO**
-(*Common Objects in Context*, 2014), con centinaia di migliaia di immagini
-annotate non solo con l'etichetta, ma con i riquadri e le maschere (le sagome
-pixel per pixel di poco fa) di circa ottanta categorie di oggetti comuni: il
-banco di prova naturale per rilevamento e segmentazione. La lezione è netta e
-vale per tutto il deep learning: buoni dati, in grande quantità, contano quanto
-la buona architettura.
+su cui, nel 2012, AlexNet ottiene il risultato che apre la strada alle reti
+convoluzionali profonde. Poco dopo arriva **COCO** (*Common Objects in Context*,
+2014), con centinaia di migliaia di immagini annotate non solo con l'etichetta,
+ma con i riquadri e le maschere (le sagome pixel per pixel di poco fa) di circa
+ottanta categorie di oggetti comuni: il banco di prova naturale per rilevamento
+e segmentazione. La lezione vale per tutto il deep learning: un'architettura
+rende quanto le permettono i dati con cui la si addestra.
 
 ## Dalla classificazione alla geometria
 
-Il mattone fondamentale, la convoluzione, e le reti convoluzionali che
-ne sono fatte le abbiamo costruite nel capitolo precedente, insieme alle
-architetture che hanno fatto scuola: qui le diamo per acquisite e le mettiamo
-al lavoro. Si parte da dove serve davvero, cioè dai dati. Prima riusare una
-rete che qualcun altro ha già addestrato su milioni di immagini (il *transfer
+Il mattone fondamentale, la convoluzione, e le reti convoluzionali che ne sono
+fatte le abbiamo costruite nella {doc}`sezione sulle reti convoluzionali
+</DeepLearning/reti-convoluzionali>` del capitolo precedente, insieme alle
+architetture che hanno fatto scuola: qui le diamo per acquisite e le mettiamo al
+lavoro. Si parte da dove serve davvero, cioè dai dati. Prima riusare una rete
+che qualcun altro ha già addestrato su milioni di immagini (il *transfer
 learning*), poi moltiplicare le foto che non abbiamo deformando quelle che
-abbiamo (la *data augmentation*), poi farne a meno del tutto, imparando da
-immagini che nessuno ha mai etichettato: il trucco, lì, è inventare un gioco
-di cui conosciamo già la risposta giusta, perché a costruirla siamo stati noi.
-Poi salgono le pretese sulla risposta,
-dal riquadro attorno all'oggetto alla sua sagoma esatta: rilevamento e
-segmentazione. L'obiettivo, oltre a capire come funzionano queste tecniche,
-è metterle al lavoro con PyTorch sulle nostre immagini.
+abbiamo (la *data augmentation*), poi fare a meno delle etichette, imparando da
+immagini che nessuno ha mai etichettato: la risposta giusta, allora, la si
+ricava dalle immagini stesse, inventando un compito la cui soluzione è già nei
+dati (l'apprendimento *auto-supervisionato*). Poi salgono le pretese sulla
+risposta, dal riquadro attorno all'oggetto alla sua sagoma esatta: rilevamento e
+segmentazione.
 
-Le sezioni successive cambiano domanda e passano dal «che cosa» al «dove»: la
-geometria che lega una fotografia alla scena da cui viene, e che permette
-di ricavare la profondità da due viste o dal movimento; e poi un modo nuovo di
-tenere in memoria una scena, in cui non si ricostruisce un oggetto solido ma
-si addestra una piccola rete a rispondere a domande del tipo «guardando da qui,
-che colore vedo?». Si chiamano campi di radianza: *radianza* è il nome
-tecnico della luce che parte da un punto in una certa direzione, e *campo* vuol
-dire che quel valore esiste in ogni punto dello spazio, come la temperatura
-dentro una stanza. Sono la parte della visione artificiale che le reti non
-hanno sostituito ma su cui hanno costruito, ed è anche la più antica: lo schema
-di come una fotocamera schiaccia il mondo su una foto, che è quello che
-useremo, lo dimostrò Brunelleschi nel Quattrocento dipingendo il Battistero di
-Firenze su una tavoletta e facendolo confrontare, attraverso un foro, con il
-Battistero vero. Chiude il capitolo il trasferimento di stile, che di una
-fotografia tiene il soggetto e ne cambia la pennellata.
+Le sezioni successive escono dal piano dell'immagine ed entrano nello spazio. La
+prima riguarda la geometria che lega una fotografia alla scena da cui viene, e
+che permette di ricavare la profondità da due viste o dal movimento. È la parte
+più antica della visione artificiale, perché il modello di fotocamera che
+useremo è la prospettiva dei pittori del Quattrocento, ed è anche quella che le
+reti non hanno sostituito ma su cui hanno costruito. La seconda è un modo nuovo
+di rappresentare una scena: invece di ricostruire un oggetto solido si addestra
+una funzione che a ogni punto dello spazio, guardato da ogni direzione, associa
+un colore e una densità, e la funzione può essere una piccola rete oppure una
+nuvola di milioni di granelli sfumati. Si chiamano campi di radianza, dal nome
+che la fisica dà alla luce che parte da un punto in una certa direzione.
+
+Chiude il capitolo il trasferimento di stile, che di una fotografia tiene il
+soggetto e ne cambia la pennellata.
 
 `````{tab} Elementare
 
@@ -395,18 +412,19 @@ fotografia tiene il soggetto e ne cambia la pennellata.
   semantica e di istanza) chiedono risposte via via più precise: una parola
   per tutta la foto, un riquadro attorno a ogni oggetto, un colore per ogni
   pixel secondo la categoria, fino a distinguere un gatto dall'altro.
-- La grande transizione: prima erano gli esperti a scrivere a mano le regole
-  per trovare bordi, angoli e forme; poi si è lasciato che fosse la rete a
-  costruirsi da sola i propri rilevatori, guardando milioni di esempi. Il
-  momento simbolo è la vittoria di AlexNet alla gara di ImageNet nel 2012.
-- Senza le grandi raccolte di immagini già etichettate (ImageNet, COCO)
-  niente di tutto questo sarebbe stato possibile: contano quanto una buona
-  architettura.
+- La grande transizione, nel riconoscere gli oggetti: prima erano gli
+  esperti a scrivere a mano le regole per trovare bordi, angoli e forme; poi
+  si è lasciato che fosse la rete a costruirsi da sola i propri rilevatori,
+  guardando milioni di esempi. Il momento simbolo è la vittoria di AlexNet
+  alla gara di ImageNet nel 2012.
+- Le grandi raccolte di immagini già etichettate (ImageNet, COCO) sono state
+  il carburante: senza esempi in quella quantità le reti profonde non
+  avrebbero avuto con che cosa imparare.
 - A quei compiti se ne aggiunge una famiglia diversa, che chiede dove sono
-  le cose e non solo che cosa sono. Lì la difficoltà è di natura opposta: la
-  distanza è stata cancellata dallo scatto, e si
-  recupera confrontando più immagini o affidandosi a ciò che il modello ha
-  imparato su come è fatto il mondo.
+  le cose nello spazio, e a quale distanza, e non solo che cosa sono. Lì la
+  difficoltà è di natura opposta: la distanza è stata cancellata dallo
+  scatto, e si recupera confrontando più immagini o affidandosi a ciò che il
+  modello ha imparato su come è fatto il mondo.
 ```
 
 `````
@@ -421,10 +439,11 @@ fotografia tiene il soggetto e ne cambia la pennellata.
 - I quattro compiti classici (classificazione, rilevamento, segmentazione
   semantica e di istanza) differiscono per la forma dell'output,
   dall'etichetta unica alla maschera per singolo oggetto.
-- La grande transizione è dalle feature disegnate a mano (Canny, SIFT, HOG)
-  alle feature imparate dalle CNN: la svolta è AlexNet su ImageNet (2012).
-- Senza i grandi dataset (ImageNet, COCO) niente di tutto questo sarebbe
-  stato possibile.
+- Nel riconoscimento la grande transizione è dalle feature disegnate a mano
+  (Canny, SIFT, HOG) a quelle imparate dalle CNN, con la svolta di AlexNet
+  su ImageNet (2012); nella geometria quelle disegnate a mano restano in uso.
+- Senza grandi dataset etichettati (ImageNet, COCO) le CNN profonde non
+  avrebbero avuto con che cosa addestrarsi.
 - Accanto ai quattro compiti c'è la visione geometrica, che stima posizioni
   e distanze invece di categorie. La proiezione prospettica non è invertibile
   (un pixel determina una direzione, non un punto), quindi la profondità si

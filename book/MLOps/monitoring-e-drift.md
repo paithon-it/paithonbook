@@ -14,9 +14,10 @@ posto in termini statistici.
 Il guaio dei modelli, rispetto a un impianto industriale, è che quando si
 guastano non fanno rumore. Una pompa che si rompe fischia, perde, si ferma; un
 modello che ha smesso di capire il mondo continua a rispondere con la stessa
-prontezza e la stessa aria sicura di sempre: solo che le risposte, poco alla
-volta, diventano sbagliate. Il monitoraggio è l'orecchio che sostituiamo al
-fischio che manca.
+prontezza di sempre, e nessun errore segnala che le risposte, poco alla volta,
+stanno diventando sbagliate. Il monitoraggio fa le veci del fischio che manca:
+decide quali grandezze misurare, a quale soglia allarmarsi e che cosa fare
+quando la soglia scatta.
 
 ## Che cosa si misura
 
@@ -121,35 +122,36 @@ mentre la risposta corretta è diventata un'altra.
 Qui ci interessa il gesto operativo: come ci si *accorge* che uno di questi è
 in corso, mentre accade.
 
-Lo strumento l'abbiamo già incontrato: il classificatore-detective. Si
-addestra un modello a distinguere i dati di ieri da quelli di oggi, e si
-guarda quanto ci riesce. Il numero con cui si misura quanto ci riesce è
-l’AUC, incontrata parlando di {doc}`metriche </MachineLearning/metriche>`, e
-qui va letta così: vale $1$ quando il detective indovina sempre da quale dei
-due periodi viene un dato, e vale $0{,}5$ quando sta tirando a indovinare,
-perché a caso, fra un dato di ieri e uno di oggi, quale sia quale lo si azzecca
-una volta su due.
+Lo strumento l'abbiamo già incontrato: un classificatore addestrato a
+distinguere i dati di ieri da quelli di oggi. Il suo nome è *test a due campioni
+con classificatore* (*classifier two-sample test*), e in «Quando i dati
+cambiano» lo abbiamo chiamato, più brevemente, il detective. Il numero con cui
+si misura quanto ci riesce è l’AUC, incontrata parlando di {doc}`metriche
+</MachineLearning/metriche>`, e qui va letta così: vale $1$ quando il detective
+indovina sempre da quale dei due periodi viene un dato, e vale $0{,}5$ quando
+sta tirando a indovinare, perché a caso, fra un dato di ieri e uno di oggi,
+quale sia quale lo si azzecca una volta su due.
 
 Un'AUC vicina a $0{,}5$ dice quindi che i due periodi sono indistinguibili *per
-lui*. È una rassicurazione, non una prova: uno scostamento piccolo e concentrato
-in poche colonne fra tante si confonde con le differenze che il caso produce
-comunque fra due settimane qualsiasi, e non gli sposta l'AUC, perso com'è in
-mezzo a decine di colonne che non sono cambiate. Uno scostamento altrettanto
-piccolo, ma che tocca molte colonne insieme, il detective lo trova, e lo trova
-mentre ciascuna colonna, presa da sola, si è mossa di pochissimo: sommare indizi
-piccoli è il mestiere per cui esiste. (Le colonne dei dati, nel gergo del
-mestiere, sono le *feature*, ed è il nome che portano anche nel codice.)
+lui*. È una rassicurazione, non una prova. Le colonne dei dati (nel gergo del
+mestiere le *feature*, ed è il nome che portano anche nel codice) possono
+essere decine, e se uno spostamento piccolo ne tocca una o due soltanto, il
+detective non lo distingue dalle differenze che il caso produce comunque fra
+due settimane qualsiasi: l'AUC non si muove. Se invece uno spostamento
+altrettanto piccolo tocca molte colonne insieme, il detective lo trova, anche
+quando ciascuna colonna, presa da sola, si è mossa di pochissimo: sommare
+indizi piccoli è il mestiere per cui esiste.
 
-Nel capitolo di Machine Learning il detective era una diagnosi fatta una volta
-sola. Per un impianto acceso va invece trasformato in una sorveglianza
-continua, e questo obbliga a decidere tre cose. Primo, che cosa si
-confronta con che cosa: si sceglie un periodo in cui il modello stava bene (è
-la *finestra di riferimento*, e resta ferma) e lo si paragona a quello appena
-trascorso, che invece scorre in avanti giorno dopo giorno (la *finestra
-corrente*). Secondo, quanto in alto mettere l'asticella: sopra quale valore
-dell'AUC far scattare l'allarme. Terzo, come capire dove, cioè quale
-colonna dei dati è cambiata, perché sapere soltanto che qualcosa è cambiato non
-dice a nessuno che cosa fare.
+In quella sezione il detective era una diagnosi fatta una volta sola. Per un
+impianto acceso va invece trasformato in una sorveglianza continua, e questo
+obbliga a decidere tre cose. Primo, che cosa si confronta con che cosa: si
+sceglie un periodo in cui il modello stava bene (è la *finestra di
+riferimento*, e resta ferma) e lo si paragona a quello appena trascorso, che
+invece scorre in avanti giorno dopo giorno (la *finestra corrente*). Secondo,
+quanto in alto mettere l'asticella: sopra quale valore dell'AUC far scattare
+l'allarme. Terzo, come capire dove, cioè quale colonna dei dati è cambiata,
+perché sapere soltanto che qualcosa è cambiato non dice a nessuno che cosa
+fare.
 
 `````{tab} Elementare
 
@@ -178,10 +180,10 @@ decidere.
 
 `````{tab} Superiore
 
-In notazione, le tre famiglie sono il *covariate shift*
-($P(X)$ che cambia, con $P(y \mid X)$ invariata), il *label shift* ($P(y)$ che
-cambia, con $P(X \mid y)$ invariata) e il *concept shift* ($P(y \mid X)$ che
-cambia). Le tre decisioni operative sono:
+In notazione, le tre famiglie sono il *covariate shift* ($P(\mathbf{x})$ che
+cambia, con $P(y \mid \mathbf{x})$ invariata), il *label shift* ($P(y)$ che
+cambia, con $P(\mathbf{x} \mid y)$ invariata) e il *concept shift* ($P(y \mid
+\mathbf{x})$ che cambia). Le tre decisioni operative sono:
 
 - **Finestre temporali**. Si fissa una **finestra di riferimento** (un periodo
   in cui il modello era sano, spesso i dati di addestramento o un mese
@@ -192,11 +194,15 @@ cambia). Le tre decisioni operative sono:
 - **Soglia sull'indicatore**. L'AUC del detective va da circa $0{,}5$
   (finestre che quel classificatore non distingue) a $1$ (perfettamente
   separabili); per rumore campionario, senza alcuno shift, oscilla attorno a
-  $0{,}5$, anche sotto. Si sceglie quindi una soglia oltre la quale scatta
-  l'allarme, e una soglia come $0{,}65$ da quell'oscillazione è lontanissima:
-  non la si tara sui falsi allarmi, che a quella distanza non arrivano, ma
-  sull'errore opposto, cioè su quanto scostamento si è disposti a lasciar
-  passare senza accorgersene.
+  $0{,}5$, anche sotto. Per un punteggio fissato, la deviazione standard
+  dell'AUC sotto l'ipotesi nulla è quella della statistica di Mann–Whitney,
+  $\sqrt{(n_1+n_2+1)/(12\,n_1 n_2)}$, cioè $0{,}009$ per due finestre di
+  duemila record; per un classificatore addestrato e valutato in validazione
+  incrociata la dispersione è maggiore, e la distribuzione nulla si stima per
+  permutazione, rimescolando le etichette «ieri» e «oggi». Una soglia come
+  $0{,}65$ sta comunque molto oltre quell'oscillazione: non la si tara sui falsi
+  allarmi, che a quella distanza non arrivano, ma sull'errore opposto, cioè su
+  quanto scostamento si è disposti a lasciar passare senza accorgersene.
 - **Test per singola *feature***. Il detective è un test *multivariato*: dice
   *se* qualcosa è cambiato, non *cosa*. Per localizzare si affianca un test
   *univariato* colonna per colonna, tipicamente il test di
@@ -208,39 +214,43 @@ cambia). Le tre decisioni operative sono:
   $$
 
   dove $F_{\text{rif}}$ e $F_{\text{cur}}$ sono le CDF empiriche della *feature*
-  nella finestra di riferimento e in quella corrente. Un'alternativa diffusa,
-  basata sugli istogrammi, è il *Population Stability Index*. Sul versante
-  multivariato il detective ha un nome, *classifier two-sample test*
-  {cite}`lopezpaz2017revisiting`, e un concorrente senza addestramento, la
-  **maximum mean discrepancy** {cite}`gretton2012kernel`: con un nucleo $k$ (per
-  esempio gaussiano),
-  $\mathrm{MMD}^2 = \mathbb{E}[k(\mathbf{x},\mathbf{x}')] + \mathbb{E}[k(\mathbf{y},\mathbf{y}')] - 2\,\mathbb{E}[k(\mathbf{x},\mathbf{y})]$,
-  con $\mathbf{x},\mathbf{x}'$ dalla finestra di riferimento e
-  $\mathbf{y},\mathbf{y}'$ da quella corrente. Con un nucleo caratteristico vale
-  zero se e solo se le due distribuzioni coincidono; la stima costa $O(n^2)$
-  valutazioni del nucleo, la soglia si ottiene per permutazione, e la scelta
-  della larghezza del nucleo fa la parte che nel detective fa il classificatore.
+  nella finestra di riferimento e in quella corrente. Il test presuppone
+  osservazioni indipendenti dentro ciascuna finestra e una variabile continua:
+  con serie autocorrelate, come sono quasi sempre i dati di un servizio, il
+  $p$-value esce troppo piccolo, e con valori ripetuti (interi, colonne
+  discrete) il test diventa conservativo; l'ampiezza $D$ resta comunque
+  interpretabile. E un test univariato, per costruzione, non vede i cambi nella
+  dipendenza fra colonne. Un'alternativa diffusa, basata sugli istogrammi, è il
+  *Population Stability Index*. Sul versante multivariato il detective è il
+  *classifier two-sample test* di {cite}`lopezpaz2017revisiting`, e ha un
+  concorrente senza addestramento, la **maximum mean discrepancy**
+  {cite}`gretton2012kernel`: con un nucleo $k$ (per esempio gaussiano),
+  $\mathrm{MMD}^2 = \mathbb{E}[k(\mathbf{x},\mathbf{x}')] + \mathbb{E}[k(\mathbf{z},\mathbf{z}')] - 2\,\mathbb{E}[k(\mathbf{x},\mathbf{z})]$,
+  con $\mathbf{x},\mathbf{x}'$ estratti in modo indipendente dalla finestra di
+  riferimento e $\mathbf{z},\mathbf{z}'$ da quella corrente (vettori di feature,
+  non etichette). Con un nucleo caratteristico vale zero se e solo se le due
+  distribuzioni coincidono; la stima costa $O(n^2)$ valutazioni del nucleo, la
+  soglia si ottiene per permutazione, e la scelta della larghezza del nucleo fa
+  la parte che nel detective fa il classificatore. Il confronto sistematico di
+  queste procedure, riduzione di dimensione seguita da test univariati con
+  correzione o da un classificatore, è di Rabanser, Günnemann e Lipton
+  {cite}`rabanser2019failing`: nelle loro prove i test KS con correzione di
+  Bonferroni sulle uscite di un classificatore già addestrato sono i migliori, e
+  il classificatore che distingue le finestre è debole con un centinaio di
+  campioni o meno, e recupera quando i campioni crescono.
 
   Sul criterio di allarme il riflesso abituale è quello sbagliato. Alle taglie
   di una finestra di produzione (migliaia di record) il KS ha una potenza
-  enorme e rifiuta l'ipotesi nulla su
-  scostamenti che nessun modello sente: uno spostamento di due decimi di
-  deviazione standard, su $n = 2000$ per finestra, dà tipicamente
-  $p \sim 10^{-7}$, e il rifiuto arriva su ogni finestra simulata. Il problema
-  non è la molteplicità dei test ma la taglia del campione, e correggere per
-  Bonferroni non lo risolve: davanti a scostamenti così i $p$-value stanno
-  molti ordini di grandezza sotto qualunque soglia, corretta o no. Su
-  scostamenti appena più piccoli la correzione morde eccome, e fa rifiutare
-  meno spesso, che è perfino il verso in cui qui si vorrebbe andare; ma agisce
-  sull'asse sbagliato, perché protegge dai rifiuti *falsi*, mentre qui i
-  rifiuti sono veri e riguardano differenze che nessun modello sente.
-  L'allarme va quindi fondato
-  sull’**ampiezza** ($D$, o una
-  distanza normalizzata, o il PSI) con una soglia decisa sul significato
-  pratico, tenendo il $p$-value al più come filtro contro il rumore delle
-  finestre piccole. La correzione per test multipli serve contro la
-  molteplicità, non contro l'eccesso di potenza, che alle taglie di produzione
-  è il problema dominante.
+  enorme: uno spostamento di due decimi di deviazione standard, che nessun
+  modello sente, su $n = 2000$ per finestra dà tipicamente $p \sim 10^{-7}$, e
+  il rifiuto arriva su ogni finestra simulata. La correzione di Bonferroni non
+  risolve il problema, perché agisce sull'asse sbagliato: protegge dai rifiuti
+  *falsi* dovuti alla molteplicità dei test, mentre qui i rifiuti sono veri, e
+  davanti a scostamenti così i $p$-value stanno comunque molti ordini di
+  grandezza sotto qualunque soglia, corretta o no. L'allarme va quindi fondato
+  sull’**ampiezza** ($D$, o una distanza normalizzata, o il PSI) con una soglia
+  decisa sul significato pratico, tenendo il $p$-value al più come filtro
+  contro il rumore delle finestre piccole.
 
   Il **PSI** (*Population Stability Index*), lo standard di fatto nel mondo
   del credito, è una di quelle ampiezze. Si dividono i valori in fasce (di
@@ -252,9 +262,22 @@ cambia). Le tre decisioni operative sono:
   $$
 
   dove $r_i$ e $q_i$ sono le quote di riferimento e correnti nella fascia
-  $i$: una divergenza simmetrica fra le due ripartizioni, che la pratica
-  legge con soglie di mestiere (sotto $0{,}1$ quiete, oltre $0{,}25$ deriva
-  da guardare). Una fascia vuota da una parte manda il logaritmo
+  $i$. È la divergenza di Kullback–Leibler simmetrizzata fra le due
+  ripartizioni, $\mathrm{KL}(q\,\|\,r) + \mathrm{KL}(r\,\|\,q)$, e la pratica la
+  legge con soglie di mestiere (sotto $0{,}1$ quiete, oltre $0{,}25$ deriva da
+  guardare), che sono una regola empirica del credito e non il risultato di un
+  conto. Il PSI infatti dipende dalla taglia dei campioni. Con $B$ fasce fissate
+  e due finestre di $n_r$ e $n_c$ record estratte dalla stessa distribuzione,
+  $\mathrm{PSI}/(1/n_r + 1/n_c)$ si distribuisce approssimativamente come un
+  $\chi^2$ con $B-1$ gradi di libertà, quindi il PSI vale in media
+  $(B-1)(1/n_r + 1/n_c)$ anche quando non è cambiato niente
+  {cite}`yurdakul2020statistical`: con dieci fasce e duecento record per
+  finestra fa $0{,}09$, già a ridosso della soglia di quiete. Gli stessi autori
+  mostrano che con lo $0{,}1$ i falsi allarmi sono troppi finché le due finestre
+  non superano qualche centinaio di record ciascuna, e che la potenza delle due
+  soglie cala al crescere della taglia. La soglia va quindi fissata sulla taglia
+  delle finestre e sul numero di fasce, per esempio come quantile di quella
+  distribuzione, non copiata. Una fascia vuota da una parte manda il logaritmo
   all'infinito, quindi nelle implementazioni si fondono le fasce troppo magre
   oppure si aggiunge a ciascuna una quota minima prima di dividere. E copre
   anche il caso a cui la KS non si applica, le colonne categoriche, dove la
@@ -295,14 +318,17 @@ $0{,}12$, $0{,}20$, $0{,}29$, $0{,}40$.
 
 Due cose il disegno le mostra e il numero $D$, da solo, non direbbe. La prima è
 *dove* cade il segmento: non ai bordi, perché lì le due curve tornano comunque
-a coincidere, l'una partendo da zero e l'altra arrivando a uno, ma nel mezzo,
-esattamente a metà strada fra il centro di ieri e il centro di oggi. La seconda
+a coincidere, l'una partendo da zero e l'altra arrivando a uno, ma nel mezzo:
+quando una distribuzione simmetrica si sposta senza cambiare forma, come in
+questo disegno, esattamente a metà strada fra il centro di ieri e il centro di
+oggi (con una forma asimmetrica, o con una larghezza che cambia, il punto si
+sposta altrove). La seconda
 è che la soglia disegnata, quel $0{,}10$, è una soglia sull'ampiezza del
 segmento, decisa su quanto si è disposti a lasciar scivolare le cose prima di
 preoccuparsi.
 
-Sembra un dettaglio e non lo è, perché c'è un altro numero che il KS
-restituisce, e prenderlo per la soglia è l'errore più comune del mestiere.
+C'è infatti un altro numero che il KS restituisce, e prenderlo per la soglia è
+un errore facile da fare.
 
 `````{tab} Elementare
 
@@ -341,8 +367,11 @@ L'altro numero è il $p$-value, e l'eccesso di potenza si legge sui sei mesi
 della deriva in un caso solo. Il valore critico al cinque per cento, che per
 finestre di uguale taglia vale circa $1{,}36\sqrt{2/n}$, a
 $n = 2000$ scende a $0{,}043$: meno della metà della soglia di ampiezza
-disegnata, e già sotto il $D$ del mese 1, che vale $0{,}060$. Cioè il test
-rifiuta quando l'occhio non vede ancora niente.
+disegnata, e già sotto il $D$ del mese 1, che vale $0{,}060$. (Per due normali
+di uguale varianza sfalsate di $\Delta$ deviazioni standard il massimo cade a
+metà strada e vale $D = 2\Phi(\Delta/2) - 1$, con $\Phi$ la ripartizione della
+normale standard: $0{,}060$ per $\Delta = 0{,}15$.) Cioè il test rifiuta quando
+l'occhio non vede ancora niente.
 
 Il conto, su quel mese: due normali di uguale varianza sfalsate di $0{,}15$
 deviazioni standard, che è lo scostamento del mese 1, duemila ripetizioni, con
@@ -504,32 +533,33 @@ capita questo, la conclusione giusta non è «falso allarme» ma un cambiamento
 nelle dipendenze, da cercare con strumenti che le guardino
 (le importanze del detective stesso, le correlazioni a coppie).
 
-Una cautela finale, la stessa della sezione statistica ma più severa di come la
-si racconta di solito. Il detective è addestrato sui soli ingressi: quello che
-rileva è che è cambiato il tipo di richieste che arrivano, e nient'altro. Non
+Una cautela finale, la stessa di «Quando i dati cambiano» ma più severa di
+come la si racconta di solito. Il detective è addestrato sui soli ingressi:
+quello che rileva è che è cambiato il tipo di richieste che arrivano, e
+nient'altro. Non
 distingue un cambiamento innocuo da uno che rovina le predizioni; e non
 distingue nemmeno le tre famiglie fra loro. Anche un puro cambio di proporzioni
 fra le risposte giuste (il *label shift*) lo sposta, e la ragione è semplice: se
 le frodi passano da una su cento a una su dieci, in mezzo alle richieste in
 arrivo ce ne sono dieci volte tante che *assomigliano* a una frode. Il detective
 non vede le risposte, ma vede quelle richieste, e le nota. Di quanto le noti,
-però, è un'altra faccenda, e la risposta è: poco. Se la proporzione passa da una
-su cento a una su dieci, la parte di richieste in arrivo che è cambiata è nove
-su cento, e con uno scarto così l'indicatore globale non arriva a $0{,}55$
-nemmeno se frodi e richieste oneste fossero distinguibili a colpo d'occhio: su
-quei nove casi il detective indovina sempre, sugli altri novantuno tira a caso e
-ci prende una volta su due, e
+però, è un'altra faccenda, e la risposta è: poco. Con quel salto, la parte di
+richieste in arrivo che è cambiata è nove su cento, e con uno scarto così
+l'indicatore globale non arriva a $0{,}55$ nemmeno se frodi e richieste oneste
+fossero distinguibili a colpo d'occhio: su quei nove casi il detective indovina
+sempre, sugli altri novantuno tira a caso e ci prende una volta su due, e
 $0{,}09 \times 1 + 0{,}91 \times 0{,}5 \approx 0{,}545$. Resta sotto qualunque
 soglia che qualcuno metterebbe davvero: il label shift lo sposta, e non basta a
 farlo suonare. Del concept shift puro, poi, non vede niente: lì gli ingressi
 restano identici ed è la regola giusta a essere cambiata sotto. Per separare i
 tre casi le etichette vere del terzo livello restano la prova. Per il label
-shift, però, bastano le predizioni: se $P(X\mid y)$ non cambia, la distribuzione
-delle classi predette in produzione è la matrice di confusione del modello
-(stimata su dati etichettati di validazione) applicata alle nuove prevalenze, e
-invertendola, se è invertibile, cioè se il modello distingue le classi, le si
-stima senza nessuna etichetta nuova
-{cite}`lipton2018detecting`, come in {doc}`Quando i dati cambiano
+shift, però, bastano le predizioni. Se le richieste di ciascuna classe restano
+fatte come prima (in formule, $P(\mathbf{x}\mid y)$ non cambia), le proporzioni
+delle classi *predette* in produzione dipendono da quelle *vere* attraverso la
+matrice di confusione del modello, stimata una volta su dati di validazione
+etichettati. Invertendo quella relazione, il che si può fare se il modello
+distingue le classi, le proporzioni vere si stimano senza nessuna etichetta
+nuova {cite}`lipton2018detecting`, come in {doc}`Quando i dati cambiano
 </MachineLearning/dati-che-cambiano>`. Il
 monitoraggio statistico è un allarme precoce, non un verdetto.
 
@@ -561,21 +591,24 @@ lontano. Per la stessa ragione, però, basta un solo valore assurdo, come un
 importo scritto con sei zeri di troppo, a gonfiarla.
 
 Poi arrivano le risposte vere, e si guarda la prestazione, fetta per fetta dei
-clienti. Nel credito le domande sono due. La prima: il modello mette ancora i
-cattivi pagatori in cima alla lista? È l'AUC, la probabilità che un cattivo
-pagatore preso a caso abbia un punteggio più alto di un buono preso a caso; e il
-mestiere la scrive riscalata, due volte l'AUC meno uno, così che un modello che
-tira a caso faccia zero e uno perfetto faccia uno. Quel numero si chiama Gini, e
-si vede anche su un disegno: si mettono in fila i clienti dal punteggio più alto
-al più basso, e si segna quanti cattivi pagatori si sono già presi dopo il primo
-dieci per cento della fila, dopo il primo venti, e così via. È la curva CAP. Un
-modello perfetto li prende tutti in testa, uno che tira a caso li prende in
-proporzione; il Gini è quanta area la curva guadagna sul caso, divisa per quella
-che guadagnerebbe il modello perfetto. La seconda: quanto sono separati i
-punteggi dei buoni da quelli dei cattivi? È lo stesso KS di prima, messo fra due
-gruppi di clienti invece che fra ieri e oggi, e guarda il punto della lista in
-cui i due gruppi sono più separati, mentre l'AUC e il Gini guardano la lista
-intera.
+clienti. Nel credito le domande sono due.
+
+La prima: il modello mette ancora i cattivi pagatori in cima alla lista? Si
+pescano a caso un cattivo pagatore e un buono, e si guarda chi dei due ha il
+punteggio più alto: la frequenza con cui vince il cattivo è l'AUC. Il mestiere
+la scrive riscalata, due volte l'AUC meno uno, così che un modello che tira a
+caso faccia zero e uno perfetto faccia uno, e quel numero si chiama Gini. Lo si
+vede anche su un disegno, la curva CAP: si mettono in fila i clienti dal
+punteggio più alto al più basso, e si segna quanti cattivi pagatori si sono già
+presi dopo il primo dieci per cento della fila, dopo il primo venti, e così
+via. Un modello perfetto li prende tutti in testa, uno che tira a caso li prende
+in proporzione, e il Gini è quanta area la curva guadagna sul caso, divisa per
+quella che guadagnerebbe il modello perfetto.
+
+La seconda: quanto sono separati i punteggi dei buoni da quelli dei cattivi? È
+lo stesso KS di prima, messo fra due gruppi di clienti invece che fra ieri e
+oggi. Guarda il solo punto della lista in cui i due gruppi sono più separati,
+mentre l'AUC e il Gini guardano la lista intera.
 
 Quel Gini non ha niente a che fare con il Gini degli alberi di decisione, che
 misura quanto è mescolato un gruppo. Hanno in comune il nome, e l'uomo: Corrado
@@ -705,54 +738,54 @@ superato il livello che considera normale, ne toglie un piccolo margine di
 tolleranza e annota il risultato su un registro che tiene il totale. Se il
 normale è 10, stasera l'errore è 11 e il margine è un quarto, annota 0,75; se
 domani l'errore è 9,5, annota 9,5 meno 10 meno un quarto, cioè meno 0,75, e il
-totale torna a zero. Una sera buona dà un numero negativo, una cattiva un
-numero positivo, con una sola regola in più: il registro non scende mai sotto
+totale torna a zero. Il registro ha una sola regola in più: non scende mai sotto
 zero, così un mese tranquillo non mette da parte un credito da spendere quando
 le cose peggiorano. Quando il totale supera una soglia, suona l'allarme
-({numref}`fig-somma-che-si-accumula`). E quando il mondo è cambiato davvero, il
-registro dice anche da quando: dalla sera dopo l'ultima volta in cui stava a
-zero, perché da lì non ci è più tornato.
+({numref}`fig-somma-che-si-accumula`).
+
+Una serata storta isolata aggiunge qualcosa al totale, e le sere normali che
+seguono se lo riprendono, perché ognuna toglie il margine. Un peggioramento
+piccolo ma costante, che nessuna sera da sola lascerebbe vedere, aggiunge invece
+un poco ogni sera, e il totale sale finché suona. Allora il registro dà anche la
+sua ipotesi su quando il mondo è cambiato: la sera dopo l'ultima volta in cui
+stava a zero, perché da lì non ci è più tornato. È la sera più verosimile, non
+una data certa.
 
 Se la risposta giusta arriva dopo settimane, gli errori della sera non si
-possono contare, e il registro si tiene su una spia che si vede subito, per
-esempio la lunghezza media delle email arrivate: di quanto supera la normale,
-meno il margine.
+possono contare, e il gestore tiene il registro su una spia che si vede subito,
+per esempio la lunghezza media delle email arrivate: di quanto supera la
+normale, meno il margine.
 
-Il registro fa una cosa che un'occhiata al giorno non sa fare. Una serata storta
-isolata aggiunge qualcosa, e le sere normali che seguono la riassorbono, perché
-ognuna toglie il margine di tolleranza. Un peggioramento piccolo ma costante,
-che nessuna sera singola lascerebbe vedere, aggiunge invece un poco ogni sera, e
-il totale sale finché suona. Il margine va scelto sulla misura del peggioramento
-che interessa cogliere, e ne è la metà. Se si vuole accorgersi di un errore
-salito di mezzo punto (un punto, qui, è quanto oscillano di solito le sere
-normali, la loro larghezza tipica: la deviazione standard), il margine è un
-quarto di punto, a metà strada fra il normale e il peggiorato: in una sera
-normale il registro perde in media un quarto di punto, quindi resta vicino a
-zero, in una sera peggiorata ne guadagna in media un quarto, e sale. Un
-peggioramento più piccolo del margine, invece, in media non lo fa salire: il
-registro finisce per suonare come suona un falso allarme, per una serie di sere
-sfortunate, soltanto più spesso che quando tutto va bene.
+Il gestore conta in punti, e un punto è quanto oscillano di solito le sere
+normali (la loro larghezza tipica, la deviazione standard). Il margine è la metà
+del peggioramento che vuole cogliere: per un errore salito di mezzo punto mette
+un quarto, a metà strada fra il normale e il peggiorato. In una sera normale il
+registro perde allora in media un quarto, e resta vicino a zero; in una sera
+peggiorata ne guadagna in media un quarto, e sale. Se il modello peggiora meno
+del margine, il registro in media non sale, e suona solo dopo una fila di sere
+sfortunate, come per un falso allarme. E guarda in un verso solo: si accorge di
+un numero che sale, non di uno che scende. Se la spia può andare storta in tutti
+e due i versi, il gestore tiene un secondo registro, a specchio, e con la stessa
+soglia sui due mette in conto il doppio dei falsi allarmi.
 
-Dove mettere la soglia è una scelta che costa da tutte e due le parti. Bassa,
-l'allarme suona presto quando qualcosa cambia davvero, ma suona anche per una
-serie sfortunata di sere normali; alta, i falsi allarmi diventano rari ma il
-vero arriva tardi. E i due lati non si muovono alla stessa velocità: alzando la
-soglia i falsi allarmi calano molto in fretta, il ritardo cresce piano e con
-regolarità. In un esperimento al calcolatore, con mille registri tenuti su
-serate inventate, portare la soglia da quattro a otto punti moltiplica quasi per
-dieci il tempo fra un falso allarme e l'altro, e fa poco più che raddoppiare il
-ritardo. E un registro più svelto non esiste: è un teorema, e dice che a parità
-di falsi allarmi nessun'altra regola si accorge prima di un peggioramento di
-quella misura, nel caso peggiore.
+Poi c'è la soglia, che costa da tutte e due le parti. Bassa, l'allarme suona
+presto quando qualcosa cambia davvero, ma sveglia il gestore anche per una fila
+sfortunata di sere normali; alta, i falsi allarmi diventano rari ma il vero
+arriva tardi. I due lati non si muovono alla stessa velocità. Con mille registri
+tenuti al calcolatore su serate inventate, portare la soglia da quattro a otto
+punti moltiplica quasi per dieci il tempo fra un falso allarme e l'altro, e fa
+poco più che raddoppiare il ritardo. E un registro più svelto non esiste: c'è un
+teorema che dice che, a parità di falsi allarmi, nessun'altra regola si accorge
+prima di un peggioramento di quella misura, nel caso peggiore.
 
 Il registro si fida di tre cose che gli dice il gestore: il normale, letto su un
 periodo tranquillo; quanto oscillano di solito le sere; e che ogni sera faccia
 storia a sé. Sull'oscillazione basta poco per sbagliare di molto: se le sere
 oscillano un po' più di quanto il gestore crede, è come avere la soglia più
-bassa, e i falsi allarmi crescono in fretta. E in una settimana di festa, dove
-le sere storte arrivano tutte insieme per una ragione che passerà, il registro,
-che somma, suona: gli errori sono saliti davvero, ma il registro non sa
-distinguere una serie storta dalla serie di un mondo cambiato.
+bassa, e i falsi allarmi crescono in fretta. E in una settimana di festa le sere
+storte arrivano tutte insieme, per una ragione che passerà: gli errori sono
+saliti davvero, il registro somma e suona, perché non sa distinguere una fila
+storta dalla fila di un mondo cambiato.
 
 `````
 
@@ -797,7 +830,25 @@ la CUSUM lo raggiunge; Moustakides {cite}`moustakides1986optimal` ne ha provato
 l'ottimalità esatta, per ogni $\gamma$, secondo lo stesso criterio. Per la CUSUM
 il caso peggiore è il cambio che arriva con la somma a zero. Il ritardo cresce
 dunque come il logaritmo di $\mathrm{ARL}_0$: la soglia $h$ entra linearmente
-nel ritardo ed esponenzialmente in $\mathrm{ARL}_0$.
+nel ritardo ed esponenzialmente in $\mathrm{ARL}_0$. Il limite però è
+asintotico: con i valori del blocco che misura il prezzo della soglia
+($\gamma = 706$, $I = 0{,}125$) dà $\log\gamma/I \approx 52$ giorni, quasi il
+doppio dei $27{,}6$ misurati, perché a soglie così basse il fattore $1+o(1)$
+pesa ancora.
+
+Per scegliere $h$ senza simulare, nel caso gaussiano con $\sigma = 1$ c'è
+l'approssimazione di Siegmund {cite}`siegmund1985sequential`,
+
+$$
+\mathrm{ARL}_0 \approx \frac{e^{2kb} - 2kb - 1}{2k^2}, \qquad b = h + 1{,}166,
+$$
+
+che con $k = 0{,}25$ dà circa $77$ a $h = 4$ e $738$ a $h = 8$, contro i $72$ e
+i $706$ simulati. La regola scritta qui vede soltanto gli aumenti della media:
+per una statistica che può peggiorare in tutti e due i versi se ne tengono due,
+speculari, e i loro falsi allarmi si sommano,
+$1/\mathrm{ARL}_0 = 1/\mathrm{ARL}_0^{+} + 1/\mathrm{ARL}_0^{-}$, che a soglie
+uguali dimezza il tempo medio fra l'uno e l'altro.
 
 La stessa regola si scrive anche come la somma cumulata degli scarti,
 $m_t = \sum_{s \le t}(x_s - \mu_0 - k)$, meno il suo minimo storico,
@@ -841,9 +892,10 @@ arrivare alla soglia; dopo il cambio il peggioramento è piccolo giorno per
 giorno ma si accumula, e la somma supera la soglia qualche settimana più tardi.
 Dopo il cambio torna a zero un'ultima volta, perché il peggioramento è piccolo e
 ogni tanto l'errore resta basso: da lì non ci torna più, e quel giorno è la
-stima dell'inizio del cambio, qui qualche giorno dopo quello vero. È un flusso
-costruito con gli stessi parametri dell'esperimento sulla soglia, con la soglia
-$h$ a otto punti.
+stima dell'inizio del cambio, qui qualche giorno dopo quello vero. Il flusso è
+simulato: dopo il cambio l'errore sale di mezza deviazione standard, il margine
+è un quarto e la soglia $h$ vale otto, come nell'ultima riga della prova sul
+prezzo della soglia.
 ```
 
 Il blocco misura il prezzo della soglia su mille flussi simulati: quanto si
@@ -888,12 +940,12 @@ soglia h = 8: un falso allarme ogni  706 giorni in media; dopo il cambio suona i
 Da $h = 4$ a $h = 8$ i giorni fra un falso allarme e l'altro passano da $72$ a
 $706$, quasi dieci volte tanto, mentre il ritardo passa da $13{,}6$ a $27{,}6$
 giorni, poco più del doppio: i falsi allarmi si diradano in fretta, il ritardo
-cresce piano. È il verso del limite di Lorden, in cui il ritardo cresce come il
-logaritmo di $\mathrm{ARL}_0$, e il ritardo del blocco ne è proprio il caso
-peggiore, perché ogni flusso parte con la somma a zero. Il limite però vale per
-soglie molto alte: preso alla lettera con i numeri del blocco, $\log\gamma/I$
-supera il ritardo misurato, perché a queste soglie il fattore $1+o(1)$ pesa
-ancora. Quale soglia scegliere non lo dice la statistica, lo dice quanto costa
+cresce piano. È l'andamento che la teoria prevede, con il ritardo che cresce
+come il logaritmo del tempo medio fra due falsi allarmi, e il ritardo misurato
+qui ne è proprio il caso peggiore, perché ogni flusso parte con la somma a zero.
+La formula del limite, però, vale per soglie molto alte, e presa alla lettera
+con questi numeri dà un ritardo minimo più lungo di quello misurato. Quale
+soglia scegliere non lo dice la statistica, lo dice quanto costa
 un falso allarme (una persona svegliata di notte, un modello ritirato senza
 motivo) contro quanto costa una settimana in più di modello peggiorato.
 
@@ -909,9 +961,9 @@ cima.
 
 Alla base c'è l’allarme: automatico, a costo quasi nullo, tanto abbondante
 quanto lo consente una buona soglia. Sopra c'è l’indagine: un umano guarda
-*quale* *feature* è cambiata e prova a capire se è un artefatto (un sensore
-rotto, un bug nella *pipeline* dei dati; più spesso è questo che un vero
-mutamento del mondo), un covariate shift benigno o l'inizio di un concept
+*quale* *feature* è cambiata e prova a capire se è un falso segnale (un
+sensore rotto, un bug nella *pipeline* dei dati; più spesso è questo che un
+vero mutamento del mondo), un covariate shift benigno o l'inizio di un concept
 shift. Solo se l'indagine conferma un degrado reale si sale al **retraining**:
 riaddestrare su dati recenti. E in cima, riservato all'emergenza, il
 **rollback**, cioè la retromarcia: rimettere in servizio il modello di prima,
@@ -927,9 +979,11 @@ solo se il motore comincia a battere in testa (e cambiare l'olio non è
 bastato) lo *spegni e chiami il carro attrezzi* (il rollback al modello
 vecchio). Rispondere sempre col gesto più drastico è come chiamare il carro
 attrezzi ogni volta che si accende una spia: costoso, e spesso inutile. In
-un'officina che lavora bene i quattro gesti non si fanno tante volte quante:
-le spie sono tante, i controlli meno, i cambi d'olio pochi e il carro attrezzi
-quasi mai. È quel restringersi a dare alla scala la forma di una piramide.
+un'officina che lavora bene i quattro gesti non capitano con la stessa
+frequenza: le spie sono tante, i controlli meno, i cambi d'olio pochi e il
+carro attrezzi quasi mai. Messi in fila, dal più frequente in basso al più raro
+in cima, fanno una piramide: larga alla base, dove stanno le spie, e stretta in
+punta, dove sta il carro attrezzi.
 
 C'è poi una scelta di fondo su *quando* rimettere mano al modello. Un'officina
 può fare due cose: il tagliando a scadenza fissa (ogni diecimila chilometri,
@@ -966,24 +1020,24 @@ Sul *quando* riaddestrare, due strategie {cite}`shankar2022operationalizing`:
   qualità degli allarmi.
 
 Il punto delicato è l’automazione del retraining, che è il sogno di ogni
-*pipeline* MLOps ma nasconde una trappola già incontrata: il feedback
-loop. Se le predizioni del modello concorrono a generare i dati futuri (un
-sistema di credito che nega prestiti non vedrà mai come sarebbero andati quei
-clienti, un sistema di raccomandazione raccoglie clic solo su ciò che ha
-deciso di mostrare), riaddestrare *automaticamente* su quei dati non
-corregge il modello: ne amplifica i bias, cementandoli a ogni ciclo
-{cite}`huyen2022designing`. È la stessa dinamica che aveva ingannato Google
-Flu Trends, dove era anche il motore di ricerca, aggiornandosi, a cambiare i
-dati che il suo stesso modello leggeva {cite}`lazer2014parable`. Un
-*retraining loop* senza sorveglianza umana è un amplificatore puntato sul
-proprio ingresso: prima o poi fischia. Per questo anche le *pipeline* più
-automatizzate tengono un umano *nell'anello* alle soglie alte della piramide,
-e valutano ogni candidato al retraining su dati freschi e possibilmente non
-contaminati dalle scelte del modello in carica. Il caso limite, in cui il
-feedback loop non è un incidente ma la struttura stessa del problema, lo
-abbiamo già visto nel
-{doc}`capitolo sui sistemi di raccomandazione </SistemiRaccomandazione/overview>`:
-lì il modello
+*pipeline* MLOps ma nasconde una trappola già incontrata: il feedback loop. Se
+le predizioni del modello concorrono a generare i dati futuri (un sistema di
+credito che nega prestiti non vedrà mai come sarebbero andati quei clienti, un
+sistema di raccomandazione raccoglie clic solo su ciò che ha deciso di
+mostrare), riaddestrare *automaticamente* su quei dati non corregge il modello:
+ne amplifica i bias, cementandoli a ogni ciclo {cite}`huyen2022designing`. Un
+meccanismo affine, senza riaddestramento sui propri esiti, aveva ingannato
+Google Flu Trends: fra le cause dei suoi errori Lazer e colleghi mettono le
+modifiche che Google faceva al motore di ricerca (i suggerimenti di ricerca, le
+diagnosi proposte accanto ai sintomi), che cambiavano il processo stesso che
+generava i dati letti dal modello {cite}`lazer2014parable`. Un *retraining loop*
+senza sorveglianza umana è un amplificatore puntato sul proprio ingresso: prima
+o poi fischia. Per questo anche le *pipeline* più automatizzate tengono un umano
+*nell'anello* alle soglie alte della piramide, e valutano ogni candidato al
+retraining su dati freschi e possibilmente non contaminati dalle scelte del
+modello in carica. Il caso limite, in cui il feedback loop non è un incidente ma
+la struttura stessa del problema, lo abbiamo già visto nel {doc}`capitolo sui
+sistemi di raccomandazione </SistemiRaccomandazione/overview>`: lì il modello
 decide che cosa l'utente può vedere, e quindi che cosa potrà mai cliccare.
 
 `````
@@ -1016,7 +1070,10 @@ Il secondo: lo fai assaggiare a pochi tavoli. Lo metti nel piatto di due
 tavoli su cento, tieni d'occhio le loro facce, e se funziona allarghi a dieci, a
 cinquanta, a tutti; se storcono il naso, lo ritiri e nessun danno è fatto. È il
 *canary*, dal canarino che i minatori si portavano sottoterra: se il gas c'era,
-lo sentiva lui per primo.
+lo sentiva lui per primo. Che cosa voglia dire «se funziona» lo decidi prima di
+servirlo, non guardando le facce. E due tavoli su cento ti dicono se il piatto
+è immangiabile, non se è un po' meno buono del vecchio: per accorgerti di
+quello servirebbero moltissime serate.
 
 Il terzo: due metà della sala, stesso momento, piatto vecchio a una metà e
 nuovo all'altra, e a fine serata conti chi ha lasciato il piatto pulito. Chi va
@@ -1033,12 +1090,14 @@ quando quella domanda si può decidere soltanto servendolo davvero è l'unico ch
 può rispondere: il piatto in ombra nessun cliente lo assaggia, quindi di chi
 l'avrebbe finito non si sa niente. Dove invece il giudizio non ha bisogno del
 cliente (lo chef assaggia in cucina e dice se è cotto al punto giusto), l'ombra
-risponde anche a questa, e con meno serate. Vecchio e nuovo sono preparati per
-tutte le stesse comande, quindi ogni comanda giudica tutti e due i piatti invece
-di uno solo; e si confrontano comanda per comanda, contando soltanto quelle in
-cui uno dei due è venuto bene e l'altro no: che una comanda fosse facile o
-difficile non pesa più, perché i due piatti l'hanno avuta uguale. Di solito si
-fanno tutti e tre in fila, in quest'ordine.
+risponde anche a questa, e con meno serate. In ombra, infatti, vecchio e nuovo
+si preparano per le stesse comande, quindi ogni comanda dà un giudizio su tutti
+e due i piatti invece che su uno solo. E si confrontano comanda per comanda,
+contando soltanto quelle in cui uno dei due è venuto bene e l'altro no. Una
+comanda difficile, che fa sbagliare tutti e due, non conta né per l'uno né per
+l'altro; e nemmeno una facile, che riesce a tutti e due. Restano le comande in
+cui i due piatti si sono davvero distinti, e su quelle si decide. Di solito i
+tre modi si usano tutti, in fila, in quest'ordine.
 
 `````
 
@@ -1051,7 +1110,9 @@ Le tre tecniche, in ordine crescente di esposizione {cite}`huyen2022designing`:
   mai servite all'utente; si registrano e si confrontano offline con quelle
   del modello in carica. Rischio per l'utente nullo; costo: si paga il calcolo
   doppio e non si misurano gli effetti sul comportamento reale (nessuno
-  *agisce* sulle predizioni ombra). Quando però la qualità si giudica senza
+  *agisce* sulle predizioni ombra); e il modello ombra non deve scrivere
+  niente, perché una risposta che cambia lo stato (un ordine, una mail) non si
+  può eseguire due volte. Quando però la qualità si giudica senza
   servire la risposta (un'etichetta che arriva dopo, un controllo offline),
   l'ombra dà un confronto appaiato: i due modelli rispondono alle stesse
   richieste, la variabilità fra una richiesta e l'altra si elide, e si decide
@@ -1075,9 +1136,13 @@ Le tre tecniche, in ordine crescente di esposizione {cite}`huyen2022designing`:
   e il vantaggio cresce ancora.
 - **Canary release**: il modello nuovo serve davvero, ma solo una piccola
   quota del traffico (l'1%, il 5%). Si sorvegliano le metriche sulla quota
-  canary e, se reggono, si aumenta gradualmente fino al
-  100%; al primo segnale cattivo si torna indietro (*rollback*) avendo esposto
-  pochi utenti.
+  canary e, se reggono, si aumenta gradualmente fino al 100%; al primo segnale
+  cattivo si torna indietro (*rollback*) avendo esposto pochi utenti. «Se
+  reggono» va scritto prima, come regola: per esempio errori e $p_{99}$ entro
+  il 10% del modello in carica per un'ora, a ogni passo di quota.
+  Un'alternativa al canary è il rilascio *blue/green*, che tiene due ambienti
+  completi e sposta tutto il traffico in un colpo solo, con un ritorno
+  istantaneo al vecchio, al prezzo di una capacità doppia.
 - **A/B test**: due gruppi di utenti, assegnati a caso, ricevono
   contemporaneamente il modello A (vecchio) e il B (nuovo); si confronta una
   metrica di business su un orizzonte definito e si decide con un test
@@ -1100,6 +1165,13 @@ Le tre tecniche, in ordine crescente di esposizione {cite}`huyen2022designing`:
   È lo strumento per rispondere a *«il nuovo è davvero meglio?»*,
   mentre shadow e canary rispondono a *«il nuovo è sicuro da servire?»*.
 
+La stessa formula dice perché il canary non basta a giudicare la qualità. Per
+vedere un tasso d'errore che raddoppia dal 2% al 4%, con $\alpha = 0{,}05$ e
+potenza $0{,}8$, servono circa $1\,100$ richieste nel gruppo canary, che con
+una quota dell'1% sono più di centomila richieste in tutto: alle quote a cui
+lavora, il canary vede i guasti grossolani (errori, latenza, crash) e non una
+piccola regressione di qualità, che resta compito dell'A/B.
+
 Le tre non sono alternative ma un percorso: shadow per verificare che non si
 rompa nulla, canary per limitare l'esposizione, A/B per decidere con rigore se
 promuoverlo. Dietro tutte c'è il prerequisito che il modello sia versionato,
@@ -1109,19 +1181,19 @@ così che il *rollback* al precedente sia sempre un'operazione di un istante.
 
 Con questo l'anello si chiude e ricomincia. Il monitoraggio è l'occhio che,
 accorgendosi del drift, fa ripartire il ciclo (indagine, retraining, rilascio
-graduale) e riporta all'inizio. Un
-modello in produzione, l'abbiamo detto, non è un risultato da archiviare ma un
-processo da tenere in vita {cite}`shankar2022operationalizing`, e il
-monitoraggio è il turno di guardia che quel processo richiede, ogni giorno,
-finché il modello serve.
+graduale) e riporta all'inizio. Un modello in produzione, l'abbiamo detto in
+apertura del capitolo, è un processo da tenere in vita; le interviste di
+Shankar e colleghi descrivono infatti il lavoro come un anello continuo di
+raccolta dei dati, sperimentazione, valutazione e sorveglianza
+{cite}`shankar2022operationalizing`, e il monitoraggio è il turno di guardia
+che quel processo richiede, ogni giorno, finché il modello serve.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
 - Un modello che si guasta non fa rumore: continua a rispondere con la
-  stessa prontezza e la stessa aria sicura, solo che le risposte, poco alla
-  volta, diventano sbagliate. Il monitoraggio è l'orecchio che sostituiamo al
-  fischio che manca.
+  stessa prontezza, e nessun errore segnala che le risposte, poco alla volta,
+  diventano sbagliate. Il monitoraggio fa le veci del fischio che manca.
 - Si guarda un cruscotto a tre quadranti: il servizio è vivo e risponde in
   fretta? che tipo di richieste stanno arrivando, e che risposte sta dando? e
   infine, la più importante e la più lenta, aveva ragione? L'ultima si scopre
@@ -1143,12 +1215,13 @@ finché il modello serve.
   risposte vere, nel credito si guarda il Gini, cioè due volte l'AUC meno uno:
   stesso nome e stesso autore dell'indice degli alberi, ma un altro mestiere.
 - Per sapere *quando* qualcosa è cambiato si tiene un registro: ogni sera si
-  aggiunge di quanto l'errore supera il normale, meno un margine pari a metà
-  del peggioramento da cogliere, e il totale non scende mai sotto zero. Una
-  sera storta si riassorbe, un peggioramento piccolo e costante si accumula
-  finché suona, e la sera dopo l'ultimo zero dice da quando; alzare la soglia
-  rende i falsi allarmi molto più rari e il ritardo solo un po' più lungo,
-  finché le sere normali sono quelle che si crede e ognuna fa storia a sé.
+  aggiunge di quanto l'errore supera il normale, meno un margine pari a metà del
+  peggioramento da cogliere, e il totale non scende mai sotto zero. Una sera
+  storta si riassorbe, un peggioramento piccolo e costante si accumula finché
+  suona, e la sera dopo l'ultimo zero è la stima più verosimile di da quando;
+  alzare la soglia rende i falsi allarmi molto più rari e il ritardo solo un po'
+  più lungo, finché le sere normali sono quelle che si crede e ognuna fa storia
+  a sé. Il registro guarda in un verso solo: per l'altro se ne tiene un secondo.
 - Quando suona, si risponde per gradi, come con la spia dell'olio: prima si
   guarda, poi si controlla, poi semmai si riaddestra, e solo in emergenza si
   torna al modello vecchio. Rispondere sempre col gesto più drastico è come
@@ -1157,7 +1230,8 @@ finché il modello serve.
   non lo corregge: ne amplifica gli errori, a ogni giro. Serve una persona
   nell'anello e dati freschi.
 - Un modello nuovo non si accende di colpo per tutti: prima in ombra, poi a
-  pochi tavoli, poi metà sala contro metà sala.
+  pochi tavoli (che vedono un piatto immangiabile, non uno un po' meno buono),
+  poi metà sala contro metà sala, tirata a sorte.
 ```
 `````
 
@@ -1178,11 +1252,14 @@ finché il modello serve.
   *feature* per localizzare il drift: Kolmogorov–Smirnov sulle colonne
   numeriche, e sulle categoriche, a cui non si applica, il PSI o un chi
   quadro. Essendo addestrato
-  sui soli ingressi, rileva un cambiamento della marginale $P(X)$: il
+  sui soli ingressi, rileva un cambiamento della marginale $P(\mathbf{x})$: il
   covariate shift lo fa suonare, il label shift lo sposta appena e quasi mai
   abbastanza, e del *concept shift* puro non vede niente.
 - L'allarme si fonda sull’ampiezza dello scostamento, non sul $p$-value: a
-  taglie di produzione il KS rifiuta su differenze che nessun modello sente. E
+  taglie di produzione il KS rifiuta su differenze che nessun modello sente.
+  Ma anche le ampiezze dipendono dalla taglia: il PSI, senza nessuna deriva,
+  vale in media $(B-1)(1/n_r + 1/n_c)$, e le sue soglie di mestiere (0,1 e
+  0,25) vanno ritarate sulle finestre {cite}`yurdakul2020statistical`. E
   il test per colonna è necessario ma non sufficiente, per due ragioni: uno
   shift che vive nella struttura congiunta lascia tutte le marginali intatte, e
   uno shift diffuso le muove tutte di un'inezia, ciascuna sotto la propria
@@ -1197,7 +1274,8 @@ finché il modello serve.
   esponenziale in $h$, con il ritardo, lineare in $h$, ed è ottima nel caso
   peggiore (Lorden, Moustakides) finché $\mu_0$, $\sigma$ e $\delta$ sono
   giusti e le osservazioni indipendenti. L'ultimo zero prima dell'allarme
-  stima l'istante del cambio.
+  stima l'istante del cambio; la regola vede un verso solo, e per l'altro se ne
+  tiene una seconda, speculare.
 - La risposta è una piramide proporzionata: allarme → indagine → retraining →
   rollback. Retraining periodico (a cadenza fissa) o innescato (a
   soglia); i sistemi reali fanno entrambi.
@@ -1205,8 +1283,10 @@ finché il modello serve.
   bias del feedback loop invece di correggerli: serve un umano nell'anello e
   dati freschi non contaminati {cite}`huyen2022designing`.
 - Un modello nuovo si introduce senza rompere: shadow (risponde in
-  parallelo, non serve), canary (piccola quota di traffico) e A/B test
-  (confronto statistico), tutti poggiati sul modello versionato per un
-  rollback immediato.
+  parallelo, non serve), canary (piccola quota di traffico, con regole di
+  promozione scritte prima; vede i guasti grossolani, non una piccola
+  regressione di qualità) e A/B test (confronto statistico con la taglia
+  fissata prima), tutti poggiati sul modello versionato per un rollback
+  immediato.
 ```
 `````

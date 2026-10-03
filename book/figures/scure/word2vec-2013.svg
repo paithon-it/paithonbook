@@ -5,7 +5,7 @@
   di book/_static/brand/tokens.css.
   fonte: ../word2vec-2013.svg
 -->
-<svg viewBox="0 0 680 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramma di aritmetica vettoriale: i vettori di uomo, re, donna, regina formano un parallelogramma, e re meno uomo più donna cade su regina">
+<svg viewBox="0 0 680 400" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramma di aritmetica vettoriale: i vettori di uomo, re, donna, regina formano un parallelogramma, e re meno uomo più donna cade vicino a regina, in un disegno idealizzato">
   <rect x="0" y="0" width="680" height="400" fill="#0E0C0A"/>
   <text x="340" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#F4ECDD" font-weight="bold">re − uomo + donna ≈ regina</text>
 

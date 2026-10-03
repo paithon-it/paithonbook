@@ -1,8 +1,8 @@
 # Esplorazione e ricompensa: curiosità, ricompense rade, reward hacking
 
-DeepMind mise alla prova il DQN su 49 giochi Atari, nel 2015, e su decine di
-essi l'agente resse il confronto con un collaudatore umano professionista. Su
-uno solo collezionò un punteggio desolante: zero {cite}`mnih2015human`.
+Fra i 49 giochi Atari del confronto con il collaudatore umano, nel 2015, ce
+n'era uno su cui il DQN collezionò un punteggio desolante: zero
+{cite}`mnih2015human`.
 
 Il gioco è *Montezuma's Revenge*, un platform del 1984. Un esploratore in un
 tempio azteco deve scendere una scala, saltare una fune, scansare un teschio
@@ -11,14 +11,13 @@ di mosse esatte, in sequenza, per un solo segnale di «bene». Un agente che
 sceglie mosse a caso non arriverà mai in fondo a quella catena: cadrà, morirà, e
 non vedrà mai una ricompensa da cui imparare.
 
-Notare che cosa *non* è andato storto. Il DQN quello schermo lo vedeva
-benissimo, e i suoi conti li faceva come sugli altri quarantotto giochi. Il muro
-è un altro: come si va a cercare qualcosa in un mondo dove le ricompense sono
-rade, o come si dice di solito **sparse**,
-cioè capitano una volta ogni tanto e in mezzo non c'è niente. Si chiama
-esplorazione.
+Che cosa *non* è andato storto, prima di tutto: il DQN quello schermo lo vedeva
+benissimo, e i suoi conti li faceva come sugli altri quarantotto giochi. Il
+problema è un altro: come si va a cercare qualcosa in un mondo dove le
+ricompense sono rade (in inglese *sparse*), cioè capitano una volta ogni tanto
+e in mezzo non c'è niente. Si chiama esplorazione.
 
-## Il problema delle ricompense sparse
+## Il problema delle ricompense rade
 
 Nella maggior parte dei giochi Atari qualcosa di buono o cattivo capita a ogni
 secondo, e l'agente ha un flusso costante di segnali da cui correggersi. Ma
@@ -30,15 +29,12 @@ inciamparci si fa a mente: se a ogni passo ci sono otto mosse possibili e una
 sola è quella giusta, azzeccarne dieci di fila vuol dire $8^{10}$, cioè una
 volta su un miliardo abbondante.
 
-Nel {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>` abbiamo introdotto il dilemma
-esplorazione–sfruttamento e la strategia detta
-$\varepsilon$-greedy: agire quasi sempre secondo la stima migliore, ma ogni
-tanto, con una piccola probabilità, scegliere a caso. Quella probabilità è la
-lettera greca $\varepsilon$ («epsilon»), che in matematica indica per tradizione
-una quantità piccola; e *greedy*, «goloso», è il resto del tempo, quando
-l'agente prende senza esitare la mossa che ha il voto più alto. Qui vediamo
-perché quella ricetta, in ambienti come Montezuma, non basta, e cosa si è
-inventato per andare oltre.
+Nel {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`
+abbiamo introdotto il dilemma esplorazione–sfruttamento e la strategia
+$\varepsilon$-greedy, «golosa»: con una piccola probabilità $\varepsilon$
+sceglie un'azione a caso, il resto del tempo prende senza esitare quella di
+valore più alto. Qui vediamo perché quella ricetta, in ambienti come Montezuma,
+non basta, e cosa si è inventato per andare oltre.
 
 ## Perché $\varepsilon$-greedy non basta
 
@@ -71,11 +67,14 @@ caso scala come $(\varepsilon/|\mathcal{A}|)^{\,n}$ e decade esponenzialmente
 in $n$. Questo è **dithering**: rumore attorno alla policy corrente, non
 ricerca strutturata.
 
-L'esplorazione *diretta* (o *deep exploration*) tiene invece conto di ciò che
-l'agente ha già visto e orienta deliberatamente il comportamento verso le
-regioni poco note dello spazio degli stati. Il modo più naturale per ottenerla
-è modificare non *come* si sceglie, ma *cosa* si ottiene: aggiungere alla
-ricompensa dell'ambiente un bonus che premia la novità.
+L'esplorazione *diretta* tiene invece conto di ciò che l'agente ha già visto e
+orienta deliberatamente il comportamento verso le regioni poco note dello spazio
+degli stati. Quando l'orientamento si estende su più passi, cioè l'agente
+accetta azioni né premiate né istruttive subito pur di arrivare dove c'è da
+imparare, si parla di *deep exploration*, che Osband e colleghi chiamano anche
+*planning to learn*, pianificare per imparare {cite}`osband2016deep`. Il modo
+più naturale per ottenerla è modificare non *come* si sceglie, ma *cosa* si
+ottiene: aggiungere alla ricompensa dell'ambiente un bonus che premia la novità.
 
 `````
 
@@ -131,16 +130,34 @@ dimensione (i pixel di uno schermo) ogni stato è, letteralmente, unico, e
 $N(s_t)$ vale sempre $1$. Il conteggio esatto non ha senso. La soluzione sono
 gli **pseudo-conteggi**: si stima una densità $\rho(s)$ sugli stati visitati e
 se ne ricava un conteggio *effettivo* $\hat N(s)$ coerente con quanto la
-densità è "sorpresa" di rivedere $s$. È l'approccio *count-based* esteso agli
-spazi grandi {cite}`bellemare2016unifying`, che diede i primi progressi
-sostanziali proprio su Montezuma's Revenge.
+densità è "sorpresa" di rivedere $s$. Se $\rho(s)$ è la probabilità che il
+modello di densità assegna a $s$ e $\rho'(s)$ quella che gli assegnerebbe dopo
+averlo visto una volta in più (la *probabilità di ricodifica*), il
+pseudo-conteggio è quello che fa corrispondere lo spostamento da $\rho$ a
+$\rho'$ a un'osservazione in più:
+
+$$
+\hat N(s) = \frac{\rho(s)\,\big(1-\rho'(s)\big)}{\rho'(s)-\rho(s)} .
+$$
+
+È l'approccio *count-based* esteso agli spazi grandi
+{cite}`bellemare2016unifying`, che diede i primi progressi sostanziali proprio
+su Montezuma's Revenge. E la radice nel bonus non è arbitraria. Per il Teorema 1
+di quel lavoro, il guadagno d'informazione che un'osservazione porta al modello
+è maggiorato da $\hat N(s)^{-1}$: un bonus proporzionale a $\hat N(s)^{-1/2}$,
+come quello del MBIE-EB di Strehl e Littman {cite}`strehl2008analysis`, porta
+quindi a un comportamento almeno altrettanto esplorativo di uno basato su quel
+guadagno, mentre un bonus proporzionale al guadagno stesso, che non supera
+$\hat N(s)^{-1}$, esplora troppo poco per garantire un comportamento quasi
+ottimo (lo si ricava, nel caso tabellare, combinando quel teorema con un
+risultato di Kolter e Ng).
 
 `````
 
-Il bonus di novità si calcola facilmente quando gli stati sono pochi e
-distinti. Il frammento seguente applica la stessa identica regola a sei stati
-visitati un numero di volte molto diverso, e mostra come il premio vada quasi
-tutto ai più rari:
+Il bonus di novità si calcola facilmente quando gli stati sono pochi e distinti.
+Il frammento seguente applica la stessa identica regola a sei stati visitati un
+numero di volte molto diverso, e mostra come il premio vada quasi tutto ai più
+rari:
 
 ```python
 import numpy as np
@@ -188,7 +205,9 @@ situazione, chiediamoci *quanto ci sorprende*. Se non sappiamo prevedere che
 cosa succederà, vuol dire che di quel pezzo di mondo non abbiamo ancora capito
 il funzionamento, e sono proprio i posti da cui c'è da imparare. La sorpresa
 diventa così una ricompensa che l'agente si dà da sé, e che si somma a quella
-che gli dà il gioco.
+che gli dà il gioco. È lo stesso genere di premio interno su cui si appoggiava
+il livello basso dell'h-DQN, nella {doc}`sezione sulla gerarchia <gerarchia>`:
+là premiava l'arrivo a un obiettivo assegnato, qui premia la sorpresa.
 
 Di questa idea esistono due realizzazioni classiche, e la differenza sta tutta
 nel come misurano la sorpresa. La prima si chiama **ICM** (*Intrinsic Curiosity
@@ -196,16 +215,12 @@ Module*, modulo di curiosità intrinseca): l'agente si costruisce una previsione
 di «che cosa succederà se faccio questo», e ogni volta che la sbaglia incassa un
 premietto.
 
-La seconda si chiama **RND** (*Random Network Distillation*) e sembra un gioco
-di prestigio, quindi conviene smontarla. Si prendono due reti fatte allo stesso
-modo. La prima ha i numeri interni tirati a caso e non si tocca più: data una
-schermata sputa fuori un altro numero, che non significa niente ed è però
-sempre lo stesso per la stessa schermata. La seconda rete ha un compito solo,
-indovinare che numero dirà la prima, e si allena a farlo sulle schermate per cui
-l'agente passa davvero. Ecco allora perché lo scarto fra le due misura la
-novità: dove l'agente è passato tante volte la seconda rete ha avuto tempo di
-imparare la risposta a memoria e sbaglia poco; su una schermata nuova non ha mai
-studiato quella risposta, e sbaglia parecchio.
+La seconda si chiama **RND** (*Random Network Distillation*): una rete
+*target* con pesi casuali e fissi associa a ogni schermata un vettore, sempre lo
+stesso per la stessa schermata, e una rete *predictor* impara a riprodurlo
+sulle schermate che l'agente visita. L'errore del predittore è basso dove
+l'agente è passato spesso e alto sulle schermate nuove, e quell'errore è la
+ricompensa intrinseca.
 
 `````{tab} Elementare
 
@@ -220,41 +235,51 @@ come una piccola ricompensa, e lo tira verso il gesto che l'ha spiazzato. Il
 premio si consuma da sé: a forza di ripeterlo quel gesto diventa prevedibile,
 la sorpresa finisce, e l'agente si sposta altrove.
 
-Presa alla lettera, però, la ricetta ha un guasto, e nella scena del bambino si
-vede a occhio nudo. Alla finestra mentre piove le gocce scendono ogni volta
-diverse: prevederle non riesce a nessuno, e la sorpresa non si esaurisce mai.
-Un bambino premiato soltanto dallo stupore resterebbe lì per sempre, davanti a
-uno spettacolo che non gli insegna nulla, perché su quelle gocce la sua mano
-non conta.
+Presa alla lettera, però, la ricetta ha un guasto, e si vede a occhio nudo. Alla
+finestra mentre piove le gocce scendono ogni volta diverse: prevederle non
+riesce a nessuno, e la sorpresa non si esaurisce mai. Un bambino premiato
+soltanto dallo stupore resterebbe lì per sempre, davanti a uno spettacolo che
+non gli insegna nulla, perché su quelle gocce la sua mano non conta.
 
 Il rimedio è cambiare l'oggetto della previsione: non tutto quello che si vede,
-ma soltanto la parte su cui la propria mano fa la differenza. E il modo di
-separare le due cose è un indovinello: guardare la scena prima e la scena dopo,
-e capire che cosa si è fatto in mezzo. Il bicchiere spostato di venti
-centimetri lo dice; la pioggia dietro il vetro no, perché è identica qualunque
-cosa si faccia. Si tiene quello che serve all'indovinello e si butta il resto:
-è il filtro che tiene il bambino lontano dalla finestra.
+ma soltanto la parte che ha a che fare con lui, cioè quella che la sua mano
+cambia e quella che può cambiare il suo gioco (il gatto che salta sul tavolo). E
+il modo di separarla dal resto è un indovinello: guardare la scena prima e la
+scena dopo, e capire che cosa si è fatto in mezzo. Il bicchiere spostato di
+venti centimetri lo dice; la pioggia dietro il vetro no, perché è identica
+qualunque cosa si faccia. Si tiene quello che serve all'indovinello e si butta
+il resto: è il filtro che tiene il bambino lontano dalla finestra.
+
+La sorpresa si può misurare anche con un gioco di prestigio, che si capisce
+smontandolo. Due reti fatte allo stesso modo: la prima ha i numeri interni
+tirati a caso e non si tocca più, e a ogni schermata risponde con un numero
+senza significato, ma sempre lo stesso per la stessa schermata; la seconda si
+allena a indovinarlo sulle schermate per cui l'agente passa davvero. Dove
+l'agente è passato spesso, la seconda ha avuto tempo di impararlo e sbaglia
+poco; su una schermata nuova sbaglia parecchio, e il suo errore è il premio alla
+novità.
 
 `````
 
 `````{tab} Superiore
 
-Nel modulo di curiosità intrinseca ICM (*Intrinsic Curiosity Module*,
-Pathak e colleghi, 2017 {cite}`pathak2017curiosity`) la ricompensa intrinseca
-è l’**errore di predizione** di un modello di dinamica. La chiave è che la
-previsione non avviene sui pixel grezzi ma in uno spazio di feature
-$\phi(s)$ appreso, che cattura solo ciò che l'agente *può controllare* e ignora
-il rumore irrilevante dell'ambiente. Come si ottenga una proprietà del genere è
-metà del lavoro: $\phi$ non si addestra da sé, si addestra
-con un modello di dinamica inversa, una rete che da $\phi(s_t)$ e
-$\phi(s_{t+1})$ deve indovinare l'azione $a_t$ che ha portato dall'uno all'altro.
-Per riuscirci $\phi$ è costretta a conservare tutto ciò che le azioni
-influenzano, e non ha ragione di conservare il resto: una foglia che si muove
-per il vento non aiuta a indovinare quale tasto è stato premuto, e quindi esce
-dalla rappresentazione. Su quello spazio, un modello *forward* prevede la
+Nel modulo di curiosità intrinseca ICM (*Intrinsic Curiosity Module*, Pathak e
+colleghi, 2017 {cite}`pathak2017curiosity`) la ricompensa intrinseca è
+l’**errore di predizione** di un modello di dinamica. La chiave è che la
+previsione non avviene sui pixel grezzi ma in uno spazio di feature $\phi(s)$
+appreso. Ciò che può cambiare l'osservazione è, nel lavoro, di tre specie:
+quello che l'agente controlla, quello che non controlla ma che lo influenza (un
+veicolo guidato da un altro), e quello che non controlla e non lo tocca (le
+foglie mosse dal vento). Uno spazio di feature adatto conserva le prime due e
+ignora la terza. Come si ottenga una proprietà del genere è metà del lavoro:
+$\phi$ non si addestra da sé, si addestra con un modello di dinamica inversa,
+una rete che da $\phi(s_t)$ e $\phi(s_{t+1})$ deve indovinare l'azione $a_t$ che
+ha portato dall'uno all'altro. Così $\phi$ non ha ragione di conservare ciò che
+non influenza le azioni dell'agente e non ne è influenzato: una foglia che si
+muove per il vento non aiuta a indovinare quale tasto è stato premuto, e quindi
+esce dalla rappresentazione. Su quello spazio, un modello *forward* prevede la
 feature del prossimo stato $\hat\phi(s_{t+1})$ da $\phi(s_t)$ e dall'azione
-$a_t$; la ricompensa
-intrinseca è
+$a_t$; la ricompensa intrinseca è
 
 $$
 r_t^{\text{int}} = \frac{\eta}{2}\,\big\lVert \hat\phi(s_{t+1}) -
@@ -265,14 +290,14 @@ l'errore di predizione, con $\eta>0$ un fattore di scala. Alta sugli stati la
 cui dinamica il modello non ha ancora imparato, la ricompensa si spegne man
 mano che il modello migliora: la curiosità è auto-esauribile.
 
-Una variante più semplice e sorprendentemente efficace è RND (*Random
-Network Distillation*, Burda e colleghi, 2019 {cite}`burda2019exploration`).
-Si fissa una rete *target* $f$ dai pesi casuali e mai addestrati, e si
-allena una rete *predictor* $\hat f$ a imitarne l'output sugli stati
-visitati. La ricompensa intrinseca è la distanza fra le due:
+Una variante più semplice e sorprendentemente efficace è RND (*Random Network
+Distillation*, Burda e colleghi, 2019 {cite}`burda2019exploration`). Si fissa
+una rete *target* $f$ dai pesi casuali e mai addestrati, e si allena una rete
+*predictor* $\hat f$ a imitarne l'output sugli stati visitati. La ricompensa
+intrinseca del passo $t$ è la distanza fra le due sullo stato appena raggiunto:
 
 $$
-r_t^{\text{int}} = \big\lVert \hat f(s_t) - f(s_t) \big\rVert^2 .
+r_t^{\text{int}} = \big\lVert \hat f(s_{t+1}) - f(s_{t+1}) \big\rVert^2 .
 $$
 
 RND fu il primo
@@ -285,27 +310,42 @@ con le parole del lavoro stesso, che sull'esito è prudente: l'agente
 quello il gioco va avanti. Superare il punteggio umano medio e risolvere un
 gioco sono due affermazioni diverse, e vanno tenute separate.
 
-La differenza fra le due sta in che cosa si predice. L'errore di un predittore
-nasce dalla scarsità di dati attorno a uno stato, che è la novità da premiare,
-e dalla casualità dell'ambiente, che nessun addestramento riduce. ICM predice
-le feature dello stato successivo, imparate in modo da tenere solo ciò su cui
-l'agente agisce: filtra il rumore che non controlla e resta esposto a quello che
-controlla. Un
-televisore con il telecomando, dove ogni cambio di canale dà un'immagine
-imprevedibile, inchioda l'agente davanti allo schermo. RND predice $f(s_t)$,
-funzione deterministica dello stato osservato: il caso della transizione non
-entra nel bersaglio, e il rumore visto spesso diventa familiare come ogni altro
-stato. In pratica vuole osservazioni e ricompensa intrinseca normalizzate, e
-due teste di valore, una per ciascuna ricompensa, con quella intrinseca che non
-si azzera a fine episodio.
+Il gioco l'ha poi risolto un'idea di altra specie, Go-Explore
+{cite}`ecoffet2021first`: ricordare gli stati promettenti, *tornarci* e solo da
+lì esplorare, invece di affidarsi a un bonus perché l'agente ritrovi la strada.
+Nella versione principale ci torna ripristinando lo stato salvato del
+simulatore, cioè proprio l'accesso a cui RND rinunciava, e la politica finale la
+ricava dalle traiettorie migliori, usate come dimostrazioni. Senza nessuna
+conoscenza del gioco quadruplica il miglior punteggio precedente; con poche
+informazioni date a mano (la stanza, la posizione, il livello, le chiavi) lo
+risolve per intero, arrivando in fondo al terzo livello. Una variante che agli
+stati promettenti torna con una politica condizionata all'obiettivo, senza
+ripristinare niente, resta comunque sopra il livello umano.
+
+La differenza fra ICM e RND sta in che cosa si predice. L'errore di un
+predittore nasce dalla scarsità di dati attorno a uno stato, che è la novità da
+premiare, e dalla casualità dell'ambiente, che nessun addestramento riduce. ICM
+predice le feature dello stato successivo, imparate in modo da tenere ciò che le
+azioni dell'agente influenzano o da cui sono influenzate: filtra il rumore che
+non lo riguarda e resta esposto a quello che controlla. Un televisore con il
+telecomando, dove ogni cambio di canale dà un'immagine imprevedibile, inchioda
+l'agente davanti allo schermo. RND predice $f(s_{t+1})$ guardando $s_{t+1}$
+stesso: il bersaglio è una funzione deterministica di ciò che il predittore
+riceve, il caso della transizione non vi entra, e il rumore visto spesso diventa
+familiare come ogni altro stato. In pratica vuole osservazioni e ricompensa
+intrinseca normalizzate, e due teste di valore, una per ciascuna ricompensa, con
+quella intrinseca che non si azzera a fine episodio.
 
 `````
 
-Il cuore di RND si scrive in poche righe di PyTorch:
+Il cuore di RND si scrive in poche righe di PyTorch, e qualche riga in più basta
+a vedere che cosa misura davvero il suo errore:
 
 ```python
 import torch
 import torch.nn as nn
+
+torch.manual_seed(0)    # le reti e gli stati sotto sono sorteggiati
 
 # RND: due reti con la stessa architettura.
 # target: pesi casuali FISSI, mai addestrati; predictor: impara a imitarla.
@@ -340,38 +380,77 @@ loss = r_int.mean()
 optimizer.zero_grad()
 loss.backward()
 optimizer.step()
+
+# Che cosa misura davvero l'errore: tre gruppi di stati.
+visti = torch.randn(64, 16)         # gli stati su cui il predictor si allena
+nuovi = torch.randn(64, 16)         # mai visti, ma dalla stessa distribuzione
+lontani = torch.randn(64, 16) + 3   # mai visti, e fuori dal mucchio dei visti
+
+def errore(x):
+    with torch.no_grad():
+        return ricompensa_intrinseca(x).mean().item()
+
+def stampa(quando):
+    print(f"{quando}: visti {errore(visti):.3f}  nuovi {errore(nuovi):.3f}"
+          f"  lontani {errore(lontani):.3f}")
+
+stampa("prima")
+for _ in range(500):                # il predictor si allena sui soli visti
+    loss = ricompensa_intrinseca(visti).mean()
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+stampa("dopo ")
 ```
+
+```text
+prima: visti 0.108  nuovi 0.112  lontani 1.213
+dopo : visti 0.000  nuovi 0.019  lontani 0.215
+```
+
+Prima dell'addestramento visti e nuovi si equivalgono, com'è naturale: vengono
+dallo stesso mucchio. Dopo, sugli stati visti l'errore è sparito, sui nuovi è
+sceso quasi altrettanto, e sui lontani resta una decina di volte più alto. Il
+predictor, cioè, generalizza: RND non premia l'essere mai visto, premia la
+distanza da ciò che si è già visto. Uno stato nuovo ma simile a tanti altri vale
+poco, uno davvero diverso vale molto, ed è quello che serve per uscire dalla
+regione già battuta.
 
 ## Un modo diverso di guardare la curiosità
 
-In tutto quello che abbiamo visto finora la curiosità
-è un premio in più: c'era una ricompensa, ci siamo accorti che non
-bastava, e gliene abbiamo affiancata un'altra, fabbricata da noi. È una toppa
-che funziona benissimo, ma resta una toppa.
+In tutto quello che si è visto finora la curiosità è un premio in più: la
+ricompensa dell'ambiente non bastava, e le se ne è affiancata un'altra,
+costruita apposta, con un peso da tarare ($\beta$ per il bonus di novità, $\eta$
+per ICM). È una toppa, anche se i primi passi avanti su Montezuma sono venuti da
+lì.
 
-Esiste una lettura opposta, e chiarisce parecchio anche a chi non intende
-seguirla. Nel quadro dell’inferenza attiva, che nelle neuroscienze teoriche
-descrive percezione e azione come un unico problema {cite}`parr2022active`,
-l'agente non massimizza una ricompensa: minimizza un'unica grandezza che tiene
+Esiste una lettura opposta, in cui sapere e ottenere sono la stessa cosa, e
+chiarisce parecchio anche a chi non intende seguirla. In questa lettura l'agente
+non massimizza una ricompensa: sceglie le azioni con un conto unico, che tiene
 insieme quanto un'azione lo avvicina a ciò che preferisce e quanto gli farebbe
-guadagnare informazione. Il nome, energia libera attesa, è preso in
-prestito dalla fisica, e qui conta soltanto che le due cose stiano in un conto
-unico. All'inferenza attiva il {doc}`capitolo sui world model
-</WorldModels/overview>` dedica una sezione, e il capitolo
-sull'auto-supervisione se ne serve per rispondere a un'obiezione sul rinforzo:
-qui ci interessa solo il riflesso che getta sui bonus di novità e sulla
-curiosità intrinseca.
+imparare. Il quadro si chiama inferenza attiva e viene dalle neuroscienze
+teoriche, dove descrive percezione e azione come un unico problema
+{cite}`parr2022active`; il conto, che l'agente minimizza, si chiama energia
+libera attesa, un nome preso in prestito dalla fisica, e qui conta soltanto che
+le due cose ci stiano dentro insieme. Al quadro è dedicata una {doc}`sezione del
+capitolo sui world model </WorldModels/inferenza-attiva>`, e il capitolo
+sull'auto-supervisione se ne serve nel {doc}`dibattito sul rinforzo
+</AutoSupervisione/dibattito-rl>`, per rispondere a un'obiezione; qui interessa
+solo il riflesso che getta sui bonus di novità e sulla curiosità intrinseca.
 
 `````{tab} Elementare
 
-La differenza che conta è questa: lì il valore di sapere non arriva come premio
-aggiunto, sta accanto al valore di ottenere fin dall'inizio. Ordinare il piatto
-che non hai mai preso non ti costa un supplemento di curiosità da giustificare:
-scoprire com'è faceva parte di quello che cercavi, esattamente come mangiare
-bene. E allora non c'è nessun dosaggio da regolare fra il curiosare e
-l'incassare, perché tutti e due sono pezzi della stessa quantità.
+Immagina di scegliere al ristorante tenendo un conto solo, in cui pesano insieme
+quanto ti piacerà il piatto e quanto scoprirai assaggiandolo. Il valore di
+sapere, allora, non arriva come premio aggiunto: sta accanto al valore di
+ottenere fin dall'inizio. Ordinare il piatto che non hai mai preso non ti costa
+un supplemento di curiosità da giustificare: scoprire com'è faceva parte di
+quello che cercavi, esattamente come mangiare bene. E allora non c'è un tasso di
+cambio da fissare a mano fra il curiosare e l'incassare, perché tutti e due sono
+pezzi della stessa quantità; quanto curiosare, però, dipende ancora da quanto è
+forte la voglia di un buon piatto.
 
-Vista da lì, la storia raccontata fin qui si legge al contrario. Non abbiamo
+Vista così, la storia raccontata fin qui si legge al contrario. Non abbiamo
 aggiunto la curiosità a un agente che non ce l'aveva: partendo da una ricompensa
 che dice soltanto «quanto ti è andata bene» e mai «quanto hai imparato»,
 eravamo costretti a rimetterla dentro a mano. Ogni manopola che dosa il peso del
@@ -420,12 +499,13 @@ viene la toppa, non a sostituirla.
 
 `````
 
-## Reward shaping: guidare senza barare
+## Reward shaping e funzioni potenziale
 
-C'è un'alternativa più diretta al problema della sparsità: se le ricompense
-sono troppo rare, perché non aggiungerne noi qualcuna intermedia, per guidare
-l'agente passo dopo passo verso l'obiettivo? Questo si chiama **reward
-shaping**, modellare la ricompensa. È potente, ma nasconde una trappola.
+Una ricompensa rada si può anche infittire direttamente, aggiungendo premi
+intermedi che guidano l'agente passo dopo passo verso l'obiettivo: è il
+**reward shaping**, modellare la ricompensa. Un premio intermedio aggiunto a
+caso, però, può cambiare la strategia migliore, e il modo sicuro di aggiungerlo
+passa per una *funzione potenziale*, un numero attaccato a ogni stato.
 
 `````{tab} Elementare
 
@@ -488,20 +568,22 @@ $$
 
 con $\gamma$ il fattore di sconto. Il risultato chiave è che la policy ottima
 dell'MDP modellato coincide con quella dell'MDP originale, *per qualunque*
-$\Phi$: la garanzia deriva da un argomento telescopico. Nella somma scontata
-dei termini $F$ ogni potenziale intermedio compare una volta col segno più e
-una col segno meno, e di una traiettoria di $T$ passi sopravvivono i soli due
-termini di bordo, $-\Phi(s_0) + \gamma^{T}\Phi(s_T)$. Il secondo svanisce nei
-due casi che interessano: a orizzonte infinito con $\gamma<1$ e $\Phi$
-limitata, perché $\gamma^{T}\Phi(s_T)\to 0$; nei task episodici con la
-convenzione (quella di Ng, Harada e Russell) $\Phi(s)=0$ sugli stati terminali.
-Resta allora il solo $-\Phi(s_0)$: un contributo che dipende dallo stato di
-partenza e non dal percorso, identico quindi per tutte le policy. Nel caso non
-scontato ($\gamma=1$, che nei compiti che finiscono è ammesso) l'argomento ha
-il corollario intuitivo della quota: un ciclo chiuso frutta esattamente zero;
-con $\gamma<1$ i cicli non sono più esattamente nulli, ma l'invarianza resta,
-perché a garantirla è il telescopio. Lo shaping accelera l'apprendimento
-rendendo il segnale più denso, senza spostare l'obiettivo (si veda
+$\Phi$: la garanzia deriva da un argomento telescopico. Nella somma scontata dei
+termini $F$ ogni potenziale intermedio compare una volta col segno più e una col
+segno meno, e di una traiettoria di $T$ passi sopravvivono i soli due termini di
+bordo, $-\Phi(s_0) + \gamma^{T}\Phi(s_T)$. Il secondo svanisce nei due casi che
+interessano: a orizzonte infinito con $\gamma<1$ e $\Phi$ limitata, perché
+$\gamma^{T}\Phi(s_T)\to 0$; nei task episodici con la convenzione (quella di Ng,
+Harada e Russell) $\Phi(s)=0$ sugli stati terminali. Resta allora il solo
+$-\Phi(s_0)$: un contributo che dipende dallo stato di partenza e non dal
+percorso, identico quindi per tutte le policy. Nel caso non scontato
+($\gamma=1$, che nei compiti che finiscono è ammesso) l'argomento ha il
+corollario intuitivo della quota: un ciclo chiuso frutta esattamente zero; con
+$\gamma<1$ i cicli non sono più esattamente nulli, ma l'invarianza resta, perché
+a garantirla è il telescopio. L'accelerazione, invece, non è garantita: con un
+potenziale informativo, che somigli al valore vero degli stati, lo shaping
+accelera l'apprendimento perché rende il segnale più denso; con un potenziale
+cattivo può rallentarlo. In nessuno dei due casi sposta l'obiettivo (si veda
 {cite}`sutton2018reinforcement`).
 
 `````
@@ -597,12 +679,21 @@ coincidono più.
 Le difese sono un ambito di ricerca attivo e nessuna è risolutiva: vincoli e
 penalità esplicite, apprendimento della ricompensa dalle preferenze umane
 (*reward modeling*, RLHF), verifica di robustezza rispetto a piccole modifiche
-della specifica. Il nodo di fondo (specificare compiutamente ciò che vogliamo
-tramite una funzione scalare) è il problema dell'allineamento, che
-affronteremo nel {doc}`capitolo sull'AI responsabile
-</AIResponsabile/overview>`. Il reward hacking è il punto in cui
-l'ottimizzazione tecnica incontra una domanda che tecnica non è del tutto:
-siamo sicuri di aver chiesto la cosa giusta?
+della specifica. Il risultato formale più netto è negativo. Skalse e colleghi
+chiamano *non hackable* una ricompensa surrogata rispetto a quella vera se non
+esiste una coppia di politiche su cui il ritorno surrogato sale mentre quello
+vero scende, e dimostrano che sull'insieme di tutte le politiche stazionarie due
+ricompense non banali (cioè che non danno lo stesso ritorno a ogni politica)
+sono non hackable l'una rispetto all'altra solo se sono *equivalenti*, cioè se
+ordinano le politiche nello stesso modo; e lo stesso vale limitandosi alle
+politiche quasi ottime {cite}`skalse2022defining`. Togliere termini alla
+ricompensa per semplificarla, quindi, non basta a renderla sicura: o la si
+azzecca fino all'ordine delle politiche, o esiste una coppia di politiche su cui
+migliorare quella surrogata peggiora quella vera. Il nodo di fondo (specificare
+compiutamente ciò che vogliamo tramite una funzione scalare) è il problema
+dell'allineamento. Il reward hacking è il punto in cui l'ottimizzazione tecnica
+incontra una domanda che tecnica non è del tutto: siamo sicuri di aver chiesto
+la cosa giusta?
 
 `````
 
@@ -617,25 +708,24 @@ Con questo il capitolo si chiude, e quella frase vale anche per tutto ciò che l
 precede. Dal DQN in avanti ogni sezione ha dato all'agente un pezzo di libertà
 in più, e subito dopo ha dovuto inventarsi come contenerla.
 
-Nella sezione su DQN, la
-memoria delle esperienze e la copia congelata, perché i voti non esplodessero.
-Nei gradienti di policy, il guinzaglio di PPO, perché non esplodesse la
-strategia. Nel controllo continuo, i due giudici e il bersaglio sfumato, perché
+Nella sezione su DQN, la memoria delle esperienze e la copia congelata, perché
+i voti non esplodessero. Nei gradienti di policy, la fascia di PPO, perché non
+esplodesse la strategia. Nella ricerca ad albero, il consiglio della rete che
+orienta le simulazioni, perché la ricerca non si disperdesse su tutte le mosse
+alla pari. Nel controllo continuo, i due giudici e il bersaglio sfumato, perché
 non esplodessero i voti di un attore libero di dosare qualunque forza. Nel RL
-basato su modello, i sogni corti, perché non esplodesse
-l'immaginazione. Nell'imitazione, l'esperto richiamato a etichettare, perché
-l'allievo non finisse nel fosso. Nell'offline RL, il recinto attorno
-all'archivio, perché non esplodessero le stime su ciò che nessuno ha mai
-provato. Nella ricerca ad albero, il consiglio della rete che orienta le
-simulazioni, perché l'albero non si disperdesse; nella gerarchia, le opzioni
-aggiunte alle mosse invece che al loro posto, perché non si perdessero le
-scorciatoie.
+basato su modello, i sogni corti, perché non esplodesse l'immaginazione.
+Nell'imitazione, l'esperto richiamato a etichettare, perché l'allievo non
+finisse nel fosso. Nell'offline RL, il recinto attorno all'archivio, perché non
+esplodessero le stime su ciò che nessuno ha mai provato. Nella gerarchia, le
+opzioni aggiunte alle mosse invece che al loro posto, perché non si perdessero
+le scorciatoie.
 
 Il reward hacking è la stessa storia raccontata all'ultimo livello, quello
 dell'obiettivo, e con una differenza: qui il contenimento diventa una domanda
-su che cosa vogliamo davvero, invece di un accorgimento tecnico. Il
-{doc}`capitolo sull'AI responsabile </AIResponsabile/overview>` comincia da
-qui.
+su che cosa vogliamo davvero, invece di un accorgimento tecnico. La domanda
+riprende nella {doc}`sezione su allineamento e governance
+</AIResponsabile/allineamento-e-governance>`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -656,26 +746,27 @@ qui.
   bordo del tavolo finché non ha imparato cosa succede. L'agente si costruisce
   una previsione di come andrà a finire, e ogni volta che sbaglia la previsione
   incassa. Si spegne da sé: quando ha imparato, non c'è più sorpresa. Ma solo
-  se a sorprenderlo è qualcosa su cui la sua mano fa la differenza, perché
-  davanti alla pioggia dietro il vetro, che nessuno sa prevedere, resterebbe lì
+  se a sorprenderlo è qualcosa che ha a che fare con lui (che la sua mano può
+  cambiare, o che può cambiare il suo gioco), perché davanti alla pioggia
+  dietro il vetro, che nessuno sa prevedere e che non lo tocca, resterebbe lì
   per sempre.
-- Aggiungere premietti intermedi per guidare l'agente (reward shaping)
-  funziona, ma può cambiargli l'obiettivo sotto il naso: il robot scopre che gli
-  conviene oscillare davanti alla porta incassando premietti, senza mai uscire.
-  C'è però un modo di darli che quel rischio non ce l'ha mai, e sono le
-  *differenze di quota*.
+- Aggiungere premietti intermedi per guidare l'agente (reward shaping) può
+  aiutare molto, ma dati a caso possono cambiargli l'obiettivo sotto il naso:
+  il robot scopre che gli conviene oscillare davanti alla porta incassando
+  premietti, senza mai uscire. C'è però un modo di darli che quel rischio non
+  ce l'ha mai, e sono le *differenze di quota*.
 - Il pericolo grosso ha un nome, reward hacking: l'idraulico pagato a tubi
   sostituiti che comincia a sostituire tubi sani, la barca di *CoastRunners* che
   gira in tondo prendendo fuoco. Il problema è che l'agente obbedisce troppo
-  bene, alla lettera sbagliata. Ed è il ponte verso il
-  capitolo sull'AI responsabile.
+  bene, alla lettera sbagliata. Ed è il ponte verso il problema
+  dell'allineamento.
 ```
 `````
 
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Con ricompense sparse (l'emblema è *Montezuma's Revenge*, dove il DQN
+- Con ricompense rade (l'emblema è *Montezuma's Revenge*, dove il DQN
   segnava zero) l'esplorazione casuale di $\varepsilon$-greedy fallisce: la
   probabilità di azzeccare $n$ azioni insolite di fila scala come
   $(\varepsilon/|\mathcal{A}|)^n$. Serve esplorazione diretta, non rumore
@@ -689,10 +780,13 @@ qui.
   RND l'errore nel predire una rete casuale fissa. RND fu il primo a
   superare il punteggio umano medio su Montezuma senza dimostrazioni né accesso
   allo stato dell'emulatore; il gioco non lo «risolse», e il paper stesso dice
-  che il primo livello lo completa solo occasionalmente.
+  che il primo livello lo completa solo occasionalmente. A risolverlo è stato
+  poi Go-Explore, che torna agli stati promettenti (nella versione principale
+  ripristinando il simulatore) e solo da lì esplora.
 - Il reward shaping densifica il segnale; solo la forma *potential-based*
   $F=\gamma\Phi(s')-\Phi(s)$ (Ng, Harada, Russell, 1999) preserva la policy
-  ottima, per un argomento telescopico valido *per qualunque* $\Phi$.
+  ottima, per un argomento telescopico valido *per qualunque* $\Phi$;
+  l'accelerazione, invece, dipende da quanto $\Phi$ è informativo.
 - Il reward hacking è l'agente che ottimizza la *lettera* della ricompensa,
   non l'intento, come la barca di *CoastRunners*. La legge che porta il nome di
   Goodhart, nella formulazione che tutti citano, è in realtà di Marilyn
@@ -700,11 +794,11 @@ qui.
 ```
 `````
 
-Quel ponte, però, è lungo: all'AI responsabile si arriva fra molti capitoli,
-quasi in fondo al libro. Il {doc}`capitolo sul linguaggio naturale
-</NaturalLanguageProcessing/overview>` riparte da un'altra storia, la
-traduzione automatica del 1954, e non è una deviazione. Qui la ricompensa la
-scriveva un programma, e si è visto che cosa succede quando la scrive male;
-quando l'allineamento tornerà, a scriverla sarà una persona che legge due frasi
-e dice quale preferisce. Prima bisogna sapere che cos'è una frase, per una
-macchina.
+Quel ponte, però, è lungo. Qui la ricompensa la scriveva un programma, e si è
+visto che cosa succede quando la scrive male; quando l'allineamento tornerà,
+con gli assistenti conversazionali della sezione {doc}`Dopo il
+pre-addestramento </Transformers/post-training>` e poi, per intero, in
+{doc}`Allineamento e governance </AIResponsabile/allineamento-e-governance>`, a
+dettarla saranno persone che leggono due risposte e dicono quale preferiscono.
+Il {doc}`capitolo sul linguaggio naturale </NaturalLanguageProcessing/overview>`
+riparte intanto da un'altra storia, la traduzione automatica del 1954.

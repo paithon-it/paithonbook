@@ -17,19 +17,22 @@ uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le feste,
 e lui riempie il tempo scrivendo, per hobby, un nuovo linguaggio di
 programmazione. Lo chiama **Python**: non per il serpente, ma per i Monty
 Python, il gruppo comico inglese di cui è fan. La prima versione pubblica esce
-nel 1991. Nessuno, allora, poteva immaginare che trent'anni dopo quel
-passatempo sarebbe diventato la lingua franca dell'intelligenza artificiale:
-dalla rivoluzione del deep learning del 2012 fino ai grandi modelli linguistici
-di oggi, la quasi totalità della ricerca recente si scrive, si mette a punto e
-si pubblica in Python. La forma di quella divisione del lavoro c'era già nella
-rete che nel 2012 aprì la stagione del deep learning: il calcolo in C++ e in
-CUDA, il linguaggio con cui si parla alle schede grafiche, e sopra uno strato
-di Python per configurarla e lanciarla. La partita però non era chiusa: la
-libreria su cui lavoravano i laboratori di punta, negli anni subito dopo, si
-programmava in Lua. Python però aveva già Theano, nato in ambito accademico
-prima di quella rivoluzione, e vince quando accanto a Theano arrivano Caffe e
-poi TensorFlow; la partita si chiude con PyTorch, nato dentro Facebook AI
-Research nel 2016 e arrivato ai ricercatori all'inizio del 2017.
+nel 1991. Trent'anni dopo quel passatempo è il linguaggio in cui si scrivono i
+principali framework di deep learning e gran parte del codice che accompagna
+la ricerca sul machine learning, dalla rivoluzione del deep learning del 2012
+ai grandi modelli linguistici di oggi. Ci è arrivato con una divisione del
+lavoro: i conti pesanti li fanno programmi scritti in linguaggi più veloci e
+più faticosi da usare, e Python li comanda.
+
+La divisione c'era già in AlexNet, la rete che nel 2012 aprì la stagione del
+deep learning: il calcolo in C++ e in CUDA, il linguaggio con cui si
+programmano le schede grafiche, e sopra uno strato di Python per configurarla e
+lanciarla. Che quel livello superiore fosse Python non era scontato. Negli anni
+subito dopo i laboratori di punta lo scrivevano in Lua, mentre Python aveva già
+Theano, nato in ambito accademico prima del 2012; la partita si è chiusa con
+librerie che si scrivono in Python e calcolano in C++, e la storia di PyTorch,
+cioè Torch rifatto per Python, la racconta l'apertura del {doc}`capitolo che
+porta il suo nome </PyTorch/overview>`.
 
 Com'è successo? Python non è il linguaggio più veloce, né il più elegante in
 senso accademico. Ha vinto per altre ragioni.
@@ -43,7 +46,8 @@ computer esegue una dopo l'altra dall'alto in basso. Nient'altro: niente di
 misterioso, un foglio di ordini in fila. E Python si legge quasi come inglese
 scarno. Una riga come `if voto >= 18: print("promosso")` si indovina prima
 ancora di aver scritto il primo programma: è come la diresti a voce, «se il
-voto è almeno diciotto, scrivi *promosso*». Le regole di scrittura di
+voto è almeno diciotto, scrivi *promosso*» (all'università i voti vanno in
+trentesimi, e il diciotto è la sufficienza). Le regole di scrittura di
 un linguaggio (dove vanno i due punti, gli a capo, le parentesi) si chiamano la
 sua **sintassi**, e quella di Python è breve e leggera: sta in un pomeriggio, e
 poi il tempo lo passi a pensare a *cosa* dire, non a *come* scriverlo. Per chi
@@ -57,9 +61,13 @@ un pacchetto di istruzioni già confezionate da altri, che ti risparmia il
 lavoro. Non devi reinventare la ruota: la importi e la usi. Importare vuol
 dire scrivere una riga in cima al programma, `import numpy`, per dire a Python
 «da qui in poi voglio usare anche questa»: da quel momento tutti gli strumenti
-della libreria sono a disposizione. La libreria deve però essere già presente
-sul computer, e installarla è un gesto a parte, che si fa una volta sola, con
-un programma apposta che si chiama `pip`.
+della libreria sono a disposizione. Python porta con sé una libreria standard
+già pronta (`math` per le funzioni matematiche, `time` per misurare il tempo,
+e decine di altre), ma le librerie scientifiche no: vanno installate, una
+volta sola, con un programma apposta che si chiama `pip`. La riga di
+importazione ha due varianti che si incontrano subito: `import numpy as np` dà
+alla libreria un nome più corto, e `from math import sqrt` porta dentro un
+solo nome, da usare senza prefisso.
 
 C'è poi una cosa che si vede solo standoci dentro: quando esce un lavoro
 nuovo, di solito esce con il suo codice allegato, ed è quasi sempre codice
@@ -115,13 +123,11 @@ Metà di quella riga non è un'istruzione: il cancelletto `#` apre un
 non per il computer, che lo salta. I commenti dicono che cosa fa la riga
 accanto, e la freccia `->` dentro un commento significa «e viene fuori questo».
 
-Su quel «viene fuori» c'è una cosa da chiarire subito, perché altrimenti
-confonde da qui in avanti. Nell'interprete, la finestra in cui le
-istruzioni si scrivono una per volta, se scrivi una riga che *vale* qualcosa
-(un conto, il nome di una variabile) e premi Invio, lui te ne mostra il
-risultato di sua iniziativa, senza che tu glielo abbia chiesto: è fatto per
-conversare. In un programma salvato in un file, invece, quella stessa riga
-calcola e non dice niente, e per vedere il risultato bisogna chiederlo con
+Su quel «viene fuori» c'è una convenzione da chiarire subito. Nell'interprete,
+la finestra in cui le istruzioni si scrivono una per volta, un'espressione
+digitata e confermata con Invio mostra il proprio valore: scrivendo `2 + 3`
+compare `5`. In un programma salvato in un file, invece, la stessa riga
+calcola e non mostra niente, e per vedere il risultato bisogna stamparlo con
 `print`. Gli esempi che seguono sono scritti come li si digiterebbe
 nell'interprete, ed è per questo che spesso una riga mostra un valore senza
 `print` accanto.
@@ -130,12 +136,11 @@ Eseguendo `import this` compaiono i diciannove aforismi che Tim Peters
 codificò nel 1999.
 Tra questi: *"Explicit is better than implicit"* («meglio esplicito che
 implicito»), *"Simple is better than complex"* («meglio semplice che
-complicato»), *"Readability counts"* («la leggibilità conta»). Non è poesia
-gratuita: il codice si legge molte più
-volte di quante lo si scriva, e in un progetto di ricerca condiviso la
-leggibilità vale quanto la correttezza. È questa attenzione alla chiarezza,
-prima ancora delle librerie, a rendere Python la scelta naturale per insegnare
-e comunicare l'AI.
+complicato»), *"Readability counts"* («la leggibilità conta»). Non è poesia:
+il codice si legge molte più volte di quante lo si scriva, e in un progetto
+condiviso ciò che non si capisce non si può nemmeno verificare. Questa
+chiarezza rende Python adatto a insegnare e a comunicare l'AI; per lavorarci
+serve anche altro, e lo dà l'ecosistema.
 
 ## L'ecosistema scientifico
 
@@ -143,29 +148,31 @@ La forza di Python nell'AI non è il linguaggio da solo, ma la torre di
 librerie costruite l'una sull'altra ({numref}`fig-stack-python`; in inglese
 quella torre si chiama *stack*). Ognuna fa una cosa e la fa bene.
 
-- NumPy: il fondamento. Introduce l’*array* N-dimensionale, il blocco di
-  numeri su cui i conti si fanno tutti insieme, e rende veloce l’algebra
+- NumPy: il fondamento. Introduce l’*array* N-dimensionale, una griglia di
+  numeri con quante dimensioni si vuole (una fila, una tabella, una pila di
+  tabelle) su cui i conti si fanno tutti insieme, e rende veloce l’algebra
   lineare, cioè la matematica delle tabelle di numeri; quasi tutto il resto
   poggia su di lui.
 - Pandas: dati tabellari. Il `DataFrame` è un foglio di calcolo
-  programmabile: caricare, pulire e trasformare i dati prima di darli in pasto
-  a un modello.
+  programmabile: caricare, pulire e trasformare i dati prima di passarli a un
+  modello.
 - Matplotlib: visualizzazione. I grafici con cui esplori i dati e racconti
   i risultati.
 - scikit-learn: la cassetta degli attrezzi del machine learning *classico*,
-  quello che viene prima delle reti neurali. Dentro ci sono decine di modelli
-  diversi, e li si comanda tutti con le stesse due parole: `fit` (impara da
-  questi dati) e `predict` (adesso prevedi). Imparato a usarne uno, li sai
-  usare tutti, ed è quel che si intende con API uniforme (l'API di una
-  libreria è l'insieme dei comandi con cui le si parla).
+  quello che viene prima delle reti neurali. Dentro ci sono decine di
+  modelli diversi, e li si comanda tutti con le stesse due parole: `fit`
+  (impara da questi dati) e `predict` (adesso prevedi). Dopo averne usato
+  uno, l'interfaccia degli altri è già nota, ed è quel che si intende con
+  API uniforme (l'API di una libreria è l'insieme dei comandi con cui le si
+  parla).
 - PyTorch (Facebook AI Research, oggi Meta), deep learning: costruisce reti
-  neurali e le addestra, calcolando da sé le correzioni da fare ai numeri
-  interni della rete ogni volta che sbaglia, e quei conti li scarica sulla GPU.
-  Con lui la torre finisce e comincia un edificio accanto: il calcolo se lo fa
-  per conto proprio, con un motore in C++ tutto suo, e a NumPy chiede soltanto
-  di scambiarsi i dati, cosa che i due fanno affacciandosi alla stessa finestra
-  invece di ricopiarseli. Il suo concorrente storico è TensorFlow (Google,
-  2015), che accanto alla torre sta allo stesso modo.
+  neurali e le addestra, calcolando da sé le derivate che servono a correggerne
+  i parametri (la *differenziazione automatica*), anche sulla GPU, la scheda
+  grafica. Non sta sopra NumPy: il calcolo lo fa con un motore proprio, scritto
+  in C++, e con NumPy scambia soltanto i dati: sulla CPU, `torch.from_numpy` e
+  `Tensor.numpy()` condividono la stessa memoria invece di ricopiarli. Il suo
+  concorrente storico è TensorFlow (Google, 2015),
+  che accanto alla torre sta allo stesso modo.
 
 ```{figure} ../figures/stack-scientifico-python.svg
 :name: fig-stack-python
@@ -180,11 +187,11 @@ più che sopra, perché i conti se li fanno per conto proprio, con un motore
 tutto loro, e con NumPy si limitano a scambiarsi i dati.
 ```
 
-Dire che Pandas o scikit-learn sono «costruiti su NumPy» vuol dire che non
-rifanno da capo il lavoro di tenere insieme tanti numeri e di farci i conti
-sopra: quello lo chiedono a lui, e si concentrano sul proprio mestiere. Pandas
-sa che cos'è una colonna e come si raggruppano le righe; quando c'è da sommare
-un milione di valori, passa la palla.
+Dire che Pandas o scikit-learn sono «costruiti su NumPy» vuol dire che tengono
+i numeri in array di NumPy e fanno i conti con le sue operazioni, invece di
+riscriverle: Pandas aggiunge le etichette, le colonne e il raggruppamento
+delle righe, e quando c'è da sommare un milione di valori la somma la fa
+NumPy.
 
 Il modo in cui NumPy quella somma la fa ha un nome, **vettorizzazione**: invece
 di dire al calcolatore che cosa fare a un numero e poi ripeterglielo un milione
@@ -285,28 +292,39 @@ prototipazione e didattica riproducibile.
 
 ## Preparare l'ambiente: la prima riga eseguita davvero
 
-Il codice si può leggere, ma è fatto per essere provato. Ecco come, in concreto.
+Il codice si può leggere, ma è fatto per essere provato.
 
 ### Senza installare niente
 
 Quasi ogni capitolo esiste anche come notebook su Google Colab, con tutte le
 sue celle in ordine e già pronte: gira nel browser, le librerie sono già
-installate, e per eseguire una cella si preme il triangolino che ha accanto. Il
-collegamento, dove c'è, sta in testa al capitolo («Esegui il codice»), e non
-serve altro che un browser e un account Google. È il modo più rapido per
+installate, e per eseguire una cella si preme il triangolino che ha accanto.
+Non serve altro che un browser e un account Google. È il modo più rapido per
 provare gli esempi mentre si legge.
+
+:::{only} html
+Il collegamento, dove c'è, sta in testa al capitolo («Esegui il codice»).
+:::
+
+:::{only} latex
+Il codice di ogni capitolo si esegue online, su book.paithon.it.
+:::
 
 ### Sul proprio computer
 
-Serve un **terminale**, cioè la finestra in cui si scrivono comandi al
-computer invece di cliccare: si chiama *Terminale* su macOS e Linux, *Prompt
-dei comandi* (o *PowerShell*) su Windows. Su Linux Python c'è già. Su macOS
-no: `/usr/bin/python3` è un segnaposto che al primo uso propone di installare
-gli strumenti da sviluppatore di Xcode, e conviene accettare, oppure scaricare
-Python da `python.org` come su Windows. Su Windows si scarica da `python.org`,
-ricordando di spuntare «Add Python to PATH» durante l'installazione: è la
-casella che dice al terminale dove Python è stato messo, e senza di essa il
-terminale risponderà che Python non lo trova. Poi, quattro gesti:
+Serve un **terminale**, cioè la finestra in cui si scrivono comandi al computer
+invece di cliccare: si chiama *Terminale* su macOS e Linux, *Prompt dei comandi*
+(o *PowerShell*) su Windows. Serve anche Python 3.11 o successivo: le versioni
+delle librerie usate negli esempi (NumPy 2, Pandas 3, Matplotlib 3.11) non
+girano su un Python più vecchio. Su Linux un Python di solito c'è già, ma va
+controllato, perché una distribuzione non recente ne ha uno più datato. Su macOS
+no: `/usr/bin/python3` è un segnaposto che esiste per gli strumenti da
+sviluppatore di Apple, al primo uso propone di installarli e contiene una
+versione vecchia, quindi anche lì Python si scarica da `python.org`, come su
+Windows. Su Windows, durante l'installazione, si spunta «Add Python to PATH»: è
+la casella che dice al terminale dove Python è stato messo, e senza di essa il
+terminale risponderà che Python non lo trova. Poi, quattro gesti (su Windows il
+comando si chiama `python`, oppure `py`, al posto di `python3`):
 
 ```text
 python3 --version        # c'è? risponde con il numero, per esempio "Python 3.12.3"
@@ -328,24 +346,32 @@ diffusi sono Visual Studio Code e PyCharm, gratuiti entrambi. Se un
 programma non finisce più (capita: basta un ciclo scritto male) si ferma
 premendo `Ctrl+C`.
 
-### Le librerie, e la scatola in cui metterle
+### Le librerie, e l'ambiente in cui metterle
 
-Le librerie non arrivano con Python: si installano una volta con `pip`,
-il programma che va a prenderle in rete e le mette al posto giusto (dentro
-l'ambiente virtuale di cui fra un attimo, `pip` c'è sempre). E conviene
-installarle dentro
-un **ambiente virtuale**, cioè una cartella-scatola che tiene le librerie di
-*questo* progetto separate da quelle di tutti gli altri:
+Le librerie scientifiche non arrivano con Python: si installano con `pip`, il
+programma che va a prenderle in rete (da PyPI, l'archivio pubblico dei
+pacchetti Python) e le mette al posto giusto. Prima di installarle, però,
+serve un posto dove metterle, per una ragione che di solito si impara a proprie
+spese. Hai un lavoro che gira, non lo tocchi da mesi, e nel frattempo per un
+esercizio nuovo aggiorni una libreria. La versione nuova ha cambiato il nome di
+un comando, il lavoro di prima smette di funzionare, e nessuno ti dice che è
+stato l'aggiornamento: te ne accorgi settimane dopo, quando riapri quel
+progetto e non parte più.
+
+Il rimedio è un **ambiente virtuale**: una cartella dentro il progetto con un
+proprio interprete e le proprie librerie, separate da quelle di tutti gli altri
+progetti. Si crea una volta, si attiva, e da lì `pip` installa dentro
+l'ambiente:
 
 ```text
-python3 -m venv .venv           # crea la scatola dentro la cartella del progetto
-source .venv/bin/activate       # la apre (su Windows: .venv\Scripts\activate)
+python3 -m venv .venv           # crea l'ambiente dentro la cartella del progetto
+source .venv/bin/activate       # lo attiva (su Windows: .venv\Scripts\activate)
 pip install numpy pandas matplotlib scikit-learn
 ```
 
 Su Debian e su Ubuntu il primo dei tre comandi può fermarsi lamentando che
-manca `ensurepip`. Quelle due distribuzioni consegnano Python senza il pezzo
-che fabbrica le scatole, e il pezzo va chiesto a parte, una volta sola, con
+manca `ensurepip`. Quelle due distribuzioni consegnano Python senza il modulo
+che crea gli ambienti, e il modulo va chiesto a parte, una volta sola, con
 `sudo apt install python3-venv`. La parolina `sudo` davanti a un comando
 significa «questo lo faccio da amministratore», e il terminale chiederà la
 password: serve perché stiamo aggiungendo qualcosa al computer intero, e non al
@@ -356,17 +382,18 @@ così», dove un modulo è un file di Python che si può tanto eseguire quanto
 importare; è il modo di lanciare uno strumento che viaggia dentro Python invece
 che un file scritto da te, e `venv` è quello strumento. `source` esegue le
 istruzioni contenute in un file senza aprire una finestra nuova, e serve
-proprio perché l'apertura della scatola deve valere per il terminale che hai
-davanti. Che abbia funzionato lo vedi subito: all'inizio della riga del
-terminale compare `(.venv)`, e resta lì finché la scatola è aperta.
+proprio perché l'attivazione deve valere per il terminale che hai davanti. Che
+abbia funzionato lo vedi subito: all'inizio della riga del terminale compare
+`(.venv)`, e resta lì finché l'ambiente è attivo.
 
-Finito di lavorare, dalla scatola si esce con `deactivate`, e quel `(.venv)`
-sparisce.
+Finito di lavorare, dall'ambiente si esce con `deactivate`, e quel `(.venv)`
+sparisce. Per ritrovare le stesse librerie su un'altra macchina,
+`pip freeze > requirements.txt` ne scrive l'elenco con le versioni in un file,
+e `pip install -r requirements.txt` le reinstalla.
 
-Di scatole, in giro, ci sono altre marche. Se in una guida senti nominare
-`conda` oppure `uv`, fanno questo stesso mestiere con altri comandi: `venv` e
-`pip` bastano per tutto quello che serve qui, e imparare due utensili per lo
-stesso chiodo è tempo tolto ai chiodi.
+Di strumenti per gli ambienti ce ne sono altri: se in una guida senti nominare
+`conda` oppure `uv`, fanno lo stesso lavoro con altri comandi. `venv` e `pip`
+bastano per tutto quello che serve qui.
 
 ```{figure} ../figures/preparare-ambiente-python.svg
 :name: fig-ambiente-python
@@ -378,28 +405,22 @@ non escono da lì, e due progetti sulla stessa macchina possono usare versioni
 diverse della stessa libreria senza incontrarsi.
 ```
 
-La separazione di {numref}`fig-ambiente-python` risparmia la classe di
-problemi più frustrante per chi comincia. Un esempio di quelli che capitano
-davvero: hai un lavoro che gira, non lo tocchi da mesi, e nel frattempo per un
-esercizio nuovo aggiorni una libreria. La versione nuova ha cambiato il nome di
-un comando, il lavoro di prima smette di funzionare, e nessuno ti dice che è
-stato l'aggiornamento: te ne accorgi settimane dopo, quando riapri quel
-progetto e non parte più. Con una scatola per progetto non succede, perché
-l'aggiornamento resta dentro la sua. Il Python di sistema resta
-intoccato, e cestinare un progetto significa cestinare anche il suo ambiente.
-Per lavorare come si lavora davvero, `pip install jupyterlab` e poi
-`jupyter lab` aprono gli stessi notebook nel browser, questa volta sulla
-propria macchina.
+La separazione di {numref}`fig-ambiente-python` è quella che evita il progetto
+che non parte più: l'aggiornamento resta dentro l'ambiente del progetto che lo
+ha chiesto. Il Python di sistema resta intoccato, e cestinare un progetto
+significa cestinare anche il suo ambiente.
 
-## Dagli strumenti al primo modello
+Per usare i notebook sulla propria macchina, `pip install jupyterlab` e poi
+`jupyter lab` li aprono nel browser, come su Colab.
 
-Da qui si passa alla tastiera. L'ambiente è pronto e quello che manca è il
-linguaggio: la sintassi di base e le strutture dati native, e poi le tre
-librerie con cui in Python si lavora sui numeri, sulle tabelle e sui grafici.
-Alla fine ci sarà da prendere un problema, tradurlo in codice e arrivare a un
-primo modello, ed è la stessa cassetta di attrezzi che aprono il
-{doc}`capitolo di matematica </Matematica/overview>` e quello sul
-{doc}`machine learning </MachineLearning/overview>`.
+## Dagli strumenti al linguaggio
+
+L'ambiente è pronto e manca il linguaggio: la
+sintassi di base e i contenitori che Python offre di suo (liste, tuple,
+dizionari, insiemi), poi le tre librerie con cui si lavora sui numeri, sulle
+tabelle e sui grafici. Sono gli attrezzi con cui il {doc}`capitolo di
+matematica </Matematica/overview>` fa i suoi conti e quello sul
+{doc}`machine learning </MachineLearning/overview>` costruisce i primi modelli.
 
 `````{tab} Elementare
 

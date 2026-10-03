@@ -1,28 +1,28 @@
 # Data augmentation: moltiplicare i dati senza raccoglierli
 
 Per insegnare a un bambino che cos'è una tazza non servono diecimila tazze. Ne
-basta una: la gira tra le mani, la guarda dall'alto e di lato, la vede al sole
-e in penombra, mezza nascosta dietro la caffettiera. Ogni sguardo è un'immagine
+basta una: la gira tra le mani, la guarda dall'alto e di lato, la vede al sole e
+in penombra, mezza nascosta dietro la caffettiera. Ogni sguardo è un'immagine
 diversa dello stesso oggetto, e da quella manciata di occhiate il concetto di
 "tazza" esce solidissimo. Una rete neurale non ha mani. Ma possiamo girare noi
 l'oggetto al posto suo: prendere ogni fotografia del training set e
-mostrargliela specchiata, ritagliata, un po’ ruotata, più chiara o più scura.
-Si chiama data augmentation (letteralmente "aumento dei dati") ed è il modo
-più economico che esista per moltiplicare gli esempi senza raccoglierne di
-nuovi. Non è un'idea recente: fra le {doc}`architetture storiche del deep
-learning </DeepLearning/architetture-storiche>` abbiamo visto che già AlexNet,
-nel 2012, la usava in modo aggressivo (ritagli casuali, riflessioni,
-perturbazioni di colore). Bastano i primi due, calcolano gli autori, per
-ricavare da ogni immagine oltre duemila varianti possibili
-{cite}`krizhevsky2012imagenet`, ed è una moltiplicazione, non una magia. Il
-conto si rifà a mano. Da un'immagine di 256 pixel di lato se ne ritaglia una di
-224: il bordo sinistro del ritaglio può quindi scivolare di $256 - 224 = 32$
-colonne, e il bordo alto di altrettante righe, il che fa $32 \times 32 = 1024$
-ritagli diversi. Lo specchio li raddoppia, e si arriva a $2048$. (A essere
-pignoli le posizioni sono $33 \times 33$, perché una la occupa il ritaglio
-tutto a sinistra e le altre trentadue sono gli scivolamenti: gli autori
-arrotondano alla potenza di due, che è il numero tondo per un computer, e la
-sostanza non cambia.)
+mostrargliela specchiata, ritagliata, un po’ ruotata, più chiara o più scura. Si
+chiama data augmentation (letteralmente "aumento dei dati") ed è il modo più
+economico che esista per moltiplicare gli esempi senza raccoglierne di nuovi.
+Non è un'idea recente. Negli anni Novanta le cifre scritte a mano si
+moltiplicavano già spostandole, allungandole e inclinandole, e così addestrata
+la rete LeNet-5 sbagliava lo 0,8% delle prove invece dello 0,95%
+{cite}`lecun1998gradient`; fra le {doc}`architetture storiche del deep learning
+</DeepLearning/architetture-storiche>` abbiamo visto che AlexNet, nel 2012, la
+usava in modo aggressivo (ritagli casuali, riflessioni, perturbazioni di
+colore). Bastano i primi due per ricavare da ogni immagine oltre duemila
+varianti possibili {cite}`krizhevsky2012imagenet`, ed è una moltiplicazione, non
+una magia. Il conto si rifà a mano. Da un'immagine di 256 pixel di lato se ne
+ritaglia una di 224: il bordo sinistro del ritaglio può stare tutto a sinistra o
+scivolare di una, due, fino a $256 - 224 = 32$ colonne, cioè in 33 posizioni, e
+il bordo alto in altrettante. Fanno $33 \times 33 = 1089$ ritagli diversi, che
+lo specchio raddoppia a $2178$. Gli autori scrivono $2048$, cioè contano
+trentadue posizioni per lato invece di trentatré; la sostanza non cambia.
 
 ## Cambiare i pixel, non l'etichetta
 
@@ -94,7 +94,8 @@ Da una sola immagine, cinque esempi "nuovi": i pixel cambiano, l'etichetta no.
 ```
 
 Come mostra {numref}`fig-data-augmentation`, da una fotografia ne ricaviamo
-molte: tutte diverse per la rete, tutte identiche per l'etichettatore.
+molte: tutte diverse per la rete, e tutte, per chi le guarda, la stessa foglia
+sana.
 
 ## Ogni epoca un'immagine nuova, ma mai all'esame
 
@@ -104,16 +105,20 @@ raccolta di foto sul disco non cresce di un byte, ma la rete non rivede mai due
 volte la stessa identica immagine. Un giro completo su tutte le foto si chiama
 epoca, e a ogni epoca le stesse foto tornano deformate in modo diverso.
 
-E c'è una regola d'oro che non ammette eccezioni disinvolte. Le foto sono
-divise in tre mucchi: quelle su cui la rete si allena (il training set),
-quelle su cui controlliamo strada facendo come sta andando per aggiustare le
-nostre scelte (il validation set) e quelle che restano chiuse in un
-cassetto fino alla fine, per il giudizio conclusivo (il test set).
-L'augmentation si applica solo al primo mucchio. Sugli altri due si fanno
-soltanto le operazioni che danno sempre lo stesso risultato: ridimensionare,
-ritagliare al centro e normalizzare, che vuol dire riportare i numeri dei
-pixel su una scala fissa, la stessa per tutte le immagini, così che una foto
-scattata in controluce e una scattata al sole partano dallo stesso metro.
+E c'è una regola d'oro che non ammette eccezioni disinvolte. Le foto sono divise
+in tre mucchi: quelle su cui la rete si allena (il training set), quelle su cui
+controlliamo strada facendo come sta andando per aggiustare le nostre scelte (il
+validation set) e quelle che restano chiuse in un cassetto fino alla fine, per
+il giudizio conclusivo (il test set). L'augmentation si applica solo al primo
+mucchio. Sugli altri due si fanno soltanto le operazioni che danno sempre lo
+stesso risultato: ridimensionare, ritagliare al centro e normalizzare.
+Normalizzare, qui, vuol dire sottrarre a ogni canale di colore una media e
+dividerlo per una deviazione standard fissate una volta per tutte, di solito
+quelle di ImageNet, così che i numeri entrino nella rete sulla stessa scala su
+cui è stata addestrata. È la stessa operazione per tutte le foto, quindi non
+pareggia la luce: una foto scattata in controluce resta più scura di una
+scattata al sole, e la differenza fra le due anzi si ingrandisce, perché si
+divide per un numero più piccolo di uno.
 
 `````{tab} Elementare
 È la differenza tra i compiti a casa e il compito in classe. A casa
@@ -134,7 +139,10 @@ tutta la classe e mette in pagella la media dei tre voti. Ripetibile lo è,
 perché le tre versioni restano quelle, ed equa pure, perché nessuno ne riceve
 una diversa dagli altri; e la media di tre prove misura un po’ meglio di una
 sola, qualche decimo di voto. Costa il triplo del tempo, e un voto ottenuto
-così si confronta solo con altri voti ottenuti allo stesso modo.
+così si confronta solo con altri voti ottenuti allo stesso modo. Per una foto
+le versioni sono per esempio l'immagine intera, la stessa specchiata e qualche
+ritaglio fisso, gli angoli e il centro: sempre gli stessi, per ogni foto e per
+ogni modello.
 `````
 
 `````{tab} Superiore
@@ -146,8 +154,11 @@ valutazione la pipeline dev'essere deterministica, per due ragioni: la metrica
 deve riflettere la distribuzione di *deployment* (le foto arrivano intere, non
 ritagliate a caso) e dev'essere riproducibile tra un'esecuzione e l'altra.
 Esiste un'eccezione consapevole, la *test-time augmentation*: si media la
-predizione su più copie trasformate della stessa immagine per guadagnare
-qualche decimo di punto. È una scelta dichiarata di inferenza, non
+predizione su $m$ copie della stessa immagine, trasformate in modo fissato, al
+costo di $m$ passaggi in avanti. AlexNet la usava già, con dieci ritagli (i
+quattro angoli e il centro, più i loro specchi), e nell'articolo la media sui
+dieci abbassa l'errore top-5 su ImageNet 2010 dal $18{,}3\%$ al $17{,}0\%$
+{cite}`krizhevsky2012imagenet`. È una scelta dichiarata di inferenza, non
 un'augmentation "dimenticata accesa", e il confronto con altri modelli va
 fatto a parità di questa scelta.
 `````
@@ -201,14 +212,14 @@ il compito: per un classificatore di cifre o di cartelli stradali, il
 
 ## Perché funziona: un altro modo di mettere il freno
 
-Impedire a una rete di imparare a memoria è un problema vecchio, e il libro ci
-ha già messo mano due volte: nella {doc}`sezione su overfitting e validazione
-</MachineLearning/overfitting-validazione>` penalizzando i modelli che si
-affidano troppo a pochi numeri grossi (la regolarizzazione $\ell_2$), in quella
-sul deep learning spegnendo a caso una parte della rete a ogni passo, il
-dropout {cite}`srivastava2014dropout`. Tutti questi freni si chiamano
-regolarizzazioni, e l'augmentation è uno di loro, con una differenza:
-agisce sui dati invece che sulla rete.
+Impedire a una rete di imparare a memoria è un problema vecchio, e i freni già
+incontrati sono due: la regolarizzazione $\ell_2$, che penalizza i modelli che
+si affidano troppo a pochi numeri grossi ({doc}`overfitting e validazione
+</MachineLearning/overfitting-validazione>`), e il dropout, che spegne a caso
+una parte della rete a ogni passo ({doc}`ottimizzazione e regolarizzazione
+</DeepLearning/ottimizzazione-regolarizzazione>`) {cite}`srivastava2014dropout`.
+Freni di questo genere si chiamano regolarizzazioni, e l'augmentation è una di
+loro, con una differenza: agisce sui dati invece che sulla rete.
 
 `````{tab} Elementare
 Torniamo ai compiti a casa, e chiediamoci perché l'insegnante cambi i numeri
@@ -217,7 +228,10 @@ se i numeri cambiano, memorizzare non serve più a niente e l'unico modo di
 rispondere bene è capire la regola. L'augmentation fa questo alla rete: le
 rende impossibile "fotografare" il training set, perché il training set non è
 mai due volte lo stesso. Ciò che sopravvive a specchi, ritagli e cambi di luce
-è proprio quello che vogliamo: l'idea di gatto, non i pixel di *quel* gatto.
+è proprio quello che vogliamo: l'idea di gatto, non i pixel di *quel* gatto. E
+il freno si vede nella risposta: alla rete che riceve la stessa foto un po’
+storta, un po’ più chiara, un po’ più stretta, conviene darle sempre la stessa
+risposta, cioè diventare poco sensibile proprio a quei piccoli cambiamenti.
 `````
 
 `````{tab} Superiore
@@ -235,20 +249,44 @@ $$
 dove $\mathcal{T}$ è la distribuzione sulle trasformazioni ammesse. In altre
 parole allarga il supporto della distribuzione empirica: invece di esigere la
 risposta giusta in $n$ punti isolati, la esige su interi intorni, e questo
-spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte. Per
-trasformazioni piccole l'equivalenza con un regolarizzatore è un conto: se $T$
-sposta l'ingresso di $\xi\,\mathbf{t}$ lungo la direzione $\mathbf{t}$, con
-$\xi$ a media nulla e varianza $\sigma_\xi^2$, per un'uscita scalare e la
-perdita $\ell = \frac{1}{2}(\hat{y} - y)^2$ lo sviluppo al secondo ordine dà, a
-meno di un termine proporzionale al residuo $f_\theta(\mathbf{x}_i) - y_i$
-(nullo dove il modello interpola, e in media quando $f_\theta$ è la media
-condizionata di $y$), con $\mathbf{t}_i$ la direzione della trasformazione nel
-punto $\mathbf{x}_i$, $\hat{R}_{\text{aug}} \approx \hat{R} +
-\frac{\sigma_\xi^2}{2}\,\frac{1}{n} \sum_{i} \big(\nabla_{\mathbf{x}}
-f_\theta(\mathbf{x}_i)^\top \mathbf{t}_i\big)^2$: una penalità sulla derivata
-dell'uscita lungo la trasformazione, la *tangent propagation*, che col rumore
-gaussiano al posto di $\mathbf{t}$ diventa la regolarizzazione di Tikhonov sul
-gradiente rispetto all'ingresso. È l'idea del *vicinal risk minimization*,
+spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte.
+
+Per trasformazioni piccole l'equivalenza con un regolarizzatore si scrive per
+intero. Sia $T$ lo spostamento dell'ingresso di $\xi\,\mathbf{t}_i$ lungo la
+direzione $\mathbf{t}_i$ che la trasformazione ha nel punto $\mathbf{x}_i$, con
+$\xi$ a media nulla e varianza $\sigma_\xi^2$, e sia
+$\ell = \frac{1}{2}(\hat{y} - y)^2$ con uscita scalare
+$\hat{y} = f_\theta(\mathbf{x}_i)$. Si sviluppa
+$f_\theta(\mathbf{x}_i + \xi\mathbf{t}_i)$ al secondo ordine in $\xi$, si
+eleva al quadrato e si media su $\xi$: i termini di primo grado si annullano, e
+restano quelli di secondo,
+
+$$
+\mathbb{E}_\xi[\ell] \approx \ell + \frac{\sigma_\xi^2}{2}
+\Big[\big(\nabla_{\mathbf{x}} f_\theta(\mathbf{x}_i)^\top \mathbf{t}_i\big)^2
++ \big(f_\theta(\mathbf{x}_i) - y_i\big)\,
+\mathbf{t}_i^\top \mathbf{H}_i\, \mathbf{t}_i\Big],
+$$
+
+dove $\mathbf{H}_i$ è l'hessiana di $f_\theta$ rispetto all'ingresso in
+$\mathbf{x}_i$. Il secondo termine è proporzionale al residuo: si annulla dove
+il modello interpola, e in media quando $f_\theta$ è la media condizionata di
+$y$, ma altrove non è trascurabile e può anche prevalere. Il primo, mediato
+sugli $n$ esempi, è la penalità
+$\frac{\sigma_\xi^2}{2}\frac{1}{n}\sum_i(\nabla_{\mathbf{x}}
+f_\theta(\mathbf{x}_i)^\top \mathbf{t}_i)^2$ sulla derivata dell'uscita lungo
+la trasformazione, la *tangent propagation* {cite}`simard1992tangent`; con un
+rumore gaussiano isotropo di varianza $\sigma^2$ al posto di $\xi\mathbf{t}_i$
+diventa $\frac{\sigma^2}{2}\lVert\nabla_{\mathbf{x}} f_\theta\rVert^2$, la
+regolarizzazione di Tikhonov sul gradiente rispetto all'ingresso
+{cite}`bishop1995training`. Con la cross-entropy il quadrato della derivata
+lascia il posto a $\mathbf{g}_i^\top\big(\mathrm{diag}(\mathbf{p}) -
+\mathbf{p}\mathbf{p}^\top\big)\mathbf{g}_i$, dove $\mathbf{g}_i$ è la derivata
+dei logit lungo $\mathbf{t}_i$ e la matrice è l'hessiana della perdita
+rispetto ai logit, e il termine con le hessiane dei logit è pesato da
+$\mathbf{p} - \mathbf{y}$, che fa la parte del residuo.
+
+È l'idea del *vicinal risk minimization*,
 formulata da Chapelle, Weston, Bottou e Vapnik {cite}`chapelle2000vicinal`
 (apprendere non dai punti, ma dai loro dintorni), che tra poco vedremo portata
 alle estreme conseguenze da mixup {cite}`zhang2018mixup`.
@@ -257,35 +295,40 @@ alle estreme conseguenze da mixup {cite}`zhang2018mixup`.
 ## Mescolare, cancellare, imparare la ricetta
 
 Le trasformazioni geometriche e di colore non esauriscono il repertorio. Le
-varianti moderne sono più spregiudicate: producono immagini che nessuna
-macchina fotografica scatterebbe, eppure aiutano.
+varianti più recenti mescolano due immagini, ne cancellano un rettangolo o
+affidano la scelta delle trasformazioni a una ricerca automatica: producono
+immagini che nessuna macchina fotografica scatterebbe, e regolarizzano più a
+fondo.
 
 `````{tab} Elementare
 **Mixup** è come proiettare due diapositive sullo stesso schermo, una al 70%
 e una al 30% di luminosità: un'immagine che è per sette decimi un gatto e per
 tre decimi un cane. Anche la risposta richiesta si mescola nelle stesse
-proporzioni: "70% gatto, 30% cane". Sembra assurdo, e serve a curare un vizio
-preciso. Una rete addestrata solo su risposte secche («questo è un gatto,
-punto») impara a essere sicurissima sempre, anche quando non ha capito niente,
-perché il gioco premia soltanto chi si sbilancia. Chiedendole ogni tanto una
-risposta a metà la si costringe a essere sicura solo dove ha davvero visto
-qualcosa. Quanto mescolare lo decide una manopola, e la si tiene bassa. Il 70
-contro 30 è già una dose generosa, e il più delle volte esce qualcosa di molto
-più sbilanciato, una diapositiva quasi piena e l'altra appena un'ombra; il
-mezzo e mezzo capita di rado. **Cutout** è ancora più semplice: si copre un
-rettangolo a caso della foto, come con un post-it. Se la rete riconosceva i
-gatti solo dalle orecchie, con il post-it sulle orecchie dovrà imparare anche
-zampe e coda. Infine, invece di scegliere a mano le trasformazioni, si può
-lasciare che sia un algoritmo a cercare la combinazione migliore per il nostro
-archivio di foto: ne prova tante per davvero, addestra ogni volta un modello,
-guarda quale combinazione gli fa prendere il voto più alto a un esame di
-prova, e tiene
+proporzioni: "70% gatto, 30% cane". Sembra assurdo, e fa due cose. Fra un
+gatto e un cane, dove l'addestramento normale non dice niente, costringe la
+rete a passare dall'uno all'altro per gradi, invece di saltare di colpo da una
+risposta all'altra. E, come si è visto dopo, la tiene meno sicura di sé dove
+non ha capito: una rete addestrata solo su risposte secche («questo è un
+gatto, punto») impara a essere sicurissima sempre, perché il gioco premia
+soltanto chi si sbilancia. Quanto mescolare lo decide una manopola, e la si
+tiene bassa. Il 70 contro 30 è già una dose generosa, e il più delle volte esce
+qualcosa di molto più sbilanciato, una diapositiva quasi piena e l'altra
+appena un'ombra; il mezzo e mezzo capita di rado.
+
+**Cutout** è ancora più semplice: si copre un rettangolo a caso della foto,
+come con un post-it. Se la rete riconosceva i gatti solo dalle orecchie, con il
+post-it sulle orecchie dovrà imparare anche zampe e coda.
+
+Infine, invece di scegliere a mano le trasformazioni, si può lasciare che sia
+un algoritmo a cercare la combinazione migliore per il nostro archivio di foto:
+ne prova tante per davvero, addestra ogni volta un modello, guarda quale
+combinazione gli fa prendere il voto più alto a un esame di prova, e tiene
 quella. È l'idea delle *policy apprese* (una *policy*, qui, è semplicemente la
-lista delle trasformazioni scelte, con quanto forte applicarle). Costa
-carissimo, ed è per questo che quasi nessuno la ricerca da sé: si scaricano le
-combinazioni già trovate da chi aveva le macchine per cercarle. Poi si è visto
-che bastano due manopole, quante trasformazioni pescare e quanto forti
-applicarle, e provarle tutte è alla portata di chiunque.
+lista delle trasformazioni scelte, con quanto forte applicarle). La prima
+versione costava carissimo, migliaia di addestramenti per una ricerca sola.
+Poi si è visto che bastano due manopole, quante trasformazioni pescare a caso
+e quanto forti applicarle, e provarne tutte le combinazioni è alla portata di
+chiunque.
 `````
 
 `````{tab} Superiore
@@ -335,26 +378,32 @@ ricerca a due soli iperparametri (numero e intensità delle trasformazioni).
 
 ## Quando aiuta, e quando no
 
-L'augmentation rende di più dove i dati scarseggiano: con poche centinaia di
-immagini per categoria può far salire di parecchi punti percentuali la quota di
-foto indovinate, ed è la prima cosa da provare quando il modello impara a
-memoria invece di capire (insieme, non in alternativa, al transfer learning
-visto nella sezione precedente). Ma non è
+L'augmentation rende di più dove i dati scarseggiano, ed è la prima cosa da
+provare quando il modello impara a memoria invece di capire (insieme, non in
+alternativa, al transfer learning visto nella sezione precedente). Ma non è
 una moltiplicazione miracolosa: le varianti di una foto portano *meno*
 informazione di altrettante foto nuove, perché raccontano sempre la stessa
 scena.
 
-Soprattutto, l'augmentation non cura lo shift di dominio. Se il modello è
-addestrato su foto diurne e in produzione arrivano riprese notturne, se il
-nuovo ospedale usa uno scanner diverso da quello del training set, nessuno
-specchio e nessun ritaglio colmerà quella distanza: è il problema di
-{doc}`quando i dati cambiano </MachineLearning/dati-che-cambiano>`, e la
-risposta è raccogliere dati rappresentativi del dominio reale, non deformare
-quelli vecchi. Anzi,
-un'augmentation scelta male può peggiorare le cose, perché iniettare
-l'invarianza sbagliata significa insegnare alla rete una cosa falsa sul mondo:
-una radiografia del torace specchiata mette il cuore a destra, un'anatomia
-rarissima che il modello imparerebbe a considerare normale. Le trasformazioni
+Soprattutto, non colma da sola la distanza fra i dati su cui il modello si è
+allenato e quelli che troverà al lavoro. Se è addestrato su foto diurne e in
+produzione arrivano riprese notturne, o se il nuovo ospedale usa uno scanner
+diverso da quello del training set, i dati di lavoro non vengono più dalla
+stessa distribuzione: è lo *shift di dominio*, un caso del dataset shift di
+{doc}`quando i dati cambiano </MachineLearning/dati-che-cambiano>`. Le
+trasformazioni lo riducono soltanto per la parte che sanno imitare: un
+disturbo di luce e di contrasto copre un pezzo della differenza fra il giorno
+e la sera, e catene di trasformazioni costruite apposta rendono un modello più
+robusto a disturbi che non ha mai visto {cite}`hendrycks2020augmix`. La fisica
+di uno scanner nuovo, o i pazienti di un'altra popolazione, nessuno specchio e
+nessun ritaglio li imita: lì servono dati rappresentativi del dominio reale.
+
+Anzi, un'augmentation scelta male può peggiorare le cose, perché iniettare
+l'invarianza sbagliata significa insegnare alla rete una cosa falsa sul mondo.
+Una radiografia del torace specchiata mette il cuore a destra, un'anatomia
+rarissima: per un modello che deve dire dove sta il cuore, o da che parte
+passa un catetere, lo specchio insegna il falso, mentre per uno che cerca una
+polmonite può essere una trasformazione legittima. Le trasformazioni
 codificano le nostre ipotesi sul problema, e delle ipotesi, come sempre, si
 risponde.
 
@@ -373,14 +422,14 @@ risponde.
   stesso risultato, altrimenti il voto non misura più niente.
 - Serve a impedire di imparare a memoria: se il compito non è mai due volte
   identico, memorizzarlo non conviene più, e l'unica strada che resta è capire.
-- Ci sono modi più spregiudicati: mescolare due foto (e mescolare nelle
-  stesse proporzioni la risposta), coprire un rettangolo a caso come con un
-  post-it, oppure lasciare che sia un algoritmo a cercare la combinazione
-  migliore.
-- Non è una moltiplicazione miracolosa, e soprattutto non serve a niente se
-  le foto vere sono di un altro tipo: se ci si è allenati di giorno e in
-  produzione arrivano riprese notturne, servono foto nuove, non deformazioni
-  di quelle vecchie.
+- Ci sono varianti che producono foto che nessuna macchina fotografica
+  scatterebbe: mescolare due foto (e mescolare nelle stesse proporzioni la
+  risposta), coprire un rettangolo a caso come con un post-it, oppure
+  lasciare che sia un algoritmo a cercare la combinazione migliore.
+- Non è una moltiplicazione miracolosa, e non basta se le foto vere sono di
+  un altro tipo: copre soltanto la parte della differenza che le deformazioni
+  sanno imitare, e se ci si è allenati di giorno e in produzione arrivano
+  riprese notturne servono anche foto nuove.
 ```
 
 `````
@@ -399,11 +448,15 @@ risponde.
   test solo operazioni deterministiche (resize, crop centrale, normalize).
 - È una regolarizzazione: allarga il supporto della distribuzione
   empirica e contrasta l'overfitting, come il dropout e la penalità $\ell_2$.
+  Per trasformazioni piccole equivale, a meno di un termine proporzionale al
+  residuo, a una penalità sulla derivata dell'uscita lungo la trasformazione
+  (*tangent propagation*).
 - Varianti moderne: mixup (interpolazione di immagini ed etichette),
   cutout/random erasing (occlusioni casuali), policy apprese
   (AutoAugment, RandAugment).
-- Non risolve lo shift di dominio: se i dati di produzione sono diversi
-  da quelli di training, servono dati nuovi, non trasformazioni.
+- Riduce lo shift di dominio solo per la parte che le trasformazioni sanno
+  descrivere (luce, rumore, sfocatura); per il resto servono dati del dominio
+  nuovo.
 ```
 
 `````

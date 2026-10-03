@@ -23,22 +23,22 @@ ricavate dall'esperienza.
 Se giocava contro sé stesso, però, chi gli diceva quale mossa fosse quella
 buona? Nessuno, ed è qui l'idea. Il programma dava un voto alla posizione che
 aveva davanti, poi guardava qualche mossa più in là, e correggeva il voto di
-adesso avvicinandolo a quello che vedeva dopo. Nessuno gli diceva chi
-avesse ragione: a fare da maestro era la propria stessa valutazione, presa un
-passo più avanti, dove si vede meglio. Ripetuto per tutta la partita e per
-tutte le partite, quel voto diventa un fiuto per le posizioni che portano bene.
-È il modo di imparare per tentativi e ricompense, e la sua forma
-matura si chiama apprendimento per differenze temporali: il nome torna nella
-pagina sul {doc}`Q-learning </ReinforcementLearning/q-learning>`, ed è lì che
-si vede per intero.
+adesso avvicinandolo a quello che vedeva dopo. Nessuno gli diceva chi avesse
+ragione: a fare da maestro era la propria stessa valutazione, presa un passo più
+avanti, dove si vede meglio. Qualcosa di vero entrava comunque: una delle voci
+del voto, i pezzi in più o in meno rispetto all'avversario, Samuel la fissava a
+mano e il programma non la cambiava, e guardando più avanti le catture si
+vedono. Ripetuto per tutta la partita e per tutte le partite, quel voto diventa
+un fiuto per le posizioni che portano bene. È l'idea da cui nascerà
+l'apprendimento per differenze temporali: il nome torna nella pagina sul
+{doc}`Q-learning </ReinforcementLearning/q-learning>`, ed è lì che si vede per
+intero.
 
-Il {doc}`capitolo di matematica </Matematica/overview>` si era chiuso
-sull'ultimo strato di un modello linguistico, cioè su un punto d'arrivo; con
-Samuel siamo al punto di partenza, e la strada fra i due è il resto del libro.
-
-In quell'articolo del 1959 compare, tra le prime volte nella storia,
-l'espressione *machine learning*: la capacità di un calcolatore di migliorare a
-un compito senza essere riprogrammato a mano.
+In quell'articolo del 1959 compare, fra le prime volte, l'espressione *machine
+learning*: la capacità di un calcolatore di migliorare a un compito senza essere
+riprogrammato a mano. Il {doc}`capitolo di matematica </Matematica/overview>` si
+era chiuso sull'ultimo strato di un modello linguistico, cioè su un punto
+d'arrivo; qui si torna all'origine dell'idea.
 
 È un'idea che ribalta il modo consueto di pensare al software.
 
@@ -83,18 +83,13 @@ $\theta$.
 
 `````
 
-Il risultato di tutto questo ha un nome, ed è la parola che tornerà da qui alla
-fine: il modello. Non è il
-modellino di un aeroplano né un'indossatrice. È il programma *dopo* che
-ha visto i dati: la regola che quei dati hanno prodotto. Una regola del genere,
-dentro un calcolatore, è fatta di numeri (quanto conta la parola «vincita»,
-quanto conta un mittente sconosciuto), e sono proprio quei numeri a rendere la
-regola quella lì e non un'altra. Il codice che scriviamo
-resta sempre lo stesso; il modello è ciò che ne esce quando lo si è fatto
-passare su un mucchio di esempi. E *come* faccia a trovare quelle regolarità,
-chi gli dica di guardare le parole di un'email e non il colore dello schermo, è
-esattamente la domanda giusta: la risposta arriva un pezzo per volta nelle
-prossime sezioni, e per ora basta sapere che quelle regole non le scriviamo noi.
+Il risultato dell'addestramento è il modello: la funzione $f_\theta$, cioè la
+regola con i suoi parametri $\theta$ (i numeri regolabili) fissati dai dati. Per
+il filtro antispam, $\theta$ contiene i numeri che dicono quanto conta la parola
+«vincita» o un mittente sconosciuto; il codice che li usa è sempre lo stesso, e
+cambiano solo quei numeri. Come un metodo trovi i valori di $\theta$, e quali
+caratteristiche dell'input guardi, varia da un metodo all'altro; quello che
+hanno in comune è che la regola non viene scritta a mano.
 
 ## Che cosa vuol dire "imparare": la definizione di Mitchell
 
@@ -137,9 +132,9 @@ $E$.
 - $E$ (*experience*): i dati da cui apprende, per esempio $m$ email etichettate.
 - $P$ (*performance*): una metrica scalare, per esempio l'accuratezza sul test.
 
-La formulazione è deliberatamente astratta: non nomina reti neurali né alberi
-di decisione. È un contratto che qualunque algoritmo di apprendimento deve
-rispettare: se all'aumentare di $E$ la $P$ non cresce, non c'è apprendimento.
+La formulazione è deliberatamente astratta: non nomina reti neurali né alberi di
+decisione. È un contratto che qualunque algoritmo di apprendimento deve
+rispettare: se all'aumentare di $E$ la $P$ non migliora, non c'è apprendimento.
 
 `````
 
@@ -148,15 +143,13 @@ rispettare: se all'aumentare di $E$ la $P$ non cresce, non c'è apprendimento.
 A seconda del tipo di esperienza a disposizione, il machine learning si
 divide in tre grandi famiglie (chi scrive di ricerca le chiama *paradigmi*).
 
-**Apprendimento supervisionato.** È il caso del filtro antispam: ogni esempio
-arriva con la sua risposta giusta (l'etichetta). Il modello impara a legare
-la domanda alla risposta: quello che entra si chiama *input*, quello che esce
-*output*, e sono due parole che d'ora in poi useremo sempre. Se l'output è una
-categoria si parla di *classificazione* (spam / non spam, gatto / cane); se è
-un numero su una scala continua, cioè una scala in cui fra due valori ce
-n'è sempre un altro (2,5 metri quadri esistono, 2,5 stanze no), si parla di
-*regressione* (prevedere il prezzo di una casa dai suoi metri quadri). È di gran
-lunga il modo più usato in pratica.
+**Apprendimento supervisionato.** Ogni esempio arriva con la sua risposta
+giusta, l’*etichetta*, come nel filtro antispam, e il modello impara a prevedere
+l’*output* (quello che esce) a partire dall’*input* (quello che entra). Se
+l'output è una categoria si parla di *classificazione* (spam o non spam, gatto o
+cane); se è un numero di cui ogni valore intermedio è possibile (2,5 metri
+quadri esistono, 2,5 stanze no), di *regressione* (il prezzo di una casa dai
+suoi metri quadri).
 
 `````{tab} Elementare
 
@@ -194,46 +187,53 @@ $$
 
 Qui $f_\theta(\mathbf{x}^{(i)}) = \hat{y}^{(i)}$ è la predizione del modello e
 $\ell$ misura la sua distanza dal valore vero $y^{(i)}$; la media di tutti gli
-$\ell$ è la loss sull'intero insieme, che il libro scrive $\mathcal{L}$. L'intero
-addestramento supervisionato è, in fondo, questo problema di minimizzazione.
+$\ell$ è la loss sull'intero insieme, $\mathcal{L}$. L'addestramento
+supervisionato consiste in questo problema di minimizzazione; la
+regolarizzazione vi aggiunge una penalità, e la validazione controlla ciò che
+interessa davvero, l'errore su dati nuovi.
 
 `````
 
 **Apprendimento non supervisionato.** Qui le etichette non ci sono: il modello
 riceve solo gli input e deve scoprire da sé una struttura nascosta. L'esempio
 classico è il *clustering*: raggruppare i clienti di un negozio in segmenti
-simili senza sapere in anticipo quali segmenti esistano. Rientrano qui anche la
+simili senza sapere in anticipo quali segmenti esistano. Rientrano qui la
 riduzione della dimensionalità, cioè descrivere ogni esempio con meno numeri
-senza perderne l'essenza (le «dimensioni» sono le colonne della tabella in cui
-si mettono i dati, una per caratteristica, e la {doc}`sezione sull'apprendimento
-supervisionato </MachineLearning/apprendimento-supervisionato>` spiega perché si
-chiamino così); e i sistemi che rilevano anomalie in una transazione.
+conservandone il più possibile l'informazione (le «dimensioni» sono le colonne
+della tabella, una per caratteristica: la {doc}`sezione sull'apprendimento
+supervisionato
+</MachineLearning/apprendimento-supervisionato>` spiega perché si chiamino
+così), e il rilevamento di anomalie, per esempio una transazione che non
+somiglia alle altre, quando non si hanno esempi etichettati di anomalie.
 
 **Apprendimento per rinforzo.** Non ci sono etichette, e non c'è nemmeno un
-mucchio di esempi fissato in partenza: c'è un agente (un programma che
-agisce, non una persona) che compie azioni in un ambiente e riceve, di tanto in
-tanto, una ricompensa. L'agente impara per tentativi la strategia che
-massimizza la ricompensa nel tempo. È il modo in cui il programma AlphaGo, del
-laboratorio DeepMind, imparò nel 2016 a battere i campioni del go, un antico
-gioco da tavolo orientale: quella prima versione studiò anche partite umane
-etichettate, mentre la versione dell'anno dopo imparò solo giocando contro sé
-stessa. Che poi è esattamente ciò che faceva il programma di dama di Samuel:
-giocare, vedere l'esito, correggere la strategia. Vincere era la ricompensa.
+mucchio di esempi fissato in partenza: c'è un agente (un programma che agisce,
+non una persona) che compie azioni in un ambiente e riceve, di tanto in tanto,
+una ricompensa. L'agente impara per tentativi la strategia che massimizza la
+ricompensa nel tempo. È il modo in cui il programma AlphaGo, del laboratorio
+DeepMind, imparò nel 2016 a battere i campioni del go, un antico gioco da tavolo
+orientale: quella prima versione studiò anche partite umane etichettate, mentre
+la versione dell'anno dopo imparò solo giocando contro sé stessa. Di questo il
+programma di dama di Samuel è un antenato: giocava contro una copia di sé stesso
+e, dopo ogni mossa, spostava la valutazione della posizione verso quella che
+otteneva guardando qualche mossa più avanti. Non c'era una ricompensa esplicita,
+e nemmeno un trattamento speciale della vittoria.
 
 ## Dall'idea al modello: il flusso di un progetto
 
 Un progetto di machine learning non è mai solo "addestrare un modello". È una
-catena di passaggi, e (dettaglio cruciale) non è una linea retta ma un
-ciclo: i risultati della valutazione ti dicono come tornare indietro e
-fare meglio ({numref}`fig-workflow-ml`).
+catena di passaggi, e non è una linea retta ma un ciclo: i risultati della
+valutazione ti dicono come tornare indietro e fare meglio
+({numref}`fig-workflow-ml`).
 
 ```{figure} ../figures/workflow-ml.svg
 :name: fig-workflow-ml
 :alt: Cinque blocchi in fila (Dati, Feature, Modello, Valutazione, Deploy) collegati da frecce; una freccia di feedback torna dalla Valutazione alle Feature.
 :width: 95%
 
-Il flusso tipico di un progetto ML. Dopo la valutazione si torna quasi sempre
-indietro a rivedere feature e modello, e si ricomincia il giro.
+Il flusso tipico di un progetto ML. Dopo la valutazione, fatta su dati tenuti da
+parte, si torna quasi sempre indietro a rivedere le feature, e si ricomincia il
+giro.
 ```
 
 I passaggi, in ordine:
@@ -242,38 +242,40 @@ I passaggi, in ordine:
    errori). Spesso è la fase più lunga e ingrata dell'intero progetto. Di
    solito si organizzano in una tabella: una riga per esempio, una colonna
    per ogni cosa che di quell'esempio abbiamo misurato.
-2. **Feature**: un modello non sa leggere un'email, sa fare conti su dei
-   numeri. Le feature (in italiano: le *caratteristiche*, e sono proprio le
-   colonne della tabella) sono i numeri con
-   cui descriviamo ogni esempio, e sceglierli è un lavoro nostro. Di un'email
-   possiamo prendere quante parole ha, quanti punti esclamativi, quante volte
-   compare la parola «vincita», se il mittente è in rubrica: quattro numeri, e
-   quell'email per il modello è diventata quei quattro numeri. Cambiando i
-   numeri che si prendono cambia la risposta, ed è per questo che si dice che
-   rappresentare bene un problema è metà della soluzione.
+2. **Feature**: un modello non legge un'email, calcola su numeri. Le feature (in
+   italiano le *caratteristiche*, cioè le colonne della tabella) sono i numeri
+   con cui si descrive ogni esempio. Di un'email si possono prendere il numero
+   di parole, quello dei punti esclamativi, quante volte compare «vincita», se
+   il mittente è in rubrica: quattro numeri, e per il modello l'email diventa
+   quei quattro numeri. Nel machine learning classico le sceglie chi progetta il
+   sistema, e cambiandole cambia la risposta; le reti profonde, tema del
+   {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`, le ricavano in
+   parte dai dati grezzi.
 3. **Modello**: decidere che *forma* dare al modello (una retta? un albero di
-   domande? una rete?) e poi addestrarlo sui dati.
-   Dentro un modello ci sono dei numeri regolabili, come le manopole di un
-   vecchio amplificatore: si chiamano parametri (nelle formule del libro:
-   $\theta$, la lettera greca *theta*). Addestrare vuol dire girare quelle
-   manopole finché il modello sbaglia il meno possibile, e «quanto sbaglia» è a
-   sua volta un numero, che si chiama loss (la *perdita*: quanto ci costa
-   ogni risposta sbagliata). Attenzione a non confondere i due momenti: la
-   forma la scegliamo prima, i numeri dentro li trova l'addestramento, e
-   «modello» in senso stretto è il risultato dei due messi insieme.
-4. **Valutazione**: misurare le prestazioni su dati mai visti in
-   addestramento, per stimare come il modello si comporterà nel mondo reale.
-   Perché non riusare gli esempi di prima, che ci sono già? Perché su quelli un
-   modello può cavarsela benissimo limitandosi a ricordarli, e ricordare non è
-   un'abilità che ci serva: quello che vogliamo sapere è come se la caverà
-   domani, su un'email che nessuno ha ancora scritto.
+   domande? una rete?) e poi addestrarlo sui dati. Dentro un modello ci sono dei
+   numeri regolabili, i parametri (nelle formule, tutti insieme, $\theta$, la
+   lettera greca *theta*). Addestrare vuol dire modificarli finché il modello
+   sbaglia il meno possibile sui dati, e «quanto sbaglia» è a sua volta un
+   numero, che si chiama loss (la *perdita*): la media, su tutti gli esempi, di
+   quanto costa ogni risposta sbagliata. Si scrive $\mathcal{L}(\theta)$ (si
+   legge «elle di theta»: la loss calcolata con quei parametri), perché dipende
+   dai parametri. Attenzione a non confondere i due momenti: la forma la
+   scegliamo prima, i numeri dentro li trova l'addestramento, e «modello» in
+   senso stretto è il risultato dei due messi insieme.
+4. **Valutazione**: misurare le prestazioni su dati mai visti in addestramento.
+   Gli esempi già usati non servono allo scopo: su di essi un modello può avere
+   un errore bassissimo limitandosi a riprodurli, e quell'errore non dice come
+   si comporterà su un'email nuova. Quello che interessa è l'errore su dati mai
+   visti, l’*errore di generalizzazione*.
 5. **Deploy**: se i numeri convincono, mettere il modello in produzione,
    cioè lasciarlo lavorare sul serio, con utenti veri e dati che arrivano ogni
    giorno, e sorvegliarlo, perché i dati del mondo cambiano nel tempo.
 
-La freccia di ritorno è la parte più importante: quasi mai il primo tentativo
-è quello buono. Si osserva dove il modello sbaglia, si tornano a ritoccare le
-feature o il modello, e si ricomincia il giro.
+La freccia di ritorno è la parte più importante: quasi mai il primo tentativo è
+quello buono. Si osserva dove il modello sbaglia su dati tenuti da parte per
+giudicare, si ritoccano le feature o il modello, e si ricomincia il giro; su
+quali dati si giudica lo stabilisce la {doc}`sezione su overfitting e
+validazione </MachineLearning/overfitting-validazione>`.
 
 `````{tab} Elementare
 
@@ -288,12 +290,14 @@ scikit-learn.
 
 `````{tab} Superiore
 
-Il metodo `fit` risolve, esattamente o in modo approssimato, la minimizzazione
-della loss vista sopra; per l'albero di decisione dell'esempio la risolve in
-modo approssimato, perché sceglie una domanda alla volta senza tornare
-indietro. `predict` applica la $f_{\theta^\star}$ appresa. La separazione tra
-dati di addestramento e dati di test serve a stimare la capacità di
-generalizzazione, non la mera memorizzazione degli esempi già visti.
+Il metodo `fit` cerca i parametri che rendono piccola la loss sugli esempi di
+addestramento, in modo esatto o approssimato a seconda del modello. L'albero di
+decisione dell'esempio lo fa in modo approssimato: costruisce le domande una
+alla volta, senza tornare indietro, e a ogni passo sceglie quella che riduce di
+più una misura di impurità (per default l'indice di Gini), che fa le veci della
+loss. `predict` applica la $f_{\theta^\star}$ appresa. La separazione tra dati
+di addestramento e dati di test serve a stimare l'errore di generalizzazione,
+non la mera memorizzazione degli esempi già visti.
 
 `````
 
@@ -310,17 +314,16 @@ modello.fit(X_train, y_train)       # training: il modello impara dai dati
 y_pred = modello.predict(X_test)    # previsione su dati mai visti in training
 ```
 
-## Questi metodi non sono roba da museo
+## Dati tabellari: dove il machine learning classico resta competitivo
 
-C'è una scena che si ripete in ogni squadra alle prime armi. Arriva un problema
-(prevedere quali clienti abbandoneranno il servizio, a partire da una tabella
-di età, contratti, consumi, reclami) e qualcuno propone subito una rete
-neurale profonda, perché è quella di cui parlano tutti. Passano due settimane
-di messa a punto, e alla fine la rete arriva faticosamente a pareggiare un
-*gradient boosting*, cioè tanti
-piccoli modelli semplici messi in fila, ognuno a correggere gli errori del
-precedente. Quel gradient boosting l'aveva addestrato in dieci minuti un
-collega scettico, senza toccare nemmeno una impostazione.
+Una scena frequente nelle squadre alle prime armi. Arriva un problema (prevedere
+quali clienti abbandoneranno il servizio, a partire da una tabella di età,
+contratti, consumi, reclami) e qualcuno propone subito una rete neurale
+profonda, perché è quella di cui parlano tutti. Passano due settimane di messa a
+punto, e alla fine la rete arriva faticosamente a pareggiare un *gradient
+boosting*, cioè tanti piccoli modelli semplici messi in fila, ognuno a
+correggere gli errori del precedente. Quel gradient boosting l'aveva addestrato
+in dieci minuti un collega scettico, senza toccare nemmeno un'impostazione.
 
 ```{figure} ../figures/ml-classico-batte-deep-learning.svg
 :name: fig-tabellari-vs-non-strutturati
@@ -335,7 +338,7 @@ rivali.
 ```
 
 C'è un confine, e {numref}`fig-tabellari-vs-non-strutturati` lo disegna. È
-quello che la scena di prima ignora ogni volta, e conviene capire dove passa.
+quello che la scena di prima ignora ogni volta.
 
 `````{tab} Elementare
 
@@ -370,20 +373,22 @@ arrotondandolo, sbagliando proprio sui clienti a ridosso della soglia.
 L'albero quel salto lo fa netto, perché la sua domanda è già «la ricarica
 supera i cinquanta euro?», e di soglie così ne mette una dietro l'altra.
 
-Nella stessa tabella parecchie colonne non dicono niente sul problema: il
-codice interno del cliente, la data in cui la riga è stata digitata, un campo
-che qualcuno ha smesso di compilare due anni fa. La rete se le porta dietro
-tutte, e da quel rumore raccoglie qualcosa che scambia per un segnale. L'albero
-a ogni passo sceglie una colonna sola, e la sceglie perché divide bene chi
-resta da chi se ne va, quindi una colonna muta non la sceglie mai.
+Nella stessa tabella parecchie colonne non dicono niente sul problema: il codice
+interno del cliente, la data in cui la riga è stata digitata, un campo che
+qualcuno ha smesso di compilare due anni fa. La rete se le porta dietro tutte, e
+da quel rumore raccoglie qualcosa che scambia per un segnale. L'albero a ogni
+passo sceglie una colonna sola, e la sceglie perché divide bene chi resta da chi
+se ne va: una colonna muta, che non divide bene niente, di solito perde contro
+le colonne che contano. Con poche righe e moltissime colonne mute qualcuna vince
+per caso, ma l'albero ne risente meno di una rete, che le usa tutte.
 
-Quella gara è stata rifatta su decine di tabelle vere, dando ai due contendenti
-lo stesso tempo di messa a punto, e gli alberi hanno vinto. Vale per tabelle
-come quella sullo schermo, intorno alle diecimila righe. Su una tabella cento
-volte più grande la gara è ancora da correre. Dalla parte opposta, con qualche
-migliaio di righe soltanto, una rete profonda ha poco materiale. Sa costruirsi
-da sola le caratteristiche buone dai dati grezzi, cosa che un albero non sa
-fare, ma di esempi ne vuole tantissimi.
+Quella gara è stata rifatta nel 2022 su decine di tabelle vere, dando ai due
+contendenti lo stesso tempo di messa a punto, e gli alberi hanno vinto, su
+tabelle come quella sullo schermo, intorno alle diecimila righe. Su tabelle più
+grandi il divario si riduceva; su quelle più piccole non era stato misurato, e
+da allora sono arrivati modelli pre-addestrati che dichiarano di vincere proprio
+lì. Una rete profonda sa costruirsi da sola le caratteristiche buone dai dati
+grezzi, cosa che un albero non sa fare, ma di esempi ne vuole tantissimi.
 
 Resta il conto da pagare. Il modello del collega si è addestrato sul suo
 portatile e va in servizio così com'è, senza macchine speciali. Prima di
@@ -394,21 +399,27 @@ regola per bene, e molto spesso la risposta è già quella.
 
 `````{tab} Superiore
 
-L'osservazione è stata messa alla prova sistematicamente: Grinsztajn, Oyallon e
+L'osservazione è stata misurata su decine di dataset: Grinsztajn, Oyallon e
 Varoquaux (NeurIPS 2022) {cite}`grinsztajn2022why` hanno confrontato modelli ad
-albero e reti neurali su decine di dataset tabulari, trovando che i primi
-restano superiori anche a parità di ricerca degli iperparametri, cioè delle
-scelte che si fissano a mano prima di addestrare, sui dati di taglia media,
-dell'ordine dei diecimila esempi, che è la scala su cui il confronto è stato
-fatto. Fuori da quella scala il confronto resta aperto.
+albero e reti neurali su 45 dataset tabulari, trovando che i primi restavano
+superiori anche a parità di ricerca degli iperparametri, cioè delle scelte che
+si fissano a mano prima di addestrare, sui dati di taglia media, dell'ordine dei
+diecimila esempi. Il confronto è di quell'anno: da allora modelli pre-addestrati
+su dati sintetici, come TabPFN {cite}`hollmann2025tabpfn`, dichiarano di
+superare sotto i diecimila esempi i metodi precedenti, boosting compresi. Le
+ragioni che seguono spiegano il risultato del 2022, e restano utili per capire
+dove una rete ha difficoltà su una tabella.
 
-Le ragioni identificate sono strutturali, non contingenti:
+Le ragioni identificate sono strutturali:
 
 1. le reti hanno un *bias induttivo* verso funzioni regolari, mentre i target
    tabulari sono spesso irregolari a tratti, esattamente ciò che una serie di
    split assiali approssima bene;
-2. le reti sono sensibili alle feature non informative, di cui una tabella
-   reale abbonda, mentre gli alberi le ignorano per costruzione;
+2. le reti sono più sensibili degli alberi alle feature non informative, di cui
+   una tabella reale abbonda: un albero sceglie a ogni nodo la divisione che
+   migliora di più un'impurità, e le colonne senza relazione con il bersaglio
+   vincono di rado nei nodi alti, anche se con pochi esempi per nodo qualcuna
+   vince per caso;
 3. l'addestramento di un MLP con la discesa del gradiente, partendo da pesi
    a simmetria sferica (per esempio gaussiani indipendenti), è invariante per
    rotazione: se le colonne si ruotano con una matrice ortogonale, le
@@ -428,10 +439,12 @@ risposta.
 
 `````
 
-Ed è il motivo per cui il machine learning classico si impara per primo, e non
-per ragioni cronologiche. Da qui in avanti valgono sempre le stesse quattro
-parole (modello, feature, parametri, loss) e gli stessi due gesti (addestrare,
-valutare su dati mai visti): cambieranno i modelli, non la grammatica.
+Per questo il machine learning classico viene per primo, e non per ragioni
+cronologiche: le quattro parole (modello, feature, parametri, loss) e i due
+gesti (addestrare, valutare su dati mai visti) valgono anche per le famiglie di
+modelli che seguono, dove cambierà semmai che cosa si misura con la loss. Si
+comincia dall’{doc}`apprendimento supervisionato
+</MachineLearning/apprendimento-supervisionato>`.
 
 `````{tab} Elementare
 
@@ -440,11 +453,13 @@ valutare su dati mai visti): cambieranno i modelli, non la grammatica.
 - Nel machine learning non si scrivono le regole: si danno migliaia di
   esempi già etichettati (le email marchiate «spam» e «non spam») e le regole
   emergono da sole dai dati.
-- Su una tabella intorno alle diecimila righe gli alberi battono ancora
-  regolarmente le reti profonde: fra le colonne di una tabella non c'è quella
-  vicinanza che le reti sanno sfruttare fra i puntini di una foto o fra le
-  parole di una frase. Su tabelle cento volte più grandi la gara è ancora da
-  correre.
+- Nei confronti fatti fino al 2022 su tabelle intorno alle diecimila righe gli
+  alberi battevano le reti profonde: fra le colonne di una tabella non c'è
+  quella vicinanza che le reti sanno sfruttare fra i puntini di una foto o fra
+  le parole di una frase. Modelli pre-addestrati più recenti dichiarano di aver
+  ribaltato il risultato sulle tabelle piccole.
+- Quattro parole valgono per tutti i modelli (modello, feature, parametri,
+  loss), e due gesti: addestrare, e valutare su dati mai visti.
 - Un programma impara (Mitchell) se, facendo pratica, diventa più bravo in
   un compito e questo «più bravo» si può misurare: servono il compito,
   l’esperienza e la misura.
@@ -464,14 +479,16 @@ valutare su dati mai visti): cambieranno i modelli, non la grammatica.
 - Nel machine learning non si scrivono le regole: si forniscono esempi e le
   regole emergono dai dati, cioè si stimano i parametri $\theta$ minimizzando
   una loss $\mathcal{L}$ sugli esempi osservati.
-- Su dati tabulari di taglia media, dell'ordine dei diecimila esempi, i
-  modelli ad albero restano superiori alle reti anche a parità di ricerca degli
-  iperparametri {cite}`grinsztajn2022why`. Fuori da quella scala il confronto
-  resta aperto.
+- Nel confronto di Grinsztajn et al. (2022), su dati tabulari di taglia media,
+  dell'ordine dei diecimila esempi, i modelli ad albero restavano superiori alle
+  reti anche a parità di ricerca degli iperparametri {cite}`grinsztajn2022why`.
+  Modelli pre-addestrati più recenti dichiarano di aver ribaltato il risultato
+  sotto i diecimila esempi.
 - Le ragioni sono strutturali: il bias induttivo delle reti verso funzioni
-  regolari, contro target irregolari a tratti; la loro sensibilità alle feature
-  non informative; l'invarianza per rotazione del loro addestramento, dannosa
-  dove mescolare linearmente le colonne cancella il significato di ciascuna.
+  regolari, contro target irregolari a tratti; la loro maggiore sensibilità alle
+  feature non informative; l'invarianza per rotazione del loro addestramento,
+  dannosa dove mescolare linearmente le colonne cancella il significato di
+  ciascuna.
 - Un programma impara (Mitchell) se la sua performance $P$ su un compito $T$
   migliora con l'esperienza $E$.
 - Tre paradigmi: supervisionato (dati etichettati), non supervisionato

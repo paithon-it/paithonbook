@@ -33,7 +33,7 @@ parts:
     title: Introduzione
     sections:
     - file: Introduzione/massimo_comune_divisore.ipynb
-      title: Python e l'AI
+      title: Il primo programma
     - file: Introduzione/calcolabile.md
       title: Che cosa si può calcolare
     - file: Introduzione/applicazioni.md

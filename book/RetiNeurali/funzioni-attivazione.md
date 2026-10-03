@@ -2,51 +2,62 @@
 
 Prendi una rete profonda: dieci strati, migliaia di neuroni, milioni di
 parametri. Ora togli le funzioni di attivazione. Tutta quella profondità si
-sgonfia in un istante: quello che resta, per quanto grande sia, è una sola
-moltiplicazione, cioè un modello che sa disegnare soltanto righe dritte. Le
-funzioni di attivazione sono il piccolo gesto non
-lineare che, ripetuto strato dopo strato, trasforma una pila di
-moltiplicazioni in un modello capace di riconoscere un volto o tradurre una
-frase. Sono l'anima non lineare della rete.
+sgonfia in un istante: quello che resta, per quanto grande sia, equivale a un
+solo strato affine, una moltiplicazione per una matrice più un vettore, cioè a
+un modello che sa tracciare soltanto confini dritti. Le funzioni di attivazione
+sono il gesto non lineare che, ripetuto strato dopo strato, impedisce quel
+collasso e trasforma una pila di moltiplicazioni in un modello capace di
+riconoscere un volto o tradurre una frase.
 
 ## Perché serve una non linearità
 
-Ogni strato di una rete fa una cosa sola: moltiplica ciascun numero che riceve
-per il proprio peso (l'importanza che gli assegna), somma i risultati e
-aggiunge un numero fisso suo, il bias. È un'operazione *lineare*, e il
-problema è che comporre due operazioni lineari dà ancora un'operazione lineare:
-mille non cambierebbero nulla.
+Tolta l'attivazione, uno strato fa una cosa sola: ciascun suo neurone moltiplica
+ogni numero che riceve per un peso (l'importanza che gli assegna), somma i
+risultati e aggiunge un numero fisso suo, il bias; tutto lo strato insieme, con
+i pesi in una matrice e i bias in un vettore, calcola
+$\mathbf{W}\mathbf{x} + \mathbf{b}$. È un'operazione *affine*, cioè una
+moltiplicazione seguita da uno spostamento fisso (nell'uso si dice lineare anche
+così), e il problema è che comporre due operazioni affini ne dà ancora una
+affine: mille strati così valgono quanto uno.
 
 `````{tab} Elementare
 
-Una catena di macchinette, ognuna delle quali "moltiplica per un numero". La
-prima moltiplica per $2$, la seconda per $3$. Metterle in fila non crea niente
-di nuovo: equivale a una sola macchinetta che moltiplica per $6$. Se ne
-impilano quante se ne vuole, alla fine resta *una regola proporzionale*.
+Una catena di macchinette, ognuna delle quali moltiplica per un numero e poi
+aggiunge un numero fisso. La prima moltiplica per $2$ e aggiunge $1$, la seconda
+moltiplica per $3$ e aggiunge $1$. Metterle in fila non crea niente di nuovo:
+equivale a una sola macchinetta che moltiplica per $6$ e aggiunge $4$, perché
+l’$1$ della prima passa per la seconda e diventa $3$, più l’$1$ suo. Se ne
+impilano quante se ne vuole, e alla fine resta sempre una regola dello stesso
+tipo, moltiplica e aggiungi, che sul grafico è una retta. In uno strato vero le
+macchinette sono tante, una per ogni coppia fra un numero che entra e uno che
+esce, e i loro numeri messi in tabella sono la matrice dei pesi; il conto non
+cambia.
 
 Una rete fatta solo di strati così, per quanto profonda, non è più potente di
 un neurone solo: per dividere i casi in due gruppi sa tracciare una riga
 dritta e nient'altro. Non imparerà mai una spirale, una lettera scritta a
 mano, il tono di una frase. Serve, tra uno strato e l'altro, una "piega": una
-funzione che *storce* i numeri in modo non proporzionale. È lei che dà alla
-rete la libertà di disegnare curve.
+funzione che *storce* i numeri, cioè che non si riduce a moltiplicare e
+aggiungere. È lei che dà alla rete la libertà di disegnare curve.
 
 Non una piega qualunque, però. Uno strato è fatto di macchinette affiancate
 invece che in fila: lavorano tutte sullo stesso numero, e quello che hanno
-prodotto si somma. Allargare lo strato vuol dire affiancarne di più.
-Prendiamo come piega "eleva al quadrato", che è una piega vera ma è pur sempre
-una parabola, e chiediamo allo strato di ricalcare la curva di $x^3$ fra $-1$ e
-$1$, quella che sale ripida agli estremi e si appiattisce attorno allo zero.
-Dieci
-macchinette sbagliano in media di quindici centesimi, su una curva i cui valori
-stanno fra $-1$ e $1$. Ottocento sbagliano di quindici centesimi, gli stessi.
-Sommare parabole non porta oltre la parabola, e di quanto la miglior parabola
-resti lontana da quella curva si sa fare il conto prima ancora di provare: quei
+prodotto si somma, ciascuno con il suo peso. Allargare lo strato vuol dire
+affiancarne di più. Prendiamo come piega "eleva al quadrato", che è una piega
+vera ma è pur sempre una parabola, e chiediamo allo strato di ricalcare la curva
+di $x^3$ fra $-1$ e $1$, quella che sale ripida agli estremi e si appiattisce
+attorno allo zero. Le macchinette si prendono a caso, e si sceglie soltanto
+quanto pesa ciascuna nella somma, nel modo che sbaglia meno. Dieci macchinette
+sbagliano in media di quindici centesimi, su una curva i cui valori stanno fra
+$-1$ e $1$. Ottocento sbagliano di quindici centesimi, gli stessi. Sommare
+parabole non porta oltre la parabola, e di quanto la miglior parabola resti
+lontana da quella curva si sa fare il conto prima ancora di provare: quei
 quindici centesimi sono il muro contro cui la larghezza si ferma. Con una piega
-che nessuna somma di parabole sappia rifare, invece, allargare rende davvero:
-dieci macchinette
-scendono a tre centesimi di scarto, cinque volte sotto il muro, e ottocento a
-poco più di un millesimo, cento volte sotto.
+che nessuna somma di parabole sa rifare, invece, come la ReLU, che lascia
+passare i numeri positivi e azzera i negativi, allargare rende davvero: dieci
+macchinette scendono a poco più di tre centesimi di scarto, più di quattro volte
+sotto il muro, e ottocento a meno di quattro centomillesimi, quasi quattromila
+volte sotto.
 
 Con una piega di quelle buone, e abbastanza macchinette affiancate, ci si
 avvicina quanto si vuole a qualunque curva tracciata senza staccare la matita.
@@ -86,66 +97,95 @@ Non basta però che $g$ sia non lineare, ed è un punto su cui si scivola spesso
 Se $g$ fosse un polinomio, per esempio $g(x)=x^2$, uno strato nascosto
 calcolerebbe $\sum_i c_i\,(w_i x + b_i)^2 + d$, dove $w_i$ e $b_i$ sono peso e
 bias dell’$i$-esimo neurone nascosto, $c_i$ il peso con cui l'uscita lo
-raccoglie e $d$ il bias d'uscita: comunque si scelgano quei parametri resta
-un polinomio di grado al più $2$, e aggiungere neuroni non servirebbe a
-niente. Provato ai minimi quadrati su $x^3$ in $[-1,1]$ (duemila punti
-equispaziati, uno strato nascosto, Adam per quattromila passi con
-$\eta = 10^{-2}$), dieci neuroni e ottocento danno lo stesso errore,
-$0{,}1514$ tutti e due, e quell'errore si sa già quanto vale senza addestrare
-niente. La miglior approssimazione di $x^3$ con un polinomio di grado
-al più $2$, in media quadratica su $[-1,1]$, è $\tfrac{3}{5}x$ (è la proiezione
-ortogonale, e si legge nella scrittura di $x^3$ come combinazione di polinomi di
-Legendre); lo scarto che resta ha radice
+raccoglie e $d$ il bias d'uscita: comunque si scelgano quei parametri resta un
+polinomio di grado al più $2$, e aggiungere neuroni non servirebbe a niente. Il
+conto si fa senza addestrare niente: su duemila punti equispaziati di $[-1,1]$
+si estraggono a caso pesi e bias dello strato nascosto, e lo strato d'uscita,
+che è lineare, si calcola esatto ai minimi quadrati. Con $g(x)=x^2$, sulla curva
+$x^3$, dieci neuroni e ottocento danno lo stesso scarto quadratico medio,
+$0{,}151$, e quello scarto si sa già quanto vale prima di calcolare. La miglior
+approssimazione di $x^3$ con un polinomio di grado al più $2$, in media
+quadratica su $[-1,1]$, è $\tfrac{3}{5}x$ (è la proiezione ortogonale, e si
+legge nella scrittura di $x^3$ come combinazione di polinomi di Legendre); lo
+scarto che resta ha radice
 
 $$
 \sqrt{\frac{1}{2}\int_{-1}^{1}\left(x^3 - \tfrac{3}{5}x\right)^2 dx}
 = \sqrt{\frac{4}{175}} \simeq 0{,}1512 ,
 $$
 
-ed è esattamente il muro contro cui la larghezza si ferma. Con la ReLU, invece,
-la larghezza compra davvero qualcosa: con lo stesso addestramento dieci neuroni
-scendono a $3{,}0\cdot 10^{-2}$ e ottocento a $1{,}3\cdot 10^{-3}$, cioè oltre
-cento volte sotto quel muro.
+ed è il muro contro cui la larghezza si ferma (sui duemila punti l'ottimo sta
+appena sopra, a $0{,}151$). Con la ReLU, invece, la larghezza compra davvero
+qualcosa: dieci neuroni scendono a $3{,}32\cdot 10^{-2}$ e ottocento a
+$3{,}85\cdot 10^{-5}$, quasi quattromila volte sotto quel muro. Estrarre a caso
+lo strato nascosto rende il confronto più severo: lasciandolo libero di muoversi
+l'ottimo potrebbe solo scendere, e con il quadrato resterebbe comunque al muro.
 
-La condizione esatta è che $g$ non sia un polinomio (per la classe di
-funzioni in cui il risultato è enunciato: attivazioni continue a tratti e
-localmente limitate), e sotto quella
-condizione la rete è un **approssimatore universale**: con abbastanza neuroni
-avvicina, con errore arbitrariamente piccolo, qualunque funzione continua su un
-insieme compatto ({cite}`cybenko1989approximation` per le sigmoidali;
-{cite}`leshno1993multilayer` nella forma generale, ReLU compresa). Resta un
-teorema di esistenza, e per giunta muto sulla larghezza necessaria, che nel
-caso peggiore cresce esponenzialmente in $d$.
+La condizione esatta è che $g$ non sia un polinomio (per la classe di funzioni
+in cui il risultato è enunciato: attivazioni continue a tratti e localmente
+limitate), e sotto quella condizione la rete è un **approssimatore universale**:
+con abbastanza neuroni avvicina, con errore arbitrariamente piccolo, qualunque
+funzione continua su un insieme compatto ({cite}`cybenko1989approximation` per
+le sigmoidali; {cite}`leshno1993multilayer` nella forma generale, ReLU
+compresa). Resta un teorema di esistenza, e per giunta muto sulla larghezza
+necessaria, che nel caso peggiore cresce esponenzialmente con la dimensione $n$
+dell'ingresso.
 
 `````
 
-Prima di guardarle una per una serve sapere una cosa su come una rete impara,
-perché è il metro con cui una funzione di attivazione si giudica.
+L'esperimento delle due pieghe sta in poche righe: lo strato nascosto si estrae
+a caso, e quello d'uscita si calcola esatto ai minimi quadrati.
 
-Per correggersi, una rete deve sapere in che direzione muovere ciascun peso, e
-lo scopre chiedendosi: *se muovessi questo peso di pochissimo, di quanto
-cambierebbe il risultato?* Quel «di quanto cambierebbe» è la derivata,
-incontrata come pendenza istante per istante nella {doc}`sezione su analisi e
-ottimizzazione </Matematica/analisi-ottimizzazione>`, e qui torna comoda la
-parola di tutti i giorni: la pendenza di una strada in salita, quanto sali per
-ogni passo che fai in avanti. Dove è ripida, un passo cambia molto; dove è
-pianeggiante, un passo non cambia niente.
+```python
+import numpy as np
 
-Adesso il punto che riguarda noi. Quella domanda non se la pone un peso alla
-volta e in un posto solo: parte dall'uscita della rete, dove l'errore si vede,
-e risale gli strati all'indietro, uno dopo l'altro, fino ai primi. È il
-meccanismo della {doc}`backpropagation </RetiNeurali/backpropagation>`, e qui
-basta sapere che il messaggio viaggia all'indietro. Ogni volta che attraversa
-una funzione di attivazione, quel messaggio viene moltiplicato per la pendenza
-di quella funzione, presa nel punto in cui il neurone stava lavorando. Se
-lì la funzione è ripida, il messaggio passa; se lì la funzione è piatta, la
-sua pendenza vale quasi zero, e moltiplicare per quasi zero spegne il
-messaggio. (E i pesi entrano nel viaggio di ritorno esattamente come nel
-viaggio di andata: tornando indietro attraverso uno strato, il messaggio viene
-moltiplicato anche per i pesi di quello strato.)
+rng = np.random.default_rng(0)
+x = np.linspace(-1, 1, 2000)                       # duemila punti in [-1, 1]
+y = x**3
 
-Una buona funzione di attivazione è una che non spegne il messaggio mentre lo
-lascia passare.
+def scarto(neuroni, piega):
+    """Uno strato nascosto con pesi e bias estratti a caso; lo strato
+    d'uscita, che è lineare, si calcola esatto ai minimi quadrati."""
+    w = rng.normal(size=neuroni)
+    b = rng.uniform(-1, 1, size=neuroni)
+    H = np.column_stack([piega(np.outer(x, w) + b), np.ones_like(x)])
+    c, *_ = np.linalg.lstsq(H, y, rcond=None)
+    return np.sqrt(np.mean((H @ c - y) ** 2))      # scarto quadratico medio
+
+print(f"il muro dei polinomi di grado 2: {np.sqrt(4 / 175):.4f}")
+pieghe = (("quadrato", np.square), ("ReLU", lambda z: np.maximum(0, z)))
+for nome, piega in pieghe:
+    for neuroni in (10, 800):
+        s = scarto(neuroni, piega)
+        print(f"{nome:>8}, {neuroni:>3} neuroni: scarto {s:.3g}")
+```
+
+```text
+il muro dei polinomi di grado 2: 0.1512
+quadrato,  10 neuroni: scarto 0.151
+quadrato, 800 neuroni: scarto 0.151
+    ReLU,  10 neuroni: scarto 0.0332
+    ReLU, 800 neuroni: scarto 3.85e-05
+```
+
+Prima di guardarle una per una serve il metro con cui si giudicano, e viene da
+come una rete impara. Ogni peso $w$ si corregge in base alla derivata della loss
+rispetto a quel peso, $\partial\mathcal{L}/\partial w$: la pendenza della
+{doc}`sezione su analisi e ottimizzazione </Matematica/analisi-ottimizzazione>`,
+cioè di quanto cambierebbe l'errore muovendo quel peso di pochissimo. Quelle
+derivate le calcola la {doc}`backpropagation </RetiNeurali/backpropagation>`,
+partendo dall'uscita, dove l'errore si vede, e risalendo gli strati
+all'indietro. Il gradiente che risale, ogni volta che attraversa una funzione di
+attivazione, viene moltiplicato per la sua derivata $g'(z)$, presa nel punto
+$z$ in cui il neurone stava lavorando; e ogni volta che attraversa uno strato,
+per la matrice dei pesi trasposta, $\mathbf{W}^\top$, perché ogni neurone
+raccoglie i gradienti di tutti i neuroni a cui mandava il proprio numero,
+ciascuno pesato con il peso del collegamento. Dove la funzione è ripida il
+gradiente passa; dove è piatta la sua derivata vale quasi zero, e moltiplicare
+per quasi zero lo spegne.
+
+Una buona funzione di attivazione, allora, è una che ha derivata lontana da zero
+là dove i neuroni lavorano davvero.
 
 Le protagoniste degli strati nascosti sono tre, ognuna con un carattere
 diverso ({numref}`fig-attivazioni`); più avanti se ne aggiunge una quarta,
@@ -159,15 +199,16 @@ la softmax, che fa un altro mestiere e lavora solo sull'ultimo strato.
 Le tre funzioni di attivazione classiche, in tre grafici affiancati. In
 orizzontale il numero che entra nella funzione, in verticale quello che ne
 esce; l'incrocio degli assi è lo zero in entrambe le direzioni. Da guardare
-soprattutto dove ciascuna curva è piatta: è lì che il messaggio che risale
-la rete si spegne.
+soprattutto dove ciascuna curva è piatta: è lì che il gradiente che risale la
+rete si spegne.
 ```
 
 ## La sigmoide: il primo interruttore morbido
 
-La prima scelta, storicamente: schiaccia qualunque numero in un valore fra $0$
-e $1$. Comoda, perché un numero fra zero e uno si legge come un interruttore
-acceso a metà, o come «quanto sono convinto». Viene dalla regressione
+La prima scelta derivabile, ed è quella con cui la backpropagation del 1986
+addestrava le reti: schiaccia qualunque numero in un valore fra $0$ e $1$.
+Comoda, perché un numero fra zero e uno si legge come un interruttore acceso a
+metà, o come «quanto sono convinto». È la stessa funzione della regressione
 logistica, il classificatore dell’{doc}`apprendimento supervisionato
 </MachineLearning/apprendimento-supervisionato>`.
 
@@ -177,8 +218,8 @@ La sigmoide prende un numero qualsiasi e lo comprime in un valore tra $0$ e $1$.
 Numeri molto negativi diventano quasi $0$, numeri molto positivi quasi $1$, e
 lo zero finisce esattamente a metà, $0{,}5$. È un interruttore che invece di
 scattare di colpo scivola dolcemente da spento ad acceso. Ecco qualche valore
-(sono da calcolatrice: la formula ha dentro lo stesso ingrandimento che
-incontreremo con la softmax):
+(sono da calcolatrice: la formula ha dentro il numero $e$, lo stesso della S
+della regressione logistica):
 
 | entra | $-6$ | $-5$ | $-2$ | $0$ | $1$ | $2$ | $5$ |
 |---|---|---|---|---|---|---|---|
@@ -195,11 +236,11 @@ identico.
 E quei due numeri sono, in pratica, la pendenza: la pendenza vera è quanto si
 muove l'uscita per un passo *piccolissimo*, e su un passo lungo uno viene fuori
 un po’ meno (vicino allo zero la pendenza vera è $0{,}25$, non $0{,}23$). Nelle
-code il divario resta, ma i numeri in gioco sono tutti dello stesso ordine: la
+code il divario resta, ma i numeri in gioco sono tutti di pochi millesimi: la
 pendenza vera vale meno di tre millesimi in $-6$ e quasi sette millesimi in
-$-5$, e i
-quattro millesimi letti sulla tabella stanno in mezzo. Il messaggio che risale
-la rete viene moltiplicato per un numero così, e si spegne.
+$-5$, e i quattro millesimi letti sulla tabella stanno in mezzo. Il messaggio di
+correzione che risale la rete dall'errore verso i primi strati (è il gradiente)
+viene moltiplicato per un numero così, e si spegne.
 
 Le code sono la parte peggiore, ma non sono tutto il problema. Un quarto è il
 massimo che la sigmoide concede: nel suo punto migliore, lo zero, il messaggio
@@ -304,9 +345,9 @@ svanire con la saturazione, e oltre quella scala con l'esplosione.
 
 ## La tanh: la stessa S, ma centrata nello zero
 
-La `tanh` (per esteso «tangente iperbolica», ma il nome lungo qui non serve a
-niente) ha la stessa forma a S della sigmoide e corregge uno dei suoi difetti:
-sta a cavallo dello zero invece che tutta sopra.
+La `tanh` (tangente iperbolica) è la stessa S della sigmoide, alta il doppio e
+centrata nello zero: va da $-1$ a $1$ invece che da $0$ a $1$, e corregge così
+uno dei suoi difetti, lo stare tutta sopra lo zero.
 
 `````{tab} Elementare
 
@@ -352,11 +393,12 @@ cancello.
 
 `````
 
-## ReLU: la semplicità che ha sbloccato il deep learning
+## ReLU: la scelta di partenza delle reti profonde
 
-Nel 2010–2012 una funzione quasi imbarazzante nella sua banalità cambia le
-regole del gioco: se il numero è positivo lo lascia passare, altrimenti lo mette
-a zero. Nessun conto complicato e, dal lato positivo, nessuna zona piatta.
+Fra il 2010 e il 2012 diventa la scelta standard una funzione elementare, che
+Fukushima usava già nel 1969 {cite}`fukushima1969visual`: se il numero è
+positivo lo lascia passare, altrimenti lo mette a zero. Nessun conto complicato
+e, dal lato positivo, nessuna zona piatta.
 
 `````{tab} Elementare
 
@@ -365,11 +407,11 @@ restituisce identico, se è negativo o zero restituisce zero. È uno sportello
 che lascia passare i versamenti e blocca i prelievi: entra $10$, esce $10$;
 entra $-3$, esce $0$.
 
-Perché ha sbloccato le reti profonde? Perché dal lato positivo la curva è una
-riga inclinata: la sua pendenza è sempre $1$, non si appiattisce mai. Si misura
-come prima: da $2$ a $3$ l'uscita passa da $2$ a $3$, si è mossa di uno intero;
-da $20$ a $21$ passa da $20$ a $21$, ancora uno intero. Lontano dallo zero
-quanto vicino, la pendenza vale sempre $1$. Il
+Perché è diventata la scelta di partenza delle reti profonde? Perché dal lato
+positivo la curva è una riga inclinata: la sua pendenza è sempre $1$, non si
+appiattisce mai. Si misura come prima: da $2$ a $3$ l'uscita passa da $2$ a $3$,
+si è mossa di uno intero; da $20$ a $21$ passa da $20$ a $21$, ancora uno
+intero. Lontano dallo zero quanto vicino, la pendenza vale sempre $1$. Il
 messaggio che risale la rete, moltiplicato per $1$, resta quello di prima; non
 si smorza a ogni passaggio come faceva con la sigmoide, e arriva quindi fino ai
 primi strati anche in una rete che ne ha decine, lungo gli sportelli aperti:
@@ -394,17 +436,20 @@ pur darla, risponde zero per convenzione. Nessuno dei due sbaglia, e la
 faccenda non ha conseguenze, perché un numero esattamente zero, con tutti i
 decimali in gioco, non capita quasi mai.
 
-C'è un rischio. Se un neurone finisce nella zona negativa per *tutti* gli
-esempi (cioè per tutti i dati con cui la rete viene addestrata), la sua uscita
-è sempre zero, e allora anche la pendenza che sente è sempre zero: nessuna
-indicazione, nessuna correzione, i suoi pesi restano fermi. È il neurone
-"morto", e il nome è più drammatico di quello che gli capita davvero. Da solo
-non si tira fuori, ma i neuroni che stanno davanti a lui continuano a
-cambiare, e possono cominciare a mandargli numeri diversi e risvegliarlo senza
-che un suo peso si sia mosso di un millimetro. Senza ritorno è un caso soltanto: il
-neurone del primo strato, che davanti ha i dati, e i dati non cambiano mai. La
-**Leaky ReLU** previene il problema lasciando filtrare una pendenza piccola
-(un centesimo) anche per i valori negativi, così un po’ di indicazione arriva
+C'è un rischio. Se un neurone finisce nella zona negativa per *tutti* gli esempi
+(cioè per tutti i dati con cui la rete viene addestrata), la sua uscita è sempre
+zero, e allora anche la pendenza che sente è sempre zero: nessuna indicazione,
+nessuna correzione, i suoi pesi restano fermi. È il neurone "morto", e il nome è
+più drammatico di quello che gli capita davvero. Da solo non si tira fuori, ma i
+neuroni che stanno davanti a lui continuano a cambiare, e possono cominciare a
+mandargli numeri diversi e risvegliarlo senza che un suo peso si sia mosso di un
+millimetro. Senza ritorno è di sicuro il neurone del primo strato, che davanti
+ha i dati, e i dati non cambiano mai. E lo è anche un neurone più interno che
+pesa in negativo tutto quello che riceve e parte già sotto lo zero: i neuroni
+davanti a lui sono sportelli che lasciano passare solo numeri positivi o zero, e
+per quanto cambino non gli riporteranno mai il totale sopra lo zero. La **Leaky
+ReLU** previene il problema lasciando filtrare una pendenza piccola (un
+centesimo) anche per i valori negativi, così un po’ di indicazione arriva
 sempre.
 
 `````
@@ -420,8 +465,8 @@ $$
 I due casi non coprono tutta la retta, e l'omissione è voluta: in $x=0$ la
 derivata non esiste, perché il rapporto incrementale vale $0$ arrivando da
 sinistra e $1$ arrivando da destra. Le librerie ne scelgono una per convenzione
-(PyTorch restituisce $0$; per `leaky_relu` restituisce $\alpha$), ed è una scelta
-innocua: i punti in cui la pre-attivazione è esattamente zero sono un
+(PyTorch restituisce $0$; per `leaky_relu` restituisce $\alpha$), ed è una
+scelta innocua: i punti in cui la pre-attivazione è esattamente zero sono un
 insieme trascurabile, e qualunque valore fra $0$ e $1$ è un sotto-gradiente
 legittimo. C'è però una conseguenza pratica che vale un pomeriggio a chi
 controlla i conti a mano: verificando il gradiente con le differenze finite
@@ -430,10 +475,11 @@ la libreria restituisce. I due numeri non coincidono e nessuno dei due è
 sbagliato: è il punto in cui la derivata non c'è, non un errore nel codice.
 
 Per $x>0$ il gradiente è esattamente $1$: niente saturazione, niente *vanishing*
-lungo i cammini attivi. Ciò ha reso addestrabili reti molto profonde
-({cite}`nair2010rectified`; {cite}`glorot2011deep`; AlexNet,
-{cite}`krizhevsky2012imagenet`) e
-induce attivazioni sparse (molti neuroni esattamente a zero). Il rovescio è
+lungo i cammini attivi. Ciò ha contribuito, con l'inizializzazione e più tardi
+con le connessioni residue, a rendere addestrabili reti profonde senza
+pre-addestramento ({cite}`nair2010rectified`; {cite}`glorot2011deep`; AlexNet,
+{cite}`krizhevsky2012imagenet`), e induce attivazioni sparse (molti neuroni
+esattamente a zero). Il rovescio è
 il *dying ReLU*: un neurone la cui pre-attivazione $z$ resta negativa su
 tutti i dati ha gradiente esattamente nullo sui propri pesi e smette di
 aggiornarsi. Attenzione a leggerlo bene: la condizione è su $z$, non
@@ -441,8 +487,12 @@ sull'ingresso $\mathbf{x}$ (a valle di uno strato ReLU gli ingressi sono
 $\ge 0$ per costruzione). E «non si aggiorna più» vale per i suoi
 parametri, non per il suo destino: in uno strato nascosto $z$ continua a
 muoversi perché cambiano gli strati a monte, e il neurone può risvegliarsi
-senza che nessuno dei suoi pesi si sia mosso. Solo nel primo strato, dove
-l'ingresso è il dato e non cambia, la morte è definitiva. La Leaky ReLU
+senza che nessuno dei suoi pesi si sia mosso. Nel primo strato, dove
+l'ingresso è il dato e non cambia, la morte è definitiva; e lo è anche più in
+alto quando il neurone ha tutti i pesi in ingresso non positivi e il bias
+negativo, perché a valle di uno strato ReLU gli ingressi non sono mai negativi
+e allora $z=\mathbf{w}^\top\mathbf{a}+b\le b<0$ qualunque cosa facciano gli
+strati a monte. La Leaky ReLU
 introduce una pendenza $\alpha$ piccola (tipicamente $0{,}01$) sul ramo
 negativo:
 
@@ -482,17 +532,15 @@ percentuali che sommano a $100\%$ (qui $66\%$, $24\%$, $10\%$) esaltando il
 punteggio più alto ma senza mai azzerare del tutto gli altri. Il risultato si
 legge come "quanto la rete è convinta di ciascuna classe".
 
-Non è una semplice divisione, e se provi a farla ti accorgi che i conti non
-tornano: $2$ diviso $3{,}1$ farebbe $64{,}5\%$, non $66\%$. Il passaggio in più
-è che prima ogni punteggio viene *ingrandito*. Si prende un numero fisso, che
-vale $2{,}718\ldots$ e in matematica si chiama $e$, e lo si eleva al punteggio.
-Elevarlo a $2$ vuol dire $e \times e$; elevarlo a $0{,}1$ a mente non si fa, ma
-la calcolatrice sì, con il tasto `exp`, che riempie anche i buchi fra un
-esponente intero e il successivo. Ecco i risultati: $2{,}0$ diventa $7{,}39$,
-$1{,}0$ diventa $2{,}72$ (cioè $e$ stesso) e $0{,}1$ diventa $1{,}11$. Sommano
-$11{,}22$, e adesso sì che si divide: $7{,}39 / 11{,}22 = 66\%$. È quel primo
-ingrandimento a esaltare il punteggio più alto, ed è anche il motivo per cui
-nessuna percentuale arriva mai a zero tondo.
+È il conto già fatto con le cartelle della posta, nella {doc}`regressione
+logistica a più risposte </MachineLearning/apprendimento-supervisionato>`: ogni
+punteggio fa da esponente al numero $e$, che vale $2{,}718\ldots$, e poi si
+divide per il totale. Qui $2{,}0$ diventa $7{,}39$, $1{,}0$ diventa $2{,}72$
+(cioè $e$ stesso) e $0{,}1$ diventa $1{,}11$; sommano $11{,}22$, e
+$7{,}39 / 11{,}22$ fa il $66\%$. È l'esponente, che ingrandisce di più i
+punteggi più alti, a esaltare il primo (senza, $2$ diviso $3{,}1$ farebbe il
+$64{,}5\%$), ed è anche il motivo per cui nessuna percentuale arriva mai a zero
+tondo.
 
 Perché proprio $e$ e non, che so, $10$? Con $10$ funzionerebbe lo stesso,
 verrebbero solo percentuali più sbilanciate verso il punteggio più alto. La
@@ -527,7 +575,7 @@ Una guida ragionevole per la maggior parte dei casi:
 
 | Dove | Scelta consigliata | Perché |
 |---|---|---|
-| Strati nascosti (scelta di partenza) | ReLU | veloce, il messaggio non si spegne, ottimo punto di partenza |
+| Strati nascosti (scelta di partenza) | ReLU | veloce, il gradiente non si spegne, ottimo punto di partenza |
 | Strati nascosti, neuroni "morti" | Leaky ReLU | un po’ di pendenza anche sui negativi |
 | Celle ricorrenti (le LSTM e le GRU della sezione sui modelli di sequenza, nel capitolo sul linguaggio naturale) | tanh + sigmoide | uscita centrata; la sigmoide fa da rubinetto, perché moltiplicare per un numero fra $0$ e $1$ è decidere quanta informazione lasciar passare |
 | Uscita, scelta fra due risposte (classificazione binaria) | sigmoide | una probabilità, mai esattamente $0$ né $1$ |
@@ -578,7 +626,8 @@ print(softmax(np.array([2.0, 1.0, 0.1])))
 Sono le tre percentuali del conto fra gatto, cane e volpe, $66$, $24$ e $10$,
 con i decimali che a mano, fermandosi a due cifre, si erano persi per strada.
 
-In PyTorch (il framework che incontreremo nel prossimo capitolo) non serve
+In PyTorch (la libreria per costruire e addestrare reti, un *framework*, che
+presenta il {doc}`capitolo che porta il suo nome </PyTorch/overview>`) non serve
 implementarle a mano: esistono come funzioni (`torch.relu`, `torch.tanh`,
 `torch.sigmoid`, `torch.softmax`) o come moduli da impilare tra gli strati
 (`nn.ReLU()`, `nn.Sigmoid()`), e sono già scritte nella forma numericamente
@@ -599,7 +648,8 @@ stabile.
   code, dove la curva è ancora più piatta.
 - La ReLU ("se è positivo lascialo passare, altrimenti zero") dal lato
   positivo non si appiattisce mai, e costa un confronto: è la scelta di
-  partenza, ed è ciò che ha reso possibili le reti profonde. La Leaky ReLU
+  partenza, ed è uno dei pezzi che hanno reso possibili le reti profonde. La
+  Leaky ReLU
   cura i neuroni che restano bloccati a zero.
 - Sull'ultimo strato di un classificatore c'è la softmax, che trasforma i
   punteggi grezzi in percentuali che sommano a $100$.
@@ -619,8 +669,9 @@ stabile.
   gradient*; la tanh almeno è centrata nello zero. Alzare i pesi per
   compensare non aiuta: sposta il problema dal modulo di $\mathbf{W}$ alla
   saturazione.
-- La ReLU ($\max(0,x)$) non satura dal lato positivo ed è velocissima: è ciò
-  che ha reso addestrabili le reti profonde. La Leaky ReLU cura i neuroni
+- La ReLU ($\max(0,x)$) non satura dal lato positivo ed è velocissima: è la
+  scelta di partenza negli strati nascosti, e uno dei pezzi che hanno reso
+  addestrabili le reti profonde. La Leaky ReLU cura i neuroni
   "morti", cioè quelli con pre-attivazione negativa su tutto il dataset.
 - La softmax trasforma i logit dell'ultimo strato in probabilità che sommano
   a $1$; va calcolata nella forma numericamente stabile.

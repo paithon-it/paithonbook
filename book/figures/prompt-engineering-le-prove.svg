@@ -5,7 +5,7 @@
   <polygon points="52,77 68,77 60,62" fill="#1A1A1A"/>
   <rect x="90" y="60" width="600" height="124" rx="8" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="2"/>
   <text x="106" y="86" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#2D5A5C" font-weight="600">Misurato, e regge</text>
-  <text x="106" y="106" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">vale su compiti diversi e su modelli diversi</text>
+  <text x="106" y="106" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">vale in media, ma dipende da formato e ordine</text>
   <rect x="106" y="120" width="238" height="34" rx="17" fill="#F8F5EE" stroke="#2D5A5C" stroke-width="1.5"/>
   <text x="225" y="142" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">esempi svolti (few-shot)</text>
   <text x="360" y="142" font-family="Inter, system-ui, sans-serif" font-size="12.5" fill="#5A524A">in cima ci arriva poco: una sola tecnica</text>
@@ -18,7 +18,7 @@
   <text x="400" y="278" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">self-consistency</text>
   <rect x="90" y="332" width="600" height="124" rx="8" fill="#F8F5EE" stroke="#B5532C" stroke-width="2"/>
   <text x="106" y="358" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#B5532C" font-weight="600">Misurato, effetto nullo</text>
-  <text x="106" y="378" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">provate in studi controllati, non spostano niente</text>
+  <text x="106" y="378" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#5A524A">provate in studi controllati: nessun effetto medio</text>
   <rect x="106" y="392" width="172" height="34" rx="17" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>
   <text x="192" y="414" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#1A1A1A" text-anchor="middle">mance e minacce</text>
   <rect x="294" y="392" width="116" height="34" rx="17" fill="#F8F5EE" stroke="#B5532C" stroke-width="1.5" stroke-dasharray="5 4"/>

@@ -1,20 +1,17 @@
 # Confronto con i modelli precedenti
 
-Ogni nuova architettura va giudicata contro ciò che sostituisce. Prima del 2017
-il testo lo trattavano le reti ricorrenti, quelle che leggono una parola alla
-volta portandosi dietro un riassunto di quel che è venuto prima: la capostipite
-si chiama RNN (*recurrent neural network*), e le due varianti raffinate che
-l'hanno soppiantata si chiamano LSTM e GRU. Le abbiamo incontrate nel
-{doc}`capitolo sul Natural Language Processing
-</NaturalLanguageProcessing/overview>`. Conviene metterle accanto al
-Transformer con onestà: capire *perché* ha vinto, e anche *dove* non vince
-affatto.
+Ogni nuova architettura va giudicata contro ciò che sostituisce, e prima del
+2017 il testo lo trattavano le reti ricorrenti del {doc}`capitolo sul Natural
+Language Processing </NaturalLanguageProcessing/overview>`: la RNN
+(*recurrent neural network*) e le due varianti con porte che l'hanno
+soppiantata, LSTM e GRU. Il confronto serve a capire *perché* il Transformer
+ha vinto, e anche *dove* non vince affatto.
 
-## Tre generazioni di memoria
+## Le reti ricorrenti: tre varianti, un limite
 
-Le tre generazioni sono le tre ricorrenti, RNN, LSTM e GRU; il Transformer non
-è la quarta, è quello che chiude la serie cambiando gioco. E per capire perché
-la serie sia finita conviene guardare da vicino il difetto della prima.
+Le tre varianti hanno un limite in comune: l'informazione sul passato passa per
+uno stato che si aggiorna un passo alla volta. Il limite si vede già nella RNN
+più semplice.
 
 ```{figure} ../figures/rnn-reti-con-memoria.svg
 :name: fig-rnn-srotolamento
@@ -27,19 +24,22 @@ sequenze di lunghezza qualsiasi.
 ```
 
 L'equivalenza di {numref}`fig-rnn-srotolamento` è anche la radice del problema.
-Quel «riassunto» che la rete si porta dietro è,
-come sempre in questo capitolo, una lista di numeri, e la scatola che lo
-aggiorna a ogni parola (nel disegno, la cella) è sempre la stessa, con
-dentro sempre gli stessi numeri: aggiornare il riassunto vuol dire dunque
-moltiplicarlo, parola dopo parola, per quegli stessi numeri.
+Lo stato, il «riassunto» che la rete si porta dietro, è un vettore
+$\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$, aggiornato a ogni parola
+dalla stessa funzione con gli stessi parametri. Il contributo di una parola
+lontana, e la correzione che durante l'addestramento torna verso di lei,
+attraversano quindi una catena di passaggi simili, uno per parola, e a ogni
+passaggio si moltiplicano per un fattore simile.
 
 Ed è lì che casca tutto, perché una moltiplicazione ripetuta non perdona: con
-un fattore di $0{,}9$ per passo, dopo cento parole del ricordo resta meno di un
-trentamillesimo, il conto che la {doc}`sezione sui modelli di sequenza
+un fattore di $0{,}9$ per passo, dopo cento parole ne resta
+$0{,}9^{100} \approx 0{,}000027$, meno di un trentamillesimo, il conto che la
+{doc}`sezione sui modelli di sequenza
 </NaturalLanguageProcessing/modelli-sequenza>` ha fatto per esteso. Anche
 $0{,}99$, che è quasi non perdere niente, dopo cento parole è sceso a $0{,}37$.
 Qualunque fattore minore di uno finisce nello stesso posto, ed è tutta lì la
-ragione per cui l'inizio di un testo lungo sbiadisce.
+ragione per cui l'inizio di un testo lungo sbiadisce; un fattore maggiore di
+uno fa il contrario, e il segnale esplode.
 
 `````{tab} Elementare
 Le RNN leggono una parola alla volta portandosi dietro un riassunto
@@ -49,8 +49,8 @@ cosa annotare, cosa cancellare, cosa rileggere (la memoria dura molto di più,
 al prezzo di un meccanismo più complicato). Le GRU sono il taccuino
 semplificato: regole più snelle, quasi la stessa resa. Taccuino o no, però, si
 legge sempre una parola alla volta, e la parola dopo aspetta che sia finita
-quella prima. Il Transformer cambia gioco: niente riassunto e niente
-taccuino, il testo resta tutto sott'occhio e ogni parola può andare a
+quella prima. Il Transformer cambia gioco: niente riassunto da tenere
+aggiornato, il testo resta tutto sott'occhio e ogni parola può andare a
 rileggersi qualunque altra. La memoria non sbiadisce perché non c'è nulla da
 ricordare: basta guardare.
 
@@ -76,15 +76,34 @@ generare resta lento.
 Le RNN mantengono uno stato
 $\mathbf{h}_t = f(\mathbf{h}_{t-1}, \mathbf{x}_t)$: la dipendenza tra
 posizioni distanti $m$ passi attraversa $m$ applicazioni di $f$, e il
-gradiente retropropagato si attenua o esplode esponenzialmente (il *vanishing
-/ exploding gradient* del
-{doc}`capitolo sulle reti neurali </RetiNeurali/overview>`). Le LSTM
-{cite}`hochreiter1997long` e le GRU {cite}`cho2014learning`, costruite nella
+gradiente retropropagato è un prodotto di $m$ jacobiane
+$\partial\mathbf{h}_s/\partial\mathbf{h}_{s-1}$. Se il massimo valore singolare
+della matrice ricorrente sta sotto $1/\gamma$, con $\gamma$ il massimo della
+derivata della non linearità ($1$ per la tanh, $1/4$ per la sigmoide), la
+norma del prodotto decade in modo esponenziale; perché esploda è necessario che
+lo superi {cite}`pascanu2013difficulty`. La derivazione sta nella
 {doc}`sezione sui modelli di sequenza
-</NaturalLanguageProcessing/modelli-sequenza>`, aprono con i gate un cammino
-quasi lineare per il gradiente. Entrambe allungano
-l'orizzonte della memoria ma restano sequenziali: il passo $t$ attende il
-passo $t-1$, in addestramento come in inferenza.
+</NaturalLanguageProcessing/modelli-sequenza>`, che costruisce anche le LSTM
+{cite}`hochreiter1997long` e le GRU {cite}`cho2014learning`: con i gate aprono
+un cammino quasi lineare per il gradiente, e allungano l'orizzonte della
+memoria, ma restano sequenziali, perché il passo $t$ attende il passo $t-1$, in
+addestramento come in inferenza.
+
+La Tabella 1 dell'articolo del 2017 mette a confronto quattro tipi di strato,
+con $n$ la lunghezza della sequenza, $d$ la dimensione delle rappresentazioni,
+$k$ l'ampiezza del filtro convoluzionale e $r$ quella del vicinato
+nell'attenzione ristretta {cite}`vaswani2017attention`:
+
+| tipo di strato | costo per strato | operazioni in sequenza | cammino massimo |
+|---|---|---|---|
+| self-attention | $O(n^2 d)$ | $O(1)$ | $O(1)$ |
+| ricorrente | $O(n d^2)$ | $O(n)$ | $O(n)$ |
+| convoluzionale | $O(k n d^2)$ | $O(1)$ | $O(\log_k n)$ |
+| self-attention ristretta | $O(r n d)$ | $O(1)$ | $O(n/r)$ |
+
+Il costo della self-attention è quello della sola operazione, senza le
+proiezioni, e il cammino $O(\log_k n)$ della convoluzione vale per i filtri
+dilatati (con filtri contigui servono $O(n/k)$ strati).
 
 Il Transformer porta la lunghezza del cammino tra due posizioni qualsiasi a
 $O(1)$ (ogni coppia è collegata direttamente dalla self-attention) e rende
@@ -116,43 +135,52 @@ Per un Transformer i presenti sono le parole, con due usanze: si parla anche da
 soli, e ascoltare non conta come farsi ascoltare (che "salta" guardi "gatto" è
 un conto, il rovescio un altro). In quattro i confronti diventano
 $4 \times 4 = 16$, con la stessa crescita di prima. Una frase è una riunione
-svelta, un libro un'assemblea oceanica che nessun computer regge volentieri. Le
-reti ricorrenti, che leggono in fila, il problema non ce l'hanno: un presente
-in più è un turno in più.
+svelta, dove pesa di più il lavoro che ognuno fa da solo, prima e dopo aver
+parlato; un libro è un'assemblea oceanica che nessun computer regge volentieri.
+Le reti ricorrenti, che leggono in fila, il problema non ce l'hanno: un presente
+in più è un turno in più. E un regolamento scritto in anticipo, con quanto ogni
+posto deve ascoltare ogni altro, varrebbe per un solo numero di presenti e
+sarebbe lunghissimo; l'attenzione le coppie le calcola al momento, con le stesse
+poche regole per qualunque riunione.
 
 Poi c'è il tabellone, una casella per ogni scambio: sedici in quattro, un
-milione in mille. Il tempo alla peggio lo si aspetta; il tabellone o sta nella
-stanza o non ci sta, ed è lui a decidere quanto testo un modello si tiene
-davanti. Di qui i tre modi di far parlare tutti senza convocare la plenaria.
+milione in mille. Il tempo alla peggio lo si aspetta; il tabellone, se lo si
+appende tutto intero, o sta nella stanza o non ci sta, ed è stato a lungo lui a
+decidere quanto testo un modello si tiene davanti. Lo si può anche riempire un
+pezzo alla volta, usarlo e cancellarlo, senza appenderlo mai intero: le
+chiacchiere restano tutte, ma la stanza basta. Gli altri rimedi tagliano invece
+le chiacchiere, e fanno parlare tutti senza convocare la plenaria.
 
 Il primo fissa il programma prima di entrare: ognuno con i vicini di posto
 (poniamo i tre a destra e i tre a sinistra), qualche coppia sorteggiata per
 accorciare le distanze, e due o tre persone che parlano con tutti e fanno da
 ponte. In mille, invece di mezzo milione di chiacchiere ne servono qualche
-migliaio. Si arriva ancora dove arrivava la plenaria, e lo si
-dimostra; a reggere la dimostrazione sono i ponti, non i vicini. Ma i ponti
-sono pochi e in un giro non ripetono tutto a tutti: quello che la plenaria
-sbrigava in una volta vuole più giri, e i giri crescono con i presenti. Si
-risparmia in larghezza e si paga in altezza.
+migliaio. Si arriva ancora dove arrivava la plenaria, e lo si dimostra; a
+reggere la dimostrazione sono i ponti, non i vicini. La riunione, però, si tiene
+a giri, uno per piano del modello, e in un giro i pochi ponti non ripetono tutto
+a tutti: c'è un compito che la plenaria sbriga in un giro solo e il programma
+fisso in tanti più giri quanti più sono i presenti (se regge un'ipotesi che
+nessuno ha ancora dimostrato). Si risparmia sulle chiacchiere di ogni giro e si
+paga in numero di giri.
 
-Il secondo lascia decidere alla sala. Ognuno ha da dire qualcosa a pochissimi,
-e le altre conversazioni si tengono lo stesso a vuoto: lì il lavoro si spreca.
-All'ingresso, allora, i presenti vanno a tavoli per affinità e parlano con chi
-si ritrovano accanto. Il tavolo giusto si trova solo se chi cerca e chi va
-trovato portano lo stesso cartellino, ed è una rinuncia, perché in plenaria
-cercare e farsi trovare erano due mestieri distinti; chi ci ha provato non ha
-visto la riunione riuscire peggio. E i tavoli sbagliano: due che avevano da
-dirsi qualcosa finiscono separati, e nessuno se ne accorge. Si rimescola più
-volte con criteri diversi, così l'occasione persa a un giro si recupera al
-successivo, ma nessuno promette che non ne resti fuori una.
+Il secondo lascia decidere alla sala. Ognuno ha da dire qualcosa a pochissimi, e
+le altre conversazioni si tengono lo stesso a vuoto. All'ingresso, allora, i
+presenti vanno a tavoli per affinità e parlano con chi si ritrovano accanto. Il
+tavolo giusto si trova solo se chi cerca e chi va trovato portano lo stesso
+cartellino, ed è una rinuncia, perché in plenaria cercare e farsi trovare erano
+due mestieri distinti; chi l'ha sperimentato, su due compiti, non ha visto la
+riunione riuscire peggio. E i tavoli sbagliano: due che avevano da dirsi
+qualcosa finiscono separati. Si rifanno i tavoli più volte con criteri diversi,
+così l'occasione persa in una disposizione si recupera nella successiva, ma
+nessuno promette che non ne resti fuori una.
 
-Gli stessi organizzatori hanno un secondo accorgimento, e non è un altro modo
-di sfoltire: non riguarda chi parla con chi, riguarda i verbali. Di ogni giro
-se ne tiene uno, perché a riunione finita bisogna tornarci sopra per capire che
-cosa ha funzionato, e più giri più verbali. Se un giro si può ripercorrere a
-ritroso, il verbale si butta e si riscrive rifacendo i conti: spazio
-risparmiato, fatica in più, un baratto che in questo mestiere torna di
-continuo.
+Gli stessi organizzatori hanno anche un accorgimento che non riguarda chi parla
+con chi. Di ogni giro si tiene un verbale, perché a riunione finita bisogna
+ripercorrerla all'indietro per capire che cosa correggere, e più giri vuol dire
+più verbali da conservare. Se però ogni giro si può ricostruire partendo da
+quello dopo, i verbali si buttano e si riscrivono quando servono, rifacendo i
+conti: spazio risparmiato, fatica in più, un baratto che in questo mestiere
+torna di continuo.
 
 Il terzo butta la lista degli invitati invece di sfoltirla: i conti si
 riordinano perché le coppie non si formino mai una per una, invece di
@@ -164,15 +192,24 @@ sull’{doc}`attenzione lineare </AttenzioneLineare/overview>`.
 `````{tab} Superiore
 La matrice di attenzione ha $n \times n$ elementi. Contando la sola
 operazione di attenzione (proiezioni escluse), il costo in tempo è
-$O(n^2 \cdot d)$ nella lunghezza $n$ della sequenza, contro l’$O(n \cdot
-d^2)$ delle ricorrenti; la memoria per i punteggi è $O(n^2)$, contro
-l’$O(n \cdot d)$ delle attivazioni ricorrenti. Il confronto fra i due termini
-dice anche quando l'uno conviene sull'altro: lo strato di self-attention costa
-meno di quello ricorrente finché $n < d$, il caso tipico della traduzione del
-2017. Dentro il Transformer, poi, il termine quadratico va messo accanto a
-quello delle proiezioni e della FFN: per strato il conto è $12nd^2 + 2n^2d$, e
-il secondo supera il primo solo per $n > 6d$, come ricava la {doc}`matematica
-di un modello linguistico </Matematica/matematica-llm>`. Sotto il vincolo della
+$O(n^2 \cdot d)$ nella lunghezza $n$ della sequenza, con $d = d_{\text{model}}$,
+contro l’$O(n \cdot d^2)$ di uno strato ricorrente; la memoria per i punteggi è
+$O(n^2)$, contro l’$O(n \cdot d)$ delle attivazioni ricorrenti. Dal confronto
+fra i due termini l'articolo ricava che l'operazione di attenzione costa meno
+del passo ricorrente finché $n < d$, il caso tipico della traduzione del 2017;
+le quattro proiezioni dello strato, che la sua tabella non conta, costano però
+$4nd^2$, quanto lo strato ricorrente, quindi lo strato intero non costa meno,
+si parallelizza meglio. Dentro il Transformer, poi, il termine quadratico va
+messo accanto a quello delle proiezioni e della FFN: per strato il conto è
+$12nd^2 + 2n^2d$, e il secondo supera il primo solo per $n > 6d$, come ricava
+la {doc}`matematica di un modello linguistico </Matematica/matematica-llm>`.
+
+Il termine di paragone che la tabella non mette è un livello denso sull'intera
+sequenza, che mappi gli $nd$ numeri d'ingresso negli $nd$ d'uscita: avrebbe
+$O(n^2 d^2)$ parametri e una lunghezza fissata una volta per tutte.
+L'attenzione ne ha $O(d^2)$, condivisi fra le posizioni, e accetta qualunque
+$n$; il prezzo è che l'interazione fra le posizioni non è parametrizzata ma
+calcolata, e costa $O(n^2 d)$ operazioni. Sotto il vincolo della
 memoria, più ancora che del tempo, sono nate le finestre di contesto limitate
 dei grandi modelli, e una vasta letteratura di rimedi: attenzione sparsa o a
 finestre locali (Longformer, BigBird), approssimazioni a rango basso o kernel
@@ -259,32 +296,26 @@ ricomputazione delle attivazioni al modo in cui FlashAttention evita di
 materializzare la matrice di attenzione.
 `````
 
-Tutto questo conto riguarda il modello che studia, con il testo già davanti.
-Quando invece scrive, una parola per volta, la stessa formula gira in un
-regime diverso e paga un prezzo diverso, che è di memoria più che di calcolo:
-lo misura la {doc}`sezione sull'attenzione in pratica <attenzione-in-pratica>`.
+## Quando conviene, e quando no
 
-## Un bilancio onesto
-
-Messi su una bilancia, il Transformer vince quando ricorrono tre condizioni
-insieme: c'è tantissimo testo su cui studiare, c'è una macchina che sa fare
-molti conti insieme invece che uno dopo l'altro, e conta capire legami fra
-parole molto distanti fra loro. Sono esattamente le condizioni in cui vivono i
-sistemi tipo ChatGPT. Le architetture ricorrenti restano sensate quando le
-risorse sono poche e il testo è lunghissimo, e nei sistemi che devono
-rispondere mentre le parole arrivano, una alla volta, senza poter aspettare la
-fine (i sottotitoli in diretta, per dire, o un traduttore che lavora mentre
-l'altro parla). E come idea non sono affatto morte: due linee di ricerca
-recenti rimettono in mezzo un riassunto che si aggiorna passo per passo,
-proprio come facevano le RNN, ma costruito in modo da non pagare il costo
-della riunione plenaria. Si chiamano *attenzioni lineari* e *state space
+Il Transformer rende al meglio quando ci sono molti dati di addestramento,
+hardware che esegue molti conti in parallelo invece che uno dopo l'altro (le
+GPU, le TPU) e legami fra parole molto distanti da catturare: sono le
+condizioni in cui si addestrano i grandi modelli linguistici. Le architetture
+ricorrenti restano ragionevoli dove la memoria e il calcolo per ogni parola
+devono restare costanti, con uno stato di dimensione fissa invece di una
+memoria che cresce con il testo: su un dispositivo piccolo, o davanti a un
+flusso che non finisce mai, come i sottotitoli in diretta o un traduttore che
+lavora mentre l'altro parla. E come idea non sono tramontate: due linee di
+ricerca recenti riportano in gioco un riassunto che si aggiorna passo per
+passo, proprio come facevano le RNN, ma costruito in modo da non pagare il
+costo della riunione plenaria. Si chiamano *attenzioni lineari* e *state space
 model* (in italiano «modelli a spazio di stato», dove lo stato è appunto il
 riassunto che si aggiorna; il più noto si chiama Mamba), e hanno un capitolo
 ciascuna subito dopo quello sui Transformer: il {doc}`capitolo sull'attenzione
 lineare </AttenzioneLineare/overview>` e quello sugli
-{doc}`state space model </StateSpaceModel/overview>`. In altre parole: il
-Transformer ha vinto la
-partita del decennio, non necessariamente il campionato eterno.
+{doc}`state space model </StateSpaceModel/overview>`. Il Transformer ha vinto
+la partita del decennio, non necessariamente il campionato eterno.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -298,8 +329,9 @@ partita del decennio, non necessariamente il campionato eterno.
   stesso una alla volta.
 - Il prezzo è la riunione dove ognuno parla con ognuno: raddoppiando i
   partecipanti le chiacchiere quadruplicano. E ogni conversazione va segnata su
-  un foglio, con una casella per ciascuna: è lo spazio di quel foglio, più
-  ancora del tempo, a decidere quanto testo un modello riesce a tenere davanti.
+  un foglio, con una casella per ciascuna: è stato a lungo lo spazio di quel
+  foglio, più ancora del tempo, a decidere quanto testo un modello riesce a
+  tenere davanti.
 - Per spendere meno si tolgono conversazioni, e i modi sono tre: decidere
   in anticipo chi parla con chi (ognuno con i vicini, più qualche
   partecipante che parla con tutti), lasciare che siano i dati a dire quali
@@ -324,9 +356,10 @@ partita del decennio, non necessariamente il campionato eterno.
 - Il prezzo è quadratico nella lunghezza della sequenza, e i due termini
   vanno tenuti distinti: la memoria per i punteggi è $O(n^2)$ se la si
   scrive tutta insieme, ed è a lungo stata lei a fissare il tetto al contesto;
-  il tempo è $O(n^2 d)$, che però nei modelli
-  attuali non è il termine dominante alle lunghezze correnti (i conti stanno
-  nella sezione sui grandi modelli linguistici).
+  il tempo è $O(n^2 d)$, che supera il costo delle matrici dense solo oltre
+  $n \approx 6d$, cioè, per i modelli attuali, oltre qualche decina di migliaia
+  di token (i conti sono nella {doc}`sezione sui grandi modelli linguistici
+  <llm>`).
 - Ridurre quel costo vuol dire togliere archi da un grafo completo, e le
   strade sono tre: uno schema fisso deciso in anticipo (Longformer,
   BigBird), una scelta guidata dai dati con l'hashing sensibile alla
@@ -339,3 +372,9 @@ partita del decennio, non necessariamente il campionato eterno.
   proprio dove l'attenzione costa troppo.
 ```
 `````
+
+Prima di quei capitoli resta da vedere che cosa costa l'attenzione quando il
+modello scrive. I conti fatti fin qui riguardano il modello che studia, con il
+testo già davanti; quando scrive, una parola per volta, la stessa formula gira
+in un regime diverso e paga un prezzo diverso, più di memoria che di calcolo, e
+lo misura la {doc}`sezione sull'attenzione in pratica <attenzione-in-pratica>`.

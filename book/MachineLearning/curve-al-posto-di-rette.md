@@ -11,28 +11,32 @@ Isaac Jacob Schoenberg {cite}`schoenberg1946contributions`; chi disegnava scafi
 di navi, fusoliere e carrozzerie ha lavorato davvero così, fino agli anni
 Sessanta.
 
-Fra un peso e l'altro quel listello non si piega a caso: prende da sé la
-curva più dolce che gli riesce, perché il legno si oppone alla piega e cede il
-meno che può. Il lavoro di Schoenberg è tutto lì dentro, ed è la ragione per cui
-l'attrezzo viene prima della formula: la curva che il legno disegna e la curva
-che la statistica calcola non si somigliano, sono la stessa curva. Il resto
-non fa che rendere esplicito il cambio di alfabeto.
+Fra un peso e l'altro quel listello non si piega a caso: prende da sé la curva
+che costa meno fatica di piegatura, perché il legno si oppone alla piega e cede
+il meno che può. Il lavoro di Schoenberg parte da qui, ed è la ragione per cui
+l'attrezzo viene prima della formula: finché le pendenze restano piccole
+(l'approssimazione che lui stesso dichiara), la curva che il legno disegna e la
+curva che la statistica calcola sono la stessa curva.
 
-La domanda di partenza, però, è più banale. Fin qui ai dati si sono adattate
+La domanda di partenza, però, è più semplice. Fin qui ai dati si sono adattate
 delle rette: una retta che li segue, nella regressione, e una retta che li
-divide, nella classificazione. Quando i dati su una retta non stanno, di strade
-ce ne sono tre. Due il capitolo le percorre nelle sezioni che seguono: gli
-alberi, che invece di piegare la linea la spezzano a gradini, e le macchine a
-vettori di supporto, che curvano lo spazio sotto di essa. La terza è la più
-ovvia di tutte, quella che verrebbe in mente per prima a chiunque abbia disegnato
-un grafico su un foglio, ed è questa: tenere una retta, e piegarla.
+divide, nella classificazione. Quando i dati su una retta non stanno, si può
+spezzare la linea a gradini, come fanno gli {doc}`alberi decisionali
+<alberi-ensemble>`, o tracciare la retta in uno spazio di caratteristiche
+trasformate, come fanno le {doc}`macchine a vettori di supporto con il kernel
+<svm-kernel>`. La strada più diretta, quella che verrebbe in mente a chiunque
+abbia disegnato un grafico su un foglio, è tenere la retta e piegarla.
 
 ## Perché non basta alzare il grado
 
-Il modo più immediato di piegare una retta è promuoverla a parabola, poi a
-cubica, e via così: si tiene la stessa macchina di prima e le si danno colonne
-nuove, il quadrato e il cubo di quella che c'era. In scikit-learn è una riga, e
-funziona finché il grado resta basso. Poi succede una cosa che non ci si aspetta.
+Il modo più immediato di piegare una retta è la **regressione polinomiale**: si
+aggiungono alla matrice dei dati le colonne $x^2, x^3, \dots, x^p$ e si risolve
+lo stesso problema ai minimi quadrati della retta (in scikit-learn,
+`PolynomialFeatures` davanti a `LinearRegression`). La potenza più alta, $p$, è
+il *grado*: $2$ dà una parabola, $3$ una cubica. Finché il grado resta basso
+funziona. Al crescere del grado l'errore esplode vicino agli estremi
+dell'intervallo, anche quando al centro la curva è perfetta: è il **fenomeno di
+Runge**, descritto da Carl Runge nel 1901 {cite}`runge1901empirische`.
 
 `````{tab} Elementare
 
@@ -49,30 +53,34 @@ col cappotto. Più si pretende di azzeccare la temperatura di ognuno, peggio
 stanno quei due, e basta che un inquilino cambi un radiatore perché tutta la
 regolazione vada rifatta da capo.
 
-Con i polinomi succede esattamente questo, e ha un nome, il **fenomeno di
-Runge**, dal matematico tedesco Carl Runge che nel 1901 lo descrisse
-{cite}`runge1901empirische`. Prendi una curva a campana molto stretta, piazza
-dei punti a distanze uguali lungo l'asse, e chiedi a un polinomio di passare
-esattamente per tutti. Al centro il polinomio è impeccabile. Ai bordi impazzisce,
-e più punti gli dai peggio va: con cinque punti sbaglia al massimo di $0{,}4$,
-con ventuno sbaglia di quasi $60$, su una curva che non supera mai $1$.
+Con i polinomi succede esattamente questo: gli inquilini sono i punti, i comandi
+sono i numeri del polinomio, e ogni numero cambia la curva dappertutto, come
+ogni comando cambia l'acqua di tutto il palazzo. È il fenomeno di Runge. Prendi
+una curva a campana molto stretta, piazza dei punti a distanze uguali lungo
+l'asse, e chiedi a un polinomio di passare esattamente per tutti. Al centro il
+polinomio è impeccabile. Ai bordi impazzisce, e più punti gli dai peggio va: con
+cinque punti sbaglia al massimo di $0{,}4$, con ventuno sbaglia di quasi $60$,
+su una curva che non supera mai $1$.
 
 Spostare i punti aiuta, e per questa campana basta. Infittendoli verso i bordi
 invece di tenerli a distanze uguali, la curva torna a venire bene. Solo che nei
 dati veri dove cadono i punti non lo decidiamo noi, e il guaio grosso è un
 altro: una formula sola vale per tutto il campo, e ogni pezzo che le si aggiunge
 piega la curva dappertutto, anche dove andava bene com'era. Il conto lo si paga
-dove i dati sono più radi, cioè ai bordi.
+ai bordi, dove i punti stanno tutti da una parte sola e niente tiene ferma la
+curva dall'altra.
 
 `````
 
 `````{tab} Superiore
 
 La regressione polinomiale $y = \theta_0 + \theta_1 x + \theta_2 x^2 + \dots$ è
-ancora un modello lineare, perché lineare lo è nei *parametri* $\theta_j$ e
-non in $x$: è quello che conta per risolverla, visto che resta un problema ai
-minimi quadrati con una matrice di disegno più larga. La difficoltà sta dunque
-in che cosa si ottiene, non nel risolverla.
+ancora un modello lineare, perché lineare lo è nei *parametri* $\theta_j$ e non
+in $x$: resta un problema ai minimi quadrati con una matrice di disegno più
+larga. Le difficoltà sono due e distinte: la base dei monomi è mal condizionata
+(il numero di condizione della matrice di disegno cresce esponenzialmente col
+grado, e si cura cambiando base, per esempio con i polinomi di Čebyšëv), e i
+polinomi hanno supporto globale, qualunque sia la base.
 
 L'interpolazione polinomiale su nodi equispaziati non converge uniformemente per
 ogni funzione continua. L'esempio canonico di Runge è
@@ -83,10 +91,13 @@ $$
 \lim_{n \to \infty} \max_{x \in [-1,1]} \bigl|f(x) - p_n(x)\bigr| = \infty ,
 $$
 
-con la divergenza concentrata vicino a $x = \pm 1$. Il conto, rifatto qui:
+con la divergenza concentrata vicino a $x = \pm 1$. Il conto, con accanto
+l'errore della spline cubica naturale sugli stessi nodi (la costruisce la
+sezione seguente):
 
 ```python
 import numpy as np
+from scipy.interpolate import CubicSpline
 
 def runge(x):
     return 1.0 / (1.0 + 25.0 * x**2)
@@ -96,37 +107,43 @@ for nodi in (5, 9, 15, 21):
     xn = np.linspace(-1, 1, nodi)                       # nodi equispaziati
     c = np.polyfit(xn, runge(xn), nodi - 1)             # interpolazione esatta
     err = np.abs(np.polyval(c, xf) - runge(xf))
-    print(f"nodi={nodi:3d}  errore max = {err.max():10.3f}  "
-          f"(al centro: {abs(np.polyval(c, 0) - runge(0)):.3e})")
+    spline = CubicSpline(xn, runge(xn), bc_type="natural")
+    err_s = np.abs(spline(xf) - runge(xf))
+    print(f"nodi={nodi:3d}  errore max: polinomio = {err.max():8.3f}  "
+          f"spline cubica naturale = {err_s.max():.4f}")
 ```
 
 ```text
-nodi=  5  errore max =      0.438  (al centro: 4.441e-16)
-nodi=  9  errore max =      1.045  (al centro: 1.177e-14)
-nodi= 15  errore max =      7.195  (al centro: 5.327e-13)
-nodi= 21  errore max =     59.822  (al centro: 4.478e-11)
+nodi=  5  errore max: polinomio =    0.438  spline cubica naturale = 0.2793
+nodi=  9  errore max: polinomio =    1.045  spline cubica naturale = 0.0561
+nodi= 15  errore max: polinomio =    7.195  spline cubica naturale = 0.0025
+nodi= 21  errore max: polinomio =   59.822  spline cubica naturale = 0.0032
 ```
 
-La causa è la costante di Lebesgue dei nodi equispaziati, che cresce come
-$2^{n}/(n \log n)$: il problema di interpolazione è mal condizionato, e il
-male si concentra agli estremi dove i nodi equispaziati sono relativamente più
-radi rispetto alla distribuzione di Čebyšëv $\cos(k\pi/n)$, che invece li
-addensa ai bordi e rende la costante logaritmica.
+Il problema di interpolazione su nodi equispaziati è mal condizionato: la
+costante di Lebesgue $\Lambda_n$, cioè il fattore massimo con cui
+l'interpolazione amplifica un errore sui valori, cresce esponenzialmente,
+$\Lambda_n \sim 2^{n+1}/(e\,n\log n)$, mentre per i nodi di Čebyšëv
+$\cos(k\pi/n)$, che si addensano ai bordi, cresce come $\tfrac{2}{\pi}\log n$.
+Che per la funzione di Runge l'errore diverga, e non soltanto si amplifichi,
+dipende anche dalla sua analiticità: i poli in $\pm i/5$ cadono fuori dalla
+regione del piano complesso in cui l'interpolazione equispaziata converge, e il
+polinomio diverge per $|x| \gtrsim 0{,}726$ {cite}`trefethen2013approximation`.
 
-Cambiare la posizione dei nodi cura questo esempio ma non il problema di fondo,
-che è il **supporto globale** della base monomiale: nessun $x^{j}$ si annulla
-fuori dall'origine, quindi ogni coefficiente influenza la curva su tutto il
+Cambiare la posizione dei nodi cura questo esempio, e cambiare base cura il
+condizionamento, ma nessuno dei due cura il problema di fondo: un polinomio ha
+**supporto globale**, quindi ogni coefficiente influenza la curva su tutto il
 dominio, e la stima ai minimi quadrati non ha modo di localizzare la
 flessibilità.
 
 `````
 
 Su dati rumorosi, che è il caso realistico, la stessa misura si fa così.
-L'errore stampato è quello commesso su punti che il modello non
-ha visto in addestramento, ed è separato in due: quello nel centro del campo
-di gioco e quello nel quinto esterno, cioè ai bordi. È la separazione che rende
-visibile il difetto, perché nella media su tutti i punti si perde: ai bordi i
-punti sono pochi, e le loro sventure pesano poco su una media.
+L'errore stampato è quello commesso su punti che il modello non ha visto in
+addestramento, al centro dell'intervallo, nel quinto esterno (cioè ai bordi) e
+su tutti i punti insieme. Accanto ai polinomi ci sono già le spline con il
+numero dei loro nodi, il rimedio che la sezione seguente costruisce: qui fanno
+da termine di paragone, e più nodi vuol dire una curva più flessibile.
 
 ```python
 import numpy as np
@@ -144,56 +161,61 @@ bordo = np.abs(x) > 0.8          # il quinto esterno del campo
 pieghe = KFold(n_splits=5, shuffle=True, random_state=0)
 
 def errori(modello):
-    """MSE fuori campione, separato fra il centro e i due bordi."""
+    """MSE fuori campione: al centro, ai due bordi, e su tutti i punti."""
     res = np.empty_like(y)
     for tr, te in pieghe.split(X):
         res[te] = modello.fit(X[tr], y[tr]).predict(X[te])
     e = (res - y) ** 2
-    return e[~bordo].mean(), e[bordo].mean()
+    return e[~bordo].mean(), e[bordo].mean(), e.mean()
 
-print(f"{'modello':<26}{'centro':>10}{'bordi':>10}")
+print(f"{'modello':<26}{'centro':>10}{'bordi':>10}{'tutti':>10}")
 for g in (9, 15, 21):
-    c, b = errori(make_pipeline(PolynomialFeatures(g), LinearRegression()))
-    print(f"polinomio grado {g:<10d}{c:10.4f}{b:10.4f}")
+    c, b, t = errori(make_pipeline(PolynomialFeatures(g), LinearRegression()))
+    print(f"polinomio grado {g:<10d}{c:10.4f}{b:10.4f}{t:10.4f}")
 for n in (8, 12, 20):
-    c, b = errori(make_pipeline(SplineTransformer(n_knots=n, degree=3),
-                                LinearRegression()))
-    print(f"spline cubica {n:2d} nodi{'':<6}{c:10.4f}{b:10.4f}")
+    c, b, t = errori(make_pipeline(SplineTransformer(n_knots=n, degree=3),
+                                   LinearRegression()))
+    print(f"spline cubica {n:2d} nodi{'':<6}{c:10.4f}{b:10.4f}{t:10.4f}")
 print(f"\npunti al bordo: {bordo.sum()} su {len(x)}; rumore vero: {0.05**2:.4f}")
 ```
 
 ```text
-modello                       centro     bordi
-polinomio grado 9             0.0088    0.0054
-polinomio grado 15            0.0034    0.0049
-polinomio grado 21            0.0034    0.0280
-spline cubica  8 nodi          0.0096    0.0029
-spline cubica 12 nodi          0.0036    0.0029
-spline cubica 20 nodi          0.0033    0.0031
+modello                       centro     bordi     tutti
+polinomio grado 9             0.0088    0.0054    0.0078
+polinomio grado 15            0.0034    0.0049    0.0038
+polinomio grado 21            0.0034    0.0280    0.0104
+spline cubica  8 nodi          0.0096    0.0029    0.0077
+spline cubica 12 nodi          0.0036    0.0029    0.0034
+spline cubica 20 nodi          0.0033    0.0031    0.0032
 
 punti al bordo: 34 su 120; rumore vero: 0.0025
 ```
 
 Il numero da guardare è lo $0{,}0280$ della terza riga. Passando dal grado 15 al
-grado 21 il polinomio non peggiora affatto al centro ($0{,}0034$ tutte e due
-le volte) e peggiora di quasi sei volte ai bordi, arrivando a undici volte il
+grado 21 il polinomio non peggiora affatto al centro ($0{,}0034$ tutte e due le
+volte) e peggiora di quasi sei volte ai bordi, arrivando a undici volte il
 rumore che c'è davvero nei dati. La spline, alla stessa mossa (da 12 a 20 nodi,
-cioè più flessibilità), non si muove né di qua né di là. Non è che il polinomio
-sia sbagliato: al grado 15 va benissimo. È che ha una finestra stretta, e uscirne
-costa caro in un posto solo.
+cioè più flessibilità), non si muove né di qua né di là. Al grado 15 il
+polinomio va benissimo; ha però una finestra stretta, e uscirne costa caro in un
+posto solo. Nella media su tutti i punti il peggioramento si vede, da $0{,}0038$
+a $0{,}0104$; è la separazione a dire dove sta: al centro il polinomio non
+cambia affatto.
 
 ## Tanti listelli corti invece di uno lungo
 
-Il rimedio è quello del tavolo da disegno, e a dirlo sembra banale: se un
-listello solo non si piega bene, se ne usano tanti corti, giuntati.
+Il rimedio è rinunciare a una formula sola: si divide l'asse con dei punti di
+giunzione, i **nodi**, si usa un polinomio di grado basso fra un nodo e l'altro,
+e si raccordano i pezzi nei nodi. La curva che ne esce è una **spline**, nome
+che viene dal listello del tavolo da disegno, che fa la stessa cosa con tanti
+pezzi corti giuntati.
 
 `````{tab} Elementare
 
-Sul tavolo da disegno i listelli corti si appoggiano uno di seguito all'altro,
-e dove finisce il primo e comincia il secondo un peso li tiene fermi, piantato
-come un paletto. Quel paletto fra un tratto e il successivo si chiama **nodo**.
-Ogni listello si piega come una cubica, la curva più semplice capace di avere
-un massimo, un minimo e un punto di flesso, quanto basta per fare una gobba e
+Sul tavolo da disegno i listelli corti si appoggiano uno di seguito all'altro, e
+dove finisce il primo e comincia il secondo un peso li tiene fermi, piantato
+come un paletto. Quel paletto fra un tratto e il successivo è il nodo. Ogni
+listello si piega come una cubica, la curva più semplice capace di avere un
+massimo, un minimo e un punto di flesso, quanto basta per fare una gobba e
 cambiare idea. Appoggiati e basta, però, i pezzi restano indipendenti, e sotto
 ogni peso si vedrebbe lo scalino.
 
@@ -202,7 +224,7 @@ niente: nessun gradino, cioè i due pezzi si toccano; nessuno spigolo, cioè
 arrivano con la stessa pendenza; nessuno scatto, cioè piegano dalla stessa parte
 e con la stessa forza. Tre pretese su ogni peso, e la giuntura sparisce anche
 alla vista: l'occhio non sa dire dove finisce un listello e comincia l'altro.
-Quello che resta sul foglio è una **spline cubica**. Adesso una gobba in fondo a
+Quello che resta sul foglio è una spline cubica. Adesso una gobba in fondo a
 destra si ottiene mettendo un peso in più a destra, e il listello di sinistra
 resta dov'era; con una formula sola per tutto il campo si muoveva tutto.
 
@@ -219,13 +241,13 @@ che si raccordano con la stessa pendenza e la stessa curvatura, e i raccordi
 cadono esattamente sotto i pesi. I paletti sul foglio sono i suoi pesi.
 
 Resta il pezzo di listello che sporge oltre l'ultimo peso. Là il foglio è vuoto,
-di dati non ce n'è, e la punta libera scappa via come scappava ai bordi la curva
-a formula unica. Allora la si schiaccia sul tavolo e la si obbliga a finire
-dritta, a proseguire come una retta oltre gli estremi. Un listello montato così
-si dice **naturale**, ed è la scelta di riferimento perché rende noiosi i bordi,
-che sono il posto dove i modelli fanno i danni. Anche questa cortesia si paga in
-libertà: due condizioni a ogni capo, e dei sette gradi di libertà ne restano
-tre, uno per paletto.
+di dati non ce n'è, e niente lo trattiene: un listello libero in quel tratto non
+ha nulla che lo pieghi, e prosegue dritto come una retta oltre gli estremi. Un
+listello montato così si dice **naturale**, ed è la scelta di riferimento perché
+rende noiosi i bordi, che sono il posto dove i modelli fanno i danni. Sul foglio
+di un modello non c'è il legno a raddrizzare la punta, e la rettilineità va
+scritta come condizione: due condizioni a ogni capo, e dei sette gradi di
+libertà ne restano tre, uno per paletto.
 
 `````
 
@@ -260,63 +282,71 @@ combinazione di $K+4$ funzioni di base. La spline cubica naturale aggiunge
 il vincolo $f'' = f''' = 0$ oltre i due nodi estremi, cioè 2 vincoli per
 estremo, e scende a $K$ gradi di libertà {cite}`hastie2009elements`.
 
-La base che si usa in pratica non è quella dei polinomi troncati
-$(x - \xi_k)_+^3$, numericamente pessima, ma quella delle **B-spline**, le
-funzioni di base a **supporto locale** costruite da Schoenberg: ogni
-$B_{k,3}$ è diversa da zero solo su quattro intervalli consecutivi. È da qui
-che viene tutto il vantaggio sul polinomio globale, dove ogni base è diversa da
-zero ovunque: la matrice di disegno è a banda, il condizionamento non degenera
-al crescere di $K$, e un coefficiente sposta la curva solo nel suo pezzo di
-dominio. In scikit-learn è ciò che fa `SplineTransformer`, che trasforma una
-colonna in $K + q + 1$ colonne di B-spline valutate sui dati, cioè esattamente
-i $K+4$ gradi di libertà contati sopra (attenzione: il
-suo `n_knots` conta anche i due nodi di bordo, quindi con `n_knots=8` e
-grado 3 le colonne sono dieci). Quelle colonne sommano a $1$ in ogni punto,
-perché le B-spline sono una partizione dell'unità, quindi la costante c'è già e
-l'intercetta del modello lineare che gli si mette dopo è ridondante; a parte
-questo resta un ordinario problema ai minimi quadrati.
+La base che si usa in pratica non è quella dei polinomi troncati $(x -
+\xi_k)_+^3$, numericamente pessima, ma quella delle **B-spline**, le funzioni di
+base a **supporto locale** costruite da Schoenberg: ogni $B_{k,3}$ è diversa da
+zero solo su quattro intervalli consecutivi. È da qui che viene tutto il
+vantaggio sul polinomio globale, dove ogni base è diversa da zero ovunque: la
+matrice di disegno è a banda, la base resta ben condizionata al crescere di $K$
+(il suo numero di condizione dipende dal grado e non dal numero di nodi), e un
+coefficiente sposta la curva solo nel suo pezzo di dominio. La matrice di
+disegno dipende però anche dai dati, e ha rango pieno solo se ogni funzione di
+base ha dei dati nel proprio supporto (la condizione di Schoenberg e Whitney):
+con nodi in zone senza dati, o più nodi che dati, il problema ai minimi quadrati
+torna singolare. In scikit-learn è ciò che fa `SplineTransformer`, che trasforma
+una colonna in $K + q + 1$ colonne di B-spline valutate sui dati, cioè
+esattamente i $K+4$ gradi di libertà contati sopra (attenzione: il suo `n_knots`
+conta anche i due nodi di bordo, quindi con `n_knots=8` e grado 3 le colonne
+sono dieci). Quelle colonne sommano a $1$ in ogni punto, perché le B-spline sono
+una partizione dell'unità, quindi la costante c'è già e l'intercetta del modello
+lineare che gli si mette dopo è ridondante; a parte questo resta un ordinario
+problema ai minimi quadrati.
 
 `````
 
-Un dettaglio pratico da isolare, perché è il punto in cui il metodo mostra il
-suo carattere. La spline sposta il problema: non c'è più da scegliere un grado,
-c'è da scegliere quanti paletti e dove. Sul «dove», l'uso è mettere i nodi
-ai quantili della variabile (più paletti dove ci sono più dati, che è dove si
-possono permettere); sul «quanti», è un iperparametro come gli altri, che si
-sceglie con la cross-validation di {doc}`Overfitting e validazione
-<overfitting-validazione>`. Ma esiste anche una terza via, ed è quella che
-riporta al listello.
+Con le spline la scelta del grado diventa la scelta dei nodi: quanti e dove. Sul
+«dove», l'uso è metterli ai quantili della variabile, cioè più fitti dove ci
+sono più dati (`SplineTransformer(knots="quantile")`; il default li mette
+equispaziati); sul «quanti», è un iperparametro come gli altri, che si sceglie
+con la cross-validation di {doc}`Overfitting e validazione
+<overfitting-validazione>`. C'è anche una terza via, che la scelta la evita.
 
 ## La manopola che irrigidisce il legno
 
-Invece di decidere quanti paletti, se ne mettono tantissimi (uno per dato) e
-poi si mette un freno alla curvatura. È l'idea della **smoothing spline**, ed è
-letteralmente il listello del cantiere. Che il minimo di quel compromesso sia
-esattamente una spline lo dimostra ancora Schoenberg, nel 1964
-{cite}`schoenberg1964graduation`; a renderla un algoritmo che gira è Christian
-Reinsch, tre anni dopo {cite}`reinsch1967smoothing`.
+Invece di decidere quanti nodi, se ne mette uno per dato e si penalizza la
+curvatura. È l'idea della **smoothing spline**. Il listello dei cantieri ne è il
+caso limite: tenuto fermo dai pesi passa per tutti i punti, e la sua rigidità
+non cambia la forma; il compromesso fra fedeltà ai dati e curvatura è quello di
+un listello agganciato ai punti con delle molle, e il rapporto fra la rigidità
+del legno e quella delle molle è il $\lambda$ della formula. Che il minimo di
+quel compromesso sia esattamente una spline lo dimostra ancora Schoenberg, nel
+1964 {cite}`schoenberg1964graduation`; a renderla un algoritmo che gira è
+Christian Reinsch, tre anni dopo {cite}`reinsch1967smoothing`.
 
 `````{tab} Elementare
 
-Il listello di legno fa due cose in contrasto fra loro. Da un lato deve passare
-vicino ai pesi, e ogni peso lo tira dalla sua parte. Dall'altro il legno si
-oppone alla piega: piegarlo costa fatica, e più lo pieghi stretto più fatica
-costa. La curva che il listello disegna è il compromesso fra questi due tiri,
-cioè quella che spende meno fatica in totale.
+Adesso i pesi, che inchiodano il listello ai punti, si tolgono, e ogni punto lo
+aggancia con un elastico. Il listello fa allora due cose in contrasto fra loro.
+Da un lato deve passare vicino ai punti, e ogni elastico lo tira dalla sua
+parte, tanto più forte quanto più è teso. Dall'altro il legno si oppone alla
+piega: piegarlo costa fatica, e più lo pieghi stretto più fatica costa. La curva
+che il listello disegna è il compromesso fra questi due tiri, cioè quella che
+spende meno fatica in totale. Con i pesi la rigidità non conterebbe niente: il
+listello passerebbe per tutti i punti comunque, duro o morbido che sia.
 
 E nessuno gli ha dovuto dire che forma prendere. Il legno non sa che cosa siano
 i tratti e i paletti, eppure quello che viene fuori è proprio una curva a tratti
-raccordati, con i raccordi sotto i pesi. E ne viene fuori una sola, perché fra
-tutte le forme possibili quella che costa meno fatica è una.
+raccordati, con i raccordi in corrispondenza dei punti. E ne viene fuori una
+sola, perché fra tutte le forme possibili quella che costa meno fatica è una.
 
-La smoothing spline scrive quel compromesso in una formula sola, con
-una manopola in mezzo: quanto è rigido il legno.
+La smoothing spline scrive quel compromesso in una formula sola, con una
+manopola in mezzo: quanto è rigido il legno rispetto agli elastici.
 
 - Gira la manopola verso il morbido e ottieni uno **spago**: passa per tutti i
-  pesi, uno per uno, e fra un peso e l'altro fa quello che vuole. Ha imparato
+  punti, uno per uno, e fra un punto e l'altro fa quello che vuole. Ha imparato
   anche il rumore.
 - Gira la manopola verso il rigido e ottieni un **righello di acciaio**: non si
-  piega affatto, e dei pesi si limita a stare in mezzo. È tornato a essere la
+  piega affatto, e dei punti si limita a stare in mezzo. È tornato a essere la
   retta di partenza.
 
 La posizione della manopola si traduce in un numero, lo stesso conto dei
@@ -380,11 +410,14 @@ per dato.
 
 `````
 
-Girando la manopola si vede quanta flessibilità resta alla curva, accanto
-all'errore rispetto alla curva vera, che in un esperimento fabbricato in
-casa si conosce. La flessibilità si misura con un conto pigro ma leggibile: si
-guarda, un dato per volta, di quanto la curva si sposta se si muove solo quel
-dato, e si sommano i centoventi spostamenti.
+Il codice adatta la smoothing spline per sei valori di $\lambda$ e stampa, per
+ciascuno, i gradi di libertà effettivi $\mathrm{df}(\lambda) =
+\operatorname{tr}(\mathbf{S}_\lambda)$ e l'errore quadratico medio rispetto alla
+curva vera, che su dati simulati si conosce. La traccia si calcola un dato per
+volta: la spline adattata a un vettore che vale $1$ nel solo dato $j$ e $0$
+altrove, letta in $x_j$, è l'elemento $S_{\lambda,jj}$, cioè di quanto si sposta
+la curva in $x_j$ se si sposta di uno solo quel dato. ($10^{-8}$, un
+centomilionesimo, si stampa `1e-08`.)
 
 ```python
 import numpy as np
@@ -437,15 +470,17 @@ libertà effettivi**. Ci sono tre cose da leggere.
 La prima è l'ultima riga. Con la manopola tutta sul rigido i gradi di libertà
 arrivano a $2{,}0$, che è il conto di una retta: uno per l'altezza, uno per la
 pendenza. Le due righe in fondo dicono quanto quella retta vada presa alla
-lettera. Il valore non è esattamente $2$ ma $2{,}0026$, perché il limite è
-asintotico e non si tocca mai; e la curva che ne esce si scosta dalla retta dei
-minimi quadrati, nel punto peggiore, di otto decimillesimi dell'ampiezza dei
-dati, cioè meno del tratto di matita con cui la si disegnerebbe.
+lettera. Il valore non è esattamente $2$ ma $2{,}0026$: la retta si raggiunge
+solo con una manopola infinita, e a ogni valore finito resta un filo di
+flessibilità; e la curva che ne esce si scosta dalla retta di best fit (la retta
+dei minimi quadrati), nel punto peggiore, di otto decimillesimi dell'ampiezza
+dei dati, cioè meno del tratto di matita con cui la si disegnerebbe.
 
-La seconda è che l'errore rispetto alla curva vera non scende in modo monotono:
-tocca il minimo a $\lambda = 10^{-4}$ e risale da tutte e due le parti. È la U
-del compromesso bias-varianza, la stessa vista nella sezione sull'overfitting,
-disegnata qui da una manopola continua invece che da una scelta discreta.
+La seconda è che l'errore rispetto alla curva vera non scende sempre: tocca il
+minimo a $\lambda = 10^{-4}$ e risale da tutte e due le parti. È la U del
+compromesso bias-varianza, la stessa vista in {doc}`Overfitting e validazione
+<overfitting-validazione>`, disegnata qui da una manopola che gira con
+continuità invece che da un numero intero di nodi.
 
 La terza è la più utile: fra $\lambda = 10^{-8}$ e $\lambda = 10^{-4}$ i gradi
 di libertà passano da $97$ a $20$, cioè la manopola ha buttato via tre quarti
@@ -468,43 +503,47 @@ servono dati rumorosi, perché è lì che la manopola della rigidità ha senso:
 dallo spago che insegue ogni punto al righello che non si piega.
 ```
 
-Il pannello di destra di {numref}`fig-spline-tavolette` merita una precisazione,
-perché è il punto in cui questa manopola somiglia a un'altra già vista e non è
-la stessa. La regolarizzazione Ridge e Lasso della sezione sull'overfitting
-frena i coefficienti, tirandoli verso lo zero; qui il freno è sulla
-curvatura della funzione, e i coefficienti possono restare grandi quanto
-vogliono purché la curva risultante sia dolce. Sono due modi diversi di dire
-«non esagerare», e il secondo è quello che si può disegnare.
+Il pannello di destra di {numref}`fig-spline-tavolette` mostra una
+regolarizzazione parente stretta della Ridge di {doc}`Overfitting e validazione
+<overfitting-validazione>`. Scritta nella base B-spline, $f = \sum_j \theta_j
+B_j$ (i $\theta_j$ sono i pesi delle funzioni di base), la penalità di curvatura
+diventa una forma quadratica nei pesi, $\int f''^2 =
+\boldsymbol{\theta}^\top\boldsymbol{\Omega}\,\boldsymbol{\theta}$ con
+$\Omega_{jk} = \int B_j''\,B_k''$: è una Ridge *generalizzata*
+{cite}`hastie2009elements`, che al posto di $\lVert\boldsymbol{\theta}\rVert^2$
+penalizza $\boldsymbol{\theta}^\top\boldsymbol{\Omega}\,\boldsymbol{\theta}$. La
+Ridge tira tutti i pesi verso lo zero; la penalità di curvatura lascia liberi
+quelli che descrivono una retta, su cui vale zero, e frena solo le combinazioni
+che piegano la curva.
 
 (sec-regressione-a-nucleo)=
 ## Una media che scivola: la regressione a nucleo
 
-Il listello di Schoenberg è una curva sola che deve andare bene dappertutto. Si
-può anche rinunciare a una formula unica per tutta la curva, e rispondere punto
-per punto: per stimare la funzione in un punto $x_0$ si fa la media delle $y$
-degli esempi, pesando ciascuno con una campana di pesi centrata in $x_0$, così
-che i vicini contino molto e i lontani quasi niente. È la **regressione a
-nucleo**, proposta indipendentemente da Èlizbar Nadaraya e da Geoffrey Watson
-nel 1964 {cite}`nadaraya1964estimating,watson1964smooth`, e la campana si
-chiama *nucleo*, in inglese *kernel*. Il nome è lo stesso del nucleo di una
-matrice della {doc}`sezione sui sistemi lineari </Matematica/sistemi-lineari>`,
-con cui non ha niente a che fare, e del kernel che tornerà nella
-{doc}`sezione sul kernel trick <svm-kernel>`, di cui la campana gaussiana è
-invece parente stretta. La larghezza della campana, $h$, è la manopola.
+La smoothing spline si ottiene con un'unica ottimizzazione su tutti i dati. Si
+può anche stimare la funzione punto per punto: per stimarla in $x_0$ si fa la
+media pesata delle $y_i$, con pesi che decrescono con la distanza $\lvert x_i -
+x_0\rvert$ secondo una funzione a campana centrata in $x_0$, così che i vicini
+contino molto e i lontani quasi niente. È la **regressione a nucleo**, proposta
+indipendentemente da Èlizbar Nadaraya e da Geoffrey Watson nel 1964
+{cite}`nadaraya1964estimating,watson1964smooth`, e la campana si chiama
+*nucleo*, in inglese *kernel*: è parente stretta del kernel che tornerà nella
+{doc}`sezione sul kernel trick <svm-kernel>`. La larghezza della campana, $h$,
+si chiama *larghezza di banda* (*bandwidth*), e fa il mestiere che nella
+smoothing spline faceva $\lambda$.
 
 `````{tab} Elementare
 
-Per stimare quanto vale una casa di 80 metri quadri si guardano le case
-vendute. Quelle di 79 o di 81 metri contano quasi come se fossero la casa da
-stimare; quelle di 70 un po’ meno; quelle di 150 non dicono niente. La stima è
-la media dei prezzi, dove ogni prezzo pesa tanto quanto la sua casa somiglia
-per superficie a quella da stimare: ogni prezzo si moltiplica per il suo peso,
-e il totale si divide per la somma dei pesi invece che per il numero delle
-case. Con due case da 79 e 81 metri vendute a 200 e 210 mila euro, che contano
-per intero, e una da 70 metri venduta a 180 mila, che conta per metà, il conto
-è $(200 + 210 + 0{,}5 \times 180) / (1 + 1 + 0{,}5) = 500 / 2{,}5 = 200$ mila
-euro. Poi si fa lo stesso per 81 metri, per 82, e così via: la finestra dei
-«simili» scivola lungo i metri quadri, e la stima disegna una curva
+Per stimare quanto vale una casa di 80 metri quadri si guardano le case vendute.
+Quelle di 79 o di 81 metri contano quasi come se fossero la casa da stimare;
+quelle di 70 un po’ meno; quelle di 150 non dicono niente. La stima è la media
+dei prezzi, dove ogni prezzo pesa tanto quanto la sua casa somiglia per
+superficie a quella da stimare: ogni prezzo si moltiplica per il suo peso, e il
+totale si divide per la somma dei pesi invece che per il numero delle case. Con
+due case da 79 e 81 metri vendute a 200 e 210 mila euro, che contano per intero
+(arrotondando il loro «quasi»), e una da 70 metri venduta a 180 mila, che conta
+per metà, il conto è $(200 + 210 + 0{,}5 \times 180) / (1 + 1 + 0{,}5) = 500 /
+2{,}5 = 200$ mila euro. Poi si fa lo stesso per 81 metri, per 82, e così via: la
+finestra dei «simili» scivola lungo i metri quadri, e la stima disegna una curva
 ({numref}`fig-media-che-scivola`). È una finestra dai bordi sfumati, e nella
 figura il peso che cala ha la forma di una campana.
 
@@ -556,23 +595,40 @@ costante adattato con pesi locali. Sostituendo la costante con una retta,
 $\min_{a,b}\sum_i K_h(x_0 - x_i)\,\big(y_i - a - b(x_i - x_0)\big)^2$ e $\hat
 f(x_0) = \hat a$, si ottiene la **regressione lineare locale** (la base del
 LOWESS di Cleveland {cite}`cleveland1979robust`). All'interno la distorsione di
-entrambe è $O(h^2)$ e la varianza $O\big(1/(mh)\big)$, quindi la banda ottima
-va come $m^{-1/5}$ e l'errore quadratico come $m^{-4/5}$, più lento del
-$m^{-1}$ di un modello parametrico corretto. Sono conti asintotici, per $h \to
-0$ e $mh \to \infty$, con $f$ due volte derivabile con continuità, densità
-degli $x_i$ positiva attorno a $x_0$ e rumore di varianza finita; il termine
-della distorsione proporzionale a $h\,f'(x_0)$ all'interno sparisce perché il
-nucleo è simmetrico. Al bordo i dati stanno da una parte sola, quel termine non
-si cancella più, e la distorsione di Nadaraya-Watson sale a $O(h)$ (nel punto
-estremo, con nucleo gaussiano e dati uniformi, circa $0{,}8\,h\,\lvert
-f'(x_0)\rvert$), mentre quella lineare locale resta $O(h^2)$: la retta corregge
-al primo ordine l'asimmetria del vicinato {cite}`hastie2009elements`. Il prezzo
-è la varianza, che nel punto estremo, con le stesse ipotesi, è circa tripla di
-quella della media pesata: con una banda stretta la retta poggia su pochi punti
-tutti da un lato, e al bordo sbaglia più della media che doveva correggere. La
-stessa idea, massimizzare una verosimiglianza pesata attorno a $x_0$, dà la
-*verosimiglianza locale*, che porta la regressione logistica o di Poisson in
-versione locale.
+entrambe è $O(h^2)$ e la varianza $O\big(1/(mh)\big)$, quindi la banda ottima va
+come $m^{-1/5}$ e l'errore quadratico come $m^{-4/5}$, più lento del $m^{-1}$ di
+un modello parametrico corretto. Sono conti asintotici, per $h \to 0$ e $mh \to
+\infty$, con $f$ due volte derivabile con continuità, densità degli $x_i$
+positiva attorno a $x_0$ e rumore di varianza finita; il termine della
+distorsione proporzionale a $h\,f'(x_0)$ all'interno sparisce perché il nucleo è
+simmetrico. Più in dettaglio, con $p$ la densità degli $x_i$, $\mu_2 = \int
+u^2K(u)\,du$ e $R(K) = \int K^2$, all'interno valgono
+
+$$
+\begin{gathered}
+\operatorname{bias}_{\mathrm{NW}}(x_0) \approx h^2\mu_2\Bigl(\tfrac12 f''(x_0) + \frac{f'(x_0)\,p'(x_0)}{p(x_0)}\Bigr),
+\\
+\operatorname{bias}_{\mathrm{LL}}(x_0) \approx \tfrac12 h^2\mu_2 f''(x_0),
+\qquad
+\operatorname{Var}(x_0) \approx \frac{\sigma^2 R(K)}{m\,h\,p(x_0)},
+\end{gathered}
+$$
+
+dove LL è la retta locale e $\sigma^2$ la varianza del rumore, la stessa per i
+due stimatori. Il termine $f'p'/p$, la *distorsione di progetto*, c'è anche
+all'interno quando i dati non sono distribuiti in modo uniforme: la media pesata
+la paga, la retta locale no, e per questo la regressione lineare locale è
+preferibile anche lontano dai bordi {cite}`fan1992design`. Al bordo i dati
+stanno da una parte sola, il termine in $h\,f'(x_0)$ non si cancella più, e la
+distorsione di Nadaraya-Watson sale a $O(h)$ (nel punto estremo, con nucleo
+gaussiano e dati uniformi, circa $0{,}8\,h\,\lvert f'(x_0)\rvert$), mentre
+quella lineare locale resta $O(h^2)$: la retta corregge al primo ordine
+l'asimmetria del vicinato {cite}`hastie2009elements`. Il prezzo è la varianza,
+che nel punto estremo, con le stesse ipotesi, è circa tripla di quella della
+media pesata: con una banda stretta la retta poggia su pochi punti tutti da un
+lato, e al bordo sbaglia più della media che doveva correggere. La stessa idea,
+massimizzare una verosimiglianza pesata attorno a $x_0$, dà la *verosimiglianza
+locale*, che porta la regressione logistica o di Poisson in versione locale.
 
 Come la smoothing spline, lo stimatore è lineare nelle risposte,
 $\hat{\mathbf{y}} = \mathbf{S}_h\mathbf{y}$ con
@@ -593,11 +649,11 @@ avanti. Se le chiavi $\mathbf{k}_i$ hanno tutte la stessa norma,
 $\exp\big(-\lVert\mathbf{q}-\mathbf{k}_i\rVert^2/(2h^2)\big) \propto
 \exp(\mathbf{q}^\top\mathbf{k}_i/h^2)$ (la norma di $\mathbf{q}$ non conta: il
 fattore $e^{-\lVert\mathbf{q}\rVert^2/(2h^2)}$ è comune a tutti i pesi e la
-normalizzazione lo cancella), e la media pesata
-$\sum_i \mathrm{softmax}_i(\mathbf{q}^\top\mathbf{k}_i/h^2)\,\mathbf{v}_i$
-è lo stimatore di Nadaraya-Watson con il punto $\mathbf{q}$, gli esempi
-$\mathbf{k}_i$ e le risposte $\mathbf{v}_i$. Con $h^2 = \sqrt{d_k}$, dove
-$d_k$ è la lunghezza di query e chiavi, è
+normalizzazione lo cancella), e la media pesata $\sum_i
+\mathrm{softmax}_i(\mathbf{q}^\top\mathbf{k}_i/h^2)\,\mathbf{v}_i$ è lo
+stimatore di Nadaraya-Watson con il punto $\mathbf{q}$, gli esempi
+$\mathbf{k}_i$ e le risposte $\mathbf{v}_i$. Con $h^2 = \sqrt{d_k}$, dove $d_k$
+è la dimensione di query e chiavi (il numero delle loro componenti), è
 l’{doc}`attenzione </Transformers/attenzione>` dei Transformer: il suo fattore
 $1/\sqrt{d_k}$ fa la parte della larghezza della campana, e la similarità, a
 differenza della campana, si impara, attraverso le proiezioni che producono
@@ -617,13 +673,16 @@ se ne stacca: a sinistra i vicini stanno tutti più in alto e la tirano su, a
 destra stanno tutti più in basso e la tirano giù.
 ```
 
-Il codice misura il compromesso sulla larghezza e il difetto del bordo
-ripetendo la prova duecento volte, ogni volta con cento esempi rumorosi nuovi
-presi dalla stessa onda ($\sin 2\pi x$ su $[0, 1]$, rumore di deviazione
-standard $0{,}3$), perché su una prova sola il rumore dei pochi punti ai bordi
-basta a far vincere, per caso, il metodo che in media sbaglia di più. Quello che
-stampa è la radice dell'errore quadratico medio rispetto all'onda vera, su
-tutta la griglia, all'interno e nel 10% vicino agli estremi.
+Il codice misura il compromesso sulla larghezza e il difetto del bordo ripetendo
+la prova duecento volte, ogni volta con cento esempi rumorosi nuovi presi dalla
+stessa onda (la funzione $\sin 2\pi x$, che fra $0$ e $1$ sale una volta e
+scende una volta, con un rumore di deviazione standard $0{,}3$), perché su una
+prova sola il rumore dei pochi punti ai bordi basta a far vincere, per caso, il
+metodo che in media sbaglia di più. Stampa la radice dell'errore quadratico
+medio, cioè di quanto, tipicamente, la stima si scosta dall'onda vera, sui
+duecentouno punti in cui la si calcola: in tutto, all'interno e nel 10% vicino
+agli estremi. I numeri da confrontare sono, riga per riga, quello dell'interno e
+quello dei bordi.
 
 ```python
 import numpy as np
@@ -687,19 +746,22 @@ pochi punti tutti da un lato non bastano a fissarne la pendenza.
 
 ## Da una curva a molte: i modelli additivi
 
-Spline e medie che scivolano danno il meglio con una variabile sola. Con dieci
-colonne, cioè dieci caratteristiche, non si può fare la stessa cosa, perché una
-funzione flessibile di dieci variabili insieme ha bisogno di una quantità di
-dati che nessuno ha: è la maledizione della dimensionalità incontrata a
-proposito del {doc}`k-NN <apprendimento-supervisionato>` e appena ritrovata per
-la media che scivola. Conviene dirla nei suoi termini. Per riempire una griglia
-a $10$ caselle per lato in una dimensione bastano dieci punti; in due le
-caselle sono già $100$, in tre $1000$, in dieci $10^{10}$, e per averne uno per
-casella servirebbero dieci miliardi di esempi.
+Spline e regressione a nucleo danno il meglio con una variabile sola. Con dieci
+colonne una funzione flessibile di tutte e dieci insieme chiederebbe una
+quantità di dati che nessuno ha: è la maledizione della dimensionalità
+incontrata a proposito del {doc}`k-NN <apprendimento-supervisionato>` e appena
+ritrovata, come velocità, nella regressione a nucleo. In numeri: una griglia a
+$10$ caselle per lato ne ha $10$ in una dimensione, $100$ in due, $1000$ in tre
+e $10^{10}$ in dieci, e per un esempio per casella ne servirebbero dieci
+miliardi.
 
-La via d'uscita è una rinuncia dichiarata, e si chiama **modello additivo
-generalizzato** (*Generalized Additive Model*, GAM), proposto da Trevor Hastie e
-Robert Tibshirani nel 1986 {cite}`hastie1986generalized`.
+La via d'uscita è rinunciare alle interazioni. Il **modello additivo
+generalizzato** (*Generalized Additive Model*, GAM), proposto da Trevor Hastie
+e Robert Tibshirani nel 1986 {cite}`hastie1986generalized`, scrive la risposta
+come una somma di funzioni di una colonna ciascuna, $\theta_0 + f_1(x_1) +
+\dots + f_d(x_d)$, e stima ogni $f_j$ con una spline («generalizzato» perché la
+somma può passare per una funzione di collegamento, come nella regressione
+logistica).
 
 `````{tab} Elementare
 
@@ -767,16 +829,15 @@ $\theta_0$.
 La stima classica è il **backfitting**: si aggiorna ciclicamente
 
 $$
-f_j \leftarrow \mathcal{S}_j \Bigl( \mathbf{y} - \theta_0 -
-\textstyle\sum_{k \ne j} f_k \Bigr),
+\mathbf{f}_j \leftarrow \mathcal{S}_j \Bigl( \mathbf{y} - \theta_0\mathbf{1} - \textstyle\sum_{k \ne j} \mathbf{f}_k \Bigr),
+\qquad \mathbf{f}_k = \bigl(f_k(x_{1k}), \dots, f_k(x_{mk})\bigr)^{\top},
 $$
 
 cioè si liscia il residuo parziale rispetto alla sola $x_j$, e si ripete fino a
-convergenza. È lo schema «alterna, tenendo fermo tutto il resto» che il
-capitolo ritroverà in $k$-means e in EM, nella {doc}`sezione su riduzione e
-clustering <riduzione-clustering>`. Se ogni $\mathcal{S}_j$ è una proiezione,
-il procedimento converge alla soluzione dei minimi quadrati vincolati allo
-spazio additivo {cite}`buja1989linear`.
+convergenza. È lo schema «alterna, tenendo fermo tutto il resto» di $k$-means e
+di EM, nella {doc}`sezione su riduzione e clustering <riduzione-clustering>`. Se
+ogni $\mathcal{S}_j$ è una proiezione, il procedimento converge alla soluzione
+dei minimi quadrati vincolati allo spazio additivo {cite}`buja1989linear`.
 
 Costruire un GAM con B-spline non richiede altro che quanto già visto: si
 espande ogni colonna nella sua base e si risolve un unico problema lineare
@@ -784,6 +845,17 @@ regolarizzato. La complessità sale linearmente con il numero $d$ di colonne, no
 esponenzialmente: è esattamente la maledizione della dimensionalità evitata per
 decreto, al prezzo di escludere dallo spazio delle ipotesi tutti i termini di
 interazione $f_{jk}(x_j, x_k)$.
+
+La garanzia che giustifica la rinuncia è di Stone {cite}`stone1985additive`: se
+il modello additivo è vero e ogni $f_j$ è due volte derivabile, l'errore
+quadratico di stima converge come $m^{-4/5}$, la velocità di una variabile sola,
+qualunque sia $d$, contro l’$m^{-4/(4+d)}$ della regressione a nucleo su tutte
+le colonne insieme. Se il modello non è additivo, il GAM converge alla
+proiezione della funzione vera sullo spazio delle somme additive, e paga per
+intero la varianza della parte che resta fuori. Nell'esperimento con
+l'interazione, con $x_1, x_2$ indipendenti e uniformi su $[-2, 2]$, il prodotto
+$1{,}5\,x_1x_2$ resta fuori tutto ($\mathbb{E}[x_1x_2 \mid x_1] = 0$), e la sua
+varianza vale $1{,}5^2\cdot(4/3)^2 = 4$.
 
 `````
 
@@ -855,9 +927,14 @@ forma. Quando l'ipotesi è vera, dichiararla vale più che essere potenti.
 
 I due numeri in basso pagano il conto della stessa scommessa. Aggiunta
 l'interazione, il GAM passa da $0{,}0427$ a $4{,}4078$, cioè cento volte peggio,
-mentre il boosting resta a $0{,}2904$. È la definizione operativa di un modello
-con un'ipotesi forte: quando l'ipotesi tiene guadagna, quando cade non degrada,
-crolla. Prima di usarne uno conviene sapere quale ipotesi si sta firmando.
+mentre il boosting passa da $0{,}0866$ a $0{,}2904$. Il GAM perde esattamente la
+parte dell'interazione che non si scrive come somma di curve, e questa
+interazione è costruita per non avere nient'altro: con $x_1$ e $x_2$
+indipendenti e simmetrici attorno allo zero, il prodotto $x_1x_2$ non ha nessuna
+componente additiva, e il GAM non ne cattura niente. È il modo di sbagliare di
+un modello con un'ipotesi forte: perde tutto ciò che sta fuori dall'ipotesi,
+poco o tanto che sia, e prima di usarne uno bisogna sapere quale ipotesi si sta
+firmando.
 
 ## Dove stanno, in pratica
 
@@ -866,11 +943,12 @@ tutto liberi, e conviene fissarla, perché non è «un modello in più».
 
 Sono la risposta giusta quando servono tre cose insieme: che l'effetto di una
 variabile sia curvo e non se ne conosca la forma; che quell'effetto vada
-mostrato a qualcuno, in un grafico che si legge senza sapere di statistica;
-e che i dati non siano tantissimi. La medicina e l'epidemiologia le usano da
-decenni per questa ragione, ed è anche il motivo per cui il capitolo
-sull'interpretabilità ci tornerà sopra: un GAM si guarda direttamente, senza
-bisogno che qualcuno venga dopo a spiegarlo.
+mostrato a qualcuno, in un grafico che si legge senza sapere di statistica; e
+che i dati non siano tantissimi. La medicina e l'epidemiologia le usano da
+decenni per questa ragione, ed è anche il motivo per cui la {doc}`sezione sui
+modelli trasparenti </Interpretabilita/modelli-trasparenti-e-importanza>` ci
+torna sopra: un GAM si guarda direttamente, senza bisogno che qualcuno venga
+dopo a spiegarlo.
 
 Sono la risposta sbagliata quando le interazioni sono il cuore del problema, e
 quando i dati sono immagini, suono o testo: là non ci sono colonne con un
@@ -881,27 +959,28 @@ altri modelli.
 
 ```{admonition} Da ricordare
 :class: important
-- Un polinomio unico piegato troppo ondeggia dappertutto, e i danni li fa
-  ai bordi, dove i dati sono radi: è il fenomeno di Runge, e al grado 21 il
-  polinomio sbaglia ai bordi undici volte il rumore che c'è nei dati, restando
-  impeccabile al centro.
-- Una spline è la stessa curva del listello di legno dei cantieri navali:
-  tante cubiche corte, giuntate in modo che sui paletti (i nodi) non si
-  vedano né gradini né spigoli né scatti di curvatura.
+- Un polinomio unico piegato troppo ondeggia, e i danni li fa ai bordi, dove
+  niente lo tiene fermo dall'altra parte: è il fenomeno di Runge, e al grado 21
+  il polinomio sbaglia ai bordi undici volte il rumore che c'è nei dati,
+  restando impeccabile al centro.
+- Una spline è la curva che prende il listello di legno dei cantieri navali
+  quando le pendenze sono piccole: tante cubiche corte, giuntate in modo che sui
+  paletti (i nodi) non si vedano né gradini né spigoli né scatti di curvatura.
 - Aggiungere flessibilità a una spline la aggiunge dove serve, un tratto per
   volta; aggiungerla a un polinomio la aggiunge ovunque.
 - La versione naturale obbliga la curva a proseguire dritta oltre gli
   estremi, cioè rende noiosi i bordi, che sono il posto dove i modelli fanno i
   danni.
-- La smoothing spline mette una manopola sulla rigidità del legno: da spago
-  che passa per ogni punto a righello che non si piega. Girata tutta verso il
-  rigido dà una retta, e il conto lo mostra: la flessibilità che resta è
-  $2{,}0026$ contro il $2$ tondo di una retta vera.
-- La media che scivola stima il valore in un punto con la media dei vicini,
-  pesati da una campana. La larghezza della campana è la manopola (stretta
-  insegue il rumore, larga appiattisce), e ai bordi, dove i vicini stanno da
-  una parte sola, la media si storce: una retta locale al posto della media
-  ne toglie gran parte, purché la finestra prenda abbastanza case.
+- La smoothing spline aggancia il listello ai punti con degli elastici e mette
+  una manopola sulla rigidità del legno: da spago che passa per ogni punto a
+  righello che non si piega. Girata tutta verso il rigido dà una retta, e il
+  conto lo mostra: la flessibilità che resta è $2{,}0026$ contro il $2$ tondo di
+  una retta vera.
+- La regressione a nucleo (la media che scivola) stima il valore in un punto con
+  la media dei vicini, pesati da una campana. La larghezza della campana è la
+  manopola (stretta insegue il rumore, larga appiattisce), e ai bordi, dove i
+  vicini stanno da una parte sola, la media si storce: una retta locale al posto
+  della media ne toglie gran parte, purché la finestra prenda abbastanza case.
 - Un GAM somma una curva per colonna: si vede la forma di ogni effetto, uno
   per uno. La rinuncia dichiarata è che gli effetti non si parlano fra loro: se
   nei dati due colonne contano insieme, il GAM non se ne accorge.
@@ -913,49 +992,49 @@ altri modelli.
 
 ```{admonition} Da ricordare
 :class: important
-- L'interpolazione polinomiale su nodi equispaziati diverge (Runge): la base
-  monomiale ha supporto globale, quindi ogni coefficiente agisce ovunque e il
-  problema è mal condizionato agli estremi.
+- L'interpolazione polinomiale su nodi equispaziati può divergere (Runge): la
+  costante di Lebesgue cresce esponenzialmente e i polinomi hanno supporto
+  globale, quindi ogni coefficiente agisce ovunque. Cambiare base cura il
+  condizionamento, non la globalità.
 - Una spline cubica con $K$ nodi è cubica a tratti con continuità di $f$,
   $f'$, $f''$ nei nodi: $4(K+1) - 3K = K+4$ gradi di libertà, che diventano $K$
   imponendo la naturalità ($f'' = f''' = 0$ fuori dai nodi estremi).
 - La base operativa sono le B-spline, a supporto locale (quattro intervalli):
-  matrice di disegno a banda, condizionamento stabile al crescere di $K$.
-- La smoothing spline minimizza
-  $\sum_i (y_i - f(x_i))^2 + \lambda \int f''^2$; il minimo su uno spazio di
-  dimensione infinita è una spline cubica naturale con nodi nei dati. La
-  complessità si misura con i gradi di libertà effettivi
-  $\operatorname{tr}(\mathbf{S}_\lambda)$, che vanno da $m$ a $2$.
+  matrice di disegno a banda e ben condizionata, finché ogni intervallo fra nodi
+  contiene dati (condizione di Schoenberg e Whitney).
+- La smoothing spline minimizza $\sum_i (y_i - f(x_i))^2 + \lambda \int f''^2$;
+  il minimo su uno spazio di dimensione infinita è una spline cubica naturale
+  con nodi nei dati. La complessità si misura con i gradi di libertà effettivi
+  $\operatorname{tr}(\mathbf{S}_\lambda)$, che vanno da $m$ a $2$. Nella base
+  B-spline è una Ridge generalizzata, che non frena le rette.
 - La regressione a nucleo di Nadaraya-Watson è una media pesata, con pesi dati
   da una campana di larghezza $h$ centrata in $x_0$: distorsione $O(h^2)$ e
   varianza $O\big(1/(mh)\big)$ danno $h \propto m^{-1/5}$ ed errore quadratico
   $m^{-4/5}$. Al bordo la distorsione sale a $O(h)$; la regressione lineare
-  locale la riporta a $O(h^2)$, pagandola in varianza (circa il triplo nel
-  punto estremo). Con nucleo gaussiano, chiavi di norma comune e
-  $h^2 = \sqrt{d_k}$ è l'attenzione dei Transformer, che in più impara le
-  proiezioni da cui escono query e chiavi.
-- Un GAM pone
-  $g(\mathbb{E}[y \mid \mathbf{x}]) = \theta_0 + \sum_j f_j(x_j)$: costo lineare
-  nel numero di colonne invece che esponenziale, al prezzo di escludere le
-  interazioni. Si stima
-  con il backfitting, cioè lisciando i residui parziali una variabile per
-  volta.
+  locale la riporta a $O(h^2)$, pagandola in varianza (circa il triplo nel punto
+  estremo), e all'interno toglie la distorsione di progetto $f'p'/p$. Con nucleo
+  gaussiano, chiavi di norma comune e $h^2 = \sqrt{d_k}$ è l'attenzione dei
+  Transformer, che in più impara le proiezioni da cui escono query e chiavi.
+- Un GAM pone $g(\mathbb{E}[y \mid \mathbf{x}]) = \theta_0 + \sum_j f_j(x_j)$:
+  costo lineare nel numero di colonne invece che esponenziale, al prezzo di
+  escludere le interazioni. Si stima con il backfitting, cioè lisciando i
+  residui parziali una variabile per volta; se il modello è vero l'errore va
+  come $m^{-4/5}$ qualunque sia $d$ (Stone).
 - Il compromesso è misurabile in tutte e due le direzioni: su dati additivi il
   GAM batte un gradient boosting (MSE $0{,}0427$ contro $0{,}0866$, con rumore
-  irriducibile $0{,}0400$); aggiunta un'interazione, crolla a $4{,}4078$ mentre
-  il boosting resta a $0{,}2904$.
+  irriducibile $0{,}0400$); aggiunta un'interazione senza componente additiva,
+  sale a $4{,}4078$ perché ne perde tutta la varianza, mentre il boosting passa
+  da $0{,}0866$ a $0{,}2904$.
 ```
 
 `````
 
 C'è un filo che tiene insieme spline e GAM con gli alberi e le macchine a
-vettori di supporto delle sezioni che seguono, ed è la domanda su quanta
-struttura mettere nel modello prima di guardare i dati. La retta ne mette
-troppa e non si piega; il polinomio ne toglie troppa e si piega dove non deve;
-la spline la rimette al posto giusto, dicendo che la curva deve essere dolce ma
-non dicendo che forma abbia, e la media che scivola chiede la stessa dolcezza
-per un'altra strada, pesando i vicini invece di penalizzare le pieghe. Il GAM
-fa lo stesso un gradino più su, sulle colonne. È lo stesso mestiere che gli
-alberi della prossima sezione faranno con un attrezzo opposto, spezzando la
-linea a gradini invece di piegarla, e che le macchine a vettori di supporto
-faranno curvando lo spazio sotto di essa.
+vettori di supporto: la domanda su quanta struttura mettere nel modello prima di
+guardare i dati. La retta ne mette troppa e non si piega; il polinomio ne toglie
+troppa e si piega dove non deve; la spline la rimette al posto giusto, dicendo
+che la curva deve essere dolce ma non che forma abbia, e la regressione a nucleo
+chiede la stessa dolcezza per un'altra strada, pesando i vicini invece di
+penalizzare le pieghe. Il GAM fa lo stesso un gradino più su, sulle colonne. Gli
+{doc}`alberi decisionali <alberi-ensemble>` fanno lo stesso mestiere con
+l'attrezzo opposto, spezzando la linea a gradini invece di piegarla.

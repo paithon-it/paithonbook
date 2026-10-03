@@ -1,7 +1,7 @@
 # Davanti ai modelli: limitare, ritentare, instradare
 
-Il pomeriggio del 15 gennaio 1990 una centrale di commutazione della rete
-interurbana AT&T, a New York, ebbe un guasto e fece quello per cui era stata
+Una centrale di commutazione della rete interurbana AT&T, a New York, il
+pomeriggio del 15 gennaio 1990 ebbe un guasto e fece quello per cui era stata
 progettata: si fermò qualche secondo, si rimise in ordine e, tornata in
 servizio, lo annunciò alle centrali vicine. Quel messaggio fece cadere le
 centrali che lo ricevevano. Un aggiornamento installato a dicembre aveva
@@ -9,9 +9,9 @@ lasciato nel programma un'istruzione fuori posto (un `break` del linguaggio C,
 che fa uscire da un blocco di codice prima del tempo), e una centrale che
 riceveva due messaggi a pochi millisecondi l'uno dall'altro si corrompeva i
 dati, se ne accorgeva e si riavviava; tornando in servizio, lo annunciava alle
-vicine. Le 114 centrali della rete si passarono il riavvio per circa nove ore,
-e in quelle ore quasi metà delle chiamate interurbane della compagnia non
-passò.
+vicine. Le 114 centrali telefoniche della rete si passarono il riavvio per
+circa nove ore, e in quelle ore quasi metà delle chiamate interurbane della
+compagnia non passò.
 
 Il difetto stava nel codice che serviva a riprendersi dai guasti. Il meccanismo
 pensato per contenere un problema locale è diventato il mezzo con cui il
@@ -66,6 +66,13 @@ una scuola da cinquecento ragazzi svuota la pila e le famiglie restano fuori:
 il posto se lo prende chi chiede di più. Per questo ogni gruppo ha il suo
 distributore, con la sua pila, e chi esagera svuota soltanto la propria.
 
+Il distributore conta gli ingressi, e non sa quanto i visitatori si fermino
+dentro: una scolaresca che resta tre ore occupa le sale più di cento turisti di
+passaggio. Per questo molti musei mettono un secondo tetto, sulle persone
+presenti nello stesso momento. Chi esce libera un posto, e quando le sale si
+svuotano piano si entra più piano anche alla porta, senza che nessuno debba
+ritoccare il distributore.
+
 `````
 
 `````{tab} Superiore
@@ -105,15 +112,25 @@ ripartisce in proporzione a quanto ciascuno chiede, cioè premia chi chiede di
 più, e un cliente in errore che manda richieste senza sosta degrada il
 servizio di tutti gli altri.
 
+Il tasso però non basta, perché con un LLM una richiesta lunga occupa il
+servente molto più di una breve. Si aggiunge allora un limite $L_{\max}$ sulle
+richieste in volo. Per la legge di Little, la stessa che in
+{doc}`Quante repliche accendere </MLOps/capacita-e-costo>` dà il bersaglio
+dell'autoscaler, il tasso medio ammesso è $L_{\max}/W$, con $W$ la permanenza
+media: quando il servente rallenta, $W$ cresce e il limite ammette meno
+richieste da sé. Quelle oltre il limite si respingono subito (*load shedding*)
+invece di accodarle, così che la coda non cresca proprio quando la capacità
+manca.
+
 `````
 
 ## Quando un modello non risponde
 
 Il secondo mestiere è il più delicato. Un modello può non rispondere per molte
 ragioni (una replica caduta, un fornitore sovraccarico, una rete che perde
-pacchetti), e la reazione istintiva, riprovare, è quasi sempre giusta per un
-guasto isolato e quasi sempre sbagliata per un guasto da sovraccarico. La
-differenza sta tutta in come i tentativi si sommano.
+pacchetti), e la reazione istintiva, riprovare, ripara un guasto isolato e
+aggrava un guasto da sovraccarico, a meno che qualcuno non ne limiti il numero.
+La differenza sta tutta in come i tentativi si sommano.
 
 `````{tab} Elementare
 
@@ -178,21 +195,29 @@ zero con il throughput al massimo.
 Le difese agiscono sui termini di $A$ e sull'anello. L'attesa esponenziale fra i
 tentativi, con una componente casuale (*backoff* con *jitter*: prima del
 ritentativo $i \ge 1$ si attende un tempo uniforme in
-$[0, \min(t_{\max}, t_0 2^{i})]$, con $t_0$ l'attesa di base e $t_{\max}$ il
-tetto), diluisce nel tempo il carico dei ritentativi e
-ne decorrela gli istanti: senza la parte casuale, i clienti falliti insieme
-ritentano insieme e ricreano il picco a ogni scadenza. Un budget di ritentativi,
-per esempio non più del 10% delle richieste nuove applicato con un token bucket,
-impone $A \le 1{,}1$ qualunque sia $p$, e rompe l'anello. Il **circuit
+$[0, \min(t_{\max}, t_0 2^{i-1})]$, con $t_0$ l'attesa di base e $t_{\max}$ il
+tetto), diluisce nel tempo il carico dei ritentativi e ne decorrela gli istanti:
+senza la parte casuale, i clienti falliti insieme ritentano insieme e ricreano
+il picco a ogni scadenza. È il *full jitter*: nel confronto di Brooker le
+varianti con una parte casuale battono tutte quella che non ne ha, quella che
+tiene fissa metà dell'attesa (l’*equal jitter*) è la peggiore delle tre, e fra
+il full jitter e il *decorrelated jitter*, che allarga l'intervallo a partire
+dall'attesa precedente, la scelta resta aperta {cite}`brooker2015backoff`. Se il
+servente ha risposto 429 indicando quando riprovare (l'intestazione
+`Retry-After`), quell'indicazione viene prima del backoff. Un budget di
+ritentativi, per esempio non più del 10% delle richieste nuove applicato con un
+token bucket, impone $A \le 1{,}1$ qualunque sia $p$, e rompe l'anello; lo si
+tiene per destinazione e per cliente, perché un budget unico lascerebbe a un
+solo cliente in errore la possibilità di consumarlo tutto. Il **circuit
 breaker** {cite}`nygard2007release` osserva il tasso di errore verso una
 destinazione: sopra una soglia passa allo stato *aperto* e fa fallire subito
 ogni chiamata senza inoltrarla, dopo un intervallo ne lascia passare una sola
 (stato *semiaperto*), e torna *chiuso* se va a buon fine. Toglie carico a chi è
 già in difficoltà, e restituisce l'errore in millisecondi invece che allo
 scadere di un timeout. L'ultima difesa sta dal lato del servente: se ogni
-richiesta porta con sé la propria scadenza e il servente scarta senza
-eseguirle quelle già scadute (la *propagazione della scadenza*), sparisce il
-lavoro speso per nessuno, che è il combustibile della metastabilità.
+richiesta porta con sé la propria scadenza e il servente scarta senza eseguirle
+quelle già scadute (la *propagazione della scadenza*), sparisce il lavoro speso
+per nessuno, che è il combustibile della metastabilità.
 
 Per un modello generativo il timeout si scrive sul TTFT e sulla pausa massima
 fra token, non sulla durata totale: una risposta lunga è lenta per
@@ -200,7 +225,9 @@ costruzione, e un timeout sul totale la ucciderebbe regolarmente, trasformando
 una risposta sana in un ritentativo che rifà il prefill da capo. E una chiamata
 che genera testo non si può ritentare in modo trasparente dopo che i primi
 token sono già arrivati all'utente: il ritentativo va fatto prima del primo
-token, o bisogna saper riprendere lo stream.
+token, o bisogna saper riprendere lo stream. E ritentare una richiesta che il
+servente stava già generando fa pagare due volte: il lavoro del primo
+tentativo, e presso un fornitore anche i suoi token, è speso per nessuno.
 
 `````
 
@@ -320,8 +347,10 @@ non sono nella simulazione; agiscono sugli stessi numeri, diluendo i
 ritentativi nel tempo o togliendoli del tutto. Scartare i tentativi scaduti fa
 meglio di tutto il resto. Il modello non spende un istante per chi non aspetta
 più, i ritentativi trovano la fila corta, e nei trenta secondi dopo il guasto
-le risposte utili sono 89,5 al secondo, più delle ottanta normali, perché si
-serve anche chi aveva ritentato.
+le risposte utili sono 89,5 al secondo, più delle ottanta richieste nuove che
+arrivano: oltre a loro il modello serve, con il suo margine di venti al
+secondo, anche i ritentativi di chi era rimasto senza risposta durante il
+guasto e aspetta ancora.
 
 ## A quale modello
 
@@ -343,27 +372,28 @@ ha meno tempo. Il triage costa poco, ma decide prima di sapere, da pochi segni,
 e ogni tanto sbaglia: il codice verde che nascondeva un infarto, il codice rosso
 per un attacco di panico.
 
-Si può fare anche un'altra cosa, che somiglia al triage e funziona al
-rovescio. Tutti passano prima dall'ambulatorio veloce, e il medico generico
-prova a risolvere; se capisce che il caso lo supera, manda il paziente dallo
+Si può fare anche un'altra cosa, che somiglia al triage e funziona al rovescio.
+Tutti passano prima dall'ambulatorio veloce, e il medico generico prova a
+risolvere; se capisce che il caso lo supera, manda il paziente dallo
 specialista. La decisione arriva dopo una visita, quindi è più informata, e lo
 specialista vede solo i casi difficili. Il prezzo è che chi arriva allo
 specialista ha pagato due visite e ha aspettato due volte. Se il generico costa
-un decimo dello specialista e risolve otto casi su dieci, la visita media costa
-un decimo più i due decimi di casi passati allo specialista, tre decimi in
-tutto: meno di un terzo che mandare tutti dallo specialista. Conviene finché il
-generico sa riconoscere i casi che non sa risolvere; uno che si crede bravo e
-non manda mai nessuno costa poco e sbaglia molto.
+un decimo dello specialista e risolve otto casi su dieci, cento pazienti
+costano cento visite dal generico, che valgono quanto dieci dallo specialista,
+più le venti visite dallo specialista di chi non è stato risolto: trenta in
+tutto, meno di un terzo delle cento che servirebbero mandando tutti da lui.
+Conviene finché il generico sa riconoscere i casi che non sa risolvere; uno che
+si crede bravo e non manda mai nessuno costa poco e sbaglia molto.
 
 Poi c'è il caso in cui lo specialista non c'è. Il turno salta, il reparto
-chiude, e il paziente va mandato in un altro ospedale. Qui il criterio smette di
-essere la difficoltà del caso e diventa la disponibilità. E l'altro ospedale ha
-i suoi protocolli, i suoi moduli, le sue abitudini: il paziente sarà curato, ma
-non allo stesso modo. Se nessuno ha mai provato a mandarcene uno, il giorno che
-serve si scopre che il numero era sbagliato. L'altro ospedale, che di colpo
-riceve anche i pazienti del primo, rischia di chiudere a sua volta. E se i due
-dipendevano dallo stesso centralino, quando il centralino si ferma si fermano
-insieme.
+chiude, e il paziente va mandato in un altro ospedale. Qui il criterio smette
+di essere la difficoltà del caso e diventa la disponibilità. E l'altro ospedale
+ha i suoi protocolli, i suoi moduli, le sue abitudini: il paziente sarà curato,
+ma non allo stesso modo. Se nessuno ha mai provato a mandarcene uno, il giorno
+che serve si scopre che il numero di telefono del reparto era sbagliato.
+L'altro ospedale, che di colpo riceve anche i pazienti del primo, rischia di
+chiudere a sua volta. E se i due dipendevano dallo stesso centralino, quando il
+centralino si ferma si fermano insieme.
 
 `````
 
@@ -376,16 +406,18 @@ interrogarne alcuno, dai soli tratti della richiesta. RouteLLM
 debole, stimando da dati di preferenza umana la probabilità che la risposta del
 forte venga preferita, e instradando al forte quando la stima supera una
 soglia; al variare della soglia si percorre una curva costo-qualità. Il
-guadagno dipende molto dal compito: nella tabella degli autori, confrontato con
-un instradamento casuale, su MT Bench il router arriva al 95% della qualità del
-modello forte con circa 3,7 volte meno chiamate a quello, su MMLU e GSM8K con
-1,4-1,5 volte meno. Una **cascata** interroga invece i modelli in ordine e si
-ferma al primo la cui risposta supera un criterio di accettazione $g(x,
-\hat{y}) \ge \tau_j$ sulla risposta $\hat{y}$, stimato da un punteggiatore
-addestrato; FrugalGPT {cite}`chen2024frugalgpt` ne apprende insieme l'ordine e
-le soglie sotto un vincolo di budget. Se $u_j$ è la probabilità che la risposta
-di $m_j$ venga accettata, dato che le precedenti non lo sono state, il costo
-atteso è
+guadagno dipende molto dal compito. Nella tabella degli autori, con GPT-4 come
+modello forte e Mixtral 8x7B come debole, si fissa il punto in cui il router
+recupera metà del divario di qualità fra i due e si contano le chiamate al
+forte che servono per arrivarci, contro quelle di un instradamento casuale: su
+MT Bench sono 3,66 volte meno, e lì si resta al 95% della qualità del forte; su
+MMLU 1,41 volte meno, al 92%; su GSM8K 1,49 volte meno, all'87%. Una
+**cascata** interroga invece i modelli in ordine e si ferma al primo la cui
+risposta supera un criterio di accettazione $g(x, \hat{y}) \ge \tau_j$ sulla
+risposta $\hat{y}$, stimato da un punteggiatore addestrato; FrugalGPT
+{cite}`chen2024frugalgpt` ne apprende insieme l'ordine e le soglie sotto un
+vincolo di budget. Se $u_j$ è la probabilità che la risposta di $m_j$ venga
+accettata, dato che le precedenti non lo sono state, il costo atteso è
 
 $$
 \mathbb{E}[C] = c_1 + (1 - u_1)\,c_2 + (1 - u_1)(1 - u_2)\,c_3 + \cdots,
@@ -448,11 +480,12 @@ quell'ultima riga, sul cruscotto una ressa di messaggi ripetuti sembra traffico
 vero.
 
 Tracciare tutto rallenterebbe il servizio e riempirebbe i dischi, e allora si
-traccia un campione. Chi sceglie a fine corsa, dopo aver visto com'è andata,
-tiene sempre le consegne lente o finite male, che sono quelle da cui si impara.
-E il contenuto del pacco non si fotografa: il testo delle domande e delle
-risposte può contenere i dati di chi scrive, e si registra solo dove le regole
-lo consentono.
+traccia solo una parte dei pacchi. Chi decide quali seguire alla partenza, prima
+di sapere com'è andata, perde quasi sempre i pochi pacchi in ritardo; chi decide
+a consegna finita può tenere sempre quelli lenti o finiti male, che sono quelli
+da cui si impara. E il contenuto del pacco non si fotografa: il testo delle
+domande e delle risposte può contenere i dati di chi scrive, e si registra solo
+dove le regole lo consentono.
 
 `````
 
@@ -474,8 +507,11 @@ t_{\text{coda}} + t_{\text{prefill}} + t_{\text{rete}},
 $$
 
 più gli span figli (recuperi di documenti, chiamate a strumenti) che precedono
-il primo token, con $t_{\text{rete}}$ il ritorno del primo token al cliente,
-mentre il TPOT è la durata dello span di decode divisa per
+il primo token, con $t_{\text{rete}}$ i due tratti di rete, l'andata della
+richiesta e il ritorno del primo token al cliente. È il TTFT visto dal cliente,
+come in {doc}`Misurare un servizio </MLOps/metriche-di-servizio>`; la somma
+$t_{\text{coda}} + t_{\text{prefill}}$ è il tratto che la replica misura da sé,
+il TTFT lato servente. Il TPOT è la durata dello span di decode divisa per
 $N_{\text{out}} - 1$. La p99 aggregata dice che uno dei termini è cresciuto; la
 traccia dice quale.
 
@@ -498,8 +534,8 @@ loro protezione lo consentono, di solito ridotto o cifrato.
 Le difese viste fin qui hanno un difetto in comune: entrano in funzione solo
 quando qualcosa va storto, cioè di rado, e il codice che gira di rado è il meno
 collaudato del sistema. Era il caso di AT&T, dove il `break` sbagliato stava
-proprio nel percorso di recupero. L'unico modo di sapere se un ripiego funziona
-è farlo scattare.
+proprio nel percorso di recupero. Il modo più affidabile di sapere se un ripiego
+funziona è farlo scattare, in condizioni controllate.
 
 `````{tab} Elementare
 
@@ -581,7 +617,8 @@ nascondere il `break` fuori posto.
   stampa e si possono fare raffiche grandi quanto la pila. Con i modelli i
   biglietti sono token: si prendono per la risposta più lunga permessa e si
   restituiscono quelli avanzati. Un distributore per cliente, perché chi
-  esagera svuoti solo la sua pila.
+  esagera svuoti solo la sua pila, e un tetto alle persone presenti, che
+  rallenta gli ingressi da sé quando le sale si svuotano piano.
 - Ripetere un messaggio funziona quando il primo si è perso per caso; quando
   non si viene richiamati perché chiamano tutti, i messaggi ripetuti
   moltiplicano il lavoro e la ressa si mantiene da sola anche dopo che la causa
@@ -618,7 +655,9 @@ nascondere il `break` fuori posto.
   LLM il costo è $N_{\text{in}} + N_{\text{out}}$: si preleva il maggiorante
   $N_{\text{in}} + N_{\text{max}}$ e si restituisce l'avanzo, e sul costo reale
   il limite si allarga degli avanzi delle prenotazioni aperte. Secchi per
-  cliente e per modello, su richieste e su token, danno l'isolamento.
+  cliente e per modello, su richieste e su token, danno l'isolamento; un limite
+  $L_{\max}$ sulle richieste in volo ammette in media $L_{\max}/W$ richieste al
+  secondo, e si stringe da sé quando il servente rallenta.
 - Con probabilità di fallimento $p$ e $k$ ritentativi i tentativi per
   richiesta sono $A = (1-p^{k+1})/(1-p)$, che tende a $k+1$ nel sovraccarico:
   la retroazione può rendere il guasto metastabile

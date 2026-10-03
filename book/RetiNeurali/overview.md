@@ -13,15 +13,15 @@
 ```
 
 C'è un'immagine che accompagna le reti neurali fin dal loro battesimo: quella
-del cervello. Miliardi di cellule che si scambiano segnali, e da quel
-brulichio emergono la memoria, il linguaggio, il riconoscere il volto di un
-amico in mezzo alla folla. L'idea, vecchia quasi quanto i computer, è
-seducente: se il cervello *è* fatto di neuroni, forse per costruire una
-macchina che impara basta costruire neuroni artificiali e collegarli fra loro.
-Da questa intuizione nasce tutto il deep learning, che è poi il nome che si
-dà all'apprendimento automatico quando i neuroni artificiali si impilano in
-molte file: «profondo» vuol dire questo, e nient'altro. Ma conviene sgombrare
-subito il campo da un equivoco.
+del cervello. Miliardi di cellule che si scambiano segnali, e da quel brulichio
+emergono la memoria, il linguaggio, il riconoscere il volto di un amico in mezzo
+alla folla. L'idea, vecchia quasi quanto i computer, è seducente: se il cervello
+*è* fatto di neuroni, forse per costruire una macchina che impara basta
+costruire neuroni artificiali e collegarli fra loro. Da questa intuizione nasce
+tutto il deep learning, che è poi il nome che si dà all'apprendimento automatico
+quando i neuroni artificiali si impilano in molte file: «profondo» vuol dire
+questo, e nient'altro. Prima di costruire queste reti un pezzo alla volta,
+però, va sgombrato il campo da un equivoco.
 
 ## Un'ispirazione, non una copia
 
@@ -63,17 +63,16 @@ Un neurone artificiale calcola una combinazione lineare degli ingressi seguita
 da una funzione non lineare. Dato un vettore di input $\mathbf{x}\in\mathbb{R}^n$:
 
 $$
-z = \mathbf{w}^\top \mathbf{x} + b, \qquad a = \sigma(z).
+z = \mathbf{w}^\top \mathbf{x} + b, \qquad a = g(z).
 $$
 
-Qui $\mathbf{w}$ è il vettore dei pesi (una "importanza" per ciascun
-ingresso), $b$ è il **bias** (che sposta la soglia), $z$ è la
-**pre-attivazione** (la somma pesata), $a$ l’**attivazione** che ne esce e
-$\sigma$ è la funzione di
-attivazione che introduce la non linearità: un gradino, una sigmoide o,
-oggi, quasi sempre la ReLU $\max(0,z)$. Il cuore del calcolo,
-$\mathbf{w}^\top\mathbf{x}$, è il prodotto scalare della
-{doc}`sezione di algebra lineare </Matematica/algebra-lineare>`.
+Qui $\mathbf{w}$ è il vettore dei pesi (una "importanza" per ciascun ingresso),
+$b$ è il **bias** (che sposta la soglia), $z$ è la **pre-attivazione** (la somma
+pesata), $a$ l’**attivazione** che ne esce e $g$ è la funzione di attivazione
+che introduce la non linearità: un gradino, una sigmoide o, oggi, quasi sempre
+la ReLU $\max(0,z)$ (la lettera $\sigma$ resta alla sigmoide). Il cuore del
+calcolo, $\mathbf{w}^\top\mathbf{x}$, è il prodotto scalare della {doc}`sezione
+di algebra lineare </Matematica/algebra-lineare>`.
 
 `````
 
@@ -94,24 +93,25 @@ ogni misura.
 
 `````{tab} Elementare
 
-Il percettrone impara come un allievo con un maestro severo. Riceve un
-esempio, prova a rispondere sì o no, e il maestro gli dice soltanto se ha
-sbagliato; quando la risposta è giusta non si tocca niente. Se doveva dire sì e
-ha detto no, l'allievo alza i pesi degli indizi che in quell'esempio erano
-accesi, così la prossima volta il totale verrà più alto e supererà la soglia;
-se doveva dire no e ha detto sì, li abbassa. Il bias si muove con loro, nella
-stessa direzione. Di quanto? Sempre della stessa misura, fissata prima di
-cominciare: è il passo con cui l'allievo si corregge. Nessuno gli ha scritto la
-regola, la ricava dagli errori.
+Il percettrone impara come un allievo con un maestro severo. Riceve un esempio,
+prova a rispondere sì o no, e il maestro gli dice soltanto se ha sbagliato;
+quando la risposta è giusta non si tocca niente. Se doveva dire sì e ha detto
+no, l'allievo alza i pesi degli ingressi che in quell'esempio erano accesi, così
+la prossima volta il totale verrà più alto e supererà la soglia; se doveva dire
+no e ha detto sì, li abbassa. Il bias si muove con loro, nella stessa direzione.
+Di quanto? Di un passo fissato prima di cominciare, moltiplicato per quanto
+valeva l'ingresso: uno acceso, che vale uno, sposta il suo peso di un passo
+intero, uno spento non lo sposta affatto. È il passo con cui l'allievo si
+corregge. Nessuno gli ha scritto la regola, la ricava dagli errori.
 
-C'è una promessa, e vale a una condizione. Se un modo di pesare gli indizi che
+C'è una promessa, e vale a una condizione. Se un modo di pesare gli ingressi che
 azzecca tutti gli esempi del maestro esiste, l'allievo lo trova di sicuro: dopo
 un numero finito di correzioni smette di sbagliare, e da lì in poi i pesi
 restano dove sono. Se non esiste, l'allievo non si assesta mai: aggiusta un
 esempio e ne rompe un altro, poi torna indietro, e andrebbe avanti così per
 sempre. Quanto manchi alla fine, però, dall'esterno non si vede: si guarda una
-risposta alla volta, e finché l'allievo sbaglia ogni tanto non si sa se sia a
-un passo dal riuscirci o se stia girando in tondo.
+risposta alla volta, e finché l'allievo sbaglia ogni tanto non si sa se sia a un
+passo dal riuscirci o se stia girando in tondo.
 
 `````
 
@@ -151,19 +151,20 @@ Nel 1969 Marvin Minsky e Seymour Papert pubblicano *Perceptrons*
 storia per una cosa che non contiene.
 
 Il fatto è questo. Un neurone solo, dovendo dividere i casi in due gruppi, sa
-tracciare una riga dritta e nient'altro. Esistono allora regole semplicissime
-che gli restano precluse, perché per separarne i casi una riga non basta.
-Nel 1969 questo si sapeva benissimo: è un'osservazione di poche righe, e i due
-autori la danno per nota. L'esempio che tutti ricordano è lo **XOR**, l’"o
-esclusivo". I teoremi veri del libro sono un'altra cosa, più forte, e li
-vediamo nella sezione dedicata al percettrone.
+tracciare una riga dritta e nient'altro: separa soltanto i casi che una retta
+divide, e che per questo si dicono linearmente separabili. Esistono allora
+regole semplicissime che gli restano precluse, perché per separarne i casi una
+riga non basta. Nel 1969 questo si sapeva benissimo: è un'osservazione di poche
+righe, e i due autori la danno per nota. L'esempio che tutti ricordano è lo
+**XOR**, l’"o esclusivo". I teoremi veri del libro sono un'altra cosa, più
+forte, e li racconta la sezione sul {doc}`percettrone <percettrone>`.
 
-Al 1969 seguirono anni in cui i soldi per l'intelligenza artificiale si
-ritirarono e molti gruppi di ricerca chiusero:
-sono l’**inverno dell'AI**, e sono la ragione per cui fra il libro di Minsky e
-Papert e la ripresa passano quasi vent'anni. Quanta parte di colpa tocchi
-davvero a quel libro è una questione aperta, e la riprendiamo nella sezione sul
-percettrone: meno di quanta gliene attribuisca il racconto corrente.
+Al 1969 seguirono anni in cui i fondi per le reti neurali passarono all'altra
+intelligenza artificiale, quella dei programmi a regole scritte a mano, e dopo
+il 1973 calarono per tutto il campo: per le reti fu un inverno lungo, e fra il
+libro di Minsky e Papert e la ripresa passano quasi vent'anni. Quanta parte di
+colpa tocchi davvero a quel libro è una questione aperta, e la riprende la
+stessa sezione: meno di quanta gliene attribuisca il racconto corrente.
 
 `````{tab} Elementare
 
@@ -184,8 +185,8 @@ soglia stanno tutti allineati, e formano proprio una riga dritta: da una parte
 il neurone dice sì, dall'altra no. Cambiare i pesi inclina quella riga,
 cambiare il bias la sposta, ma una riga resta. Un percettrone singolo sa
 disegnare solo quello, e quindi lo XOR non lo imparerà mai. (Che quei punti
-siano allineati non è una cosa da bersi sulla fiducia: nella prossima sezione
-li calcoliamo, due punti veri con due numeri veri, e la riga si vede.)
+siano allineati non è una cosa da bersi sulla fiducia: nella sezione sul
+percettrone ne calcoliamo tre, con numeri veri, e stanno in fila.)
 
 `````
 
@@ -196,7 +197,8 @@ Un percettrone realizza un separatore lineare $\mathbf{w}^\top\mathbf{x}+b=0$,
 cioè un iperpiano; può risolvere solo problemi **linearmente separabili**. Lo
 XOR non lo è: poiché il gradino risponde $1$ quando $z\ge 0$, servirebbero
 $\mathbf{w}$ e $b$ tali che $w_1 x_1 + w_2 x_2 + b$ risulti non negativo sui
-due punti con etichetta $1$ e negativo sugli altri due, e non esistono. La
+due punti con etichetta $1$ e negativo sugli altri due, e non esistono (la
+dimostrazione, in due righe, sta nella sezione sul percettrone). La
 soluzione (impilare più neuroni in strati) era nota già
 allora, ma mancava un modo efficiente per addestrarla, ed è questa la ragione
 che gli stessi Minsky e Papert indicheranno per la lunga pausa che seguì. Il
@@ -210,16 +212,16 @@ storiografia recente invita a non attribuirlo a un libro solo
 
 ## La rinascita: la backpropagation (1986)
 
-La chiave era là da vedere: se un neurone solo non basta, se ne mettono di
-più, in strati. Resta però una domanda: che risposta dovrebbero dare i
-neuroni in mezzo? Per quelli in fondo lo sappiamo, perché ogni esempio di
-addestramento si porta dietro la risposta giusta (si chiama etichetta:
-«questa foto è un gatto»). Per quelli in mezzo non l'ha scritta nessuno. La
-risposta è la
+La chiave era là da vedere: se un neurone solo non basta, se ne mettono di più,
+in strati. Resta però una domanda: che risposta dovrebbero dare i neuroni in
+mezzo? Per quelli in fondo lo sappiamo, perché ogni esempio di addestramento si
+porta dietro la risposta giusta (si chiama etichetta: «questa foto è un gatto»).
+Per quelli in mezzo non l'ha scritta nessuno. La risposta è la
 **backpropagation** (retropropagazione dell'errore), resa celebre nel 1986 da
 David Rumelhart, Geoffrey Hinton e Ronald Williams su *Nature*. L'algoritmo
-aveva precursori (Paul Werbos lo aveva formulato nella tesi di dottorato del
-1974) ma è quel lavoro a farne lo standard.
+aveva precursori, che la sezione sulla {doc}`backpropagation <backpropagation>`
+racconta a partire dal primo, Seppo Linnainmaa nel 1970, ma è quel lavoro a
+farne lo standard.
 
 `````{tab} Elementare
 
@@ -235,28 +237,34 @@ dieci specchietti si fa; con dieci milioni no, perché ogni prova costa un giro
 intero del raggio. La backpropagation di giri ne fa uno solo, e all'indietro:
 parte dal punto sbagliato e risale la fila. A ogni specchietto arriva già fatto
 il conto di tutto il tratto che viene dopo, e per sapere quanto conta quello lì
-basta combinarlo con la sua inclinazione; poi il conto, aggiornato, passa allo
+basta moltiplicarlo per quanto quello specchietto, girato un pochino, devia il
+raggio: gli effetti lungo la fila si moltiplicano uno dopo l'altro, come i giri
+degli ingranaggi della {doc}`regola della catena
+</Matematica/analisi-ottimizzazione>`. Poi il conto, aggiornato, passa allo
 specchietto precedente. Alla fine ognuno sa di quanto sposterebbe il punto, se
 lo si girasse un pochino, e il ritorno è costato quanto un paio di andate, non
-dieci milioni. Tutto questo
-tiene finché il punto scorre: se saltasse da una posizione all'altra, quella
-domanda resterebbe senza risposta.
+dieci milioni. Tutto questo funziona perché, girando uno specchietto, il punto
+scorre sul muro. Se invece saltasse di colpo da una posizione all'altra, come il
+verdetto secco della giuria, che passa da no a sì tutto in una volta, la domanda
+«di quanto si sposta girandolo un pochino» non avrebbe risposta: un pochino non
+lo sposterebbe affatto, oppure lo farebbe saltare.
 
 Chi sposta il punto di più riceve la correzione più grande, chi quasi non conta
 resta quasi fermo, e ogni correzione rimane piccola, perché il conto appena
 fatto vale solo lì attorno. Ripetuto su migliaia di esempi, questo tornare
 indietro e correggere fa sì che anche i neuroni in mezzo alla fila, quelli di
 cui nessuno ha mai scritto la risposta giusta, imparino il loro mestiere. Hanno
-un nome: si chiamano neuroni **nascosti**, e "nascosto" vuol dire soltanto che
-non si affacciano né sull'ingresso né sull'uscita.
+un nome: si chiamano neuroni nascosti, e "nascosto" vuol dire soltanto che non
+si affacciano né sull'ingresso né sull'uscita.
 
 `````
 
 `````{tab} Superiore
 
-Si definisce una funzione di loss $\mathcal{L}(\hat{\mathbf{y}},
-\mathbf{y})$ derivabile e si aggiornano tutti i parametri $\theta$ (pesi e
-bias di ogni strato) scendendo lungo il gradiente:
+Si definisce una perdita derivabile $\ell(\hat{\mathbf{y}}, \mathbf{y})$ sul
+singolo esempio, la si media sugli esempi nella loss $\mathcal{L}(\theta)$, e si
+aggiornano tutti i parametri $\theta$ (pesi e bias di ogni strato) scendendo
+lungo il gradiente:
 
 $$
 \theta \leftarrow \theta - \eta\,\nabla_\theta \mathcal{L}.
@@ -273,11 +281,12 @@ una passata all'indietro è dello stesso ordine di una in avanti.
 
 Il modello che nasce da questa storia è il **percettrone multistrato** (MLP,
 *multilayer perceptron*). I neuroni si mettono in fila, e ogni fila è uno
-strato: l'uscita di uno strato è l'ingresso del prossimo. Il primo strato è
-la porta da cui entrano i dati e si chiama **strato di input**, l'ultimo
-produce la risposta e si chiama **strato di output**, e quelli in mezzo sono i
-nascosti di poco fa ({numref}`fig-percettrone-multistrato`). Nel disegno ogni
-pallino è un neurone e ogni filo un peso.
+strato: l'uscita di uno strato è l'ingresso del prossimo. Il primo strato è la
+porta da cui entrano i dati e si chiama **strato di input**, l'ultimo produce la
+risposta e si chiama **strato di output**, e quelli in mezzo, che non si
+affacciano né sull'ingresso né sull'uscita, sono gli **strati nascosti**
+({numref}`fig-percettrone-multistrato`). Nel disegno ogni pallino è un neurone e
+ogni filo un peso.
 
 ```{figure} ../figures/percettrone-multistrato.svg
 :name: fig-percettrone-multistrato
@@ -307,13 +316,13 @@ combinano fra loro e il bordo si fa di molti lati, senza che serva uno strato
 smisurato.
 ```
 
-I quattro punti del disegno sono un caso più facile dello XOR, che una riga
-sola risolve benissimo, e stanno lì per far vedere che cosa si guadagna
-mano a mano che gli strati aumentano. Lo XOR risolto arriva nella prossima
-sezione. Il senso però è lo stesso: il guaio del percettrone era che una riga
-sola non può separare i quattro casi dello XOR per quanto bene la si giri,
-non che imparasse male. Serviva un secondo strato, non un
-addestramento migliore.
+I quattro punti del disegno sono un caso più facile dello XOR, che una riga sola
+risolve benissimo, e stanno lì per far vedere quali confini diventano possibili
+mano a mano che gli strati aumentano, non perché quei punti li richiedano. Lo
+XOR risolto arriva nella sezione sul percettrone. Il senso però è lo stesso: il
+guaio del percettrone era che una riga sola non può separare i quattro casi
+dello XOR per quanto bene la si giri, non che imparasse male. Serviva un secondo
+strato, non un addestramento migliore.
 
 Dal primo riquadro al secondo si guadagna qualcosa che prima non c'era. Un
 neurone solo disegna una riga e nient'altro, quindi un confine chiuso gli è
@@ -360,14 +369,14 @@ servirebbe a niente.
 Con un solo strato nascosto, l'MLP calcola
 
 $$
-\mathbf{h} = \sigma\!\left(\mathbf{W}^{[1]}\mathbf{x} + \mathbf{b}^{[1]}\right),
+\mathbf{h} = g\!\left(\mathbf{W}^{[1]}\mathbf{x} + \mathbf{b}^{[1]}\right),
 \qquad
 \hat{\mathbf{y}} = \varphi\!\left(\mathbf{W}^{[2]}\mathbf{h} + \mathbf{b}^{[2]}\right).
 $$
 
 Qui $\mathbf{W}^{[1]}\in\mathbb{R}^{4\times 3}$ e
 $\mathbf{W}^{[2]}\in\mathbb{R}^{2\times 4}$ sono
-le matrici dei pesi, $\mathbf{b}^{[1]}, \mathbf{b}^{[2]}$ i bias, $\sigma$ la
+le matrici dei pesi, $\mathbf{b}^{[1]}, \mathbf{b}^{[2]}$ i bias, $g$ la
 non linearità nascosta (tipicamente ReLU) e $\varphi$ l'attivazione d'uscita
 (per esempio softmax). L'indice fra parentesi quadre in alto è il numero dello
 strato, e resta questo per tutto il libro: la parentesi tonda serve per
@@ -378,21 +387,23 @@ distinguere gli esempi, come in $\hat{y}^{(i)}$.
 strato nascosto abbastanza ampio può approssimare, con errore arbitrariamente
 piccolo, qualunque funzione continua su un insieme compatto. Dimostrato prima
 per attivazioni limitate, come la sigmoide ({cite}`cybenko1989approximation`;
-{cite}`hornik1991approximation`), vale per ogni $\sigma$ non polinomiale, ReLU
-compresa ({cite}`leshno1993multilayer`). È però un teorema di esistenza: dice
-che i pesi giusti ci sono, non che la discesa del gradiente li trovi. E c'è una
+{cite}`hornik1991approximation`), vale per ogni $g$ non polinomiale che sia
+continua a tratti e localmente limitata, ReLU compresa, con lo strato d'uscita
+lineare ({cite}`leshno1993multilayer`). È però un teorema di esistenza: dice che
+i pesi giusti ci sono, non che la discesa del gradiente li trovi. E c'è una
 seconda cosa che non dice, altrettanto importante: quanto ampio. Nell'enunciato
 "abbastanza ampio" non è quantificato, e nel caso peggiore il conto è
-proibitivo: per approssimare a meno di $\varepsilon$ ogni funzione di $d$
-variabili con $s$ derivate limitate servono dell'ordine di $\varepsilon^{-d/s}$
-neuroni, esponenziale in $d$, e per una funzione generica il conto è fuori
-portata già per un'immagine piccola, ed è il vero motivo per cui il teorema
-consola meno di quanto suoni. Non per tutte, però: se la trasformata di Fourier
-della funzione ha primo momento finito $C_f$, Barron {cite}`barron1993universal`
-mostra che $n$ neuroni sigmoidali danno un errore quadratico dell'ordine di
-$C_f^2/n$, senza esponenziale in $d$ (la dipendenza dalla dimensione si sposta
-dentro $C_f$). La non linearità $\sigma$ è essenziale: senza di essa, due strati
-lineari collasserebbero in uno solo.
+proibitivo: per approssimare a meno di $\varepsilon$ ogni funzione di $n$
+variabili con $s$ derivate limitate bastano dell'ordine di $\varepsilon^{-n/s}$
+neuroni {cite}`mhaskar1996neural`, e se i pesi dipendono con continuità dalla
+funzione ne servono altrettanti {cite}`devore1989optimal`: esponenziale in $n$.
+Per una funzione generica il conto è fuori portata già per un'immagine piccola,
+ed è il vero motivo per cui il teorema consola meno di quanto suoni. Non per
+tutte, però: se la trasformata di Fourier della funzione ha primo momento finito
+$C_f$, Barron {cite}`barron1993universal` mostra che $k$ neuroni sigmoidali
+danno un errore quadratico dell'ordine di $C_f^2/k$, senza esponenziale in $n$
+(la dipendenza dalla dimensione si sposta dentro $C_f$). La non linearità $g$ è
+essenziale: senza di essa, due strati lineari collasserebbero in uno solo.
 
 Come leggere allora {numref}`fig-confini-multistrato`? Non con il teorema di
 approssimazione universale, che sull'efficienza non dice niente: dice solo che
@@ -404,10 +415,10 @@ piatta non sa approssimare se non pagando una larghezza esponenziale. Telgarsky
 tratti (una sega dai molti denti), che una rete profonda disegna con pochi
 neuroni per strato e che una rete di pochi strati richiederebbe un numero di
 neuroni esponenziale nella profondità risparmiata; Eldan e Shamir
-{cite}`eldan2016power` fanno lo stesso in $d$ dimensioni sul salto più piccolo
+{cite}`eldan2016power` fanno lo stesso in $n$ dimensioni sul salto più piccolo
 che ci sia, da due strati nascosti a uno: esiste una funzione che due strati
-nascosti realizzano con larghezza polinomiale in $d$ e che uno strato solo non
-approssima senza larghezza esponenziale in $d$. Sono funzioni costruite apposta,
+nascosti realizzano con larghezza polinomiale in $n$ e che uno strato solo non
+approssima senza larghezza esponenziale in $n$. Sono funzioni costruite apposta,
 non un teorema su tutte le funzioni, ed è già abbastanza: dicono che la
 profondità può comprare qualcosa che la larghezza paga carissimo.
 
@@ -419,29 +430,33 @@ attivazioni derivabili come la sigmoide o la tangente iperbolica.
 
 `````
 
-## Il mattone, la piega, il bersaglio, la correzione
+## Neurone, attivazione, loss, backpropagation
 
 Da qui in avanti smontiamo l'MLP pezzo per pezzo, in quattro sezioni.
 
 La prima torna sul percettrone, il neurone singolo, e sulla regola con cui
-impara: è il mattone, e il suo limite è la ragione di tutto il resto. La
-seconda sono le funzioni di attivazione, cioè proprio quel qualcosa che
-deve succedere fra uno strato e l'altro perché impilarne dieci non equivalga a
-impilarne uno. La terza è il bersaglio, la loss: il numero che dice quanto
-la rete ha sbagliato, e che va costruito prima di poterlo far scendere, perché
-la sua forma la decide il tipo di risposta che stiamo chiedendo. La quarta è la
-backpropagation, il meccanismo con cui l'errore risale la rete e dice a
-ogni peso di quanto muoversi; e con essa la discesa del gradiente, il modo
-in cui quelle correzioni si fanno davvero, un passettino alla volta, sempre
-nella direzione che fa scendere l'errore («gradiente» è il nome che prende,
-tutto insieme, l'elenco di quelle direzioni).
+impara: è il mattone, e il suo limite è la ragione di tutto il resto. La seconda
+sono le funzioni di attivazione, cioè proprio quel qualcosa che deve succedere
+fra uno strato e l'altro perché impilarne dieci non equivalga a impilarne uno.
+La terza è il bersaglio, la loss: il numero che dice quanto la rete ha
+sbagliato, e che va costruito prima di poterlo far scendere, perché la sua forma
+la decide il tipo di risposta che stiamo chiedendo. La quarta è la
+backpropagation, il meccanismo con cui l'errore risale la rete e dice a ogni
+peso di quanto muoversi; e con essa la discesa del gradiente, il modo in cui
+quelle correzioni si fanno davvero, un passettino alla volta, sempre nella
+direzione che fa scendere l'errore (il gradiente è il vettore delle pendenze
+della loss, una per peso, cioè delle sue derivate parziali: indica la direzione
+in cui la loss cresce più in fretta, e la discesa va nel verso opposto).
 
-Restano fuori due scelte pratiche, che riprende il {doc}`capitolo sul deep learning </DeepLearning/overview>`:
-da dove far partire i pesi, e come impedire a una rete di imparare a memoria
-gli esempi che ha visto invece della regola che li governa (quando succede, sui
-casi nuovi sbaglia). È la cerniera del libro: tutto ciò che viene dopo (la
-visione artificiale, il linguaggio, i modelli che generano immagini e testo)
-sono percettroni multistrato cresciuti, specializzati e resi profondi.
+Restano fuori due scelte pratiche, che riprende la sezione del capitolo sul deep
+learning dedicata a {doc}`ottimizzazione e regolarizzazione
+</DeepLearning/ottimizzazione-regolarizzazione>`: da dove far partire i pesi, e
+come impedire a una rete di imparare a memoria gli esempi che ha visto invece
+della regola che li governa (quando succede, sui casi nuovi sbaglia). È la
+cerniera del libro: tutto ciò che viene dopo (la visione artificiale, il
+linguaggio, i modelli che generano immagini e testo) è fatto degli stessi pezzi,
+strati di pesi, attivazioni, una loss e la backpropagation, combinati in
+architetture pensate per i loro dati.
 
 `````{tab} Elementare
 
@@ -488,7 +503,8 @@ sono percettroni multistrato cresciuti, specializzati e resi profondi.
 - Un MLP impila input → strati nascosti → output, alternando
   trasformazioni lineari e non linearità. Il teorema di approssimazione
   universale garantisce l'esistenza dei pesi giusti per ogni attivazione non
-  polinomiale, non che la discesa del gradiente li trovi.
+  polinomiale (continua a tratti e localmente limitata), non che la discesa del
+  gradiente li trovi, né con quanti neuroni.
 ```
 
 `````

@@ -10,8 +10,9 @@ Un modello linguistico ordinario fa il contrario: scrive una parola dopo
 l'altra, da sinistra a destra, e quello che ha scritto non lo tocca più.
 Funziona benissimo e ha due conseguenze che si pagano tutti i giorni: per
 scrivere mille parole servono mille passaggi nella rete, uno per parola; e per
-riempire un buco in mezzo a un testo già scritto bisogna far finta che il
-seguito non ci sia.
+riempire un buco in mezzo a un testo già scritto servono un addestramento e un
+formato apposta, il *fill-in-the-middle* {cite}`bavarian2022efficient`, perché
+la rete legge solo il passato e il seguito glielo si deve spostare davanti.
 
 Serve un altro modo di rovinare, e la strada che l'ha trovato assomiglia al
 sudoku. Nel sudoku, del resto, la regola è tutta lì: in una riga ogni cifra può
@@ -32,9 +33,12 @@ probabilità si arriva a un testo del tutto casuale. Funziona, ed è scomodo: ch
 deve ripulire non sa quali parole siano state toccate e quali no, e deve
 decidere anche questo.
 
-*Spostarla verso i vicini.* Ha senso solo se i simboli hanno un ordine, come i
-livelli di grigio di un pixel quantizzato, e non ne ha nessuno per un
-vocabolario, dove «gatto» non è più vicino a «gatta» che a «treno».
+*Spostarla verso i vicini.* Ha senso quando i simboli hanno un ordine, come i
+livelli di grigio di un pixel che ne ha un numero finito. Con i testi lo si è
+provato, spostando ogni pezzo di parola verso quelli che una rete considera
+simili, e non ha aiutato: appena meglio della sostituzione a caso su una
+raccolta di testi, peggio su un'altra. Che «gatto» somigli a «gatta» più che
+a «treno» è vero, ma non è quello che serve a rovinare con metodo.
 
 *Cancellarla.* Al posto della parola si mette un segnaposto che dice «qui c'era
 qualcosa e non lo sai». Aumentando il tempo si cancella una frazione crescente
@@ -65,7 +69,10 @@ scelta di $\mathbf{Q}_t$ definisce la famiglia:
 - **uniforme**: con probabilità $\beta_t$ il simbolo diventa uno qualsiasi del
   vocabolario. La stazionaria è l'uniforme.
 - **ordinale**: la transizione favorisce i simboli vicini, sensata solo su
-  alfabeti con una metrica (pixel quantizzati, note musicali).
+  alfabeti con una metrica (pixel quantizzati, note musicali). Sul testo D3PM
+  prova invece la vicinanza nello spazio degli embedding (*nearest neighbor*):
+  appena meglio dell'uniforme su text8, peggio su LM1B (perplessità $149{,}5$
+  contro $137{,}9$), mentre l'assorbente scende a $76{,}9$.
 - **assorbente**: con probabilità $\beta_t$ il simbolo diventa il simbolo
   speciale $\texttt{[MASK]}$, dal quale non si esce più. La stazionaria è la
   sequenza di soli $\texttt{[MASK]}$.
@@ -133,14 +140,18 @@ $$
 -\log p_\theta\big(x_0^{(i)}\mid \mathbf{x}_t\big)\right],
 $$
 
-cioè una cross-entropia sulle sole posizioni mascherate, pesata da un
-fattore che dipende solo dal programma di mascheramento
+cioè una cross-entropia sulle sole posizioni mascherate, pesata da un fattore
+che dipende solo dal programma di mascheramento
 {cite}`sahoo2024simple,shi2024simplified`. Il segno merita un secondo: il
-programma scende da $\alpha_0=1$ a $\alpha_1=0$, quindi $\alpha_t'$ è negativa
-e il coefficiente $-\alpha_t'/(1-\alpha_t)$ è positivo, come deve essere una
-perdita fatta di termini positivi. Non compaiono né il punteggio né una
-divergenza fra gaussiane: il modello risolve una classificazione sul
-vocabolario, posizione per posizione.
+programma scende da $\alpha_0=1$ a $\alpha_1=0$, quindi $\alpha_t'$ è negativa e
+il coefficiente $-\alpha_t'/(1-\alpha_t)$ è positivo, come deve essere una
+perdita fatta di termini positivi. Con il programma lineare, $\alpha_t = 1-t$,
+il peso vale $1/t$, e la somma ha in media $tL$ termini, con $L$ la lunghezza
+della sequenza: in media ogni posizione mascherata pesa uno, e la perdita è una
+cross-entropia mediata sulle posizioni cancellate. Le posizioni non mascherate
+la rete non le deve predire: le copia dall'ingresso. Non compaiono né il
+punteggio né una divergenza fra gaussiane: il modello risolve una
+classificazione sul vocabolario, posizione per posizione.
 
 Da qui il legame con il **modellamento mascherato del linguaggio** alla BERT
 {cite}`devlin2019bert`: a meno del peso, è la stessa somma valutata a un solo
@@ -152,9 +163,11 @@ tre le specie. La frazione davvero cancellata è quindi il $12\%$, e fra le
 posizioni da indovinare ce ne sono che non sono buchi. Un modello di diffusione
 mascherata è un BERT addestrato su tutte le frazioni di maschera, con la
 cancellazione sempre applicata, più una procedura di campionamento che lo
-trasforma in un generatore: l'equivalenza fra i due obiettivi, a meno dei pesi,
-è dimostrata in {cite}`austin2021structured`, e rende disponibile un decennio di
-lavoro sull'addestramento mascherato.
+trasforma in un generatore. Austin e colleghi osservano già che BERT è un
+modello di diffusione a un passo {cite}`austin2021structured`; l'equivalenza
+per ogni frazione di maschera, con la perdita pesata di sopra, è di Sahoo e di
+Shi e colleghi {cite}`sahoo2024simple,shi2024simplified`, e rende disponibile
+il lavoro fatto sull'addestramento mascherato dal 2018 in poi.
 
 Esiste anche una formulazione a tempo continuo che ricalca fedelmente il caso
 gaussiano, con al posto del gradiente della log-densità il rapporto fra
@@ -246,12 +259,12 @@ for passi in (1, 2, 3):
 `````{tab} Elementare
 
 Con tre caselle, che possono valere zero o uno, le combinazioni possibili sono
-otto; la regola del numero pari di uni ne ammette quattro, e sono quelle
-stampate. Guardato un bit alla volta non si vede niente: ciascuno è cinquanta e
-cinquanta, e anche due qualsiasi non sanno niente l'uno dell'altro. Il legame
-c'è solo fra tutti e tre insieme, e si dice in cinque parole: due qualsiasi
-decidono il terzo. Se le prime due sono uno e zero, la terza deve essere uno,
-se no gli uni sono dispari.
+otto; la regola del numero pari di uni ne ammette quattro, e sono quelle che il
+codice elenca per prime. Guardato un bit alla volta non si vede niente: ciascuno
+è cinquanta e cinquanta, e anche due qualsiasi non sanno niente l'uno
+dell'altro. Il legame c'è solo fra tutti e tre insieme, e si dice in cinque
+parole: due qualsiasi decidono il terzo. Se le prime due sono uno e zero, la
+terza deve essere uno, se no gli uni sono dispari.
 
 Riempire le tre posizioni in un colpo solo, ciascuna sorteggiata dalla
 propria probabilità, è come tirare tre monetine: esce una qualunque delle otto
@@ -283,7 +296,10 @@ Il risparmio, poi, non è pieno. Chi scrive una parola alla volta si tiene in
 mano il lavoro già fatto sulle parole precedenti e non lo rifà; qui, a ogni
 passo, si riguarda la frase intera da capo. Dieci passi su mille parole
 convengono, perché sono dieci letture invece di mille; cento passi su cento
-parole non convengono affatto.
+parole non convengono affatto. Per questo i modelli più recenti scrivono a
+blocchi: dentro un blocco riempiono i buchi come un sudoku, da un blocco al
+successivo procedono da sinistra a destra, e il lavoro sui blocchi già scritti
+lo tengono.
 
 `````
 
@@ -322,6 +338,12 @@ tre in su non si riduce a nessuna somma di informazioni mutue a coppie, e il
 linguaggio di parità lo mostra nel modo più netto: ogni coppia di bit ha
 informazione mutua esattamente nulla, e le tre posizioni insieme hanno
 multi-informazione di un bit. È la ragione per cui due passi bastano e uno no.
+E la quantità non è solo un indice: con un modello perfetto, campionare il
+gruppo dal prodotto delle marginali invece che dalla congiunta costa, in
+divergenza di Kullback-Leibler, esattamente
+$D_{\mathrm{KL}}\big(p(\cdot\mid\mathbf{x}_t)\,\big\Vert\,\prod_{i\in G}
+p(x^{(i)}\mid\mathbf{x}_t)\big) = \mathrm{TC}(G\mid\mathbf{x}_t)$, cioè un
+bit per il gruppo di tre del linguaggio di parità.
 Ne segue la strategia usata in pratica, che è adattiva: a ogni passo si
 scoprono le posizioni su cui il modello è più sicuro (entropia più bassa),
 perché lì la dipendenza residua dalle altre tende a essere minore
@@ -330,11 +352,16 @@ criterio.
 
 Le conseguenze pratiche, in ordine di quanto pesano:
 
-- Nessun riuso della cache. Un modello autoregressivo riusa le
-  rappresentazioni delle posizioni precedenti a costo zero; qui ogni passo
-  ricalcola tutta la sequenza, quindi il costo per passo è quello di un
-  passaggio intero. Il guadagno esiste solo se i passi sono molti meno delle
-  posizioni.
+- Riuso della cache, solo a blocchi. Un modello autoregressivo riusa le
+  rappresentazioni delle posizioni precedenti a costo zero; la diffusione su
+  tutta la sequenza ricalcola a ogni passo tutta la sequenza, quindi il costo
+  per passo è quello di un passaggio intero, e il guadagno esiste solo se i
+  passi sono molti meno delle posizioni. Le varianti a blocchi
+  {cite}`arriola2025block` fanno diffusione dentro un blocco e autoregressione
+  fra i blocchi, e riusano la cache di quelli già scritti; una cache
+  approssimata si può dare anche ai modelli che guardano in tutte e due le
+  direzioni {cite}`wu2025fastdllm`. È la via dei modelli più recenti, che
+  pagano in parallelismo massimo quello che guadagnano in cache.
 - Verosimiglianza solo come limite. Si ottiene un bound variazionale e non
   il valore esatto, quindi i confronti di perplessità con i modelli
   autoregressivi vanno letti sapendo che si sta confrontando un limite con un
@@ -353,11 +380,14 @@ Le conseguenze pratiche, in ordine di quanto pesano:
 `````{tab} Elementare
 
 I modelli linguistici a diffusione esistono e sono addestrati su scala vera.
-Dove restano indietro rispetto a chi scrive una parola alla volta (si chiamano
-modelli autoregressivi) è la generazione lunga, ed è esattamente il posto in
-cui il conto sul linguaggio a tre bit dice che devono restare indietro: nel
-linguaggio una parola dell'inizio può decidere una parola della fine, e ogni
-passo parallelo paga una parte di quel legame.
+Nel 2025 LLaDA, con otto miliardi di parametri, è risultato paragonabile ai
+modelli che scrivono una parola alla volta (si chiamano modelli
+autoregressivi) della stessa taglia sulla maggior parte delle prove; nel 2026
+DiffusionGemma, ottenuto adattando un modello autoregressivo, riscrive blocchi
+di 256 pezzi di parola alla volta. Dove restino indietro, se restano indietro,
+è ancora una domanda aperta. Il conto sul linguaggio a tre bit dice dove
+guardare: la generazione lunga, dove una parola dell'inizio può decidere una
+parola della fine, e ogni passo parallelo paga una parte di quel legame.
 
 Dove la famiglia ha già un vantaggio chiaro è nei compiti in cui il testo va
 riempito invece che scritto di seguito: completare un modulo, correggere un
@@ -379,11 +409,16 @@ La fattorizzazione dice anche dove cercare la distanza dai modelli
 autoregressivi, ed è una previsione verificabile: la distanza deve concentrarsi
 sui compiti in cui la dipendenza fra posizioni lontane è forte, cioè sulla
 generazione lunga, e assottigliarsi dove il contesto determina quasi tutto, cioè
-sulla comprensione. È una previsione, e i lavori su scala non l'hanno ancora
-messa alla prova in questa forma: LLaDA {cite}`nie2025llada` riporta prestazioni
+sulla comprensione. È una previsione, e al 2026 i lavori su scala non l'hanno
+ancora messa alla prova in questa forma: LLaDA {cite}`nie2025llada`, nel 2025,
+riporta prestazioni
 paragonabili a quelle di un modello autoregressivo della stessa taglia sulla
 maggior parte dei compiti, e un vantaggio netto dove l'ordine da sinistra a
-destra è d'intralcio, come la *reversal curse*.
+destra è d'intralcio, come la *reversal curse*. Nel 2026 DiffusionGemma
+{cite}`diffusiongemma2026` ottiene un modello a diffusione adattando un
+modello autoregressivo e raffina in parallelo blocchi di 256 token, una
+ventina per passaggio in media: la via a blocchi, non la diffusione su tutta
+la sequenza.
 
 Da qui tre osservazioni di prospettiva, tutte verificabili sul conto fatto e
 nessuna delle quali richiede di sapere quale modello sia uscito quando.
@@ -406,7 +441,9 @@ stato non ha un analogo diretto, e un cammino di probabilità non determina una
 sola matrice generatrice. Chi ha capito il caso continuo può leggere il discreto
 come una traduzione, e questo vale anche nel verso pratico: le tecniche di guida
 della {doc}`sezione su guida e allineamento </ModelliDiffusione/guida>` hanno
-tutte una controparte discreta.
+in molti casi una controparte discreta (la guida senza classificatore, per
+esempio, combina le due predizioni sui logit), anche se non tutte si traducono
+nella stessa forma.
 
 La terza è che questa famiglia rende naturali i compiti di riempimento
 vincolato, che è la forma di molti problemi importanti fuori dal linguaggio:
@@ -417,19 +454,20 @@ guadagno.
 
 `````
 
-Resta da registrare un conto in sospeso. Anche qui la strada del ritorno ha una
-regola esatta, che dice istante per istante con che frequenza ogni segnaposto
-torna a essere una parola, come nel continuo ce l'aveva il risultato di Anderson
-della {doc}`sezione sul limite continuo
-</ModelliDiffusione/sde-e-ode>`. Ma la dinamica esatta scopre una posizione per
-volta, perché il processo in avanti corrompe ogni posizione per conto suo e due
-cancellazioni nello stesso istante hanno probabilità trascurabile: ogni volta
-che se ne scoprono due insieme si sta saltando, e il salto è
-un'approssimazione {cite}`campbell2022continuous`. Il regime in cui questa
-famiglia conviene, cioè quello parallelo, è esattamente quello in cui
-l'approssimazione morde. C'è però un rovescio, e va detto per intero: qui
-l'errore si azzera dopo un numero finito di passi, uno per posizione, mentre
-nel continuo si azzera solo al limite.
+Resta un'ultima differenza con il caso continuo, e riguarda il ritorno. Anche
+qui la strada del ritorno ha una regola esatta, che dice istante per istante
+con che probabilità ogni segnaposto torna a essere una parola, come nel
+continuo ce l'aveva il risultato di Anderson della {doc}`sezione sul limite
+continuo </ModelliDiffusione/sde-e-ode>`. Ma la regola esatta scopre una
+posizione per volta: il processo in avanti cancella ogni posizione per conto
+suo, e due cancellazioni nello stesso istante esatto non capitano mai. Scoprirne
+due insieme vuol dire saltare, e il salto è un'approssimazione
+{cite}`campbell2022continuous`, la stessa delle tre caselle riempite in un
+colpo solo. Il modo in cui questa famiglia conviene, quello parallelo, è
+proprio quello in cui l'approssimazione morde. Il rovescio, però, è a favore
+del discreto: qui l'errore si azzera dopo un numero finito di passi, uno per
+posizione, mentre nel continuo si azzera solo con passi infinitamente
+piccoli.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -448,14 +486,17 @@ nel continuo si azzera solo al limite.
   spazzatura. Sul linguaggio a tre bit, un passo solo produce metà parole
   sbagliate; due passi zero. E il risparmio non è pieno: a ogni passo si
   riguarda la frase intera da capo, quindi conviene solo se i passi sono molti
-  meno delle parole.
+  meno delle parole, ed è per questo che i modelli più recenti scrivono a
+  blocchi.
 - Quindi il numero di passi necessari non dipende dalla lunghezza del testo ma
   da quanto le parti si condizionano a vicenda, ed è la ragione per cui in
   pratica si scoprono per prime le posizioni su cui il modello è più sicuro:
   è il sudoku, dove si comincia dalla casella più costretta.
-- Dove questa famiglia vince già oggi è nei compiti di riempimento:
-  completare un buco in mezzo a un file, rispettare vincoli su posizioni
-  sparse, generare molecole o sequenze con parti fissate.
+- Dove questa famiglia ha già un vantaggio chiaro è nei compiti di
+  riempimento: completare un buco in mezzo a un file, rispettare vincoli su
+  posizioni sparse, generare molecole o sequenze con parti fissate. Sulla
+  scrittura di testo lungo, al 2026, il confronto con i modelli autoregressivi
+  è aperto.
 ```
 `````
 
@@ -480,23 +521,31 @@ nel continuo si azzera solo al limite.
   valide e otto stati invece di quattro; due passi danno la distribuzione
   esatta. La strategia pratica è scoprire per prime le posizioni a entropia
   minima.
-- Costi: nessun riuso della cache (ogni passo ricalcola l'intera
-  sequenza), verosimiglianza disponibile solo come limite. Guadagni:
+- Costi: riuso della cache solo nelle varianti a blocchi (la diffusione su
+  tutta la sequenza ricalcola a ogni passo l'intera sequenza), verosimiglianza
+  disponibile solo come limite. Guadagni:
   riempimento vincolato naturale, e calcolo regolabile al momento della
   richiesta senza riaddestrare.
 - La formulazione a tempo continuo sostituisce il gradiente della log-densità
   con il rapporto fra probabilità di stati vicini e la deriva con la
-  matrice generatrice: la struttura del caso continuo si traduce, guida
-  compresa, ma non alla lettera, perché in uno spazio finito il gradiente
-  rispetto allo stato non ha un analogo diretto.
+  matrice generatrice: la struttura del caso continuo si traduce, molte
+  tecniche di guida comprese, ma non alla lettera, perché in uno spazio finito
+  il gradiente rispetto allo stato non ha un analogo diretto.
 ```
 `````
 
 La strada è percorsa tutta, allora: da una ricetta per rovinare le immagini a
 una teoria che dice quale percorso seguire, quanto in fretta, in che direzione
 piegarlo, e che cosa fare quando lo stato non è fatto di numeri. Quello che
-resta uguale in tutte le versioni è la mossa iniziale, ed è la ragione per cui
-questa famiglia ha vinto dove altre si erano fermate: invece di chiedere a una
-rete di produrre in un colpo qualcosa di complicato, le si chiede mille volte
-di sistemare qualcosa di poco rovinato, e si mettono in fila le mille
-risposte.
+resta uguale in tutte le versioni è la mossa iniziale: invece di chiedere a una
+rete di produrre in un colpo qualcosa di complicato, le si chiede tante volte
+di sistemare qualcosa di poco rovinato, e si mettono in fila le risposte. Su
+immagini e video è la famiglia che si è imposta; sul testo la partita è
+aperta.
+
+Un conto, però, è rimasto aperto in tutte le versioni. La diffusione sa
+generare, ma il numero che dice quanto è probabile un dato, nel modello
+addestrato, lo si ha solo come limite inferiore, o con un secondo calcolo
+lungo, l'integrale lungo la strada deterministica. Il {doc}`capitolo sui
+modelli a verosimiglianza esatta </VerosimiglianzaEsatta/overview>` parte da
+lì: modelli costruiti perché quel numero esca esatto, in un passaggio solo.

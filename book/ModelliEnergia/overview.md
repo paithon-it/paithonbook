@@ -21,11 +21,12 @@ California, si dice sbalordito) e per giorni rimbalza la stessa domanda: che
 cosa c'entra la *fisica*? Hopfield e Hinton non hanno scoperto particelle né
 misurato onde gravitazionali: hanno costruito reti neurali.
 
-La risposta della giuria è seria, ed è la porta d'ingresso di questo capitolo.
-Le reti premiate non *assomigliano* a un sistema fisico, per esempio a una
-calamita: si comportano esattamente come tale. A ogni **configurazione** dei
-loro neuroni, cioè a ogni modo in cui possono essere accesi e spenti, è
-associato un numero, e quel numero si chiama **energia**.
+La risposta della giuria è seria, ed è la porta d'ingresso dei modelli a
+energia. Le reti premiate hanno la stessa struttura matematica di un modello
+fisico, quello con cui i fisici descrivono una calamita e che porta il nome di
+Ernst Ising: a ogni **configurazione** dei loro neuroni, cioè a ogni modo in
+cui possono essere accesi e spenti, è associato un numero, e quel numero si
+chiama **energia**.
 
 Conviene fermarsi subito su quella parola, perché è una parola presa in
 prestito. Qui «energia» non è la corrente che accende una lampadina né le
@@ -33,8 +34,8 @@ calorie di un piatto di pasta: non è una sostanza che la rete possiede e
 consuma. È un voto, un numero che il modello dà a ogni risposta possibile:
 basso se la risposta è sensata, alto se è assurda. Poteva chiamarsi punteggio,
 o stranezza, o altezza. Si chiama energia per due motivi: la formula che lo
-calcola è, lettera per lettera, quella con cui i fisici descrivono una
-calamita (da dove esca lo racconta la prima sezione), e quella
+calcola è, lettera per lettera, quella del modello di Ising (da dove esca lo
+racconta la prima sezione), e quella
 parola porta con sé un'immagine comoda, le risposte buone come il fondo di una
 valle.
 
@@ -42,34 +43,27 @@ Le parole che arrivano dalla fisica sono quattro, e ciascuna si scioglie dove
 compare. La prima è quella appena sciolta, energia; le altre sono
 temperatura, partizione e spin, e arrivano in quest'ordine.
 
-E c'è una ragione precisa per cui il fondo, e non la cima. Una pallina, nel
-mondo, cade: nei punti bassi ci va da sola, mentre in cima a un monte non ci
-sta ferma nessuno. Se mettiamo le risposte buone in basso non dobbiamo
-*cercarle*, basta lasciar rotolare; se le mettessimo in alto qualcuno dovrebbe
-spingere, e quel qualcuno saremmo noi. È qui la furbizia di tutto il capitolo:
-la dinamica di queste reti fa scendere l'energia, quindi *ricordare* significa
-scivolare in un minimo, e *imparare* significa scolpire il paesaggio, scavare
-valli nei punti dove vogliamo che la rete vada a finire.
+Che le risposte buone stiano in basso è una convenzione, la stessa della
+fisica, e si poteva scegliere il verso opposto. È però una convenzione comoda,
+perché nella rete di Hopfield ogni aggiornamento lascia l'energia dov'è o la
+abbassa: *ricordare* significa allora scendere in un minimo, e *imparare*
+significa modificare i pesi in modo che i minimi cadano sui dati, cioè scavare
+valli nei punti dove vogliamo che la rete vada a finire. Dalla macchina di
+Boltzmann in poi la discesa resta soltanto la tendenza media di una dinamica
+che ogni tanto risale.
 
 Quarant'anni dopo quelle reti, il linguaggio dell'energia non è un pezzo da
-museo. È la lingua in cui è scritta la proposta per l'AI che verrà di Yann
-LeCun, uno dei tre a cui nel 2018 è andato il premio Turing per il deep
-learning; è, sotto mentite spoglie, ciò che addestra i modelli di diffusione;
-ed è il modo più economico che conosciamo per rispondere a una domanda senza
-essere costretti a rispondere, insieme, a tutte le altre.
+museo. È quello in cui è scritta la proposta di Yann LeCun per l'AI che verrà;
+descrive, a meno di una riparametrizzazione, l'addestramento dei modelli di
+diffusione; e permette di confrontare due risposte senza calcolare la costante
+che trasformerebbe i punteggi in probabilità, che è proprio il conto che nei
+modelli probabilistici costa.
 
-Quel «senza rispondere a tutte le altre» è il seguito diretto della
-{doc}`verosimiglianza esatta </VerosimiglianzaEsatta/overview>`, e i due si
-tengono per mano. Là abbiamo visto la famiglia che la probabilità la
-restituisce esatta, e il prezzo che paga per riuscirci: i modelli
-autoregressivi, che mettono i dati in fila, sono poi costretti a generarli un
-pezzetto alla volta; i flussi, che li deformano, non possono buttare via niente
-e quindi non possono comprimere. I due prezzi sono diversi, ma la ragione è la
-stessa: perché il conto delle probabilità torni esatto, la rete non si può più
-fare come si vuole, e la forma gliela detta il conto. Qui si prende la strada
-opposta: si rinuncia in partenza a normalizzare, cioè a far tornare cento
-le percentuali, e si tiene un voto e basta. Tutto il capitolo racconta come si
-vive senza quel cento per cento, e quanto costa.
+Quella rinuncia è il seguito diretto della {doc}`verosimiglianza
+esatta </VerosimiglianzaEsatta/overview>`, che per avere probabilità esatte
+paga in vincoli sulla forma della rete. Qui si prende la strada opposta: si
+rinuncia in partenza a normalizzare, cioè a imporre che le probabilità di tutte
+le configurazioni sommino a uno, e si tiene l'energia così com'è.
 
 ## Un numero al posto di una probabilità
 
@@ -86,50 +80,50 @@ tanto accetta di risalire, e così cambia valle. Sono due mosse per due
 problemi diversi, e il capitolo le incontra in quest'ordine.
 ```
 
-Le due mosse della {numref}`fig-paesaggio-energia` portano i loro nomi
-inglesi, e nel disegno sembrano dire il contrario di quel che fanno. La
-prima si chiama *hill climbing*, «scalata della collina», e il nome viene da
-dove è nata, cioè da chi cercava il punto più *alto*. Qui le risposte buone
-stanno in basso, quindi la stessa mossa scende, ma il nome le è rimasto
-addosso. La
-seconda si chiama *simulated annealing*, «ricottura simulata»: si scuote il
-paesaggio, forte all'inizio e poi sempre più piano, e finché la scossa è forte
-la pallina salta fuori anche dalle conche in cui si era infilata per sbaglio.
-«Ricottura» è quello che fa il fabbro quando scalda un pezzo di metallo e lo
-lascia raffreddare adagio invece di buttarlo nell'acqua: raffreddando piano,
-gli atomi hanno tempo di sistemarsi bene. È la mossa su cui è costruita la
-seconda sezione, quella delle macchine di Boltzmann.
+Le due mosse della {numref}`fig-paesaggio-energia` sono quelle della ricerca
+locale, già incontrate nella {doc}`sezione sulla ricerca senza un modello del
+mondo </Ricerca/quando-il-mondo-non-si-conosce>`. La prima è la salita
+(*hill climbing*), che accetta soltanto le mosse che migliorano; qui le
+risposte buone stanno in basso, quindi la salita scende, e il nome le è
+rimasto addosso. La seconda è la ricottura simulata (*simulated
+annealing*), che accetta anche una mossa che alza l'energia di $\Delta E > 0$,
+con probabilità $e^{-\Delta E / T}$, e abbassa $T$ col passare del tempo
+{cite}`kirkpatrick1983optimization`: finché $T$ è alta la pallina esce anche
+dalle conche in cui si era infilata per sbaglio. Il nome viene dal fabbro, che
+scalda un pezzo di metallo e lo lascia raffreddare adagio invece di buttarlo
+nell'acqua, perché raffreddando piano gli atomi hanno il tempo di sistemarsi
+bene. È la mossa su cui sono costruite le macchine di Boltzmann.
 
 Ed ecco la seconda parola presa in prestito dalla fisica, quella che nel
-disegno è la «T»: temperatura. Qui non c'è niente di caldo e non c'è
-nessun termometro. «Temperatura» vuol dire soltanto *quanto forte stiamo
-scuotendo*: alta quando la pallina salta dappertutto, bassa quando resta nei
-fondovalle, zero quando può solo scendere. La seconda sezione la riprende per
-esteso, e le fa fare un mestiere in più: trasformare le altezze del paesaggio
-in percentuali.
+disegno è la «T»: temperatura. Non c'è niente di caldo e nessun termometro:
+$T > 0$ è il parametro che decide quanto spesso si accetta una mossa che alza
+l'energia. Per $T \to 0$ si scende soltanto; per $T$ grande quasi ogni mossa
+passa, e la pallina salta dappertutto. La sezione sulle macchine di Boltzmann
+le fa fare un mestiere in più: trasformare le altezze del paesaggio in
+probabilità.
 
 Quella seconda mossa, la scossa che accetta di far risalire, anticipa una
 differenza di mentalità che attraversa quasi tutto il capitolo. Un
 classificatore o un regressore *ottimizzano*: cercano la risposta migliore e
 si fermano lì. La prima rete che incontreremo, quella di Hopfield, fa lo
-stesso. Ma dalla seconda sezione in poi i modelli di questo capitolo
+stesso. Ma dalla macchina di Boltzmann in poi i modelli a energia
 campionano, cioè producono una risposta alla volta, e la pescano in modo
 che a lungo andare le risposte buone escano
 spesso, quelle mediocri ogni tanto e quelle assurde quasi mai: è la frequenza
 che il paesaggio prescrive. Per riuscirci accettano di peggiorare per un
 tratto, perché è l'unico modo di uscire da una valle e vederne un'altra. Non è
-una novità assoluta, e sarebbe scorretto farla passare per tale: i generatori
-dei due capitoli precedenti campionano anche loro, e quello di diffusione lo
-fa con una mossa che è parente stretta di quella che si incontra qui.
+una novità assoluta, e sarebbe scorretto farla passare per tale: i modelli
+autoregressivi, i flussi e i modelli di diffusione campionano anche loro, e
+quelli di diffusione lo fanno con una mossa parente stretta di quella che si
+incontra qui.
 
-Un modello probabilistico, per dire quanto è verosimile una risposta, deve
-tenere il conto di tutte le risposte possibili: le percentuali che dà a tutte
-le risposte, sommate, devono fare cento, e quel cento è un vincolo che tiene
-insieme il mondo intero. Un modello a energia rinuncia al vincolo.
-Assegna a ogni configurazione (cioè a ogni risposta possibile: un'immagine,
-una frase, uno stato della rete) un numero, l'energia, e si limita a pretendere
-che le configurazioni sensate stiano in basso e le altre in alto. Nessuna
-somma da chiudere, nessun totale da rispettare: solo un paesaggio.
+Un modello probabilistico assegna a ogni configurazione $\mathbf{x}$ una
+probabilità $p(\mathbf{x}) \ge 0$, e le probabilità di tutte le configurazioni
+devono sommare a uno (integrare a uno, se le configurazioni sono continue):
+per valutarne una sola bisogna quindi tener conto di tutte le altre. Un modello
+a energia rinuncia a questo vincolo. Assegna a ogni configurazione (un'immagine,
+una frase, uno stato della rete) un'energia, e chiede soltanto che quelle
+sensate stiano in basso e le altre in alto.
 
 `````{tab} Elementare
 
@@ -137,20 +131,26 @@ Passa un dito su una carta geografica in rilievo e senti le valli e le cime.
 Ogni punto di quella carta è una risposta possibile alla tua domanda: una
 faccia, una frase, il fotogramma che verrà. L'altezza del punto è la sua
 energia, e dice quanto la risposta è insensata: le risposte buone stanno nelle
-valli, quelle assurde in cima ai monti. Energia e altezza sulla carta sono la
-stessa cosa. Rispondere significa lasciar rotolare una pallina e guardare dove
-si ferma; imparare significa scavare il paesaggio finché le valli non stanno
+valli, quelle assurde in cima ai monti. Rispondere significa lasciar rotolare
+una pallina e guardare dove si ferma, e mettere le risposte buone in basso
+serve proprio a questo: nei punti bassi la pallina ci va da sola, mentre in
+cima a un monte non ci sta ferma nessuno, quindi le risposte non bisogna
+cercarle. Imparare significa scavare il paesaggio finché le valli non stanno
 nei punti giusti.
 
 Le percentuali, dalla carta, si ricavano. Scuotila e lascia girare la pallina
-per un'ora. Tocca un po’ tutti i punti, ma in quelli bassi si trattiene molto
+per un'ora: quanto forte scuoti è la temperatura, e con scossoni forti la
+pallina salta dappertutto, con scossoni deboli resta nei fondovalle. Tocca un
+po’ tutti i punti, ma in quelli bassi si trattiene molto
 più a lungo che in cima, e quel «molto più a lungo» è una percentuale. Altezze e
 frequenze dicono la stessa cosa in due lingue. La traduzione, però, si paga. Se
 ti chiedessi «quante probabilità ci sono che dietro l'angolo ci sia un gatto?»
 e volessi una percentuale onesta, dovrei aver messo in conto tutto quello che
 un gatto non è: cani, biciclette, cassonetti, qualunque cosa esista. È il
 prezzo del cento per cento: per dire «70%» su una cosa devi aver pesato tutte
-le altre, e una carta grande così nessuno riesce a misurarla tutta.
+le altre, e una carta grande così, disegnata come capita, nessuno riesce a
+misurarla tutta. Ci si riesce solo se la carta è stata disegnata apposta
+perché il conto torni da sé, e quel disegno obbligato ha i suoi costi.
 
 Se invece ti chiedo soltanto «gatto o cassonetto, quale delle due torna di
 più?», ti basta confrontare due altezze sulla carta. Il paesaggio non ti
@@ -181,49 +181,50 @@ p_\theta(\mathbf{x}) = \frac{e^{-E_\theta(\mathbf{x})}}{Z(\theta)},
 Z(\theta) = \int e^{-E_\theta(\mathbf{x}')}\, d\mathbf{x}',
 $$
 
-dove $Z(\theta)$ è la funzione di partizione, l'integrale (o la somma, nel
-caso discreto) su *tutto* lo spazio delle configurazioni. Ogni energia per
-cui quell'integrale è finito definisce una densità, e ogni densità
-strettamente positiva si riscrive come
-energia, $E_\theta(\mathbf{x}) = -\log p_\theta(\mathbf{x}) + \text{cost.}$: le due descrizioni
-sono equivalenti *sulla carta*. Non lo sono nei conti. $Z(\theta)$ è il
-termine che nessuno sa calcolare quando $\mathbf{x}$ è un'immagine, e metà di questo
-capitolo è dedicata a ciò che si può fare senza di lui, e all'osservazione,
-tutt'altro che ovvia, che moltissimi compiti non ne hanno mai avuto bisogno.
+dove $Z(\theta)$ è la funzione di partizione, l'integrale (o la somma, nel caso
+discreto) su *tutto* lo spazio delle configurazioni. Ogni energia per cui
+quell'integrale è finito definisce una densità, e ogni densità strettamente
+positiva si riscrive come energia, $E_\theta(\mathbf{x}) = -\log
+p_\theta(\mathbf{x}) + \text{cost.}$: le due descrizioni sono equivalenti
+*sulla carta*. Non lo sono nei conti. $Z(\theta)$ è esplicita quando la
+struttura lo permette: in una gaussiana; in un modello autoregressivo o in un
+flusso, che sono normalizzati per costruzione (è il prezzo in vincoli della
+verosimiglianza esatta); in una rete binaria abbastanza piccola da sommarne
+tutti i $2^N$ stati. Per un'energia scelta senza vincoli sull'architettura, su
+un $\mathbf{x}$ ad alta dimensione come un'immagine, nessuno la sa calcolare, e
+«modello a energia» in senso stretto designa proprio questo caso. Metà del
+capitolo è dedicata a ciò che si può fare senza $Z(\theta)$, e
+all'osservazione, tutt'altro che ovvia, che moltissimi compiti non ne hanno mai
+avuto bisogno.
 
 `````
 
-## Perché un capitolo a sé
+## Lo stesso oggetto sotto quattro nomi
 
-Perché lo stesso oggetto continua a riaffiorare sotto nomi diversi, e finché
-lo si incontra un pezzo per volta non lo si riconosce.
+Lo stesso oggetto continua a riaffiorare sotto nomi diversi, e finché lo si
+incontra un pezzo per volta non lo si riconosce.
 
-Prendiamo di nuovo i modelli di diffusione. Partono da un'immagine tutta
-sporca di rumore e arrivano, mille passi più tardi, a
-un'immagine pulita; e ogni passo ha il suo paesaggio: all'inizio liscio, con
-poche valli larghe, poi via via più dettagliato. Quello che quei modelli
-imparano, punto per punto, è la pendenza di quei paesaggi: da che parte si
-scende e quanto ripido. In inglese quella pendenza si chiama *score*, ed è la
-parola che si incontra nei loro articoli. Attraversare quella successione di
-paesaggi, dal più liscio al più dettagliato, *è* generare.
-
-Il {doc}`capitolo sui world model </WorldModels/overview>` racconta i modelli
-che, invece di ridisegnare il mondo, ne confrontano due riassunti: si chiamano
-**JEPA** (*Joint-Embedding Predictive Architecture*). Anche loro sono energie
-mai trasformate in percentuali: giudicano quanto un pezzo di mondo osservato e
-uno da predire stiano bene insieme. Le reti di Hopfield «moderne», poi,
-richiamano un ricordo con lo stesso conto con cui un modello di linguaggio
-decide a quali parole guardare {cite}`ramsauer2021hopfield`. E LeCun chiude da
-anni le sue conferenze con lo stesso elenco: quattro cose a cui il campo
-dovrebbe rinunciare, ciascuna con la sua alternativa (l'ultima sezione le
-guarda una per una). La seconda chiede di abbandonare il modello probabilistico
-in favore dei modelli a energia; l'argomento disteso sta nel documento di
-posizione del 2022 {cite}`lecun2022path`.
+I modelli di diffusione imparano, per ogni livello di rumore, la pendenza di un
+paesaggio: è il punteggio (*score*) del {doc}`capitolo sulla diffusione
+</ModelliDiffusione/sde-e-ode>`, e generare vuol dire attraversare quella
+successione di paesaggi, dal più liscio al più dettagliato. Le architetture
+che il {doc}`capitolo sui world model </WorldModels/overview>` chiama **JEPA**
+(*Joint-Embedding Predictive Architecture*), cioè i modelli che per prevedere
+come va il mondo ne confrontano due riassunti invece di ridisegnarlo pixel per
+pixel, sono energie mai trasformate in probabilità: giudicano quanto
+stiano bene insieme un pezzo di mondo osservato e uno da predire. Le reti di
+Hopfield «moderne» richiamano un ricordo con lo stesso conto con cui un
+Transformer decide a quali parole guardare {cite}`ramsauer2021hopfield`. E
+LeCun chiude da anni le sue conferenze con quattro cose a cui il campo
+dovrebbe rinunciare, fra le quali il modello probabilistico, da sostituire con
+i modelli a energia; l'argomento disteso sta nel documento di posizione del
+2022 {cite}`lecun2022path`.
 
 Diffusione, JEPA, Hopfield moderne, il programma di LeCun: sembrano quattro
-argomenti distinti. Hanno in comune un oggetto, un punteggio che si scende
-invece di normalizzarlo, con la riserva che la sezione sulla funzione di
-partizione rende precisa per la diffusione.
+argomenti distinti, e hanno in comune un punteggio che si scende invece di
+normalizzarlo (per la diffusione con una riserva, che la sezione sulla
+funzione di partizione rende precisa). La {doc}`sezione sui paesaggi di oggi
+</ModelliEnergia/paesaggi-di-oggi>` li riprende uno per uno.
 
 ## Dal paesaggio all'energia
 
@@ -257,13 +258,13 @@ esattamente quello che quel conto fa.
   costa cara, perché per dire onestamente «70% gatto» bisogna aver pesato
   tutto quello che gatto non è. Il paesaggio non lo chiede mai: per
   sapere quale di due risposte torna di più bastano due altezze messe a
-  confronto. Quel conto di tutto il resto del mondo, che nessuno riesce a
-  fare, si chiama funzione di partizione, ed è l'ostacolo contro cui si
-  scontra metà del capitolo.
+  confronto. Quel conto di tutto il resto del mondo, che su una carta
+  disegnata come capita nessuno riesce a fare, si chiama funzione di
+  partizione, ed è l'ostacolo contro cui si scontra metà del capitolo.
 - Il premio Nobel per la fisica del 2024 a Hopfield e Hinton ha ricordato
   a tutti che questo modo di ragionare non se n'è mai andato: i generatori di
-  immagini a diffusione ripuliscono il rumore seguendo la pendenza di un
-  paesaggio, e le reti di Hopfield di oggi richiamano un ricordo con lo
+  immagini a diffusione partono dal rumore e seguono la pendenza di una fila
+  di paesaggi, e le reti di Hopfield di oggi richiamano un ricordo con lo
   stesso conto con cui i modelli di linguaggio decidono a quali parole
   guardare.
 - Nelle prossime pagine, cinque: la memoria che si ripara da sola, le reti che
@@ -283,7 +284,8 @@ esattamente quello che quel conto fa.
 - Energia e probabilità sono legate dalla distribuzione di Boltzmann–Gibbs,
   $p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$. Il ponte si
   paga con la funzione di partizione $Z(\theta)$, intrattabile in alta
-  dimensione: è il personaggio contro cui si scontra metà del capitolo.
+  dimensione quando l'energia non ha vincoli sull'architettura: è il
+  personaggio contro cui si scontra metà del capitolo.
 - Il premio Nobel per la fisica 2024 a Hopfield e Hinton ha riportato
   alla luce un filone che non se n'era mai andato: lo *score* della
   diffusione è $-\nabla_{\mathbf{x}} E_t$, una pendenza per ogni livello di

@@ -2,38 +2,31 @@
 
 Dopo tanta architettura, mettiamo i Transformer al lavoro su due compiti
 concreti: tradurre una frase e capire se una recensione è entusiasta o delusa.
-Sono gli stessi esempi che un lettore incontra ogni giorno senza pensarci (il
-tasto "traduci" sotto un post, il termometro delle recensioni di un prodotto) e
-per fortuna non serve addestrare nulla da zero. Qualcun altro ha già fatto la
-parte cara del lavoro: ha preso una di queste macchine ancora vuota, le ha dato
-in pasto montagne di testo e ha lasciato che si aggiustasse i numeri da sola
-per giorni interi, su una fila di processori in parallelo. Il risultato di
-quella fatica si scarica e si usa in tre righe, ed è quello che chiamiamo un
-modello **pre-addestrato**. A tenerne il catalogo è Hugging Face, un'azienda
-che ospita un sito da cui chiunque può scaricarli; il programma con cui li si
-adopera si chiama `transformers` {cite}`wolf2020transformers` ed è una
-*libreria*, cioè una cassetta degli attrezzi già pronta che un programma può
-aprire e usare. Sotto c'è PyTorch, lo strumento con cui in questo libro si
-costruiscono le reti.
+Sono gli stessi esempi che si incontrano ogni giorno senza pensarci (il tasto
+"traduci" sotto un post, il termometro delle recensioni di un prodotto), e non
+serve addestrare niente da zero. La parte costosa l'ha già fatta qualcun altro:
+ha preso una di queste reti con i parametri ancora a caso, l'ha addestrata su
+montagne di testo per giorni interi, su una fila di processori in parallelo, e
+ne ha pubblicato i pesi, che si scaricano e si usano in poche righe. Una rete
+così, con i parametri già ottimizzati su un grande corpus, si chiama modello
+**pre-addestrato**. Il catalogo di questi modelli lo tiene Hugging Face, sul
+suo sito; la libreria che li carica e li fa girare si chiama `transformers`
+{cite}`wolf2020transformers`, una cassetta degli attrezzi già pronta che un
+programma può aprire e usare, e sotto c'è {doc}`PyTorch </PyTorch/overview>`,
+lo strumento con cui si costruiscono le reti.
 
 Dei due esempi conta soprattutto il secondo, e non per quello che indovina:
-per quello che sbaglia. Il prezzo dell'architettura si è visto in astratto,
-contando le coppie; qui si tocca un errore concreto, su una frase italiana di
-quattro parole.
+per quello che sbaglia, su una frase italiana di quattro parole.
 
 ## Traduzione automatica
 
-Il compito per cui il Transformer è nato, e quello con cui la sezione
-sull'architettura ce l'ha presentato: la torre che legge (l’encoder) si
-prende la frase di partenza, la torre che scrive (il decoder) compone
-quella d'arrivo, e mentre la compone torna continuamente a guardare
-l'originale.
-
-Quel «tornare a guardare» ha un nome che tornerà spesso, la
-cross-attention, ed è l'attenzione di sempre applicata fra le due torri
-invece che dentro una: le domande (le *query*, cioè «che cosa mi serve
-adesso?») le pone la torre che scrive, e le etichette e le informazioni con cui
-si risponde (le *key* e i *value*) vengono da quella che ha letto.
+Il compito per cui il Transformer è nato, e quello con cui la {doc}`sezione
+sulla struttura del Transformer <architettura>` l'ha presentato: l'encoder
+legge la frase di partenza, il decoder compone quella d'arrivo, e a ogni parola
+prodotta torna a guardare l'originale con la cross-attention della
+{doc}`sezione sull'attenzione <attenzione>`. Le domande, cioè le query («che
+cosa mi serve adesso?»), le pone il decoder; le chiavi e i valori con cui si
+risponde vengono dall'encoder.
 
 `````{tab} Elementare
 Segui il viaggio di "The cat sits on the mat". Prima la frase viene spezzata
@@ -41,7 +34,7 @@ in mattoncini (le parole o pezzi di parola: i *token*) e l'encoder la legge
 tutta, riscrivendo la lista di numeri di ogni parola in modo che si porti dentro
 anche il contesto in cui si trova. Poi il decoder comincia a scrivere in
 italiano, una parola alla volta: quando deve produrre "gatto" il suo
-evidenziatore (l'attenzione della sezione di apertura) punta su "cat",
+evidenziatore, cioè l'attenzione, punta su "cat",
 quando produce "siede" punta su "sits". Somiglia più a un traduttore che legge
 tutta la frase, la capisce e la riscrive, che a un dizionario che sostituisce
 parola per parola. La differenza si vede con una parola ambigua: "bank"
@@ -69,6 +62,7 @@ tokenizzatore = AutoTokenizer.from_pretrained(nome)
 modello = AutoModelForSeq2SeqLM.from_pretrained(nome)
 
 for frase in ["The cat sits on the mat.",
+              "The cat sits on the bank.",
               "The cat sits on the river bank."]:
     ingresso = tokenizzatore(frase, return_tensors="pt")  # testo -> token
     uscita = modello.generate(**ingresso, max_new_tokens=40)  # autoregressiva
@@ -77,13 +71,16 @@ for frase in ["The cat sits on the mat.",
 
 ```text
 Il gatto si siede sul tappetino.
+Il gatto si siede sulla banca.
 Il gatto si siede sulla riva del fiume.
 ```
 
-La seconda frase è la disambiguazione lessicale in atto: un dizionario elenca
+La terza frase è la disambiguazione lessicale in atto: un dizionario elenca
 tutti e due i significati di «bank» e lascia la scelta a chi legge, mentre qui
-la compie il modello, perché la rappresentazione di quel token è stata
-costruita pesando anche «river».
+la compie il modello, e la compie in funzione del contesto, perché senza
+«river» la stessa frase diventa «Il gatto si siede sulla banca», il significato
+più comune. È quello che ci si aspetta da una rappresentazione di «bank»
+costruita dall'attenzione anche sugli altri token della frase.
 
 Le tre righe di lavoro sono i tre passaggi visti nei capitoli precedenti, qui
 scritti in chiaro: tokenizzazione (la frase diventa una sequenza di id di
@@ -91,8 +88,8 @@ token), inferenza con `generate` (encoder e decoder Transformer, con
 generazione autoregressiva e maschera causale) e decodifica (dagli id di
 token al testo). La libreria offre anche una scorciatoia, `pipeline`, che li
 incapsula in una riga; qui li teniamo separati perché sono esattamente i pezzi
-che il capitolo ha spiegato; nel secondo esempio, dove non aggiungerebbero
-niente, la scorciatoia va benissimo. Sotto il cofano il modello è
+spiegati fin qui; nel secondo esempio, dove non aggiungerebbero niente, la
+scorciatoia va benissimo. Sotto il cofano il modello è
 un `nn.Module` PyTorch come quelli della {doc}`sezione sui moduli
 </PyTorch/moduli>`: con `modello.named_parameters()` si ispezionano strati,
 teste di attenzione e
@@ -128,15 +125,19 @@ casella dove ne ha messi di più. Ottanta gettoni su una casella e venti sparsi
 altrove, oppure due caselle in testa a pochi gettoni una dall'altra: l'annuncio
 esce identico, un nome di casella e nient'altro, mentre le due situazioni non
 si somigliano. Chiedere la fila completa, casella per casella, distingue la
-macchina sicura da quella in bilico.
+macchina sicura da quella in bilico. E nemmeno ottanta gettoni su una casella
+vogliono dire avere ragione ottanta volte su cento: quanto la macchina si fidi
+a ragione di sé lo si scopre soltanto provandola su frasi di cui si sa già la
+risposta.
 
 Le frasi facili però le indovinano tutti, ed è sulle altre che si capisce
 quanto un modello abbia davvero capito. Il caso classico in italiano è il
 complimento detto negando il contrario, "non è affatto male": nessuna delle tre
-parole è un elogio, eppure la frase lo è. Lì il modello sbaglia, e il verdetto
-è in bilico: la casella accanto, di poco più benevola, resta indietro di pochi
-gettoni. Ma in bilico ci sono due modi di sbagliare: le caselle che di un
-complimento sarebbero la lettura giusta restano quasi vuote tutte e due.
+parole è un elogio, eppure la frase lo è. Lì il modello sbaglia: mette poco più
+di un terzo dei gettoni su due stelle, una recensione scontenta, e appena meno
+su tre. È indeciso, ma fra due risposte sbagliate tutte e due: le quattro e le
+cinque stelle, che di un complimento sarebbero la lettura giusta, insieme ne
+prendono sette su cento.
 `````
 
 `````{tab} Superiore
@@ -180,9 +181,10 @@ for r in recensioni:
       3 stars 0.471  4 stars 0.318  5 stars 0.125  2 stars 0.062  1 star 0.023
 ```
 
-I pesi di questo modello stanno sul server di chi lo pubblica: se un giorno lo
-riaddestrano, le cifre esatte possono cambiare, mentre la graduatoria e il
-fenomeno che segue restano.
+I pesi di questo modello stanno sul server di chi lo pubblica: se un giorno li
+riaddestrano, può cambiare anche la graduatoria. Per riprodurre esattamente
+queste cifre si fissa la versione dei pesi con l'argomento `revision`
+(l'identificativo di una versione sul sito) e quella della libreria.
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
 classificazione usa la rappresentazione del token speciale `[CLS]`, passata per
@@ -198,25 +200,31 @@ delle altre tre righe, dove la seconda classe resta indietro di centocinquanta
 millesimi o più: `top_k=None` tiene visibile la differenza fra un verdetto
 comodo e uno in bilico.
 
-Il punteggio della classe vincente è la confidenza del modello, e da solo
-non dice niente sulla qualità del classificatore: quella si valuta con le
-metriche della {doc}`sezione su come si valuta un modello
-</MachineLearning/metriche>` (accuratezza, precision/recall), e su
-domini diversi da quello di addestramento (ironia, sarcasmo, gergo) le
-prestazioni calano sensibilmente.
+Il punteggio della classe vincente è la probabilità che la softmax assegna a
+quella classe, e niente garantisce che sia calibrata, cioè che fra le frasi a
+cui il modello dà 0,6 ne siano giuste sei su dieci: le reti neurali moderne
+sono spesso mal calibrate {cite}`guo2017calibration`, e la {doc}`sezione su
+come si valuta un modello </MachineLearning/metriche>` spiega come lo si
+controlla. Da solo, poi, quel punteggio non dice niente sulla qualità del
+classificatore, che si misura con le metriche della stessa sezione
+(accuratezza, precision e recall) su dati del dominio che interessa; su testi
+diversi da quelli di addestramento (ironia, sarcasmo, gergo) le prestazioni di
+solito calano, e una sola litote non basta a dire di quanto.
 `````
 
-Quell'errore sulla terza frase è la cosa più utile dei due esempi. Il modello
-dà a «non è affatto male» due stelle su cinque, cioè lo legge come una
-recensione scontenta, mentre a «non è male», la stessa frase senza l'avverbio,
-ne dà tre.
+Le frasi date al modello sono quattro: una lode, una stroncatura, e le due
+litoti «non è affatto male» e «non è male». L'errore sulla terza è la cosa più
+utile dei due esempi. Il modello dà a «non è affatto male» due stelle su
+cinque, cioè lo legge come una recensione scontenta, mentre a «non è male», la
+stessa frase senza l'avverbio, ne dà tre.
 
-Il modello non sceglie una risposta sola: dà un voto a ciascuna delle cinque
-stelle. Qui le due stelle stanno a 0,365 e le tre a 0,336, a ventinove
-millesimi l'una dall'altra, e nessuna delle altre tre frasi ha i primi due posti
-così attaccati. Il quasi-pareggio, però, è fra due modi di sbagliare e non fra
-sbagliare e indovinare: le quattro e le cinque stelle, che sarebbero la lettura
-giusta di un complimento, si dividono in tutto sette centesimi.
+Il modello non sceglie una risposta sola: assegna una probabilità a ciascuna
+delle cinque stelle. Qui le due stelle stanno a 0,365 e le tre a 0,336, a
+ventinove millesimi l'una dall'altra, e nessuna delle altre tre frasi ha i
+primi due posti così attaccati. Il quasi-pareggio, però, è fra due modi di
+sbagliare e non fra sbagliare e indovinare: le quattro e le cinque stelle, che
+sarebbero la lettura giusta di un complimento, si dividono in tutto sette
+centesimi.
 
 L'errore viene probabilmente dalla compagnia che
 «affatto» tiene nei testi: compare quasi sempre dentro una stroncatura piena
@@ -259,7 +267,13 @@ l'esempio appena visto lo dimostra da solo.
   modelli pre-addestrati per entrambi i compiti in poche righe: sotto, sono
   `nn.Module` come quelli della sezione sui moduli di PyTorch.
 - I risultati vanno validati sul proprio dominio: ironia, gergo e litoti
-  restano difficili, e la demo di questa pagina ne fornisce il controesempio in
-  casa.
+  restano difficili, e «non è affatto male», letta come scontenta, ne è il
+  controesempio. La probabilità della classe vincente non è per forza
+  calibrata.
 ```
 `````
+
+BERT, il modello del secondo esempio, è uno dei tre capostipiti da cui nascono
+le famiglie di Transformer: la {doc}`sezione sulle famiglie di modelli
+<multimodalita>` lo mette accanto a GPT e a T5, e poi porta lo stesso
+meccanismo fuori dal testo.

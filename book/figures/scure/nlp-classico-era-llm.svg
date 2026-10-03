@@ -43,7 +43,7 @@
     <path d="M256 227 l-7 -4 v8 z" fill="#F4ECDD"/>
     <rect x="260" y="204" width="150" height="46" rx="8" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>
     <text x="335" y="224" text-anchor="middle">LLM generalista</text>
-    <text x="335" y="240" text-anchor="middle">(zero training)</text>
+    <text x="335" y="240" text-anchor="middle">(non riaddestrato)</text>
     <line x1="410" y1="227" x2="476" y2="227" stroke="#F4ECDD" stroke-width="1.5"/>
     <path d="M476 227 l-7 -4 v8 z" fill="#F4ECDD"/>
     <rect x="480" y="204" width="110" height="46" rx="8" fill="#0E0C0A" stroke="#E27B52" stroke-width="2"/>

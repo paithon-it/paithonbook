@@ -19,7 +19,7 @@ Eppure è proprio così (provando, sbagliando, esplorando) che gli agenti dei
 capitoli precedenti imparano. Il **reinforcement learning offline** (o *batch
 RL*) affronta il caso opposto e più scomodo: imparare la migliore strategia
 possibile *senza mai interagire con l'ambiente*, disponendo solo di un
-registro di esperienze già accadute {cite}`sutton2018reinforcement`.
+registro di esperienze già accadute {cite}`levine2020offline`.
 
 ## Imparare da un archivio, non dall'esperienza
 
@@ -66,23 +66,31 @@ s_t)$, che chiede di conoscere $\pi_\beta$ e ha una varianza che esplode con
 l'orizzonte; l'alternativa, stimare $Q^\pi$ sui dati (*fitted Q evaluation*),
 eredita l'errore di estrapolazione descritto più avanti. La valutazione
 dell’*AI Clinician* è stata fatta così, ed è su questo punto che è stata
-criticata.
+criticata: l'importance sampling non dà quasi peso alle traiettorie in cui la
+policy appresa fa qualcosa di molto diverso dai medici, cioè proprio ai casi
+difficili {cite}`jeter2019ai`.
 
 `````
 
 Verrebbe da pensare che sia facile, e la ragione l'abbiamo già vista nella
-{doc}`sezione su DQN <dqn>`. Il Q-learning tira ogni tanto una mossa a caso per esplorare,
-ma sui suoi appunti scrive sempre quanto vale la mossa *migliore*: si allena
-insomma su una strategia diversa da quella che sta giocando, ed è l’*off-policy*
-di allora. Se sa fare questo, dovrebbe saper imparare anche da partite giocate
-da altri e finite da un pezzo. Basterebbe dargli in pasto il diario invece delle
-esperienze fresche, e lasciarlo lavorare. Purtroppo, fatto così, fallisce quasi
-sempre. Capire *perché* è il cuore di tutto l'argomento.
+{doc}`sezione su DQN <dqn>`: il Q-learning è *off-policy*, cioè il suo bersaglio
+valuta la policy greedy mentre i dati possono venire da un'altra policy. Se sa
+fare questo, dovrebbe saper imparare anche da partite giocate da altri e finite
+da un pezzo: basterebbe addestrarlo sull'archivio $\mathcal{D}$ invece che sulle
+esperienze fresche. Fatto così, però, può fallire gravemente. Fujimoto e
+colleghi lo mostrano su un compito di controllo continuo, perfino quando
+l'archivio è quello che un altro agente sta raccogliendo e da cui lui stesso
+impara con successo {cite}`fujimoto2019off`; con archivi enormi e vari, come i
+cinquanta milioni di transizioni accumulati da un DQN in tutto il suo
+addestramento su un gioco Atari, gli stessi metodi possono invece superare,
+sulla maggior parte dei giochi, l'agente che li ha prodotti
+{cite}`agarwal2020optimistic`. Capire *quando* e *perché* l'archivio rompe il
+metodo è il cuore di tutto l'argomento.
 
 ## Il buco nero delle azioni mai viste
 
-Il colpevole è la differenza fra le mosse che nel diario ci sono e le mosse che
-l'agente, imparando, vorrebbe fare, la stessa frattura vista nell'imitazione
+Il colpevole è la differenza fra le mosse che nell'archivio ci sono e le mosse
+che l'agente, imparando, vorrebbe fare, la stessa frattura vista nell'imitazione
 quando l'allievo usciva dalla fascia dimostrata. Ha un nome tecnico,
 **distributional shift**, lo spostamento di distribuzione, e un modo molto più
 chiaro di raccontarlo.
@@ -108,25 +116,33 @@ smaschera da sé; qui no, e resta lì a fare danni.
 
 `````{tab} Superiore
 
-Il target del Q-learning è
-$y = r + \gamma \max_{a'} Q_\theta(s', a')$. Il problema è l'operatore
-$\max_{a'}$: spazia su *tutte* le azioni, comprese quelle che $\pi_\beta$ non ha
-mai eseguito in $s'$. Su quelle azioni *out-of-distribution* (OOD) la rete
-$Q_\theta$ non ha mai visto dati e non fa che estrapolare; i suoi errori di
-estrapolazione sono casuali, ma il $\max$ non è casuale: seleziona
-sistematicamente i valori più alti, cioè proprio le sovrastime. Il target
-risulta gonfiato, la policy insegue quelle azioni fantasma, e per bootstrapping
-il valore inflazionato si propaga all'indietro agli altri stati.
+Il target del Q-learning è $y = r + \gamma \max_{a'} Q_\theta(s', a')$. Il
+problema è l'operatore $\max_{a'}$: spazia su *tutte* le azioni, comprese quelle
+che $\pi_\beta$ non ha mai eseguito in $s'$. Su quelle azioni
+*out-of-distribution* (OOD) la rete $Q_\theta$ non ha mai visto dati e non fa
+che estrapolare; i suoi errori di estrapolazione sono casuali, ma il $\max$ non
+è casuale: seleziona sistematicamente i valori più alti, cioè proprio le
+sovrastime. Il target risulta gonfiato, la policy insegue quelle azioni
+fantasma, e per bootstrapping il valore inflazionato si propaga all'indietro
+agli altri stati.
 
 Nel RL online questo circolo si spezza da solo: eseguendo l'azione
 sopravvalutata si osserva la ricompensa vera, bassa, e la stima si corregge.
-Offline il correttivo non arriva mai (non c'è nuova interazione) e l'errore
-diverge. Fujimoto e colleghi {cite}`fujimoto2019off` hanno mostrato che questa
-**extrapolation error** è la ragione per cui gli algoritmi off-policy standard
-crollano su dati fissi, spesso *peggiorando* al crescere delle iterazioni
-invece di migliorare. Tutte le tecniche che seguono attaccano lo stesso nemico
-da angolazioni diverse: impedire, in un modo o nell'altro, di fidarsi delle
-azioni fuori dal supporto dei dati.
+Offline il correttivo non arriva mai (non c'è nuova interazione) e l'errore può
+crescere senza freni. Fujimoto e colleghi {cite}`fujimoto2019off` hanno mostrato
+che questa **extrapolation error** è la ragione per cui gli algoritmi off-policy
+standard possono crollare su dati fissi: DDPG addestrato su un archivio di un
+milione di transizioni resta molto sotto l'agente che lo ha raccolto, anche
+quando i due imparano dagli stessi dati, e le sue stime oscillano o divergono.
+Non è però un destino: Agarwal e colleghi {cite}`agarwal2020optimistic` mostrano
+che su archivi grandi e vari (tutta l'esperienza di un DQN, cinquanta milioni di
+transizioni per gioco) QR-DQN e REM, due varianti di DQN che stimano
+rispettivamente una distribuzione di ritorni e un insieme di teste di valore,
+addestrati offline superano il DQN completamente addestrato sulla maggior parte
+dei giochi Atari. Quanto conta l'estrapolazione dipende da quanto l'archivio
+copre le azioni che la policy appresa vorrà fare. Tutte le tecniche che seguono
+attaccano lo stesso nemico da angolazioni diverse: impedire, in un modo o
+nell'altro, di fidarsi delle azioni fuori dal supporto dei dati.
 
 `````
 
@@ -216,14 +232,12 @@ scegliendo esattamente la forma giusta, che qui è la parabola; ma la forma
 giusta è quella che non si conosce, perché è ciò che si sta cercando.
 
 Vincolando invece la ricerca alla zona che i dati coprono davvero (il loro
-**supporto**: in statistica è la parte dello spazio in cui una distribuzione
-mette massa, e con quaranta punti la si approssima con il tratto che li
-racchiude) si sceglie $-0{,}21$, e stima ($-0{,}25$) e realtà ($-0{,}26$)
-tornano a coincidere. È, in miniatura, la prima famiglia di soluzioni, e mostra
-anche che cosa costa: la mossa perfetta, $+0{,}3$, resta irraggiungibile,
-perché nell'archivio non c'è. Si è rinunciato al meglio in cambio di non
-prendere lucciole per lanterne, ed è un baratto che l'RL offline fa
-continuamente.
+**supporto**, che con quaranta punti è il tratto che li racchiude) si sceglie
+$-0{,}21$, e stima ($-0{,}25$) e realtà ($-0{,}26$) tornano a coincidere. È, in
+miniatura, la prima famiglia di soluzioni, e mostra anche che cosa costa: la
+mossa perfetta, $+0{,}3$, resta irraggiungibile, perché nell'archivio non c'è.
+Si è rinunciato al meglio in cambio di non prendere lucciole per lanterne, ed è
+un baratto che l'RL offline fa continuamente.
 
 ## BCQ: restare vicini a ciò che è stato visto
 
@@ -271,10 +285,22 @@ poche variabili e da quelle li ricostruisce, derivata per esteso nel capitolo
 sui modelli latenti) sulle coppie $(s, a)$ del
 dataset: dato uno stato, genera azioni simili a quelle che $\pi_\beta$ avrebbe
 scelto in situazioni analoghe. La rete $Q$ viene poi massimizzata solo su un
-pugno di azioni campionate da questo generatore (con una piccola perturbazione
-appresa che concede un margine di miglioramento). L'operatore di
-massimizzazione non può più cadere nelle regioni fantasma: sceglie il meglio
-*tra ciò che si sarebbe davvero potuto fare*.
+pugno di azioni campionate da questo generatore, ciascuna con una piccola
+perturbazione appresa che concede un margine di miglioramento:
+
+$$
+\pi(s) = \operatorname*{arg\,max}_{a_i + \xi_\phi(s, a_i, \Phi)}
+Q_\theta\big(s,\, a_i + \xi_\phi(s, a_i, \Phi)\big),
+\qquad a_i \sim G_\omega(s),\quad i = 1, \dots, n,
+$$
+
+dove $G_\omega$ è il generatore, $\xi_\phi$ la perturbazione, che non può
+superare in ampiezza $\Phi$, e $n$ il numero di azioni candidate (nel lavoro
+$n = 10$). Le due manopole spostano BCQ fra due estremi: con $\Phi = 0$ e
+$n = 1$ è una clonazione comportamentale, con $\Phi$ pari a tutta l'ampiezza
+delle azioni e $n \to \infty$ torna il Q-learning su tutto lo spazio.
+L'operatore di massimizzazione non può più cadere nelle regioni fantasma:
+sceglie il meglio *tra ciò che si sarebbe davvero potuto fare*.
 
 `````
 
@@ -325,13 +351,15 @@ niente.
 E vale a due condizioni. La prima è che la manopola sia girata abbastanza, e
 quanto basti dipende da quanto ciascun piatto è documentato: uno cucinato una
 volta sola dà un voto malfermo e chiede una spinta all'ingiù più robusta di uno
-cucinato cento volte. La seconda è sulle somiglianze. Se il critico tiene un rigo
-separato per ogni piatto, o se le somiglianze fra i piatti se le è fissate una
-volta per tutte prima di cominciare, la promessa regge ancora. Un critico vero
-impara strada facendo che cosa somiglia a che cosa, e allora la spinta che
-abbassa un piatto immaginato scivola addosso a tutti quelli che gli somigliano,
-compresi quelli scritti nei quaderni: la prudenza continua a funzionare in
-pratica, la dimostrazione lì non la segue più.
+cucinato cento volte. La seconda riguarda il modo in cui il critico mette
+insieme i piatti che si somigliano. Finché ogni piatto ha la sua scheda, o le
+somiglianze il critico le ha decise una volta per tutte («i risotti con i
+risotti, le zuppe con le zuppe»), abbassare il voto di un piatto immaginato non
+tocca gli altri, e la promessa regge. Un critico vero, però, che cosa somiglia
+a che cosa lo impara strada facendo, e allora la spinta che abbassa un piatto
+immaginato scivola anche su quelli che gli somigliano, compresi quelli scritti
+nei quaderni: la prudenza continua a funzionare in pratica, la dimostrazione lì
+non la segue più.
 
 `````
 
@@ -373,9 +401,8 @@ estendono agli approssimatori lineari e alle reti nel regime del *neural tangent
 kernel*, cioè con le caratteristiche di fatto congelate: due ipotesi che una
 rete addestrata normalmente non soddisfa, e infatti l'analisi della CQL con le
 reti profonde vere gli autori la lasciano scritta come lavoro da fare. Quello
-che resta è una buona
-euristica con un teorema alle spalle, il che nel RL offline è comunque parecchio
-più di quanto offra la concorrenza.
+che resta è una buona euristica con un teorema alle spalle, e la portata del
+teorema è quella appena detta.
 
 `````
 
@@ -385,7 +412,7 @@ CQL valuta ancora le azioni OOD, salvo poi penalizzarle. Nel 2022 Ilya
 Kostrikov, Ashvin Nair e Sergey Levine portano l'idea alle estreme conseguenze
 con **IQL** (*Implicit Q-Learning*) {cite}`kostrikov2022offline`: costruire
 una strategia migliore di quella che ha raccolto i dati *senza mai chiedere alla
-rete dei voti che voto darebbe a una mossa che nel diario non c'è*. Se non
+rete dei voti che voto darebbe a una mossa che nell'archivio non c'è*. Se non
 guardi mai fuori, non puoi essere ingannato da ciò che c'è fuori.
 
 «Implicito» è il nome di quello che non si fa. Fin qui, per sapere quanto vale
@@ -399,21 +426,22 @@ nemmeno nominata.
 
 Come si fa a scegliere bene senza mai considerare piatti mai cucinati? IQL
 cambia la domanda che rivolge ai quaderni. Non chiede più «quanto varrebbe
-questa ricetta ipotetica?», che è la domanda da cui nascono i voti di
-fantasia: chiede «nelle serate come questa, quanto hanno reso le ricette
-*migliori* fra quelle davvero provate?», e quella risposta è il metro della
-situazione. È come giudicare il potenziale di una cucina dai suoi piatti più
-riusciti, senza fantasticare su menù mai esistiti.
+questa ricetta ipotetica?», che è la domanda da cui nascono i voti di fantasia:
+chiede «nelle serate come questa, fin dove sono arrivate le ricette davvero
+provate, contando di più quelle andate meglio?», e quella risposta è il metro
+della situazione. È come giudicare il potenziale di una cucina dai suoi piatti
+più riusciti, senza fantasticare su menù mai esistiti.
 
-I due numeri si calcolano uno dall'altro. Il voto di una ricetta tiene conto
-del metro della situazione in cui ti lascia; il metro di una situazione esce
-dai voti delle ricette provate lì. Aggiornarli insieme, nello stesso istante,
-dà due conti che si rincorrono e non si posano più. Il rimedio è tenere sul
-tavolo una copia dei voti stampata poco prima e ricalcolare il metro leggendo
-quella: serve qualcosa di fermo a cui appoggiarsi, e chi salta l'accorgimento
-si ritrova con un metodo che non impara niente.
+I due numeri si calcolano uno dall'altro. Il voto di una ricetta tiene conto del
+metro della situazione in cui ti lascia; il metro di una situazione esce dai
+voti delle ricette provate lì. Aggiornarli insieme, nello stesso istante, dà due
+conti che si rincorrono e non si posano più. Il rimedio è tenere sul tavolo una
+copia dei voti stampata poco prima, come la copia congelata di DQN, e
+ricalcolare il metro leggendo quella: serve qualcosa di fermo a cui appoggiarsi,
+e chi salta l'accorgimento si ritrova con un metodo che non impara niente.
 
-Con quel metro («il meglio di ciò che è stato fatto qui») si rileggono poi le
+Con quel metro («quanto si ottiene qui scegliendo bene fra ciò che è stato
+fatto») si rileggono poi le
 pagine del diario: le mosse che hanno reso più del solito nella loro
 situazione vengono imitate di più, le altre di meno. Dall'inizio alla fine,
 nessuna azione fuori dal diario viene mai nemmeno nominata: dove gli altri
@@ -429,7 +457,9 @@ su tutte le azioni) con una funzione valore $V(s')$ stimata in modo obliquo,
 tramite **regressione expectile**. Un expectile alto (vicino a $1$) fa sì che
 $V(s)$ approssimi il *massimo* dei valori $Q(s,a)$ ma solo sulle azioni $a$
 *effettivamente osservate* in quello stato: coglie «il meglio tra ciò che è
-stato fatto» senza mai nominare un'azione ipotetica. Le tre reti si addestrano
+stato fatto» senza mai nominare un'azione ipotetica. Con i valori di $\tau$ che
+si usano in pratica la stima sta fra la media e il massimo, tanto più vicina al
+massimo quanto più $\tau$ si avvicina a $1$. Le tre reti si addestrano
 per pura regressione sui dati:
 
 $$
@@ -457,18 +487,24 @@ $\mathcal{L}_Q$
 usa $V(s')$, non un massimo su azioni arbitrarie: ecco perché nessuna azione
 OOD viene mai valutata. La policy si estrae infine per *advantage-weighted
 regression*, imitando le azioni del dataset con peso
-$\exp\!\big(\beta\,(Q(s,a)-V(s))\big)$: l'esponenziale tiene i pesi positivi
-anche sui vantaggi negativi, e $\beta$ decide quanto la policy assomigli a chi
-ha raccolto i dati ($\beta \to 0$) o a chi insegue il vantaggio massimo
-($\beta$ grande).
+$\exp\!\big(\beta_{\text{AWR}}\,(Q(s,a)-V(s))\big)$: l'esponenziale tiene i
+pesi positivi anche sui vantaggi negativi, e $\beta_{\text{AWR}}$, l'inverso di
+una temperatura (che con la policy comportamentale $\pi_\beta$ ha in comune
+solo la lettera), decide quanto la policy assomigli a quella che ha raccolto i
+dati ($\beta_{\text{AWR}} \to 0$) o a quella che insegue il vantaggio massimo
+($\beta_{\text{AWR}}$ grande). Nell'implementazione degli autori i pesi sono
+troncati a $100$, perché l'esponenziale non faccia esplodere un singolo
+campione.
 
 `````
 
 Il nucleo di IQL, in PyTorch, sta in poche righe. È una misura d'errore
 volutamente sbilanciata: con `tau=0.8` una stima troppo bassa viene rimproverata
 quattro volte più di una stima troppo alta ($0{,}8$ contro $0{,}2$). E siccome
-sbagliare per difetto costa quattro volte di più, alla stima conviene stare in
-alto: si posa vicino ai voti migliori fra quelli osservati, invece che nel mezzo.
+sbagliare per difetto costa quattro volte di più, alla stima conviene stare
+sopra la media dei voti osservati, ma non sul migliore: con voti sparsi in modo
+uniforme fra $0$ e $1$ si posa a $0{,}667$, e al massimo si avvicina soltanto
+quando $\tau$ si avvicina a $1$.
 
 ```python
 import torch
@@ -479,6 +515,21 @@ def expectile_loss(q, v, tau=0.8):
     diff = q.detach() - v
     peso = torch.where(diff > 0, tau, 1.0 - tau)
     return (peso * diff.pow(2)).mean()
+
+# dove si posa la stima: si provano i candidati e si tiene il piu' economico
+voti = torch.linspace(0, 1, 10_001, dtype=torch.float64)   # uniformi fra 0 e 1
+candidati = torch.linspace(0, 1, 1_001, dtype=torch.float64)
+for tau in (0.5, 0.8, 0.9, 0.99):
+    perdite = torch.stack([expectile_loss(voti, v, tau) for v in candidati])
+    migliore = candidati[perdite.argmin()]
+    print(f"tau={tau:4.2f}: la stima si posa a {migliore:.3f}")
+```
+
+```text
+tau=0.50: la stima si posa a 0.500
+tau=0.80: la stima si posa a 0.667
+tau=0.90: la stima si posa a 0.750
+tau=0.99: la stima si posa a 0.909
 ```
 
 ## Decision Transformer: l'RL come previsione di sequenze
@@ -546,7 +597,10 @@ In fase di controllo si fissa un return-to-go iniziale $\hat{R}_1$ desiderato, s
 osserva lo stato, si genera l'azione; a ogni passo si decrementa il return-to-go
 della ricompensa incassata e si prosegue. È il ponte esplicito tra reinforcement
 learning e *sequence modeling*: condizionare sul risultato voluto, anziché
-inseguire un valore stimato.
+inseguire un valore stimato. Che a contare sia soprattutto il condizionamento,
+più dell'architettura, lo suggerisce un confronto successivo: sui compiti di
+locomozione simulata una semplice rete densa condizionata sul ritorno eguaglia
+il Decision Transformer {cite}`emmons2022rvs`.
 
 `````
 
@@ -555,19 +609,22 @@ capisce bene: se nell'archivio non c'è una sola partita andata a finire bene,
 lui non ha niente da recitare, perché sa soltanto ripetere partite che ha visto.
 
 CQL e IQL invece i voti li stimano, e questo dà loro un potere in più: sanno
-«ricucire». Un voto sta attaccato a una singola mossa in una singola
-situazione, non a una partita intera;
-quindi se due partite mediocri passano tutte e due per la stessa situazione,
-l'inizio buono della prima si può attaccare al finale buono della seconda, e ne
-esce un percorso migliore di entrambe, che nel diario non c'è. Il Decision
-Transformer, che le partite le racconta intere, di quella cucitura non ha un
-meccanismo: gli autori la osservano succedere lo stesso su un problema piccolo
-di cammini minimi, dove circa un sesto dei percorsi prodotti non compare in
-nessuna partita del diario {cite}`chen2021decision`, ma è un effetto che nel
-metodo non ha nulla che lo garantisca, mentre nei metodi a valori discende dalla
-forma stessa del voto.
-Ha però aperto una linea feconda, mostrando che una parte del reinforcement
-learning si può riformulare come apprendimento supervisionato di sequenze.
+«ricucire». Un voto sta attaccato a una singola mossa in una singola situazione,
+non a una partita intera; quindi se due partite mediocri passano tutte e due per
+la stessa situazione, l'inizio buono della prima si può attaccare al finale
+buono della seconda, e ne esce un percorso migliore di entrambe, che
+nell'archivio non c'è. Il Decision Transformer, che le partite le racconta
+intere, di quella cucitura non ha un meccanismo. Gli autori la vedono succedere
+lo stesso su un piccolo problema di percorsi in un grafo, dove circa un sesto
+dei percorsi generati non compare in nessuna partita dell'archivio
+{cite}`chen2021decision`; ma lì è un effetto osservato, mentre nei metodi a
+valori discende dalla forma stessa del voto.
+
+Il Decision Transformer ha comunque aperto, insieme al Trajectory Transformer di
+Janner e colleghi, uscito il giorno dopo {cite}`janner2021offline`, una linea
+feconda: una parte del reinforcement learning si può riformulare come
+apprendimento supervisionato di sequenze, condizionato sul risultato che si
+vuole.
 
 ## Un filo che torna: le preferenze dell'RLHF
 
@@ -610,11 +667,12 @@ possiamo fidarci di ciò che non abbiamo mai visto?
 - Il RL offline impara da un archivio chiuso di esperienze già accadute,
   come i quaderni di ricette della nonna: qualcun altro ha agito e ha lasciato
   scritto com'è andata. Nessun assaggio nuovo, nessuna prova sul campo.
-- Il metodo classico, applicato così com'è, fallisce quasi sempre. L'agente
-  cerca sempre il voto più alto, e i voti più alti finiscono per capitare
-  proprio sulle mosse mai provate, quelle su cui il modello può solo tirare a
-  indovinare (il risotto al peperoncino da dieci e lode). Nessuna prova può
-  smentire quel voto gonfiato, che anzi contagia le stime vicine.
+- Il metodo classico, applicato così com'è, può fallire gravemente (con archivi
+  enormi e vari a volte regge). L'agente cerca sempre il voto più alto, e i voti
+  più alti finiscono per capitare proprio sulle mosse mai provate, quelle su cui
+  il modello può solo tirare a indovinare (il risotto al peperoncino da dieci e
+  lode). Nessuna prova può smentire quel voto gonfiato, che anzi contagia le
+  stime vicine.
 - BCQ costruisce un recinto: valuta solo le mosse plausibili secondo
   l'archivio, generate imitando chi i dati li ha raccolti. CQL non vieta
   nulla, insegna prudenza: abbassa i voti di ciò che non è mai stato provato e
@@ -631,8 +689,10 @@ possiamo fidarci di ciò che non abbiamo mai visto?
   gonfiato.
 - Anche i confronti con cui le persone giudicano le risposte di un assistente
   conversazionale sono un archivio, che si riapre a tornate ma resta fermo
-  mentre l'addestramento va avanti: stesso problema, e stesso rimedio, cioè
-  restare vicini a ciò che l'archivio contiene davvero.
+  mentre l'addestramento va avanti: il giudice costruito su quei confronti si
+  inganna più facilmente proprio dove nessuno ha giudicato niente, e il rimedio
+  è della stessa famiglia, una penalità che tiene il modello vicino a com'era
+  all'inizio.
 ```
 `````
 
@@ -657,7 +717,9 @@ possiamo fidarci di ciò che non abbiamo mai visto?
   condiziona sul *return-to-go* desiderato e predice l'azione con un Transformer,
   in modo puramente supervisionato {cite}`chen2021decision`.
 - I dati di preferenza dell’RLHF sono anch'essi un dataset raccolto a
-  tornate e fermo fra una tornata e l'altra: stesso problema, stessi rimedi
-  (restare vicini alla distribuzione dei dati {cite}`ouyang2022training`).
+  tornate e fermo fra una tornata e l'altra: il modello di ricompensa viene
+  interrogato fuori dal suo supporto e si lascia sfruttare
+  {cite}`gao2023scaling`, e la penalità KL verso il modello di partenza è un
+  rimedio della stessa famiglia {cite}`ouyang2022training`.
 ```
 `````

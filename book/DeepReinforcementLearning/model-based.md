@@ -5,22 +5,26 @@ dopo un paio di mani hai già smesso di muovere a caso. Non perché tu abbia
 giocato migliaia di partite: ne bastano due o tre perché la testa cominci a
 fare da sola una cosa preziosa (*provare le mosse prima di farle*). «Se scarto
 questa carta lui pesca e chiude… allora no.» La mossa cattiva muore
-nell'immaginazione, senza costarti la partita. È questa la differenza, ancora
-oggi imbarazzante, fra un essere umano e un agente come il
-{doc}`DQN <dqn>`: a noi bastano pochi minuti per capire *Breakout* (il gioco
-dei mattoncini da abbattere con una pallina), all'agente servono decine di
-milioni di fotogrammi.
-La parola tecnica per questa distanza è **sample efficiency**, l'efficienza nei
-campioni (quanta esperienza serve per imparare) ed è il problema che il
-reinforcement learning basato su modello affronta di petto.
+nell'immaginazione, senza costarti la partita. È una delle differenze, ancora
+oggi vistose, fra un essere umano e un agente come il {doc}`DQN <dqn>`. L'altra
+è tutto quello che sappiamo prima di cominciare (che gli oggetti cadono, che una
+chiave apre una porta): togliendo a chi gioca i segnali che lo richiamano, il
+tempo per finire un gioco nuovo passa da meno di due minuti a una ventina
+{cite}`dubey2018investigating`. A noi bastano poche partite per capire come si
+gioca a *Breakout* (il gioco dei mattoncini da abbattere con una pallina) e un
+paio d'ore per giocarci bene; all'agente servono decine di milioni di
+fotogrammi. La parola tecnica per questa distanza è **sample efficiency**,
+l'efficienza nei campioni (quanta esperienza serve per imparare), ed è il
+problema che il reinforcement learning basato su modello affronta direttamente.
 
-Tutti gli algoritmi visti finora (Q-learning, DQN, i metodi a gradiente di
-policy) condividono una scelta implicita: imparano *provando per davvero*.
-Provano un'azione nel mondo, guardano cosa succede, aggiustano. Non si
-costruiscono mai una copia del gioco da consultare in privato. Sono metodi
-**model-free**, «senza modello». Qui cambiamo strategia: costruiamo prima un
-modello dell'ambiente e poi lo usiamo per *pianificare*, cioè per provare le
-mosse nella testa, come al tavolo da gioco.
+Gli algoritmi visti finora per imparare dall'esperienza (Q-learning, DQN, i
+metodi a gradiente di policy, DDPG, TD3, SAC) condividono una scelta implicita:
+imparano *provando per davvero*. Provano un'azione nel mondo, guardano cosa
+succede, aggiustano, e non si costruiscono mai una copia del gioco da consultare
+in privato. Sono metodi **model-free**, «senza modello». La ricerca ad albero fa
+eccezione, ma pianifica su un modello che le è *dato*, le regole del gioco. Qui
+il modello dell'ambiente l'agente se lo costruisce da sé, e poi lo usa per
+*pianificare*, cioè per provare le mosse nella testa, come al tavolo da gioco.
 
 ## Provare per davvero o provare nella testa
 
@@ -97,7 +101,7 @@ presenta **Dyna** {cite}`sutton1990integrated`, ripresa l'anno dopo in una
 versione più diffusa {cite}`sutton1991dyna`. È un'architettura tanto semplice
 quanto lungimirante: mentre l'agente gioca, impara *contemporaneamente* due cose
 (una policy, come sempre, e un modellino del mondo) e usa il modellino per
-«ripassare» esperienze mai vissute davvero.
+«ripassare» senza muovere un passo nel mondo.
 
 `````{tab} Elementare
 
@@ -122,6 +126,13 @@ alcune transizioni già annotate e riaggiusta le valutazioni anche su quelle, co
 lo stesso conto che farebbe sull'esperienza vera. Le mosse vere restano poche, i
 ripassi sono tanti, e la ricompensa si propaga all'indietro molto più in fretta.
 
+Detto così, il taccuino somiglia molto al quaderno di DQN, e in questa forma
+minima la differenza è davvero piccola. Il quaderno conserva i ricordi così come
+sono; il taccuino risponde a una domanda, «se da qui faccio questo, che cosa
+succede?». Finché le risposte sono soltanto le righe scritte, le due cose si
+equivalgono. Quando il taccuino diventa una rete che generalizza, sa rispondere
+anche per svolte mai provate, ed è lì che il ripasso diventa immaginazione.
+
 `````
 
 `````{tab} Superiore
@@ -145,6 +156,17 @@ scatena molti aggiornamenti immaginati, e la propagazione dei valori accelera
 drasticamente. È il seme di tutto il model-based moderno: separare
 l'esperienza (costosa, reale) dagli aggiornamenti (economici, ripetibili nel
 modello).
+
+Il modello tabellare tiene una sola coppia $(r,s')$ per ogni $(s,a)$, quindi
+presuppone un ambiente deterministico e stazionario. In un ambiente stocastico
+va sostituito con una distribuzione sugli esiti, o con i campioni osservati
+pescati secondo le loro frequenze; se la dinamica cambia nel tempo il modello
+invecchia, e Dyna-Q+ lo tiene aggiornato aggiungendo nei ripassi un premio
+$\kappa\sqrt{\tau}$ alle coppie non provate da $\tau$ passi
+{cite}`sutton2018reinforcement`. E finché il modello restituisce soltanto le
+transizioni già viste, il planning di Dyna-Q coincide di fatto con un replay di
+quelle transizioni: la differenza con la memoria di DQN nasce quando il modello
+generalizza a coppie mai osservate.
 
 `````
 
@@ -227,18 +249,12 @@ laggiù) e dopo trenta si ferma a $0{,}156$. Con venti ripassi per ogni mossa
 vera, dopo tre episodi vale già $0{,}200$, dopo dieci $0{,}808$ e alla
 trentesima $0{,}815$.
 
-Quel $0{,}815$ è la risposta esatta, e si calcola a mano, a patto di sapere
-che cosa fa lo sconto dei premi lontani. È una scelta di chi programma e non
-una legge di natura, e si fa per due motivi. Un
-agente che dà lo stesso peso a un guadagno fra tre mosse e a uno fra tremila non
-ha nessun motivo di sbrigarsi; e su una partita che potrebbe non finire mai, la
-somma di tutti i premi futuri sarebbe infinita per chiunque, il che renderebbe
-ogni strategia buona quanto le altre. Nel codice
-ogni passo di attesa sconta il premio del $5\%$, cioè lo moltiplica per
-$0{,}95$. Chi
-si trova sulla casella accanto all'obiettivo incassa $1$ alla mossa dopo, e per
-lui quel premio vale $1$; chi sta una casella più indietro deve aspettare una
-mossa in più e per lui vale $0{,}95$; due caselle indietro, $0{,}95\times0{,}95$.
+Quel $0{,}815$ è la risposta esatta, e si calcola a mano con lo sconto dei premi
+lontani della {doc}`sezione sugli MDP </ReinforcementLearning/mdp-valore>`: nel
+codice ogni passo di attesa moltiplica il premio per $\gamma = 0{,}95$. Chi si
+trova sulla casella accanto all'obiettivo incassa $1$ alla mossa dopo, e per lui
+quel premio vale $1$; chi sta una casella più indietro deve aspettare una mossa
+in più e per lui vale $0{,}95$; due caselle indietro, $0{,}95\times0{,}95$.
 Dalla partenza al traguardo ci sono cinque mosse, ma l'ultima incassa il premio
 subito e non aspetta niente: le attese vere sono quattro, quindi
 $0{,}95^{4} \approx 0{,}815$, ed è lì che il valore deve arrivare.
@@ -247,18 +263,19 @@ $0{,}95^{4} \approx 0{,}815$, ed è lì che il valore deve arrivare.
 il ripasso ha portato la casella di partenza a $0{,}815$, cioè esattamente dove
 doveva arrivare, mentre senza ripassi si è fermata a $0{,}156$: cinque volte
 più in basso, e ancora lontanissima dal bersaglio. Se avessimo guardato solo
-la policy non avremmo visto niente, e avremmo attribuito ai ripassi un merito
-che in questo ambiente non hanno.
+la policy, avremmo concluso che i ripassi non cambiano niente, e ci saremmo
+sbagliati: il vantaggio c'è, e sta nella velocità con cui il valore arriva fino
+alla casella di partenza.
 
-## Il tallone d'Achille: l'errore che si accumula
+## L'errore del modello si compone lungo il rollout
 
-C'è un motivo se Dyna, nell'esempio, «immagina» transizioni di *un solo passo*
-già osservate, e non intere partite inventate di sana pianta. È il problema
-strutturale di ogni approccio model-based: più il sogno si allunga, più
-l'errore del modello si compone, perché ogni previsione parte da una già
-sbagliata. Dove gli scarti si amplificano, una predizione appena imprecisa a un
-passo è mediocre a cinque e un'assurdità a venti. (Una di quelle partite
-immaginate, in gergo, si chiama *rollout*.)
+Dyna, nell'esempio, «immagina» transizioni di *un solo passo*, già osservate, e
+non intere traiettorie inventate dal modello. La ragione è il problema
+strutturale di ogni approccio basato su modello: più la traiettoria immaginata
+si allunga (in gergo è un *rollout*), più l'errore del modello si compone,
+perché ogni previsione parte da uno stato già sbagliato. Se la dinamica
+amplifica le perturbazioni, l'errore cresce in modo esponenziale con la
+lunghezza del rollout.
 
 `````{tab} Elementare
 
@@ -275,9 +292,12 @@ in fondo a una scodella: lì uno scarto piccolo resta piccolo per sempre, e si
 può sognare a lungo senza troppi danni. E ci sono sistemi instabili, come la
 biglia in equilibrio sulla scodella rovesciata, dove ogni passaggio ingrandisce
 lo scarto invece di smorzarlo: bastano pochi passi e il sogno non ha più niente
-a che vedere con la realtà. E c'è un terzo caso, che è quello che frega: una
-scodella lunga e storta. La biglia in fondo ci arriva lo stesso, ma prima fa un
-giro larghissimo, e il sogno dura quanto il giro, non quanto l'arrivo.
+a che vedere con la realtà. E c'è un terzo caso, il più insidioso: una
+scodella lunga e storta. Alla lunga la biglia arriva in fondo anche lì, e chi
+guarda solo dove finisce la scambia per un sistema tranquillo; ma prima fa un
+giro larghissimo, e durante il giro due biglie partite vicine si allontanano
+parecchio. Un sogno corto vive tutto dentro quel giro: lo scarto cresce proprio
+mentre si sogna, anche se più tardi si sarebbe riassorbito.
 
 Morale: in quale di questi mondi ti trovi quasi mai lo sai, quindi le previsioni
 su cui puoi contare sono quelle a breve. La cura è disarmante nella sua
@@ -295,11 +315,14 @@ in tempo ad accumularsi.
 Il conto si fa su una dinamica deterministica, che è il caso in cui «lo
 scarto» è una distanza fra due stati e non fra due distribuzioni (nel caso
 stocastico la stessa idea regge, ma va riscritta in distanza di Wasserstein, e la
-costante non è più la stessa). Se il modello sbaglia di una quantità $\epsilon$
-a ogni passo, ogni passo successivo parte da uno stato già sbagliato, e quanto
-quell'errore si gonfi dipende da quanto la dinamica amplifica le
-perturbazioni. Con una dinamica $L$-Lipschitz, cioè che moltiplica al più per
-$L$ la distanza fra due stati vicini, lo scarto dopo $k$ passi è maggiorato da
+costante non è più la stessa). Si supponga che la dinamica vera $f$ sia
+$L$-Lipschitz nello stato, cioè che moltiplichi al più per $L$ la distanza fra
+due stati, e che il modello $\hat f$ sbagli di al più $\epsilon$ in ogni stato
+che il rollout raggiunge, $\lVert \hat f(s,a) - f(s,a)\rVert \le \epsilon$; e si
+confrontino traiettoria vera e immaginata a parità di azioni. Allora, per la
+disuguaglianza triangolare, lo scarto $e_k$ fra stato immaginato e stato vero
+soddisfa $e_k \le \epsilon + L\,e_{k-1}$ con $e_0 = 0$, e dopo $k$ passi è
+maggiorato da
 
 $$
 \epsilon \sum_{i=0}^{k-1} L^{\,i} ,
@@ -319,7 +342,11 @@ resta $0{,}020$, contro i $0{,}500$ che darebbe la lettura lineare, ed è già
 fermo lì dal ventesimo passo. È il **compounding error**, e impone un
 compromesso: rollout lunghi danno più segnale di allenamento ma sempre meno
 affidabile, e quanto meno affidabile non lo decide l'orizzonte da solo, lo
-decide il sistema.
+decide il sistema. Il conto, poi, è ottimista per costruzione: chiede che
+l'errore del modello resti sotto $\epsilon$ in ogni stato raggiunto, mentre un
+modello appreso è accurato soprattutto vicino ai dati, e il rollout se ne
+allontana proprio perché sbaglia; e se le azioni le sceglie una policy che
+dipende dallo stato, nella $L$ va messa anche la sua costante di Lipschitz.
 
 MBPO (*Model-Based Policy Optimization*, Janner et al., 2019
 {cite}`janner2019trust`) risolve il compromesso con un'idea nel titolo del
@@ -352,14 +379,15 @@ propagata su una ventina di traiettorie.
 
 ## MuZero: pianificare senza conoscere le regole
 
-Fin qui abbiamo dato per scontata una cosa: che l'agente, per costruirsi il suo
-simulatore, sappia sempre com'è fatto il mondo in cui si trova. Ma in Go, negli
-scacchi, in un videogioco Atari, quello che riceve sono pietre su una griglia o
-puntini colorati su uno schermo, e le regole che li fanno muovere possono
-essergli ignote, o essere troppo complicate da scrivere a mano. Nel novembre
-2019 (su *Nature* l'anno dopo) un gruppo di DeepMind presenta **MuZero**
-{cite}`schrittwieser2020mastering`, che fa un passo che sembra un gioco di
-prestigio: pianifica in profondità *senza conoscere le regole del gioco*.
+Dyna e MBPO si costruiscono un modello che prova a riprodurre il mondo: dallo
+stato e dalla mossa, lo stato successivo e la ricompensa. AlphaZero, nella
+{doc}`sezione sulla ricerca ad albero <mcts-alphago>`, un modello non doveva
+impararlo: glielo davano le regole del gioco, e dentro quello pianificava in
+profondità. Nel novembre 2019 (su *Nature* l'anno dopo) un gruppo di DeepMind
+presenta **MuZero** {cite}`schrittwieser2020mastering`, che fa un passo che
+sembra un gioco di prestigio: pianifica in profondità come AlphaZero, ma *senza
+ricevere le regole del gioco*, con un modello imparato come quello di Dyna; e
+quel modello non prova nemmeno a riprodurre il mondo.
 
 Il modello che MuZero si costruisce tiene, al posto del mondo, un riassunto: il
 minimo che serve a decidere. In gergo quel riassunto si chiama latente, e la
@@ -401,16 +429,28 @@ $s^{k+1}$ e la ricompensa $\hat r^{k+1}$; la *predizione* $f_\psi$ ne ricava
 una policy $\hat \pi^k$ e un valore $\hat v^k$. Punto decisivo: $s^k$ non è
 addestrato a ricostruire l'osservazione. Non c'è alcuna pressione a
 rappresentare i pixel; il latente deve solo contenere ciò che serve a predire
-*policy, valore e ricompensa*: le tre quantità utili alla pianificazione. Su
-questo modello latente MuZero esegue una ricerca ad albero Monte Carlo
-(MCTS), la stessa idea di AlphaGo {cite}`silver2016mastering` e del suo
-successore AlphaZero {cite}`silver2018general`, ma
-srotolata dentro il modello appreso anziché su un simulatore dato. Il
-risultato: prestazioni pari ad AlphaZero su Go, scacchi e shogi *senza*
-riceverne le regole, e la stessa ricetta che regge sui giochi Atari, dove un
-modello scritto a mano non esiste affatto. La differenza con AlphaZero è tutta
-qui: AlphaZero pianifica su un modello *fornito*, MuZero su un modello
-*appreso*.
+*policy, valore e ricompensa*: le tre quantità utili alla pianificazione. La
+perdita, su un tratto di $K = 5$ passi srotolati dentro il modello, è
+
+$$
+\mathcal{L}(\psi) = \sum_{k=0}^{K}\Big[\ell^{v}\big(z_{t+k}, \hat v^{k}\big) +
+\ell^{p}\big(\pi_{t+k}, \hat \pi^{k}\big)\Big] +
+\sum_{k=1}^{K}\ell^{r}\big(u_{t+k}, \hat r^{k}\big) + c\,\lVert\psi\rVert^2 ,
+$$
+
+dove $u_{t+k}$ è la ricompensa osservata, $\pi_{t+k}$ la distribuzione delle
+visite della ricerca e $z_{t+k}$ il ritorno a $n$ passi che usa come coda il
+valore stimato dalla ricerca ($n = 10$ negli Atari; nei giochi da tavolo, il
+risultato della partita). Su questo modello latente MuZero esegue una ricerca ad
+albero Monte Carlo (MCTS), la stessa idea di AlphaGo {cite}`silver2016mastering`
+e del suo successore AlphaZero {cite}`silver2018general`, ma srotolata dentro il
+modello appreso anziché su un simulatore dato. Il risultato: prestazioni pari ad
+AlphaZero su Go, scacchi e shogi *senza* riceverne le regole, e la stessa
+ricetta che regge sui giochi Atari, dove l'emulatore esiste ma all'agente non
+viene dato come modello. La differenza con AlphaZero è tutta qui: AlphaZero
+pianifica su un modello *fornito*, MuZero su un modello *appreso*. (Alla radice
+della ricerca, dove l'ambiente si può interrogare, MuZero conosce le mosse
+ammesse; dentro l'albero no.)
 
 `````
 
@@ -418,23 +458,20 @@ qui: AlphaZero pianifica su un modello *fornito*, MuZero su un modello
 
 Le strade viste finora sono due. Dyna immagina un passo alla volta e con quello
 aggiusta i propri giudizi; MuZero, al momento di decidere, si ferma ed esplora
-un albero di continuazioni. Ce n'è una terza, che il {doc}`capitolo sui World Model </WorldModels/overview>`
-racconta per esteso e che qui serve solo a completare il quadro: costruirsi un
-simulatore interno dell'ambiente (un world model) e allenare la strategia
-*interamente lì dentro*, senza mai fermarsi a pianificare.
+un albero di continuazioni. Ce n'è una terza, che la {doc}`sezione sui mondi in
+miniatura </WorldModels/mondi-in-miniatura>` racconterà per esteso e che qui
+serve solo a completare il quadro: costruirsi un simulatore interno
+dell'ambiente (un *world model*) e allenare la strategia *interamente lì
+dentro*, senza mai fermarsi a pianificare.
 
-La terza via ha una possibilità che alle altre due manca, e sta nel fatto che
-sono reti neurali tutte e due: il simulatore e la strategia che si allena
-dentro di esso. Una rete sa correggersi all'indietro: si parte da com'è andata
-a finire e si risale, un pezzo alla volta, fino ai numeri interni che hanno
-prodotto quel risultato. Se sono reti tutte e due, e se la mossa è una
-quantità da dosare (quanta spinta, quanto sterzo), la catena all'indietro può
-attraversare anche il simulatore: risale il tratto sognato, mossa dopo mossa,
-fino alla prima. Così la strategia impara non solo *che* il tratto è andato
-male, ma anche *di quanto* andava spostata ciascuna mossa. Quando le mosse sono
-voci di un menu, come nei giochi Atari, la catena si spezza, perché una scelta
-fra voci non ha pendenza, e sul tratto sognato si torna al gradiente di policy
-di REINFORCE.
+La terza via sfrutta il fatto che simulatore e strategia sono reti neurali,
+quindi derivabili. Se le azioni sono continue (quanta spinta, quanto sterzo), il
+gradiente del ritorno immaginato può risalire il tratto sognato, mossa dopo
+mossa, fino ai parametri della strategia, che impara così non solo *che* il
+tratto è andato male ma *di quanto* andava spostata ciascuna mossa. La scelta
+fra le voci di un menu, come nei giochi Atari, non ha derivata, e lì si torna
+allo stimatore di REINFORCE, che l'ultima versione di Dreamer usa per tutte le
+azioni.
 
 E la partita immaginata si srotola dentro il latente: a ogni passo il
 simulatore prevede il riassunto successivo, senza mai ridisegnare quello che
@@ -447,7 +484,9 @@ curva per curva. Non consuma benzina, non rischia incidenti: la pista ce l'ha
 in testa, e lì dentro può ripassarla quante volte vuole. Gli algoritmi della
 famiglia **Dreamer** fanno questo: si costruiscono un modello del gioco e poi
 addestrano il pilota *solo dentro il sogno*, riportandolo nel mondo vero già
-allenato.
+allenato. E da una curva ripassata male il pilota non si porta via soltanto
+che è andata male: ripercorrendola a ritroso capisce di quanto avrebbe dovuto
+girare il volante, punto per punto.
 
 Il ripasso, però, non è mai il giro intero. Il pilota riparte da un punto della
 pista in cui è passato davvero nel pomeriggio e tira avanti per un tratto breve,
@@ -455,11 +494,10 @@ la curva e l'uscita; poi ricomincia da un altro punto vero. Più a lungo si va
 avanti a occhi chiusi, più la pista che si ha in testa si scosta da quella su
 cui si correrà.
 
-La linea di ricerca nasce dai «mondi in miniatura» di Ha e
-Schmidhuber {cite}`ha2018world` (l'agente che imparava a schivare palle di
-fuoco esercitandosi nel proprio sogno) e arriva a DreamerV3 di Danijar
-Hafner e colleghi
-{cite}`hafner2023mastering`, che con la *stessa* configurazione, senza
+La linea di ricerca nasce dai «mondi in miniatura» di Ha e Schmidhuber
+{cite}`ha2018world` (l'agente che imparava a schivare palle di fuoco
+esercitandosi nel proprio sogno) e arriva a DreamerV3 di Danijar Hafner e
+colleghi {cite}`hafner2023mastering`, che con la *stessa* configurazione, senza
 ritocchi, padroneggia oltre 150 compiti diversi (robot simulati, giochi Atari,
 navigazione 3D) e riesce persino a raccogliere i diamanti in *Minecraft*
 partendo da zero, senza che nessuno gli mostri come.
@@ -470,27 +508,29 @@ partendo da zero, senza che nessuno gli mostri come.
 
 Dreamer apprende un modello ricorrente dello stato nello spazio latente e vi
 addestra un attore-critico (i metodi visti nella {doc}`sezione sul gradiente di
-policy <policy-gradient>`) per retropropagazione attraverso il modello quando
-le azioni sono continue, con lo stimatore di REINFORCE quando sono discrete,
-lungo rollout di quindici passi chiusi dai $\lambda$-ritorni del critico,
-proprio per contenere il compounding error. DreamerV3
-{cite}`hafner2023mastering` aggiunge normalizzazioni robuste di osservazioni,
-ricompense e ritorni che rendono lo stesso set di iperparametri valido su
-domini radicalmente diversi: è la dimostrazione che un agente model-based può
-essere *generalista*. La parentela con Dyna è diretta (attore e critico
-crescono su esperienza sintetica generata da un modello appreso) ma il modello
-qui è una rete profonda che vive in uno spazio latente, non una tabella di
-transizioni. Per la ricetta completa (encoder, modello ricorrente, il «sogno»
-come rollout latente), si rimanda al capitolo sui World Model, che tratta anche
-la proposta di LeCun e le architetture JEPA, la frontiera di questa linea di
-ricerca.
+policy <policy-gradient>`) su rollout immaginati di una quindicina di passi,
+chiusi dai $\lambda$-ritorni del critico, proprio per contenere il compounding
+error. Nelle prime versioni l'attore impara per retropropagazione attraverso il
+modello quando le azioni sono continue e con lo stimatore di REINFORCE quando
+sono discrete; nella versione definitiva di DreamerV3
+{cite}`hafner2023mastering` usa REINFORCE per tutte. DreamerV3 aggiunge poi
+normalizzazioni robuste di osservazioni, ricompense e ritorni che rendono lo
+stesso set di iperparametri valido su domini radicalmente diversi: è la
+dimostrazione che un agente model-based può essere *generalista*. La parentela
+con Dyna è diretta (attore e critico crescono su esperienza sintetica generata
+da un modello appreso) ma il modello qui è una rete profonda che vive in uno
+spazio latente, non una tabella di transizioni. Per la ricetta completa
+(encoder, modello ricorrente, il «sogno» come rollout latente), si rimanda al
+capitolo sui World Model, che tratta anche la proposta di LeCun e le
+architetture JEPA, la frontiera di questa linea di ricerca.
 
 `````
 
-Un modello della dinamica appreso, come quelli che alimentano i metodi appena
-visti, in PyTorch ha una forma semplice: da stato e azione predice lo stato
-successivo e la ricompensa. La traiettoria «immaginata» è poi la sua
-applicazione ripetuta, tenuta volutamente corta.
+Un modello della dinamica, come quelli che alimentano i metodi appena visti, in
+PyTorch ha una forma semplice: da stato e azione predice lo stato successivo e
+la ricompensa, e lo si addestra per regressione sulle transizioni osservate
+(errore quadratico sullo stato successivo e sulla ricompensa). La traiettoria
+«immaginata» è poi la sua applicazione ripetuta, tenuta volutamente corta.
 
 ```python
 import torch
@@ -514,25 +554,26 @@ class ModelloDinamica(nn.Module):
         return s_succ, r
 
 # Rollout BREVE immaginato (stile MBPO): parte da stati reali, pochi passi.
+# Qui si vede solo la forma: il modello non e' addestrato.
 modello = ModelloDinamica(dim_s=4, dim_a=1)
 policy = nn.Sequential(nn.Linear(4, 1), nn.Tanh())    # strategia giocattolo
-s = torch.randn(32, 4)                                # 32 situazioni VERE gia' vissute
+s = torch.randn(32, 4)            # 32 stati (casuali, al posto di quelli veri)
 for _ in range(3):                                    # orizzonte corto: 3 passi
     a = policy(s)                                     # (32, 1)
     s, r = modello(s, a)                              # transizioni SINTETICHE
 ```
 
-## Onestà: quando il sogno inganna
+## Quando il sogno inganna: il model exploitation
 
 Resta il punto dolente, che nessun risultato spettacolare cancella. Una policy
-addestrata dentro un modello finisce, prima o poi, per sfruttarne i
-difetti. Se il modello sbaglia in modo sistematico (sopravvaluta una
-ricompensa, dimentica un ostacolo), l'ottimizzazione trova con precisione
-chirurgica proprio quelle crepe: emergono policy che incassano ritorni
-immaginari altissimi e falliscono nel mondo vero. È il *model exploitation*, e
-nel {doc}`capitolo sui World Model </WorldModels/overview>` se ne vede l'esempio da manuale: l'agente che,
-dentro il proprio sogno di *Doom*, scopre movimenti per cui i mostri «non
-sparano mai».
+addestrata dentro un modello tende a sfruttarne i difetti, ed è il *model
+exploitation*, lo sfruttamento del modello. Se il modello sbaglia in modo
+sistematico (sopravvaluta una ricompensa, dimentica un ostacolo),
+l'ottimizzazione trova proprio quelle crepe: emergono policy che incassano
+ritorni immaginari altissimi e falliscono nel mondo vero. La {doc}`sezione sui
+mondi in miniatura </WorldModels/mondi-in-miniatura>` ne racconterà l'esempio
+da manuale: l'agente che, dentro il proprio sogno di *Doom*, trova movimenti
+per cui le palle di fuoco si spengono mentre si formano.
 
 Il compromesso è strutturale, e si può leggere come una manopola. Girata da una
 parte c'è la fiducia: sogni lunghi, tutta la strategia allenata
@@ -566,8 +607,10 @@ sapere dove metterla è oggi materia di ricerca aperta.
   da una precedente già un po’ sbagliata e l'errore si gonfia a ogni passaggio.
   *Quanto* si gonfi dipende dal sistema: dove gli scarti si riassorbono da sé
   l'errore resta piccolo per sempre, dove il sistema li ingigantisce esplode in
-  pochi passi. La cura è tenere i sogni corti e farli partire da situazioni
-  davvero visitate: si chiama MBPO, e l'errore non fa in tempo ad accumularsi.
+  pochi passi, e il caso più insidioso è il sistema che alla lunga si calma ma
+  intanto li allarga, proprio mentre si sogna. La cura è tenere i sogni corti e
+  farli partire da situazioni davvero visitate: si chiama MBPO, e l'errore non
+  fa in tempo ad accumularsi.
 - MuZero (2020) le regole del gioco se le costruisce da solo guardando le
   partite, e non si fa un modello che ridisegna la scacchiera pezzo per pezzo:
   tiene solo il riassunto (il latente) che serve a rispondere a "chi è in
@@ -577,7 +620,7 @@ sapere dove metterla è oggi materia di ricerca aperta.
 - Dreamer allena il pilota interamente dentro il sogno, e DreamerV3 se la
   cava con la stessa configurazione su oltre 150 compiti diversi. Il limite di
   fondo non sparisce: una strategia vale quanto il mondo immaginario in cui è
-  cresciuta, e prima o poi ne trova e ne sfrutta le crepe.
+  cresciuta, e tende a trovarne e sfruttarne le crepe.
 ```
 `````
 

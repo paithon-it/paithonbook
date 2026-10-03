@@ -1,23 +1,24 @@
 # Analisi e ottimizzazione: derivate e discesa del gradiente
 
-Nebbia fitta, nessuna mappa, e non si vede a un metro di distanza. Un'informazione, però, ce l'hai sempre: la
-pendenza del terreno sotto i piedi. Ti basta sentire da che parte scende, fare
-un passo in quella direzione, rimisurare e ripetere. Addestrare un modello è
-esattamente questo. La collina da scendere è la funzione che misura *quanto il
-modello sbaglia* (il **costo** o **loss**, che indichiamo con $\mathcal{L}$) e
-lo strumento che sente la pendenza sotto i piedi è la **derivata**. 
+Nebbia fitta, nessuna mappa, e non si vede a un metro di distanza.
+Un'informazione, però, ce l'hai sempre: la pendenza del terreno sotto i piedi.
+Ti basta sentire da che parte scende, fare un passo in quella direzione,
+rimisurare e ripetere. Addestrare un modello con la discesa del gradiente
+funziona proprio così. La collina da scendere è la funzione che misura *quanto
+il modello sbaglia* (il **costo** o **loss**, che indichiamo con $\mathcal{L}$)
+e lo strumento che sente la pendenza sotto i piedi è la **derivata**.
 
 ## La derivata: la pendenza istante per istante
 
-Una funzione è una regola che, dato un numero in ingresso, ne restituisce
-uno in uscita, sempre lo stesso a parità di ingresso: «raddoppia» è una
-funzione, «il prezzo del biglietto per un viaggio di tanti chilometri» è una
-funzione, e anche «di quanto sbaglia questo modello, se le sue manopole sono
-regolate così» è una funzione. Disegnarla si può: si mette l'ingresso
-sull'asse orizzontale e l'uscita su quello verticale, e l'insieme dei punti
-che ne viene fuori è il grafico, di solito una curva che sale e scende. La
-derivata risponde a una domanda sola: *se muovo l'ingresso di un pelo, di
-quanto cambia l'uscita?*
+Una funzione è una regola che, dato un numero in ingresso, ne restituisce uno in
+uscita, sempre lo stesso a parità di ingresso: «raddoppia» è una funzione, «il
+prezzo del biglietto per un viaggio di tanti chilometri» è una funzione, e anche
+«di quanto sbaglia questo modello, se i suoi parametri valgono così» è una
+funzione. Disegnarla si può: si mette l'ingresso sull'asse orizzontale e
+l'uscita su quello verticale, e l'insieme dei punti che ne viene fuori è il
+grafico, di solito una curva che sale e scende. La derivata risponde a una
+domanda sola: *se sposto l'ingresso di una quantità piccolissima $h$, di quante
+volte $h$ cambia l'uscita?*
 
 `````{tab} Elementare
 
@@ -80,18 +81,19 @@ che si ripete, si chiama *base*. Un libretto che decuplica ogni anno va da
 cento euro a centomila negli stessi tre anni, e $\log_{10} 1000 = 3$ perché
 $1000$ è $10\times10\times10$.
 
-Contare i fattori invece dei soldi schiaccia i numeri enormi. Fra un libretto
-da $1000$ euro e uno da $1\,000\,000$ ci sono novecentonovantanovemila euro di
+Contare i fattori invece dei soldi schiaccia i numeri enormi. Fra un libretto da
+$1000$ euro e uno da $1\,000\,000$ ci sono novecentonovantanovemila euro di
 differenza, fra i loro logaritmi in base dieci ce ne sono tre (contati in
-raddoppi, una decina). E trasforma le
-moltiplicazioni in somme, perché moltiplicare due potenze vuol dire sommarne
-gli esponenti: tre anni di raddoppio e poi altri quattro moltiplicano il
-capitale per $8$ e per $16$ ($128$ in tutto), mentre i raddoppi si sommano,
-$3+4=7$. Un libretto che ogni giorno perde metà di quello che ha, dopo mille
-giorni tiene una cifra con trecento zeri dopo la virgola; un modello che
-moltiplica fra loro mille probabilità piccolissime ci arriva anche prima, e il
-calcolatore quel numero lo arrotonda a zero. I mille logaritmi invece si
-sommano, e il risultato è lo stesso a meno di tradurlo indietro.
+raddoppi, una decina). E trasforma le moltiplicazioni in somme, perché
+moltiplicare due potenze vuol dire sommarne gli esponenti: tre anni di raddoppio
+e poi altri quattro moltiplicano il capitale per $8$ e per $16$ ($128$ in
+tutto), mentre i raddoppi si sommano, $3+4=7$. Un libretto che ogni giorno perde
+metà di quello che ha, dopo mille giorni tiene una cifra con più di trecento
+zeri dopo la virgola, ai limiti di quello che un calcolatore sa scrivere. Un
+modello che moltiplica fra loro mille probabilità di un centesimo arriva a
+duemila zeri, ben oltre quel limite, e il calcolatore arrotonda il risultato a
+zero. I mille logaritmi invece si sommano, e il risultato è lo stesso a meno di
+tradurlo indietro.
 
 L'esponenziale è il logaritmo letto al contrario, e nasce da una regola sola
 cambiata sul libretto: gli interessi maturano in ogni istante invece che una
@@ -135,8 +137,15 @@ $$
 
 Ricorrono proprio queste tre per una ragione: l'errore quadratico medio è una
 potenza, la sigmoide $\sigma(x)=1/(1+e^{-x})$ e la softmax sono costruite
-sull'esponenziale, la log-verosimiglianza e la cross-entropy sul logaritmo.
-La stabilità di $e^x$ sotto derivazione è ciò che rende quei conti trattabili.
+sull'esponenziale, la log-verosimiglianza e la cross-entropy sul logaritmo. La
+stabilità di $e^x$ sotto derivazione è ciò che rende quei conti trattabili.
+Valgono anche la linearità, $(fg)'=f'g+fg'$ e $(f/g)'=(f'g-fg')/g^2$, e ne
+discendono le due derivate che tornano di continuo:
+$\sigma'(x)=\sigma(x)\big(1-\sigma(x)\big)$ e, per la softmax
+$\mathbf{s}=\operatorname{softmax}(\mathbf{z})$, $\partial s_i/\partial
+z_j=s_i(\delta_{ij}-s_j)$, da cui la cross-entropy $\mathcal{L}=-\log s_y$ ha
+gradiente $\partial\mathcal{L}/\partial\mathbf{z}=\mathbf{s}-\mathbf{e}_y$, con
+$\mathbf{e}_y$ il vettore che vale uno nella posizione della classe vera.
 
 `````
 
@@ -145,11 +154,11 @@ La stabilità di $e^x$ sotto derivazione è ciò che rende quei conti trattabili
 Un modello reale non ha un parametro solo, ne ha milioni, e la loss dipende da
 tutti insieme. Con due parametri il costo non è più una curva ma una
 superficie, un paesaggio di colline e conche in cui ogni punto del terreno è
-una coppia di regolazioni e la quota è l'errore che ne viene fuori. Un modo
-comodo di disegnare un paesaggio su un foglio è quello delle carte
-escursionistiche: guardarlo dall'alto e tracciare le curve di livello,
-cioè le linee che uniscono i punti alla stessa quota. Dove le linee sono
-fitte, il terreno è ripido; dove sono larghe, è pianeggiante.
+una coppia di valori dei parametri e la quota è l'errore che ne viene fuori. Un
+modo comodo di disegnare un paesaggio su un foglio è quello delle carte
+escursionistiche: guardarlo dall'alto e tracciare le curve di livello, cioè le
+linee che uniscono i punti alla stessa quota. Dove le linee sono fitte, il
+terreno è ripido; dove sono larghe, è pianeggiante.
 
 ```{figure} ../figures/derivate-gradiente.svg
 :name: fig-curve-di-livello
@@ -166,14 +175,11 @@ opposto: il triangolino capovolto $\nabla$ è il simbolo che lo indica, si legge
 trova.
 ```
 
-Quell'angolo retto di {numref}`fig-curve-di-livello` viene da una ragione
-precisa. Camminare lungo un anello vuol dire, per definizione dell'anello,
-restare alla stessa quota: in quella direzione il costo non cambia di niente.
-Per cambiare quota bisogna attraversare gli anelli, e a parità di passi la si
-cambia di più là dove l'anello successivo è più vicino; la strada più corta da
-un anello a quello accanto è quella che lo taglia ad angolo retto. Ecco perché
-la freccia esce sempre perpendicolare all'anello (chi preferisce la parola
-tecnica la trova come «ortogonale»: vuol dire la stessa cosa).
+Quell'angolo retto di {numref}`fig-curve-di-livello` ha una ragione precisa:
+lungo una curva di livello la loss è costante, quindi la derivata nella
+direzione della curva è nulla, e il gradiente non ha nessuna componente lungo di
+essa. Per cambiare quota, il passo più efficace taglia gli anelli ad angolo
+retto.
 
 È lo stesso angolo retto a spiegare un fastidio che si incontra sempre. Se la
 conca invece di essere tonda si allunga in una valle stretta, gli anelli
@@ -198,7 +204,10 @@ qualunque direzione lo si faccia. Se però verso nord si affonda nella neve e
 verso est corre un sentiero battuto, i passi non costano tutti uguali, e la
 direzione che fa scendere di più a parità di fatica non coincide con quella
 della pendenza pura. Il gradiente vince finché i passi si misurano tutti allo
-stesso modo; cambiando il metro, cambia il vincitore.
+stesso modo; cambiando il metro, cambia il vincitore. È la ragione per cui certi
+metodi di addestramento, invece di seguire il gradiente così com'è, allungano il
+passo nelle direzioni in cui costa poco e lo accorciano in quelle in cui costa
+molto.
 
 `````
 
@@ -218,23 +227,25 @@ $$
 
 ```{admonition} Una convenzione, dichiarata una volta per tutte
 :class: note
-Da qui in avanti vale il layout al denominatore: la derivata di uno
-scalare
-rispetto a un oggetto ha sempre la stessa forma di quell'oggetto. Il
-gradiente rispetto a un vettore è quindi un vettore colonna, e
-per una matrice di pesi $\mathbf{W}\in\mathbb{R}^{m\times n}$ che manda un
-ingresso $\mathbf{a}\in\mathbb{R}^n$ in $\mathbf{z}=\mathbf{W}\mathbf{a}\in
-\mathbb{R}^m$, $\partial\mathcal{L}/\partial\mathbf{W}$ è una matrice
-$m\times n$ come $\mathbf{W}$. Detto
-$\boldsymbol{\delta}=\partial\mathcal{L}/\partial\mathbf{z}\in\mathbb{R}^m$,
-da $z_i=\sum_j W_{ij}a_j$ segue
-$\partial\mathcal{L}/\partial W_{ij}=\delta_i a_j$, cioè
-$\partial\mathcal{L}/\partial\mathbf{W}=\boldsymbol{\delta}\mathbf{a}^\top$.
-La posta in gioco è la differenza fra $\boldsymbol{\delta}\mathbf{a}^\top$
+Da qui in avanti vale il layout al denominatore: la derivata di uno scalare
+rispetto a un oggetto ha sempre la stessa forma di quell'oggetto. Il gradiente
+rispetto a un vettore è quindi un vettore colonna (per una funzione vettoriale
+$\mathbf{f}:\mathbb{R}^n\to\mathbb{R}^m$ la jacobiana resta invece
+$(\mathbf{J}_{\mathbf{f}})_{ij}=\partial f_i/\partial x_j$, di forma $m\times
+n$: la regola vale per i gradienti di scalari), e per una matrice di pesi
+$\mathbf{W}\in\mathbb{R}^{m\times n}$ che manda un ingresso
+$\mathbf{a}\in\mathbb{R}^n$ in $\mathbf{z}=\mathbf{W}\mathbf{a}\in
+\mathbb{R}^m$, $\partial\mathcal{L}/\partial\mathbf{W}$ è una matrice $m\times
+n$ come $\mathbf{W}$. Detto
+$\boldsymbol{\delta}=\partial\mathcal{L}/\partial\mathbf{z}\in\mathbb{R}^m$, da
+$z_i=\sum_j W_{ij}a_j$ segue $\partial\mathcal{L}/\partial W_{ij}=\delta_i a_j$,
+cioè
+$\partial\mathcal{L}/\partial\mathbf{W}=\boldsymbol{\delta}\mathbf{a}^\top$. La
+posta in gioco è la differenza fra $\boldsymbol{\delta}\mathbf{a}^\top$
 ($m\times n$) e $\mathbf{a}\boldsymbol{\delta}^\top$ ($n\times m$), cioè fra un
-aggiornamento dei pesi che ha le dimensioni giuste e uno che non si può
-nemmeno scrivere. La {doc}`sezione sul backpropagation
-</RetiNeurali/backpropagation>` e quella su {doc}`tensori e autograd
+aggiornamento dei pesi che ha le dimensioni giuste e uno che non si può nemmeno
+scrivere. La {doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>`
+e quella su {doc}`tensori e autograd
 </PyTorch/tensori>` compongono catene di derivate con questa convenzione, e chi le
 rifà a mano deve poterle attaccare senza trasposte a sorpresa.
 ```
@@ -255,13 +266,12 @@ allora $\mathcal{L}(\gamma(t))$ è costante, quindi
 $\frac{d}{dt}\mathcal{L}(\gamma(t)) = \nabla\mathcal{L}^\top \gamma'(t) = 0$:
 il gradiente è ortogonale a ogni direzione tangente all'insieme di livello.
 
-Un'avvertenza: quel primato è relativo alla
-norma euclidea. «Il passo di lunghezza fissata che fa scendere di più»
-dipende da come si misura la lunghezza di un passo, e cambiando metrica cambia
-la direzione più ripida. Adam,
-riscalando ogni coordinata, e i metodi del secondo ordine, misurando i passi
-con la curvatura, fanno precisamente questo: adottano un altro metro, e con
-esso un'altra discesa. Il gradiente è la
+Un'avvertenza: quel primato è relativo alla norma euclidea. «Il passo di
+lunghezza fissata che fa scendere di più» dipende da come si misura la lunghezza
+di un passo, e cambiando metrica cambia la direzione più ripida. Il metodo di
+Newton, che misura i passi con la curvatura, e Adam, che riscala ogni
+coordinata, si possono leggere come discese nella direzione più ripida secondo
+un altro metro: un'altra metrica, e con essa un'altra discesa. Il gradiente è la
 direzione migliore secondo il metro euclideo, e secondo quello soltanto.
 
 Il gradiente porta l'informazione del primo ordine; la curvatura sta nella
@@ -290,7 +300,7 @@ produrre lo zigzag della valle stretta {cite}`goodfellow2016deep`.
 
 `````
 
-## La regola della catena: il motore del backpropagation
+## La regola della catena: il motore della backpropagation
 
 Una rete neurale è una funzione dentro una funzione dentro una funzione: strati
 impilati, ognuno che riceve l'uscita del precedente. Per sapere come un peso
@@ -325,11 +335,11 @@ $2 \times 1{,}5 = 3$ volte. Gli effetti lungo la catena si
 moltiplicano.
 
 E un ingranaggio è una derivata travestita, perché «quanti giri fa B per ogni
-giro di A» è esattamente la domanda della derivata: *se muovo un po’
-l'ingresso, di quanto si muove l'uscita?* Sostituendo agli ingranaggi gli
-strati di una rete, la conclusione è la stessa: le pendenze si moltiplicano una
-dopo l'altra. Il *backpropagation* è questo e nient'altro: moltiplicare le
-pendenze strato per strato, partendo dall'uscita e risalendo verso l'ingresso.
+giro di A» è esattamente la domanda della derivata: *se muovo un po’ l'ingresso,
+di quanto si muove l'uscita?* Sostituendo agli ingranaggi gli strati di una
+rete, la conclusione è la stessa: le pendenze si moltiplicano una dopo l'altra.
+La *backpropagation* è questo e nient'altro: moltiplicare le pendenze strato per
+strato, partendo dall'uscita e risalendo verso l'ingresso.
 
 `````
 
@@ -344,13 +354,17 @@ $$
 $$
 
 il prodotto tra la pendenza della funzione esterna $f$ (valutata in $g(w)$) e
-quella della funzione interna $g$. In una rete profonda la catena si allunga
-di un anello per strato, e le derivate si moltiplicano una dopo l'altra. Il
-backpropagation applica questa regola in
-ordine inverso (dall'uscita agli ingressi) riutilizzando i fattori condivisi
-tra i cammini. È ciò che permette di calcolare il gradiente rispetto a milioni
-di parametri in un'unica passata all'indietro, invece di derivare ogni peso da
-capo {cite}`rumelhart1986learning`.
+quella della funzione interna $g$. In una rete profonda la catena si allunga di
+un anello per strato, e le derivate si moltiplicano una dopo l'altra. La
+backpropagation applica questa regola in ordine inverso (dall'uscita agli
+ingressi) riutilizzando i fattori condivisi tra i cammini. È ciò che permette di
+calcolare il gradiente rispetto a milioni di parametri in un'unica passata
+all'indietro, invece di derivare ogni peso da capo; il prezzo è la memoria,
+perché i valori intermedi del passaggio in avanti vanno conservati fino al
+ritorno (o ricalcolati). L'idea è la modalità inversa della differenziazione
+automatica {cite}`linnainmaa1970taylor`, applicata alle reti da Werbos
+{cite}`werbos1974beyond` e resa nota da Rumelhart, Hinton e Williams
+{cite}`rumelhart1986learning`.
 
 In più variabili, per $\mathbf{g}:\mathbb{R}^n\to\mathbb{R}^k$ e
 $\mathbf{f}:\mathbb{R}^k\to\mathbb{R}^m$, la regola si scrive con le jacobiane:
@@ -359,7 +373,7 @@ $\mathbf{J}_{\mathbf{f}\circ\mathbf{g}}(\mathbf{w}) =
 il prodotto di una matrice $m\times k$ per una $k\times n$. Quando in fondo
 alla catena c'è uno scalare, con $\mathbf{u}=\mathbf{g}(\mathbf{w})$ si ha
 $\nabla_{\mathbf{w}}\mathcal{L}=\mathbf{J}_{\mathbf{g}}^\top\nabla_{\mathbf{u}}\mathcal{L}$:
-il backpropagation moltiplica un vettore per una jacobiana trasposta alla
+la backpropagation moltiplica un vettore per una jacobiana trasposta alla
 volta, partendo dall'uscita, e non forma mai le jacobiane intere. Per questo il
 gradiente costa una piccola costante per il costo del passaggio in avanti,
 qualunque sia il numero di parametri, mentre derivare peso per peso costerebbe
@@ -369,10 +383,11 @@ un passaggio in avanti per ogni peso.
 
 ## La discesa del gradiente
 
-Ora abbiamo tutto: uno strumento che dice da che parte si scende (il gradiente)
-e un posto dove si vuole arrivare, il fondo della valle, che è per l'appunto il
-punto in cui il costo è più piccolo. La ricetta è quella dell'escursionista
-nella nebbia: un passo in discesa, ricalcola, ripeti
+La discesa del gradiente ripete un passo: dal punto $\theta$ in cui si è, si va
+nel verso opposto al gradiente,
+$\theta\leftarrow\theta-\eta\,\nabla\mathcal{L}(\theta)$, dove $\eta>0$, il
+learning rate, fissa la lunghezza del passo. È la ricetta dell'escursionista
+nella nebbia: un passo in discesa, si ricalcola la pendenza, si ripete
 ({numref}`fig-discesa-gradiente`).
 
 ```{figure} ../figures/discesa-gradiente.svg
@@ -383,8 +398,8 @@ nella nebbia: un passo in discesa, ricalcola, ripeti
 La funzione di costo $\mathcal{L}(\theta)$ come una scodella. Sull'asse
 orizzontale c'è il parametro da regolare, che per tradizione si scrive con la
 lettera greca $\theta$ (si legge «theta»: è la stessa lettera che nel prodotto
-scalare indicava un angolo, e qui indica tutt'altro, cioè una manopola da
-girare); il numerino in basso conta i passi, quindi
+scalare indicava un angolo, e qui indica tutt'altro, cioè un parametro da
+regolare); il numerino in basso conta i passi, quindi
 $\theta_0$ è la regolazione di partenza, quella scelta a caso prima che
 l'addestramento cominci, mentre $\theta^*$, con l'asterisco, è quella in fondo
 alla scodella, la migliore che ci sia. Da lì ogni passo va nel verso opposto al
@@ -409,35 +424,37 @@ fondo.
 ```
 
 Il meccanismo di {numref}`fig-valle-allungata` si chiama **momento**
-(*momentum*), e sotto il nome fisico c'è una ricetta più semplice
-dell'immagine della pallina che rotola: invece di muoversi lungo la pendenza
-sentita adesso, ci si muove lungo una media delle ultime pendenze sentite.
-Il perché funzioni si vede senza formule. In una valle stretta la pendenza ha
-due parti: quella che attraversa la valle, che a ogni passo cambia verso
-perché si sbatte prima contro una parete e poi contro l'altra, e quella che
-scende lungo la valle, che punta sempre dalla stessa parte. Facendo la media,
-la prima si cancella da sé (una volta è più uno, la volta dopo è meno uno) e
-la seconda si somma. Restano meno rimbalzi e più avanzamento, che è appunto
-quel che mostra il disegno.
+(*momentum*), e sotto il nome fisico c'è una ricetta più semplice dell'immagine
+della pallina che rotola: invece di muoversi lungo la pendenza sentita adesso,
+ci si muove lungo una somma pesata delle ultime pendenze sentite, in cui ogni
+pendenza conta $\beta$ volte quella appena più recente (tipicamente
+$\beta=0{,}9$). Il perché funzioni si vede senza formule. In una valle stretta
+la pendenza ha due parti: quella che attraversa la valle, che a ogni passo
+cambia verso perché si sbatte prima contro una parete e poi contro l'altra, e
+quella che scende lungo la valle, che punta sempre dalla stessa parte. Nella
+somma la prima parte si cancella da sé (una volta è più uno, la volta dopo è
+meno uno) e la seconda si accumula: lungo la valle, dove la pendenza è sempre la
+stessa, il passo diventa $1/(1-\beta)$ volte più lungo, dieci volte con
+$\beta=0{,}9$. Restano meno rimbalzi e più avanzamento, che è appunto quel che
+mostra il disegno.
 
 La sigla del disegno, **SGD**, sta per *stochastic gradient descent*, discesa
 stocastica del gradiente: è la discesa raccontata qui, con l'accorgimento che
-a ogni passo la pendenza non si misura su tutti i dati ma su un pugno di
-esempi presi a caso, il che la rende più sbrigativa e un po’ traballante. È la
-variante che si usa in pratica, e su di essa il momento è quasi sempre
-attivo.
+a ogni passo la pendenza non si misura su tutti i dati ma su un piccolo gruppo
+di esempi estratti a caso, il *mini-batch*. Ogni passo costa molto meno, e in
+cambio la direzione è una stima rumorosa della pendenza vera. È la variante che
+si usa in pratica, e su di essa il momento è quasi sempre attivo.
 
 `````{tab} Elementare
 
 Cammini verso il basso e a ogni passo scegli la direzione di discesa. Quanto
 lungo sia il passo lo decidono due cose insieme: quanto è ripido lì dove sei
-(più ripido, passo più lungo) e una manopola che moltiplica tutto, il
-**learning rate** (tasso di apprendimento). La manopola è la sola che scegli
-tu, ed è
-un compromesso delicato: un passo troppo lungo scavalca il fondo e ti fa
-rimbalzare da una parete all'altra senza mai fermarti; un passo troppo corto
-arriva, ma dopo un'eternità. Trovare la lunghezza giusta è metà del mestiere
-di chi addestra modelli.
+(più ripido, passo più lungo) e una manopola che moltiplica tutto, il **learning
+rate** (tasso di apprendimento). La manopola è la sola che scegli tu, ed è un
+compromesso delicato: un passo troppo lungo scavalca il fondo e ti fa rimbalzare
+da una parete all'altra senza mai fermarti; un passo troppo corto arriva, ma
+dopo un'eternità. La scelta del learning rate è una delle più delicate per chi
+addestra modelli.
 
 `````
 
@@ -507,21 +524,24 @@ conche secondarie in cui restare intrappolati: da qualunque punto si parta si
 scende verso quell'unico fondo, purché il passo non sia troppo lungo. È il caso
 convesso, il più comodo, anche se non sempre il più veloce: in una valle stretta
 e lunga il passo va tenuto corto per non sbattere contro le pareti ripide, e con
-quel passo corto il fondo lungo e quasi piatto si percorre a fatica. La pallina
-con il momento fa meglio perché si porta dietro un po’ dei passi di prima: a
-ogni passo conserva una parte della velocità che aveva (nove decimi, di solito),
-e quello che perde fa da attrito. Di traverso oscilla, ma con l’attrito ogni
-oscillazione si accorcia della stessa frazione della precedente, mentre lungo la
-valle la velocità si accumula; e con l’attrito regolato bene quella frazione è
-la stessa in ogni direzione, dalla più dolce alla più ripida. Due guasti restano
-possibili anche qui. Se lontano dal centro le pareti si impennano sempre di più,
-partire troppo in alto rovina tutto: il passo si allunga dove è più ripido,
-quindi il primo balzo scavalca l'intera conca e atterra sul fianco opposto,
-ancora più su. Da lì il balzo dopo è più lungo ancora, e ogni rimbalzo allontana
-dal fondo. Quanto sia «troppo lungo» un passo, insomma, dipende anche da dove si
-parte. E la discesa deve avere un fondo: una rampa che scende per sempre,
-spianandosi senza mai finire, si percorre in eterno senza arrivare da nessuna
-parte.
+quel passo corto il fondo lungo e quasi piatto si percorre a fatica.
+
+Qui aiuta il momento, cioè la somma pesata delle pendenze vista come una pallina
+che rotola: a ogni passo conserva una parte della velocità che aveva (nove
+decimi, di solito), e quello che perde fa da attrito. Di traverso oscilla, ma
+con l’attrito ogni oscillazione si accorcia della stessa frazione della
+precedente, mentre lungo la valle la velocità si accumula; e con l’attrito
+regolato bene quella frazione è la stessa in ogni direzione, dalla più dolce
+alla più ripida.
+
+Anche in una scodella, però, due guasti restano possibili. Se lontano dal centro
+le pareti si impennano sempre di più, partire troppo in alto rovina tutto: il
+passo si allunga dove è più ripido, quindi il primo balzo scavalca l'intera
+conca e atterra sul fianco opposto, ancora più su. Da lì il balzo dopo è più
+lungo ancora, e ogni rimbalzo allontana dal fondo. Quanto sia «troppo lungo» un
+passo, insomma, dipende anche da dove si parte. E la discesa deve avere un
+fondo: una rampa che scende per sempre, spianandosi senza mai finire, si
+percorre in eterno senza arrivare da nessuna parte.
 
 Se invece il paesaggio è una catena montuosa piena
 di conche, si può finire intrappolati in una conca che non è la più profonda:
@@ -562,15 +582,15 @@ basta $\eta > 1$ perché ogni passo allontani dal minimo, oscillando da un
 fianco all'altro: lì $L=2$, e la soglia $2/L=1$ separa le due righe del
 codice che convergono da quella che scappa.
 
-La velocità la decide la curvatura minima. Se $\mathcal{L}$ è anche
-$\mu$-fortemente convessa, con $\eta=2/(L+\mu)$ la distanza dal minimo si
-contrae a ogni passo del fattore $(\kappa-1)/(\kappa+1)$, con $\kappa=L/\mu$:
-per $\kappa=100$ vale $99/101$, e servono circa $350$ passi per ridurre la
-distanza di un fattore mille. Sulle quadratiche il momento fa meglio, e il
-conto è una {doc}`ricorrenza lineare </Matematica/algebra-lineare>` del secondo
-ordine. Per $\mathcal{L}(\theta) = \tfrac12(\theta-\theta^*)^\top
-\mathbf{H}\,(\theta-\theta^*)$, con gli autovalori di $\mathbf{H}$ in
-$[\mu, L]$, l'aggiornamento $\mathbf{v}\leftarrow\beta\mathbf{v}+\mathbf{g}$,
+La velocità la decide il rapporto fra la curvatura massima e la minima. Se
+$\mathcal{L}$ è anche $\mu$-fortemente convessa, con $\eta=2/(L+\mu)$ la
+distanza dal minimo si contrae a ogni passo del fattore $(\kappa-1)/(\kappa+1)$,
+con $\kappa=L/\mu$: per $\kappa=100$ vale $99/101$, e servono circa $350$ passi
+per ridurre la distanza di un fattore mille. Sulle quadratiche il momento fa
+meglio, e il conto è una {doc}`ricorrenza lineare </Matematica/algebra-lineare>`
+del secondo ordine. Per $\mathcal{L}(\theta) = \tfrac12(\theta-\theta^*)^\top
+\mathbf{H}\,(\theta-\theta^*)$, con gli autovalori di $\mathbf{H}$ in $[\mu,
+L]$, l'aggiornamento $\mathbf{v}\leftarrow\beta\mathbf{v}+\mathbf{g}$,
 $\theta\leftarrow\theta-\eta\,\mathbf{v}$ si separa lungo gli autovettori di
 $\mathbf{H}$: chiamata $u_t$ la componente dell'errore $\theta - \theta^*$ al
 passo $t$ lungo un autovettore di autovalore $\lambda$,
@@ -616,7 +636,7 @@ import numpy as np
 def grad(theta):
     return 2 * (theta - 3)          # derivata della loss
 
-# eta e' il learning rate; theta parte sul fianco della scodella
+# eta è il learning rate; theta parte sul fianco della scodella
 def scendi(eta, theta=-4.0, passi=20):
     for _ in range(passi):
         theta = theta - eta * grad(theta)   # un passo di discesa del gradiente
@@ -628,13 +648,15 @@ print(round(scendi(1.1), 3))        # -> -265.363, il passo lungo scappa via
 ```
 
 Il valore di `eta` decide tutto, e le tre righe lo mostrano. Con `0.1`
-l'avvicinamento al minimo, che in gergo si chiama convergenza, si compie in
-venti passi; con `0.01` rallenta, e dopo gli stessi venti passi $\theta$ è a
-$-1{,}673$, ancora lontano. Con `1.1` invece $\theta$ diverge, cioè scappa
-via anziché avvicinarsi, saltando a ogni passo da una parte all'altra del
-minimo e sempre più lontano: dopo venti passi vale $-265{,}363$. È la stessa
-dinamica, in scala minima, che governa l'addestramento di una rete con miliardi
-di pesi.
+l'avvicinamento al minimo, che in gergo si chiama convergenza, in venti passi
+porta $\theta$ a $2{,}919$; con `0.01` rallenta, e dopo gli stessi venti passi
+$\theta$ è a $-1{,}673$, ancora lontano. Con `1.1` invece $\theta$ diverge, cioè
+scappa via anziché avvicinarsi, saltando a ogni passo da una parte all'altra del
+minimo e sempre più lontano: dopo venti passi vale $-265{,}363$. Vicino a un
+minimo la loss di una rete è approssimata da una quadratica, e la soglia che qui
+separa le due righe che convergono da quella che scappa, $\eta<2/L$ con $L=2$,
+vale anche per una rete con miliardi di pesi, dove $L$ è il massimo autovalore
+dell'hessiana.
 
 La valle stretta si misura allo stesso modo. Il blocco costruisce una scodella
 cento volte più ripida di traverso che per il lungo, conta quanti passi servono
@@ -643,6 +665,7 @@ per avvicinarsi mille volte al fondo, e controlla, su mille pendenze fra la più
 dolce e la più ripida, di quanto si accorciano le oscillazioni a ogni passo.
 
 ```python
+import numpy as np
 # una valle stretta: curvatura 1 lungo la valle e 100 di traverso
 mu, L = 1.0, 100.0
 kappa = L / mu
@@ -704,9 +727,17 @@ volte meno della discesa semplice.
   più è ripido, moltiplicato per una manopola che si chiama learning rate:
   quella è la scelta delicata, perché con la manopola troppo alta si rimbalza da
   una parete all'altra e con quella troppo bassa si arriva dopo un'eternità.
-- La regola della catena moltiplica fra loro le pendenze anello per anello,
-  come ingranaggi che si trascinano: è così che la correzione risale
-  dall'uscita fino ai primi strati (il *backpropagation*).
+- Il logaritmo conta i fattori invece dei soldi: trasforma i prodotti in somme e
+  schiaccia i numeri enormi. L'esponenziale cresce in ogni punto quanto vale, e
+  derivandolo resta com'è. Stanno dentro la sigmoide, la softmax e la
+  cross-entropy.
+- La regola della catena moltiplica fra loro le pendenze anello per anello, come
+  ingranaggi che si trascinano: è così che la correzione risale dall'uscita fino
+  ai primi strati (la *backpropagation*).
+- In pratica la pendenza si misura su un piccolo gruppo di esempi presi a caso
+  (la discesa stocastica, SGD), e il momento somma le ultime pendenze con pesi
+  che calano: i rimbalzi di traverso si cancellano, l'avanzamento lungo la valle
+  si accumula.
 - Il paesaggio di una rete profonda non è una scodella liscia ma una catena
   montuosa: nessuno garantisce che si arrivi al fondo più basso, e in pratica
   una conca abbastanza profonda basta quasi sempre.
@@ -720,18 +751,23 @@ volte meno della discesa semplice.
   poco l'ingresso. È zero nei punti stazionari.
 - Il gradiente $\nabla\mathcal{L}$ è il vettore delle derivate parziali:
   punta verso la massima crescita del costo, e noi andiamo nel verso opposto.
-- La discesa del gradiente aggiorna i parametri con
-  $\theta \leftarrow \theta - \eta\,\nabla\mathcal{L}(\theta)$; il learning
-  rate $\eta$ dosa la lunghezza del passo.
-- La regola della catena propaga le derivate lungo gli strati: è il cuore
-  del *backpropagation*.
+- La discesa del gradiente aggiorna i parametri con $\theta \leftarrow \theta -
+  \eta\,\nabla\mathcal{L}(\theta)$; il learning rate $\eta$ dosa il passo: con
+  un gradiente lipschitziano di costante $L$ e un minimo che esiste, ogni
+  $\eta<2/L$ fa scendere il costo a ogni passo, e oltre quella soglia una
+  quadratica di curvatura $L$ diverge. Su un mini-batch di $b$ esempi il
+  gradiente è uno stimatore non distorto di quello vero, con varianza che cala
+  come $1/b$.
+- La regola della catena propaga le derivate lungo gli strati: è il cuore della
+  *backpropagation*.
 - In deep learning la loss non è convessa, ma un minimo "abbastanza buono"
   basta quasi sempre.
 ```
 `````
 
-Derivate, gradiente e lunghezza del passo bastano a trovare il fondo di un
-paesaggio che si conosce. Il costo di un modello, però, si calcola su dati che
-sono un campione del mondo, e le sue risposte sono scommesse: per dire quanto
-fidarsi di entrambi serve il linguaggio della {doc}`probabilità
-<probabilita-statistica>`.
+Derivate, gradiente e lunghezza del passo bastano a scendere in un paesaggio che
+si conosce e, sotto ipotesi precise, a fermarsi in un punto stazionario. Il
+costo di un modello, però, si calcola su esempi che sono un campione del mondo:
+il gradiente di un mini-batch è già una media campionaria, una stima con il suo
+errore. Per dire quanto fidarsi di quella stima, e del modello che ne esce,
+serve il linguaggio della {doc}`probabilità <probabilita-statistica>`.

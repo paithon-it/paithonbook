@@ -22,7 +22,7 @@ della sezione e URL), non si ridistribuisce il testo.
 ## Fondamenta
 
 - [Introduzione](https://book.paithon.it/main/Introduzione/overview.html): Joseph Weizenbaum era un informatico tedesco emigrato negli Stati Uniti e professore al MIT. Nel 1966 presentò al mondo ELIZA, il capostipite dei chatbot: un programma con cui si poteva conversare…
-  - [Python e l'AI](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
+  - [Il primo programma](https://book.paithon.it/main/Introduzione/massimo_comune_divisore.html)
   - [Che cosa si può calcolare](https://book.paithon.it/main/Introduzione/calcolabile.html)
   - [Robotica e AI](https://book.paithon.it/main/Introduzione/applicazioni.html)
   - [Conclusione](https://book.paithon.it/main/Introduzione/conclusione.html)
@@ -98,13 +98,13 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Deep learning e visione
 
-- [Deep Learning](https://book.paithon.it/main/DeepLearning/overview.html): Nel 1959 due neuroscienziati, David Hubel e Torsten Wiesel , infilarono un sottile elettrodo nella corteccia visiva di un gatto e proiettarono forme luminose davanti ai suoi occhi.
+- [Deep Learning](https://book.paithon.it/main/DeepLearning/overview.html): Un elettrodo sottile, infilato nella corteccia visiva di un gatto, e davanti ai suoi occhi uno schermo su cui si proiettano forme luminose.
   - [Reti convoluzionali (CNN)](https://book.paithon.it/main/DeepLearning/reti-convoluzionali.html)
   - [Far funzionare le reti profonde](https://book.paithon.it/main/DeepLearning/ottimizzazione-regolarizzazione.html)
   - [Architetture storiche](https://book.paithon.it/main/DeepLearning/architetture-storiche.html)
   - [Una rete, molti compiti](https://book.paithon.it/main/DeepLearning/multi-compito.html)
   - [Imparare a imparare](https://book.paithon.it/main/DeepLearning/meta-apprendimento.html)
-- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Nel 1966, al MIT, Seymour Papert affidò a un gruppo di studenti un compito per l'estate: collegare una telecamera a un computer e insegnargli a descrivere quello che vedeva.
+- [Visione artificiale](https://book.paithon.it/main/VisioneArtificiale/overview.html): Un lavoro per l'estate: tanto doveva bastare, secondo il piano che Seymour Papert scrisse al MIT nel 1966, il Summer Vision Project, perché un gruppo di studenti costruisse un sistema capace di…
   - [Classificazione e transfer learning](https://book.paithon.it/main/VisioneArtificiale/classificazione-transfer.html)
   - [Data augmentation](https://book.paithon.it/main/VisioneArtificiale/data-augmentation.html)
   - [Imparare senza etichette](https://book.paithon.it/main/VisioneArtificiale/senza-etichette.html)
@@ -115,7 +115,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Apprendimento per rinforzo
 
-- [Ricerca e pianificazione](https://book.paithon.it/main/Ricerca/overview.html): Una cassa di ingranaggi e contatti elettrici, in una sala di Parigi, gioca a scacchi da sola davanti al pubblico.
+- [Ricerca e pianificazione](https://book.paithon.it/main/Ricerca/overview.html): Una cassa di ingranaggi e contatti elettrici, in una sala di Parigi, nel 1914, gioca a scacchi da sola davanti al pubblico.
   - [Esplorare lo spazio](https://book.paithon.it/main/Ricerca/esplorare-lo-spazio.html)
   - [Giocare contro qualcuno](https://book.paithon.it/main/Ricerca/giocare-contro-qualcuno.html)
   - [Le tre cose date per scontate](https://book.paithon.it/main/Ricerca/quando-il-mondo-non-si-conosce.html)
@@ -137,7 +137,7 @@ della sezione e URL), non si ridistribuisce il testo.
 
 ## Linguaggio e sequenze
 
-- [Natural Language Processing](https://book.paithon.it/main/NaturalLanguageProcessing/overview.html): Nel 1954 un gruppo di ricercatori di IBM e della Georgetown University annunciò al mondo una traduzione automatica dal russo all'inglese: sessanta frasi, tradotte da un calcolatore, davanti alla…
+- [Natural Language Processing](https://book.paithon.it/main/NaturalLanguageProcessing/overview.html): Duecentocinquanta voci di vocabolario, fra radici e desinenze, e sei regole di grammatica: con questo un calcolatore tradusse dal russo all'inglese, davanti alla stampa, più di sessanta frasi.
   - [La cassetta degli attrezzi](https://book.paithon.it/main/NaturalLanguageProcessing/strumenti-classici.html)
   - [Rappresentare il testo](https://book.paithon.it/main/NaturalLanguageProcessing/rappresentare-testo.html)
   - [Come si spezza il testo](https://book.paithon.it/main/NaturalLanguageProcessing/tokenizzatori.html)
@@ -149,7 +149,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [POS tagging ed entità](https://book.paithon.it/main/NaturalLanguageProcessing/etichettare-sequenze.html)
   - [Sintassi e parsing](https://book.paithon.it/main/NaturalLanguageProcessing/struttura-frase.html)
   - [Dialogo e chatbot](https://book.paithon.it/main/NaturalLanguageProcessing/dialogo-chatbot.html)
-- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google Research, pubblicano un paper (un articolo scientifico: il modo in cui chi fa ricerca racconta agli altri quello che ha…
+- [Transformer](https://book.paithon.it/main/Transformers/overview.html): Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google Research, pubblicano un articolo dal titolo che suona come una battuta: Attention Is All You Need («l'attenzione è tutto…
   - [Il meccanismo di attenzione](https://book.paithon.it/main/Transformers/attenzione.html)
   - [La struttura del Transformer](https://book.paithon.it/main/Transformers/architettura.html)
   - [Confronto coi modelli precedenti](https://book.paithon.it/main/Transformers/confronti.html)
@@ -186,7 +186,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [RAG avanzato](https://book.paithon.it/main/Agenti/rag-avanzato.html)
   - [Il contesto è l'interfaccia](https://book.paithon.it/main/Agenti/context-engineering.html)
   - [Architetture e valutazione](https://book.paithon.it/main/Agenti/architetture-e-valutazione.html)
-- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo dell'intelligenza artificiale in Tesla) ha dato credito a un nome appena proposto per un mestiere che esisteva già.
+- [Prompt, contesto e loop](https://book.paithon.it/main/IngegneriaLLM/overview.html): Nel giugno 2025 Andrej Karpathy (tra i fondatori di OpenAI, per anni a capo dell'intelligenza artificiale in Tesla) ha dato il suo appoggio a un nome appena proposto per un mestiere che esisteva già.
   - [Prompt engineering](https://book.paithon.it/main/IngegneriaLLM/prompt-engineering.html)
   - [Context engineering](https://book.paithon.it/main/IngegneriaLLM/context-engineering.html)
   - [Loop engineering](https://book.paithon.it/main/IngegneriaLLM/loop-engineering.html)
@@ -215,7 +215,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Comprimere e ricostruire](https://book.paithon.it/main/ModelliLatenti/comprimere-e-ricostruire.html)
   - [ELBO e riparametrizzazione](https://book.paithon.it/main/ModelliLatenti/il-salto-probabilistico.html)
   - [Il latente che si usa](https://book.paithon.it/main/ModelliLatenti/il-latente-che-si-usa.html)
-- [GAN](https://book.paithon.it/main/GAN/overview.html): L'idea delle GAN è nata, dice la leggenda (perché ormai è una leggenda), in un bar di Montréal, «Les 3 Brasseurs», nel 2014.
+- [GAN](https://book.paithon.it/main/GAN/overview.html): L'idea delle GAN nasce in un bar di Montréal, «Les 3 Brasseurs», una sera del 2014, e a raccontarla è stato lo stesso Ian Goodfellow .
   - [L'addestramento avversario](https://book.paithon.it/main/GAN/come-funziona.html)
   - [Evoluzioni e applicazioni](https://book.paithon.it/main/GAN/applicazioni-evoluzioni.html)
 - [Modelli di diffusione](https://book.paithon.it/main/ModelliDiffusione/overview.html): Versa una goccia d'inchiostro in un bicchiere d'acqua e guarda. Prima un filamento scuro, poi volute sempre più sottili, e in pochi minuti l'acqua è tutta di un azzurro pallido e uniforme.
@@ -238,7 +238,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Oltre la partizione](https://book.paithon.it/main/ModelliEnergia/oltre-la-partizione.html)
   - [Energia come compatibilità](https://book.paithon.it/main/ModelliEnergia/energia-come-compatibilita.html)
   - [Paesaggi di oggi](https://book.paithon.it/main/ModelliEnergia/paesaggi-di-oggi.html)
-- [Auto-supervisione](https://book.paithon.it/main/AutoSupervisione/overview.html): Nel 1953 Wilson Taylor, che studiava giornalismo e non calcolatori, aveva un problema pratico: misurare quanto un testo sia facile da leggere.
+- [Auto-supervisione](https://book.paithon.it/main/AutoSupervisione/overview.html): Wilson Taylor studiava giornalismo, non calcolatori, e nel 1953 aveva un problema pratico: misurare quanto un testo sia facile da leggere.
   - [Le quattro famiglie](https://book.paithon.it/main/AutoSupervisione/famiglie.html)
   - [Collasso e misura](https://book.paithon.it/main/AutoSupervisione/collasso-e-misura.html)
   - [Capire è accorciare](https://book.paithon.it/main/AutoSupervisione/capire-e-accorciare.html)
@@ -256,10 +256,10 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Message passing](https://book.paithon.it/main/GraphNeuralNetwork/message-passing.html)
   - [I knowledge graph](https://book.paithon.it/main/GraphNeuralNetwork/knowledge-graph.html)
   - [GraphSAGE, GAT e applicazioni](https://book.paithon.it/main/GraphNeuralNetwork/architetture-applicazioni.html)
-- [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Il 2 ottobre 2006 Netflix, che allora campava spedendo DVD per posta, mette in palio un milione di dollari. Li prende chi riesce a migliorare del 10% il suo sistema di raccomandazione, Cinematch.
+- [Sistemi di raccomandazione](https://book.paithon.it/main/SistemiRaccomandazione/overview.html): Un milione di dollari a chi riesce a migliorare del 10% Cinematch, il sistema di raccomandazione di Netflix: è il premio che l'azienda, che allora campava spedendo DVD per posta, mette in palio il 2…
   - [Il filtraggio collaborativo](https://book.paithon.it/main/SistemiRaccomandazione/filtraggio-collaborativo.html)
   - [La raccomandazione neurale](https://book.paithon.it/main/SistemiRaccomandazione/raccomandazione-neurale.html)
-- [Serie temporali](https://book.paithon.it/main/SerieTemporali/overview.html): Negli anni Settanta dell'Ottocento William Thomson, professore a Glasgow (il mondo lo avrebbe conosciuto come Lord Kelvin), fece costruire a Londra una macchina di ottone, corde e pulegge che…
+- [Serie temporali](https://book.paithon.it/main/SerieTemporali/overview.html): Una macchina di ottone, corde e pulegge che prevedeva le maree: la fece costruire a Londra, negli anni Settanta dell'Ottocento, William Thomson, professore a Glasgow (il mondo lo avrebbe conosciuto…
   - [Componenti e modelli classici](https://book.paithon.it/main/SerieTemporali/componenti-e-classici.html)
   - [Validazione e feature](https://book.paithon.it/main/SerieTemporali/validazione-e-feature.html)
   - [Forecasting neurale](https://book.paithon.it/main/SerieTemporali/forecasting-neurale.html)
@@ -284,7 +284,7 @@ della sezione e URL), non si ridistribuisce il testo.
   - [Modelli trasparenti](https://book.paithon.it/main/Interpretabilita/modelli-trasparenti-e-importanza.html)
   - [Spiegazioni locali](https://book.paithon.it/main/Interpretabilita/spiegazioni-locali.html)
   - [Attribuzione e meccanicistica](https://book.paithon.it/main/Interpretabilita/attribuzione-e-meccanicistica.html)
-- [AI responsabile](https://book.paithon.it/main/AIResponsabile/overview.html): Nel maggio del 2016 la redazione investigativa di ProPublica pubblica un'inchiesta destinata a diventare un caso di scuola .
+- [AI responsabile](https://book.paithon.it/main/AIResponsabile/overview.html): C'è un software venduto ai tribunali statunitensi, COMPAS, che assegna a ogni imputato un punteggio di rischio: la probabilità, stimata da un algoritmo, che quella persona torni a delinquere.
   - [Equità e bias](https://book.paithon.it/main/AIResponsabile/equita-e-bias.html)
   - [Privacy e robustezza](https://book.paithon.it/main/AIResponsabile/privacy-e-robustezza.html)
   - [Attaccare e difendere un LLM](https://book.paithon.it/main/AIResponsabile/sicurezza-llm.html)

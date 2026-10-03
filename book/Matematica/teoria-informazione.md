@@ -1,23 +1,20 @@
 # Teoria dell'informazione: misurare la sorpresa
 
-Nel luglio del 1948, sulla rivista tecnica dei Bell Labs, un ingegnere
-trentaduenne di nome Claude Shannon pubblica un articolo dal titolo
-volutamente sobrio: *A Mathematical Theory of Communication*
-{cite}`shannon1948mathematical`. Dentro c'è un'idea che cambierà il mondo più
-di quanto il titolo lasci intuire: l'informazione si può misurare, con la
-stessa oggettività con cui si misurano metri e chilogrammi. L'unità di misura
-è il **bit**: contrazione di *binary digit*, parola che Shannon attribuisce al
-collega John Tukey e che proprio in quell'articolo compare a stampa per la
-prima volta.
+Nel luglio del 1948, sul *Bell System Technical Journal*, un ingegnere
+trentaduenne dei Bell Labs di nome Claude Shannon pubblica *A Mathematical
+Theory of Communication* {cite}`shannon1948mathematical`. L'articolo definisce
+la quantità di informazione di un messaggio a partire dalla probabilità della
+sorgente che lo produce, e ne fissa l'unità di misura, il **bit**: contrazione
+di *binary digit*, parola che Shannon attribuisce al collega John Tukey e che
+proprio in quell'articolo compare a stampa per la prima volta.
 
-In quell'articolo la grandezza centrale della teoria prende il nome che ha
+Nello stesso articolo la grandezza centrale della teoria prende il nome che ha
 ancora oggi, **entropia**, lo stesso della termodinamica: è il nome
-dell'aneddoto raccontato in apertura di capitolo, quello che von Neumann
-avrebbe suggerito a Shannon. Qui lo riempiamo di contenuto, perché ci riguarda
-da vicino: il punteggio d'errore con cui addestreremo quasi tutti
-i classificatori (cioè i modelli che devono scegliere fra
-alternative: gatto o cane, spam o no) discende in linea diretta da
-quell'articolo del 1948, e si chiama *cross-entropy*.
+dell'aneddoto raccontato nell’{doc}`apertura del capitolo <overview>`, quello
+che von Neumann avrebbe suggerito a Shannon. Dall'entropia e dalla divergenza
+di Kullback e Leibler (1951) si ricava la *cross-entropy*, la funzione di
+errore con cui si addestra la maggior parte dei classificatori, cioè dei
+modelli che scelgono fra alternative (gatto o cane, spam o no).
 
 ## La sorpresa di un evento
 
@@ -51,12 +48,22 @@ non si influenzano a vicenda.
 
 Un dado onesto ha sei facce, e sei sta in mezzo fra quattro e otto: fra $2$ e
 $3$ bit. Il numero esatto è l'esponente che elevando $2$ dà $6$, cioè circa
-$2{,}585$. Attenzione però a che cosa promette. Le domande si contano intere,
-quindi su un tiro solo la strategia migliore ne consuma in media due e due
-terzi, un po’ più di quel numero: due facce si isolano con due domande, le
-altre quattro con tre, e $(2+2+3+3+3+3)/6 = 16/6$; il resto si recupera
-giocando molti tiri insieme e facendo domande che ne riguardano parecchi per
-volta, e allora la media per tiro scende fino a $2{,}585$ e sotto non va. Sono
+$2{,}585$. Un esponente con la virgola sembra non avere senso (moltiplicare il
+due per sé stesso due volte e mezza?), e invece ne ha uno preciso:
+l'elevamento a potenza si estende agli esponenti con la virgola in modo che
+continui a valere la regola di sempre, cioè che sommando gli esponenti si
+moltiplichino i risultati. Con quella regola $2^{0{,}5}$ deve essere il numero
+che moltiplicato per sé stesso dà $2$, cioè $\sqrt 2 \approx 1{,}41$, e
+$2^{2{,}585}$ è il numero fra $2^2 = 4$ e $2^3 = 8$ che fa proprio $6$.
+
+Attenzione però a che cosa promette quel $2{,}585$. Le domande si contano
+intere, quindi su un tiro solo la strategia migliore ne consuma in media due e
+due terzi, un po’ più di quel numero: due facce si isolano con due domande, le
+altre quattro con tre, e $(2+2+3+3+3+3)/6 = 16/6$. Il resto si recupera facendo
+domande su più tiri insieme. Due tiri hanno trentasei esiti, e con le domande
+giuste sulla coppia ventotto esiti si isolano con cinque domande e otto con sei:
+in media $188/36 \approx 5{,}22$ domande, cioè $2{,}61$ per tiro. Allungando la
+partita la media per tiro scende ancora, fino a $2{,}585$, e sotto non va. Sono
 i «2,6 bit» del dado: non il costo di una partita, ma il fondo a cui si arriva
 allungandola.
 
@@ -67,8 +74,8 @@ $1/0{,}9 = 1{,}11$", cioè quasi nessuna domanda, $0{,}15$ bit, e ce lo
 aspettavamo. La croce è "una su $1/0{,}1 = 10$", cioè quanto un dado a dieci
 facce, e vale $3{,}32$ bit: rara, e perciò molto informativa.
 
-Quei due esponenti li dà una calcolatrice, ma controllarli si può a mano,
-andando nel verso facile, cioè elevando il due. Se
+Quei due esponenti li dà una calcolatrice, e si controllano andando nel verso
+facile, cioè elevando il due. Se
 $0{,}15$ è giusto, $2^{0{,}15}$ deve fare $1{,}11$, e infatti fa $1{,}11$. Se
 $3{,}32$ è giusto, $2^{3{,}32}$ deve fare $10$: sta fra $2^3 = 8$ e
 $2^4 = 16$, e viene $9{,}99$.
@@ -165,14 +172,12 @@ delle ragioni per cui è lei l'oggetto su cui si costruisce.
 
 ## Confrontare distribuzioni: cross-entropia e divergenza KL
 
-Fin qui una sola sorgente e una sola tabella di probabilità. Ma nel machine
-learning ce ne sono sempre *due*, e conviene dire di quali si tratta. La prima
-descrive come vanno le cose davvero: quanto spesso, nel mondo, esce ciascuna
-risposta. Nessuno la conosce per intero (con la moneta truccata sì, perché
-l'abbiamo truccata noi; con le foto di gatti no), ma esiste, e la chiamiamo
-$p$. La seconda è quello che il modello crede: le probabilità che assegna
-lui, e che sono sbagliate finché non impara. La chiamiamo $q$. Serve un modo
-per misurare quanto la seconda sbaglia rispetto alla prima.
+Nel machine learning le distribuzioni in gioco sono due. La prima, $p$, è la
+distribuzione vera dei dati, quanto spesso nel mondo esce ciascuna risposta:
+con la moneta truccata la conosciamo, perché l'abbiamo truccata noi; con le
+foto di gatti no. La seconda, $q$, è quella che il modello assegna, e
+differisce da $p$ finché il modello non ha imparato (e in generale anche dopo).
+Serve una misura di quanto $q$ si discosta da $p$.
 
 ```{figure} ../figures/cross-entropy-kl-divergence.svg
 :name: fig-cross-entropia-kl
@@ -192,27 +197,6 @@ e il modello le aveva dato quasi zero: essere colti di sorpresa lì è la cosa
 più cara che possa capitare, ed è per questo che la scritta accanto dice che il
 conto «esplode».
 ```
-
-La distinzione che {numref}`fig-cross-entropia-kl` rende visiva spiega perché
-in pratica si minimizzi la cross-entropia e non la KL. Le due quantità
-differiscono per una sola cosa, la sorpresa media della realtà $p$, che
-dipende dai dati e non da chi li prevede: è la stessa qualunque modello si
-usi. Spingere in basso l'una o l'altra porta quindi esattamente allo stesso
-modello, e la cross-entropia ha il vantaggio di potersi stimare dai soli
-esempi, senza mai scrivere $p$.
-
-A prima vista sembra impossibile, visto che nella definizione la $p$ c'è. Il
-punto è che non serve la tabella completa delle probabilità vere: bastano gli
-esiti veri, uno alla volta. Ogni foto etichettata «gatto» è la realtà che si
-presenta e dice «stavolta è toccato a me», e facendo la media della sorpresa
-del modello su tutte le foto che si hanno, la $p$ entra nel conto da sé, senza
-che nessuno l'abbia mai scritta.
-
-La KL, invece, quella tabella la vorrebbe davvero, perché al suo interno c'è la
-sorpresa media della realtà, che dagli esempi non si ricava. Ed è la ragione
-per cui, dovendo sceglierne una, si minimizza la cross-entropia. È poi la
-situazione in cui ci si trova sempre: gli esempi si hanno, la legge che li ha
-prodotti no.
 
 `````{tab} Elementare
 
@@ -285,9 +269,21 @@ codice tarato sulla distribuzione sbagliata.
 
 `````
 
+La cross-entropia e la divergenza KL, le due misure di
+{numref}`fig-cross-entropia-kl`, differiscono per $H(p)$, l'entropia della
+distribuzione vera, che non dipende dal modello: minimizzare l'una o l'altra
+rispetto ai parametri dà quindi lo stesso modello. La cross-entropia ha in più
+un vantaggio pratico: $H(p,q)=\mathbb{E}_{x\sim p}[-\log q(x)]$ si stima dai
+campioni, con $-\frac1N\sum_{j=1}^{N}\log q(x_j)$ sugli $N$ esempi $x_j$
+estratti da $p$, senza mai scrivere $p$: ogni foto etichettata «gatto» è un
+esito della realtà, e la media della sorpresa del modello sugli esiti fa
+entrare $p$ nel conto da sé. La divergenza KL contiene invece $H(p)$, che dai
+soli esempi non si calcola direttamente. Di solito si hanno gli esempi e non la
+legge che li ha prodotti.
+
 ## Il ponte con l'apprendimento
 
-Ed ecco il motivo per cui l'entropia sta in un libro di machine learning.
+Da qui viene la cross-entropia come funzione di perdita.
 
 `````{tab} Elementare
 
@@ -345,12 +341,14 @@ estrazioni, non perché il processo sia diventato certo.
 Inoltre, sulla
 distribuzione empirica del training set la cross-entropia coincide con la
 log-verosimiglianza negativa media: minimizzarla *è* la stima di massima
-verosimiglianza vista nella sezione su probabilità e statistica. Le tre
+verosimiglianza della {doc}`sezione su probabilità e statistica
+</Matematica/probabilita-statistica>`. Le tre
 prospettive (minimizzare la cross-entropia, avvicinare $q_\theta$ a $p$ nel
 senso della KL, massimizzare la verosimiglianza) sono la stessa operazione. È
-ciò che fa `nn.CrossEntropyLoss`, la loss $\mathcal{L}=-\log \hat{y}_c$ (dove
-$\hat{y}_c$ è la probabilità che il modello assegna alla classe corretta $c$)
-che useremo nei capitoli sulle reti neurali e su PyTorch. Che quella loss esca
+ciò che fa `nn.CrossEntropyLoss`: la loss di un esempio è $\ell=-\log
+\hat{y}_c$ (dove $\hat{y}_c$ è la probabilità che il modello assegna alla
+classe corretta $c$), e $\mathcal{L}$ è la sua media sugli esempi. La useremo
+nei capitoli sulle reti neurali e su PyTorch. Che quella loss esca
 da una distribuzione categorica sull'uscita, e non sia una scelta a sé, lo
 mostra la sezione
 {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`.
@@ -360,21 +358,22 @@ mostra la sezione
 ## Due variabili: entropia condizionata e informazione mutua
 
 Fin qui una variabile alla volta. Nel machine learning le variabili sono
-almeno due, l'ingresso $X$ e l'etichetta $Y$, e la domanda che conta è quanto
-conoscere la prima riduca l'incertezza sulla seconda. L'incertezza che resta
-su $Y$ quando si conosce $X$ è l’**entropia condizionata** $H(Y\mid X)$; la
-differenza fra prima e dopo,
+almeno due, l'ingresso $X$ e l'etichetta $Y$, e interessa quanto conoscere la
+prima riduca, in media, l'incertezza sulla seconda. L’**entropia
+condizionata** $H(Y\mid X)$ è l'incertezza che resta su $Y$ dopo aver
+osservato $X$, mediata sui valori di $X$; la differenza fra prima e dopo,
 
 $$
 I(X;Y) = H(Y) - H(Y\mid X),
 $$
 
-è l’**informazione mutua**, e torna sotto molti nomi: l’*information gain*
+è l’**informazione mutua**. Ricompare con altri nomi: è l’*information gain*
 con cui un {doc}`albero di decisione </MachineLearning/alberi-ensemble>`
-sceglie le domande, l'NMI che confronta due {doc}`raggruppamenti
-</MachineLearning/valutare-un-raggruppamento>`, la quantità che
+sceglie la domanda, è la base dell'NMI (*normalized mutual information*) che
+confronta due {doc}`raggruppamenti
+</MachineLearning/valutare-un-raggruppamento>`, ed è la quantità a cui
 l’{doc}`apprendimento auto-supervisionato </AutoSupervisione/collasso-e-misura>`
-dice di massimizzare.
+lega la propria perdita InfoNCE.
 
 `````{tab} Elementare
 
@@ -511,20 +510,12 @@ aggiunge niente all'entropia: la dice in facce invece che in bit, e le facce
 raddoppiano dove i bit crescono di uno.
 ```
 
-Il salto alla perplessità è una riscrittura, non un concetto nuovo: si torna
-indietro dall'esponente al numero di alternative. Per la moneta equa $2^1 = 2$
-facce, per quella truccata $2^{0{,}47} \approx 1{,}4$, e in
-{numref}`fig-perplessita-righello` sono lo stesso punto letto sui due bordi.
-
-Quel secondo conto merita una riga, perché «due elevato a zero virgola
-quarantasette» non è più «due moltiplicato per sé stesso un certo numero di
-volte»: l'elevamento a potenza si estende agli esponenti con la virgola in
-modo che continui a valere la regola di sempre, cioè che sommando gli
-esponenti si moltiplichino i risultati. Con quella regola $2^{0{,}5}$ deve
-essere il numero che moltiplicato per sé stesso dà $2$, cioè $\sqrt 2 \approx
-1{,}41$; e $2^{0{,}47}$, di pochissimo più piccolo, vale circa $1{,}4$. Non
-esiste un dado con $1{,}4$ facce, e non serve: il numero dice «meno di due
-alternative vere», cioè che quella moneta è poco più che decisa.
+La perplessità è l'esponenziale dell'entropia: riporta l'incertezza al numero
+di alternative equiprobabili che darebbero la stessa entropia. Per la moneta
+equa $2^1 = 2$ facce, per quella truccata $2^{0{,}47} \approx 1{,}4$, e in
+{numref}`fig-perplessita-righello` sono lo stesso punto letto sui due bordi. Un
+valore non intero ha un senso preciso: $2^{0{,}47}\approx1{,}4$, poco meno di
+$2^{0{,}5}\approx1{,}41$, vuol dire meno di due alternative effettive.
 
 `````{tab} Elementare
 
@@ -552,10 +543,14 @@ l'esponenziale dell'entropia nella stessa base del logaritmo. Per la
 distribuzione uniforme su $n$ esiti, $\mathrm{PP} = 2^{\log_2 n} = n$: il
 numero di alternative, appunto. Per le nostre sorgenti:
 $2^{1}=2$ (moneta equa), $2^{\log_2 6}=6$ (dado),
-$2^{0{,}469}\approx 1{,}38$ (moneta truccata). Si minimizza, come l'entropia da
-cui deriva, e il suo pavimento è $1$. Nei modelli di linguaggio si usa
-la perplessità *per parola*, calcolata sulla cross-entropia media del modello
-su un testo di test: la riprende, numeri alla mano, la {doc}`sezione sui
+$2^{0{,}469}\approx 1{,}38$ (moneta truccata). Un modello $q$ valutato su un
+testo $w_1,\dots,w_T$ ha perplessità $\mathrm{PP}=2^{H(p,q)}$, con
+$H(p,q)\approx-\frac1T\sum_{t=1}^{T}\log_2 q(w_t\mid w_{<t})$, cioè
+$\mathrm{PP}=\big(\prod_{t}q(w_t\mid w_{<t})\big)^{-1/T}$: la media geometrica
+degli inversi delle probabilità assegnate alle parole che sono davvero
+occorse. Si minimizza, e il suo pavimento è $1$ (probabilità $1$ a ogni parola
+occorsa). Nei modelli di linguaggio si usa la perplessità *per parola*: la
+riprende, numeri alla mano, la {doc}`sezione sui
 modelli n-gram </NaturalLanguageProcessing/modelli-ngram>`.
 
 `````
@@ -563,21 +558,22 @@ modelli n-gram </NaturalLanguageProcessing/modelli-ngram>`.
 ## Il limite della compressione
 
 Chiudiamo con la conseguenza più concreta del lavoro di Shannon: l'entropia è
-un limite alla compressione. Comprimere un file, come fa un programma tipo
-`zip` o `gzip`, vuol dire riscriverlo più corto in modo da poterlo poi
-ricostruire identico. Shannon dimostrò che quel «più corto» ha un fondo:
-nessun programma, per quanto ingegnoso, può scendere sotto l’**entropia per
-simbolo** del messaggio, cioè sotto la sorpresa media che ogni carattere porta
-con sé. In media, sotto quella soglia non si scende.
+un limite alla compressione. Comprimere un file, come fanno `zip` e `gzip`, vuol
+dire riscriverlo più corto in modo da poterlo ricostruire identico. Shannon
+dimostrò che nessun codice senza perdita può avere, in media, una lunghezza per
+simbolo inferiore all’**entropia per simbolo** (*entropy rate*) della sorgente
+che produce il messaggio,
 
-L'aggettivo «per simbolo» regge tutta l'affermazione, ed è il punto in cui la
-frase detta male diventa falsa. La sorpresa media $H$ calcolata sulle sole
-frequenze delle lettere descrive una sorgente senza memoria, una che
-estrae ogni lettera indipendentemente dalle precedenti. Una lingua non è così:
+$$
+h = \lim_{n\to\infty}\frac{H(X_1,\dots,X_n)}{n},
+$$
+
+cioè la sorpresa media di un simbolo dato tutto ciò che lo precede. Se i
+simboli sono indipendenti, $h$ coincide con la $H$ di un simbolo solo; se c'è
+memoria, $h$ è più piccola, e l'entropia calcolata sulle sole frequenze dei
+simboli (quella *di ordine zero*) sovrastima il limite. Una lingua ha memoria:
 dopo una «q» arriva quasi sempre una «u», dopo «il gatto ne» le continuazioni
-plausibili sono poche. Per una sorgente con memoria il limite vero è più
-basso, ed è la sorpresa media di ogni lettera dato tutto ciò che la
-precede.
+plausibili sono poche.
 
 La differenza si tocca con mano su una sorgente con memoria costruita apposta,
 dove si sa in partenza dove la memoria sta. Si estraggono a caso ventimila
@@ -587,29 +583,28 @@ siccome le parole sono lunghe in media poco più di cinque caratteri, ne produce
 meno di mezzo bit per carattere. Contando invece soltanto quanto è frequente
 ciascuna lettera, senza accorgersi che le lettere arrivano in gruppi
 obbligati, la sorpresa media sale a $3{,}36$ bit a carattere. Passato lo stesso
-testo a `gzip`, il compressore più ordinario che ci sia, il file esce a
-$0{,}80$ bit a carattere, cioè a un quarto di quel presunto limite
+testo a `gzip`, il compressore più ordinario che ci sia, il file esce a circa
+$0{,}8$ bit a carattere, cioè a un quarto di quel presunto limite
 invalicabile. Non ha violato nessun teorema, sta sfruttando la ridondanza fra
 un carattere e il successivo che quel conto ignorava; e resta comunque sopra il
 mezzo bit della sorgente vera, perché un compressore generico quella struttura
 la indovina, non la conosce.
 
-È la stessa quantità che Shannon stimò nel 1951 per l'inglese scritto in circa
-un bit per lettera {cite}`shannon1951prediction`, e va confrontata con i
+L'entropia per simbolo dell'inglese scritto Shannon la stimò nel 1951 in
+circa un bit per lettera {cite}`shannon1951prediction`, e va confrontata con i
 quasi $5$ bit che darebbero ventisei lettere equiprobabili tenendo conto solo
 di quante sono. Uno zip morde bene un testo perché quella ridondanza c'è tutta;
 non morde più niente su un file già compresso, dove è già stata spremuta via.
 
-Comprimere è l'arte del Morse portata al suo limite matematico: scorciatoie a
-ciò che è frequente. E qui si chiude il cerchio con il machine learning, in un
-passaggio da fare per esteso. Un compressore ha bisogno di sapere che cosa è
-frequente, per dare a quello le scorciatoie. Un modello che predice bene sa
-esattamente questo, anzi qualcosa di più: sa che cosa è frequente *proprio
-lì*, dopo le parole appena lette. Chi ha un modello così può scrivere il
-messaggio in un modo diverso e più corto: invece del testo, le sorprese, e
-dove il modello indovina la sorpresa è quasi zero, quindi non c'è quasi niente
-da scrivere. Predire e comprimere, ci dice Shannon, sono in fondo la stessa
-cosa.
+Un compressore assegna codici corti ai simboli frequenti; un modello che
+predice il simbolo successivo dà probabilità più precise, condizionate a ciò
+che è appena stato letto. Con la codifica aritmetica un modello $q$ scrive un
+testo $x_1\dots x_T$ in circa $-\sum_{t=1}^{T}\log_2 q(x_t\mid x_{<t})$ bit,
+cioè $T$ volte la sua cross-entropia per simbolo: dove il modello indovina, la
+sorpresa è quasi zero e non c'è quasi niente da scrivere. Predire bene e
+comprimere bene sono lo stesso problema, e la perdita con cui si addestra un
+modello linguistico è, a meno della base del logaritmo, la lunghezza media per
+simbolo del testo compresso con lui.
 
 ## In pratica, con NumPy
 
@@ -724,8 +719,8 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
   simmetrica, nulla se e solo se $X$ e $Y$ sono indipendenti. Condizionare
   riduce l'entropia in media, non per ogni valore osservato, e lungo una
   catena $X\to Y\to Z$ vale $I(X;Z)\le I(X;Y)$.
-- La perplessità $2^{H}$ traduce l'entropia in "facce del dado": si
-  minimizza come l'entropia, con pavimento $1$, e la ritroveremo nei modelli di
+- La perplessità $2^{H}$ traduce l'entropia in "facce del dado"; quella di un
+  modello si minimizza, con pavimento $1$, e la ritroveremo nei modelli di
   linguaggio.
 - Il limite della compressione senza perdite è l’entropia per simbolo
   (*entropy rate*) $\lim_n H(X_1,\dots,X_n)/n$, non la $H$ di ordine zero
@@ -735,8 +730,8 @@ print(f"{h_zero:.2f}  {gzip_per_carattere:.2f}")
 ```
 `````
 
-Tutto questo conta in bit, e i bit sono anche la materia di cui è fatta la
-memoria del calcolatore. Lì il loro numero è fissato una volta per tutte, e un
-numero reale deve starci dentro comunque: che cosa si perde nel farcelo
+Tutto questo conta in bit. Anche la memoria del calcolatore si conta in bit,
+cioè in cifre binarie, e lì il numero di cifre è fissato una volta per tutte:
+un numero reale deve starci dentro comunque. Che cosa si perde nel farcelo
 entrare, e come si evita che la perdita cresca durante un conto, è l'argomento
 dell’{doc}`analisi numerica <analisi-numerica>`.

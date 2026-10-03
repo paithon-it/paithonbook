@@ -3,33 +3,32 @@
 C'è un gioco da tavolo, *Indovina chi?*, in cui si scopre il personaggio
 misterioso dell'avversario a forza di domande sì/no: «Porta gli occhiali?»,
 «Ha i capelli neri?». Ogni risposta abbatte a metà i sospetti, finché non ne
-resta uno solo. È esattamente così che ragiona un **albero decisionale**: una
+resta uno solo. È così che ragiona un **albero decisionale**: una
 catena di domande sulle caratteristiche di un esempio, ciascuna scelta per
 dividere i casi nel modo più netto possibile, fino a una risposta.
 
-Nelle sezioni precedenti abbiamo incontrato modelli che separano i dati con un
-taglio dritto: la regressione lineare traccia una retta che segue i punti,
-la logistica una retta che li divide. La sezione appena finita quella retta la
-piegava, tenendola una curva sola e liscia; gli alberi fanno la mossa opposta,
-che è spezzarla. Con due sole colonne quel taglio è una
-retta su un foglio; con tre è un piano che taglia in due una scatola; con
-cento è la stessa cosa in uno spazio che non sappiamo disegnare, e il nome
-tecnico, che tornerà nella sezione sulle SVM, è *iperpiano*.
+Nelle sezioni precedenti abbiamo incontrato modelli lineari: la regressione
+lineare traccia una retta che segue i punti, la logistica una retta che li
+divide. Le {doc}`spline e i modelli additivi <curve-al-posto-di-rette>` quella
+retta la piegavano, tenendola una curva sola e liscia; gli alberi fanno la mossa
+opposta, che è spezzarla.
 
-Gli alberi appartengono a
-un'altra famiglia, e sono i re incontrastati di un terreno preciso: i dati in
-tabella, quelli a righe e colonne di un foglio di calcolo, dove ogni
-colonna è una caratteristica di natura diversa (un'età, un reddito, una
-categoria). Su questo terreno gli alberi, e ancora di più i gruppi di alberi
-messi a votare insieme, restano difficili da battere ancora oggi.
+Gli alberi appartengono a un'altra famiglia, e hanno un terreno in cui
+eccellono: i dati in tabella, quelli a righe e colonne di un foglio di calcolo,
+dove ogni colonna è una caratteristica di natura diversa (un'età, un reddito,
+una categoria). Su questo terreno gli alberi, e ancora di più i gruppi di alberi
+messi a votare insieme, restano difficili da battere per le reti neurali sui
+dati di taglia media, dell'ordine dei diecimila esempi
+{cite}`grinsztajn2022why`; fuori da quella scala il confronto resta aperto.
 
-C'è poi una ragione in più per studiarli: sono interpretabili. Un albero
-si può leggere, stampare, seguire domanda per domanda. È la differenza tra un
-modello «scatola bianca» (*white box*), di cui capiamo la logica, e una
-«scatola nera» (*black box*), che dà la risposta
-giusta senza dirci perché (una grande rete neurale, il modello dei prossimi
-capitoli, è il caso tipico). Quando la decisione conta (un prestito negato, una
-diagnosi), poter spiegare il *perché* non è un lusso.
+C'è poi una ragione in più per studiarli: un albero poco profondo è
+interpretabile. Lo si può leggere, stampare, seguire domanda per domanda: è un
+modello trasparente (*white box*), al contrario di una scatola nera (*black
+box*) che dà la risposta senza dire perché (una grande rete neurale, il modello
+dei prossimi capitoli, è il caso tipico). Quando la decisione conta (un prestito
+negato, una diagnosi), poter spiegare il *perché* è un requisito. La trasparenza
+ha però un limite di taglia: un albero di migliaia di foglie non si legge più, e
+una foresta di centinaia di alberi non si legge affatto.
 
 ## L'albero decisionale: dividere per domande
 
@@ -42,12 +41,11 @@ due gruppi che ne risultano.
 L'albero è fatto di **nodi**, e ogni nodo è una domanda: si parte da quello in
 cima (la **radice**), si scende a destra o a sinistra secondo la risposta, e si
 finisce in un nodo che non ha più domande sotto di sé (una **foglia**), dove
-sta la risposta finale. Sì, a testa in giù: gli alberi dell'informatica si
-disegnano con la radice in alto e le foglie in basso, e conviene farci
-l'abitudine perché è la convenzione di tutti. Che poi la stessa procedura si
-applichi identica a ogni sottogruppo che si forma, all'infinito finché c'è
-qualcosa da dividere, è ciò che si intende dicendo che l'albero si costruisce
-ricorsivamente.
+sta la risposta finale. Sì, a testa in giù: in informatica gli alberi si
+disegnano con la radice in alto e le foglie in basso, per convenzione. Che poi
+la stessa procedura si applichi identica a ogni sottogruppo che si forma,
+all'infinito finché c'è qualcosa da dividere, è ciò che si intende dicendo che
+l'albero si costruisce ricorsivamente.
 
 Ogni domanda è una soglia su una caratteristica: «reddito < 25 000 €?», «età <
 30?». Una risposta manda l'esempio a sinistra, l'altra a destra, e un taglio
@@ -107,9 +105,10 @@ $$
 $$
 
 Il proprietario ora divide i biglietti in due barattoli, secondo la domanda «ha
-visitato il sito almeno 3 volte?». Nel barattolo dei «sì» finiscono 4
-biglietti, e sono 4 acquirenti; in quello dei «no» ne finiscono 6, e uno solo
-ha comprato.
+visitato il sito almeno 3 volte?». Nel barattolo dei «sì», chi ha visitato il
+sito almeno 3 volte, finiscono 4 biglietti, e sono tutti e 4 acquirenti; in
+quello dei «no» ne finiscono 6, e uno solo ha comprato. (Il «padre» nei conti è
+il barattolo di partenza, prima della divisione.)
 
 $$
 \begin{aligned}
@@ -163,9 +162,9 @@ $$
 
 dove $K$ è il numero di classi. Entrambe valgono $0$ su un nodo puro ($p_k = 1$
 per una sola classe) e sono massime sulla distribuzione uniforme. La qualità di
-uno split che manda una frazione $w_L$ degli esempi nel figlio sinistro e $w_R
-= 1 - w_L$ nel destro si misura con l’**information gain**, la riduzione attesa
-di impurità:
+uno split che manda una frazione $w_L$ degli esempi nel figlio sinistro e $w_R =
+1 - w_L$ nel destro si misura con la **riduzione di impurità** (con l'entropia
+si chiama *information gain*):
 
 $$
 \Delta = I_\text{padre} - \big(w_L\, I_L + w_R\, I_R\big) ,
@@ -175,6 +174,15 @@ dove $I$ è l'impurità scelta (Gini o entropia) e $w_L, w_R$ pesano i figli per
 la loro numerosità. CART sceglie, tra tutte le coppie (caratteristica, soglia),
 quella che massimizza $\Delta$, e procede in modo ricorsivo e *greedy*: nessun
 passo indietro, ogni split è ottimo solo localmente.
+
+Perché non usare direttamente l'errore di classificazione $1 - \max_k p_k$?
+Perché non è strettamente concavo, e non distingue split che Gini ed entropia
+distinguono: da un padre con $(400, 400)$ esempi, gli split $(300,100) +
+(100,300)$ e $(200,400) + (200,0)$ hanno lo stesso errore, $0{,}25$, ma Gini
+($0{,}375$ contro $0{,}333$) ed entropia ($0{,}811$ contro $0{,}689$ bit)
+preferiscono il secondo, che ha un figlio puro e lascia più spazio agli split
+successivi {cite}`hastie2009elements`. E il procedimento è greedy per necessità:
+trovare l'albero binario ottimo è NP-completo {cite}`hyafil1976constructing`.
 
 Un esempio numerico con l’entropia. Una domanda sì/no divide dieci esempi,
 cinque per classe, in un figlio «sì» di quattro tutti della stessa classe e in
@@ -190,11 +198,11 @@ $$
 
 L'entropia media dopo lo split è $\tfrac{4}{10}\cdot 0 + \tfrac{6}{10}\cdot
 0{,}650 = 0{,}390$ bit, e l'information gain vale $1 - 0{,}390 = 0{,}610$ bit.
-Fra Gini ed entropia l'accuratezza finale cambia raramente, e la scelta si fa
-di solito per altro: gli alberi che ne escono, però, sono tutt'altro che
-uguali, e senza un tetto di profondità arrivano a dissentire su un esempio su
-cinque. Gini è un po’ più veloce (niente logaritmi) ed è la scelta di default
-in scikit-learn.
+Fra Gini ed entropia l'accuratezza finale cambia raramente, e la scelta si fa di
+solito per altro: gli alberi che ne escono, però, non coincidono, e senza un
+tetto di profondità, su dati rumorosi, possono dissentire su una parte non
+piccola degli esempi. Gini è un po’ più veloce (niente logaritmi) ed è la scelta
+di default in scikit-learn.
 
 `````
 
@@ -212,22 +220,23 @@ vicini alla loro media, e la misura è quella già usata per la retta di best fi
 medio). Il risultato non è una retta ma una funzione «a scalini», costante su
 ogni rettangolo.
 
-## Il tallone d'Achille: un albero è ballerino
+## Il tallone d'Achille: un albero è instabile
 
 Un albero lasciato crescere senza freni continua a dividere finché ogni foglia
 è pura, cioè finché dentro non c'è più di una classe: a quel punto classifica
-alla perfezione i dati di addestramento, e generalizza malissimo. Qualche
-foglia finisce con un esempio solo, ma non è la regola: quello che ferma la
-crescita è la purezza. È l’overfitting della sezione su
-overfitting e validazione, nella sua forma più estrema.
+alla perfezione i dati di addestramento, e fra l'errore di addestramento e
+quello di test si apre un divario grande. Qualche foglia finisce con un esempio
+solo, ma non è la regola: quello che ferma la crescita è la purezza. È
+l'overfitting della {doc}`sezione su overfitting e validazione
+<overfitting-validazione>`, nella sua forma più estrema.
 
 `````{tab} Elementare
 
-Un albero profondo è come lo studente che impara a memoria: costruisce una
-domanda su misura per ogni singolo esempio, rumore compreso. Il problema è che
-è anche instabile. Cambia appena qualche dato di addestramento (togline
-dieci, aggiungine altri dieci) e l'albero può risultare completamente diverso:
-uno split scelto in cima cambia, e tutto ciò che ci sta sotto cambia con lui.
+Un albero profondo è come lo studente che impara a memoria: costruisce domande
+su misura anche per i singoli esempi, rumore compreso. Il problema è che è anche
+instabile. Cambia appena qualche dato di addestramento (togline dieci,
+aggiungine altri dieci) e l'albero può risultare completamente diverso: uno
+split scelto in cima cambia, e tutto ciò che ci sta sotto cambia con lui.
 
 Nella sezione sul compromesso bias-varianza avevamo dato un nome a questa
 irrequietezza: si chiama varianza. Un singolo albero profondo ha bias basso
@@ -297,10 +306,10 @@ di votanti ne servono centosessanta, e serve per giunta una condizione che il
 disegno non può mostrare.
 ```
 
-La condizione nascosta in {numref}`fig-voto-di-maggioranza` è quella che tutto
-il resto della sezione cerca di ottenere. Se i cinque modelli sbagliassero
-sugli stessi esempi e nello stesso modo, la media non correggerebbe niente:
-riprodurrebbe l'errore comune con più sicurezza di prima.
+La condizione nascosta in {numref}`fig-voto-di-maggioranza` è l'indipendenza
+degli errori. Se i cinque modelli sbagliassero sugli stessi esempi e nello
+stesso modo, la media non correggerebbe niente: riprodurrebbe l'errore comune
+con più sicurezza di prima.
 
 Ci sono due strategie profondamente diverse per farlo, e vanno tenute distinte
 fin da subito ({numref}`fig-bagging-vs-boosting`): il **bagging**
@@ -322,19 +331,22 @@ sommati con pesi.
 ### Bagging: mediare per ridurre la varianza
 
 Il bagging (da *bootstrap aggregating*, proposto da Breiman nel 1996
-{cite}`breiman1996bagging`) attacca direttamente il problema della varianza
-degli alberi. Il trucco è generare tanti dataset di addestramento leggermente
-diversi a partire da uno solo, e su ciascuno addestrare un albero.
+{cite}`breiman1996bagging`) attacca direttamente la varianza degli alberi. Da un
+training set di $m$ esempi estrae $B$ **campioni bootstrap**, ciascuno di $m$
+esempi presi a caso *con reimmissione* (lo stesso esempio può uscire più volte,
+e altri non uscire affatto), addestra un albero su ciascuno e ne fa votare le
+predizioni, o ne fa la media in regressione. Lo stesso ricampionamento, usato
+per misurare quanto è incerta una stima, è il tema della sezione sul
+{doc}`bootstrap <il-bootstrap>`.
 
 `````{tab} Elementare
 
-Come si ottengono dataset diversi avendone uno solo? Con il **bootstrap**: si
-pesca a caso dal mucchio degli esempi, *rimettendo* ogni volta dentro quello
-appena pescato. È come pescare da un mazzo di carte guardando la carta e
-rimettendola nel mazzo prima di pescare di nuovo: nella nuova mano qualche
-carta capiterà due o tre volte e qualche altra non uscirà affatto. Ogni
-campione così ottenuto è una versione un po’ storta dell'originale, e ogni
-volta storta in modo diverso.
+Come si ottengono dataset diversi avendone uno solo? Con il bootstrap: si pesca
+a caso dal mucchio degli esempi, *rimettendo* ogni volta dentro quello appena
+pescato. È come pescare da un mazzo di carte guardando la carta e rimettendola
+nel mazzo prima di pescare di nuovo: nella nuova mano qualche carta capiterà due
+o tre volte e qualche altra non uscirà affatto. Ogni campione così ottenuto è
+una versione un po’ storta dell'originale, e ogni volta storta in modo diverso.
 
 Su ognuno di questi campioni si addestra un albero. Ne escono, poniamo, 100
 alberi tutti diversi. Per classificare un esempio nuovo, li si interpella tutti
@@ -370,24 +382,32 @@ $$
 dove $\sigma^2$ è la varianza del singolo modello e $\rho$ la correlazione tra
 due modelli distinti. Il secondo termine svanisce all'aumentare di $B$: con
 molti alberi resta solo $\rho\,\sigma^2$. La media riduce dunque la varianza
-tanto più quanto i modelli sono decorrelati (cioè quanto $\rho$ è
-piccolo). Qui sta il limite del bagging puro: alberi addestrati su campioni
-bootstrap dello stesso dataset restano abbastanza correlati; se una
-caratteristica è molto predittiva, quasi tutti gli alberi la scelgono in cima
-e finiscono per somigliarsi. È il collo di bottiglia che la foresta casuale
-rimuove.
+tanto più quanto i modelli sono decorrelati (cioè quanto $\rho$ è piccolo). Qui
+sta il limite del bagging puro: alberi addestrati su campioni bootstrap dello
+stesso dataset restano abbastanza correlati; se una caratteristica è molto
+predittiva, quasi tutti gli alberi la scelgono in cima e finiscono per
+somigliarsi. È il collo di bottiglia che la foresta casuale rimuove.
+
+La formula dice quanto si guadagna, non che non si possa perdere. Per la perdita
+quadratica non si perde: detto $\varphi(\mathbf{x}) =
+\mathbb{E}_{\mathcal{D}}[\hat f(\mathbf{x})]$ il predittore aggregato ideale, la
+disuguaglianza di Jensen dà $\mathbb{E}_{\mathcal{D}}\bigl[(y - \hat
+f(\mathbf{x}))^2\bigr] \ge (y - \varphi(\mathbf{x}))^2$, e la differenza è la
+varianza di $\hat f(\mathbf{x})$. Per la perdita 0-1 la garanzia non c'è: dove
+un classificatore sbaglia più spesso di quanto azzecchi, il voto lo fa sbagliare
+sempre, e aggregare un classificatore cattivo lo peggiora
+{cite}`hastie2009elements`. Il voto di maggioranza amplifica: migliora i votanti
+sopra il $50\%$, peggiora quelli sotto.
 
 `````
 
 ## Random Forest: decorrelare gli alberi
 
-Il bagging ha un limite, e conviene vederlo prima del rimedio. Mediare tante
-risposte funziona solo se quelle risposte sbagliano in modi diversi: se
-tutti gli alberi sbagliano nello stesso punto e nello stesso verso, la media
-non corregge niente, ripete l'errore. E gli alberi di un bagging tendono
-proprio a somigliarsi, perché sono cresciuti sugli stessi dati: se una colonna
-è nettamente la più informativa, ognuno la sceglierà come prima domanda, e da
-lì in poi le loro strade saranno parenti strette.
+Il bagging ha un limite: la varianza che resta dipende da quanto gli alberi si
+somigliano, e gli alberi di un bagging tendono proprio a somigliarsi, perché
+sono cresciuti sugli stessi dati: se una colonna è nettamente la più
+informativa, ognuno la sceglierà come prima domanda, e da lì in poi le loro
+strade saranno parenti strette.
 
 La **foresta casuale** (*random forest*), sempre di Breiman, nel 2001
 {cite}`breiman2001random`, aggiunge al bagging una seconda dose di casualità
@@ -398,19 +418,19 @@ mirata proprio a rompere quella somiglianza.
 :alt: "Quattro alberi di decisione affiancati sotto l'intestazione «stesso input, alberi diversi»; sotto ciascuno il suo voto, tre volte A e una volta B, e le quattro linee confluiscono in «maggioranza: A, tre voti contro uno». In fondo la riga «ogni albero vede dati e feature diversi: gli errori individuali si compensano nel voto»."
 :width: 96%
 
-La foresta al lavoro. La diversità è costruita
-apposta, con due sorteggi, uno sugli esempi dati a ciascun albero e uno sulle
-colonne che ciascun albero può guardare.
+La foresta al lavoro. La diversità è costruita apposta, con due sorteggi, uno
+sugli esempi dati a ciascun albero e uno sulle colonne fra cui ogni nodo sceglie
+la sua domanda.
 ```
 
-Il primo dei due sorteggi è il bootstrap, che c'era già nel bagging. Il
-secondo, quello sulle colonne, non era inedito: sorteggiarle una volta per
-albero è di Tin Kam Ho, nel 1998 {cite}`ho1998random`, ripetere il sorteggio a
-ogni nodo è di Amit e Geman, nel 1997 {cite}`amit1997shape`, ed è questa
-seconda forma che la foresta casuale adotta. Togliendo a
-turno a ciascun albero la colonna più ovvia, li si costringe a scoprire strade
-diverse. Il contributo di Breiman è la combinazione, e la teoria che spiega
-perché funziona.
+Il primo dei due sorteggi è il bootstrap, che c'era già nel bagging. Il secondo,
+quello sulle colonne, non era inedito: sorteggiarle una volta per albero è di
+Tin Kam Ho, nel 1998 {cite}`ho1998random`, ripetere il sorteggio a ogni nodo è
+di Amit e Geman, nel 1997 {cite}`amit1997shape`, ed è questa seconda forma che
+la foresta casuale adotta. Nei nodi in cui la colonna più informativa non è fra
+quelle sorteggiate, l'albero deve scegliere un'altra domanda, e gli alberi
+imboccano strade diverse. Il contributo di Breiman è la combinazione, e la
+teoria che spiega perché funziona.
 
 `````{tab} Elementare
 
@@ -422,11 +442,12 @@ quadrata di quante sono: con cento colonne, dieci per volta. È un punto di
 partenza da tarare, non una risposta. Se la caratteristica dominante non è tra
 quelle proposte, l'albero è costretto a guardare altrove.
 
-È come chiedere a una giuria di esperti di votare, ma bendando ogni giurato su
-aspetti diversi del caso: nessuno può basarsi sempre sull'indizio più ovvio, e i
-loro pareri si somigliano molto meno. Alberi più diversi tra loro, media
-più efficace, varianza ancora più bassa. Il singolo albero diventa un po’ meno
-bravo (gli abbiamo nascosto delle carte), ma l'insieme diventa molto più forte.
+È come chiedere a una giuria di votare, ma a ogni domanda che un giurato si pone
+lo si benda su aspetti diversi del caso, scelti a sorte: nessuno può basarsi
+sempre sull'indizio più ovvio, e i loro pareri si somigliano molto meno. Alberi
+più diversi tra loro, media più efficace, varianza ancora più bassa. Il singolo
+albero diventa un po’ meno bravo (gli abbiamo nascosto delle carte), ma
+l'insieme diventa molto più forte.
 
 Le bende, però, vanno chieste, e non sempre arrivano da sole: le librerie le
 mettono di serie quando la risposta è una categoria, e non quando è un numero.
@@ -441,28 +462,27 @@ A ogni nodo, la ricerca dello split migliore è ristretta a un sottoinsieme
 casuale di $q$ caratteristiche estratte dalle $d$ totali, dove $d$ è il numero
 di colonne della tabella e il sorteggio si ripete a ogni nodo. La convenzione
 più diffusa è $q = \sqrt{d}$ per la classificazione e $q = d/3$ per la
-regressione, ed è una convenzione da tarare più che una risposta: Breiman
-stesso osserva che il risultato è poco sensibile a quel numero, e in
-scikit-learn è anche una convenzione e non un default, perché
-`RandomForestClassifier` estrae davvero $\sqrt{d}$ colonne, ma
-`RandomForestRegressor` ha `max_features=1.0`, cioè le guarda tutte. Chi scrive
-`RandomForestRegressor()` e basta ottiene quindi un bagging di alberi, senza il
-secondo sorteggio che distingue la foresta dal bagging; se lo vuole, deve
-chiederlo (`max_features="sqrt"`, oppure `1/3`). Il vincolo sulle colonne
-abbassa la correlazione $\rho$ tra gli alberi: nella formula della varianza
-della media, è esattamente la leva che fa scendere il termine dominante
-$\rho\,\sigma^2$. Si accetta un lieve aumento del bias e della varianza del
-singolo albero in cambio di una riduzione netta della varianza dell'ensemble.
-Per la classificazione Breiman dà a questa leva un teorema
-{cite}`breiman2001random`: detta $s$ la *forza* della foresta, cioè il margine
-atteso con cui il voto sceglie la classe giusta, e $\bar{\rho}$ la correlazione
-media fra i margini dei singoli alberi, l'errore di generalizzazione soddisfa
-$PE^\star \le \bar{\rho}\,(1-s^2)/s^2$. Il limite è largo, ma dice in che verso
-muovere il numero di colonne sorteggiate: abbassarlo fa calare $\bar{\rho}$ e,
-oltre un certo punto, anche $s$. Una variante ancora più aggressiva, gli
-**Extra-Trees** (*Extremely Randomized Trees*), estrae a caso anche le soglie
-di split invece di ottimizzarle, guadagnando velocità e ulteriore
-decorrelazione.
+regressione, ed è una convenzione da tarare più che una risposta: Breiman stesso
+osserva che il risultato è poco sensibile a quel numero. In scikit-learn il
+default segue la convenzione per la classificazione (`RandomForestClassifier`
+estrae $\sqrt{d}$ colonne) e non per la regressione: `RandomForestRegressor` ha
+`max_features=1.0`, cioè le guarda tutte. Chi scrive `RandomForestRegressor()` e
+basta ottiene quindi un bagging di alberi, senza il secondo sorteggio che
+distingue la foresta dal bagging; se lo vuole, deve chiederlo
+(`max_features="sqrt"`, oppure `1/3`). Il vincolo sulle colonne abbassa la
+correlazione $\rho$ tra gli alberi: nella formula della varianza della media, è
+esattamente la leva che fa scendere il termine dominante $\rho\,\sigma^2$. Si
+accetta un lieve aumento del bias e della varianza del singolo albero in cambio
+di una riduzione netta della varianza dell'ensemble. Per la classificazione
+Breiman dà a questa leva un teorema {cite}`breiman2001random`: detta $s$ la
+*forza* della foresta, cioè il margine atteso con cui il voto sceglie la classe
+giusta, e $\bar{\rho}$ la correlazione media fra i margini dei singoli alberi,
+l'errore di generalizzazione soddisfa $PE^\star \le \bar{\rho}\,(1-s^2)/s^2$. Il
+limite è largo, ma dice in che verso muovere il numero di colonne sorteggiate:
+abbassarlo fa calare $\bar{\rho}$ e, oltre un certo punto, anche $s$. Una
+variante ancora più aggressiva, gli **Extra-Trees** (*Extremely Randomized
+Trees*), estrae a caso anche le soglie di split invece di ottimizzarle,
+guadagnando velocità e ulteriore decorrelazione.
 
 `````
 
@@ -477,14 +497,13 @@ volta. Quanti restano fuori è sempre più o meno lo stesso, poco più di un
 terzo; *quali* restano fuori cambia da un albero all'altro, ed è proprio da lì
 che viene il regalo.
 
-Il conto, per chi ha voglia di rifarlo, è questo. Un esempio preciso, a ogni
-pescata, ha $999$ probabilità su $1000$ di non essere quello estratto; per
-restare fuori dal campione deve scamparle tutte e mille, e siccome le pescate
-sono indipendenti le probabilità si moltiplicano fra loro:
-$(999/1000)^{1000} \approx 0{,}37$. Il valore dipende pochissimo dalla taglia
-del mucchio: con $m$ esempi vale $(1 - 1/m)^m$, che fa $0{,}35$ con dieci
-esempi e $0{,}366$ con cento, e tende a $1/e \approx 0{,}368$, l'inverso della
-base dei logaritmi naturali.
+Il conto è questo. Un esempio preciso, a ogni pescata, ha $999$ probabilità su
+$1000$ di non essere quello estratto; per restare fuori dal campione deve
+scamparle tutte e mille, e siccome le pescate sono indipendenti le probabilità
+si moltiplicano fra loro: $(999/1000)^{1000} \approx 0{,}37$. Il valore dipende
+pochissimo dalla taglia del mucchio: con $m$ esempi vale $(1 - 1/m)^m$, che fa
+$0{,}35$ con dieci esempi e $0{,}366$ con cento, e tende a $1/e \approx
+0{,}368$, dove $e \approx 2{,}718$ è la costante di Nepero.
 
 Quel terzo di esempi rimasti fuori si chiamano *out-of-bag*, «fuori dal
 sacchetto». Per ciascun esempio
@@ -492,20 +511,21 @@ possiamo raccogliere il voto dei soli alberi che *non* l'hanno visto in
 addestramento: è una stima dell'errore di generalizzazione ottenuta gratis,
 senza mettere da parte un validation set separato.
 
-Il secondo è la **feature importance**. Sommando, su tutti gli alberi, di
-quanto ciascuna caratteristica ha ridotto l'impurità nei suoi split, si
-ottiene una classifica di quanto ogni caratteristica «conta» per il modello. È
+Il secondo è la **feature importance**. Sommando, su tutti gli alberi, di quanto
+ciascuna caratteristica ha ridotto l'impurità nei suoi split, si ottiene una
+classifica di quanto ogni caratteristica «conta» per il modello. È
 un'informazione preziosa per capire i dati, con un'avvertenza che scikit-learn
 stessa segnala: questa misura tende a gonfiare l'importanza delle
-caratteristiche con molti valori distinti, e va letta con prudenza. C'è una
-misura più affidabile, la *permutation importance*, e funziona così: si
-prende una colonna e la si mescola a caso, rovinandola di proposito, poi si
-guarda di quanto peggiora il modello su dati che non ha visto in
-addestramento. Se non peggiora, il modello quella colonna non la usa, o può
+caratteristiche con molti valori distinti, e siccome è calcolata sui dati di
+addestramento può dare importanza perfino a una colonna di puro rumore: va letta
+con prudenza. C'è una misura più affidabile, la *permutation importance*, e
+funziona così: si prende una colonna e la si mescola a caso, rovinandola di
+proposito, poi si guarda di quanto peggiora il modello su dati che non ha visto
+in addestramento. Se non peggiora, il modello quella colonna non la usa, o può
 farne a meno: una colonna quasi gemella di un'altra risulta poco importante
-anche quando porta informazione vera, perché la gemella la sostituisce. I
-limiti di tutte e due le misure li racconta la {doc}`sezione sui modelli
-trasparenti </Interpretabilita/modelli-trasparenti-e-importanza>`.
+anche quando porta informazione vera, perché la gemella la sostituisce. I limiti
+di tutte e due le misure li racconta la {doc}`sezione sui modelli trasparenti
+</Interpretabilita/modelli-trasparenti-e-importanza>`.
 
 ## Boosting: correggere gli errori, uno alla volta
 
@@ -545,6 +565,25 @@ indica anche la direzione in cui l'errore cala più in fretta.
 `````
 
 `````{tab} Superiore
+
+AdaBoost {cite}`freund1997decision`, con $y_i \in \{-1, +1\}$, parte da pesi
+uniformi sugli esempi, $v_i^{(1)} = 1/m$. Al passo $t$ addestra un
+classificatore debole $h_t$ sui dati pesati, ne misura l'errore pesato
+$\varepsilon_t = \sum_i v_i^{(t)}\,\mathbb{1}[h_t(\mathbf{x}_i) \ne y_i]$, gli
+dà il voto $\alpha_t = \tfrac12\ln\frac{1-\varepsilon_t}{\varepsilon_t}$ e
+aggiorna i pesi, $v_i^{(t+1)} \propto v_i^{(t)}\,e^{-\alpha_t y_i
+h_t(\mathbf{x}_i)}$, che moltiplica per $e^{\alpha_t}$ quelli degli esempi
+sbagliati e per $e^{-\alpha_t}$ quelli giusti; il classificatore finale è
+$\operatorname{sign}\sum_t \alpha_t h_t(\mathbf{x})$. Freund e Schapire
+dimostrano che l'errore di addestramento è al più $\prod_t
+2\sqrt{\varepsilon_t(1-\varepsilon_t)} \le \exp\bigl(-2\sum_t \gamma_t^2\bigr)$,
+con $\gamma_t = \tfrac12 - \varepsilon_t$: se ogni $h_t$ fa anche solo un poco
+meglio del caso, l'errore sui dati di addestramento scende esponenzialmente. È
+la risposta costruttiva alla domanda di Kearns e Valiant (un apprendista
+*debole*, appena migliore del caso, si può sempre potenziare in uno *forte*?), a
+cui Schapire aveva risposto di sì nel 1990; sull'errore di test il limite non
+dice niente. In scikit-learn `estimator_weights_` vale $2\alpha_t$: stesso
+classificatore.
 
 Il gradient boosting (Friedman, 2001 {cite}`friedman2001greedy`) generalizza
 l'idea di AdaBoost e la inquadra come una discesa del gradiente nello spazio
@@ -609,16 +648,17 @@ albero minimizza lo sviluppo di Taylor della loss più una penalità sulla sua
 forma,
 
 $$
-\sum_{i=1}^{m}\Big[g_i\,h_t(\mathbf{x}_i) + \tfrac{1}{2}\,s_i\,h_t(\mathbf{x}_i)^2\Big]
-+ c\,T + \tfrac{1}{2}\lambda\sum_{j=1}^{T} w_j^2 ,
+\sum_{i=1}^{m}\Big[g_i\,h_t(\mathbf{x}_i) +
+\tfrac{1}{2}\,s_i\,h_t(\mathbf{x}_i)^2\Big] + c\,J +
+\tfrac{1}{2}\lambda\sum_{j=1}^{J} w_j^2 ,
 $$
 
-dove $T$ è il numero di foglie, $w_j$ il valore della foglia $j$, $c$ il prezzo
-di una foglia e $\lambda$ il freno $\ell_2$ sui valori (`reg_lambda`). Con
-$G_j$ e $S_j$ le somme di $g_i$ e $s_i$ sulla foglia, il valore ottimo è
-$w_j^\star = -G_j/(S_j+\lambda)$, cioè il passo di Newton di Friedman ristretto
-verso zero, e con la loss quadratica ($s_i = 1$) la media dei residui ristretta
-verso zero. Uno split si accetta solo se il guadagno
+dove $J$ è il numero di foglie, $w_j$ il valore della foglia $j$, $c$ il prezzo
+di una foglia e $\lambda$ il freno $\ell_2$ sui valori (`reg_lambda`). Con $G_j$
+e $S_j$ le somme di $g_i$ e $s_i$ sulla foglia, il valore ottimo è $w_j^\star =
+-G_j/(S_j+\lambda)$, cioè il passo di Newton di Friedman ristretto verso zero, e
+con la loss quadratica ($s_i = 1$) la media dei residui ristretta verso zero.
+Uno split si accetta solo se il guadagno
 
 $$
 \tfrac{1}{2}\left[\frac{G_L^2}{S_L+\lambda} + \frac{G_R^2}{S_R+\lambda}
@@ -647,25 +687,23 @@ gradino, e nessuno guarda i punti: guarda i trattini, cioè quello che i
 precedenti hanno sbagliato. L'errore tipico scende da $0{,}60$ a $0{,}14$.
 ```
 
-Nel mondo reale, due implementazioni del gradient boosting dominano le
-competizioni sui dati tabellari: **XGBoost** (Chen e Guestrin, 2016
+Nel mondo reale, due implementazioni del gradient boosting sono diventate lo
+standard sui dati tabellari: **XGBoost** (Chen e Guestrin, 2016
 {cite}`chen2016xgboost`) e **LightGBM** (Ke e colleghi, 2017
-{cite}`ke2017lightgbm`). Non sono idee nuove, ma ingegnerizzazioni del
-gradient boosting molto più veloci e robuste, e conviene sapere perché
-vincono:
+{cite}`ke2017lightgbm`). Sono estensioni dell'algoritmo di Friedman, più veloci
+e più regolarizzate; ecco che cosa le distingue:
 
 - Regolarizzazione esplicita. XGBoost aggiunge alla loss una penalità sulla
   complessità di ogni albero (numero di foglie, ampiezza dei valori nelle
   foglie), nello spirito del rasoio di Occam già visto per Ridge e Lasso. Questo
   tiene a bada l'overfitting, il vero rischio del boosting.
-- Non solo la pendenza, anche la curvatura. Per decidere dove tagliare,
-  XGBoost non guarda soltanto in che direzione la loss cala (il gradiente) ma
-  anche quanto in fretta quella pendenza sta cambiando: è come scendere dalla
-  collina sapendo non solo che si scende, ma anche se il pendio sta per
-  spianarsi, e con quel secondo dato il passo si sceglie meglio. Chi ha in
-  mano gli strumenti dell'analisi ci riconosce uno sviluppo di Taylor
-  arrestato al secondo ordine, cioè la derivata seconda usata accanto alla
-  prima.
+- Il secondo ordine. XGBoost approssima la loss con il suo sviluppo di Taylor al
+  secondo ordine: per ogni esempio usa il gradiente $g_i$ e la derivata seconda
+  $s_i$, cioè non soltanto in che direzione la loss cala ma anche quanto in
+  fretta quella pendenza cambia, e il valore di ogni foglia è un passo di
+  Newton, $-G_j/(S_j + \lambda)$, dove $G_j$ e $S_j$ sono le somme di $g_i$ e
+  $s_i$ sulla foglia e $\lambda$ il freno sui valori. Con la loss quadratica è
+  la media dei residui, ristretta verso lo zero.
 - Istogrammi e velocità. Entrambi raggruppano i valori continui delle
   caratteristiche in poche centinaia di intervalli (*bin*: di default $256$ in
   XGBoost e $255$ in LightGBM), e trovare lo split migliore diventa scorrere un
@@ -694,29 +732,29 @@ vincono:
 Le due strategie curano mali opposti, e questo dice quando preferire l'una o
 l'altra.
 
-Il bagging (e la sua incarnazione migliore, la random forest) parte da
-alberi a varianza alta e la abbatte mediando. È robusto, poco sensibile agli
-iperparametri, difficile da mandare in overfitting: aggiungere alberi non
-peggiora quasi mai. Ottima scelta di default, specie quando si vuole un modello
-solido con poca messa a punto, e si parallelizza in modo naturale (gli alberi
-sono indipendenti).
+Il bagging (e la sua incarnazione migliore, la random forest) parte da alberi a
+varianza alta e la abbatte mediando. È robusto e poco sensibile agli
+iperparametri: aggiungere alberi non causa overfitting, perché l'errore converge
+a un limite al crescere di $B$ {cite}`breiman2001random`. Quel limite è la media
+di alberi cresciuti a fondo e può essere un modello troppo ricco, ma in pratica
+costa poco {cite}`hastie2009elements`. Ottima scelta di default, specie quando
+si vuole un modello solido con poca messa a punto, e si addestra in parallelo in
+modo naturale (ogni albero dipende solo dal proprio campione).
 
 Il boosting parte da alberi deboli a bias alto e lo abbatte correggendo
 gli errori in sequenza. Tipicamente raggiunge l'accuratezza più alta sui dati
 tabellari, ma è più delicato: siccome ogni albero rincorre gli errori del
 precedente, può andare in overfitting se lo si lascia correre troppo.
 
-I freni principali sono due. Il primo è il learning rate, che qui non è la
-lunghezza del passo lungo una collina ma quanta parte di ogni nuovo albero si
-somma al modello: al minimo si prende solo un pezzetto della correzione che
-quell'albero propone. La logica però è la stessa della collina nella nebbia:
-passi piccoli
-rendono l'apprendimento più lento ma più stabile, e di solito si abbina un
-passo piccolo a molti alberi. Il secondo freno è l’**early stopping**, cioè
-fermarsi quando l'errore
-su un validation set smette di migliorare, come abbiamo visto nella sezione
-sugli iperparametri. Il boosting inoltre è sequenziale per costruzione:
-non si parallelizza sugli alberi come il bagging.
+I freni principali sono due. Il primo è il learning rate $\nu$ (*shrinkage*):
+ogni nuovo albero entra nella somma moltiplicato per $\nu$, quindi il passo
+della discesa del gradiente nello spazio delle funzioni viene accorciato
+{cite}`friedman2001greedy`. Passi piccoli rendono l'apprendimento più lento ma
+più stabile, e di solito si abbina un passo piccolo a molti alberi. Il secondo
+freno è l’**early stopping**, cioè fermarsi quando l'errore su un validation set
+smette di migliorare: il blocco con XGBoost, più in basso, lo mostra all'opera.
+Il boosting inoltre è sequenziale per costruzione: non si parallelizza sugli
+alberi come il bagging.
 
 In sintesi: se cerchi robustezza con poco sforzo, parti dalla random forest; se
 cerchi l'ultimo punto di accuratezza e sei disposto a mettere a punto learning
@@ -732,14 +770,15 @@ veda arrivare a punteggi simili: si possono mettere insieme *quelli*?
 
 Sì, e in due modi, che si distinguono per chi decide come pesare i pareri.
 
-Il primo è il **voto**. Ogni modello dice la sua e vince la maggioranza. C'è
-una variante che quasi sempre funziona meglio: invece di contare i voti secchi
-si mediano le probabilità, così un modello sicurissimo pesa più di uno che
-era incerto. Contare i voti butta via l'informazione più utile, cioè quanto
-ciascuno ci credeva. Con una riserva: le sicurezze devono essere confrontabili
-fra loro. Un modello che si dichiara certo al 99 per cento anche quando tira a
-indovinare trascina la media dalla sua parte, e a quel punto mediare le
-probabilità rende meno che contare i voti secchi.
+Il primo è il **voto**. Ogni modello dice la sua e vince la maggioranza. C'è una
+variante che quasi sempre funziona meglio: invece di contare i voti secchi (il
+voto «duro») si mediano le probabilità (il voto «morbido»), così un modello
+sicurissimo pesa più di uno che era incerto. Contare i voti butta via
+l'informazione più utile, cioè quanto ciascuno ci credeva. Con una riserva: le
+sicurezze devono essere confrontabili fra loro. Un modello che si dichiara certo
+al 99 per cento anche quando tira a indovinare trascina la media dalla sua
+parte, e a quel punto mediare le probabilità rende meno che contare i voti
+secchi.
 
 Il secondo è lo **stacking**, e l'idea è più ambiziosa: invece di decidere noi
 come pesare i modelli, si addestra un modello a farlo. Sopra i predittori
@@ -814,25 +853,22 @@ più bravo non contraddice affatto Krogh e Vedelsby.
 
 `````
 
-Conviene vedere che cosa succede davvero, perché il risultato non è quello che
-ci si aspetta. Nell'esperimento che segue i tre modelli di base sono una
-foresta casuale, un k-NN e un terzo che non abbiamo ancora incontrato, il
-**Bayes ingenuo**.
-
-È semplicissimo. Guarda le colonne una per
-volta e si fa, di ciascuna, una domanda sola: un valore come questo, quanto
-spesso capita fra i malati e quanto spesso fra i sani? Poi mette insieme tutti i
-verdetti parziali moltiplicandoli fra loro, come se ogni colonna raccontasse una
-storia sua, senza rapporti con le altre. «Ingenuo» è proprio questo: le colonne
-di una tabella vera sono quasi sempre legate (reddito e quartiere non sono
-indipendenti), e fare finta di no è una semplificazione grossolana. È la ragione
-per cui qui sarà nettamente il più debole dei tre. Lo riprende per esteso
-{doc}`Modelli generativi <modelli-generativi>`
-e
+Il risultato non è quello che ci si aspetta. Nell'esperimento i tre modelli di
+base sono una foresta casuale, un k-NN e un **Bayes ingenuo** (*naive Bayes*):
+un classificatore che stima, per ogni classe, la distribuzione di ciascuna
+colonna presa da sola (un valore come questo, quanto spesso capita fra i malati
+e quanto spesso fra i sani?), e moltiplica le probabilità come se le colonne
+fossero indipendenti dentro la classe, $p(\mathbf{x}\mid y) = \prod_j p(x_j \mid
+y)$; poi sceglie la classe con il teorema di Bayes. L'indipendenza è quasi
+sempre falsa (reddito e quartiere non sono indipendenti), ed è la ragione
+principale per cui qui sarà nettamente il più debole dei tre. Lo riprende per
+esteso la sezione sui {doc}`modelli generativi <modelli-generativi>`, e
 {doc}`Classificare il testo </NaturalLanguageProcessing/classificazione-testo>`
 lo mostra al lavoro sulle parole di un'email, dove invece funziona benissimo.
 
 ```python
+import numpy as np
+from scipy.stats import binomtest, chi2
 from sklearn.datasets import make_classification
 from sklearn.ensemble import (RandomForestClassifier, StackingClassifier,
                               VotingClassifier)
@@ -873,6 +909,26 @@ print("Brier dei tre:", " ".join(f"{b:.4f}" for b in brier),
 print(f"Brier del voto morbido: "
       f"{brier_score_loss(y_te, morbido.predict_proba(X_te)[:, 1]):.4f}")
 print("pesi del combinatore:", pila.final_estimator_.coef_.round(2))
+
+def mcnemar(a, b):
+    """I casi su cui uno azzecca e l'altro no: p esatto e p approssimato."""
+    ok_a, ok_b = a.predict(X_te) == y_te, b.predict(X_te) == y_te
+    solo_a, solo_b = int(np.sum(ok_a & ~ok_b)), int(np.sum(~ok_a & ok_b))
+    esatto = binomtest(solo_a, solo_a + solo_b, 0.5).pvalue
+    stat = (abs(solo_a - solo_b) - 1) ** 2 / (solo_a + solo_b)
+    return solo_a, solo_b, esatto, chi2.sf(stat, 1)
+
+foresta = base[0][1]
+print(f"\n{'confronto':<30}{'solo a':>7}{'solo b':>7}"
+      f"{'p esatto':>10}{'p approx.':>10}")
+for testo, a, b in [("foresta contro voto duro", foresta, duro),
+                    ("foresta contro voto morbido", foresta, morbido),
+                    ("voto duro contro voto morbido", duro, morbido),
+                    ("stacking contro voto morbido", pila, morbido),
+                    ("stacking contro voto duro", pila, duro),
+                    ("stacking contro foresta", pila, foresta)]:
+    sa, sb, pe, pa = mcnemar(a, b)
+    print(f"{testo:<30}{sa:7d}{sb:7d}{pe:10.4f}{pa:10.4f}")
 ```
 
 ```text
@@ -885,21 +941,29 @@ stacking     0.9089
 Brier dei tre: 0.0945 0.0889 0.1303  media 0.1046
 Brier del voto morbido: 0.0961
 pesi del combinatore: [[ 6.05  4.86 -1.14]]
+
+confronto                      solo a solo b  p esatto p approx.
+foresta contro voto duro           19     13    0.3771    0.3768
+foresta contro voto morbido        30     20    0.2026    0.2031
+voto duro contro voto morbido      14     10    0.5413    0.5403
+stacking contro voto morbido       37     13    0.0009    0.0011
+stacking contro voto duro          32     12    0.0037    0.0042
+stacking contro foresta            29     15    0.0488    0.0500
 ```
 
 I singoli arrivano a $0{,}8933$ (foresta), $0{,}8889$ (vicini) e $0{,}8156$
 (Bayes ingenuo); il voto duro dà $0{,}8867$, quello morbido $0{,}8822$,
 lo stacking $0{,}9089$.
 
-Prima di ricavarne una classifica, il promemoria della sezione
-sull'overfitting e la validazione: due punteggi che distano meno del rumore
-della misura non sono una classifica. Il test qui sono $900$ esempi, e attorno
-a un'accuratezza dell’$89\%$ un punteggio così oscilla di circa un punto
-percentuale: è $\sqrt{0{,}89 \cdot 0{,}11 / 900} = 0{,}010$, cioè una
-deviazione standard, e non l'intervallo entro cui il valore vero sta quasi
-sempre, che è il doppio. Fra la foresta e i due voti gli scarti sono
-$0{,}007$ e $0{,}011$: dello stesso ordine, cioè troppo piccoli
-per pronunciarsi con questo metro.
+Prima di ricavarne una classifica, il promemoria della sezione sull'overfitting
+e la validazione: due punteggi che distano meno del rumore della misura non sono
+una classifica. Il test qui sono $900$ esempi, e attorno a un'accuratezza
+dell’$89\%$ un punteggio così oscilla tipicamente di circa un punto percentuale
+(è la deviazione standard di una proporzione, $\sqrt{0{,}89 \cdot 0{,}11 / 900}
+= 0{,}010$; l'intervallo entro cui il valore vero cade quasi sempre è largo il
+doppio per parte). Fra la foresta e i due voti gli scarti sono $0{,}007$ e
+$0{,}011$: dello stesso ordine, cioè troppo piccoli per pronunciarsi con questo
+metro.
 
 Il confronto va allora fatto in modo più fine, sulle
 **predizioni appaiate**: invece di guardare due punteggi complessivi si va
@@ -913,17 +977,17 @@ spesso il caso, da solo, produrrebbe uno sbilanciamento almeno così marcato se 
 due modelli fossero equivalenti. Sotto $0{,}05$, per la convenzione di sempre,
 si smette di credere che siano equivalenti.
 
-Qui, foresta contro voto duro dà
-$p = 0{,}38$, foresta contro voto morbido $p = 0{,}20$, voto duro contro voto
-morbido $p = 0{,}54$: numeri grandi, cioè nessuna differenza dimostrabile. Su
-questo test, semplicemente, quei tre non si distinguono. Lo stacking invece sì:
-batte il voto morbido con $p = 0{,}0009$, il voto duro con $p = 0{,}0037$ e la
-foresta con $p = 0{,}049$, cioè in modo netto rispetto ai due voti e per un
-soffio rispetto alla foresta. Su quest'ultimo la terza cifra decide, e il
-verdetto cambia con la forma del test: quei $p$ vengono dal conto binomiale
-esatto, e la versione approssimata che quasi tutti i manuali chiamano test di
-McNemar dà $0{,}050$, cioè sopra la soglia. Un confronto che si gioca lì non
-è un confronto vinto.
+La tabella in fondo all'uscita li stampa tutti. Foresta contro voto duro dà $p =
+0{,}38$, foresta contro voto morbido $p = 0{,}20$, voto duro contro voto morbido
+$p = 0{,}54$: numeri grandi, cioè nessuna differenza dimostrabile. Su questo
+test, semplicemente, quei tre non si distinguono. Lo stacking invece sì: batte
+il voto morbido con $p = 0{,}0009$, il voto duro con $p = 0{,}0037$ e la foresta
+con $p = 0{,}049$, cioè in modo netto rispetto ai due voti e per un soffio
+rispetto alla foresta. Su quest'ultimo la terza cifra decide, e il verdetto
+cambia con la forma del test: quei $p$ vengono dal conto binomiale esatto, e la
+versione approssimata che quasi tutti i manuali chiamano test di McNemar, con la
+correzione di continuità, dà $0{,}0500$, cioè la soglia stessa (alla quinta
+cifra, un soffio sopra). Un confronto che si gioca lì non è un confronto vinto.
 
 Quello che invece i numeri possono dire riguarda un'altra domanda, e conviene
 tenerle distinte: mediare probabilità a pesi fissi mette al riparo dal membro
@@ -939,16 +1003,16 @@ garanzia promette, e perde contro la foresta ($0{,}0945$) e contro il $k$-NN
 media dei tre punteggi ($0{,}8822$ contro $0{,}8659$) è un fatto di questi
 dati, non una promessa.
 
-Sul perché il voto non guadagni di più, invece, si può ragionare, e la ragione
-è il terzo modello. Il Bayes ingenuo è nettamente il più debole, e in una media
-a pesi fissi conta quanto gli altri: il voto lo tratta alla pari con la
-foresta. Lo stacking impara che di quel modello ci si può fidare poco, e i pesi
-del combinatore lo dicono: $6{,}05$ alla foresta, $4{,}86$ al $k$-NN e
-$-1{,}14$ al Bayes ingenuo, cioè un peso piccolo e perfino di segno opposto,
-che usa il modello debole come correzione degli altri due: è il vantaggio
-strutturale di far decidere i pesi ai dati invece che fissarli a priori, e la
-ragione per cui, in un ensemble eterogeneo, la media semplice è una scommessa
-sulla qualità uniforme dei membri.
+Sul perché il voto non guadagni di più, invece, si può ragionare, e la ragione è
+il terzo modello. Il Bayes ingenuo è nettamente il più debole, e in una media a
+pesi fissi conta quanto gli altri: il voto lo tratta alla pari con la foresta.
+Lo stacking impara che di quel modello ci si può fidare poco, e i pesi del
+combinatore lo dicono: $6{,}05$ alla foresta, $4{,}86$ al $k$-NN e $-1{,}14$ al
+Bayes ingenuo, cioè un peso piccolo e perfino di segno opposto (con tre colonne
+di probabilità così correlate fra loro, il segno del peso più piccolo non si
+legge come fiducia). È il vantaggio di far decidere i pesi ai dati invece che
+fissarli in anticipo, e la ragione per cui, in un ensemble eterogeneo, la media
+semplice è una scommessa sulla qualità uniforme dei membri.
 
 Non è però un invito a impilare tutto: il guadagno qui è di poco più di un
 punto e mezzo,
@@ -1054,7 +1118,7 @@ X_fit, X_val, y_fit, y_val = train_test_split(
 # smette di migliorare, evitando l'overfitting del boosting.
 xgb = XGBClassifier(
     n_estimators=1000, learning_rate=0.05, max_depth=4,
-    subsample=0.8, early_stopping_rounds=30)
+    subsample=0.8, early_stopping_rounds=30, random_state=0)
 xgb.fit(X_fit, y_fit, eval_set=[(X_val, y_val)], verbose=False)
 print("alberi usati:", xgb.best_iteration + 1, "su 1000")
 ```
@@ -1064,21 +1128,24 @@ alberi usati: 253 su 1000
 ```
 
 Duecentocinquantatré alberi invece di mille: l'arresto anticipato ha fermato la
-sequenza appena la validazione ha smesso di migliorare, e i settecento e passa
-alberi non costruiti sono quelli che avrebbero cominciato a imparare a memoria.
+sequenza quando la validazione non migliorava da trenta alberi. Il numero esatto
+dipende dal seme (il sorteggio dell'80% delle righe per albero) e dalla
+validazione, ma l'ordine di grandezza no: il modello smette di migliorare molto
+prima dei mille alberi richiesti.
 
-Un consiglio pratico, che riassume tutta la sezione: su un problema tabellare
-nuovo, una random forest con i parametri di default è quasi sempre la prima
-cosa da provare; è la **linea di base** onesta contro cui misurare tutto il
+Su un problema tabellare nuovo, una random forest con i parametri di default è
+quasi sempre la prima cosa da provare (in regressione chiedendo esplicitamente
+il sorteggio delle colonne, `max_features="sqrt"` o `1/3`, che scikit-learn di
+default non fa); è la **linea di base** onesta contro cui misurare tutto il
 resto, cioè il termine di paragone volutamente semplice che un modello più
-elaborato deve battere per giustificare quello che costa (in inglese
-*baseline*, ed è la parola che si legge nel codice e nei manuali). Quando quel
-modello non la batte, la risposta non è insistere: la foresta era già la
-risposta, e il conto in più non si è pagato. Se serve spremere di più, si passa
-a XGBoost o LightGBM con learning rate basso ed early stopping. Per il *deep
-learning* (che affronteremo con PyTorch nei capitoli successivi), il turno
-arriva sui dati non tabellari: immagini, testo, audio, dove queste stesse
-foreste e questi boosting cedono il passo alle reti.
+elaborato deve battere per giustificare quello che costa (in inglese *baseline*,
+ed è la parola che si legge nel codice e nei manuali). Quando quel modello non
+la batte, la risposta non è insistere: la foresta era già la risposta, e il
+conto in più non si è pagato. Se serve spremere di più, si passa a XGBoost o
+LightGBM con learning rate basso ed early stopping. Per il *deep learning* (che
+affronteremo con PyTorch nei capitoli successivi), il turno arriva sui dati non
+tabellari: immagini, testo, audio, dove queste stesse foreste e questi boosting
+cedono il passo alle reti.
 
 `````{tab} Elementare
 
@@ -1093,25 +1160,25 @@ foreste e questi boosting cedono il passo alle reti.
   instabile: cambia dieci dati e viene fuori un albero diverso.
 - Il rimedio è non fidarsi di uno solo. Se ne addestrano tanti su versioni
   leggermente diverse degli stessi dati e si fanno votare: gli errori, se sono
-  errori diversi, si annullano a vicenda. La foresta casuale aggiunge il
-  colpo di genio di nascondere a ogni albero alcune colonne, come una giuria in
-  cui ogni giurato è bendato su aspetti diversi, così i pareri si somigliano
-  molto meno.
-- L'altra strada è metterli in fila invece che in parallelo: ogni nuovo
-  modello si occupa solo di ciò che i precedenti hanno sbagliato, come lo
-  studente che al secondo giro ripassa gli esercizi andati male. È il
-  boosting, oggi il più accurato sui dati in tabella, ma va frenato: passi
-  corti e stop appena smette di migliorare.
-- Per combinare modelli di tipo diverso si può votare, oppure far decidere
-  a un ultimo modello quanto fidarsi di ciascuno (lo stacking). Il secondo
-  vince quando uno dei modelli è più debole degli altri, perché impara a
-  pesarlo poco; una media a pesi fissi, invece, se lo porta appresso.
+  errori diversi, si annullano a vicenda. La foresta casuale aggiunge la mossa
+  decisiva: a ogni domanda l'albero vede solo alcune colonne, sorteggiate di
+  nuovo ogni volta, come una giuria in cui a ogni domanda ogni giurato è bendato
+  su aspetti diversi, così i pareri si somigliano molto meno.
+- L'altra strada è metterli in fila invece che in parallelo: ogni nuovo modello
+  si occupa solo di ciò che i precedenti hanno sbagliato, come lo studente che
+  al secondo giro ripassa gli esercizi andati male. È il boosting, di norma il
+  più accurato sui dati in tabella, ma va frenato: passi corti e stop appena
+  smette di migliorare.
+- Per combinare modelli di tipo diverso si può votare, oppure far decidere a un
+  ultimo modello quanto fidarsi di ciascuno (lo stacking). Nell'esperimento il
+  secondo batte il voto perché impara a pesare poco il modello più debole, che
+  una media a pesi fissi si porta appresso; contro il migliore dei tre, invece,
+  il guadagno sta al limite della misura.
 - La condizione perché combinare serva è sempre la stessa: i modelli devono
   sbagliare in modi diversi. Combinarne tre che sbagliano insieme non
   corregge niente, ripete l'errore con più sicurezza.
-- Su un problema nuovo in tabella: prima una foresta casuale con le impostazioni
-  di fabbrica, ed è già una linea di partenza onesta contro cui misurare tutto
-  il resto.
+- Su un problema nuovo in tabella: prima una foresta casuale, ed è già una linea
+  di partenza onesta contro cui misurare tutto il resto.
 ```
 
 `````
@@ -1120,23 +1187,26 @@ foreste e questi boosting cedono il passo alle reti.
 
 ```{admonition} Da ricordare
 :class: important
-- Un albero decisionale (CART) classifica per domande sì/no che partizionano
-  lo spazio in rettangoli; sceglie a ogni nodo lo split che riduce di più
-  l'impurità (Gini o entropia), massimizzando l’information gain.
-  In regressione la foglia predice la media e si minimizza l’MSE.
-- Gli alberi sono interpretabili («scatola bianca») ma ad alta varianza:
-  un albero profondo memorizza i dati ed è instabile.
+- Un albero decisionale (CART) classifica per domande sì/no che partizionano lo
+  spazio in rettangoli; sceglie a ogni nodo lo split che riduce di più
+  l'impurità (Gini o entropia; con l'entropia è l'information gain), con una
+  ricerca greedy, perché l'albero ottimo è NP-completo. In regressione la foglia
+  predice la media e si minimizza l’MSE.
+- Un albero poco profondo è interpretabile («scatola bianca»); un albero
+  profondo memorizza i dati, ha alta varianza ed è instabile.
 - Il bagging addestra molti alberi in parallelo su campioni bootstrap e
   li fa votare: mediando modelli decorrelati, abbatte la varianza.
 - La random forest aggiunge il campionamento casuale delle feature a ogni
   split per decorrelare gli alberi; offre gratis l'errore out-of-bag e la
   feature importance.
 - Il boosting addestra alberi deboli in sequenza, ognuno sui residui del
-  precedente: dal riequilibrio dei pesi di AdaBoost alla discesa del
-  gradiente nello spazio delle funzioni del gradient boosting. XGBoost e
-  LightGBM lo rendono veloce e regolarizzato: dominano i dati tabellari.
-- Bagging vs boosting: il primo cura la varianza (robusto, difficile da
-  overfittare); il secondo cura il bias (più accurato, ma va frenato con
+  precedente: dal riequilibrio dei pesi di AdaBoost alla discesa del gradiente
+  nello spazio delle funzioni del gradient boosting. XGBoost e LightGBM lo
+  rendono veloce e regolarizzato, e sui dati tabellari di taglia media sono fra
+  i metodi da battere.
+- Bagging vs boosting: il primo cura la varianza (robusto, aggiungere alberi non
+  fa overfitting; per la perdita 0-1 aggregare un classificatore cattivo lo
+  peggiora); il secondo cura il bias (più accurato di norma, ma va frenato con
   learning rate basso ed early stopping).
 - Per combinare modelli di tipo diverso ci sono il voto (meglio quello
   *morbido*, che media le probabilità invece di contare le etichette) e lo

@@ -12,12 +12,15 @@
 :alt: Due fumetti vuoti uno di fronte all'altro, uniti al centro da un ingranaggio.
 ```
 
-Nel 1954 un gruppo di ricercatori di IBM e della Georgetown University
-annunciò al mondo una traduzione automatica dal russo all'inglese: sessanta
-frasi, tradotte da un calcolatore, davanti alla stampa entusiasta. Il progetto
-prometteva di risolvere la traduzione "in tre, forse cinque anni". Ne
-servirono molti di più, e la lezione che ne uscì è ancora il cuore di questo
-capitolo: il linguaggio umano sembra semplice perché lo maneggiamo senza
+Duecentocinquanta voci di vocabolario, fra radici e desinenze, e sei regole di
+grammatica: con questo un calcolatore tradusse dal russo all'inglese, davanti
+alla stampa, più di sessanta frasi. Era il 7 gennaio 1954, a New York, e dietro
+c'era un gruppo di ricercatori della Georgetown University e di IBM
+{cite}`hutchins2004georgetown`. Il direttore del progetto, Leon Dostert, si
+spinse a prevedere che nel giro di cinque anni, forse di tre, la traduzione per
+via elettronica sarebbe diventata un fatto compiuto in importanti settori e per
+più lingue. Ne servirono molti di più, e la lezione che ne uscì non è
+invecchiata: il linguaggio umano sembra semplice perché lo maneggiamo senza
 sforzo, ma per una macchina è uno dei problemi più ostici che esistano.
 
 Il **Natural Language Processing** (NLP, elaborazione del linguaggio naturale)
@@ -25,13 +28,6 @@ Il **Natural Language Processing** (NLP, elaborazione del linguaggio naturale)
 "Naturale" per distinguerlo dai linguaggi *artificiali* come Python: quelli li
 abbiamo progettati noi perché ogni istruzione voglia dire una cosa sola,
 l'italiano e l'inglese no.
-
-Arriviamo qui dal deep reinforcement learning, che ci lascia una domanda in
-mano: come si scrive una ricompensa che dica davvero quel che vogliamo. La
-risposta, quando arriverà, non sarà un numero calcolato da un programma ma il
-giudizio di una persona che legge due frasi e dice quale preferisce. Prima però
-bisogna sapere che cos'è una frase, per una macchina, ed è quel che si fa da
-qui in poi.
 
 ## Perché il linguaggio è così difficile
 
@@ -58,8 +54,8 @@ tra le righe, ed è lì che le macchine si perdono.
 Non esiste una regola che, presa la frase, ne restituisca il significato:
 nemmeno tu ne hai una. Davanti al binocolo scegli la lettura che ti torna di
 più, e ti torna di più per via delle migliaia di frasi simili che hai già
-sentito in vita tua. Una macchina può fare soltanto lo stesso mestiere: pesare
-le letture possibili guardando le parole che ci stanno intorno, e puntare su
+sentito in vita tua. Una macchina addestrata sui testi fa lo stesso mestiere:
+pesa le letture possibili guardando le parole che ci stanno intorno, e punta su
 quella che le sembra più probabile. È una scommessa, e ogni tanto la perde.
 
 `````
@@ -75,15 +71,18 @@ La difficoltà del linguaggio si può decomporre in alcuni fenomeni ricorrenti:
 - Dipendenza dal contesto. Il significato di un token è funzione della
   finestra che lo circonda; i pronomi (*anafora*) vanno risolti rispetto ad
   antecedenti anche lontani.
-- Sinonimia e polisemia. La stessa forma superficiale copre sensi diversi e
-  sensi diversi condividono forme: la relazione tra stringhe e significati è
-  molti-a-molti.
+- Sinonimia e polisemia. Forme diverse possono avere lo stesso senso
+  (*auto*, *macchina*, *vettura*) e una stessa forma più sensi (*campo*): la
+  relazione tra stringhe e significati è molti-a-molti.
 - Pragmatica. Ironia, sarcasmo e implicature richiedono conoscenza del
   mondo e dell'intenzione del parlante, non ricavabile dalla sola sintassi.
 
-La conseguenza pratica è che non esiste una funzione deterministica
-testo $\to$ significato: il NLP moderno la *stima* da dati, modellando
-$P(\text{significato} \mid \text{testo}, \text{contesto})$.
+La conseguenza pratica è che il testo, da solo, non determina la propria
+interpretazione: la stessa stringa ne ammette più d'una, e quale valga dipende
+dal contesto e da ciò che chi legge sa del mondo. Nessuna regola scritta a mano
+copre tutti i casi, e il NLP moderno stima allora dai dati una distribuzione
+sulle interpretazioni, $P(\text{interpretazione} \mid \text{testo},
+\text{contesto})$, da cui sceglie la più probabile.
 
 `````
 
@@ -97,8 +96,8 @@ continuo, e tre di loro avranno più avanti una sezione tutta per sé.
   È spam o no? Questa recensione è positiva o negativa? Questa email va allo
   sportello "reclami" o "fatturazione"?
 - Traduzione automatica (*machine translation*): trasformare una frase da
-  una lingua all'altra preservandone il senso (proprio la promessa di
-  Georgetown del 1954).
+  una lingua all'altra preservandone il senso (il compito della dimostrazione
+  di Georgetown del 1954).
 - Riconoscimento di entità nominate (*Named Entity Recognition*, NER):
   individuare nel testo persone, luoghi, organizzazioni, date. In "Enrico Fermi
   nacque a Roma nel 1901", un sistema NER etichetta *Enrico Fermi* come
@@ -107,24 +106,25 @@ continuo, e tre di loro avranno più avanti una sezione tutta per sé.
   naturale, estraendo la risposta da un testo o generandola. È l'unico dei
   quattro che qui non avrà una sezione sua: per rispondere sul serio bisogna
   prima andare a cercare il testo giusto in un archivio, e quel mestiere ha
-  bisogno di attrezzi che arrivano nel capitolo dopo questo.
+  bisogno di attrezzi che arrivano con i Transformer, in {doc}`Cercare per
+  rispondere: retrieval e RAG </Transformers/rag>`.
 
-Sono compiti diversi, e per decenni si sono risolti con programmi diversi: uno
-per lo spam, uno per la traduzione, uno per le entità. La storia recente li ha
-avvicinati fino quasi a unificarli, e conviene vedere come, perché sembra un
-gioco di prestigio e non lo è.
+Sono compiti diversi, e per decenni li hanno risolti programmi diversi: uno
+per lo spam, uno per la traduzione, uno per le entità. I grandi modelli di
+linguaggio li hanno quasi unificati, con una mossa più semplice di quanto
+sembri.
 
-Il protagonista è un modello: un programma che non è stato scritto
-istruzione per istruzione, ma ricavato da una montagna di testo, e il cui
-unico mestiere è tirare a indovinare come continua un pezzo di scrittura. Un
-mestiere solo, quindi. Il trucco sta nel riscrivere ogni compito in modo che
-la risposta sia proprio la continuazione. Non gli si chiede «questa email è
+Un modello di linguaggio è un programma che nessuno ha scritto istruzione per
+istruzione: lo si addestra su un'enorme raccolta di testo a prevedere come
+continua un pezzo di scrittura, e di solito un secondo addestramento, sugli
+esempi e sulle preferenze di persone, gli insegna poi a seguire le istruzioni.
+Il suo mestiere resta continuare un testo, e allora si riscrive ogni compito in
+modo che la risposta sia la continuazione. Non gli si chiede «questa email è
 spam?»: gli si dà da finire un testo che dice «Email: *vinci subito un
 premio*. Questa email è spam? Risposta:», e la parola con cui continua è il
 verdetto. Non gli si chiede di tradurre: gli si dà «Italiano: *il gatto nero
-salta sul muro*. Inglese:». Stesso programma, stessi numeri dentro: cambia
-soltanto il foglio che gli si mette davanti. Il come, e a quale prezzo, è il
-filo che tiene insieme tutto quello che segue.
+salta sul muro*. Inglese:». Il programma e i suoi parametri restano gli
+stessi; cambia soltanto il testo che gli si mette davanti.
 
 ## Una parabola storica: dalle regole ai Transformer
 
@@ -198,13 +198,16 @@ La traiettoria del NLP attraversa quattro fasi ({numref}`fig-nlp-storia`):
    conoscenza scritte a mano; approccio *symbolic AI*. Fragile fuori dal
    dominio previsto, costoso da mantenere.
 2. Metodi statistici (anni '90–2000). Modelli probabilistici stimati da
-   corpora annotati: $n$-gram per il *language modeling*, Hidden Markov Model
-   per il *part-of-speech tagging*, traduzione statistica allineata a livello
-   di parola. Il paradigma diventa "impara dai dati".
+   corpora: $n$-gram per il *language modeling*, stimati da testo grezzo;
+   Hidden Markov Model per il *part-of-speech tagging*, stimati da corpora
+   annotati a mano; traduzione statistica appresa da testi paralleli, con
+   allineamento a livello di parola. Il paradigma diventa "impara dai dati".
 3. Reti neurali (dal ~2013). Le parole diventano vettori densi
-   (*embedding*): word2vec (Mikolov et al., 2013) colloca ogni parola in
-   $\mathbb{R}^d$ così che il prodotto scalare catturi la similarità
-   semantica. Reti ricorrenti (RNN, LSTM) modellano le sequenze.
+   (*embedding*). Li imparava già il modello di linguaggio neurale di Bengio e
+   colleghi {cite}`bengio2003neural`; word2vec {cite}`mikolov2013efficient`
+   li ha resi comuni, collocando ogni parola in $\mathbb{R}^d$ così che il
+   prodotto scalare catturi la similarità semantica. Reti ricorrenti (RNN,
+   LSTM) modellano le sequenze.
 4. Transformer (dal 2017). Il paper *Attention Is All You Need*
    {cite}`vaswani2017attention` sostituisce la ricorrenza con il meccanismo di
    *self-attention*, permettendo parallelismo e dipendenze a lungo raggio. Da
@@ -216,10 +219,6 @@ inserita a mano in favore di rappresentazioni apprese direttamente dal testo.
 `````
 
 ## Dagli attrezzi alle reti
-
-Nelle sezioni seguenti seguiremo questa stessa parabola, ma da vicino. Ogni
-tappa ha un nome tecnico, e qui lo mettiamo fra parentesi solo perché lo si
-riconosca quando arriverà: quello che conta è il lavoro, scritto in italiano.
 
 Si parte dalla cassetta degli attrezzi classica: cercare in un testo tutti i
 pezzi che hanno una certa forma (le *espressioni regolari*), ripulirlo perché
@@ -241,11 +240,12 @@ Con i numeri in mano affrontiamo i compiti, uno alla volta.
 - Ricordare ciò che si è letto prima, con le reti che leggono in fila
   tenendo un riassunto aggiornato (le *reti ricorrenti*).
 - Tradurre: una rete legge la frase in una lingua, una seconda la riscrive
-  nell'altra (la coppia si chiama *encoder–decoder*), e fra le due nasce l'idea
-  che cambierà tutto, l’*attenzione*.
+  nell'altra (la coppia si chiama *encoder–decoder*), e fra le due si inserisce
+  l’*attenzione*, il meccanismo da cui nasceranno i Transformer.
 - Dire il mestiere di ogni singola parola (nome, verbo, articolo) e
   riconoscere nomi di persona, di luogo e date: sono il *POS tagging* e il
-  *NER*, e li risolve un procedimento del 1967, l’*algoritmo di Viterbi*.
+  *NER*, e la sequenza di etichette più probabile la trova un procedimento del
+  1967, l’*algoritmo di Viterbi*.
 - Scoprire com'è costruita una frase, cioè quali parole vanno insieme e
   chi fa che cosa a chi (il *parsing*).
 - Parlare con le macchine: dialogo e chatbot, che chiude il cerchio aperto
@@ -256,11 +256,14 @@ lingua di lavoro.
 
 Resta l'ultima tappa, i Transformer, che merita un capitolo tutto suo: è
 l'architettura che ha ridefinito non solo il NLP ma buona parte dell'AI
-contemporanea. Qui basti sapere dove stiamo andando: da un calcolatore che nel
-1954 arrancava su sessanta frasi, a modelli che oggi traducono, riassumono e
-conversano, senza mai, va detto con onestà, "capire" nel senso in cui capiamo
-noi. Il senso preciso di quella riserva è che nessuna di queste macchine ha
-mai visto un gatto, aperto una porta o avuto fretta: quello che sa della
-parola *gatto* è dove quella parola compare rispetto a tutte le altre, e nulla
-di ciò a cui la parola si riferisce. È una conoscenza reale e verificabile,
-ed è di un altro tipo dalla nostra.
+contemporanea. Da un calcolatore che nel 1954 arrancava su una sessantina di
+frasi si arriva così a modelli che oggi traducono, riassumono e conversano, e
+la domanda se «capiscano» resta aperta. Un modello addestrato soltanto su
+testo non ha mai visto un gatto, aperto una porta o avuto fretta: quello che
+sa della parola *gatto* è dove quella parola compare rispetto a tutte le
+altre, e nulla di ciò a cui la parola si riferisce. Che dalla sola forma delle
+frasi non si possa arrivare al significato è una tesi, sostenuta da Emily
+Bender e Alexander Koller {cite}`bender2020climbing` e contestata da altri, e
+i modelli che ricevono anche immagini e suoni la mettono alla prova. Ciò che sa
+un modello di solo testo resta comunque una conoscenza reale e misurabile, di
+un altro tipo dalla nostra.

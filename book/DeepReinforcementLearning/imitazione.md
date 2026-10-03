@@ -13,13 +13,13 @@ si mostrava la risposta giusta e lo si correggeva finché non la indovinava, che
 supervisionato.
 
 C'è un dettaglio di quella storia che sembra un'inezia ed è invece tutto il
-problema, arrivato con trent'anni di anticipo. Le immagini su cui ALVINN
-imparò, nel lavoro del 1989, erano simulate. Quando Pomerleau passò alle
-registrazioni di un guidatore vero, due anni dopo, si trovò davanti a un
-ostacolo che dovette aggirare a mano: un guidatore bravo non esce mai dalla
-corsia, quindi nelle sue registrazioni non c'è un solo fotogramma che mostri
-come si rimedia a un'auto storta. Se li dovette fabbricare, deformando le foto
-buone per ottenerne altre scattate come se l'auto fosse un po’ fuori centro
+problema, arrivato con vent'anni di anticipo sulla sua formalizzazione. Le
+immagini su cui ALVINN imparò, nel lavoro del 1989, erano simulate. Quando
+Pomerleau passò alle registrazioni di un guidatore vero, due anni dopo, si trovò
+davanti a un ostacolo che dovette aggirare a mano: un guidatore bravo non esce
+mai dalla corsia, quindi nelle sue registrazioni non c'è un solo fotogramma che
+mostri come si rimedia a un'auto storta. Se li dovette fabbricare, deformando le
+foto buone per ottenerne altre scattate come se l'auto fosse un po’ fuori centro
 {cite}`pomerleau1991efficient`. Quel lavoro in più non fu un capriccio: fu la
 sola cosa che tenne in piedi il furgone, e il motivo è quello che segue.
 
@@ -28,7 +28,8 @@ conviene capire bene perché non basta. Nei capitoli precedenti l'agente impara
 da una ricompensa, e la ricompensa è la parte difficile: scriverla per una
 guida sicura o per una risposta utile è un problema aperto. Se però qualcuno
 sa già fare il compito, quel problema si può aggirare. Non gli si chiede di
-scrivere una funzione di ricompensa: gli si chiede di fare vedere.
+scrivere una funzione di ricompensa, la regola che assegna i punti: gli si
+chiede di fare vedere.
 
 ## Clonare un comportamento è apprendimento supervisionato
 
@@ -49,12 +50,12 @@ numero da regolare (di quanti gradi girare il volante) cambia solo il modo di
 misurare lo scarto, non l'impianto.
 
 Si chiama **clonazione comportamentale**, ed è tanto semplice che l'abbiamo già
-incontrata due volte senza chiamarla così. Il primo AlphaGo, prima di giocare
-contro sé stesso, aveva imparato a proporre mosse guardando
-centosessantamila partite di giocatori forti. E la prima fase
-dell'addestramento di un assistente
-conversazionale è esattamente questa: si raccolgono risposte scritte da persone
-e si insegna al modello a scriverne di simili.
+incontrata due volte. Il primo AlphaGo, prima di giocare contro sé stesso, aveva
+imparato a proporre mosse guardando centosessantamila partite di giocatori
+forti, e lì la cosa non aveva ancora un nome. In fondo alla sezione sulla
+ricerca ad albero il nome c'era già: prima della fase a rinforzo, a un
+assistente conversazionale si fanno leggere risposte scritte da persone, e gli
+si insegna a scriverne di simili.
 
 I pregi sono seri. È stabile, perché è addestramento
 supervisionato ordinario: nessuno dei tormenti visti fin qui nei metodi che
@@ -86,15 +87,14 @@ azioni continue. Non compaiono ricompense, non compare l'equazione di Bellman,
 non compare il bootstrapping: è regressione o classificazione, con tutto
 ciò che ne consegue in termini di stabilità e di strumenti già noti.
 
-La stessa mossa compare in tre punti del libro, e conviene riconoscerla. Nella
-{doc}`sezione sulla ricerca ad albero Monte Carlo <mcts-alphago>`, la rete di
-policy di AlphaGo è
-pre-addestrata in modo supervisionato su partite umane prima del *self-play*.
-Nel post-addestramento dei modelli linguistici, la fase di *supervised
-fine-tuning* che precede l'RLHF è clonazione comportamentale su dimostrazioni
-scritte da persone. E nella {doc}`sezione sull'RL offline <offline-rl>`, la
-componente supervisionata del Decision Transformer è la stessa cosa,
-condizionata sul ritorno desiderato.
+La stessa mossa compare in tre punti, due già incontrati e uno che deve ancora
+arrivare. Nella {doc}`sezione sulla ricerca ad albero Monte Carlo
+<mcts-alphago>`, la rete di policy di AlphaGo è pre-addestrata in modo
+supervisionato su partite umane prima del *self-play*. Nel post-addestramento
+dei modelli linguistici, la fase di *supervised fine-tuning* che precede l'RLHF
+è clonazione comportamentale su dimostrazioni scritte da persone. E nella
+{doc}`sezione sull'RL offline <offline-rl>`, la componente supervisionata del
+Decision Transformer è la stessa cosa, condizionata sul ritorno desiderato.
 
 L'assunzione nascosta, che è tutto il problema, è quella di ogni apprendimento
 supervisionato: dati indipendenti e identicamente distribuiti. Qui non lo
@@ -137,29 +137,32 @@ si smette quando non finisci più in posti nuovi. Si chiama **DAgger**, da
 *Dataset Aggregation*, «accumulare dati». E alla fine non tieni per forza il
 guidatore dell'ultimo giro: provi su una strada mai fatta quello di ogni giro,
 e tieni il migliore. Il conto lo paghi in ore del pilota, che deve stare lì a
-rispondere: la scatola delle vecchie cassette non basta più.
+rispondere: l'archivio delle vecchie registrazioni non basta più.
 
-Oltre un certo punto non serve. Finché le ruote sono sull'asfalto, storte
-quanto vuoi, lui sa raddrizzare, e uno sbaglio isolato costa poco e si paga
-subito. Se la sbandata ti pianta contro il guard rail, puoi averlo seduto
-accanto quanto vuoi: da un'auto ferma fra i rottami non c'è sterzata che
-riporti in corsia. Il quaderno si riempie delle situazioni giuste, e nessuno
-promette che da lì si torni indietro.
+Oltre un certo punto, però, nemmeno il pilota serve più. Finché le ruote sono
+sull'asfalto, storte quanto vuoi, lui sa raddrizzare, e uno sbaglio isolato
+costa poco e si paga subito. Se la sbandata ti pianta contro il guard rail, puoi
+averlo seduto accanto quanto vuoi: da un'auto ferma fra i rottami non c'è
+sterzata che riporti in corsia. Il quaderno si riempie delle situazioni giuste,
+e nessuno promette che da lì si torni indietro.
 
 C'è poi chi il pilota lo guarda dall'altro capo: invece di copiargli le mani si
 chiede che cosa voglia ottenere. Si chiama **apprendimento per rinforzo
-inverso**, «inverso» perché di solito da un premio si ricava un modo di
-guidare, e qui si va nel verso opposto. Costa di più e regge meglio se la
-strada cambia un poco: un obiettivo lo porti altrove, una collezione di
-reazioni no. Il difetto è che di obiettivi che spiegano quella guida ce n'è
-un'infinità. Il più sfacciato non chiede niente: se ogni viaggio vale zero, il
-pilota è perfetto insieme a chiunque altro. Nemmeno pretendere di più basta.
-Chiedi che tutti i viaggi possibili restino nello stesso ordine, dal migliore
-al peggiore, e ne sopravvivono ancora infiniti: quelli che ripetono la stessa
-cosa in un'altra unità di misura, come contare in euro invece che in centesimi,
-e quelli che seminano premi lungo la strada in modo che, a viaggio finito, la
-somma sia la stessa qualunque strada si sia presa. Guardando solo come guida,
-sceglierne uno non si può.
+inverso**, «inverso» perché di solito da un premio si ricava un modo di guidare,
+e qui si va nel verso opposto. Costa di più e regge meglio se la strada cambia
+un poco: un obiettivo lo porti altrove, una collezione di reazioni no. Il
+difetto è che di obiettivi che spiegano quella guida ce n'è un'infinità. Il più
+sfacciato non chiede niente: se ogni viaggio vale zero, il pilota è perfetto
+insieme a chiunque altro. Nemmeno pretendere di più basta. Chiedi che tutti i
+viaggi possibili restino nello stesso ordine, dal migliore al peggiore, e ne
+sopravvivono ancora infiniti: quelli che ripetono la stessa cosa in un'altra
+unità di misura, come contare in euro invece che in centesimi, e quelli che
+spargono lungo la strada premietti che si cancellano da soli. Si dà a ogni città
+una quota (Torino 3, Milano 5, Bologna 4) e a ogni tappa si incassa la
+differenza: da Torino a Milano più due, da Milano a Bologna meno uno. Comunque
+si vada da Torino a Bologna, quei premietti sommano a più uno, la quota d'arrivo
+meno quella di partenza, e quindi non cambiano quale viaggio sia il migliore.
+Guardando solo come guida, sceglierne uno non si può.
 
 `````
 
@@ -284,12 +287,31 @@ termine della forma $\gamma\Phi(s')-\Phi(s)$ lascia invariata la policy ottima,
 aiuti senza spostare l'obiettivo); qui, letta al rovescio, è esattamente
 l'ambiguità che l'RL inverso non può sciogliere. Stessa proprietà, due lati.
 
+Nella pratica l'ambiguità si scioglie imponendo una preferenza. L'apprendimento
+per apprendistato di Abbeel e Ng {cite}`abbeel2004apprenticeship` rinuncia a
+trovare *la* ricompensa: cerca una politica le cui aspettative delle
+caratteristiche,
+$\boldsymbol{\mu}(\pi)=
+\mathbb{E}\big[\sum_t\gamma^t\boldsymbol{\phi}(s_t)\mid\pi\big]$,
+siano vicine a quelle dell'esperto. Basta, perché per ogni ricompensa lineare
+nelle caratteristiche, $r(s)=\mathbf{w}^{\top}\boldsymbol{\phi}(s)$ con
+$\lVert\mathbf{w}\rVert_1\le 1$, lo scarto fra i due valori non supera quello
+fra le due aspettative. L'RL inverso a massima entropia di Ziebart e colleghi
+{cite}`ziebart2008maximum` sceglie invece, fra le distribuzioni sulle
+traiettorie che rispettano quel vincolo, quella di entropia massima, che nel
+caso deterministico è
+$P(\tau)\propto\exp\big(\mathbf{w}^{\top}\mathbf{f}(\tau)\big)$ con
+$\mathbf{f}(\tau)$ le caratteristiche accumulate lungo la traiettoria: la meno
+impegnata oltre ciò che i dati impongono. GAIL ne è la versione in cui la
+ricompensa non si scrive mai, e il vincolo lo tiene il discriminatore.
+
 `````
 
 ## In pratica: che cosa succede appena si esce da ciò che il maestro ha mostrato
 
-Quell'affermazione si può toccare con mano: è l'auto storta del racconto,
-scritta in numeri, e i numeri sono pochissimi.
+Che fuori da ciò che il maestro ha mostrato l'allievo sbagli sempre di più si
+può toccare con mano, con un'auto che sbanda scritta in numeri, e i numeri sono
+pochissimi.
 
 Di quanto siamo fuori posto lo dice un numero solo, che chiameremo $s$: zero
 vuol dire dritti in mezzo alla corsia, e più cresce (in positivo o in negativo)
@@ -303,14 +325,13 @@ aggiunge allo scarto un quarto di se stesso ($1{,}25 - 1 = 0{,}25$). Perché
 l'auto si raddrizzi invece di storcersi ancora, la correzione deve come minimo
 cancellare quell'aggiunta: deve cioè valere almeno un quarto dello scarto.
 
-L'esperto è un controllore che sa cosa fare ovunque, anche lontanissimo da
+L'esperto è un pilota automatico che sa cosa fare ovunque, anche lontanissimo da
 zero: la sua regola è correggere in proporzione allo scarto, così da riportarlo
 ogni volta all’$85\%$ di quello che era. A $s = 3$ corregge di $1{,}2$, e il
 conto torna: $1{,}25 \times 3 = 3{,}75$, meno $1{,}2$ fa $2{,}55$, che è
 esattamente l’$85\%$ di $3$. A $s = 20$ correggerà di $8$, e così via. E siccome
-è bravo, dallo zero non si allontana mai. Poi, a
-metà partita, diamo una folata di vento che l'esperto nelle sue registrazioni
-non ha mai preso.
+è bravo, dallo zero non si allontana mai. Poi, a metà partita, diamo una folata
+di vento che l'esperto nelle sue registrazioni non ha mai preso.
 
 ```python
 import torch
@@ -436,16 +457,14 @@ cambiati quali situazioni stanno nel mucchio degli esempi.
 
 ### Che cosa questo esperimento dimostra, e che cosa no
 
-Primo, quel $74{,}6$ è un seme, cioè una singola ripetizione, quella che
-esce dal numero da cui è partito il sorteggio interno. Rifacendo tutto da capo
-con otto semi diversi, lo stato finale della clonazione dopo la folata ha
-mediana $322$ e va da $76$ a $473$: il numero del racconto sta perfino sotto
-il più mite degli otto, e la mediana è più di quattro volte più grande. La
+Primo, quel $74{,}6$ è un seme, cioè una singola ripetizione. Rifacendo tutto da
+capo con otto semi diversi, lo stato finale della clonazione dopo la folata ha
+mediana $322$ e va da $76$ a $473$: il numero del racconto sta perfino sotto il
+più mite degli otto, e la mediana è più di quattro volte più grande. La
 conclusione qualitativa non cambia di una virgola (la clonazione finisce fuori
-strada in tutti e otto i casi, finendo cento o mille volte più lontano
-dell'esperto), ma la cifra precisa è una proprietà di quella ripetizione e non
-dell'algoritmo, e per giunta quella che fa apparire il guaio
-più piccolo di com'è.
+strada in tutti e otto i casi, almeno mille volte più lontano dell'esperto), ma
+la cifra precisa è una proprietà di quella ripetizione e non dell'algoritmo, e
+per giunta quella che fa apparire il guaio più piccolo di com'è.
 
 Secondo, e conta di più: senza la folata non succede niente. Sugli stessi
 otto semi, lasciata a sé, la clonazione chiude con mediana $0{,}0285$ (fra
@@ -483,7 +502,7 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
   qualcuno che il lavoro lo sa fare, si annota «in questa situazione, questa
   mossa», e da lì in poi il problema diventa indovinare la risposta giusta,
   invece di imparare per tentativi. Stabile, sicura, parca di dati, e già
-  incontrata due volte senza chiamarla per nome.
+  incontrata due volte, nel primo AlphaGo e negli assistenti conversazionali.
 - La crepa sta in un'assunzione che nessuno dichiara: che le situazioni siano
   sempre le stesse, decise dal mondo. Non è così, perché le situazioni che
   incontri dipendono dalle mosse che hai fatto, e le mosse dell'allievo non
@@ -516,9 +535,9 @@ i suoi stessi errori, resta un risultato teorico, e questo codice non la prova.
 :class: important
 - La clonazione comportamentale trasforma il controllo in apprendimento
   supervisionato: coppie (situazione, azione dell'esperto), e si minimizza
-  l'errore. Stabile, efficiente nei dati, sicura, e già usata due volte nel
-  libro senza il suo nome (la policy iniziale di AlphaGo, la fase supervisionata
-  che precede l'RLHF).
+  l'errore. Stabile, efficiente nei dati, sicura, e già usata due volte (la
+  policy iniziale di AlphaGo, la fase supervisionata che precede l'RLHF); la
+  ritroverà il Decision Transformer dell'RL offline.
 - L'assunzione che salta è quella di dati i.i.d.: la distribuzione degli
   stati è indotta dalla politica e non fissata dal mondo, e quella
   dell'allievo non è quella del maestro.

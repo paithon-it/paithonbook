@@ -17,18 +17,21 @@ Da questa asimmetria nasce un'idea che negli ultimi anni ha un nome:
 **data-centric AI**. La provocazione, resa popolare da Andrew Ng intorno al
 2021, è semplice. Per un decennio si sono limate le architetture per rubare un
 decimale di accuratezza a un *benchmark*, cioè a una prova standard su cui i
-modelli si confrontano, come un compito in classe uguale per tutti. Ma nei
-sistemi reali il guadagno più grande si ottiene quasi sempre migliorando i
-*dati*: etichette più coerenti, esempi più rappresentativi, meno rumore.
+modelli si confrontano, come un compito in classe uguale per tutti. La tesi è
+che in molti sistemi reali il guadagno maggiore venga dal migliorare i *dati*
+più che l'architettura: etichette più coerenti, esempi più rappresentativi,
+meno rumore. Il suo argomento più concreto sono gli errori di etichetta che
+si trovano perfino nei set di prova dei benchmark più usati: in dieci di
+questi, in media almeno il 3,3% degli esempi ha l'etichetta sbagliata
+{cite}`northcutt2021pervasive`.
 
 Se è così, i dati non possono restare un allegato del codice: vanno trattati
-come cittadini di prima classe, versionati, testati e sorvegliati con la
-stessa disciplina. {doc}`Dal notebook alla produzione
-</MLOps/dal-notebook-alla-produzione>` ha
-stabilito che riprodurre un modello richiede tre artefatti: codice, dati,
-modello. Qui si entra nel più grande e trascurato dei tre, e nel sistema di
-tubature che lo trasporta
-{cite}`huyen2022designing`.
+come il codice, cioè versionati, testati e sorvegliati con la stessa
+disciplina. {doc}`Dal notebook alla produzione
+</MLOps/dal-notebook-alla-produzione>` ha stabilito che riprodurre un modello
+richiede tre artefatti: codice, dati, modello. Qui si entra nel più grande e
+trascurato dei tre, e nell'infrastruttura che lo trasporta, la *pipeline* dei
+dati {cite}`huyen2022designing`.
 
 ## Versionare i dati
 
@@ -62,11 +65,11 @@ li consegna. Quando arrivano, li ripassi nel tritatutto: se il codice che ne
 esce è quello scritto sul cartellino, per strada non si è rotto niente.
 
 Niente si corregge sul posto: chi cambia i dati ne deposita una versione nuova,
-con un cartellino nuovo, e la vecchia resta dov'era, così un lavoro di sei mesi
-fa ritrova i dati che aveva usato. E sul modello finito si scrive di quali
-cartellini è fatto, quelli dei dati e quello del programma: mesi dopo, quando
-qualcuno chiede da dove viene una certa risposta, si risale all'indietro fino
-al dato di partenza.
+con un cartellino nuovo, e la vecchia resta dov'era: così chi riprende un
+lavoro di sei mesi prima ritrova i dati che quel lavoro aveva usato. E sul
+modello finito si scrive di quali cartellini è fatto, quelli dei dati e quello
+del programma: mesi dopo, quando qualcuno chiede da dove viene una certa
+risposta, si risale all'indietro fino al dato di partenza.
 
 `````
 
@@ -134,7 +137,10 @@ niente lo scavalca. Ne segue che quel blocco va conservato versione per
 versione esattamente come il programma. Se cambia il modo di costruire una
 feature, il modello addestrato prima e quello addestrato dopo non stanno più
 guardando la stessa cosa, e confrontare i loro voti è come confrontare i tempi
-di due corse su piste di lunghezza diversa.
+di due corse su piste di lunghezza diversa. Per le reti che imparano da sole le
+proprie rappresentazioni (le immagini, il testo) il blocco di mezzo si
+assottiglia, fino a ridursi alla normalizzazione o alla divisione in token; ma
+resta una trasformazione, e si conserva insieme al modello.
 
 `````{tab} Elementare
 
@@ -173,14 +179,19 @@ garantisce che un ordine di esecuzione valido esista, di solito più d'uno, ed �
 per questo che qualcosa poi può andare in parallelo. Due proprietà la rendono
 governabile. L’**idempotenza**: rilanciare uno stadio già eseguito lascia il
 risultato dov'era invece di accumulare effetti collaterali, ed è la condizione
-per ripartire da metà catena dopo un errore. E la **materializzazione
-versionata** degli stadi intermedi, così che un cambiamento a valle non
-obblighi a ricalcolare tutto da capo. Il programma che tiene insieme il tutto
-si chiama **orchestratore**: decide in che ordine far girare gli stadi, quali
-possono andare in parallelo e cosa ritentare quando uno fallisce. Ma, come per
-il versionamento, lo strumento è secondario rispetto al principio.
-Automatizzare l'intera catena (da dato grezzo a modello valutato)
-con un comando solo è il cuore della *Continuous Delivery for Machine
+per ripartire da metà catena dopo un errore. Formalmente, detto $A$ lo stato
+dell'archivio e $\Phi(A)$ quello che lo stadio lascia dopo un'esecuzione,
+$\Phi(\Phi(A)) = \Phi(A)$; lo si ottiene facendo scrivere a ogni stadio il
+proprio risultato sotto una chiave determinata dall'ingresso (la partizione del
+giorno, l'impronta dei dati), sostituendo ciò che c'era invece di accodarvi. E
+la **materializzazione versionata** degli stadi intermedi, così che un
+cambiamento a valle non obblighi a ricalcolare tutto da capo. Il programma che
+tiene insieme il tutto si chiama **orchestratore**: decide in che ordine far
+girare gli stadi (un ordinamento topologico del DAG, che costa $O(V + E)$ con
+$V$ stadi ed $E$ dipendenze), quali possono andare in parallelo e cosa ritentare
+quando uno fallisce. Ma, come per il versionamento, lo strumento è secondario
+rispetto al principio. Automatizzare l'intera catena (da dato grezzo a modello
+valutato) con un comando solo è il cuore della *Continuous Delivery for Machine
 Learning* {cite}`sato2019continuous`: finché un pezzo della pipeline resta un
 rito manuale, l'intero sistema non è né riproducibile né rilasciabile in modo
 affidabile.
@@ -190,12 +201,14 @@ affidabile.
 ### In che formato stanno i dati, e perché conta
 
 C'è una decisione che si prende all'inizio, che sembra tecnica e non lo è: come
-i dati stanno scritti su disco fra uno stadio e il successivo. Quasi tutti,
-senza pensarci, scelgono il CSV, che è il modo più semplice di scrivere una
-tabella in un file di testo: una riga del file per ogni riga della tabella, e
-dentro ogni riga i valori separati da una virgola. È quello che esce da un
-foglio di calcolo quando gli si chiede di esportare. Ed è quasi sempre la
-scelta sbagliata.
+i dati stanno scritti su disco fra uno stadio e il successivo. La scelta più
+comune è il CSV, il modo più semplice di scrivere una tabella in un file di
+testo: una riga del file per ogni riga della tabella, e dentro ogni riga i
+valori separati da una virgola. È quello che esce da un foglio di calcolo
+quando gli si chiede di esportare. Per le tabelle che passano da uno stadio
+all'altro, però, è una scelta povera: non porta con sé i tipi delle colonne,
+va letto per intero anche quando ne servono poche, e occupa molto più spazio
+del necessario.
 
 `````{tab} Elementare
 
@@ -223,11 +236,13 @@ allora «Milano» si scrive una volta sola e poi ci si rimanda con un numerino;
 nella scheda per riga ogni valore è circondato da valori di natura diversa, e
 non c'è niente da riconoscere.
 
-L'archivio però riconosce solo i valori uguali, e nella colonna degli orari,
-che crescono di pochi secondi alla volta, di uguali non ce n'è quasi nessuno:
-gli basterebbe segnare il primo orario e poi, per ciascuno dei seguenti, di
-quanti secondi è più avanti del precedente (un numerino piccolo che si ripete
-spesso), ma quel modo di scrivere glielo si deve chiedere apposta.
+Questo risparmio, però, vale solo per i valori che si ripetono. Nella colonna
+degli orari, che crescono di pochi secondi alla volta, due orari uguali non ci
+sono quasi mai. Lì converrebbe un altro trucco: scrivere il primo orario per
+intero e poi, per ciascuno dei seguenti, soltanto di quanti secondi è più
+avanti del precedente, un numerino piccolo. Più quei salti sono regolari, più
+il trucco rende. Il formato lo sa fare, ma da solo non lo fa: bisogna
+chiederglielo.
 
 Il formato per colonna più usato si chiama **Parquet**, e in più tiene i tipi
 delle colonne (che il CSV non ha: per lui è tutto testo, ed è il motivo per cui
@@ -257,32 +272,87 @@ di ML, dove si leggono poche colonne di tabelle larghe, è la voce dominante.
 per contenuto, il che abilita codifiche specializzate (dizionario per le
 categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
 timestamp) prima ancora della compressione generica. Rispetto al CSV equivalente
-il guadagno è di qualche volta, e a decidere quante è la codifica a dizionario.
-I numeri che seguono vengono da tabelle di duecentomila righe, scritte con le
-impostazioni di serie, che la delta non la usano: la si chiede colonna per
-colonna, e allora conta anche la risoluzione degli istanti (in nanosecondi gli
-scarti sono mille volte più grandi che in microsecondi, costano una decina di
-bit in più ciascuno, e il file esce fra una volta e mezza e quasi il doppio più
-grosso). Sei colonne di categorie con
-sei valori distinti (nomi di città) stanno in un file diciotto volte più
-piccolo, perché il dizionario sostituisce ogni stringa con un indice, e quante
-volte lo decide la lunghezza delle stringhe. Sei colonne di numeri casuali con
-la virgola scendono a poco più di due volte, perché lì non c'è niente da
-riconoscere, e una tabella mista come quelle su cui si addestra di solito sta
-fra il due e il tre a seconda di quante colonne siano categoriche.
+il guadagno è di qualche volta, e a decidere quante è soprattutto la codifica a
+dizionario. Il blocco che segue lo misura su tabelle di duecentomila righe, con
+le impostazioni di serie di Pandas e PyArrow, che la *delta encoding*
+(memorizzare la differenza fra un valore e il precedente) non la usano: la si
+chiede colonna per colonna.
+
+```python
+import io
+
+import numpy as np
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
+
+rng = np.random.default_rng(0)
+n = 200_000
+citta = np.array(["Milano", "Roma", "Napoli", "Torino", "Bari", "Genova"])
+
+
+def rapporto(tabella, delta=False):
+    """Quante volte il Parquet è più piccolo del CSV della stessa tabella."""
+    byte_csv = len(tabella.to_csv(index=False).encode())
+    buf = io.BytesIO()
+    if delta:  # la delta si chiede colonna per colonna, e senza dizionario
+        codifica = {c: "DELTA_BINARY_PACKED" for c in tabella}
+        pq.write_table(pa.Table.from_pandas(tabella, preserve_index=False), buf,
+                       use_dictionary=False, column_encoding=codifica)
+    else:      # le impostazioni di serie
+        tabella.to_parquet(buf, index=False)
+    return byte_csv / len(buf.getvalue())
+
+
+categorie = pd.DataFrame({f"c{i}": rng.choice(citta, n) for i in range(6)})
+numeri = pd.DataFrame({f"x{i}": rng.normal(size=n) for i in range(6)})
+print(f"sei colonne di città:            {rapporto(categorie):5.1f}")
+print(f"sei colonne di numeri casuali:   {rapporto(numeri):5.1f}")
+for k in (2, 4):
+    mista = pd.concat([categorie.iloc[:, :k], numeri.iloc[:, k:]], axis=1)
+    print(f"mista, {k} colonne di città su 6:  {rapporto(mista):5.1f}")
+
+# istanti al microsecondo, che crescono di qualche secondo alla volta
+for passo in (3, 60):
+    salti = rng.integers(1, passo + 1, size=(n, 6))
+    secondi = 1_700_000_000 + np.cumsum(salti, axis=0)
+    istanti = pd.DataFrame({f"t{i}": pd.to_datetime(secondi[:, i], unit="s")
+                            .astype("datetime64[us]") for i in range(6)})
+    print(f"istanti a passi di 1-{passo} s: di serie {rapporto(istanti):.1f}, "
+          f"con la delta {rapporto(istanti, delta=True):.1f}")
+```
+
+```text
+sei colonne di città:             16.6
+sei colonne di numeri casuali:     2.1
+mista, 2 colonne di città su 6:    2.4
+mista, 4 colonne di città su 6:    3.2
+istanti a passi di 1-3 s: di serie 2.7, con la delta 22.8
+istanti a passi di 1-60 s: di serie 2.5, con la delta 8.1
+```
+
+Sei colonne di categorie con sei valori distinti (nomi di città) stanno in un
+file 16,6 volte più piccolo del CSV, perché il dizionario sostituisce ogni
+stringa con un indice di pochi bit, e quante volte lo decide la lunghezza delle
+stringhe. Sei colonne di numeri casuali con la virgola scendono a poco più di
+due volte: lì non c'è niente da riconoscere, e resta soltanto il risparmio della
+scrittura in binario. Una tabella mista come quelle su cui si addestra di solito
+sta in mezzo, fra 2,4 e 3,2 a seconda di quante colonne siano categoriche. Sono
+ordini di grandezza, non costanti: cambiano con le stringhe, con la
+distribuzione dei valori e con la versione della libreria.
 
 Le colonne ordinate, che l'intuizione metterebbe in alto, non ci vanno, e la
-ragione è istruttiva: la codifica che le comprimerebbe davvero (memorizzare le
-differenze fra un valore e il precedente, la *delta encoding*) non è quella
-che la libreria sceglie da sola. Su una colonna di istanti che crescono di
-pochi secondi alla volta il default resta sotto il tre, perché il
-dizionario, su valori quasi tutti diversi, non ha niente da riusare; chiedendo
-esplicitamente la delta si sale a una decina di volte e oltre, e quanto
-esattamente lo decide la regolarità degli scarti (con incrementi fra uno e tre
-secondi si arriva sopra il venti, con incrementi fino a un minuto si resta
-sotto il dieci). È il caso da tenere a mente ogni volta che si dichiara che
-cosa fa uno strumento «di serie»: qui l'impostazione di serie lascia sul
-tavolo un fattore fra il tre e l'otto.
+ragione è istruttiva: la codifica che le comprimerebbe davvero, la delta, non
+è quella che la libreria sceglie da sola. Su una colonna di istanti che
+crescono di pochi secondi alla volta l'impostazione di serie resta sotto il tre
+(2,7 e 2,5 nelle due prove), perché il dizionario, su valori quasi tutti
+diversi, non ha niente da riusare. Chiedendo esplicitamente la delta si sale a
+22,8 quando i salti stanno fra uno e tre secondi, e a 8,1 quando arrivano fino
+a un minuto: quanto si guadagna lo decide la regolarità dei salti, perché in
+ogni blocco ogni differenza si scrive con i bit che servono alla più larga. È
+il caso da tenere a mente ogni volta che si dichiara che cosa fa uno strumento
+«di serie»: qui l'impostazione di serie lascia sul tavolo un fattore che va da
+poco più di tre a più di otto.
 
 **Predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
@@ -302,11 +372,10 @@ valore è l'eliminazione della serializzazione ai confini: due processi, o
 due librerie in linguaggi diversi, che parlano Arrow si scambiano una tabella
 senza copiarla né convertirla. È la ragione per cui lo stesso formato compare
 sotto motori che non si somigliano affatto, ed è anche ciò che sta sotto il
-tipo stringa di Pandas, cambiato di recente e in silenzio: dalla versione 3 le
-colonne di testo hanno un tipo dedicato,
-appoggiato ad Arrow quando PyArrow è installato, e quella differenza (con il
-vecchio `object` di NumPy era sostanziale) è ormai il comportamento normale
-della libreria, e non un'opzione da attivare.
+tipo stringa di Pandas: dalla versione 3.0 le colonne di testo hanno un tipo
+dedicato, `str`, appoggiato ad Arrow quando PyArrow è installato, e quella
+differenza (con il vecchio `object` di NumPy era sostanziale) è ormai il
+comportamento normale della libreria, e non un'opzione da attivare.
 
 La regola pratica, sintetica: CSV per scambiare con un umano, Parquet per
 tutto il resto; e se una tabella attraversa un confine di processo o di
@@ -346,7 +415,10 @@ Un barattolo, poi, va preso dal giorno giusto. Per rifare il piatto di un
 martedì di tre mesi fa serve il soffritto di quel martedì: chi prende quello di
 oggi ottiene un piatto migliore di quello che era uscito davvero, perché ci ha
 messo dentro qualcosa che quel giorno non c'era ancora. Assaggia, conclude che
-la ricetta è ottima, e in servizio scopre di no.
+la ricetta è ottima, e in servizio scopre di no. E il giorno che conta è quello
+in cui il barattolo è arrivato sul banco, non quello scritto sull'etichetta: un
+soffritto cotto il lunedì sera porta la data del lunedì, ma sul banco arriva il
+martedì sera, quindi per rifare il pranzo del martedì non vale.
 
 E una feature preparata bene la riusano dieci modelli diversi: si cucina una
 volta, si serve a tutti.
@@ -369,15 +441,32 @@ etichettato al tempo $t$, le sue feature vanno calcolate con i soli dati
 disponibili *prima* di $t$: usare un valore aggregato che include informazione
 successiva a $t$ inietta nel modello una conoscenza del futuro che in
 produzione non avrà mai (una forma di *data leakage* temporale che gonfia le
-metriche in laboratorio e crolla sul campo). Un *point-in-time join* corretto
-è tedioso da implementare a mano ed è una delle ragioni per cui il feature
-store esiste come componente dedicato.
+metriche in laboratorio e crolla sul campo).
+
+Formalmente è un *as-of join*. Per un esempio dell'entità $e$ etichettato
+all'istante $t$, il valore di ogni feature $f$ è l'ultimo registrato non oltre
+$t - \delta_f$,
+
+$$
+x_f(e, t) = v_f(e, s^\ast), \qquad
+s^\ast = \max\{\, s \le t - \delta_f : \text{esiste } v_f(e, s) \,\},
+$$
+
+dove $v_f(e, s)$ è il valore calcolato all'istante $s$ e $\delta_f$ il ritardo
+con cui quel valore diventa disponibile al servizio (in Pandas,
+`pd.merge_asof`). Il ritardo è la parte che si dimentica: gli istanti che
+contano sono quelli in cui il dato è *arrivato* al sistema, non quelli in cui
+l'evento è *accaduto*, e un join sul solo tempo dell'evento rispetta $s \le t$ e
+lascia trapelare il futuro lo stesso, perché il valore c'era già nell'archivio
+storico ma non ancora nel servizio. Un *point-in-time join* corretto è tedioso
+da implementare a mano ed è una delle ragioni per cui il feature store esiste
+come componente dedicato.
 
 `````
 
 ## Training–serving skew
 
-Arriviamo così al guasto più classico e più costoso di tutta la disciplina,
+Arriviamo così a un guasto classico, e dei più insidiosi perché silenzioso:
 quello che il feature store esiste per prevenire. Succede quando una feature
 viene calcolata in un modo mentre il modello impara e in un modo *anche solo
 leggermente diverso* mentre risponde. Il modello, tarato sui numeri del primo
@@ -403,13 +492,13 @@ un'età in anni diventano paragonabili. La media e lo sbalzo abituale si
 calcolano una volta sola, sui dati di addestramento, e poi si congelano: fanno
 parte del modello quanto i pesi.
 
-In produzione, per una svista, qualcuno li ricalcola sul *singolo lotto*
-appena arrivato, ed è lì che il pavimento cede. In addestramento «alto» voleva
-dire «più della media di tutti»; se la media la si rifà sul gruppetto appena
-arrivato, e quel gruppetto è fatto di soli importi alti, nessuno di loro è più
-sopra la media: sono tutti normali. Il modello smette di insospettirsi proprio
-del lotto più sospetto che gli sia mai capitato. Fra il programma giusto e
-quello bacato la differenza è una riga sola.
+In produzione, per una svista, qualcuno li ricalcola sul *singolo lotto* appena
+arrivato, ed è lì che la bilancia comincia a mentire. In addestramento «alto»
+voleva dire «più della media di tutti»; se la media la si rifà sul gruppetto
+appena arrivato, e quel gruppetto è fatto di soli importi alti, nessuno di loro
+è più sopra la media: sono tutti normali. Il modello smette di insospettirsi
+proprio del lotto più sospetto che gli sia mai capitato. Fra il programma
+giusto e quello bacato la differenza è una riga sola.
 
 `````
 
@@ -469,24 +558,30 @@ p_bug = predici_bacato(X_prod)
 print("prob. media di frode (corretta):", round(float(p_ok.mean()), 3))
 print("prob. media di frode (bacata):  ", round(float(p_bug.mean()), 3))
 print("scarto massimo sulle predizioni:", round(float(np.abs(p_ok - p_bug).max()), 3))
+allarmi_ok, allarmi_bug = int((p_ok > 0.5).sum()), int((p_bug > 0.5).sum())
+print("allarmi oltre 0.5 (corretta):   ", allarmi_ok, "su", len(X_prod))
+print("allarmi oltre 0.5 (bacata):     ", allarmi_bug, "su", len(X_prod))
 ```
 
 ```text
 prob. media di frode (corretta): 0.967
 prob. media di frode (bacata):   0.454
 scarto massimo sulle predizioni: 0.793
+allarmi oltre 0.5 (corretta):    32 su 32
+allarmi oltre 0.5 (bacata):      13 su 32
 ```
 
-Lo stesso identico modello, sugli stessi identici dati, dà due risposte
-opposte. La pipeline corretta riconosce il lotto come sospetto: probabilità
-media di frode $0{,}97$, cioè un allarme netto. Quella bacata, ricentrando ogni
-lotto su sé stesso, cancella l'anomalia e scende a $0{,}45$, che non vuol dire
-«innocuo»: vuol dire testa o croce, ed è anche peggio, perché un sistema
-antifrode tarato per intervenire sopra una certa soglia adesso ne lascia
-passare la maggior parte. Su singole transazioni la differenza fra le due
-risposte arriva a $0{,}79$. Nessun errore, nessun avviso: solo predizioni
-sbagliate. Ecco perché la definizione di una feature deve vivere in *un posto
-solo*, condiviso tra addestramento e servizio: è il compito del feature store.
+Lo stesso identico modello, sugli stessi identici dati, dà due risposte molto
+diverse. La pipeline corretta riconosce il lotto come sospetto: probabilità
+media di frode $0{,}97$, e tutte e 32 le transazioni oltre una soglia
+d'intervento di $0{,}5$. Quella bacata, ricentrando ogni lotto su sé stesso,
+cancella l'anomalia e scende a $0{,}45$, che non vuol dire «innocuo»: vuol dire
+testa o croce, ed è anche peggio, perché con la stessa soglia il sistema
+antifrode ne ferma 13 su 32 e lascia passare le altre diciannove. Su singole
+transazioni la differenza fra le due risposte arriva a $0{,}79$. Nessun errore,
+nessun avviso: solo predizioni sbagliate. Ecco perché la definizione di una
+feature deve vivere in *un posto solo*, condiviso tra addestramento e servizio:
+è il compito del feature store.
 
 ## Validare i dati in ingresso
 
@@ -583,6 +678,8 @@ records = [
     {"eta": 41, "importo": float("nan"), "citta": "Napoli"},   # importo NaN
     {"eta": 29, "importo": 60.0},                              # citta mancante
     {"eta": "trenta", "importo": 15.0, "citta": "Torino"},     # eta di tipo sbagliato
+    {"eta": True, "importo": 10.0, "citta": "Bari"},           # eta booleana
+    {"eta": 52, "importo": 250, "citta": "Genova"},            # importo intero
 ]
 
 for i, r in enumerate(records):
@@ -596,32 +693,38 @@ record 1: eta: 200 oltre il massimo 120
 record 2: importo: NaN
 record 3: citta: valore mancante
 record 4: eta: tipo str, atteso int
+record 5: OK
+record 6: importo: tipo int, atteso float
 ```
 
 Poche righe, ma è la porta blindata del sistema: ogni scheda che entra viene
 promossa o respinta secondo regole esplicite, e le respinte finiscono in un
 registro invece che, silenziosamente, dentro il modello.
 
-E proprio su questo guardiano va detta una cosa, perché il guardiano ha una
-falla. In Python il vero e il falso sono, sotto sotto, dei numeri: vero vale
-uno e falso vale zero. Ne segue che un'età scritta «vero» passa indenne da tutti
-e due i controlli, quello sul tipo (perché vero *è* un numero) e quello
-sull'intervallo (perché uno sta fra zero e centoventi). Il guardiano dice che va
-tutto bene, e non va bene niente.
-
-Capita davvero, ogni volta che una colonna di sì e no viene
+Proprio questo guardiano, però, ha due falle, e le ultime due righe
+dell'uscita le mostrano. La prima è nel record 5. In Python il vero e il falso
+sono, sotto sotto, dei numeri: vero vale uno e falso vale zero. Ne segue che
+un'età scritta «vero» passa indenne da tutti e due i controlli sull'età,
+quello sul tipo (perché vero *è* un numero intero) e quello sull'intervallo
+(perché uno sta fra zero e centoventi). Il guardiano dice che va tutto bene, e
+non va bene niente. Capita davvero, ogni volta che una colonna di sì e no viene
 letta come vero-e-falso da un programma e come zero-e-uno da un altro, cioè
 proprio la classe di guasti silenziosi che un CSV senza tipi dichiarati produce
-a getto continuo. La cura è chiedere il tipo *esatto*
-(`type(valore) is regole["tipo"]`) invece di accontentarsi di uno che gli
-somiglia.
+a getto continuo.
+
+La seconda falla è il rovescio della prima, nel record 6: un importo di 250
+euro scritto senza decimali è un dato valido, e il guardiano lo respinge,
+perché `250` è un intero e lo schema chiede un numero con la virgola. Le due
+cure vanno quindi in versi opposti. Per l'età serve il tipo *esatto*
+(`type(valore) is int`), che lascia fuori il booleano; per l'importo serve un
+tipo più largo, che accetti interi e decimali ed escluda soltanto i booleani.
 
 In un impianto vero, poi, questo schema si arricchisce (soglie su quante
 caselle vuote si tollerano, controlli di coerenza fra un campo e l'altro,
 l'aggancio ai controlli sulle distribuzioni) ma l'ossatura resta questa:
 dichiarare cosa ci si aspetta dai dati, e verificarlo prima di fidarsene.
-Trattare i dati da cittadini di prima classe significa, alla fine, esattamente
-questo: dargli un contratto, e farlo rispettare.
+Trattare i dati come il codice significa, alla fine, esattamente questo:
+dargli un contratto, e farlo rispettare.
 
 ## Collaudare il modello, non solo i dati
 
@@ -694,16 +797,21 @@ spesso le prestazioni, perché quei dati non coprono tutti i casi e condividono
 i bias dell'insieme di addestramento. Sull'analisi del sentiment il metodo ha
 trovato fallimenti frequenti su capacità elementari, come la negazione, sia in
 servizi commerciali sia in modelli di ricerca affinati con accuratezze oltre il
-90% sul proprio insieme di prova; in uno studio con utenti, chi lo usava ha
-scritto più del doppio dei test e trovato quasi il triplo dei difetti gravi. I
-limiti sono di costruzione: i test coprono le capacità che qualcuno ha
-pensato, un tasso di fallimento su casi costruiti non stima la frequenza
-dell'errore in produzione, perché i casi non sono campionati dal traffico, e
-superare un template non garantisce la capacità fuori da quel template. Nella
-rubrica di Breck e colleghi {cite}`breck2017ml` i test del modello sono un asse
-a sé, fra cui la qualità su tutte le fette importanti dei dati; il collaudo
-comportamentale, venuto dopo e in modo indipendente, affronta con uno strumento
-più specifico un'esigenza che quell'asse aveva già individuato.
+90% sul proprio insieme di prova. In uno studio con diciotto partecipanti (otto
+dall'industria, dieci dall'università), due ore ciascuno per collaudare un
+modello affinato a riconoscere le domande duplicate (il compito QQP), chi aveva
+capacità e template ha scritto più del doppio dei test di chi lavorava senza
+(13,5 contro 5,8 in media) e trovato quasi il triplo dei difetti da correggere
+(6,2 contro 2,2), contando quelli a cui i partecipanti stessi davano gravità
+almeno 3 su 5. I limiti sono di costruzione: i test coprono le capacità che
+qualcuno ha pensato, un tasso di fallimento su casi costruiti non stima la
+frequenza dell'errore in produzione, perché i casi non sono campionati dal
+traffico, e superare un template non garantisce la capacità fuori da quel
+template. Nella rubrica di Breck e colleghi {cite}`breck2017ml` i test del
+modello sono un asse a sé, fra cui la qualità su tutte le fette importanti dei
+dati; il collaudo comportamentale, venuto dopo e in modo indipendente, affronta
+con uno strumento più specifico un'esigenza che quell'asse aveva già
+individuato.
 
 `````
 
@@ -765,12 +873,14 @@ lodi che con una lamentela calano: 1.00
 
 Sul suo insieme di prova il modello non sbaglia niente, e il collaudo trova un
 difetto che quel voto non poteva vedere. Nessuna negazione esce negativa:
-nell'addestramento «non» non c'era, e una parola mai vista il modello la scarta;
-anche avendola vista, poi, un modello che conta le parole senza guardarne
-l'ordine non saprebbe a quale aggettivo attaccarla. Le altre due prove passano:
-cambiare città non sposta nessuna risposta, e una lamentela fatta di parole
-note abbassa ogni lode. L'accuratezza piena e il collaudo misurano due cose
-diverse, e solo il secondo dice dove il modello si rompe.
+nell'addestramento «non» non c'era, e una parola mai vista il modello la
+scarta. E anche avendola vista, un modello che somma un peso per ogni parola
+darebbe a «non» un contributo solo, uguale davanti a «buono» e davanti a
+«pessimo»: potrebbe abbassare «non buono» soltanto abbassando insieme «non
+pessimo». Le altre due prove passano: cambiare città non sposta nessuna
+risposta, e una lamentela fatta di parole note abbassa ogni lode. L'accuratezza
+piena e il collaudo misurano due cose diverse, e solo il secondo dice dove il
+modello si rompe.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -790,10 +900,11 @@ diverse, e solo il secondo dice dove il modello si rompe.
   l'altra: l'archivio per colonna (Parquet) legge solo le poche voci
   che servono invece di attraversare tutte le schede, e si comprime meglio,
   perché un valore che si ripete si scrive una volta sola; dove di ripetuto non
-  c'è niente, come in una colonna di orari sempre diversi, quel risparmio va
+  c'è niente, come in una colonna di orari sempre diversi, serve un altro
+  trucco (scrivere soltanto i salti fra un orario e il successivo), e va
   chiesto apposta. Il CSV va bene per passare una tabella a una persona, non
   per il resto.
-- Il bug più costoso del mestiere è calcolare una stessa informazione in un
+- Un bug classico, e silenzioso, è calcolare una stessa informazione in un
   modo mentre si impara e in un modo appena diverso mentre si risponde: nessun
   errore compare a schermo, solo predizioni sbagliate. La cura è definirla in
   un posto solo (la dispensa comune, il *feature store*) e usarla di lì da
@@ -803,7 +914,8 @@ diverse, e solo il secondo dice dove il modello si rompe.
   plausibili? quante caselle sono vuote? Chi non passa finisce in un registro
   invece che dentro il modello. E il guardiano va scritto con cura, perché
   chiedere «è un numero?» lascia passare anche un «vero», che sotto sotto un
-  numero lo è.
+  numero lo è, e chiedere «è un numero con la virgola?» respinge un importo
+  tondo che andava benissimo.
 - Anche il modello va collaudato, e non basta il voto medio sugli esempi messi
   da parte: si preparano prove che chiedono una cosa sola (una negazione deve
   uscire negativa, cambiare città non deve contare, una lamentela non deve far
@@ -831,18 +943,20 @@ diverse, e solo il secondo dice dove il modello si rompe.
   CD4ML {cite}`sato2019continuous`.
 - Conta anche il formato in cui i dati stanno fra uno stadio e l'altro: uno
   colonnare (Parquet) legge solo le colonne che servono, comprime
-  meglio perché i valori simili sono vicini (diciotto volte su colonne
-  categoriche, poco più di due su float casuali, fra due e tre su una tabella
-  mista, e sotto il tre su istanti ordinati finché non si chiede la *delta
-  encoding*, che porta a una decina di volte e oltre), salta interi blocchi
+  meglio perché i valori simili sono vicini (su duecentomila righe, 16,6
+  volte su colonne categoriche, 2,1 su numeri casuali, fra 2,4 e 3,2 su una
+  tabella mista, e sotto il tre su istanti ordinati finché non si chiede la
+  *delta encoding*, che li porta fra 8,1 e 22,8 volte), salta interi blocchi
   grazie alle statistiche, e ha uno schema con i tipi che al CSV manca.
   Arrow fa la stessa cosa in memoria, e serve a passarsi una tabella
   fra processi o linguaggi senza convertirla. CSV per un umano, Parquet per
   tutto il resto.
 - Il feature store centralizza la definizione delle feature: stessa ricetta
   in addestramento (*offline*) e in produzione (*online*), riuso tra modelli,
-  freschezza e point-in-time correctness contro il *leakage* temporale.
-- Il training–serving skew è il bug silenzioso per eccellenza: una feature
+  freschezza e point-in-time correctness contro il *leakage* temporale (un
+  *as-of join* che conta anche il ritardo con cui ogni valore arriva al
+  servizio).
+- Il training–serving skew è un bug silenzioso tipico: una feature
   calcolata diversamente in training e in produzione (es. normalizzare col
   batch invece che con le statistiche congelate del training) sballa le
   predizioni senza sollevare alcun errore.
@@ -851,7 +965,8 @@ diverse, e solo il secondo dice dove il modello si rompe.
   controlli puntuali fermano il record malformato; quelli distribuzionali
   sfumano nel monitoraggio del *dataset shift* {cite}`quinonero2009dataset`.
   Attenzione al controllo di tipo: `isinstance` accetta i sottotipi, e in
-  Python `bool` è un `int`.
+  Python `bool` è un `int`; e un tipo troppo stretto (`float`) respinge un
+  `int` valido.
 - Il collaudo comportamentale (CheckList {cite}`ribeiro2020beyond`) incrocia
   capacità e tre tipi di test (MFT, INV, DIR) generati da template: trova
   quello che l'accuratezza su dati tenuti da parte non vede, ma solo sulle

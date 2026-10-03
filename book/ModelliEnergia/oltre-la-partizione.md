@@ -2,9 +2,11 @@
 
 La macchina di Boltzmann ha lasciato in eredità $Z$, la funzione di
 partizione: la somma su *tutte* le configurazioni possibili. È lei a dettare
-tutto ciò che segue, e il fatto che non si riesca a calcolarla è un muro, più
-che una difficoltà tecnica fra le tante. (Da qui in avanti si pone $T = 1$,
-così che $Z$ dipenda solo dai parametri.)
+tutto ciò che segue. Per un'energia scelta senza vincoli sull'architettura, in
+alta dimensione, non si riesce a calcolarla, e questo è un muro più che una
+difficoltà tecnica fra le tante: i modelli della {doc}`verosimiglianza esatta
+</VerosimiglianzaEsatta/overview>` lo evitano proprio pagando in vincoli sulla
+forma della rete.
 
 Una rete di venticinque neuroni accesi o spenti, come quella della memoria
 associativa, ha trentatré milioni di configurazioni ($2^{25} = 33\,554\,432$),
@@ -17,14 +19,16 @@ regalando a quel computer una velocità mille volte superiore a quella che ha,
 un miliardo di configurazioni al secondo, servirebbero circa
 $4 \times 10^{13}$ anni per percorrerle: quasi tremila volte l'età
 dell'universo. E cento neuroni accesi o spenti sono un'immagine in bianco e
-nero di dieci pixel per dieci: nemmeno una figurina. Nessun trucco di
-ingegneria fa sparire trenta zeri: se una strada passa da $Z$, quella strada è
-chiusa.
+nero di dieci pixel per dieci, molto meno di una fotografia. Il costo cresce
+come $2^N$, e nessun miglioramento dell'hardware fa sparire trenta zeri: per
+un'energia qualunque in alta dimensione, un metodo che deve calcolare $Z$ è
+escluso in partenza.
 
 `````{tab} Elementare
 
-Il paesaggio, con tutte le risposte possibili messe una accanto all'altra, è
-grande come un continente: da qui in avanti lo chiameremo così. E su quel
+È la stessa carta in rilievo dell'apertura del capitolo, con tutte le
+risposte possibili messe una accanto all'altra, ma guardata per quello che è:
+grande come un continente, e da qui in avanti la chiameremo così. E su quel
 continente piove. L'acqua scende e si raccoglie in basso, quindi le valli si
 riempiono e le cime restano asciutte, e la pioggia raccolta è la probabilità.
 Quanta ne raccolga una valle dipende da due cose, da quanto è profonda e da
@@ -38,7 +42,8 @@ di partizione, ed è ciò che trasforma un'altezza in una percentuale.
 
 E perché mai dovremmo misurarlo? Perché imparare, per un modello a energia,
 sono due gesti e non uno: scavare il paesaggio dove stanno i dati veri, e
-rialzarlo dove il modello si immagina roba che non esiste. Il primo è facile, i
+rialzarlo dove il modello si immagina roba che non esiste. Sono la veglia e il
+sogno della macchina di Boltzmann, con altri nomi. Il primo è facile, i
 dati ce li abbiamo in mano. Il secondo no: per sapere che cosa il modello si
 immagina bisogna prima fargli produrre qualcosa, e produrlo *nelle proporzioni
 giuste* sembra richiedere di conoscere il continente intero. E i gesti sono due
@@ -55,14 +60,16 @@ chiede nessuna misura d'insieme. Oppure *aggirarlo*: sostituire la domanda
 «quanto è probabile questo?» con «questo viene dai dati o l'ho inventato io?»,
 che è una domanda da sì o no, e a rispondere sì o no sappiamo addestrare un
 classificatore da trent'anni. La prima delle tre è la più sorprendente:
-camminando secondo la regola giusta, le proporzioni vengono da sé, e quel
-«sembra richiedere» era di troppo.
+camminando secondo la regola giusta, le proporzioni vengono da sé, a lungo
+andare, e quel «sembra richiedere» era di troppo.
 
 `````
 
 `````{tab} Superiore
 
-Il punto di attrito è il gradiente della log-verosimiglianza. Da
+Da qui in avanti si pone $T = 1$, così che $Z$ dipenda soltanto dai
+parametri: $Z(\theta)$. Il punto di attrito è il gradiente della
+log-verosimiglianza. Da
 $p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$ segue
 $\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - \log Z(\theta)$, e il primo
 addendo si deriva senza storie. Tutto sta nel secondo, ed è il passaggio da
@@ -113,23 +120,31 @@ questa luce, tre risposte alla stessa domanda: chi solleviamo, e come?
 ## Prima via: campionare il paesaggio
 
 Se il conto esatto su tutto il paesaggio non si può fare, lo si può stimare
-visitandone dei pezzi: non calcolare, campionare. Il modo classico è mandare
-un esploratore a spasso sul paesaggio, lasciarlo camminare a lungo e segnare
-ogni tanto dove si trova. Se cammina secondo la regola giusta, il tempo che
-passa in un posto è proporzionale alla pioggia che quel posto raccoglie, e
-allora i punti segnati sono un campione onesto: valgono quanto se li avessimo
-pescati sapendo tutte le percentuali. Un esploratore così, in gergo, si chiama
-**catena**, e nella pratica se ne fanno camminare migliaia in parallelo.
+visitandone dei pezzi: non calcolare, campionare. Il modo classico è far
+camminare uno stato sul paesaggio, un passo dopo l'altro, con una regola che
+guarda soltanto dove si trova adesso, e segnare ogni tanto dove è arrivato. Una
+successione di stati fatta così è una {doc}`catena di Markov
+</Matematica/catene-di-markov>`, e il metodo si chiama *Monte Carlo a catena di
+Markov*, in sigla MCMC. Se la regola ha $p_\theta$
+come distribuzione stazionaria, la frazione di tempo che la catena passa in una
+regione tende alla probabilità di quella regione, e gli stati visitati dopo un
+periodo iniziale di assestamento sono un campione di $p_\theta$. È però un
+campione correlato: due stati vicini lungo la catena si somigliano, e per la
+stessa precisione servono più punti di quanti ne servirebbero se fossero
+pescati indipendenti. Nella pratica se ne fanno camminare migliaia in
+parallelo.
 
 Quando le risposte non sono acceso e spento ma numeri con la virgola
-(un'immagine vera, per dire, dove ogni pixel può avere qualunque sfumatura),
-la regola più usata porta il nome del fisico francese Paul Langevin, che nel
-1908 la scrisse per il moto browniano, il tremolio di un granello di
-polline sull'acqua sotto gli urti delle molecole. È quasi uno slogan:
-scendere lungo la pendenza dell'energia, con addosso un po’ di rumore. E
-«rumore», qui, non ha niente a che fare con i suoni: vuol dire una spintarella
-a caso, diversa a ogni passo, che non si sa da che parte arriverà. Nella terza
-via la parola prenderà anche un secondo mestiere.
+(un'immagine vera, per dire, dove ogni pixel può avere qualunque sfumatura), la
+regola più usata porta il nome del fisico francese Paul Langevin, che nel 1908
+la scrisse per il moto browniano, il tremolio di un granello di polline
+sull'acqua sotto gli urti delle molecole {cite}`langevin1908theorie`. È quasi
+uno slogan: scendere lungo la pendenza dell'energia, con addosso un po’ di
+rumore. E «rumore», qui, non ha niente a che fare con i suoni: vuol dire una
+spintarella a caso, diversa a ogni passo, che non si sa da che parte arriverà.
+Nelle due vie che seguono la parola cambierà ancora mestiere: nella seconda
+sarà lo sporco aggiunto apposta a un dato vero, nella terza gli esempi finti
+fabbricati per confronto.
 
 `````{tab} Elementare
 
@@ -150,16 +165,21 @@ valle, cioè fare lo stesso identico gesto in ogni punto. E fra le due lingue il
 cambio è questo: scendere di un gradino non aggiunge una quantità fissa di
 pioggia, la moltiplica per un fattore fisso, sempre lo stesso. Se ogni gradino
 in giù raddoppia la pioggia, una valle tre gradini più bassa di un'altra ne
-raccoglie otto volte tanto, dovunque stiano le due. Dividere
-tutta la pioggia per uno stesso numero, allora, dall'altra parte è alzare tutto
-il paesaggio della stessa quantità. Ma alzare l'intero paesaggio di dieci
-metri non cambia di un grado nessuna salita e nessuna discesa. La pallina, che
+raccoglie otto volte tanto, dovunque stiano le due. Leggiamo la stessa regola
+al contrario: salire di un gradino dimezza la pioggia, salire di tre la divide
+per otto, e questo in ogni punto del continente. Dividere tutta la pioggia per
+otto, allora, è la stessa cosa che alzare tutto il paesaggio di tre gradini, e
+dividerla per un numero qualunque è alzarlo dappertutto di una stessa
+quantità. Ma alzare l'intero paesaggio di dieci metri non cambia di un grado
+nessuna salita e nessuna discesa. La pallina, che
 sente solo il pendio sotto i piedi, non se ne accorgerebbe nemmeno, e infatti
 non ha bisogno di conoscerlo.
 
 Il prezzo è il tempo. Se due valli sono separate da una montagna alta, la
 pallina può restare intrappolata a lungo da una parte, e la fotografia che
-ne ricavi è sbilanciata.
+ne ricavi è sbilanciata. E l'attesa non cresce in proporzione all'altezza:
+una collinetta dieci volte più alta si scavalca centinaia di volte meno
+spesso.
 
 E qui va spiegata una parola che tornerà spesso da adesso in poi: **alta
 dimensione**. Un'immagine di dieci pixel per dieci è fatta di cento numeri, e
@@ -181,27 +201,34 @@ $$
 \qquad \mathbf{z}_k \sim \mathcal{N}(\mathbf{0}, \mathbf{I}),
 $$
 
-dove $\epsilon > 0$ è il passo (un tempo, non una lunghezza) e
-$\mathbf{z}_k$ il rumore gaussiano. Per $k \to \infty$, con $\epsilon \to 0$ e
-$k\epsilon \to \infty$ (il passo si accorcia, ma il tempo totale percorso dalla
-catena deve crescere senza limite), la distribuzione di $\mathbf{x}_k$ converge
-a $p_\theta \propto e^{-E_\theta}$. Il teorema vuole però anche delle ipotesi
-sul paesaggio, e l'esempio a doppia buca ne viola una: $\nabla_{\mathbf{x}}
-E_\theta$ globalmente lipschitziano, o almeno una condizione di dissipatività
-che tenga la catena al finito. Con $E(x) = (x^2-1)^2$ il gradiente cresce come
-$x^3$, non è lipschitziano, e a passo fissato la ricorsione diverge oltre
-una soglia: $|1 - 2\epsilon(x^2-1)| > 1$, cioè $|x| > \sqrt{1 + 1/\epsilon}$,
-che a $\epsilon = 0{,}01$ vale $10{,}05$ (da $10{,}00$ la catena torna in una
-buca, da $10{,}05$ esplode in nove passi). Non si vede mai, perché lassù la
-densità vale $e^{-9800}$, ma è una divergenza vera e non un'approssimazione:
-quella catena, a rigore, è transiente. A passo fissato, come nel codice della
-doppia buca e nella pratica degli EBM, la catena si assesta poi su una
-distribuzione leggermente distorta, con un errore dell'ordine di $\epsilon$: lo
-eliminerebbe un test di accettazione alla Metropolis (la variante MALA), a cui
-di solito si rinuncia in cambio della semplicità. Si noti che compare solo
-$\nabla_{\mathbf{x}} E_\theta$: la costante $\log Z(\theta)$, non dipendendo da
-$\mathbf{x}$, ha gradiente nullo. Il campionamento non ha mai bisogno della
-normalizzazione: è l'osservazione su cui poggia tutto il resto della sezione.
+dove $\epsilon > 0$ è il passo (un tempo, non una lunghezza) e $\mathbf{z}_k$
+il rumore gaussiano. Per $k \to \infty$, con $\epsilon \to 0$ e $k\epsilon \to
+\infty$ (il passo si accorcia, ma il tempo totale percorso dalla catena deve
+crescere senza limite), la distribuzione di $\mathbf{x}_k$ converge a $p_\theta
+\propto e^{-E_\theta}$. Il teorema vuole però anche delle ipotesi sul
+paesaggio, che Roberts e Tweedie hanno reso precise mostrando, fra l'altro, che
+la diffusione può convergere mentre la sua discretizzazione non converge
+affatto {cite}`roberts1996exponential`; e l'esempio a doppia buca ne viola una:
+$\nabla_{\mathbf{x}} E_\theta$ globalmente lipschitziano, o almeno una
+condizione di dissipatività che tenga la catena al finito. Con $E(x) =
+(x^2-1)^2$ il gradiente cresce come $x^3$, non è lipschitziano, e a passo
+fissato la ricorsione diverge oltre una soglia: $|1 - 2\epsilon(x^2-1)| > 1$,
+cioè $|x| > \sqrt{1 + 1/\epsilon}$, che a $\epsilon = 0{,}01$ vale $10{,}05$
+(da $10{,}00$ la catena torna in una buca, da $10{,}05$ esplode in nove passi).
+Non si vede mai, perché lassù la densità vale $e^{-9800}$, ma è una divergenza
+vera e non un'approssimazione: quella catena, a rigore, è transiente. A passo
+fissato, come nel codice della doppia buca e nella pratica degli EBM, la catena
+si assesta poi su una distribuzione leggermente distorta, con un errore
+dell'ordine di $\epsilon$: lo eliminerebbe un test di accettazione alla
+Metropolis (la variante MALA), a cui di solito si rinuncia in cambio della
+semplicità. Si noti che compare solo $\nabla_{\mathbf{x}} E_\theta$: la
+costante $\log Z(\theta)$, non dipendendo da $\mathbf{x}$, ha gradiente nullo.
+Il campionamento non ha mai bisogno della normalizzazione: è l'osservazione su
+cui poggia tutto il resto della sezione. Dove le ipotesi valgono, la
+convergenza può essere comunque lentissima: il tempo medio per scavalcare una
+barriera di altezza $\Delta E$ cresce come $e^{\Delta E}$ (la legge di Kramers
+{cite}`kramers1940brownian`), e un paesaggio con molte buche separate da
+barriere alte si campiona in tempi esponenziali nell'altezza delle barriere.
 
 La versione stocastica su minibatch, che sostituisce il gradiente esatto con
 quello stimato, è la *stochastic gradient Langevin dynamics*
@@ -220,8 +247,10 @@ del passo è un'altra cosa ancora: il rumore del gradiente su minibatch, che
 scala come $\epsilon$ e finisce sotto quello iniettato; ed è lì che la catena
 passa senza soluzione di continuità dall'ottimizzazione al campionamento. Nella
 pratica degli EBM la catena si tronca dopo poche decine di passi (*short-run
-MCMC*) e si conservano i campioni in un serbatoio da cui ripartire, l'erede
-diretto della persistent contrastive divergence della sezione precedente.
+MCMC*), e la si fa ripartire dal rumore a ogni aggiornamento
+{cite}`nijkamp2019learning` oppure da un serbatoio di campioni passati
+{cite}`du2019implicit`; il serbatoio è l'erede diretto della persistent
+contrastive divergence della sezione precedente.
 
 `````
 
@@ -298,32 +327,23 @@ catene hanno ricostruito le proporzioni giuste senza che $Z$ sia mai entrata
 nel ciclo.
 
 Quei pochi millesimi, però, non sono tutti fortuna del sorteggio. Dentro c'è
-anche un errore di natura diversa, che c'è sempre e sempre nello stesso verso,
-ed è colpa del
-passo: la pallina non scivola giù per il pendio con continuità, lo scende
-a saltelli, e $\epsilon$ (nel codice, `eps`) è quanto dura ogni saltello. Una
-scala di gradini non è una rampa. Più i saltelli sono brevi, più la fotografia
-finale somiglia a quella vera; con saltelli di durata finita resta uno scarto
-che non dipende dalla sfortuna e che nessuna quantità di catene fa sparire.
+anche un errore che c'è sempre e sempre nello stesso verso, ed è colpa del
+passo: la pallina non scivola giù per il pendio con continuità, lo scende a
+saltelli, e $\epsilon$ (nel codice, `eps`) è quanto dura ogni saltello. Una
+scala di gradini non è una rampa, e con saltelli di durata finita resta uno
+scarto che nessuna quantità di catene fa sparire.
 
-Per vederlo, una sola esecuzione non basta. Con ventimila catene, due esecuzioni
-identiche in tutto tranne che nel sorteggio danno risultati che ballano di
-qualche millesimo su un bin, cioè quanto l'effetto che vogliamo misurare: quel
-numero, da solo, non sa distinguere le due cose. Lo 0,006 della tabella,
-insomma, è la somma di un effetto vero e di una botta di fortuna, e non sappiamo
-quanto sia l'uno e quanto l'altra. I numeri che seguono servono a separarli, e
-saranno più piccoli.
-
-Ripetere non basta a chiudere la questione, perché il ballo si divide per la
-radice quadrata del numero di esecuzioni: per dimezzarlo ne servono quattro
-volte tante, e qui ce ne vorrebbero centinaia. Conviene cambiare strumento, e
-la strada è quella già usata per $Z$: in una dimensione si può calcolare la
-risposta esatta senza tirare nemmeno una pallina. Si scrive la regola con cui
-la catena si sposta come una matrice su una griglia fine (la riga di un punto
-dice con che probabilità da lì si arriva in ciascun altro), e si cerca l'unica
-distribuzione che quella regola lascia identica a se stessa, l'autovettore di
-Perron dell'operatore di transizione: è quella su cui la catena a passo
-$\epsilon$ si assesta davvero.
+Separare i due effetti ripetendo le esecuzioni costerebbe caro. Con ventimila
+catene, due esecuzioni che differiscono soltanto nel sorteggio ballano di
+qualche millesimo su un bin, cioè quanto l'effetto da misurare, e il ballo cala
+solo come la radice quadrata del numero di esecuzioni: per dimezzarlo ne
+servono quattro volte tante. In una dimensione, però, la risposta esatta si
+calcola senza tirare nemmeno una pallina, come si è fatto per $Z$. La regola
+con cui la catena si sposta si scrive come una matrice su una griglia fine (la
+riga di un punto dice con che probabilità da lì si arriva in ciascun altro), e
+la distribuzione su cui la catena a passo $\epsilon$ si assesta davvero è
+l'unica che quella matrice lascia identica a se stessa, il suo autovettore di
+Perron.
 
 ```python
 import numpy as np
@@ -363,10 +383,11 @@ scarto e la durata del saltello resta fra $0{,}35$ e $0{,}36$ mentre il passo
 si accorcia di venti volte. Lo scarto, cioè, cala esattamente in proporzione al
 passo: passo cinque volte più corto, scarto cinque volte più piccolo, e zero
 soltanto al limite di saltelli di durata nulla. Sparirebbe anche in un altro
-modo: aggiungendo, dopo ogni saltello, un controllo che confronta il punto di
-arrivo con quello di partenza e ogni tanto rifiuta la mossa, con una regola
-tarata apposta perché le proporzioni finali tornino esatte. Si chiama test di
-accettazione di Metropolis, e i modelli a energia ci rinunciano per semplicità.
+modo: aggiungendo dopo ogni saltello un controllo che, come nella ricottura
+simulata, accetta la mossa sempre oppure soltanto con una certa probabilità,
+con una regola tarata perché le proporzioni finali tornino esatte. È il test di
+accettazione di Metropolis, e i modelli a energia ci rinunciano per
+semplicità.
 
 La lezione vale ben oltre questo esempio. A $\epsilon = 0{,}002$ l'effetto vero
 vale sette decimillesimi, e un'esecuzione sola balla di più: l'effetto c'è
@@ -375,19 +396,63 @@ Un numero solo, per quanto stampato con quattro cifre, non dimostra niente se
 non si sa di quanto balla.
 
 Qui funziona bene per una ragione che non si generalizza. La collinetta fra le
-due buche è alta un'unità di energia, e un'unità è esattamente la salita che le
-spintarelle casuali riescono a far fare a una pallina senza sforzarsi: barriere
-così si scavalcano di continuo, e le catene sono ventimila e indipendenti. Ma
-la difficoltà di superare una barriera non cresce in proporzione alla sua
-altezza, cresce molto più in fretta. Sullo stesso paesaggio, con le stesse
-ventimila catene e lo stesso numero di passi, alzando la collinetta da uno a
-dieci gli scavalcamenti crollano di tre ordini di grandezza: da qualche
-centinaio di migliaia a qualche centinaio. Quanto esattamente dipende da come
-si contano i passaggi e da dove si fanno partire le catene, ma il salto è
-quello. Alzandola, o passando a mille dimensioni dove le valli sono separate da
-creste lunghissime, la stessa procedura darebbe una fotografia sbilanciata, e
-nessuno se ne accorgerebbe: in alta dimensione la colonna «esatto» non si può
-stampare.
+due buche è alta un'unità di energia, e con la temperatura a uno un'unità è
+esattamente la salita che le spintarelle casuali fanno fare a una pallina senza
+sforzarsi: barriere così si scavalcano di continuo. Ma la difficoltà di
+superare una barriera non cresce in proporzione alla sua altezza, cresce molto
+più in fretta. Lo si vede moltiplicando l'energia per un'altezza $h$,
+$E(x) = h\,(x^2 - 1)^2$, e contando quante volte ventimila catene passano da
+una buca all'altra in duemila passi, con $h = 1$ e con $h = 10$. Le catene
+partono metà in una buca e metà nell'altra (con la collinetta alta dieci,
+partire lontano dalle buche come nella prima simulazione farebbe esplodere la
+ricorsione), e un passaggio conta solo quando la catena arriva in fondo
+all'altra buca, oltre $\pm 0{,}8$, così che i saltelli avanti e indietro sulla
+cima non vengano contati come scavalcamenti.
+
+```python
+import numpy as np
+
+def scavalcamenti(h, eps=0.01, passi=2000, catene=20000, seme=0):
+    """Passaggi da una buca all'altra di E(x) = h (x^2 - 1)^2."""
+    rng = np.random.default_rng(seme)
+    x = rng.choice([-1.0, 1.0], size=catene)   # metà per buca
+    lato = x.copy()                            # l'ultima buca toccata
+    conta = 0
+    for _ in range(passi):
+        pendenza = 4.0 * h * x * (x**2 - 1.0)
+        x = x - 0.5 * eps * pendenza + np.sqrt(eps) * rng.normal(size=catene)
+        # si cambia lato solo arrivando in fondo all'altra buca, oltre ±0,8
+        nuovo = np.where(x > 0.8, 1.0, np.where(x < -0.8, -1.0, lato))
+        conta += int((nuovo != lato).sum())
+        lato = nuovo
+    return conta
+
+basso, alto = scavalcamenti(1.0), scavalcamenti(10.0)
+print(f"collinetta alta  1: {basso:6d} passaggi")
+print(f"collinetta alta 10: {alto:6d} passaggi")
+print(f"rapporto {basso / alto:.0f}; "
+      f"legge di Kramers, e^9 / 10 = {np.exp(9) / 10:.0f}")
+```
+
+```text
+collinetta alta  1:  58934 passaggi
+collinetta alta 10:     70 passaggi
+rapporto 842; legge di Kramers, e^9 / 10 = 810
+```
+
+Con la collinetta alta uno le catene passano da una buca all'altra quasi
+sessantamila volte, alta dieci settanta volte: quasi tre ordini di grandezza in
+meno. È l'ordine che prevede la legge di Kramers {cite}`kramers1940brownian`:
+la frequenza degli scavalcamenti cala come $e^{-\Delta E}$, l'esponenziale
+dell'altezza della barriera, moltiplicato per un fattore che dipende da quanto
+sono curvi il fondo della buca e la cima della collinetta. Qui
+$\Delta E = h$ e quel fattore cresce come $h$, quindi da $h = 1$ a $h = 10$ la
+frequenza cala di $e^{9}/10$, circa 810 volte. Settanta passaggi sono pochi, e
+da un sorteggio all'altro quel numero balla parecchio; l'ordine di grandezza
+no. Alzando ancora la collinetta, o passando a mille dimensioni dove le valli
+sono separate da creste lunghissime, la stessa procedura darebbe una fotografia
+sbilanciata, e nessuno se ne accorgerebbe: in alta dimensione la colonna
+«esatto» non si può stampare.
 
 ## Seconda via: imparare la pendenza, non la probabilità
 
@@ -420,10 +485,10 @@ dati stanno in gruppi ben separati, che è il caso normale, è lì che questi
 metodi sbagliano le proporzioni.
 
 La carta è sempre quella, guardata da sopra o da sotto: l'altezza è l'energia,
-e dove il paesaggio scende la pioggia aumenta. La sua pendenza ha un nome
-tecnico, score, la stessa parola dei
-{doc}`modelli di diffusione </ModelliDiffusione/come-funziona>`, e per la
-stessa ragione.
+e dove il paesaggio scende la pioggia aumenta. La sua pendenza è quella che il
+{doc}`capitolo sulla diffusione </ModelliDiffusione/sde-e-ode>` chiamava
+punteggio, o *score*: la freccia che in ogni punto indica da che parte
+la pioggia si fa più fitta.
 
 Il prezzo si paga al momento di disegnare la carta. In ogni punto va
 controllato di quanto la pendenza cambia facendo un passo, e il controllo va
@@ -506,9 +571,13 @@ al quadrato, $J \ge 0$, e $J = 0$ se e solo se i due score coincidono quasi
 ovunque. Niente $Z$, niente catene di Markov: solo derivate del modello. Il
 costo si è spostato sulla traccia dell'hessiana, e va quantificato, perché è
 l'unico costo del capitolo che si lascia contare: sono $D$ retropropagazioni
-per ogni esempio, con $D$ la dimensione del dato. Su un'immagine è proibitivo,
-ed è la ragione per cui in pratica la si stima con una proiezione casuale (lo
-*sliced score matching*) invece di calcolarla.
+per ogni esempio, con $D$ la dimensione del dato. Su un'immagine è proibitivo.
+Lo *sliced score matching* lo evita proiettando gli score su direzioni casuali
+$\mathbf{v} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$ prima di confrontarli:
+la traccia diventa $\mathbb{E}_{\mathbf{v}}\big[\mathbf{v}^\top
+\nabla_{\mathbf{x}}^2 \log p_\theta(\mathbf{x})\, \mathbf{v}\big]$, che chiede
+un solo prodotto hessiana-vettore per proiezione, cioè due retropropagazioni
+invece di $D$ {cite}`song2020sliced`.
 
 Il colpo di scena arriva nel 2011: Pascal Vincent dimostra che lo score
 matching su dati perturbati con rumore gaussiano equivale, a meno di
@@ -561,7 +630,7 @@ e il campionamento deve attraversarli in fila.
 Il cerchio che si chiude qui è largo. Il compito con cui si addestrano i
 modelli di diffusione, «indovina il rumore che ho aggiunto a questa immagine»,
 nasce nel capitolo che porta il loro nome come una scelta pratica e felice.
-Vista da questo capitolo è la soluzione di un problema vecchio di vent'anni:
+Vista dai modelli a energia è la soluzione di un problema vecchio di vent'anni:
 come dare forma a un paesaggio senza mai misurare il continente. I modelli di
 diffusione sono, in questa luce, modelli a energia addestrati sulla pendenza.
 
@@ -570,7 +639,9 @@ l'altezza del paesaggio, e la pendenza si ricava da quella; un modello di
 diffusione impara direttamente la pendenza, una freccia per ogni punto, e non
 si preoccupa che esista davvero una superficie di cui quelle frecce siano la
 discesa. Sono due cose diverse, e a rigore niente garantisce che le frecce
-imparate siano la pendenza di qualcosa. Che sia possibile sbagliare si vede
+imparate siano la pendenza di qualcosa: un campo di vettori è il gradiente di
+una funzione solo se il suo rotore è nullo, e una rete che li impara uno per
+uno non ha nessun vincolo che lo imponga. Che sia possibile sbagliare si vede
 con quattro frecce: disponile lungo il bordo di un quadrato in modo che ognuna
 punti alla successiva, in tondo. Sembrano un pendio, ma seguendole si torna al
 punto di partenza dopo essere sempre scesi, e un paesaggio in cui si scende
@@ -600,11 +671,13 @@ serviva sta tutta lì dentro, ma è arrivata rispondendo a una domanda facile.
 
 Per smistare serve anche l'asticella: quanto tipica deve essere un'immagine
 perché la si dichiari vera. Quel livello è la misura del continente, e qui
-diventa una manopola come tutte le altre, girata finché lo smistamento torna.
-Con la domanda sulle probabilità quella manopola non si poteva girare: chi
-rispondeva poteva dichiarare tutto sempre più probabile, e per smentirlo
-bisognava aver sommato il continente. Smistando si tradisce al primo giro,
-perché a furia di alzare comincia a chiamare veri anche i finti.
+diventa un numero da imparare come tutti gli altri, ritoccato finché lo
+smistamento torna. Con la domanda sulle probabilità quel numero non si poteva
+lasciare libero: chi rispondeva poteva dichiarare tutto sempre più probabile, e
+per smentirlo bisognava aver sommato il continente. Smistando si tradisce al
+primo giro, perché a furia di alzare comincia a chiamare veri anche i finti. E
+quando lo smistamento torna, quel numero è proprio la misura del continente,
+che nessuno ha mai fatto.
 
 Il gioco però vale quanto la fabbrica dei finti. Se sforna macchie grigie e i
 veri sono fotografie, smistare è banale: il modello impara a riconoscere il
@@ -670,7 +743,16 @@ verosimiglianza la stessa mossa è impossibile, non soltanto inutile: lasciando
 $c$ libero, la verosimiglianza si fa crescere quanto si vuole mandando
 $c \to -\infty$, cioè dichiarando una densità sempre più alta in ogni punto, e
 il problema non ha soluzione. È il vincolo di normalizzazione a impedirlo, ed è
-esattamente ciò a cui NCE rinuncia {cite}`gutmann2010noise`.
+esattamente ciò a cui NCE rinuncia {cite}`gutmann2010noise`. La rinuncia,
+però, non costa la normalizzazione: all'ottimo la costante appresa coincide
+con il logaritmo della partizione, $\hat c = \log Z(\hat\theta)$, perché il
+massimo della funzione obiettivo, preso su tutte le densità non normalizzate,
+ha integrale uno da sé (Teorema 1 in {cite}`gutmann2012noise`). NCE normalizza
+il modello senza mai sommare su tutto lo spazio, ed è l'unica delle tre vie
+che restituisce una densità. La InfoNCE dei metodi contrastivi è la stessa
+idea con molti campioni di rumore per ogni dato e una softmax al posto della
+sigmoide, e la si ritrova nella sezione {doc}`Perché non collassa, e come si
+fa a saperlo </AutoSupervisione/collasso-e-misura>`.
 
 Il discriminatore delle GAN è cugino stretto di NCE: tutti e due imparano un
 rapporto fra densità, non una densità. Il *negative sampling* di word2vec
@@ -708,7 +790,8 @@ autori scrivono che quella proprietà per il loro scopo non serve.
     in alta dimensione; nella forma *denoising*, il fatto che la pendenza
     imparata è quella dei dati sporcati di rumore, non dei dati
 * - **NCE** (*noise-contrastive estimation*, la domanda sì o no) e parenti
-  - La stima come un numero qualunque, insieme a tutto il resto
+  - La tratta come un parametro in più, da imparare insieme agli altri; e alla
+    fine la ritrova giusta, senza averla mai calcolata
   - Dipende dal rumore che si sceglie: la stima resta corretta con
     qualunque rumore che copra i dati, ma se è troppo diverso distinguere
     diventa facile e servono moltissimi esempi per imparare poco
@@ -716,18 +799,13 @@ autori scrivono che quella proprietà per il loro scopo non serve.
 
 Tre modi di non pagare il conto, e nessuno dei tre gratis. Le tre strade
 hanno però tutte lo stesso scopo, costruire un modello di com'è fatto il
-paesaggio, e si distinguono solo per come pagano il conto. Resta una quarta
-possibilità, la più radicale, e cambia lo scopo invece del metodo: è la tesi
-della sezione seguente, e dice non chiedere mai la probabilità. Se ciò che
-serve è decidere, ordinare, pianificare, e non stampare percentuali, un
-modello della distribuzione non serve affatto: l'energia basta da sola, e il
-conto non si apre nemmeno.
+paesaggio, e si distinguono solo per come pagano il conto.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- Misurare l'intero continente è impossibile, prima ancora che caro. Cento
-  neuroni, cioè
+- Su un paesaggio disegnato senza vincoli, misurare l'intero continente è
+  impossibile, prima ancora che caro. Cento neuroni, cioè
   cento interruttori accesi o spenti, danno un numero di configurazioni lungo
   trentuno cifre: a un miliardo di configurazioni al secondo servirebbero
   quasi tremila volte l'età dell'universo, e cento interruttori sono
@@ -758,8 +836,8 @@ conto non si apre nemmeno.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- $Z$ è impossibile, prima ancora che cara. Con $N = 100$ variabili binarie gli
-  stati
+- Per un'energia senza vincoli sull'architettura, $Z$ è fuori portata prima
+  ancora che cara. Con $N = 100$ variabili binarie gli stati
   sono $\approx 1{,}27 \times 10^{30}$, quasi tremila volte l'età
   dell'universo a un miliardo di stati al secondo.
 - Il gradiente della log-verosimiglianza ha una fase positiva (abbassa
@@ -768,13 +846,23 @@ conto non si apre nemmeno.
 - Langevin:
   $\mathbf{x}_{k+1} = \mathbf{x}_k - \frac{\epsilon}{2}\nabla_{\mathbf{x}} E_\theta(\mathbf{x}_k) + \sqrt{\epsilon}\, \mathbf{z}_k$.
   Usa solo $\nabla_{\mathbf{x}} E$, mai $Z$: nell'esempio a doppia buca
-  ricostruisce la distribuzione esatta entro pochi millesimi.
+  ricostruisce la distribuzione esatta entro pochi millesimi, con un errore
+  sistematico proporzionale a $\epsilon$. Il prezzo è il tempo: gli
+  scavalcamenti di una barriera calano come $e^{-\Delta E}$ (Kramers).
 - Score matching {cite}`hyvarinen2005estimation` confronta i gradienti
   invece delle densità; la forma denoising {cite}`vincent2011connection`
   la riduce a una regressione sul rumore ed è la loss dei modelli di
   diffusione.
 - NCE {cite}`gutmann2010noise` trasforma la stima di densità in una
-  classificazione dati contro rumore, con $\log Z$ come parametro. Il
+  classificazione dati contro rumore, con $\log Z$ come parametro che
+  all'ottimo coincide con quello vero {cite}`gutmann2012noise`. Il
   *negative sampling* di word2vec è suo discendente.
 ```
 `````
+
+Resta una quarta possibilità, la più radicale, e cambia lo scopo invece del
+metodo: non chiedere mai la probabilità. Se ciò che serve è decidere, ordinare,
+pianificare, e non stampare percentuali, un modello della distribuzione non
+serve affatto: l'energia basta da sola, e il conto non si apre nemmeno. È la
+tesi della {doc}`cornice di LeCun </ModelliEnergia/energia-come-compatibilita>`,
+che legge l'energia come un giudizio di compatibilità fra due cose.

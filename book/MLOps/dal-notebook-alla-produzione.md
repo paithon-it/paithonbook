@@ -17,10 +17,11 @@ quel portatile.
 
 E poi c'è quella che non esplode affatto, ed è la peggiore. Divide gli esempi
 fra dati di addestramento e dati di prova tirandoli a sorte
-(`train_test_split`), e funziona benissimo: solo che la sorte ogni volta cade
-diversa, perché nessuno le ha detto da dove partire, e il 94% di ieri sera non
-si rivede più. La frase che chiude la giornata è la più celebre della
-disciplina: «Ma sul mio computer funzionava».
+(`train_test_split`), e funziona benissimo: solo che il sorteggio ogni volta
+cade diverso, perché nessuno ha fissato il *seme* da cui il generatore di
+numeri casuali comincia, e il 94% di ieri sera non si rivede più. La frase che
+chiude la giornata è la più celebre della disciplina: «Ma sul mio computer
+funzionava».
 
 Attenzione: il disordine di quelle celle non è un peccato in sé. Mentre si
 esplora, saltare avanti e indietro è esattamente il modo giusto di lavorare, ed
@@ -29,9 +30,11 @@ cioè lasciare che il risultato buono viva soltanto nella memoria di una
 sessione che qualcuno prima o poi chiuderà.
 
 Fra quel notebook e un sistema che dà previsioni a persone vere, ogni giorno,
-senza sorprese, c'è quindi un abisso. Colmarlo è il mestiere dell’MLOps. Che
-cosa cambia davvero, passando «dal mio computer» al mondo, e con quali attrezzi
-si attraversa: si comincia da qui.
+senza sorprese, c'è quindi un abisso. Il primo tratto, dalle celle agli script
+che si rieseguono uguali, l'ha percorso la sezione {doc}`Dal notebook agli
+script </PyTorch/dal-notebook-agli-script>` del capitolo su PyTorch; colmare il
+resto è il mestiere dell’MLOps. Che cosa cambia davvero, passando «dal mio
+computer» al mondo, e con quali attrezzi si attraversa: si comincia da qui.
 
 ## Il divario ricerca–produzione
 
@@ -87,12 +90,10 @@ sistema di ML è, in buona misura, l'arte di bilanciarle.
 ## Il ciclo di vita, in concreto
 
 Il rettangolino nero e l'anello li conosciamo già: addestrare è la parte
-piccola, e il percorso gira in tondo. Adesso li si guarda da vicino.
-
-Prima di guardare il ciclo intero, però, conviene guardare da vicino un suo
-pezzo, quello che si ripete più spesso ({numref}`fig-cicd-ml`): il viaggio che
-compie una singola modifica, da quando qualcuno la propone a quando finisce
-sotto gli occhi del pubblico. Quel viaggio, preso da solo, è dritto.
+piccola, e il percorso gira in tondo. L'anello ha un pezzo che si ripete più di
+ogni altro ({numref}`fig-cicd-ml`): il viaggio che compie una singola
+modifica, da quando qualcuno la propone a quando finisce sotto gli occhi del
+pubblico. Preso da solo, quel viaggio è una catena dritta.
 
 ```{figure} ../figures/cicd-machine-learning.svg
 :name: fig-cicd-ml
@@ -113,25 +114,30 @@ che può dire di no.
 
 Lo stadio aggiunto in {numref}`fig-cicd-ml` è la differenza fra il rilascio di
 un programma e quello di un modello. Di un programma rotto il computer si
-accorge da solo e si rifiuta di partire; un modello no: un modello risponde
-comunque, con la stessa aria sicura, anche quando risponde peggio di quello di
-prima. Senza una soglia scritta prima, non c'è modo automatico di
+accorge da solo e si rifiuta di partire; un modello no: restituisce comunque
+una predizione, e nessun errore segnala che è peggiore di quella della versione
+precedente. Senza una soglia scritta prima, non c'è modo automatico di
 accorgersene.
 
 Uno studio di ingegneria del software condotto in Microsoft mette in fila nove
 fasi ricorrenti di un progetto di machine learning
-{cite}`amershi2019software`, che qui raggruppiamo in sei momenti:
+{cite}`amershi2019software`. La prima, la definizione dei requisiti (che cosa
+il modello deve fare, e con quale errore lo si considera accettabile), precede
+il lavoro sui dati; le altre otto qui si raggruppano in sei momenti:
 
-1. Dati: raccolta, pulizia, etichettatura. È dove si consuma la maggior
-   parte del tempo, e dove nasce la maggior parte degli errori.
-2. Feature, costruzione delle variabili di input a partire dai dati grezzi
-   (*feature engineering*): la forma in cui il modello «vede» il mondo.
-3. Training: l'addestramento vero e proprio. È il ciclo di ottimizzazione
-   che abbiamo scritto a mano nel {doc}`capitolo su PyTorch </PyTorch/overview>` (si veda [Il training
-   loop](../PyTorch/addestramento.md)): qui è solo *una* delle fasi.
-4. Valutazione: la misura onesta delle prestazioni su dati mai visti, con
-   la disciplina di train/validation/test già discussa nel capitolo sul
-   machine learning (si veda [Overfitting e
+1. Dati: raccolta, pulizia, etichettatura. Fra i professionisti intervistati
+   nello stesso studio è la difficoltà indicata più spesso, a qualunque livello
+   di esperienza.
+2. Feature: costruire, a partire dai dati grezzi, le grandezze che il modello
+   riceve in ingresso (il *feature engineering*). È la forma in cui il modello
+   «vede» il mondo.
+3. Addestramento (*training*): il ciclo che aggiusta i pesi un passo dopo
+   l'altro per ridurre l'errore, quello che abbiamo scritto a mano nel
+   {doc}`capitolo su PyTorch </PyTorch/overview>` (si veda [Il training
+   loop](../PyTorch/addestramento.md)). Qui è solo *una* delle fasi.
+4. Valutazione: la misura onesta delle prestazioni su dati mai visti, con la
+   divisione in dati di addestramento, di validazione e di prova già discussa
+   nel capitolo sul machine learning (si veda [Overfitting e
    validazione](../MachineLearning/overfitting-validazione.md)).
 5. Deploy: mettere il modello in un servizio che risponde a richieste
    reali, dietro un’API o dentro un'applicazione. Un'API è una specie di
@@ -183,11 +189,13 @@ modo un po’ diverso.
 E la torta si conserva anche lei, non solo la ricetta: rifarla identica costa
 ore di forno, e chi la deve mangiare non può aspettarle. Da tenere sotto
 chiave, allora, sono codice, dati e modello, con il forno (le librerie)
-come condizione da non dimenticare. Nel quaderno delle ricette, però, non ci
-stanno i sacchi di farina né le torte: chi ce li forzasse dentro avrebbe un
-quaderno che non si sfoglia più. Sul quaderno va il cartellino, quel sacco lì,
-di quel lotto; la roba vera sta in dispensa e in freezer. Chi scrive «farina» e
-basta, un anno dopo la torta non la sa più rifare.
+come condizione da non dimenticare. Il programma ha già il suo quaderno delle
+ricette, che ne conserva ogni versione: è il registro con cui chi scrive
+software tiene la cronologia del codice, e si chiama Git. Nel quaderno, però,
+non ci stanno i sacchi di farina né le torte: chi ce li forzasse dentro avrebbe
+un quaderno che non si sfoglia più. Sul quaderno va il cartellino, quel sacco
+lì, di quel lotto; la roba vera sta in dispensa e in freezer. Chi scrive
+«farina» e basta, un anno dopo la torta non la sa più rifare.
 
 `````
 
@@ -251,20 +259,21 @@ def fissa_seed(seed: int = 42) -> None:
 Fissare il seme è il primo passo, non l'ultimo. Restano di mezzo le versioni
 delle librerie, che cambiando cambiano i risultati, e un fatto sorprendente
 dell'aritmetica dei calcolatori: sommare gli stessi numeri in ordine diverso
-non dà esattamente lo stesso totale. Si può verificare in tre secondi con una
-calcolatrice che non sia quella della mente: chiedendo a Python
-`(0.1 + 0.2) + 0.3` si ottiene `0.6000000000000001`, mentre
-`0.1 + (0.2 + 0.3)` dà `0.6` tondo. Gli addendi sono gli stessi, il totale no.
-Il motivo è che i numeri con la virgola vengono arrotondati a ogni passaggio, e
-un arrotondamento fatto prima o dopo non lascia lo stesso residuo.
+non dà esattamente lo stesso totale. Sui numeri con la virgola del
+calcolatore (la *virgola mobile*, qui in doppia precisione, lo standard IEEE
+754) l'addizione non è associativa: in Python `(0.1 + 0.2) + 0.3` dà
+`0.6000000000000001`, mentre `0.1 + (0.2 + 0.3)` dà `0.6` tondo. Gli addendi
+sono gli stessi, il totale no. Il motivo è che ogni somma viene arrotondata
+alle 53 cifre binarie di precisione del formato, e un arrotondamento fatto
+prima o dopo non lascia lo stesso residuo.
 
 Ora, l'ordine in cui una libreria combina milioni di numeri non è sempre lo
 stesso: dipende da quanti esempi viaggiano insieme, da quale ricetta interna la
 libreria sceglie per quella forma di dati, da quanti processori se lo dividono.
 Le ultime cifre ballano. In produzione ballano di più, perché lì quanti esempi
-viaggiano insieme lo decide il servizio momento per momento (la sezione sul
-deployment lo chiamerà *batching dinamico*, e a questa ripetibilità rinuncia
-per scelta).
+viaggiano insieme lo decide il servizio momento per momento: è il *batching
+dinamico* di {doc}`Servire un modello </MLOps/deployment-e-serving>`, che a
+questa ripetibilità rinuncia per scelta.
 
 Conviene allora distinguere due promesse diverse, perché costano diversamente.
 
@@ -281,9 +290,12 @@ calcolatore, non l'ordine in cui due processori diversi sommano gli stessi
 numeri.
 
 La seconda è la **riproducibilità statistica**: i numeri non coincidono
-all'ultima cifra, ma le differenze restano dentro il ballo naturale delle
-ultime cifre, e le conclusioni non cambiano. È quella che serve quasi sempre,
-ed è quella che seme, ambiente congelato e dati versionati consegnano davvero.
+all'ultima cifra, ma ogni metrica resta dentro la variabilità che si osserva
+cambiando il seme, e il confronto fra due modelli non cambia verso. Quella
+variabilità si misura: si ripete l'addestramento con alcuni semi diversi e se
+ne riportano media e deviazione standard, e due configurazioni si confrontano
+sugli stessi semi. È la promessa che serve quasi sempre, ed è quella che seme,
+ambiente congelato e dati versionati consegnano davvero.
 Senza nemmeno il seme, però, non si ha né l'una né l'altra: due esecuzioni
 dello stesso codice danno modelli diversi, e ogni confronto perde di
 significato.
@@ -323,8 +335,11 @@ un ordine e chi in un altro ottiene lo stesso codice. Per il resto, però, il
 tritatutto è letterale: legge quello che c'è scritto, non quello che si
 intendeva. «5» e «5,0» dicono la stessa cosa (cinque passate sui dati di
 addestramento) e danno due codici diversi, quindi i numeri vanno scritti sempre
-allo stesso modo, o si rifà una prova credendo che sia nuova. È lo stesso
-attrezzo che serve a mettere un cartellino a un intero archivio di dati.
+allo stesso modo, o si rifà una prova credendo che sia nuova. E un codice
+corto ha un limite suo: su qualche migliaio di prove due codici uguali per caso
+non escono praticamente mai, su milioni sì, e chi ne accumula tante lo tiene
+più lungo. È lo stesso attrezzo che serve a mettere un cartellino a un intero
+archivio di dati.
 
 `````
 
@@ -346,6 +361,13 @@ serializzano uguali e quindi collidono, e un valore non serializzabile (un
 si normalizzano prima di serializzarli; qui l'impronta è stabile rispetto
 all'ordine delle chiavi, che è già sufficiente a riconoscere il duplicato più
 frequente, cioè la stessa configurazione riscritta in un altro ordine.
+
+C'è poi il troncamento. Dodici cifre esadecimali sono 48 bit, e per il
+paradosso del compleanno la probabilità che fra $n$ configurazioni due abbiano
+la stessa impronta è circa $1 - e^{-n^2/2^{49}}$: trascurabile per qualche
+migliaio di run (con diecimila è dell'ordine di $10^{-7}$), non più verso i
+sedici milioni ($n = 2^{24}$), dove arriva a quattro su dieci. Un registro che
+deve crescere senza limiti tiene l'impronta intera.
 
 `````
 
@@ -418,9 +440,10 @@ mantenute per anni, e intanto diventano tantissime: tubi aggiunti uno sopra
 l'altro, con rubinetti che nessuno sa più a che cosa servano e che nessuno osa
 chiudere.
 
-E c'è un motivo più profondo: un modello dipende dai dati, non solo dal
-codice, e dentro un modello nulla è separato da nulla. Basta cambiare una delle
-informazioni che gli si danno in pasto perché il modello rifaccia i suoi
+E c'è un motivo più profondo: un modello dipende dai dati, non solo dal codice,
+e dentro un modello le parti si tengono tutte insieme, come le ricette della
+cucina di apertura del capitolo. Basta cambiare una delle informazioni che gli
+si danno in pasto perché, al prossimo addestramento, il modello rifaccia i suoi
 equilibri e sposti le risposte anche dove nessuno se lo aspettava. Cambiare
 *qualsiasi* cosa può cambiare *tutto*. E i dati, a differenza del codice,
 cambiano da soli, senza che nessuno tocchi una riga.
@@ -466,13 +489,14 @@ affidabile, in ogni momento, con un comando invece che con un rito manuale.
 
 `````
 
-Nessuno di questi strumenti è un fine in sé. Servono a una cosa sola: fare in
-modo che il modello del notebook di stamattina (quello che «funzionava sul mio
-computer») continui a funzionare domani, sul computer di tutti, e che tra sei
-mesi qualcuno possa capire *perché* funzionava e rifarlo daccapo. È il
-passaggio dalla dimostrazione al prodotto: meno spettacolare della prima
-intuizione, ma è qui che la ricerca diventa qualcosa su cui le persone possono
-contare.
+Nessuno di questi attrezzi (le versioni conservate di codice, dati e modello, il
+registro delle prove, i controlli contro il debito) è un fine in sé. Servono a
+una cosa sola: fare in modo che il modello del notebook di stamattina (quello
+che «funzionava sul mio computer») continui a funzionare domani, sul computer di
+tutti, e che tra sei mesi qualcuno possa capire *perché* funzionava e rifarlo
+daccapo. È il passaggio dalla dimostrazione al prodotto: meno spettacolare della
+prima intuizione, ma è qui che la ricerca diventa qualcosa su cui le persone
+possono contare.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -516,11 +540,15 @@ contare.
   modello) più ambiente e semi casuali. `git` da solo non basta: dati e
   modelli sono grandi e binari, se ne versiona un'impronta. Distinguere la
   riproducibilità bit a bit (che si paga in prestazioni e che il batching
-  dinamico rinuncia a dare) da quella statistica, che è quella che serve.
+  dinamico rinuncia a dare) da quella statistica (metriche dentro la
+  variabilità fra semi, confronti che non cambiano verso), che è quella che
+  serve.
 - L’experiment tracking registra iperparametri, metriche e artefatti di ogni
   run: un'impronta della configurazione, stabile rispetto all'ordine delle
   chiavi, riconosce la stessa configurazione riscritta in un altro ordine, non
-  ogni duplicato (`epoche=5` ed `epoche=5.0` danno due impronte diverse).
+  ogni duplicato (`epoche=5` ed `epoche=5.0` danno due impronte diverse); e
+  troncata a 48 bit smette di essere un identificativo sicuro verso i milioni
+  di run.
 - Il ML accumula debito tecnico in fretta {cite}`sculley2015hidden` (glue
   code, pipeline jungle, dipendenze dai dati); la maturità si misura con rubriche
   come la ML Test Score {cite}`breck2017ml` e si automatizza con la CD4ML

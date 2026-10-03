@@ -12,9 +12,8 @@ lastra, le stazioni da attraversare sono sempre quelle.
 
 ## Sei stazioni, sempre le stesse
 
-La {numref}`fig-flusso-pytorch` le mette in fila. Conviene guardarla una volta
-per intero: è la mappa di tutto quello che si fa quando si addestra un
-modello.
+La {numref}`fig-flusso-pytorch` le mette in fila: è la mappa di tutto quello
+che si fa quando si addestra un modello.
 
 ```{figure} ../figures/flusso-di-lavoro-pytorch.svg
 :name: fig-flusso-pytorch
@@ -62,17 +61,25 @@ a metà cottura e correggi su quello che ti ha detto hai consumato anche lui.
 `````
 
 `````{tab} Superiore
-Formalizzato: si fissa uno spazio di ipotesi $\mathcal{F}$ (l'architettura),
-una funzione di perdita $\mathcal{L}$ e un algoritmo di ottimizzazione; si
-stima $\theta$ minimizzando il rischio empirico sul training set; si misura il
-rischio su un campione indipendente per stimare la generalizzazione. Le
-stazioni 3–5 sono un ciclo di ricerca su iperparametri e architettura, guidato
-dalla metrica di validazione, e ogni decisione presa guardando quel numero
-lo consuma un po’, perché il set di validazione diventa a poco a poco parte
-dell'addestramento. Per questo il test set si tocca una volta sola, alla
-fine: è l'unica stima onesta che rimane. Il {doc}`capitolo sul machine learning
-</MachineLearning/overview>`
-tratta per esteso questa contabilità in [overfitting e
+Formalizzato: si fissa uno spazio di ipotesi
+$\mathcal{H} = \{f_\theta\}$ (l'architettura), una loss per esempio $\ell$ e un
+algoritmo di ottimizzazione, e si stima $\theta$ minimizzando il rischio
+empirico sugli $m$ esempi di addestramento,
+
+$$
+\hat{\theta} = \arg\min_{\theta} \frac{1}{m} \sum_{i=1}^{m}
+\ell\big(f_\theta(\mathbf{x}_i), y_i\big);
+$$
+
+poi si misura il rischio su un campione indipendente, che stima senza
+distorsione l'errore di generalizzazione di $f_{\hat{\theta}}$ solo finché non
+viene usato per scegliere. Le stazioni 3–5 sono un ciclo di ricerca su
+iperparametri e architettura, guidato dalla metrica di validazione, e ogni
+decisione presa guardando quel numero lo consuma un po’, perché il set di
+validazione diventa a poco a poco parte dell'addestramento. Per questo il test
+set si tocca una volta sola, alla fine: è l'unica stima onesta che rimane. Il
+{doc}`capitolo sul machine learning </MachineLearning/overview>` tratta per
+esteso questa contabilità in [overfitting e
 validazione](../MachineLearning/overfitting-validazione.md).
 `````
 
@@ -84,14 +91,14 @@ verificare a colpo d'occhio se il modello l'ha trovata. Costruiamo dei dati
 con una formula nota (una retta di pendenza $0{,}7$ e intercetta $0{,}3$) e
 poi buttiamo via la formula, lasciando al modello solo i punti.
 
-Quei due nomi meritano una sosta, perché è il punto migliore
-di tutto il capitolo per capire che cosa sia davvero un peso. La pendenza
-di una retta è quanto la retta sale ogni volta che ci si sposta di uno verso
-destra; l’intercetta è l'altezza a cui la retta taglia l'asse verticale, il
-punto da cui parte. Nel vocabolario delle reti neurali quei due numeri si
-chiamano peso e bias, ed è la stessa cosa: il peso dice quanto
-l'ingresso conta, il bias dove si parte. Una rete vera ne ha milioni invece di
-due, ma il mestiere di ciascuno è questo.
+Quei due nomi meritano una sosta, perché dicono che cosa sia davvero un peso.
+La pendenza di una retta è quanto la retta sale ogni volta che ci si sposta di
+uno verso destra; l’intercetta è l'altezza a cui la retta taglia l'asse
+verticale, il punto da cui parte. Nel vocabolario delle reti neurali quei due
+numeri si chiamano peso $w$ e bias $b$: il modello di questo problema è
+$\hat{y} = wx + b$, e un `nn.Linear(1, 1)` ha esattamente questi due
+parametri. Il peso dice quanto l'ingresso conta, il bias da dove si parte; una
+rete vera ne ha milioni invece di due, ma il mestiere di ciascuno è questo.
 
 ```python
 import torch
@@ -119,8 +126,10 @@ esempio, e su ogni riga le caratteristiche di quell'esempio (in inglese
 stesso, ed è per questo che il conto delle dimensioni è il primo dei
 [tre errori più comuni](errori-comuni.md). E `manual_seed` fissa il
 generatore di numeri casuali: senza, due esecuzioni dello stesso codice danno
-risultati diversi e non si capisce più se un miglioramento viene dalla
-modifica o dalla fortuna.
+risultati diversi e non si può nemmeno ripetere un esperimento. Fissarlo,
+però, non basta a dire che un miglioramento sia reale: per quello si ripete
+l'esperimento con più semi, come spiega la sezione
+{doc}`dal notebook agli script <dal-notebook-agli-script>`.
 
 Il modello è la retta più semplice che si possa scrivere: un `nn.Linear` con
 un ingresso e un'uscita, cioè esattamente due numeri da imparare.
@@ -147,11 +156,11 @@ questo `manual_seed` conta: fissa anche quel sorteggio. (Il $0{,}7645$ che esce
 dal caso somiglia al $0{,}7$ vero per pura coincidenza; il bias, $0{,}83$
 contro $0{,}3$, è bello lontano.)
 
-Adesso il ciclo. Rispetto alla sezione precedente cambiano tre cose, e
-conviene dirle prima perché altrimenti sembrano contraddizioni. Primo: qui i
-quaranta punti entrano tutti insieme a ogni giro, non a pacchetti, perché sono
-quaranta e starebbero in un pacchetto solo; quindi qui «epoca» e «un giro di
-correzione» coincidono, mentre su MNIST un'epoca erano quasi mille giri.
+Adesso il ciclo, che cambia in tre punti rispetto a quello del
+[training loop](addestramento.md). Primo: qui i quaranta punti entrano tutti
+insieme a ogni giro, non a mini-batch, perché sono quaranta e starebbero in un
+mini-batch solo; quindi qui «epoca» e «un giro di correzione» coincidono,
+mentre su MNIST un'epoca erano quasi mille giri.
 Secondo: l'ottimizzatore è SGD e non Adam, perché con due soli parametri il
 vantaggio di Adam (un passo diverso per ciascuno) non si vede, e SGD lascia
 vedere meglio quello che succede. Terzo: ogni tanto ci si ferma a misurare
@@ -159,7 +168,7 @@ anche sui dati messi da parte.
 
 ```python
 criterio = nn.L1Loss()                                     # errore assoluto medio
-# lr e' il learning rate, il "passo" della sezione precedente
+# lr è il learning rate, il "passo" del training loop
 ottimizzatore = torch.optim.SGD(modello.parameters(), lr=0.01)
 
 for epoca in range(1000):
@@ -203,20 +212,22 @@ $0{,}0013$ tornano a turno. Ed è la cosa più istruttiva di tutto l'esempio:
 verso la fine la perdita non si ferma su un valore, alterna fra quei due,
 un giro sì e un giro no.
 
-Perché lo faccia si dice in una riga. Questa misura dell'errore corregge sempre
-della stessa quantità, che si sia lontanissimi o a un capello dal bersaglio:
-sbagliare di $10$ e sbagliare di $0{,}001$ producono la stessa spinta. Non
-«frena» avvicinandosi. E il passo è fisso, sempre $0{,}01$. Quindi, arrivata a
-un capello dal punto giusto, la correzione lo scavalca; il giro dopo lo
-scavalca all'indietro; e da lì in poi ci balla attorno per sempre, con
-un'oscillazione grande più o meno quanto il passo.
+Perché lo faccia si dice in una riga. La misura dell'errore scelta nel codice,
+`nn.L1Loss`, cioè l'errore assoluto medio, corregge sempre della stessa
+quantità, che si sia lontanissimi o a un capello dal bersaglio: sbagliare di
+$10$ e sbagliare di $0{,}001$ producono la stessa spinta. Non «frena»
+avvicinandosi. E il passo è fisso, sempre $0{,}01$. Quindi, arrivata a un
+capello dal punto giusto, la correzione lo scavalca; il giro dopo lo scavalca
+all'indietro; e da lì in poi i valori oscillano attorno a quello giusto per
+sempre, ripetendosi a due a due (un ciclo di periodo 2), con un'ampiezza più o
+meno pari al passo.
 
-Ecco perché il "termometro" stampa ogni $199$ epoche e non ogni $200$, che
-sembra un capriccio e non lo è. Stampando ogni $200$, cioè un numero pari, si
-guarderebbe sempre lo stesso piede del ballo: dopo la prima riga si vedrebbero
-quattro righe con lo stesso identico numero, e il modello sembrerebbe fermo
-sull'ottimo mentre gli sta girando attorno. Col $199$ i due piedi si vedono
-tutti e due, ed è la verità.
+Ecco perché la riga che misura sui dati messi da parte (il "termometro" del
+codice) stampa ogni $199$ epoche e non ogni $200$. Stampando ogni $200$, cioè
+un numero pari, si guarderebbe sempre la stessa fase del ciclo: dopo la prima
+riga si vedrebbero quattro righe con lo stesso identico numero, e il modello
+sembrerebbe fermo sull'ottimo mentre gli sta girando attorno. Col $199$ le due
+fasi si vedono tutte e due, ed è la verità.
 
 `````{tab} Elementare
 La `L1Loss` conta gli sbagli così come sono: è la distanza media tra quello
@@ -248,18 +259,20 @@ retta, non c'è nessuna villa da domare, e quel po’ di ballo è tutto l'errore
 che rimane.
 
 Torniamo ai due numeri stampati a ogni riga. Quello da guardare è il secondo,
-misurato sui dieci punti messi da parte: è l'unico preso su domande mai viste.
+misurato sui dieci punti messi da parte, che stanno tutti in fondo alla retta,
+oltre quelli usati per imparare: è l'unico preso su domande mai viste.
 Guardandolo sei volte durante la corsa stiamo prendendo la stessa scorciatoia
-della sezione precedente: su un problema truccato come questo è innocua, perché
+del programma su MNIST: su un problema truccato come questo è innocua, perché
 non stiamo decidendo niente in base a quel numero, lo stiamo solo guardando
-scendere. In un progetto vero quel ruolo lo farebbe un terzo mucchio, la
-validazione, e il test resterebbe chiuso fino alla fine.
+scendere. In un progetto vero quel ruolo lo farebbe una terza porzione dei
+dati, la validazione, e il test resterebbe chiuso fino alla fine.
 `````
 
 `````{tab} Superiore
 `nn.L1Loss` calcola l'errore assoluto medio
-$\mathcal{L} = \frac{1}{N}\sum_i |\hat{y}_i - y_i|$, mentre `nn.MSELoss` media
-i quadrati. La differenza pratica sta nei gradienti e negli *outlier*: il
+$\mathcal{L} = \frac{1}{B}\sum_{i=1}^{B} |\hat{y}_i - y_i|$ sui $B$ esempi del
+batch (qui tutti e quaranta), mentre `nn.MSELoss` media i quadrati. La
+differenza pratica sta nei gradienti e negli *outlier*: il
 gradiente della L1 rispetto al residuo è $\pm 1$, costante, quindi un punto
 molto lontano non domina l'aggiornamento, la L1 è robusta; con il lr fissato,
 però, il modello non converge esattamente ma oscilla in un intorno di ampiezza
@@ -274,18 +287,30 @@ proporzionale al residuo, converge in modo più pulito ma insegue gli outlier. L
 lineare lontano. Qui la scelta è quasi indifferente perché i dati sono
 esattamente su una retta: la loss finale è limitata solo dalla granularità dei
 passi.
+
+Due cose aiutano a leggere la tabella. In ogni riga la perdita di
+addestramento è quella calcolata prima dello `step()`, e quella di test viene
+dopo, quindi le due cifre appartengono a fasi opposte del ciclo; le due
+perdite degli stessi pesi si leggono su due righe consecutive, e sono
+$0{,}0103$ e $0{,}0138$ in una fase, $0{,}0013$ e $0{,}0003$ nell'altra. E i
+dati sono divisi per posizione: il test ($x \in [0{,}80;\, 0{,}98]$) sta oltre
+l'intervallo di addestramento ($[0;\, 0{,}78]$), quindi misura anche
+un'estrapolazione, dove l'errore sul peso conta di più perché si moltiplica per
+$x$. Per una retta è innocuo; in un progetto vero il campione di test si
+estrae a caso, o per gruppo e per data, come spiega la sezione sui
+{doc}`dati su misura <dati-su-misura>`.
 `````
 
 ## Loss e ultimo strato: una scelta che dipende dal problema
 
 "Quale loss uso?" è una domanda che ha una risposta quasi meccanica: la decide
 il tipo di problema, e insieme a lei decide anche la forma dell'ultimo strato.
-I tipi di problema, in fondo, sono quattro, e sono quattro modi di fare una
-domanda a un modello: *quanto?*, *sì o no?*, *quale fra tanti?*, *quali fra
-tanti?* Ognuno ha la sua riga nella tabella. Le due lettere che vi compaiono
-stanno per «quanti numeri entrano nell'ultimo strato» ($d$) e «quante
-categorie ci sono» ($K$). Conviene tenerla sott'occhio: metà degli errori dei
-principianti nascono da una riga sbagliata qui.
+Le configurazioni di base sono quattro, e corrispondono a quattro domande che
+si possono fare a un modello: *quanto?*, *sì o no?*, *quale fra tanti?*,
+*quali fra tanti?* Ognuna ha la sua riga nella tabella. Le due lettere che vi
+compaiono stanno per «quanti numeri entrano nell'ultimo strato» ($d$) e
+«quante categorie ci sono» ($K$). Molti errori dei principianti nascono da una
+riga sbagliata qui.
 
 | Tipo di problema | Ultimo strato | Funzione di perdita | Per leggere l'output |
 |---|---|---|---|
@@ -306,23 +331,23 @@ ne sceglie uno, di bollini se ne accendono quanti se ne vuole: è il caso
 *multi-etichetta*.
 
 Il punteggio che lo smistatore scrive sulla busta può uscire meno tre come più
-quaranta: nessuno gli ha chiesto una percentuale. Quei punteggi grezzi si
-chiamano **logit**, ed è la sillaba che si ritrova nei nomi delle funzioni:
-`BCEWithLogitsLoss`, la perdita del sì o no, vuol dire «con i logit». Li
-vuole grezzi, ed è lei a convertirli in probabilità, al suo interno.
+quaranta: nessuno gli ha chiesto una percentuale. Quei punteggi grezzi sono i
+logit della {doc}`sezione sui moduli <moduli>`, ed è la sillaba che si ritrova
+nei nomi delle funzioni: `BCEWithLogitsLoss`, la perdita del sì o no, vuol
+dire «con i logit». Li vuole grezzi, ed è lei a convertirli in probabilità, al
+suo interno.
 
 Tenerli grezzi serve anche a non perdere gli sbagli grossi. Un meno ottocento,
 messo in percentuale, diventa un numero così piccolo che la macchina finisce le
 cifre e scrive zero tondo. E da uno zero non si sa più né di quanto lo
 smistatore abbia sbagliato né da che parte correggerlo.
 
-La probabilità serve eccome, ma dopo: la `softmax` si applica sul risultato,
-quando il numero lo deve leggere una persona. Messa dentro il modello, come
-ultimo strato, consegna alla funzione di perdita dei punteggi già convertiti,
-che lei converte una seconda volta. Le due righe di codice si assomigliano e
-fanno cose opposte: la prima non tocca l'addestramento, la seconda fa imparare
-male il modello senza dare nessun errore. Niente messaggio rosso, solo numeri
-che non migliorano: è il guasto più silenzioso di tutti.
+La probabilità serve eccome, ma dopo: `sigmoid` e `softmax` si applicano sul
+risultato, quando il numero lo deve leggere una persona. Messe dentro il
+modello, come ultimo strato, consegnerebbero alla funzione di perdita dei
+punteggi già convertiti, che lei convertirebbe una seconda volta: è il guasto
+già visto con la cross-entropy, e anche qui il modello impara male senza
+nessun messaggio rosso, solo con numeri che non migliorano.
 
 Resta una manopola, che serve appena si esce dagli esempi: le risposte quasi
 mai sono in pari. Su mille buste, novecentonovanta lettere vere e dieci
@@ -330,22 +355,34 @@ pubblicità. Lo smistatore trova subito la furbizia: dire sempre «lettera vera�
 sbagliare dieci volte su mille e portare a casa un risultato che sulla carta
 sembra ottimo, mentre la pubblicità passa tutta. Alla funzione di perdita si
 può dire quanto pesa ciascuna risposta: se una pubblicità lasciata passare
-costa quanto novantanove lettere vere buttate, i due mucchi tornano in pari e
-alla furbizia non conviene più.
+costa quanto novantanove lettere vere buttate, le due risposte tornano in pari
+e alla furbizia non conviene più.
 `````
 
 `````{tab} Superiore
 `BCEWithLogitsLoss` e `CrossEntropyLoss` incorporano rispettivamente la
 sigmoide e la log-softmax, e vanno alimentate con i logit. Il motivo è
 numerico: il calcolo congiunto usa il *log-sum-exp trick*, che evita
-l'underflow di $\log(\hat{y})$ quando $\hat{y} \to 0$. Le versioni "nude"
-(`nn.BCELoss`, `nn.NLLLoss`) esistono per i casi in cui la normalizzazione è
-già avvenuta, ma nel dubbio si usa sempre la variante con i logit. Due note di
+l'underflow di $\log(\hat{y})$ quando $\hat{y} \to 0$. Per un logit $z$ e
+un'etichetta $y \in \{0, 1\}$ la perdita della `BCEWithLogitsLoss` si scrive
+
+$$
+\ell(z, y) = \max(z, 0) - z\,y + \log\big(1 + e^{-|z|}\big),
+$$
+
+che non trabocca per nessun $z$: è lo stesso trucco, con due termini. Con
+$z = -800$ e $y = 1$ la sigmoide vale zero in virgola mobile e
+$\log \sigma(z)$ vale $-\infty$, mentre la forma stabile dà
+$0 + 800 + \log(1 + e^{-800}) \approx 800$, la perdita giusta. Le versioni
+"nude" (`nn.BCELoss`, `nn.NLLLoss`) esistono per i casi in cui la
+normalizzazione è già avvenuta, ma nel dubbio si usa sempre la variante con i
+logit. Due note di
 forma dei tensori: `BCEWithLogitsLoss` vuole target `float32` della stessa
-shape dei logit, tipicamente si applica `squeeze()` all'uscita
-$(N,1) \to (N,)$; `CrossEntropyLoss` vuole logit $(N,K)$ e target $(N,)$ di
-dtype `int64`, cioè gli indici di classe, e un one-hot di interi solleva un
-errore (la forma $(N,K)$ passa solo in `float`, dove è letta come
+shape dei logit, tipicamente si applica `squeeze(1)` all'uscita
+$(B,1) \to (B,)$ (con `squeeze()` senza argomento un batch da un solo esempio
+perderebbe anche il suo asse); `CrossEntropyLoss` vuole logit $(B,K)$ e target
+$(B,)$ di dtype `int64`, cioè gli indici di classe, e un one-hot di interi
+solleva un errore (la forma $(B,K)$ passa solo in `float`, dove è letta come
 distribuzione di probabilità sulle classi). Per classi molto sbilanciate,
 entrambe accettano un peso per classe (`weight`, o `pos_weight` per la
 binaria), che rialza il contributo della classe rara.
@@ -364,7 +401,7 @@ spingere ancora.
 Un rubinetto che gocciola non si aggiusta smontando tutto il bagno:
 l'idraulico chiude l'acqua, cambia una guarnizione, riapre e guarda. Una
 chiave alla volta, partendo da quello che si rompe più spesso. Sul modello le
-chiavi sono sei, dalla più efficace alla più illusoria.
+chiavi sono sei.
 
 1. Più dati, o dati migliori: la leva più potente, e la più noiosa. Mille
    esempi in più valgono di solito più di qualunque astuzia architetturale.
@@ -374,13 +411,15 @@ chiavi sono sei, dalla più efficace alla più illusoria.
 3. Un modello più capiente, più strati e più unità. Ma solo dopo aver
    verificato che il piccolo non ce la faccia davvero: su dati sbagliati, uno
    grande impara a memoria le cose sbagliate.
-4. Il passo, cioè il learning rate. È la manopola della temperatura di una
-   doccia: il punto giusto è uno solo e stretto, e spostarlo di un fattore dieci
-   in su o in giù separa un modello
-   che impara da uno che non parte. Si trova girando piano verso il caldo
-   finché non scotta e tornando un filo indietro: una corsa breve in cui il
-   passo cresce a ogni giro, e si prende il valore poco prima che l'errore si
-   impenni.
+4. Il passo, cioè il learning rate: è la chiave più delicata delle sei, e se
+   l'addestramento è instabile o non scende è la prima da guardare. È la
+   manopola della temperatura di una doccia: il punto giusto è uno solo e
+   stretto, e spostarlo di un fattore dieci in su o in giù separa un modello
+   che impara da uno che non parte. Si trova con una corsa breve in cui il
+   passo cresce a ogni giro, come girare piano la manopola verso il caldo: il
+   valore giusto non è quello in cui l'acqua comincia a scottare, cioè in cui
+   l'errore si impenna, ma uno nettamente più basso, dove l'errore scendeva più
+   in fretta.
 5. I freni, che rendono la vita più difficile al modello mentre studia, apposta
    perché non si limiti a memorizzare (*dropout* e *weight decay*, spiegati nel
    {doc}`capitolo sul deep learning </DeepLearning/overview>`). Si mettono solo
@@ -403,30 +442,39 @@ la differenza.
 
 Un controllo però viene prima di tutti e sei, e costa cinque minuti:
 l'idraulico apre il rubinetto e guarda se l'acqua arriva, perché se non arriva
-la guarnizione non c'entra. Il rubinetto, per un modello, sono due mucchietti
-di esempi, una decina in tutto: si addestra su quelli finché l'errore non è
-quasi zero. Dieci li manda a memoria qualunque rete, e se la tua non ci riesce
-non c'è manopola che la salvi su cinquantamila: c'è un errore nel codice, e
-stai girando le manopole sbagliate.
+la guarnizione non c'entra. Il rubinetto, per un modello, è un solo mazzetto
+di esempi, una decina: si addestra su quelli, con un passo normale e senza
+freni, finché l'errore non è quasi zero. Dieci esempi li manda a memoria
+qualunque rete con più pesi che esempi, e se la tua non ci riesce quasi sempre
+c'è un errore nel codice: stai girando le manopole sbagliate.
 `````
 
 `````{tab} Superiore
 Formalmente si sta esplorando lo spazio degli iperparametri con un budget
-limitato, e la sensibilità non è uniforme: il learning rate domina, seguito
-dalla dimensione del batch e dalla capacità del modello, mentre molte altre
-scelte contano poco. Da qui due pratiche standard. La prima è la ricerca
+limitato, e la sensibilità non è uniforme: il learning rate è di solito
+l'iperparametro che conta di più {cite}`goodfellow2016deep`, e per ogni
+problema contano pochi iperparametri, diversi da un problema all'altro
+{cite}`bergstra2012random`. Da qui due pratiche standard. La prima è la ricerca
 casuale invece della ricerca a griglia {cite}`bergstra2012random`: con $n$
 prove su $h$ iperparametri la griglia prova $n^{1/h}$ valori per asse (nove
 prove su due assi sono tre valori ciascuno), la casuale $n$ valori distinti
 *per ogni* asse, e quando la loss dipende davvero da pochi assi, com'è la
 regola, quegli assi la casuale li esplora $n^{1-1/h}$ volte più fitti. La
-seconda è il *learning
-rate range test*: si fa crescere $\eta$ esponenzialmente per poche centinaia
-di iterazioni e si sceglie il valore poco prima che la loss esploda.
+seconda è il *learning rate range test* {cite}`smith2017cyclical`: si fa
+crescere $\eta$ da un valore piccolo a uno grande in una corsa breve
+(linearmente nell'articolo originale, esponenzialmente nelle implementazioni
+più diffuse, come `lr_find` di fastai, da $10^{-7}$ a $10$ in cento
+iterazioni) e si guarda come risponde l'addestramento. Smith annota il valore
+in cui l'accuratezza comincia a salire e quello in cui rallenta, diventa
+irregolare o scende, e li usa come estremi di un intervallo; le
+implementazioni suggeriscono il punto in cui la loss scende più ripida, o un
+decimo di quello in cui tocca il minimo. Il valore in cui la loss esplode non
+si usa mai: è già fuori dall'intervallo buono.
 
 C'è poi una diagnosi che viene prima di tutto il resto: sovradattare
 di proposito un solo batch di una decina di esempi. Se il modello non ci
-riesce, il problema è un bug e non gli iperparametri; il protocollo e i
+riesce con un learning rate ordinario e senza regolarizzazione, il problema è
+quasi sempre un bug e non una questione di iperparametri; il protocollo e i
 sospettati sono nella {doc}`sezione sui tre errori più comuni
 <errori-comuni>`. Il repertorio
 completo (regolarizzazione, scheduler, normalizzazione) è nel capitolo sul
@@ -437,10 +485,10 @@ alla produzione](../MLOps/dal-notebook-alla-produzione.md).
 
 ## Predire su dati nuovi: tre condizioni e due interruttori
 
-Il modello è addestrato. Arriva un dato mai visto e va dato in pasto alla
-rete: è il gesto più semplice del capitolo, ed è quello che fallisce più
-spesso. Il dato nuovo deve soddisfare tre condizioni (stesso dispositivo,
-stesso tipo, stessa forma dei dati di addestramento) e vanno azionati due
+Il modello è addestrato. Arriva un dato mai visto e va passato alla rete: è un
+gesto semplice, e fallisce spesso. Il dato nuovo deve soddisfare tre
+condizioni (stesso dispositivo, stesso tipo, stessa forma dei dati di
+addestramento, a parte la dimensione del batch) e vanno azionati due
 interruttori.
 
 ```python
@@ -453,14 +501,14 @@ with torch.no_grad():                           # interruttore 2: niente gradien
 print(stima.item())        # ~ 0.7 * 0.95 + 0.3 = 0.965
 ```
 
-La riga con `next(modello.parameters()).device` merita una spiegazione, perché
-sembra peggio di quello che è. Un modello, come i suoi dati, sta fisicamente da
-qualche parte: nella memoria del processore o in quella della scheda grafica. E
-i due possono lavorare insieme solo se stanno nello stesso posto. Quella riga
-prende il primo peso che il modello ha in casa, gli chiede dove abita, e ci
-manda il dato nuovo. Il vantaggio è che così la risposta viene dal modello
-stesso invece che da un appunto scritto altrove nel programma, che prima o poi
-qualcuno cambierà senza ricordarsi di aggiornare anche questo.
+La riga con `next(modello.parameters()).device` sembra più complicata di quello
+che è. Un modello, come i suoi dati, sta fisicamente da qualche parte: nella
+memoria del processore o in quella della scheda grafica. E i due possono
+lavorare insieme solo se stanno nello stesso posto. Quella riga legge il
+dispositivo del primo parametro del modello (gli chiede, cioè, dove abita) e
+ci manda il dato nuovo. Il vantaggio è che così la risposta viene dal modello
+stesso invece che da una variabile scritta altrove nel programma, che prima o
+poi qualcuno cambierà senza ricordarsi di aggiornare anche questa riga.
 
 Che cosa succede quando una delle tre condizioni salta, e come si legge il
 messaggio d'errore che ne esce, è l'argomento della sezione [sui tre errori più
@@ -481,13 +529,15 @@ dà più lavoro di tutti: i dati.
   funzioni davvero: alla fine i due numeri devono tornare.
 - La domanda che si fa al modello decide l'ultimo strato e la misura
   dell'errore: quanto? sì o no? quale fra tanti? quali fra tanti? Sbagliare
-  questa riga è metà degli errori di chi comincia.
-- Nel migliorare un modello si cambia una cosa alla volta, e in ordine:
-  prima più dati, poi più tempo, poi un modello più grande, poi la manopola
-  del passo, poi i freni, e solo alla fine si cambia strada.
+  questa riga è uno degli errori più frequenti di chi comincia.
+- Nel migliorare un modello si cambia una cosa alla volta: più dati, più
+  tempo, un modello più grande, la manopola del passo, i freni, e alla fine si
+  cambia strada. Il passo è la manopola più delicata, e si cerca con una corsa
+  breve, tenendosi ben sotto il valore in cui l'errore si impenna.
 - Prima di girare qualunque manopola, il collaudo che costa cinque minuti: il
-  modello deve riuscire a mandare a memoria dieci esempi. Se non ci
-  riesce, l'errore è nel codice e non in una manopola.
+  modello deve riuscire a mandare a memoria dieci esempi. Se non ci riesce,
+  con un passo normale e senza freni, l'errore è quasi sempre nel codice e non
+  in una manopola.
 - Per dare al modello un dato nuovo servono tre condizioni (stesso posto,
   stesso tipo di numeri, stessa forma) e due interruttori (modalità esame,
   niente appunti).
@@ -506,10 +556,13 @@ dà più lavoro di tutti: i dati.
 - Loss e ultimo strato si scelgono dal tipo di problema:
   `MSELoss`/`L1Loss` per la regressione, `BCEWithLogitsLoss` per il sì/no,
   `CrossEntropyLoss` per le $K$ classi; le ultime due vogliono i logit.
-- Nel ciclo di miglioramento si cambia una leva alla volta, in ordine:
-  dati, durata, capacità, learning rate, regolarizzazione, architettura.
+- Nel ciclo di miglioramento si cambia una leva alla volta: dati, durata,
+  capacità, learning rate, regolarizzazione, architettura. Il learning rate è
+  di solito la più sensibile, e il range test ne dà l'intervallo, non il
+  valore in cui la loss esplode.
 - Prima di ottimizzare qualunque cosa: verifica che il modello riesca a
-  mandare a memoria dieci esempi. Se non ci riesce, è un bug, non un
+  mandare a memoria dieci esempi. Se non ci riesce, con un learning rate
+  ordinario e senza regolarizzazione, è quasi sempre un bug, non un
   iperparametro.
 - Per predire su dati nuovi servono tre condizioni (device, dtype, shape)
   e due interruttori (`eval()`, `no_grad()`).

@@ -25,13 +25,14 @@ precedente (oggi le chiamiamo catene di Markov, e sono quelle della
 la dipendenza dentro un capolavoro della letteratura. Presentò i conteggi
 all'Accademia il 23 gennaio 1913.
 
-Le stesse catene tornano più avanti con nomi diversi. Nel capitolo
-sul Reinforcement Learning l'ambiente in cui si muove un agente è un *processo
-decisionale di Markov*, che è una catena di Markov con in più le azioni di
-qualcuno e le ricompense che ne seguono; nei modelli di diffusione sarà una
-catena che sporca un'immagine un poco alla volta, per poi imparare a rifare la
-strada al contrario e ripulirla. La struttura è sempre questa:
-il prossimo passo dipende solo da dove sei adesso.
+Le stesse catene si ritrovano con altri nomi. Nei {doc}`processi decisionali
+di Markov </ReinforcementLearning/mdp-valore>` del Reinforcement Learning, già
+incontrati, l'ambiente in cui si muove un agente è una catena di Markov con in
+più le azioni di qualcuno e le ricompense che ne seguono; più avanti, nei
+{doc}`modelli di diffusione </ModelliDiffusione/overview>`, sarà una catena che
+sporca un'immagine un poco alla volta, per poi imparare a rifare la strada al
+contrario e ripulirla. La struttura è sempre questa: il prossimo passo dipende
+solo da dove sei adesso.
 
 Trentacinque anni dopo, Claude Shannon rovescia il gioco, nell'articolo del
 1948 che abbiamo già incontrato in {doc}`Teoria dell'informazione
@@ -54,12 +55,13 @@ o tre parole fila liscio, l'insieme non significa nulla. Tre anni dopo, con un
 gioco di predizione fatto in casa, Shannon stimerà quanto l'inglese sia
 prevedibile lettera per lettera {cite}`shannon1951prediction`: circa un bit a
 lettera, come si è visto parlando di {doc}`compressione
-</Matematica/teoria-informazione>`. Un bit è una domanda da
-sì o no: vuol dire che, in media, chi conosce bene l'inglese indovina la
-lettera successiva con una domanda sola, purché ben scelta. Non perché le
-lettere siano due: perché quasi sempre quello che precede ha già ristretto il
+</Matematica/teoria-informazione>`. Un bit è una domanda da sì o no: vuol dire
+che, in media, chi conosce bene l'inglese indovina la lettera successiva con
+una domanda sola, purché ben scelta. Le lettere sono ventisei, eppure una
+domanda basta quasi sempre, perché quello che precede ha già ristretto il
 campo a una o due candidate (dopo «th» ci si aspetta una vocale, dopo «q» una
-«u»), e le rare volte in cui il campo resta largo si pagano su quella media.
+«u»); le rare volte in cui il campo resta largo servono più domande, e la media
+le mette nel conto.
 
 L'idea che unisce il matematico che contava le lettere a Pietroburgo e
 l'ingegnere dei laboratori Bell è la tesi da cui partono i modelli di
@@ -134,20 +136,25 @@ P(w_t \mid w_{t-1}) = \frac{C(w_{t-1}\, w_t)}{C(w_{t-1})},
 $$
 
 dove $C(\cdot)$ conta le occorrenze nel corpus di addestramento: quante volte
-la coppia $w_{t-1} w_t$ appare, diviso quante volte appare $w_{t-1}$. Si
-dimostra che queste frazioni massimizzano la verosimiglianza del corpus. Due
-accorgimenti pratici: si incorniciano le frasi con simboli di inizio e fine,
-`<s>` e `</s>`, così anche la prima parola e la chiusura sono scommesse come
-le altre; e i prodotti di molte probabilità piccole si calcolano come somme di
-logaritmi, per evitare l’*underflow* (lo stesso trucco di Naive Bayes).
+la coppia $w_{t-1} w_t$ appare, diviso quante volte appare $w_{t-1}$. Queste
+frazioni massimizzano la verosimiglianza del corpus. Fissato il contesto
+$h = w_{t-1}$, la parte della log-verosimiglianza che dipende dalle
+$p(w \mid h)$ è $\sum_w C(h\,w) \log p(w \mid h)$, da massimizzare con il
+vincolo $\sum_w p(w \mid h) = 1$; con un moltiplicatore di Lagrange $\mu$ si
+ottiene $C(h\,w)/p(w \mid h) = \mu$ per ogni $w$, cioè
+$p(w \mid h) \propto C(h\,w)$, e il vincolo fissa
+$\mu = \sum_w C(h\,w) = C(h)$. Due accorgimenti pratici: si incorniciano le
+frasi con simboli di inizio e fine, `<s>` e `</s>`, così anche la prima parola
+e la chiusura sono scommesse come le altre; e i prodotti di molte probabilità
+piccole si calcolano come somme di logaritmi, per evitare l’*underflow* (lo
+stesso trucco di Naive Bayes).
 
 `````
 
 ## Tre frasi e un quaderno di conteggi
 
-Basta un corpus giocattolo per vedere tutta la macchina in funzione, dove
-corpus è il mucchio di testo su cui si conta. Il
-nostro sarà di tre frasi:
+Basta un corpus giocattolo per vedere tutta la macchina in funzione. Il nostro
+sarà di tre frasi:
 
 1. «il gatto nero salta sul muro»
 2. «il gatto bianco dorme sul divano»
@@ -162,14 +169,13 @@ scommessa come le altre: il modello, arrivato a «muro», deve poter decidere se
 la frase finisce lì o continua, e senza un simbolo per «finisce lì» non
 saprebbe come dirlo.
 
-I conti che seguono si scrivono in una notazione da decifrare una volta per
-tutte, perché ricorre in tutto quello che segue: $P(\text{gatto} \mid
-\text{il})$ si legge «la probabilità di *gatto*, sapendo che prima c'era *il*».
-La barretta verticale vuol dire «dato che», e separa la cosa su cui si
-scommette (a sinistra) da quello che si sa già (a destra). Tutto qui: è una
-frazione con un nome, e la frazione è proprio la pagina del quaderno, «quante
-volte questa parola ha seguito quell'altra, diviso quante volte quell'altra è
-comparsa».
+I conti che seguono usano la notazione della *probabilità condizionata*:
+$P(\text{gatto} \mid \text{il})$ si legge «la probabilità di *gatto*, sapendo
+che prima c'era *il*». La barretta verticale vuol dire «dato che», e separa la
+cosa su cui si scommette (a sinistra) da quello che si sa già (a destra). Per
+un bigramma è una frazione con un nome, e la frazione è proprio la pagina del
+quaderno: «quante volte questa parola ha seguito quell'altra, diviso quante
+volte quell'altra è comparsa».
 
 - ogni frase comincia con «il»: $P(\text{il} \mid \langle s \rangle) = 3/3 = 1$;
 - «il» compare 4 volte, seguito 3 volte da «gatto» e 1 da «cane»:
@@ -254,9 +260,9 @@ dopo cane» passa da 0 a $1/13$, circa 0,08. Piccola, ma viva.
 Il regalo lo pagano i ricchi. La pagina di «il» dava «gatto» a
 $3/4 = 0{,}75$; adesso sopra c'è $3 + 1$ e sotto ci sono le 4 comparse di «il»
 più i 12 trattini, cioè $(3+1)/(4+12) = 4/16 = 0{,}25$. La fiducia di quella
-pagina è un piatto solo, e ora si divide fra dodici righe, dieci delle quali
+pagina è una torta sola, e ora si divide fra dodici righe, dieci delle quali
 sono rimaste sempre bianche. Con un vocabolario vero, decine di migliaia di
-righe per pagina, il +1 porta quasi tutto il piatto ai fantasmi. Un trattino
+righe per pagina, il +1 porta quasi tutta la torta ai fantasmi. Un trattino
 più magro, mezzo o un decimo, ne fa scivolare meno; ma lo fa scivolare sempre
 in parti uguali su ogni riga bianca.
 
@@ -264,8 +270,8 @@ Il quaderno però non è uno. Accanto a quello delle coppie ce n'è un altro, pi
 povero e più pieno, che segna soltanto quanto è comune ogni parola, senza
 guardare che cosa la precedeva. Quando la riga della coppia è bianca si chiude
 il primo e si apre il secondo, dove la domanda è più facile: quanto è comune
-«nero». Anche questa risposta va pagata, perché il piatto deve
-restare intero. Invece di regalare un trattino a chiunque, si trattiene un
+«nero». Anche questa risposta va pagata, perché la torta deve
+restare intera. Invece di regalare un trattino a chiunque, si trattiene un
 poco da ogni coppia vista, e quel mucchietto è tutto ciò che si spartisce fra
 le righe mancanti.
 
@@ -308,27 +314,29 @@ due, spesso combinate:
   \qquad \lambda_1 + \lambda_2 = 1,
   $$
 
-  dove i pesi $\lambda_i$ non si fissano a mano ma si ottimizzano su un
-  insieme di validazione (e con i trigrammi si aggiunge un terzo termine). È
-  l'interpolazione lineare di Jelinek e Mercer, e in una versione più fine i
-  pesi dipendono dal contesto, $\lambda_i(w_{t-1})$: più peso alla coppia
-  proprio là dove la coppia è stata vista spesso;
+  dove i pesi $\lambda_i$ non si fissano a mano ma si ottimizzano su un insieme
+  di validazione (e con i trigrammi si aggiunge un terzo termine). È
+  l'interpolazione lineare di Jelinek e Mercer {cite}`jelinek1980interpolated`,
+  e in una versione più fine i pesi dipendono dal contesto,
+  $\lambda_i(w_{t-1})$: più peso alla coppia proprio là dove la coppia è stata
+  vista spesso;
 
 - **backoff**: usare l'ordine alto quando il suo conteggio è positivo e
   *ripiegare* sull'ordine inferiore altrimenti. Nella forma classica è il
-  backoff di Katz (1987), e i fattori in gioco sono due, con due mestieri
-  distinti. Il primo è lo sconto di Good e Turing: con $N_r$ il numero di
-  bigrammi distinti visti esattamente $r$ volte, un conteggio $r$ si ri-stima in
-  $r^* = (r+1)\,N_{r+1}/N_r$, e la massa lasciata agli eventi mai visti è $N_1$
-  diviso il totale dei bigrammi osservati, cioè la frazione di eventi incontrati
-  una volta sola. Katz lo applica ai soli conteggi piccoli ($r \le 5$), dove è
-  affidabile. Il secondo è un peso di ripiego $\alpha(w_{t-1})$: dopo lo sconto,
-  le probabilità dei bigrammi visti dopo $w_{t-1}$ sommano a meno di 1, e il
-  peso ridistribuisce proprio quel resto, che cambia da un contesto all'altro,
-  sulle continuazioni mai viste dopo $w_{t-1}$, in proporzione a $P(w_t)$,
-  rimettendo la probabilità totale a 1. La variante a sconto costante, quella
-  che serve a Kneser–Ney, si chiama invece sconto assoluto: si toglie sempre la
-  stessa quantità, qualunque sia il conteggio di partenza.
+  backoff di Katz {cite}`katz1987estimation`, e i fattori in gioco sono due,
+  con due mestieri distinti. Il primo è lo sconto di Good e Turing: con $N_r$
+  il numero di bigrammi distinti visti esattamente $r$ volte, un conteggio $r$
+  si ri-stima in $r^* = (r+1)\,N_{r+1}/N_r$, e la massa lasciata agli eventi
+  mai visti è $N_1$ diviso il totale dei bigrammi osservati, cioè la frazione
+  di eventi incontrati una volta sola. Katz lo applica ai soli conteggi piccoli
+  ($r \le 5$), dove è affidabile. Il secondo è un peso di ripiego
+  $\alpha(w_{t-1})$: dopo lo sconto, le probabilità dei bigrammi visti dopo
+  $w_{t-1}$ sommano a meno di 1, e il peso ridistribuisce proprio quel resto,
+  che cambia da un contesto all'altro, sulle continuazioni mai viste dopo
+  $w_{t-1}$, in proporzione a $P(w_t)$, rimettendo la probabilità totale a 1.
+  La variante a sconto costante, quella che serve a Kneser–Ney, si chiama
+  invece sconto assoluto: si toglie sempre la stessa quantità, qualunque sia il
+  conteggio di partenza.
 
 Il confronto sistematico tra queste famiglie è lo studio empirico di Chen e
 Goodman {cite}`chen1999empirical`, per anni la bussola di chi costruiva
@@ -368,8 +376,8 @@ coppia vista dieci volte scende a 9,25, una vista una volta sola scende a
 ne aveva molti quasi non se ne accorge, chi ne aveva uno solo ne perde tre
 quarti, ed è giusto, perché una coppia vista una volta sola poteva essere un
 caso. Poi si spartisce in proporzione alle feste girate, così che chi era
-frequente ma sempre allo stesso posto non ne prenda quasi niente. Il piatto
-resta intero, cambia soltanto come lo si divide.
+frequente ma sempre allo stesso posto non ne prenda quasi niente. La torta
+resta intera, cambia soltanto come la si divide.
 
 `````
 
@@ -389,11 +397,16 @@ dove il numeratore conta i *contesti distinti* in cui $w$ è comparsa (quante
 parole diverse l'hanno preceduta almeno una volta) e il denominatore è il
 numero di bigrammi distinti del corpus, che normalizza. Per «Francisco» il
 numeratore vale 1, o poco più, per quanto alta sia la sua frequenza. Il lavoro
-del 1995 lo mette in un modello di ripiego, ed è quello che dice il suo titolo,
-*Improved Backing-off for M-gram Language Modeling*. La forma interpolata,
-quella che si usa oggi, è di Chen e Goodman {cite}`chen1999empirical`, che ne
-danno una derivazione diversa e misurano che batte sistematicamente quella di
-ripiego; sul modello bigramma è
+del 1995 mette $P_{\text{cont}}$ in un modello di ripiego, ed è quello che
+dice il suo titolo, *Improved Backing-off for M-gram Language Modeling*, e la
+ricava, in prima approssimazione, chiedendo che il modello lisciato conservi le
+marginali di unigramma osservate nel corpus. La forma interpolata, quella che
+si usa oggi, è di Chen e Goodman {cite}`chen1999empirical`: dimostrano che
+sconto assoluto, interpolazione e conservazione delle marginali portano proprio
+a lei, e misurano che batte sistematicamente quella di ripiego. Goodman mostra
+poi che, sotto ipotesi dichiarate, un lisciamento ottimo deve conservare le
+marginali {cite}`goodman2001bitextended`. Sul modello bigramma la forma
+interpolata è
 
 $$
 P_{KN}(w_t \mid w_{t-1}) =
@@ -423,16 +436,15 @@ l'unico che KenLM, il costruttore più usato, sappia fare.
 
 `````
 
-## La pagella della scommettitrice: la perplessità
+## La pagella del modello: la perplessità
 
-Come si misura se un modello di linguaggio scommette bene? Con la
-perplessità, e l'immagine da tenere è quella del dado: la perplessità dice
-con quante facce è il dado su cui il modello sta tirando a ogni scommessa.
-Perplessità 2, e il modello esita fra due parole soltanto; perplessità 100, e
-ne ha davanti cento tutte ugualmente plausibili. Più il numero è basso, meglio
-scommette. L'avevamo definita in {doc}`Teoria dell'informazione
-</Matematica/teoria-informazione>`, promettendo di riprenderla numeri alla
-mano.
+Un modello di linguaggio si valuta con la perplessità, definita in
+{doc}`Teoria dell'informazione </Matematica/teoria-informazione>`:
+l'esponenziale dell'entropia per parola, che si legge come un *fattore di
+ramificazione* medio, cioè il numero di facce del dado su cui il modello tira a
+ogni scommessa. Perplessità 2, e il modello esita fra due parole soltanto;
+perplessità 100, e ne ha davanti cento tutte ugualmente plausibili. Più il
+numero è basso, meglio scommette.
 
 `````{tab} Elementare
 
@@ -486,7 +498,14 @@ frase di sette token è un nome generoso. La base del logaritmo non cambia il
 numero: $\mathrm{PP} = 2^{H_2} = e^{H_e}$, con $H_2$ in bit e $H_e$ in nat.
 Addestrando una rete si incontra la seconda forma: `nn.CrossEntropyLoss` di
 PyTorch restituisce la log-verosimiglianza negativa media in nat, e la
-perplessità è il suo esponenziale.
+perplessità è il suo esponenziale. Con un tokenizzatore a sotto-parole, però,
+la perplessità per token dipende dal tokenizzatore, e due modelli con
+vocabolari diversi non si confrontano così: si confrontano in bit per
+carattere,
+$\mathrm{BPC} = \frac{N_{\text{token}}}{N_{\text{caratteri}}}
+\log_2 \mathrm{PP}_{\text{token}}$, che divide i bit totali spesi sul testo
+per il numero dei suoi caratteri, una grandezza che la segmentazione non
+tocca.
 
 Un avvertimento sul conto di $N$, perché è il punto esatto in cui si sbaglia.
 Con le frasi incorniciate fra `<s>` e `</s>`, anche `</s>` è una scommessa e va
@@ -514,20 +533,51 @@ scommessa come le altre, e infatti ha il suo riquadro. Nessuna parola, da
 sola, decide il punteggio.
 ```
 
-Un limite però ce l'ha, e la
-{numref}`fig-perplessita-frase` lo lascia vedere su un'altra frase, «Il gatto
-dorme sul divano», con le probabilità di un modello qualunque. Le scommesse
-entrano tutte con lo stesso peso, un sesto a testa, e a fare la differenza è
-solo quanto ciascuna sorprende: quella su «il», che vale 0,60, pesa il sette
-per cento del punteggio, quella su «divano», che vale 0,12, il ventinove. Ma in
-un testo vero le parole ovvie sono la stragrande maggioranza e quelle su cui si
-gioca la qualità sono una manciata, così la media annega le seconde nelle
-prime: un modello può cavarsela benissimo nel punteggio complessivo inciampando
+La perplessità ha un limite, e la {numref}`fig-perplessita-frase` lo lascia
+vedere su un'altra frase, «Il gatto dorme sul divano», con le probabilità di un
+modello qualunque. Nella media ogni scommessa conta una volta, un sesto a
+testa; quello che ciascuna porta, però, è la sua *sorpresa*, il logaritmo
+dell'inverso della probabilità, che è tanto più grande quanto più la parola era
+improbabile. Ecco le quote, scommessa per scommessa, e i due numeri della
+figura:
+
+```python
+import math
+
+# le scommesse di un modello qualunque sulla frase della figura
+scommesse = {"il": 0.60, "gatto": 0.15, "dorme": 0.30, "sul": 0.45,
+             "divano": 0.12, "</s>": 0.50}
+# la sorpresa di una scommessa: più la parola era improbabile, più è grande
+sorpresa = {w: -math.log(p) for w, p in scommesse.items()}
+totale = sum(sorpresa.values())
+for w, s in sorpresa.items():
+    quota = s / totale
+    print(f"{w:7} p = {scommesse[w]:.2f}   quota della sorpresa {quota:4.0%}")
+print(f"prodotto {math.prod(scommesse.values()):.5f}, "
+      f"perplessità {math.exp(totale / len(scommesse)):.1f}")
+```
+
+```text
+il      p = 0.60   quota della sorpresa   7%
+gatto   p = 0.15   quota della sorpresa  26%
+dorme   p = 0.30   quota della sorpresa  17%
+sul     p = 0.45   quota della sorpresa  11%
+divano  p = 0.12   quota della sorpresa  29%
+</s>    p = 0.50   quota della sorpresa  10%
+prodotto 0.00073, perplessità 3.3
+```
+
+La scommessa su «il», data a 0,60, porta il sette per cento della sorpresa
+totale; quella su «divano», data a 0,12, il ventinove. Ma in un testo vero le
+parole ovvie sono la stragrande maggioranza e quelle su cui si gioca la
+qualità sono una manciata, così la media annega le seconde nelle prime: un
+modello può cavarsela benissimo nel punteggio complessivo inciampando
 esattamente dove contava.
 
-Lo stesso conto, scritto in una riga. Il bigramma a conteggi grezzi, senza
-nessun aggiustamento, dava alla frase «il gatto nero salta sul muro»
-probabilità $0{,}125$ in 7 scommesse (sei parole più la chiusura di frase):
+Lo stesso conto, scritto in una riga, con $\mathrm{PP}$ per perplessità. Il
+bigramma a conteggi grezzi, senza nessun aggiustamento, dava alla frase «il
+gatto nero salta sul muro» probabilità $0{,}125$ in 7 scommesse (sei parole più
+la chiusura di frase):
 
 $$
 \mathrm{PP} = 0{,}125^{-1/7} = 8^{1/7} \approx 1{,}35.
@@ -551,18 +601,18 @@ riscritta all'incontrario, «divano sul salta nero gatto il», ed è la frase
 rovesciata. Il programma del bigramma dà 5,5 alla frase senza sorprese, 7,0 a
 quella con la coppia mai vista, 14,2 a quella rovesciata.
 
-Conviene guardare da dove viene quel 5,5, perché la lettura più naturale è
-sbagliata. Non è il prezzo di aver smesso di barare: sulla frase senza sorprese
-il bigramma a conteggi grezzi dà di nuovo 1,35, la stessa
-identica cifra della
-frase di addestramento, perché su un corpus di tre frasi «muro» e «divano» sono
-gemelli statistici. Il salto da 1,35 a 5,5 è tutto del lisciamento, che toglie
-probabilità alle coppie viste per regalarla a quelle mai viste, e su un
-vocabolario di dodici parole quel regalo è enorme. La misura onesta è il 5,5.
-L'1,35 di prima era ottimista per due ragioni, il testo di prova e i conteggi
-grezzi; qui pesa solo la seconda, perché il corpus è così piccolo che una frase
-nuova e una vista sono la stessa cosa, ma su un corpus vero la prima pesa
-quanto e più.
+Quel 5,5 si presta a una lettura sbagliata, cioè che sia il prezzo di aver
+smesso di barare. Sulla frase senza sorprese il bigramma a conteggi grezzi dà
+di nuovo 1,35, la stessa identica cifra della frase di addestramento, perché
+su un corpus di tre frasi «muro» e «divano» compaiono negli stessi posti,
+sempre dopo «sul» e sempre a fine frase. Il salto da 1,35 a 5,5 è tutto del
+lisciamento, che toglie probabilità alle coppie viste per regalarla a quelle
+mai viste, e su un vocabolario di dodici parole quel regalo è enorme. La misura
+onesta è il 5,5. L'1,35 di prima era ottimista per due ragioni: era misurato
+sulla frase di addestramento, e con i conteggi grezzi, senza il regalo di
+Laplace. Su questo corpus la prima ragione non conta, perché una frase nuova
+fatta di coppie già viste dà la stessa cifra; su un corpus vero conta quanto
+la seconda, e spesso di più.
 
 Restano i due confronti fra le tre frasi, e ciascuno dice una cosa sua. Dalla
 frase senza sorprese a quella con la coppia mai vista: quell'unica coppia fa
@@ -576,16 +626,19 @@ buttava via, si prende la rivincita: il modello non guarda niente più che le
 coppie di parole vicine, e tanto basta a distinguere una frase italiana da un
 mucchio di parole italiane.
 
-Per le grandezze reali, nell'esperimento classico riportato da Jurafsky e
-Martin {cite}`jurafsky2026speech`, tre modelli addestrati su 38 milioni di
+Per le grandezze reali c'è l'esperimento classico riportato da Jurafsky e
+Martin {cite}`jurafsky2026speech`: tre modelli addestrati su 38 milioni di
 parole del *Wall Street Journal* e messi alla prova su un milione e mezzo di
-parole tenute da parte, con lo stesso vocabolario chiuso di ventimila parole
-per tutti e tre (senza quella condizione due perplessità non si confrontano),
-la perplessità scende da circa 960 con l’**unigramma** (il modello
-che scommette guardando solo quanto una parola è comune, senza nemmeno
-l'ultima parola letta: è il gradino sotto il bigramma) a 170 col bigramma e a
-circa 110 col trigramma. I modelli neurali che incontreremo faranno molto
-meglio, ma sulla stessa pagella.
+parole tenute da parte. La perplessità scende da circa 960 con
+l’**unigramma** (il modello che scommette guardando solo quanto una parola è
+comune, senza nemmeno l'ultima parola letta: è il gradino sotto il bigramma) a
+170 col bigramma e a circa 110 col trigramma. I tre modelli usano lo stesso
+vocabolario, un elenco fissato prima in cui le parole che restano fuori
+diventano tutte lo stesso simbolo `<UNK>` (un *vocabolario chiuso*: nelle
+edizioni precedenti del manuale, di circa ventimila parole), perché la
+perplessità di due modelli si confronta solo a parità di vocabolario. I
+modelli neurali che incontreremo faranno molto meglio, ma sulla stessa
+pagella.
 
 ## La passeggiata del bigramma
 
@@ -595,7 +648,7 @@ dopo l'inizio è sempre venuto «il». Si scrive «il», si va alla sua pagina, 
 si trova che tre volte su quattro è seguito da «gatto» e una volta su quattro
 da «cane». Adesso si sorteggia, ma non con un dado onesto: con un sorteggio
 truccato secondo quei conteggi, in cui «gatto» ha tre biglietti su quattro
-e «cane» uno. Immaginate un sacchetto con dentro quattro foglietti, tre con
+e «cane» uno. Immagina un sacchetto con dentro quattro foglietti, tre con
 scritto «gatto» e uno con scritto «cane»: si pesca a occhi chiusi. Poi si
 riparte dalla parola pescata e si pesca ancora, fino al segnale di fine. È
 esattamente il gioco dei libri sfogliati a caso di Shannon, automatizzato.
@@ -621,7 +674,7 @@ tondo: nessuna delle scommesse è sbagliata, e il giro si chiude lo stesso.
 
 `````{tab} Elementare
 
-La nostra scommettitrice ha una memoria da pesce rosso: quando sceglie la
+Il nostro modello ha una memoria da pesce rosso: quando sceglie la
 parola nuova, ricorda solo l'ultima scritta (o le ultime due). È come
 attraversare una città chiedendo indicazioni a un passante diverso a ogni
 incrocio, senza mai dire da dove sei partito: ogni singolo consiglio è
@@ -660,8 +713,9 @@ I limiti del modello n-gram sono strutturali, non di taratura:
   in $\mathbb{R}^d$ dove la similarità è misurabile.
 
 La sintesi delle due cure è il modello di linguaggio neurale proposto da
-Yoshua Bengio e colleghi nel 2003 (embedding più rete feed-forward su una
-finestra fissa) e soprattutto le RNN della prossima sezione, il cui stato
+Yoshua Bengio e colleghi nel 2003 {cite}`bengio2003neural` (embedding più rete
+feed-forward su una finestra fissa) e soprattutto le reti ricorrenti, le RNN,
+il cui stato
 nascosto riassume in un vettore di dimensione fissa *tutto* il prefisso, non
 le ultime $n-1$ parole. La scommessa resta identica, $P(w_t \mid w_{<t})$,
 addestrata con la stessa cross-entropia e valutata con la stessa perplessità:
@@ -710,7 +764,7 @@ for frase in corpus:
 vocabolario = {w for frase in corpus for w in frase.split()} | {FINE}
 V = len(vocabolario)                      # 12: 11 parole + </s>
 
-# 2. Probabilita': massima verosimiglianza e Laplace
+# 2. Probabilità: massima verosimiglianza e Laplace
 def p_mle(w1, w2):
     tot = sum(conta[w1].values())
     return conta[w1][w2] / tot if tot else 0.0
@@ -718,9 +772,9 @@ def p_mle(w1, w2):
 def p_laplace(w1, w2):
     return (conta[w1][w2] + 1) / (sum(conta[w1].values()) + V)
 
-print(p_mle("il", "gatto"))       # 0.75
-print(p_mle("cane", "nero"))      # 0.0 -> lo zero che azzera tutto
-print(p_laplace("cane", "nero"))  # 0.0769... -> piccola ma viva
+print(p_mle("il", "gatto"))       # tre volte su quattro
+print(p_mle("cane", "nero"))      # lo zero che azzera tutto
+print(p_laplace("cane", "nero"))  # un tredicesimo: piccola ma viva
 
 # 3. Generazione: una passeggiata di scommesse da <s> a </s>
 def genera(seme):
@@ -736,21 +790,31 @@ def genera(seme):
 
 for seme in range(3):
     print(genera(seme))
-# il cane guarda il gatto nero
-# il cane guarda il gatto nero
-# il cane guarda il cane guarda il gatto nero
 
-# 4. Perplessita' di una frase secondo il modello lisciato
+# 4. Perplessità di una frase secondo il modello lisciato
 def perplessita(frase):
     parole = [INIZIO] + frase.split() + [FINE]
     log2p = sum(math.log2(p_laplace(w1, w2))
                 for w1, w2 in zip(parole, parole[1:]))
     return 2 ** (-log2p / (len(parole) - 1))
 
-# nessuna delle tre e' nel corpus di addestramento: si valuta su testo nuovo
-print(perplessita("il gatto nero salta sul divano"))  # ~5.5  senza sorprese
-print(perplessita("il cane nero salta sul divano"))   # ~7.0  coppia mai vista
-print(perplessita("divano sul salta nero gatto il"))  # ~14.2 la rovesciata
+# nessuna delle tre è nel corpus di addestramento: si valuta su testo nuovo
+for frase in ["il gatto nero salta sul divano",     # senza sorprese
+              "il cane nero salta sul divano",      # una coppia mai vista
+              "divano sul salta nero gatto il"]:    # la rovesciata
+    print(f"{perplessita(frase):5.1f}  {frase}")
+```
+
+```text
+0.75
+0.0
+0.07692307692307693
+il cane guarda il gatto nero
+il cane guarda il gatto nero
+il cane guarda il cane guarda il gatto nero
+  5.5  il gatto nero salta sul divano
+  7.0  il cane nero salta sul divano
+ 14.2  divano sul salta nero gatto il
 ```
 
 La generazione con il seme 2 inciampa
@@ -764,32 +828,32 @@ posto di Python, sono i conti che Markov fece nel 1913.
 
 ## Gli n-gram non sono morti
 
-Sarebbe facile chiudere con «poi arrivarono le reti neurali e gli n-gram
-finirono in soffitta». Non è andata così, e l'onestà storica impone di dirlo.
-Contare è imbattibilmente *economico*. Addestrare una rete neurale vuol dire
-ripassare sugli stessi dati decine di volte, aggiustando ogni volta milioni di
-numeri con quel segnale di ritorno che si chiama gradiente, e per farlo in
-tempi umani serve una scheda grafica, una GPU. Costruire un n-gram vuol dire
+Le reti neurali non hanno mandato gli n-gram in soffitta, e la ragione è il
+costo. Una rete neurale si addestra ripassando sugli stessi dati molte volte e
+aggiustando ogni volta milioni di parametri con il gradiente, e quando è
+grande le serve una scheda grafica, una GPU. Costruire un n-gram vuol dire
 leggere il corpus una volta sola e riempire un quaderno; usarlo vuol dire
-aprire il quaderno alla pagina giusta. Nessuna scheda grafica, nessun
-gradiente, nessuna attesa. Nel 2006 Google distribuì i conteggi fino ai
-5-grammi estratti da circa mille miliardi di parole di web: modelli giganteschi
-costruiti, in fondo, con la matita di Markov. Per anni la barra dei
-suggerimenti delle tastiere dei telefoni è stata proprio questo (un n-gram con
-smoothing, piccolo e veloce abbastanza da girare sul dispositivo), oggi
-affiancato da reti compatte che girano sullo stesso dispositivo. E nel
-riconoscimento vocale, come racconta il {doc}`capitolo sul riconoscimento del
-parlato </SpeechRecognition/overview>`, un modello di linguaggio si fonde
-ancora col modello acustico per scegliere fra trascrizioni identiche
-all'orecchio («l'ago» o «lago») e per anni quel correttore silenzioso è stato
-un n-gram alla Kneser–Ney. Quando serve una probabilità *subito*, su hardware
+aprire il quaderno alla pagina giusta. Nel 2006 Google distribuì i conteggi
+dei gruppi fino a cinque parole (i 5-grammi) estratti da circa mille miliardi
+di parole di web {cite}`brants2006web`: modelli giganteschi costruiti, in
+fondo, con la matita di Markov. A quella scala Brants e colleghi rinunciarono
+perfino a far sommare a uno le probabilità, con un ripiego semplificato che
+chiamarono *stupid backoff* {cite}`brants2007large`. Per anni la barra dei
+suggerimenti delle tastiere dei telefoni è stata un n-gram con smoothing,
+piccolo e veloce abbastanza da girare sul dispositivo, oggi affiancato da reti
+compatte. E nel riconoscimento vocale, come racconta il {doc}`capitolo sul
+riconoscimento del parlato </SpeechRecognition/overview>`, il modello di
+linguaggio si combina con quello acustico per scegliere fra trascrizioni che
+all'orecchio suonano uguali («l'ago» o «lago»), e per anni quel modello è
+stato un n-gram. Quando serve una probabilità *subito*, su hardware
 qualunque, contare resta un'ottima idea.
 
 Ma il soffitto degli n-gram è quello che abbiamo toccato con mano: memoria
 corta per costruzione, e nessuna nozione del fatto che «gatto» e «micio» si
-somiglino. La prossima sezione riparte esattamente da qui: la stessa
-scommessa sulla parola successiva, affidata però a una rete che porta con
-sé, parola dopo parola, un riassunto dell'intera frase.
+somiglino. Le reti ricorrenti di {doc}`Modelli di sequenza
+</NaturalLanguageProcessing/modelli-sequenza>` fanno la stessa scommessa sulla
+parola successiva tenendo, parola dopo parola, un riassunto di tutto quello che
+hanno letto.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -816,13 +880,14 @@ sé, parola dopo parola, un riassunto dell'intera frase.
   parte senza «San»).
 - La perplessità è la pagella: il numero di facce del dado con cui il
   modello esita a ogni scommessa, e più è basso meglio scommette. Va misurata
-  su testo mai letto in addestramento, altrimenti si sta barando.
+  su testo mai letto in addestramento, altrimenti si sta barando; ed è una
+  media, in cui le poche scommesse difficili annegano fra le tante facili.
 - Un n-gram sa anche generare, tirando il suo dado truccato una parola
   alla volta: il risultato suona giusto da vicino e non porta da nessuna
   parte da lontano, perché la memoria è da pesce rosso. Allungarla riempie il
   quaderno di pagine bianche, e comunque per il quaderno «gatto» e «micio»
-  restano due estranei: sono le due ragioni che portano alle reti della
-  prossima sezione.
+  restano due estranei: sono le due ragioni che portano alle reti
+  ricorrenti.
 - Gli n-gram non sono morti: le tastiere che suggeriscono la parola, la
   spalla del riconoscimento vocale, un metro di paragone velocissimo che gira
   su qualunque computer, senza GPU.
@@ -844,14 +909,17 @@ sé, parola dopo parola, un riassunto dell'intera frase.
   l'interpolazione mescola sempre gli ordini, il backoff commuta fra l'uno e
   l'altro; Kneser–Ney sostituisce la frequenza con i *contesti distinti*
   («Francisco» è frequente ma vive solo dopo «San»), nasce come modello di
-  ripiego e si usa nella forma interpolata di Chen e Goodman, che è la linea
-  di base rimasta fino all'era neurale.
+  ripiego e si usa nella forma interpolata di Chen e Goodman, che si ricava
+  chiedendo di conservare le marginali ed è la linea di base rimasta fino
+  all'era neurale.
 - La perplessità (il $2^H$ della teoria dell'informazione) è la pagella:
-  va misurata su testo di test, mai su quello di addestramento.
+  va misurata su testo di test, mai su quello di addestramento, e si
+  confronta solo a parità di vocabolario; fra tokenizzatori diversi si usano i
+  bit per carattere.
 - Un n-gram genera testo campionando scommessa dopo scommessa: giusto da
   vicino, sconnesso da lontano. I limiti sono strutturali: contesti
   $|V|^{\,n-1}$ e nessuna generalizzazione tra parole simili; le ragioni che
-  portano alle RNN della prossima sezione.
+  portano alle RNN.
 - Gli n-gram non sono morti: tastiere predittive, fusione col modello
   acustico del riconoscimento vocale, baseline velocissime senza GPU.
 ```

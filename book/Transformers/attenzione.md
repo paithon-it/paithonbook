@@ -14,34 +14,31 @@ sequenza </NaturalLanguageProcessing/modelli-sequenza>` monta pezzo per pezzo)
 {cite}`bahdanau2015neural`. Tre anni dopo il Transformer ci avrebbe costruito
 sopra tutto il resto.
 
-## L'idea: un'aggregazione pesata che dipende dal contenuto
+## L'idea: una media pesata, con i pesi calcolati dall'ingresso
 
 Ogni token entra nell'attenzione come un vettore
-$\mathbf{x}_i \in \mathbb{R}^{d_{\text{model}}}$, l'embedding della
-{doc}`sezione sulla rappresentazione del testo
-</NaturalLanguageProcessing/rappresentare-testo>`, e la ragione per cui la cosa
-conta è aritmetica: fra due parole una media non è definita, fra due vettori sì,
-coordinata per coordinata. Chi ha letto la {doc}`matematica di un modello
-linguistico </Matematica/matematica-llm>` ha già visto il meccanismo per
-intero, con le tre proiezioni chiamate $\mathbf{W}^A$, $\mathbf{W}^B$,
-$\mathbf{W}^C$: qui lo si rivede con il vocabolario standard e con i pezzi che
-là restavano fuori.
+$\mathbf{x}_i \in \mathbb{R}^{d_{\text{model}}}$, cioè una lista di
+$d_{\text{model}}$ numeri: l'embedding della {doc}`sezione sulla
+rappresentazione del testo </NaturalLanguageProcessing/rappresentare-testo>`.
+La ragione per cui conta è aritmetica: fra due parole una media non è definita,
+fra due vettori sì, coordinata per coordinata. Chi ha letto la
+{doc}`matematica di un modello linguistico </Matematica/matematica-llm>` ha già
+visto il meccanismo per intero, con altri nomi e con le matrici scritte
+trasposte; qui lo si rivede con il vocabolario standard e con i pezzi che là
+restavano fuori.
 
-Una media del genere è esattamente quello che l'attenzione fa. Per ogni parola
-da elaborare guarda tutte le altre parole della frase, decide quanto ciascuna
-conta per capire quella, e ne mescola i vettori in quella proporzione. Il
-risultato è una versione della parola arricchita dal contesto: non più «salta»
-in astratto, ma «salta» in *questa* frase. L'operazione ha un nome ordinario,
-media pesata, e una proprietà che la distingue dalle medie pesate di tutti i
-giorni: i pesi non stanno scritti in nessun regolamento, li produce la frase
-stessa, parola per parola. Di qui il nome tecnico dell'oggetto, aggregazione
-pesata dipendente dal contenuto. Una media con pesi decisi dalla somiglianza
-c'era già, nella {ref}`regressione a nucleo <sec-regressione-a-nucleo>`; là però
-il modo di misurare la somiglianza era fissato in partenza, una campana sulla
-distanza, qui lo impara la rete.
+Per ogni posizione l'attenzione calcola una media pesata dei vettori di tutte
+le posizioni della frase. Il risultato è una versione della parola arricchita
+dal contesto: non più «salta» in astratto, ma «salta» in *questa* frase. Da una
+media pesata ordinaria la distingue la provenienza dei pesi: non sono parametri
+fissati una volta per tutte dall'addestramento, li ricalcola ogni volta il
+contenuto della frase, parola per parola. Una media con pesi decisi dalla
+somiglianza c'era già, nella {ref}`regressione a nucleo
+<sec-regressione-a-nucleo>`; là però il modo di misurare la somiglianza era
+fissato in partenza, una campana sulla distanza, qui lo impara la rete.
 
 Il problema che l'attenzione viene a risolvere è il collo di bottiglia del
-traduttore a due metà, che la {doc}`sezione sulla traduzione con le reti
+modello encoder-decoder, che la {doc}`sezione sulla traduzione con le reti
 </NaturalLanguageProcessing/seq2seq-traduzione>` ha raccontato insieme alla
 soluzione di Bahdanau: l'encoder, la parte che legge, comprimeva la frase in un
 solo vettore di lunghezza fissa, e il decoder, la parte che scrive, doveva
@@ -71,11 +68,11 @@ prendere il 52% della lista di numeri di "gatto", il 24% di quella di "muro", e
 così via, e sommare il tutto: quello che ne esce è "salta" in questa frase e in
 nessun'altra.
 
-Due mestieri diversi, e conviene tenerli separati fin da subito. L'evidenziatore
-decide quanto ciascuna parola conta; quello che finisce nel miscuglio è
-invece l'informazione che ciascuna porta con sé, e le due cose la rete se le
-tiene in due posti distinti. Un vantaggio si vede subito: "gatto" può
-essere facile da trovare per una ragione (è un soggetto animato) e
+Due mestieri diversi, da tenere separati fin da subito. L'evidenziatore decide
+quanto ciascuna parola conta; quello che finisce nel miscuglio è invece
+l'informazione che ciascuna porta con sé, e per ogni parola la rete tiene le
+due cose in due liste di numeri diverse. Un vantaggio si vede subito: "gatto"
+può essere facile da trovare per una ragione (è un soggetto animato) e
 consegnare tutt'altro (che è un felino, che è nero, che in questa frase è
 il protagonista).
 
@@ -126,26 +123,41 @@ $\mathbf{q}$ «la domanda» e $\mathbf{k}_j$ «la risposta» aiuta a ricordare,
 ed è un uso corrente; ma il meccanismo è il
 prodotto scalare fra due proiezioni apprese, non un dialogo. E il prodotto
 scalare non c'era fin dall'inizio: nel lavoro del 2014 il punteggio lo
-calcolava una piccola rete a sé (l'attenzione *additiva*). La forma
+calcolava una piccola rete a sé,
+
+$$
+z_{ij} = \mathbf{v}_a^\top \tanh\big(\mathbf{W}_a \mathbf{s}_{i-1} +
+\mathbf{U}_a \mathbf{h}_j\big),
+$$
+
+con $\mathbf{s}_{i-1}$ lo stato del decoder al passo precedente, $\mathbf{h}_j$
+quello dell'encoder sulla parola $j$, e $\mathbf{W}_a$, $\mathbf{U}_a$,
+$\mathbf{v}_a$ appresi insieme al resto: è l'attenzione *additiva*. La forma
 moltiplicativa si afferma nel 2015 per due strade: nelle end-to-end memory
 network {cite}`sukhbaatar2015end`, che pesano ogni fatto $\mathbf{m}_i$ in
 memoria con $\operatorname{softmax}(\mathbf{u}^\top \mathbf{m}_i)$, dove
 $\mathbf{u}$ è la domanda, e nella traduzione con Luong, Pham e Manning
-{cite}`luong2015effective`. È questa che il Transformer adotta, aggiungendo
-la scala, e l'articolo del 2017 ne dice il motivo: a parità di complessità
+{cite}`luong2015effective`, che confrontano tre punteggi fra lo stato del
+decoder $\mathbf{s}$ e uno stato dell'encoder $\mathbf{h}_j$: il prodotto
+scalare $\mathbf{s}^\top\mathbf{h}_j$, la forma bilineare
+$\mathbf{s}^\top\mathbf{W}_a\mathbf{h}_j$ e una variante della rete additiva.
+È la prima che il Transformer adotta, con le proiezioni apprese davanti e la
+scala, e l'articolo del 2017 ne dice il motivo: a parità di complessità
 teorica il prodotto scalare è un prodotto fra matrici, molto più veloce e
 parco di memoria della rete additiva, che però lo supera quando $d_k$ è
 grande e la scala manca.
 `````
 
-## Il tabellone: quali sono le forme in gioco
+## Tutte le query insieme: le forme delle matrici
 
-Fin qui la domanda era una sola. In un Transformer le domande sono tante, una
-per posizione, e i conti si fanno tutti insieme impilandole per righe, in
-notazione matriciale. Le posizioni
-che fanno una domanda sono $L$, quelle che si offrono come chiavi sono $S$, e
-i due numeri non sono lo stesso numero. La matrice dei punteggi ha forma
-$L \times S$, e il caso quadrato è soltanto il più frequente.
+Fin qui la domanda era una sola. In un Transformer ce n'è una per posizione, e
+i conti si fanno tutti insieme impilando i vettori per righe, in notazione
+matriciale. Le posizioni che pongono una domanda, le *query*, sono $L$, e
+impilate formano la matrice $\mathbf{Q}$; quelle che si offrono per essere
+trovate, le *chiavi*, sono $S$, e formano la matrice $\mathbf{K}$. I due numeri
+in generale sono diversi: la matrice dei punteggi, una riga per query e una
+colonna per chiave, ha forma $L \times S$, e il caso quadrato è soltanto il più
+frequente.
 
 `````{tab} Elementare
 Un tabellone appeso al muro, una riga per ogni parola che fa una domanda e una
@@ -161,9 +173,9 @@ scritte con la stessa quantità di numeri; l'informazione consegnata no, quella
 può essere lunga a piacere, perché con nessuno si confronta. E quello che esce
 da una riga ha sempre la stessa taglia, che le colonne siano dieci o diecimila:
 il tabellone si allarga, il risultato per ogni parola no. È il motivo per cui la
-stessa macchina lavora su una frase e su un capitolo senza cambiare forma. Non
-per cui lo fa a costo uguale: il tabellone cresce con il quadrato della
-lunghezza, ed è da lì che vengono i limiti di lunghezza dei modelli.
+stessa macchina lavora su una frase e su un capitolo senza cambiare forma. Il
+costo, quello sì, cambia: il tabellone cresce con il quadrato della lunghezza,
+ed è da lì che vengono i limiti di lunghezza dei modelli.
 
 Il tabellone è quadrato quando le due liste sono la stessa, cioè quando una
 frase interroga sé stessa. Ma non deve esserlo. Un traduttore ha davanti due
@@ -192,10 +204,9 @@ $$
 \mathbf{V} \in \mathbb{R}^{S \times d_v},
 $$
 
-dove $L$ è il numero di posizioni di query (non il numero di strati, che porta
-la stessa lettera nel resto del libro e nella {doc}`sezione sulla struttura del
-Transformer <architettura>`: qui $L$ conta righe di una matrice, là piani di
-una pila), $S$ il numero di posizioni di chiave e valore, $d_k$ la dimensione
+dove $L$ è il numero di posizioni di query (non il numero di strati, che in
+questo capitolo si scrive $n_{\text{strati}}$), $S$ il numero di posizioni di
+chiave e valore, $d_k$ la dimensione
 per testa di query e chiavi, $d_v$ quella dei valori. Query e chiavi devono
 condividere $d_k$, perché fra loro si fa un prodotto scalare; i valori no, e
 $d_v$ può essere diverso. Da qui le forme di
@@ -223,20 +234,23 @@ finché non si esce dal caso simmetrico, e allora si manifesta come un
 disallineamento della maschera.
 `````
 
-Un batch e più teste aggiungono due dimensioni davanti, e non cambiano niente
-del ragionamento: gli stessi conti, ripetuti per ogni esempio e per ogni testa.
-Nel resto del capitolo restano sottintese.
+Nel codice queste matrici hanno due indici in più davanti: uno per l'esempio
+del batch, cioè del gruppo di frasi elaborate insieme, e uno per la testa di
+attenzione, che arriva fra poco. I conti sono gli stessi, ripetuti per ogni
+esempio e per ogni testa, e nel resto del capitolo quei due indici restano
+sottintesi.
 
 ## Da dove nascono query, chiavi e valori
 
-Resta da dire *come* si decide l'intensità dell'evidenziatore. Ogni parola, per
-partecipare al gioco, fa tre mestieri diversi, e la rete se ne costruisce tre
-versioni diverse: la **query**, la **key** e il **value**. In italiano sono
-*domanda*, *chiave* e *valore*, ma i nomi inglesi sono ormai quelli che si
-trovano scritti ovunque, nei paper e nel codice, e li useremo anche noi. Tutte
-e tre nascono dalla stessa lista di partenza, moltiplicata per tre matrici
-diverse e apprese, e il percorso che ne segue, dalla proiezione fino alla
-miscela dei value, è quello che {numref}`fig-qkv` disegna per una parola sola.
+Resta da dire da dove vengono query, chiavi e valori. Ogni token $i$ ha tre
+rappresentazioni, una per ciascuno dei tre ruoli: la **query**
+$\mathbf{q}_i$, la **key** $\mathbf{k}_i$ e il **value** $\mathbf{v}_i$. In
+italiano sono *domanda*, *chiave* e *valore*, ma i nomi inglesi sono quelli che
+si trovano scritti ovunque, negli articoli e nel codice, e valgono anche qui.
+Tutte e tre si ricavano dallo stesso vettore $\mathbf{x}_i$, moltiplicandolo
+per tre matrici diverse e apprese durante l'addestramento: sono le
+*proiezioni*. {numref}`fig-qkv` segue il percorso per un token solo, dalle
+proiezioni fino alla media dei value.
 
 `````{tab} Elementare
 Sono i tre biglietti della {doc}`matematica di un modello linguistico
@@ -260,10 +274,10 @@ all'altro del modello, e dentro lo stesso piano ce n'è più di una copia che
 lavora in parallelo sulla stessa frase (fra poco quelle copie prenderanno il
 nome di teste). Quindi "gatto" cerca una cosa al primo piano e un'altra al
 ventesimo, e nello stesso piano si presenta in un modo a una copia e in un
-altro modo a quella accanto. La prova sta nel guasto che eviti sapendolo: chi
-si aspetta un cartellino fisso si aspetta anche che "gatto" venga scelto sempre
-dalle stesse parole, e poi trova due piani in cui succede il contrario, senza
-che nessuno dei due sia rotto.
+altro modo a quella accanto. Saperlo evita un errore preciso: chi si aspetta un
+cartellino fisso si aspetta anche che "gatto" venga scelto sempre dalle stesse
+parole, e poi trova due piani in cui succede il contrario, senza che nessuno
+dei due sia rotto.
 
 E la separazione dei tre mestieri sembra un lusso, mentre è il punto di tutta
 la faccenda. Se ogni parola avesse una sola versione di sé, cercare ed essere
@@ -285,7 +299,11 @@ $$
 
 con $\mathbf{W}^Q, \mathbf{W}^K \in
 \mathbb{R}^{d_{\text{model}} \times d_k}$ e
-$\mathbf{W}^V \in \mathbb{R}^{d_{\text{model}} \times d_v}$. Nell'attenzione
+$\mathbf{W}^V \in \mathbb{R}^{d_{\text{model}} \times d_v}$. Sono le trasposte
+delle $\mathbf{W}^A$, $\mathbf{W}^B$, $\mathbf{W}^C$ della {doc}`matematica di
+un modello linguistico </Matematica/matematica-llm>`, che lavora su vettori
+colonna; qui, come nelle librerie, le posizioni stanno nelle righe di
+$\mathbf{X}$. Nell'attenzione
 incrociata cambia una cosa sola: le query vengono da un flusso,
 $\mathbf{Q} = \mathbf{Y}\mathbf{W}^Q$ con $\mathbf{Y}$ le rappresentazioni di
 quell'altra sequenza, e chiavi e valori dall'altro. Tutto il
@@ -302,10 +320,14 @@ La libertà di avere $\mathbf{W}^Q \neq \mathbf{W}^K$ ha una conseguenza
 strutturale che si perde di vista: la matrice dei punteggi
 $\mathbf{X}\mathbf{W}^Q(\mathbf{X}\mathbf{W}^K)^\top =
 \mathbf{X}\,\mathbf{W}^Q\mathbf{W}^{K\top}\mathbf{X}^\top$ è governata da
-$\mathbf{W}^Q\mathbf{W}^{K\top}$, che in generale non è simmetrica. Che
+$\mathbf{W}^Q\mathbf{W}^{K\top}$, una matrice
+$d_{\text{model}} \times d_{\text{model}}$ che in generale non è simmetrica. Che
 $i$ attenda a $j$ non implica quindi che $j$ attenda a $i$, ed è da questa
 asimmetria che viene la capacità di rappresentare relazioni orientate come
-«chi è il soggetto di», invece della sola somiglianza. Le varianti che legano
+«chi è il soggetto di», invece della sola somiglianza. La stessa matrice ha
+rango al più $d_k$, perché è il prodotto di due fattori con $d_k$ colonne: ogni
+testa confronta le posizioni in un sottospazio di dimensione $d_k$, e non
+nell'intero $\mathbb{R}^{d_{\text{model}}}$. Le varianti che legano
 le due proiezioni rinunciano a quella libertà nei punteggi (la matrice
 $\mathbf{X}\mathbf{W}\mathbf{W}^\top\mathbf{X}^\top$ diventa simmetrica, anche
 se la softmax per riga lascia asimmetrici i pesi), e quanto costi dipende dal
@@ -327,27 +349,28 @@ parola li ricopre tutti e tre insieme.
 
 ## La matrice dei punteggi, elemento per elemento
 
-Presa la riga $i$ di $\mathbf{Q}$ e la riga $j$ di $\mathbf{K}$, l'elemento di
-posto $(i, j)$ della matrice dei punteggi è il loro prodotto scalare:
+Rispetto all'attenzione della {doc}`sezione sulla traduzione con le reti
+</NaturalLanguageProcessing/seq2seq-traduzione>` cambia il modo di calcolare il
+punteggio: non lo dà più una piccola rete addestrata insieme al resto, lo dà un
+prodotto scalare. Presa la riga $i$ di $\mathbf{Q}$
+e la riga $j$ di $\mathbf{K}$, l'elemento di posto $(i, j)$ della matrice dei
+punteggi è
 
 $$
-z_{ij} = \mathbf{q}_i^\top \mathbf{k}_j .
+z_{ij} = \mathbf{q}_i^\top \mathbf{k}_j ,
 $$
 
-Il prodotto fra matrici $\mathbf{Q}\mathbf{K}^\top$ calcola in un colpo solo
-tutti i prodotti scalari query-chiave: ogni riga corrisponde a una posizione di
-query, ogni colonna a una posizione di chiave.
-
-E il confronto fra una ricerca e un'etichetta, una volta ricordato che sono due
-liste di numeri, è la cosa più semplice del mondo: si moltiplicano numero per
-numero e si sommano i risultati. Con due listine da tre: $(2, 0, 1)$ contro
-$(3, 1, 0)$ fa $2\cdot3 + 0\cdot1 + 1\cdot0 = 6$, mentre contro $(0, 4, 0)$ fa
-$0 + 0 + 0 = 0$. Se le due liste hanno numeri grandi negli stessi posti la
-somma viene grande, e vuol dire che quell'etichetta risponde a quella ricerca;
-se i numeri grandi stanno in posti diversi la somma viene piccola. È
-l'operazione che la
-{doc}`sezione sull'algebra lineare </Matematica/algebra-lineare>` chiama
-*prodotto scalare*, ed è l'unico conto che l'attenzione fa davvero.
+cioè si moltiplicano le coordinate corrispondenti e si sommano i risultati. Con
+due vettori di tre numeri, $(2, 0, 1)$ contro $(3, 1, 0)$ dà
+$2\cdot3 + 0\cdot1 + 1\cdot0 = 6$, mentre contro $(0, 4, 0)$ dà $0$. Il
+punteggio viene grande quando i due vettori hanno valori grandi e dello stesso
+segno negli stessi posti, e piccolo, o negativo, quando non si allineano. È
+l'operazione che la {doc}`sezione sull'algebra lineare
+</Matematica/algebra-lineare>` chiama *prodotto scalare*, ed è l'unico
+confronto fra una query e una chiave che il meccanismo esegue. Il prodotto fra
+matrici $\mathbf{Q}\mathbf{K}^\top$ li calcola tutti in un colpo solo: ogni
+riga corrisponde a una posizione di query, ogni colonna a una posizione di
+chiave.
 
 Due avvertenze sul contenuto di quelle caselle. Un punteggio grezzo non è una
 probabilità: può essere negativo, e la sua grandezza dipende dalla scala e
@@ -359,10 +382,13 @@ d'accordo.
 
 ## Perché si divide per la radice di $d_k$
 
-Prima di trasformare i punteggi in intensità, il Transformer li rimpicciolisce
-tutti dividendoli per $\sqrt{d_k}$, la radice quadrata della dimensione di
-query e chiavi. Il fattore ha una giustificazione precisa, e guardarla da
-vicino dice anche che cosa quel fattore non promette.
+I punteggi diventano pesi attraverso la softmax, la funzione della
+{doc}`sezione sulle funzioni di attivazione </RetiNeurali/funzioni-attivazione>`
+che trasforma una fila di numeri qualsiasi in numeri positivi che sommano a uno.
+Prima di passarli alla softmax, il Transformer li divide tutti per
+$\sqrt{d_k}$, la radice quadrata della dimensione di query e chiavi, cioè di
+quanti numeri ha ciascuno dei due vettori. Il fattore ha una giustificazione
+precisa, e guardarla da vicino dice anche che cosa quel fattore non promette.
 
 `````{tab} Elementare
 Un punteggio nasce come somma di tanti pezzetti, uno per ogni numero delle due
@@ -446,10 +472,10 @@ diverso da riga a riga.
 ## Le maschere: quali collegamenti sono permessi
 
 C'è un passaggio in mezzo che finora si è dato per scontato. Prima della
-softmax, all'implementazione è permesso sommare alla matrice dei punteggi una
-**maschera**, cioè una matrice della stessa forma che vale $0$ dove il
-collegamento è lecito e $-\infty$ dove è vietato. Il posto in cui la somma
-avviene fa parte della definizione.
+softmax si può sommare alla matrice dei punteggi una **maschera**, cioè una
+matrice della stessa forma che vale $0$ dove il collegamento è lecito e
+$-\infty$ dove è vietato. Che la somma avvenga prima della softmax, e non dopo,
+fa parte della definizione: le due scelte danno risultati diversi.
 
 `````{tab} Elementare
 Il regolamento si scrive sul tabellone prima di cominciare a colorare, e su
@@ -543,8 +569,9 @@ efficaci di far attendere un modello al proprio futuro.
 
 ## La softmax, riga per riga, e la miscela dei valori
 
-Restano gli ultimi due gesti, e sono quelli che trasformano un tabellone di
-numeri in una rappresentazione nuova.
+Restano gli ultimi due passaggi, quelli che trasformano la matrice dei
+punteggi in una rappresentazione nuova: la softmax, riga per riga, e la media
+dei valori.
 
 `````{tab} Elementare
 Ogni riga del tabellone viene guardata da sola, e da sola diventa una
@@ -608,11 +635,22 @@ quello dei punteggi, ed essendo una combinazione convessa dei
 $\mathbf{v}_j$ sta nel loro inviluppo convesso. Una singola testa non può
 fabbricare direzioni che i valori non contengono già; quello che può fare è
 sceglierne il mescolamento in funzione del contenuto, e cambiarlo a ogni
-posizione. Il vincolo cade appena si concatenano più teste e si mescolano con
-$\mathbf{W}^O$, che è una proiezione qualsiasi. Dati
-i coefficienti, la combinazione dei valori è lineare: la non-linearità viene
-da come i coefficienti dipendono dall'ingresso, e dal fatto che li si
-moltiplica per valori che dall'ingresso dipendono anche loro.
+posizione. Con più teste, che arrivano fra poco, la proprietà vale per
+ciascuna: l'uscita di ogni testa è una media convessa dei propri valori, con
+pesi propri, e la proiezione $\mathbf{W}^O$ che le ricompone è lineare, quindi
+l'uscita dello strato resta nel sottospazio generato dai valori di tutte le
+teste, proiettati. Le teste aggiungono un mescolamento diverso per ogni
+sottospazio. Dati i coefficienti, la combinazione dei valori è lineare: la
+non-linearità viene da come i coefficienti dipendono dall'ingresso, e dal fatto
+che li si moltiplica per valori che dall'ingresso dipendono anche loro.
+
+Il costo sta nei due prodotti fra matrici: $\mathbf{Q}\mathbf{K}^\top$ richiede
+$L\,S\,d_k$ moltiplicazioni, ciascuna con la sua somma, e $\mathbf{A}\mathbf{V}$
+altre $L\,S\,d_v$; un'implementazione diretta tiene poi in memoria l'intera
+matrice dei punteggi, $L \times S$ numeri. Con $L = S = n$ il tempo cresce come
+$n^2 d_k$ per testa, cioè $O(n^2 d_{\text{model}})$ sommando le teste, e la
+memoria come $n^2$: sono i costi che il {doc}`confronto coi modelli precedenti
+<confronti>` mette accanto a quelli delle reti ricorrenti.
 
 I pesi $\mathbf{A}$ restano una quantità intermedia. Scambiarli per l'uscita
 dello strato è un errore ricorrente, e la
@@ -622,12 +660,21 @@ insieme agli altri della stessa famiglia.
 
 ## L'attenzione con i numeri: tre token a mano
 
-Tutto il meccanismo sta in una manciata di conti, e su una frase di tre parole
-li si può rifare a mano. Le liste hanno due soli numeri ciascuna
-($d_k = d_v = 2$), e il divieto è quello autoregressivo: ogni parola guarda sé
-stessa e quelle prima. Le tre parole sono "il", "gatto", "salta"; le query e le
-chiavi sono scelte in modo che "salta" cerchi sull'asse su cui "gatto" si fa
-trovare.
+Messi in fila, i passaggi visti fin qui si scrivono in una formula sola, che
+l'articolo del 2017 chiama *scaled dot-product attention*:
+
+$$
+\operatorname{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) =
+\operatorname{softmax}\!\left(\frac{\mathbf{Q}\mathbf{K}^\top}{\sqrt{d_k}} +
+\mathbf{M}\right)\mathbf{V},
+$$
+
+con la softmax applicata riga per riga: punteggi, scala, maschera, softmax,
+media dei valori. Su una frase di tre token la si rifà a mano. I vettori hanno
+due soli numeri ciascuno ($d_k = d_v = 2$), e la maschera è quella che vieta di
+guardare avanti, detta *causale*: ogni token vede sé stesso e quelli prima. I
+token sono "il", "gatto", "salta"; query e chiavi sono scelte in modo che
+"salta" cerchi sull'asse su cui "gatto" si fa trovare.
 
 ```python
 import torch
@@ -678,27 +725,27 @@ uscita
 ```
 
 Le tre righe si leggono una per una, e nessuna richiede la macchina. La prima
-parola può guardare solo sé stessa: un peso di 1 su una casella sola, e la sua
-uscita $(1{,}00,\ 0{,}00)$ è il proprio valore tale e quale. La seconda ha
-davanti due caselle con lo stesso punteggio, quindi mezzo e mezzo, e la sua
-uscita è la media esatta dei due valori,
-$\tfrac{1}{2}(1, 0) + \tfrac{1}{2}(0, 2) = (0{,}50,\ 1{,}00)$. La terza è
-l'unica interessante: i punteggi $2$ e $4$ diventano $1{,}414$ e $2{,}828$
-dopo la scala, e la softmax li trasforma in $0{,}19$ e $0{,}77$; il poco che
-resta, cinque centesimi, va a "salta" su sé stessa. "Salta" mette più di tre
-quarti del suo colore su "gatto", e la sua uscita
-$(0{,}23,\ 1{,}58)$ pende dalla parte del valore di "gatto", che era $(0, 2)$.
+posizione vede solo sé stessa: peso 1 su una colonna sola, e la sua uscita
+$(1{,}00;\ 0{,}00)$ è il suo stesso valore. La seconda ha davanti due punteggi
+uguali, quindi pesi $\tfrac{1}{2}$ e $\tfrac{1}{2}$, e la sua uscita è la media
+dei due valori, $\tfrac{1}{2}(1;\ 0) + \tfrac{1}{2}(0;\ 2) = (0{,}50;\ 1{,}00)$.
+La terza è l'unica interessante. La query di "salta", $(2;\ 0)$, contro le
+chiavi di "il", $(1;\ 0)$, e di "gatto", $(2;\ 0)$, dà i punteggi $2$ e $4$, che
+dopo la scala diventano $1{,}414$ e $2{,}828$; la softmax li trasforma in
+$0{,}19$ e $0{,}77$, e il resto, cinque centesimi, va a "salta" su sé stessa.
+"Salta" dà a "gatto" più di tre quarti del peso, e la sua uscita
+$(0{,}23;\ 1{,}58)$ pende verso il valore di "gatto", che era $(0;\ 2)$.
 
-Due cose che quel tabellone dice e che sono più facili da vedere qui che in
-una formula. La prima è dove sono finiti i punteggi: nell'uscita non ce n'è
-traccia, hanno deciso le proporzioni e sono usciti di scena. La seconda è che
-la terza riga resta una miscela, dove "gatto" pesa molto senza esserne una
-copia: le altre due parole ci sono ancora, con il loro pezzetto.
+Due cose che i numeri mostrano meglio della formula. La prima è dove sono
+finiti i punteggi: nell'uscita non ce n'è traccia, hanno deciso i pesi e sono
+usciti di scena. La seconda è che la terza riga resta una miscela: "gatto" pesa
+molto senza esserne una copia, perché le altre due posizioni contribuiscono con
+la loro parte.
 
-E adesso i due guasti annunciati poco fa, misurati sugli stessi numeri.
-Togliendo la scala i punteggi restano $2$ e $4$ invece di $1{,}414$ e
-$2{,}828$, e la distribuzione si stringe; spostando la maschera dopo la softmax
-la riga smette di sommare a uno.
+Gli stessi numeri mostrano i due errori descritti nelle sezioni sulla scala e
+sulle maschere. Togliendo la scala i punteggi restano $2$ e $4$ invece di
+$1{,}414$ e $2{,}828$, e il peso di "gatto" sale da $0{,}77$ a $0{,}87$;
+spostando la maschera dopo la softmax la riga smette di sommare a uno.
 
 ```python
 # senza la scala: la stessa riga, più concentrata
@@ -713,6 +760,13 @@ prima = torch.softmax(riga.masked_fill(fuori, float("-inf")), dim=-1)
 dopo = torch.softmax(riga, dim=-1).masked_fill(fuori, 0.)
 print("maschera prima:", prima.round(decimals=4), "somma", float(prima.sum()))
 print("maschera dopo: ", dopo.round(decimals=4), "somma", float(dopo.sum()))
+print("dopo, rinormalizzata:", (dopo / dopo.sum()).round(decimals=4))
+
+# lo stesso con il punteggio vietato a 200: i permessi vanno in underflow
+riga_200 = torch.tensor([[1., 2., 200.]])
+dopo_200 = torch.softmax(riga_200, dim=-1).masked_fill(fuori, 0.)
+print("con 200, somma", float(dopo_200.sum()),
+      "e rinormalizzata", dopo_200 / dopo_200.sum())
 ```
 
 ```text
@@ -720,45 +774,53 @@ terza riga con la scala    tensor([0.1867, 0.7679, 0.0454])
 terza riga senza la scala  tensor([0.1173, 0.8668, 0.0159])
 maschera prima: tensor([[0.2689, 0.7311, 0.0000]]) somma 1.0
 maschera dopo:  tensor([[0., 0., 0.]]) somma 8.850501050313119e-26
+dopo, rinormalizzata: tensor([[0.2689, 0.7311, 0.0000]])
+con 200, somma 0.0 e rinormalizzata tensor([[nan, nan, nan]])
 ```
 
 La riga mascherata dopo la softmax somma a $8{,}9 \cdot 10^{-26}$ invece che a
 uno, e l'uscita che ne segue è di fatto azzerata. Rinormalizzarla recupera i
 valori giusti, con questi numeri; ma il punteggio vietato continua a entrare nel
 conto, e portandolo da $60$ a $200$ i termini permessi finiscono sotto il più
-piccolo numero rappresentabile, la somma diventa esattamente zero e la
-rinormalizzazione restituisce `nan`. Il divieto scritto prima della softmax non
-ha nessuno di questi due problemi.
+piccolo numero rappresentabile: la somma diventa esattamente zero, e la
+rinormalizzazione restituisce `nan` (*not a number*, il valore con cui il
+calcolatore segnala un conto senza risultato, qui zero diviso zero). Il divieto
+scritto prima della softmax non ha nessuno di questi due problemi.
 
 ## Auto-attenzione e attenzione incrociata
 
 La formula non chiede da nessuna parte che $\mathbf{Q}$, $\mathbf{K}$ e
 $\mathbf{V}$ vengano dalla stessa sequenza, e da questa libertà nascono i due
-usi che si incontrano in ogni Transformer. Nella **self-attention** le tre
-proiezioni vengono tutte dallo stesso flusso: ogni parola pesa tutte le altre
-della propria frase, e anche sé stessa. Nella **cross-attention** le query
-vengono da un flusso e chiavi e valori dall'altro, ed è il traduttore che,
-mentre scrive in italiano, torna a rileggersi l'inglese.
+usi che si incontrano in ogni Transformer. Nella **self-attention** query,
+chiavi e valori vengono tutti dalla stessa sequenza: ogni parola pesa tutte le
+altre della propria frase, e anche sé stessa. Nella **cross-attention** le
+query vengono da una sequenza e chiavi e valori da un'altra: è il traduttore
+che, mentre scrive la frase italiana, torna a rileggere quella inglese, con le
+domande poste dalla frase in scrittura e le risposte prese da quella già
+letta.
 
 | | query da | chiavi e valori da | collegamenti permessi |
 |---|---|---|---|
 | self-attention | la sequenza stessa | la sequenza stessa | tutte le posizioni |
-| cross-attention | il flusso che scrive | il flusso che è stato letto | tutte le posizioni lette |
+| cross-attention | quella che si scrive | quella letta | tutte quelle lette |
 | self-attention causale | la sequenza stessa | la sequenza stessa | sé stessa e quelle prima |
 
 Due parole che il gergo confonde volentieri, e che la tabella tiene separate.
-«Self-attention» dice da dove vengono le tre proiezioni; «causale» dice
-quali collegamenti sono permessi, cioè è una proprietà della maschera. Una
-self-attention può essere bidirezionale (l'encoder) oppure causale (il
-decoder), e restano tutte e due self-attention. Chiamare causale ogni
-self-attention porta a cercare una maschera dove non c'è, e a non vederla dove
-c'è.
+«Self-attention» dice da dove vengono query, chiavi e valori; «causale» dice
+quali collegamenti sono permessi, cioè è una proprietà della maschera: ogni
+posizione vede soltanto sé stessa e quelle che la precedono, come chi scrive
+una parola alla volta. Una self-attention può essere bidirezionale
+(nell'encoder) oppure causale (nel decoder), e resta self-attention in tutti e
+due i casi. Chiamare causale ogni self-attention porta a cercare una maschera
+dove non c'è, e a non vederla dove c'è.
 
 ## Multi-Head Attention: più letture in parallelo
 
-Una sola passata di evidenziatore costringe la rete a comprimere in un unico
-schema tutti i tipi di relazione fra parole. La soluzione del Transformer è
-farne parecchie in parallelo.
+Con una sola attenzione, ogni posizione ha un solo insieme di pesi per
+riassumere tutti i tipi di relazione con le altre: chi compie l'azione, che
+cosa la qualifica, chi sta vicino a chi. Il Transformer ne esegue $h$ in
+parallelo, ciascuna con le proprie proiezioni di query, chiavi e valori: è la
+*multi-head attention*, e ciascuna delle $h$ attenzioni si chiama testa.
 
 `````{tab} Elementare
 Sulla stessa frase lavorano più lettori, ognuno con un evidenziatore di
@@ -819,10 +881,17 @@ dimensione $d_k = d_v = d_{\text{model}}/h = 64$, così che la concatenazione
 sia già larga quanto l'ingresso: tenendo $d_{\text{model}}$ fisso, aumentare
 il numero di teste non moltiplica per $h$ il costo di un'attenzione a
 dimensione piena, perché ogni testa è più stretta. Il costo complessivo resta
-paragonabile a quello di una singola attenzione a dimensione piena, e il
-modello può dedicare teste diverse a relazioni diverse (sintattiche,
-semantiche, posizionali), cosa che l'analisi empirica delle teste addestrate
-conferma almeno in parte.
+paragonabile a quello di una singola attenzione a dimensione piena, e anche i
+parametri non dipendono da $h$: le proiezioni delle $h$ teste ne hanno
+$3\,h\,d_{\text{model}}\,d_k = 3\,d_{\text{model}}^2$, e $\mathbf{W}^O$ altri
+$d_{\text{model}}^2$, cioè $4\,d_{\text{model}}^2$ in tutto. Il modello può
+dedicare teste diverse a relazioni diverse (sintattiche, semantiche,
+posizionali), e l'analisi delle teste addestrate lo conferma in parte: in BERT
+alcune hanno un ruolo riconoscibile, come seguire il complemento oggetto di un
+verbo o tornare a una menzione precedente della stessa entità
+{cite}`clark2019what`, e nei modelli di traduzione poche teste portano la gran
+parte del lavoro, mentre molte altre si tolgono con perdite trascurabili
+{cite}`voita2019analyzing,michel2019sixteen`.
 
 Su quest'ultimo punto la prudenza è d'obbligo, e riguarda il modo in cui si
 leggono le teste di un modello vero. Le semantiche delle teste sono
@@ -833,67 +902,99 @@ cercare un'etichetta per tutte.
 
 ## L'attenzione, da sola, non ha ordine
 
-Un fatto che a prima lettura sorprende: nella formula che abbiamo montato non
+Un fatto che a prima lettura sorprende: nella formula dell'attenzione non
 compare mai la posizione dei token. Ogni riga di $\mathbf{Q}$ viene confrontata
-con ogni riga di $\mathbf{K}$ senza che nulla dica quale venga prima. Per
-l'attenzione, «Il gatto morde il cane» e «Il cane morde il gatto» sono lo
-stesso insieme di parole.
+con ogni riga di $\mathbf{K}$ senza che nulla dica quale venga prima, e la
+proprietà ha un nome: la self-attention senza maschera è *equivariante
+rispetto alle permutazioni*, cioè rimescolare le parole in ingresso rimescola
+allo stesso modo le uscite, senza cambiarne i valori. Per l'attenzione,
+«Il gatto morde il cane» e «Il cane morde il gatto» sono lo stesso insieme di
+parole.
 
-La conseguenza è precisa, e si dimostra in una riga: rimescolare le righe di
-$\mathbf{X}$ con una permutazione $\mathbf{P}$ rimescola allo stesso modo
-quelle di $\mathbf{Q}$, $\mathbf{K}$ e $\mathbf{V}$, quindi i punteggi
-diventano $\mathbf{P}\tilde{\mathbf{Z}}\mathbf{P}^\top$; la softmax lavora riga
-per riga e il rimescolamento la attraversa intatto; e il prodotto finale lo
-riporta fuori tale e quale, perché
-$(\mathbf{P}\mathbf{A}\mathbf{P}^\top)(\mathbf{P}\mathbf{V}) =
-\mathbf{P}\mathbf{A}\mathbf{V}$. Le righe dell'uscita si permutano come quelle
-dell'ingresso e nient'altro cambia: la self-attention senza maschera è
-equivariante rispetto alle permutazioni, cioè permutare l'ingresso permuta
-l'uscita e non le cambia i valori. Il passaggio finale vale perché una matrice
-di permutazione è ortogonale, quindi $\mathbf{P}^\top\mathbf{P}$ è
-l'identità.
+`````{tab} Elementare
+Si prendono le parole di «Il gatto morde il cane» e si rimescolano come carte,
+fino a «Il cane morde il gatto». Ogni parola si porta dietro le sue tre
+versioni, la domanda, l'etichetta e l'informazione, perché nascono dalla parola
+da sola, senza guardare dove sta. Sul tabellone righe e colonne cambiano di
+posto, ma i numeri nelle caselle restano quelli: "gatto" contro "morde" dà lo
+stesso punteggio in qualunque punto della fila stiano le due parole. Ogni riga
+si colora per conto suo, quindi anche il colore si sposta e basta, e ogni
+parola esce con lo stesso miscuglio di prima, soltanto in un altro posto della
+fila. "Gatto" esce identico che faccia il soggetto o il complemento: chi morde
+chi, l'attenzione da sola non lo vede.
+
+C'è un'eccezione, ed è il divieto di guardare avanti. Se ogni parola può
+guardare soltanto sé stessa e quelle prima, la prima parola ne guarda una, la
+decima dieci, e da quante sono le parole che ha davanti una parola può ricavare
+a che punto della frase si trova. I modelli che scrivono una parola alla volta
+se ne accorgono da soli. Chi legge tutta la frase insieme non ha nemmeno questo
+appiglio.
+`````
+
+`````{tab} Superiore
+La dimostrazione sta in una riga. Rimescolare le righe di $\mathbf{X}$ con una
+matrice di permutazione $\mathbf{P}$ rimescola allo stesso modo quelle di
+$\mathbf{Q}$, $\mathbf{K}$ e $\mathbf{V}$, perché le proiezioni agiscono riga
+per riga; i punteggi diventano allora
+$\mathbf{P}\tilde{\mathbf{Z}}\mathbf{P}^\top$, gli stessi numeri con righe e
+colonne rimescolate; la softmax lavora riga per riga e il rimescolamento la
+attraversa intatto, quindi i pesi diventano
+$\mathbf{P}\mathbf{A}\mathbf{P}^\top$; e il prodotto finale lo riporta fuori
+tale e quale,
+
+$$
+(\mathbf{P}\mathbf{A}\mathbf{P}^\top)(\mathbf{P}\mathbf{V}) =
+\mathbf{P}\mathbf{A}\mathbf{V},
+$$
+
+perché una matrice di permutazione è ortogonale e $\mathbf{P}^\top\mathbf{P}$ è
+l'identità. Le righe dell'uscita si permutano come quelle dell'ingresso, e
+nient'altro cambia.
+
+La maschera causale rompe la simmetria, e introduce con essa un segnale di
+posizione indiretto: la riga $i$ fa la media su esattamente $i$ vettori. Un
+modello causale addestrato senza nessuna codifica esplicita impara lo stesso
+dove si trova, con ogni probabilità proprio da quel conteggio
+{cite}`haviv2022transformer`, come ha già notato la {doc}`matematica di un
+modello linguistico </Matematica/matematica-llm>`. Un encoder bidirezionale non
+ha nemmeno questo appiglio.
+`````
 
 L'ordine va quindi reintrodotto da fuori, e il Transformer del 2017 lo fa
-sommando alle rappresentazioni un segnale posizionale. Chi lo produce, come
-lo si è calcolato nel 2017 e come lo si calcola oggi (con la rotazione di query
-e chiavi che va sotto il nome di RoPE) è materia della
-{doc}`sezione sulla struttura del Transformer <architettura>`, che monta il
+sommando alle rappresentazioni un segnale che dipende dalla posizione, la
+codifica posizionale. La codifica non fa parte dell'attenzione: modifica le
+rappresentazioni, o l'interazione fra query e chiavi, in modo che l'attenzione
+possa usare la posizione, e anche nei modelli causali resta il modo diretto di
+dare l'ordine. Come la si calcolava nel 2017 e come la si calcola oggi (con una
+rotazione di query e chiavi, la RoPE, *rotary position embedding*) lo racconta
+la {doc}`sezione sulla struttura del Transformer <architettura>`, che monta il
 blocco per intero.
-
-Due precisazioni, perché sono i due modi in cui questo punto si fraintende. La
-codifica posizionale non fa parte dell'attenzione: modifica le rappresentazioni,
-o l'interazione fra query e chiavi, in modo che l'attenzione possa usare la
-posizione. E la maschera causale introduce una direzione, e con essa un segnale
-di posizione indiretto: la riga $i$ fa la media su esattamente $i$ vettori, e
-un modello causale addestrato senza codifica esplicita impara lo stesso dove si
-trova, con ogni probabilità proprio da quel conteggio
-{cite}`haviv2022transformer`, come ha già notato la
-{doc}`matematica di un modello linguistico </Matematica/matematica-llm>`. Un
-encoder bidirezionale non ha nemmeno questo appiglio, e per tutti e due la
-codifica esplicita resta il modo diretto di dare l'ordine.
 
 ## Dove va a finire l'attenzione: encoder e decoder
 
-L'attenzione, da sola, è un pezzo, e va montato. Il
-pezzo si chiama **blocco**, e un blocco è quello che si ripete sempre uguale a
-sé stesso lungo la macchina, come un piano di un palazzo. L'encoder, la
-torre che legge, è una pila di questi blocchi; il decoder, quella che
-scrive, è un'altra pila fatta allo stesso modo, che produce l'uscita (una
-traduzione, una risposta) un pezzo alla volta. In mezzo, ancora attenzione:
-mentre genera, il decoder pesa le parti rilevanti di ciò che l'encoder
-ha letto, ed è la cross-attention di poco fa.
+L'attenzione è un componente, e va montata dentro un **blocco**: la struttura
+che il Transformer ripete lungo tutta la rete, con la stessa forma e parametri
+propri a ogni ripetizione. L'encoder, la parte che legge, è una pila di blocchi
+che trasforma la frase d'ingresso in una sequenza di rappresentazioni, una per
+token; il decoder, la parte che scrive, è un'altra pila, con un passaggio in
+più in ogni blocco, che produce l'uscita (una traduzione, una risposta) un
+token alla volta. Il passaggio in più è la cross-attention di poco fa, con cui
+il decoder consulta le rappresentazioni dell'encoder.
 
-Una pila di blocchi è quella che si chiama una rete profonda, ed è profonda
-proprio in questo senso: tanti passaggi uno sopra l'altro, decine o centinaia.
+Una pila di blocchi è una rete profonda, e lo è proprio in questo senso: tanti
+passaggi uno sopra l'altro, decine, e più di cento nei modelli più grandi.
 Impilarli, però, non è gratis, e ogni blocco porta con sé due accorgimenti che
 servono soltanto a rendere la pila addestrabile.
 
 `````{tab} Elementare
-A ogni piano del palazzo la lista di numeri entra nelle stanze, passa per i
-conti e ne esce cambiata. Accanto alle stanze corre una scala dritta, con un
-corrimano che va da cima a fondo: lungo quella scala la stessa lista sale
-intatta, senza entrare da nessuna parte, e in cima al piano si somma numero per
-numero a quella uscita dalle stanze. La strada di lato è la **scorciatoia**.
+Una pila di blocchi è un palazzo, e ogni blocco è un piano, fatto come gli
+altri. A ogni piano ci sono due stanze: nella prima le parole si guardano fra
+loro con l'attenzione, nella seconda ognuna fa un lavoro a parte, per conto
+suo. La lista di numeri di ogni parola entra in una stanza, passa per i conti e
+ne esce cambiata. Accanto alle stanze corre un corrimano, dritto da cima a
+fondo: lungo il corrimano la stessa lista sale intatta, senza entrare da
+nessuna parte, e all'uscita di ogni stanza si somma numero per numero a quella
+che dalla stanza è uscita. La strada di lato è la **scorciatoia**.
 
 Chi sale la usa per arrivare in alto senza sfilacciarsi per via. Serve però
 soprattutto a chi scende. Quando la rete scopre di aver sbagliato, dall'ultimo
@@ -902,32 +1003,33 @@ conti, e quel messaggio deve arrivare fino ai primi piani. Se passa per le
 stanze, a ogni piano viene moltiplicato per i numeri di quel piano, che di
 solito sono un po’ minori di uno. Nove decimi a ogni piano: dopo cinquanta piani
 ne resta lo $0{,}5\%$, cioè quasi niente, e i piani bassi smettono di imparare.
-Sulla scala il messaggio scende senza toccare i conti, e in fondo arriva ancora
-leggibile.
+Lungo il corrimano il messaggio scende senza toccare i conti, e in fondo arriva
+ancora leggibile.
 
-Su ogni pianerottolo c'è una bilancia, ed è il secondo accorgimento: la
-**taratura**. Piano dopo piano i numeri scappano via, qui tutti enormi, là tutti
-minuscoli, e una rete con addosso valori fuori misura non impara più. Allora la
-lista viene rimessa in riga: si sottrae a tutti la loro media, così il centro
-cade sullo zero, e poi si dividono tutti per quanto sono sparpagliati, così la
-larghezza è sempre quella. La bilancia non cambia che cosa si sta pesando: mette
-solo il numero letto sulla stessa scala di tutti gli altri. Accanto c'è una
-manopola, imparata durante l'addestramento, con cui la rete riallarga o
-restringe la scala dove le conviene.
+Il secondo accorgimento è una bilancia: la **taratura**. Piano dopo piano i
+numeri scappano via, qui tutti enormi, là tutti minuscoli, e una rete con
+addosso valori fuori misura non impara più. Allora la lista viene rimessa in
+riga: si sottrae a tutti la loro media, così il centro cade sullo zero, e poi si
+dividono tutti per quanto sono sparpagliati, così la larghezza è sempre quella.
+La bilancia non cambia che cosa si sta pesando: mette solo il numero letto
+sulla stessa scala di tutti gli altri. Dopo la pesata ogni numero viene
+moltiplicato per un fattore suo, imparato durante l'addestramento, con cui la
+rete riallarga o restringe la scala dove le conviene.
 
-Nel palazzo del 2017 la bilancia sta sul pianerottolo della scala, subito dopo
-il punto in cui le due liste si sommano: chi scende deve attraversarla a ogni
-piano, e il corrimano non è sgombro fino in fondo. Lo si vedeva
-dall'addestramento, che partiva storto: bisognava cominciare con ritocchi
-piccolissimi e allargarli pian piano, altrimenti la pila andava fuori giri alle
-prime correzioni. I modelli venuti dopo hanno portato la bilancia all'ingresso
-delle stanze, la scala è tornata libera da cima a fondo, e quella partenza in
-punta di piedi si è potuta togliere.
+Nel palazzo del 2017 le bilance stanno sul corrimano, una subito dopo ogni
+punto in cui le due liste si sommano: chi scende ne attraversa una a ogni
+somma, cioè due volte per piano, una per stanza, e il corrimano non è sgombro
+fino in fondo. Lo si vedeva dall'addestramento, che partiva storto: bisognava
+cominciare con ritocchi piccolissimi, allargarli pian piano per qualche
+migliaio di passi e solo dopo tornare a stringerli, altrimenti la pila andava
+fuori giri alle prime correzioni. I modelli venuti dopo hanno portato le
+bilance all'ingresso delle stanze, il corrimano è tornato libero da cima a
+fondo, e quella partenza in punta di piedi si è potuta togliere.
 
 La pesata, intanto, si è fatta più spiccia. Nei modelli linguistici di oggi la
 media non la si toglie nemmeno: si divide e basta per la grandezza tipica dei
-numeri della lista, e poi si gira la manopola. Un conto in meno a ogni piano, e
-la pila sta ferma lo stesso.
+numeri della lista, e poi si moltiplica per i fattori imparati. Un conto in
+meno a ogni piano, e la pila sta ferma lo stesso.
 `````
 
 `````{tab} Superiore
@@ -959,17 +1061,28 @@ traslazione appresi ed $\epsilon$ una costante piccola che evita la divisione
 per zero. Non usando statistiche del batch, si comporta allo stesso modo in
 addestramento e in inferenza e con sequenze di lunghezza qualsiasi, cosa che la
 batch normalization non garantisce; e rende l'addestramento meno sensibile a
-learning rate e inizializzazione. «Quasi»,
-perché in questa formulazione (detta *Post-LN*, quella del 2017) la
-normalizzazione sta proprio sul ramo della scorciatoia, e il gradiente la
-attraversa a ogni strato: i modelli successivi la spostano prima del
-sotto-strato, $\mathbf{x} + \text{SubLayer}(\text{LayerNorm}(\mathbf{x}))$, il
-cosiddetto
+learning rate e inizializzazione.
+
+Il cammino della connessione residua, però, è diretto solo in parte: in questa
+formulazione (detta *Post-LN*, quella del 2017) la normalizzazione sta proprio
+sul ramo della scorciatoia, e il gradiente la attraversa a ogni sotto-strato. I
+modelli successivi la spostano prima del sotto-strato,
+$\mathbf{x} + \text{SubLayer}(\text{LayerNorm}(\mathbf{x}))$, il cosiddetto
 *Pre-LN* (che vuole una normalizzazione finale dopo l'ultimo blocco, e GPT-2
 la aggiunge esplicitamente), ed è lì che il cammino identità diventa davvero
-pulito (Xiong e
-colleghi {cite}`xiong2020layer` mostrano che senza questo spostamento serve un
-riscaldamento graduale del learning rate per addestrare stabilmente).
+pulito. Xiong e colleghi {cite}`xiong2020layer` spiegano con la teoria del
+campo medio perché lo spostamento conta: nel Post-LN, all'inizializzazione, i
+gradienti attesi dei parametri vicini all'uscita sono grandi, e con un learning
+rate alto l'addestramento diventa instabile; nel Pre-LN sono ben comportati.
+Per questo l'articolo del 2017 aveva bisogno di un riscaldamento del learning
+rate, che al passo $s$ vale
+
+$$
+\eta(s) = d_{\text{model}}^{-1/2}\,\min\!\big(s^{-1/2},\; s \cdot 4000^{-3/2}\big),
+$$
+
+cioè sale linearmente per i primi 4000 passi e poi decresce come $s^{-1/2}$
+{cite}`vaswani2017attention`; con il Pre-LN il riscaldamento si può togliere.
 
 Nei modelli linguistici recenti anche la normalizzazione stessa si è
 alleggerita: al posto della LayerNorm c'è quasi sempre la **RMSNorm**
@@ -994,106 +1107,85 @@ destra è stata spostata all'ingresso dei sotto-strati, e la scorciatoia corre
 intera dall'alto in basso.
 ```
 
-Scorciatoia e taratura sono la parte che nessuno racconta mai, e senza la quale
-niente di tutto il resto starebbe in piedi: l'attenzione è l'idea, ma in un
-modello grande di oggi i blocchi vanno da sessanta a più di cento, e un'idea
-impilata così si sfalda. Questi due accorgimenti, montati come in
-{numref}`fig-corrimano-taratura`, sono ciò che la tiene insieme. Con il
-meccanismo in mano, la {doc}`sezione sulla struttura del Transformer
-<architettura>` prende questi pezzi e li monta nelle due torri di una macchina
+Connessione residua e normalizzazione sono ciò che rende possibile impilare
+l'attenzione: nei modelli grandi di oggi i blocchi vanno da sessanta a più di
+cento, e senza questi due accorgimenti, montati come in
+{numref}`fig-corrimano-taratura`, una pila così profonda non si addestra. Con
+il meccanismo in mano, la {doc}`sezione sulla struttura del Transformer
+<architettura>` prende questi pezzi e li monta nelle due pile di una macchina
 vera.
 
 ```{admonition} Un cantiere parallelo: le reti a memoria
 :class: note
 Interrogare un archivio con una domanda, pesare quanto ciascun elemento le
-risponde, e restituire la miscela pesata di ciò che quegli elementi contengono:
+risponde, e restituire la media pesata di ciò che quegli elementi contengono:
 questa struttura è stata costruita prima dei Transformer, e per un altro scopo.
 
 Nel 2014 le **memory network** {cite}`weston2015memory` affrontavano il
-problema di far ragionare una rete su un elenco di fatti. L'esempio degli
-autori è costruito apposta perché una frase sola non basti: «Giovanni è andato
-in ufficio. Giovanni ha posato il latte. Giovanni è andato in bagno. Dov'è il
-latte?», dove per rispondere «in ufficio» servono i primi due e nessuno dei due
-basta. La rete teneva i fatti in un archivio a parte, separato dai numeri che
-aveva imparato, e ci pescava dentro due volte di fila, la seconda con in mano
-il fatto trovato per primo: erano gli *hop*, i salti di ragionamento. In quella
+problema di far ragionare una rete su un elenco di fatti, con storie costruite
+apposta perché un fatto solo non basti. In una versione accorciata: «Giovanni
+è andato in ufficio. Giovanni ha posato il latte. Giovanni è andato in bagno.
+Dov'è il latte?», dove per rispondere «in ufficio» servono i primi due fatti, e
+nessuno dei due basta da solo. La rete teneva i fatti in un archivio a parte,
+separato dai parametri appresi, e ci pescava due volte di fila, la seconda con
+in mano il fatto trovato la prima: sono gli *hop*, i passi di lettura. In quella
 prima versione però la pesca era secca (si sceglieva *un* fatto, il più
-somigliante) e per addestrarla bisognava dire alla rete, esempio per esempio,
-quali fossero i fatti giusti da usare.
+somigliante), e per addestrarla bisognava indicare alla rete, esempio per
+esempio, quali fossero i fatti giusti.
 
 Il passo che ci interessa arriva l'anno dopo, con le *end-to-end memory
-network* {cite}`sukhbaatar2015end`: al posto della scelta secca si mette una
-graduatoria, cioè la domanda viene confrontata con tutti i fatti, il
-confronto produce un'intensità di evidenziatore per ciascuno, e l'archivio
-viene letto mescolando i fatti in quelle proporzioni. I salti restano; a
-cambiare è che adesso ogni fatto contribuisce un po’, quindi la correzione
-degli errori attraversa anche la pesca, e la rete impara da sola quali fatti
-contano senza che glielo si dica.
+network* {cite}`sukhbaatar2015end`: al posto della scelta secca c'è una
+softmax. La domanda viene confrontata con tutti i fatti, i punteggi diventano
+pesi, e l'archivio si legge come media dei fatti pesata da quei pesi. Gli hop
+restano; ora però ogni fatto contribuisce, il gradiente attraversa anche la
+lettura dell'archivio, e la rete impara da sola quali fatti usare.
 
-Due cose da portarsi via. La prima è che quella graduatoria sui fatti *è*
-l'attenzione, con la sola differenza che qui l'archivio è un magazzino a parte
-invece della frase stessa. La seconda è che la struttura
-domanda-contro-archivio, con i fatti tenuti fuori dalla rete e consultati al
-momento, è esattamente la forma dei sistemi che cercano documenti prima di
-rispondere: si chiamano RAG, e li costruisce per intero la
-{doc}`sezione sul retrieval <rag>`.
-
-Sulle date conviene però essere precisi. L'attenzione per la traduzione è del
-settembre 2014 e le memory network dell'ottobre dello stesso anno: due strade
-partite quasi insieme, da due problemi diversi, e arrivate alla stessa
-operazione, tanto che la seconda cita la prima fra i lavori affini e non fra le
-proprie basi. La versione a graduatoria è invece del marzo 2015, e lì le due
-strade si incrociano per davvero: gli autori presentano il proprio modello come
-un'estensione di quello di Bahdanau, con più passi di lettura per ogni parola
-prodotta. Quello che le reti a memoria hanno di proprio è dunque
-l’archivio tenuto fuori dai numeri imparati e consultato al momento della
-domanda, più che l'attenzione: ed è quel pezzo lì, messo da parte perché la
-sua epoca
-non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nome.
+Quella lettura pesata *è* l'attenzione, con l'archivio al posto della frase. Le
+due strade sono partite quasi insieme: l'attenzione per la traduzione è del
+settembre 2014, le memory network dell'ottobre, e la seconda cita la prima fra
+i lavori affini, non fra le proprie basi; la versione end-to-end, del marzo
+2015, si presenta invece come un'estensione del modello di Bahdanau, con più
+passi di lettura per ogni parola prodotta. Quello che le reti a memoria hanno di
+proprio è dunque l'archivio tenuto fuori dai parametri e consultato al momento
+della domanda: la stessa separazione ricompare, cinque anni dopo, nei sistemi
+che cercano documenti prima di rispondere, i RAG della {doc}`sezione sul
+retrieval <rag>`.
 ```
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
 :class: important
-- L’attenzione rilegge la frase con un evidenziatore: per capire una
-  parola, guarda tutte le altre, dà a ciascuna un'intensità di colore e ne
-  mescola le informazioni in quella proporzione. L'evidenziatore decide quanto;
-  quello che si mescola è l'informazione, e sono due cose tenute separate.
-- Le intensità le decide la frase, non un programmatore: quello che la rete
-  impara, provando e correggendosi su miliardi di esempi, è il criterio con cui
-  il colore va assegnato, e le intensità le ricalcola su ogni frase nuova.
-  Quando è ogni parola a guardare tutte le altre, si chiama self-attention;
-  quando a guardare è un testo che si sta scrivendo verso un testo che è stato
-  letto, si chiama cross-attention.
-- Per giocare, ogni parola si presenta in tre versioni: la query (la
-  domanda che fa), la key (l'etichetta con cui si fa trovare) e il
-  value (l'informazione che consegna). Le tre versioni cambiano da un piano
-  all'altro del modello: non sono cartellini appiccicati addosso una volta per
-  tutte.
-- I conti si tengono su un tabellone, una riga per chi chiede e una colonna per
-  chi risponde, e il tabellone non è per forza quadrato: nella traduzione, e
-  quando il modello scrive una parola alla volta, le due liste hanno lunghezze
-  diverse.
-- I divieti (non guardare avanti, non guardare il riempitivo) si scrivono
-  prima di distribuire il colore. Colorare e poi cancellare lascia una riga
-  che non somma più a uno, e un miscuglio sbiadito.
-- I punteggi si rimpiccioliscono prima di diventare colore, dividendoli per la
-  radice della lunghezza delle liste. Senza, con liste lunghe l'evidenziatore
-  diventa un interruttore, e un interruttore non si corregge un pochino per
-  volta, cioè non impara più. La divisione toglie però una causa sola: con
-  numeri abbastanza grandi l'interruttore scatta comunque, a qualunque
-  lunghezza delle liste.
-- Di evidenziatori se ne passano parecchi in parallelo, ognuno attento a un
-  tipo di legame diverso: sono le teste di attenzione, e nel Transformer del
-  2017 erano otto.
+- L’attenzione rilegge la frase con un evidenziatore: per capire una parola,
+  dà a tutte le altre un'intensità di colore e ne mescola le informazioni in
+  quella proporzione. L'evidenziatore decide quanto; quello che si mescola è
+  l'informazione, e la rete tiene le due cose separate.
+- Le intensità le ricalcola ogni frase: la rete impara, su miliardi di esempi,
+  soltanto il criterio con cui il colore va assegnato.
+- Ogni parola si presenta in tre versioni: la query (la domanda che fa), la key
+  (l'etichetta con cui si fa trovare) e il value (l'informazione che
+  consegna), e le tre versioni cambiano da un piano all'altro del modello.
+- Se le parole guardano la propria frase è self-attention; se la frase che si
+  sta scrivendo guarda quella già letta, come in un traduttore, è
+  cross-attention.
+- Il tabellone dei punteggi non è per forza quadrato: nella traduzione, e
+  quando il modello scrive una parola alla volta, chi chiede e chi risponde
+  sono due liste di lunghezza diversa.
+- I divieti (non guardare avanti, non guardare il riempitivo) si scrivono prima
+  di distribuire il colore; colorare e poi cancellare lascia una riga che non
+  somma più a uno, e un miscuglio sbiadito.
+- I punteggi si dividono per la radice della lunghezza delle liste, perché con
+  liste lunghe l'evidenziatore non diventi un interruttore, che non si corregge
+  un pochino per volta. Con numeri abbastanza grandi, però, l'interruttore
+  scatta comunque.
+- Più evidenziatori lavorano in parallelo, ognuno attento a un tipo di legame:
+  sono le teste di attenzione, otto nel Transformer del 2017.
 - L'attenzione da sola non sa che cosa viene prima e che cosa dopo: l'ordine
   glielo si aggiunge da fuori.
-- Attorno a ogni blocco ci sono una scorciatoia (l'informazione passa anche
-  di lato, intatta, e la correzione degli errori trova una presa per tornare
-  indietro) e una taratura (i numeri riportati su una scala standard).
-  Senza di loro le torri alte non si addestrano; e conta dove la taratura si
-  infila, perché nel montaggio del 2017 stava sul percorso della scorciatoia, e
-  i modelli venuti dopo l'hanno spostata all'ingresso del blocco.
+- Attorno a ogni blocco ci sono una scorciatoia, che lascia passare
+  l'informazione intatta e riporta indietro la correzione degli errori, e una
+  taratura, che rimette i numeri su una scala standard. Senza, i palazzi alti
+  non si addestrano; e conta dove sta la taratura: nel 2017 stava sul
+  corrimano, i modelli venuti dopo l'hanno spostata all'ingresso delle stanze.
 ```
 `````
 
@@ -1147,5 +1239,5 @@ non aveva né i dati né l'hardware, a tornare cinque anni dopo con un altro nom
 Il meccanismo, adesso, è tutto qui: cinque passaggi che si rifanno a mano su
 tre parole, e una manciata di scelte che spiegano perché la formula ha proprio
 quella forma. Quello che manca è la macchina che gli sta attorno, e le due
-sezioni che seguono la costruiscono da due lati diversi: prima le torri in cui
-il blocco si impila, poi il confronto con le reti che leggevano in fila.
+sezioni che seguono la costruiscono da due lati diversi: prima le due pile in
+cui il blocco si impila, poi il confronto con le reti che leggevano in fila.

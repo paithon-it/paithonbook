@@ -26,15 +26,13 @@ Un neurone biologico riceve segnali da altri neuroni, li combina e "scarica" un
 impulso se lo stimolo complessivo supera una soglia. Rosenblatt cattura questa
 idea con tre gesti: pesare gli ingressi, sommarli, decidere.
 
-Ogni ingresso arriva con un peso che ne misura l'importanza: il primo
-ingresso lo chiamiamo $x_1$ e il suo peso $w_1$, il secondo $x_2$ e $w_2$, e
-avanti così (scrivere $x_i$ e $w_i$, con una lettera al posto del numero, è il
-modo di dire «uno qualunque di loro»). Il neurone li combina in una somma
-pesata e vi aggiunge un termine costante, il bias $b$, che è la sua indole di
-partenza, quanto pende verso il sì prima ancora di guardare gli ingressi. Poi
-il totale passa a un ultimo gesto, che decide sì
-o no, e quel gesto si chiama **funzione di attivazione**
-({numref}`fig-neurone`).
+Ogni ingresso arriva con un peso che ne misura l'importanza: il primo ingresso
+lo chiamiamo $x_1$ e il suo peso $w_1$, il secondo $x_2$ e $w_2$, e avanti così,
+con $x_i$ e $w_i$ per uno qualunque di loro. Il neurone li combina in una somma
+pesata e vi aggiunge un termine costante, il bias $b$, che sposta la soglia:
+quanto il neurone pende verso il sì prima ancora di guardare gli ingressi. Poi
+il totale passa a un ultimo gesto, che decide sì o no, e quel gesto si chiama
+**funzione di attivazione** ({numref}`fig-neurone`).
 
 ```{figure} ../figures/neurone-artificiale.svg
 :name: fig-neurone
@@ -113,11 +111,11 @@ Un interruttore non conosce le mezze misure. Se la somma raggiunge la soglia
 l'uscita è $1$ ("sì"), altrimenti è $0$ ("no"): sommati gli indizi, o esci con
 l'ombrello o non lo prendi.
 
-Le manopole da girare sembrano tre (i pesi, il bias, la soglia) e sono due.
-Chiedere che il totale superi $3$ è la stessa identica cosa che togliere $3$ dal
-totale e chiedere che superi lo zero. La soglia si nasconde dentro il bias, e da
-lì in avanti resta sempre lo zero: a spostare il punto in cui il neurone cambia
-idea è il bias.
+Le manopole da girare sembrano di tre tipi (i pesi, il bias, la soglia), e sono
+di due. Chiedere che il totale superi $3$ è la stessa identica cosa che togliere
+$3$ dal totale e chiedere che superi lo zero. La soglia si nasconde dentro il
+bias, e da lì in avanti resta sempre lo zero: a spostare il punto in cui il
+neurone cambia idea è il bias.
 
 Sui numeri dell'ombrello: il bias era $0{,}5$ e la soglia $3$, quindi il bias
 nuovo è $0{,}5 - 3 = -2{,}5$, e la regola diventa «esci con l'ombrello se
@@ -140,11 +138,15 @@ $0{,}3 \cdot x_1 = 0{,}5$ e la nuvolosità in bilico è
 $x_1 = 0{,}5 : 0{,}3 = 1{,}66\ldots$, in pratica $1{,}7$: se l'app promette
 pioggia basta molto meno.
 
-Un punto a $8{,}3$ in basso, un punto a $1{,}7$ in alto, e una riga tirata fra i
-due. Da una parte della riga il neurone risponde sempre sì, dall'altra sempre
-no, e una terza possibilità non c'è. Quella riga è tutto ciò che un neurone sa
-disegnare: cambiare i pesi la inclina, cambiare il bias la sposta avanti e
-indietro, ma resta dritta.
+Un punto a $8{,}3$ in basso, un punto a $1{,}7$ in alto. Per due punti una riga
+passa sempre, quindi ne serve un terzo per controllare. Un'app più sfumata, che
+dica «metà pioggia», $x_2 = 0{,}5$, contribuisce $2 \cdot 0{,}5 = 1$, resta
+$0{,}3 \cdot x_1 + 1 - 2{,}5 = 0$, e la nuvolosità in bilico è
+$x_1 = 1{,}5 : 0{,}3 = 5$: a metà altezza e proprio a metà fra $8{,}3$ e
+$1{,}7$, cioè sulla riga che unisce gli altri due. Da una parte di quella riga
+il neurone risponde sempre sì, dall'altra sempre no, e una terza possibilità non
+c'è. Quella riga è tutto ciò che un neurone sa disegnare: cambiare i pesi la
+inclina, cambiare il bias la sposta avanti e indietro, ma resta dritta.
 
 `````
 
@@ -224,65 +226,62 @@ fra poco diventerà il problema principale.
 Torni a casa la sera e sai com'è andata: è il momento di girare le manopole per
 il giorno dopo. Se stamattina il neurone ha azzeccato non tocchi nulla; se ha
 detto $0$, cioè niente ombrello, e ti sei bagnato, alzi i pesi; se ha detto $1$
-e c'era il sole, li abbassi.
+e c'era il sole, li abbassi. Di quanto? Ogni manopola gira in proporzione a
+quanto valeva il suo indizio quella mattina: chi segnava molto si muove molto,
+chi segnava zero resta ferma. Si corregge chi ha parlato più forte.
 
-Di quanto? In proporzione a quanto valeva quell'indizio quella mattina: chi
-segnava molto si muove molto, chi segnava zero non si muove affatto. Si corregge
-chi ha parlato più forte.
+Il giro si moltiplica poi per un numeretto che scegli tu, il passo di
+apprendimento (in inglese *learning rate*, nel codice `eta`), e qui,
+curiosamente, decide soltanto di quanto gira la manopola. Il vicino di casa
+parte dalle stesse manopole a zero e le gira dieci volte più forte: si ritrova
+pesi dieci volte più grandi, ma il neurone guarda soltanto se il totale sta
+sopra o sotto lo zero, quel confine un fattore dieci non lo sposta, e tutte le
+mattine il vicino esce di casa come te. Finché i conti sono esatti, almeno: il
+calcolatore arrotonda, e ogni tanto l'ultima cifra cambia strada (il codice
+della porta AND ne mostra un caso). Il passo diventerà una scelta che conta
+davvero quando la correzione smetterà di essere fissa, nella sezione sulla
+backpropagation.
 
-Ogni correzione poi si moltiplica per un numeretto scelto da noi, il passo di
-apprendimento (in inglese *learning rate*, e nel codice `eta`): decide di
-quanto gira la manopola ogni volta. Qui, curiosamente, non decide altro. Il
-vicino di casa parte dalle stesse manopole a zero e le gira dieci volte più
-forte: si ritrova pesi dieci volte più grandi e tutte le mattine esce di casa
-come te, perché il neurone guarda soltanto se il totale sta sopra o sotto lo
-zero, e quel confine un fattore dieci non lo sposta. Diventerà una scelta che
-conta davvero quando la correzione smetterà di essere un passo fisso, nella
-sezione sulla backpropagation.
+La prima sera, per esteso, con le manopole tutte a zero e il passo a $0{,}1$.
+Stamattina il cielo era quasi sereno, $x_1 = 1$, e l'app diceva sereno,
+$x_2 = 0$. Il totale faceva zero, e lo zero la soglia la raggiunge, quindi il
+neurone ha risposto $1$: con le manopole a zero dice sì a qualunque giornata, ed
+è la prima cosa che dovrà disimparare. Sei uscito con l'ombrello e c'era il
+sole: doveva dire $0$. La manopola della nuvolosità scende di
+$0{,}1 \cdot 1 = 0{,}1$, quella dell'app di $0{,}1 \cdot 0 = 0$, perché l'app
+valeva zero, non ha detto niente e non paga niente: adesso segnano $-0{,}1$ e
+$0$. Scende di $0{,}1$ anche il bias, da $0$ a $-0{,}1$: è una manopola
+attaccata a un indizio che vale sempre $1$, quindi parla tutte le mattine, e a
+ogni correzione si sposta del passo intero, in su se la risposta era troppo
+bassa e in giù se era troppo alta (nel codice, `b += eta * errore`).
 
-Una giornata per esteso, la prima, con le manopole ancora tutte a zero e il
-passo di apprendimento a $0{,}1$. Cielo quasi sereno, $x_1 = 1$; l'app dice
-sereno, $x_2 = 0$. Il totale fa zero, e lo zero la soglia la raggiunge, quindi
-il neurone risponde $1$: con le manopole a zero dice sì a qualunque giornata,
-ed è la prima cosa che dovrà disimparare. Esci con l'ombrello e c'è il sole:
-doveva dire $0$. Il peso della nuvolosità scende di $0{,}1 \cdot 1 = 0{,}1$,
-quello dell'app di $0{,}1 \cdot 0 = 0$, cioè non si muove affatto. Le due
-manopole segnano $-0{,}1$ e $0$: l'app valeva zero, non ha detto niente, e non
-paga niente. Anche il bias scende di $0{,}1$, e da $0$ passa a $-0{,}1$, perché
-lui parla tutte le mattine.
+Poi si ricomincia, e si ripassa più volte sulle stesse giornate: ogni giro
+completo è un'epoca, le `epoche` del codice. Quante giornate sbagliate servono,
+prima che le manopole si fermino? Torna al foglio a quadretti con i puntini. Se
+fra il gruppo del sì e quello del no c'è un corridoio vuoto, prima o poi si
+fermano, e a decidere quando è la sua larghezza. Giornate chiaramente da
+ombrello o da occhiali da sole lasciano un corridoio comodo, e bastano poche
+correzioni; due giornate quasi identiche che vogliono risposte opposte lo
+assottigliano, e ogni volta che il corridoio si dimezza le correzioni che
+possono servire diventano quattro volte tante.
 
-E il bias? È una manopola anche lui, e si corregge con la stessa regola: si
-comporta come un indizio che vale sempre $1$, quindi parla tutte le mattine e
-ogni volta si sposta del passo intero, in su quando la risposta era troppo bassa
-e in giù quando era troppo alta. Nel codice è la riga `b += eta * errore`.
-
-Poi si ricomincia, e si ripassa più volte sulle stesse giornate: un giro
-completo si chiama epoca, che nel codice dà il nome a `epoche`.
-
-Quante giornate sbagliate servono, prima che le manopole si fermino? Torna al
-foglio a quadretti con i puntini: fra il gruppo del sì e il gruppo del no c'è un
-corridoio vuoto, e a decidere è quanto è largo. Giornate o chiaramente da
-ombrello o chiaramente da occhiali da sole lasciano un corridoio comodo, e
-bastano poche correzioni. Due giornate quasi identiche che vogliono risposte
-opposte lo assottigliano, e le correzioni si moltiplicano: ogni volta che si
-dimezza, quelle che possono servire diventano quattro volte tante.
-
-Largo in proporzione al disegno, non in centimetri, e il disegno ha un
-punto fermo: l'angolo del foglio da cui si misura tutto. Il bias è un indizio
-che vale sempre $1$, e quell’$1$ la fotocopia non lo ingrandisce, quindi
-fotocopiando il foglio al doppio le correzioni cambiano, e di solito crescono.
-Restano le stesse soltanto se la riga passa per l'angolo, cioè senza bias. E
-mille giornate in più segnate sul foglio non aggiungono una correzione a quelle
-che possono servire, purché stiano dentro allo spazio già occupato: a contare
-non è quante sono, ma quanto è largo il corridoio rispetto alla distanza del
-puntino più lontano dall'angolo.
+Largo in proporzione al disegno, però, non in centimetri. Fotocopia il foglio al
+doppio: il corridoio raddoppia, ma raddoppiano anche le distanze dei puntini, e
+il rapporto resta quello. Resterebbe uguale anche il numero di correzioni, se il
+foglio non avesse un punto fermo, l'angolo da cui si misurano i due numeri di
+ogni giornata. L’$1$ del bias non è una distanza sul foglio e la fotocopia non
+lo raddoppia, così le correzioni cambiano, e di solito crescono; restano le
+stesse soltanto se la riga passa per l'angolo, cioè senza bias. E mille giornate
+in più, purché cadano dentro lo spazio già occupato, non aggiungono una
+correzione a quelle che possono servire: conta soltanto quanto è largo il
+corridoio rispetto alla distanza del puntino più lontano dall'angolo.
 
 La riga prudente, però, la macchina non la promette. Si ferma appena nessun
 puntino resta dalla parte sbagliata, e la riga può restare lì, appiccicata a un
-puntino; una giornata nuova appena diversa finirebbe dal lato sbagliato. Cercare
+puntino: una giornata nuova appena diversa finirebbe dal lato sbagliato. Cercare
 la riga che passa in mezzo al corridoio, il più lontano possibile da tutti i
-puntini, è un altro mestiere, ed è quello delle
-{doc}`macchine a vettori di supporto </MachineLearning/svm>`.
+puntini, è un altro mestiere, quello delle {doc}`macchine a vettori di
+supporto </MachineLearning/svm>`.
 
 `````
 
@@ -312,10 +311,10 @@ separa solo grazie all'arrotondamento. Per questo il codice chiama `addestra`
 con $\eta = 1$, dove tutti i conti sono interi. Interi, non comodi: anche la
 retta che ne esce, $2x_1 + x_2 - 3 = 0$, passa esattamente per $(1,1)$, e a
 metterlo dalla parte giusta è la convenzione $g(0) = 1$. Il blocco della porta
-AND prova anche gli altri due passi, e stampa pesi e bias in unità di $\eta$ e
-il totale sul caso $(1,0)$ a fine corsa. Diventerà una scelta vera nella sezione
-sulla backpropagation, dove la correzione non sarà più proporzionale all'errore
-ma al gradiente di una loss.
+AND prova anche gli altri due passi e lo XOR, e stampa pesi e bias in unità di
+$\eta$ e il totale sul caso $(1,0)$ a fine corsa. Diventerà una scelta vera
+nella sezione sulla backpropagation, dove la correzione non sarà più
+proporzionale all'errore ma al gradiente di una loss.
 
 C'è poi il teorema di convergenza del percettrone: se i dati sono linearmente
 separabili, l'algoritmo trova in un numero finito di passi un iperpiano che li
@@ -349,7 +348,10 @@ da cui $k \le (R/\gamma)^2$: $\eta$ si semplifica, ed è un altro modo di vedere
 che qui è cosmetico. In quel limite non compaiono né il numero di esempi né la
 dimensione: quel che conta è il rapporto fra quanto sono lontani gli esempi e
 quanto è sottile il corridoio fra le due classi (la dimensione rientra dentro
-$R$), e raddoppiare il dataset non raddoppia il numero di correzioni. E non dice
+$R$), e raddoppiare il dataset non raddoppia il numero di correzioni. È lo
+stesso rapporto fra raggio e margine che decideva la garanzia della
+{doc}`strada larga </TeoriaApprendimento/rademacher-margine>`, qui al servizio
+di un'altra domanda: quante correzioni bastano. E non dice
 l'altra metà: l'iperpiano trovato è uno qualunque fra quelli che separano, senza
 alcuna garanzia di margine, che è esattamente la differenza con le
 {doc}`Support Vector Machine </MachineLearning/svm>`. Il seme dell'apprendimento
@@ -405,13 +407,32 @@ for eta in (7.3, 0.1):
     w_e, b_e = addestra(X, y_and, eta=eta)
     print(f"eta {eta}: pesi {w_e / eta}, bias {b_e / eta:.1f},",
           f"totale su (1,0) {w_e @ X[2] + b_e:.1e}")
+
+# lo XOR: nessuna retta lo separa, e la regola gira in tondo
+y_xor = np.array([0, 1, 1, 0])
+for epoche in (10, 100):
+    w_x, b_x = addestra(X, y_xor, epoche=epoche)
+    print(f"XOR, {epoche} epoche: pesi {w_x}, bias {b_x:.1f},",
+          f"uscita {gradino(X @ w_x + b_x)}")
 ```
 
 ```text
 [0 0 0 1]
 eta 7.3: pesi [2. 1.], bias -3.0, totale su (1,0) -7.3e+00
 eta 0.1: pesi [2. 1.], bias -2.0, totale su (1,0) -2.8e-17
+XOR, 10 epoche: pesi [-0.1  0. ], bias 0.0, uscita [1 1 0 0]
+XOR, 100 epoche: pesi [-0.1  0. ], bias 0.0, uscita [1 1 0 0]
 ```
+
+Con $\eta = 7{,}3$ la corsa finisce dove finiva con $\eta = 1$, pesi $(2,1)$ e
+bias $-3$ in unità di $\eta$. Con $\eta = 0{,}1$ si ferma prima, con bias $-2$:
+$0{,}1$ in binario non si scrive esatto, e sul caso $(1,0)$ il totale, che
+doveva fare zero e far scattare un'ultima correzione, esce $-2{,}8\cdot10^{-17}$
+(il `-2.8e-17` della stampa, cioè sedici zeri dopo la virgola e poi $28$, con
+il segno meno). Il neurone risponde no, nessuno corregge più, e la corsa resta
+dov'è: in aritmetica esatta il passo non deciderebbe niente, in macchina ogni
+tanto decide dove ci si ferma. Le ultime due righe sono lo XOR, il caso in cui
+una retta che separa non esiste.
 
 ## Il muro dello XOR
 
@@ -419,16 +440,15 @@ Ed eccolo, il muro. Merita di essere raccontato
 per quello che è, perché la versione che si sente di solito è comoda e
 sbagliata.
 
-Nel 1969 Marvin Minsky e Seymour Papert pubblicano *Perceptrons*
-{cite}`minsky1969perceptrons`. Il libro è ricordato per lo XOR ("o
-esclusivo", che vale $1$ quando i due ingressi sono diversi e $0$ quando sono
-uguali), e cioè per l'osservazione che un neurone solo non ce la fa. Ma quella
-osservazione era già nota, e i due autori la danno per nota: che un elemento a
-soglia da solo tracci una riga e nient'altro si sapeva da decenni, ed è il
-motivo per cui già nel 1943, in McCulloch e Pitts, per calcolare le funzioni
-logiche gli elementi si collegavano fra loro invece di usarne uno. Nel 1969
-era materia da manuale. Vediamo prima l'ostacolo come lo si racconta di solito,
-poi che cosa dimostra davvero quel libro.
+*Perceptrons*, il libro di Minsky e Papert del 1969
+{cite}`minsky1969perceptrons`, è ricordato per lo XOR ("o esclusivo",
+che vale $1$ quando i due ingressi sono diversi e $0$ quando sono uguali), e
+cioè per l'osservazione che un neurone solo non ce la fa. Ma quella osservazione
+non era loro: che un elemento a soglia da solo tracci una riga e nient'altro si
+sapeva da decenni, ed è il motivo per cui già nel 1943, in McCulloch e Pitts,
+per calcolare le funzioni logiche gli elementi si collegavano fra loro invece di
+usarne uno. Nel 1969 era materia da manuale. Vediamo prima l'ostacolo come lo si
+racconta di solito, poi che cosa dimostra davvero quel libro.
 
 ```{figure} ../figures/xor-non-separabile.svg
 :name: fig-xor-non-separabile
@@ -449,14 +469,16 @@ angoli opposti del quadrato.
 
 `````{tab} Elementare
 
-Disegna i quattro casi sullo stesso foglio a quadretti di prima, il primo
-ingresso in orizzontale e il secondo in verticale: vengono i quattro angoli di
-un quadrato di lato $1$. I punti $(0,0)$ e $(1,1)$ vogliono uscita $0$; i punti
-$(0,1)$ e $(1,0)$ vogliono uscita $1$. Prova a separarli con una sola riga
-dritta: è impossibile. Le due classi stanno negli angoli opposti, "incrociate",
-e una riga non sa scavalcare il centro per andarle a prendere tutte e due. Un
-singolo percettrone traccia solo quella riga, quindi sullo XOR è condannato a
-sbagliare almeno un caso.
+Sul foglio a quadretti i quattro casi dello XOR sono gli angoli di un quadrato
+di lato $1$, e i due che vogliono uscita $1$, $(0,1)$ e $(1,0)$, stanno in
+angoli opposti. Che nessuna riga li separi lo si vede con un conto breve. Il
+totale del caso $(1,1)$ è quello di $(1,0)$, più quello di $(0,1)$, meno quello
+di $(0,0)$: sommando i primi due ci sono tutti e due i pesi, come in $(1,1)$, ma
+il bias due volte, e togliere il totale di $(0,0)$, che è il bias da solo, lo
+riporta a una. I primi due devono stare sopra lo zero, il terzo sotto, e
+togliere un numero negativo vuol dire aggiungere: il totale di $(1,1)$ finisce
+sopra lo zero per forza, e il neurone dice $1$ dove doveva dire $0$. Un singolo
+percettrone, sullo XOR, è condannato a sbagliare almeno un caso.
 
 Adesso lascia provare alla macchina, con la regola delle correzioni, e a ogni
 caso sbagliato la riga si sposta un po’. Dopo due o tre giri completi succede
@@ -474,11 +496,13 @@ esplode, non si arrende, e continua a sbagliare con calma.
 
 `````{tab} Superiore
 
-Lo XOR non è linearmente separabile: non esiste alcun $(\mathbf{w}, b)$ tale
-che $g(\mathbf{w}^\top\mathbf{x}+b)$ riproduca la tabella. Le classi $\{(0,0),
-(1,1)\}$ e $\{(0,1),(1,0)\}$ non sono divisibili da un iperpiano in
-$\mathbb{R}^2$. Non è un difetto dell'ottimizzatore, è un limite di *capacità*
-del modello.
+Lo XOR non è linearmente separabile: non esiste alcun $(\mathbf{w}, b)$ tale che
+$g(\mathbf{w}^\top\mathbf{x}+b)$ riproduca la tabella. Lo si vede sommando le
+disuguaglianze: servirebbero $b<0$ da $(0,0)$, $w_2+b\ge0$ da $(0,1)$,
+$w_1+b\ge0$ da $(1,0)$ e $w_1+w_2+b<0$ da $(1,1)$; sommando la seconda e la
+terza, $w_1+w_2+b\ge -b>0$, contro la quarta. Le classi $\{(0,0),(1,1)\}$ e
+$\{(0,1),(1,0)\}$ non sono divisibili da un iperpiano in $\mathbb{R}^2$. Non è
+un difetto dell'ottimizzatore, è un limite di *capacità* del modello.
 
 Lanciato `addestra` su `y_xor = np.array([0, 1, 1, 0])`, quello che si vede non
 è quello che ci si aspetta. Non
@@ -516,14 +540,14 @@ Prima di tutto, una parola che cambia significato. Nel loro libro «percettrone�
 non indica il neurone di poco fa, ma una macchina più generale, e conviene
 saperlo, altrimenti i loro risultati sembrano parlare di una cosa che non è.
 
-Una fotografia, e una squadra di ispettori: ciascuno può guardare solo
-qualche punto dell'immagine e risponde sì o no, poi un capo raccoglie le
-risposte, dà a ognuna un peso, somma e decide. Il neurone di poco fa è il caso
-più semplice di questa macchina, quello in cui ogni ispettore guarda un punto
-solo. La domanda dei teoremi non è se la squadra ce la fa, ma quanti
-punti deve guardare in una volta sola l'ispettore più affamato: quel numero
-si chiama **ordine**, e misura quanto il problema si lascia dividere in
-pezzetti.
+Una fotografia, e una squadra di ispettori (sono le scatolette del Mark I,
+ognuna attaccata a un pugno di fotocellule): ciascuno può guardare solo qualche
+punto dell'immagine e risponde sì o no, poi un capo raccoglie le risposte, dà a
+ognuna un peso, somma e decide. Il neurone di poco fa è il caso più semplice di
+questa macchina, quello in cui ogni ispettore guarda un punto solo. La domanda
+dei teoremi non è se la squadra ce la fa, ma quanti punti deve guardare in una
+volta sola l'ispettore più affamato: quel numero si chiama **ordine**, e misura
+quanto il problema si lascia dividere in pezzetti.
 
 C'è un compito in cui va malissimo: dire se i punti accesi sono in numero pari
 o dispari (i matematici lo chiamano la **parità**). Qui nessun ispettore può
@@ -556,20 +580,20 @@ Che è un difetto peggiore, perché non si vede finché non si prova a ingrandir
 
 `````{tab} Superiore
 
-Nel libro «percettrone» indica una macchina più generale del neurone di poco
-fa: una somma pesata di **predicati** qualsiasi, ciascuno dei quali però può
-guardare solo un pezzetto dell'immagine in ingresso, e il numero di punti che
-il predicato più affamato deve guardare si chiama **ordine**. I teoremi sono su
-quello. Il più celebre dice che per calcolare la parità di $n$ bit
-(rispondere "quanti sono
-accesi, pari o dispari?") serve ordine $n$: qualche predicato deve guardare
-tutti gli ingressi in una volta sola, e non c'è modo di cavarsela con
-pezzetti. Un altro
-dice che per decidere se una figura disegnata è tutta d'un pezzo o spezzata in
-due, il numero di punti da guardare insieme cresce con la figura. Lo XOR è la
-parità a due bit, cioè il caso più piccolo di una famiglia: non un impossibile,
-ma il primo gradino di un costo che esplode. Il messaggio non era "una retta non
-basta", era "questo modo di costruire le caratteristiche non scala".
+Nel libro «percettrone» indica una macchina più generale del neurone di poco fa:
+una somma pesata di **predicati** qualsiasi, ciascuno dei quali però può
+guardare solo un pezzetto dell'immagine in ingresso (le unità intermedie del
+Mark I, collegate a caso a poche fotocellule, sono predicati di questo tipo), e
+il numero di punti che il predicato più affamato deve guardare si chiama
+**ordine**. I teoremi sono su quello. Il più celebre dice che per calcolare la
+parità di $n$ bit (rispondere "quanti sono accesi, pari o dispari?") serve
+ordine $n$: qualche predicato deve guardare tutti gli ingressi in una volta
+sola, e non c'è modo di cavarsela con pezzetti. Un altro dice che per decidere
+se una figura disegnata è tutta d'un pezzo o spezzata in due, il numero di punti
+da guardare insieme cresce con la figura. Lo XOR è la parità a due bit, cioè il
+caso più piccolo di una famiglia: non un impossibile, ma il primo gradino di un
+costo che esplode. Il messaggio non era "una retta non basta", era "questo modo
+di costruire le caratteristiche non scala".
 
 `````
 
@@ -587,19 +611,19 @@ Quello che venne dopo lo riassume la {numref}`fig-inverni-ai`.
 :alt: "In alto lo schema del neurone artificiale di Rosenblatt, con i tre ingressi pesati, il sommatore, la soglia e l'uscita 0 o 1. Sotto, una linea del tempo dal 1958 al 1980 con cinque tappe: il percettrone nel 1958, il Mark I nel 1960, il libro Perceptrons nel 1969, il rapporto Lighthill nel 1973, e il disgelo attorno al 1980; una banda colorata copre il primo inverno dell'AI, fra il 1974 e il 1980."
 :width: 100%
 
-In alto il neurone di Rosenblatt; sotto, vent'anni di storia in cinque tappe.
-La banda colorata è il primo inverno dell'AI: gli anni in cui i
-finanziamenti si ritirarono e il campo quasi si fermò. In mezzo c'è il rapporto
-Lighthill del 1973, la stroncatura commissionata dal governo britannico che
-porta ai tagli veri.
+In alto il neurone di Rosenblatt; sotto, vent'anni di storia in cinque tappe,
+dal percettrone del 1958 al disgelo attorno al 1980, con il rapporto Lighthill
+del 1973 in mezzo. La banda colorata è il primo inverno dell'AI.
 ```
 
 Seguirono anni magri, che oggi si chiamano il primo inverno dell'AI: i
 finanziamenti si ritirarono, i gruppi di ricerca si svuotarono e il campo quasi
 si fermò. A far scattare i tagli veri, però, non fu questo libro, e non fu
-subito: fu il **rapporto Lighthill** del 1973, una stroncatura commissionata dal
-governo britannico che riguardava l'intelligenza artificiale tutta intera, reti
-neurali o no.
+subito. Nel Regno Unito fu il **rapporto Lighthill** del 1973, una stroncatura
+commissionata dallo Science Research Council che riguardava l'intelligenza
+artificiale tutta intera, reti neurali o no. Negli Stati Uniti, negli stessi
+anni, la DARPA, che finanziava gran parte della ricerca sull'intelligenza
+artificiale, tagliò quella che non avesse uno scopo militare diretto.
 
 La sproporzione fra la portata dei risultati e l'ampiezza della reazione è una
 lezione che vale oltre questa storia. I teoremi erano corretti e limitati, e
@@ -614,25 +638,24 @@ correggere i neuroni in mezzo. È da lì che sarebbe arrivata la via d'uscita.
 ## Oltre la linea: strati nascosti e non linearità
 
 Se un neurone traccia una sola riga, mettiamone di più. Un primo strato di
-neuroni traccia più righe insieme, e si chiama **strato nascosto** perché non
-si affaccia né sull'ingresso né sull'uscita: lavora in mezzo. Un secondo strato
-poi lavora sulle risposte del primo, e il confine che ne esce non è più una
-riga sola. Tanto basta per lo XOR, e fra poco lo vediamo disegnato.
+neuroni traccia più righe insieme: è uno strato nascosto, che lavora in mezzo
+fra l'ingresso e l'uscita. Un secondo strato poi lavora sulle risposte del
+primo, e il confine che ne esce non è più una riga sola. Tanto basta per lo XOR,
+e fra poco lo vediamo disegnato.
 
-C'è però una condizione non negoziabile, la stessa già annunciata
-nell'introduzione del capitolo: fra uno strato e l'altro deve succedere
-qualcosa che non sia moltiplicare e sommare. Se no cento strati si
-schiaccerebbero in uno solo, capace di disegnare quello che sapeva disegnare
-prima, cioè una riga dritta, e lo XOR resterebbe fuori portata. Quel qualcosa
-da mettere in mezzo si chiama **non linearità**, e sono funzioni come la ReLU o
-la sigmoide: sono loro, insieme al percettrone multistrato (MLP) e
-all'algoritmo che lo addestra, la *backpropagation*, il tema delle sezioni
-{doc}`sulle funzioni di attivazione </RetiNeurali/funzioni-attivazione>` e
-{doc}`sulla backpropagation </RetiNeurali/backpropagation>`.
+C'è però una condizione: fra uno strato e l'altro deve succedere qualcosa che
+non sia moltiplicare e sommare. Se no cento strati si schiaccerebbero in uno
+solo, capace di disegnare quello che sapeva disegnare prima, cioè una riga
+dritta, e lo XOR resterebbe fuori portata. Quel qualcosa da mettere in mezzo si
+chiama **non linearità**, e sono funzioni come la ReLU o la sigmoide: sono loro,
+insieme al percettrone multistrato (MLP) e all'algoritmo che lo addestra, la
+*backpropagation*, il tema delle sezioni {doc}`sulle funzioni di attivazione
+</RetiNeurali/funzioni-attivazione>` e {doc}`sulla backpropagation
+</RetiNeurali/backpropagation>`.
 
 La {numref}`fig-xor-si-piega` fa vedere il passaggio per intero, ed è la
-risposta che aspettavamo: lo XOR risolto. Conviene capire il
-trucco, perché è lo stesso di tutto il deep learning.
+risposta che aspettavamo: lo XOR risolto. Il trucco è lo stesso di tutto il deep
+learning.
 
 I due neuroni del primo strato tracciano due righe parallele, e lasciano fra
 loro una fascia. Dentro la fascia stanno i due casi che vogliono risposta $1$;
@@ -679,9 +702,9 @@ scelti a mano, e le loro formule si leggono in fondo alla figura; i pesi del
 neurone d'uscita no, li trova la discesa del gradiente, il metodo di
 aggiustamento automatico di cui parla la sezione sulla backpropagation. Che di
 un interruttore secco non saprebbe che farsene, quindi ad addestrarsi è un
-neurone dall'uscita morbida, e l'interruttore torna alla fine, a leggere il
-risultato. Messi in fila i quattro ingressi, la rete risponde $0, 1, 1, 0$: lo
-XOR, per intero.
+neurone dall'uscita morbida, che scivola da zero a uno invece di saltare, e
+l'interruttore torna alla fine, a leggere il risultato. Messi in fila i quattro
+ingressi, la rete risponde $0, 1, 1, 0$: lo XOR, per intero.
 ```
 
 `````{tab} Elementare

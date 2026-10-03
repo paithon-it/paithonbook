@@ -5,7 +5,7 @@
   di book/_static/brand/tokens.css.
   fonte: ../inizializzazione-pesi.svg
 -->
-<svg viewBox="0 0 760 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico della varianza del segnale strato per strato: con pesi troppo grandi esplode, troppo piccoli collassa, con inizializzazione Xavier/He resta stabile">
+<svg viewBox="0 0 760 360" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafico della varianza del segnale strato per strato: con pesi troppo grandi esplode, troppo piccoli collassa, con la scala calibrata sull'attivazione (Xavier per la tanh, He per la ReLU) resta stabile">
   <rect x="0" y="0" width="760" height="360" fill="#0E0C0A"/>
   <text x="380" y="32" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="bold" fill="#F4ECDD">Varianza del segnale, strato per strato</text>
   <!-- axes -->
@@ -33,5 +33,5 @@
   <polyline points="120,240 200,236 280,242 360,238 440,241 520,237 600,240 680,239" fill="none" stroke="#5BA39C" stroke-width="2.5"/>
   <circle cx="120" cy="240" r="4" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
   <circle cx="680" cy="239" r="4" fill="#5BA39C" stroke="#F4ECDD" stroke-width="1.5"/>
-  <text x="470" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#5BA39C">Xavier / He: stabile</text>
+  <text x="470" y="222" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="bold" fill="#5BA39C">Xavier (tanh) / He (ReLU): stabile</text>
 </svg>

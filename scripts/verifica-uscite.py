@@ -171,6 +171,75 @@ def attesa_dopo(testo: str, fine_blocco: int) -> tuple[str, int] | None:
     return m.group(1), fine_blocco + m.start(1)
 
 
+# Le uscite staccate dal loro codice che restano staccate per una ragione,
+# con la ragione: la chiave e' la pagina e l'inizio della prima riga
+# dell'uscita, che non si sposta quando la pagina cresce sopra.
+STACCATE_VOLUTE = {
+    ("Python/basi.md", "CPU, in sequenza"):
+        "tempi di una macchina, che il testo presenta come «qualcosa del "
+        "genere»: cambiano a ogni esecuzione",
+    ("PINN/come-funziona.md", "epoca      0 | loss"):
+        "trentamila passi di Adam: le cifre cambiano da un processore "
+        "all'altro (con MKL_CBWR=COMPATIBLE la loss a 5000 epoche passa da "
+        "7.31e-02 a 7.36e-02 e la loss di fisica finale da 7.77e-03 a "
+        "7.59e-03), e il testo lo dice e si appoggia alle sole cifre che "
+        "reggono",
+}
+
+
+def staccata_dopo(testo: str, fine_blocco: int) -> tuple[int, str] | None:
+    """Un ` ```text ` che arriva poco dopo il codice, ma dopo un capoverso.
+
+    `attesa_dopo` lo lascia fuori a ragione, perche' non puo' sapere se quel
+    blocco e' l'uscita o un'altra cosa; il guaio e' che lo lasciava fuori in
+    silenzio, e un'uscita vera separata dal suo codice da una frase di
+    commento («L'output e' la tabella di poco fa:») non la confrontava
+    nessuno, mentre il capitolo restava verde con un'uscita in meno. Qui la
+    si nomina: il primo recinto dopo il codice e' un ` ```text `, in mezzo ci
+    sono solo poche righe di prosa e nessun titolo. Un titolo, una scheda o un
+    altro recinto in mezzo vogliono dire che il blocco appartiene ad altro.
+    """
+    resto = testo[fine_blocco:]
+    m = re.search(r"^(`{3,})(\S*)", resto, re.M)
+    if not m or m.group(1) != "```" or m.group(2) != "text":
+        return None
+    righe = [r for r in resto[:m.start()].split("\n") if r.strip()]
+    if not righe or len(righe) > 12 or any(r.lstrip().startswith("#")
+                                           for r in righe):
+        return None
+    prima = resto[m.end():].lstrip("\n").split("\n", 1)[0]
+    return riga_di(testo, fine_blocco + m.start()), prima
+
+
+def staccate_di(pagina: pathlib.Path, anche_lenti: bool = False):
+    """[(riga, prima riga dell'uscita)] delle uscite staccate dal codice."""
+    testo = pagina.read_text(encoding="utf-8")
+    ammessi = {"cella", "lento"} if anche_lenti else {"cella"}
+    fuori = []
+    for posizione, codice, stato in GN.blocchi(testo):
+        if stato not in ammessi:
+            continue
+        fine = testo.index("```", testo.index(codice, posizione) + len(codice)) + 3
+        if attesa_dopo(testo, fine):
+            continue
+        s = staccata_dopo(testo, fine)
+        if s:
+            fuori.append(s)
+    return fuori
+
+
+def staccate_non_volute(pagine, anche_lenti: bool = False):
+    """[(pagina relativa, riga)] delle staccate che nessuno ha dichiarato."""
+    fuori = []
+    for p in pagine:
+        rel = str(p.relative_to(LIBRO))
+        for riga, prima in staccate_di(p, anche_lenti):
+            if not any(rel == pg and prima.startswith(inizio)
+                       for pg, inizio in STACCATE_VOLUTE):
+                fuori.append((rel, riga))
+    return fuori
+
+
 def blocchi_di(pagina: pathlib.Path, anche_lenti: bool = False):
     """[(riga, codice, atteso_o_None, riga_attesa)] dei blocchi eseguibili.
 
@@ -342,6 +411,9 @@ def main() -> None:
             if b and not quanti:
                 senza.append(nome)
             print(f"  {nome:28} {len(b):3} blocchi, {quanti:3} con un'uscita da controllare")
+            for pagina, riga in staccate_non_volute(pagine):
+                print(f"       {pagina}:{riga}  uscita staccata dal codice: "
+                      f"non confrontata")
         print(f"\n{con} blocchi con un'uscita dichiarata.")
         if senza:
             print("capitoli che eseguono codice senza mai dichiarare che cosa "
@@ -362,7 +434,14 @@ def main() -> None:
     # a mano», cioe' una diagnosi falsa e per giunta credibile.
     problemi = 0
     non_eseguiti = 0
+    staccate = 0
     for nome, pagine in sorted(scelti.items()):
+        # Prima di eseguire, e anche se poi il capitolo non parte: un'uscita
+        # staccata dal codice non dipende dall'ambiente, dipende dalla pagina.
+        for pagina, riga in staccate_non_volute(pagine, args.anche_lenti):
+            staccate += 1
+            print(f"  ✗  {nome:28} {pagina}:{riga}  uscita staccata dal codice "
+                  f"da un capoverso: non viene confrontata")
         raccolti = [(p, *x) for p in pagine
                     for x in blocchi_di(p, args.anche_lenti)]
         if not raccolti:
@@ -411,7 +490,13 @@ def main() -> None:
     if problemi:
         print(f"{problemi} uscite non combaciano: o il codice e' cambiato, o il "
               f"blocco ```text e' stato scritto a mano e non ricontrollato.")
-    if problemi or non_eseguiti:
+    if staccate:
+        print(f"{staccate} uscite stanno dopo un capoverso invece che subito "
+              f"dopo il loro codice, e nessuno le confronta: si sposta la frase "
+              f"prima del codice o dopo l'uscita. Se la distanza e' voluta (i "
+              f"numeri cambiano a ogni esecuzione, e il testo lo dice), la si "
+              f"dichiara in STACCATE_VOLUTE con la sua ragione.")
+    if problemi or non_eseguiti or staccate:
         sys.exit(1)
     print("ogni numero stampato nel libro e' quello che il codice produce.")
 

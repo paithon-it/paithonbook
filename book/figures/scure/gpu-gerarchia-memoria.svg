@@ -10,14 +10,14 @@
   paithon book, figura: la gerarchia di memoria di una GPU, come piramide.
   Dall'alto (piccola, velocissima, on-chip) verso il basso (capiente, lenta,
   lontana): registri, shared memory, cache L2, memoria globale HBM, memoria
-  host oltre il bus PCIe. A sinistra cresce la velocita/banda (verso l'alto),
-  a destra cresce la capacita (verso il basso). Palette-locked: teal per i
+  host oltre il bus PCIe. A sinistra cresce la velocità/banda (verso l'alto),
+  a destra cresce lo spazio che tocca a chi lo usa (verso il basso). Palette-locked: teal per i
   livelli on-chip (freddi/vicini), ocra al centro, terracotta per i livelli
   lontani (caldi/lenti). Tinte via fill-opacity, testo/tratti warm-black.
   Backing cream: leggibile in light e dark. Nessun colore fuori palette.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 430" role="img"
-     aria-label="Piramide della gerarchia di memoria di una GPU su cinque livelli. Dall'apice alla base: registri (per-thread, pochi kilobyte, immediati); shared memory (per-blocco, circa cento kilobyte, on-chip); cache L2 (condivisa, decine di megabyte); memoria globale HBM (decine di gigabyte, banda di qualche terabyte al secondo, latenza di centinaia di cicli); memoria host, la RAM di sistema, oltre il bus PCIe a decine di gigabyte al secondo. Una freccia a sinistra indica che salendo crescono velocita e banda; una freccia a destra indica che scendendo cresce la capacita.">
+     aria-label="Piramide della gerarchia di memoria di una GPU su cinque livelli. Dall'apice alla base: registri (per-thread, meno di un kilobyte a testa, immediati); shared memory (per-blocco, circa cento kilobyte, on-chip); cache L2 (condivisa, decine di megabyte); memoria globale HBM (decine di gigabyte, banda di qualche terabyte al secondo, latenza di centinaia di cicli); memoria host, la RAM di sistema, oltre il bus PCIe a decine di gigabyte al secondo. Una freccia a sinistra indica che salendo crescono velocità e banda; una freccia a destra indica che scendendo cresce lo spazio che tocca a chi lo usa, non quello che c'è in tutto a quel piano.">
   <style>
     .band  { stroke-width:2; }
     .name  { font-family:Inter, system-ui, sans-serif; font-size:14px; font-weight:700; fill:#F4ECDD; }
@@ -60,10 +60,10 @@
   <polygon points="58,66 52,82 64,82" fill="#F4ECDD" fill-opacity="0.55"/>
   <text class="side" x="44" y="230" text-anchor="middle" transform="rotate(-90 44 230)">velocità e banda</text>
 
-  <!-- ===== freccia destra: capacita cresce verso il basso ===== -->
+  <!-- ===== freccia destra: lo spazio per chi lo usa cresce verso il basso ===== -->
   <line class="axis" x1="644" y1="80" x2="644" y2="360"/>
   <polygon points="644,374 638,358 650,358" fill="#F4ECDD" fill-opacity="0.55"/>
-  <text class="side" x="660" y="220" text-anchor="middle" transform="rotate(90 660 220)">capacità</text>
+  <text class="side" x="660" y="220" text-anchor="middle" transform="rotate(90 660 220)">spazio per chi lo usa</text>
 
   <!-- etichette on-chip / off-chip -->
   <text class="det" x="330" y="400" text-anchor="middle">on-chip (dentro la GPU) fino alla L2 · off-chip (HBM e host) sotto</text>

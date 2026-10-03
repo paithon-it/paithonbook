@@ -45,26 +45,27 @@ materie non si somigliano fra loro: si somigliano perché sono figlie della
 stessa cosa.
 
 Se quella quantità esista davvero, e che cosa sia, è oggetto di una discussione
-che dura da oltre un secolo, e il libro non prende posizione: quello
-che ci serve è la mossa, non la conclusione. La mossa è sopravvissuta
-alla discussione, ha preso un nome (variabile latente, dal latino *latere*,
-«stare nascosto») e ha una macchina matematica che la rende operativa, che
-Spearman inventò per sostenere la sua tesi e che oggi si chiama analisi
-fattoriale. Quella macchina è l’antenata di tutto questo capitolo, e ne è la
-versione più semplice: quella in cui la quantità nascosta e le cose visibili
-sono legate da somme e moltiplicazioni, e da nient’altro.
+che dura da oltre un secolo, e qui non serve prendere posizione: quello che ci
+serve è la mossa, non la conclusione. La mossa è sopravvissuta alla
+discussione, ha preso un nome (variabile latente, dal latino *latere*, «stare
+nascosto») e ha una macchina matematica che la rende operativa, che Spearman
+inventò per sostenere la sua tesi e che oggi si chiama **analisi fattoriale**:
+ogni voto è la quantità nascosta moltiplicata per un peso proprio di quella
+materia, più uno scarto. È l’antenata dei modelli a variabile latente continua,
+e ne è la versione più semplice, perché fra la quantità nascosta e le cose
+visibili ci sono soltanto moltiplicazioni e somme.
 
 Anche l’altra metà del titolo si scioglie qui. **Inferenza** è il mestiere di
 risalire alla causa nascosta a partire da quello che si vede, dai voti di quei
 ragazzi alla quantità che nessuno ha misurato, ed è il senso che la parola ha
-in tutto il capitolo. Nel gergo del deep learning la stessa parola indica
-quasi sempre una cosa molto più modesta, il momento in cui un modello già
-addestrato risponde e basta, e chi la incontra di solito in quel senso qui
-deve lasciarla da parte. **Variazionale** dice come lo faremo, e cioè
-rinunciando alla risposta esatta e cercandone la migliore dentro una famiglia
-scelta da noi, dove «risposta» non è un numero ma una distribuzione, il
-ventaglio delle cause possibili con quanto ciascuna è credibile. La seconda
-metà del capitolo non fa altro che questo.
+in tutto il capitolo. Nel gergo del deep learning la stessa parola indica quasi
+sempre una cosa molto più modesta, il momento in cui un modello già addestrato
+risponde e basta, e chi la incontra di solito in quel senso qui deve lasciarla
+da parte. **Variazionale** dice come la si fa. La risposta di un’inferenza non
+è un numero ma una distribuzione, il ventaglio delle cause possibili con quanto
+ciascuna è credibile; invece di calcolarla esatta, se ne cerca la migliore
+approssimazione fra le distribuzioni di una forma fissata in anticipo, per
+esempio fra tutte le curve a campana.
 
 ## La mossa: spiegare il visibile con l’invisibile
 
@@ -88,10 +89,12 @@ quasi sempre lo stesso colore, tranne sui contorni, e dove passano i contorni
 dipende da che cosa c’è nella foto.
 
 La mossa della variabile latente è cambiare domanda. Invece di descrivere il
-dato, si descrive come è nato: prima si sorteggia qualcosa che non si vede,
-e poi, a partire da quel qualcosa, si sorteggia il dato. Il modello si scrive
-allora in due pezzi, e sono due pezzi semplici; la complicazione che si vede
-nasce dal fatto che il primo dei due non lo si osserva mai.
+dato, si descrive come è nato: prima si sorteggia qualcosa che non si vede, la
+causa nascosta $\mathbf{z}$, da una distribuzione semplice scelta in anticipo,
+il prior $p(\mathbf{z})$; poi, a partire da lei, si sorteggia il dato
+$\mathbf{x}$. Il modello si scrive allora in due pezzi, e sono due pezzi
+semplici; la complicazione che si vede nasce dal fatto che il primo dei due
+non lo si osserva mai.
 
 `````{tab} Elementare
 
@@ -122,6 +125,7 @@ righello, uno per ogni punto: si sorteggia un punto del righello, e una regola
 dice attorno a che misura stanno le biglie del sacchetto che sta lì. E il
 sorteggio non è alla pari: i punti vicini al centro escono spesso, quelli
 lontani quasi mai, ed è una preferenza che decidiamo noi prima di cominciare.
+Quella preferenza è il prior.
 
 E i sacchetti nessuno te li ha mostrati. Torna ai due del cassetto e cambiali
 di poco, 12 e 14 millimetri con la stessa variazione: l’istogramma fa una gobba
@@ -149,13 +153,13 @@ sorteggiato, scelta da noi e di solito semplicissima), $p_\theta(\mathbf{x}
 parametri del modello generativo. L’integrale diventa una somma quando
 $\mathbf{z}$ è discreto.
 
-Il caso discreto il libro l’ha già visto, e con questo nome: nella
-mistura di gaussiane della sezione su riduzione e clustering, $z \in \{1,
-\dots, K\}$, la componente da cui l’esempio proviene, è introdotta lì proprio
-come variabile latente. Là $p(z = k) = \pi_k$ è il
-suo peso e $p(\mathbf{x} \mid z = k) = \mathcal{N}(\mathbf{x};
-\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$ la sua campana, con
-$\boldsymbol{\mu}_k$ il centro della componente $k$ e
+Il caso discreto si è già visto, e con questo nome: nella mistura di gaussiane
+della {doc}`sezione su riduzione e
+clustering </MachineLearning/riduzione-clustering>`, $z \in \{1, \dots, K\}$,
+la componente da cui l’esempio proviene, è introdotta lì proprio come variabile
+latente. Là $p(z = k) = \pi_k$ è il suo peso e $p(\mathbf{x} \mid z = k) =
+\mathcal{N}(\mathbf{x}; \boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$ la sua
+campana, con $\boldsymbol{\mu}_k$ il centro della componente $k$ e
 $\boldsymbol{\Sigma}_k$ la sua covarianza; la densità osservata
 
 $$
@@ -167,8 +171,9 @@ può essere multimodale pur essendo fatta di soli pezzi unimodali: con $K = 2$ �
 la densità a due gobbe che nasce da due sole componenti. Le
 gobbe però non sono garantite, e la soglia si calcola: due componenti di ugual
 peso e ugual larghezza ne danno due soltanto se i centri distano più di due
-deviazioni standard, e sotto quella soglia la densità torna a una gobba sola
-pur restando una mistura.
+deviazioni standard (a distanza esattamente due la cima è piatta, con derivata
+seconda nulla), e sotto quella soglia la densità torna a una gobba sola pur
+restando una mistura.
 
 Il caso continuo generalizza la stessa costruzione: se $p(\mathbf{z}) =
 \mathcal{N}(\mathbf{0}, \mathbf{I})$ e $p_\theta(\mathbf{x} \mid \mathbf{z}) =
@@ -182,18 +187,33 @@ dati dal prior. Una rete deterministica più due gaussiane elementari bastano
 quindi a descrivere una distribuzione che in forma chiusa non si saprebbe
 scrivere.
 
-Con $f_\theta$ affine il modello diventa la PCA probabilistica, la cui
-soluzione a massima verosimiglianza individua il sottospazio generato dalle
-prime $L$ componenti principali e non le singole direzioni (con $f_\theta$
-affine, cioè $f_\theta(\mathbf{z}) = \mathbf{W}\mathbf{z} + \boldsymbol{\mu}$ e
-$\mathbf{z}$ di dimensione $L$, la matrice $\mathbf{W}$ è determinata a meno di
-una rotazione),
-e nel limite $\sigma^2 \to 0$ la ricostruzione si riduce alla proiezione
-ortogonale, cioè alla PCA della sezione su riduzione e clustering, e il codice
-ne è un sistema di coordinate. Cambiando l’ipotesi sul rumore, da una sola
-varianza per tutte le componenti osservate a una varianza per ciascuna, si
-ottiene
-l’**analisi fattoriale**, e con un fattore solo è il modello di Spearman: una
+Con $f_\theta$ affine, cioè $f_\theta(\mathbf{z}) = \mathbf{W}\mathbf{z} +
+\boldsymbol{\mu}$ con $\mathbf{z}$ di dimensione $L$, il modello diventa la PCA
+probabilistica di Tipping e Bishop {cite}`tipping1999probabilistic`, e la
+massima verosimiglianza ha forma chiusa. Con $\lambda_1 \ge \dots \ge
+\lambda_D$ gli autovalori della covarianza dei dati, $\mathbf{U}_L$ la matrice
+dei primi $L$ autovettori e $\boldsymbol{\Lambda}_L$ la diagonale dei primi $L$
+autovalori,
+
+$$
+\mathbf{W}_{\mathrm{ML}} = \mathbf{U}_L \big(\boldsymbol{\Lambda}_L - \sigma^2 \mathbf{I}\big)^{1/2} \mathbf{R},
+\qquad
+\sigma^2_{\mathrm{ML}} = \frac{1}{D - L} \sum_{i = L + 1}^{D} \lambda_i,
+$$
+
+dove $D$ è la dimensione del dato e $\mathbf{R}$ una qualunque matrice
+ortogonale $L \times L$. La soluzione individua quindi il sottospazio generato
+dalle prime $L$ componenti principali e non le singole direzioni, perché
+$\mathbf{W}$ è determinata solo a meno della rotazione $\mathbf{R}$; la varianza
+del rumore è la media degli autovalori scartati; e se $\sigma^2$ è fissato a
+mano invece che stimato, la colonna di $\mathbf{W}$ che corrisponde a un
+autovalore non superiore a $\sigma^2$ resta nulla, un fatto che tornerà nella
+sezione sul salto probabilistico a spiegare il collasso della posterior. Nel
+limite $\sigma^2 \to 0$ la ricostruzione si riduce alla proiezione ortogonale,
+cioè alla PCA della sezione su riduzione e clustering, e il codice ne è un
+sistema di coordinate. Cambiando l’ipotesi sul rumore, da una sola varianza
+per tutte le componenti osservate a una varianza per ciascuna, si ottiene
+l’analisi fattoriale, e con un fattore solo è il modello di Spearman: una
 quantità comune a tutte le prove più uno scarto proprio di ciascuna. Nel
 lavoro del 1904 quel rapporto è già stimato prova per prova, sulle
 correlazioni corrette per l’errore di misura e non su quelle grezze
@@ -224,9 +244,12 @@ sono tantissime.)
 Guardando {numref}`fig-due-gobbe` si capisce anche perché conviene: chi volesse
 descrivere la curva di destra senza sapere dei sacchetti dovrebbe inventarsi
 una formula per una cosa a due gobbe, mentre a noi sono bastate due gobbe
-semplici (in matematica si chiamano gaussiane, e «campana» è il
-soprannome della loro forma) e
-la regola con cui si sceglie il sacchetto.
+semplici (in matematica si chiamano gaussiane, e «campana» è il soprannome
+della loro forma) e la regola con cui si sceglie il sacchetto. Gaussiane più
+una regola che sceglie fra loro fanno una mistura di gaussiane, la stessa della
+{doc}`sezione su riduzione e clustering
+</MachineLearning/riduzione-clustering>`, dove la variabile latente era la
+componente da cui veniva un esempio.
 
 ## Il prezzo: la somma che non si può fare
 
@@ -241,9 +264,8 @@ capitolo passa il tempo ad aggirare.
 Le due direzioni della stessa freccia. Scendere è facile: si sorteggia un punto
 là sopra e si applica la regola che porta da lui al dato. Risalire, cioè
 chiedersi da quale punto di sopra possa essere venuto un dato che si ha in
-mano, è la parte cara. (Le due lettere del disegno sono i nomi con cui
-questa materia le chiama da sempre: **z** la cosa nascosta, **x** il dato che
-si vede.)
+mano, è la parte cara. (Le due lettere del disegno sono quelle di sempre:
+z la causa nascosta, x il dato che si vede.)
 ```
 
 La freccia tratteggiata di {numref}`fig-modello-latente` costa in due modi
@@ -251,67 +273,64 @@ diversi, che è bene tenere separati perché il capitolo li affronta con due
 strumenti distinti.
 
 Prima difficoltà: la somma. Per sapere quanto è probabile un dato bisogna
-considerare tutti i valori che la causa nascosta poteva prendere, e sommarli
-pesando ciascuno per quanto è probabile che tocchi proprio a lui. Con due
-sacchetti pescati con una monetina sono due addendi, mezzo per uno. Ma la
-causa nascosta di cui
-parleremo è una fila di numeri (nel capitolo ne useremo otto per comprimere
-una cifra scritta a mano, e si vedrà che la rete non li adopera nemmeno
-tutti) e non la scelta fra due scatole, e
-ciascuno può valere qualunque cosa. Gli addendi diventano allora infiniti, il
-che di per sé non sarebbe un guaio, perché somme di infiniti addendi si fanno
-da secoli, purché la cosa da sommare sia semplice.
+considerare tutti i valori che la causa nascosta poteva prendere, e sommare
+quanto ciascuno spiega il dato, contando ciascuno tanto quanto è probabile che
+tocchi proprio a lui: con due sacchetti pescati con una monetina sono due
+addendi, mezzo per uno. La causa nascosta di cui parleremo, però, è un
+vettore di $L$ numeri reali (nel capitolo $L = 8$, per comprimere una cifra
+scritta a mano, e si vedrà che la rete non li adopera nemmeno tutti), e siccome
+ciascun numero può valere qualunque cosa, la somma diventa un integrale su
+tutti i valori possibili. Un integrale si sa calcolare quando la funzione da
+integrare è semplice.
 
-Il guaio è un altro. A trasformare la causa nascosta nel dato ci pensa una
-rete neurale, cioè la macchina dei capitoli precedenti: milioni di numeri
-messi in fila che si moltiplicano e si sommano, e che nessuno saprebbe
-riassumere in una formula. Con quella in mezzo, la somma non si sa scrivere
-in nessun modo utile; e provare a tentoni, misurandola in tanti punti sparsi,
-chiede un numero di punti che si moltiplica a ogni numero in più della causa
-nascosta: se con un numero ne bastassero dieci, con due ne servirebbero cento
-e con otto cento milioni.
+Qui non lo è. Il legame fra $\mathbf{z}$ e $\mathbf{x}$ passa per una rete
+neurale $f_\theta$, non lineare e con migliaia di parametri, e l’integrale non
+ha una formula chiusa. Resta il calcolo numerico, che valuta la funzione su una
+griglia di punti; ma i punti della griglia si moltiplicano a ogni dimensione
+in più: se lungo un asse ne bastassero dieci, con due assi ne servirebbero
+cento, e con otto cento milioni.
 
-Seconda difficoltà, ed è quella che sorprende: neanche tirare a sorte
-funziona. La via d’uscita ovvia sarebbe sorteggiare un po’ di valori del
-latente, guardare quanto ciascuno spiega bene il dato, e fare la media. In
-poche dimensioni si fa. In molte no, e la ragione è che quasi tutti i valori
-sorteggiati spiegano il dato in modo pessimo: la media di mille numeri quasi
-nulli e di un numero grande dipende tutta da quell’uno, che quasi mai capita di
-pescare. Quando non capita, la media esce ridicolmente bassa; quando capita,
-schizza; e rifacendo il sorteggio il risultato cambia ogni volta, cioè non è
-una misura. La {doc}`sezione sul salto probabilistico
-</ModelliLatenti/il-salto-probabilistico>` lo misura invece di dirlo.
+Seconda difficoltà, ed è quella che sorprende: nemmeno la stima Monte Carlo
+funziona. La via d’uscita ovvia è sorteggiare dal prior un po’ di valori
+$\mathbf{z}^{(1)}, \dots, \mathbf{z}^{(S)}$, calcolare per ciascuno quanto
+spiega il dato, $p_\theta(\mathbf{x} \mid \mathbf{z}^{(s)})$, e fare la media.
+In media la stima è giusta, e in poche dimensioni funziona. Quando $L$ cresce,
+però, quasi tutti i valori sorteggiati danno a $p_\theta(\mathbf{x} \mid
+\mathbf{z})$ un valore trascurabile, e la media è dominata dai pochissimi che
+cadono nel posto giusto, che quasi mai capita di pescare. Quando non capitano
+la stima esce molto più bassa del vero, quando capitano schizza in alto, e
+rifacendo il sorteggio cambia ogni volta: ha una varianza enorme e, in scala
+logaritmica, è sistematicamente troppo bassa. La {doc}`sezione sul salto
+probabilistico </ModelliLatenti/il-salto-probabilistico>` lo misura.
 
 ## La stessa idea, dentro quattro macchine
 
-Questa idea il libro la mette al lavoro in quattro punti, e in nessuno dei
-quattro la spiega fino in fondo. Due sono già passati. Il primo sono i
-{doc}`codec neurali </Audio/codec-neurali>`, che riducono il suono a un
-elenco chiuso di simboli per poterlo scrivere come si scrive un testo. Il
-secondo è il {doc}`reinforcement learning offline
-</DeepReinforcementLearning/offline-rl>`, dove la stessa macchina impara quali
-mosse assomigliano a quelle già viste, così che l’agente non ne provi di
-inventate. Due arriveranno: la generazione di immagini su un computer di casa,
-che comprime la figura prima di generarla, e i modelli del mondo, che spremono
-un fotogramma di videogioco in pochi numeri. Ogni volta il libro rimanda la
-fattura, dicendo che lo vedrà più avanti o che gli basta il ruolo di quel
-codice compresso; l’ultima sezione la paga, e ripassa i quattro punti uno per
-uno adesso che la macchina è nota.
+Il modello a variabile latente è già al lavoro in quattro capitoli, dove
+serviva la macchina e non la sua derivazione. Due sono già passati: i
+{doc}`codec neurali </Audio/codec-neurali>`, che riducono il suono a una
+sequenza di simboli, e il {doc}`reinforcement learning
+offline </DeepReinforcementLearning/offline-rl>`, dove la stessa macchina dice
+quali mosse somigliano a quelle già viste. Due arriveranno: la generazione di
+immagini di Stable Diffusion e i modelli del mondo. La sezione sul
+{doc}`latente che si usa </ModelliLatenti/il-latente-che-si-usa>` li riprende
+uno per uno, con la macchina del capitolo in mano.
 
-Il {doc}`capitolo sulla verosimiglianza esatta
-</VerosimiglianzaEsatta/overview>`, più avanti, mette in fila dove questa
-famiglia stia rispetto alle altre. «Verosimiglianza» è proprio quel numero di
-poco fa, quanto il modello si aspettava di vedere il dato; e là i modelli
-generativi del libro sono ordinati tutti insieme secondo una cosa sola, che
-cosa ciascuno sa dirne. Quella mappa vive là, e qui non ne facciamo una
-seconda. Basta l’essenziale, e vale per la macchina che il capitolo costruisce,
-non per le sue antenate: dove la causa nascosta passa per una rete neurale quel
-numero si sa dire solo per difetto, cioè si restituisce un valore che sta di
-sicuro sotto a quello vero. La mistura di gaussiane e le sue parenti lineari,
-invece, lo sanno dire esatto, perché lì il conto si chiude. Di che cosa sia
-fatto il divario si sa benissimo; quanto valga, no. Perché ci si debba
-accontentare, e perché accontentarsi convenga, è la storia della sezione sul
-salto probabilistico.
+Il {doc}`capitolo sulla verosimiglianza
+esatta </VerosimiglianzaEsatta/overview>`, più avanti, mette in fila dove
+questa famiglia stia rispetto alle altre: là i modelli generativi incontrati
+fin lì sono ordinati secondo una cosa sola, che cosa ciascuno sa dire della
+verosimiglianza $p_\theta(\mathbf{x})$, cioè di quel numero di poco fa, quanto
+il modello si aspettava di vedere il dato. Qui basta l’essenziale, e vale per
+la macchina che il capitolo costruisce, non per le sue antenate. Dove la causa
+nascosta passa per una rete neurale, la verosimiglianza si sa dire solo per
+difetto: si calcola un valore che sta di sicuro sotto quello vero. La mistura
+di gaussiane, la PCA probabilistica e l’analisi fattoriale, dove la causa
+prende pochi valori oppure il legame è lineare, la danno invece esatta, perché
+lì l’integrale si chiude. Di che cosa sia fatto il divario fra il valore
+calcolato e quello vero si sa con precisione, e quanto valga lo si può stimare
+a parte, a modello addestrato, con un conto più costoso. Perché ci si debba
+accontentare del valore per difetto, e perché convenga, è la storia della
+sezione sul salto probabilistico.
 
 `````{tab} Elementare
 
@@ -328,10 +347,6 @@ salto probabilistico.
   tutte le cause nascoste possibili, e quando sono tante quel conto non si
   fa. Non si fa nemmeno tirando a sorte, perché quasi tutte le cause
   sorteggiate spiegano il dato malissimo.
-- Il libro monta questa idea in quattro punti senza mai spiegarla fino in
-  fondo: i codec del suono e le mosse consentite a un agente, che sono già
-  passati, la generazione di immagini e i modelli del mondo, che arrivano. È
-  il buco che questo capitolo riempie.
 ```
 
 `````
@@ -357,8 +372,9 @@ salto probabilistico.
   chiusa, e la stima Monte Carlo dal prior ha varianza che esplode con la
   dimensione di $\mathbf{z}$, perché quasi tutti i campioni cadono dove
   $p_\theta(\mathbf{x} \mid \mathbf{z})$ è trascurabile. Con $\mathbf{z}$
-  discreto, o con $f_\theta$ affine, il conto si chiude: mistura, PCA
-  probabilistica e analisi fattoriale la marginale la danno esatta.
+  discreto e pochi valori possibili, o con $f_\theta$ affine, il conto si
+  chiude: mistura, PCA probabilistica e analisi fattoriale la marginale la
+  danno esatta.
 - Da qui il programma del capitolo: rinunciare al valore esatto di
   $\log p_\theta(\mathbf{x})$ e ottimizzare un limite inferiore, che si
   paga con un secondo modello (l’encoder) e si guadagna in trattabilità.
@@ -369,19 +385,20 @@ salto probabilistico.
 ## Comprimere, ricostruire, usare
 
 Tre sezioni, e ciascuna toglie un pezzo al problema. La prima parte dalla
-strada più corta, l’autoencoder, cioè una rete che impara a comprimere e a
-ricostruire senza che nessuno le parli di probabilità: funziona benissimo per
-comprimere e fallisce per generare, e il perché di quel fallimento è il modo
-migliore per capire che cosa manchi. La seconda è il cuore: la verosimiglianza
-intrattabile e il limite inferiore che la sostituisce, l’ELBO (dalle iniziali
-inglesi di *evidence lower bound*, «limite inferiore sull’evidenza», dove
-l’evidenza è quanto il modello si aspettava di vedere il dato). Quel limite si
-legge come una somma di due pezzi, uno che premia le ricostruzioni fedeli e
-uno che fa pagare le descrizioni stravaganti; e insieme all’ELBO arriva un
-trucco senza il quale la macchina si addestrerebbe molto peggio, perché fra il
-dato e la sua ricostruzione c’è un sorteggio, e le correzioni che aggiustano
-i numeri della rete di là non passano da sole. La terza sezione guarda che
-cosa si fa con la causa nascosta una volta che c’è: la manopola con cui gli si
-può chiedere di tenere separate le cose di cui il dato è fatto (la luce,
-l’inclinazione, il soggetto), il riassunto fatto di simboli invece che di
-numeri, e i quattro punti del libro in cui questa macchina è al lavoro.
+strada più corta, l’autoencoder, una rete che impara a comprimere un dato in un
+codice e a ricostruirlo senza che nessuno le parli di probabilità: funziona
+benissimo per comprimere e fallisce per generare, e il perché di quel
+fallimento è il modo migliore per capire che cosa manchi. La seconda è il
+cuore: la verosimiglianza intrattabile e il limite inferiore che la
+sostituisce, l’ELBO (dalle iniziali inglesi di *evidence lower bound*, «limite
+inferiore sull’evidenza», dove evidenza è il nome tecnico della verosimiglianza
+$p_\theta(\mathbf{x})$, quanto il modello si aspettava di vedere il dato).
+L’ELBO si legge come una somma di due termini, uno che premia le ricostruzioni
+fedeli e uno che fa pagare i codici troppo lontani dal prior; e con lui arriva
+la riparametrizzazione, che riscrive il sorteggio in mezzo alla rete in modo
+che il gradiente lo possa attraversare. La terza sezione guarda che cosa si fa
+con il latente una volta che c’è: il $\beta$-VAE, che pesa di più il secondo
+termine e con cui si è sperato di tenere separate le cose di cui il dato è
+fatto (la luce, l’inclinazione, il soggetto); il VQ-VAE, con un latente fatto
+di simboli invece che di numeri; e i quattro capitoli in cui il modello è al
+lavoro.

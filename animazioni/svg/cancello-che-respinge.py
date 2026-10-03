@@ -50,13 +50,33 @@ MONO = "JetBrains Mono, ui-monospace, monospace"
 # --------------------------------------------------------------------------
 # Il codice del capitolo, eseguito davvero
 # --------------------------------------------------------------------------
+# La marca che il blocco del ciclo porta addosso: la firma del cancello.
+MARCA = "def verifica(slug)"
+
+
 def _blocco(marcatore: str) -> str:
+    """Il blocco del ciclo (``python``) o la sua uscita (``text``).
+
+    La sezione ha piu' di un blocco di codice (il conto degli errori a
+    grappoli e' arrivato dopo questa figura), e prendere «l'unico» blocco
+    smetteva di funzionare al secondo. Il blocco giusto si riconosce dalla
+    marca, e se la portano in due ci si ferma invece di scegliere; l'uscita e'
+    il ```text che lo segue subito, con le sole righe vuote in mezzo.
+    """
     testo = SEZIONE.read_text(encoding="utf-8")
-    blocchi = re.findall(rf"```{marcatore}\n(.*?)```", testo, re.S)
-    if len(blocchi) != 1:
-        raise ValueError(f"{NOME}: {len(blocchi)} blocchi ```{marcatore} in "
-                         f"{SEZIONE.name}, ne serve esattamente 1")
-    return blocchi[0]
+    trovati = [m for m in re.finditer(r"```python\n(.*?)```", testo, re.S)
+               if MARCA in m.group(1)]
+    if len(trovati) != 1:
+        raise ValueError(f"{NOME}: {len(trovati)} blocchi ```python con "
+                         f"{MARCA!r} in {SEZIONE.name}, ne serve esattamente 1")
+    codice = trovati[0]
+    if marcatore == "python":
+        return codice.group(1)
+    uscita = re.match(r"\n*```text\n(.*?)```", testo[codice.end():], re.S)
+    if not uscita:
+        raise ValueError(f"{NOME}: il blocco del ciclo in {SEZIONE.name} non "
+                         f"ha il suo ```text subito dopo")
+    return uscita.group(1)
 
 
 def esegui_il_capitolo():

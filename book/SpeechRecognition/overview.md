@@ -25,6 +25,9 @@ lavastoviglie, e la frase diventa testo (e poi azione) in una frazione di
 secondo. In mezzo c'è la storia dell’ASR (*Automatic Speech Recognition*),
 il riconoscimento vocale automatico.
 
+Gli attrezzi del mestiere li ha già costruiti il {doc}`capitolo
+sull'audio </Audio/overview>`, e qui si mettono in fila sulla voce.
+
 ## Che cosa fa, in fondo
 
 Il compito è facile da enunciare: prendere un segnale audio e restituire le
@@ -39,7 +42,7 @@ centesimi di secondo tocchino a ciascuna. Dove il parlato è impastato torni
 indietro, riascolti, provi due letture possibili e scrivi quella che ti
 convince di più. Il riconoscitore vocale fa esattamente questo: in ingresso
 l'onda sonora catturata dal microfono, in uscita del testo. Del significato
-non capisce niente, per ora. Solo il passaggio dal suono alle lettere giuste.
+non capisce niente: il suo mestiere finisce con le lettere giuste.
 
 `````
 
@@ -83,12 +86,14 @@ un nome che ogni tanto si incontra ancora, *dynamic time warping*, «deformare
 il tempo». Andava bene per pochissime parole e un solo parlante: aggiungerne
 una voleva dire registrarla.
 
-Il salto di qualità, negli anni Ottanta, non venne da macchine più potenti.
-Venne da due idee. La prima: smettere di ragionare per parole intere e
-ragionare per suoni, perché le parole di una lingua sono centinaia di
-migliaia mentre i suoni sono qualche decina, e una parola mai sentita prima è
-comunque fatta di suoni già sentiti. La seconda: dividere il lavoro in due
-pareri.
+Il salto di qualità, preparato negli anni Settanta all'IBM e a Carnegie
+Mellon e diventato la norma nel decennio seguente, non venne da macchine più
+potenti. Venne da due idee. La prima: smettere di ragionare per parole intere
+e ragionare per **fonemi**, i suoni minimi che distinguono una parola
+dall'altra (*pane* e *cane* differiscono per uno solo). Le parole di una
+lingua sono centinaia di migliaia, i fonemi qualche decina, e una parola mai
+sentita prima è comunque fatta di fonemi già sentiti. La seconda: dividere il
+lavoro in due pareri.
 
 `````{tab} Elementare
 
@@ -119,8 +124,10 @@ misura quanto i suoni osservati siano
 compatibili con una data sequenza di parole, e storicamente si scompone ancora
 in due: un **dizionario di pronuncia** traduce $W$ in fonemi, e ogni fonema,
 preso nel contesto del precedente e del successivo (il *trifone*), è un
-*Hidden Markov Model* sinistra-destra di tre stati. Con
-$Q = (q_1, \dots, q_T)$ la sequenza nascosta di stati,
+*Hidden Markov Model* sinistra-destra di tre stati. Gli HMM dei trifoni, messi
+in fila nell'ordine delle parole di $W$, formano un HMM composto; con
+$Q = (q_1, \dots, q_T)$ una sequenza dei suoi stati e $q_0$ il suo stato
+iniziale,
 
 $$
 P(\mathbf{X} \mid W) = \sum_{Q} \prod_{t=1}^{T} P(q_t \mid q_{t-1})\, p(\mathbf{x}_t \mid q_t),
@@ -133,41 +140,51 @@ covarianze $\boldsymbol{\Sigma}_{jm}$ diagonali. Gli stati dei trifoni sono
 decine di migliaia, troppi per stimarli uno per uno: si raggruppano con alberi
 di decisione fonetici e si addestrano con l'EM di Baum-Welch; in decodifica la
 somma su $Q$ diventa il massimo di Viterbi, e il modello di linguaggio entra
-elevato a un peso, $P(W)^{\lambda}$, perché i due fattori sono stimati su scale
-diverse. Il modello di
+elevato a un peso, $P(W)^{\lambda}$ con $\lambda$ di solito fra $5$ e $15$. Il
+peso serve perché il modello acustico moltiplica le densità di centinaia di
+frame come se fossero indipendenti, mentre frame vicini si somigliano molto: i
+suoi punteggi escono fuori scala rispetto a quelli del linguaggio, e $\lambda$
+li riequilibra. Il modello di
 linguaggio $P(W)$ assegna una probabilità a priori alle frasi ($n$-grammi,
 oggi reti neurali) ed è quello che disambigua gli omofoni. Dal 2012 le reti
 neurali profonde sostituiscono le GMM nel modello acustico
-{cite}`hinton2012deep`, tagliando in modo netto il tasso di errore.
+{cite}`hinton2012deep`: su una prova di conversazioni telefoniche
+(Switchboard, RT03S), con le stesse trecento ore circa di addestramento,
+l'errore sulle parole scende dal $27{,}4\%$ del sistema a GMM al $18{,}5\%$,
+un terzo in meno.
 
 `````
 
-I due pareri hanno un nome che torna in tutto il capitolo: il primo, quello
+I due pareri hanno un nome che tornerà spesso: il primo, quello
 che giudica il suono, si chiama **modello
 acustico**; il secondo, quello che giudica se la frase è italiano plausibile,
-si chiama modello di linguaggio. Li ritroveremo anche nell'ultima sezione,
-dove il viaggio si fa al contrario e il modello acustico, invece di ascoltare
-suoni, decide quali produrre.
+si chiama modello di linguaggio. Li ritroveremo in {doc}`La voce sintetica
+</SpeechRecognition/sintesi-vocale>`, dove il viaggio si fa al contrario e il
+modello acustico, invece di ascoltare suoni, decide quali produrre.
 
 Su questa divisione del lavoro il riconoscimento vocale si è retto per
 trent'anni, dagli anni Ottanta al 2010 circa, e chi legge qualsiasi cosa
-scritta in quel periodo trova sempre la stessa sigla poco amichevole,
-**HMM-GMM**. Sono due macchine già incontrate, e qui lavorano insieme.
+scritta in quel periodo trova sempre la stessa sigla, **HMM-GMM**: due modelli
+già incontrati, che qui lavorano in coppia.
 
-La prima descrive il parlato come una fila di stati nascosti, pezzi di fonema
-che si susseguono senza che nessuno li osservi: si osservano soltanto i frame
-acustici che ciascuno stato emette, e da quelli si risale agli stati. Si chiama
-«modello di Markov nascosto», HMM, ed è la stessa macchina di {doc}`POS tagging
-ed entità </NaturalLanguageProcessing/etichettare-sequenze>`, dove gli stati
-nascosti erano le categorie grammaticali e le emissioni le parole.
+Il primo, l'HMM («modello di Markov nascosto»), descrive una parola come una
+fila di stati che non si vedono: ogni fonema ne ha tre, il suo attacco, il suo
+centro e la sua coda, e la voce passa dall'uno all'altro senza che nessuno lo
+osservi. Si osservano soltanto i *frame*, le fettine di suono lunghe pochi
+centesimi di secondo in cui il segnale viene tagliato (ne comincia una ogni
+dieci millesimi), e da quelli si risale agli stati. È la stessa macchina di
+{doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`,
+dove gli stati nascosti erano le categorie grammaticali e quello che si
+osservava erano le parole.
 
-La seconda dice che cosa emette ciascuno stato. Ogni frame è ridotto a un
-vettore di poche decine di misure, e la «a» di mille persone diverse non
-produce mai lo stesso vettore: produce una nuvola di vettori vicini, fitta al
-centro e rada ai bordi. Quella nuvola, e dove la forma è storta la somma di più
-nuvole, la descrivono le misture di gaussiane (GMM) di {doc}`Riduzione e
-clustering </MachineLearning/riduzione-clustering>`, dove servivano a trovare
-gruppi nei dati; qui ogni stato dell'HMM ha la sua.
+Il secondo, la GMM (mistura di gaussiane), dice che aspetto hanno i frame che
+ciascuno stato produce. Ogni frame è ridotto a un vettore di poche decine di
+misure, e la «a» di mille persone diverse non dà mai lo stesso vettore: dà una
+nuvola di vettori vicini, fitta attorno a un centro e sempre più rada man mano
+che ci si allontana. Una gaussiana è la curva che descrive una nuvola così, e
+dove la nuvola è storta se ne sommano parecchie: è lo strumento di
+{doc}`Riduzione e clustering </MachineLearning/riduzione-clustering>`, dove
+serviva a trovare gruppi nei dati, e qui ogni stato dell'HMM ha la sua.
 
 L'ultimo salto è l'approccio **end-to-end** ("da un capo all'altro"): una sola
 rete neurale che impara direttamente il passaggio dall'audio al testo, senza
@@ -176,25 +193,30 @@ scomporre a mano acustica e linguaggio. Tecniche come la CTC
 modelli con attenzione (una parte della rete ascolta tutto, l'altra
 scrive, e mentre scrive torna a guardare il punto dell'audio che le serve:
 quel tornare a guardare è l'attenzione) hanno reso possibile addestrare
-l'intero sistema da coppie (audio, testo); e il trasduttore, nato dalla CTC
-per darle quello che le mancava, scrive mentre ascolta senza dimenticare
-quello che ha già messo giù.
-Le vedremo una per una nella prossima sezione: qui bastano i nomi.
+l'intero sistema da coppie (audio, testo). Il trasduttore è nato dalla CTC per
+darle la cosa che le manca, la memoria di quello che ha già scritto, senza
+toglierle l'andatura frame per frame che permette di trascrivere mentre si
+parla. Le vedremo una per una in
+{doc}`I modelli di riconoscimento </SpeechRecognition/modelli-asr>`: qui
+bastano i nomi.
 
-L'esempio più noto è Whisper di OpenAI (2022): trascrive e traduce
-quasi cento lingue, italiano compreso, con un unico modello, allenato su circa
-680.000 ore di audio multilingue. Per farsi un'idea di quelle ore: sono quasi
-settantotto anni di parlato ininterrotto, giorno e notte, senza una pausa.
-La rete che ci sta dentro è un Transformer, l'architettura del
-{doc}`capitolo sui Transformer </Transformers/overview>`, montata anche lei
-come encoder e decoder.
+L'esempio più noto è Whisper di OpenAI (2022): con un unico modello trascrive
+quasi cento lingue, italiano compreso, e traduce in inglese il parlato delle
+altre. È stato allenato su circa 680.000 ore di audio multilingue: per farsi
+un'idea, sono quasi settantotto anni di parlato ininterrotto, giorno e notte,
+senza una pausa. La rete che ci sta dentro è un Transformer, l'architettura
+del {doc}`capitolo sui Transformer </Transformers/overview>`, montata in due
+metà: un *encoder*, che ascolta l'audio e lo riassume, e un *decoder*, che da
+quel riassunto scrive il testo.
 
 ## La catena di montaggio, passo per passo
 
 Dal microfono al testo il suono passa per alcune tappe, sempre le stesse
-({numref}`fig-asr-pipeline`). Adesso sono finite tutte dentro un'unica rete e
-non si vedono più dall'esterno, ma i nomi sono rimasti quelli e li useremo per
-tutto il capitolo. La catena nel suo insieme, in inglese, è la *pipeline* del
+({numref}`fig-asr-pipeline`). Nei sistemi end-to-end di oggi il modello
+acustico e il modello di linguaggio sono finiti dentro un'unica rete e non si
+vedono più dall'esterno, mentre l'estrazione delle feature resta un calcolo
+fisso, fatto prima che il suono entri nella rete; i nomi delle tappe però sono
+rimasti in uso. La catena nel suo insieme, in inglese, è la *pipeline* del
 riconoscimento vocale.
 
 ```{figure} ../figures/asr-pipeline.svg
@@ -260,8 +282,9 @@ difficile passo (dall'onda alla parola) comincia sempre qui.
 Ed è un passo che sbaglia ancora, ogni giorno, sotto i nostri occhi: i
 sottotitoli automatici che scrivono una parola per un'altra, o che riempiono
 di frasi inventate un pezzo di video in cui nessuno parla, sono la parte
-visibile di limiti precisi, che le prossime sezioni raccontano uno per uno.
+visibile di limiti precisi, che {doc}`I modelli di riconoscimento
+</SpeechRecognition/modelli-asr>` racconta uno per uno.
 
-E il viaggio ha anche un ritorno: l'ultima sezione
-percorre la strada opposta (dal testo all'onda sonora, la sintesi vocale)
-chiudendo il cerchio tra ascoltare e parlare.
+E il viaggio ha anche un ritorno: {doc}`La voce sintetica
+</SpeechRecognition/sintesi-vocale>` percorre la strada opposta, dal testo
+all'onda sonora, e chiude il cerchio tra ascoltare e parlare.

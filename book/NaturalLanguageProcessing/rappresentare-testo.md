@@ -1,18 +1,25 @@
 # Rappresentare il testo: dai token agli embedding
 
-Un calcolatore non sa cosa sia una parola: sa solo manipolare numeri. Perciò,
-prima ancora di costruire un traduttore automatico o un assistente
-conversazionale, dobbiamo rispondere a una domanda che sembra banale e non lo
-è: come si trasforma una frase come *"Il gatto nero salta sul muro"* in
-qualcosa che una rete neurale possa moltiplicare, sommare, confrontare? Tutta
-l'elaborazione del linguaggio naturale (*Natural Language Processing*, NLP) è,
-in fondo, una lunga ricerca di rappresentazioni del testo sempre più
-ricche. Partiamo dal gradino più basso e saliamo.
+Per un calcolatore un testo è già una sequenza di numeri, i punti di codice
+della {doc}`cassetta degli attrezzi
+</NaturalLanguageProcessing/strumenti-classici>`; ma con quei numeri non si fa
+aritmetica sensata, perché che il codice della *g* venga prima di quello della
+*h* non dice niente su *gatto* e *gallo*. Prima di costruire un traduttore
+automatico o un assistente conversazionale serve dunque una
+*rappresentazione* del testo: un modo di trasformare una frase come *"Il gatto
+nero salta sul muro"* in numeri che una rete neurale possa sommare,
+moltiplicare e confrontare, e su cui quei conti abbiano un senso. Gran parte
+della storia del NLP è la ricerca di rappresentazioni sempre più ricche, e il
+percorso va dalla più semplice, le parole contate una per una, fino agli
+embedding.
 
 ## Spezzare il testo: la tokenizzazione
 
 Il primo passo è sempre lo stesso: tagliare il flusso di caratteri in unità
-discrete, i token. Solo dopo potremo assegnare numeri a queste unità.
+discrete, cioè in pezzi separati che si possono contare, i token. Come si
+scelga il taglio è il tema di {doc}`Come si spezza il testo
+</NaturalLanguageProcessing/tokenizzatori>`; qui basta sapere che dopo il
+taglio si potranno assegnare numeri ai pezzi.
 
 `````{tab} Elementare
 
@@ -41,14 +48,14 @@ pezzo per pezzo.)
 
 Alla fine nella scatola convivono pezzi di ogni taglia. Le parole comunissime,
 *il* e *sul*, ci stanno per intero; *tokenizzazione* è rara e non ci sta, quindi
-si scrive come `token` + `izzazione`, due pezzi visti tante volte altrove. E una
-parola mai incontrata, un cognome o una sigla, si scrive lo stesso, al peggio
-lettera per lettera, purché quelle lettere fossero nel testo da cui la scatola
-è stata riempita. Condizione che pare scontata, finché non arriva un alfabeto
-che in quel testo non compariva, il greco o il coreano: al posto della parola
-finisce un segnaposto che non vuol dire niente. La {doc}`sezione oltre
-il BPE </NaturalLanguageProcessing/oltre-il-bpe>` racconta come ci si è
-liberati anche di questo limite, scendendo sotto la lettera.
+si scrive con qualche pezzo più corto, visto tante volte altrove. E una parola
+mai incontrata, un cognome o una sigla, si scrive lo stesso, al peggio lettera
+per lettera, purché quelle lettere fossero nel testo da cui la scatola è stata
+riempita. Condizione che pare scontata, finché non arriva un alfabeto che in
+quel testo non compariva, il greco o il coreano: al posto della parola finisce
+un segnaposto che non vuol dire niente. Come ci si è liberati anche di questo
+limite, scendendo sotto la lettera, lo racconta la {doc}`sezione sui byte
+</NaturalLanguageProcessing/oltre-il-bpe>`.
 
 `````
 
@@ -65,10 +72,12 @@ I sistemi moderni usano perciò tokenizzatori sottoparola (*subword*). Il
 testo {cite}`sennrich2016neural`: parte dai singoli caratteri e
 fonde iterativamente la coppia di simboli più frequente; *WordPiece*
 {cite}`schuster2012japanese` adotta una strategia analoga, ma sceglie la
-coppia con un criterio che premia le coppie sorprendenti invece di quelle
-semplicemente frequenti. In
-entrambi i casi il processo si arresta quando il vocabolario raggiunge una
-taglia fissata (tipicamente $30\,000$–$100\,000$ token). Ogni stringa fatta di
+coppia che fa crescere di più la verosimiglianza del corpus, e nella
+ricostruzione più diffusa questo diventa un criterio che premia le coppie
+sorprendenti invece di quelle semplicemente frequenti. In entrambi i casi il
+processo si arresta quando il vocabolario raggiunge una taglia fissata (da
+circa $30\,000$ token in BERT a qualche centinaio di migliaia nei modelli
+recenti e multilingue). Ogni stringa fatta di
 simboli visti in addestramento resta rappresentabile, anche se la stringa
 intera è nuova; la copertura diventa totale solo scendendo al singolo byte.
 
@@ -93,15 +102,15 @@ città, tutte a zero tranne una, non dice niente di tutto questo, ed è il suo
 pregio.
 ```
 
-Con le parole vale identico. Se *gatto* è 1 e *mercoledì* è 3, un programma
-che vede numeri leggerà lì dentro un ordine e delle distanze, perché è quello
-che i programmi fanno con i numeri: *mercoledì* risulterebbe «il triplo» di
-*gatto*, e sarebbe una relazione che nessuno ha mai voluto affermare. Meglio
-allora una casella per ogni parola, tutte a zero tranne quella giusta: è la
-codifica che si chiama **one-hot**, «uno solo acceso». Lo spreco si vede a
-occhio (con un vocabolario da decine di migliaia di voci servono decine di
-migliaia di caselle per scrivere una parola sola) e lo si accetta lo stesso,
-perché almeno non mente.
+Lo stesso vale per le parole. Con *gatto* = 1 e *mercoledì* = 3, un modello
+che tratta l'indice come una quantità (un modello lineare, una rete neurale)
+ne ricava un ordine e delle distanze che il vocabolario non ha: *mercoledì*
+risulterebbe «il triplo» di *gatto*. La codifica **one-hot**, «uno solo
+acceso», evita il problema assegnando a ogni parola un vettore con una
+componente per ogni voce del vocabolario, uguale a 1 nella posizione della
+parola e a 0 altrove. Costa una componente per voce, cioè decine di migliaia di
+numeri per scrivere una parola sola, ma non introduce relazioni che non
+esistono.
 
 `````{tab} Elementare
 
@@ -135,17 +144,19 @@ $$
 $$
 
 cioè prodotto scalare nullo e distanza identica per *qualsiasi* coppia. La
-geometria non porta alcuna informazione semantica. In più la dimensione
-$|V|$ è dell'ordine di $10^5$–$10^6$: i vettori sono enormi e sparsissimi.
+geometria non porta alcuna informazione semantica. In più, con un vocabolario
+di parole intere, $|V|$ è dell'ordine di $10^5$–$10^6$ (con le sottoparole
+scende a qualche decina di migliaia): i vettori sono enormi e sparsissimi.
 
 `````
 
 ## Contare le parole: bag-of-words e TF-IDF
 
-Per rappresentare un intero documento, e non una sola parola, si conta: quante
-volte compare ciascuna parola del vocabolario, e amen all'ordine in cui
-comparivano. Si chiama **sacchetto di parole** (*bag-of-words*), e il nome dice
-tutto: come rovesciare il testo dentro un sacchetto e scuoterlo.
+Per rappresentare un documento intero, e non una parola sola, si conta quante
+volte compare ciascuna parola del vocabolario e si trascura l'ordine in cui
+comparivano. Il risultato si chiama **sacchetto di parole** (*bag-of-words*):
+un vettore di conteggi, con una componente per ogni voce del vocabolario, che
+del testo conserva quali parole c'erano e quante volte, e nient'altro.
 
 ```{figure} ../figures/bag-of-words-tf-idf.svg
 :name: fig-bag-of-words
@@ -166,9 +177,8 @@ parte.
 
 `````{tab} Elementare
 
-Il documento diventa un conteggio: quante volte compare ciascuna parola. È la
-pulsantiera di prima, con gli interruttori sostituiti da manopole: non più
-«c'è / non c'è», ma «c'è, e tante volte». Resta **sparsa**, che è il modo
+È la pulsantiera di prima, con gli interruttori sostituiti da contatori: non
+più «c'è / non c'è», ma «c'è, e tante volte». Resta **sparsa**, che è il modo
 tecnico di dire che quasi tutte le caselle stanno a zero: un documento usa
 qualche centinaio di parole diverse, e le caselle disponibili sono decine di
 migliaia.
@@ -195,10 +205,10 @@ diviso due fa cinquecento, e il logaritmo di cinquecento è circa 6,2.
 Sopravvive, e pesa.
 
 Il prodotto dei due numeri gonfia dunque le parole rare e informative e sgonfia
-quelle comuni a tutti: stessa pulsantiera, manopole tarate meglio. Una cosa però
-non cambia: le caselle restano mute fra loro, come gli interruttori di prima. Un
-testo che parla di *gatti* e uno che parla di *felini* non hanno una sola
-casella in comune, e per il conteggio non si somigliano per niente.
+quelle comuni a tutti: stessa pulsantiera, contatori pesati meglio. Una cosa
+però non cambia: le caselle restano mute fra loro, come gli interruttori di
+prima. Un testo che parla di *gatti* e uno che parla di *felini* non hanno una
+sola casella in comune, e per il conteggio non si somigliano per niente.
 
 `````
 
@@ -219,8 +229,13 @@ logaritmo è quello naturale (la base cambia solo un fattore di scala comune
 a tutti i termini). Il fattore logaritmico penalizza i termini onnipresenti
 (df alto) fino ad azzerare chi compare ovunque: se $\text{df}(t) = N$ allora
 $\log(N/N) = 0$. Questa è la forma da manuale, e le librerie ne calcolano
-varianti lisciate. Restano due limiti strutturali: i vettori sono ancora sparsi
-e $|V|$-dimensionali, e nessuna relazione lega parole diverse tra loro.
+varianti lisciate; come peso dei termini, il prodotto $\text{tf}\cdot\text{idf}$
+si afferma con i sistemi di recupero di Salton {cite}`salton1988term`. Nei
+motori di ricerca la variante usata oggi è BM25, che limita il contributo di
+una parola ripetuta molte volte e normalizza per la lunghezza del documento
+({doc}`Cercare per rispondere: retrieval e RAG </Transformers/rag>`). Restano
+due limiti strutturali: i vettori sono ancora sparsi e $|V|$-dimensionali, e
+nessuna relazione lega parole diverse tra loro.
 
 `````
 
@@ -255,23 +270,21 @@ raccolta piccola la differenza si vede.
 
 `````{tab} Elementare
 
-La variante serve a due cose. La prima è non trovarsi mai a dividere per zero.
-Nel conto di poco fa si divide il numero dei documenti per quello dei documenti
-che contengono la parola, e se quel secondo numero fosse zero (una parola che
-c'è nel vocabolario ma in nessun testo) la divisione non si potrebbe fare:
-la libreria aggiunge $1$ sopra e sotto e il problema sparisce. Poi, al
-logaritmo già calcolato, aggiunge ancora $1$: è questo secondo regalo a tenere
-in vita le parole che stanno dappertutto, perché con il primo soltanto *il*
-varrebbe ancora zero. La seconda è
-mettere sulla stessa scala documenti di lunghezza diversa, così che un testo
-lungo non risulti più «pesante» solo perché contiene più parole; a conti fatti
-ogni documento viene riportato alla stessa misura complessiva, e a contare sono
-le proporzioni fra le sue parole, non quante ne ha.
+La variante serve a due cose. La prima è non trovarsi mai a dividere per zero,
+cosa che capiterebbe con una parola presente nel vocabolario ma in nessun
+testo: la libreria fa finta di avere un documento in più, che contiene tutte le
+parole, e così il conto della rarità si fa sempre. Poi, a quel conto, aggiunge
+sempre $1$. La seconda è mettere sulla stessa scala documenti di lunghezza
+diversa, così che un testo lungo non risulti più «pesante» solo perché contiene
+più parole; a conti fatti ogni documento viene riportato alla stessa misura
+complessiva, e a contare sono le proporzioni fra le sue parole, non quante ne
+ha.
 
 C'è un effetto collaterale, ed è meglio conoscerlo perché altrimenti i numeri a
-schermo sorprendono. Con la ricetta da manuale una parola presente in *tutti* i
-documenti prendeva zero e spariva; con la variante della libreria le resta
-addosso un peso, e su una raccolta piccola quel peso è tutt'altro che poco.
+schermo sorprendono. Lo produce quell’$1$ aggiunto alla rarità: con la ricetta
+da manuale una parola presente in *tutti* i documenti prendeva zero e spariva,
+con la variante della libreria le resta addosso un peso, e su una raccolta
+piccola quel peso è tutt'altro che poco.
 Nel primo dei due testi dell'esempio *il* esce con $0{,}318$ e *gatto* con
 $0{,}447$:
 l'articolo che sta in tutti e due i testi pesa circa sette decimi della parola
@@ -307,12 +320,20 @@ cresce come $\ln\frac{1+N}{2} + 1$.
 
 ## Vettori densi: i word embedding
 
-Il salto che ha reso comuni questi vettori arriva nel 2013, anche se i primi
-vettori densi di parola sono più vecchi: nel 1990 l'analisi semantica latente
-li ricavava comprimendo la tabella dei conteggi parola per documento, e nel
-2003 il modello di linguaggio neurale di Bengio e colleghi li imparava mentre
-scommetteva sulla parola successiva. L'idea guida è più vecchia ancora, e il
-linguista John Firth nel 1957 la riassunse così: *"You shall know a word by the
+Contare lascia un difetto che nessuna taratura corregge: un testo sui *gatti*
+e uno sui *felini* non hanno una sola casella in comune. Serve una
+rappresentazione in cui parole di significato vicino abbiano numeri vicini, e
+la si ottiene con vettori **densi**, cioè corti (qualche centinaio di numeri)
+e senza zeri, invece che lunghi quanto il vocabolario e quasi tutti a zero. I
+primi vettori di questo tipo sono del 1990: l’*analisi semantica latente*
+{cite}`deerwester1990indexing` li ricavava comprimendo la tabella che conta
+quante volte ogni parola compare in ogni documento (latente perché le
+dimensioni che ne escono non sono parole, ma combinazioni nascoste nei
+conteggi). Nel 2003 il modello di linguaggio neurale di Bengio e colleghi
+{cite}`bengio2003neural` li imparava mentre scommetteva sulla parola
+successiva, e il salto che li ha resi comuni arriva nel 2013. L'idea guida è
+più vecchia ancora, e il linguista John Firth nel 1957 la riassunse così:
+*"You shall know a word by the
 company it keeps"* {cite}`firth1957synopsis`, conoscerai una parola dalla
 compagnia che frequenta. Parole che appaiono in contesti simili hanno
 significati simili. Se lo facciamo dire ai numeri, otteniamo i **word
@@ -336,14 +357,13 @@ parola: gli si fa vedere in quali compagnie compare, milioni di volte, e il
 vettore è il riassunto di quelle compagnie.
 ```
 
-Quella procedura non usa nessun dizionario, nessun elenco di significati,
-nessuna persona che spieghi qualcosa. Serve solo del testo qualsiasi, e questa
-è la ragione del suo successo. Il testo qualsiasi è
-gratis e infinito; un archivio di testi con le spiegazioni scritte a mano da
-esperti (in gergo si dice che è **annotato**) costa mesi di lavoro di persone
-vere ed è sempre piccolo. Il mucchio di testi su cui un programma si addestra
-ha un nome che da qui in poi ricorre di continuo, ed è **corpus** (al plurale,
-alla latina, *corpora*).
+Quella procedura non usa dizionari né spiegazioni scritte da qualcuno: le
+basta testo grezzo, che esiste in quantità enormi, ed è la ragione del suo
+successo. Un archivio di testi corredati a mano da esperti di etichette
+linguistiche (in gergo, **annotato**) costa invece mesi di lavoro, ed è sempre
+piccolo. L'insieme dei testi su cui un programma si addestra si chiama
+**corpus** (al plurale, alla latina, *corpora*), e da qui in poi ricorre di
+continuo.
 
 `````{tab} Elementare
 
@@ -354,8 +374,11 @@ quali parole si accompagnano.
 
 Il risultato è una mappa del significato. Su questa mappa *gatto* e
 *felino* finiscono vicini, *gatto* e *cane* poco più lontani, *gatto* e
-*mercoledì* agli antipodi. La vicinanza geometrica diventa vicinanza di
-senso.
+*mercoledì* lontani, in direzioni che non hanno niente da spartire. La
+vicinanza geometrica diventa vicinanza di senso. Ogni parola, però, ha un punto
+solo: *pesca* il frutto e *pesca* lo sport finiscono nello stesso punto, a metà
+strada fra la frutta e il mare, e separare i due sensi sarà il mestiere di
+modelli che leggono anche la frase intorno.
 
 Quella vicinanza ha un modo standard di misurarsi, ed è quello già visto con
 le frecce dell’{doc}`algebra lineare </Matematica/algebra-lineare>`, dove il
@@ -378,15 +401,17 @@ chiede molto meno: accanto alla vicina vera si pescano a caso cinque o dieci
 parole qualsiasi dal testo, e il modello deve solo separare quella che c'era
 davvero dalle intruse. Una domanda piccola, ripetuta miliardi di volte.
 
-**GloVe**, del 2014, arriva allo stesso risultato per un'altra strada: conta una
-volta per tutte quante volte ogni parola compare vicino a ogni altra, e poi
-cerca, per ogni parola, la fila di numeri che quei conteggi li ricostruisce.
-Due estremi vanno tenuti a bada. Le
-coppie che non si sono mai viste non hanno niente da insegnare, e restano fuori
-dal conto invece di pesare come una somiglianza mancata. Le coppie che
-contengono una parola come *di* si contano a milioni, e da sole coprirebbero la
-voce a tutte le altre: oltre un certo tetto il loro peso smette di crescere, per
-quanto salga il conteggio.
+**GloVe**, del 2014, arriva allo stesso risultato per un'altra strada. Prima
+conta, una volta per tutte, quante volte ogni parola compare vicino a ogni
+altra: una tabella enorme, con *gatto* e *miagola* vicini spesso e *gatto* e
+*trattore* quasi mai. Poi cerca per ogni parola una lista di numeri tale che,
+prese due parole, le loro due liste combinate ridiano quanto spesso le due
+stanno vicine. Non tutte le caselle della tabella contano allo stesso modo.
+Quelle a zero, coppie mai viste, non insegnano niente, e GloVe le salta invece
+di prenderle per una somiglianza mancata. Quelle enormi, le coppie con parole
+come *di*, che stanno vicino a tutto, varrebbero da sole più di tutte le
+altre: per questo il peso di una casella cresce con il suo conteggio solo fino
+a un tetto, cento incontri nel lavoro originale, e da lì resta fermo.
 
 `````
 
@@ -394,7 +419,13 @@ quanto salga il conteggio.
 
 Un embedding è una funzione che associa a ogni token un vettore denso
 $\mathbf{v} \in \mathbb{R}^{d}$ con $d$ piccolo (tipicamente $100$–$300$),
-appreso dai dati. **word2vec** {cite}`mikolov2013efficient` addestra una rete
+appreso dai dati. Quelli di word2vec, GloVe e fastText sono *statici*: un solo
+vettore per ogni tipo di parola, che mescola quindi i sensi di una parola
+polisemica
+(*pesca* il frutto e *pesca* lo sport); gli embedding *contestuali* ne danno
+uno diverso a ogni occorrenza, calcolato dalla frase che la contiene
+{cite}`peters2018deep,devlin2019bert`. **word2vec**
+{cite}`mikolov2013efficient` addestra una rete
 poco profonda a predire il contesto data la parola (*skip-gram*) o viceversa
 (*CBOW*). Nello skip-gram l'obiettivo è massimizzare, su ogni coppia
 parola-vicina $(w, c)$ del corpus, la probabilità
@@ -403,9 +434,10 @@ $p(c \mid w) = \exp(\mathbf{u}_c^\top \mathbf{v}_w) / \sum_{c' \in V}
 $\mathbf{v}$ e $\mathbf{u}$ sono i vettori della parola come centro e come
 contesto. Quella softmax corre però su tutto il vocabolario, e in pratica la si
 sostituisce con il **negative sampling** {cite}`mikolov2013distributed`: per
-ogni coppia vera si pescano $k$ parole da una distribuzione sulle frequenze, e
-non uniforme: Mikolov e colleghi trovano che l'unigramma elevato a $3/4$ batte
-nettamente sia l'uniforme sia l'unigramma puro. Si addestra poi un
+ogni coppia vera si pescano $k$ parole (da 5 a 20 sui corpora piccoli, da 2 a 5
+su quelli grandi) da una distribuzione sulle frequenze, e non uniforme: Mikolov
+e colleghi trovano che l'unigramma elevato a $3/4$ batte nettamente sia
+l'uniforme sia l'unigramma puro. Si addestra poi un
 classificatore binario a distinguere la vicina vera dalle intruse,
 massimizzando
 
@@ -418,8 +450,13 @@ $$
 con $\sigma$ la sigmoide e $c_1, \dots, c_k$ le intruse pescate. Due
 accorgimenti completano la ricetta. Le parole frequentissime si scartano a caso
 prima di formare le coppie, ciascuna occorrenza di $w$ con probabilità
-$1 - \sqrt{t/\hat{p}(w)}$, dove $\hat{p}(w)$ è la frequenza relativa di $w$ e
-$t \approx 10^{-5}$ una soglia. La finestra, poi, ha una larghezza sorteggiata a
+$\max\bigl(0,\, 1 - \sqrt{t/\hat{p}(w)}\bigr)$, dove $\hat{p}(w)$ è la
+frequenza relativa di $w$ e $t \approx 10^{-5}$ una soglia (sotto la soglia non
+si scarta niente). Il codice di riferimento usa una forma un po’ diversa: tiene
+l'occorrenza con probabilità $\min\bigl(1,\, \sqrt{t/\hat{p}(w)} +
+t/\hat{p}(w)\bigr)$, e la soglia predefinita è $t = 10^{-3}$, per cui chi
+riproduce i vettori dal codice non ritrova esattamente le condizioni
+dell'articolo. La finestra, poi, ha una larghezza sorteggiata a
 ogni posizione, così che i vicini stretti contino più dei lontani. Che cosa
 calcoli davvero questo obiettivo lo hanno mostrato Levy e Goldberg
 {cite}`levy2014neural`: se $d$ è abbastanza grande da lasciare liberi tutti i
@@ -465,13 +502,13 @@ struttura semantica.
 
 `````
 
-La procedura di word2vec ha un nome, e va imparato subito perché torna in molti
-capitoli. Nessuno ha preparato gli esercizi su cui word2vec si addestra:
-la parola al centro e le sue vicine stavano già nel testo, e a separarle per
-farne una domanda e una risposta siamo stati noi. Un compito costruito così si
-chiama auto-supervisionato. Sulle immagini l'ha già fatto {doc}`Imparare senza
+Il compito su cui word2vec si addestra non l'ha preparato nessuno: la parola al
+centro e le sue vicine stavano già nel testo, ed è bastato separarle per farne
+una domanda e una risposta. Un compito costruito così si chiama
+*auto-supervisionato* (*self-supervised*): le etichette si ricavano dai dati
+stessi, senza annotazione. Sulle immagini l'ha già fatto {doc}`Imparare senza
 etichette </VisioneArtificiale/senza-etichette>`, coprendo un pezzo di foto e
-chiedendo di indovinarlo; e a raccontarlo per esteso è il {doc}`capitolo
+chiedendo di ricostruirlo, e lo racconta per esteso il {doc}`capitolo
 sull'auto-supervisione </AutoSupervisione/overview>`.
 
 ## Sotto la parola: fastText
@@ -481,7 +518,8 @@ word2vec e GloVe hanno però un punto cieco: assegnano un vettore a ogni parola
 
 Il primo: se una parola nel corpus di addestramento non compare mai, per lei
 non c'è nessun vettore, e il programma resta muto. Il secondo riguarda le
-lingue come la nostra, che declinano e coniugano tutto. *Gatto*, *gatta*,
+lingue come la nostra, in cui quasi ogni parola cambia forma secondo il genere,
+il numero, la persona o il tempo. *Gatto*, *gatta*,
 *gatti*, *gattino* sono quattro parole distinte da imparare quattro volte, e
 ciascuna singolarmente più rara dell'inglese *cat*, che sta al posto di tutte.
 **fastText** {cite}`bojanowski2017enriching` risolve i due guai con una mossa
@@ -498,7 +536,7 @@ pratica si tengono insieme le fette da tre fino a sei lettere, così da prendere
 sia le sillabe sia le desinenze intere.)
 
 Ogni mattoncino ha il proprio vettore, e il vettore di *gatto* è semplicemente
-la somma dei vettori dei suoi mattoncini. Sommare due file di numeri vuol
+la somma dei vettori dei suoi mattoncini. Sommare due liste di numeri vuol
 dire sommarle casella per casella: `(3, 4)` più `(1, 2)` fa `(4, 6)`, e basta.
 Fra i mattoncini di *gatto* c'è anche `<gatto>` per intero, che è un pezzo come
 gli altri e per una parola comune è il più informativo di tutti.
@@ -510,6 +548,13 @@ vista prima manca il mattoncino della parola intera, che nessuno ha avuto
 occasione di imparare, ma le fette da tre, quattro, cinque lettere ci sono
 tutte, e sommando quelle un vettore esce lo stesso. Nessuna parola resta più
 senza rappresentazione.
+
+I mattoncini aiutano dove il significato si legge nei pezzi, come nelle
+desinenze. Dove non si legge, possono anche confondere: *cane* e *canestro*
+condividono `<ca` e `can`, e i loro significati non c'entrano niente l'uno con
+l'altro. Sulle domande di
+significato puro, quelle che non dipendono dalla forma delle parole, fastText
+non fa meglio dei vettori a parola intera, e a volte fa peggio.
 
 `````
 
@@ -526,19 +571,26 @@ $$
 $$
 
 dove $\mathbf{z}_g \in \mathbb{R}^{d}$ è il vettore appreso per l'n-gramma
-$g$. Due conseguenze pratiche: le parole **out-of-vocabulary** restano
-rappresentabili sommando i soli n-grammi, e nelle lingue morfologicamente
-ricche le forme flesse di una stessa radice condividono parametri; Bojanowski
-e colleghi misurano i guadagni maggiori proprio su lingue molto flessive come
-ceco e tedesco {cite}`bojanowski2017enriching`.
+$g$. Per contenere la memoria gli n-grammi non hanno ciascuno una riga
+propria: una funzione di hash (FNV-1a) li manda in $K = 2\cdot 10^{6}$ righe, e
+n-grammi diversi che cadono nella stessa riga condividono il vettore. Due
+conseguenze pratiche: le parole **out-of-vocabulary** restano rappresentabili
+sommando i soli n-grammi, che hanno un vettore anche quando non si sono mai
+visti; e nelle lingue morfologicamente ricche le forme flesse di una stessa
+radice condividono parametri. Il guadagno però non è uniforme. Bojanowski e
+colleghi {cite}`bojanowski2017enriching` lo misurano sulla similarità di
+parole e sulle analogie sintattiche, più marcato su lingue molto flessive come
+ceco e tedesco; sulle analogie semantiche il metodo non aiuta, e per tedesco e
+italiano peggiora, un effetto che gli autori legano alla lunghezza degli
+n-grammi scelti.
 
 `````
 
 ## L'aritmetica del significato: re − uomo + donna ≈ regina
 
-Quando le parole diventano vettori densi, succede qualcosa di sorprendente:
-le relazioni di significato prendono la forma di direzioni nello spazio, e
-si possono sommare e sottrarre come frecce.
+Negli embedding densi alcune relazioni di significato prendono la forma di
+direzioni quasi costanti dello spazio, e si possono comporre sommando e
+sottraendo vettori, come frecce.
 
 ```{figure} ../figures/embedding-analogia.svg
 :name: fig-embedding-analogia
@@ -572,10 +624,14 @@ e quello di "genere", senza che nessuno glieli abbia mai spiegati.
 
 C'è un'avvertenza che quasi nessuno racconta, e che invece è la parte più
 istruttiva. Se il conto lo si fa davvero, e poi si cerca la parola più vicina
-al punto di arrivo, la vincitrice non è *regina*: è *re*. La freccia del genere
-è una spintarella, debole rispetto alla distanza che separa una parola
-dall'altra: sposta il punto quel tanto che basta a portare *regina* al secondo
-posto, non abbastanza da farle superare *re*. Tutti i programmi che fanno
+al punto di arrivo, la vincitrice non è *regina*: è *re*. Il perché si vede
+rileggendo la stessa somma dall'altro verso. Partire da *donna* e
+aggiungere la freccia che va da *uomo* a *re* porta nello stesso punto in cui
+si arriva partendo da *re* e aggiungendo la freccia che va da *uomo* a
+*donna*, quella del genere. E la freccia del genere è una spintarella, debole
+rispetto alla distanza che separa una parola dall'altra: sposta *re* quel
+tanto che basta a portare *regina* al secondo posto, non abbastanza da farle
+superare *re*. Tutti i programmi che fanno
 queste analogie tolgono dalla gara le tre parole della domanda, e solo così
 la risposta che esce è quella famosa. L'analogia geometrica esiste davvero,
 insomma, ma è più tenue di come la si disegna, e il parallelogramma della
@@ -595,8 +651,9 @@ essere *medico*.
 
 `````{tab} Superiore
 
-L'osservazione, resa celebre da Mikolov et al. (2013), è che le analogie sono
-approssimativamente lineari nello spazio degli embedding:
+L'osservazione, resa celebre da Mikolov, Yih e Zweig
+{cite}`mikolov2013linguistic`, è che le analogie sono approssimativamente
+lineari nello spazio degli embedding:
 
 $$
 \mathbf{v}_{\text{re}} - \mathbf{v}_{\text{uomo}} + \mathbf{v}_{\text{donna}}
@@ -605,22 +662,55 @@ $$
 
 Operativamente si calcola il vettore a sinistra e si cerca la parola il cui
 embedding gli è più vicino, misurando la prossimità con la similarità del
-coseno già incontrata in *Algebra lineare*:
+coseno già incontrata in *Algebra lineare*, che per gli embedding
+$\mathbf{v}_i$ e $\mathbf{v}_j$ di due parole è il coseno dell'angolo fra i due
+vettori:
 
 $$
-\cos\theta = \frac{\mathbf{a}^\top \mathbf{b}}
-{\lVert\mathbf{a}\rVert\,\lVert\mathbf{b}\rVert} \in [-1, 1] .
+\cos(\mathbf{v}_i, \mathbf{v}_j) = \frac{\mathbf{v}_i^\top \mathbf{v}_j}
+{\lVert\mathbf{v}_i\rVert\,\lVert\mathbf{v}_j\rVert} \in [-1, 1] .
 $$
 
 La ricerca però si fa escludendo dai candidati le tre parole della domanda,
-e quel vincolo pesa: senza di esso il primo vicino è quasi sempre *re* stesso.
-Su GloVe da $100$ dimensioni addestrato su 6 miliardi di token (i vettori
-distribuiti come `glove-wiki-gigaword-100`, sommati e sottratti come sono,
-senza normalizzarli prima), il coseno con *king* vale $0{,}855$ contro lo $0{,}783$
-di *queen*, e la stessa cosa succede a `man : doctor :: woman : ?` ($0{,}866$
-per *doctor*, $0{,}776$ per *nurse*) e a `good : better :: bad : ?` ($0{,}886$
-per *bad*, $0{,}839$ per *worse*). L'enunciato onesto non è dunque l’$\approx$
-della formula, ma
+una scelta che il lavoro di word2vec dichiara fra parentesi
+{cite}`mikolov2013distributed`, e quel vincolo pesa: senza di esso il primo
+vicino è quasi sempre *re* stesso. Lo si vede su GloVe da $100$ dimensioni
+addestrato su 6 miliardi di token, nei vettori distribuiti come
+`glove-wiki-gigaword-100`, sommati e sottratti come sono, senza normalizzarli
+prima:
+
+```{code-block} python
+:class: pt-lento
+
+# pt-lento: 128 MB di vettori da scaricare la prima volta, e la libreria
+# gensim, che va installata a parte
+import numpy as np
+import gensim.downloader as api
+
+kv = api.load("glove-wiki-gigaword-100")    # 400 000 parole, 100 dimensioni
+
+def coseno(a, b):
+    return float(a @ b / (np.linalg.norm(a) * np.linalg.norm(b)))
+
+for a, b, c, candidati in [("man", "king", "woman", ("king", "queen")),
+                           ("man", "doctor", "woman", ("doctor", "nurse")),
+                           ("good", "better", "bad", ("bad", "worse"))]:
+    v = kv[b] - kv[a] + kv[c]               # b - a + c, senza normalizzare
+    primo = kv.similar_by_vector(v, topn=1)[0][0]   # nessuna esclusione
+    coseni = ", ".join(f"{w} {coseno(v, kv[w]):.3f}" for w in candidati)
+    print(f"{a}:{b} = {c}:?  {coseni}  (primo vicino: {primo})")
+```
+
+```text
+man:king = woman:?  king 0.855, queen 0.783  (primo vicino: king)
+man:doctor = woman:?  doctor 0.866, nurse 0.776  (primo vicino: doctor)
+good:better = bad:?  bad 0.886, worse 0.839  (primo vicino: bad)
+```
+
+Il coseno con *king* vale $0{,}855$ contro lo $0{,}783$ di *queen*, e lo stesso
+succede con *doctor* e *nurse* e con *bad* e *worse*: in tutti e tre i casi il
+primo vicino è la parola da cui si è partiti. L'enunciato onesto non è dunque
+l’$\approx$ della formula, ma
 
 $$
 \arg\max_{w \,\notin\, \{\text{re},\,\text{uomo},\,\text{donna}\}}
@@ -636,39 +726,44 @@ ha discusso a fondo la questione è Nissim, van Noord e van der Goot
 comprese quelle usate come prova di *bias*, dipenda da quella scelta di
 implementazione, mai scritta nelle equazioni.
 
-Non è magia e non è perfetta, quindi, anche al netto dell'esclusione: molte
-analogie falliscono, e questi vettori ereditano i pregiudizi dei testi su
-cui sono addestrati (per esempio associazioni di genere a certi mestieri). Il
-messaggio però resta: il significato, ridotto a geometria, si
-lascia misurare con un prodotto scalare.
+Anche al netto dell'esclusione molte analogie falliscono, e i vettori
+ereditano le associazioni dei testi su cui sono addestrati, fra cui quelle di
+genere con certi mestieri. Quelle associazioni si misurano meglio con test
+diretti, come il WEAT di Caliskan, Bryson e Narayanan
+{cite}`caliskan2017semantics`, che confronta quanto due gruppi di parole
+bersaglio (nomi maschili e femminili, per esempio) stanno vicini a due gruppi
+di attributi (parole della carriera e della famiglia). Quello che resta è più
+modesto della formula celebre: la somiglianza dei contesti d'uso si lascia
+misurare con un prodotto scalare.
 
 `````
 
 ## Dalla parola alla frase: gli embedding di frase
 
-Tutto quello che abbiamo costruito finora dà un vettore per parola. Ma
-quasi tutto ciò che si vuole fare davvero riguarda testi interi: trovare i
-documenti che rispondono a una domanda, accorgersi che due segnalazioni
-arrivate allo sportello sono lo stesso reclamo, raggruppare le recensioni per
-tema, pescare da un archivio i tre paragrafi giusti da mettere sotto gli occhi
-di un chatbot prima che risponda. Serve un vettore per frase, e ottenerlo
-non è altrettanto ovvio.
+Gli embedding visti finora danno un vettore per parola, ma molti compiti
+riguardano testi interi: trovare i documenti che rispondono a una domanda,
+accorgersi che due segnalazioni arrivate allo sportello sono lo stesso
+reclamo, raggruppare le recensioni per tema, pescare da un archivio i tre
+paragrafi giusti da mettere sotto gli occhi di un chatbot prima che risponda.
+Serve un vettore per frase, e ottenerlo non è altrettanto ovvio.
 
-C'è anche una ragione di costo, e da sola decide l'architettura. Dare a un
-modello le due frasi attaccate, perché le legga come un testo solo, dà il
-giudizio migliore ma vale per quella coppia sola: su diecimila frasi le coppie
-sono quasi cinquanta milioni ($10\,000 \times 9\,999$ diviso $2$), e gli autori
-di **Sentence-BERT** {cite}`reimers2019sentence` le stimano in circa
-65 ore su una scheda V100. Riassumere invece una volta sola le diecimila
-frasi costa cinque secondi, e i cinquanta milioni di confronti fra file già
-pronte un centesimo di secondo: è la differenza fra un'idea e un prodotto.
+C'è anche una ragione di costo, e pesa sulla scelta dell'architettura. Un
+modello che legge le due frasi attaccate, come un testo solo (un
+*cross-encoder*), dà il giudizio migliore, ma vale per quella coppia sola: su
+diecimila frasi le coppie sono quasi cinquanta milioni ($10\,000 \times 9\,999$
+diviso $2$), e gli autori di **Sentence-BERT** {cite}`reimers2019sentence` le
+stimano in circa 65 ore su una GPU V100. Calcolare invece un vettore per
+frase, una volta sola, costa circa cinque secondi per tutte le diecimila, e i
+cinquanta milioni di confronti fra vettori già pronti un centesimo di secondo:
+è la differenza fra un'idea e un prodotto.
 
 `````{tab} Elementare
 
 Diecimila moduli di reclamo in uno scatolone, e bisogna trovare i due che
 dicono la stessa cosa.
 
-L'impiegata riassume ogni modulo con una fila di numeri e confronta le file. La
+L'impiegata riassume ogni modulo con una lista di numeri e confronta i
+riassunti. La
 media dei numeri già pronti di ogni parola, come primo tentativo, regge
 sorprendentemente bene, e si rompe in due punti. Mescolate, le parole perdono
 l'ordine, e «il cane morde l'uomo» e «l'uomo morde il cane» diventano lo
@@ -687,7 +782,8 @@ insegnarglielo.
 
 La somiglianza gliela insegna tre moduli per volta: uno di riferimento,
 l’**ancora**, uno che dice la stessa cosa, uno che parla d'altro. Chiede solo
-che l'ancora finisca più vicina al primo che al secondo, e non di un soffio, ma
+che l'ancora finisca più vicina al modulo che dice la stessa cosa che a quello
+che parla d'altro, e non di un soffio, ma
 di uno scarto minimo deciso in partenza, il margine; dove vadano i tre non lo
 dice. Le terne che rispettano già il margine non hanno più niente da insegnare,
 e le mette da parte. Su milioni di terne lo spazio si riordina da sé, e
@@ -738,25 +834,37 @@ coppie portano un'etichetta, una regressione sul coseno dove l'annotazione è un
 punteggio di somiglianza, la terna con il margine dove ci sono le terne. Il
 modello distribuito nasce dalla prima.
 
-Le funzioni obiettivo di questa famiglia, il *metric learning*, sono tre e
-conviene distinguerle.
+Le funzioni obiettivo di questa famiglia, il *metric learning*, si
+distinguono per che cosa confrontano: una coppia di frasi, una terna, oppure
+un'ancora contro tutto il batch.
 
-La **contrastive loss** lavora su coppie: avvicina le simili, allontana le
-dissimili fino a un margine $m$, e oltre quel margine smette di spingere
-(altrimenti spenderebbe capacità a separare cose già separate).
+La **contrastive loss** {cite}`hadsell2006dimensionality` lavora su coppie di
+frasi, con embedding $\mathbf{s}_1$ e $\mathbf{s}_2$ e un'etichetta $y$ che vale
+$1$ se le due frasi sono simili e $0$ se non lo sono:
+
+$$
+\ell = y\,\mathrm{dist}(\mathbf{s}_1, \mathbf{s}_2)^2
++ (1-y)\,\max\big(0,\; m - \mathrm{dist}(\mathbf{s}_1, \mathbf{s}_2)\big)^2 ,
+$$
+
+dove $\mathrm{dist}(\cdot,\cdot)$ è la distanza euclidea fra due embedding e
+$m > 0$ un margine. Avvicina le coppie simili e allontana le dissimili fino al
+margine; oltre il margine smette di spingere, altrimenti spenderebbe capacità a
+separare cose già separate. (Nel lavoro originale la convenzione su $y$ è
+rovesciata, e ciascuno dei due termini ha un fattore $\tfrac{1}{2}$.)
 
 La **triplet loss** lavora su terne $(\mathbf{a}, \mathbf{p}, \mathbf{n})$, gli
 embedding di ancora, positivo e negativo, e chiede una disuguaglianza
 relativa:
 
 $$
-\mathcal{L} = \max\big(0,\; m + \mathrm{dist}(\mathbf{a}, \mathbf{p})
+\ell = \max\big(0,\; m + \mathrm{dist}(\mathbf{a}, \mathbf{p})
 - \mathrm{dist}(\mathbf{a}, \mathbf{n})\big),
 $$
 
-dove $\mathrm{dist}(\cdot,\cdot)$ è una distanza fra due embedding (di solito
-l'euclidea, o $1-\cos$) e $m > 0$ è il margine di poco fa: cioè «il positivo
-deve stare più vicino del negativo, e di almeno $m$». È più robusta della
+dove $\mathrm{dist}$ è di nuovo una distanza fra embedding (l'euclidea, o
+$1-\cos$) e $m > 0$ il margine: cioè «il positivo deve stare più vicino del
+negativo, e di almeno $m$». È più robusta della
 contrastive perché non impone distanze assolute, che sarebbero arbitrarie, ma
 solo un ordinamento.
 
@@ -767,7 +875,7 @@ incontrata per SimCLR in {doc}`Imparare senza etichette
 negativi tutti gli altri elementi del batch:
 
 $$
-\mathcal{L} = -\log \frac{\exp\big(\mathrm{sim}(\mathbf{a}, \mathbf{p})/\tau\big)}
+\ell = -\log \frac{\exp\big(\mathrm{sim}(\mathbf{a}, \mathbf{p})/\tau\big)}
 {\sum_{j=1}^{B} \exp\big(\mathrm{sim}(\mathbf{a}, \mathbf{p}_j)/\tau\big)} ,
 $$
 
@@ -777,42 +885,51 @@ batch di taglia $B$ (il proprio, che sta anche al numeratore, più i $B-1$
 altrui, che fanno da negativi), $\mathrm{sim}$ è la similarità del coseno di
 poco sopra e $\tau > 0$ è la temperatura, che decide quanto il denominatore
 sia dominato dai candidati più vicini. È una cross-entropia su un problema a
-$B$ vie in cui la classe giusta è «il proprio positivo».
+$B$ vie in cui la classe giusta è «il proprio positivo». Minimizzarla ha anche
+un significato preciso: van den Oord, Li e Vinyals
+{cite}`oord2018representation` mostrano che la sua media sul batch,
+$\mathcal{L}$, limita dal basso l'informazione mutua fra ancora e positivo,
+$I(\mathbf{a}; \mathbf{p}) \ge \log B - \mathcal{L}$, e il tetto $\log B$ sale
+con il batch.
 
 È oggi la scelta prevalente, perché un batch da 1024 fornisce 1023 negativi
 gratis a ogni esempio, ed è precisamente la ricetta degli *in-batch negatives*
 che {doc}`Retrieval e RAG </Transformers/rag>`, nel capitolo sui Transformer,
 attribuisce a DPR {cite}`karpukhin2020dense`.
 
-Due avvertenze pratiche che separano un modello che funziona da uno che no.
-La prima è la scelta dei negativi: quelli presi a caso diventano presto
-banali (due testi su argomenti scorrelati sono facilissimi da separare, e la
-loss va a zero senza aver insegnato niente), per cui si passa ai *hard
-negatives*, cercati apposta fra i quasi-simili, tipicamente scavandoli con un
-modello precedente. La seconda è il rischio opposto, il collasso: nulla
-vieta alla rete di mandare tutte le frasi di un argomento esattamente nello
-stesso punto, che azzera la loss e distrugge ogni distinzione fine.
-Temperatura, margine e regolarizzazione servono a governare quel compromesso.
+Due aspetti pratici decidono se il metodo funziona. Il primo è la scelta dei
+negativi: quelli presi a caso diventano presto banali (due testi su argomenti
+scorrelati si separano senza sforzo, e la loss va a zero senza insegnare
+altro), per cui si passa ai *hard negatives*, testi simili all'ancora ma non
+positivi, di solito estratti con un modello precedente. Il secondo è che la
+loss può azzerarsi anche con una soluzione degenere: la rete può mandare tutte
+le frasi di un argomento nello stesso punto, e perdere ogni distinzione fine
+fra frasi dello stesso argomento. Temperatura, margine e regolarizzazione
+controllano quanto la soluzione si avvicini a quell'estremo.
 
-Infine una nota che chiude il cerchio con la sezione su RAG: la similarità del
-coseno misura «si somigliano», non «questo risponde a quella». Una
-domanda e la sua risposta spesso non si somigliano affatto, e infatti si
-addestrano due reti separate, una per le domande e una per i passaggi ($E_q$
-ed $E_p$), che si incontrano solo alla fine, nel prodotto scalare. Ciascuna
-delle due si chiama una *torre*. I positivi diventano coppie domanda-passaggio
-e non coppie di parafrasi. Cambia il compito, cambiano i positivi, cambia lo
-spazio.
+Un'ultima nota anticipa il capitolo sui Transformer, dove il retrieval torna
+per esteso: la similarità del coseno misura «si somigliano», non «questo
+risponde a quella». Una domanda e la sua risposta spesso non si somigliano
+affatto, e infatti il retrieval addestra due reti separate, un encoder $E_q$
+per le domande e uno $E_p$ per i passaggi, che si incontrano solo alla fine,
+nel prodotto scalare. Ciascuna delle due si chiama una *torre*. I positivi
+diventano coppie domanda-passaggio e non coppie di parafrasi. Cambia il
+compito, cambiano i positivi, cambia lo spazio.
 
 `````
 
 Che l'addestramento *riorganizzi lo spazio* si può guardare da vicino con un
-esperimentino, e senza scaricare nessuno dei modelli veri, che pesano gigabyte.
-L'idea: fabbrichiamo centoventotto finte frasi, divise in quattro argomenti da
-trentadue, e diamo a ciascuna una fila di sedici numeri tirati a caso. Uno
-spazio così non sa niente degli argomenti: due frasi dello stesso tema sono
-lontane quanto due di temi diversi, ed è esattamente la situazione di una rete
-a cui la somiglianza non è mai stata insegnata. Poi si applica la regola delle
-terne (ancora, simile, diverso, e l'ordine da rispettare) e si guarda che cosa
+piccolo esperimento, senza scaricare nessuno dei modelli veri, che pesano
+gigabyte. Fabbrichiamo centoventotto finte frasi, divise in quattro argomenti
+da trentadue, e diamo a ciascuna una lista di sessantaquattro numeri, in due
+versioni. Nella prima i numeri sono tirati a caso e basta, e le frasi di uno
+stesso argomento non hanno niente in comune. Nella seconda ogni argomento ha
+una direzione sua, che le sue frasi portano con sé debolmente, sotto un rumore
+più forte: è la situazione di un encoder a cui la somiglianza non è mai stata
+insegnata, in cui l'argomento c'è ma la geometria quasi non lo mostra. Otto
+frasi per argomento restano fuori dall'addestramento e servono a misurare. Poi
+si applica la regola delle terne (ancora, simile, diverso, e l'ordine da
+rispettare), pescandole soltanto fra le frasi viste, e si guarda che cosa
 succede.
 
 ```python
@@ -820,78 +937,107 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-torch.manual_seed(0)
-
-# Uno spazio di partenza che NON separa gli argomenti: quattro argomenti,
-# trentadue "frasi" ciascuno, coordinate casuali. È il caso di un encoder
-# che non è mai stato addestrato alla somiglianza.
-N_ARG, PER_ARG, D = 4, 32, 16
+# Quattro argomenti, trentadue "frasi" ciascuno, sessantaquattro numeri a
+# frase. Otto frasi per argomento restano fuori dall'addestramento: servono
+# a misurare se quello che la rete impara vale anche per frasi mai viste.
+N_ARG, PER_ARG, D = 4, 32, 64
 argomento = torch.arange(N_ARG).repeat_interleave(PER_ARG)
-grezzi = torch.randn(N_ARG * PER_ARG, D)
-indici = [torch.nonzero(argomento == k).flatten() for k in range(N_ARG)]
-
-def coseni(V):
-    """Coseno medio dentro l'argomento e fra argomenti diversi."""
-    V = F.normalize(V, dim=-1)
-    S = V @ V.T
-    stesso = argomento[:, None] == argomento[None, :]
-    stesso.fill_diagonal_(False)
-    return S[stesso].mean().item(), S[~stesso].mean().item()
-
-def sorteggia(n):
-    """Una tripletta per riga: ancora, un simile, un diverso."""
-    a = torch.randint(0, len(grezzi), (n,))
-    ka = argomento[a]
-    p = torch.stack([indici[k][torch.randint(0, PER_ARG, (1,))][0] for k in ka])
-    kn = (ka + torch.randint(1, N_ARG, (n,))) % N_ARG      # un argomento diverso
-    neg = torch.stack([indici[k][torch.randint(0, PER_ARG, (1,))][0] for k in kn])
-    return a, p, neg
-
-# La "torre": UNA sola rete, applicata a tutti e tre gli ingressi.
-# I pesi condivisi sono ciò che rende la rete siamese.
-torre = nn.Sequential(nn.Linear(D, 32), nn.ReLU(), nn.Linear(32, D))
-ott = torch.optim.Adam(torre.parameters(), lr=1e-2)
+tenute = torch.cat([torch.nonzero(argomento == k).flatten()[:8]
+                    for k in range(N_ARG)])
+viste = torch.tensor([i for i in range(len(argomento))
+                      if i not in tenute.tolist()])
+indici = [viste[argomento[viste] == k] for k in range(N_ARG)]
 MARGINE = 0.3
 
-for _ in range(400):
-    a, p, neg = sorteggia(128)
-    A, P, N = (F.normalize(torre(grezzi[i]), dim=-1) for i in (a, p, neg))
-    # l'ancora deve stare più vicina al positivo che al negativo, e non di
-    # poco: almeno di un margine. Chi già rispetta il margine non contribuisce.
-    perdita = F.relu(MARGINE - (A * P).sum(-1) + (A * N).sum(-1)).mean()
-    ott.zero_grad(); perdita.backward(); ott.step()
+def coseni(V, quali):
+    """Coseno medio dentro l'argomento e fra argomenti diversi."""
+    V = F.normalize(V[quali], dim=-1)
+    S = V @ V.T
+    stesso = argomento[quali][:, None] == argomento[quali][None, :]
+    diverso = ~stesso
+    stesso.fill_diagonal_(False)
+    return S[stesso].mean().item(), S[diverso].mean().item()
 
-for etichetta, V in [("prima", grezzi), ("dopo ", torre(grezzi).detach())]:
-    dentro, fuori = coseni(V)
-    print(f"{etichetta}: coseno dentro l'argomento {dentro:+.3f}, "
-          f"fra argomenti diversi {fuori:+.3f}, distacco {dentro - fuori:+.3f}")
+def sorteggia(n):
+    """Una terna per riga, solo fra le frasi viste."""
+    a = viste[torch.randint(0, len(viste), (n,))]
+    ka = argomento[a]
+    kn = (ka + torch.randint(1, N_ARG, (n,))) % N_ARG    # argomento diverso
+    pesca = lambda k: indici[k][torch.randint(0, len(indici[k]), (1,))][0]
+    return (a, torch.stack([pesca(k) for k in ka]),
+            torch.stack([pesca(k) for k in kn]))
+
+def esperimento(segnale):
+    torch.manual_seed(0)
+    # Ogni frase porta la direzione del suo argomento, moltiplicata per
+    # `segnale`, sotto un rumore più forte. Con segnale 0 è puro caso.
+    direzioni = torch.randn(N_ARG, D)
+    grezzi = segnale * direzioni[argomento] + torch.randn(N_ARG * PER_ARG, D)
+    # La "torre": UNA sola rete, applicata a tutti e tre gli ingressi.
+    # I pesi condivisi sono ciò che rende la rete siamese.
+    torre = nn.Sequential(nn.Linear(D, 2 * D), nn.ReLU(), nn.Linear(2 * D, D))
+    ott = torch.optim.Adam(torre.parameters(), lr=1e-2)
+    for _ in range(400):
+        a, p, neg = sorteggia(128)
+        A, P, N = (F.normalize(torre(grezzi[i]), dim=-1) for i in (a, p, neg))
+        # l'ancora deve stare più vicina al positivo che al negativo, e non
+        # di poco: almeno di un margine. Chi già rispetta il margine non conta.
+        perdita = F.relu(MARGINE - (A * P).sum(-1) + (A * N).sum(-1)).mean()
+        ott.zero_grad(); perdita.backward(); ott.step()
+    with torch.no_grad():
+        dopo = torre(grezzi)
+    return [("prima (tenute)", coseni(grezzi, tenute)),
+            ("dopo (viste)", coseni(dopo, viste)),
+            ("dopo (tenute)", coseni(dopo, tenute))]
+
+print(f"{'':38}dentro    fra  distacco")
+for nome, segnale in [("frasi a caso", 0.0), ("argomento sotto rumore", 0.4)]:
+    for riga, (dentro, fra) in esperimento(segnale):
+        d = dentro - fra
+        print(f"{nome:22}  {riga:14}  {dentro:+.2f}  {fra:+.2f}     {d:+.2f}")
+        nome = ""
 ```
 
-Il programma stampa due numeri, prima e dopo: il coseno medio fra due frasi
-dello stesso argomento e quello fra due frasi di argomenti diversi. Se
-lo spazio sa il fatto suo, il primo deve essere molto più alto del secondo, e
-la loro differenza è il distacco.
+```text
+                                      dentro    fra  distacco
+frasi a caso            prima (tenute)  +0.02  +0.01     +0.02
+                        dopo (viste)    +0.87  -0.28     +1.16
+                        dopo (tenute)   +0.02  -0.03     +0.04
+argomento sotto rumore  prima (tenute)  +0.13  +0.01     +0.12
+                        dopo (viste)    +0.91  -0.22     +1.13
+                        dopo (tenute)   +0.72  -0.08     +0.80
+```
 
-All'inizio il distacco è $-0{,}004$, cioè zero: dentro e fuori si somigliano
-allo stesso modo, come dovevamo aspettarci da numeri tirati a caso. Dopo
-quattrocento passi il coseno fra frasi dello stesso argomento è salito a
-$+0{,}876$ e quello fra argomenti diversi è sceso a $-0{,}261$. Nessuno ha
-detto alla rete quali fossero i quattro argomenti né dove metterli: le sono
-state date solo delle terne e un ordine da rispettare, e la geometria si è
-riorganizzata da sé.
+Il programma stampa il coseno medio fra due frasi dello stesso argomento
+(*dentro*), quello fra due frasi di argomenti diversi (*fra*) e la loro
+differenza, il distacco: prima dell'addestramento sulle frasi tenute da parte,
+dopo su tutti e due i gruppi. Se lo spazio sa il fatto suo il distacco è
+grande, e con numeri tirati a caso vale zero.
 
-Conviene guardare anche il rovescio della medaglia. Un coseno di $0{,}876$ fra
-frasi dello stesso argomento è tantissimo: vuol dire che quelle trentadue
-frasi si sono quasi ammucchiate in un punto solo. Va benissimo se il compito è
-separare quattro temi, e malissimo se il compito è distinguere due sfumature
-*dentro* lo stesso tema, perché lì dentro non c'è più spazio. Il rimedio, in
+Con le frasi tirate a caso il distacco parte da zero e, dopo quattrocento
+passi, sulle frasi viste arriva a $1{,}16$, mentre su quelle tenute da parte
+resta a zero ($0{,}04$): la rete ha spostato i punti che conosceva, cioè li ha
+memorizzati, perché fra le frasi di un argomento non c'era niente da imparare.
+Con l'argomento sotto il rumore il distacco delle frasi tenute da parte sale
+invece da $0{,}12$ a $0{,}80$: la rete ha trovato la direzione che distingue
+gli argomenti, e la usa anche su frasi che non ha mai visto. Gli argomenti,
+come tali, alla rete non li ha detti nessuno; le terne però li contengono
+tutti, perché dicono quale frase sta con quale. Quello che si vuole da uno
+spazio bisogna insegnarglielo, e la rete lo impara davvero soltanto se nei
+dati c'è.
+
+Il rovescio della medaglia sta nelle frasi viste, dove in tutti e due i casi
+il coseno dentro l'argomento arriva a $0{,}87$ e a $0{,}91$: quelle frasi si
+sono ammucchiate quasi in un punto solo per argomento. Va bene se il compito è
+separare quattro temi; non va bene se serve distinguere due sfumature *dentro*
+lo stesso tema, perché lì le differenze sono state cancellate. Il rimedio, in
 un modello vero, è scegliere meglio la terza frase di ogni terna, quella che
-deve stare lontana: se la si pesca a caso è quasi sempre di un altro pianeta,
-la regola è già rispettata e la rete non impara niente. Si vanno allora a
-cercare apposta le frasi *quasi* uguali all'ancora e però diverse, che in
-gergo si chiamano **negativi difficili**, e sono quelle che insegnano
-qualcosa. Ecco perché un modello di embedding si sceglie guardando il compito
-che si ha davvero, e non una classifica generica.
+deve stare lontana: pescata a caso è quasi sempre di un argomento lontanissimo,
+la regola è già rispettata e la rete non impara niente. Si cercano allora
+apposta le frasi *quasi* uguali all'ancora e però diverse, che in gergo si
+chiamano **negativi difficili** e sono quelle che insegnano qualcosa. Ecco
+perché un modello di embedding si sceglie guardando il compito che si ha
+davvero, e non una classifica generica.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -909,7 +1055,8 @@ che si ha davvero, e non una classifica generica.
   gonfiando le parole rare e sgonfiando quelle che stanno dappertutto.
 - Gli embedding danno a ogni parola poche centinaia di numeri, imparati
   leggendo montagne di testo: una mappa del significato, in cui la vicinanza si
-  misura con la similarità del coseno, un numero fra $-1$ e $+1$.
+  misura con la similarità del coseno, un numero fra $-1$ e $+1$. Un punto solo
+  per parola, però: i due sensi di *pesca* finiscono nello stesso posto.
 - *Re meno uomo più donna* atterra vicino a *regina*, ma la risposta esce solo
   se dalla ricerca si tolgono le tre parole della domanda: la freccia del
   significato esiste, ed è più debole di come la si disegna.
@@ -920,7 +1067,10 @@ che si ha davvero, e non una classifica generica.
   partenza onesto ma cieco all'ordine; e un BERT preso così com'è non fa
   meglio, perché nessuno gliel'aveva chiesto. Se vuoi che uno spazio abbia una
   certa proprietà, quella proprietà devi addestrarla: una sola rete usata tre
-  volte, e terne di frasi da avvicinare e da allontanare.
+  volte, e terne di frasi da avvicinare e da allontanare. Su frasi nuove
+  funziona solo se nei dati c'era qualcosa da imparare: altrimenti la rete
+  memorizza le frasi che ha visto, e lo si scopre soltanto provandola su frasi
+  tenute da parte.
 - Il coseno dice «si somigliano», non «questo risponde a quella»: chi cerca
   risposte addestra due reti separate, una per le domande e una per i testi.
 ```
@@ -936,7 +1086,8 @@ che si ha davvero, e non una classifica generica.
   nozione di somiglianza tra parole diverse.
 - I word embedding (word2vec, GloVe) sono densi e a bassa dimensione: la
   vicinanza geometrica riflette la vicinanza di significato, misurata con
-  la similarità del coseno.
+  la similarità del coseno. Sono *statici*: un vettore per tipo di parola, con
+  i sensi di una parola polisemica mescolati.
 - L’analogia lineare ($\mathbf{v}_{\text{re}} - \mathbf{v}_{\text{uomo}} +
   \mathbf{v}_{\text{donna}}$) restituisce *regina* solo perché i tre termini di
   ingresso sono esclusi dai candidati: senza quel vincolo, mai scritto nelle
@@ -944,17 +1095,25 @@ che si ha davvero, e non una classifica generica.
 - fastText somma i vettori degli *n-grammi di caratteri*: dà un vettore
   anche alle parole mai viste e sfrutta la morfologia; un aiuto concreto per
   lingue a morfologia ricca, dove Bojanowski e colleghi misurano i guadagni
-  maggiori (ceco e tedesco).
+  maggiori (ceco e tedesco), mentre sulle analogie semantiche non aiuta.
 - Per un vettore di frase la media dei vettori di parola è una baseline
   onesta ma cieca all'ordine; e un BERT preso così com'è dà embedding di frase
   mediocri, perché è stato addestrato ad altro. La similarità va
   addestrata: reti siamesi (un solo encoder a pesi condivisi) e obiettivi
   sulle distanze (contrastive, triplet, in-batch negatives).
 - La scelta dei negativi decide il risultato: quelli casuali diventano
-  presto banali, quelli difficili insegnano; e il rischio opposto è il
-  collasso di tutto un argomento in un punto.
+  presto banali, quelli difficili insegnano. Una loss vicina a zero non basta:
+  la rete può far collassare un argomento in un punto, o memorizzare le frasi
+  viste senza generalizzare, e la seconda cosa si vede soltanto misurando su
+  frasi tenute da parte.
 - Attenzione a cosa si misura: il coseno dice «si somigliano», non «questo
   risponde a quella». È il motivo per cui il retrieval usa due torri,
   domande da una parte e passaggi dall'altra.
 ```
 `````
+
+Fin qui i token sono stati un dato di partenza: che i sistemi moderni spezzino
+il testo in pezzi più piccoli della parola lo si è detto, e resta da vedere
+come si decide dove tagliare. È la domanda di {doc}`Come si spezza il testo
+</NaturalLanguageProcessing/tokenizzatori>`, e la risposta ha conseguenze che
+arrivano fino al costo di ogni richiesta fatta a un modello.

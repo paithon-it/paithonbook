@@ -335,7 +335,11 @@ def _maschera_prosa(testo: str, riempitivo: str = " ") -> str:
         dentro_codice = any(e_codice for _, e_codice in pila)
         fuori.append(riempitivo * len(riga) if dentro_codice else riga)
     t = "\n".join(fuori)
-    for rx in (r"\$\$.*?\$\$", r"\$[^$]*?\$", r"`[^`]*`", r"https?://\S+"):
+    # Il codice in linea prima della matematica: un `$` fra due backtick (il
+    # metacarattere di fine riga di una regex, una variabile di shell) e' testo
+    # di codice, ma se la matematica passa per prima lo appaia con il dollaro
+    # successivo, e tutta la prosa fra i due sparisce dagli assi.
+    for rx in (r"`[^`]*`", r"\$\$.*?\$\$", r"\$[^$]*?\$", r"https?://\S+"):
         t = re.sub(rx, lambda m: re.sub(r"[^\n]", riempitivo, m.group(0)),
                    t, flags=re.S)
     return t
@@ -374,14 +378,16 @@ _RX_SORELLE = re.compile(
     rf"|pignoleria|capriccio)\b(?!{_SP}particolare)")
 
 
-def _senza_citazioni(t: str) -> str:
+def _senza_citazioni(t: str, riempitivo: str = " ") -> str:
     """Il testo con le citazioni messe a spazi, i numeri di riga fermi.
 
     Una negazione dentro «virgolette» e' un riferimento a una frase gia'
     coniata, non una mossa fatta adesso: chi la «ripara» rompe una citazione.
+    Il `riempitivo` pieno serve a chi conta le parole, per la ragione scritta
+    in `frasi_doppie`.
     """
     for rx in (r"«[^»]*»", r'"[^"\n]*"', r"“[^”]*”"):
-        t = re.sub(rx, lambda m: re.sub(r"[^\n]", " ", m.group(0)), t)
+        t = re.sub(rx, lambda m: re.sub(r"[^\n]", riempitivo, m.group(0)), t)
     return t
 
 
@@ -398,6 +404,71 @@ def contrapposizioni(testo: str) -> list[tuple[int, str]]:
     return [(pulito[:pos].count("\n") + 1,
              " ".join(trovati[pos].group(0).split()))
             for pos in sorted(trovati)]
+
+
+# I capoversi che l'asse `doppioni` non legge, per scelta: elenchi puntati,
+# tabelle, titoli, righe di opzione (`:name:`), citazioni e commenti. Il
+# corsivo e il neretto in testa a un capoverso **non** ne fanno parte: `*` e
+# `-` contano solo come segno d'elenco, cioe' seguiti da uno spazio.
+_RX_NON_PROSA = re.compile(r"(?:[-*+]\s|[|#:>%])")
+
+
+def frasi_doppie(testo: str) -> list[tuple[int, str]]:
+    """[(riga, otto parole)] delle frasi scritte due volte in un capoverso.
+
+    Due finestre di otto parole identiche a meno di novanta parole di
+    distanza, dentro lo stesso capoverso di prosa: e' quasi sempre una frase
+    incollata due volte da una riscrittura. Una voce per capoverso.
+
+    Il capoverso si cerca sul testo **mascherato**, e non con un interruttore
+    acceso/spento girato dai capoversi che cominciano con tre backtick. La
+    chiusura di un recinto sta in coda allo stesso capoverso dell'apertura,
+    quindi l'interruttore non torna indietro: dopo il primo blocco di codice
+    la prosa non si legge piu' fino al recinto successivo, ogni `{figure}` lo
+    gira a sua volta, e il codice dopo una riga vuota dentro un blocco si
+    legge come prosa. E' la prima trappola di `_maschera_prosa`, e la pila
+    che la evita sta gia' la'.
+
+    Il riempitivo e' pieno, non uno spazio, perche' la maschera **inventa**:
+    azzerando con gli spazi, «il valore di $x$ cresce…» e «il valore di $y$
+    cresce…» diventano la stessa frase. Con un carattere pieno la finestra
+    che tocca codice, formule o URL resta riconoscibile, e si salta.
+
+    E si salta anche la finestra che tocca una citazione. Due frasi fra
+    virgolette che differiscono per una parola sono quasi sempre un parallelo
+    voluto («il primo barattolo e il secondo, insieme, devono fare due litri»
+    contro «…tre litri», in `Matematica/sistemi-lineari.md`, dove il punto e'
+    proprio che le due promesse si somigliano), e non la firma di una
+    riscrittura. Il prezzo, dichiarato: un doppione tutto dentro le virgolette
+    qui non si vede.
+
+    Sta a livello di modulo per la ragione di `contrapposizioni`: chi lo
+    collauda deve eseguire il rilevatore vero.
+    """
+    maschera = _senza_citazioni(_maschera_prosa(testo, _PIENO), _PIENO)
+    # le righe tutte piene in testa a un capoverso sono la recinzione che lo
+    # apre (una scheda, un riquadro, una figura): a dire che cosa c'e' dentro
+    # e' la prima riga dopo, `:class:` o `- ` o prosa che sia
+    recinto = re.compile(rf"\A(?:[^\S\n]*{re.escape(_PIENO)}+[^\S\n]*\n)+")
+    trovate, inizio, riga = [], 0, 1
+    for m in re.finditer(r"\n[^\S\n]*\n|\Z", maschera):
+        blocco, prima = maschera[inizio:m.start()], riga
+        riga += maschera.count("\n", inizio, m.end())
+        inizio = m.end()
+        if _RX_NON_PROSA.match(recinto.sub("", blocco.lstrip(), count=1)):
+            continue
+        parole, visti = blocco.split(), {}
+        for i in range(len(parole) - 7):
+            chiave = " ".join(parole[i:i + 8]).lower()
+            # una finestra con dentro codice o formule non e' prosa: li'
+            # ripetersi e' normale e non dice niente
+            if any(c in chiave for c in "`=#\\$" + _PIENO):
+                continue
+            if chiave in visti and i - visti[chiave] < 90:
+                trovate.append((prima, chiave))
+                break
+            visti[chiave] = i
+    return trovate
 
 
 # La marcatura di enfasi, contro cui `CONTRIBUTING.md` mette un tetto. `(?!\s)`
@@ -1497,7 +1568,14 @@ def main():
             if not f.endswith(".md"):
                 continue
             prosa = solo_prosa(t)
-            for m in formule.finditer(prosa):
+            # Le formule si cercano a codice in linea spento, per la ragione
+            # scritta in `_maschera_prosa`: un `$` fra due backtick si
+            # appaierebbe con il dollaro dopo, e il pezzo di prosa in mezzo
+            # diventerebbe una formula piena di segni di prosa. Le posizioni
+            # restano quelle di `prosa`, che serve intera ai rimandi qui sotto.
+            formule_prosa = re.sub(
+                r"`[^`]*`", lambda x: re.sub(r"[^\n]", " ", x.group(0)), prosa)
+            for m in formule.finditer(formule_prosa):
                 corpo = testuale.sub(lambda x: " " * len(x.group(0)), m.group(0))
                 for i, ch in enumerate(corpo):
                     if ch in SEGNI:
@@ -1514,7 +1592,7 @@ def main():
             # sempre la stessa: il segno in coda alla riga prima, o l'a capo
             # in un altro punto. Una coppia di `$` che scavalca una riga vuota
             # non e' una formula ma due dollari spaiati, e si salta.
-            for m in formule.finditer(prosa):
+            for m in formule.finditer(formule_prosa):
                 if m.group(0).startswith("$$"):
                     continue
                 if re.search(r"\n[ \t]*\n", m.group(0)):
@@ -1541,36 +1619,15 @@ def main():
                         f"{f}:{n}  {' '.join(etichetta.split())[:60]}")
 
     if "doppioni" in attivi:
-        # Due finestre di otto parole identiche a meno di novanta parole di
-        # distanza, dentro lo stesso capoverso di prosa: e' quasi sempre una
-        # frase incollata due volte da una riscrittura. Il codice e le formule
-        # restano fuori, che li' ripetersi e' normale.
+        # Il rilevatore e le sue ragioni stanno in `frasi_doppie`. Il registro
+        # degli aggiornamenti resta fuori: e' generato, e le sue voci si
+        # ripetono per costruzione.
         for f, t in testi.items():
             if f.endswith("aggiornamenti.md"):
                 continue
-            dentro = False
-            for blocco in re.split(r"\n\s*\n", t):
-                testa = blocco.lstrip()
-                # le recinzioni a 4+ backtick sono le schede `{tab}`, e il
-                # loro contenuto e' prosa: solo quelle a 3 aprono codice
-                if testa.startswith("```") and not testa.startswith("````"):
-                    dentro = not dentro
-                if dentro or testa.startswith((":", "|", "#", "$$", "```",
-                                               "-", "*", ">", "%")):
-                    continue
-                parole = " ".join(blocco.split()).split()
-                visti, gia = {}, False
-                for i in range(len(parole) - 7):
-                    chiave = " ".join(parole[i:i + 8]).lower()
-                    # una finestra con dentro codice o formule non e' prosa:
-                    # li' ripetersi e' normale e non dice niente
-                    if any(c in chiave for c in "`=#\\$"):
-                        continue
-                    if chiave in visti and i - visti[chiave] < 90 and not gia:
-                        problemi["frasi scritte due volte"].append(
-                            f"{f}  ->  «{chiave}…»")
-                        gia = True
-                    visti[chiave] = i
+            for riga, chiave in frasi_doppie(t):
+                problemi["frasi scritte due volte"].append(
+                    f"{f}:{riga}  ->  «{chiave}…»")
 
     if "verso" in attivi:
         # Il difetto piu' insidioso di questo libro non e' un fatto sbagliato:
@@ -1701,6 +1758,7 @@ def main():
               "scheda senza il suo capitolo in PDF",
               "schede contigue, che la build fonde",
               "coppia di schede spezzata da prosa",
+              "scheda non chiusa, un'altra si apre dentro",
               "recinzione con del testo attaccato",
               "schede Elementari molto lunghe (da rileggere)",
               "capitoli oltre il tetto di 10 clip",
@@ -1753,6 +1811,18 @@ def main():
             print(f"   … e altri {len(v) - len(mostra)}")
         if k not in solo_elenco:
             totale += len(v)
+    # E una chiave che manca da `ordine` non deve piu' sparire: la si stampa e
+    # la si conta. Il commento qui sopra racconta i doppioni; la terza volta e'
+    # toccata alle schede non chiuse, rimaste mute dal giorno in cui il
+    # controllo e' nato, mentre una scheda aperta rompeva una pagina del libro.
+    for k, v in sorted(problemi.items()):
+        if k in ordine or not v:
+            continue
+        print(f"\n=== {k} ({len(v)}) [chiave senza posto in `ordine`: "
+              f"aggiungerla alla lista]")
+        for riga in v:
+            print(f"   {riga}")
+        totale += len(v)
 
     print(f"\n{totale} problemi da correggere"
           f" ({len(problemi.get('rimandi in avanti (da leggere)', []))}"

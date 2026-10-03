@@ -121,6 +121,7 @@ PACCHETTI = {
     "torch_geometric": "torch-geometric",
     "gymnasium": "gymnasium",
     "statsmodels": "statsmodels",
+    "pyarrow": "pyarrow",
 }
 
 # Le versioni dichiarate: finiscono in testa a ogni notebook, così chi lo apre

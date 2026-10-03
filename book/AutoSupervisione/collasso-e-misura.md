@@ -3,8 +3,8 @@
 Un modello addestrato in modo supervisionato si controlla in un attimo: gli si
 danno degli esempi che non ha mai visto, si guarda quante volte azzecca, e quel
 numero è la risposta. Un modello auto-supervisionato no. Di ogni dato produce
-soltanto il proprio riassunto interno, e il suo punteggio (quanto bene ha risolto
-il pretesto) non ci dice quello che vogliamo sapere, perché il pretesto lo
+soltanto una rappresentazione, e il suo punteggio (quanto bene ha risolto il
+pretesto) non ci dice quello che vogliamo sapere, perché il pretesto lo
 abbiamo inventato noi e a nessuno interessa.
 
 Restano quindi due domande aperte. La prima: che cosa può andare storto senza
@@ -13,26 +13,35 @@ punteggio.
 
 ## Il collasso non è uno solo
 
-La sezione precedente ha chiamato collasso la risposta vuota, cioè
-descrivere tutto allo stesso identico modo. In quella forma è facile da
-riconoscere: se ne accorgerebbe chiunque guardasse due riassunti. C'è però anche
-una versione più educata dello stesso guasto, già intravista
-con la regola della varietà (la scheda che cambia da foto a foto ma dice otto
-volte la stessa cosa), e passa inosservata proprio perché non è totale.
+Le {doc}`quattro famiglie </AutoSupervisione/famiglie>` hanno chiamato
+collasso la risposta vuota, cioè la stessa rappresentazione per ogni dato. È il
+**collasso completo**, e in quella forma è facile da riconoscere: se ne
+accorgerebbe chiunque guardasse due rappresentazioni. Ne esiste però una
+versione meno visibile, il **collasso dimensionale**, già intravista con la
+regola della varietà: le rappresentazioni cambiano da un dato all'altro, ma
+occupano soltanto poche delle direzioni disponibili, e il punteggio del
+pretesto non se ne accorge.
 
 `````{tab} Elementare
 
-Torniamo alla scheda con le otto caselle.
+Torniamo alla scheda con le otto caselle. Che tutte le fotografie ricevano la
+stessa scheda è il disastro visibile.
 
-Il **collasso completo** è quello che già conosciamo: tutte le fotografie
-ricevono la stessa scheda. Un disastro, ma un disastro visibile.
+Il collasso dimensionale, che si può chiamare anche parziale, è più subdolo. Le
+schede sono diverse fra loro, quindi a prima vista tutto funziona; solo che,
+guardandole tutte insieme, ci si accorge che cambiano in pochi modi soltanto.
+È come avere otto manopole, sei delle quali sono incollate insieme in modo
+che, girandone una, girano tutte e sei. Le manopole che si muovono davvero per
+conto loro sono tre (le due libere e il blocco delle sei incollate), e tre
+sono le **direzioni** in cui la scheda può cambiare: i modi indipendenti di
+cambiarla sono meno degli otto che hai pagato. Il modello non ti sta mentendo,
+ti sta dando meno di quello che sembra.
 
-Il **collasso parziale** è più subdolo. Le schede sono diverse fra loro, quindi
-a prima vista tutto funziona; solo che, guardandole tutte insieme, ci si accorge
-che variano solo lungo due o tre direzioni. È come avere otto manopole di cui sei
-sono incollate insieme: le puoi girare, la scheda cambia, ma i gradi di libertà
-veri sono meno di quelli che hai pagato. Il modello non ti sta mentendo, ti sta
-dando meno di quello che sembra.
+Il guasto si scopre contando, su tante schede insieme, quante manopole si
+muovono davvero per conto loro. Contarne tante è necessario, ma non basta:
+otto manopole libere che girano a caso, come un rumore, sono tutte
+indipendenti e non descrivono niente. E il guasto non risparmia nessuno,
+nemmeno i metodi che giocano con i rivali.
 
 Perché è insidioso: il punteggio del pretesto può essere ottimo lo stesso. Se il
 gioco che gli abbiamo dato si vince con tre direzioni, tre direzioni gli bastano,
@@ -53,28 +62,44 @@ la stessa cosa.
 
 Si distinguono due regimi.
 
-Il **collasso completo** è la soluzione costante,
+Il collasso completo è la soluzione costante,
 $f_\theta(\mathbf{x}) = \mathbf{c}$ per ogni $\mathbf{x}$: la rappresentazione
 non porta alcuna informazione sull'ingresso. È il minimo banale che le quattro
-famiglie della sezione precedente esistono per escludere.
+famiglie esistono per escludere.
 
-Il **collasso dimensionale** è più fine: le rappresentazioni non sono costanti,
-ma occupano un sottospazio di dimensione $r \ll D$ dello spazio $\mathbb{R}^D$
-in cui vivono {cite}`jing2022understanding`. Si diagnostica sullo spettro della
-matrice di covarianza delle rappresentazioni: se gli autovalori decadono
-bruscamente e solo $r$ di essi sono sensibilmente diversi da zero, le direzioni
+Il collasso dimensionale è più fine: le rappresentazioni non sono costanti, ma
+occupano un sottospazio di dimensione $r \ll D$ dello spazio $\mathbb{R}^D$ in
+cui vivono. Il fenomeno, e il nome, si devono a Tianyu Hua e colleghi, che lo
+osservano nei metodi senza negativi accanto al collasso completo
+{cite}`hua2021feature`. Si diagnostica sullo spettro della matrice di
+covarianza delle rappresentazioni: se gli autovalori decadono bruscamente e
+solo $r$ di essi sono sensibilmente diversi da zero, le direzioni
 effettivamente usate sono $r$. Una misura riassuntiva comoda è la **dimensione
 effettiva**, per esempio $\big(\sum_i \lambda_i\big)^2 / \sum_i \lambda_i^2$ con
 $\lambda_i$ gli autovalori, che vale $D$ se lo spettro è piatto e crolla se è
 concentrato. Una variante entropica, il rango effettivo, è diventata uno
 strumento di selezione senza etichette: RankMe calcola
 $\exp\big(-\sum_k p_k \log p_k\big)$ con
-$p_k = \varsigma_k / \sum_l \varsigma_l$, dove $\varsigma_k$ sono i valori
-singolari della matrice delle rappresentazioni, e mostra che il valore segue da
-vicino la prestazione a valle
-{cite}`garrido2023rankme`. Il collasso dimensionale, poi, non risparmia i
-metodi contrastivi: trasformazioni forti e la regolarizzazione implicita della
-discesa del gradiente lo producono anche lì, negativi o no
+$p_k = \varsigma_k / \sum_l \varsigma_l + \varepsilon$, dove $\varsigma_k$ sono
+i valori singolari della matrice delle rappresentazioni e $\varepsilon$ una
+piccola costante, e mostra che, confrontando esecuzioni diverse dello stesso
+metodo a incorporamento congiunto, il valore segue da vicino la prestazione a
+valle, tanto da servire a scegliere gli iperparametri senza etichette
+{cite}`garrido2023rankme`. Gli stessi autori ne dicono i limiti: un rango alto
+è una condizione necessaria e non sufficiente (un rumore casuale ha rango
+pieno e non serve a niente), e il numero va usato solo fra esecuzioni dello
+stesso metodo, perché il rango non è l'unica cosa che decide la prestazione.
+
+I due indici non si confrontano fra loro. Per una $\mathbf{Z}$ centrata gli
+autovalori della covarianza e i valori singolari sono legati da
+$\lambda_k = \varsigma_k^2/(N-1)$: la dimensione effettiva pesa lo spettro dei
+$\lambda_k$, RankMe quello delle loro radici, che è più piatto, e sullo stesso
+spettro il secondo dà sempre un numero almeno pari al primo.
+
+Il collasso dimensionale, poi, non risparmia i metodi contrastivi: Li Jing e
+colleghi mostrano che lo producono anche lì, negativi o no, trasformazioni
+forti lungo alcune direzioni e la regolarizzazione implicita che spinge la
+discesa del gradiente verso soluzioni di rango basso
 {cite}`jing2022understanding`.
 
 Il punto pratico è che la perdita del pretesto non lo vede: un obiettivo
@@ -97,34 +122,38 @@ la varianza e la diagonale. Due tipi di vincolo per due collassi diversi.
 C'è una lettura elegante dei metodi contrastivi che circola molto ed è vera a
 metà. La metà che manca è quella istruttiva.
 
-La lettura è questa. Il punteggio con cui si addestrano quei metodi si chiama
+La lettura è questa. La perdita con cui si addestrano quei metodi si chiama
 **InfoNCE** {cite}`oord2018representation`, e il nome dice già dove vuole
-andare: si sostiene che sia legato all’**informazione mutua** fra le due viste,
-cioè a quanto, sapendo una delle due, si diventa meno incerti sull'altra.
-L'informazione mutua è appunto la differenza fra l'incertezza che si aveva
-prima e quella che resta dopo, e si misura con l'entropia di
-{doc}`Teoria dell'informazione </Matematica/teoria-informazione>`. Minimizzare
-quella perdita, si dice, equivale a massimizzare l'informazione mutua. Se fosse
-tutta la storia, avremmo una spiegazione limpida del perché quei metodi
-funzionano.
+andare: la si lega all’**informazione mutua** fra le due viste, cioè a quanto,
+sapendo una delle due, si diventa meno incerti sull'altra. È la differenza fra
+l'incertezza che si aveva prima e quella che resta dopo, e si misura con
+l'entropia di
+{doc}`Teoria dell'informazione </Matematica/teoria-informazione>`. Rendere
+piccola quella perdita, si dice, equivale a rendere grande l'informazione
+mutua. Se fosse tutta la storia, avremmo una spiegazione limpida del perché
+quei metodi funzionano.
 
 `````{tab} Elementare
 
-Il legame c'è, ma ha un tetto, e il tetto dipende da una cosa che non c'entra
-niente con quanto il modello ha capito: quanti rivali ci sono nel gruppo.
+Il legame fra la perdita e l'informazione mutua c'è, ma ha un tetto, e il
+tetto dipende da una cosa che non c'entra niente con quanto il modello ha
+capito: quanti rivali ci sono nel gruppo.
 
-Il compito è ritrovare il gemello in mezzo a $N$ candidati. Anche riuscendoci
-sempre, quanto abbiamo dimostrato di sapere? Abbiamo dimostrato di saper
-scegliere fra $N$ cose, che è quanto basta per vincere quel gioco e non un
-briciolo di più. Se i candidati sono otto, il massimo che quel gioco può
-certificare è la capacità di distinguere fra otto; se il modello ne sapesse
-mille volte tanto, il gioco non se ne accorgerebbe, perché ha finito le domande
-da fare.
+Il compito è ritrovare il gemello in mezzo a un gruppo di candidati. Anche
+riuscendoci sempre, quanto abbiamo dimostrato di sapere? Abbiamo dimostrato di
+saper scegliere fra quei candidati, che è quanto basta per vincere quel gioco e
+non un briciolo di più. Se i candidati sono otto, il massimo che quel gioco può
+certificare è la capacità di distinguere fra otto, cioè tre domande da sì o no,
+tre bit; se il modello ne sapesse mille volte tanto, il gioco non se ne
+accorgerebbe, perché ha finito le domande da fare.
 
-Con un modello che indovina sempre, cioè al meglio delle sue possibilità, il
-numero certificato cresce col numero dei rivali e si ferma lì, sempre e solo lì.
-Allargare il gruppo alza il tetto e costa: ecco perché in questi metodi i gruppi
-si fanno enormi.
+Con un modello che indovina sempre, cioè al meglio delle sue possibilità,
+quello che il gioco può certificare cresce col numero dei rivali e si ferma lì,
+sempre e solo lì: otto candidati, tre bit; mille, una decina. Allargare il
+gruppo alza il tetto e costa: ecco perché in questi metodi i gruppi si fanno
+enormi. E un tetto della stessa forma lo incontra chiunque voglia dimostrare
+quanto due cose dicono l'una dell'altra guardando un numero limitato di
+esempi, non solo questo gioco: cresce con gli esempi, e cresce piano.
 
 E se il segreto stesse davvero nell'informazione, chi quel gioco non lo gioca
 affatto dovrebbe cavarsela male. Invece se la cava benissimo: far indovinare a
@@ -138,41 +167,70 @@ una regola che chiude la strada alla risposta vuota.
 
 `````{tab} Superiore
 
-La relazione è un limite inferiore: detta $\mathcal{L}_{\text{NCE}}$ la
-perdita calcolata su un gruppo di $N$ candidati, uno solo dei quali è il
-gemello (qui $N$ conta i candidati e non gli esempi del batch, che sotto si
-chiama $B$),
+La perdita è una cross-entropia a $K$ classi in cui la classe giusta è il
+gemello. Con $\mathbf{y}_1$ il gemello di $\mathbf{x}$ e
+$\mathbf{y}_2, \dots, \mathbf{y}_K$ i rivali, estratti indipendentemente dalla
+distribuzione marginale,
 
 $$
-I(\mathbf{x}; \mathbf{y}) \;\ge\; \log N - \mathcal{L}_{\text{NCE}},
+\mathcal{L}_{\text{NCE}} \;=\; -\,\mathbb{E}\left[\log
+\frac{e^{f(\mathbf{x}, \mathbf{y}_1)}}{\sum_{j=1}^{K} e^{f(\mathbf{x}, \mathbf{y}_j)}}
+\right],
 $$
 
-come mostrano van den Oord e colleghi {cite}`oord2018representation`. La
-disuguaglianza è utile ma è saturata da $\log N$: anche con
-$\mathcal{L}_{\text{NCE}} = 0$, cioè con un critico perfetto, la quantità
-certificata non supera $\log N$. Se l'informazione mutua vera è molto maggiore
-(e fra due viste della stessa immagine ad alta risoluzione lo è di parecchio),
-il limite non dice più niente di interessante: è vero e inservibile.
+dove $f$ è il critico, cioè il punteggio di compatibilità fra due viste (nei
+metodi a due viste, la similarità coseno divisa per la temperatura). Qui $K$
+conta i candidati, come nel conto d'apertura del capitolo contava le
+possibilità di una scelta; gli esempi del batch sono $N$, come nelle famiglie.
+La relazione con l'informazione mutua è un limite inferiore, che vale per
+qualunque critico:
+
+$$
+I(\mathbf{x}; \mathbf{y}) \;\ge\; \log K - \mathcal{L}_{\text{NCE}},
+$$
+
+come mostrano van den Oord e colleghi {cite}`oord2018representation`, e in
+forma rigorosa Ben Poole e colleghi {cite}`poole2019variational`. Il critico
+che lo rende più stretto è il rapporto di densità
+$f^*(\mathbf{x}, \mathbf{y}) = \log p(\mathbf{y} \mid \mathbf{x}) / p(\mathbf{y})$,
+a meno di una funzione della sola $\mathbf{x}$, e con quello il limite tende a
+$I$ quando $K$ cresce. La disuguaglianza però è saturata da $\log K$: la
+perdita non è mai negativa, quindi anche con $\mathcal{L}_{\text{NCE}} = 0$ la
+quantità certificata non supera $\log K$. Finché $\log K$ sta sopra $I$ il
+limite stringe; se l'informazione mutua vera è molto maggiore (e fra due viste
+della stessa immagine ad alta risoluzione lo è di parecchio), il limite non
+dice più niente di interessante: è vero e inservibile. E tutto questo presume
+rivali indipendenti, perché con rivali che dipendono fra loro il legame con
+l'informazione mutua può svanire {cite}`tschannen2020mutual`.
 
 Ne seguono due conseguenze, da tenere separate. La prima è tecnica: il numero
-$N$ dei candidati, e con lui il batch da cui si pescano, entra nella
+$K$ dei candidati, e con lui il batch da cui si pescano, entra nella
 *garanzia*, non solo nel costo, ed è per questo che in questi metodi i batch si
 fanno enormi. La seconda è di
 interpretazione, ed è la più importante: la massimizzazione dell'informazione
 mutua non può essere la spiegazione del successo di questi metodi. Due risultati
-lo mostrano direttamente. Michael Tschannen e colleghi
-prendono encoder invertibili, che per costruzione conservano tutta
-l'informazione mutua, e trovano rappresentazioni di qualità molto diversa al
-variare dell'architettura; e stimatori di $I$ più stretti danno
-rappresentazioni peggiori, non migliori {cite}`tschannen2020mutual`. David
-McAllester e Karl Stratos chiudono il lato teorico: nessun limite inferiore
-sull'informazione mutua che valga senza ipotesi sulla distribuzione, e con
-alta confidenza, può superare l'ordine di $\log N$
-{cite}`mcallester2020formal`. La distillazione asimmetrica e la riduzione di
-ridondanza della sezione precedente, che $I$ non la stimano in nessun modo,
-completano il quadro. Quello che i metodi riusciti hanno in comune è una
-invarianza imposta più un meccanismo che vieta la risposta vuota, e non una
-quantità informativa massimizzata.
+lo mostrano direttamente. Michael Tschannen e colleghi prendono encoder
+invertibili, che per costruzione conservano tutta l'informazione mutua, e
+trovano che la qualità delle rappresentazioni cambia lo stesso, durante
+l'addestramento e al variare dell'architettura; e mostrano che limiti più
+stretti, ottenuti con critici di capacità maggiore, possono dare
+rappresentazioni peggiori di limiti più larghi ottenuti con critici semplici
+{cite}`tschannen2020mutual`. David McAllester e Karl Stratos chiudono il lato
+teorico: nessun limite inferiore sull'informazione mutua che valga senza
+ipotesi sulla distribuzione, e con alta confidenza, può superare l'ordine di
+$\log M$ se lo si stima da $M$ campioni {cite}`mcallester2020formal`. Il
+risultato vale per qualunque stimatore, e dice che il tetto $\log K$ è il
+prezzo di certificare informazione a partire da un numero finito di esempi,
+che l'InfoNCE paga come tutti gli altri. La distillazione asimmetrica e la
+riduzione di ridondanza, che $I$ non la stimano in nessun modo, completano il
+quadro. Quello che i metodi riusciti hanno in comune è una invarianza imposta
+più un meccanismo che vieta la risposta vuota, e non una quantità informativa
+massimizzata. Per la perdita contrastiva questa coppia ha anche una forma
+esplicita: al crescere del numero dei rivali l'InfoNCE ottimizza due
+proprietà, l'allineamento delle viste di uno stesso dato e l'uniformità delle
+rappresentazioni normalizzate sulla sfera, e due misure costruite su queste
+proprietà seguono da vicino la prestazione a valle
+{cite}`wang2020understanding`.
 
 `````
 
@@ -187,26 +245,27 @@ torch.manual_seed(0)
 # Domanda: quanta ne puo' certificare la InfoNCE, al meglio delle sue
 # possibilita'?
 
-def infonce_al_meglio(n, d=64):
-    """Loss InfoNCE con un critico PERFETTO fra n candidati, e il limite che segue.
+def infonce_al_meglio(k, d=64):
+    """Loss InfoNCE con un critico PERFETTO fra k candidati, e il suo limite.
 
-    n e' il numero di candidati fra cui il gioco chiede di scegliere, non la
-    dimensione del batch: in NT-Xent un batch di B immagini ne mette 2B-1.
+    k e' il numero di candidati fra cui il gioco chiede di scegliere, non la
+    dimensione del batch: in NT-Xent un batch di N immagini ne mette 2N-1.
     """
-    z = torch.nn.functional.normalize(torch.randn(n, d), dim=1)
+    z = torch.nn.functional.normalize(torch.randn(k, d), dim=1)
     sim = (z @ z.t()) / 0.01           # temperatura bassissima: critico ideale
-    perdita = torch.nn.functional.cross_entropy(sim, torch.arange(n)).item()
-    # I(x; y) >= log N - L   (van den Oord e colleghi), qui in bit
-    return perdita, (math.log(n) - perdita) / math.log(2)
+    perdita = torch.nn.functional.cross_entropy(sim, torch.arange(k)).item()
+    # I(x; y) >= log K - L   (van den Oord e colleghi), qui in bit
+    return perdita, (math.log(k) - perdita) / math.log(2)
 
-print(f"{'candidati':>18s} {'perdita':>10s} {'bit certificati':>18s} {'log2(N)':>10s}")
-for n in (8, 64, 512, 4096):
-    perdita, bit = infonce_al_meglio(n)
-    print(f"{n:>18d} {perdita:>10.4f} {bit:>18.2f} {math.log2(n):>10.2f}")
+print(f"{'candidati':>18s} {'perdita':>10s} "
+      f"{'bit certificati':>18s} {'log2(K)':>10s}")
+for k in (8, 64, 512, 4096):
+    perdita, bit = infonce_al_meglio(k)
+    print(f"{k:>18d} {perdita:>10.4f} {bit:>18.2f} {math.log2(k):>10.2f}")
 ```
 
 ```text
-         candidati    perdita    bit certificati    log2(N)
+         candidati    perdita    bit certificati    log2(K)
                  8     0.0000               3.00       3.00
                 64     0.0000               6.00       6.00
                512     0.0000               9.00       9.00
@@ -215,26 +274,29 @@ for n in (8, 64, 512, 4096):
 
 Le due colonne di destra coincidono riga per riga, ed è tutta la dimostrazione:
 con un giudice che riconosce sempre il gemello la perdita è nulla e il numero
-certificato è esattamente $\log_2 N$, dove $N$ sono i candidati. Prendiamo
+certificato è esattamente $\log_2 K$, dove $K$ sono i candidati. Prendiamo
 SimCLR {cite}`chen2020simple`, che è il metodo contrastivo più noto: un batch da
-$B = 4096$ immagini ne mette in campo $2B$ viste, e i candidati per ciascuna
-sono le altre $2B - 1$, cioè $N = 8191$. Il tetto è allora tredici bit, poco
-più di quanto porti una singola etichetta su mille classi secondo il conto
-d'apertura del capitolo: dieci. Un batch così, che per stare in memoria vuole i
-centoventotto core TPU dichiarati in quel lavoro, certifica tre bit più di una
-parola scritta sotto una foto. Che quei modelli imparino molto di più è fuori
-discussione; quindi non è quel limite a spiegare quello che fanno.
+$N = 4096$ immagini ne mette in campo $2N$ viste, e i candidati per ciascuna
+sono le altre $2N - 1$, cioè $K = 8191$. Il tetto è allora tredici bit (in
+SimCLR i rivali vengono a coppie dalla stessa immagine, quindi non sono
+indipendenti, e $8191$ dà l'ordine di grandezza del tetto più che il suo
+valore esatto). Nel lavoro originale un batch così richiede fino a centoventotto
+core di calcolo specializzati, e garantisce tredici bit contro i dieci di
+un'etichetta su mille classi del conto d'apertura del capitolo. Sono grandezze
+diverse, l'informazione fra due viste e quella di un bersaglio, ma dello stesso
+ordine; e che quei modelli imparino molto di più è fuori discussione. Quindi
+non è quel limite a spiegare quello che fanno.
 
 ## Con che cosa si sostituisce il punteggio
 
-Resta la seconda domanda: come si misura se il riassunto è buono.
+Resta la seconda domanda: come si misura se la rappresentazione è buona.
 
 Lo strumento standard è già costruito in
 {doc}`Imparare a vedere senza etichette </VisioneArtificiale/senza-etichette>`,
 e si chiama sondaggio lineare: si congela l'encoder, gli si affianca un
 classificatore così semplice da non poter aggiungere niente di suo, e si guarda
-se passa l'esame. Se un giudice tanto sprovveduto ci riesce, il merito è del
-riassunto.
+se passa l'esame. Se un giudice tanto sprovveduto ci riesce, il merito è della
+rappresentazione.
 
 Qui interessa il seguito, cioè che cosa quello strumento non vede, perché è
 la parte che si dimentica.
@@ -248,7 +310,9 @@ più contorta, e quell'esame lo boccerebbe lo stesso. È un metro, non un verdet
 Poi c'è un difetto che non riguarda lo strumento ma il modo in cui lo si usa: si
 misura quasi sempre sulla stessa cosa, cioè «che oggetto c'è in questa foto». È
 una domanda sola, e un riassunto può essere bravissimo a rispondere a quella e
-inservibile per le altre.
+inservibile per le altre. E conta come si fa l'esame: da quale punto della rete
+si prende il riassunto, quanti esempi corretti si danno al giudice per
+imparare. Due esami fatti in modo diverso non si confrontano.
 
 Accanto a quell'esame ne stanno due che costano poco e dicono cose diverse fra
 loro. Uno non studia niente: guarda a quali riassunti già visti somiglia quello
@@ -292,6 +356,12 @@ questo scarto è un dato, non un contrattempo: dice che il pretesto ha
 selezionato un tipo di informazione e non un altro. Le sonde possono perfino
 ordinare gli stessi metodi al contrario: il MAE sta sotto i contrastivi con la
 sonda lineare e sopra di loro dopo la rifinitura completa {cite}`he2022masked`.
+E il protocollo della sonda fa parte del risultato: lo strato da cui si leggono
+le rappresentazioni (nei modelli generativi il migliore sta a metà rete, e le
+sonde di iGPT {cite}`chen2020generative` lo cercano strato per strato: prendere
+l'ultimo costa più di due punti su CIFAR-10), la regolarizzazione e le
+trasformazioni usate per addestrare la sonda, quanti esempi etichettati le si
+danno. Un confronto che non li dichiara non si può rifare.
 
 Vale infine la disciplina già enunciata dal capitolo sulla visione: nessuna
 singola misura chiude la questione, e un confronto fra metodi condotto su una
@@ -300,22 +370,23 @@ sola sonda e un solo dataset misura la sonda quanto i metodi.
 `````
 
 Le due domande di apertura hanno quindi la stessa forma di risposta, ed è una
-risposta scomoda: non esiste un numero solo. Il collasso si vede guardando che
-forma prendono, tutti insieme, i riassunti che il modello produce, non il suo
-punteggio; e la qualità di un riassunto si vede solo mettendolo a fare un
-mestiere che non è quello per cui è stato addestrato. Chi cerca in questo
-campo una metrica unica da massimizzare sta cercando una cosa che, per come il
-paradigma è fatto, non può esserci: se avessimo un punteggio che dice tutto,
-avremmo anche il compito vero, e non ci sarebbe stato bisogno di inventarne uno
-finto.
+risposta scomoda: non esiste un punteggio unico. Il collasso si vede dalla
+forma che prendono, tutte insieme, le rappresentazioni di un batch, non dal
+punteggio del pretesto; e la qualità di una rappresentazione si vede solo
+mettendola a fare un mestiere diverso da quello per cui è stata addestrata.
+Misure riassuntive come il rango effettivo aiutano a confrontare esecuzioni
+dello stesso metodo, e nessuna sostituisce la prova su compiti a valle: il
+pretesto è stato inventato proprio perché il compito vero, quando si
+addestra, non lo si ha.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
 - Il collasso ha due forme. Quella completa, tutte le schede uguali, si vede
-  subito. Quella parziale è insidiosa: le schede sono diverse, ma variano
-  solo lungo poche direzioni, come otto manopole di cui sei incollate insieme.
+  subito. Quella parziale, che si chiama dimensionale, è insidiosa: le schede
+  sono diverse, ma variano solo lungo poche direzioni, come otto manopole di
+  cui sei incollate insieme.
   Il punteggio del gioco non se ne accorge, perché se il gioco si vince con tre
   direzioni tre bastano.
 - Contro la seconda forma non basta chiedere che ogni casella si muova: due
@@ -348,25 +419,34 @@ finto.
 ```{admonition} Da ricordare
 :class: important
 - Collasso completo: $f_\theta(\mathbf{x}) = \mathbf{c}$. Collasso
-  dimensionale: le rappresentazioni occupano un sottospazio di dimensione
-  $r \ll D$. Il secondo si diagnostica sullo spettro della covarianza (o con la
-  dimensione effettiva $(\sum_i \lambda_i)^2 / \sum_i \lambda_i^2$) e la
-  perdita del pretesto non lo vede, perché un obiettivo risolvibile in $r$
-  direzioni non ne richiede $D$.
+  dimensionale {cite}`hua2021feature`: le rappresentazioni occupano un
+  sottospazio di dimensione $r \ll D$, e capita anche nei metodi contrastivi
+  {cite}`jing2022understanding`. Il secondo si diagnostica sullo spettro della
+  covarianza (o con la dimensione effettiva
+  $(\sum_i \lambda_i)^2 / \sum_i \lambda_i^2$) e la perdita del pretesto non lo
+  vede, perché un obiettivo risolvibile in $r$ direzioni non ne richiede $D$.
+  RankMe {cite}`garrido2023rankme` è un rango effettivo entropico sui valori
+  singolari: condizione necessaria e non sufficiente, da usare solo fra
+  esecuzioni dello stesso metodo.
 - Sul regime dimensionale mordono i termini che guardano le coppie di
   coordinate, la fuori diagonale della cross-correlazione di Barlow Twins e il
   termine di covarianza di VICReg; il regime costante lo fermano la varianza e
   la diagonale. Una condizione coordinata per coordinata non basta: due
   coordinate identiche superano tutte e due la soglia sulla deviazione standard
   e insieme portano una direzione sola.
-- InfoNCE e informazione mutua:
-  $I(\mathbf{x};\mathbf{y}) \ge \log N - \mathcal{L}_{\text{NCE}}$
-  {cite}`oord2018representation`, quindi il limite è saturato da $\log N$,
-  con $N$ il numero di candidati: in SimCLR un batch da $B = 4096$ immagini dà
-  $N = 2B-1 = 8191$ candidati per vista, cioè $13$ bit con critico perfetto,
-  mentre l'informazione vera fra due viste è molto maggiore. Tredici bit sono
-  appena più dei dieci di un'etichetta su mille classi: la garanzia è
-  debolissima. La dimensione del batch entra nella garanzia, non solo nel costo.
+- InfoNCE e informazione mutua: la perdita è una cross-entropia a $K$ classi
+  con il gemello come classe giusta, e con rivali indipendenti dalla marginale
+  vale $I(\mathbf{x};\mathbf{y}) \ge \log K - \mathcal{L}_{\text{NCE}}$ per
+  ogni critico {cite}`oord2018representation` {cite}`poole2019variational`,
+  quindi il limite è saturato da $\log K$, con $K$ il numero di candidati: in
+  SimCLR un batch da $N = 4096$ immagini dà $K = 2N-1 = 8191$ candidati per
+  vista, cioè circa $13$ bit con critico perfetto (i rivali non sono
+  indipendenti, quindi è un ordine di grandezza), mentre l'informazione vera
+  fra due viste è molto maggiore. Tredici bit sono appena più dei dieci di
+  un'etichetta su mille classi: la garanzia è debolissima. La dimensione del
+  batch entra nella garanzia, non solo nel costo, e nessun limite inferiore
+  senza ipotesi sulla distribuzione stimato da $M$ campioni supera l'ordine di
+  $\log M$ {cite}`mcallester2020formal`.
 - Conseguenza interpretativa: la massimizzazione dell'informazione mutua non
   spiega il successo di questi metodi, visto che distillazione asimmetrica e
   riduzione di ridondanza funzionano senza stimarla. Il denominatore comune è
@@ -375,7 +455,9 @@ finto.
   l'informazione), $k$-NN come sonda senza parametri, spettro della covarianza
   per la geometria, e trasferimento a compiti strutturalmente diversi come
   prova più severa, perché rilevamento e segmentazione chiedono informazione
-  localizzata dove la classificazione premia un riassunto globale.
+  localizzata dove la classificazione premia un riassunto globale. Il
+  protocollo della sonda (strato, regolarizzazione, trasformazioni, esempi
+  etichettati) fa parte del risultato.
 ```
 
 `````

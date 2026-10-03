@@ -5,7 +5,10 @@ tre se la foto è a colori. Prendi la foto di un gatto e spostalo di dieci pixel
 a destra: per te è ancora, banalmente, un gatto; per la tabella, invece, quasi
 nessun numero è rimasto dov'era, e una rete fatta come quelle del {doc}`capitolo
 sulle reti neurali </RetiNeurali/overview>` si ritrova davanti un ingresso
-completamente nuovo.
+completamente nuovo. È il caso della rete con cui il {doc}`capitolo su PyTorch
+</PyTorch/moduli>` riconosceva le cifre scritte a mano: srotolava la griglia di
+28 per 28 pixel in una fila di 784 numeri e la passava a strati densi, e per
+quella fila una cifra spostata di due pixel è un'altra fila.
 
 Questo scarto tra come *noi* vediamo un'immagine e come la vede una rete neurale
 ordinaria è il problema che le **reti convoluzionali** (Convolutional Neural
@@ -13,18 +16,19 @@ Networks, CNN) sono nate per risolvere. L'idea affonda le radici negli stessi
 esperimenti di Hubel e Wiesel sulla corteccia del gatto: prende forma nel
 *Neocognitron* di Fukushima {cite}`fukushima1980neocognitron`, una rete a strati
 che imita proprio quella catena di rivelatori, e arriva a maturazione nella
-LeNet-5 di Yann LeCun e colleghi ai Bell Labs (1998)
-{cite}`lecun1998gradient`, che leggeva le cifre scritte a mano sugli assegni
+LeNet-5 di Yann LeCun e colleghi (1998) {cite}`lecun1998gradient`, il
+riconoscitore di cifre scritte a mano di un sistema che leggeva gli assegni
 bancari.
 
 ## Perché uno strato denso non basta
 
 Il pezzo che abbiamo già è lo strato in cui ogni neurone riceve tutti i numeri
 che escono dallo strato di sotto: con quello erano fatte tutte le reti del
-capitolo sulle reti neurali, e qui lo chiameremo strato **denso**. Sulle
-immagini non funziona, per due ragioni: il numero di pesi da imparare, che
-diventa ingestibile, e il fatto che una rete fatta così tratti la stessa forma
-come due cose diverse a seconda di *dove* si trova nell'immagine.
+capitolo sulle reti neurali, e si chiama strato **denso** (*fully-connected*).
+Sulle immagini funziona male, e tanto peggio quanti più pixel ci sono, per due
+ragioni: il numero di pesi da imparare cresce con i pixel fino a diventare
+ingestibile, e lo strato tratta la stessa forma come due cose diverse a
+seconda di *dove* si trova nell'immagine.
 
 `````{tab} Elementare
 
@@ -57,8 +61,8 @@ Soprattutto, lo strato denso non è **equivariante alla traslazione**: un
 pattern spostato di un vettore $\boldsymbol{\Delta}$ attiva pesi diversi,
 perché l'indice della componente cambia. Le CNN recuperano l'equivarianza
 grazie alla sola condivisione dei pesi: sposti l'input, e l'attivazione si
-sposta con lui. Vale all'interno, e con due riserve che la pagina ritrova più
-avanti: la cornice di zeri rompe l'equivarianza sul bordo, dove il motivo perde
+sposta con lui. Vale all'interno, e con due riserve: la cornice di zeri rompe
+l'equivarianza sul bordo, dove il motivo perde
 i contributi che cadono fuori, e con un passo maggiore di uno sopravvivono solo
 gli spostamenti multipli del passo. L'altro vincolo, la connettività locale, dà
 i pochi parametri e non l'equivarianza: uno strato *locally connected*, che
@@ -75,15 +79,13 @@ incontreremo in {doc}`Architetture storiche <architetture-storiche>`.
 Il cuore della rete è la **convoluzione**: un piccolo filtro (o *kernel*),
 tipicamente $3\times3$, che scivola su tutta l'immagine. In ogni posizione
 sovrappone il filtro alla porzione di immagine sottostante, moltiplica valore
-per valore e somma il tutto in *un* numero. Quel numero misura quanto bene
-quella porzione somiglia al **motivo** che il filtro cerca, cioè al disegno
-ricorrente che lo interessa: un bordo verticale, una macchia di colore, una
-trama.
+per valore e somma il tutto in *un* numero, che è il prodotto scalare fra la
+porzione e il filtro. Quel numero è alto dove la porzione ha la forma del
+**motivo** che il filtro codifica: un bordo verticale, una macchia di colore,
+una trama.
 
 I nove numeri di cui un filtro $3\times3$ è fatto non li scrive nessuno a mano:
-sono pesi come tutti gli altri della rete, e sono esattamente ciò che
-l'addestramento aggiusta. Un filtro, in altre parole, è una domanda che la rete
-impara a formulare da sé.
+sono pesi come tutti gli altri della rete, e li fissa l'addestramento.
 
 ```{figure} ../figures/convoluzione.svg
 :name: fig-convoluzione
@@ -92,8 +94,8 @@ impara a formulare da sé.
 
 Il filtro (o *kernel*) di $3\times3$ copre nove caselle dell'immagine per
 volta: i nove valori vengono moltiplicati ciascuno per il proprio peso e poi
-sommati, e il totale diventa una casella del foglio dei risultati, che si
-chiama *feature map*. Facendo scorrere la finestra si riempie l'intera mappa.
+sommati, e il totale diventa una casella della mappa dei risultati, la
+*feature map*. Facendo scorrere la finestra si riempie l'intera mappa.
 ```
 
 Come mostra {numref}`fig-convoluzione`, il filtro guarda solo una finestra per
@@ -106,7 +108,8 @@ ogni punto guardi i nove quadretti che si affacciano dai buchi, moltiplichi
 ciascuno per il numero scritto sul suo buco e sommi: viene un totale solo, e
 quello scrivi su un foglio nuovo. I nove numeri dello stampino sono la ricetta,
 e sono quelli che la rete impara: all'inizio sono presi a caso e non trovano
-niente, e a forza di esempi diventano un cercatore di bordi o di macchie.
+niente, e a forza di esempi diventano un cercatore di bordi o di macchie. Lo
+stampino, in altre parole, è una domanda che la rete impara a formulare da sé.
 
 Il punto è che lo stampino non cambia mai mentre scorre: la ricetta è la stessa
 in tutti i punti della pagina. Se è brava a trovare un bordo, lo trova ovunque
@@ -149,11 +152,11 @@ uno stride $s$ solo per spostamenti multipli di $s$. La convoluzione in senso
 stretto, $\sum_m\sum_n I(i-m,\,j-n)\,K(m,n)$, differisce dalla
 cross-correlazione solo per il kernel ribaltato, e siccome $K$ si impara la
 differenza non ha conseguenze. Con più canali in ingresso (es. RGB), $F$
-filtri, un bias per filtro e una non linearità $\sigma$ (di solito la ReLU), la
-stessa formula si riscrive con gli indici:
+filtri, un bias per filtro e una funzione di attivazione $g$ (di solito la
+ReLU), la stessa formula si riscrive con gli indici:
 
 $$
-a_{f,i,j} = \sigma\!\left( b_f + \sum_{c}\sum_{m}\sum_{n}
+a_{f,i,j} = g\!\left( b_f + \sum_{c}\sum_{m}\sum_{n}
 K_{f,c,m,n}\; I_{c,\,i+m,\,j+n} \right).
 $$
 
@@ -170,16 +173,13 @@ strato sotto: ogni filtro legge tutte le mappe che arrivano, non una.
 :alt: "Animazione: una finestra 3x3 scorre sulle nove posizioni di un'immagine 5x5 che contiene una barra verticale; a ogni posizione si riempie la cella corrispondente della mappa 3x3, con valori -3 sulla colonna di sinistra, 0 al centro e +3 a destra."
 :width: 90%
 
-La stessa operazione in movimento, con un filtro che cerca bordi verticali.
-Sotto i tre riquadri, la regola scritta in simboli, che dice questo: moltiplica
-i nove valori sotto la finestra per i nove pesi del filtro, e somma tutto. La
-barra è spessa
-un pixel, quindi in ogni posizione finisce sotto una sola colonna del filtro: la
-mappa risponde $-3$ quando cade sotto la colonna destra, $+3$ quando cade sotto
-la sinistra e $0$ quando cade sotto quella centrale, i cui pesi valgono zero.
+La stessa operazione in movimento, con un filtro che cerca bordi verticali e
+un'immagine con una barra verticale spessa un pixel. Sotto i tre riquadri, la
+regola scritta in simboli, che dice questo: moltiplica i nove valori sotto la
+finestra per i nove pesi del filtro, e somma tutto.
 ```
 
-Conviene rifare i conti della {numref}`fig-convoluzione-animata`. Il filtro è
+I conti della {numref}`fig-convoluzione-animata` si rifanno a mano. Il filtro è
 fatto di tre righe uguali, ciascuna con i pesi $1$, $0$, $-1$; la barra vale
 $1$ e lo sfondo $0$. Quando la barra finisce sotto la colonna destra del
 filtro, ogni riga contribuisce $-1$ e le tre righe insieme danno $-3$; quando
@@ -192,13 +192,12 @@ soli.
 
 ## Campi recettivi locali e pesi condivisi
 
-Due principi rendono tutto ciò possibile, e conviene dar loro un nome perché
-tornano dappertutto. Il primo è il **campo recettivo locale**: ogni casella
-della mappa dei risultati (che è poi un neurone come quelli del capitolo sulle
-reti neurali, solo con pochissimi ingressi) guarda una finestra piccola, non
-l'immagine intera. Il secondo è la **condivisione dei pesi**: lo stesso filtro
-si usa in ogni posizione, quindi i pochi numeri che lo compongono vengono
-riutilizzati migliaia di volte.
+Due principi rendono tutto ciò possibile, e tornano dappertutto. Il primo è il
+**campo recettivo locale**: ogni casella della mappa dei risultati (che è poi
+un neurone come quelli del capitolo sulle reti neurali, solo con pochissimi
+ingressi) guarda una finestra piccola, non l'immagine intera. Il secondo è la
+**condivisione dei pesi**: lo stesso filtro si usa in ogni posizione, quindi i
+pochi numeri che lo compongono vengono riutilizzati migliaia di volte.
 
 `````{tab} Elementare
 
@@ -243,7 +242,10 @@ trasportare il risparmio dai parametri ai conti: le moltiplicazioni sono
 $o^2 F k^2 C$ con $o$ il lato della mappa d'uscita, e la risoluzione lì c'è
 eccome. Il crollo di cinque ordini di grandezza è sui pesi; sul calcolo il
 vantaggio è molto più modesto, ed è per questo che le CNN restano care da
-addestrare. È la condivisione dei pesi
+addestrare. Il conto spiega anche il ritmo con cui le reti profonde crescono:
+dimezzare $o$ raddoppiando sia $F$ sia $C$ lo lascia invariato,
+$(o/2)^2\,(2F)\,k^2\,(2C) = o^2 F k^2 C$, e ogni blocco costa quanto il
+precedente. È la condivisione dei pesi
 (*parameter sharing*) che impone l'equivarianza traslazionale come *prior*
 strutturale, riducendo drasticamente
 lo spazio delle ipotesi e quindi il rischio di overfitting.
@@ -252,7 +254,7 @@ lo spazio delle ipotesi e quindi il rischio di overfitting.
 
 L'uscita di un filtro è una feature map: una mappa che segna, punto per
 punto, *dove* nell'immagine è presente il motivo cercato. Uno strato
-convoluzionale, in inglese *layer*, produce una pila di feature map, una per
+convoluzionale produce una pila di feature map, una per
 filtro, e lo strato dopo le riceve come *canali* d'ingresso, nello stesso modo
 in cui il primo riceve i tre colori di una foto. I primi strati imparano motivi
 elementari (bordi, angoli), i più profondi li combinano in parti sempre più
@@ -269,15 +271,15 @@ disegna come un mazzo di griglie, alto quanto le mappe che gli arrivano.
 Lo stesso gesto, a due strati diversi. La finestra si affaccia su tutte le
 mappe che arrivano, nello stesso punto di ognuna, e i prodotti si sommano
 tutti insieme in un numero solo: quindi un filtro è un mazzo di griglie alto
-quanto le mappe, ventisette pesi più il bias al primo strato e trentadue
-griglie allo strato dopo, dove le mappe che arrivano sono quelle uscite dai
-trentadue filtri di sopra.
+quanto le mappe che arrivano, tre al primo strato e trentadue al secondo.
 ```
 
 ## Il pooling: mappe più piccole, e cosa si guadagna
 
-Dopo la convoluzione si applica quasi sempre il **pooling**, che rimpicciolisce
-le feature map riassumendo ogni zona in un numero solo. Il più comune è il
+Nelle architetture classiche, dopo la convoluzione si applica quasi sempre il
+**pooling**, che rimpicciolisce le feature map riassumendo ogni zona in un
+numero solo (molte reti recenti le rimpiccioliscono invece con una
+convoluzione che avanza di due pixel per volta). Il più comune è il
 **max pooling**, che di ogni finestra (di solito $2\times2$) conserva il
 massimo: su un quadratino che contiene $1$, $7$, $3$ e $2$, esce $7$, e gli
 altri tre numeri si perdono. L'altro modo è tenere la media, e la variante che
@@ -299,7 +301,9 @@ si sposta di un pixel e resta dentro lo stesso quadratino, il massimo di quel
 quadratino non cambia, e dopo il pooling la mappa è identica: lo spostamento è
 stato assorbito. Se invece scavalca il confine fra due quadratini, cambia
 eccome. Su una mappa piena di valori diversi uno spostamento di un solo pixel
-altera quasi sempre il risultato.
+altera quasi sempre il risultato. Sfumare un poco la mappa prima di
+riassumerla, così che un valore forte si spanda anche sui vicini, fa assorbire
+una parte degli spostamenti che scavalcano il confine.
 
 È un baratto, non un regalo: si guadagnano leggerezza e un po’ di tolleranza,
 si perde precisione su dove le cose stanno.
@@ -319,15 +323,20 @@ dei layer successivi; e in cambio dell'equivarianza esatta, che con finestre
 prese a passo 2 sopravvive solo per gli spostamenti pari, offre una modesta
 tolleranza alle traslazioni di un pixel. Modesta è la parola giusta: su un
 picco isolato spostato di un pixel la mappa risultante resta identica circa una
-volta su due, su feature map dense di valori diversi praticamente mai. È un
-baratto e non un'aggiunta gratuita.
+volta su due, su feature map dense di valori diversi praticamente mai. La causa
+ha un nome, *aliasing*: sottocampionare senza prima togliere le frequenze alte
+con un filtro passa-basso ignora il teorema del campionamento, e una
+traslazione di un pixel può cambiare l'uscita di molto. Vale per il max
+pooling, per il pooling medio e per la convoluzione a passo due, e filtrare
+prima di sottocampionare restituisce parte della tolleranza
+{cite}`zhang2019making`. È un baratto e non un'aggiunta gratuita.
 
 `````
 
-La misura si fa in dieci righe, e conviene farla perché il risultato è più
-magro di come la tolleranza agli spostamenti viene raccontata di solito. Si
-prende una mappa, la si legge due volte sfalsata di un pixel, e si guarda
-quante volte il pooling restituisce esattamente la stessa cosa.
+La tolleranza agli spostamenti si misura, e il risultato è più magro di come
+viene raccontata di solito. Si prende una mappa, la si legge due volte sfalsata
+di un pixel, e si conta quante volte il pooling restituisce esattamente la
+stessa cosa.
 
 ```python
 import torch
@@ -379,19 +388,21 @@ secondo strato veda qualcosa che il primo non poteva produrre da solo.
 
 Due manopole governano poi lo scorrimento del filtro: lo **stride**, di quanti
 pixel salta la finestra a ogni passo, e il **padding**, la cornice di zeri
-aggiunta ai bordi per non perdere i pixel di frontiera.
+aggiunta ai bordi per non perdere i pixel di frontiera. Insieme alla larghezza
+della finestra, e alla dilatazione quando c'è, decidono quanto viene grande la
+mappa che esce.
 
 `````{tab} Elementare
 
-Quanto viene grande la mappa che esce? Se la finestra avanza di un
-pixel per volta (stride 1) e all'immagine si aggiunge attorno una cornice
-spessa uno (padding 1), un filtro $3\times3$ restituisce una mappa grande
-esattamente quanto l'immagine di partenza: da $28\times28$ pixel escono
-$28\times28$ risultati. Senza quella cornice ne uscirebbero $26\times26$, e il
-conto si fa a mente: la finestra è larga 3, può cominciare dal primo pixel e
-deve finire entro il ventottesimo, quindi le posizioni buone sono
-$28 - 3 + 1 = 26$, una in meno per lato. Se invece si tiene la cornice e si
-porta il passo a 2, la finestra salta una posizione ogni volta e la mappa esce
+Quanto viene grande la mappa che esce? Se la finestra avanza di un pixel per
+volta (stride 1) e all'immagine si aggiunge attorno una cornice spessa uno
+(padding 1), un filtro $3\times3$ restituisce una mappa grande esattamente
+quanto l'immagine di partenza: da $28\times28$ pixel escono $28\times28$
+risultati. Senza quella cornice ne uscirebbero $26\times26$, e il conto si fa a
+mente: la finestra è larga 3, può cominciare dal primo pixel e deve finire
+entro il ventottesimo, quindi le posizioni buone sono $28 - 3 + 1 = 26$, una in
+meno su ciascun lato, due in tutto. Se invece si tiene la cornice e si porta il
+passo a 2, la finestra salta una posizione ogni volta e la mappa esce
 dimezzata, $14\times14$.
 
 Col passo a 2 il conto non sempre torna in pieno, e allora tocca scegliere. Su
@@ -494,14 +505,20 @@ Linear     -> (4, 10)
 Nota il ritmo ricorrente: le mappe si restringono (28 → 14 → 7), mentre il
 numero di filtri cresce (32 → 64). È uno scambio: la rete rinuncia a sapere
 *dove* le cose stanno con precisione, e in cambio si porta dietro più tipi
-diversi di cose trovate, finché le poche rimaste bastano allo strato denso per
-decidere.
+diversi di cose trovate, finché le poche posizioni rimaste bastano allo strato
+denso per decidere. E ha anche una ragione di costo. Le moltiplicazioni di uno
+strato crescono con l'area della mappa che esce, con il numero dei filtri e con
+quello dei canali che arrivano: nelle reti più profonde, dove a ogni
+dimezzamento del lato raddoppiano sia i filtri sia i canali, l'area si divide
+per quattro e il resto si moltiplica per quattro, e ogni blocco costa quanto il
+precedente.
 
 Un dettaglio tutto di PyTorch: `nn.Flatten()` srotola la pila di mappe in
 un'unica fila di numeri, e lo strato denso finale, che in PyTorch si chiama
 `nn.Linear`, vuole sapere esattamente quanti ne riceve (qui
 $64 \cdot 7 \cdot 7 = 3136$, la penultima riga dell'uscita). Quel conto resta
-a chi progetta la rete, non alla libreria.
+a chi progetta la rete, a meno di usare `nn.LazyLinear`, che ricava il numero
+degli ingressi dalla prima chiamata.
 
 ## Lo stesso conto con meno moltiplicazioni
 
@@ -540,21 +557,23 @@ miscele li sommano e li sottraggono prima di moltiplicare, e così bastano
 quattro moltiplicazioni in tutto, una per quadretto della striscia.
 
 Contate tutte, però, le operazioni sono aumentate: prima sei moltiplicazioni e
-quattro somme, adesso quattro e otto. Il guadagno viene in una rete vera, dove a
-ripetersi sono le moltiplicazioni (che nei chip costano più delle somme). Le
-miscele di ogni stampino, divisioni comprese, si fanno una volta sola, perché lo
-stampino non cambia mentre scorre; quelle di un pezzo d'immagine servono a tutti
-gli stampini che ci passano sopra, uno per ogni foglio che esce. E uno stampino
-del secondo strato legge insieme tutti i fogli che entrano, i 32 usciti dallo
-strato prima: le sue quattro moltiplicazioni si fanno su ogni foglio, i prodotti
-che stanno allo stesso posto si sommano fra un foglio e l'altro, e la
-ricomposizione, fatta di sole somme e differenze, si fa una volta sola sul
-totale invece che trentadue volte. Restano da pagare quasi soltanto le
-moltiplicazioni. Sull'immagine il gioco si fa lungo le righe e lungo le colonne:
-un pezzo di quattro quadretti per quattro dà i quattro risultati di un
-quadratino di due per due, e invece di nove moltiplicazioni per ciascuno dei
-quattro, trentasei in tutto, ne bastano sedici, di nuovo una per quadretto del
-pezzo; con pezzi più grandi il risparmio cresce ancora.
+quattro somme, adesso quattro e otto. Il guadagno arriva in una rete vera, dove
+le miscele si preparano una volta e servono molte volte. Quelle di uno stampino
+si fanno una volta sola, divisioni comprese, perché lo stampino non cambia
+mentre scorre. Quelle di un pezzo d'immagine servono a tutti gli stampini che
+ci passano sopra, uno per ogni foglio che esce. E l'ultimo passo, la
+ricomposizione che dai quattro prodotti tira fuori 14 e 20, si può rimandare:
+uno stampino del secondo strato legge insieme i 32 fogli usciti dallo strato
+prima, e invece di ricomporre 32 volte si sommano prima i prodotti, foglio per
+foglio e posto per posto, e si ricompone una volta sola il totale. Alla fine
+restano da pagare quasi soltanto le moltiplicazioni, che nei chip costano più
+delle somme.
+
+Sull'immagine il gioco si fa lungo le righe e lungo le colonne: un pezzo di
+quattro quadretti per quattro dà i quattro risultati di un quadratino di due
+per due, e invece di nove moltiplicazioni per ciascuno dei quattro, trentasei
+in tutto, ne bastano sedici, di nuovo una per quadretto del pezzo; con pezzi
+più grandi il risparmio cresce ancora.
 
 Il prezzo è la precisione. Un calcolatore tiene di ogni numero un numero fisso
 di cifre e arrotonda il resto. Con le nostre metà i conti tornano esatti, ma le
@@ -662,22 +681,24 @@ di sole somme e differenze, e le moltiplicazioni sono quattro; la
 ricomposizione dà $14$ e $20$, come il conto diretto con sei moltiplicazioni.
 ```
 
-Il blocco verifica i conti della striscia, poi convolve un'immagine di $64$
-canali con un filtro $3\times3$ in due modi diretti, che differiscono solo per
-l'ordine delle somme, e con $F(2\times2, 3\times3)$ e $F(4\times4, 3\times3)$,
-cioè a pezzi, o *tessere*, di quattro e di sei valori per lato
-($F(2\times2, 3\times3)$ si legge: uscite a quadratini di due per due, filtro di
-tre per tre). Di ciascuno misura l'errore relativo (lo scarto più grande diviso
-per il valore più grande) facendo tutti i conti, dati, miscele (le
-*trasformazioni*, nel gergo) e somme,
-prima a 32 e poi a 16 bit (`float32` e `float16`, cioè con circa sette e circa
-tre cifre significative), contro lo stesso conto a 64 bit preso come
-riferimento. L'ordine delle somme conta, perché in virgola mobile l'addizione
-{doc}`non è associativa </Matematica/analisi-numerica>`: a 16 bit, oltre $2048$
-i numeri si susseguono di due in due, quindi $2048 + 1 + 1$ fatto da sinistra
-resta $2048$ ($2049$ non si può scrivere, e l'arrotondamento lo riporta a
-$2048$), mentre $1 + 1 + 2048$ fa $2050$. Per questo il blocco somma in un
-ordine fissato, un'operazione elemento per elemento alla volta, e gli
+Il blocco rifà prima i conti della striscia. Poi applica un filtro $3\times3$
+a un'immagine di $64$ canali in quattro modi: due diretti, che differiscono
+solo per l'ordine in cui sommano i prodotti, e due alla Winograd, a pezzi (le
+*tessere*) di quattro e di sei valori per lato. Il primo dei due si scrive
+$F(2\times2, 3\times3)$, che si legge «uscite a quadratini di due per due,
+filtro di tre per tre», il secondo $F(4\times4, 3\times3)$. Di ciascun modo
+misura l'errore: tutti i conti, dati, *trasformazioni* (le miscele della
+figura) e somme, si fanno prima con numeri a 32 bit e poi a 16 (`float32` e
+`float16`, cioè con circa sette e circa tre cifre significative), e il
+risultato si confronta con lo stesso conto fatto a 64 bit. L'errore è relativo:
+lo scarto più grande diviso per il valore più grande.
+
+L'ordine delle somme conta, perché in virgola mobile l'addizione
+{doc}`non è associativa </Matematica/analisi-numerica>`. A 16 bit, oltre
+$2048$ i numeri si susseguono di due in due, quindi $2048 + 1 + 1$ fatto da
+sinistra resta $2048$ ($2049$ non si può scrivere, e l'arrotondamento lo
+riporta a $2048$), mentre $1 + 1 + 2048$ fa $2050$. Per questo il blocco somma
+in un ordine fissato, un'operazione elemento per elemento alla volta, e gli
 arrotondamenti sono gli stessi su qualunque processore.
 
 ```python
@@ -779,22 +800,25 @@ Nella tabella `6.4e-07` si legge $6{,}4\cdot10^{-7}$, cioè $6{,}4$ diviso dieci
 milioni, e `2.9e-02` è quasi il $3\,\%$. Le moltiplicazioni per casella scendono
 da $9$ a $4$ e a $2{,}25$, e l'errore segue la taglia della tessera: in
 `float32` come in `float16`, $F(4\times4, 3\times3)$ sbaglia circa dieci volte
-più di $F(2\times2, 3\times3)$. La convoluzione diretta che somma tutti i $576$
-prodotti ($64$ canali per $9$ pesi) in una catena sola sbaglia più di
-$F(2\times2, 3\times3)$, come nelle misure di Lavin e Gray in `float32`;
-sommando prima i nove prodotti di ogni canale e poi i $64$ canali, la stessa
-convoluzione diretta torna la più precisa della tabella, di poco davanti a
-$F(2\times2, 3\times3)$. Fra le due dirette cambia solo l'ordine: per sommare
-$576$ numeri servono $575$ somme in tutti e due i casi, ma nella catena unica il
-primo prodotto le attraversa tutte, sommando per canale al più $8 + 63 = 71$, e
-ogni somma aggiunge il suo arrotondamento. È la stessa ragione per cui la
-{doc}`precisione mista </GPU/gemm-e-tensor-core>` tiene gli ingressi a 16 bit e
-l'accumulo in `float32`. Il prezzo di Winograd, quindi, dipende da dove si
-arrotonda. Se a 16 bit sono anche le miscele, come nel blocco, le tessere grandi
-sbagliano di più; Lavin e Gray, con i soli dati a 16 bit e i conti in `float32`,
-trovano invece tutti gli algoritmi alla pari, perché lì a dominare è
-l'arrotondamento dei dati, e le trasformazioni non lo peggiorano
-{cite}`lavin2016fast`.
+più di $F(2\times2, 3\times3)$.
+
+Le due dirette, invece, dicono una cosa sull'ordine delle somme. Quella che
+somma tutti i $576$ prodotti ($64$ canali per $9$ pesi) in una catena sola
+sbaglia più di $F(2\times2, 3\times3)$, come nelle misure di Lavin e Gray in
+`float32`; sommando prima i nove prodotti di ogni canale e poi i $64$ canali,
+la stessa convoluzione diretta torna la più precisa della tabella, di poco
+davanti a $F(2\times2, 3\times3)$. Le somme sono $575$ in tutti e due i casi,
+ma nella catena unica il primo prodotto le attraversa tutte, mentre sommando
+per canale ne attraversa al più $8 + 63 = 71$, e ogni somma aggiunge il suo
+arrotondamento. È la stessa ragione per cui la {doc}`precisione mista
+</GPU/gemm-e-tensor-core>` tiene gli ingressi a 16 bit e l’*accumulo*, cioè il
+totale che raccoglie i prodotti uno dopo l'altro, a 32 bit.
+
+Il prezzo di Winograd, quindi, dipende da dove si arrotonda. Se a 16 bit sono
+anche le trasformazioni, come nel blocco, le tessere grandi sbagliano di più;
+Lavin e Gray, con i soli dati a 16 bit e i conti a 32 bit, trovano invece tutti
+gli algoritmi alla pari, perché lì a dominare è l'arrotondamento dei dati, e
+le trasformazioni non lo peggiorano {cite}`lavin2016fast`.
 
 ## Lo stesso conto con meno spostamenti
 
@@ -805,10 +829,12 @@ moltiplicarli, come si è visto per gli
 tiene fermo un peso o un totale, e per un prodotto fra matrici basta. Una
 convoluzione offre più riuso di così: lo stesso peso serve in tutte le posizioni
 dell'immagine, lo stesso pixel sta sotto più posizioni del filtro, e la stessa
-casella d'uscita raccoglie prodotti da più righe del filtro e da più canali. Il
-flusso **row stationary** di Eyeriss, l'acceleratore di Chen, Emer e Sze
-{cite}`chen2016eyeriss`, li sfrutta insieme tenendo ferma in ogni elemento una
-riga del filtro, come in {numref}`fig-row-stationary`.
+casella d'uscita raccoglie prodotti da più righe del filtro e da più canali.
+Eyeriss, un chip costruito apposta per le reti convoluzionali da Chen, Emer e
+Sze {cite}`chen2016eyeriss`, sfrutta questi riusi tutti insieme con un modo di
+far scorrere i dati che i suoi autori chiamano **row stationary**, «a riga
+ferma»: ogni elemento di calcolo tiene ferma una riga del filtro, come in
+{numref}`fig-row-stationary`.
 
 ```{figure} ../figures/row-stationary.svg
 :name: fig-row-stationary
@@ -962,33 +988,32 @@ elemento in elemento dentro la colonna.
 - Pochi pesi, riusati in ogni punto: la rete impara cosa cercare, non
   dove. Se il motivo si sposta, si sposta con lui anche il segnale che lo
   indica.
-- Quanto viene grande la mappa che esce lo decidono tre manopole: quanto è
-  larga la finestra, di quanto salta a ogni passo (lo stride) e se attorno
-  all'immagine si è messa una cornice (il padding). Col passo a 1 e la cornice
-  da uno, un filtro $3\times3$ lascia la mappa grande quanto l'immagine; col
-  passo a 2 la dimezza, e quando il conto non torna in pieno due persone che
-  scelgono in modo diverso si ritrovano con mappe diverse.
+- Quanto viene grande la mappa che esce lo decidono la larghezza della
+  finestra, di quanto salta a ogni passo (lo stride), la cornice attorno
+  all'immagine (il padding) e, quando c'è, la dilatazione. Col passo a 1 e la
+  cornice da uno, un filtro $3\times3$ lascia la mappa grande quanto
+  l'immagine; col passo a 2 la dimezza, e quando il conto non torna in pieno
+  due persone che scelgono in modo diverso si ritrovano con mappe diverse.
 - Il max pooling tiene, di ogni quadratino, solo il valore più forte:
   rimpicciolisce le mappe e dà un po’ di tolleranza agli spostamenti minimi, in
   cambio della precisione su dove le cose stanno. L'architettura tipica alterna
   convoluzione e pooling, e chiude con gli strati densi che decidono la classe.
-- Lo stesso conto si può fare con meno moltiplicazioni: mescolando prima,
-  ognuno per conto suo, lo stampino e il pezzo d'immagine (questo con sole
-  somme e differenze), due risultati di uno stampino da tre costano quattro
-  moltiplicazioni invece di sei. Si paga in precisione, e così com'è funziona
-  per stampini piccoli che avanzano di un quadretto.
-- E con meno spostamenti: dare a ogni banco una riga dello stampino e fargli
-  passare davanti le righe della pagina fa lavorare ogni numero molte volte
-  prima che torni in magazzino, dove prenderlo costa quanto duecento
-  moltiplicazioni. Il prezzo è che il capannone va ridisegnato per ogni strato.
+- Lo stesso conto si può fare con meno moltiplicazioni (l'algoritmo di
+  Winograd): mescolando prima lo stampino e il pezzo d'immagine, due risultati
+  di uno stampino da tre costano quattro moltiplicazioni invece di sei. Si paga
+  in precisione, e vale per stampini piccoli che avanzano di un quadretto.
+- E con meno spostamenti: un chip che dà a ogni banco una riga dello stampino
+  fa lavorare ogni numero molte volte prima di rimandarlo in magazzino, dove
+  prenderlo costa quanto duecento moltiplicazioni. Il prezzo è che il
+  capannone va ridisegnato per ogni strato.
 ```
 `````
 
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Gli strati densi falliscono sulle immagini per troppi parametri e perché
-  non sono equivarianti alla traslazione.
+- Gli strati densi scalano male sulle immagini: i parametri crescono con i
+  pixel, e lo strato non è equivariante alla traslazione.
 - La convoluzione fa scorrere un piccolo kernel che evidenzia un motivo
   ovunque compaia; l'uscita è una feature map.
 - Campo recettivo locale = pochi parametri; pesi condivisi = risposta
@@ -1018,12 +1043,14 @@ elemento in elemento dentro la colonna.
 ```
 `````
 
-Da portarsi dietro c'è lo stampino: un pugno di numeri che scorre su tutto e
-non cambia mai, e che per questo trova il motivo dovunque sia finito. È un
-vincolo messo dentro l'architettura invece che sperato dall'addestramento: si
-paga in flessibilità e si riscuote in esempi che non servono più. Restano due
-domande, di mestiere diverso: come si fa a far imparare davvero una rete
-profonda, che è
+Da portarsi dietro c'è un filtro piccolo che scorre su tutto e non cambia mai:
+la connettività locale, ogni neurone una finestra sola, e la condivisione dei
+pesi, lo stesso filtro in ogni posizione. Sono due vincoli messi dentro
+l'architettura invece che sperati dall'addestramento, e danno pochi parametri
+e l'equivarianza alla traslazione, cioè il motivo trovato dovunque sia finito.
+Si pagano in flessibilità, e in cambio per imparare servono molti meno esempi.
+Restano due domande, di mestiere diverso: come si fa a far imparare davvero una
+rete profonda, che è
 {doc}`Far funzionare le reti profonde <ottimizzazione-regolarizzazione>`, e
 quali sono le reti che con questi pezzi hanno vinto, che è
 {doc}`Le architetture che hanno fatto la storia <architetture-storiche>`.

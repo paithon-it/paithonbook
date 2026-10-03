@@ -19,8 +19,8 @@ domanda che circolava era se esistesse una passeggiata che attraversasse ogni
 ponte una e una sola volta. Nessuno ci riusciva, ma nessuno sapeva dire se
 fosse davvero impossibile o solo difficile.
 
-A rispondere fu il matematico svizzero Leonhard Euler. La sua mossa geniale
-non fu camminare di più, ma buttare via la mappa. Le distanze, la forma delle
+A rispondere fu il matematico svizzero Leonhard Euler, e la sua mossa fu
+buttare via la mappa. Le distanze, la forma delle
 isole, la lunghezza dei ponti: niente di tutto questo contava. Contava solo
 *quale lembo di terra fosse collegato a quale*. Euler ridusse allora la città
 a quattro lettere, una per lembo di terra, e a sette ponti fra quelle lettere,
@@ -29,8 +29,10 @@ entra in un lembo di terra passando su un ponte ne deve prendere un altro per
 uscirne, quindi i ponti di ogni lembo vanno a coppie, salvo quello da cui si
 parte e quello in cui si arriva. I lembi con un numero dispari di ponti
 possono essere al massimo due, allora; a Königsberg erano quattro su quattro.
-Il disegno a punti e linee, quelli che oggi chiamiamo **nodi** e **archi**,
-sarebbe arrivato più di un secolo e mezzo dopo; l'astrazione però è di Euler, e
+Nel suo articolo non ci sono punti e linee, quelli che oggi chiamiamo **nodi**
+e **archi**: la parola *grafo* la introdurrà nel 1878 il matematico inglese
+James Joseph Sylvester, che la prese dai diagrammi con cui i chimici
+disegnavano le molecole. L'astrazione però è di Euler, e
 il suo articolo, *Solutio Problematis ad Geometriam Situs Pertinentis*, letto
 all'Accademia di San Pietroburgo nel 1735 e stampato sei anni dopo, è
 considerato l'atto di nascita della **teoria dei grafi**: la matematica delle
@@ -45,12 +47,12 @@ prevedere quali fermassero la crescita dei batteri. Le hanno poi fatto passare
 al setaccio un archivio di migliaia di sostanze già preparate, e la rete ne ha
 segnalata una che nessuno associava agli antibiotici; nei topi ha curato anche
 un'infezione da *Acinetobacter baumannii* resistente a tutti gli antibiotici
-provati. L'hanno chiamata halicin, in omaggio a HAL 9000, il computer di *2001:
-Odissea nello spazio*. Il filo che unisce i sette ponti di Königsberg a un
-antibiotico del XXI secolo ha un nome: le **reti neurali su grafo** (*Graph
-Neural Networks*, GNN).
+provati {cite}`stokes2020deep`. L'hanno chiamata halicin, in omaggio a HAL
+9000, il computer di *2001: Odissea nello spazio*. Il filo che unisce i sette
+ponti di Königsberg a un antibiotico del XXI secolo ha un nome: le **reti
+neurali su grafo** (*Graph Neural Networks*, GNN).
 
-## Perché un capitolo dedicato
+## Né griglia né sequenza
 
 Le reti viste finora lavorano su due forme di dato molto ordinate. Le reti
 convoluzionali del {doc}`capitolo sul deep learning </DeepLearning/overview>`
@@ -85,7 +87,8 @@ quello scheletro, qualunque cosa rappresenti.
 
 Come mostra {numref}`fig-grafo-esempi`, se spogliamo questi oggetti delle loro
 apparenze resta la stessa figura astratta. E qui nasce il problema tecnico: un
-grafo è ostico da dare in pasto a una rete neurale ordinaria, per tre motivi.
+grafo è ostico da dare in ingresso a una rete neurale ordinaria, per tre
+motivi.
 
 `````{tab} Elementare
 
@@ -141,24 +144,25 @@ $\theta$.
 
 ## L'idea in una frase
 
-La soluzione è tanto semplice da enunciare quanto potente nelle conseguenze:
+Il rimedio si enuncia in una frase:
 
 > dare a ogni nodo (o a ogni arco, o all'intero grafo) una fila di numeri
 > che lo descrive, e costruirla facendo circolare l'informazione lungo gli
 > archi: ogni nodo ascolta i suoi vicini e si aggiorna, e si ricomincia.
 
 Quella fila di numeri si chiama rappresentazione del nodo, ed è la parola
-che in questo capitolo torna più spesso: vuol dire sempre questo, la fila di
+che con i grafi torna più spesso: vuol dire sempre questo, la fila di
 numeri con cui il modello descrive un nodo in un certo momento. All'inizio non
 contiene niente di speciale, sono le informazioni che sul nodo abbiamo già noi
 (per una persona l'età, per un atomo il tipo di elemento); a ogni giro di
 ascolto diventa qualcosa di più.
 
-Il resto è la macchina di sempre. Le operazioni che compongono un giro sono
-tutte di quelle di cui si sa calcolare la derivata, e quindi la rete si
-addestra dall'ingresso all'uscita con la stessa discesa del gradiente di ogni
-altro modello visto finora. Non serve un modo nuovo di imparare: serve solo
-un modo di far parlare i nodi fra loro.
+Il resto è la macchina di sempre. Ogni operazione di un giro è derivabile
+(quasi ovunque, nel caso del massimo), quindi la rete si addestra
+dall'ingresso all'uscita con la retropropagazione e la discesa del gradiente
+della {doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>`,
+come ogni altro modello visto finora. Non serve un modo nuovo di imparare:
+serve solo un modo di far parlare i nodi fra loro.
 
 `````{tab} Elementare
 
@@ -219,11 +223,12 @@ Network* (GCN).
 `````
 
 L'idea non è nuova, e ha una storia in buona parte italiana. La
-prima forma è di fine anni Novanta, con i lavori di Alessandro Sperduti e
-Antonina Starita (1997) e di Paolo Frasconi, Marco Gori e Sperduti (1998);
-reggevano però soltanto grafi i cui archi hanno un verso e in cui, seguendo le
-frecce, non si torna mai al punto di partenza. A reggere un grafo qualunque,
-giri chiusi compresi, si arriva a metà anni Duemila, e per due strade italiane
+prima forma sono le *reti neurali ricorsive* di fine anni Novanta, nei lavori
+di Alessandro Sperduti e Antonina Starita (1997) e di Paolo Frasconi, Marco Gori
+e Sperduti (1998). Reggevano però soltanto grafi senza giri chiusi, in cui gli
+archi hanno un verso e, seguendo le frecce, non si torna mai al punto di
+partenza: un albero genealogico sì, una rete di amicizie no. A reggere un grafo
+qualunque si arriva a metà anni Duemila, e per due strade italiane
 che nel 2009 escono a pochi mesi l'una dall'altra sulla stessa rivista: il
 modello del gruppo di Siena di Franco Scarselli e Marco Gori
 {cite}`scarselli2009graph` e la rete di Alessio Micheli, a Pisa
@@ -252,7 +257,10 @@ nuovo ad halicin.
 
 Cambia anche quello che si ha in mano quando si comincia. Sul singolo nodo la
 risposta qualcuno l'ha già data, ma per pochi account: si impara da quei
-pochi, e tutti gli altri intorno fanno da contesto. Sull'intero grafo un nodo
+pochi, e tutti gli altri intorno fanno da contesto. Sull'arco si conoscono
+soltanto le amicizie che ci sono: per insegnare alla rete che aspetto ha una
+coppia di sconosciuti se ne pescano a caso fra quelle non collegate, sapendo
+che qualcuna diventerà amicizia domani. Sull'intero grafo un nodo
 solo non dice niente, quindi le file di numeri di tutti gli atomi si mettono
 insieme in un unico riassunto della molecola, e su quel riassunto si risponde;
 e la molecola che arriva sul tavolo quasi mai è una di quelle su cui si è
@@ -273,6 +281,14 @@ aggregano ($\mathrm{READOUT}$) tutti i vettori dei nodi in un unico vettore del
 grafo, su cui fare classificazione o regressione; qui il regime è di norma
 *induttivo*, perché ogni esempio è un grafo a sé e a test se ne incontrano di
 mai visti in addestramento.
+
+Per la *link prediction* c'è una complicazione in più: gli esempi negativi nei
+dati non ci sono, e si campionano fra le coppie non collegate. Quanti se ne
+mettono contro ogni positivo cambia il valore della *average precision* e
+delle metriche di rango (non quello dell'AUC, che confronta coppie
+positivo-negativo e non dipende dalle proporzioni), e come li si sceglie (a
+caso, o fra le coppie vicine nel grafo, che sono le più difficili) cambia
+tutte e tre: il protocollo va dichiarato insieme al numero.
 
 `````
 
@@ -319,17 +335,20 @@ capitoli sulle immagini, a dati che una griglia non la formano.
 
 Questo modo di guardare le cose ha un nome, *geometric deep learning*, cioè
 l'apprendimento profondo visto dalla parte della geometria
-{cite}`bronstein2021geometric`. Parte da una domanda sola: che cosa si può
-fare a un dato senza cambiarne il significato? Un'immagine spostata di un
-pixel contiene sempre lo stesso gatto; un discorso ascoltato un po' più
-lentamente è sempre lo stesso discorso; un grafo con i nodi rinumerati è sempre
-lo stesso grafo. Queste trasformazioni che non cambiano la
-risposta si chiamano **simmetrie** del dato, e una volta elencate dicono come
-deve essere fatta la rete che ci lavora sopra, perché le sue operazioni devono
-essere quelle che le simmetrie lasciano indisturbate, e i suoi pesi vanno
-condivisi fra tutte le posizioni che una simmetria scambia fra loro. Reti
-convoluzionali, reti ricorrenti e reti su grafo sono quella stessa ricetta
-applicata a tre elenchi di simmetrie diversi.
+{cite}`bronstein2021geometric`. Parte da una domanda sola: che cosa si può fare
+a un dato senza cambiarne il significato? Un'immagine spostata di un pixel
+contiene sempre lo stesso gatto; una frase pronunciata un minuto più tardi è
+sempre la stessa frase; un grafo con i nodi rinumerati è sempre lo stesso
+grafo. Queste trasformazioni che non cambiano la risposta si chiamano
+**simmetrie** del dato, e una volta elencate dicono come deve essere fatta la
+rete che ci lavora sopra. Se la risposta riguarda il dato intero, applicare la
+simmetria prima della rete non deve cambiarla; se ha una posizione
+(un'etichetta per pixel, per parola, per nodo), deve spostarsi insieme al dato.
+Il modo più semplice di garantirlo è usare gli stessi pesi in tutte le
+posizioni che la simmetria scambia fra loro. La rete convoluzionale passa lo
+stesso filtro su ogni pixel, la rete ricorrente applica la stessa regola a ogni
+istante della sequenza, la rete su grafo la stessa regola a ogni nodo: la
+stessa idea, applicata a tre elenchi di simmetrie diversi.
 
 Il secondo filo porta ai sistemi di raccomandazione. Lì il dato è, per sua
 natura, un grafo: da un lato gli utenti, dall'altro gli oggetti, e un arco
@@ -390,7 +409,10 @@ appresi. Detto così è una frase su un'architettura per il linguaggio; riletta
 con il vocabolario di questo capitolo è la definizione di un passo di message
 passing, con l'unica particolarità che il grafo è completo e porta un cappio su
 ogni nodo: ogni token è collegato a ogni altro e a sé stesso, e i coefficienti
-di attenzione sono i pesi degli archi.
+di attenzione sono i pesi degli archi. Vale per l'attenzione senza maschera
+causale; in un decoder ogni token vede solo sé stesso e quelli che lo
+precedono, e il grafo, invece che completo, ha soltanto gli archi che puntano
+in avanti nella sequenza.
 
 Non è un'analogia costruita a posteriori. Le rassegne che hanno unificato il
 campo lo dicono esplicitamente: il quadro delle *message passing neural

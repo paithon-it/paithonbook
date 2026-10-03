@@ -13,35 +13,36 @@
 ```
 
 Nel giugno del 2017 otto ricercatori, tutti passati per Google Brain e Google
-Research, pubblicano un *paper* (un articolo scientifico: il modo in cui chi fa
-ricerca racconta agli altri quello che ha trovato) dal titolo che suona come
-una battuta: *Attention Is All You Need* {cite}`vaswani2017attention`
-(«l'attenzione è tutto ciò che serve», eco di *All You Need Is Love* dei
-Beatles). Dentro c'è un'architettura di rete neurale nuova, il **Transformer**, che
-fa una scommessa radicale: per capire il linguaggio non servono né la
-ricorrenza delle RNN (leggere una parola alla volta, portandosi dietro un
-riassunto di quel che è venuto prima) né le convoluzioni (i filtri che scorrono
-su un testo o su un'immagine guardando solo i vicini, del {doc}`capitolo sul
-deep learning </DeepLearning/overview>`); basta il meccanismo di attenzione,
-usato fino ad allora come accessorio. La scommessa è vinta oltre ogni
-previsione: oggi il Transformer è la base di quasi tutti i grandi modelli
-linguistici, e quella «T» è la stessa che trovi nel nome di GPT e di ChatGPT.
+Research, pubblicano un articolo dal titolo che suona come una battuta:
+*Attention Is All You Need* {cite}`vaswani2017attention` («l'attenzione è tutto
+ciò che serve», eco di *All You Need Is Love* dei Beatles). Dentro c'è
+un'architettura di rete neurale nuova, il **Transformer**, che scommette su un
+meccanismo solo: l'attenzione, usata fino ad allora come accessorio, basta da
+sola. Restano fuori i due pezzi su cui si reggevano le reti per le sequenze: la
+ricorrenza delle RNN, che leggono una parola alla volta portandosi dietro un
+riassunto del già letto, e le convoluzioni del {doc}`capitolo sul deep learning
+</DeepLearning/overview>`, filtri che guardano soltanto i vicini. La scommessa
+ha retto: oggi il Transformer è l'architettura di quasi tutti i grandi modelli
+linguistici, e la «T» di GPT, la sigla che si legge anche nel nome di ChatGPT,
+sta proprio per Transformer.
 
 ## Il problema: leggere una frase tutta insieme
 
-I modelli che abbiamo incontrato nel {doc}`capitolo sul Natural Language
-Processing </NaturalLanguageProcessing/overview>` leggono il testo una parola
-alla volta, portandosi dietro un riassunto di quel che è venuto prima: sono le
-reti ricorrenti (in sigla RNN) e la loro versione più raffinata, quella con un
-taccuino su cui annotare e cancellare (le LSTM). Funziona, ma con due difetti
-strutturali.
+Il Transformer tiene i pezzi che il {doc}`capitolo sul Natural Language
+Processing </NaturalLanguageProcessing/overview>` gli ha consegnato e cambia la
+macchina che li porta. Le reti ricorrenti, anche nelle varianti con porte che
+decidono che cosa conservare e che cosa cancellare dello stato (LSTM e GRU),
+riassumono il passato in uno stato aggiornato un passo alla volta. Il metodo ha
+due limiti che stanno nella sua struttura: l'informazione fra due parole
+lontane attraversa tutti i passi intermedi, e il passo $t$ non comincia finché
+il passo $t-1$ non è finito.
 
 `````{tab} Elementare
 Un romanzo letto attraverso una fessura che scopre una parola alla volta, con
 tutto il resto da tenere a memoria: dopo dieci pagine, quanto ricordi della
 prima? È il problema delle reti ricorrenti: sui testi lunghi il ricordo
-dell'inizio sbiadisce. Il taccuino su cui annoti quello che conta aiuta
-parecchio, perché ci scrivi solo l'essenziale e cancelli il resto. Ma la
+dell'inizio sbiadisce. Il taccuino della LSTM, su cui annoti quello che conta,
+aiuta parecchio, perché ci scrivi solo l'essenziale e cancelli il resto. Ma la
 pagina è una sola, e a furia di aggiungere e cancellare, di quel che c'era
 all'inizio resta sempre meno. E c'è un secondo problema: se puoi leggere solo
 una parola alla volta, non puoi farti aiutare; cento amici non leggono un
@@ -68,9 +69,10 @@ volta.
 `````{tab} Superiore
 Nelle RNN l'informazione che va dalla prima all'ultima parola di una sequenza
 lunga $n$ attraversa $O(n)$ passaggi di stato: il segnale si degrada (gradiente
-che svanisce, come visto nella {doc}`sezione sulle funzioni di attivazione
-</RetiNeurali/funzioni-attivazione>`) e le dipendenze
-lunghe si perdono, problema che LSTM e GRU mitigano ma non eliminano. Inoltre
+che svanisce, la cui derivazione per le ricorrenti sta nella {doc}`sezione sui
+modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>`) e le
+dipendenze lunghe si perdono, problema che LSTM e GRU mitigano ma non
+eliminano. Inoltre
 la ricorrenza è intrinsecamente sequenziale: il passo $t$ richiede il passo
 $t-1$, e l'hardware parallelo (le GPU) resta sottoutilizzato in addestramento.
 
@@ -86,34 +88,33 @@ mette sul tavolo.
 
 ## Dal meccanismo ai modelli
 
-I Transformer sono importanti, ma non sono magia: dentro ci sono
-tabelle di numeri e operazioni che si fanno con carta e penna, montate in un
-ordine particolarmente felice. Chi ha letto la {doc}`matematica di un modello
+I Transformer sono importanti, ma non sono magia. Dentro ci sono prodotti fra
+matrici, una softmax, normalizzazioni e piccole reti applicate a ogni
+posizione, montati in un ordine preciso, e su una frase di tre parole si
+rifanno con carta e penna. Chi ha letto la {doc}`matematica di un modello
 linguistico </Matematica/matematica-llm>` ne conosce già il meccanismo, con
-altri nomi; qui arrivano il vocabolario standard, query, key e value, e i pezzi
-che là restavano fuori, le maschere e l'architettura che li monta.
+altri nomi; qui arrivano il vocabolario standard (query, key e value, i tre
+ruoli che ogni parola gioca nell'attenzione) e i pezzi che là restavano fuori:
+le maschere, che decidono quali parole ciascuna può guardare, e l'architettura
+che monta il tutto.
 
-Il capitolo segue la scia dell'articolo del 2017. Si comincia dal meccanismo
-di attenzione: cos'è, come si calcola, perché funziona. Poi si monta
-l’architettura completa, cioè come i blocchi di attenzione diventano una
-rete vera. Segue un confronto onesto con i modelli precedenti, quelli che
-leggevano in fila, inclusi i punti dove il Transformer è più debole. Poi
-l'attenzione in pratica: come la stessa formula gira quando il modello
-genera una parola per volta, che cosa si conserva fra un token e il
-successivo, e quanto costa. E infine due esempi pratici che si possono
-eseguire.
+Il capitolo segue l'ordine dell'articolo del 2017. Si comincia dal meccanismo
+di attenzione e dalla sua forma con le matrici, poi si monta l’architettura
+completa, cioè come i blocchi di attenzione diventano una rete. Segue il
+confronto con i modelli precedenti, quelli che leggevano in fila, compresi i
+punti dove il Transformer è più debole; poi l'attenzione mentre il modello
+genera una parola per volta, che cosa si conserva da un token al successivo e
+quanto costa; e due esempi da eseguire.
 
-Da lì in poi si guarda che cosa è cresciuto su quell'architettura. Le
-famiglie di modelli (GPT, BERT, T5) e l'estensione alle immagini. Che cosa
-succede quando lo stesso modello impara cento lingue insieme, compreso il
-fatto tutt'altro che ovvio che si possa rifinirlo in inglese e usarlo in
-italiano. I grandi modelli linguistici: quanto conviene ingrandirli, e come
-si sceglie davvero la parola da scrivere. I modelli a esperti, che sanno
-moltissimo ma per ogni parola accendono solo un pezzetto di sé, e costano quindi
-molto meno di quanto siano grandi. Il post-training, cioè come un
-completatore di frasi diventa un assistente che risponde. E il retrieval,
-cioè come si insegna a un modello a cercare prima di rispondere. Chiude uno
-sguardo alle tendenze, con i limiti, che non mancano.
+Su quell'architettura sono cresciuti i modelli che si usano oggi: le famiglie
+GPT, BERT e T5 e l'estensione alle immagini; una rete sola addestrata su cento
+lingue, che si può rifinire in inglese e usare in italiano; i grandi modelli
+linguistici, con le leggi di scala, la scelta della parola da scrivere e il
+modo di valutarli; i modelli a esperti, che hanno moltissimi parametri ma per
+ogni parola ne usano una piccola parte; il post-training, che trasforma un
+completatore di frasi in un assistente che risponde; il retrieval, con cui un
+modello consulta dei documenti prima di rispondere. Chiude uno sguardo alle
+tendenze e ai limiti.
 
 `````{tab} Elementare
 
@@ -154,9 +155,11 @@ sguardo alle tendenze, con i limiti, che non mancano.
   una dopo l'altra passano da $O(n)$ a $O(1)$, quindi l'intera sequenza si
   elabora in parallelo e l'addestramento sfrutta l'hardware a molti core.
 - Il prezzo sta nell'altra colonna della stessa tabella: il costo per strato è
-  $O(n^2 \cdot d)$, cioè quadratico nella lunghezza $n$ della sequenza; ed
-  è quadratica in $n$ anche la memoria per i punteggi, $O(n^2)$, senza il
-  fattore $d$. È il conto che il capitolo nomina e non salda.
+  $O(n^2 \cdot d)$, con $d$ la dimensione delle rappresentazioni, cioè
+  quadratico nella lunghezza $n$ della sequenza; ed è quadratica in $n$ anche
+  la memoria per i punteggi, $O(n^2)$, senza il fattore $d$. Quel conto torna
+  nel {doc}`confronto coi modelli precedenti <confronti>` e nella sezione
+  sull’{doc}`attenzione in pratica <attenzione-in-pratica>`.
 - Su questa architettura poggiano i grandi modelli linguistici (GPT, BERT,
   T5): a imporla è stata la capacità di scalare con dati e parametri.
 ```

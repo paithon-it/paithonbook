@@ -99,7 +99,7 @@ tutte e due le ragioni: è il giro dei tre ruoli che si reggono a vicenda, ed è
 il guasto contro cui quel lavoro esiste.
 
 Le illustrazioni che aprono i capitoli sono generate con il modello Recraft
-V4.1, a partire da una descrizione dell'aneddoto con cui ciascun capitolo
+V4.1, a partire da una descrizione della scena con cui ciascun capitolo
 comincia; ogni pixel viene poi riportato sulle cinque tinte del libro.
 
 % La chiusa di questo capoverso esiste in due versioni perche' la pagina degli
@@ -136,7 +136,12 @@ algoritmica.
 % La firma e’ in HTML perche’ al sito serve l'allineamento a destra. In stampa
 % il blocco raw sparisce, e la prefazione restava senza firma: si ripete per
 % il solo LaTeX, com'e’ gia’ successo con l'attribuzione della citazione nella
-% pagina di apertura.
+% pagina di apertura. In stampa data e firma stanno su una riga
+% sola: su due righe il nome scivolava da solo su una pagina nuova, e la
+% prefazione passava da due pagine a quattro (la terza con il solo nome, la
+% quarta bianca perche' il capitolo dopo apre a destra); concedendo alla pagina
+% le due righe con `\enlargethispage` la firma finiva schiacciata sul piede.
+% Con una riga sola basta allungare la pagina di una.
 
 ```{raw} html
 <p class="text-right mt-3">Napoli, 15 agosto 2026<br><em>Francesco Messina</em></p>
@@ -144,7 +149,7 @@ algoritmica.
 
 :::{only} latex
 ```{raw} latex
-\vspace{4mm}\hfill Napoli, 15 agosto 2026\par
-\vspace{1mm}\hfill\textit{Francesco Messina}\par
+\enlargethispage{\baselineskip}%
+\vspace{3mm}\noindent Napoli, 15 agosto 2026\hfill\textit{Francesco Messina}\par
 ```
 :::

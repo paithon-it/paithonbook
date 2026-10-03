@@ -1,30 +1,27 @@
 # Processi decisionali di Markov e funzioni valore
 
-La sezione precedente ha lavorato su un mondo che non si muove: davanti
-all'agente c'era una fila di leve sempre uguale, e tirarne una non cambiava in
-nulla quello che si sarebbe trovato davanti al tiro dopo. Il mondo vero non è
-così. Un bambino che impara ad andare in bicicletta prova, oscilla, cade; e la
-pedalata storta non gli costa soltanto un brutto voto, gli sposta la
-bicicletta: quello che potrà fare fra un istante dipende da quello che ha
-fatto ora, e si ritrova in una situazione che si è creato da sé.
+La {doc}`sezione sui bandit <banditi>` ha lavorato su un mondo che non si
+muove: davanti all'agente c'era una fila di leve sempre uguale, e tirarne una
+non cambiava in nulla quello che si sarebbe trovato davanti al tiro dopo. Il
+mondo vero non è così. Il bambino della panoramica, quando dalla camminata
+passa alla bicicletta, se ne accorge alla prima pedalata storta: non gli costa
+soltanto un punto in meno, gli sposta la bicicletta, e quello che potrà fare
+fra un istante dipende da quello che ha fatto ora. Si ritrova in una situazione
+che si è creato da sé.
 
-Rimettere al suo posto la situazione che cambia è il passo che resta da fare, e
-il resto del capitolo lo dà per fatto. Costa qualche simbolo in più, e in cambio
-restituisce il problema per intero.
+Rimettere al suo posto la situazione che cambia è il passo che resta da fare.
+Costa qualche simbolo in più, e in cambio restituisce il problema per intero.
 
-Per trasformare questa intuizione in matematica serve un'impalcatura precisa.
-Quell'impalcatura, formalizzata da Richard Bellman nel 1957 e diventata la
-spina dorsale del testo di riferimento di Sutton e Barto
-{cite}`sutton2018reinforcement`, si chiama **processo
-decisionale di Markov**: in inglese *Markov Decision Process*, che tutti
-abbreviano in MDP, ed è la sigla che d'ora in poi si incontra dappertutto.
+L'impalcatura che serve è il **processo decisionale di Markov**, in inglese
+*Markov Decision Process*, che tutti abbreviano in MDP. Lo ha formalizzato
+Richard Bellman nel 1957 {cite}`bellman1957dynamic`, ed è l'impianto su cui è
+costruito il manuale di Sutton e Barto {cite}`sutton2018reinforcement`.
 
 ## Il ciclo: stati, azioni, ricompense
 
-A ogni istante l'agente si trova in uno stato, sceglie un’azione,
-l'ambiente lo trasporta in un nuovo stato e gli consegna una ricompensa
-numerica. Poi il ciclo riparte. Tutto il reinforcement learning abita dentro
-questo giro.
+A ogni istante l'agente si trova in uno stato, sceglie un’azione, l'ambiente lo
+trasporta in un nuovo stato e gli consegna una ricompensa numerica. Poi il
+ciclo riparte.
 
 `````{tab} Elementare
 
@@ -43,11 +40,12 @@ ha.
 Una mossa, poi, non sempre fa quello che promette. Su un pavimento scivoloso il
 comando «avanti» porta avanti nove volte su dieci e di traverso una volta su
 dieci: dove si finisce è un elenco di caselle con accanto quanto spesso capita
-ciascuna, e non una casella sola. Lo stesso per il punteggio: se una
-casella bagnata certe volte costa un punto e certe altre tre, il numero che
-conta è quanto costa in media. Nel labirinto su cui faremo i conti niente
-slitta e niente varia, ogni mossa porta sempre nella stessa casella e paga
-sempre lo stesso: è il caso facile, quello in cui l'elenco ha una riga sola.
+ciascuna, e non una casella sola. Lo stesso per il punteggio: se una casella
+bagnata certe volte costa un punto e certe altre tre, il numero che conta è
+quanto costa in media. Nel mondo su cui faremo i conti, tre caselle in fila,
+niente slitta e niente varia: ogni mossa porta sempre nella stessa casella e
+paga sempre lo stesso. È il caso facile, quello in cui l'elenco ha una riga
+sola.
 
 `````
 
@@ -83,36 +81,37 @@ Confondere le due vuol dire credere che l'agente conosca una media che invece
 deve stimare.
 
 Infine $\gamma \in [0,1]$ è il fattore di sconto, che il paragrafo sul ritorno
-scontato riprende per esteso. Le transizioni
-possono essere stocastiche, cioè la stessa azione può condurre in stati
-diversi; il caso deterministico, come l'MDP in miniatura di qualche riga più
-avanti, è il caso particolare in cui $P(s'\mid s,a)$ vale $1$ su un solo stato.
-Né $P$ né $r$ dipendono dal tempo $t$: l'MDP è *stazionario*, ed è l'ipotesi
-che cade quando nell'ambiente ci sono {doc}`altri agenti che a loro volta
-imparano </SistemiMultiAgente/imparare-insieme>`.
+scontato riprende per esteso. Le transizioni possono essere stocastiche, cioè
+la stessa azione può condurre in stati diversi; il caso deterministico, come
+l'MDP in miniatura della {numref}`fig-mdp`, è il caso particolare in cui
+$P(s'\mid s,a)$ vale $1$ su un solo stato. Né $P$ né $r$ dipendono dal tempo
+$t$: l'MDP è *stazionario*, ed è l'ipotesi che cade quando nell'ambiente ci
+sono {doc}`altri agenti che a loro volta imparano
+</SistemiMultiAgente/imparare-insieme>`.
 
 `````
 
 ## La proprietà di Markov
 
-Il nome non è un vezzo: rende onore ad Andrej Markov, il matematico russo che
-fra Otto e Novecento studiò le sequenze di eventi in cui ciò che viene dopo
-dipende soltanto da ciò che c'è adesso. E dice una richiesta molto precisa. Lo
-stato deve bastare da solo, deve cioè riassumere tutto quello che serve per
-decidere il futuro: il futuro dipende solo dal presente, non dall'intera
-storia passata.
+La proprietà prende il nome da Andrej Markov, il matematico russo che fra Otto
+e Novecento studiò le sequenze di eventi in cui ciò che viene dopo dipende
+soltanto da ciò che c'è adesso. Chiede che lo stato riassuma tutto ciò che
+serve a prevedere il seguito: noti lo stato e l'azione di adesso, la storia
+precedente non aggiunge niente alla previsione dello stato successivo e della
+ricompensa.
 
 `````{tab} Elementare
 
-Fotografa una partita a scacchi a metà. A un bravo giocatore, per decidere la
-prossima mossa, basta la foto: non gli serve sapere in che ordine i pezzi sono
-arrivati lì. La posizione attuale racconta già tutto ciò che conta. Uno stato
-fatto così si dice *markoviano*. E se la foto non bastasse? Si allarga
-l'inquadratura finché basta: negli scacchi veri, per esempio, alla foto va
-aggiunta una nota ("il re non ha ancora mosso"), perché da essa dipende una
-mossa speciale, l'arrocco, in cui il re e la torre si scambiano di posto e che
-è permessa solo se nessuno dei due si è mai mosso prima. L'importante è che
-tutto il necessario stia nella foto, e niente resti nascosto nella storia.
+Fotografa una partita a scacchi a metà. A un bravo giocatore, per capire come
+può andare avanti la partita, e quindi per decidere la prossima mossa, basta la
+foto: non gli serve sapere in che ordine i pezzi sono arrivati lì. La posizione
+attuale racconta già tutto ciò che conta. Uno stato fatto così si dice
+*markoviano*. E se la foto non bastasse? Si allarga l'inquadratura finché
+basta: negli scacchi veri, per esempio, alla foto va aggiunta una nota ("il re
+non ha ancora mosso"), perché da essa dipende una mossa speciale, l'arrocco, in
+cui il re e la torre si scambiano di posto e che è permessa solo se nessuno dei
+due si è mai mosso prima. L'importante è che tutto il necessario stia nella
+foto, e niente resti nascosto nella storia.
 
 Allargare l'inquadratura, però, non sempre si può. A carte le mani degli altri
 sono coperte, e nessuna fotografia del tavolo dirà mai che cosa tengono:
@@ -133,15 +132,18 @@ si capisce dove stia andando una palla, da sei fotogrammi di fila sì.
 Formalmente si richiede che
 
 $$
-P(S_{t+1} \mid S_t, A_t) = P(S_{t+1} \mid S_0, A_0, \dots, S_t, A_t).
+\Pr(S_{t+1}, R_{t+1} \mid S_t, A_t)
+= \Pr(S_{t+1}, R_{t+1} \mid S_0, A_0, R_1, \dots, S_t, A_t).
 $$
 
-La distribuzione dello stato successivo, condizionata a stato e azione
-correnti, non cambia aggiungendo l'intera traiettoria passata. Se
-l'osservazione disponibile non soddisfa questa proprietà, si *arricchisce* lo
-stato (aggiungendo variabili, o una finestra di osservazioni recenti), finché
-la proprietà vale: è esattamente ciò che farà il DQN impilando quattro frame
-consecutivi di un videogioco per catturare le velocità.
+La distribuzione congiunta dello stato successivo e della ricompensa,
+condizionata a stato e azione correnti, non cambia aggiungendo l'intera
+traiettoria passata, ricompense comprese: è quello che serve perché $r(s,a)$
+sia ben definita, e perché il valore di uno stato dipenda soltanto dallo stato.
+Se l'osservazione disponibile non soddisfa questa proprietà, si *arricchisce*
+lo stato (aggiungendo variabili, o una finestra di osservazioni recenti),
+finché la proprietà vale: è esattamente ciò che farà il DQN impilando quattro
+frame consecutivi di un videogioco per catturare le velocità.
 
 Quel caso ha un nome, perché è la regola e non l'eccezione. Quando l'agente non
 osserva lo stato ma solo una sua funzione parziale e rumorosa, il modello
@@ -221,36 +223,43 @@ somma i premi lontani entrano ridotti: da qui il nome **ritorno scontato**, che
 
 Dieci euro oggi valgono più di dieci euro l'anno prossimo. Il **fattore di
 sconto** $\gamma$ (gamma), un numero tra 0 e 1, misura questa impazienza. Con
-$\gamma = 0{,}9$ la prossima ricompensa conta per intero, ma ogni passo di attesa
-in più la moltiplica per $0{,}9$: un $+10$ che arriva un passo più tardi vale
-$0{,}9 \times 10 = 9$, due passi più tardi $0{,}9^2 \times 10 = 8{,}1$. Più è
-lontana, meno pesa. Con $\gamma$ vicino a 0 l'agente è miope (guarda solo al
-premio immediato), vicino a 1 è lungimirante.
+$\gamma = 0{,}9$ un $+10$ che arriva alla prossima mossa conta per intero,
+$10$; se arriva una mossa dopo vale $0{,}9 \times 10 = 9$, due mosse dopo
+$0{,}9^2 \times 10 = 8{,}1$. Più è lontano, meno pesa. Con $\gamma$ vicino a 0
+l'agente è miope (guarda solo al premio immediato), vicino a 1 è lungimirante.
 
 Lo sconto fa anche un secondo mestiere, meno visibile del primo. Una partita
 che non finisce mai regala premi per sempre, e a sommarli tutti interi viene un
 totale infinito: due strategie che incassano senza fine varrebbero infinito
-tutte e due, e non ci sarebbe modo di dire quale sia la migliore. Scontando,
-invece, il totale resta un numero: $+10$ a ogni passo per sempre, con
-$\gamma = 0{,}9$, fa in tutto $100$ (dieci, più nove, più $8{,}1$, e avanti
-così, e per quanti termini si aggiungano il totale non supera $100$). Nelle
-partite che a un certo punto finiscono il problema non si pone, perché i premi
-da sommare finiscono anche loro: lì lo sconto si può lasciare da parte.
+tutte e due, e col totale non ci sarebbe modo di dire quale sia la migliore.
+Scontando, invece, il totale resta un numero: $+10$ a ogni passo per sempre,
+con $\gamma = 0{,}9$, fa in tutto $100$. Il perché sta in un conto di due
+righe. Il totale da adesso in poi è il $10$ di adesso più nove decimi del
+totale che comincia al passo dopo; ma dal passo dopo la partita è identica, e
+il suo totale è lo stesso numero. Un numero che vale $10$ più nove decimi di sé
+stesso è $100$, perché il decimo che avanza deve valere $10$. Nelle partite
+senza fine c'è anche un'altra strada, che lascia stare il totale e chiede
+quanto si incassa in media a ogni passo: con $+10$ per sempre fa $10$, e resta
+un numero anche senza sconto. Nelle partite che a un certo punto finiscono il
+problema non si pone, perché i premi da sommare finiscono anche loro: lì lo
+sconto si può lasciare da parte.
 
 Oltre allo sconto conta un'altra cosa, quando la partita dura un numero fisso
 di turni: la mossa giusta può dipendere anche da quanti ne restano. Al minuto
-89, in vantaggio di un gol, una squadra butta la palla in tribuna; al minuto 10,
-dallo stesso punto del campo, non lo farebbe mai. Stessa posizione, mossa
+89, in vantaggio di un gol, una squadra butta la palla in tribuna; al minuto
+10, dallo stesso punto del campo, non lo farebbe mai. Stessa posizione, mossa
 diversa, perché è cambiato il tempo che resta sull'orologio. Una policy, cioè
-un'abitudine, che guarda solo dove ci si trova e non l'orologio basta a giocare
-al meglio le partite senza fine, perché lì dopo ogni passo il futuro che resta è
-lungo quanto prima (infinito meno uno è ancora infinito). Basta anche per quelle
-che finiscono all'arrivo a un traguardo, senza una scadenza, come il labirinto
-del robot: lì quanti passi mancano all'uscita dipende da dove ci si trova, non
-da quanti turni si sono già giocati, purché girare a vuoto costi (nel labirinto
-ci pensa il $-1$ di ogni passo). Per quelle a durata fissa, in generale, no, e
-il rimedio è quello degli scacchi: nella foto si scrive anche quanti turni
-mancano.
+un'abitudine, che guarda solo dove ci si trova e non l'orologio basta in due
+casi. Il primo sono le partite senza fine: dopo ogni passo il futuro che resta
+è lungo quanto prima, e la stessa posizione chiede sempre la stessa mossa. Il
+secondo sono le partite che finiscono all'arrivo a un traguardo, senza
+scadenza, come il labirinto del robot: quanto manca all'uscita dipende da dove
+ci si trova, non da quanti turni sono passati. Se i punti lontani contano per
+intero, senza sconto, serve una precauzione in più, che girare a vuoto non
+convenga mai: nel labirinto ci pensa il $-1$ di ogni passo, perché un robot che
+gironzola per sempre perde punti senza fine. Nelle partite a durata fissa,
+invece, l'orologio conta, e il rimedio è quello degli scacchi: nella foto si
+scrive anche quanti turni mancano.
 
 `````
 
@@ -264,14 +273,24 @@ G_t = R_{t+1} + \gamma\, R_{t+2} + \gamma^2 R_{t+3} + \cdots
 $$
 
 Con $0 \le \gamma < 1$, e se le ricompense sono limitate, la serie converge
-anche su orizzonti infiniti, il che rende il problema ben posto. È il motivo per
-cui nei compiti continui, quelli che non finiscono mai, lo sconto è
-obbligatorio. Nei compiti episodici la somma ha invece un numero finito di
-termini, perché l'episodio termina, e $\gamma = 1$ è ammesso: è il caso di molti
-esempi classici, compreso il *cliff walking* che incontreremo nella
-sezione sul Q-learning. Nell'uno e nell'altro caso $\gamma$ non è un semplice
-trucco matematico: codifica *quanto lontano* nel futuro all'agente conviene
-guardare.
+anche su orizzonti infiniti, il che rende il problema ben posto. È il motivo
+per cui nei compiti continui, quelli che non finiscono mai, si sconta di norma.
+L'alternativa è non scontare e misurare la ricompensa per unità di tempo, il
+criterio della **ricompensa media**,
+
+$$
+\bar{r}(\pi) = \lim_{h \to \infty} \frac{1}{h}\,
+\mathbb{E}_\pi\Big[\sum_{t=1}^{h} R_t\Big],
+$$
+
+che Sutton e Barto adottano per i compiti continui quando i valori si
+approssimano con una funzione, perché lì lo sconto crea problemi
+{cite}`sutton2018reinforcement`. Nei compiti episodici la somma ha invece un
+numero finito di termini, perché l'episodio termina, e $\gamma = 1$ è ammesso:
+è il caso di molti esempi classici, compreso il *cliff walking* che
+incontreremo nella sezione sul Q-learning. Nell'uno e nell'altro caso $\gamma$
+non è un semplice trucco matematico: codifica *quanto lontano* nel futuro
+all'agente conviene guardare.
 
 La lunghezza dell'orizzonte decide anche la forma della policy ottima. Una
 policy $\pi(a\mid s)$ che non dipende dal tempo, ma solo dallo stato in cui ci
@@ -289,8 +308,8 @@ labirinto e il *cliff walking*, stanno da questa parte: quanto resta da giocare
 dipende dallo stato in cui ci si trova, non dall'orologio. Con $\gamma < 1$
 basta il risultato scontato, perché lo stato terminale è uno stato da cui non si
 esce e che non paga più niente; con $\gamma = 1$, come nel *cliff walking*,
-servono le ipotesi dei problemi di cammino minimo stocastico, richiamate più
-avanti a proposito della value iteration. È la ragione per cui la policy si
+servono le ipotesi dei problemi di cammino minimo stocastico, che tornano con
+la convergenza della value iteration. È la ragione per cui la policy si
 scrive di solito $\pi(a\mid s)$, senza indice di tempo, e per cui i
 {doc}`risultati sugli equilibri fra più agenti </SistemiMultiAgente/overview>`
 parlano di policy stazionarie.
@@ -385,15 +404,19 @@ sono legate da $V^\pi(s) = \sum_a \pi(a\mid s)\, Q^\pi(s,a)$.
 
 ## L'equazione di Bellman: ogni valore si appoggia al successivo
 
-Qui arriva l'idea che tiene in piedi tutto. Il valore di uno stato non va
-calcolato da zero sommando infinite ricompense: si spezza in due pezzi,
-*l'adesso* e *il dopo*.
+L’**equazione di Bellman** lega il valore di uno stato a quello degli stati che
+lo seguono. Il ritorno si spezza in due pezzi, la ricompensa del passo
+successivo e il ritorno scontato che viene dopo, e di questo secondo pezzo
+basta il valore atteso: non serve sommare da capo infinite ricompense.
 
 `````{tab} Elementare
 
 Il valore di dove sei = la ricompensa che incassi al prossimo passo più il
 valore (scontato) di dove finisci. È una scala a pioli: ogni gradino è definito
-in funzione del successivo.
+in funzione del successivo. Vale per qualunque strategia, con i valori di
+quella strategia: chi gioca a caso ha la sua scala, chi gioca bene un'altra.
+Per chi gioca al meglio, la ricompensa e la casella d'arrivo sono quelle della
+mossa migliore.
 
 Quando la strategia lascia qualcosa al caso, o quando il mondo alla stessa
 mossa risponde in modi diversi, «la ricompensa che incassi» e «dove finisci»
@@ -414,7 +437,18 @@ notizia che esiste.
 `````{tab} Superiore
 
 Spezzando il ritorno come $G_t = R_{t+1} + \gamma\, G_{t+1}$ e prendendo
-l'attesa si ottiene l’**equazione di Bellman** per $V^\pi$:
+l'attesa condizionata a $S_t = s$ si ha
+
+$$
+V^\pi(s) = \mathbb{E}_\pi[R_{t+1} \mid S_t = s]
++ \gamma\, \mathbb{E}_\pi[G_{t+1} \mid S_t = s].
+$$
+
+Nell'ultimo termine si condiziona prima anche a $S_{t+1}$ (legge delle attese
+iterate): per la proprietà di Markov, e perché né $\pi$ né $P$ dipendono dal
+tempo, noto $S_{t+1} = s'$ il futuro non dipende più da $S_t$, quindi
+$\mathbb{E}_\pi[G_{t+1} \mid S_{t+1} = s',\, S_t = s] = V^\pi(s')$. Si ottiene
+l'equazione di Bellman per $V^\pi$:
 
 $$
 V^\pi(s) = \mathbb{E}_\pi\!\left[\, R_{t+1} + \gamma\, V^\pi(S_{t+1})
@@ -443,24 +477,23 @@ esattamente l'aggiornamento di SARSA, che arriva nella
 {doc}`pagina su Q-learning e differenze temporali
 </ReinforcementLearning/q-learning>`.
 
-Sono sistemi di equazioni lineari: relazioni di consistenza fra il valore
-di uno stato (o di una coppia stato-azione) e quello dei successori. Da qui
-partono tutti gli algoritmi
-che incontreremo: a cominciare dalla *value iteration* e dalla *policy
-iteration* che vengono adesso, fino al *Q-learning*.
+Sono sistemi di equazioni lineari: relazioni di consistenza fra il valore di
+uno stato (o di una coppia stato-azione) e quello dei successori. Da qui
+partono la programmazione dinamica e le differenze temporali, dalla *value
+iteration* e dalla *policy iteration* che vengono adesso fino al *Q-learning*;
+i metodi Monte Carlo stimano gli stessi valori senza usare la ricorsione.
 
 `````
 
 ## Value iteration: l'equazione diventa algoritmo
 
-La regola della scala, da sola, è una fotografia: dice come devono stare i
-valori quando sono *giusti* (ogni gradino appoggiato al successivo), ma non
-spiega come trovarli, e all'inizio non li conosciamo. Il primo modo per
-trovarli è di una semplicità disarmante: usare la regola non come descrizione
-ma come *istruzione*, cioè scrivere su ogni casella quello che la regola dice
-che dovrebbe esserci, e ripetere finché i numeri non si assestano. In inglese
-si chiama **value iteration**, «iterazione dei valori», ed è il nome con cui si
-incontra ovunque.
+L'equazione di Bellman dice come devono stare i valori quando sono giusti, ma
+non come trovarli, e all'inizio non li conosciamo. Il primo modo di trovarli la
+usa come regola di aggiornamento: su ogni casella si scrive quello che
+l'equazione dice che dovrebbe esserci, calcolato con i numeri che stanno adesso
+sulle caselle d'arrivo, e si ripete finché i numeri non si assestano. In
+inglese si chiama **value iteration**, «iterazione dei valori», ed è il nome
+con cui si incontra ovunque.
 
 È anche l'idea con cui Bellman inaugurò la **programmazione dinamica**
 {cite}`bellman1957dynamic`: due parole che non spiegano niente (e lo sapeva lui
@@ -473,21 +506,23 @@ riusando le risposte già trovate ai suoi pezzi piccoli.
 La ricetta, nel labirinto: scrivi $0$ su ogni casella. Poi, casella per
 casella, guarda tutte le mosse possibili e chiediti: "quanto rende ciascuna,
 contando la ricompensa immediata più il valore (scontato) della casella dove
-finirei?". Scrivi sulla casella il risultato della mossa migliore, perché
-il valore che stiamo calcolando è quello di chi gioca al meglio. Finito il
-giro, ricomincia da capo con i numeri nuovi, e poi ancora, finché i numeri
-smettono di muoversi. A quel punto ogni casella dice quanto vale *davvero*, e
-la strategia migliore è in omaggio: da ogni casella, scegli la mossa che rende
-di più. Da quali numeri si sia cominciato non conta: partendo da cento
-dappertutto invece che da zero i giri sono molti di più, ma i numeri su cui ci
-si ferma sono gli stessi.
+finirei?". Scrivi sulla casella il risultato della mossa migliore, perché il
+valore che stiamo calcolando è quello di chi gioca al meglio. Finito il giro,
+ricomincia da capo con i numeri nuovi, e poi ancora, finché i numeri smettono
+di muoversi. A quel punto ogni casella dice quanto vale *davvero*, e la
+strategia migliore è in omaggio: da ogni casella, scegli la mossa che rende di
+più. Da quali numeri si sia cominciato non conta: partendo da cento dappertutto
+invece che da zero i giri sono molti di più, ma i numeri su cui ci si ferma
+sono gli stessi. Sulle leve il numero di partenza cambiava parecchio, perché
+decideva quali leve l'agente avrebbe provato; qui nessuno sceglie che cosa
+guardare, a ogni giro si ricalcolano tutte le caselle, e il punto di partenza
+sbiadisce da sé.
 
 Un dettaglio del "giro" va fissato adesso, perché senza di quello i conti che
-seguono sembrano sbagliati. Si compila una scheda nuova guardando la vecchia,
-non
-si corregge la vecchia mentre la si legge. Quindi, dentro un giro, i numeri che
-si leggono sono sempre quelli con cui il giro è cominciato: anche quelli di una
-casella che nel frattempo si è già riscritta.
+seguono sembrano sbagliati. Si scrive su un foglio nuovo guardando il vecchio,
+e non si corregge il vecchio mentre lo si legge. Quindi, dentro un giro, i
+numeri che si leggono sono sempre quelli con cui il giro è cominciato: anche
+quelli di una casella che nel frattempo si è già riscritta.
 
 `````
 
@@ -506,16 +541,16 @@ l’**equazione di ottimalità di Bellman**,
 $V^*(s) = \max_a \sum_{s'} P(s'\mid s,a)\big[r(s,a) + \gamma\, V^*(s')\big]$,
 dove $V^*$ è il valore della migliore policy possibile. Con $\gamma < 1$, stati
 e azioni finiti e ricompense limitate, la convergenza è garantita. Chiamato
-$\mathcal{T}$ l'operatore che porta $V_k$ in $V_{k+1}$, per due funzioni
+$\mathcal{B}$ l'operatore che porta $V_k$ in $V_{k+1}$, per due funzioni
 qualsiasi $U$ e $W$ vale
 
 $$
-\|\mathcal{T}U - \mathcal{T}W\|_\infty \le \gamma\, \|U - W\|_\infty,
+\|\mathcal{B}U - \mathcal{B}W\|_\infty \le \gamma\, \|U - W\|_\infty,
 \qquad \|U\|_\infty = \max_s |U(s)| :
 $$
 
 basta la disuguaglianza $|\max_a x_a - \max_a y_a| \le \max_a |x_a - y_a|$,
-insieme al fatto che le $P(s'\mid s,a)$ sommano a $1$. $\mathcal{T}$ è quindi
+insieme al fatto che le $P(s'\mid s,a)$ sommano a $1$. $\mathcal{B}$ è quindi
 una **contrazione** di fattore $\gamma$ nella norma del massimo, e per il
 teorema di punto fisso di Banach ha un punto fisso unico, $V^*$, a cui
 l'iterazione arriva da qualunque inizializzazione con
@@ -524,15 +559,17 @@ $\|V_k - V^*\|_\infty \le \gamma^k \|V_0 - V^*\|_\infty$
 disuguaglianza dà il criterio d'arresto: se
 $\|V_{k+1} - V_k\|_\infty < \kappa(1-\gamma)/(2\gamma)$, la policy greedy
 rispetto a $V_{k+1}$ perde al più $\kappa$ rispetto all'ottima. Ogni passata
-costa $O(|\mathcal{S}|^2 |\mathcal{A}|)$. Nei compiti episodici con $\gamma = 1$
-il
-fattore di contrazione sparisce, e la garanzia va ricomprata altrove: basta che
-ogni policy raggiunga con probabilità $1$ uno stato terminale, e la condizione
-si allenta fino a chiedere che almeno una ci arrivi e che ogni policy che non
-ci arriva accumuli, da qualche stato, ricompensa $-\infty$ (è il quadro dei
-problemi di cammino minimo stocastico). Estratto $V^*$,
-la policy ottima è quella *greedy*: in ogni stato, l'azione che realizza il
-massimo.
+costa $O(|\mathcal{S}|^2 |\mathcal{A}|)$. Nei compiti episodici con
+$\gamma = 1$ il fattore di contrazione sparisce, e la garanzia va ricomprata
+altrove: basta che ogni policy raggiunga con probabilità $1$ uno stato
+terminale, e la condizione si allenta fino a chiedere che almeno una ci arrivi
+e che ogni policy che non ci arriva accumuli, da qualche stato, ricompensa
+$-\infty$ (è il quadro dei problemi di cammino minimo stocastico). Estratto
+$V^*$, la policy ottima è quella *greedy*: in ogni stato, l'azione che realizza
+il massimo di $\sum_{s'} P(s'\mid s,a)\,[\,r(s,a) + \gamma\, V^*(s')\,]$, e per
+calcolarlo serve il modello. Con i valori delle azioni non serve:
+$\pi^*(s) = \arg\max_a Q^*(s,a)$ si legge dalla tabella. Per questo, quando il
+modello manca, si stimano i valori delle azioni.
 
 `````
 
@@ -557,8 +594,8 @@ paga $10$ subito e porta
 nell'obiettivo, che vale $0$: in tutto $10 + 0{,}9 \times 0 = 10$. Tornare
 indietro costa $1$ e porta in $s_0$, che per adesso vale $0$: in tutto
 $-1 + 0{,}9 \times 0 = -1$. Vince scendere, e su $s_1$ scriviamo $10$. Passiamo
-a $s_0$: salire non costa nulla e porta in $s_1$, che sulla scheda vecchia vale
-ancora $0$ (il $10$ l'abbiamo appena scritto su quella nuova, e in questo giro
+a $s_0$: salire non costa nulla e porta in $s_1$, che sul foglio vecchio vale
+ancora $0$ (il $10$ l'abbiamo appena scritto su quello nuovo, e in questo giro
 non si legge), quindi rende $0$; restare fermi costa $1$ e lascia dove si è,
 cioè in $s_0$, che vale $0$, quindi rende $-1$. Vince salire, e su $s_0$
 scriviamo $0$. Il premio è entrato in $s_1$, ma in $s_0$ non è ancora arrivato.
@@ -624,9 +661,9 @@ prima, solo che adesso è un calcolo che un computer ripete identico su un
 milione di caselle.
 
 Un milione, però, è un tetto e non un vanto, ed è la ragione per cui esiste il
-capitolo successivo. La tabella si può scrivere
-finché le situazioni si possono elencare, e ci sono giochi comunissimi in cui
-non si possono.
+{doc}`deep reinforcement learning </DeepReinforcementLearning/overview>`. La
+tabella si può scrivere finché le situazioni si possono elencare, e ci sono
+giochi comunissimi in cui non si possono.
 
 Gli scacchi hanno circa $4{,}8 \times 10^{44}$ posizioni legali, dove
 $10^{44}$ è la scrittura breve di «uno seguito da quarantaquattro zeri». Il Go,
@@ -639,16 +676,16 @@ dove è una stima.
 E poi c'è il caso che chiude il discorso. Prendiamo un solo fotogramma di un
 videogioco Atari, ridotto come lo riducevano gli agenti che imparavano a
 giocare guardando lo schermo: niente colori, solo sfumature di grigio, e una
-griglia di $84$ punti per $84$ (una misura scelta da loro, abbastanza piccola
-da essere maneggiabile e abbastanza grande da vederci ancora qualcosa). Sono
-$7056$ punti, e ognuno può essere in uno di $256$ grigi, dal nero al bianco.
-Le combinazioni si contano moltiplicando: due punti da $256$ grigi danno
-$256 \times 256$ immagini diverse, tre punti $256 \times 256 \times 256$, e
-settemila punti danno $256$ moltiplicato per sé stesso settemila volte, che si
-scrive $256^{7056}$. È un numero di quasi diciassettemila cifre; per contare
-tutti gli atomi dell'universo osservabile ne bastano un'ottantina. Non è che
-su quei mondi la tabella sia lenta: non c'è nessun universo in cui la si possa
-scrivere. Un milione di stati è poco.
+griglia di $84$ pixel per $84$, i puntini di cui è fatta l'immagine (una misura
+scelta da loro, abbastanza piccola da essere maneggiabile e abbastanza grande
+da vederci ancora qualcosa). Sono $7056$ pixel, e ognuno può essere in uno di
+$256$ grigi, dal nero al bianco. Le combinazioni si contano moltiplicando: due
+pixel da $256$ grigi danno $256 \times 256$ immagini diverse, tre pixel
+$256 \times 256 \times 256$, e settemila pixel danno $256$ moltiplicato per sé
+stesso settemila volte, che si scrive $256^{7056}$. È un numero di quasi
+diciassettemila cifre; per contare tutti gli atomi dell'universo osservabile ne
+bastano un'ottantina. Non è che su quei mondi la tabella sia lenta: non c'è
+nessun universo in cui la si possa scrivere. Un milione di stati è poco.
 
 Il premio, si è visto, non resta fermo dov'è: risale il mondo una casella per
 giro, come un'onda che parte dal traguardo e va all'indietro. Su tre stati
@@ -684,17 +721,16 @@ valore vecchio della casella dove si finisce».
 Che i giri siano esattamente sei vale però solo in un mondo come questo, dove
 ogni mossa porta sempre nella stessa casella e il premio sta tutto sul
 traguardo. Quando le mosse hanno esito incerto, cioè quando la stessa mossa a
-volte riesce e a volte no, il calcolo non finisce mai del tutto. A ogni giro,
-però, quello che ancora manca ai numeri veri si riduce, e si riduce
-moltiplicandosi per lo sconto: il motivo è che l'errore di una casella entra
-nel conto della casella prima soltanto dopo essere passato per una
-moltiplicazione per $0{,}9$, ed è quella moltiplicazione che se lo mangia, un
-giro alla volta. Ridursi però non è azzerarsi: con uno sconto di $0{,}9$, dopo
-dieci giri manca circa un terzo di quello che mancava all'inizio ($0{,}9$
-moltiplicato per sé stesso dieci volte fa circa $0{,}35$), dopo altri dieci un
-terzo di quel terzo, e così via. Si smette quando è abbastanza piccolo. In
-tutti e due i casi resta vero il punto: il valore non "si diffonde" ovunque
-insieme, cammina.
+volte riesce e a volte no, di regola il calcolo non si ferma da sé: si avvicina
+ai numeri veri senza mai toccarli. Chiamiamo errore di una casella la distanza
+fra il numero che porta e il suo valore vero. Il numero nuovo di una casella si
+fa con quelli delle caselle d'arrivo moltiplicati per lo sconto, e con loro
+arrivano moltiplicati per lo sconto anche i loro errori: a ogni giro l'errore
+più grande della griglia scende almeno a nove decimi di quello che era. Dopo
+dieci giri ne resta al più il 35% ($0{,}9$ moltiplicato per sé stesso dieci
+volte), dopo venti al più il 12%, e ci si ferma quando è più piccolo di una
+soglia fissata in anticipo. In tutti e due i casi resta vero il punto: il
+valore non arriva dappertutto insieme, cammina, una casella per giro.
 
 ## Policy iteration: valutare e migliorare, a turni
 
@@ -736,96 +772,181 @@ lungo.
 
 Si alternano due passi. **Valutazione**: data la policy $\pi$, si calcola
 $V^\pi$ risolvendo il sistema lineare dell'equazione di Bellman. In forma
-vettoriale è $\mathbf{v}^\pi = \mathbf{r}^\pi + \gamma\, \mathbf{P}^\pi
-\mathbf{v}^\pi$, dove $\mathbf{v}^\pi$ è il vettore dei valori, $\mathbf{r}^\pi$
-quello delle ricompense attese sotto $\pi$ e $\mathbf{P}^\pi$ la matrice di
-transizione fra stati indotta da $\pi$; quindi
-$\mathbf{v}^\pi = (\mathbf{I} - \gamma\, \mathbf{P}^\pi)^{-1} \mathbf{r}^\pi$, e
-l'inversa esiste perché $\mathbf{P}^\pi$ è stocastica e il raggio spettrale di
-$\gamma\, \mathbf{P}^\pi$ non supera $\gamma < 1$. Per eliminazione costa
+vettoriale è
+$\mathbf{v}^\pi = \mathbf{r}^\pi + \gamma\, \mathbf{P}^\pi \mathbf{v}^\pi$,
+dove $\mathbf{v}^\pi$ è il vettore dei valori, $\mathbf{r}^\pi$ quello delle
+ricompense attese sotto $\pi$ e $\mathbf{P}^\pi$ la matrice di transizione fra
+stati indotta da $\pi$; quindi
+$\mathbf{v}^\pi = (\mathbf{I} - \gamma\, \mathbf{P}^\pi)^{-1} \mathbf{r}^\pi$,
+e l'inversa esiste perché $\mathbf{P}^\pi$ è stocastica e il raggio spettrale
+di $\gamma\, \mathbf{P}^\pi$ non supera $\gamma < 1$. Per eliminazione costa
 $O(|\mathcal{S}|^3)$, e per questo con molti stati la si itera, stavolta senza
-$\max$, fino a convergenza. **Miglioramento**: si rende la
-policy *greedy* rispetto ai valori appena calcolati,
+$\max$, fino a convergenza: l'operatore $\mathcal{B}^\pi$ della valutazione, la
+stessa iterazione senza $\max$, è anch'esso una contrazione di fattore $\gamma$
+nella norma del massimo, e per questo converge a $V^\pi$. Si può anche
+aggiornare sul posto, usando subito i valori già ricalcolati nello stesso giro:
+converge lo stesso, e di solito più in fretta {cite}`sutton2018reinforcement`.
+**Miglioramento**: si rende la policy *greedy* rispetto ai valori appena
+calcolati,
 
 $$
 \pi'(s) = \arg\max_{a} \sum_{s'} P(s'\mid s,a)
 \big[\,r(s,a) + \gamma\, V^\pi(s')\,\big].
 $$
 
-Il *policy improvement theorem* garantisce $V^{\pi'}(s) \ge V^\pi(s)$ in ogni
-stato, con miglioramento stretto da qualche parte finché $\pi$ non è ottima; e
-poiché in un MDP finito le policy deterministiche sono in numero finito,
-l'alternanza termina sulla policy ottima in un numero finito di iterazioni,
-al più $|\mathcal{A}|^{|\mathcal{S}|}$ e in pratica pochissime
-{cite}`sutton2018reinforcement`. La terminazione vuole però una cautela: se il
-$\arg\max$ ha azioni pari merito e le sceglie ogni volta in modo diverso,
-l'algoritmo può rimbalzare per sempre fra policy ugualmente buone; si cambia
-azione solo quando la nuova è strettamente migliore, oppure ci si ferma quando
-$V^\pi$ smette di cambiare. Il confronto con la value iteration è un
-compromesso classico: la policy iteration converge in *meno* iterazioni, ma
-ciascuna contiene una valutazione completa (costosa: un sistema di
+Il *policy improvement theorem* dice che, se $Q^\pi(s,\pi'(s)) \ge V^\pi(s)$
+in ogni stato, allora $V^{\pi'}(s) \ge V^\pi(s)$ in ogni stato. La
+dimostrazione è un'espansione ripetuta,
+
+$$
+V^\pi(s) \le Q^\pi(s,\pi'(s))
+= \mathbb{E}_{\pi'}\big[R_{t+1} + \gamma\, V^\pi(S_{t+1}) \mid S_t = s\big],
+$$
+
+in cui sul secondo termine si riapplica la stessa disuguaglianza, passo dopo
+passo, finché resta l'attesa del ritorno sotto $\pi'$. La policy greedy
+soddisfa la condizione per costruzione, con miglioramento stretto da qualche
+parte finché $\pi$ non è ottima; e poiché in un MDP finito le policy
+deterministiche sono in numero finito, l'alternanza termina sulla policy ottima
+in un numero finito di iterazioni, al più $|\mathcal{A}|^{|\mathcal{S}|}$ e in
+pratica pochissime {cite}`sutton2018reinforcement`. La terminazione vuole però
+una cautela: se il $\arg\max$ ha azioni pari merito e le sceglie ogni volta in
+modo diverso, l'algoritmo può rimbalzare per sempre fra policy ugualmente
+buone; si cambia azione solo quando la nuova è strettamente migliore, oppure ci
+si ferma quando $V^\pi$ smette di cambiare. Il confronto con la value iteration
+è un compromesso classico: la policy iteration converge in *meno* iterazioni,
+ma ciascuna contiene una valutazione completa (costosa: un sistema di
 $|\mathcal{S}|$ equazioni, o molte passate); la value iteration fa iterazioni
-molto più economiche (una sola passata con il $\max$) ma ne richiede di più.
-Si può anzi leggere la value iteration come una policy iteration impaziente,
-che tronca la valutazione dopo un solo passo.
+molto più economiche (una sola passata con il $\max$) ma ne richiede di più. Si
+può anzi leggere la value iteration come una policy iteration impaziente, che
+tronca la valutazione dopo un solo passo. L'alternanza fra valutare e
+migliorare, completa o troncata, sincrona o sul posto, ha un nome, *generalized
+policy iteration*, ed è lo schema in cui Sutton e Barto riconoscono quasi tutti
+i metodi di reinforcement learning {cite}`sutton2018reinforcement`.
 
 `````
 
-Due strade per la stessa vetta, insomma: pochi passi pesanti o molti passi
-leggeri. Nei problemi reali si sceglie in base alle dimensioni del problema, o
-si mescolano le due, fermando la pagella dopo poche riletture invece di
-portarla fino in fondo.
+Le due strade portano alla stessa policy ottima: la policy iteration con poche
+iterazioni, ciascuna con una valutazione completa; la value iteration con molte
+iterazioni leggere. Nella pratica si usano anche le vie di mezzo, in cui la
+valutazione si ferma dopo poche passate invece di arrivare fino in fondo
+(*modified policy iteration*).
 
-## Quando manca la mappa
+In codice le due ricette stanno in poche righe, sul mondo a tre caselle della
+{numref}`fig-mdp`: la value iteration ripete il massimo su tutte le caselle, la
+policy iteration parte dalla strategia peggiore, quella che resta ferma e torna
+indietro, e alterna valutazione e correzione.
+
+```python
+import numpy as np
+
+gamma = 0.9
+# Il mondo della figura: s0, s1 e l'obiettivo s2, che chiude la partita.
+# In ogni casella la mossa 0 va verso l'obiettivo, la mossa 1 no.
+P = np.zeros((2, 3, 3))                 # P[a, s, s'] = P(s' | s, a)
+r = np.zeros((3, 2))                    # r[s, a] = ricompensa attesa r(s, a)
+P[0, 0, 1], r[0, 0] = 1, 0              # s0, su:    si va in s1, r = 0
+P[1, 0, 0], r[0, 1] = 1, -1             # s0, resta: si resta in s0, r = -1
+P[0, 1, 2], r[1, 0] = 1, 10             # s1, giù:   si arriva in s2, r = +10
+P[1, 1, 0], r[1, 1] = 1, -1             # s1, torna: si torna in s0, r = -1
+P[:, 2, 2] = 1                          # da s2 non si esce e non si incassa
+NOMI = [["su", "resta"], ["giù", "torna"]]
+
+def valori_mosse(V):
+    """Q(s, a) = r(s, a) + gamma * somma su s' di P(s' | s, a) V(s')."""
+    return r + gamma * np.einsum("ast,t->sa", P, V)
+
+print("value iteration       V(s0)  V(s1)  V(s2)")
+V = np.zeros(3)
+for giro in range(1, 4):
+    V = valori_mosse(V).max(axis=1)     # in ogni casella, la mossa migliore
+    print(f"  giro {giro}            " + "".join(f"{v:7.2f}" for v in V))
+
+print("policy iteration")
+pi = np.array([1, 1, 0])                # si parte da "resta" e "torna"
+caselle = np.arange(3)
+while True:
+    # valutazione: si risolve (I - gamma P_pi) v = r_pi
+    V = np.linalg.solve(np.eye(3) - gamma * P[pi, caselle], r[caselle, pi])
+    print(f"  {NOMI[0][pi[0]]:5} {NOMI[1][pi[1]]:5}       "
+          + "".join(f"{v:7.2f}" for v in V))
+    nuova = valori_mosse(V).argmax(axis=1)       # correzione: greedy su V
+    if (nuova == pi).all():
+        break
+    pi = nuova
+```
+
+```text
+value iteration       V(s0)  V(s1)  V(s2)
+  giro 1               0.00  10.00   0.00
+  giro 2               9.00  10.00   0.00
+  giro 3               9.00  10.00   0.00
+policy iteration
+  resta torna        -10.00 -10.00   0.00
+  su    giù            9.00  10.00   0.00
+```
+
+La value iteration si ferma al terzo giro sui numeri della tabella. La policy
+iteration parte da una strategia che perde un punto a ogni passo per sempre, e
+che scontato fa $-10$ da tutte e due le caselle; alla prima correzione arriva
+sulla strategia giusta e sugli stessi valori, e lì si ferma.
+
+## Quando manca il modello dell'ambiente
 
 C'è però un dettaglio che finora abbiamo dato per scontato, ed è enorme. Per
-fare quei conti ("ricompensa della mossa più valore della casella d'arrivo"),
+fare quei conti ("ricompensa della mossa più valore della casella d'arrivo")
 bisogna *sapere in anticipo* dove porta ogni mossa e quanto paga. Le due
 ricette appena viste richiedono cioè di avere in mano la mappa: per ogni mossa,
 dove si finisce (e con quali probabilità, quando l'esito è incerto) e quanto si
-incassa a farla. È pianificare un viaggio con la cartina già aperta sul tavolo.
+incassa a farla. È pianificare un viaggio con la cartina già aperta sul tavolo,
+e quella cartina sono le regole che, nel {doc}`capitolo sulla ricerca
+</Ricerca/quando-il-mondo-non-si-conosce>`, si potevano interrogare a volontà.
 
-Quella mappa ha un nome tecnico, ed è **modello dell'ambiente**. Attenzione a
-non confonderlo con il «modello» di cui si parla altrove, la rete neurale
+Quella mappa ha un nome tecnico, **modello dell'ambiente**: le probabilità di
+transizione $P(s'\mid s,a)$ e le ricompense attese $r(s,a)$. Attenzione a non
+confonderlo con il «modello» di cui si parla altrove, la rete neurale
 addestrata: qui modello vuol dire una descrizione di come funziona il mondo,
 niente di più. Il robot del nostro labirinto quella descrizione non ce l'ha, e
 il mondo reale quasi mai la consegna: nessuno può dire a un agente, per ogni
 mossa e in anticipo, con che probabilità troverà traffico o come risponderà
 l'avversario a Go.
 
-Quando la mappa manca resta una sola strada: stimare i valori
-*dall'esperienza*, cioè giocando. E ci sono due modi di percorrerla, che le
-prossime due sezioni prendono in ordine.
+Quando la mappa manca, i valori si ricavano dall'esperienza, cioè giocando, e
+le strade sono due. La prima usa le partite per stimare la mappa stessa, le
+probabilità $P(s'\mid s,a)$ e le ricompense $r(s,a)$, e poi su quella stima
+rifà i conti delle due ricette di prima, come fa la {doc}`sezione sull'RL
+basato su modello </DeepReinforcementLearning/model-based>`. La seconda stima i
+valori direttamente, senza passare dalla mappa, e lo si può fare in due modi.
 
 Il primo è il più diretto che si possa immaginare. Si gioca una partita intera,
 si guarda quanti punti si sono fatti, e si usa quel totale per dare un voto a
 tutte le caselle attraversate. Poi un'altra partita, e un'altra ancora, e si fa
-la media. Sono i metodi Monte Carlo, dal nome del casinò, perché tutto si
-regge sul ripetere molte volte una cosa che ogni volta va a finire
-diversamente.
+la media. Sono i {doc}`metodi Monte Carlo <monte-carlo>`, dal nome del casinò,
+perché tutto si regge sul ripetere molte volte una cosa che ogni volta va a
+finire diversamente.
 
 Il secondo non aspetta nemmeno la fine della partita. Dopo ogni singola mossa
 guarda dov'è finito, legge il numero che era già scritto su quella casella (un
 numero provvisorio, magari sbagliato, ma è quello che si ha) e con quello
 corregge subito il numero della casella da cui era partito. Correggere una
-propria stima appoggiandosi a un'altra propria stima sembra un trucco da
-illusionisti, e per certi versi lo è; funziona, e si chiama apprendimento per
-differenze temporali, perché la correzione nasce dalla differenza fra
-quello che si credeva un istante fa e quello che si crede adesso. Il suo
-esemplare più famoso è il Q-learning, con cui il capitolo si chiude.
+stima con un'altra stima, ancora imperfetta, è l'idea dell'apprendimento per
+differenze temporali, che prende il nome dalla correzione: la differenza fra
+quello che si credeva un istante fa e quello che si crede adesso. Che funzioni,
+e a quali condizioni, lo mostra la sezione sul {doc}`Q-learning e le differenze
+temporali <q-learning>`, il suo esemplare più famoso.
 
 `````{tab} Elementare
 
 ```{admonition} Da ricordare
 :class: important
-- Tutto il reinforcement learning sta dentro un giro solo: l'agente si trova in
+- Il reinforcement learning si descrive con un giro solo: l'agente si trova in
   una situazione (il robot in una casella del labirinto), sceglie una mossa,
   finisce da qualche parte e incassa un punteggio. Poi si ricomincia.
 - La situazione deve bastare da sola: come la foto di una partita a
-  scacchi, deve dire tutto ciò che serve per decidere, senza che occorra sapere
-  come ci si è arrivati. Se non basta, si allarga l'inquadratura; e dove non si
-  può, come con le carte coperte degli altri, ci si fa un'idea di quello che c'è
-  sotto e si gioca lo stesso.
+  scacchi, deve dire tutto ciò che serve per prevedere come va avanti, e quindi
+  per decidere, senza che occorra sapere come ci si è arrivati. Se non basta,
+  si allarga l'inquadratura; e dove non si può, come con le carte coperte degli
+  altri, ci si fa un'idea di quello che c'è sotto e si gioca lo stesso.
 - La strategia è l'abitudine dell'agente (in questa casella vado a destra),
   eventualmente truccata come un dado quando conviene provare altro. E il
   futuro pesa meno del presente: dieci euro oggi valgono più di dieci euro
@@ -837,13 +958,14 @@ esemplare più famoso è il Q-learning, con cui il capitolo si chiude.
 - Se la mappa è nota (dove porta ogni mossa e quanto paga), ci sono due
   ricette: aggiornare i numeri di tutte le caselle finché smettono di muoversi,
   oppure alternare pagella e correzione come un allenatore. Quando la mappa
-  manca bisogna imparare giocando: partite intere (Monte Carlo) o correzioni a
-  ogni passo (differenze temporali).
+  manca si impara giocando: o ci si ricostruisce la mappa e si rifanno i conti,
+  oppure si stimano direttamente i valori, con partite intere (Monte Carlo) o
+  con correzioni a ogni passo (differenze temporali).
 - Tutto questo si tiene in una tabella con una casella per situazione, e la
   tabella si scrive finché le situazioni si possono elencare: un milione va
   benissimo, ma gli scacchi ne hanno uno seguito da quarantaquattro zeri e il
-  Go uno seguito da centosettanta zeri. È il muro che il capitolo successivo esiste
-  per aggirare.
+  Go uno seguito da centosettanta zeri. È il muro che il deep reinforcement
+  learning esiste per aggirare.
 ```
 
 `````
@@ -854,21 +976,25 @@ esemplare più famoso è il Q-learning, con cui il capitolo si chiude.
 :class: important
 - Un MDP $(\mathcal{S},\mathcal{A},P,r,\gamma)$ formalizza un agente che
   sceglie azioni, transita fra stati e raccoglie ricompense.
-- La proprietà di Markov: il futuro dipende solo dallo stato presente, non
-  dall'intera storia.
+- La proprietà di Markov: noti lo stato e l'azione presenti, lo stato
+  successivo e la ricompensa non dipendono dal resto della storia.
 - La policy $\pi(a\mid s)$ è la strategia, e senza indice di tempo basta a
   orizzonte infinito o senza scadenza (a orizzonte finito $H$ la policy ottima
   dipende dai passi che mancano); il ritorno scontato $G_t$ pesa il futuro con
-  $\gamma$.
+  $\gamma$, e nei compiti continui l'alternativa allo sconto è la ricompensa
+  media.
 - $V^\pi$ e $Q^\pi$ misurano il ritorno *atteso*; l’equazione di Bellman li
-  definisce in modo ricorsivo, ed è la base di ogni algoritmo di RL.
+  definisce in modo ricorsivo, ed è la base degli algoritmi che stimano
+  funzioni di valore.
 - Con il modello ($P$ e $r$) noto, value iteration e policy iteration
-  calcolano valori e policy ottimi iterando Bellman; quando il modello manca
-  bisogna imparare dall'esperienza, coi metodi Monte Carlo o con le differenze
-  temporali.
+  calcolano valori e policy ottimi iterando Bellman. Quando il modello manca lo
+  si può stimare dall'esperienza e pianificarci dentro, oppure imparare i
+  valori direttamente, coi metodi Monte Carlo o con le differenze temporali; e
+  senza modello la policy greedy si legge dai valori delle azioni, non da quelli
+  degli stati.
 - Tutto l'impianto presuppone $\mathcal{S}$ enumerabile, una casella di
   tabella per stato: $10^6$ stati si trattano, $10^{44}$ (scacchi) o $10^{170}$
-  (Go) no. È l'ipotesi che il capitolo seguente dovrà abbandonare.
+  (Go) no. È l'ipotesi che il deep reinforcement learning dovrà abbandonare.
 ```
 
 `````

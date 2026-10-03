@@ -11,16 +11,18 @@ Kantorovič la riformuli in una veste risolvibile, e quella riformulazione è un
 pezzo del lavoro sull'impiego ottimale delle risorse per cui, nel 1975, gli
 daranno il Nobel per l'economia.
 
-La diffusione, guardata da lontano, è un problema di questa famiglia. Da una
-parte c'è un mucchio di terra a forma di «tutte le fotografie di gatti»,
-dall'altra un mucchio a forma di «rumore»: generare significa spostare il
-secondo sul primo. La sezione precedente ha ottenuto un piano di trasporto per
-una via indiretta, costruendo un processo che rovina i dati e poi invertendolo.
+La diffusione, guardata da lontano, è un problema di questa famiglia. Ci sono
+due distribuzioni, il rumore gaussiano $p_{\text{prior}}$ e i dati
+$p_{\text{dati}}$, come due mucchi di terra di forma diversa, e generare
+significa trasportare il primo sul secondo. La sezione precedente ha costruito
+il trasporto per una via indiretta: un processo che rovina i dati, poi
+invertito.
 La domanda è se non si possa fare la cosa ovvia: scegliere il percorso,
 invece di ereditarlo dal modo in cui si è deciso di rovinare le immagini.
 
-La risposta è sì, il metodo si chiama **flow matching**, e la strada più
-semplice fra due punti risulta essere anche la più economica da percorrere.
+La risposta è sì, il metodo si chiama **flow matching**, e la scelta più
+semplice, una retta fra il dato e il rumore, risulta anche la più comoda da
+percorrere in pochi passi, a patto di intendere bene in che senso è dritta.
 
 ## Invece di rovinare, trasportare
 
@@ -108,8 +110,8 @@ ostacolo. Per insegnarle qualcosa bisogna poterle dire che cosa avrebbe dovuto
 rispondere; e la velocità giusta in un punto dipende da tutti i modi in cui
 ci si può arrivare. In quel punto passano infinite fotografie diverse in
 viaggio verso infiniti rumori diversi, ciascuna con la sua velocità, e quella
-giusta è la loro media. Calcolarla vorrebbe dire fare un integrale su tutto
-l'archivio, per ogni punto e per ogni istante.
+giusta è la loro media. Calcolarla vorrebbe dire sommare su tutto l'archivio
+(fare un integrale, in matematica), per ogni punto e per ogni istante.
 
 Il trucco che sblocca la situazione reggeva già, senza dirlo, il gioco del
 disturbo: la rete di DDPM non vede mai il verso della salita, vede soltanto il
@@ -123,11 +125,13 @@ viaggio lo abbiamo disegnato noi.
 
 Il fatto sorprendente, e il motivo per cui il metodo funziona, è che
 allenarsi sulla velocità del singolo viaggio porta esattamente allo stesso
-posto che allenarsi su quella media. Non è un'approssimazione: le due
-funzioni di costo hanno lo stesso punto di minimo. La ragione è quella che
-rende speciale l'errore quadratico: chi cerca di indovinare un numero
-sorteggiato, e viene giudicato su quanto sbaglia al quadrato, ha come strategia
-migliore rispondere la media di quel numero. Quindi una rete allenata a
+posto che allenarsi su quella media. Non è un'approssimazione: i due voti
+(le due funzioni di costo, nel gergo) danno il voto migliore alla stessa
+rete. La ragione è quella che rende speciale l'errore quadratico: chi cerca di
+indovinare un numero sorteggiato, e viene giudicato su quanto sbaglia al
+quadrato, ha come strategia migliore rispondere la media di quel numero. Con un
+dado: chi risponde sempre 3,5 sbaglia in media, al quadrato, di 2,92; chi
+risponde 3 o 4 di 3,17, e chi risponde 1 di 9,17. Quindi una rete allenata a
 indovinare le singole velocità, proprio perché non può indovinarle tutte,
 finisce per rispondere la loro media, che è quello che ci serviva.
 
@@ -173,8 +177,21 @@ $$
 \;\big|\;\mathbf{x}_t=\mathbf{x}\big] .
 $$
 
-La dimostrazione è un conto di due righe che usa una sola proprietà: il minimo
-di $\mathbb{E}[\lVert a - Y\rVert^2]$ rispetto ad $a$ è $\mathbb{E}[Y]$. È
+La dimostrazione è un conto di due righe. Sviluppando i quadrati, i due
+obiettivi hanno lo stesso termine in $\lVert\mathbf{v}_\theta\rVert^2$, perché
+$p_t(\mathbf{x}) = \int p_t(\mathbf{x}\mid\mathbf{z})\,p(\mathbf{z})\,
+\mathrm{d}\mathbf{z}$; lo stesso termine misto
+$\langle\mathbf{v}_\theta,\cdot\rangle$, perché il campo marginale è per
+definizione
+$\mathbf{u}_t(\mathbf{x}) = \int \mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\,
+p_t(\mathbf{x}\mid\mathbf{z})\,p(\mathbf{z})\,\mathrm{d}\mathbf{z}\,/\,
+p_t(\mathbf{x})$, cioè la media condizionata scritta sopra; e differiscono
+soltanto nel termine in $\lVert\mathbf{u}\rVert^2$, che non dipende da
+$\theta$. La proprietà che lavora sotto è una sola: il minimo di
+$\mathbb{E}[\lVert a - Y\rVert^2]$ rispetto ad $a$ è $\mathbb{E}[Y]$. Perché
+l'obiettivo abbia senso serve però anche il primo teorema dello stesso lavoro:
+se ogni campo condizionato genera il proprio percorso condizionato, il campo
+marginale genera il percorso marginale $p_t$, dove $p_t > 0$. È
 esattamente la struttura del denoising score matching di Vincent, dove il
 bersaglio intrattabile (il punteggio della marginale) veniva sostituito dal
 bersaglio banale (il rumore iniettato), con la stessa garanzia. Riconoscere che
@@ -265,7 +282,10 @@ $$
 - (\boldsymbol{\epsilon}-\mathbf{x}_0)\big\rVert^2\Big],
 $$
 
-cioè tre righe di codice {cite}`liu2023rectified`.
+cioè tre righe di codice {cite}`liu2023rectified`. L'accoppiamento di
+partenza è quello indipendente, $(\mathbf{x}_0,\boldsymbol{\epsilon}) \sim
+p_{\text{dati}} \otimes \mathcal{N}(\mathbf{0},\mathbf{I})$: ogni dato può
+finire con qualunque rumore.
 
 La rettitudine è condizionata, non marginale. Il campo marginale
 $\mathbf{u}_t(\mathbf{x}) = \mathbb{E}[\boldsymbol{\epsilon}-\mathbf{x}_0\mid
@@ -279,9 +299,20 @@ l'accoppiamento deterministico $(\boldsymbol{\epsilon},
 quelle coppie invece di accoppiamenti indipendenti. L'accoppiamento indotto
 non fa incrociare le traiettorie, quindi il nuovo campo marginale è più vicino
 a quello condizionato; iterando, le traiettorie si raddrizzano e il numero di
-passi necessari crolla. Il prezzo è che ogni giro di reflow richiede di
-generare un insieme di coppie con il modello corrente, e che l'accuratezza si
-degrada leggermente a ogni giro.
+passi necessari crolla. Quanto siano dritte si misura con la rettitudine
+$S(Z) = \int_0^1 \mathbb{E}\lVert (Z_1 - Z_0) - \dot{Z}_t\rVert^2\,
+\mathrm{d}t$, nulla se e solo se le traiettorie sono rette; Liu e colleghi
+dimostrano che, su $K$ giri di reflow, il migliore ha
+$\min_{k\le K} S(Z^k) \le \mathbb{E}\lVert X_1 - X_0\rVert^2 / K$, cioè che
+la rettitudine scende come $1/K$ per il migliore dei giri, non che scenda a
+ogni giro. Il prezzo è che ogni giro di reflow richiede di generare un insieme
+di coppie con il modello corrente, e che l'accuratezza si degrada leggermente a
+ogni giro: gli autori stessi sconsigliano di farne troppi, perché l'errore di
+stima si accumula. L'alternativa che evita il secondo addestramento è
+accoppiare dato e rumore già dentro ogni minibatch, risolvendo su quel
+minibatch un piccolo problema di trasporto ottimo discreto: l'accoppiamento si
+avvicina a quello ideale al costo di un assegnamento per minibatch
+{cite}`tong2024improving`.
 
 Un avvertimento sulla parentela con il trasporto ottimo, perché il nome
 inganna. Un accoppiamento che non fa incrociare le traiettorie è monotono,
@@ -294,8 +325,9 @@ Monge. La coincidenza vale in dimensione uno e va lasciata lì.
 `````
 
 Il vantaggio delle strade dritte si misura, e il conto si fa senza addestrare
-niente: su dati costituiti da due sole possibilità il campo di velocità esatto
-si scrive a mano, per il percorso rettificato come per quello della diffusione.
+niente: sui dati della sezione precedente, che possono valere soltanto $-1{,}5$
+o $+1{,}5$ (i due *modi*), il campo di velocità esatto si scrive a mano, per il
+percorso rettificato come per quello della diffusione.
 
 ```python
 import numpy as np
@@ -303,7 +335,7 @@ import numpy as np
 MODI = np.array([-1.5, 1.5])
 T_MIN = 1e-3
 
-# --- percorso rettificato: x_t = (1-t) x0 + t z, quindi x_t|x0 ha
+# --- percorso rettificato: x_t = (1-t) x0 + t eps, quindi x_t|x0 ha
 #     media (1-t) x0 e deviazione t
 def x0_atteso(x, t):
     d = x[:, None] - (1 - t) * MODI[None, :]
@@ -329,11 +361,11 @@ def velocita_diffusione(x, t):
     return -0.5 * beta(t) * (x + punteggio)
 
 rng = np.random.default_rng(0)
-z = rng.normal(size=4000)
+rumore = rng.normal(size=4000)
 
 def integra(campo, passi):
     ts = np.linspace(1.0, T_MIN, passi + 1)
-    x = z.copy()
+    x = rumore.copy()
     for k in range(passi):
         x = x + (ts[k + 1] - ts[k]) * campo(x, ts[k])
     return x
@@ -352,31 +384,36 @@ for passi in (1, 2, 4, 8, 16, 64, 256):
 # ->    16   0.0017   0.0343
 # ->    64   0.0016   0.0135
 # ->   256   0.0015   0.0104
+
+# dove si fermerebbe anche un integratore esatto: i dati veri, portati a T_MIN
+r = np.random.default_rng(1)
+x0, e = r.choice(MODI, size=2_000_000), r.normal(size=2_000_000)
+print(f"esatto  {errore((1 - T_MIN) * x0 + T_MIN * e):.4f}   "
+      f"{errore(alpha(T_MIN) * x0 + sigma(T_MIN) * e):.4f}")
+# -> esatto  0.0016   0.0084
 ```
 
 La tabella dice due cose, e la seconda è la più istruttiva.
 
 La prima è il risultato atteso: con il percorso rettificato otto passi
 bastano ad arrivare più vicino di quanto il percorso della diffusione arrivi
-con duecentocinquantasei. Sull'ultima riga, però, il confronto va letto con una
-riserva: le due colonne non hanno lo stesso pavimento. A un millesimo dalla
-fine, l'ultimo istante a cui la prova arriva, sul percorso rettificato resta
-un velo di disturbo largo 0,001 e su quello della diffusione uno largo
-$0{,}0105$, dieci volte tanto, e quei soli residui valgono $0{,}0016$ e
-$0{,}0084$. Dei $0{,}0104$ della riga a duecentocinquantasei passi, quindi,
-quasi tutto è residuo e non errore di integrazione: il divario vero è quello
-delle righe a quattro e a otto passi, dove è di quasi venti e di sessanta
-volte. Il valore $0{,}0015$ su cui la prima colonna si appoggia non è errore di
-integrazione ma il tempo che si ferma a un millesimo invece che a zero: a
-quell'istante il segnale è ancora rimpicciolito di un millesimo, e
-$1{,}5\times0{,}001$ fa esattamente $0{,}0015$.
+con duecentocinquantasei. Le righe in fondo, però, vanno lette con una
+riserva. La prova si ferma a un millesimo dalla fine, non a zero, e lì resta
+qualcosa che nessun numero di passi toglie: sulla retta il dato è ancora
+rimpicciolito di un millesimo e coperto da un velo di disturbo largo un
+millesimo, sulla diffusione il velo è largo $0{,}0105$. È quello che misura
+l'ultima riga stampata, i dati veri portati a quell'istante senza nessun
+passo: $0{,}0016$ e $0{,}0084$. La retta, a duecentocinquantasei passi, è già
+lì, e dei $0{,}0104$ della diffusione quasi tutto è quel residuo e non errore
+dei passi. Il divario vero fra i due percorsi è quello delle righe a quattro e
+a otto passi, dove la retta sbaglia quasi venti e sessanta volte meno.
 
 La seconda è che con un passo solo il percorso rettificato fa peggio della
-diffusione, e finisce a metà strada fra i due modi. È la conferma numerica
-dell'insidia: al tempo uno la freccia, che è una media, punta verso la media
-dei dati, perché a quell'istante l'immagine di partenza è del tutto dimenticata
-e i due modi pesano uguale. Ogni viaggio è una retta, il campo che li media no,
-e un passo solo lo dimostra.
+diffusione, e finisce a metà strada fra $-1{,}5$ e $+1{,}5$. È la conferma
+numerica dell'insidia: al tempo uno la freccia, che è una media, punta verso la
+media dei dati, perché a quell'istante l'immagine di partenza è del tutto
+dimenticata e i due modi pesano uguale. Ogni viaggio è una retta, il campo che
+li media no, e un passo solo lo dimostra.
 
 Che sia proprio l'incrocio delle traiettorie il problema si vede guardando dove
 finisce ciascun punto di partenza.
@@ -393,11 +430,12 @@ print(bool(np.all(np.diff(arrivo) > 0)))          # la mappa e' monotona -> True
 
 La mappa che il campo induce è monotona: chi parte più a destra arriva più
 a destra, e le traiettorie non si scavalcano mai. L'unica eccezione è il punto
-esattamente a zero, dove i due modi si equivalgono e la velocità è nulla: è lo
-spartiacque fra i due bacini, un punto solo su tutta la retta. È questa
-monotonia che il raddrizzamento sfrutta, ed è anche il motivo per cui in una
-dimensione (e soltanto lì) la mappa che ne esce coincide con quella del
-trasporto ottimo.
+esattamente a zero, dove i due modi si equivalgono e la velocità è nulla: è il
+confine fra chi finisce a $-1{,}5$ e chi a $+1{,}5$, un punto solo su tutta la
+retta. È questa monotonia che il raddrizzamento sfrutta, ed è anche il motivo
+per cui in una dimensione (e soltanto lì) la mappa che ne esce coincide con
+quella del trasporto ottimo, la mappa che sposterebbe la terra di Monge con la
+minima fatica.
 
 ## La stessa cosa vista da due parti
 
@@ -437,7 +475,12 @@ $$
 
 e la relazione si inverte. Le due formulazioni sono quindi la stessa famiglia
 di modelli in due parametrizzazioni, e la differenza fra le loss è ancora una
-volta un peso $w(t)$.
+volta un peso $w(t)$. La relazione ha però $\alpha_t$ a denominatore: per il
+percorso rettificato diverge per $t \to 1$, dove il dato è dimenticato del
+tutto, e lì è la conversione attraverso il punteggio a diventare mal
+condizionata, mentre il campo
+$\mathbf{u}_t = \mathbb{E}[\boldsymbol{\epsilon} - \mathbf{x}_0 \mid
+\mathbf{x}_t]$ resta limitato.
 
 Le tre differenze che restano sono operative e sostanziali:
 
@@ -449,8 +492,12 @@ Le tre differenze che restano sono operative e sostanziali:
   le sponde e disporre di un accoppiamento. Da qui la traduzione fra domini e i
   ponti fra distribuzioni, che con la formulazione a SDE richiedevano
   costruzioni ad hoc.
-- Semplicità della loss. Nessun programma di rumore da tarare, nessun peso
-  da riequilibrare a mano, un solo campo da regredire.
+- Semplicità della loss. Nessun programma di rumore da tarare e un solo
+  campo da regredire. Resta una scelta di peso, la distribuzione $\pi(t)$ con
+  cui si estrae $t$, perché cambiarla equivale a pesare la loss: l'uniforme
+  dà lo stesso peso a tutti i tempi, ma i tempi intermedi sono i più difficili
+  da predire, e Stable Diffusion 3 li favorisce con una distribuzione
+  logit-normale {cite}`esser2024scaling`.
 
 Sono queste tre ragioni, e non un vantaggio teorico, ad aver portato le
 architetture di punta (Stable Diffusion 3 e i modelli della sua generazione)
@@ -463,8 +510,11 @@ Una nota di lessico, perché aprendo il codice di una libreria si incontrano
 tutti e due i vocabolari nello stesso file. «Programma di rumore» e «percorso
 di probabilità» indicano la stessa scelta; «predire il rumore» e «predire la
 velocità» sono due uscite della stessa rete, convertibili l'una nell'altra; e
-un campionatore chiamato *flow matching Euler* e uno chiamato *DDIM* fanno, sul
-percorso rettificato, lo stesso identico passo. Sapere che i due dizionari
+un campionatore chiamato *flow matching Euler* e uno chiamato *DDIM* (nella
+versione deterministica, con le due uscite ricavate dalla stessa predizione)
+fanno, sul percorso rettificato, lo stesso identico passo: lungo la retta
+$\mathbf{x}_s = \mathbf{x}_t + (s-t)\,\hat{\mathbf{v}}$ è esatto per
+entrambi. Sapere che i due dizionari
 traducono lo stesso testo evita di cercare differenze dove ci sono soltanto
 nomi diversi.
 
@@ -485,8 +535,9 @@ nomi diversi.
   differenza fra arrivo e partenza. A quattro passi la retta sbaglia quasi
   venti volte meno del percorso della diffusione, a otto sessanta volte meno.
 - Ma la retta è quella del singolo viaggio: il campo che ne risulta,
-  essendo una media, curva ancora. Con un passo solo si finisce a metà strada
-  fra i due gruppi di dati. Il rimedio è il raddrizzamento: si guarda dove
+  essendo una media, curva ancora. Sulla prova con i dati che valgono soltanto
+  $-1{,}5$ o $+1{,}5$, un passo solo finisce a metà strada fra i due. Il
+  rimedio è il raddrizzamento: si guarda dove
   il modello porta ciascuna partenza, e si riaddestra su quelle coppie.
 - Diffusione e flow matching sono la stessa famiglia in due linguaggi. Quello
   che il secondo aggiunge sono tre libertà pratiche: scegliere il percorso,
@@ -501,8 +552,8 @@ nomi diversi.
 - Un flusso è generato da $\dot\Phi_t = \mathbf{u}_t(\Phi_t)$, e la coppia
   $(p_t,\mathbf{u}_t)$ deve soddisfare l’equazione di continuità
   $\partial_t p_t + \nabla\!\cdot\!(p_t\mathbf{u}_t)=0$. Il campo compatibile
-    con un dato $p_t$ non è unico; sui percorsi gaussiani quello che il flow
-    matching sceglie coincide con la PF-ODE.
+  con un dato $p_t$ non è unico; sui percorsi gaussiani quello che il flow
+  matching sceglie coincide con la PF-ODE.
 - $\mathcal{L}_{\text{FM}}$ è intrattabile; $\mathcal{L}_{\text{CFM}}$, che
   regredisce sulla velocità condizionata, ha lo stesso gradiente e lo
   stesso minimo, che è $\mathbb{E}[\mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\mid
@@ -511,25 +562,28 @@ nomi diversi.
   $\boldsymbol{\epsilon}-\mathbf{x}_0$, costante nel tempo. La rettitudine è
   condizionata: il campo marginale è una media e le sue traiettorie
   curvano ancora. Il reflow riaddestra sull'accoppiamento indotto dalla ODE
-  e le raddrizza, a costo di generare le coppie e di degradare un poco.
+  e le raddrizza (il migliore di $K$ giri ha rettitudine $O(1/K)$), a costo di
+  generare le coppie e di degradare un poco; l'accoppiamento per minibatch con
+  il trasporto ottimo evita il secondo addestramento.
 - Il legame con il punteggio è
   $\mathbf{u}_t = \frac{\dot\alpha_t}{\alpha_t}\mathbf{x} +
   (\frac{\dot\alpha_t}{\alpha_t}\sigma_t^2 - \dot\sigma_t\sigma_t)
   \nabla\log p_t$, quindi le due formulazioni differiscono per una
   riparametrizzazione e un peso.
 - Non è trasporto ottimo. La mappa monotona coincide con la soluzione di
-  Monge solo in dimensione uno; in dimensione maggiore il reflow abbassa il
-  costo di trasporto senza raggiungere l'ottimo.
+  Monge solo in dimensione uno; in dimensione maggiore il reflow non fa
+  crescere il costo di trasporto, ma in generale non converge alla mappa
+  ottima.
 ```
 `````
 
 Con il flow matching il percorso è diventato una scelta di progetto, e la
 scelta migliore accorcia il viaggio. Resta il fatto che quel viaggio va
-comunque percorso, e che percorrerlo significa rileggere, a ogni passo, tutti i
-numeri
-dell'immagine: centinaia di migliaia. Il primo modo di renderlo leggero non
-tocca la strada ma il viaggiatore, ed è quello che ha portato la diffusione sui
-computer di casa: far viaggiare una versione compressa dell'immagine. Ad
-accorciare la strada penseranno poi i {doc}`campionatori veloci
-</ModelliDiffusione/campionatori-veloci>`, con due secoli di analisi numerica
-alle spalle.
+comunque percorso, e che ogni passo è una valutazione della rete su tutti i
+numeri dell'immagine: per una fotografia a colori di $512\times512$ pixel sono
+786.432. Il primo modo di alleggerirla non tocca la strada ma lo spazio in cui
+si viaggia, ed è quello che ha portato la diffusione sui computer di casa: la
+diffusione si fa sulla versione compressa che ne scrive un autoencoder, decine
+di volte più piccola. Ad accorciare la strada penseranno poi i
+{doc}`campionatori veloci </ModelliDiffusione/campionatori-veloci>`, con due
+secoli di analisi numerica alle spalle.

@@ -63,26 +63,26 @@ che spezzano l'indice per aree.
 
 | # | Capitolo | In breve |
 |---|----------|----------|
-| 1 | **Introduzione** | Che cos'è l'AI, da ELIZA a oggi; il primo notebook eseguibile |
+| 1 | **Introduzione** | Che cos'è l'AI, da ELIZA a oggi; il primo notebook eseguibile; che cosa si può calcolare; la robotica |
 | 2 | **Python** | Le basi del linguaggio, NumPy, pandas e matplotlib |
-| 3 | **Richiami di matematica** | Algebra lineare, sistemi lineari, ortogonalità e proiezioni, determinante, ottimizzazione, probabilità, disuguaglianze di concentrazione, catene di Markov, teoria dell'informazione, analisi numerica, e la matematica che sta dentro un modello linguistico |
+| 3 | **Matematica** | Algebra lineare, sistemi lineari, ortogonalità e proiezioni, determinante, ottimizzazione, probabilità, disuguaglianze di concentrazione, catene di Markov, teoria dell'informazione, analisi numerica, e la matematica che sta dentro un modello linguistico |
 | 4 | **Machine Learning** | Apprendimento supervisionato, overfitting, metriche, iperparametri, spline e modelli additivi, alberi e metodi ensemble (Random Forest, gradient boosting, XGBoost), bootstrap, SVM e kernel trick, classificatori generativi (naive Bayes, analisi discriminante), riduzione della dimensionalità e clustering (PCA, t-SNE/UMAP, k-means, DBSCAN) con le metriche per valutarlo, distribution shift, processi gaussiani |
 | 5 | **Teoria dell'apprendimento** | Perché gli esempi bastano: apprendimento PAC e complessità campionaria, dimensione VC e lemma di Sauer, complessità di Rademacher e bound di margine, e l'esperimento delle etichette casuali che mette in crisi le garanzie per le reti profonde |
 | 6 | **Reti Neurali** | Percettrone, funzioni di attivazione, da dove viene la loss, backpropagation |
 | 7 | **PyTorch** | Tensori, autograd, `nn.Module`, training loop, `Dataset` e `DataLoader`, i tre errori più comuni, dal notebook agli script, replicare un paper, prestazioni e scala |
 | 8 | **GPU e calcolo parallelo** | Sotto il cofano: architettura ed esecuzione, gerarchia di memoria, kernel e Triton, GEMM e tensor core, Flash Attention, parallelismo dati/tensor/pipeline e FSDP |
-| 9 | **Efficienza** | Il modello che si addestra non è quello che si usa: quantizzazione (scala e granularità, componenti anomale degli LLM, PTQ e QAT, GPTQ e AWQ), potatura e sparsità strutturata, ipotesi del biglietto della lotteria, distillazione e bersagli morbidi, e perché starci in memoria non sia rispondere in fretta |
+| 9 | **Efficienza** | Il modello che si addestra e quello che si usa: quantizzazione (scala e granularità, componenti anomale degli LLM, PTQ e QAT, GPTQ e AWQ), potatura e sparsità strutturata, ipotesi del biglietto della lotteria, distillazione e bersagli morbidi, e perché starci in memoria non sia rispondere in fretta |
 | 10 | **Deep Learning** | Reti convoluzionali, ottimizzazione e regolarizzazione, architetture storiche, una rete sola per molti compiti |
 | 11 | **Visione Artificiale** | Classificazione e transfer learning, data augmentation, apprendimento auto-supervisionato (SimCLR, MoCo, BYOL, DINO, MAE), detection e segmentazione, geometria e profondità, rendering neurale (NeRF, splatting), style transfer |
 | 12 | **Ricerca e pianificazione** | Guardare avanti senza imparare niente: spazio degli stati e albero di ricerca, ricerca cieca e in profondità iterativa, euristiche ammissibili e consistenti, A*, minimax e potatura alfa-beta, funzione di valutazione ed effetto orizzonte, e le tre ipotesi che cadendo aprono il rinforzo |
 | 13 | **Reinforcement Learning** | Imparare per tentativi: bandit a più braccia, MDP e funzioni valore, metodi Monte Carlo, differenze temporali e Q-learning |
 | 14 | **Deep Reinforcement Learning** | DQN e policy gradient, actor-critic (A2C/A3C/PPO), MCTS e AlphaGo, controllo continuo (DDPG/TD3/SAC), RL basato su modello (MuZero, Dreamer), imitazione e clonazione comportamentale, offline RL (Decision Transformer), esplorazione e reward hacking |
 | 15 | **Natural Language Processing** | Strumenti classici, embedding, tokenizzatori a sotto-parole (BPE, WordPiece, SentencePiece, byte), classificazione, n-gram, RNN/LSTM, seq2seq, POS/NER, parsing, dialogo |
-| 16 | **Transformers** | Self-attention, architettura, Mixture of Experts, GPT/BERT/ViT/CLIP, LLM e scaling, post-training (RLHF/DPO), RAG, multimodalità e multilingua |
+| 16 | **Transformer** | Self-attention, architettura, Mixture of Experts, GPT/BERT/ViT/CLIP, LLM e scaling, post-training (RLHF/DPO), RAG, multimodalità e multilingua |
 | 17 | **Attenzione lineare** | Dall'attenzione quadratica alla ricorrenza lineare; delta rule e gate; DeltaNet, GLA, RetNet, RWKV, xLSTM |
 | 18 | **State Space Model** | Dai sistemi dinamici a S4; Mamba e il selective scan; dualità SSD, Mamba-2 e Mamba-3; ibridi e limiti |
 | 19 | **Visione e linguaggio** | Modelli che vedono e parlano: addestramento contrastivo (CLIP, SigLIP), connettori (Flamingo, Q-Former, proiettore), fusione precoce e vocabolario comune, il costo del dettaglio (tessere, documenti), allucinazione visiva e azioni come token |
-| 20 | **Agenti e applicazioni LLM** | Tool use e ReAct, RAG avanzato (HyDE, reranking, Self-RAG), context engineering, architetture multi-agente e valutazione |
+| 20 | **Agenti** | Tool use e ReAct, RAG avanzato (HyDE, reranking, Self-RAG), context engineering, architetture multi-agente e valutazione |
 | 21 | **Prompt, contesto e loop** | Programmare gli LLM a parole su tre livelli concentrici: prompt engineering (ruoli, few-shot, chain-of-thought, self-consistency), context engineering (le quattro mosse, i guasti del contesto, il PRP), loop engineering (il ciclo con validation gate, split maker/checker, governance) |
 | 22 | **Sistemi multi-agente** | Quando gli agenti sono molti: il costo del coordinamento (Amdahl, composizione degli errori), topologie (supervisore, lavagna, mercato), protocolli e consenso (Condorcet, dibattito, bizantini), MARL e self-play, sciami (ACO, PSO) e società simulate |
 | 23 | **Audio oltre la voce** | Dal suono alle feature (spettrogramma, mel, MFCC), classificazione (AudioSet, AST), rappresentazioni auto-supervisionate (wav2vec 2.0, HuBERT), codec neurali (VQ-VAE, RVQ, EnCodec), generazione (WaveNet, AudioLM, MusicGen) |
@@ -99,7 +99,7 @@ che spezzano l'indice per aree.
 | 34 | **Serie temporali** | Prevedere dal passato: decomposizione, ARIMA e Holt-Winters, validazione temporale e metriche (MASE, pinball loss), forecasting neurale (TCN, DeepAR, N-BEATS, Transformer, foundation model) |
 | 35 | **Physics-Informed Neural Networks** | Le equazioni differenziali dentro la loss; operatori neurali |
 | 36 | **MLOps** | Dal notebook alla produzione: versionamento, pipeline di dati, serving e quantizzazione, metriche di servizio (TTFT, TPOT, goodput), autoscaling e costo per token, gateway e affidabilità (rate limit, ritentativi, routing, chaos engineering), monitoraggio del drift, LLMOps e deploy, il conto in energia |
-| 37 | **Interpretabilità e XAI** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
+| 37 | **Interpretabilità** | Aprire la scatola nera: modelli trasparenti, importanza delle feature, LIME/SHAP/controfattuali, Grad-CAM e integrated gradients, interpretabilità meccanicistica |
 | 38 | **AI responsabile** | Equità e bias, privacy (differential privacy, federated learning) e robustezza agli attacchi avversari, sicurezza degli LLM (prompt injection, jailbreak, red teaming), allineamento (RLHF/DPO) e governance (l'AI Act europeo) |
 | 39 | **Conclusioni** | Bilancio e letture per proseguire |
 

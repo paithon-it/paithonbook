@@ -45,11 +45,11 @@ l'abbiamo già incontrata nella {doc}`sezione sull'apprendimento supervisionato
 testo. Il confronto tra i due, vedremo, insegna una distinzione che attraversa
 tutto il machine learning.
 
-## Naive Bayes: indizi che votano
+## Naive Bayes: la regola di Bayes con un'ipotesi ingenua
 
-L'idea di Naive Bayes è quella del detective che non ha la prova regina ma
-tanti piccoli indizi: nessuna parola, da sola, dimostra che un'email è spam,
-ma ogni parola *sposta* un po’ il sospetto.
+Naive Bayes assegna a un documento la classe più probabile applicando la regola
+di Bayes con un'ipotesi semplificatrice: nessuna parola, da sola, decide che
+un'email è spam, ma ciascuna *sposta* un po’ la probabilità a favore o contro.
 
 ```{figure} ../figures/naive-bayes-filtro-antispam.svg
 :name: fig-naive-bayes-spam
@@ -60,21 +60,21 @@ Nessun indizio decide da solo. Ogni parola porta il proprio piccolo peso al
 calcolo, e il verdetto è la probabilità che ne risulta.
 ```
 
-In {numref}`fig-naive-bayes-spam` si vede anche dove sta l'ingenuità che dà il
-nome al metodo: le frecce entrano nel calcolo tutte allo stesso modo, senza
-mai incontrarsi fra loro. «Offerta» e «gratis» in una stessa frase valgono
-quanto le stesse due parole in capo opposto al messaggio. Il modello fa votare
-tutti gli indizi e sceglie l'etichetta che ne esce meglio. L'aggettivo *naive*,
-"ingenuo", è dichiarato nel nome: ogni parola vota per conto suo, come se le
-altre non esistessero.
+Nella {numref}`fig-naive-bayes-spam` si vede anche dove sta l'ingenuità che dà
+il nome al metodo: le frecce entrano nel calcolo ciascuna per conto suo, senza
+mai incontrarsi. L'aggettivo *naive*, "ingenuo", è dichiarato nel nome: ogni
+parola vota come se le altre non esistessero, e se «offerta» e «gratis»
+compaiono quasi sempre insieme, il modello le conta come due indizi
+indipendenti e lo stesso sospetto vota due volte. Il modello fa votare tutti
+gli indizi e sceglie l'etichetta che ne esce meglio.
 
-Ne segue una cosa che conviene mettere a fuoco adesso, perché tornerà alla fine
-della sezione: un giudice fatto così non vede l'ordine delle parole. Riceve
-un sacchetto di parole e conta chi c'è dentro; di chi veniva prima e chi dopo
-non gli arriva niente. Per lui «Il gatto nero salta sul muro» e «Il muro nero
-salta sul gatto» sono lo stesso identico messaggio. Per decidere se una
-recensione è entusiasta se ne può fare a meno; per altre cose no, ed è il
-motivo per cui il NLP non si ferma qui.
+A questa ipotesi se ne aggiunge un'altra, quella del sacchetto di parole. Il
+giudice riceve un sacchetto e conta chi c'è dentro; di chi veniva prima e chi
+dopo non gli arriva niente, e per lui «Il gatto nero salta sul muro» e «Il muro
+nero salta sul gatto» sono lo stesso identico messaggio. È un'ipotesi diversa
+dalla prima, e vale per qualunque modello che legga un sacchetto, ingenuo o
+no. Per decidere se una recensione è entusiasta se ne può fare a meno; per
+altre cose no, ed è il motivo per cui il NLP non si ferma qui.
 
 `````{tab} Elementare
 
@@ -110,8 +110,11 @@ votare da estranee.
 Una parola della nuova email mai vista nella pila delle spam vale zero, e uno
 zero moltiplicato spegne l'intera pila per colpa di una parola sola. Si regala
 allora un conteggio a tutte le parole, così nessuna resta a secco; il regalo si
-paga, perché chi aggiunge 1 al numeratore deve aggiungere al denominatore il
-numero dei regali distribuiti. È la regola del +1 di Laplace.
+paga, perché chi aggiunge 1 sopra la linea di frazione deve aggiungere sotto
+tanti regali quanti ne ha distribuiti. Contando le email, i regali sono due,
+uno per «c'è» e uno per «non c'è»: «premio», mai vista fra le 4 spam, passa da
+0 su 4 a (0 + 1) su (4 + 2), cioè un sesto, e «gratis» da 3 su 4 a 4 su 6. È
+la regola del +1 di Laplace.
 
 Le email vere hanno trecento parole, e trecento frazioni moltiplicate una dopo
 l'altra danno un numero con centinaia di zeri dopo la virgola: sotto una certa
@@ -170,7 +173,7 @@ $$
 P(w \mid c) = \frac{\mathrm{conta}(w, c) + 1}{\sum_{w' \in V} \mathrm{conta}(w', c) + |V|},
 $$
 
-un'idea che ritroveremo, identica, nella prossima sezione sui modelli n-gram.
+un'idea che ritroveremo, identica, nei modelli n-gram.
 Infine un accorgimento numerico: un prodotto di centinaia di probabilità
 minuscole va in *underflow*, perciò in pratica si lavora nello spazio dei
 logaritmi, massimizzando $\log P(c) + \sum_i \log P(w_i \mid c)$; il prodotto
@@ -188,14 +191,26 @@ compare («gratis» in 3 spam su 4) e non quante occorrenze ha sul totale dei
 token delle spam: due ricette diverse, e i numeri di un conto non si ottengono
 con la formula dell'altro. La variante di Bernoulli è preferibile quando
 interessa la presenza e non la quantità (testi molto corti, vocabolari piccoli)
-e in `scikit-learn` si chiama `BernoulliNB`.
+e in `scikit-learn` si chiama `BernoulliNB`. Anche il lisciamento cambia: si
+aggiunge 1 ai documenti che contengono la parola e 1 a quelli che non la
+contengono, $P(w \mid c) = (\mathrm{doc}(w, c) + 1)/(m_c + 2)$, con
+$\mathrm{doc}(w, c)$ il numero di documenti di classe $c$ che contengono $w$ e
+$m_c$ il numero di documenti della classe. Nel confronto di McCallum e Nigam
+{cite}`mccallum1998comparison` il modello di Bernoulli fa a volte meglio con
+vocabolari piccoli, ma con vocabolari grandi vince quasi sempre il
+multinomiale, che riduce l'errore in media del 27% (in termini relativi).
 
 `````
 
 L'ipotesi di indipendenza è linguisticamente falsa (le parole si tirano a
-vicenda) eppure Naive Bayes funziona sorprendentemente bene: si addestra con
-un solo passaggio sui dati (basta contare), regge anche con pochi esempi
-etichettati, e per decenni è stato il cuore dei filtri antispam reali.
+vicenda) eppure Naive Bayes funziona bene, e la ragione si conosce: per
+classificare basta che la classe giusta abbia il punteggio più alto, non che
+le probabilità siano esatte, e la distorsione dovuta alle dipendenze può
+colpire le classi in modo simile senza cambiare la decisione
+{cite}`domingos1997optimality`. Le probabilità, in compenso, escono troppo
+estreme. Si addestra con un solo passaggio sui dati (basta contare), regge
+anche con pochi esempi etichettati, e per decenni è stato il cuore dei filtri
+antispam reali.
 
 ## Alla prova: il sentiment delle recensioni
 
@@ -207,15 +222,15 @@ decidere se un testo esprime un giudizio positivo o negativo.
 :alt: "Catena di tre stadi in fila, più l'esito. Il testo grezzo di una recensione stroncatoria diventa un vettore di pesi TF-IDF, in cui le parole distintive pesano molto e quelle comuni quasi nulla; il vettore passa a una regressione logistica, che somma i pesi e li confronta con una soglia; in uscita, di due etichette possibili, si accende «negativo»."
 :width: 96%
 
-La catena, dal testo alla polarità. Ogni stadio è sostituibile: cambiare
-tokenizzatore o classificatore non cambia la forma della pipeline.
+La catena, dal testo alla polarità (positiva o negativa). Ogni stadio è
+sostituibile: cambiare tokenizzatore o classificatore non cambia la forma della
+pipeline.
 ```
 
-La catena di {numref}`fig-pipeline-sentiment` è fatta di stadi staccabili, e
-questo è il motivo per cui il compito è rimasto un banco di prova per
-vent'anni: si tiene fisso tutto e si cambia un solo pezzo, ed è così che si
-confrontano metodi lontanissimi fra loro, dal conteggio di parole del 2002 ai
-modelli di oggi.
+Gli stadi della catena della {numref}`fig-pipeline-sentiment` sono
+staccabili: si tiene fisso il resto e si cambia un pezzo solo, e questo
+permette di confrontare sullo stesso compito metodi lontanissimi fra loro, dal
+conteggio di parole del 2002 ai modelli di oggi.
 
 Lo studio che aprì il filone è del 2002, e lo firmano Bo Pang, Lillian Lee e
 Shivakumar Vaithyanathan {cite}`pang2002thumbs`. Presero 1.400 recensioni di
@@ -230,7 +245,7 @@ Due risultati restano istruttivi. Il primo: tutti e tre i giudici, che il
 giudizio se lo erano ricavato dagli esempi, arrivavano intorno all'80 per cento
 di risposte esatte, cioè nettamente meglio del metodo artigianale con cui si
 faceva prima, che era compilare a mano una lista di parole belle e una di
-parole brutte e contare chi vince (le rivedremo in fondo alla sezione). Il
+parole brutte e contare chi vince (le si ritrova con i lessici di sentiment). Il
 secondo: giudicare il tono si rivelò più difficile che riconoscere di che
 argomento parla un testo, perché l'argomento sta nelle parole e il giudizio si
 nasconde nei giri di frase, che i conteggi prendono male.
@@ -255,22 +270,30 @@ recensioni = [
 ]
 etichette = [1, 1, 1, 1, 0, 0, 0, 0]  # 1 = positiva, 0 = negativa
 
-# CountVectorizer = bag-of-words; alpha=1.0 e' lo smoothing di Laplace
+# CountVectorizer = bag-of-words; alpha=1.0 è lo smoothing di Laplace
 modello = make_pipeline(CountVectorizer(), MultinomialNB(alpha=1.0))
 modello.fit(recensioni, etichette)
 
 nuove = ["una regia splendida e attori bravissimi",
          "prevedibile e senza emozioni, che delusione"]
-print(modello.predict(nuove))          # [1 0]
-print(modello.predict_proba(nuove))    # probabilita' per classe
+print(modello.predict(nuove))                  # la classe di ciascuna
+print(modello.predict_proba(nuove).round(3))   # righe: recensioni;
+                                               # colonne: classe 0, classe 1
 ```
 
-Otto esempi sono pochi per qualunque conclusione seria, ma la meccanica è
-tutta qui: conteggi in ingresso, regola di Bayes in mezzo, verdetto in
-uscita. Al posto di `CountVectorizer` si può usare il `TfidfVectorizer` già
-visto nella sezione sulla rappresentazione del testo.
+```text
+[1 0]
+[[0.221 0.779]
+ [0.905 0.095]]
+```
 
-## La regressione logistica: pesare gli indizi
+Le probabilità si leggono per riga: la prima recensione è positiva al 77,9 per
+cento, la seconda negativa al 90,5. Otto esempi sono pochi per qualunque
+conclusione seria, ma la meccanica è tutta qui: conteggi in ingresso, regola di
+Bayes in mezzo, verdetto in uscita. Al posto di `CountVectorizer` si può usare
+il `TfidfVectorizer` già visto nella sezione sulla rappresentazione del testo.
+
+## La regressione logistica: un peso per parola
 
 Naive Bayes conta le parole dentro ciascuna delle due etichette possibili
 («classe» è il nome tecnico per «etichetta», e da qui in avanti si trovano tutti
@@ -309,7 +332,7 @@ punteggi positivi verso 1 e quelli negativi verso 0, senza mai arrivare né
 all'uno né all'altro. Più il punteggio è alto, più il risultato si avvicina a
 uno: a 3,5 la regola risponde circa 0,97, molto convinta ma non certa. (Quel
 0,97 non è a occhio: la sigmoide è una formula sola, $1/(1 + e^{-z})$, e
-mettendoci $z = 3{,}5$ esce $0{,}9707$. Se il conto non vi dice niente, tenete
+mettendoci $z = 3{,}5$ esce $0{,}9707$. Se il conto non ti dice niente, tieni
 l'idea: punteggio alto, probabilità vicina a uno.) Se le
 etichette possibili sono più di due (per esempio lo sportello giusto fra
 reclami, fatturazione e informazioni) al posto della sigmoide c'è la sua
@@ -343,11 +366,27 @@ la stessa grafia: minuscolo grassetto per i vettori. Per $K$ classi i pesi
 diventano una matrice $\mathbf{W} \in \mathbb{R}^{K \times |V|}$ e la
 sigmoide lascia il posto alla softmax,
 $\hat{\mathbf{y}} = \mathrm{softmax}(\mathbf{W}\mathbf{x} + \mathbf{b})$, con
-$\hat{\mathbf{y}} \in \mathbb{R}^{K}$ il vettore delle probabilità. I parametri
-si stimano minimizzando la cross-entropia
-$\mathcal{L}$ con la discesa del gradiente (non esiste una soluzione in forma
-chiusa) tipicamente con una regolarizzazione L2 che scoraggia pesi estremi su
-parole rare. Un vantaggio pratico: le feature non devono essere solo parole.
+$\hat{\mathbf{y}} \in \mathbb{R}^{K}$ il vettore delle probabilità. Nel caso
+a due classi i parametri si stimano minimizzando la cross-entropia media con
+un termine di regolarizzazione $L^2$,
+
+$$
+\mathcal{L}(\mathbf{w}, b) = -\frac{1}{m}\sum_{i=1}^{m}
+\Bigl[y_i \log\hat{y}_i + (1 - y_i)\log(1 - \hat{y}_i)\Bigr]
++ \lambda\,\lVert\mathbf{w}\rVert_2^2 ,
+$$
+
+dove $m$ è il numero di documenti di addestramento, $y_i \in \{0, 1\}$
+l'etichetta del documento $i$, $\hat{y}_i$ la probabilità che il modello gli
+assegna e $\lambda \ge 0$ il coefficiente di regolarizzazione (in
+`scikit-learn` si imposta il suo inverso, `C`). $\mathcal{L}$ è convessa,
+quindi la discesa non resta intrappolata in minimi locali, ma non ha una
+soluzione in forma chiusa, e si usano metodi iterativi (la discesa del
+gradiente, o L-BFGS in `scikit-learn`). Senza regolarizzazione, su dati
+linearmente separabili il minimo non esiste: la perdita continua a scendere
+mentre i pesi crescono senza limite, ed è il caso di una parola rara che
+compare in una recensione sola. Con $\lambda > 0$ i pesi restano finiti. Un
+vantaggio pratico: le feature non devono essere solo parole.
 Si possono affiancare le coppie di parole adiacenti (i *bigrammi*), la
 lunghezza del documento, il numero di punti esclamativi, i conteggi da un
 lessico di sentiment: il modello impara il peso di ciascuna, qualunque cosa
@@ -364,9 +403,11 @@ profonda.
 
 ## Generativo contro discriminativo
 
-Perché tenere due modelli per lo stesso compito? Perché incarnano due
-filosofie diverse, e la differenza (al di là del testo) è uno dei confini
-concettuali del machine learning.
+Naive Bayes e regressione logistica arrivano alla stessa forma di decisione,
+una combinazione lineare dei conteggi, per due strade opposte, e la differenza
+è una delle distinzioni fondamentali del machine learning: un modello
+*generativo* impara come sono fatti i documenti di ciascuna classe, un modello
+*discriminativo* impara direttamente quale classe ha un documento dato.
 
 `````{tab} Elementare
 
@@ -413,9 +454,11 @@ $$
 $$
 
 dove $x_w$ è il conteggio di $w$ in $d$. È una funzione lineare di $\mathbf{x}$,
-della stessa forma $\mathbf{w}^\top\mathbf{x}+b$ della regressione logistica: il
-peso della parola $w$ è il logaritmo del rapporto fra le sue due probabilità, e
-$b$ quello fra le priori. Cambia come si scelgono i pesi: per conteggio, parola
+della stessa forma $\mathbf{w}^\top\mathbf{x}+b$ della regressione logistica
+(in grassetto $\mathbf{w}$ è il vettore dei pesi, in tondo $w$ è una parola del
+vocabolario): il peso della parola $w$ è
+$\log\frac{P(w\mid c_1)}{P(w\mid c_0)}$, e $b$ è il logaritmo del rapporto
+fra le priori. Cambia come si scelgono i pesi: per conteggio, parola
 per parola, oppure per massima verosimiglianza condizionata, tutti insieme. Ng e
 Jordan {cite}`ng2001discriminative` ne ricavano un compromesso, dimostrato per
 feature binarie (il Naive Bayes di Bernoulli) e per feature gaussiane: l'errore
@@ -431,29 +474,29 @@ evidenze non indipendenti e produce probabilità mal calibrate, schiacciate vers
 logistica, ottimizzando i pesi congiuntamente, ripartisce il credito tra feature
 correlate. In cambio, Naive Bayes ha stime a bassa varianza che convergono con
 pochi dati e si addestra in un solo passaggio; la regressione logistica tende a
-vincere quando gli esempi abbondano. Già nei confronti di Pang, Lee e
-Vaithyanathan sulle recensioni di film i modelli discriminativi tendevano a
-superare Naive Bayes, ma di poco {cite}`pang2002thumbs`: su compiti lessicali
-con dati scarsi, l'ingenuo resta un avversario dignitoso.
+vincere quando gli esempi abbondano. Nei confronti di Pang, Lee e
+Vaithyanathan sulle recensioni di film la regressione logistica (la «massima
+entropia» del loro articolo) e Naive Bayes stavano vicini, a volte avanti
+l'una e a volte l'altro: con le sole presenze di parola 80,4 contro 81,0 per
+cento a favore di Naive Bayes, mentre le SVM guadagnavano un paio di punti
+(82,9) {cite}`pang2002thumbs`. Su compiti lessicali, e tanto più con pochi
+dati, l'ingenuo resta un avversario dignitoso.
 
 `````
 
 ## Il classificatore in PyTorch
 
-La bilancia a due piatti, tradotta in PyTorch, sta in tre righe: un peso per
-parola, un ciclo che li aggiusta, un verdetto. Prima di guardarla, la traduzione
-dei tre nomi che compaiono nel programma. `nn.Linear` *è* la bilancia: un
-peso per parola più una costante che sposta l'ago (il *bias*). Il ciclo `for` è
-l'addestramento, cioè trecento passaggi sugli stessi otto esempi, in ciascuno
-dei quali i pesi si spostano un pochino nella direzione che fa sbagliare di
-meno. E il logit è il punteggio grezzo della bilancia, quel 3,5 di prima:
-il numero che la curva a S non ha ancora trasformato in probabilità.
-
-Chi ha letto il {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`
-riconoscerà qui il percettrone,
-cioè un neurone artificiale solo: la ricetta è la stessa, un peso per ingresso
-e una somma, e cambia solo come si schiaccia il risultato alla fine. Riusiamo
-il micro-corpus di prima, con vettori TF-IDF in ingresso:
+In PyTorch il modello è un solo strato lineare. `nn.Linear` calcola il
+punteggio $z = \mathbf{w}^\top\mathbf{x} + b$, un peso per parola più il
+*bias* $b$, la costante che sposta l'ago; finché non passa dalla curva a S il
+punteggio si chiama *logit*, ed è il 3,5 della bilancia di prima. Il ciclo
+`for` è l'addestramento: trecento passi sugli stessi otto esempi, in ciascuno
+dei quali l'ottimizzatore (Adam) sposta i pesi un poco nella direzione che
+riduce la perdita. È un neurone artificiale solo, come il
+{doc}`percettrone </RetiNeurali/percettrone>`, con due differenze: la sigmoide
+al posto del gradino, e la cross-entropia al posto della regola di
+aggiornamento del percettrone. Si riusa il micro-corpus di prima, con vettori
+TF-IDF in ingresso:
 
 ```python
 import torch
@@ -466,19 +509,19 @@ vec = TfidfVectorizer()
 X = torch.tensor(vec.fit_transform(recensioni).toarray(), dtype=torch.float32)
 y = torch.tensor(etichette, dtype=torch.float32).unsqueeze(1)
 
-modello = nn.Linear(X.shape[1], 1)      # un peso per parola, piu' il bias
+modello = nn.Linear(X.shape[1], 1)      # un peso per parola, più il bias
 loss_fn = nn.BCEWithLogitsLoss()        # sigmoide + cross-entropia binaria
 ottim = torch.optim.Adam(modello.parameters(), lr=0.05)
 
 for epoca in range(300):
     ottim.zero_grad()
-    perdita = loss_fn(modello(X), y)    # il modello emette logit, non probabilita'
+    perdita = loss_fn(modello(X), y)    # logit, non probabilità
     perdita.backward()
     ottim.step()
 
 with torch.no_grad():
     X_nuove = torch.tensor(vec.transform(nuove).toarray(), dtype=torch.float32)
-    print(torch.sigmoid(modello(X_nuove)).squeeze())  # probabilita' "positiva"
+    print(torch.sigmoid(modello(X_nuove)).squeeze())  # probabilità "positiva"
 ```
 
 Una nota sul nome più ostico, `BCEWithLogitsLoss`: fonde in un'unica operazione
@@ -492,8 +535,13 @@ interrogare, parola per parola:
 pesi = modello.weight.detach().squeeze()
 parole = vec.get_feature_names_out()
 ordine = pesi.argsort().tolist()
-print("piu' negative:", [parole[i] for i in ordine[:3]])
-print("piu' positive:", [parole[i] for i in ordine[-3:]])
+print("più negative:", [parole[i] for i in ordine[:3]])
+print("più positive:", [parole[i] for i in ordine[-3:]])
+```
+
+```text
+più negative: ['ore', 'soldi', 'senza']
+più positive: ['fotografia', 'sorprende', 'che']
 ```
 
 Con otto recensioni, però, la lista dice più sul corpus che sulla lingua: in
@@ -503,21 +551,24 @@ storia che sorprende» e in «che noia». La recensione entusiasta è la più co
 delle due, e in un vettore riportato alla stessa misura complessiva la stessa
 parola pesa di più dove le altre sono meno; basta quel poco perché il suo
 pesetto finisca sul piatto positivo. Su un corpus vero, dove ogni parola si è
-vista in contesti diversi, in cima e in fondo compaiono quelle che un lettore
-umano sottolineerebbe: il modello è una bilancia trasparente, e questa
-leggibilità è uno dei motivi per cui resta un riferimento anche nell'era dei
-Transformer.
+vista in contesti diversi, in cima e in fondo compaiono di solito quelle che
+un lettore umano sottolineerebbe; quando però il corpus è sbilanciato in un
+modo che non ha a che fare con il giudizio (la fonte, il periodo, il formato
+dei testi), in cima finisce la parola che tradisce quello sbilanciamento. Il
+modello resta una bilancia trasparente, i cui pesi si leggono, a patto di non
+scambiare per una spiegazione quella che può essere una scorciatoia del
+corpus; e questa leggibilità è uno dei motivi per cui resta un riferimento
+anche nell'era dei Transformer.
 
 ## Giudicare il giudice
 
-Come si misura un classificatore di testi? Con gli strumenti già costruiti nel
-capitolo sul machine learning: la matrice di confusione, la precision, la
-recall e la loro sintesi $F_1$. Le due parole inglesi sono quelle che si
-trovano ovunque, e conviene ridirle nel modo più corto possibile: di quello
-che il sistema ha segnalato, quanto era davvero da segnalare (precision)?
-E di quello che andava segnalato, quanto ne ha trovato (recall)? La prima
-misura gli abbagli, la seconda le omissioni; $F_1$ è la loro sintesi in un
-numero solo.
+Un classificatore di testi si valuta con gli strumenti di {doc}`Valutare un
+modello: le metriche </MachineLearning/metriche>`: la matrice di confusione,
+la precision, la recall e la loro sintesi $F_1$. Le due parole inglesi si
+ridicono in una riga ciascuna. Di quello che il sistema ha segnalato, quanto
+era davvero da segnalare (precision)? E di quello che andava segnalato, quanto
+ne ha trovato (recall)? La prima misura gli abbagli, la seconda le omissioni;
+$F_1$ è la loro sintesi in un numero solo.
 
 ```{figure} ../figures/precision-recall-f1.svg
 :name: fig-quattro-caselle
@@ -533,11 +584,14 @@ scendendo lungo una colonna. Di quella da segnalare, quanta ne è stata trovata:
 Il promemoria di {numref}`fig-quattro-caselle` serve perché le due domande
 tirano in direzioni opposte, e la ragione è più semplice di quanto sembri. Il
 giudice non risponde sì o no: emette un punteggio, e c'è una soglia oltre la
-quale segnala. Abbassate la soglia e segnalerete di più: troverete più roba
-vera (la recall sale) ma anche più falsi allarmi (la precision scende).
-Alzatela e succede l'esatto contrario. Un solo cursore, due numeri che si
-muovono in senso inverso: per questo non ha senso chiedere «quanto è bravo» in
-astratto, senza dire quale dei due errori costa di più.
+quale segnala. Abbassa la soglia e segnalerai di più: la recall non può che
+salire o restare ferma, perché le segnalazioni giuste di prima restano tutte,
+mentre la precision di solito scende, perché fra i nuovi segnalati entrano
+soprattutto falsi allarmi (di solito, non sempre: se il caso che entra è
+giusto, la precision sale). Alzala e succede il contrario. Un solo cursore,
+due numeri che tendono a muoversi in senso inverso: per questo non ha senso
+chiedere «quanto è bravo» in astratto, senza dire quale dei due errori costa di
+più.
 
 E nei testi il costo è quasi sempre asimmetrico. In un filtro antispam una
 mail buona cestinata (falso allarme) è molto peggio di uno spam sfuggito,
@@ -545,32 +599,39 @@ quindi comanda la precision. In un sistema che cerca segnalazioni di un difetto
 pericoloso è il contrario. La metrica da guardare discende da quel costo, non
 da una convenzione.
 
-Quando servono tutte e due in un numero solo si usa $F_1$, che è una media
-costruita apposta perché un voto basso non si possa nascondere dietro un voto
-alto. La ricetta: si moltiplicano i due numeri, si raddoppia il prodotto, e lo
-si divide per la loro somma. In simboli, chiamando $P$ la precision e $R$ la
-recall (questa $P$ è un numero fra zero e uno, non la probabilità $P(\cdot)$
-dei conti di Naive Bayes), $F_1 = 2PR/(P+R)$.
+Quando servono tutte e due in un numero solo si usa $F_1$, la loro *media
+armonica*, una media costruita apposta perché un voto basso non si possa
+nascondere dietro un voto alto. La ricetta: si moltiplicano i due numeri, si
+raddoppia il prodotto, e lo si divide per la loro somma. In simboli, chiamando
+$P$ la precision e $R$ la recall (lettere scelte per le iniziali: questa $P$ è
+un numero fra zero e uno e non una probabilità), $F_1 = 2PR/(P+R)$.
 
-Provate con precision $1{,}0$ e recall $0{,}1$, cioè un sistema che segnala
+Prova con precision $1{,}0$ e recall $0{,}1$, cioè un sistema che segnala
 pochissimo e però non sbaglia mai. La media normale, quella di scuola, darebbe
 un onorevole $(1{,}0 + 0{,}1)/2 = 0{,}55$. Con $F_1$: il prodotto è $0{,}10$,
 raddoppiato fa $0{,}20$, la somma dei due voti è $1{,}1$, e $0{,}20$ diviso
 $1{,}1$ fa $0{,}18$. Il voto basso comanda, ed è giusto così: un sistema che
 segnala una cosa sola e la azzecca non ha risolto niente.
 
-Resta il tranello che nel capitolo sul machine learning avevamo battezzato
-"l'accuratezza inganna", e nei testi è la regola più che l'eccezione, perché le
-classi sono quasi sempre sbilanciate. Se solo un'email su cento è spam, il
-filtro pigro che risponde sempre "legittima" sfoggia il 99% di risposte esatte
-senza aver fermato nulla. Quale metrica privilegiare è la definizione di
-"successo" per quel particolare giudice.
+Con più di due etichette (lo sportello dei reclami, quello della fatturazione,
+quello delle informazioni) i conti si riassumono in due modi. La media *micro*
+somma le caselle di tutte le etichette e calcola un’$F_1$ sola, e con una sola
+etichetta per documento coincide con l'accuratezza; la media *macro* calcola
+un’$F_1$ per etichetta e ne fa la media semplice, dando lo stesso peso alle
+etichette rare, che nei testi sono spesso quelle che contano.
+
+Resta il tranello che fra le metriche del machine learning ha un titolo suo,
+«Perché l'accuratezza inganna», e nei testi è la regola più che l'eccezione,
+perché le classi sono quasi sempre sbilanciate. Se solo un'email su cento è
+spam, il filtro pigro che risponde sempre "legittima" sfoggia il 99% di
+risposte esatte senza aver fermato nulla. Quale metrica privilegiare è la
+definizione di "successo" per quel particolare giudice.
 
 ## Il termometro delle parole: i lessici di sentiment
 
 Prima di chiudere, un attrezzo più artigianale ma tuttora utile: i **lessici
-di sentiment**, liste di parole con la loro polarità compilate una volta per
-tutte.
+di sentiment**, liste di parole con la loro polarità, cioè il loro segno,
+positivo o negativo, compilate una volta per tutte.
 
 `````{tab} Elementare
 
@@ -598,29 +659,31 @@ solo segno. L'ironia: «complimenti davvero», scritto sotto il racconto di un
 disastro, in un elenco di parole conta come una lode. E la negazione: «non è
 affatto male» è un complimento, eppure è fatto soltanto di parole che
 un elenco di quel genere marchia come negative o neutre, «non» e «male» in
-testa. È lo stesso esempio che ritroveremo negli
-{doc}`esempi pratici del capitolo sui Transformer </Transformers/esempi>`, e
-va a finire così. Un
-conteggio di parole isolate quella frase non la può prendere, per
+testa. Un conteggio di parole isolate quella frase non la può prendere, per
 costruzione: presa una per una, nessuna di quelle parole è un elogio, e il
-senso sta tutto in come stanno insieme. Un
-modello che legge la frase intera con l'attenzione invece potrebbe, perché ha
-davanti anche il «non»; e quello che proveremo là sbaglia lo stesso, per un
-soffio, dando alla frase due stelle su cinque, cioè leggendola come una
-recensione scontenta. Leggere tutta la frase è la condizione per capirla, non
-la garanzia.
+senso sta tutto in come stanno insieme. Un modello che legge la frase intera
+con l'attenzione, come quelli del capitolo sui Transformer, ha davanti anche il
+«non», e in principio potrebbe farcela. Eppure negli {doc}`esempi pratici di
+quel capitolo </Transformers/esempi>` un modello che dà alle recensioni da una
+a cinque stelle legge proprio questa frase come scontenta, per un soffio, e le
+dà due stelle. Leggere tutta la frase è la condizione per capirla, non la
+garanzia.
 
 `````
 
 `````{tab} Superiore
 
 I lessici hanno una storia lunga: il *General Inquirer* di Philip Stone e
-colleghi, a metà anni Sessanta, già annotava migliaia di parole inglesi con
-categorie tra cui positivo/negativo. Le voci si costruiscono a mano o in modo
-semi-supervisionato: si parte da pochi semi di polarità nota e la si propaga
-alle parole che co-occorrono in congiunzioni rivelatrici ("bello e X"
-suggerisce X positivo, "bello ma X" il contrario) o che risiedono vicine nello
-spazio dei word embedding. In un sistema moderno il
+colleghi {cite}`stone1966general` già annotava, a metà degli anni Sessanta,
+migliaia di parole inglesi con categorie tra cui positivo/negativo. Le voci si
+costruiscono a mano o in modo semi-supervisionato. Hatzivassiloglou e McKeown
+{cite}`hatzivassiloglou1997predicting` usano le congiunzioni fra aggettivi
+("elegante e X" lega X allo stesso orientamento, "elegante ma X" a quello
+opposto): dai legami dividono gli aggettivi in due gruppi, e chiamano positivo
+quello delle parole più frequenti. Altri metodi partono da pochi semi di
+polarità nota e la propagano alle parole che stanno vicine nello spazio dei
+word embedding, come SentProp di Hamilton e colleghi
+{cite}`hamilton2016inducing`. In un sistema moderno il
 lessico raramente decide da solo: i suoi conteggi entrano come feature in una
 regressione logistica, dove convivono con i pesi appresi; un innesto utile
 soprattutto quando i dati etichettati del dominio sono pochi. Restano i limiti
@@ -630,13 +693,16 @@ porzioni di frase e richiede modelli che leggano le sequenze, non i mucchi.
 
 `````
 
-Ed è proprio questo il passo successivo. Il nostro giudice tratta ancora il
-testo come un sacchetto: per lui «Il gatto nero salta sul muro» e «Il muro
-nero salta sul gatto» sono indistinguibili. Per andare oltre serve un modello
-che prenda sul serio l’*ordine* delle parole: che sappia dire quanto è
-plausibile una sequenza, e scommettere sulla parola che viene dopo. È il
-modello di linguaggio n-gram della prossima sezione, dove ritroveremo un
-vecchio amico appena conosciuto: il +1 di Laplace.
+Resta il limite del sacchetto di parole: per il nostro giudice «Il gatto nero
+salta sul muro» e «Il muro nero salta sul gatto» sono indistinguibili. Per
+andare oltre serve un modello che prenda sul serio l’*ordine* delle parole: che
+sappia dire quanto è plausibile una sequenza, e scommettere sulla parola che
+viene dopo. È un *modello di linguaggio*, e il più semplice, l'n-gram, ha con
+Naive Bayes una parentela stretta: il Naive Bayes multinomiale tiene per ogni
+classe le frequenze delle parole, cioè un modello di linguaggio che guarda una
+parola alla volta, e l'n-gram ci aggiunge le parole che vengono prima. Anche
+il +1 di Laplace ritorna, identico, nei {doc}`modelli n-gram
+</NaturalLanguageProcessing/modelli-ngram>`.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare
@@ -648,9 +714,9 @@ vecchio amico appena conosciuto: il +1 di Laplace.
 - Naive Bayes fa votare le parole: ogni parola porta il suo piccolo
   indizio, i voti si moltiplicano fra loro e vince l'ipotesi con il punteggio
   più alto. È ingenuo perché ogni parola vota come se le altre non
-  esistessero, e funziona lo stesso. Perché una parola mai vista non azzeri
-  tutto, si regala un conteggio in più a ogni parola: la regola del $+1$
-  di Laplace.
+  esistessero, e funziona lo stesso; e come ogni modello a sacchetto non vede
+  l'ordine delle parole. Perché una parola mai vista non azzeri tutto, si
+  regala un conteggio in più a ogni parola: la regola del $+1$ di Laplace.
 - La regressione logistica è la bilancia a due piatti: ogni parola butta
   un pesetto da una parte o dall'altra, i pesetti li impara dagli esempi già
   etichettati, e la curva a S traduce il totale in una probabilità (con più di
@@ -680,7 +746,9 @@ vecchio amico appena conosciuto: il +1 di Laplace.
   funzione.
 - Naive Bayes sceglie la classe che massimizza
   $P(c)\prod_i P(w_i \mid c)$: le parole votano come indizi indipendenti
-  (ipotesi falsa ma efficace). Lo smoothing add-1 di Laplace evita gli
+  (ipotesi falsa, ma alla decisione basta che la classe giusta resti in testa;
+  le probabilità escono troppo estreme), e il documento è un sacchetto di
+  parole, che è un'ipotesi distinta. Lo smoothing add-1 di Laplace evita gli
   zeri; in pratica si calcola tutto in spazio logaritmico.
 - La regressione logistica impara un peso per parola e passa la somma
   nella sigmoide (softmax per più classi): stessa ricetta del capitolo sul
@@ -689,8 +757,10 @@ vecchio amico appena conosciuto: il +1 di Laplace.
   la regressione logistica direttamente $P(c \mid d)$; il primo impara da
   pochi dati ma conta due volte gli indizi correlati, la seconda ripartisce
   i pesi e vince quando gli esempi abbondano.
-- La valutazione usa precision, recall e $F_1$ del capitolo sul machine
-  learning: con classi sbilanciate (lo spam è raro) l'accuratezza inganna.
+- La valutazione usa precision, recall e $F_1$ (la loro media armonica) del
+  capitolo sul machine learning: con classi sbilanciate (lo spam è raro)
+  l'accuratezza inganna, e con più classi la media macro dà alle classi rare
+  lo stesso peso delle altre.
 - I lessici di sentiment funzionano senza dati etichettati ma sono ciechi
   a contesto e negazione: «non è affatto male» resta il controesempio da
   ricordare.

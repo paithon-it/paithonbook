@@ -95,6 +95,10 @@ In pratica, scrivendo una pagina:
   linguette, e serve del testo comune in mezzo. Tutti e due li vede
   `python3 scripts/coerenza.py --solo schede`.
 
+- **il lettore si chiama «tu»**: il libro gli si rivolge alla seconda persona
+  singolare, nelle schede come nella spina («guarda», «hai», «la tua
+  rete»), mai con il «voi». Restano come sono le battute di dialogo fra
+  virgolette, dove a parlare è un personaggio;
 - **niente lineette** (`—`): non sono nello stile del libro. Un inciso che si
   potrebbe togliere va fra parentesi, un concetto racchiuso dentro la frase
   fra virgole, una spiegazione dopo i due punti, due proposizioni che si

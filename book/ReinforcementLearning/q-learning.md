@@ -12,13 +12,16 @@ le differenze temporali, e da lì il Q-learning.
 
 ## Imparare senza aspettare la fine: le differenze temporali
 
-Aspettare la fine funziona, ed è corretto in media, ma costa: il totale di una
-singola partita è un numero ballerino, e finché la partita non finisce non si
-scrive niente. L'apprendimento per **differenze temporali**
-(*temporal-difference*, TD), che porta questo nome da Richard Sutton (1988)
-{cite}`sutton1988learning`, propone invece di aggiornare le stime *durante*
-la partita, a ogni singolo passo, usando la ricompensa appena incassata più la
-stima che già si ha della situazione in cui si è finiti.
+Un metodo Monte Carlo è corretto in media, ma ha due costi: il ritorno di una
+partita ha varianza alta, e nessuna stima si aggiorna prima che la partita
+finisca. L'apprendimento per differenze temporali (*temporal-difference*, TD)
+aggiorna invece le stime *durante* la partita, a ogni singolo passo, usando la
+ricompensa appena incassata più la stima che già si ha della situazione in cui
+si è finiti. Il nome e la teoria vengono da Richard Sutton, nel 1988
+{cite}`sutton1988learning`; l'idea è più vecchia, ed è quella del programma di
+dama di Samuel con cui si apre il {doc}`capitolo sul machine learning
+</MachineLearning/overview>`, che spostava la valutazione di una posizione
+verso quella della posizione vista più avanti {cite}`samuel1959some`.
 
 `````{tab} Elementare
 
@@ -62,21 +65,21 @@ V(s) \leftarrow V(s) + \alpha\,\underbrace{\big[\,r + \gamma\,V(s') -
 V(s)\,\big]}_{\text{errore TD}\;\delta} .
 $$
 
-Qui $\alpha \in (0,1]$ è il learning rate, $\gamma \in [0,1]$ il fattore
-di sconto e $\delta$ l’**errore TD**. Il termine $r + \gamma V(s')$ è una
-stima aggiornata di $V(s)$ costruita *usando la stima successiva* $V(s')$:
-questa dipendenza da una stima per aggiornarne un'altra si chiama
-*bootstrapping*, ed è esattamente ciò che i metodi Monte Carlo della sezione
-precedente non fanno. Il bersaglio non è più il ritorno osservato $G_t$ ma una
-sua approssimazione a un passo: si guadagna in varianza (un solo termine
-casuale invece di una somma lunga) e si perde in correttezza, perché $V(s')$ è
-a sua volta una stima, e all'inizio è sbagliata. La distorsione però non resta:
-per una policy fissa e una tabella, TD(0) converge a $V^\pi$ con probabilità
-$1$ se ogni stato è visitato infinite volte e i passi soddisfano le condizioni
-di Robbins-Monro viste sui bandit {cite}`sutton2018reinforcement`. E a parità
-di dati le due famiglie non convergono alla stessa cosa. Ripassando all'infinito
-un insieme finito di episodi (l'aggiornamento *batch*), Monte Carlo si ferma
-sui valori che minimizzano l'errore quadratico sui ritorni osservati; TD(0) si
+Qui $\alpha \in (0,1]$ è il learning rate, $\gamma \in [0,1]$ il fattore di
+sconto e $\delta$ l’**errore TD**. Il termine $r + \gamma V(s')$ è una stima
+aggiornata di $V(s)$ costruita *usando la stima successiva* $V(s')$: questa
+dipendenza da una stima per aggiornarne un'altra si chiama *bootstrapping*, ed
+è esattamente ciò che i metodi Monte Carlo non fanno. Il bersaglio non è più il
+ritorno osservato $G_t$ ma una sua approssimazione a un passo: si guadagna in
+varianza (un solo termine casuale invece di una somma lunga) e si perde in
+correttezza, perché $V(s')$ è a sua volta una stima, e all'inizio è sbagliata.
+La distorsione però non resta: per una policy fissa e una tabella, TD(0)
+converge a $V^\pi$ con probabilità $1$ se ogni stato è visitato infinite volte
+e i passi, presi sulle visite di ciascuno stato, soddisfano le condizioni di
+Robbins-Monro viste sui bandit {cite}`dayan1992convergence`. E a parità di dati
+le due famiglie non convergono alla stessa cosa. Ripassando all'infinito un
+insieme finito di episodi (l'aggiornamento *batch*), Monte Carlo si ferma sui
+valori che minimizzano l'errore quadratico sui ritorni osservati; TD(0) si
 ferma invece sul valore esatto dell'MDP di massima verosimiglianza stimato da
 quegli episodi, la stima di *certainty equivalence*. Se il processo è davvero
 markoviano ci si aspetta che la seconda sbagli meno sui dati futuri, ed è una
@@ -86,23 +89,24 @@ ragione, oltre alla varianza, per cui TD impara spesso più in fretta.
 
 ## Q-learning: stimare il valore delle azioni
 
-Conoscere il valore di uno stato non basta per decidere: serve sapere quanto
-vale ogni azione in quello stato. È il salto del **Q-learning**, formulato
-da Chris Watkins nel 1989, forse l'algoritmo più celebre del campo.
+Conoscere il valore di uno stato non basta per decidere senza il modello, come
+si è visto con i metodi Monte Carlo: serve sapere quanto vale ogni azione in
+quello stato. È il salto del **Q-learning**, formulato da Chris Watkins nella
+tesi di dottorato del 1989 {cite}`watkins1989learning`, forse l'algoritmo più
+celebre del campo.
 
 `````{tab} Elementare
 
 Una grande tabella: una riga per ogni situazione in cui l'agente può trovarsi,
-una colonna per ogni mossa possibile. In ciascuna casella un voto, che dice
-quanto conviene fare quella mossa in quella situazione. Quel voto, nelle
-formule, si chiama $Q$, e da lì viene il nome dell'algoritmo. Perché proprio
-quella lettera non lo dice nessuno con certezza: la usò Watkins nella sua tesi
-ed è rimasta; torna comoda da ricordare come l'iniziale di *quality*, la
-qualità di una mossa, anche se il nome ufficiale della cosa è «funzione
-azione-valore». All'inizio i voti sono tutti a zero: l'agente non sa nulla.
-Giocando e ricevendo ricompense, corregge i voti. Alla fine, per agire bene,
-gli basta guardare la riga della situazione corrente e scegliere la mossa col
-voto più alto.
+una colonna per ogni mossa possibile, e all'incrocio un voto, che dice quanto
+conviene fare quella mossa in quella situazione. Quel voto, nelle formule, si
+chiama $Q$, e da lì viene il nome dell'algoritmo. La lettera viene dalla tesi
+di Watkins ed è rimasta; torna comoda da ricordare come l'iniziale di
+*quality*, la qualità di una mossa, anche se il nome ufficiale della cosa è
+«funzione azione-valore». All'inizio i voti sono tutti a zero: l'agente non sa
+nulla. Giocando e ricevendo ricompense, corregge i voti. Alla fine, per agire
+bene, gli basta guardare la riga della situazione corrente e scegliere la mossa
+col voto più alto.
 
 La parte sorprendente: l'agente può muoversi anche a casaccio, sbagliando di
 proposito per esplorare, e imparare comunque quali sarebbero le mosse
@@ -116,12 +120,15 @@ davvero. Quindi anche se subito dopo tira un dado e sbaglia apposta, il conto
 che ha appena scritto parlava di un giocatore che non sbaglia.
 
 Giocando abbastanza a lungo i voti finiscono al posto giusto, e c'è una
-dimostrazione che lo garantisce. In cambio pone delle condizioni. Una è che
-ogni casella della tabella venga provata tante volte, non una o due: una
-casella provata due volte porta un numero che vale quanto un sorteggio.
-Un'altra è che la tabella si possa scrivere per intero, riga per riga. E ce
-n'è una terza, sulla frazione di sorpresa a cui si dà retta: va calata man mano
-che si gioca, e torna più avanti quando il codice deciderà di non rispettarla.
+dimostrazione che lo garantisce. Il motivo, in una riga: ogni correzione è un
+giro della ricetta della value iteration fatto con una partita sola invece che
+con la mappa, e mediando tante partite il caso si cancella. In cambio la
+dimostrazione pone delle condizioni. Una è che ogni mossa venga provata tante
+volte in ogni situazione, non una o due: un voto corretto due volte vale quanto
+un sorteggio. Un'altra è che la tabella si possa scrivere per intero, riga per
+riga. E ce n'è una terza, sulla frazione di sorpresa a cui si dà retta: va
+calata man mano che si gioca. Il programma del labirinto la terrà ferma, e se
+lo può permettere perché in quel labirinto niente è lasciato al caso.
 
 Prendere sempre il voto più alto, però, ha un difetto suo. Un voto si
 costruisce sommando una frazione di ogni sorpresa incassata fin lì, e nei mondi
@@ -132,13 +139,16 @@ mettiamo $-0{,}2$, $+0{,}1$, $-0{,}3$, $+0{,}3$. Il più alto è $+0{,}3$, cioè
 più di quanto la riga valga davvero. Succede in tutte le righe, e sempre nello
 stesso verso, verso l'alto: il massimo di quattro numeri sballati è quello che
 ha sbagliato dalla parte generosa. L'agente si fa così un'idea un po’ troppo
-rosea delle proprie mosse. Per rimediare servono due tabelle invece di una, e i
-due mestieri si separano: quella che sceglie la mossa non è la stessa che le dà
-il voto, così che la fortuna che ha gonfiato la prima non gonfi anche la
-seconda. Chi fa che cosa si tira a sorte a ogni correzione, e le due tabelle si
-scambiano i ruoli di continuo: se ne aggiorna una per volta, e a giudicare la
-mossa che quella ha scelto è sempre l'altra. Si chiama *Double Q-learning*, il
-Q-learning a due tabelle.
+rosea delle proprie mosse.
+
+Per rimediare si tengono due tabelle, e a ogni correzione una sceglie e l'altra
+giudica: la prima dice qual è la mossa migliore dalla situazione d'arrivo, la
+seconda dice quanto vale quella mossa. Un voto che per fortuna è uscito troppo
+alto nella prima la fa scegliere, ma il numero che entra nel conto lo legge la
+seconda, che quella fortuna non l'ha avuta, e la gonfiatura non passa. A ogni
+correzione si tira a sorte quale delle due tabelle aggiornare, così che
+imparino tutte e due e nessuna giudichi sempre sé stessa. Si chiama *Double
+Q-learning*, il Q-learning a due tabelle.
 
 `````
 
@@ -163,44 +173,62 @@ ottima anche mentre ne segue una esplorativa.
 
 Watkins e Dayan {cite}`watkins1992q` ne dimostrarono la convergenza, e le
 ipotesi vanno enunciate per intero perché una di esse è la cerniera di tutto il
-capitolo seguente: in un MDP finito, con $Q$ tabellare e ricompense limitate e
-sconto $\gamma < 1$, purché ogni coppia $(s,a)$ sia visitata infinite volte e i
-passi soddisfino le condizioni di Robbins-Monro già viste sui bandit, $Q$
-converge a $Q^*$ con probabilità $1$. Le due somme però vanno prese sui
-passaggi di ciascuna coppia, non sul tempo globale: detta $n^i(s,a)$ la
-$i$-esima volta che in $s$ si prova $a$, servono $\sum_i \alpha_{n^i(s,a)} =
-\infty$ e $\sum_i \alpha^2_{n^i(s,a)} < \infty$ per ogni $(s,a)$. La differenza
-non è formale: con $\alpha_t = 1/t$ e una coppia visitata ai tempi
+{doc}`deep reinforcement learning </DeepReinforcementLearning/overview>`: in un
+MDP finito, con $Q$ tabellare e ricompense limitate e sconto $\gamma < 1$,
+purché ogni coppia $(s,a)$ sia visitata infinite volte e i passi soddisfino le
+condizioni di Robbins-Monro già viste sui bandit, $Q$ converge a $Q^*$ con
+probabilità $1$. Le due somme però vanno prese sui passaggi di ciascuna coppia,
+non sul tempo globale: detta $n^i(s,a)$ la $i$-esima volta che in $s$ si prova
+$a$, servono $\sum_i \alpha_{n^i(s,a)} = \infty$ e
+$\sum_i \alpha^2_{n^i(s,a)} < \infty$ per ogni $(s,a)$. La differenza non è
+formale: con $\alpha_t = 1/t$ e una coppia visitata ai tempi
 $t = 2, 4, 8, \dots$ la somma globale diverge, quella che il teorema chiede
 vale $\sum_{k \ge 1} 2^{-k} = 1$, e l'ipotesi cade.
+
+Il perché della convergenza sta in una frase: il Q-learning è la value
+iteration con l'attesa sostituita da un campione. L'operatore di ottimalità
+
+$$
+(\mathcal{B}Q)(s,a) = r(s,a)
++ \gamma \sum_{s'} P(s'\mid s,a)\, \max_{a'} Q(s',a')
+$$
+
+è una contrazione di fattore $\gamma$ nella norma del massimo, per la stessa
+disuguaglianza sul massimo della value iteration; il bersaglio
+$r + \gamma \max_{a'} Q(S_{t+1},a')$ ne è un campione non distorto; e
+l'aggiornamento è un passo di Robbins-Monro verso di esso. È l'approssimazione
+stocastica del punto fisso di una contrazione, la strada delle dimostrazioni di
+Jaakkola, Jordan e Singh {cite}`jaakkola1994convergence` e di Tsitsiklis
+{cite}`tsitsiklis1994asynchronous`, accanto a quella di Watkins e Dayan.
+
 La parola da segnare è **tabellare**: sostituita la tabella con una funzione
 approssimata, la dimostrazione non si trasporta, e il deep reinforcement
 learning nasce per far funzionare in pratica qualcosa che in generale non è
 garantito convergere.
 
-Il $\max$ nel target ha poi un costo suo, e il capitolo successivo introdurrà
-un algoritmo apposta per correggerlo. Applicato a
-stime rumorose, il massimo è uno stimatore distorto verso l'alto del massimo
-dei valori veri: se in uno stato tutte le azioni valgono davvero zero ma le
-stime oscillano attorno allo zero, $\max_{a'}Q(s',a')$ è sistematicamente
-positivo. La regola che lo dà è la disuguaglianza di Jensen applicata al
-$\max$, che è convesso: $\mathbb{E}[\max_a \hat{Q}(s,a)] \ge
-\max_a \mathbb{E}[\hat{Q}(s,a)]$, con disuguaglianza stretta appena nessuna
-azione è quasi certamente la migliore. È il **bias di
-massimizzazione**, e si attenua tenendo due stime
-indipendenti $Q_A$ e $Q_B$ e usandone una per scegliere l'azione e l'altra per
-valutarla, con i ruoli sorteggiati a ogni aggiornamento
-(*Double Q-learning*, di Hado van Hasselt {cite}`vanhasselt2010double`): è
-l'idea che nel capitolo seguente diventerà il Double DQN.
+Il $\max$ nel target ha poi un costo suo, e la {doc}`sezione sul DQN
+</DeepReinforcementLearning/dqn>` introdurrà un algoritmo apposta per
+correggerlo. Applicato a stime rumorose, il massimo è uno stimatore distorto
+verso l'alto del massimo dei valori veri: se in uno stato tutte le azioni
+valgono davvero zero ma le stime oscillano attorno allo zero,
+$\max_{a'}Q(s',a')$ è sistematicamente positivo. La regola che lo dà è la
+disuguaglianza di Jensen applicata al $\max$, che è convesso:
+$\mathbb{E}[\max_a \hat{Q}(s,a)] \ge \max_a \mathbb{E}[\hat{Q}(s,a)]$, con
+disuguaglianza stretta appena nessuna azione è quasi certamente la migliore. È
+il **bias di massimizzazione**, e si attenua tenendo due stime indipendenti
+$Q_A$ e $Q_B$ e usandone una per scegliere l'azione e l'altra per valutarla,
+con i ruoli sorteggiati a ogni aggiornamento (*Double Q-learning*, di Hado van
+Hasselt {cite}`vanhasselt2010double`): è l'idea che là diventerà il Double DQN.
 
 `````
 
 ## La formula di aggiornamento
 
-Il cuore dell'algoritmo è una sola riga. In parole suona così: *nuovo voto =
-vecchio voto + un po’ della sorpresa*, dove la sorpresa è la differenza tra
-com'è andata davvero (premio incassato più prospettive dalla nuova casella) e
-come pensavi andasse.
+L'aggiornamento è una sola riga. Il valore stimato $Q(s,a)$ della mossa $a$
+nella situazione $s$, il suo voto, si sposta di una frazione $\alpha$ verso un
+bersaglio: la ricompensa $r$ appena incassata più il valore della mossa
+migliore dalla situazione $s'$ in cui si è finiti, scontato di $\gamma$. La
+differenza fra bersaglio e stima è l'errore TD, la sorpresa.
 
 `````{tab} Elementare
 
@@ -213,7 +241,8 @@ capitolo: una stima vecchia, più una frazione della sorpresa. Dentro ci sono
 quattro pezzi, e ognuno ha un nome che torna in ogni metodo che impara
 qualcosa.
 
-- Il **voto vecchio**, quello che c'era scritto nella casella della tabella.
+- Il **voto vecchio**, quello che c'era scritto nella tabella per quella
+  situazione e quella mossa.
 - Il **bersaglio**: quanto quella mossa sembra valere adesso, cioè il premio
   appena incassato più il miglior voto della riga in cui si è finiti, ridotto
   dallo sconto. È una stima migliore della precedente perché contiene un pezzo
@@ -228,9 +257,9 @@ qualcosa.
   cauto; vicino a uno butta via il voto vecchio a ogni sorpresa.
 
 E c'è lo sconto, la $\gamma$ (gamma) della {doc}`sezione sui processi
-decisionali di Markov <mdp-valore>` (in sigla MDP, che è il modo in cui il libro
-descrive un ambiente: stati, mosse, ricompense), che decide quanto
-pesano le prospettive future rispetto al premio incassato subito.
+decisionali di Markov <mdp-valore>` (in sigla MDP, il modo di descrivere un
+ambiente come stati, mosse e ricompense), che decide quanto pesano le
+prospettive future rispetto al premio incassato subito.
 
 `````
 
@@ -254,14 +283,15 @@ lungimirante, vicino a $0$ = miope).
 
 `````
 
-Nient'altro. Nessuna rete neurale, nessuna delle macchinerie dei capitoli
-precedenti: solo una tabella di numeri che si aggiusta a ogni mossa.
+Il Q-learning tabellare non usa altro: nessuna rete neurale, nessun gradiente,
+solo la tabella dei valori $Q$ aggiornata a ogni passo.
 
 ## Esplorare o sfruttare: la strategia $\varepsilon$-greedy
 
-Se l'agente scegliesse sempre la mossa col voto più alto, resterebbe
-intrappolato nella prima strategia decente che trova, senza mai scoprire
-scorciatoie migliori. Deve ogni tanto esplorare.
+Se l'agente scegliesse sempre la mossa di valore $Q$ più alto, potrebbe
+fermarsi su una strategia peggiore dell'ottima senza mai provare le mosse che
+la migliorerebbero. Serve un modo di esplorare, e il più semplice è quello
+delle leve, $\varepsilon$-greedy.
 
 `````{tab} Elementare
 
@@ -270,20 +300,25 @@ sempre la mossa che il quaderno dà per migliore, e con una piccola probabilità
 $\varepsilon$ una a caso. All'inizio si esplora molto, e $\varepsilon$ si riduce
 man mano che si impara.
 
-Quanto in fretta lo riduci cambia tutto, e si vede con un conto. Trenta cene
-al mese, e parti con una novità su dieci: tre ristoranti nuovi il primo mese.
-Se poi dimezzi la quota ogni mese passi a una e mezza, poi a tre quarti, e
-sommando tutti i mesi da qui all'eternità arrivi a sei. Sei ristoranti nuovi
-in tutta la vita: quello che non hai provato entro allora non lo proverai mai,
-e se era il migliore della città non lo saprai. Se invece dividi la quota per
-il numero dei mesi passati (metà il secondo mese, un terzo il terzo, un
-decimo il decimo), la somma diventa tre più uno e mezzo più uno più tre quarti
-e così via, cioè sedici novità in dieci anni e ventitré in un
-secolo: rallenti senza mai fermarti, e aspettando abbastanza ogni ristorante
-prima o poi ti capita. È la seconda ricetta a tenere in piedi la promessa dei
-voti che si assestano al posto giusto, perché quella promessa chiede che ogni
-casella venga provata tante volte. La prima si usa lo stesso, perché porta
-prima a risultati decenti, sapendo che cosa si lascia indietro.
+Quanto in fretta lo riduci cambia tutto, e si vede con un conto. Trenta cene al
+mese, e parti con una novità su dieci: tre ristoranti nuovi il primo mese. Se
+poi dimezzi la quota ogni mese passi a una e mezza, poi a tre quarti, e
+sommando tutti i mesi da qui all'eternità arrivi a sei. Sei ristoranti nuovi in
+tutta la vita: quello che non hai provato entro allora non lo proverai mai, e
+se era il migliore della città non lo saprai. Se invece dividi la quota per il
+numero dei mesi passati (metà il secondo mese, un terzo il terzo, un decimo il
+decimo), la somma diventa tre più uno e mezzo più uno più tre quarti e così
+via, cioè sedici novità in dieci anni e ventitré in un secolo. Sembrano poche
+anche queste, ma la differenza sta altrove: con la prima ricetta il conto si
+ferma a sei, con la seconda non si ferma mai, e qualunque numero si fissi prima
+o poi lo si supera. Rallenti senza mai fermarti, e aspettando abbastanza ogni
+ristorante prima o poi ti capita. È la seconda ricetta a tenere in piedi la
+promessa dei voti che si assestano al posto giusto, perché quella promessa
+chiede che ogni mossa venga provata tante volte. Qui la situazione è una sola,
+la città, e i mesi sono anche le volte in cui ci si è trovati lì; con più
+situazioni il conto si tiene per ciascuna, dividendo per le volte in cui si è
+stati in quella. La prima ricetta si usa lo stesso, perché porta prima a
+risultati decenti, sapendo che cosa si lascia indietro.
 
 `````
 
@@ -324,16 +359,17 @@ teorici centrali del reinforcement learning.
 
 ## SARSA: la variante on-policy
 
-C'è un cugino stretto del Q-learning che cambia un solo simbolo nella formula,
-con conseguenze interessanti. Si chiama **SARSA**, dalle iniziali dei cinque
-ingredienti del suo aggiornamento: stato, azione, ricompensa, nuovo stato,
-nuova azione. Le iniziali sono quelle inglesi, *state, action, reward, state,
-action*, e in italiano vengono le stesse cinque. E si dice on-policy, che è il
-contrario di off-policy: invece di imparare quanto varrebbero le mosse di un
-giocatore perfetto, impara quanto valgono le proprie, esplorazione compresa.
-L'algoritmo è di Rummery e Niranjan {cite}`rummery1994online`, che però lo
-chiamavano *modified connectionist Q-learning*; il nome con cui lo conosciamo
-oggi arriva da Sutton qualche anno dopo, nel 1996.
+SARSA differisce dal Q-learning per un solo termine dell'aggiornamento: al
+posto del valore della mossa migliore dalla situazione d'arrivo,
+$\max_{a'} Q(s',a')$, usa il valore $Q(s',a')$ della mossa $a'$ che l'agente
+sceglie davvero. Il nome viene dalle iniziali dei cinque ingredienti del suo
+aggiornamento, stato, azione, ricompensa, nuovo stato, nuova azione, che in
+inglese sono *state, action, reward, state, action* e in italiano danno le
+stesse cinque lettere. E si dice on-policy, che è il contrario di off-policy:
+invece di imparare quanto varrebbero le mosse di un giocatore perfetto, impara
+quanto valgono le proprie, esplorazione compresa. L'algoritmo è di Rummery e
+Niranjan {cite}`rummery1994online`, che lo chiamavano *modified connectionist
+Q-learning*; il nome con cui lo conosciamo glielo diede Sutton nel 1996.
 
 `````{tab} Elementare
 
@@ -345,7 +381,11 @@ compresa.
 
 Il cambio è di un pezzo solo. Quando corregge il voto di una mossa, SARSA
 guarda dove è finito e prende il voto della mossa che farà davvero, dado
-compreso, al posto del voto della migliore di quella riga.
+compreso, al posto del voto della migliore di quella riga. C'è anche una via di
+mezzo: invece di aspettare il dado, fare la media dei voti della riga, ciascuno
+pesato per quanto spesso la strategia lo sceglierebbe. Toglie dal conto il caso
+del dado, e se la strategia sceglie sempre la mossa migliore ridà esattamente
+il Q-learning.
 
 Il risultato tipico si vede su un esperimento classico, che si chiama
 *cammino sul precipizio*: una griglia di quattro righe per dodici colonne, in
@@ -395,6 +435,19 @@ un cammino più sicuro e lontano dal precipizio, il Q-learning al cammino ottimo
 ma rischioso lungo il bordo: differenza che sparisce solo quando $\varepsilon
 \to 0$.
 
+Fra i due sta una terza regola, che al posto del campione $a'$ usa l'attesa
+sotto la policy, ed è **Expected SARSA**:
+
+$$
+Q(s,a) \leftarrow Q(s,a) + \alpha\,\Big[\,r
++ \gamma \sum_{a'} \pi(a'\mid s')\, Q(s',a') - Q(s,a)\,\Big].
+$$
+
+Ha la stessa media di SARSA e varianza minore, perché toglie il caso della
+scelta di $a'$; e se $\pi$ è la policy greedy diventa esattamente il
+Q-learning. On-policy e off-policy, qui, sono due scelte della policy rispetto
+a cui si prende l'attesa del bersaglio {cite}`sutton2018reinforcement`.
+
 `````
 
 Le due strade, disegnate sulla stessa griglia, si confrontano a colpo d'occhio
@@ -436,7 +489,7 @@ Sono invece le stesse della griglia su cui là si guarda l'iterazione dei valori
 
 La strategia imparata dal Q-learning sulla griglia: in ogni cella la freccia
 indica la mossa che, finite tutte le partite di allenamento, ha il voto più
-alto. È il risultato che stampa il codice della pagina. Il disegno mostra il
+alto. È il risultato che stampa il programma del labirinto. Il disegno mostra il
 punto d'arrivo, non la strada per arrivarci: quella, cioè il valore della meta
 che retrocede una casella per volta, la mostra la
 {numref}`fig-voto-che-retrocede`.
@@ -454,15 +507,15 @@ lì, quindi dalla casella d'arrivo non c'è più niente da aspettarsi. La sorpre
 dell'ultima mossa passa da $0$ a $0{,}5$.
 
 Alla casella che veniva prima tocca più tardi, e non alla partita dopo: alla
-prima partita in cui l'agente ci ripassa. Quando ci era passato, il voto della
-casella in cui è finito era ancora zero, e correggere verso zero non muove
-niente. Adesso invece il $0{,}5$ c'è, e servirà a chi ripasserà di lì. Da quella
-casella la mossa non paga niente, ma porta in una casella la cui riga di
-tabella contiene ormai una mossa da $0{,}5$ (i voti stanno sulle mosse, e
-quello che conta qui è il migliore della riga): scontato, vale
-$0{,}9 \times 0{,}5 = 0{,}45$. La sorpresa è di
-nuovo positiva (si aspettava $0$, la prospettiva vale $0{,}45$) e dandole
-retta a metà il voto diventa $0{,}225$.
+prima partita in cui l'agente ci ripassa. Quando ci era passato, i voti della
+casella in cui era finito erano ancora tutti zero, e correggere verso zero non
+muove niente. Adesso invece il $0{,}5$ c'è, e servirà a chi ripasserà di lì. Da
+quella casella la mossa non paga niente, ma porta nella casella accanto alla
+meta, che nella sua riga di tabella ha ormai una mossa da $0{,}5$ (i voti
+stanno sulle mosse, e quello che conta qui è il migliore della riga): scontato,
+vale $0{,}9 \times 0{,}5 = 0{,}45$. La sorpresa è di nuovo positiva (si
+aspettava $0$, la prospettiva vale $0{,}45$) e dandole retta a metà il voto
+diventa $0{,}225$.
 
 Nota che tutti e due i conti funzionano perché qui muoversi non costa nulla:
 nel labirinto del robot, dove ogni passo faceva perdere un punto,
@@ -520,7 +573,7 @@ def indice(cella):
     return cella[0] * COLONNE + cella[1]
 
 def ambiente(cella, a):
-    """Dove si finisce, quanto si incassa, se la partita e' finita."""
+    """Dove si finisce, quanto si incassa, se la partita è finita."""
     i, j = cella[0] + MOSSE[a][0], cella[1] + MOSSE[a][1]
     if not (0 <= i < RIGHE and 0 <= j < COLONNE) or (i, j) == MURO:
         i, j = cella                          # contro un muro si resta fermi
@@ -531,7 +584,7 @@ def ambiente(cella, a):
 def epsilon_greedy(s):
     if rng.random() < epsilon:
         return int(rng.integers(n_azioni))    # esplora: mossa a caso
-    return int(np.argmax(Q[s]))               # sfrutta: mossa col voto piu alto
+    return int(np.argmax(Q[s]))               # sfrutta: mossa col voto più alto
 
 def aggiorna(s, a, r, s_next, fine):
     # target TD: usa la stima migliore dello stato successivo (off-policy)
@@ -612,16 +665,15 @@ poi $0{,}875$, poi $0{,}9375$, e così via. Dopo
 cinquemila partite ci è arrivato così vicino che, alla seconda cifra, si legge
 $1{,}00$.
 
-Per le altre caselle succede la stessa cosa, con una complicazione in più da
-nominare perché è il reinforcement learning in miniatura: il loro bersaglio non
-sta
-fermo. La casella accanto era partita rincorrendo $0{,}45$, cioè lo sconto per
-il $0{,}5$ che c'era allora; ma mentre lei ci correva dietro, quel $0{,}5$ è
-salito verso $1$, e quindi il bersaglio è salito verso $0{,}90$. Ogni casella
-insegue un numero che a sua volta sta salendo, e la fila si assesta
-dall'ultima all'indietro. I conti a mano dicono da dove parte ciascun voto, la
-griglia stampata dice dove arriva, e la {numref}`fig-voto-che-retrocede` mostra
-il tragitto.
+Per le altre caselle succede la stessa cosa, con una complicazione in più, che
+ha già un nome, *bootstrapping*: il loro bersaglio contiene la stima della
+casella successiva, e quindi non sta fermo. La casella accanto era partita
+rincorrendo $0{,}45$, cioè lo sconto per il $0{,}5$ che c'era allora; ma mentre
+lei ci correva dietro, quel $0{,}5$ è salito verso $1$, e quindi il bersaglio è
+salito verso $0{,}90$. Ogni casella insegue un numero che a sua volta sta
+salendo, e la fila si assesta dall'ultima all'indietro. I conti a mano dicono
+da dove parte ciascun voto, la griglia stampata dice dove arriva, e la
+{numref}`fig-voto-che-retrocede` mostra il tragitto.
 
 ```{figure} ../figures/voto-che-retrocede.svg
 :name: fig-voto-che-retrocede
@@ -645,46 +697,80 @@ passaggio, non la distanza. L'ultima istantanea è la griglia che il programma
 stampa.
 ```
 
-Tre note sul codice.
-
-La funzione `aggiorna` è il Q-learning per intero, tutto qui. Per ottenere
+Nel programma, la funzione `aggiorna` è il Q-learning per intero. Per ottenere
 invece SARSA basterebbe passarle l'azione che l'agente sceglierà davvero al
 passo successivo, e usare il voto di *quella* al posto del voto della mossa
 migliore.
 
-Il tasso di apprendimento (`alpha`) qui resta fermo a metà per tutte e
-cinquemila le partite. Un tasso che non si accorcia mai continua per sempre a
-rincorrere le ultime sorprese, e in un mondo che sorteggia i premi non si posa
-su un numero; qui non se ne accorge nessuno, perché il labirinto è tutto fisso
-e la sorpresa, alla fine, è zero. È comunque una scelta che ha un prezzo: fra
-le condizioni del teorema di convergenza c'è proprio un tasso che si accorci
-come il passo del quaderno delle leve all'inizio del capitolo: abbastanza da
-posarsi, non tanto da fermarsi prima di arrivare. Qui ci si rinuncia, in cambio
-di un algoritmo che reagisce in fretta, che nella pratica conviene quasi
-sempre. Anche la quota di esplorazione resta ferma a un decimo invece di
-calare, e qui è lecito: al Q-learning, che impara la mossa migliore mentre ne
-fa un'altra, basta che ogni coppia continui a essere provata. Che
-l'esplorazione alla lunga si spenga lo chiede invece SARSA, che valuta le mosse
-che fa davvero e, con un decimo di mosse a caso, impara il valore di chi
-sbaglia un decimo delle volte.
+Il tasso di apprendimento (`alpha`) resta fermo a metà per tutte e cinquemila
+le partite. Un tasso che non si accorcia mai continua per sempre a rincorrere
+le ultime sorprese, e in un mondo che sorteggia i premi non si posa su un
+numero; nel labirinto non se ne accorge nessuno, perché è tutto fisso e la
+sorpresa, alla fine, è zero. Fra le condizioni della dimostrazione che i voti
+si assestano al posto giusto c'è proprio un tasso che si accorci come il passo
+del quaderno delle leve: abbastanza da posarsi, non tanto da fermarsi prima di
+arrivare. Qui ci si rinuncia, in cambio di un algoritmo che reagisce in fretta,
+che nella pratica conviene quasi sempre. Anche la quota di esplorazione resta
+ferma a un decimo invece di calare, e qui è lecito: al Q-learning, che impara
+la mossa migliore mentre ne fa un'altra, basta che ogni coppia continui a
+essere provata. Che l'esplorazione alla lunga si spenga lo chiede invece SARSA,
+che valuta le mosse che fa davvero e, con un decimo di mosse a caso, impara il
+valore di chi sbaglia un decimo delle volte.
 
-Ogni partita comincia da una casella sorteggiata invece che dalla partenza.
-Sono gli **inizi esplorativi** dei metodi Monte Carlo in versione più debole:
-là si sorteggiava la coppia casella-mossa, qui solo la casella, e a provare
-tutte le mosse ci pensa l’$\varepsilon$-greedy. Dentro un simulatore, che
-possiamo far ripartire dove vogliamo, costano una riga. Senza, le caselle fuori
-dal cammino migliore verrebbero visitate troppo di rado, la loro riga
-resterebbe quasi vuota e la loro freccia sarebbe poco più di un sorteggio. Si
-provi a far cominciare tutte le partite dalla partenza, in basso a sinistra, e
-a guardare l'angolo in basso a destra, che sul cammino migliore non sta. Con i
-sorteggi scritti nel codice (il numerone accanto a `default_rng` è il seme:
-fissa la sequenza dei numeri a caso, così che rilanciando il programma esca la
-stessa identica storia) l'agente ci capita ventidue volte invece di
-settecentocinquanta, e il suo voto si ferma a $0{,}55$ invece che a $0{,}73$.
-Cambiando seme può non capitarci mai, e anche capitandoci una volta sola il
-voto non si muove: con la riga tutta a zero la prima mossa che si prova è
-quella in su, che porta nella trappola, e il $-0{,}50$ che ne esce il massimo
-della riga non lo tocca. La freccia, allora, è quella che viene.
+Ogni partita, poi, comincia da una casella sorteggiata invece che dalla
+partenza. Sono gli inizi esplorativi dei metodi Monte Carlo in versione più
+debole: là si sorteggiava la coppia casella-mossa, qui solo la casella, e a
+provare tutte le mosse ci pensa l’$\varepsilon$-greedy. Dentro un simulatore,
+che possiamo far ripartire dove vogliamo, costano una riga. Senza, le caselle
+lontane dal cammino migliore verrebbero visitate di rado, la loro riga
+resterebbe quasi vuota e la loro freccia sarebbe poco più di un sorteggio. Lo
+si vede rifacendo l'addestramento con tutte le partite che cominciano dalla
+partenza, in basso a sinistra, e contando quante volte l'agente passa
+dall'angolo in basso a destra, che sul cammino migliore non sta:
+
+```python
+def addestra(dalla_partenza, seme=20260807):
+    """Rifà le 5000 partite; dà visite e voto dell'angolo in basso a destra."""
+    global Q, rng
+    Q, rng = np.zeros((n_stati, n_azioni)), np.random.default_rng(seme)
+    visite = np.zeros(n_stati, dtype=int)
+    for _ in range(5000):
+        cella = (2, 0) if dalla_partenza else LIBERE[rng.integers(len(LIBERE))]
+        for _ in range(100):
+            s = indice(cella)
+            visite[s] += 1
+            a = epsilon_greedy(s)
+            cella_dopo, r, fine = ambiente(cella, a)
+            aggiorna(s, a, r, indice(cella_dopo), fine)
+            if fine:
+                break
+            cella = cella_dopo
+    angolo = indice((2, 3))
+    return visite[angolo], Q[angolo].max()
+
+for nome, dalla_partenza in (("partenze sorteggiate", False),
+                             ("sempre dalla partenza", True)):
+    visite, voto_angolo = addestra(dalla_partenza)
+    print(f"{nome:22} visite all'angolo: {visite:4d}   voto: {voto_angolo:.2f}")
+altri = [addestra(True, seme)[0] for seme in (1, 2, 3, 4, 5)]
+print("sempre dalla partenza, altri cinque semi, visite:", *altri)
+```
+
+```text
+partenze sorteggiate   visite all'angolo:  750   voto: 0.73
+sempre dalla partenza  visite all'angolo:   22   voto: 0.55
+sempre dalla partenza, altri cinque semi, visite: 0 0 0 1 0
+```
+
+Con i sorteggi del primo programma (il numerone accanto a `default_rng` è il
+seme: fissa la sequenza dei numeri a caso, così che rilanciando il programma
+esca la stessa identica storia) l'agente passa dall'angolo settecentocinquanta
+volte con le partenze sorteggiate e ventidue partendo sempre dal basso a
+sinistra, e il voto dell'angolo si ferma a $0{,}55$ invece che a $0{,}73$. Con
+altri semi può non passarci mai, o passarci una volta sola, e una volta non
+basta: con la riga tutta a zero la prima mossa che si prova è quella in su, che
+porta nella trappola, e il $-0{,}50$ che ne esce il massimo della riga non lo
+tocca. La freccia, allora, è quella che viene.
 
 ## Fra un passo e la fine: quanti passi guardare avanti
 
@@ -693,8 +779,9 @@ Q-learning la fa retrocedere di al più una casella per partita, perché il suo
 bersaglio guarda avanti di un passo solo. I metodi Monte Carlo, all'estremo
 opposto, usano il totale della partita, e in una partita sola portano la
 notizia a tutte le caselle attraversate: una notizia sola, però, e rumorosa.
-Detta così, la scelta sembra fra due poli. Non lo è: fra i due c'è un continuo,
-e si attraversa con una manopola.
+Fra i due estremi c'è una famiglia intera: il bersaglio può guardare avanti $n$
+passi, da $n = 1$, le differenze temporali, fino alla fine della partita, Monte
+Carlo.
 
 `````{tab} Elementare
 
@@ -715,43 +802,37 @@ e la manopola che decide quanto in fretta si spenga si chiama $\lambda$
 (lambda), un numero fra zero e uno.
 
 I due estremi si capiscono guardando come si spartisce il peso. La lunghezza
-più corta, guardare avanti un passo, si prende quanto manca a $\lambda$ per
-arrivare a uno: con $\lambda = 0{,}5$ metà di tutto il peso, con
-$\lambda = 0{,}9$ soltanto un decimo. Quel che avanza se lo spartiscono le
-lunghezze successive, sempre con la stessa regola.
-
-Con $\lambda = 0$ la prima si prende tutto, e siamo tornati alle differenze
-temporali. Alzando $\lambda$ il peso scivola sempre più in fondo alla fila, e
-il modo più pulito di vederlo è contare quanto ne è stato distribuito fino a
-un certo punto: alle prime dieci lunghezze messe insieme tocca uno meno
-$\lambda$ elevato alla decima ($0{,}9$ moltiplicato per sé stesso dieci volte fa
-circa $0{,}35$), cioè quasi due terzi con $\lambda = 0{,}9$ e un
-decimo scarso con $\lambda = 0{,}99$. Più $\lambda$ si avvicina a uno, meno
-peso resta a un numero finito di lunghezze, per grande che sia; e a
-$\lambda = 1$ non ne resta niente, perché è tutto più in là. Più in là c'è la
-fine della partita, dove «guardare avanti dieci passi» e «guardarne cento» sono
-ormai la stessa identica cosa, cioè guardare fino in fondo: resta
-il totale della partita, e siamo tornati a Monte Carlo. In mezzo c'è tutto il
-resto.
+più corta, un passo, si prende quanto manca a $\lambda$ per arrivare a uno;
+quel che avanza se lo spartiscono le lunghezze successive, con la stessa
+regola. Con $\lambda = 0$ la prima si prende tutto, e siamo tornati alle
+differenze temporali. Con $\lambda = 0{,}5$ il passo singolo prende metà del
+peso, quello doppio un quarto, quello triplo un ottavo, e così via dimezzando.
+Più $\lambda$ si avvicina a uno, più il peso scivola verso le lunghezze lunghe:
+con $\lambda = 0{,}9$ alle prime dieci lunghezze messe insieme ne toccano circa
+due terzi (uno meno $0{,}9$ moltiplicato per sé stesso dieci volte, cioè
+$1 - 0{,}35$), e il resto va più in là. Ma nelle partite che finiscono «più in
+là» ha un fondo: oltre la fine, guardare avanti dieci passi o cento è la stessa
+cosa, cioè guardare fino in fondo, e tutto il peso che avanza va al totale
+della partita. A $\lambda = 1$ ci va tutto, e siamo tornati a Monte Carlo. In
+mezzo c'è tutto il resto.
 
 Detta così sembra impossibile da fare mentre si gioca, perché quella media
 guarda avanti, e il futuro non lo si conosce. Il trucco è guardare dall'altra
 parte: invece di chiedersi "che cosa succederà dopo questa casella", si tiene
 un elenco delle caselle appena attraversate, ciascuna con un ricordo che sfuma
-a ogni passo. A farlo sfumare sono due cose insieme: la manopola di poco fa, e
-lo sconto con cui il capitolo pesa meno ciò che sta lontano nel tempo. Quel
-ricordo si chiama **traccia**, e quando arriva una sorpresa
-la si distribuisce a tutta la scia, tanto più forte quanto più recente è il
-passaggio. Che venga davvero lo stesso risultato non è ovvio ed è un conto da
-fare; l'idea è che dare a ogni casella un pezzetto di correzione alla volta,
-per tutta la partita, alla fine somma quanto le si sarebbe dato in un colpo
-solo guardando avanti. Esattamente, se si aspetta la fine della partita per
-applicare le correzioni; quasi esattamente se le si applica strada facendo,
-che è il modo in cui si usa. Il guadagno è che non si aspetta mai la fine: la
-correzione si scrive a ogni passo, e una manopola sola le copre tutte le
-lunghezze insieme. Di memoria non se ne risparmia, semmai il contrario: il
-ricordo che sfuma va tenuto per ogni casella della griglia, non solo per le
-ultime dieci attraversate.
+a ogni passo. A farlo sfumare sono due cose insieme: $\lambda$, e lo sconto che
+pesa meno ciò che sta lontano nel tempo. Quel ricordo si chiama **traccia**, e
+quando arriva una sorpresa la si distribuisce a tutta la scia, tanto più forte
+quanto più recente è il passaggio. Che venga davvero lo stesso risultato non è
+ovvio ed è un conto da fare; l'idea è che dare a ogni casella un pezzetto di
+correzione alla volta, per tutta la partita, alla fine somma quanto le si
+sarebbe dato in un colpo solo guardando avanti. Esattamente, se si aspetta la
+fine della partita per applicare le correzioni; quasi esattamente se le si
+applica strada facendo, che è il modo in cui si usa. Il guadagno è che non si
+aspetta mai la fine: la correzione si scrive a ogni passo, e una manopola sola
+le copre tutte le lunghezze insieme. Di memoria non se ne risparmia, semmai il
+contrario: il ricordo che sfuma va tenuto per ogni casella della griglia, non
+solo per le ultime dieci attraversate.
 
 `````
 
@@ -823,14 +904,21 @@ tutto l'episodio, mentre online l'uguaglianza esatta chiede la *dutch trace*
 del true online TD($\lambda$), e la traccia accumulante di qui la approssima
 {cite}`sutton2018reinforcement`.
 
+Per il controllo off-policy la traccia così com'è non basta. Il Q-learning
+valuta la policy greedy, e una scia che continua dopo un'azione esplorativa
+darebbe credito a un cammino che quella policy scarta. Il Q($\lambda$) di
+Watkins azzera allora tutte le tracce alla prima azione non greedy, e a
+decidere il taglio è l'azione scelta, non l'estrazione dell’$\varepsilon$:
+un'esplorazione che pesca comunque l'azione greedy non interrompe niente
+{cite}`sutton2018reinforcement`.
+
 `````
 
-Sul labirinto la differenza è quella della
-{numref}`fig-tracce-illuminano`: lo stesso episodio, e a un passo alla volta si
-muove la sola mossa che incassa il premio, mentre con le tracce si muovono
-tutte, in dissolvenza all'indietro. Il che, detto in modo meno pittoresco, è il
-motivo per cui i metodi multi-passo imparano più in fretta quando le ricompense
-sono rare.
+Sul labirinto la differenza è quella della {numref}`fig-tracce-illuminano`: lo
+stesso episodio, e a un passo alla volta si muove la sola mossa che incassa il
+premio, mentre con le tracce si muovono tutte, in dissolvenza all'indietro. È
+il motivo per cui i metodi che guardano più passi avanti imparano più in fretta
+quando le ricompense sono rare.
 
 ```{figure} ../figures/tracce-illuminano.svg
 :name: fig-tracce-illuminano
@@ -840,45 +928,44 @@ sono rare.
 Lo stesso episodio, il cammino più corto dalla partenza alla meta, con la
 tabella dei voti tutta a zero. A un passo alla volta il bersaglio è zero
 ovunque tranne sull'ultima mossa, che incassa il premio: si rinforza quella e
-basta. Con le tracce si rinforzano tutte, e ciascuna per quanto vale la sua
-traccia nell'istante della sorpresa, cioè $\gamma\lambda$ elevato ai passi
-che la separano dalla fine. Con lo sconto della pagina e $\lambda = 0{,}9$
-quel fattore vale $0{,}81$, e alla mossa più vecchia arriva ancora il $43\%$
-della correzione.
+basta. Con le tracce si rinforzano tutte, ciascuna per quanto vale la sua
+traccia nell'istante della sorpresa: lo sconto per $\lambda$, cioè
+$\gamma\lambda$, moltiplicato per sé stesso tante volte quanti sono i passi che
+la separano dalla fine. Con lo sconto di $0{,}9$ e $\lambda = 0{,}9$ quel
+prodotto vale $0{,}81$, e alla mossa più vecchia, quattro passi prima della
+fine, arriva ancora $0{,}81^4 \approx 0{,}43$, il $43\%$ della correzione.
 ```
 
-La scia intera del disegno è quella che si ottiene valutando la politica che si
-segue davvero. Con il massimo del Q-learning, che valuta un giocatore che non
-sbaglia mai, la stessa idea vuole una variante che azzeri la scia dopo la
-prima mossa che la politica appresa non avrebbe scelto: dare credito a un
-cammino che quella politica scarta vorrebbe dire rinforzare le mosse sbagliate
-di proposito. Si chiama Q($\lambda$) di Watkins, e a decidere il taglio è la
-mossa, non il tiro di dado: un dado che finisce per scegliere comunque la
-mossa migliore non interrompe niente.
+La scia intera del disegno vale quando si giudica la strategia che si sta
+seguendo, come fa SARSA. Il Q-learning giudica invece un giocatore che non
+sbaglia mai, e allora la scia va tagliata alla prima mossa esplorativa che quel
+giocatore non avrebbe fatto: è la mossa storta dell'archivio dei metodi Monte
+Carlo, dopo la quale la partita non è più la sua. La variante del Q-learning
+che taglia così si chiama Q($\lambda$) di Watkins.
 
-Questa manopola non è un residuo storico, e la si ritroverà identica nel
-capitolo successivo. Là il segnale che guida l'apprendimento si chiama
-*vantaggio* di una mossa, ed è quanto quella mossa è migliore della media delle
-mosse possibili in quella situazione. E la sorpresa di un passo di cui si è
-appena detto, guardata da vicino, è già una misura di quello: dice di quanto la
-mossa fatta è andata meglio di come ci si aspettava. Nella sua forma più
-semplice il vantaggio è proprio lei; e il modo
-standard di calcolarlo è questa identica media pesata, con questo identico
-$\lambda$. Si sceglie di nuovo la stessa cosa: quanto accettare che il
-bersaglio sia storto, in cambio di quanto farlo ballare di meno.
+Lo stesso $\lambda$ ritorna nella {doc}`sezione sul gradiente di policy
+</DeepReinforcementLearning/policy-gradient>`. Là il segnale che guida
+l'apprendimento si chiama *vantaggio* di una mossa, ed è quanto quella mossa è
+migliore della media delle mosse possibili in quella situazione; e la sorpresa
+di un passo, l'errore TD, ne è già una stima, la più semplice. Il modo standard
+di calcolarlo, la *generalized advantage estimation* {cite}`schulman2016high`,
+somma gli errori TD dei passi successivi con pesi che calano di $\gamma\lambda$
+a ogni passo, come le tracce, e la scelta è di nuovo la stessa: quanto
+accettare che il bersaglio sia storto, in cambio di quanto farlo ballare di
+meno.
 
 ## Quando la tabella non basta più
 
-Tutto quello che si è letto finora poggia su un'ipotesi comparsa finora come
-una riga fra le condizioni della garanzia, e negli esempi così ovvia da non
-pesare: che le situazioni si possano elencare, una riga di tabella ciascuna.
-Nel labirinto sono dodici. In un gioco da tavolo sono più delle molecole d'aria
-di questa stanza. Sullo schermo di un videogioco, dove ogni fotogramma diverso
-è una situazione diversa, la tabella non si può scrivere in nessun universo,
-come dicono i conti della sezione sugli MDP.
+Tutto quello che si è visto poggia su un'ipotesi che finora è comparsa solo fra
+le condizioni della dimostrazione di Watkins e Dayan, e che negli esempi era
+così ovvia da non pesare: che le situazioni si possano elencare, una riga di
+tabella ciascuna. Nel labirinto sono dodici. In un gioco da tavolo sono più
+delle molecole d'aria di questa stanza. Sullo schermo di un videogioco, dove
+ogni fotogramma diverso è una situazione diversa, la tabella non si può
+scrivere in nessun universo, come dicono i conti della sezione sugli MDP.
 
-E si rompe due volte, non una. Si rompe per memoria, perché servirebbe una
-casella per ogni coppia situazione-mossa. E si rompe per dati, che è il
+E si rompe due volte, non una. Si rompe per memoria, perché servirebbe un
+voto per ogni coppia situazione-mossa. E si rompe per dati, che è il
 guasto peggiore: anche avendo la tabella, quasi ogni situazione che l'agente
 incontra non l'ha mai vista prima, quindi la sua riga è ancora vuota, e riempire
 per esperienza diretta ogni riga di una tabella così grande richiederebbe più
@@ -899,8 +986,9 @@ tabella soltanto. Buttata via la tabella, la promessa non c'è più, e non
 perché manchi ancora una dimostrazione: si sa che in quel caso i voti possono
 scappare via, e ci sono esempi costruiti apposta per farlo vedere. La causa ha
 un nome, la {doc}`triade fatale </DeepReinforcementLearning/dqn>`:
-approssimazione di funzione, bootstrapping e apprendimento off-policy insieme,
-cioè esattamente un Q-learning con una rete al posto della tabella. Il deep
+l'approssimazione di funzione, cioè valori stimati da una formula invece che
+scritti uno per uno, il bootstrapping e l'apprendimento off-policy insieme,
+che è esattamente un Q-learning con una rete al posto della tabella. Il deep
 reinforcement learning è in buona parte il mestiere di tenerli fermi lo
 stesso.
 
@@ -933,15 +1021,12 @@ stesso.
   il Q-learning cammina sull'orlo perché in teoria non cadrebbe mai. Tolto il
   dado, la differenza sparisce, e la prudenza di SARSA diventa strada in più.
 - Guardare avanti un passo solo o fino alla fine della partita sono i due
-  estremi di un continuo: una manciata di passi in genere batte entrambi, e si
-  può anche non scegliere, facendo la media di tutte le lunghezze con più peso
-  alle corte. Quella media si tiene aggiornata mentre si gioca, senza
-  aspettare la fine: basta ricordare quali situazioni si sono appena
-  attraversate, con un ricordo che sfuma a ogni passo. Così una ricompensa a
-  sorpresa corregge in un colpo tutta la scia alle spalle, le più recenti di
-  più: nel labirinto, dove un passo alla volta il primo episodio che tocca la
-  meta illumina la sola casella accanto a lei, con le tracce quello stesso
-  episodio illumina tutta la strada percorsa, in dissolvenza.
+  estremi di una famiglia: una manciata di passi in genere batte entrambi, e si
+  può anche fare la media di tutte le lunghezze, con più peso alle corte.
+  Quella media si tiene aggiornata mentre si gioca ricordando le situazioni
+  appena attraversate, con un ricordo che sfuma a ogni passo: così una
+  ricompensa a sorpresa corregge in un colpo tutta la scia alle spalle, le più
+  recenti di più.
 - Tutto questo funziona finché le situazioni si possono elencare una per una.
   Per dodici caselle la tabella si scrive; per un videogioco in cui quasi ogni
   schermata è nuova, no, e nemmeno basterebbero le partite per riempirla. Al
@@ -960,9 +1045,10 @@ stesso.
   successiva (*bootstrapping*), senza attendere la fine dell'episodio.
 - Il Q-learning impara una tabella $Q(s,a)$ ed è *off-policy*: il suo
   target usa $\max_{a'} Q(s',a')$, quindi apprende la politica ottima anche
-  mentre esplora. La convergenza di Watkins e Dayan vale per MDP finiti,
-  $Q$ tabellare, ricompense limitate, sconto $\gamma < 1$, visite infinite e
-  passi che soddisfano Robbins-Monro sui passaggi di ciascuna coppia.
+  mentre esplora. È la value iteration con l'attesa sostituita da un campione,
+  e la convergenza di Watkins e Dayan vale per MDP finiti, $Q$ tabellare,
+  ricompense limitate, sconto $\gamma < 1$, visite infinite e passi che
+  soddisfano Robbins-Monro sui passaggi di ciascuna coppia.
 - Nella formula, $\alpha$ dosa la correzione e $\gamma$ pesa il futuro; la
   strategia $\varepsilon$-greedy bilancia esplorazione e sfruttamento. Delle due
   metà di GLIE (visite infinite, e policy greedy nel limite) al Q-learning,
@@ -970,9 +1056,10 @@ stesso.
   con $\varepsilon$ fisso si posa sul valore della politica
   $\varepsilon$-greedy invece che su quello ottimo.
 - SARSA è la variante *on-policy* ($\gamma\,Q(s',a')$ al posto del massimo):
-  più prudente, valuta la politica che segue davvero. Il $\max$ del Q-learning
-  porta invece con sé il bias di massimizzazione, che il Double Q-learning
-  attenua.
+  più prudente, valuta la politica che segue davvero; Expected SARSA ne prende
+  l'attesa sotto $\pi$, e con $\pi$ greedy ridà il Q-learning. Il $\max$ del
+  Q-learning porta invece con sé il bias di massimizzazione, che il Double
+  Q-learning attenua.
 - TD e Monte Carlo sono i due estremi di un continuo: il ritorno a $n$
   passi sta in mezzo, e il $\lambda$-return li media tutti (vista in
   avanti). Le tracce di eleggibilità sono la vista all'indietro, che
@@ -989,10 +1076,10 @@ stesso.
 
 `````
 
-Il capitolo si chiude con una tabella in mano, ed è proprio lei a rompersi
-appena il mondo diventa grande. Tutto il resto regge: correggere una stima con
-la stima successiva, dosare quella correzione, decidere quanto pesa il futuro,
-tentare ogni tanto una strada nuova per non affezionarsi alla prima trovata. In
-Deep Reinforcement Learning la tabella lascia il posto a una rete, che le
-situazioni non le elenca ma le riconosce; e insieme alla tabella se ne va la
-certezza che il metodo converga.
+Di tutto l'impianto, a rompersi appena il mondo diventa grande è la tabella.
+Tutto il resto regge: correggere una stima con la stima successiva, dosare
+quella correzione, decidere quanto pesa il futuro, tentare ogni tanto una
+strada nuova per non affezionarsi alla prima trovata. In Deep Reinforcement
+Learning la tabella lascia il posto a una rete, che le situazioni non le elenca
+ma le riconosce; e insieme alla tabella se ne va la certezza che i voti
+finiscano al posto giusto.
