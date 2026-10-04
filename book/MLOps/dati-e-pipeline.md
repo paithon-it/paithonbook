@@ -75,17 +75,17 @@ risposta, si risale all'indietro fino al dato di partenza.
 
 `````{tab} Superiore
 
-L'impronta è un **hash crittografico** del contenuto (per esempio SHA-256):
-una funzione che mappa una sequenza arbitraria di byte in una stringa di
-lunghezza fissa, deterministica e sensibile a ogni bit. Su questa idea si
+L'impronta è un **hash crittografico** del contenuto (per esempio SHA-256): una
+funzione deterministica e sensibile a ogni bit che mappa una sequenza
+arbitraria di byte in una stringa di lunghezza fissa. Su questa idea si
 costruisce il **content-addressable storage**: l'indirizzo di un dato *è*
 l'hash del suo contenuto, non un percorso né un nome scelto a mano. Ne
-discendono tre proprietà preziose. Immutabilità: un dato non si modifica
-«sul posto», si scrive una nuova versione con un nuovo indirizzo; le vecchie
-restano raggiungibili, e un esperimento passato non cambia sotto i piedi.
-Deduplicazione: file identici hanno lo stesso hash e occupano spazio una
-volta sola. Integrità: ricalcolare l'hash verifica che il dato non si sia
-corrotto in transito.
+discendono tre proprietà preziose. Immutabilità: un dato non si modifica «sul
+posto», si scrive una nuova versione con un nuovo indirizzo; le vecchie restano
+raggiungibili, e un esperimento passato non cambia sotto i piedi.
+Deduplicazione: file identici hanno lo stesso hash e occupano spazio una volta
+sola. Integrità: ricalcolare l'hash verifica che il dato non si sia corrotto in
+transito.
 
 Nel repository si versiona allora solo un *puntatore* (un piccolo file di
 testo che contiene l'hash e l'indirizzo del magazzino remoto), mentre
@@ -116,8 +116,8 @@ questi passaggi si scrive con gli attrezzi per maneggiare tabelle già visti in
 {doc}`Pandas e Matplotlib </Python/pandas-matplotlib>`.
 
 Il salto di qualità, però, è organizzativo prima che tecnico, e chiede due cose
-alla catena. Che sia riproducibile, cioè che rilanciandola sugli stessi
-dati grezzi si riottenga lo stesso identico dataset. E che sia orchestrata,
+alla catena: che sia riproducibile, cioè che rilanciandola sugli stessi
+dati grezzi si riottenga lo stesso identico dataset; e che sia orchestrata,
 cioè che l'ordine dei passaggi sia scritto una volta in un file, e sia un
 programma a farli partire in quell'ordine, invece di una persona che li lancia
 a mano in un notebook e ogni tanto ne salta uno.
@@ -177,24 +177,24 @@ Formalmente una pipeline è un **DAG** (*directed acyclic graph*): i nodi sono
 trasformazioni, gli archi le dipendenze dato-verso-dato, e l'assenza di cicli
 garantisce che un ordine di esecuzione valido esista, di solito più d'uno, ed è
 per questo che qualcosa poi può andare in parallelo. Due proprietà la rendono
-governabile. L’**idempotenza**: rilanciare uno stadio già eseguito lascia il
-risultato dov'era invece di accumulare effetti collaterali, ed è la condizione
-per ripartire da metà catena dopo un errore. Formalmente, detto $A$ lo stato
-dell'archivio e $\Phi(A)$ quello che lo stadio lascia dopo un'esecuzione,
-$\Phi(\Phi(A)) = \Phi(A)$; lo si ottiene facendo scrivere a ogni stadio il
-proprio risultato sotto una chiave determinata dall'ingresso (la partizione del
-giorno, l'impronta dei dati), sostituendo ciò che c'era invece di accodarvi. E
-la **materializzazione versionata** degli stadi intermedi, così che un
-cambiamento a valle non obblighi a ricalcolare tutto da capo. Il programma che
-tiene insieme il tutto si chiama **orchestratore**: decide in che ordine far
-girare gli stadi (un ordinamento topologico del DAG, che costa $O(V + E)$ con
-$V$ stadi ed $E$ dipendenze), quali possono andare in parallelo e cosa ritentare
-quando uno fallisce. Ma, come per il versionamento, lo strumento è secondario
-rispetto al principio. Automatizzare l'intera catena (da dato grezzo a modello
-valutato) con un comando solo è il cuore della *Continuous Delivery for Machine
-Learning* {cite}`sato2019continuous`: finché un pezzo della pipeline resta un
-rito manuale, l'intero sistema non è né riproducibile né rilasciabile in modo
-affidabile.
+governabile. La prima è l’**idempotenza**: rilanciare uno stadio già eseguito
+lascia il risultato dov'era invece di accumulare effetti collaterali, ed è la
+condizione per ripartire da metà catena dopo un errore. Formalmente, detto $A$
+lo stato dell'archivio e $\Phi(A)$ quello che lo stadio lascia dopo
+un'esecuzione, $\Phi(\Phi(A)) = \Phi(A)$; lo si ottiene facendo scrivere a ogni
+stadio il proprio risultato sotto una chiave determinata dall'ingresso (la
+partizione del giorno, l'impronta dei dati), sostituendo ciò che c'era invece
+di accodarvi. La seconda è la **materializzazione versionata** degli stadi
+intermedi, così che un cambiamento a valle non obblighi a ricalcolare tutto da
+capo. Il programma che tiene insieme il tutto si chiama **orchestratore**:
+decide in che ordine far girare gli stadi (un ordinamento topologico del DAG,
+che costa $O(V + E)$ con $V$ stadi ed $E$ dipendenze), quali possono andare in
+parallelo e cosa ritentare quando uno fallisce. Ma, come per il versionamento,
+lo strumento è secondario rispetto al principio. Automatizzare l'intera catena
+(da dato grezzo a modello valutato) con un comando solo è il cuore della
+*Continuous Delivery for Machine Learning* {cite}`sato2019continuous`: finché
+un pezzo della pipeline resta un rito manuale, l'intero sistema non è né
+riproducibile né rilasciabile in modo affidabile.
 
 `````
 
@@ -264,19 +264,20 @@ uno dopo l'altro; uno orientato alle colonne (Parquet, ORC) memorizza
 insieme tutti i valori di una stessa colonna. La differenza produce tre effetti
 che contano tutti in un carico di lavoro analitico.
 
-**Projection pushdown**: leggere $k$ colonne su $d$ costa in proporzione a $k$
-e non a $d$, perché le altre non vengono nemmeno toccate su disco. Nei carichi
-di ML, dove si leggono poche colonne di tabelle larghe, è la voce dominante.
+Il primo è il **projection pushdown**: leggere $k$ colonne su $d$ costa in
+proporzione a $k$ e non a $d$, perché le altre non vengono nemmeno toccate su
+disco. Nei carichi di ML, dove si leggono poche colonne di tabelle larghe, è la
+voce dominante.
 
-**Compressione**: dentro una colonna i valori sono omogenei per tipo e spesso
-per contenuto, il che abilita codifiche specializzate (dizionario per le
-categorie a bassa cardinalità, run-length per i valori ripetuti, delta per i
-timestamp) prima ancora della compressione generica. Rispetto al CSV equivalente
-il guadagno è di qualche volta, e a decidere quante è soprattutto la codifica a
-dizionario. Il blocco che segue lo misura su tabelle di duecentomila righe, con
-le impostazioni di serie di Pandas e PyArrow, che la *delta encoding*
-(memorizzare la differenza fra un valore e il precedente) non la usano: la si
-chiede colonna per colonna.
+Il secondo è la **compressione**: dentro una colonna i valori sono omogenei per
+tipo e spesso per contenuto, il che abilita codifiche specializzate (dizionario
+per le categorie a bassa cardinalità, run-length per i valori ripetuti, delta
+per i timestamp) prima ancora della compressione generica. Rispetto al CSV
+equivalente il guadagno è di qualche volta, e a decidere quante è soprattutto
+la codifica a dizionario. Il blocco che segue lo misura su tabelle di
+duecentomila righe, con le impostazioni di serie di Pandas e PyArrow, che la
+*delta encoding* (memorizzare la differenza fra un valore e il precedente) non
+la usano: la si chiede colonna per colonna.
 
 ```python
 import io
@@ -354,7 +355,7 @@ il caso da tenere a mente ogni volta che si dichiara che cosa fa uno strumento
 «di serie»: qui l'impostazione di serie lascia sul tavolo un fattore che va da
 poco più di tre a più di otto.
 
-**Predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
+Il terzo è il **predicate pushdown**: Parquet memorizza per ogni gruppo di righe le
 statistiche di ciascuna colonna (minimo, massimo, conteggio dei nulli), quindi
 un filtro `data > 2026-01-01` può saltare interi blocchi senza
 decomprimerli.
@@ -456,7 +457,7 @@ dove $v_f(e, s)$ è il valore calcolato all'istante $s$ e $\delta_f$ il ritardo
 con cui quel valore diventa disponibile al servizio (in Pandas,
 `pd.merge_asof`). Il ritardo è la parte che si dimentica: gli istanti che
 contano sono quelli in cui il dato è *arrivato* al sistema, non quelli in cui
-l'evento è *accaduto*, e un join sul solo tempo dell'evento rispetta $s \le t$ e
+l'evento è *accaduto*. Un join sul solo tempo dell'evento rispetta $s \le t$ ma
 lascia trapelare il futuro lo stesso, perché il valore c'era già nell'archivio
 storico ma non ancora nel servizio. Un *point-in-time join* corretto è tedioso
 da implementare a mano ed è una delle ragioni per cui il feature store esiste
@@ -589,11 +590,11 @@ Il *training–serving skew* è un bug di *calcolo* delle feature. Ma un'intera
 famiglia di guai arriva prima, dal dato grezzo stesso: un campo che cambia
 unità di misura, una colonna che di colpo si riempie di valori nulli, un codice
 prodotto che non era mai comparso. Nel software normale un input malformato fa
-esplodere il programma, e l'errore si nota subito. Un modello, invece, un numero
-lo restituisce *sempre*: dagli in pasto spazzatura e ti darà una predizione
-dall'aria rispettabile. Per questo i dati in ingresso vanno validati
-esplicitamente, come si controlla la merce alla porta del magazzino prima di
-metterla a scaffale.
+esplodere il programma, e l'errore si nota subito. Un modello, invece, un
+numero lo restituisce *sempre*: se alimentato a spazzatura, produrrà comunque
+una predizione dall'aria rispettabile. Per questo i dati in ingresso vanno
+validati esplicitamente, come si controlla la merce alla porta del magazzino
+prima di metterla a scaffale.
 
 `````{tab} Elementare
 
@@ -618,8 +619,8 @@ non ha una media.
 La validazione dei dati è uno dei quattro assi della ML Test Score
 {cite}`breck2017ml`, la rubrica di collaudo che misura la maturità di un
 sistema di ML: include test sullo schema delle feature, sui loro intervalli e
-sul fatto che ogni feature apporti davvero valore. Conviene distinguere due
-livelli. I controlli puntuali (tipo, obbligatorietà, intervallo, assenza di
+sul fatto che ogni feature apporti davvero valore. I controlli si dividono su due
+livelli. Quelli puntuali (tipo, obbligatorietà, intervallo, assenza di
 `NaN`) si applicano a ogni record isolato e sono economici: sono quelli che il
 codice mette in pratica. I controlli distribuzionali (la media di una
 feature è slittata? la proporzione di una categoria è raddoppiata?) richiedono

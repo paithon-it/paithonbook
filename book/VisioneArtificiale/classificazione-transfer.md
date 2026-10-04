@@ -9,7 +9,7 @@ dopo rifinite sulle mille della gara; gli autori chiamano quel secondo
 passaggio *fine-tuning*, e lo scrivono fra virgolette
 {cite}`krizhevsky2012imagenet`. Dietro il risultato c'erano comunque 1,2
 milioni di immagini etichettate a mano e cinque o sei giorni di calcolo su due
-GPU. La buona notizia è che quasi nessuno di noi deve ripetere quella fatica:
+GPU. Oggi quasi nessuno deve ripetere quella fatica:
 possiamo *prendere in prestito* ciò che quelle reti hanno già imparato. Si
 chiama **transfer learning** ed è, oggi, il modo normale di costruire un
 classificatore di immagini.
@@ -61,7 +61,7 @@ testa è un lavoro di due misure diverse.
 
 L'input è un tensore $\mathbf{X} \in \mathbb{R}^{C\times H\times W}$ (canali,
 altezza, larghezza: l'ordine *channels-first* di PyTorch). Una successione di
-blocchi convoluzione + batch normalization + non linearità
+blocchi di convoluzione, batch normalization e non linearità
 lo trasforma in una *feature map* sempre più piccola nello spazio ma più ricca
 in profondità: a rimpicciolirla è il pooling nelle architetture della prima
 generazione e il passo di convoluzione maggiore di uno in quelle di oggi (in
@@ -110,7 +110,7 @@ collo di bottiglia, quasi sempre, sono i dati e il tempo, non l'algoritmo.
 
 L'idea del transfer learning è semplice: invece di ripartire da zero,
 prendiamo una rete già addestrata su un grande dataset (quasi sempre ImageNet)
-e la adattiamo al nostro compito. Funziona per una ragione precisa, da capire.
+e la adattiamo al nostro compito. Funziona per una ragione precisa.
 
 `````{tab} Elementare
 
@@ -146,7 +146,7 @@ strati si trasferiscono quasi senza perdita a compiti diversi, mentre quelle
 degli ultimi strati sono tanto più specializzate (e meno riusabili) quanto più
 ci si avvicina all'uscita. A far scendere il rendimento del trasferimento,
 però, non è solo la specializzazione: pesa anche il taglio in sé, perché separa
-neuroni che si erano adattati l'uno all'altro, e il conto si paga pure
+neuroni che si erano adattati l'uno all'altro, e il costo si paga anche
 trasferendo un compito su sé stesso. Da qui la strategia: congelare gli strati
 bassi (generici) e riaddestrare quelli alti (specifici) sul nuovo dominio,
 sapendo che partire da pesi trasferiti conviene quasi sempre, anche quando poi
@@ -272,7 +272,7 @@ di partenza, non una costante. Conta anche l'ordine. Una testa appena
 inizializzata a caso produce all'inizio gradienti grandi e privi di senso, che
 scendendo nella base ne deformano le feature prima che la testa abbia imparato
 a usarle; addestrare prima la sola testa e poi sbloccare protegge la base, e
-fuori dalla distribuzione di addestramento rende più del fine-tuning diretto
+fuori dalla distribuzione di addestramento è più efficace del fine-tuning diretto
 {cite}`kumar2022finetuning`. Si scongelano solo gli strati alti, perché i bassi
 sono i più generici, e i BatchNorm si lasciano in `.eval()` quando i batch del
 fine-tuning sono piccoli, perché le loro medie salterebbero da un batch
@@ -369,7 +369,7 @@ canali, quindi ogni stadio pesa circa quattro volte il precedente: la cautela
 sul passo non è prudenza di maniera.
 
 Il passo, del resto, non deve essere per forza uno solo. Invece di sbloccare il
-solo ultimo stadio si possono sbloccarli tutti, dando a ciascuno un passo più
+solo ultimo stadio si possono sbloccare tutti, dando a ciascuno un passo più
 corto di quello sopra, così che le tecniche di base, vicino all'ingresso, si
 muovano appena; qui ogni stadio riceve il passo di quello che lo segue diviso
 per $2{,}6$, la regola che ULMFiT ha proposto per un modello di linguaggio
@@ -403,19 +403,19 @@ qualunque fotografia.
 
 Con poche centinaia di immagini per classe questa ricetta arriva dove una rete
 addestrata da zero sugli stessi dati resta molto indietro: con così pochi
-esempi quella rete impara a memoria prima di
-aver imparato a vedere. Quanti dati le servirebbero per rifarsi da sola le
-tecniche di base non è una domanda con una risposta sola. Dipende da quanto le
-nostre immagini somigliano a quelle su cui la base è stata addestrata, ed è la
-stessa cosa da cui dipende quanto rende il transfer learning: più il dominio è
-lontano da ImageNet (le radiografie, le immagini satellitari, il microscopio),
-meno c'è da riusare e più c'è da riaddestrare.
+esempi quella rete impara a memoria prima di aver imparato a vedere. Quanti
+dati le servirebbero per rifarsi da sola le tecniche di base non è una domanda
+con una risposta sola. Dipende da quanto le nostre immagini somigliano a quelle
+su cui la base è stata addestrata, lo stesso fattore da cui dipende l'efficacia
+del transfer learning: più il dominio è lontano da ImageNet (le radiografie, le
+immagini satellitari, il microscopio), meno c'è da riusare e più c'è da
+riaddestrare.
 
 Sostituendo `resnet18` con `resnet50` la struttura del codice non cambia.
 Cambiando famiglia cambiano i nomi dei pezzi, e vanno guardati prima di
 copiare il codice: in `efficientnet_b0` {cite}`tan2019efficientnet` la testa si
 chiama `classifier[1]` e non `fc`, e gli strati alti stanno dentro `features`
-e non in un `layer4`. E una famiglia come i Vision Transformer, che al posto
+e non in un `layer4`. Una famiglia come i Vision Transformer, che al posto
 della batch normalization usa la LayerNorm, di `BatchNorm2d` non ne ha nessuno:
 il ciclo che li rimette in `eval()` gira a vuoto senza protestare. E va bene
 così, perché la LayerNorm calcola le sue medie su ogni immagine presa da sola e

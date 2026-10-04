@@ -120,7 +120,7 @@ un'immagine, senza convoluzioni, regga il confronto con le reti convoluzionali
 nella classificazione, a patto di un pre-addestramento su moltissimi dati. È un
 buon caso di studio perché l'architettura si scrive in quattro equazioni e i
 numeri da verificare sono pubblicati. Della teoria di questo modello non si è
-ancora parlato, e questo mostra un fatto preciso: forme, conteggio e gradienti
+ancora parlato, a dimostrazione che forme, conteggio e gradienti
 si controllano senza averla capita; che il montaggio sia anche quello giusto lo
 dice soltanto il confronto con un'implementazione di riferimento.
 
@@ -162,7 +162,7 @@ calcolato ($16 \cdot 16 \cdot 3$, quanti numeri contiene una patch) e il $768$
 che comparirà fra poco nel codice come `d_modello` sono due cose diverse.
 Il primo è quanto entra nella proiezione, il secondo quanto ne esce, ed è una
 scelta degli autori del paper. Che coincidano vuol dire soltanto che la
-proiezione, in questo caso, non cambia il numero di numeri; con patch da $32$
+proiezione, in questo caso, non cambia la quantità di numeri; con patch da $32$
 pixel il primo diventerebbe $3072$ e il secondo resterebbe $768$.
 
 Ecco la stessa equazione, in PyTorch:
@@ -393,7 +393,7 @@ print(f"{n_parametri:,}")                          # 85,797,120
 
 Il conto torna. Rifarlo a mano una volta smaschera ogni svista che cambia il
 numero di parametri (un blocco in meno, una dimensione sbagliata), e nessuna di
-quelle che lo lasciano com'è:
+quelle che lo lasciano invariato:
 
 | Pezzo | Formula | Parametri |
 |---|---|---|
@@ -421,7 +421,7 @@ $768$ componenti, e i normalizzatori per blocco sono due, da cui
 $2 \cdot 2 \cdot 768$.
 
 Poco meno di $86$ milioni: è il numero che dichiara il paper. Il nostro conto,
-però, si è fermato prima di due pezzi finali, e sono quelli che ci mancano per
+però, si è fermato prima dei due pezzi finali necessari per
 arrivare a un modello completo. Il primo è la LayerNorm dell'equazione 4, che
 vale $2 \cdot 768 = 1\,536$ con lo stesso conto di prima. Il secondo è la
 **testa di classificazione**, cioè lo strato che dai 768 numeri del token di
@@ -436,7 +436,7 @@ $$
 $$
 
 ed è esattamente il numero che quel modello riporta, fino all'ultima cifra. Il
-$+K$ in coda conta: scordarsi i mille bias della testa
+$+K$ in coda conta: dimenticare i mille bias della testa
 farebbe chiudere il conto mille parametri sotto, e in una verifica che si
 vanta di essere esatta all'unità mille parametri si vedono.
 
@@ -554,18 +554,18 @@ l'architettura raggiunge o supera le reti convoluzionali (le CNN, la famiglia
 di modelli per immagini del {doc}`capitolo sul deep learning
 </DeepLearning/overview>`) solo dopo essere stata addestrata una prima volta su
 quantità di dati enormi, e solo allora rifinita sul compito che interessa: è
-quello che si chiama *pre-addestramento*. La parola dice in che ordine si
-fanno le cose, e lascia aperto il resto: qui le immagini portano ancora la
-loro etichetta, mentre sul testo la stessa mossa si farà senza che nessuno
-etichetti niente. Nel paper quelle quantità sono ImageNet-21k, ventunomila
-categorie su quattordici milioni di immagini, o il JFT-300M interno a Google,
-diciottomila categorie su trecento milioni di immagini mai rese pubbliche.
-Addestrato da zero sul solo ImageNet-1k con la ricetta del paper, lo stesso
-codice resta sotto le reti convoluzionali di dimensione paragonabile, e questo
-è un *risultato* del paper, non un fallimento della replica. Il limite dipende
-però anche dalla ricetta: con aumentazione dei dati e regolarizzazione forti, e
-senza un'immagine in più, DeiT porta la stessa architettura all’81,8% sul solo
-ImageNet-1k, e all’83,4% aggiungendo una distillazione
+quello che si chiama *pre-addestramento*. La parola dice in che ordine si fanno
+le cose, e lascia aperto il resto: qui le immagini portano ancora la loro
+etichetta, mentre sul testo la stessa mossa si farà senza che nessuno etichetti
+niente. Nel paper quelle quantità sono ImageNet-21k, ventunomila categorie su
+quattordici milioni di immagini, o il JFT-300M interno a Google, diciottomila
+categorie su trecento milioni di immagini mai rese pubbliche. Addestrato da
+zero sul solo ImageNet-1k con la ricetta del paper, lo stesso codice ottiene
+risultati inferiori alle reti convoluzionali di dimensione paragonabile, e
+questo è un *risultato* del paper, non un fallimento della replica. Il limite
+dipende però anche dalla ricetta: con aumentazione dei dati e regolarizzazione
+forti, e senza un'immagine in più, DeiT porta la stessa architettura all’81,8%
+sul solo ImageNet-1k, e all’83,4% aggiungendo una distillazione
 {cite}`touvron2021training`.
 
 Sapere in anticipo che la riproduzione completa è impossibile cambia
@@ -593,8 +593,8 @@ sono questi:
 4. I freni, cioè tutto quello che si mette apposta per rendere la vita più
    difficile al modello mentre impara. Ce n'è una famiglia intera (weight decay,
    dropout, *label smoothing*, che sfuma le etichette invece di darle secche),
-   e li raccoglie la sezione su [come far funzionare
-   le reti profonde](../DeepLearning/ottimizzazione-regolarizzazione.md): un paper
+   e li raccoglie la {doc}`sezione su come far funzionare
+   le reti profonde </DeepLearning/ottimizzazione-regolarizzazione>`: un paper
    che ne omette uno solo è già un altro esperimento.
 5. L'inizializzazione, cioè da quali numeri partono i pesi, quando non è
    quella che la libreria mette di suo.
@@ -677,8 +677,8 @@ validazione invece dell'ultima, confrontarsi con l'addestramento nudo dà una
 differenza sistematica che non ha nulla a che vedere con l'architettura.
 `````
 
-La disciplina è la stessa della sezione sul
-[flusso di lavoro](flusso-di-lavoro.md): si cambia un sospetto alla volta e
+La disciplina è la stessa della {doc}`sezione sul
+flusso di lavoro <flusso-di-lavoro>`: si cambia un sospetto alla volta e
 si registra. Ed è utile sapere che il problema è riconosciuto e studiato: la
 comunità ha risposto con i *reproducibility checklist* adottati dalle grandi
 conferenze, che chiedono agli autori di dichiarare esattamente questi punti

@@ -67,13 +67,12 @@ andare, e quel «sembra richiedere» era di troppo.
 
 `````{tab} Superiore
 
-Da qui in avanti si pone $T = 1$, così che $Z$ dipenda soltanto dai
-parametri: $Z(\theta)$. Il punto di attrito è il gradiente della
-log-verosimiglianza. Da
-$p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$ segue
-$\log p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - \log Z(\theta)$, e il primo
-addendo si deriva senza storie. Tutto sta nel secondo, ed è il passaggio da
-cui dipende il resto del capitolo:
+Da qui in avanti si pone $T = 1$, così che $Z$ dipenda soltanto dai parametri:
+$Z(\theta)$. Il punto di attrito è il gradiente della log-verosimiglianza. Da
+$p_\theta(\mathbf{x}) = e^{-E_\theta(\mathbf{x})}/Z(\theta)$ segue $\log
+p_\theta(\mathbf{x}) = -E_\theta(\mathbf{x}) - \log Z(\theta)$, e il primo
+addendo si deriva immediatamente. Il termine complesso è il secondo, ed è il
+passaggio da cui dipende il resto del capitolo:
 
 $$
 \nabla_\theta \log Z(\theta)
@@ -141,10 +140,10 @@ la scrisse per il moto browniano, il tremolio di un granello di polline
 sull'acqua sotto gli urti delle molecole {cite}`langevin1908theorie`. È quasi
 uno slogan: scendere lungo la pendenza dell'energia, con addosso un po’ di
 rumore. E «rumore», qui, non ha niente a che fare con i suoni: vuol dire una
-spintarella a caso, diversa a ogni passo, che non si sa da che parte arriverà.
-Nelle due vie che seguono la parola cambierà ancora mestiere: nella seconda
-sarà lo sporco aggiunto apposta a un dato vero, nella terza gli esempi finti
-fabbricati per confronto.
+perturbazione casuale, diversa a ogni passo, che non si sa da che parte
+arriverà. Nelle due vie che seguono la parola cambierà ancora mestiere: nella
+seconda sarà la perturbazione aggiunta apposta a un dato vero, nella terza gli
+esempi artificiali fabbricati per confronto.
 
 `````{tab} Elementare
 
@@ -209,31 +208,32 @@ crescere senza limite), la distribuzione di $\mathbf{x}_k$ converge a $p_\theta
 paesaggio, che Roberts e Tweedie hanno reso precise mostrando, fra l'altro, che
 la diffusione può convergere mentre la sua discretizzazione non converge
 affatto {cite}`roberts1996exponential`; e l'esempio a doppia buca ne viola una:
-$\nabla_{\mathbf{x}} E_\theta$ globalmente lipschitziano, o almeno una
-condizione di dissipatività che tenga la catena al finito. Con $E(x) =
-(x^2-1)^2$ il gradiente cresce come $x^3$, non è lipschitziano, e a passo
-fissato la ricorsione diverge oltre una soglia: $|1 - 2\epsilon(x^2-1)| > 1$,
-cioè $|x| > \sqrt{1 + 1/\epsilon}$, che a $\epsilon = 0{,}01$ vale $10{,}05$
-(da $10{,}00$ la catena torna in una buca, da $10{,}05$ esplode in nove passi).
-Non si vede mai, perché lassù la densità vale $e^{-9800}$, ma è una divergenza
-vera e non un'approssimazione: quella catena, a rigore, è transiente. A passo
-fissato, come nel codice della doppia buca e nella pratica degli EBM, la catena
-si assesta poi su una distribuzione leggermente distorta, con un errore
-dell'ordine di $\epsilon$: lo eliminerebbe un test di accettazione alla
-Metropolis (la variante MALA), a cui di solito si rinuncia in cambio della
-semplicità. Si noti che compare solo $\nabla_{\mathbf{x}} E_\theta$: la
-costante $\log Z(\theta)$, non dipendendo da $\mathbf{x}$, ha gradiente nullo.
-Il campionamento non ha mai bisogno della normalizzazione: è l'osservazione su
-cui poggia tutto il resto della sezione. Dove le ipotesi valgono, la
-convergenza può essere comunque lentissima: il tempo medio per scavalcare una
-barriera di altezza $\Delta E$ cresce come $e^{\Delta E}$ (la legge di Kramers
-{cite}`kramers1940brownian`), e un paesaggio con molte buche separate da
-barriere alte si campiona in tempi esponenziali nell'altezza delle barriere.
+l'ipotesi che $\nabla_{\mathbf{x}} E_\theta$ sia globalmente lipschitziano, o
+che valga almeno una condizione di dissipatività che tenga la catena al finito.
+Con $E(x) = (x^2-1)^2$ il gradiente cresce come $x^3$, non è lipschitziano, e a
+passo fissato la ricorsione diverge oltre una soglia: $|1 - 2\epsilon(x^2-1)| >
+1$, cioè $|x| > \sqrt{1 + 1/\epsilon}$, che a $\epsilon = 0{,}01$ vale
+$10{,}05$ (da $10{,}00$ la catena torna in una buca, da $10{,}05$ esplode in
+nove passi). Non si vede mai, perché lassù la densità vale $e^{-9800}$, ma è
+una divergenza vera e non un'approssimazione: quella catena, a rigore, è
+transiente. A passo fissato, come nel codice della doppia buca e nella pratica
+degli EBM, la catena si assesta poi su una distribuzione leggermente distorta,
+con un errore dell'ordine di $\epsilon$: lo eliminerebbe un test di
+accettazione alla Metropolis (la variante MALA), a cui di solito si rinuncia in
+cambio della semplicità. Si noti che compare solo $\nabla_{\mathbf{x}}
+E_\theta$: la costante $\log Z(\theta)$, non dipendendo da $\mathbf{x}$, ha
+gradiente nullo. Il campionamento non ha mai bisogno della normalizzazione: è
+l'osservazione su cui poggia tutto il resto della sezione. Dove le ipotesi
+valgono, la convergenza può essere comunque lentissima: il tempo medio per
+scavalcare una barriera di altezza $\Delta E$ cresce come $e^{\Delta E}$ (la
+legge di Kramers {cite}`kramers1940brownian`), e un paesaggio con molte buche
+separate da barriere alte si campiona in tempi esponenziali nell'altezza delle
+barriere.
 
 La versione stocastica su minibatch, che sostituisce il gradiente esatto con
 quello stimato, è la *stochastic gradient Langevin dynamics*
 {cite}`welling2011bayesian`, nata per campionare la distribuzione a posteriori
-dei *parametri* e poi passata di peso al campionamento dei dati: un passo di
+dei *parametri* e poi estesa direttamente al campionamento dei dati: un passo di
 discesa dimezzato ($\epsilon/2$) più un rumore di deviazione standard
 $\sqrt{\epsilon}$. Il $\tfrac12$ e la radice sono ciò che rende la ricorsione
 la discretizzazione di Eulero–Maruyama della diffusione $d\mathbf{x} =
@@ -327,10 +327,9 @@ catene hanno ricostruito le proporzioni giuste senza che $Z$ sia mai entrata
 nel ciclo.
 
 Quei pochi millesimi, però, non sono tutti fortuna del sorteggio. Dentro c'è
-anche un errore che c'è sempre e sempre nello stesso verso, ed è colpa del
-passo: la pallina non scivola giù per il pendio con continuità, lo scende a
-saltelli, e $\epsilon$ (nel codice, `eps`) è quanto dura ogni saltello. Una
-scala di gradini non è una rampa, e con saltelli di durata finita resta uno
+anche un errore sistematico, colpa della discretizzazione: la catena non evolve
+in tempo continuo, ma avanza a passi discreti, e $\epsilon$ (nel codice, `eps`)
+è la lunghezza di ogni passo. Una sequenza di incrementi finiti lascia uno
 scarto che nessuna quantità di catene fa sparire.
 
 Separare i due effetti ripetendo le esecuzioni costerebbe caro. Con ventimila
@@ -338,7 +337,7 @@ catene, due esecuzioni che differiscono soltanto nel sorteggio ballano di
 qualche millesimo su un bin, cioè quanto l'effetto da misurare, e il ballo cala
 solo come la radice quadrata del numero di esecuzioni: per dimezzarlo ne
 servono quattro volte tante. In una dimensione, però, la risposta esatta si
-calcola senza tirare nemmeno una pallina, come si è fatto per $Z$. La regola
+calcola senza far partire nemmeno una catena, come si è fatto per $Z$. La regola
 con cui la catena si sposta si scrive come una matrice su una griglia fine (la
 riga di un punto dice con che probabilità da lì si arriva in ciascun altro), e
 la distribuzione su cui la catena a passo $\epsilon$ si assesta davvero è
@@ -379,11 +378,11 @@ eps = 0.0005  scarto sul bin centrale +0.00018   scarto/eps 0.352
 ```
 
 Lo scarto è sempre positivo (la barriera è sovrappesata), e il rapporto fra lo
-scarto e la durata del saltello resta fra $0{,}35$ e $0{,}36$ mentre il passo
+scarto e la durata del passo resta fra $0{,}35$ e $0{,}36$ mentre il passo
 si accorcia di venti volte. Lo scarto, cioè, cala esattamente in proporzione al
 passo: passo cinque volte più corto, scarto cinque volte più piccolo, e zero
-soltanto al limite di saltelli di durata nulla. Sparirebbe anche in un altro
-modo: aggiungendo dopo ogni saltello un controllo che, come nella ricottura
+soltanto al limite di passi di durata nulla. L'errore sparirebbe anche in un altro
+modo: aggiungendo dopo ogni passo un controllo che, come nella ricottura
 simulata, accetta la mossa sempre oppure soltanto con una certa probabilità,
 con una regola tarata perché le proporzioni finali tornino esatte. È il test di
 accettazione di Metropolis, e i modelli a energia ci rinunciano per
@@ -395,19 +394,19 @@ sempre, ma è più piccolo di quanto i numeri ballino da un sorteggio all'altro.
 Un numero solo, per quanto stampato con quattro cifre, non dimostra niente se
 non si sa di quanto balla.
 
-Qui funziona bene per una ragione che non si generalizza. La collinetta fra le
-due buche è alta un'unità di energia, e con la temperatura a uno un'unità è
-esattamente la salita che le spintarelle casuali fanno fare a una pallina senza
-sforzarsi: barriere così si scavalcano di continuo. Ma la difficoltà di
+Qui la stima converge per una ragione che non si generalizza. La barriera fra
+le due buche è alta un'unità di energia, e con la temperatura a uno un'unità è
+esattamente il dislivello che la perturbazione casuale fa superare alla catena
+senza difficoltà: barriere così si scavalcano di continuo. Ma la difficoltà di
 superare una barriera non cresce in proporzione alla sua altezza, cresce molto
-più in fretta. Lo si vede moltiplicando l'energia per un'altezza $h$,
-$E(x) = h\,(x^2 - 1)^2$, e contando quante volte ventimila catene passano da
-una buca all'altra in duemila passi, con $h = 1$ e con $h = 10$. Le catene
-partono metà in una buca e metà nell'altra (con la collinetta alta dieci,
-partire lontano dalle buche come nella prima simulazione farebbe esplodere la
-ricorsione), e un passaggio conta solo quando la catena arriva in fondo
-all'altra buca, oltre $\pm 0{,}8$, così che i saltelli avanti e indietro sulla
-cima non vengano contati come scavalcamenti.
+più in fretta. Lo si vede moltiplicando l'energia per un'altezza $h$, $E(x) =
+h\,(x^2 - 1)^2$, e contando quante volte ventimila catene passano da una buca
+all'altra in duemila passi, con $h = 1$ e con $h = 10$. Le catene partono metà
+in una buca e metà nell'altra (con la collinetta alta dieci, partire lontano
+dalle buche come nella prima simulazione farebbe esplodere la ricorsione), e un
+passaggio conta solo quando la catena arriva in fondo all'altra buca, oltre
+$\pm 0{,}8$, così che i passi avanti e indietro sulla cima non vengano
+contati come scavalcamenti.
 
 ```python
 import numpy as np
@@ -531,15 +530,15 @@ $$
 che a prima vista è inservibile (lo score dei dati non lo conosciamo) ma che
 un'integrazione per parti trasforma in una quantità calcolabile su un
 campione. Le ipotesi contano.
-L'integrazione per parti richiede regolarità, $p_{\text{dati}}$
+L'integrazione per parti richiede regolarità: $p_{\text{dati}}$
 differenziabile, i due valori attesi
 $\mathbb{E}\lVert\nabla_{\mathbf{x}}\log p_\theta\rVert^2$ e
 $\mathbb{E}\lVert\nabla_{\mathbf{x}}\log p_{\text{dati}}\rVert^2$ finiti,
 e un decadimento all'infinito
 ($p_{\text{dati}}(\mathbf{x})\, \nabla_{\mathbf{x}} \log p_\theta(\mathbf{x})
-\to 0$ per $\lVert\mathbf{x}\rVert \to \infty$, che è ciò che annulla il
-termine di bordo); per concludere che il minimo di $J$ identifica il modello
-serve in più la densità del modello strettamente positiva ovunque,
+\to 0$ per $\lVert\mathbf{x}\rVert \to \infty$, condizione che annulla il
+termine di bordo). Per concludere che il minimo di $J$ identifica il modello
+serve in più che la densità del modello sia strettamente positiva ovunque,
 ipotesi che nel caso ben specificato si trasmette ai dati
 {cite}`hyvarinen2005estimation`.
 
@@ -653,11 +652,11 @@ importato.
 
 La terza strada è la più obliqua e ha il fascino delle idee che spostano il
 problema invece di risolverlo. Michael Gutmann e Aapo Hyvärinen, nel 2010,
-osservano che dire quanto è probabile un dato è difficile, mentre
-distinguere i dati veri da roba fabbricata da noi è un problema di
-classificazione, e a classificare siamo bravi {cite}`gutmann2010noise`. Il
-metodo si chiama **stima contrastiva col rumore**, dove «rumore» sono appunto
-gli esempi finti che ci fabbrichiamo, e la sigla inglese con cui lo si trova
+osservano che dire quanto è probabile un dato è difficile, mentre distinguere i
+dati veri da esempi fabbricati apposta è un problema di classificazione, e
+classificare si sa fare bene {cite}`gutmann2010noise`. Il metodo si chiama
+**stima contrastiva col rumore**, dove «rumore» sono appunto gli esempi
+artificiali fabbricati per confronto, e la sigla inglese con cui lo si trova
 ovunque è **NCE**.
 
 `````{tab} Elementare

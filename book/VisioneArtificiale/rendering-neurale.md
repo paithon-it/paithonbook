@@ -26,7 +26,7 @@ mondo non è fatto di superfici nette: capelli, foglie, fumo, vetro, riflessi.
 
 Nel 2020 un articolo di sei autori di Berkeley, San Diego e Google propose di
 smettere di ricostruire l'oggetto e di addestrare una funzione $F_\theta$ che a
-ogni punto dello spazio, guardato da ogni direzione, associa un colore e una
+ogni punto dello spazio, guardato da una direzione, associa un colore e una
 densità {cite}`mildenhall2020nerf`. Nessuno la scrive: la si addestra, ed è una
 rete, un piccolo percettrone multistrato. Il metodo si chiama **NeRF**,
 dall'inglese *neural radiance field*, cioè «campo di radianza neurale»:
@@ -51,7 +51,7 @@ domanda in ogni punto e per ogni direzione, e la risposta la dà una piccola ret
 neurale. Il colore del pixel si ottiene dopo, mettendo insieme le risposte di
 tutti i punti che il raggio attraversa.
 
-Due conseguenze, che è il caso di sentire come strane prima di trovarle normali.
+Due conseguenze, che all'inizio suonano strane.
 La prima: la scena non ha una griglia. Puoi chiedere il colore in un punto
 qualsiasi, anche fra due punti che nessuna foto ha guardato da vicino.
 L'immagine che ne ricavi, sì: quella la disegni tu, con tutti i pixel che vuoi,
@@ -118,10 +118,10 @@ il meccanismo, ed è fisica ottocentesca invece che una rete: per la precisione
 la legge con cui la luce si spegne attraversando qualcosa di torbido, che porta i
 nomi di Beer e Lambert e ha quasi due secoli.
 
-Differenziabile vuol dire che autograd attraversa l'intera catena, dal pixel
-reso fino ai pesi della rete: lungo quella strada nessun passo fa un salto
-brusco o prende una decisione secca del tipo «qui mi fermo», che
-interromperebbe il gradiente.
+Che il rendering sia differenziabile vuol dire che autograd attraversa l'intera
+catena, dal pixel reso fino ai pesi della rete: lungo quella strada nessun
+passo fa un salto brusco o prende una decisione secca del tipo «qui mi fermo»,
+che interromperebbe il gradiente.
 
 ```{figure} ../figures/nerf-campo-di-radianza.svg
 :name: fig-nerf-rendering
@@ -141,7 +141,7 @@ Segui {numref}`fig-nerf-rendering`. Dall'obiettivo della fotocamera parte un
 filo teso che attraversa la scena, e sul filo si infilano qualche decina di
 quadratini di carta velina, uno per ogni punto da guardare. Il colore di
 ciascuno, e quanto è fitto, li dice la rete, a cui si chiede punto per punto che
-colore c'è lì e quanto è solido. Guardato il filo di punta, dalla parte
+colore c'è lì e quanto è solido. Guardando il filo di punta, dalla parte
 dell'obiettivo, i quadratini si sovrappongono in una macchia di colore sola, e
 quella macchia è un pixel.
 
@@ -179,7 +179,7 @@ soluzioni comode, e con qualche decina di fotografie prese tutt'attorno le
 sagome che le spiegano tutte insieme, senza contraddirne nemmeno una, sono
 sostanzialmente quelle vere. Non le sole, però: anche una sagoma sbagliata può
 mettere d'accordo tutte le foto, se la si dipinge con colori che cambiano
-velocissimi a seconda di dove la si guarda. La rete di solito non ci cade,
+molto in fretta a seconda di dove la si guarda. La rete di solito non ci cade,
 perché colori così le riescono male e scivola verso la spiegazione più semplice.
 Garanzie però non ce ne sono, e dove ha guardato una fotografia sola, o nessuna,
 la rete mette quello che le pare.
@@ -222,7 +222,7 @@ discreta è esattamente il "sopra" di Porter e Duff, con l'opacità ricavata
 dalla densità. I pesi $w_i = T_i \alpha_i$ formano una distribuzione lungo il
 raggio, e la loro massa $\sum_i w_i$ è l'opacità totale, mentre $\sum_i w_i
 t_i$ è la profondità attesa: una mappa di profondità si ottiene gratis,
-senza averla mai addestrata. Attenzione però che quella è una somma pesata, non
+senza una supervisione dedicata. Attenzione però che quella è una somma pesata, non
 una media: i $w_i$ sommano a uno solo se il raggio è completamente opaco, e
 dove non lo è la profondità va divisa per $\sum_i w_i$, altrimenti risulta
 sistematicamente più corta del vero.
@@ -262,7 +262,7 @@ $$
 
 E si campiona in due fasi (*hierarchical sampling*), perché spendere calcolo
 nell'aria vuota è sprecarlo. Una rete grossolana valuta $N_c = 64$ campioni e
-ne ricava i pesi $w_i$; normalizzati, $\hat{w}_i = w_i/\sum_j w_j$, definiscono
+ne ricava i pesi $w_i$; normalizzati come $\hat{w}_i = w_i/\sum_j w_j$, definiscono
 lungo il raggio una densità costante a tratti, da cui si estraggono per
 trasformata inversa altri $N_f = 128$ campioni, dove i pesi sono grandi. Una
 rete fine valuta tutti gli $N_c + N_f$ campioni e rende il colore finale. Con
@@ -341,19 +341,19 @@ $$
 
 applicata a ciascuna delle tre coordinate (con $L = 10$ nel lavoro originale) e
 alle componenti della direzione (con $L = 4$). Non è un espediente. Nel regime
-del **neural tangent kernel**, dove una rete larga addestrata a passi piccoli si
-comporta come una regressione con un nucleo fisso nel senso del {doc}`kernel
+del **neural tangent kernel**, dove una rete larga addestrata a passi piccoli
+si comporta come una regressione con un nucleo fisso nel senso del {doc}`kernel
 trick </MachineLearning/svm-kernel>` (il prodotto scalare fra i gradienti della
-rete nei due punti, non la media pesata di Nadaraya-Watson), l'errore lungo ogni
-autovettore del nucleo cala con una velocità proporzionale al suo autovalore;
-per un MLP con ingresso a bassa dimensione gli autovalori calano rapidamente con
-la frequenza, e le alte frequenze richiedono un numero di passi impraticabile.
-Tancik e colleghi mostrano che le *Fourier features* rendono il nucleo
-stazionario, con una banda che si regola scegliendo le frequenze
+rete nei due punti, non la media pesata di Nadaraya-Watson), l'errore lungo
+ogni autovettore del nucleo cala con una velocità proporzionale al suo
+autovalore. Per un MLP con ingresso a bassa dimensione gli autovalori calano
+rapidamente con la frequenza, e le alte frequenze richiedono un numero di passi
+impraticabile. Tancik e colleghi mostrano che le *Fourier features* rendono il
+nucleo stazionario, con una banda che si regola scegliendo le frequenze
 {cite}`tancik2020fourier`. La mappa presuppone coordinate normalizzate, in NeRF
 dentro $[-1, 1]$: la frequenza più alta, $2^{L-1}\pi$, fissa la scala più fine
-rappresentabile, e una $L$ troppo grande produce rumore ad alta frequenza invece
-che dettaglio.
+rappresentabile, e una $L$ troppo grande produce rumore ad alta frequenza
+invece che dettaglio.
 
 La forma coincide con la codifica posizionale dei Transformer, sinusoidi a
 frequenze scalate geometricamente, ma lo scopo è un altro, e gli autori di NeRF
@@ -394,7 +394,7 @@ funziona, ma i foglietti diventano così tanti da riempire gigabyte.
 
 I numeri sui foglietti all'inizio sono a caso, e si imparano esattamente come
 si impara tutto il resto: si rende un pixel, si vede quanto è sbagliato e si
-corregge all'indietro fino ai foglietti, spostandoli un pochino. E le griglie
+corregge all'indietro fino ai foglietti, ritoccandoli un pochino. E le griglie
 non sono una sola ma una quindicina, dalla più larga alla più fitta, così che
 una sappia dov'è il tavolo e un'altra dove sono le venature del legno.
 
@@ -433,7 +433,7 @@ un solo strato nascosto da 64 unità, e uno per il colore, con due
 La parte controintuitiva è che le collisioni della tabella hash non si
 risolvono: si lasciano. Il gradiente medio di due punti che collidono è
 dominato da quello dove c'è densità, perché la regione vuota contribuisce
-poco alla loss, e i livelli a risoluzione diversa collidono in modi diversi,
+poco alla loss. Inoltre i livelli a risoluzione diversa collidono in modi diversi,
 quindi l'ambiguità di un livello viene sciolta dagli altri. Il risultato è un
 addestramento di ordini di grandezza più veloce, con qualità paragonabile, e un
 fotogramma in alta definizione reso in qualche decina di millisecondi.
@@ -455,8 +455,8 @@ addestrabile. Il campo continuo resta, ma non è più tutto dentro l'MLP.
 
 ## Splatting: dai raggi ai granelli
 
-Nel 2023 lo stesso obiettivo è stato raggiunto da un'altra direzione, e per
-farlo ha cambiato la rappresentazione invece del modo di ottimizzarla.
+Nel 2023 lo stesso obiettivo è stato raggiunto da un'altra direzione, cambiando
+la rappresentazione invece del modo di ottimizzarla.
 
 `````{tab} Elementare
 
@@ -520,7 +520,7 @@ covarianza proiettati. L'ordinamento si fa una volta per tile di $16 \times 16$
 pixel, sui centri delle gaussiane, e non pixel per pixel: dove due gaussiane si
 compenetrano l'ordine può scattare fra un fotogramma e l'altro. Le gaussiane
 infine, nelle scene reali, non partono a caso: nascono sulla nuvola di punti che
-la structure from motion produce insieme alle pose, e il rendering sfrutta
+la *structure from motion* produce insieme alle pose. Il rendering, poi, sfrutta
 appieno l'hardware grafico. Con una precisazione che il metodo non nasconde:
 sotto la prospettiva vera, che divide per $Z$, l'immagine di una gaussiana non è
 una gaussiana. Lo diventa se la proiezione si linearizza localmente, e la
@@ -535,17 +535,18 @@ risoluzione 1080p, con qualità pari a quella dei migliori campi di radianza
 allora pubblicati e tempi di addestramento competitivi.
 
 La qualità, qui come in tutta la sintesi di viste, si misura su fotografie
-tenute fuori dall'addestramento, rendendole dalle loro pose e confrontandole con
-gli originali. Le misure sono tre, e il verso va detto per ciascuna: il PSNR,
-$10\log_{10}(\mathrm{MAX}^2/\mathrm{MSE})$ in decibel, cioè l'errore quadratico
-in scala logaritmica, dove più alto è meglio; l'SSIM, che confronta luminanza,
-contrasto e struttura su finestre locali, dove più alto è meglio, fino a un
-massimo di $1$ {cite}`wang2004image`; e LPIPS, la distanza fra le attivazioni di
-una rete addestrata, dove più basso è meglio, e che segue meglio delle altre due
-il giudizio umano sulle sfocature {cite}`zhang2018unreasonable`. Anche la loss è
-diversa da quella di NeRF: è $\mathcal{L} = (1-\lambda)\,\mathcal{L}_1 +
-\lambda\,\mathcal{L}_{\text{D-SSIM}}$, l'errore assoluto sui pixel combinato con
-un termine strutturale, con $\lambda = 0{,}2$.
+tenute fuori dall'addestramento, rendendole dalle loro pose e confrontandole
+con gli originali. Le misure sono tre, e il verso va detto per ciascuna: il
+PSNR, $10\log_{10}(\mathrm{MAX}^2/\mathrm{MSE})$ in decibel, cioè l'errore
+quadratico in scala logaritmica, dove più alto è meglio; l'SSIM, che confronta
+luminanza, contrasto e struttura su finestre locali, dove più alto è meglio,
+fino a un massimo di $1$ {cite}`wang2004image`; e infine LPIPS, la distanza fra
+le attivazioni di una rete addestrata, dove più basso è meglio, e che segue
+meglio delle altre due il giudizio umano sulle sfocature
+{cite}`zhang2018unreasonable`. Anche la loss è diversa da quella di NeRF: è
+$\mathcal{L} = (1-\lambda)\,\mathcal{L}_1 +
+\lambda\,\mathcal{L}_{\text{D-SSIM}}$, l'errore assoluto sui pixel combinato
+con un termine strutturale, con $\lambda = 0{,}2$.
 
 L'ottimizzazione alterna discesa del gradiente sui parametri e un
 **controllo adattivo della densità**: le gaussiane con gradiente di posizione
@@ -683,13 +684,12 @@ quanto ciascun punto conta. I punti che contano zero non spostano niente, quello
 sulla superficie si prende tutto, e viene $3{,}99$ metri. È così che da un campo
 di radianza esce gratis anche una mappa di profondità.
 
-Non viene esattamente quattro, e la ragione merita di essere detta perché è un
-errore che si fa davvero. I pesi sommano a $0{,}9975$ e non a uno, quindi
-quella è una somma e non ancora una media. Per farne una media va divisa per il
-totale dei pesi, e $3{,}99 / 0{,}9975$ dà esattamente $4{,}00$ metri, cioè dove
-la superficie sta davvero. Chi salta quella divisione ottiene mappe di
-profondità sistematicamente più corte del vero, e tanto più corte quanto più la
-scena è semitrasparente.
+Non viene esattamente quattro, ed è un dettaglio su cui è facile sbagliare. I
+pesi sommano a $0{,}9975$ e non a uno, quindi quella è una somma e non ancora
+una media. Per farne una media va divisa per il totale dei pesi, e $3{,}99 /
+0{,}9975$ dà esattamente $4{,}00$ metri, cioè dove la superficie sta davvero.
+Chi salta quella divisione ottiene mappe di profondità sistematicamente più
+corte del vero, e tanto più corte quanto più la scena è semitrasparente.
 
 E se non c'è nessuna superficie? Nel caso della nebbia il punto che conta
 di più conta $0{,}044$, contro lo $0{,}9975$ di prima: nessuno comanda, il

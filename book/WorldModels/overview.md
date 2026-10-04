@@ -37,14 +37,14 @@ rappresenta gli oggetti siano innati {cite}`spelke2007core`. LeCun scommette
 sulla prima lettura: guardando, il bambino si costruisce dentro qualcosa che
 gli permette di *aspettarsi* il mondo, cioè un modello.
 
-Col metro del {doc}`dibattito sul rinforzo </AutoSupervisione/dibattito-rl>`,
-quanta informazione porta il segnale, il bambino che guarda ne ha uno
-ricchissimo e gratuito: a ogni istante il mondo gli dice se aveva previsto
-bene. Dare alle macchine qualcosa di simile, un **world model** (modello del
-mondo), vuol dire dar loro lo stesso maestro: prevedere che cosa succede dopo
-e, per chi deve agire, che cosa succede dopo un'azione. È un tentativo in
-corso, e resta aperto il dibattito su quanto sia davvero il pezzo mancante
-dell'intelligenza artificiale.
+Secondo il metro introdotto dal {doc}`dibattito sul rinforzo
+</AutoSupervisione/dibattito-rl>`, ovvero la quantità di informazione del
+segnale, il bambino che guarda ne riceve uno ricchissimo e gratuito: a ogni
+istante il mondo gli dice se aveva previsto bene. Dare alle macchine qualcosa
+di simile, un **world model** (modello del mondo), vuol dire dar loro lo stesso
+maestro: prevedere che cosa succede dopo e, per chi deve agire, che cosa
+succede dopo un'azione. È un tentativo in corso, e resta aperto il dibattito su
+quanto sia davvero il pezzo mancante dell'intelligenza artificiale.
 
 ## Un modello in scala ridotta della realtà
 
@@ -116,9 +116,9 @@ ricompensa $r_\theta(s_t, a_t)$. Un modello così abilita tre operazioni:
 predizione (srotolare traiettorie future senza toccare l'ambiente),
 pianificazione (cercare, tra le traiettorie immaginate, quella con il ritorno
 più alto) e simulazione di alternative («e se agissi diversamente?»). Su
-quest'ultima una precisazione da manuale di causalità: ri-simulare da $s_t$ con
-un'altra azione è, nel lessico di Pearl, un *intervento* nel modello; il
-controfattuale in senso stretto («cosa *sarebbe* successo in *quella*
+quest'ultima serve una precisazione da manuale di causalità: ri-simulare da
+$s_t$ con un'altra azione è, nel lessico di Pearl, un *intervento* nel modello;
+il controfattuale in senso stretto («cosa *sarebbe* successo in *quella*
 traiettoria») chiederebbe invece di tenere fisso il caso già uscito (di riusare
 cioè la stessa realizzazione del rumore esogeno di quella traiettoria, non di
 ri-estrarlo) e di ri-simulare cambiando la sola azione; le due cose coincidono
@@ -129,7 +129,7 @@ di dettagli irrilevanti. I world model moderni imparano perciò due oggetti
 distinti: un codice compatto della singola osservazione, $\mathbf{z}_t =
 f_\phi(\mathbf{x}_t)$ con $f_\phi$ un encoder appreso, e una memoria
 $\mathbf{h}_t$ che riassume la storia precedente. Da un solo fotogramma
-mancherebbero, per dire, le velocità: è $\mathbf{h}_t$ a portarle, ed è la
+mancherebbero, per esempio, le velocità: è $\mathbf{h}_t$ a portarle, ed è la
 memoria della prossima sezione. Lo stato del modello è quindi la coppia
 $(\mathbf{z}_t, \mathbf{h}_t)$ e la dinamica si scrive
 $p_\theta(\mathbf{z}_{t+1} \mid \mathbf{z}_t, a_t, \mathbf{h}_t)$; nell'RSSM
@@ -211,18 +211,18 @@ compromesso: quanta fiducia concedere al sogno, e per quanti passi.
 
 `````
 
-C'è poi una seconda ragione, meno contabile e più profonda. Il **senso
-comune** che LeCun rivendica al gatto non è un elenco di fatti, ma un
-repertorio di previsioni: le cose non sostenute cadono, ciò che è nascosto
-continua a esistere, i liquidi si versano, gli oggetti spinti si muovono. È la
-*fisica intuitiva* che il neonato dell'incipit costruisce guardando, senza
-etichette, e il segnale di cui si nutre è la sorpresa, nel senso che
-l’{doc}`apertura del capitolo sull'auto-supervisione
-</AutoSupervisione/overview>` le ha dato: quanto era improbabile, per il
-modello che il bambino si è fatto, quello che poi accade. È una lezione
-auto-supervisionata, perché il bersaglio non lo scrive nessuno: è il futuro
-stesso che arriva. Se il senso comune è fatto così, inseguirlo significa
-costruire macchine che imparano a prevedere il mondo, non a memorizzarlo.
+C'è poi una seconda ragione, meno contabile e più profonda. Il **senso comune**
+che LeCun rivendica al gatto non è un elenco di fatti, ma un repertorio di
+previsioni: le cose non sostenute cadono, ciò che è nascosto continua a
+esistere, i liquidi si versano, gli oggetti spinti si muovono. È la *fisica
+intuitiva* che il neonato dell'incipit costruisce guardando, senza etichette, e
+il segnale di cui si nutre è la sorpresa, nell'accezione introdotta
+dall’{doc}`apertura del capitolo sull'auto-supervisione
+</AutoSupervisione/overview>`: quanto era improbabile, per il modello che il
+bambino si è fatto, quello che poi accade. È una lezione auto-supervisionata,
+perché il bersaglio non lo scrive nessuno: è il futuro stesso che arriva. Se il
+senso comune è fatto così, inseguirlo significa costruire macchine che imparano
+a prevedere il mondo, non a memorizzarlo.
 
 ## La scommessa di LeCun (e chi non è d'accordo)
 
@@ -243,7 +243,7 @@ di ricerca FAIR, per fondare una società dedicata ai world model.
 
 Dentro quel programma c'è anche la retrocessione dell'apprendimento per
 rinforzo a «ciliegina sulla torta» {cite}`lecun2016cake`, che il dibattito sul
-rinforzo ha appena pesato con il suo contraddittorio. L'argomento è il criterio
+rinforzo ha appena pesato insieme alle obiezioni. L'argomento è il criterio
 da cui il capitolo è partito: chi impara per tentativi riceve una correzione
 poverissima, un «bravo» a fine giornata, mentre chi prevede il mondo ne riceve
 una a ogni istante. Da lì viene la proposta di sostituire i tentativi con la
@@ -323,7 +323,7 @@ Dal 2020 quella linea di ricerca arriva ai Dreamer di Danijar Hafner e
 colleghi. DreamerV3, uscito su *Nature* nel 2025 {cite}`hafner2023mastering`,
 ottiene un diamante in *Minecraft* senza dimostrazioni umane: il primo
 algoritmo a riuscirci partendo da zero, dichiarano gli autori, a condizioni che
-la sezione dedicata racconta. Dreamer 4, nel settembre dello stesso anno, ci
+la sezione dedicata illustra. Dreamer 4, nel settembre dello stesso anno, ci
 arriva senza mai giocare durante l'addestramento: il modello del mondo lo
 impara da registrazioni di partite giocate da persone, la strategia soltanto
 dentro il modello {cite}`hafner2025training`.
@@ -355,7 +355,7 @@ Ultima risposta, i simulatori generativi di video: Sora di OpenAI, presentato
 nel febbraio 2024 come passo verso «simulatori di mondo»
 {cite}`brooks2024video`, e la famiglia Genie di Google DeepMind, che dal 2024
 genera ambienti in cui si può giocare {cite}`bruce2024genie`. Con loro arriva la
-domanda con cui il capitolo si chiude, ed è onestamente aperta: generare video
+domanda con cui il capitolo si chiude, ed è ancora del tutto aperta: generare video
 plausibili significa aver capito la fisica, o soltanto saperla imitare?
 
 `````{tab} Elementare
@@ -426,7 +426,7 @@ plausibili significa aver capito la fisica, o soltanto saperla imitare?
   L'argomento è l'informazione del bersaglio (uno scalare per episodio contro
   ordini di grandezza in più nel pre-addestramento) e l'assegnazione del credito
   lungo la traiettoria: la {doc}`sezione sul dibattito attorno al rinforzo
-  </AutoSupervisione/dibattito-rl>` lo quantifica, con il contraddittorio.
+  </AutoSupervisione/dibattito-rl>` lo quantifica, dando spazio alle obiezioni.
 - Il percorso del capitolo: mondi in miniatura (Ha & Schmidhuber, la linea
   Dreamer fino a Dreamer 4) → JEPA (I-JEPA, V-JEPA, V-JEPA 2) → inferenza
   attiva (percezione, azione e apprendimento come minimizzazioni della stessa

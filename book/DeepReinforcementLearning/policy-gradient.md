@@ -33,7 +33,7 @@ l'aggiornamento fa un passo in quella direzione, $\theta \leftarrow \theta +
 
 Quando si dice che «la strategia cambia» o che «si fa un passo», si intende
 sempre questo: i pesi della rete, i numeri che decidono come una situazione si
-trasforma in una decisione, che si spostano un pochino nella direzione del
+trasforma in una decisione, si spostano un pochino nella direzione del
 gradiente.
 
 ## Imparare la policy, non il valore
@@ -207,7 +207,7 @@ il teorema è on-policy. Nella forma originale al posto di $G_t$ compare
 $Q^\pi(s_t,a_t)$, e sostituirvi il ritorno osservato è lecito solo perché
 $\mathbb{E}[G_t \mid s_t, a_t] = Q^\pi(s_t,a_t)$, il che richiede che il seguito
 della traiettoria sia stato generato dalla stessa policy che stiamo
-derivando. È esattamente l'ipotesi che PPO dovrà rattoppare con un rapporto di
+derivando. È esattamente l'ipotesi che PPO dovrà correggere con un rapporto di
 importance sampling per riusare i dati della policy vecchia.
 
 Il termine $\nabla_\theta \log \pi_\theta(a_t\mid s_t)$ indica *come*
@@ -222,17 +222,16 @@ $$
 con $\alpha$ il passo di apprendimento. E qui c'è un'avvertenza di rigore,
 perché l'aggiornamento appena scritto non è la formula del teorema: il
 $\gamma^{\,t}$ davanti a ciascun addendo è sparito. Ometterlo è la prassi, ed è
-la prassi che seguiamo anche noi, e costa: la direzione che si ottiene non è
-più $\nabla_\theta J(\theta)$, e Nota e Thomas {cite}`nota2020policy` hanno
-mostrato che non è il
-gradiente di nessuna funzione, per cui le garanzie della salita del gradiente
-non la coprono (esiste un esempio costruito in cui converge a una politica
-pessima). In pratica la si usa perché non soffoca il segnale dei passi lontani
-nel tempo, che con lo sconto esatto peserebbero quasi nulla. Chi ha letto la
-sezione sui bandit riconosce la struttura: il *bandit a gradiente* era
-esattamente questo, in un mondo con un solo stato, dove la softmax sulle
-preferenze $H(a)$ faceva le veci di $\pi_\theta(a\mid s)$. Anche il rimedio che
-segue è già comparso là.
+la prassi che seguiamo anche noi, ma ha un prezzo: la direzione che si ottiene
+non è più $\nabla_\theta J(\theta)$, e Nota e Thomas {cite}`nota2020policy`
+hanno mostrato che non è il gradiente di nessuna funzione, per cui le garanzie
+della salita del gradiente non la coprono (esiste un esempio costruito in cui
+converge a una politica pessima). In pratica la si usa perché non soffoca il
+segnale dei passi lontani nel tempo, che con lo sconto esatto peserebbero quasi
+nulla. Chi ha letto la sezione sui bandit riconosce la struttura: il *bandit a
+gradiente* era esattamente questo, in un mondo con un solo stato, dove la
+softmax sulle preferenze $H(a)$ faceva le veci di $\pi_\theta(a\mid s)$. Anche
+il rimedio che segue è già comparso là.
 
 Il punto debole è la varianza:
 $G_t$ dipende dall'intero seguito casuale della partita, e le stime risultano
@@ -285,7 +284,7 @@ scambia una cosa con l'altra, commenti immediati in cambio del rischio che siano
 storti, ed è lo scambio su cui si regge il metodo.
 
 Fra i due estremi c'è una manopola, e la si gira dove si vuole: quanto aspetta
-l'allenatore prima di parlare. Una mossa sola, e parla subito fidandosi tutto
+l'allenatore prima di parlare. Una mossa sola, e parla subito fidandosi in tutto
 del proprio fiuto. Dieci mosse, e si fida un po’ meno, perché nel frattempo ha
 visto succedere delle cose. Fino alla fine della partita, che è tornare al prova
 e ricorda.
@@ -413,11 +412,10 @@ cambiato niente vale $1$. La fascia disegnata nella figura va appunto da
 $0{,}8$ a $1{,}2$, cioè un quinto in meno e un quinto in più.
 
 E che succede fuori da lì? Ricordiamo che tutto questo mestiere consiste nel
-far salire un numero, la ricompensa attesa, spostando i pesi della rete. Ecco:
-appena si esce dalla fascia dalla parte pericolosa, quel numero smette di
-salire per quanto ci si sposti ancora. Il passo non è vietato, semplicemente
-non frutta più niente, e una rete che cerca il guadagno non ha nessun motivo di
-farlo.
+far salire un numero, la ricompensa attesa, spostando i pesi della rete. Appena
+si esce dalla fascia dalla parte pericolosa, quel numero smette di salire per
+quanto ci si sposti ancora. Il passo non è vietato, semplicemente non frutta
+più niente, e una rete che cerca il guadagno non ha nessun motivo di farlo.
 
 `````{tab} Elementare
 
@@ -475,7 +473,7 @@ fascia entro cui lo spostamento continua a fruttare. Quel rapporto è il
 rapporto di importance sampling incontrato nel capitolo precedente e non un
 espediente inventato qui: quello che permette di valutare una policy con dati
 generati da un'altra, troncato a un passo solo. E il suo difetto è lo stesso
-già visto là: può assumere valori enormi e mandare in aria la stima. Il
+già visto là: può assumere valori enormi e destabilizzare la stima. Il
 *clipping* toglie il premio, campione per campione, a chi spinge $\rho_t$
 fuori dall'intervallo $[1-\epsilon,1+\epsilon]$.
 
@@ -540,7 +538,7 @@ che confrontano riesce a tenere i rapporti dentro l'intervallo
 $[1-\epsilon,1+\epsilon]$, PPO compreso, che pure è addestrato con un obiettivo
 che quei rapporti li tosa. Attenzione però a quale recinto si sta misurando:
 questo è il vincolo sui rapporti, non la regione di fiducia in divergenza di
-Kullback-Leibler della formula di TRPO. Quella TRPO la impone davvero, quasi
+Kullback-Leibler della formula di TRPO. Quella, TRPO la impone davvero, quasi
 per costruzione; ma con gli iperparametri migliori la divergenza media resta
 contenuta anche per PPO, e secondo gli autori a tenerla è il modo in cui
 l'obiettivo viene ottimizzato (passo di apprendimento, momento, ottimizzazioni
@@ -611,7 +609,7 @@ peso molto più piccolo e uno scopo più modesto.
 
 Sarebbe comodo chiudere dicendo che PPO ha vinto perché il tosaggio è
 «abbastanza corretto», ma è una spiegazione data a posteriori che la letteratura
-non regge, e conviene guardarla in faccia per due ragioni.
+smentisce, e conviene affrontarla per due ragioni.
 
 La prima è che il confronto con TRPO non è fra un'euristica e un teorema. Il
 teorema di miglioramento monotono chiede il massimo della KL su tutti gli stati
@@ -625,12 +623,12 @@ larghissima parte da altro. Engstrom e colleghi
 implementazione della versione di riferimento (normalizzazione e clipping delle
 osservazioni, scalatura e clipping della ricompensa, clipping della value
 function, inizializzazione ortogonale, annealing del passo di Adam, attivazioni
-tanh, clipping globale del gradiente) e trovano che sono loro a rendere
-conto della maggior parte del guadagno, non l'obiettivo tosato. Lo studio
-indipendente di Andrychowicz e colleghi {cite}`andrychowicz2021what`, su più di
-250.000 agenti addestrati, parte dalla stessa constatazione. È una lezione più
-utile della prima: in deep RL la distanza fra l'algoritmo pubblicato e il codice
-che lo esegue è spesso più larga della distanza fra due algoritmi.
+tanh, clipping globale del gradiente) e trovano che sono loro a spiegare la
+maggior parte del guadagno, non l'obiettivo tosato. Lo studio indipendente di
+Andrychowicz e colleghi {cite}`andrychowicz2021what`, su più di 250.000 agenti
+addestrati, parte dalla stessa constatazione. È una lezione più utile della
+prima: in deep RL la distanza fra l'algoritmo pubblicato e il codice che lo
+esegue è spesso più larga della distanza fra due algoritmi.
 
 `````
 

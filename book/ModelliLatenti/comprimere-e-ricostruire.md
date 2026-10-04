@@ -16,7 +16,7 @@ sia importante in un quadro: se lo sono divisi lavorando.
 Questa macchina è già comparsa nella {doc}`sezione sui codec
 neurali </Audio/codec-neurali>`, per comprimere il suono: è l’autoencoder, una
 coppia di reti con la forma di una clessidra, larga alle due estremità e
-strettissima in mezzo ({numref}`fig-autoencoder-clessidra`, che sta là).
+strettissima in mezzo ({numref}`fig-autoencoder-clessidra`).
 L’encoder («chi codifica») riduce il dato a un **codice** $\mathbf{z}$, detto
 anche latente; il decoder («chi decodifica») ricostruisce il dato dal solo
 codice. Nel museo l’archivista è l’encoder, il copista il decoder e la scheda
@@ -134,12 +134,12 @@ $D$ componenti (errore quadratico, oppure cross-entropia per componente come
 nell’addestramento sulle cifre scritte a mano: è la somma sui pixel a fare del
 risultato un costo «per cifra» e non «per pixel»). Il vincolo $L \ll D$ è la
 strozzatura, e senza un vincolo il problema è vuoto: con $L \ge D$ basta
-prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per dire)
+prendere $d_\theta$ e $e_\phi$ inverse l’una dell’altra (l’identità, per esempio)
 e la loss tocca il suo minimo senza che nessuno abbia imparato niente. La
 strozzatura, però, non è l’unico vincolo possibile, ed è per questo che sta fra
 le condizioni e non nella definizione: ce ne sono altri, che di strozzatura non
 ne hanno. Uno chiede che di ogni codice si accendano pochissime componenti, e
-di componenti ne tiene più di quante erano quelle di partenza (lo *sparse
+di componenti ne tiene più di quelle di partenza (lo *sparse
 autoencoder*, che torna più avanti nel capitolo sull’{doc}`interpretabilità
 </Interpretabilita/attribuzione-e-meccanicistica>`); un altro fa ricostruire il
 dato da una sua copia sporcata di rumore (il *denoising autoencoder*, che il
@@ -375,7 +375,7 @@ fra originale e copia, misura quanto il decoder si è sbilanciato su ogni pixel
 e quanto ci ha azzeccato, e dà un numero che si legge in unità di
 informazione.
 
-Una riga del codice con gli autoencoder non c'entra niente,
+Una riga del codice non riguarda gli autoencoder,
 `torch.set_num_threads(1)`: chiede a PyTorch di fare i conti su un nucleo
 solo, e serve perché gli stessi numeri escano su qualunque macchina.[^thread]
 
@@ -615,7 +615,7 @@ quarta hanno tratti che si interrompono a
 metà, la prima è un anello troppo grasso, la terza una forma piena, e nessuna
 delle quattro si lascia chiamare per nome. Ma il numero conta più delle
 immagini,
-perché dice il perché invece del sintomo. I codici veri stanno a poco più
+perché svela la causa invece del sintomo. I codici veri stanno a poco più
 di due unità l’uno dall’altro; un codice sorteggiato dista più di cinque dal
 più vicino dei codici veri. Sorteggiare in quello spazio vuol dire finire, di
 norma, a più del doppio della distanza che separa due codici veri vicini: è
@@ -700,7 +700,7 @@ due che il nome «autoencoder variazionale» tiene una per parola: una
 distribuzione bersaglio $p(\mathbf{z})$ scelta in anticipo (così si sa dove
 pescare) e un termine nella loss che spinga i codici a distribuirsi come lei.
 La sorpresa, e il motivo per cui la sezione è lunga, è che quel termine non si
-inventa: cade fuori da solo dal tentativo, tutt’altro, di massimizzare la
+inventa: scaturisce naturalmente dal tentativo, tutt’altro, di massimizzare la
 verosimiglianza dei dati.
 
 `````
@@ -800,7 +800,7 @@ sommano in ordini diversi. Su una rete addestrata per quattromila passi
 quelle ultime cifre si accumulano, e alla fine si vedono: il costo di
 descrizione del $\beta$-VAE a $\beta = 0{,}5$, nella sezione sul latente che si
 usa, senza quella riga vale 6,04 lasciando lavorare quattro nuclei e 6,03
-usandone uno solo. La regola è più larga di
+usandone uno solo. La regola è più generale di
 PyTorch: fissare il seme non basta, dato che il seme
 governa i sorteggi e non l’ordine delle somme. E la riparazione non costa
 niente, anzi. Su tensori piccoli come questi (1797 cifre da 64 numeri) un

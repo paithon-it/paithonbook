@@ -6,7 +6,7 @@ stanze, quartiere) e accanto a ciascuna il prezzo finale. Dopo un po’, davanti
 a un appartamento mai visto, sa già proporre una cifra ragionevole. Ha
 imparato dagli esempi etichettati, ed è, in una frase, ciò che fa
 l'apprendimento supervisionato: mostrare a un modello abbastanza coppie
-*domanda–risposta* perché impari a rispondere da solo.
+*domanda-risposta* perché impari a rispondere da solo.
 
 ## Imparare una funzione dagli esempi
 
@@ -402,10 +402,10 @@ Per la classificazione la retta da sola non basta. Siccome un modello lavora su
 numeri, le due risposte si scrivono per convenzione $0$ («no») e $1$ («sì»): è
 una scelta di notazione, e scambiarle cambia solo il segno dei pesi, non le
 previsioni. Fatto questo, la differenza con la regressione salta all'occhio: un
-prezzo può valere $310\,000$, mentre «spam sì/no» vale solo $0$ o $1$. La
-**regressione logistica** (il nome è storico: serve a classificare) risolve il
-problema in due mosse: calcola un punteggio lineare delle caratteristiche e lo
-converte in una probabilità.
+prezzo può valere $310\,000$, mentre la risposta a «spam sì/no» vale solo $0$ o
+$1$. La **regressione logistica** (il nome è storico: serve a classificare)
+risolve il problema in due mosse: calcola un punteggio lineare delle
+caratteristiche e lo converte in una probabilità.
 
 `````{tab} Elementare
 
@@ -447,15 +447,15 @@ dall'altra tutte le altre, senza nemmeno un'eccezione, al filtro conviene essere
 sempre più sicuro, e gli basta ingrandire i pesi: il terreno scende senza fine,
 e un fondo non c'è.
 
-Con più di due risposte, per esempio la cartella in cui mettere l'email (lavoro,
-amici, promozioni), ogni cartella ha i suoi pesi e il suo punteggio. Il filtro
-rende i punteggi positivi, perché una sicurezza sotto zero non esiste, elevando
-a ciascuno lo stesso $e$ della S (con un altro numero cambierebbe solo la scala
-dei pesi): il più alto resta il più alto, e anche un punteggio negativo diventa
-un numero piccolo ma positivo. Poi divide ciascuno per la somma di tutti, così
-le sicurezze sommano a uno. Con $2$ per il lavoro, $1$ per gli amici e $0$ per
-le promozioni vengono $7{,}39$, $2{,}72$ e $1$, che sommano a $11{,}11$: le
-sicurezze sono $0{,}67$, $0{,}24$ e $0{,}09$.
+Con più di due risposte, per esempio la cartella in cui mettere l'email
+(lavoro, amici, promozioni), ogni cartella ha i suoi pesi e il suo punteggio.
+Il filtro rende i punteggi positivi, perché una sicurezza sotto zero non
+esiste, elevando lo stesso $e$ della S a ciascun punteggio (con un altro numero
+cambierebbe solo la scala dei pesi): il più alto resta il più alto, e anche un
+punteggio negativo diventa un numero piccolo ma positivo. Poi divide ciascuno
+per la somma di tutti, così le sicurezze sommano a uno. Con $2$ per il lavoro,
+$1$ per gli amici e $0$ per le promozioni vengono $7{,}39$, $2{,}72$ e $1$, che
+sommano a $11{,}11$: le sicurezze sono $0{,}67$, $0{,}24$ e $0{,}09$.
 
 Alzare di uno tutti i punteggi non cambia niente. Con $3$, $2$ e $1$ i numeri
 sono tutti moltiplicati per $e$, $20{,}09$, $7{,}39$ e $2{,}72$, la somma pure,
@@ -766,8 +766,8 @@ dalla media, e si chiama binomiale negativa.
 
 `````{tab} Superiore
 
-Un modello lineare generalizzato (GLM) si specifica con tre pezzi
-{cite}`nelder1972generalized`. Una **distribuzione** per $y \mid \mathbf{x}$
+Un modello lineare generalizzato (GLM) si definisce con tre componenti
+{cite}`nelder1972generalized`: una **distribuzione** per $y \mid \mathbf{x}$
 scelta nella famiglia esponenziale; un **predittore lineare** $\eta =
 \mathbf{w}^\top\mathbf{x} + b$; e una **funzione di legame** $g$ che li unisce,
 con $g(\mu) = \eta$ e $\mu = \mathbb{E}[y \mid \mathbf{x}]$.
@@ -829,7 +829,7 @@ teorema di Pitagora da invocare.
 Due garanzie discendono da $A''>0$. La log-verosimiglianza è concava in
 $\mathbf{w}$, quindi non ci sono ottimi locali e il massimo, quando esiste,
 è unico a meno di colonne collineari: che esista non è garantito, ed è di nuovo
-il caso della separazione perfetta appena visto per la logistica. E l'Hessiana
+il caso della separazione perfetta appena visto per la logistica. E l'hessiana
 $-\sum_i A''(\eta_i)\mathbf{x}_i\mathbf{x}_i^\top$ si scrive come una matrice
 di pesi, il che rende il passo di Newton una regressione ai minimi quadrati
 pesata, rifatta a ogni iterazione: è l'algoritmo IRLS del lavoro del 1972, che
@@ -929,8 +929,8 @@ il suo peso si legge come moltiplicatore: un punto in più di stagione
 moltiplica i clienti per $4{,}55$. La riga sugli scarti è un controllo:
 moltiplicandoli per ciascuna colonna e sommandoli si ottiene zero al millesimo
 su quasi ventimila clienti, cioè quello che il modello non è riuscito a
-spiegare non ha più niente in comune con le colonne che ha usato. Finché ne
-avesse, quei pesi si potrebbero ancora migliorare: è la stessa condizione che
+spiegare non ha più niente in comune con le colonne che ha usato. Se ne
+avesse ancora, quei pesi si potrebbero migliorare: è la stessa condizione che
 il conto diretto della retta risolve in un colpo solo.
 
 Le ultime due righe sono il limite, e il conto è questo: si prende ogni scarto,

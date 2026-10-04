@@ -42,7 +42,7 @@ modello encoder-decoder, che la {doc}`sezione sulla traduzione con le reti
 </NaturalLanguageProcessing/seq2seq-traduzione>` ha raccontato insieme alla
 soluzione di Bahdanau: l'encoder, la parte che legge, comprimeva la frase in un
 solo vettore di lunghezza fissa, e il decoder, la parte che scrive, doveva
-tradurre da quello soltanto. I due nomi tornano in tutto il capitolo, e la
+tradurre da quello soltanto. I due nomi sono la terminologia standard, e la
 {doc}`sezione sulla struttura del Transformer <architettura>` li smonta pezzo
 per pezzo. Il passo nuovo è prendere la mossa di Bahdanau, il decoder che
 rilegge tutte le parole d'origine pesandole di volta in volta, e farne l'unico
@@ -107,12 +107,12 @@ chiave, $d_k$ è la dimensione di query e chiavi, $a_j$ è il peso che la softma
 ricava dai punteggi, e $\mathbf{o}$ è l'uscita, un vettore nello stesso spazio
 dei $\mathbf{v}_j$. La somma corre sulle sole chiavi permesse.
 
-Tre osservazioni tengono in piedi tutto il resto. La prima: quella
+Il meccanismo regge su alcune proprietà. La
 compatibilità è appresa, perché $\mathbf{q}$ e $\mathbf{k}_j$ non sono i
 vettori grezzi dei token ma proiezioni di quei vettori con matrici che
-l'addestramento aggiusta. La seconda: la softmax rende i pesi non negativi e li
+l'addestramento aggiusta. La softmax rende poi i pesi non negativi e li
 normalizza a somma unitaria, quindi $\mathbf{o}$ è una media pesata in senso
-proprio e resta nell'inviluppo convesso dei valori. La terza, che è la ragione
+proprio e resta nell'inviluppo convesso dei valori. Da ultimo, la ragione
 per cui l'operazione ha bisogno tanto di $\mathbf{K}$ quanto di $\mathbf{V}$:
 la chiave decide il peso, il valore fornisce il contenuto che viene
 mescolato. Sono due mestieri distinti affidati a due spazi distinti, e nulla
@@ -166,7 +166,7 @@ colonna per ogni parola che si offre come risposta. Nella casella dove la riga
 d'accordo. Riempito il tabellone, ogni riga viene guardata per conto suo, e le
 sue caselle diventano le intensità dell'evidenziatore per quella parola lì.
 
-Due cose sulle taglie, e qui «taglia» è quanti numeri ci sono dentro una lista,
+La parola «taglia» indica quanti numeri ci sono dentro una lista,
 non quanto è grande il tabellone. Domanda e risposta, cioè la riga e la colonna
 che si incrociano in una casella, vanno confrontate, quindi devono essere
 scritte con la stessa quantità di numeri; l'informazione consegnata no, quella
@@ -237,16 +237,16 @@ disallineamento della maschera.
 Nel codice queste matrici hanno due indici in più davanti: uno per l'esempio
 del batch, cioè del gruppo di frasi elaborate insieme, e uno per la testa di
 attenzione, che arriva fra poco. I conti sono gli stessi, ripetuti per ogni
-esempio e per ogni testa, e nel resto del capitolo quei due indici restano
+esempio e per ogni testa, e per chiarezza quei due indici restano
 sottintesi.
 
 ## Da dove nascono query, chiavi e valori
 
-Resta da dire da dove vengono query, chiavi e valori. Ogni token $i$ ha tre
+Ogni token $i$ ha tre
 rappresentazioni, una per ciascuno dei tre ruoli: la **query**
 $\mathbf{q}_i$, la **key** $\mathbf{k}_i$ e il **value** $\mathbf{v}_i$. In
 italiano sono *domanda*, *chiave* e *valore*, ma i nomi inglesi sono quelli che
-si trovano scritti ovunque, negli articoli e nel codice, e valgono anche qui.
+si trovano ovunque, negli articoli e nel codice.
 Tutte e tre si ricavano dallo stesso vettore $\mathbf{x}_i$, moltiplicandolo
 per tre matrici diverse e apprese durante l'addestramento: sono le
 *proiezioni*. {numref}`fig-qkv` segue il percorso per un token solo, dalle
@@ -372,10 +372,10 @@ matrici $\mathbf{Q}\mathbf{K}^\top$ li calcola tutti in un colpo solo: ogni
 riga corrisponde a una posizione di query, ogni colonna a una posizione di
 chiave.
 
-Due avvertenze sul contenuto di quelle caselle. Un punteggio grezzo non è una
+Un punteggio grezzo non è una
 probabilità: può essere negativo, e la sua grandezza dipende dalla scala e
 dalla dimensione dei vettori, cioè da due cose che con la frase non c'entrano
-niente. Ed è comodo chiamarlo «somiglianza», ma la parola promette più di
+niente. Inoltre, è comodo chiamarlo «somiglianza», ma la parola promette più di
 quanto ci sia: l'addestramento sceglie le proiezioni perché il punteggio serva
 al compito, e il compito può chiedere che due parole diversissime vadano
 d'accordo.
@@ -410,11 +410,11 @@ niente. Siccome imparare, per una rete, è esattamente ricevere consigli di
 quel genere e seguirli un pochino per volta, un modello saturo smette di
 imparare in quel punto.
 
-Due riserve, e sono la parte che si dimentica. La prima: il conto sulla radice
+Una riserva importante: il conto sulla radice
 vale finché i numeri delle liste sono presi alla rinfusa, cioè all'inizio,
 quando la rete non ha ancora imparato niente. Dopo un po’ di addestramento le
 liste smettono di essere alla rinfusa e la radice non descrive più bene la loro
-taglia. La seconda, che è la stessa cosa vista dall'altro lato: quella divisione
+taglia. Questo significa anche che quella divisione
 non è una promessa che l'interruttore non scatti. Con numeri abbastanza grandi
 scatta lo stesso, a qualunque lunghezza delle liste; quello che la divisione
 toglie è che scatti *per colpa* della lunghezza. E si divide tutto per lo
@@ -736,11 +736,10 @@ $0{,}19$ e $0{,}77$, e il resto, cinque centesimi, va a "salta" su sé stessa.
 "Salta" dà a "gatto" più di tre quarti del peso, e la sua uscita
 $(0{,}23;\ 1{,}58)$ pende verso il valore di "gatto", che era $(0;\ 2)$.
 
-Due cose che i numeri mostrano meglio della formula. La prima è dove sono
-finiti i punteggi: nell'uscita non ce n'è traccia, hanno deciso i pesi e sono
-usciti di scena. La seconda è che la terza riga resta una miscela: "gatto" pesa
-molto senza esserne una copia, perché le altre due posizioni contribuiscono con
-la loro parte.
+I numeri mostrano un dettaglio invisibile nella formula: nell'uscita non c'è
+traccia dei punteggi, che hanno deciso i pesi e sono usciti di scena. La terza
+riga resta peraltro una miscela: "gatto" pesa molto senza esserne una copia,
+perché le altre due posizioni contribuiscono con la loro parte.
 
 Gli stessi numeri mostrano i due errori descritti nelle sezioni sulla scala e
 sulle maschere. Togliendo la scala i punteggi restano $2$ e $4$ invece di
@@ -902,7 +901,7 @@ cercare un'etichetta per tutte.
 
 ## L'attenzione, da sola, non ha ordine
 
-Un fatto che a prima lettura sorprende: nella formula dell'attenzione non
+Nella formula dell'attenzione non
 compare mai la posizione dei token. Ogni riga di $\mathbf{Q}$ viene confrontata
 con ogni riga di $\mathbf{K}$ senza che nulla dica quale venga prima, e la
 proprietà ha un nome: la self-attention senza maschera è *equivariante
@@ -1236,8 +1235,8 @@ retrieval <rag>`.
 ```
 `````
 
-Il meccanismo, adesso, è tutto qui: cinque passaggi che si rifanno a mano su
-tre parole, e una manciata di scelte che spiegano perché la formula ha proprio
-quella forma. Quello che manca è la macchina che gli sta attorno, e le due
-sezioni che seguono la costruiscono da due lati diversi: prima le due pile in
-cui il blocco si impila, poi il confronto con le reti che leggevano in fila.
+Il meccanismo è completo: cinque passaggi che si rifanno a mano su tre parole,
+e una manciata di scelte che spiegano perché la formula ha proprio quella
+forma. Manca la macchina che gli sta attorno: l'architettura a due pile in cui
+il blocco viene impilato e il confronto strutturale con le reti che leggevano
+in fila.

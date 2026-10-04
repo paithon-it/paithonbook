@@ -102,11 +102,11 @@ in alto a sinistra, la prima parola è sempre la prima.
 
 Riscrivi la stessa lista in ordine alfabetico, poi fai due domande. «Alla cena
 ci si diverte?» riguarda la serata intera, e la risposta è una sola: deve
-essere quella di prima, perché la serata non cambia se cambi foglio. «Chi
-rischia di restare in disparte?» riguarda invece ciascun invitato, e di
-risposte ne dà una per ognuno: devono essere gli stessi nomi di prima, e
-ciascuna deve restare attaccata alla sua persona anche adesso che il nome sta
-su un'altra riga.
+essere quella di prima, perché la serata non cambia se scrivi i nomi in un
+altro ordine. «Chi rischia di restare in disparte?» riguarda invece ciascun
+invitato, e di risposte ne dà una per ognuno: devono essere gli stessi nomi di
+prima, e ciascuna deve restare attaccata alla sua persona anche adesso che il
+nome sta su un'altra riga.
 
 E non è finita: a una cena ognuno ha un numero diverso di amici (c'è chi
 ne ha due e chi dieci), mentre in un'immagine ogni pixel ha sempre lo stesso
@@ -236,12 +236,11 @@ modello del gruppo di Siena di Franco Scarselli e Marco Gori
 decennio, quando si è capito come farla girare in fretta anche su grafi enormi
 {cite}`hamilton2020graph`.
 
-Una volta che ogni nodo ha la sua rappresentazione, che cosa ce ne facciamo?
-Le domande che si fanno più spesso a un grafo sono di tre tipi, e conviene
-distinguerle fin da subito. Accanto a queste ce ne sono altre, come generare un
-grafo nuovo (progettare una molecola invece di giudicarla) o raggruppare i nodi
-in comunità senza etichette, ma le tre caselle coprono i compiti con cui si
-addestra una GNN supervisionata.
+Una volta che ogni nodo ha la sua rappresentazione, che cosa ce ne facciamo? Le
+domande che si fanno più spesso a un grafo sono di tre tipi. Accanto a queste
+ce ne sono altre, come generare un grafo nuovo (progettare una molecola invece
+di giudicarla) o raggruppare i nodi in comunità senza etichette, ma queste tre
+coprono i compiti con cui si addestra una GNN supervisionata.
 
 `````{tab} Elementare
 
@@ -351,19 +350,18 @@ istante della sequenza, la rete su grafo la stessa regola a ogni nodo: la
 stessa idea, applicata a tre elenchi di simmetrie diversi.
 
 Il secondo filo porta ai sistemi di raccomandazione. Lì il dato è, per sua
-natura, un grafo: da un lato gli utenti, dall'altro gli oggetti, e un arco
-ogni volta che un utente interagisce con un oggetto. Un grafo fatto così, con i
-nodi divisi in due squadre e archi solo fra una squadra e l'altra (mai fra due
-utenti, mai fra due prodotti), si dice **bipartito**, e la parola tornerà più
-volte nel capitolo. La *link prediction* su questo grafo è, letteralmente, il
-problema della raccomandazione: prevedere gli archi che ancora non ci sono.
-Ed è la lettura che mette a disposizione della raccomandazione tutto
-l'armamentario delle reti su grafo, portata in produzione da alcuni grandi
-servizi. Non è però la definizione del problema, e la {doc}`sezione sulla
-raccomandazione neurale </SistemiRaccomandazione/raccomandazione-neurale>`
-riprende il filo da vicino, dicendo anche perché i sistemi che girano davvero
-restano organizzati attorno al confronto fra due rappresentazioni, una per
-l'utente e una per il prodotto.
+natura, un grafo: da un lato gli utenti, dall'altro gli oggetti, e un arco ogni
+volta che un utente interagisce con un oggetto. Un grafo fatto così, con i nodi
+divisi in due squadre e archi solo fra una squadra e l'altra (mai fra due
+utenti, mai fra due prodotti), si dice **bipartito**. La *link prediction* su
+questo grafo è, letteralmente, il problema della raccomandazione: prevedere gli
+archi che ancora non ci sono. Ed è la lettura che mette a disposizione della
+raccomandazione tutto l'armamentario delle reti su grafo, portata in produzione
+da alcuni grandi servizi. Non è però la definizione del problema, e la
+{doc}`sezione sulla raccomandazione neurale
+</SistemiRaccomandazione/raccomandazione-neurale>` riprende il filo da vicino,
+dicendo anche perché i sistemi che girano davvero restano organizzati attorno
+al confronto fra due rappresentazioni, una per l'utente e una per il prodotto.
 
 Il terzo filo è il meno ovvio dei tre e il più utile, perché porta a un
 capitolo che sembrava parlare d'altro: quello sui Transformer, i modelli
@@ -406,7 +404,7 @@ archi da quel grafo completo.
 Nel Transformer ogni token calcola la propria nuova rappresentazione come somma
 pesata dei valori di tutti i token della sequenza, sé compreso, con pesi
 appresi. Detto così è una frase su un'architettura per il linguaggio; riletta
-con il vocabolario di questo capitolo è la definizione di un passo di message
+con il vocabolario delle reti su grafo è la definizione di un passo di message
 passing, con l'unica particolarità che il grafo è completo e porta un cappio su
 ogni nodo: ogni token è collegato a ogni altro e a sé stesso, e i coefficienti
 di attenzione sono i pesi degli archi. Vale per l'attenzione senza maschera
@@ -434,7 +432,8 @@ renderla sparsa vuol dire, letteralmente, togliere archi.
 `````
 
 Questo terzo filo tornerà due volte: quando incontreremo la GAT, che pesa i
-vicini con l'attenzione, e alla fine del capitolo, dove si prova a fare la
+vicini con l'attenzione, e nella {doc}`sezione sulle architetture
+</GraphNeuralNetwork/architetture-applicazioni>`, dove si prova a fare la
 strada al contrario e a mettere un Transformer su un grafo qualunque.
 
 `````{tab} Elementare

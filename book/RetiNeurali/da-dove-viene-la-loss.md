@@ -126,7 +126,7 @@ p\big(y^{(i)} \mid f_\theta(\mathbf{x}^{(i)})\big) .
 $$
 
 Il prodotto poggia su due ipotesi che conviene enunciare, perché non sono
-gratis. La prima: la famiglia è la stessa per ogni esempio, e a cambiare
+scontate. La prima: la famiglia è la stessa per ogni esempio, e a cambiare
 da un esempio all'altro sono solo i parametri. La seconda: le risposte sono
 **condizionatamente indipendenti** dati gli ingressi, cioè sapere com'è andato
 l'esempio $j$ non dice niente in più sull'esempio $i$ una volta noto
@@ -175,7 +175,7 @@ La ricetta si giudica da quello che restituisce nei casi noti, e restituisce
 proprio le due loss che la
 {doc}`backpropagation </RetiNeurali/backpropagation>` userà: l'errore
 quadratico per la regressione, la cross-entropia per la classificazione.
-Le tira fuori la stessa procedura, cambiando una riga sola.
+Le produce la stessa procedura, cambiando una riga sola.
 
 ### Un numero reale: la gaussiana dà l'errore quadratico
 
@@ -297,7 +297,7 @@ perché nello sviluppo del quadrato attorno a $\mathbb{E}[y \mid \mathbf{x}]$ il
 doppio prodotto ha media condizionata nulla. Il primo addendo non dipende da
 $c$, il secondo si annulla solo per $c = \mathbb{E}[y \mid \mathbf{x}]$. Il
 rischio di una funzione $f$ è la media su $\mathbf{x}$ di questi rischi
-condizionati, e mediando la stessa identità
+condizionati. Mediando la stessa identità si ottiene
 
 $$
 \mathbb{E}\big[(y - f(\mathbf{x}))^2\big]
@@ -320,7 +320,7 @@ più probabile (il classificatore di Bayes). Per una $y$ continua la perdita 0-1
 esatta non seleziona niente, perché ogni valore singolo ha probabilità nulla. La
 log-verosimiglianza negativa che la ricetta dà per le famiglie discrete, invece,
 non sceglie un valore. Se $q$ è la distribuzione che il modello dichiara per un
-certo $\mathbf{x}$ e $P_{\mathbf{x}}$ quella vera di $y$ dato $\mathbf{x}$,
+certo $\mathbf{x}$ e $P_{\mathbf{x}}$ quella vera di $y$ dato $\mathbf{x}$, si ha
 
 $$
 \mathbb{E}_{y \sim P_{\mathbf{x}}}\big[-\log q(y)\big]
@@ -415,7 +415,7 @@ simplesso è il loro dominio, e a portarci i $K$ logit è la softmax; la loss
 diventa $\mathcal{L}(\theta) = -\sum_i \log \hat y^{(i)}_{c_i}$, con $c_i$ la
 classe vera dell'esempio $i$.
 
-Dietro i tre casi c'è una regolarità sola, ed è la parte da portarsi via: la
+Dietro i tre casi c'è una regolarità sola, ed è il punto che conta: la
 funzione sull'ultimo strato la detta il dominio del parametro. La retta
 reale della media gaussiana non chiede niente, l'intervallo $[0,1]$ della
 Bernoulli chiede la sigmoide, il simplesso della categorica chiede la softmax.
@@ -473,7 +473,7 @@ distribuzione, e un punteggio lineare gliene fornisce il parametro passando per
 una funzione di legame, la funzione che collega il parametro al punteggio (per
 la Poisson il punteggio è il logaritmo della media). Qui il punteggio lineare
 diventa una rete, e la funzione dell'ultimo strato fa il mestiere del legame
-percorso all'incontrario, dal punteggio grezzo al parametro. Lineare, logistica
+percorso a ritroso, dal punteggio grezzo al parametro. Lineare, logistica
 e Poisson erano già la stessa macchina con tre impostazioni: il resto della
 ricetta non è cambiato.
 
@@ -553,15 +553,15 @@ $\sigma_i \to \infty$ per ogni $i$, cioè la resa incondizionata.
 Che il prezzo sia tarato bene si vede fissando $\mu$ e annullando la derivata
 rispetto a $\sigma$: si ottiene $\hat\sigma^2 = (y-\mu)^2$ sul singolo punto e,
 su un gruppo di punti che condividono la stessa larghezza, la media dei
-quadrati dei residui. La larghezza ottima è lo scarto quadratico medio,
-cioè la loss chiede di dichiarare l'incertezza che si ha davvero. Il singolo
-punto, però, è anche il primo guasto. Se la rete riesce a far coincidere
-$\mu_i$ con $y^{(i)}$, il residuo è nullo, l'ottimo è $\sigma_i \to 0$ e la
-loss scende senza limite, perché $\log\sigma_i \to -\infty$: una densità può
-crescere a piacere, e con una sola osservazione e la media incognita la stima
-di massima verosimiglianza della varianza non esiste
-{cite}`detlefsen2019reliable`. In pratica si mette un pavimento a $\sigma$, o
-si stima la larghezza su punti che non hanno contribuito a fissare il centro.
+quadrati dei residui. La larghezza ottima è lo scarto quadratico medio, cioè la
+loss chiede di dichiarare l'incertezza che si ha davvero. Il singolo punto,
+però, è anche il primo guasto. Se la rete riesce a far coincidere $\mu_i$ con
+$y^{(i)}$, il residuo è nullo, l'ottimo è $\sigma_i \to 0$ e la loss scende
+senza limite, perché $\log\sigma_i \to -\infty$: una densità può crescere a
+piacere, e con una sola osservazione e la media incognita la stima di massima
+verosimiglianza della varianza non esiste {cite}`detlefsen2019reliable`. In
+pratica si impone un limite inferiore a $\sigma$, o si stima la larghezza su
+punti che non hanno contribuito a fissare il centro.
 
 Due punti di rottura. Il primo: il gradiente rispetto a $\mu_i$
 porta un fattore $1/\sigma_i^2$, quindi la rete può abbassare la loss
@@ -730,8 +730,8 @@ dati sono stati generati, $0{,}1$ e $0{,}6$.
 Con questo la loss ha smesso di essere un ingrediente che qualcuno ci passa, e
 si può costruire per un problema nuovo, anche uno che non compare fra questi
 capitoli: si guarda che forma ha la risposta, si trova una distribuzione
-definita là sopra, e si scrive il logaritmo cambiato di segno. Resta la
-domanda a cui serviva: adesso che $\mathcal{L}(\theta)$ c'è, come si trovano i
-pesi che la rendono minima. È il mestiere della backpropagation, che ricava la
+definita là sopra, e si scrive il logaritmo cambiato di segno. Resta la domanda
+a cui la loss serviva: adesso che $\mathcal{L}(\theta)$ c'è, come si trovano i
+pesi che la rendono minima? È il mestiere della backpropagation, che ricava la
 pendenza della loss rispetto a ciascuno dei parametri, e della discesa del
 gradiente, che con quelle pendenze si muove.

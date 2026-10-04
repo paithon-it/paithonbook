@@ -198,7 +198,7 @@ dichiara che «gatto» e «cane» sono diversi fra loro esattamente quanto
 secondo.
 
 L'alternativa è una matrice di embedding $\mathbf{E} \in
-\mathbb{R}^{|\mathcal{V}| \times d}$, di cui la riga $\mathbf{e}_w \in
+\mathbb{R}^{|\mathcal{V}| \times d}$, in cui ogni riga $\mathbf{e}_w \in
 \mathbb{R}^d$ è la rappresentazione del token $w$; la dimensione $d$ è moderata
 (nei modelli attuali da qualche centinaio a qualche migliaio) e tutte le
 coordinate sono parametri appresi. Formalmente è il prodotto
@@ -362,19 +362,18 @@ $$
 \alpha_{ij} = \frac{e^{r_{ij}}}{\sum_{m} e^{r_{im}}} .
 $$
 
-È l'inversa della trasformazione log-odds generalizzata a più di due
-categorie: nella regressione logistica multinomiale, se il log-odds della
-categoria $m$ rispetto a una di riferimento è $z_m$, la probabilità di quella
-categoria è $e^{z_m}/\sum_{m'} e^{z_{m'}}$, dove la somma comprende anche la
-categoria di riferimento, che entra con $z = 0$. Qui il punteggio $r_{ij}$
-gioca il ruolo del log-odds «di essere influenzati dalla posizione $j$», ma di
-categoria di riferimento non ce n'è nessuna: i punteggi sono definiti solo a
-meno di una costante additiva comune, ed è precisamente l'invarianza che il
-*log-sum-exp* sfrutta quando sottrae il massimo. È
-differenziabile ovunque, monotona nei punteggi e assegna peso positivo a
-tutte le posizioni, per quanto trascurabile. In pratica si calcola sempre
-sottraendo prima il massimo, con il *log-sum-exp* della sezione di analisi
-numerica, altrimenti l'esponenziale trabocca.
+È l'inversa della trasformazione log-odds generalizzata a più di due categorie:
+nella regressione logistica multinomiale, se il log-odds della categoria $m$
+rispetto a una di riferimento è $z_m$, la probabilità di quella categoria è
+$e^{z_m}/\sum_{m'} e^{z_{m'}}$, dove la somma comprende anche la categoria di
+riferimento, che entra con $z = 0$. Qui il punteggio $r_{ij}$ gioca il ruolo
+del log-odds «di essere influenzati dalla posizione $j$», ma non c'è nessuna
+categoria di riferimento: i punteggi sono definiti solo a meno di una costante
+additiva comune, ed è precisamente l'invarianza che il *log-sum-exp* sfrutta
+quando sottrae il massimo. È differenziabile ovunque, monotona nei punteggi e
+assegna peso positivo a tutte le posizioni, per quanto trascurabile. In pratica
+si calcola sempre sottraendo prima il massimo, con il *log-sum-exp* della
+sezione di analisi numerica, altrimenti l'esponenziale trabocca.
 
 L'operazione completa, per la posizione $i$, è quindi: proietta con le tre
 matrici, calcola i punteggi, normalizzali in pesi, e restituisci la media
@@ -438,7 +437,7 @@ possibili, dica quanto l'una si accorda con l'altra: la
 riga «è un verbo di movimento» incrocia la colonna «è un nome animato» con un
 numero alto, e così via. Sarebbe il modo più generale di
 misurare l'affinità fra due parole, e sarebbe anche insostenibile. Prendiamo i
-numeri veri di GPT-3, il modello di cui torneremo a fare i conti più avanti: la
+numeri veri di GPT-3: la
 lista di numeri di una parola, lì, è lunga $12\,288$. Quella tabella avrebbe
 $12\,288$ righe e
 $12\,288$ colonne, cioè 151 milioni di caselle, e ce ne vorrebbe una per ogni
@@ -599,17 +598,16 @@ determinati solo a meno di una trasformazione ortogonale
 {cite}`hastie2009elements`, ed è il motivo per cui esistono i criteri di
 rotazione (varimax e simili) e le liti su quale usare. Lo stesso argomento,
 rifatto sulle immagini invece che sulle matrici, sta nella {doc}`sezione sul
-latente che si usa </ModelliLatenti/il-latente-che-si-usa>`. Due conseguenze,
-opposte di segno. Per l'interpretabilità è una cattiva notizia: le quantità che
-hanno senso studiare sono quelle invarianti (i prodotti, i pesi $\alpha_{ij}$,
-le direzioni nello spazio delle rappresentazioni), non le singole righe delle
-matrici, e la {doc}`sezione sull'interpretabilità meccanicistica
-</Interpretabilita/attribuzione-e-meccanicistica>` riprende il tema con i
-circuiti e la sovrapposizione. Per l'ottimizzazione il quadro è neutro:
-l'insieme delle soluzioni equivalenti è una varietà continua e non un punto
-isolato, quindi il paesaggio ha direzioni piatte lungo di essa, ma la
-simmetria da sola non dice niente sui minimi che non sono equivalenti fra
-loro.
+latente che si usa </ModelliLatenti/il-latente-che-si-usa>`. Ne derivano due
+conseguenze, opposte di segno. Per l'interpretabilità è una cattiva notizia: le
+quantità che hanno senso studiare sono quelle invarianti (i prodotti, i pesi
+$\alpha_{ij}$, le direzioni nello spazio delle rappresentazioni), non le
+singole righe delle matrici, e la {doc}`sezione sull'interpretabilità
+meccanicistica </Interpretabilita/attribuzione-e-meccanicistica>` riprende il
+tema con i circuiti e la sovrapposizione. Per l'ottimizzazione il quadro è
+neutro: l'insieme delle soluzioni equivalenti è una varietà continua e non un
+punto isolato, quindi il paesaggio ha direzioni piatte lungo di essa, ma la
+simmetria da sola non dice niente sui minimi che non sono equivalenti fra loro.
 
 `````
 
@@ -796,19 +794,19 @@ accorgimento che tiene le grandezze in un intervallo trattabile lungo tutta
 la pila. In inglese si chiama *layer normalization*: è la LN di *post-LN* e
 *pre-LN*.
 
-Dove la si mette decide quanto resti libera la via diretta del gradiente, e
-qui il testo non può promettere più di quanto la formula mantenga. Nella forma
-del 2017, il *post-LN*, la normalizzazione sta sopra la somma, quindi il
-gradiente la attraversa a ogni strato e viene moltiplicato per la sua
-Jacobiana, che identità non è: il termine si attenua, tanto più quanto più
-cresce in norma il vettore che percorre la pila. I modelli recenti la spostano
-a monte del sotto-strato, ed è il *pre-LN*: solo lì la scorciatoia resta
-pulita. Senza quello spostamento il tasso di apprendimento va fatto salire
-piano nei primi passi invece di partire subito al valore scelto, un
-*riscaldamento* senza il quale l'addestramento non regge
-{cite}`xiong2020layer`. Le due formule per esteso stanno nella {doc}`sezione
-sul meccanismo di attenzione </Transformers/attenzione>` e in quella sulla
-{doc}`struttura del Transformer </Transformers/architettura>`.
+Dove la si mette decide quanto resti libera la via diretta del gradiente, e qui
+il testo non può promettere più di quanto la formula mantenga. Nella forma del
+2017, il *post-LN*, la normalizzazione sta sopra la somma, quindi il gradiente
+la attraversa a ogni strato e viene moltiplicato per la sua Jacobiana, che non
+è la matrice identità: il termine si attenua, tanto più quanto più cresce in
+norma il vettore che percorre la pila. I modelli recenti la spostano a monte
+del sotto-strato, ed è il *pre-LN*: solo lì la scorciatoia resta pulita. Senza
+quello spostamento il tasso di apprendimento va fatto salire piano nei primi
+passi invece di partire subito al valore scelto, un *riscaldamento* senza il
+quale l'addestramento non regge {cite}`xiong2020layer`. Le due formule per
+esteso stanno nella {doc}`sezione sul meccanismo di attenzione
+</Transformers/attenzione>` e in quella sulla {doc}`struttura del Transformer
+</Transformers/architettura>`.
 
 I parametri non sono condivisi fra strati, e questo spiega gli ordini di
 grandezza. Contiamoli per GPT-3 {cite}`brown2020language`, con $d = 12\,288$,
@@ -957,7 +955,7 @@ della sezione sulla teoria dell'informazione, misurata sulla realtà: minimizzar
 quella e massimizzare la plausibilità dei dati sono la stessa operazione,
 scritta due volte.
 
-Le manopole si girano come nell'escursionista nella nebbia: si guarda in che
+Le manopole si girano come per l'escursionista nella nebbia: si guarda in che
 direzione l'errore cala più in fretta e si fa un passo di lì. Con una
 scorciatoia obbligata, però: calcolare la pendenza su tutto il testo del mondo
 a ogni passo è impensabile, quindi la si calcola ogni volta su un pugno di
@@ -985,8 +983,8 @@ cross-entropia si riduce a $-\log q(\text{parola occorsa})$. Minimizzare la
 sorpresa media del modello davanti alla realtà e massimizzare la
 verosimiglianza sono, letteralmente, la stessa formula. (È anche il caso in cui
 il «pavimento» della loss è zero: la sezione sulla teoria dell'informazione
-osservava che il minimo teorico è $H(p)$, ed è vero della distribuzione
-condizionata vera del processo, non di questo bersaglio empirico.)
+osservava che il minimo teorico è $H(p)$, e questo è vero per la distribuzione
+condizionata vera del processo, non per questo bersaglio empirico.)
 
 La massimizzazione avviene per discesa del gradiente stocastica: si calcola
 il gradiente su un sottoinsieme casuale di sequenze invece che sull'intero
@@ -1007,7 +1005,7 @@ umane {cite}`ouyang2022training`, con programmi che fanno salire il tasso di
 apprendimento nei primi passi (riscaldamento) e poi lo abbassano (decadimento).
 Le fasi dopo la prima le descrive la {doc}`sezione sul post-addestramento
 </Transformers/post-training>`; la matematica dell'obiettivo di
-pre-addestramento resta quella di sopra.
+pre-addestramento resta quella appena descritta.
 
 ## Il modello, in una pagina
 

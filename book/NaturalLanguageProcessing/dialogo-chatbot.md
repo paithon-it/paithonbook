@@ -65,7 +65,7 @@ parole e sbagliato la mossa.
 Il terzo è controllare di essersi capiti. Quel «Mh-mh» non aggiunge niente alla
 prenotazione, dice «ti sto seguendo, continua». Dieci secondi di ristoratore
 muto sul registro, e il cliente chiede «pronto? mi sente?». Poi rilegge la
-ricevuta, un tavolo per quattro domani alle otto all'aperto, il cliente non lo
+ricevuta: un tavolo per quattro domani alle otto all'aperto. Il cliente non lo
 corregge, e la prenotazione diventa cosa di tutti e due. Ma confermare troppo
 costa caro. Uno che ripetesse ogni parola («Quattro? Quattro. All'aperto?
 All'aperto. Domani? Domani.») raddoppierebbe la telefonata, e a metà gli si
@@ -95,9 +95,10 @@ il punto di completamento del turno altrui e si avvicendano con pause
 brevissime in ogni lingua studiata (Stivers e colleghi
 {cite}`stivers2009universals` misurano 208 ms di media su dieci lingue, con
 medie per lingua che vanno da 7 a 469 ms: l'universale che il lavoro dimostra è
-la brevità, non un valore fisso), troppo brevi per pianificare da zero:
-pianifichiamo *mentre* l'altro parla. Per un sistema vocale è un vincolo
-concreto: l’*endpointing* deve distinguere una pausa da una cessione del turno.
+la brevità, non un valore fisso). Queste pause sono troppo brevi per
+pianificare da zero: pianifichiamo *mentre* l'altro parla. Per un sistema
+vocale è un vincolo concreto: l’*endpointing* deve distinguere una pausa da una
+cessione del turno.
 
 **Atti linguistici** (*speech acts*). Austin {cite}`austin1962how` (*How to Do
 Things with Words*, 1962) osservò che gli enunciati *eseguono* azioni; una
@@ -220,22 +221,22 @@ for battuta in ["Mi sento in colpa verso mia sorella",
 
 Trenta righe scarse, eppure l'effetto c'è. Il cuore è la funzione `rifletti`,
 che ribalta la prospettiva del frammento catturato («mia sorella» diventa «tua
-sorella») ed è questo riuso delle *tue* parole, restituite al posto
+sorella»). È proprio questo riuso delle *tue* parole, restituite al posto
 grammaticalmente giusto, a creare l'illusione di essere ascoltati. L'ordine
 delle regole conta (la prima che aggancia vince), e il ripiego finale copre
 tutto il resto del mondo, gatto sul muro compreso. L'ELIZA vera aveva più
 copioni, più varianti di risposta e un rudimento di memoria, ma il principio è
 tutto qui.
 
-E qui è anche il limite. Quel rudimento di memoria era poca cosa: ELIZA
-metteva da parte una frase per ripescarla quando non sapeva che dire, ma della
+E qui è anche il limite. Quel rudimento di memoria era poca cosa: ELIZA metteva
+da parte una frase per ripescarla quando non sapeva che dire, ma della
 conversazione non teneva il filo, e a ogni battuta ripartiva praticamente da
-zero. Quello che un interlocutore dovrebbe tenere da parte (chi sono io, di
-che cosa stiamo parlando, che cosa ci siamo già detti) ha un nome che tornerà
-fra poco: si chiama **stato del dialogo**, ed è l'insieme delle entità
-menzionate, degli impegni presi e dei dati che le due parti hanno accettato.
-ELIZA non ne ha, ed è il contrario esatto di ciò che la telefonata al
-ristorante ci ha mostrato essere una conversazione.
+zero. Quello che un interlocutore dovrebbe tenere da parte (chi sono io, di che
+cosa stiamo parlando, che cosa ci siamo già detti) ha un nome preciso: si
+chiama **stato del dialogo**, ed è l'insieme delle entità menzionate, degli
+impegni presi e dei dati che le due parti hanno accettato. ELIZA non ne ha, ed
+è il contrario esatto di ciò che la telefonata al ristorante ci ha mostrato
+essere una conversazione.
 
 ### Il modulo da riempire: i sistemi a frame
 
@@ -281,7 +282,7 @@ Un impiegato così non inventa: quando una casella è vuota la chiede, e non se
 la riempie da sé. Se qualcosa esce storto si vede subito dove, perché a
 sbagliare è una casella e la casella si rilegge. E il suo lavoro si misura: a
 fine giornata le pratiche chiuse si contano, e il modulo si può perfino
-controllare battuta dopo battuta contro quello giusto, dove basta una casella
+confrontare battuta dopo battuta con quello giusto, dove basta una casella
 sbagliata perché quella battuta conti come un errore. Sono tre buone ragioni per
 tenerselo, ed è per queste che il modulo è sopravvissuto a tutto quello che è
 venuto dopo. Il prezzo si paga
@@ -404,7 +405,7 @@ pre-addestramento ai modelli con cui oggi si conversa.
 ## Valutare un sistema di dialogo
 
 Come si stabilisce se un sistema di dialogo è *buono*? Per la traduzione
-avevamo almeno un riferimento con cui confrontarsi. Qui no, ed è il cuore
+avevamo almeno un riferimento con cui confrontarci. Qui no, ed è il cuore
 della difficoltà: a «Che si fa stasera?» esistono mille risposte eccellenti
 che non condividono una parola.
 

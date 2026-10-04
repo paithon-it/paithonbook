@@ -15,7 +15,7 @@ Non c'è un menu di mosse da scorrere, ma un continuo di forze da dosare.
 
 È lo scoglio annunciato in fondo alla {doc}`sezione su DQN <dqn>`. Prendere il
 voto più alto vuol dire scorrere le mosse una per una: con un joystick si può,
-con uno sterzo, un acceleratore o sette giunti che si muovono insieme le
+con uno sterzo, un acceleratore o sette giunti che si muovono insieme, le
 combinazioni sono infinite e non si scorre più niente.
 
 I metodi a {doc}`gradiente di policy <policy-gradient>` (REINFORCE,
@@ -73,7 +73,7 @@ alternative che conservano l’$\arg\max$ lo rendono trattabile in due modi:
 restringendo $Q$ a una forma quadratica nell'azione, dove il massimo si scrive
 in forma chiusa (NAF {cite}`gu2016continuous`), oppure cercandolo per
 campionamento con il *cross-entropy method* (QT-Opt
-{cite}`kalashnikov2018qtopt`); discretizzare ciascuna delle $n$ componenti in
+{cite}`kalashnikov2018qtopt`). Discretizzare ciascuna delle $n$ componenti in
 $k$ valori, invece, dà $k^n$ azioni da scorrere. La via più seguita è un'altra:
 approssimare quel massimo con una policy parametrica
 $\boldsymbol{\mu}_\theta(s)$ che restituisce direttamente l'azione, addestrata
@@ -177,7 +177,7 @@ Il secondo, $\nabla_\theta \boldsymbol{\mu}_\theta$, propaga quella direzione ai
 parametri dell'attore.
 
 Un passaggio, qui, è un'approssimazione e non un'uguaglianza, e conviene non
-farselo scivolare addosso. Il teorema vale per stati distribuiti secondo
+trascurarlo. Il teorema vale per stati distribuiti secondo
 $\rho^\mu$, cioè secondo la policy corrente; scriverci sotto $s\sim\mathcal{D}$,
 gli stati del replay buffer raccolti da policy vecchie, è la mossa che rende DDPG
 *off-policy* e costa un termine che si butta via. Funziona, ma non discende dalla
@@ -279,7 +279,7 @@ definita poco più sotto dal *target policy smoothing*.
 
 Prendere il minimo introduce un bias *pessimista* che compensa la sovrastima:
 poiché l'errore che si propaga è il più piccolo dei due, il valore tende a non
-gonfiarsi. Vale però lo stesso caveat visto per il Double DQN, ed è la stessa
+gonfiarsi. Vale però la stessa avvertenza vista per il Double DQN, ed è la stessa
 ragione: i due critici sono addestrati sullo stesso bersaglio e sugli stessi
 dati, quindi i loro errori sono correlati, e il minimo di due stime correlate
 non elimina il bias, lo sposta, scambiando tipicamente una sovrastima con una
@@ -541,7 +541,7 @@ che porta un robot a muoversi nel mondo.
 ```{admonition} Da ricordare
 :class: important
 - Nel controllo continuo l'azione è una quantità da dosare (quanta forza a
-  ciascun motore) e non una voce da scegliere in un menu, e il menu ha
+  ciascun motore) e non una voce da scegliere in un menu, che qui avrebbe
   infinite righe: scorrerle tutte, come fa DQN, non si può. La via d'uscita è
   affiancare al giudice che assegna i voti un attore che propone
   direttamente la mossa; al giudice resta da dire se è buona e da che parte

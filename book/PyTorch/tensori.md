@@ -97,7 +97,7 @@ soltanto la struttura dati: un array $n$-dimensionale con un `dtype` omogeneo
 ## Creare tensori e farci i conti
 
 Un tensore si può fabbricare in tre modi: scrivendo i numeri a mano in una
-lista Python, chiedendo a PyTorch di riempirlo lui (`zeros`, `ones`, `randn`, fra un
+lista Python, chiedendo a PyTorch di riempirlo (`zeros`, `ones`, `randn`, fra un
 attimo), oppure partendo da un array di NumPy, la libreria di calcolo
 numerico della {doc}`sezione su NumPy </Python/numpy>`. Con
 quest'ultima PyTorch va d'accordo così bene che, con `torch.from_numpy`, i due
@@ -152,7 +152,7 @@ cioè moltiplicarle a due a due e sommare tutto
 ($1 \cdot 10 + 2 \cdot 20 + 3 \cdot 30 = 140$); è il prodotto scalare, e
 il conto è scritto per esteso nel commento apposta perché lo si possa rifare.
 
-Il broadcasting, che conosciamo già da NumPy, funziona identico. Se scrivi
+Il broadcasting, che conosciamo già da NumPy, funziona allo stesso modo. Se scrivi
 `a + 5`, PyTorch capisce da solo che vuoi sommare $5$ a *ciascuno* dei tre
 numeri, come un insegnante che aggiunge lo stesso bonus a tutti i compiti della
 classe senza riscrivere la regola una volta per studente: il risultato è
@@ -162,7 +162,7 @@ numeri va bene, e la fila si ripete su ciascuna delle tre righe. L'appaiamento
 si fa a partire dall'ultimo asse, quello delle colonne, e va all'indietro:
 quindi alla stessa tabella una fila di *tre* numeri non si somma, anche se le
 righe sono tre, perché le colonne sono quattro e la fila si affianca a quelle.
-E tre numeri più quattro numeri, di nuovo, no: PyTorch si ferma con un
+E sommare tre numeri con quattro, di nuovo, non si può: PyTorch si ferma con un
 errore.
 
 Resta la cosa che si vede meno e che spiega di più. I numeri di un tensore
@@ -211,7 +211,7 @@ contiguità, come si legge spesso: è che la nuova forma sia compatibile con gli
 Spezzare o fondere assi già contigui fra loro riesce anche su un tensore non
 contiguo: se `x` è $(8,4)$ e `y = x[::2]` (quindi $(4,4)$ con stride $(8,1)$,
 non contigua), `y.view(4, 2, 2)` passa e condivide la memoria, mentre
-`y.view(16)` solleva.
+`y.view(16)` solleva un errore.
 
 ```python
 x = torch.arange(32.).reshape(8, 4)   # contigua
@@ -262,8 +262,8 @@ La prima riga è un modo compatto di scrivere una scelta, e si legge da
 sinistra: prendi `"cuda"` *se* c'è una scheda utilizzabile, *altrimenti*
 `"cpu"`. È il gesto con cui comincia quasi ogni programma PyTorch, e da qui in
 avanti lo ritroveremo identico. L'ultima riga stampa dove il risultato è
-finito, e su una macchina senza scheda grafica stampa `cpu`, ed è la scelta
-della prima riga che si vede all'opera. Su un computer con una
+finito: su una macchina senza scheda grafica stampa `cpu`, confermando la scelta
+della prima riga. Su un computer con una
 scheda NVIDIA la stessa identica riga stamperebbe `cuda:0`.
 
 La matrice è di mille per mille perché su matrici piccole la differenza fra i
@@ -285,7 +285,7 @@ alla velocità con cui la scheda macina i conti, quindi chi porta i numeri
 avanti e indietro a ogni riga consuma nel viaggio più di quanto guadagni nel
 calcolo, come attraversare la cucina con una cassa per ogni singolo
 ingrediente. Ecco perché PyTorch i dati non li trasloca per conto suo e
-preferisce fermarsi con un errore: il viaggio deve deciderlo tu, e devi poterlo
+preferisce fermarsi con un errore: il viaggio devi deciderlo tu, e devi poterlo
 vedere scritto.
 
 `````
@@ -294,27 +294,25 @@ vedere scritto.
 
 Il pattern idiomatico è definire `device` una volta all'inizio e spostare
 modello e batch con `.to(device)`; su Apple Silicon il device si chiama
-`"mps"`. Operazioni tra tensori su device diversi sollevano un errore
-esplicito (nessun trasferimento implicito, che nasconderebbe costi: su una
-scheda discreta il passaggio attraversa il bus PCIe ed è lento rispetto al
-calcolo, mentre su Apple Silicon la memoria è unificata e il problema è un
-altro). L'eccezione sono i tensori a zero assi
-che stanno sulla CPU: un numero solo, lì, viene trattato come uno scalare e
-combinato in silenzio con un tensore che sta altrove, mentre lo stesso numero
-dentro un tensore a un asse solleva. Il contrario non vale: uno scalare a zero
-assi che sta sulla scheda grafica, sommato a un tensore sulla CPU, solleva
-anche lui. Le
-stesse moltiplicazioni tra matrici che scriviamo qui sono, sull'hardware,
-migliaia di prodotti scalari eseguiti in parallelo dai kernel di cuBLAS (le
-convoluzioni passano invece da cuDNN): è il motivo per cui le GPU (nate per la
-grafica) sono diventate lo strumento del deep learning. Il codice resta lo
-stesso, a parte gli spostamenti con `.to()`; cambiano la velocità e, di
-pochissimo, i numeri. Le somme si fanno in un altro ordine, e sulle GPU NVIDIA
-da Ampere in poi le convoluzioni usano di default il formato TF32, che
-arrotonda gli ingressi a dieci bit di mantissa
-(`torch.backends.cudnn.conv.fp32_precision` vale `"tf32"`): la documentazione
-di PyTorch avverte che fra CPU e GPU i risultati possono non coincidere anche
-con lo stesso seme.
+`"mps"`. Operazioni tra tensori su device diversi sollevano un errore esplicito
+(nessun trasferimento implicito, che nasconderebbe costi: su una scheda
+discreta il passaggio attraversa il bus PCIe ed è lento rispetto al calcolo,
+mentre su Apple Silicon la memoria è unificata e il problema è un altro).
+L'eccezione sono i tensori a zero assi che stanno sulla CPU: un numero solo,
+lì, viene trattato come uno scalare e combinato in silenzio con un tensore che
+sta altrove, mentre lo stesso numero dentro un tensore a un asse solleva un
+errore. Il contrario non vale: uno scalare a zero assi che sta sulla scheda
+grafica, sommato a un tensore sulla CPU, solleva un errore anche lui. Le stesse
+moltiplicazioni tra matrici che scriviamo qui sono, sull'hardware, migliaia di
+prodotti scalari eseguiti in parallelo dai kernel di cuBLAS (le convoluzioni
+passano invece da cuDNN): è il motivo per cui le GPU (nate per la grafica) sono
+diventate lo strumento del deep learning. Il codice resta lo stesso, a parte
+gli spostamenti con `.to()`; cambiano la velocità e, di pochissimo, i numeri.
+Le somme si fanno in un altro ordine, e sulle GPU NVIDIA da Ampere in poi le
+convoluzioni usano di default il formato TF32, che arrotonda gli ingressi a
+dieci bit di mantissa (`torch.backends.cudnn.conv.fp32_precision` vale
+`"tf32"`): la documentazione di PyTorch avverte che fra CPU e GPU i risultati
+possono non coincidere anche con lo stesso seme.
 
 `````
 
@@ -434,7 +432,7 @@ quadrato e $2$ dal doppio. Somma anche nel taccuino su cui deposita, `x.grad`,
 ma per un'altra ragione: PyTorch lo tiene così, e il taccuino non si cancella da
 sé. Ecco la sorpresa che tocca a tutti la prima volta: rifai il conto da capo,
 richiedi la derivata senza aver svuotato `x.grad`, e ti ritrovi in mano $16$
-invece di $8$. Un addestramento lo azzera prima di ogni passo.
+invece di $8$. Nel ciclo di addestramento lo si azzera prima di ogni passo.
 
 Il nastro invece si consuma mentre lo riavvolgi, perché gli appunti presi
 all'andata li cancella il viaggio di ritorno. Riavvolgere due volte lo stesso
@@ -516,8 +514,8 @@ non un `=`, così due `backward()` successive danno, per linearità, il
 gradiente della somma delle due loss, che è quello che serve per accumulare
 gradienti su più passate.
 
-Quattro dettagli operativi che incontreremo di continuo. I gradienti si
-accumulano: una `backward()` successiva, su un nuovo forward, somma in
+Quattro dettagli operativi che incontreremo di continuo. Primo: i gradienti si
+accumulano. Una `backward()` successiva, su un nuovo forward, somma in
 `x.grad` invece di sovrascrivere, per questo il training loop azzera i
 gradienti a ogni passo. Ripetere la *stessa* chiamata sullo stesso grafo,
 invece, solleva un errore.
@@ -558,7 +556,7 @@ sprecata. Infine `t.detach()` restituisce una vista del tensore staccata dal
 grafo, e le operazioni in-place sui tensori tracciati vanno evitate perché
 possono invalidare i valori salvati per la passata a ritroso. PyTorch se ne
 accorge: ogni tensore porta un *version counter*, e se un valore salvato è
-stato modificato dopo il salvataggio la `backward()` solleva invece di
+stato modificato dopo il salvataggio la `backward()` solleva un errore invece di
 consegnare un gradiente sbagliato.
 
 Non tutte le operazioni lasciano passare il gradiente. `t.item()` restituisce

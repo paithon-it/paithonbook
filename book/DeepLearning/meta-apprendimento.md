@@ -4,7 +4,7 @@ Di esempi ce ne sono dieci, e il compito è nuovo. Che cosa si fa?
 
 La risposta ovvia è la meno utile. Si prende una rete già addestrata su tutti i
 compiti conosciuti e le si dà una ripassata sui dieci esempi. Funziona quando i
-compiti si somigliano molto, e quando la famiglia di compiti è varia, cioè i
+compiti si somigliano molto; quando invece la famiglia di compiti è varia, cioè i
 compiti si somigliano solo in parte, funziona male per una ragione
 controintuitiva: una rete addestrata su tutti i compiti insieme impara la loro
 media, e la media di una famiglia varia può non somigliare a nessuno dei suoi
@@ -40,7 +40,7 @@ l'arco in una posizione da cui il contrabbasso è a cinque minuti di distanza.
 La differenza con l'apprendimento multi-compito è tutta qui, ed è una
 differenza su che cosa si è allenato. Là si imparavano più strumenti insieme
 per suonarli tutti; qui non interessa suonare bene i tre di prima. Interessa
-arrivare a essere uno da cui il quarto si impara in fretta.
+prepararsi in modo da imparare il quarto in fretta.
 
 Detta così sembra un gioco di parole, e invece cambia l'allenamento. Chi vuole
 suonare bene i tre strumenti si esercita sui tre strumenti. Chi vuole arrivare
@@ -104,11 +104,11 @@ $$
 $$
 
 con $\beta$ il passo esterno e $\mathcal{L}^{\text{q}}_{\mathcal{T}_i}$ la
-perdita su esempi nuovi dello stesso compito. Qui sta tutto: il gradiente si
-prende rispetto a $\theta$ di una perdita valutata in $\theta_i'$, che di
-$\theta$ è funzione. Derivare attraverso il passo di adattamento chiama in causa
-le derivate seconde, ed è il costo dell'algoritmo. Per un passo interno la
-regola della catena dà
+perdita su esempi nuovi dello stesso compito. Qui sta tutto: si calcola il
+gradiente rispetto a $\theta$ di una perdita valutata in $\theta_i'$, che di
+$\theta$ è funzione. Derivare attraverso il passo di adattamento chiama in
+causa le derivate seconde, ed è il costo dell'algoritmo. Per un passo interno
+la regola della catena dà
 
 $$
 \nabla_\theta\,\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta_i') = \big(\mathbf{I} - \alpha\,\nabla^2_\theta \mathcal{L}^{\text{s}}_{\mathcal{T}_i}(\theta)\big)\,\nabla_{\theta'}\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta')\big|_{\theta' = \theta_i'},
@@ -119,20 +119,20 @@ adattamento, mentre il gradiente a destra è della perdita esterna. L'hessiana
 non si forma mai, basta il suo prodotto per un vettore, che costa un secondo
 passaggio all'indietro; ma per derivare attraverso $m$ passi interni bisogna
 tenere in memoria il grafo di tutti e $m$, e la memoria cresce linearmente con
-$m$. La versione del primo ordine, già provata nel lavoro originale, butta via
-il termine con l'hessiana e usa
+$m$. La versione del primo ordine, già provata nel lavoro originale, scarta il
+termine con l'hessiana e usa
 $\nabla_{\theta'}\mathcal{L}^{\text{q}}_{\mathcal{T}_i}(\theta_i')$ come se
 $\theta_i'$ non dipendesse da $\theta$: sulle immagini gli autori la trovano
-quasi equivalente e più veloce. Reptile {cite}`nichol2018first` rinuncia anche a
-quel gradiente: fa $m > 1$ passi interni e sposta $\theta$ verso i parametri che
-ne escono, $\theta \leftarrow \theta + \beta\,(\theta_i^{(m)} - \theta)$. Il
+quasi equivalente e più veloce. Reptile {cite}`nichol2018first` rinuncia anche
+a quel gradiente: fa $m > 1$ passi interni e sposta $\theta$ verso i parametri
+risultanti, $\theta \leftarrow \theta + \beta\,(\theta_i^{(m)} - \theta)$. Il
 numero di passi conta: con uno solo la mossa diventa $\theta -
 \alpha\beta\,\nabla_\theta\mathcal{L}_{\mathcal{T}_i}(\theta)$, la discesa del
 gradiente sulla perdita media dei compiti, e sono i passi successivi a portare
 dentro i termini che premiano l'adattamento. Le due perdite, infine, non si
 calcolano sugli stessi esempi: quella del ciclo interno sull'insieme di
 supporto, quella del ciclo esterno sull'insieme di interrogazione, come nel
-codice sulle sinusoidi. L'obiettivo che ne esce si legge «$\theta$ è un punto da
+codice sulle sinusoidi. L'obiettivo risultante si legge «$\theta$ è un punto da
 cui pochi passi bastano», e non «$\theta$ è bravo sui compiti visti»: sono due
 proprietà diverse, e la prima si ottiene solo scrivendola nella funzione
 obiettivo. Pochi passi, e di quella lunghezza: $\theta$ è ottimizzato per il
@@ -313,7 +313,7 @@ la rete allenata su tutte oscilla fra -1.61 e 1.75:
 e' la media della famiglia: un'onda sola, di ampiezza ridotta
 ```
 
-I numeri sono errori: più bassi, meglio la curva prevista ricalca l'onda vera.
+I numeri sono errori: più sono bassi, meglio la curva prevista ricalca l'onda vera.
 E la colonna da guardare per prima è quella di sinistra, perché è la sorpresa.
 Senza adattamento la rete meta-addestrata ($1{,}60$) e quella allenata su tutte
 le onde ($1{,}88$) hanno errori vicini, e nessuna delle due è una buona
@@ -340,8 +340,8 @@ impara. Ed è proprio così che era stata definita la cosa da migliorare.
 
 Restano due avvertenze sulla lettura della tabella. Riporta mediane, e non
 medie, perché con passi di dimensione fissa capita che su qualche onda i cinque
-passi non convergano affatto: basta uno di quei casi, e la media di cento
-numeri la decide lui. E la riga della rete presa a caso sembra contraddirsi:
+passi non convergano affatto: basta uno di quei casi a dominare la media di cento
+numeri. E la riga della rete presa a caso sembra contraddirsi:
 migliora in cinquantanove casi su cento e ha il numero peggiore, perché le due
 colonne sono mediane calcolate su insiemi diversi di cento numeri, non la
 mediana delle differenze, e da una partenza casuale i miglioramenti sono
@@ -351,7 +351,7 @@ Un'avvertenza vale invece per l'esperimento intero: il risultato dipende dal
 seme del meta-addestramento. Cambiando il `manual_seed(1)` da cui parte, la
 forma del confronto regge (con passi lunghi la rete meta-addestrata migliora e
 quella allenata su tutte peggiora), la misura no: su qualche seme, con queste
-iterazioni, il meta-addestramento prende solo a metà, e la rete meta-addestrata
+iterazioni, il meta-addestramento riesce solo a metà, e la rete meta-addestrata
 si ferma molto più in alto di $0{,}34$, fino a finire sopra la rete allenata su
 tutte adattata a passi corti.
 
@@ -447,7 +447,7 @@ e l’ultimo termine è uguale per tutte le classi, quindi il confine fra due
 classi è l’iperpiano che biseca il segmento fra i loro prototipi. La non
 linearità, se serve, sta tutta in $f_\theta$. Gli autori giustificano la media
 come prototipo con le divergenze di Bregman, di cui l’euclidea al quadrato è un
-caso, e trovano che rende molto più del coseno: la ragione, che danno come
+caso, e trovano che funziona molto meglio del coseno: la ragione, che danno come
 congettura, è che il coseno non è una divergenza di Bregman. Con $k = 1$ il
 prototipo è l’esempio stesso, e a parità di distanza e di embedding il metodo
 coincide con le matching networks, che però nella forma pubblicata usano il
@@ -558,7 +558,7 @@ riconoscimento da un esempio solo da 76,1% a 88,6%, e da cinque esempi da 91,2%
 a 95,6%: con un esempio solo il rumore pesa di più, ed è lì che togliere quello
 che non conta rende di più. L’ultima riga dice che cosa è stato imparato, senza
 che nessuno lo avesse detto alla matrice: le differenze lungo le quattro
-direzioni che contano escono moltiplicate in media per 0,53, quelle lungo le
+direzioni che contano risultano moltiplicate in media per 0,53, quelle lungo le
 altre trentasei per 0,17, cioè circa tre volte più piccole: la matrice ha
 schiacciato le direzioni che non servivano. Sulle classi dell’altra famiglia lo
 stesso schiacciamento cade sulle direzioni sbagliate, e

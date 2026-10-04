@@ -32,15 +32,15 @@ nell'array i valori stanno di fila, e il processore può leggerli a blocchi.
 
 La {numref}`fig-array-vs-lista` mostra il motivo per cui l'array esiste: un
 processore è costruito per scorrere valori messi di fila, e se la cava peggio
-quando deve seguire un **riferimento** alla volta (un riferimento, o
-puntatore, porta scritto l'indirizzo in cui si trova il numero, invece del
-numero). Va però precisato chi ne beneficia: la compattezza serve al motore
-interno di NumPy, scritto in C (un linguaggio molto più vicino alla macchina
-di Python, veloce da eseguire e scomodo da scrivere), che attraversa l'array
-tutto insieme; non serve a un ciclo scritto in Python.
+quando deve seguire un **riferimento** alla volta (un riferimento, o puntatore,
+porta scritto l'indirizzo in cui si trova il numero, invece del numero). La
+compattezza, però, serve al motore interno di NumPy, scritto in C (un
+linguaggio molto più vicino all'hardware rispetto a Python, veloce da eseguire
+e scomodo da scrivere), che attraversa l'array tutto insieme; non serve a un
+ciclo scritto in Python.
 
-Una nota di passaggio, perché è la domanda che viene subito: in Python il `+`
-fra due liste non somma i numeri, attacca la seconda in coda alla prima
+In Python il `+`
+fra due liste non somma i numeri, ma attacca la seconda in coda alla prima
 (`[1, 2] + [3]` fa `[1, 2, 3]`). Per sommarle davvero, valore per valore,
 servirebbe un ciclo scritto a mano, ed è una delle ragioni per cui NumPy
 esiste.
@@ -117,7 +117,7 @@ dtype dell'array solleva `OverflowError` invece di allargarlo (`a + 200`, con
 
 ## Creare un array
 
-I modi ricorrenti per far nascere un array sono pochi, e tornano di continuo.
+I modi per far nascere un array sono pochi, e tornano di continuo.
 
 ```python
 import numpy as np
@@ -158,9 +158,9 @@ dimensione la forma è un numero solo e le parentesi doppie non servono, da cui
 `np.ones(4)`. L'ordine è sempre quello: prima le righe, poi le colonne. A un
 array già fatto la forma si può anche chiedere, e si scrive `M.shape`.
 
-Due dettagli importanti: `arange` è pensato per interi e passi (con un passo
-decimale la lunghezza dipende dagli arrotondamenti: `np.arange(0.1, 0.4, 0.1)`
-contiene anche `0.4`, l'estremo che dovrebbe restare fuori), `linspace` per
+La funzione `arange` è pensata per interi e passi (con un passo decimale la
+lunghezza dipende dagli arrotondamenti: `np.arange(0.1, 0.4, 0.1)` contiene
+anche `0.4`, l'estremo che dovrebbe restare fuori), mentre `linspace` serve a
 dividere un intervallo in un numero *esatto* di punti (è quello giusto per
 disegnare curve). E il generatore casuale moderno si costruisce con
 `default_rng(seme)`: fissare il seme rende l'esperimento ripetibile, requisito
@@ -195,7 +195,7 @@ selezione.
 Nessuna delle tre selezioni di {numref}`fig-slicing-numpy` copia i dati. Sono
 **viste** sullo stesso array in memoria, e scriverci dentro modifica
 l'originale: è la differenza più insidiosa rispetto alla fetta di una lista,
-che invece è una copia. Vederla succedere fa un altro effetto che leggerla:
+che invece è una copia.
 
 ```python
 lista = [10, 20, 30, 40]
@@ -228,7 +228,7 @@ M[:, 0]     # tutte le righe, colonna 0 -> array([0, 4, 8])
 M[0]        # prima riga intera -> array([0, 1, 2, 3])
 ```
 
-Tre convenzioni, in tre righe. Si conta da zero, quindi l'indice `1` è il
+Si conta sempre da zero, quindi l'indice `1` è il
 secondo elemento e `M[1, 2]` sta nella seconda riga, terza colonna. Un indice
 negativo conta dalla fine, e `x[-1]` è l'ultimo qualunque sia la lunghezza. E
 in una *slice* il secondo estremo è escluso (`x[1:4]` dà tre elementi): vale la
@@ -412,10 +412,9 @@ stende viene riletto invece che ricopiato.
 ## Vettorizzazione: quanto conta davvero
 
 Il motivo per cui tutto questo esiste è la velocità. "Vettorizzare" significa
-sostituire un ciclo Python con un'operazione sull'intero array, e il blocco che
-segue misura quanto si guadagna con `%timeit`, un comando dei notebook che
-cronometra la riga scritta accanto (qui il `%` non è il resto della
-divisione).
+sostituire un ciclo Python con un'operazione sull'intero array. Il guadagno di
+tempo si misura con `%timeit`, un comando dei notebook che cronometra
+l'istruzione alla sua destra (qui il `%` non è il resto della divisione).
 
 ```python
 import numpy as np
@@ -447,7 +446,7 @@ scostano (`mean ± std. dev.`) e il numero di ripetizioni. In un normale file
 `````{tab} Elementare
 
 Le due misure riguardano la stessa cosa (raddoppiare un milione di numeri) ma
-la seconda strada è tipicamente centinaia di volte più veloce, e la ragione
+la seconda strada è di solito centinaia di volte più veloce, e la ragione
 sta tutta nel ciclo che sparisce. È il pedaggio già incontrato: il ciclo
 Python lo paga un milione di volte, `2 * x` una volta sola, perché a scorrere
 il blocco è il motore in C. Che i numeri stiano in
@@ -544,7 +543,7 @@ I due numeri di `A @ v` si leggono a occhio, e conviene farlo: $3$ è
 $1 + 2$, $7$ è $3 + 4$, cioè ogni riga di `A` moltiplicata voce per voce per
 `v` e poi sommata.
 
-Un'avvertenza che torna spesso: per risolvere un sistema di equazioni
+Per risolvere un sistema di equazioni
 $\mathbf{A}\mathbf{z} = \mathbf{v}$, cioè trovare lo $\mathbf{z}$ che
 moltiplicato per $\mathbf{A}$ dà $\mathbf{v}$, si usa `np.linalg.solve`, non
 `inv(A) @ v`. Il primo è più preciso e più veloce; calcolare l'inversa

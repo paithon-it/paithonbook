@@ -149,7 +149,7 @@ $$
 dove $\mathbf{x}$ è il dato osservato, $\mathbf{z}$ la variabile latente,
 $p(\mathbf{z})$ il prior (la distribuzione da cui $\mathbf{z}$ viene
 sorteggiato, scelta da noi e di solito semplicissima), $p_\theta(\mathbf{x}
-\mid \mathbf{z})$ la verosimiglianza del dato dato il latente, e $\theta$ i
+\mid \mathbf{z})$ la verosimiglianza del dato condizionata al latente, e $\theta$ i
 parametri del modello generativo. L’integrale diventa una somma quando
 $\mathbf{z}$ è discreto.
 
@@ -204,10 +204,10 @@ $$
 dove $D$ è la dimensione del dato e $\mathbf{R}$ una qualunque matrice
 ortogonale $L \times L$. La soluzione individua quindi il sottospazio generato
 dalle prime $L$ componenti principali e non le singole direzioni, perché
-$\mathbf{W}$ è determinata solo a meno della rotazione $\mathbf{R}$; la varianza
-del rumore è la media degli autovalori scartati; e se $\sigma^2$ è fissato a
-mano invece che stimato, la colonna di $\mathbf{W}$ che corrisponde a un
-autovalore non superiore a $\sigma^2$ resta nulla, un fatto che tornerà nella
+$\mathbf{W}$ è determinata solo a meno della rotazione $\mathbf{R}$. La varianza
+del rumore è la media degli autovalori scartati. Se invece $\sigma^2$ è fissato a
+mano anziché stimato, la colonna di $\mathbf{W}$ che corrisponde a un
+autovalore non superiore a $\sigma^2$ resta nulla: è un fenomeno che tornerà nella
 sezione sul salto probabilistico a spiegare il collasso della posterior. Nel
 limite $\sigma^2 \to 0$ la ricostruzione si riduce alla proiezione ortogonale,
 cioè alla PCA della sezione su riduzione e clustering, e il codice ne è un
@@ -297,8 +297,8 @@ spiega il dato, $p_\theta(\mathbf{x} \mid \mathbf{z}^{(s)})$, e fare la media.
 In media la stima è giusta, e in poche dimensioni funziona. Quando $L$ cresce,
 però, quasi tutti i valori sorteggiati danno a $p_\theta(\mathbf{x} \mid
 \mathbf{z})$ un valore trascurabile, e la media è dominata dai pochissimi che
-cadono nel posto giusto, che quasi mai capita di pescare. Quando non capitano
-la stima esce molto più bassa del vero, quando capitano schizza in alto, e
+cadono nel posto giusto, ma che si estraggono di rado. Quando mancano,
+la stima esce molto più bassa del vero, quando compaiono schizza in alto, e
 rifacendo il sorteggio cambia ogni volta: ha una varianza enorme e, in scala
 logaritmica, è sistematicamente troppo bassa. La {doc}`sezione sul salto
 probabilistico </ModelliLatenti/il-salto-probabilistico>` lo misura.
@@ -315,10 +315,10 @@ immagini di Stable Diffusion e i modelli del mondo. La sezione sul
 {doc}`latente che si usa </ModelliLatenti/il-latente-che-si-usa>` li riprende
 uno per uno, con la macchina del capitolo in mano.
 
-Il {doc}`capitolo sulla verosimiglianza
-esatta </VerosimiglianzaEsatta/overview>`, più avanti, mette in fila dove
-questa famiglia stia rispetto alle altre: là i modelli generativi incontrati
-fin lì sono ordinati secondo una cosa sola, che cosa ciascuno sa dire della
+Il {doc}`capitolo sulla verosimiglianza esatta
+</VerosimiglianzaEsatta/overview>`, più avanti, mette in fila dove questa
+famiglia stia rispetto alle altre: là i modelli generativi incontrati fin lì
+sono ordinati in base a una cosa sola: che cosa ciascuno sa dire della
 verosimiglianza $p_\theta(\mathbf{x})$, cioè di quel numero di poco fa, quanto
 il modello si aspettava di vedere il dato. Qui basta l’essenziale, e vale per
 la macchina che il capitolo costruisce, non per le sue antenate. Dove la causa
@@ -326,8 +326,8 @@ nascosta passa per una rete neurale, la verosimiglianza si sa dire solo per
 difetto: si calcola un valore che sta di sicuro sotto quello vero. La mistura
 di gaussiane, la PCA probabilistica e l’analisi fattoriale, dove la causa
 prende pochi valori oppure il legame è lineare, la danno invece esatta, perché
-lì l’integrale si chiude. Di che cosa sia fatto il divario fra il valore
-calcolato e quello vero si sa con precisione, e quanto valga lo si può stimare
+lì l’integrale si chiude. Si sa con precisione da che cosa sia formato il
+divario fra il valore calcolato e quello vero, e quanto valga lo si può stimare
 a parte, a modello addestrato, con un conto più costoso. Perché ci si debba
 accontentare del valore per difetto, e perché convenga, è la storia della
 sezione sul salto probabilistico.

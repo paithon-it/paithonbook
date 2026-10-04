@@ -232,8 +232,8 @@ che nessun kernel può fare, la tessera $256 \times 256$ darebbe $I = 128$;
 quella $128 \times 128$ dei GEMM industriali si ferma a 64. Nessuna tessera
 arriva a 161.
 
-La domanda diventa allora chi li salvi davvero, quei GEMM, dato che veloci lo
-sono. La risposta sta un piano più giù ed è la cache L2. Il modello usato
+La domanda diventa allora che cosa salvi davvero quei GEMM, dato che sono
+veloci. La risposta sta un piano più giù ed è la cache L2. Il modello usato
 finora (ogni lettura che esce dall'SM arriva fino alla HBM) è lo stesso modello
 crudo del kernel ingenuo, e sbaglia allo stesso modo: le tessere di
 $\mathbf{A}$ e di $\mathbf{B}$ che blocchi diversi si portano in shared memory
@@ -257,30 +257,30 @@ di NVIDIA sulle prestazioni del GEMM classifica proprio il caso $8192^3$ fra
 quelli limitati dal calcolo, avvertendo che il confronto fra intensità e
 ginocchio è una regola pratica.
 
-E allora a che serve il secondo livello di tessere nei registri che i GEMM veri
-impilano davvero sotto il primo? Non a spostare il punto sul roofline della
-HBM: lì il traffico lo decide soltanto la tessera in shared memory, e la
-micro-tessera nei registri non ne cambia un byte. Serve a un problema diverso e
-altrettanto reale, un piano più su: la banda della shared memory. Ogni SM la
-serve con 32 banchi da 4 byte per colpo di clock, cioè 128 byte per ciclo, che
-sui 108 SM di una A100, a $1{,}41$ GHz, fanno circa 19 TB/s aggregati (la
-stessa cifra che il paper di FlashAttention attribuisce alla SRAM on-chip). Per
-alimentare 312 TFLOP/s di tensor core servono dunque 16 FLOP per ogni byte
-letto dalla shared, e un thread che vada a prendersi i due operandi di ogni
-singolo prodotto ne fa $0{,}5$: due FLOP ogni quattro byte in `float16`. Con
-una micro-tessera $R \times R$ tenuta nei registri, invece, ogni thread legge
-$2R$ valori e ne ricava $R^2$ prodotti, cioè $R/2$ FLOP per byte. Per arrivare
-a 16 servirebbe però $R = 32$, cioè 1024 accumulatori a testa, quattro volte il
-tetto di 255 registri per thread. Il riuso che basta si ottiene un gradino più
-su, sul warp: con i tensor core il frammento $W \times W$ di $\mathbf{C}$ sta
-nei registri dei 32 thread insieme ($W^2/32$ accumulatori a testa), a ogni
-passo il warp legge dalla shared $2W$ valori e ne ricava $W^2$ prodotti, e
-l'intensità torna $W/2$: la tessera di warp $64 \times 64$ tipica dei GEMM su
-Ampere dà 32 FLOP per byte con 128 accumulatori per thread. È la stessa
-aritmetica del tiling, con la shared al posto della HBM e i registri al posto
-della shared: il riuso si ricompra un piano più giù, ed è possibile per la
-ragione vista nella sezione sulla memoria, che il register file di un SM è il
-banco on-chip più capiente che ci sia.
+A che cosa serve, allora, il secondo livello di tessere nei registri che le
+implementazioni industriali del GEMM impilano sotto il primo? Non a spostare il
+punto sul roofline della HBM: lì il traffico lo decide soltanto la tessera in
+shared memory, e la micro-tessera nei registri non ne cambia un byte. Serve a
+un problema diverso e altrettanto reale, un piano più su: la banda della shared
+memory. Ogni SM la serve con 32 banchi da 4 byte per colpo di clock, cioè 128
+byte per ciclo, che sui 108 SM di una A100, a $1{,}41$ GHz, fanno circa 19 TB/s
+aggregati (la stessa cifra che il paper di FlashAttention attribuisce alla SRAM
+on-chip). Per alimentare 312 TFLOP/s di tensor core servono dunque 16 FLOP per
+ogni byte letto dalla shared, e un thread che vada a prendersi i due operandi
+di ogni singolo prodotto ne fa $0{,}5$: due FLOP ogni quattro byte in
+`float16`. Con una micro-tessera $R \times R$ tenuta nei registri, invece, ogni
+thread legge $2R$ valori e ne ricava $R^2$ prodotti, cioè $R/2$ FLOP per byte.
+Per arrivare a 16 servirebbe però $R = 32$, cioè 1024 accumulatori a testa,
+quattro volte il tetto di 255 registri per thread. Il riuso che basta si
+ottiene un gradino più su, sul warp: con i tensor core il frammento $W \times
+W$ di $\mathbf{C}$ sta nei registri dei 32 thread insieme ($W^2/32$
+accumulatori a testa), a ogni passo il warp legge dalla shared $2W$ valori e ne
+ricava $W^2$ prodotti, e l'intensità torna $W/2$: la tessera di warp $64 \times
+64$ tipica dei GEMM su Ampere dà 32 FLOP per byte con 128 accumulatori per
+thread. È la stessa aritmetica del tiling, con la shared al posto della HBM e i
+registri al posto della shared: il riuso si ricompra un piano più giù, ed è
+possibile per la ragione vista nella sezione sulla memoria, che il register
+file di un SM è il banco on-chip più capiente che ci sia.
 
 Il fatto generale, più della gerarchia in sé, è questo: c'è un roofline per
 ogni livello della piramide, ciascuno con la sua banda e il suo ginocchio, e
@@ -288,11 +288,11 @@ ogni livello di tiling esiste per superare il proprio. Quanto al tetto, l’$n/6
 del roofline (dove $n$ è il lato di due matrici quadrate) è un *ideale* che
 richiederebbe $\mathbf{A}$ e $\mathbf{B}$ intere on-chip, e per fortuna non
 serve raggiungerlo: l'intensità realmente raggiungibile non cresce con $n$, ma
-con la radice della memoria veloce disponibile (è il risultato classico di Hong
+con la radice della memoria veloce disponibile. È il risultato classico di Hong
 e Kung sulla complessità di I/O {cite}`hongkung1981io`, che dà
 $\Omega(n^3/\sqrt{M_\text{chip}})$ trasferimenti e quindi $I =
 O(\sqrt{M_\text{chip}})$, dove $M_\text{chip}$ è la memoria veloce disponibile
-e non va confusa con le $M$ righe di $\mathbf{A}$). Il risultato vale per
+(da non confondere con le $M$ righe di $\mathbf{A}$). Il risultato vale per
 l'algoritmo che esegue tutti gli $n^3$ prodotti (non per quelli alla Strassen,
 che ne eseguono meno) e per una memoria veloce di $M_\text{chip}$ elementi
 davanti a una lenta illimitata, ed è raggiungibile: tenendo in memoria veloce
@@ -306,8 +306,8 @@ documentazione di CUTLASS: la *threadblock tile* (per esempio $128 \times
 
 La struttura del tiling si scrive per esteso, senza GPU, in puro NumPy. Il
 codice non è veloce, e non deve esserlo, perché i prodotti veri li fa già NumPy
-meglio di così: serve a rendere visibile *il nido di cicli*, tre cicli uno
-dentro l'altro, si scorre il risultato a tessere, e per ogni tessera si sommano
+meglio di così: serve a rendere visibile *il nido di cicli*. Con tre cicli uno
+dentro l'altro, si scorre il risultato a tessere e per ogni tessera si sommano
 i contributi dei blocchi lungo $K$. Ogni `a` e `b` è un blocco «caricato in
 shared memory»; `a @ b` è il lavoro che lo riusa, e alla fine il risultato
 coincide con la moltiplicazione diretta `A @ B`.
@@ -405,34 +405,31 @@ $$
 
 su tessere $4 \times 4$, cioè 64 moltiplicazioni-accumulo per colpo di clock
 per unità (l'operazione è esposta al programmatore, a livello di warp, su
-tessere $16 \times 16$). Qui $\mathbf{C}$ non è il risultato del prodotto, che è
-$\mathbf{D}$: è il valore già accumulato a cui il prodotto si somma, ed è la
+tessere $16 \times 16$). Qui $\mathbf{C}$ non è il risultato del prodotto, che
+è $\mathbf{D}$: è il valore già accumulato a cui il prodotto si somma, ed è la
 convenzione con cui NVIDIA espone l'istruzione. Le forme sono quelle di Volta:
 le generazioni successive ne usano di più grandi, e da Hopper l'unità che
-emette l'istruzione non è più il singolo warp ma un gruppo di quattro. Il
-cuore è la precisione mista {cite}`micikevicius2018mixed`: gli ingressi $\mathbf{A}$ e
-$\mathbf{B}$
-sono a 16 bit (`float16` sulla V100; le architetture successive, da Ampere in
-poi, aggiungono anche `bfloat16`), mentre l'accumulo di $\mathbf{C}$ e
-$\mathbf{D}$ può restare
-a `float32`: è la modalità dell'addestramento in precisione mista, così la
-somma di molti prodotti non degrada (il silicio offre anche l'accumulo a 16
-bit, usato talvolta in inferenza). È, non a caso, la
-forma «generale» del GEMM delle BLAS
-($\mathbf{C} \leftarrow \alpha \mathbf{A}\mathbf{B} + \beta \mathbf{C}$, dove
-$\alpha$ e $\beta$ sono due numeri che pesano il prodotto nuovo e il valore già
-accumulato: moltiplica *e* accumula) cablata nel silicio. Il guadagno è di
-circa un ordine
-di grandezza sul throughput di matmul rispetto ai CUDA core normali (un fattore
-8 sulla V100, 16 sull'A100, 15 sulla H100): è
+emette l'istruzione non è più il singolo warp ma un gruppo di quattro. Il cuore
+è la precisione mista {cite}`micikevicius2018mixed`: gli ingressi $\mathbf{A}$
+e $\mathbf{B}$ sono a 16 bit (`float16` sulla V100; le architetture successive,
+da Ampere in poi, aggiungono anche `bfloat16`), mentre l'accumulo di
+$\mathbf{C}$ e $\mathbf{D}$ può restare a `float32`: è la modalità
+dell'addestramento in precisione mista, così la somma di molti prodotti non
+degrada (il silicio offre anche l'accumulo a 16 bit, usato talvolta in
+inferenza). È, non a caso, la forma «generale» del GEMM delle BLAS cablata nel
+silicio: l'operazione è $\mathbf{C} \leftarrow \alpha \mathbf{A}\mathbf{B} +
+\beta \mathbf{C}$, dove $\alpha$ e $\beta$ sono due numeri che pesano il
+prodotto nuovo e il valore già accumulato (moltiplica *e* accumula). Il
+guadagno è di circa un ordine di grandezza sul throughput di matmul rispetto ai
+CUDA core normali (un fattore 8 sulla V100, 16 sull'A100, 15 sulla H100): è
 l'innalzamento di $P_\text{picco}$ che, come notava il roofline, sposta il
 ginocchio verso destra e rende la banda ancora più decisiva. Tutti i picchi
 citati sono *densi*. Le schede tecniche NVIDIA mettono in evidenza anche il
 valore con sparsità strutturata 2:4, doppio (624 TFLOP/s in `float16` su A100,
 1979 su H100 SXM), che vale solo per matrici con due valori nulli in ogni
-gruppo di quattro: usato per calcolare il ginocchio, lo raddoppierebbe. Non
-li programmi tu direttamente: cuBLAS e cuDNN li usano dietro le quinte ogni
-volta che una `nn.Linear` o una convoluzione girano su una GPU recente in mezza
+gruppo di quattro: usato per calcolare il ginocchio, lo raddoppierebbe. Non li
+programmi tu direttamente: cuBLAS e cuDNN li usano dietro le quinte ogni volta
+che una `nn.Linear` o una convoluzione girano su una GPU recente in mezza
 precisione. Da Ampere c'è anche una terza via, il `tf32`: ingressi `float32`
 troncati a 10 bit di mantissa e accumulo a 32 bit, che su una A100 dà 156
 TFLOP/s contro i 19,5 dei CUDA core, e quindi un ginocchio intermedio a circa
@@ -534,15 +531,15 @@ La prima TPU di Google {cite}`jouppi2017datacenter` è la realizzazione più not
 del secondo schema: un array $256 \times 256$, cioè $65\,536$
 moltiplicazioni-accumulo per ciclo di clock in una sola unità (le generazioni
 dalla seconda alla quinta usano più unità $128 \times 128$, e dalla sesta si
-torna a $256 \times 256$), con i pesi precaricati dall'alto,
-i dati che entrano da sinistra e 4 MiB di accumulatori a 32 bit sotto la
-matrice, che raccolgono una somma parziale da 256 elementi per ciclo. Va detto
-che cosa moltiplica: interi a 8 bit, e per la sola inferenza, quindi il
-confronto con una GPU che addestra in mezza precisione non è alla pari. Il
-confronto non è comunque «chi calcola di più»
-ma «chi si muove di meno», ed è per questo che gli acceleratori dedicati
-guadagnano soprattutto in energia per operazione, che è poi la voce di
-spesa della {doc}`sezione sul conto in energia </MLOps/energia-e-impronta>`.
+torna a $256 \times 256$), con i pesi precaricati dall'alto, i dati che entrano
+da sinistra e 4 MiB di accumulatori a 32 bit sotto la matrice, che raccolgono
+una somma parziale da 256 elementi per ciclo. Quell'unità, però, moltiplica
+interi a 8 bit e serve solo per l'inferenza, quindi il confronto con una GPU
+che addestra in mezza precisione non è alla pari. Il confronto non è comunque
+«chi calcola di più» ma «chi si muove di meno», ed è per questo che gli
+acceleratori dedicati guadagnano soprattutto in energia per operazione, che è
+poi la voce di spesa della {doc}`sezione sul conto in energia
+</MLOps/energia-e-impronta>`.
 
 Il prezzo della specializzazione è la rigidità. Un array sistolico è bravo
 esattamente a una cosa. Se la matrice è più piccola dell'array, gran parte
@@ -558,13 +555,13 @@ generalità che oppone una GPU a una CPU, spostata di un livello.
 ## In pratica: forme «tonde» e mezza precisione
 
 Quasi certamente non scriverai mai a mano una moltiplicazione fra matrici:
-esistono librerie che la fanno meglio di quanto convenga fare da soli,
+esistono librerie che la fanno meglio di quanto convenga scrivere da sé,
 sfruttando tessere a più livelli e tensor core in modi che cambiano a ogni
-generazione di schede. Sono quelle che PyTorch chiama ogni volta che una rete
-gira (cuBLAS per le matrici, cuDNN per le convoluzioni, scritte da NVIDIA), più
-i due strumenti che quel codice lo generano invece di averlo già scritto:
-**CUTLASS**, la raccolta di modelli in C++ di NVIDIA con cui si compongono i
-propri GEMM, e Triton {cite}`tillet2019triton`.
+generazione di schede. Sono le stesse che PyTorch chiama ogni volta che una
+rete gira (cuBLAS per le matrici, cuDNN per le convoluzioni, fornite da
+NVIDIA), a cui si aggiungono due strumenti che quel codice lo generano invece
+di offrirlo già pronto: **CUTLASS**, la raccolta di modelli in C++ di NVIDIA
+con cui si compongono i propri GEMM, e Triton {cite}`tillet2019triton`.
 
 Perché allora capire il tiling? Perché spiega due regole pratiche che spostano
 davvero il cronometro, e che altrimenti sembrerebbero magia:
@@ -703,7 +700,7 @@ pagina.
   all'infinito: nel modello senza cache l'intensità aritmetica resta ferma a
   $\tfrac14$ FLOP/byte, indipendente dalla taglia (nella realtà la L1, la L2 e
   il broadcast dentro il warp recuperano qualcosa, ma è riuso *sperato*, non
-  garantito dal programma). In
+  garantito dal programma). Il kernel resta, in
   ogni caso, profondamente memory-bound.
 - Il tiling spezza $\mathbf{C}$ in tessere e carica i blocchi di $\mathbf{A}$ e
   $\mathbf{B}$ in shared memory una volta sola, riusandoli: con tessere $T

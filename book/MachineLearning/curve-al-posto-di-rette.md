@@ -325,8 +325,8 @@ Christian Reinsch, tre anni dopo {cite}`reinsch1967smoothing`.
 
 `````{tab} Elementare
 
-Adesso i pesi, che inchiodano il listello ai punti, si tolgono, e ogni punto lo
-aggancia con un elastico. Il listello fa allora due cose in contrasto fra loro.
+Adesso si tolgono i pesi che inchiodano il listello ai punti, e in ogni punto lo
+si aggancia con un elastico. Il listello fa allora due cose in contrasto fra loro.
 Da un lato deve passare vicino ai punti, e ogni elastico lo tira dalla sua
 parte, tanto più forte quanto più è teso. Dall'altro il legno si oppone alla
 piega: piegarlo costa fatica, e più lo pieghi stretto più fatica costa. La curva
@@ -483,8 +483,8 @@ compromesso bias-varianza, la stessa vista in {doc}`Overfitting e validazione
 continuità invece che da un numero intero di nodi.
 
 La terza è la più utile: fra $\lambda = 10^{-8}$ e $\lambda = 10^{-4}$ i gradi
-di libertà passano da $97$ a $20$, cioè la manopola ha buttato via tre quarti
-della flessibilità, e l'errore migliora di sette volte. Quei $77$ gradi di
+di libertà passano da $97$ a $20$, cioè la manopola ha ridotto di tre quarti
+la flessibilità, e l'errore migliora di sette volte. Quei $77$ gradi di
 libertà stavano descrivendo il rumore.
 
 La {numref}`fig-spline-tavolette` mette in fila le tre cose viste finora.
@@ -547,7 +547,7 @@ finestra dei «simili» scivola lungo i metri quadri, e la stima disegna una cur
 ({numref}`fig-media-che-scivola`). È una finestra dai bordi sfumati, e nella
 figura il peso che cala ha la forma di una campana.
 
-Quanto larga fare quella finestra è tutta la questione. Se si considerano simili
+Tutta la questione è quanto fare larga quella finestra. Se si considerano simili
 solo le case identiche, ogni stima si appoggia su una o due vendite e salta
 qua e là a ogni affare fortunato. Se si considerano simili tutte le case fino a
 cento metri di differenza, la stima diventa la media di tutto il quartiere, la
@@ -775,8 +775,8 @@ Il prezzo dell'affitto, per dire. Una curva dice come cambia il prezzo al
 crescere dei metri quadri (sale, ma sempre meno: i primi cinquanta metri quadri
 valgono più dei cinquanta successivi). Un'altra dice come cambia con la
 distanza dal centro (scende in fretta nei primi chilometri e poi si
-appiattisce). Una terza con l'anno di costruzione,
-che non è affatto monotona: le case degli anni Sessanta valgono meno sia delle
+appiattisce). Una terza mostra l'effetto dell'anno di costruzione,
+e non è affatto monotona: le case degli anni Sessanta valgono meno sia delle
 nuove sia di quelle d'epoca. Ogni curva la disegna una spline, e il prezzo
 stimato è la somma delle tre.
 

@@ -423,14 +423,14 @@ sugli esempi dati a ciascun albero e uno sulle colonne fra cui ogni nodo sceglie
 la sua domanda.
 ```
 
-Il primo dei due sorteggi è il bootstrap, che c'era già nel bagging. Il secondo,
-quello sulle colonne, non era inedito: sorteggiarle una volta per albero è di
-Tin Kam Ho, nel 1998 {cite}`ho1998random`, ripetere il sorteggio a ogni nodo è
-di Amit e Geman, nel 1997 {cite}`amit1997shape`, ed è questa seconda forma che
-la foresta casuale adotta. Nei nodi in cui la colonna più informativa non è fra
-quelle sorteggiate, l'albero deve scegliere un'altra domanda, e gli alberi
-imboccano strade diverse. Il contributo di Breiman è la combinazione, e la
-teoria che spiega perché funziona.
+Il primo dei due sorteggi è il bootstrap, che c'era già nel bagging. Il
+secondo, quello sulle colonne, non era inedito: sorteggiarle una volta per
+albero è un'idea di Tin Kam Ho del 1998 {cite}`ho1998random`, mentre ripetere
+il sorteggio a ogni nodo viene da Amit e Geman nel 1997 {cite}`amit1997shape`.
+È questa seconda forma che la foresta casuale adotta. Nei nodi in cui la
+colonna più informativa non è fra quelle sorteggiate, l'albero deve scegliere
+un'altra domanda, e gli alberi imboccano strade diverse. Il contributo di
+Breiman è la combinazione, e la teoria che spiega perché funziona.
 
 `````{tab} Elementare
 
@@ -514,10 +514,10 @@ senza mettere da parte un validation set separato.
 Il secondo è la **feature importance**. Sommando, su tutti gli alberi, di quanto
 ciascuna caratteristica ha ridotto l'impurità nei suoi split, si ottiene una
 classifica di quanto ogni caratteristica «conta» per il modello. È
-un'informazione preziosa per capire i dati, con un'avvertenza che scikit-learn
+un'informazione preziosa per capire i dati, ma con un'avvertenza che scikit-learn
 stessa segnala: questa misura tende a gonfiare l'importanza delle
 caratteristiche con molti valori distinti, e siccome è calcolata sui dati di
-addestramento può dare importanza perfino a una colonna di puro rumore: va letta
+addestramento può dare importanza perfino a una colonna di puro rumore. Va letta
 con prudenza. C'è una misura più affidabile, la *permutation importance*, e
 funziona così: si prende una colonna e la si mescola a caso, rovinandola di
 proposito, poi si guarda di quanto peggiora il modello su dati che non ha visto
@@ -611,7 +611,7 @@ approssimare proprio questi pseudo-residui. Nel caso della loss quadratica
 $\ell = \tfrac{1}{2}(y - F)^2$ il gradiente si riduce a $r_i = y_i -
 F_{t-1}(\mathbf{x}_i)$: cioè, semplicemente, l’errore residuo ancora da
 spiegare (al primo passo, lo scarto dalla media $F_0$).
-Detto a parole: ogni albero fitta ciò che i precedenti hanno sbagliato. Il
+Detto a parole: ogni albero approssima ciò che i precedenti hanno sbagliato. Il
 legame con AdaBoost passa per un lavoro di poco precedente
 {cite}`friedman2000additive`: AdaBoost coincide con la costruzione additiva un
 termine alla volta (*forward stagewise additive modeling*) sotto la
@@ -620,8 +620,8 @@ nuovo minimizza esattamente quella loss. Il gradient boosting sostituisce quella
 minimizzazione esatta con un passo di gradiente, e applicato alla loss
 esponenziale ne dà un'approssimazione, non una copia.
 
-Un passaggio, nell'algoritmo di Friedman, si salta spesso raccontandolo, e
-cambia i numeri: dell'albero appena fittato si tiene la partizione, non i
+Quando si racconta l'algoritmo di Friedman si salta spesso un passaggio che
+cambia i numeri: dell'albero appena addestrato si tiene la partizione, non i
 valori nelle foglie. Quelli vengono ri-ottimizzati regione per regione,
 cercando in ciascuna la costante che minimizza la loss vera,
 
@@ -711,21 +711,19 @@ e più regolarizzate; ecco che cosa le distingue:
   gestire da soli i valori mancanti, imparando per ogni split da che parte
   conviene mandare le righe con la casella vuota (in XGBoost è lo
   *sparsity-aware split finding* del paper del 2016).
-- Le due mosse di LightGBM. Quello che il suo paper aggiunge sono due modi
-  di rimpicciolire il problema *prima* di costruire gli istogrammi. Il **GOSS**
+- Le due mosse di LightGBM. Quello che il suo paper aggiunge sono due modi di
+  rimpicciolire il problema *prima* di costruire gli istogrammi. Il **GOSS**
   (*gradient-based one-side sampling*) tiene tutte le righe su cui il modello
-  sta ancora sbagliando parecchio, e delle altre ne
-  campiona solo una parte, ripesandola per non falsare il conto: righe che
-  contano poco, invece di pesare quanto le altre, si fanno rappresentare.
-  L’**EFB** (*exclusive feature bundling*) impacchetta in una colonna sola
-  colonne che quasi mai sono diverse da zero contemporaneamente, e taglia il
-  numero di
-  colonne da scandire. La crescita *leaf-wise*, cioè espandere sempre la foglia
-  più promettente invece di completare un livello per volta, è una scelta in
-  più e non la differenza fra i due: anche XGBoost la offre
-  (`grow_policy="lossguide"`), e in entrambi va tenuta a freno, perché un
-  albero che cresce solo da un lato diventa profondo in fretta e va in
-  overfitting più facilmente.
+  sta ancora sbagliando parecchio, e delle altre ne campiona solo una parte,
+  ripesandola per non falsare il conto: righe che contano poco, invece di
+  pesare quanto le altre, si fanno rappresentare. L’**EFB** (*exclusive feature
+  bundling*) impacchetta in una colonna sola colonne che quasi mai sono diverse
+  da zero contemporaneamente, e taglia il numero di colonne da scandire. La
+  crescita *leaf-wise* (espandere sempre la foglia più promettente invece di
+  completare un livello per volta) è un'opzione in più, non la vera differenza
+  fra i due: la offre anche XGBoost (`grow_policy="lossguide"`). In entrambi va
+  tenuta a freno, perché un albero che cresce solo da un lato diventa profondo
+  in fretta e va in overfitting più facilmente.
 
 ## Bagging o boosting? Varianza contro bias
 

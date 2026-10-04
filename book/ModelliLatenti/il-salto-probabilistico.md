@@ -11,7 +11,7 @@ variabile latente dell’apertura del capitolo. A prima vista sembra un
 peggioramento, perché $p_\theta(\mathbf{x})$ è proprio l’integrale che non si
 sa calcolare. Il resto della sezione racconta come mai è invece la domanda
 giusta, e come mai la regola che all’autoencoder mancava, quella su dove vanno
-messi i codici, non bisogna aggiungerla: cade fuori da sola dal tentativo di
+messi i codici, non bisogna aggiungerla: scaturisce da sola dal tentativo di
 approssimare quell’integrale.
 
 Il percorso è in quattro passi: l’integrale che non si può calcolare; la
@@ -146,10 +146,10 @@ Con una causa nascosta da un numero solo, centomila sorteggi danno la risposta
 esatta a due cifre decimali. Con quaranta numeri sbagliano di dieci nat, cioè
 stimano una probabilità ventiduemila volte più piccola di quella vera. E
 l’errore, salendo di
-dimensione, è tutto dalla stessa parte: per difetto. (Nelle poche
-dimensioni la stima balla in tutti e due i versi, e infatti a cinque il segno
-è positivo per un centesimo: la spinta verso il basso è una tendenza, e diventa
-schiacciante quando le dimensioni crescono.) La colonna a
+dimensione, è tutto dalla stessa parte: per difetto. Con poche
+dimensioni la stima oscilla ancora nei due versi (a cinque il segno
+è positivo per un centesimo), ma la spinta verso il basso diventa
+schiacciante quando le dimensioni crescono. La colonna a
 destra dice perché: su centomila sorteggi, uno solo si prende il trentacinque
 per cento del totale. Non stiamo facendo una media, stiamo aspettando un colpo
 di fortuna.
@@ -382,14 +382,14 @@ precedente, nient’altro che il vecchio «la copia somiglia all’originale?».
 
 Seconda voce: quanto costa scrivere la scheda. Qui c’è la novità, ed è la
 regola che mancava. Un **vocabolario comune** è stato fissato prima che i due
-cominciassero, e non lo decidono loro: è la «forma decisa in anticipo per il
-cassetto» che prima mancava, la stessa preferenza per il centro del righello con
-cui il capitolo si apre (il prior), vista stavolta da chi scrive la scheda.
+cominciassero, e non lo decidono loro. È la «forma decisa in anticipo per il
+cassetto» che prima mancava: la stessa preferenza per il centro del righello
+(il prior) con cui il capitolo si apre, vista stavolta da chi scrive la scheda.
 È un modo standard di descrivere un quadro, che vale per tutti i quadri e non è
-stato adattato a nessuno. Quando
-l’archivista scrive una scheda, paga solo per quello che si discosta da quel
-vocabolario. Descrivere un quadro come «uno dei soliti» non costa niente;
-descriverlo nel dettaglio, con precisione al millimetro, costa molto.
+stato adattato a nessuno. Quando l’archivista scrive una scheda, paga solo per
+quello che si discosta da quel vocabolario. Descrivere un quadro come «uno dei
+soliti» non costa niente; descriverlo nel dettaglio, con precisione al
+millimetro, costa molto.
 
 L’archivista si trova quindi stretto fra due spinte opposte, e questo è il
 cuore di tutto. Se resta sul vago, la scheda costa poco e il copista dipinge
@@ -792,7 +792,7 @@ costo descrizione     3.6 nat
 ELBO                -23.8 nat  (log p(x) sta piu' in alto di qui)
 ```
 
-La prima cosa da notare è che la ricostruzione è peggiorata: 20,2 nat contro i
+Il primo risultato è che la ricostruzione è peggiorata: 20,2 nat contro i
 16,3 dell’autoencoder, sulle stesse cifre e con la stessa architettura, a parte
 la testa dell’encoder che qui produce anche la varianza. Il decoder riceve un
 campione della zona proposta e non il suo centro, e il codice porta meno
@@ -1087,37 +1087,37 @@ schede da cui escono i disegni deboli.
 
 `````{tab} Superiore
 
-**Sfocatura.** Massimizzare l’ELBO su tutto l’insieme di dati equivale a
-minimizzare $D_{\mathrm{KL}}(q_{\mathcal{D},\phi}(\mathbf{x}, \mathbf{z})
-\,\|\, p_\theta(\mathbf{x}, \mathbf{z}))$, dove
+La **sfocatura** deriva dal fatto che massimizzare l’ELBO su tutto l’insieme di
+dati equivale a minimizzare $D_{\mathrm{KL}}(q_{\mathcal{D},\phi}(\mathbf{x},
+\mathbf{z}) \,\|\, p_\theta(\mathbf{x}, \mathbf{z}))$, dove
 $q_{\mathcal{D},\phi}(\mathbf{x}, \mathbf{z}) = p_{\text{dati}}(\mathbf{x})\,
 q_\phi(\mathbf{z} \mid \mathbf{x})$ è la congiunta che si ottiene pescando un
 dato vero e poi codificandolo: è una KL in cui la distribuzione dei dati sta a
-sinistra. In quella direzione il costo di mettere probabilità
-quasi nulla dove i dati ci sono diverge, mentre il costo di metterne dove i
-dati non ci sono è mite: il modello ottimale è quindi più disperso dei dati, e
-su immagini «più disperso» si legge come sfocato. È la spiegazione che danno
-Kingma e Welling {cite}`kingma2019introduction`, i quali osservano anche che il
-rimedio non è cambiare obiettivo ma rendere più flessibili la posterior o il
-decoder. A questa causa se ne somma una seconda, che sta nella verosimiglianza
-scelta: con $p_\theta(\mathbf{x} \mid \mathbf{z})$ fattorizzata sui pixel, tutto
-ciò che $\mathbf{z}$ non determina viene trattato come rumore indipendente
-pixel per pixel, e la media $\mathbb{E}[\mathbf{x} \mid \mathbf{z}]$ che si
-disegna è una media su tutte le immagini compatibili con quel codice, sfocata
-per costruzione; campionando invece di prendere la media esce rumore, non
-dettaglio. Zhao, Song ed Ermon {cite}`zhao2017towards` indicano questa
-seconda causa come quella vera: in certe condizioni, mostrano, la sfocatura non
-viene dalla massima verosimiglianza, ma da una $q_\phi$ che manda sullo stesso
-codice immagini troppo diverse perché una gaussiana fattorizzata le
-rappresenti. Per questo i VAE più nitidi hanno decoder autoregressivi, latenti
-gerarchici o latenti discreti.
+sinistra. In quella direzione il costo di mettere probabilità quasi nulla dove
+i dati ci sono diverge, mentre il costo di metterne dove i dati non ci sono è
+mite: il modello ottimale è quindi più disperso dei dati, e su immagini «più
+disperso» si legge come sfocato. È la spiegazione che danno Kingma e Welling
+{cite}`kingma2019introduction`, i quali osservano anche che il rimedio non è
+cambiare obiettivo ma rendere più flessibili la posterior o il decoder. A
+questa causa se ne somma una seconda, che sta nella verosimiglianza scelta: con
+$p_\theta(\mathbf{x} \mid \mathbf{z})$ fattorizzata sui pixel, tutto ciò che
+$\mathbf{z}$ non determina viene trattato come rumore indipendente pixel per
+pixel, e la media $\mathbb{E}[\mathbf{x} \mid \mathbf{z}]$ che si disegna è una
+media su tutte le immagini compatibili con quel codice, sfocata per
+costruzione; campionando invece di prendere la media esce rumore, non
+dettaglio. Zhao, Song ed Ermon {cite}`zhao2017towards` indicano questa seconda
+causa come quella vera: in certe condizioni, mostrano, la sfocatura non viene
+dalla massima verosimiglianza, ma da una $q_\phi$ che manda sullo stesso codice
+immagini troppo diverse perché una gaussiana fattorizzata le rappresenti. Per
+questo i VAE più nitidi hanno decoder autoregressivi, latenti gerarchici o
+latenti discreti.
 
-**Collasso della posterior.** All’inizio dell’addestramento il termine di
-ricostruzione è debole, e $q_\phi(\mathbf{z} \mid \mathbf{x}) \approx
-p(\mathbf{z})$ è un equilibrio stabile da cui è difficile uscire: il costo di
-descrizione va a zero e il latente smette di portare informazione. Nel caso
-lineare-gaussiano dell’apertura del capitolo, la PCA probabilistica, il collasso
-si calcola: all’ottimo la colonna di $\mathbf{W}$ che corrisponde a un
+Il **collasso della posterior** si innesca perché all’inizio dell’addestramento
+il termine di ricostruzione è debole, e $q_\phi(\mathbf{z} \mid \mathbf{x})
+\approx p(\mathbf{z})$ è un equilibrio stabile da cui è difficile uscire: il
+costo di descrizione va a zero e il latente smette di portare informazione. Nel
+caso lineare-gaussiano dell’apertura del capitolo, la PCA probabilistica, il
+collasso si calcola: all’ottimo la colonna di $\mathbf{W}$ che corrisponde a un
 autovalore non superiore alla varianza del rumore $\sigma^2$ è nulla, e la
 posterior di quella componente coincide con il prior
 {cite}`tipping1999probabilistic`. Un rumore più grande spegne le componenti a
@@ -1134,7 +1134,7 @@ gruppo di componenti latenti. Il caso peggiore è un decoder molto espressivo
 (autoregressivo, per dire), che può modellare i dati da solo e rende il latente
 superfluo.
 
-**Scarto fra prior e posterior aggregata.** Il termine KL agisce su un
+Resta lo **scarto fra prior e posterior aggregata**: il termine KL agisce su un
 esempio alla volta, quindi vincola ciascuna $q_\phi(\mathbf{z} \mid
 \mathbf{x})$ e non l’aggregato $q_\phi(\mathbf{z}) =
 \mathbb{E}_{p_{\text{dati}}}[q_\phi(\mathbf{z} \mid \mathbf{x})]$. I due non

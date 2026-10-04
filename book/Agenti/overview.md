@@ -14,7 +14,7 @@
 
 Fra rispondere bene a una domanda e portare a termine un lavoro c'è un salto, e
 qualcuno ha provato a misurarlo con una gara di riparazioni. La gara prende
-2.294 segnalazioni di errore vere, di quelle che gli utenti scrivono agli autori
+2.294 segnalazioni di errore reali, inviate dagli utenti agli autori
 di un programma quando qualcosa non funziona, tratte da dodici progetti open
 source scritti in Python, e le usa come compiti d'esame: al sistema si dà la
 segnalazione insieme al codice del progetto, e deve produrre la correzione. Si
@@ -34,14 +34,14 @@ d'errore, correggere. Nell'articolo che presentava la gara, nell'ottobre 2023,
 il migliore dei modelli provati, Claude 2, ne risolveva l'1,96%. Un numero così
 basso misura quanto costi tenere insieme molte mosse di fila. E la misura
 stessa, si scoprirà nella {doc}`sezione sul valutare un agente
-</Agenti/architetture-e-valutazione>`, andava presa con le pinze: rileggendo a
+</Agenti/architetture-e-valutazione>`, richiedeva cautela: rileggendo a
 mano i successi del sistema che nel 2024 guidava la classifica, una parte non
-era stata guadagnata sul campo.
+derivava da capacità reali.
 
 Che un modello possa agire, del resto, lo ha già mostrato la {doc}`sezione sul
 passaggio dalla percezione
 all'azione </VisioneLinguaggio/vedere-quel-che-non-ce>`: un braccio robotico
-comandato a token, che nel mondo ci mette le mani sul serio, ma l'obiettivo lo
+comandato a token, che interviene fisicamente nel mondo, ma l'obiettivo lo
 riceve da qualcun altro («prendi la tazza»).
 
 Fra il 2023 e il 2024 si diffondono i sistemi che decidono da sé quando
@@ -56,7 +56,7 @@ abbiamo studiato nel {doc}`capitolo sui Transformer </Transformers/overview>`.
 Un agente è un *sistema* costruito attorno a un modello: un programma che
 guarda l'ambiente, lascia che il modello decida la mossa successiva, la esegue
 davvero, osserva com'è andata e ricomincia. L’ambiente è tutto ciò su cui
-l'agente può mettere le mani e da cui può ricevere notizie: le pagine del web,
+l'agente può intervenire e da cui può ricevere informazioni: le pagine del web,
 i file di un computer, i servizi a cui si può chiedere qualcosa. Il modello
 sceglie la mossa; l'agente è tutto il resto, cioè il programma che gli prepara
 il contesto (il testo che il modello legge prima di scegliere: la richiesta, le
@@ -148,11 +148,12 @@ learning, ma qui lo «stato» è una sequenza di testo (il contesto accumulato: 
 richiesta, le mosse fatte, i loro risultati) e l’«azione» è, tipicamente,
 l'invocazione di uno strumento oppure la risposta finale. Lo $s_t$ non è lo
 stato del mondo, che l'agente non vede: è la storia di ciò che ha osservato e
-fatto, quindi il problema è un {doc}`POMDP </ReinforcementLearning/mdp-valore>`,
-in cui la storia completa basta a decidere finché entra tutta nella finestra.
-Quando il contesto viene troncato o riassunto, come nella {doc}`sezione sul
-contesto </Agenti/context-engineering>`, quella proprietà cade, e la policy
-decide su un riassunto della storia. A ogni passo:
+fatto, quindi il problema è un {doc}`POMDP
+</ReinforcementLearning/mdp-valore>`, in cui la storia completa è sufficiente
+per decidere, purché rientri nella finestra. Quando il contesto viene troncato
+o riassunto, come nella {doc}`sezione sul contesto
+</Agenti/context-engineering>`, quella proprietà cade, e la policy decide su un
+riassunto della storia. A ogni passo:
 
 1. il sistema fornisce al modello lo stato $s_t$ (il contesto);
 2. il modello genera un'azione $a_t$, per esempio «cerca sul web *X*»;
@@ -161,10 +162,10 @@ decide su un riassunto della storia. A ogni passo:
 
 dove $\oplus$ denota la concatenazione al contesto e il ciclo termina quando il
 modello emette un'azione speciale di «risposta finale» o si raggiunge un limite
-di passi. La differenza cruciale con il reinforcement learning classico sta in
-chi fa cosa: chi costruisce l'agente, di norma, non ottimizza $\theta$. La
-policy è un modello di linguaggio già addestrato (spesso proprio con
-ricompense ed episodi, nel post-training che gli ha insegnato a seguire
+di passi. La differenza cruciale con il reinforcement learning classico sta nel
+soggetto dell'ottimizzazione: chi costruisce l'agente, di norma, non ottimizza
+$\theta$. La policy è un modello di linguaggio già addestrato (spesso proprio
+con ricompense ed episodi, nel post-training che gli ha insegnato a seguire
 istruzioni e a usare strumenti) e qui il suo comportamento si governa con
 istruzioni in linguaggio naturale: non si aggiornano i pesi, si scrive il
 *prompt*.
@@ -230,7 +231,7 @@ risposta.
 
 Come mostra {numref}`fig-agente-anatomia`, il modello non tocca mai il mondo
 direttamente: lo fa attraverso gli strumenti, e ogni azione torna indietro
-come un'osservazione che rientra nel contesto. Il pezzo più sottile è proprio
+come un'osservazione che rientra nel contesto. Il passaggio più delicato è proprio
 questo, l'uso degli strumenti (in inglese **tool use**, ed è il nome che
 troverai ovunque). Come fa un modello che sa solo *scrivere testo* a mettere
 in moto un pezzo di programma? In informatica un pezzo di programma con un
@@ -285,9 +286,9 @@ l'osservazione (l'esito della funzione) al contesto. Al passo successivo il
 modello vede la propria richiesta *e* la risposta, e prosegue il ragionamento.
 
 Due conseguenze pratiche. Primo: la separazione è netta, il modello *propone*,
-il runtime *dispone*; l'esecuzione vera (con i suoi permessi, i suoi limiti, i
-suoi controlli di sicurezza) resta fuori dal modello, ed è lì che si mette il
-freno alle azioni pericolose. Secondo: ogni chiamata è del testo che entra e
+il runtime *dispone*; l'esecuzione effettiva (con i suoi permessi, i suoi
+limiti, i suoi controlli di sicurezza) resta fuori dal modello, ed è lì che si
+bloccano le azioni pericolose. Secondo: ogni chiamata è del testo che entra e
 del testo che esce, e quindi consuma finestra di contesto; un loop lungo la
 riempie in fretta, ed è il problema da cui parte la {doc}`sezione sul contesto
 </Agenti/context-engineering>`.
@@ -454,7 +455,7 @@ Le quattro sezioni che seguono riprendono uno per uno i pezzi montati fin qui.
   risultati con un secondo giudice più attento, lasciare che sia l'agente a
   decidere quando cercare).
 - {doc}`Il contesto è l'interfaccia </Agenti/context-engineering>`: la
-  finestra di contesto vista da un agente, cioè quanto se ne mangiano gli
+  finestra di contesto vista da un agente, cioè quanto ne consumano gli
   strumenti e la traccia, dove si tiene quello che non ci sta più, quanto costa
   far pensare il modello a voce alta.
 - {doc}`Architetture e valutazione </Agenti/architetture-e-valutazione>`: come

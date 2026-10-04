@@ -51,22 +51,21 @@ stesso.
 `````{tab} Superiore
 
 Le quattro componenti canoniche sono: **istruzione** (il compito: «riassumi»,
-«classifica», «traduci»); **sfondo** (informazioni e vincoli che
-condizionano la risposta: il tono, il pubblico, regole da rispettare,
-eventuali passaggi recuperati; la guida DAIR.AI chiama questa componente
-*context*, ma qui «contesto» è già il nome dell'intera finestra,
-e usare la stessa parola per il contenitore e per una delle cose contenute
-sarebbe un modo sicuro di non capirsi più); **dato d'ingresso** (l'input
-specifico su cui operare); **indicatore d'output** (il segnale che innesca e
-formatta la generazione, un `Traduzione:` finale, l'inizio di un blocco JSON,
-un'etichetta attesa). Non è uno schema rigido: molti prompt utili contengono
-solo istruzione e input. Ma la distinzione è operativa, perché ciascuna parte
-si può isolare e migliorare da sola, e perché separare nettamente istruzione
-e dato rende più difficile, senza impedirlo, un problema concreto, la *prompt
-injection* (istruzioni ostili nascoste dentro il materiale su cui il modello
-deve lavorare), che chiude il discorso sul prompt: delimitatori ed etichette
-sono testo come gli altri, e arrivano al modello nella stessa sequenza di token
-delle istruzioni ostili.
+«classifica», «traduci»); **sfondo** (informazioni e vincoli che condizionano
+la risposta: il tono, il pubblico, regole da rispettare, eventuali passaggi
+recuperati; la guida DAIR.AI chiama questa componente *context*, ma qui
+«contesto» è già il nome dell'intera finestra, e usare la stessa parola per il
+contenitore e per una delle cose contenute sarebbe un modo sicuro di non
+capirsi più); **dato d'ingresso** (l'input specifico su cui operare);
+**indicatore d'output** (il segnale che innesca e formatta la generazione, un
+`Traduzione:` finale, l'inizio di un blocco JSON, un'etichetta attesa). Non è
+uno schema rigido: molti prompt utili contengono solo istruzione e input. Ma la
+distinzione è operativa, perché ciascuna parte si può isolare e migliorare da
+sola, e perché separare nettamente istruzione e dato ostacola un attacco
+concreto, la *prompt injection*, cioè le istruzioni ostili nascoste nel
+materiale su cui il modello deve lavorare. Separarle non impedisce il problema,
+perché delimitatori ed etichette sono testo come gli altri e arrivano al
+modello nella stessa sequenza di token delle istruzioni ostili.
 
 `````
 
@@ -414,13 +413,13 @@ nel contesto, senza fine-tuning. Il modello definisce, un token alla volta, la
 distribuzione $P(y \mid I, (x_1,y_1),\dots,(x_k,y_k), x)$, dove $I$ sono le
 istruzioni, le coppie $(x_i, y_i)$ i $k$ esempi svolti e $x$ la richiesta
 corrente, e la risposta se ne ricava per decodifica. Conta che cosa la
-decodifica restituisca (il greedy massimizza token per token, senza garanzie
+decodifica restituisca: il *greedy* massimizza token per token, senza garanzie
 sulla sequenza; il campionamento non massimizza affatto, e restituisce un
-campione da $P$ soltanto per $T = 1$ e senza troncamento: a $T \neq 1$ la
+campione da $P$ soltanto per $T = 1$ e senza troncamento. A $T \neq 1$ la
 temperatura si applica token per token, e la sequenza esce con probabilità
 $\prod_t P(y_t \mid y_{<t}, \dots)^{1/T} / Z_t(y_{<t})$, che non è
 proporzionale a $P^{1/T}$ perché il normalizzatore $Z_t$ dipende dal prefisso;
-il top_p aggiunge un troncamento, anch'esso token per token). Qui basti
+il top_p aggiunge un troncamento, anch'esso token per token. Qui basti
 ricordare che gli esempi agiscono come condizionamento, spostando la
 distribuzione condizionata del modello verso lo stile e il formato mostrati,
 non come dati d'addestramento. Alcune avvertenze empiriche contano nella
@@ -464,7 +463,7 @@ Chiedi a un modello «Quanto fa 17 × 24?» e potresti ricevere un numero secco,
 e sbagliato: nel 2020 GPT-3 azzeccava le moltiplicazioni fra due numeri di due
 cifre meno di una volta su tre {cite}`brown2020language`, e con i modelli di
 oggi l'esempio va fatto con numeri più lunghi. Chiedigli di mostrare i passaggi
-e la musica cambia: se
+e il risultato migliora nettamente: se
 scrive «17 × 24 = 17 × 20 + 17 × 4 = 340 + 68 = 408», arriva alla risposta
 giusta molto più spesso. È la chain-of-thought, la catena di pensiero che nel
 capitolo sugli agenti il
@@ -489,9 +488,9 @@ invece di dover indovinare tutto in un colpo.
 C'è una lettura di {numref}`fig-chain-of-thought` che vale più della tecnica, e
 sta in come il modello lavora. Ogni parola che scrive gli costa un giro di
 calcolo attraverso tutta la rete, e quella parola, appena scritta, torna nel
-testo che ha davanti al giro dopo. Se la risposta deve uscire subito, tutto il
-lavoro gli tocca farlo in un giro solo; se prima gli lasciamo scrivere
-«17 × 20 = 340», di giri ne ha uno in più, e nel secondo quel 340 non deve più
+testo che ha davanti al giro dopo. Se la risposta deve uscire subito, deve
+completare tutto il lavoro in un giro solo; se prima gli lasciamo scrivere «17
+× 20 = 340», di giri ne ha uno in più, e nel secondo quel 340 non deve più
 calcolarlo: gli sta davanti, scritto. Lasciarlo scrivere i passaggi gli dà più
 spazio per fare i conti, e non è una cortesia.
 
@@ -567,25 +566,25 @@ sistematico le prestazioni, e consigliano di descrivere il problema senza
 esempi {cite}`guo2025deepseek`.
 
 Una cautela che gli autori stessi pongono, e da non perdere per strada: che la
-catena *assomigli* a un ragionamento non dice che *sia* il
-ragionamento che ha prodotto la risposta, e Wei e colleghi lasciano la
-questione esplicitamente aperta. Misurata dopo, la risposta è severa, e i due
+catena *assomigli* a un ragionamento non dice che *sia* il ragionamento che ha
+prodotto la risposta, e Wei e colleghi lasciano la questione esplicitamente
+aperta. Quando se ne è misurata la fedeltà, il verdetto è stato severo, e i due
 lavori che la {doc}`sezione sul ciclo dell'agente </Agenti/agenti-e-tool-use>`
 ha citato a proposito della traccia di ReAct qui si leggono per esteso. Turpin
 e colleghi {cite}`turpin2023unfaithful` inseriscono nel prompt few-shot una
 caratteristica di bias (riordinare le opzioni perché la risposta sia sempre la
-prima) e trovano che i modelli producono catene che razionalizzano la
-risposta sbagliata senza mai nominare la causa che li ha spostati, con cali di
+prima) e trovano che i modelli producono catene che razionalizzano la risposta
+sbagliata senza mai nominare la causa che li ha spostati, con cali di
 accuratezza fino al 36% su tredici compiti di BIG-Bench Hard. Lanham e colleghi
-{cite}`lanham2023faith` intervengono direttamente sulla catena (vi
-inseriscono errori, la parafrasano) e trovano che i modelli a volte vi si
-appoggiano molto e a volte la ignorano quasi del tutto, e soprattutto che «al
-crescere della taglia e delle capacità producono ragionamenti meno fedeli
-sulla maggior parte dei compiti». Questo si accosta male all’«emerge con la
-scala» di poche righe fa, ed è bene che le due cose stiano vicine: con la
-scala il guadagno cresce e la fedeltà cala. Conseguenza operativa: la catena
-si legge come **traccia ispezionabile**, utile per accorgersi che qualcosa non
-torna, non come spiegazione di che cosa è successo davvero.
+{cite}`lanham2023faith` intervengono direttamente sulla catena (vi inseriscono
+errori, la parafrasano) e trovano che i modelli a volte vi si appoggiano molto
+e a volte la ignorano quasi del tutto, e soprattutto che «al crescere della
+taglia e delle capacità producono ragionamenti meno fedeli sulla maggior parte
+dei compiti». Questo si accosta male all’«emerge con la scala» di poche righe
+fa, ed è bene che le due cose stiano vicine: con la scala il guadagno cresce e
+la fedeltà cala. Conseguenza operativa: la catena si legge come **traccia
+ispezionabile**, utile per accorgersi che qualcosa non torna, non come
+spiegazione di che cosa è successo davvero.
 
 `````
 
@@ -605,7 +604,7 @@ Se un problema difficile lo dai a dieci persone e otto arrivano allo stesso
 numero, quel numero è probabilmente giusto, anche se ognuna ci è arrivata per
 una strada un po’ diversa. La self-consistency fa questo con un solo modello:
 gli fai risolvere lo stesso problema dieci volte, con un pizzico di casualità
-(temperatura non nulla) perché ogni volta ragioni in modo un po’ diverso, e
+(temperatura non nulla) per farlo ragionare ogni volta in modo un po’ diverso, e
 poi tieni la risposta che compare più spesso. Qui la varietà conviene, mentre
 per una risposta sola e prevedibile si tiene la temperatura bassa: a decidere
 è quante volte una risposta torna, e non quanto è buona quella singola. Delle
@@ -780,7 +779,7 @@ lascerebbe credere. Intanto cade se la generazione si interrompe a metà, per
 il tetto sui token o per un rifiuto: quello che resta non è più conforme a
 niente. E anche quando regge, la conformità non dice che i campi siano veri:
 `{"sentiment": "positivo"}` su una stroncatura è output perfettamente
-conforme. Toglie di mezzo la classe di errori più fastidiosa (la risposta che
+conforme. Elimina la classe di errori più fastidiosa (la risposta che
 non si riesce ad aprire), non quella di contenuto, che resta da verificare a
 valle.
 
@@ -869,15 +868,14 @@ proposta è appreso implicitamente dal pre-addestramento.
 La selezione eredita l’ottimismo della {doc}`ricerca degli iperparametri
 </MachineLearning/iperparametri>`. Detta $f(\rho) = \mathbb{E}[\hat f(\rho)]$
 l’accuratezza vera dell’istruzione, quella che si misurerebbe su infinite
-domande, vale $\mathbb{E}[\max_i \hat f(\rho_i)] \ge \max_i f(\rho_i)$:
-$\max_i \hat f(\rho_i) \ge \hat f(\rho_j)$ per ogni $j$, e passando alle attese
-il massimo misurato vale in media almeno quanto ciascuna accuratezza vera,
-quindi almeno quanto la più alta. L’errore standard
-di un’accuratezza $p$ misurata su $|D|$ domande è
-$\sqrt{p(1-p)/|D|}$, circa $0{,}065$ per $p = 0{,}7$ e $|D| = 50$, contro
-differenze vere fra candidate che spesso sono di pochi punti. Per questo APE
-riporta l’accuratezza dell’istruzione scelta su esempi tenuti da parte, e il
-numero da credere è quello.
+domande, vale $\mathbb{E}[\max_i \hat f(\rho_i)] \ge \max_i f(\rho_i)$: $\max_i
+\hat f(\rho_i) \ge \hat f(\rho_j)$ per ogni $j$, e passando alle attese il
+massimo misurato vale in media almeno quanto ciascuna accuratezza vera, quindi
+almeno quanto la più alta. L’errore standard di un’accuratezza $p$ misurata su
+$|D|$ domande è $\sqrt{p(1-p)/|D|}$, circa $0{,}065$ per $p = 0{,}7$ e $|D| =
+50$, contro differenze vere fra candidate che spesso sono di pochi punti. Per
+questo APE riporta l’accuratezza dell’istruzione scelta su esempi tenuti da
+parte, ed è quello il valore attendibile.
 
 Il *meta-prompting* di Suzgun e Kalai è un’altra cosa: un’impalcatura in cui
 lo stesso modello fa da direttore, scompone il compito, interroga istanze di
@@ -926,7 +924,7 @@ dieci. Con cinquecento lo scarto scende a meno di tre punti, ma la migliore
 vera vince ancora meno di una volta su tre, perché le candidate sono vicine fra
 loro. L’errore standard, quello che il {doc}`bootstrap
 </MachineLearning/il-bootstrap>` insegnava a stimare, dice di quanto
-un’accuratezza misurata balla da un banco di domande all’altro: qui vale due
+un’accuratezza misurata oscilla da un banco di domande all’altro: qui vale due
 punti, contro otto punti di distanza fra la prima candidata e l’ultima e meno
 di mezzo punto fra due vicine. La ricerca automatica del prompt funziona se il
 banco su cui si sceglie è grande rispetto alle differenze che si cercano, e se

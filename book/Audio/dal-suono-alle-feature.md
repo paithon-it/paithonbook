@@ -323,8 +323,8 @@ frequenze e male gli istanti, perché dentro ci finiscono due note; una corta fa
 il contrario. Non esiste una lunghezza che vinca su tutti e due i fronti, ed è
 per questo che sceglierla è una decisione e non un dettaglio.
 
-Una parola sulla forma della finestra, perché nel disegno è gonfia in mezzo
-e va a zero ai bordi, invece del rettangolo che «finestrella» lascia
+Nel disegno la finestra è gonfia in mezzo
+e va a zero ai bordi, invece del rettangolo che la parola «finestrella» lascerebbe
 immaginare.
 Tagliare di netto un pezzo di onda creerebbe due gradini artificiali agli
 estremi, e la trasformata leggerebbe quei gradini come frequenze che nel suono
@@ -449,11 +449,10 @@ cambia l'altezza.
 ## MFCC e la scala mel: ascoltare come un orecchio
 
 Lo spettrogramma contiene molti più numeri di quanti ne servano a distinguere
-un suono dall'altro: righe vicine si somigliano parecchio, e molti valori non
-fanno che ripetere quello che c'è accanto. Lo si può riassumere, e conviene
-farlo imitando il modo in cui l'orecchio percepisce davvero i suoni: le
-differenze che l'orecchio non coglie si possono lasciar fuori anche dal
-riassunto. Il riassunto più famoso porta la sigla inglese **MFCC**, da
+un suono dall'altro: righe vicine si somigliano parecchio e molti valori
+ripetono quello che c'è accanto. Lo si riassume imitando il modo in cui
+l'orecchio percepisce davvero i suoni: le differenze che l'orecchio non coglie
+vengono scartate. Il riassunto più famoso porta la sigla inglese **MFCC**, da
 *mel-frequency cepstral coefficients*, cioè «coefficienti cepstrali in scala
 mel». I coefficienti sono semplicemente i numeri del riassunto; la scala mel è
 il modo di riscrivere le frequenze a orecchio; «cepstrale» è la parola strana,
@@ -562,7 +561,7 @@ $c_0$, che è proporzionale all'energia logaritmica media della colonna): sono
 le feature classiche dei sistemi pre-deep-learning basati su modelli di Markov
 nascosti (HMM).
 
-La DCT merita una spiegazione che di solito manca, perché senza di essa
+Senza la sua storia la DCT
 sembra un accorgimento di buon senso valido sempre. Non lo è: serviva a una
 cosa precisa e datata. I sistemi GMM-HMM modellavano ogni stato con gaussiane a
 covarianza diagonale, per costo e per scarsità di dati, e una covarianza
@@ -575,33 +574,30 @@ lavora. Per questo dagli anni Dieci si è tornati allo spettrogramma log-mel
 grezzo, mentre i 13 MFCC restano una feature d'archivio, ancora comoda dove
 serve un vettore piccolo (HuBERT li usa proprio per il primo raggruppamento).
 
-Da qui in poi le strade si dividono, e la divisione attraversa tutto il resto
-del capitolo. Chi in uscita ha un'etichetta o del testo parte dal log-mel:
-l'AST della prossima sezione ne prende 128 bande, Whisper, che è del capitolo
-dopo, ne prende 80, e 128 nelle versioni più recenti. Chi in uscita ha del
-*suono* lavora invece sui campioni, o ci ritorna con una rete addestrata
-apposta (un *vocoder*), perché il log-mel butta via la fase e per rifare l'onda
-la fase va ricostruita: sono i codec e i generatori delle ultime due sezioni. E
-chi vuole imparare tutto dai dati sceglie i campioni comunque, e il banco di
-filtri che qui abbiamo disegnato a mano se lo costruisce da sé.
+Da qui in poi le strade si dividono. I modelli che prevedono un'etichetta o del
+testo partono dal log-mel (come AST, che ne usa 128 bande, o Whisper, che ne
+usa 80 e 128 nelle versioni più recenti). Quelli che generano del *suono*
+lavorano invece sui campioni, o ci ritornano con una rete addestrata apposta
+(un *vocoder*), perché il log-mel butta via la fase necessaria a ricostruire
+l'onda. E chi vuole imparare tutto dai dati sceglie i campioni comunque, e il
+banco di filtri che qui abbiamo disegnato a mano se lo costruisce da sé.
 
 `````
 
 ## Perché queste feature aiutano il modello
 
 La forma d'onda grezza è enorme (decine di migliaia di numeri al secondo) e
-piena di variazioni che, per riconoscere un suono, non contano: quanto forte è
-stata registrata la stessa frase, il fatto che il suono cominci due millesimi
-di secondo prima o dopo. Lo spettrogramma log-mel ne toglie di mezzo una parte,
-ciascuna per una ragione precisa. Uno spostamento più corto della finestra
-cambia quasi soltanto le fasi, e le fasi nell'immagine non ci sono più. Un
-cambio di volume moltiplica tutte le energie per lo stesso fattore, e dopo il
-logaritmo diventa uno spostamento costante di tutta l'immagine, che una rete
-assorbe facilmente. La scala mel, infine, riduce il numero di righe e tiene la
-risoluzione dove l'orecchio la usa. Il modello parte così da una descrizione
-più piccola e più stabile. Non tutto però se ne va: il rumore di fondo della
-stanza resta nell'immagine, sommato al suono, e a separarlo deve pensarci il
-modello.
+piena di variazioni che, per riconoscere un suono, non contano: il volume a cui
+la frase è stata registrata, o uno scarto di due millesimi di secondo sul suo
+inizio. Lo spettrogramma log-mel ne toglie di mezzo una parte, ciascuna per una
+ragione precisa. Uno spostamento più corto della finestra cambia quasi soltanto
+le fasi, e le fasi nell'immagine non ci sono più. Un cambio di volume
+moltiplica tutte le energie per lo stesso fattore, e dopo il logaritmo diventa
+uno spostamento costante di tutta l'immagine, che una rete assorbe facilmente.
+La scala mel, infine, riduce il numero di righe e tiene la risoluzione dove
+l'orecchio la usa. Il modello parte così da una descrizione più piccola e più
+stabile. Non tutto però se ne va: il rumore di fondo della stanza resta
+nell'immagine, sommato al suono, e a separarlo deve pensarci il modello.
 
 I sistemi più recenti, come wav2vec 2.0 {cite}`baevski2020wav2vec`, che impara
 dall'onda grezza senza etichette, o Whisper {cite}`radford2022robust`, il
@@ -710,15 +706,13 @@ lunghezze per caso coincidessero, due tabelle che parlano di istanti diversi.
   orecchio (preciso sui suoni gravi, approssimativo sugli acuti) e la
   riassumono in pochi numeri per finestrella: meno dati, ma quelli che contano
   davvero, e il modello ha un compito più facile.
-- I modelli di oggi però si fermano un passo prima: prendono l'immagine
-  riletta a orecchio (lo spettrogramma log-mel, con anche le intensità
-  schiacciate) e saltano il riassunto finale. Quel riassunto serviva a macchine
-  con molta meno memoria, che per giunta trattavano ogni numero per conto suo e
-  li volevano diversi l'uno dall'altro; a una rete non serve, e anzi il suo
-  rimescolamento le confonde le righe vicine, che sono ciò su cui lavora. È il
-  primo esempio di una cosa che si
-  ripeterà: un accorgimento intelligente smette di servire quando cambia chi lo
-  usa.
+- I modelli di oggi però si fermano un passo prima: prendono l'immagine riletta
+  a orecchio (lo spettrogramma log-mel, con anche le intensità schiacciate) e
+  saltano il riassunto finale. Quel riassunto serviva a macchine con molta meno
+  memoria, che per giunta trattavano ogni numero per conto suo e li volevano
+  diversi l'uno dall'altro; a una rete non serve, e anzi il suo rimescolamento
+  le confonde le righe vicine, che sono ciò su cui lavora. Un accorgimento
+  intelligente smette di servire quando cambia chi lo usa.
 ```
 
 `````

@@ -2,7 +2,7 @@
 
 Se potessimo aprire una di quelle applicazioni che le aziende costruiscono
 attorno a un modello, e guardare che cosa gli arriva davvero a ogni richiesta,
-troveremmo che quasi nulla di quel testo lo ha battuto una persona sulla
+troveremmo che quasi nulla di quel testo è stato digitato da una persona sulla
 tastiera. C'è il *system prompt*, cioè le istruzioni di fondo che il programma
 antepone sempre, il messaggio *system* della {doc}`sezione sul prompt
 engineering <prompt-engineering>`. Ci sono alcuni esempi già svolti, tenuti da
@@ -29,7 +29,7 @@ completo (documentazione, esempi, regole, schemi da seguire, prove di
 collaudo), e i due stanno fra loro come un *post-it* e una sceneggiatura. Un
 post-it dice cosa fare in una riga; una sceneggiatura dà a ogni scena il
 contesto per recitarla bene. È un'affermazione di chi costruisce, non un
-risultato misurato, e la riportiamo per quello che è.
+risultato misurato.
 
 La {doc}`sezione sul contesto come interfaccia </Agenti/context-engineering>`
 ha guardato la finestra di un agente: quanto se ne mangiano gli strumenti e la
@@ -62,7 +62,7 @@ più passi divisi fra più parti, dove il modello può chiedere al programma di
 fare qualcosa per lui (cercare, calcolare, aprire un archivio) e poi usare il
 risultato. La scala di Kim ha ancora due gradini: sopra gli organi mette gli
 schemi di ragionamento da riusare («scomponi il problema», «verifica il
-risultato»), che ritroveremo in fondo; in cima, l'idea di trattare tutto il
+risultato»); in cima, l'idea di trattare tutto il
 contesto come un tutto continuo invece che come pezzi distinti, che per ora è
 un'idea di ricerca e non un attrezzo.
 
@@ -214,8 +214,8 @@ qui il più rilevante va in fondo, a ridosso della domanda, mentre il secondo va
 in testa. Nelle librerie di RAG questo riordino porta il nome di *long-context
 reorder*.
 
-Un'ultima nota di rigore, che non cambia il risultato ma cambia la regola.
-Avendo ammesso il troncamento, lo zaino è diventato frazionario, e per quel
+
+Avendo ammesso il troncamento, lo zaino è diventato frazionario. Per questo
 problema l'ottimo greedy si ottiene ordinando per **densità** $r_i / c_i$
 (rilevanza per token), non per la sola rilevanza $r_i$; e nello zaino 0/1, senza
 troncamento, il migliore fra il greedy per densità e il singolo passaggio di
@@ -417,12 +417,12 @@ Più si sale di scala, più il contesto va amministrato invece che scritto e
 basta. Una divisione comoda raccoglie le tattiche in quattro mosse sole: l'ha
 proposta nel luglio 2025 LangChain, una delle cassette di attrezzi già pronti
 con cui questi sistemi si costruiscono {cite}`langchain2025context`. Non è
-l'unica in circolazione: le pratiche descritte da Anthropic nel 2025, che la
-{doc}`sezione sul contesto come interfaccia </Agenti/context-engineering>` ha
-già incontrato (la compattazione, gli appunti tenuti fuori dalla finestra, i
-sotto-agenti), tagliano lo stesso materiale in altro modo
-{cite}`anthropic2025context`. Le quattro mosse conviene tenerle a mente come un
-piccolo repertorio.
+l'unica in circolazione: le pratiche descritte da Anthropic nel 2025, già
+incontrate nella {doc}`sezione sul contesto come interfaccia
+</Agenti/context-engineering>` (la compattazione, gli appunti tenuti fuori
+dalla finestra, i sotto-agenti), organizzano le stesse idee in modo diverso
+{cite}`anthropic2025context`. Queste quattro mosse formano un comodo repertorio
+di base.
 
 `````{tab} Elementare
 
@@ -677,8 +677,8 @@ riassunti in un caso, trentasette passaggi di scheda nell’altro.
 Un contesto più lungo non è per forza un contesto migliore, e molti dei modi in
 cui le risposte peggiorano via via che si va avanti hanno a che fare con un
 contesto che si sporca. Drew Breunig, che scrive di queste applicazioni, ne ha
-proposto un catalogo utile {cite}`breunig2025contexts`, che qui riprendiamo
-con parole nostre. Quattro guasti ricorrenti:
+proposto un catalogo utile {cite}`breunig2025contexts`. I guasti ricorrenti
+sono quattro:
 
 - **L'avvelenamento** (*context poisoning*): un errore, o una cosa che il
   modello si è inventato di sana pianta (un’allucinazione), entra nel
@@ -807,24 +807,22 @@ lavoro.
 
 `````{tab} Superiore
 
-Un PRP tipico raccoglie quattro ingredienti: (1) le regole di progetto in
-un file versionato accanto al codice (`CLAUDE.md`, `AGENTS.md` a seconda
-dell'assistente), con convenzioni, vincoli, cosa evitare; (2)
-esempi di codice del repository, che condizionano l'assistente sullo stile
-reale invece che su uno generico; (3) la documentazione pertinente (API,
-riferimenti), selezionata e non l'intera libreria; (4) un **validation gate**,
-cioè il criterio oggettivo (i test da far passare, il *linter*, il comando che
-deve tornare a zero) con cui verificare che il lavoro sia effettivamente
-finito. I primi tre ingredienti sono context engineering allo stato puro: sono
-le mosse *select* e *write* rese esplicite in un artefatto versionabile. Il
-quarto anticipa la {doc}`sezione sul loop engineering <loop-engineering>`: il
-*validation gate* è il seme del loop engineering, perché trasforma un colpo
-solo in un ciclo (genera,
-verifica contro il gate, e se fallisce reitera con l'esito in contesto). Che
-dare al modello più contesto strutturato riduca gli errori è
-l'affermazione di chi propone il metodo {cite}`medin2025contextintro`, e va
-letta come tale: è un'intuizione sensata, senza un confronto controllato alle
-spalle.
+Un PRP tipico raccoglie quattro ingredienti: (1) le regole di progetto in un
+file versionato accanto al codice (`CLAUDE.md`, `AGENTS.md` a seconda
+dell'assistente), con convenzioni, vincoli, cosa evitare; (2) esempi di codice
+del repository, che condizionano l'assistente sullo stile reale invece che su
+uno generico; (3) la documentazione pertinente (API, riferimenti), selezionata
+e non l'intera libreria; (4) un **validation gate**, cioè il criterio oggettivo
+(i test da far passare, il *linter*, il comando che deve tornare a zero) con
+cui verificare che il lavoro sia effettivamente finito. I primi tre ingredienti
+sono context engineering allo stato puro: sono le mosse *select* e *write* rese
+esplicite in un artefatto versionabile. Il quarto anticipa la {doc}`sezione sul
+loop engineering <loop-engineering>`: il *validation gate* è il seme del loop
+engineering, perché trasforma un colpo solo in un ciclo (genera, verifica
+contro il gate, e se fallisce reitera con l'esito in contesto). Che dare al
+modello più contesto strutturato riduca gli errori è l'affermazione di chi
+propone il metodo {cite}`medin2025contextintro`: un'intuizione sensata, ma
+senza un confronto controllato alle spalle.
 
 `````
 

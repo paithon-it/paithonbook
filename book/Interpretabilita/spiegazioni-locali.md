@@ -15,11 +15,11 @@ più usati per spiegare la singola decisione di una rete neurale.
 Fin qui la domanda era globale: su quali colonne dei dati (le feature) si regge
 il modello, *in media*? Ma chi si vede negare un prestito non chiede una media:
 chiede «perché *la mia* domanda?». È una domanda **locale**, perché riguarda
-una risposta sola e non l'intero comportamento del modello. Qui vediamo i modi
-di risponderle: i tre attrezzi che si incontrano più spesso, LIME, SHAP e le
-spiegazioni controfattuali, e poi altre due forme di risposta, la regola e ciò
-che manca, che rispondono alla stessa domanda in un modo abbastanza diverso da
-meritarsi una sezione.
+una risposta sola e non l'intero comportamento del modello. I modi
+di risponderle sono i tre attrezzi che si incontrano più spesso, LIME, SHAP e le
+spiegazioni controfattuali, e altre due forme, la regola e ciò
+che manca, abbastanza diverse dalle prime da
+meritarsi un paragrafo ciascuna.
 
 ## Perché proprio *questa* risposta
 
@@ -212,8 +212,8 @@ LIME risponde alla domanda, ma il modo in cui lo fa poggia su una lunga catena
 di scelte fatte da chi lo usa: quanti casi-fantasma fabbricare, quanto contare
 quelli lontani, come spezzettare l'ingresso. Rilanciandolo si ottengono numeri
 un po’ diversi. Serve un metodo in cui il modo di dividere il merito sia
-fissato prima, da proprietà dichiarate, e lo dà la teoria dei giochi
-cooperativi con la formula di Shapley del 1953. Le colonne sono i giocatori, e
+fissato prima, da proprietà dichiarate: a fornirlo è la teoria dei giochi
+cooperativi, con la formula di Shapley del 1953. Le colonne sono i giocatori, e
 il guadagno da spartire non è il punteggio che il modello ha dato a Maria, ma
 di quanto quel punteggio si scosta dalla risposta che il modello darebbe senza
 sapere niente di lei. Quella risposta a vuoto la chiameremo, qui e per tutto il
@@ -342,7 +342,7 @@ soddisfa quattro assiomi:
 - **Additività**: i valori di Shapley di una somma di modelli sono la somma
   dei valori; è la proprietà che rende trattabili gli ensemble.
 
-Che questi siano gli assiomi giusti per spiegare un modello è discusso: Kumar e
+È dibattuto se questi siano gli assiomi giusti per spiegare un modello: Kumar e
 colleghi mostrano che, usati come misura d'importanza, i valori di Shapley
 pongono problemi matematici il cui rimedio richiede di ragionare sulle cause,
 e che non rispondono in modo naturale a quello che una persona chiede a una
@@ -365,8 +365,8 @@ Minorics e Blöbaum leggono la variante interventista in termini causali:
 togliere una feature è un intervento sull'ingresso del modello nel senso di
 Pearl, e per questo la ritengono la nozione giusta quando la domanda riguarda
 il modello {cite}`janzing2020feature`. La causalità di cui parlano sta dentro
-il modello: nessuna delle due varianti dice che cosa provochi che cosa fra le
-grandezze del mondo.
+il modello: nessuna delle due varianti stabilisce relazioni di causa-effetto fra le
+grandezze del mondo reale.
 
 Sull'esempio dei due giocatori, con $v(\varnothing)=10$, $v(\{1\})=30$,
 $v(\{2\})=20$, $v(\{1,2\})=50$, la formula dà $\phi_1 = 25$ e $\phi_2 = 15$, in
@@ -471,8 +471,8 @@ popolazioni dei nodi dell'albero e non riproduce la marginalizzazione pura;
 la variante *interventional* la calcola davvero, rispetto a un insieme di
 riferimento esplicito.
 
-Il vantaggio teorico appartiene ai valori di Shapley, e quindi a ogni loro
-calcolo esatto: è la **consistenza**. Se si modifica il modello così che una
+Il vantaggio teorico dei valori di Shapley, e quindi di ogni loro
+calcolo esatto, è la **consistenza**. Se si modifica il modello così che una
 feature contribuisca di più in ogni coalizione, il suo valore SHAP non può
 diminuire; è una monotonia che l'importanza da impurità della sezione sui
 modelli trasparenti *non* garantisce. Oltre al waterfall (una predizione), i
@@ -521,8 +521,8 @@ sostenevano che un diritto vincolante a farsi spiegare il funzionamento del
 modello il GDPR non lo dà, e proponevano il controfattuale come la spiegazione
 che serve comunque all'interessato: capire la decisione, contestarla e sapere
 che cosa cambiare, senza aprire il modello. Nel 2025 la Corte di giustizia,
-nella sentenza ricordata in apertura, ha indicato proprio questa forma fra
-quelle che possono bastare: dire all'interessato come una variazione dei suoi
+nella sentenza ricordata in apertura, ha indicato proprio questa fra le forme
+di spiegazione sufficienti: dire all'interessato come una variazione dei suoi
 dati avrebbe portato a un risultato diverso.
 
 `````{tab} Elementare
@@ -761,8 +761,8 @@ vale $1$; le varianti del reddito vanno un poco oltre, e lo pagano meno.
 ## Regole invece di pesi: gli anchor
 
 LIME e SHAP consegnano un elenco di colonne con dei numeri accanto, e per
-leggerlo bisogna saper interpretare dei numeri. C'è una forma di spiegazione
-locale che non chiede questo sforzo: una regola.
+coglierne il senso bisogna saperli interpretare. C'è una forma di spiegazione
+locale che non richiede questo sforzo: la regola.
 
 `````{tab} Elementare
 
@@ -915,13 +915,13 @@ minima dell'input che conserva la classe da sola.
 
 ## In pratica: i valori di Shapley calcolati da zero
 
-Esistono librerie che calcolano tutto questo in due righe. Qui il conto si fa
-da zero, provando tutti gli ordini a uno a uno, come nell'esempio con 10, 30,
-20 e 50; e poi si rifà per intero a mano, con carta e penna. Stavolta però con
-tre colonne invece che due, il che cambia una cosa sola e conviene dirla
-subito: con due colonne gli ordini erano due, con tre diventano sei (la prima
-entrata si può scegliere in tre modi, la seconda nei due rimasti, la terza è
-obbligata: $3 \times 2 \times 1$).
+Esistono librerie che calcolano tutto questo in due righe. Qui calcoleremo i
+valori da zero, provando tutti gli ordini a uno a uno, come nell'esempio con
+10, 30, 20 e 50; e poi ripeteremo i passaggi per intero a mano, con carta e
+penna. Stavolta però con tre colonne invece che due, il che cambia una cosa
+sola e conviene dirla subito: con due colonne gli ordini erano due, con tre
+diventano sei (la prima entrata si può scegliere in tre modi, la seconda nei
+due rimasti, la terza è obbligata: $3 \times 2 \times 1$).
 
 Il modellino su cui lo faremo è una formula inventata, con tre colonne che
 chiameremo $x_0$, $x_1$ e $x_2$: si numera da zero perché così fa Python, quindi
@@ -939,7 +939,7 @@ arrivare a 50 invece che a 40, ed è il motivo per cui questa formula è stata
 scelta: è il caso in cui i meriti non sono ovvi.
 
 Per «spegnere» una colonna useremo la più semplice delle tre scelte elencate
-sopra: al posto del suo valore vero ci mettiamo uno zero. Il caso da spiegare è
+sopra: al posto del suo valore vero inseriremo uno zero. Il caso da spiegare è
 quello in cui tutte e tre le colonne valgono $1$; la risposta base, cioè quella
 a tutto spento, è $f(0,0,0) = 0$. La proprietà da verificare alla fine è
 l'efficienza: la somma dei tre meriti deve fare esattamente la risposta vera

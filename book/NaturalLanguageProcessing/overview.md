@@ -80,7 +80,7 @@ La difficoltà del linguaggio si può decomporre in alcuni fenomeni ricorrenti:
 La conseguenza pratica è che il testo, da solo, non determina la propria
 interpretazione: la stessa stringa ne ammette più d'una, e quale valga dipende
 dal contesto e da ciò che chi legge sa del mondo. Nessuna regola scritta a mano
-copre tutti i casi, e il NLP moderno stima allora dai dati una distribuzione
+copre tutti i casi: perciò il NLP moderno stima dai dati una distribuzione
 sulle interpretazioni, $P(\text{interpretazione} \mid \text{testo},
 \text{contesto})$, da cui sceglie la più probabile.
 
@@ -91,8 +91,8 @@ sulle interpretazioni, $P(\text{interpretazione} \mid \text{testo},
 Il NLP non è un problema unico ma una famiglia di compiti. Quattro tornano di
 continuo, e tre di loro avranno più avanti una sezione tutta per sé.
 
-- Classificazione e analisi del sentimento (*sentiment analysis*, che è il
-  nome inglese con cui la si trova ovunque): assegnare un'etichetta a un testo.
+- Classificazione e analisi del sentimento (nota ovunque con il
+  termine inglese *sentiment analysis*): assegnare un'etichetta a un testo.
   È spam o no? Questa recensione è positiva o negativa? Questa email va allo
   sportello "reclami" o "fatturazione"?
 - Traduzione automatica (*machine translation*): trasformare una frase da
@@ -115,16 +115,16 @@ linguaggio li hanno quasi unificati, con una mossa più semplice di quanto
 sembri.
 
 Un modello di linguaggio è un programma che nessuno ha scritto istruzione per
-istruzione: lo si addestra su un'enorme raccolta di testo a prevedere come
-continua un pezzo di scrittura, e di solito un secondo addestramento, sugli
-esempi e sulle preferenze di persone, gli insegna poi a seguire le istruzioni.
+istruzione. Lo si addestra su un'enorme raccolta di documenti a prevedere come
+prosegua un testo; di solito un secondo addestramento, basato sugli esempi e
+sulle preferenze di valutatori umani, gli insegna poi a seguire le istruzioni.
 Il suo mestiere resta continuare un testo, e allora si riscrive ogni compito in
 modo che la risposta sia la continuazione. Non gli si chiede «questa email è
-spam?»: gli si dà da finire un testo che dice «Email: *vinci subito un
-premio*. Questa email è spam? Risposta:», e la parola con cui continua è il
-verdetto. Non gli si chiede di tradurre: gli si dà «Italiano: *il gatto nero
-salta sul muro*. Inglese:». Il programma e i suoi parametri restano gli
-stessi; cambia soltanto il testo che gli si mette davanti.
+spam?»: gli si dà da finire un testo che dice «Email: *vinci subito un premio*.
+Questa email è spam? Risposta:», e la parola con cui continua è il verdetto.
+Non gli si chiede di tradurre: gli si dà «Italiano: *il gatto nero salta sul
+muro*. Inglese:». Il programma e i suoi parametri restano gli stessi; cambia
+soltanto il testo che gli si mette davanti.
 
 ## Una parabola storica: dalle regole ai Transformer
 
@@ -222,7 +222,7 @@ inserita a mano in favore di rappresentazioni apprese direttamente dal testo.
 
 Si parte dalla cassetta degli attrezzi classica: cercare in un testo tutti i
 pezzi che hanno una certa forma (le *espressioni regolari*), ripulirlo perché
-due scritture della stessa parola non contino come due parole diverse (la
+due varianti della stessa parola non contino come vocaboli diversi (la
 *normalizzazione*), misurare quanto due parole si somigliano (la *distanza di
 edit*, quella che sta dietro al correttore del telefono). Poi il testo diventa
 numeri: prima lo si taglia in pezzi (la *tokenizzazione*), poi si contano i
@@ -235,7 +235,7 @@ Con i numeri in mano affrontiamo i compiti, uno alla volta.
 - Dare un'etichetta a un testo intero: spam o non spam, recensione
   entusiasta o stroncatura (i due metodi si chiamano *Naive Bayes* e
   *regressione logistica*).
-- Scommettere su quale parola verrà, che è il mestiere della barra dei
+- Scommettere su quale parola seguirà, che è il mestiere della barra dei
   suggerimenti sul telefono (i modelli *n-gram*).
 - Ricordare ciò che si è letto prima, con le reti che leggono in fila
   tenendo un riassunto aggiornato (le *reti ricorrenti*).
@@ -261,7 +261,7 @@ frasi si arriva così a modelli che oggi traducono, riassumono e conversano, e
 la domanda se «capiscano» resta aperta. Un modello addestrato soltanto su
 testo non ha mai visto un gatto, aperto una porta o avuto fretta: quello che
 sa della parola *gatto* è dove quella parola compare rispetto a tutte le
-altre, e nulla di ciò a cui la parola si riferisce. Che dalla sola forma delle
+altre, ma non sa nulla di ciò a cui si riferisce. Che dalla sola forma delle
 frasi non si possa arrivare al significato è una tesi, sostenuta da Emily
 Bender e Alexander Koller {cite}`bender2020climbing` e contestata da altri, e
 i modelli che ricevono anche immagini e suoni la mettono alla prova. Ciò che sa

@@ -206,19 +206,19 @@ il risultato è il bersaglio discreto $\mathbf{q}_t$, cioè il modo di darsi un
 più corte dei fonemi: ce n'è una ogni 20 ms.
 
 Attenzione a *come* avviene la scelta, perché non è quella dei {doc}`codec
-neurali </Audio/codec-neurali>`, dove si cerca l'entrata più vicina in
-distanza. $\mathbf{z}_t$ viene proiettato su una griglia di $G \times V$ logit
-(con $G = 2$ gruppi e $V = 320$ voci per gruppo) e l'indice è l’$\arg\max$
-della **Gumbel-softmax** di quei logit, cioè della softmax dei logit perturbati
-con rumore di Gumbel e temperatura $\tau$. A rendere stocastica la scelta è il
+neurali </Audio/codec-neurali>`, dove si cerca la voce più vicina in distanza.
+$\mathbf{z}_t$ viene proiettato su una griglia di $G \times V$ logit (con $G =
+2$ gruppi e $V = 320$ voci per gruppo) e l'indice è l’$\arg\max$ della
+**Gumbel-softmax** di quei logit, cioè della softmax dei logit perturbati con
+rumore di Gumbel e temperatura $\tau$. A rendere stocastica la scelta è il
 rumore, non la temperatura: dividere per $\tau > 0$ è una riscalatura monotòna
 e l’$\arg\max$ non se ne accorge. $\tau$ agisce all'indietro, sul gradiente, ed
 è per questo che il paper la fa scendere lungo l'addestramento: da 2 a 0,5
-nella versione base, e fino a 0,1 in quella grande, che è poi quella dei numeri
-più sotto. Il termine di diversità, che spinge il modello a usare tutte le voci
-dei codebook, invece non la vede: gli autori lo scrivono sulla softmax nuda dei
-logit, dichiarando che lì dentro non c'è né il rumore di Gumbel né la
-temperatura. In formula, con $l_{g,v}$ i logit del gruppo $g$ e
+nella versione base, e fino a 0,1 in quella grande, a cui si riferiscono i
+risultati discussi in seguito. Il termine di diversità, che spinge il modello a
+usare tutte le voci dei codebook, invece non la vede: gli autori lo scrivono
+sulla softmax nuda dei logit, dichiarando che lì dentro non c'è né il rumore di
+Gumbel né la temperatura. In formula, con $l_{g,v}$ i logit del gruppo $g$ e
 $n_v = -\log(-\log u_v)$, $u_v \sim \mathcal{U}(0,1)$, la probabilità morbida è
 
 $$
@@ -251,23 +251,21 @@ dell'apprendimento contrastivo sulle immagini in {doc}`Imparare a vedere senza
 etichette </VisioneArtificiale/senza-etichette>` e della coppia immagine-testo
 in {doc}`Un solo spazio per le immagini e le parole
 </VisioneLinguaggio/allineare-due-spazi>`, con l'audio al posto delle une e
-dell'altra. Qui $\mathrm{sim}(\mathbf{a},\mathbf{b})$ è la
-similarità del coseno (già usata per gli embedding) e $\mathcal{Q}_t$ l'insieme
-dei candidati; $\kappa$ è la temperatura del contrastivo, e il nome è quello
-del paper, che la $\tau$ l'aveva già spesa per la Gumbel-softmax. Altrove la
-stessa temperatura si scrive $\tau$, ed è lì che si inciampa. La perdita è il
-meno logaritmo di una softmax, e scende quando il modello assegna a
-$\mathbf{q}_t$ la probabilità più alta. Il nome viene dall'informazione
-mutua: con $N = K + 1$ candidati vale
-$I(\mathbf{c}_t; \mathbf{q}_t) \ge \log N - \mathcal{L}_m$
+dell'altra. Qui $\mathrm{sim}(\mathbf{a},\mathbf{b})$ è la similarità del
+coseno (già usata per gli embedding) e $\mathcal{Q}_t$ l'insieme dei candidati;
+$\kappa$ è la temperatura del contrastivo, e il nome è quello del paper, che
+aveva già riservato $\tau$ per la Gumbel-softmax. Altrove la stessa temperatura
+si indica spesso con $\tau$, creando possibile confusione. La perdita è il meno
+logaritmo di una softmax, e scende quando il modello assegna a $\mathbf{q}_t$
+la probabilità più alta. Il nome viene dall'informazione mutua: con $N = K + 1$
+candidati vale $I(\mathbf{c}_t; \mathbf{q}_t) \ge \log N - \mathcal{L}_m$
 {cite}`oord2018representation`, quindi minimizzare $\mathcal{L}_m$ alza un
 limite inferiore dell'informazione che il contesto porta sull'unità coperta. Il
-limite però non supera $\log N$, cioè $\log 101 \approx 4{,}6$ nat con
-$K = 100$: più distrattori lo alzano, al prezzo di più calcolo. Accanto le sta
-il termine di diversità,
-e la ragione la dà il paper: se il
-dizionario collassa su poche voci, il bersaglio e i distrattori diventano la
-stessa cosa e il compito degenera. La perdita completa è
+limite però non supera $\log N$, cioè $\log 101 \approx 4{,}6$ nat con $K =
+100$: più distrattori lo alzano, al prezzo di più calcolo. Accanto le sta il
+termine di diversità, e la ragione la dà il paper: se il dizionario collassa su
+poche voci, il bersaglio e i distrattori diventano la stessa cosa e il compito
+degenera. La perdita completa è
 
 $$
 \mathcal{L} = \mathcal{L}_m + \alpha\,\mathcal{L}_d,
@@ -279,28 +277,27 @@ $$
 dove $\bar{\mathbf{p}}_g$ è la softmax dei logit del gruppo $g$ mediata sui
 frame del batch, $H$ l'entropia e $\alpha = 0{,}1$: minimizzare $\mathcal{L}_d$
 vuol dire massimizzare l'entropia dell'uso medio, che tocca il massimo $\log V$
-quando le $V$ voci sono scelte con la stessa frequenza. La misura è di batch: al
-singolo frame si chiede una scelta netta, al batch di spenderle tutte. Il
+quando le $V$ voci sono scelte con la stessa frequenza. La misura è di batch:
+al singolo frame si chiede una scelta netta, al batch di spenderle tutte. Il
 mascheramento ha due numeri soli: si estrae come inizio di un tratto il
 $6{,}5\%$ dei passi, e da ciascuno si coprono i dieci successivi, con
 sovrapposizioni ammesse, sicché resta coperto circa il $49\%$ dei passi, in
 tratti lunghi in media $299$ ms. A valle, con una testa CTC su pochissime
 etichette, la versione grande di wav2vec 2.0 raggiunge un tasso di errore sulle
-parole (in sigla WER, *word error rate*: la quota di parole da correggere per
-rimettere a posto la trascrizione, e il capitolo sullo Speech Recognition la
-costruisce da capo) di $4{,}8/8{,}2$ usando 10 minuti di parlato trascritto e
-53.000 ore non etichettate, che vengono da un corpus di audiolibri più grande di
-quello di prova {cite}`baevski2020wav2vec`. I due numeri sono le due prove
-d'esame di Librispeech, *test-clean* e *test-other*: la seconda è quella
-difficile, con registrazioni e accenti più ostici, e infatti l'errore è quasi
-sempre più alto.
+parole (in sigla WER, *word error rate*: la quota di parole da correggere,
+metrica che il capitolo sullo Speech Recognition spiegherà da capo) di
+$4{,}8/8{,}2$ usando 10 minuti di parlato trascritto e 53.000 ore non
+etichettate, che vengono da un corpus di audiolibri più grande di quello di
+prova {cite}`baevski2020wav2vec`. I due numeri sono le due prove d'esame di
+Librispeech, *test-clean* e *test-other*: la seconda è quella difficile, con
+registrazioni e accenti più ostici, e infatti l'errore è quasi sempre più alto.
 
 Quel numero però va letto per intero, ed è la cifra più citata del paper: lo
 stesso abstract la dà senza dire che è ottenuta decodificando con un modello
 di lingua Transformer. Il solo modello acustico, nella stessa configurazione,
-sta a $40{,}2/38{,}7$ (la tabella in appendice del paper smonta il contributo
-della decodifica; e sì, a quel regime le due misure si scambiano, che è il
-segno di quanto il modello acustico da solo sia fuori scala); con un modello
+sta a $40{,}2/38{,}7$ (la tabella in appendice del paper isola il contributo
+della decodifica: a questo livello di errore le due misure si scambiano,
+segno dell'inadeguatezza del modello acustico preso da solo); con un modello
 di lingua a 4-grammi si passa
 a $6{,}6/10{,}3$, e solo con quello Transformer si arriva a $4{,}8/8{,}2$. Fra il
 primo e l'ultimo l'errore si divide per otto sul test pulito e per quasi cinque
@@ -458,14 +455,14 @@ HuBERT alterna due passi. **Passo di clustering** (offline): si estraggono
 feature dall'audio e le si raggruppa con un semplice k-means, ottenendo per
 ogni frame (una posizione della finestra che scorre sul segnale) un'etichetta
 discreta $u_t \in \{1, \dots, C\}$, l’«unità nascosta», dove $C$ è il numero di
-cluster ed è l'intero inventario discreto. La lettera è quella del paper, e
-tiene separato questo conto dalla $V$ di wav2vec 2.0, che conta le voci di
-*uno* dei due codebook: là l'inventario è il prodotto dei due, centomila voci
-abbondanti, qui è $C$ e basta. E $u_t$ non si chiama $\mathbf{z}_t$ apposta: è
-un intero, un nome di gruppo,
-mentre lo $\mathbf{z}_t$ di wav2vec 2.0 è l'uscita reale dell'encoder,
-l'ingresso della quantizzazione e non il bersaglio. Il bersaglio di wav2vec 2.0
-è $\mathbf{q}_t$, discreto anche lui: la differenza fra i due metodi sta in chi
+cluster ed è l'intero inventario discreto. Questa lettera viene dal paper e
+tiene distinto il conto dalla $V$ di wav2vec 2.0, che indica le voci di *uno*
+solo dei codebook (lì l'inventario totale è il prodotto dei due, con oltre
+centomila combinazioni, mentre qui corrisponde al solo $C$). Inoltre $u_t$ è un
+indice intero di gruppo, a differenza del vettore reale $\mathbf{z}_t$ di
+wav2vec 2.0 che rappresenta l'uscita dell'encoder, cioè l'ingresso della
+quantizzazione e non il bersaglio. Il bersaglio di wav2vec 2.0 è
+$\mathbf{q}_t$, anch'esso discreto: la differenza fra i due metodi sta in chi
 lo fissa e quando, un quantizzatore addestrato insieme al modello là, un
 k-means rifatto fuori linea qui. Nella prima iterazione le feature sono 39
 coefficienti per frame, i 13 MFCC con le loro derivate prime e seconde,
@@ -499,11 +496,10 @@ modello a modellare la struttura del segnale. E l'iterazione chiude il cerchio:
 rappresentazioni migliori $\to$ cluster migliori $\to$ bersagli migliori. A
 parità di condizioni HuBERT sta appaiato a wav2vec 2.0 nei regimi a basse
 risorse su Librispeech: a dieci minuti di etichette fa $4{,}7/7{,}6$ contro
-$4{,}8/8{,}2$, cioè un decimo di punto sul pulito e sei decimi sul difficile,
-e a cento ore gli autori dichiarano da sé due casi in cui resta indietro di un
-decimo. Il salto vero
-lo fa il modello da un miliardo di parametri, che è un'altra taglia
-{cite}`hsu2021hubert`.
+$4{,}8/8{,}2$, cioè un decimo di punto sul pulito e sei decimi sul difficile, e
+a cento ore gli autori dichiarano da sé due casi in cui resta indietro di un
+decimo. I miglioramenti decisivi emergono con il modello da un miliardo di
+parametri, grazie alla scala molto maggiore {cite}`hsu2021hubert`.
 
 `````
 

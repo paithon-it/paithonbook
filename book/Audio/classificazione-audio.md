@@ -65,17 +65,17 @@ non si riabitua, e in poco tempo diventa brava anche lì.
 
 `````{tab} Superiore
 
-Lo spettrogramma mel è una matrice $\mathbf{S} \in \mathbb{R}^{F \times T}$: $F$ bande
-di frequenza (tipicamente 64 o 128) per $T$ finestre temporali. La trattiamo
-come un’immagine a un solo canale (l'analogo di una foto in scala di
-grigi) e la diamo in pasto a una CNN 2D, con i filtri convoluzionali che
+Lo spettrogramma mel è una matrice $\mathbf{S} \in \mathbb{R}^{F \times T}$:
+$F$ bande di frequenza (tipicamente 64 o 128) per $T$ finestre temporali. La
+trattiamo come un’immagine a un solo canale (l'analogo di una foto in scala di
+grigi) e la forniamo in ingresso a una CNN 2D, con i filtri convoluzionali che
 scorrono contemporaneamente sull'asse del tempo e su quello della frequenza. È
 esattamente la pipeline convoluzione + non linearità + pooling della
 [classificazione di
 immagini](../VisioneArtificiale/classificazione-transfer.md), con un'unica
 differenza concettuale: qui i due assi non sono omogenei (uno è il tempo,
-l'altro la frequenza). La conseguenza però non riguarda la località, che non
-è mai stata in discussione (una firma sonora è un motivo locale nel piano
+l'altro la frequenza). La conseguenza però non riguarda la località, che non è
+mai stata in discussione (una firma sonora è un motivo locale nel piano
 tempo–frequenza esattamente come un occhio lo è in una foto): riguarda la
 condivisione dei pesi. Applicare gli stessi filtri a ogni banda rende ogni
 strato convoluzionale *equivariante* per traslazione (un motivo spostato
@@ -83,17 +83,17 @@ produce la stessa risposta, spostata), e il pooling, soprattutto quello globale
 finale, trasforma l'equivarianza in *invarianza*: la rete completa assume che
 traslare un motivo non ne cambi la classe. Lungo il tempo è una simmetria vera,
 un latrato è un latrato mezzo secondo dopo; lungo la frequenza no, perché su
-una scala quasi logaritmica traslare in su è trasporre, e la trasposizione
-cambia la vocale, la nota, lo strumento. Funziona lo stesso perché i motivi
-utili restano locali, ma è un bias solo approssimato, e va tenuto a mente
-quando si legge una CNN su spettrogrammi come se fosse una CNN su fotografie.
-I rimedi restituiscono alla rete la posizione in frequenza: un canale in più
-all'ingresso che contiene la coordinata della banda (la tecnica che in visione
-si chiama *CoordConv*), o filtri che cambiano con la banda, come la
-*frequency dynamic convolution* {cite}`nam2022frequency`. Anche il
-transfer learning si trasporta di peso: si parte spesso da una rete
-pre-addestrata su ImageNet e si rifinisce sugli spettrogrammi, replicando il
-canale grigio sui tre canali RGB attesi in ingresso.
+una scala quasi logaritmica traslare verso l'alto equivale a trasporre, e la
+trasposizione cambia la vocale, la nota, lo strumento. Funziona lo stesso
+perché i motivi utili restano locali, ma è un bias solo approssimato, e va
+tenuto a mente quando si legge una CNN su spettrogrammi come se fosse una CNN
+su fotografie. I rimedi restituiscono alla rete la posizione in frequenza: un
+canale in più all'ingresso che contiene la coordinata della banda (la tecnica
+che in visione si chiama *CoordConv*), o filtri che cambiano con la banda, come
+la *frequency dynamic convolution* {cite}`nam2022frequency`. Anche il transfer
+learning si trasporta di peso: si parte spesso da una rete pre-addestrata su
+ImageNet e si rifinisce sugli spettrogrammi, replicando il canale grigio sui
+tre canali RGB attesi in ingresso.
 
 `````
 
@@ -152,7 +152,7 @@ dove $z_c$ è il logit della classe $c$, $\hat{y}_c \in (0,1)$ la probabilità
 Nessun vincolo di somma: più classi possono essere «accese» insieme. Il
 **rilevamento degli eventi sonori** (*sound event detection*, il cuore delle
 sfide DCASE, la gara annuale sul rilevamento e la classificazione di scene ed
-eventi acustici) spinge oltre, chiedendo una predizione per ogni istante (un
+eventi acustici) si spinge oltre, chiedendo una predizione per ogni istante (un
 tagging *frame per frame* con i confini temporali di ogni evento). Si valuta
 confrontando gli intervalli predetti con quelli veri, in due modi
 {cite}`mesaros2016metrics`: per segmenti, dividendo il tempo in tratti di un
@@ -236,23 +236,23 @@ raccolta di $1\,789\,621$ segmenti da 10 secondi. La raccolta pubblicata è poi
 cresciuta oltre l'articolo, e la versione che si scarica oggi conta
 $2\,084\,320$ clip su 527 categorie: sono queste ultime a formare il benchmark
 di classificazione standard su cui si confrontano i modelli, e quando si citano
-quei due numeri la fonte è la pagina del dataset, non il paper. Le etichette sono
-**deboli** (*weak labels*): indicano la presenza di un suono nella clip, senza
-localizzazione temporale, ed essendo multi-etichetta si prestano naturalmente
-alla coppia sigmoide + BCE. La metrica di riferimento non è
-l'accuratezza (inadatta a un problema multi-etichetta e sbilanciato) ma la
-mean Average Precision (mAP), che per ogni classe fa la media delle
-precisioni raggiunte a ciascuna soglia, pesandole con l'aumento di richiamo che
-quella soglia porta, e poi media sulle classi. Si massimizza. Un dataset grande
-e debolmente etichettato sposta il collo di bottiglia: non più «troppi pochi
-dati», ma «etichette rumorose e
-code lunghe di classi rare», un regime in cui contano di più la capienza del
-modello e il pre-addestramento della precisione di ogni singola annotazione.
-C'è poi una riserva pratica: AudioSet distribuisce gli identificatori dei video
-di YouTube e gli intervalli da ritagliare, non l'audio. Ogni gruppo scarica i
-video da sé, e quelli rimossi nel frattempo fanno sì che l'insieme davvero
-disponibile cambi da un gruppo all'altro: due mAP di articoli diversi si
-confrontano alla pari solo se i clip coincidono.
+quei due numeri la fonte è la pagina del dataset, non l'articolo. Le etichette
+sono **deboli** (*weak labels*): indicano la presenza di un suono nella clip,
+senza localizzazione temporale, ed essendo multi-etichetta si prestano
+naturalmente alla coppia sigmoide + BCE. La metrica di riferimento non è
+l'accuratezza (inadatta a un problema multi-etichetta e sbilanciato) ma la mean
+Average Precision (mAP), che per ogni classe fa la media delle precisioni
+raggiunte a ciascuna soglia, pesandole con l'aumento di richiamo che quella
+soglia porta, e poi media sulle classi. Si massimizza. Un dataset grande e
+debolmente etichettato sposta il collo di bottiglia: non più «troppi pochi
+dati», ma «etichette rumorose e code lunghe di classi rare», un regime in cui
+la capienza del modello e il pre-addestramento contano più della precisione di
+ogni singola annotazione. C'è poi una complicazione pratica: AudioSet
+distribuisce gli identificatori dei video di YouTube e gli intervalli da
+ritagliare, non l'audio. Ogni gruppo scarica i video da sé, e quelli rimossi
+nel frattempo fanno sì che l'insieme davvero disponibile cambi da un gruppo
+all'altro: due mAP di articoli diversi si confrontano alla pari solo se i clip
+coincidono.
 
 `````
 
@@ -292,7 +292,7 @@ solo tessere che si guardano tra loro. E guardarsi tutte costa: dieci secondi
 di suono sono milleduecento tessere, e le coppie da confrontare, a ogni
 passaggio, quasi un milione e mezzo.
 
-Non è gratis, però, ed è la parte che di solito non si racconta. I filtri che
+Non è gratis, però. I filtri che
 scorrono portavano con sé un'idea già pronta (quello che conta sta vicino a
 quello che gli sta accanto), e a un modello che riceve un'idea in regalo bastano
 meno esempi per imparare. Le tessere quell'idea non ce l'hanno e se la devono
@@ -331,7 +331,7 @@ superata in seguito, anche dalla strada auto-supervisionata della sezione
 {doc}`Imparare dal suono senza etichette
 </Audio/rappresentazioni-auto-supervisionate>`.
 
-Onestà d'obbligo, la stessa del capitolo sui Transformer: rinunciare alla
+Come già visto nel capitolo sui Transformer, rinunciare alla
 convoluzione significa rinunciare al suo *bias induttivo* di località, e quel
 bias andava «gratis». Senza, servono molti più dati, oppure, come fa l'AST, il
 transfer dei pesi di un ViT pre-addestrato su ImageNet, adattando gli
@@ -373,7 +373,7 @@ profonda e una «sss» sibilante.
 
 Con queste due sole misure distinguiamo già tre situazioni, purché le si guardi
 in un ordine preciso. Prima l'energia: se è quasi zero c'è silenzio, e non
-serve chiedere altro. Se invece del suono c'è, allora si guarda quante volte
+serve chiedere altro. Se invece c'è del suono, allora si guarda quante volte
 l'onda attraversa lo zero: pochi attraversamenti vuol dire tono, tantissimi
 rumore. Quest'ultima regola però vale finché il tono è grave e il rumore è un
 fruscio pieno di frequenze alte. Un fischio molto acuto attraversa lo zero
@@ -546,7 +546,7 @@ giri al secondo, 8.000 campioni, quindi $2 \times 3900 / 8000 \approx 0{,}975$.
 Il rumore cupo, che ha la stessa energia del rumore bianco, attraversa lo zero
 di rado, ben sotto la soglia di $0{,}20$, e la regola lo chiama tono. Lo zcr
 dice dove stanno le frequenze di un suono, alte o basse; se il suono sia un
-tono o un rumore è un'altra domanda, e queste due misure non ci arrivano.
+tono o un rumore è un'altra domanda, e queste due misure non bastano per capirlo.
 
 Due numeri per finestra e due soglie, nessuna rete, e la logica è già quella dei
 modelli grandi: *estrarre feature che separano le classi, poi decidere*. La

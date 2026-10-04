@@ -24,11 +24,11 @@ grafo di miliardi di archi, dove qualche nodo-celebrità ha milioni di
 connessioni, bastano due o tre anelli perché quella cerchia arrivi a
 inghiottire mezza rete.
 
-A tutti e due risponde *GraphSAGE*, che si addestra su vicinati campionati ed
-è alla base di PinSage, il sistema di raccomandazione che Pinterest ha messo
-in produzione. La *Graph Attention Network* (GAT) aggiunge una cosa diversa:
-pesare i vicini con l'attenzione, invece che con i soli gradi. Poi viene il
-giro delle cose che oggi, con questi strumenti, si riesce davvero a fare.
+A tutti e due risponde *GraphSAGE*, che si addestra su vicinati campionati ed è
+alla base di PinSage, il sistema di raccomandazione che Pinterest ha messo in
+produzione. La *Graph Attention Network* (GAT) aggiunge una cosa diversa:
+pesare i vicini con l'attenzione, invece che con i soli gradi. Poi le
+applicazioni: che cosa, oggi, con questi strumenti si riesce davvero a fare.
 
 ## GraphSAGE: imparare a generalizzare
 
@@ -112,16 +112,15 @@ Hamilton et al. ne propongono tre varianti:
   piccola modifica (invece di concatenare, si somma $v$ ai suoi vicini prima
   della media) si ottiene la variante convoluzionale, che gli autori stessi
   descrivono come «un'approssimazione lineare grossolana» di una convoluzione
-  spettrale localizzata. Non è un caso particolare della GCN, ed è utile capire
-  perché: quella media è l'operatore
-  $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$, la normalizzazione per righe
-  che la sezione sul message passing aveva scartato in favore della simmetrica
-  $\hat{\mathbf{A}}$. Sulla catena di quattro nodi di quella sezione, con
-  $\mathbf{X} = (1,2,3,4)^\top$, un passo dei due operatori dà
-  $(1{,}500,\, 2{,}000,\, 3{,}000,\, 3{,}500)$ contro
-  $(1{,}316,\, 2{,}075,\, 3{,}300,\, 3{,}225)$: sul primo nodo la media per
-  righe esce del $14\%$ più alta ($1{,}500 / 1{,}316$), e il conto si rifà a
-  mente, perché la prima riga è semplicemente $(1+2)/2$.
+  spettrale localizzata. Non è un caso particolare della GCN: quella media è
+  l'operatore $\tilde{\mathbf{D}}^{-1}\tilde{\mathbf{A}}$, la normalizzazione
+  per righe che la sezione sul message passing aveva scartato in favore della
+  simmetrica $\hat{\mathbf{A}}$. Sulla catena di quattro nodi di quella
+  sezione, con $\mathbf{X} = (1,2,3,4)^\top$, un passo dei due operatori dà
+  $(1{,}500,\, 2{,}000,\, 3{,}000,\, 3{,}500)$ contro $(1{,}316,\, 2{,}075,\,
+  3{,}300,\, 3{,}225)$: sul primo nodo la media per righe esce del $14\%$ più
+  alta ($1{,}500 / 1{,}316$), e il conto si rifà a mente, perché la prima riga
+  è semplicemente $(1+2)/2$.
 - **pool**: ogni vicino passa per uno stesso piccolo strato denso, poi si
   prende il massimo elemento per elemento (*max-pooling*):
   $\max\{\sigma(\mathbf{W}_{\text{pool}}\,\mathbf{h}_u + \mathbf{b}) : u \in \mathcal{S}(v)\}$.
@@ -169,9 +168,9 @@ class GraphSAGE(nn.Module):
         return self.conv2(x, edge_index)           # secondo giro
 ```
 
-La {numref}`fig-gnn-graphsage-gat` mette a confronto il modo di guardare il
-vicinato di GraphSAGE, che è quello appena descritto, con quello del modello
-che arriva subito dopo, la GAT: nel pannello di sinistra si tengono solo alcuni
+La {numref}`fig-gnn-graphsage-gat` confronta il
+vicinato di GraphSAGE, appena descritto, con quello della GAT, il modello
+successivo: nel pannello di sinistra si tengono solo alcuni
 vicini, scelti a sorte; in quello di destra si tengono tutti, ma pesati.
 
 ```{figure} ../figures/gnn-graphsage-gat.svg
@@ -193,7 +192,7 @@ sono ugualmente informativi; in un social, l'amico stretto conta più del
 contatto occasionale. L'idea di pesare i vicini l'abbiamo già incontrata, e in
 grande stile: è l’attenzione del {doc}`capitolo sui Transformer
 </Transformers/overview>`. La *Graph Attention Network* (GAT), proposta nel
-2018 da Petar Veličković e colleghi, la prende pari pari e la porta sui grafi
+2018 da Petar Veličković e colleghi, la porta sui grafi così com'è
 {cite}`velickovic2018graph`.
 
 `````{tab} Elementare
@@ -491,7 +490,7 @@ A rendere l'idea corrente nella chimica computazionale sono stati i
 {cite}`duvenaud2015convolutional`. Un *fingerprint*, un'impronta, è la fila di
 numeri con cui si descrive una molecola a un modello (quanti anelli, quali
 gruppi chimici, che peso). Fino ad allora la si calcolava con una ricetta
-fissa, scritta da un chimico; qui la ricava la rete dalla struttura della
+fissa, scritta da un chimico; qui è la rete a ricavarla dalla struttura della
 molecola, imparando quali pezzi contano per la proprietà da prevedere.
 
 Il caso più noto è halicin, la molecola con cui il capitolo si è aperto. La
@@ -515,8 +514,8 @@ nodi.
 nodi, pagamenti negli archi) e le frodi vivono nelle *relazioni*: anelli di
 conti che si rimpallano denaro, o decine di conti che confluiscono tutti sullo
 stesso, prestato da qualcuno perché il denaro ci transiti (in gergo, un
-«mulo»). Un classificatore che guardi i conti uno per uno non lo vede; una
-GNN, che propaga segnale lungo gli archi, sì. Per questo l'antiriciclaggio è
+«mulo»). Un classificatore che guardi i conti uno per uno non se ne accorge; una
+GNN, che propaga il segnale lungo gli archi, sì. Per questo l'antiriciclaggio è
 diventato un banco di prova delle reti su grafo, e un banco severo: sul grafo
 di oltre duecentomila transazioni Bitcoin pubblicato nel 2019 con le etichette
 lecita e illecita, una GCN non batteva ancora una foresta casuale che vedeva,
@@ -622,7 +621,7 @@ affatto.
   bottiglia topologici, penalizzando i compiti a lungo raggio. Profondità e
   portata sono così in tensione: servirebbero più strati per raggiungere nodi
   lontani, ma più strati innescano l'oversmoothing. La versione misurabile è di
-  Topping e colleghi: in un MPNN che pesa i messaggi dei vicini con
+  Topping e colleghi: in una MPNN che pesa i messaggi dei vicini con
   $\hat{\mathbf{A}}$, l'adiacenza normalizzata con i cappi, se le derivate delle
   funzioni di messaggio e di aggiornamento sono limitate da due costanti $c_1$ e
   $c_2$, la sensibilità
@@ -765,38 +764,36 @@ Transformer (e il cerchio si chiude, perché quelle approssimazioni erano
 descritte proprio come sparsificazione di un grafo).
 
 Il problema da risolvere è che l'attenzione piena non prende $\mathbf{A}$ in
-ingresso: la sua uscita è funzione del solo multinsieme delle feature dei
-nodi, ed è quindi la stessa qualunque siano gli archi, o se non ce ne fosse
-nessuno. Senza informazione aggiuntiva il modello non distingue un anello da
-una stella. Attribuirlo all'invarianza alle permutazioni sarebbe un errore:
+ingresso: la sua uscita è funzione del solo multinsieme delle feature dei nodi,
+ed è quindi la stessa qualunque siano gli archi, o se non ce ne fosse nessuno.
+Senza informazione aggiuntiva il modello non distingue un anello da una stella.
+Attribuire questa cecità all'invarianza alle permutazioni sarebbe un errore:
 quella è un'altra cosa, ed è la proprietà *desiderabile* di cui si è parlato
 finora. Anche una GNN è equivariante alle permutazioni, e non è affatto cieca
 alla topologia. Sono due simmetrie diverse. La GNN è equivariante rispetto alle
-permutazioni che riordinano $(\mathbf{A}, \mathbf{X})$ insieme; il
-Transformer nudo lo è rispetto a quelle che riordinano $\mathbf{X}$ da
-solo, qualunque cosa faccia $\mathbf{A}$, ed è una simmetria molto più
-grande: pretenderla costringe la funzione a ignorare $\mathbf{A}$. È
-un'informazione che non entra, più che un difetto di simmetria, e la si deve
-reiniettare: le due strade sono quelle che il capitolo sui Transformer già
-conosce.
+permutazioni che riordinano $(\mathbf{A}, \mathbf{X})$ insieme; il Transformer
+nudo lo è rispetto a quelle che riordinano $\mathbf{X}$ da solo, qualunque cosa
+faccia $\mathbf{A}$, ed è una simmetria molto più grande: pretenderla costringe
+la funzione a ignorare $\mathbf{A}$. È un'informazione che non entra, più che
+un difetto di simmetria, e la si deve reiniettare: le due strade sono quelle
+che il capitolo sui Transformer già conosce.
 
-La prima è una codifica posizionale: si calcolano i primi $k$ autovettori
-non banali del laplaciano normalizzato
-$\mathbf{L} = \mathbf{U}\boldsymbol{\Lambda} \mathbf{U}^\top$ e si prende la
-riga $i$-esima di $\mathbf{U}_{:,1:k}$ come firma del nodo $i$, che chiamiamo
-$\mathbf{p}_i$. La costruzione viene dal lavoro di Dwivedi e colleghi che ha
-messo in fila i banchi di prova per le GNN {cite}`dwivedi2020benchmarking`, e
-riprende le *laplacian eigenmaps* della riduzione di dimensionalità; nel Graph
-Transformer di Dwivedi e Bresson {cite}`dwivedi2020generalization` quella firma
-si somma alle feature del nodo dopo una proiezione lineare
-($\mathbf{p}_i^0 = \mathbf{C}^0\mathbf{p}_i + \mathbf{c}^0$ con
-$\mathbf{C}^0 \in \mathbb{R}^{d \times k}$, poi
+La prima è una codifica posizionale: si calcolano i primi $k$ autovettori non
+banali del laplaciano normalizzato $\mathbf{L} = \mathbf{U}\boldsymbol{\Lambda}
+\mathbf{U}^\top$ e si prende la riga $i$-esima di $\mathbf{U}_{:,1:k}$ come
+firma del nodo $i$, che chiamiamo $\mathbf{p}_i$. La costruzione viene dal
+lavoro di Dwivedi e colleghi che ha messo in fila i banchi di prova per le GNN
+{cite}`dwivedi2020benchmarking`, e riprende le *laplacian eigenmaps* della
+riduzione di dimensionalità; nel Graph Transformer di Dwivedi e Bresson
+{cite}`dwivedi2020generalization` quella firma si somma alle feature del nodo
+dopo una proiezione lineare ($\mathbf{p}_i^0 = \mathbf{C}^0\mathbf{p}_i +
+\mathbf{c}^0$ con $\mathbf{C}^0 \in \mathbb{R}^{d \times k}$, poi
 $\mathbf{h}_i^0 = \hat{\mathbf{h}}_i^0 + \mathbf{p}_i^0$), non si concatena: la
 proiezione serve proprio perché $k$ e $d$ non coincidono. È la stessa mossa che
 il capitolo sui Transformer descrive per la codifica sinusoidale, dove la firma
 della posizione si somma all'embedding del token invece di affiancarglisi.
-Diverse implementazioni successive concatenano invece; e la codifica entra solo
-allo strato d'ingresso, non negli strati intermedi.
+Diverse implementazioni successive, invece, la concatenano; e la codifica entra
+solo allo strato d'ingresso, non negli strati intermedi.
 
 La giustificazione è quella già stabilita in questo capitolo: gli autovettori
 sono i modi di variazione del grafo ordinati per frequenza, e su un grafo a

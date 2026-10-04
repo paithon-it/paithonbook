@@ -58,7 +58,7 @@ traccia e la sua testa resta com'era. Con il solo intervallo ottiene tutte e due
 le cose che gli servono: «di questo mi ricorderò» e «questo non l'ho nemmeno
 visto». È l'intervallo $\Delta$ della vasca, e Mamba lo sceglie a ogni parola.
 
-Perché ci interessa? Perché apre la porta a un tipo di ragionamento che un
+Questo meccanismo apre la porta a un tipo di ragionamento che un
 tornello non potrà mai fare: quello che dipende dal contenuto. Prendi il
 gioco del «copia solo le parole in maiuscolo» in mezzo a un fiume di parole
 minuscole: serve decidere, parola per parola, se questa va tenuta o buttata. Un
@@ -194,7 +194,7 @@ sequenza accumulando i risultati parziali. In fila, $L$ passi chiedono $L$
 turni uno dopo l'altro; a raddoppio ne bastano circa $\log_2 L$, una decina per
 mille passi, e raddoppiando la lunghezza si aggiunge un turno soltanto. Il
 prezzo è il lavoro totale, che nella versione più semplice cresce di un fattore
-$\log_2 L$ e in quella più accurata resta dell'ordine di $L$, come in fila: è
+$\log_2 L$ e in quella più efficiente resta dell'ordine di $L$, come in fila: è
 il compromesso tipico del calcolo parallelo, più conti (o almeno non meno) in
 cambio di meno attesa.
 
@@ -588,7 +588,7 @@ finora: gli basta il suo riassunto, che è sempre della stessa misura.
 
 La seconda è la portata, ed è il punto in cui conviene essere precisi su
 dove è stata misurata. Le sequenze da un milione di passi su cui Mamba continua
-a migliorare sono suono grezzo e non testo (dove un passo è un campione
+a migliorare non sono testo, ma suono grezzo (dove un passo è un campione
 sonoro: in un secondo di registrazione ce ne stanno circa sedicimila, quindi un
 milione di campioni è poco più di un minuto) e
 sequenze di DNA (dove un passo è una lettera del genoma). Sul linguaggio i

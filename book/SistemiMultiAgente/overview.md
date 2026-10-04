@@ -52,7 +52,7 @@ la stessa scena, nove su dieci. Ma due macchine vicine sono come due occhi
 quasi sovrapposti, e della profondità misurano poco: a misurarla bene serve la
 coppia lontana. Ecco allora a che cosa serve la terza: gli abbinamenti si fanno
 fra le due vicine, dove sono facili, e la geometria delle tre viste li
-trasferisce sulla coppia lontana. Vengono così ricostruiti in tre dimensioni
+trasferisce sulla coppia lontana. Vennero così ricostruiti in tre dimensioni
 dieci stormi, ciascuno ripreso per qualche secondo, e il più numeroso arrivava a
 2600 individui.
 
@@ -167,13 +167,13 @@ linguaggio dei grafi, quello dei {doc}`dati a grafo
 raggio fisso e la topologica il grafo diretto degli $n_c$ vicini più prossimi,
 in cui ogni nodo sceglie i propri $n_c$ archi uscenti: il grado uscente è
 costante per costruzione (quello entrante no, perché la scelta non va
-ricambiata: io guardo te senza che tu debba guardare me, che è la natura stessa
+ricambiata: io guardo te senza che tu debba guardare me, ed è la natura stessa
 dell'interazione fra storni) e il grafo non cambia affatto se tutte le distanze
 vengono riscalate.
 
 `````
 
-Da qui la tesi che percorre tutto il capitolo, e che vale ben oltre gli
+Da qui l'idea portante, che vale ben oltre gli
 uccelli: a parità di individui, il comportamento di un gruppo lo decide la
 regola di interazione. Nelle simulazioni con cui Ballerini e colleghi
 accompagnano le misure gli individui sono gli stessi, e cambia soltanto la
@@ -262,11 +262,11 @@ sono costruiti tutti allo stesso modo.
 Tre colleghi devono rispondere sì o no a una domanda difficile, e ognuno, da
 solo, ci prende sette volte su dieci. Decidendo a maggioranza il gruppo ci
 prende quasi otto volte su dieci (78%), e con nove colleghi il 90%: perché il
-gruppo sbagli servono almeno due errori insieme, che sono più rari di uno. Da
-dove esca esattamente quel 78 lo vedremo elencando i casi uno per uno nella
-{doc}`sezione sui protocolli e il consenso <protocolli-e-consenso>` (il 90 esce
-allo stesso modo, con molti più
-casi da elencare): è un conto da foglio e matita, ma per adesso basta il senso.
+gruppo sbagli servono almeno due errori insieme, che sono più rari di uno. Quel
+78 si ricava elencando i casi uno per uno nella {doc}`sezione sui protocolli e
+il consenso <protocolli-e-consenso>` (il 90 esce allo stesso modo, con molti
+più casi da elencare): è un conto da foglio e matita, ma per adesso basta il
+senso.
 
 Il conto però vale solo se i tre sbagliano in modo *diverso*. Se hanno studiato
 sugli stessi appunti sbagliati sbagliano insieme, la maggioranza conferma
@@ -321,21 +321,20 @@ con il suo prezzo, li elenca la stessa sezione sui protocolli e il consenso.
 
 ## Dal singolo agente al gioco: i prerequisiti
 
-I sistemi multi-agente poggiano su due capitoli precedenti, e ne anticipano
-uno. Dagli Agenti vengono il ciclo osserva-ragiona-agisci e i ruoli
+I sistemi multi-agente uniscono due idee, e ne preparano una terza. Dagli
+agenti autonomi prendono il ciclo osserva-ragiona-agisci e i ruoli
 specializzati: qui diamo per acquisito il singolo agente e studiamo ciò che
-nasce quando sono molti. Dal Reinforcement Learning vengono il processo
+nasce quando sono molti. Dal *reinforcement learning* ereditano il processo
 decisionale di Markov (MDP: si osserva uno stato, si sceglie un'azione, si
-riceve una ricompensa e si passa allo stato successivo), la *policy* $\pi$, cioè
-la regola con cui l'agente sceglie l'azione in ciascuno stato, e il problema
-dell'assegnazione del merito (*credit assignment*): la ricompensa arriva alla
-fine di una partita e bisogna stabilire quale mossa se la sia guadagnata. Con
-più agenti la domanda si sdoppia, e non chiede più soltanto *quale mossa* ha
-prodotto il risultato, ma anche *quale agente*.
+riceve una ricompensa e si passa allo stato successivo), la *policy* $\pi$,
+cioè la regola con cui l'agente sceglie l'azione in ciascuno stato, e il
+problema dell'assegnazione del merito (*credit assignment*): la ricompensa
+arriva alla fine di una partita e bisogna stabilire quale mossa se la sia
+guadagnata. Con più agenti la domanda si sdoppia, e non chiede più soltanto
+*quale mossa* ha prodotto il risultato, ma anche *quale agente*.
 
-Il terzo arriva più avanti: sono le {doc}`GAN </GAN/overview>`, l'esempio più
-puro di due parti che si spingono a vicenda a migliorare. Ogni volta che
-serviranno diremo per esteso quel che c'è da saperne.
+La terza idea sono le {doc}`GAN </GAN/overview>`, l'esempio più
+puro di due parti che si spingono a vicenda a migliorare.
 
 `````{tab} Elementare
 
@@ -429,9 +428,9 @@ storni, a cui la regola dei sei o sette vicini non l'ha insegnata nessuno?
   ricetta di allenarsi guardando tutto e poi giocare guardando solo il proprio
   pezzo (l'addestramento centralizzato con esecuzione decentralizzata) e il
   *self-play* incontrato dietro AlphaGo.
-- In fondo, sciami e simulazioni: regole locali elementari che risolvono
-  problemi globali (colonie di formiche, sciami di particelle) e le società
-  simulate, dove l'oggetto di studio è il collettivo stesso.
+- Oltre gli agenti linguistici, sciami e simulazioni: regole locali elementari
+  che risolvono problemi globali (colonie di formiche, sciami di particelle) e
+  le società simulate, dove l'oggetto di studio è il collettivo stesso.
 
 `````{tab} Elementare
 

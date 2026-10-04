@@ -49,11 +49,11 @@ uno solo per tutti i pesi; Adam è meno sensibile alla scala dei gradienti,
 perché ciascun peso riscala il proprio passo, ma $\eta$ resta anche per lui
 l'iperparametro più importante.
 
-Nel codice le cose hanno il nome inglese: `criterion` è la funzione di perdita
-(sì, la stessa che il capitolo chiama *loss* e che qui a volte si chiama
-«criterio»: sono tre nomi per un oggetto solo), `dataloader` è l'oggetto che
+Nel codice i componenti hanno il nome inglese: `criterion` è la funzione di perdita
+(la *loss*, qui chiamata anche
+«criterio»: tre nomi per un oggetto solo); `dataloader` è l'oggetto che
 consegna gli esempi a mini-batch, uno per giro, e che costruiremo nel prossimo
-paragrafo, `optimizer` è l'ottimizzatore appena presentato.
+paragrafo; `optimizer` è l'ottimizzatore appena presentato.
 
 ```{code-block} python
 :class: pt-non-eseguibile
@@ -174,7 +174,7 @@ il gradiente), che i micro-batch abbiano tutti la stessa dimensione, e che nel
 modello non ci siano strati che si tarano sul batch, come la batch norm, che
 continua a vedere il micro-batch. Quello con lo
 `zero_grad()` a ogni micro-batch conserva soltanto il gradiente dell'ultimo
-micro-batch, senza una riga di errore.
+micro-batch, senza un messaggio d'errore.
 `````
 
 ## `Dataset` e `DataLoader`: la catena di rifornimento
@@ -445,8 +445,8 @@ denominatore impedisce che si divida zero per zero.
 `torch.no_grad()` è un context manager che sospende la
 costruzione del grafo autograd: non vengono salvati i valori intermedi per un
 `backward()` che non arriverà mai, con un risparmio di memoria che cresce con
-la profondità della rete, e accelera il momento in cui il modello risponde e
-basta, senza più imparare niente. In gergo quel momento si chiama
+la profondità della rete, e accelera l'esecuzione quando il modello risponde e
+basta, senza più imparare niente. In gergo questa fase si chiama
 *inferenza*, parola presa in prestito dalla statistica che qui indica soltanto
 un modello già addestrato messo in uso, senza nessun ragionamento dentro.
 Sono due meccanismi indipendenti e servono entrambi: `eval()` senza
@@ -709,11 +709,11 @@ contrario: $|\hat{m}|$ cala più in fretta di $\sqrt{\hat{v}}$, e il passo della
 corsa non interrotta è più corto di $\eta$. Ricaricando lo stato, invece, il
 passo coincide esattamente con quello della traiettoria mai interrotta.
 
-Di quanto sia più lungo dipende dal problema, e quindi va detto su quale è
-misurato e come: una quadratica $\mathcal{L}(\theta) = \frac{1}{2}\|\theta\|^2$
-con cento parametri inizializzati da una normale standard, venti passi di Adam
-con $\eta = 0{,}1$, poi la ripresa, e come misura la media quadratica dello
-spostamento al primo passo dopo di essa.
+Di quanto sia più lungo dipende dal problema, perciò va misurato su un caso
+preciso: una quadratica $\mathcal{L}(\theta) = \frac{1}{2}\|\theta\|^2$ con
+cento parametri inizializzati da una normale standard, venti passi di Adam con
+$\eta = 0{,}1$, e poi la ripresa. La misura è la media quadratica dello
+spostamento al primo passo dopo la ripresa.
 
 ```python
 import torch

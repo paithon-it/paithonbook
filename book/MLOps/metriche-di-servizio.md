@@ -30,10 +30,9 @@ bisogna decidere che cosa vuol dire, per questo servizio, *andare veloce*.
 La generazione ha due fasi, molto diverse fra loro, e sono quelle incontrate
 nei {doc}`grandi modelli linguistici </Transformers/llm>` parlando di KV cache.
 
-Nella prima il modello legge il prompt: tutti i token insieme, in un colpo
-solo, e per ciascuno calcola e conserva le chiavi e i valori che l'attenzione
-rileggerà a ogni passo successivo, cioè la KV cache. Questa fase si chiama
-**prefill**.
+Nella prima il modello legge il prompt: tutti i token insieme, e per ciascuno
+calcola e conserva le chiavi e i valori che l'attenzione rileggerà a ogni passo
+successivo, cioè la KV cache. Questa fase si chiama **prefill**.
 
 Nella seconda scrive la risposta, un token (un pezzo di parola) alla volta, e
 ogni token lo decide guardando tutti quelli già scritti. È il **decode**, ed è
@@ -122,7 +121,7 @@ successiva, che il TPOT medio confonde in un valore che non capita mai.
 
 `````
 
-Che le due misure non siano intercambiabili si vede spendendo la stessa attesa
+Che le due misure non siano intercambiabili si vede distribuendo la stessa attesa
 totale in due modi. Un sistema con TTFT di 0,350 s e TPOT di 25 ms impiega
 5,325 secondi per 200 token; un secondo con TTFT di 2,340 s e TPOT di 15 ms
 impiega $2{,}340 + 199 \times 0{,}015 = 5{,}325$ secondi, identici al
@@ -414,7 +413,7 @@ Sono due configurazioni simulate, non due misure su un sistema vero, e servono
 a mostrare *che* throughput e goodput possono muoversi in direzioni opposte,
 non a dire di quanto succeda su un modello particolare. Nella simulazione, per
 giunta, allargare il batch peggiora l'attesa di tutti della stessa quantità,
-mentre in un sistema vero peggiora molto di più chi ha la sfortuna di accodarsi
+mentre in un sistema vero penalizza molto di più chi ha la sfortuna di accodarsi
 in fondo.
 
 C'è poi una grandezza che si misura per richiesta e non è un tempo: i token
@@ -457,7 +456,7 @@ servito il 99%, e la promessa si scrive su quelli e non sulla media. Da qui in
 poi «coda» indica la coda della distribuzione (*tail*): le richieste che
 superano un percentile alto, poche e molto più lente delle altre, quelle che
 fanno arrabbiare le persone. Attenzione a non confonderla con la fila d'attesa
-davanti al servente (*queue*), che in quella sezione portava lo stesso nome e
+davanti al servente (*queue*), che in quella sezione chiamavamo coda e
 che qui si chiama fila.
 
 Quando il modello genera, quella regola vale doppio, per tre ragioni sue.
@@ -500,7 +499,7 @@ accorcia molto, e il carico in più resta attorno al 5%.
 
 Nel caso opposto l'effetto si rovescia, e conviene saperlo per non applicare il
 conto dove non vale. Un agente che fa venti chiamate una dopo l'altra non
-aspetta la più lenta, le somma, e sommando la sfortuna si diluisce. Venti passi
+aspetta la più lenta, le somma, e sommando, la sfortuna si diluisce. Venti passi
 da un secondo fanno venti secondi; se uno va male e ne impiega tre, il totale
 diventa ventidue, cioè il $10\%$ in più, non il $200\%$ che quel passo ha
 subìto per conto suo. Lì a sfondare la promessa è il totale, che di suo è
@@ -531,9 +530,9 @@ sono indipendenti fra loro, cominciano quasi tutte allo stesso modo.
 `````{tab} Elementare
 
 Ogni atto di uno studio notarile comincia con le stesse quattro pagine di
-premesse, e solo dalla quinta si parla del caso. Un copista che ricopiasse ogni
-atto da capo riscriverebbe quelle pagine centinaia di volte: basta tenerne una
-copia pronta e ricopiare solo il seguito.
+premesse, e solo dalla quinta si parla del caso. Un copista che trascrivesse ogni
+atto da capo riscriverebbe quelle pagine centinaia di volte: basta averne una
+copia pronta e aggiungere solo il seguito.
 
 Nei sistemi che servono modelli generativi tre casi coprono quasi tutto il
 traffico. L'istruzione di sistema (le righe che spiegano al modello come
@@ -581,7 +580,7 @@ Il meccanismo di riferimento è la **RadixAttention** di SGLang
 prefissi** compresso (un radix tree) i cui archi sono sequenze di token e i cui
 nodi puntano ai blocchi di KV cache. Una richiesta nuova cammina sull'albero
 finché i token coincidono, riusa i blocchi trovati e calcola il prefill solo per
-la coda non trovata; il ramo nuovo si innesta e resta disponibile per le
+la parte restante; il ramo nuovo si innesta e resta disponibile per le
 richieste successive. Lo sfratto è a politica LRU con un conteggio dei
 riferimenti, così che i blocchi in uso non vengano rimossi, e lo scheduler può
 ordinare la coda per affinità di prefisso, in modo da massimizzare i colpi a
@@ -820,7 +819,7 @@ e la seconda comprende la prima.
 Le stesse venti righe, girate su misure vere invece che su numeri sorteggiati, e
 ripetute a ogni finestra di dieci secondi, sono lo scheletro di un cruscotto:
 throughput, goodput e percentili sono tutto quello che serve per sapere se un
-servizio che genera testo sta funzionando. Con un'avvertenza sui percentili
+servizio che genera testo sta funzionando, pur con un'avvertenza sui percentili
 alti. In una finestra di dieci secondi a venti richieste al secondo ci sono
 duecento richieste, e la p99 poggia sulle due o tre più lente: da una finestra
 all'altra oscilla parecchio anche se niente è cambiato. Per sorvegliarla servono

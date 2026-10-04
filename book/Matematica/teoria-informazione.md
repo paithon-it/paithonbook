@@ -189,23 +189,22 @@ totale di descrivere $p$ usando $q$; la divergenza KL misura solo il
 sovrapprezzo, cioè quanto si paga in più rispetto a conoscere $p$, ed è la
 sottrazione scritta in fondo al disegno (dove $H(p,q)$ è la cross-entropia,
 $H(p)$ la sorpresa media della realtà, e la doppia stanghetta si legge
-«rispetto a»). Due avvertenze sul resto. Lo spazio
-bianco fra le due curve è un promemoria visivo e non la misura: le due misure
-vere sono definite fra poche righe. E il punto segnato sulla coda di sinistra è
-il caso che costa di più, quello in cui la realtà ogni tanto produce una parola
-e il modello le aveva dato quasi zero: essere colti di sorpresa lì è la cosa
-più cara che possa capitare, ed è per questo che la scritta accanto dice che il
-conto «esplode».
+«rispetto a»). Due avvertenze sul resto. Lo spazio bianco fra le due curve è un
+promemoria visivo e non la misura esatta dello scarto. Il punto segnato sulla
+coda di sinistra è invece il caso che costa di più, quello in cui la realtà
+ogni tanto produce una parola a cui il modello aveva assegnato una probabilità
+quasi nulla: essere colti di sorpresa lì è la cosa più cara che possa capitare,
+ed è per questo che la scritta accanto dice che il conto «esplode».
 ```
 
 `````{tab} Elementare
 
 Il codice Morse assegna il segnale più corto (un punto) alla E, che in inglese
-è la lettera più frequente: le scorciatoie migliori vanno alle cose più
-comuni, così i messaggi restano brevi. Ora immagina di telegrafare in italiano
-usando il Morse *tarato sull'inglese*: funziona, ogni lettera ha il suo
-codice, ma le frequenze delle lettere sono diverse e ogni tanto una lettera
-comune da noi si porta dietro un codice lungo. In media, sprechi.
+è la lettera più frequente: le scorciatoie migliori vanno alle cose più comuni,
+così i messaggi restano brevi. Se telegrafi in italiano usando il Morse *tarato
+sull'inglese*, l'alfabeto funziona ancora, ma le frequenze sono diverse: ogni
+tanto un carattere per noi comunissimo si porta dietro un codice lungo. In
+media, sprechi.
 
 La **cross-entropia** è la lunghezza media dei tuoi messaggi quando usi il
 codice pensato per la lingua sbagliata: le lettere arrivano secondo la realtà
@@ -338,20 +337,17 @@ probabilità quasi $1$ proprio all'etichetta che ogni esempio ha ricevuto, rumor
 compreso: la loss scende quasi a zero perché il modello ha memorizzato quelle
 estrazioni, non perché il processo sia diventato certo.
 
-Inoltre, sulla
-distribuzione empirica del training set la cross-entropia coincide con la
-log-verosimiglianza negativa media: minimizzarla *è* la stima di massima
-verosimiglianza della {doc}`sezione su probabilità e statistica
-</Matematica/probabilita-statistica>`. Le tre
-prospettive (minimizzare la cross-entropia, avvicinare $q_\theta$ a $p$ nel
-senso della KL, massimizzare la verosimiglianza) sono la stessa operazione. È
-ciò che fa `nn.CrossEntropyLoss`: la loss di un esempio è $\ell=-\log
-\hat{y}_c$ (dove $\hat{y}_c$ è la probabilità che il modello assegna alla
-classe corretta $c$), e $\mathcal{L}$ è la sua media sugli esempi. La useremo
-nei capitoli sulle reti neurali e su PyTorch. Che quella loss esca
-da una distribuzione categorica sull'uscita, e non sia una scelta a sé, lo
-mostra la sezione
-{doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`.
+Inoltre, sulla distribuzione empirica del training set la cross-entropia
+coincide con la log-verosimiglianza negativa media: minimizzarla *è* la stima
+di massima verosimiglianza della {doc}`sezione su probabilità e statistica
+</Matematica/probabilita-statistica>`. Le tre prospettive (minimizzare la
+cross-entropia, avvicinare $q_\theta$ a $p$ nel senso della KL, massimizzare la
+verosimiglianza) sono la stessa operazione. È ciò che fa `nn.CrossEntropyLoss`:
+la loss di un esempio è $\ell=-\log \hat{y}_c$ (dove $\hat{y}_c$ è la
+probabilità che il modello assegna alla classe corretta $c$), e $\mathcal{L}$ è
+la sua media sugli esempi. Che questa funzione di perdita esca da una
+distribuzione categorica sull'uscita, e non sia una scelta a sé, lo mostra la
+sezione {doc}`Da dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`.
 
 `````
 
@@ -557,8 +553,8 @@ modelli n-gram </NaturalLanguageProcessing/modelli-ngram>`.
 
 ## Il limite della compressione
 
-Chiudiamo con la conseguenza più concreta del lavoro di Shannon: l'entropia è
-un limite alla compressione. Comprimere un file, come fanno `zip` e `gzip`, vuol
+La conseguenza più concreta del lavoro di Shannon è che l'entropia fissa il
+limite alla compressione. Comprimere un file, come fanno `zip` e `gzip`, vuol
 dire riscriverlo più corto in modo da poterlo ricostruire identico. Shannon
 dimostrò che nessun codice senza perdita può avere, in media, una lunghezza per
 simbolo inferiore all’**entropia per simbolo** (*entropy rate*) della sorgente

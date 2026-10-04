@@ -43,14 +43,14 @@ La domanda, allora, è come si costruisce la farfalla.
 
 ## Il problema, in due numeri
 
-Prima dei rimedi, il problema, e lo si misura con due numeri: quanti parametri
+Prima dei rimedi viene il problema, e lo si misura con due numeri: quanti parametri
 ha il modello, $P$, e quanti bit occupa ciascuno, $b$. I parametri sono i pesi,
 i numeri che la rete ha imparato, e il conto d'apertura del {doc}`parallelismo
 distribuito </GPU/parallelismo-distribuito>` li ha già pesati in byte: quattro
 l'uno in precisione piena, due in mezza precisione.
 
 I bit sono le cifre binarie con cui un calcolatore scrive tutto, e ogni bit in
-più raddoppia i valori diversi che si riescono a scrivere, che con $b$ bit sono
+più raddoppia i valori diversi che si riescono a rappresentare. Con $b$ bit sono
 $2^b$: con due bit quattro, con quattro sedici, con otto duecentocinquantasei.
 Otto bit fanno un byte, quindi i pesi occupano $P \cdot b / 8$ byte, e niente
 obbliga a fermarsi ai sedici bit della mezza precisione.
@@ -89,10 +89,10 @@ Un modello troppo grande si può stringere in tre modi, e sono tre operazioni
 che agiscono su cose diverse, non la stessa idea vista da tre angoli: si
 possono usare tutte e tre insieme.
 
-Meno bit per parametro. I parametri restano tutti, e resta la forma della
-rete: cambia solo quante cifre si tengono di ciascun numero. È la leva del
-conto sui due numeri, si chiama **quantizzazione**, ed è quella che rende di più
-per quanto costa.
+Meno bit per parametro. I parametri restano tutti, e resta la forma della rete:
+cambia solo quante cifre si tengono di ciascun numero. È la leva che abbiamo
+visto nel conto sui due numeri, si chiama **quantizzazione**, ed è quella che
+rende di più per quanto costa.
 
 Meno parametri. La forma della rete resta quella, ma una parte dei suoi
 collegamenti viene messa a zero, e in linea di principio non servirebbe più né
@@ -128,10 +128,10 @@ C’è poi una quarta strada per andare più veloci, di natura diversa: non tocc
 il modello, ma il modo in cui lo si fa lavorare mentre risponde. Tenere da
 parte i conti già fatti invece di rifarli, servire molte richieste insieme,
 far scrivere una bozza a un modello piccolo e farla controllare al grande: sono
-tecniche che costruiscono più avanti la {doc}`sezione sui grandi modelli
-linguistici </Transformers/llm>` e quella su {doc}`LLMOps </MLOps/llmops>`, e
+tecniche affrontate più avanti nella {doc}`sezione sui grandi modelli
+linguistici </Transformers/llm>` e in quella su {doc}`LLMOps </MLOps/llmops>`, e
 la sezione su {doc}`come far rispondere in fretta <far-rispondere-in-fretta>`
-dice perché stiano lì e non qui.
+spiega perché stiano lì e non qui.
 
 ## Tre piani, tre mestieri
 
@@ -196,8 +196,8 @@ funziona.
   modello roofline del capitolo sulla GPU: stringere il modello aiuta perché
   sono meno byte, e non basta, perché a un token per passo si resta legati alla
   banda comunque. La lettura del testo in ingresso elabora $k$ token insieme,
-  con intensità aritmetica $k$ a sedici bit, e passa dalla parte del calcolo
-  solo quando $k$ supera il ginocchio della macchina, nell'ordine delle
+  con intensità aritmetica $k$ a sedici bit, e passa nel regime dominato dal
+  calcolo solo quando $k$ supera il ginocchio della macchina, nell'ordine delle
   centinaia.
 ```
 

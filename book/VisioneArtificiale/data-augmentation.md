@@ -26,7 +26,7 @@ trentadue posizioni per lato invece di trentatré; la sostanza non cambia.
 
 ## Cambiare i pixel, non l'etichetta
 
-Tutto il trucco sta in un vincolo, che va capito bene: una trasformazione è
+Tutto il trucco sta in un vincolo: una trasformazione è
 ammessa solo se cambia l'immagine ma non cambia l'etichetta. Le
 trasformazioni buone catturano le *invarianze* del compito: i modi in cui il
 mondo può variare senza che la risposta giusta vari. E qui serve onestà:
@@ -218,8 +218,8 @@ si affidano troppo a pochi numeri grossi ({doc}`overfitting e validazione
 </MachineLearning/overfitting-validazione>`), e il dropout, che spegne a caso
 una parte della rete a ogni passo ({doc}`ottimizzazione e regolarizzazione
 </DeepLearning/ottimizzazione-regolarizzazione>`) {cite}`srivastava2014dropout`.
-Freni di questo genere si chiamano regolarizzazioni, e l'augmentation è una di
-loro, con una differenza: agisce sui dati invece che sulla rete.
+Freni di questo genere si chiamano regolarizzazioni; l'augmentation è una di
+loro, ma agisce sui dati invece che sulla rete.
 
 `````{tab} Elementare
 Torniamo ai compiti a casa, e chiediamoci perché l'insegnante cambi i numeri
@@ -246,10 +246,10 @@ $$
 \mathbb{E}_{T\sim\mathcal{T}}\Big[\ell\big(f_\theta(T(\mathbf{x}_i)),\, y_i\big)\Big],
 $$
 
-dove $\mathcal{T}$ è la distribuzione sulle trasformazioni ammesse. In altre
-parole allarga il supporto della distribuzione empirica: invece di esigere la
-risposta giusta in $n$ punti isolati, la esige su interi intorni, e questo
-spinge $f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte.
+dove $\mathcal{T}$ è la distribuzione sulle trasformazioni ammesse. Così
+allarga il supporto della distribuzione empirica: invece di esigere la risposta
+giusta in $n$ punti isolati, la esige su interi intorni, e questo spinge
+$f_\theta$ verso funzioni *invarianti* alle trasformazioni scelte.
 
 Per trasformazioni piccole l'equivalenza con un regolarizzatore si scrive per
 intero. Sia $T$ lo spostamento dell'ingresso di $\xi\,\mathbf{t}_i$ lungo la
@@ -288,7 +288,7 @@ $\mathbf{p} - \mathbf{y}$, che fa la parte del residuo.
 
 È l'idea del *vicinal risk minimization*,
 formulata da Chapelle, Weston, Bottou e Vapnik {cite}`chapelle2000vicinal`
-(apprendere non dai punti, ma dai loro dintorni), che tra poco vedremo portata
+(apprendere non dai punti, ma dai loro dintorni), portata
 alle estreme conseguenze da mixup {cite}`zhang2018mixup`.
 `````
 
@@ -354,26 +354,27 @@ comportamento *tra* gli esempi, dove il rischio empirico tace. Siccome la
 cross-entropy è lineare nel bersaglio, $\ell(\hat{\mathbf{y}}, \lambda
 \mathbf{y}_i + (1-\lambda)\mathbf{y}_j) = \lambda\, \ell(\hat{\mathbf{y}},
 \mathbf{y}_i) + (1-\lambda)\, \ell(\hat{\mathbf{y}}, \mathbf{y}_j)$, in codice
-l'etichetta mescolata non si costruisce: si mescolano le due perdite. Un effetto
-misurato dopo il lavoro originale è la calibrazione, cioè probabilità meno
-sbilanciate verso la certezza {cite}`thulasidasan2019mixup`. **CutMix**
+l'etichetta mescolata non si costruisce: si mescolano le due perdite. Un
+effetto misurato dopo il lavoro originale è la calibrazione, cioè probabilità
+meno sbilanciate verso la certezza {cite}`thulasidasan2019mixup`. **CutMix**
 {cite}`yun2019cutmix` mescola incollando invece che sfumando: con una maschera
 binaria $\mathbf{M}$ che vale $0$ su un rettangolo casuale, $\tilde{\mathbf{x}}
-= \mathbf{M} \odot \mathbf{x}_i + (\mathbf{1} - \mathbf{M}) \odot \mathbf{x}_j$,
-e il $\lambda$ dell'etichetta è la frazione di area rimasta a $\mathbf{x}_i$.
-L'immagine resta naturale pezzo per pezzo, e a differenza di Cutout nessun pixel
-del rettangolo va sprecato: lì la rete vede un'altra classe e deve riconoscerla.
-**Cutout** {cite}`devries2017improved` azzera un riquadro casuale dell'immagine
-(l'idea quasi identica del *random erasing* lo riempie invece di valori casuali;
-torchvision le fa tutte e due con `transforms.RandomErasing`, da applicare dopo
-`ToTensor`, ma il valore predefinito è zero, cioè Cutout: per il random erasing
-serve `value="random"`), impedendo alla rete di dipendere da una singola regione
-discriminante: un dropout applicato allo spazio dei pixel. Infine
-**AutoAugment** {cite}`cubuk2019autoaugment` tratta la scelta delle
-trasformazioni come un problema di ricerca: un controllore addestrato per
-rinforzo compone la *policy* di augmentation che massimizza l'accuratezza in
-validazione; il successore RandAugment ottiene risultati simili riducendo la
-ricerca a due soli iperparametri (numero e intensità delle trasformazioni).
+= \mathbf{M} \odot \mathbf{x}_i + (\mathbf{1} - \mathbf{M}) \odot
+\mathbf{x}_j$, e il $\lambda$ dell'etichetta è la frazione di area rimasta a
+$\mathbf{x}_i$. L'immagine resta naturale pezzo per pezzo, e a differenza di
+Cutout nessun pixel del rettangolo va sprecato: lì la rete vede un'altra classe
+e deve riconoscerla. **Cutout** {cite}`devries2017improved` azzera un riquadro
+casuale dell'immagine, impedendo alla rete di dipendere da una singola regione
+discriminante: un dropout applicato allo spazio dei pixel. L'idea quasi
+identica del *random erasing* lo riempie invece di valori casuali; torchvision
+le fa tutte e due con `transforms.RandomErasing` (da applicare dopo
+`ToTensor`), in cui il valore predefinito è zero, cioè Cutout, mentre per il
+random erasing serve `value="random"`. Infine **AutoAugment**
+{cite}`cubuk2019autoaugment` tratta la scelta delle trasformazioni come un
+problema di ricerca: un controllore addestrato per rinforzo compone la *policy*
+di augmentation che massimizza l'accuratezza in validazione; il successore
+RandAugment ottiene risultati simili riducendo la ricerca a due soli
+iperparametri (numero e intensità delle trasformazioni).
 `````
 
 ## Quando aiuta, e quando no

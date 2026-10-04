@@ -36,21 +36,21 @@ chiamata.
 
 Il testo che si scrive al modello della seconda strada si chiama **prompt**,
 ed è la parola con cui si indica oggi qualunque richiesta fatta a un modello:
-la ritroveremo alla fine del capitolo. E si paga «a ogni chiamata» perché, nel
-caso più comune, quel modello è un servizio: gira sui server di un fornitore,
+la ritroveremo alla fine del capitolo. L'uso si paga «a ogni chiamata» perché, nel
+caso più comune, il modello è un servizio: gira sui server di un fornitore,
 che fa pagare in proporzione al testo che riceve e che produce. Un modello a
 pesi aperti, cioè scaricabile, si può far girare su una macchina propria, e
 allora il conto passa all'hardware e all'elettricità.
 
 {numref}`fig-nlp-classico-vs-llm` mette a confronto tempi e costi, che è il
 modo in cui la scelta si presenta a chi deve consegnare un lavoro. Ma c'è una
-seconda ragione, e riguarda proprio questi attrezzi: si
-spiegano in una riga, si ispezionano un passaggio alla volta e si correggono a
-mano. Un modello ti dice che quell'indirizzo email è valido *quasi sempre*;
-un'espressione regolare o combacia o non combacia, e se sbaglia puoi aprirla
-e vedere dove. Quando serve sapere *perché* è uscita una certa risposta, o
-serve una garanzia invece di un «molto probabilmente», sono ancora loro a
-stare dentro i sistemi moderni.
+seconda ragione per non abbandonare l'approccio classico, e sta proprio in
+questi attrezzi: si spiegano in una riga, si ispezionano un passaggio alla
+volta e si correggono a mano. Un modello ti dice che quell'indirizzo email è
+valido *quasi sempre*; un'espressione regolare o combacia o non combacia, e se
+sbaglia puoi aprirla e vedere dove. Quando serve sapere *perché* è uscita una
+certa risposta, o serve una garanzia invece di un «molto probabilmente», sono
+ancora loro a stare dentro i sistemi moderni.
 
 ## Le espressioni regolari: descrivere uno schema, non una parola
 
@@ -270,9 +270,9 @@ che stanno dappertutto e proprio per questo non dicono nulla sull'argomento del
 testo. Resta la mossa più delicata, raggruppare le forme della stessa parola.
 *Andavamo*, *andiamo* e *andrò* sono tutte facce del verbo *andare*.
 
-Per quest'ultima mossa ci sono due attrezzi. Lo **stemming** lavora di
-forbici, e taglia la coda delle parole secondo regole fisse, sempre alla stessa
-misura. È rapidissimo, e su *gatto*, *gatta* e *gatti* fa centro, perché da
+Per quest'ultima mossa ci sono due attrezzi. Lo **stemming** lavora di forbici,
+e taglia la coda delle parole in modo puramente meccanico, secondo regole
+fisse. È rapidissimo, e su *gatto*, *gatta* e *gatti* fa centro, perché da
 tutti e tre resta *gatt*. Sui verbi irregolari invece cade proprio dove
 serviva. Le forbici più usate per l'italiano riducono *andavamo* ad *andavam*,
 *andiamo* ad *andiam* e *andare* ad *andar*, mentre su *andrò* non trovano
@@ -300,7 +300,7 @@ testi che si hanno davvero.
 Normalizzare significa definire una funzione che manda ogni variante
 superficiale in un rappresentante canonico: minuscolizzazione (*case
 folding*), normalizzazione Unicode (le forme NFC/NFKC unificano caratteri
-composti e precomposti, come la *é* codificata in un modo o in due),
+composti e precomposti, come la *é* codificata con uno o due punti di codice),
 rimozione di punteggiatura e stopword, riduzione morfologica.
 
 Per quest'ultima, lo **stemming** applica regole di troncamento dei suffissi:

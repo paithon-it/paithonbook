@@ -128,8 +128,8 @@ scrive «ci penso io, più tardi», nessun programma può stabilire se ha accett
 un incarico o se sta rimandando; e a lavoro finito nessuno può far dire a una
 macchina se quella richiesta ha avuto risposta, se quell'impegno è stato
 onorato, se quella proposta è stata accettata o ignorata. La stessa idea torna
-negli standard di oggi per gli agenti linguistici, quelli che la stessa
-sezione sul ciclo dell'agente ha presentato: MCP per il
+negli standard di oggi per gli agenti linguistici, quelli che la
+sezione sul ciclo dell'agente ha già presentato: MCP per il
 dialogo fra un agente e i suoi strumenti, e A2A, annunciato da Google
 nell'aprile 2025 {cite}`surapaneni2025a2a`, per quello fra agenti. Danno ai
 messaggi un tipo e uno schema, e questo li rende controllabili nella forma; non
@@ -256,7 +256,7 @@ visibile.
 modello di chiamare gli strumenti con argomenti in un formato fisso invece che
 in prosa: si restringe quello che può scrivere, e in cambio si ottiene la
 possibilità di controllarlo a macchina. Quello che cambia qui è la scala. Il
-cancello di verifica della stessa sezione sul costo del coordinamento, quel
+cancello di verifica descritto nella sezione sul costo del coordinamento, quel
 controllo esterno che o passa o non passa, giudica una risposta per volta; un
 protocollo giudica l’intera conversazione. Non «questa risposta è ben formata»,
 ma «questo scambio, dal primo messaggio all'ultimo, è una partita legale».
@@ -399,18 +399,18 @@ alla stessa domanda, valgono molto meno di dieci votanti indipendenti. È una
 conseguenza di come sono fatte. I pesi del modello, cioè i numeri che
 l'addestramento ha aggiustato una volta per tutte, sono fissi, e l'unica cosa
 che varia da una risposta all'altra è il campionamento: parola per parola, il
-modello non prende sempre la più probabile, ma ogni tanto ne pesca una vicina, e
-quanto spesso lo faccia lo regola la temperatura. Portata a zero, il caso si
+modello non prende sempre la più probabile, ma ogni tanto ne pesca una vicina,
+e quanto spesso lo faccia lo regola la temperatura. Portata a zero, il caso si
 spegne e dieci copie restituiscono (quasi) la stessa risposta, cioè un parere
 fotocopiato dieci volte. Alzandola si cambia il percorso lungo il quale la
-risposta si forma, non la macchina che la forma: restano identici i pesi, i dati
-su cui il modello si è addestrato e le lacune che quei dati hanno lasciato. Un
-errore sistematico vive esattamente lì (una formula memorizzata male,
-un'ambiguità letta sempre nello stesso verso, un fatto che nei testi di
+risposta si forma, non la macchina che la forma: restano identici i pesi, i
+dati su cui il modello si è addestrato e le lacune che quei dati hanno
+lasciato. Un errore sistematico vive esattamente lì (una formula memorizzata
+male, un'ambiguità letta sempre nello stesso verso, un fatto che nei testi di
 addestramento compare solo nella versione sbagliata) e non è il tipo di errore
-che quel pescare parole vicine possa disperdere: non è che qualcuno degli agenti
-sbagli, sbagliano tutti, e sbagliano allo stesso modo. La maggioranza, in quel
-caso, non corregge niente: certifica.
+che quel pescare parole vicine possa disperdere: non è un singolo agente a
+sbagliare, sbagliano tutti, e sbagliano allo stesso modo. La maggioranza, in
+quel caso, non corregge niente: certifica.
 
 È anche una previsione che si può mettere alla prova in mezz'ora, e conviene
 farlo prima di fidarsi di un voto. Su un insieme di domande con la risposta
@@ -717,7 +717,7 @@ giocatori corrisponde all'alternanza dei quantificatori di una formula
 booleana quantificata, ed è quella corrispondenza (la PSPACE-completezza di
 TQBF) a reggere il risultato. Le ipotesi però contano, e sono tre: i dibattenti
 hanno potenza di calcolo illimitata, e il dibattente onesto deve poterla usare
-tutta, perché per vincere gli tocca simulare per intero un calcolo
+tutta, perché per vincere è costretto a simulare per intero un calcolo
 esponenziale; il giudice è polinomiale ma scelto in funzione del problema; e il
 numero di turni cresce con il problema, perché a $n$ turni fissati la classe
 raggiunta è $\Sigma_n^P$, un gradino della gerarchia polinomiale per ogni
@@ -729,17 +729,17 @@ interessi opposti, hanno scelto di contestare.
 Tre avvertenze, e sono sostanziali. La prima: il risultato vale con gioco
 ottimale e giudice affidabile, cioè capace di valutare correttamente l'ultimo
 passaggio conteso. Un giudice sensibile alla posizione dell'intervento, alla
-sua lunghezza o alla somiglianza con il proprio stile (sono esattamente i tre
-bias dell’*LLM-as-a-judge*, *position*, *verbosity* e *self-enhancement*, che
-la {doc}`sezione su LLMOps </MLOps/llmops>` riprende con i numeri: i primi due
-misurati, il terzo osservato senza poter essere dimostrato) rompe l'ipotesi, e
-il gioco premia la
-persuasione invece della verità. La seconda riguarda proprio questo capitolo:
-due dibattenti istanziati dallo stesso modello ereditano la correlazione appena
-descritta. Se entrambi condividono lo stesso errore sistematico, nessuno dei
-due lo contesta, l'errore non entra mai nel dibattito e il giudice non ha nulla
-su cui esercitare la propria verifica. Il dibattito rende *ispezionabile* il
-disaccordo che c'è, non crea quello che manca.
+sua lunghezza o alla somiglianza con il proprio stile rompe l'ipotesi, e il
+gioco premia la persuasione invece della verità. Sono esattamente i tre bias
+dell’*LLM-as-a-judge* (*position*, *verbosity* e *self-enhancement*) che la
+{doc}`sezione su LLMOps </MLOps/llmops>` riprende con i numeri: i primi due
+misurati, il terzo osservato senza poter essere dimostrato. La seconda riguarda
+proprio questo capitolo: due dibattenti istanziati dallo stesso modello
+ereditano la correlazione appena descritta. Se entrambi condividono lo stesso
+errore sistematico, nessuno dei due lo contesta, l'errore non entra mai nel
+dibattito e il giudice non ha nulla su cui esercitare la propria verifica. Il
+dibattito rende *ispezionabile* il disaccordo che c'è, non crea quello che
+manca.
 
 La terza avvertenza è la più grave, perché non riguarda il giudice né la
 somiglianza fra i due: attacca l'asimmetria stessa da cui tutto discende. Chi

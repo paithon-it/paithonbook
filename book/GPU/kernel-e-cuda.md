@@ -156,7 +156,7 @@ programmazione con cui si parla alle macchine quando si vuole controllare tutto:
 potente, e faticoso. Chi lo usa deve calcolarsi gli indici a mano, decidere in
 quale memoria mettere ogni numero, tenere a mente i dettagli della scheda che
 ha davanti. Nel 2019 Philippe Tillet ha proposto un'alternativa che ha cambiato
-il modo di scriverli, **Triton** {cite}`tillet2019triton`: un linguaggio che
+il modo di scriverlo, **Triton** {cite}`tillet2019triton`: un linguaggio che
 ragiona a *tessere*, cioè a riquadri di dati di forma fissa, invece che al
 singolo esecutore. Quella prima versione era ancora un dialetto del C, e la
 riscrittura *dentro* Python, quella con cui i kernel Triton si scrivono oggi,
@@ -286,7 +286,7 @@ verranno ignorati); `tl.load` legge dalla memoria solo le posizioni valide,
 divisione arrotondata per eccesso) e invoca il kernel con la sintassi
 `fused_kernel[grid](...)`.
 
-Il salto di astrazione è preciso: un *program instance* di Triton (un `pid`)
+Il salto di astrazione è netto: un *program instance* di Triton (un `pid`)
 non è un thread, ma elabora un intero blocco di `BLOCK_SIZE` elementi. Il
 programmatore lavora su vettori e tessere (`offsets` è un vettore di indici,
 `x` un vettore di valori); il compilatore Triton mappa da sé quel lavoro sui
@@ -384,10 +384,10 @@ una somma vettoriale fa circa $1$ FLOP ogni $12$ byte spostati (profondamente
 kernel fuso una sola. A parità di FLOP, tagliare i byte alza l'intensità
 aritmetica e sposta l'operazione verso destra sul roofline, dal tetto di banda
 verso quello di calcolo. È esattamente ciò che fa la kernel fusion di
-`torch.compile`, descritta in «Prestazioni e scala»: TorchInductor riconosce
-le catene di operazioni fondibili e ne sintetizza un unico kernel Triton, così
-che la memoria venga letta e scritta una volta invece di $k$. Il guadagno
-cresce con quanto sei memory-bound, cioè, per gran parte delle operazioni
+`torch.compile`, descritta in «Prestazioni e scala»: TorchInductor riconosce le
+catene di operazioni fondibili e ne sintetizza un unico kernel Triton, così che
+la memoria venga letta e scritta una volta invece di $k$. Il guadagno è tanto
+maggiore quanto più il calcolo è memory-bound: per gran parte delle operazioni
 non-matmul, parecchio.
 
 `````
@@ -451,7 +451,7 @@ costruttore, l'attenzione, le normalizzazioni fra l'una e l'altra), e ciascuna
 lavoro, è il lancio a comandare il tempo, e ha una cura sua, i **CUDA Graphs**:
 *graph* qui è il grafo, la rete delle operazioni con i loro collegamenti, e
 non un grafico. È il caso tipico di un modello linguistico non troppo grande
-che genera una parola alla volta per poche persone insieme, che la
+che genera una parola alla volta per poche persone insieme, un tema che la
 {doc}`sezione sui grandi modelli linguistici </Transformers/llm>` e quella su
 {doc}`LLMOps </MLOps/llmops>`, il mestiere di far girare i modelli linguistici
 in produzione, raccontano per esteso.
@@ -517,7 +517,7 @@ lancio dalla CPU: le dipendenze fra i nodi del grafo sono note in anticipo, e
 il driver le soddisfa senza tornare alla CPU fra un kernel e l'altro. Il prezzo
 è la staticità. Il grafo fissa le forme dei tensori, gli indirizzi e il flusso
 di controllo, quindi un ramo che dipende dai dati o una dimensione che cambia
-vogliono un grafo diverso, e i dati nuovi vanno copiati nei tensori su cui il
+richiedono un grafo diverso, e i dati nuovi vanno copiati nei tensori su cui il
 grafo è stato catturato prima di ogni replay. Ogni grafo tiene inoltre
 riservata la memoria dei tensori su cui è stato catturato, e dentro la cattura
 non possono esserci sincronizzazioni con la CPU (un `.item()`, per esempio).
@@ -534,7 +534,7 @@ lanci, la fusione i viaggi in memoria.
 
 Con questo il quadro è completo: l'architettura dice chi esegue (gli SM, i
 warp da 32 thread), la memoria da dove arrivano i dati, il kernel che cosa si
-esegue. Resta il kernel in cui una rete spende la maggior parte dei suoi conti,
+esegue. Resta il kernel su cui una rete spende la maggior parte del tempo,
 il prodotto fra matrici, e gli è dedicata la {doc}`sezione sul GEMM
 <gemm-e-tensor-core>`.
 

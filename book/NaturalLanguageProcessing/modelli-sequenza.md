@@ -32,14 +32,14 @@ dedicato il {doc}`capitolo che segue </Transformers/overview>`.
 ## Le reti ricorrenti: una memoria che scorre nel tempo
 
 Una **rete neurale ricorrente** (RNN, *recurrent neural network*) legge la
-frase una parola alla volta e, a ogni passo $t$, aggiorna un vettore di
-lunghezza fissa, lo **stato nascosto** $\mathbf{h}_t$. Il nuovo stato si calcola
-da due cose soltanto: la parola corrente, già trasformata nel suo embedding
-$\mathbf{x}_t$, e lo stato del passo prima, $\mathbf{h}_{t-1}$ (all'inizio della
-frase, $\mathbf{h}_0$, di solito un vettore di zeri). Così $\mathbf{h}_t$
-riassume tutto ciò che la rete ha letto fino a lì, senza un limite fisso alla
-lunghezza del contesto. Si dice nascosto perché resta dentro la rete: la
-risposta $\hat{\mathbf{y}}_t$ se ne ricava a parte.
+frase una parola alla volta e a ogni passo $t$ aggiorna un vettore di lunghezza
+fissa, lo **stato nascosto** $\mathbf{h}_t$. Il nuovo stato si calcola da due
+soli elementi: la parola corrente, già trasformata nel suo embedding
+$\mathbf{x}_t$, e lo stato del passo precedente $\mathbf{h}_{t-1}$, che
+all'inizio della sequenza è $\mathbf{h}_0$, di solito un vettore di zeri. Così
+$\mathbf{h}_t$ riassume tutto ciò che la rete ha letto fino a quel momento,
+senza limiti fissi alla lunghezza del contesto. Si dice nascosto perché resta
+dentro la rete: la risposta $\hat{\mathbf{y}}_t$ se ne ricava a parte.
 
 La funzione che calcola $\mathbf{h}_t$ da $\mathbf{x}_t$ e da $\mathbf{h}_{t-1}$
 si chiama **cella**, e i suoi pesi sono gli stessi a ogni passo. Per vederlo si
@@ -146,13 +146,13 @@ qualunque, senza la sua storia. In PyTorch è letteralmente una chiamata,
 `h = h.detach()`, e per la LSTM, il cui stato è una coppia, la stessa cosa
 scritta su tutti e due i pezzi: `h = tuple(s.detach() for s in h)`.
 
-Il prezzo è dichiarato: il gradiente non attraversa mai il confine, quindi la
-rete non può imparare dipendenze più lunghe del blocco. Lo stato in avanti
-sì, continua a propagarsi e a portare informazione; è il segnale di
-apprendimento che si ferma. Quando si legge che una ricorrente «fatica sulle
-dipendenze lunghe», una parte del problema è matematica, ed è il gradiente che
-svanisce; una parte è questa, cioè una scelta di ingegneria presa per far
-entrare l'addestramento in memoria.
+Il prezzo è noto: il gradiente non attraversa mai il confine, quindi la rete
+non può imparare dipendenze più lunghe del blocco. Lo stato in avanti continua
+a propagarsi e a portare informazione; a fermarsi è il segnale di
+apprendimento. Quando si legge che una ricorrente fatica sulle dipendenze
+lunghe, la ragione è duplice: da una parte la matematica del gradiente che
+svanisce, dall'altra questa scelta di ingegneria necessaria per far entrare
+l'addestramento in memoria.
 
 `````
 
@@ -344,7 +344,7 @@ risale lungo il taccuino attraversa cento aggiunte e arriva com'era partita.
 L'unica moltiplicazione è la prima manopola, e finché resta spalancata
 moltiplica per uno.
 
-Una curiosità che dice qualcosa su come si fa ricerca: nella prima versione, del
+Nella prima versione, del
 1997, le manopole erano due, annota e mostra. Quella che dimentica sembrava
 superflua (perché mai insegnare a una memoria a cancellarsi?) e fu aggiunta solo
 tre anni dopo, quando ci si accorse che su un testo che non finisce mai il
@@ -454,23 +454,23 @@ forget e input come fa la GRU non peggiora la LSTM in modo significativo
 
 ## In pratica, con PyTorch
 
-Tutta questa storia (cella, cancelli, stato nascosto) in PyTorch si condensa in
-poche righe. Il compito che scegliamo per l'esempio è quello della {doc}`sezione
+La cella, i cancelli e lo stato nascosto si condensano in PyTorch in
+poche righe. Il compito di esempio è quello affrontato nella {doc}`sezione
 sulla
-classificazione <classificazione-testo>`: leggere una recensione e dire se è
+classificazione <classificazione-testo>`: leggere una recensione e decidere se è
 entusiasta o stroncatoria.
 
-I tre pezzi del programma hanno i nomi delle cose di cui abbiamo appena
-parlato. `nn.Embedding` è la tabella che trasforma ogni parola nel suo
-embedding. `nn.LSTM` è lo strato ricorrente: applica la cella con i suoi
-cancelli a tutta la frase, un passo dopo l'altro, e restituisce lo stato di ogni
-passo (la cella di un passo solo, in PyTorch, è `nn.LSTMCell`). `nn.Linear`
-trasforma l'ultimo stato nei due punteggi del verdetto, uno per classe: è la
-regressione logistica della sezione sulla classificazione, applicata al
-riassunto della frase invece che al sacchetto di parole. E siccome i tre strati
-ricorrenti, `nn.RNN`, `nn.LSTM` e `nn.GRU`, si usano allo stesso modo, per
-cambiarne uno basta cambiare quella parola lì e rilanciare; l'unica differenza
-è lo stato finale, che per la LSTM è una coppia, $(\mathbf{h}, \mathbf{c})$.
+I tre strati del programma corrispondono uno a uno ai pezzi della rete.
+`nn.Embedding` è la tabella che trasforma ogni parola nel suo embedding.
+`nn.LSTM` è lo strato ricorrente: applica la cella con i suoi cancelli a tutta
+la frase, un passo dopo l'altro, e restituisce lo stato di ogni passo (la cella
+di un passo solo, in PyTorch, è `nn.LSTMCell`). `nn.Linear` trasforma l'ultimo
+stato nei due punteggi del verdetto, uno per classe: è la regressione logistica
+della sezione sulla classificazione, applicata al riassunto della frase invece
+che al sacchetto di parole. Siccome i tre strati ricorrenti (`nn.RNN`,
+`nn.LSTM` e `nn.GRU`) condividono l'interfaccia, per passare dall'uno all'altro
+basta cambiare il nome della classe; l'unica differenza è lo stato finale, che
+per la LSTM è una coppia, $(\mathbf{h}, \mathbf{c})$.
 
 ```python
 import torch
@@ -489,12 +489,12 @@ class ClassificatoreSentiment(nn.Module):
         return self.out(h[:, -1])  # ultimo passo -> logit per CrossEntropyLoss
 ```
 
-Una cosa il blocco la dà per buona, e in un programma vero non lo è: `h[:, -1]`
-prende l'ultimo posto della fila. In un mini-batch le frasi hanno lunghezze
-diverse, e per metterle in una tabella sola le si allunga tutte alla stessa
-misura con dei riempitivi (il *padding*). L'ultimo posto è allora l'ultimo
-riempitivo, non l'ultima parola, e lo stato che si legge dipende da quanti
-riempitivi si sono aggiunti.
+Il blocco nasconde però una semplificazione che in un programma reale produce
+errori: `h[:, -1]` prende l'ultimo posto della fila. In un mini-batch le frasi
+hanno lunghezze diverse, e per metterle in una tabella sola le si allunga tutte
+alla stessa misura con dei riempitivi (il *padding*). L'ultimo posto letto è
+allora l'ultimo riempitivo, non l'ultima parola, e lo stato estratto dipende da
+quanti riempitivi si sono aggiunti.
 
 Il rimedio è dire alla rete quanto è lunga davvero ciascuna frase. In PyTorch lo
 si fa impacchettando il mini-batch con `pack_padded_sequence`, a cui si passano

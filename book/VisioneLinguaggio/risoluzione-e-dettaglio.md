@@ -68,7 +68,7 @@ Il costo dell'attenzione è a sua volta quadratico in $N$, cioè $O(N^2 d)$ con
 $d$ dimensione del modello: quartico nel lato dell'immagine. Da $224$ a $448$
 si paga $(1024/256)^2 = 16$ volte tanto; da $224$ a $896$, $(4096/256)^2 = 256$.
 
-Una precisazione, per non vendere il termine quadratico più caro di quanto sia.
+Una precisazione, per inquadrare il peso effettivo del termine quadratico.
 Nei FLOP di un blocco Transformer l'attenzione vale circa $4N^2 d$ e le
 proiezioni più il feed-forward (con strato nascosto a $4d$ unità) circa $24 N
 d^2$: il quadratico supera il lineare solo per $N > 6d$, cioè oltre $24\,576$
@@ -152,7 +152,7 @@ l'informazione è già stata buttata nel ridimensionamento. Non a caso i sistemi
 che puntano ai documenti alzano la risoluzione nativa dell'encoder in una fase
 di addestramento apposita: Qwen-VL {cite}`bai2023qwenvl`, il cui encoder è un
 ViT con patch di lato $14$, la porta da $224$ a $448$ nella fase di
-pre-addestramento multi-compito, e la ragione dichiarata è esattamente questa,
+pre-addestramento multi-compito, e la ragione dichiarata è esattamente questa:
 ridurre l'informazione persa nel sotto-campionamento.
 
 `````
@@ -164,16 +164,16 @@ ciascuna si vede dove finisce il conto.
 
 ## Prima risposta: tagliare l'immagine a riquadri
 
-La più semplice, adottata fra l'altro da LLaVA-1.5-HD {cite}`liu2024improved` e
-da InternVL {cite}`chen2024far`. Un encoder come quello di CLIP lavora a una
-risoluzione sola, quella su cui è stato addestrato, e l'immagine è più grande.
-Invece di rimpicciolire l'immagine fino a farla stare nell'encoder, la si taglia
-in riquadri grandi esattamente quanto lui si aspetta. Ogni riquadro passa per
-conto suo, e i pezzi che ne escono si mettono tutti in fila; in coda si aggiunge
-una miniatura dell'immagine intera, che è l'unico posto in cui si vede come i
-riquadri stanno insieme. Il metodo si chiama **tiling**, «tagliare a
-piastrelle», e si trova anche sotto i nomi *AnyRes* (in LLaVA-NeXT) e *dynamic
-high resolution* (in InternVL).
+È la soluzione più semplice, adottata fra l'altro da LLaVA-1.5-HD
+{cite}`liu2024improved` e da InternVL {cite}`chen2024far`. Un encoder come
+quello di CLIP lavora a una risoluzione sola, quella su cui è stato addestrato,
+e l'immagine è più grande. Invece di rimpicciolire l'immagine fino a farla
+stare nell'encoder, la si taglia in riquadri grandi esattamente quanto lui si
+aspetta. Ogni riquadro passa per conto suo, e i pezzi che ne escono si mettono
+tutti in fila; in coda si aggiunge una miniatura dell'immagine intera, che è
+l'unico posto in cui si vede come i riquadri stanno insieme. Il metodo si
+chiama **tiling**, «tagliare a piastrelle», e si trova anche sotto i nomi
+*AnyRes* (in LLaVA-NeXT) e *dynamic high resolution* (in InternVL).
 
 `````{tab} Elementare
 
@@ -428,7 +428,7 @@ trascriverla: è la strada del recupero *vision-native* alla ColPali
 Per cercare in un archivio non si fruga fra i documenti: si cerca in un indice,
 come quello in fondo a un libro, e quel che nell'indice non è finito per la
 ricerca non esiste. Di solito nell'indice finiscono le pagine ribattute. L'idea
-nuova è semplice quanto suona: invece di trascrivere ogni pagina dell'archivio
+nuova è semplice quanto sembra: invece di trascrivere ogni pagina dell'archivio
 per poterla cercare, si dà ogni pagina in pasto a un modello che vede, si
 tengono i numeri che ne escono, e si cerca fra quelli. Anche la domanda diventa
 numeri. Nessuno ha trascritto niente, quindi nessuno ha deciso in che ordine
@@ -602,7 +602,7 @@ scelta si fa guardando che cosa il modello dovrà leggere. La risoluzione è un
 iperparametro di progetto, che si fissa sapendo a che cosa servirà il prodotto
 finito.
 
-Le tre risposte non eliminano il costo, lo spostano. Il tiling lo toglie
+Ognuna delle tre risposte sposta il costo altrove. Il tiling lo toglie
 all'encoder e lo consegna al contesto, dove diventa lunghezza di sequenza; la
 compressione lo toglie al contesto e lo carica sui singoli token, dove diventa
 capacità, cioè quanta pagina deve portare ogni vettore; e le due si combinano,
@@ -691,7 +691,7 @@ risposta non è confortante.
   differenza che lo ha imparato. Il pooling medio, sullo stesso blocco, ha
   nucleo di dimensione $3 d_v$: cancella proprio le differenze fra patch
   vicine, cioè il dettaglio fine.
-- Per i documenti la catena OCR poi testo poi modello decide l'ordine di
+- Per i documenti la catena OCR-testo-modello decide l'ordine di
   lettura, la struttura delle tabelle e il destino dei grafici prima di
   conoscere la domanda. Un VLM legge la pagina come immagine e salta la catena;
   il recupero *vision-native* {cite}`faysse2025colpali` indicizza le patch

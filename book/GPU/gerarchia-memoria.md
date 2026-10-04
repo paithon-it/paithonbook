@@ -121,32 +121,30 @@ I livelli, dall'alto verso il basso, sono cinque e differiscono per ordini di
 grandezza (le cifre esatte cambiano con la generazione: qui contano le
 *proporzioni*).
 
-- Registri, privati del singolo thread: ciascun thread ne ha appena un
-  pugno, dell'ordine del kilobyte (il tetto architetturale è 255 registri da
-  32 bit, cioè 1020 byte, appena sotto il kilobyte), con latenza di fatto
-  nulla. Sono la memoria più veloce che esista sul chip. Attenzione però al singolare: *per SM* il
-  register file è il banco on-chip più grande di tutti, 256 KB su A100
-  contro i 192 KB di L1 e shared messe insieme, e sull'intera GPU sono 27 MB
-  di registri. È questa abbondanza, non il «pugno» del singolo thread, a
-  rendere possibile il secondo livello di tiling di cui si parlerà nel GEMM,
-  quello che vive nei registri.
-- Shared memory e cache L1: on-chip, all'interno dell'SM. La shared memory
-  è condivisa dai thread di uno stesso blocco, dell'ordine di un centinaio di
-  KB per unità di calcolo, e la sua particolarità è che *non* è una cache
+- Registri, privati del singolo thread: ciascun thread ne ha appena un pugno,
+  dell'ordine del kilobyte (il tetto architetturale è 255 registri da 32 bit,
+  cioè 1020 byte, appena sotto il kilobyte), con latenza di fatto nulla. Sono
+  la memoria più veloce che esista sul chip. Il singolare però inganna: *per
+  SM* il register file è il banco on-chip più grande di tutti, 256 KB su A100
+  contro i 192 KB di L1 e shared messe insieme, e sull'intera GPU sono 27 MB di
+  registri. È questa abbondanza, non il «pugno» del singolo thread, a rendere
+  possibile il secondo livello di tiling di cui si parlerà nel GEMM, quello che
+  vive nei registri.
+- Shared memory e cache L1: on-chip, all'interno dell'SM. La shared memory è
+  condivisa dai thread di uno stesso blocco, dell'ordine di un centinaio di KB
+  per unità di calcolo, e la sua particolarità è che *non* è una cache
   automatica: la gestisci a mano, decidendo tu cosa metterci. La L1 sì, è
   automatica. Il punto che la piramide disegnata nasconde è che oggi le due
-  sono lo stesso banco di SRAM (lo erano con Fermi e Kepler, dal 2010,
-  furono separate con Maxwell e Pascal, e da Volta, nel 2017, lo sono di
-  nuovo), ripartito fra le due funzioni
-  da un pomello
-  che il programmatore gira (192 KB combinati per SM su A100, di cui fino a 164
-  configurabili come shared; 256 KB su H100). Tre conseguenze pratiche:
-  chiedere tutta la shared possibile non è gratis, perché toglie cache; il
-  riuso «sperato» che il GEMM ingenuo strappa alle cache lo recuperano insieme
-  questa L1, la L2 e il broadcast dentro il warp; e negli spill dei
-  registri (quando un thread ne chiede più di quanti ne ha) finisce lì il
-  traffico che rende improduttivo alzare ancora i registri per thread. Latenza
-  di poche decine di cicli.
+  sono lo stesso banco di SRAM (lo erano con Fermi e Kepler, dal 2010, furono
+  separate con Maxwell e Pascal, e da Volta, nel 2017, lo sono di nuovo),
+  ripartito fra le due funzioni da un parametro che il programmatore imposta
+  (192 KB combinati per SM su A100, di cui fino a 164 configurabili come
+  shared; 256 KB su H100). Tre conseguenze pratiche: chiedere tutta la shared
+  possibile non è gratis, perché toglie cache; questa L1, la L2 e il broadcast
+  dentro il warp recuperano insieme il riuso «sperato» che il GEMM ingenuo
+  strappa alle cache; e negli spill dei registri (quando un thread ne chiede
+  più di quanti ne ha) è lì che si riversa il traffico che rende improduttivo
+  alzare ancora i registri per thread. Latenza di poche decine di cicli.
 - Cache L2: condivisa da tutte le unità di calcolo, dell'ordine di decine
   di MB (40 MB su A100), con latenza di un paio di centinaia di cicli. È
   l'ultimo livello *dentro* il chip.
@@ -168,7 +166,7 @@ non moltiplicano la *banda*. Salendo la piramide la banda cresce e la latenza
 cala: la memoria on-chip (registri, shared) ha banda di un ordine di grandezza
 superiore alla HBM, che a sua volta ne ha uno o due sul PCIe.
 
-Sulla capienza, invece, la forma a piramide va presa con le pinze, perché
+Sulla capienza, invece, la forma a piramide va interpretata con cautela, perché
 diminuisce *per unità che ne dispone* (per thread, per blocco, per SM, per
 GPU), non in assoluto: come si è visto, su A100 il register file di un SM è più
 capiente della sua L1 più shared, ed è la punta della piramide a essere il
@@ -321,16 +319,16 @@ scartato. Se lo carichi una volta e lo usi $r$ volte, hai diviso per $r$ il
 traffico verso la HBM per quel dato, e, come vedremo tra poco con il roofline,
 ridurre i byte spostati a parità di conti è esattamente ciò che sposta un
 kernel dal regime *memory-bound* verso quello *compute-bound*. La shared
-memory è programmer-managed proprio per questo: a differenza di una cache
+memory è gestita dal programmatore proprio per questo: a differenza di una cache
 automatica, sei tu a decidere quale tessera trattenere e per quanto, adattando
 il riuso alla struttura del calcolo. È un potere che si paga in complessità,
 ed è il motivo per cui i kernel di alte prestazioni si scrivono a mano (o li
 genera un compilatore come Triton, che incontreremo).
 
 Ha però un secondo prezzo, ed è l'esatto analogo della coalescenza un piano più
-su. La shared memory è divisa in 32 banchi da 32 bit, con le parole
-consecutive assegnate a banchi consecutivi, e i banchi sono tanti quanti i
-thread di un warp proprio perché nel caso buono ciascun thread ne colpisca uno
+su. La shared memory è divisa in 32 banchi da 32 bit, con le parole consecutive
+assegnate a banchi consecutivi, e i banchi sono tanti quanti i thread di un
+warp proprio perché nel caso favorevole ciascun thread acceda a un banco
 diverso e i 32 accessi vengano serviti insieme. Se invece più thread dello
 stesso warp chiedono parole *diverse* dello stesso banco (un **bank conflict**)
 l'hardware spezza la richiesta in tante richieste prive di conflitto quante
@@ -338,14 +336,15 @@ servono, e la banda effettiva si divide per quel numero: fino a $32\times$ nel
 caso peggiore. Fa eccezione il caso in cui i thread chiedono la *stessa*
 parola: quello è un broadcast, ed è gratis.
 
-Nel tiling classico del GEMM la cosa non morde (la tessera di $\mathbf{A}$ si
-legge in broadcast, quella di $\mathbf{B}$ per parole consecutive) e proprio
-per questo la nota serve: il caso comodo è quello, mentre ogni variante che
-percorre una tessera *per colonna* (una trasposta, il caricamento dei frammenti
-per i tensor core, il tile di $\mathbf{K}^\top$ in FlashAttention) cade nel caso
-scomodo. Il rimedio canonico sta in una riga: si dichiara la tessera con una
-colonna in più (`[32][33]` invece di `[32][32]`), così l'indirizzo di ogni riga
-slitta di un banco e la colonna smette di ricadere sempre sullo stesso.
+Nel tiling classico del GEMM il problema non si pone (la tessera di
+$\mathbf{A}$ si legge in broadcast, quella di $\mathbf{B}$ per parole
+consecutive) e proprio per questo l'avvertenza è necessaria: quello è il caso
+favorevole, mentre ogni variante che percorre una tessera *per colonna* (una
+trasposta, il caricamento dei frammenti per i tensor core, il tile di
+$\mathbf{K}^\top$ in FlashAttention) cade nel caso scomodo. Il rimedio canonico
+sta in una riga: si dichiara la tessera con una colonna in più (`[32][33]`
+invece di `[32][32]`), così l'indirizzo di ogni riga slitta di un banco e la
+colonna smette di ricadere sempre sullo stesso.
 `````
 
 Questo schema (portare in shared memory un pezzo di dati, farlo usare a tutti i
@@ -502,25 +501,25 @@ Due esempi concreti, con dati in `float32` (4 byte):
   scrivo $z$). Intensità $I = 1/12 \approx 0{,}08$ FLOP/byte: bassissima,
   profondamente memory-bound. Con un ginocchio a 10 FLOP/byte questa operazione
   usa meno dell'1 % del picco di calcolo.
-- **GEMM grande** $\mathbf{C} = \mathbf{A}\mathbf{B}$ con matrici
-  $n \times n$. Circa $2n^3$ FLOP e, *con riuso perfetto*,
-  $3 n^2 \times 4 = 12 n^2$ byte, per un'intensità $I = n/6$
-  FLOP/byte che cresce con $n$: per $n = 4096$ vale circa 680 FLOP/byte,
-  saldamente compute-bound. Attenzione però a che cosa vuol dire «riuso
-  perfetto»: leggere ogni elemento di $\mathbf{A}$ e $\mathbf{B}$ *una volta
-  sola*, cioè tenerle intere in memoria veloce. Per $n = 4096$ in `float32`
-  sono 128 MiB, e l'unico banco on-chip che una tessera qualsiasi può
-  attraversare è la cache L2, 50 MB su una H100: shared memory e registri sono
-  ripartiti per SM e per blocco, e sommarli al totale darebbe un numero che
-  nessun calcolo può spendere. Quell’$n/6$ è quindi un
-  tetto ideale, non un traguardo. Ci si torna nella sezione sul GEMM, dove si
-  vede quanto ci si arriva davvero (e perché non serve arrivarci).
+- **GEMM grande** $\mathbf{C} = \mathbf{A}\mathbf{B}$ con matrici $n \times n$.
+  Circa $2n^3$ FLOP e, *con riuso perfetto*, $3 n^2 \times 4 = 12 n^2$ byte,
+  per un'intensità $I = n/6$ FLOP/byte che cresce con $n$: per $n = 4096$ vale
+  circa 680 FLOP/byte, saldamente compute-bound. Attenzione però a che cosa
+  vuol dire «riuso perfetto»: leggere ogni elemento di $\mathbf{A}$ e
+  $\mathbf{B}$ *una volta sola*, cioè tenerle intere in memoria veloce. Per $n
+  = 4096$ in `float32` sono 128 MiB, e l'unico banco on-chip che una tessera
+  qualsiasi può attraversare è la cache L2, 50 MB su una H100: shared memory e
+  registri sono ripartiti per SM e per blocco, e sommarli al totale darebbe un
+  numero che nessun calcolo può spendere. Quell’$n/6$ è quindi un tetto ideale,
+  non un traguardo. La {doc}`sezione sul GEMM <gemm-e-tensor-core>` riprenderà
+  questo conto per mostrare a che punto si arrivi davvero (e perché non serva
+  arrivarci).
 
 Ora è chiaro *perché* la kernel fusion paga: fondere tre operazioni
 elemento-per-elemento in un solo kernel significa leggere gli input una volta
 e scrivere l'output una volta invece di tre (meno byte a parità di FLOP, cioè
 intensità $I$ più alta). Sul roofline l'operazione scivola verso destra, dal
-tetto di banda verso il tetto di calcolo. Nota infine che i tensor core
+tetto di banda verso il tetto di calcolo. I tensor core, infine,
 alzano $P_\text{picco}$ di un ordine di grandezza: spostano il ginocchio a
 destra, e rendono *ancora più* facile ritrovarsi memory-bound. Ecco perché,
 nell'era dei tensor core, la partita si gioca sempre più sui byte e sempre
@@ -547,7 +546,7 @@ stesse che tengono i bit; in quella più diffusa, il calcolo *vicino* alla
 memoria (*near-memory computing*), le unità di calcolo stanno su una piastrina
 di silicio attaccata a quelle della memoria. Un esempio del secondo tipo,
 progettato per le reti neurali, è il Neurocube {cite}`kim2016neurocube`,
-disegnato in {numref}`fig-neurocube-pila`. Stava dentro una memoria costruita
+disegnato in {numref}`fig-neurocube-pila`. Era integrato in una memoria costruita
 a piani, l’*Hybrid Memory Cube* (oggi fuori produzione, e il meccanismo è
 passato ad altre memorie): più piastrine di memoria, i *die*, impilate una
 sull'altra e attraversate da collegamenti verticali, sopra uno strato di
@@ -634,15 +633,15 @@ coerente con le misure su un sistema commerciale dello stesso genere, con i
 processori sul die della DRAM (UPMEM), dove i carichi che convengono sono
 quelli limitati dalla memoria, con aritmetica semplice e poca comunicazione fra
 le unità {cite}`gomezluna2021benchmarking`. I limiti sono fisici e di
-programmazione. La logica sotto la pila scalda la DRAM, che a temperatura più
-alta trattiene la carica per meno tempo e va rinfrescata più spesso, quindi il
-bilancio termico decide quanto calcolo ci sta; lo strato logico ha un bilancio
-di area e di potenza limitato, quindi unità semplici; e i dati vanno
-distribuiti fra i vault in modo che ciascuno lavori su ciò che ha, perché
-spostarli da un vault all'altro passa per la rete sul die logico, e nel lavoro
-quel traffico laterale costa fino a un sesto della velocità sugli strati densi:
-gli autori lo evitano duplicando in ogni vault i dati di confine, e lo pagano
-in memoria.
+programmazione. La logica sotto la pila riscalda la DRAM, che a temperatura più
+alta trattiene la carica per meno tempo e va rinfrescata più spesso: il
+bilancio termico decide quindi quanta logica sia possibile integrare. Lo strato
+logico ha un bilancio di area e di potenza limitato, quindi unità semplici; e i
+dati vanno distribuiti fra i vault in modo che ciascuno lavori su ciò che ha,
+perché spostarli da un vault all'altro richiede di attraversare la rete sul die
+logico, e nell'articolo quel traffico laterale costa fino a un sesto della
+velocità sugli strati densi: gli autori lo evitano duplicando in ogni vault i
+dati di confine, e lo pagano in capacità di memoria.
 
 `````
 

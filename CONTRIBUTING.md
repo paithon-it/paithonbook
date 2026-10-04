@@ -331,6 +331,57 @@ quando si sostituisce un pezzo con uno che anticipa il seguito. Il markdown
 resta valido e nessuno se ne accorge, quindi c'è un controllo:
 `python3 scripts/coerenza.py --solo doppioni`.
 
+## La frase
+
+Le regole qui sopra si riconoscono meglio nelle forme che prendono davvero.
+
+**Il libro che parla di sé si traveste.** Oltre a «questa sezione» e «qui
+sotto», vale per la scaletta («fino a qui il capitolo», «le sezioni
+precedenti», «nel resto del capitolo», «alla fine del capitolo»), per la
+posizione nella pagina («introdotta più su», «di cui si parlava sopra», «il
+blocco che segue») e per l'annuncio del vocabolario («da qui in poi la
+chiameremo», «la parola tornerà spesso»). Si nomina la cosa, e se sta in
+un'altra pagina la si linka.
+
+**Le formule d'annuncio** sono più di quelle elencate: «conviene dirlo
+subito», «va detta la cosa che», «una premessa, che qui conta più del solito»,
+«due cose vanno dette», «il punto è che», «si noti», «attenzione a»,
+«fermiamoci un attimo». Si tolgono, e la frase quasi sempre si chiude meglio.
+
+**I calchi dall'inglese**, che chi legge molti articoli non sente più:
+«cade fuori dal conto» (*falls out*: «esce dal conto»), «non compra la strada
+giusta» (*doesn't buy*: «non garantisce»), «la cifra titolare» (*headline
+figure*: «il risultato principale»), «regredire» una grandezza («stimarla»),
+«uccidere» una richiesta («interromperla»), «gli autori riportano un
+classificatore» («ottengono»), «la diagonale si legge 0,93» («vale»), «da
+portarsi via» (*takeaway*), «onestamente aperta» («ancora aperta»).
+
+**Il parlato nella scheda Superiore.** Nell'Elementare e nel testo comune la
+leggerezza è voluta; nella Superiore stonano «per dire», «senza storie»,
+«basta e avanza», «tirare su», «pari pari», «parente stretto», «si tocca con
+mano». La correzione non è il sinonimo impettito («in modo repentino»,
+«perturbazione stocastica»): è il termine tecnico esatto, o la frase piana.
+Vale lo stesso per la sintassi del parlato, le dislocazioni («le istruzioni
+non le sa leggere», «l'autoregressione, la faceva già Yule»): si rimette
+l'ordine piano.
+
+**Niente chiusa ad aforisma**, la sentenza che riassume il capoverso («È un
+trucco, e come tutti i trucchi funziona finché si ricorda che è un trucco»).
+Il capoverso finisce sull'ultimo fatto.
+
+**E quello che resta**, perché queste regole applicate alla cieca potano cose
+giuste: il grassetto su un termine al primo uso, anche se lo stesso termine è
+in grassetto nell'altra scheda (le due schede si escludono); la lineetta breve
+nei nomi composti (Kullback–Leibler) e negli intervalli numerici; le
+virgolette doppie dritte, che la composizione rende «così»; la negazione che
+avverte di un errore che il lettore farebbe davvero; l'esempio che torna.
+
+**Se riscrivi una frase per lo stile, non toccarne il merito.** Una
+riscrittura non deve togliere una riserva («che gli autori assumono senza
+dimostrarla», «quasi certamente») né aggiungere un'affermazione («a ogni
+passo», «sempre»). È il modo più comune in cui una correzione di prosa diventa
+un errore di fatto.
+
 ## Le regole che gli script controllano
 
 Buona parte di quello che sta qui sopra la controlla una macchina, e i

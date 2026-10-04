@@ -8,7 +8,7 @@ pretesto) non ci dice quello che vogliamo sapere, perché il pretesto lo
 abbiamo inventato noi e a nessuno interessa.
 
 Restano quindi due domande aperte. La prima: che cosa può andare storto senza
-che il punteggio se ne accorga. La seconda: con che cosa si sostituisce, il
+che il punteggio se ne accorga. La seconda: con che cosa si sostituisce il
 punteggio.
 
 ## Il collasso non è uno solo
@@ -85,7 +85,7 @@ i valori singolari della matrice delle rappresentazioni e $\varepsilon$ una
 piccola costante, e mostra che, confrontando esecuzioni diverse dello stesso
 metodo a incorporamento congiunto, il valore segue da vicino la prestazione a
 valle, tanto da servire a scegliere gli iperparametri senza etichette
-{cite}`garrido2023rankme`. Gli stessi autori ne dicono i limiti: un rango alto
+{cite}`garrido2023rankme`. Gli stessi autori ne segnalano i limiti: un rango alto
 è una condizione necessaria e non sufficiente (un rumore casuale ha rango
 pieno e non serve a niente), e il numero va usato solo fra esecuzioni dello
 stesso metodo, perché il rango non è l'unica cosa che decide la prestazione.
@@ -111,18 +111,19 @@ condizione coordinata per coordinata non basta a escluderlo: il termine di
 varianza di VICReg tiene la deviazione standard di ogni coordinata sopra una
 soglia, e due coordinate identiche la superano tutte e due pur portando una
 direzione sola. Sul regime dimensionale mordono i termini che guardano le
-coppie, cioè la fuori diagonale della cross-correlazione di Barlow Twins e
-il termine di covarianza di VICReg; il regime costante lo fermano gli altri due,
-la varianza e la diagonale. Due tipi di vincolo per due collassi diversi.
+coppie, cioè gli elementi fuori dalla diagonale della cross-correlazione di
+Barlow Twins e il termine di covarianza di VICReg; il regime costante lo
+fermano gli altri due, la varianza e la diagonale. Due tipi di vincolo per due
+collassi diversi.
 
 `````
 
 ## Che cosa garantisce davvero il punteggio dei metodi contrastivi
 
-C'è una lettura elegante dei metodi contrastivi che circola molto ed è vera a
-metà. La metà che manca è quella istruttiva.
+C'è una lettura elegante dei metodi contrastivi che circola molto, ma è vera solo a
+metà; e la parte mancante è proprio quella istruttiva.
 
-La lettura è questa. La perdita con cui si addestrano quei metodi si chiama
+La perdita con cui si addestrano questi metodi si chiama
 **InfoNCE** {cite}`oord2018representation`, e il nome dice già dove vuole
 andare: la si lega all’**informazione mutua** fra le due viste, cioè a quanto,
 sapendo una delle due, si diventa meno incerti sull'altra. È la differenza fra
@@ -222,7 +223,7 @@ $\log M$ se lo si stima da $M$ campioni {cite}`mcallester2020formal`. Il
 risultato vale per qualunque stimatore, e dice che il tetto $\log K$ è il
 prezzo di certificare informazione a partire da un numero finito di esempi,
 che l'InfoNCE paga come tutti gli altri. La distillazione asimmetrica e la
-riduzione di ridondanza, che $I$ non la stimano in nessun modo, completano il
+riduzione di ridondanza, che non stimano $I$ in nessun modo, completano il
 quadro. Quello che i metodi riusciti hanno in comune è una invarianza imposta
 più un meccanismo che vieta la risposta vuota, e non una quantità informativa
 massimizzata. Per la perdita contrastiva questa coppia ha anche una forma
@@ -298,8 +299,8 @@ classificatore così semplice da non poter aggiungere niente di suo, e si guarda
 se passa l'esame. Se un giudice tanto sprovveduto ci riesce, il merito è della
 rappresentazione.
 
-Qui interessa il seguito, cioè che cosa quello strumento non vede, perché è
-la parte che si dimentica.
+Ma questo strumento non vede tutto, e i suoi limiti sono
+la parte che si dimentica più spesso.
 
 `````{tab} Elementare
 

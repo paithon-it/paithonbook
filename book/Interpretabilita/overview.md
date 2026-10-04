@@ -22,27 +22,26 @@ classificatore semplice, di quelli del {doc}`capitolo sul machine learning
 addestrata da altri e lasciata com'era: la parte che imparava dalle foto era
 solo il classificatore in cima.
 
-Il trucco stava nelle foto. Erano venti soltanto, poche apposta, e scelte a mano
-in modo che tutti i lupi comparissero su sfondo innevato e nessun husky lo
-facesse. Come previsto, il modello imparò una scorciatoia («c'è neve → lupo»)
-che con l'animale non c'entrava nulla: un rilevatore di neve travestito da
-riconoscitore di canidi.
+Il trucco stava nelle foto. Erano venti soltanto, poche apposta, e scelte a
+mano in modo che tutti i lupi comparissero su sfondo innevato, al contrario
+degli husky. Come previsto, il modello imparò una scorciatoia («c'è neve →
+lupo») che con l'animale non c'entrava nulla: un rilevatore di neve travestito
+da riconoscitore di canidi.
 
 Poi venne la parte interessante. I tre mostrarono dieci risposte del modello,
-errori compresi, a ventisette studenti di dottorato e di magistrale che un corso
-di machine learning l'avevano già fatto, e chiesero loro se si
-fidassero e come pensavano che quel programma decidesse. Con le sole risposte
-sotto gli occhi, dieci studenti su ventisette dissero di fidarsi, e meno della
-metà sospettò della neve. Allora i ricercatori diedero loro le *spiegazioni*:
-sopra ogni foto, evidenziate a colori, le porzioni di immagine su cui quella
-risposta si era basata. L'inganno crollò. I fiduciosi scesero a tre, e
-venticinque studenti su ventisette indicarono la neve
-{cite}`ribeiro2016why`. Era una messinscena costruita apposta per dimostrare
-una cosa sola: senza una spiegazione, nemmeno gli addetti ai lavori si
-accorgono di un modello che funziona per la ragione sbagliata. Il metodo che
-disegna quelle macchie, LIME, lo proposero gli stessi autori insieme
-all'esperimento, e lo racconta la sezione sulle {doc}`spiegazioni locali
-</Interpretabilita/spiegazioni-locali>`.
+errori compresi, a ventisette studenti di dottorato e di magistrale che avevano
+già seguito un corso di machine learning, e chiesero loro se si fidassero e su
+quali basi pensassero che il programma decidesse. Con le sole risposte sotto
+gli occhi, dieci studenti su ventisette dissero di fidarsi, e meno della metà
+sospettò della neve. Allora i ricercatori diedero loro le *spiegazioni*: sopra
+ogni foto, evidenziate a colori, le porzioni di immagine su cui quella risposta
+si era basata. L'inganno crollò. I fiduciosi scesero a tre, e venticinque
+studenti su ventisette indicarono la neve {cite}`ribeiro2016why`. Era una
+messinscena costruita apposta per dimostrare una cosa sola: senza una
+spiegazione, nemmeno gli addetti ai lavori si accorgono di un modello che
+funziona per la ragione sbagliata. Il metodo che disegna quelle macchie, LIME,
+lo proposero gli stessi autori insieme all'esperimento, e lo racconta la
+sezione sulle {doc}`spiegazioni locali </Interpretabilita/spiegazioni-locali>`.
 
 La storia ha un antenato illustre. All'inizio del Novecento, a Berlino, un
 cavallo di nome Hans il Sapiente sembrava saper contare: gli si chiedeva
@@ -56,8 +55,8 @@ cose. Hans non faceva aritmetica, leggeva i movimenti involontari di chi gli
 poneva la domanda. L'esaminatore, chino appena in avanti a guardare lo zoccolo,
 alzava di un nonnulla la testa quando i colpi arrivavano al numero giusto,
 senza accorgersene, e il cavallo si fermava lì. Bastava che l'esaminatore non
-conoscesse la risposta, e Hans sbagliava. Il resoconto per esteso Pfungst lo
-pubblicò in un libro nel 1907, ed è quello che si cita ancora. Da allora si
+conoscesse la risposta, e Hans sbagliava. Pfungst ne pubblicò il resoconto per
+esteso in un libro nel 1907, ed è quello che si cita ancora. Da allora si
 chiama **effetto Clever Hans** ogni sistema che *sembra* risolvere un problema
 mentre in realtà ne risolve un altro, più facile e nascosto. Il rilevatore di
 lupi è un Clever Hans in silicio: azzeccava quasi sempre, e per la ragione
@@ -367,10 +366,10 @@ distinguiamo lungo tre assi.
 
 I tre assi sono largamente indipendenti (fa eccezione l'interpretabilità
 intrinseca, che per definizione è sempre specifica del modello
-{cite}`molnar2022interpretable`), e a mostrarlo serve un esempio che li separi,
-perché i due che vengono in mente per primi non lo fanno: LIME, che vedremo, è
-post-hoc, locale e agnostico, e i coefficienti di una regressione lineare sono
-intrinseci, globali e specifici, cioè stanno ai due capi di tutti e tre.
+{cite}`molnar2022interpretable`). A mostrarlo serve un esempio che li separi,
+perché i primi due che vengono in mente non lo fanno: LIME, che vedremo, è
+post-hoc, locale e agnostico, mentre i coefficienti di una regressione lineare sono
+intrinseci, globali e specifici, cioè ai due capi di tutti e tre gli assi.
 L'esempio che separa è la *permutation importance* della {doc}`sezione su
 alberi e metodi ensemble </MachineLearning/alberi-ensemble>`, che mescola a
 caso una colonna e guarda di quanto il modello peggiora: post-hoc come LIME,
@@ -715,14 +714,14 @@ ratio*, la frazione dello spazio (in volume, sotto un prior uniforme) che cade
 nel set, e sostengono che quando il rapporto è grande è probabile che il set
 contenga modelli quasi ottimi di una classe più semplice: è la ragione tecnica
 della tesi di Rudin {cite}`rudin2019stop`, e resta un argomento probabilistico,
-non una garanzia. L'altra faccia riguarda l'importanza: Fisher, Rudin e Dominici
-{cite}`fisher2019models` definiscono la *model class reliance* come l'intervallo
-fra il minimo e il massimo della *model reliance* di una variabile sui modelli
-del Rashomon set (che definiscono rispetto a un modello di riferimento), e
-mostrano come stimarlo. L'importanza calcolata su un solo modello è un punto di
-quell'intervallo, e con variabili correlate l'intervallo può andare da zero a
-molto. Rapporto e intervallo dipendono tutti e due dalla classe $\mathcal{F}$ e
-dalla soglia scelte.
+non una garanzia. L'altra faccia riguarda l'importanza: Fisher, Rudin e
+Dominici {cite}`fisher2019models` definiscono la *model class reliance* come
+l'intervallo fra il minimo e il massimo della *model reliance* di una variabile
+sui modelli del Rashomon set (che definiscono rispetto a un modello di
+riferimento), e mostrano come stimarlo. L'importanza calcolata su un solo
+modello è un punto di quell'intervallo, e con variabili correlate l'intervallo
+può andare da zero a valori elevati. Rapporto e intervallo dipendono entrambi
+dalla classe $\mathcal{F}$ e dalla soglia scelte.
 
 `````
 
@@ -814,8 +813,8 @@ dei due semplici: $0{,}7825$ così com'è e $0{,}7855$ regolato, contro $0{,}797
 e $0{,}7965$. Quanto sia netta la differenza lo dicono i casi in cui i modelli
 non sono d'accordo, perché su tutti gli altri sbagliano o indovinano insieme:
 su 2000 casi di prova, 65 li indovina solo la logistica e 42 solo il boosting.
-Basta per dire che il boosting non fa meglio; per dire di quanto fa peggio,
-poco più di cento disaccordi sono pochi. Su dati come questi lo scambio fra
+Basta per dire che il boosting non fa meglio; per dire di quanto faccia peggio,
+poco più di cento disaccordi non bastano. Su dati come questi lo scambio fra
 accuratezza e chiarezza non c'è.
 
 ## Dai modelli trasparenti ai circuiti

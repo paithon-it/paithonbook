@@ -50,7 +50,7 @@ precisione, cioè la quota di materiale buono fra quello che arriva al
 generatore, e permette di pescare più candidati all'inizio senza consegnarli
 tutti. *Attorno* all'intero ciclo si lascia decidere al modello se e quando
 cercare, e questo alza la recall sulle domande che una ricerca sola non
-risolve. Chiudiamo con la domanda che tiene onesto tutto il resto: come si
+risolve. Chiudiamo con la domanda che fa da arbitro a tutto il resto: come si
 misura se un sistema RAG funziona davvero.
 
 ```{figure} ../figures/rag-avanzato.svg
@@ -364,12 +364,12 @@ pugno di confronti in più invece del doppio.
 
 Sulla forma esatta di quella crescita conviene però essere precisi, perché è il
 punto in cui si tende a promettere un teorema che non c'è. Gli autori
-argomentano una scalabilità logaritmica in $N$, il numero di vettori
+sostengono una scalabilità logaritmica rispetto a $N$, il numero di vettori
 nell'archivio, con un ragionamento che vale per un grafo di Delaunay esatto e di
-grado limitato, mentre HNSW ne costruisce solo un'approssimazione; e la misurano
-su dati sintetici a bassa dimensione: a quattro dimensioni il parametro di
+grado limitato, mentre HNSW ne costruisce solo un'approssimazione. La misurano poi
+su dati sintetici a bassa dimensione. A quattro dimensioni il parametro di
 ricerca che serve per una recall fissata smette di crescere quando l'archivio si
-allarga, e a otto dimensioni, con dieci vicini cercati e la recall ferma a
+allarga; a otto dimensioni, con dieci vicini cercati e la recall ferma a
 $0{,}95$, osservano una complessità «non peggiore che logaritmica». È evidenza
 empirica, non una garanzia dimostrata in generale. E il logaritmo è in $N$: il
 prezzo di vettori più lunghi non sparisce, si paga nel costo del singolo
@@ -395,9 +395,9 @@ Questa disposizione a stadi ha una sua letteratura, e conviene sapere dove
 guardare: Nogueira, Yang, Cho e Lin la montano con un cross-encoder BERT (il
 nome con cui si trova citata è *monoBERT*) e misurano che $k_1$ è la manopola
 con cui si sceglie il punto di equilibrio fra qualità e latenza
-{cite}`nogueira2019multistage`. Da qui l'indicazione pratica su come si fissa:
-alzare $k_1$ compra recall e costa attesa, quindi il valore giusto dipende da
-quanto l'attesa pesa nel sistema che si sta costruendo.
+{cite}`nogueira2019multistage`. Da qui l'indicazione pratica su come
+sceglierlo: alzare $k_1$ fa guadagnare recall ma costa attesa, quindi il valore
+giusto dipende da quanto l'attesa pesi nel sistema che si sta costruendo.
 
 Tra i due estremi esiste una via di mezzo elegante: l’interazione tardiva
 di ColBERT {cite}`khattab2020colbert`. Invece di collassare ogni testo in
@@ -414,12 +414,13 @@ ed $E(\cdot)$ il loro embedding contestuale: qui l'encoder è uno solo, che per�
 legge la query e il documento con un marcatore diverso in testa. Per ogni token
 della domanda si prende la migliore corrispondenza tra i token del documento e
 si sommano: un confronto fine, token-a-token, ma con gli embedding dei
-documenti precalcolabili offline come nel bi-encoder. Nell'articolo ColBERT è
-competitivo con i reranker basati su BERT, con una latenza di due ordini di
-grandezza più bassa e quattro ordini di grandezza in meno di operazioni per
-query; il prezzo è un indice molto più grande (un vettore per token, non per
-passaggio), che ColBERTv2 riduce da sei a dieci volte comprimendo i vettori
-come scarti da un centroide {cite}`santhanam2022colbertv2`.
+documenti precalcolabili offline come nel bi-encoder. Nell'articolo ColBERT
+ottiene prestazioni paragonabili ai reranker basati su BERT, con una latenza di
+due ordini di grandezza più bassa e quattro ordini di grandezza in meno di
+operazioni per query; il prezzo è un indice molto più grande (un vettore per
+token, non per passaggio), che ColBERTv2 riduce da sei a dieci volte
+comprimendo i vettori come scarti da un centroide
+{cite}`santhanam2022colbertv2`.
 
 `````
 
@@ -586,13 +587,13 @@ condivide una parola con la risposta, finisce a zero, ed è corretto: la domanda
 parlava di un gatto che salta, non di solai.
 
 Non abbiamo alzato la recall, perché il passaggio giusto era già stato
-recuperato. Abbiamo alzato la precisione, la quota di roba buona fra quella che
-consegniamo al generatore. Sono due misure gemelle e
-raccontano due guai diversi: la recall dice quanto ci siamo persi per strada,
-la precisione quanta spazzatura abbiamo consegnato insieme al buono. Il tetto
-del sistema resta il primo, perché ciò che non si trova non si recupera più; ma
-la seconda si può alzare a valle, ed è quello che abbiamo appena fatto,
-guadagnando la capacità di dire di no.
+recuperato. Abbiamo alzato la precisione, la quota di passaggi utili fra quelli
+che consegniamo al generatore. Sono due misure gemelle e descrivono due
+problemi diversi: la recall dice quanto ci siamo persi per strada, la
+precisione quanto materiale irrilevante abbiamo consegnato insieme a quello
+utile. Il tetto del sistema resta il primo, perché ciò che non si trova non si
+recupera più; ma la seconda si può alzare a valle, ed è quello che abbiamo
+appena fatto, guadagnando la capacità di dire di no.
 
 ## Il RAG che si corregge: Self-RAG e RAG agentico
 
@@ -680,7 +681,7 @@ per tutte, prima dell'addestramento: il generatore impara poi con l'obiettivo
 consueto, prevedere il token successivo, token di riflessione compresi, e non si
 porta dietro nessun critico. Un token *Retrieve* decide, passo per passo, se in
 quel momento serve recuperare (`sì`/`no`/`continua`, dove il terzo vuol dire
-tenersi il passaggio che si ha già in mano invece di cercarne un altro); quando
+mantenere il passaggio corrente invece di cercarne un altro); quando
 il recupero avviene, altri token *critici* danno tre giudizi diversi: se il
 passaggio è rilevante per la domanda, se la frase appena generata è supportata
 da quel passaggio o lo travisa, e se la risposta nel complesso serve a chi ha
@@ -735,9 +736,9 @@ Tutte queste leve hanno senso solo se sappiamo dire quale migliora il sistema e
 quale no. Ma un RAG ha due pezzi, il cercatore e il generatore, e una risposta
 sbagliata può essere colpa dell'uno o dell'altro: o la ricerca ha mancato il
 documento giusto, o il documento c'era e chi ha scritto la risposta l'ha
-ignorato, o l'ha letto male. Un voto solo non distingue i due casi, e chi
-ripara non sa dove mettere le mani. Servono misure separate, che sappiano
-dove guardare.
+ignorato, o l'ha letto male. Un voto solo non distingue i due casi, e non offre
+indicazioni su dove intervenire. Servono misure separate, che sappiano dove
+guardare.
 
 `````{tab} Elementare
 
@@ -815,7 +816,7 @@ di giudizi umani, mai preso per oracolo.
 
 `````
 
-Un'ultima avvertenza, che è il filo rosso di tutta la RAG. La fedeltà, la
+Un'ultima avvertenza, che vale per tutta la RAG. La fedeltà, la
 metrica più facile da scambiare per correttezza, non va confusa con la verità.
 Un sistema può essere perfettamente fedele e fattualmente sbagliato: se
 l'archivio contiene un documento errato, la risposta più fedele possibile a

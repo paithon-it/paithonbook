@@ -28,7 +28,7 @@ numeri non avevano senso: direzione, distanza, angolo.
 
 `````{tab} Elementare
 
-Un vettore è semplicemente una lista ordinata di numeri. Se descrivo un
+Un vettore è una lista ordinata di numeri. Se descrivo un
 appartamento con tre numeri (metri quadri, numero di stanze, piano), ho già un
 vettore:
 
@@ -495,11 +495,11 @@ $$
 $$
 
 Riscrivendo come $(\mathbf{A}-\lambda \mathbf{I})\mathbf{v}=\mathbf{0}$, dove
-$\mathbf{I}$ è la matrice identità (uno sulla diagonale e zero altrove: quella
-che moltiplicando non cambia niente), la soluzione non banale esiste solo se
-$\mathbf{A}-\lambda \mathbf{I}$ è singolare, cioè non invertibile, cioè se il
-suo determinante (definito nella {doc}`sezione sul determinante
-</Matematica/determinante-e-volume>`) si annulla:
+$\mathbf{I}$ è la matrice identità (uno sulla diagonale e zero altrove), la
+soluzione non banale esiste solo se $\mathbf{A}-\lambda \mathbf{I}$ è
+singolare, cioè non invertibile, cioè se il suo determinante (definito nella
+{doc}`sezione sul determinante </Matematica/determinante-e-volume>`) si
+annulla:
 
 $$
 \det(\mathbf{A} - \lambda \mathbf{I}) = 0 .
@@ -747,20 +747,20 @@ $z_{n+1}/z_n \to \lambda_1$, con velocità $|\lambda_2/\lambda_1|^n$: è
 $\mathbf{A}^k\mathbf{v} = \lambda^k\mathbf{v}$ letto su una successione, e il
 raggio spettrale di $\mathbf{M}$ è il tasso di crescita.
 
-Le due eccezioni sono quelle della diagonalizzazione. La matrice compagna ha
-un solo autovettore per ogni autovalore distinto, quindi una radice di
-molteplicità $m$ le dà un blocco di Jordan di taglia $m$ e contribuisce con i
-termini $\lambda^n, n\lambda^n, \dots, n^{m-1}\lambda^n$: un fattore
-polinomiale che il modulo della radice non vede, parente del transitorio
-delle matrici non normali. E con coefficienti reali le radici complesse
-vanno in coppie coniugate $\rho\, e^{\pm i\theta}$, la cui somma nella formula
-chiusa è il termine reale $\rho^n (a \cos n\theta + b \sin n\theta)$:
-un’oscillazione di periodo $2\pi/\theta$ dentro un inviluppo $\rho^n$. Per
-$z_n = z_{n-1} - z_{n-2}/2$ le radici sono $(1 \pm i)/2$, con
-$\rho = 1/\sqrt2$ e $\theta = \pi/4$: periodo otto, e in otto passi
-l’inviluppo si riduce di $\rho^8 = 1/16$. È la forma della discesa con il
-momento: sulle quadratiche, lungo ogni autodirezione dell’hessiana, è una
-ricorrenza del secondo ordine, e la {doc}`sezione di analisi e ottimizzazione
+I due casi che sfuggono a questo schema semplice sono le radici multiple e le
+radici complesse. La matrice compagna ha un solo autovettore per ogni
+autovalore distinto, quindi una radice di molteplicità $m$ le dà un blocco di
+Jordan di taglia $m$ e contribuisce con i termini $\lambda^n, n\lambda^n,
+\dots, n^{m-1}\lambda^n$: un fattore polinomiale che il modulo della radice non
+vede, parente del transitorio delle matrici non normali. E con coefficienti
+reali le radici complesse vanno in coppie coniugate $\rho\, e^{\pm i\theta}$,
+la cui somma nella formula chiusa è il termine reale $\rho^n (a \cos n\theta +
+b \sin n\theta)$: un’oscillazione di periodo $2\pi/\theta$ dentro un inviluppo
+$\rho^n$. Per $z_n = z_{n-1} - z_{n-2}/2$ le radici sono $(1 \pm i)/2$, con
+$\rho = 1/\sqrt2$ e $\theta = \pi/4$: periodo otto, e in otto passi l’inviluppo
+si riduce di $\rho^8 = 1/16$. È la forma della discesa con il momento: sulle
+quadratiche, lungo ogni autodirezione dell’hessiana, è una ricorrenza del
+secondo ordine, e la {doc}`sezione di analisi e ottimizzazione
 </Matematica/analisi-ottimizzazione>` ne ricava così la velocità.
 
 `````

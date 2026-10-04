@@ -36,8 +36,7 @@ lo stesso lavoro.
 La differenza tra machine learning classico e deep learning non sta in una
 matematica esoterica: sta in *chi* decide quali caratteristiche dei dati
 contano. Quelle caratteristiche, in gergo, si chiamano feature: sono i
-numeri che descrivono un dato e su cui il modello, cioè il programma che impara
-dagli esempi, fa i suoi conti.
+numeri che descrivono un dato e su cui il modello fa i suoi conti.
 
 `````{tab} Elementare
 
@@ -100,12 +99,12 @@ fissa. È ciò che si chiama *representation learning*.
 ## Rappresentazioni gerarchiche: dai bordi agli oggetti
 
 Una rete profonda è una sequenza di strati: il primo riceve i numeri
-dell'immagine, ognuno dei successivi l'uscita dello strato che lo precede. Un
-neurone, in questo senso, non è una cellula: calcola una somma pesata dei suoi
-ingressi e la passa per la funzione di attivazione, la ReLU per esempio.
-L'uscita di uno strato è la sua *rappresentazione* dell'ingresso, e poiché
-ciascuna è costruita sulla precedente le rappresentazioni sono gerarchiche. Che
-cosa rappresenta davvero uno strato?
+dell'immagine, ognuno dei successivi l'uscita dello strato che lo precede. Ogni
+neurone calcola una somma pesata dei suoi ingressi e la passa per la funzione
+di attivazione, la ReLU per esempio. L'uscita di uno strato è la sua
+*rappresentazione* dell'ingresso, e poiché ciascuna è costruita sulla
+precedente le rappresentazioni sono gerarchiche. Che cosa rappresenta davvero
+uno strato?
 
 Nel 2014 Zeiler e Fergus {cite}`zeiler2014visualizing` trovarono il modo di
 "visualizzarlo" in una rete convoluzionale, il tipo di rete fatto apposta per le
@@ -184,7 +183,7 @@ nuovi, mentre gli ultimi vanno riaddestrati {cite}`yosinski2014transferable`.
 
 C'è un dettaglio che spiazza chi arriva al deep learning da profano: la
 retropropagazione, l'algoritmo che addestra queste reti, fu resa celebre nel
-1986 da Rumelhart, Hinton e Williams {cite}`rumelhart1986learning`, e l'idea è
+1986 da Rumelhart, Hinton e Williams {cite}`rumelhart1986learning`, ma l'idea è
 ancora più vecchia[^backprop-storia].
 Se l'algoritmo esisteva da decenni, perché il deep learning
 è esploso solo dopo il 2012? Perché servivano tre ingredienti tutti insieme:
@@ -222,14 +221,14 @@ Il primo guaio sta nella funzione che ogni neurone applica al numero uscito dai
 suoi conti. Era la curva a S, la sigmoide: oltre un certo punto, numero grande
 o numero grandissimo, esce quasi lo stesso valore, e la rete non si accorge
 della differenza. Il danno peggiore però si vede al ritorno. La correzione
-risale dall'ultimo strato verso il primo, e a ogni strato viene moltiplicata per
-la pendenza di quella curva, che sulla parte piatta è quasi zero: un numero
-piccolo per ogni strato risalito, e ai primi strati non arrivava quasi niente.
-Il rimedio è lo sportello del {doc}`capitolo sulle reti neurali
-</RetiNeurali/funzioni-attivazione>`: i numeri positivi passano come sono, i
-negativi diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0, e dal lato
-aperto la pendenza vale sempre 1, quindi la correzione passa intera. Si chiama
-ReLU.
+risale dall'ultimo strato verso il primo, e a ogni strato viene moltiplicata
+per la pendenza di quella curva, che sulla parte piatta è quasi zero: a ogni
+strato risalito si moltiplica per un numero piccolo, e ai primi strati non
+arrivava quasi niente. Il rimedio è lo sportello del {doc}`capitolo sulle reti
+neurali </RetiNeurali/funzioni-attivazione>`: i numeri positivi passano come
+sono, i negativi diventano zero. Se entra 5 esce 5, se entra $-3$ esce 0, e dal
+lato aperto la pendenza vale sempre 1, quindi la correzione passa intera. Si
+chiama ReLU.
 
 Il secondo guaio è che la rete si impara a memoria le fotografie
 dell'addestramento. Sembrerebbe un pregio, ed è il modo più sicuro di fallire:
@@ -309,14 +308,14 @@ due fregature. Una sta nel prezzo: quel singolo strato potrebbe aver bisogno di
 un numero enorme, impraticabile, di neuroni. L'altra sta nel verbo che il
 teorema usa, "esiste". Garantisce che una rete buona ci sia da qualche parte,
 non che qualcuno la sappia trovare. A cercarla è l'addestramento, che parte da
-numeri buttati a caso e li corregge un poco alla volta guardando gli esempi,
-e sapere che il traguardo c'è non dice da che parte muoversi per raggiungerlo,
-né quante foto bisognerà guardare per arrivarci.
+numeri buttati a caso e li corregge un poco alla volta guardando gli esempi:
+sapere che il traguardo c'è non dice da che parte muoversi per raggiungerlo, né
+quante foto bisognerà guardare per arrivarci.
 
 Il prezzo alto ha una ragione precisa. Quello che manca alla rete piatta è la
 possibilità di costruire sopra. In
 una rete a un solo strato ogni neurone guarda i pixel grezzi e nient'altro:
-nessuno può partire da una forma che un altro ha già trovato per comporla con
+nessuno può prendere una forma che un altro ha già trovato e comporla con
 una seconda. Un occhio va descritto ogni volta a partire dai pixel, e le
 combinazioni di pixel che fanno un occhio sono innumerevoli: cambia la luce,
 cambia l'inclinazione, cambia la taglia, e ogni variante va prevista da capo.

@@ -151,10 +151,10 @@ discorso ma è onesto nominare: una rotazione di fase (*xPos*) che convive con
 il decadimento e fa da codifica posizionale relativa (il decadimento completo è
 allora un numero complesso: il modulo $\gamma$ dimentica, la fase $\theta$
 codifica la posizione), e tre riscalature dei punteggi che servono a tenere i
-conti in un intervallo numerico sicuro. Sono gratis perché ogni testa passa poi
-per una normalizzazione di gruppo, che è cieca a un fattore comune: gli autori
-dichiarano che il risultato non cambia, e l'equivalenza fra le tre forme è
-esatta anche senza.
+conti in un intervallo numerico sicuro. Non modificano l'uscita perché ogni
+testa passa poi per una normalizzazione di gruppo, che è cieca a un fattore
+comune: gli autori dichiarano che il risultato non cambia, e l'equivalenza fra
+le tre forme è esatta anche senza.
 
 **Ricorrente** (inferenza, costo costante nella lunghezza: $O(d^2)$ per token,
 come per l'attenzione lineare). La stessa funzione, srotolata come
@@ -500,17 +500,17 @@ n_t = f_t\, n_{t-1} + i_t,
 h_t = o_t\, \frac{c_t}{n_t},
 $$
 
-dove $z_t$ è l'input candidato, $f_t, o_t$ i gate di *forget* e *output* e
-$i_t = \exp(\tilde{\imath}_t)$ è il gate di *input* reso esponenziale, con
+dove $z_t$ è l'input candidato, $f_t, o_t$ i gate di *forget* e *output* e $i_t
+= \exp(\tilde{\imath}_t)$ è il gate di *input* reso esponenziale, con
 $\tilde{\imath}_t$ la sua pre-attivazione, cioè quello che la rete calcola
-prima di passarlo per l'esponenziale. Il
-denominatore $n_t$ è un normalizzatore che accumula i gate di input, così che la
-lettura $c_t/n_t$ resti una media ben scalata. La sLSTM ha una *memory mixing*
-fra le celle di una stessa testa, e non fra teste diverse: è per questo che i
-suoi parametri ricorrenti sono $d^2/N_h$ invece di $d^2$, con $N_h$ il numero
-di teste. Proprio quel mescolamento (i collegamenti da stato a stato) la rende,
-per costruzione, ricorrente non parallelizzabile: si valuta con un kernel
-sequenziale, che gli autori hanno però scritto in CUDA e reso veloce.
+prima di passarlo per l'esponenziale. Il denominatore $n_t$ è un normalizzatore
+che accumula i gate di input, così che la lettura $c_t/n_t$ resti una media ben
+scalata. La sLSTM ha una *memory mixing* fra le celle di una stessa testa, e
+non fra teste diverse: è per questo che i suoi parametri ricorrenti sono
+$d^2/N_h$ invece di $d^2$, con $N_h$ il numero di teste. Proprio quel
+mescolamento (i collegamenti da stato a stato) la rende, per costruzione,
+ricorrente non parallelizzabile: si valuta con un kernel sequenziale, che gli
+autori hanno però ottimizzato scrivendolo direttamente in CUDA.
 
 mLSTM (memoria *matriciale*) è la variante pensata per le GPU. Lo stato
 diventa una matrice, e qui porta il nome che ha nelle LSTM, $\mathbf{C}_t$ come
@@ -568,7 +568,7 @@ La mLSTM, cioè la cella con la memoria a griglia, si è rivelata quella di
 maggior peso pratico. Nel 2025 lo stesso gruppo presenta **xLSTM-7B**
 {cite}`beck2025xlstm7b`, un modello da 7 miliardi di parametri costruito su
 sole celle mLSTM e addestrato su 2,3 mila miliardi di token: a quella
-taglia va alla pari con i modelli confrontabili, tenendo l'inferenza a memoria
+taglia va alla pari con i modelli confrontabili, mantenendo l'inferenza a memoria
 costante che una ricorrenza porta con sé.
 
 ## Lo stesso scheletro
@@ -622,7 +622,7 @@ diagonale fisso della v4 a quello data-dipendente della v6 fino al
 decadimento diagonale con correzione di rango uno della v7. Attenzione a non
 leggerlo come il gradino che, nella famiglia di Yang, separa la GLA dal Gated
 DeltaNet: quello scambia il decadimento per canale con uno scalare mentre
-aggiunge la correzione, la v7 invece il decadimento per canale se lo tiene.
+aggiunge la correzione, la v7 invece conserva il decadimento per canale.
 
 Una riserva sull'affermazione «tutte tengono una memoria che si scrive per
 prodotto esterno»: vale da RWKV-5 in poi (oltre che per RetNet e per la

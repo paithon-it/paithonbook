@@ -22,8 +22,8 @@ soltanto un modo più accorto di percorrere la stessa strada.
 `````{tab} Elementare
 
 Una barca scende un fiume. Due cose la muovono: la corrente, che la trascina in
-un modo perfettamente noto perché del fiume abbiamo la carta, con i tratti
-lenti e le rapide, e i colpi di remo di chi ci sta sopra, che dipendono da dove
+un modo perfettamente noto perché del fiume abbiamo la carta (con i tratti
+lenti e le rapide), e i colpi di remo di chi ci sta sopra, che dipendono da dove
 si trova e da cosa vede.
 
 Chi volesse prevedere dove finirà la barca ha due strade. La prima è misurare
@@ -165,7 +165,7 @@ programmi come quello lineare di DDPM la differenza fra le due griglie è
 sostanziale a parità di valutazioni; ma il verso della differenza dipende dal
 metodo e dal programma di rumore, e il banco di prova lo mostra. È il motivo per
 cui i campionatori delle librerie espongono la griglia come parametro separato
-dal metodo: sono due scelte distinte, e si sbaglia a considerarle una sola.
+dal metodo: sono due scelte distinte.
 
 La parametrizzazione che le librerie hanno adottato più di tutte è quella di
 Karras e colleghi {cite}`karras2022elucidating`. Si scrive il dato rumoroso come
@@ -274,9 +274,10 @@ $O(h^2)$ {cite}`lu2022dpm`.
 
 Le tre affermazioni (il pezzo noto risolto a penna conviene, spaziare i passi
 sul rapporto segnale-rumore conviene, l'ordine alto conviene) si misurano sullo
-stesso banco di prova che il capitolo usa da qualche sezione: due sole
-modalità, punteggio esatto scritto a mano, nessuna rete addestrata. Isolare i
-metodi dalla qualità del modello è precisamente ciò che serve per confrontarli.
+stesso banco di prova della {doc}`sezione sul limite continuo
+</ModelliDiffusione/sde-e-ode>`: due sole modalità, punteggio esatto scritto a
+mano, nessuna rete addestrata. Isolare i metodi dalla qualità del modello è
+precisamente ciò che serve per confrontarli.
 
 ```python
 import numpy as np
@@ -385,8 +386,8 @@ print("ordine di Eulero in lambda:", round(float(np.log(rapporto) / np.log(4)), 
 # -> ordine di Eulero in lambda: 1.09
 ```
 
-Gli ordini misurati (l'esponente per cui, raddoppiando i passi, l'errore si
-divide per due elevato a quell'esponente) dicono che i metodi si comportano
+Gli ordini misurati (l'esponente $p$ per cui, raddoppiando i passi, l'errore si
+divide per $2^p$) dicono che i metodi si comportano
 esattamente come la teoria prevede: DDIM è del primo ordine ($1{,}07$),
 DPM-Solver del secondo ($2{,}08$). Eulero invece non raggiunge il primo ordine
 ($0{,}78$), e il confronto va letto con un'avvertenza: Eulero cammina a passi
@@ -422,7 +423,7 @@ sedici e da trentadue, e con le stesse trentadue è già tre volte più preciso.
 
 ## Quando l'ordine alto smette di aiutare
 
-La tabella contiene anche il suo controesempio, e va guardata perché è la cosa
+La tabella contiene anche il suo controesempio, ed è il punto
 che in pratica sorprende.
 
 `````{tab} Elementare
@@ -450,8 +451,8 @@ grandezza così gonfiata prevede male ed esce di strada. La cura è cambiare la
 grandezza su cui si fa la previsione: invece del disturbo si prevede la stima
 dell'immagine pulita, che resta di taglia normale molto più a lungo e, quando
 esagera, si può riportare dentro i limiti dell'immagine. È la modifica che
-porta da DPM-Solver a DPM-Solver++, con il suo «più», ed è pensata per il caso
-guidato, che poi è quello di tutti.
+porta da DPM-Solver a DPM-Solver++, con i suoi due «più», ed è pensata per il caso
+guidato, che in pratica è quello di tutti.
 
 La seconda è che sotto una certa soglia il limite smette di essere il
 metodo. Se la rete stima il disturbo con un certo errore suo, nessun

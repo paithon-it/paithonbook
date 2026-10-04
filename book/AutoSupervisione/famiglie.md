@@ -19,7 +19,7 @@ incontrato: un'energia bassa dappertutto, che dà ragione a ogni coppia.
 
 Quindi la domanda vera non è «quale pretesto». È: che cosa impedisce la
 risposta vuota. Le quattro famiglie sono quattro risposte a questa domanda, e
-messe in fila si tengono a mente molto meglio che come quattro elenchi di sigle.
+messe in fila si ricordano molto meglio di quattro elenchi di sigle.
 
 ## La prima: respingere
 
@@ -63,7 +63,7 @@ predizione su un ramo e lo stop-gradient sull'altro: tolta l'una o l'altro, il
 modello collassa. In DINO le architetture sono identiche, e servono la copia
 lenta e due ritocchi all'uscita dell'insegnante: la centratura, che sottrae la
 risposta media e gli impedisce di dire sempre la stessa cosa, e l'affilatura,
-che rende la risposta più netta e gli impedisce di dire tutto un po'.
+che rende la risposta più netta e gli impedisce di dire un po' di tutto.
 
 È la famiglia della distillazione, perché una rete impara da quello che dice
 l'altra, e anche questa è già stata percorsa in
@@ -182,7 +182,7 @@ $\mathbf{C}$ ha rango al più $N - 1$, e la perdita non è un vincolo da
 soddisfare ma una penalità da rendere piccola.
 
 L'anti-collasso non è una proprietà emergente, ed è utile vedere quale dei due
-termini ferma quale collasso, perché non è lo stesso. Se l'uscita è
+termini ferma quale collasso, perché i due collassi sono diversi. Se l'uscita è
 costante, la standardizzazione ha numeratore e deviazione standard nulli, e
 con l’$\varepsilon$ che ogni implementazione tiene al denominatore manda a zero
 tutte le celle di $\mathbf{C}$: a pagare è allora il termine di invarianza,
@@ -253,7 +253,7 @@ e i vettori $\mathbf{u}$ e $\mathbf{v}$ si trovano con l'algoritmo di
 Sinkhorn-Knopp, di cui tre iterazioni bastano. Mathilde Caron firma come prima
 autrice anche il metodo di distillazione della famiglia precedente
 {cite}`caron2021emerging`, e l'equipartizione fa qui il mestiere che là fa la
-centratura: impedire che una componente dell'uscita si prenda tutta la massa.
+centratura: impedire che una componente dell'uscita assorba tutta la massa.
 Là quel mestiere richiede un contrappeso, perché la centratura da sola spinge
 verso l'uniformità e a tirare dall'altra parte serve l'affilatura; qui il
 vincolo è uno solo.
@@ -351,7 +351,7 @@ punto. La fuori diagonale crolla da $0{,}70$ a $0{,}01$: le otto coordinate
 smettono di ripetersi e cominciano a dire otto cose distinte. La diagonale
 invece parte già in cima e ci resta, al tetto imposto dal rumore, $0{,}92$.
 
-Dopo seicento passi la diagonale si legge $0{,}93$, cioè un centesimo sopra
+Dopo seicento passi la diagonale segna $0{,}93$, cioè un centesimo sopra
 quel tetto, e il centesimo non è un errore di conto: il punteggio si calcola
 sulle cinquecentododici coppie che il modello ha davanti, non sulla sorgente da
 cui vengono, e su un campione finito un po' di somiglianza in più si trova
@@ -451,13 +451,13 @@ escono tre famiglie, e la terza, quella che predice nello spazio delle
 rappresentazioni, qui non compare affatto perché non è un modo diverso di
 evitare il collasso.
 
-Non è una contraddizione ed è utile che sia così: i due assi sono
-indipendenti, e un metodo ha una posizione su ciascuno dei due. Una JEPA, per
-dire, sull'asse del *dove* predice nello spazio delle rappresentazioni, e
-sull'asse del *come non collassa* si affida a un'asimmetria, oppure a un vincolo
-sulle statistiche. Quando si leggono due elenchi con due numeri diversi, quasi
-sempre non è che uno dei due sbagli a contare: stanno guardando la stessa cosa
-da due lati.
+Non è una contraddizione ed è utile che sia così: i due assi sono indipendenti,
+e un metodo ha una posizione su ciascuno dei due. Una JEPA, per dire, sull'asse
+del *dove* predice nello spazio delle rappresentazioni, e sull'asse del *come
+non collassa* si affida a un'asimmetria, oppure a un vincolo sulle statistiche.
+Quando si leggono due elenchi con due numeri diversi, quasi sempre non
+significa che uno dei due sbagli a contare: stanno guardando la stessa cosa da
+due lati.
 
 `````{tab} Elementare
 

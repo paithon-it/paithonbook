@@ -1,8 +1,8 @@
 # Reti convoluzionali (CNN)
 
 Per un computer una fotografia è una tabella di numeri: uno per ogni pixel, o
-tre se la foto è a colori. Prendi la foto di un gatto e spostalo di dieci pixel
-a destra: per te è ancora, banalmente, un gatto; per la tabella, invece, quasi
+tre se la foto è a colori. Prendi la foto di un gatto e spostala di dieci pixel
+a destra: per te è ancora un gatto; per la tabella, invece, quasi
 nessun numero è rimasto dov'era, e una rete fatta come quelle del {doc}`capitolo
 sulle reti neurali </RetiNeurali/overview>` si ritrova davanti un ingresso
 completamente nuovo. È il caso della rete con cui il {doc}`capitolo su PyTorch
@@ -61,16 +61,16 @@ Soprattutto, lo strato denso non è **equivariante alla traslazione**: un
 pattern spostato di un vettore $\boldsymbol{\Delta}$ attiva pesi diversi,
 perché l'indice della componente cambia. Le CNN recuperano l'equivarianza
 grazie alla sola condivisione dei pesi: sposti l'input, e l'attivazione si
-sposta con lui. Vale all'interno, e con due riserve: la cornice di zeri rompe
-l'equivarianza sul bordo, dove il motivo perde
-i contributi che cadono fuori, e con un passo maggiore di uno sopravvivono solo
-gli spostamenti multipli del passo. L'altro vincolo, la connettività locale, dà
-i pochi parametri e non l'equivarianza: uno strato *locally connected*, che
-guarda una finestra piccola ma con pesi diversi in ogni posizione, equivariante
-non è. Attenzione a non chiamarla invarianza, che è un'altra proprietà (la
-risposta non cambia affatto) e la convoluzione non la dà: semmai la porta la
-testa della rete, con il *global average pooling* di Network in Network, che
-incontreremo in {doc}`Architetture storiche <architetture-storiche>`.
+sposta con lui. L'equivarianza vale all'interno, con due riserve: la cornice di
+zeri la rompe sul bordo, dove il motivo perde i contributi che cadono fuori;
+inoltre, con un passo maggiore di uno sopravvivono solo gli spostamenti
+multipli del passo. L'altro vincolo, la connettività locale, dà i pochi
+parametri e non l'equivarianza: uno strato *locally connected*, che guarda una
+finestra piccola ma con pesi diversi in ogni posizione, equivariante non è.
+Attenzione a non chiamarla invarianza, che è un'altra proprietà (la risposta
+non cambia affatto) e la convoluzione non la dà: semmai la porta la testa della
+rete, con il *global average pooling* di Network in Network, che incontreremo
+in {doc}`Architetture storiche <architetture-storiche>`.
 
 `````
 
@@ -238,16 +238,15 @@ Un layer convoluzionale con $F$ filtri, kernel $k\times k$ e $C$ canali in
 ingresso ha $F\,(k^2 C + 1)$ parametri, e nel conto la risoluzione
 dell'immagine non compare: su una foto con quattro volte i pixel il lavoro da
 fare quadruplica, i pesi da imparare restano quelli. Attenzione a non
-trasportare il risparmio dai parametri ai conti: le moltiplicazioni sono
-$o^2 F k^2 C$ con $o$ il lato della mappa d'uscita, e la risoluzione lì c'è
-eccome. Il crollo di cinque ordini di grandezza è sui pesi; sul calcolo il
-vantaggio è molto più modesto, ed è per questo che le CNN restano care da
-addestrare. Il conto spiega anche il ritmo con cui le reti profonde crescono:
-dimezzare $o$ raddoppiando sia $F$ sia $C$ lo lascia invariato,
+trasportare il risparmio dai parametri ai conti: le moltiplicazioni sono $o^2 F
+k^2 C$ con $o$ il lato della mappa d'uscita, e in questo conto la risoluzione
+compare in pieno. Il crollo di cinque ordini di grandezza è sui pesi; sul
+calcolo il vantaggio è molto più modesto, ed è per questo che le CNN restano
+care da addestrare. Il conto spiega anche il ritmo con cui le reti profonde
+crescono: dimezzare $o$ raddoppiando sia $F$ sia $C$ lo lascia invariato,
 $(o/2)^2\,(2F)\,k^2\,(2C) = o^2 F k^2 C$, e ogni blocco costa quanto il
-precedente. È la condivisione dei pesi
-(*parameter sharing*) che impone l'equivarianza traslazionale come *prior*
-strutturale, riducendo drasticamente
+precedente. È la condivisione dei pesi (*parameter sharing*) che impone
+l'equivarianza traslazionale come *prior* strutturale, riducendo drasticamente
 lo spazio delle ipotesi e quindi il rischio di overfitting.
 
 `````
@@ -444,8 +443,8 @@ convenzione).
 Due precisazioni, perché la formula così com'è nasconde altrettante ipotesi.
 
 La prima: a stride 1 la parte intera non serve, perché dividere per uno dà
-sempre un intero. Conta da stride 2 in su, dove le posizioni in cui la
-finestra sporgerebbe dal bordo semplicemente non si contano. E lì va saputo che
+sempre un intero. Conta da stride 2 in su, dove le posizioni in cui la finestra
+sporgerebbe dal bordo semplicemente non si contano. Qui occorre ricordare che
 arrotondare per difetto è una convenzione, non l'unica possibile:
 `nn.MaxPool2d(..., ceil_mode=True)` arrotonda per eccesso, tenendo anche
 l'ultima finestra incompleta. Con $n=61$ e $k=s=2$ la prima dà $30$ e la
@@ -911,11 +910,11 @@ Il criterio è energetico. Con i costi per accesso di un processo a 65 nm,
 normalizzati a una moltiplicazione-accumulo (register file 1, rete fra elementi
 2, buffer globale 6, DRAM 200), il flusso minimizza l'energia complessiva del
 movimento dei dati, invece di tenere fermo un solo tipo di dato come *weight
-stationary* e *output stationary*, o nessuno come *no local reuse*. Sugli strati
-convoluzionali di AlexNet, a parità di area e di numero di elementi, risulta da
-$1{,}4$ a $2{,}5$ volte più efficiente degli altri flussi, e almeno $1{,}3$
-volte su quelli completamente connessi con lotti di almeno sedici immagini. Il
-chip {cite}`chen2017eyeriss` ha 168 elementi in una matrice $12 \times 14$ e
+stationary* e *output stationary*, o nessuno come *no local reuse*. Sugli
+strati convoluzionali di AlexNet, a parità di area e di numero di elementi,
+questo flusso risulta da $1{,}4$ a $2{,}5$ volte più efficiente degli altri, e
+almeno $1{,}3$ volte sugli strati densi, con lotti di almeno sedici immagini.
+Il chip {cite}`chen2017eyeriss` ha 168 elementi in una matrice $12 \times 14$ e
 108 kB di buffer globale; adatta il set logico alla matrice fisica spezzandolo
 quando è troppo grande e replicandolo quando è piccolo, e la sua rete porta la
 stessa riga a più elementi in multicast. I limiti sono la mappatura, che va
@@ -1043,14 +1042,11 @@ elemento in elemento dentro la colonna.
 ```
 `````
 
-Da portarsi dietro c'è un filtro piccolo che scorre su tutto e non cambia mai:
-la connettività locale, ogni neurone una finestra sola, e la condivisione dei
-pesi, lo stesso filtro in ogni posizione. Sono due vincoli messi dentro
-l'architettura invece che sperati dall'addestramento, e danno pochi parametri
-e l'equivarianza alla traslazione, cioè il motivo trovato dovunque sia finito.
-Si pagano in flessibilità, e in cambio per imparare servono molti meno esempi.
-Restano due domande, di mestiere diverso: come si fa a far imparare davvero una
-rete profonda, che è
-{doc}`Far funzionare le reti profonde <ottimizzazione-regolarizzazione>`, e
-quali sono le reti che con questi pezzi hanno vinto, che è
-{doc}`Le architetture che hanno fatto la storia <architetture-storiche>`.
+I due vincoli della convoluzione, una finestra sola per ogni neurone e lo
+stesso filtro in ogni posizione, stanno dentro l'architettura invece di essere
+sperati dall'addestramento: si pagano in flessibilità, e in cambio per imparare
+servono molti meno esempi. Restano due domande, di mestiere diverso: come si fa
+a far imparare davvero una rete profonda, il tema di {doc}`Far funzionare le
+reti profonde <ottimizzazione-regolarizzazione>`, e quali reti hanno vinto con
+questi pezzi, che racconta {doc}`Le architetture che hanno fatto la storia
+<architetture-storiche>`.

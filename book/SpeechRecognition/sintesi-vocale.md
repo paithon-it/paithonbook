@@ -57,7 +57,7 @@ può ascoltare. Ogni tappa ha un nome, e le prossime pagine le prendono una per
 una.
 ```
 
-Attenzione a un nome che torna e cambia mestiere. Nel riconoscimento il
+Un nome torna e cambia mestiere. Nel riconoscimento il
 modello acustico era il pezzo che, ascoltando il suono, diceva quali
 suoni ci fossero dentro; qui è il pezzo che, letto il testo, decide
 quali suoni *produrre*. Stesso nome, freccia rovesciata: è il punto in cui la
@@ -247,21 +247,22 @@ registrazione.
 
 Fra la seconda e la terza c'è una generazione spesso dimenticata, che per
 quindici anni ha tenuto il campo accanto alla concatenativa: la **sintesi
-parametrica statistica**. Un modello impara dalle registrazioni la distribuzione
-dei parametri acustici di ciascun fonema nel suo contesto (la forma dello
-spettro, che decide timbro e vocale; l'altezza della voce, $F_0$; le durate),
-e un vocoder a regole li rende udibili: prima con i modelli di Markov nascosti
-della panoramica {cite}`zen2009statistical`, dal 2013 con reti neurali
-profonde {cite}`zen2013statistical`. Suonava più liscia e più ovattata della
-concatenativa (nei test d'ascolto con cui la confrontano gli autori di Tacotron
-2, voti medi da 1 a 5 che più avanti prendono il nome di MOS, prende $3{,}49$
-contro $4{,}17$), ma si ritoccava cambiando un numero invece che tornando in
-studio. Le reti neurali entrano nella sintesi da lì; la generazione che le
-mette al centro comincia nel 2016 con WaveNet {cite}`oord2016wavenet`, che
-fabbrica l'onda sonora un campione alla volta, sedicimila al secondo, con una
-rete sola e una qualità fino ad allora irraggiungibile. Era però lentissima, e
-per aggirare la lentezza nel giro di due anni la ricetta si assesta nella forma
-a due stadi che è ancora quella di oggi.
+parametrica statistica**. Un modello impara dalle registrazioni la
+distribuzione dei parametri acustici di ciascun fonema nel suo contesto (la
+forma dello spettro, che decide timbro e vocale; l'altezza della voce, $F_0$;
+le durate), e un vocoder a regole li rende udibili: prima con i modelli di
+Markov nascosti della panoramica {cite}`zen2009statistical`, dal 2013 con reti
+neurali profonde {cite}`zen2013statistical`. Suonava più liscia e più ovattata
+della concatenativa, ma si ritoccava cambiando un numero invece che tornando in
+studio. Nei test d'ascolto con cui la confrontano gli autori di Tacotron 2
+(voti medi da 1 a 5 che più avanti prenderanno il nome di MOS) prende $3{,}49$
+contro il $4{,}17$ della concatenativa. Le reti neurali entrano nella sintesi
+da lì; la generazione che le mette al centro comincia nel 2016 con WaveNet
+{cite}`oord2016wavenet`, che fabbrica l'onda sonora un campione alla volta,
+sedicimila al secondo, con una rete sola e una qualità fino ad allora
+irraggiungibile. Era però lentissima, e per aggirare la lentezza nel giro di
+due anni la ricetta si assesta nella forma a due stadi che è ancora quella di
+oggi.
 
 ## Il TTS neurale, in due stadi
 
@@ -278,10 +279,11 @@ addestrate una indipendentemente dall'altra.
 
 Il modello di riferimento è **Tacotron 2** {cite}`shen2018natural`, di Google,
 e la macchina che c'è dentro l'abbiamo già vista due volte: è la stessa del
-traduttore automatico del capitolo sul linguaggio naturale e dei riconoscitori
-con attenzione, quella in cui una parte della rete legge e un'altra scrive, con
-l'attenzione che si sposta sul punto giusto (in gergo, un encoder-decoder con
-attenzione). Cambia solo cosa scrive in uscita.
+traduttore automatico del {doc}`capitolo sul linguaggio naturale
+</NaturalLanguageProcessing/overview>` e dei riconoscitori con attenzione,
+quella in cui una parte della rete legge e un'altra scrive, con l'attenzione
+che si sposta sul punto giusto (in gergo, un encoder-decoder con attenzione).
+Cambia solo cosa scrive in uscita.
 
 `````{tab} Elementare
 
@@ -413,23 +415,23 @@ Il mel-spettrogramma è il progetto della casa; il vocoder è l'impresa che la
 costruisce mattone su mattone. WaveNet (l'abbiamo già incontrata in
 {doc}`Generare suono e musica </Audio/generazione-audio>`, quando generava
 musica) lavora come un amanuense: scrive l'onda un campione alla volta,
-sedicimila al secondo, decidendo ognuno sulla base di quelli che ha già scritto.
-Qualità altissima, ma una lentezza proverbiale: nella versione a
-ventiquattromila campioni al secondo, sulla scheda grafica di allora, un secondo
-di parlato chiedeva più di due minuti di calcolo. **HiFi-GAN** risolve il
-problema con una gara fra falsario ed esperti d'arte. È l'idea delle GAN, le
-reti avversarie generative, a cui più avanti è dedicato un capitolo intero: qui
-basta il gioco. Una rete-falsario impara a produrre l'onda intera in un colpo
-solo, e delle reti-esperto provano a distinguere l'audio vero da quello
-fabbricato. Gli esperti sono parecchi, perché uno solo si farebbe fregare:
-qualcuno ascolta l'onda in tutto il suo dettaglio, qualcuno sfocata, a grana
-più grossa, e qualcuno la ascolta a intervalli regolari, per cogliere le
-ripetizioni che stanno sotto una vocale. Un difetto che sfugge all'uno salta
-all'orecchio dell'altro, e il falsario deve ingannarli tutti. C'è poi
-un controllo in più: dall'onda appena fabbricata si ridisegna l'immagine a bande
-e la si confronta con quella di partenza, così il falsario non può cavarsela con
-una voce bellissima che dice un'altra frase. Falsario ed esperti si allenano a
-vicenda finché il falso non si distingue più.
+sedicimila al secondo, decidendo ognuno sulla base di quelli che ha già
+scritto. Qualità altissima, ma una lentezza proverbiale: nella versione a
+ventiquattromila campioni al secondo, sulla scheda grafica di allora, un
+secondo di parlato chiedeva più di due minuti di calcolo. **HiFi-GAN** risolve
+il problema con una gara fra falsario ed esperti d'arte. È l'idea delle GAN, le
+reti avversarie generative, a cui più avanti è dedicato un {doc}`capitolo
+intero </GAN/overview>`: qui basta il gioco. Una rete-falsario impara a
+produrre l'onda intera in un colpo solo, e delle reti-esperto provano a
+distinguere l'audio vero da quello fabbricato. Gli esperti sono parecchi,
+perché uno solo si farebbe fregare: qualcuno ascolta l'onda in tutto il suo
+dettaglio, qualcuno sfocata, a grana più grossa, e qualcuno la ascolta a
+intervalli regolari, per cogliere le ripetizioni che stanno sotto una vocale.
+Un difetto che sfugge all'uno salta all'orecchio dell'altro, e il falsario deve
+ingannarli tutti. C'è poi un controllo in più: dall'onda appena fabbricata si
+ridisegna l'immagine a bande e la si confronta con quella di partenza, così il
+falsario non può cavarsela con una voce bellissima che dice un'altra frase.
+Falsario ed esperti si allenano a vicenda finché il falso non si distingue più.
 
 Risultato: qualità paragonabile a WaveNet, ma molto più veloce del tempo
 reale, che vuol dire questo: per fabbricare un secondo di parlato ci mette
@@ -535,12 +537,12 @@ mestiere che $N$ faceva nel WER); si riporta con l'intervallo di confidenza al
 madrelingua, cuffie, campioni mescolati con parlato reale come ancoraggio). Le
 alternative sono i test di preferenza A/B e ABX. Due debolezze strutturali: il
 MOS è relativo al gruppo di ascoltatori e alle condizioni della prova, quindi i
-numeri di studi diversi non sono confrontabili (nel paper di Tacotron 2 il
+numeri di studi diversi non sono confrontabili. Nel paper di Tacotron 2 il
 *parlato umano registrato* prende $4{,}58$, in quello di FastSpeech 2 tre anni
 dopo prende $4{,}30$: ventotto centesimi fra due righe che portano la stessa
 etichetta, e dietro le quali c'è tutto un altro esperimento, una professionista
 registrata in studio contro il corpus pubblico LJSpeech, altri ascoltatori, un
-altro protocollo). Lo stesso corpus non aiuta: il parlato registrato di
+altro protocollo. Lo stesso corpus non aiuta: il parlato registrato di
 LJSpeech, $4{,}30$ in FastSpeech 2, prende $4{,}46$ nel paper di VITS
 {cite}`kim2021vits`. E nemmeno due numeri della stessa tabella si leggono per
 differenza se i loro intervalli di confidenza si sovrappongono, come succede
@@ -565,27 +567,26 @@ dall'orecchio umano.
 
 C'è un rovescio della medaglia, ed è bene guardarlo senza allarmismi ma senza
 sconti. Gli stessi modelli, addestrati sulla voce di una persona specifica,
-producono un **clone vocale**.
-La quantità di registrazione che serve è crollata da ore a secondi da quando
-la voce non si riaddestra più ma si *condiziona*: un secondo modello,
-addestrato a riconoscere chi parla, ricava da un campione di pochi secondi un
-vettore che descrive quel timbro, e il sintetizzatore lo riceve come riceve il
-testo {cite}`jia2018transfer`. Il passo successivo viene dalla strada dei token
-di {doc}`Generare suono e musica </Audio/generazione-audio>`. VALL-E
-{cite}`wang2023neural` tratta la sintesi come un modello di linguaggio che,
-invece di parole, scrive i token di un codec neurale, EnCodec, quello di
-{doc}`Codec neurali </Audio/codec-neurali>`. Riceve i fonemi del testo e tre
-secondi di una voce mai sentita, già tradotti in token, e continua la fila
-nella stessa voce, con lo stesso ambiente acustico e la stessa emozione: è la
-continuazione di AudioLM, guidata da un testo. (Ogni istante, nel codec, è una
-pila di otto token: il primo livello lo scrive un Transformer autoregressivo,
-un istante dopo l'altro, gli altri sette un secondo Transformer, un livello
-alla volta ma su tutti gli istanti in parallelo.)
-Addestrato su sessantamila ore di audiolibri inglesi, si porta dietro due
-difetti già incontrati. I fonemi di quelle ore non li ha scritti nessuno: li
-ha ricavati dall'audio un riconoscitore della vecchia catena, un DNN-HMM, con
-i suoi errori. E come ogni modello che scrive rileggendosi, a volte salta o
-ripete una parola, come dichiarano gli stessi autori.
+producono un **clone vocale**. La quantità di registrazione che serve è
+crollata da ore a secondi da quando la voce non si riaddestra più ma si
+*condiziona*: un secondo modello, addestrato a riconoscere chi parla, ricava da
+un campione di pochi secondi un vettore che descrive quel timbro, e il
+sintetizzatore lo riceve come riceve il testo {cite}`jia2018transfer`. Il passo
+successivo viene dalla strada dei token di {doc}`Generare suono e musica
+</Audio/generazione-audio>`. VALL-E {cite}`wang2023neural` tratta la sintesi
+come un modello di linguaggio che, invece di parole, scrive i token di un codec
+neurale, EnCodec, quello di {doc}`Codec neurali </Audio/codec-neurali>`. Riceve
+i fonemi del testo e tre secondi di una voce mai sentita, già tradotti in
+token, e continua la fila nella stessa voce, con lo stesso ambiente acustico e
+la stessa emozione: è la continuazione di AudioLM, guidata da un testo. (Ogni
+istante, nel codec, è una pila di otto token: il primo livello lo scrive un
+Transformer autoregressivo, un istante dopo l'altro; gli altri sette li scrive
+un secondo Transformer, un livello alla volta ma su tutti gli istanti in
+parallelo.) Addestrato su sessantamila ore di audiolibri inglesi, si porta
+dietro due difetti già incontrati. I fonemi di quelle ore non li ha scritti
+nessuno: li ha ricavati dall'audio un riconoscitore della vecchia catena, un
+DNN-HMM, con i suoi errori. E come ogni modello che scrive rileggendosi, a
+volte salta o ripete una parola, come dichiarano gli stessi autori.
 
 Le truffe sono già successe. Nel 2019 il *Wall Street Journal* raccontò
 questa: l'amministratore delegato di un'azienda energetica britannica riceve

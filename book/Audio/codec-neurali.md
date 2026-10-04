@@ -3,8 +3,8 @@
 Per generare suono come un modello di linguaggio genera testo, un simbolo alla
 volta, serve un alfabeto finito e di dimensione ragionevole. Il testo ce l'ha
 dalla lingua, una ventina di lettere. L'audio, dentro il calcolatore, ne ha uno
-sbagliato, i 65.536 livelli con cui si misura ogni campione, con troppe
-lettere e troppo fitte: quello buono va costruito. A costruirlo sono i codec
+sbagliato: i 65.536 livelli con cui si misura ogni campione sono lettere troppe
+e troppo fitte. Quello buono va costruito. A costruirlo sono i codec
 neurali, che comprimono l'onda in una fila di indici presi da un elenco
 appreso e da quegli indici sanno rifare il suono. Senza un buon alfabeto, non
 c'è nulla su cui scrivere.
@@ -25,16 +25,14 @@ Un codec neurale ribalta l'approccio. Invece di scrivere le regole, le fa
 imparare a una rete. La struttura ha un nome, **autoencoder**, e una forma da
 guardare: un *encoder* $E$ che comprime l'ingresso $\mathbf{x}$ in un vettore
 molto più piccolo, $\mathbf{z} = E(\mathbf{x})$, e un *decoder* $D$ che da
-$\mathbf{z}$ cerca di rifare l'originale, $\hat{\mathbf{x}} = D(\mathbf{z})$.
-I due si addestrano *insieme*, con un'unica regola: minimizzare una perdita
-$\mathcal{L}$ che misura quanto $\hat{\mathbf{x}}$ si discosta da
-$\mathbf{x}$, cioè quanto quello che esce è diverso da quello che è entrato.
-Questa forma vale per qualunque cosa si voglia comprimere, non solo per il
-suono, ed è qui che la si monta pezzo per pezzo: più avanti nel libro, la
-sezione {doc}`Comprimere e ricostruire
-</ModelliLatenti/comprimere-e-ricostruire>` la riprenderà per le immagini, e
-il capitolo che la contiene le aggiungerà l'unica cosa che le manca per servire
-anche a *generare*.
+$\mathbf{z}$ cerca di rifare l'originale, $\hat{\mathbf{x}} = D(\mathbf{z})$. I
+due si addestrano *insieme*, con un'unica regola: minimizzare una perdita
+$\mathcal{L}$ che misura quanto $\hat{\mathbf{x}}$ si discosta da $\mathbf{x}$,
+cioè quanto quello che esce è diverso da quello che è entrato. Questa forma
+vale per qualunque cosa si voglia comprimere, non solo per il suono, ed è qui
+che la si monta pezzo per pezzo: {doc}`Comprimere e ricostruire
+</ModelliLatenti/comprimere-e-ricostruire>` la riprenderà per le immagini
+aggiungendole l'unica cosa che manca per servire anche a *generare*.
 
 ```{figure} ../figures/autoencoder-comprimere-per-capire.svg
 :name: fig-autoencoder-clessidra
@@ -47,7 +45,7 @@ che serve a ricostruire.
 ```
 
 La forma di {numref}`fig-autoencoder-clessidra` è quella di ogni compressione
-imparata, e il resto della sezione non fa che stringere e disciplinare quel
+imparata, e tutto il resto non fa che stringere e disciplinare quel
 collo centrale. Nel disegno le parole sono in inglese, come si trovano nel
 codice: l’*input* è ciò che entra, l’*encoder* la parte che stringe, il
 *bottleneck* la strozzatura, il *decoder* la parte che riapre, l’*output* ciò
@@ -64,12 +62,12 @@ compressa dei dati invece che sui dati.
 I numeri del disegno, $784 \to 128 \to 32$, vengono dalle immagini, dove lo
 schema si vede meglio: una cifra scritta a mano di $28 \times 28$ pixel, cioè
 784 numeri, stretta a 32 e poi rifatta. Con l'audio gli ordini di grandezza
-sono quelli di EnCodec, il codec che accompagnerà tutta la sezione. Un secondo
+sono quelli di EnCodec, il codec che fa da filo conduttore. Un secondo
 di suono misurato 24.000 volte entra come 24.000 numeri, ed esce dalla
 strozzatura come 75 latenti, uno ogni 320 misure, ciascuno un vettore di 128
 numeri: in tutto 9.600 numeri, quindi la strozzatura da sola stringe appena
 due volte e mezzo. La compressione vera arriva dopo, quando ogni latente viene
-sostituito da un numero intero, ed è il mestiere del resto della sezione.
+sostituito da un numero intero.
 
 `````{tab} Elementare
 
@@ -202,25 +200,25 @@ Un dettaglio importante: l'operazione $\arg\min$ non è differenziabile, quindi
 il gradiente non attraverserebbe la quantizzazione. Il VQ-VAE
 {cite}`oord2017neural` lo aggira con lo **straight-through estimator** (il
 gradiente del decoder viene copiato tal quale sull'uscita dell'encoder, come se
-$q$ fosse l'identità) e con due termini quadratici: il *codebook loss* $\lVert
-\mathrm{sg}[\mathbf{z}] - \mathbf{e}_{k^\star} \rVert^2$, che tira il prototipo
-scelto verso i latenti che l'hanno scelto, ed è l'unica cosa che fa imparare il
-codebook: la scorciatoia appena vista scavalca il prototipo, quindi dalla
-ricostruzione ai prototipi non arriva niente. E la *commitment loss* $\beta
-\lVert \mathbf{z} - \mathrm{sg}[\mathbf{e}_{k^\star}] \rVert^2$, che tira i
-latenti verso i prototipi ($\mathrm{sg}$ è lo *stop-gradient*, e il verso della
-freccia sta tutto in quale dei due membri lo porta). Sommati alla perdita di
-ricostruzione danno la perdita completa del VQ-VAE, con $\beta = 0{,}25$, già
-scritta per intero nella sezione sul vocabolario unico; e lo straight-through,
-nel codice, è una riga sola, $\mathbf{z}_q = \mathbf{z} +
-\mathrm{sg}[\mathbf{e}_{k^\star} - \mathbf{z}]$, che in avanti vale
-$\mathbf{e}_{k^\star}$ e all'indietro ha derivata rispetto a $\mathbf{z}$
-uguale all'identità. Molte implementazioni
-sostituiscono il primo con una media mobile esponenziale, che è la stessa idea
-scritta in modo più stabile: la regola alla k-means, che sposta ogni prototipo
-verso la media dei latenti che l'hanno scelto. Resta il compromesso di fondo:
-un codebook grande ($K$ alto) ricostruisce meglio ma costa più bit per token;
-uno piccolo comprime di più ma perde fedeltà.
+$q$ fosse l'identità) e con due termini quadratici. Il primo è la *codebook
+loss* $\lVert \mathrm{sg}[\mathbf{z}] - \mathbf{e}_{k^\star} \rVert^2$, che
+tira il prototipo scelto verso i latenti che l'hanno scelto; è l'unica cosa che
+fa imparare il codebook, perché la scorciatoia appena vista scavalca il
+prototipo e dalla ricostruzione non gli arriva niente. Il secondo è la
+*commitment loss* $\beta \lVert \mathbf{z} - \mathrm{sg}[\mathbf{e}_{k^\star}]
+\rVert^2$, che tira i latenti verso i prototipi ($\mathrm{sg}$ è lo
+*stop-gradient*, e il verso della freccia sta tutto in quale dei due membri lo
+porta). Sommati alla perdita di ricostruzione danno la perdita completa del
+VQ-VAE, con $\beta = 0{,}25$, già scritta per intero nella sezione sul
+vocabolario unico; e lo straight-through, nel codice, è una riga sola,
+$\mathbf{z}_q = \mathbf{z} + \mathrm{sg}[\mathbf{e}_{k^\star} - \mathbf{z}]$,
+che in avanti vale $\mathbf{e}_{k^\star}$ e all'indietro ha derivata rispetto a
+$\mathbf{z}$ uguale all'identità. Molte implementazioni sostituiscono il primo
+con una media mobile esponenziale, che è la stessa idea scritta in modo più
+stabile: la regola alla k-means, che sposta ogni prototipo verso la media dei
+latenti che l'hanno scelto. Resta il compromesso di fondo: un codebook grande
+($K$ alto) ricostruisce meglio ma costa più bit per token; uno piccolo comprime
+di più ma perde fedeltà.
 
 `````
 
@@ -304,8 +302,8 @@ elenchi da 1024 voci, dieci risposte ciascuno, spendono esattamente gli stessi
 
 La soluzione è la **residual vector quantization** (RVQ), una tecnica di
 codifica del parlato a stadi multipli che risale agli anni Ottanta
-{cite}`juang1982multiple`, portata nei codec neurali da **SoundStream**
-{cite}`zeghidour2021soundstream` e adottata da **EnCodec**
+{cite}`juang1982multiple`, portata nei codec neurali da SoundStream
+{cite}`zeghidour2021soundstream` e adottata da EnCodec
 {cite}`defossez2023high`, di Meta: invece di un solo codebook enorme, si
 mettono in cascata più codebook piccoli, ciascuno dei quali corregge l'errore
 lasciato dal precedente.
@@ -430,7 +428,7 @@ sbagliare poco. Accanto a lui, durante l'addestramento, lavora un
 discriminatore: una seconda rete il cui unico mestiere è smascherare l'audio
 finto, e che quindi lo costringe a produrre qualcosa che *suoni* vero, non
 soltanto qualcosa di numericamente vicino all'originale (è il meccanismo delle
-{doc}`GAN </GAN/overview>`, raccontato per intero più avanti nel libro).
+{doc}`GAN </GAN/overview>`).
 
 Sotto quella pressione il decoder diventa a tutti gli effetti un piccolo
 generatore, guidato dai token che riceve. A bitrate bassi il dettaglio più fine
@@ -440,8 +438,8 @@ a 24 kHz addestrato come EnCodec {cite}`kumar2023high`: a 1,5 kbps l'errore
 campione per campione ha quasi la stessa energia del segnale (un rapporto
 segnale-distorsione, l'SI-SDR, di appena 0,32 dB), mentre un indice di qualità
 percepita, il ViSQOL, dà al suono 4,04 su 5. La fedeltà sul campione crolla, la
-qualità che si sente regge. Ed ecco anche perché, nella sezione
-{doc}`Generare suono e musica </Audio/generazione-audio>`, questo stesso
+qualità che si sente regge. Ed ecco anche perché in
+{doc}`Generare suono e musica </Audio/generazione-audio>` questo stesso
 decoder potrà fare da generatore senza cambiare una riga: a quel punto la
 differenza fra un codec e un modello che inventa suono sta soltanto nella
 provenienza dei token. I token che escono dall'encoder sono quelli su cui, là,

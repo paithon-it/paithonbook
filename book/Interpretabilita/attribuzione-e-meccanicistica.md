@@ -664,12 +664,12 @@ non-linearità con il rapporto incrementale
 $\big(f(z) - f(\bar z)\big)/(z - \bar z)$, sicché su un neurone solo
 $a_i = w_i (x_i - \bar{x}_i)\,\big(f(z) - f(\bar z)\big)/(z - \bar z)$; in una
 rete a strati senza interazioni moltiplicative vale per costruzione
-$\sum_i a_i = f(\mathbf{x}) - f(\bar{\mathbf{x}})$, che Ancona e colleghi
-mostrano invece violabile dove due ingressi si moltiplicano (i cancelli di una
+$\sum_i a_i = f(\mathbf{x}) - f(\bar{\mathbf{x}})$, ma Ancona e colleghi
+mostrano che la regola salta dove due ingressi si moltiplicano (i cancelli di una
 LSTM).
 
 Le famiglie non sono indipendenti. Ancona e colleghi {cite}`ancona2018towards`
-dimostrano che la regola $\varepsilon$ di LRP coincide con gradiente per
+dimostrano che la regola $\varepsilon$ di LRP coincide con il gradiente per
 ingresso se le non-linearità sono tutte ReLU, e con DeepLIFT a baseline zero
 se la rete non ha bias additivi e le non-linearità soddisfano $f(0) = 0$
 (ReLU, $\tanh$); e che nel caso lineare tutti questi metodi coincidono. Su un
@@ -678,7 +678,7 @@ baseline nulla, coincidono anche con i gradienti integrati
 {cite}`sundararajan2017axiomatic`: tutti e tre danno
 $a_i = \frac{w_i x_i}{z}\tanh(z)$, perché
 $\int_0^1 \tanh'(\alpha z)\,d\alpha = \tanh(z)/z$ è proprio il rapporto
-incrementale di DeepLIFT. Gradiente per ingresso vale invece
+incrementale di DeepLIFT. Il gradiente per ingresso vale invece
 $w_i x_i \tanh'(z)$, che in saturazione tende a zero. Su più strati IG si
 separa da LRP e DeepLIFT per l'invarianza all'implementazione: è fatto di
 gradienti, che la rispettano per la regola della catena, mentre gli altri due
@@ -744,7 +744,7 @@ gradienti integrati     [ 1.3267 -0.3317]  somma 0.9951
 f(x) - f(0)             0.9951
 ```
 
-Gradiente per ingresso vede il neurone saturo e dà quasi zero a tutti e due.
+Il gradiente per ingresso vede il neurone saturo e dà quasi zero a tutti e due.
 L’occlusione dà alla prima variabile più di tutta la differenza da spiegare,
 $1{,}757$ contro $0{,}995$, perché togliendola la somma pesata passa da $3$ a
 $-1$ e la $\tanh$ attraversa tutta la sua parte ripida; alla seconda quasi
@@ -859,7 +859,7 @@ struttura dell'ingresso resta chiaramente prevalente nelle maschere: chi
 moltiplica per l'ingresso, quando il gradiente si fa rumoroso, finisce per
 restituire soprattutto l'ingresso. È il caso più insidioso, perché il metodo
 *è* sensibile al modello e nondimeno l'occhio continua a riconoscere l'oggetto.
-Il punto metodologico da portarsi via è questo: la plausibilità visiva di una
+La lezione metodologica è questa: la plausibilità visiva di una
 spiegazione non è una prova della sua fedeltà, e un occhio umano non
 distingue le due cose. Un metodo di attribuzione va sottoposto a un test che
 possa farlo fallire, esattamente come un modello. Nel lavoro di Adebayo e

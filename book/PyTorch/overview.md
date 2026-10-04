@@ -29,7 +29,7 @@ maggioranza dei modelli pubblicati su Hugging Face (il grande archivio pubblico
 dove la comunità condivide i propri modelli) e degli articoli di ricerca
 recenti è scritta così.
 
-In PyTorch era scritto anche il ciclo di cinque righe mostrato in fondo alla
+In PyTorch era scritto anche il ciclo di cinque righe mostrato nella
 {doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>`, e da
 quelle righe si riparte: prima la riga che calcola da sola il giro
 all'indietro, poi i pezzi del ciclo uno alla volta, fino a rimontarlo intero e
@@ -123,10 +123,10 @@ da quelli di Python; con il grafo costruito mentre il programma gira bastano un
 circolo che si alimenta da sé: gli articoli pubblicano il loro codice in
 PyTorch, chi vuole riprodurli usa PyTorch, e le librerie costruite sopra
 (Hugging Face Transformers per i modelli di linguaggio, torchvision per le
-immagini) nascono pensate prima di tutto per lui. Nel 2022 Meta ha ceduto il
-progetto alla neonata PyTorch Foundation, dentro la Linux Foundation: da
-progetto di un'azienda a progetto di una fondazione neutrale, che ne governa lo
-sviluppo.
+immagini) nascono pensate prima di tutto per questo framework. Nel 2022 Meta ha
+ceduto il progetto alla neonata PyTorch Foundation, dentro la Linux Foundation:
+da progetto di un'azienda a progetto di una fondazione neutrale, che ne governa
+lo sviluppo.
 
 Non ha vinto *ovunque*: TensorFlow resta diffuso dove il modello non si studia
 più ma si usa per lavoro, dentro i sistemi di un'azienda o dentro un'app del
@@ -179,13 +179,15 @@ PyTorch si lavora su blocchi interi di numeri, e non su un numero per volta.
 L'API Python (`torch`, `torch.nn`, `torch.optim`, `torch.utils.data`) è un
 guscio sottile sopra **ATen**, la libreria C++ dei tensori, e sopra il motore
 autograd che registra le operazioni e calcola i gradienti. Un *dispatcher*
-smista ogni operazione al kernel giusto per il dispositivo del tensore: BLAS
-e simili su CPU; su GPU NVIDIA cuBLAS per le moltiplicazioni fra matrici e
-cuDNN per convoluzioni e normalizzazioni; Metal Performance Shaders (MPS) su
-Apple Silicon. Per il passaggio in produzione: `torch.compile` (fusione e
-compilazione JIT dei kernel), l'esportazione in ONNX verso runtime esterni, ed
-ExecuTorch per mobile ed embedded. La divisione del lavoro è netta: Python
-decide *cosa* calcolare, il motore C++ decide *come*.
+smista ogni operazione al kernel giusto per il dispositivo del tensore: BLAS e
+simili su CPU; su GPU NVIDIA cuBLAS per le moltiplicazioni fra matrici e cuDNN
+per convoluzioni e normalizzazioni; Metal Performance Shaders (MPS) su Apple
+Silicon. Il dispatcher però non muove i dati: se un'operazione riceve tensori
+su dispositivi diversi solleva un errore, e il trasferimento va comandato da
+Python. Per il passaggio in produzione: `torch.compile` (fusione e compilazione
+JIT dei kernel), l'esportazione in ONNX verso runtime esterni, ed ExecuTorch
+per mobile ed embedded. La divisione del lavoro è netta: Python decide *cosa*
+calcolare, il motore C++ decide *come*.
 
 Il passaggio da Python al motore ha un costo fisso. Ogni operazione attraversa
 il dispatcher prima di arrivare al kernel, e quel tragitto, dell'ordine dei
@@ -221,7 +223,7 @@ Due parole prima del comando, perché compaiono subito e conviene averle. La
 bravissimo a fare tanti conti identici tutti insieme; **CUDA** è il nome che
 NVIDIA, che quelle schede le costruisce, dà al modo in cui i programmi le
 parlano (per questo nel codice il dispositivo si chiamerà `"cuda"` e non
-`"gpu"`). La prossima sezione riprende entrambe con calma.
+`"gpu"`).
 
 PyTorch si installa come qualunque pacchetto Python, cioè scrivendo una riga
 nel terminale, la finestra in cui si danno comandi scritti al computer; sul

@@ -15,7 +15,7 @@ Da qui il criterio alternativo di **WordPiece**, introdotto da Mike Schuster e
 Kaisuke Nakajima nel 2012 per la ricerca vocale in giapponese e coreano
 {cite}`schuster2012japanese` e diventato noto anni dopo come il tokenizzatore
 di BERT {cite}`devlin2019bert`. La struttura dell'algoritmo è identica a
-quella di BPE, si parte dai caratteri e si fonde una coppia per volta fino a
+quella di BPE: si parte dai caratteri e si fonde una coppia per volta fino a
 riempire il vocabolario. Cambia solo *quale* coppia si sceglie: nel lavoro
 originale quella che fa crescere di più la verosimiglianza del corpus, nella
 ricostruzione che si è diffusa quella che sta insieme più di quanto farebbe
@@ -198,7 +198,7 @@ Il guadagno esatto indica ancora `ss`, con $32{,}19$ contro i $24{,}56$ di
 `ba`: fondere le due `s` toglie dal corpus un simbolo intero e accorcia il
 testo di 25 pezzi, e la verosimiglianza ci guadagna più che con qualunque
 coppia sorprendente. È la differenza fra pesare il guadagno per quante volte la
-fusione si applica e valutarlo per occorrenza, che sceglie `ba`.
+fusione si applica e valutarlo per occorrenza, approccio che sceglie `ba`.
 L'approssimazione $\mathrm{freq}(ab)\,(\mathrm{PMI} - 1)$ qui non aiuta,
 perché vale quando la fusione consuma una piccola parte delle occorrenze dei
 suoi pezzi, e la fusione di `ss` le consuma tutte.
@@ -211,9 +211,9 @@ stesso token di `etto` a inizio parola: la distinzione fra prefissi e suffissi
 otteneva lo stesso effetto con un marcatore di spazio attaccato alle unità).
 BERT usa un vocabolario di circa $30\,000$ token così costruiti. In fase di
 codifica, inoltre, quella implementazione non replica una lista di fusioni ma
-applica una scansione greedy del prefisso più lungo presente nel
-vocabolario: differenza sottile che può produrre segmentazioni diverse da
-quelle che il replay di BPE darebbe a parità di vocabolario. Diverso è anche il
+applica una scansione greedy del prefisso più lungo presente nel vocabolario:
+differenza sottile che può produrre segmentazioni diverse da quelle che
+l'applicazione di BPE darebbe a parità di vocabolario. Diverso è anche il
 fallimento: se da un certo punto della parola nessun prefisso sta nel
 vocabolario, l'implementazione di BERT restituisce `[UNK]` per la parola
 intera, e non per il solo pezzo mancante.
@@ -360,7 +360,7 @@ lunghezza. Due proprietà distinguono unigram da BPE. È un modello
 probabilistico, quindi sa dire *quanto* una segmentazione è buona e
 campionarne di alternative: nella *subword regularization*
 {cite}`kudo2018subword` si prendono le $l$ segmentazioni migliori e se ne
-estrae una con probabilità proporzionale a $P(x_i)^{\alpha}$, dove $\alpha > 0$
+estrae una con probabilità proporzionale a $P(x)^{\alpha}$, dove $\alpha > 0$
 regola quanto la scelta si concentra (con $\alpha$ grande tende alla
 segmentazione di Viterbi, con $\alpha$ piccolo si avvicina all'uniforme), e
 addestrare su segmentazioni diverse della stessa frase fa da regolarizzatore.

@@ -323,15 +323,15 @@ $$
 
 dove $p_n$ è la precisione clippata degli $n$-grammi e $w_n = 1/4$ il peso
 uniforme dei quattro ordini. I limiti vanno detti subito, perché servono a
-leggere i punteggi di Sutskever: BLEU è definito sul corpus e non sulla
-singola frase (le $p_n$ si accumulano su tutto il test set, e su una frase sola
-un 4-gramma mancante manda il punteggio a zero); dipende dalla tokenizzazione e
-dal numero di riferimenti, tanto che due punteggi si confrontano solo a
-protocollo identico, ed è la ragione per cui esiste `sacrebleu`: Matt Post
-misura fino a 1,8 punti di differenza fra configurazioni d'uso comune, e
-indica come prima causa la tokenizzazione e la normalizzazione applicate ai
-riferimenti {cite}`post2018call`; ed è cieco alla parafrasi corretta. Un punto
-di differenza è un segnale, non una sentenza.
+leggere i punteggi di Sutskever. BLEU è definito sul corpus e non sulla singola
+frase: le $p_n$ si accumulano su tutto il test set, e su una frase sola un
+4-gramma mancante manda il punteggio a zero. Inoltre, dipende dalla
+tokenizzazione e dal numero di riferimenti, tanto che due punteggi si
+confrontano solo a protocollo identico. È la ragione per cui esiste
+`sacrebleu`: Matt Post misura fino a 1,8 punti di differenza fra configurazioni
+d'uso comune, e indica come prima causa la tokenizzazione e la normalizzazione
+applicate ai riferimenti {cite}`post2018call`. Infine, è cieco alla parafrasi
+corretta. Un punto di differenza è un segnale, non una sentenza.
 
 Quel «un termine di *recall* non c'è» è la porta da cui entra il metro gemello.
 **ROUGE** {cite}`lin2004rouge` (l'acronimo, coniato da Chin-Yew Lin, sta per
@@ -379,28 +379,27 @@ precisione e richiamo insieme: un richiamo puro non cala mai allungando il
 candidato, quindi da solo premia chi ricopia mezzo articolo.
 
 Sutskever et al. usano LSTM a 4 strati con stati da 1000 dimensioni e
-riportano, sul benchmark WMT'14 (il *Workshop on Machine Translation* del
-2014) inglese→francese, un BLEU di
-$34{,}8$ (con un ensemble di cinque modelli) contro il $33{,}3$ del sistema
-statistico a frasi di riferimento. Il confronto va letto per quello che è: il
-$33{,}3$ è il sistema di *riferimento*, non lo stato dell'arte, che su quel
-compito stava a $37{,}0$; la rete pura non lo raggiunge, e ci si avvicina
-($36{,}5$) solo quando la si usa per riordinare le mille ipotesi prodotte dal
-sistema statistico. Nel 2014 il neurale non ha ancora vinto: la data del
-sorpasso è il 2016. L'aneddoto dell'inversione è invece documentato nei numeri:
-invertire l'ordine delle parole sorgente fa scendere la perplessità di test da
-$5{,}8$ a $4{,}7$ e salire il BLEU da $25{,}9$ a $30{,}6$. Gli autori, che
-dichiarano di non averne una spiegazione completa, lo attribuiscono alle molte
-dipendenze brevi introdotte fra le prime parole di $x$ e le prime di $y$, che
-semplificano l'ottimizzazione. Ma il limite strutturale resta: qualunque sia
-$n$, tutta l'informazione su $x$ deve passare per un vettore di dimensione
-fissa. Con un encoder–decoder di questo tipo la qualità cala rapidamente al
-crescere della lunghezza della frase, come misurano nello stesso anno Cho e
-colleghi {cite}`cho2014properties` (su modelli addestrati con frasi fino a
-trenta parole) e come mostra la curva di RNNencdec nella figura 2 di
-{cite}`bahdanau2015neural`. La LSTM profonda di Sutskever e colleghi fa
-eccezione, e gli autori attribuiscono la sua tenuta sulle frasi lunghe proprio
-all'inversione della sorgente.
+riportano, sul benchmark WMT'14 (il *Workshop on Machine Translation* del 2014)
+inglese→francese, un BLEU di $34{,}8$ (con un ensemble di cinque modelli)
+contro il $33{,}3$ del sistema statistico a frasi di riferimento. Il confronto
+va letto per quello che è: il $33{,}3$ è il sistema di *riferimento*, non lo
+stato dell'arte, che su quel compito stava a $37{,}0$; la rete pura non lo
+raggiunge, e ci si avvicina ($36{,}5$) solo quando la si usa per riordinare le
+mille ipotesi prodotte dal sistema statistico. Nel 2014 il neurale non ha
+ancora vinto: la data del sorpasso è il 2016. Il trucco di invertire l'ordine
+delle parole sorgente è documentato nei numeri: leggere la frase al contrario
+fa scendere la perplessità di test da $5{,}8$ a $4{,}7$ e salire il BLEU da
+$25{,}9$ a $30{,}6$. Gli autori, che dichiarano di non averne una spiegazione
+completa, lo attribuiscono alle molte dipendenze brevi introdotte fra le prime
+parole di $x$ e le prime di $y$, che semplificano l'ottimizzazione. Ma il
+limite strutturale resta: qualunque sia $n$, tutta l'informazione su $x$ deve
+passare per un vettore di dimensione fissa. Con un encoder–decoder di questo
+tipo la qualità cala rapidamente al crescere della lunghezza della frase, come
+misurano nello stesso anno Cho e colleghi {cite}`cho2014properties` (su modelli
+addestrati con frasi fino a trenta parole) e come mostra la curva di RNNencdec
+nella figura 2 di {cite}`bahdanau2015neural`. La LSTM profonda di Sutskever e
+colleghi fa eccezione, e gli autori attribuiscono la sua tenuta sulle frasi
+lunghe proprio all'inversione della sorgente.
 
 `````
 
@@ -515,27 +514,28 @@ $$
 $$
 
 dove $\alpha_{ij}$ è quanto il passo di decodifica $i$ «guarda» la parola
-sorgente $j$ (i pesi sommano a 1) e $\mathbf{c}_i$ è la media pesata degli stati
-dell'encoder, che entra nel calcolo di $\mathbf{s}_i$ e della parola successiva.
-Il costo è di $n$ punteggi per ciascuno degli $m$ passi di decodifica, $O(n\,m)$
-valutazioni della piccola rete: quadratico nella lunghezza quando le due frasi
-si somigliano, ed è il prezzo del collo di bottiglia tolto. L'anno dopo Luong,
-Pham e Manning {cite}`luong2015effective` confrontano forme più economiche del
-punteggio: il prodotto scalare $e_{ij} = \mathbf{s}_i^{\top}\mathbf{h}_j$, che
-chiede allo stato del decoder e agli stati dell'encoder la stessa dimensione
-(nel loro modello l'encoder legge in un verso solo), e la forma bilineare
-$e_{ij} = \mathbf{s}_i^{\top}\mathbf{W}_a\mathbf{h}_j$, che non la chiede e dove
-$\mathbf{W}_a$ è una matrice diversa da quella dell'attenzione additiva, tutte e
-due calcolate con lo stato corrente $\mathbf{s}_i$ invece che con
-$\mathbf{s}_{i-1}$: è l'attenzione *moltiplicativa*, la famiglia da cui il
-Transformer prenderà la sua. La matrice dei pesi $\alpha_{ij}$, visualizzata, si
-legge di solito come una mappa di allineamento fra le due frasi, appresa senza
-alcuna supervisione esplicita. Di solito e non sempre: misurata contro un
-allineatore automatico su sei coppie di lingue, la sovrapposizione sta fra il
-$72$ e il $78\%$ in cinque casi e crolla al $15\%$ sul tedesco-inglese, che gli
-autori registrano come un caso isolato {cite}`koehn2017six`. Chi vuole
-l'allineamento, e non solo l'intuizione, addestra l'attenzione con
-l'allineamento come bersaglio, cioè con la supervisione che qui non c'è.
+sorgente $j$ (i pesi sommano a 1) e $\mathbf{c}_i$ è la media pesata degli
+stati dell'encoder, che entra nel calcolo di $\mathbf{s}_i$ e della parola
+successiva. Il costo è di $n$ punteggi per ciascuno degli $m$ passi di
+decodifica, $O(n\,m)$ valutazioni della piccola rete: quadratico nella
+lunghezza quando le due frasi si somigliano, ed è il prezzo del collo di
+bottiglia tolto. L'anno dopo Luong, Pham e Manning {cite}`luong2015effective`
+confrontano forme più economiche del punteggio, calcolate tutte e due con lo
+stato corrente $\mathbf{s}_i$ invece che con $\mathbf{s}_{i-1}$. La prima è il
+prodotto scalare $e_{ij} = \mathbf{s}_i^{\top}\mathbf{h}_j$, che chiede allo
+stato del decoder e agli stati dell'encoder la stessa dimensione (nel loro
+modello l'encoder legge in un verso solo). La seconda è la forma bilineare
+$e_{ij} = \mathbf{s}_i^{\top}\mathbf{W}_a\mathbf{h}_j$, che non la chiede e
+dove $\mathbf{W}_a$ è una matrice diversa da quella dell'attenzione additiva. È
+l'attenzione *moltiplicativa*, la famiglia da cui il Transformer prenderà la
+sua. La matrice dei pesi $\alpha_{ij}$, visualizzata, si legge di solito come
+una mappa di allineamento fra le due frasi, appresa senza alcuna supervisione
+esplicita. Di solito e non sempre: misurata contro un allineatore automatico su
+sei coppie di lingue, la sovrapposizione sta fra il $72$ e il $78\%$ in cinque
+casi e crolla al $15\%$ sul tedesco-inglese, che gli autori registrano come un
+caso isolato {cite}`koehn2017six`. Chi vuole l'allineamento, e non solo
+l'intuizione, addestra l'attenzione con l'allineamento come bersaglio, cioè con
+la supervisione che qui non c'è.
 
 `````
 
@@ -719,7 +719,7 @@ l’addestramento (non lungo la frase), cioè un curriculum. MIXER, di Ranzato
 e colleghi, ottimizza la metrica di valutazione con il gradiente di policy di
 {doc}`REINFORCE </DeepReinforcementLearning/policy-gradient>`, ma parte da un
 modello già addestrato con l'entropia incrociata, tiene le due perdite mescolate
-e sposta il confine fra le due un pezzo di frase alla volta: gli autori
+e sposta il confine fra le due un pezzo di frase alla volta. Gli autori
 insistono che entrambi gli ingredienti sono necessari, chiamano curriculum
 anche il proprio, e dichiarano di prendere idee tanto dallo scheduled sampling
 quanto da DAgger {cite}`ross2011reduction`, il rimedio che per l'imitazione
@@ -940,8 +940,8 @@ ricerca esaustiva. Non è una ricerca esatta: l'ottimo globale può sfuggire al
 fascio, e allargare $k$ riduce gli errori di ricerca senza migliorare la
 traduzione oltre un certo punto. Koehn e Knowles misurano che «in quasi tutti i
 casi si trovano traduzioni peggiori oltre un'ampiezza ottima», che sulle otto
-coppie di lingue che provano va da $4$ a circa $30$, e che la causa è che con
-il fascio largo vincono le traduzioni corte {cite}`koehn2017six`; la
+coppie di lingue che provano va da $4$ a circa $30$. La causa è che con
+il fascio largo vincono le traduzioni corte {cite}`koehn2017six`. La
 normalizzazione per lunghezza attenua il fenomeno senza toglierlo (l'ampiezza
 ottima sale fra $30$ e $50$, ma oltre la qualità cala ancora). È un risultato
 che va letto per quello che dice, e lo dice per intero una ricerca esatta:
@@ -1024,17 +1024,16 @@ dalla coppia cinese→inglese, circa 18 milioni di traduzioni al giorno.
 Il confronto con il vecchio sistema lo fanno delle persone, e non un punteggio
 calcolato da un programma (l'articolo riporta anche il BLEU sui banchi di prova
 pubblici). Per ogni frase i valutatori danno un voto da 0 a 6 a tre traduzioni
-messe fianco a fianco: quella del sistema statistico, quella di GNMT e quella di
-un traduttore umano che conosce bene le due lingue. Della distanza fra il
-sistema statistico e il traduttore umano, GNMT ne recupera fra il 58%
-(inglese→cinese) e l'87% (inglese→spagnolo), secondo la coppia di lingue; gli
-autori la chiamano riduzione degli errori, e nell'abstract la riassumono in un
-60% medio. La misura vale per le frasi su cui è fatta: 500 per coppia di
-lingue, isolate, prese da Wikipedia e da siti di notizie, e che gli autori
-stessi definiscono semplici. Da quel momento le reti ricorrenti che abbiamo
-studiato traducono ogni giorno per un servizio di massa, e non sono le sole:
-altri sistemi neurali entrano in produzione negli stessi mesi
-{cite}`koehn2017six`.
+messe fianco a fianco: quella del sistema statistico, quella di GNMT e quella
+di un traduttore umano che conosce bene le due lingue. GNMT recupera fra il 58%
+(inglese→cinese) e l'87% (inglese→spagnolo) della distanza fra il sistema
+statistico e il traduttore umano, a seconda della coppia di lingue. Gli autori
+la chiamano riduzione degli errori, e nell'abstract la riassumono in un 60%
+medio. La misura vale per le frasi su cui è fatta: 500 per coppia di lingue,
+isolate, prese da Wikipedia e da siti di notizie, e che gli autori stessi
+definiscono semplici. Da quel momento le reti ricorrenti che abbiamo studiato
+traducono ogni giorno per un servizio di massa, e non sono le sole: altri
+sistemi neurali entrano in produzione negli stessi mesi {cite}`koehn2017six`.
 
 Questa storia ha anche un seguito, che la {doc}`sezione sui modelli multilingue
 </Transformers/multilingua>` riprende per intero. Pochi mesi dopo, invece di un
@@ -1126,18 +1125,18 @@ decennio.
 - L’attenzione di Bahdanau lo elimina: a ogni passo il decoder rivede
   *tutti* gli stati dell'encoder con pesi $\alpha_{ij}$ appresi; è il
   precursore diretto della *scaled dot-product attention* dei Transformer.
-- L'addestramento condiziona su $y_{<i}$ di riferimento (teacher forcing),
-  che è la forma esatta della massima verosimiglianza sulle coppie, token di
-  fine frase compreso, e rende noti in anticipo gli ingressi del decoder: su una
-  RNN restano comunque $m$ passi in sequenza, con una maschera causale il
+- L'addestramento condiziona su $y_{<i}$ di riferimento (teacher forcing). È la
+  forma esatta della massima verosimiglianza sulle coppie, token di fine frase
+  compreso, e rende noti in anticipo gli ingressi del decoder: su una RNN
+  restano comunque $m$ passi in sequenza, mentre con una maschera causale il
   passaggio diventa uno solo. In generazione il condizionamento è su
-  $\hat{y}_{<i}$, cioè su prefissi fuori dal supporto dei dati: è l’exposure
+  $\hat{y}_{<i}$, cioè su prefissi fuori dal supporto dei dati. È l’exposure
   bias {cite}`ranzato2016sequence`, lo spostamento di distribuzione della
-  clonazione comportamentale, e si misura come scarto fra l'errore per
-  token con prefisso vero e quello con prefisso proprio, non sulla quota di
-  sequenze intatte, che scende uguale anche senza. Rimedi: *scheduled sampling*
+  clonazione comportamentale; si misura come scarto fra l'errore per token con
+  prefisso vero e quello con prefisso proprio, non sulla quota di sequenze
+  intatte, che scende uguale anche senza. Rimedi: *scheduled sampling*
   {cite}`bengio2015scheduled`, il cui obiettivo è però improprio e lo stimatore
-  inconsistente {cite}`huszar2015how`, e MIXER, che mescola entropia incrociata
+  inconsistente {cite}`huszar2015how`; e MIXER, che mescola entropia incrociata
   e gradiente di policy invece di sostituirla.
 - In generazione la scelta greedy è miope; la beam search tiene
   aperte le $k$ ipotesi migliori (con una *length penalty* per non penalizzare

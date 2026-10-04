@@ -330,23 +330,23 @@ punto in cui la chiamata andrebbe inserita e da cui parte la somma; $z$ è
 l'unica cosa che cambia fra i due termini del confronto. Gli autori mettono la
 chiamata in testa, e non al posto $i$, perché il modello non ha ancora visto
 chiamate in mezzo a un testo e trovarsene una lì ne peggiorerebbe la
-perplessità; dentro la frase la chiamata entra solo nel dataset aumentato su
-cui il modello viene poi messo a punto: $\mathcal{L}_i^{\text{con}}$ e
-$\mathcal{L}_i^{\text{senza}}$ sono la perdita futura con e senza la chiamata
-($\mathcal{L}_i^{\text{senza}}$ è il minimo fra il non chiamare affatto e
-il chiamare ottenendo una risposta vuota), $x_j$ sono i token che nel testo
-originale seguono quel punto e $x_{<j}$ quelli che li precedono, $\tau$ è una
-soglia di utilità, e i pesi $w_{j-i}$ dipendono solo dalla distanza dal punto
-della chiamata: calano linearmente fino ad annullarsi dopo cinque token.
-Quei pesi dicono una cosa precisa: ciò che si misura è se la chiamata aiuta a
-scrivere la frase in corso, non il resto del documento, ed è la ragione per cui
-il filtro non annega nel rumore. Le chiamate che superano il filtro diventano
-un dataset aumentato, e il modello ci viene messo a punto sopra con il consueto
-obiettivo auto-supervisionato. Il risultato è un modello che, a inferenza,
-decide *da sé* quando emettere una chiamata, perché ha imparato che in quei
-punti la chiamata paga in termini di predizione. Il criterio è puramente
-interno («l'attrezzo mi aiuta a continuare il testo?») e non richiede alcuna
-etichetta umana su dove usarlo.
+perplessità. Dentro la frase la chiamata entra solo nel dataset aumentato su
+cui il modello viene poi messo a punto. Quanto agli altri simboli,
+$\mathcal{L}_i^{\text{con}}$ e $\mathcal{L}_i^{\text{senza}}$ sono la perdita
+futura con e senza la chiamata ($\mathcal{L}_i^{\text{senza}}$ è il minimo fra
+il non chiamare affatto e il chiamare ottenendo una risposta vuota); $x_j$ sono
+i token che nel testo originale seguono quel punto e $x_{<j}$ quelli che li
+precedono; $\tau$ è una soglia di utilità. I pesi $w_{j-i}$ dipendono solo
+dalla distanza dal punto della chiamata, e calano linearmente fino ad
+annullarsi dopo cinque token. Quei pesi dicono una cosa precisa: ciò che si
+misura è se la chiamata aiuta a scrivere la frase in corso, non il resto del
+documento, ed è la ragione per cui il filtro non annega nel rumore. Le chiamate
+che superano il filtro diventano un dataset aumentato, e il modello ci viene
+messo a punto sopra con il consueto obiettivo auto-supervisionato. Il risultato
+è un modello che, a inferenza, decide *da sé* quando emettere una chiamata,
+perché ha imparato che in quei punti la chiamata paga in termini di predizione.
+Il criterio è puramente interno («l'attrezzo mi aiuta a continuare il testo?»)
+e non richiede alcuna etichetta umana su dove usarlo.
 
 Gli autori dichiarano un limite preciso, ed è il confine fra usare uno
 strumento e condurre un compito. Toolformer decide *dove* chiamare,
@@ -487,11 +487,11 @@ contro il 14% della sola catena di pensiero. Intanto il ragionamento si
 irrigidisce sulla forma pensiero-azione-osservazione, e gli errori di
 ragionamento quasi triplicano, dal 16% al 47% delle traiettorie fallite
 esaminate; per giunta nasce un modo di fallire che prima non esisteva, la
-ricerca che torna a mani vuote. Fra i prompt il risultato migliore viene dalla
-combinazione dei due, e la regola che decide chi ha il turno è una per verso: si
+ricerca che torna a mani vuote. Fra le varianti testate, il risultato migliore
+viene dalla combinazione dei due metodi, passandosi il turno con due regole. Si
 torna al solo ragionamento quando ReAct esaurisce i passi senza arrivare a una
-risposta, e si torna a ReAct quando il solo ragionamento, provato più volte, non
-fa cadere la maggioranza delle prove sulla stessa risposta.
+risposta; e si ripassa a ReAct quando il solo ragionamento, provato più volte,
+non fa convergere la maggioranza delle prove sulla stessa risposta.
 
 Il costo è in token e latenza (ogni pensiero è testo generato in più). In
 cambio la traccia è ispezionabile, ed è un vantaggio operativo vero. Ma
@@ -568,13 +568,14 @@ memoria della traiettoria fallita, senza critica: su cento domande di HotpotQA
 la riflessione aggiunge circa otto punti assoluti. Le cifre che seguono sono
 dell'articolo originale (2023), con GPT-4 sui compiti di programmazione, e gli
 autori non offrono garanzie: tutto dipende da quanto il modello sa valutarsi
-{cite}`shinn2023reflexion`. Sui compiti di programmazione gli autori misurano
-il *pass@1*, la quota di problemi risolti con l'unica soluzione consegnata alla
-fine (il ciclo interno gira su test che il modello si scrive da sé, non sui
-test veri, ed è questo a dare loro diritto di chiamarlo così), e iterare
-sull'auto-critica senza toccare i pesi lo alza quasi dappertutto: su HumanEval
-in Python da $0{,}80$ a $0{,}91$. Quasi: su MBPP in Python scende da $0{,}80$ a
-$0{,}77$, ed è l'unico banco su cui perde.
+{cite}`shinn2023reflexion`. Gli autori misurano il *pass@1*, cioè la quota di
+problemi risolti con l'unica soluzione consegnata alla fine. Il ciclo interno
+gira su test che il modello si scrive da sé, non su quelli veri del benchmark:
+per questo la soluzione conta come unico tentativo e si può ancora parlare di
+*pass@1*. Iterare sull'auto-critica senza toccare i pesi alza il risultato
+quasi dappertutto: su HumanEval in Python passa da $0{,}80$ a $0{,}91$. Quasi,
+però: su MBPP in Python scende da $0{,}80$ a $0{,}77$, ed è l'unico banco su
+cui perde.
 
 La lettera piccola di quel guadagno riguarda chi fa il giudice. Il *valutatore*
 che dice «hai sbagliato» non è, in quegli esperimenti di programmazione, un

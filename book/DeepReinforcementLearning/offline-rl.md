@@ -73,19 +73,19 @@ difficili {cite}`jeter2019ai`.
 `````
 
 Verrebbe da pensare che sia facile, e la ragione l'abbiamo già vista nella
-{doc}`sezione su DQN <dqn>`: il Q-learning è *off-policy*, cioè il suo bersaglio
-valuta la policy greedy mentre i dati possono venire da un'altra policy. Se sa
-fare questo, dovrebbe saper imparare anche da partite giocate da altri e finite
-da un pezzo: basterebbe addestrarlo sull'archivio $\mathcal{D}$ invece che sulle
-esperienze fresche. Fatto così, però, può fallire gravemente. Fujimoto e
-colleghi lo mostrano su un compito di controllo continuo, perfino quando
-l'archivio è quello che un altro agente sta raccogliendo e da cui lui stesso
-impara con successo {cite}`fujimoto2019off`; con archivi enormi e vari, come i
-cinquanta milioni di transizioni accumulati da un DQN in tutto il suo
-addestramento su un gioco Atari, gli stessi metodi possono invece superare,
-sulla maggior parte dei giochi, l'agente che li ha prodotti
-{cite}`agarwal2020optimistic`. Capire *quando* e *perché* l'archivio rompe il
-metodo è il cuore di tutto l'argomento.
+{doc}`sezione su DQN <dqn>`: il Q-learning è *off-policy*, cioè il suo
+bersaglio stima il valore della policy greedy mentre i dati possono venire da
+un'altra policy. Se sa fare questo, dovrebbe saper imparare anche da partite
+giocate da altri e finite da un pezzo: basterebbe addestrarlo sull'archivio
+$\mathcal{D}$ invece che sulle esperienze fresche. Fatto così, però, può
+fallire gravemente. Fujimoto e colleghi lo mostrano su un compito di controllo
+continuo, perfino quando l'archivio è quello che un altro agente sta
+raccogliendo e da cui lui stesso impara con successo {cite}`fujimoto2019off`;
+con archivi enormi e vari, come i cinquanta milioni di transizioni accumulati
+da un DQN in tutto il suo addestramento su un gioco Atari, gli stessi metodi
+possono invece superare, sulla maggior parte dei giochi, l'agente che li ha
+prodotti {cite}`agarwal2020optimistic`. Capire *quando* e *perché* l'archivio
+fa fallire il metodo è il cuore di tutto l'argomento.
 
 ## Il buco nero delle azioni mai viste
 
@@ -130,7 +130,7 @@ Nel RL online questo circolo si spezza da solo: eseguendo l'azione
 sopravvalutata si osserva la ricompensa vera, bassa, e la stima si corregge.
 Offline il correttivo non arriva mai (non c'è nuova interazione) e l'errore può
 crescere senza freni. Fujimoto e colleghi {cite}`fujimoto2019off` hanno mostrato
-che questa **extrapolation error** è la ragione per cui gli algoritmi off-policy
+che questo **extrapolation error** è la ragione per cui gli algoritmi off-policy
 standard possono crollare su dati fissi: DDPG addestrato su un archivio di un
 milione di transizioni resta molto sotto l'agente che lo ha raccolto, anche
 quando i due imparano dagli stessi dati, e le sue stime oscillano o divergono.
@@ -146,7 +146,7 @@ nell'altro, di fidarsi delle azioni fuori dal supporto dei dati.
 
 `````
 
-Prima di vedere i rimedi, tocchiamo con mano il fenomeno, e in miniatura. La
+Prima di vedere i rimedi, tocchiamo con mano il fenomeno in miniatura. La
 mossa è un numero solo, che va da $-1$ a $+1$: immagina lo sterzo. Il voto vero
 di ogni posizione dello sterzo lo conosciamo noi, ed è costruito come una multa:
 misura quanto ci si allontana dalla posizione perfetta, col segno cambiato. La
@@ -236,12 +236,12 @@ Vincolando invece la ricerca alla zona che i dati coprono davvero (il loro
 $-0{,}21$, e stima ($-0{,}25$) e realtà ($-0{,}26$) tornano a coincidere. È, in
 miniatura, la prima famiglia di soluzioni, e mostra anche che cosa costa: la
 mossa perfetta, $+0{,}3$, resta irraggiungibile, perché nell'archivio non c'è.
-Si è rinunciato al meglio in cambio di non prendere lucciole per lanterne, ed è
-un baratto che l'RL offline fa continuamente.
+Si è rinunciato al meglio pur di non prendere abbagli,
+un compromesso che l'RL offline accetta continuamente.
 
 ## BCQ: restare vicini a ciò che è stato visto
 
-L'idea è quella suggerita dall'esempio, e più semplice di così non si può: se il
+L'idea, suggerita dall'esempio, è semplice: se il
 guaio nasce dal dare un voto a mosse mai provate, allora non diamoglielo. Si
 cercherà il voto più alto soltanto fra le mosse che nell'archivio compaiono
 davvero.
@@ -358,8 +358,8 @@ risotti, le zuppe con le zuppe»), abbassare il voto di un piatto immaginato non
 tocca gli altri, e la promessa regge. Un critico vero, però, che cosa somiglia
 a che cosa lo impara strada facendo, e allora la spinta che abbassa un piatto
 immaginato scivola anche su quelli che gli somigliano, compresi quelli scritti
-nei quaderni: la prudenza continua a funzionare in pratica, la dimostrazione lì
-non la segue più.
+nei quaderni: la prudenza continua a funzionare in pratica, ma la garanzia
+teorica viene meno.
 
 `````
 
@@ -390,7 +390,7 @@ alla policy che si sta valutando, il valore atteso delle azioni sotto la
 $Q$ così ottenuta minora il vero valore della policy in ogni stato del
 dataset: un limite
 inferiore *in valore*, non punto per punto (la singola stima $Q(s,a)$ può
-ancora eccedere quella vera), e su uno stato mai visto non promesso affatto.
+ancora eccedere quella vera), e per gli stati mai visti non è garantito affatto.
 
 La prudenza sull'ignoto resta quindi una garanzia formale e non un'euristica,
 ma conviene dire dove la garanzia vive. L'enunciato principale è nel caso
@@ -399,8 +399,8 @@ $\alpha$ abbastanza grande rispetto all'errore di campionamento, che dipende da
 quante volte la coppia $(s,a)$ compare nel dataset. In appendice gli autori lo
 estendono agli approssimatori lineari e alle reti nel regime del *neural tangent
 kernel*, cioè con le caratteristiche di fatto congelate: due ipotesi che una
-rete addestrata normalmente non soddisfa, e infatti l'analisi della CQL con le
-reti profonde vere gli autori la lasciano scritta come lavoro da fare. Quello
+rete addestrata normalmente non soddisfa. Infatti, l'analisi di CQL con
+reti profonde vere viene lasciata dagli autori come lavoro futuro. Quello
 che resta è una buona euristica con un teorema alle spalle, e la portata del
 teorema è quella appena detta.
 
@@ -459,7 +459,7 @@ $V(s)$ approssimi il *massimo* dei valori $Q(s,a)$ ma solo sulle azioni $a$
 *effettivamente osservate* in quello stato: coglie «il meglio tra ciò che è
 stato fatto» senza mai nominare un'azione ipotetica. Con i valori di $\tau$ che
 si usano in pratica la stima sta fra la media e il massimo, tanto più vicina al
-massimo quanto più $\tau$ si avvicina a $1$. Le tre reti si addestrano
+massimo quanto più $\tau$ si avvicina a $1$. Le reti del valore si addestrano
 per pura regressione sui dati:
 
 $$
@@ -648,7 +648,7 @@ costruito viene da risposte di versioni precedenti.
 Tanto basta perché l'RLHF erediti le tensioni di tutta la sezione. Il modello si
 allontana dalle risposte che le persone hanno davvero giudicato, e proprio là
 dove nessuno ha giudicato niente il giudice automatico è più facile da
-imbrogliare: è il risotto al peperoncino, con altri ingredienti. E il rimedio è
+imbrogliare: è di nuovo la situazione del risotto al peperoncino. E il rimedio è
 della stessa famiglia: al punteggio che il modello cerca di far salire si
 sottrae una penalità, che cresce man mano che le sue risposte si allontanano da
 quelle di partenza. Allontanarsi resta possibile, ma costa, ed è una cugina

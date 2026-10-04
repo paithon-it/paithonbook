@@ -31,7 +31,7 @@ Riprendi il foglio-registro del capitolo precedente. A ogni parola ci si scrive
 una voce nuova, fatta di un’etichetta e di un contenuto, e per rileggere si
 presenta un'etichetta e si riceve indietro ciò che le somiglia di più. Il foglio
 ha un numero fisso di caselle, e la voce nuova si somma a quello che c'è già,
-lasciando un segno un po’ in tutte; prima di sommarla, però, quello che c'è già
+lasciando un segno in tutte le caselle; prima di sommarla, però, il passato
 viene sbiadito un po’.
 
 Quasi tutte le architetture dell'attenzione lineare e degli SSM sono un
@@ -189,7 +189,7 @@ l'esigenza a cui Mamba-3 risponde con le rotazioni.
 
 **3. Il grado di dipendenza dai dati.** La transizione può essere fissa
 (scelta a priori, uguale per ogni token, come il $\gamma$ di RetNet o il
-decadimento della RWKV-4) oppure data-dipendente, generata dall'input
+decadimento della RWKV-4) oppure dipendente dai dati, generata dall'input
 token per token, come in GLA, DeltaNet e Mamba {cite}`gu2023mamba`. La
 dipendenza dai dati è ciò che compra il *ragionamento basato sul contenuto*:
 decidere cosa tenere e cosa lasciar cadere in base a *ciò che si legge*, non
@@ -222,10 +222,9 @@ restano parenti.
 
 Il limite è strutturale: uno stato di taglia fissa non può contenere una
 quantità di informazione che cresce con la lunghezza del contesto. Si vede nel
-richiamo esatto, cioè nel ritrovare alla lettera, in un contesto lunghissimo,
-un dettaglio letto centinaia di pagine prima; nel gergo del campo è il *recall
-associativo esatto*: data una chiave, restituire il valore che le era stato
-associato.
+ritrovare alla lettera, in un contesto lunghissimo, un dettaglio letto
+centinaia di pagine prima; nel gergo del campo è il *recall associativo
+esatto*: data una chiave, restituire il valore che le era stato associato.
 
 ```{figure} ../figures/interferenza-da-subito.svg
 :name: fig-interferenza-da-subito
@@ -361,7 +360,7 @@ scaffali soltanto le ultime pagine, e del lungo periodo si fidano dei quaderni
 dei compagni.
 
 Due cose, però, la squadra mista non le fa sparire. Le biblioteche non sono
-abolite, solo ridotte a poche: se il testo diventa sterminato, quelle poche
+abolite, solo ridotte a poche: se il testo si allunga a dismisura, quelle poche
 tornano a confrontare ogni pagina con tutte le altre, ed è di nuovo la spesa
 che si voleva evitare. E sulla citazione alla lettera una squadra di sole
 biblioteche resta più precisa: quella mista le arriva vicino, a una frazione
@@ -514,7 +513,7 @@ stesso scheletro sotto il prossimo nome che farà rumore.
   ricca, ma non è una scala in cui ogni gradino contiene il precedente:
   decadimento per canale e cancellazione mirata fanno cose diverse, e l'ultimo
   gradino unisce quest'ultima con il decadimento globale, non con quello
-  per canale), e quanto è data-dipendente (fisso vs generato
+  per canale), e quanto dipende dai dati (fisso o generato
   dall'input, che compra il ragionamento basato sul contenuto).
 - La dualità SSD di Mamba-2 {cite}`dao2024mamba2` dimostra che un SSM a
   transizione scalare ($\alpha_t \mathbf{I}$) calcola esattamente la stessa
@@ -554,7 +553,7 @@ della transizione, per la dimensione dello stato e per quanto dipendono dai
 dati, e su cui l'attenzione lineare e gli SSM si incontrano. Il limite è che
 uno stato di taglia fissa non restituisce alla lettera tutto ciò che ha letto:
 per questo l'attenzione piena resta il termine di paragone, e le versioni più
-usate sono ibride. Il capitolo che segue cambia materia, e si chiede come far
-incontrare in una stessa rete le parole di una lingua e i puntini di luce di
-un'immagine, che hanno nature opposte: è l'argomento di {doc}`Visione e
-linguaggio </VisioneLinguaggio/overview>`.
+usate sono ibride. Il capitolo su {doc}`Visione e linguaggio
+</VisioneLinguaggio/overview>` cambia materia, e si chiede come far incontrare
+in una stessa rete le parole di una lingua e i puntini di luce di un'immagine,
+che hanno nature opposte.

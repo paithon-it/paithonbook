@@ -53,7 +53,7 @@ rispondono a domande diverse.
 
 `````{tab} Elementare
 
-Immagina un colorificio. Sul bancone ci sono tre barattoli di tinta base, e un
+In un colorificio, sul bancone ci sono tre barattoli di tinta base e un
 cliente porta un colore da riprodurre. La domanda è: quante parti di ciascun
 barattolo?
 
@@ -129,12 +129,12 @@ $$
 cioè: $\mathbf{b}$ è una **combinazione lineare** delle colonne di
 $\mathbf{A}$, e le incognite sono i coefficienti della combinazione.
 
-Le due letture sono algebricamente equivalenti e cognitivamente no. La prima
-si visualizza bene per $n\le 3$ e smette di aiutare subito dopo. La seconda
-resta utile in qualunque dimensione e risponde da sola alla domanda
-sull'esistenza: il sistema ammette soluzione se e solo se $\mathbf{b}$
-appartiene all'insieme delle combinazioni lineari delle colonne. Quell'insieme
-ha un nome, e più avanti si chiamerà l’immagine di $\mathbf{A}$.
+Le due letture sono algebricamente equivalenti, ma non guidano l'intuizione
+allo stesso modo. La prima si visualizza bene per $n\le 3$ e smette di aiutare
+subito dopo. La seconda resta utile in qualunque dimensione e risponde da sola
+alla domanda sull'esistenza: il sistema ammette soluzione se e solo se
+$\mathbf{b}$ appartiene all'insieme delle combinazioni lineari delle colonne.
+Quell'insieme ha un nome, e più avanti si chiamerà l’immagine di $\mathbf{A}$.
 
 `````
 
@@ -265,8 +265,8 @@ di manovra.
 Questo secondo caso capita più spesso di quanto ci si aspetti, e capita anche
 quando le equazioni sembrano indipendentissime. Ecco una scena vera. Un
 piccolo editore ha due titoli in catalogo e due librerie che li vendono. A
-fine mese sa quanto ha venduto ciascun titolo, novanta copie il primo e
-sessanta il secondo, e quante ne ha vendute ciascuna libreria, settanta quella
+fine mese sa quante copie ha venduto di ciascun titolo, novanta del primo e
+sessanta del secondo, e quante ne ha vendute in ciascuna libreria, settanta quella
 di centro e ottanta quella di periferia. Vuole ricostruire la
 tabella completa: quante copie del primo titolo ha venduto la libreria di
 centro, e così per le altre tre caselle.
@@ -342,12 +342,12 @@ sì, la retta si accorcia in un segmento limitato. È il passaggio che porta da
 un problema di algebra lineare a uno di programmazione lineare, e da lì al
 trasporto fra distribuzioni.
 
-Questo schema, dove si osservano i marginali di una tabella e si vorrebbe
-ricostruire la tabella, ricompare sotto altri nomi, per esempio nel trasporto
-fra distribuzioni: è la ragione per cui conoscere due distribuzioni separate non
-determina la loro congiunta, ed è la struttura del problema che la {doc}`sezione
-sul flow matching </ModelliDiffusione/flow-matching>` incontrerà nella forma del
-trasporto fra due distribuzioni.
+Questo schema, in cui si osservano i marginali di una tabella e se ne vorrebbe
+ricostruire l'interno, ricompare in molti altri campi. È la ragione per cui
+conoscere due distribuzioni separate non determina la loro congiunta, ed è la
+struttura del problema che la {doc}`sezione sul flow matching
+</ModelliDiffusione/flow-matching>` incontrerà nella forma del trasporto fra
+due distribuzioni.
 
 `````
 
@@ -481,9 +481,10 @@ $$
 
 con $n$ il numero di colonne, cioè di incognite. La dimostrazione è
 l'eliminazione stessa: le colonne di $\mathbf{A}$ nelle posizioni dei pivot
-danno una base dell'immagine (non quelle della forma ridotta, che l'immagine
-non la conservano), le colonne senza pivot danno una variabile libera ciascuna,
-e ogni colonna è dell'uno o dell'altro tipo.
+danno una base dell'immagine (non quelle della forma ridotta, poiché le
+operazioni di riga alterano lo spazio delle colonne), le colonne senza pivot
+danno una variabile libera ciascuna, e ogni colonna è dell'uno o dell'altro
+tipo.
 
 La conseguenza modellistica ha un nome: **non identificabilità**. Se
 $\ker(\mathbf{A})\neq\{\mathbf{0}\}$, due insiemi di parametri che
@@ -532,7 +533,7 @@ quattro corsie i numeri diventano duemila, trenta volte di meno.
 
 È la mossa su cui si regge LoRA, uno dei modi di adattare un modello linguistico
 a un compito nuovo senza riaddestrarlo tutto: si lasciano fermi i numeri già
-imparati e si affianca loro una correzione che passa per una strettoia stretta.
+imparati e si affianca loro una correzione che passa per una strettoia.
 La
 {doc}`sezione su ciò che viene dopo il pre-addestramento
 </Transformers/post-training>` la racconta per esteso; qui interessa il conto
@@ -622,10 +623,10 @@ print(np.linalg.matrix_rank(T.T))     # -> 2
 
 Nei problemi visti finora i vincoli erano pochi o giusti. Nel machine learning
 classico (regressione, modelli lineari e additivi) il caso frequente è
-l'opposto: le equazioni sono migliaia (una per esempio osservato) e le incognite
-poche (i parametri del modello). Un sistema del genere non ha quasi mai
-soluzione, perché i dati portano rumore e nessuna retta passa esattamente per
-mille punti sparsi. In una rete che ha più parametri che esempi accade il
+l'opposto: le equazioni sono migliaia (una per ogni esempio osservato) e le
+incognite poche (i parametri del modello). Un sistema del genere non ha quasi
+mai soluzione, perché i dati portano rumore e nessuna retta passa esattamente
+per mille punti sparsi. In una rete che ha più parametri che esempi accade il
 contrario: le soluzioni esatte sono infinite.
 
 Rinunciare sarebbe assurdo, e la domanda si cambia: se non si può azzerare
@@ -652,14 +653,14 @@ np.linalg.lstsq(A, b, rcond=None)[0]   # funziona anche se A è singolare
 ```
 
 `solve` pretende una matrice quadrata e invertibile, cioè con il nucleo ridotto
-al solo zero (una matrice che non lo è si dice *singolare*), e solleva l'errore
+al solo zero (una matrice che non lo è si dice *singolare*). Solleva l'errore
 `LinAlgError` solo se durante la fattorizzazione incontra un pivot esattamente
-nullo: su una matrice singolare a meno degli arrotondamenti, la situazione
-normale con dati reali, non dice niente e restituisce un vettore enorme. `lstsq`
-non si ferma mai: restituisce una soluzione anche quando ce ne sono infinite
+nullo: su una matrice singolare a meno degli arrotondamenti (la situazione
+normale con i dati reali) non dice niente e restituisce un vettore enorme. `lstsq`
+invece non si ferma mai: restituisce una soluzione anche quando ce ne sono infinite
 (sceglie quella di norma minima) e anche quando non ce n'è nessuna (sceglie
-quella che minimizza l'errore). È comodo e va saputo, perché una risposta arriva
-comunque e sta a chi legge sapere a quale delle tre situazioni corrisponde. Due
+quella che minimizza l'errore). È comodo ma va saputo, perché una risposta arriva
+comunque, e sta a chi legge sapere a quale delle tre situazioni corrisponde. Due
 colonne uguali a meno di un'unità di macchina bastano a vederlo:
 
 ```python

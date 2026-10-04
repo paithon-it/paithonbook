@@ -39,7 +39,7 @@ quando si filtra, si ordina o si estrae una colonna.
 Un DataFrame è un foglio Excel fatto di codice. Ogni colonna ha
 un'intestazione (`nome`, `eta`, `citta`, `spesa`, senza accenti, come si
 scrivono di solito i nomi delle colonne) e ogni riga è un cliente; solo che
-invece di cliccare con il mouse dai istruzioni a parole:
+invece di cliccare con il mouse dai istruzioni per iscritto:
 
 ```python
 import pandas as pd
@@ -121,10 +121,10 @@ pd.DataFrame({
                                        # servono
 ```
 
-Il blocco che segue la rilegge da lì, e da quel punto in avanti `df` è questa
-tabella caricata da file, e non più una scritta a mano: il nome è lo stesso
-perché `df` (da *dataframe*) è il nome che quasi tutti danno alla tabella su
-cui stanno lavorando in quel momento. La tabella su cui girano le righe che
+Il blocco che segue la rilegge dal file. Da questo punto in avanti `df` è la
+tabella caricata, non più quella scritta a mano. Il nome resta lo stesso
+perché `df` (da *dataframe*) è la sigla convenzionale per la tabella su
+cui si sta lavorando. La tabella su cui girano le righe che
 seguono ha sei clienti e quattro colonne (`nome`, `eta`, `citta`, `spesa`),
 con un paio di caselle lasciate vuote di proposito, perché i dati veri sono
 quasi sempre così.
@@ -204,12 +204,12 @@ df["spesa_iva"] = df["spesa"] * 1.22   # nuova colonna calcolata
 `````{tab} Elementare
 
 La riga centrale è la più importante. `df["eta"] > 30` non restituisce un
-numero: restituisce una colonna di `True`/`False`, una per riga. Mettendola
-tra parentesi quadre, Pandas tiene solo le righe dove il valore è `True`. È
-come applicare un colino: la condizione decide cosa passa e cosa resta fuori.
-Puoi combinarne più d'una con `&` («e») e `|` («o»), e ogni condizione va
-chiusa fra parentesi sue, altrimenti Python legge la riga in un altro modo e
-risponde con un errore:
+numero: restituisce una colonna di `True`/`False`, una per riga. Mettendola tra
+parentesi quadre, chiedi a Pandas di tenere solo le righe in cui il valore è
+`True`. È come applicare un colino: la condizione decide cosa passa e cosa
+resta fuori. Puoi combinarne più d'una con `&` («e») e `|` («o»), e ogni
+condizione va chiusa fra parentesi sue, altrimenti Python legge la riga in un
+altro modo e risponde con un errore:
 
 ```python
 df[(df["eta"] > 30) & (df["citta"] == "Milano")]
@@ -227,8 +227,8 @@ df[df["eta"] > 30]["spesa"] = 0       # scrive sulla ciotola, non sulla pentola
 In NumPy la riga `x[x > 25] = 0`, con una sola coppia di quadre, scriveva
 sull'originale; qui le coppie di quadre sono due, una dopo l'altra: la prima
 fabbrica la ciotola, la seconda ci scrive dentro. Pandas la segnala con un
-avviso, che però in mezzo a mille righe di uscita
-non lo legge nessuno. Per scrivere sulla tabella originale c'è un attrezzo
+avviso che, in mezzo a mille righe di uscita,
+non legge nessuno. Per scrivere sulla tabella originale c'è un attrezzo
 apposta, `.loc`, che sceglie le righe e le cambia lì dove stanno. Fra le sue
 quadre si scrive prima la condizione sulle righe e poi il nome della colonna:
 `df.loc[df["eta"] > 30, "spesa"] = 0` azzera la spesa di chi ha più di
@@ -255,8 +255,8 @@ va bene qualunque forma, per scrivere si usa `.loc`. `df[df["eta"] > 30]` è un
 oggetto nuovo, quindi `df[df["eta"] > 30]["spesa"] = 0` modifica quello e
 lascia `df` com'era. Pandas 3 lo segnala con un `ChainedAssignmentError` che,
 malgrado il nome, viene *emesso* come avviso e non *sollevato* come errore: il
-programma non si ferma, tira dritto, e la modifica che credevi di aver fatto
-semplicemente non c'è. In uno script che filtra gli avvisi, o in un notebook
+programma non si ferma, e la modifica che credevi di aver fatto
+non c'è. In uno script che filtra gli avvisi, o in un notebook
 con mille righe di output, il gesto sbagliato passa in silenzio. Chi vuole che
 si fermi lo può promuovere a errore vero con `warnings.simplefilter("error",
 pd.errors.ChainedAssignmentError)`, che è una riga da mettere in cima a uno
@@ -511,8 +511,8 @@ al test set, per non far trapelare informazione (*data leakage*).
 
 ## Perché guardare i dati prima di modellare
 
-Verrebbe la tentazione di saltare direttamente al modello, e c'è un esempio
-famoso che spiega perché sia una cattiva idea. Nel 1973 lo statistico Francis
+Verrebbe la tentazione di saltare direttamente al modello, ma un esempio
+famoso spiega perché sia una cattiva idea. Nel 1973 lo statistico Francis
 Anscombe mise insieme quattro piccole raccolte di undici punti ciascuna, e le
 costruì apposta perché, misurate, risultassero gemelle: alcune misure
 coincidono esatte, le altre a meno di qualche millesimo.
@@ -576,11 +576,10 @@ $$
 Il cappuccio sopra la $y$ vuol dire «valore *previsto* dalla retta», da tenere
 distinto dal valore misurato davvero, e la distinzione fra i due è quella su
 cui si misura ogni modello supervisionato. Un conto solo basta a fissare
-l'idea:
-nel primo insieme, dove $x$ vale $10$, la retta prevede
-$\hat{y} = 3 + 0{,}5 \cdot 10 = 8$, mentre il punto misurato in quel posto sta
-a $8{,}04$. La differenza fra i due, qui quattro centesimi, è l’**errore** su
-quel punto, ed è la quantità che ogni modello cercherà di rendere piccola.
+l'idea: nel primo insieme, dove $x$ vale $10$, la retta prevede $\hat{y} = 3 +
+0{,}5 \cdot 10 = 8$, mentre il punto misurato per quella $x$ vale $8{,}04$. La
+differenza fra i due, qui quattro centesimi, è l’**errore** su quel punto, ed è
+la quantità che ogni modello cercherà di rendere piccola.
 
 Costruire quattro insiemi di dati che coincidono su tutte e quattro queste
 misure è un lavoro di precisione, ed è il punto: sono fabbricati apposta
@@ -626,15 +625,14 @@ metodi appartengono ai secondi.
 ```
 
 I nomi di {numref}`fig-anatomia-figura` si imparano prima di scrivere il primo
-grafico, perché la documentazione di Matplotlib li dà per noti, e perché
-l'errore più comune dei primi tempi (chiamare un metodo sulla Figure quando
-serviva sugli Axes) diventa leggibile appena si sa che sono due oggetti
-distinti. Nelle righe `plt.qualcosa` non compaiono né l'una né gli altri, ed è
-voluto: quelle funzioni lavorano sulla figura *corrente*,
-quella aperta in quel momento, il che va benissimo per un grafico veloce.
-Quando i grafici diventano due o più, o quando li si vuole affiancare, si
-prendono i due oggetti per nome e si chiamano i metodi su `ax`, come vedremo
-subito dopo.
+grafico, dato che la documentazione di Matplotlib li dà per noti. L'errore più
+comune dei primi tempi (chiamare un metodo sulla Figure anziché sugli Axes)
+diventa evidente appena si capisce che sono due oggetti distinti. Nelle righe
+`plt.qualcosa` non compaiono né l'una né gli altri, ed è voluto: quelle
+funzioni lavorano sulla figura *corrente*, quella aperta in quel momento, il
+che va benissimo per un grafico veloce. Quando i grafici diventano due o più, o
+quando li si vuole affiancare, si prendono i due oggetti per nome e si chiamano
+i metodi su `ax`, come vedremo subito dopo.
 
 ```python
 import matplotlib.pyplot as plt
@@ -660,7 +658,7 @@ plt.plot(mesi, fatturato)             # andamento nel tempo
 plt.show()
 ```
 
-Le due righe fanno mestieri diversi. `plt.figure()` apre un foglio nuovo: qui
+Questi due comandi fanno mestieri diversi. `plt.figure()` apre un foglio nuovo: qui
 non sarebbe indispensabile, perché `plt.show()` chiude i fogli che ha appena
 mostrato, ma serve ogni volta che si preparano più grafici prima di mostrarli,
 altrimenti i disegni finiscono tutti sullo stesso foglio. `plt.show()` mostra

@@ -51,7 +51,7 @@ così, che dice come una cosa cambia istante per istante, in matematica si
 chiama equazione differenziale: la sua soluzione non è un numero, come per le
 equazioni di scuola, ma un intero percorso.
 
-Sul tremore serve una precisazione, perché è controintuitiva. Gli scossoni non
+Il tremore si comporta in modo controintuitivo. Gli scossoni non
 si accumulano come uno spostamento normale: è il conto dei mille passi a caso,
 che portano a una trentina di metri e non a un chilometro. Cento scossoni da un
 centimetro allontanano di una decina di centimetri, non di un metro: chi va a
@@ -295,8 +295,8 @@ cosa ignota. Deriva e tremore li abbiamo scelti noi quando abbiamo deciso
 come rovinare le immagini: sono nostri, li conosciamo esattamente. Della strada
 del ritorno manca un pezzo solo, ed è quello che la rete impara.
 
-C'è una cosa che sorprende. Andando all'indietro si continua ad aggiungere
-rumore. Sembra assurdo, visto che si sta cercando di ripulire; e invece i due
+Andando all'indietro si continua ad aggiungere
+rumore. Sembra assurdo, visto che si sta cercando di ripulire, ma i due
 termini lavorano insieme. La spinta verso le zone dense tira verso i dati, il
 rumore permette di esplorare invece di precipitare sul primo posto buono, e il
 tremore si spegne man mano che si procede: all'inizio del ritorno è forte e
@@ -368,7 +368,7 @@ sempre lo stesso: $\pi_s$ parte larga e si stringe verso i dati man mano che il
 rumore scende, ed è questo l’*annealing*, quello dei livelli di rumore di Song
 ed Ermon e non quello di una temperatura. E la deriva è il doppio di quella di
 Langevin, che a parità di diffusione vuole $\tau\nabla\log\pi$; la differenza
-morde: con il bersaglio congelato questa equazione avrebbe per stazionaria
+è sostanziale: con il bersaglio congelato questa equazione avrebbe per stazionaria
 $\pi^2$ e non $\pi$, e la Langevin vera, dove serve, si aggiunge a parte come
 correttore. Il fattore $\tau(s)$, invece, di una temperatura ha soltanto la
 lettera: moltiplica insieme la deriva e la varianza del rumore, quindi ne lascia
@@ -504,14 +504,14 @@ punteggio stimato la SDE dà spesso campioni migliori, perché la componente di
 Langevin che contiene riporta a ogni passo il campione verso la marginale
 giusta e corregge in parte gli errori dei passi precedenti, mentre la ODE li
 integra fedelmente {cite}`karras2022elucidating`. Il vantaggio ha due limiti.
-Discretizzare la parte stocastica introduce un errore suo, e troppo rumore
-aggiunto e tolto impoverisce i dettagli, tanto che Karras e colleghi
-accendono la stocasticità soltanto in una fascia di livelli di rumore e ne
-tarano la dose caso per caso; e il guadagno si assottiglia al migliorare del
-modello: su CIFAR-10, con il loro addestramento migliore, qualunque dose di
-rumore peggiora il risultato, mentre su ImageNet $64\times64$ resta utile.
-Da qui i campionatori ibridi, che iniettano rumore in un tratto del percorso e
-seguono la sola ODE nel resto.
+Il primo è che discretizzare la parte stocastica introduce un errore suo, e
+troppo rumore aggiunto e tolto impoverisce i dettagli (tanto che Karras e
+colleghi accendono la stocasticità soltanto in una fascia di livelli di rumore
+e ne tarano la dose caso per caso). Il secondo è che il guadagno si assottiglia
+al migliorare del modello: su CIFAR-10, con il loro addestramento migliore,
+qualunque dose di rumore peggiora il risultato, mentre su ImageNet $64\times64$
+resta utile. Da qui i campionatori ibridi, che iniettano rumore in un tratto
+del percorso e seguono la sola ODE nel resto.
 
 `````
 
@@ -612,7 +612,7 @@ Sono quattro forme della stessa informazione perché l'immagine rovinata è fatt
 di due pezzi, l'immagine pulita e il disturbo, mescolati in proporzioni note.
 Sapendo l'immagine rovinata e uno dei due pezzi, l'altro si ricava sottraendo.
 
-La scelta non cambia la matematica e cambia i conti. Chiedere il disturbo
+La scelta non cambia la matematica, ma cambia i conti. Chiedere il disturbo
 funziona male quando di disturbo ce n'è pochissimo, perché di quel disturbo
 nell'immagine resta una traccia minuscola e va indovinato tutto a partire da
 lì; chiedere l'immagine pulita funziona male dall'altra parte, dove di immagine
@@ -666,26 +666,23 @@ $$
 $$
 
 e ogni scelta di parametrizzazione equivale a una scelta di $w(t)$ nella
-formulazione sul rumore. Con il rapporto segnale-rumore
-$\mathrm{SNR}(t) = \alpha_t^2/\sigma_t^2$, fra le potenze, i conti stanno in
-una riga:
+formulazione sul rumore. Con il rapporto segnale-rumore $\mathrm{SNR}(t) =
+\alpha_t^2/\sigma_t^2$, fra le potenze, i conti stanno in una riga:
 $\lVert\hat{\mathbf{x}}_0 - \mathbf{x}_0\rVert^2 =
 \lVert\hat{\boldsymbol{\epsilon}} -
-\boldsymbol{\epsilon}\rVert^2/\mathrm{SNR}(t)$,
-$\lVert\mathbf{s}_\theta - \nabla\log p_t(\mathbf{x}_t \mid
-\mathbf{x}_0)\rVert^2 = \lVert\hat{\boldsymbol{\epsilon}} -
-\boldsymbol{\epsilon}\rVert^2/\sigma_t^2$
-e, sul percorso VP,
-$\lVert\hat{\mathbf{v}} - \mathbf{v}\rVert^2 = \lVert\hat{\boldsymbol{\epsilon}} -
-\boldsymbol{\epsilon}\rVert^2/\alpha_t^2 = \big(1 +
-1/\mathrm{SNR}(t)\big)\lVert\hat{\boldsymbol{\epsilon}} -
-\boldsymbol{\epsilon}\rVert^2$.
-La lettura per pesi è di Kingma e colleghi, che nel 2021 scrivono il bound
-variazionale in funzione del solo rapporto segnale-rumore
-{cite}`kingma2021variational` e più tardi mostrano che ogni peso monotono in $t$
-equivale a un ELBO su dati aumentati con rumore {cite}`kingma2023understanding`;
-e spiega perché confronti fra articoli che dichiaravano obiettivi diversi
-risultassero poi difficili da interpretare: cambiava il peso, non l'obiettivo.
+\boldsymbol{\epsilon}\rVert^2/\mathrm{SNR}(t)$, $\lVert\mathbf{s}_\theta -
+\nabla\log p_t(\mathbf{x}_t \mid \mathbf{x}_0)\rVert^2 =
+\lVert\hat{\boldsymbol{\epsilon}} - \boldsymbol{\epsilon}\rVert^2/\sigma_t^2$
+e, sul percorso VP, $\lVert\hat{\mathbf{v}} - \mathbf{v}\rVert^2 =
+\lVert\hat{\boldsymbol{\epsilon}} - \boldsymbol{\epsilon}\rVert^2/\alpha_t^2 =
+\big(1 + 1/\mathrm{SNR}(t)\big)\lVert\hat{\boldsymbol{\epsilon}} -
+\boldsymbol{\epsilon}\rVert^2$. La lettura per pesi è di Kingma e colleghi, che
+nel 2021 scrivono il bound variazionale in funzione del solo rapporto
+segnale-rumore {cite}`kingma2021variational` e più tardi mostrano che ogni peso
+monotono in $t$ equivale a un ELBO su dati aumentati con rumore
+{cite}`kingma2023understanding`. Questa prospettiva spiega perché confronti fra
+articoli che dichiaravano obiettivi diversi risultassero poi difficili da
+interpretare: cambiava il peso, non l'obiettivo.
 
 `````
 

@@ -38,6 +38,20 @@ Una versione corrisponde a una **pubblicazione**, non a una giornata di
 lavoro: il libro si scrive tutti i giorni e si pubblica quando un pezzo sta in
 piedi.
 
+(v1-14-2)=
+
+## 1.14.2 · 4 ottobre 2026
+
+### Pagine ampliate
+
+- {doc}`Detection e segmentazione </VisioneArtificiale/detection-segmentazione>` (Visione artificiale). **Grandi e piccoli: le piramidi di feature.** Come un rilevatore trova nella stessa immagine il passerotto e il camion, e la segmentazione panottica, che unisce quella semantica a quella d'istanza.
+- {doc}`Geometria e profondità </VisioneArtificiale/geometria-e-profondita>` (Visione artificiale). **L'omografia, la stima della matrice fondamentale e il controllo sinistra-destra nella stereo**, e nell'apertura del capitolo che cosa fa il rilevatore di Canny.
+
+### Correzioni
+
+- **La prosa di tutto il libro, ripresa frase per frase.** Un italiano più diretto, le parole dei testi italiani al posto dei calchi dall'inglese, e i rimandi che nominano la pagina a cui portano.
+- **Qualche affermazione rimessa a posto.** Fra le altre, il costo della ricerca a griglia, le radici complesse nella diagonalizzazione, la densità di un flusso dove la trasformazione schiaccia e il teorema che sta dietro la disputa su COMPAS.
+
 (v1-14-1)=
 
 ## 1.14.1 · 3 ottobre 2026

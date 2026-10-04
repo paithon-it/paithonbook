@@ -37,16 +37,15 @@ della materia.
 
 ## Il ciclo come unità di progetto
 
-Prima, però: la parola «loop» ha due significati annidati, e conviene tenerli
-distinti invece di lasciarli capire. Il primo è il giro di un agente (osserva,
-ragiona, agisci), e il giro più comune di tutti è quello che fai tu in una
-chat: chiedi, guardi la risposta, storci il naso, richiedi meglio. Quel loop
-esiste ancora; solo che lo giri tu, a mano, e finisce quando chiudi la
-finestra. Il secondo è lo stesso giro affidato a un programma, che lo fa
-partire da sé, lo ripete e ne conserva l'esito. È un annidamento e non una
+Prima, però: la parola «loop» ha due significati annidati. Il primo è il giro
+di un agente (osserva, ragiona, agisci), e il giro più comune di tutti è quello
+che fai tu in una chat: chiedi, guardi la risposta, storci il naso, richiedi
+meglio. Quel loop esiste ancora; solo che lo giri tu, a mano, e finisce quando
+chiudi la finestra. Il secondo è lo stesso giro affidato a un programma, che lo
+fa partire da sé, lo ripete e ne conserva l'esito. È un annidamento e non una
 sostituzione: dentro c'è ancora il ciclo di prima. Quello che cambia è chi lo
-mette in moto e chi decide quando è finito, e quel «chi», da qui in avanti,
-non è più una persona davanti a una tastiera.
+mette in moto e chi decide quando è finito, e quel «chi», da qui in avanti, non
+è più una persona davanti a una tastiera.
 
 L'unità di lavoro del loop engineering non è la richiesta, ma il ciclo:
 una sequenza che si ripete (*pianifica, esegui, verifica, rifletti*) e poi
@@ -118,10 +117,10 @@ Il ciclo esterno, disegnato per esteso, ha quattro stazioni. La
 {numref}`fig-loop-ciclo` le mostra chiuse in cerchio, con il dettaglio che regge
 tutto il resto: alla stazione di verifica c'è un **cancello**,
 cioè un controllo che decide se il giro può chiudersi o va rifatto, e a
-deciderlo non è il modello. Più avanti vedremo che dove il lavoro tocca cose
+deciderlo non è il modello. Dove il lavoro tocca cose
 difficili da disfare (mandare una mail a un cliente, cancellare dei dati,
 pubblicare qualcosa) di cancelli se ne mette un secondo, e a tenerlo è una
-persona; qui basta il primo.
+persona. Qui basta il primo.
 
 ```{figure} ../figures/loop-engineering-ciclo.svg
 :name: fig-loop-ciclo
@@ -135,12 +134,12 @@ consegnato, chi non lo supera torna indietro con il motivo del rifiuto.
 
 ## I componenti di un loop
 
-Un capobottega è fatto di attrezzi concreti. Cobus
-Greyling {cite}`greyling2026loop` ne ha raccolto il repertorio, e conviene
-scorrerlo, perché ogni voce risponde a un problema pratico che il ciclo
-esterno pone. Gli esempi vengono quasi tutti dal mondo di chi programma, che
-di questi loop è il primo cantiere; e di ogni voce diciamo prima a che cosa
-serve, che è la parte che dura, poi come si chiama l'attrezzo che oggi la fa.
+Un capobottega è fatto di attrezzi concreti. Cobus Greyling
+{cite}`greyling2026loop` ne ha raccolto il repertorio. Ogni voce risponde a un
+problema pratico che il ciclo esterno pone. Gli esempi vengono quasi tutti dal
+mondo di chi programma, che di questi loop è il primo cantiere; e di ogni voce
+diciamo prima a che cosa serve, che è la parte che dura, poi come si chiama
+l'attrezzo che oggi la fa.
 
 - **La sveglia.** Il loop parte da sé, a una cadenza sua: ogni notte a un'ora
   fissata (l'orologio che lo fa partire, nei sistemi che ospitano i programmi,
@@ -163,11 +162,10 @@ serve, che è la parte che dura, poi come si chiama l'attrezzo che oggi la fa.
   pacchetti si chiamano *skill*). È l'idea, già incontrata nel capitolo sugli
   Agenti, che un prompt vada trattato come si tratta il codice: archiviato,
   corretto in un posto solo, con la storia delle sue versioni.
-- **Chi fa e chi controlla, separati.** Il lavoro si divide in due ruoli
+- **Ruoli separati.** Il lavoro si divide in due ruoli
   affidati a due agenti distinti, cioè a due copie del modello ciascuna
-  con le sue istruzioni e la sua finestra: una produce, l'altra giudica. Ci
-  torniamo fra poco.
-- **La memoria fuori dalla finestra.** Quello che il ciclo sa non vive nella
+  con le sue istruzioni e la sua finestra: una produce, l'altra giudica.
+- **Memoria esterna.** Quello che il ciclo sa non vive nella
   conversazione, ma in file che legge e riscrive a ogni giro: uno con il
   punto a cui si è arrivati, uno con il piano e le decisioni prese. Sono la
   memoria a lungo termine di cui parlava il capitolo sugli Agenti, qui in una
@@ -260,7 +258,7 @@ nel testo non si riconosce, ma gli stessi autori avvertono che un modello premia
 anche i testi che somigliano ai propri: il problema si sposta più che sparire. È
 una delle ragioni per cui, sopra il checker, il cancello resta deterministico;
 degli altri pregiudizi di un modello che fa da giudice, la posizione e la
-lunghezza, si occupa più avanti la {doc}`sezione su LLMOps </MLOps/llmops>`. In
+lunghezza, si occupa la {doc}`sezione su LLMOps </MLOps/llmops>`. In
 cambio si paga un secondo giro di inferenza (token e latenza in più) che va
 messo a bilancio come ogni altra spesa del loop.
 
@@ -322,14 +320,14 @@ i test di HumanEval, e su ventisei modelli la quota di problemi risolti si è
 ridotta, nei casi peggiori, del 19,3-28,9 per cento: erano soluzioni sbagliate
 che i test originali lasciavano passare {cite}`liu2023evalplus`.
 
-Il ciclo attorno al cancello (provare, farsi respingere, ripensarci,
-riprovare) ha invece antecedenti in due lavori del 2022 e del 2023, che il
-capitolo sugli Agenti ha già introdotto e che qui rileggiamo dal lato del
-loop. Il primo si chiama ReAct {cite}`yao2023react`, e mostra che intrecciare
-ragionamento e azione (pensare a parole *e* usare strumenti) rende più del
-solo agire. Siccome ogni pensiero è agganciato a quello che gli strumenti
-hanno davvero riportato, ReAct si inventa meno cose del ragionamento lasciato
-a sé stesso, cioè della catena di pensiero della sezione sul prompt
+Il ciclo attorno al cancello (provare, farsi respingere, ripensarci, riprovare)
+ha invece antecedenti in due lavori del 2022 e del 2023, descritti nel
+{doc}`capitolo sugli Agenti </Agenti/overview>`, che si possono rileggere dal
+lato del loop. Il primo si chiama ReAct {cite}`yao2023react`, e mostra che
+intrecciare ragionamento e azione (pensare a parole *e* usare strumenti) rende
+più del solo agire. Siccome ogni pensiero è agganciato a quello che gli
+strumenti hanno davvero riportato, ReAct si inventa meno cose del ragionamento
+lasciato a sé stesso, cioè della catena di pensiero della sezione sul prompt
 {cite}`wei2022chain`, che pensa a voce alta senza mai andare a controllare.
 
 Questo non vuol dire che ReAct vinca sempre, e sono gli stessi autori a
@@ -482,9 +480,9 @@ test del progetto. L'ossatura del cancello, però, è questa.
 
 ## Tenere il ciclo in mano: gli errori si moltiplicano
 
-Fin qui la parte esaltante. Ora quella onesta, perché un loop mal governato è
-uno strumento per sbagliare più in fretta. Prima però guardiamo il metro con
-cui questi cicli vengono misurati, perché è un metro che ha i suoi limiti.
+Fin qui la parte esaltante. La parte onesta è che un loop mal governato è
+uno strumento per sbagliare più in fretta. E lo stesso metro con
+cui questi cicli vengono misurati ha dei limiti.
 
 ```{figure} ../figures/swe-bench-agenti-programmano.svg
 :name: fig-swe-bench
@@ -498,33 +496,32 @@ valuta.
 ```
 
 Il banco di prova disegnato in {numref}`fig-swe-bench` è SWE-bench
-{cite}`jimenez2024swebench`, che nel capitolo sugli Agenti abbiamo già usato e
-discusso. Il suo pregio è anche il suo limite. Un banco così misura ciò che i
-test sanno vedere, e i test non sanno vedere tutto: una modifica che li supera
-lasciando dietro di sé del codice più difficile da leggere passa comunque, e nel
-punteggio non se ne trova traccia. Il guaio si paga più tardi, quando qualcuno
-dovrà rimetterci le mani, ed è per questo che chi programma lo chiama un
-**debito**. E ci sono due obiezioni più dure, che vengono dallo stesso lavoro.
-Rileggendo a mano le prove superate, Aleithan e colleghi trovano che in circa
-una su tre la soluzione era già scritta dentro la segnalazione da risolvere,
-cioè l'agente aveva la risposta sotto gli occhi insieme alla domanda (negli
-Agenti l'abbiamo riportata per esteso); e che il 31% delle correzioni accettate
-era sospetto, sbagliato o incompleto, e passava soltanto perché i test erano
-troppo deboli per accorgersene. Tolti i casi dubbi, il tasso di successo
-dell'agente che misuravano scende dal 12,47% al 3,97%
-{cite}`aleithan2024swebenchplus`. E il 23 febbraio 2026 OpenAI ha smesso di
-riportare i punteggi di SWE-bench Verified, per test difettosi e contaminazione
-{cite}`openai2026sweverified`. Un giudice automatico è una gran cosa, ma giudica
-solo ciò che qualcuno ha deciso di misurare, e un cancello vale quanto i suoi
-test.
+{cite}`jimenez2024swebench`, già incontrato nel capitolo sugli agenti. Il suo
+pregio è anche il suo limite. Un banco così misura ciò che i test sanno vedere,
+e i test non sanno vedere tutto: una modifica che li supera lasciando dietro di
+sé del codice più difficile da leggere passa comunque, e nel punteggio non se
+ne trova traccia. Il guaio si paga più tardi, quando qualcuno dovrà rimetterci
+le mani, ed è per questo che chi programma lo chiama un **debito**. E ci sono
+due obiezioni più dure, che vengono dallo stesso lavoro. Rileggendo a mano le
+prove superate, Aleithan e colleghi trovano che in circa una su tre la
+soluzione era già scritta dentro la segnalazione da risolvere, cioè l'agente
+aveva la risposta sotto gli occhi insieme alla domanda (negli Agenti l'abbiamo
+riportata per esteso); e che il 31% delle correzioni accettate era sospetto,
+sbagliato o incompleto, e passava soltanto perché i test erano troppo deboli
+per accorgersene. Tolti i casi dubbi, il tasso di successo dell'agente che
+misuravano scende dal 12,47% al 3,97% {cite}`aleithan2024swebenchplus`. E il 23
+febbraio 2026 OpenAI ha smesso di riportare i punteggi di SWE-bench Verified,
+per test difettosi e contaminazione {cite}`openai2026sweverified`. Un giudice
+automatico è una gran cosa, ma giudica solo ciò che qualcuno ha deciso di
+misurare, e un cancello vale quanto i suoi test.
 
-Detto questo, i limiti sono tre. Il primo è aritmetico, e lo abbiamo già
-incontrato negli Agenti: gli errori si accumulano lungo il ciclo. Chiamiamo $p$
-la probabilità che un singolo passo introduca un errore che nessuno intercetta
-(una probabilità si scrive come una frazione di uno: $p = 0{,}05$ vuol dire
-cinque volte su cento). Allora $1 - p$ è la probabilità che quel passo vada
-liscio, e se ogni passo sbaglia per conto proprio, con lo stesso rischio $p$
-tutte le volte, la probabilità che il loop attraversi $n$ passi senza guai è
+I limiti sono tre. Il primo è aritmetico, come si è visto per gli agenti: gli
+errori si accumulano lungo il ciclo. Chiamiamo $p$ la probabilità che un
+singolo passo introduca un errore che nessuno intercetta (una probabilità si
+scrive come una frazione di uno: $p = 0{,}05$ vuol dire cinque volte su cento).
+Allora $1 - p$ è la probabilità che quel passo vada liscio, e se ogni passo
+sbaglia per conto proprio, con lo stesso rischio $p$ tutte le volte, la
+probabilità che il loop attraversi $n$ passi senza guai è
 
 $$
 P(\text{pulito}) = (1 - p)^n,
@@ -626,7 +623,7 @@ ha avuto ragione per una settimana {cite}`greyling2026loop`:
 
 - **L1, solo report.** Il loop osserva e *propone*: apre una segnalazione,
   scrive una diagnosi. L'umano applica. Raggio d'azione nullo sul sistema.
-- **L2, fix assistiti.** Il loop produce la modifica (una pull request, una
+- **L2, correzioni assistite.** Il loop produce la modifica (una pull request, una
   patch) ma non la integra: c'è un cancello umano che rivede e fonde. È il
   livello a cui conviene fermarsi finché il costo di una revisione resta
   minore del costo atteso di un errore integrato senza guardarlo, cioè finché
@@ -659,7 +656,7 @@ più codice, più modifiche, più decisioni di quante una persona ne riesca a
 leggere, e quello che nessuno ha letto resta un debito: qualcuno, un giorno,
 dovrà capirlo, e lo capirà quando serve, cioè quando qualcosa si è rotto. Addy
 Osmani lo chiama **comprehension debt** {cite}`osmani2026comprehension`, debito
-di comprensione, e l'espressione, va detto, circolava già prima di lui. Il
+di comprensione, e l'espressione circolava già prima di lui. Il
 punto è che i loop amplificano il giudizio, quello buono e quello cattivo
 con la stessa efficienza: una scelta di partenza azzeccata si moltiplica in
 fretta su tutto il lavoro, e una sbagliata pure. Per questo la regola del

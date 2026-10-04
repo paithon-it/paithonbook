@@ -18,7 +18,7 @@ contiene di sicuro la regola giusta.
 Un investigatore ha una lista di mille sospettati, e sa per certo che il
 colpevole è fra loro. I sospettati sono le regole candidate, il colpevole la
 regola giusta, gli indizi gli esempi. Gli indizi arrivano uno alla volta, a
-caso, e ognuno scagiona chi non ci si accorda: un'impronta di scarpa numero
+caso, e ognuno scagiona chi lo contraddice: un'impronta di scarpa numero
 quarantadue esclude chi porta il trentotto. Dopo un certo numero di indizi
 restano solo i sospettati compatibili con tutti, e l'investigatore ne indica uno
 qualunque.
@@ -31,7 +31,7 @@ su cento di scagionarlo: lo lascia in lista al più novantacinque volte su cento
 Per restarci dopo due indizi devono andargli bene tutti e due, e le probabilità
 si moltiplicano: al più $0{,}95 \cdot 0{,}95 \approx 0{,}90$. Dopo quattordici
 indizi ($0{,}95$ moltiplicato per sé stesso quattordici volte fa circa $0{,}49$)
-è scesa sotto la metà, e ogni altri quattordici si dimezza ancora.
+la probabilità scende sotto la metà, e ogni altri quattordici si dimezza ancora.
 
 I sospettati da scartare però possono essere tanti, fino a novecentonovantanove,
 e basta che ne resti in lista uno solo per rovinare tutto, perché
@@ -58,9 +58,9 @@ realtà un po' meno di diciassette e ciascuno chiede un po’ meno di quattordic
 indizi.
 
 Raddoppiare i sospettati costa soltanto altri quattordici indizi, perché basta
-dimezzare ancora una volta la probabilità di ciascuno: con un milione di
+dimezzare ancora una volta la probabilità di ciascuno. Con un milione di
 sospettati invece di mille ne servono $360$, non duecentoventicinquemila.
-Pretendere di più costa di più: se il sospettato indicato deve contraddire meno
+Pretendere di più costa di più. Se il sospettato indicato deve contraddire meno
 dell'uno per cento degli indizi invece del cinque, ogni indizio scagiona un
 sospettato da scartare cinque volte più di rado, e gli indizi diventano cinque
 volte tanti. E il conto è prudente: tratta i mille sospettati come se ciascuno
@@ -132,11 +132,11 @@ costa poco: con $|\mathcal{H}|=1000$, $\varepsilon=0{,}05$ e $\delta=0{,}01$ la
 forma con $(1-\varepsilon)^m$ chiede $225$ esempi, quella esponenziale $231$.
 
 La dipendenza da $|\mathcal{H}|$ è logaritmica, e $\log_2|\mathcal{H}|$ è il
-numero di bit che servono a indicare un'ipotesi: se ogni ipotesi si descrive con
+numero di bit che servono a indicare un'ipotesi. Se ogni ipotesi si descrive con
 $b$ bit, $|\mathcal{H}|\le 2^b$ e
 $R(h_S)\le\big(b\log 2+\log\frac{1}{\delta}\big)/m$, la versione quantitativa
 del rasoio di Occam (una regola corta e coerente con i dati generalizza). Lo
-stesso conto risponde a chi osserva che in macchina ogni famiglia è finita: una
+stesso conto risponde a chi osserva che in macchina ogni famiglia è finita. Una
 rete con $P$ pesi a $32$ bit ha al più $2^{32P}$ configurazioni, quindi $b=32P$,
 e il bound resta sopra $1$, cioè non dice niente, finché gli esempi non sono
 almeno una ventina di volte i pesi ($32\log 2\approx 22$). La dipendenza da
@@ -203,16 +203,16 @@ una famiglia più grande *improprio*.
 
 Il conto si può mettere alla prova su una famiglia di cui si sa tutto: mille
 soglie su un segmento, cioè le regole $h_t$ che rispondono $1$ (sì) se $x\ge t$
-e $0$ (no) altrimenti, con la soglia $t$ che va da $0$ a $0{,}999$ a passi di un
-millesimo. Gli esempi sono numeri presi a caso fra $0$ e $1$, con la stessa
+e $0$ (no) altrimenti, con la soglia $t$ che va da $0$ a $0{,}999$ a passi di
+un millesimo. Gli esempi sono numeri presi a caso fra $0$ e $1$, con la stessa
 probabilità in ogni punto, ed etichettati dalla soglia $0{,}371$. L'errore vero
 di una soglia $t$ è allora la distanza $|t-0{,}371|$: sbaglia esattamente i
-punti che cadono fra le due soglie, e con la stessa probabilità in ogni punto un
-tratto del segmento raccoglie una frazione degli esempi pari alla sua lunghezza.
-Le soglie compatibili con gli esempi sono quelle comprese fra l'esempio con
-etichetta $0$ più a destra e quello con etichetta $1$ più a sinistra, e basta
-guardare le due estreme per sapere se fra loro ce n'è una cattiva, cioè con
-errore oltre il cinque per cento.
+punti che cadono fra le due soglie, e siccome gli esempi cadono ovunque con la
+stessa probabilità, ogni tratto del segmento ne raccoglie una frazione pari
+alla sua lunghezza. Le soglie compatibili con gli esempi sono quelle comprese
+fra l'esempio con etichetta $0$ più a destra e quello con etichetta $1$ più a
+sinistra, e basta guardare le due estreme per sapere se fra loro ce n'è una
+cattiva, cioè con errore oltre il cinque per cento.
 
 ```{figure} ../figures/soglie-che-sopravvivono.svg
 :name: fig-soglie-sopravvivono
@@ -233,11 +233,12 @@ calcola il limite per le famiglie finite nelle sue due forme: $225$ esempi con
 il conto che non arrotonda, quello con $(1-\varepsilon)^m$, e $231$ con la
 versione esponenziale, $e^{-\varepsilon m}$, un poco più larga e più comoda da
 scrivere. Poi ripete l'esperimento su ventimila campioni per ciascun numero di
-esempi e conta quante volte una soglia cattiva sopravvive. Per le soglie, poi,
-la stessa probabilità ha una formula esatta: una soglia cattiva sopravvive solo
-se nessun esempio cade in uno dei due tratti accanto alla soglia vera, larghi
-$0{,}05$ più la distanza fra due soglie vicine, un millesimo; e quel conto
-esatto il blocco lo rifà anche con soglie dieci volte più fitte.
+esempi e conta quante volte una soglia cattiva sopravvive. Nel caso delle
+soglie, poi, questa probabilità ha una formula esatta: una soglia cattiva
+sopravvive solo se nessun esempio cade in uno dei due tratti accanto alla
+soglia vera, larghi $0{,}05$ più la distanza fra due soglie vicine, un
+millesimo; e quel conto esatto il blocco lo rifà anche con soglie dieci volte
+più fitte.
 
 ```python
 import numpy as np
@@ -311,18 +312,18 @@ caso agnostico, deviazione 0.005: 244122 esempi
  10000 soglie: 104 esempi per scendere sotto l'1%
 ```
 
-Il limite aveva ragione e chiedeva più del necessario. Per scendere sotto l'uno
-per cento di fallimenti bastano poco più di cento esempi (la formula esatta ne
-chiede $102$, e le ventimila prove, che su cento esempi danno lo $0{,}97\%$
-contro l’$1{,}06\%$ della formula, se ne scostano quanto ci si aspetta da un
-sorteggio), meno della metà dei $231$ del limite, e la ragione è quella già
-vista: fra mille soglie, due vicine sbagliano quasi sugli stessi punti, e la
-somma delle probabilità (in gergo, la disuguaglianza dell'unione) le conta come
-se sbagliassero ciascuna per conto suo. La riga sul caso agnostico misura
-invece il salto del caso in cui la regola giusta non è fra le candidate
-(*agnostico* perché non presume niente su dove stia la regola giusta): per
-separare chi sbaglia il cinque per cento da chi sbaglia il sei le stime devono
-stare entro mezzo punto, e gli esempi diventano più di duecentoquarantamila.
+Il limite aveva ragione ma chiedeva più del necessario. Per scendere sotto
+l'uno per cento di fallimenti bastano poco più di cento esempi, meno della metà
+dei $231$ del limite. La formula esatta ne chiede $102$, e le ventimila prove
+se ne scostano solo quanto ci si aspetta da un sorteggio (danno lo $0{,}97\%$
+contro l’$1{,}06\%$ della formula). La ragione è quella già vista: fra mille
+soglie, due vicine sbagliano quasi sugli stessi punti, e la somma delle
+probabilità (in gergo, la disuguaglianza dell'unione) le conta come se
+sbagliassero ciascuna per conto suo. La riga sul caso agnostico misura invece
+il salto del caso in cui la regola giusta non è fra le candidate (*agnostico*
+perché non presume niente su dove stia la regola giusta): per separare chi
+sbaglia il cinque per cento da chi sbaglia il sei le stime devono stare entro
+mezzo punto, e gli esempi diventano più di duecentoquarantamila.
 
 Resta un ostacolo che nessun blocco può aggirare. Le soglie erano mille perché
 le si è prese su una griglia, ma una soglia vera può stare in qualunque punto

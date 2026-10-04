@@ -40,7 +40,13 @@ $$
 \mathbf{z} \sim p_z(\mathbf{z}) \quad\longmapsto\quad \tilde{\mathbf{x}} = G(\mathbf{z}) .
 $$
 
-Il vettore $\mathbf{z}$ è campionato da un *prior* semplice, tipicamente $p_z=\mathcal{N}(\mathbf{0}, \mathbf{I})$ o uniforme. $G$ definisce implicitamente una distribuzione $p_G$ sullo spazio dei dati: spingendo campioni di $\mathbf{z}$ attraverso la rete, otteniamo campioni di dati sintetici. L'obiettivo dell'addestramento è far convergere $p_G$ verso la distribuzione reale $p_{\text{dati}}$, senza mai scrivere esplicitamente la densità: da qui il nome di modello *generativo implicito*.
+Il vettore $\mathbf{z}$ è campionato da un *prior* semplice, tipicamente
+$p_z=\mathcal{N}(\mathbf{0}, \mathbf{I})$ o uniforme. $G$ definisce
+implicitamente una distribuzione $p_G$ sullo spazio dei dati: propagando
+campioni di $\mathbf{z}$ attraverso la rete, otteniamo campioni di dati
+sintetici. L'obiettivo dell'addestramento è far convergere $p_G$ verso la
+distribuzione reale $p_{\text{dati}}$, senza mai scrivere esplicitamente la
+densità: da qui il nome di modello *generativo implicito*.
 
 `````
 
@@ -196,7 +202,10 @@ rispetto alla stessa misura. Su quest'ultima conviene tenere un dito: nel caso
 vero è proprio lei a cadere, e la sezione sul duello che si inceppa ci torna
 sopra.
 
-**Primo passaggio: il discriminatore ottimo.** Fissato $G$, il secondo integrale si riscrive nello spazio dei dati invece che in quello del rumore, perché spingere $\mathbf{z}$ attraverso $G$ è esattamente ciò che definisce $p_G$:
+**Primo passaggio: il discriminatore ottimo.** Fissato $G$, il secondo
+integrale si riscrive nello spazio dei dati invece che in quello del rumore,
+perché propagare $\mathbf{z}$ attraverso $G$ è esattamente ciò che definisce
+$p_G$:
 
 $$
 \begin{aligned}
@@ -750,23 +759,22 @@ reti più difficili da addestrare, e tre problemi ricorrono.
   un punto che cambia il rimedio. Arjovsky e Bottou mostrano che $p_G$, essendo
   l'immagine di uno spazio di rumore a poche decine o centinaia di dimensioni,
   vive su una varietà di dimensione bassa immersa nello spazio dei dati: con
-  $\mathbf{z} \in \mathbb{R}^{100}$ e immagini $1024\times1024$ a colori, il supporto di
-  $p_G$ ha dimensione al più $100$ dentro $\mathbb{R}^{3\,145\,728}$. Se anche
-  $p_{\text{dati}}$ è concentrata su una varietà di dimensione bassa
-    (l’ipotesi della varietà, che Arjovsky e Bottou assumono senza dimostrarla,
-    e che chiede di starci sopra, non soltanto vicino), due varietà così, salvo
-    allineamenti perfetti, hanno supporti quasi certamente disgiunti (o
-    intersecantisi in
-  un insieme di misura nulla), un discriminatore perfetto esiste, e su supporti
-  disgiunti la $\mathrm{JSD}$ vale $\log 2$ qualunque sia la distanza fra le
-  due distribuzioni. Il gradiente è nullo, e non soltanto piccolo, e resta
-  nullo mentre $G$ si avvicina. Ed
-  è qui che si chiude il cerchio con le ipotesi del teorema: il conto che dava
-  $2\,\mathrm{JSD}$ presupponeva due densità, e un generatore vero una densità
-  non ce l'ha. La caratterizzazione dell'ottimo resta vera; è il mondo in cui
-  vale a non essere quello dell'addestramento. Alternare meglio i turni non lo
-  risolve, ed è da qui che
-  nasce l'idea di cambiare misura, cioè la Wasserstein GAN.
+  $\mathbf{z} \in \mathbb{R}^{100}$ e immagini $1024\times1024$ a colori, il
+  supporto di $p_G$ ha dimensione al più $100$ dentro
+  $\mathbb{R}^{3\,145\,728}$. Supponi che anche $p_{\text{dati}}$ stia su una
+  varietà di dimensione bassa. È l’ipotesi della varietà, che Arjovsky e Bottou
+  assumono senza dimostrarla, e chiede ai dati di starci sopra, non soltanto
+  vicino. In quel caso due varietà così, salvo allineamenti perfetti, hanno
+  supporti quasi certamente disgiunti, o che si intersecano in un insieme di
+  misura nulla. Su supporti disgiunti un discriminatore perfetto esiste, e la
+  $\mathrm{JSD}$ vale $\log 2$ qualunque sia la distanza fra le due
+  distribuzioni. Il gradiente è nullo, e non soltanto piccolo, e resta nullo
+  mentre $G$ si avvicina. Ed è qui che si chiude il cerchio con le ipotesi del
+  teorema: il conto che dava $2\,\mathrm{JSD}$ presupponeva due densità, e un
+  generatore vero una densità non ce l'ha. La caratterizzazione dell'ottimo
+  resta vera; è il mondo in cui vale a non essere quello dell'addestramento.
+  Alternare meglio i turni non lo risolve, ed è da qui che nasce l'idea di
+  cambiare misura, cioè la Wasserstein GAN.
 - Mode collapse. $G$ mappa molti $\mathbf{z}$ diversi su una stessa uscita
   $\tilde{\mathbf{x}}$: $p_G$ collassa su pochi modi di $p_{\text{dati}}$. Sembra un
   paradosso, visto che l'obiettivo ideale ha minimo solo in $p_G =

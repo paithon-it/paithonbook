@@ -13,7 +13,7 @@ Avevano ragione: da allora il deep learning e l'hardware sono cresciuti
 insieme, ciascuno tirandosi dietro l'altro. Reti più grandi giustificano chip
 più potenti, chip più potenti rendono pensabili reti più grandi.
 
-Finora si è costruito il *cosa*: tensori, moduli, training loop. Qui la
+Finora hai costruito il *cosa*: tensori, moduli, training loop. Qui la
 domanda è *quanto in fretta*: perché la GPU è lo strumento giusto, come
 dimezzare i byte per (quasi) raddoppiare la velocità, come si misura un tempo
 su una GPU, cosa fa `torch.compile`, come si addestra su più schede, da quali
@@ -160,22 +160,20 @@ mentre i prodotti fra matrici restano in `float32` pieno finché non si chiama
 `torch.set_float32_matmul_precision("high")`.
 `````
 
-Nel ciclo di addestramento della sezione sul
-[training loop](addestramento.md), la precisione mista aggiunge cinque righe.
-La prima, all'inizio, crea il `GradScaler`, che moltiplica la loss prima del
-`backward()`. Poi `autocast`, il gestore di contesto che si scrive attorno alle
-due righe della previsione e della loss e che dentro sceglie, operazione per
-operazione, quali eseguire in sedici bit e quali in `float32`. Infine tre righe
-prendono il posto delle solite `backward()` e `step()`:
-`scaler.scale(loss).backward()`, `scaler.step(optimizer)`, che riporta i
-gradienti in scala prima di aggiornare i pesi, e `scaler.update()`, che
-ricalibra il fattore.
+Nel {doc}`ciclo di addestramento <addestramento>`, la precisione mista aggiunge
+cinque righe. La prima, all'inizio, crea il `GradScaler`, che moltiplica la
+loss prima del `backward()`. Poi `autocast`, il gestore di contesto che si
+scrive attorno alle due righe della previsione e della loss e che dentro
+sceglie, operazione per operazione, quali eseguire in sedici bit e quali in
+`float32`. Infine tre righe prendono il posto delle solite `backward()` e
+`step()`: `scaler.scale(loss).backward()`, `scaler.step(optimizer)`, che
+riporta i gradienti in scala prima di aggiornare i pesi, e `scaler.update()`,
+che ricalibra il fattore.
 
 Una sola avvertenza, sul formato che `autocast` usa: di formati corti ne
 esistono due, `float16` e `bfloat16`, e il codice sceglie il secondo quando
-gira senza scheda grafica. La differenza fra i due la vediamo subito dopo il
-blocco; per ora basta sapere che sono due modi di scrivere un numero in sedici
-bit.
+gira senza scheda grafica. La differenza fra i due emergerà dall'esecuzione;
+per ora basta sapere che sono due modi di scrivere un numero in sedici bit.
 
 ```python
 import torch
@@ -351,8 +349,8 @@ if dispositivo == "cpu":
           f"ordine, qui a {abs(con - senza) / senza:.0%} di distanza)")
 ```
 
-Due precauzioni nel codice meritano una riga, perché sono il modo giusto di
-cronometrare qualunque cosa e non solo questo. La prima è il riscaldamento:
+Due precauzioni in questo codice sono la regola per
+cronometrare qualunque cosa, e non solo questa. La prima è il riscaldamento:
 le prime chiamate pagano costi che le successive non pagano (l'avvio dei thread
 di calcolo, la memoria che si scalda), quindi si fanno girare a vuoto e non si
 misurano. La seconda è prendere il minimo di più ripetizioni invece della
@@ -549,7 +547,7 @@ gira un processo per GPU proprio per questo: un GIL a testa.
 `````
 
 In codice questo si chiama **DDP**, da `DistributedDataParallel`, ed è più uno
-schema che una libreria da imparare. Il pezzo di codice che segue non si
+schema che una libreria da imparare. Questo schema non si
 lancia con `python`: serve un programma di avvio, `torchrun`, che fa partire
 un processo per ogni GPU e dice a ciascuno chi è.
 
@@ -619,24 +617,23 @@ $2/n_{\text{in}}$ contro il $1/n_{\text{in}}$ di Glorot. La {doc}`sezione
 sull'inizializzazione </DeepLearning/ottimizzazione-regolarizzazione>` ne dà la
 derivazione; qui vediamo il gesto con cui si applicano.
 
-I default di PyTorch non sono né Glorot né He, e conviene sapere quali sono,
-perché si legge spesso il contrario: per `nn.Linear` il default è una variante
-uniforme ereditata dal vecchio Torch, che sorteggia i pesi fra
-$-1/\sqrt{n_{\text{in}}}$ e $+1/\sqrt{n_{\text{in}}}$ (nel sorgente di
-`nn.Linear` è `kaiming_uniform_` con `a=math.sqrt(5)`, che nonostante il nome
-dà proprio questa uniforme). Su uno strato da mille ingressi, $\sqrt{1000}$ fa
-circa $31{,}6$, quindi i pesi nascono tutti fra $-0{,}032$ e $+0{,}032$:
-piccoli, e più piccoli di He. La loro dispersione attorno allo zero, la
-varianza, vale $1/(3n_{\text{in}})$, un sesto dei $2/n_{\text{in}}$ di He, e in
-una pila di strati con la ReLU il segnale perde a ogni strato un fattore
-$\sqrt{6} \approx 2{,}4$ in ampiezza (trascurando i bias). Su tre strati
-l'uscita parte già circa quindici volte più piccola che con He
-($6^{3/2} \approx 14{,}7$), e su una rete profonda, dove il fattore si
-moltiplica a ogni strato, il segnale svanisce: è il caso in cui la ricetta
-esplicita serve davvero. Le ricette pronte stanno in `torch.nn.init`, e i loro
-nomi finiscono tutti con un trattino basso: è la convenzione con cui PyTorch
-segna le funzioni che riscrivono il tensore che ricevono, invece di restituirne
-uno nuovo.
+I default di PyTorch non sono né Glorot né He, benché si legga spesso il
+contrario: per `nn.Linear` il default è una variante uniforme ereditata dal
+vecchio Torch, che sorteggia i pesi fra $-1/\sqrt{n_{\text{in}}}$ e
+$+1/\sqrt{n_{\text{in}}}$ (nel sorgente di `nn.Linear` è `kaiming_uniform_` con
+`a=math.sqrt(5)`, che nonostante il nome dà proprio questa uniforme). Su uno
+strato da mille ingressi, $\sqrt{1000}$ fa circa $31{,}6$, quindi i pesi
+nascono tutti fra $-0{,}032$ e $+0{,}032$: piccoli, e più piccoli di He. La
+loro dispersione attorno allo zero, la varianza, vale $1/(3n_{\text{in}})$, un
+sesto dei $2/n_{\text{in}}$ di He, e in una pila di strati con la ReLU il
+segnale perde a ogni strato un fattore $\sqrt{6} \approx 2{,}4$ in ampiezza
+(trascurando i bias). Su tre strati l'uscita parte già circa quindici volte più
+piccola che con He ($6^{3/2} \approx 14{,}7$), e su una rete profonda, dove il
+fattore si moltiplica a ogni strato, il segnale svanisce: è il caso in cui la
+ricetta esplicita serve davvero. Le ricette pronte stanno in `torch.nn.init`, e
+i loro nomi finiscono tutti con un trattino basso: è la convenzione con cui
+PyTorch segna le funzioni che riscrivono il tensore che ricevono, invece di
+restituirne uno nuovo.
 
 ```python
 from torch import nn
@@ -762,9 +759,9 @@ potare un albero al buio.
 Gli attrezzi per far correre un addestramento ora ci sono tutti: numeri corti
 dove bastano, il cronometro con la sincronizzazione e il profilatore, la
 compilazione, più schede che si spartiscono il batch, i pesi che partono dalla
-scala giusta. Una riga, però, l'abbiamo usata senza aprirla: `.to(device)`,
+scala giusta. Una riga, però, l'hai usata senza aprirla: `.to(device)`,
 quella che sposta il modello e i dati sulla scheda grafica. Funziona, cambia i
-tempi di un addestramento, e finora ne abbiamo visto il perché, non il come. Il
+tempi di un addestramento, e finora ne hai visto il perché, non il come. Il
 {doc}`capitolo su GPU e calcolo parallelo </GPU/overview>` apre quella scatola:
 che cos'è un kernel, perché a decidere è così spesso la banda di memoria invece
 del calcolo, come lavorano i tensor core, e che cosa si fa quando il modello in

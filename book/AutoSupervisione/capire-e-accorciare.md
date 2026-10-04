@@ -217,12 +217,12 @@ non è un risultato sperimentale: si calcola dalla tabella. Nessun codice, per
 quanto ingegnoso, spende in media meno di $1{,}4367$ bit per lettera su testi
 sorteggiati da questa lingua.
 
-Conviene leggere quella frase con attenzione, perché il paragrafo sul programma
-più corto ci gioca sopra: è un limite in media sulla sorgente, non un limite
-su *questa* stringa. Chi avesse in mano proprio queste duecentomila lettere le
-scriverebbe in un programma di poche righe (il seme, la tabella, il ciclo), cioè
-in pochissimi bit per lettera; ma quel programma sa una cosa che nessun
-compressore, guardando il testo, può indovinare.
+Il paragrafo sul programma più corto tornerà su questo fatto: è un limite in
+media sulla sorgente, non un limite su *questa* stringa. Chi avesse in mano
+proprio queste duecentomila lettere le scriverebbe in un programma di poche
+righe (il seme, la tabella, il ciclo), cioè in pochissimi bit per lettera; ma
+quel programma sa una cosa che nessun compressore, guardando il testo, può
+indovinare.
 
 `````{tab} Elementare
 
@@ -304,7 +304,7 @@ forma di una ripetizione.
 
 `````
 
-La media finale però nasconde la cosa più interessante, che è quando ognuno
+La media finale però nasconde quando ognuno
 paga. La {numref}`fig-il-codice-si-accorcia` mostra le tre curve mentre
 scorrono: tutte partono da due bit, cioè da «non so niente», e da lì in poi le
 strade si dividono. Quello di ordine 1 si porta a cinque centesimi di bit dal
@@ -326,8 +326,8 @@ mette più tempo e arriva un po’ più in su.
 ```{admonition} Il gesto da portarsi via
 :class: tip
 Il fondo lo tocca il modello che ha la forma della regola, non il più
-grosso e non il più generico. Se questa frase suona come una descrizione di
-tutto il machine learning, è perché lo è: qui la si è misurata in bit invece
+grosso e non il più generico. È una descrizione di
+tutto il machine learning, misurata qui in bit invece
 che in accuratezza.
 ```
 
@@ -482,7 +482,7 @@ predittore.
 
 Il terzo è che $K$ è non computabile: nessun algoritmo, dato $x$, ne
 restituisce $K(x)$. Segue dall'indecidibilità della fermata ed è già in
-Kolmogorov e Solomonoff; quello che è di Chaitin, dieci anni dopo, è la
+Kolmogorov e Solomonoff; di Chaitin, dieci anni dopo, è la
 conseguenza più famosa, la versione algoritmica dell'incompletezza
 {cite}`chaitin1974limitations`. Per ogni sistema formale $F$ coerente e capace
 di dimostrare gli enunciati veri della forma «esiste un programma più corto di
@@ -540,9 +540,9 @@ intelligenza. Qualcuno l'ha preso alla lettera.
 Matt Mahoney lo propose come test in un intervento del 1999 il cui titolo è
 già l'argomento: la compressione di testo come prova per l'intelligenza
 artificiale {cite}`mahoney1999text`. Il ragionamento è che per
-predire la parola dopo in un testo scritto da persone bisogna sapere di che
+predire la parola successiva in un testo scritto da persone bisogna sapere di che
 cosa parla, quindi un compressore che batte tutti gli altri su testo naturale
-deve avere dentro qualcosa che somiglia a una conoscenza del mondo.
+deve avere dentro qualcosa che somigli a una conoscenza del mondo.
 
 Nel 2006 Marcus Hutter ci ha messo i soldi. Il premio che porta il suo nome
 paga chi comprime un ritaglio di Wikipedia meglio di chi l'ha preceduto:
@@ -1168,7 +1168,7 @@ osservazione che Sutskever fa a Berkeley. Una sola passata vuol dire che ogni
 esempio viene predetto da un modello che non l'ha ancora visto, ed è
 esattamente la condizione che rende quel conto onesto.
 
-Questa è la parte più istruttiva di tutta la faccenda, e non
+Questa è la parte più istruttiva, e non
 riguarda solo la compressione. Due gruppi seri possono guardare la stessa rete
 addestrata e concludere che comprime magnificamente o che è un disastro, senza
 che nessuno dei due sbagli un conto: cambia che cosa si mette nel prezzo. Ogni
@@ -1202,7 +1202,7 @@ gradiente. Un'analogia da maneggiare con cautela, perché non vale
 universalmente.
 
 E la teoria parla di un insieme di dati fisso. In teoria si comprime un file
-che sta lì; nell'uso vero, dopo l'addestramento, arrivano dati nuovi che di
+statico; nell'uso vero, dopo l'addestramento, arrivano dati nuovi che di
 fatto non finiscono mai, e Sutskever tratta l'insieme di prova come infinito.
 Se quello che
 si vuole comprimere non finisce mai, la dimensione del compressore smette di

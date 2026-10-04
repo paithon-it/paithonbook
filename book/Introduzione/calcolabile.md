@@ -17,13 +17,13 @@ resteranno affermazioni vere che quelle regole non dimostrano.
 Hilbert chiedeva, fra le altre cose, un procedimento meccanico capace di
 decidere se un'affermazione scritta nel linguaggio della logica segue dagli
 assiomi, le verità di partenza. Un'affermazione come «ogni numero pari maggiore
-di due è la somma di due numeri primi» (la congettura di Goldbach), per dire: il
+di due è la somma di due numeri primi» (la congettura di Goldbach), per esempio: il
 procedimento avrebbe
 dovuto rispondere sì o no, sempre. Lo chiamava il problema della decisione,
 l’*Entscheidungsproblem*, e lo aveva posto con Wilhelm Ackermann nel 1928.
 Per rispondere di no bisognava prima dire che cosa sia un procedimento
 meccanico: per sostenere che nessun procedimento ci riesce, occorre sapere
-quali sono tutti. Serviva, cioè, una definizione precisa di algoritmo, che fin
+quali siano tutti. Serviva, cioè, una definizione precisa di algoritmo, che fin
 qui è stato descritto come una ricetta sull'esempio di {doc}`Euclide
 </Introduzione/overview>`. La diede Alan Turing nel 1936, con una macchina
 immaginaria {cite}`turing1936computable`; quasi negli stessi mesi Alonzo Church
@@ -315,7 +315,7 @@ domanda difficile anche su programmi minuscoli lo mostra la congettura di
 Collatz, ancora aperta: l'iterazione $n\mapsto n/2$ per $n$ pari,
 $n\mapsto 3n+1$ per $n$ dispari, raggiunge $1$ da ogni intero positivo? Al
 calcolatore è verificata per tutti gli interi fino ad almeno $2^{68}$
-{cite}`barina2021convergence`, e nessuna dimostrazione.
+{cite}`barina2021convergence`, ma non ne esiste una dimostrazione.
 
 `````
 

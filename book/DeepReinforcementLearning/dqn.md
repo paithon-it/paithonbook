@@ -97,9 +97,9 @@ da una giocata male, anche da una giocata da altri molto tempo prima.
 
 E l'instabilità non veniva dalla sfortuna, né da un passo di apprendimento
 tarato male (il *learning rate*: di quanto si spostano i pesi a ogni
-correzione). Prima dei due trucchi che hanno reso il metodo praticabile
-conviene capire da che cosa lo hanno salvato, perché è un risultato preciso e
-sorprendentemente pulito.
+correzione). Prima dei due trucchi che hanno reso il metodo praticabile, serve
+capire da che cosa lo abbiano salvato: un risultato preciso e sorprendentemente
+pulito.
 
 `````{tab} Elementare
 
@@ -113,7 +113,7 @@ mai visto. È l’approssimazione.
 Non aspetta la fine della partita. Una mossa gli frutta $1$ punto, valuta $7$
 la schermata in cui si ritrova, e scrive subito i due numeri messi insieme,
 il secondo contato per nove decimi: $7{,}3$, ed è il bersaglio verso cui
-correggerà. Aggiustare un voto
+correggerà il voto di partenza. Aggiustare un voto
 con un altro voto si chiama bootstrapping, e separa le differenze
 temporali del capitolo precedente, il TD, dai metodi Monte Carlo, che
 aspettano il fischio finale per tirare le somme.
@@ -400,11 +400,11 @@ di compiti partendo da input sensoriali grezzi.
 
 ## Il difetto che il massimo si porta dietro
 
-Nel bersaglio di DQN c'è un'operazione che sembra innocua e non lo è:
-prendere il valore più alto. Conviene capire perché gonfia le stime, sia
-perché è controintuitivo (prendere il massimo è proprio quello che si vuole
-fare), sia perché lo stesso difetto e la stessa cura torneranno, identici,
-nella {doc}`sezione sul controllo continuo <controllo-continuo>`.
+Nel bersaglio di DQN c'è un'operazione che sembra innocua e non lo è: prendere
+il valore più alto. Capire perché l'operazione gonfi le stime serve due volte:
+il fenomeno è controintuitivo (prendere il massimo è proprio quello che si
+vuole fare), e lo stesso difetto con la stessa cura torneranno, identici, nella
+{doc}`sezione sul controllo continuo <controllo-continuo>`.
 
 `````{tab} Elementare
 
@@ -515,7 +515,7 @@ a $\theta^{-}$ e valutare a $\theta$ conserverebbe il disaccoppiamento, e quindi
 una parte della correzione, ma rimetterebbe i pesi in aggiornamento dentro il
 bersaglio, buttando via il congelamento che era servito a stabilizzarlo.
 
-Gli autori sono prudenti sul risultato, e conviene esserlo con loro: l'algoritmo
+Gli autori sono prudenti sul risultato, ed è giusto esserlo con loro: l'algoritmo
 «riduce le sovrastime osservate», non le elimina. Il disaccoppiamento
 annullerebbe il bias solo con due stimatori indipendenti, e qui il secondo
 non lo è: la rete target è una copia ritardata del primo, scelta perché è il
@@ -632,9 +632,9 @@ più all'insieme.
 
 ## I limiti
 
-Molti confini di questo approccio hanno guidato la ricerca successiva, e
-conviene metterli in fila. Oltre alla sovrastima del massimo, che il Double
-DQN attenua e basta, ne restano tre.
+Molti confini di questo approccio hanno guidato la ricerca successiva: oltre
+alla sovrastima del massimo, che il Double DQN attenua e basta, ne restano tre
+principali.
 
 - Fame di dati. La versione di *Nature* usa $50$ milioni di passi dell'agente
   per gioco, circa $38$ giorni di gioco ininterrotto; il collaudatore umano con

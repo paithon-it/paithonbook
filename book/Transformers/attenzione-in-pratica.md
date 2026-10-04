@@ -305,12 +305,11 @@ L'ultima strada, MLA, cambia mestiere. Invece di far leggere a più lettori lo
 stesso taccuino, riscrive che cosa ci si annota: al posto delle etichette e
 delle informazioni per esteso, un riassunto compatto da cui le une e le altre
 si possono ricostruire al momento del bisogno. Un taccuino di appunti
-stenografati, che occupa una frazione dello spazio e si rilegge quando serve,
-e che nelle prove di chi l'ha inventato non fa leggere peggio dei taccuini
-separati. La stenografia ha un punto scomodo, e riguarda il modo in cui il
-modello sa in che ordine stanno le parole: quel segnale va tenuto fuori dal
-riassunto, su una riga a parte, altrimenti il risparmio che rende conveniente
-la stenografia non c'è più.
+stenografati, che occupa una frazione dello spazio e si rilegge quando serve, e
+che nelle prove di chi l'ha inventato non fa leggere peggio dei taccuini
+separati. La stenografia ha un punto scomodo, e riguarda l'ordine delle parole:
+quel segnale va tenuto fuori dal riassunto, su una riga a parte, altrimenti il
+risparmio che rende conveniente la stenografia non c'è più.
 
 Un equivoco da togliere subito, perché è quello che si sente ripetere. Nessuna
 di queste strade tocca il numero di lettori. Le domande restano otto, i punti
@@ -454,9 +453,9 @@ decide il tempo di esecuzione, a parità di conti da fare.
 Tenerle distinte permette di dire due cose insieme senza contraddirsi:
 l'attenzione densa fa un numero quadratico di interazioni, e un'implementazione
 esatta può evitare di scrivere in memoria l'intera matrice quadratica e girare
-molto più in fretta. La seconda è la FlashAttention, che esegue l'attenzione
-esatta un pezzo alla volta: stessa attenzione, esecuzione diversa, e la
-costruisce per intero la {doc}`sezione sulla FlashAttention
+molto più in fretta. Quest'ultima è la strada della FlashAttention, che esegue
+l'attenzione esatta un pezzo alla volta: stessa attenzione, esecuzione diversa,
+e la costruisce per intero la {doc}`sezione sulla FlashAttention
 </GPU/flash-attention>`. Una famiglia diversa di rimedi cambia invece quali
 coppie si calcolano, con finestre locali o schemi sparsi, e allora l'attenzione
 non è più densa; un'altra ancora riscrive la softmax per non formare mai le

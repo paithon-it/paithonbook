@@ -86,14 +86,13 @@ un nome che ogni tanto si incontra ancora, *dynamic time warping*, «deformare
 il tempo». Andava bene per pochissime parole e un solo parlante: aggiungerne
 una voleva dire registrarla.
 
-Il salto di qualità, preparato negli anni Settanta all'IBM e a Carnegie
-Mellon e diventato la norma nel decennio seguente, non venne da macchine più
-potenti. Venne da due idee. La prima: smettere di ragionare per parole intere
-e ragionare per **fonemi**, i suoni minimi che distinguono una parola
-dall'altra (*pane* e *cane* differiscono per uno solo). Le parole di una
-lingua sono centinaia di migliaia, i fonemi qualche decina, e una parola mai
-sentita prima è comunque fatta di fonemi già sentiti. La seconda: dividere il
-lavoro in due pareri.
+Il salto di qualità, preparato negli anni Settanta all'IBM e a Carnegie Mellon
+e diventato la norma nel decennio seguente, arrivò da due idee, non da macchine
+più potenti. La prima: smettere di ragionare per parole intere e ragionare per
+**fonemi**, i suoni minimi che distinguono una parola dall'altra (*pane* e
+*cane* differiscono per uno solo). Le parole di una lingua sono centinaia di
+migliaia, i fonemi qualche decina, e una parola mai sentita prima è comunque
+fatta di fonemi già sentiti. La seconda: dividere il lavoro in due pareri.
 
 `````{tab} Elementare
 
@@ -137,21 +136,20 @@ $$
 
 dove l'emissione di ogni stato è una mistura di $M$ gaussiane (GMM) con
 covarianze $\boldsymbol{\Sigma}_{jm}$ diagonali. Gli stati dei trifoni sono
-decine di migliaia, troppi per stimarli uno per uno: si raggruppano con alberi
-di decisione fonetici e si addestrano con l'EM di Baum-Welch; in decodifica la
-somma su $Q$ diventa il massimo di Viterbi, e il modello di linguaggio entra
-elevato a un peso, $P(W)^{\lambda}$ con $\lambda$ di solito fra $5$ e $15$. Il
-peso serve perché il modello acustico moltiplica le densità di centinaia di
-frame come se fossero indipendenti, mentre frame vicini si somigliano molto: i
-suoi punteggi escono fuori scala rispetto a quelli del linguaggio, e $\lambda$
-li riequilibra. Il modello di
-linguaggio $P(W)$ assegna una probabilità a priori alle frasi ($n$-grammi,
-oggi reti neurali) ed è quello che disambigua gli omofoni. Dal 2012 le reti
-neurali profonde sostituiscono le GMM nel modello acustico
-{cite}`hinton2012deep`: su una prova di conversazioni telefoniche
-(Switchboard, RT03S), con le stesse trecento ore circa di addestramento,
-l'errore sulle parole scende dal $27{,}4\%$ del sistema a GMM al $18{,}5\%$,
-un terzo in meno.
+decine di migliaia, troppi per stimarli uno per uno: per questo si raggruppano
+con alberi di decisione fonetici e si addestrano con l'algoritmo EM di
+Baum-Welch. In decodifica la somma su $Q$ diventa il massimo di Viterbi, e in
+questa fase il modello di linguaggio entra elevato a un peso, $P(W)^{\lambda}$
+con $\lambda$ di solito fra $5$ e $15$. Il peso serve perché il modello
+acustico moltiplica le densità di centinaia di frame come se fossero
+indipendenti, mentre frame vicini si somigliano molto: i suoi punteggi escono
+fuori scala rispetto a quelli del linguaggio, e $\lambda$ li riequilibra. Il
+modello di linguaggio $P(W)$ assegna una probabilità a priori alle frasi
+($n$-grammi, oggi reti neurali) ed è quello che disambigua gli omofoni. Dal
+2012 le reti neurali profonde sostituiscono le GMM nel modello acustico
+{cite}`hinton2012deep`: su una prova di conversazioni telefoniche (Switchboard,
+RT03S), con le stesse trecento ore circa di addestramento, l'errore sulle
+parole scende dal $27{,}4\%$ del sistema a GMM al $18{,}5\%$, un terzo in meno.
 
 `````
 
@@ -172,7 +170,7 @@ fila di stati che non si vedono: ogni fonema ne ha tre, il suo attacco, il suo
 centro e la sua coda, e la voce passa dall'uno all'altro senza che nessuno lo
 osservi. Si osservano soltanto i *frame*, le fettine di suono lunghe pochi
 centesimi di secondo in cui il segnale viene tagliato (ne comincia una ogni
-dieci millesimi), e da quelli si risale agli stati. È la stessa macchina di
+dieci millisecondi), e da quelli si risale agli stati. È la stessa macchina di
 {doc}`POS tagging ed entità </NaturalLanguageProcessing/etichettare-sequenze>`,
 dove gli stati nascosti erano le categorie grammaticali e quello che si
 osservava erano le parole.
@@ -194,7 +192,7 @@ modelli con attenzione (una parte della rete ascolta tutto, l'altra
 scrive, e mentre scrive torna a guardare il punto dell'audio che le serve:
 quel tornare a guardare è l'attenzione) hanno reso possibile addestrare
 l'intero sistema da coppie (audio, testo). Il trasduttore è nato dalla CTC per
-darle la cosa che le manca, la memoria di quello che ha già scritto, senza
+aggiungerle ciò che le manca, la memoria di quello che ha già scritto, senza
 toglierle l'andatura frame per frame che permette di trascrivere mentre si
 parla. Le vedremo una per una in
 {doc}`I modelli di riconoscimento </SpeechRecognition/modelli-asr>`: qui
@@ -202,9 +200,9 @@ bastano i nomi.
 
 L'esempio più noto è Whisper di OpenAI (2022): con un unico modello trascrive
 quasi cento lingue, italiano compreso, e traduce in inglese il parlato delle
-altre. È stato allenato su circa 680.000 ore di audio multilingue: per farsi
+altre. È stato addestrato su circa 680.000 ore di audio multilingue: per farsi
 un'idea, sono quasi settantotto anni di parlato ininterrotto, giorno e notte,
-senza una pausa. La rete che ci sta dentro è un Transformer, l'architettura
+senza una pausa. Il modello alla sua base è un Transformer, l'architettura
 del {doc}`capitolo sui Transformer </Transformers/overview>`, montata in due
 metà: un *encoder*, che ascolta l'audio e lo riassume, e un *decoder*, che da
 quel riassunto scrive il testo.
@@ -233,7 +231,7 @@ consentono, e in fondo esce il testo.
 La prima tappa riduce il suono all'essenziale, e si chiama **estrazione delle
 feature** («caratteristiche», in inglese): al posto dell'onda grezza, poche
 misure per ogni frammento di suono. È il passaggio che rende trattabile tutto
-il resto, e merita un dettaglio.
+il resto, e merita un approfondimento.
 
 `````{tab} Elementare
 
@@ -263,7 +261,7 @@ $\mathbf{X}$ che entra nel modello acustico. I sistemi classici applicavano un
 ultimo passaggio, la trasformata coseno discreta (DCT), che decorrelava i
 coefficienti e riduceva ogni frame a una dozzina di MFCC (*Mel-Frequency
 Cepstral Coefficients*, una quarantina con le derivate prima e seconda):
-serviva alle covarianze diagonali delle GMM, e i sistemi neurali end-to-end,
+serviva alle covarianze diagonali delle GMM; i sistemi neurali end-to-end,
 Whisper compreso, non lo fanno più.
 
 `````
@@ -279,12 +277,12 @@ che "capisce" il parlato: una volta che la voce è diventata testo, tocca agli
 strumenti del linguaggio naturale interpretarne il significato. Ma quel primo,
 difficile passo (dall'onda alla parola) comincia sempre qui.
 
-Ed è un passo che sbaglia ancora, ogni giorno, sotto i nostri occhi: i
+Ed è un passaggio in cui si sbaglia ancora, ogni giorno, sotto i nostri occhi: i
 sottotitoli automatici che scrivono una parola per un'altra, o che riempiono
 di frasi inventate un pezzo di video in cui nessuno parla, sono la parte
 visibile di limiti precisi, che {doc}`I modelli di riconoscimento
 </SpeechRecognition/modelli-asr>` racconta uno per uno.
 
-E il viaggio ha anche un ritorno: {doc}`La voce sintetica
+Il viaggio ha anche un ritorno: {doc}`La voce sintetica
 </SpeechRecognition/sintesi-vocale>` percorre la strada opposta, dal testo
 all'onda sonora, e chiude il cerchio tra ascoltare e parlare.

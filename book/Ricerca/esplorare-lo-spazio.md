@@ -380,28 +380,28 @@ la profondità e non come il numero di nodi.
 
 La proprietà che serve a $h$ ha un nome: è ammissibile se non sovrastima
 mai, cioè se $h(n) \le h^*(n)$ per ogni $n$, dove $h^*(n)$ è il costo vero del
-cammino ottimo da $n$ alla meta. Un’euristica ammissibile è, in altre parole,
+cammino ottimo da $n$ alla meta. Un’euristica ammissibile è
 ottimista. E con un’euristica ammissibile A\* restituisce una soluzione di
 costo minimo.
 
-La ragione, in poche righe e per un grafo a costi non negativi, con due
-dettagli che sembrano formalità e non lo sono. A\* dichiara di aver finito
-quando estrae dalla frontiera uno stato finale, non quando lo genera: se
-bastasse generarlo, restituirebbe la prima soluzione che incontra, che non è la
-più corta. Detto questo, supponiamo che stia per restituire una soluzione
-peggiore di quella ottima, il cui costo è $C^*$. Lungo il cammino ottimo, il
-primo nodo $n$ che non è ancora stato espanso con il suo costo ottimo
-$g^*(n)$, cioè con il costo del cammino ottimo dalla partenza a $n$, sta sulla
-frontiera: il suo predecessore sul cammino lo è stato, e lo ha generato con
-$g(n) = g^*(n)$. Per quel nodo vale quindi
-$f(n) = g^*(n) + h(n) \le g^*(n) + h^*(n) = C^*$: un valore non superiore a
-$C^*$, e quindi inferiore a quello della soluzione peggiore che stiamo per
-restituire. Ma allora A\* avrebbe estratto $n$ prima, perché estrae sempre il
-minimo. È la contraddizione che dimostra il risultato.
+La ragione si dimostra in poche righe per un grafo a costi non negativi,
+chiarendo prima due dettagli che sembrano formalità e non lo sono. A\* dichiara
+di aver finito quando estrae dalla frontiera uno stato finale, non quando lo
+genera: se bastasse generarlo, restituirebbe la prima soluzione che incontra,
+che non è la più corta. Fatta questa premessa, supponiamo che stia per
+restituire una soluzione peggiore di quella ottima, il cui costo è $C^*$. Lungo
+il cammino ottimo, il primo nodo $n$ che non è ancora stato espanso con il suo
+costo ottimo $g^*(n)$, cioè con il costo del cammino ottimo dalla partenza a
+$n$, sta sulla frontiera: il suo predecessore sul cammino lo è stato, e lo ha
+generato con $g(n) = g^*(n)$. Per quel nodo vale quindi $f(n) = g^*(n) + h(n)
+\le g^*(n) + h^*(n) = C^*$: un valore non superiore a $C^*$, e quindi inferiore
+a quello della soluzione peggiore che stiamo per restituire. Ma allora A\*
+avrebbe estratto $n$ prima, perché estrae sempre il minimo. È la contraddizione
+che dimostra il risultato.
 
 Il «primo non ancora espanso con il suo costo ottimo» porta tutto il peso
 dell’argomento: appartenere al cammino ottimo non basta, bisogna esserci
-arrivati lungo di esso, e solo per il primo di quei nodi questo è garantito
+arrivati percorrendolo, e solo per il primo di quei nodi questo è garantito
 dal predecessore. Ed è il punto in cui si sbaglia, perché presuppone di poter
 tornare su uno stato già aperto se salta fuori una strada più corta per
 arrivarci: un nodo espanso la prima volta con un costo troppo alto deve poter
@@ -426,7 +426,7 @@ sugli stati finali è anche ammissibile, e non viceversa; la condizione sugli
 stati finali serve davvero, perché $h \equiv 5$ soddisfa la disuguaglianza
 triangolare su qualunque grafo a costi non negativi e ammissibile non è.
 
-In cambio la consistenza dà una cosa pratica, ed è esattamente quella che manca
+In cambio la consistenza garantisce proprio ciò che manca
 sopra: i valori di $f$ non diminuiscono mai lungo un cammino, perché passando
 da $n$ a un successore $n'$ si ha
 $f(n') = g(n) + c(n, a, n') + h(n') \ge g(n) + h(n) = f(n)$. Ne segue che la
@@ -617,13 +617,14 @@ fretta: la stima perfetta, la distanza vera, farebbe aprire soltanto gli stati
 che stanno su una strada più corta, ma calcolarla vorrebbe dire aver già
 risolto il problema.
 
-Resta da vedere che cosa compra la consistenza, e lo si vede togliendola. La
-stima *a salti* vale la distanza a isolati quando le tessere fuori posto sono
-in numero pari, e zero quando sono dispari: non esagera mai, perché non supera
-la distanza a isolati, ma fra due posizioni vicine può saltare da zero a una
-ventina di passi, e consistente non è. Il conto rifà la ricerca con due
-interruttori: se uno stato già aperto si può riaprire quando salta fuori una
-strada più corta, e chi esce per primo dalla coda a parità di somma.
+Resta da vedere che cosa si guadagna con la consistenza, e lo si vede
+togliendola. La stima *a salti* vale la distanza a isolati quando le tessere
+fuori posto sono in numero pari, e zero quando sono dispari: non esagera mai,
+perché non supera la distanza a isolati, ma fra due posizioni vicine può
+saltare da zero a una ventina di passi, e consistente non è. Il conto rifà la
+ricerca con due interruttori: se uno stato già aperto si può riaprire quando
+salta fuori una strada più corta, e chi esce per primo dalla coda a parità di
+somma.
 
 ```python
 def cerca_variante(stima, riapre=True, verso_la_meta=False):

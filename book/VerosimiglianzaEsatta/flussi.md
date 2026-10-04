@@ -174,9 +174,10 @@ inventarselo, e quella che esce non sarebbe più la fotografia che era entrata.
 Per questo un flusso esce con esattamente tanti numeri quanti ne sono entrati.
 La seconda è schiacciare fino a zero, anche in un punto solo. Elevare al cubo,
 per esempio, vicino allo zero schiaccia sempre di più: il tratto fra 0 e 0,1
-finisce fra 0 e 0,001, cento volte più corto, e l'acqua che ci stava sopra sale
-cento volte. Proprio nello zero lo stiramento vale zero, e lì l'acqua salirebbe
-all'infinito.
+finisce fra 0 e 0,001, cento volte più corto, e le fotografie di quel tratto
+raccolgono l'acqua di un tratto cento volte più corto. Proprio nello zero lo
+stiramento vale zero: una fotografia che cade lì non raccoglie acqua per
+niente, e per riportarla indietro la macchina dovrebbe stirare all'infinito.
 
 E adesso il guaio. Calcolare un determinante costa tantissimo: con il metodo
 generale servono all'incirca tante operazioni quanto è il cubo del lato della
@@ -202,20 +203,20 @@ $$
 $$
 
 È la formula dei {doc}`richiami su determinante e volume
-</Matematica/determinante-e-volume>` letta nell'altro verso. Là
-$\mathbf{y} = \mathbf{f}(\mathbf{x})$ è l'immagine e la sua densità si ottiene
-dividendo per $\lvert\det\mathbf{J}_{\mathbf{f}}\rvert$; qui si conosce la
-densità del punto d'arrivo $\mathbf{z}$ e si risale a quella di partenza, quindi
-si moltiplica. Le due sono la stessa identità, perché
-$\mathbf{J}_{f^{-1}}(\mathbf{z}) = \mathbf{J}_f(\mathbf{x})^{-1}$, e scritta
-nel verso della generazione lo stesso termine cambia segno. Per una $f$
-invertibile e $C^1$ l'ipotesi sull'inversa equivale a
-$\det\mathbf{J}_f \neq 0$ ovunque: $x \mapsto x^3$ la viola in $0$, dove la
-densità trasformata diverge. Il valore assoluto serve perché il determinante è
-con segno (dice anche se la trasformazione ribalta l'orientamento), mentre
-interessa solo il rapporto fra i volumi. Componendo più trasformazioni i
-logaritmi si sommano, ed è la ragione per cui in pratica si scrive tutto in
-scala logaritmica: una successione $f = f_K \circ \dots \circ f_1$ dà
+</Matematica/determinante-e-volume>` letta nell'altro verso. Là $\mathbf{y} =
+\mathbf{f}(\mathbf{x})$ è l'immagine e la sua densità si ottiene dividendo per
+$\lvert\det\mathbf{J}_{\mathbf{f}}\rvert$; qui si conosce la densità del punto
+d'arrivo $\mathbf{z}$ e si risale a quella di partenza, quindi si moltiplica.
+Le due sono la stessa identità, perché $\mathbf{J}_{f^{-1}}(\mathbf{z}) =
+\mathbf{J}_f(\mathbf{x})^{-1}$, e scritta nel verso della generazione lo stesso
+termine cambia segno. Per una $f$ invertibile e $C^1$ l'ipotesi sull'inversa
+equivale a $\det\mathbf{J}_f \neq 0$ ovunque: $x \mapsto x^3$ la viola in $0$,
+dove la densità del modello si annulla e la jacobiana dell'inversa diverge. Il
+valore assoluto serve perché il determinante è con segno (dice anche se la
+trasformazione ribalta l'orientamento), mentre interessa solo il rapporto fra i
+volumi. Componendo più trasformazioni i logaritmi si sommano, ed è la ragione
+per cui in pratica si scrive tutto in scala logaritmica: una successione $f =
+f_K \circ \dots \circ f_1$ dà
 
 $$
 \log\lvert\det \mathbf{J}_f(\mathbf{x})\rvert
@@ -275,7 +276,7 @@ Tre proprietà discendono tutte insieme: si torna indietro senza invertire la
 rete, il fattore di stiramento si legge sulle scale, e la rete che le decide può
 essere complicata quanto si vuole. È per questo che l'accoppiamento è diventato
 la ricetta più usata per un determinante a buon mercato, anche se non l'unica:
-i flussi autoregressivi e quelli continui dell'ultima sezione ne sono altre.
+i flussi autoregressivi e quelli continui sono altre due.
 
 `````{tab} Elementare
 
@@ -353,8 +354,8 @@ soltanto da quelle del primo, e fra loro no. È la fattorizzazione di
 Papamakarios e colleghi {cite}`papamakarios2017masked`): valutare costa un
 passaggio, generare ne costa $D$, il numero di coordinate. L'IAF
 {cite}`kingma2016improved` scambia i due costi, ma solo per i propri campioni:
-genera in un passaggio, valuta in un passaggio la densità dei punti che ha
-generato lui, di cui conosce già la $\mathbf{z}$, e su un dato qualsiasi ne
+genera in un passaggio, valuta in un passaggio la densità dei punti che ha appena
+generato (di cui conosce già la $\mathbf{z}$), e su un dato qualsiasi ne
 spende $D$. Per questo si usa come distribuzione approssimante nell'inferenza
 variazionale, dove servono proprio i propri campioni e le loro densità, più che
 come stimatore di densità.
@@ -500,9 +501,9 @@ vanno lette insieme: la densità del modello, integrata numericamente su una
 griglia che la copre tutta, fa uno, e non perché qualcuno l'abbia normalizzata
 a mano. Fa uno perché il cambio di variabile lo garantisce, e la terza misura
 lo mostra togliendo il fattore dagli stessi identici pesi: senza, l'area scende
-a 0,24, e un numero la cui area non fa uno non è una probabilità. In quel
-numero non c'è niente da leggere, dipende dal flusso che è uscito da questo
-addestramento; l'unica cosa che conta è che non faccia uno. Fare uno è
+a 0,24, e una curva la cui area non fa uno non è una densità di probabilità.
+Nel valore 0,24 non c'è niente da leggere, dipende dal flusso che è uscito da
+questo addestramento; l'unica cosa che conta è che non faccia uno. Fare uno è
 esattamente la differenza fra questa famiglia e quella del {doc}`capitolo sui
 modelli a energia </ModelliEnergia/overview>`, dove quel conto non si può fare
 e tutto il capitolo gira attorno a come evitarlo. Le ultime due dicono che il
@@ -554,7 +555,7 @@ modelli interi: su CIFAR-10, una raccolta di piccole fotografie a colori, il
 costo passa dai $3{,}49$ bit per dimensione di RealNVP (quanti bit servono in
 media per scrivere ciascun numero dell'immagine: meno è meglio) ai $3{,}35$ di
 Glow, che però cambia anche la normalizzazione interna e divide le coordinate
-soltanto per canali: il miglioramento fra i due modelli interi non va
+soltanto per canali. Il miglioramento fra i due modelli interi, quindi, non va
 attribuito alla sola convoluzione, il cui effetto gli autori misurano a parte,
 a parità del resto. Con la stessa ricetta escono i volti a $256 \times 256$
 del 2018, addestrati su immagini ridotte a 5 bit per canale, quelli che si
@@ -600,7 +601,7 @@ tempo di generazione, più che in dimensione.
 - Chi deforma lo spazio deve pagare un fattore di correzione: la stessa
   acqua su un tavolo tre volte più largo sta tre volte più bassa, e un flusso,
   che fa la domanda al contrario, il fattore lo moltiplica. Senza quel fattore
-  l'area sotto la curva non fa più uno, e un numero la cui area non fa uno non
+  l'area sotto la curva non fa più uno, e una curva la cui area non fa uno non
   è una probabilità. Il conto su una campana stirata di tre volte lo mostra: con
   il fattore la curva calcolata coincide con quella misurata e la sua area fa
   1, senza è tre volte troppo alta e l'area fa 3.

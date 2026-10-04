@@ -11,13 +11,12 @@ la forma dei dati, il loro tipo, il dispositivo su cui stanno.
 La ragione è che, quando due tensori si incontrano, PyTorch controlla tre loro
 attributi: la forma (`shape`), il tipo dei numeri (`dtype`) e il dispositivo
 (`device`). Dove una regola lo permette li adatta da sé (allarga una forma col
-*broadcasting*, porta due tipi a uno comune), e dove non può si ferma: quasi
-ogni volta che la libreria si ferma, una di queste tre regole non è rispettata,
-e chi impara a riconoscerle a colpo d'occhio smette di cercare l'errore per
-tentativi. Restano fuori i guasti sui valori, come un'etichetta che indica una
-classe che non esiste (`IndexError: Target 10 is out of bounds`), e quelli di
-risorse, come la memoria della scheda grafica che finisce
-(`CUDA out of memory`).
+*broadcasting*, porta due tipi a uno comune), e dove non può si ferma, e quasi
+sempre perché una di queste tre regole non è rispettata: chi impara a
+riconoscerle a colpo d'occhio smette di cercare l'errore per tentativi. Restano
+fuori i guasti sui valori, come un'etichetta che indica una classe che non
+esiste (`IndexError: Target 10 is out of bounds`), e quelli di risorse, come la
+memoria della scheda grafica che finisce (`CUDA out of memory`).
 
 ```python
 import torch
@@ -130,7 +129,7 @@ il numero.
 
 **Dimensione di batch.** Quasi tutti i moduli assumono la convenzione
 *batch-first* $(B, \dots)$, con un'eccezione che costa cara perché non solleva
-niente: `nn.RNN`, `nn.LSTM`, `nn.GRU`, `nn.MultiheadAttention` e i moduli
+eccezioni: `nn.RNN`, `nn.LSTM`, `nn.GRU`, `nn.MultiheadAttention` e i moduli
 `nn.Transformer*` hanno `batch_first=False` di default, cioè si aspettano
 $(L, B, \dots)$, con $L$ la lunghezza della sequenza. Per aggiungere la
 dimensione di batch a un esempio singolo si usa `unsqueeze(0)` nel caso comune
@@ -173,12 +172,12 @@ RuntimeError: expected target dtype to be Long or Byte, but got Float
 ```
 
 Il secondo errore riguarda il `dtype`, cioè il tipo di numero con cui il
-tensore è scritto: interi (il $3$) oppure decimali (il $3{,}0$). Quando somma
-o moltiplica due tensori numero per numero, PyTorch li porta da sé a un tipo
+tensore è scritto: interi (il $3$) oppure decimali (il $3{,}0$). Quando somma o
+moltiplica due tensori numero per numero, PyTorch li porta da sé a un tipo
 comune che li contenga tutti e due (un intero e un decimale, per esempio,
 diventano due decimali); ma nel prodotto fra matrici e dentro gli strati `nn`
-(i casi dei due messaggi) il tipo se lo aspetta preciso, e preferisce fermarsi
-piuttosto che indovinare quale volevamo.
+(i casi dei due messaggi) la libreria richiede un tipo preciso, e preferisce
+fermarsi piuttosto che indovinare quale volevamo.
 
 I due messaggi vanno letti in modi diversi. Nel primo i due tipi sono i
 due operandi, il tensore che abbiamo passato e i pesi del modello,
@@ -245,15 +244,14 @@ conversione esplicita `torch.from_numpy(a).float()` (o `.to(torch.float32)`) va
 fatta al confine.
 
 Sul *type promotion* elemento per elemento la formula che si legge di solito
-(«le stesse regole di NumPy») è vera solo in parte. Confrontando
-`torch.result_type` con `np.result_type` su tutte le coppie dei tipi che le due
-librerie hanno in comune (gli otto numerici di uso quotidiano: `uint8`, i
-quattro interi con segno e i tre decimali, escluso il `bfloat16`, che in NumPy
-non esiste; le coppie sono quindi $8^2 = 64$), dieci divergono, e sono tutte
-del tipo intero per decimale: a differenza di NumPy, in PyTorch un intero non
-spinge mai un decimale a una precisione più alta. `int64 + float32` dà
-`float32` in torch e `float64` in NumPy; `torch.tensor([1,2,3]) * 2.5` dà
-`float32`, mentre
+(«le stesse regole di NumPy») è vera solo in parte. Le due librerie hanno in
+comune otto tipi numerici di uso quotidiano (`uint8`, i quattro interi con
+segno e i tre decimali, escluso il `bfloat16` che in NumPy non esiste), per un
+totale di $8^2 = 64$ coppie possibili. Confrontando `torch.result_type` con
+`np.result_type` su ciascuna di esse, dieci divergono, e sono tutte del tipo
+intero per decimale: a differenza di NumPy, in PyTorch un intero non spinge mai
+un decimale a una precisione più alta. `int64 + float32` dà `float32` in torch
+e `float64` in NumPy; `torch.tensor([1,2,3]) * 2.5` dà `float32`, mentre
 `np.array([1,2,3]) * 2.5` dà `float64`. Il che rende il `float64` in arrivo da
 NumPy ancora più insidioso, perché le due librerie non la pensano allo stesso
 modo.
@@ -484,20 +482,20 @@ fermarsi» della {doc}`sezione sul training loop <addestramento>`.
   stabile. Quello che invece non cambia è il voto: con `model.eval()`
   l'accuratezza misurata è identica cifra per cifra con il mescolamento acceso
   e con quello spento, perché sono gli stessi esempi in un altro ordine.
-  L'unico numero che balla è la media delle medie per batch, che però è un
-  errore di conto per conto suo, quello spiegato in [dal notebook agli
+  L'unico numero che cambia è la media delle medie per batch, che però è un
+  errore numerico a sé, spiegato in [dal notebook agli
   script](dal-notebook-agli-script.md), e si sistema lì.
 - La loss diventa `nan`. `nan` sta per *not a number* ed è il valore che i
   computer usano per dire "questo conto non ha un risultato": lo si ottiene
-  dividendo zero per zero, o sottraendo fra loro due infiniti, che è dove
-  finisce un numero cresciuto oltre il rappresentabile.
-  Quando compare al posto della loss, il primo sospettato è un learning rate
-  troppo alto, con i pesi schizzati via; altrimenti c'è un denominatore che si
-  annulla da qualche parte, e il posto dove si nasconde più spesso è la
-  divisione per una deviazione standard nulla, cioè per un gruppo di numeri
-  tutti uguali. Il secondo sospettato è il logaritmo di una probabilità esatta
-  $0$, che non è una divisione per zero: vale meno infinito, e diventa un `nan`
-  appena quell'infinito incontra uno zero o un altro infinito. I rimedi sono
+  dividendo zero per zero, o sottraendo fra loro due infiniti (il valore
+  assunto da un numero cresciuto oltre il limite rappresentabile). Quando
+  compare al posto della loss, il primo sospettato è un learning rate troppo
+  alto, con i pesi schizzati via; altrimenti c'è un denominatore che si annulla
+  da qualche parte, e il posto dove si nasconde più spesso è la divisione per
+  una deviazione standard nulla, cioè per un gruppo di numeri tutti uguali. Il
+  secondo sospettato è il logaritmo di una probabilità esatta $0$, che non è
+  una divisione per zero: vale meno infinito, e diventa un `nan` appena
+  quell'infinito incontra uno zero o un altro infinito. I rimedi sono
   altrettanto meccanici: dividere il learning rate per tre o per dieci, e
   sommare al denominatore un numero minuscolo (si scrive $\varepsilon$,
   epsilon, e vale $10^{-5}$ negli strati che normalizzano, $10^{-8}$ dentro
@@ -692,7 +690,7 @@ migliorare. Poiché la scala giusta cambia di ordini di grandezza fra un
 problema e l'altro, la si esplora moltiplicando o dividendo per tre, non
 aggiustandola di percentuali.
 
-Il rumore delle curve ha due sorgenti distinte, che si distinguono da come si
+Il rumore delle curve ha due sorgenti diverse, che si riconoscono da come si
 comporta l'oscillazione. Il passo troppo lungo produce oscillazioni che non
 si riducono aumentando la dimensione del batch; il rumore del gradiente
 scala invece come $1/\sqrt{B}$ con la dimensione $B$ del batch, quindi
@@ -734,7 +732,7 @@ Quasi sempre non c'è nulla di rotto, e le spiegazioni sono quattro.
 2. La regolarizzazione è attiva solo in addestramento. Il dropout spegne
    neuroni e la data augmentation deforma gli esempi durante il training e non
    in valutazione: la rete che produce la loss di addestramento è una rete
-   handicappata, quella che produce la validazione no.
+   azzoppata, quella che produce la validazione no.
 3. Il set di validazione è più facile. Può capitare per caso con split
    piccoli, o sistematicamente se la separazione non è stata casuale (i casi
    difficili concentrati da una parte sola).

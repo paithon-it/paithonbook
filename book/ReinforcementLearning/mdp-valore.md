@@ -153,7 +153,7 @@ $\Pr(o \mid s)$ che dice cosa si riesce a vedere. Un robot con sensori
 limitati, un sistema di raccomandazione che non conosce l'umore dell'utente, un
 giocatore di poker che non vede le carte altrui: tutti POMDP.
 
-Il fatto scomodo è che in un POMDP la policy ottima non può dipendere solo
+La difficoltà è che in un POMDP la policy ottima non può dipendere solo
 dall'osservazione corrente. La soluzione teorica è ragionare su una
 distribuzione di probabilità sugli stati possibili, il *belief state*
 $\beta(s)$, aggiornata a ogni passo con il filtro bayesiano
@@ -213,11 +213,11 @@ la policy che massimizza la ricompensa accumulata nel tempo.
 ## Quanto vale il futuro: il ritorno scontato
 
 Una ricompensa da sola dice poco: conta la *somma* delle ricompense lungo tutto
-il percorso. Quella somma è il ritorno: non
-quanto si incassa adesso, ma quanto si incasserà in tutto da qui alla fine. Ma
-un premio subito vale più dello stesso premio fra dieci mosse, e quindi nella
-somma i premi lontani entrano ridotti: da qui il nome **ritorno scontato**, che
-è il numero che l'agente cerca di rendere più grande possibile.
+il percorso. Quella somma è il ritorno: non quanto si incassa adesso, ma quanto
+si incasserà in tutto da qui alla fine. Un premio subito, però, vale più dello
+stesso premio fra dieci mosse, e quindi nella somma i premi lontani entrano
+ridotti: da qui il nome **ritorno scontato**, che è il numero che l'agente
+cerca di rendere più grande possibile.
 
 `````{tab} Elementare
 
@@ -320,16 +320,16 @@ parlano di policy stazionarie.
 
 Conviene vedere tutti i pezzi in un solo disegno. La {numref}`fig-mdp` ritrae
 un mondo minuscolo con tre stati, che chiamiamo $s_0$, $s_1$ e $s_2$ (sono
-soltanto nomi di caselle, e il disegno le mostra). Da $s_0$ l'agente può
-salire verso $s_1$ oppure restare fermo; da $s_1$ può scendere verso
-l'obiettivo $s_2$ o tornare indietro. L'obiettivo si dice **terminale**, che
-vuol dire semplicemente che lì la partita finisce: arrivati, non si fa più
-niente e non si incassa più niente. Ogni freccia è un'azione ed è annotata con
-la ricompensa che paga: salire non costa nulla, restare o tornare fanno
-perdere un punto (nel disegno, $r = -1$), raggiungere l'obiettivo ne fa
-guadagnare dieci ($r = +10$). Con $\gamma$ vicino a 1 la strategia migliore è
-intuibile a colpo d'occhio ($s_0 \to s_1 \to s_2$) ed è proprio quel "colpo
-d'occhio" che le funzioni valore rendono calcolabile in modo sistematico.
+soltanto nomi di caselle, e il disegno le mostra). Da $s_0$ l'agente può salire
+verso $s_1$ oppure restare fermo; da $s_1$ può scendere verso l'obiettivo $s_2$
+o tornare indietro. L'obiettivo si dice **terminale**, a indicare che lì la
+partita finisce: arrivati, non si fa più niente e non si incassa più niente.
+Ogni freccia è un'azione ed è annotata con la ricompensa che paga: salire non
+costa nulla, restare o tornare fanno perdere un punto (nel disegno, $r = -1$),
+raggiungere l'obiettivo ne fa guadagnare dieci ($r = +10$). Con $\gamma$ vicino
+a 1 la strategia migliore è intuibile a colpo d'occhio ($s_0 \to s_1 \to s_2$)
+ed è proprio quel "colpo d'occhio" che le funzioni valore rendono calcolabile
+in modo sistematico.
 
 ```{figure} ../figures/mdp-grafo.svg
 :name: fig-mdp
@@ -489,16 +489,16 @@ i metodi Monte Carlo stimano gli stessi valori senza usare la ricorsione.
 
 L'equazione di Bellman dice come devono stare i valori quando sono giusti, ma
 non come trovarli, e all'inizio non li conosciamo. Il primo modo di trovarli la
-usa come regola di aggiornamento: su ogni casella si scrive quello che
-l'equazione dice che dovrebbe esserci, calcolato con i numeri che stanno adesso
-sulle caselle d'arrivo, e si ripete finché i numeri non si assestano. In
-inglese si chiama **value iteration**, «iterazione dei valori», ed è il nome
-con cui si incontra ovunque.
+usa come regola di aggiornamento: su ogni casella si scrive il valore richiesto
+dall'equazione, calcolato usando i numeri presenti in quel momento sulle
+caselle d'arrivo, e si ripete finché le stime non si assestano. In inglese si
+chiama **value iteration**, «iterazione dei valori», ed è il nome con cui si
+incontra ovunque.
 
 È anche l'idea con cui Bellman inaugurò la **programmazione dinamica**
 {cite}`bellman1957dynamic`: due parole che non spiegano niente (e lo sapeva lui
 per primo, che le scelse anche perché suonavano innocue a chi doveva
-finanziarlo), ma che ancora oggi indicano questo, risolvere un problema grande
+finanziarlo), ma che ancora oggi indicano questo: risolvere un problema grande
 riusando le risposte già trovate ai suoi pezzi piccoli.
 
 `````{tab} Elementare
@@ -984,8 +984,8 @@ temporali <q-learning>`, il suo esemplare più famoso.
   $\gamma$, e nei compiti continui l'alternativa allo sconto è la ricompensa
   media.
 - $V^\pi$ e $Q^\pi$ misurano il ritorno *atteso*; l’equazione di Bellman li
-  definisce in modo ricorsivo, ed è la base degli algoritmi che stimano
-  funzioni di valore.
+  definisce in modo ricorsivo, ed è la base degli algoritmi che stimano le
+  funzioni valore.
 - Con il modello ($P$ e $r$) noto, value iteration e policy iteration
   calcolano valori e policy ottimi iterando Bellman. Quando il modello manca lo
   si può stimare dall'esperienza e pianificarci dentro, oppure imparare i

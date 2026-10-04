@@ -33,7 +33,7 @@ Un rilevatore di fumo ha quattro esiti possibili, due giusti e due sbagliati:
   più pericoloso;
 - non c'è incendio e l'allarme tace → **vero negativo** (VN): giusto.
 
-La matrice di confusione non è altro che questa tabellina: quante volte il
+La matrice di confusione è questa tabella: quante volte il
 modello ha azzeccato (VP e VN) e, soprattutto, *in che modo* ha sbagliato
 (falso allarme o incendio mancato). Non è mai indifferente quale dei due.
 
@@ -132,7 +132,7 @@ molto più vicina al piatto peggiore. Se la recall crollasse a $0{,}1$, la F1
 crollerebbe con lei anche con la precision al massimo.
 
 Il voto si può anche sbilanciare apposta, dichiarando quante volte un malato
-mancato pesa più di un falso allarme. Da quel momento premia chi non se ne
+mancato pesa più di un falso allarme. In questo modo premia chi non se ne
 lascia scappare nessuno, e qualche esame fatto per niente non basta più ad
 abbassarlo.
 
@@ -250,12 +250,13 @@ numero), dove è il numero piccolo a diventare grosso. Coincidono soltanto quand
 i due numeri sono uguali, e più i due voti sono lontani, più si aprono a
 ventaglio.
 
-Quello che conta è verso chi pendono. L’aritmetica non scende mai sotto metà del
-voto migliore: un filtro con precision 0,9 e recall 0,05, che lascia passare
-diciannove spam su venti, prende 0,475, un voto che sembra quasi dignitoso.
-L’armonica sta dall’altra parte: non va mai sotto il voto peggiore e non supera
-mai il suo doppio. Con una recall di 0,4 la F1 non passa 0,8, qualunque sia la
-precision, e con 0,05 non arriva a 0,1: il voto cattivo comanda.
+Quello che conta è verso quale estremo pendono. L’aritmetica non scende mai
+sotto metà del voto migliore: un filtro con precision 0,9 e recall 0,05, che
+lascia passare diciannove spam su venti, prende 0,475, un voto che sembra quasi
+dignitoso. L’armonica sta dall’altra parte: non va mai sotto il voto peggiore e
+non supera mai il suo doppio. Con una recall di 0,4 la F1 non passa 0,8,
+qualunque sia la precision, e con 0,05 non arriva a 0,1: il voto cattivo
+comanda.
 
 E proprio l’armonica è quella giusta, per una ragione che sta nei conteggi. Il
 filtro prudente ha preso 36 spam, ne ha cestinati 40 e ce n’erano 90: la
@@ -328,7 +329,7 @@ conteggi ha anche il pregio di restare definita dove quella con $P$ e $R$ si
 inceppa: con $\mathrm{VP} = 0$ dà $0$, mentre $2PR/(P+R)$ con $P = R = 0$
 sarebbe $0/0$; resta indefinita solo senza positivi né veri né predetti, e lì
 scikit-learn restituisce il valore del parametro `zero_division`. La media
-geometrica delle stesse due quantità ha anche lei un nome, l’indice di Fowlkes e
+geometrica delle stesse due quantità ha anch'essa un nome, l’indice di Fowlkes e
 Mallows, nato per confrontare due raggruppamenti contando le coppie di punti
 messe insieme {cite}`fowlkes1983method`.
 
@@ -394,7 +395,7 @@ anche lontano dall’esempio.
 Precision e recall dipendono da un numero che il modello non contiene: la
 soglia. Come si è visto parlando di regressione logistica, molti classificatori
 non restituiscono un secco «sì/no» ma una probabilità, un numero fra $0$ e $1$;
-siamo noi a fissare la soglia oltre la quale dichiararlo positivo, e per
+siamo noi a fissare la soglia oltre la quale dichiarare il caso positivo, e per
 abitudine si parte da $0{,}5$. Cambiare soglia cambia l'equilibrio tra i due
 errori senza toccare il modello, e la curva ROC (dall'inglese *receiver
 operating characteristic*, un nome ereditato dai radar) li mostra tutti in un
@@ -412,10 +413,10 @@ preferisce pagare.
 
 La diagonale di {numref}`fig-curva-roc` è il termine di paragone che rende
 leggibile tutto il resto: è ciò che otterrebbe un modello che tira a
-indovinare. Più la curva sale verso l'angolo in alto a sinistra, meglio va, e l’**AUC** è il
-modo di ridurre quel confronto a un numero solo: è l'area che resta sotto la
-curva. Il suo pregio è di riassumere *tutte* le soglie, senza che se ne debba
-fissare una.
+indovinare. Più la curva sale verso l'angolo in alto a sinistra, migliore è il
+modello, e l’**AUC** è il modo di ridurre quel confronto a un numero solo: è
+l'area che resta sotto la curva. Il suo pregio è di riassumere *tutte* le
+soglie, senza che se ne debba fissare una.
 
 `````{tab} Elementare
 
@@ -733,7 +734,7 @@ riserva sulla scaletta, che è fatta di gradini: due operazioni un po' diverse
 possono finire sullo stesso gradino e diventare pari merito, e i pari merito
 nella graduatoria contano mezzo punto ciascuno.
 
-E una trappola, che è la ragione per cui la calibrazione da sola non è un voto
+È una trappola, che è la ragione per cui la calibrazione da sola non è un voto
 sufficiente. Un modello che a ogni operazione risponde «quattro su cento»,
 sempre lo stesso numero, finisce tutto in un cassetto solo, e in quel cassetto
 il conto torna: di frodi ce ne sono davvero quattro per cento. È calibrato

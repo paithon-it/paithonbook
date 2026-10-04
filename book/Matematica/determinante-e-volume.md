@@ -131,7 +131,7 @@ geometrico: la decomposizione ai valori singolari dice che ogni trasformazione
 $\sigma_i$, poi un'altra rotazione; le rotazioni non toccano i volumi, quindi
 il fattore di volume è il prodotto delle dilatazioni.
 
-Una conseguenza da tenere a mente prima di usare il determinante come diagnosi:
+Usare il determinante come diagnosi ha un limite:
 $|\det|$ non dice niente sul condizionamento. Una matrice
 $\operatorname{diag}(10^{-3},10^{3})$ ha determinante $1$, quindi conserva le
 aree alla perfezione, ed è pessimamente condizionata perché schiaccia
@@ -192,7 +192,7 @@ sulla diagonale, con un cambio di segno per ogni scambio di righe fatto per
 strada. Ottomila operazioni invece di quattro miliardi di miliardi, e il conto
 finisce prima che tu abbia alzato gli occhi.
 
-Resta un guaio, e riguarda la grandezza del risultato. Moltiplicare fra loro
+Resta un guaio pratico: la grandezza del risultato. Moltiplicare fra loro
 qualche centinaio di numeri dà un valore assurdamente grande o assurdamente
 piccolo: su una tabella di quattrocento righe presa a caso il determinante esce
 dalla scala dei numeri che la macchina sa scrivere, e al posto della risposta
@@ -260,9 +260,8 @@ print(round(np.linalg.det(T), 8), round(np.prod(np.diag(T)), 8))   # -> 1.26 1.2
 ```
 
 Il determinante che va in `inf` è il motivo per cui, nel codice vero, si
-incontra quasi sempre sotto forma di logaritmo. Il conto sulla triangolare è
-invece la mossa su cui è costruita un'intera famiglia di modelli generativi, e
-va guardata da vicino.
+incontra quasi sempre sotto forma di logaritmo. Il conto sulla triangolare,
+invece, è la mossa su cui si fonda un'intera famiglia di modelli generativi.
 
 ## Quando lo spazio si deforma, quello che è spalmato sopra si assottiglia
 
@@ -294,8 +293,8 @@ Per sapere quanto è denso il risultato in un punto bisogna sapere quanto la
 deformazione ha allargato lo spazio proprio lì, e cioè fare il determinante,
 per ogni punto e a ogni passo.
 
-Ed ecco il problema pratico, con la sua soluzione, che è la parte istruttiva.
-Quel conto costa il cubo del numero di coordinate, e su un'immagine di
+Il problema pratico è il costo.
+Quel conto richiede il cubo del numero di coordinate, e su un'immagine di
 centomila pixel sarebbe fuori discussione. Allora si costruisce la
 trasformazione apposta perché il conto venga facile: si impone che la prima
 coordinata nuova dipenda solo dalla prima vecchia, la seconda dalle prime due,
@@ -361,18 +360,18 @@ $$
 = \sum_{i=1}^{n} \log\left|\frac{\partial f_i}{\partial x_i}\right| ,
 $$
 
-cioè $\Theta(n)$. Lo stesso determinante compare in altri due posti che conviene
-riconoscere come lo stesso conto: nella densità della gaussiana multivariata,
-dove il fattore di normalizzazione contiene $(\det\boldsymbol{\Sigma})^{-1/2}$ e
-misura il volume dell'ellissoide di covarianza, e nella verosimiglianza dei
-processi gaussiani, dove $\log\det\boldsymbol{\Sigma}$ e
+cioè $\Theta(n)$. Lo stesso determinante compare in altri due posti, ed è lo
+stesso conto: nella densità della gaussiana multivariata, dove il fattore di
+normalizzazione contiene $(\det\boldsymbol{\Sigma})^{-1/2}$ e misura il volume
+dell'ellissoide di covarianza, e nella verosimiglianza dei processi gaussiani,
+dove $\log\det\boldsymbol{\Sigma}$ e
 $\mathbf{y}^\top\boldsymbol{\Sigma}^{-1}\mathbf{y}$ si ricavano dalla stessa
-fattorizzazione di Cholesky della matrice di covarianza, che costa $\Theta(N^3)$
-nel numero $N$ di osservazioni {cite}`rasmussen2006gaussian`.
+fattorizzazione di Cholesky della matrice di covarianza, che costa
+$\Theta(N^3)$ nel numero $N$ di osservazioni {cite}`rasmussen2006gaussian`.
 
 `````
 
-Il caso opposto chiude il discorso. Una rete neurale ordinaria in genere non è
+All'opposto, una rete neurale ordinaria in genere non è
 invertibile: la funzione di attivazione, cioè quella che piega i numeri fra uno
 strato e l'altro, nella forma più diffusa (la ReLU) manda a zero tutti i valori
 negativi, e da uno zero non si risale al numero di partenza. Il determinante che

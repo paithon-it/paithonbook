@@ -107,9 +107,9 @@ conosciamo per costruzione, perché i due ritagli li abbiamo fatti noi. Eppure
 per vincere bisogna capire parecchio: che muso e coda appartengono allo stesso
 animale, che quel pelo e quel muro stanno insieme. Bisogna farsi un'idea di
 *che cosa* raffigura ogni ritaglio, perché è l'unico modo di riconoscere il
-gemello in mezzo a centonovantotto estranei. Almeno, così sembra: fra poco
-vedremo che c'è anche un modo di vincere senza aver capito niente, ed è il
-problema centrale di tutta questa storia.
+gemello in mezzo a centonovantotto estranei. Almeno, così sembra: in realtà c'è
+un modo di vincere senza aver capito niente, ed è il problema centrale di tutta
+questa storia.
 
 `````
 
@@ -217,7 +217,7 @@ SimCLR trovano migliore su CIFAR-10; su ImageNet rende di più $0{,}1$
 
 ## Scegliere le trasformazioni è scrivere il compito
 
-Ed eccoci al rovesciamento annunciato. Nella sezione sulla data augmentation le
+Nella sezione sulla data augmentation le
 trasformazioni servivano a non far imparare a memoria, e la regola era: sono
 ammesse se non cambiano l'etichetta. Qui un'etichetta non c'è, e le
 trasformazioni non decorano il compito, lo definiscono: chiedere che due
@@ -811,7 +811,7 @@ non chiedono di dire che cosa c'è nella foto, chiedono di dire *dove*: e per
 rispondere non basta un
 riassunto che descriva bene l'immagine tutta insieme, ne serve uno che resti
 preciso zona per zona, angolo per angolo. Può quindi succedere che un encoder
-superi l'esame con la linea dritta sulla classificazione e poi, messo a fare da
+superi il sondaggio lineare sulla classificazione e poi, messo a fare da
 base di un rilevatore, non regga: vuol dire che ha imparato un riassunto buono
 per una domanda sola. È il criterio
 che conta, perché è il motivo per cui addestriamo in anticipo: non risolvere il
@@ -822,7 +822,7 @@ addestravamo, non sapevamo nemmeno quali sarebbero stati.
 
 La varietà dei nomi nasconde un'unica struttura. Chi mette a confronto (SimCLR,
 MoCo), chi predice senza rivali (BYOL, DINO) e chi ricostruisce quello che ha
-coperto (il MAE, e si chiamano generativi proprio perché il compito è
+coperto (i modelli generativi come il MAE, chiamati così perché il loro compito è
 produrre di nuovo un pezzo di immagine) risolvono lo stesso problema:
 fabbricare un compito la cui risposta è già nei dati e che sia abbastanza
 difficile da non poter essere risolto per scorciatoia. Quello che li distingue è
@@ -849,7 +849,7 @@ vicenda. Niente rivali da allontanare, e nessun bisogno che le due reti siano
 fatte diverse: la condizione che tiene lontana la risposta vuota è scritta
 direttamente nel punteggio. La sezione sulle {doc}`quattro famiglie
 </AutoSupervisione/famiglie>`, nel capitolo sull'auto-supervisione, lo chiama
-«vincolare le statistiche» e lo mette in fila con gli altri secondo una seconda
+«vincolare le statistiche» e lo mette in fila con gli altri in base a una seconda
 domanda: che cosa impedisce, in ciascuno, al modello di rispondere sempre la
 stessa cosa.
 

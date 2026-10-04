@@ -117,7 +117,7 @@ X_train, y_train = X[:taglio], y[:taglio]       # (40, 1)
 X_test,  y_test  = X[taglio:], y[taglio:]       # (10, 1)
 ```
 
-Due dettagli meritano attenzione, perché tornano in ogni progetto.
+Due dettagli tornano in ogni progetto.
 `unsqueeze(dim=1)` trasforma la fila di cinquanta numeri in una tabella di
 cinquanta righe e una colonna: gli strati di PyTorch vogliono una riga per
 esempio, e su ogni riga le caratteristiche di quell'esempio (in inglese
@@ -199,7 +199,7 @@ epoca  995 | train 0.0103 | test 0.0003
 OrderedDict({'strato.weight': tensor([[0.6968]]), 'strato.bias': tensor([0.3025])})
 ```
 
-Questa è la parte da guardare. Alla fine `state_dict()` stampa due numeri
+Alla fine dell'addestramento `state_dict()` stampa due numeri
 molto vicini a $0{,}7$ e $0{,}3$: $0{,}6968$ e $0{,}3025$, cioè $0{,}70$ e
 $0{,}30$ arrotondati al centesimo.
 Non identici, perché la discesa del gradiente si ferma quando è *abbastanza*
@@ -207,10 +207,9 @@ vicina. È una verifica che nella maggior parte dei problemi veri non potremo
 mai fare, e proprio per questo conviene farla almeno una volta: qui sappiamo
 con certezza che la macchina funziona.
 
-Guardando la tabella si nota che le ultime righe si ripetono: $0{,}0103$ e
-$0{,}0013$ tornano a turno. Ed è la cosa più istruttiva di tutto l'esempio:
-verso la fine la perdita non si ferma su un valore, alterna fra quei due,
-un giro sì e un giro no.
+Nelle ultime epoche i valori si ripetono: $0{,}0103$ e $0{,}0013$ tornano a
+turno. Verso la fine la perdita non si ferma su un valore, alterna fra quei
+due, un giro sì e un giro no.
 
 Perché lo faccia si dice in una riga. La misura dell'errore scelta nel codice,
 `nn.L1Loss`, cioè l'errore assoluto medio, corregge sempre della stessa
@@ -258,7 +257,7 @@ problema truccato la scelta cambia pochissimo: i punti stanno esattamente sulla
 retta, non c'è nessuna villa da domare, e quel po’ di ballo è tutto l'errore
 che rimane.
 
-Torniamo ai due numeri stampati a ogni riga. Quello da guardare è il secondo,
+Dei due numeri stampati a ogni riga, quello da guardare è il secondo,
 misurato sui dieci punti messi da parte, che stanno tutti in fondo alla retta,
 oltre quelli usati per imparare: è l'unico preso su domande mai viste.
 Guardandolo sei volte durante la corsa stiamo prendendo la stessa scorciatoia
@@ -288,7 +287,7 @@ lineare lontano. Qui la scelta è quasi indifferente perché i dati sono
 esattamente su una retta: la loss finale è limitata solo dalla granularità dei
 passi.
 
-Due cose aiutano a leggere la tabella. In ogni riga la perdita di
+Nella stampa la perdita di
 addestramento è quella calcolata prima dello `step()`, e quella di test viene
 dopo, quindi le due cifre appartengono a fasi opposte del ciclo; le due
 perdite degli stessi pesi si leggono su due righe consecutive, e sono
@@ -376,7 +375,7 @@ $\log \sigma(z)$ vale $-\infty$, mentre la forma stabile dà
 $0 + 800 + \log(1 + e^{-800}) \approx 800$, la perdita giusta. Le versioni
 "nude" (`nn.BCELoss`, `nn.NLLLoss`) esistono per i casi in cui la
 normalizzazione è già avvenuta, ma nel dubbio si usa sempre la variante con i
-logit. Due note di
+logit. Due note sulla
 forma dei tensori: `BCEWithLogitsLoss` vuole target `float32` della stessa
 shape dei logit, tipicamente si applica `squeeze(1)` all'uscita
 $(B,1) \to (B,)$ (con `squeeze()` senza argomento un batch da un solo esempio
@@ -511,12 +510,12 @@ stesso invece che da una variabile scritta altrove nel programma, che prima o
 poi qualcuno cambierà senza ricordarsi di aggiornare anche questa riga.
 
 Che cosa succede quando una delle tre condizioni salta, e come si legge il
-messaggio d'errore che ne esce, è l'argomento della sezione [sui tre errori più
+messaggio d'errore che ne esce, lo spiega la sezione [sui tre errori più
 comuni](errori-comuni.md).
 
-Il mestiere sta in queste sei stazioni e nel ciclo che le lega. Il resto del
-capitolo torna a occuparsi dei pezzi, cominciando da quello che nella pratica
-dà più lavoro di tutti: i dati.
+Il mestiere sta in queste sei stazioni e nel ciclo che le lega. Il primo pezzo
+da esplorare nel dettaglio, e quello che nella pratica dà più lavoro di tutti,
+sono i dati.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

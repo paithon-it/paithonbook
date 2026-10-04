@@ -94,7 +94,7 @@ passo più fine. Il tetto che minimizza l’errore quadratico bilancia le due
 parti, e per distribuzioni note Banner e colleghi lo ricavano in forma chiusa
 {cite}`banner2019post`; più avanti, nel conto su quanti bit servono, lo si
 cerca sui pesi della prova a ogni numero di bit. Il taglio rende perché i
-valori sacrificati sono pochi e non portano niente di speciale. Quando sono
+valori sacrificati sono pochi e non contengono niente di decisivo. Quando sono
 proprio loro a portare l’informazione, come le componenti anomale delle
 attivazioni dei modelli linguistici, tagliarli vuol dire sbagliare i numeri che
 contano.
@@ -145,7 +145,7 @@ dal peso e con la varianza $s^2/12$ del modello uniforme. Cade quando i livelli
 sono così pochi che l’arrotondamento diventa una funzione del peso: a due bit i
 livelli sono $-s$, $0$ e $s$, il passo vale più di quattro deviazioni, quasi
 tutti i pesi finiscono sullo zero e l’errore è in pratica $-w$, fortemente
-anticorrelato con il peso; ma a due bit è già crollato tutto.
+anticorrelato con il peso; ma a due bit, in ogni caso, il modello è compromesso.
 
 Il punto delicato è la definizione della scala. Presa dal massimo in valore
 assoluto del gruppo di numeri che la condividono, la detta un elemento solo: se
@@ -157,7 +157,7 @@ un tetto invece che dal massimo, oppure si cambia chi la condivide, restringendo
 il gruppo o tenendone fuori i pochi elementi anomali.
 
 Questa è la forma simmetrica, che dà per scontato che i numeri stiano
-attorno allo zero. Dove non è così (le uscite di una ReLU, per dire, sono tutte
+attorno allo zero. Dove non è così (le uscite di una ReLU, per esempio, sono tutte
 non negative, e metà dei livelli andrebbe sprecata) si usa la forma
 **asimmetrica**, che aggiunge un intero $z$, lo *zero-point*, cioè il livello
 che rappresenta il valore reale zero:
@@ -268,17 +268,16 @@ A otto bit l’uscita dello strato si sposta dell’uno per cento, e a sei bit s
 ancora sotto il cinque: fin lì arrotondare costa poco. A quattro bit no, ed è la
 riga da guardare due volte.
 
-Quel diciotto e sette per cento conviene tradurlo, perché da solo non dice
-niente. È il rapporto fra la lunghezza del vettore degli errori e quella del
-vettore dei risultati veri, e vuol dire che l’uscita tipica dello strato è
-lontana quasi un quinto dal valore che avrebbe dovuto avere. È uno scostamento
-grosso e non un arrotondamento all’ultima cifra, e la rete lo userà come se
-fosse il risultato buono. E la distribuzione è peggiore di quel che il
-numero lascia intendere: più di un’uscita su nove, l’11,9%, sbaglia di più del
-proprio valore, e sono le più piccole, cioè proprio quelle su cui una decisione
-si gioca per poco. E lo strato dopo prende quei numeri per veri e ci
-aggiunge il suo errore. Non c’è una formula semplice per dire quanto lo
-scostamento cresca lungo una rete di trenta strati (dipende da che cosa
+Quel diciotto e sette per cento è il rapporto fra la lunghezza del vettore
+degli errori e quella del vettore dei risultati veri, e vuol dire che l’uscita
+tipica dello strato è lontana quasi un quinto dal valore che avrebbe dovuto
+avere. È uno scostamento grosso e non un arrotondamento all’ultima cifra, e la
+rete lo userà come se fosse il risultato buono. E la distribuzione è peggiore
+di quel che il numero lascia intendere: più di un’uscita su nove, l’11,9%,
+sbaglia di più del proprio valore, e sono le più piccole, cioè proprio quelle
+su cui una decisione si gioca per poco. E lo strato dopo prende quei numeri per
+veri e ci aggiunge il suo errore. Non c’è una formula semplice per dire quanto
+lo scostamento cresca lungo una rete di trenta strati (dipende da che cosa
 ciascuno fa), ma la direzione è una sola, e non è verso il basso. Quanto costi
 in accuratezza, però, lo strato da solo non lo dice, perché dipende da quanto
 sono strette le decisioni che seguono, e si misura sul modello: la rete di
@@ -287,8 +286,7 @@ bit con una scala ogni sessantaquattro pesi, classifica come prima.
 
 Quindi la frase che si sente dire, «i modelli girano a quattro bit», non
 significa che a quattro bit basti arrotondare con una scala sola. Significa che
-a quattro bit si arriva facendo qualcosa di più, e il resto della sezione è quel
-qualcosa.
+a quattro bit si arriva facendo qualcosa di più.
 
 La colonna di destra è il primo pezzo, ed è il più economico: invece di una
 scala sola per centotrentamila pesi se ne tiene una ogni sessantaquattro. Il
@@ -350,7 +348,7 @@ avere intervalli che differiscono di oltre cento volte, e qualche peso anomalo
 rende meno precisi tutti gli altri {cite}`jacob2018quantization`: è il carrello
 col televisore, e il rimedio è una scala per canale invece che per tutto lo
 strato. Sulle attivazioni dei modelli linguistici grandi, cioè sui numeri che
-scorrono da uno strato all’altro, il problema invece c’è eccome: ci sono poche
+scorrono da uno strato all’altro, il problema invece è molto marcato: ci sono poche
 componenti (una componente è uno dei numeri della fila che passa da uno strato
 al successivo, sempre nella stessa posizione) che arrivano a valere fino a venti
 volte tutte le altre {cite}`dettmers2022llmint8`. Nell’esperimento che segue il
@@ -677,7 +675,7 @@ velocità di uno a sedici bit.
 
 ## Arrotondare dopo, o saperlo già durante
 
-C’è un’ultima distinzione, ed è quella che separa due mestieri.
+C’è un’ultima distinzione, che riguarda il momento in cui si interviene.
 
 `````{tab} Elementare
 
@@ -747,16 +745,15 @@ basta.
 
 `````
 
-Messi in fila, questi risultati dicono una cosa sola, ed è quella da tenere
-invece dell’elenco. Il numero di bit fissa l’ordine di grandezza dell’errore:
-ogni bit in meno lo raddoppia circa, e da otto a quattro bit lo moltiplica per
-diciotto. A parità di bit, però, il modo in cui si sceglie e si condivide il
-passo lo sposta quanto parecchi bit. Una scala ogni sessantaquattro pesi porta
-il 18,7% al 10,8%, e un tetto scelto bene all’11,4%; togliere dal gruppo tre
-numeri su cinquecentododici porta il 7,28% allo 0,20%, quanto cinque bit in
-più; e a parità di otto bit, scrivere ciascun numero con la propria virgola
-porta il 7,83% al 2,50% quando qualche peso è grande. Nessuno di questi salti
-l’ha fatto il numero di bit.
+Messi in fila, questi risultati dicono una cosa sola. Il numero di bit fissa
+l’ordine di grandezza dell’errore: ogni bit in meno lo raddoppia circa, e da
+otto a quattro bit lo moltiplica per diciotto. A parità di bit, però, il modo
+in cui si sceglie e si condivide il passo lo sposta quanto parecchi bit. Una
+scala ogni sessantaquattro pesi porta il 18,7% al 10,8%, e un tetto scelto bene
+all’11,4%; togliere dal gruppo tre numeri su cinquecentododici porta il 7,28%
+allo 0,20%, quanto cinque bit in più; e a parità di otto bit, scrivere ciascun
+numero con la propria virgola porta il 7,83% al 2,50% quando qualche peso è
+grande. Nessuno di questi salti l’ha fatto il numero di bit.
 
 `````{tab} Elementare
 

@@ -1,9 +1,9 @@
 # Dati su misura: `Dataset`, `DataLoader` e trasformazioni
 
-Nei manuali il dataset arriva sempre pronto: una riga di codice e MNIST, la
+Nei manuali il dataset arriva sempre pronto: con una riga di codice MNIST (la
 raccolta di cifre scritte a mano su cui il capitolo ha addestrato la sua prima
-rete, si
-scarica da solo, con le immagini già quadrate, già etichettate, già divise in
+rete) si
+scarica da solo, con le immagini già quadrate, già etichettate e già divise in
 addestramento e test. Nella vita reale il primo giorno di un progetto
 assomiglia piuttosto a questo: una cartella con quattromila fotografie, i nomi
 dei file scritti da tre persone diverse, due immagini corrotte, una classe con
@@ -68,7 +68,7 @@ sbagliare tutto mentre funziona benissimo.
 
 `ImageFolder` copre il caso fortunato. Appena i dati stanno in un CSV, in un
 database, in file audio con le etichette in un foglio a parte (o appena
-servono più informazioni della sola classe), si scrive la propria classe. È
+servono più informazioni della sola classe), bisogna scriversi la propria classe. È
 meno lavoro di quanto sembri: tre metodi, il costruttore `__init__` e le due
 domande che PyTorch verrà a fare, `__len__` e `__getitem__`.
 
@@ -132,8 +132,8 @@ class DatasetImmagini(Dataset):
 Sono tre metodi, ma le domande sono due, ed è la distinzione che la
 {numref}`fig-ereditarieta-dataset` disegna. Le due domande che il `DataLoader`
 farà per tutto l'addestramento sono *quanti esempi hai?* (`__len__`) e *dammi
-il numero 137* (`__getitem__`: qui si fa il lavoro di un esempio solo, aprire
-il suo file e prepararlo, ed è la parte che verrà eseguita milioni di volte).
+il numero 137* (`__getitem__`). Qui si fa il lavoro di un esempio solo, si apre
+il suo file e lo si prepara, ed è la parte che verrà eseguita milioni di volte.
 Il terzo metodo, `__init__`, nessuno ce lo chiede: è la nostra preparazione,
 quella che avviene una volta sola prima di cominciare, dove si elencano i file
 o si legge il foglio con le etichette.
@@ -168,8 +168,8 @@ La preparazione la fa una persona sola, e le richieste vengono poi smistate a
 degli aiutanti, cioè a più processi che leggono i dati in parallelo (li accende
 il `DataLoader`, e quanti lo decide un suo argomento, `num_workers`). Ogni
 aiutante riceve una copia di tutto quello che la preparazione ha messo da
-parte, e un collegamento già avviato, copiato, è come una telefonata in corso
-passata a quattro persone insieme: parlano tutte sulla stessa linea, e nessuno
+parte, e copiare un collegamento già avviato è come passare una telefonata in corso
+a quattro persone insieme: parlano tutte sulla stessa linea, e nessuno
 capisce più niente. Il lavoro muore con un errore che sembra venire da
 tutt'altra parte. Il collegamento si apre alla prima richiesta, e lo apre
 l'aiutante che quella richiesta la sta servendo.
@@ -185,7 +185,7 @@ gli stream (file compressi letti in sequenza, code di messaggi, dataset che non
 stanno su disco), dove il campionamento casuale non è possibile e lo shuffling
 si approssima con un buffer. Con
 `num_workers > 0` ogni worker riceve una copia dello stream, e se `__iter__`
-non si divide il lavoro in base a `torch.utils.data.get_worker_info()` ogni
+non divide il lavoro in base a `torch.utils.data.get_worker_info()`, ogni
 esempio compare tante volte quanti sono i worker: con due worker, uno stream di
 otto esempi ne consegna sedici.
 
@@ -420,10 +420,10 @@ pezzi della rete che rimettono in scala i numeri usando le medie del vassoio
 vassoio quelle medie restano giuste e diventano soltanto più ballerine. Con
 2049 esempi, però, l'ultimo vassoio ne avrebbe uno solo, e da un numero solo la
 media si fa ma la misura di quanto i numeri si sparpagliano no. Quando quei
-pezzi dal vassoio ricevono un numero per esempio, un vassoio da uno li ferma
-con un errore; su una fotografia no, perché lì i numeri su cui fanno il conto
-sono i pixel, e restano tanti anche con una foto sola. Per non pensarci si
-butta via l'ultimo vassoio quando è incompleto: è `drop_last`.
+pezzi dal vassoio ricevono un solo numero per ogni esempio, un vassoio da uno
+li ferma con un errore; su una fotografia no, perché lì i numeri su cui fanno
+il conto sono i pixel, e restano tanti anche con una foto sola. Per non
+pensarci si butta via l'ultimo vassoio quando è incompleto: è `drop_last`.
 
 Alla fine di ogni giro, poi, gli aiutanti vengono licenziati e riassunti subito
 dopo, e se prepararsi costa loro qualche secondo quei secondi si pagano a ogni
@@ -557,7 +557,7 @@ indistinguibili da parole vere: senza sapere dove
 finisce la frase, il modello imparerebbe che lo zero è una parola come le
 altre, e passerebbe metà del suo tempo a studiare l'imbottitura. Le lunghezze
 sono l'informazione che permette di dire «da qui in poi non guardare». Il
-gesto ha due seguiti. La {doc}`sezione sull'etichettare le sequenze
+gesto ha due conseguenze. La {doc}`sezione sull'etichettare le sequenze
 </NaturalLanguageProcessing/etichettare-sequenze>` marca le caselle di
 imbottitura perché non entrino nel conto dell'errore, che è lo stesso lavoro
 fatto sulle etichette invece che sui dati. Nei

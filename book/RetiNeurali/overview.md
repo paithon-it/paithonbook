@@ -29,7 +29,7 @@ Il neurone biologico riceve segnali dalle sue diramazioni d'ingresso, i
 **dendriti**, li somma nel corpo cellulare e, se il totale supera una soglia,
 "spara" un impulso lungo il proprio cavo d'uscita, l'assone, fino ai punti di
 contatto con gli altri neuroni. È da questa immagine che nasce il neurone
-artificiale. Attenzione, però: è una metafora, non una fotografia. Un neurone
+artificiale. È una metafora, non una fotografia. Un neurone
 reale è una cellula viva,
 governata da una chimica di una complessità che non riproduciamo. Il neurone
 artificiale ne prende in prestito una sola idea (*sommare tanti segnali e
@@ -316,13 +316,14 @@ combinano fra loro e il bordo si fa di molti lati, senza che serva uno strato
 smisurato.
 ```
 
-I quattro punti del disegno sono un caso più facile dello XOR, che una riga sola
-risolve benissimo, e stanno lì per far vedere quali confini diventano possibili
-mano a mano che gli strati aumentano, non perché quei punti li richiedano. Lo
-XOR risolto arriva nella sezione sul percettrone. Il senso però è lo stesso: il
-guaio del percettrone era che una riga sola non può separare i quattro casi
-dello XOR per quanto bene la si giri, non che imparasse male. Serviva un secondo
-strato, non un addestramento migliore.
+I quattro punti del disegno sono un caso più facile dello XOR, che una riga
+sola risolve benissimo, e stanno lì per far vedere quali confini diventano
+possibili mano a mano che gli strati aumentano, non perché quei punti li
+richiedano. Lo XOR risolto arriva nella {doc}`sezione sul percettrone
+<percettrone>`. Il senso però è lo stesso: il guaio del percettrone era che una
+riga sola non può separare i quattro casi dello XOR per quanto bene la si giri,
+non che imparasse male. Serviva un secondo strato, non un addestramento
+migliore.
 
 Dal primo riquadro al secondo si guadagna qualcosa che prima non c'era. Un
 neurone solo disegna una riga e nient'altro, quindi un confine chiuso gli è
@@ -432,7 +433,7 @@ attivazioni derivabili come la sigmoide o la tangente iperbolica.
 
 ## Neurone, attivazione, loss, backpropagation
 
-Da qui in avanti smontiamo l'MLP pezzo per pezzo, in quattro sezioni.
+Da qui in avanti smontiamo l'MLP pezzo per pezzo, in quattro tappe.
 
 La prima torna sul percettrone, il neurone singolo, e sulla regola con cui
 impara: è il mattone, e il suo limite è la ragione di tutto il resto. La seconda
@@ -448,14 +449,14 @@ direzione che fa scendere l'errore (il gradiente è il vettore delle pendenze
 della loss, una per peso, cioè delle sue derivate parziali: indica la direzione
 in cui la loss cresce più in fretta, e la discesa va nel verso opposto).
 
-Restano fuori due scelte pratiche, che riprende la sezione del capitolo sul deep
-learning dedicata a {doc}`ottimizzazione e regolarizzazione
+Restano fuori due scelte pratiche, riprese nella sezione su
+{doc}`ottimizzazione e regolarizzazione
 </DeepLearning/ottimizzazione-regolarizzazione>`: da dove far partire i pesi, e
 come impedire a una rete di imparare a memoria gli esempi che ha visto invece
 della regola che li governa (quando succede, sui casi nuovi sbaglia). È la
 cerniera del libro: tutto ciò che viene dopo (la visione artificiale, il
-linguaggio, i modelli che generano immagini e testo) è fatto degli stessi pezzi,
-strati di pesi, attivazioni, una loss e la backpropagation, combinati in
+linguaggio, i modelli che generano immagini e testo) è fatto degli stessi
+pezzi, strati di pesi, attivazioni, una loss e la backpropagation, combinati in
 architetture pensate per i loro dati.
 
 `````{tab} Elementare

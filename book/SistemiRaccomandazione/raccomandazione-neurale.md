@@ -94,7 +94,7 @@ oggetti non visti presi a caso, con HR@10 e NDCG@10, su MovieLens 1M e
 Pinterest {cite}`he2017neural`. Il protocollo conta, e il paragrafo sul
 misurare una classifica dice perché.
 
-Una parola sui simboli, prima di andare avanti. Il cappello indica sempre la
+Il cappello indica sempre la
 predizione, ma la lettera sotto cambia con il compito, e qui si segue quella
 dei paper d'origine: $\hat{r}_{ui}$ per un voto da prevedere
 (fattorizzazione), $\hat{y}_{ui}$ per una probabilità di interazione (NCF),
@@ -123,7 +123,7 @@ un'altra faccenda ancora.
 
 `````
 
-Qui serve una dose di onestà intellettuale, e non riguarda un paper solo. Nel
+Nel
 2019 due ricercatori del Politecnico di Milano e un collega dell'università di
 Klagenfurt hanno provato a rifare i conti di diciotto metodi neurali per la
 raccomandazione, presentati alle conferenze principali {cite}`dacrema2019are`.
@@ -289,7 +289,7 @@ scalare della sezione precedente: a cambiare sono gli embedding che vi entrano.
 
 `````
 
-La morale somiglia a quella del paragrafo su Rendle, ma le due storie non
+La morale somiglia a quella vista per il NCF, ma le due storie non
 pesano allo stesso modo come prova. La prima, il riesame del NCF, l'hanno
 fatta persone diverse da chi il metodo l'aveva proposto, ritarando con cura gli
 avversari e facendoli correre di nuovo. La seconda è il paper di LightGCN, cioè
@@ -363,7 +363,7 @@ confronti a coppie produce una classifica personale senza che nessuno abbia
 mai dato un voto. Nota la finezza: non serve decidere *quanto* gli piace ogni
 libro; serve solo che l'ordine sia giusto.
 
-Una domanda onesta, a questo punto: e se il
+E se il
 libro pescato a caso era proprio uno che gli sarebbe piaciuto, e che non ha
 comprato solo perché non l'ha mai visto? Succede, e per un istante lo stiamo
 spingendo giù per sbaglio. Il gioco regge lo stesso, per due motivi. Il primo è
@@ -430,13 +430,12 @@ $$
 con $\mathcal{P}_u$ gli oggetti con cui $u$ ha interagito: BPR sostituisce
 l'indicatore, che non è derivabile, con $\ln \sigma(\hat{x}_{uv} -
 \hat{x}_{uw})$, che lo è. Il gradiente di una tripla rispetto a un parametro
-$\theta$ vale
-$-\sigma\big(-(\hat{x}_{uv} - \hat{x}_{uw})\big)\,
-\partial(\hat{x}_{uv} - \hat{x}_{uw})/\partial\theta$: ogni coppia pesa
-quanto è ordinata male, quindi le coppie già ben ordinate con margine ampio
-contribuiscono quasi zero e quelle invertite spingono forte. Due avvertenze. I
-non osservati non sono negativi veri: un oggetto mai visto può piacere, e BPR
-lo tratta come meno preferito senza poter sapere se lo è (è il problema
+$\theta$ vale $-\sigma\big(-(\hat{x}_{uv} - \hat{x}_{uw})\big)\,
+\partial(\hat{x}_{uv} - \hat{x}_{uw})/\partial\theta$: ogni coppia pesa quanto
+è ordinata male, quindi le coppie già ben ordinate con margine ampio
+contribuiscono quasi zero e quelle invertite spingono forte. I non osservati,
+però, non sono negativi veri: un oggetto mai visto può piacere, e BPR lo tratta
+come meno preferito senza poter sapere se lo è (è il problema
 dell'apprendimento *positive-unlabeled*), e si conta sul fatto che su un
 catalogo grande un $w$ pescato a caso sia quasi sempre meno gradito. E BPR
 ottimizza l'ordine sull'intero catalogo, mentre le metriche del paragrafo sul
@@ -612,8 +611,7 @@ nascosti fanno da riferimento: sono interazioni che sappiamo avvenute, e che il
 modello non ha visto perché le abbiamo tolte noi. Il riferimento è imperfetto,
 per le ragioni della {doc}`panoramica <overview>`: aver guardato un titolo non
 vuol dire averlo gradito, e un titolo buono che l'utente non ha mai incontrato,
-se il modello lo propone, conta come un errore. È un trucco, e come tutti i
-trucchi funziona finché si ricorda che è un trucco.
+se il modello lo propone, conta come un errore.
 
 `````{tab} Elementare
 
@@ -828,8 +826,7 @@ Il terzo è arrivato per ultimo, e per un po’ è sembrato il migliore. Poi
 qualcuno ha rifatto le prove. Per ottenere i risultati annunciati bisognava
 allenarlo molto più a lungo di quanto dicessero le sue istruzioni; e il
 secondo, allenato a scegliere il brano giusto fra tutti quelli del catalogo
-invece che fra due soli, come faceva all'inizio, lo batteva. Arrivare dopo non
-vuol dire arrivare primi.
+invece che fra due soli, come faceva all'inizio, lo batteva.
 
 `````
 

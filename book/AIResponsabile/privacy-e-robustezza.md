@@ -127,7 +127,7 @@ un test del rapporto di verosimiglianza. La causa più comune del
 divario è l’*overfitting* della {doc}`sezione su sovradattamento e validazione
 </MachineLearning/overfitting-validazione>`, qui
 riletto come vulnerabilità (più un modello si adatta ai singoli esempi, più li
-lascia riconoscere), e gli autori avvertono che è la più comune e non l'unica.
+lascia riconoscere), ma gli autori avvertono che non è l'unica.
 L’**estrazione di dati di addestramento** è più aggressiva: Carlini e colleghi
 {cite}`carlini2021extracting` mostrarono che da GPT-2 si potevano recuperare
 *verbatim* sequenze memorizzate (nomi, recapiti, frammenti di codice) presenti
@@ -215,9 +215,9 @@ perfino essere sbagliati, e le date approssimate a quattordici giorni, il
 $99\%$ delle righe si individuava in modo univoco; con due voti soltanto e le
 date approssimate a tre giorni, il $68\%$.
 
-Quel poco si trova in rete. Su Internet Movie Database la gente i film li vota
+Quel poco si trova in rete. Su Internet Movie Database la gente vota i film
 firmando con il proprio nome, e gli autori provarono ad appaiare le due
-tabelle: dei pochi utenti che poterono guardare, una cinquantina (il
+tabelle. Dei pochi utenti che poterono esaminare, una cinquantina (il
 regolamento del sito limitava la raccolta, e loro lo rispettarono, cosa che un
 malintenzionato non farebbe), due si appaiarono a una riga della gara staccando
 la seconda candidata di circa $28$ e $15$ deviazioni standard, mentre per quasi
@@ -276,11 +276,11 @@ stato sincero è stata la moneta e non la persona: i cinquecento sinceri sono un
 campione a caso di tutto il gruppo. Quel caso aggiunto apposta ha un nome che
 tornerà a ogni riga da qui in avanti, ed è *rumore*: si chiama così perché
 copre il segnale senza cancellarlo, come le voci di fondo di una stanza
-affollata. Il rumore si sottrae proprio perché
-sappiamo *quanto* ne abbiamo messo, mentre non sappiamo a chi sia toccato. Il
-prezzo è la precisione: su mille persone quel $30\%$ è giusto a circa tre punti
-in più o in meno, mentre con la domanda diretta, se tutti rispondessero
-sinceri, lo sarebbe a un punto e mezzo. Ogni individuo ha la sua *negabilità
+affollata. Il rumore si sottrae proprio perché sappiamo *quanto* ne abbiamo
+messo, mentre non sappiamo a chi sia toccato. Il prezzo è la precisione: su
+mille persone quel $30\%$ ha un margine d'errore di circa tre punti
+percentuali, mentre con la domanda diretta, se tutti rispondessero sinceri, il
+margine sarebbe di un punto e mezzo. Ogni individuo ha la sua *negabilità
 plausibile*; la statistica collettiva sopravvive, un po' più sfocata.
 
 La privacy differenziale è questa idea resa una garanzia numerica: al risultato
@@ -318,7 +318,7 @@ protegge il singolo esempio, non la persona.
 La *risposta randomizzata* sulle domande imbarazzanti è un meccanismo di questo
 tipo, con un $\varepsilon$ che si calcola. Nella variante con due monete
 ciascuno lancia la prima: con testa dice la verità, con croce risponde «sì» o
-«no» secondo una seconda moneta. Chi ha la verità «sì» risponde allora «sì» con
+«no» in base a una seconda moneta. Chi ha la verità «sì» risponde allora «sì» con
 probabilità $\tfrac12 + \tfrac14 = \tfrac34$, chi ha «no» con probabilità
 $\tfrac14$, e il rapporto fra le probabilità di una stessa risposta su due
 valori veri diversi è al più $3$: le due monete danno $\varepsilon = \ln 3
@@ -813,10 +813,10 @@ risolto esattamente, quel gradiente sarebbe una direzione di discesa del
 problema esterno. Il costo è di $K$ passi di PGD per ogni passo di
 addestramento, circa $K+1$ volte l'addestramento normale; e il compromesso si
 misura. Su CIFAR-10 con $\rho = 8/255$ la rete di Madry e colleghi (una ResNet
-allargata dieci volte) resta corretta sul $45{,}8\%$ degli esempi attaccati con
-PGD a $20$ passi, con pieno accesso al modello, e sull’$87{,}3\%$ di quelli
-intatti; la stessa architettura addestrata normalmente arriva al $95{,}2\%$
-sugli intatti e, sotto lo stesso attacco, scende al $3{,}5\%$.
+allargata dieci volte) classifica correttamente il $45{,}8\%$ degli esempi
+attaccati con PGD a $20$ passi, con pieno accesso al modello, e l’$87{,}3\%$ di
+quelli intatti; la stessa architettura addestrata normalmente arriva al
+$95{,}2\%$ sugli intatti ma, sotto lo stesso attacco, crolla al $3{,}5\%$.
 
 `````
 
@@ -1044,7 +1044,7 @@ una chiave che il produttore distribuisce a tutti, e il confronto lo fa un
 programma. Se il sigillo non torna, il cartellino è falso e si vede subito.
 
 La differenza si vede tutta con una foto dello schermo, che copia i pixel e
-butta il resto: si porta via il cartellino e lascia la filigrana, un po’
+butta il resto: cancella il cartellino e lascia la filigrana, un po’
 consumata. In compenso il cartellino racconta una storia, la filigrana
 dice soltanto «sono artificiale».
 
@@ -1145,10 +1145,10 @@ caratteristica di un soffio, tutte nel verso che danneggia di più il modello
 (trenta piccole spinte concordi, invisibili una per una: sono le dita del
 titolo), e guardiamo la predizione ribaltarsi.
 
-L'esempio non è scelto a mano: il programma prende il primo caso che il
-modello azzecca con una fiducia fra l’$85$ e il $95$ per cento. Su un caso in
-cui fosse sicuro oltre il $97\%$ questa spinta non basterebbe a ribaltarlo, e
-la soglia esatta la stampa il programma stesso.
+L'esempio non è scelto a mano: il programma prende il primo caso che il modello
+classifica correttamente con una fiducia fra l’$85$ e il $95$ per cento. Su un
+caso in cui fosse sicuro oltre il $97\%$ questa spinta non basterebbe a
+ribaltarlo, e la soglia esatta la stampa il programma stesso.
 
 ```python
 import numpy as np
@@ -1348,7 +1348,7 @@ perimetro da difendere non si riuscirà nemmeno a disegnare dentro il modello.
 
 ```{admonition} Da ricordare
 :class: important
-- I modelli memorizzano i dati rari o ripetuti: da qui i *membership
+- I modelli memorizzano i dati rari o ripetuti: da qui gli attacchi di *membership
   inference* (capire se un individuo era nel training) e l’estrazione
   verbatim di dati sensibili dagli LLM. La memorizzazione è overfitting visto
   come falla di privacy.

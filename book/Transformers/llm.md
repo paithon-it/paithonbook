@@ -127,8 +127,7 @@ fotografia o di un «hai vinto» a fine partita.
 
 Perché proprio *grandi* modelli? È una regolarità che qualcuno ha misurato.
 
-Prima però serve sapere che cosa si misura, perché «migliora» e «sbaglia meno»
-sono espressioni che tornano di continuo. Un modello di linguaggio ha un solo
+Un modello di linguaggio ha un solo
 compito, indovinare la parola dopo, e su quel compito si può dargli un voto
 preciso: gli si fa leggere del testo che non ha mai visto e si guarda quanta
 probabilità aveva assegnato alle parole che poi sono comparse davvero. Se ne
@@ -143,11 +142,10 @@ trovato curve così regolari da chiamarle **leggi di scala**.
 
 `````{tab} Elementare
 La ricetta di un modello di linguaggio ha tre ingredienti: la taglia del
-modello (quanti numeri interni ha da regolare, cioè i numeri che
-l'addestramento sposta un'inezia alla volta e che si chiamano parametri: «un
-modello da sette miliardi» vuol dire sette miliardi di parametri), la quantità
-di testo su cui studia, e il calcolo
-(quante ore di computer può bruciare). La scoperta del 2020
+modello, la quantità di testo su cui studia, e il calcolo (quante ore di
+computer può bruciare). La taglia si misura in parametri, cioè i numeri interni
+che l'addestramento sposta un'inezia alla volta: «un modello da sette miliardi»
+vuol dire sette miliardi di parametri. La scoperta del 2020
 {cite}`kaplan2020scaling` è che aumentando gli ingredienti tutti insieme
 l'errore cala in modo *prevedibile*: niente salti misteriosi, una curva liscia,
 come una ricetta che riesce sempre un po’ meglio se si raddoppia ogni
@@ -156,22 +154,21 @@ si guarda di quanto migliora a ogni raddoppio, e si sa già come verrà quella
 grande prima di infornarla. Il guadagno però è lento: ogni raddoppio del
 calcolo lima l'errore di poco più del tre per cento. E la ricetta perfetta non
 arriva mai: sotto un certo punto non si scende comunque, perché una quota
-dell'incertezza appartiene alla lingua stessa, e nessuna quantità di
-parametri la toglie di mezzo. La seconda scoperta, del 2022
-{cite}`hoffmann2022training`, è che gli ingredienti vanno bilanciati: è
-inutile fare una torta con dieci uova e un cucchiaio di farina. La regola
-pratica emersa è circa 20 pezzi di testo per ogni parametro del modello,
-contati in quei pezzi in cui il testo viene spezzato, i token, non in parole:
-per un modello da sette miliardi di parametri vuol dire centoquaranta miliardi
-di token da leggere. Molti modelli dell'epoca erano enormi ma avevano studiato
-troppo poco, e la dimostrazione ha un nome, perché è un modello costruito
-apposta: si chiama **Chinchilla**, ha quattro volte meno parametri del suo
-rivale diretto (**Gopher**), ha letto quasi cinque volte più testo a parità di
-ore di calcolo, e lo batte. Da allora "più grande" non basta più: conta il
-rapporto fra modello e dati. Venti pezzi per parametro, però, è la proporzione
-che costa meno da addestrare: chi il modello lo deve poi usare moltissimo ne
-fa uno più piccolo e gli fa leggere molto di più, perché ogni risposta di un
-modello piccolo costa meno.
+dell'incertezza appartiene alla lingua stessa, e nessuna quantità di parametri
+la toglie di mezzo. La seconda scoperta, del 2022 {cite}`hoffmann2022training`,
+è che gli ingredienti vanno bilanciati: è inutile fare una torta con dieci uova
+e un cucchiaio di farina. La regola pratica emersa è circa 20 pezzi di testo
+per ogni parametro del modello, contati in quei pezzi in cui il testo viene
+spezzato, i token, non in parole: per un modello da sette miliardi di parametri
+vuol dire centoquaranta miliardi di token da leggere. Molti modelli dell'epoca
+erano enormi ma avevano studiato troppo poco, e la dimostrazione ha un nome,
+perché è un modello costruito apposta: si chiama **Chinchilla**, ha quattro
+volte meno parametri del suo rivale diretto (**Gopher**), ha letto quasi cinque
+volte più testo a parità di ore di calcolo, e lo batte. Da allora "più grande"
+non basta più: conta il rapporto fra modello e dati. Venti pezzi per parametro,
+però, è la proporzione che costa meno da addestrare: chi il modello lo deve poi
+usare moltissimo ne fa uno più piccolo e gli fa leggere molto di più, perché
+ogni risposta di un modello piccolo costa meno.
 `````
 
 `````{tab} Superiore
@@ -188,23 +185,21 @@ $$
 $$
 
 dove $N$ è il numero di parametri (esclusi gli embedding), $D$ il numero di
-token di addestramento, $C_{\min}$ il calcolo speso in modo ottimo fra
-modello e dati (che è la grandezza per cui gli autori raccomandano di fare
-previsioni: la curva a batch size fissato ha un esponente suo, $\approx
-0{,}057$), $N_c$, $D_c$ e $C_c$ costanti di normalizzazione, e gli esponenti
-misurati
-valgono $\alpha_N \approx 0{,}076$, $\alpha_D \approx 0{,}095$,
-$\alpha_C^{\min} \approx 0{,}050$. Esponenti piccoli: raddoppiare il calcolo,
-speso bene, riduce
+token di addestramento, $C_{\min}$ il calcolo speso in modo ottimo fra modello
+e dati (che è la grandezza per cui gli autori raccomandano di fare previsioni:
+la curva a batch size fissato ha un esponente suo, $\approx 0{,}057$), $N_c$,
+$D_c$ e $C_c$ costanti di normalizzazione, e gli esponenti misurati valgono
+$\alpha_N \approx 0{,}076$, $\alpha_D \approx 0{,}095$, $\alpha_C^{\min}
+\approx 0{,}050$. Esponenti piccoli: raddoppiare il calcolo, speso bene, riduce
 la loss di circa il 3,4% ($2^{-0{,}050} \approx 0{,}966$), poco, ma con
 sorprendente affidabilità su molti ordini di grandezza, il che permette di
 *estrapolare*: si può stimare la loss di un modello da miliardi di parametri
 addestrando modelli da milioni. Un'avvertenza sulla forma: scritte così le tre
-leggi mandano la loss a zero ingrandendo abbastanza, il che è falso. Valgono
-dentro il regime misurato, e la forma completa che si usa per estrapolare
-davvero somma un termine costante irriducibile, l'entropia del linguaggio
-stesso, che nessuna quantità di parametri toglie di mezzo, ed è la forma che
-Hoffmann e colleghi adottano.
+leggi mandano la loss a zero su scale arbitrariamente grandi, il che è falso.
+Valgono dentro il regime misurato, e la forma completa che si usa per
+estrapolare davvero somma un termine costante irriducibile, l'entropia del
+linguaggio stesso, che nessuna quantità di parametri toglie di mezzo, ed è la
+forma che Hoffmann e colleghi adottano.
 
 Hoffmann e colleghi {cite}`hoffmann2022training` correggono la conclusione
 operativa di Kaplan (che suggeriva di privilegiare $N$): rifacendo le misure
@@ -252,20 +247,19 @@ regolazione dell'ottimizzatore che dipende dalla scala. Corretti questi tre
 punti i due risultati coincidono, e un decadimento accurato del learning rate
 non risulta essenziale.
 
-Hoffmann adatta la forma
-$\bar{\mathcal{L}}(N,D) = E + A/N^{a} + B/D^{b}$, con $E \approx 1{,}69$ il
-termine irriducibile, $A$ e $B$ due costanti di adattamento e
-$a \approx 0{,}34$, $b \approx 0{,}28$. Sono i valori arrotondati
+Hoffmann adatta la forma $\bar{\mathcal{L}}(N,D) = E + A/N^{a} + B/D^{b}$, con
+$E \approx 1{,}69$ il termine irriducibile, $A$ e $B$ due costanti di
+adattamento e $a \approx 0{,}34$, $b \approx 0{,}28$. Sono i valori arrotondati
 dell'articolo, e Besiroglu e colleghi {cite}`besiroglu2024chinchilla`,
-ricostruendo i dati dai grafici, trovano che così non si adattano ai dati: il
-loro adattamento dà $E \approx 1{,}82$, $a \approx 0{,}35$, $b \approx 0{,}37$,
-quindi $N_{\text{opt}} \propto C^{0{,}51}$ e un rapporto ottimo vicino a venti
-token per parametro. La regola del mezzo regge, i valori arrotondati no. E il
-rapporto 20 minimizza il costo dell'addestramento, non quello dell'uso: chi
-prevede di servire molte richieste addestra di proposito un modello più
-piccolo su molti più token. La famiglia Llama 3 lo fa anche con i modelli più
-piccoli {cite}`grattafiori2024llama3`, e quello da 8 miliardi di parametri ha
-letto circa 15 000 miliardi di token, quasi 1.900 per parametro.
+ricostruendo i dati dai grafici, trovano che quei valori non descrivono bene i
+dati: il loro adattamento dà $E \approx 1{,}82$, $a \approx 0{,}35$, $b \approx
+0{,}37$, quindi $N_{\text{opt}} \propto C^{0{,}51}$ e un rapporto ottimo vicino
+a venti token per parametro. La regola del mezzo regge, i valori arrotondati
+no. E il rapporto 20 minimizza il costo dell'addestramento, non quello
+dell'uso: chi prevede di servire molte richieste addestra di proposito un
+modello più piccolo su molti più token. La famiglia Llama 3 lo fa anche con i
+modelli più piccoli {cite}`grattafiori2024llama3`, e quello da 8 miliardi di
+parametri ha letto circa 15 000 miliardi di token, quasi 1.900 per parametro.
 `````
 
 ```{figure} ../figures/chinchilla-2022.svg
@@ -284,12 +278,11 @@ parametri dice quanta capacità c'è, non quanta ne è stata riempita, e due
 modelli con lo stesso cartellino possono aver letto quantità di testo
 incomparabili.
 
-Una parola di prudenza, per intanto: le leggi di scala descrivono come cala
+Una parola di prudenza: le leggi di scala descrivono come cala
 la loss di test dentro il regime in cui sono state misurate, cioè che il
 modello sbaglierà un po’ meno a indovinare la parola dopo, non che a una certa
 taglia gli spunterà una certa abilità. Che le abilità spuntino davvero
-all'improvviso è una faccenda controversa, e le abilità emergenti hanno un
-paragrafo tutto loro.
+all'improvviso è una faccenda controversa.
 
 ## Generare: l'arte di scegliere la parola dopo
 
@@ -530,8 +523,9 @@ letto, molto sotto il ginocchio del {doc}`modello roofline
 </GPU/gerarchia-memoria>`, che per una scheda grafica moderna in mezza
 precisione sta oltre le centocinquanta. Generare testo, a una richiesta per
 volta, è quindi un lavoro limitato dalla memoria più che dall'aritmetica, come
-dirà anche la sezione sui modelli a esperti: il collo di bottiglia è leggere i
-pesi a ogni parola, non confrontare la parola con quelle prima.
+dirà anche la {doc}`sezione sui modelli a esperti <mixture-of-experts>`: il
+collo di bottiglia è leggere i pesi a ogni parola, non confrontare la parola
+con quelle prima.
 
 Il conto della memoria è quello della tabella della sezione sull'attenzione in
 pratica: con una testa di chiave e valore per ogni testa di query sono
@@ -623,13 +617,13 @@ perché il linguaggio ha una sua imprevedibilità di fondo che nessun modello pu
 togliere: quella che Shannon misurava coprendo una riga di testo e chiedendo a
 una persona di indovinare come andava avanti.
 
-L'avvertenza è che il numero non si confronta fra testi diversi. La
-perplessità su una raccolta di leggi e quella su un romanzo non si possono
-mettere sulla stessa riga, perché le leggi sono scritte in modo molto più
-prevedibile: confrontare due modelli ha senso solo sullo stesso testo, e
-spezzato in pezzi allo stesso modo, a meno di contare l'indecisione lettera per
-lettera invece che pezzo per pezzo, che non dipende da come il testo è stato
-spezzato.
+L'avvertenza è che il numero non si confronta fra testi diversi. La perplessità
+su una raccolta di leggi e quella su un romanzo non si possono mettere sulla
+stessa riga, perché le leggi sono scritte in modo molto più prevedibile:
+confrontare due modelli ha senso solo sullo stesso testo e spezzato allo stesso
+modo. L'unica alternativa per sfuggire alla scelta dei pezzi è contare
+l'indecisione lettera per lettera, che non dipende da come il testo viene
+diviso.
 `````
 
 `````{tab} Superiore
@@ -701,7 +695,7 @@ dedicate ai grandi modelli.
 
 ### Le abilità emergenti, e il dubbio che siano un miraggio
 
-C'è un'osservazione che ha fatto molto discutere. Su certi compiti (aritmetica
+Su certi compiti (aritmetica
 a più cifre, ragionamento a più passi) i modelli piccoli vanno a zero, e
 poi, superata una certa scala, la prestazione salta all'improvviso. Non
 migliora gradualmente: appare. Da qui il nome *abilità emergenti*, e l'idea
@@ -723,8 +717,7 @@ questione.
 
 `````{tab} Elementare
 
-L'obiezione arrivata dopo è più interessante della scoperta, ed è un'ottima
-lezione su come si misura.
+L'obiezione arrivata dopo mostra che l'errore stava nel modo di misurare.
 
 Molti di quei compiti sono valutati **tutto-o-niente**: la risposta a
 $134 \times 27$ è giusta solo se tutte le cifre sono giuste. Con una metrica
@@ -930,7 +923,7 @@ post-training, e ha una {doc}`sezione tutta sua <post-training>`.
 `````
 
 Prima del post-training, però, un'idea architetturale che la scala rende
-interessante. Crescere conviene, questo lo abbiamo visto; ma per scrivere una
+interessante. Crescere conviene, ma per scrivere una
 sola parola il modello la moltiplica, piano dopo piano, per tutti i suoi
 parametri, e più i parametri sono tanti più ogni parola costa. A meno di far
 passare ogni parola solo per una parte dei parametri, che è l'idea della

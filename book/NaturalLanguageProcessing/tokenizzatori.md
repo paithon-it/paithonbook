@@ -195,7 +195,7 @@ casa: 2 token [' cas', 'a']
 ```
 
 Le parole lunghe e rare si spezzano in pezzi che ricorrono altrove:
-*tokenizzazione* e *ortogonalizzazione* finiscono negli stessi tre pezzi,
+*tokenizzazione* e *ortogonalizzazione* terminano con gli stessi tre pezzi,
 `izz`, `az` e `ione`, con gli stessi ID, e lo spazio che precede la parola
 resta attaccato al suo primo pezzo. *the*, frequentissima nei testi su cui
 questo tokenizzatore è stato costruito, quasi tutti inglesi, è un pezzo solo;
@@ -257,9 +257,9 @@ si arresta quando $|\Sigma| + k$ raggiunge la taglia $|V|$ desiderata: il
 numero di fusioni è quindi $k = |V| - |\Sigma|$, e il modello finale è la
 coppia $(\Sigma, M)$.
 
-La codifica di una stringa mai vista è il replay della lista: si parte dai
-caratteri e si applicano $m_1, \dots, m_k$ in quest'ordine. L'ordine è
-sostanziale, non convenzionale: una fusione tardiva può agire su simboli che
+La codifica di una stringa mai vista consiste nel ripercorrere la lista: si
+parte dai caratteri e si applicano $m_1, \dots, m_k$ in quest'ordine. L'ordine
+è sostanziale, non convenzionale: una fusione tardiva può agire su simboli che
 solo le precedenti sanno produrre, e invertirne due dà in generale una
 segmentazione diversa. La procedura è deterministica e priva di ricerca: BPE
 non cerca la segmentazione ottima di una parola, ma quella che le sue fusioni
@@ -272,7 +272,7 @@ implementazioni serie non lo fanno: mantengono un indice dalla coppia alle
 posizioni in cui compare e aggiornano solo i conteggi toccati dalla fusione,
 con una coda di priorità sulle frequenze. L'addestramento resta comunque
 un'operazione da fare una volta sola. La codifica di una parola di $L$
-caratteri con il replay ingenuo costa $O(kL)$, ma in pratica si tiene una
+caratteri con l'applicazione ingenua costa $O(kL)$, ma in pratica si tiene una
 cache parola $\to$ token e il costo ammortizzato crolla, perché la
 distribuzione delle parole è fortemente sbilanciata.
 
@@ -371,7 +371,7 @@ nei tokenizzatori veri, le parole più frequenti nel corpus di addestramento
 sono un token solo e quelle rare ne prendono parecchi: in quello di GPT-2,
 come si è visto, *the* è un token e *ortogonalizzazione* ne prende sette.
 
-I quattro passi si vedono succedere nella {numref}`fig-bpe-fusioni`: a sinistra
+I quattro passi sono illustrati nella {numref}`fig-bpe-fusioni`: a sinistra
 le cinque parole, che a ogni fusione perdono una scatola; a destra l'elenco,
 che si allunga di una riga per volta con il conteggio che ha fatto vincere
 quella coppia.
@@ -457,7 +457,7 @@ Il punto vero è quello, però, e conviene metterlo per iscritto. L'affermazione
 dell'algoritmo: è una scommessa sull'alfabeto di partenza. Si vince finché
 il corpus di addestramento conteneva ogni carattere che potrà mai arrivare.
 Con cinque parole la scommessa è persa in partenza; con un corpus vero è quasi
-sempre vinta, e a tradirla bastano un ideogramma raro o un'emoji uscita l'anno
+sempre vinta, e a farla fallire bastano un ideogramma raro o un'emoji uscita l'anno
 scorso. È il buco che il livello dei byte, fra qualche pagina, chiuderà per
 costruzione e per sempre.
 

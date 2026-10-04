@@ -18,15 +18,15 @@ passato dell'azienda e riproposta come profezia.
 **Bias**, qui, vuol dire *pregiudizio*: quello della storia di Amazon, un
 trattamento sistematicamente peggiore riservato a un gruppo di persone.
 
-La stessa parola ha già fatto altri due mestieri, e vanno tenuti
-distinti: non è il bias del neurone (il termine $b$ che nel capitolo
-sulle reti neurali si somma ai pesi e sposta la soglia), e non è il bias del
-compromesso bias-varianza (l'errore sistematico di un modello troppo semplice,
-nella {doc}`sezione su overfitting e validazione
-</MachineLearning/overfitting-validazione>`). Il secondo in particolare è vicino
-abbastanza da confondere, e non lo è: un modello troppo semplice non per
-questo discrimina, e un modello che discrimina può essere complicato quanto si
-vuole.
+La stessa parola ha già fatto altri due mestieri, e vanno tenuti distinti: non
+è il bias del neurone (il termine $b$ che nel capitolo sulle reti neurali si
+somma ai pesi e sposta la soglia), e non è il bias del compromesso
+bias-varianza (l'errore sistematico di un modello troppo semplice, nella
+{doc}`sezione su overfitting e validazione
+</MachineLearning/overfitting-validazione>`). Il secondo in particolare è
+vicino abbastanza da creare confusione, ma è un concetto diverso: un modello
+troppo semplice non per questo discrimina, e un modello che discrimina può
+essere complicato quanto si vuole.
 
 Un modello non inventa il pregiudizio, lo eredita. Governarlo vuol dire prima
 capire *da dove* entra, poi *misurarlo* con precisione, con la tabella a quattro
@@ -111,14 +111,14 @@ dalla raccolta dei dati alla messa in uso.
   perché quella disuguaglianza è il fenomeno, non un errore di misura.
 - **Bias di rappresentazione (campionamento).** La distribuzione dei dati di
   addestramento $P_{\text{train}}$ differisce dalla popolazione bersaglio
-  $P_{\text{test}}$, e in particolare sotto-rappresenta alcuni gruppi. È il caso
-  di *Gender Shades* citato nell'apertura del capitolo: gli archivi più usati
-  per valutare l'analisi dei volti hanno pochi volti scuri (nei due esaminati
-  ha la pelle chiara il $79{,}6\%$ e l’$86{,}2\%$ dei soggetti), e sui sistemi
-  commerciali, i cui dati di addestramento non sono dichiarati, l'errore è molto
-  più alto su quel gruppo. Lo studio misura lo sbilanciamento della
-  valutazione; che la disparità venga dal campione di addestramento è
-  plausibile, non dimostrato.
+  $P_{\text{test}}$, e in particolare sotto-rappresenta alcuni gruppi. È il
+  caso di *Gender Shades*, lo studio raccontato nell’{doc}`apertura del
+  capitolo </AIResponsabile/overview>`: gli archivi più usati per valutare
+  l'analisi dei volti hanno pochi volti scuri (nei due esaminati ha la pelle
+  chiara il $79{,}6\%$ e l’$86{,}2\%$ dei soggetti), e sui sistemi commerciali,
+  i cui dati di addestramento non sono dichiarati, l'errore è molto più alto su
+  quel gruppo. Lo studio misura lo sbilanciamento della valutazione; che la
+  disparità venga dal campione di addestramento è plausibile, non dimostrato.
 - **Bias di misura (etichette).** L'etichetta osservata è un *proxy* del
   costrutto d'interesse: si misura «arresto» per «reato», «voto del manager» per
   «rendimento». Se il proxy è più rumoroso o più severo per un gruppo, il bias
@@ -270,8 +270,8 @@ l'accuratezza vera sta con buona probabilità fra $0{,}50$ e $0{,}59$: lontana
 dall'85%, appena sopra una moneta. L'ultima riga stampata dice perché: il
 modello ha dato quasi tutto il peso alla prima colonna, quella che decide la
 risposta nel gruppo grande, e quasi niente alla seconda, che la decide nel
-gruppo piccolo. La media assomiglia al gruppo grande perché è fatta soprattutto
-di lui, e la quota nel dataset, la prima riga
+gruppo piccolo. La media assomiglia al gruppo grande perché è calcolata soprattutto
+sui suoi dati, e la quota nel dataset, la prima riga
 stampata, è la domanda sulla composizione della scheda tecnica: senza quella,
 e senza il conto per gruppo, il 54,5% non compare da nessuna parte.
 
@@ -450,9 +450,9 @@ Raghavan riguarda i punteggi: la calibrazione e i punteggi medi ricevuti nei due
 gruppi. Quello di Pleiss e colleghi, fra i quali ci sono due degli autori del
 secondo, dice che cosa resta possibile: la calibrazione insieme alla parità di
 un solo tasso d'errore, contato sul punteggio e non sui sì e no, pagata in
-accuratezza. Scambiarli porta ad affermare cose false, per esempio che il caso
-COMPAS mostri un conflitto fra la calibrazione e gli errori pari, mentre il
-teorema che lo spiega la calibrazione non la nomina nemmeno. Cominciamo da
+accuratezza. Scambiarli porta ad affermare il falso, per esempio che il caso
+COMPAS mostri un conflitto fra la calibrazione e la parità degli errori, mentre il
+teorema che lo spiega non nomina nemmeno la calibrazione. Cominciamo da
 quello, e prendiamoci lo spazio per vederlo succedere invece di annunciarlo.
 
 `````{tab} Elementare
@@ -582,7 +582,7 @@ $$
 Stesso valore predittivo, stesso tasso di veri positivi, eppure il tasso di
 falsi positivi è tre volte più alto nel gruppo con prevalenza maggiore:
 $0{,}30$ contro $0{,}10$. È esattamente la forma del caso COMPAS
-{cite}`angwin2016machine`. Si noti che cosa non compare in questo enunciato:
+{cite}`angwin2016machine`. In questo enunciato manca però un elemento:
 la calibrazione. Il teorema di Chouldechova parla di $\text{VPP}$, che è una
 proprietà della decisione $\hat{Y}$, non di $S$.
 
@@ -1145,14 +1145,14 @@ nessuno.
   demografica (stessa quota di sì), equalized odds (stessi TPR e FPR)
   {cite}`hardt2016equality`, calibrazione (il punteggio è la probabilità
   dell'esito in ogni gruppo, proprietà di $S$ e non di $\hat{Y}$).
-- Tre risultati di impossibilità distinti, da non confondere:
-  Chouldechova {cite}`chouldechova2017fair`, parità del valore predittivo
-  più i due tassi d'errore, al più due su tre; Kleinberg, Mullainathan e
-  Raghavan {cite}`kleinberg2017inherent`, calibrazione più i due
-  bilanciamenti di classe (punteggi medi, non tassi); Pleiss e colleghi
-  {cite}`pleiss2017fairness`, calibrazione più equalized odds, ma con un solo
-  vincolo d'errore alla volta e sotto l'ipotesi che il classificatore di cui si
-  pareggiano gli errori sia esso stesso calibrato. È il nodo del caso COMPAS
+- Tre risultati di impossibilità distinti, da non confondere: Chouldechova
+  {cite}`chouldechova2017fair`, parità del valore predittivo più i due tassi
+  d'errore, al più due su tre; Kleinberg, Mullainathan e Raghavan
+  {cite}`kleinberg2017inherent`, calibrazione più i due bilanciamenti di classe
+  (punteggi medi, non tassi); Pleiss e colleghi {cite}`pleiss2017fairness`,
+  calibrazione più equalized odds, ma con un solo vincolo d'errore alla volta e
+  sotto l'ipotesi che il classificatore di cui si pareggiano gli errori sia
+  esso stesso calibrato. Il primo dei tre è il nodo del caso COMPAS
   {cite}`angwin2016machine`, dove ProPublica e Northpointe
   {cite}`dieterich2016compas` avevano ragione entrambe.
 - I tassi di base che accendono il conflitto sono grandezze *misurate*: su

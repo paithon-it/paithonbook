@@ -52,7 +52,7 @@ manciata di valori candidati e si prova ogni combinazione, tenendo quella con il
 punteggio di validazione migliore. È la *grid search*, la ricerca a griglia:
 esaustiva entro la griglia e facile da parallelizzare, perché ogni combinazione
 è indipendente dalle altre e si può valutare in parallelo su un altro
-calcolatore. Il difetto è il costo, che cresce come una potenza del numero di
+calcolatore. Il difetto è il costo, che cresce esponenzialmente con il numero di
 iperparametri.
 
 `````{tab} Elementare
@@ -271,7 +271,7 @@ per $n=81$, $r=1$, $\eta=3$, 405 epoche-modello contro le $81 \times 81 =
 *best-arm identification* in un bandit non stocastico (la famiglia di problemi
 della {doc}`sezione sui banditi </ReinforcementLearning/banditi>`, dove ogni
 configurazione è una leva e addestrarla per un'epoca è un tiro): basta che le
-classifiche parziali siano abbastanza indicative di quelle finali, ed è proprio
+classifiche parziali siano abbastanza indicative di quelle finali. È proprio
 questa l'ipotesi fragile, perché una configurazione a convergenza lenta viene
 eliminata da giovane. Hyperband {cite}`li2018hyperband` aggira il dilemma tra
 molte configurazioni e molto budget per testa eseguendo $s_{\max}+1$ istanze di
@@ -385,22 +385,23 @@ della sezione sulle SVM: è la stessa lettera con un altro mestiere), e $\Phi$ e
 $\varphi$ sono la funzione di ripartizione e la densità della normale standard.
 La formula premia sia $\mu(\boldsymbol{\lambda})$ basso (sfruttamento) sia
 $\sigma(\boldsymbol{\lambda})$ alto (esplorazione); la prossima prova è
-$\boldsymbol{\lambda}_{\text{next}} = \arg\max_{\boldsymbol{\lambda}} \mathrm{EI}(\boldsymbol{\lambda})$:
-un'ottimizzazione a sua volta, ma sul surrogato, che risponde in millisecondi.
-Il prezzo è la natura essenzialmente sequenziale del metodo (ogni scelta
-attende l'esito della precedente), la dipendenza dalle ipotesi del
-surrogato, a cominciare dalla scelta del kernel, e il costo del surrogato
-stesso: l'inferenza esatta di un processo gaussiano su $n$ prove costa
-$O(n^3)$, che con qualche centinaio di prove è niente e con decine di migliaia
-no. Per questo il surrogato più diffuso in pratica è un altro, il
-*Tree-structured Parzen Estimator* (TPE) {cite}`bergstra2011algorithms`,
-campionatore di default di Optuna. Divide le prove in buone e cattive secondo
-un quantile del punteggio, stima la densità delle configurazioni in ciascun
-gruppo, $p_{\text{buone}}(\boldsymbol{\lambda})$ e $p_{\text{cattive}}(\boldsymbol{\lambda})$, e propone
-la configurazione che massimizza il loro rapporto; sotto quel modello è la
-stessa scelta che massimizza l'expected improvement, e si adatta con
-naturalezza a spazi misti di variabili continue, intere e categoriche, dove un
-kernel è scomodo.
+$\boldsymbol{\lambda}_{\text{next}} = \arg\max_{\boldsymbol{\lambda}}
+\mathrm{EI}(\boldsymbol{\lambda})$: un'ottimizzazione a sua volta, ma sul
+surrogato, che risponde in millisecondi. Il prezzo è la natura essenzialmente
+sequenziale del metodo (ogni scelta attende l'esito della precedente), la
+dipendenza dalle ipotesi del surrogato, a cominciare dalla scelta del kernel, e
+il costo del surrogato stesso: l'inferenza esatta di un processo gaussiano su
+$n$ prove costa $O(n^3)$, un costo trascurabile con qualche centinaio di prove
+ma proibitivo con decine di migliaia. Per questo il surrogato più diffuso in
+pratica è un altro, il *Tree-structured Parzen Estimator* (TPE)
+{cite}`bergstra2011algorithms`, campionatore di default di Optuna. Divide le
+prove in buone e cattive secondo un quantile del punteggio, stima la densità
+delle configurazioni in ciascun gruppo,
+$p_{\text{buone}}(\boldsymbol{\lambda})$ e
+$p_{\text{cattive}}(\boldsymbol{\lambda})$, e propone la configurazione che
+massimizza il loro rapporto; sotto quel modello è la stessa scelta che
+massimizza l'expected improvement, e si adatta con naturalezza a spazi misti di
+variabili continue, intere e categoriche, dove un kernel è scomodo.
 
 `````
 
@@ -412,7 +413,7 @@ scikit-learn offre le due strategie di base con la stessa forma d'uso:
 lo ripetono da soli. Le proviamo
 su un classificatore SVC, una *support vector machine*, che qui usiamo come
 scatola nera: ci basta sapere che ha due manopole delicate, `C` e `gamma`. Sono
-entrambe **parametri di scala**, e vuol dire che quello che conta è il loro
+entrambe **parametri di scala**, il che significa che a contare è il loro
 ordine di grandezza, non la differenza fra un valore e l'altro: fra $0{,}001$ e
 $0{,}01$ c'è lo stesso salto che fra $1$ e $10$, mentre fra $1$ e $1{,}5$ non
 c'è quasi niente. È per questo che i loro valori si provano moltiplicandoli per
@@ -643,17 +644,17 @@ $$
 cioè il punteggio della vincitrice è ottimista in media anche se nessuna stima,
 presa da sola, lo è: selezionando la migliore si eredita anche il suo errore di
 stima favorevole. Aggiungere configurazioni non può abbassare il membro di
-sinistra, quindi a parità di vero massimo la distorsione non diminuisce con $N$.
-In altre parole, una ricerca abbastanza lunga fa overfitting *sul validation
-set* {cite}`cawley2010overfitting`. L'ottimismo ha un ordine di grandezza: per
-la disuguaglianza dell'unione lo scarto garantito cresce come $\sqrt{\log N}$
-nel numero $N$ di configurazioni confrontate, come mostra la {doc}`sezione sulla
-concentrazione </Matematica/concentrazione>`. Le contromisure: riservare il test
-a un'unica valutazione finale; riportare media e deviazione standard sui fold,
-non il solo massimo; nei confronti metodologici, usare la *nested
-cross-validation* (un anello esterno per la stima onesta dell'errore, un anello
-interno per la selezione degli iperparametri) accettandone il costo, che è il
-prodotto dei due anelli.
+sinistra, quindi a parità di vero massimo la distorsione non diminuisce con
+$N$. In altre parole, una ricerca abbastanza lunga fa overfitting *sul
+validation set* {cite}`cawley2010overfitting`. L'ottimismo ha un ordine di
+grandezza: per la disuguaglianza dell'unione il limite superiore allo scarto
+cresce come $\sqrt{\log N}$ nel numero $N$ di configurazioni confrontate, come
+mostra la {doc}`sezione sulla concentrazione </Matematica/concentrazione>`. Le
+contromisure: riservare il test a un'unica valutazione finale; riportare media
+e deviazione standard sui fold, non il solo massimo; nei confronti
+metodologici, usare la *nested cross-validation* (un anello esterno per la
+stima onesta dell'errore, un anello interno per la selezione degli
+iperparametri) accettandone il costo, che è il prodotto dei due anelli.
 
 `````
 

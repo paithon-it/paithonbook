@@ -66,11 +66,11 @@ prima della fine e si dà un voto alla posizione, e il voto può sbagliare.
 
 `````{tab} Superiore
 
-Per un gioco a due giocatori, deterministico, a somma zero e a
-informazione perfetta (cioè in cui ciascuno vede tutta la posizione: è
-un’altra cosa dall’«informazione completa» della teoria dei giochi, che
-riguarda il conoscere i guadagni dell’avversario), il valore minimax di uno
-stato $s$ è definito ricorsivamente:
+Per un gioco a due giocatori, deterministico, a somma zero e a informazione
+perfetta (cioè in cui ciascuno vede tutta la posizione: concetto diverso
+dall’«informazione completa» della teoria dei giochi, che riguarda il conoscere
+i guadagni dell’avversario), il valore minimax di uno stato $s$ è definito
+ricorsivamente:
 
 $$
 \mathrm{minimax}(s) =
@@ -411,7 +411,7 @@ bordi per primi:                         17002
 venti ordini a caso: da 2603 a 13358, e 1 su 20 batte il ragionato
 ```
 
-Sei volte fra il migliore e il peggiore, sullo stesso gioco, con lo stesso
+Il peggiore costa sei volte il migliore, sullo stesso gioco, con lo stesso
 algoritmo e con la stessa risposta in fondo. E l'ordine ragionato non è
 lontano dal migliore che si trovi a tentativi: mettere per primi il centro e
 gli angoli vuol dire provare per prime le caselle che nel tris contano di più,
@@ -526,7 +526,7 @@ soluzione), e il taglio scatta quando $k$ arriva al limite fissato o la
 posizione è comunque terminale.
 
 Perché $\mathrm{ev}$ sia utile deve concordare con $u$ sugli stati terminali,
-essere calcolabile in fretta, e correlare con la probabilità di vittoria. Per
+essere calcolabile in fretta, ed essere correlata alla probabilità di vittoria. Per
 decenni è stata quasi sempre una somma pesata di caratteristiche della
 posizione (materiale, struttura pedonale, sicurezza del re), il che assume
 implicitamente che i loro contributi siano indipendenti: un’ipotesi falsa (il
@@ -557,7 +557,7 @@ arrivano a sette, per 140 terabyte. Stiller trovò anche un finale in cui il
 matto forzato richiede 262 mosse, più delle cinquanta senza catture che il
 regolamento tollera {cite}`russell2020artificial`.
 
-Due complicazioni che i programmi seri devono affrontare, e sono i punti in cui
+Due complicazioni che i programmi seri devono affrontare, i punti in cui
 la teoria pulita si sporca:
 
 - **l’effetto orizzonte**, cioè la tendenza a preferire mosse che rimandano un
@@ -815,7 +815,7 @@ L’etichetta 0 vuol dire che chi deve muovere perde. Prova con quattro
 fiammiferi: qualunque cosa togli, uno, due o tre, l’altro prende il resto e
 vince. Da un’etichetta 0 non si arriva mai a un’altra etichetta 0 (se ci si
 arrivasse, lo 0 non mancherebbe), e da un’etichetta diversa da 0 c’è sempre una
-mossa verso uno 0: è il mestiere del tavolo in pari, chi ci si trova davanti
+mossa verso uno 0. È il mestiere del tavolo in pari: chi ci si trova davanti
 può solo uscirne, e l’altro ce lo riporta.
 
 Per uno, due e tre fiammiferi l’etichetta coincide con i fiammiferi; dal
@@ -991,7 +991,7 @@ fin qui: l’albero, la potatura, il giudizio a occhio con il suo orizzonte.
   profondità e si giudica a occhio la posizione, con un foglietto di conti che
   si chiama funzione di valutazione. Questo sì che costa, e il prezzo si
   chiama effetto orizzonte: il disastro che sta un passo oltre l’ultimo che
-  si è guardato non si vede, e conviene perfino spingercelo pagando
+  si è guardato non si vede, e conviene perfino spingerlo più in là pagando
   qualcosa. Un rimedio è non fermarsi dove i pezzi si stanno ancora
   mangiando: l’orizzonte si sposta dove fa meno danni, e sparire non sparisce.
 - Nel Nim il giudizio è esatto. Si spezzano i mucchi in pacchetti da 1, 2, 4,

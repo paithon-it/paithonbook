@@ -14,10 +14,10 @@
 
 Nel 1929 René Magritte dipinge una pipa su fondo chiaro e, sotto, ci scrive a
 mano *Ceci n'est pas une pipe*: questa non è una pipa. È una constatazione
-esatta, non un gioco di parole. Il disegno non è la pipa, è un velo di
-colore steso su una tela; e la frase sotto è una fila di segni dipinti anche
-lei. Eppure chi guarda il quadro attraversa quei due confini senza
-accorgersene: vede una forma, pensa a un oggetto, gli dà un nome.
+esatta, non un gioco di parole. Il disegno non è la pipa, è un velo di colore
+steso su una tela; e la frase sotto è una fila di segni dipinti anch'essa.
+Eppure chi guarda il quadro attraversa quei due confini senza accorgersene:
+vede una forma, pensa a un oggetto, gli dà un nome.
 
 Per una macchina quel passaggio non avviene da sé, ed è stato a lungo il
 confine fra due mestieri separati. Da una parte i programmi che guardano,
@@ -25,7 +25,7 @@ addestrati a mettere una fotografia in una casella e poi a tacere; dall'altra i
 programmi che scrivono, addestrati a indovinare la parola dopo. Farli lavorare
 insieme non vuol dire attaccare una telecamera a un generatore di testo: vuol
 dire costruire un posto in cui le misure della luce e le parole di una lingua
-possano incontrarsi. Di posti così se ne sanno costruire tre, e da ciascuno
+possano incontrarsi. Di posti così oggi sappiamo costruirne tre, e da ciascuno
 nasce una famiglia di modelli.
 
 ## Due materie che non si somigliano
@@ -72,7 +72,7 @@ un'immagine qualunque di un'altra scena. Le invarianze che ci interessano
 (traslazione, illuminazione, punto di vista, scala) sono esattamente quelle
 che la metrica nativa non ha.
 
-Servono quindi due decisioni distinte: come rappresentare l'immagine come
+Servono quindi due decisioni distinte: in che modo rappresentare l'immagine come
 sequenza di vettori di dimensione fissa, in uno spazio dove la vicinanza sia
 somiglianza semantica, e dove i due flussi si incontrano, cioè a quale
 profondità del sistema informazione visiva e informazione linguistica smettono
@@ -86,10 +86,10 @@ La prima delle due decisioni, dare all'immagine delle unità, ha una risposta
 condivisa da quasi tutti i sistemi attuali: il Vision Transformer
 {cite}`dosovitskiy2021image`, descritto nella {doc}`sezione sulle famiglie di
 modelli </Transformers/multimodalita>`. L'immagine si divide in quadrati di
-lato fisso, le tessere (in inglese *patch*: da qui in avanti le due parole
-vogliono dire la stessa cosa); ogni tessera diventa un vettore per proiezione
-lineare, e a ogni vettore si somma una codifica di posizione, che registra il
-posto della tessera nella griglia.
+lato fisso, le tessere (in inglese *patch*: da qui in avanti useremo i due
+termini come sinonimi); ogni tessera diventa un vettore per proiezione lineare,
+e a ogni vettore si somma una codifica di posizione, che registra il posto
+della tessera nella griglia.
 
 ```{figure} ../figures/vit-2020.svg
 :name: fig-vit-patch-token
@@ -155,7 +155,7 @@ CNN, perché località ed equivarianza alla traslazione restano soltanto negli
 strati feed-forward, applicati patch per patch, e nel taglio iniziale, mentre
 l'auto-attenzione è globale; la struttura bidimensionale rientra solo quando
 gli embedding di posizione si interpolano per una risoluzione diversa
-{cite}`dosovitskiy2021image`. Con pochi dati un ViT rende quindi meno di una
+{cite}`dosovitskiy2021image`. Con pochi dati un ViT è quindi meno efficace di una
 rete convoluzionale, e il suo vantaggio compare con pre-addestramenti molto
 grandi (da 14 a 300 milioni di immagini nel lavoro originale). La seconda: il
 costo dell'attenzione, $O(N^2 d)$, dipende dal quadrato del numero di patch, e
@@ -189,7 +189,7 @@ Che cosa voglia dire «vicini» è meno ovvio di quel che sembra: la
 {doc}`sezione sull'allineamento </VisioneLinguaggio/allineare-due-spazi>`
 mostra che una foto è più vicina a un'altra foto che alla propria didascalia
 (il *modality gap*), e che quindi i coseni fra modalità diverse e quelli dentro
-una modalità non si confrontano.
+una modalità non sono confrontabili.
 
 La seconda innesta un occhio su un modello di linguaggio già addestrato, come
 si innesta un ramo su un ceppo che ha già le radici: fra un encoder visivo e il
@@ -290,12 +290,12 @@ che comincia adesso.
 
 Dalla {doc}`sezione sull'architettura </Transformers/architettura>` serve la
 cross-attention: le query $\mathbf{Q}$ vengono da una sequenza, qui il testo, e
-le chiavi $\mathbf{K}$ e i valori $\mathbf{V}$ da un'altra, qui l'immagine, così
-che ogni posizione del testo raccolga informazione dalle tessere. Dalla
+le chiavi $\mathbf{K}$ e i valori $\mathbf{V}$ da un'altra, qui l'immagine,
+così che ogni posizione del testo raccolga informazione dalle tessere. Dalla
 {doc}`sezione sul post-training </Transformers/post-training>` serve
-l’instruction tuning, che insegna a un modello che continuava testi a eseguire
-una consegna: qui farà lo stesso con un modello che descrive immagini, e ne
-farà uno a cui si fanno domande. E dalla {doc}`sezione su classificazione e
+l’instruction tuning, che insegna a un modello abituato a continuare testi a
+eseguire una consegna: qui trasformerà un modello che descrive immagini in uno
+capace di rispondere a domande. E dalla {doc}`sezione su classificazione e
 transfer learning </VisioneArtificiale/classificazione-transfer>` serve il
 riuso di una rete pre-addestrata, con i pesi congelati o riaddestrati poco: nei
 sistemi che seguono, l'encoder visivo e il modello di linguaggio sono quasi
@@ -329,7 +329,7 @@ bene impara a farne a meno.
 Un modello che genera testo condizionato a un'immagine minimizza
 $\mathcal{L}(\theta) = -\sum_t \log p_\theta(y_t \mid y_{<t}, \mathbf{I})$,
 dove $y_t$ è il token al passo $t$ e $\mathbf{I}$ l'immagine. Nulla in questa
-funzione di costo obbliga il modello a *usare* $\mathbf{I}$: se il priore
+funzione di costo obbliga il modello a *usare* $\mathbf{I}$: se il prior
 linguistico concentra già la massa di probabilità sulla parola corretta, il
 gradiente che spinge a sfruttare l'informazione visiva è debole, e il modello
 impara la statistica delle didascalie invece della scena. È il primo dei
@@ -417,12 +417,12 @@ davvero guardato.
   tagliandola in patch: con $224 \times 224$ e patch $16 \times 16$ sono 196
   token. Il costo dell'attenzione cresce con $N^2$, quello di proiezioni e
   feed-forward con $N$, e il termine quadratico domina solo per $N > 6d$.
-- Dove i due flussi si incontrano genera tre famiglie: allineare due spazi
-  senza fonderli (CLIP {cite}`radford2021learning`), innestare un connettore su
-  un modello di linguaggio già addestrato, o elaborare patch e parole in un
-  solo Transformer fin dall'ingresso, spesso con l'immagine ridotta a token di
-  un unico vocabolario. Non si superano a vicenda: la prima cerca, la seconda
-  conversa, la terza produce.
+- Il punto in cui i due flussi si incontrano genera tre famiglie: allineare due
+  spazi senza fonderli (CLIP {cite}`radford2021learning`), innestare un
+  connettore su un modello di linguaggio già addestrato, o elaborare patch e
+  parole in un solo Transformer fin dall'ingresso, spesso con l'immagine
+  ridotta a token di un unico vocabolario. Non si superano a vicenda: la prima
+  cerca, la seconda conversa, la terza produce.
 - L'obiettivo di addestramento non obbliga il modello a guardare: quando il
   priore linguistico (la statistica delle didascalie, appresa prima e
   indipendentemente dall'immagine) basta a indovinare la didascalia, il modello

@@ -51,7 +51,7 @@ algebra lineare </Matematica/algebra-lineare>`, calcolata sui soli film che i
 due hanno votato entrambi: con quella, Carla somiglia a Dario per $1{,}00$, ad
 Anna per $0{,}99$, a Bruno per $0{,}96$ e a Elena per $0{,}67$. Nella classifica
 dei più simili a Carla, Bruno è terzo. E Dario con Carla ha in comune un film
-solo, il che, come vedremo fra poco, basta a farlo sembrare identico a lei. Il
+solo, il che basta a farlo sembrare identico a lei. Il
 difetto si vede già su una griglia di venticinque caselle.
 
 Il disegno non rende però la cosa più importante: lì le celle piene sono la
@@ -124,11 +124,11 @@ $$
  \sqrt{\sum_{i \in \mathcal{I}_{uv}} r_{vi}^2}} .
 $$
 
-Restringere a $\mathcal{I}_{uv}$ non è pignoleria. Sui vettori interi il coseno
-si può calcolare solo dopo aver deciso cosa mettere nelle componenti mancanti,
-e la scelta corrente per il coseno «pieno», imputare zero, mette il non visto
-sotto al peggiore dei voti possibili, che su una scala da 1 a 5 parte da 1: è
-una decisione di modellazione, non una necessità.
+Restringere a $\mathcal{I}_{uv}$ ha ragioni strutturali. Sui vettori interi il
+coseno si può calcolare solo dopo aver deciso cosa mettere nelle componenti
+mancanti, e la scelta corrente per il coseno «pieno», imputare zero, mette il
+non visto sotto al peggiore dei voti possibili, che su una scala da 1 a 5 parte
+da 1: imputare zero è una decisione di modellazione, non una necessità.
 
 Il voto previsto per l'utente $u$ sul film $i$ è la media dei voti dei vicini,
 pesata per la somiglianza:
@@ -195,7 +195,7 @@ se la media sottratta è calcolata sui soli film di $\mathcal{I}_{uv}$ si ottien
 esattamente la correlazione di Pearson; se è la media di *tutti* i voti
 dell'utente si ottiene il coseno centrato (*mean-centered cosine*), variante
 vicina ma distinta. Le due centrature sono ortogonali: si possono adottare
-entrambe, una sola, o nessuna. Attenzione a una collisione di nomi che costa
+entrambe, una sola, o nessuna. Qui si incontra una collisione di nomi che costa
 un pomeriggio. GroupLens calcolava medie e somme sui soli articoli votati da
 entrambi {cite}`resnick1994grouplens`, cioè la Pearson vera; Breese, Heckerman
 e Kadie, che citano GroupLens come fonte della formula, sottraggono invece la
@@ -364,7 +364,7 @@ accontenta di un minimo locale. Riempire i buchi di zeri per tornare alla SVD
 vorrebbe dire dichiarare che ogni film non visto vale zero stelle. Nella
 fattorizzazione per feedback esplicito i buchi sono incognite, e restano fuori
 dalla somma; che nel gergo del Netflix Prize il metodo si chiami ancora «SVD»
-è un'eredità del nome e non della matematica. Lo rese popolare Simon Funk, che
+è un'eredità del nome slegata dalla matematica. Lo rese popolare Simon Funk, che
 l'11 dicembre 2006 descrisse in un post come addestrarlo con la discesa del
 gradiente sui soli voti noti, un fattore alla volta {cite}`funk2006netflix`.
 
@@ -388,7 +388,7 @@ $$
 $$
 
 dove la somma corre su tutte le celle, osservate e no. È un cambio di
-regime, non una variante: i termini diventano miliardi, la discesa stocastica
+regime radicale: i termini diventano miliardi, la discesa stocastica
 sulle triple non è più praticabile per questa loss, e i minimi quadrati
 alternati (ALS) smettono di essere un'alternativa di gusto. Fissati i
 $\mathbf{q}_i$, ogni $\mathbf{p}_u$ ha la soluzione chiusa
@@ -410,20 +410,18 @@ chiama iALS, ha quasi vent'anni ed è tutt'altro che un cimelio: ritarato con
 cura regge il confronto con i metodi più recenti sui banchi di
 prova su cui quei metodi erano stati presentati {cite}`rendle2022revisiting`.
 
-Sul come si ottimizza, nel caso esplicito, resta la scelta fra due algoritmi. La
-discesa stocastica passa sulle triple $(u, i, r_{ui})$ una alla volta: calcolato
-l'errore $e_{ui} = r_{ui} - \hat{r}_{ui}$, aggiorna
-$b_u \leftarrow b_u + \eta\,(e_{ui} - \lambda b_u)$,
-$b_i \leftarrow b_i + \eta\,(e_{ui} - \lambda b_i)$,
-$\mathbf{p}_u \leftarrow \mathbf{p}_u + \eta\,(e_{ui}\,\mathbf{q}_i - \lambda\,\mathbf{p}_u)$
-e
-$\mathbf{q}_i \leftarrow \mathbf{q}_i + \eta\,(e_{ui}\,\mathbf{p}_u - \lambda\,\mathbf{q}_i)$,
-al costo di $O(k)$ per voto {cite}`koren2009matrix`. ALS risolve invece in forma
-chiusa alternando $\mathbf{P}$ e $\mathbf{Q}$: fissata $\mathbf{Q}$, ogni
-$\mathbf{p}_u$ è una regressione ridge sui film che $u$ ha votato. Trascurando
-per brevità i bias, dette $\mathbf{Q}_u$ la matrice delle righe
-$\mathbf{q}_i^\top$ di quei film e $\tilde{\mathbf{r}}_u$ il vettore dei voti
-corrispondenti,
+Per ottimizzare il caso esplicito resta la scelta fra due algoritmi. La discesa
+stocastica passa sulle triple $(u, i, r_{ui})$ una alla volta: calcolato
+l'errore $e_{ui} = r_{ui} - \hat{r}_{ui}$, aggiorna $b_u \leftarrow b_u +
+\eta\,(e_{ui} - \lambda b_u)$, $b_i \leftarrow b_i + \eta\,(e_{ui} - \lambda
+b_i)$, $\mathbf{p}_u \leftarrow \mathbf{p}_u + \eta\,(e_{ui}\,\mathbf{q}_i -
+\lambda\,\mathbf{p}_u)$ e $\mathbf{q}_i \leftarrow \mathbf{q}_i +
+\eta\,(e_{ui}\,\mathbf{p}_u - \lambda\,\mathbf{q}_i)$, al costo di $O(k)$ per
+voto {cite}`koren2009matrix`. ALS risolve invece in forma chiusa alternando
+$\mathbf{P}$ e $\mathbf{Q}$: fissata $\mathbf{Q}$, ogni $\mathbf{p}_u$ è una
+regressione ridge sui film che $u$ ha votato. Trascurando per brevità i bias,
+dette $\mathbf{Q}_u$ la matrice delle righe $\mathbf{q}_i^\top$ di quei film e
+$\tilde{\mathbf{r}}_u$ il vettore dei voti corrispondenti,
 
 $$
 \mathbf{p}_u = \big(\mathbf{Q}_u^\top \mathbf{Q}_u + \lambda\, n_u\, \mathbf{I}\big)^{-1}
@@ -481,7 +479,7 @@ perfino di MovieLens 100K: là i 100.000 voti stanno in una tabella di
 $943 \times 1.682$ celle, poco meno di un milione e seicentomila, e la
 riempiono al 6,3%. Fra i banchi di prova del settore, MovieLens 100K è già uno
 dei meno vuoti. Su un esempio piccolo come il nostro, con la sparsità vera non
-resterebbe abbastanza da cui imparare in trenta secondi.
+resterebbero abbastanza voti per addestrare il modello in trenta secondi.
 
 Il modello è la traduzione letterale dell'idea appena vista.
 `nn.Embedding(n, k)` è una matrice di parametri $n \times k$ che restituisce la
@@ -579,11 +577,10 @@ queste l'83% ne ha uno o due: è il regime in cui la similarità calcolata sui
 film in comune fabbrica utenti identici, ed è il motivo per cui qui si passa
 direttamente ai fattori latenti.
 
-L'addestramento è un normale ciclo PyTorch. A ogni giro completo sui voti, e un
-giro si chiama epoca, il modello prevede, si misura di quanto ha sbagliato e
-l'ottimizzatore, il pezzo di codice che decide di quanto ritoccare ogni
-parametro, aggiorna i vettori latenti. La misura è l'errore quadratico medio,
-la MSE incontrata nella {doc}`sezione sulle metriche
+L'addestramento è un normale ciclo PyTorch. A ogni epoca (cioè a ogni giro
+completo sui voti) il modello prevede, calcola di quanto ha sbagliato, e
+l'ottimizzatore aggiorna i vettori latenti. La misura è l'errore quadratico
+medio, la MSE incontrata nella {doc}`sezione sulle metriche
 </MachineLearning/metriche>`. È lo stesso metro del Netflix Prize meno l'ultimo
 passaggio: l'RMSE è la radice quadrata della MSE che vedremo stampata. Una MSE
 di $0{,}35$ vale quindi un errore di circa $0{,}59$ stelle, perché

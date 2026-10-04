@@ -104,27 +104,26 @@ serve scriverlo: è la ragione per cui il formato `float32` spende 1 bit di
 segno, 8 di esponente e 23 per $f$. Da quei 23 bit (non dai 24 del
 significando, che comprendono l'uno implicito) esce l’$\varepsilon$ di due
 righe più sotto: a $x=1$ l'esponente è nullo, quindi il numero rappresentabile
-successivo è esattamente $1+2^{-23}$. Il
-`float64` (doppia precisione) dà 52 bit a $f$. La granularità relativa è
-l’**epsilon macchina** $\varepsilon$: la
+successivo è esattamente $1+2^{-23}$. Il `float64` (doppia precisione) dà 52
+bit a $f$. La granularità relativa è l’**epsilon macchina** $\varepsilon$: la
 distanza fra $1$ e il numero rappresentabile immediatamente successivo, pari a
-$2^{-23}\approx 1{,}19\cdot10^{-7}$ per `float32` e
-$2^{-52}\approx 2{,}22\cdot10^{-16}$ per `float64`. Ogni operazione arrotonda
-al numero rappresentabile più vicino, e l'errore relativo che ne deriva è
-limitato dall’unità di arrotondamento $u=\varepsilon/2$ (metà del gradino,
-perché si arrotonda all'estremo più vicino), purché il risultato non cada
-fuori dalla portata. Per i formati da sedici bit gli stessi conti danno: il
-`float16` ha $\varepsilon=2^{-10}\approx 9{,}8\cdot10^{-4}$ e un massimo di
-$65\,504$, il `bfloat16` ha $\varepsilon=2^{-7}\approx 7{,}8\cdot10^{-3}$ e la
-portata del `float32`. Il `float16` ha anche il più piccolo normalizzato a
-$2^{-14}\approx 6{,}1\cdot10^{-5}$; sotto quella soglia i numeri diventano
-*subnormali*, perdono cifre fino a $2^{-24}\approx 6\cdot10^{-8}$ e poi
-finiscono a zero, e molti gradienti di una rete stanno proprio lì.
-L'addestramento in precisione mista tiene allora una copia `float32` dei pesi,
-calcola in `float16` e moltiplica la loss per un fattore di scala prima della
-retropropagazione, per poi dividerlo via dai gradienti
-{cite}`micikevicius2018mixed`. Col `bfloat16` quel fattore di norma non
-serve, ed è la ragione pratica per cui lo si preferisce.
+$2^{-23}\approx 1{,}19\cdot10^{-7}$ per `float32` e $2^{-52}\approx
+2{,}22\cdot10^{-16}$ per `float64`. Ogni operazione arrotonda al numero
+rappresentabile più vicino, e l'errore relativo che ne deriva è limitato
+dall’unità di arrotondamento $u=\varepsilon/2$ (metà del gradino, perché si
+arrotonda all'estremo più vicino), purché il risultato non cada fuori dalla
+portata. Per i formati da sedici bit gli stessi conti danno: il `float16` ha
+$\varepsilon=2^{-10}\approx 9{,}8\cdot10^{-4}$ e un massimo di $65\,504$, il
+`bfloat16` ha $\varepsilon=2^{-7}\approx 7{,}8\cdot10^{-3}$ e la portata del
+`float32`. Il `float16` ha anche il più piccolo normalizzato a $2^{-14}\approx
+6{,}1\cdot10^{-5}$; sotto quella soglia i numeri diventano *subnormali*,
+perdono cifre fino a $2^{-24}\approx 6\cdot10^{-8}$ e poi finiscono a zero, e
+molti gradienti di una rete stanno proprio lì. L'addestramento in precisione
+mista tiene allora una copia `float32` dei pesi, calcola in `float16` e
+moltiplica la loss per un fattore di scala prima della retropropagazione, per
+poi annullarlo dividendo i gradienti per lo stesso fattore
+{cite}`micikevicius2018mixed`. Col `bfloat16` quel fattore di norma non serve,
+ed è la ragione pratica per cui lo si preferisce.
 
 L'esempio $0{,}1+0{,}2$ si spiega per intero. In `float64`, $0{,}1$ e $0{,}2$
 non sono rappresentabili (il loro sviluppo binario è periodico) e diventano
@@ -473,15 +472,15 @@ La scelta si può fissare dall’esterno, con `OPENBLAS_CORETYPE` per OpenBLAS e
 `ATEN_CPU_CAPABILITY` per le operazioni su CPU di PyTorch, e fissarla rimette
 d'accordo la parte di conto che passa da quelle due strade.
 
-Non basta però a garantire l'accordo in generale, ed è la metà che conta di
-più. I prodotti fra matrici di PyTorch su CPU x86 non passano da OpenBLAS ma da
-Intel MKL, che quelle variabili non toccano e che ha le sue (per la
-riproducibilità condizionale, `MKL_CBWR`); e basta una terza macchina, con le
-stesse variabili fissate, perché l’ultima cifra ricominci a discostarsi. La
-riproducibilità bit a bit fra calcolatori diversi non è una casella da
-spuntare: si perde di nuovo appena un pezzo del conto sceglie una strada per
-conto proprio, e per questo due esecuzioni su macchine diverse si confrontano
-con una tolleranza, non con l’uguaglianza.
+Fissare queste variabili non basta però a garantire l'accordo in generale. I
+prodotti fra matrici di PyTorch su CPU x86, che sono la parte di calcolo che
+conta di più, non passano da OpenBLAS ma da Intel MKL, che ignora quelle
+variabili e usa le proprie (per la riproducibilità condizionale, `MKL_CBWR`); e
+basta una terza macchina, con le stesse variabili fissate, perché l’ultima
+cifra ricominci a discostarsi. La riproducibilità bit a bit fra calcolatori
+diversi non è una casella da spuntare: si perde di nuovo appena un pezzo del
+conto sceglie una strada per conto proprio, e per questo due esecuzioni su
+macchine diverse si confrontano con una tolleranza, non con l’uguaglianza.
 
 Quanto può cambiare, una somma, cambiando ordine? Nel caso peggiore l'errore
 della somma in fila di $n$ numeri è al più circa $(n-1)\,u\sum_i|x_i|$; la
@@ -553,7 +552,7 @@ softmax del secondo.
 
 `````{tab} Superiore
 
-Il condizionamento è una proprietà del problema, non dell'algoritmo: su un
+Su un
 problema mal condizionato anche il codice perfetto fatica, perché eredita
 l'errore di arrotondamento già presente negli input. Per un sistema lineare
 $\mathbf{A}\mathbf{x} = \mathbf{b}$ lo si misura con il **numero di
@@ -677,24 +676,24 @@ problema, non sull'algoritmo.
 Se una feature vale in migliaia di euro e un'altra in numero di stanze, i loro
 prodotti dentro la rete stanno su scale lontanissime (invito all'overflow) e la
 superficie della *loss* si allunga in una valle stretta, mal condizionata. La
-discesa del gradiente vi rimbalza da una parete all'altra a zig-zag, convergendo
-con lentezza esasperante. Standardizzare rende le curve di livello molto più
-tonde: il gradiente punta quasi dritto verso il minimo
+discesa del gradiente vi rimbalza da una parete all'altra a zig-zag,
+convergendo con lentezza esasperante. Standardizzare rende le curve di livello
+molto più tonde: il gradiente punta quasi dritto verso il minimo
 ({numref}`fig-condizionamento`). Detto con il numero di condizionamento: per un
 modello lineare con $m$ esempi e perdita
 $\frac{1}{2m}\lVert\mathbf{X}\mathbf{w}-\mathbf{y}\rVert^2$ l'hessiana è
-$\mathbf{X}^\top\mathbf{X}/m$, e dopo la standardizzazione diventa la matrice di
-correlazione delle feature, con diagonale di soli $1$ (senza il $\tfrac12$ è il
-doppio, e $\kappa$ non cambia). Il suo $\kappa=\lambda_{\max}/\lambda_{\min}$
-fissa il fattore di contrazione $(\kappa-1)/(\kappa+1)$ della discesa del
-gradiente visto nella {doc}`sezione su analisi e ottimizzazione
-<analisi-ottimizzazione>`. Che la riduzione sia quasi la migliore possibile,
-anche se non garantita, lo dice un teorema di van der Sluis: fra tutte le
-riscalature diagonali delle colonne di $\mathbf{X}$, già centrate, quella che le
-rende di norma uguale ha un $\kappa_2(\mathbf{X})$ al più $\sqrt{p}$ volte
-l'ottimo, con $p$ il numero di colonne, e quindi un'hessiana con $\kappa$ al più
-$p$ volte l'ottimo, perché
-$\kappa(\mathbf{X}^\top\mathbf{X})=\kappa_2(\mathbf{X})^2$
+$\mathbf{X}^\top\mathbf{X}/m$, e dopo la standardizzazione diventa la matrice
+di correlazione delle feature, con diagonale di soli $1$ (senza il $\tfrac12$ è
+il doppio, e $\kappa$ non cambia). Il suo
+$\kappa=\lambda_{\max}/\lambda_{\min}$ fissa il fattore di contrazione
+$(\kappa-1)/(\kappa+1)$ della discesa del gradiente visto nella {doc}`sezione
+su analisi e ottimizzazione <analisi-ottimizzazione>`. Un teorema di van der
+Sluis dimostra che questa riduzione, per quanto non garantisca l'ottimo, vi si
+avvicina molto: fra tutte le riscalature diagonali delle colonne di
+$\mathbf{X}$ (già centrate), quella che le rende di norma uguale ha un
+$\kappa_2(\mathbf{X})$ al più $\sqrt{p}$ volte l'ottimo, dove $p$ è il numero
+di colonne. Se ne ricava un'hessiana con $\kappa$ al più $p$ volte l'ottimo,
+perché $\kappa(\mathbf{X}^\top\mathbf{X})=\kappa_2(\mathbf{X})^2$
 {cite}`higham2002accuracy`.
 
 Non è una cura completa, perché mette tutte le feature sulla stessa scala ma

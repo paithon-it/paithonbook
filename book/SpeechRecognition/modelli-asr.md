@@ -42,7 +42,7 @@ scorre con lui, e quello che si sente prima è anche scritto prima. Un passaggio
 impastato lo si riascolta quante volte si vuole; quello che non capita mai è
 che una lettera debba scavalcare quella di prima.
 
-I tempi si potrebbero anche segnare a mano, cronometro alla mano, suono per
+I tempi si potrebbero anche segnare a mano, col cronometro, suono per
 suono: su un video si fa, su milioni di ore di registrazioni non lo farà
 nessuno. Restano le due cose che costa poco avere, la registrazione e la sua
 trascrizione, e da quelle due i tempi bisogna tirarli fuori da sé.
@@ -807,7 +807,7 @@ ascolti. Il primo guarda quanto il testo si comprime: un testo che si ripete
 si comprime moltissimo, e se il rapporto di compressione (misurato con gzip)
 supera $2{,}4$ il pezzo è scartato. Il secondo guarda quanto la rete era
 convinta di ciò che ha scritto: se la log-probabilità media dei token generati
-scende sotto $-1$, il pezzo è scartato anche lui. Un pezzo scartato si rifà a
+scende sotto $-1$, il pezzo è scartato anche lui. Un pezzo scartato si rigenera a
 temperatura più alta, salendo da $0$ fino a $1$ a passi di $0{,}2$
 {cite}`radford2022robust`; e siccome una temperatura alta rende il modello
 meno incaponito sulla parola che gli sembra ovvia, gli capiterà di provarne una

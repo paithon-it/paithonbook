@@ -54,7 +54,7 @@ Il guaio non finisce con la carta. Per scrivere il voto di una riga bisogna aver
 giocato quella schermata almeno una volta, e basta che la pallina si sposti di
 un quadretto perché la schermata sia un'altra, con la sua riga da riempire. Otto
 ore al giorno per cinquant'anni fanno scorrere una trentina di miliardi di
-schermate, che su quell'elenco non si vedono.
+schermate, che non scalfiscono nemmeno quell'elenco.
 
 Il modo di dare i voti regge. A cedere è l'elenco, cioè l'idea di tenere una
 riga per ciascuna schermata.
@@ -180,8 +180,8 @@ Quel primo lavoro, *Playing Atari with Deep Reinforcement Learning* (Mnih e
 colleghi, 2013), diventa nel 2015 un articolo su *Nature*, *Human-level
 control through deep reinforcement learning*: un'unica architettura, senza
 ritocchi specifici per gioco, regge il confronto con un collaudatore umano
-professionista su 49 titoli Atari, e in ventinove di essi ne raggiunge almeno
-il 75% del punteggio, con il solo schermo per guida e un punteggio avaro, che
+professionista su 49 titoli Atari, e in ventinove di essi raggiunge almeno
+il 75% del punteggio umano, con il solo schermo per guida e un punteggio avaro, che
 nei giochi Atari arriva ogni tanto e non spiega mai perché.
 
 L'anno dopo arriva il colpo che raggiunge il grande pubblico. L'articolo su
@@ -197,8 +197,8 @@ curiosità da laboratorio.
 
 ## Il prezzo: un addestramento che balla, e milioni di partite
 
-L'entusiasmo non deve nascondere il conto da pagare. Il deep RL (l'abbreviazione
-di *deep reinforcement learning*, e da qui in avanti si userà spesso) è
+L'entusiasmo non deve nascondere il conto da pagare. Il deep RL (abbreviazione
+di *deep reinforcement learning*, d'ora in avanti usata spesso) è
 notoriamente capriccioso.
 
 `````{tab} Elementare
@@ -222,15 +222,15 @@ meno.
 
 I campioni sono fortemente correlati (fotogrammi consecutivi) e il *target*
 $r + \gamma \max_{a'} Q(s',a';\theta)$ si muove insieme ai pesi che stiamo
-aggiornando: la combinazione di approssimazione, bootstrapping e
-apprendimento off-policy è la celebre *deadly triad* che può divergere. DQN la
+aggiornando: la combinazione di approssimazione, bootstrapping e apprendimento
+off-policy è la celebre *deadly triad* che può causare divergenza. DQN la
 addomestica con due trucchi: l’experience replay (campionare a caso da un
 buffer di transizioni passate, decorrelandole) e la rete target $\theta^{-}$
-aggiornata di rado, che stabilizza il bersaglio. Resta il costo campionario:
-la versione di *Nature* usava $50$ milioni di passi dell'agente per titolo, cioè
-$200$ milioni di fotogrammi dell'emulatore (ogni azione è ripetuta per quattro),
-circa $38$ giorni di gioco. La *sample efficiency* è tuttora un problema di
-ricerca aperto.
+aggiornata di rado, che stabilizza il bersaglio. Resta il costo campionario: la
+versione di *Nature* usava $50$ milioni di passi dell'agente per titolo, cioè
+$200$ milioni di fotogrammi dell'emulatore (ogni azione è ripetuta per
+quattro), circa $38$ giorni di gioco. La *sample efficiency* è tuttora un
+problema di ricerca aperto.
 
 `````
 
@@ -249,12 +249,12 @@ Poi si cambia famiglia. Invece di stimare il valore di ogni azione e prendere
 la migliore, si impara direttamente la policy, la regola che dice che cosa
 fare. Sono i metodi a *gradiente di policy*: alla policy, che qui si chiama
 attore, si affianca un critico che ne giudica le mosse una per una, e la
-famiglia arriva a PPO, l'algoritmo che oggi si prova per primo, che tiene ogni
-aggiornamento vicino alla policy da cui è partito. Una policy appresa così è
-anche il consiglio che orienta la ricerca ad albero di AlphaGo; e dalla stessa
-famiglia viene la fase finale dell'addestramento degli assistenti
-conversazionali, quella che li porta verso le risposte che le persone
-preferiscono.
+famiglia arriva a PPO, l'algoritmo che oggi si prova per primo, studiato per
+tenere ogni aggiornamento vicino alla policy da cui è partito. Una policy
+appresa così è anche il consiglio che orienta la ricerca ad albero di AlphaGo;
+e dalla stessa famiglia viene la fase finale dell'addestramento degli
+assistenti conversazionali, quella che li porta verso le risposte che le
+persone preferiscono.
 
 Quella famiglia serve subito. Nel controllo continuo (un braccio robotico,
 uno sterzo) le mosse sono una quantità da dosare e non un menu di poche voci, e

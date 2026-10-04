@@ -114,8 +114,8 @@ strada dei generatori a pochi passi.
 **Il punto che va dichiarato.** Per $w=1$ questa è esattamente
 $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t,c)$, cioè il campionamento dalla
 condizionata vera, e la formula di Bayes è rispettata; per $w>1$ non lo è più,
-e si estrapola oltre il punto che il teorema autorizza. Quello che resta da
-mettere in conto è la lettura di ricambio che circola, cioè che il risultato
+e si estrapola oltre il punto che il teorema autorizza. L'errore da
+evitare è l'interpretazione diffusa secondo cui il risultato
 equivalga a campionare dalla distribuzione inclinata
 
 $$
@@ -133,13 +133,13 @@ differenza si misura.
 
 ## Che cosa la guida fa davvero alla distribuzione
 
-Il banco di prova è quello che il capitolo usa da qualche sezione, con una
-modifica: ogni classe è una gaussiana di deviazione $0{,}5$ attorno al suo
-centro, $-1{,}5$ o $+1{,}5$, così si può misurare anche di quanto la guida
-restringe la distribuzione. Il punteggio condizionato e quello libero (la
-miscela delle due classi) hanno forma chiusa, quindi quello che si misura è la
-guida e non gli errori di una rete: nella scena delle bussole, sono le due
-bussole esatte.
+Il banco di prova è quello della {doc}`sezione sul limite continuo
+</ModelliDiffusione/sde-e-ode>`, con una modifica: ogni classe è una gaussiana
+di deviazione $0{,}5$ attorno al suo centro, $-1{,}5$ o $+1{,}5$, così si può
+misurare anche di quanto la guida restringe la distribuzione. Il punteggio
+condizionato e quello libero (la miscela delle due classi) hanno forma chiusa,
+quindi quello che si misura è la guida e non gli errori di una rete: nella
+scena delle bussole, sono le due bussole esatte.
 
 ```python
 import numpy as np
@@ -225,9 +225,9 @@ Le cure che si usano derivano tutte da questa lettura. Si può rimettere in
 scala l'immagine guidata, riportandone l'ampiezza a quella che aveva la
 bussola condizionata da sola: si smorza l'esagerazione senza cambiare la
 direzione, e in pratica si mescolano le due versioni, perché il riscalamento
-puro dà immagini spente. Si può tagliare i valori estremi a ogni passo, non
-a una soglia decisa una volta per tutte ma a un livello scelto ogni volta
-guardando quanto sono grandi i valori di quell'immagine. E si può accendere
+puro dà immagini spente. Si possono tagliare i valori estremi a ogni passo: non
+a una soglia fissa, ma a un livello calcolato di volta
+in volta in base ai valori dell'immagine. E si può accendere
 la guida solo in un tratto del percorso invece che lungo tutto: non costa
 niente, e per scegliere il tratto bisogna sapere dove il danno nasce.
 
@@ -280,7 +280,7 @@ Le mitigazioni in uso derivano tutte da questa diagnosi:
   quasi niente nel risultato. È la mitigazione con il miglior rapporto fra
   guadagno e costo, perché è gratuita.
 
-Resta da dire, per non lasciare l'impressione che la guida sia un errore, che
+La guida non è però un errore da correggere a ogni costo:
 senza di essa i modelli condizionati al testo producono immagini che seguono la
 richiesta troppo poco per essere utili, e i punteggi percettivi con guida sono
 molto migliori. Lo scambio è deliberato, e conoscerne il prezzo esatto è
@@ -308,14 +308,14 @@ la attraversa due volte invece di una, all'andata e al ritorno: siccome il
 modello non si sta addestrando, il ritorno costa quanto l'andata, e il passo
 costa il doppio.
 
-C'è un accorgimento che fa la differenza fra funzionare e non funzionare, ed è
-istruttivo. La misura va applicata non all'immagine rumorosa che si ha in
-mano, ma alla stima dell'immagine pulita che il modello sa già produrre in
-ogni istante. Un misuratore di qualità estetica davanti a un'immagine mezza
-distrutta risponde a caso, e la sua indicazione sarebbe rumore; davanti alla
-stima di come quell'immagine finirà, risponde sensatamente. È il motivo per cui
-la maggior parte dei metodi che aggiungono vincoli a un modello di diffusione,
-senza riaddestrarlo, passa da quella stima.
+Un accorgimento fa la differenza fra funzionare e non funzionare: la misura va
+applicata non all'immagine rumorosa che si ha in mano, ma alla stima
+dell'immagine pulita che il modello sa già produrre in ogni istante. Un
+misuratore di qualità estetica davanti a un'immagine mezza distrutta risponde a
+caso, e la sua indicazione sarebbe rumore; davanti alla stima di come
+quell'immagine finirà, risponde sensatamente. È il motivo per cui la maggior
+parte dei metodi che aggiungono vincoli a un modello di diffusione, senza
+riaddestrarlo, passa da quella stima.
 
 C'è un caso in cui questa sola idea copre una famiglia intera di problemi.
 Ricostruire la parte mancante di una foto, tirar fuori i dettagli da
@@ -462,7 +462,7 @@ invece di sparire. Le contromisure standard sono un termine di
 regolarizzazione verso il modello di partenza (una divergenza KL, con il suo
 coefficiente), il rimescolamento periodico dei dati di preferenza, e
 l'interruzione anticipata guidata da una valutazione indipendente. Nessuna
-delle tre risolve il problema, lo rallentano.
+delle tre risolve il problema: tutte e tre lo rallentano soltanto.
 
 `````
 

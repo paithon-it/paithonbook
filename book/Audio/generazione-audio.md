@@ -83,23 +83,23 @@ $$
 p(\mathbf{x}) = \prod_{t=1}^{T} p(x_t \mid x_1, \dots, x_{t-1}),
 $$
 
-dove $x_t$ è il campione audio al passo $t$ (è la forma d'onda campionata della
-prima sezione, dove i singoli campioni si scrivevano $x[n]$). Due scelte
-architetturali rendono il tutto praticabile. La prima è la quantizzazione:
-predire un valore reale continuo sarebbe scomodo, così l'ampiezza viene ridotta
-a $256$ livelli (un byte per campione) con la compansione **$\mu$-law** (di cui
-diciamo tra poco) e la rete emette una softmax su quelle $256$ classi. La
-seconda sono le **convoluzioni causali dilatate**: «causali» perché ogni
-campione vede solo il passato (mai il futuro, che non esiste ancora),
-«dilatate» perché a ogni strato il filtro salta un numero crescente di campioni
-($1, 2, 4, 8, \dots$) raddoppiando: con dilatazione $d$ i campioni saltati fra
-un ingresso e il successivo sono $d-1$, quindi a $1$ la convoluzione è quella
-ordinaria. Il raddoppio non prosegue all'infinito: sale fino a $512$ e poi
-ricomincia da $1$, e la pila è fatta di blocchi così. Dentro un blocco il campo
-recettivo cresce in modo *esponenziale* con la profondità, e impilando i
-blocchi cresce in modo proporzionale al loro numero. Con filtri di lunghezza
-$2$, $J$ strati per blocco (dilatazioni $1, 2, \dots, 2^{J-1}$) e $B$ blocchi,
-il campo recettivo è
+dove $x_t$ è il campione audio al passo $t$ (è la forma d'onda campionata vista
+introducendo il suono digitale, dove i singoli campioni si scrivevano $x[n]$).
+Due scelte architetturali rendono il tutto praticabile. La prima è la
+quantizzazione: predire un valore reale continuo sarebbe scomodo, così
+l'ampiezza viene ridotta a $256$ livelli (un byte per campione) con la
+compansione **$\mu$-law** (di cui diciamo tra poco) e la rete emette una
+softmax su quelle $256$ classi. La seconda sono le **convoluzioni causali
+dilatate**: «causali» perché ogni campione vede solo il passato (mai il futuro,
+che non esiste ancora), «dilatate» perché a ogni strato il filtro salta un
+numero crescente di campioni ($1, 2, 4, 8, \dots$) raddoppiando: con
+dilatazione $d$ i campioni saltati fra un ingresso e il successivo sono $d-1$,
+quindi a $1$ la convoluzione è quella ordinaria. Il raddoppio non prosegue
+all'infinito: sale fino a $512$ e poi ricomincia da $1$, e la pila è fatta di
+blocchi così. Dentro un blocco il campo recettivo cresce in modo *esponenziale*
+con la profondità, e impilando i blocchi cresce in modo proporzionale al loro
+numero. Con filtri di lunghezza $2$, $J$ strati per blocco (dilatazioni $1, 2,
+\dots, 2^{J-1}$) e $B$ blocchi, il campo recettivo è
 
 $$
 R = 1 + B\,(2^{J} - 1)
@@ -242,7 +242,7 @@ nota tenuta:
 L'errore massimo di ricostruzione resta attorno all’$1\%$ dell'escursione
 picco-picco (il segnale vive in $[-1, 1]$, quindi l'escursione è 2 e l'errore
 $0{,}0201$): con un solo byte per campione l'onda torna indietro quasi intatta.
-Si noti però il rovescio, che è la parte istruttiva: sull'errore *massimo* la
+Il rovescio però è la parte istruttiva: sull'errore *massimo* la
 quantizzazione lineare è cinque volte migliore ($0{,}0039$ contro $0{,}0201$),
 perché la $\mu$-law spende i suoi gradini sulle ampiezze piccole e ne lascia di
 più larghi sui picchi. È il baratto voluto, ed è anche una lezione sulle
@@ -281,9 +281,9 @@ grezzo predicessimo un'unità molto più «densa»: un token che riassume divers
 millisecondi di suono? È esattamente ciò che offre un codec neurale: un
 autoencoder addestrato a comprimere la forma d'onda in una sequenza *corta* di
 token discreti e a ricostruirla da quelli. I token nascono dallo stesso
-principio di quantizzazione visto nella sezione precedente, portato alle sue
-conseguenze: l'audio diventa qualche centinaio di simboli al secondo invece di
-decine di migliaia di campioni.
+principio di quantizzazione dei {doc}`codec neurali <codec-neurali>`, portato
+alle sue conseguenze: l'audio diventa qualche centinaio di simboli al secondo
+invece di decine di migliaia di campioni.
 
 Ma il numero che conta davvero è quanti passi in fila servono, perché è la
 fila a costare. Prendiamo il codec di MusicGen, il generatore di musica del
@@ -365,7 +365,7 @@ un modello auto-supervisionato e i **token acustici** di un codec neurale, due
 famiglie con ruoli complementari, in quello che il paper chiama uno *schema di
 tokenizzazione ibrido*. I token
 semantici provengono da un modello auto-supervisionato della famiglia vista in
-[Imparare dal suono senza etichette](rappresentazioni-auto-supervisionate.md);
+{doc}`Imparare dal suono senza etichette <rappresentazioni-auto-supervisionate>`;
 nel paper è w2v-BERT, parente stretto di wav2vec 2.0
 e HuBERT: catturano il contenuto fonetico e la struttura a lungo termine, ma
 buttano via gran parte del dettaglio acustico. I token acustici vengono

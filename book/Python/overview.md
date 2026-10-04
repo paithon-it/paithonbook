@@ -17,7 +17,7 @@ uffici del centro di ricerca dove lavora ad Amsterdam sono chiusi per le feste,
 e lui riempie il tempo scrivendo, per hobby, un nuovo linguaggio di
 programmazione. Lo chiama **Python**: non per il serpente, ma per i Monty
 Python, il gruppo comico inglese di cui è fan. La prima versione pubblica esce
-nel 1991. Trent'anni dopo quel passatempo è il linguaggio in cui si scrivono i
+nel 1991. Trent'anni dopo, quel passatempo è il linguaggio in cui si scrivono i
 principali framework di deep learning e gran parte del codice che accompagna
 la ricerca sul machine learning, dalla rivoluzione del deep learning del 2012
 ai grandi modelli linguistici di oggi. Ci è arrivato con una divisione del
@@ -28,11 +28,11 @@ La divisione c'era già in AlexNet, la rete che nel 2012 aprì la stagione del
 deep learning: il calcolo in C++ e in CUDA, il linguaggio con cui si
 programmano le schede grafiche, e sopra uno strato di Python per configurarla e
 lanciarla. Che quel livello superiore fosse Python non era scontato. Negli anni
-subito dopo i laboratori di punta lo scrivevano in Lua, mentre Python aveva già
-Theano, nato in ambito accademico prima del 2012; la partita si è chiusa con
-librerie che si scrivono in Python e calcolano in C++, e la storia di PyTorch,
-cioè Torch rifatto per Python, la racconta l'apertura del {doc}`capitolo che
-porta il suo nome </PyTorch/overview>`.
+subito dopo, i laboratori di punta scrivevano il codice in Lua, mentre Python
+aveva già Theano, nato in ambito accademico prima del 2012; la partita si è
+chiusa con librerie che si scrivono in Python e calcolano in C++, e la storia
+di PyTorch, cioè Torch rifatto per Python, la racconta l'apertura del
+{doc}`capitolo che porta il suo nome </PyTorch/overview>`.
 
 Com'è successo? Python non è il linguaggio più veloce, né il più elegante in
 senso accademico. Ha vinto per altre ragioni.
@@ -181,9 +181,9 @@ quella torre si chiama *stack*). Ognuna fa una cosa e la fa bene.
 
 La torre delle librerie scientifiche di Python. Le due frecce sono i due
 «poggia su» veri: NumPy sul linguaggio, e Pandas, Matplotlib e scikit-learn su
-NumPy, senza il quale non funzionano. Sopra il secondo strato la
+NumPy, senza il quale non funzionano. Sopra il secondo strato, la
 freccia manca, ed è il punto: PyTorch e TensorFlow stanno accanto alla torre
-più che sopra, perché i conti se li fanno per conto proprio, con un motore
+più che sopra, perché i conti li fanno da sé, con un motore
 tutto loro, e con NumPy si limitano a scambiarsi i dati.
 ```
 
@@ -193,7 +193,7 @@ riscriverle: Pandas aggiunge le etichette, le colonne e il raggruppamento
 delle righe, e quando c'è da sommare un milione di valori la somma la fa
 NumPy.
 
-Il modo in cui NumPy quella somma la fa ha un nome, **vettorizzazione**: invece
+Il modo in cui NumPy esegue quella somma ha un nome, **vettorizzazione**: invece
 di dire al calcolatore che cosa fare a un numero e poi ripeterglielo un milione
 di volte, glielo si dice una volta sola sul blocco intero. Da dove venga il
 guadagno è meno ovvio di quanto sembri.
@@ -322,7 +322,7 @@ no: `/usr/bin/python3` è un segnaposto che esiste per gli strumenti da
 sviluppatore di Apple, al primo uso propone di installarli e contiene una
 versione vecchia, quindi anche lì Python si scarica da `python.org`, come su
 Windows. Su Windows, durante l'installazione, si spunta «Add Python to PATH»: è
-la casella che dice al terminale dove Python è stato messo, e senza di essa il
+la casella che dice al terminale dove si trova Python, e senza di essa il
 terminale risponderà che Python non lo trova. Poi, quattro gesti (su Windows il
 comando si chiama `python`, oppure `py`, al posto di `python3`):
 
@@ -372,14 +372,14 @@ pip install numpy pandas matplotlib scikit-learn
 Su Debian e su Ubuntu il primo dei tre comandi può fermarsi lamentando che
 manca `ensurepip`. Quelle due distribuzioni consegnano Python senza il modulo
 che crea gli ambienti, e il modulo va chiesto a parte, una volta sola, con
-`sudo apt install python3-venv`. La parolina `sudo` davanti a un comando
+`sudo apt install python3-venv`. La parola `sudo` davanti a un comando
 significa «questo lo faccio da amministratore», e il terminale chiederà la
 password: serve perché stiamo aggiungendo qualcosa al computer intero, e non al
 singolo progetto.
 
 Due parole sui comandi. Il `-m` vuol dire «esegui il modulo che si chiama
 così», dove un modulo è un file di Python che si può tanto eseguire quanto
-importare; è il modo di lanciare uno strumento che viaggia dentro Python invece
+importare; è il modo di lanciare uno strumento incluso in Python invece
 che un file scritto da te, e `venv` è quello strumento. `source` esegue le
 istruzioni contenute in un file senza aprire una finestra nuova, e serve
 proprio perché l'attivazione deve valere per il terminale che hai davanti. Che
@@ -391,7 +391,7 @@ sparisce. Per ritrovare le stesse librerie su un'altra macchina,
 `pip freeze > requirements.txt` ne scrive l'elenco con le versioni in un file,
 e `pip install -r requirements.txt` le reinstalla.
 
-Di strumenti per gli ambienti ce ne sono altri: se in una guida senti nominare
+Ci sono anche altri strumenti per gli ambienti: se in una guida senti nominare
 `conda` oppure `uv`, fanno lo stesso lavoro con altri comandi. `venv` e `pip`
 bastano per tutto quello che serve qui.
 

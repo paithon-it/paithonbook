@@ -60,7 +60,7 @@ artificiale: sono io a delineare i temi, a dare la direzione e a scegliere le
 fonti, e l'AI elabora la prima bozza. Questo libro è, alla lettera, l'AI che
 spiega se stessa.
 
-Quello che l'AI ha scritto lo rilegge **un'altra AI**, che alla stesura non ha
+Quello che l'AI ha scritto lo rilegge un'altra AI, che alla stesura non ha
 partecipato e ha un compito solo, cercare l'errore: rifà i conti, riapre gli
 articoli citati, ripercorre le derivazioni ed esegue il codice invece di
 guardarlo. Chi ha scritto una cosa è l'ultimo a poterci trovare uno sbaglio, e

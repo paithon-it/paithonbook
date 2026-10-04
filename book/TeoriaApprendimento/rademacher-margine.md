@@ -44,7 +44,7 @@ ne accorge, la dimensione VC no.
 La garanzia che ne esce ha la stessa forma di quella della dimensione VC.
 L'errore vero sta sotto l'errore sugli esempi, più quel punteggio sulle monete,
 più un pezzetto che si restringe con il numero degli esempi. E anche il
-punteggio si restringe: una
+punteggio scende: una
 famiglia che insegue dieci monete senza fatica ne insegue mille molto peggio.
 Resta un inconveniente pratico: trovare davvero la regola migliore
 sulle monete può essere un conto lunghissimo, e per molte famiglie ci si
@@ -64,7 +64,7 @@ $$
 $$
 
 con $\sigma_1,\dots,\sigma_m$ indipendenti e uniformi su $\{-1,+1\}$ (le
-variabili di Rademacher), e la complessità di Rademacher è
+variabili di Rademacher). La complessità di Rademacher vera e propria è
 $\mathfrak{R}_m(\mathcal{G})=\mathbb{E}_{S\sim\mathcal{D}^m}\big[\hat{\mathfrak{R}}_S(\mathcal{G})\big]$.
 Il sup misura la correlazione migliore che la famiglia raggiunge con un rumore
 puro. Per la classificazione binaria,
@@ -91,7 +91,7 @@ sul campione, e premia i campioni benevoli (punti allineati, poche dicotomie
 realizzabili). Il legame con la teoria di prima passa per il lemma di Massart
 (teorema 3.7), che per le famiglie a valori $\pm1$ dà
 $\mathfrak{R}_m(\mathcal{H})\le\sqrt{2\log\Pi_{\mathcal{H}}(m)/m}$ (corollario
-3.8); con Sauer ne esce di nuovo $O\big(\sqrt{d\log m/m}\big)$, cioè Rademacher
+3.8); con Sauer si ottiene di nuovo $O\big(\sqrt{d\log m/m}\big)$, cioè Rademacher
 non è mai peggio di VC a meno delle costanti, e sui dati buoni è meglio. Il
 prezzo è computazionale: calcolare $\hat{\mathfrak{R}}_S$ vuol dire minimizzare
 l'errore empirico su etichette casuali, un problema NP-difficile per alcune
@@ -119,7 +119,7 @@ La larghezza però va misurata rispetto a quanto sono sparsi i punti. Una
 strada larga un metro fra punti sparsi su un chilometro è un sentiero; fra
 punti raccolti in una stanza è un'autostrada. Quello che conta è il rapporto
 fra la larghezza (il margine, la parola con cui la SVM la chiama) e l'ingombro
-dei punti, e da quel rapporto dipende quanto il righello riesce a inseguire le
+dei punti: da questo dipende quanto il righello riesce a inseguire le
 monete.
 
 Non dipende invece dal numero di direzioni in cui i punti possono stare. Su un
@@ -147,7 +147,7 @@ e quella costa un poco di più.
 
 `````{tab} Superiore
 
-Sia $\mathcal{H}=\{\mathbf{x}\mapsto\mathbf{w}^\top\mathbf{x} :
+Siano $\mathcal{H}=\{\mathbf{x}\mapsto\mathbf{w}^\top\mathbf{x} :
 \lVert\mathbf{w}\rVert\le\Lambda\}$ e i punti in una palla di raggio $r$ (il
 termine noto della SVM si assorbe aggiungendo a ogni punto una coordinata
 costante, che allarga un poco $r$). Allora (Mohri e colleghi, teorema 5.10; per
@@ -187,9 +187,9 @@ minimizzazione diretta di quel rapporto. Il bound però vale per $\rho$ e
 $\Lambda$ fissati prima di vedere il campione, come Mohri e colleghi precisano
 subito dopo il teorema 5.8, mentre la SVM il margine lo sceglie sui dati.
 Riscalando $\mathbf{w}$ ci si riduce a $\Lambda=1$, con $\rho$ il margine
-geometrico, e la versione che vale insieme per tutti i $\rho\in(0,r]$, quindi
-anche per quello trovato, costa una costante $4/\rho$ al posto di $2/\rho$
-davanti alla complessità, un termine $\sqrt{\log\log_2(2r/\rho)/m}$ e
+geometrico. La versione che vale simultaneamente per tutti i $\rho\in(0,r]$ (e
+quindi anche per quello trovato) costa una costante $4/\rho$ al posto di
+$2/\rho$ davanti alla complessità, un termine $\sqrt{\log\log_2(2r/\rho)/m}$ e
 $\log(2/\delta)$ al posto di $\log(1/\delta)$ (teorema 5.9). Con questa
 correzione il bound resta invariato nello spazio di Hilbert a nucleo
 riproducente del {doc}`kernel trick </MachineLearning/svm-kernel>`, con
@@ -203,7 +203,7 @@ Il blocco calcola la complessità di Rademacher empirica, cioè misurata sui pun
 che si hanno, delle funzioni lineari con pesi di lunghezza al più uno
 ($\Lambda=1$), su punti presi a caso sulla sfera di raggio uno ($r=1$: tutti a
 distanza uno dall'origine), in dimensione due e in dimensione mille. La mette
-accanto al tetto $r\Lambda/\sqrt{m}$, che qui vale $1/\sqrt{m}$, e ai due pezzi
+accanto al tetto $r\Lambda/\sqrt{m}$, che qui vale $1/\sqrt{m}$, e ai due termini
 che la complessità aggiunge all'errore sugli esempi: quello della garanzia di
 margine, per un margine richiesto $\rho=0{,}5$, e quello della garanzia VC per
 gli iperpiani.
@@ -249,13 +249,13 @@ n=1000 m=1000: Rademacher 0.0316 (tetto 0.0316); margine 0.126, VC inf
 
 Il numero stampato come Rademacher è la correlazione con le monete, che vale $1$
 quando la famiglia le insegue tutte e $0$ quando ne indovina metà: con dieci
-punti sul cerchio di raggio uno vale $0{,}28$. In due dimensioni i due pezzi
+punti sul cerchio di raggio uno vale $0{,}28$. In due dimensioni i due termini
 sono simili, al più uno il doppio dell'altro. In mille dimensioni la garanzia VC
 non esiste più, perché mille esempi non bastano nemmeno a superare la dimensione
-VC degli iperpiani, mentre il pezzo di margine ha lo stesso tetto che nel piano,
+VC degli iperpiani, mentre il termine di margine ha lo stesso tetto che nel piano,
 e gli sta a un passo: la dimensione dello spazio non entra. Il tetto
 $1/\sqrt{m}$, anzi, in mille dimensioni viene toccato quasi esattamente, e la
-ragione è geometrica. In dimensione mille, punti presi a caso sono, come
+ragione è geometrica. In dimensione mille, i punti presi a caso sono, come
 vettori, quasi perpendicolari fra loro, e la loro somma con segni a caso ha
 quasi la stessa lunghezza a ogni sorteggio, quella che il tetto calcola. Nel
 piano, in dimensione due, i vettori a volte si sommano e a volte si cancellano,

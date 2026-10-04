@@ -34,7 +34,7 @@ esattamente come una rete ricorrente. Il Transformer, il modello che aveva
 appena spodestato le reti ricorrenti, ricade in una di loro. Il re, sotto il
 mantello, era un vecchio parente.
 
-Non è un gioco di prestigio: è una porta. L'attenzione dei
+Questa equivalenza apre una porta. L'attenzione dei
 {doc}`Transformer </Transformers/overview>` si paga due volte, e il primo conto
 è quello appena fatto: ogni parola guarda tutte le altre, quindi raddoppiando
 la lunghezza del testo il lavoro quadruplica. È il costo *quadratico*, che si
@@ -86,7 +86,7 @@ che giocano le architetture lineari.
 L’addestramento si fa una volta sola: il testo esiste già tutto, e il modello
 lo attraversa per imparare. La generazione viene dopo, quando il modello è in
 uso e scrive parola per parola un testo che non esiste ancora (si chiama anche
-*inferenza*, che è il nome tecnico dello stesso momento). Le due cose costano
+*inferenza*, che è il nome tecnico di questa fase). Le due cose costano
 in modo diverso, e un modello può essere bravo in una e disastroso nell'altra.
 
 Le due grandi famiglie di modelli per sequenze hanno infatti un pregio e un
@@ -126,7 +126,7 @@ L'attenzione lineare vive nel punto d'incontro: espone due forme
 equivalenti dello stesso calcolo. Una forma *parallela*, per addestrare
 sull'intera sequenza sfruttando le GPU (in pratica spezzata a blocchi di $B$
 token, per tenere il costo lineare); e una forma *ricorrente*, per generare a
-costo e memoria costanti per token: nessuna *cache* che si gonfia. La tabella
+costo e memoria costanti per token: senza una *cache* che cresce. La tabella
 mette i costi a confronto per il solo mescolamento fra token, con una testa di
 dimensione $d$ (le proiezioni che producono query, chiavi e valori costano lo
 stesso in tutti i casi); i «passi in sequenza» sono quelli che devono
@@ -226,8 +226,8 @@ subito, e bastano poche voci perché non ci si legga più niente di preciso. La
 seconda, {doc}`scrivere meglio nella memoria
 </AttenzioneLineare/scrivere-nella-memoria>`, porta i due rimedi: il *gate*,
 che lascia sbiadire ciò che è vecchio, e la *delta rule*, che prima di scrivere
-corregge ciò che c'è già. Li mette in fila in una tabella in cui i modelli si
-distinguono soprattutto per come trattano lo stato di prima. La terza, le
+corregge ciò che c'è già. Li riassume in una tabella in cui i modelli si
+distinguono soprattutto per come trattano lo stato precedente. La terza, le
 {doc}`architetture lineari </AttenzioneLineare/architetture-lineari>`, rimonta
 questi pezzi in tre modelli completi, RetNet, RWKV e xLSTM. Chiude un
 {doc}`notebook </AttenzioneLineare/linear-attention-ricorrenza>`, una pagina di
@@ -238,12 +238,12 @@ una parola alla volta, e controlla che il risultato coincida.
 
 ```{admonition} Da ricordare
 :class: important
-- Cambiato il modo di misurare quanto due parole si somigliano (con uno che si
-  spezza in un pezzo per ciascuna delle due, al posto di quello della
+- Cambiato il modo di misurare quanto due parole si somigliano (con un calcolo
+  che si spezza in un pezzo per ciascuna delle due, al posto di quello della
   softmax), il Transformer che scrive, dove ogni parola guarda soltanto quelle
   venute prima, si riscopre una rete ricorrente
-  {cite}`katharopoulos2020transformers`: legge una parola alla volta
-  portandosi dietro una memoria di dimensione sempre uguale, lo stato.
+  {cite}`katharopoulos2020transformers`: legge una parola alla volta portandosi
+  dietro una memoria di dimensione sempre uguale, lo stato.
 - È la via per aggirare i due conti che i Transformer pagano sui testi lunghi:
   il lavoro che cresce a valanga con la lunghezza (raddoppiando il testo
   quadruplica) e la KV cache, la memoria di appoggio che si allunga a ogni

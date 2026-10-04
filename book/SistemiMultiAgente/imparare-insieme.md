@@ -18,7 +18,7 @@ molte prede e le prede calano se ci sono molti predatori. Oggi si chiamano
 equazioni di Lotka-Volterra, perché alle stesse era arrivato l'anno prima
 Alfred Lotka, studiando le reazioni chimiche che oscillano.
 
-La risposta al quesito di D'Ancona c'era, ma la cosa da tenere è un'altra:
+La risposta al quesito di D'Ancona c'era, ma il punto decisivo è un altro:
 quelle due popolazioni non si fermano mai su un valore di equilibrio, ci
 girano attorno all'infinito. Segnate su un piano, le prede in orizzontale e i
 predatori in verticale, gli anni disegnano un anello chiuso che ripassa sempre
@@ -341,14 +341,14 @@ e nessuno di questi metodi vi si trasferisce.
 
 ## Addestramento centralizzato, esecuzione decentralizzata
 
-L'asimmetria che salva è questa. Agenti come questi non imparano nel mondo vero,
-imparano dentro un simulatore: un mondo finto costruito al computer, in cui
-si può rigiocare la stessa situazione mille volte senza rompere niente. E quel
-simulatore è nostro, quindi in allenamento possiamo guardarci dentro quanto ci
-pare: la situazione completa, le mosse di tutti, perfino cose che nessun agente
-potrà mai osservare. Usarle è legittimo, perché il simulatore le mette a
-disposizione, ed è un'ipotesi esplicita del metodo. In partita no, e ciascuno ha
-soltanto quello che vede lui.
+L'asimmetria che salva è questa. Agenti come questi non imparano nel mondo
+vero, imparano dentro un simulatore: un mondo finto costruito al computer, in
+cui si può rigiocare la stessa situazione mille volte senza causare danni. E
+quel simulatore è nostro, quindi in allenamento possiamo ispezionarlo a
+piacimento: la situazione completa, le mosse di tutti, perfino cose che nessun
+agente potrà mai osservare. Usarle è legittimo, perché il simulatore le mette a
+disposizione, ed è un'ipotesi esplicita del metodo. In partita no, e ciascuno
+ha soltanto quello che vede lui.
 
 La ricetta che ne discende si chiama **CTDE**, addestramento centralizzato ed
 esecuzione decentralizzata, e la sua regola d'oro sta in una riga:
@@ -490,7 +490,7 @@ di policy: ogni agente allena $K$ sotto-policy e a ogni episodio ne sorteggia
 una, così che gli altri non possano adattarsi a un avversario solo. È una
 contromisura esplicita alla non stazionarietà residua, e non servirebbe se
 questa fosse stata eliminata «per costruzione». Le reti target invece non
-provano niente né in un senso né nell'altro: MADDPG le eredita da DDPG, dove
+dimostrano nulla né in un senso né nell'altro: MADDPG le eredita da DDPG, dove
 esistono già con un agente solo, perché anche lì il bersaglio
 $r + \gamma\,Q'$ si calcolerebbe altrimenti con la stessa rete che si sta
 aggiornando. Da cui la conseguenza già enunciata in apertura di sezione, che
@@ -815,11 +815,13 @@ StarCraft II: una lega in cui convivono tre tipi di partecipanti.
 Ci sono gli agenti principali, quelli che devono battere tutti: si allenano
 contro la lega intera, ma non pescando gli avversari a caso, bensì incontrando
 più spesso quelli che li stanno battendo. Ci sono gli **sfruttatori**, che sono
-la parte controintuitiva: agenti pagati per *non* essere bravi in generale, e
-per specializzarsi invece in una singola strategia che umilia qualcun altro. Ne esistono di due tipi: chi va a caccia dei punti deboli dei campioni del
-momento, e chi cerca invece quelli della lega nel suo insieme; e servono a far incontrare al campione una debolezza che da solo non
-incontrerebbe mai. E poi ci sono le versioni congelate di tutti costoro,
-che una volta entrate nella lega ci restano per sempre.
+la parte controintuitiva: agenti premiati per *non* essere forti in generale, e
+per specializzarsi invece in una singola strategia che neutralizza un
+avversario specifico. Ne esistono di due tipi: chi va a caccia dei punti deboli
+dei campioni del momento, e chi cerca invece quelli della lega nel suo insieme;
+e servono a far incontrare al campione una debolezza che da solo non
+incontrerebbe mai. E poi ci sono le versioni congelate di tutti costoro, che
+una volta entrate nella lega ci restano per sempre.
 
 La lega però non è gratis: ogni avversario in più è memoria, partite e calcolo,
 e il conto della sezione sul costo del coordinamento torna a presentarsi qui,
@@ -897,7 +899,7 @@ Il secondo somiglia all'allenarsi contro l'ultima versione, visto dall'altro
 lato. Il falsario scopre l'unica cosa che riesce a far passare per buona al
 poliziotto del momento (mettiamo: un certo tipo di volto) e si mette a produrre
 soltanto quella. Contro l'avversario corrente vince quasi sempre, quindi il suo
-punteggio è ottimo; ma di tutto il resto ha smesso di saper fare qualunque cosa.
+punteggio è ottimo; ma del resto non sa più fare niente.
 Quando il poliziotto lo scopre, il falsario salta a un altro tipo di volto e il
 poliziotto lo insegue, come nel giro di sasso, carta e forbici. Il nome che ha
 in letteratura è **collasso dei modi**, dove i «modi» sono i tipi diversi di

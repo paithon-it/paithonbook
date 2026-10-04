@@ -76,7 +76,7 @@ connesso nascosto nelle architetture profonde.
 Il paper mostra anche che lo spazio latente $\mathcal{Z}$ è semanticamente
 strutturato: aritmetica vettoriale come "uomo con occhiali $-$ uomo senza
 occhiali $+$ donna senza occhiali" produce, decodificata da $G$, il volto di
-una donna con occhiali. Con una cautela che il paper stesso dichiara, e che
+una donna con occhiali. C'è però una cautela, che il paper stesso dichiara e che
 pesa: sui singoli vettori l'operazione è instabile, e il risultato regge
 mediando i $\mathbf{z}$ di tre esemplari per concetto. La struttura c'è, ma è
 una proprietà di regioni dello spazio, non di punti singoli; ed è comunque un
@@ -143,9 +143,9 @@ input sempre più ricco, da un'etichetta discreta a un'intera frase.
 ## SAGAN e BigGAN: guardare lontano, poi crescere
 
 Condizionare sulla classe non basta, da solo, a far disegnare bene mille classi
-diverse. Nel 2018 due lavori sulle GAN condizionate di ImageNet (la raccolta di
+diverse. Nel 2018 due lavori sulle GAN condizionate di ImageNet, la raccolta di
 oltre un milione di fotografie divise in mille classi su cui si addestrano i
-classificatori d’immagini) lo affrontano uno dopo l’altro. La **SAGAN**
+classificatori d’immagini, affrontano il problema uno dopo l’altro. La **SAGAN**
 (*Self-Attention GAN*) di Zhang, Goodfellow, Metaxas e Odena mette l’attenzione
 dentro il generatore e il discriminatore {cite}`zhang2019self`; **BigGAN**, di
 Brock, Donahue e Simonyan, prende la SAGAN come punto di partenza, la
@@ -255,7 +255,7 @@ modulo oltre una soglia $\tau$ vengono ricampionate. Abbassando $\tau$ i
 campioni si avvicinano al modo della distribuzione d’uscita: l’Inception Score,
 che nei modelli condizionati non penalizza la mancanza di varietà, sale in modo
 monotono, mentre il FID prima migliora e poi peggiora, e gli autori ne leggono
-una curva fra fedeltà e varietà parente di quella fra precision e recall.
+una curva fra fedeltà e varietà analoga a quella fra precision e recall.
 Osservazioni vicine c’erano già {cite}`marchesi2017megapixel`; la trattazione
 sistematica e il nome sono di BigGAN. La troncatura sposta però la distribuzione
 d’ingresso rispetto all’addestramento: i vettori troncati hanno
@@ -341,7 +341,7 @@ siano correlati. In generazione si usa il *truncation trick* di BigGAN,
 spostato in $\mathcal{W}$:
 $\mathbf{w}' = \bar{\mathbf{w}} + \psi\,(\mathbf{w} - \bar{\mathbf{w}})$, con
 $\bar{\mathbf{w}}$ la media degli stili e $\psi < 1$, che avvicina i campioni
-alle regioni dense e compra fedeltà al prezzo della varietà. Il FID quella
+alle regioni dense e ottiene fedeltà a scapito della varietà. Il FID quella
 rinuncia la fa pagare: nel confronto di Kynkäänniemi e colleghi
 {cite}`kynkaanniemi2019improved` la configurazione di StyleGAN più troncata, con
 volti belli e tutti simili, ha un FID di $91{,}7$ contro il $4{,}5$ di quella
@@ -452,7 +452,7 @@ Gli altri tre contributi del lavoro:
 - **Pixelwise feature normalization** nel generatore: dopo ogni convoluzione il
   vettore di attivazioni di ciascun pixel è riscalato perché la media dei suoi
   quadrati sui canali valga uno. Non
-  ha parametri appresi e serve a impedire che le magnitudini scappino via
+  ha parametri appresi e serve a impedire che le magnitudini divergano
   durante l'escalation del duello.
 - **Minibatch standard deviation**: al discriminatore si aggiunge un canale
   costante che riporta la deviazione standard delle attivazioni *attraverso il
@@ -532,7 +532,7 @@ lì che viene il controllo per scala.
 Le immagini di StyleGAN avevano un difetto che si vedeva a occhio nudo, e nella
 maggior parte dei casi anche senza cercarlo: una macchia a forma di goccia
 d'acqua, sempre uguale, da qualche parte nell'immagine. Quando nell'immagine
-finita non si vedeva c'era comunque nelle mappe intermedie del generatore, e lì
+finita non si vedeva, c'era comunque nelle mappe intermedie del generatore, e lì
 c'era praticamente sempre. Per un anno è stata una di quelle cose che si vedono
 e non si spiegano, e a renderla un enigma c'era anche il fatto che il
 discriminatore, che sta lì apposta per accorgersi di ciò che non torna, se la
@@ -684,8 +684,8 @@ basta l'identità $\mathbf{J}_{\mathbf{w}}^{\top}\mathbf{u} =
 \nabla_{\mathbf{w}}\big(g(\mathbf{w}) \cdot \mathbf{u}\big)$, che è una normale
 retropropagazione. È un vincolo di buon condizionamento *numerico* della
 mappa latente-immagine (numerico nel senso dell'analisi numerica, cioè quanto
-la mappa amplifica una differenza in ingresso; niente a che vedere con il
-condizionamento della GAN condizionale, che è un'etichetta data in pasto alle
+la mappa amplifica una differenza in ingresso; da non confondere con il
+condizionamento della GAN condizionale, che è un'etichetta data in ingresso alle
 due reti), e ha un effetto collaterale utile dichiarato dagli autori: i
 generatori così regolarizzati sono molto più facili da invertire, cioè da
 usare al contrario per trovare il $\mathbf{w}$ che produce una data fotografia,
@@ -747,7 +747,14 @@ $\mathcal{L}_{\text{cyc}}$ non compare da sola ma pesata da un coefficiente
 $\lambda$ (nel paper, $\lambda = 10$) accanto alle due perdite avversarie: il
 rapporto fra le due spinte è un iperparametro, e non dei più innocui.
 
-Questo vincolo rende superfluo l'allineamento a coppie. Che poi «ancori il contenuto» è vero solo in parte, ed è un limite noto: Chu, Zhmoginov e Sandler {cite}`chu2017cyclegan` hanno mostrato che CycleGAN impara a soddisfare il ciclo nascondendo l'immagine di partenza dentro quella tradotta, come un segnale ad alta frequenza quasi invisibile a occhio, che $F$ poi rilegge per ricostruire l'originale. Il ciclo si chiude, ma per steganografia invece che per conservazione del soggetto: una $\mathcal{L}_{\text{cyc}}$ bassa non è di per sé una garanzia di fedeltà.
+Questo vincolo rende superfluo l'allineamento a coppie. Che il vincolo «ancori
+il contenuto», però, è vero solo in parte, ed è un limite noto: Chu, Zhmoginov
+e Sandler {cite}`chu2017cyclegan` hanno mostrato che CycleGAN impara a
+soddisfare il ciclo nascondendo l'immagine di partenza dentro quella tradotta,
+come un segnale ad alta frequenza quasi invisibile a occhio, che $F$ poi
+rilegge per ricostruire l'originale. Il ciclo si chiude, ma per steganografia
+invece che per conservazione del soggetto: una $\mathcal{L}_{\text{cyc}}$ bassa
+non è di per sé una garanzia di fedeltà.
 `````
 
 ## Applicazioni
@@ -819,7 +826,7 @@ Il guaio è che le due riduzioni si mordono la coda. Un Transformer paga
 l'attenzione col quadrato della lunghezza della fila (fila doppia, conto
 quadruplo), quindi la fila va accorciata tanto; ma comprimere tanto, con una
 rete addestrata a somigliare all'originale puntino per puntino, produce
-immagini molli, perché la strada più sicura per somigliare a tutto è fare la
+immagini sfocate, perché la strada più sicura per somigliare a tutto è fare la
 media di tutto. È qui che entra il duello. Patrick Esser, Robin Rombach e
 Björn Ommer {cite}`esser2021taming` cambiano due cose al compressore. Primo: al
 posto del conto puntino per puntino mettono un giudizio percettivo, che
@@ -850,7 +857,7 @@ Il catalogo però va fatto bene, e qui torna il duello. Se le tessere si scelgon
 soltanto col criterio «somiglia», il catalogo si riempie di tessere sbiadite:
 davanti a un dubbio la scelta più prudente è sempre il grigio medio, che
 somiglia un po’ a tutto e non è niente. Mettendo un esperto a bocciare le
-ricostruzioni molli, le tessere restano nette. È il mestiere di sempre, ma
+ricostruzioni sfocate, le tessere restano nette. È il mestiere di sempre, ma
 stavolta il prodotto dell'esperto è un alfabeto e non un'immagine.
 
 Un'avvertenza: il catalogo è un soffitto. Ciò che nessuna delle mille
@@ -934,7 +941,7 @@ che lo misura su due fronti: un FID migliore di quello di BigGAN su ImageNet,
 e una copertura più ampia della distribuzione, misurata dal richiamo (una
 guida forte, che alza la fedeltà, ne fa perdere una parte, ma resta sopra
 quella della GAN). La ragione per cui il passaggio è stato così rapido, però,
-sta nei due guasti delle GAN. Un modello di diffusione si addestra minimizzando
+sta nei due difetti delle GAN. Un modello di diffusione si addestra minimizzando
 una loss di regressione, con un bersaglio che non dipende da un'altra rete, e
 quindi senza un duello da tenere in equilibrio; e copre i modi della
 distribuzione molto meglio di una GAN. L'idea è opposta a quella avversaria: si

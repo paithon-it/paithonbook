@@ -21,8 +21,8 @@ ragioni che la teoria non aveva ancora capito.
 
 Uno studente prepara un esame a quiz. Lo studente è la rete neurale, e tutto
 quello che sarebbe capace di imparare è la sua famiglia di regole. Ha un foglio
-con trecento domande, ciascuna con dieci risposte possibili, e accanto a ognuna
-quella giusta, e le impara; all'esame, su domande nuove dello stesso tipo, ne
+con trecento domande, ciascuna con dieci risposte possibili e quella giusta
+segnata accanto, e le impara; all'esame, su domande nuove dello stesso tipo, ne
 azzecca novantacinque su cento. Poi gli si dà un altro foglio con le stesse
 domande e le risposte rimescolate a caso. Le impara lo stesso, tutte, e ci
 mette solo cinque o sei volte il tempo di prima, quando ci si aspetterebbe
@@ -31,7 +31,7 @@ All'esame, su domande nuove, va poco meglio di chi tira a indovinare.
 
 Lo studente è lo stesso nei due casi, con la stessa memoria e la stessa
 capacità. La prova delle monete, fatta su di lui con un terzo foglio in cui le
-risposte sono un sì o un no tirati con una moneta, dà il risultato peggiore
+risposte sono un sì o un no tirato con una moneta, dà il risultato peggiore
 possibile per la garanzia: impara qualunque sequenza di sì e di no gli si metta
 davanti. Tutte le garanzie di prima, che guardano solo quanto è capace lo
 studente, dicono quindi la stessa cosa nei due casi, cioè niente. Eppure nel
@@ -59,7 +59,7 @@ differenza.
 `````{tab} Superiore
 
 Gli esperimenti di Zhang e colleghi, su CIFAR-10 con architetture standard e
-SGD, stabiliscono tre cose, e le si legge meglio nelle loro parole. Le reti
+SGD, stabiliscono tre cose, e si leggono meglio nelle loro parole. Le reti
 «adattano facilmente un'etichettatura casuale dei dati di addestramento» fino
 all'errore zero, e lo fanno anche sostituendo le immagini con rumore privo di
 struttura; su ImageNet, con un milione di etichette casuali su mille classi,
@@ -186,8 +186,8 @@ dentro la rete, i pesi, che possono gonfiare ogni distacco. Per staccare allo
 stesso modo le risposte a caso i pesi devono crescere molto di più, e la misura
 viene più grande.
 
-Un'altra guarda quanto la preparazione è salda. Se si prende lo studente e lo
-si confonde un po', cambiandogli qualche ricordo a caso, e continua ad andare
+Un'altra guarda quanto la preparazione è salda. Se si prende lo studente, lo
+si confonde un po' cambiandogli qualche ricordo a caso, e lui continua ad andare
 bene, la sua bravura non è un colpo di fortuna: vanno bene anche tutte le copie
 di lui appena diverse. Una garanzia che vale per tutte quelle copie insieme,
 invece che per uno studente solo, si può calcolare, e per una rete vera dà
@@ -213,7 +213,7 @@ multiclasse che scala con la *complessità spettrale* della rete normalizzata pe
 il margine: il prodotto delle norme spettrali delle matrici dei pesi (una
 costante di Lipschitz della rete) per un fattore correttivo, diviso per il
 margine di classificazione. È la generalizzazione del bound di margine delle
-funzioni lineari nella linea aperta da Bartlett nel 1998, quando mostrò che a
+funzioni lineari nel filone aperto da Bartlett nel 1998, quando mostrò che a
 contare è la taglia dei pesi e non quella della rete {cite}`bartlett1998sample`,
 e ha la proprietà che ai bound visti fin qui mancava, perché dipende dai pesi
 trovati. Sperimentalmente, su AlexNet addestrata con SGD su MNIST e CIFAR-10, il
@@ -227,7 +227,7 @@ sui pesi, e il bound PAC-Bayes, proposto da McAllester alla fine degli anni
 Novanta {cite}`mcallester1999some` e raffinato in molte varianti, controlla il
 rischio medio della rete stocastica con il suo rischio empirico medio. Nella
 forma che usano Dziugaite e Roy {cite}`dziugaite2017computing`, con probabilità
-almeno $1-\delta$, per ogni $Q$ insieme,
+almeno $1-\delta$, per tutte le $Q$ simultaneamente,
 
 $$
 \mathrm{kl}\Big(\mathbb{E}_{h\sim Q}\big[\hat{R}_S(h)\big]\,\Big\|\,

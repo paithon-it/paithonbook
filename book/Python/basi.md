@@ -1,10 +1,10 @@
 # Le basi di Python
 
-Il nucleo di Python è piccolo: 35 parole chiave nelle versioni attuali, cioè
-quelle che il linguaggio riserva a sé, come `if`, `for` e `def`, e che quindi
-non si possono usare come nomi, e una manciata di costrutti che si combinano
-fra loro invece di una regola speciale per ogni caso. Imparati quelli, il tempo
-si spende a decidere che cosa dire, non a ricordare eccezioni.
+Il nucleo di Python è piccolo: 35 parole chiave nelle versioni attuali (quelle
+che il linguaggio riserva a sé, come `if`, `for` e `def`, e che quindi non si
+possono usare come nomi) e una manciata di costrutti che si combinano fra loro
+invece di una regola speciale per ogni caso. Imparati quelli, il tempo si
+spende a decidere che cosa dire, non a ricordare eccezioni.
 
 Prima vengono i mattoni, poi gli attrezzi che si incontrano appena si legge
 codice scritto da altri: le comprehension, i messaggi d'errore, le classi, i
@@ -144,26 +144,26 @@ converte di nascosto, e `"1" + 1` solleva `TypeError` invece di produrre
 intero `5`. Ogni valore è un oggetto con un tipo a runtime, e lo stesso nome può
 essere rilegato a oggetti di tipo diverso in momenti diversi.
 
-Dettagli che contano più avanti: gli `int` hanno precisione arbitraria
-(non c'è overflow a 64 bit), i `float` sono double IEEE 754 a 64 bit, con una
+Dettagli che contano più avanti. Gli `int` hanno precisione arbitraria
+(non c'è overflow a 64 bit). I `float` sono double IEEE 754 a 64 bit, con una
 quindicina di cifre decimali significative e decimali come $0{,}1$ non
 rappresentabili esattamente (`0.1 + 0.2 == 0.3` è `False`, e due `float` si
-confrontano con `math.isclose`), le `str` sono sequenze Unicode
-immutabili, e `bool` è una sottoclasse di `int`, infatti `True == 1` e
+confrontano con `math.isclose`). Le `str` sono sequenze Unicode
+immutabili, e `bool` è una sottoclasse di `int`: infatti `True == 1` e
 `False == 0`. Dalla stessa premessa, il tipo che appartiene all'oggetto, viene
 lo stile *duck typing*: conta cosa un oggetto *sa fare*, non a quale classe
 appartiene.
 
-Il modello a riferimenti ha due conseguenze immediate. La prima è l’*alias*:
-`b = a` non copia niente, dà un secondo nome allo stesso oggetto, e
-`b.append(3)` si vede anche da `a` (per copiare servono `a.copy()`, che è
-superficiale, o `copy.deepcopy`). La seconda è la distinzione fra i due
-confronti: `is` chiede «sono lo stesso oggetto?», `==` chiede «valgono la
-stessa cosa?». L'unico uso di `is` da imparare a memoria è `if x is None`;
-usarlo sui numeri dà risultati che dipendono da come CPython riusa gli oggetti
-(`x = 1000; y = 1000; x is y` risponde `True` se le due righe stanno nello
-stesso blocco compilato e `False` se le si digita separatamente all'interprete,
-che è esattamente il motivo per cui non va usato così).
+Il modello a riferimenti ha due conseguenze immediate. La prima è l’*alias*: `b
+= a` non copia niente, dà un secondo nome allo stesso oggetto, e `b.append(3)`
+si vede anche da `a` (per copiare servono `a.copy()`, che è superficiale, o
+`copy.deepcopy`). La seconda è la distinzione fra i due confronti: `is` chiede
+«sono lo stesso oggetto?», `==` chiede «valgono la stessa cosa?». L'unico uso
+di `is` da imparare a memoria è `if x is None`. Usarlo sui numeri dà risultati
+che dipendono da come CPython riusa gli oggetti (`x = 1000; y = 1000; x is y`
+risponde `True` se le due righe stanno nello stesso blocco compilato e `False`
+se le si digita separatamente all'interprete): è il motivo per cui non va usato
+così.
 
 `````
 
@@ -277,11 +277,11 @@ un posto tutti gli elementi. Una coda da cui si toglie in testa si scrive con
 un `dict` e gli elementi di un `set` devono essere hashable, cioè avere un
 hash che non cambia nel tempo. Per i tipi built-in la proprietà coincide in
 pratica con l'immutabilità (una tupla che contiene una lista, per esempio,
-non è hashable), ed è il motivo per cui una lista non può stare in un set ma
-una tupla di numeri sì; fuori dai built-in la coincidenza cade, perché
+non è hashable): è il motivo per cui una lista non può stare in un set ma
+una tupla di numeri sì. Fuori dai built-in la coincidenza cade, perché
 un'istanza di una classe definita dall'utente è mutabile ed è hashable per
 default (l'hash deriva dall'identità dell'oggetto), finché la classe non
-ridefinisce `__eq__`: in quel caso Python pone `__hash__ = None` e l'istanza
+ridefinisce `__eq__`. In quel caso Python pone `__hash__ = None` e l'istanza
 smette di essere hashable, a meno di scrivere un `__hash__` coerente con
 l'uguaglianza (oggetti uguali devono avere hash uguale).
 
@@ -624,7 +624,7 @@ capita, usa `def`.
 
 ## List comprehension: l'idioma pythonico
 
-Costruire una lista trasformando un'altra è talmente comune che Python ha una
+Costruire una lista trasformandone un'altra è talmente comune che Python ha una
 sintassi dedicata. Il nome inglese, *list comprehension*, viene dalla
 matematica: un insieme si può definire *per elencazione* (0, 1, 4, 9, …) oppure
 *per comprensione* («i quadrati dei numeri da 0 a 9»), ed è esattamente ciò che
@@ -747,10 +747,10 @@ catturare poco:
   messaggio;
 - `raise` senza argomenti, dentro un `except`, rilancia l'eccezione appena
   catturata: si usa quando si vuole registrare il guasto ma non nasconderlo;
-- i rami facoltativi: `else` gira solo se il `try` è filato liscio, `finally`
-  gira comunque, ed è il posto delle pulizie (chiudere un file, rilasciare
-  una risorsa). Il mestiere di `finally` è esattamente quello che il
-  costrutto `with` automatizza.
+- i rami facoltativi: `else` viene eseguito solo se il `try` non solleva
+  eccezioni, `finally` viene eseguito comunque, ed è il posto delle pulizie
+  (chiudere un file, rilasciare una risorsa). Il mestiere di `finally` è
+  esattamente quello che il costrutto `with` automatizza.
 
 Lo stile che ne esce ha un nome, **EAFP** (*easier to ask forgiveness than
 permission*): si prova e si gestisce il fallimento, invece di controllare
@@ -989,7 +989,7 @@ deve solo rispondere e non più imparare.
 
 `````{tab} Superiore
 
-Due dettagli separano un decoratore giocattolo da uno usabile, e sono
+Due dettagli separano un decoratore giocattolo da uno usabile:
 accettare qualunque firma e non falsificare l'identità di ciò che si avvolge.
 L'involucro sostituisce l'originale, quindi deve poter ricevere gli argomenti
 che riceveva quella: `*args` raccoglie in una tupla tutti gli argomenti passati per
@@ -1152,9 +1152,9 @@ numeri, insomma, il lucchetto è aperto quasi sempre.
 Il **Global Interpreter Lock** è un mutex nell'implementazione di riferimento
 di Python (CPython) che protegge lo stato interno dell'interprete, in
 particolare il **conteggio dei riferimenti** con cui ogni oggetto tiene traccia
-di quanti riferimenti lo puntano (un nome, un posto in una lista, un attributo)
-(è il meccanismo primario con cui CPython libera la
-memoria; il `gc` vero e proprio gli sta sopra e serve a raccogliere i cicli).
+di quanti riferimenti lo puntano (un nome, un posto in una lista, un
+attributo). È il meccanismo primario con cui CPython libera la memoria; il `gc`
+vero e proprio gli sta sopra e serve a raccogliere i cicli.
 La sua conseguenza è netta: un solo thread per interprete esegue bytecode
 Python in un dato istante. Resta una scelta di implementazione e non una
 proprietà del linguaggio, tanto che Jython e IronPython il GIL non ce l'hanno;
@@ -1206,7 +1206,7 @@ sub-interpreti (`concurrent.interpreters`, PEP 734), ciascuno con il proprio
 GIL dentro lo stesso processo; `concurrent.futures.InterpreterPoolExecutor` li
 usa come un pool di thread, con un costo di avvio e di memoria ancora alto e
 pochi oggetti condivisibili. È materia in movimento: quel che
-resta vero, e che conviene portarsi via, è la distinzione fra lavoro che
+resta vero, e che conviene ricordare, è la distinzione fra lavoro che
 aspetta e lavoro che calcola, e il fatto che condividere memoria e condividere
 nuclei sono due problemi diversi.
 ```
@@ -1335,7 +1335,7 @@ più spesso che almeno uno di loro abbia il turno. È un effetto
 instabile, e un motivo in più per misurare a macchina scarica.
 
 Il tempo di CPU stampato accanto serve a distinguere le due situazioni in
-cui la parete non scende, e va letto con una cautela da dire: `process_time()`
+cui la parete non scende, e va letto con una cautela: `process_time()`
 somma il lavoro di tutti i thread, quindi resta all'incirca uguale sia quando
 i thread si alternano sia quando lavorano davvero insieme, e da solo non
 dimostra nulla. Quello che dice è un'altra cosa, utile: quando la parete non

@@ -105,8 +105,8 @@ scrivono davvero.
 
 Nell'attenzione dei Transformer {cite}`vaswani2017attention` l'uscita (non
 normalizzata) per la query $i$ è una somma dei value pesati dalla somiglianza
-esponenziale $\exp(\mathbf{q}_i^\top \mathbf{k}_j)$ (il fattore di scala
-$1/\sqrt{d}$ lo consideriamo assorbito in query e chiavi). Il guaio è che
+esponenziale $\exp(\mathbf{q}_i^\top \mathbf{k}_j)$, con il fattore di scala
+$1/\sqrt{d}$ assorbito in query e chiavi. Il guaio è che
 quell'esponenziale *non si spezza*: non esiste una fattorizzazione esatta a
 dimensione finita in un prodotto di una funzione della sola $\mathbf{q}_i$ per
 una funzione della sola $\mathbf{k}_j$. Lo si vede riscrivendolo come
@@ -197,15 +197,16 @@ $$
 \phi(x) = \operatorname{elu}(x) + 1,
 $$
 
-applicata componente per componente e sempre maggiore di zero (in aritmetica
-esatta: per $x<0$ vale $\exp(x)$, ma il calcolo passa da $-1 + \exp(x)$, e in
-`float32` quella somma arrotonda a $-1$ appena $\exp(x)$ scende sotto
-$2^{-25}$, cioè da $x = -25\ln 2 \approx -17{,}33$ in giù; da lì $\phi$ è zero esatto, e un
-denominatore che si azzera è il modo tipico in cui questa implementazione si
-rompe). La softmax aveva anche un denominatore che
-normalizzava i pesi: lo si conserva come un secondo accumulatore
-$\mathbf{z} = \sum_j \phi(\mathbf{k}_j)$, e la lettura *normalizzata* diventa
-$\mathbf{o}_i = \mathbf{S}\,\phi(\mathbf{q}_i) \,/\, \big(\mathbf{z}^\top \phi(\mathbf{q}_i)\big)$.
+applicata componente per componente e sempre maggiore di zero. Lo è in
+aritmetica esatta: per $x<0$ vale $\exp(x)$, ma il calcolo passa da $-1 +
+\exp(x)$, e in `float32` quella somma arrotonda a $-1$ appena $\exp(x)$ scende
+sotto $2^{-25}$, cioè da $x = -25\ln 2 \approx -17{,}33$ in giù. Da lì $\phi$ è
+zero esatto, e un denominatore che si azzera è il modo tipico in cui questa
+implementazione si rompe. La softmax aveva anche un denominatore che
+normalizzava i pesi: lo si conserva come un secondo accumulatore $\mathbf{z} =
+\sum_j \phi(\mathbf{k}_j)$, e la lettura *normalizzata* diventa $\mathbf{o}_i =
+\mathbf{S}\,\phi(\mathbf{q}_i) \,/\, \big(\mathbf{z}^\top
+\phi(\mathbf{q}_i)\big)$.
 
 `````
 
@@ -285,17 +286,16 @@ pongono $\phi$ uguale all'identità {cite}`sun2023retnet,yang2024gla`, ed è
 quella delle formule da qui in avanti: $\phi$ assorbita nelle proiezioni che
 producono query e chiavi, e nessun $\mathbf{z}_t$.
 
-Guardiamo bene questa ricorrenza. È esattamente una RNN, ma con due
-differenze rispetto alle celle dei
-{doc}`modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>`.
-La prima: lo stato non è un vettore $\mathbf{h}_t$ ma una matrice
-$\mathbf{S}_t$ (una memoria molto più capiente). La
-seconda, decisiva: la transizione di stato è lineare, anzi è l'identità
-($\mathbf{S}_{t-1}$ passa intatto, gli si somma soltanto un termine nuovo). Non c'è
-nessuna $\tanh$ o non-linearità *sullo stato*, come invece in
-$\mathbf{h}_t = \tanh(\mathbf{W}_{hh} \mathbf{h}_{t-1} + \dots)$. L'aggiornamento costa $O(d^2)$ per
-token e la memoria è costante: la matrice $d \times d$ non cambia
-dimensione, che siamo al decimo o al milionesimo token.
+Guardiamo bene questa ricorrenza. È esattamente una RNN, ma con due differenze
+rispetto alle celle dei {doc}`modelli di sequenza
+</NaturalLanguageProcessing/modelli-sequenza>`. La prima: lo stato non è un
+vettore $\mathbf{h}_t$ ma una matrice $\mathbf{S}_t$ (una memoria molto più
+capiente). La seconda, decisiva: la transizione di stato è lineare, anzi è
+l'identità ($\mathbf{S}_{t-1}$ passa intatto, gli si somma soltanto un termine
+nuovo). Non c'è nessuna $\tanh$ o non-linearità *sullo stato*, come invece in
+$\mathbf{h}_t = \tanh(\mathbf{W}_{hh} \mathbf{h}_{t-1} + \dots)$.
+L'aggiornamento costa $O(d^2)$ per token e la memoria è costante: la matrice $d
+\times d$ non cambia dimensione, sia al decimo sia al milionesimo token.
 
 È il senso, volutamente ironico, del titolo del paper di Katharopoulos et al.,
 *Transformers are RNNs* {cite}`katharopoulos2020transformers`: sotto una certa
@@ -437,17 +437,17 @@ progressiva): l'operazione è associativa, quindi si calcola con uno *scan*
 parallelo a costo $O(n d^2)$, lineare. L'ostacolo qui non è il numero di
 operazioni ma la memoria: uno scan pretende di materializzare tutti gli $n$
 stati intermedi $d \times d$, cioè $O(n d^2)$ di memoria contro gli $O(d^2)$
-della forma ricorrente, e il traffico da e verso la memoria della GPU si mangia
+della forma ricorrente, e il traffico da e verso la memoria della GPU vanifica
 il guadagno del parallelismo (con $n = 8192$ e $d = 64$ per testa sono più di
 33 milioni di valori per testa e per strato, contro i 4096 dello stato).
 Nessuna delle due forme dà insieme le due cose. Katharopoulos e colleghi
-addestrano con la forma ricorrente, scritta come kernel per GPU che è
-sequenziale nel tempo e parallelo su tutto il resto, e riscrivono anche il
+addestrano con la forma ricorrente, scritta come kernel per GPU
+sequenziale nel tempo ma parallelo su tutto il resto. Riscrivono inoltre il
 gradiente come somma cumulativa, così da non conservare nessuno stato
-intermedio; la conciliazione usata in seguito è il calcolo a blocchi
+intermedio. La conciliazione usata in seguito è il calcolo a blocchi
 (*chunkwise*), proposto da Hua e colleghi nel 2022 {cite}`hua2022flash`:
-parallelo dentro ogni blocco, ricorrente fra un blocco e l'altro, costo
-$O(nBd + nd^2)$ con blocchi di ampiezza $B$, cioè lineare in $n$. I due addendi
+parallelo dentro ogni blocco, ricorrente fra un blocco e l'altro, con costo
+$O(nBd + nd^2)$ per blocchi di ampiezza $B$, cioè lineare in $n$. I due addendi
 di un blocco, $B^2 d$ per la parte parallela e $B d^2$ per leggere e aggiornare
 lo stato, si equivalgono a $B \approx d$, dove il totale è $O(n d^2)$ come
 nella forma ricorrente; blocchi più grandi aumentano il lavoro dentro il blocco

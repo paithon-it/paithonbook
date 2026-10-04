@@ -763,7 +763,7 @@ con i minimi quadrati (quelli della regressione con cui, più avanti, si stima a
 mano un AR(1)); con una parte MA la verosimiglianza non è più quadratica nei
 $\theta_j$, si calcola con il filtro di Kalman, che il capitolo incontra più
 avanti, e va massimizzata per via numerica. L'ottimizzatore può fermarsi prima
-di arrivare a convergenza, e l'AIC di una stima non convergita non è
+di arrivare a convergenza, e l'AIC di una stima non giunta a convergenza non è
 confrontabile con quello degli altri modelli. Quando la serie ha una
 stagionalità marcata, si aggiunge un secondo blocco di termini che agiscono al
 ritardo stagionale $m$: è il SARIMA($p,d,q$)($P,D,Q$)$_m$, dove le lettere
@@ -916,7 +916,7 @@ opposti: l'ADF parte dal sospetto che la serie *non* sia a posto e chiede alla
 serie di smentirlo, il KPSS parte dal sospetto contrario. Quindi lo stesso
 responso, nei due, vuol dire cose opposte, e il modo di leggerli è guardare se
 concordano. Da qui esce già uno dei tre conteggi, quello di mezzo, che dice
-quante volte si è raddrizzato.
+quante volte si è raddrizzata la serie.
 
 **Secondo tempo: scegliere gli altri due.** La ricetta dei manuali dice di
 leggere i due grafici a barre, l'ACF e la PACF, e dedurli da lì.
@@ -1103,7 +1103,7 @@ un ARMA stimato, il test va calcolato con $\ell - (p+q)$ gradi di libertà e
 non con $\ell$ {cite}`hyndman2021forecasting`: i parametri già spesi per far
 aderire il modello ai dati non contano come prove d'innocenza. Ometterlo è la
 scorciatoia più diffusa della materia (le librerie lasciano fare, perché il
-parametro va passato a mano) ed è sempre ottimista: gonfia il $p$-value, e
+parametro va passato a mano) ed è sempre ottimista: gonfia il $p$-value,
 cioè fa sembrare adeguati modelli che lo sono meno. Sull'ARMA scelto con
 seicento osservazioni la differenza fra le due letture è fra $0{,}71$ e
 $0{,}51$.
@@ -1267,7 +1267,7 @@ può dare. (Senza togliere i gradi già spesi per stimare il modello, il $p$ sal
 a $0{,}706$: è la lettura ottimista che le librerie lasciano fare, e che fa
 sembrare il modello più adeguato di quanto sia.) Il modello «sbagliato» va
 benissimo, ed è la lezione centrale: l'obiettivo non è indovinare il modello
-vero (che sulle serie reali non esiste), è trovarne uno che non lasci struttura
+vero (che sulle serie reali non esiste), ma trovarne uno che non lasci struttura
 fuori.
 
 Con 2000 osservazioni l'AIC trova l'ordine giusto, e il secondo classificato è
@@ -1399,7 +1399,7 @@ dove $\eta_t$ segue un SARIMA($p,d,q$)($P,D,Q$)$_m$. Si legge bene così: una
 regressione ordinaria il cui errore non è indipendente ma ha esso stesso
 una struttura temporale, il che è precisamente la ragione per cui una
 regressione lineare ordinaria su dati temporali dà coefficienti con errori
-standard sbagliati.
+standard sbagliati (di solito troppo piccoli, e i test troppo ottimisti).
 
 Il vincolo operativo da tenere a mente: per una previsione a orizzonte $h$
 servono i valori $\mathbf{z}_{T+1},\dots,\mathbf{z}_{T+h}$. O sono noti per
@@ -1728,7 +1728,7 @@ La quantità $x_t - \hat{\ell}_{t|t-1}$ è l’**innovazione**, cioè la parte d
 misura che il modello non aveva previsto, e $K_t \in (0,1)$ dice quanta parte
 di quella sorpresa entra nella stima. Il guadagno è grande quando l'incertezza
 sulla previsione supera quella della misura, e piccolo nel caso opposto: è un
-rapporto fra fiducie, non una costante da tarare.
+rapporto fra i gradi di fiducia, non una costante da tarare.
 
 La garanzia è forte e va enunciata per intero. Sotto linearità e rumore
 gaussiano, $\hat{\ell}_t$ è la media della distribuzione a posteriori dello
@@ -2101,8 +2101,8 @@ sugli stessi dati, e con $\phi = 0{,}6$ è la parte più grossa. Con cinquecento
 osservazioni la formula dà sei millesimi, con cinquanta sei centesimi, cioè il
 10% del valore vero, e la prova ripetuta misura $-0{,}005$ e $-0{,}058$.
 
-Il punto non è che la distorsione superi l'errore standard, che a cinquanta
-osservazioni resta il doppio ($0{,}12$). Il punto è che l'errore standard, a
+La distorsione non supera l'errore standard, che a cinquanta
+osservazioni resta il doppio ($0{,}12$). Tuttavia l'errore standard, a
 forza di ripetere la misura, si media via, e la distorsione no, perché punta
 sempre dalla stessa parte: passando da cinquecento a cinquanta osservazioni
 cresce da meno di un sesto dell'errore standard a quasi la metà.

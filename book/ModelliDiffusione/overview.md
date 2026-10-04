@@ -94,12 +94,13 @@ esisteva da nessuna parte: la rete ha imparato che aspetto ha il mondo.
 
 Verrebbe da immaginare che a ogni giro si sollevi un velo di sporco, e che dopo
 mille veli il quadro sia pulito. Non è così: a ogni giro se ne toglie
-pochissimo, e se ne getta sopra dell'altro, sorteggiato di nuovo. Una delle due
-ragioni per cui l'immagine emerge lo stesso: quel poco che si toglie è
+pochissimo, e se ne getta sopra dell'altro, sorteggiato di nuovo. L'immagine
+emerge lo stesso, e una delle due ragioni è che quel poco che si toglie è
 mirato (ogni giro spinge il quadro un pochino più verso una figura sensata),
-quello che si getta è sorteggiato, e mille spintine tutte concordi si
-sommano mentre mille spintoni a casaccio si disfano fra loro. La seconda
-ragione richiede i numeri, e ce li prendiamo nella prossima sezione.
+quello che si getta è sorteggiato, e mille spintine tutte concordi si sommano
+mentre mille spintoni a casaccio si disfano fra loro. La seconda ragione
+richiede i numeri, e ce li prendiamo nella {doc}`sezione su come funziona la
+diffusione </ModelliDiffusione/come-funziona>`.
 
 `````
 
@@ -179,13 +180,14 @@ figura, tanti passi piccoli invece di pochi grandi. Ogni passo chiede alla rete
 un compito facile, e la difficoltà si distribuisce sull'intera catena.
 ```
 
-La figura rende evidente anche il conto da pagare, che il capitolo ripeterà
-spesso. Se la generazione è una catena di centinaia di passi, ogni passo vuole
-la sua risposta dalla rete: per una immagine bisogna interrogarla centinaia
-di volte, non una. Nel resto del capitolo questa operazione (passare alla rete
-un fotogramma rumoroso con il suo livello di rovina, e leggerne la risposta) si
-chiama sempre allo stesso modo, **una valutazione della rete** (in inglese si
-contano le NFE, *number of function evaluations*), e se ne conterà il numero.
+La figura rende evidente anche il conto da pagare, un vincolo che tornerà di
+continuo. Se la generazione è una catena di centinaia di passi, ogni passo
+vuole la sua risposta dalla rete: per una immagine bisogna interrogarla
+centinaia di volte, non una. Da qui in avanti questa operazione (passare alla
+rete un fotogramma rumoroso con il suo livello di rovina, e leggerne la
+risposta) si chiama sempre allo stesso modo, **una valutazione della rete** (in
+inglese si contano le NFE, *number of function evaluations*), e se ne conterà
+il numero.
 
 Il secondo atto è del 2020. Jonathan Ho, Ajay Jain e Pieter Abbeel, a
 Berkeley, ripuliscono la formulazione e la battezzano **DDPM**, *Denoising
@@ -219,8 +221,7 @@ Per la prima volta si può scrivere «un gatto nero che salta sul muro, in stile
 acquerello» e vedere l'immagine materializzarsi sul proprio computer, non nel
 data center di qualcun altro. La generazione di immagini smette di essere una
 demo e diventa un fenomeno pubblico, con il suo seguito di entusiasmo, cause
-legali sui dati di addestramento e domande aperte sul lavoro creativo, su cui
-torneremo.
+legali sui dati di addestramento e domande aperte sul lavoro creativo.
 
 ## Il falsario e il restauratore
 
@@ -285,10 +286,11 @@ Il confronto si gioca su tre assi.
 **Stabilità.** L'addestramento GAN cerca l'equilibrio di un gioco minimax
 $\min_G \max_D V(D,G)$: una dinamica a due giocatori che può oscillare,
 divergere o collassare, come visto nel capitolo precedente. La diffusione
-minimizza una singola loss di regressione,
-$\mathcal{L} = \mathbb{E}\lVert\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\rVert^2$:
-un obiettivo stazionario che scende con la discesa del gradiente come
-qualunque problema supervisionato, senza equilibri da inseguire.
+minimizza una singola loss di regressione, $\mathcal{L} =
+\mathbb{E}\lVert\boldsymbol{\epsilon} -
+\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\rVert^2$: un obiettivo
+stazionario che si minimizza con la discesa del gradiente come qualunque
+problema supervisionato, senza equilibri da inseguire.
 
 **Diversità.** Il minimo della loss quadratica è la media condizionata
 $\mathbb{E}[\boldsymbol{\epsilon} \mid \mathbf{x}_t]$ (la dimostrazione sta
@@ -297,16 +299,17 @@ definita per *ogni* esempio del dataset a *ogni* livello di rumore: il
 bersaglio dell'addestramento è l'intera distribuzione, modi compresi. Il *mode
 collapse* nasce dalla struttura del gioco avversario, dove il generatore è
 premiato se inganna $D$ e può riuscirci anche con un solo modo. Nella
-regressione sul rumore non c'è un avversario da ingannare, e un modo
-trascurato resta un errore che la loss fa pagare in proporzione alla sua
-massa. L'argomento vale per il minimo: una rete finita lo approssima, e la
-varietà si può perdere per altre vie, la guida forte della {doc}`sezione sulla
-guida </ModelliDiffusione/guida>` e la memorizzazione di singoli esempi di
+regressione sul rumore non c'è un avversario da ingannare, e un modo trascurato
+resta un errore che la loss fa pagare in proporzione alla sua massa.
+L'argomento vale per il minimo: una rete finita lo approssima, e la varietà si
+può perdere per altre vie, la guida forte della {doc}`sezione sulla guida
+</ModelliDiffusione/guida>` e la memorizzazione di singoli esempi di
 addestramento {cite}`carlini2023extracting`. Dhariwal e Nichol
 {cite}`dhariwal2021diffusion` misurano, oltre alla qualità, anche la copertura
 della distribuzione dei dati, con il richiamo. (Attenzione a non appoggiare
 questo argomento al limite variazionale: la loss che si usa davvero non è un
-bound, come mostra la sezione su come funziona la diffusione. Regge da sé.)
+bound, come mostra la {doc}`sezione su come funziona la diffusione
+</ModelliDiffusione/come-funziona>`. Regge da sé.)
 
 **Costo di campionamento.** Una GAN genera con una valutazione della rete;
 un DDPM ne richiede $T$ (mille, in origine), perché il campionamento percorre
@@ -326,7 +329,7 @@ discriminatore, che è il nome tecnico dell'esperto d'arte del capitolo
 precedente: il duello è rientrato come attrezzo di servizio dentro una macchina
 che di suo non ne ha bisogno, invece di sparire. L'impianto dei generatori di
 immagini arrivati al pubblico dal 2022 in poi, però, è questo e non quello, ed
-è la ragione per cui il resto del capitolo lo smonta pezzo per pezzo.
+è la ragione per cui da qui in avanti lo smonteremo pezzo per pezzo.
 
 ## Dal rumore all'immagine
 
@@ -384,16 +387,7 @@ applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
   Il conto si paga in attesa: il falsario dipinge in una pennellata sola, il
   restauratore ripete il suo giro centinaia di volte. È un baratto e non una
   classifica: tempo in cambio di stabilità e varietà.
-- Nel resto del capitolo: DDPM in dettaglio; i mille gradini resi
-  infinitamente piccoli, che fanno della scala una rampa; il flow matching, che
-  la strada fra rumore e immagine la sceglie dritta invece di ereditarla; il
-  trucco che fa lavorare la rete su una versione compressa della fotografia
-  invece che sui pixel, ed è il motivo per cui Stable Diffusion gira in casa;
-  un Transformer, cioè l'architettura del capitolo che porta quel nome, messo
-  al posto della rete di visione, e i modelli che con la stessa ricetta
-  generano video; i modi di ridurre i passi a qualche decina, e poi a uno solo;
-  la manopola che decide quanto il risultato obbedisca alla richiesta; e la
-  stessa ricetta applicata al testo.
+
 ```
 
 `````
@@ -421,12 +415,7 @@ applicata a uno stato fatto di simboli invece che di numeri, cioè al testo.
   avversario (la varietà si perde, se si perde, per la guida forte o per la
   memorizzazione), addestramento stabile, ma il campionamento costa molti
   passi di rete invece di uno.
-- Nel resto del capitolo: DDPM in dettaglio, il limite continuo che ne fa
-  un'equazione differenziale, il flow matching che sceglie il percorso
-  invece di ereditarlo, la diffusione latente di Stable Diffusion, i
-  diffusion Transformer, i campionatori che tagliano i passi, i
-  generatori a un passo, la guida e infine la diffusione sui simboli,
-  cioè sul testo.
+
 ```
 
 `````

@@ -68,11 +68,11 @@ oggetto. L'addestramento minimizza una loss composita che somma un termine di
 localizzazione (errore sulle coordinate, tipicamente *smooth L1* o una
 IoU-loss), un termine di classificazione (cross-entropy sulla classe) e un
 termine di **objectness** che supervisiona la confidenza, spingendola verso
-l'alto dove un oggetto c'è e verso zero sullo sfondo (in YOLOv1, e ancora in
-YOLOv2, il bersaglio non è uno ma la IoU stessa fra riquadro predetto e
-riquadro vero, cioè l'area in comune divisa per quella coperta in tutto, così
-che il punteggio incorpori già la qualità della localizzazione; da YOLOv3 in
-poi, semplicemente uno):
+l'alto dove un oggetto c'è e verso zero sullo sfondo. In YOLOv1 e YOLOv2 il
+bersaglio dell'objectness non era uno ma la IoU stessa fra riquadro predetto e
+riquadro vero (l'area in comune divisa per quella coperta in tutto), così che
+il punteggio incorporasse la qualità della localizzazione; da YOLOv3 in poi, è
+semplicemente uno. La formula unisce i tre termini:
 
 $$
 \mathcal{L} = \mathcal{L}_{\text{obj}} + \mathcal{L}_{\text{cls}} + \lambda \,\mathcal{L}_{\text{box}} .
@@ -182,15 +182,15 @@ $$
 \mathrm{FL}(p_t) = -\alpha_t\,(1 - p_t)^{\gamma} \log p_t ,
 $$
 
-dove $\alpha_t$ vale $\alpha$ sulle ancore positive e $1 - \alpha$ sullo
-sfondo, un peso fisso per classe come il $\lambda_{\text{noobj}}$ di YOLO, e il
-fattore $(1 - p_t)^{\gamma}$ è quello nuovo, perché dipende da quanto l'esempio
-è già risolto. Con $\gamma = 2$ un esempio con $p_t = 0{,}9$ pesa cento volte
-meno che nella cross-entropy, uno con $p_t \approx 0{,}968$ mille volte meno.
-Il lavoro usa $\gamma = 2$ e $\alpha = 0{,}25$, cioè pesa gli oggetti un terzo
-dello sfondo, al rovescio di $\lambda_{\text{noobj}}$: spenti i negativi facili
-dal fattore focale, sono i positivi a chiedere meno enfasi. La somma si divide
-per il numero delle sole ancore positive.
+dove $\alpha_t$ vale $\alpha$ sulle ancore positive e $1 - \alpha$ sullo sfondo
+(un peso fisso per classe, come il $\lambda_{\text{noobj}}$ di YOLO); il
+fattore $(1 - p_t)^{\gamma}$ è invece la vera novità, perché dipende da quanto
+l'esempio è già risolto. Con $\gamma = 2$ un esempio con $p_t = 0{,}9$ pesa
+cento volte meno che nella cross-entropy, uno con $p_t \approx 0{,}968$ mille
+volte meno. Il lavoro usa $\gamma = 2$ e $\alpha = 0{,}25$, cioè pesa gli
+oggetti un terzo dello sfondo, al rovescio di $\lambda_{\text{noobj}}$: spenti
+i negativi facili dal fattore focale, sono i positivi a chiedere meno enfasi.
+La somma si divide per il numero delle sole ancore positive.
 
 `````
 
@@ -264,23 +264,136 @@ la IoU). Quel confronto appartiene al solo addestramento, quando i riquadri
 veri ci sono: le ancore che ricoprono bene un oggetto diventano positive e
 imparano classe e offset verso di lui, le altre fanno da sfondo. In inferenza
 non c'è nessun riquadro vero da ricoprire: la rete produce punteggi e offset
-per tutte le ancore, ogni ancora corretta diventa un candidato, e la IoU
-ricompare solo alla fine, misurata fra i candidati stessi, per sfoltire i
-doppioni sullo stesso oggetto. È il meccanismo della *Region Proposal Network*
-di Faster R-CNN {cite}`ren2015faster`, che usa $k=9$ ancore per posizione (3
-scale × 3 proporzioni), e di SSD {cite}`liu2016ssd`, che le chiama *default
-boxes* e le distribuisce su mappe di feature a più risoluzioni, per coprire
-oggetti piccoli e grandi. Esistono anche rilevatori *anchor-free*, che
+per tutte le ancore, ogni ancora deformata dagli offset diventa un candidato, e
+la IoU ricompare solo alla fine, misurata fra i candidati stessi, per sfoltire
+i doppioni sullo stesso oggetto. È il meccanismo della *Region Proposal
+Network* di Faster R-CNN {cite}`ren2015faster`, che usa $k=9$ ancore per
+posizione (3 scale × 3 proporzioni), e di SSD {cite}`liu2016ssd`, che le chiama
+*default boxes* e le distribuisce su mappe di feature a più risoluzioni, per
+coprire oggetti piccoli e grandi. Esistono anche rilevatori *anchor-free*, che
 predicono direttamente centri e distanze dai bordi senza riquadri di partenza;
 ma le ancore restano il modo più chiaro per capire come una griglia fissa possa
 produrre riquadri di ogni forma.
 
 `````
 
+## Grandi e piccoli: le piramidi
+
+Le ancore hanno più taglie, ma da sole non bastano. Per riempire una cornice la
+rete legge una **mappa di feature**, la griglia di numeri con cui uno dei suoi
+strati descrive l'immagine, e una mappa sola non va bene per gli oggetti
+piccoli e per quelli grandi. Le mappe degli ultimi strati sanno che cosa c'è ma
+sono sgranate, e un oggetto piccolo ci occupa una cella o meno; quelle dei
+primi strati hanno il dettaglio ma non il significato. La risposta che si è
+imposta dal 2017 è una **piramide di feature**: le mappe dei vari strati,
+sempre più piccole e messe una sopra l'altra come i piani di una piramide, in
+cui il significato degli ultimi strati viene riportato fino ai primi.
+
+`````{tab} Elementare
+
+La bottega ha un problema che le cornici da sole non risolvono: in un quadro il
+passerotto in fondo al prato è una macchiolina di pochi puntini, il camion in
+primo piano prende mezza tela. Per decidere le cornici, la rete guarda il
+quadro con una fila di aiutanti, ciascuno un passo più lontano del precedente.
+Il primo sta a un palmo dalla tela e distingue ogni filo d'erba, ma ne vede un
+pezzetto alla volta e non sa che cosa rappresenti; l'ultimo, in fondo alla
+bottega, vede tutto il quadro e capisce che sul ramo c'è un uccello, ma da così
+lontano non saprebbe dire dove finisce.
+
+Una soluzione antica è rifare tutto più volte: preparare copie del quadro
+ingrandite e rimpicciolite, e far guardare ciascuna da capo. Funziona, ma il
+lavoro cresce con la superficie di tutte le copie messe insieme, e una copia
+ingrandita al doppio costa da sola quanto quattro.
+
+La piramide di feature costa molto meno, perché la fila fa un giro solo: chi
+sta più indietro non guarda il quadro da capo, lavora sugli appunti già
+riassunti da chi gli sta davanti. Poi il significato torna indietro. L'ultimo
+segna su un foglio di carta lucida, a grandi linee, «qui c'è un uccello»;
+l'aiutante davanti a lui ingrandisce il foglio fino alla misura dei propri
+appunti, ce lo posa sopra e lo ripassa con il suo tratto più fine, e così via
+fino al primo. Alla fine ognuno ha le due cose insieme: il dettaglio del
+proprio sguardo e il significato portato da chi vedeva l'insieme. E siccome
+tutti incorniciano seguendo lo stesso manuale, ognuno ricopia i propri appunti
+sullo stesso formato di foglio.
+
+Ogni oggetto lo incornicia l'aiutante che lo vede della misura giusta, con le
+cornici adatte a quella misura: il passerotto chi sta vicino alla tela, il
+camion chi sta in fondo. Resta un limite: un passerotto di due o tre puntini
+non lo trova nessuno. Per ragioni di spazio nemmeno il primo aiutante si
+avvicina più di un palmo, e dettagli più fini di così non li vede; e la cornice
+più piccola della bottega gli sta comunque larga.
+
+`````
+
+`````{tab} Superiore
+
+Le reti convoluzionali sono già piramidali. In una ResNet l'uscita
+$\mathbf{C}_l$ dell'ultimo blocco dello stadio $l$ ha passo $2^l$ rispetto
+all'ingresso, cioè $4, 8, 16, 32$ pixel per $l = 2, \dots, 5$, e sempre più
+canali: meno risoluzione, più semantica. Le soluzioni precedenti sceglievano.
+Faster R-CNN legge da una mappa sola ($\mathbf{C}_4$ con una ResNet, passo
+$16$), dove un oggetto di $32$ pixel occupa due celle per lato. La piramide
+d'immagine rifà la rete su più ridimensionamenti: il costo è $\sum_i s_i^2$
+volte quello di un passaggio solo (con le scale $\tfrac12$, $1$ e $2$ fa
+$5{,}25$), e addestrarla da capo a fondo non entra in memoria, così la si usa
+solo in inferenza, incoerente con l'addestramento. SSD predice da mappe a più
+profondità, ma per non usare quelle troppo deboli parte da strati già alti, e
+rinuncia proprio alle mappe più fini, che servono agli oggetti piccoli. La
+**Feature Pyramid Network** {cite}`lin2017feature` costruisce invece un
+percorso dall'alto in basso con connessioni laterali, e predice da ogni
+livello:
+
+$$
+\mathbf{M}_5 = \mathrm{conv}^{(5)}_{1\times1}(\mathbf{C}_5), \qquad
+\mathbf{M}_l = \mathrm{conv}^{(l)}_{1\times1}(\mathbf{C}_l)
++ \mathrm{up}_2(\mathbf{M}_{l+1}), \qquad
+\mathbf{P}_l = \mathrm{conv}^{(l)}_{3\times3}(\mathbf{M}_l),
+$$
+
+con la seconda per $l = 4, 3, 2$ e la terza per tutti i livelli. Ogni laterale
+$\mathrm{conv}^{(l)}_{1\times1}$ ha i suoi pesi, perché i $\mathbf{C}_l$ hanno
+numeri di canali diversi, e porta tutti i livelli a $d = 256$; nessuna di
+queste convoluzioni ha un'attivazione. $\mathrm{up}_2$ è il sovracampionamento
+per due al vicino più prossimo, che combacia con $\mathbf{C}_l$ quando il lato
+d'ingresso è multiplo di $32$ (le implementazioni riempiono l'immagine fino a
+esserlo), e la $3\times3$ attenua i blocchi $2\times2$ che quel
+sovracampionamento lascia. Ogni $\mathbf{P}_l$ ha così la risoluzione di
+$\mathbf{C}_l$ e la semantica che scende da $\mathbf{C}_5$, a un costo molto
+inferiore a quello di una piramide d'immagine, concentrato sul livello più
+fine. Le teste sono condivise fra i livelli, come in una piramide d'immagine,
+ed è per questo che tutti vanno portati alla stessa $d$. La novità rispetto a
+FCN e U-Net, che hanno anche loro un percorso dall'alto in basso, sta qui: si
+predice da ogni livello, con le stesse teste.
+
+Nella RPN ogni livello ha ancore di una sola area, $32^2, 64^2, 128^2, 256^2,
+512^2$ pixel su $\mathbf{P}_2, \dots, \mathbf{P}_6$, in tre proporzioni: tre
+ancore per posizione su ciascun livello, quindici forme distinte su tutta la
+piramide. $\mathbf{P}_6$ sottocampiona $\mathbf{P}_5$ con passo $2$ e serve
+alla sola RPN. Nel secondo stadio una regione di lati $w$ e $h$, misurati
+sull'immagine che entra nella rete, si legge dal livello
+
+$$
+l = \left\lfloor l_0 + \log_2\!\left(\sqrt{wh}\,/\,224\right)\right\rfloor,
+\qquad l_0 = 4,
+$$
+
+troncato a $l \in \{2, \dots, 5\}$. Il $\log_2$ viene dal passo $2^l$, e $l_0 =
+4$ imita il Faster R-CNN che legge da $\mathbf{C}_4$: una regione con
+$\sqrt{wh}$ fra $224$ (la taglia di ImageNet) e $448$ va su $\mathbf{P}_4$,
+ogni dimezzamento di $\sqrt{wh}$ scende di un livello, e sul proprio livello
+ogni regione copre fra $14$ e $28$ celle per lato. Il limite sugli oggetti
+piccoli è doppio. $\mathbf{P}_2$ ha passo $4$ (la $\mathbf{C}_1$ è esclusa per
+la memoria), e l'ancora più piccola è $32^2$: un oggetto di $10 \times 10$
+pixel ha con qualunque ancora una IoU di al massimo $0{,}098$, molto sotto la
+soglia, e diventa positivo solo per la regola che assegna a ogni oggetto vero
+la sua ancora migliore.
+
+`````
+
 ## Quanto è buona una predizione? IoU e mAP
 
 Un riquadro predetto non è mai esattamente sovrapposto a quello vero, e la
-misura di quanto ci ha preso è quella già incontrata fra i compiti della
+misura della sovrapposizione è quella già incontrata fra i compiti della
 visione: l’**Intersection over Union**, l'area in comune divisa per l'area
 coperta in tutto. Qui serve a qualcosa di più, il voto complessivo di un
 rilevatore.
@@ -453,14 +566,14 @@ perché la stessa figura può essere insieme «persona» e «pedone».
 
 Poi la famiglia si divide, e il filo da tenere è uno: le due impalcature del
 mestiere, le ancore e la pulizia dei doppioni, la famiglia le ha prima adottate
-e poi tolte tutte e due. Dal 2020 il nome lo portano due linee parallele. Da una
-parte ci sono articoli di gruppi di ricerca (YOLOv4 nel 2020 e YOLOv7 nel 2022,
-degli stessi autori, e YOLOv10 nel 2024); dall'altra il software della società
-Ultralytics {cite}`jocher2026ultralytics`, la cui storia si legge soprattutto
-nei registri delle versioni: YOLOv5, una libreria PyTorch, un articolo non l'ha
-mai avuto, e quello di YOLO26 è uscito mesi dopo il software
-{cite}`jocher2026yolo26`. YOLOv8, nel 2023, toglie le ancore, predicendo
-direttamente centro e distanze dai bordi, come i rilevatori detti
+e poi tolte tutte e due. Dal 2020 il nome lo portano due linee parallele. Da
+una parte ci sono articoli di gruppi di ricerca (YOLOv4 nel 2020 e YOLOv7 nel
+2022, degli stessi autori, e YOLOv10 nel 2024); dall'altra il software della
+società Ultralytics {cite}`jocher2026ultralytics`, la cui storia si legge
+soprattutto nei registri delle versioni: YOLOv5, una libreria PyTorch, non ha
+mai avuto un articolo scientifico, e quello di YOLO26 è uscito mesi dopo il
+software {cite}`jocher2026yolo26`. YOLOv8, nel 2023, toglie le ancore,
+predicendo direttamente centro e distanze dai bordi, come i rilevatori detti
 *anchor-free*. YOLO26, all'inizio del 2026, toglie anche la NMS: punisce i
 doppioni durante l'addestramento con la stessa idea dell'abbinamento uno a uno
 di DETR, che nella famiglia era entrata con YOLOv10, un lavoro dell'Università
@@ -504,7 +617,7 @@ lettura resta la stessa, con la confidenza che cala dove calerebbe la nostra.
 
 Il riquadro è comodo ma grossolano: attorno a un pedone c'è sempre un rettangolo
 pieno di sfondo. Quando serve il contorno esatto, pixel per pixel, si passa alla
-segmentazione. Qui vanno distinti due sapori.
+segmentazione. Qui vanno distinte due varianti.
 
 Prima, però, una forma che molte reti di segmentazione condividono: un ramo che
 riassume l'immagine e uno che la ricostruisce, e la più nota si chiama **U-Net**
@@ -573,7 +686,10 @@ classe vera riceve gradiente, così le classi non competono pixel per pixel; e
 le feature della regione si estraggono con **RoIAlign**, che campiona la mappa
 per interpolazione bilineare invece di arrotondare le coordinate della regione
 alla griglia, che farebbe scivolare la maschera di frazioni di cella. Ottiene
-così, insieme, riquadro, classe e sagoma di ogni singola istanza.
+così, insieme, riquadro, classe e sagoma di ogni singola istanza. Sotto, come
+backbone, una ResNet (o una ResNeXt) con la piramide di feature, che nel
+confronto del lavoro supera la lettura dalla sola $\mathbf{C}_4$ sia in
+accuratezza sia in velocità.
 
 Le metriche seguono. Per la semantica la IoU si calcola per classe, sui pixel
 di tutto il dataset, $\mathrm{IoU}_k = \mathrm{TP}_k / (\mathrm{TP}_k +
@@ -593,6 +709,15 @@ occupa pochi. Per l'istanza si riusa la mAP, con la IoU fra maschere al posto di
 quella fra riquadri.
 
 `````
+
+Le due varianti si possono anche fondere in un compito solo, la **segmentazione
+panottica** {cite}`kirillov2019panoptic`. Ogni pixel riceve una categoria, come
+nella semantica; i pixel delle cose che si contano (i pedoni, le automobili)
+ricevono in più il numero dell'individuo a cui appartengono, come nell'istanza,
+mentre quelli delle cose che non si contano (la strada, il cielo) restano una
+macchia unica. In inglese le due famiglie si chiamano *things* e *stuff*, e la
+misura che le valuta insieme, la *panoptic quality*, mette in un numero solo
+quanto sono giuste le sagome e quanti individui sono stati trovati.
 
 ## Risalire di risoluzione: la convoluzione trasposta
 
@@ -693,8 +818,8 @@ $p=0$, quindi $o = 2 \cdot 1 + 2 - 0 = 4$. La formula assume dilatazione 1 e
 convoluzione diretta manda taglie di ingresso diverse nella stessa uscita (con
 $k=3$, $s=2$, $p=1$ sia un $7$ sia un $8$ diventano $4$), quindi la risalita
 non è univoca e la formula dà solo la più piccola delle partenze possibili. Chi
-la applica a una U-Net vera e trova le due metà della clessidra disallineate
-di un pixel ha trovato questo. Il nome viene dall'algebra: se si
+la applica a una U-Net vera e si ritrova le due metà della clessidra disallineate
+di un pixel ha appena scoperto questo effetto. Il nome viene dall'algebra: se si
 srotola l'input in un vettore, una convoluzione è la moltiplicazione per una
 matrice sparsa $\mathbf{C}$; la trasposta moltiplica per $\mathbf{C}^\top$, che
 riporta il
@@ -728,14 +853,15 @@ corpo a fette, e ne misurano il volume con una precisione che a occhio si
 perderebbe. Nell’industria, un rilevatore su una linea di produzione individua
 il graffio o il pezzo mal assemblato prima che arrivi al cliente.
 
-Nessuno di questi sistemi è infallibile, e il margine va detto con precisione,
-perché la sovrapposizione non conta gli errori: dice quanto una maschera
-combacia con quella vera. Una maschera con IoU $0{,}9$ è una maschera buona, e
-vuol dire che di dieci quadretti coperti in tutto, nove sono in comune e uno no:
-un decimo dell'area cade nel posto sbagliato, per eccesso o per difetto. Su un
-nodulo quel decimo può anche non cambiare il volume misurato, perché la parte in
-più e quella in meno si compensano; a spostarsi è il contorno, che in qualche
-punto entra nel tessuto sano e in qualche altro lascia fuori del tumore.
+Nessuno di questi sistemi è infallibile, e il margine di errore va comunicato
+con precisione, perché la sovrapposizione non conta gli errori: dice quanto una
+maschera combacia con quella vera. Una maschera con IoU $0{,}9$ è una maschera
+buona, e vuol dire che di dieci quadretti coperti in tutto, nove sono in comune
+e uno no: un decimo dell'area cade nel posto sbagliato, per eccesso o per
+difetto. Su un nodulo quel decimo può anche non cambiare il volume misurato,
+perché la parte in più e quella in meno si compensano; a spostarsi è il
+contorno, che in qualche punto entra nel tessuto sano e in qualche altro lascia
+fuori del tumore.
 
 E soprattutto restano gli oggetti mancati del tutto. La IoU si calcola fra due
 cornici, quella vera e quella disegnata, quindi per un pedone che il rilevatore
@@ -767,6 +893,10 @@ profondità <geometria-e-profondita>`.
 - Nessuno disegna le cornici dal nulla: come un corniciaio, la rete tiene
   pronti alcuni formati standard in ogni punto dell'immagine e si limita a
   ritoccare quello che ci va più vicino.
+- Gli oggetti piccoli e quelli grandi li trovano strati diversi: la rete guarda
+  il quadro una volta sola, con una fila di aiutanti a distanze crescenti, e
+  chi vede l'insieme passa all'indietro, su carta lucida, quello che ha capito.
+  Un oggetto di pochi puntini resta comunque fuori.
 - Per dire quanto una cornice ci ha preso si guarda quanto si sovrappone a
   quella giusta: area in comune divisa per area totale, da 0 a 1. Il voto
   complessivo di un rilevatore si ottiene calcolando un voto per ogni categoria
@@ -779,7 +909,9 @@ profondità <geometria-e-profondita>`.
   segmentazione: colorare ogni pixel con la sua categoria, o addirittura
   distinguere un pedone dall'altro. La forma tipica è la U: si scende per
   capire che cosa c'è, si risale per dire dove, e a ogni gradino della risalita
-  si ripassa quello che si era visto scendendo.
+  si ripassa quello che si era visto scendendo. Le due colorazioni insieme, una
+  tinta per categoria e una per ogni individuo, si chiamano segmentazione
+  panottica.
 - Nessuno di questi sistemi è infallibile, e il margine è di due tipi: contorni
   approssimati, e oggetti mancati del tutto (che nella sovrapposizione di una
   coppia non compaiono, e che il voto complessivo invece conta, perché divide
@@ -803,6 +935,11 @@ profondità <geometria-e-profondita>`.
   *bipartito*) ed eliminano per costruzione sia le ancore sia l'NMS.
 - Le anchor box danno alla rete riquadri di partenza a più scale e
   proporzioni: si predicono piccoli offset, non riquadri dal nulla.
+- La FPN ricava dai $\mathbf{C}_l$ della rete una piramide $\mathbf{P}_2,
+  \dots, \mathbf{P}_6$ con un percorso dall'alto in basso e connessioni
+  laterali, tutta a $d = 256$ canali perché le teste sono condivise; ogni
+  regione si legge dal livello adatto alla sua taglia,
+  $l = \lfloor 4 + \log_2(\sqrt{wh}/224)\rfloor$ troncato a $\{2, \dots, 5\}$.
 - La IoU misura la sovrapposizione riquadro-realtà, non un tasso di errore;
   la mAP (*mean Average Precision*) riassume in un numero solo la qualità
   complessiva del rilevatore, e nel farlo accoppia ogni oggetto a una sola
@@ -815,7 +952,8 @@ profondità <geometria-e-profondita>`.
 - Semantica (FCN, U-Net) etichetta ogni pixel; istanza (Mask R-CNN)
   separa anche i singoli oggetti. Le *skip connection* fra encoder e decoder
   nascono con la FCN; la U-Net ne generalizza la forma concatenando a ogni
-  livello.
+  livello. La segmentazione panottica unisce le due in un compito solo
+  (*things* contati per istanza, *stuff* per sola classe).
 - La convoluzione trasposta riporta le mappe a piena risoluzione con un
   ingrandimento *appreso*: occhio agli artefatti a scacchiera (le griglie
   regolari che compaiono nell'uscita), che la sola divisibilità fra kernel e

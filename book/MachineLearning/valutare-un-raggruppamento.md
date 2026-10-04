@@ -6,7 +6,7 @@ nell'estate del 2006: la risoluzione fissava tre criteri (orbitare attorno al
 Sole, essere abbastanza massiccio da essersi fatto tondo da sé, e aver ripulito
 la propria orbita dagli altri corpi) e Plutone cadeva sul terzo.
 
-La cosa da notare è che ci sia voluta una votazione. Le
+Ci è voluta una votazione. Le
 misure erano note a tutti e nessuno le contestava; a mancare era il criterio con
 cui raggruppare gli oggetti del sistema solare in famiglie, perché di criteri
 ragionevoli ce n'era più d'uno e portavano a risposte diverse. Tenendo i tre
@@ -186,7 +186,7 @@ $$
 dove $t$ è il numero atteso di coppie tenute insieme da entrambe sotto il
 modello di permutazione, e il primo termine del denominatore è quell’$1$,
 contato in coppie. L'indice vale $1$ per l'accordo perfetto, $0$ in media sul
-caso casuale, e può essere negativo per un accordo peggiore del caso.
+caso nullo, e può essere negativo per un accordo peggiore del caso.
 L'alternativa dal versante informazionale è l’NMI,
 
 $$
@@ -261,7 +261,7 @@ due etichettature a caso, quanto si somigliano:
   con 20 gruppi ciascuna:  Rand 0.905   ARI -0.0001   NMI 0.119
 ```
 
-La prima colonna dice il contrario delle ultime tre. Secondo ARI e NMI, che
+L'indice interno dice il contrario di quelli esterni. Secondo ARI e NMI, che
 sanno qual è la risposta giusta, DBSCAN ha ricostruito le due lune alla
 perfezione: valgono $1{,}000$, cioè la sua partizione e quella vera sono la
 stessa. La silhouette dà a DBSCAN $0{,}331$ e a $k$-means $0{,}486$: giudicando
@@ -273,7 +273,7 @@ luna, la luna accanto è più vicina, in media, del resto della propria, che si
 allunga fino all'altro capo della curva: $b_i$ (la distanza media dalla luna
 vicina) è minore di $a_i$ (quella dal resto della propria), e quindi $s_i < 0$
 anche se l'assegnazione è giusta. Con la partizione di DBSCAN, che è quella
-vera, succede al $16\%$ dei punti (la colonna `s<0`), contro lo $0{,}3\%$ di
+vera, succede al $16\%$ dei punti (la quota di `s<0`), contro lo $0{,}3\%$ di
 $k$-means. Un indice interno è una domanda geometrica, compattezza e
 separazione, e va usato solo quando è quella la domanda che ci si pone. (Qui
 DBSCAN non manda nessun punto nel rumore; quando lo fa, scikit-learn tratta
@@ -292,8 +292,8 @@ tutte le coppie, e il Rand conta come «accordo» anche l'aver separato.
 L'ARI sulle stesse tre righe vale $+0{,}0003$, $-0{,}0003$, $-0{,}0001$: non si
 muove. È lo stesso inganno dell'accuratezza su classi sbilanciate: qui le coppie
 separate da tutte e due le partizioni fanno la parte della classe dominante. E
-la correzione è la stessa del kappa di Cohen, che {doc}`Valutare un modello
-<metriche>` presenta nella forma pesata: sottrarre l'accordo che si otterrebbe
+la correzione è la stessa del kappa di Cohen, discusso in {doc}`Valutare un modello
+<metriche>` nella forma pesata: sottrarre l'accordo che si otterrebbe
 per caso e dividere per quanto ne resta da guadagnare, che è ciò che l'aggettivo
 *aggiustato* significa. L'NMI sta in mezzo: $0{,}001$ e $0{,}008$ con due e
 cinque gruppi, ma $0{,}119$ con venti, ed è la ragione per cui ne esiste una
@@ -454,9 +454,9 @@ non a scegliere il massimo assoluto senza guardare altro.
 
 ## Una parentesi sul nome: «non supervisionato»
 
-Prima di tirare le somme c'è una faccenda di vocabolario: questi metodi si
+C'è una precisazione di vocabolario: questi metodi si
 chiamano «non supervisionati», e c'è chi sostiene che quel nome non andrebbe
-usato. Vedere perché aiuta a capire che cosa li distingue dai metodi che si
+usato. Capirne il motivo aiuta a distinguerli dai metodi che si
 costruiscono da sé un compito da imparare.
 
 Yann LeCun, fra i pionieri delle reti neurali convoluzionali, ha rinunciato
@@ -488,7 +488,7 @@ convenzione, e non è la loro.
 
 ## Perché nessun algoritmo di raggruppamento è neutro
 
-Chiusa la parentesi, resta la domanda rimandata: fra tutti questi voti, qual è
+Resta la domanda rimandata: fra tutti questi voti, qual è
 quello buono? Un teorema c'entra, ma parla degli algoritmi e non degli indici.
 Non esclude che esista un buon indice: Ackerman e Ben-David hanno mostrato che
 le stesse richieste, riscritte per le misure di qualità di un raggruppamento,

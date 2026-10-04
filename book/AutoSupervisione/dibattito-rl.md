@@ -8,26 +8,26 @@ critica va presa sul serio, perché a muoverla sono ricercatori del campo, e
 perché l'argomento che le sta sotto è quello del conto d'apertura del capitolo:
 quanto è grande la correzione che il modello riceve.
 
-Una premessa, che qui conta più del solito: le posizioni che seguono sono di
+Le posizioni che seguono sono di
 persone in attività su una questione aperta, e ciascuna va attribuita a chi
-l'ha sostenuta. Non è scontato nemmeno questo, perché due di quelle tesi si
+l'ha sostenuta. La cautela serve, perché due di queste tesi si
 somigliano abbastanza da essere scambiate.
 
 ## L'argomento, in due mosse
 
-Le critiche mosse all'apprendimento per rinforzo «puro», cioè usato da solo
-per costruire un sistema a partire da zero, sono quattro, e due si discutono
-qui. Sono la scarsità del segnale, che porta pochissima informazione, e
-l'assegnazione del credito, cioè il dover dividere quel poco fra tutte le
-decisioni che l'hanno preceduto; e vanno viste come due mosse dello stesso
-ragionamento, non come due obiezioni separate.
+Le critiche all'apprendimento per rinforzo «puro» (cioè usato da solo per
+costruire un sistema a partire da zero) sono quattro. Due riguardano la
+scarsità del segnale, che porta pochissima informazione, e l'assegnazione del
+credito, cioè il dover dividere quel poco fra tutte le decisioni che l'hanno
+preceduto; e vanno viste come due mosse dello stesso ragionamento, non come
+obiezioni separate.
 
-Le altre due hanno già avuto il loro spazio: la ricompensa scritta male e
-ottimizzata alla lettera sta nel {doc}`capitolo sul deep reinforcement
+Le altre due sono la ricompensa scritta male e
+ottimizzata alla lettera (nel {doc}`capitolo sul deep reinforcement
 learning </DeepReinforcementLearning/overview>` e nella
-{doc}`sezione sul post-addestramento </Transformers/post-training>`; il costo
-in esperienza dell'imparare per tentativi nel mondo, invece che dentro un
-modello del mondo, è la tesi del
+{doc}`sezione sul post-addestramento </Transformers/post-training>`) e il costo
+in esperienza dell'imparare per tentativi nel mondo invece che dentro un
+modello del mondo, che è la tesi del
 {doc}`capitolo sui world model </WorldModels/overview>`.
 
 `````{tab} Elementare
@@ -57,7 +57,7 @@ quella distanza la colpa e il merito si perdono comunque. Sono rimedi veri, e
 aiutano a smistare. Ma nemmeno chi ti accompagna ha mai sentito altro che la
 frase della sera: nessuno di quei rimedi inventa quello che nessuno ha detto.
 
-Il punto è che le due obiezioni si moltiplicano invece di sommarsi. Poca
+Le due obiezioni si moltiplicano invece di sommarsi. Poca
 informazione sarebbe già un problema; poca informazione, e da spalmare su
 centinaia di decisioni che non sai distinguere, è un problema di un altro
 ordine. E più lunga è la giornata, più sono le decisioni fra cui dividerla.
@@ -83,7 +83,7 @@ moltiplica i bit per problema al più per il numero delle risposte, ma non
 cambia niente di quello che segue, perché ciascuna risposta riceve ancora un
 voto solo.
 
-La seconda mossa è strutturale e riguarda **l'assegnazione del credito**
+La seconda mossa è strutturale e riguarda l’**assegnazione del credito**
 (*credit assignment*). Un ritorno osservato $R$ alla fine di una traiettoria
 $\tau = (s_0, a_0, \dots, s_{T-1}, a_{T-1})$ non dice quale delle $T$ azioni
 abbia contribuito. Nella forma più semplice del gradiente di policy, con la
@@ -334,17 +334,16 @@ la domanda resta aperta.
 Le due posizioni sono compatibili e vanno tenute distinte: Karpathy dice che il
 segnale è povero e mal distribuito; Yue e colleghi misurano che, con
 l'impostazione della primavera del 2025, il confine delle capacità non si
-allarga. Ma la seconda non è un'affermazione della prima persona, e chi le
-fonde attribuisce a Karpathy
-una misura che non ha fatto e una conclusione che nella stessa intervista
-contraddice, quando dice che il rinforzo fa scoprire soluzioni che una persona
-potrebbe non trovare.
+allarga. Ma questa seconda tesi non è di Karpathy, e chi le fonde gli
+attribuisce una misura che non ha fatto e una conclusione che lui stesso
+contraddice nella stessa intervista, quando dice che il rinforzo fa scoprire
+soluzioni che una persona potrebbe non trovare.
 
 ## E chi non è d'accordo
 
-Riportare solo le critiche darebbe un'impressione falsa, perché mentre si
-discuteva di ciliegine l'apprendimento per rinforzo ha fatto due cose
-grosse, e vanno raccontate entrambe.
+Fermarsi alle critiche darebbe un'impressione falsa: mentre si discuteva di
+ciliegine l'apprendimento per rinforzo ha ottenuto due risultati grossi, e non
+si possono ignorare.
 
 La prima è che gli assistenti conversazionali che tutti usano sono rifiniti
 così. La {doc}`sezione sul post-addestramento </Transformers/post-training>`
@@ -465,19 +464,19 @@ che gli autori le danno; con la stessa forma $G$ si riscrive anche come rischio
 più ambiguità, come mostra {doc}`la sezione sull'inferenza attiva
 </WorldModels/inferenza-attiva>`.
 
-La conseguenza che gli autori enunciano è che, poiché «l'utilità e il valore
-dell'informazione emergono come due componenti dell'energia libera attesa»,
-non c'è da preoccuparsi di bilanciare esplorazione e sfruttamento con un
-coefficiente scelto a mano, perché «entrambe sono al servizio
-dell'ottimizzazione della stessa funzione» {cite}`parr2022active`: i due valori
-si misurano nella stessa unità, il nat. Il bilanciamento però non sparisce, e
-gli stessi autori scrivono che è il peso relativo dei due termini a decidere
-se il comportamento è prevalentemente esplorativo o di sfruttamento. Quel peso
-dipende da quanto sono nette le preferenze. Scrivendole come
-$P(\tilde{o} \mid C) \propto e^{\beta\, u(\tilde{o})}$, con $u$ un'utilità e
-$\beta > 0$ la loro precisione, la differenza di valore pragmatico fra due
-politiche risulta proporzionale a $\beta$: preferenze più nette spingono a
-sfruttare, e $\beta$ lo sceglie chi costruisce il modello.
+Gli autori enunciano una conseguenza diretta: non c'è da preoccuparsi di
+bilanciare esplorazione e sfruttamento con un coefficiente scelto a mano.
+Poiché «l'utilità e il valore dell'informazione emergono come due componenti
+dell'energia libera attesa», entrambe «sono al servizio dell'ottimizzazione
+della stessa funzione» {cite}`parr2022active`: i due valori si misurano nella
+stessa unità, il nat. Il bilanciamento però non sparisce, e gli stessi autori
+scrivono che è il peso relativo dei due termini a decidere se il comportamento
+è prevalentemente esplorativo o di sfruttamento. Quel peso dipende da quanto
+sono nette le preferenze. Scrivendole come $P(\tilde{o} \mid C) \propto
+e^{\beta\, u(\tilde{o})}$, con $u$ un'utilità e $\beta > 0$ la loro precisione,
+la differenza di valore pragmatico fra due politiche risulta proporzionale a
+$\beta$: preferenze più nette spingono a sfruttare, e $\beta$ lo sceglie chi
+costruisce il modello.
 
 Il quadro ha inoltre una proprietà che aiuta a collocarlo: togliendo pezzi a
 $G$ si riottengono schemi già noti. Tolte le preferenze, cioè annullato il
@@ -490,21 +489,22 @@ concorrenza, una è il caso particolare dell'altra.
 
 `````
 
-Due avvertenze prima di lasciare l'argomento, perché è il punto in cui sarebbe
+Restano due avvertenze, perché su questo punto sarebbe
 facile promettere troppo. La prima: non è così che si addestrano oggi i
 sistemi di cui si è parlato fin qui. L'inferenza attiva nasce come teoria del
 comportamento biologico, e le sue realizzazioni sono modelli di laboratorio,
 non i sistemi su cui gira il mondo. La seconda la dicono gli autori
-stessi in apertura, e conviene riportarla perché evita di trasformarli in
+stessi in apertura, ed evita di trasformarli in
 avversari di qualcuno: il quadro «non mira a rimpiazzare altri quadri di
 riferimento, come la psicologia comportamentale, la teoria delle decisioni e
 l'apprendimento per rinforzo», ma a comprenderli.
 
-Serve dunque a quello per cui l'abbiamo chiamato in causa: mostrare che la
-povertà del segnale non è una fatalità dell'imparare agendo, ma la conseguenza
-di *quale* quantità si è scelto di ottimizzare. E l'oggetto della discordia, a
-ben vedere, non è se il rinforzo serva, ma se basti a spiegare da dove venga la
-comprensione. Su quella domanda si apre il {doc}`capitolo sui world model </WorldModels/overview>`.
+L'inferenza attiva serve a mostrare una cosa precisa: la povertà del segnale
+non è una fatalità dell'imparare agendo, ma la conseguenza di *quale* quantità
+si è scelto di ottimizzare. E l'oggetto della discordia, a ben vedere, non è se
+il rinforzo serva, ma se basti a spiegare da dove venga la comprensione. Su
+quella domanda si apre il {doc}`capitolo sui world model
+</WorldModels/overview>`.
 
 `````{tab} Elementare
 

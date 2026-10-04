@@ -16,11 +16,11 @@ sottovalutare: un modo per dire alla rete *in che ordine* stanno le parole.
 Il blocco che si ripete, con la stessa forma a ogni strato. Dentro ci sono due
 sotto-strati: l'attenzione, dove le parole si scambiano informazioni, e la rete
 feed-forward, dove ogni parola viene rielaborata per conto suo. Attorno a
-entrambi ci sono la connessione residua e la normalizzazione della sezione
-sull'attenzione, che permettono di impilare decine di blocchi senza che i primi
-smettano di imparare. Il disegno mette la normalizzazione all'ingresso di
-ciascun sotto-strato, che è il montaggio dei modelli di oggi; quello del 2017
-la metteva subito dopo la somma.
+entrambi ci sono la connessione residua e la normalizzazione descritte nella
+sezione sull'attenzione, che permettono di impilare decine di blocchi senza che
+i primi smettano di imparare. Il disegno mette la normalizzazione all'ingresso
+di ciascun sotto-strato, che è il montaggio dei modelli di oggi; quello del
+2017 la metteva subito dopo la somma.
 ```
 
 {numref}`fig-blocco-transformer` mostra il blocco, ed encoder e decoder sono
@@ -59,10 +59,10 @@ venuti dopo sono arrivati a decine di piani, oltre cento nei più grandi.
 `````
 
 `````{tab} Superiore
-L'encoder è una pila di $n_{\text{strati}} = 6$ strati con la stessa struttura
-e parametri propri (nel modello base, $d_{\text{model}} = 512$; l'articolo del
-2017 chiama $N$ questo numero, ma qui $N$ serve ad altro e $L$ conta le
-posizioni di query), ciascuno con due sotto-strati:
+L'encoder è una pila di $n_{\text{strati}} = 6$ strati (l'articolo del 2017
+chiama $N$ questo numero, ma qui $N$ serve ad altro e $L$ conta le posizioni di
+query) con la stessa struttura e parametri propri (nel modello base,
+$d_{\text{model}} = 512$), ciascuno con due sotto-strati:
 
 1. **Multi-Head Self-Attention**: ogni posizione attende a tutte le posizioni
    dell'input, catturando le relazioni a coppie in un solo passo;
@@ -75,7 +75,7 @@ $\text{LayerNorm}(\mathbf{x} + \text{SubLayer}(\mathbf{x}))$, come visto nella
 {doc}`sezione sull'attenzione <attenzione>`, dove si è detto anche perché i
 modelli successivi preferiscono il Pre-LN, che è quello disegnato in
 {numref}`fig-blocco-transformer`: le formule che seguono sono quelle del 2017.
-Si noti la divisione dei ruoli: l'attenzione *mescola* informazione tra le
+La divisione dei ruoli è netta: l'attenzione *mescola* informazione tra le
 posizioni, la FFN la *trasforma* posizione per posizione; è l'alternanza dei
 due movimenti, ripetuta per $n_{\text{strati}}$ strati, a costruire
 rappresentazioni via via più astratte. Per esteso, con
@@ -186,12 +186,13 @@ $$
 x_{1:n}\big),
 $$
 
-con i $y_{<t}$ presi dal riferimento stesso e la maschera causale che impedisce
-a ogni posizione di vedere $y_t$ e i successivi. La maschera garantisce che il
-meccanismo sia lo stesso nei due casi, ma i prefissi su cui il decoder viene
-interrogato no: in addestramento sono quelli del riferimento, in generazione i
-propri, ed è l’*exposure bias* che la {doc}`sezione sulla traduzione con le
-reti </NaturalLanguageProcessing/seq2seq-traduzione>` ha raccontato insieme al
+con i valori $y_{<t}$ presi dal riferimento stesso e la maschera causale che
+impedisce a ogni posizione di vedere $y_t$ e i successivi. La maschera
+garantisce che il meccanismo sia lo stesso nei due casi, ma i prefissi su cui
+il decoder viene interrogato sono diversi: in addestramento sono quelli del
+riferimento, in generazione i propri, ed è l’*exposure bias* che la
+{doc}`sezione sulla traduzione con le reti
+</NaturalLanguageProcessing/seq2seq-traduzione>` ha raccontato insieme al
 teacher forcing.
 `````
 
@@ -210,7 +211,7 @@ peso su ciò che precede.
 Righe e colonne sono le parole nell'ordine della frase: una riga per ogni parola
 che guarda, una colonna per ogni parola guardata, e in ogni casella il peso che
 la prima dà alla seconda. La diagonale è la parola che guarda sé stessa, e
-resta accesa; il triangolo sopra la diagonale sono le parole che vengono dopo,
+resta accesa; il triangolo sopra la diagonale contiene le parole che vengono dopo,
 e i loro punteggi vanno a $-\infty$ prima della softmax, come nella
 {doc}`sezione sull'attenzione <attenzione>`: per questo ne escono zeri esatti,
 e ogni riga somma a uno sulle sole posizioni permesse.
@@ -265,12 +266,12 @@ perché la firma di una posizione si ripeta.
 A teatro ogni spettatore ha un posto numerato, e la stessa persona in prima
 fila o in quinta non sta nello stesso punto della sala. Al Transformer serve lo
 stesso, un posto numerato per ogni parola, e la soluzione del 2017 lo scrive
-con tre orologi affiancati, uno veloce, uno medio, uno lento: il numero di
-posto sono le loro lancette. Nessuna lancetta si allontana mai, perché gira e
-torna: qualunque posizione della frase, il numero che se ne legge resta sempre
-nella stessa fascia. E la
-lancetta veloce distingue i vicini immediati, quella lenta dice in quale parte
-della frase siamo: due scale insieme invece di una.
+con tre orologi affiancati, uno veloce, uno medio, uno lento: a formare il
+numero di posto sono le loro lancette. Nessuna lancetta si allontana mai,
+perché gira e torna: qualunque posizione della frase, il numero che se ne legge
+resta sempre nella stessa fascia. E la lancetta veloce distingue i vicini
+immediati, quella lenta dice in quale parte della frase siamo: due scale
+insieme invece di una.
 
 Il legame con la figura è che l'altezza della punta di una lancetta, disegnata
 mano a mano che l'orologio avanza, è proprio un’onda che sale e scende: le
@@ -332,8 +333,8 @@ lascia credere che arrivi a $d_{\text{model}}$.
 
 Ogni posizione riceve così una firma unica, sommata all'embedding del token; e
 la scelta sinusoidale fa sì che la firma della posizione $\text{pos} + k$ sia
-una trasformazione lineare di quella di $\text{pos}$ **con una matrice che
-dipende solo da $k$**. La clausola in grassetto è tutto il contenuto: che due
+una trasformazione lineare di quella di $\text{pos}$ con una matrice che
+dipende solo da $k$. Questa condizione è tutto il contenuto: che due
 vettori siano legati da *qualche* matrice è vero sempre e non dice niente; che
 la matrice sia la stessa per ogni $\text{pos}$ è ciò che rende la distanza
 relativa una cosa rappresentabile. Ed è una riga di trigonometria: dalle
@@ -381,7 +382,7 @@ distanza; ALiBi {cite}`press2022train` somma una penalità fissa e lineare,
 $-\lambda_h\,(i-j)$, con una pendenza $\lambda_h$ diversa per ogni testa (la
 $m$ dell'articolo, che qui è già la posizione della RoPE), e nessuna codifica
 all'ingresso. Gli
-schemi si separano sull'estrapolazione: oltre la lunghezza vista in
+schemi differiscono sull'estrapolazione: oltre la lunghezza vista in
 addestramento la RoPE incontra angoli mai visti e degrada se non se ne
 riscalano le posizioni o le frequenze, mentre ALiBi è stato costruito per
 reggere contesti più lunghi di quelli di addestramento. Il rimedio più semplice
@@ -510,7 +511,7 @@ traduzione; la self-attention, in lavori sulla lettura e sul riassunto di
 testi; la piccola rete applicata a ogni posizione, come quelle del
 {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`; la connessione
 residua e la normalizzazione; e perfino la codifica posizionale, che le reti
-convoluzionali per la traduzione usavano già, imparata. Di nuovo l'articolo
+convoluzionali per la traduzione usavano già, imparata. Come novità l'articolo
 porta la scala $1/\sqrt{d_k}$, le teste multiple e le sinusoidi; e soprattutto
 il montaggio, perché il Transformer è il primo modello per trasformare una
 sequenza in un'altra che si regge sulla sola attenzione, senza ricorrenza né
@@ -560,7 +561,7 @@ sono l'argomento della {doc}`sezione sulle famiglie di modelli <multimodalita>`.
 `````{tab} Superiore
 ```{admonition} Da ricordare
 :class: important
-- Il Transformer originale è encoder–decoder: $n_{\text{strati}} = 6$ strati
+- Il Transformer originale è encoder-decoder: $n_{\text{strati}} = 6$ strati
   per pila, $d_{\text{model}} = 512$, 8 teste di attenzione.
 - Ogni strato alterna attenzione (le posizioni si scambiano informazione)
   e FFN (ogni posizione rielabora per conto suo), con residual e layer

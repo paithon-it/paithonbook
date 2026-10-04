@@ -41,9 +41,9 @@ che è in funzione.
 
 ## Il modello è la parte piccola del sistema
 
-L'errore di prospettiva è comprensibile: fino a qui, in tutto il libro, «fare
-machine learning» ha significato scegliere un modello, addestrarlo, misurarne
-l'accuratezza. E tutto questo si fa in un **notebook**, un documento
+L'errore di prospettiva è comprensibile: nei primi passi, «fare
+machine learning» significa scegliere un modello, addestrarlo e misurarne
+l'accuratezza. Tutto questo si sperimenta in un **notebook**, un documento
 interattivo fatto di pezzetti di programma (le *celle*) che si eseguono uno
 alla volta, con il risultato mostrato subito sotto ciascuno. È comodo per
 sperimentare, ed è lì che di solito nasce un modello. Sul proprio computer il
@@ -127,7 +127,7 @@ che pubblicare una versione nuova diventa un gesto ordinario invece che una
 notte in bianco.
 
 MLOps prende quella cultura e la porta al ciclo di vita del machine learning
-{cite}`kreuzberger2023machine`. Con una complicazione in più, che è il cuore
+{cite}`kreuzberger2023machine`, con una complicazione in più che è il cuore
 di tutto. Nel software classico la cosa da conservare versione per versione è
 una sola, il codice; qui i pezzi che compongono il lavoro finito (gli
 **artefatti**) sono tre: il codice, i dati e il modello addestrato. E due
@@ -272,7 +272,7 @@ questa la ragione strutturale per cui il ciclo è un anello e non un segmento.
 
 ## Perché non basta il notebook
 
-Il notebook, si è detto, è dove il modello nasce. Il guaio è che di solito lo
+Il notebook è il posto dove il modello nasce. Il guaio è che di solito lo
 si scambia anche per il posto dove il lavoro finisce, e in realtà è la prima
 casella di cinque ({numref}`fig-cinque-tappe`): dopo di lui il modello deve
 uscire dal foglio, farsi raggiungere da altri programmi, portarsi dietro su
@@ -296,24 +296,24 @@ l'anello: da lì si ricomincia.
 ```
 
 Quattro caselle su cinque vengono *dopo* il notebook, ed è la proporzione da
-tenere a mente. Costruire il modello sta tutto nella prima: la teoria dei
-capitoli precedenti e gli attrezzi con cui si addestra una rete, quelli di
-{doc}`PyTorch </PyTorch/overview>`, sono il bagaglio con cui si arriva qui. Il
-notebook che addestra una rete e ne stampa il voto è la riga di partenza, e da
-lì in poi comincia tutto il resto.
+tenere a mente. Costruire il modello sta tutto nella prima: la teoria e gli
+attrezzi con cui si addestra una rete, come quelli di {doc}`PyTorch
+</PyTorch/overview>`, sono il bagaglio con cui si parte. Il notebook che
+addestra una rete e ne stampa il voto è la riga di partenza, e da lì in poi
+comincia tutto il resto.
 
 Perché un notebook non basta lo si capisce elencando ciò che non fa. Non mette
 il modello a disposizione di chi deve usarlo. Non decide *come* metterlo a
 disposizione: un caso per volta, mentre l'utente aspetta, oppure tutti insieme
-durante la notte, un mucchio alla volta (in gergo un *batch*, e la parola
-tornerà spesso). Non sa dire se i dati di oggi somigliano ancora a quelli di
-ieri. Non tiene traccia di quale versione dei dati ha prodotto quali pesi, così
-che tra sei mesi si possa capire *perché* una predizione è quella. Non si
-riaddestra da solo quando il mondo cambia.
+durante la notte, un mucchio alla volta (in gergo un *batch*). Non sa dire se i
+dati di oggi somigliano ancora a quelli di ieri. Non tiene traccia di quale
+versione dei dati ha prodotto quali pesi, così che tra sei mesi si possa capire
+*perché* una predizione è quella. Non si riaddestra da solo quando il mondo
+cambia.
 
 ## L'anello, un attrezzo alla volta
 
-Le sezioni che seguono percorrono l'anello e ne sciolgono i nodi, uno per uno.
+L'anello si percorre e se ne sciolgono i nodi, uno per uno.
 
 - {doc}`Dal notebook alla produzione </MLOps/dal-notebook-alla-produzione>`,
   che cosa cambia quando si esce dall'ambiente di sperimentazione:

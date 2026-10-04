@@ -111,12 +111,12 @@ martingala vera, per cui $\mathbb{E}[v_t] = v_0$, cioè
 $\mathbb{E}[\varphi(\mathbf{x} + \sqrt{2\alpha}\,\mathbf{W}_t)] = u(\mathbf{x},
 t)$.
 
-La forma con un potenziale porta il nome di Mark Kac, che nel 1949 la studiò per
+La forma con un potenziale porta il nome di Mark Kac. Nel 1949 la studiò per
 via della trasformata di Laplace {cite}`kac1949distributions`, ispirato dagli
-integrali sui cammini di Feynman, che aveva sentito esporre a Cornell, dove
-insegnavano entrambi, e che Feynman pubblicò nel 1948
-{cite}`feynman1948spacetime`.
-Nella scrittura dei manuali di oggi, per $\partial_t u = \alpha\Delta u - V u$,
+integrali sui cammini che Feynman aveva appena pubblicato
+{cite}`feynman1948spacetime` e che Kac aveva sentito esporre a Cornell, dove
+insegnavano entrambi. Nella scrittura dei manuali di oggi, per $\partial_t u =
+\alpha\Delta u - V u$,
 
 $$
 u(\mathbf{x}, t) = \mathbb{E}\Big[\varphi(\mathbf{X}_t)\,
@@ -249,11 +249,12 @@ per volta.
 
 `````
 
-Il programma stima la soluzione dell'equazione del calore con
-$\varphi(\mathbf{x}) = \|\mathbf{x}\|^2$, il quadrato della distanza
-dall'origine, la cui soluzione esatta, che qui si sa calcolare, è
-$\|\mathbf{x}\|^2 + 2\alpha t\,d$, in un punto a distanza $1$ dall'origine e in
-dimensione da $1$ a $1000$, sempre con diecimila cammini.
+Il programma stima la soluzione dell'equazione del calore per la temperatura
+iniziale $\varphi(\mathbf{x}) = \|\mathbf{x}\|^2$, il quadrato della distanza
+dall'origine. La soluzione esatta (che qui si sa calcolare) è
+$\|\mathbf{x}\|^2 + 2\alpha t\,d$, e il calcolo viene ripetuto in un punto a
+distanza $1$ dall'origine in dimensioni da $1$ a $1000$, sempre con diecimila
+cammini.
 
 ```python
 import numpy as np
@@ -353,11 +354,11 @@ poggia.
 
 `````
 
-Il blocco addestra una rete piccola sull'equazione del calore in dieci
+Un esperimento addestra una rete piccola sull'equazione del calore in dieci
 dimensioni, con $\varphi(\mathbf{x}) = \|\mathbf{x}\|^2$ e i punti pescati nel
 cubo $[-1, 1]^{10}$ (ogni coordinata fra $-1$ e $1$), e la confronta con la
-soluzione esatta su diecimila punti nuovi. Come ogni addestramento, i numeri
-esatti cambiano un poco da una macchina all'altra, e il blocco stampa i
+soluzione esatta su diecimila punti nuovi. Come per ogni addestramento, i numeri
+esatti cambiano un poco da una macchina all'altra, e il codice stampa i
 confronti che non ne dipendono.
 
 ```python
@@ -405,7 +406,7 @@ Su diecimila punti che nessun cammino ha mai visitato la rete sbaglia di meno
 del tre per cento, mentre un cammino solo, preso come risposta, sbaglia più di
 dieci volte tanto, e lo stesso fa la temperatura iniziale scambiata per la
 soluzione. La rete ha imparato la media, e non i campioni rumorosi da cui l'ha
-imparata.
+ricavata.
 
 ## Punti sempre nuovi: il Galerkin profondo
 
@@ -435,10 +436,10 @@ Il *Deep Galerkin Method* di Sirignano e Spiliopoulos {cite}`sirignano2018dgm`
 stessa somma di residuo quadratico dell'equazione e di scarti sulle condizioni
 iniziali e al bordo, ma valutata su punti estratti di nuovo a ogni passo da una
 distribuzione sul dominio: una stima stocastica del funzionale integrale, e
-non una somma su un insieme fisso. La PINN di Raissi, Perdikaris e Karniadakis
+non una somma su un insieme fisso (la PINN di Raissi, Perdikaris e Karniadakis
 {cite}`raissi2019physics` usa invece un insieme fisso di punti di
-collocazione, generato una volta con un campionamento a ipercubo latino. Gli
-autori del DGM lo
+collocazione, generato una volta con un campionamento a ipercubo latino). Gli
+autori lo
 provano su problemi fino a 200 dimensioni, fra cui le opzioni americane con
 frontiera libera. Il nome viene dal metodo di Galerkin, che proietta
 l'equazione su uno spazio di funzioni. Qui lo spazio è quello delle reti, e il

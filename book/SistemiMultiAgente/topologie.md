@@ -21,7 +21,7 @@ come il numero di agenti, e il divario fra i due si allarga man mano che la
 squadra cresce. Fra i due casi non cambia il modello e non cambia il numero dei
 partecipanti: cambia chi legge i messaggi di chi, cioè la topologia.
 
-Una precisazione sulla parola, perché qui ha due sensi, e vicini. Nella
+Una precisazione sulla parola, perché qui ha due sensi molto vicini. Nella
 {doc}`pagina d'apertura del capitolo <overview>` «topologica» descriveva la
 regola degli storni, quella che conta i vicini invece di misurarli in metri.
 Qui «topologia» vuol dire una cosa più vicina all'uso comune: la forma dello
@@ -272,7 +272,7 @@ quinto non c'è nessuno che possa accorgersene: per accorgersene bisognerebbe
 avere in mano il foglietto iniziale, e chi sta in fondo alla fila non ce l'ha
 mai avuto.
 
-E poi c'è il conto che si moltiplica, lo stesso di prima. Sei passaggi fatti
+E poi c'è il conto che si moltiplica. Sei passaggi fatti
 bene novantacinque volte su cento non danno una fila affidabile al
 novantacinque per cento: danno una fila che arriva in fondo intatta poco più di
 settantatré volte su cento, cioè fallisce più di una volta su quattro, pur
@@ -584,7 +584,7 @@ per verso, e il testo letto in un giro va con il numero di fili: sessantaquattro
 messaggi nell'ipercubo, ventotto nell'organigramma, più del doppio per lo stesso
 lavoro. Non è il conto che esplode della trascrizione condivisa, dove fra sedici
 agenti che leggono tutti gli altri i messaggi letti in un giro sarebbero
-duecentoquaranta; e a ciascun agente ne tocca poco, quattro, meno dei
+duecentoquaranta; e a ciascun agente ne toccano pochi, quattro, meno dei
 quattordici che arrivano al centro di una stella. Il prezzo vero è un altro:
 nella maglia nessuno vede l'insieme. Un'informazione impiega fino a quattro
 giri per attraversarla, e ogni giro sono sedici chiamate al modello; e alla fine
@@ -630,12 +630,12 @@ comprensione del parlato finanziato dalla DARPA, l'agenzia del Dipartimento
 della difesa statunitense che finanzia la ricerca a lungo termine; lo racconta
 un articolo di rassegna del 1980 di Lee Erman e colleghi
 {cite}`erman1980hearsay`. Doveva capire frasi dette a voce, di seguito e senza
-pause, per interrogare una raccolta di riassunti di articoli di informatica, con
-un vocabolario di 1011 parole. Delle ventitré frasi di prova, mai sentite prima,
-ne fraintese il senso di due, cioè ne capì il novantuno per cento (sbagliate
-anche in una sola parola, e non soltanto nel senso, erano il diciannove per
-cento); su così pochi casi, una percentuale va presa come un ordine di
-grandezza.
+pause, per interrogare una raccolta di riassunti di articoli di informatica,
+con un vocabolario di 1011 parole. Delle ventitré frasi di prova, mai sentite
+prima, ne fraintese il senso di due, cioè ne capì il novantuno per cento (le
+frasi con almeno una parola sbagliata, e non soltanto quelle fraintese nel
+senso, erano il diciannove per cento); su così pochi casi, una percentuale va
+presa come un ordine di grandezza.
 
 `````{tab} Elementare
 
@@ -698,8 +698,8 @@ il disaccoppiamento è massimo: le knowledge source non si nominano fra loro, e
 aggiungerne una non richiede di modificare le altre.
 
 Gli autori stessi elencano due debolezze, e valgono ancora. La prima nasce
-dalla generalità: ogni decisione passa per la lavagna, il che si è rivelato
-desiderabile *fra* moduli e inadatto ai passaggi intermedi *dentro* un modulo,
+dalla generalità: ogni decisione passa per la lavagna, una scelta che si è rivelata
+desiderabile *fra* moduli e inadatta ai passaggi intermedi *dentro* un modulo,
 dove le knowledge source di Hearsay-II usavano strutture dati private e
 specializzate (reti sequenziali per il riconoscitore di parole, una grande
 matrice di bit delle adiacenze per quello di sequenze); costringerle nello stile
@@ -745,9 +745,9 @@ Funziona come un bando di gara, e i messaggi che servono sono quattro. Il
 banditore dice: «serve questo lavoro; possono rispondere solo quelli che hanno
 il tal requisito; nella risposta scrivetemi queste cose; c'è tempo fino a
 giovedì». Chi si sente in grado risponde con un'offerta. Il banditore le
-confronta e assegna a chi gli sembra più adatto. E il quarto, quello che ci si
-dimentica sempre: chi ha preso il lavoro alla fine deve riferire, altrimenti
-il banditore non sa nemmeno se è stato svolto.
+confronta e assegna il compito a chi gli sembra più adatto. E il quarto, quello
+che ci si dimentica sempre: chi ha preso il lavoro alla fine deve riferire,
+altrimenti il banditore non sa nemmeno se è stato svolto.
 
 La cosa elegante è che la scelta la fanno in due. Il banditore sceglie fra
 chi si è offerto, ma prima ancora ciascuno ha scelto se offrirsi e per quale
@@ -831,7 +831,7 @@ Conviene isolare ciò che lavagna e mercato hanno in comune, perché è il punto
 più profondo della sezione. Sono i due modi di coordinarsi senza un grafo deciso
 in anticipo, e risolvono lo stesso problema in modi opposti e simmetrici. Il
 malinteso da togliere di mezzo subito è che rinuncino ai messaggi diretti: il
-contract net è fatto *soltanto* di messaggi diretti, quattro tipi in croce, e la
+contract net è fatto *soltanto* di messaggi diretti, appena quattro tipi, e la
 {numref}`fig-multiagente-topologie` disegna le frecce che vanno dal banditore a
 ciascun offerente. A sparire è il progettista che stabilisce in anticipo chi
 scriverà a chi, non il canale.

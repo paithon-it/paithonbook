@@ -69,7 +69,7 @@ molto più piccolo, e il crollo è più rapido.
 Verrebbe da concludere che con la ReLU il problema sia chiuso, e non lo è. Le
 derivate sono solo metà della storia: a ogni passo indietro il gradiente viene
 moltiplicato anche per i pesi dello strato, e quelli, all'inizio, non li ha
-ancora sistemati nessuno. Da lì comincia il rimedio successivo, la scala dei
+ancora sistemati nessuno. Questo rende cruciale la scelta successiva: la scala dei
 pesi prima del primo passo.
 
 `````{tab} Elementare
@@ -115,18 +115,18 @@ $$
 $$
 
 dove $\mathbf{W}_k$ è la matrice dei pesi dello strato $k$ e
-$g'(\mathbf{z}_{k-1})$ la derivata della funzione di attivazione $g$ (la
-lettera è quella del {doc}`capitolo sulle reti neurali </RetiNeurali/overview>`;
-la sigmoide, che ne è un caso particolare, si nomina sempre per esteso)
-calcolata negli ingressi dello
-strato precedente. Il prodotto è ordinato: i fattori vanno scritti da sinistra
-a destra per $k$ crescente e non si possono scambiare, perché il prodotto di
-matrici non commuta. Siccome la norma di un prodotto non supera il prodotto
-delle norme, se le norme spettrali dei fattori restano sotto $1$ il prodotto
-tende a $0$ esponenzialmente in $L$ (**vanishing gradient**): è una condizione
-sufficiente. Che qualche norma superi $1$ è invece necessario perché il
-gradiente diverga (**exploding gradient**), ma non basta, perché conta anche
-come i fattori si allineano {cite}`pascanu2013difficulty`.
+$g'(\mathbf{z}_{k-1})$ la derivata della funzione di attivazione $g$ calcolata
+negli ingressi dello strato precedente (la lettera è quella del {doc}`capitolo
+sulle reti neurali </RetiNeurali/overview>`; la sigmoide, che ne è un caso
+particolare, si nomina sempre per esteso). Il prodotto è ordinato: i fattori
+vanno scritti da sinistra a destra per $k$ crescente e non si possono
+scambiare, perché il prodotto di matrici non commuta. Siccome la norma di un
+prodotto non supera il prodotto delle norme, se le norme spettrali dei fattori
+restano sotto $1$ il prodotto tende a $0$ esponenzialmente in $L$ (**vanishing
+gradient**): è una condizione sufficiente. Che qualche norma superi $1$ è
+invece necessario perché il gradiente diverga (**exploding gradient**), ma non
+basta, perché conta anche come i fattori si allineano
+{cite}`pascanu2013difficulty`.
 
 La sigmoide aggrava il primo caso: la sua derivata non supera $0{,}25$ in
 nessun punto, quindi il solo fattore di attivazione riduce il gradiente di
@@ -153,9 +153,8 @@ Attenzione a una parola che da qui in avanti cambia mestiere. «Attivazione»
 indica due cose diverse: la *funzione* che ogni neurone applica al proprio
 risultato (la ReLU, la sigmoide) e i *numeri* che escono da uno strato dopo che
 quella funzione è stata applicata. «La derivata dell'attivazione» è la prima
-cosa; «normalizzare le attivazioni», che è ciò di cui parleremo tra poco, sono
-i secondi. Il contesto basta a distinguerle, ma conviene saperlo in anticipo
-invece di inciampare.
+cosa; «normalizzare le attivazioni» sono
+i secondi. Il contesto basta a distinguerle.
 
 ```{figure} ../figures/inizializzazione-pesi.svg
 :name: fig-inizializzazione
@@ -352,8 +351,8 @@ divario fra le tre no. E il divario c'è già con pochi strati: a cinque blocchi
 il default arriva al primo strato con un gradiente mille volte più piccolo di
 He ($4{,}2\times10^{-4}$ contro $4{,}6\times10^{-1}$), a dieci più di centomila
 volte ($3{,}7\times10^{-6}$ contro $5{,}4\times10^{-1}$). Con la discesa del
-gradiente semplice, che non riscala niente, il primo strato si muove
-altrettante volte più piano.
+gradiente semplice, che non riscala niente, l'aggiornamento del primo strato
+rallenta dello stesso fattore.
 
 I bias del default contano: azzerandoli, a quaranta blocchi la norma scende da
 $9{,}6\times10^{-18}$ a $1{,}0\times10^{-31}$. Sono loro a tenere viva l'uscita
@@ -822,7 +821,7 @@ raramente danneggia, più che perché si sappia quando aiuti. Il titolo del loro
 articolo è una domanda, e nell'abstract il verdetto è che il label smoothing
 «è ancora poco capito». Il conto sul distacco fra logit spiega
 perché l'addestramento smetta di correre, non perché la rete generalizzi
-meglio: sono due domande diverse, e la seconda è aperta come lo è quella sulla
+meglio: sono due domande diverse, e la seconda resta aperta come quella sulla
 batch normalization.
 
 `````
@@ -1021,12 +1020,11 @@ un'enorme varietà di casi.[^adam-convergenza]
 
 `````
 
-C'è un punto in cui gli ottimizzatori incontrano la lotta contro
-l'overfitting: il parametro `weight_decay` di `torch.optim`, che serve a
-tenere i pesi piccoli. L'idea è che una rete costretta a lavorare con numeri
-modesti non può affidarsi a pochi valori enormi per imparare a memoria. Il
-nome però promette una cosa e il codice ne fa un'altra, e conviene disfare
-l'equivoco subito, perché è quello da cui nasce AdamW.
+C'è un punto in cui gli ottimizzatori incontrano la lotta contro l'overfitting:
+il parametro `weight_decay` di `torch.optim`, che serve a tenere i pesi
+piccoli. L'idea è che una rete costretta a lavorare con numeri modesti non può
+affidarsi a pochi valori enormi per imparare a memoria. Il nome però promette
+una cosa e il codice ne fa un'altra: un equivoco da cui nasce lo stesso AdamW.
 
 `````{tab} Elementare
 
@@ -1266,7 +1264,7 @@ for epoca in range(50):        # un'«epoca» è una passata su tutti i dati
 C'è però un pezzo dello schedule che non sta alla fine ma all'inizio, e che
 si incontra in ogni ricetta di addestramento moderna: il **warmup**. Invece di
 partire subito da $\eta_0$, si sale da (quasi) zero fino a $\eta_0$ nell'arco
-dei primi qualche centinaio o migliaio di passi, e solo dopo comincia il
+delle prime centinaia o migliaia di passi, e solo dopo comincia il
 decadimento.
 
 `````{tab} Elementare

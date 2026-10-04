@@ -55,7 +55,7 @@ ha scoperto la scorciatoia perfetta: dire sempre sì. Chiunque si presenti,
 passa. Nessuna coppia si lamenta mai, e il suo giudizio non vale più niente. Se
 durante l'addestramento premi il modello solo quando dà energia bassa alle
 coppie giuste, la soluzione più comoda è dare energia bassa a tutto. I rimedi
-sono due, e li vedremo fra poco: si può istruire il buttafuori, oppure
+sono due: si può istruire il buttafuori, oppure
 cambiargli la porta.
 
 `````
@@ -89,7 +89,7 @@ $$
 
 dove $\beta > 0$ è una temperatura inversa e il denominatore è la funzione di
 partizione condizionata $Z_\theta(\mathbf{x})$, l'integrale (o la somma) su
-*tutte* le risposte possibili: un parente stretto della $Z(\theta)$ della
+*tutte* le risposte possibili: un termine analogo alla $Z(\theta)$ della
 sezione precedente, ma non lo stesso oggetto, perché lì si integrava sui dati
 e qui sulle risposte. Quando $\mathcal{Y}$ è grande o continuo e ad alta
 dimensione (una risposta che è un'immagine, un video, una frase),
@@ -124,13 +124,14 @@ diversi. La macchina di Boltzmann
 è quello facile: sull'energia si costruisce una probabilità, ed è proprio il
 caso da cui la cornice si libera.
 
-La memoria di Hopfield ci sta anche lei, con una differenza. La sua energia
-guarda una cosa sola, lo stato della rete, e l'indizio rovinato non entra nel
-conto: decide soltanto da dove parte la discesa. E la risposta è il fondovalle
-in cui si finisce partendo di lì, non il più basso di tutti, perché altrimenti
-la rete restituirebbe sempre lo stesso ricordo qualunque indizio le si desse.
+Anche la memoria di Hopfield rientra in questa cornice, ma con una differenza.
+La sua energia guarda una cosa sola, lo stato della rete, e l'indizio rovinato
+non entra nel conto: decide soltanto da dove parte la discesa. E la risposta è
+il fondovalle in cui si finisce partendo di lì, non il più basso di tutti,
+perché altrimenti la rete restituirebbe sempre lo stesso ricordo qualunque
+indizio le si desse.
 
-Che la risposta possa non essere la migliore in assoluto non è un imbarazzo,
+Che la risposta possa non essere la migliore in assoluto non è un difetto,
 ed è l'articolo stesso a metterlo in conto: in molte situazioni reali un
 modello che va a cercarsi la risposta ne trova una approssimata, che può
 essere il fondovalle più basso di tutti oppure no.
@@ -138,7 +139,7 @@ essere il fondovalle più basso di tutti oppure no.
 ## Il collasso, e le due famiglie di rimedi
 
 Il collasso, cioè l'energia bassa dappertutto e il sì a qualunque cosa, si
-previene in due posti: nella forma del modello, e nel modo in cui lo si
+previene a due livelli: nella forma del modello, e nel modo in cui lo si
 addestra. Addestrarlo vuol dire mostrargli una coppia, guardare che voto le dà,
 e ritoccarlo perché quel voto somigli di più a quello che volevamo. La regola
 con cui si decide «di quanto ha sbagliato», la funzione di perdita, è una
@@ -168,12 +169,12 @@ tenerli distinti perché tutta la discussione dei prossimi anni ruota su
 questa scelta.
 
 Il primo: portargli davanti anche le coppie sbagliate e pretendere che le
-respinga. Quelle coppie sbagliate, fabbricate apposta per fargliele
-respingere, nel gergo del campo si chiamano **controesempi**, ed è la parola
-con cui torneranno. Il metodo funziona, e ha un difetto che si vede subito
-appena le coppie possibili diventano tante: quanti controesempi devi mostrare?
-Per ogni coppia giusta ne esiste un numero enorme di sbagliate, e mostrargliene
-un pugno alla volta è come puntellare un tendone con tre paletti.
+respinga. Quelle coppie sbagliate, fabbricate apposta per fargliele respingere,
+nel gergo del campo si chiamano **controesempi**, ed è con questo nome che
+torneranno. Il metodo funziona, e ha un difetto che si vede subito appena le
+coppie possibili diventano tante: quanti controesempi devi mostrare? Per ogni
+coppia giusta ne esiste un numero enorme di sbagliate, e mostrargliene un pugno
+alla volta è come puntellare un tendone con tre paletti.
 
 E i controesempi non sono tutti uguali: quello che insegna qualcosa è la coppia
 sbagliata che al buttafuori sembra più giusta di tutte, cioè l'impostore
@@ -183,13 +184,13 @@ difetto è quindi doppio: i controesempi servono a migliaia, e trovarne uno buon
 costa quanto rispondere a una domanda.
 
 Il secondo: cambiare la porta invece di istruire il buttafuori. Se al posto
-della porta c'è una fessura, di là non passa una folla qualunque cosa lui
-dica: si costruisce il modello in modo che il numero di risposte a cui *può*
-dare energia bassa sia limitato in partenza. Un modo concreto è obbligarlo a
+della porta c'è una fessura, di là non passa una folla qualunque cosa lui dica:
+si costruisce il modello in modo che il numero di risposte a cui *può* dare
+energia bassa sia limitato in partenza. Un modo concreto è obbligarlo a
 riassumere ogni coppia in un disegno di dieci tratti e a lasciarla entrare solo
 se, dal riassunto, riesce a rifarla somigliante. Con dieci tratti si rifanno
 bene le coppie viste mille volte, e tutte le altre vengono male per forza:
-dire di sì a tutti, anche volendo, non può. Nessun controesempio da andare a
+anche volendo, non può dire di sì a tutti. Nessun controesempio da andare a
 cercare.
 
 E il fatto che il primo metodo non regga quando le risposte possibili sono
@@ -227,11 +228,11 @@ risposta con forza proporzionale alla sua verosimiglianza, e nel limite $\beta
 \to \infty$ la loss NLL degenera nella loss del percettrone generalizzata, che
 ne solleva una sola, quella a energia minima {cite}`lecun2006tutorial`.
 Contrastive divergence, NCE e le loss a margine sono tutte varianti di una
-stessa domanda: quali risposte tirare su, e con che forza. Nella tabella delle
-loss del tutorial la energy loss ha margine «none», il percettrone
-generalizzato e LVQ2 hanno margine nullo, e tutte le altre (la hinge con
-margine $m$, la log-verosimiglianza negativa per ogni $\beta$) un margine
-strettamente positivo {cite}`lecun2006tutorial`. Il percettrone alza
+stessa domanda: di quali risposte alzare l'energia, e con che forza. Nella
+tabella delle loss del tutorial la energy loss ha margine «none», il
+percettrone generalizzato e LVQ2 hanno margine nullo, e tutte le altre (la
+hinge con margine $m$, la log-verosimiglianza negativa per ogni $\beta$) un
+margine strettamente positivo {cite}`lecun2006tutorial`. Il percettrone alza
 l'energia della risposta che il modello dà, eppure non crea nessun dislivello
 fra quella giusta e le altre, e l'articolo avverte che, come la energy loss,
 può produrre superfici piatte se l'architettura lo permette. A proteggere dal

@@ -102,7 +102,7 @@ $\nabla_{\mathbf{x}} E = \sum_k \nabla_{\mathbf{x}} E_k$.
 `````
 
 Tutte queste cose, generare e completare e segnalare e mescolare, sono poi la
-stessa cosa: andare a stare in basso. Non «nel punto più basso di tutti», che
+stessa cosa: portarsi verso il basso. Non «nel punto più basso di tutti», che
 sarebbe la stessa risposta ogni volta: si scende con addosso il rumore, come
 nella prima delle tre vie, e ogni volta si finisce in una valle diversa. A
 cambiare, da un mestiere all'altro, è solo il vincolo con cui si scende.
@@ -111,8 +111,8 @@ Nel 2020 Will Grathwohl e colleghi prendono sul serio una lettura che la
 {doc}`cornice di LeCun </ModelliEnergia/energia-come-compatibilita>` conteneva
 già, quella per cui un classificatore è un modello a energia, e ne ricavano una
 conseguenza: i punteggi che il classificatore dà alle classi definiscono anche
-una densità sulle immagini, e quella densità si può addestrare insieme a lui
-{cite}`grathwohl2020your`.
+una densità sulle immagini, e quella densità si può addestrare insieme al
+classificatore {cite}`grathwohl2020your`.
 
 `````{tab} Elementare
 
@@ -158,7 +158,7 @@ che il paesaggio di una rete qualunque non sia di questi.
 
 Addestrando la stessa rete a fare bene tutte e due le cose (riconoscere la
 classe, e insieme dare energia bassa alle immagini plausibili) gli autori
-riportano un classificatore che sbaglia con più prudenza: quando è incerto lo dice,
+ottengono un classificatore che sbaglia con più prudenza: quando è incerto lo dice,
 riconosce le cose che non ha mai visto ed è più difficile da ingannare con
 immagini manipolate.
 
@@ -189,26 +189,26 @@ dove $\operatorname{logsumexp}_y f[y] = \log \sum_y e^{f[y]}$ è il massimo
 «ammorbidito» dei logit (vale sempre almeno quanto il più grande, e un po’ di
 più quando anche gli altri gli stanno vicino), da cui l'energia marginale
 $E_\theta(\mathbf{x}) = -\operatorname{logsumexp}_y f_\theta(\mathbf{x})[y]$
-{cite}`grathwohl2020your`. Perché non la si veda mai, in un classificatore
-normale, è questione di gradienti e non di assenza: la softmax è invariante
-alla traslazione dei logit, quindi la cross-entropy non vincola il loro
-livello assoluto, che resta libero di andare dove capita. L'informazione è lì
-(tanto che il logsumexp di una rete addestrata alla maniera solita si usa così
-com'è per riconoscere il fuori distribuzione, come mostrano Weitang Liu e colleghi nel 2020 {cite}`liu2020energy`); semplicemente nessuno le ha mai
-chiesto di essere sensata. JEM (*Joint
-Energy-based Model*) gliela chiede, massimizzando la log-verosimiglianza
-congiunta nella forma
-$\log p_\theta(\mathbf{x}, y) = \log p_\theta(y \mid \mathbf{x}) + \log p_\theta(\mathbf{x})$: il primo
-termine è la solita cross-entropy cambiata di segno, il secondo è un EBM
-addestrato con Langevin
-e serbatoio, come in {cite}`du2019implicit`. Resta una riserva sulla funzione di
-partizione: quel $Z(\theta)$ esiste solo se
-$\int \sum_y e^{f_\theta(\mathbf{x})[y]}\, d\mathbf{x}$ converge, che per una rete
+{cite}`grathwohl2020your`. Se in un classificatore normale non la si vede mai,
+è questione di gradienti e non di assenza: la softmax è invariante alla
+traslazione dei logit, quindi la cross-entropy non vincola il loro livello
+assoluto, che resta libero di andare dove capita. L'informazione è lì (tanto
+che il logsumexp di una rete addestrata alla maniera solita si usa così com'è
+per riconoscere il fuori distribuzione, come mostrano Weitang Liu e colleghi
+nel 2020 {cite}`liu2020energy`); semplicemente nessuno le ha mai chiesto di
+essere sensata. JEM (*Joint Energy-based Model*) gliela chiede, massimizzando
+la log-verosimiglianza congiunta nella forma $\log p_\theta(\mathbf{x}, y) =
+\log p_\theta(y \mid \mathbf{x}) + \log p_\theta(\mathbf{x})$: il primo termine
+è la solita cross-entropy cambiata di segno, il secondo è un EBM addestrato con
+Langevin e serbatoio, come in {cite}`du2019implicit`. Resta una riserva sulla
+funzione di partizione: quel $Z(\theta)$ esiste solo se $\int \sum_y
+e^{f_\theta(\mathbf{x})[y]}\, d\mathbf{x}$ converge, che per una rete
 convoluzionale qualunque nessuno garantisce. La lettura «un classificatore è
-un'energia» è sempre vera; la densità che ne segue, sotto condizione. Il risultato riportato è un
-classificatore con calibrazione migliore, rilevamento di fuori distribuzione
-più affidabile e maggiore robustezza agli attacchi avversari, al prezzo di un
-addestramento più fragile, che è il difetto ereditario di tutta la famiglia.
+un'energia» è sempre vera; la densità che ne segue, sotto condizione. Il
+risultato riportato è un classificatore con calibrazione migliore, rilevamento
+di fuori distribuzione più affidabile e maggiore robustezza agli attacchi
+avversari, al prezzo di un addestramento più fragile, che è il difetto
+ereditario di tutta la famiglia.
 
 `````
 
@@ -440,12 +440,12 @@ benissimo.
 
 La riga sui metodi contrastivi chiede di abbandonarli in favore di quelli
 regolarizzati, ed è la scelta discussa nella {doc}`cornice di LeCun
-</ModelliEnergia/energia-come-compatibilita>`: mostrare al
-modello dei controesempi, oppure costruirlo in modo che non possa dire di sì a
-tutto. È una questione di ricerca aperta con risultati da entrambe le parti.
-L'apprendimento contrastivo ha prodotto sistemi che funzionano molto bene, e
-la scommessa di chi sta dall'altra parte è che non reggeranno al video, dove
-il numero di risposte possibili è tale che nessuna quantità di controesempi
+</ModelliEnergia/energia-come-compatibilita>`: mostrare al modello dei
+controesempi, oppure costruirlo in modo che non possa dire di sì a tutto. È una
+questione di ricerca aperta con risultati da entrambe le parti. L'apprendimento
+contrastivo ha prodotto sistemi che funzionano molto bene, e la scommessa di
+chi sta dall'altra parte è che non reggeranno il passaggio ai video, dove il
+numero di risposte possibili è tale che nessuna quantità di controesempi
 basterebbe a puntellarlo.
 
 La riga sul reinforcement learning chiede di sostituirlo con il controllo
@@ -463,7 +463,7 @@ indovinare, e contata in bit può valere decine di migliaia di volte tanto. È
 l'argomento che LeCun riassume dicendo che l'apprendimento per rinforzo è la
 «ciliegina sulla torta» {cite}`lecun2016cake`, e il {doc}`dibattito sul rinforzo
 </AutoSupervisione/dibattito-rl>` lo misura per intero, quel conto compreso,
-insieme alle obiezioni di chi non ci sta.
+insieme alle obiezioni dei suoi critici.
 
 La riga sui modelli generativi è la più contestata. Rinunciare
 ai modelli generativi in favore delle architetture a incorporamento congiunto,

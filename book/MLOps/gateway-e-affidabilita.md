@@ -192,18 +192,18 @@ sposta dal buono al cattivo. Il servente lavora a pieno, e quasi tutto il
 suo lavoro va a tentativi che il cliente ha già abbandonato: goodput prossimo a
 zero con il throughput al massimo.
 
-Le difese agiscono sui termini di $A$ e sull'anello. L'attesa esponenziale fra i
-tentativi, con una componente casuale (*backoff* con *jitter*: prima del
-ritentativo $i \ge 1$ si attende un tempo uniforme in
-$[0, \min(t_{\max}, t_0 2^{i-1})]$, con $t_0$ l'attesa di base e $t_{\max}$ il
-tetto), diluisce nel tempo il carico dei ritentativi e ne decorrela gli istanti:
-senza la parte casuale, i clienti falliti insieme ritentano insieme e ricreano
-il picco a ogni scadenza. È il *full jitter*: nel confronto di Brooker le
-varianti con una parte casuale battono tutte quella che non ne ha, quella che
-tiene fissa metà dell'attesa (l’*equal jitter*) è la peggiore delle tre, e fra
-il full jitter e il *decorrelated jitter*, che allarga l'intervallo a partire
-dall'attesa precedente, la scelta resta aperta {cite}`brooker2015backoff`. Se il
-servente ha risposto 429 indicando quando riprovare (l'intestazione
+Le difese agiscono sui termini di $A$ e sull'anello. L'attesa esponenziale fra
+i tentativi, con una componente casuale (*backoff* con *jitter*: prima del
+ritentativo $i \ge 1$ si attende un tempo uniforme in $[0, \min(t_{\max}, t_0
+2^{i-1})]$, con $t_0$ l'attesa di base e $t_{\max}$ il tetto), diluisce nel
+tempo il carico dei ritentativi e ne decorrela gli istanti: senza la parte
+casuale, i clienti falliti insieme ritentano insieme e ricreano il picco a ogni
+scadenza. È il *full jitter*. Nel confronto di Brooker, le tre varianti con una
+componente casuale battono tutte quella che ne è priva. Fra loro, quella che
+tiene fissa metà dell'attesa (l’*equal jitter*) è la peggiore, mentre fra il
+full jitter e il *decorrelated jitter*, che allarga l'intervallo a partire
+dall'attesa precedente, la scelta resta aperta {cite}`brooker2015backoff`. Se
+il servente ha risposto 429 indicando quando riprovare (l'intestazione
 `Retry-After`), quell'indicazione viene prima del backoff. Un budget di
 ritentativi, per esempio non più del 10% delle richieste nuove applicato con un
 token bucket, impone $A \le 1{,}1$ qualunque sia $p$, e rompe l'anello; lo si
@@ -221,7 +221,7 @@ per nessuno, che è il combustibile della metastabilità.
 
 Per un modello generativo il timeout si scrive sul TTFT e sulla pausa massima
 fra token, non sulla durata totale: una risposta lunga è lenta per
-costruzione, e un timeout sul totale la ucciderebbe regolarmente, trasformando
+costruzione, e un timeout sul totale la interromperebbe regolarmente, trasformando
 una risposta sana in un ritentativo che rifà il prefill da capo. E una chiamata
 che genera testo non si può ritentare in modo trasparente dopo che i primi
 token sono già arrivati all'utente: il ritentativo va fatto prima del primo
@@ -340,10 +340,10 @@ la scorta, il carico resta sotto la capacità, e la fila si svuota. Si svuota
 più piano che senza ritentativi (38,4 risposte utili al secondo fra trenta e
 novanta secondi, contro 80,3), perché anche i ritentativi permessi aggiungono
 lavoro. Il vantaggio di ritentare comunque un poco si vede quando un tentativo
-fallisce per caso e non per la ressa, e la simulazione quel caso non lo
-contiene: lì il secondo tentativo passa quasi sempre, e senza ritentativi
-quella risposta sarebbe persa. L'attesa che cresce e l'avviso che chiude subito
-non sono nella simulazione; agiscono sugli stessi numeri, diluendo i
+fallisce per caso e non per la ressa, un evento che la simulazione non
+contempla: lì il secondo tentativo passa quasi sempre, mentre senza ritentativi
+quella risposta andrebbe persa. L'attesa che cresce e l'avviso che chiude
+subito non sono nella simulazione; agiscono sugli stessi numeri, diluendo i
 ritentativi nel tempo o togliendoli del tutto. Scartare i tentativi scaduti fa
 meglio di tutto il resto. Il modello non spende un istante per chi non aspetta
 più, i ritentativi trovano la fila corta, e nei trenta secondi dopo il guasto
@@ -550,14 +550,14 @@ trovato il difetto in un giorno tranquillo invece che durante un incendio.
 L'esercitazione si fa con la scuola vera, in orario di lezione, con i ragazzi
 veri: provata di sabato a scuola vuota direbbe che le porte si aprono, non che
 trecento persone ci passano in tre minuti. Ma il guasto finto tocca pochi: si
-fa trovare chiusa una scala a una classe sola, mentre tutte le altre escono come
-sempre, così la ressa nei corridoi è quella vera e, se qualcosa va storto,
-riguarda pochi. C'è anche un modo di fermare tutto se va storto davvero. E si
-cambia l'evento, perché gli incendi non scelgono il momento comodo: un anno
-l'allarme suona mentre la scala principale è chiusa per lavori, un altro
-durante la ricreazione. Poi la si ripete, perché la scuola cambia (un'aula
-nuova, un corridoio chiuso) e il piano che reggeva l'anno scorso può non
-reggere più.
+fa trovare chiusa una scala a una classe sola, mentre tutte le altre escono
+come sempre, così la ressa nei corridoi è quella vera e, se qualcosa va storto,
+il problema resta confinato. C'è anche un modo di fermare tutto se va storto
+davvero. E si cambia l'evento, perché gli incendi non scelgono il momento
+comodo: un anno l'allarme suona mentre la scala principale è chiusa per lavori,
+un altro durante la ricreazione. Poi la si ripete, perché la scuola cambia
+(un'aula nuova, un corridoio chiuso) e il piano che reggeva l'anno scorso può
+non reggere più.
 
 Con un servizio che risponde attraverso dei modelli si fa lo stesso. Si spegne
 apposta una replica, si fa rispondere piano un fornitore, si fa dire a un

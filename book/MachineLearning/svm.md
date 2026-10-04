@@ -136,7 +136,7 @@ $$
 y_i\,(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1, \qquad i = 1, \dots, m.
 $$
 
-La distanza di un punto sul margine dall'iperpiano è il margine, $M = 1/\lVert
+La distanza dall'iperpiano di un punto sul bordo è il margine, $M = 1/\lVert
 \mathbf{w}\rVert$, quindi la larghezza totale del corridoio (da un bordo
 all'altro) è
 
@@ -264,11 +264,10 @@ $$
 $$
 
 Ed è esattamente la distanza euclidea tra $\mathbf{x}_1=(0,0)$ e
-$\mathbf{x}_2=(2,2)$, che vale
-$\sqrt{2^2+2^2}=\sqrt{8}=2\sqrt{2}$: i due vettori di supporto, uno per
-classe, si affacciano sui bordi opposti dello stesso corridoio. Nota il punto
-cruciale: cancellare $\mathbf{x}_3$ e $\mathbf{x}_4$ non cambia nulla; la
-soluzione dipende solo dai due punti sul bordo.
+$\mathbf{x}_2=(2,2)$, che vale $\sqrt{2^2+2^2}=\sqrt{8}=2\sqrt{2}$: i due
+vettori di supporto, uno per classe, si affacciano sui bordi opposti dello
+stesso corridoio. Cancellare $\mathbf{x}_3$ e $\mathbf{x}_4$ non cambia nulla:
+la soluzione dipende solo dai due punti sul bordo.
 
 `````
 
@@ -631,8 +630,7 @@ $$
 Il quadrato toglie di mezzo la radice quadrata nascosta nella norma e rende la
 funzione differenziabile ovunque, compresa l'origine; il fattore $1/2$ serve solo
 a far sparire il $2$ quando deriveremo. Nessuna delle due mosse cambia il punto
-di minimo, perché elevare al quadrato è monotono sui numeri non negativi. Terzo
-pezzo sistemato.
+di minimo, perché elevare al quadrato è monotono sui numeri non negativi.
 
 `````
 
@@ -732,7 +730,7 @@ $$
 dove il primo termine è la quantità da minimizzare, la parentesi quadra è
 esattamente il vincolo del secondo passo, quello che vale zero sui punti di
 margine, e $\alpha_i$ è il moltiplicatore associato al vincolo $i$-esimo. Un
-avvertimento sul simbolo: qui $\mathcal{L}$ è la **lagrangiana**, non la
+avvertimento sul simbolo: qui $\mathcal{L}$ è la lagrangiana, non la
 funzione di costo che la stessa lettera indica ovunque altrove. È la notazione
 consolidata di questa derivazione, e vale fino alla fine della sezione. Il
 segno meno, con $\alpha_i \ge 0$, non è arbitrario: se un vincolo è violato la
@@ -763,7 +761,7 @@ $$
 \sum_{i=1}^{m}\alpha_i y_i = 0 .
 $$
 
-La prima delle due è la sorpresa, e conviene dirla per esteso: il vettore dei
+La prima delle due è la sorpresa: il vettore dei
 pesi $\mathbf{w}$ è una combinazione lineare degli esempi di addestramento,
 con coefficienti $\alpha_i y_i$. Guardando il problema di partenza non c'era
 nulla che lo annunciasse, e invece la soluzione vive nello spazio generato
@@ -779,7 +777,7 @@ che dà senso anche al primo: «a proposito, queste pause caffè durano mesi». 
 sta lì a guardare il risultato, si lavora ad altro, ci si preoccupa degli esami,
 ogni tanto ci si ripensa. Prima o poi si torna dal caffè e si fa il passo
 successivo. Caffè numero due: quanto siano durate davvero, quelle due pause, lo
-dice l'ultima parte della sezione.
+racconterà la fine della storia.
 
 ### Quinto passo: il duale, e la seconda sorpresa
 

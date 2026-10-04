@@ -106,7 +106,7 @@ penalità entra nella loss: con $\mu = 0$ le reti sono indipendenti, e per
 $\mu \to \infty$ i parametri penalizzati diventano uguali, quindi se la
 penalità esclude gli strati d'uscita il limite è la condivisione dura.
 
-Le forme miste condividono gli strati bassi e lasciano divergere gli alti, ed è
+Le forme miste condividono gli strati bassi e lasciano separati gli alti, ed è
 quasi sempre la scelta pratica, per la ragione già vista parlando di
 rappresentazioni gerarchiche: le feature generiche
 stanno in basso e quelle specifiche in alto, quindi il punto in cui separare le
@@ -147,7 +147,7 @@ quando aspettarsi un guadagno e quando no.
 
 `````{tab} Elementare
 
-Il più ovvio è più segnale. Il compito in più porta con sé altre
+Il motivo più ovvio è la quantità di segnale. Il compito in più porta con sé altre
 etichette, cioè altre risposte giuste scritte accanto agli esempi, come «in
 questa foto c'è un gatto». Le etichette costano, perché quasi sempre è una
 persona a doverle scrivere una per una, e a volte sono semplicemente rare (di
@@ -160,12 +160,12 @@ limite: le etichette in più aiutano a leggere l'archivio comune, ma ogni
 sportello deve imparare il proprio mestiere dai propri esempi, e lì il compito
 di contorno non lo può sostituire.
 
-Più sottile: il compito in più fa da freno. Una rete lasciata sola con un
-compito trova la soluzione di comodo per risolverlo, e le soluzioni di comodo
-sono proprio ciò che non generalizza. Se la stessa rappresentazione deve
-servire anche a un secondo compito, quelle soluzioni smettono di essere
-convenienti, perché al secondo non servono. La rete è spinta verso soluzioni
-più generali, e questo è esattamente ciò che in gergo si chiama
+Un secondo motivo, più sottile: il compito in più fa da freno. Una rete
+lasciata sola con un compito trova la soluzione di comodo per risolverlo, e le
+soluzioni di comodo sono proprio ciò che non generalizza. Se la stessa
+rappresentazione deve servire anche a un secondo compito, quelle soluzioni
+smettono di essere convenienti, perché al secondo non servono. La rete è spinta
+verso soluzioni più generali, e questo è esattamente ciò che in gergo si chiama
 regolarizzazione: qualunque accorgimento che, restringendo le strade che la
 rete può prendere, la costringa a una risposta che vale in generale invece che
 a una perfetta sugli esempi già visti. Un freno rende dove c'è da frenare, cioè
@@ -233,8 +233,8 @@ letterature descrivono lo stesso meccanismo arrivandoci da due direzioni.
 
 ## Quando invece fa danno
 
-C'è un però grosso, ed è la ragione per cui questa non è una tecnica da usare
-sempre.
+C'è però un limite importante, ed è la ragione per cui questa non è una tecnica
+da usare sempre.
 
 `````{tab} Elementare
 
@@ -311,12 +311,12 @@ non producono guadagni oltre l'ottimizzazione ordinaria {cite}`xin2022current`.
 Il conflitto fra gradienti resta una buona diagnosi; che proiettarli sia la
 cura è meno stabilito di quanto la letteratura sui metodi lasci pensare.
 
-Una cautela metodologica su questa diagnosi, perché è facile misurarla male: il
-prodotto scalare fra gradienti va guardato durante l'addestramento e sui
-parametri condivisi, non all'inizializzazione. All'inizio le teste sono
+Serve una cautela metodologica su questa diagnosi, perché è facile misurarla
+male: il prodotto scalare fra gradienti va guardato durante l'addestramento e
+sui parametri condivisi, non all'inizializzazione. All'inizio le teste sono
 casuali e possono assorbire un cambio di segno senza che il tronco se ne
-accorga, quindi un conflitto vero fra compiti può benissimo non comparire
-come coseno negativo.
+accorga, quindi un conflitto vero fra compiti può benissimo non comparire come
+coseno negativo.
 
 Resta il problema dei pesi $\lambda_t$, insidioso perché le loss di compiti
 diversi hanno unità e scale diverse (una cross-entropia e un errore in
@@ -466,7 +466,7 @@ stesso seme senza ausiliario (stessi dati, stessa partenza).
   nascosta* da cui entrambi dipendono, e ottocento esempi su quella quantità
   hanno insegnato al tronco quello che quaranta non bastavano a insegnare;
 - ausiliario che non ha niente da insegnare: $0{,}3523$, cioè il 25% di
-  errore in più, e in più su tutti e cinque i semi, fra il 15% e il 36%:
+  errore in più, e per giunta su tutti e cinque i semi, fra il 15% e il 36%:
   peggio che non averlo. La capacità del tronco spesa a inseguire quel
   bersaglio è capacità sottratta al compito che contava.
 
@@ -499,11 +499,11 @@ imparato il principale ha già in mano tutto quello che serve al «parente». Il
 contrario vale quasi, ma non del tutto, e quello che manca è il segno. Un
 numero e il suo opposto hanno lo stesso quadrato, quindi dal «parente» il
 tronco impara quale combinazione degli ingressi guardare, cioè la direzione
-$\mathbf{w}$ della quantità nascosta $\tanh(\mathbf{x}^\top\mathbf{w})$, ma se
-quella quantità sia positiva o negativa deve impararlo dai soli quaranta esempi
-etichettati. Il $-65\%$ è dunque vicino al tetto di quello che un compito in
-più può fare, non a un caso tipico: due compiti davvero distinti condividono
-una parte della struttura, non tutta.
+$\mathbf{w}$ della quantità nascosta $\tanh(\mathbf{x}^\top\mathbf{w})$, ma il
+segno di quella quantità deve impararlo dai soli quaranta esempi etichettati.
+Il $-65\%$ è dunque vicino al tetto di quello che un compito in più può fare,
+non a un caso tipico: due compiti davvero distinti condividono una parte della
+struttura, non tutta.
 
 Che compiti in competizione peggiorino il risultato è comunque un fatto
 documentato su scala ben più grande di questa {cite}`standley2020tasks`, e
@@ -575,7 +575,7 @@ provandoli a coppie, più che deducendolo.
 - Misurato su un caso costruito: un ausiliario imparentato toglie il 65%
   dell'errore, un ausiliario fatto di puro rumore ne aggiunge il 25%. Non è
   una tecnica neutra. Entrambi i numeri sono estremi (il «parente» è una
-  funzione deterministica del bersaglio principale) e valgono a
+  funzione deterministica del bersaglio principale) e valgono per
   $\lambda_t$ uguali: con l'ausiliario pesato $0{,}1$ il danno medio scende al
   7%, con $0{,}01$ all'1%, che sui cinque semi non si distingue da zero.
 ```

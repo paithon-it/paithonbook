@@ -47,8 +47,8 @@ se si potessero usare *entrambi*?
 
 Un'equazione differenziale, si è detto, è una regola su come cambiano le cose.
 Il modo in cui lo fa, però, spiazza: non dice mai *quanto vale* la cosa che ci
-interessa, dice soltanto *di quanto sta cambiando*. Sembra pochissimo. Invece
-basta, e conviene vedere subito perché.
+interessa, dice soltanto *di quanto sta cambiando*. Sembra pochissimo, eppure
+per ricostruire l'intera storia basta.
 
 `````{tab} Elementare
 
@@ -158,12 +158,12 @@ dire quale sia quella buona. Per questo l'equazione può prendere il posto dei
 dati come supervisione.
 
 A rilanciare questa mossa, nel 2019, sono Maziar Raissi, Paris Perdikaris e
-George Karniadakis {cite}`raissi2019physics`, e il nome che le danno è quello
-nel titolo del capitolo: **Physics-Informed Neural Networks**, PINN, cioè reti
-neurali informate dalla fisica. L'idea però è più vecchia di loro:
-una rete che si corregge sul residuo di un'equazione compare già nel 1994
-{cite}`dissanayake1994neural`, e resta di nicchia per un quarto di secolo perché
-le derivate della rete andavano scritte a mano, caso per caso. Diventa
+George Karniadakis {cite}`raissi2019physics`, e il nome che le danno è la sigla
+diventata celebre: **Physics-Informed Neural Networks**, PINN, cioè reti
+neurali informate dalla fisica. L'idea però è più vecchia di loro: una rete che
+si corregge sul residuo di un'equazione compare già nel 1994
+{cite}`dissanayake1994neural`, e resta di nicchia per un quarto di secolo
+perché le derivate della rete andavano scritte a mano, caso per caso. Diventa
 praticabile quando le librerie imparano a calcolarle da sole.
 
 `````{tab} Elementare
@@ -421,17 +421,19 @@ solutore maturo impiega millisecondi, e a volte fallisce senza preavviso
 
 ## La legge dentro la loss, e i suoi limiti
 
-Dalla cornice al banco di lavoro. Nella prossima sezione costruiremo il metodo
-per intero, con una PINN scritta in PyTorch, e il banco di prova sarà una molla
-che oscilla e si smorza: la rete, la misura di quanto viola la regola, il
-punteggio che mette insieme i due controlli, e infine il problema inverso, con
-un pezzo di legge che fingeremo di non conoscere. Poi, per le equazioni che
-diffondono, una seconda lettura che aggira la griglia: la soluzione come media
-su cammini casuali. Chiuderemo con le applicazioni (il sangue nelle arterie, i
-materiali), con una mappa dei limiti (quando le PINN convengono, quando no) e
-con gli operatori neurali, reti che imparano il procedimento invece di un
-singolo problema, la stessa idea che, appresa dai soli dati, fa girare i
-modelli meteo neurali.
+Dalla cornice al banco di lavoro. La {doc}`sezione sulla legge dentro la loss
+</PINN/come-funziona>` costruisce il metodo per intero, con una PINN scritta in
+PyTorch, e il banco di prova sarà una molla che oscilla e si smorza: la rete,
+la misura di quanto viola la regola, il punteggio che mette insieme i due
+controlli, e infine il problema inverso, con un pezzo di legge che fingeremo di
+non conoscere. Per le equazioni che diffondono, la {doc}`sezione sulle
+equazioni come medie </PINN/equazioni-come-medie>` offre una lettura che aggira
+la griglia calcolando la soluzione come media su cammini casuali. La
+{doc}`sezione su dove la fisica aiuta </PINN/applicazioni-limiti>` chiude sulle
+applicazioni (il sangue nelle arterie, i materiali), sulla mappa dei limiti
+(quando le PINN convengono, quando no) e sugli operatori neurali: reti che
+imparano il procedimento invece di un singolo problema, la stessa idea che,
+appresa dai soli dati, fa girare i modelli meteo neurali.
 
 `````{tab} Elementare
 

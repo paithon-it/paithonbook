@@ -114,7 +114,7 @@ perfezionano a vicenda. Se la corsa arriva in fondo, i falsi sono così buoni
 che nemmeno l'esperto sa più distinguerli. Il **generatore** è il falsario, il
 **discriminatore** è l'esperto.
 
-Qui c'è però una domanda da fare subito, perché è il cuore di tutto il
+Resta una domanda, ed è il cuore di tutto il
 capitolo: il falsario impara *che cosa*? Se l'esperto si limitasse a dire
 "falso", il falsario saprebbe di aver sbagliato ma non saprebbe dove, ed è
 la stessa differenza che passa fra un professore che scrive "no" in fondo al
@@ -138,15 +138,14 @@ Il segnale che smaschera il falso, propagato all'indietro attraverso $D$, è lo
 stesso che insegna a $G$ come migliorarlo: è questa condivisione a saldare
 l'addestramento delle due reti in un unico ciclo di feedback.
 
-Conviene dire subito che cosa sia, quel segnale, perché è il perno
-dell'intero capitolo e non è il verdetto. Ciò che risale da $D$ verso $G$ è il
-gradiente della loss del generatore rispetto al **dato generato**
-$\tilde{\mathbf{x}} = G(\mathbf{z})$, cioè $\partial \mathcal{L}_G /
-\partial \tilde{\mathbf{x}}$: non un numero ma un vettore, con una componente per ogni
-numero del dato, che dice in che verso spostare ciascuna di quelle componenti
-perché il verdetto cambi. È una direzione, non un voto, e la sua esistenza
-richiede che $D$ sia derivabile rispetto al proprio ingresso: la sezione
-seguente riprende il punto con la regola della catena.
+Quel segnale è il perno dell'intero capitolo, e non è il verdetto. Ciò che
+risale da $D$ verso $G$ è il gradiente della loss del generatore rispetto al
+dato generato $\tilde{\mathbf{x}} = G(\mathbf{z})$, cioè $\partial
+\mathcal{L}_G / \partial \tilde{\mathbf{x}}$: non un numero ma un vettore, con
+una componente per ogni numero del dato, che dice in che verso spostare
+ciascuna di quelle componenti perché il verdetto cambi. È una direzione, non un
+voto, e la sua esistenza richiede che $D$ sia derivabile rispetto al proprio
+ingresso: la sezione seguente riprende il punto con la regola della catena.
 
 `````
 
@@ -181,7 +180,7 @@ una sola. L'immagine però va fermata qui: in un tiro alla fune, quando nessuno
 dei due si sposta più non sta succedendo niente, mentre fra falsario ed esperto
 il pareggio è il traguardo.
 
-Perché il pareggio arriva quando il falsario è diventato bravissimo. Se i suoi
+Il pareggio arriva quando il falsario è diventato bravissimo. Se i suoi
 quadri sono indistinguibili da quelli veri, l'esperto non ha più niente su cui
 appoggiarsi: qualunque cosa gli passi davanti, può solo tirare a indovinare,
 come a testa o croce, e indovina una volta su due. Quel 50% è il massimo che
@@ -201,8 +200,9 @@ da vedere non ce ne sono più, cioè al pareggio.
 Quel pareggio è delicato, e si rompe in due modi. L'esperto può prendere troppo
 vantaggio, e allora il falsario non ha più modo di stargli dietro. Oppure il
 falsario trova un quadro che passa sempre e da lì in poi dipinge quello e
-basta: l'inganno riesce, ma la varietà sparisce. Sono problemi concreti, e
-tornano nella stessa sezione.
+basta: l'inganno riesce, ma la varietà sparisce. Sono problemi concreti, e la
+{doc}`sezione sull'addestramento avversario </GAN/come-funziona>` li riprende
+uno per uno.
 
 `````
 
@@ -242,13 +242,13 @@ non si distingue da una fotografia. Da qui arrivano anche i **deepfake** (volti
 sostituiti nei video) con tutto il loro carico di rischi per disinformazione e
 consenso. E arriva l’arte generata, con un ritratto prodotto da una GAN battuto
 all'asta da Christie's nel 2018: l'episodio, e la questione di chi ne sia
-l'autore, tornano nella sezione sulle applicazioni.
+l'autore, tornano nella {doc}`sezione sulle applicazioni
+</GAN/applicazioni-evoluzioni>`.
 
 Uno strumento potente e ambivalente, insomma: capace di fabbricare dataset (le
 raccolte di esempi su cui si addestrano le altre reti), di restaurare immagini
 e perfino di proporre molecole nuove, descritte come grafi (atomi collegati dai
-loro legami), ma anche di fabbricare falsi convincenti. Ragione in più per
-capirne bene il funzionamento.
+loro legami), ma anche di fabbricare falsi convincenti.
 
 ## Il duello, e quello che ne è nato
 

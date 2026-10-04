@@ -12,8 +12,8 @@ nello stesso istante. Gli ingegneri lo chiamano *TV pickup*, e quello di Torino
 Come la rete si prepara a questi minuti l'ha raccontato la National Grid, che
 la gestisce. Un gruppo di statistici sfoglia i palinsesti televisivi per
 prevedere i picchi (le partite decisive, le puntate attese delle serie più
-viste); prima del fischio finale alle centrali si chiede di produrre meno del
-possibile, così che abbiano margine da dare subito; e nel Galles la centrale di
+viste); prima del fischio finale alle centrali si chiede di produrre sotto il
+massimo, così che abbiano margine da dare subito; e nel Galles la centrale di
 Dinorwig, che tiene l'acqua in un lago in cima a una montagna e la fa cadere
 quando serve, con le turbine già in rotazione passa da zero a 1.320 megawatt in
 dodici secondi. Tanta preparazione ha una ragione semplice. La corrente va
@@ -107,7 +107,7 @@ e il numero di richieste nel sistema non supera mai $N_u$: il generatore si
 adegua al servente invece di metterlo alla prova. Le richieste che avrebbero
 trovato la coda lunga, e che in produzione arriverebbero comunque, non vengono
 mai inviate, e le loro latenze mancano dal campione: è la *coordinated
-omission*, il nome che le ha dato Gil Tene. In ciclo aperto, al contrario,
+omission*, come l'ha chiamata Gil Tene. In ciclo aperto, al contrario,
 sopra la capacità non c'è regime, e il numero di richieste nel sistema cresce
 senza limite.
 
@@ -135,7 +135,7 @@ $\mu^\ast = \mu - \ln 10/\tau$ per la quota del 90%. Per questo si opera a una
 frazione di $\mu^\ast$, non a $\mu^\ast$. La M/M/1 resta un modello
 didattico: serve una richiesta alla volta con tempi esponenziali, mentre una
 replica con batching continuo ne serve molte insieme e deve rispettare due
-soglie, su TTFT e TPOT. Ne dà la forma della curva, ripida vicino alla
+soglie, su TTFT e TPOT. Dà la forma della curva, ripida vicino alla
 saturazione, e lascia il valore di $\mu^\ast$ alla misura.
 
 Il ciclo chiuso resta il modello corretto quando la popolazione di chi chiede è
@@ -148,16 +148,16 @@ un sovraccarico che non può accadere.
 ## Che cosa guardare
 
 Una volta misurata la capacità, la regola sembra ovvia. Se arrivano $\lambda$
-richieste al secondo (è la lettera con cui si indica il tasso d'arrivo) e una
-replica ne regge $\mu^\ast$ (la capacità appena misurata: l'asterisco ricorda
-che è la più alta che mantiene le promesse), servono $\lambda/\mu^\ast$ repliche,
-arrotondato per eccesso: sessanta richieste al secondo con repliche da otto
-fanno 7,5, cioè otto repliche. Il guaio è che $\lambda$ non si conosce in
-anticipo. Il sistema che decide quante repliche tenere accese si chiama
-**autoscaler**, e lo stima da qualcos'altro: ogni pochi secondi legge una
-grandezza, la confronta con un bersaglio, e aggiunge o toglie repliche. È un
-anello di controllo (misura, confronta, corregge, e ricomincia), e funziona
-bene quanto la grandezza che guarda.
+richieste al secondo (il tasso d'arrivo) e una replica ne regge $\mu^\ast$ (la
+capacità appena misurata, con l'asterisco a ricordare il tetto per le
+promesse), servono in tutto $\lambda/\mu^\ast$ repliche, arrotondando per
+eccesso: sessanta richieste al secondo con repliche da otto fanno 7,5, cioè
+otto repliche. Il guaio è che $\lambda$ non si conosce in anticipo. Il sistema
+che decide quante repliche tenere accese si chiama **autoscaler**, e lo stima
+da qualcos'altro: ogni pochi secondi legge una grandezza, la confronta con un
+bersaglio, e aggiunge o toglie repliche. È un anello di controllo (misura,
+confronta, corregge, e ricomincia), e funziona bene quanto la grandezza che
+guarda.
 
 `````{tab} Elementare
 
@@ -255,7 +255,7 @@ i valori dell'esempio sul costo per token) il bersaglio è
 $0{,}8 \cdot 8 \cdot 8 \approx 51$ richieste in volo per replica.
 
 Due non linearità completano il controllore. La prima è un'isteresi
-asimmetrica: salire tardi costa SLO sforati, scendere troppo presto costa
+asimmetrica: salire tardi costa violazioni degli SLO, scendere troppo presto costa
 un'accensione in più, e il comportamento di default di Kubernetes sale subito
 (fino al raddoppio, o a quattro repliche in più, ogni 15 secondi) e scende solo
 al massimo delle raccomandazioni degli ultimi 300 secondi (la *finestra di
@@ -277,8 +277,8 @@ richiesta servita, una replica nuova attraversa quattro attese in fila. Prima
 si ottiene una macchina con le schede. Poi si scarica l'immagine del container,
 cioè il pacchetto sigillato con il programma e tutto ciò che gli serve, come in
 {doc}`Servire un modello </MLOps/deployment-e-serving>`. Poi si caricano i
-pesi nella memoria delle schede: stanno dentro l'immagine, o accanto a lei
-quando sono troppo grandi per starci comodi. Infine c'è il riscaldamento, in
+pesi nella memoria delle schede: stanno dentro l'immagine, o in un volume a parte
+quando sono troppo grandi per starci. Infine c'è il riscaldamento, in
 cui il programma prepara i calcoli per quella scheda e riserva la memoria per
 la KV cache. Quando la macchina c'è già e i pesi arrivano dalla rete, per un
 modello grande quasi tutto il tempo se ne va nel caricamento dei pesi, ed è un
@@ -346,7 +346,7 @@ tiene già i pesi più vicino alle schede. Il riscaldamento non è trascurabile:
 compilare e catturare i CUDA Graphs per le taglie di mazzo previste può costare
 decine di secondi. La compilazione si può mettere in cache fra un avvio e
 l'altro, la cattura dei grafi no, e con i pesi già nella memoria dell'host il
-riscaldamento pesa quanto il caricamento o di più; e se va prima ottenuta una
+riscaldamento pesa quanto il caricamento o di più; e se prima occorre ottenere una
 macchina con le schede, $T_{\text{macchina}}$ può valere minuti da solo.
 
 Con un ritardo $T_{\text{avvio}}$, la condizione per non sforare è che la
@@ -620,9 +620,9 @@ variabile su istanze prerilasciabili.
 
 Il costo per token dice quanto si paga, e resta da sapere quanto la scheda
 potrebbe dare ancora. Lo si vede confrontando quello che fa con quello che
-potrebbe fare. La misura che si usa per l'addestramento, l'utilizzazione dei
-FLOP del modello (MFU, la quota dei conti possibili che la scheda sta facendo
-davvero), applicata alla generazione parola per parola, cioè al decode, dà un
+potrebbe fare. L'utilizzazione dei FLOP del modello (MFU, la quota dei conti
+possibili che la scheda sta facendo davvero), la misura su cui si giudica
+l'addestramento, applicata alla generazione parola per parola, il decode, dà un
 numero molto basso: il 4% nell'esempio che segue. Basso, qui, non vuol dire
 sprecato.
 
@@ -653,14 +653,15 @@ quanto resta da guadagnare.
 
 Si guadagna comprimendo le piume, cioè scrivendo i numeri del modello con meno
 cifre: il carico è sempre lo stesso modello, ma occupa meno spazio, e ogni
-viaggio, cioè ogni parola, dura meno. L'altro modo sembrerebbe caricare più
-richieste nello stesso giro, e funziona a metà. Il modello, riletto una volta,
-serve a tutte, e su quella parte il carico si fa più denso. Ma ogni richiesta
-porta con sé i propri appunti, che vanno riletti anche loro a ogni parola: sono
-altri cuscini, che occupano spazio e non pesano. Con conversazioni lunghe gli
-appunti diventano la parte più grossa del carico, e il furgone resta pieno di
-piume comunque lo si carichi. Per questo, nella generazione, conta quasi sempre
-la seconda misura, e si guadagna soprattutto rendendo più corti gli appunti.
+viaggio, cioè ogni parola, dura meno. L'altra strada sembrerebbe quella di
+caricare più richieste nello stesso giro, ma funziona a metà. Il modello,
+riletto una volta, serve a tutte, e su quella parte il carico si fa più denso.
+Ma ogni richiesta porta con sé i propri appunti, che vanno riletti anche loro a
+ogni parola: sono altri cuscini, che occupano spazio e non pesano. Con
+conversazioni lunghe gli appunti diventano la parte più grossa del carico, e il
+furgone resta pieno di piume comunque lo si carichi. Per questo, nella
+generazione, conta quasi sempre la seconda misura, e si guadagna soprattutto
+rendendo più corti gli appunti.
 
 `````
 

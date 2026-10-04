@@ -92,13 +92,17 @@ quadruplicato, non raddoppiato. $\gamma$ grande, campana stretta. Il kernel RBF
 corrisponde a uno spazio $\phi$ di dimensione *infinita*: sarebbe impossibile da
 costruire, eppure $k$ si calcola in una riga.
 
-Un'ultima clausola, quella che fa del trucco un teorema invece che una speranza.
-La frase «se esiste una funzione $k$ che calcola quel prodotto scalare» rovescia
-l'ordine dei fatti: in pratica non si parte da $\phi$ per cercare $k$, si
-sceglie $k$ e si spera che un $\phi$ esista. Esiste se e solo se $k$ è
-simmetrica e **semidefinita positiva**, cioè se ogni matrice di Gram
+Un'ultima clausola, quella che fa del trucco un teorema invece che una
+speranza. La frase «se esiste una funzione $k$ che calcola quel prodotto
+scalare» rovescia l'ordine dei fatti: in pratica non si parte da $\phi$ per
+cercare $k$, si sceglie $k$ e si spera che un $\phi$ esista. Esiste se e solo
+se $k$ è simmetrica e **semidefinita positiva**, cioè se ogni matrice di Gram
 $\mathbf{K}$, quella di elementi $K_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$, ha
-autovalori non negativi. Che la condizione basti lo dice il teorema di Moore e
+autovalori non negativi. È questa condizione la ragione per cui i kernel non si
+inventano a piacere: se $k$ non la rispetta, il duale smette di essere concavo
+e il solutore risolve un problema diverso da quello che si crede. Non ogni
+«misura di somiglianza» è un kernel, ed è l'errore più comune di chi prova a
+scriversene uno. Che la condizione basti lo dice il teorema di Moore e
 Aronszajn: ogni $k$ del genere definisce uno spazio di Hilbert di funzioni, lo
 spazio a nucleo riproducente $\mathcal{H}_k$, in cui $\langle
 k(\cdot,\mathbf{x}),\, k(\cdot,\mathbf{z})\rangle_{\mathcal{H}_k} =
@@ -113,11 +117,7 @@ poi a perdite qualsiasi (nella forma generale da Schölkopf, Herbrich e Smola
 \sum_{i=1}^{m} \ell\bigl(y_i, f(\mathbf{x}_i)\bigr) + \lambda\lVert
 f\rVert^2_{\mathcal{H}_k}$ ha un minimo della forma $f = \sum_i \alpha_i\,
 k(\cdot, \mathbf{x}_i)$, che estende a ogni perdita il $\mathbf{w} = \sum_i
-\alpha_i y_i \mathbf{x}_i$ della strada più larga. Ed è la condizione di
-semidefinitezza la ragione per cui i kernel non si inventano a piacere. Se $k$
-non lo è, il duale smette di essere concavo e il solutore sta risolvendo un
-problema diverso da quello che si crede. Non ogni «misura di somiglianza» è un
-kernel, ed è l'errore più comune di chi prova a scriversene uno.
+\alpha_i y_i \mathbf{x}_i$ della strada più larga.
 
 I kernel validi si costruiscono da altri kernel validi: se $k_1$ e $k_2$ sono
 semidefiniti positivi, lo sono anche $c\,k_1$ con $c > 0$, $k_1 + k_2$, $k_1
@@ -271,8 +271,8 @@ $$
 $$
 
 Gli errori entro $\pm\epsilon$ non vengono penalizzati; oltre, la penalità
-cresce linearmente. Con due slack per esempio, una per chi sporge sopra il
-tubo e una per chi sporge sotto, il problema è
+cresce linearmente. Con due variabili slack per ogni esempio, una per chi
+sporge sopra il tubo e una per chi sporge sotto, il problema è
 
 $$
 \begin{gathered}
@@ -373,9 +373,10 @@ alberi della {doc}`sezione sugli ensemble <alberi-ensemble>`) e il *Local
 Outlier Factor* basato sulla densità locale.
 
 I limiti sono due. Senza esempi anomali non c'è un errore da validare, e
-$\gamma$ e $\nu$ si fissano con euristiche ($\nu$ dalla quota di anomalie che ci
-si aspetta); e il modello descrive i dati del giorno in cui è stato addestrato,
-quindi se la loro distribuzione si sposta il nuovo normale esce come anomalo.
+$\gamma$ e $\nu$ si fissano con euristiche ($\nu$ dalla quota di anomalie che
+ci si aspetta). Il modello descrive i dati del giorno in cui è stato
+addestrato: se la loro distribuzione si sposta, il nuovo normale esce come
+anomalo.
 
 `````
 

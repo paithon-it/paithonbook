@@ -620,12 +620,11 @@ etichetta per documento coincide con l'accuratezza; la media *macro* calcola
 un’$F_1$ per etichetta e ne fa la media semplice, dando lo stesso peso alle
 etichette rare, che nei testi sono spesso quelle che contano.
 
-Resta il tranello che fra le metriche del machine learning ha un titolo suo,
-«Perché l'accuratezza inganna», e nei testi è la regola più che l'eccezione,
-perché le classi sono quasi sempre sbilanciate. Se solo un'email su cento è
-spam, il filtro pigro che risponde sempre "legittima" sfoggia il 99% di
-risposte esatte senza aver fermato nulla. Quale metrica privilegiare è la
-definizione di "successo" per quel particolare giudice.
+Resta il tranello dell'accuratezza ingannevole, che nei testi è la regola più
+che l'eccezione, perché le classi sono quasi sempre sbilanciate. Se solo
+un'email su cento è spam, il filtro pigro che risponde sempre "legittima"
+sfoggia il 99% di risposte esatte senza aver fermato nulla. Quale metrica
+privilegiare è la definizione di "successo" per quel particolare giudice.
 
 ## Il termometro delle parole: i lessici di sentiment
 

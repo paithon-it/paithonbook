@@ -39,7 +39,7 @@ dappertutto.
 
 Il modo in cui obbedisce ha una parte che sorprende: non accorcia soltanto le
 righe, ne spegne qualcuna del tutto, lasciando cadere per intero quelle che
-gli rendono meno e concentrando su quelle che restano. Fin qui è proprio il
+gli rendono meno e concentrandosi su quelle che restano. Fin qui è proprio il
 mestiere che gli abbiamo chiesto.
 
 Ma quel mestiere ha un punto in cui si rovescia, ed è lo stesso di cui la
@@ -99,7 +99,7 @@ quello che non ne dipende è che $\beta$ e la varianza del rumore regolano la
 stessa cosa. Due riserve,
 però, e la seconda morde qui: se $\sigma^2$ viene appreso invece che
 fissato, il termine additivo $-\tfrac{D}{2}\log(2\pi\sigma^2)$ non è più una
-costante e quel grado di libertà sparisce; e il decoder di queste pagine non è
+costante e quel grado di libertà sparisce; e il nostro decoder non è
 gaussiano ma di Bernoulli, cioè un $\sigma^2$ da girare non ce l’ha affatto.
 Nell’esperimento delle quattro tacche, quindi, $\beta$ è un parametro vero e
 non è assorbito da niente.
@@ -208,7 +208,7 @@ può fare altro che produrre sempre la stessa immagine, e quella che gli convien
 produrre è proprio la media: i due numeri devono coincidere. La prova
 del collasso, però, non è il 27,1, è la colonna del costo, che a quella tacca
 vale zero su tutte e otto le righe; il 27,1 è la conferma che arriva da fuori.
-E dice una cosa da portarsi via: il collasso non è un modello
+E dice una cosa che resta vera in generale: il collasso non è un modello
 brutto, è nessun modello.
 
 Per vederlo si fa variare una sola componente del codice, tenendo ferme le
@@ -274,24 +274,24 @@ l’identità della cifra, e non una cosa sola. Quella componente del codice è 
 direzione lungo la quale parecchie cose si muovono insieme, e non «lo
 spessore» né «l’inclinazione».
 
-Ed è la regola, non l’eccezione. Chiamiamo **fattori** gli ingredienti di cui un
-dato è fatto e che si vorrebbero tenere separati: per un volto, la luce, quanto
-la testa è girata, l’espressione. La parola arriva dall’analisi fattoriale di
-Spearman, con cui il capitolo si apre, e vuol dire cause che concorrono a un
-effetto: i fattori di una moltiplicazione sono un’altra cosa. Tenerli separati
-in inglese si chiama *disentanglement*, ed è il nome con cui cercarne la
-letteratura. Nel 2019 Francesco Locatello e colleghi hanno addestrato più di
-dodicimila modelli di questa famiglia, su sette insiemi di dati e con le
-varianti più diffuse, per rispondere a una domanda sola: alzare $\beta$, o
-usare le sue varianti, separa davvero i fattori? La risposta ha due parti, e la
-prima è un teorema di impossibilità, uno dei pochi del libro: dimostra che una
-cosa non si può fare, e non soltanto che è difficile
+Ed è la regola, non l’eccezione. Chiamiamo **fattori** gli ingredienti di cui
+un dato è fatto e che si vorrebbero tenere separati: per un volto, la luce,
+quanto la testa è girata, l’espressione. La parola arriva dall’analisi
+fattoriale di Spearman, con cui il capitolo si apre, e vuol dire cause che
+concorrono a un effetto: i fattori di una moltiplicazione sono un’altra cosa.
+Tenerli separati in inglese si chiama *disentanglement*, ed è il nome con cui
+cercarne la letteratura. Nel 2019 Francesco Locatello e colleghi hanno
+addestrato più di dodicimila modelli di questa famiglia, su sette insiemi di
+dati e con le varianti più diffuse, per rispondere a una domanda sola: alzare
+$\beta$, o usare le sue varianti, separa davvero i fattori? La risposta ha due
+parti, e la prima è un teorema di impossibilità, uno dei pochi che incontrerai:
+dimostra che una cosa non si può fare, e non soltanto che è difficile
 {cite}`locatello2019challenging`.
 
 Il teorema dice che, senza ipotesi in più sul modello e sui dati, separare i
-fattori senza supervisione è impossibile. La ragione si vede con un esempio. Si
-supponga che l’encoder ci sia riuscito: la prima componente del codice misura
-quanto la testa è girata, la seconda quanta luce c’è. Si ruotino ora quelle due
+fattori senza supervisione è impossibile. La ragione si vede con un esempio.
+Supponiamo che l’encoder ci sia riuscito: la prima componente del codice misura
+quanto la testa è girata, la seconda quanta luce c’è. Ruotiamo ora quelle due
 componenti insieme, come si gira di sbieco una coppia di assi disegnata su un
 foglio: al posto di «inclinazione» e «luce» restano due componenti che ne
 portano un po’ per una ({numref}`fig-assi-girati`).
@@ -367,7 +367,7 @@ quel numero. La scheda smette di essere una fila di misure e diventa una fila
 di numeri di catalogo. E la manopola non fa più presa: una casella costa quanto
 le altre, quindi la scheda costa uguale comunque la si scriva.
 
-Il guadagno è enorme, e lo si è già incassato due volte. Una fila di numeri di
+Il guadagno è enorme, e lo abbiamo già incassato due volte. Una fila di numeri di
 catalogo è, alla lettera, un testo: simboli in fila presi da un alfabeto
 finito, come le parole di una frase sono prese da un vocabolario. E su una cosa
 fatta così si può mettere al lavoro tutta la macchina costruita per il
@@ -385,7 +385,7 @@ dove il prontuario si chiamava tavolozza: all’indietro si fa finta che la
 scelta della casella non ci sia, e la correzione arriva all’archivista come se
 avesse consegnato la sua descrizione esatta invece della casella più vicina.
 È un’approssimazione, ma funziona. La stessa idea torna nel capitolo sulle
-GAN, le reti che si sfidano, che si legge più avanti: nella {doc}`sezione sulle
+GAN, le reti che si sfidano, che leggerai più avanti: nella {doc}`sezione sulle
 loro evoluzioni </GAN/applicazioni-evoluzioni>` serve a fare lo stesso con le
 immagini.
 
@@ -452,7 +452,7 @@ sulla sequenza di simboli, ed è quel modello, non il VQ-VAE, a generare.
 ## Quattro macchine, adesso che si sa come sono fatte
 
 Il modello a variabile latente è al lavoro in quattro sezioni di capitoli
-diversi, e adesso il conto si può saldare. Due li abbiamo già attraversati, e
+diversi, e adesso possiamo saldare il conto. Due li abbiamo già attraversati, e
 là c’era una promessa al posto della derivazione; due arrivano dopo, e possono
 darla per fatta.
 
@@ -470,7 +470,7 @@ poi sceglie la migliore soltanto fra quelle, invece che fra tutte, così da non
 valutare azioni che nei dati non compaiono mai. È un modello generativo usato
 come vincolo.
 
-Gli altri due arrivano dopo, e da qui in avanti li si legge sapendo
+Gli altri due arrivano dopo, e quando li incontrerai saprai già
 che cosa c’è dentro.
 
 **In {doc}`Stable Diffusion </ModelliDiffusione/stable-diffusion>`**, per far
@@ -575,6 +575,6 @@ Il {doc}`capitolo sulle GAN </GAN/overview>`, che segue, rinuncia alla
 verosimiglianza. Il generatore definisce ancora una distribuzione, da cui si sa
 campionare, ma di cui non si calcola la densità: niente limite inferiore,
 niente costo di descrizione, e al posto dell’obiettivo una seconda rete, il
-discriminatore, che guarda il risultato e dice se ci crede. Si perde la
+discriminatore, che guarda il risultato e dice se ci crede. Perdiamo la
 possibilità di dire quanto un dato è probabile; in cambio i campioni sono di
 norma più nitidi, al prezzo di un addestramento meno stabile.

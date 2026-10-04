@@ -10,7 +10,7 @@ verso giusto è quello.
 
 Adesso ripetiamo il gioco per mille livelli di rovina, dalla grana appena
 percettibile al pulviscolo che ha inghiottito tutto. Mille non è un numero
-sacro (fra poco vedremo come si scende a un centinaio, o a venti) ma è
+sacro (con DDIM si scende a un centinaio, o a venti) ma è
 quello del lavoro che ha reso famoso il metodo, e per adesso teniamolo.
 Chi sa rispondere a *ogni* livello ha in mano qualcosa di più di un
 restauratore: ha una scala. Può prendere del pulviscolo qualsiasi, dirsi
@@ -64,7 +64,7 @@ gesti:
 1. attenua il valore, moltiplicandolo per un numero appena sotto 1. Nel
    passo che prendiamo a esempio è 0,99, e il pixel scende a
    $0{,}8 \times 0{,}99 = 0{,}792$;
-2. aggiungi un piccolo numero sorteggiato dalla campana di Gauss,
+2. aggiunge un piccolo numero sorteggiato dalla campana di Gauss,
    rimpicciolito di un fattore piccolo, qui 0,14. Se il sorteggio dà $-0{,}7$,
    il contributo è $-0{,}7 \times 0{,}14 \approx -0{,}10$, e il pixel finisce a
    circa $0{,}69$. Con un sorteggio diverso, poniamo $+0{,}3$, sarebbe finito
@@ -307,20 +307,19 @@ p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t) = \mathcal{N}\!\left(\mathbf{x}_{t-
 $$
 
 dove $\theta$ sono i parametri della rete e $\sigma_t^2$ è una varianza
-fissata, non appresa. DDPM ne prova due, $\sigma_t^2 = \beta_t$ e la
-varianza del posteriore
-$\tilde{\beta}_t = \frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha}_t}\beta_t$,
-e le trova sperimentalmente equivalenti sui mille passi; qui useremo la prima,
-ma teniamo a mente che sono due, perché a poche decine di passi smetteranno di
-equivalersi (ci torniamo con DDIM). Si noti che $\tilde{\beta}_1 = 0$: la
-seconda scelta spiega da sé perché all'ultimo passo non si aggiunga rumore
-fresco. La scelta di modellare il ritorno
-con una gaussiana è legittimata dal risultato di Feller citato in apertura di
-capitolo: per passi
-$\beta_t$ piccoli, il vero inverso $q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è
-approssimativamente gaussiano. Il contributo chiave di Ho, Jain e Abbeel
-{cite}`ho2020denoising` è la riparametrizzazione della media: invece di
-far predire alla rete $\boldsymbol{\mu}_\theta$ direttamente (o la ricostruzione
+fissata, non appresa. DDPM ne prova due, $\sigma_t^2 = \beta_t$ e la varianza
+del posteriore $\tilde{\beta}_t =
+\frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha}_t}\beta_t$, e le trova
+sperimentalmente equivalenti sui mille passi; la derivazione adotta la prima,
+ma le due scelte smetteranno di equivalersi a poche decine di passi, con DDIM.
+Si noti che $\tilde{\beta}_1 = 0$: la seconda scelta spiega da sé perché
+all'ultimo passo non si aggiunga rumore fresco. La scelta di modellare il
+ritorno con una gaussiana è legittimata dal risultato di Feller citato in
+apertura di capitolo: per passi $\beta_t$ piccoli, il vero inverso
+$q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ è approssimativamente gaussiano. Il
+contributo chiave di Ho, Jain e Abbeel {cite}`ho2020denoising` è la
+riparametrizzazione della media: invece di far predire alla rete
+$\boldsymbol{\mu}_\theta$ direttamente (o la ricostruzione
 $\hat{\mathbf{x}}_0$), la si scrive in funzione del rumore stimato,
 
 $$
@@ -395,11 +394,11 @@ differiscono soltanto per quel peso.
 Finito l'addestramento, il generatore è pronto. Non serve nessuna foto di
 partenza: si sorteggia rumore puro, $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0},
 \mathbf{I})$, e si percorre la catena all'indietro, un gradino alla volta, con
-una valutazione della rete per gradino. Ogni gradino ha tre componenti, che il
-capitolo chiama sempre allo stesso modo: la **correzione**, che sottrae una
-frazione del rumore stimato dalla rete; la **riscalatura**, che moltiplica
-tutto quello che resta per $1/\sqrt{\alpha_t}$, un numero appena sopra 1 (si
-alza il volume); e il **rimescolamento**, che somma rumore appena sorteggiato.
+una valutazione della rete per gradino. Ogni gradino ha tre componenti: la
+**correzione**, che sottrae una frazione del rumore stimato dalla rete; la
+**riscalatura**, che moltiplica tutto quello che resta per $1/\sqrt{\alpha_t}$,
+un numero appena sopra 1 (si alza il volume); e il **rimescolamento**, che
+somma rumore appena sorteggiato.
 
 ```{figure} ../figures/diffusione-denoising.gif
 :name: fig-diffusione-denoising
@@ -565,8 +564,8 @@ racconta quindi metà del guadagno e circa un decimo del gesto (a $t = 500$ la
 correzione vale $0{,}0105$ su uno spostamento complessivo di $0{,}1007$), e
 tace la riscalatura, che è l'altra metà.
 
-Quel rapporto è fra le due ampiezze, non fra le due potenze, e conviene dirlo
-perché la letteratura fa l'altra scelta: chi lo definisce come
+Quel rapporto è fra le due ampiezze, non fra le due potenze, mentre la
+letteratura fa di solito l'altra scelta: chi lo definisce come
 $\bar{\alpha}_t/(1-\bar{\alpha}_t)$ trova il quadrato dei numeri appena
 scritti. Qui servono le ampiezze perché è in quelle che si misurano le tre
 mosse, e la {doc}`sezione sui campionatori veloci
@@ -725,8 +724,8 @@ gradiente, ed è lì che un modello addestrato con
 $\mathcal{L}_{\text{semplice}}$ smette di massimizzare la verosimiglianza: la
 sua verosimiglianza è misurabilmente peggiore di quella dello stesso modello
 addestrato sul bound vero, e resta lontana da quella dei modelli
-autoregressivi, come gli autori scrivono senza girarci intorno. È il
-compromesso che spiega una stranezza altrimenti inspiegabile della famiglia: i
+autoregressivi, come gli autori dichiarano esplicitamente. È il
+compromesso che spiega un tratto controintuitivo della famiglia: i
 modelli di diffusione producono campioni migliori dei modelli che ottimizzano
 la verosimiglianza, pur avendo verosimiglianze peggiori.
 
@@ -946,10 +945,10 @@ così pochi da non avere più struttura da confrontare.
 
 `````
 
-Teniamo a mente questa composizione, una rete di visione con il numero del
-passo cucito addosso, perché è un equilibrio provvisorio: più avanti nel
-capitolo vedremo un'architettura chiamata DiT buttare via la U-Net intera e
-metterci al suo posto un Transformer, che invece di guardare l'immagine da
+Questa composizione, una rete di visione con il numero del passo cucito
+addosso, è un equilibrio provvisorio: il {doc}`Diffusion Transformer
+</ModelliDiffusione/diffusion-transformer>` butterà via la U-Net intera e ci
+metterà al suo posto un Transformer, che invece di guardare l'immagine da
 lontano e poi da vicino la taglia in tessere e le tratta come le parole di una
 frase. Era già successo nella visione, con i Vision Transformer
 {cite}`dosovitskiy2021image`.
@@ -1003,17 +1002,17 @@ La successione dei mille dosaggi (le variabili `beta`, `alpha` e `alpha_bar`)
 si chiama in gergo lo schedule del rumore, ed è la manopola con le mille
 tacche di cui si diceva sopra, scritta una volta per tutte prima di cominciare.
 
-Una cosa il giocattolo la lascia correre, e conviene dirla perché la sezione su
-Stable Diffusion ci tornerà sopra. Lo schedule di DDPM presuppone dati con
-varianza vicina a 1 per componente: è la condizione sotto cui
-$\mathrm{Var}(\mathbf{x}_t) = 1$ a ogni passo. I punti della spirale hanno
+Il giocattolo trascura un dettaglio, su cui la {doc}`sezione su Stable
+Diffusion </ModelliDiffusione/stable-diffusion>` tornerà. Lo schedule di DDPM
+presuppone dati con varianza vicina a 1 per componente: è la condizione sotto
+cui $\mathrm{Var}(\mathbf{x}_t) = 1$ a ogni passo. I punti della spirale hanno
 invece una deviazione standard di circa mezza unità per coordinata, cioè una
 varianza attorno a un quarto (nella tazza di caffè e latte, una tazza che parte
 mezza vuota). Il segnale è quindi più debole del previsto a ogni livello, e il
 rumore lo copre a livelli più bassi di quelli su cui lo schedule è tarato. Qui
-non fa danno, perché la spirale riemerge lo stesso; in Stable Diffusion sì, e il
-rimedio, una moltiplicazione che riporta i dati alla scala giusta, diventa una
-costante scritta dentro il modello.
+non fa danno, perché la spirale riemerge lo stesso; in Stable Diffusion sì, e
+il rimedio, una moltiplicazione che riporta i dati alla scala giusta, diventa
+una costante scritta dentro il modello.
 
 Poi la rete. La U-Net qui non serve, perché i dati non sono immagini: basta la
 rete più semplice che c'è, qualche strato di neuroni uno dopo l'altro, che in
@@ -1134,12 +1133,12 @@ Due avvertenze pratiche prima di lasciare il giocattolo. La prima: il ciclo di
 addestramento fa trentamila giri, che sono i giri dell'allenamento e non hanno
 niente a che vedere con i mille livelli di rovina (a ogni giro se ne pesca uno
 solo, a caso). Trentamila giri da 256 punti fanno quasi otto milioni di carte
-del mazzo, che è l'ordine di grandezza di cui si parlava sopra. E servono
+del mazzo. E servono
 davvero: con poche migliaia di giri la forma esce appena abbozzata. La
 seconda: in tutto è questione di meno di un minuto su un
 portatile.
 
-Due esperimenti valgono la pena. Interrompere il campionamento a metà strada,
+Restano due esperimenti istruttivi. Interrompere il campionamento a metà strada,
 per vedere la forma «mezza decisa». E passare da questi punti alle immagini,
 dove l'unica modifica sostanziale è sostituire l'MLP con una U-Net e le coppie
 di coordinate con griglie di pixel: schedule, voto e cicli restano gli stessi,

@@ -9,14 +9,13 @@ invece di scorrere tutto il contesto.
 `````{tab} Elementare
 
 Il registro della sala si usa come una rubrica: alla voce di un'etichetta si
-legge l'informazione che le corrisponde. È una rubrica strana, però, ed è la
-sua stranezza a spiegare tutto il resto. Non ha una riga per contatto: ha un
-numero fisso di caselle, e ogni voce nuova si somma a quello che c'è già
-scritto. Quando le chiedi «che cosa corrisponde a questa etichetta?», lei non
-pesca una riga: risponde con un miscuglio, in cui pesa soprattutto
-l'informazione scritta sotto l'etichetta più somigliante, più un po’ di tutte
-le altre. Finché le etichette sono ben diverse fra loro quel «po’ di tutte le
-altre» è trascurabile, ed è per questo che il trucco funziona.
+legge l'informazione che le corrisponde. È una rubrica particolare, che non ha
+una riga per contatto: ha un numero fisso di caselle, e ogni voce nuova si
+somma a quello che c'è già scritto. Quando le chiedi «che cosa corrisponde a
+questa etichetta?», lei non pesca una riga: risponde con un miscuglio, in cui
+pesa soprattutto l'informazione scritta sotto l'etichetta più somigliante, più
+un po’ di tutte le altre. Finché le etichette sono ben diverse fra loro quel
+«po’ di tutte le altre» è trascurabile, ed è per questo che il trucco funziona.
 
 `````
 
@@ -31,10 +30,12 @@ $$
 \mathbf{S}_t = \mathbf{S}_{t-1} + \mathbf{v}_t\, \mathbf{k}_t^\top ,
 $$
 
-letta proiettando lo stato sulla query, $\mathbf{o}_t = \mathbf{S}_t\, \mathbf{q}_t$. Qui $\mathbf{k}_t$, $\mathbf{v}_t$ e
-$\mathbf{q}_t$ sono le chiavi, i valori e le query che conosciamo dall'attenzione dei
-Transformer, $\mathbf{v}_t \mathbf{k}_t^\top$ è il prodotto esterno che scrive il valore sotto la
-sua chiave, e $\mathbf{S}_t$ è la memoria dopo aver letto i primi $t$ token.
+letta applicando lo stato alla query, $\mathbf{o}_t = \mathbf{S}_t\,
+\mathbf{q}_t$. Qui $\mathbf{k}_t$, $\mathbf{v}_t$ e $\mathbf{q}_t$ sono le
+chiavi, i valori e le query che conosciamo dall'attenzione dei Transformer,
+$\mathbf{v}_t \mathbf{k}_t^\top$ è il prodotto esterno che scrive il valore
+sotto la sua chiave, e $\mathbf{S}_t$ è la memoria dopo aver letto i primi $t$
+token.
 
 `````
 
@@ -78,8 +79,7 @@ leggendo: davanti a una cosa importante sbiadisce poco, davanti a un
 intercalare, un «cioè» o un «insomma», sbiadisce molto (è la strada di
 Mamba-2, un modello degli
 {doc}`State Space Model </StateSpaceModel/overview>` che, da questo lato, si
-comporta esattamente così). E la
-differenza sta tutta qui: nel secondo caso non c'è nessun valore da tenere,
+comporta esattamente così). Nel secondo caso non c'è nessun valore da tenere,
 perché a essere stato appreso durante l'addestramento è il *modo* di
 ricalcolarlo a ogni parola.
 
@@ -147,15 +147,15 @@ sbiadirebbero i canali del valore, che è un'altra cosa. (Anche la transizione
 della delta rule, fra poco, sta da quel lato e per la stessa ragione.) Così
 $\alpha_{t,i}\to 1$ conserva il canale $i$ (nel limite si torna all'accumulo
 puro), $\alpha_{t,i}\to 0$ lo azzera. Il vettore è ricavato dall'input con una
-proiezione a **basso rango** (un collo di bottiglia stretto, dimensione 16)
-seguita da una sigmoide, così da generare $d$ gate distinti senza far esplodere
-il numero di parametri; la sigmoide è poi elevata a $1/\tau$ con $\tau = 16$,
+proiezione a **basso rango** (un collo di bottiglia di dimensione 16)
+seguita da una sigmoide, per generare $d$ gate distinti senza far esplodere
+il numero di parametri. La sigmoide è poi elevata a $1/\tau$ con $\tau = 16$,
 un esponente che gli autori chiamano *temperatura* e che spinge i gate verso 1,
-cioè verso un oblio più lento: $\boldsymbol{\alpha}_t =
+rallentando l'oblio. In formule $\boldsymbol{\alpha}_t =
 \sigma\big(\mathbf{W}^2_\alpha \mathbf{W}^1_\alpha \mathbf{x}_t +
-\mathbf{b}_\alpha\big)^{1/\tau}$, con $\mathbf{W}^1_\alpha$ che porta
-l'ingresso $\mathbf{x}_t$, di dimensione $d_{\text{model}}$, a 16, e
-$\mathbf{W}^2_\alpha$ che da 16 porta alla dimensione $d$ delle chiavi (in GLA
+\mathbf{b}_\alpha\big)^{1/\tau}$, dove $\mathbf{W}^1_\alpha$ porta
+l'ingresso $\mathbf{x}_t$ da $d_{\text{model}}$ a 16, e
+$\mathbf{W}^2_\alpha$ lo porta da 16 alla dimensione $d$ delle chiavi (in GLA
 le chiavi hanno, in tutto, metà della dimensione del modello). La gerarchia è
 chiara: scalare fisso (RetNet) $\to$ scalare data-dipendente (Mamba-2) $\to$
 diagonale data-dipendente (GLA), dal più grossolano al più selettivo.
@@ -294,17 +294,17 @@ Resta un problema pratico. Il gate si può anticipare: $\alpha_t$ dipende solo
 dall'ingresso, quindi i prodotti $\prod_i \alpha_i$, che dicono quanto resterà
 fra dieci token di ciò che si scrive adesso, si calcolano per tutti i passi
 insieme, distribuiti su molte unità di calcolo. La correzione no:
-$\mathbf{v}_t - \mathbf{S}_{t-1}\mathbf{k}_t$ dipende dallo stato precedente.
-Per sapere che cosa scrivere al token numero cento bisogna prima sapere che
-cosa la memoria risponde al token numero cento, e quello dipende da tutte le
-novantanove correzioni precedenti: scritta così, la ricorrenza aspetta a ogni
-passo quello prima.
+$\mathbf{v}_t - \mathbf{S}_{t-1}\mathbf{k}_t$ dipende dallo stato precedente. Per sapere che
+cosa scrivere al token numero cento bisogna prima sapere che cosa la memoria
+risponde al token numero cento, e quello dipende da tutte le novantanove
+correzioni precedenti: in questa forma, la ricorrenza impone di completare ogni
+passo prima di calcolare il successivo.
 
 Il modello con la delta rule è dunque nato subito, ma nato lento. Lo propongono
 nel 2021 gli stessi Schlag, Irie e Schmidhuber, che lo addestrano davvero come
 modello linguistico e lo battezzano **Delta Network**, nome che la letteratura
 successiva scriverà tutto attaccato, *DeltaNet*. L'algoritmo che avevano, però,
-procede in fila lungo la sequenza: lascia ferma la scheda grafica e non regge
+procede in fila lungo la sequenza: sfrutta male l'hardware parallelo e non regge
 oltre le taglie piccole. Nel 2024, alla conferenza NeurIPS, Yang e colleghi lo
 sbloccano con un algoritmo **chunk-parallel**, che spezza la sequenza in
 blocchi e dentro ogni blocco fa i conti tutti insieme {cite}`yang2024deltanet`.
@@ -390,8 +390,8 @@ $\beta_t = 1$.
 
 ## Unire oblio e correzione: Gated DeltaNet
 
-A questo punto ci sono due mosse che curano difetti diversi, e la domanda si
-fa naturale: perché scegliere? Il gate scalare, che sbiadisce tutta la
+Dal momento che gate e delta rule curano difetti diversi, si
+possono combinare. Il gate scalare, che sbiadisce tutta la
 memoria con lo stesso fattore, svuota in fretta, ma in modo uniforme e
 indiscriminato: non sa *cosa* sta buttando via. La delta rule fa correzioni
 mirate su singole chiavi, ma da sola non svuota: tende a lasciare la memoria

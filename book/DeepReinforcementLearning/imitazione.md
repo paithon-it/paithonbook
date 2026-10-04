@@ -23,8 +23,8 @@ foto buone per ottenerne altre scattate come se l'auto fosse un po’ fuori cent
 {cite}`pomerleau1991efficient`. Quel lavoro in più non fu un capriccio: fu la
 sola cosa che tenne in piedi il furgone, e il motivo è quello che segue.
 
-L'imitazione è, in un certo senso, l'idea più ovvia di tutte, e per questo
-conviene capire bene perché non basta. Nei capitoli precedenti l'agente impara
+L'imitazione è l'idea più ovvia di tutte, e per questo
+bisogna capire perché non basta. Nei capitoli precedenti l'agente impara
 da una ricompensa, e la ricompensa è la parte difficile: scriverla per una
 guida sicura o per una risposta utile è un problema aperto. Se però qualcuno
 sa già fare il compito, quel problema si può aggirare. Non gli si chiede di
@@ -50,12 +50,12 @@ numero da regolare (di quanti gradi girare il volante) cambia solo il modo di
 misurare lo scarto, non l'impianto.
 
 Si chiama **clonazione comportamentale**, ed è tanto semplice che l'abbiamo già
-incontrata due volte. Il primo AlphaGo, prima di giocare contro sé stesso, aveva
-imparato a proporre mosse guardando centosessantamila partite di giocatori
-forti, e lì la cosa non aveva ancora un nome. In fondo alla sezione sulla
-ricerca ad albero il nome c'era già: prima della fase a rinforzo, a un
-assistente conversazionale si fanno leggere risposte scritte da persone, e gli
-si insegna a scriverne di simili.
+incontrata due volte. Il primo AlphaGo, prima di giocare contro sé stesso,
+aveva imparato a proporre mosse guardando centosessantamila partite di
+giocatori forti, e lì la cosa non aveva ancora un nome. Nella {doc}`sezione
+sulla ricerca ad albero <mcts-alphago>` il nome c'era già: prima della fase a
+rinforzo, a un assistente conversazionale si fanno leggere risposte scritte da
+persone, e gli si insegna a scriverne di simili.
 
 I pregi sono seri. È stabile, perché è addestramento
 supervisionato ordinario: nessuno dei tormenti visti fin qui nei metodi che
@@ -87,14 +87,14 @@ azioni continue. Non compaiono ricompense, non compare l'equazione di Bellman,
 non compare il bootstrapping: è regressione o classificazione, con tutto
 ciò che ne consegue in termini di stabilità e di strumenti già noti.
 
-La stessa mossa compare in tre punti, due già incontrati e uno che deve ancora
-arrivare. Nella {doc}`sezione sulla ricerca ad albero Monte Carlo
-<mcts-alphago>`, la rete di policy di AlphaGo è pre-addestrata in modo
-supervisionato su partite umane prima del *self-play*. Nel post-addestramento
-dei modelli linguistici, la fase di *supervised fine-tuning* che precede l'RLHF
-è clonazione comportamentale su dimostrazioni scritte da persone. E nella
-{doc}`sezione sull'RL offline <offline-rl>`, la componente supervisionata del
-Decision Transformer è la stessa cosa, condizionata sul ritorno desiderato.
+La stessa mossa compare in tre punti. Nella {doc}`sezione sulla ricerca ad
+albero Monte Carlo <mcts-alphago>`, la rete di policy di AlphaGo è
+pre-addestrata in modo supervisionato su partite umane prima del *self-play*.
+Nel post-addestramento dei modelli linguistici, la fase di *supervised
+fine-tuning* che precede l'RLHF è clonazione comportamentale su dimostrazioni
+scritte da persone. E nella {doc}`sezione sull'RL offline <offline-rl>`, la
+componente supervisionata del Decision Transformer è la stessa cosa,
+condizionata sul ritorno desiderato.
 
 L'assunzione nascosta, che è tutto il problema, è quella di ogni apprendimento
 supervisionato: dati indipendenti e identicamente distribuiti. Qui non lo
@@ -205,7 +205,7 @@ contenere e non un ritorno da massimizzare: per questo $C(\hat\pi)$ sta a
 sinistra della disuguaglianza (nel lavoro originale è chiamato $J$). Quanto a
 $\epsilon_N$, è l'errore della migliore politica *col senno di poi* e non
 l’$\epsilon$ misurato sotto la distribuzione dell'esperto: misurato sulla media
-di tutte le distribuzioni di stati accumulate nei $N$ giri, ed è piccolo solo
+di tutte le distribuzioni di stati accumulate negli $N$ giri, ed è piccolo solo
 se la classe di politiche ne contiene una che imita l'esperto anche sugli stati
 che le politiche apprese visitano. Che le politiche prodotte arrivino vicino a
 quel numero non è gratis: lo garantisce il fatto che i giri si comportino come
@@ -421,9 +421,9 @@ for nome, colonna in (("esperto, senza folata   ", 0),
     print(f"{nome}: mediana {(v[3] + v[4]) / 2:.4g}, da {v[0]:.4g} a {v[-1]:.4g}")
 ```
 
-I numeri raccontano la storia meglio di qualunque spiegazione. (Nelle stampe,
-`|stato|` con le due stanghette vuol dire «quanto è grande lo scarto», senza
-guardare se siamo storti da una parte o dall'altra.)
+I numeri raccontano la storia meglio di qualunque spiegazione. Nelle stampe,
+`|stato|` con le due stanghette indica quanto è grande lo scarto, senza
+guardare se siamo storti da una parte o dall'altra.
 
 L'esperto vive in una fascia strettissima, fra $-1{,}00$ e $+0{,}71$. Su quella
 fascia la clonazione impara perfettamente: l'errore per singolo passo è
@@ -476,7 +476,7 @@ esperimento a portarcelo è una perturbazione esterna, che gli diamo noi, e
 che in un colpo solo lo scaraventa a quattro volte il bordo della fascia.
 
 Nel racconto della guida, invece, fuori dalla fascia l'allievo ci arriva da
-solo, un errore alla volta. E qui conviene contare, perché il conto è la parte
+solo, un errore alla volta. E qui il conto è la parte
 sorprendente. Le occasioni di sbagliare sono tante quanti i passi del percorso;
 e ogni singolo sbaglio non si paga una volta sola, perché lascia l'allievo in
 una zona che non conosce per tutti i passi che restano. Tanti inciampi

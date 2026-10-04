@@ -71,14 +71,15 @@ non lo saprai.
 
 `````{tab} Superiore
 
-Il problema è quello classico dell'inferenza. Si osserva un campione $\mathbf{x}
-= (x_1, \dots, x_m)$ estratto da una distribuzione ignota $F$ (due avvertenze
-sui simboli, che nella notazione consolidata del bootstrap cambiano mestiere:
-$\mathbf{x}$ è l'intero campione e non le caratteristiche di un esempio, e
-$\theta$ è la quantità da stimare, non i parametri di un modello), si calcola
-una statistica $\hat{\theta} = s(\mathbf{x})$, e si vuole la distribuzione
-campionaria di $\hat{\theta}$, cioè come varierebbe ripetendo l'estrazione da
-$F$. Da lì si ricavano errore standard, intervalli di confidenza e test.
+Il problema è quello classico dell'inferenza. Si osserva un campione
+$\mathbf{x} = (x_1, \dots, x_m)$ estratto da una distribuzione ignota $F$. Si
+calcola una statistica $\hat{\theta} = s(\mathbf{x})$ e se ne cerca la
+distribuzione campionaria, cioè come varierebbe $\hat{\theta}$ ripetendo
+l'estrazione da $F$. Nella notazione consolidata del bootstrap due simboli
+cambiano mestiere: $\mathbf{x}$ è l'intero campione e non le caratteristiche di
+un singolo esempio, mentre $\theta$ è la quantità da stimare e non i parametri
+di un modello. Da lì si ricavano errore standard, intervalli di confidenza e
+test.
 
 Per $\hat\theta = \bar{x}$ il teorema del limite centrale dà la risposta
 asintotica, $\operatorname{se}(\bar{x}) = \sigma/\sqrt{m}$ stimabile con
@@ -142,14 +143,14 @@ promette di contenere la mediana vera novantacinque volte su cento. Siccome i
 due estremi sono due percentili del mucchio, si chiama *intervallo percentile*.
 E questo lo puoi fare stasera, con i dati che hai già.
 
-Il punto in cui l'analogia si rompe, e va detto perché è il punto in cui il
-metodo si rompe davvero: la fotografia non può mostrare quello che non inquadra.
-Se il campione è piccolo, o storto (solo stipendi del Nord, solo clienti
-soddisfatti), il bootstrap ricampiona quella stortura con la stessa diligenza
-con cui ricampiona il resto, e restituisce un intervallo stretto e sbagliato. Il
-bootstrap misura la variabilità del campionamento, non i peccati del campione. E
-c'è un caso in cui la fotografia è buona e il metodo si rompe lo stesso, quando
-la stima dipende dal bordo del campione: è il massimo, e lo si vede più avanti.
+L'analogia si rompe nello stesso punto in cui si rompe il metodo: la fotografia
+non può mostrare quello che non inquadra. Se il campione è piccolo, o storto
+(solo stipendi del Nord, solo clienti soddisfatti), il bootstrap ricampiona
+quella stortura con la stessa diligenza con cui ricampiona il resto, e
+restituisce un intervallo stretto e sbagliato. Il bootstrap misura la
+variabilità del campionamento, non i peccati del campione. E c'è un caso in cui
+la fotografia è buona e il metodo si rompe lo stesso, quando la stima dipende
+dal bordo del campione: è il massimo, e lo si vede più avanti.
 
 `````
 
@@ -251,9 +252,9 @@ redditi veri), ricampionati diecimila volte, quelle diecimila mediane danno due
 numeri: l'errore standard, cioè la deviazione standard delle diecimila mediane,
 e l’**intervallo**, i due estremi che promettono di contenere la mediana vera
 nel $95\%$ dei casi. Il programma poi rifà lo stesso lavoro sulla media, dove
-esiste anche la formula di due secoli fa, per avere qualcosa contro cui
-controllarlo, e in fondo stampa due termini di paragone: l'intervallo *basic* e
-il jackknife.
+esiste anche la formula di due secoli fa, per avere un riferimento noto con cui
+confrontare i risultati, e in fondo stampa due termini di paragone:
+l'intervallo *basic* e il jackknife.
 
 ```python
 import numpy as np
@@ -445,7 +446,7 @@ il verdetto. È la domanda da cui siamo partiti, applicata a noi stessi.
 ## Dove si rompe, e perché è lo stesso conto del bagging
 
 Un metodo che sembra dare qualcosa in cambio di niente va provato dove non
-funziona, se no non si sa dove ci si può fidare. Il caso da manuale è il
+funziona, altrimenti non si sa fin dove fidarsene. Il caso da manuale è il
 massimo.
 
 ```python

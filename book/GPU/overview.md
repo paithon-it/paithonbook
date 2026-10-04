@@ -64,8 +64,8 @@ veloce un core e hanno iniziato a fornire *più core*: la ragione per cui il
 calcolo è diventato parallelo.
 ```
 
-Un chip costruito fin dall'inizio proprio su quel principio (tanti piccoli
-esecutori invece di uno solo velocissimo) però esisteva già, e faceva un
+Eppure un chip costruito fin dall'inizio proprio su quel principio (tanti piccoli
+esecutori invece di uno solo velocissimo) esisteva già, e faceva un
 mestiere che con l'intelligenza artificiale sembrava non c'entrare nulla:
 disegnare i videogiochi. Una scena tridimensionale, al computer, è fatta di
 migliaia di triangoli: è la forma più semplice che descriva un pezzetto di
@@ -82,7 +82,7 @@ soltanto disegni. Quel modo si chiama CUDA {cite}`nickolls2008scalable`, ed
 che serve a usarlo: si scrive un programma normale, e si dice quali pezzi
 devono girare sulla scheda video invece che sul processore.
 
-Da lì la stessa folla di esecutori che coloriva pixel si rivelò perfetta per un
+Da lì la stessa folla di esecutori che colorava pixel si rivelò perfetta per un
 altro compito fatto di conti tutti dello stesso tipo e indipendenti: addestrare
 reti neurali. Nel 2011 una rete per immagini addestrata su GPU vinse una gara
 di riconoscimento dei segnali stradali, riconoscendoli meglio delle persone
@@ -97,7 +97,7 @@ insegnato i *gesti* per usare una scheda (`.to(device)`, `autocast`,
 linee, con l'analogia della GPU come squadra di operai semplici. Qui si apre il
 cofano: *perché* quei gesti funzionano, cosa succede davvero nel silicio quando
 una rete gira, e fin dove si può spingere l'hardware. Non serve saper
-programmare una GPU per usarla (PyTorch lo fa per noi) ma capire come è fatta
+programmare una GPU per usarla (PyTorch lo fa per noi), ma capire come è fatta
 dentro spiega quasi tutto ciò che separa un addestramento veloce da uno lento.
 
 Due idee attraversano tutte le sezioni che seguono.
@@ -126,7 +126,7 @@ la potenza di calcolo non c'era, ed è la banda chiara al centro: cinquant'anni
 di attesa.
 ```
 
-Guardando la {numref}`fig-hardware-e-modelli` si nota una cosa sola: fra
+Guardando la {numref}`fig-hardware-e-modelli` si nota soprattutto una cosa: fra
 un'idea e il momento in cui quell'idea funziona possono passare decenni. Il
 percettrone è del 1958, la backpropagation si diffonde nel 1986, le reti
 convoluzionali, quelle fatte per le immagini, sono in piedi nel 1998; il
@@ -277,7 +277,7 @@ tetti dell'hardware, la banda e il picco di calcolo, e dice se un programma è
 ogni sezione, in forme diverse (accessi coalescenti, riuso in shared memory o
 *tiling*, fusione dei kernel, fino alla FlashAttention
 {cite}`dao2022flashattention`) che sono variazioni sullo stesso tema: fare più
-conti per ogni byte e tenere il byte il più vicino possibile ai core.
+conti per ogni byte e tenerlo il più vicino possibile ai core.
 `````
 
 ## Un gradino alla volta
@@ -358,7 +358,7 @@ addestrano le reti che non entrano in una scheda sola.
   distingue i carichi *memory-bound* da quelli *compute-bound*.
 - Un unico filo conduttore lega tutto il capitolo (coalescenza, tiling,
   kernel fusion, FlashAttention {cite}`dao2022flashattention`): fare
-  più conti per ogni byte spostato, e tenere il byte vicino ai core.
+  più conti per ogni byte spostato, e tenerlo vicino ai core.
 - A programmare la GPU ci pensa PyTorch: sapere come funziona resta quello
   che spiega perché un addestramento va veloce o lento.
 - Quando una GPU non basta, il lavoro si divide su più schede (parallelismo

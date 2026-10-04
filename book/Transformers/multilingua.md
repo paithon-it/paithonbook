@@ -135,16 +135,16 @@ mettere vicine le traduzioni. Nessuno gli mostra mai «il gatto nero salta sul
 muro» accanto a «the black cat jumps on the wall». Eppure, a fine
 addestramento, succede questo.
 
-Dentro il modello ogni frase diventa un vettore, una lista di numeri (in
-mBERT, la media dei vettori dei suoi token a un dato strato: 768 numeri), e una
-lista di numeri si può leggere come un indirizzo: due numeri sono un punto su
-un foglio, tre un punto nello spazio, settecentosessantotto un punto in un
-luogo che non si disegna ma si ragiona allo stesso modo. Chiamiamola mappa del
-significato,
-perché la proprietà che conta è quella di una mappa: frasi che vogliono dire
-cose simili finiscono in indirizzi vicini. Ebbene, «il gatto nero salta sul
-muro» e «the black cat jumps on the wall» finiscono nella stessa regione, pur
-essendo in due lingue di cui al modello nessuno ha mai raccontato l'esistenza.
+Dentro il modello ogni frase diventa un vettore, una lista di numeri (in mBERT,
+la media dei vettori dei suoi token a un dato strato: 768 numeri), e una lista
+di numeri si può leggere come un indirizzo: due numeri sono un punto su un
+foglio, tre un punto nello spazio, settecentosessantotto un punto in un luogo
+che non si disegna ma su cui si ragiona allo stesso modo. Chiamiamola mappa del
+significato, perché la proprietà che conta è quella di una mappa: frasi che
+vogliono dire cose simili finiscono in indirizzi vicini. Ebbene, «il gatto nero
+salta sul muro» e «the black cat jumps on the wall» finiscono nella stessa
+regione, pur essendo in due lingue di cui al modello nessuno ha mai raccontato
+l'esistenza.
 
 Su *quanto* vicine serve precisione, perché il modo in cui la cosa si misura
 è più interessante dello slogan. I quartieri di due lingue sono affiancati e
@@ -245,7 +245,7 @@ Sovrapposizione di vocabolario. Che la sovrapposizione dei sottotoken
 correli positivamente con il trasferimento zero-shot, e su compiti molto
 diversi fra loro (riconoscimento di entità, POS tagging, inferenza, parsing di
 dipendenze, classificazione di documenti), è il risultato di Wu e Dredze
-{cite}`wu2019beto`, che misura mBERT su cinque compiti e trentanove lingue. Ma
+{cite}`wu2019beto`, che misurano mBERT su cinque compiti e trentanove lingue. Ma
 è correlazione, e due lavori la ridimensionano da direzioni diverse. Pires e
 colleghi {cite}`pires2019multilingual` mettono in grafico la resa sul
 riconoscimento di entità contro la sovrapposizione, per ogni coppia fra
@@ -377,13 +377,13 @@ parallelo esplicito diventa meno necessario.
 
 La via a **doppio encoder** (LaBSE {cite}`feng2022language` e affini) cambia
 granularità: non predice token, allinea *frasi*. Con un batch di $N$ coppie
-parallele e una loss contrastiva su una matrice di somiglianze $N \times N$,
-si massimizza la diagonale e si minimizza il resto. È la stessa forma della
-loss che il capitolo su visione e linguaggio disegnerà nella
-{numref}`fig-clip-matrice` per CLIP {cite}`radford2021learning`, con la
-coppia (immagine, didascalia) al posto di (frase, traduzione), e ne condivide
-il meccanismo che conta: i negativi gratis, che crescono come $N^2$ e rendono
-prezioso il batch grande.
+parallele e una loss contrastiva su una matrice di somiglianze $N \times N$, si
+massimizza la diagonale e si minimizza il resto. È la stessa forma della loss
+che il capitolo su visione e linguaggio disegnerà nella
+{numref}`fig-clip-matrice` per CLIP {cite}`radford2021learning`, con la coppia
+(immagine, didascalia) al posto di (frase, traduzione), e ne condivide il
+meccanismo che conta: gli esempi negativi a costo zero, che crescono come $N^2$
+e rendono prezioso il batch grande.
 
 Sull'ordine serve precisione, perché è facile raccontarla al contrario: LaBSE è
 del luglio 2020 e CLIP del febbraio 2021, quindi non eredita niente da CLIP. E
@@ -439,7 +439,7 @@ cancellandone una vecchia, un fenomeno descritto sulle reti neurali fin dal
 Rimettere il vecchio esercizio a buchi accanto al compito nuovo riporta la
 perplessità dov'era, ma le traduzioni si ritrovano 25 volte su cento, peggio di
 prima: l'allineamento non era un semplice prodotto secondario dell'esercizio.
-Vietare agli errori sul vecchio esercizio di crescere ne salva una parte, 32
+Impedire agli errori sul vecchio esercizio di crescere ne salva una parte, 32
 volte su cento. Per andare oltre il punto di partenza, fino a 64 volte su
 cento, bisogna chiedere durante la rifinitura proprio la cosa che si vuole
 conservare, cioè appaiare le frasi con le loro traduzioni, e tornano a servire
@@ -464,7 +464,7 @@ rifinendo su una SOV per usare su una SVO si ottiene 64,0. Due decimi di
 scarto, contro i quindici punti che separano le due combinazioni di prima.
 Condividere l'ordine delle parole aiuta molto quando si parte da una lingua
 SVO e quasi niente quando si parte da una SOV, e quel che conta di più è
-dunque da dove si parte. È poi il caso in cui casca l'italiano: chi misura la
+dunque da dove si parte. È peraltro il caso in cui ricade l'italiano: chi misura la
 resa sull'italiano e ne deduce la resa «sulle altre lingue» sta misurando la
 cosa più facile che c'era da misurare.
 
@@ -500,10 +500,10 @@ rispetto alle lingue che interessano.
 Nessuno ha sbagliato niente: la coperta è corta. L'unico modo di aggiungere
 lingue senza perderci niente è ingrandire il modello, e la strada più diretta è
 dare a ogni lingua, a ogni piano, un pezzetto di macchina tutto suo, che si
-accende solo sui suoi testi, lasciando in comune il resto: il modello cresce con
-le lingue, ma ogni frase ne attraversa sempre la stessa quantità. Più antico è
-fare un modello per una famiglia di lingue vicine, che ha molto meno da
-spartire. Ed è lo stesso argomento, girato, di quello che
+accende solo sui suoi testi, lasciando in comune il resto: il modello cresce
+con le lingue, ma ogni frase ne attraversa sempre la stessa quantità. Una
+strada più antica è addestrare un modello per una famiglia di lingue vicine,
+che ha molto meno da spartire. Ed è lo stesso argomento, girato, di quello che
 spiegava perché l'allineamento emerge: condividere è economico finché la
 scarsità costringe a condividere, e diventa un impaccio quando quello che
 serviva era distinguere.
@@ -544,7 +544,7 @@ L'italiano sta in una posizione comoda ma non privilegiata: c'è in tutti i
 modelli multilingui, ha abbastanza testo perché il vocabolario condiviso gli
 riservi pezzi decenti, e ha in comune con l'inglese l'ordine delle parole
 (soggetto, verbo, oggetto) e l'alfabeto, le condizioni in cui il trasferimento
-zero-shot si è misurato più efficace. In pratica, un
+zero-shot è risultato più efficace. In pratica, un
 classificatore rifinito su dati inglesi funziona in italiano meglio di quanto
 ci si aspetterebbe, ed è la ragione per cui in Italia si costruiscono sistemi
 funzionanti senza avere dataset italiani di dimensioni comparabili.
@@ -571,7 +571,7 @@ lingue si parlano.
   una sola scatola di mattoncini (i pezzi di parola) per tutte le lingue.
   Siccome l'inglese sommergerebbe le altre, si bara sulle dosi in modo
   controllato: alle lingue piccole si dà più turni di quanti ne avrebbero, e
-  le proporzioni si appiattiscono verso il pari.
+  le proporzioni si appiattiscono verso la parità.
 - L’allineamento fra lingue emerge da solo: nessuno mostra mai al modello
   una frase accanto alla sua traduzione, eppure le due finiscono vicine.
   Perché, non si sa fino in fondo: i pezzi di parola in comune aiutano ma non

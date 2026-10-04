@@ -93,7 +93,7 @@ serve l'online.
 Batch e online sono i due estremi che si incontrano più spesso, ed è utile
 vederli affiancati ({numref}`fig-mlops-serving`): stessa scatola «modello» al
 centro, priorità opposte ai due lati. Le due priorità hanno un nome. La
-latenza è quanto si aspetta una risposta, il tempo che passa fra la domanda
+latenza è il tempo che passa fra la domanda
 e la risposta; il throughput è quante risposte il sistema riesce a sfornare
 in un secondo.
 
@@ -345,13 +345,13 @@ aspetta quei pochi millisecondi in più; in cambio, nello stesso secondo, il
 sistema ne serve molte di più.
 
 Il batching dinamico ha anche un prezzo che non si vede nei tempi. Il modo in
-cui una libreria somma i numeri dipende dalla forma dei dati che le arrivano,
-e la forma qui la decide quante richieste capitano nello stesso mazzetto:
-due chiamate identiche, finite in mazzetti diversi, possono differire nelle
-ultime cifre {cite}`he2025nondeterminism`. È la ripetibilità bit a bit a cui
-{doc}`Dal notebook alla produzione </MLOps/dal-notebook-alla-produzione>`
-diceva che il servizio rinuncia. Per i modelli che generano testo, poi, il
-mazzetto non si chiude e si riapre a ogni richiesta, ma si ricompone a ogni
+cui una libreria somma i numeri dipende dalla forma dei dati che le arrivano, e
+la forma qui la decide quante richieste capitano nello stesso mazzetto: due
+chiamate identiche, finite in mazzetti diversi, possono differire nelle ultime
+cifre {cite}`he2025nondeterminism`. È la ripetibilità bit a bit alla quale il
+servizio rinuncia, come avvertiva {doc}`Dal notebook alla produzione
+</MLOps/dal-notebook-alla-produzione>`. Per i modelli che generano testo, poi,
+il mazzetto non si chiude e si riapre a ogni richiesta, ma si ricompone a ogni
 token: è il *continuous batching* di {doc}`LLMOps </MLOps/llmops>`.
 
 La seconda leva è ridurre la precisione dei numeri, cioè scriverli con meno
@@ -417,15 +417,14 @@ quanto cali si scopre soltanto misurandolo su quel modello lì.
 
 La forma più economica è la **quantizzazione post-training** (*PTQ*): si prende
 un modello già addestrato in `float32` e se ne convertono i pesi in interi,
-senza riaddestrare. Il meccanismo (la mappa affine $\hat{w} = s\,(q - z)$ fra
-l'intero $q$ e il valore reale ricostruito $\hat{w}$, con $s$ la larghezza di
-un gradino e $z$, lo *zero-point*, il livello che rappresenta lo zero; l'errore
-limitato a mezzo gradino; e soprattutto il fatto che la larghezza del gradino la
-dettino gli elementi più estremi fra quelli che condividono la scala) è
-costruito per esteso in
-{doc}`Meno bit </Efficienza/meno-bit>`
-{cite}`jacob2018quantization`, insieme alle due conseguenze che qui si danno
-per acquisite: che la granularità della scala sia la leva più economica, e
+senza riaddestrare. Il meccanismo è costruito per esteso in {doc}`Meno bit
+</Efficienza/meno-bit>` {cite}`jacob2018quantization`. Quella sezione definisce
+la mappa affine $\hat{w} = s\,(q - z)$ fra l'intero $q$ e il valore reale
+ricostruito $\hat{w}$ (con $s$ la larghezza di un gradino e $z$, lo
+*zero-point*, il livello che rappresenta lo zero), calcola l'errore limitato a
+mezzo gradino, e spiega perché la larghezza del gradino la dettino gli elementi
+più estremi fra quelli che condividono la scala. Da lì si danno per acquisite
+due conseguenze: che la granularità della scala sia la leva più economica, e
 che nei modelli linguistici poche componenti anomale la dettino per tutte le
 altre. Qui interessa la parte di servizio, cioè che cosa si scrive e che cosa
 si misura.
@@ -469,7 +468,7 @@ motore d'inferenza di terzi. Non sono due strade alternative, e chi le ha
 imparate ai tempi di PyTorch 1.x se lo ricorda al contrario: da PyTorch 2.9
 l'esportatore ONNX passa per `torch.export` (il parametro `dynamo` vale
 `True` di serie) e delega a lui la cattura del grafo. Ne discende una
-conseguenza pratica che coglie tutti di sorpresa: la traduzione in ONNX vive in
+conseguenza pratica immediata: la traduzione in ONNX vive in
 un pacchetto a parte, `onnxscript`, che non viene più installato insieme a
 `torch`. Su un ambiente appena preparato quella riga solleva un
 `ModuleNotFoundError`, e la cura è installarlo (`pip install onnxscript`), non

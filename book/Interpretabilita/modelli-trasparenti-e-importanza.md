@@ -8,7 +8,7 @@ pericoloso: gli asmatici sono pazienti fragili. La spiegazione era clinica, e
 sta tutta in quello che i medici facevano con loro. Negli ospedali un asmatico
 con la polmonite veniva mandato subito in terapia intensiva, proprio perché
 considerato a rischio, e quelle cure aggressive gli abbassavano la mortalità
-sotto quella di tutti gli altri. L'asma, di suo, non proteggeva un bel niente.
+sotto quella di tutti gli altri. L'asma, di suo, non offriva alcuna protezione.
 A proteggere era la corsia in cui l'asma ti faceva finire. Il modello aveva
 colto una correlazione vera nei dati e ne aveva tratto una conclusione che,
 usata per decidere chi mandare a casa, avrebbe ucciso. La storia (raccontata
@@ -17,12 +17,12 @@ anni dopo da Rich Caruana e colleghi
 possiamo *guardare dentro* un modello, non sappiamo su quali scorciatoie si
 regge, e non possiamo fidarcene quando la posta è alta.
 
-Ci sono due strade per capire un modello. La prima è sceglierlo trasparente
-per costruzione, così semplice che la sua logica si legge a occhio nudo. La
-seconda è tenere il modello com'è, anche se dentro ha milioni di numeri e non
-si legge affatto, e interrogarlo da fuori: gli si passano dei casi, si guardano
-le risposte, e si deduce il resto. È la scatola nera dell'apertura del
-capitolo; un modello che si legge, per contrasto, si dice scatola bianca.
+Ci sono due strade per capire un modello. La prima è sceglierlo trasparente per
+costruzione, così semplice che la sua logica si legge a occhio nudo. La seconda
+è tenere il modello com'è, anche se dentro ha milioni di numeri e non si legge
+affatto, e interrogarlo da fuori: gli si passano dei casi, si guardano le
+risposte, e si deduce il resto. È la scatola nera della storia degli asmatici;
+un modello che si legge, per contrasto, si dice scatola bianca.
 
 La prima strada si percorre per intero; della seconda si prende il primo
 attrezzo che vi si incontra: una classifica delle colonne dei dati,
@@ -462,10 +462,10 @@ imitare a gradini; sulle funzioni simulate del lavoro originale il vantaggio
 medio c'è, ma è piccolo. Il modello lineare si ferma a $0{,}47$ perché una
 regola a soglia fra due colonne non è una somma di rette.
 
-Si sente dire che la trasparenza si paghi in accuratezza. Dipende dai dati, e
-l'apertura del capitolo ha già detto dove: su tabelle con colonne che hanno un
-senso il divario fra un modello trasparente ben costruito e una scatola nera è
-spesso piccolo o nullo, su immagini, testo e suoni le reti profonde sono
+Si sente dire che la trasparenza si paghi in accuratezza. Dipende dai dati,
+come ha già mostrato la storia degli asmatici: su tabelle con colonne che hanno
+un senso il divario fra un modello trasparente ben costruito e una scatola nera
+è spesso piccolo o nullo, su immagini, testo e suoni le reti profonde sono
 nettamente più accurate. Resta da vedere come si costruisce, su una tabella, un
 modello trasparente che regga il confronto con quello che lì va più forte.
 
@@ -637,28 +637,27 @@ richiede solo il forward del modello e un insieme etichettato.
 
 Due accortezze. La misura va calcolata su dati held-out: sul *training* essa
 racconta quanto il modello si è appoggiato a $x_j$ per memorizzare, non quanto
-quella feature aiuti a generalizzare. E le feature correlate portano due
-guai distinti, che conviene non confondere. Il primo: il modello recupera
-l'informazione dalla colonna gemella non permutata, e l'importanza, spartita
-fra le due, risulta *sottostimata*. Il secondo: la permutazione crea
-combinazioni irrealistiche (un'altezza da adulto con un peso da bambino) su
-cui il modello viene interrogato fuori dal supporto dei dati, e l'errore così
-gonfiato può *sovrastimare* l'importanza delle feature coinvolte
-{cite}`hooker2021unrestricted`: la stessa patologia di estrapolazione che
-ritroveremo nel PDP. I due guasti non si correggono insieme: permutare $x_j$
-*dentro* gruppi di righe simili (permutazione condizionata) toglie di mezzo le
-combinazioni irrealistiche, ma accentua la sottostima, perché a ciascuna delle
-due colonne gemelle resta soltanto l'informazione che aggiunge all'altra. E la
-sottostima pesa su chi chiede «quanta informazione porta *questa colonna*»; a
-chi chiede «di che cosa ha bisogno *questo modello*» quel valore basso risponde
-il vero, ed è la forcella vista in apertura di capitolo. Il rimedio pratico
-alla sottostima è l'importanza *di gruppo*: si applica la stessa permutazione
-delle righe a tutte le colonne di un gruppo correlato e si legge l'importanza
-dell'insieme, che non dipende da come il modello si è spartito il lavoro fra
-loro. Quanto all'incertezza, la deviazione standard che accompagna
-$\mathrm{FI}_j$ misura la variabilità dei rimescolamenti, non quella del
-campione di valutazione: con poche righe di prova sottostima l'incertezza
-vera.
+quella feature aiuti a generalizzare. E le feature correlate portano due guai
+distinti. Il primo: il modello recupera l'informazione dalla colonna gemella
+non permutata, e l'importanza, spartita fra le due, risulta *sottostimata*. Il
+secondo: la permutazione crea combinazioni irrealistiche (un'altezza da adulto
+con un peso da bambino) su cui il modello viene interrogato fuori dal supporto
+dei dati, e l'errore così gonfiato può *sovrastimare* l'importanza delle
+feature coinvolte {cite}`hooker2021unrestricted`: la stessa patologia di
+estrapolazione che affligge il *Partial Dependence Plot* (PDP). I due guasti
+non si correggono insieme: permutare $x_j$ *dentro* gruppi di righe simili
+(permutazione condizionata) toglie di mezzo le combinazioni irrealistiche, ma
+accentua la sottostima, perché a ciascuna delle due colonne gemelle resta
+soltanto l'informazione che aggiunge all'altra. E la sottostima pesa su chi
+chiede «quanta informazione porta *questa colonna*»; a chi chiede «di che cosa
+ha bisogno *questo modello*» quel valore basso risponde il vero, ed è la
+forcella vista in apertura di capitolo. Il rimedio pratico alla sottostima è
+l'importanza *di gruppo*: si applica la stessa permutazione delle righe a tutte
+le colonne di un gruppo correlato e si legge l'importanza dell'insieme, che non
+dipende da come il modello si è spartito il lavoro fra loro. Quanto
+all'incertezza, la deviazione standard che accompagna $\mathrm{FI}_j$ misura la
+variabilità dei rimescolamenti, non quella del campione di valutazione: con
+poche righe di prova sottostima l'incertezza vera.
 
 `````
 
@@ -787,8 +786,8 @@ scende con i metri quadri? Ogni metro in più vale quanto il precedente, o dopo
 i primi cento non conta più niente? La prima domanda è sul segno, la seconda
 sulla forma, e per rispondere serve disegnare una curva: sull'asse
 orizzontale i valori della colonna, su quello verticale la risposta del
-modello. I tre attrezzi che seguono disegnano quella curva in tre modi diversi,
-e si citano tutti e tre con la sigla inglese.
+modello. Tre strumenti permettono di disegnare quella curva in modi diversi,
+e si citano tutti con la sigla inglese.
 
 `````{tab} Elementare
 
@@ -810,15 +809,15 @@ C'è un secondo limite, più insidioso, e per quello esiste un attrezzo diverso.
 Riscrivere a tutti la stessa età va bene finché l'età non è legata ad altro; ma
 se due colonne vanno sempre insieme (l'altezza e il peso, per dire) riscriverne
 una sola fabbrica persone che non esistono, alte due metri e pesanti cinquanta
-chili. Al modello quelle persone non le ha mai viste nessuno, quindi risponde a
+chili. Di persone del genere il modello non ne ha mai viste, quindi risponde a
 caso, e la curva che ne esce è la media di un mucchio di risposte a caso.
 
 Il rimedio si chiama **ALE** (*Accumulated Local Effects*, effetti locali
 accumulati), e il nome dice il metodo. Non si chiede più niente a tutta la
 popolazione: si divide la colonna in fascette sottili (i quarantenni, i
 quarantunenni, e così via) e dentro ciascuna fascetta si lavora solo con chi
-in quella fascetta ci sta davvero. A quelle persone, e solo a quelle, si
-chiede il modello due volte: una con l'età portata all'estremo basso della
+in quella fascetta ci sta davvero. Per quelle persone, e solo per loro, si
+interroga il modello due volte: una con l'età portata all'estremo basso della
 fascetta e una all'estremo alto. La differenza fra le due risposte, mediata su
 di loro, è quanto conta un anno in più *per chi ha quell'età lì*, ed è uno
 scalino. Nessuno viene inventato, perché a un quarantenne stiamo chiedendo di
@@ -889,7 +888,7 @@ predizione lungo i dati che esistono davvero».
 ## In pratica: rimescolamento contro impurità
 
 Torniamo alle due classifiche, per rimescolamento e da impurità, e mettiamole
-a confronto su dati veri. Le curve appena viste rispondevano a «come agisce una
+a confronto su dati veri. PDP, ICE e ALE rispondevano a «come agisce una
 colonna»; adesso si torna alla domanda di prima, «quanto conta», e si guarda
 quale dei due modi di misurarla è affidabile. Ne useremo una raccolta che si
 studia da decenni, distribuita insieme alla libreria `scikit-learn` e che si
@@ -1262,16 +1261,16 @@ di fidarsene.
 
 ## Che una feature conti, non come, né perché
 
-Chiudiamo tornando alle colonne, con l'avvertenza più importante, la stessa
-della storia degli asmatici. L'importanza delle feature (per rimescolamento o da
-impurità) dice che una colonna pesa sulle risposte del modello. Non dice come
-agisce (per quello servono le curve di poco fa), non dice se l'effetto sia lo
-stesso per tutti (lo dicono le curve ICE, e caso per caso i metodi delle
-{doc}`spiegazioni locali </Interpretabilita/spiegazioni-locali>`), e soprattutto
-non dice che quella colonna sia la causa di niente. Attenzione a questa parola,
-che somiglia a un'altra usata qui di continuo: «casuale» vuol dire tirato a
-sorte, «causale» vuol dire che una cosa ne provoca un'altra, ed è la seconda che
-qui stiamo negando.
+L'avvertenza più importante sulle colonne è la stessa che chiudeva la storia
+degli asmatici. L'importanza delle feature (per rimescolamento o da impurità)
+dice che una colonna pesa sulle risposte del modello. Non dice come agisce (per
+quello servono le curve di poco fa), non dice se l'effetto sia lo stesso per
+tutti (lo dicono le curve ICE, e caso per caso i metodi delle {doc}`spiegazioni
+locali </Interpretabilita/spiegazioni-locali>`), e soprattutto non dice che
+quella colonna sia la causa di niente. Attenzione a questa parola, che somiglia
+a un'altra molto frequente in statistica: «casuale» vuol dire tirato a sorte,
+«causale» vuol dire che una cosa ne provoca un'altra, ed è quest'ultima che
+stiamo negando.
 
 Un esempio, e sta tutto nella storia degli asmatici di apertura. Là l'asma
 risultava importante, e chi avesse letto quel numero come una causa avrebbe

@@ -45,7 +45,7 @@ valore che $y_t$ possa assumere.
 Da qui la domanda ingenua che è anche quella giusta: e se anche l'immagine
 avesse i suoi token? Se nell'elenco ci fossero, accanto alle parole, dei simboli
 che stanno per pezzi di immagine, l'ultimo strato potrebbe pescare anche quelli,
-e produrre un disegno diventerebbe *lo stesso gesto* che produrre una frase.
+e produrre un disegno diventerebbe *lo stesso gesto* con cui si produce una frase.
 L'idea funziona, e ha un prezzo.
 
 ## Un alfabeto anche per i pixel
@@ -61,7 +61,7 @@ compressione dei segnali ed è molto più vecchia del VQ-VAE
 decoder addestrati insieme, con la quantizzazione in mezzo (le prime due
 lettere stanno per *vector quantized*, le altre per *variational autoencoder*,
 la famiglia che la {doc}`sezione sul latente che si usa
-</ModelliLatenti/il-latente-che-si-usa>` riprenderà).
+</ModelliLatenti/il-latente-che-si-usa>` esplorerà in dettaglio).
 
 Non è un attrezzo dei soli pixel: la {doc}`sezione sui codec neurali
 </Audio/codec-neurali>` la riprenderà per il suono, con una variante a più
@@ -409,15 +409,16 @@ finché non è troppo tardi.
 
 C'è poi un costo di natura diversa, che nessuno degli accorgimenti precedenti
 cura: la quantizzazione perde informazione. L'encoder della fusione tardiva
-consegna vettori continui; il tokenizzatore sostituisce ciascuno con il
-prototipo più vicino, e la differenza non è recuperabile in nessun punto
-successivo della catena. Con i numeri di prima, ogni patch di $16 \times 16$
-pixel (768 byte di colori) diventa uno fra 8.192 simboli: sopravvive la
-struttura grossa, non il tratto sottile. Il caso peggiore è il testo dentro
-l'immagine, perché un carattere di un documento fotografato sta nella scala di
-dettaglio che la quantizzazione cancella; il lavoro su Chameleon lo dichiara
-come la debolezza principale del proprio tokenizzatore, che limita le
-prestazioni sui compiti di OCR {cite}`chameleon2024mixed`.
+consegna vettori continui; il tokenizzatore della fusione precoce, invece,
+sostituisce ciascun vettore con il prototipo più vicino, e la differenza non è
+recuperabile in nessun punto successivo della catena. Con i numeri di prima,
+ogni patch di $16 \times 16$ pixel (768 byte di colori) diventa uno fra 8.192
+simboli: sopravvive la struttura grossa, non il tratto sottile. Il caso
+peggiore è il testo dentro l'immagine, perché un carattere di un documento
+fotografato sta nella scala di dettaglio che la quantizzazione cancella; il
+lavoro su Chameleon lo dichiara come la debolezza principale del proprio
+tokenizzatore, che limita le prestazioni sui compiti di OCR
+{cite}`chameleon2024mixed`.
 
 ## Due obiettivi, un modello solo
 

@@ -90,8 +90,8 @@ tenuti separati. Il salto che il pubblico ha percepito alla fine del
 *Attention Is All You Need*, «l'attenzione è tutto ciò che serve»
 {cite}`vaswani2017attention`. Da lì è nata la famiglia di programmi con cui
 oggi si conversa, e la descrive il
-{doc}`capitolo sui Transformer </Transformers/overview>`. Nel 2022, cioè,
-l'architettura aveva cinque anni; di nuovo c'erano l'ultimo tratto
+{doc}`capitolo sui Transformer </Transformers/overview>`. Nel 2022
+l'architettura aveva già cinque anni; di nuovo c'erano l'ultimo tratto
 dell'addestramento, fatto con istruzioni e giudizi di persone
 {cite}`ouyang2022training`, e soprattutto il posto in cui la tecnologia si
 incontrava. Prima stava nascosta dentro servizi che facevano altro (traduci
@@ -110,7 +110,7 @@ Empirico, non di Aristotele) è «tutti gli
 uomini sono mortali; Socrate è un uomo; quindi Socrate è mortale». Per tirare
 la conclusione non serve sapere chi fosse Socrate: basta la struttura delle
 prime due frasi. È questo che vuol dire ottenere le conclusioni
-«meccanicamente», ed è il più antico tentativo di cui ci resti traccia di
+«meccanicamente», ed è il più antico tentativo giunto fino a noi di
 scrivere le regole del pensiero come si scriverebbero quelle di un gioco.
 
 Poi bisogna aspettare quasi due millenni, e arrivare al Seicento, quando
@@ -163,7 +163,7 @@ punteggio ha un nome, ed è uno dei pochi da imparare adesso: si chiama
 **funzione obiettivo**. È a grandi linee anche lo scopo dell'AI, costruire
 sistemi che agiscono «nel modo migliore possibile».
 
-Detto questo, l'AI non è una costola della teoria del controllo: nacque anzi
+L'AI, però, non è una costola della teoria del controllo: nacque anzi
 proprio per superarne i limiti {cite}`russell2020artificial`. Quella matematica
 sapeva tenere in rotta un sistema descritto da pochi numeri che cambiano nel
 tempo (la velocità, la temperatura, l'angolo del timone), e si fermava lì.
@@ -270,7 +270,7 @@ Nel 2010 il gruppo di Broggi è riuscito a far guidare da soli dei furgoni
 elettrici dall'Italia alla Cina. La sfida si chiamava VIAC (VisLab
 Intercontinental Autonomous Challenge): quasi sedicimila chilometri da Parma a
 Shanghai, con due veicoli in marcia (più due di riserva) e una regola
-d'ingaggio da dire, perché è la parte interessante. I due procedevano in fila:
+d'ingaggio che è la parte più interessante dell'impresa. I due procedevano in fila:
 quello di testa apriva la strada e ogni tanto un umano interveniva, per
 scegliere il percorso o per risolvere le situazioni che il sistema non sapeva
 gestire; quello dietro seguiva il primo in completa autonomia. Non sedicimila

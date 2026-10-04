@@ -49,16 +49,14 @@ di sempre, quello che qualcuno scrive riga per riga in un linguaggio di
 programmazione. Nel 2.0, cioè nei sistemi di apprendimento automatico, il
 programma non lo scrive più una persona riga per riga, lo si *addestra*, cioè
 gli si mostrano montagne di esempi e lo si lascia aggiustare da sé, un pochino
-alla volta, i numeri che ha dentro. Quei numeri sono i pesi della rete,
-milioni o miliardi, e sono in tutto e per tutto quello che il modello ha
-imparato: il suo codice. Nel 2025 ha aggiunto un terzo capitolo,
-il **Software 3.0**, osservando che oggi, con i grandi modelli linguistici, «si
-programma in inglese»: il prompt *è* il programma, scritto in lingua naturale
-invece che in Python. («In inglese» sta per «in lingua umana»: l'italiano va
-altrettanto bene, e infatti gli esempi qui sono tutti in
-italiano.) È un'immagine forte, e come tutte le immagini forti va presa con
-prudenza; ma coglie qualcosa di vero, ed è il punto di partenza
-dell'ingegneria dei prompt.
+alla volta, i numeri che ha dentro. Quei numeri sono i pesi della rete, milioni
+o miliardi, e sono in tutto e per tutto quello che il modello ha imparato: il
+suo codice. Nel 2025 ha aggiunto un terzo capitolo, il **Software 3.0**,
+osservando che oggi, con i grandi modelli linguistici, «si programma in
+inglese»: il prompt *è* il programma, scritto in lingua naturale invece che in
+Python (con «inglese» si intende la lingua naturale, e qui useremo l'italiano
+per gli esempi). È un'immagine forte, da prendere con prudenza; ma coglie
+qualcosa di vero, ed è il punto di partenza dell'ingegneria dei prompt.
 
 ## Programmare a parole
 
@@ -86,10 +84,9 @@ muro 41%, tetto 20%, ramo 11%, e via calando fino alle ultime parole del
 vocabolario. La risposta nasce estraendo a sorte da quella classifica, con le
 percentuali come pesi: «muro» esce circa quattro volte su dieci, «tetto» due.
 Estrarre così si dice *campionare*, ed è la ragione per cui la stessa domanda
-può avere risposte diverse. (Quando la classifica la sentirai chiamare
-«distribuzione», da qui o da altri, è di lei che si sta parlando: è la parola
-che usano gli statistici.) Nella figura le voci si chiamano *token*, che è il
-pezzo di parola con cui il modello lavora davvero, come abbiamo visto nella
+può avere risposte diverse (la statistica chiama questa classifica
+«distribuzione»). Nella figura le voci si chiamano *token*, che è il pezzo di
+parola con cui il modello lavora davvero, come abbiamo visto nella
 {doc}`sezione sui tokenizzatori </NaturalLanguageProcessing/tokenizzatori>`.
 Diremo «parola» dove la differenza non conta, e «token» dove conta: cioè quando
 si tratta di contarli, perché è a token che si misura quanto testo entra nella
@@ -106,10 +103,9 @@ l'unica che abbiamo finché non mettiamo le mani dentro al modello.
 Ne segue che, con un LLM già addestrato, cioè uno di quelli che si trovano
 pronti e che sanno già leggere e scrivere, non si programma più toccando i
 pesi: quelli sono congelati, li ha fissati l'addestramento. «Congelati» non
-vuol dire immutabili per sempre: riaprirli e proseguire l'addestramento sui
-propri dati si può, si chiama fine-tuning, e fra poco vedremo perché, fra le
-strade che si hanno davanti quando un modello non fa quello che vogliamo, è la
-più cara da mettere in piedi. Vuol dire che restano fermi mentre si lavora sul
+vuol dire immutabili per sempre (riaprirli e proseguire l'addestramento sui
+propri dati si può, si chiama fine-tuning, ma fra poco vedremo perché è la strada
+più costosa). Vuol dire che restano fermi mentre si lavora sul
 testo. Programmiamo con le parole, cioè con il testo che gli mettiamo davanti
 prima di chiedergli una risposta. Cambiare quel testo cambia
 il comportamento del sistema tanto quanto, nel software tradizionale,
@@ -163,7 +159,7 @@ poche coppie richiesta → risposta nel contesto (il *few-shot*), perché il
 modello esegua un compito nuovo *senza alcun aggiornamento dei pesi*. Gli
 esempi non addestrano: condizionano. La scoperta è raccontata nella
 {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`, e la sua
-forma probabilistica la scrive la {doc}`sezione sul prompt
+forma probabilistica è formalizzata nella {doc}`sezione sul prompt
 engineering <prompt-engineering>`; qui ci basta la conseguenza: la
 programmazione avviene nel testo.
 
@@ -223,10 +219,10 @@ vincolo attorno a cui gira tutto il secondo cerchio.
 Il terzo cerchio, il più esterno, è il **loop engineering**: il processo che
 sta attorno alle chiamate. Dentro c'è il ciclo dell'agente, *osserva → ragiona
 → agisci*, che a ogni giro ri-riempie e ripulisce la finestra; attorno c'è il
-programma che decide quando quel ciclo parte, che cosa si porta da un giro
-all'altro e dove lo tiene, visto che nella finestra non ci sta, come si
-verifica che il risultato vada bene e quando ci si ferma. Progettare questo
-processo è il livello più esterno e più difficile.
+programma che decide quando far partire quel ciclo. È lui a stabilire quali
+informazioni portare da un giro all'altro e dove memorizzarle quando la
+finestra è piena, come validare il risultato e quando fermarsi. Progettare
+questo processo è il livello più esterno e più difficile.
 
 `````{tab} Elementare
 
@@ -288,13 +284,12 @@ che si fa si misura, invece di fidarsi a occhio; e che di ogni modifica
 si tiene traccia, come si fa col codice.
 
 Il costo si vede meglio in una figura. Quando un modello non fa quello che
-vogliamo, davanti abbiamo tre strade, e non costano uguale: riscrivere il
-messaggio; andare a prendere i documenti che al modello mancano e metterglieli
-davanti insieme alla domanda (è il RAG, sigla di *retrieval augmented
-generation*, «generazione con recupero»); oppure
-riaprire i pesi e riaddestrarlo un po’ sui nostri esempi (il fine-tuning). Le
-prime due lasciano il modello com'è, la terza lo cambia, ed è la più cara da
-mettere in piedi.
+vogliamo, abbiamo davanti tre strade, con costi crescenti: riscrivere il
+messaggio; recuperare i documenti che al modello mancano e fornirglieli insieme
+alla domanda (è il RAG, sigla di *retrieval augmented generation*, «generazione
+con recupero»); oppure riaprire i pesi e riaddestrarlo in parte sui nostri
+esempi (il fine-tuning). Le prime due lasciano il modello intatto, la terza lo
+altera, ed è la più costosa da mettere in piedi.
 
 ```{figure} ../figures/fine-tuning-rag-o-prompt.svg
 :name: fig-quale-leva
@@ -349,16 +344,15 @@ funziona sempre ti sta vendendo qualcosa.
 Tre proprietà rendono l'attività ingegneristica e non magica. Primo, i vincoli
 sono reali e quantificabili: la finestra ha un tetto di token, e ogni token
 pesa su latenza, memoria (la KV cache vista nel capitolo sui Transformer) e
-denaro, e del costo per token si occupa la {doc}`sezione su capacità e
-costo </MLOps/capacita-e-costo>`. Non si ottimizza «la qualità» in astratto ma
-la qualità *sotto vincolo di budget*. Secondo, si misura: una versione del
-prompt o della politica di contesto si valuta su una batteria di casi e si
-confronta sugli stessi casi con la precedente prima di sostituirla; senza
-misura non c'è miglioramento, solo opinioni. Terzo, si versiona: *il prompt è
-codice*, va messo sotto controllo di versione e trattato come un artefatto del
-software, tema che ritroveremo in MLOps. Con una avvertenza di onestà
-intellettuale: è un'ingegneria giovane, fatta oggi più di euristiche, cioè di
-regole pratiche che spesso funzionano e ogni tanto no, che di garanzie. La
+denaro, e del costo per token si occupa la {doc}`sezione su capacità e costo
+</MLOps/capacita-e-costo>`. Non si ottimizza «la qualità» in astratto ma la
+qualità *sotto vincolo di budget*. Secondo, si misura: una versione del prompt
+o della politica di contesto si valuta su una batteria di casi e si confronta
+sugli stessi casi con la precedente prima di sostituirla; senza misura non c'è
+miglioramento, solo opinioni. Terzo, si versiona: *il prompt è codice*, va
+messo sotto controllo di versione e trattato come un artefatto del software,
+tema che ritroveremo in MLOps. Con una avvertenza di onestà intellettuale: è
+un'ingegneria giovane, fatta oggi più di euristiche che di garanzie. La
 terminologia stessa è in assestamento: per un buon tratto si è chiamato tutto
 «prompt engineering», finché non si è capito che il problema vero stava un
 cerchio più in fuori. Chi promette leggi certe, in questo campo, sta vendendo
@@ -371,9 +365,9 @@ qualcosa.
 Il capitolo segue i tre cerchi, dal centro verso l'esterno. Del primo restano
 da vedere le fragilità, e il modo di chiedere esplicitamente il ragionamento
 passo passo, la *chain-of-thought* {cite}`wei2022chain`. Del secondo il
-capitolo sugli agenti ha già visto la parte che tocca un agente (quanto della
-finestra si mangiano gli strumenti e la traccia, dove si tengono i ricordi che
-non ci stanno); qui lo si prende per intero, dal montaggio dentro un budget ai
+capitolo sugli agenti ha già visto la parte che tocca un agente (quanto spazio
+occupano gli strumenti e la traccia nella finestra, come memorizzare i ricordi
+in eccesso); qui lo si prende per intero, dal montaggio dentro un budget ai
 modi in cui si guasta. Il terzo è il più esterno e il più difficile, ed è
 quello che separa un modello che risponde da un sistema che porta a termine un
 compito.

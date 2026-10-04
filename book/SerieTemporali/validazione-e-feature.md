@@ -31,7 +31,7 @@ quello che è successo davvero; poi si sposta in avanti quel giorno, e si rifà.
 Con i dati tabellari gli esempi si dividono in tre insiemi: uno su cui il
 modello impara, uno su cui se ne regolano le scelte, uno su cui lo si esamina
 alla fine e che prima non si tocca. E prima di dividerli si mescolano, perché
-un ordine già presente nel file (tutte le foto di gatti in fondo, per dire)
+un ordine già presente nel file (tutte le foto di gatti in fondo, per esempio)
 renderebbe i tre insiemi diversi per costruzione. La *k-fold
 cross-validation* ripete la divisione più volte, tenendo da parte ogni volta
 una fetta diversa, e fa la media degli errori: il voto che ne esce è più
@@ -91,7 +91,7 @@ casi più comuni, resta la regola temporale.
 
 La cura è semplice da enunciare: rispettare la freccia del tempo. Ci si allena
 sul passato, si verifica sul futuro, mai il contrario. Un taglio solo, però, non
-basta, e la ragione è che darebbe un voto solo, misurato su una manciata di
+basta, perché darebbe un voto solo, misurato su una manciata di
 giorni: se in quei giorni è capitato un fatto strano (una nevicata, uno
 sciopero), il voto racconta la nevicata e non il modello. Meglio tagliare in
 molti punti diversi e fare la media dei voti. È il backtesting dell'apertura, e
@@ -142,15 +142,16 @@ violare l'ordine temporale {cite}`hyndman2021forecasting`.
 
 Anche la scelta degli iperparametri (gli ordini di un ARIMA, l'ampiezza di una
 finestra mobile, il numero di armoniche di Fourier) è un uso dei dati, e va
-fatta dentro lo schema: a ogni origine $t_i$ si sceglie sul solo training
-$y_1, \dots, y_{t_i}$, con un walk-forward interno a quel training, e si valuta
-il modello scelto sul blocco di test che segue. È la versione temporale della
+fatta dentro lo schema: a ogni origine $t_i$ si sceglie sul solo training $y_1,
+\dots, y_{t_i}$, con un walk-forward interno a quel training, e si valuta il
+modello scelto sul blocco di test che segue. È la versione temporale della
 *nested cross-validation* della {doc}`sezione sugli iperparametri
-</MachineLearning/iperparametri>`, e ne eredita il costo: origini per tagli
-interni per candidati, altrettante stime. Per questo in pratica si riduce la
-griglia, o si ripete la scelta soltanto ogni $s$ origini. Scegliere sull'intera
-serie e poi misurare sulla stessa serie è la forma di leakage che la sezione
-sui modelli classici ha anticipato a proposito degli ordini $p$ e $q$.
+</MachineLearning/iperparametri>`, e ne eredita il costo: il numero di stime è
+il prodotto tra origini, tagli interni e candidati. Per questo in pratica si
+riduce la griglia, o si ripete la scelta soltanto ogni $s$ origini. Scegliere
+sull'intera serie e poi misurare sulla stessa serie è la forma di leakage che
+la sezione sui modelli classici ha anticipato a proposito degli ordini $p$ e
+$q$.
 
 `````
 
@@ -222,9 +223,9 @@ solo, senza unità di misura. Perché ci sia un metro, però, la serie deve
 muoversi: su una che si ripete sempre identica chi copia non sbaglia mai, il
 suo errore è zero, e per zero non si divide.
 
-Due modi di sbagliarla. Uno è tacere quale pigrizia si è messa al paragone: chi
-copia può copiare ieri, oppure lo stesso giorno della settimana scorsa se la
-serie ha un ritmo settimanale, e il numero che ne esce è diverso.
+Ci sono due modi per usarla male. Uno è tacere quale pigrizia si è presa a
+paragone: chi copia può copiare ieri, oppure lo stesso giorno della settimana
+scorsa se la serie ha un ritmo settimanale, e il numero che ne esce è diverso.
 
 L'altro è leggerla come una gara alla pari, e non lo è. L'errore di chi copia
 si misura una volta sola, prima che la prova cominci, sulla strada già
@@ -301,27 +302,26 @@ ha una {cite}`hyndman2021forecasting`. Altrimenti al denominatore finisce un
 avversario che su quella serie sbaglia molto più del dovuto, e ogni modello ne
 esce lusingato.
 
-Poiché è un rapporto tra errori nella stessa unità, la MASE è
-adimensionale e confrontabile tra serie, e non ha problemi con gli zeri
-purché la serie di training non si ripeta identica a passo $m$: non basta che
-non sia costante, perché su una serie perfettamente periodica di periodo $m$
-il denominatore è zero comunque, e la MASE stagionale si usa proprio sulle
-serie che un periodo ce l'hanno. La lettura, però, va data per
-esteso, perché la versione corta («sotto 1 batte il naive») è la fonte di
-un equivoco: un valore sotto $1$ vuol dire che il modello sbaglia meno di quanto
-sbaglia, a un passo di stagione e sui dati di addestramento, il predittore
-che copia il ciclo precedente. È una scala e non un duello: il denominatore
-serve a togliere l'unità di misura della serie, non a fare da avversario. Un
-modello con MASE $0{,}9$ su un orizzonte a dodici passi non ha battuto nessuno
-alla pari: ha sbagliato il 90% di quanto sbaglia a un passo chi copia, il che
-su dodici passi è ottimo e su un passo sarebbe mediocre. Se si vuole davvero
-il duello, il naive va fatto correre sullo stesso test e sullo stesso
-orizzonte, ed è quello che si fa con le linee di base ingenue. Su più serie,
-infine, serve una regola per aggregare: le competizioni M usano l'OWA
-(*overall weighted average*), la media di sMAPE e MASE, ciascuna divisa per
-quella di un metodo di riferimento sull'insieme delle serie (il Naive 2, un
-naive sulla serie destagionalizzata), così che $1$ voglia dire «pari al
-riferimento» {cite}`makridakis2020m4`.
+Poiché è un rapporto tra errori nella stessa unità, la MASE è adimensionale e
+confrontabile tra serie, e non ha problemi con gli zeri purché la serie di
+training non si ripeta identica a passo $m$: non basta che non sia costante,
+perché su una serie perfettamente periodica di periodo $m$ il denominatore è
+zero comunque, e la MASE stagionale si usa proprio sulle serie che un periodo
+ce l'hanno. La lettura, però, va data per esteso, perché la versione corta
+(«sotto 1 batte il naive») è la fonte di un equivoco: un valore sotto $1$ vuol
+dire che l'errore del modello è inferiore a quello commesso, a un passo di
+stagione e sui dati di addestramento, dal predittore che copia il ciclo
+precedente. È una scala e non un duello: il denominatore serve a togliere
+l'unità di misura della serie, non a fare da avversario. Un modello con MASE
+$0{,}9$ su un orizzonte a dodici passi non ha battuto nessuno alla pari: ha
+sbagliato il 90% di quanto sbaglia a un passo chi copia, il che su dodici passi
+è ottimo e su un passo sarebbe mediocre. Se si vuole davvero il duello, il
+naive va fatto correre sullo stesso test e sullo stesso orizzonte, ed è quello
+che si fa con le linee di base ingenue. Su più serie, infine, serve una regola
+per aggregare: le competizioni M usano l'OWA (*overall weighted average*), la
+media di sMAPE e MASE, ciascuna divisa per quella di un metodo di riferimento
+sull'insieme delle serie (il Naive 2, un naive sulla serie destagionalizzata),
+così che $1$ voglia dire «pari al riferimento» {cite}`makridakis2020m4`.
 
 Quando la previsione non è un singolo numero ma una distribuzione (un
 intervallo, o un insieme di quantili), si usa la
@@ -342,11 +342,11 @@ sotto, tanto da spingere $\hat{y}_\tau$ verso il vero quantile $\tau$-esimo dell
 distribuzione. Mediata su più livelli, approssima un punteggio proprio per
 l'intera previsione probabilistica {cite}`hyndman2021forecasting`.
 
-Il fattore due che in molte scritture moltiplica i due rami qui non c'è, ed è
-una convenzione e non un pezzo della definizione: Hyndman e Athanasopoulos lo
-tengono, e annotano che spesso si omette. Raddoppiare ogni perdita non sposta
-il minimo né l'ordine fra due modelli, ma raddoppia le cifre, e due punteggi si
-confrontano solo se vengono dalla stessa forma.
+Il fattore due che in molte scritture moltiplica i due rami qui non c'è:
+ometterlo è una convenzione e non altera la definizione. Hyndman e
+Athanasopoulos lo tengono, e annotano che spesso si omette. Raddoppiare ogni
+perdita non sposta il minimo né l'ordine fra due modelli, ma raddoppia le
+cifre, e due punteggi si confrontano solo se vengono dalla stessa forma.
 
 Attenzione però a cosa misura, perché non è la calibrazione. Essere un punteggio
 proprio significa che è minimizzata in media dalla distribuzione vera, e
@@ -410,9 +410,9 @@ guarda se fa l'80%. La macchina per farlo è il walk-forward.
 
 `````
 
-Le due corse, messe sulla stessa linea del tempo, si guardano in un colpo
+Le due corse, messe sulla stessa linea del tempo, si colgono in un colpo
 solo ({numref}`fig-mase-non-duello`): il modello parte dove finisce la storia e
-copre tutto l'orizzonte in una volta, chi copia resta di qua dal confine e
+copre tutto l'orizzonte in una volta; chi copia, invece, resta di qua dal confine e
 avanza di un passo per volta.
 
 ```{figure} ../figures/mase-non-e-un-duello.svg
@@ -526,13 +526,13 @@ incertezza: qui ci sono gli attrezzi per chiuderla.
 
 Prima però va detto per bene che cosa promette una forbice, perché è una
 promessa precisa e si può controllare. Quando un modello dice «fra 22 e 26,
-all'80%» sta dicendo: se ripetessi questa previsione mille volte, il valore vero
-mi cadrebbe dentro ottocento volte. È un conto che il modello ha fatto, non una
-speranza, e poggia su ipotesi. Due si possono guardare da vicino con un
-esperimento: che i parametri siano noti invece che stimati, e che gli scarti si
-distribuiscano secondo la gaussiana della {doc}`sezione su probabilità e
-statistica </Matematica/probabilita-statistica>`. Nessuna delle due è vera, e
-non sbagliano nello stesso verso.
+all'80%» sta dicendo: se ripetessi questa previsione mille volte, il valore
+vero cadrebbe al suo interno ottocento volte. È un conto che il modello ha
+fatto, non una speranza, e poggia su ipotesi. Due si possono guardare da vicino
+con un esperimento: che i parametri siano noti invece che stimati, e che gli
+scarti si distribuiscano secondo la gaussiana della {doc}`sezione su
+probabilità e statistica </Matematica/probabilita-statistica>`. Nessuna delle
+due è vera, e non sbagliano nello stesso verso.
 
 `````{tab} Elementare
 
@@ -547,7 +547,7 @@ sempre, e tanto più quanto la storia è corta e quanto più in là si guarda.
 La seconda è più curiosa, perché non sbaglia sempre nello stesso verso. Prendi
 due fenomeni che nel complesso si agitano uguale, ma uno dei due ogni tanto fa
 un salto enorme. Quei pochi salti enormi, nel bilancio dell'agitazione, pesano
-tantissimo, e per la ragione già vista con l'RMSE: il bilancio somma i
+tantissimo, per la ragione già vista con l'RMSE: il bilancio somma i
 quadrati, e il quadrato di otto è sessantaquattro. Siccome il bilancio totale
 deve restare lo stesso, tutti gli altri giorni devono essere più tranquilli. I
 valori, cioè, si accalcano attorno al centro, qualcuno finisce lontanissimo, e
@@ -814,10 +814,10 @@ punto qualunque regressore tabellare (dai modelli lineari al gradient
 boosting) diventa un modello di forecasting.
 
 Il divieto vale anche per le trasformazioni: media, deviazione, minimo e
-massimo usati per scalare le colonne vanno stimati sul solo training di
-quel giro e poi applicati al test, mai
-calcolati sull'intera serie. Uno `StandardScaler` messo prima dello split è
-esattamente l'analista con la curva liscia come una pista da sci.
+massimo usati per scalare le colonne vanno stimati sul solo training di quel
+giro e poi applicati al test, mai calcolati sull'intera serie. Uno
+`StandardScaler` applicato prima dello split ricade nello stesso errore
+dell'analista con la curva liscia come una pista da sci.
 
 E attenzione a dove cade il taglio, perché la regola «netta» del confine
 temporale si viola da sé, al bordo. Se si costruisce la tabella sull'intera

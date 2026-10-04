@@ -26,11 +26,12 @@ parte dal primo mestiere, il più antico.
 ## Trovare l'ago: l'information retrieval
 
 Il problema è presto detto: data una richiesta, trovare in una collezione che
-può contenere milioni di documenti i pochi che servono. È il problema dei motori
-di ricerca, ma è nato ben prima del web. Il termine *information retrieval* è
-del 1950, in una relazione di Calvin Mooers a un convegno, e negli anni Sessanta
-il gruppo di Gerard Salton confrontava già documenti e domande come vettori,
-misurandone la somiglianza con il coseno {cite}`sanderson2012history`.
+può contenere milioni di documenti i pochi che servono. È il problema dei
+motori di ricerca, ma è nato ben prima del web. Il termine *information
+retrieval* compare nel 1950, in una relazione di Calvin Mooers a un convegno, e
+negli anni Sessanta il gruppo di Gerard Salton confrontava già documenti e
+domande come vettori, misurandone la somiglianza con il coseno
+{cite}`sanderson2012history`.
 
 Chi lo studia chiama quella richiesta una **query**, ed è la stessa parola che
 nel meccanismo di attenzione indica la domanda che una parola pone alle altre.
@@ -92,7 +93,7 @@ prima buona (più è in alto, meglio è).
 
 `````{tab} Superiore
 
-Un **indice invertito** mappa ogni termine $t$ del vocabolario nella lista dei
+Un **indice invertito** associa a ogni termine $t$ del vocabolario la lista dei
 documenti (e delle posizioni) in cui compare: l'elaborazione di una query si
 riduce a operazioni su liste ordinate, con costo legato ai documenti *che
 contengono i termini della query*, non all'intera collezione.
@@ -141,15 +142,14 @@ Due parole sulla valutazione, perché torneranno. Detti $\mathrm{Ril}(q)$ i
 documenti rilevanti per la query e $\mathrm{Top}_k(q)$ i primi $k$ restituiti,
 la **precision@k** è $|\mathrm{Ril}\cap\mathrm{Top}_k|/k$ e la **recall@k** è
 $|\mathrm{Ril}\cap\mathrm{Top}_k|/|\mathrm{Ril}|$: la prima misura quanto è
-pulita la lista, la seconda quanto del necessario ci è entrato, ed è quella che
-conta per un sistema che poi legge i passaggi. L’**MRR** (*Mean Reciprocal
-Rank*) è la media, sulle query, di $1/\mathrm{rank}$, dove $\mathrm{rank}$ è la
-posizione del primo risultato corretto (vale $1$ se il sistema azzecca sempre
-il primo posto).
-Quando la rilevanza ha dei gradi si usa l’**nDCG@k**,
-$\sum_{i=1}^{k}(2^{g_i}-1)/\log_2(i+1)$ diviso per lo stesso valore
-dell'ordinamento ideale, dove $g_i$ è il grado di rilevanza del documento in
-posizione $i$. Tutte e quattro crescono verso il meglio.
+pulita la lista, la seconda quanto del necessario è stato recuperato, ed è
+quella che conta per un sistema che poi legge i passaggi. L’**MRR** (*Mean
+Reciprocal Rank*) è la media, sulle query, di $1/\mathrm{rank}$, dove
+$\mathrm{rank}$ è la posizione del primo risultato corretto (vale $1$ se il
+sistema azzecca sempre il primo posto). Quando la rilevanza ha dei gradi si usa
+l’**nDCG@k**, $\sum_{i=1}^{k}(2^{g_i}-1)/\log_2(i+1)$ diviso per lo stesso
+valore dell'ordinamento ideale, dove $g_i$ è il grado di rilevanza del
+documento in posizione $i$. Tutte e quattro crescono verso il meglio.
 
 `````
 
@@ -242,15 +242,15 @@ $\mathrm{sim}(q, z) = E_q(q)^\top E_z(z)$, che coincide con la similarità del
 coseno, già incontrata nella {doc}`sezione sull'algebra lineare
 </Matematica/algebra-lineare>`, quando i vettori sono normalizzati. Il
 vantaggio computazionale è decisivo: gli embedding dei passaggi si calcolano
-una volta sola, offline; a query time restano una codifica e una ricerca di
-vicini più prossimi. Esatta, quella ricerca costa $O(Nd)$ per domanda, con $N$
-passaggi di dimensione $d$: per i 21 milioni di passaggi di Wikipedia
-dell'articolo di Lewis e colleghi e $d = 768$, la dimensione di DPR, sono circa
-$1{,}6 \times 10^{10}$ moltiplicazioni a domanda, e i soli vettori, in
-`float32`, occupano circa 65 GB. Su milioni di vettori si usano allora indici
-*approssimati* dei vicini più prossimi (in sigla ANN, *approximate nearest
-neighbor*, da non confondere con la sigla delle reti neurali): grafi navigabili
-a più livelli come HNSW {cite}`malkov2020hnsw`, liste invertite con
+una volta sola, offline; al momento della ricerca restano solo una codifica e
+il calcolo dei vicini più prossimi. Esatta, quella ricerca costa $O(Nd)$ per
+domanda, con $N$ passaggi di dimensione $d$: per i 21 milioni di passaggi di
+Wikipedia dell'articolo di Lewis e colleghi e $d = 768$, la dimensione di DPR,
+sono circa $1{,}6 \times 10^{10}$ moltiplicazioni a domanda, e i soli vettori,
+in `float32`, occupano circa 65 GB. Su milioni di vettori si usano allora
+indici *approssimati* dei vicini più prossimi (in sigla ANN, *approximate
+nearest neighbor*, da non confondere con la sigla delle reti neurali): grafi
+navigabili a più livelli come HNSW {cite}`malkov2020hnsw`, liste invertite con
 quantizzazione del prodotto, librerie come FAISS {cite}`johnson2017billion`. Il
 compromesso è fra recall, latenza e memoria: si accetta di perdere qualche
 vicino vero in cambio di una ricerca sublineare, ed è la funzione dei database
@@ -284,11 +284,12 @@ la posizione in ciascuna lista e non il punteggio, che fra un BM25 e un
 prodotto scalare non è confrontabile. La fusione e il reranking hanno una
 sezione propria, {doc}`RAG avanzato </Agenti/rag-avanzato>`.
 
-Un raffinamento chiude il quadro: il bi-encoder codifica query e passaggio
+Un raffinamento chiude il quadro. Il bi-encoder codifica query e passaggio
 *separatamente*, mentre un **cross-encoder** li concatena in un unico
-Transformer (l'attenzione confronta i token dei due testi uno a uno) ed è più
-accurato ma troppo costoso per scandagliare l'archivio, quindi si usa come
-reranker: riordina i migliori $k$ candidati proposti dal retriever.
+Transformer, in cui l'attenzione confronta i token dei due testi uno a uno. È
+un approccio più accurato ma troppo costoso per scandagliare l'archivio; per
+questo si usa come reranker, per riordinare i migliori $k$ candidati proposti
+dal retriever.
 
 `````
 
@@ -398,20 +399,19 @@ di chi scrive.
 
 `````{tab} Superiore
 
-Nel modello originale {cite}`lewis2020retrieval` le due metà sono esplicite:
-un retriever DPR fornisce $p_\eta(z \mid x)$, la probabilità di recuperare il
+Nel modello originale {cite}`lewis2020retrieval` le due metà sono esplicite: un
+retriever DPR fornisce $p_\eta(z \mid x)$, la probabilità di recuperare il
 passaggio $z$ data la domanda $x$, e un generatore seq2seq (BART) fornisce
 $p_\theta(y \mid x, z)$. Il prodotto scalare del bi-encoder diventa quella
 probabilità nel modo consueto, passando per l'esponenziale e normalizzando su
-tutto l'archivio:
-$p_\eta(z \mid x) \propto \exp\!\big(E_z(z)^\top E_q(x)\big)$. (Due avvisi
-sulle lettere, presi tutti e due dal paper: $\eta$ sono i parametri del
-retriever e non il tasso di apprendimento che $\eta$ indica nel resto del
-libro; e la domanda qui è $x$, la stessa che il bi-encoder chiamava $q$.)
-La risposta marginalizza sui passaggi recuperati, ed è la variante che il
-paper chiama RAG-Sequence, quella che usa lo stesso passaggio per tutta la
-risposta (nell'altra, RAG-Token, la somma si rifà a ogni token, e parole
-diverse possono venire da passaggi diversi):
+tutto l'archivio: $p_\eta(z \mid x) \propto \exp\!\big(E_z(z)^\top
+E_q(x)\big)$. (Due avvisi sulle lettere, presi tutti e due dal paper: $\eta$
+sono i parametri del retriever e non il tasso di apprendimento che $\eta$
+indica nel resto del libro; e la domanda qui è $x$, la stessa che il bi-encoder
+chiamava $q$.) La risposta marginalizza sui passaggi recuperati, ed è la
+variante che il paper chiama RAG-Sequence, quella che usa lo stesso passaggio
+per tutta la risposta (nell'altra, RAG-Token, la somma viene ricalcolata per
+ogni token, e parole diverse possono venire da passaggi diversi):
 
 $$
 p(y \mid x) \;\approx\; \sum_{z \,\in\, \text{top-}k}
@@ -419,9 +419,9 @@ p_\eta(z \mid x)\; p_\theta(y \mid x, z),
 $$
 
 dove $x$ è la domanda, $y$ la risposta generata, $z$ uno dei $k$ passaggi
-recuperati, $\eta$ i parametri del retriever e $\theta$ quelli del
-generatore. Il segno di «circa» dice una cosa precisa: la somma esatta correrebbe
-su tutti i passaggi dell'archivio, e qui si ferma ai primi $k$. Il paper la
+recuperati, $\eta$ i parametri del retriever e $\theta$ quelli del generatore.
+Il segno di «circa» dice una cosa precisa: la somma esatta si estenderebbe a
+tutti i passaggi dell'archivio, mentre qui si ferma ai primi $k$. Il paper la
 chiama approssimazione top-$k$ e non la giustifica: quanto pesi la coda che
 resta fuori dipende dalla scala dei prodotti scalari del retriever, e non è
 detto sia poco. La somma troncata viene poi rinormalizzata sui soli $k$
@@ -459,23 +459,23 @@ variante sparisce anche la marginalizzazione: i passaggi finiscono tutti nello
 stesso prompt, il generatore li vede insieme, e a pesarne la pertinenza è lui,
 dal contenuto e non dal punteggio del recupero, che però decide ancora quali
 entrano e in che ordine. L'ordine conta: con molti passaggi nel contesto le
-prestazioni sono spesso migliori quando l'informazione rilevante sta
-all'inizio o alla fine, e calano quando sta in mezzo {cite}`liu2024lost`. E
-ogni passaggio in più costa contesto: con $k$ passaggi di $n_p$ token ciascuno
-la domanda si allunga di $k\,n_p$ token, e $k$ diventa la manopola che mette
-in tensione la recall con il costo e il rumore. I limiti però non cambiano. Il
-tetto di ciò che il sistema può dire in modo fondato e citabile è la recall
-del retriever, cioè la quota dei passaggi pertinenti che la ricerca riesce a
-ripescare: è la stessa domanda della recall di un classificatore, quanti dei
-casi buoni si riescono a prendere, con i passaggi pertinenti dell'archivio al
-posto dei positivi da trovare (la
-{doc}`sezione sulle metriche </MachineLearning/metriche>` la definisce per
-esteso). Quel che non viene recuperato non può entrare nella risposta *a
-partire dai documenti*, e il modello può sempre rispondere di suo, ma allora è
-tornato all'esame a libro chiuso, e senza dirlo. Il generatore, poi, può
-ignorare i passaggi o contraddirli, tanto che la fedeltà alla fonte
-(*groundedness*) è oggi una metrica di valutazione a sé; e una citazione
-formalmente corretta non rende vera una risposta che ne travisa il contenuto.
+prestazioni sono spesso migliori quando l'informazione rilevante sta all'inizio
+o alla fine, e calano quando sta in mezzo {cite}`liu2024lost`. E ogni passaggio
+in più costa contesto: con $k$ passaggi di $n_p$ token ciascuno la domanda si
+allunga di $k\,n_p$ token, e $k$ diventa la manopola che mette in tensione la
+recall con il costo e il rumore. I limiti però non cambiano. Il tetto di ciò
+che il sistema può dire in modo fondato e citabile è la recall del retriever,
+cioè la quota dei passaggi pertinenti che la ricerca riesce a ripescare: è la
+stessa domanda della recall di un classificatore, quanti dei casi buoni si
+riescono a prendere, con i passaggi pertinenti dell'archivio al posto dei
+positivi da trovare (la {doc}`sezione sulle metriche
+</MachineLearning/metriche>` la definisce per esteso). Quel che non viene
+recuperato non può entrare nella risposta *a partire dai documenti*, e il
+modello può sempre rispondere attingendo ai propri pesi, ma allora è tornato
+all'esame a libro chiuso, e senza dirlo. Il generatore, poi, può ignorare i
+passaggi o contraddirli, tanto che la fedeltà alla fonte (*groundedness*) è
+oggi una metrica di valutazione a sé; e una citazione formalmente corretta non
+rende vera una risposta che ne travisa il contenuto.
 
 `````
 

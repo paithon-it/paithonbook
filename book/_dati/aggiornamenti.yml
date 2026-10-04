@@ -48,6 +48,37 @@
 
 versioni:
 
+- versione: "1.14.2"
+  data: 2026-10-04
+  voci:
+
+  - tipo: corretto
+    testo: >
+      **La prosa di tutto il libro, ripresa frase per frase.** Un italiano più
+      diretto, le parole dei testi italiani al posto dei calchi dall'inglese, e
+      i rimandi che nominano la pagina a cui portano.
+
+  - tipo: corretto
+    testo: >
+      **Qualche affermazione rimessa a posto.** Fra le altre, il costo della
+      ricerca a griglia, le radici complesse nella diagonalizzazione, la
+      densità di un flusso dove la trasformazione schiaccia e il teorema che
+      sta dietro la disputa su COMPAS.
+
+  - tipo: ampliato
+    pagina: VisioneArtificiale/detection-segmentazione.md
+    testo: >
+      **Grandi e piccoli: le piramidi di feature.** Come un rilevatore trova
+      nella stessa immagine il passerotto e il camion, e la segmentazione
+      panottica, che unisce quella semantica a quella d'istanza.
+
+  - tipo: ampliato
+    pagina: VisioneArtificiale/geometria-e-profondita.md
+    testo: >
+      **L'omografia, la stima della matrice fondamentale e il controllo
+      sinistra-destra nella stereo**, e nell'apertura del capitolo che cosa fa
+      il rilevatore di Canny.
+
 - versione: "1.14.1"
   data: 2026-10-03
   voci:

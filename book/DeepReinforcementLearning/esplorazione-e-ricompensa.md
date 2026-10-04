@@ -30,7 +30,7 @@ sola è quella giusta, azzeccarne dieci di fila vuol dire $8^{10}$, cioè una
 volta su un miliardo abbondante.
 
 Nel {doc}`capitolo sul reinforcement learning </ReinforcementLearning/overview>`
-abbiamo introdotto il dilemma esplorazione–sfruttamento e la strategia
+abbiamo introdotto il dilemma esplorazione-sfruttamento e la strategia
 $\varepsilon$-greedy, «golosa»: con una piccola probabilità $\varepsilon$
 sceglie un'azione a caso, il resto del tempo prende senza esitare quella di
 valore più alto. Qui vediamo perché quella ricetta, in ambienti come Montezuma,
@@ -132,7 +132,7 @@ gli **pseudo-conteggi**: si stima una densità $\rho(s)$ sugli stati visitati e
 se ne ricava un conteggio *effettivo* $\hat N(s)$ coerente con quanto la
 densità è "sorpresa" di rivedere $s$. Se $\rho(s)$ è la probabilità che il
 modello di densità assegna a $s$ e $\rho'(s)$ quella che gli assegnerebbe dopo
-averlo visto una volta in più (la *probabilità di ricodifica*), il
+averlo visto una volta in più (la *probabilità di ricodifica*), lo
 pseudo-conteggio è quello che fa corrispondere lo spostamento da $\rho$ a
 $\rho'$ a un'osservazione in più:
 
@@ -189,7 +189,7 @@ così: la centesima visita a un posto insegna molto meno della prima.
 La regola con cui l'agente sceglie è rimasta quella di sempre, prendere la
 mossa col voto più alto. È solo il voto ad avere adesso un
 pezzo in più, e l'agente si dirige verso l'ignoto credendo di dirigersi verso il
-guadagno. Non gli si è insegnata la curiosità: gliel'hanno pagata.
+guadagno.
 
 La via d'uscita, quando le situazioni non si possono contare, è smettere
 di contare e cominciare a stimare: si valuta quanto una schermata assomigli
@@ -419,7 +419,7 @@ regione già battuta.
 ## Un modo diverso di guardare la curiosità
 
 In tutto quello che si è visto finora la curiosità è un premio in più: la
-ricompensa dell'ambiente non bastava, e le se ne è affiancata un'altra,
+ricompensa dell'ambiente non bastava, e se ne è affiancata un'altra,
 costruita apposta, con un peso da tarare ($\beta$ per il bonus di novità, $\eta$
 per ICM). È una toppa, anche se i primi passi avanti su Montezuma sono venuti da
 lì.

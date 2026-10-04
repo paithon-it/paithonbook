@@ -24,12 +24,12 @@ si mette insieme una squadra. La terza è dare all'agente una memoria che duri
 più di una finestra.
 
 E dietro tutte e tre si nasconde la domanda più scomoda del campo, quella che
-nessuno ha davvero chiuso: come si fa a sapere se un agente funziona
-davvero? Già dare un voto a un modello che si limita a rispondere è
-difficile, quando la risposta è libera e non esiste una soluzione unica con cui
-confrontarla, e lo si vedrà con {doc}`LLMOps </MLOps/llmops>`. Dare un voto
-a un agente che *agisce*, in più passi, in un ambiente che cambia sotto i suoi
-piedi, è molto più difficile ancora.
+nessuno ha davvero chiuso: come si fa a sapere se un agente funziona davvero?
+Già dare un voto a un modello che si limita a rispondere è difficile, specie
+quando la risposta è libera e non esiste una soluzione unica con cui
+confrontarla (ci torna la sezione su {doc}`LLMOps </MLOps/llmops>`). Dare un
+voto a un agente che *agisce*, in più passi, in un ambiente che cambia sotto i
+suoi piedi, è molto più difficile ancora.
 
 ## Pianificare: scomporre il problema
 
@@ -125,12 +125,10 @@ che può essere lo stesso per tutti: sta nelle istruzioni e negli strumenti che
 ciascun ruolo riceve.
 ```
 
-C'è una precisazione che {numref}`fig-orchestratore-worker` aiuta a fare, e
-che conviene fare presto: i quattro agenti del disegno possono essere lo
-stesso identico modello, interpellato quattro volte con quattro prompt
-diversi. «Multi-agente»
-descrive come è organizzato il lavoro, non quanti modelli diversi ci sono
-sotto.
+La {numref}`fig-orchestratore-worker` aiuta a fare una precisazione: i quattro
+agenti del disegno possono essere lo stesso identico modello, interpellato
+quattro volte con quattro prompt diversi. «Multi-agente» descrive come è
+organizzato il lavoro, non quanti modelli diversi ci sono sotto.
 
 Nel disegno i ruoli sono divisi per mestiere, cioè per lo strumento che
 ciascuno ha in mano: uno cerca sul web, uno interroga un archivio di dati, uno
@@ -159,14 +157,14 @@ collaudatore è il primo a restare vuoto, e il lavoro esce lo stesso, senza che
 nessuno l'abbia provato.
 
 Ma attenzione: più teste vuol dire anche più stipendi. Ogni volta che un agente
-parla, qualcuno da qualche parte fa lavorare un modello, e quel lavoro si paga a
-consumo: quattro agenti che si scrivono a vicenda per dieci giri fanno quaranta
-interventi, ma non costano quaranta volte uno solo: ogni volta che uno prende la
-parola rilegge da capo tutto quello che gli altri hanno già detto. Il primo
-intervento non rilegge niente, il quarantesimo rilegge trentanove messaggi, e
-sommate le riletture fanno settecentottanta messaggi letti per quaranta scritti.
-Quella rilettura si paga come il resto. E ci sono più modi di litigare o
-fraintendersi.
+parla, qualcuno da qualche parte fa lavorare un modello, e quel lavoro si paga
+a consumo: quattro agenti che si scrivono a vicenda per dieci giri fanno
+quaranta interventi, ma costano molto più di quaranta chiamate isolate: ogni
+volta che uno prende la parola rilegge da capo tutto quello che gli altri hanno
+già detto. Il primo intervento non rilegge niente, il quarantesimo rilegge
+trentanove messaggi, e sommate le riletture fanno settecentottanta messaggi
+letti per quaranta scritti. Quella rilettura si paga come il resto. E ci sono
+più modi di litigare o fraintendersi.
 
 Non sempre la bottega batte il buon artigiano. Rende quando il lavoro si
 divide in pezzi che si possono fare in parallelo, come dieci ricerche in dieci
@@ -366,7 +364,7 @@ modo di uno che lo chiude in quattro.
 La quarta è la **dispersione**, e viene diritta dalla terza difficoltà di
 prima. Se la stessa prova ripetuta non dà mai lo stesso esito, un numero solo
 non vuol dire niente: bisogna rifare ogni compito più volte e riportare di
-quanto i risultati ballano da una ripetizione all'altra. Un agente che riesce
+quanto i risultati oscillano da una ripetizione all'altra. Un agente che riesce
 tre volte su cinque, provato una volta sola e riuscito, non si distingue con
 nessuna sicurezza da uno che riesce sempre.
 
@@ -391,14 +389,14 @@ giusta, anche se sembra un passo indietro. Il segnale brutto è un altro: la
 stessa salsa rimestata per dieci minuti, o tre viaggi in dispensa per la
 stessa cosa.
 
-Più passaggi ha un piatto, più diventa un affare rischioso: il conto dei dieci
-passaggi che filano lisci poco più di una volta su tre vale anche in cucina.
-Qualche intoppo si recupera, come la salsa rifatta. E le serate storte tendono
-a esserlo dall'inizio, per un fornitore che non è arrivato, più che per un
-inciampo a caso piatto per piatto: allora le serate perfette sono un po' più di
-quante ne prometta il conto, e quelle disastrose pure. Ma l'ultimo passaggio
-pesa quanto il primo, e chi rovescia il vassoio sulla soglia della sala aveva
-fatto tutto bene fino a lì.
+Più passaggi ha un piatto, più diventa un affare rischioso: se a ogni passo c'è
+anche solo un piccolo rischio di sbagliare, una ricetta di dieci mosse si salva
+per intero solo una volta su tre. Qualche intoppo si recupera, come la salsa
+rifatta. E le serate storte tendono a esserlo dall'inizio, per un fornitore che
+non è arrivato, più che per un inciampo a caso piatto per piatto: allora le
+serate perfette sono un po' più di quante ne prometta il conto, e quelle
+disastrose pure. Ma l'ultimo passaggio pesa quanto il primo, e chi rovescia il
+vassoio sulla soglia della sala aveva fatto tutto bene fino a lì.
 
 E una serata sola non dice niente. La stessa sera ripetuta non esce mai
 uguale: fornitori diversi, sala più piena, un aiuto in meno. Per questo si
@@ -425,7 +423,7 @@ un loop è il passo che si ripete, più che quello che allontana. Un agente può
 poi azzeccare la risposta per la strada sbagliata (giusto per caso) o
 sbagliarla dopo una traiettoria impeccabile (l'ultimo passo va storto):
 guardare solo il risultato finale confonde questi casi, e per capire davvero
-*dove* un agente rompe serve la traccia.
+*dove* un agente fallisce serve la traccia.
 
 Sotto tutto c'è la fragilità dei compiti lunghi, già incontrata:
 l'accumulo di errori. Un modellino illustrativo: se a ogni passo la
@@ -562,7 +560,7 @@ prima (nessuna azione ripetuta senza un'osservazione nuova, per esempio) o un
 giudice, umano o automatico, che legge la traccia.
 
 Detto questo, il primo di quei numeri va guardato con sospetto, ed è il
-difetto che il codice illustra suo malgrado, calcolandoselo da sé nelle ultime
+difetto che il codice stesso smaschera calcolandolo nelle ultime
 righe: cinque episodi non misurano niente. Prova cinque volte, e il caso da
 solo può farti sembrare bravo o scarso, senza che ci sia modo di distinguere le
 due cose.

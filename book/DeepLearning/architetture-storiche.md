@@ -174,12 +174,12 @@ filtro che vede tutti i canali. $61\,100\,840$, infine, è ciò che dichiara
 variante più snella che Krizhevsky ridisegnò nel 2014 in un secondo articolo,
 quello sulla parallelizzazione (i primi due strati passano da 96 e 256 filtri a
 64 e 192, il quarto da 384 a 256): è la versione che quasi tutti eseguono
-credendo di eseguire quella dell'articolo del 2012. Le tre scelte decisive:
-attivazioni ReLU al posto di $\tanh$ (gradienti che non saturano,
-addestramento molto più rapido), dropout negli strati densi per contenere
-l'overfitting, e data augmentation aggressiva (ritagli, riflessioni,
-perturbazioni di colore). Non concetti nuovi in assoluto, ma messi insieme alla
-scala giusta sul dataset giusto.
+credendo di eseguire quella dell'articolo del 2012. Le scelte decisive sono
+tre: le attivazioni ReLU al posto di $\tanh$ (perché i gradienti non saturano e
+l'addestramento è molto più rapido), il dropout negli strati densi per
+contenere l'overfitting, e una data augmentation aggressiva (ritagli,
+riflessioni, perturbazioni di colore). Non sono concetti nuovi in assoluto, ma
+messi insieme alla scala giusta sul dataset giusto.
 `````
 
 ## Network in Network: una piccola rete dentro il filtro
@@ -337,13 +337,13 @@ per quel ramo, $15\,872$, un decimo di prima.
 `````
 
 `````{tab} Superiore
-Ogni modulo esegue in parallelo convoluzioni $1\times 1$, $3\times 3$,
-$5\times 5$ e un *pooling*, poi concatena le uscite lungo i canali,
-elaborando così l'immagine a più scale simultaneamente. Le convoluzioni
-$1\times 1$ fungono da collo di bottiglia che riduce i canali prima delle
-convoluzioni costose. Risultato: 22 strati con pesi e, dichiara l'articolo,
-dodici volte meno parametri di AlexNet, cioè circa $5$ milioni, con
-accuratezza persino superiore.
+Ogni modulo esegue in parallelo convoluzioni $1\times 1$, $3\times 3$, $5\times
+5$ e un *pooling*, poi concatena le uscite lungo i canali, elaborando così
+l'immagine a più scale simultaneamente. Le convoluzioni $1\times 1$ fungono da
+collo di bottiglia che riduce i canali prima delle convoluzioni costose. Il
+risultato è una rete di 22 strati con pesi e, come dichiara l'articolo, dodici
+volte meno parametri di AlexNet (cioè circa $5$ milioni), con un'accuratezza
+persino superiore.
 
 Quella cifra però va presa per quello che è: un rapporto, non un conteggio. Un
 totale l'articolo non lo scrive, ma la sua Tabella 1 ha una colonna dei
@@ -361,7 +361,7 @@ resta un ordine di grandezza risparmiato, che è il punto, ma il numero preciso
 dipende da che cosa si conta.
 `````
 
-Anche la seconda idea di NiN è all'appello. GoogLeNet rinuncia agli strati
+Viene ripresa anche la seconda idea di NiN. GoogLeNet rinuncia agli strati
 densi finali, *fully-connected*, con cui AlexNet e VGG chiudevano: calcola la
 media di ogni mappa (il *global average pooling* di NiN) e la passa a un solo
 strato lineare che sceglie la classe. È in buona parte per questo che ha così

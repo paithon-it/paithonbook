@@ -4,13 +4,13 @@ Il 30 novembre 2022 OpenAI mette online ChatGPT. Cinque giorni dopo Sam Altman
 annota su Twitter che ha superato il milione di utenti. Lo stesso giorno,
 rispondendo a due persone diverse, dice le due cose rimaste celebri: i costi di
 calcolo sono *eye-watering*, da far venire le lacrime agli occhi, e siamo
-nell'ordine di qualche centesimo di dollaro a conversazione. Il dettaglio
-interessante è quello che *non* dice: il modello dietro ChatGPT, un GPT-3.5,
-era già pronto da mesi, addestrato e poi rifinito perché rispondesse come ci si
-aspetta da un assistente e non come da un completatore di testi. La cosa nuova,
-quella che teneva svegli gli ingegneri, era operarlo invece che costruirlo:
-servirlo a milioni di persone, in fretta, in modo affidabile, senza che la
-bolletta della GPU divorasse l'azienda.
+nell'ordine di qualche centesimo di dollaro a conversazione. Omette però una
+premessa: il modello dietro ChatGPT, un GPT-3.5, era già pronto da mesi,
+addestrato e poi rifinito perché rispondesse come ci si aspetta da un
+assistente e non come da un completatore di testi. La sfida vera, quella che
+teneva svegli gli ingegneri, era operarlo invece che costruirlo: servirlo a
+milioni di persone, in fretta, in modo affidabile, senza che la bolletta della
+GPU divorasse l'azienda.
 
 È lo stesso salto dal notebook alla produzione raccontato fin qui. Ma quando il
 «modello» è un grande modello linguistico, in sigla LLM (*large language
@@ -24,9 +24,9 @@ italiano. Quel territorio ha un nome: **LLMOps**.
 
 ## Che cosa cambia con gli LLM
 
-Il token, prima di tutto, perché da qui in avanti si conta tutto così, i
-tempi come i costi: è il pezzetto di testo (una parola corta, o un frammento di
-parola) che il modello legge e scrive come unità.
+Cambia l'unità di misura: il token. Da qui in avanti si conta tutto così,
+tempi e costi. Un token è il frammento di testo (una parola corta, o parte di una
+parola) che il modello legge e scrive in blocco.
 
 Con un LLM il collo di bottiglia si sposta. Fin qui il problema era caricare
 i pesi dal disco alla memoria: si fa una volta all'avvio, poi non ci si pensa
@@ -60,9 +60,9 @@ quattro cifre binarie invece delle solite sedici (il perché è più avanti, in
 diviso mezzo fa 26.
 ```
 
-Il vincolo di {numref}`fig-cosa-entra-in-memoria` viene prima di tutte le
-tecniche che seguono, e ne fissa l'ordine. Prima si stabilisce cosa
-entra nella memoria che si ha, poi si discute di quanto vada veloce: un
+Il vincolo di {numref}`fig-cosa-entra-in-memoria` ha la precedenza su tutte le
+tecniche di ottimizzazione, e ne fissa l'ordine. Si stabilisce prima cosa
+entra nella memoria disponibile, poi si discute di quanto vada veloce: un
 modello che non ci sta non è lento, semplicemente non parte.
 
 `````{tab} Elementare
@@ -130,8 +130,8 @@ questi due limiti.
 
 ## Servire un LLM
 
-Tutto quello che segue discende dalla lettura dei pesi, che a ogni token costa
-più del calcolo che ci si fa sopra. E da lì viene anche la conseguenza che
+Il problema centrale è la lettura dei pesi, che a ogni token costa
+più del calcolo aritmetico. Da lì viene anche la conseguenza che
 salva i conti: la lettura è la stessa qualunque cosa il modello stia
 scrivendo. Farla per servire una persona sola, o per servirne cento nello
 stesso istante, costa quasi uguale, finché le richieste in volo restano sotto
@@ -413,11 +413,11 @@ sorteggio vero lo confermano.
 `````{tab} Elementare
 
 Un revisore esperto non manda in stampa una riga senza aver ricontrollato il
-manuale di stile, settecento pagine, e se le rilegge da capo ogni volta.
-Controllare una riga o quattro gli costa quasi uguale, perché il tempo se ne va
-nel manuale. Vale lo stesso per il modello, che per scrivere una parola si
-rilegge tutti i suoi numeri e con quella rilettura potrebbe controllarne
-quattro.
+manuale di stile, settecento pagine che si rilegge da capo ogni volta.
+Controllare una riga o quattro gli costa quasi uguale, perché il grosso del
+tempo se ne va nel manuale. Vale lo stesso per il modello, che per scrivere una
+parola rilegge tutti i suoi numeri e con la stessa passata potrebbe
+controllarne quattro.
 
 Accanto al revisore siede uno stagista veloce, che il manuale non lo apre.
 Butta giù quattro righe in avanti tirando a indovinare, e ci prende spesso,
@@ -629,12 +629,12 @@ misurano un'accelerazione della latenza fra 2,7× e 3,5×.
 ## Comprimere per servire
 
 Se il vincolo è la memoria (quanta ce n'è, e quanto in fretta la si legge), la
-leva più diretta è far pesare meno i pesi. L'idea l'abbiamo già vista nella
-sezione sul servire un modello: la quantizzazione, cioè riscrivere i decimali
-finissimi dei pesi come interi grossolani, arrotondati ai gradini di una scala;
-passando da sedici a quattro cifre binarie ogni peso occupa quattro volte meno.
-È da qui, per inciso, che veniva il mezzo gigabyte a miliardo della prima
-figura.
+leva più diretta è far pesare meno i pesi. È il principio della quantizzazione
+(introdotta nella {doc}`sezione sul servire un modello
+</MLOps/deployment-e-serving>`): riscrivere i decimali finissimi dei pesi come
+interi grossolani, arrotondati ai gradini di una scala; passando da sedici a
+quattro cifre binarie ogni peso occupa quattro volte meno. È da qui, per
+inciso, che veniva il mezzo gigabyte a miliardo della prima figura.
 
 Sugli LLM questa leva conta doppio, per due ragioni. La prima è che qui il
 tempo se ne va nel rileggere i pesi: alleggerirli non fa solo risparmiare
@@ -952,8 +952,8 @@ ha idea. È una misura ottima mentre il modello impara la lingua, ma non dice
 quasi niente di ciò che conta poi: la risposta è *utile*? *corretta*? *ben
 scritta*?
 
-Il secondo sono gli esami standard, i benchmark, sempre visti nel capitolo
-sui Transformer, che sono compiti in classe uguali per tutti i modelli. Vanno
+Il secondo metro sono gli esami standard, i benchmark (già visti nel capitolo
+sui Transformer), compiti in classe uguali per tutti i modelli. Vanno
 letti con un sospetto preciso, quello della contaminazione: se le domande
 dell'esame erano già finite dentro i testi su cui il modello si è allenato, il
 suo bel voto non dice niente, perché quelle domande le aveva già viste.
@@ -1076,47 +1076,47 @@ e ottimizzare troppo contro un surrogato porta al *reward hacking*.
 Alla valutazione si affianca, quando il servizio è acceso, la sicurezza di ciò
 che esce. Al modello, durante l'addestramento, si è già insegnato quali
 risposte sono preferibili e quali no, a partire da coppie di risposte di cui
-delle persone avevano indicato la migliore: sono le due tecniche del capitolo
-sui Transformer che là si chiamano per sigla, RLHF e DPO. Quell'insegnamento
-lo rende meno incline a rispondere in modo dannoso, ma non offre garanzie:
-resta una disposizione appresa, e una disposizione si aggira. Per questo i
-sistemi reali aggiungono dei *guardrail*, filtri e classificatori indipendenti
-dal modello che esaminano quello che entra e quello che esce. Servono a
-bloccare contenuti dannosi e dati personali, ma anche due mosse che hanno un
-nome preciso: le istruzioni nascoste dentro un testo che il modello deve
-leggere, scritte apposta perché le prenda per ordini (la *prompt injection*),
-e i tentativi di farsi dire ciò che il modello non dovrebbe dire, aggirandone
-le regole (il *jailbreak*). Nessuno di questi strumenti è perfetto; messi
-insieme, riducono il rischio senza azzerarlo. Quanto lo riducano si misura
-come il resto, con una batteria di attacchi noti (iniezioni dirette e nascoste
-nei documenti che il modello legge {cite}`greshake2023not`, tentativi di
-jailbreak) che gira a ogni cambio di prompt o di modello e conta quanti ne
-passano. Il filtro, però, non sostituisce il confine vero, che sta nei
-permessi dati al sistema: come si attacca e come si difende un modello di
-linguaggio lo racconta {doc}`Attaccare e difendere un modello di linguaggio
-</AIResponsabile/sicurezza-llm>`, nel capitolo sull'AI responsabile.
+delle persone avevano indicato la migliore: le tecniche RLHF e DPO, discusse
+nel capitolo sui Transformer. Quell'insegnamento lo rende meno incline a
+rispondere in modo dannoso, ma non offre garanzie: resta una disposizione
+appresa, e una disposizione si aggira. Per questo i sistemi reali aggiungono
+dei *guardrail*, filtri e classificatori indipendenti dal modello che esaminano
+quello che entra e quello che esce. Servono a bloccare contenuti dannosi e dati
+personali, ma anche due mosse che hanno un nome preciso: le istruzioni nascoste
+dentro un testo che il modello deve leggere, scritte apposta perché le prenda
+per ordini (la *prompt injection*), e i tentativi di farsi dire ciò che il
+modello non dovrebbe dire, aggirandone le regole (il *jailbreak*). Nessuno di
+questi strumenti è perfetto; messi insieme, riducono il rischio senza
+azzerarlo. Quanto lo riducano si misura come il resto, con una batteria di
+attacchi noti (iniezioni dirette e nascoste nei documenti che il modello legge
+{cite}`greshake2023not`, tentativi di jailbreak) che gira a ogni cambio di
+prompt o di modello e conta quanti ne passano. Il filtro, però, non sostituisce
+il confine vero, che sta nei permessi dati al sistema: come si attacca e come
+si difende un modello di linguaggio lo racconta {doc}`Attaccare e difendere un
+modello di linguaggio </AIResponsabile/sicurezza-llm>`, nel capitolo sull'AI
+responsabile.
 
 ## Il ciclo LLMOps
 
 L'anello dell'MLOps resta quello di sempre (dati, addestramento, valutazione,
 consegna, sorveglianza), ma con gli LLM cambia quello che ci gira dentro, cioè
 le cose di cui si conserva ogni versione. Spesso non sono i pesi, che arrivano
-già fatti da qualcun altro: è il prompt, la riga d'istruzione con cui si
-spiega al modello che cosa deve fare. Quella riga è codice a tutti gli
-effetti, ed è fragile come abbiamo visto nel capitolo sui Transformer, dove
-basta una parola diversa per cambiare la risposta. Si versiona quindi come il
-codice: un identificativo (l'impronta del testo e dei parametri di
-generazione, come quella della configurazione in
-{doc}`Dal notebook alla produzione </MLOps/dal-notebook-alla-produzione>`),
-il modello fissato alla versione con cui è stato provato, e la batteria di casi
-che lo ha approvato. Una versione nuova si prova prima fuori linea, su quella
-batteria, e solo se supera quella in uso si mette alla prova sul pubblico, con
-un test *A/B* come in {doc}`Sorvegliare un modello vivo
-</MLOps/monitoring-e-drift>`. Con un modello offerto da terzi il rischio è
-doppio, perché anche sotto lo stesso nome il servizio cambia versione, e il
-comportamento cambia con lei: le versioni di marzo e di giugno 2023 di GPT-3.5
-e GPT-4 rispondevano in modo diverso alle stesse domande, dal riconoscere un
-numero primo al formato del codice prodotto {cite}`chen2024chatgpt`.
+già fatti da qualcun altro: è il prompt, la riga d'istruzione con cui si spiega
+al modello che cosa deve fare. Quella riga è codice a tutti gli effetti, ed è
+fragile: basta una parola diversa per cambiare la risposta, come illustrato nel
+capitolo sui Transformer. Si versiona quindi come il codice: un identificativo
+(l'impronta del testo e dei parametri di generazione, come quella della
+configurazione in {doc}`Dal notebook alla produzione
+</MLOps/dal-notebook-alla-produzione>`), il modello fissato alla versione con
+cui è stato provato, e la batteria di casi che lo ha approvato. Una versione
+nuova si prova prima fuori linea, su quella batteria, e solo se supera quella
+in uso si mette alla prova sul pubblico, con un test *A/B* come in
+{doc}`Sorvegliare un modello vivo </MLOps/monitoring-e-drift>`. Con un modello
+offerto da terzi il rischio è doppio, perché anche sotto lo stesso nome il
+servizio cambia versione, e il comportamento cambia con lei: le versioni di
+marzo e di giugno 2023 di GPT-3.5 e GPT-4 rispondevano in modo diverso alle
+stesse domande, dal riconoscere un numero primo al formato del codice prodotto
+{cite}`chen2024chatgpt`.
 
 Il monitoraggio, a sua volta, insegue bersagli nuovi: le allucinazioni
 (risposte sicure di sé e sbagliate), la deriva dell'uso rispetto a ciò per
@@ -1133,7 +1133,7 @@ risposte a documenti recuperati al momento ({doc}`Cercare per rispondere
 {doc}`capitolo sugli Agenti </Agenti/overview>`), comporre prompt, contesto e
 cicli di lavoro ({doc}`Prompt, contesto e loop </IngegneriaLLM/overview>`),
 far usare al modello strumenti esterni e comporre più passi in un agente, di
-nuovo negli Agenti. Sono capitoli che abbiamo già percorso.
+nuovo negli Agenti.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

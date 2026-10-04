@@ -92,7 +92,7 @@ La somma pesata $z$ è un numero qualsiasi. Per trasformarla in una decisione
 serve un ultimo passo, la funzione di attivazione. Nel percettrone classico
 è la più netta possibile: la funzione a **gradino** (detta anche di Heaviside,
 dal nome del fisico inglese che la mise in uso), e la
-{numref}`fig-funzione-gradino` è tutto il suo grafico.
+{numref}`fig-funzione-gradino` ne mostra il grafico per intero.
 
 ```{figure} ../figures/funzione-a-gradino.svg
 :name: fig-funzione-gradino
@@ -239,8 +239,8 @@ sopra o sotto lo zero, quel confine un fattore dieci non lo sposta, e tutte le
 mattine il vicino esce di casa come te. Finché i conti sono esatti, almeno: il
 calcolatore arrotonda, e ogni tanto l'ultima cifra cambia strada (il codice
 della porta AND ne mostra un caso). Il passo diventerà una scelta che conta
-davvero quando la correzione smetterà di essere fissa, nella sezione sulla
-backpropagation.
+davvero quando la correzione smetterà di essere fissa, nella {doc}`sezione sulla
+backpropagation </RetiNeurali/backpropagation>`.
 
 La prima sera, per esteso, con le manopole tutte a zero e il passo a $0{,}1$.
 Stamattina il cielo era quasi sereno, $x_1 = 1$, e l'app diceva sereno,
@@ -298,23 +298,24 @@ $$
 Il fattore $(y-\hat{y})$ vale $0$ quando la predizione è corretta (nessun
 aggiornamento), $+1$ o $-1$ altrimenti. Qui $\eta$ è cosmetico: partendo da
 $\mathbf{w}=\mathbf{0}$ e $b=0$ ogni aggiornamento è proporzionale a $\eta$,
-quindi cambiarlo riscala $\mathbf{w}$ e $b$ dello stesso fattore, e la decisione
-dipende solo dal segno di $\mathbf{w}^\top\mathbf{x}+b$, che un riscalamento
-positivo non tocca. Con $\eta=1$ e $\eta=7{,}3$ la porta AND esce identica, con
-pesi $(2,\ 1)$ e bias $-3$ in unità di $\eta$. Il riscalamento esatto vale però
-in aritmetica esatta, e con $\eta=0{,}1$ si rompe proprio su questo esempio:
-$0{,}1$ in binario non è esatto, e a un certo passo il totale sul caso $(1,0)$,
-che doveva valere zero e far scattare una correzione, esce
-$-2{,}8\cdot 10^{-17}$. Il neurone risponde $0$, nessuno corregge, e la corsa si
-ferma sulla retta $2x_1 + x_2 - 2 = 0$, che passa esattamente per $(1,0)$:
+quindi cambiarlo riscala $\mathbf{w}$ e $b$ dello stesso fattore, e la
+decisione dipende solo dal segno di $\mathbf{w}^\top\mathbf{x}+b$, che un
+riscalamento positivo non tocca. Con $\eta=1$ e $\eta=7{,}3$ la porta AND esce
+identica, con pesi $(2,\ 1)$ e bias $-3$ in unità di $\eta$. Il riscalamento
+esatto vale però in aritmetica esatta, e con $\eta=0{,}1$ si rompe proprio su
+questo esempio: $0{,}1$ in binario non è esatto, e a un certo passo il totale
+sul caso $(1,0)$, che doveva valere zero e far scattare una correzione, esce
+$-2{,}8\cdot 10^{-17}$. Il neurone risponde $0$, nessuno corregge, e la corsa
+si ferma sulla retta $2x_1 + x_2 - 2 = 0$, che passa esattamente per $(1,0)$:
 separa solo grazie all'arrotondamento. Per questo il codice chiama `addestra`
 con $\eta = 1$, dove tutti i conti sono interi. Interi, non comodi: anche la
 retta che ne esce, $2x_1 + x_2 - 3 = 0$, passa esattamente per $(1,1)$, e a
 metterlo dalla parte giusta è la convenzione $g(0) = 1$. Il blocco della porta
 AND prova anche gli altri due passi e lo XOR, e stampa pesi e bias in unità di
 $\eta$ e il totale sul caso $(1,0)$ a fine corsa. Diventerà una scelta vera
-nella sezione sulla backpropagation, dove la correzione non sarà più
-proporzionale all'errore ma al gradiente di una loss.
+nella {doc}`sezione sulla backpropagation </RetiNeurali/backpropagation>`, dove
+la correzione non sarà più proporzionale all'errore ma al gradiente di una
+loss.
 
 C'è poi il teorema di convergenza del percettrone: se i dati sono linearmente
 separabili, l'algoritmo trova in un numero finito di passi un iperpiano che li
@@ -647,10 +648,10 @@ C'è però una condizione: fra uno strato e l'altro deve succedere qualcosa che
 non sia moltiplicare e sommare. Se no cento strati si schiaccerebbero in uno
 solo, capace di disegnare quello che sapeva disegnare prima, cioè una riga
 dritta, e lo XOR resterebbe fuori portata. Quel qualcosa da mettere in mezzo si
-chiama **non linearità**, e sono funzioni come la ReLU o la sigmoide: sono loro,
-insieme al percettrone multistrato (MLP) e all'algoritmo che lo addestra, la
-*backpropagation*, il tema delle sezioni {doc}`sulle funzioni di attivazione
-</RetiNeurali/funzioni-attivazione>` e {doc}`sulla backpropagation
+chiama **non linearità**, e sono funzioni come la ReLU o la sigmoide. Saranno
+loro, insieme al percettrone multistrato (MLP) e all'algoritmo che lo addestra
+(la *backpropagation*), il tema delle sezioni {doc}`sulle funzioni di
+attivazione </RetiNeurali/funzioni-attivazione>` e {doc}`sulla backpropagation
 </RetiNeurali/backpropagation>`.
 
 La {numref}`fig-xor-si-piega` fa vedere il passaggio per intero, ed è la

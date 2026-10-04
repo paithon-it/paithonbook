@@ -24,19 +24,17 @@ Gioca una situazione sola, e non è l’inizio della partita ma la sua coda,
 quella che negli scacchi si chiama **finale**: da una parte re e torre,
 dall’altra il re avversario e nient’altro. Ma lo gioca contro chiunque, da
 qualunque posizione, e lo scacco matto (il re avversario attaccato, senza
-nessun modo di sottrarsi) lo dà sempre. Non lo dà in fretta: ci mette
-più mosse del necessario, a volte più delle cinquanta senza catture oltre le
-quali il regolamento permette di chiedere la patta, cioè il pareggio; la
-macchina il regolamento non lo conosce, e al matto arriva lo stesso. E non è
-questo il punto. Il punto è come fa.
-
-E come fa è la cosa che a noi serve: non pensa avanti. Non immagina le
-mosse dell’avversario, non prova continuazioni, non valuta niente. Guarda dove
-sono i tre pezzi e applica una regola fissa, scritta a mano dentro gli
-ingranaggi, del tipo «se il re nemico sta in questa fascia, porta la torre una
-riga più in là». Quella regola esiste perché re e torre contro re è un
-problema abbastanza piccolo da avere una ricetta: qualcuno l’ha trovata, l’ha
-scritta, e la macchina la esegue.
+nessun modo di sottrarsi) lo dà sempre. Non lo dà in fretta: ci mette più mosse
+del necessario, a volte più delle cinquanta senza catture oltre le quali il
+regolamento permette di chiedere la patta, cioè il pareggio; la macchina il
+regolamento non lo conosce, e al matto arriva lo stesso. Il modo in cui ci
+riesce è quello che ci interessa: non pensa avanti. Non immagina le mosse
+dell’avversario, non prova continuazioni, non valuta niente. Guarda dove sono i
+tre pezzi e applica una regola fissa, scritta a mano dentro gli ingranaggi, del
+tipo «se il re nemico sta in questa fascia, porta la torre una riga più in là».
+Quella regola esiste perché re e torre contro re è un problema abbastanza
+piccolo da avere una ricetta: qualcuno l’ha trovata, l’ha scritta, e la
+macchina la esegue.
 
 Per la partita intera, di ricetta non ce n’è. Nessuno sa scrivere una regola
 che, guardando una posizione qualunque di scacchi, dica quale mossa fare. E
@@ -48,11 +46,10 @@ senza bersaglio: non ha esempi da imitare, non impara niente, e tutta la sua
 forza sta nel guardare avanti fra le mosse possibili.
 
 Guardata dal lato di quello che restituisce, cioè una sequenza di mosse da
-eseguire poi nell’ordine, la stessa faccenda si chiama **pianificazione**, la
-parola che sta nel titolo. I pianificatori in senso stretto descrivono il
-problema in un linguaggio apposito, con i fatti che valgono in uno stato e le
-condizioni e gli effetti di ogni azione; il motore che hanno sotto, però, è la
-stessa ricerca.
+eseguire poi nell’ordine, la stessa faccenda si chiama **pianificazione**. I
+pianificatori in senso stretto descrivono il problema in un linguaggio
+apposito, con i fatti che valgono in uno stato e le condizioni e gli effetti di
+ogni azione; il motore che hanno sotto, però, è la stessa ricerca.
 
 ## Gli stati, le mosse, e l’albero che ne esce
 
@@ -62,7 +59,7 @@ si fanno scivolare delle tessere numerate dentro una cornice.
 
 Serve dire in che situazione ci si trova, e quella descrizione si chiama
 stato: la posizione di tutti i pezzi sulla scacchiera, l’incrocio in cui
-sono adesso, la disposizione delle tessere. Serve dire che cosa si può
+ci si trova, la disposizione delle tessere. Serve dire che cosa si può
 fare, cioè quali mosse sono ammesse in quello stato e in quale stato portano.
 E serve sapere quando si è arrivati, cioè riconoscere lo stato di fine.
 
@@ -134,8 +131,8 @@ problema in cui le precondizioni si ignorano {cite}`russell2020artificial`,
 ma la ricerca che le usa è la stessa.
 
 Dalla definizione di problema discende l’**albero di ricerca**, che non va
-confuso con lo spazio degli stati. Lo spazio degli stati è un grafo: stati
-diversi si possono raggiungere per strade diverse, e la stessa posizione può
+confuso con lo spazio degli stati. Lo spazio degli stati è un grafo: uno stesso
+stato si può raggiungere per strade diverse, e la stessa posizione può
 ripresentarsi (la cosa ha un nome, trasposizione, e la {doc}`sezione sui giochi
 </Ricerca/giocare-contro-qualcuno>` ci torna). L’albero di ricerca è invece
 l’oggetto che l’algoritmo srotola: un suo **nodo** contiene uno stato, il nodo
@@ -233,8 +230,7 @@ ricomincia. È il campo della ricerca in avanti.
 Il mondo non è noto. Nessuno dice dove porta una mossa né quanto paga, e
 bisogna provare e vedere come va. È il reinforcement learning senza modello,
 quello dei metodi Monte Carlo e delle differenze temporali, a cui il capitolo
-sul reinforcement learning arriva dopo il caso a modello noto: per questo i
-due capitoli stanno uno accanto all’altro.
+sul reinforcement learning arriva dopo il caso a modello noto.
 
 ## Dall’albero dei futuri alle sue potature
 

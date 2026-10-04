@@ -112,7 +112,7 @@ che a lungo andare le risposte buone escano
 spesso, quelle mediocri ogni tanto e quelle assurde quasi mai: è la frequenza
 che il paesaggio prescrive. Per riuscirci accettano di peggiorare per un
 tratto, perché è l'unico modo di uscire da una valle e vederne un'altra. Non è
-una novità assoluta, e sarebbe scorretto farla passare per tale: i modelli
+una novità assoluta: i modelli
 autoregressivi, i flussi e i modelli di diffusione campionano anche loro, e
 quelli di diffusione lo fanno con una mossa parente stretta di quella che si
 incontra qui.
@@ -221,8 +221,8 @@ i modelli a energia; l'argomento disteso sta nel documento di posizione del
 2022 {cite}`lecun2022path`.
 
 Diffusione, JEPA, Hopfield moderne, il programma di LeCun: sembrano quattro
-argomenti distinti, e hanno in comune un punteggio che si scende invece di
-normalizzarlo (per la diffusione con una riserva, che la sezione sulla
+argomenti distinti, e hanno in comune un punteggio da minimizzare invece di
+normalizzare (per la diffusione con una riserva, che la sezione sulla
 funzione di partizione rende precisa). La {doc}`sezione sui paesaggi di oggi
 </ModelliEnergia/paesaggi-di-oggi>` li riprende uno per uno.
 

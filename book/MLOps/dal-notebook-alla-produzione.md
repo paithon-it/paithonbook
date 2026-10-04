@@ -18,12 +18,12 @@ quel portatile.
 E poi c'è quella che non esplode affatto, ed è la peggiore. Divide gli esempi
 fra dati di addestramento e dati di prova tirandoli a sorte
 (`train_test_split`), e funziona benissimo: solo che il sorteggio ogni volta
-cade diverso, perché nessuno ha fissato il *seme* da cui il generatore di
+dà un esito diverso, perché nessuno ha fissato il *seme* da cui il generatore di
 numeri casuali comincia, e il 94% di ieri sera non si rivede più. La frase che
 chiude la giornata è la più celebre della disciplina: «Ma sul mio computer
 funzionava».
 
-Attenzione: il disordine di quelle celle non è un peccato in sé. Mentre si
+Il disordine di quelle celle non è un peccato in sé. Mentre si
 esplora, saltare avanti e indietro è esattamente il modo giusto di lavorare, ed
 è per questo che il notebook esiste. Il peccato è consegnare quel disordine,
 cioè lasciare che il risultato buono viva soltanto nella memoria di una
@@ -133,11 +133,11 @@ il lavoro sui dati; le altre otto qui si raggruppano in sei momenti:
    «vede» il mondo.
 3. Addestramento (*training*): il ciclo che aggiusta i pesi un passo dopo
    l'altro per ridurre l'errore, quello che abbiamo scritto a mano nel
-   {doc}`capitolo su PyTorch </PyTorch/overview>` (si veda [Il training
+   {doc}`capitolo su PyTorch </PyTorch/overview>` ([Il training
    loop](../PyTorch/addestramento.md)). Qui è solo *una* delle fasi.
 4. Valutazione: la misura onesta delle prestazioni su dati mai visti, con la
-   divisione in dati di addestramento, di validazione e di prova già discussa
-   nel capitolo sul machine learning (si veda [Overfitting e
+   divisione in dati di addestramento, di validazione e di prova discussa
+   nel capitolo sul machine learning ([Overfitting e
    validazione](../MachineLearning/overfitting-validazione.md)).
 5. Deploy: mettere il modello in un servizio che risponde a richieste
    reali, dietro un’API o dentro un'applicazione. Un'API è una specie di
@@ -210,17 +210,17 @@ contesto in cui sono stati combinati:
   fissandone un’**impronta** (l'hash del contenuto) e conservando lo
   *snapshot* in un archivio dedicato.
 - Modello: i pesi addestrati (in PyTorch lo `state_dict` visto nel
-  capitolo PyTorch), catalogati in un **model registry** che ne traccia
+  capitolo su PyTorch), catalogati in un **model registry** che ne traccia
   versione, metriche e provenienza.
 
-A questi si aggiungono l’ambiente, versioni esatte di Python e delle
-librerie, *pinnate* (`pip freeze > requirements.txt`, un lockfile, un'immagine
-container), perché una minor version diversa di una libreria può cambiare i
-risultati, e la configurazione: iperparametri e, cruciale, i semi
-casuali. Il punto delicato è che `git` da solo non basta: è pensato per file
-di testo piccoli e diffabili, mentre dati e modelli sono grandi, binari e
-opachi. Versionarli dentro un repository lo gonfia e lo rende inutilizzabile;
-per questo si versiona nel repository un *puntatore* (l'hash, un percorso
+A questi si aggiungono l’ambiente (le versioni esatte di Python e delle
+librerie, congelate tramite `pip freeze > requirements.txt`, un *lockfile* o
+un'immagine container, perché una versione minore diversa può cambiare i
+risultati) e la configurazione: gli iperparametri e, cruciali, i semi casuali.
+Il punto delicato è che `git` da solo non basta: è pensato per file di testo
+piccoli e confrontabili, mentre dati e modelli sono grandi, binari e opachi.
+Versionarli dentro un repository lo gonfia e lo rende inutilizzabile; per
+questo si versiona nel repository un *puntatore* (l'hash, un percorso
 all'archivio) e si tiene l'artefatto vero altrove.
 
 `````

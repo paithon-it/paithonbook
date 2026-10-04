@@ -3,15 +3,15 @@
 Nel 1960 l'ingegnere ungherese-americano Rudolf Kálmán pubblicò la formulazione
 che l'ingegneria avrebbe adottato per descrivere un sistema che evolve nel
 tempo: poche variabili che non si osservano direttamente, lo stato, che
-riassumono ciò che del passato serve a prevedere il futuro, e una misura che se
-ne prende, disturbata da errori (*rumorosa*, si dice). È la *rappresentazione
-in spazio degli stati*. Il filtro che porta il suo nome, quello delle capsule
-Apollo {cite}`mcgee1985kalman`, stima lo stato (per un veicolo, posizione e
-velocità) da quelle misure rumorose; il ciclo di previsione e correzione su cui
-si regge l'avevano scritto anche altri prima di lui, come racconta la
-{doc}`sezione sui modelli classici delle serie
-temporali </SerieTemporali/componenti-e-classici>`. È un'idea di teoria del
-controllo e di elaborazione dei segnali, lontana dal linguaggio naturale.
+riassumono ciò che del passato serve a prevedere il futuro, e una sua misura,
+disturbata da errori (*rumorosa*, si dice). È la *rappresentazione in spazio
+degli stati*. Il filtro che porta il suo nome, quello delle capsule Apollo
+{cite}`mcgee1985kalman`, stima lo stato (per un veicolo, posizione e velocità)
+da quelle misure rumorose; il ciclo di previsione e correzione su cui si regge
+l'avevano scritto anche altri prima di lui, come racconta la {doc}`sezione sui
+modelli classici delle serie temporali
+</SerieTemporali/componenti-e-classici>`. È un'idea di teoria del controllo e
+di elaborazione dei segnali, lontana dal linguaggio naturale.
 
 Mezzo secolo dopo, la stessa idea ha dato una seconda strada verso l'obiettivo
 del {doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`: un
@@ -85,8 +85,8 @@ matrici hanno ruoli distinti: $\mathbf{A}\in\mathbb{R}^{N\times N}$ è la
 ingresso (gli autovalori di $\mathbf{A}$ decidono se lo stato decade, oscilla o
 esplode); $\mathbf{B}\in\mathbb{R}^{N\times 1}$ è la **matrice d'ingresso**,
 dice come il segnale in arrivo si scrive nello stato;
-$\mathbf{C}\in\mathbb{R}^{1\times N}$ è la **matrice d'uscita** (legge lo stato
-e produce il segnale in uscita). Il termine $D\,u(t)$ è una scorciatoia diretta
+$\mathbf{C}\in\mathbb{R}^{1\times N}$ è la **matrice d'uscita**, legge lo stato
+e produce il segnale in uscita. Il termine $D\,u(t)$ è una scorciatoia diretta
 dall'ingresso all'uscita, una *skip connection*: nei modelli che vedremo lo si
 tiene a parte (equivale a un residuo) e ci si concentra sulla parte con
 memoria, ponendo spesso $D=0$ nella derivazione.
@@ -271,7 +271,7 @@ perché il modello ha da imparare le tre regole, che sono poche, e non i numeri
 del filtro, che sono tanti quanto il testo è lungo. Quei numeri, uno per
 posizione, dicono quanto una parola di venti o di mille passi fa conta ancora
 sull'uscita di adesso: nella vasca dei due litri al minuto erano 1, 0,5, 0,25,
-0,125, quanto pesa ancora un getto entrato adesso, un minuto fa, due, tre. Il
+0,125 (quanto pesa ancora un getto entrato adesso, un minuto fa, due, tre). Il
 vantaggio è che una convoluzione si calcola in un colpo solo, in parallelo su
 tutta la sequenza: proprio ciò che serve per sfruttare le GPU in
 addestramento.
@@ -576,23 +576,23 @@ misurarsi.
 Prima ancora c'è un passo che Mamba darà per scontato: togliere a S4 la
 correzione di rango basso. DSS {cite}`gupta2022dss` e poi S4D {cite}`gu2022s4d`
 mostrano che con $\mathbf{A}$ soltanto diagonale la qualità resta vicina a
-quella di S4, purché l'inizializzazione sia scelta con cura. Reggono la parte
-normale di LegS (S4D-LegS), con parte reale $-\tfrac12$ e parti immaginarie
-che vanno, secondo una congettura del paper verificata numericamente, come
-l'inverso dell'indice (la formula chiusa che ne discende è S4D-Inv), e la più
-semplice $a_n = -\tfrac12 + i\pi n$ (S4D-Lin), che prende le frequenze di
-Fourier di un'altra matrice HiPPO, FouT. Conservare lo spettro, invece, non
-basta: i reali $a_n = -(n+1)$ (S4D-Real), che sono proprio gli autovalori di
-LegS, nelle ablazioni di S4D perdono circa cinque punti e mezzo su sCIFAR e
-dieci su Speech Commands rispetto a S4D-Inv (quasi sei e dieci e mezzo
-rispetto a S4D-Lin). Il kernel diventa una somma di $N$ esponenziali,
+quella di S4, purché l'inizializzazione sia scelta con cura. A reggere sono la
+parte normale di LegS (S4D-LegS), con parte reale $-\tfrac12$ e parti
+immaginarie che vanno, secondo una congettura del paper verificata
+numericamente, come l'inverso dell'indice (la formula chiusa che ne discende è
+S4D-Inv), e la più semplice $a_n = -\tfrac12 + i\pi n$ (S4D-Lin), che prende le
+frequenze di Fourier di un'altra matrice HiPPO, FouT. Conservare lo spettro,
+invece, non basta: i reali $a_n = -(n+1)$ (S4D-Real), che sono proprio gli
+autovalori di LegS, nelle ablazioni di S4D perdono circa cinque punti e mezzo
+su sCIFAR e dieci su Speech Commands rispetto a S4D-Inv (quasi sei e dieci e
+mezzo rispetto a S4D-Lin). Il kernel diventa una somma di $N$ esponenziali,
 $\bar K_j = \sum_n C_n\, e^{j\Delta a_n}\, \bar b_n$, calcolabile con una
 matrice di Vandermonde, senza Cauchy né Woodbury. La $\mathbf{A}$ diagonale e
-reale di Mamba è proprio l'inizializzazione di S4D-Real, e Mamba la sceglie
-per una ragione che il caso LTI non vede: con l'SSM selettivo e sul
-linguaggio, nelle ablazioni del suo paper S4D-Real batte S4D-Lin (perplessità
-8,71 contro 9,16), mentre i numeri complessi servono per i segnali continui,
-tanto che l'audio è l'unico esperimento di Mamba che li usa {cite}`gu2023mamba`.
+reale di Mamba è proprio l'inizializzazione di S4D-Real, e Mamba la sceglie per
+una ragione che il caso LTI non vede: con l'SSM selettivo e sul linguaggio,
+nelle ablazioni del suo paper S4D-Real batte S4D-Lin (perplessità 8,71 contro
+9,16), mentre i numeri complessi servono per i segnali continui, tanto che
+l'audio è l'unico esperimento di Mamba che li usa {cite}`gu2023mamba`.
 
 S5 (Smith, Warrington e Linderman, ICLR 2023, {cite}`smith2023s5`)
 semplifica S4 su due fronti. Primo: usa un unico SSM **MIMO** (a più ingressi
@@ -704,13 +704,13 @@ che porta a {doc}`Mamba </StateSpaceModel/mamba>`.
   termine d'ingresso, però, l'implementazione di Mamba si accontenta del conto a
   rettangoli, $\bar{\mathbf{B}}=\Delta \mathbf{B}$ (il metodo di Eulero, cioè lo
   ZOH troncato al prim'ordine): è il pezzo che Mamba-3 rifarà a trapezi.
-- Se il sistema discretizzato è tempo-invariante (LTI), la stessa funzione
-  ha due forme equivalenti: ricorrente
+- Se il sistema discretizzato è tempo-invariante (LTI), la stessa funzione ha
+  due forme equivalenti: ricorrente
   $\mathbf{h}_t=\bar{\mathbf{A}}\mathbf{h}_{t-1}+\bar{\mathbf{B}}x_t$
   (inferenza a costo costante nella lunghezza) e convoluzionale
-  $\mathbf{y}=\mathbf{x}*\bar{\mathbf{K}}$ (addestramento parallelo). Si
-  allena convoluzionale, si inferisce ricorrente: la stessa dualità vista con
-  l'attenzione lineare.
+  $\mathbf{y}=\mathbf{x}*\bar{\mathbf{K}}$ (addestramento parallelo).
+  L'addestramento è convoluzionale, l'inferenza è ricorrente: la stessa dualità
+  vista con l'attenzione lineare.
 - Questa equivalenza vale solo se $\bar{\mathbf{A}},\bar{\mathbf{B}},
   \mathbf{C}$ sono costanti: Mamba la romperà rendendoli dipendenti
   dall'ingresso, e allora resterà solo lo scan.

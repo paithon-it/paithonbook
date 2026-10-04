@@ -19,22 +19,23 @@ in un assistente. La prova più eloquente sta nell'articolo su InstructGPT
 {cite}`ouyang2022training`, il modello che ha preceduto ChatGPT: davanti a
 valutatori umani, le risposte di un modello da 1,3 miliardi di parametri
 passato per il post-training venivano *preferite* a quelle del GPT-3 da 175
-miliardi, cioè a un modello più di cento volte più grande. Su quali richieste,
-va detto: quelle che arrivavano davvero alla loro interfaccia pubblica, cioè lo
-stesso tipo di richieste su cui il modello piccolo era stato rifinito. Su altri
-banchi di prova il gigante resta avanti. La tesi dell'articolo sta nella sua
-prima riga: ingrandire un modello non lo rende, di per sé, più capace di
-seguire le intenzioni di chi lo usa.
+miliardi, cioè a un modello più di cento volte più grande. Il confronto, però,
+si giocava sulle richieste che arrivavano davvero alla loro interfaccia
+pubblica, cioè lo stesso tipo di istruzioni su cui il modello piccolo era stato
+rifinito. Su altri banchi di prova il gigante resta avanti. La tesi
+dell'articolo sta nella sua prima riga: ingrandire un modello non lo rende, di
+per sé, più capace di seguire le intenzioni di chi lo usa.
 
 La procedura, schematizzata in {numref}`fig-post-training-pipeline`, ha due
 mosse principali. L’*instruction tuning* insegna il formato delle risposte con
 esempi svolti; l'apprendimento dalle preferenze affina le risposte con i
 giudizi delle persone, per due strade: l'RLHF, che passa da un modello
-addestrato a dare voti, e la DPO, che quel modello lo salta. Fra le due sta un
-problema di memoria, come rifinire un modello i cui parametri non entrano in
-quella disponibile, e lo risolve LoRA. In coda, un terzo modo di migliorare le
-risposte, più recente: spendere più calcolo *al momento della risposta*,
-facendo «ragionare» il modello prima di rispondere.
+addestrato a dare voti, e la DPO, che quel modello lo salta. Prima di
+esplorarle si apre un problema di memoria: come rifinire un modello i cui
+parametri non entrano in quella disponibile, ostacolo che si supera con LoRA.
+In coda, un terzo modo di migliorare le risposte, più recente: spendere più
+calcolo *al momento della risposta*, facendo «ragionare» il modello prima di
+rispondere.
 
 ```{figure} ../figures/post-training-pipeline.svg
 :name: fig-post-training-pipeline
@@ -214,15 +215,15 @@ In piccolo si vede subito. Una riga di partenza, $(4, 5, 6)$, e una colonna di
 dosi, $(1, 2, 3)$: moltiplicate nel modo standard (il prodotto di matrici della
 {doc}`sezione di algebra lineare </Matematica/algebra-lineare>`), danno una
 tabella tre per tre con le righe $(4, 5, 6)$, $(8, 10, 12)$ e $(12, 15, 18)$,
-cioè la stessa riga presa una, due e tre volte. Nove caselle da sei numeri. Sul
-foglio vero le strisce sono due, sottili: una alta otto e larga quattromila,
-con le otto righe di partenza, e una alta quattromila e larga otto, con le otto
-dosi di ciascuna delle quattromila righe. Il loro prodotto è un foglio
-quattromila per quattromila, la misura esatta della pianta, e ci si appoggia
-sopra; ma i tratti da disegnare sono $4000 \times 8 + 8 \times 4000 = 64\,000$
-invece di sedici milioni, cioè lo $0{,}4\%$. Le otto colonne sono la manopola,
-e si chiamano il rango: più è alto, più ricca può essere la correzione, e più
-tratti ci sono da disegnare.
+cioè la stessa riga presa una, due e tre volte. Nove caselle calcolate a
+partire da sei numeri. Sul foglio vero le strisce sono due, sottili: una alta
+otto e larga quattromila, con le otto righe di partenza, e una alta quattromila
+e larga otto, con le otto dosi di ciascuna delle quattromila righe. Il loro
+prodotto è un foglio quattromila per quattromila, la misura esatta della
+pianta, e ci si appoggia sopra; ma i tratti da disegnare sono $4000 \times 8 +
+8 \times 4000 = 64\,000$ invece di sedici milioni, cioè lo $0{,}4\%$. Le otto
+colonne sono la manopola, e si chiamano il rango: più è alto, più ricca può
+essere la correzione, e più tratti ci sono da disegnare.
 
 Il lucido si comincia bianco, e finché non ci metti un tratto quello che si vede
 attraverso è la pianta di prima. L'adattamento parte esattamente dal
@@ -281,8 +282,8 @@ matrice, lo $0{,}39\%$. All'inizio $\mathbf{A}$ è inizializzata casualmente e
 $\mathbf{B}$ a zero,
 così $\Delta\mathbf{W} = 0$ e il modello parte esattamente dal comportamento
 pre-addestrato; $\alpha/\rho$ è un fattore di scala che disaccoppia il *learning
-rate* efficace dalla scelta di $\rho$. Su quali matrici si mette il ramo
-laterale è una scelta, non un dato: il lavoro originale limita lo studio ai
+rate* efficace dalla scelta di $\rho$. Su quali matrici inserire il ramo
+laterale è una scelta progettuale: il lavoro originale limita lo studio ai
 pesi dell'attenzione, e nella maggior parte degli esperimenti alle sole
 proiezioni $\mathbf{W}^Q$ e $\mathbf{W}^V$, ed è da lì che viene il conteggio
 minuscolo sul modello intero. QLoRA trova però che per eguagliare il
@@ -451,12 +452,12 @@ dove $\pi_{\text{ref}}$ è il modello di riferimento congelato (di solito il
 modello SFT), $D_{\mathrm{KL}}$ è la divergenza di Kullback–Leibler
 {cite}`kullback1951information` vista nella {doc}`sezione sulla teoria
 dell'informazione </Matematica/teoria-informazione>` (là scritta in bit, qui in
-logaritmi naturali, che è la base con cui la forma chiusa di poco più avanti
-torna) e $\beta > 0$ regola la forza del vincolo. Si noti che entrambi i termini
-stanno dentro la stessa aspettazione sui prompt: la deriva si penalizza in media
-sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$, non su un prompt
-lasciato libero, altrimenti l'espressione non sarebbe funzione dei soli $\theta$
-e non ci sarebbe niente da massimizzare.
+logaritmi naturali, che è la base necessaria per ricavare la forma chiusa
+dell'ottimizzazione) e $\beta > 0$ regola la forza del vincolo. Si noti che
+entrambi i termini stanno dentro la stessa aspettazione sui prompt: la deriva
+si penalizza in media sulla distribuzione dei prompt $\mathcal{D}_{\text{pr}}$,
+non su un prompt lasciato libero, altrimenti l'espressione non sarebbe funzione
+dei soli $\theta$ e non ci sarebbe niente da massimizzare.
 
 InstructGPT scrive l'obiettivo in forma campionata, con
 $-\beta\log\frac{\pi_\theta(y\mid x)}{\pi_{\text{ref}}(y\mid x)}$ dentro
@@ -539,7 +540,7 @@ ottima in forma chiusa; invertendola, la ricompensa si scrive come
 $\beta\log(\pi^*/\pi_{\text{ref}})$, cioè come il logaritmo di quanto la policy
 ottima ha alzato la probabilità di una risposta rispetto al riferimento, più un
 termine che dipende dalla domanda e non dalla risposta. Confrontando due
-risposte alla stessa domanda quel termine si cancella, e resta soltanto il
+risposte alla stessa domanda, quel termine si cancella, e resta soltanto il
 movimento rispetto al riferimento. Il metodo si chiama **DPO** (*Direct
 Preference Optimization*, ottimizzazione diretta delle preferenze).
 
@@ -606,7 +607,7 @@ ricompensa si può scrivere in funzione della policy ottima:
 $r(x,y) = \beta \log \frac{\pi^*(y \mid x)}{\pi_{\text{ref}}(y \mid x)} +
 \beta \log Z(x)$.
 
-Da qui i due passaggi che rendono possibile il metodo, e conviene separarli.
+Da qui i due passaggi che rendono possibile il metodo.
 Il primo: $Z(x)$ è una somma su tutte le risposte, quindi dipende dal
 prompt e non dalla risposta; siccome $y_w$ e $y_l$ stanno sotto lo stesso
 prompt, i due $\beta\log Z(x)$ sono lo stesso numero e si elidono nella
@@ -888,7 +889,7 @@ risposte $y_1, \dots, y_G$, se ne calcolano le ricompense $r_1, \dots, r_G$, e
 il vantaggio di ciascuna è la sua ricompensa standardizzata dentro il gruppo,
 $\hat{A}_i = (r_i -
 \operatorname{media}(\mathbf{r}))/\operatorname{dev.std}(\mathbf{r})$,
-lo stesso per tutti i token della risposta. Nella forma dell'articolo su R1 si
+uguale per tutti i token della risposta. Nella forma dell'articolo su R1 si
 massimizza
 
 $$
@@ -1000,7 +1001,7 @@ sull'AI responsabile </AIResponsabile/allineamento-e-governance>`), o a
 verificatori automatici nei domini verificabili. La domanda resta: la scelta di
 quali giudizi o di quali principi contino è una decisione di chi costruisce il
 modello, non un fatto tecnico. Per questo l'allineamento è oggi un'area di
-ricerca a pieno titolo, non un ritocco finale: abbiamo strumenti per orientare
+ricerca autonoma, ben più di un ritocco finale: abbiamo strumenti per orientare
 il comportamento dei modelli, non garanzie sul risultato.
 
 `````{tab} Elementare

@@ -210,28 +210,28 @@ istogrammi di gradienti orientati, normalizzato. Invarianza a scala e
 rotazione per costruzione, robustezza all'illuminazione per normalizzazione
 {cite}`lowe2004distinctive`.
 
-La stima robusta: RANSAC di Fischler e Bolles (1981) campiona il minimo
-numero di corrispondenze necessarie a determinare il modello (quattro per
-un'omografia; sette per la matrice fondamentale, che di gradi di libertà
-ne ha sette, o cinque per l'essenziale se le fotocamere sono calibrate), conta
-gli *inlier* entro
-una soglia, e itera. Con una frazione $w$ di corrispondenze buone e un modello
-che ne richiede $s$, la probabilità di aver estratto almeno un campione
-interamente pulito in $N$ tentativi è $1 - (1 - w^s)^N$: si sceglie $N$ per
-portarla dove serve {cite}`fischler1981random`. Ed è qui che il minimo conta
-davvero, perché $s$ sta all'esponente: con $w = 0{,}5$ e obiettivo $0{,}99$
-servono circa $1177$ tentativi con $s = 8$, $588$ con $s = 7$ e $146$ con
-$s = 5$. Usare l'algoritmo a otto punti dentro RANSAC, come si legge spesso,
-costa il doppio dei campioni necessari.
+La stima robusta: RANSAC di Fischler e Bolles (1981) campiona il minimo numero
+di corrispondenze necessarie a determinare il modello (quattro per
+un'omografia[^omografia]; sette per la matrice fondamentale, che di gradi di
+libertà ne ha sette, o cinque per l'essenziale se le fotocamere sono
+calibrate), conta gli *inlier* entro una soglia, e itera. Con una frazione $w$
+di corrispondenze buone e un modello che ne richiede $s$, la probabilità di
+aver estratto almeno un campione interamente pulito in $N$ tentativi è
+$1 - (1 - w^s)^N$: si sceglie $N$ per portarla dove serve
+{cite}`fischler1981random`.
+Ed è qui che il minimo conta davvero, perché $s$ sta all'esponente: con $w =
+0{,}5$ e obiettivo $0{,}99$ servono circa $1177$ tentativi con $s = 8$, $588$
+con $s = 7$ e $146$ con $s = 5$. Usare l'algoritmo a otto punti dentro RANSAC,
+come si legge spesso, costa il doppio dei campioni necessari.
 
 `````
 
 Questo passaggio dice qualcosa che va oltre la geometria. Trovare punti facili
 da ritrovare, descriverli con una scheda che non cambia se l'immagine cambia,
 buttare via gli accoppiamenti sbagliati: sono tre pezzi di ingegneria umana
-raffinatissima, frutto di vent'anni di lavoro. All'inizio del capitolo si diceva
-che le regole per riconoscere si sono smesse di scrivere a mano e si sono
-cominciate a far imparare; qui la storia è andata solo a metà. Esistono
+raffinatissima, frutto di vent'anni di lavoro. All'inizio del capitolo si
+diceva che si è smesso di scrivere a mano le regole per riconoscere e si è
+cominciato a farle imparare; qui la storia è andata solo a metà. Esistono
 rilevatori e descrittori appresi, addestrati apposta a ritrovare gli stessi
 punti fra fotografie diverse, ma le schede disegnate a mano restano il punto di
 partenza di strumenti di ricostruzione molto usati
@@ -351,7 +351,17 @@ vettoriale per $\mathbf{t}$. Il prodotto $\mathbf{F}\tilde{\mathbf{x}}_L$ è
 la retta epipolare nella seconda immagine, scritta come terna di coefficienti
 $(a,b,c)$ dell'equazione $au + bv + c = 0$: il vincolo dice semplicemente che
 $\tilde{\mathbf{x}}_R$ le appartiene. $\mathbf{F}$ ha rango 2 e sette gradi di
-libertà, ed è definita a meno di scala {cite}`hartley2004multiple`.
+libertà, ed è definita a meno di scala {cite}`hartley2004multiple`. Da otto o
+più corrispondenze la si stima con un sistema lineare: ogni coppia dà
+un'equazione lineare nei nove elementi di $\mathbf{F}$, e impilandole si ottiene
+$\mathbf{A}\mathbf{f} = \mathbf{0}$. La soluzione ai minimi quadrati con
+$\lVert\mathbf{f}\rVert = 1$ è il vettore singolare destro di $\mathbf{A}$
+associato al valore singolare più piccolo (è la SVD della
+{doc}`sezione su ortogonalità e proiezioni </Matematica/ortogonalita-proiezioni>`).
+La matrice che ne esce in genere ha rango 3, e il rango 2 si impone dopo,
+azzerandone il valore singolare più piccolo. È l'algoritmo a otto punti, che
+dà stime buone solo con le coordinate prima normalizzate, cioè centrate e
+riscalate {cite}`hartley2004multiple`.
 
 Dalla $\mathbf{E}$, a fotocamere calibrate, si ricavano le pose. Una matrice
 essenziale ha due valori singolari uguali e il terzo nullo,
@@ -385,7 +395,7 @@ la riga numero cento della prima immagine corrisponde alla riga numero cento
 della seconda: allora cercare il gemello vuol dire scorrere una riga di pixel, e
 basta. Quel caso lo si ottiene in due modi, montando le due fotocamere
 affiancate e ben allineate, oppure raddrizzando le immagini dopo, con un calcolo
-che le storce quel tanto che basta a metterle in quella posizione. In tutti e
+che le deforma quel tanto che basta a metterle in quella posizione. In tutti e
 due i casi si dice che le immagini sono **rettificate**, e da lì la geometria si
 riduce a una formula sola, $Z = fB/d$, che lega la profondità $Z$ alla focale
 $f$, alla distanza $B$ fra le due fotocamere e allo spostamento $d$ di un punto
@@ -465,9 +475,14 @@ tassonomia classica {cite}`scharstein2002taxonomy` distingue quattro pezzi:
 una misura di somiglianza fra finestre (differenze assolute, correlazione
 normalizzata, *census transform*), un'aggregazione spaziale, un'ottimizzazione
 globale con un termine di regolarità che favorisce disparità localmente
-costanti, e un raffinamento sub-pixel. Il termine di regolarità è ciò che
+costanti, e un raffinamento sub-pixel. Nel raffinamento entra di solito anche
+il controllo incrociato (*left-right check*): la disparità si calcola due
+volte, prendendo come riferimento prima l'immagine sinistra e poi la destra, e
+si scartano i pixel su cui le due stime non si corrispondono. Restano fuori
+soprattutto le occlusioni, dove un punto visto da una sola fotocamera non ha un
+gemello a cui tornare. Il termine di regolarità è ciò che
 tappa i buchi nelle zone senza tessitura, ed è un prior sulla forma delle
-superfici più che geometria, e le reti moderne lo sostituiscono con un prior
+superfici più che geometria. Le reti moderne lo sostituiscono con un prior
 appreso da grandi collezioni di scene.
 
 `````
@@ -649,7 +664,7 @@ Si fa a tentativi organizzati: si parte da due foto, si stima una soluzione
 approssimata, si aggiungono le altre una alla volta, e ogni tanto si aggiusta
 tutto insieme minimizzando un unico errore, la distanza fra dove ogni punto
 appare nelle foto e dove il modello attuale dice che dovrebbe apparire.
-Un punto, quasi sempre, in molte delle foto non si vede proprio, e il conto
+Quasi sempre un punto non si vede in gran parte delle foto, e il conto
 tiene in considerazione soltanto quelle in cui c'è. Quando la distanza è
 piccola per ogni punto, in ognuna delle foto che lo contengono, la
 ricostruzione è coerente.
@@ -684,16 +699,15 @@ $$
 
 dove $\pi$ è la proiezione, $\mathbf{u}_{ij}$ è dove il punto $i$ è stato
 *osservato* nell'immagine $j$, e $m_{ij}$ vale 1 se quell'osservazione esiste e
-0 altrimenti.
-La minimizzazione congiunta si chiama **bundle adjustment** e si risolve con
-Levenberg-Marquardt sfruttando la struttura sparsa del problema. Ogni residuo
-dipende da un punto solo e da una fotocamera sola, quindi nella matrice normale
-il blocco dei punti è diagonale a blocchi $3 \times 3$ e si elimina per
-complemento di Schur {cite}`triggs2000bundle`: resta un sistema ridotto nelle
-sole fotocamere, di dimensione proporzionale al loro numero, che con un
-solutore denso costa come il cubo di quel numero a ogni iterazione. Che ogni
-punto compaia in poche immagini rende sparso, in più, il blocco che lega punti
-e fotocamere.
+0 altrimenti. La minimizzazione congiunta si chiama **bundle adjustment** e si
+risolve con Levenberg-Marquardt sfruttando la struttura sparsa del problema.
+Ogni residuo dipende da un punto solo e da una fotocamera sola, quindi nella
+matrice normale il blocco dei punti è diagonale a blocchi $3 \times 3$ e si
+elimina per complemento di Schur {cite}`triggs2000bundle`: resta un sistema
+ridotto nelle sole fotocamere, di dimensione proporzionale al loro numero, che
+con un solutore denso costa come il cubo di quel numero a ogni iterazione.
+Inoltre, il fatto che ogni punto compaia in poche immagini rende sparso il
+blocco che lega punti e fotocamere.
 
 Due cose meritano di essere notate. La prima è che il problema è non
 convesso e serve una buona inizializzazione, che è il motivo per cui le
@@ -764,15 +778,15 @@ immagine, e la classe di ambiguità include almeno la scala globale. Un modello
 monoculare non risolve la geometria: della distribuzione della profondità data
 l'immagine stima soltanto la statistica che la loss premia (la media con
 l'errore quadratico, la mediana con quello assoluto). La distinzione
-terminologica che ne discende è utile: si parla di profondità relativa
+terminologica che ne discende è utile: si distingue la profondità relativa
 (l'ordinamento, oppure l'inversa della profondità a meno di scala e offset, che
-è ciò che predice MiDaS; uno spostamento costante della disparità non è uno
-spostamento costante della profondità, e dal risultato non si ricavano nemmeno
-i rapporti fra le distanze) contro profondità metrica (in metri). La seconda
-chiede che il prior contenga anche le taglie degli oggetti e che la focale sia
-nota o stimata, perché la stessa scena ripresa con un grandangolo o con un
-teleobiettivo suggerisce distanze diverse; con più viste bastano invece la base
-nota o un sensore inerziale.
+è ciò che predice MiDaS) dalla profondità metrica (in metri). Dalla profondità
+relativa non si ricavano nemmeno i rapporti fra le distanze, perché uno
+spostamento costante della disparità non equivale a uno spostamento costante
+della profondità. La seconda chiede che il prior contenga anche le taglie degli
+oggetti e che la focale sia nota o stimata, perché la stessa scena ripresa con
+un grandangolo o con un teleobiettivo suggerisce distanze diverse; con più
+viste bastano invece la base nota o un sensore inerziale.
 
 Il progresso decisivo è stato di dati, non di architettura. **MiDaS** mostra
 che mescolando dataset molto diversi (scansioni 3D, stereo da film, ricostruzioni
@@ -1009,3 +1023,16 @@ della visione artificiale non è invecchiata.
 ```
 
 `````
+
+[^omografia]: Un’**omografia** è la trasformazione proiettiva del piano
+    $\tilde{\mathbf{x}}' \simeq \mathbf{H}\,\tilde{\mathbf{x}}$, con
+    $\mathbf{H}$ matrice $3\times 3$ invertibile e $\simeq$ l'uguaglianza a
+    meno di un fattore di scala. Tolto quel fattore restano otto gradi di
+    libertà; ogni corrispondenza ne fissa due, una per coordinata, e quattro
+    corrispondenze in posizione generale (tre mai allineate) bastano. Lega due
+    immagini in due casi: quando i punti osservati stanno tutti su un piano, e
+    quando la fotocamera ruota attorno al proprio centro senza spostarsi, con
+    $\mathbf{H} = \mathbf{K}\mathbf{R}\mathbf{K}^{-1}$. Sono i due casi in cui
+    la stima della matrice essenziale degenera, e una trasformazione dello
+    stesso tipo è quella con cui si rettificano le immagini
+    {cite}`hartley2004multiple`.

@@ -105,13 +105,13 @@ ricostruisce la pressione senza che nessuna misura di pressione gli sia mai
 stata data. Che il flusso dell'esperimento fosse simulato al calcolatore è
 insieme la condizione della prova e la sua debolezza, e gli autori la mettono
 fra i propri limiti: solo con dati fabbricati la risposta vera si conosce e si
-può controllare se la ricostruzione ci ha preso, ma quei dati sono più puliti
+può controllare se la ricostruzione sia corretta, ma quei dati sono più puliti
 di qualunque risonanza.
 
-Leggere il non misurabile a partire dal misurabile è la vera ragione per cui
-conviene studiare le PINN, molto più che rifare quello che i solutori classici
-fanno già benissimo (il conto a passettini dell'apertura del capitolo, quello
-che avanza su una fitta rete di puntini).
+Leggere il non misurabile a partire dal misurabile è la vera ragione per
+studiare le PINN, molto più che rifare quello che i solutori classici fanno già
+benissimo (il conto a passettini dell'apertura del capitolo, quello che avanza
+su una fitta rete di puntini).
 
 ## Il problema inverso
 
@@ -167,7 +167,7 @@ dove il residuo fisico dentro $\mathcal{L}$ dipende ora anche da $\alpha$, il
 cui gradiente arriva dalla stessa passata di backpropagation che aggiorna i
 pesi: soluzione e parametro si stimano nello stesso ciclo di discesa.
 
-Qui però va evitata una scorciatoia retorica che si legge spesso, e che
+Una scorciatoia retorica diffusa
 consiste nel dipingere i metodi classici mentre provano un valore, risolvono
 tutto, confrontano e riprovano. Non è così che si fa, e non lo è da
 quarant'anni: il metodo dello stato aggiunto ottiene il gradiente della
@@ -221,9 +221,9 @@ residuo = u_t - alpha * u_xx
 
 ## Cosa sanno fare, per davvero
 
-Al di là dell'aneurisma, il filone ha prodotto applicazioni concrete. Conviene
-elencarle con onestà: dove le PINN portano un vantaggio reale, e dove sono
-ancora una promessa da verificare.
+Al di là dell'aneurisma, il filone ha prodotto applicazioni concrete. I casi in
+cui le PINN portano un vantaggio reale vanno tenuti separati da quelli dove
+sono ancora una promessa da verificare.
 
 **Fluidodinamica ed emodinamica**, cioè il moto dei fluidi in generale e del
 sangue in particolare. È il territorio d'elezione, quello di *Hidden Fluid
@@ -253,8 +253,7 @@ inglese si chiamano *full-waveform inversion* (simulano le onde in un modello
 del sottosuolo e lo correggono finché i sismogrammi calcolati coincidono con
 quelli registrati), e sono maturi e difficili da battere.
 
-**Clima e meteo.** Qui serve una precisazione netta, per non confondere due
-cose diverse. I grandi modelli meteorologici neurali che negli ultimi anni
+**Clima e meteo.** I grandi modelli meteorologici neurali che negli ultimi anni
 hanno fatto notizia non sono PINN. GraphCast, una {doc}`rete a grafo
 </GraphNeuralNetwork/architetture-applicazioni>`, prevede dieci giorni su tutto
 il pianeta in meno di un minuto {cite}`lam2023graphcast`, e FourCastNet una
@@ -472,7 +471,7 @@ massimo autovalore dell'hessiana. La trovano
 dominata dal residuo della PDE, e ne fanno discendere lo squilibrio fra i rami
 della loss; che legame ci sia fra la rigidezza di un'equazione e quella del
 flusso della sua PINN lo lasciano come domanda aperta
-{cite}`wang2021understanding`. De Ryck e colleghi portano la difficoltà nel
+{cite}`wang2021understanding`. De Ryck e colleghi riconducono la difficoltà al
 condizionamento dell'operatore {cite}`deryck2024operator`. Quel che lo spectral
 bias spiega davvero sono i fronti ripidi e gli strati limite, che sono
 *localmente* ad alta frequenza, e fra questi il transitorio iniziale di un
@@ -513,20 +512,20 @@ $\beta \int_{\partial\Omega} u_\theta^2\,\mathrm{d}s$, cioè in forma *soft*,
 come le PINN.
 
 Sugli orizzonti temporali lunghi agisce invece un guasto tutto suo, da tenere
-distinto dallo spectral bias: è un meccanismo indipendente, non quello detto in
-altre parole. Non è nemmeno un accumulo di errore passo dopo passo (quella è la
-malattia degli integratori sequenziali, e qui di passi non ce ne sono:
-l'ottimizzazione è globale nel tempo). È che la loss, sommando residui su punti
-sparsi in tutto il dominio, non impone alcun **ordine causale**: nulla obbliga
-la rete a sistemare prima l'inizio dell'intervallo e poi il resto, e
-l'informazione delle condizioni iniziali non viene propagata in avanti nel
-tempo. Il residuo può così restare piccolo mentre la rete collassa su una
-dinamica banale, plausibile punto per punto e sbagliata nel complesso. Lo
-correggono la decomposizione sequenziale nel tempo di Krishnapriyan et al.,
-vista poco sopra, che addestra una finestra temporale per volta, e i pesi
-causali di Wang, Sankaran e Perdikaris {cite}`wang2024respecting`, che dentro
-un'unica ottimizzazione, e calcolati a gradiente fermo, fanno contare il residuo
-di un istante solo quando quelli che lo precedono sono già piccoli.
+distinto dallo spectral bias: è un meccanismo indipendente. Non è nemmeno un
+accumulo di errore passo dopo passo (quella è la malattia degli integratori
+sequenziali, e qui di passi non ce ne sono: l'ottimizzazione è globale nel
+tempo). È che la loss, sommando residui su punti sparsi in tutto il dominio,
+non impone alcun **ordine causale**: nulla obbliga la rete a sistemare prima
+l'inizio dell'intervallo e poi il resto, e l'informazione delle condizioni
+iniziali non viene propagata in avanti nel tempo. Il residuo può così restare
+piccolo mentre la rete collassa su una dinamica banale, plausibile punto per
+punto e sbagliata nel complesso. Lo correggono la decomposizione sequenziale
+nel tempo di Krishnapriyan et al., vista poco sopra, che addestra una finestra
+temporale per volta, e i pesi causali di Wang, Sankaran e Perdikaris
+{cite}`wang2024respecting`, che dentro un'unica ottimizzazione, e calcolati a
+gradiente fermo, fanno contare il residuo di un istante solo quando quelli che
+lo precedono sono già piccoli.
 
 `````
 
@@ -671,18 +670,18 @@ un'inferenza fino a circa tre ordini di grandezza più rapida dei solutori
 tradizionali; il cronometro nel corpo, sul confronto con il pseudospettrale, dà
 440 volte.
 
-Quella cifra però va presa con le stesse pinze che si usano qui sulle PINN, e
-sarebbe scorretto non farlo. Il confronto non è a parità di accuratezza: il
-solutore pseudospettrale è quello che ha *generato* i dati di addestramento, e
-nella tabella dell'accuratezza dello stesso articolo l'errore relativo
-dell'operatore alle due viscosità più basse che provano sta fra l'8% e il 19%,
-a seconda di quanti esempi gli si danno da studiare. Sui tempi, rifatti da
-altri, si tornerà fra qualche pagina; qui conta il conto d'insieme della
-rassegna di McGreivy e Hakim, che dà la misura del problema: fra gli articoli
-che dichiarano di battere un metodo numerico classico, ne trova 60 su 76 che si
-confrontano con una baseline debole {cite}`mcgreivy2024weak`. Gli operatori
-neurali restano la direzione più interessante di tutte; i loro numeri di targa
-vanno letti come si leggono tutti gli altri.
+Quella cifra però va presa con le stesse pinze che si usano qui sulle PINN. Il
+confronto non è a parità di accuratezza: il solutore pseudospettrale è quello
+che ha *generato* i dati di addestramento, e nella tabella dell'accuratezza
+dello stesso articolo l'errore relativo dell'operatore alle due viscosità più
+basse che provano sta fra l'8% e il 19%, a seconda di quanti esempi gli si
+danno da studiare. Sui tempi, rifatti da altri, si tornerà fra qualche pagina;
+qui conta il conto d'insieme della rassegna di McGreivy e Hakim, che dà la
+misura del problema: fra gli articoli che dichiarano di battere un metodo
+numerico classico, ne trova 60 su 76 che si confrontano con una baseline debole
+{cite}`mcgreivy2024weak`. Gli operatori neurali restano la direzione più
+interessante di tutte; i loro numeri di targa vanno letti come si leggono tutti
+gli altri.
 
 `````
 

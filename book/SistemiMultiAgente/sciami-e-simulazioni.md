@@ -88,20 +88,19 @@ p_{ij}^{k} \;=\; \frac{\tau_{ij}^{\alpha}\;\eta_{ij}^{\beta}}
 \qquad j \in \mathcal{A}_k,
 $$
 
-dove $\tau_{ij}$ è la quantità di feromone sull'arco $(i,j)$, $\eta_{ij}$ è la
-**visibilità**, cioè l'inverso della lunghezza dell'arco ($\eta_{ij} = 1/d_{ij}$
-nel commesso viaggiatore, e niente a che vedere con il tasso di apprendimento
-$\eta$ del resto del libro), $\mathcal{A}_k$ è l'insieme dei nodi che la formica
-$k$ non ha ancora visitato, tenuto da una lista di nodi proibiti che le vieta di
-tornare dove è già passata ed è ciò che rende legale il giro, e gli esponenti
-$\alpha, \beta \ge 0$ pesano i due
-termini l'uno contro l'altro. La formula è un compromesso fra esperienza
-collettiva ($\tau$: quante formiche sono passate di qui e quanto bene è
-andata) ed euristica locale ($\eta$: quanto è vicino il prossimo nodo). I
-due casi limite lo chiariscono: con $\alpha = 0$ il feromone sparisce dal conto
-e resta un algoritmo goloso stocastico, cioè una colonia di formiche che non
-comunicano; con $\beta = 0$ resta solo il passaparola, senza nessuna
-informazione sul problema.
+dove $\tau_{ij}$ è la quantità di feromone sull'arco $(i,j)$ ed $\eta_{ij}$ è
+la **visibilità**, cioè l'inverso della lunghezza dell'arco ($\eta_{ij} =
+1/d_{ij}$ nel commesso viaggiatore, e niente a che vedere con il tasso di
+apprendimento $\eta$ del resto del libro). L'insieme $\mathcal{A}_k$ contiene i
+nodi che la formica $k$ non ha ancora visitato: una lista di nodi proibiti le
+vieta di tornare dove è già passata, ed è ciò che rende legale il giro. Infine,
+gli esponenti $\alpha, \beta \ge 0$ pesano i due termini l'uno contro l'altro.
+La formula è un compromesso fra esperienza collettiva ($\tau$: quante formiche
+sono passate di qui e quanto bene è andata) ed euristica locale ($\eta$: quanto
+è vicino il prossimo nodo). I due casi limite lo chiariscono: con $\alpha = 0$
+il feromone sparisce dal conto e resta un algoritmo goloso stocastico, cioè una
+colonia di formiche che non comunicano; con $\beta = 0$ resta solo il
+passaparola, senza nessuna informazione sul problema.
 
 Il rinforzo arriva a giro finito, ed è proporzionale alla qualità della
 soluzione costruita:
@@ -253,22 +252,22 @@ $$
 cioè una somma della qualità recente di quell'arco con pesi che decadono
 esponenzialmente (una media mobile esponenziale moltiplicata per $1/\rho$, che
 è la somma dei pesi: per questo il punto fisso vale $\Delta/\rho$ e non
-$\Delta$); il primo addendo è la traccia iniziale,
-una costantina positiva uguale su tutti gli archi, e si spegne da sé nei primi
-cicli. Due conseguenze quantitative. La prima:
-la traccia non diverge. Se un arco riceve un deposito costante $\Delta$ a ogni
-ciclo, la serie geometrica converge al punto fisso $\tau^{\ast} = \Delta/\rho$,
-che con $\rho = 0{,}5$ vale il doppio di un singolo deposito. La seconda: la
-somma dei pesi è $1/\rho$, quindi $1/\rho$ è l'orizzonte di memoria in
-cicli. Con $\rho$ vicino a zero la colonia ricorda tutto e si fossilizza sul
-primo ottimo locale; con $\rho$ vicino a uno dimentica a ogni giro e le formiche
-tornano a essere golose e scorrelate. Il valore che gli autori trovano migliore
-per questa variante sta esattamente in mezzo, $\rho = 0{,}5$ (l'unico numero che
-vale lo stesso nelle due convenzioni, appunto perché sta in mezzo), cioè un
-orizzonte di due cicli; e la ragione che ne danno è la migliore descrizione in
-una riga del compromesso esplorazione-sfruttamento: l'algoritmo ha bisogno di
-poter dimenticare parte dell'esperienza passata per sfruttare l'informazione
-globale che sta arrivando adesso.
+$\Delta$); il primo addendo è la traccia iniziale, una costante piccola e
+positiva uguale su tutti gli archi, che si spegne da sé nei primi cicli. Due
+conseguenze quantitative. La prima: la traccia non diverge. Se un arco riceve
+un deposito costante $\Delta$ a ogni ciclo, la serie geometrica converge al
+punto fisso $\tau^{\ast} = \Delta/\rho$, che con $\rho = 0{,}5$ vale il doppio
+di un singolo deposito. La seconda: la somma dei pesi è $1/\rho$, quindi
+$1/\rho$ è l'orizzonte di memoria in cicli. Con $\rho$ vicino a zero la colonia
+ricorda tutto e si fossilizza sul primo ottimo locale; con $\rho$ vicino a uno
+dimentica a ogni giro e le formiche tornano a essere golose e scorrelate. Il
+valore che gli autori trovano migliore per questa variante sta esattamente in
+mezzo, $\rho = 0{,}5$ (l'unico numero che vale lo stesso nelle due convenzioni,
+appunto perché sta in mezzo), cioè un orizzonte di due cicli; e la ragione che
+ne danno è la migliore descrizione in una riga del compromesso
+esplorazione-sfruttamento: l'algoritmo ha bisogno di poter dimenticare parte
+dell'esperienza passata per sfruttare l'informazione globale che sta arrivando
+adesso.
 
 `````
 
@@ -400,7 +399,7 @@ $\mathbf{v}_i \leftarrow \chi\,[\mathbf{v}_i + c_1\mathbf{r}_1 \odot
 (\mathbf{p}_i - \mathbf{x}_i) + c_2\mathbf{r}_2 \odot (\mathbf{g} -
 \mathbf{x}_i)]$
 tiene le traiettorie limitate e le fa convergere, nel modello semplificato che
-l'analisi studia (attrattori fermi, niente sorteggio): a un punto fra
+l'analisi studia (attrattori fermi, niente sorteggio), a un punto fra
 $\mathbf{p}_i$ e $\mathbf{g}$, che non è per forza un ottimo. Con
 $\varphi = 4{,}1$ si ha $\chi \approx 0{,}7298$, cioè $w \approx 0{,}73$ e
 $c_1 = c_2 = 2{,}05\,\chi \approx 1{,}50$; con $w = 1$ e senza costrizione le
@@ -486,12 +485,13 @@ da una generazione all'altra.
 La giustificazione classica dell'incrocio è l'ipotesi dei *building block*:
 schemi parziali corti e buoni verrebbero propagati e combinati. Il teorema su
 cui poggia è quello degli schemi di Holland. Uno schema $H$ è un insieme di
-genotipi che coincidono in alcune posizioni fissate (per esempio $1{*}{*}0{*}$);
-detti $m(H,t)$ il numero di individui della generazione $t$ che vi
-appartengono, $f(H)$ la loro fitness media, $\bar{f}$ quella della popolazione,
-$\delta(H)$ la distanza fra la prima e l'ultima posizione fissata, $o(H)$ il
-numero di posizioni fissate, $\ell$ la lunghezza del genotipo, e $p_c$ e $p_m$
-le probabilità di incrocio e di mutazione,
+genotipi che coincidono in alcune posizioni fissate (per esempio
+$1{*}{*}0{*}$). Siano $m(H,t)$ il numero di individui della generazione $t$ che
+vi appartengono, $f(H)$ la loro fitness media, $\bar{f}$ quella della
+popolazione, $\delta(H)$ la distanza fra la prima e l'ultima posizione fissata,
+$o(H)$ il numero di posizioni fissate, $\ell$ la lunghezza del genotipo, e
+infine $p_c$ e $p_m$ le probabilità di incrocio e di mutazione. Allora vale la
+disuguaglianza:
 
 $$
 \mathbb{E}\big[m(H, t+1)\big] \;\ge\; m(H, t)\,\frac{f(H)}{\bar{f}}
@@ -607,8 +607,8 @@ dove una scorciatoia del genere non c'è, e lì la risposta trovata ha esattamen
 lo stesso aspetto, giusta o sbagliata che sia.
 
 Nel machine learning questa famiglia compare in due punti. Il primo è la
-**ricerca di architetture**, e conviene distinguere subito le due strade
-perché si confondono spesso. La rete base di EfficientNet, ricordata fra le
+**ricerca di architetture**, dove le due strade
+possibili si confondono spesso. La rete base di EfficientNet, ricordata fra le
 {doc}`architetture storiche </DeepLearning/architetture-storiche>` del deep
 learning, viene da una ricerca automatica multi-obiettivo
 guidata dal reinforcement learning, non dall'evoluzione. L'evoluzione è
@@ -775,8 +775,8 @@ volte su dieci, non sempre.
 
 ### Il confronto che si legge in giro, e quello onesto
 
-Adesso il paragone con il metodo che segue la pendenza, che è il punto in cui il
-confronto si fa spesso senza contare la spesa. Fatta partire da un solo punto
+Adesso il paragone con il metodo che segue la pendenza. Qui il
+confronto si fa spesso senza contare la spesa: fatta partire da un solo punto
 preso a caso, una discesa lungo la pendenza arriva al fondo vero due volte su
 trecento; nelle altre duecentonovantotto si ferma ordinatamente nella fossetta
 in cui è nata. Duecentosettantasette contro due: un confronto splendido e
@@ -946,7 +946,7 @@ comportarsi. Il lavoro di riferimento è quello di Park e colleghi del 2023
 che dura: venticinque agenti in un paese simulato, ciascuno con un archivio di
 ricordi in linguaggio naturale. Il risultato più citato è un comportamento
 emerso, e conviene dire dove comincia l'emergenza: agli sperimentatori tocca una
-riga sola, mettere in testa a un'agente l'intenzione di dare una festa di San
+riga sola, mettere in testa a un agente l'intenzione di dare una festa di San
 Valentino, e da lì in poi nessuno instrada più niente. L'invito si propaga di
 bocca in bocca, e alla fine tredici agenti su venticinque ne sanno qualcosa e
 cinque si presentano.
@@ -955,8 +955,8 @@ Non ripetiamo l'architettura, che è già stata descritta lì: flusso di
 osservazioni, recupero, riflessione, pianificazione. La riflessione è il
 momento in cui l'agente si ferma, rilegge quello che gli è appena successo e ne
 ricava una conclusione più generale, che riscrive fra i propri ricordi.
-Conviene guardare da vicino il pezzo che regge tutto, e che è anche il più
-imitato senza capirlo: la **funzione di recupero a tre termini**. Risponde
+Il pezzo che regge tutto, e che è anche il più
+imitato senza capirlo, è la **funzione di recupero a tre termini**. Risponde
 alla domanda di qualunque memoria grande: fra diecimila ricordi, quali sono i
 pochi che vanno messi nel contesto adesso?
 
@@ -1050,8 +1050,8 @@ L’**importanza** è l'unica anomala: non si calcola, si chiede al modello,
 che assegna alla memoria un voto di salienza da 1 a 10 nel momento in cui la
 scrive, con tutti i pregiudizi che ha su che cosa conti in una vita.
 
-Sopra i tre segnali sta un quarto meccanismo, la riflessione, e ciò che
-merita attenzione è quando scatta: non a orario fisso, ma quando la somma delle
+Sopra i tre segnali sta un quarto meccanismo, la riflessione, che
+non scatta a orario fisso, ma quando la somma delle
 importanze degli eventi recenti supera una soglia (150 nella loro
 implementazione, che nei loro esperimenti si traduce in due o tre riflessioni al
 giorno). La cadenza è quindi guidata dagli eventi e non dall'orologio: una
@@ -1083,8 +1083,7 @@ conoscenze reciproche sei su 453 (l’1,3%).
 ## Che cosa dimostra una simulazione di persone
 
 Le trascrizioni di questi esperimenti sono convincenti. Gli agenti si invitano,
-si ricordano di essersi conosciuti, si giustificano se arrivano tardi. È il
-momento di essere precisi su che cosa questo autorizzi a concludere, perché la
+si ricordano di essersi conosciuti, si giustificano se arrivano tardi. Ma la
 tentazione di usare simulazioni del genere come evidenza sul comportamento umano
 è forte e, senza dati veri alle spalle, il salto non è consentito.
 

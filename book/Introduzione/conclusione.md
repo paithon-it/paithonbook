@@ -13,15 +13,15 @@ e la formula più fortunata è di Andrew Ng:
 
 È uno slogan, e come tutti gli slogan funziona perché elimina le sfumature. Ng
 insegna all'Università di Stanford ed è autore di alcuni fra i corsi di machine
-learning più seguiti al mondo, e la formula l'ha ripetuta in più occasioni; ma
-nell'intervento del 2017 da cui la formula è presa, il ragionamento per esteso
-è più cauto, e più interessante: «proprio come l'elettricità ha trasformato
+learning più seguiti al mondo. Ha ripetuto la formula in più occasioni, ma
+nell'intervento del 2017 da cui è presa, il ragionamento per esteso
+è più cauto e più interessante: «proprio come l'elettricità ha trasformato
 quasi tutto cento anni fa, oggi faccio davvero fatica a pensare a un settore
 che l'AI non trasformerà nei prossimi anni» {cite}`ng2017electricity`. È una
 previsione, non un bilancio, e come tutte le previsioni andrà verificata; ma
 qualche esempio concreto, di quelli già successi, c'è.
 
-Il primo riguarda l'elettricità per davvero. I servizi online girano nei
+Il primo riguarda l'elettricità vera e propria. I servizi online girano nei
 *data center* (centri di elaborazione dati), capannoni pieni di server accesi
 giorno e notte. Il calore va smaltito di continuo, e il raffreddamento pesa
 molto sui consumi di energia. Già nel 2016 DeepMind, il laboratorio di ricerca
@@ -30,31 +30,30 @@ per ridurre fino al 40% l'energia usata per raffreddare i data center
 dell'azienda {cite}`evans2016deepmind`.
 
 Quel 40%, però, riguarda la sola voce del raffreddamento, e nello stesso
-annuncio c'è un altro numero. Un centro del genere
-consuma parecchio oltre ai computer: le ventole, le luci, e l'energia che va
-perduta per strada negli impianti elettrici. Chi gestisce questi centri misura
-il peso di quel contorno con il PUE (*power usage effectiveness*), il rapporto
-fra l'energia totale del centro e quella assorbita dai soli server: un PUE di
-$1{,}1$, per esempio, vuol dire che il contorno consuma un decimo di quanto
-consumano i server. Su quel contorno, che è una fetta più larga del solo
-condizionamento, il calo dichiarato fu del 15%. È il 15% del contorno e non
-dell'energia totale, cioè il numero meno spettacolare, ed è quello che dice di
-più.
+annuncio c'è un altro numero. Un centro del genere consuma parecchio oltre ai
+computer: le ventole, le luci, e l'energia che si disperde negli impianti
+elettrici. Chi gestisce questi centri misura il peso di quel contorno con il
+PUE (*power usage effectiveness*), il rapporto fra l'energia totale del centro
+e quella assorbita dai soli server: un PUE di $1{,}1$, per esempio, vuol dire
+che il contorno consuma un decimo di quanto consumano i server. Su quel
+contorno, che è una fetta più larga del solo condizionamento, il calo
+dichiarato fu del 15%. È il 15% del contorno e non dell'energia totale, cioè il
+numero meno spettacolare, ed è quello che dice di più.
 
 Il secondo è in medicina. Una rete neurale addestrata su più di novantamila
 tracciati, raccolti da oltre cinquantamila pazienti, riconosce le aritmie
-cardiache da un elettrocardiogramma a una sola derivazione, registrato da un
-monitor portatile, e sul punteggio F1 (una misura fra $0$ e $1$ che premia chi
-trova le aritmie senza dare troppi falsi allarmi) fa meglio del cardiologo medio
-($0{,}837$ contro $0{,}780$, su un insieme di prova di alcune centinaia di
-tracciati) {cite}`hannun2019cardiologist`. Il confronto si fa
+cardiache da un elettrocardiogramma a una sola derivazione registrato da un
+monitor portatile. Sul punteggio F1 (una misura fra $0$ e $1$ che premia chi
+trova le aritmie senza dare troppi falsi allarmi), la rete fa meglio del
+cardiologo medio ($0{,}837$ contro $0{,}780$, su un insieme di prova di alcune
+centinaia di tracciati) {cite}`hannun2019cardiologist`. Il confronto si fa
 così: un gruppo di cardiologi discute i tracciati finché non converge su una
 risposta, e quella diventa la risposta giusta; poi gli stessi tracciati vanno
 ad altri cardiologi, che li leggono da soli, e si guarda quanto spesso ci
 arriva ciascuno di loro e quanto spesso ci arriva la rete. Chi fissa la
-risposta giusta e chi viene misurato non sono le stesse persone, o il
-confronto non direbbe niente. La rete l'ha costruita il gruppo dello stesso
-Andrew Ng dell'elettricità.
+risposta giusta e chi viene misurato non sono le stesse persone, o il confronto
+non direbbe niente. La rete l'ha costruita il gruppo dello stesso Andrew Ng
+dell'elettricità.
 
 Il terzo è AlphaFold, sempre di DeepMind, che ha imparato a prevedere la forma
 tridimensionale delle proteine {cite}`jumper2021highly`. Il problema era
@@ -157,7 +156,7 @@ storto, dall'interpretabilità all'AI responsabile.
   $J(\theta) = \mathbb{E}_{\xi \sim p_\theta}[U(\theta, \xi)]$ e si cerca
   $\theta^\star \in \arg\max_\theta J(\theta)$, cioè
   $\arg\min_\theta \mathcal{L}$ con $\mathcal{L} = -J$.
-- Quell'attesa non è calcolabile, perché è presa sui casi futuri: in
+- Quel valore atteso non è calcolabile, perché è preso sui casi futuri: in
   pratica si ottimizza la media su un campione già raccolto. La distanza fra le
   due quantità è la differenza fra *ottimizzare* e *imparare*, ed è l'oggetto
   del {doc}`capitolo sul machine learning </MachineLearning/overview>`.

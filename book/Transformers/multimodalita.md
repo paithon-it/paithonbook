@@ -97,7 +97,7 @@ davvero la prima, un esercizio che i modelli successivi hanno lasciato cadere
 (RoBERTa lo toglie e sui compiti a valle non perde, anzi migliora di poco
 {cite}`liu2019roberta`); eccelle nei compiti di comprensione (classificazione,
 estrazione di risposte) previo fine-tuning. T5 {cite}`raffel2020exploring`
-(Google, 2019) mantiene l'encoder–decoder completo, e il suo esercizio è un
+(Google, 2019) mantiene l'encoder-decoder completo, e il suo esercizio è un
 *denoising*: si elimina il 15% dei token, a spezzoni contigui di tre in media,
 e ogni spezzone lascia al suo posto un solo *sentinel token*, unico nella
 sequenza; il bersaglio è la concatenazione degli spezzoni tolti, ciascuno
@@ -155,16 +155,15 @@ L'idea di {numref}`fig-t5-text-to-text` sembra un dettaglio ingegneristico e
 invece anticipa il modo in cui oggi si usano i modelli di linguaggio. Se ogni
 compito si può scrivere come testo in ingresso e testo in uscita, allora
 cambiare compito non richiede di cambiare il modello: basta cambiare quello che
-gli si scrive davanti. Quel «quello che gli si scrive davanti» è il prompt,
-la parola che da qui in avanti tornerà in tutto il capitolo: le istruzioni e il
-testo che si consegnano al modello prima che risponda. Dentro il prompt ci si
-può mettere la sola consegna a parole, o anche due o tre esercizi già svolti
-perché il modello capisca che cosa gli si sta chiedendo. Che quei pochi esempi
-bastino a far eseguire un compito, senza aggiornare i parametri, è la scoperta
-di GPT-3 (l’*in-context learning*), dopo che GPT-2 {cite}`radford2019language`
-aveva mostrato lo stesso principio in forma grezza, con «TL;DR:» in coda a un
-articolo per farlo riassumere e coppie «frase inglese = frase francese» per
-farlo tradurre.
+gli si scrive davanti. Quel «quello che gli si scrive davanti» è il prompt: le
+istruzioni e il testo che si consegnano al modello prima che risponda. Dentro
+il prompt ci si può mettere la sola consegna a parole, o anche due o tre
+esercizi già svolti perché il modello capisca che cosa gli si sta chiedendo.
+Che quei pochi esempi bastino a far eseguire un compito, senza aggiornare i
+parametri, è la scoperta di GPT-3 (l’*in-context learning*), dopo che GPT-2
+{cite}`radford2019language` aveva mostrato lo stesso principio in forma grezza,
+con «TL;DR:» in coda a un articolo per farlo riassumere e coppie «frase inglese
+= frase francese» per farlo tradurre.
 
 ## Oltre il testo: Vision Transformer e modelli multimodali
 
@@ -197,8 +196,7 @@ adiacenti e due lontanissime partono alla pari, e la struttura dello spazio va
 imparata dai dati.
 
 `````{tab} Elementare
-E le immagini? Il trucco, che il capitolo su PyTorch ha già messo in codice
-costruendo il ViT, è di una semplicità disarmante: si taglia la foto in
+E le immagini? Si taglia la foto in
 tessere quadrate, come un mosaico, e si mettono le tessere in fila come se
 fossero le parole di una frase. A quel punto il Transformer fa quello che sa
 fare: per capire la tessera con l'orecchio del gatto, va a "guardare" anche
@@ -222,45 +220,43 @@ un modulo e gli chiedi di spiegartelo.
 `````
 
 `````{tab} Superiore
-Il Vision Transformer (ViT {cite}`dosovitskiy2021image`), che la
-{doc}`sezione sul replicare un paper </PyTorch/replicare-un-paper>` ha già
-costruito riga per riga, suddivide l'immagine in patch (tipicamente
-$16 \times 16$ pixel), le proietta linearmente in embedding e le tratta come
-token, con un token di classe in testa e codifiche di posizione apprese in una
-dimensione sola. Gli embedding appresi ritrovano da soli la topologia
-bidimensionale (le patch della stessa riga o della stessa colonna finiscono con
-embedding simili), ed è per questo che le varianti scritte a mano in due
-dimensioni, o relative, non migliorano; e già dai primi strati alcune teste
-guardano quasi tutta l'immagine, mentre altre restano locali. La cosa da
-portarsi via è la condizione: senza il *bias induttivo* di località delle CNN,
-il ViT dell'articolo regge il confronto solo se pre-addestrato su dataset molto
-grandi (ImageNet-21k, JFT-300M). La soglia però si sposta con la ricetta: con
-aumentazione aggressiva, regolarizzazione e distillazione da una rete
-convoluzionale, DeiT {cite}`touvron2021training` addestra lo stesso modello sul
-solo ImageNet-1k.
-La località non è gratis: o la si mette nell'architettura, o la si compra in
-dati. Sul fronte multimodale, **CLIP**
-{cite}`radford2021learning` allinea in uno spazio comune embedding di immagini
-e testi tramite addestramento contrastivo su coppie immagine–didascalia; i
-modelli generativi di immagini usano il Transformer in due modi diversi, perché
-DALL·E {cite}`ramesh2021zero` è esso stesso un Transformer autoregressivo da 12
-miliardi di parametri che genera i token dell'immagine dopo quelli del testo,
-mentre la diffusione latente di Stable Diffusion {cite}`rombach2022high` si
-condiziona sul testo con un encoder Transformer, attraverso la cross-attention;
-e modelli come GPT-4 (2023) accettano input misti testo+immagine.
+Il Vision Transformer (ViT {cite}`dosovitskiy2021image`), che la {doc}`sezione
+sul replicare un paper </PyTorch/replicare-un-paper>` ha già costruito riga per
+riga, suddivide l'immagine in patch (tipicamente $16 \times 16$ pixel), le
+proietta linearmente in embedding e le tratta come token, con un token di
+classe in testa e codifiche di posizione apprese in una dimensione sola. Gli
+embedding appresi ritrovano da soli la topologia bidimensionale (le patch della
+stessa riga o della stessa colonna finiscono con embedding simili), ed è per
+questo che le varianti scritte a mano in due dimensioni, o relative, non
+migliorano; e già dai primi strati alcune teste guardano quasi tutta
+l'immagine, mentre altre restano locali. Il punto essenziale è la condizione:
+senza il *bias induttivo* di località delle CNN, il ViT dell'articolo regge il
+confronto solo se pre-addestrato su dataset molto grandi (ImageNet-21k,
+JFT-300M). La soglia però si sposta con la ricetta: con aumentazione
+aggressiva, regolarizzazione e distillazione da una rete convoluzionale, DeiT
+{cite}`touvron2021training` addestra lo stesso modello sul solo ImageNet-1k. La
+località non è gratis: o la si mette nell'architettura, o la si compra in dati.
+Sul fronte multimodale, **CLIP** {cite}`radford2021learning` allinea in uno
+spazio comune embedding di immagini e testi tramite addestramento contrastivo
+su coppie immagine-didascalia; i modelli generativi di immagini usano il
+Transformer in due modi diversi, perché DALL·E {cite}`ramesh2021zero` è esso
+stesso un Transformer autoregressivo da 12 miliardi di parametri che genera i
+token dell'immagine dopo quelli del testo, mentre la diffusione latente di
+Stable Diffusion {cite}`rombach2022high` si condiziona sul testo con un encoder
+Transformer, attraverso la cross-attention; e modelli come GPT-4 (2023)
+accettano input misti testo+immagine.
 `````
 
-Il principio, ed è il filo di tutto il discorso sui Transformer, è che tutto ciò
-che si riduce a una sequenza di token (le parole di una frase, le tessere di
-una foto, gli spezzoni di un suono) si può elaborare con l'attenzione. Come si
-costruisca davvero un modello che vede e parla ha un capitolo suo,
-{doc}`visione e linguaggio </VisioneLinguaggio/overview>`, che distingue tre
-strade: tenere immagini e parole ciascuna nel proprio spazio e addestrarle a
-mettere le cose corrispondenti nello stesso punto; innestare un encoder visivo
-su un modello di linguaggio già fatto, lasciando comandare il linguaggio;
-oppure dare a tessere e parole un unico vocabolario, come se le tessere fossero
-le parole di una lingua in più. Quale convenga, e che cosa costi ciascuna, lo
-dice quel capitolo.
+Il principio, ed è il filo di tutto il discorso sui Transformer, è che tutto
+ciò che si riduce a una sequenza di token (le parole di una frase, le tessere
+di una foto, gli spezzoni di un suono) si può elaborare con l'attenzione. Come
+si costruisca davvero un modello che vede e parla è l'argomento di
+{doc}`visione e linguaggio </VisioneLinguaggio/overview>`, che esplora e valuta
+i costi di tre strade: tenere immagini e parole ciascuna nel proprio spazio e
+addestrarle a mettere le cose corrispondenti nello stesso punto; innestare un
+encoder visivo su un modello di linguaggio già fatto, lasciando comandare il
+linguaggio; oppure dare a tessere e parole un unico vocabolario, come se le
+tessere fossero le parole di una lingua in più.
 
 ## Fuori dal linguaggio: AlphaFold 2 e la forma delle proteine
 
@@ -271,12 +267,12 @@ Le proteine sono le macchine di cui siamo fatti, e ciascuna nasce come una
 catena di mattoncini agganciati in fila, che appena esiste si ripiega su sé
 stessa in una forma tridimensionale precisa. Da quella forma dipende tutto quel
 che la proteina sa fare, e prevederla a partire dalla sola fila di mattoncini
-era un problema aperto da mezzo secolo. Nel novembre 2020, alla CASP14, la gara
-biennale in cui i programmi che ci provano si sfidano su proteine di cui la
-risposta è nota solo agli organizzatori, **AlphaFold 2**
-{cite}`jumper2021highly` ha predetto quelle forme con un'accuratezza
-confrontabile con quella delle misure fatte in laboratorio nella maggior
-parte dei casi, e per le proteine formate da una catena sola.
+era un problema aperto da mezzo secolo. Nel novembre 2020, alla CASP14 (la gara
+biennale in cui i programmi concorrenti si sfidano su proteine la cui struttura
+è nota solo agli organizzatori), **AlphaFold 2** {cite}`jumper2021highly` ha
+predetto quelle forme con un'accuratezza confrontabile con le misure fatte in
+laboratorio per la maggior parte dei casi, sulle proteine formate da una catena
+sola.
 
 Le due riserve, «nella maggior parte dei casi» e «una catena sola», hanno un
 peso preciso. Restano fuori le proteine fatte di più catene incastrate, i tratti
@@ -294,15 +290,13 @@ AlphaFold legge l'allineamento con le proteine imparentate: l'evoluzione ha già
 fatto milioni di esperimenti, e quelli sono i dati.
 ```
 
-Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione serve di più,
-ed è facile vedere perché. Gli anelli della catena, in gergo, si chiamano
-**residui** (omonimi dei residui della connessione residua, la scorciatoia
-attorno a un blocco, ma senza nessun legame con quelli). Due residui
-lontanissimi lungo la catena
-possono ritrovarsi appiccicati una volta che la catena si è ripiegata: è la
-relazione fra due elementi lontani che i filtri delle reti per immagini
-faticano a vedere, ed è esattamente il caso che l'attenzione tratta come
-normale, perché per lei ogni coppia è a un passo di distanza.
+Il blocco centrale di {numref}`fig-alphafold` è dove l'attenzione serve di più.
+Gli anelli della catena, in gergo, si chiamano **residui** (termine senza alcun
+legame con la connessione residua delle reti). Due residui lontanissimi lungo
+la catena possono ritrovarsi appiccicati una volta che la catena si è
+ripiegata: è la relazione fra due elementi lontani che i filtri delle reti per
+immagini faticano a vedere, ed è esattamente il caso che l'attenzione tratta
+come normale, perché per lei ogni coppia è a un passo di distanza.
 
 `````{tab} Elementare
 
@@ -374,19 +368,19 @@ Il **modulo di struttura** finale produce le coordinate atomiche trattando ogni
 residuo come un sistema di riferimento rigido, e il tutto viene ripassato più
 volte (*recycling*): l'uscita rientra come ingresso e la struttura si affina.
 
-Due conseguenze da tenere a mente. La prima: il modello stima anche la propria
-confidenza, il pLDDT (*predicted local distance difference test*), un numero da
-0 a 100 per ogni residuo che stima quanto la previsione concorderebbe in quel
-punto con la struttura sperimentale (è una stima dell'lDDT-Cα). Sopra 90 la
-previsione è considerata molto accurata, sopra 70 lo scheletro della catena è
-in genere corretto; e le regioni lunghe sotto 50 vanno lette come previsione di
-disordine più che come struttura {cite}`tunyasuvunakool2021highly`, un raro
-caso in cui l'incertezza dichiarata ha un significato fisico. La seconda:
-dipendendo dall'MSA, il metodo è più debole dove l'allineamento è povero.
-Jumper e colleghi riportano che l'accuratezza cala sensibilmente quando la
-profondità mediana dell'allineamento scende sotto una trentina di sequenze,
-mentre oltre un centinaio i miglioramenti sono piccoli: è il caso delle
-proteine orfane, che di parenti ne hanno pochi.
+Da questo impianto derivano due conseguenze. Innanzitutto, il modello stima la
+propria confidenza, il pLDDT (*predicted local distance difference test*), un
+numero da 0 a 100 per ogni residuo che stima quanto la previsione concorderebbe
+in quel punto con la struttura sperimentale (è una stima dell'lDDT-Cα). Sopra
+90 la previsione è considerata molto accurata, sopra 70 lo scheletro della
+catena è in genere corretto; e le regioni lunghe sotto 50 vanno lette come
+previsione di disordine più che come struttura
+{cite}`tunyasuvunakool2021highly`, un raro caso in cui l'incertezza dichiarata
+ha un significato fisico. Inoltre, dipendendo dall'MSA, il metodo è più debole
+dove l'allineamento è povero. Jumper e colleghi riportano che l'accuratezza
+cala sensibilmente quando la profondità mediana dell'allineamento scende sotto
+una trentina di sequenze, mentre oltre un centinaio i miglioramenti sono
+piccoli: è il caso delle proteine orfane, che di parenti ne hanno pochi.
 
 Il database pubblico che ne è seguito copre la quasi totalità di UniProt, cioè
 quasi ogni sequenza proteica catalogata (restano fuori le catene troppo corte o

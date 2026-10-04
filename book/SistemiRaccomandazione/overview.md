@@ -13,10 +13,10 @@
 ```
 
 Un milione di dollari a chi riesce a migliorare del 10% Cinematch, il sistema
-di raccomandazione di Netflix: è il premio che l'azienda, che allora campava
-spedendo DVD per posta, mette in palio il 2 ottobre 2006.
+di raccomandazione di Netflix: è il premio che l'azienda, all'epoca un servizio
+di noleggio DVD per posta, mette in palio il 2 ottobre 2006.
 
-Del 10% *che cosa*, conviene dirlo subito, perché la gara si gioca tutta lì.
+Del 10% *che cosa*, perché la gara si gioca tutta lì.
 Cinematch prevede quante stelle un utente darà a un film, e il metro della gara
 è la radice dell'errore quadratico medio, l'RMSE (*root mean square error*):
 
@@ -72,7 +72,7 @@ matrici molto più piccole, e la gara le diede la ricetta di addestramento con
 cui è arrivata fino a oggi, la discesa del gradiente sui soli voti noti che
 Simon Funk descrisse in un post del dicembre 2006 {cite}`funk2006netflix`.
 
-Una parola sul nome, prima di partire, perché in italiano «raccomandazione»
+Una parola sul nome, perché in italiano «raccomandazione»
 significa due cose e una delle due è la spintarella. Qui vale l'altra, quella
 del consiglio: raccomandare è consigliare, e un sistema di raccomandazione è
 una macchina che consiglia. Il senso brutto, però, non è del tutto fuori luogo.
@@ -108,7 +108,7 @@ acquisti in croce, e di quasi tutti i libri non sa niente.
 `````{tab} Superiore
 
 Formalmente, dati un insieme di utenti $\mathcal{U}$ e un insieme di oggetti
-(*item*) $\mathcal{I}$ (film, prodotti, brani, articoli) un sistema di
+(*item*) $\mathcal{I}$ (film, prodotti, brani, articoli), un sistema di
 raccomandazione stima una funzione di utilità
 $f:\mathcal{U}\times\mathcal{I} \to \mathbb{R}$ che assegna a ogni coppia
 (utente, oggetto) un punteggio di affinità, e per ogni utente restituisce gli
@@ -140,16 +140,19 @@ stelle arrivano quasi tutte dallo stesso posto: un film lo voti dopo averlo
 scelto, e l'avevi scelto perché pensavi ti sarebbe piaciuto. Chi legge quei
 voti legge il parere di gente che partiva ben disposta.
 
-Il feedback implicito è tutto ciò che fai senza pensare di stare
-giudicando: i click, gli acquisti, i minuti di visione, i brani saltati dopo
-dieci secondi. È abbondante (ogni gesto ne produce) e per certi versi più
-sincero delle dichiarazioni: puoi *dire* che ami i documentari, ma la
-cronologia rivela le serie poliziesche. Ha però un difetto: è ambiguo. Un
-click non è una promozione (magari il film ti ha deluso), e un film ignorato
-non è una bocciatura: forse non l'hai mai visto passare. Nei sistemi veri è
-l'implicito a farla da padrone, perché ce n'è tantissimo; ma proprio perché è
-ambiguo va maneggiato con più cautela. E cambia la domanda: senza stelle da
-prevedere, resta da decidere quale titolo mettere in cima alla vetrina.
+Il feedback implicito è tutto ciò che fai senza pensare di stare giudicando: i
+click, gli acquisti, i minuti di visione, i brani saltati dopo dieci secondi. È
+abbondante (ogni gesto ne produce) e per certi versi più sincero delle
+dichiarazioni: puoi *dire* che ami i documentari, ma la cronologia rivela le
+serie poliziesche. Ha però un difetto: è ambiguo. Un click non è una promozione
+(magari il film ti ha deluso), e un film ignorato non è una bocciatura: forse
+non l'hai mai visto passare. Nei sistemi veri è l'implicito a farla da padrone,
+perché ce n'è tantissimo; ma proprio perché è ambiguo va maneggiato con più
+cautela. E cambia la domanda, perché non ci sono stelle da prevedere. Una
+strada è segnare ogni titolo con un sì o con un no, guardato o non guardato, e
+fidarsi poco dei no e molto dei sì ripetuti: una serie vista fino in fondo dice
+più di un click. L'altra è rinunciare al voto e decidere soltanto quale titolo
+mettere in cima alla vetrina.
 
 `````
 
@@ -210,7 +213,7 @@ Anna al film D) è l'intero problema.
 ```
 
 La seconda è che non esiste una «risposta giusta» da guardare. Un
-classificatore di cifre, il modello che riconosce un numero scritto a mano, si
+modello che riconosce le cifre scritte a mano si
 può confrontare con l'etichetta vera, perché quell'immagine o è un 7 o non lo
 è, e qualcuno lo sa. Qui invece la domanda riguarda un fatto che non è
 avvenuto: *se* ti avessimo mostrato quel film, ti sarebbe piaciuto? Una domanda
@@ -252,8 +255,11 @@ cioè il ristorante che si sarebbe visto se il cameriere avesse proposto tutto
 allo stesso modo. Il conto però ha due debolezze. Un piatto che il cameriere
 non nomina mai resta a zero, e nessun peso lo recupera. E la zuppa sta in testa
 grazie a un cliente solo: se quell'unico cliente avesse scelto altro, sarebbe
-in fondo. Per fare il conto, infine, bisogna sapere quante volte ogni piatto è
-stato proposto, e quel registro nessuno lo tiene da solo.
+in fondo. Per questo il conto si fa con due accortezze: a nessuna ordinazione
+si lascia pesare più di tanto, per quanto raro fosse il piatto, oppure si
+divide per il totale dei pesi invece che per il numero dei clienti, e un colpo
+di fortuna isolato conta meno. Per fare il conto, infine, bisogna sapere quante
+volte ogni piatto è stato proposto, e quel registro nessuno lo tiene da solo.
 
 `````
 

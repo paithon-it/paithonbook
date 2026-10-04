@@ -20,7 +20,7 @@ per quello che sbaglia, su una frase italiana di quattro parole.
 
 ## Traduzione automatica
 
-Il compito per cui il Transformer è nato, e quello con cui la {doc}`sezione
+È il compito per cui il Transformer è nato, e quello con cui la {doc}`sezione
 sulla struttura del Transformer <architettura>` l'ha presentato: l'encoder
 legge la frase di partenza, il decoder compone quella d'arrivo, e a ogni parola
 prodotta torna a guardare l'originale con la cross-attention della
@@ -85,15 +85,13 @@ costruita dall'attenzione anche sugli altri token della frase.
 Le tre righe di lavoro sono i tre passaggi visti nei capitoli precedenti, qui
 scritti in chiaro: tokenizzazione (la frase diventa una sequenza di id di
 token), inferenza con `generate` (encoder e decoder Transformer, con
-generazione autoregressiva e maschera causale) e decodifica (dagli id di
-token al testo). La libreria offre anche una scorciatoia, `pipeline`, che li
-incapsula in una riga; qui li teniamo separati perché sono esattamente i pezzi
-spiegati fin qui; nel secondo esempio, dove non aggiungerebbero niente, la
-scorciatoia va benissimo. Sotto il cofano il modello è
-un `nn.Module` PyTorch come quelli della {doc}`sezione sui moduli
-</PyTorch/moduli>`: con `modello.named_parameters()` si ispezionano strati,
-teste di attenzione e
-parametri.
+generazione autoregressiva e maschera causale) e decodifica (dagli id di token
+al testo). La libreria offre anche una scorciatoia, `pipeline`, che li
+incapsula in una sola riga. In questo esempio restano separati per mostrare in
+pratica i passaggi appena studiati, mentre nel prossimo si userà la via più
+breve. Dietro le quinte il modello è un `nn.Module` PyTorch come quelli della
+{doc}`sezione sui moduli </PyTorch/moduli>`: con `modello.named_parameters()`
+si ispezionano strati, teste di attenzione e parametri.
 `````
 
 ## Il termometro delle recensioni
@@ -126,9 +124,9 @@ altrove, oppure due caselle in testa a pochi gettoni una dall'altra: l'annuncio
 esce identico, un nome di casella e nient'altro, mentre le due situazioni non
 si somigliano. Chiedere la fila completa, casella per casella, distingue la
 macchina sicura da quella in bilico. E nemmeno ottanta gettoni su una casella
-vogliono dire avere ragione ottanta volte su cento: quanto la macchina si fidi
-a ragione di sé lo si scopre soltanto provandola su frasi di cui si sa già la
-risposta.
+vogliono dire avere ragione ottanta volte su cento: se la sicurezza della
+macchina sia giustificata lo si scopre soltanto provandola su frasi di cui si
+sa già la risposta.
 
 Le frasi facili però le indovinano tutti, ed è sulle altre che si capisce
 quanto un modello abbia davvero capito. Il caso classico in italiano è il
@@ -181,10 +179,10 @@ for r in recensioni:
       3 stars 0.471  4 stars 0.318  5 stars 0.125  2 stars 0.062  1 star 0.023
 ```
 
-I pesi di questo modello stanno sul server di chi lo pubblica: se un giorno li
-riaddestrano, può cambiare anche la graduatoria. Per riprodurre esattamente
-queste cifre si fissa la versione dei pesi con l'argomento `revision`
-(l'identificativo di una versione sul sito) e quella della libreria.
+I pesi di questo modello risiedono sui server di chi lo pubblica: se in futuro
+venissero aggiornati, potrebbe cambiare anche la graduatoria. Per riprodurre
+esattamente queste cifre si fissa la versione dei pesi con l'argomento
+`revision` (l'identificativo di una versione sul sito) e quella della libreria.
 
 Il modello è un BERT multilingue rifinito (*fine-tuned*) su recensioni: la
 classificazione usa la rappresentazione del token speciale `[CLS]`, passata per
@@ -204,9 +202,9 @@ Il punteggio della classe vincente è la probabilità che la softmax assegna a
 quella classe, e niente garantisce che sia calibrata, cioè che fra le frasi a
 cui il modello dà 0,6 ne siano giuste sei su dieci: le reti neurali moderne
 sono spesso mal calibrate {cite}`guo2017calibration`, e la {doc}`sezione su
-come si valuta un modello </MachineLearning/metriche>` spiega come lo si
-controlla. Da solo, poi, quel punteggio non dice niente sulla qualità del
-classificatore, che si misura con le metriche della stessa sezione
+come si valuta un modello </MachineLearning/metriche>` spiega come se ne
+verifichi la calibrazione. Inoltre, un punteggio isolato non dice nulla sulla
+qualità del classificatore, che si misura con le metriche della stessa sezione
 (accuratezza, precision e recall) su dati del dominio che interessa; su testi
 diversi da quelli di addestramento (ironia, sarcasmo, gergo) le prestazioni di
 solito calano, e una sola litote non basta a dire di quanto.

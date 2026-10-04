@@ -14,14 +14,13 @@
 
 Una macchina di ottone, corde e pulegge che prevedeva le maree: la fece
 costruire a Londra, negli anni Settanta dell'Ottocento, William Thomson,
-professore a Glasgow (il mondo lo avrebbe conosciuto come Lord Kelvin). Non con
-la magia: osservando anni di misure del livello del mare, Kelvin lo aveva
-scomposto nella somma di tante oscillazioni regolari (quella lunare, quella
-solare, quelle più sottili) e la macchina, girando una manovella, sommava
-meccanicamente quelle onde per *disegnare la marea di un anno intero prima che
-accadesse*. È la stessa idea che regge tutta la previsione delle serie
-temporali: il futuro si stima dal passato, purché il passato conservi delle
-regolarità.
+professore a Glasgow (il mondo lo avrebbe conosciuto come Lord Kelvin).
+Osservando anni di misure del livello del mare, Kelvin lo aveva scomposto nella
+somma di tante oscillazioni regolari (quella lunare, quella solare, quelle più
+sottili) e la macchina, girando una manovella, sommava meccanicamente quelle
+onde per *disegnare la marea di un anno intero prima che accadesse*. È la
+stessa idea che regge tutta la previsione delle serie temporali: il futuro si
+stima dal passato, purché il passato conservi delle regolarità.
 
 Prevedere è un mestiere antico. Il contadino che legge il cielo per decidere
 quando seminare, il mercante che anticipa il prezzo del grano, il meteorologo
@@ -37,13 +36,13 @@ statistica applicata ai fenomeni economici) e dell'ingegneria
 {cite}`box2015time`. La loro ricetta sta in tre mosse: identificare che forma
 ha la serie, stimare i numeri del modello, verificare che il modello non abbia
 lasciato fuori niente. Non è la prima idea di previsione statistica: spiegare
-un valore con quelli che lo precedono, e cioè l’**autoregressione**, la faceva
-già George Udny Yule nel 1927, sulle macchie solari. Il contributo di Box e
-Jenkins è una procedura completa, che dice come scegliere il modello invece di
-lasciare che se ne inventi uno diverso ogni volta. Dal 1982 lo statistico greco
-Spyros Makridakis mette alla prova quei metodi su larga scala con le
-**competizioni M**, gare pubbliche di previsione su un migliaio di serie reali
-nella prima edizione e su centomila nella quarta, del 2018
+un valore con quelli che lo precedono, cioè l’**autoregressione**, è un'idea
+che George Udny Yule usava già nel 1927, sulle macchie solari. Il contributo di
+Box e Jenkins è una procedura completa, che dice come scegliere il modello
+invece di lasciare che se ne inventi uno diverso ogni volta. Dal 1982 lo
+statistico greco Spyros Makridakis mette alla prova quei metodi su larga scala
+con le **competizioni M**, gare pubbliche di previsione su un migliaio di serie
+reali nella prima edizione e su centomila nella quarta, del 2018
 {cite}`makridakis2020m4`. La lezione che ne esce è tanto tecnica quanto morale:
 si prevede, sì, ma con umiltà. Nessun modello domina sempre, e dichiarare
 *quanto* siamo incerti conta quanto la previsione stessa.
@@ -115,7 +114,7 @@ gli altri tre:
 - Imputazione: ricostruire i valori mancanti *dentro* la serie, quando un
   sensore si è spento per qualche ora e restano dei buchi da riempire.
 
-Il forecasting stesso, poi, non è sempre lo stesso mestiere: due cose ne
+Il forecasting, poi, non è sempre lo stesso mestiere: due cose ne
 cambiano la difficoltà, e conviene guardarle una per volta.
 
 `````{tab} Elementare
@@ -305,7 +304,7 @@ massimo: ogni valore anticipa quasi perfettamente il successivo. Una parte di
 quel numero, per onestà, la mette la salita: in una serie che cresce sempre due
 giorni consecutivi si somigliano più di due giorni presi a caso in tutta la
 storia, e questo succede anche se di memoria vera non ce n'è nessuna. Per
-levarla di mezzo si tira la retta che segue meglio la salita e si tiene, di ogni
+neutralizzarla si traccia la retta che segue meglio la salita e si tiene, di ogni
 punto, soltanto quanto sta sopra o sotto quella retta: sono due righe di
 codice, e il codice le ha già fatte. Su quel che resta il coefficiente scende
 a $0{,}78$, che è ancora tanto: la dipendenza è vera, non è solo la salita.
@@ -374,10 +373,10 @@ Un fiume la cui portata oscilla attorno allo stesso valore medio, con piene e
 magre di ampiezza costante, è un fiume «stabile»: chi lo studia oggi può usare
 le stesse regole di chi lo studiava vent'anni fa. Devono restare fermi il
 valore attorno a cui la portata balla, l'ampiezza con cui balla, e il modo in
-cui due giorni si somigliano, che dipende da quanto distano fra loro e non
-da quando cadono nel
-calendario (due giorni di fila si somigliano uguale, che siano di marzo o di
-settembre). Questa stabilità è ciò che i tecnici chiamano stazionarietà.
+cui due giorni si somigliano, che dipende da quanto distano fra loro e non da
+quando cadono nel calendario (due giorni di fila si somigliano allo stesso
+modo, che siano di marzo o di settembre). Questa stabilità è ciò che i tecnici
+chiamano stazionarietà.
 
 Molte serie vere non sono così. Il prezzo di una casa cresce di decennio in
 decennio (la media sale: c'è una **tendenza**), i consumi di gelato salgono
@@ -447,7 +446,7 @@ Autocorrelazione e non stazionarietà sono due rotture distinte della stessa
 comodità, quella su cui abbiamo costruito il resto del machine learning
 supervisionato: che gli esempi siano indipendenti fra loro e vengano tutti
 dalla stessa distribuzione. L'autocorrelazione rompe l'indipendenza; la non
-stazionarietà, e il cambio di regime che ne è la forma brusca, rompe la
+stazionarietà, di cui il cambio di regime è la forma brusca, rompe la
 distribuzione unica. Una serie può avere l'una senza l'altra (una serie
 stazionaria può essere fortemente autocorrelata), e ogni metodo del capitolo è
 un modo di fare i conti con tutte e due.

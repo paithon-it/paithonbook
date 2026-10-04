@@ -22,9 +22,9 @@ nodo dichiarato vicino di sé stesso).
 
 L'introduzione al capitolo ha dato un nome al meccanismo: message passing,
 «scambio di messaggi». Qui lo apriamo: prima nella sua forma generale, poi nella
-sua incarnazione più usata, la *Graph Convolutional Network*. Di quella
+sua forma più usata, la *Graph Convolutional Network*. Di quella
 vedremo, in quest'ordine, la formula, i conti che ne escono su un grafo
-minuscolo, la ragione per cui è fatta così e infine da dove salta fuori.
+minuscolo, la ragione per cui è fatta così e infine da dove viene.
 
 ## Un nodo, i suoi vicini, tre mosse
 
@@ -101,7 +101,7 @@ massimo) che produce il messaggio aggregato $\mathbf{m}_v^{(k)}$; e $U_k$ è la
 **funzione di aggiornamento** che fonde lo stato precedente con
 $\mathbf{m}_v^{(k)}$.
 
-Di che oggetti si parla è il punto su cui la formula si legge o non si legge:
+Per leggere la formula bisogna sapere di che oggetti parla:
 sono tutti vettori. Lo stato è
 $\mathbf{h}_v^{(k)} \in \mathbb{R}^{F_k}$, il messaggio è
 $\mathbf{m}_v^{(k)} \in \mathbb{R}^{F_m}$, e quindi
@@ -133,12 +133,13 @@ fissata (somma, media o massimo).
 
 ## Dalla formula alla matrice: la GCN
 
-Lo schema delle tre mosse è un telaio, non un modello: per avere qualcosa che
-gira bisogna decidere *come* si scrive il bigliettino, *come* si riassumono e
-*come* si riscrive la scheda. La **Graph Convolutional Network** (GCN) di
-Thomas Kipf e Max Welling, circolata come preprint nel 2016 e pubblicata
-nel 2017 {cite}`kipf2017semi`, fissa le tre scelte nel modo più semplice, ed è
-diventata il termine di paragone contro cui si misurano i modelli successivi.
+Lo schema delle tre mosse è un telaio, non un modello: per avere una rete
+funzionante bisogna decidere *come* si compongono i messaggi, *come* si
+aggregano e *come* si aggiorna lo stato dei nodi. La **Graph Convolutional
+Network** (GCN) di Thomas Kipf e Max Welling, circolata come preprint nel 2016
+e pubblicata nel 2017 {cite}`kipf2017semi`, fissa le tre scelte nel modo più
+semplice, ed è diventata il termine di paragone contro cui si misurano i
+modelli successivi.
 
 Una parola sul vocabolario, perché da qui in avanti le due si alternano: ogni
 **giro** di passaparola è uno **strato** della rete. Sono la stessa cosa detta
@@ -374,16 +375,15 @@ da $1{,}32$ a $3{,}30$, due punti scarsi. Il nodo 1, che valeva $1$, sale a
 $1{,}316$ perché è tirato in alto dal vicino 2; il nodo 4, che valeva $4$,
 scende a $3{,}225$ perché è tirato in basso dal 3.
 
-I due nodi di mezzo salgono invece tutti e due, e conviene non nasconderlo,
-perché smonta una scorciatoia che verrebbe naturale: questa non è la media
-dei vicini. Se lo fosse, il nodo 3, che vale $3$ e sta fra un $2$ e un $4$,
-resterebbe a $3$; invece sale a $3{,}300$. La ragione è che i pesi di una riga
-non sommano a uno (in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non
-è una media ma una somma pesata, che può alzare il livello generale. Quello
-che la GCN garantisce è che, ripetendo, le differenze di partenza si
-consumino, e non che ciascuno vada verso i suoi vicini a ogni singolo passo. Il
-livellamento si vedrà succedere, giro dopo giro, su questi stessi quattro
-numeri.
+I due nodi di mezzo salgono invece tutti e due, e la cosa smonta una
+scorciatoia che verrebbe naturale: questa non è la media dei vicini. Se lo
+fosse, il nodo 3, che vale $3$ e sta fra un $2$ e un $4$, resterebbe a $3$;
+invece sale a $3{,}300$. La ragione è che i pesi di una riga non sommano a uno
+(in quella del nodo 3 fanno $1{,}07$), quindi ogni giro non è una media ma una
+somma pesata, che può alzare il livello generale. Quello che la GCN garantisce
+è che, ripetendo, le differenze di partenza si consumino, e non che ciascuno
+vada verso i suoi vicini a ogni singolo passo. Il livellamento si vedrà
+succedere, giro dopo giro, su questi stessi quattro numeri.
 
 ### Perché normalizzare così
 
@@ -467,15 +467,15 @@ decomporre un segnale sui nodi nelle sue «frequenze» con $\mathbf{U}^\top$,
 moltiplicarle una per una e ricomporre con $\mathbf{U}$ presuppone una base
 ortonormale, e senza di essa la lettura spettrale non sta in piedi.
 
-Ed è anche la ragione per cui quella forma è caduta dal conto invece di
-essere scelta. Qui sta il secondo punto, l’origine spettrale. La GCN nasce come
-approssimazione al prim'ordine di una convoluzione definita nel dominio
-spettrale del grafo: i filtri polinomiali di Čebyšëv di Defferrard, Bresson e
-Vandergheynst {cite}`defferrard2016convolutional`. Troncare quel polinomio al
-primo grado e legare i due coefficienti che restano lascia
+Ed è anche la ragione per cui quella forma emerge dai calcoli invece di essere
+una scelta a priori. Qui sta il secondo punto, l’origine spettrale. La GCN
+nasce come approssimazione al prim'ordine di una convoluzione definita nel
+dominio spettrale del grafo: i filtri polinomiali di Čebyšëv di Defferrard,
+Bresson e Vandergheynst {cite}`defferrard2016convolutional`. Troncare quel
+polinomio al primo grado e legare i due coefficienti che restano lascia
 $\mathbf{I}_N + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2}$, che il
 *renormalization trick* sostituisce con $\hat{\mathbf{A}}$: è da lì che la
-normalizzazione simmetrica «cade» dal conto, e non è una scelta arbitraria.
+normalizzazione simmetrica emerge dai calcoli, e non è una scelta arbitraria.
 Rispetto al modello originale di Scarselli e colleghi
 {cite}`scarselli2009graph`, che iterava fino a un punto fisso, la GCN fissa un
 numero piccolo di strati e si addestra come una qualunque rete profonda.
@@ -594,9 +594,9 @@ a distanza qualunque. Bruna e colleghi stessi propongono di recuperare la
 località chiedendo moltiplicatori lisci nella frequenza, che è la via che il
 passo successivo rende sistematica.
 
-Entrambi si curano con lo stesso trucco: approssimare $g_\theta$ con un
-polinomio di grado $K$, e in particolare con i polinomi di Čebyšëv
-{cite}`hammond2011wavelets`,
+Entrambi i problemi si risolvono con lo stesso espediente: approssimare
+$g_\theta$ con un polinomio di grado $K$, e in particolare con i polinomi di
+Čebyšëv {cite}`hammond2011wavelets`,
 
 $$
 g_\theta(\boldsymbol{\Lambda}) \approx \sum_{k=0}^{K} \theta_k\, T_k(\bar{\boldsymbol{\Lambda}}),
@@ -985,12 +985,12 @@ L'addestramento è un normale ciclo di discesa del gradiente, con l'unico
 accorgimento di mascherare la loss sui soli nodi etichettati. Per vederlo
 girare senza scaricare Cora basta un grafo inventato: duecento nodi in due
 comunità da cento, con archi fitti dentro ciascuna e radi fra l'una e l'altra,
-sedici feature appena spostate secondo la comunità, e cinque etichette note
-per comunità. Lo stesso addestramento si fa due volte, con $\hat{\mathbf{A}}$
-e con la matrice identità al suo posto, cioè con ogni nodo che ascolta soltanto
-sé stesso: è la stessa rete, privata del grafo. E si rifà con tre semi, perché
-il grafo, le feature e i pesi iniziali sono sorteggiati, e da un'estrazione
-sola non si capisce se l'ordine regge.
+sedici feature appena spostate secondo la comunità, e cinque etichette note per
+comunità. Lo stesso addestramento si fa due volte, con $\hat{\mathbf{A}}$ e con
+la matrice identità al suo posto, cioè con ogni nodo che ascolta soltanto sé
+stesso: è la stessa rete, privata del grafo. L'esperimento si ripete con tre
+semi, perché il grafo, le feature e i pesi iniziali sono sorteggiati, e da
+un'estrazione sola non si capisce se l'ordine regge.
 
 ```python
 def prova(modello, X, A_in, y, mask_train):

@@ -8,14 +8,14 @@ esempi (il parallelismo dei dati), le singole matrici del modello (il *tensor
 parallelism*), i suoi strati (il *pipeline parallelism*) oppure tutto lo stato
 dell'addestramento (ZeRO e FSDP).
 
-Prima però conviene vedere *perché* una scheda non basta, e vederlo con un
-conto vero invece che a parole.
+*Perché* una scheda non basti, però, lo dice meglio un
+conto vero che un discorso.
 
 Un modello come GPT-3 ha 175 miliardi di parametri: sono i numeri che la rete
-impara, e si chiamano anche pesi (le due parole si usano l'una per l'altra, e
-faremo lo stesso). Scritti in *mezza precisione*, il formato corto, ciascuno
-occupa 2 byte invece di 4. In tutto $175 \cdot 10^9 \times 2 = 350$ miliardi di
-byte, cioè 350 GB di soli pesi.
+impara, e si chiamano anche pesi (le due parole si usano l'una per l'altra).
+Scritti in *mezza precisione*, il formato corto, ciascuno occupa 2 byte invece
+di 4. In tutto $175 \cdot 10^9 \times 2 = 350$ miliardi di byte, cioè 350 GB di
+soli pesi.
 
 Ma addestrare è un'altra faccenda, perché durante l'addestramento in memoria
 non ci sono solo i pesi. C'è anche la contabilità di chi guida l'apprendimento,
@@ -43,15 +43,15 @@ Parametro per parametro, è questo:
   misura di quanto quelle correzioni ballano, che serve a fare passi corti dove
   il terreno è accidentato e passi lunghi dove è liscio.
 
-Sommando i quattro punti, con le due statistiche che entrano una per una:
-$2 + 2 + 4 + 4 + 4 = 16$ byte per parametro, dei quali i 350 GB di prima sono
-soltanto il primo addendo. Per 175 miliardi di parametri fanno
-$175 \cdot 10^9 \times 16 = 2800$ miliardi di byte, cioè 2,8 terabyte.
-Tutto questo insieme (pesi, correzioni, copia precisa e statistiche) ha un nome
-che tornerà spesso: è lo **stato dell'addestramento**, e deve stare in memoria
-dal primo esempio all'ultimo. Una GPU da datacenter di fascia alta, una
-H100, ha 80 GB di memoria: $2800 / 80 = 35$, ci vorrebbero trentacinque schede
-soltanto per *contenerlo*, prima ancora di parlare di velocità.
+Sommando i quattro punti, con le due statistiche che entrano una per una: $2 +
+2 + 4 + 4 + 4 = 16$ byte per parametro, dei quali i 350 GB di prima sono
+soltanto il primo addendo. Per 175 miliardi di parametri fanno $175 \cdot 10^9
+\times 16 = 2800$ miliardi di byte, cioè 2,8 terabyte. Tutto questo insieme
+(pesi, correzioni, copia precisa e statistiche) è lo **stato
+dell'addestramento**, e deve stare in memoria dal primo esempio all'ultimo. Una
+GPU da datacenter di fascia alta, una H100, ha 80 GB di memoria: $2800 / 80 =
+35$, ci vorrebbero trentacinque schede soltanto per *contenerlo*, prima ancora
+di parlare di velocità.
 
 E la velocità è l'altro limite. Addestrare un modello costa circa sei
 operazioni per ogni parametro e per ogni token visto, due all'andata e quattro
@@ -76,16 +76,14 @@ mettiamo a fuoco il limite, e poi andiamo *oltre*: una mappa dei modi di
 dividere il lavoro quando un modello è troppo grande perché una GPU basti a
 sé.
 
-Due parole da fissare subito, perché da qui in avanti tornano di continuo.
+
 Un **nodo** è un singolo computer, con dentro le sue schede, di solito quattro
 o otto, collegate fra loro da connessioni interne molto veloci. Un **cluster**
 è un insieme di nodi collegati in rete, che lavorano allo stesso compito: fra
 due schede dello stesso nodo i dati volano, fra due nodi diversi devono passare
-per la rete, che è molto più lenta. Quasi tutte le scelte che seguono nascono
-da questa differenza. (Attenzione a una parola che qui fa due
-mestieri: quando si dice «rete» in questo senso si intendono i cavi che
-collegano i computer, non la rete neurale. Per quest'ultima, qui, diremo sempre
-«il modello».)
+per la rete, che è molto più lenta. Quasi tutte le scelte del calcolo
+distribuito nascono da questa differenza (qui la parola «rete» indica i cavi
+che collegano i computer, non le reti neurali, che chiameremo «modelli»).
 
 ## Ripasso: il parallelismo dati e il suo limite
 
@@ -116,7 +114,7 @@ su GPU diverse.
 
 Il punto delicato è come avviene quella media senza intasare la rete. Il modo
 ingenuo (tutte le GPU spediscono i gradienti a una sola, che somma e
-rispedisce) trasforma quella GPU in un imbuto. La soluzione elegante si chiama
+rispedisce) trasforma quella GPU in un imbuto. La soluzione si chiama
 **ring all-reduce**, l'all-reduce ad anello, e la {numref}`fig-anello-somma` ne
 segue i due giri.
 
@@ -287,16 +285,15 @@ vicine, unite da una linea diretta velocissima.
 `````{tab} Superiore
 
 Consideriamo il prodotto $\mathbf{Y} = \mathbf{X}\mathbf{W}$, cuore di ogni
-strato lineare. Spezzando la matrice dei pesi per colonne,
-$\mathbf{W} = [\,\mathbf{W}_1 \; \mathbf{W}_2\,]$, si ottiene
-$\mathbf{Y} = [\,\mathbf{X}\mathbf{W}_1 \; \mathbf{X}\mathbf{W}_2\,]$: la GPU 0
-calcola $\mathbf{X}\mathbf{W}_1$, la GPU 1 calcola $\mathbf{X}\mathbf{W}_2$, e
-i due blocchi si concatenano. Megatron sfrutta questa libertà con un'eleganza
-particolare nel blocco *feed-forward*
-$\mathbf{Z} = \mathrm{GeLU}(\mathbf{X}\mathbf{A})\,\mathbf{B}$: spezza
-$\mathbf{A}$ per colonne (la GeLU è elemento-per-elemento, quindi ogni GPU
-può applicarla alla propria fetta senza consultare le altre) e $\mathbf{B}$ per
-righe, così che
+strato lineare. Spezzando la matrice dei pesi per colonne, $\mathbf{W} =
+[\,\mathbf{W}_1 \; \mathbf{W}_2\,]$, si ottiene $\mathbf{Y} =
+[\,\mathbf{X}\mathbf{W}_1 \; \mathbf{X}\mathbf{W}_2\,]$: la GPU 0 calcola
+$\mathbf{X}\mathbf{W}_1$, la GPU 1 calcola $\mathbf{X}\mathbf{W}_2$, e i due
+blocchi si concatenano. Megatron sfrutta questa libertà nel blocco
+*feed-forward* $\mathbf{Z} = \mathrm{GeLU}(\mathbf{X}\mathbf{A})\,\mathbf{B}$:
+spezza $\mathbf{A}$ per colonne (la GeLU è elemento-per-elemento, quindi ogni
+GPU può applicarla alla propria fetta senza consultare le altre) e $\mathbf{B}$
+per righe, così che
 
 $$
 \mathbf{Z} = \mathrm{GeLU}(\mathbf{X}\mathbf{A}_1)\,\mathbf{B}_1
@@ -437,12 +434,11 @@ dell'NVLink.
 ## Non replicare, spartire: ZeRO e FSDP
 
 Torniamo al difetto del parallelismo dati: con otto GPU ci sono otto copie
-identiche di tutto, cioè otto volte lo stato dell'addestramento del conto di
-apertura (pesi, correzioni e le due statistiche che l'ottimizzatore si tiene per
-ogni peso). Una montagna di memoria sprecata a ripetere le stesse cose. E se,
-invece di replicare, si spartisse? Ogni GPU custodisce solo la propria
-fetta, e quando le serve un pezzo che non ha, se lo fa passare al volo dalla
-collega che lo tiene.
+identiche di tutto, cioè otto volte l'intero stato dell'addestramento (pesi,
+correzioni e le due statistiche che l'ottimizzatore si tiene per ogni peso).
+Una montagna di memoria sprecata a ripetere le stesse cose. E se, invece di
+replicare, si spartisse? Ogni GPU custodisce solo la propria fetta, e quando le
+serve un pezzo che non ha, se lo fa passare al volo dalla collega che lo tiene.
 
 I due nomi con cui questa idea si incontra sono sigle inglesi. **ZeRO**
 (*Zero Redundancy Optimizer*, «ottimizzatore senza copie ripetute»)
@@ -523,7 +519,7 @@ stadi sono gratis. Spartire gli stati dell'ottimizzatore e i gradienti «incurs
 no additional communication» rispetto al parallelismo dati puro, scrive
 l'articolo, a fronte di un risparmio di memoria fino a otto volte. Quel «fino
 a» conta, perché il fattore cresce con il numero di schede e otto è il suo
-limite: sulle otto GPU di questa scena i due stadi insieme dividono per poco
+limite: con $K=8$ i due stadi insieme dividono la memoria per poco
 più di quattro. Difficile trovare un motivo per non accenderli. A pagare è solo
 il terzo stadio, quello di FSDP, e paga al massimo $1{,}5\times$ la
 comunicazione del parallelismo dati, a patto che le collettive usino l'anello

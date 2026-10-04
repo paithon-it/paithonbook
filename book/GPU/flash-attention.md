@@ -14,9 +14,9 @@ Serve prima il *che cosa* dell'attenzione, il meccanismo su cui i modelli
 linguistici sono costruiti: la {doc}`sezione sulla matematica dei modelli
 linguistici </Matematica/matematica-llm>` l'ha costruita come una media pesata,
 e il {doc}`capitolo sui Transformer </Transformers/overview>` ne racconterà il
-*perché*. Qui bastano i tre passi da eseguire in fretta, su un testo di $N$
-posizioni (i token, cioè le parole o i pezzi di parola), ciascuna con tre
-vettori di $d_k$ numeri, la *query*, la *key* e il *value*, che sono le righe
+*perché*. Qui bastano i tre passi da eseguire in fretta su un testo di $N$
+posizioni (i token, cioè le parole o i pezzi di parola). Ciascuna ha tre
+vettori di $d_k$ numeri: la *query*, la *key* e il *value*, che formano le righe
 di tre matrici $\mathbf{Q}$, $\mathbf{K}$ e $\mathbf{V}$. Primo: ogni posizione
 viene confrontata con tutte le altre, e da ogni confronto esce un punteggio di
 somiglianza; sono i punteggi $\mathbf{S} =
@@ -246,10 +246,10 @@ transito, per cui $\mathbf{S}_{ij}$ è la tessera
 di punteggi che nasce dal loro incontro: $B_r \times B_c$, cioè $B_r$ righe di
 query per $B_c$ chiavi (le due misure del blocchetto, che il kernel sceglie in
 base a quanta shared memory ha), e non l'intera riga di $\mathbf{S}$.
-(Quest'ordine dei cicli, con il blocco di query fermo e $\mathbf{K},\mathbf{V}$
+Quest'ordine dei cicli, con il blocco di query fermo e $\mathbf{K},\mathbf{V}$
 che scorrono, è
 quello reso canonico dalla seconda versione dell'algoritmo, che incontreremo a
-breve; l'articolo del 2022 li annidava al contrario, ma l'idea non cambia.) La
+breve; l'articolo del 2022 li annidava al contrario, ma l'idea non cambia. La
 memoria on-chip trattiene solo i tile correnti; la HBM vede scorrere
 $\mathbf{K},\mathbf{V}$ una
 volta per ogni blocco di query, e la matrice $\mathbf{S}$ mai. La memoria
@@ -468,7 +468,7 @@ invece che per colonne di key, eliminando lo scambio di risultati parziali in
 shared memory. Ne esce un tempo grosso modo dimezzato rispetto alla prima
 versione.
 
-Va però detto con precisione che cosa tutto questo risolve, perché è facile
+Tutto questo risolve un problema ben preciso, ed è facile
 attribuirgli un merito che è di un'altra tecnica. Ci sono due momenti in cui la
 tabella dei confronti viene costruita per intero: mentre il modello impara, e
 nella prima passata con cui legge la domanda che gli abbiamo fatto, che si

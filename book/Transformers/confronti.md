@@ -9,7 +9,7 @@ ha vinto, e anche *dove* non vince affatto.
 
 ## Le reti ricorrenti: tre varianti, un limite
 
-Le tre varianti hanno un limite in comune: l'informazione sul passato passa per
+Le tre varianti hanno un limite in comune: l'informazione sul passato attraversa
 uno stato che si aggiorna un passo alla volta. Il limite si vede già nella RNN
 più semplice.
 
@@ -49,7 +49,7 @@ cosa annotare, cosa cancellare, cosa rileggere (la memoria dura molto di più,
 al prezzo di un meccanismo più complicato). Le GRU sono il taccuino
 semplificato: regole più snelle, quasi la stessa resa. Taccuino o no, però, si
 legge sempre una parola alla volta, e la parola dopo aspetta che sia finita
-quella prima. Il Transformer cambia gioco: niente riassunto da tenere
+quella prima. Il Transformer cambia tutto: niente riassunto da tenere
 aggiornato, il testo resta tutto sott'occhio e ogni parola può andare a
 rileggersi qualunque altra. La memoria non sbiadisce perché non c'è nulla da
 ricordare: basta guardare.
@@ -224,12 +224,12 @@ di calcolo. La matrice di attenzione è la matrice di adiacenza di un
 **grafo completo** sui token, e ridurne il costo è un problema
 di sparsificazione di grafi. Longformer {cite}`beltagy2020longformer`
 toglie archi tenendo una finestra scorrevole attorno a ogni token, qualche
-finestra dilatata per allargare la portata, e un pugno di **token globali**
+finestra dilatata per allargare la portata, e alcuni **token globali**
 collegati a tutti (nel question answering, quelli della domanda): il costo
 scende da $O(n^2)$ a $O(n w)$, dove $w$ è l'ampiezza della finestra, un numero
 fissato in anticipo e molto minore di $n$. BigBird {cite}`zaheer2020big`
 prende la stessa
-strada dichiarando la cosa: combina una finestra ad anello (un grafo «piccolo
+strada, formalizzandola: combina una finestra ad anello (un grafo «piccolo
 mondo» alla Watts-Strogatz), archi casuali alla Erdős-Rényi e token
 globali, e dimostra che il modello risultante resta un approssimatore
 universale di funzioni su sequenze.
@@ -255,8 +255,8 @@ vicini e ne fonde il riassunto col proprio ha un nome, *message passing*, e la
 self-attention è il caso in cui quel grafo è completo; da lì la conseguenza: i
 **Graph Transformer** applicano questo modello a un grafo qualunque, e per non
 perdere la topologia devono reintrodurla come codifica posizionale. Quella
-codifica nasce dallo stesso ragionamento delle sinusoidi viste qui, ma non ne
-è la stessa cosa scritta in generale: là il confronto è fatto numero alla
+codifica nasce dallo stesso ragionamento delle sinusoidi appena viste, ma non ne
+è la generalizzazione matematica: là il confronto è fatto numero alla
 mano, e le due famiglie si somigliano senza coincidere.
 
 Longformer e BigBird decidono in anticipo quali archi tenere, in base alla
@@ -277,7 +277,7 @@ chiave non c'è. Il Reformer usa quindi la stessa proiezione per entrambe
 (*shared-QK*), rinunciando alla distinzione fra il cercare e l'essere trovati
 su cui si regge la {numref}`fig-qkv`; gli autori non trovano perdite
 sui due compiti su cui la provano (testo a livello di carattere e immagini di
-$64 \times 64$ pixel), il che è di per sé un'informazione interessante. Fatto
+$64 \times 64$ pixel). Fatto
 questo, si raggruppano query e chiavi per secchiello, si calcola l'attenzione
 piena solo dentro ciascun secchiello, e il costo scende da $O(n^2)$ a
 $O(n \log n)$. Il prezzo ulteriore è che l'hashing sbaglia: si ripete con più
@@ -309,11 +309,11 @@ flusso che non finisce mai, come i sottotitoli in diretta o un traduttore che
 lavora mentre l'altro parla. E come idea non sono tramontate: due linee di
 ricerca recenti riportano in gioco un riassunto che si aggiorna passo per
 passo, proprio come facevano le RNN, ma costruito in modo da non pagare il
-costo della riunione plenaria. Si chiamano *attenzioni lineari* e *state space
-model* (in italiano «modelli a spazio di stato», dove lo stato è appunto il
-riassunto che si aggiorna; il più noto si chiama Mamba), e hanno un capitolo
-ciascuna subito dopo quello sui Transformer: il {doc}`capitolo sull'attenzione
-lineare </AttenzioneLineare/overview>` e quello sugli
+costo quadratico dell'attenzione globale. Si chiamano *attenzioni lineari* e
+*state space model* (in italiano «modelli a spazio di stato», dove lo stato è
+appunto il riassunto che si aggiorna; il più noto si chiama Mamba), e hanno un
+capitolo ciascuna subito dopo quello sui Transformer: il {doc}`capitolo
+sull'attenzione lineare </AttenzioneLineare/overview>` e quello sugli
 {doc}`state space model </StateSpaceModel/overview>`. Il Transformer ha vinto
 la partita del decennio, non necessariamente il campionato eterno.
 
@@ -373,8 +373,8 @@ la partita del decennio, non necessariamente il campionato eterno.
 ```
 `````
 
-Prima di quei capitoli resta da vedere che cosa costa l'attenzione quando il
-modello scrive. I conti fatti fin qui riguardano il modello che studia, con il
-testo già davanti; quando scrive, una parola per volta, la stessa formula gira
-in un regime diverso e paga un prezzo diverso, più di memoria che di calcolo, e
-lo misura la {doc}`sezione sull'attenzione in pratica <attenzione-in-pratica>`.
+Prima di quei capitoli resta da vedere che cosa costa l'attenzione in fase di
+inferenza. I conti fatti fin qui riguardano l'addestramento, con il testo già
+davanti; in generazione, una parola per volta, la stessa formula gira in un
+regime diverso e paga un prezzo diverso, più di memoria che di calcolo, e lo
+misura la {doc}`sezione sull'attenzione in pratica <attenzione-in-pratica>`.

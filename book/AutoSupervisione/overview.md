@@ -128,8 +128,8 @@ può essere una mossa oppure diecimila.
 
 `````
 
-Il conto lo facciamo fare al calcolatore, così si può rifare e discutere.
-L'unità è il bit, quella del gioco delle venti domande della
+
+L'unità di misura è il bit, quella del gioco delle venti domande della
 {doc}`teoria dell'informazione </Matematica/teoria-informazione>`: una
 risposta scelta fra mille possibilità si indovina con dieci domande da sì o no
 (mille, cinquecento, duecentocinquanta, e avanti a dimezzare), quindi vale al
@@ -187,20 +187,20 @@ vale 0.0001 bit per passo
 L'etichetta e il verdetto di fine partita, la prima riga e l'ultima, distano
 appena un fattore dieci. Il salto sta nella terza riga, il brano di testo che
 il modello legge in un colpo solo, ottomila pezzetti di parola: vale quasi
-quattordicimila etichette e centotrentanovemila verdetti di fine partita, e
-sono i due rapporti che il programma stampa in fondo. Un brano che nessuno ha
-annotato offre quindi un tetto di informazione migliaia di volte più alto di
-una fotografia con la sua etichetta; quanto di quel tetto il modello usi
-davvero è un'altra domanda.
+quattordicimila etichette e centotrentanovemila verdetti di fine partita, come
+mostrano i due rapporti appena calcolati. Un brano che nessuno ha annotato
+offre quindi un tetto di informazione migliaia di volte più alto di una
+fotografia con la sua etichetta; quanto di quel tetto il modello usi davvero è
+un'altra domanda.
 
-Adesso però va detta la cosa che rende il conto onesto, perché senza di essa
-quei numeri prometterebbero più di quanto possono mantenere.
+Senza una precisazione, però, questi numeri prometterebbero più di quanto
+possono mantenere.
 
 `````{tab} Elementare
 
 Le quattordicimila etichette e i centotrentanovemila verdetti dicono quanto è
-grande la risposta giusta, non quanto il modello ne ha capito. Sono il diametro
-del tubo, non l'acqua che ci passa.
+grande la risposta giusta, ma tacciono su quanto il modello ne abbia capito.
+Sono il diametro del tubo, non l'acqua che ci passa.
 
 E il diametro è già generoso. Il conto tratta ogni dettaglio della metà coperta
 come una sorpresa, e sorprese non sono: se il ramo si vede per un tratto,
@@ -250,11 +250,11 @@ ed è la lunghezza di descrizione prequenziale di
 si risparmiano, rispetto al codice uniforme, prevedendo i dati con un modello
 che li impara mentre li legge.
 
-La terza, ed è quella che il dibattito sul rinforzo userà: la povertà del
-segnale nel rinforzo non è solo una questione di quantità. Un bit per episodio
-va anche assegnato, cioè distribuito fra i passi che hanno contribuito, e
-quel problema (l'assegnazione del credito) è duro in modo indipendente dal
-numero di bit.
+La terza, che tornerà nel {doc}`dibattito sul rinforzo
+</AutoSupervisione/dibattito-rl>`: la povertà del segnale nel rinforzo non è
+solo una questione di quantità. Un bit per episodio va anche assegnato, cioè
+distribuito fra i passi che hanno contribuito, e quel problema (l'assegnazione
+del credito) è duro in modo indipendente dal numero di bit.
 
 `````
 
@@ -262,11 +262,12 @@ numero di bit.
 
 L'argomento ha una forma celebre, e la sua storia dice qualcosa sul campo.
 
-Il capitolo sui modelli a energia l'ha già citata di passaggio, per la sua
-ciliegina; eccola per intero. Nel dicembre del 2016, a un convegno, Yann LeCun
-mostra una diapositiva con una fetta di torta e una frase: «se l'intelligenza è
-una torta, il grosso della torta è l'apprendimento non supervisionato, la glassa
-è l'apprendimento supervisionato, e la ciliegina è l'apprendimento per rinforzo»
+Il {doc}`capitolo sui modelli a energia </ModelliEnergia/paesaggi-di-oggi>`
+l'ha già citata di passaggio, per la sua ciliegina; eccola per intero. Nel
+dicembre del 2016, a un convegno, Yann LeCun mostra una diapositiva con una
+fetta di torta e una frase: «se l'intelligenza è una torta, il grosso della
+torta è l'apprendimento non supervisionato, la glassa è l'apprendimento
+supervisionato, e la ciliegina è l'apprendimento per rinforzo»
 {cite}`lecun2016cake`. L'immagine fa il giro del mondo, e la ciliegina diventa
 un modo di dire.
 
@@ -332,7 +333,7 @@ trasformazione del dato. Sta nella tabella perché il meccanismo con cui si
 addestra, ritrovare la coppia giusta in mezzo alle sbagliate, è lo stesso dei
 metodi contrastivi.
 
-C'è poi un sesto caso, che non è un capitolo ma un organismo vivo. Nelle
+C'è poi un sesto caso: l'organismo vivo. Nelle
 neuroscienze teoriche c'è un modo di guardare al cervello, l’**inferenza
 attiva**, secondo cui percepire e agire sono due facce dello stesso mestiere:
 indovinare che cosa c'è là fuori, e muoversi per indovinare meglio; gli è

@@ -15,13 +15,15 @@ nasce lì è la forma che si sarebbe imposta, il modello **globale**, ed è da l
 che passa il forecasting neurale. (L'articolo circolò subito online e fu
 stampato su una rivista scientifica solo tre anni dopo, nel 2020.)
 
-Le sezioni precedenti hanno costruito la cassetta degli attrezzi classica
-(ARIMA, Holt-Winters) e hanno insistito su un punto scomodo: quei metodi di
-mezzo secolo fa restano una linea di base durissima da battere. Tocca ora
-all'altra famiglia, quella delle reti neurali: quando conviene davvero, come si
-è evoluta dalle reti ricorrenti alle convoluzioni causali fino ai Transformer,
-e dove sta arrivando oggi con i *foundation model*. Con la stessa onestà: il
-deep learning non è un miglioramento automatico.
+Le sezioni sui {doc}`modelli classici </SerieTemporali/componenti-e-classici>`
+e sulla {doc}`validazione </SerieTemporali/validazione-e-feature>` hanno
+costruito la cassetta degli attrezzi classica (ARIMA, Holt-Winters) e hanno
+insistito su un punto scomodo: quei metodi di mezzo secolo fa restano una linea
+di base durissima da battere. Tocca ora all'altra famiglia, quella delle reti
+neurali: quando conviene davvero, come si è evoluta dalle reti ricorrenti alle
+convoluzioni causali fino ai Transformer, e dove sta arrivando oggi con i
+*foundation model*. Con la stessa onestà: il deep learning non è un
+miglioramento automatico.
 
 ## Quando conviene il deep learning
 
@@ -37,11 +39,11 @@ Un unico negozio di quartiere ha una storia di vendite corta e ballerina, e un
 modello troppo sofisticato ci si perde: con tanti numeri da regolare e pochi
 giorni su cui regolarli, finisce per imparare a memoria anche gli sbalzi
 capitati per caso, che domani non si ripeteranno. Un buon vecchio ARIMA fa
-altrettanto bene con molta meno fatica. Ora prendi una catena con
-diecimila negozi. Molti pattern sono condivisi: il picco del sabato, il crollo
-di Ferragosto, l'effetto di una promozione. Una rete neurale può impararli
-*una volta sola* guardando tutti i negozi insieme, e poi applicarli anche al
-negozio aperto il mese scorso, che da solo non avrebbe abbastanza storia.
+altrettanto bene con molta meno fatica. In una catena con diecimila negozi,
+invece, molti pattern sono condivisi: il picco del sabato, il crollo di
+Ferragosto, l'effetto di una promozione. Una rete neurale può impararli *una
+volta sola* guardando tutti i negozi insieme, e poi applicarli anche al negozio
+aperto il mese scorso, che da solo non avrebbe abbastanza storia.
 
 Il deep learning conviene quando ricorrono alcune di queste quattro condizioni,
 e la catena le ha tutte: **tante serie collegate** fra loro; relazioni **non
@@ -101,7 +103,7 @@ stima puntuale. Un avviso sulle lettere, per chi andrà a leggere l'articolo di
 DeepAR: là $z$ è la serie da prevedere e le covariate si chiamano $x$, cioè
 esattamente al contrario di qui.
 
-L'onestà impone il rovescio della medaglia. Con poche serie o serie
+Il modello globale ha però un costo strutturale. Con poche serie o serie
 corte il regime dati non regge la varianza di un modello ad alta capacità,
 e i metodi statistici (robusti, frugali, interpretabili) tengono il campo,
 come mostrano ripetutamente le competizioni M discusse nell'introduzione al
@@ -162,7 +164,7 @@ lasciare il buco.
 
 ## Reti ricorrenti per il forecasting
 
-Il primo strumento neurale per le sequenze lo abbiamo già costruito, nella
+Il primo strumento neurale per le sequenze è quello descritto nella
 {doc}`sezione sui modelli di sequenza
 </NaturalLanguageProcessing/modelli-sequenza>`: una rete che legge un pezzo per
 volta e si porta dietro un riassunto di quello che ha letto fin lì. Quel
@@ -349,7 +351,7 @@ indietro si aggiungono strati o si allarga il filtro.
 
 ## DeepAR: una rete per mille serie, e una distribuzione
 
-Torniamo al problema di Amazon con cui si è aperta la sezione. **DeepAR**
+Torniamo al problema di scala affrontato da Amazon. **DeepAR**
 {cite}`salinas2020deepar` è la risposta neurale, e porta due idee da tenere
 distinte.
 
@@ -452,12 +454,12 @@ formula chiusa per gli intervalli: è Monte Carlo.
 
 `````
 
-Il campionamento ancestrale è così centrale che conviene vederlo girare, su un
-modellino giocattolo di venti righe. La rete
-vera, a ogni passo, calcola due numeri: attorno a che valore si aspetta il
-giorno dopo, e di quanto quel giorno può discostarsene. Qui quei due numeri non
-li impara nessuno, glieli diamo noi con la regola più semplice che abbiamo, la
-stessa AR(1) della sezione sui modelli classici (il 60% del valore di ieri, più
+Il campionamento ancestrale è il motore della previsione, e lo si vede
+all'opera su un modellino giocattolo di venti righe. La rete vera, a ogni
+passo, calcola due numeri: attorno a che valore si aspetta il giorno dopo, e di
+quanto quel giorno può discostarsene. Qui quei due numeri non li impara
+nessuno, glieli diamo noi con la regola più semplice che abbiamo, la stessa
+AR(1) della sezione sui modelli classici (il 60% del valore di ieri, più
 quattro), perché quello che conta guardare è il meccanismo: campiona,
 reinietta, ripeti.
 
@@ -608,7 +610,7 @@ due gruppi, restituiscano una componente leggibile ciascuno; in quella
 innestate non ce n'è nessuna: solo strati densi.
 
 Il risultato sulla M4 va letto con il suo protocollo. Gli autori riportano un
-miglioramento di circa l'11% sul riferimento statistico e del 3% sul vincitore
+miglioramento di circa l’11% sul riferimento statistico e del 3% sul vincitore
 della gara, ma da un insieme di 180 reti: tre funzioni di perdita (sMAPE, MASE
 e MAPE), sei lunghezze della finestra passata, da due a sette volte
 l'orizzonte, e diverse inizializzazioni casuali, con la mediana come regola di

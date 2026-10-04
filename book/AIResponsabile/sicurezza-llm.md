@@ -53,7 +53,7 @@ c'è chi addestra il modello a dare più peso ai pezzi fidati
 {cite}`wallace2024instruction` o marca la provenienza trasformando il testo non
 fidato {cite}`hines2024spotlighting`; ma sono disposizioni apprese, che
 riducono il successo degli attacchi noti senza escluderlo. Obbligare il modello
-a tenerne conto non si sa.
+a tenerne conto non lo si sa fare.
 
 ## Il difetto sta nel canale, non nel modello
 
@@ -360,16 +360,16 @@ addestrata *in quella forma*. La conseguenza di progetto è scomoda e va detta:
 il divario può allargarsi con la scala, perché un modello più capace copre più
 forme di quante il fine-tuning di sicurezza riesca a coprirne, e questo finché
 l'addestramento di sicurezza non viene esteso alle forme nuove. Una misura gli
-autori ce l'hanno, ed è su due modelli soli: il più piccolo dei due le
-istruzioni scritte in Base64 non le sa nemmeno leggere, il più grande le legge
-e le esegue con meno freni {cite}`wei2023jailbroken`. Il resto, cioè che a ogni
-salto di scala si aprano forme nuove più in fretta di quanto la sicurezza le
-copra, lo scrivono come previsione. Lo stesso divario si è misurato sulle
-lingue: tradotte in quattro lingue con poche risorse (zulu, gaelico scozzese,
-hmong, guaraní), le richieste dannose di un benchmark ottengono da GPT-4 una
-risposta utile nel $79\%$ dei casi, contando riuscito il tentativo se passa in
-almeno una delle quattro, contro meno dell’$1\%$ in inglese e meno del $15\%$
-per ciascuna lingua con risorse alte o medie {cite}`yong2023lowresource`. E ne
+autori ce l'hanno, ed è su due modelli soli: il più piccolo dei due non sa
+nemmeno leggere le istruzioni in Base64, il più grande le legge e le esegue con
+meno freni {cite}`wei2023jailbroken`. Il resto, cioè che a ogni salto di scala
+si aprano forme nuove più in fretta di quanto la sicurezza le copra, lo
+scrivono come previsione. Lo stesso divario si è misurato sulle lingue:
+tradotte in quattro lingue con poche risorse (zulu, gaelico scozzese, hmong,
+guaraní), le richieste dannose di un benchmark ottengono da GPT-4 una risposta
+utile nel $79\%$ dei casi, contando riuscito il tentativo se passa in almeno
+una delle quattro, contro meno dell’$1\%$ in inglese e meno del $15\%$ per
+ciascuna lingua con risorse alte o medie {cite}`yong2023lowresource`. E ne
 segue un corollario sulla misura: un test passato su una formulazione dice poco
 sulla formulazione vicina, perché la sicurezza non è una proprietà del modello
 ma della coppia modello-distribuzione degli input.
@@ -386,10 +386,9 @@ che quel meccanismo non sa distinguere ciò che gli si vuole insegnare da ciò
 che gli si vuole far disimparare. Se si riempie la conversazione di finti
 scambi in cui il modello accetta di fare una cosa che non dovrebbe, alla fine
 la fa. E siccome le conversazioni che questi sistemi riescono a tenere a mente
-si sono allungate moltissimo, di finti esempi ce ne stanno centinaia. Il punto
-sta nel fatto che la memoria lunga, che è una capacità, è
-anche una porta, e più la si allarga per rendere il sistema utile, più larga
-diventa anche per chi vuole entrare.
+si sono allungate moltissimo, di finti esempi ce ne stanno centinaia. La
+memoria lunga, che è una capacità, è anche una porta, e più la si allarga per
+rendere il sistema utile, più larga diventa anche per chi vuole entrare.
 
 `````{tab} Elementare
 
@@ -598,8 +597,8 @@ Quattro difese, applicate all'assistente con le chiavi.
 
 Le quattro difese non stanno su una scala uniforme. Le difese nel prompt e i
 classificatori sono mitigazioni probabilistiche: abbassano il tasso di successo
-degli attacchi, e di quanto lo abbassino dipende dall'attacco con cui le si
-misura. Contro un attacco fisso possono sembrare quasi perfette: marcare la
+degli attacchi, in misura che dipende dall'attacco con cui le si
+valuta. Contro un attacco fisso possono sembrare quasi perfette: marcare la
 provenienza trasformando il testo non fidato porta un attacco statico da oltre
 il $50\%$ a meno del $2\%$ sui modelli GPT su cui è stato provato
 {cite}`hines2024spotlighting`. Ma Nasr e colleghi, con attaccanti che conoscono
@@ -829,7 +828,7 @@ zero successi su $n$ prove indipendenti non dicono che il tasso vero $p$ sia
 zero: la probabilità di non osservare nessun successo è $(1-p)^n$, che resta
 sopra il $5\%$ finché $p < 1 - 0{,}05^{1/n} \approx 3/n$ (la *regola del tre*).
 Con $n = 100$ il tasso vero può ancora essere del $3\%$, e un sistema che cede
-una volta su cento supera pulite cento prove con probabilità
+una volta su cento supera indenne cento prove con probabilità
 $0{,}99^{100} \approx 0{,}37$. Le prove di un red team, poi, non sono
 indipendenti né campionate dagli attacchi reali. Per confrontare sistemi
 diversi si usano insiemi pubblici, come HarmBench per i jailbreak
@@ -859,10 +858,10 @@ difese descritte qui è una dimostrazione, e non lo diventa mettendole insieme,
 per la ragione da cui siamo partiti col fischietto: al modello arriva un
 canale solo, e in quel canale non c'è scritto da dove viene ciascuna parola.
 Finché è così, qualunque separazione fra istruzioni e dati che avvenga
-*dentro* il modello è una separazione appresa, cioè probabile e non garantita.
+*dentro* il modello è una separazione appresa, cioè probabilistica e non garantita.
 Una difesa strutturale vorrebbe due cose: che a ogni pezzetto di testo fosse
 attaccata l'etichetta della sua provenienza, fidata o no, e che il modello la
-ricevesse insieme al testo invece di doverla indovinare; e poi, soprattutto,
+ricevesse insieme al testo invece di doverla indovinare; e soprattutto
 che si potesse dimostrare la **non-interferenza** delle parti non fidate sulle
 azioni privilegiate, nel senso di Goguen e Meseguer {cite}`goguen1982security`:
 togliendo dalla storia tutto ciò che hanno scritto, le azioni che hanno effetto

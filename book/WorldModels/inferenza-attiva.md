@@ -1,6 +1,6 @@
 # Agire per non essere sorpresi: l'inferenza attiva
 
-Fino a qui il capitolo ha tenuto separate due cose. Da una parte un modello che
+I sistemi visti fin qui tengono separate due cose. Da una parte un modello che
 impara a prevedere come va il mondo; dall'altra una strategia che, servendosi di
 quel modello, decide che cosa fare. Prima si addestra il modello della
 dinamica, poi lo si usa per scegliere la mossa. È la divisione del lavoro dei
@@ -14,12 +14,11 @@ incontrato nella {doc}`sezione sul dibattito attorno al rinforzo
 caffè guarda prima il calendario. Là se ne è vista la conclusione, qui si parte
 dall'inizio. La sua trattazione d'insieme è un libro di Thomas Parr, Giovanni
 Pezzulo e Karl Friston {cite}`parr2022active`. «Inferenza», qui, è quella dei
-modelli latenti: risalire alla causa nascosta a partire da quel che si vede, non
-il far girare un modello già addestrato. Non è il modo in cui oggi si
+modelli latenti: risalire alla causa nascosta a partire da quel che si vede,
+non il far girare un modello già addestrato. Non è il modo in cui oggi si
 costruiscono i sistemi (e i limiti, in fondo, lo dicono senza giri di parole),
-ma risponde alla domanda del capitolo da un'angolatura che le due tappe
-precedenti non hanno: a che cosa serve, in fondo, un modello del mondo a una
-cosa viva.
+ma risponde alla domanda iniziale da un'angolatura che Dreamer e JEPA non
+hanno: a che cosa serve, in fondo, un modello del mondo a una cosa viva.
 
 ## Un pesce deve restare nell'acqua
 
@@ -48,7 +47,7 @@ stessa cosa, detta in due lingue diverse.
 
 ## Due modi di smettere di essere sorpresi
 
-Qui arriva l'idea che dà il nome alla sezione.
+Qui arriva l'idea da cui la teoria prende il nome.
 
 `````{tab} Elementare
 
@@ -92,7 +91,7 @@ aggiustare l'idea di oggi, conviene cambiare il modello che quelle idee le
 produce. Gli autori lo dicono così: imparare «non è fondamentalmente diverso dal
 percepire, opera semplicemente su una scala di tempo più lenta».
 
-Detto altrimenti: qui non esiste una fase di addestramento separata dall'uso.
+Qui non esiste una fase di addestramento separata dall'uso.
 C'è una cosa sola che va avanti sempre, a tre velocità diverse.
 
 `````
@@ -250,13 +249,13 @@ più generale, quando si discute che cosa l'inferenza attiva dimostri.
 
 ## Come fa a scegliere una mossa
 
-Fin qui abbiamo detto il *perché*: un pesce si muove per non trovarsi
-all'asciutto. Resta il *come*. Davanti a due mosse possibili, che cosa dice a
-un agente del genere quale delle due è meglio? La risposta ha una particolarità
-che sarebbe un peccato saltare, ed è la ragione per cui questa cornice torna
-utile due volte altrove: nella {doc}`sezione sul dibattito attorno al
-rinforzo </AutoSupervisione/dibattito-rl>` e in quella
-{doc}`sull'esplorazione </DeepReinforcementLearning/esplorazione-e-ricompensa>`.
+Sapere che un pesce si muove per non trovarsi all'asciutto non dice *come*
+scelga di muoversi. Davanti a due mosse possibili, che cosa dice a un agente
+del genere quale delle due è meglio? La risposta ha una particolarità che
+sarebbe un peccato saltare, ed è la ragione per cui questa cornice torna utile
+due volte altrove: nella {doc}`sezione sul dibattito attorno al rinforzo
+</AutoSupervisione/dibattito-rl>` e in quella {doc}`sull'esplorazione
+</DeepReinforcementLearning/esplorazione-e-ricompensa>`.
 
 `````{tab} Elementare
 
@@ -300,9 +299,9 @@ lo decide chi lo costruisce.
 
 `````{tab} Superiore
 
-La quantità che ordina le politiche è l’energia libera attesa $G(\pi)$
-introdotta più su, e la sua utilità sta tutta nel fatto che si riscrive in modi
-diversi. Uno la separa in rischio e ambiguità:
+La quantità che ordina le politiche è l’energia libera attesa $G(\pi)$, e la
+sua utilità sta tutta nel fatto che si riscrive in modi diversi. Uno la separa
+in rischio e ambiguità:
 
 $$
 G(\pi) \;=\;
@@ -339,13 +338,13 @@ $\beta$, mentre il valore epistemico non ne dipende: preferenze più nette
 spingono a sfruttare. Nei modelli concreti $\beta$, come la precisione sulle
 politiche, la sceglie chi costruisce il modello.
 
-Una nota che servirà fra poco: sviluppando la divergenza, il rischio vale
-$-H[Q(\tilde{o} \mid \pi)] - \mathbb{E}_{Q(\tilde{o} \mid \pi)}[\ln P(\tilde{o} \mid C)]$,
-quindi porta dentro anche l'entropia delle osservazioni previste. Annullare
-l'ambiguità non spegne dunque ogni spinta a informarsi: sopravvive quel termine
-di entropia, che è poi quello che gli autori, nel caso limite in cui si tolgano
-anche le preferenze, descrivono come «tenersi aperte le opzioni». Quel che
-sparisce è l'altra metà, la spinta a cercare i posti da cui si vede bene.
+Sviluppando la divergenza, il rischio vale $-H[Q(\tilde{o} \mid \pi)] -
+\mathbb{E}_{Q(\tilde{o} \mid \pi)}[\ln P(\tilde{o} \mid C)]$, quindi porta
+dentro anche l'entropia delle osservazioni previste. Annullare l'ambiguità non
+spegne dunque ogni spinta a informarsi: sopravvive quel termine di entropia,
+che è poi quello che gli autori, nel caso limite in cui si tolgano anche le
+preferenze, descrivono come «tenersi aperte le opzioni». Quel che sparisce è
+l'altra metà, la spinta a cercare i posti da cui si vede bene.
 
 `````
 
@@ -353,7 +352,7 @@ sparisce è l'altra metà, la spinta a cercare i posti da cui si vede bene.
 
 Nessuna delle idee che seguono chiede di adottare il quadro per intero.
 
-La prima è una risposta alla domanda con cui il capitolo è partito, «a che serve
+La prima è una risposta alla domanda iniziale, «a che serve
 un modello del mondo». Qui la risposta non è «a pianificare meglio»: senza un
 modello di quel che succederà non si può anticipare niente, e un organismo
 che non anticipa arriva sempre tardi. Cercare l'ombra prima di avere caldo è un
@@ -391,12 +390,12 @@ buttafuori si perde.
 L'inferenza attiva è una teoria e non un risultato, e i suoi confini vanno
 detti con la stessa precisione delle sue idee.
 
-Non è così che si addestrano i sistemi delle sezioni precedenti, né quelli del
+Non è così che si addestrano i *world model* visti finora, né i sistemi del
 deep reinforcement learning. L'inferenza attiva nasce come teoria del
 comportamento biologico, e le sue realizzazioni sono modelli di laboratorio su
-compiti piccoli, non i sistemi che giocano a *Minecraft* o generano video. Le
-sezioni precedenti raccontano quello che funziona oggi; l'inferenza attiva è un
-modo di pensarci sopra.
+compiti piccoli, non i programmi che giocano a *Minecraft* o generano video.
+Quelli rappresentano ciò che funziona oggi; l'inferenza attiva è un modo di
+pensarci sopra.
 
 Non si propone come rivale. Lo dicono gli autori in apertura, e conviene
 riportarlo perché evita di arruolarli in una polemica che non hanno cercato: il
@@ -438,10 +437,11 @@ KL nella teoria del controllo» {cite}`parr2022active`.
 «Controllo KL» vuol dire una cosa precisa: un problema di controllo in cui al
 costo si aggiunge una penalità per quanto il comportamento si allontana da uno
 di riferimento, misurata con la divergenza di Kullback-Leibler della
-{doc}`sezione sulla teoria dell'informazione </Matematica/teoria-informazione>`,
-una distanza fra due distribuzioni di probabilità che vale zero quando
-coincidono. E un obiettivo fatto esattamente così è già comparso, qualche
-capitolo più indietro.
+{doc}`sezione sulla teoria dell'informazione
+</Matematica/teoria-informazione>`, una distanza fra due distribuzioni di
+probabilità che vale zero quando coincidono. E un obiettivo fatto esattamente
+così è già comparso nella {doc}`sezione sul post-addestramento
+</Transformers/post-training>`.
 
 `````{tab} Elementare
 
@@ -539,12 +539,11 @@ posti da cui si vede bene non ha dove attaccarsi.
 
 `````
 
-Resta poi una cosa che il lettore può portarsi via anche senza seguire un
-passaggio di algebra. Quando un obiettivo pratico si scrive come «ottieni ciò
-che preferisci, ma non allontanarti dal punto di partenza», quella seconda metà
-è sempre un'ipotesi su dove sia lecito cercare, mai un dettaglio
-implementativo, ed è quasi sempre la parte che decide che cosa il sistema
-diventerà.
+Resta poi una cosa vera anche fuori dall'algebra. Quando un obiettivo pratico
+si scrive come «ottieni ciò che preferisci, ma non allontanarti dal punto di
+partenza», quella seconda metà è sempre un'ipotesi su dove sia lecito cercare,
+mai un dettaglio implementativo, ed è quasi sempre la parte che decide che cosa
+il sistema diventerà.
 
 `````{tab} Elementare
 
@@ -626,6 +625,6 @@ diventerà.
 `````
 
 Il pesce, il caffè e la stanza buia raccontano un modello del mondo visto da
-dentro una creatura, che non ha bisogno di disegnare niente per usarlo. L'ultima
-tappa va all'estremo opposto: macchine che il mondo lo disegnano fotogramma per
-fotogramma, e che hanno riaperto la domanda da cui il capitolo era partito.
+dentro una creatura, che non ha bisogno di disegnare niente per usarlo. I
+generatori video vanno all'estremo opposto: macchine che il mondo lo disegnano
+fotogramma per fotogramma, e che hanno riaperto la domanda iniziale.

@@ -5,8 +5,7 @@ una laguna, prendendo fuoco e andando contromano, e senza mai tagliare il
 traguardo incassava in media il venti per cento di punti in più dei giocatori
 umani. La racconta per esteso la {doc}`sezione su esplorazione e ricompensa
 </DeepReinforcementLearning/esplorazione-e-ricompensa>`
-{cite}`clark2016faulty`. Qui serve la frase che la chiude, perché è da lì che
-riparte tutto il resto. Quell'agente aveva fatto esattamente ciò che gli
+{cite}`clark2016faulty`. Quell'agente aveva fatto esattamente ciò che gli
 avevamo chiesto. Non ciò che intendevamo.
 
 Questa distanza (tra la lettera di un obiettivo e la sua intenzione) è il cuore
@@ -35,13 +34,12 @@ per rinforzo il guaio si incontra a ogni ricompensa mal scritta, e torna
 identico nell'ultima fase con cui si rifiniscono i grandi modelli di linguaggio
 (gli LLM, dall'inglese *large language model*).
 
-La formula da tenere a mente è questa: quando ottimizzi un **surrogato** del
-tuo vero obiettivo, e spingi abbastanza, il surrogato continua a salire mentre
-l'obiettivo vero smette di salire e può scendere. Surrogato, o *proxy*, sono
-le due parole con cui d'ora in poi si chiamerà una
-imitazione di ciò che volevamo davvero: un numero che gli somiglia
-abbastanza da poterlo misurare, e che proprio per questo non è la cosa vera.
-Il punteggio del videogioco era il surrogato di «vinci la gara».
+Quando ottimizzi un **surrogato** del tuo vero obiettivo, e spingi abbastanza,
+il surrogato continua a salire mentre l'obiettivo vero smette di salire e può
+scendere. Surrogato, o *proxy*, è il nome che diamo a un'imitazione di ciò che
+volevamo davvero: un numero che gli somiglia abbastanza da poterlo misurare, e
+che proprio per questo non è la cosa vera. Il punteggio del videogioco era il
+surrogato di «vinci la gara».
 
 ```{figure} ../figures/problema-allineamento.svg
 :name: fig-problema-allineamento
@@ -113,16 +111,16 @@ controllo. Il caso di studio più netto è costruito apposta. Hubinger e collegh
 corretto se il prompt dice che l'anno è il 2023, vulnerabile se dice 2024) e
 mostrano che fine-tuning supervisionato, RLHF e addestramento avversariale di
 sicurezza non la rimuovono; l'ultimo, anzi, insegna al modello a riconoscere
-meglio l'innesco e a nasconderla. Sugli stessi modelli, una sonda lineare sulle
-attivazioni interne, costruita con un'unica domanda generica e le sue due
-risposte opposte («sì» e «no»), che non dicono nulla né dell'innesco né del
-comportamento, separa i prompt che fanno scattare la backdoor dagli altri con
-AUROC sopra il $99\%$ {cite}`macdiarmid2024probes`, in una nota di ricerca del
-laboratorio che non è passata per una revisione. Il limite lo dichiarano gli
-autori: la backdoor l'hanno inserita loro, e che la stessa sonda trovi un
-obiettivo sbagliato nato da sé durante l'addestramento resta da dimostrare.
-Sull'outer alignment, il primo dei due sottoproblemi, pesa la legge di
-Goodhart, nella formulazione resa celebre da Marilyn Strathern
+meglio l'innesco e a nasconderla. Sugli stessi modelli si può addestrare una
+sonda lineare sulle attivazioni interne, usando un'unica domanda generica con
+le due risposte opposte («sì» e «no»), che non dicono nulla dell'innesco o del
+comportamento. Questa sonda separa i prompt che fanno scattare la backdoor
+dagli altri con AUROC sopra il $99\%$ {cite}`macdiarmid2024probes`, secondo una
+nota di ricerca del laboratorio non sottoposta a revisione paritaria. Il limite
+lo dichiarano gli autori: la backdoor l'hanno inserita loro, e che la stessa
+sonda trovi un obiettivo sbagliato nato da sé durante l'addestramento resta da
+dimostrare. Sull'outer alignment, il primo dei due sottoproblemi, pesa la legge
+di Goodhart, nella formulazione resa celebre da Marilyn Strathern
 {cite}`strathern1997improving`: «quando una misura diventa un obiettivo, cessa
 di essere una buona misura». Formalmente, ottimizziamo un proxy $\tilde{r}
 \approx r^*$; ma $\arg\max_y \tilde{r}(y)$ e $\arg\max_y r^*(y)$ in generale
@@ -148,7 +146,7 @@ un limite superiore {cite}`beirami2025theoretical`: vale $1{,}40$ nat a $k =
 10$ e $5{,}91$ a $k = 1000$, la stessa unità in cui si misura la penalità
 dell'RLHF.
 
-Il giocattolo che segue mette queste grandezze in forma esplicita. Merito $\mu$
+Un modello semplificato mette queste grandezze in forma esplicita. Merito $\mu$
 e lunghezza $\lambda$ di una risposta sono uniformi in $[0, 1]$, e
 
 $$
@@ -281,9 +279,9 @@ sono tarati il difetto del giudice e la pressione.
 ## Allineare gli LLM
 
 Come si orienta, in concreto, un modello di linguaggio? La ricetta per intero
-sta nella {doc}`sezione sul post-training </Transformers/post-training>`; qui
-restano i due passaggi che servono a leggere il resto, e il tassello che là non
-c'era.
+sta nella {doc}`sezione sul post-training </Transformers/post-training>`;
+l'allineamento si regge su due passaggi di quella pipeline, più un tassello
+dedicato.
 
 La prima mossa storica è l’RLHF (*Reinforcement Learning from Human
 Feedback*, apprendimento per rinforzo dai giudizi delle persone), quella del
@@ -351,7 +349,7 @@ problemi aperti e dei limiti di fondo dell'RLHF è quella di Casper e colleghi
 `````
 
 Tutto questo funziona, ma richiede due addestramenti in fila: il giudice da
-tirare su, e poi il modello da allenare contro di lui. Nel 2023 la
+addestrare, e poi il modello da allenare contro di lui. Nel 2023 la
 DPO (*Direct Preference Optimization*, «ottimizzazione diretta dalle
 preferenze») di Rafailov e colleghi {cite}`rafailov2023direct` mostra che il
 giudice si può togliere di mezzo. Le stesse coppie di risposte, con scritto
@@ -384,9 +382,9 @@ può assorbire dentro la formula invece di addestrarlo a parte.
 
 Il confronto di {numref}`fig-rlhf-vs-dpo` mostra quanto costa ciascuna via, e
 la ragione riguarda anche chi non addestrerà mai un modello: è una questione di
-quanta macchina serve. La riga sotto ciascuna
-delle due file elenca che cosa si smette di tenere in piedi. Con il giudice
-bisogna tenere in piedi i quattro modelli che la sezione sul post-training
+quanta macchina serve. La riga sotto ciascuna delle due file elenca che cosa si
+smette di tenere in piedi. Con il giudice bisogna tenere in piedi i quattro
+modelli che la {doc}`sezione sul post-training </Transformers/post-training>`
 elenca, e far generare risposte nuove a ogni passo; con la DPO i modelli sono
 due e le risposte sono già scritte. È la differenza fra una tecnica che possono
 permettersi pochi laboratori e una che può usare un gruppo qualsiasi, ed è il
@@ -546,15 +544,16 @@ azzera; si mitigano con recupero da fonti (RAG), richiesta di citazioni,
 verifica esterna e valutazioni che non puniscano l'astensione. Jailbreak e
 prompt injection sono invece problemi avversari: sfruttano il fatto che la
 gerarchia *system > user* è morbida e che il modello non distingue in modo
-affidabile *istruzioni* da *dati*. La prompt injection in particolare (testo
-non fidato che entra nel contesto e viene interpretato come comando) è
-l'analogo dell'SQL injection, come ha mostrato in dettaglio la sezione su come
-si attacca e si difende un modello di linguaggio; e nei sistemi agentici (con
-accesso a strumenti, mail, file) il danno smette di essere un testo sbagliato e
-diventa un'azione. Sopra tutto sta la questione dell’**uso duale**: le stesse
-capacità che rendono un modello utile per chimica, biologia o codice possono
-assistere chi vuole nuocere. È una proprietà della capacità stessa, e ne fa una
-questione di controllo dell'accesso più che di addestramento.
+affidabile *istruzioni* da *dati*. La prompt injection in particolare, in cui
+testo non fidato entra nel contesto e viene interpretato come comando, è
+l'analogo dell'SQL injection, come ha mostrato in dettaglio la {doc}`sezione
+sugli attacchi ai modelli di linguaggio </AIResponsabile/sicurezza-llm>`; e nei
+sistemi agentici (con accesso a strumenti, mail, file) il danno smette di
+essere un testo sbagliato e diventa un'azione. Sopra tutto sta la questione
+dell’**uso duale**: le stesse capacità che rendono un modello utile per
+chimica, biologia o codice possono assistere chi vuole nuocere. È una proprietà
+della capacità stessa, e ne fa una questione di controllo dell'accesso più che
+di addestramento.
 
 `````
 
@@ -602,8 +601,9 @@ pensato nessuno, del vento di traverso non si sa ancora niente.
 
 `````{tab} Superiore
 
-Il red-teaming, manuale o automatizzato, e le evals sono quelli della sezione
-sugli attacchi ai modelli di linguaggio. Fra le evals si distinguono quelle di
+Il red-teaming, manuale o automatizzato, e le evals sono quelli della
+{doc}`sezione sugli attacchi ai modelli di linguaggio
+</AIResponsabile/sicurezza-llm>`. Fra le evals si distinguono quelle di
 *capacità* (cosa il modello sa fare) da quelle di *sicurezza* (tossicità,
 rifiuto di richieste illecite, resistenza ai jailbreak, propensione alle
 allucinazioni), spesso riassunte in metriche che si leggono in versi opposti:
@@ -645,7 +645,7 @@ anche l'ultimo.
 
 E c'è una differenza di natura fra la cima e il gradino sotto, che la forma
 della piramide non mostra. Sotto si autorizza a condizioni: il legislatore
-ammette che di quel sistema esista una versione fatta bene. In cima no, e la
+ammette che di quel sistema esista una versione fatta bene. In cima no: la
 ragione che il legislatore ne dà è che di certi usi una versione fatta bene non
 esiste. Un punteggio unico attaccato a ogni cittadino sposta comunque il potere
 su chi tiene il registro, e chi si ritrova il voto basso non ha nemmeno un
@@ -711,7 +711,7 @@ persone («stai parlando con un'AI», «questo video è generato»). In fondo, i
 *rischio minimo*: la stragrande maggioranza dei sistemi, senza obblighi
 particolari.
 
-Resta una domanda che a questo punto viene naturale: e i modelli come quelli che
+E i modelli come quelli che
 usiamo tutti i giorni per farci scrivere un testo, in quale gradino stanno? In
 nessuno, ed è il punto in cui la piramide non basta più. Un modello
 buono-per-tutto (il regolamento lo chiama di uso generale) non ha un impiego
@@ -802,24 +802,23 @@ rischi sistemici, cybersicurezza e segnalazione degli incidenti gravi (art. 55).
 Le sanzioni per le pratiche vietate arrivano fino a 35 milioni di euro o al 7%
 del fatturato mondiale annuo, il maggiore dei due (art. 99(3)).
 
-Fermiamoci un attimo su come si stabilisce quel «rischio sistemico»,
-perché è il punto in cui il regolamento cambia asse e contraddice la
-formula con cui si riassume di solito («non regola la tecnologia, regola
-l'uso»). La presunzione scatta oltre una soglia di calcolo di addestramento di
-$10^{25}$ FLOP (art. 51(2)), dove FLOP sta per *floating point operations*, il
-conto totale delle operazioni aritmetiche fatte per addestrare il modello. È un
-criterio di capacità, applicato al fornitore, prima e indipendentemente da
-qualunque impiego a valle: della sfera dell'uso non c'è più niente. Che sia
-stato necessario dipende dalla natura dell'oggetto, non da una scrittura
-difettosa: un modello generalista gli usi non li sceglie, quindi un criterio
-d'uso da solo non
-aveva presa. E la soglia è una presunzione, non la definizione: l'art. 51(1)
-definisce il rischio sistemico con le «capacità di impatto elevato», valutate
-con indicatori e parametri di riferimento, e il calcolo di addestramento ne è
-un indizio che non le misura. Per questo la Commissione può aggiornare la soglia
-«alla luce degli sviluppi tecnologici in evoluzione, quali miglioramenti
-algoritmici o una maggiore efficienza dell'hardware» (art. 51(3)), e può
-designare d'ufficio un modello che non la supera (art. 52).
+Il modo in cui si stabilisce quel «rischio sistemico» è il punto in cui il
+regolamento cambia asse e contraddice la formula con cui si riassume di solito
+(«non regola la tecnologia, regola l'uso»). La presunzione scatta oltre una
+soglia di calcolo di addestramento di $10^{25}$ FLOP (art. 51(2)), dove FLOP
+sta per *floating point operations*, il conto totale delle operazioni
+aritmetiche fatte per addestrare il modello. È un criterio di capacità,
+applicato al fornitore, prima e indipendentemente da qualunque impiego a valle:
+della sfera dell'uso non c'è più niente. Che sia stato necessario dipende dalla
+natura dell'oggetto, non da una scrittura difettosa: un modello generalista gli
+usi non li sceglie, quindi un criterio d'uso da solo non aveva presa. E la
+soglia è una presunzione, non la definizione: l'art. 51(1) definisce il rischio
+sistemico con le «capacità di impatto elevato», valutate con indicatori e
+parametri di riferimento, e il calcolo di addestramento ne è un indizio che non
+le misura. Per questo la Commissione può aggiornare la soglia «alla luce degli
+sviluppi tecnologici in evoluzione, quali miglioramenti algoritmici o una
+maggiore efficienza dell'hardware» (art. 51(3)), e può designare d'ufficio un
+modello che non la supera (art. 52).
 
 Sull'altra sponda dell'Atlantico l'approccio federale è volontario: il **NIST AI
 Risk Management Framework** (2023) propone quattro funzioni (*Govern, Map,
@@ -830,7 +829,7 @@ cambia in fretta).
 
 `````
 
-Resta la domanda che farebbe per prima chiunque si trovi dall'altra parte: e
+E
 poi con chi ci si lamenta? La risposta onesta è che dipende, e che fino a ieri
 spesso non c'era nessuno. Chi è valutato da un sistema automatico spesso non sa
 di esserlo, né come, e non ha un posto dove reclamare. È esattamente il vuoto
@@ -844,9 +843,8 @@ parte tecnica della stessa domanda, poter dire *perché* il sistema ha deciso
 così a una persona precisa, nella {doc}`sezione sulle spiegazioni locali
 </Interpretabilita/spiegazioni-locali>` del capitolo sull'interpretabilità.
 
-Dietro le regole c'è poi un dibattito che va reso esplicito, perché divide anche
-gli addetti ai lavori: è quello annunciato all'inizio del capitolo, quando si è
-detto che qui ci saremmo occupati dei danni misurabili adesso. Da un lato chi
+Dietro le regole c'è poi un dibattito sui danni da considerare prioritari, che
+va reso esplicito perché divide anche gli addetti ai lavori. Da un lato chi
 mette al centro i danni presenti e documentati (i pregiudizi, le violazioni di
 privacy, gli esempi avversari; per i modelli di linguaggio ne fanno un elenco,
 per esempio, Bender e colleghi {cite}`bender2021dangers`) e teme che
@@ -857,16 +855,16 @@ cominciare adesso: la dichiarazione del Center for AI Safety del 2023 chiede di
 trattare il rischio di estinzione dovuto all'AI come una priorità globale,
 accanto alle pandemie e alla guerra nucleare {cite}`cais2023statement`, e sulla
 stessa linea stanno Bengio e colleghi {cite}`bengio2024managing`. Non è una
-disputa che si possa chiudere adesso; ma è onesto notare che
-non si escludono a vicenda: un ponte va progettato sia contro le crepe di oggi
-sia contro il terremoto che forse verrà. Quello che le separa è il giudizio su
-quali danni siano più probabili e più gravi, e su quante risorse di ricerca e
-di regolazione spettino a ciascuno; deciderlo è di nuovo una scelta, non un
+disputa che si possa chiudere adesso; ma è onesto notare che non si escludono a
+vicenda: un ponte va progettato sia contro le crepe di oggi sia contro il
+terremoto che forse verrà. Quello che le separa è il giudizio su quali danni
+siano più probabili e più gravi, e su quante risorse di ricerca e di
+regolazione spettino a ciascuno; deciderlo è di nuovo una scelta, non un
 calcolo.
 
 ## L'onestà dovuta
 
-Chiudiamo dove il capitolo intero insiste. L'allineamento è oggi un'area di
+L'allineamento è oggi un'area di
 ricerca a pieno titolo, non un ritocco finale: abbiamo strumenti per
 *orientare* il comportamento dei modelli (RLHF, DPO, Constitutional AI,
 red-teaming, evals), non garanzie sul risultato. Sotto tutto corre una

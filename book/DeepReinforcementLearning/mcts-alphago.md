@@ -209,16 +209,16 @@ Due parole di gergo, che tornano nel codice e nei risultati: la radice è il
 punto di partenza dell'albero, le foglie sono le sue punte, cioè i sedici
 finali.
 
-Una precauzione, prima di leggere i numeri, e vale per tutto il resto del
-capitolo. Se lancio un dado una volta e fa sei, non posso dire che quel dado fa
-sempre sei: ho misurato quel lancio, non il dado. Lo stesso vale per un
-algoritmo che a ogni passo tira a sorte. Quindi l'esperimento sull'albero
-giocattolo si lancia sessanta volte, cambiando ogni volta il *seme*, cioè il
-numero da cui parte il sorteggio (dentro un computer il caso è una sequenza
-calcolata e non vero caso, che dipende tutta da quel numero iniziale, e
-cambiarlo è il modo di rifare l'esperimento daccapo). Di ciò che ne esce non si
-guarda un risultato: si guardano il valore di mezzo (la mediana: la metà delle
-sessanta prove sta sotto, l'altra metà sopra) e gli estremi.
+Una precauzione, prima di leggere i numeri. Se lancio un dado una volta e fa
+sei, non posso dire che quel dado fa sempre sei: ho misurato quel lancio, non
+il dado. Lo stesso vale per un algoritmo che a ogni passo tira a sorte. Quindi
+l'esperimento sull'albero giocattolo si lancia sessanta volte, cambiando ogni
+volta il *seme*, cioè il numero da cui parte il sorteggio. Dentro un computer
+il caso è una sequenza calcolata e non vero caso, che dipende tutta da quel
+numero iniziale: cambiarlo è il modo di rifare l'esperimento daccapo. Di ciò
+che ne esce non si guarda un singolo risultato: si guardano il valore di mezzo
+(la mediana: la metà delle sessanta prove sta sotto, l'altra metà sopra) e gli
+estremi.
 
 ```python
 import math
@@ -379,13 +379,13 @@ dalla ricerca è migliore di quella che la rete avrebbe scelto da sola, ed è un
 esempio su cui la rete può allenarsi.
 
 Ecco la fonte di supervisione interna: non serve un maestro, basta giocare
-contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo,
-nella versione pubblicata quell'anno, questo giro lo faceva solo a metà: la
-rete di policy aveva imparato prima a imitare le partite umane e poi si era
-affinata giocando contro sé stessa; la rete di valore invece si era allenata
-soltanto su posizioni prese da quelle partite contro sé stessa, perché sulle
-partite umane, dove posizioni consecutive quasi identiche condividono lo stesso
-esito, imparava a memoria i risultati invece di stimarli.
+contro sé stessi e imparare da dove la ricerca ha portato. Nel 2016 AlphaGo
+questo giro lo faceva solo a metà: la rete di policy aveva imparato prima a
+imitare le partite umane e poi si era affinata giocando contro sé stessa; la
+rete di valore invece si era allenata soltanto su posizioni prese da quelle
+partite contro sé stessa, perché sulle partite umane, dove posizioni
+consecutive quasi identiche condividono lo stesso esito, imparava a memoria i
+risultati invece di stimarli.
 
 Un anno dopo, **AlphaGo Zero** {cite}`silver2017mastering` elimina persino le
 partite umane: parte dalle sole regole del Go e impara *tabula rasa*, dal
@@ -427,7 +427,7 @@ un giudizio che gli esseri umani danno con buona coerenza fra loro; assegnare
 un voto da uno a dieci molto meno, e su scale diverse. Nell’**RLHF**
 (*Reinforcement Learning from Human Feedback*, cioè apprendimento per rinforzo
 dal giudizio umano; {cite}`christiano2017deep`, {cite}`ouyang2022training`) le
-risposte del modello sono l’"azione", dei valutatori umani indicano quali
+risposte del modello sono l’"azione", i valutatori umani indicano quali
 preferiscono, e le loro preferenze addestrano un *modello di ricompensa*, che
 da lì in poi assegna il premio a ogni risposta. Con PPO si ritocca poi la
 policy del modello (la sua tendenza a produrre certe risposte), verso ciò che

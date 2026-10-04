@@ -119,7 +119,8 @@ numerico, $N = 576$ e $T = 20$: passare da $M = 32$ a $M = N$ moltiplica il
 termine quadratico per $(596/52)^2 \approx 131$. Quel $131$ però non è il
 rapporto fra i due costi: a $M + T \approx 600$ e $d_t = 4096$ il termine
 quadratico vale il $2{,}4\%$ del blocco (è il conto $4(M+T)^2 d_t$ contro $24
-(M+T) d_t^2$ che la sezione sulla risoluzione fa per esteso), e i FLOP totali
+(M+T) d_t^2$ che la {doc}`sezione sulla risoluzione
+</VisioneLinguaggio/risoluzione-e-dettaglio>` fa per esteso), e i FLOP totali
 per strato scendono di $11{,}7$ volte, cioè quanto la sequenza. Quello che si
 paga davvero, a queste lunghezze, è il contesto occupato e la KV cache, che
 crescono linearmente: per un modello da sette miliardi di parametri con
@@ -248,15 +249,15 @@ dalla concatenazione $[\mathbf{Z}; \mathbf{L}]$ delle feature visive,
 appiattite in un'unica sequenza e già proiettate in $\mathbb{R}^{N \times d}$
 (la concatenazione avviene lungo l'asse della sequenza, quindi la dimensione di
 feature dev'essere la stessa dei latenti), con i latenti stessi, che quindi
-attendono anche a sé: $\mathbf{R} = \mathrm{XAttn}(\mathbf{L}, [\mathbf{Z};
-\mathbf{L}]) \in \mathbb{R}^{K \times d}$, ripetuta per qualche strato con un
-feed-forward dopo ciascuno. Qualunque sia $N$ (una sola immagine, oppure le
-feature spazio-temporali di un video) l'uscita ha sempre $K$ righe, e il costo
-a valle diventa indipendente dalla risoluzione e dalla durata: è questa, nel
-lavoro, la ragione del Resampler, perché le cross-attention accetterebbero un
-numero qualunque di chiavi e valori, ma a un costo che cresce con $N$ a ogni
-strato in cui compaiono. Il Resampler stesso costa $O\big(K(N+K)d\big)$ per
-strato, lineare in $N$.
+calcolano l'attenzione anche su di sé: $\mathbf{R} = \mathrm{XAttn}(\mathbf{L},
+[\mathbf{Z}; \mathbf{L}]) \in \mathbb{R}^{K \times d}$, ripetuta per qualche
+strato con un feed-forward dopo ciascuno. Qualunque sia $N$ (una sola immagine,
+oppure le feature spazio-temporali di un video) l'uscita ha sempre $K$ righe, e
+il costo a valle diventa indipendente dalla risoluzione e dalla durata: è
+questa, nel lavoro, la ragione del Resampler, perché le cross-attention
+accetterebbero un numero qualunque di chiavi e valori, ma a un costo che cresce
+con $N$ a ogni strato in cui compaiono. Il Resampler stesso costa
+$O\big(K(N+K)d\big)$ per strato, lineare in $N$.
 
 Il conto dei parametri, però, è severo: gli strati aggiunti sono blocchi di
 attenzione a dimensione piena distribuiti lungo tutta la pila, e nella variante
@@ -353,14 +354,13 @@ massimo sulle 32 query; nella generazione il testo vede le query e sé stesso in
 modo causale, le query non vedono il testo; nell'appaiamento si vedono tutti.
 Le query sono così costrette a raccogliere dall'immagine ciò che serve a
 scrivere il testo, perché il testo può arrivare all'immagine soltanto
-attraverso di loro. Solo nella
-seconda l'uscita viene proiettata e data al modello di linguaggio congelato, con
-la sola loss di modellazione del linguaggio. Senza la prima fase il Q-Former si
-addestra soltanto attraverso il modello di linguaggio congelato, come il
-Perceiver Resampler di Flamingo, e nelle prove degli autori le prestazioni
-sulle domande visive a zero esempi scendono molto; con OPT come modello di
-linguaggio peggiorano anzi via via che l'addestramento procede, per
-dimenticanza catastrofica.
+attraverso di loro. Solo nella seconda fase l'uscita viene proiettata e data al
+modello di linguaggio congelato, con la sola loss di modellazione del
+linguaggio. Senza la prima fase il Q-Former si addestra soltanto attraverso il
+modello di linguaggio congelato, come il Perceiver Resampler di Flamingo, e
+nelle prove degli autori le prestazioni sulle domande visive a zero esempi
+scendono molto; con OPT come modello di linguaggio peggiorano anzi via via che
+l'addestramento procede, per dimenticanza catastrofica.
 
 `````
 
@@ -491,7 +491,7 @@ disponibile il massimo condizionamento; è la stessa logica per cui il collo di
 bottiglia del seq2seq classico è stato sciolto dall'attenzione di Bahdanau
 invece che da un vettore di contesto più grande.
 
-Quattro onestà, per non trasformare un'osservazione in un dogma. La prima: la
+Quattro precisazioni, per non trasformare un'osservazione in un dogma. La prima: la
 cecità alla domanda non è inevitabile, e InstructBLIP
 {cite}`dai2023instructblip` la toglie passando l'istruzione dentro il Q-Former
 insieme alle query. La seconda: a parità di numero di token, le ablazioni

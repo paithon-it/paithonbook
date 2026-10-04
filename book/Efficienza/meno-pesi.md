@@ -417,12 +417,13 @@ perde uno, e la rete ci rimette. Per questo, dopo aver azzerato, la si fa
 studiare di nuovo, per tutto il tempo che era servito la prima volta, e i pesi
 rimasti imparano a coprire quelli tolti: così torna quasi dov'era. Con i
 modelli linguistici grandi, però, ripetere l'addestramento costerebbe troppo, e
-si pota senza rifarlo. Lì la regola dei due su quattro fa perdere più che
-togliere la stessa metà dei pesi dove si vuole, e un ripasso breve recupera
-buona parte della differenza, senza colmarla. E la velocità doppia vale per le
-moltiplicazioni: i numeri da portare dalla memoria non si dimezzano, e l'intero
-calcolo accelera meno di due volte, in un modello grande una volta e mezza per
-le moltiplicazioni di uno strato e un quarto in più per la risposta intera.
+si pota senza rifarlo. Lì la regola dei due su quattro fa perdere più punti
+rispetto a togliere la stessa metà dei pesi dove si vuole, e un ripasso breve
+recupera buona parte della differenza, senza colmarla. E la velocità doppia
+vale per le moltiplicazioni: i numeri da portare dalla memoria non si
+dimezzano, e l'intero calcolo accelera meno di due volte, in un modello grande
+una volta e mezza per le moltiplicazioni di uno strato e un quarto in più per
+la risposta intera.
 
 `````
 
@@ -828,7 +829,7 @@ rete con un decimo dei pesi che funziona, perché ho dovuto addestrare quella
 grande? Perché non parto da quella piccola?
 
 La risposta sta nella {doc}`sezione su overfitting e validazione
-</MachineLearning/overfitting-validazione>`, che la dà parlando di quanto male
+</MachineLearning/overfitting-validazione>`, proprio dove mostra quanto male
 il numero di parametri misuri la complessità di un modello: quella sottorete
 funziona se la si riaddestra con i numeri di partenza che aveva (sulle reti
 grandi, con quelli di poche iterazioni dopo l’inizio), e reinizializzandola a

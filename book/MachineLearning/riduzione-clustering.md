@@ -46,7 +46,7 @@ ocra, sono gli angoli. In dieci dimensioni del centro non resta praticamente
 niente.
 ```
 
-Il conto di {numref}`fig-maledizione-dimensionalita` dice che in tante
+Il conto di {numref}`fig-maledizione-dimensionalita` mostra che in tante
 dimensioni il volume sta lontano dal centro. Il secondo effetto riguarda le
 distanze. Con $d$ dimensioni, il quadrato della distanza fra due punti è una
 somma di $d$ termini, uno per coordinata; se le coordinate sono indipendenti, la
@@ -375,7 +375,7 @@ la seconda (PC2), ortogonale, ne raccoglie molta meno. Proiettare i punti su
 PC1 comprime i dati da due dimensioni a una, perdendo poco.
 ```
 
-A cosa serve, in concreto? A comprimere i dati (meno numeri da salvare e da
+In concreto, la PCA serve a comprimere i dati (meno numeri da salvare e da
 passare ai modelli); a visualizzare in due o tre dimensioni dataset con
 centinaia di feature; a ripulirli dal rumore (*denoising*), se il segnale ha
 varianza maggiore del rumore: proiettando sulle prime componenti si scarta il
@@ -403,7 +403,7 @@ hanno lo stesso quadrato: mentre il numero sale da $-1$ a $1$, il quadrato prima
 scende e poi risale, e nel complesso non tende a salire con lui né a scendere. E
 quando i dati nascono mescolando segnali indipendenti fra loro, le *sorgenti*,
 la PCA restituisce altre miscele. Colin Cherry chiamò problema del *cocktail
-party* il capire che cosa dice una persona mentre altre parlano insieme
+party* la capacità di isolare la voce di una persona mentre altre parlano insieme
 {cite}`cherry1953experiments`; nella versione per le macchine due persone
 parlano nella stessa stanza, due microfoni in punti diversi registrano ciascuno
 un miscuglio delle due voci, e si vogliono riavere le voci separate senza sapere
@@ -507,7 +507,7 @@ miscela residua $\mathbf{z} = \tilde{\mathbf{A}}\mathbf{s}$ ha
 $\tilde{\mathbf{A}}\tilde{\mathbf{A}}^\top = \mathbf{I}$: resta da trovare una
 rotazione, cioè $n(n-1)/2$ angoli invece degli $n^2$ numeri di una matrice
 qualunque (le riflessioni le assorbe l'indeterminazione di segno). È qui che la
-gaussiana si tira fuori da sola: una gaussiana sbiancata è isotropa, ogni
+gaussiana fa eccezione: una gaussiana sbiancata è isotropa, ogni
 rotazione la lascia identica, e nessun criterio che guardi la distribuzione dei
 valori può sceglierne una. Con una sola sorgente gaussiana la rotazione è
 fissata lo stesso, dalle altre $n-1$ direzioni per ortogonalità; con due o più
@@ -1020,7 +1020,7 @@ predefinito fa una partenza sola.
 
 ## DBSCAN: seguire la densità, non i centri
 
-E se i gruppi non fossero pallini tondi ma serpenti, anelli, spirali? Serve
+Quando i gruppi non sono pallini tondi ma serpenti, anelli o spirali, serve
 un'idea diversa da «un centro e tutto ciò che gli sta attorno». **DBSCAN**
 (Ester, Kriegel, Sander e Xu, 1996) {cite}`ester1996density` cambia
 prospettiva: un cluster è una **regione densa** di punti, e le regioni dense

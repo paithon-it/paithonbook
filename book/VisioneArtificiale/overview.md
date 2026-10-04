@@ -201,26 +201,27 @@ furono i filtri disegnati a mano.
 
 Le invarianze si ottengono in tre modi, che il resto del capitolo percorre
 tutti. Per architettura: la condivisione dei pesi della convoluzione dà
-l'equivarianza alla traslazione, e il pooling una tolleranza locale alle piccole
-traslazioni, che però è un'intenzione di progetto più che una proprietà
-ottenuta: il sottocampionamento ignora il teorema del campionamento, come si è
-visto parlando del pooling nel capitolo precedente, e per aliasing una CNN
-moderna resta sorprendentemente sensibile a uno spostamento di pochi pixel. Su
-ImageNet una ResNet-50 assegna la stessa classe a due copie della stessa
-immagine spostate a caso nell’$89{,}2\%$ dei casi, e nel resto cambia idea
-{cite}`zhang2019making`. Per dati: la *data augmentation* espone il modello alle
-trasformazioni che deve ignorare, ed è un modo di iniettare un'invarianza senza
-cablarla nell'architettura. Per addestramento: l'apprendimento
-auto-supervisionato costruisce il compito proprio a partire dalla scelta di
-quali trasformazioni debbano lasciare invariata la rappresentazione, e lì la
-scelta delle trasformazioni coincide con la definizione del problema.
+l'equivarianza alla traslazione, e il pooling una tolleranza locale alle
+piccole traslazioni. Quest'ultima, però, è un'intenzione di progetto più che
+una proprietà garantita: come si è visto parlando del pooling nel capitolo
+precedente, il sottocampionamento ignora il teorema del campionamento. Di
+conseguenza, a causa dell'aliasing, una CNN moderna resta sorprendentemente
+sensibile a uno spostamento di pochi pixel. Su ImageNet una ResNet-50 assegna
+la stessa classe a due copie della stessa immagine spostate a caso
+nell’$89{,}2\%$ dei casi, e nel resto cambia idea {cite}`zhang2019making`. Per
+dati: la *data augmentation* espone il modello alle trasformazioni che deve
+ignorare, ed è un modo di iniettare un'invarianza senza cablarla
+nell'architettura. Per addestramento: l'apprendimento auto-supervisionato
+costruisce il compito proprio a partire dalla scelta di quali trasformazioni
+debbano lasciare invariata la rappresentazione, e lì la scelta delle
+trasformazioni coincide con la definizione del problema.
 
 `````
 
 ## I compiti della visione
 
-Avere i numeri è solo l'inizio. La domanda vera è: *che cosa chiediamo alla
-rete di produrre?* Da qui nascono i quattro compiti fondamentali, che si
+Avere i numeri è solo l'inizio: occorre decidere che cosa chiedere alla
+rete di produrre. Da qui nascono i quattro compiti fondamentali, che si
 possono leggere come una scala di ambizione crescente
 ({numref}`fig-compiti-visione`).
 
@@ -311,13 +312,15 @@ scrivi tu la regola per trovarlo.
 È la storia che il {doc}`capitolo sul deep learning </DeepLearning/overview>`
 racconta in generale, e sulle immagini è andata così. Un esperto progettava a
 mano dei "rilevatori": una formula per scovare i bordi (dove il colore cambia
-bruscamente è probabile ci sia un contorno), un'altra per le forme, un'altra per
-gli angoli. Quei rilevatori non decidevano niente da soli: passavano la foto al
-setaccio e ne tiravano fuori una scheda di misure (tanti bordi verticali qui,
-tanti obliqui là), e a dire "gatto" oppure "non gatto" ci pensava un secondo
-programma, addestrato su esempi già etichettati. Imparare dagli esempi si faceva
-già, insomma; si imparava però soltanto l'ultimo passo, e il setaccio restava
-quello che l'esperto aveva costruito a mano.
+bruscamente è probabile ci sia un contorno), un'altra per le forme, un'altra
+per gli angoli. Anche la formula più semplice nascondeva un mestiere: prima di
+cercare i salti di colore bisognava sfocare un poco la foto, altrimenti ogni
+granello di rumore sembrava un bordo. Quei rilevatori non decidevano niente da
+soli: passavano la foto al setaccio e ne tiravano fuori una scheda di misure
+(tanti bordi verticali qui, tanti obliqui là), e a dire "gatto" oppure "non
+gatto" ci pensava un secondo programma, addestrato su esempi già etichettati.
+Imparare dagli esempi si faceva già, ma riguardava soltanto l'ultimo passo: il
+setaccio restava quello che l'esperto aveva costruito a mano.
 
 Funzionava, ma solo fino a un certo punto: ogni nuovo problema richiedeva nuove
 regole cucite a mano, e la realtà (luci, ombre, angolazioni) è troppo varia per
@@ -336,11 +339,14 @@ l'ingegnere: emergono dai dati.
 L'era delle *feature* ingegnerizzate ci ha lasciato strumenti tuttora eleganti:
 il rilevatore di bordi di **Canny** (1986), i descrittori **SIFT** di Lowe
 (1999, nella forma canonica del 2004), invarianti a scala e rotazione, e
-l'istogramma dei gradienti orientati
-**HOG** di Dalal e Triggs {cite}`dalal2005histograms`, a lungo lo standard
-per il rilevamento di
-pedoni. Erano feature *fisse*, seguite da un classificatore addestrabile (spesso
-una SVM).
+l'istogramma dei gradienti orientati **HOG** di Dalal e Triggs
+{cite}`dalal2005histograms`, a lungo lo standard per il rilevamento di pedoni.
+Canny, per dirne uno, smussa l'immagine con una gaussiana prima di derivarla,
+perché la derivata da sola amplifica il rumore pixel per pixel; poi tiene,
+lungo la direzione del gradiente, soltanto i massimi locali, e decide quali
+sono bordi con due soglie collegate per isteresi
+{cite}`canny1986computational`. Erano feature *fisse*, seguite da un
+classificatore addestrabile (spesso una SVM).
 
 La rottura arriva con le reti convoluzionali. LeCun e colleghi mostrano già nel
 1998, con LeNet-5, che una CNN può imparare da sola i filtri leggendo cifre
@@ -356,23 +362,23 @@ di partenza di molte pipeline di ricostruzione tridimensionale.
 
 ## Il carburante: i grandi dataset
 
-Le reti convoluzionali non avrebbero spiccato il volo senza qualcosa su cui
-volare. Il progetto ImageNet, guidato da Fei-Fei Li, viene presentato nel 2009
-con 3,2 milioni di immagini etichettate ed è poi cresciuto fino a oltre
-quattordici milioni; la sua gara annuale (la *ImageNet Large Scale Visual
-Recognition Challenge*) usa un sottoinsieme di mille categorie ed è la palestra
-su cui, nel 2012, AlexNet ottiene il risultato che apre la strada alle reti
-convoluzionali profonde. Poco dopo arriva **COCO** (*Common Objects in Context*,
-2014), con centinaia di migliaia di immagini annotate non solo con l'etichetta,
-ma con i riquadri e le maschere (le sagome pixel per pixel di poco fa) di circa
-ottanta categorie di oggetti comuni: il banco di prova naturale per rilevamento
-e segmentazione. La lezione vale per tutto il deep learning: un'architettura
-rende quanto le permettono i dati con cui la si addestra.
+Le reti convoluzionali non si sarebbero imposte senza enormi quantità di dati
+su cui addestrarsi. Il progetto ImageNet, guidato da Fei-Fei Li, viene
+presentato nel 2009 con 3,2 milioni di immagini etichettate ed è poi cresciuto
+fino a oltre quattordici milioni; la sua gara annuale (la *ImageNet Large Scale
+Visual Recognition Challenge*) usa un sottoinsieme di mille categorie ed è la
+palestra su cui, nel 2012, AlexNet ottiene il risultato che apre la strada alle
+reti convoluzionali profonde. Poco dopo arriva **COCO** (*Common Objects in
+Context*, 2014), con centinaia di migliaia di immagini annotate non solo con
+l'etichetta, ma con i riquadri e le maschere (le sagome pixel per pixel di poco
+fa) di circa ottanta categorie di oggetti comuni: il banco di prova naturale
+per rilevamento e segmentazione. La lezione vale per tutto il deep learning:
+un'architettura rende quanto le permettono i dati con cui la si addestra.
 
 ## Dalla classificazione alla geometria
 
-Il mattone fondamentale, la convoluzione, e le reti convoluzionali che ne sono
-fatte le abbiamo costruite nella {doc}`sezione sulle reti convoluzionali
+Il mattone fondamentale, la convoluzione, e le reti che si basano su di essa sono
+state introdotte nella {doc}`sezione sulle reti convoluzionali
 </DeepLearning/reti-convoluzionali>` del capitolo precedente, insieme alle
 architetture che hanno fatto scuola: qui le diamo per acquisite e le mettiamo al
 lavoro. Si parte da dove serve davvero, cioè dai dati. Prima riusare una rete
@@ -390,7 +396,7 @@ prima riguarda la geometria che lega una fotografia alla scena da cui viene, e
 che permette di ricavare la profondità da due viste o dal movimento. È la parte
 più antica della visione artificiale, perché il modello di fotocamera che
 useremo è la prospettiva dei pittori del Quattrocento, ed è anche quella che le
-reti non hanno sostituito ma su cui hanno costruito. La seconda è un modo nuovo
+reti non hanno sostituito, ma a cui si sono appoggiate. La seconda è un modo nuovo
 di rappresentare una scena: invece di ricostruire un oggetto solido si addestra
 una funzione che a ogni punto dello spazio, guardato da ogni direzione, associa
 un colore e una densità, e la funzione può essere una piccola rete oppure una

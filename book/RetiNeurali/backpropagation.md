@@ -82,7 +82,7 @@ finale è la previsione $\hat{\mathbf{y}} = \mathbf{a}^{[L]}$. Ogni strato non �
 che il prodotto matrice-vettore già incontrato in algebra lineare, "avvolto" in
 una non linearità.
 
-Conviene fissare subito anche le forme, che rendono verificabile a mano
+Fissare le forme dei tensori rende verificabile a mano
 ogni formula che segue, a partire dalla
 trasposta che comparirà nel passaggio all'indietro. Se lo strato $l$ ha $n_l$
 neuroni, allora
@@ -101,11 +101,10 @@ forme non combaciano, la formula è sbagliata, e non serve altro per accorgersen
 
 ## Quanto abbiamo sbagliato: la funzione di loss
 
-Il numero che dice *quanto* la rete ha sbagliato rispetto alla risposta giusta è
-la loss, e da dove venga la sua forma lo ha già ricavato la sezione {doc}`Da
-dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`. Qui la si prende per
-data e se ne calcolano le derivate, perché imparare significa renderla il più
-piccola possibile.
+Il numero che dice *quanto* la rete ha sbagliato rispetto alla risposta giusta
+è la loss, e da dove venga la sua forma lo ha già ricavato la sezione {doc}`Da
+dove viene la loss </RetiNeurali/da-dove-viene-la-loss>`. Imparare significa
+renderla il più piccola possibile, e a questo scopo servono le sue derivate.
 
 `````{tab} Elementare
 
@@ -316,9 +315,8 @@ percorsa a ritroso. Scriviamo tutto per un singolo esempio, con la sua loss
 $\ell$: il gradiente della loss media di un mini-batch (il gruppo di esempi su
 cui si fa un aggiornamento) è la media di questi contributi, uno per esempio.
 
-Serve un nome per la quantità che si propaga, ed è l'unica definizione da tenere
-a mente: il **segnale d'errore** dello strato $l$ è la derivata della loss
-$\ell$ rispetto alla sua pre-attivazione,
+Diamo un nome alla quantità che si propaga: il **segnale d'errore** dello
+strato $l$ è la derivata della loss $\ell$ rispetto alla sua pre-attivazione,
 
 $$
 \boldsymbol{\delta}^{[l]} \;\equiv\; \frac{\partial \ell}{\partial \mathbf{z}^{[l]}} \;\in\; \mathbb{R}^{n_l},
@@ -534,7 +532,7 @@ ciascun parametro (RMSProp), o tutte e due le cose (Adam
 
 `````
 
-C'è un rovescio della medaglia, e sta proprio nella cosa più comoda. Che i
+Che i
 passi si accorcino da soli, come in {numref}`fig-discesa-passi`, è comodo e
 insieme un problema. Comodo perché
 l'algoritmo rallenta da sé arrivando a destinazione, senza che nessuno glielo
@@ -580,8 +578,7 @@ Si racconta anche che i mini-batch piccoli portino a fermarsi in valli larghe
 invece che in fessure strette, e che sia un bene: una soluzione che regge
 anche spostandola un po’ dovrebbe reggere meglio sui dati nuovi, quelli che la
 rete non ha mai visto. Il fenomeno è documentato {cite}`keskar2017large`; la
-spiegazione, invece, è contestata, e conviene dirlo perché è una frase che si
-ripete come se fosse assodata.
+spiegazione, invece, è contestata, benché continui a essere ripetuta come assodata.
 
 L'obiezione è che "larga" e "stretta", misurate così, non dicono niente sul
 modello. In una rete con la ReLU si possono moltiplicare per dieci i pesi di uno
@@ -633,17 +630,18 @@ strati. Si arrangiano su quello che i primi strati passano loro, che è rimasto
 quasi com'era all'inizio, cioè quasi a caso. Dal di fuori sembra addestramento;
 dal di dentro, metà della rete è ferma.
 
-"A caso" è da prendere alla lettera, ed è l'occasione per dire da dove parte una
-rete: i pesi si estraggono a sorte, piccoli, non si mettono a zero. Il
-percettrone, nella sezione che porta il suo nome, poteva permetterselo perché
-aveva un neurone solo; in uno strato di cento, con tutti i pesi a zero i cento
-neuroni calcolerebbero lo stesso identico numero, riceverebbero la stessa
-identica correzione e resterebbero uguali fra loro per sempre, come già diceva
-il biglietto vincente della {doc}`sezione su overfitting e validazione
+"A caso" è da prendere alla lettera, perché all'inizio i pesi di una rete si
+estraggono a sorte, piccoli, e non si mettono a zero. Il percettrone, nella
+sezione che porta il suo nome, poteva permetterselo perché aveva un neurone
+solo; in uno strato di cento, con tutti i pesi a zero i cento neuroni
+calcolerebbero lo stesso identico numero, riceverebbero la stessa identica
+correzione e resterebbero uguali fra loro per sempre, come già diceva il
+biglietto vincente della {doc}`sezione su overfitting e validazione
 </MachineLearning/overfitting-validazione>`. Il caso iniziale serve a rompere
 quella simmetria. Quanto piccoli, e con quale regola, è una scelta che pesa
 parecchio, e la tratta la sezione su {doc}`ottimizzazione e regolarizzazione
-</DeepLearning/ottimizzazione-regolarizzazione>` del capitolo sul deep learning.
+</DeepLearning/ottimizzazione-regolarizzazione>` del capitolo sul deep
+learning.
 
 `````{tab} Elementare
 

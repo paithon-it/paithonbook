@@ -14,9 +14,9 @@ si dice che non ha **rappresentazioni interne**.
 La risposta a tutti e due i limiti si chiama **macchina di Boltzmann**, e
 aggiunge alla rete di Hopfield esattamente due ingredienti: la temperatura
 (la scossa di cui si diceva in apertura di capitolo) e i **neuroni nascosti**,
-che sono quelle caselle libere per gli appunti: nascosti perché non si vedono
+le caselle libere per gli appunti. Si chiamano così perché non si vedono
 né in entrata né in uscita, come i neuroni degli strati intermedi di una rete,
-mentre le caselle su cui si posano i dati si chiamano per contrasto visibili.
+mentre le caselle su cui si posano i dati si dicono per contrasto visibili.
 Il nome compare già nel 1983, in un lavoro di Scott Fahlman, Geoffrey Hinton e
 Terrence Sejnowski {cite}`fahlman1983massively`; l'articolo che ne fissa
 l'algoritmo di apprendimento,
@@ -147,16 +147,16 @@ necessarie. I pesi devono restare simmetrici: senza $w_{ij} = w_{ji}$ la
 dinamica ha in generale una distribuzione stazionaria diversa da questa, e di
 solito senza forma chiusa (ed è un altro mestiere della simmetria, rispetto a
 quello di garantire la discesa che aveva nella sezione precedente).
-L'aggiornamento dev'essere asincrono: ogni aggiornamento di un neurone è una
-mossa del campionamento di Gibbs, che lascia invariata questa distribuzione, e
-scegliendo il neurone a caso vale anche il bilancio dettagliato, mentre con una
-scansione in ordine fisso, o per permutazioni come nel codice della memoria
-di Hopfield, resta l'invarianza ma la catena composta non è reversibile. La
-temperatura dev'essere $T > 0$ (a $T = 0$ la catena si inchioda nel primo
-minimo). E ogni neurone va visitato infinitamente spesso. Con l'aggiornamento
-sincrono, quello di Little, la distribuzione stazionaria è un'altra, per la
-stessa differenza che nella sezione precedente faceva cadere la garanzia di
-discesa. I neuroni si dividono in visibili (dove si presentano i dati) e
+L'aggiornamento dev'essere asincrono: con l'aggiornamento sincrono, quello di
+Little, la distribuzione stazionaria è un'altra, per la stessa differenza che
+nella sezione precedente faceva cadere la garanzia di discesa. Inoltre, ogni
+aggiornamento di un neurone è una mossa del campionamento di Gibbs che lascia
+invariata questa distribuzione, e scegliendo il neurone a caso vale anche il
+bilancio dettagliato; con una scansione in ordine fisso (o per permutazioni,
+come nel codice della memoria di Hopfield) resta l'invarianza ma la catena
+composta non è reversibile. La temperatura dev'essere $T > 0$ (a $T = 0$ la
+catena si inchioda nel primo minimo). E ogni neurone va visitato infinitamente
+spesso. I neuroni si dividono in visibili (dove si presentano i dati) e
 nascosti (variabili latenti che catturano regolarità di ordine superiore).
 L'apprendimento massimizza la verosimiglianza dei dati sui visibili, e il
 gradiente ha una forma di contrasto di rara eleganza:
@@ -168,9 +168,9 @@ $$
 
 dove $\langle \cdot \rangle$ è il valore atteso (le parentesi angolari sono la
 notazione dei fisici per l’$\mathbb{E}[\cdot]$ del resto del libro, e qui si
-tengono perché è così che la formula si trova in letteratura), il primo
+tengono perché è così che la formula si trova in letteratura). Il primo
 termine è la correlazione media tra i neuroni $i$ e $j$ con i
-visibili bloccati sui dati (fase positiva, la «veglia») e il secondo la
+visibili bloccati sui dati (fase positiva, la «veglia»), e il secondo la
 stessa correlazione con la rete libera di campionare da sé (fase negativa,
 il «sogno»). Il «$\propto$» nasconde un $1/T$: il tasso di apprendimento
 effettivo dipende dalla temperatura a cui si raccolgono le statistiche. La
@@ -192,7 +192,7 @@ stimata anch'essa portando una catena all'equilibrio, per *ogni* vettore
 d'addestramento. Ackley, Hinton e Sejnowski, nell'esperimento 40-10-40 del
 loro articolo, ricuociono la rete una volta con ciascuno dei quaranta vettori
 bloccati e altrettante volte senza bloccare niente, per ogni passo di
-gradiente: ottanta ricotture per un solo aggiornamento dei pesi, e la fase
+gradiente: ottanta ricotture per un solo aggiornamento dei pesi. La fase
 positiva ne costa esattamente quanto la negativa, perché va rifatta dato per
 dato. È questo doppio ciclo a rendere l'algoritmo originale inutilizzabile
 oltre i problemi giocattolo, ed è metà esatta di quel doppio ciclo che l'RBM,
@@ -205,14 +205,14 @@ fra poco, farà sparire.
 La via d'uscita arriva quasi vent'anni dopo, ed è di nuovo di Hinton: la
 **contrastive divergence** {cite}`hinton2002training`, che in italiano
 suonerebbe «divergenza contrastiva». Il nome viene dall'obiettivo che Hinton
-scrive: una differenza fra due divergenze di Kullback e Leibler, la misura di
-quanto una distribuzione si discosta da un'altra che il {doc}`capitolo sulla
-teoria dell'informazione </Matematica/teoria-informazione>` ha costruito,
-$\mathrm{KL}(p_0 \,\|\, p_\theta) - \mathrm{KL}(p_k \,\|\, p_\theta)$. Qui
-$p_\theta$ è la distribuzione del modello, $p_0$ quella dei dati e $p_k$
-quella del sogno abbreviato, cioè degli stati in cui arriva la rete lasciata
-evolvere per $k$ passi partendo dai dati. Dentro c'è il contrasto fra veglia e
-sogno di cui si è appena detto. In una riga: rinunciare al sogno
+scrive: una differenza fra due divergenze di Kullback e Leibler, la misura
+(costruita nel {doc}`capitolo sulla teoria dell'informazione
+</Matematica/teoria-informazione>`) di quanto una distribuzione si discosta da
+un'altra, $\mathrm{KL}(p_0 \,\|\, p_\theta) - \mathrm{KL}(p_k \,\|\,
+p_\theta)$. Qui $p_\theta$ è la distribuzione del modello, $p_0$ quella dei
+dati e $p_k$ quella del sogno abbreviato, cioè degli stati in cui arriva la
+rete lasciata evolvere per $k$ passi partendo dai dati. Dentro c'è il contrasto
+fra veglia e sogno di cui si è appena detto. In una riga: rinunciare al sogno
 completo. Invece di lasciar sognare la macchina finché il sogno non si assesta,
 la si fa partire da una cosa vera e le si concede un istante solo di fantasia.
 
@@ -233,19 +233,19 @@ la macchina si illude. Si chiama **contrastive divergence persistente**, dove
 «persistente» è il sogno che non viene mai interrotto.
 
 C'è un prezzo, ed è meglio saperlo che credere di aver trovato una scorciatoia
-gratis. Di solito, quando una macchina impara, c'è un numero che dice quanto sta
-sbagliando. Non è l'energia: l'energia è il voto dato a una singola risposta,
-questo è un voto dato all'intera macchina, e lo si guarda una volta ogni
-tanto. Imparare vuol dire farlo calare: finché cala si è sulla strada giusta,
-e quando smette si è arrivati. Quel numero, qui, resta fuori portata:
+gratis. Di solito, quando una macchina impara, c'è un numero che dice quanto
+sta sbagliando. Non è l'energia: l'energia è il voto dato a una singola
+risposta, questo è un voto dato all'intera macchina, e lo si guarda una volta
+ogni tanto. Imparare vuol dire farlo calare: finché cala si è sulla strada
+giusta, e quando smette si è arrivati. Quel numero, qui, resta fuori portata:
 calcolarlo vorrebbe dire misurare il paesaggio intero, ed è il conto a cui è
 intitolata la sezione dopo. Lo si può soltanto stimare, con un conto lungo e
 approssimato che si fa di rado, per esempio per confrontare due macchine a
-lavoro finito. I ritocchi del sogno abbreviato gli somigliano ma
-non sono i suoi, e nel caso più studiato si è dimostrato che non sono nemmeno
-la discesa di nessun altro numero. Nessuno può garantire che la macchina stia
-andando verso qualcosa invece che in tondo. In pratica, sulle reti di allora,
-funzionava benissimo.
+lavoro finito. I ritocchi del sogno abbreviato somigliano a quelli che
+farebbero scendere quel numero, ma non sono i suoi, e nel caso più studiato si
+è dimostrato che non sono nemmeno la discesa di nessun altro numero. Nessuno
+può garantire che la macchina stia andando verso qualcosa invece che in tondo.
+In pratica, sulle reti di allora, funzionava benissimo.
 
 `````
 
@@ -288,7 +288,7 @@ $$
 
 Per $k \to \infty$ si ritrova il gradiente esatto; a $k$ finito
 l'aggiornamento trascura il termine che nasce dal fatto che anche $p_k$ dipende
-dai parametri. Costa $O(k \, n_v n_h)$ per esempio. È l'RBM a
+dai parametri. Costa $O(k \, n_v n_h)$ per esempio di addestramento. È l'RBM a
 riparare la metà cara di cui sopra; la contrastive divergence accorcia
 l'altra.
 
@@ -300,17 +300,18 @@ F(\mathbf{v}) = -\mathbf{a}^\top \mathbf{v}
 - \sum_{j=1}^{n_h} \log\!\big(1 + e^{\,b_j + (\mathbf{W}^\top \mathbf{v})_j}\big),
 $$
 
-che si calcola in $O(n_v n_h)$. Da lì i gradienti rispetto alle soglie hanno
-la stessa forma di contrasto: $\mathbb{E}_{\text{dati}}[\mathbf{v}] -
+che si calcola in $O(n_v n_h)$. Da lì i gradienti rispetto alle soglie hanno la
+stessa forma di contrasto: $\mathbb{E}_{\text{dati}}[\mathbf{v}] -
 \mathbb{E}_{p}[\mathbf{v}]$ per $\mathbf{a}$ e
 $\mathbb{E}_{\text{dati}}[\hat{\mathbf{h}}] - \mathbb{E}_{p}[\mathbf{h}]$ per
 $\mathbf{b}$. Fuori portata resta soltanto $Z$, che somma $e^{-F}$ su $2^{n_v}$
 configurazioni (o, simmetricamente, su $2^{n_h}$ configurazioni delle
-nascoste): è esatta in $O(2^{\min(n_v, n_h)}\, n_v n_h)$ finché il minimo dei
-due resta sotto una ventina, e oltre si stima, per esempio con l’*annealed
-importance sampling* {cite}`salakhutdinov2008quantitative`. È così che si
-confrontano due RBM, perché la log-verosimiglianza che la contrastive
-divergence non segue si può misurare solo passando da $Z$.
+nascoste): si calcola esattamente in $O(2^{\min(n_v, n_h)}\, n_v n_h)$ finché
+il minimo dei due resta sotto una ventina di unità, e oltre si stima, per
+esempio con l’*annealed importance sampling*
+{cite}`salakhutdinov2008quantitative`. È così che si confrontano due RBM,
+perché la log-verosimiglianza che la contrastive divergence non segue si può
+misurare solo passando da $Z$.
 
 Sulla natura di quell'aggiornamento conviene essere precisi, perché due cose
 diverse si confondono con facilità. Una stima *distorta* del gradiente della

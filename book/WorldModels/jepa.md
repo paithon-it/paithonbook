@@ -145,12 +145,12 @@ contro di esso.
 
 `````
 
-La {numref}`fig-jepa-architettura` mette i due mondi uno sopra l'altro, con le
-parole che da qui in poi tornano a ogni riga. Il contesto $\mathbf{x}$ è la
-parte che il modello vede, il target $\mathbf{y}$ (il bersaglio) la parte da
-prevedere. Un encoder ne produce le rappresentazioni, i vettori
-$\mathbf{s}_x$ e $\mathbf{s}_y$; il predictor stima $\mathbf{s}_y$ a partire
-da $\mathbf{s}_x$; un decoder, al contrario, ricostruirebbe l'input puntino per
+La {numref}`fig-jepa-architettura` mette i due mondi uno sopra l'altro,
+introducendo i termini dell'architettura. Il contesto $\mathbf{x}$ è la parte
+che il modello vede, il target $\mathbf{y}$ (il bersaglio) la parte da
+prevedere. Un encoder ne produce le rappresentazioni, i vettori $\mathbf{s}_x$
+e $\mathbf{s}_y$; il predictor stima $\mathbf{s}_y$ a partire da
+$\mathbf{s}_x$; un decoder, al contrario, ricostruirebbe l'input puntino per
 puntino. Riassunto, embedding, rappresentazione e «spazio delle idee» indicano
 qui lo stesso vettore, cambia soltanto il registro. Fa eccezione *latente*, che
 nei paper indica anche la variabile $\mathbf{z}$ della JEPA: quella non
@@ -166,7 +166,7 @@ indovinare anche l'irrilevante), la seconda lo predice nello spazio delle
 rappresentazioni, dove l'irrilevante può restare fuori.
 ```
 
-Adesso la figura si legge da sé. Nel pannello A il decoder deve tornare fino ai
+Nel pannello A della figura il decoder deve tornare fino ai
 singoli puntini, e la loss lo punisce anche su ogni foglia che trema; nel
 pannello B la previsione parte dal contesto e arriva al target senza mai uscire
 dallo **spazio delle rappresentazioni**, che è lo spazio delle idee del titolo,
@@ -295,7 +295,7 @@ che lo spiega l'hanno analizzata Tian, Chen e Ganguli
 {cite}`tian2021understanding`. Che un sistema senza coppie negative né termini
 contrastivi potesse non collassare era stata la scoperta empirica di BYOL nel
 2020, e aveva sorpreso la comunità. Una comprensione teorica completa del
-*perché* manca ancora, ed è giusto dirlo.
+*perché* manca ancora.
 
 Il documento del 2022 {cite}`lecun2022path` discute anche l'alternativa
 esplicitamente regolarizzata, alla VICReg {cite}`bardes2022vicreg`, dove a
@@ -313,20 +313,18 @@ V-JEPA, nei paper, si affidano invece all'asimmetria EMA.
 
 Nel documento del 2022 la JEPA è soprattutto un diagramma. La prima
 incarnazione che ne porta il nome arriva l'anno dopo, dal gruppo di LeCun a
-Meta AI:
-**I-JEPA** (*Image-based JEPA*, la JEPA per le immagini)
+Meta AI: **I-JEPA** (*Image-based JEPA*, la JEPA per le immagini)
 {cite}`assran2023self`, presentata alla conferenza CVPR. I pezzi sono quelli di
-poco fa. L'encoder è un Vision Transformer, la rete che nella
-{doc}`sezione sui modelli multimodali </Transformers/multimodalita>`
-tagliava l'immagine in tessere e le trattava come le parole di una
-frase {cite}`dosovitskiy2021image`. Il compito è un indovinello: dato un solo
-blocco di *contesto* dell'immagine, prevedere che cosa c'è in quattro blocchi
-*bersaglio* nascosti. La novità è tutta nel che cosa si prevede: non i
-puntini dei blocchi mancanti, ma i loro riassunti, calcolati dalla copia lenta
-di poco fa. Quella copia, da qui in avanti, la chiameremo anche con la sua
-sigla, **EMA** (*exponential moving average*, media mobile esponenziale): è il
-nome tecnico di quel mescolare, a ogni passo, un pochino dei numeri
-dell'allievo in quelli dell'insegnante.
+poco fa. L'encoder è un Vision Transformer, la rete che nella {doc}`sezione sui
+modelli multimodali </Transformers/multimodalita>` tagliava l'immagine in
+tessere e le trattava come le parole di una frase {cite}`dosovitskiy2021image`.
+Il compito è un indovinello: dato un solo blocco di *contesto* dell'immagine,
+prevedere che cosa c'è in quattro blocchi *bersaglio* nascosti. La novità è
+tutta nel che cosa si prevede: non i puntini dei blocchi mancanti, ma i loro
+riassunti, calcolati dalla copia lenta di poco fa. Quella copia prende la sigla
+di **EMA** (*exponential moving average*, media mobile esponenziale): è il nome
+tecnico per il mescolare, a ogni passo, un pochino dei numeri dell'allievo in
+quelli dell'insegnante.
 
 `````{tab} Elementare
 
@@ -390,16 +388,15 @@ data2vec è un predecessore; e il pre-addestramento del ViT-H/14 richiede meno d
 1200 ore-GPU (meno di 72 ore su 16 A100), oltre dieci volte meno di MAE a parità
 di architettura.
 
-Il risparmio, però, non viene da dove sembra. Calcolare i bersagli nello
-spazio delle rappresentazioni, invece che nei pixel, aggiunge costo,
-perché c'è un secondo encoder da mandare avanti a ogni passo: il paper misura
-circa il 7% in più per iterazione. Quel che risparmia è il *numero* di
-iterazioni, di circa cinque volte (300 epoche di pre-addestramento contro le
-1600 di MAE). Cinque volte meno passi non bastano però a fare un fattore
-dieci: quel rapporto confronta due addestramenti interi, che oltre alle epoche
-differiscono in ciò che sta attorno al backbone (un predictor fra embedding da
-una parte, un decoder di pixel dall'altra), non due costi per iterazione. La
-tesi giusta, che è anche la più interessante, suona così: spostare il
+Il risparmio, però, non viene da dove sembra. Calcolare i bersagli nello spazio
+delle rappresentazioni, invece che nei pixel, aggiunge costo, perché c'è un
+secondo encoder da mandare avanti a ogni passo: il paper misura circa il 7% in
+più per iterazione. Quel che risparmia è il *numero* di iterazioni, di circa
+cinque volte (300 epoche di pre-addestramento contro le 1600 di MAE). Cinque
+volte meno passi non bastano però a fare un fattore dieci: quel rapporto
+confronta due addestramenti interi, che oltre alle epoche differiscono in ciò
+che sta attorno al backbone (un predictor fra embedding da una parte, un
+decoder di pixel dall'altra), non due costi per iterazione. Spostare il
 bersaglio nello spazio delle rappresentazioni non rende più economico il
 singolo passo, rende necessari molti meno passi.
 
@@ -414,7 +411,7 @@ spazio-temporale, cioè aggiunge il tempo all'altezza e alla larghezza: si copre
 una regione del video (in gergo si dice **mascherare**) e se ne prevedono le
 rappresentazioni a partire dal resto.
 
-C'è una finezza che rivela quanto i video siano una bestia diversa. Un video è
+C'è una finezza che rivela quanto i video siano un problema diverso. Un video è
 una pila di fotogrammi, e i vicini si somigliano quasi in tutto: se la maschera
 coprisse zone diverse in fotogrammi diversi, il modello potrebbe barare
 copiando dal fotogramma accanto quello che nel suo manca. La maschera è perciò
@@ -521,23 +518,21 @@ tutti, ed è per questo che il protocollo va dichiarato insieme al numero.
 
 ## V-JEPA 2: il world model tocca il mondo
 
-Nel giugno 2025 arriva il passo successivo, ed è quello che riporta tutta
-questa storia al punto di partenza del capitolo: usare il modello per *agire*.
-**V-JEPA 2** {cite}`assran2025vjepa` ingrandisce la ricetta, con un modello da
-oltre un miliardo di parametri addestrato su più di un milione di ore di video
-presi da internet, e i punteggi salgono di conseguenza. Sul banco di prova del
-movimento, quello dello «spingere da sinistra a destra», le risposte giuste
-passano da sette a quasi otto su dieci (77,3%, sul banco che porta il nome
-buffo di Something-Something-v2). Poi
-c'è un esame più difficile, l'anticipazione: guardando una cucina ripresa in
-soggettiva, indovinare che cosa farà la persona nel secondo che viene. Il
-modello può proporre cinque risposte, e conta quante volte quella giusta è fra
-le cinque; il punteggio fa poi la media sui tipi di azione, così che quelle
-rare pesino quanto quelle frequenti (in gergo è il *recall@5*). V-JEPA 2
-arriva a 39,7 su cento; il miglior sistema precedente, otto volte più grosso,
-si fermava a 27,6. È un progresso grosso su un compito che resta largamente
-irrisolto, il che è già un buon motivo per diffidare di chi riassume queste
-cose con «ci riesce».
+Nel giugno 2025 arriva il passo successivo: usare il modello per *agire*.
+**V-JEPA 2** {cite}`assran2025vjepa` porta la ricetta su scala più grande, con
+un modello da oltre un miliardo di parametri addestrato su più di un milione di
+ore di video presi da internet, e i punteggi salgono di conseguenza. Sul banco
+di prova del movimento, quello dello «spingere da sinistra a destra», le
+risposte giuste passano da sette a quasi otto su dieci (77,3%, sul banco che
+porta il nome buffo di Something-Something-v2). Poi c'è un esame più difficile,
+l'anticipazione: guardando una cucina ripresa in soggettiva, indovinare che
+cosa farà la persona nel secondo che viene. Il modello può proporre cinque
+risposte, e conta quante volte quella giusta è fra le cinque; il punteggio fa
+poi la media sui tipi di azione, così che quelle rare pesino quanto quelle
+frequenti (in gergo è il *recall@5*). V-JEPA 2 arriva a 39,7 su cento; il
+miglior sistema precedente, otto volte più grosso, si fermava a 27,6. È un
+progresso grosso su un compito che resta largamente irrisolto, il che è già un
+buon motivo per diffidare di chi riassume queste cose con «ci riesce».
 
 Ma la parte concettualmente nuova è **V-JEPA 2-AC** (*action-conditioned*,
 condizionato sulle azioni), ed è la parte in cui il capitolo arriva finalmente
@@ -706,7 +701,7 @@ scommessa più grossa.
 
 ## Una scommessa aperta
 
-Chiudiamo con l'onestà dovuta. Quella raccontata fin qui è una linea di
+La via di LeCun è una linea di
 ricerca in corso, non un traguardo raggiunto. Le rappresentazioni JEPA reggono
 il confronto con i metodi concorrenti sui banchi di prova considerati, senza
 batterli sempre, e nel caso di I-JEPA contro MAE chiedono molto meno calcolo di
@@ -737,8 +732,7 @@ opposto del dibattito (i simulatori generativi di video, da Sora a Genie, e la
 domanda se un modello che *disegna* futuri plausibili abbia capito la fisica o
 abbia solo imparato a imitarla) lo attraversa la {doc}`sezione sui simulatori
 </WorldModels/simulatori-e-dibattito>`.
-Prima, una deviazione nelle neuroscienze: l'inferenza attiva, che alla stessa
-domanda risponde da tutt'altra parte.
+
 
 ## Una mini-JEPA in PyTorch
 
@@ -831,8 +825,9 @@ rappresentazioni si stessero appiattendo: passa da 0,38 a 1,00. Il modello
 impara a prevedere il *contenuto* delle tessere coperte, che è condiviso con il
 contesto, e ignora il rumore, che non è prevedibile.
 
-Quale dei pezzi regga il muro, però, non lo dicono questi numeri: lo si vede
-spegnendo i pezzi uno alla volta, e ripetendo ogni prova con tre semi diversi.
+Quale dei pezzi regga davvero il risultato, però, non lo dicono questi numeri:
+lo si vede spegnendo i pezzi uno alla volta, e ripetendo ogni prova con tre
+semi diversi.
 
 ```python
 import statistics
@@ -1003,3 +998,7 @@ immagini e di ore di video. La logica è la stessa.
 ```
 
 `````
+
+Prima dei simulatori, una deviazione nelle neuroscienze: l’{doc}`inferenza
+attiva </WorldModels/inferenza-attiva>`, che alla stessa domanda risponde da
+tutt'altra parte.

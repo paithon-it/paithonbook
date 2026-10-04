@@ -171,7 +171,7 @@ della forma debole sotto un'ipotesi in più, l'esistenza della varianza; in
 compenso non chiede nemmeno l'indipendenza piena, perché basta che le $X_i$
 siano scorrelate a due a due, ed è tutto ciò che serve a scrivere
 $\mathrm{Var}(\bar{X}_n)=\sigma^2/n$. La legge debole vale anche con la sola
-media finita (teorema di Khinčin), ma lo si dimostra con altri strumenti, e
+media finita (teorema di Khinčin), ma la si dimostra con altri strumenti, e
 senza varianza si perde la velocità. Si vede anche perché
 l'errore scala come $1/\sqrt{n}$: perché $\varepsilon$ compare al quadrato
 accanto a $n$.
@@ -181,12 +181,12 @@ accanto a $n$.
 ## Quando i valori stanno in un intervallo: Hoeffding
 
 Il limite di Čebyšëv alla probabilità di un errore grande cala come $1/n$, con
-$n$ il numero di prove, e $1/n$ cala lentamente. Se in più i valori stanno in un
-intervallo noto, il limite cala esponenzialmente in $n$, e il vantaggio cresce
-con la sicurezza richiesta. Per una variabile in $[0,1]$, a parità di
+$n$ il numero di prove, e $1/n$ cala lentamente. Se in più i valori stanno in
+un intervallo noto, il limite cala esponenzialmente in $n$, e il vantaggio
+cresce con la sicurezza richiesta. Per una variabile in $[0,1]$, a parità di
 tolleranza, con una probabilità di errore ammessa di uno su venti gli esempi
-necessari si dividono per 2,7 rispetto a Čebyšëv (con $\sigma^2\le 1/4$), con
-uno su mille per circa 66.
+necessari si riducono di un fattore 2,7 rispetto a Čebyšëv (con $\sigma^2\le
+1/4$), e per uno su mille di circa 66.
 
 `````{tab} Elementare
 
@@ -275,8 +275,8 @@ $\varepsilon=0{,}01$ e $\delta=0{,}05$ bastano $984$ esempi, contro i
 $18\,445$ di Hoeffding. La varianza vera non si conosce, e si usa un suo
 maggiorante.
 
-Invertendo per $n$ si ottiene la formula che serve davvero, cioè quanti esempi
-mettere in un insieme di prova:
+Risolvendo rispetto a $n$ si ottiene la formula che serve davvero, cioè quanti
+esempi mettere in un insieme di prova:
 
 $$
 n \;\ge\; \frac{(b-a)^2\,\log(2/\delta)}{2\varepsilon^2} ,
@@ -488,7 +488,7 @@ for k in (2, 3):
 Accanto a ogni numero di larghezze ci sono due colonne, quello che succede e
 quello che Čebyšëv garantisce, e la garanzia tiene con larghissimo margine,
 come quasi sempre. Il punto è che tiene senza sapere che i dati erano
-esponenziali, e avrebbe tenuto anche se fossero stati fatti apposta per
+esponenziali, e avrebbe tenuto anche se fossero stati costruiti apposta per
 metterla in difficoltà.
 
 `````{tab} Elementare
@@ -531,7 +531,7 @@ metterla in difficoltà.
   tre righe e spiega perché l'errore cala come $1/\sqrt{n}$.
 - Hoeffding: per $X_i\in[a,b]$ indipendenti,
   $\Pr[|\bar{X}_n-\mu|\ge\varepsilon]\le 2\exp(-2n\varepsilon^2/(b-a)^2)$,
-  cioè decadimento esponenziale invece che polinomiale. Invertita dà
+  cioè decadimento esponenziale invece che polinomiale. Esplicitando $n$ si ottiene
   $n \ge (b-a)^2\log(2/\delta)/(2\varepsilon^2)$: per $\varepsilon=0{,}02$ e
   $\delta=0{,}05$ su $[0,1]$, $n\ge 4612$ contro i $12\,500$ di Čebyšëv e i
   $2401$ dell'approssimazione normale.

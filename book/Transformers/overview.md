@@ -32,8 +32,8 @@ Il Transformer tiene i pezzi che il {doc}`capitolo sul Natural Language
 Processing </NaturalLanguageProcessing/overview>` gli ha consegnato e cambia la
 macchina che li porta. Le reti ricorrenti, anche nelle varianti con porte che
 decidono che cosa conservare e che cosa cancellare dello stato (LSTM e GRU),
-riassumono il passato in uno stato aggiornato un passo alla volta. Il metodo ha
-due limiti che stanno nella sua struttura: l'informazione fra due parole
+riassumono il passato in uno stato aggiornato un passo alla volta. Questo metodo ha
+due limiti strutturali: l'informazione fra due parole
 lontane attraversa tutti i passi intermedi, e il passo $t$ non comincia finché
 il passo $t-1$ non è finito.
 
@@ -68,22 +68,21 @@ volta.
 
 `````{tab} Superiore
 Nelle RNN l'informazione che va dalla prima all'ultima parola di una sequenza
-lunga $n$ attraversa $O(n)$ passaggi di stato: il segnale si degrada (gradiente
-che svanisce, la cui derivazione per le ricorrenti sta nella {doc}`sezione sui
-modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>`) e le
-dipendenze lunghe si perdono, problema che LSTM e GRU mitigano ma non
-eliminano. Inoltre
-la ricorrenza è intrinsecamente sequenziale: il passo $t$ richiede il passo
-$t-1$, e l'hardware parallelo (le GPU) resta sottoutilizzato in addestramento.
+lunga $n$ attraversa $O(n)$ passaggi di stato. Il segnale si degrada (per il
+problema del gradiente che svanisce, la cui derivazione sta nella {doc}`sezione
+sui modelli di sequenza </NaturalLanguageProcessing/modelli-sequenza>`) e le
+dipendenze lunghe si perdono: un limite che LSTM e GRU mitigano ma non
+eliminano. Inoltre la ricorrenza è intrinsecamente sequenziale: il passo $t$
+richiede il passo $t-1$, e l'hardware parallelo (le GPU) resta sottoutilizzato
+in addestramento.
 
-Nel Transformer la self-attention collega ogni coppia di posizioni in un
-solo passo, lunghezza di cammino $O(1)$, e l'elaborazione di tutte le
-posizioni è un prodotto tra matrici, parallelizzabile per costruzione. È
-questa seconda proprietà, più ancora della prima, ad aver cambiato la scala
-dei modelli: addestrare su corpora enormi è diventato una questione di
-hardware, non di architettura. Il prezzo è un costo quadratico nella lunghezza
-della sequenza, che il {doc}`confronto coi modelli precedenti <confronti>`
-mette sul tavolo.
+Nel Transformer la self-attention collega ogni coppia di posizioni in un solo
+passo, lunghezza di cammino $O(1)$, e l'elaborazione di tutte le posizioni è un
+prodotto tra matrici, parallelizzabile per costruzione. È questa seconda
+proprietà, più ancora della prima, ad aver cambiato la scala dei modelli:
+addestrare su corpora enormi è diventato una questione di hardware, non di
+architettura. Il prezzo è un costo quadratico rispetto alla lunghezza della
+sequenza, analizzato nel {doc}`confronto coi modelli precedenti <confronti>`.
 `````
 
 ## Dal meccanismo ai modelli
@@ -93,10 +92,10 @@ matrici, una softmax, normalizzazioni e piccole reti applicate a ogni
 posizione, montati in un ordine preciso, e su una frase di tre parole si
 rifanno con carta e penna. Chi ha letto la {doc}`matematica di un modello
 linguistico </Matematica/matematica-llm>` ne conosce già il meccanismo, con
-altri nomi; qui arrivano il vocabolario standard (query, key e value, i tre
-ruoli che ogni parola gioca nell'attenzione) e i pezzi che là restavano fuori:
-le maschere, che decidono quali parole ciascuna può guardare, e l'architettura
-che monta il tutto.
+altri nomi. Qui si aggiungono il vocabolario standard (query, key e value, i
+tre ruoli che ogni parola gioca nell'attenzione) e i pezzi che in quel capitolo
+restavano fuori: le maschere, che decidono quali parole ciascuna può guardare,
+e l'architettura che monta il tutto.
 
 Il capitolo segue l'ordine dell'articolo del 2017. Si comincia dal meccanismo
 di attenzione e dalla sua forma con le matrici, poi si monta l’architettura
@@ -146,7 +145,7 @@ tendenze e ai limiti.
 :class: important
 - Il Transformer (Vaswani et al., 2017, *Attention Is All You Need*)
   sostituisce ricorrenza e convoluzione con la self-attention. La Tabella 1
-  dell'articolo mette in fila il guadagno: il cammino massimo fra due posizioni
+  dell'articolo quantifica il vantaggio: il cammino massimo fra due posizioni
   qualsiasi scende da $O(n)$ di uno strato ricorrente a $O(1)$, e secondo gli
   autori cammini più corti rendono più facili da imparare le dipendenze
   lunghe. È un'ipotesi e non una garanzia: sull'accordo fra soggetto e verbo
@@ -157,7 +156,7 @@ tendenze e ai limiti.
 - Il prezzo sta nell'altra colonna della stessa tabella: il costo per strato è
   $O(n^2 \cdot d)$, con $d$ la dimensione delle rappresentazioni, cioè
   quadratico nella lunghezza $n$ della sequenza; ed è quadratica in $n$ anche
-  la memoria per i punteggi, $O(n^2)$, senza il fattore $d$. Quel conto torna
+  la memoria per i punteggi, $O(n^2)$, senza il fattore $d$. Questo calcolo ritorna
   nel {doc}`confronto coi modelli precedenti <confronti>` e nella sezione
   sull’{doc}`attenzione in pratica <attenzione-in-pratica>`.
 - Su questa architettura poggiano i grandi modelli linguistici (GPT, BERT,

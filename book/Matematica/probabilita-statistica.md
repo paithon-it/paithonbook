@@ -496,9 +496,8 @@ Una Bernoulli è una moneta, magari truccata: esce $1$ (successo) con probabilit
 $p$ e $0$ con probabilità $1-p$. Serve a modellare qualunque esito binario:
 click/non click, spam/non spam.
 
-La normale, che si chiama anche gaussiana dal nome del matematico Carl
-Friedrich Gauss (i due nomi indicano la stessa identica cosa e si usano l'uno
-per l'altro), è la celebre curva a campana ({numref}`fig-curva-normale`):
+La normale, che prende anche il nome di gaussiana dal matematico Carl
+Friedrich Gauss, è la celebre curva a campana ({numref}`fig-curva-normale`):
 simmetrica, con la maggior parte dei valori stretti attorno alla media $\mu$ e
 code che si assottigliano ai lati. Vale una regola pratica utilissima, la
 "68–95": circa il $68\%$ dei casi cade entro una deviazione standard dalla media
@@ -548,11 +547,11 @@ di Lyapunov.) È il motivo per cui gli errori di misura si modellano gaussiani, 
 per cui in una rete neurale larga, all'inizializzazione, le pre-attivazioni di
 uno strato, che sono somme di molti contributi indipendenti, tendono a essere
 gaussiane qualunque sia la distribuzione dei pesi, purché abbia media nulla e
-varianza finita. (Non è invece il motivo per cui si inizializzano i pesi in un
+varianza finita. Non è invece il motivo per cui si inizializzano i pesi in un
 modo o nell'altro: gli schemi standard derivano la varianza
 dell'inizializzazione, per conservare la scala delle attivazioni fra uno strato
 e l'altro, e non la famiglia, tanto che il default di PyTorch campiona da
-un'uniforme e non da una normale.)
+un'uniforme e non da una normale.
 
 Il teorema dice che si converge, non quanto in fretta, e la seconda domanda ha
 una risposta separata. Una garanzia grossolana la dà la disuguaglianza di
@@ -1175,10 +1174,10 @@ Boole, $\Pr(\bigcup_i A_i) \le \sum_i \Pr(A_i)$, e quindi non chiede
 indipendenza: è la sua forza e la ragione della sua prudenza. Una cosa la
 chiede, e va detta perché è quella che si rompe più spesso: che ogni $p$-value
 sia valido di per sé, cioè $\Pr(p_i \le t \mid H_0) \le t$. Con $p$-value
-ottimisti Bonferroni fallisce anche senza nessuna dipendenza. Un fratello
-maggiore gratuito esiste: la procedura di Holm ordina i $p$-value e allenta la
-soglia man mano, controlla la stessa FWER sotto le stesse ipotesi e rifiuta
-sempre almeno quanto Bonferroni.
+ottimisti Bonferroni fallisce anche senza nessuna dipendenza. Un'alternativa
+gratuita e mai peggiore esiste: la procedura di Holm ordina i $p$-value e
+allenta la soglia man mano, controlla la stessa FWER sotto le stesse ipotesi e
+rifiuta sempre almeno quanto Bonferroni.
 
 La procedura di Benjamini e Hochberg {cite}`benjamini1995controlling`
 controlla invece la FDR a un livello $q$: si ordinano i $p$-value

@@ -37,9 +37,7 @@ dimezzarlo ancora, e si scende a duecentocinquanta. Ogni giro dimezza, quindi
 dieci giri portano da mille a uno. Il conto è quello del foglio piegato a metà:
 poche piegature, e gli strati sono tantissimi.
 
-Due cose vanno dette perché il metodo si capisca davvero.
-
-La prima è che ogni giro è un addestramento a sé, non una rifinitura, con il
+Ogni giro è un addestramento a sé, non una rifinitura, con il
 maestro da interrogare due volte per ogni esempio. I giri non si accorciano (gli
 ultimi due, anzi, durano il doppio), e il conto torna lo stesso per due ragioni:
 ogni esempio chiede al maestro soltanto due passi, per quanti passi sappia fare,
@@ -48,8 +46,8 @@ riportano che arrivare a quattro passi non costa più che addestrare il modello
 di partenza. Il metodo trasforma tempo di generazione in tempo di addestramento,
 a un cambio conveniente, ed è per questo che si è diffuso.
 
-La seconda è che il modo in cui la rete descrive la propria risposta diventa
-importante. Chiedendole «qual era il disturbo?» si ottiene una risposta da cui
+Inoltre, il modo in cui la rete descrive la propria risposta diventa
+decisivo. Chiedendole «qual era il disturbo?» si ottiene una risposta da cui
 l'immagine va ancora ricavata, e all'inizio del ritorno quel passaggio è
 disastroso: lì dell'immagine è rimasto quasi niente, quindi per tirarla fuori
 bisogna dividere per quel quasi niente, e ogni errore sul disturbo viene
@@ -96,9 +94,7 @@ Terminato il giro, lo studente diventa il maestro e si ripete: $K$ giri
 riducono i passi di un fattore $2^K$, quindi dieci giri portano da $1024$ a
 $1$.
 
-Due dettagli tecnici sono decisivi e vanno riportati.
-
-Il primo è la parametrizzazione. Con passi lunghi, a $t$ grande è
+La parametrizzazione è decisiva. Con passi lunghi, a $t$ grande è
 l'immagine ricavata dal rumore predetto ad avere varianza esplosiva, perché lì
 $\alpha_t\to 0$ e ricostruire
 $\hat{\mathbf{x}}_0 = (\mathbf{x}_t-\sigma_t\hat{\boldsymbol{\epsilon}})/\alpha_t$
@@ -110,11 +106,11 @@ estremi, dove le altre degenerano. Gli autori riportano che anche la predizione
 diretta di $\mathbf{x}_0$ regge la distillazione; la $\mathbf{v}$ è quella che
 si è imposta.
 
-Il secondo è il programma di rumore a SNR terminale nullo. Se all'ultimo
-passo $\alpha_T$ non è esattamente zero, il modello a un passo riceve un
-ingresso che contiene ancora un residuo di segnale, che in generazione non
-c'è: la discrepanza fra addestramento e uso è invisibile con mille passi e
-diventa dominante con uno.
+Altrettanto essenziale è il programma di rumore a SNR terminale nullo. Se
+all'ultimo passo $\alpha_T$ non è esattamente zero, il modello a un passo
+riceve un ingresso che contiene ancora un residuo di segnale, che in
+generazione non c'è: la discrepanza fra addestramento e uso è invisibile con
+mille passi e diventa dominante con uno.
 
 Il limite del metodo è strutturale: lo studente insegue le traiettorie del
 maestro, quindi ne eredita gli errori e niente lo spinge oltre. Il tetto è la
@@ -129,12 +125,12 @@ scendendo a due e a uno.
 
 `````{tab} Elementare
 
-Inseguire le traiettorie ha un difetto che si capisce con un'immagine.
-Immagina di dover imparare a disegnare copiando i tratti di un maestro, uno per
-uno, nell'ordine esatto in cui li fa. Se il maestro sbaglia un tratto tu lo
-copi, e il tuo massimo è la sua bravura. Ma quello che al committente interessa
-è il disegno finito, non la sequenza dei tratti: se ne arrivi con uno
-altrettanto bello per un'altra strada, va bene uguale, e magari meglio.
+Inseguire le traiettorie ha un difetto. Se per imparare a disegnare copi i
+tratti di un maestro, uno per uno e nell'ordine in cui li fa, quando il maestro
+sbaglia un tratto tu lo copi, e il tuo massimo è la sua bravura. Ma quello che
+al committente interessa è il disegno finito, non la sequenza dei tratti: se ne
+arrivi con uno altrettanto bello per un'altra strada, va bene uguale, e magari
+meglio.
 
 Da qui la seconda famiglia di metodi. Invece di chiedere allo studente di
 ripercorrere il cammino del maestro, gli si chiede che le immagini che produce
@@ -309,7 +305,7 @@ divario con il maestro, ed è il regime in cui questi modelli si usano davvero.
 
 La distillazione progressiva e i consistency model sembrano trucchi diversi,
 e guardati da un passo indietro sono la stessa mossa. La famiglia che fa
-combaciare le distribuzioni resta fuori, e il motivo è istruttivo: il suo
+combaciare le distribuzioni resta fuori per sua natura: il suo
 studente non impara dove porta la strada del maestro, impara una strada
 qualsiasi, purché le destinazioni, prese tutte insieme, si distribuiscano come
 le sue.
@@ -321,7 +317,7 @@ matematica, si chiama integrale). Le altre due famiglie imparano invece qualcosa
 che contiene già la somma fatta: la destinazione, oppure la velocità media su
 un tratto lungo.
 
-E la velocità media è la chiave, perché rende ovvio il perché del guadagno.
+E la velocità media è la chiave che spiega il guadagno.
 Andando da Milano a Roma la velocità istantanea cambia di continuo, e per
 sapere dove si arriva bisogna seguirla minuto per minuto; ma se qualcuno ti
 dice la velocità media dell'intero viaggio, la destinazione la calcoli con una
@@ -453,7 +449,7 @@ media.
 
 ## Che cosa si perde
 
-Il conto va chiuso onestamente, perché i modelli a pochi passi hanno tre costi
+Il conto va chiuso onestamente, perché i modelli a pochi passi hanno dei costi
 che i confronti pubblicati non sempre mettono in evidenza.
 
 Il primo è la varietà, e il guaio dipende dal criterio più che dal numero di
@@ -544,7 +540,7 @@ dichiarano.
 ```
 `````
 
-Resta aperta una domanda che il capitolo ha lasciato in sospeso dalla
+Una domanda restava in sospeso dalla
 {doc}`sezione su Stable Diffusion </ModelliDiffusione/stable-diffusion>`. La
 guida, il peso per cui si moltiplica la differenza fra la risposta con la
 richiesta e quella senza, è ciò che rende utilizzabili i modelli che

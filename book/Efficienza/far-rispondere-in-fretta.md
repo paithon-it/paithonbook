@@ -27,7 +27,7 @@ coperti. Se apparecchi per uno, scendi una volta lo stesso, e quella fatica se
 la prende un coperto solo. E se ti tocca scendere una volta per ogni coperto,
 passi la giornata sulle scale e in cucina non fai niente.
 
-Sulle scale o in cucina, dove ti si ferma la giornata lo decide un paragone fra
+Sulle scale o in cucina, a decidere dove si blocca il lavoro è un paragone fra
 due numeri: quanti coperti riesci ad apparecchiare nel tempo di un viaggio in
 cantina, e quanti coperti servi con quello che porti su in un viaggio. Se nel
 tempo di un viaggio ne apparecchieresti cento e con il carico ne servi uno,
@@ -127,7 +127,7 @@ bassa il processore resta fermo ad aspettare i dati, e un processore più veloce
 non cambia il tempo; quando è alta i dati fanno in tempo ad arrivare e il
 processore lavora.
 
-E adesso il punto. Quando un modello legge una domanda, la legge tutta
+Quando un modello legge una domanda, la legge tutta
 insieme: se la domanda è di duecento parole (più esattamente token, i pezzi in
 cui il modello divide il testo), le cose insieme sono duecento, vicino
 all’ultima riga della tabella. Che quel regime sia legato al calcolo dipende dal
@@ -141,9 +141,9 @@ prima riga.
 Sono la stessa moltiplicazione con lo stesso modello, e stanno ai due estremi
 opposti della tabella. Il rapporto fra le due efficienze è, a meno dei byte
 degli ingressi che il conto trascura, la lunghezza della domanda: con duecento
-parole, scrivere è quasi duecento volte meno efficiente che leggere. E non
-perché l’operazione sia più difficile: perché è la stessa lettura di
-trentaquattro megabyte di pesi, spesa per una parola sola invece che per
+parole, scrivere è quasi duecento volte meno efficiente che leggere. Non
+perché l’operazione sia più difficile, ma perché si paga la stessa lettura di
+trentaquattro megabyte di pesi per una parola sola invece che per
 duecento.
 
 Questo è il motivo per cui rimpicciolire il modello aiuta anche il tempo di
@@ -163,7 +163,7 @@ quattrocentonovantanove di prima. Ma di ciascuna di quelle parole gli serve
 soltanto una coppia di vettori per strato, la chiave e il valore, già calcolata
 quando la parola è stata scritta, quindi invece di rifarla la si conserva, come
 si tiene un segnalibro invece di rileggere il libro da capo a ogni pagina. Quel
-deposito si chiama cache delle chiavi e dei valori, e lo costruisce la
+deposito si chiama cache delle chiavi e dei valori, e lo introduce la
 {doc}`sezione sui grandi modelli linguistici </Transformers/llm>`, nel capitolo
 sui Transformer (l’architettura di cui quei modelli sono fatti), perché è lì
 che si capisce che cosa siano chiavi e valori. Non risolve il problema della
@@ -244,7 +244,7 @@ E le tre leve del capitolo tornano, applicate al servizio, nella sezione
   la distribuzione di uscita. La cache delle chiavi e dei valori fa il
   contrario: toglie i conti del ricalcolo e aggiunge i byte della cache, che
   cresce con il contesto, quindi abbassa l'intensità aritmetica del passo di
-  decodifica invece di alzarla. Resta un affare perché per ogni posizione del
+  decodifica invece di alzarla. Resta vantaggiosa perché per ogni posizione del
   contesto toglie proiezioni dell'ordine di $n^2$ operazioni e aggiunge la
   lettura di due vettori dell'ordine di $n$ numeri, con $n$ la larghezza dello
   strato.
@@ -267,8 +267,8 @@ sul modello; potare novanta pesi su cento costa un punto di accuratezza e,
 sulla moltiplicazione densa che quasi tutti eseguono, non regala un
 millisecondo; imitare un maestro vuol dire prenderne anche gli errori, e un
 maestro sbagliato fa peggio di nessuno. Il prezzo cambia da un modello
-all'altro, e chi ne adotta una senza misurarlo sul proprio sta scegliendo alla
-cieca.
+all'altro, e chi adotta una di queste leve senza valutarne l'impatto sul
+proprio sta scegliendo alla cieca.
 
 La tabella dei conti per byte guarda uno strato solo, e un modello vero ne
 mette in fila decine, uno dopo l’altro. Perché una rete sia fatta di molti

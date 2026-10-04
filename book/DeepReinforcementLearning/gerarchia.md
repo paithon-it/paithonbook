@@ -106,9 +106,8 @@ sconto e $\alpha$ il passo di apprendimento. Il salto è tutto in
 quell'esponente: lo sconto si applica $k$ volte invece che una, perché fra le
 due decisioni è passato $k$ e non $1$.
 
-Da qui i problemi che il campo si porta dietro, e conviene tenerli distinti
-perché hanno risposte diverse: trovare i sotto-obiettivi, trovare la politica
-sulle opzioni, trovare le sotto-politiche. Per i sotto-obiettivi le risposte
+Da qui i problemi aperti del campo: trovare i sotto-obiettivi, trovare la politica
+sulle opzioni e trovare le sotto-politiche. Per i sotto-obiettivi le risposte
 standard sono di specie diversa: cercare gli stati-collo di bottiglia, per cui
 passano molte delle traiettorie che arrivano a destinazione (le porte di una
 pianta a stanze sono l'esempio da manuale) {cite}`mcgovern2001automatic`;
@@ -133,6 +132,13 @@ rimpara solo quando chiamarlo. Ed è anche il motivo per cui una squadra nuova
 può cominciare a giocare in una settimana: gli schemi arrivano già fatti dai
 giocatori che li hanno imparati altrove.
 
+Il secondo guadagno si vede in una squadra alle prime armi. Provare un gesto
+alla volta, a caso, la tiene a girare nella propria metà campo: per arrivare
+sotto il canestro avversario servono molti gesti giusti di fila, e a caso non
+escono quasi mai. Uno schema intero, anche scelto alla cieca, la porta
+dall'altra parte al primo tentativo, e solo lì scopre che cosa vale la pena di
+imparare.
+
 Il conto da pagare c'è, e nessuna delle sue voci è piccola.
 
 C'è il costo di inventarli: gli schemi non nascono da soli, e chi li
@@ -146,8 +152,8 @@ repertorio è una scommessa su quali dodici.
 E c'è il costo che si dimentica, quello sulla qualità del gioco. Uno schema
 porta dove porta, e ci mette il suo tempo: chi gioca soltanto a schemi non vede
 il pallone perso dall'avversario con il canestro libero davanti, chiama la sua
-sequenza, la esegue per bene, e arriva dall'altra parte tre secondi dopo che
-sarebbe potuto arrivare da solo in due passi. Giocare a gesti grossi fa perdere
+sequenza, la esegue per bene, e arriva dall'altra parte tre secondi più tardi
+di quanto avrebbe fatto da solo in due passi. Giocare a gesti grossi fa perdere
 le scorciatoie, sempre.
 
 Da quest'ultimo viene la sola scelta sensata: gli schemi si aggiungono al
@@ -391,7 +397,7 @@ episodi l'agente a sole mosse ne spende $85{,}1$ per arrivare, quello che ha
 anche le opzioni $21{,}6$, cioè un quarto. È il risparmio di esperienza, e viene
 tutto da un fatto: una decisione al posto di una stanza intera.
 
-Nella stessa tabella l'ultima riga va letta con prudenza. L'agente che ha
+L'ultima riga della stessa tabella nasconde un'insidia. L'agente che ha
 solo le opzioni impara ancora più in fretta ($15{,}7$) e poi si ferma su una
 politica da $14{,}7$ passi contro gli $8{,}5$ possibili, ma quel $14{,}7$ non è il
 limite del suo repertorio: qui il traguardo è una porta, l'opzione in corso si
@@ -480,9 +486,9 @@ manager non dice mai come fare: dice dove andare.
 Le due famiglie si incontrano dove la ricompensa arriva di rado, che è il caso
 per cui la gerarchia serve di più: un gesto grosso copre in una decisione sola
 un tratto che a passi elementari richiederebbe una fortuna rara. Nella seconda
-famiglia, però, il problema si ripresenta un livello più giù, perché un livello
+famiglia, però, il problema si ripresenta un livello più giù. Un livello
 basso che impara a raggiungere un obiettivo ha bisogno di sapere quando ci è
-arrivato, e il punteggio del gioco può arrivare migliaia di passi dopo, quando
+arrivato, ma il punteggio del gioco può arrivare migliaia di passi dopo, quando
 la porta attraversata è dimenticata da un pezzo. L’**h-DQN**
 {cite}`kulkarni2016hdqn` affronta proprio questo punto: un livello alto sceglie
 un obiettivo (in un gioco, «arriva alla scala», «prendi la chiave»), un livello
@@ -556,7 +562,7 @@ ci sono; trovarli resta il compito dell'altra famiglia.
 ```
 `````
 
-La gerarchia, insomma, cambia l'unità di misura del tempo: il livello alto vede
+La gerarchia cambia l'unità di misura del tempo: il livello alto vede
 una partita fatta di poche mosse grosse, e quanto duri ciascuna glielo dice il
 livello basso. Resta aperto il punto su cui l'h-DQN si appoggia: la ricompensa
 interna che l'agente si dà quando raggiunge l'obiettivo assegnato. Nelle

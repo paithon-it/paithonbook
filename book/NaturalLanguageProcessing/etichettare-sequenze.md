@@ -116,8 +116,7 @@ lingue del progetto:
 Le classi *aperte* accolgono parole nuove di continuo («googlare» è un `VERB`
 recente), quelle *chiuse* quasi mai: nessuno conia nuovi articoli.
 Sull'inglese giornalistico i tagger moderni superano il 97% di accuratezza per
-token: un numero da leggere con prudenza, come vedremo parlando di
-valutazione.
+token: un numero da leggere con prudenza.
 
 `````
 
@@ -358,8 +357,7 @@ l'articolo; `NOUN`, il nome; `VERB`, il verbo: le sigle del tagset universale) e
 la frase «la porta cigola», dove «porta» ha la stessa doppiezza di «porta» nella
 frase d'apertura. I numeri delle due tabelle di probabilità sono inventati per
 l'esempio, scelti tondi perché i conti si possano rifare a mente: in un sistema
-vero verrebbero dai conteggi su un corpus già etichettato, come si è detto poco
-fa.
+vero verrebbero dai conteggi su un corpus già etichettato.
 
 La prima tabella, quella che dice quale categoria segue quale, contiene le
 probabilità di transizione $P(t_i \mid t_{i-1})$. Si legge riga per riga: la
@@ -390,7 +388,7 @@ compaiono. E siccome siamo in un modello giocattolo con tre sole categorie, il
 pronome non c'è: qui «la» la può dire solo l'articolo, anche se in italiano
 vero, come in «La vecchia porta la sbarra», potrebbe essere un pronome.
 
-Nota infine il punto delicato: la parola «porta», da sola, *non decide*, perché
+Un ultimo punto delicato: la parola «porta», da sola, *non decide*, perché
 il nome e il verbo la pronunciano con la stessa frequenza, 0,2 contro 0,2.
 {numref}`fig-viterbi-traliccio` mostra il **traliccio** (*trellis*): una
 colonna per parola, una casella per categoria, e tutti i cammini che
@@ -808,8 +806,7 @@ Transformer </Transformers/overview>`.
 ## Misurare bene: token o entità?
 
 Un'ultima questione, meno contabile di quanto sembri: come si dà il voto a
-un etichettatore? La risposta giusta è diversa per i due compiti, e la
-differenza insegna qualcosa.
+un etichettatore? La risposta giusta è diversa per i due compiti.
 
 `````{tab} Elementare
 
@@ -903,8 +900,7 @@ certamente la signora con la sbarra, perché le statistiche della lingua
 pendono da quella parte. Ma sapere che «porta» è un verbo non dice ancora *chi
 fa che cosa a chi*: per questo bisogna salire di un piano, dalle etichette
 alla struttura della frase. È l’{doc}`analisi sintattica <struttura-frase>`, e
-i suoi mattoni sono esattamente le etichette POS che abbiamo imparato a
-mettere.
+i suoi mattoni sono esattamente queste etichette POS.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

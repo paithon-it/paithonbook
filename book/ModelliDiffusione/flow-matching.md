@@ -130,8 +130,8 @@ posto che allenarsi su quella media. Non è un'approssimazione: i due voti
 rete. La ragione è quella che rende speciale l'errore quadratico: chi cerca di
 indovinare un numero sorteggiato, e viene giudicato su quanto sbaglia al
 quadrato, ha come strategia migliore rispondere la media di quel numero. Con un
-dado: chi risponde sempre 3,5 sbaglia in media, al quadrato, di 2,92; chi
-risponde 3 o 4 di 3,17, e chi risponde 1 di 9,17. Quindi una rete allenata a
+dado: l'errore al quadrato di chi risponde sempre 3,5 è in media 2,92; per chi
+risponde 3 o 4 sale a 3,17, e per chi risponde 1 a 9,17. Quindi una rete allenata a
 indovinare le singole velocità, proprio perché non può indovinarle tutte,
 finisce per rispondere la loro media, che è quello che ci serviva.
 
@@ -180,14 +180,14 @@ $$
 La dimostrazione è un conto di due righe. Sviluppando i quadrati, i due
 obiettivi hanno lo stesso termine in $\lVert\mathbf{v}_\theta\rVert^2$, perché
 $p_t(\mathbf{x}) = \int p_t(\mathbf{x}\mid\mathbf{z})\,p(\mathbf{z})\,
-\mathrm{d}\mathbf{z}$; lo stesso termine misto
+\mathrm{d}\mathbf{z}$. Hanno anche lo stesso termine misto
 $\langle\mathbf{v}_\theta,\cdot\rangle$, perché il campo marginale è per
 definizione
 $\mathbf{u}_t(\mathbf{x}) = \int \mathbf{u}_t(\mathbf{x}\mid\mathbf{z})\,
 p_t(\mathbf{x}\mid\mathbf{z})\,p(\mathbf{z})\,\mathrm{d}\mathbf{z}\,/\,
-p_t(\mathbf{x})$, cioè la media condizionata scritta sopra; e differiscono
+p_t(\mathbf{x})$, cioè la media condizionata scritta sopra. Infine, differiscono
 soltanto nel termine in $\lVert\mathbf{u}\rVert^2$, che non dipende da
-$\theta$. La proprietà che lavora sotto è una sola: il minimo di
+$\theta$. La proprietà su cui tutto si regge è una sola: il minimo di
 $\mathbb{E}[\lVert a - Y\rVert^2]$ rispetto ad $a$ è $\mathbb{E}[Y]$. Perché
 l'obiettivo abbia senso serve però anche il primo teorema dello stesso lavoro:
 se ogni campo condizionato genera il proprio percorso condizionato, il campo
@@ -223,15 +223,14 @@ Questa è l'idea del **flusso rettificato**, ed è la strada che i generatori di
 immagini più recenti hanno preso.
 
 C'è però un'insidia da capire bene, perché il metodo si spiega spesso male.
-Ogni singolo viaggio è una retta; il campo dei venti che ne risulta no. In
-un punto in cui passano molti viaggi diretti in posti diversi, la freccia è la
+Ogni singolo viaggio è una retta; il campo dei venti che ne risulta no. In un
+punto in cui passano molti viaggi diretti in posti diversi, la freccia è la
 loro media, e seguendo le medie non si percorre nessuna delle rette: si fa una
 curva. È come un incrocio affollato in cui ciascuno, invece di seguire la
-propria
-strada, segue la media delle direzioni di chi gli sta intorno: chi è diretto a
-sinistra e chi a destra, mediati, puntano dritti in mezzo, dove non abita
-nessuno, e solo avvicinandosi a destinazione le direzioni si separano. La
-strada che ne esce è una curva.
+propria strada, segue la media delle direzioni di chi gli sta intorno: le
+direzioni di chi è diretto a sinistra e di chi a destra, mediate, puntano
+dritte in mezzo, dove non abita nessuno, e si separano solo avvicinandosi a
+destinazione. La strada che ne esce è una curva.
 
 Il rimedio esiste e si chiama **raddrizzamento**. Si fa girare il modello una
 volta, e si guarda dove ciascun rumore di partenza va a finire: si ottengono
@@ -295,24 +294,23 @@ retta. È il punto in cui la divulgazione del metodo scivola più spesso.
 
 Il **reflow** rimedia iterando. Dal modello addestrato si ricava
 l'accoppiamento deterministico $(\boldsymbol{\epsilon},
-\Phi(\boldsymbol{\epsilon}))$ indotto dalla ODE, e si riaddestra usando
-quelle coppie invece di accoppiamenti indipendenti. L'accoppiamento indotto
-non fa incrociare le traiettorie, quindi il nuovo campo marginale è più vicino
-a quello condizionato; iterando, le traiettorie si raddrizzano e il numero di
-passi necessari crolla. Quanto siano dritte si misura con la rettitudine
-$S(Z) = \int_0^1 \mathbb{E}\lVert (Z_1 - Z_0) - \dot{Z}_t\rVert^2\,
-\mathrm{d}t$, nulla se e solo se le traiettorie sono rette; Liu e colleghi
-dimostrano che, su $K$ giri di reflow, il migliore ha
-$\min_{k\le K} S(Z^k) \le \mathbb{E}\lVert X_1 - X_0\rVert^2 / K$, cioè che
-la rettitudine scende come $1/K$ per il migliore dei giri, non che scenda a
-ogni giro. Il prezzo è che ogni giro di reflow richiede di generare un insieme
-di coppie con il modello corrente, e che l'accuratezza si degrada leggermente a
-ogni giro: gli autori stessi sconsigliano di farne troppi, perché l'errore di
-stima si accumula. L'alternativa che evita il secondo addestramento è
-accoppiare dato e rumore già dentro ogni minibatch, risolvendo su quel
-minibatch un piccolo problema di trasporto ottimo discreto: l'accoppiamento si
-avvicina a quello ideale al costo di un assegnamento per minibatch
-{cite}`tong2024improving`.
+\Phi(\boldsymbol{\epsilon}))$ indotto dalla ODE, e si riaddestra usando quelle
+coppie invece di accoppiamenti indipendenti. L'accoppiamento indotto non fa
+incrociare le traiettorie, quindi il nuovo campo marginale è più vicino a
+quello condizionato; iterando, le traiettorie si raddrizzano e il numero di
+passi necessari crolla. Quanto siano dritte si misura con la rettitudine $S(Z)
+= \int_0^1 \mathbb{E}\lVert (Z_1 - Z_0) - \dot{Z}_t\rVert^2\, \mathrm{d}t$,
+nulla se e solo se le traiettorie sono rette. Liu e colleghi dimostrano che, su
+$K$ giri di reflow, il migliore ha $\min_{k\le K} S(Z^k) \le \mathbb{E}\lVert
+X_1 - X_0\rVert^2 / K$: la rettitudine scende come $1/K$ per il migliore dei
+giri, ma non è garantito che scenda a ogni giro. Il prezzo è che ogni giro di
+reflow richiede di generare un insieme di coppie con il modello corrente, e che
+l'accuratezza si degrada leggermente a ogni giro: gli autori stessi
+sconsigliano di farne troppi, perché l'errore di stima si accumula.
+L'alternativa che evita il secondo addestramento è accoppiare dato e rumore già
+dentro ogni minibatch, risolvendo su quel minibatch un piccolo problema di
+trasporto ottimo discreto: l'accoppiamento si avvicina a quello ideale al costo
+di un assegnamento per minibatch {cite}`tong2024improving`.
 
 Un avvertimento sulla parentela con il trasporto ottimo, perché il nome
 inganna. Un accoppiamento che non fa incrociare le traiettorie è monotono,
@@ -512,11 +510,10 @@ di probabilità» indicano la stessa scelta; «predire il rumore» e «predire l
 velocità» sono due uscite della stessa rete, convertibili l'una nell'altra; e
 un campionatore chiamato *flow matching Euler* e uno chiamato *DDIM* (nella
 versione deterministica, con le due uscite ricavate dalla stessa predizione)
-fanno, sul percorso rettificato, lo stesso identico passo: lungo la retta
-$\mathbf{x}_s = \mathbf{x}_t + (s-t)\,\hat{\mathbf{v}}$ è esatto per
-entrambi. Sapere che i due dizionari
-traducono lo stesso testo evita di cercare differenze dove ci sono soltanto
-nomi diversi.
+fanno, sul percorso rettificato, lo stesso identico passo: la formula
+$\mathbf{x}_s = \mathbf{x}_t + (s-t)\,\hat{\mathbf{v}}$ lungo la retta è
+l'aggiornamento esatto per entrambi. Sapere che i due dizionari traducono lo
+stesso testo evita di cercare differenze dove ci sono soltanto nomi diversi.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

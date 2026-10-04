@@ -151,12 +151,12 @@ terminano mai, perché senza sconto quella somma infinita può non convergere
 criterio e massimizzare la ricompensa media per passo. Nei compiti
 **episodici**, che finiscono da soli, la somma ha un numero finito di termini e
 $\gamma = 1$ è ammesso e usatissimo. Cercare la politica ottima $\pi^{*}$
-significa massimizzare $\mathbb{E}_\pi[G_t]$, e molti algoritmi lo fanno
-stimando funzioni di valore come
-$Q^\pi(s,a) = \mathbb{E}_\pi[G_t \mid S_t=s,\, A_t=a]$, il ritorno atteso
-partendo da $s$, giocando $a$ e poi seguendo $\pi$, e migliorando poi la
-politica con la scelta, in ogni stato, dell'azione di valore stimato più alto;
-altri, come il gradiente di policy, ottimizzano direttamente $\pi$.
+significa massimizzare $\mathbb{E}_\pi[G_t]$. Molti algoritmi lo fanno stimando
+funzioni di valore come $Q^\pi(s,a) = \mathbb{E}_\pi[G_t \mid S_t=s,\, A_t=a]$,
+il ritorno atteso partendo da $s$, giocando $a$ e poi seguendo $\pi$. Da lì
+migliorano la politica scegliendo, in ogni stato, l'azione di valore stimato
+più alto. Altri metodi, come il gradiente di policy, ottimizzano invece $\pi$
+in modo diretto.
 
 `````
 
@@ -294,9 +294,9 @@ vinto, e quel giudizio bastava per capire quali stime rivedere. Le versioni
 migliori si allenarono su un milione e mezzo di partite, e ne uscirono aperture
 che i maestri poi adottarono.
 
-Le due tappe successive, il DQN che nel 2015 imparava i videogiochi Atari dai
-soli pixel dello schermo e AlphaGo che nel 2016 batteva Lee Sedol al Go, hanno
-bisogno di reti profonde al posto delle tabelle, e aprono il {doc}`capitolo sul
+Le due tappe successive (il DQN che nel 2015 ha imparato i videogiochi Atari
+dai soli pixel dello schermo e AlphaGo che nel 2016 ha battuto Lee Sedol al Go)
+richiedono reti profonde al posto delle tabelle, e aprono il {doc}`capitolo sul
 Deep Reinforcement Learning </DeepReinforcementLearning/overview>`.
 
 ## Dalla leva sola al mondo che cambia
@@ -322,7 +322,7 @@ situazione in cui scrivere quanto vale.
 
 Il passo verso il deep reinforcement learning, dove reti neurali stimano quei
 valori o direttamente la politica, è una necessità e non un ampliamento
-facoltativo, perché la tabella smette di stare in piedi appena le situazioni
+facoltativo, perché la tabella diventa impraticabile appena le situazioni
 possibili sono tante, e va sostituita da qualcosa che sappia indovinare il
 valore di situazioni mai viste prima. Lo affronta il capitolo sul {doc}`deep
 reinforcement learning </DeepReinforcementLearning/overview>`, che ricostruisce

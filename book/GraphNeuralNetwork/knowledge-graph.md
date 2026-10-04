@@ -3,7 +3,7 @@
 Nel maggio del 2012 Google annuncia una modifica al motore di ricerca con uno
 slogan che vale più della modifica: *things, not strings*, cose e non stringhe.
 Fino a quel momento cercare «Torino» significava chiedere le pagine che
-contengono quella sequenza di sei caratteri. Da lì in avanti il motore prova a
+contenevano quella sequenza di sei caratteri. Da lì in avanti il motore prova a
 sapere che Torino è una città, che sta in Italia, che ha un fiume, un
 sindaco e una squadra di calcio, e che «Torino» può anche essere quella
 squadra.
@@ -142,7 +142,7 @@ entità esiste un certo legame. Oggi la si affida spesso a un grande modello di
 linguaggio, con i problemi di affidabilità che la {doc}`sezione sui limiti dei
 modelli di linguaggio </Transformers/tendenzefuture>` ha già discusso: un
 modello che inventa una tripla plausibile e falsa la inserisce nel grafo con la
-stessa faccia con cui inserisce quelle vere.
+stessa sicurezza con cui inserisce quelle vere.
 
 ## Entità come punti, relazioni come frecce
 
@@ -309,10 +309,10 @@ oggetto capace di contenerne un altro (ordini parziali, scatole, spazi
 iperbolici).
 
 I parametri, con embedding di dimensione $d$: TransE e DistMult tengono
-$d(|\mathcal{E}| + |\mathcal{R}|)$ numeri reali, ComplEx il doppio, perché ogni
-componente è complessa, RotatE $2d|\mathcal{E}| + d|\mathcal{R}|$, perché di
-una rotazione basta l'angolo; il modello bilineare pieno, con una matrice
-$d \times d$ per relazione di cui DistMult tiene la sola diagonale, ne tiene
+$d(|\mathcal{E}| + |\mathcal{R}|)$ numeri reali; ComplEx il doppio, perché ogni
+componente è complessa; RotatE $2d|\mathcal{E}| + d|\mathcal{R}|$, perché di
+una rotazione basta l'angolo. Il modello bilineare pieno, con una matrice
+$d \times d$ per relazione di cui DistMult tiene la sola diagonale, ne tiene invece
 $d|\mathcal{E}| + d^2|\mathcal{R}|$. E si addestrano in modi diversi: TransE e
 DistMult con la *margin ranking loss* di TransE, ComplEx con la perdita
 logistica su triple vere e corrotte, RotatE con un campionamento dei negativi
@@ -377,10 +377,10 @@ dominio dove sbagliare costa (clinico, legale, finanziario) è una differenza di
 natura.
 
 Il terzo vantaggio si dimentica spesso ed è forse il più pratico: le domande
-che chiedono di contare. «Quanti registi italiani hanno girato almeno tre
-film ambientati a Napoli» non è una domanda a cui un modello di linguaggio
-possa rispondere in modo affidabile, e nemmeno di somiglianza: vuole
-un'interrogazione a un archivio ordinato, e una struttura su cui contare
+che chiedono di contare. «Quanti registi italiani hanno girato almeno tre film
+ambientati a Napoli» non è una domanda a cui un modello di linguaggio possa
+rispondere in modo affidabile, e nemmeno un sistema di ricerca per somiglianza:
+vuole un'interrogazione a un archivio ordinato, e una struttura su cui contare
 davvero.
 
 Dare a un modello di linguaggio dei documenti pescati sul momento, invece di

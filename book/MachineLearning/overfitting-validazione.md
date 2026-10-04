@@ -143,15 +143,15 @@ ciò che capita e basta: quella parte di errore resta lì comunque, e nessun
 modello, per quanto bravo, se la prende.
 
 Il conto va fatto come si è fatto sul prezzo delle case: si misura di quanto il
-colpo si allontana dal centro, si eleva al quadrato, e si fa la media su tutti i
-colpi. Solo allora i tre pezzi si sommano davvero, e quella media si spacca in
-tre addendi puliti: quello del mirino, quello della mano, quello del vento.
-Sulle distanze nude la somma non torna. Il quadrato di una somma si apre in
-pezzi, i quadrati dei tre scarti più i loro prodotti a due a due, e i prodotti
-misti, in media su molti colpi, fanno zero: quelli con la mano perché il tremore
-si misura a partire dal punto medio dei colpi, e gli scostamenti da una media,
-messi tutti insieme, si annullano per costruzione, e quelli con il vento perché
-il vento non sa niente né del mirino né della mano. Resta la somma dei tre
+colpo si allontana dal centro, si eleva al quadrato, e si fa la media su tutti
+i colpi. Solo allora i tre pezzi si sommano davvero, e quella media si spacca
+in tre addendi puliti: quello del mirino, quello della mano, quello del vento.
+Sulle distanze nude la somma non torna. Il quadrato di una somma si apre nei
+quadrati dei tre scarti più i loro doppi prodotti. In media su molti colpi,
+questi prodotti misti fanno zero. Quelli con la mano si annullano perché il
+tremore si misura a partire dal punto medio dei colpi, e gli scostamenti da una
+media si compensano per costruzione. Quelli con il vento si annullano perché il
+vento non sa niente né del mirino né della mano. Resta la somma dei tre
 quadrati. È la stessa aritmetica che rende il quadrato scomodo da leggere a
 renderlo scomponibile.
 
@@ -549,22 +549,22 @@ $m$ modelli addestrati su insiemi quasi identici e quindi fortemente correlati
 fra loro, e la media di quantità fortemente correlate si stabilizza poco: con
 correlazione $\rho$ fra i termini la sua varianza non scende sotto
 $\rho\,\sigma^2$, qualunque sia il numero dei termini. Valori $k=5$ o $k=10$
-sono un buon compromesso fra distorsione, costo computazionale e stabilità della
-stima {cite}`hastie2009elements`. Resta da dire che cosa stimino. $\text{CV}_k$
-approssima bene l'errore atteso sui possibili insiemi di addestramento, e male
-l'errore del modello addestrato proprio sui nostri dati, con cui nelle
-simulazioni di ESL risulta perfino debolmente anticorrelata
+sono un buon compromesso fra distorsione, costo computazionale e stabilità
+della stima {cite}`hastie2009elements`. Resta da dire che cosa stimino.
+$\text{CV}_k$ approssima bene l'errore atteso sui possibili insiemi di
+addestramento, e male l'errore del modello addestrato proprio sui nostri dati,
+con cui nelle simulazioni di ESL risulta perfino debolmente anticorrelata
 {cite}`hastie2009elements`; e siccome ogni modello vede $(k-1)m/k$ esempi, la
-stima è pessimista per il modello finale, addestrato su tutti gli $m$. Perché
-stimi qualcosa, poi, ogni passo che guarda i dati deve stare dentro il ciclo. Il
-controesempio classico è di ESL: cinquanta esempi, cinquemila colonne di puro
-rumore, le cento più correlate con l'etichetta scelte guardando tutti i dati, e
-un $1$-NN valutato in cross-validation; l'errore stimato è del $3\%$, quello
-vero del $50\%$. Selezione delle colonne, riscalatura e imputazione vanno quindi
-in una `Pipeline`, che scikit-learn riaddestra da capo in ogni fold. Per il
-ricampionamento serve la `Pipeline` di imbalanced-learn, perché quella di
-scikit-learn non ammette passi che cambiano il numero di righe: lo spiega la
-{doc}`sezione sulle metriche </MachineLearning/metriche>`.
+stima è pessimista per il modello finale, addestrato su tutti gli $m$. Inoltre,
+perché la stima sia valida, ogni passo che guarda i dati deve stare dentro il
+ciclo. Il controesempio classico è di ESL: cinquanta esempi, cinquemila colonne
+di puro rumore, le cento più correlate con l'etichetta scelte guardando tutti i
+dati, e un $1$-NN valutato in cross-validation; l'errore stimato è del $3\%$,
+quello vero del $50\%$. Selezione delle colonne, riscalatura e imputazione
+vanno quindi in una `Pipeline`, che scikit-learn riaddestra da capo in ogni
+fold. Per il ricampionamento serve la `Pipeline` di imbalanced-learn, perché
+quella di scikit-learn non ammette passi che cambiano il numero di righe: lo
+spiega la {doc}`sezione sulle metriche </MachineLearning/metriche>`.
 
 E quando più configurazioni risultano a pari merito dentro l'incertezza della
 stima, la convenzione per decidere è la **regola dell'errore standard**: si
@@ -1309,7 +1309,7 @@ non gli avanza niente.
 E l'addestramento sceglie davvero, fra le infinite curve che passano per tutti i
 punti, quella meno tormentata? Per i modelli lineari è dimostrato: la discesa
 del gradiente (la procedura a piccoli passi vista con la retta di best fit),
-partendo da zero e muovendosi a passettini finché i dati non tornano, arriva a
+partendo da zero e muovendosi a passettini finché non riproduce i dati, arriva a
 quella con i pesi più piccoli. Per le reti profonde è l'ipotesi più studiata,
 con buone prove sperimentali ma senza una dimostrazione generale. Avere
 parametri in eccesso dà soprattutto questo: la libertà di scegliere una
@@ -1355,7 +1355,7 @@ un'ipotesi con buone prove sperimentali: che «semplice» non si conti in
 parametri è assodato, in che cosa si conti no.
 
 Si vede soprattutto con le etichette sporche, e la regolarizzazione appiana il
-picco. La prima clausola è degli autori stessi («le osserviamo tutte con più
+picco. La prima affermazione è degli autori stessi («le osserviamo tutte con più
 forza dove le etichette hanno del rumore»), che però elencano subito dopo i
 casi in cui il picco c'è anche con le etichette pulite, e ne mostrano almeno
 uno in cui sopravvive perfino all'arresto anticipato scelto al meglio. La

@@ -362,8 +362,7 @@ basta testo grezzo, che esiste in quantità enormi, ed è la ragione del suo
 successo. Un archivio di testi corredati a mano da esperti di etichette
 linguistiche (in gergo, **annotato**) costa invece mesi di lavoro, ed è sempre
 piccolo. L'insieme dei testi su cui un programma si addestra si chiama
-**corpus** (al plurale, alla latina, *corpora*), e da qui in poi ricorre di
-continuo.
+**corpus** (al plurale, alla latina, *corpora*).
 
 `````{tab} Elementare
 
@@ -907,14 +906,14 @@ le frasi di un argomento nello stesso punto, e perdere ogni distinzione fine
 fra frasi dello stesso argomento. Temperatura, margine e regolarizzazione
 controllano quanto la soluzione si avvicini a quell'estremo.
 
-Un'ultima nota anticipa il capitolo sui Transformer, dove il retrieval torna
-per esteso: la similarità del coseno misura «si somigliano», non «questo
-risponde a quella». Una domanda e la sua risposta spesso non si somigliano
-affatto, e infatti il retrieval addestra due reti separate, un encoder $E_q$
-per le domande e uno $E_p$ per i passaggi, che si incontrano solo alla fine,
-nel prodotto scalare. Ciascuna delle due si chiama una *torre*. I positivi
-diventano coppie domanda-passaggio e non coppie di parafrasi. Cambia il
-compito, cambiano i positivi, cambia lo spazio.
+Un'ultima nota riguarda il {doc}`retrieval </Transformers/rag>`: la similarità
+del coseno misura «si somigliano», non «questo risponde a quella». Una domanda
+e la sua risposta spesso non si somigliano affatto, e infatti il retrieval
+addestra due reti separate, un encoder $E_q$ per le domande e uno $E_p$ per i
+passaggi, che si incontrano solo alla fine, nel prodotto scalare. Ciascuna
+delle due si chiama una *torre*. I positivi diventano coppie domanda-passaggio
+e non coppie di parafrasi. Cambia il compito, cambiano i positivi, cambia lo
+spazio.
 
 `````
 
@@ -1112,8 +1111,8 @@ davvero, e non una classifica generica.
 ```
 `````
 
-Fin qui i token sono stati un dato di partenza: che i sistemi moderni spezzino
-il testo in pezzi più piccoli della parola lo si è detto, e resta da vedere
-come si decide dove tagliare. È la domanda di {doc}`Come si spezza il testo
+Fin qui i token sono stati un dato di partenza: i sistemi moderni spezzano il
+testo in pezzi più piccoli della parola, ma serve un criterio per decidere dove
+tagliare. È la domanda di {doc}`Come si spezza il testo
 </NaturalLanguageProcessing/tokenizzatori>`, e la risposta ha conseguenze che
 arrivano fino al costo di ogni richiesta fatta a un modello.

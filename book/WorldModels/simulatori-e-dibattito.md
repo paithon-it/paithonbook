@@ -79,13 +79,13 @@ Genie (circa 11 miliardi di parametri in totale) è composto da tre moduli: un
 azioni latenti** e un **modello di dinamica** (di gran lunga il più grande dei
 tre) che predice i token del fotogramma successivo. Tutti e tre sono
 trasformatori spazio-temporali, con l'attenzione causale nel tempo: il
-tokenizer è un autoencoder a quantizzazione vettoriale (VQ-VAE) di questo
-tipo, il modello di azioni latenti è anch'esso un VQ-VAE, addestrato a
-ricostruire il fotogramma successivo dai precedenti e da un'azione scelta in un
-codebook minuscolo, e il modello di dinamica è un trasformatore di tipo
-MaskGIT, che riempie i token mascherati del fotogramma successivo in più
-passate invece che uno alla volta. L'addestramento ha due fasi: prima il
-tokenizer, poi azioni latenti e dinamica insieme {cite}`bruce2024genie`.
+tokenizer è un autoencoder a quantizzazione vettoriale (VQ-VAE), il modello di
+azioni latenti è anch'esso un VQ-VAE, addestrato a ricostruire il fotogramma
+successivo dai precedenti e da un'azione scelta in un codebook minuscolo, e il
+modello di dinamica è un trasformatore di tipo MaskGIT, che riempie i token
+mascherati del fotogramma successivo in più passate invece che uno alla volta.
+L'addestramento ha due fasi: prima il tokenizer, poi azioni latenti e dinamica
+insieme {cite}`bruce2024genie`.
 
 Il cuore concettuale è il secondo modulo, che affronta il problema
 dell'assenza di etichette: i video di internet non dicono quale azione è stata
@@ -104,29 +104,28 @@ $\mathrm{tok}$ è il tokenizer, il primo dei tre moduli, che di ogni fotogramma
 fa una manciata di token discreti $\mathbf{z}_t$ guardando anche quelli che lo
 precedono (è causale nel tempo, non lavora un'immagine per volta: fa lo stesso
 mestiere del $\mathbf{z}$ del VAE nel world model di Ha e Schmidhuber, ma con
-un vocabolario finito invece di 32 numeri continui); $f_\phi$ è un encoder che riassume la
-transizione dal fotogramma $t$ al $t+1$; $q$ è una quantizzazione vettoriale
-su un codebook di appena $|\mathcal{A}| = 8$ codici (un tetto fissato dagli autori perché il joystick resti
-maneggiabile per un giocatore umano); e $g_\theta$ è il modello di dinamica,
-che predice i token del fotogramma successivo a partire dai token del
-passato *e* dall'azione latente $\tilde{a}_t$. A riportare i token in pixel è
-il decoder del tokenizer: il modello di dinamica non vede mai un pixel e non ne
-produce mai uno. Il collo di
-bottiglia è la chiave: potendo trasmettere a $g_\theta$ solo tre bit per
-passo, $\tilde{a}_t$ è spinta a codificare il *cambiamento controllabile*
-(la mossa) e a lasciare tutto il resto (sfondo, fisica, inerzia) al modello di
-dinamica. In inferenza il modello di azioni sparisce e l'azione la fornisce
-l'utente, fotogramma per fotogramma. Le azioni apprese risultano
-semanticamente coerenti tra ambienti mai visti; addestrando lo stesso schema
-su video di manipolazione robotica (il dataset RT-1), emergono allo stesso
-modo azioni consistenti senza alcuna etichetta: indizio che la ricetta non è
-legata ai platform.
+un vocabolario finito invece di 32 numeri continui); $f_\phi$ è un encoder che
+riassume la transizione dal fotogramma $t$ al $t+1$; $q$ è una quantizzazione
+vettoriale su un codebook di appena $|\mathcal{A}| = 8$ codici (un tetto
+fissato dagli autori perché il joystick resti maneggiabile per un giocatore
+umano); e $g_\theta$ è il modello di dinamica, che predice i token del
+fotogramma successivo a partire dai token del passato *e* dall'azione latente
+$\tilde{a}_t$. A riportare i token in pixel è il decoder del tokenizer: il
+modello di dinamica non vede mai un pixel e non ne produce mai uno. Il collo di
+bottiglia è la chiave: potendo trasmettere a $g_\theta$ solo tre bit per passo,
+$\tilde{a}_t$ è spinta a codificare il *cambiamento controllabile* (la mossa) e
+a lasciare tutto il resto (sfondo, fisica, inerzia) al modello di dinamica. In
+inferenza il modello di azioni sparisce e l'azione è fornita dall'utente,
+fotogramma per fotogramma. Le azioni apprese risultano semanticamente coerenti
+tra ambienti mai visti; addestrando lo stesso schema su video di manipolazione
+robotica (il dataset RT-1), emergono allo stesso modo azioni consistenti senza
+alcuna etichetta: indizio che la ricetta non è legata ai platform.
 
 Fa il contrario di Genie, e per questo aiuta a capirlo, GameNGen di Valevski e
 colleghi {cite}`valevski2025diffusion`: un modello di diffusione condizionato
-sulle azioni, addestrato sulle partite registrate di un agente di
-reinforcement learning a *DOOM*, che simula il gioco a 20 fotogrammi al secondo
-su una sola TPU, e di cui valutatori umani distinguono le brevi clip da quelle
+sulle azioni, addestrato sulle partite registrate di un agente di reinforcement
+learning a *DOOM*, che simula il gioco a 20 fotogrammi al secondo su una sola
+TPU, capace di produrre brevi clip che i valutatori umani distinguono da quelle
 vere poco meglio del caso. Qui le azioni sono osservate e non inferite, e il
 gioco è uno solo: è un motore di gioco neurale, non un modello che impara da
 video qualsiasi.
@@ -241,7 +240,7 @@ rappresentazione, dunque, *guida* la predizione.
 Un poscritto metodologico, prima di tirare le somme. Neel Nanda e collaboratori
 (2023) {cite}`nanda2023emergent` hanno mostrato che la rappresentazione è in
 realtà *lineare*, purché la si cerchi nel sistema di riferimento giusto: non
-«nero/bianco» ma «mia/dell'avversario», relativo a chi muove. L'1,7% delle
+«nero/bianco» ma «mia/dell'avversario», relativo a chi muove. L’1,7% delle
 sonde non lineari, quindi, non diceva che l'informazione fosse codificata in
 modo intricato: quelle sonde stavano compensando una scelta di coordinate. Nel
 loro GPT, la sonda lineare su «mia/dell'avversario» arriva fino al 99,6% di
@@ -420,7 +419,7 @@ del 1982, ha ricevuto il Nobel per la fisica nel 2024.
   nel vetro due secoli prima che qualcuno scrivesse la legge della rifrazione.
 - Genie {cite}`bruce2024genie` è un videogioco senza motore di gioco:
   guardando trentamila ore di partite altrui, e senza che nessuno gli abbia
-  mai detto quali tasti si premessero, si è inventato da solo un joystick a
+  mai detto quali tasti premevano i giocatori, si è inventato da solo un joystick a
   otto pulsanti. Le versioni successive (dicembre 2024 e agosto 2025) fanno lo
   stesso in tre dimensioni e in tempo reale, ma sono dimostrazioni scelte da
   chi le pubblica, non prodotti.
@@ -457,7 +456,7 @@ del 1982, ha ricevuto il Nobel per la fisica nel 2024.
 ```{admonition} Da ricordare
 :class: important
 - Nel 2024 OpenAI presenta i modelli di generazione video come «simulatori di
-  mondo» {cite}`brooks2024video`, documentando però essa stessa i limiti:
+  mondo» {cite}`brooks2024video`, ma nel rapporto stesso ne documenta i limiti:
   fisica delle interazioni di base sbagliata (il bicchiere che si rovescia e
   trattiene il liquido anche coricato, senza rompersi). È un documento
   aziendale con dimostrazioni scelte, non un

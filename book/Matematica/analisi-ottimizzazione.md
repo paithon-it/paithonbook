@@ -117,8 +117,8 @@ Restano le pendenze, che si prendono da una tabella come si prende la formula
 dell'area del cerchio, senza dimostrarle. La pendenza di $x^2$ è $2x$, quindi
 nel punto $x=3$ la parabola sale con pendenza $6$. Quella di $e^x$ è di nuovo
 $e^x$, che è la regola del libretto detta in simboli, ed è il motivo per cui
-l'esponenziale rende i conti sopportabili: derivandola, resta identica a sé
-stessa. E la pendenza del logaritmo naturale, quello che ha per base
+l'esponenziale rende i conti sopportabili: derivandolo, resta identico a sé
+stesso. E la pendenza del logaritmo naturale, quello che ha per base
 proprio $e$, è «uno diviso il numero a cui si è arrivati»: su un conto da
 $1000$ euro un euro in più sposta il conteggio di un millesimo, che è lo
 schiacciamento dei numeri enormi visto dal lato della pendenza.
@@ -139,9 +139,9 @@ Ricorrono proprio queste tre per una ragione: l'errore quadratico medio è una
 potenza, la sigmoide $\sigma(x)=1/(1+e^{-x})$ e la softmax sono costruite
 sull'esponenziale, la log-verosimiglianza e la cross-entropy sul logaritmo. La
 stabilità di $e^x$ sotto derivazione è ciò che rende quei conti trattabili.
-Valgono anche la linearità, $(fg)'=f'g+fg'$ e $(f/g)'=(f'g-fg')/g^2$, e ne
-discendono le due derivate che tornano di continuo:
-$\sigma'(x)=\sigma(x)\big(1-\sigma(x)\big)$ e, per la softmax
+Valgono anche la linearità, la regola del prodotto $(fg)'=f'g+fg'$ e del
+quoziente $(f/g)'=(f'g-fg')/g^2$, e ne discendono le due derivate che tornano
+di continuo: $\sigma'(x)=\sigma(x)\big(1-\sigma(x)\big)$ e, per la softmax
 $\mathbf{s}=\operatorname{softmax}(\mathbf{z})$, $\partial s_i/\partial
 z_j=s_i(\delta_{ij}-s_j)$, da cui la cross-entropy $\mathcal{L}=-\log s_y$ ha
 gradiente $\partial\mathcal{L}/\partial\mathbf{z}=\mathbf{s}-\mathbf{e}_y$, con
@@ -190,7 +190,7 @@ zigzaga da una parete all'altra e avanza poco.
 `````{tab} Elementare
 
 La **derivata parziale** è semplice: tieni fermi tutti i parametri tranne uno
-e misura la pendenza rispetto a quello, come chiudere gli occhi su tutte le
+e misura la pendenza rispetto a quello, come lasciare ferme tutte le
 manopole di un mixer tranne una e ascoltare l'effetto di quella sola. Metti in
 fila tutte queste pendenze e ottieni il gradiente: un vettore che punta
 nella direzione in cui il costo cresce più in fretta (la salita più ripida).
@@ -375,9 +375,9 @@ alla catena c'è uno scalare, con $\mathbf{u}=\mathbf{g}(\mathbf{w})$ si ha
 $\nabla_{\mathbf{w}}\mathcal{L}=\mathbf{J}_{\mathbf{g}}^\top\nabla_{\mathbf{u}}\mathcal{L}$:
 la backpropagation moltiplica un vettore per una jacobiana trasposta alla
 volta, partendo dall'uscita, e non forma mai le jacobiane intere. Per questo il
-gradiente costa una piccola costante per il costo del passaggio in avanti,
-qualunque sia il numero di parametri, mentre derivare peso per peso costerebbe
-un passaggio in avanti per ogni peso.
+gradiente costa un piccolo multiplo del passaggio in avanti, qualunque sia il
+numero di parametri, mentre derivare peso per peso costerebbe un passaggio in
+avanti per ogni peso.
 
 `````
 
@@ -430,7 +430,7 @@ ci si muove lungo una somma pesata delle ultime pendenze sentite, in cui ogni
 pendenza conta $\beta$ volte quella appena più recente (tipicamente
 $\beta=0{,}9$). Il perché funzioni si vede senza formule. In una valle stretta
 la pendenza ha due parti: quella che attraversa la valle, che a ogni passo
-cambia verso perché si sbatte prima contro una parete e poi contro l'altra, e
+cambia verso perché rimbalza prima contro una parete e poi contro l'altra, e
 quella che scende lungo la valle, che punta sempre dalla stessa parte. Nella
 somma la prima parte si cancella da sé (una volta è più uno, la volta dopo è
 meno uno) e la seconda si accumula: lungo la valle, dove la pendenza è sempre la

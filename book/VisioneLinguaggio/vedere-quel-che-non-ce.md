@@ -7,8 +7,8 @@ piatto», con la stessa calma con cui il modello ha nominato il bicchiere. La
 forchetta non c'è, e non c'è mai stata.
 
 Il primo istinto è chiamarlo un errore di percezione, come una macchia sul
-sensore o un riflesso scambiato per un oggetto. Il più delle volte è la lettura
-sbagliata, e fermarsi lì porta a cercare la soluzione nel posto sbagliato. Il
+sensore o un riflesso scambiato per un oggetto. Il più delle volte è una lettura
+fuorviante, e fermarsi lì porta a cercare la soluzione nel posto sbagliato. Il
 modello non ha visto male: ha *scritto bene*. Nelle didascalie del mondo,
 accanto a un piatto e a un coltello, una forchetta c'è spesso, e chi è
 addestrato a continuare frasi plausibili la scrive perché la frase, senza,
@@ -53,8 +53,8 @@ E l'abitudine parte avvantaggiata. Le frasi la tastiera le macina da anni; la
 telecamera gliel'hanno attaccata ieri, e il filo fra le due è nuovo di zecca,
 per cui all'inizio, con ogni probabilità, non guardare costa poco. Poi c'è il
 materiale su cui ha imparato. Molte descrizioni delle fotografie le ha scritte
-un altro programma, che aveva davanti due righe di didascalia e non la foto, e
-dove leggeva «tavola apparecchiata» ha messo piatto, coltello e forchetta.
+un altro programma, che aveva davanti due righe di didascalia e non la foto; lì,
+dove leggeva «tavola apparecchiata», ha messo piatto, coltello e forchetta.
 Quella forchetta era lì prima di ogni domanda.
 
 `````
@@ -161,7 +161,7 @@ conteggio sbagliato, una relazione spaziale rovesciata sono invisibili. La
 seconda: dipende dalla completezza delle annotazioni, e un oggetto che c'è
 davvero ma che nessuno ha annotato viene contato come allucinazione. La terza:
 cercare parole dentro un testo libero è un metodo approssimativo, che va bene in
-media e sbaglia sui casi storti, perché inciampa sulle negazioni («non c'è
+media e sbaglia sui casi atipici, perché inciampa sulle negazioni («non c'è
 nessuna forchetta» contiene la parola «forchetta») e sui riferimenti generici. E
 la quarta: il punteggio dipende da cose che con l'immagine non c'entrano, cioè
 da come è formulata la richiesta e da quanto è lunga la descrizione che ne esce,
@@ -244,8 +244,8 @@ condizionato alla co-occorrenza, più un controllo. Il divario fra le
 accuratezze nelle tre condizioni è una stima di quanto ciascun priore stia
 guidando la risposta.
 
-Tre proprietà del disegno meritano di essere isolate, perché sono ciò che lo
-rende una misura e non un sondaggio. L'insieme è bilanciato, metà domande
+Tre proprietà del disegno lo
+rendono una misura e non un sondaggio. L'insieme è bilanciato, metà domande
 con risposta sì e metà con risposta no, così che entrambe le strategie
 degeneri si collochino al livello del caso in accuratezza. La risposta è un
 token, quindi il confronto con la verità è esatto e riproducibile. E accanto
@@ -366,7 +366,7 @@ C'è anche un secondo difetto, più banale e forse peggiore: molte domande si
 possono indovinare senza guardare la fotografia. Queste prove, a differenza
 delle domande a cui si risponde sì o no, sono a crocette, e la risposta sta
 spesso nella domanda stessa, nelle alternative proposte accanto («che animale
-c'è nella foto? a) un cane b) una sedia c) un tavolo d) una nuvola») o in cose
+c'è nella foto? a) un cane, b) una sedia, c) un tavolo, d) una nuvola») o in cose
 che chiunque sa del mondo.
 
 Per fortuna il controllo che li scopre tutti e due è il più semplice che si
@@ -529,8 +529,8 @@ Il rimedio a monte è coerente con la diagnosi: se un encoder addestrato sulle
 didascalie perde ciò che le didascalie non nominano, gli si affianca un secondo
 encoder addestrato sulle sole immagini e si uniscono le due descrizioni. Il come
 cambia il conto e il risultato. Si possono combinare i due vettori di ogni
-tessera, mescolandoli o mettendoli uno in coda all'altro, e la sequenza resta
-lunga uguale: nelle prove di Tong e colleghi il miscuglio fa salire il punteggio
+tessera sommandoli o concatenandoli, e la sequenza resta
+lunga uguale: nelle prove di Tong e colleghi la fusione fa salire il punteggio
 sulle coppie cieche (da $5{,}5$ a $18{,}7$ con tre parti su quattro di encoder
 di sola visione), ma fa scendere la capacità di seguire le istruzioni da
 $81{,}8$ a $75{,}8$. Oppure si mettono in fila i token dei due encoder,
@@ -613,7 +613,7 @@ manopola.
 Una precauzione serve, altrimenti il trucco si rivolta: sottraendo senza freni
 si finisce per premiare parole assurde, che a occhi chiusi erano
 improbabilissime e a occhi aperti solo un po’ meno. Il rimedio è restringere la
-scelta in partenza alle parole che a occhi aperti valevano almeno un decimo
+scelta in partenza alle parole che a occhi aperti valgono almeno un decimo
 della più probabile: dentro quel gruppo ristretto si confronta, fuori non si
 guarda. E il
 conto da pagare è semplice: due letture invece di una, quindi il doppio del
@@ -672,7 +672,7 @@ quelli frequenti e di meno di due con quelli che co-occorrono ($79{,}0 \to
 distinzione che serve è già scomparsa in $E(\mathbf{I})$, contrastare con
 $E(\mathbf{I}')$ non la fa ricomparire: la correzione sposta massa di
 probabilità fra token, non restituisce una dimensione che l'encoder ha
-collassato. E con $\alpha$ grande si penalizza tutto ciò che è insieme vero e
+collassato. E con $\alpha$ grande si penalizza tutto ciò che è al contempo vero e
 atteso, cioè anche la forchetta nelle foto in cui la forchetta c'è: si scambia
 un tipo di errore con l'altro.
 
@@ -808,7 +808,7 @@ il dettaglio fine.
 `````
 
 La discretizzazione sta in poche righe, e il codice serve soprattutto a rendere
-visibile che cosa il braccio esegue davvero, che quasi mai è esattamente
+visibile che cosa il braccio esegua davvero, che quasi mai è esattamente
 l'azione richiesta: è il centro del gradino più vicino.
 
 ```python
@@ -853,7 +853,7 @@ print((alto - basso) / (2 * N_BIN))   # mezzo gradino: l'errore massimo
 L'ultima riga è l'errore massimo dell'arrotondamento a gradini, che è mezzo
 gradino: due decimi di millimetro sulla traslazione, meno di un millesimo di
 radiante sulla rotazione, cioè meno di un ventesimo di grado. È un limite noto
-e accettabile. Quelli che non si liquidano con un numero sono altri tre, e
+e accettabile. I difetti che non si liquidano con un numero sono altri tre, e
 stanno tutti fra il video di una dimostrazione e un impianto che lavora.
 
 Il primo è la frequenza. Nel lavoro che nel 2023 ha introdotto questa ricetta
@@ -914,9 +914,9 @@ un modello che conversa, e fra i modelli aperti si è diffusa la saldatura più
 povera, perché comprimere significa scegliere prima di conoscere la domanda.
 Fondere all'ingresso, in un vocabolario solo, dà un modello che produce, al
 prezzo di un pre-addestramento da rifare o da estendere a lungo e di un
-arrotondamento a catalogo che butta via. Pagare il dettaglio è il conto che
-presenta la risoluzione, dove ogni pixel in più si trasforma in posto occupato
-nella sequenza.
+arrotondamento a catalogo che perde parte dell'informazione. Pagare il
+dettaglio è il conto che presenta la risoluzione, dove ogni pixel in più si
+trasforma in posto occupato nella sequenza.
 
 E infine diffidare, che non è una quinta tecnica ma la disposizione da
 tenere davanti alle altre quattro: chiedersi non soltanto dove i due flussi si

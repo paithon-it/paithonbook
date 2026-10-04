@@ -47,7 +47,7 @@ vinto, per una ragione che si vede subito: chi ripulisce sa esattamente dove
 guardare. Le parole rimaste sono vere e non si toccano; il lavoro è
 ricostruire quelle cancellate, e il modello sa quali sono.
 
-C'è di più, ed è una sorpresa piacevole. Il compito «ecco un testo con dei buchi,
+Il compito «ecco un testo con dei buchi,
 riempili» è esattamente quello su cui una generazione di modelli linguistici è
 stata addestrata a partire dal 2018, e nessuno all'epoca la chiamava diffusione.
 La differenza fra quei modelli e questi sta in due dettagli: la frazione di
@@ -142,7 +142,7 @@ $$
 
 cioè una cross-entropia sulle sole posizioni mascherate, pesata da un fattore
 che dipende solo dal programma di mascheramento
-{cite}`sahoo2024simple,shi2024simplified`. Il segno merita un secondo: il
+{cite}`sahoo2024simple,shi2024simplified`. Quanto al segno, il
 programma scende da $\alpha_0=1$ a $\alpha_1=0$, quindi $\alpha_t'$ è negativa e
 il coefficiente $-\alpha_t'/(1-\alpha_t)$ è positivo, come deve essere una
 perdita fatta di termini positivi. Con il programma lineare, $\alpha_t = 1-t$,
@@ -260,7 +260,7 @@ for passi in (1, 2, 3):
 
 Con tre caselle, che possono valere zero o uno, le combinazioni possibili sono
 otto; la regola del numero pari di uni ne ammette quattro, e sono quelle che il
-codice elenca per prime. Guardato un bit alla volta non si vede niente: ciascuno
+codice elenca per prime. Guardando un bit alla volta non si vede niente: ciascuno
 è cinquanta e cinquanta, e anche due qualsiasi non sanno niente l'uno
 dell'altro. Il legame c'è solo fra tutti e tre insieme, e si dice in cinque
 parole: due qualsiasi decidono il terzo. Se le prime due sono uno e zero, la
@@ -381,8 +381,8 @@ Le conseguenze pratiche, in ordine di quanto pesano:
 
 I modelli linguistici a diffusione esistono e sono addestrati su scala vera.
 Nel 2025 LLaDA, con otto miliardi di parametri, è risultato paragonabile ai
-modelli che scrivono una parola alla volta (si chiamano modelli
-autoregressivi) della stessa taglia sulla maggior parte delle prove; nel 2026
+modelli che scrivono una parola alla volta, i modelli
+autoregressivi, della stessa taglia sulla maggior parte delle prove; nel 2026
 DiffusionGemma, ottenuto adattando un modello autoregressivo, riscrive blocchi
 di 256 pezzi di parola alla volta. Dove restino indietro, se restano indietro,
 è ancora una domanda aperta. Il conto sul linguaggio a tre bit dice dove
@@ -420,17 +420,17 @@ modello autoregressivo e raffina in parallelo blocchi di 256 token, una
 ventina per passaggio in media: la via a blocchi, non la diffusione su tutta
 la sequenza.
 
-Da qui tre osservazioni di prospettiva, tutte verificabili sul conto fatto e
-nessuna delle quali richiede di sapere quale modello sia uscito quando.
+Da qui qualche osservazione di prospettiva, che si verifica sul conto fatto
+senza sapere quale modello sia uscito quando.
 
-La prima è che il limite viene dalla fattorizzazione, e non dalla diffusione
+Il limite viene dalla fattorizzazione, e non dalla diffusione
 in sé. Un passo parallelo esatto richiederebbe di campionare dalla congiunta
 delle posizioni scoperte, e nessuno sa farlo a costo lineare. Le tecniche che
 riducono il divario (scoperta adattiva per entropia, correzione delle posizioni
 già scritte, gruppi piccoli in punti critici) lavorano tutte su questa
 quantità.
 
-La seconda è che il caso continuo e quello discreto si descrivono con lo stesso
+Inoltre, il caso continuo e quello discreto si descrivono con lo stesso
 principio, al livello in cui la probabilità si sposta: il rapporto fra
 probabilità di stati vicini fa il mestiere del gradiente della log-densità, la
 matrice generatrice quello della deriva, e le tre letture (variazionale, del
@@ -445,7 +445,7 @@ in molti casi una controparte discreta (la guida senza classificatore, per
 esempio, combina le due predizioni sui logit), anche se non tutte si traducono
 nella stessa forma.
 
-La terza è che questa famiglia rende naturali i compiti di riempimento
+Infine, questa famiglia rende naturali i compiti di riempimento
 vincolato, che è la forma di molti problemi importanti fuori dal linguaggio:
 generazione di molecole con proprietà imposte, progettazione di sequenze
 proteiche con siti fissati, sintesi di programmi con un'interfaccia data. In

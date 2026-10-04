@@ -30,12 +30,12 @@ e non è più un limite.
 
 La terza risposta è una famiglia di modelli costruiti in modo che quel numero
 esca esatto, e che per valutarlo basti un solo passaggio della rete. Il numero
-serve a tre mestieri: comprimere i dati senza perdere niente, scegliere fra
-ipotesi alternative la più probabile (fra due trascrizioni di una frase
-registrata, la più plausibile), e accorgersi che un dato non somiglia a quelli
-su cui il modello è stato addestrato. Sono i mestieri per cui la famiglia è
-rimasta in servizio anche negli anni in cui, sulla qualità delle immagini
-generate, la diffusione la superava nettamente.
+serve a tre mestieri: comprimere i dati senza perdere niente, scegliere la più
+probabile fra ipotesi alternative (la trascrizione più plausibile di una frase
+registrata), e accorgersi che un dato non somiglia a quelli su cui il modello è
+stato addestrato. Sono i mestieri per cui la famiglia è rimasta in servizio
+anche negli anni in cui, sulla qualità delle immagini generate, la diffusione
+la superava nettamente.
 
 ## La parola, prima della mappa
 
@@ -60,21 +60,19 @@ a verosimiglianza esatta ai modelli a energia. Normalizzare un punteggio vuol
 dire dividerlo per la somma dei punteggi di tutti i dati possibili, e quella
 somma non si può fare: il capitolo sui modelli a energia mostrerà quanto il
 conto sia fuori portata. Le strade sono allora due: rinunciare alla
-normalizzazione e cavarsela lo stesso (è il capitolo sui modelli a energia),
+normalizzazione e cavarsela lo stesso (come faranno i modelli a energia),
 oppure costruire il modello in modo che venga normalizzato da sé, senza mai
-fare quel conto. È la strada di questo.
+fare quel conto. È la strada della verosimiglianza esatta.
 
 ## La mappa
 
-I capitoli generativi del libro sono cinque, e per la prima volta li mettiamo
-tutti insieme: {doc}`modelli latenti </ModelliLatenti/overview>`,
-le GAN, la diffusione,
-questo e i modelli a energia. L'asse su cui li
-ordiniamo è uno solo: che rapporto ha il modello con la probabilità del
-dato. È un taglio fra i tanti possibili, e altrove nel libro le stesse cose
-sono ordinate secondo altri assi (le quattro famiglie dell'auto-supervisione si
-ordinano secondo che cosa impedisce la risposta vuota, che è tutta un'altra
-domanda). Qui contano solo tre risposte.
+Le famiglie di modelli generativi sono cinque: i {doc}`modelli latenti
+</ModelliLatenti/overview>`, le GAN, la diffusione, i modelli a verosimiglianza
+esatta e quelli a energia. L'asse su cui si ordinano qui è uno solo: che
+rapporto ha il modello con la probabilità del dato. È un taglio fra i tanti
+possibili (le quattro famiglie dell'auto-supervisione, per esempio, si ordinano
+in base a cosa impedisca la risposta vuota, che è tutta un'altra domanda). Qui
+contano solo tre risposte.
 
 La prima risposta è che il modello quel numero non ce l'ha affatto. Sa produrre
 campioni e nient'altro, e la probabilità non compare in nessuna delle sue
@@ -111,10 +109,10 @@ $\log p(\mathbf{x})$, il logaritmo della probabilità del dato, in un passaggio
 solo. Si lavora sul logaritmo perché la probabilità di un'immagine intera è un
 numero con migliaia di zeri dopo la virgola, e il logaritmo lo rende
 maneggevole e trasforma i prodotti di probabilità in somme. Due strade portano
-lì, e sono le prime due sezioni. La prima scrive la probabilità del dato come
+lì. La prima scrive la probabilità del dato come
 prodotto di probabilità condizionate, un valore alla volta, ciascuno sapendo
-quelli che lo precedono: sono i modelli autoregressivi, che il libro conosce sul
-testo e sull'audio e che qui incontriamo sulle immagini. La seconda costruisce
+quelli che lo precedono: sono i modelli autoregressivi, già incontrati sul
+testo e sull'audio e applicati qui alle immagini. La seconda costruisce
 una trasformazione invertibile che porta i dati su una distribuzione di base
 nota, di solito una gaussiana, e ricava la probabilità con un cambio di
 variabile: sono i flussi normalizzanti, e la parola «flusso» è la stessa del
@@ -216,11 +214,11 @@ probabilità esatta vale allora per la versione compressa, non per l'immagine.
 Prima gli autoregressivi sulle immagini: come si fissa un ordine su una
 griglia di pixel, come si impone a una convoluzione di guardare solo i pixel
 già letti, e il difetto, il punto cieco, che quel vincolo porta con sé. Poi i
-flussi normalizzanti: il cambio di variabile per le densità, che è tutta la
-matematica del capitolo, il vincolo di invertibilità, e il modo di soddisfarlo
+flussi normalizzanti: il cambio di variabile per le densità, che è la sola
+matematica necessaria, il vincolo di invertibilità, e il modo di soddisfarlo
 con un determinante che in generale costa il cubo del numero di coordinate e
 che negli strati di accoppiamento si riduce a una somma. Infine il bilancio: a
 che cosa serve il numero (comprimere, scegliere fra ipotesi, riconoscere un
 dato anomalo), il fallimento istruttivo che ha smontato la più ovvia di queste
-applicazioni, e il ponte verso il *flow matching* che il capitolo precedente ha
+applicazioni, e il ponte verso il *flow matching* che la diffusione ha
 già usato.

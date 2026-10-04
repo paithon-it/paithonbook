@@ -84,7 +84,7 @@ $\mathbf{X}$ come foglia con `requires_grad_(True)` e la backpropagation
 restituisce $\partial \mathcal{L} / \partial \mathbf{X}$, il gradiente della
 loss rispetto ai pixel. È lo stesso meccanismo che rende possibili gli *esempi
 avversari* (immagini ritoccate in modo impercettibile apposta per ingannare una
-rete) qui usato a fin di bene.
+rete), qui usato a uno scopo diverso.
 
 `````
 
@@ -111,7 +111,7 @@ compromesso fra due termini.
 
 In un quadro ci sono due cose sovrapposte: il **soggetto** (una notte, un paese,
 un cipresso) e la **mano del pittore** (la tavolozza dei colori, lo spessore e
-la direzione delle pennellate, il ritmo delle trame). Riconosci uno van Gogh da
+la direzione delle pennellate, il ritmo delle trame). Riconosci un van Gogh da
 tre centimetri quadrati di cielo, senza sapere cosa rappresenta il quadro:
 quella è la mano, non il soggetto. È come la grafia di un amico: la riconosci su
 qualunque parola, perché non dipende da *cosa* scrive ma da *come* scrive.
@@ -377,7 +377,7 @@ partenza sempre uguale esce sempre la stessa immagine, mentre dai puntini a
 caso se ne possono generare quante se ne vuole.
 
 Chi decide i passi. Il ritocco della tela è affidato a un ottimizzatore, cioè al
-pezzo di codice che, saputo di quanto si è sbagliato, decide come muovere i
+pezzo di codice che, calcolato l'errore, decide come muovere i
 pixel. Gli autori usavano L-BFGS, un metodo che oltre alla pendenza stima anche
 quanto la loss si incurva, e che su un problema come questo arriva in meno passi
 ma va richiamato in un modo tutto suo; noi usiamo Adam, che è lo stesso del
@@ -498,7 +498,7 @@ In tutto il capitolo, da qualche parte, c'era sempre un bersaglio già scritto,
 la risposta giusta con cui confrontare quella della rete: l'etichetta della
 foto, il riquadro intorno all'oggetto, la maschera dei pixel, le fotografie
 vere che una scena ricostruita doveva rifare, e perfino qui, dove il bersaglio
-era un quadro appeso in un museo. Dove le etichette mancavano, la rete se lo
+era un quadro appeso in un museo. Quando il bersaglio mancava, la rete se lo
 fabbricava da sé, confrontando due viste della stessa foto oppure nascondendone
 un pezzo e provando a indovinarlo. Da qui il bersaglio sparisce del tutto, in
 due tempi: prima con programmi che non imparano niente e se la cavano guardando

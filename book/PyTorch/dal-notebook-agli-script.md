@@ -350,8 +350,8 @@ partenza, e quindi la configurazione va salvata insieme.
 
 Il salvataggio parte da un modello vivo e produce numeri, e sembra facile; il
 ricaricamento deve fare il contrario, e i numeri da soli non sanno dire in che
-forma andavano rimessi. È questa asimmetria, disegnata in
-{numref}`fig-serializzazione`, una fonte frequente di errori di
+forma andavano rimessi. Questa asimmetria, disegnata in
+{numref}`fig-serializzazione`, è una fonte frequente di errori di
 ricaricamento, ed è la ragione per cui la configurazione viaggia nello stesso
 file dei pesi: dentro c'è anche il seme, che di quella configurazione è una
 voce come le altre. I due gesti del ricaricamento, in codice, sono la
@@ -422,7 +422,7 @@ piccolo può venire dal foglio più che dal learning rate. Per saperlo rifai la
 prova con tre o cinque fogli diversi, confronti le medie, e magari anche quanto
 ballano i valori.
 
-C'è poi una cosa che nessun foglio compra: le ultime cifre. Una somma lunga,
+C'è poi una cosa che nessun foglio garantisce: le ultime cifre. Una somma lunga,
 fatta in ordini diversi, dà totali diversi, e non serve sbagliare niente,
 basta che a ogni passaggio si arrotondi. Un conto in banca tiene i centesimi, e
 matura quattro decimi di centesimo di interessi al giorno. Accreditati giorno
@@ -431,7 +431,7 @@ quello di partenza; sommati prima fra loro fanno un euro e quarantasei, e il
 saldo si muove. Stessi numeri, ordine diverso, totale diverso.
 
 Una scheda grafica lavora proprio così, spezzando la somma fra migliaia di
-calcoli che corrono nello stesso momento e consegnano appena hanno finito, e
+calcoli che avvengono nello stesso momento e consegnano appena hanno finito, e
 chi consegna per primo non è sempre lo stesso. Le differenze sono nelle ultime
 cifre, molto più piccole di quelle del conto in banca; ma le somme di un
 addestramento sono milioni, e alla fine due esecuzioni dello stesso codice, con

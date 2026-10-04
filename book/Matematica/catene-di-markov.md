@@ -4,11 +4,11 @@ Per mescolare davvero un mazzo di cinquantadue carte servono sette mescolate, e
 la settima non è una scelta di stile. È un risultato di matematica pura, e nel
 gennaio del 1990 il *New York Times* gli dedicò un articolo. Dave Bayer e Persi
 Diaconis avevano studiato che cosa succede a un mazzo mescolato alla maniera
-dei croupier, dividendolo in due e facendo cadere le carte a intreccio, e
-avevano scoperto un fenomeno inatteso: fino a quattro mescolate la distanza fra
-la distribuzione dei mazzi ottenuti e quella di un mazzo sorteggiato a caso,
+dei croupier, dividendolo in due e facendo cadere le carte a intreccio. Avevano
+scoperto un fenomeno inatteso: fino a quattro mescolate la distanza fra la
+distribuzione dei mazzi ottenuti e quella di un mazzo sorteggiato a caso,
 misurata in variazione totale, resta praticamente uguale a uno (chi conosce la
-procedura riconosce quasi sempre un mazzo così mescolato), alla settima scende
+procedura riconosce quasi sempre un mazzo così mescolato). Alla settima scende
 per la prima volta sotto la metà, e da lì in poi si dimezza a ogni mescolata
 {cite}`bayer1992trailing`. Fra il mazzo ancora riconoscibile e quello
 indistinguibile da uno casuale non c'è una salita graduale, c'è una soglia, e
@@ -36,7 +36,7 @@ catene di Markov. È una restrizione seria, ed è proprio per questo che porta
 lontano: un sistema che ricorda tutto è impossibile da studiare, uno che
 ricorda solo dove si trova si maneggia con l'algebra lineare.
 
-C'è una mossa da imparare qui, perché serve continuamente. Se il gioco avesse
+C'è una mossa da imparare, perché serve continuamente. Se il gioco avesse
 una regola del tipo «chi è già finito in prigione una volta, la seconda volta
 esce subito», il patto sarebbe rotto: la casella da sola non basterebbe più a
 decidere il futuro. Ma basta cambiare che cosa si chiama stato. Invece della
@@ -184,7 +184,7 @@ Il calcolo si può fare in tre modi, tutti usati:
 L'equilibrio è dinamico: la catena continua a saltare da uno stato all'altro, ed
 è il flusso complessivo a pareggiarsi. Una condizione più forte, il **bilancio
 dettagliato** $P_{ij}\pi_j = P_{ji}\pi_i$, chiede che si pareggi ogni singola
-coppia di stati. È sufficiente, e lo si vede sommando su $j$:
+coppia di stati. È sufficiente per la stazionarietà, e lo si vede sommando su $j$:
 $\sum_j P_{ij}\pi_j=\pi_i\sum_j P_{ji}=\pi_i$. Non è necessaria, ma è comoda:
 per costruire una catena con una stazionaria assegnata basta imporre una
 condizione locale fra coppie di stati, senza risolvere nessun sistema. È la

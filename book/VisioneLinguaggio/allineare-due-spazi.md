@@ -132,7 +132,7 @@ batch $B$. Ogni riga ha una coppia giusta, il positivo, e $B - 1$ sbagliate, i
 negativi, cioè gli abbinamenti che il caso ha messo insieme nello stesso
 batch. Passando da $B$ a $2B$ i negativi diventano $2B - 1$, e riconoscere il
 positivo si fa più difficile. Quanto costi un $B$ grande lo dice il paragrafo
-«La temperatura e il batch», ed è il vincolo da cui nascerà SigLIP.
+«La temperatura e il batch»: è il vincolo da cui nascerà SigLIP.
 
 ```{figure} ../figures/vlm-contrastivo.svg
 :name: fig-vlm-contrastivo
@@ -330,7 +330,7 @@ sulle colonne $0{,}148$; la loss simmetrica $0{,}148$.
 
 Ora rifacciamo il conto senza cambiare una sola similarità, solo alzando la
 temperatura a $\tau = 0{,}5$. Dividendo per $0{,}5$ ed esponenziando come prima,
-la prima riga diventa $0{,}351$, $0{,}235$, $0{,}213$, $0{,}201$ di fiducia: la
+la prima riga diventa $0{,}351$, $0{,}235$, $0{,}213$, $0{,}201$ di probabilità: la
 coppia giusta è ancora in testa, ma di un soffio, e la
 loss simmetrica sale a $1{,}082$. Per confronto, un modello che tirasse a caso
 fra quattro didascalie pagherebbe $\log 4 = 1{,}386$. Con $\tau = 0{,}5$ questa
@@ -342,8 +342,8 @@ costa l’$11\%$.
 
 ## La temperatura e il batch
 
-Quel confronto dice una cosa importante: la temperatura non è un parametro
-cosmetico, decide *quanto* piccole differenze di somiglianza diventino grandi
+Quel confronto dimostra che la temperatura non è un parametro
+cosmetico: decide *quanto* piccole differenze di somiglianza diventino grandi
 differenze di fiducia, e quindi che cosa il modello si sforzi di
 correggere.
 
@@ -405,7 +405,7 @@ coseno vicino a quello del positivo. Il $0{,}07$ è un punto di partenza e non
 un regime di esercizio: nel modello pubblicato la scala appresa sta
 appoggiata al tetto,
 cioè $\tau = 1/100 = 0{,}01$, sette volte più piccata di come è partita.
-L'ottimizzazione, lasciata libera, va a sbattere contro il vincolo e ci resta; ci
+L'ottimizzazione, lasciata libera, raggiunge il vincolo e vi si ferma; ci
 servirà fra poco, quando si tratterà di capire perché due nuvole di punti non si
 avvicinano mai.
 
@@ -637,19 +637,19 @@ zero-shot, un prompt per classe in italiano: 0.70
 
 La distanza fra i due centroidi vale $1{,}08$ (gli embedding stanno sulla sfera
 unitaria, dove il massimo possibile è $2$); il coseno medio con la didascalia
-migliore è $0{,}30$, contro $0{,}76$ fra due immagini qualunque; e le due nuvole
-non si sovrappongono per niente, tanto che una regressione logistica risponde
-«immagine o testo?» senza un errore in validazione incrociata. Con un solo
-prompt per classe, in inglese, la classificazione zero-shot a dieci vie ne
-prende nove su dieci: il divario non le impedisce di funzionare, ed è il punto.
+migliore è $0{,}30$, contro $0{,}76$ fra due immagini qualunque; e le due
+nuvole non si sovrappongono per niente, tanto che una regressione logistica
+risponde «immagine o testo?» senza un errore in validazione incrociata. Con un
+solo prompt per classe, in inglese, la classificazione zero-shot a dieci vie
+arriva al 90%: il divario non le impedisce di funzionare, ed è il punto.
 Cambiando il seme, cioè le otto immagini per classe, le prime quattro righe
 dell'uscita non si spostano più di un centesimo, mentre lo zero-shot si muove
 fino a una decina di punti; e quel $0{,}76$ è alto perché le immagini di
-CIFAR-10 sono $32 \times 32$ e si somigliano fra loro più di quanto si somiglino
-fotografie a piena risoluzione: su queste il valore scende, senza che la forbice
-si chiuda. L'ampiezza del divario dipende dal modello, dai dati e dalla
-temperatura: con $\tau$ bassa, come in CLIP, la perdita lo mantiene; con $\tau$
-alta, nelle prove di Liang e colleghi, un fine-tuning lo riduce fino a
+CIFAR-10 sono $32 \times 32$ e si somigliano fra loro più di quanto si
+somiglino fotografie a piena risoluzione: su queste il valore scende, senza che
+la forbice si chiuda. L'ampiezza del divario dipende dal modello, dai dati e
+dalla temperatura: con $\tau$ bassa, come in CLIP, la perdita lo mantiene; con
+$\tau$ alta, nelle prove di Liang e colleghi, un fine-tuning lo riduce fino a
 chiuderlo.
 
 Il divario non è un difetto dell'ottimizzazione. La InfoNCE non contiene nessun
@@ -845,7 +845,7 @@ parametro libero), $b$ un bias appreso e $z_{ij}$ l'etichetta binaria della
 cella. Si noti la normalizzazione: la somma corre su tutte le $B^2$ celle, ma
 il divisore è $B$, così che la loss conti il costo per elemento del batch e non
 per cella. Il bias serve a un problema che la softmax non aveva: in un batch le
-celle negative sono $B^2 - B$ contro $B$ positive, uno sbilanciamento feroce,
+celle negative sono $B^2 - B$ contro $B$ positive, un forte sbilanciamento,
 e senza un $b$
 inizializzato molto negativo (nel lavoro originale a $-10$) le prime iterazioni
 si consumerebbero tutte a correggerlo, invece che a imparare.[^siglip-segno]
@@ -953,15 +953,15 @@ rovescia il significato e non la sposta quasi per niente nello spazio) sono i
 primi a rimanere fuori.
 
 Che il gioco contrastivo sia una causa di questo comportamento è l'ipotesi di
-Yuksekgonul e colleghi {cite}`yuksekgonul2023when`, sostenuta da un'evidenza di
-una semplicità disarmante: si prendono le didascalie di un archivio, se ne
-mescolano le parole, si rifà la ricerca per immagini, e il risultato quasi non
-peggiora. Se l'ordine si può buttare via senza pagare pegno, l'ordine il compito
-non lo chiedeva. Lo stesso lavoro propone anche una riparazione, che è la parte
-utile: fra i negativi del batch si aggiungono didascalie ottenute scambiando fra
-loro sintagmi, nomi, aggettivi o verbi della didascalia giusta, e immagini molto
-simili a quelle del batch. Con questo fine-tuning di CLIP su COCO la stessa rete
-migliora nettamente sui test di ordine e di relazione (su COCO Order, per
+Yuksekgonul e colleghi {cite}`yuksekgonul2023when`, sostenuta da un esperimento
+chiarissimo: si prendono le didascalie di un archivio, se ne mescolano le
+parole, si rifà la ricerca per immagini, e il risultato quasi non peggiora. Se
+l'ordine si può buttare via senza pagare pegno, l'ordine il compito non lo
+chiedeva. Lo stesso lavoro propone anche una riparazione, che è la parte utile:
+fra i negativi del batch si aggiungono didascalie ottenute scambiando fra loro
+sintagmi, nomi, aggettivi o verbi della didascalia giusta, e immagini molto
+simili a quelle del batch. Con questo fine-tuning di CLIP su COCO la stessa
+rete migliora nettamente sui test di ordine e di relazione (su COCO Order, per
 esempio, da 46% a 86%): una buona parte del limite stava in quello che le si
 chiedeva di distinguere. Solo una parte, però: quelle didascalie con le parti
 scambiate sono spesso frasi sgrammaticate, che un modello di solo testo

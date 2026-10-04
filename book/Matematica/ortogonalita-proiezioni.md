@@ -27,7 +27,7 @@ von Zach, a Gotha, annota fra le stelline del campo proprio Cerere, anche se ne
 sarà certo solo il 31; la notte del primo gennaio 1802 la ritrova Wilhelm
 Olbers a Brema. Stava a meno di mezzo grado da dove il conto diceva.
 
-In quella nota la regola non c'è, e quella che si imporrà pochi anni dopo
+In quella nota la regola non compare, e il metodo che si imporrà pochi anni dopo
 cambia la domanda: se nessuna orbita azzera gli scarti, si prende quella che
 rende minima la somma dei loro quadrati.
 
@@ -45,7 +45,7 @@ allineati; il caso in cui vale zero ha un nome, l'ortogonalità.
 
 Se il prodotto scalare di due liste di numeri fa zero, le due frecce
 corrispondenti sono perpendicolari. Il nome tecnico è **ortogonali**, dal greco
-per «ad angolo retto», e la cosa importante è quello che significa in pratica:
+per «ad angolo retto», e in pratica significa questo:
 spostarsi lungo una delle due non ti sposta di un millimetro lungo l'altra.
 
 Un esempio con due frecce sul foglio: $(3, 0)$ punta a destra, $(0, 5)$ punta in
@@ -80,7 +80,7 @@ macchina. Girare la carta stradale, tenendo i due assi perpendicolari fra loro,
 non cambia nessuna distanza e nessun angolo: le città restano lontane
 esattamente quanto prima, cambia solo come si chiamano le loro coordinate. Un
 cambio di assi perpendicolari non gonfia niente e non schiaccia niente, quindi
-non introduce errori di suo, ed è il motivo per cui gli algoritmi numerici
+non introduce errori di suo: per questo gli algoritmi numerici
 seri sono costruiti a partire da rotazioni.
 
 `````
@@ -128,7 +128,7 @@ sono rotazioni e riflessioni. Sono anche perfettamente condizionate: detto
 $\kappa_2(\mathbf{A})=\sigma_{\max}/\sigma_{\min}$ il rapporto fra il massimo e
 il minimo allungamento, che si chiama numero di condizionamento, per una
 matrice ortogonale tutti i valori singolari valgono uno e quindi
-$\kappa_2(\mathbf{Q})=1$. Ed è la ragione per cui gli algoritmi numerici seri
+$\kappa_2(\mathbf{Q})=1$. Per questo gli algoritmi numerici seri
 sono costruiti a partire da esse.
 
 `````
@@ -217,7 +217,7 @@ calcolata dividendo per $n$. La media è quindi il coefficiente dell'ombra
 lungo $\mathbf{1}$, e la varianza è la lunghezza al quadrato di ciò che resta
 divisa per $n$: la
 {doc}`sezione su probabilità e statistica </Matematica/probabilita-statistica>`
-le ritroverà per la strada probabilistica, e i due conti danno gli stessi
+le ritroverà per la via probabilistica, e i due conti danno gli stessi
 numeri.
 
 `````
@@ -734,20 +734,19 @@ La forma della superficie attorno a quell'ottimo è un fatto in più, e si deve 
 Baldi e Hornik {cite}`baldi1989neural`. Su quella superficie non ci sono minimi
 locali spuri, perché ogni altro punto critico è una sella, cioè un punto da cui
 si scende in una direzione e si sale in un'altra. E la soluzione è determinata
-solo a meno di un cambio di base nello spazio compresso di mezzo, il
-*latente*, $\mathbf{W}_2 =
-\mathbf{V}_k\mathbf{C}$ e $\mathbf{W}_1 = \mathbf{C}^{-1}\mathbf{V}_k^\top$ con
-$\mathbf{C}$ invertibile qualunque, quindi un autoencoder lineare ritrova il
-sottospazio della PCA e non i suoi assi. Che la discesa del gradiente ci arrivi
-non segue, e gli autori lo scrivono: una superficie senza minimi locali lascia
-comunque il modo di incagliarsi in una sella. Aggiungono però che in pratica
-non capita quasi mai, perché la direzione calcolata su pochi campioni non è il
-gradiente vero. Le due ipotesi sono la covarianza di rango pieno e i suoi
-autovalori tutti distinti. Gli autori le danno per poco restrittive, e nel 1989
-lo erano; oggi la prima cade spesso, ogni volta che i casi sono meno delle
-caratteristiche, e cade anche quando i casi bastano ma le direzioni vere sono
-poche, come sul catalogo di quaranta tinte e dodici pigmenti, che di pesi non
-nulli ne ha cinque.
+solo a meno di un cambio di base nello spazio compresso di mezzo, il *latente*,
+$\mathbf{W}_2 = \mathbf{V}_k\mathbf{C}$ e $\mathbf{W}_1 =
+\mathbf{C}^{-1}\mathbf{V}_k^\top$ con $\mathbf{C}$ invertibile qualunque,
+quindi un autoencoder lineare ritrova il sottospazio della PCA e non i suoi
+assi. Non ne segue che la discesa del gradiente ci arrivi, e gli autori lo
+scrivono: una superficie senza minimi locali lascia comunque il modo di
+incagliarsi in una sella. Aggiungono però che in pratica non capita quasi mai,
+perché la direzione calcolata su pochi campioni non è il gradiente vero. Le due
+ipotesi sono la covarianza di rango pieno e i suoi autovalori tutti distinti.
+Gli autori le danno per poco restrittive, e nel 1989 lo erano; oggi la prima
+cade spesso, ogni volta che i casi sono meno delle caratteristiche, e cade
+anche quando i casi bastano ma le direzioni vere sono poche, come sul catalogo
+di quaranta tinte e dodici pigmenti, che di pesi non nulli ne ha cinque.
 
 I due limiti del troncamento sono precisi, e il secondo è quello che si
 dimentica. Se lo spettro non decade il teorema resta vero e diventa inutile:
@@ -1111,8 +1110,8 @@ sta sotto un decimo.
 
 La media da sola non distingue un coseno che si è spostato da uno che si è
 stretto, e {numref}`fig-quasi-perpendicolari` fa vedere che è la seconda.
-Tremila direzioni sorteggiate in mille dimensioni, cioè tre volte più direzioni
-che dimensioni, e fra i quattro milioni e mezzo di coppie possibili la più
+Si sorteggiano tremila direzioni in mille dimensioni, cioè tre volte più direzioni
+che dimensioni: fra i quattro milioni e mezzo di coppie possibili la più
 allineata di tutte ha coseno $0{,}166$, che è un angolo di poco più di ottanta
 gradi. Le stesse tremila direzioni in tre dimensioni danno invece coseno
 massimo $1{,}0$: là dentro non c'è posto, e due finiscono per sovrapporsi.
@@ -1242,9 +1241,9 @@ e se serve la proiezione la si ottiene come `A @ coefficienti`.
 `````
 
 Le proiezioni hanno risolto il caso in cui i vincoli sono troppi, e la
-pseudoinversa quello in cui sono troppo pochi (la {doc}`sezione sui sistemi
-lineari </Matematica/sistemi-lineari>` li aveva descritti soltanto); i valori
-singolari, ordinati, hanno detto che cosa tenere quando non si può tenere tutto.
-Resta da vedere come una trasformazione lineare cambia le aree e i volumi: lo
-dice un numero solo, il determinante, che misura quanto una trasformazione
-gonfia o comprime lo spazio su cui lavora.
+pseudoinversa quello in cui sono troppo pochi, due casi che la {doc}`sezione
+sui sistemi lineari </Matematica/sistemi-lineari>` aveva descritto soltanto; i
+valori singolari, ordinati, hanno detto che cosa tenere quando non si può
+tenere tutto. Resta da vedere come una trasformazione lineare cambia le aree e
+i volumi: lo dice un numero solo, il determinante, che misura quanto una
+trasformazione gonfia o comprime lo spazio su cui lavora.

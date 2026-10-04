@@ -199,32 +199,33 @@ $\boldsymbol{\gamma}_c$ e $\boldsymbol{\beta}_c$ sono scala e traslazione
 dettate dal condizionamento, $\odot$ è il prodotto elemento per elemento e
 $\boldsymbol{\alpha}_c$ è un *gate* che dosa il contributo del sotto-strato
 prima della somma residua. Il pedice $c$ non è decorativo e va letto:
-$\boldsymbol{\alpha}_c, \boldsymbol{\beta}_c, \boldsymbol{\gamma}_c$ vengono dal
-condizionamento e non hanno niente a che vedere con $\alpha_t$ e $\beta_t$, che
-in questo capitolo sono lo schedule del rumore. Il suffisso *zero* sta
+$\boldsymbol{\alpha}_c, \boldsymbol{\beta}_c, \boldsymbol{\gamma}_c$ vengono
+dal condizionamento e non hanno niente a che vedere con $\alpha_t$ e $\beta_t$,
+che in questo capitolo sono lo schedule del rumore. Il suffisso *zero* sta
 nell'inizializzazione, e basta azzerare $\boldsymbol{\alpha}_c$: con il gate a
-zero il ramo residuo non passa, e il blocco è l’identità qualunque cosa facciano
-scala e traslazione. Il paper dichiara azzerato quello; l'implementazione di
-riferimento azzera per comodità l'ultimo strato dell'MLP per intero, e la
-differenza non si vede, perché finché $\boldsymbol{\alpha}_c = 0$ il gradiente
-di scala e traslazione è nullo e a muoversi è solo il gate. Il gradiente del
-gate no, perché vale il prodotto scalare fra ciò che il sotto-strato ha prodotto
-e la direzione in cui l'uscita andrebbe spostata: il blocco impara quanto
-aprirsi pur non contribuendo ancora, e la rete, che comincia come un tubo vuoto,
-riceve gradiente su tutti i gate insieme (dal secondo passo nell'implementazione
-di riferimento, che azzera anche lo strato d'uscita e al primo passo muove solo
-quello; dal primo nel `MiniDiT` di «Un DiT in miniatura», che quello strato
-non lo azzera, come mostra la sua ultima stampa). L'idea di modulare
-le normalizzazioni ha un precedente illustre che conosciamo: l'AdaIN con cui
-StyleGAN {cite}`karras2019style` inietta lo stile nel generatore. Nelle
-ablazioni del paper adaLN-zero batte sia i token in-context sia la
-cross-attention, e le batte spendendo meno: $118{,}6$ Gflops contro i $119{,}4$
-dell'in-context e i $137{,}6$ della cross-attention, che è un sedici per cento
-in più. In Gflops, quindi, le manopole non costano quasi niente, perché sono
-vettori e non token da far partecipare all'attenzione. In parametri costano
-parecchio: gli MLP di modulazione sono $226$ dei $675$ milioni di DiT-XL/2, cioè
-un terzo della rete, e il confronto delle ablazioni corre a passi di
-addestramento pari, non a parametri pari.
+zero il ramo residuo non passa, e il blocco è l’identità qualunque cosa
+facciano scala e traslazione. Il paper dichiara azzerato quello;
+l'implementazione di riferimento azzera per comodità l'ultimo strato dell'MLP
+per intero, e la differenza non si vede, perché finché $\boldsymbol{\alpha}_c =
+0$ il gradiente di scala e traslazione è nullo e a muoversi è solo il gate. Il
+gradiente del gate no, perché vale il prodotto scalare fra ciò che il
+sotto-strato ha prodotto e la direzione in cui l'uscita andrebbe spostata: il
+blocco impara quanto aprirsi pur non contribuendo ancora, e la rete, che
+comincia come un tubo vuoto, riceve gradiente su tutti i gate insieme.
+Nell'implementazione di riferimento succede dal secondo passo, perché anche lo
+strato d'uscita parte da zero e al primo passo si muove solo lui; nel `MiniDiT`
+di «Un DiT in miniatura», che quello strato non lo azzera, succede dal primo,
+come mostra la sua ultima stampa. L'idea di modulare le normalizzazioni ha un
+precedente illustre che conosciamo: l'AdaIN con cui StyleGAN
+{cite}`karras2019style` inietta lo stile nel generatore. Nelle ablazioni del
+paper adaLN-zero batte sia i token in-context sia la cross-attention, e le
+batte spendendo meno: $118{,}6$ Gflops contro i $119{,}4$ dell'in-context e i
+$137{,}6$ della cross-attention, che è un sedici per cento in più. In Gflops,
+quindi, le manopole non costano quasi niente, perché sono vettori e non token
+da far partecipare all'attenzione. In parametri costano parecchio: gli MLP di
+modulazione sono $226$ dei $675$ milioni di DiT-XL/2, cioè un terzo della rete,
+e il confronto delle ablazioni corre a passi di addestramento pari, non a
+parametri pari.
 
 `````
 
@@ -262,24 +263,23 @@ finita.
 
 In cima alla curva sta il modello più grande con le tessere più piccole, che
 nel paper si chiama DiT-XL/2 (XL è la taglia della torre, il 2 è il lato della
-tessera in caselle): un Transformer da seicentosettantacinque milioni di
-numeri interni che genera immagini a partire dalla categoria richiesta («un
-cane», «un faro»). Con la classifier-free guidance e dopo sette milioni di
-passi di addestramento arriva a un FID di $2{,}27$ su ImageNet $256\times256$,
-contro $3{,}60$ del latent diffusion di Rombach e colleghi
-{cite}`rombach2022high`, che con la sua U-Net spende $103{,}6$ Gflops contro i
-$118{,}6$ di DiT, e $3{,}94$ della U-Net di Dhariwal e Nichol
-{cite}`dhariwal2021diffusion`, che lavora sui pixel e di Gflops ne spende fra
-742 e 1120: il migliore fra i modelli di diffusione allora noti, alla pari con
-la GAN più forte del momento, StyleGAN-XL ($2{,}30$). La U-Net, dunque, non era
+tessera in caselle): un Transformer da 675 milioni di numeri interni che genera
+immagini a partire dalla categoria richiesta («un cane», «un faro»). Con la
+classifier-free guidance e dopo sette milioni di passi di addestramento, il
+modello arriva a un FID di $2{,}27$ su ImageNet $256\times256$. Questo
+punteggio ne fa il migliore fra i modelli di diffusione allora noti, mettendolo
+alla pari con la GAN più forte del momento, StyleGAN-XL ($2{,}30$). Per
+confronto, il latent diffusion di Rombach e colleghi {cite}`rombach2022high` si
+fermava a $3{,}60$ spendendo $103{,}6$ Gflops (contro i $118{,}6$ di DiT),
+mentre la U-Net sui pixel di Dhariwal e Nichol {cite}`dhariwal2021diffusion`
+arrivava a $3{,}94$ chiedendone fra 742 e 1120. La U-Net, dunque, non era
 essenziale. Il suo vantaggio di partenza (sapere già in fabbrica che i pixel
 vicini contano più di quelli lontani) si può comprare con dati e calcolo, e a
 calcolo quasi pari il Transformer arriva più in alto; che la distanza cresca
 con la scala, il lavoro non lo misura, perché una curva di scala la traccia
-solo per i DiT. È la stessa storia già vista nel {doc}`capitolo sui
-Transformer </Transformers/overview>`, dove le reti di visione classiche
-avevano ceduto il passo ai Vision Transformer, e adesso si ripete dentro la
-diffusione.
+solo per i DiT. È la stessa storia già vista nel {doc}`capitolo sui Transformer
+</Transformers/overview>`, dove le reti di visione classiche avevano ceduto il
+passo ai Vision Transformer, e adesso si ripete dentro la diffusione.
 
 `````{tab} Elementare
 
@@ -326,8 +326,8 @@ L'affermazione va delimitata, perché è il tipo di regolarità che si generaliz
 troppo in fretta. La correlazione fra Gflops e qualità è misurata
 su una sola famiglia (i dodici DiT), su un solo compito (generazione
 condizionata alla classe), a quattrocentomila passi di addestramento e senza
-guidance. La cifra titolare del lavoro sta fuori da quella curva per due
-ragioni insieme, e citarne una sola è l'errore più comune: è ottenuta *con* la
+guidance. Il risultato principale del lavoro sta fuori da quella curva per due
+ragioni insieme, e citarne una sola è l'errore più comune: è ottenuto *con* la
 classifier-free guidance, e su un modello che ha continuato ad addestrarsi
 fino a sette milioni di passi, cioè diciassette volte e mezzo il budget della
 curva.
@@ -409,10 +409,10 @@ Stable Diffusion pubblicano il lavoro dietro **Stable Diffusion 3**
 articoli della conferenza. Le novità sono tre, e conviene prenderle in ordine
 di profondità crescente.
 
-La prima è l'architettura, battezzata **MM-DiT** (*multimodal DiT*, cioè DiT a
-più modalità: il testo e l'immagine sono due modalità), e riguarda il rapporto
-fra le due. In Stable Diffusion il testo era un consulente esterno. La rete che
-lo leggeva era quella di CLIP {cite}`radford2021learning`, un modello del
+La prima è l'architettura, battezzata **MM-DiT** (*multimodal DiT*, dove le due
+modalità sono appunto il testo e l'immagine), e riguarda il rapporto fra le
+due. In Stable Diffusion il testo era un consulente esterno. La rete che lo
+leggeva era quella di CLIP {cite}`radford2021learning`, un modello del
 {doc}`capitolo su visione e linguaggio </VisioneLinguaggio/overview>`
 addestrato a mettere in corrispondenza immagini e didascalie; trasformava la
 richiesta una volta per tutte in una fila di numeri, e da lì in poi la U-Net
@@ -563,7 +563,7 @@ segmento la velocità è costante: $\mathrm{d}\mathbf{x}_t/\mathrm{d}t =
 rumore*, e la generazione lo percorre all'indietro: è per questo che,
 camminando nel verso della generazione, lo stesso numero va letto col segno
 opposto. Il modello $\mathbf{v}_\theta(\mathbf{x}_t, t)$ viene addestrato a
-regredirla:
+stimarla:
 
 $$
 \mathcal{L}_{\mathrm{CFM}} = \mathbb{E}_{\mathbf{x}_0,\, \boldsymbol{\epsilon},\, t}

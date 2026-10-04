@@ -123,7 +123,7 @@ Programmazione dinamica è il nome che Bellman diede al modo di procedere
 della sezione sugli MDP (con lo scrivere programmi per il computer non
 c'entra niente: «programmazione», per lui, voleva dire pianificazione), quello
 che trova i valori girando e rigirando su tutte le caselle con la mappa in
-mano: da qui in avanti lo useremo come nome collettivo delle sue due ricette,
+mano. Da qui in avanti farà da nome collettivo per le sue due ricette,
 l'iterazione dei valori e quella della pagella (*value iteration* e *policy
 iteration*). Conviene metterlo accanto a Monte Carlo, perché la differenza fra
 i due non è di efficienza ma di che cosa serve sapere.
@@ -254,15 +254,15 @@ $$
 
 `````
 
-Per ogni casella sono usciti due numeri diversi dagli stessi identici dati, ed
-entrambi sono legittimi: sono due modi di stimare la stessa cosa, e nella
-pratica si usano tutti e due. Quello a prima visita è il più facile da
-giustificare: ogni partita porta un numero solo, le partite non si influenzano
-fra loro, e la media di numeri indipendenti presi tutti dalla stessa
-distribuzione si avvicina al valore vero quante più partite si giocano. Quello
-a ogni visita conta anche i ripassaggi, quindi butta via meno dati, e non
-obbliga a tenere il conto di dove si è già passati. Con tante partite la scelta
-non cambia il risultato, perché tutti e due finiscono sul valore vero.
+Gli stessi identici dati danno due numeri diversi per ogni casella. Entrambi
+sono legittimi: sono due modi di stimare la stessa cosa, e nella pratica si
+usano tutti e due. Quello a prima visita è il più facile da giustificare: ogni
+partita porta un numero solo, le partite non si influenzano fra loro, e la
+media di numeri indipendenti presi tutti dalla stessa distribuzione si avvicina
+al valore vero quante più partite si giocano. Quello a ogni visita conta anche
+i ripassaggi, quindi butta via meno dati, e non obbliga a tenere il conto di
+dove si è già passati. Con tante partite la scelta non cambia il risultato,
+perché tutti e due finiscono sul valore vero.
 
 Tutti e quattro i numeri, però, restano sotto quelli che la sezione sugli MDP
 aveva calcolato sullo stesso mondo, che erano $9$ per $s_0$ e $10$ per $s_1$:
@@ -470,9 +470,9 @@ implicare $b(a\mid s) > 0$. Ne segue che $b$ deve essere stocastica dove
 differisce da $\pi$, mentre $\pi$ può tranquillamente essere deterministica
 (ed è il caso che interessa nel controllo, dove $\pi$ è la greedy).
 
-Il peso è il **rapporto di importance sampling**. La probabilità della
-traiettoria $A_t, S_{t+1}, \dots, S_T$, dove $T$ è l'istante in cui finisce
-l'episodio che contiene $t$, sotto una policy è il prodotto dei termini
+Il peso è il **rapporto di importance sampling**. Sotto una policy, la
+probabilità della traiettoria $A_t, S_{t+1}, \dots, S_T$ (dove $T$ è l'istante
+in cui finisce l'episodio che contiene $t$) è il prodotto dei termini
 $\pi(A_k\mid S_k)\,P(S_{k+1}\mid S_k, A_k)$, e nel rapporto fra le due policy
 accade la cosa che rende il metodo praticabile:
 

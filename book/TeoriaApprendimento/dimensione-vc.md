@@ -166,13 +166,13 @@ righello dice $92$, sotto il tetto come deve.
 
 Da qui la regola pratica: gli esempi che servono crescono con la dimensione VC,
 come prima crescevano con il numero di raddoppi dei sospettati. Un attrezzo più
-potente sbaglia meno sugli esempi che ha visto e ne chiede di più per potersi
-fidare, e scegliere l'attrezzo vuol dire scegliere dove stare fra le due cose.
-E non si scende sotto: nessun metodo, per quanto astuto, se la cava con meno
-esempi di una quantità proporzionale alla dimensione VC. Quando la dimensione
-VC è infinita, come per l'onda, nessun numero di esempi basta in tutti i casi,
-perché l'attrezzo riesce a colorare qualunque cosa e quindi non impara niente
-dai colori che ha visto.
+potente sbaglia meno sugli esempi che ha visto e ne chiede di più perché ci si
+possa fidare, e scegliere l'attrezzo vuol dire scegliere dove stare fra le due
+cose. E non si scende sotto: nessun metodo, per quanto astuto, se la cava con
+meno esempi di una quantità proporzionale alla dimensione VC. Quando la
+dimensione VC è infinita, come per l'onda, nessun numero di esempi basta in
+tutti i casi, perché l'attrezzo riesce a colorare qualunque cosa e quindi non
+impara niente dai colori che ha visto.
 
 `````
 

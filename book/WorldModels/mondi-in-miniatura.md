@@ -44,7 +44,7 @@ che arriva insieme all'ambiente e che tutti adoperano, così che i risultati si
 possano confrontare. «Risolto», accanto a un numero, vuol dire soltanto «sopra
 la soglia fissata dall'ambiente», e il numero va letto insieme alla soglia e a
 come la si misura. L'esperimento del sogno è l'altro, lo sparatutto, con taglie
-diverse che si dichiarano quando arriva.
+diverse che vanno dette insieme ai suoi numeri.
 
 La {numref}`fig-world-model-vmc` mostra il giro completo, con $\mathbf{h}$ e
 LSTM scritti al loro posto: l'azione di C torna all'ambiente, che produce il
@@ -337,10 +337,10 @@ $[-1, 1]$; acceleratore e freno vengono poi riportati in $[0, 1]$), quindi la
 policy è a tutti gli effetti lineare. Un controllore così piccolo si può
 addestrare senza gradiente: gli autori usano CMA-ES, una strategia evolutiva
 che a ogni generazione fa «gareggiare» 64 varianti del controllore, ne stima
-media e covarianza e ricampiona da lì la generazione successiva. Con 867 numeri
-da scegliere l'evoluzione basta e avanza, ed è anche la strada più naturale,
+media e covarianza e ricampiona da lì la generazione successiva. Con 867 parametri
+da scegliere l'evoluzione è sufficiente, ed è anche la strada più naturale,
 visto che il segnale su cui giudicare un pilota (il punteggio) arriva solo a
-fine episodio. Non è però a buon mercato: ogni candidato si valuta su 16
+fine episodio. Non è però economica: ogni candidato si valuta su 16
 episodi, e le generazioni sono 1800, cioè $64 \times 16 \times 1800 =
 1\,843\,200$ episodi nell'ambiente vero per addestrare il solo C su
 *CarRacing*, oltre ai 10.000 rollout casuali su cui si sono addestrati V e M.
@@ -372,7 +372,7 @@ chi lo guarda.
 
 Un cambio di scena, però, va dichiarato. I numeri dati finora (32 numeri di
 codice, 256 di memoria, 867 parametri di controller) sono quelli di
-*CarRacing*, e su *CarRacing* il controller gli autori lo fanno evolvere
+*CarRacing*, e su *CarRacing* gli autori fanno evolvere il controller
 nell'ambiente vero. L'unico esperimento allenato davvero dentro il sogno è
 l'altro, lo sparatutto. Il suo nome per esteso è *Take Cover*, uno degli
 scenari di VizDoom (la versione di *Doom* attrezzata per la ricerca), e
@@ -450,7 +450,7 @@ una LSTM deterministica e collassa su una sola modalità. Il problema struttural
 è che C viene ottimizzato *contro M*, non contro l'ambiente: ogni errore
 sistematico del modello diventa una risorsa da sfruttare, e la ricerca di policy
 trova politiche avversarie al proprio stesso mondo interno; nel paper, movimenti
-che «estinguono» le palle di fuoco mentre si formano. Da tenere distinto il
+che «estinguono» le palle di fuoco mentre si formano. Va tenuto distinto il
 guasto che a $\tau = 0{,}10$ gli autori descrivono a parte, i mostri che non
 sparano mai *qualunque cosa l'agente faccia*: quello va attribuito al mode
 collapse di M, non a una politica avversaria. Con $\tau$ basso il sogno è docile
@@ -721,16 +721,16 @@ D_{\mathrm{KL}}[\mathrm{sg}(q_\phi) \,\|\, p_\phi]\big)$ addestra il
 predittore, e $\mathcal{L}_{\text{rep}} = \max\big(1, D_{\mathrm{KL}}[q_\phi
 \,\|\, \mathrm{sg}(p_\phi)]\big)$ chiede all'encoder di farsi prevedere. I pesi
 sono $\beta_{\text{pred}} = \beta_{\text{dyn}} = 1$ e $\beta_{\text{rep}} =
-0{,}1$, e la soglia di un nat (*free bits*) spegne i due KL quando sono già
-piccoli, così che il latente non si riduca a una dinamica banale. Attore e
-critico si addestrano dentro rollout immaginati di una quindicina di passi ($H
-= 15$), per contenere l'accumulo degli errori del modello. Il critico $p_\psi$
-minimizza $-\sum_t \ln p_\psi(R^\lambda_t \mid \mathbf{s}_t)$ sul
-$\lambda$-ritorno $R^\lambda_t = r_t + \gamma c_t\big[(1-\lambda)\,
-v(\mathbf{s}_{t+1}) + \lambda R^\lambda_{t+1}\big]$, con $R^\lambda_T =
-v(\mathbf{s}_T)$, $\mathbf{s}_t = (\mathbf{h}_t, \mathbf{z}_t)$, $\gamma =
-0{,}997$ e $\lambda = 0{,}95$, che mescola la ricompensa sognata con il valore
-stimato oltre l'orizzonte. L'attore $\pi_\theta$ massimizza
+0{,}1$, e la soglia di un nat (*free bits*) azzera il gradiente dei due KL
+quando sono già piccoli, così che il latente non si riduca a una dinamica
+banale. Attore e critico si addestrano dentro rollout immaginati di una
+quindicina di passi ($H = 15$), per contenere l'accumulo degli errori del
+modello. Il critico $p_\psi$ minimizza $-\sum_t \ln p_\psi(R^\lambda_t \mid
+\mathbf{s}_t)$ sul $\lambda$-ritorno $R^\lambda_t = r_t + \gamma
+c_t\big[(1-\lambda)\, v(\mathbf{s}_{t+1}) + \lambda R^\lambda_{t+1}\big]$, con
+$R^\lambda_T = v(\mathbf{s}_T)$, $\mathbf{s}_t = (\mathbf{h}_t, \mathbf{z}_t)$,
+$\gamma = 0{,}997$ e $\lambda = 0{,}95$, che mescola la ricompensa sognata con
+il valore stimato oltre l'orizzonte. L'attore $\pi_\theta$ massimizza
 
 $$
 \sum_{t}\Big(\mathrm{sg}\Big[\frac{R^\lambda_t - v(\mathbf{s}_t)}{\max(1, S)}\Big]\ln \pi_\theta(a_t \mid \mathbf{s}_t)
@@ -740,7 +740,7 @@ $$
 
 con $S$ l'ampiezza fra i percentili 5 e 95 dei ritorni (stimata con una media
 mobile) e $H$ l'entropia della policy. È REINFORCE su tutte le azioni: la prima
-versione retropropagava il ritorno attraverso la dinamica, DreamerV2
+versione retropropagava il ritorno attraverso la dinamica, mentre DreamerV2
 {cite}`hafner2021mastering` usava REINFORCE sulle sole azioni discrete. Gli
 stessi iperparametri reggono su domini diversi grazie a un insieme di tecniche
 di robustezza, quattro delle quali gli autori misurano togliendole una alla
@@ -755,21 +755,21 @@ deterministica {cite}`hafner2023mastering`. Su *Minecraft* l'agente riceve
 anche un vettore con il massimo raggiunto da ciascun oggetto dell'inventario,
 che gli dice quali tappe ha già superato, e la rottura dei blocchi segue la
 regola di un lavoro precedente, perché una policy che sorteggia le mosse
-farebbe fatica a tenere premuto un tasto a lungo; il confronto con VPT, che
-usava dati umani e 720 GPU per nove giorni, è di una GPU per nove giorni. Il
-guadagno è l'efficienza campionaria; il tetto è la qualità del modello: la
-policy è buona quanto il sogno in cui è cresciuta, e su dinamiche caotiche o
-eventi rari i modelli restano il punto debole. Il confronto con i metodi
-model-free, competitivi quando i campioni costano poco, è tutt'altro che
-chiuso.
+farebbe fatica a tenere premuto un tasto a lungo. Quanto ai costi di calcolo,
+contro le 720 GPU per nove giorni di VPT (che usava dati umani), a DreamerV3
+basta una sola GPU per lo stesso tempo. Il guadagno è l'efficienza campionaria;
+il tetto è la qualità del modello: la policy è buona quanto il sogno in cui è
+cresciuta, e su dinamiche caotiche o eventi rari i modelli restano il punto
+debole. Il confronto con i metodi model-free, competitivi quando i campioni
+costano poco, è tutt'altro che chiuso.
 
 `````
 
 Una nota di prospettiva: «world model» è anche il nome che si dà ai grandi
 modelli generativi di video, promossi a simulatori del mondo fisico. La
 parentela concettuale c'è, e la prova richiesta è la stessa raccontata qui:
-reggere un intero addestramento al proprio interno, cioè lasciarci crescere
-dentro un agente che poi, riportato fuori, funzioni davvero. Qualche lavoro
+reggere un intero addestramento al proprio interno, cioè farvi crescere
+un agente che poi, riportato fuori, funzioni davvero. Qualche lavoro
 comincia a mostrarla. Yang e colleghi allenano una policy dentro un simulatore
 video appreso e la portano su un robot vero senza altri ritocchi
 {cite}`yang2024learning`. E la linea Dreamer, nel settembre 2025, ha fatto il

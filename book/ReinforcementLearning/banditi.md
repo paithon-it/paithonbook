@@ -371,21 +371,20 @@ $$
 A_t = \arg\max_{a} \left[\, Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \,\right],
 $$
 
-dove $N_t(a)$ è il numero di volte che $a$ è stata scelta prima di $t$ e
-$c > 0$ regola quanto pesa l'incertezza (le azioni mai provate si trattano come
+dove $N_t(a)$ è il numero di volte che $a$ è stata scelta prima di $t$ e $c >
+0$ regola quanto pesa l'incertezza (le azioni mai provate si trattano come
 massimamente urgenti). Il termine sotto radice è, a meno di costanti, la
-larghezza di un intervallo di confidenza sulla media di $a$: il numeratore
-$\ln t$ cresce con il tempo, il denominatore $N_t(a)$ con l'uso. La forma
-$\sqrt{\ln t / N_t(a)}$ non è arbitraria: esce da una disuguaglianza di
-concentrazione (la {doc}`disuguaglianza di Hoeffding
-</Matematica/concentrazione>`,
-che per $n$ ricompense indipendenti in $[0,1]$, con media vera $\mu$ e media
-campionaria $\bar{X}_n$, dà $\Pr(|\bar{X}_n - \mu| \ge u) \le 2e^{-2nu^2}$ per
-ogni scarto $u > 0$) applicata alla media di
-$N_t(a)$ campioni, con il $\ln t$ che paga l'unione su tutti i passi fatti
-finora. Il nome dice il principio: **ottimismo di fronte all'incertezza**, cioè
-agire come se ogni azione valesse il massimo compatibile con i dati raccolti, e
-lasciare che siano i dati a smentire.
+larghezza di un intervallo di confidenza sulla media di $a$: il numeratore $\ln
+t$ cresce con il tempo, il denominatore $N_t(a)$ con l'uso. La forma $\sqrt{\ln
+t / N_t(a)}$ non è arbitraria: esce da una disuguaglianza di concentrazione (la
+{doc}`disuguaglianza di Hoeffding </Matematica/concentrazione>`, che per $n$
+ricompense indipendenti in $[0,1]$, con media vera $\mu$ e media campionaria
+$\bar{X}_n$, dà $\Pr(|\bar{X}_n - \mu| \ge u) \le 2e^{-2nu^2}$ per ogni scarto
+$u > 0$) applicata alla media di $N_t(a)$ campioni, con il $\ln t$ che compensa
+il limite dell'unione su tutti i passi fatti finora. Il nome dice il principio:
+**ottimismo di fronte all'incertezza**, cioè agire come se ogni azione valesse
+il massimo compatibile con i dati raccolti, e lasciare che siano i dati a
+smentire.
 
 Il decadimento logaritmico non è decorativo. Si chiami **rimpianto** in $T$
 tiri
@@ -402,7 +401,7 @@ migliore e $N_T(a)$ quante volte è stata tirata. Lai e Robbins
 {cite}`lai1985asymptotically` dimostrano che ogni algoritmo *consistente*, cioè
 con $\mathcal{R}_T = o(T^p)$ per ogni $p > 0$ su tutte le istanze (la clausola
 esclude scorciatoie come tirare sempre la stessa leva, che trionfa quando
-quella leva è la migliore e affonda su tutte le altre istanze), soddisfa
+quella leva è la migliore e affonda in tutti gli altri casi), soddisfa
 
 $$
 \liminf_{T \to \infty} \frac{\mathcal{R}_T}{\ln T} \;\ge \sum_{a:\,\Delta_a > 0}
@@ -863,7 +862,7 @@ i parametri di una policy). Un campione per braccio, il
 massimo vince. La probabilità che così esca $a$ è la probabilità a posteriori
 che $a$ sia il braccio ottimo, e per questo il metodo si chiama anche
 *probability matching*: la frequenza con cui si gioca un'azione insegue la
-probabilità che sia la migliore. L'uguaglianza vuole però un'ipotesi, e conviene
+probabilità che sia la migliore. L'uguaglianza richiede però un'ipotesi, e conviene
 dirla perché è quella che cade per prima: la posteriore congiunta deve
 fattorizzarsi sui bracci, cosa che qui vale perché il priore è indipendente e
 i tiri di un braccio non dicono niente sugli altri. Con bracci correlati, che è
@@ -1043,7 +1042,7 @@ esteso la {doc}`sezione sugli iperparametri
 </MachineLearning/iperparametri>`. Con una differenza
 rispetto alla macchinetta del casinò, e ha pure un nome, *best-arm
 identification*: qui non interessa incassare molto lungo la strada, i tiri
-spesi sono solo il costo della ricerca, interessa soltanto indovinare alla fine
+spesi sono solo il costo della ricerca, conta soltanto indovinare alla fine
 quale fosse la leva migliore.
 
 Fra il bandit e il reinforcement learning pieno c'è un gradino intermedio, il

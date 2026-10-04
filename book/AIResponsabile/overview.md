@@ -161,18 +161,18 @@ intrecciate, e conviene chiamarle per nome prima di entrarci dentro.
   gruppi di persone in base a genere, etnia, età o altre **caratteristiche
   protette**. L'espressione viene dal diritto e indica i tratti su cui la legge
   vieta di discriminare: «protette» non vuol dire che il problema non possa
-  succedere, vuol dire che quando succede è illecito. È il filo che lega COMPAS
+  succedere, ma che quando succede è illecito. È il filo che lega COMPAS
   e *Gender Shades*.
 - **Privacy**: i modelli si nutrono di dati, spesso personali. Proteggerli
   significa impedire che un sistema riveli chi c'era fra quegli esempi. Può
-  farlo in due modi, e li vedremo tutti e due. Il primo è sputare fuori di sana
+  farlo in due modi, e li vedremo tutti e due. Il primo è restituire di sana
   pianta un indirizzo o un numero di telefono veri. Il secondo è più di
-  nascosto: su una persona che ha già visto il modello risponde con una
+  nascosto: su una persona che ha già visto, il modello risponde con una
   sicurezza insolita, e da quella sicurezza si capisce che era nei dati, il che
   a volte è già un'informazione delicata («era fra i pazienti di quel reparto»).
 - **Robustezza e sicurezza**: un modello dovrebbe rispondere in modo
   prevedibile anche davanti a casi insoliti, o costruiti *apposta* per
-  ingannarlo. E si può, con una facilità che sorprende: a un'immagine si
+  ingannarlo. E ci si riesce, con una facilità che sorprende: a un'immagine si
   possono cambiare i colori così poco che l'occhio non se ne accorge, e lo
   stesso programma che diceva «panda» dice «scimmia». Le immagini truccate così
   si chiamano **esempi avversari**.
@@ -282,13 +282,13 @@ tasso di falsi positivi).
 Poi privacy, robustezza e sicurezza, che prendono due sezioni. La prima
 chiede come un modello possa, senza volerlo, lasciar trapelare i dati su cui è
 stato addestrato, e come un avversario possa manipolarne l'input con
-perturbazioni impercettibili (gli esempi avversari di poco fa) per fargli
+perturbazioni impercettibili (gli esempi avversari di poco fa) per farlo
 sbagliare a comando. La seconda porta la stessa domanda ai modelli di
 linguaggio, dove l'attacco è un testo che il modello legge, per esempio una
 frase nascosta in una pagina web, e che esegue come se venisse da chi lo ha
 costruito.
 Sono due facce della stessa domanda: un modello messo davvero nel mondo, quanto
-sa tenere un segreto e quanto è facile fargli sbagliare.
+sa tenere un segreto e quanto è facile farlo sbagliare.
 
 Infine allineamento e governance: che cosa significa chiedere a un sistema
 potente di perseguire *ciò che intendiamo* e non la lettera di un obiettivo
@@ -309,14 +309,13 @@ saltare: chi ha deciso di mettere lì quel sistema, e per risolvere quale
 problema. Quando un tribunale adotta un software di punteggi, il problema che
 si sta togliendo dal tavolo sono quasi sempre i tempi, i costi, la pila di
 fascicoli da smaltire, e quasi mai «vorremmo essere più giusti». E c'è un
-vantaggio in più,
-meno confessabile: davanti a un reclamo un numero si difende meglio di una
-motivazione scritta, perché sembra non avere un autore. Tenere presente quel
-passo dice che «come rendo equo il modello» non è sempre la prima domanda: a
-volte lo è «questo compito va dato a un modello?», e la risposta legittima può
-essere no.
-Non è una domanda che si chiude con una metrica, ma lasciarla fuori significa
-dare per scontata proprio la decisione che ha causato tutto il resto.
+vantaggio in più, meno confessabile: davanti a un reclamo un numero si difende
+meglio di una motivazione scritta, perché sembra non avere un autore. Ricordare
+questo passaggio chiarisce che «come rendo equo il modello» non è sempre la
+prima domanda: a volte lo è «questo compito va dato a un modello?», e la
+risposta legittima può essere no. Non è una domanda che si chiude con una
+metrica, ma lasciarla fuori significa dare per scontata proprio la decisione
+che ha causato tutto il resto.
 
 `````{tab} Elementare
 

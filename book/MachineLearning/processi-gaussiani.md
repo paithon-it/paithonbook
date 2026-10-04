@@ -89,8 +89,8 @@ restringe la distribuzione, e il risultato è ancora un processo gaussiano
 
 Non ogni funzione $k$ va bene: perché quelle covarianze definiscano una
 gaussiana per ogni scelta di punti, ogni matrice $[k(\mathbf{x}_i,
-\mathbf{x}_j)]_{ij}$ deve essere simmetrica e semidefinita positiva, la
-condizione dei kernel di {doc}`Il kernel trick <svm-kernel>`. Il legame con i
+\mathbf{x}_j)]_{ij}$ deve essere simmetrica e semidefinita positiva, la stessa
+condizione vista in {doc}`Il kernel trick <svm-kernel>`. Il legame con i
 modelli già visti si vede dal lato dei pesi: se $f(\mathbf{x}) =
 \boldsymbol{\phi}(\mathbf{x})^\top\mathbf{w}$ con $\mathbf{w} \sim
 \mathcal{N}(\mathbf{0}, \boldsymbol{\Sigma}_p)$, allora $f$ è un processo
@@ -175,26 +175,27 @@ k(\mathbf{x}, \mathbf{x}') = \sigma_f^2
 \exp\!\left(-\frac{\lVert \mathbf{x} - \mathbf{x}'\rVert^2}{2\ell^2}\right),
 $$
 
-dove $\sigma_f^2$ è la varianza di segnale (l'ampiezza tipica delle oscillazioni
-delle funzioni campionate) e $\ell$ è la **lunghezza-scala** (*lengthscale*; qui
-$\ell$ è una lunghezza, non la perdita di un esempio che la stessa lettera
-indica altrove): l'unità in cui il kernel misura le distanze. A distanza $\ell$
-due valori sono ancora ben correlati, e la correlazione diventa trascurabile
-solo verso $3\ell$. È lo stesso kernel del {doc}`kernel trick <svm-kernel>`, con
-$\gamma = 1/(2\ell^2)$: la larghezza che là si chiamava $\sigma$ qui si chiama
-$\ell$. In scikit-learn la si passa come `length_scale` $=\ell$ a `RBF`, mentre
-`SVC` vuole `gamma` $=1/(2\ell^2)$. Con $\ell = 1$ due punti a distanza $1$
-hanno correlazione $e^{-0{,}5} \approx 0{,}61$; a distanza $3$, $e^{-4{,}5}
-\approx 0{,}01$. Una $\ell$ piccola produce funzioni nervose che dimenticano in
-fretta; una $\ell$ grande, funzioni lisce e a lungo raggio. Con input di scale
-diverse si usa una lunghezza-scala per dimensione (*automatic relevance
-determination*; in scikit-learn `RBF(length_scale=[…])`). Il kernel RBF genera
-funzioni infinitamente derivabili: un'ipotesi di regolarità forte, che Stein
-giudica irrealistica per molti processi fisici. L'alternativa standard è la
-famiglia di Matérn, con un parametro di regolarità $\nu$: le funzioni sono $j$
-volte derivabili in media quadratica se e solo se $\nu > j$, e l'RBF è il limite
-$\nu \to \infty$. I due casi più usati hanno forma chiusa, con $r =
-\lVert\mathbf{x} - \mathbf{x}'\rVert$:
+dove $\sigma_f^2$ è la varianza di segnale (l'ampiezza tipica delle
+oscillazioni delle funzioni campionate) e $\ell$ è la **lunghezza-scala**
+(*lengthscale*; qui $\ell$ è una lunghezza, non la perdita su un esempio
+indicata altrove con la stessa lettera): l'unità in cui il kernel misura le
+distanze. A distanza $\ell$ due valori sono ancora ben correlati, e la
+correlazione diventa trascurabile solo verso $3\ell$. È lo stesso kernel del
+{doc}`kernel trick <svm-kernel>`, con $\gamma = 1/(2\ell^2)$: la larghezza che
+là si chiamava $\sigma$ qui si chiama $\ell$. In scikit-learn la si passa come
+`length_scale` $=\ell$ a `RBF`, mentre `SVC` vuole `gamma` $=1/(2\ell^2)$. Con
+$\ell = 1$ due punti a distanza $1$ hanno correlazione $e^{-0{,}5} \approx
+0{,}61$; a distanza $3$, $e^{-4{,}5} \approx 0{,}01$. Una $\ell$ piccola
+produce funzioni nervose che dimenticano in fretta; una $\ell$ grande, funzioni
+lisce e a lungo raggio. Con input di scale diverse si usa una lunghezza-scala
+per dimensione (*automatic relevance determination*; in scikit-learn
+`RBF(length_scale=[…])`). Il kernel RBF genera funzioni infinitamente
+derivabili: un'ipotesi di regolarità forte, che Stein giudica irrealistica per
+molti processi fisici. L'alternativa standard è la famiglia di Matérn, con un
+parametro di regolarità $\nu$: le funzioni sono $j$ volte derivabili in media
+quadratica se e solo se $\nu > j$, e l'RBF è il limite $\nu \to \infty$. I due
+casi più usati hanno forma chiusa, con $r = \lVert\mathbf{x} -
+\mathbf{x}'\rVert$:
 
 $$
 k_{3/2}(r) = \sigma_f^2\Big(1+\frac{\sqrt3\,r}{\ell}\Big)e^{-\sqrt3\,r/\ell},
@@ -230,13 +231,13 @@ determinante) penalizza i kernel «capaci», quelli che ammettono troppe funzion
 diverse. È il rasoio di Occam scritto dentro il criterio: la complessità è già
 penalizzata nella stima degli iperparametri, e non serve un validation set per
 sceglierli. Non sostituisce il giudizio sul modello finito: massimizzare la
-verosimiglianza marginale può sovradattare quando gli iperparametri sono molti e
-i dati pochi {cite}`rasmussen2006gaussian`, e non protegge da un kernel mal
+verosimiglianza marginale può sovradattare quando gli iperparametri sono molti
+e i dati pochi {cite}`rasmussen2006gaussian`, e non protegge da un kernel mal
 scelto. E c'è un'avvertenza pratica: quella funzione non è concava negli
-iperparametri e ha massimi locali {cite}`rasmussen2006gaussian`, ed è la ragione
-per cui l'ottimizzazione si fa ripartire cinque volte da inizializzazioni
-sorteggiate (`n_restarts_optimizer=5` in `scikit-learn`, che di suo non ne fa
-nessuna: il default è zero) tenendo il massimo più alto.
+iperparametri e ha massimi locali {cite}`rasmussen2006gaussian`, ed è la
+ragione per cui l'ottimizzazione si fa ripartire cinque volte da
+inizializzazioni sorteggiate (`n_restarts_optimizer=5` in `scikit-learn`, il
+cui valore predefinito è zero) tenendo il massimo più alto.
 
 `````
 
@@ -492,7 +493,7 @@ regolarità infinita, che Matérn allenta) da verificare sul problema reale.
 Il suo territorio, allora, è l'opposto del big data: pochi dati costosi.
 Esperimenti di laboratorio dove ogni misura vale una giornata di lavoro,
 simulazioni ingegneristiche da ore di calcolo l'una, prove sul campo che non si
-possono ripetere. E il caso che abbiamo già incontrato: l’ottimizzazione
+possono ripetere. È il caso che abbiamo già incontrato: l’ottimizzazione
 bayesiana degli iperparametri {cite}`snoek2012practical`, dove ogni "dato" è un
 intero addestramento e il processo gaussiano fa da mappa (stima più incertezza)
 per decidere quale configurazione provare dopo. {doc}`Trovare gli iperparametri

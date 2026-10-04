@@ -48,7 +48,7 @@ si può fare; su un computer di casa no.
 Ed è uno spreco, per una ragione precisa: la maggior parte di quei 786.432
 numeri non descrive *che cosa* c'è nell'immagine, ma dettagli percettivi (la
 grana dell'intonaco, il micro-rumore del sensore, la trama del pelo). La
-compressione JPEG campa su questo da trent'anni: butta via gran parte dei bit
+compressione JPEG si fonda su questo da trent'anni: scarta gran parte dei bit
 e l'occhio quasi non se ne accorge. Un modello di diffusione che lavora sui
 pixel spende quindi la parte del leone del suo sforzo a modellare dettagli ad
 alta frequenza (i dettagli piccolissimi, quelli che cambiano da un pixel al
@@ -335,26 +335,27 @@ ricordando che sotto c'è un campionamento, e $\mathrm{Dec}(\mathbf{z})$ per la
 media di $p_\psi(\mathbf{x} \mid \mathbf{z})$, cioè per la ricostruzione).
 
 **2. Diffusione nel latente.** Il processo diretto e quello inverso hanno la
-stessa forma di quelli di DDPM, applicati a $\mathbf{z}$ anziché a $\mathbf{x}$,
-ma lo schedule è un altro: in Stable Diffusion 1.x $\sqrt{\beta_t}$ cresce
-linearmente da $\sqrt{0{,}00085}$ a $\sqrt{0{,}012}$ su $T = 1000$ passi, molto
-più dolce del lineare di DDPM, e ne segue $\bar{\alpha}_T \approx 0{,}0047$
-invece di $4 \cdot 10^{-5}$. All'ultimo passo sopravvive quasi il 7%
-dell'ampiezza del latente, e il rumore puro da cui parte la generazione
-differisce dalla marginale su cui la rete si è addestrata: è il problema del
-rapporto segnale-rumore terminale non nullo di cui parla la {doc}`sezione sul
-flow matching </ModelliDiffusione/flow-matching>`. Serve poi l'avvertenza che la
-{doc}`spirale in miniatura </ModelliDiffusione/come-funziona>` aveva già
-anticipato: lo schedule *variance-preserving* presuppone dati a varianza
-unitaria, e il latente del VAE non ce l'ha. LDM lo riscala quindi per la
-deviazione standard misurata sui latenti, che è un solo numero e non uno per
-canale (in Stable Diffusion 1.x quella costante vale $0{,}18215$, cioè l'inverso
-di quella deviazione standard). Non è una limatura: Rombach e colleghi
-documentano che il rapporto segnale/rumore indotto dalla scala del latente
-incide sensibilmente sul risultato, e senza quella riscalatura tutta la taratura
-dello schedule sarebbe sbagliata. Fatta la riscalatura, la U-Net
-$\boldsymbol{\epsilon}_\theta$ è addestrata a predire il rumore con la solita
-regressione, ora condizionata anche dal testo $c$:
+stessa forma di quelli di DDPM, applicati a $\mathbf{z}$ anziché a
+$\mathbf{x}$, ma lo schedule è un altro: in Stable Diffusion 1.x
+$\sqrt{\beta_t}$ cresce linearmente da $\sqrt{0{,}00085}$ a $\sqrt{0{,}012}$ su
+$T = 1000$ passi, molto più dolce dello schedule lineare di DDPM, e ne segue
+$\bar{\alpha}_T \approx 0{,}0047$ invece di $4 \cdot 10^{-5}$. All'ultimo passo
+sopravvive quasi il 7% dell'ampiezza del latente, e il rumore puro da cui parte
+la generazione differisce dalla marginale su cui la rete si è addestrata: è il
+problema del rapporto segnale-rumore terminale non nullo di cui parla la
+{doc}`sezione sul flow matching </ModelliDiffusione/flow-matching>`. Serve poi
+l'avvertenza che la {doc}`spirale in miniatura
+</ModelliDiffusione/come-funziona>` aveva già anticipato: lo schedule
+*variance-preserving* presuppone dati a varianza unitaria, e il latente del VAE
+non ce l'ha. LDM lo riscala quindi per la deviazione standard misurata sui
+latenti, che è un solo numero e non uno per canale (in Stable Diffusion 1.x
+quella costante vale $0{,}18215$, cioè l'inverso di quella deviazione
+standard). Non è una limatura: Rombach e colleghi documentano che il rapporto
+segnale/rumore indotto dalla scala del latente incide sensibilmente sul
+risultato, e senza quella riscalatura tutta la taratura dello schedule sarebbe
+sbagliata. Fatta la riscalatura, la U-Net $\boldsymbol{\epsilon}_\theta$ è
+addestrata a predire il rumore con la solita regressione, ora condizionata
+anche dal testo $c$:
 
 $$
 \mathcal{L}_{\mathrm{LDM}} =
@@ -423,7 +424,7 @@ accesa per diciassette anni (nella realtà erano 256, in 32 macchine da otto,
 per poco più di tre settimane). *Usarlo*, grazie alla compressione nelle
 schede, chiede alla GPU quattro gigabyte di memoria e qualche secondo di
 attesa: il file, caricato a metà precisione, ne occupa circa due, e gli altri
-due servono ai conti. È il secondo di questi due conti, non il primo, ad aver
+due servono ai calcoli. È il costo dell'uso, non quello dell'addestramento, ad aver
 cambiato chi può partecipare.
 
 ## Quanto dare retta alla richiesta
@@ -639,8 +640,8 @@ campionatori veloci </ModelliDiffusione/campionatori-veloci>`: per DPM-Solver++
 basta assegnare a `pipe.scheduler` un `DPMSolverMultistepScheduler` costruito
 con `from_config(pipe.scheduler.config)`. E se la memoria non basta,
 `pipe.enable_model_cpu_offload()` tiene sulla GPU un pezzo di modello per
-volta e lascia gli altri nella memoria del computer: si paga in secondi e il
-picco scende di molto.
+volta e lascia gli altri nella memoria del computer: si paga in secondi, ma il
+picco di memoria scende di molto.
 
 ## L'onda lunga dei pesi aperti
 

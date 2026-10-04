@@ -19,7 +19,7 @@ spostarsi: il braccio di una catena di montaggio ha la base fissa e muove
 soltanto le giunture, e nessuno gli nega il titolo. Basta sentire e agire.
 
 Fin dove si può tirare questa definizione? Esiste un vocabolario
-internazionale, la norma ISO 8373, rifatta nel 2021, in cui i tecnici di tutto
+internazionale, la norma ISO 8373, rivista nel 2021, in cui i tecnici di tutto
 il mondo si mettono d'accordo su che cosa chiamare robot. È più stretta della
 nostra: chiede che la macchina si sposti, maneggi oggetti o porti qualcosa in
 un punto preciso, e che lo faccia con un certo grado di autonomia, cioè
@@ -81,18 +81,18 @@ videogioco al metallo, senza perderlo per strada, resta un problema aperto.
 Nel formalismo dei due {doc}`capitoli sul reinforcement learning
 </ReinforcementLearning/overview>`: un agente osserva lo stato $s_t$
 dell'ambiente, sceglie un'azione $a_t$ secondo una policy $\pi(a \mid s)$ e
-riceve una ricompensa $r_{t+1}$; l'obiettivo è trovare la policy che massimizza
+riceve una ricompensa $r_{t+1}$. L'obiettivo è trovare la policy che massimizza
 il ritorno atteso $\mathbb{E}_{\pi}\!\left[\sum_{t=0}^{\infty} \gamma^{\,t}
 r_{t+1}\right]$, dove la media è presa sulle traiettorie che la policy $\pi$
-genera e $\gamma \in [0, 1)$ sconta le ricompense future: se le ricompense sono
+genera e $\gamma \in [0, 1)$ sconta le ricompense future. Se le ricompense sono
 limitate, $|r_t| \le r_{\max}$, lo sconto rende finita la somma di infiniti
 termini ($\left|\sum_{t \ge 0}\gamma^t r_{t+1}\right| \le r_{\max}/(1-\gamma)$,
 serie geometrica), mentre con $\gamma = 1$ la somma può divergere. Per la
 robotica, con azioni continue (coppie ai motori), si usano i metodi a gradiente
-di policy: la policy è una distribuzione parametrica $\pi_\theta(a \mid s)$,
+di policy. La policy è una distribuzione parametrica $\pi_\theta(a \mid s)$,
 tipicamente una gaussiana la cui media esce da una rete, e $\theta$ sale lungo
 il gradiente del ritorno atteso $J(\theta) = \mathbb{E}_{\pi_\theta}\big[\sum_t
-\gamma^{t} r_{t+1}\big]$, che vale
+\gamma^{t} r_{t+1}\big]$. Questo gradiente vale:
 
 $$
 \nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}\!\left[\sum_{t}
@@ -101,24 +101,25 @@ $$
 $$
 
 dove $G_t$ è il ritorno scontato dal passo $t$ in poi (a meno di un fattore
-$\gamma^{\,t}$ che nella pratica si omette): le azioni seguite da un ritorno
+$\gamma^{\,t}$ che nella pratica si omette). Così, le azioni seguite da un ritorno
 alto diventano più probabili, le altre meno (REINFORCE
 {cite}`williams1992simple`). La formula segue da
 $\nabla_\theta \pi_\theta = \pi_\theta \nabla_\theta \log \pi_\theta$, che porta
 il gradiente dentro l'attesa senza derivare attraverso l'ambiente. La stima ha
 varianza alta, e in pratica a $G_t$ si sottrae una *baseline* $b(s_t)$ che non
-dipende dall'azione: non introduce errore sistematico perché
+dipende dall'azione. La sottrazione di solito riduce molto la varianza senza
+introdurre errore sistematico, perché
 $\mathbb{E}_{a \sim \pi_\theta}[\nabla_\theta \log \pi_\theta(a \mid s)] =
-\nabla_\theta \int \pi_\theta(a \mid s)\,\mathrm{d}a = \nabla_\theta 1 = 0$,
-e di solito riduce molto la varianza. L'addestramento avviene in simulazione,
-con il passaggio al robot fisico (*sim-to-real*) come problema aperto.
+\nabla_\theta \int \pi_\theta(a \mid s)\,\mathrm{d}a = \nabla_\theta 1 = 0$.
+L'addestramento avviene in simulazione, con il passaggio al robot fisico
+(*sim-to-real*) come problema aperto.
 `````
 
-I nomi di questa scena tornano per intero nei due {doc}`capitoli sul
+I nomi di questo problema tornano per intero nei due {doc}`capitoli sul
 reinforcement learning </ReinforcementLearning/overview>`. Si chiama **agente**
-chi decide, cioè il robot dell'esempio, e **ambiente** tutto il resto con cui
-ha a che fare: il pavimento, la gravità, il cronometro che conta i secondi in
-piedi. Lo **stato** $s_t$ è la fotografia della situazione nel momento in cui
+chi decide, cioè il robot che impara a camminare, e **ambiente** tutto il resto
+con cui ha a che fare: il pavimento, la gravità, la regola che assegna i punti.
+Lo **stato** $s_t$ è la fotografia della situazione nel momento in cui
 l'agente deve decidere: com'è messo il corpo, a che velocità sta cadendo.
 L'agente sceglie un'azione $a_t$, cioè una mossa, e l'ambiente risponde con la
 **ricompensa** $r_{t+1}$, il punteggio di quella mossa, e con il nuovo stato
@@ -150,6 +151,6 @@ credito (*credit assignment*), uno dei problemi centrali del campo.
 
 Fuori dai corpi meccanici, poi, l'intelligenza artificiale sconfina sempre più
 spesso in campi lontani dal suo: raffreddare un capannone pieno di computer
-accesi, leggere un elettrocardiogramma, e un problema di biologia rimasto
+accesi, leggere un elettrocardiogramma, e risolvere un problema di biologia rimasto
 aperto per mezzo secolo. Sono i tre esempi da cui {doc}`si riparte
 </Introduzione/conclusione>`.

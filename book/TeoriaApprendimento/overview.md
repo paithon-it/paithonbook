@@ -17,8 +17,8 @@ accudisce con il mangime; una mattina l'uomo arriva e gli tira il collo. La
 storia è di Bertrand Russell, che nel 1912 la racconta per spiegare che cosa non
 torna nel ragionare per induzione, cioè nel passare dai casi visti a quelli che
 verranno. Idee più raffinate sull'uniformità della natura (sul fatto che domani
-vada come ieri), commenta Russell, al pollo sarebbero state utili
-{cite}`russell1912problems`.
+vada come ieri) sarebbero state utili
+al pollo, commenta Russell {cite}`russell1912problems`.
 
 Ogni modello che impara dagli esempi sta nella posizione di quel pollo. Ha
 visto mille casi e scommette sul milleunesimo, e nessuna quantità di casi
@@ -72,8 +72,8 @@ distanza fra i due.
 Un'urna contiene milioni di biglietti, e su ognuno c'è una domanda con la sua
 risposta giusta: una foto e il nome dell'animale che mostra, un'email e la
 parola «spam» oppure «buona». Chi costruisce un modello l'urna non la vede.
-Ne pesca mille biglietti, uno alla volta, rimettendo ogni volta dentro quello
-pescato e rimescolando, così che nessuna pescata dipenda dalle precedenti, e
+Pesca mille biglietti, uno alla volta, rimettendo ogni volta nell'urna quello
+estratto e rimescolando, così che nessuna pescata dipenda dalle precedenti, e
 prova le sue regole su quei mille.
 
 Di ogni regola si possono dire due percentuali. Quella degli errori sui mille
@@ -88,7 +88,7 @@ Ma la regola si sceglie dopo aver guardato i biglietti, prendendo quella che ne
 sbaglia di meno, e fra tante regole quella che va meglio sui mille è anche
 quella che con quei mille ha avuto più fortuna. È il vincitore di un concorso
 in cui conta anche la sorte: il suo punteggio dice un po' di bravura e un po'
-di buona sorte, e non dice quanta dell'una e quanta dell'altra. È la storia
+di fortuna, e non dice quanta dell'una e quanta dell'altra. È la storia
 delle mille persone che lanciano una moneta dieci volte, incontrata con lo
 {doc}`spazio delle ipotesi </MachineLearning/apprendimento-supervisionato>`:
 qualcuna fa dieci teste e sembra bravissima, e alla prova successiva fa come
@@ -103,7 +103,7 @@ peggiore, riempita apposta per ingannare chi pesca, perché l'urna non la vede
 nessuno. Quello che c'è dentro, e in che proporzioni, è ciò che i matematici
 chiamano la distribuzione dei dati. Quante regole si possono mettere in gara
 prima che questa garanzia salti, e quanti biglietti servono per tenerla in
-piedi, è la domanda da cui nasce tutto il resto.
+piedi, sono le domande da cui nasce tutto il resto.
 
 L'urna poi deve restare la stessa. Se il biglietto che conta, quello di
 domani, viene pescato da un'altra urna, i mille di prima non dicono più
@@ -153,12 +153,12 @@ $$
 
 che copre qualunque $h$ scelta in $\mathcal{H}$ a partire dai dati, $h_S$
 compresa. I risultati che seguono dicono quanto grande debba essere $m$ perché
-questo accada, in funzione della ricchezza di $\mathcal{H}$, e valgono per
-ogni $\mathcal{D}$: sono garanzie *distribution-free*, ed è questo che le
-rende utili, perché la distribuzione nessuno la conosce. L'unica ipotesi sulla
+questo accada, in funzione della ricchezza di $\mathcal{H}$, e valgono per ogni
+$\mathcal{D}$: sono garanzie *distribution-free*, ed è questo che le rende
+utili, perché la distribuzione nessuno la conosce. L'unica ipotesi sulla
 sorgente è che il campione sia i.i.d. e che la distribuzione su cui si valuta
-il modello sia la stessa su cui lo si è addestrato. Quando cade, cadono tutte,
-e il pollo di Russell ne è il controesempio.
+il modello sia la stessa su cui lo si è addestrato. Quando questa ipotesi cade,
+cadono tutte le garanzie, e il pollo di Russell ne è il controesempio.
 
 `````
 

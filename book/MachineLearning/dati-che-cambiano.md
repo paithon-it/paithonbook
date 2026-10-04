@@ -23,9 +23,9 @@ Che cosa era andato storto? Gli autori dell'articolo su *Science* indicano due
 cause, e solo la seconda è un invecchiamento. La prima nasce con il modello: i
 termini di ricerca erano stati scelti cercando, fra cinquanta milioni di
 candidati, quelli che seguivano meglio 1152 rilevazioni settimanali dei CDC, e
-molti seguivano l'inverno più che l'influenza (il modello, scrivono, era in
-parte un rilevatore di influenza e in parte un rilevatore d'inverno; nel 2009
-mancò la pandemia di H1N1, arrivata fuori stagione, e fu corretto). La seconda è
+molti seguivano l'inverno più che l'influenza. Il modello, scrivono, era in
+parte un rilevatore di influenza e in parte un rilevatore d'inverno: nel 2009
+mancò la pandemia di H1N1, arrivata fuori stagione, e fu corretto. La seconda è
 il tempo. Il modo di cercare in rete era cambiato, e Google stessa aggiornava il
 motore: dal giugno 2011 cominciò a proporre altri termini da cercare (a chi
 chiedeva dell'influenza suggeriva di cercarne le cure), dal febbraio 2012 a
@@ -36,9 +36,9 @@ sé: più suggerimenti, più ricerche sull'influenza; e siccome il modello conta
 proprio quelle ricerche, più malati stimati. Intanto i giornali parlavano di
 epidemia e la gente cercava per curiosità, non per febbre. Il modello, tarato
 sul mondo di qualche anno prima, continuava a leggere il presente con gli
-occhiali di allora. Ed è esattamente questo il punto: che cosa succede quando i
+occhiali di allora. Che cosa succede quando i
 dati che un modello incontra non somigliano più a quelli su cui è stato
-addestrato.
+addestrato?
 
 ## L'ipotesi nascosta: che la distribuzione non cambi
 
@@ -77,7 +77,7 @@ suoi termini di ricerca fra cinquanta milioni guardando come andavano su quei
 dati. Ci si difende allo stesso modo, tenendo corto l'elenco delle domande che
 ci si concede prima di pescare.
 
-Una parola su questa urna, che ha anche un nome tecnico. La distribuzione
+Questa urna ha anche un nome tecnico. La distribuzione
 di una cosa è, semplicemente, il resoconto di quanto spesso ciascun valore
 capita: le palline rosse al 30% e le altre al 70% *sono* la distribuzione dei
 colori in quell'urna. «La distribuzione degli input è cambiata» vuol dire
@@ -225,11 +225,11 @@ $P(\mathbf{x} \mid y)$ a $P(y)$ fisso, per esempio, non è nessuna delle tre
 
 ## Perché la validazione classica non protegge
 
-Validation set, test tenuto da parte e cross-validation ({doc}`Overfitting e
-validazione <overfitting-validazione>`) restano necessari, ma hanno un punto
-cieco: estraggono i loro esempi dallo stesso passato da cui viene il training
-set, quindi stimano l'errore sotto la distribuzione di addestramento, non sotto
-quella che il modello incontrerà dopo.
+Validation set, test tenuto da parte e cross-validation, presentati in
+{doc}`Overfitting e validazione <overfitting-validazione>`, restano necessari,
+ma hanno un punto cieco: estraggono i loro esempi dallo stesso passato da cui
+viene il training set, quindi stimano l'errore sotto la distribuzione di
+addestramento, non sotto quella che il modello incontrerà dopo.
 
 `````{tab} Elementare
 
@@ -287,8 +287,9 @@ sono operativi prima che matematici. Sono tre:
 1. **Monitoraggio** del modello in produzione, cioè acceso su dati veri, con
    utenti veri: va trattato come un impianto, non come un quadro appeso, e si
    confrontano nel tempo la distribuzione degli input, quella delle predizioni
-   e, appena le etichette arrivano, l'errore effettivo. Gli strumenti sono in
-   {doc}`Sorvegliare un modello vivo </MLOps/monitoring-e-drift>`.
+   e, appena le etichette arrivano, l'errore effettivo, misurabile con gli
+   strumenti descritti in {doc}`Sorvegliare un modello vivo
+   </MLOps/monitoring-e-drift>`.
 2. **Riaddestramento** (*retraining*) periodico su dati recenti, perché la
    distribuzione di addestramento segua quella di produzione.
 3. **Valutazione su dati successivi** all'addestramento, raccolti dopo che il
@@ -625,17 +626,17 @@ compresso rispetto al miglior compressore possibile.
 
 Il primo esperimento misura il rimpianto su flussi di esempi sempre più lunghi.
 Il modello è la regressione logistica, che si corregge dopo ogni esempio con
-passo $1/\sqrt{t}$ (il teorema di Zinkevich prende $D/(G\sqrt{t})$, con $D$ il
-diametro dell'insieme ammesso per i pesi e $G$ il massimo della norma del
-gradiente, e ne ricava la costante $\tfrac32 GD$) e riporta i pesi dentro una
-palla di raggio $5$ se ne escono, come chiede la garanzia: è l'insieme convesso
-$\mathcal{K} = \{\mathbf{w} : \lVert\mathbf{w}\rVert \le 5\}$ della formula, i
-pesi la cui lunghezza non supera $5$. La perdita è la sua cross-entropy (o
-*log-loss*), il modo della regressione logistica di contare quanto ha sbagliato.
-Il miglior modello fisso col senno di poi si trova risolvendo la regressione
-sull'intero flusso (il suo minimo cade dentro la palla, quindi è anche il
-migliore in $\mathcal{K}$), e il rimpianto è la differenza fra le due perdite
-totali.
+passo $1/\sqrt{t}$ e riporta i pesi dentro una palla di raggio $5$ se ne
+escono, come chiede la garanzia. Il teorema di Zinkevich prende infatti
+$D/(G\sqrt{t})$, con $D$ il diametro dell'insieme ammesso per i pesi e $G$ il
+massimo della norma del gradiente, e ne ricava la costante $\tfrac32 GD$. La
+palla di raggio $5$ è l'insieme convesso $\mathcal{K} = \{\mathbf{w} :
+\lVert\mathbf{w}\rVert \le 5\}$ della formula, i pesi la cui lunghezza non
+supera $5$. La perdita è la sua cross-entropy (o *log-loss*), il modo della
+regressione logistica di contare quanto ha sbagliato. Il miglior modello fisso
+col senno di poi si trova risolvendo la regressione sull'intero flusso (il suo
+minimo cade dentro la palla, quindi è anche il migliore in $\mathcal{K}$), e il
+rimpianto è la differenza fra le due perdite totali.
 
 ```python
 import numpy as np

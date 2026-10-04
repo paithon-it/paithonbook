@@ -24,15 +24,15 @@ Se giocava contro sé stesso, però, chi gli diceva quale mossa fosse quella
 buona? Nessuno, ed è qui l'idea. Il programma dava un voto alla posizione che
 aveva davanti, poi guardava qualche mossa più in là, e correggeva il voto di
 adesso avvicinandolo a quello che vedeva dopo. Nessuno gli diceva chi avesse
-ragione: a fare da maestro era la propria stessa valutazione, presa un passo più
-avanti, dove si vede meglio. Qualcosa di vero entrava comunque: una delle voci
-del voto, i pezzi in più o in meno rispetto all'avversario, Samuel la fissava a
-mano e il programma non la cambiava, e guardando più avanti le catture si
-vedono. Ripetuto per tutta la partita e per tutte le partite, quel voto diventa
-un fiuto per le posizioni che portano bene. È l'idea da cui nascerà
-l'apprendimento per differenze temporali: il nome torna nella pagina sul
-{doc}`Q-learning </ReinforcementLearning/q-learning>`, ed è lì che si vede per
-intero.
+ragione: a fare da maestro era la propria stessa valutazione, presa un passo
+più avanti, dove si vede meglio. Qualcosa di vero entrava comunque: Samuel
+fissava a mano una delle voci del voto (i pezzi in più o in meno rispetto
+all'avversario) e il programma non la cambiava, e guardando più avanti le
+catture si vedevano. Ripetuto per tutta la partita e per tutte le partite, quel
+voto diventa un fiuto per le posizioni che portano bene. È l'idea da cui
+nascerà l'apprendimento per differenze temporali: il nome torna nella pagina
+sul {doc}`Q-learning </ReinforcementLearning/q-learning>`, ed è lì che si vede
+per intero.
 
 In quell'articolo del 1959 compare, fra le prime volte, l'espressione *machine
 learning*: la capacità di un calcolatore di migliorare a un compito senza essere
@@ -75,7 +75,7 @@ $\text{output} = f(\text{input})$. Le regole sono note *a priori*.
 
 Nel machine learning $f$ è ignota. Disponiamo invece di una collezione di
 coppie input-output osservate, e cerchiamo una funzione $f_\theta$, presa da
-una famiglia parametrizzata dai parametri $\theta$, che le riproduca bene e
+una famiglia parametrizzata da $\theta$, che le riproduca bene e
 (soprattutto) generalizzi a input mai visti. Il compito non è più
 *scrivere* $f$, ma *stimare* i parametri $\theta$ a partire dai dati. Il
 codice resta fisso; ciò che cambia, con l'esperienza, sono i numeri dentro
@@ -87,9 +87,9 @@ Il risultato dell'addestramento è il modello: la funzione $f_\theta$, cioè la
 regola con i suoi parametri $\theta$ (i numeri regolabili) fissati dai dati. Per
 il filtro antispam, $\theta$ contiene i numeri che dicono quanto conta la parola
 «vincita» o un mittente sconosciuto; il codice che li usa è sempre lo stesso, e
-cambiano solo quei numeri. Come un metodo trovi i valori di $\theta$, e quali
-caratteristiche dell'input guardi, varia da un metodo all'altro; quello che
-hanno in comune è che la regola non viene scritta a mano.
+cambiano solo quei numeri. Le tecniche per trovare i valori di $\theta$ e le
+caratteristiche dell'input da esaminare variano da un metodo all'altro; quello che
+tutti hanno in comune è che la regola non viene scritta a mano.
 
 ## Che cosa vuol dire "imparare": la definizione di Mitchell
 
@@ -147,7 +147,7 @@ divide in tre grandi famiglie (chi scrive di ricerca le chiama *paradigmi*).
 giusta, l’*etichetta*, come nel filtro antispam, e il modello impara a prevedere
 l’*output* (quello che esce) a partire dall’*input* (quello che entra). Se
 l'output è una categoria si parla di *classificazione* (spam o non spam, gatto o
-cane); se è un numero di cui ogni valore intermedio è possibile (2,5 metri
+cane); se è un numero che può assumere qualunque valore intermedio (2,5 metri
 quadri esistono, 2,5 stanze no), di *regressione* (il prezzo di una casa dai
 suoi metri quadri).
 
@@ -199,12 +199,12 @@ riceve solo gli input e deve scoprire da sé una struttura nascosta. L'esempio
 classico è il *clustering*: raggruppare i clienti di un negozio in segmenti
 simili senza sapere in anticipo quali segmenti esistano. Rientrano qui la
 riduzione della dimensionalità, cioè descrivere ogni esempio con meno numeri
-conservandone il più possibile l'informazione (le «dimensioni» sono le colonne
-della tabella, una per caratteristica: la {doc}`sezione sull'apprendimento
-supervisionato
+conservandone il più possibile l'informazione, e il rilevamento di anomalie,
+per esempio una transazione che non somiglia alle altre in assenza di esempi
+etichettati. (Le «dimensioni» sono le colonne della tabella, una per
+caratteristica: la {doc}`sezione sull'apprendimento supervisionato
 </MachineLearning/apprendimento-supervisionato>` spiega perché si chiamino
-così), e il rilevamento di anomalie, per esempio una transazione che non
-somiglia alle altre, quando non si hanno esempi etichettati di anomalie.
+così).
 
 **Apprendimento per rinforzo.** Non ci sono etichette, e non c'è nemmeno un
 mucchio di esempi fissato in partenza: c'è un agente (un programma che agisce,
@@ -221,9 +221,9 @@ e nemmeno un trattamento speciale della vittoria.
 
 ## Dall'idea al modello: il flusso di un progetto
 
-Un progetto di machine learning non è mai solo "addestrare un modello". È una
-catena di passaggi, e non è una linea retta ma un ciclo: i risultati della
-valutazione ti dicono come tornare indietro e fare meglio
+Addestrare un modello è solo uno dei passaggi di un progetto di machine
+learning, e i passaggi non stanno su una linea retta ma su un ciclo: i
+risultati della valutazione ti dicono come tornare indietro e fare meglio
 ({numref}`fig-workflow-ml`).
 
 ```{figure} ../figures/workflow-ml.svg
@@ -240,8 +240,8 @@ I passaggi, in ordine:
 
 1. **Dati**: raccogliere esempi e ripulirli (valori mancanti, duplicati,
    errori). Spesso è la fase più lunga e ingrata dell'intero progetto. Di
-   solito si organizzano in una tabella: una riga per esempio, una colonna
-   per ogni cosa che di quell'esempio abbiamo misurato.
+   solito si organizzano in una tabella: una riga per ogni esempio, una colonna
+   per ogni cosa che ne abbiamo misurato.
 2. **Feature**: un modello non legge un'email, calcola su numeri. Le feature (in
    italiano le *caratteristiche*, cioè le colonne della tabella) sono i numeri
    con cui si descrive ogni esempio. Di un'email si possono prendere il numero
@@ -420,15 +420,15 @@ Le ragioni identificate sono strutturali:
    migliora di più un'impurità, e le colonne senza relazione con il bersaglio
    vincono di rado nei nodi alti, anche se con pochi esempi per nodo qualcuna
    vince per caso;
-3. l'addestramento di un MLP con la discesa del gradiente, partendo da pesi
-   a simmetria sferica (per esempio gaussiani indipendenti), è invariante per
-   rotazione: se le colonne si ruotano con una matrice ortogonale, le
-   previsioni che se ne ottengono restano le stesse in distribuzione, quindi
-   la procedura non può sfruttare la base in cui la tabella è scritta; e una
-   tabella invece ha una base naturale, la sua: colonne con significati
-   diversi, che una mescolanza cancella. È anche il legame con il punto
-   precedente, perché una procedura invariante per rotazione ha bisogno, nel
-   caso peggiore, di un numero di esempi che cresce almeno linearmente col
+3. l'addestramento di un MLP con la discesa del gradiente, partendo da pesi a
+   simmetria sferica (per esempio gaussiani indipendenti), è invariante per
+   rotazione. Se si ruotano le colonne con una matrice ortogonale, le
+   previsioni ottenute restano invariate in distribuzione, impedendo alla
+   procedura di sfruttare la base in cui la tabella è scritta. Una tabella, al
+   contrario, possiede una sua base naturale composta da colonne con
+   significati diversi, che una mescolanza cancellerebbe. Questo aspetto si
+   lega al punto precedente: una procedura invariante per rotazione richiede,
+   nel caso peggiore, un numero di esempi che cresce almeno linearmente con il
    numero di feature irrilevanti {cite}`ng2004feature`.
 
 Il corollario pratico riguarda il costo: un gradient boosting si addestra

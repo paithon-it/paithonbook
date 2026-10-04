@@ -171,7 +171,7 @@ qualunque profondità, zero pixel del futuro entrano nel conto. Le maschere
 fanno il loro mestiere.
 
 La seconda colonna è la sorpresa. Con sei strati ventiquattro pixel del passato
-restano fuori, e ci si sta: la rete non arriva così lontano, basta farla più
+restano fuori, ed è atteso: la rete non arriva così lontano, basta farla più
 profonda. Con dodici ne restano fuori sei. Con ventiquattro ne restano fuori
 ancora sei, e sono una zona che quelle maschere non raggiungono a nessuna
 profondità: il triangolo che nella mappa sale a destra del pixel da indovinare.
@@ -317,28 +317,28 @@ quindi l'espansione verso destra guadagna al più una colonna per ogni riga
 guadagnata in alto. Il bordo destro del campo sale quindi a $45^\circ$ invece
 di coprire tutto il semipiano che l'ordinamento consentirebbe, e ciò che resta
 fra quella retta e il bordo dell'immagine non è raggiungibile a nessuna
-profondità: con filtri $3 \times 3$ il punto cieco arriva a coprire, dicono
-gli autori, «fino a un quarto del campo recettivo potenziale». La riparazione
-di {cite}`oord2016conditional` fattorizza il filtro in due pile: la verticale,
-non mascherata, sulle righe strettamente superiori (campo rettangolare, nessun
+profondità: con filtri $3 \times 3$ il punto cieco arriva a coprire, dicono gli
+autori, «fino a un quarto del campo recettivo potenziale». La riparazione di
+{cite}`oord2016conditional` fattorizza il filtro in due pile: la verticale, non
+mascherata, sulle righe strettamente superiori (campo rettangolare, nessun
 punto cieco), e l'orizzontale, mascherata, sulla riga corrente. L'uscita della
-verticale entra nell'orizzontale con una $1\times1$, e non nell'altro verso:
-il ritorno darebbe alla verticale i pixel sotto e a destra, e romperebbe la
+verticale entra nell'orizzontale con una $1\times1$, e non nell'altro verso: il
+ritorno darebbe alla verticale i pixel sotto e a destra, e romperebbe la
 fattorizzazione. La predizione esce dall'orizzontale. Lo stesso lavoro
 sostituisce la ReLU con un'unità *gated* in stile LSTM, e aggiunge il
 condizionamento su un vettore esterno, che è il motivo per cui il titolo parla
 di generazione condizionale. Le due pile e le unità *gated* insieme portano il
 PixelCNN, su CIFAR-10, da $3{,}14$ a $3{,}03$ bit per dimensione (quanti bit
 costa in media ogni numero dell'immagine: più basso è meglio), a un soffio dal
-$3{,}00$ del PixelRNN, che però è molto più lento da addestrare, perché una
-ricorrenza sui pixel non si parallelizza come una convoluzione. Il PixelRNN usa
-due LSTM bidimensionali: la *Row LSTM* elabora una riga alla volta con una
-convoluzione $k \times 1$ sullo stato della riga precedente, e ha un campo
-recettivo triangolare; la *Diagonal BiLSTM* scorre lungo le diagonali
+$3{,}00$ del PixelRNN. Quest'ultimo, però, è molto più lento da addestrare,
+perché una ricorrenza sui pixel non si parallelizza come una convoluzione. Il
+PixelRNN usa due LSTM bidimensionali: la *Row LSTM* elabora una riga alla volta
+con una convoluzione $k \times 1$ sullo stato della riga precedente, e ha un
+campo recettivo triangolare; la *Diagonal BiLSTM* scorre lungo le diagonali
 dell'immagine inclinata e copre tutto il contesto passato, ed è lei a dare il
 $3{,}00$. WaveNet risolve in una dimensione un problema diverso, un campo
 recettivo troppo corto: con filtri causali di lunghezza $k$ ogni strato allunga
-il campo di $k - 1$ posizioni, e con convoluzioni causali *dilatate*,
+il campo di $k - 1$ posizioni, mentre con convoluzioni causali *dilatate*,
 raddoppiando la dilatazione a ogni strato, il campo di $L$ strati con $k = 2$
 arriva a $2^L$ invece che a $L + 1$.
 
@@ -369,16 +369,17 @@ la sequenza la impone la fattorizzazione stessa.
 
 Per questo l'idea, sulle immagini, è tornata spostandosi di un piano. Niente
 obbliga i pezzi da mettere in fila a essere pixel. Se prima si comprime
-l'immagine in una griglia piccola di simboli presi da un catalogo (il VQ-VAE
-dei {doc}`modelli latenti </ModelliLatenti/il-latente-che-si-usa>`, o il suo
-successore con perdita avversaria, il VQ-GAN della {doc}`sezione sulle
-evoluzioni delle GAN </GAN/applicazioni-evoluzioni>`, che riduce
-$256 \times 256$ pixel a $16 \times 16$ caselle, cioè 256 posizioni), i
-passaggi sequenziali scendono da 196.608 a 256, settecentosessantotto volte
-meno, e a metterli in fila può pensare un Transformer. È la forma in cui
-l'autoregressione sulle immagini vive nei modelli che trattano testo e immagini
-come un'unica sequenza di simboli, come Chameleon nella {doc}`sezione sulla
-fusione precoce </VisioneLinguaggio/fusione-precoce-tardiva>`.
+l'immagine in una griglia piccola di simboli presi da un catalogo, i passaggi
+sequenziali crollano. Ne è un esempio il VQ-VAE dei {doc}`modelli latenti
+</ModelliLatenti/il-latente-che-si-usa>`, o il suo successore con perdita
+avversaria, il VQ-GAN della {doc}`sezione sulle evoluzioni delle GAN
+</GAN/applicazioni-evoluzioni>`, che riduce $256 \times 256$ pixel a $16 \times
+16$ caselle, cioè 256 posizioni: i passaggi scendono da 196.608 a 256,
+settecentosessantotto volte meno, e a metterli in fila può pensare un
+Transformer. È la forma in cui l'autoregressione sulle immagini vive nei
+modelli che trattano testo e immagini come un'unica sequenza di simboli, come
+Chameleon nella {doc}`sezione sulla fusione precoce
+</VisioneLinguaggio/fusione-precoce-tardiva>`.
 
 Resta però una cosa che si perde in quel trasloco, e riguarda proprio questo
 capitolo: la verosimiglianza che si calcola sui token è quella dei token,

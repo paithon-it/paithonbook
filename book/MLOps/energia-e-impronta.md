@@ -3,7 +3,7 @@
 Di un modello si dichiara quasi tutto: quanti parametri ha, quanti conti costa
 una passata (in gergo quanti FLOP, cioè quante singole operazioni
 aritmetiche, una moltiplicazione o una somma), quanto è accurato, quanti
-millisecondi impiega a rispondere. Una cosa non si dichiara quasi mai, ed è
+millisecondi impiega a rispondere. Una cosa non si dichiara quasi mai:
 quanta elettricità consuma.
 
 Il costo energetico del calcolo è una domanda vecchia quanto i chip; sui
@@ -12,12 +12,12 @@ provando a mettere un numero sull'addestramento {cite}`strubell2019energy`.
 Alcuni di quei numeri sono stati poi corretti. La loro stima per la ricerca
 automatica dell'architettura dell'Evolved Transformer supponeva che ogni
 candidato fosse addestrato a grandezza piena, mentre la ricerca vera usava un
-compito ridotto; rifatte sull'hardware e sul centro dati effettivi, le
+compito ridotto; ricalcolate sull'hardware e sul centro dati effettivi, le
 emissioni sono risultate 88 volte più basse {cite}`patterson2021carbon`. Le
 cifre di questa materia invecchiano in fretta, perché dipendono dall'hardware
 di quell'anno, dal centro dati e perfino dall'ora del giorno. Quello che non
 invecchia è la catena che porta da un'operazione aritmetica a un grammo di
-anidride carbonica, e sono i suoi anelli da conoscere, perché ognuno è una
+anidride carbonica, e ogni anello della catena è una
 leva.
 
 ## Dal FLOP al joule
@@ -129,8 +129,8 @@ carico è memory-bound, che è quasi tutta l'inferenza interattiva, e modesta do
 non lo è. È la giustificazione economica di tutta l'ingegneria del capitolo
 sulle GPU: il riuso in shared memory, la fusione dei kernel, la precisione
 ridotta (che dimezza i byte da muovere prima ancora di dimezzare i conti) e
-l'array sistolico, la cui intera ragione d'essere è far attraversare un dato
-letto una sola volta a decine di unità di calcolo.
+l'array sistolico, la cui intera ragione d'essere è far passare un dato
+letto una sola volta attraverso decine di unità di calcolo.
 
 La stessa scomposizione dà l'energia di un token generato. In un passo di
 decode con $b$ sequenze di contesto $n_{\text{ctx}}$,
@@ -250,8 +250,8 @@ raffreddamento); $I_{\text{rete}}$ è la leva di chi sceglie dove e
 quando eseguire, e varia di oltre un ordine di grandezza fra reti diverse,
 e di alcune volte fra ore diverse della stessa rete.
 
-Una precisazione sul PUE, perché la formula insegna a fare un conto ed è così
-che il conto sbaglia. Il PUE è un rapporto di struttura, annualizzato:
+Una precisazione sul PUE, perché la formula invita a un conto
+che sbaglia. Il PUE è un rapporto di struttura, annualizzato:
 riguarda tutto l'edificio su tutto l'anno. Moltiplicarlo per l’$E_{\text{IT}}$
 di *un* singolo carico di lavoro assume che il contorno cresca in proporzione
 al carico, mentre una quota rilevante (illuminazione, gruppi di continuità a
@@ -292,10 +292,10 @@ tipico (è il PUE di poco fa).
 Quei quattro numeri sono misure su architetture di quell'anno, e come tutte le
 misure hanno una scadenza; quello che regge è la loro morale, ed è già
 abbastanza forte. Le leve di progetto (quanto modello serve, e dove lo si
-esegue) contano più di quelle di implementazione, e nessuna delle due sta dove
-di solito si cerca: non nella micro-ottimizzazione del codice, che sposta molto
-meno, e non tutte nelle mani del team che costruisce il modello, visto che la
-scelta del luogo è di qualcun altro.
+esegue) contano più di quelle di implementazione, e non si trovano dove si
+cerca di solito: la prima sposta molto più della micro-ottimizzazione del
+codice, e la seconda sfugge spesso alle mani del team che costruisce il
+modello, visto che la scelta del luogo spetta a qualcun altro.
 
 `````
 
@@ -450,13 +450,13 @@ davvero (uno a scomparti, o uno dieci volte più piccolo purché basti allo
 scopo, batte qualunque limatura del programma), dove si esegue, cioè quanto è
 pulita l'elettricità di quella rete, e su cosa si esegue, cioè una macchina
 fatta apposta contro una generica. Le altre due la classifica non le misurava:
-quando si esegue, spostando ciò che può aspettare nelle ore in cui la rete è
-pulita, e infine come è scritto il codice, che è la leva che conta meno di
-tutte. Fuori dall'elenco resta la quarta voce della classifica, la qualità
-dell'edificio, e non per distrazione: quella non la sceglie chi costruisce il
-modello, la sceglie chi costruisce il centro dati.
+l'ora in cui si esegue (perché ciò che può aspettare si può spostare nei
+momenti in cui la rete è pulita), e infine come è scritto il codice, che è la
+leva che conta meno di tutte. Fuori dall'elenco resta la quarta voce della
+classifica, la qualità dell'edificio, e non per distrazione: quella non la
+sceglie chi costruisce il modello, la sceglie chi costruisce il centro dati.
 
-Due avvertenze finali, che valgono più di molte buone intenzioni.
+Due avvertenze finali.
 
 La prima è che l'efficienza, da sola, non basta a ridurre i consumi totali.
 Quando un servizio costa meno, se ne usa di più: è l'effetto di rimbalzo, detto
@@ -471,7 +471,7 @@ guidato da Eric Masanet, su *Science* nel 2020
 centri dati del mondo: fra il 2010 e il 2018 quel consumo è cresciuto di circa
 il sei per cento, mentre nello stesso periodo il lavoro che ci girava dentro si
 è moltiplicato per più di sei (le istanze di calcolo sono cresciute del 550 per
-cento). Attenzione a non confondere le due cifre: la prima è un pochino in più,
+cento). Attenzione a non confondere le due cifre: la prima è poco di più,
 la seconda è sei volte tanto. In otto anni il mondo ha chiesto ai centri dati
 sei volte il lavoro, e loro hanno consumato quasi uguale: lì l'efficienza la
 crescita se l'è mangiata tutta.

@@ -1,9 +1,9 @@
 # A che serve saperlo, e dove sbaglia
 
 Abbiamo speso due sezioni per ottenere un numero. Adesso la domanda che le
-giustifica: a che cosa serve. Sono tre mestieri (comprimere, scegliere fra
-ipotesi, riconoscere ciò che è fuori posto), e sul terzo questa famiglia ha
-preso una lezione che vale più degli altri due.
+giustifica: a che cosa serve calcolarlo. Sono tre mestieri (comprimere,
+scegliere fra ipotesi, riconoscere ciò che è fuori posto), e sul terzo questa
+famiglia ha preso una lezione che vale più degli altri due.
 
 ## Primo: comprimere
 
@@ -21,9 +21,9 @@ una quantità che intera non è.
 
 Un modello che sa dire $p(\mathbf{x})$ *è* un compressore, e non per
 analogia. Gli si dà un file, lui dà una probabilità, e un codificatore
-aritmetico, il programma che trasforma una sequenza di probabilità in una
+aritmetico, il programma che converte una sequenza di probabilità in una
 sequenza di zeri e di uni lunga appunto $-\log_2 p$ (lo stesso del limite della
-compressione nei richiami), la trasforma in bit; il file si ricostruisce
+compressione nei richiami), la traduce in bit; il file si ricostruisce
 esattamente. L'equivalenza ha due condizioni. La prima è che $p$ sia
 normalizzata: per la disuguaglianza di Kraft un codice con quelle lunghezze
 esiste solo se le probabilità sommano al più a uno, e un punteggio che non fa
@@ -78,8 +78,8 @@ per un'immagine di CIFAR-10) e $p$ una probabilità sui valori interi, oppure
 una densità sui pixel dequantizzati nella loro scala originale $[0, 256)^D$. Se
 il modello lavora sui pixel riscalati in $[0, 1]$, al numeratore si aggiunge
 $D \ln 256$, cioè otto bit per dimensione: è il logaritmo del fattore $256^D$
-di cui il riscalamento restringe il volume, e senza quel termine i numeri
-escono irrisori o negativi. Per la stessa ragione la log-densità delle due lune,
+di cui il riscalamento restringe il volume; senza quel termine i numeri
+risultano irrisori o negativi. Per la stessa ragione la log-densità delle due lune,
 misurata su coordinate standardizzate, non ha un equivalente in bit. Per un
 modello linguistico la grandezza corrispondente sono i bit per simbolo, che di
 solito si riportano come perplessità, $2^{\text{bit per simbolo}}$, quella dei
@@ -95,7 +95,7 @@ L'elenco è quello storico, fermo al 2017, e si è mosso: nella tabella di VDM
 $2{,}80$, e VDM stesso, un modello di diffusione addestrato su un limite
 variazionale, a $2{,}65$, meglio di tutti i modelli esatti con un numero che è
 soltanto un limite superiore del costo. La contraddizione è apparente. Per
-comprimere un limite basta, con lo schema *bits-back* già incontrato con i
+comprimere basta un limite, con lo schema *bits-back* già incontrato con i
 {doc}`VAE </ModelliLatenti/il-salto-probabilistico>`, e VDM lo usa per una
 compressione senza perdita vicina all'ottimo teorico. L'esattezza serve quando
 si vuole la probabilità di un singolo dato, come nel riconoscere un dato
@@ -147,7 +147,7 @@ dimensione, meno dell'ultima cifra che le tabelle riportano.
 
 C'è anche un motivo per cui questo modo di misurare piace, e la
 {doc}`sezione sull'addestramento avversario </GAN/come-funziona>` lo rende
-evidente per contrasto. Confrontare due GAN richiede il FID, che richiede una
+evidente per contrasto. Confrontare due GAN richiede il FID, che si appoggia a una
 terza rete addestrata da qualcun altro, che a sua volta ha le sue idee su che
 cosa sia una fotografia. Confrontare due modelli a verosimiglianza esatta
 richiede un numero solo, misurato su dati mai visti e senza una terza rete che
@@ -193,9 +193,9 @@ calcolabile la densità, che è proprio ciò che serve all'ELBO.
 
 ## Terzo: riconoscere ciò che è fuori posto, e dove la verosimiglianza sbaglia
 
-L'applicazione più ovvia di tutte è questa. Ho addestrato il modello sulle mie
-fotografie; adesso me ne arriva una nuova; se il modello le dà una probabilità
-bassissima, vuol dire che è diversa da quelle che ho visto. Rilevamento di
+L'applicazione più ovvia di tutte è questa. Hai addestrato il modello sulle tue
+fotografie; adesso te ne arriva una nuova; se il modello le dà una probabilità
+bassissima, vuol dire che è diversa da quelle che hai visto. Rilevamento di
 anomalie, controllo qualità, allarme quando il mondo cambia sotto ai piedi del
 sistema (è il tema della {doc}`sezione sul sorvegliare un modello vivo
 </MLOps/monitoring-e-drift>`). Sembra il criterio più solido che ci sia.
@@ -206,8 +206,8 @@ essere diventato un caso di scuola.
 Eric Nalisnick e colleghi {cite}`nalisnick2019do` addestrano flussi, VAE e
 PixelCNN su CIFAR-10, una raccolta di fotografie di cani, camion, cavalli e
 altre cose comuni. Poi mostrano a quei modelli SVHN, fotografie di numeri
-civici: un'altra raccolta, con un altro contenuto, che il modello non ha mai
-visto. E misurano la verosimiglianza. Il risultato, nelle loro parole, è che
+civici (un'altra raccolta, con un altro contenuto, che il modello non ha mai
+visto), e ne misurano la verosimiglianza. Il risultato, nelle loro parole, è che
 «la densità appresa» da quei modelli «non riesce a distinguere immagini di
 oggetti comuni come cani, camion e cavalli da quelle di numeri civici,
 assegnando una verosimiglianza più alta a queste ultime quando il modello è
@@ -226,11 +226,11 @@ lontano dalle immagini.
 
 Un modello addestrato su testi italiani riceve una pagina e dice quanto la
 trova probabile. Gli arriva un foglio bianco, con scritto in mezzo
-«aaaaaaaaaaaa». Non è italiano, non l'ha mai visto, è fuori posto sotto ogni
-criterio. Ma è anche facilissima: ogni carattere è identico al precedente,
-quindi il modello ci azzecca ogni volta, e la probabilità che ne esce è
-altissima, più alta di quella di una pagina di italiano vero, piena di scelte
-difficili.
+«aaaaaaaaaaaa». Quel testo non è italiano, il modello non l'ha mai visto, è
+fuori posto sotto ogni criterio. Ma la sequenza è anche facilissima: ogni
+carattere è identico al precedente, quindi il modello ci azzecca ogni volta, e
+la probabilità che ne esce è altissima, più alta di quella di una pagina di
+italiano vero, piena di scelte difficili.
 
 Le fotografie dei numeri civici fanno la stessa cosa: sono immagini più lisce,
 più povere di dettaglio, più prevedibili di quelle di un bosco o del pelo di un
@@ -241,7 +241,7 @@ difficili.
 
 C'è poi un secondo motivo, ancora più strano, e varrebbe anche per un modello
 perfetto. In una vita di letture, una pagina fatta di «a» in fila non capita
-mai, anche se ciascuna di quelle pagine è più probabile di qualunque pagina
+mai, anche se quella pagina è più probabile di qualunque pagina
 vera: le pagine vere sono tantissime, ognuna poco probabile, e tutte insieme si
 prendono quasi tutta la probabilità. Stanno in una fascia di mezzo, mai
 facilissime e mai impossibili, e nessuna arriva vicino alla pagina più
@@ -252,8 +252,8 @@ Ed è qui la lezione, che vale ben oltre questa famiglia: «quanto è probabile�
 «l'ho già visto» sono due domande diverse. Le abbiamo confuse perché nella
 nostra testa vanno insieme, e per un modello no. Per sapere se un dato viene
 dalla distribuzione su cui il modello è stato addestrato, una strada proposta è
-guardare se quel dato cade nella fascia di mezzo invece che se ha battuto un
-record; se basti, è ancora discusso.
+guardare se quel dato cade nella fascia di mezzo anziché controllare se ha
+battuto un record; se basti, è ancora discusso.
 
 C'è un lato lieto. La convinzione che una probabilità bassa bastasse a scovare
 un intruso girava da anni, ed è bastato un esperimento piccolo e riproducibile a
@@ -336,11 +336,12 @@ al posto di una scala di gradini. È il flusso normalizzante continuo delle
 *neural ODE* di Ricky Chen e colleghi {cite}`chen2018neural`. Nel limite il
 logaritmo del determinante diventa l'integrale nel tempo della traccia della
 jacobiana del campo, cioè della sua divergenza; FFJORD
-{cite}`grathwohl2019ffjord` stima quella traccia a caso con lo stimatore di
-Hutchinson, invece di calcolarla. Cadono i vincoli sull'architettura del
-campo, purché resti abbastanza regolare da tenere la trasformazione
-invertibile, e il prezzo si sposta sul calcolo: per avere la verosimiglianza, e
-per generare, bisogna integrare l'equazione, ogni volta e per ogni esempio.
+{cite}`grathwohl2019ffjord` stima quella traccia per campionamento con lo
+stimatore di Hutchinson, invece di calcolarla. Cadono i vincoli
+sull'architettura del campo, purché resti abbastanza regolare da tenere la
+trasformazione invertibile, e il prezzo si sposta sul calcolo: per avere la
+verosimiglianza, e per generare, bisogna integrare l'equazione, ogni volta e
+per ogni esempio.
 
 `````{tab} Elementare
 

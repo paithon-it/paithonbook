@@ -170,7 +170,7 @@ quadrato, 800 neuroni: scarto 0.151
 
 Prima di guardarle una per una serve il metro con cui si giudicano, e viene da
 come una rete impara. Ogni peso $w$ si corregge in base alla derivata della loss
-rispetto a quel peso, $\partial\mathcal{L}/\partial w$: la pendenza della
+rispetto a quel peso, $\partial\mathcal{L}/\partial w$: la pendenza vista nella
 {doc}`sezione su analisi e ottimizzazione </Matematica/analisi-ottimizzazione>`,
 cioè di quanto cambierebbe l'errore muovendo quel peso di pochissimo. Quelle
 derivate le calcola la {doc}`backpropagation </RetiNeurali/backpropagation>`,
@@ -188,7 +188,7 @@ Una buona funzione di attivazione, allora, è una che ha derivata lontana da zer
 là dove i neuroni lavorano davvero.
 
 Le protagoniste degli strati nascosti sono tre, ognuna con un carattere
-diverso ({numref}`fig-attivazioni`); più avanti se ne aggiunge una quarta,
+diverso ({numref}`fig-attivazioni`); a queste si aggiunge poi una quarta,
 la softmax, che fa un altro mestiere e lavora solo sull'ultimo strato.
 
 ```{figure} ../figures/attivazioni-sigmoide-tanh-relu.svg
@@ -354,7 +354,7 @@ uno dei suoi difetti, lo stare tutta sopra lo zero.
 Un numero molto negativo esce quasi $-1$, uno molto positivo quasi $+1$, e lo
 zero resta zero. La differenza con la sigmoide è che ora l'uscita può essere
 anche negativa: in media i valori si bilanciano attorno allo zero, e questo
-aiuta la rete a imparare un po’ più in fretta. Il motivo, in breve. I numeri
+aiuta la rete a imparare un po’ più in fretta. Il motivo, in breve: i numeri
 che entrano in un neurone sono le uscite dello strato precedente, e con la
 sigmoide sono tutti positivi; la correzione che tocca a ciascun peso di quel
 neurone è quel numero moltiplicato per il messaggio che arriva dall'alto, che
@@ -441,12 +441,12 @@ C'è un rischio. Se un neurone finisce nella zona negativa per *tutti* gli esemp
 zero, e allora anche la pendenza che sente è sempre zero: nessuna indicazione,
 nessuna correzione, i suoi pesi restano fermi. È il neurone "morto", e il nome è
 più drammatico di quello che gli capita davvero. Da solo non si tira fuori, ma i
-neuroni che stanno davanti a lui continuano a cambiare, e possono cominciare a
+neuroni che lo precedono continuano a cambiare, e possono cominciare a
 mandargli numeri diversi e risvegliarlo senza che un suo peso si sia mosso di un
-millimetro. Senza ritorno è di sicuro il neurone del primo strato, che davanti
-ha i dati, e i dati non cambiano mai. E lo è anche un neurone più interno che
+millimetro. Senza ritorno è di sicuro il neurone del primo strato, che prima di sé
+ha solo i dati, e i dati non cambiano mai. E lo è anche un neurone più interno che
 pesa in negativo tutto quello che riceve e parte già sotto lo zero: i neuroni
-davanti a lui sono sportelli che lasciano passare solo numeri positivi o zero, e
+che lo precedono sono sportelli che lasciano passare solo numeri positivi o zero, e
 per quanto cambino non gli riporteranno mai il totale sopra lo zero. La **Leaky
 ReLU** previene il problema lasciando filtrare una pendenza piccola (un
 centesimo) anche per i valori negativi, così un po’ di indicazione arriva
@@ -468,7 +468,7 @@ sinistra e $1$ arrivando da destra. Le librerie ne scelgono una per convenzione
 (PyTorch restituisce $0$; per `leaky_relu` restituisce $\alpha$), ed è una
 scelta innocua: i punti in cui la pre-attivazione è esattamente zero sono un
 insieme trascurabile, e qualunque valore fra $0$ e $1$ è un sotto-gradiente
-legittimo. C'è però una conseguenza pratica che vale un pomeriggio a chi
+legittimo. C'è però una conseguenza pratica che costa un pomeriggio a chi
 controlla i conti a mano: verificando il gradiente con le differenze finite
 proprio in zero si trova $0{,}5$, cioè la media dei due lati, e non lo $0$ che
 la libreria restituisce. I due numeri non coincidono e nessuno dei due è
@@ -511,7 +511,7 @@ a $0$ per $x \to -\infty$: il lato negativo satura come quello della ReLU,
 soltanto senza lo spigolo. Da non confondere con la densità, che qui chiamiamo
 $\Phi'$ per non tirare in ballo la $\varphi$ (nel resto del capitolo $\varphi$
 è l'attivazione dello strato d'uscita, e un simbolo con due mestieri è un
-errore che aspetta): $x\,\Phi'(x)$ è tutt'altra funzione, dispari e non
+errore in agguato): $x\,\Phi'(x)$ è tutt'altra funzione, dispari e non
 monotona, e chi prova a rifarsi il grafico partendo dalla campana ottiene un
 disegno diverso.
 

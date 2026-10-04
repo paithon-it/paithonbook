@@ -121,7 +121,7 @@ $r_\theta$ (per noi $u_\theta'$ e $u_\theta''$) le fornisce la
 differenziazione automatica rispetto all'ingresso $t$: esatte, senza rapporti
 incrementali né passo di discretizzazione.
 
-Un dettaglio che sembra pedante e non lo è: il termine di fisica, da solo,
+Il termine di fisica, da solo,
 ha un minimo banale, perché la funzione $u \equiv 0$ risolve l'equazione
 omogenea con residuo nullo ovunque. Il termine sulle condizioni iniziali
 serve dunque a selezionare, dentro la famiglia delle soluzioni
@@ -219,8 +219,8 @@ sulla sola partenza non basta a imporlo. E in tutti e due i casi la manopola
 </PINN/applicazioni-limiti>` mette in fila.
 
 Attenzione però a non dare per scontato l'effetto. Sull'oscillatore il
-moltiplicatore non compra l'ancoraggio, perché a $\lambda_0 = 1$ la rete
-rispetta le condizioni iniziali lo stesso, e non compra nemmeno il percorso:
+moltiplicatore non garantisce l'ancoraggio, perché a $\lambda_0 = 1$ la rete
+rispetta le condizioni iniziali lo stesso, e non assicura nemmeno il percorso:
 sugli stessi dieci semi le corse che collassano sono cinque con $\lambda_0 = 1$
 e cinque con $\lambda_0 = 100$, e fra le riuscite la mediana sbaglia di
 $7 \cdot 10^{-3}$ con 1 e di $0{,}25$ con 100 (lo stampa il confronto fra
@@ -259,12 +259,11 @@ Lo scarto fra i due lati dell'equazione, quello che il ramo in alto calcola in
 ogni punto, si chiama residuo, $r_\theta(t)$: è lo stesso oggetto che nel
 racconto del compito in classe erano i punti persi per una violazione della
 regola. La media dei suoi quadrati sui punti di collocazione è il termine di
-fisica della loss, $\mathcal{L}_{\text{fisica}}$, che nel codice si chiama
-`loss_fisica` e che da qui in poi chiameremo la loss di fisica. Il quadrato
-serve a due cose, a contare uguale una violazione in su e una in giù, e a far
-pesare di più quelle grosse; e la conseguenza da tenere a mente è che la loss
-di fisica cresce con il quadrato della violazione. Se il residuo vale 3 in un
-punto e 1 in un altro, i due contano 9 e 1: una loss cento volte più alta
+fisica della loss, $\mathcal{L}_{\text{fisica}}$ (`loss_fisica` nel codice). Il
+quadrato serve a due cose, a contare uguale una violazione in su e una in giù,
+e a far pesare di più quelle grosse; e la conseguenza da tenere a mente è che
+la loss di fisica cresce con il quadrato della violazione. Se il residuo vale 3
+in un punto e 1 in un altro, i due contano 9 e 1: una loss cento volte più alta
 vuol dire una violazione dieci volte più grossa.
 
 Lo schema è disegnato nel caso generale, quello di un'equazione con una
@@ -664,8 +663,8 @@ presto, e torna solo a tratti (a ventimila epoche ne vale un quarto). Il
 lavoro, da lì in poi, lo fa la fisica, che in trentamila epoche si divide
 soltanto per una trentina, da 0,26 a 0,0078.
 
-Le cinque righe finali vanno lette con attenzione, perché dicono due cose
-diverse, ed è raro che un esempio da manuale sia così onesto.
+Le cinque righe finali dicono due cose
+diverse (ed è raro che un esempio da manuale sia così onesto).
 
 La prima è che il metodo funziona. La rete non ha mai visto un solo valore
 della soluzione, solo la partenza e la legge, e ne esce una curva che oscilla
@@ -902,8 +901,8 @@ le loss vuol dire uno di migliaia fra le violazioni. Resta un abisso.)[^risale]
     ed è il genere di cifra che cambia da un processore all'altro; la sostanza
     non cambia.
 
-Non è dunque soltanto che una loss di fisica bassa non garantisce la soluzione
-giusta: è che quella loss bassa è stata ottenuta proprio e soltanto nei punti
+Una loss di fisica bassa non garantisce la soluzione
+giusta anche perché è stata ottenuta proprio e soltanto nei punti
 che si stanno guardando. La rete ha imparato a essere impeccabile all'esame e
 sregolata fuori.
 
@@ -962,31 +961,28 @@ sezione sui limiti chiamerà mancanza di ordine causale: la loss somma
 residui su punti sparsi nel dominio e nulla obbliga la rete a propagare in
 avanti nel tempo l'informazione della partenza.
 
-Il secondo è il campionamento finito, ed è il posto in cui si tocca con
-mano l'avvertenza di poco fa: fra un punto di collocazione e il
-successivo la regolarità della rete non le impedisce affatto di oscillare.
-Qui infatti oscilla: misurato su una griglia da
-20 000 istanti, il residuo puntuale $|r_\theta|$ tocca un massimo di
-$6{,}6 \cdot 10^2$ a $t = 1{,}263$, con un picco largo $0{,}02$ secondi a
-metà altezza. I
-due punti di collocazione che se lo trovano in mezzo stanno a $1{,}205$ e a
-$1{,}415$: fra loro corrono $0{,}21$ secondi, quattro volte il passo medio del
-campione. Il picco sta nel buco fra due punti di controllo, ed è largo un
-decimo di quel buco. E non è un'increspatura invisibile nella soluzione:
-dentro quello stesso intervallo $u_\theta$ tocca il fondo a $-0{,}565$ e
-risale a $-0{,}007$, un salto di $0{,}56$ compiuto per intero fra due istanti
-in cui la rete non viene interrogata. È lì che la rete abbandona la discesa e
-passa alla piattezza che terrà fino alla fine. Fuori di lì è davvero
-piatta: per
-$t > 2$ resta entro $1{,}2 \cdot 10^{-2}$ dallo zero. È la situazione della
-stima con la funzione di Green: il picco pesa per intero nell'integrale di
-$|r_\theta|$, che controlla l'errore, e per niente nella media sui punti di
-collocazione, che è quella minimizzata. Una rete `tanh` con tre strati da 32
-neuroni ha abbastanza capacità per infilare una guglia dove non viene
-interrogata, e duecento punti su dieci secondi non bastano a impedirglielo. La
-regolarità
-della rete è un argomento asintotico, non una garanzia a $N_c$ finito: dice
-che infittendo i punti la cosa si chiude, non che sia già chiusa.
+Il secondo è il campionamento finito, che verifica direttamente l'avvertenza di
+poco fa: fra un punto di collocazione e il successivo la regolarità della rete
+non le impedisce affatto di oscillare. Qui infatti oscilla: misurato su una
+griglia da 20 000 istanti, il residuo puntuale $|r_\theta|$ tocca un massimo di
+$6{,}6 \cdot 10^2$ a $t = 1{,}263$, con un picco largo $0{,}02$ secondi a metà
+altezza. I due punti di collocazione che se lo trovano in mezzo stanno a
+$1{,}205$ e a $1{,}415$: fra loro corrono $0{,}21$ secondi, quattro volte il
+passo medio del campione. Il picco sta nel buco fra due punti di controllo, ed
+è largo un decimo di quel buco. E non è un'increspatura invisibile nella
+soluzione: dentro quello stesso intervallo $u_\theta$ tocca il fondo a
+$-0{,}565$ e risale a $-0{,}007$, un salto di $0{,}56$ compiuto per intero fra
+due istanti in cui la rete non viene interrogata. È lì che la rete abbandona la
+discesa e passa alla piattezza che terrà fino alla fine. Fuori di lì è davvero
+piatta: per $t > 2$ resta entro $1{,}2 \cdot 10^{-2}$ dallo zero. È la
+situazione della stima con la funzione di Green: il picco pesa per intero
+nell'integrale di $|r_\theta|$, che controlla l'errore, e per niente nella
+media sui punti di collocazione, che è quella minimizzata. Una rete `tanh` con
+tre strati da 32 neuroni ha abbastanza capacità per infilare una guglia dove
+non viene interrogata, e duecento punti su dieci secondi non bastano a
+impedirglielo. La regolarità della rete è un argomento asintotico, non una
+garanzia a $N_c$ finito: dice che infittendo i punti la cosa si chiude, non che
+sia già chiusa.
 
 `````
 
@@ -1131,7 +1127,7 @@ griglia fitta la sua loss di fisica vale $2{,}8$, più di centomila volte
 quella dei duecento punti. Sui dieci semi le corse che collassano sono cinque
 con $\lambda_0 = 1$ come con $\lambda_0 = 100$, e fra quelle riuscite la
 mediana sbaglia di sette millesimi con 1 e di un quarto con 100. Su questo
-problema il coefficiente non compra la strada giusta, e quando la strada è
+problema il coefficiente non garantisce la strada giusta, e quando la strada è
 giusta costa precisione. Nemmeno la ragione che di solito lo giustifica, lo
 squilibrio fra i gradienti dei due termini, qui c'è: all'avvio il rapporto fra
 le loro ampiezze medie ha mediana 2,4, e in quattro semi su venti è
@@ -1468,12 +1464,11 @@ sorteggi su cento resta sotto tutte e due le sue corse; la rigidezza esce fra
 $3{,}91$ e $4{,}09$ in novanta sorteggi su cento, un intervallo da cui il
 $3{,}76$ del seme 7 resta fuori. Non è infallibile nemmeno lui (il problema non
 è convesso, e partendo da $k = 1$ ogni tanto si ferma su una frequenza
-sbagliata), ma su un problema con tre incognite e un solutore a disposizione è
-il metodo da battere, e la PINN non lo batte. Il suo vantaggio sta altrove: lo
-stesso impianto regge senza modifiche quando l'incognita è un campo intero
-invece di tre numeri, o quando l'equazione è alle derivate parziali e un
-adattamento come questo chiederebbe un solutore, e il suo aggiunto, scritti su
-misura.
+sbagliata), ma su un problema con tre incognite e un solutore a disposizione
+rimane superiore alla PINN. Il vantaggio della rete sta altrove: lo stesso
+impianto regge senza modifiche quando l'incognita è un campo intero invece di
+tre numeri, o quando l'equazione è alle derivate parziali e un adattamento come
+questo chiederebbe un solutore, e il suo aggiunto, scritti su misura.
 
 `````{tab} Elementare
 

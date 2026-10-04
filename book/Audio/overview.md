@@ -108,12 +108,12 @@ La radice comune è che le rappresentazioni tempo–frequenza restano quelle: la
 costruzione dello spettrogramma e della scala mel è la stessa per un colpo di
 tamburo e per una vocale, e a cambiare sono i parametri (la finestra standard
 di 25 ms è tarata sul parlato: abbastanza corta perché il tratto vocale si
-possa considerare fermo, abbastanza lunga da contenere almeno due o tre periodi
-della fondamentale; chi lavora sulla musica allunga la finestra, per separare
-note vicine, e alza il numero di bande). Cambia poi tutto a valle (l'obiettivo,
-la funzione di perdita, l'architettura), perché la struttura statistica di
-musica e suoni ambientali non è quella, quasi-periodica e vincolata dal tratto
-vocale, del parlato.
+possa considerare stazionario, abbastanza lunga da contenere almeno due o tre
+periodi della fondamentale; chi lavora sulla musica allunga la finestra, per
+separare note vicine, e alza il numero di bande). Cambia poi tutto a valle
+(l'obiettivo, la funzione di perdita, l'architettura), perché la struttura
+statistica di musica e suoni ambientali non è quella, quasi-periodica e
+vincolata dal tratto vocale, del parlato.
 
 `````
 
@@ -148,7 +148,7 @@ compresa. I suoi pezzi sono questi:
   la risoluzione dell'orecchio.
 
 Da lì in poi torna spesso lo spettrogramma log-mel: uno spettrogramma con le
-frequenze riscritte sulla scala mel, fine sui suoni gravi e più grossolana sugli
+frequenze riscritte sulla scala mel, più fitta sui suoni gravi e più rada sugli
 acuti come l'orecchio, e con le intensità passate al logaritmo, così che un
 sussurro e un urlo stiano sulla stessa scala. Lo si tratta come un'immagine a un
 canale, e vale identico per il canto di un merlo, per un accordo di chitarra,
@@ -211,10 +211,10 @@ ciò che fa l'encoder del disegno). Un modello che *scrive* un simbolo alla volt
 deve invece assegnare una probabilità a ciascun simbolo possibile della
 posizione successiva, e una probabilità così si distribuisce soltanto su un
 elenco: è la softmax dei modelli di linguaggio, che vuole un vocabolario finito.
-(Si può generare anche senza alfabeto, predicendo direttamente numeri continui,
+Si può generare anche senza alfabeto, predicendo direttamente numeri continui,
 oppure partendo da rumore e ripulendolo un passo alla volta: sono altre strade,
 e {doc}`la sezione sulla generazione </Audio/generazione-audio>` ne incontra
-una.) La domanda del capitolo è allora questa: esiste per il suono un alfabeto
+una. La domanda del capitolo è allora questa: esiste per il suono un alfabeto
 abbastanza piccolo da imparare e abbastanza lento da arrivare in fondo a un
 brano? Se esiste, tutto l'armamentario costruito per il linguaggio diventa di
 colpo applicabile al suono.
@@ -236,7 +236,7 @@ il prontuario delle sillabe e spezzare il canto più fitto, costa dall'altra
 parte: il taccuino si riempie di pagine, e chi deve rileggerlo dall'inizio alla
 fine per indovinare come continua non ci arriva. Fra un alfabeto povero e un
 taccuino illeggibile ci sta tutto il mestiere dei codec neurali e della
-generazione, le due tappe con cui il capitolo si chiude.
+generazione.
 
 Un modello fa lo stesso su qualunque suono, con un «alfabeto sonoro» tutto
 suo, costruito apposta: ritaglia il suono in pezzetti e a ciascuno dà il
@@ -288,21 +288,20 @@ $K$ voci del codebook: la stessa fattorizzazione, parola per parola, del
 posto delle parole. È la ricetta dietro sistemi come AudioLM e MusicLM: prima
 si impara un *alfabeto* del suono, poi ci si scrive sopra con un modello di
 linguaggio. Le due difficoltà (costruire un buon alfabeto che perda poco
-fedeltà, e modellare bene sequenze di token lunghissime) sono i due poli
-attorno a cui ruotano le sezioni sui codec neurali e sulla generazione.
+fedeltà, e modellare bene sequenze di token lunghissime) sono i due nodi che i
+codec neurali e i modelli di generazione devono sciogliere.
 
 `````
 
 C'è un'asimmetria onesta da segnalare subito. Il testo *nasce* discreto: le
 lettere e le parole sono già simboli, l'alfabeto ce lo dà la lingua. L'audio
-no: è un'onda continua, e l'alfabeto sonoro non esiste in natura; va
-costruito, ed è di per sé un problema di apprendimento difficile. Un
-alfabeto troppo povero rende il suono metallico e irriconoscibile; e più lo si
-vuole fedele, più lunga diventa la fila di token da scrivere e da leggere,
-finché nessun modello ci arriva in fondo. Il compromesso è il mestiere dei codec
-neurali, ed è la ragione per cui la sezione che li tratta viene prima di
-quella sulla generazione: senza un buon alfabeto, non c'è nulla su cui
-scrivere.
+no: è un'onda continua, e l'alfabeto sonoro non esiste in natura; va costruito,
+ed è di per sé un problema di apprendimento difficile. Un alfabeto troppo
+povero rende il suono metallico e irriconoscibile; e più lo si vuole fedele,
+più lunga diventa la fila di token da scrivere e da leggere, finché nessun
+modello ci arriva in fondo. Il compromesso è il mestiere dei codec neurali, ed
+è per questo che la loro costruzione deve precedere la generazione: senza un
+buon alfabeto, non c'è nulla su cui scrivere.
 
 ## Dal riconoscere al generare
 
@@ -354,7 +353,7 @@ sa maneggiare, che sia un'immagine tempo–frequenza o un alfabeto di token).
   macchina che indovina la parola successiva di una frase può indovinare il
   pezzetto di suono successivo di un brano. Un alfabeto ce l'abbiamo già, quello
   dei livelli con cui si misura l'onda, ma ha troppe lettere e troppo fitte.
-- Le quattro tappe: riconoscere i suoni, imparare dal suono senza
+- I quattro nodi: riconoscere i suoni, imparare dal suono senza
   etichette, costruire l’alfabeto, generare suono nuovo.
 ```
 
@@ -383,7 +382,7 @@ sa maneggiare, che sia un'immagine tempo–frequenza o un alfabeto di token).
   softmax autoregressiva si possa distribuire; allora tutto l'armamentario dei
   Transformer diventa applicabile. È il ponte verso i codec neurali e la
   generazione.
-- Le quattro sezioni: classificazione, rappresentazioni
+- I quattro nodi: classificazione, rappresentazioni
   auto-supervisionate, codec neurali, generazione audio e musica.
 ```
 

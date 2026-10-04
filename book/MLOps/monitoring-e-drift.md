@@ -45,7 +45,7 @@ strada è, quante curve, quanto vai piano. Per un modello: che tipo di
 richieste stanno arrivando, e che tipo di risposte sta dando. Se ieri gli
 arrivavano email lunghe in media 80 parole e oggi ne arrivano da 200, o se
 ieri segnalava spam il 20% dei messaggi e oggi il 45%, il quadrante te lo
-mostra subito: anche se non sai ancora se sia un bene o un male.
+mostra subito, anche se non sai ancora se sia un bene o un male.
 
 Il terzo quadrante è il più importante e il più lento: *sei arrivato dove
 volevi?* Lo scopri solo alla fine del viaggio, confrontando dove sei con dove
@@ -129,8 +129,8 @@ cambiano» lo abbiamo chiamato, più brevemente, il detective. Il numero con cui
 si misura quanto ci riesce è l’AUC, incontrata parlando di {doc}`metriche
 </MachineLearning/metriche>`, e qui va letta così: vale $1$ quando il detective
 indovina sempre da quale dei due periodi viene un dato, e vale $0{,}5$ quando
-sta tirando a indovinare, perché a caso, fra un dato di ieri e uno di oggi,
-quale sia quale lo si azzecca una volta su due.
+sta tirando a indovinare: fra un dato di ieri e uno di oggi,
+scegliendo a caso, si indovina una volta su due.
 
 Un'AUC vicina a $0{,}5$ dice quindi che i due periodi sono indistinguibili *per
 lui*. È una rassicurazione, non una prova. Le colonne dei dati (nel gergo del
@@ -248,7 +248,7 @@ cambia, con $P(\mathbf{x} \mid y)$ invariata) e il *concept shift* ($P(y \mid
   *falsi* dovuti alla molteplicità dei test, mentre qui i rifiuti sono veri, e
   davanti a scostamenti così i $p$-value stanno comunque molti ordini di
   grandezza sotto qualunque soglia, corretta o no. L'allarme va quindi fondato
-  sull’**ampiezza** ($D$, o una distanza normalizzata, o il PSI) con una soglia
+  sull'ampiezza ($D$, o una distanza normalizzata, o il PSI) con una soglia
   decisa sul significato pratico, tenendo il $p$-value al più come filtro
   contro il rumore delle finestre piccole.
 
@@ -327,8 +327,8 @@ sposta altrove). La seconda
 segmento, decisa su quanto si è disposti a lasciar scivolare le cose prima di
 preoccuparsi.
 
-C'è infatti un altro numero che il KS restituisce, e prenderlo per la soglia è
-un errore facile da fare.
+C'è infatti un altro numero che il KS restituisce, e usarlo come soglia è
+un errore comune.
 
 `````{tab} Elementare
 
@@ -542,7 +542,7 @@ distingue nemmeno le tre famiglie fra loro. Anche un puro cambio di proporzioni
 fra le risposte giuste (il *label shift*) lo sposta, e la ragione è semplice: se
 le frodi passano da una su cento a una su dieci, in mezzo alle richieste in
 arrivo ce ne sono dieci volte tante che *assomigliano* a una frode. Il detective
-non vede le risposte, ma vede quelle richieste, e le nota. Di quanto le noti,
+non vede le risposte, ma vede quelle richieste, e le nota. Quanto le noti,
 però, è un'altra faccenda, e la risposta è: poco. Con quel salto, la parte di
 richieste in arrivo che è cambiata è nove su cento, e con uno scarto così
 l'indicatore globale non arriva a $0{,}55$ nemmeno se frodi e richieste oneste
@@ -727,7 +727,7 @@ cambi** (*change-point detection*), che coglie un {doc}`cambio di regime
 resta cambiata, mentre avviene. Nasce dal controllo di qualità in fabbrica,
 dove le carte di controllo di Shewhart, grafici su cui si segnava la misura di
 ogni lotto di pezzi, giudicavano ogni lotto da solo
-{cite}`shewhart1931economic`, e il suo strumento classico è la somma cumulata
+{cite}`shewhart1931economic`. Il suo strumento classico è la somma cumulata
 (*CUSUM*, da *cumulative sum*), che Ewan Page propose nel 1954 per accumulare
 l'evidenza da un lotto all'altro {cite}`page1954continuous`.
 
@@ -967,8 +967,8 @@ vero mutamento del mondo), un covariate shift benigno o l'inizio di un concept
 shift. Solo se l'indagine conferma un degrado reale si sale al **retraining**:
 riaddestrare su dati recenti. E in cima, riservato all'emergenza, il
 **rollback**, cioè la retromarcia: rimettere in servizio il modello di prima,
-nel tempo di un respiro. Che è possibile solo se di ogni modello si è conservata
-la propria copia, con il proprio numero, e quella vecchia è ancora lì dov'era.
+nel tempo di un respiro. Questo è possibile solo se di ogni modello si è conservata
+la copia, con il proprio numero, e quella vecchia è ancora lì dov'era.
 
 `````{tab} Elementare
 
@@ -990,7 +990,7 @@ può fare due cose: il tagliando a scadenza fissa (ogni diecimila chilometri,
 che tu abbia problemi o no) oppure l'intervento a chiamata, quando qualcosa si
 guasta. Il tagliando è prevedibile e semplice, ma quello che si rompe il giorno
 dopo resta rotto fino al prossimo; la chiamata risparmia lavoro e vale quanto
-valgono le spie. I sistemi reali quasi sempre fanno entrambe.
+valgono le spie. I sistemi reali quasi sempre le fanno entrambe.
 
 E c'è una trappola che riguarda proprio il riaddestramento fatto in automatico.
 Un modello che decide che cosa mostrare alle persone decide, con quello, anche
@@ -1181,12 +1181,12 @@ così che il *rollback* al precedente sia sempre un'operazione di un istante.
 
 Con questo l'anello si chiude e ricomincia. Il monitoraggio è l'occhio che,
 accorgendosi del drift, fa ripartire il ciclo (indagine, retraining, rilascio
-graduale) e riporta all'inizio. Un modello in produzione, l'abbiamo detto in
-apertura del capitolo, è un processo da tenere in vita; le interviste di
-Shankar e colleghi descrivono infatti il lavoro come un anello continuo di
-raccolta dei dati, sperimentazione, valutazione e sorveglianza
-{cite}`shankar2022operationalizing`, e il monitoraggio è il turno di guardia
-che quel processo richiede, ogni giorno, finché il modello serve.
+graduale) e riporta all'inizio. Un modello in produzione è un processo da
+tenere in vita; le interviste di Shankar e colleghi descrivono infatti il
+lavoro come un anello continuo di raccolta dei dati, sperimentazione,
+valutazione e sorveglianza {cite}`shankar2022operationalizing`, e il
+monitoraggio è il turno di guardia che quel processo richiede, ogni giorno,
+finché il modello serve.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

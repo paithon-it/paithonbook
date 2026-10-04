@@ -131,7 +131,7 @@ alla temperatura che il codice usa, moltiplicare per $T^2$ sovracompensa di
 assorbe il resto; ma è il genere di dettaglio che distingue una ricetta
 applicata da una capita.
 
-Dove stia il guadagno è meno ovvio di come lo si racconta di solito.
+Dove stia il guadagno è meno ovvio di quanto si racconti di solito.
 L’argomento tradizionale è che i bersagli morbidi trasportino informazione
 sulla struttura delle classi (la «conoscenza oscura»: quali classi il maestro
 confonde e quali no) e che questa informazione agisca come un regolarizzatore,
@@ -286,7 +286,7 @@ La riga di mezzo è quella che serve di più, perché separa due cose che di
 solito si raccontano come una sola. Con il maestro che commenta soltanto i
 centoventi esempi che lo studente ha già etichettati si guadagnano 2,4 punti:
 sono i dubbi, cioè sapere che un certo sette somigliava a un uno e non a un
-otto, quali li ha imparati un maestro che di etichette ne ha viste
+otto, così come li ha imparati un maestro che di etichette ne ha viste
 ottocentonovantotto. Lasciando al maestro commentare anche gli altri
 settecentosettantotto, che lo studente non può usare perché non ne ha
 l’etichetta, se ne guadagnano altri 3,2. Quindi la spiegazione bella («il
@@ -324,15 +324,14 @@ su tutti, studente con tutte       96.9%     95.7%     95.8%     95.8%
 Con un maestro che ha visto soltanto le centoventi etichette dello studente i
 commenti non portano niente, né sugli esempi etichettati né sugli altri: i
 dubbi di un maestro valgono quello che il maestro sa in più. Con un maestro che
-la seconda metà dei dati non l’ha mai vista i due guadagni scendono da 2,4 e
-3,2 a 1,8 e 1,5, e il secondo più del primo, perché le etichette di quegli
-esempi il maestro di prima le aveva viste e i suoi commenti in parte le
-passavano allo studente: la cifra che il conto attribuisce ai dati non
-etichettati è un tetto. Le due cose insieme fanno la distillazione, e chi ne
-racconta solo la prima attribuisce a un meccanismo elegante un guadagno che
-viene soprattutto da un meccanismo banale. La riga dello studente con tutte le
-etichette dice che cosa il conto non dimostra, cioè che imitare sia meglio che
-imparare: con tutte le
+non ha mai visto la seconda metà dei dati, i due guadagni scendono da 2,4 e 3,2
+a 1,8 e 1,5, e il secondo più del primo, perché il maestro di prima aveva visto
+le etichette di quegli esempi e i suoi commenti in parte le passavano allo
+studente: la cifra che il conto attribuisce ai dati non etichettati è un tetto.
+Le due cose insieme fanno la distillazione, e chi ne racconta solo la prima
+attribuisce a un meccanismo elegante un guadagno che viene soprattutto da un
+meccanismo banale. La riga dello studente con tutte le etichette dice che cosa
+il conto non dimostra, cioè che imitare sia meglio che imparare: con tutte le
 ottocentonovantotto etichette lo studente arriva al 95,7% da solo, e il maestro
 non aggiunge più niente.
 

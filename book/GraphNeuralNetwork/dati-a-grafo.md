@@ -1,9 +1,9 @@
 # Il mondo come grafo
 
 Fermati un attimo a guardare i dati che ti circondano. I tuoi contatti sul
-telefono non sono un elenco, ma una rete di persone che, a loro volta, si
-conoscono tra loro. Una molecola non è una lista di atomi, ma un intreccio di
-legami. Il web non è una pila di pagine, bensì un tessuto di link. La rete
+telefono formano una rete di persone che, a loro volta, si
+conoscono tra loro. Una molecola è un intreccio di
+legami. Il web è un tessuto di link. La rete
 stradale di una città, i pagamenti tra conti bancari, le citazioni tra articoli
 scientifici, le proteine che interagiscono in una cellula: in tutti questi
 casi l'informazione più preziosa non sta *dentro* le singole cose, ma nei
@@ -14,9 +14,9 @@ Le reti che abbiamo studiato finora (quelle convoluzionali per le immagini,
 quelle ricorrenti e i Transformer per il testo) sono nate per dati con una
 forma regolare: una griglia di pixel, una sequenza di parole. Ma un grafo non
 ha né una griglia né un ordine. È una struttura più libera e, proprio per
-questo, più difficile da dare in ingresso a una rete neurale. Come si fa lo
-dicono un vocabolario e alcuni problemi di fondo, che spiegano *perché*
-servono strumenti nuovi.
+questo, più difficile da dare in ingresso a una rete neurale. Per capire come
+fare servono un vocabolario e alcuni problemi di fondo, che spiegano *perché*
+siano necessari strumenti nuovi.
 
 ## Nodi e archi: l'anatomia di un grafo
 
@@ -50,7 +50,7 @@ suo **vicinato**, e quanti sono è il suo **grado**. Una tabella di numeri, in
 matematica, si chiama matrice: la tabella $\mathbf{A}$ è la matrice di
 adiacenza, e le due espressioni sono sinonimi.
 
-Sistemiamo adesso tre distinzioni che tornano di continuo.
+Fissiamo adesso tre distinzioni che tornano di continuo.
 
 `````{tab} Elementare
 
@@ -179,7 +179,7 @@ o da sessanta, mentre le foto si possono tagliare tutte alla stessa misura.
 
 `````{tab} Superiore
 
-Chiamiamo $\mathbf{P}$ una **matrice di permutazione** $N \times N$ (una sola
+Chiamiamo $\mathbf{P}$ una **matrice di permutazione** $N \times N$ (un solo
 $1$ per riga e colonna). Rinumerare i nodi significa trasformare
 $\mathbf{A} \mapsto \mathbf{P} \mathbf{A} \mathbf{P}^\top$ e
 $\mathbf{X} \mapsto \mathbf{P} \mathbf{X}$. Poiché questi descrivono lo stesso
@@ -292,7 +292,7 @@ superano {cite}`hamilton2020graph`.
 
 ## Un primo assaggio senza reti neurali: camminare a caso sul grafo
 
-Prima di tirare in ballo le reti neurali conviene vedere un'idea più semplice,
+Prima di introdurre le reti neurali conviene vedere un'idea più semplice,
 che per qualche anno è stata il modo migliore che si conoscesse per descrivere
 i nodi di un grafo.
 
@@ -300,11 +300,11 @@ L'obiettivo è quello di sempre: dare a ogni nodo una fila di qualche decina di
 numeri, fatta in modo che due nodi vicini nel grafo ricevano due file che si
 somigliano, numero per numero. Un vettore costruito con questa intenzione (i
 simili vicini fra loro) ha un nome che il capitolo sul linguaggio ha già usato
-per le parole: si chiama embedding. È sempre una fila di numeri, e
-«embedding» dice a che scopo è stata costruita. Lì l'idea era
-che a ogni parola tocca un punto, e che parole di significato simile finiscono
-vicine; e «vicine» va preso alla lettera, come su una mappa, solo che le
-coordinate non sono due ma qualche decina.
+per le parole: si chiama embedding. È sempre una fila di numeri, e «embedding»
+dice a che scopo è stata costruita. Lì l'idea era che a ogni parola
+corrispondesse un punto, e che parole di significato simile finissero vicine; e
+«vicine» va preso alla lettera, come su una mappa, solo che le coordinate non
+sono due ma qualche decina.
 
 E il trucco per ottenerlo su un grafo è sorprendente: si riusa, quasi senza
 modifiche, la stessa ricetta con cui si imparavano gli embedding delle parole.
@@ -392,8 +392,8 @@ reti neurali su grafo verranno a risolvere.
 
 - Sono transduttivi: quello che si impara è un elenco, un nodo per riga con
   accanto la sua fila di numeri, e ogni riga vale per quel nodo e per nessun
-  altro. Arriva un nodo nuovo? Non ha nessuna riga, e bisogna riaddestrare.
-  Non c'è modo di generalizzare a un grafo mai visto.
+  altro. Se arriva un nodo nuovo non ha nessuna riga, e bisogna riaddestrare:
+  non c'è modo di generalizzare a un grafo mai visto.
 - Ignorano le caratteristiche dei nodi: guardano solo chi è connesso a chi,
   buttando via la tabella $\mathbf{X}$. Due nodi con le stesse connessioni ma
   contenuti diversissimi producono le stesse passeggiate, e il metodo non ha
@@ -414,12 +414,12 @@ la tabella $\mathbf{X}$. I cammini casuali usano solo la prima. Le reti
 ordinarie saprebbero usare la seconda, ma inciampano sull'assenza di ordine e
 sul numero variabile di vicini.
 
-Ci serve dunque un modello che tenga insieme quattro richieste. Che usi
-collegamenti e caratteristiche insieme. Che sia induttivo, cioè che
-impari una procedura riusabile invece di una tabella di risultati. Che usi la
-stessa procedura per ogni nodo, come la convoluzione usa lo stesso filtro
-su tutti i pixel. E che non si accorga dell'ordine in cui gli elenchiamo i
-nodi, la proprietà da cui è partito tutto il ragionamento della cena.
+Ci serve dunque un modello che tenga insieme quattro richieste: deve usare
+collegamenti e caratteristiche insieme; essere induttivo, cioè imparare una
+procedura riusabile invece di una tabella di risultati; applicare la stessa
+procedura per ogni nodo, come la convoluzione usa lo stesso filtro su tutti i
+pixel; e non accorgersi dell'ordine in cui gli elenchiamo i nodi, la proprietà
+da cui è partito tutto il ragionamento della cena.
 
 L'idea che concilia tutte queste richieste è far sì che ogni nodo aggiorni la
 fila di numeri che lo descrive ascoltando i vicini, e ripetere l'operazione a

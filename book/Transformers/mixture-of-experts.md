@@ -38,8 +38,8 @@ stava lì: quattro matrici $d_{\text{model}} \times d_{\text{model}}$
 nell'attenzione, contro due matrici quattro volte più grandi nella FFN, cioè
 otto della stessa taglia. Otto contro quattro, due terzi contro un terzo. Una
 linea di ricerca legge la FFN come la memoria del modello
-{cite}`geva2021transformer`, un'interpretazione sostenuta da esperimenti; per
-il conto che segue basta che sia il blocco più pesante.
+{cite}`geva2021transformer`, un'interpretazione sostenuta da esperimenti; ai
+fini del bilancio basta che sia il blocco più pesante.
 
 ```{figure} ../figures/mixture-of-experts.svg
 :name: fig-moe-layer
@@ -137,8 +137,8 @@ della sezione sull'architettura; con una variante *gated* come SwiGLU le
 matrici diventano tre, e allora dipende da che cosa si tiene fisso: a
 $d_{\text{ff}}$ invariato il primo termine cresce di metà, mentre riducendo
 $d_{\text{ff}}$ a $\tfrac{8}{3}d_{\text{model}}$, che è la pratica corrente
-vista nella sezione sull'architettura, resta identico. I conti che seguono
-usano la FFN a due matrici.
+vista nella sezione sull'architettura, resta identico. Il bilancio qui
+sviluppato usa la FFN a due matrici.
 
 Ora sostituiamo ogni FFN con $N = 8$ esperti della stessa taglia. I parametri
 totali diventano
@@ -351,8 +351,8 @@ $d_{\text{model}} = 4096$ e $d_{\text{ff}} = 16384$, sono $32\,768$
 moltiplicazioni contro i $134$ milioni di un solo esperto. Il costo della
 selezione è trascurabile.
 
-Una variante del lavoro del 2017 merita una riga: il **noisy top-k gating**,
-che prima di prendere i $k$ migliori somma ai punteggi un rumore gaussiano di
+Una variante del lavoro del 2017 aggiunge casualità: il **noisy top-k gating**,
+prima di prendere i $k$ migliori, somma ai punteggi un rumore gaussiano di
 ampiezza appresa,
 $H(\mathbf{x})_i = (\mathbf{W}_g\mathbf{x})_i + \varepsilon_i\,
 \operatorname{softplus}\bigl((\mathbf{W}_{\text{noise}}\mathbf{x})_i\bigr)$ con
@@ -540,7 +540,7 @@ resta quasi libero.
 
 ### La capacità, e i token che cadono
 
-Il bilanciamento è una spinta statistica, non una garanzia: in un batch
+Il bilanciamento è solo una spinta statistica: in un batch
 qualunque un esperto può comunque ricevere più token di quanti ne possa
 elaborare. Molte implementazioni fissano allora in anticipo una **capacità**,
 cioè il numero massimo di token che ciascun esperto accetta per batch: il carico
@@ -716,17 +716,17 @@ il modello in una macchina sola o lavora nell'intervallo di mezzo.
 
 ## Da un'idea del 1991
 
-L'idea era pronta trent'anni prima dell'hardware che l'ha resa utile.
-Nel 1991 Robert Jacobs, Michael Jordan, Steven Nowlan e Geoffrey Hinton
-pubblicano su *Neural Computation* un articolo intitolato *Adaptive Mixtures
-of Local Experts* {cite}`jacobs1991adaptive`. La proposta è già tutta lì: più
-reti separate, e una **gating network** (letteralmente «rete cancello»,
-l'antenato del router) che impara a pesarle a seconda di quello che le arriva
-davanti, così che ciascuna si specializzi su un tipo di dati invece di fare un
+L'idea era pronta trent'anni prima dell'hardware che l'ha resa utile. Nel 1991
+Robert Jacobs, Michael Jordan, Steven Nowlan e Geoffrey Hinton pubblicano su
+*Neural Computation* un articolo intitolato *Adaptive Mixtures of Local
+Experts* {cite}`jacobs1991adaptive`. La proposta è già tutta lì: più reti
+separate, e una **gating network** (letteralmente «rete cancello», l'antenato
+del router) che impara a pesarle a seconda di quello che le arriva davanti,
+così che ciascuna si specializzi su un tipo di dati invece di fare un
 compromesso mediocre su tutto. Manca però il pezzo che ci interessa qui: la
-miscela era densa, cioè si facevano lavorare tutti gli esperti e poi si
-faceva la media delle loro risposte. Un buon modo di organizzare
-l'apprendimento, non un modo di risparmiare conto.
+miscela era densa, cioè si facevano lavorare tutti gli esperti e poi si faceva
+la media delle loro risposte. L'architettura serviva a farli imparare meglio,
+senza alcun risparmio di calcolo.
 
 Il salto è del 2017, con *Outrageously Large Neural Networks: The
 Sparsely-Gated Mixture-of-Experts Layer* di Noam Shazeer e colleghi
@@ -784,19 +784,19 @@ parametri totali e 13 attivi {cite}`jiang2024mixtral`, DeepSeek-V3 (dicembre
 primo riguarda la rifinitura: rifiniti direttamente su un compito piccolo, i
 modelli sparsi tendono a sovradattarsi, e Switch Transformer alza per questo il
 dropout dentro gli esperti (0,4 contro lo 0,1 del resto); se passano prima per
-l'instruction tuning della {doc}`sezione sul post-training <post-training>`, il
-quadro cambia, perché ne guadagnano più dei modelli densi {cite}`shen2023moe`.
-Il secondo riguarda la specializzazione: nell'analisi del routing di Mixtral la
-distribuzione degli esperti è quasi la stessa per articoli scientifici di arXiv,
-di biologia e di filosofia, e a distinguere i token è piuttosto la sintassi (la
-parola `self` del codice Python, i rientri) {cite}`jiang2024mixtral`; nel 2017,
-su un modello a LSTM, Shazeer e colleghi avevano visto esperti specializzati per
-sintassi e per significato. «Esperti» è una metafora comoda, non una
-descrizione verificata.
+l'instruction tuning descritto nella {doc}`sezione sul post-training
+<post-training>`, il quadro cambia, perché ne guadagnano più dei modelli densi
+{cite}`shen2023moe`. Il secondo riguarda la specializzazione: nell'analisi del
+routing di Mixtral la distribuzione degli esperti è quasi la stessa per
+articoli scientifici di arXiv, di biologia e di filosofia, e a distinguere i
+token è piuttosto la sintassi (la parola `self` del codice Python, i rientri)
+{cite}`jiang2024mixtral`; nel 2017, su un modello a LSTM, Shazeer e colleghi
+avevano visto esperti specializzati per sintassi e per significato. «Esperti» è
+una metafora comoda, non una descrizione verificata.
 
 ## In pratica: uno strato MoE in PyTorch
 
-Il codice che segue implementa lo strato per intero, e si legge in quattro
+La classe `StratoMoE` implementa lo strato per intero, e si legge in quattro
 tempi: il router dà un punteggio a ogni esperto per ogni token, i punteggi
 diventano probabilità, `torch.topk` tiene i $k$ esperti migliori con i loro
 pesi, e ogni esperto lavora soltanto sui token che lo hanno scelto. Mancano le
@@ -852,7 +852,7 @@ class StratoMoE(nn.Module):
         return y.reshape(forma)
 ```
 
-Due punti meritano attenzione. I pesi sono le probabilità dei $k$ esperti
+I pesi sono le probabilità dei $k$ esperti
 sopravvissuti al `topk`, divise per la loro somma: è la rinormalizzazione sui
 soli scelti, e coincide con la softmax dei soli $k$ punteggi. Con $k = 1$ quella
 divisione darebbe sempre $1$ e il router non imparerebbe, e il codice lascia

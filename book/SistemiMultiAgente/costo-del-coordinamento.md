@@ -147,22 +147,21 @@ $$
 N^{2}\,\bar{m}\,\frac{R(R-1)}{2},
 $$
 
-cioè lo stesso ordine $O(\bar{m}N^2R^2)$ con la stessa costante di testa:
-lo sconto sta in un termine di grado inferiore, e quindi si vede sui numeri
-piccoli e sparisce al crescere dei turni. Con quattro agenti e otto giri a testa
-($N = 4$, $R = 8$) fa $304.000$ token contro i
-$328.000$ del turno a turno, il 7% in meno; a $R = 64$ il rapporto è già
-$0{,}99$. Resta sotto uno per
-ogni squadra di almeno due agenti, ma sempre meno. Attenzione a non leggerlo
-come un risparmio: la ragione dello
-sconto è che dentro un giro nessuno legge gli altri. Chi parla per $t$-esimo
-nel regime a turni ha già davanti i $t-1$ interventi del giro in corso; in
-*broadcast* tutti leggono la stessa trascrizione, ferma al giro precedente, e
-quello che manca dal conto è esattamente l'informazione che manca a chi lavora.
-Ciò che il *broadcast* compra davvero è la latenza, $R$ giri invece di $NR$
-turni, perché gli interventi di un giro si producono in parallelo; e la compra
-al prezzo di un giro di ritardo nel reagire a quello che ha appena detto un
-altro.
+cioè lo stesso ordine $O(\bar{m}N^2R^2)$ con la stessa costante di testa: lo
+sconto sta in un termine di grado inferiore, e quindi si vede sui numeri
+piccoli e sparisce al crescere dei turni. Con quattro agenti e otto giri a
+testa ($N = 4$, $R = 8$) fa $304.000$ token contro i $328.000$ del turno a
+turno, il 7% in meno; a $R = 64$ il rapporto è già $0{,}99$. Resta sotto a uno
+per ogni squadra di almeno due agenti, ma il risparmio si assottiglia al
+crescere dei turni. Attenzione a non leggerlo come un risparmio: la ragione
+dello sconto è che dentro un giro nessuno legge gli altri. Chi parla per
+$t$-esimo nel regime a turni ha già davanti i $t-1$ interventi del giro in
+corso; in *broadcast* tutti leggono la stessa trascrizione, ferma al giro
+precedente, e quello che manca dal conto è esattamente l'informazione che manca
+a chi lavora. Ciò che il *broadcast* compra davvero è la latenza, $R$ giri
+invece di $NR$ turni, perché gli interventi di un giro si producono in
+parallelo; e la compra al prezzo di un giro di ritardo nel reagire a quello che
+ha appena detto un altro.
 
 `````
 

@@ -1,15 +1,15 @@
 # Reinforcement learning basato su modello
 
-La prima volta che ti siedi davanti a un gioco da tavolo nuovo,
-dopo un paio di mani hai già smesso di muovere a caso. Non perché tu abbia
-giocato migliaia di partite: ne bastano due o tre perché la testa cominci a
-fare da sola una cosa preziosa (*provare le mosse prima di farle*). «Se scarto
-questa carta lui pesca e chiude… allora no.» La mossa cattiva muore
-nell'immaginazione, senza costarti la partita. È una delle differenze, ancora
-oggi vistose, fra un essere umano e un agente come il {doc}`DQN <dqn>`. L'altra
-è tutto quello che sappiamo prima di cominciare (che gli oggetti cadono, che una
-chiave apre una porta): togliendo a chi gioca i segnali che lo richiamano, il
-tempo per finire un gioco nuovo passa da meno di due minuti a una ventina
+La prima volta che ti siedi davanti a un gioco da tavolo nuovo, dopo un paio di
+mani hai già smesso di muovere a caso. Non perché tu abbia giocato migliaia di
+partite: ne bastano due o tre perché la testa cominci a fare da sola una cosa
+preziosa (*provare le mosse prima di farle*). «Se scarto questa carta lui pesca
+e chiude… allora no.» La mossa cattiva muore nell'immaginazione, senza costarti
+la partita. È una delle differenze, ancora oggi vistose, fra un essere umano e
+un agente come il {doc}`DQN <dqn>`. L'altra è tutto quello che sappiamo prima
+di cominciare (che gli oggetti cadono, che una chiave apre una porta):
+togliendo al giocatore i segnali visivi che lo richiamano, il tempo per finire
+un gioco nuovo passa da meno di due minuti a una ventina
 {cite}`dubey2018investigating`. A noi bastano poche partite per capire come si
 gioca a *Breakout* (il gioco dei mattoncini da abbattere con una pallina) e un
 paio d'ore per giocarci bene; all'agente servono decine di milioni di
@@ -345,7 +345,7 @@ affidabile, e quanto meno affidabile non lo decide l'orizzonte da solo, lo
 decide il sistema. Il conto, poi, è ottimista per costruzione: chiede che
 l'errore del modello resti sotto $\epsilon$ in ogni stato raggiunto, mentre un
 modello appreso è accurato soprattutto vicino ai dati, e il rollout se ne
-allontana proprio perché sbaglia; e se le azioni le sceglie una policy che
+allontana proprio perché sbaglia. Inoltre, se le azioni le sceglie una policy che
 dipende dallo stato, nella $L$ va messa anche la sua costante di Lipschitz.
 
 MBPO (*Model-Based Policy Optimization*, Janner et al., 2019
@@ -512,8 +512,8 @@ policy <policy-gradient>`) su rollout immaginati di una quindicina di passi,
 chiusi dai $\lambda$-ritorni del critico, proprio per contenere il compounding
 error. Nelle prime versioni l'attore impara per retropropagazione attraverso il
 modello quando le azioni sono continue e con lo stimatore di REINFORCE quando
-sono discrete; nella versione definitiva di DreamerV3
-{cite}`hafner2023mastering` usa REINFORCE per tutte. DreamerV3 aggiunge poi
+sono discrete; la versione definitiva, DreamerV3
+{cite}`hafner2023mastering`, usa REINFORCE per tutte e aggiunge
 normalizzazioni robuste di osservazioni, ricompense e ritorni che rendono lo
 stesso set di iperparametri valido su domini radicalmente diversi: è la
 dimostrazione che un agente model-based può essere *generalista*. La parentela

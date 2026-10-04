@@ -139,7 +139,7 @@ M_{ij} = \begin{cases} \prod_{k=j+1}^{i} a_k & i \ge j \\ 0 & i < j \end{cases}
 $$
 
 dove $\mathbf{C} \mathbf{B}^\top$ è la matrice $L\times L$ (lunghezza per
-lunghezza) di tutte le affinità query–chiave, esattamente
+lunghezza) di tutte le affinità tra query e chiave, esattamente
 $\mathbf{Q}\mathbf{K}^\top$ dell'attenzione; $\odot$ è il prodotto elemento per
 elemento; e $\mathbf{M}$ è una maschera causale con decadimento: azzera il
 futuro (triangolo superiore) e pesa il passato con i prodotti degli scalari
@@ -188,10 +188,10 @@ Nella {doc}`sezione sulla scrittura in memoria
 messo in fila una piccola collezione di architetture (uno «zoo», lo avevamo
 chiamato) con lo stesso corpo, una memoria di taglia fissa addestrata in
 parallelo e usata passo dopo passo, e una sola differenza: come il passato
-sbiadisce quando arriva il presente. C'era chi non dimentica niente, chi
-sbiadisce tutta la memoria della stessa quantità, chi ne sbiadisce ogni
-colonna al suo ritmo, e chi cancella di mira la vecchia voce che sta per essere
-riscritta. Mamba-2 stava sul secondo gradino, quello della transizione
+sbiadisce quando arriva il presente. C'era chi non dimenticava niente, chi
+sbiadiva tutta la memoria della stessa quantità, chi ne sbiadiva ogni colonna
+al suo ritmo, e chi cancellava in modo mirato la vecchia voce che stava per
+essere riscritta. Mamba-2 stava sul secondo gradino, quello della transizione
 $\alpha_t\mathbf{I}$, il decadimento scalare ricalcolato a ogni parola.
 Arrivando dai sistemi dinamici invece che dall'attenzione, con la transizione
 scalare ci si ritrova su quello stesso gradino. Lì la stessa funzione ha una
@@ -261,7 +261,7 @@ $N$ valori distinti per canale ma un solo scalare ripetuto, $\mathbf{A} = a\math
 da cui una transizione discreta $\bar{\mathbf{A}}_t = a_t \mathbf{I}$.
 
 Il motivo per cui il matmul batte lo scan è nell'hardware. Un tensor core esegue
-un piccolo prodotto matrice–matrice per ciclo: su una GPU moderna è lì che
+un piccolo prodotto di matrici per ciclo: su una GPU moderna è lì che
 risiede la stragrande maggioranza dei FLOP disponibili. Un *selective scan* come
 quello di Mamba-1 è invece una ricorrenza associativa fatta di moltiplicazioni
 elemento per elemento e somme: parallelizzabile in $O(\log L)$ passi, ma su unità
@@ -386,7 +386,7 @@ per la parte di stato è esatto
 sistemi dinamici </StateSpaceModel/dai-sistemi-dinamici-a-s4>`); il termine
 d'ingresso, però, viene semplificato al prim'ordine (Eulero):
 $\bar{\mathbf{B}}_t = \Delta_t \mathbf{B}_t$, con un errore locale
-dell'ordine di $O(\Delta_t^2)$ sul passo. È su questo pezzo che interviene
+dell'ordine di $O(\Delta_t^2)$ sul passo. È su questo termine che interviene
 Mamba-3, con una discretizzazione **esponenziale-trapezoidale**:
 un'integrazione del second'ordine che stima il contributo dell'ingresso con una
 combinazione convessa dei valori agli estremi dell'intervallo,
@@ -536,7 +536,7 @@ rotazionale dei Transformer riemerge, spontaneamente, come la fase di una
 dinamica di stato complessa.
 
 Il paper verifica che conti proprio la dipendenza dai dati, con un controllo.
-In accuratezza riscalata (100 la risposta sempre giusta, 0 il tirare a
+Misurando un'accuratezza riscalata (100 la risposta sempre giusta, 0 il tirare a
 indovinare), sulla parità e sull'aritmetica modulare senza parentesi Mamba-3
 arriva a 100 e a 98,5; con un RoPE standard, ad angoli fissi, scende a 1,6 e a
 20,7, e Mamba-2 si ferma a 0,9 e a 47,8 {cite}`lahoti2026mamba3`. La rotazione
@@ -571,20 +571,20 @@ formule, con lo stato scritto come nella dualità e la discretizzazione di
 Eulero per brevità, la ricorrenza SISO di una testa è $\mathbf{S}_t = a_t\,
 \mathbf{S}_{t-1} + \Delta_t\, \mathbf{x}_t \mathbf{B}_t^\top$, con
 $\mathbf{S}_t \in \mathbb{R}^{P\times N}$, $\mathbf{x}_t \in \mathbb{R}^{P}$ e
-$\mathbf{B}_t \in \mathbb{R}^{N}$. Nel MIMO di rango $R$,
-$\mathbf{x}_t \in \mathbb{R}^{P\times R}$ e
-$\mathbf{B}_t \in \mathbb{R}^{N\times R}$ (e così $\mathbf{C}_t$): la
-scrittura $\mathbf{x}_t\mathbf{B}_t^\top$ diventa una somma di $R$ prodotti
-esterni, un prodotto fra matrici, lo stato resta $P \times N$, le operazioni
-del passo crescono di un fattore $R$ e i byte letti, dominati dallo stato,
-quasi non cambiano. L'effetto tecnico è aumentare l’intensità aritmetica (il
-numero di operazioni per ogni byte letto dalla memoria), che è proprio ciò che
-tiene occupati i tensor core. Per un passo di decodifica SISO vale circa 2,5
-operazioni per byte, contro le circa 295 che servono a saturare i tensor core
-di una H100 in mezza precisione, e il MIMO la fa crescere linearmente con $R$
-(nel paper, $R = 4$). Il guadagno pratico riportato è qualità migliore senza
-aumentare apprezzabilmente la latenza di decodifica, cioè senza rallentare la
-generazione token per token {cite}`lahoti2026mamba3`.
+$\mathbf{B}_t \in \mathbb{R}^{N}$. Nel MIMO di rango $R$, $\mathbf{x}_t \in
+\mathbb{R}^{P\times R}$ e $\mathbf{B}_t \in \mathbb{R}^{N\times R}$ (e così
+$\mathbf{C}_t$): la scrittura $\mathbf{x}_t\mathbf{B}_t^\top$ diventa una somma
+di $R$ prodotti esterni, cioè un prodotto fra matrici; lo stato resta $P \times
+N$, le operazioni del passo crescono di un fattore $R$ e la quantità di byte
+letti, dominata dallo stato, resta quasi invariata. L'effetto tecnico è
+aumentare l’intensità aritmetica (il numero di operazioni per ogni byte letto
+dalla memoria), che è proprio ciò che tiene occupati i tensor core. Per un
+passo di decodifica SISO questa intensità vale circa 2,5 operazioni per byte,
+contro le circa 295 che servono a saturare i tensor core di una H100 in mezza
+precisione, e il MIMO la fa crescere linearmente con $R$ (nel paper, $R = 4$).
+Il guadagno pratico riportato è qualità migliore senza aumentare
+apprezzabilmente la latenza di decodifica, cioè senza rallentare la generazione
+token per token {cite}`lahoti2026mamba3`.
 
 `````
 

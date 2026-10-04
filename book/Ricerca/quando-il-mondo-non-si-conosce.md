@@ -35,8 +35,8 @@ giocatore più forte del mondo, e ne uscì in vantaggio per tre punti e mezzo a
 due e mezzo: due vittorie contro una, e tre patte, che valgono mezzo punto a
 testa {cite}`russell2020artificial`.
 
-Il Go è un altro gioco, e conviene dire com’è fatto perché in Italia lo si
-vede di rado. Si gioca su una griglia grande, diciannove righe per diciannove,
+Il Go è un altro gioco. In Italia lo si
+vede di rado: si gioca su una griglia grande, diciannove righe per diciannove,
 e i pezzi sono pietre tutte uguali, bianche e nere, che si posano sugli
 incroci e da lì non si muovono più. Non ci sono re, torri o alfieri: c’è solo
 il disegno che le pietre formano, e vince chi alla fine ha circondato più
@@ -65,8 +65,8 @@ conteggio: da questa posizione, tirando a caso, ho vinto (mettiamo)
 seicentotrenta volte su mille.
 
 A caso, ma con un divieto: non si posa una pietra dentro un buco circondato
-tutto da pietre proprie, che è una mossa che nessun giocatore farebbe, perché
-riempie con le proprie mani il territorio che stava tenendo. Senza quel
+tutto da pietre proprie. Nessun giocatore lo farebbe, perché
+riempirebbe con le proprie mani il territorio che stava tenendo. Senza quel
 divieto le partite a caso rischiano di non finire più, e mille partite che non
 finiscono non contano niente.
 
@@ -107,39 +107,37 @@ così che si è vinto.
 `````{tab} Superiore
 
 La mossa è sostituire la valutazione statica $\mathrm{ev}(s)$ con una stima
-campionaria: da $s$ si simulano $N$ partite fino alla fine con una politica
-rapida (nella versione più semplice, uniforme sulle mosse legali, con
-l’eccezione di quelle che nel Go riempirebbero un proprio *occhio*, cioè un
-incrocio vuoto circondato da pietre proprie: senza quel divieto le partite a
-caso rischiano di non finire) e si usa la frazione di vittorie come stima del
-valore. Stimare una quantità che non si sa calcolare campionando a caso e
-facendo la media si chiama **metodo Monte Carlo**, ed è un attrezzo che ricorre
-in campi diversi: sugli alberi di gioco, come qui; nel reinforcement learning,
-per stimare il valore di uno stato dalle partite giocate; nei modelli
-generativi, per stimare integrali che non hanno forma chiusa. La politica
-uniforme, però, risponde alla domanda «qual è la mossa migliore se tutti e due
-giocano a caso?», che coincide con quella vera soltanto nei giochi semplici:
-nei programmi reali la politica di simulazione si pesa con la conoscenza del
-gioco (gli schemi locali, nel Go) oppure si impara
+campionaria. Da $s$ si simulano $N$ partite fino alla fine con una politica
+rapida, e si usa la frazione di vittorie come stima del valore. La politica più
+semplice è uniforme sulle mosse legali, con un'eccezione: nel Go non si riempie
+mai un proprio *occhio* (un incrocio vuoto circondato da pietre proprie),
+altrimenti le partite a caso rischiano di non finire. Stimare una quantità che
+non si sa calcolare campionando a caso e facendo la media si chiama **metodo
+Monte Carlo**, ed è un attrezzo che ricorre in campi diversi: sugli alberi di
+gioco, come qui; nel reinforcement learning, per stimare il valore di uno stato
+dalle partite giocate; nei modelli generativi, per stimare integrali che non
+hanno forma chiusa. La politica uniforme, però, risponde alla domanda «qual è
+la mossa migliore se tutti e due giocano a caso?», che coincide con quella vera
+soltanto nei giochi semplici: nei programmi reali la politica di simulazione si
+pesa con la conoscenza del gioco (gli schemi locali, nel Go) oppure si impara
 {cite}`russell2020artificial`.
 
 Resta da dire come si distribuisce il budget di simulazioni fra i figli della
-radice, e la risposta è esattamente il dilemma fra esplorare e sfruttare che
-il capitolo sul reinforcement learning tratta con i {doc}`bandit a più braccia
-</ReinforcementLearning/banditi>`: dare più prove a ciò che finora rende,
-senza smettere di provare ciò di cui si sa poco, e con una regola che
+radice, e la risposta è il dilemma fra esplorare e sfruttare dei {doc}`bandit a
+più braccia </ReinforcementLearning/banditi>`: dare più prove a ciò che finora
+rende, senza smettere di provare ciò di cui si sa poco, e con una regola che
 quantifichi quel «senza smettere».
 
 Valutare una posizione giocando partite a caso non è un’idea del 2006: per i
 giochi in generale la propose Bruce Abramson alla fine degli anni Ottanta
 {cite}`abramson1990expected`, e nel Go ci era arrivato per primo Bernd Brügmann
-{cite}`brugmann1993monte`, che nel 1993, senza dare al programma nessuna
-conoscenza oltre alle regole, sul nove per nove aveva raggiunto la forza di un
-principiante. Quello che nasce più tardi è la fusione delle due cose, e nasce
-in due tempi. Prima l’albero che cresce una simulazione alla volta, con un
-modo di risalire i valori che comincia facendo la media e finisce facendo il
-minimax: è di Rémi Coulom {cite}`coulom2006efficient`, che fra i propri
-riferimenti mette Brügmann. Poi la regola che decide dove spendere la
+{cite}`brugmann1993monte`. Nel 1993 il suo programma, al quale non aveva dato
+nessuna conoscenza oltre alle regole, sul nove per nove aveva raggiunto la
+forza di un principiante. Quello che nasce più tardi è la fusione delle due
+cose, e nasce in due tempi. Prima l’albero che cresce una simulazione alla
+volta, con un modo di risalire i valori che comincia facendo la media e finisce
+facendo il minimax: è di Rémi Coulom {cite}`coulom2006efficient`, che fra i
+propri riferimenti mette Brügmann. Poi la regola che decide dove spendere la
 simulazione successiva, cioè la regola UCB1 dei bandit applicata a ogni nodo
 dell’albero, che prende il nome di UCT {cite}`kocsis2006bandit`:
 
@@ -240,13 +238,11 @@ cena. Nessuno ha finito: uno ha smesso.
 `````{tab} Superiore
 
 Quando manca il test di arrivo perché si cerca lo stato *migliore* e non uno
-qualunque, c’è una funzione obiettivo $f : \mathcal{S} \to \mathbb{R}$ da
-massimizzare (o un costo da minimizzare), gli stati sono già soluzioni
-complete, e il cammino per arrivarci non interessa
-{cite}`russell2020artificial`. Gli algoritmi di ricerca locale tengono uno
-stato solo, lo confrontano con i suoi vicini $\mathcal{N}(s)$, cioè gli stati
-a una modifica di distanza, e si spostano. La **salita** (*hill climbing*)
-passa al vicino migliore,
+qualunque, il problema è massimizzare una funzione obiettivo $f : \mathcal{S}
+\to \mathbb{R}$, o minimizzare un costo {cite}`russell2020artificial`. Gli
+algoritmi di ricerca locale tengono uno stato solo, lo confrontano con i suoi
+vicini $\mathcal{N}(s)$, cioè gli stati a una modifica di distanza, e si
+spostano. La **salita** (*hill climbing*) passa al vicino migliore,
 
 $$
 s \leftarrow \arg\max_{s' \in \mathcal{N}(s)} f(s'),
@@ -381,7 +377,7 @@ astratta del gioco minimizzando il rimpianto controfattuale
 
 `````
 
-Messi in fila, i tre casi dicono una cosa che presi uno per uno non dicono:
+Letti tutti insieme, i tre casi mostrano uno schema:
 ogni ipotesi tolta apre una direzione di lavoro, e spesso più di una. Senza una
 valutazione scritta a mano la si stima per sorteggio, ed è la ricerca ad albero
 Monte Carlo, oppure la si impara dalle partite, come faceva Samuel e come fanno

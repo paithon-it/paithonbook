@@ -148,10 +148,10 @@ cosiddetta FMA, *fused multiply-add*), per la frequenza di clock. In simboli,
 $P_\text{picco} = n_\text{SM} \cdot n_\text{FMA} \cdot 2 \cdot f$, dove
 $n_\text{SM}$ è il numero di SM, $n_\text{FMA}$ le unità di
 moltiplicazione-e-somma per SM e $f$ la frequenza. Su una NVIDIA A100, una
-scheda da datacenter del 2020, $108 \cdot 64 \cdot 2 \cdot 1{,}41 \cdot 10^9
-\approx 19{,}5 \cdot 10^{12}$ conti al secondo sui numeri `float32` (quelli da
-quattro byte), quasi ventimila miliardi: l'ordine di grandezza che serve alle
-moltiplicazioni fra matrici di cui una rete neurale è fatta.
+scheda da datacenter del 2020, si ottengono $108 \cdot 64 \cdot 2 \cdot 1{,}41
+\cdot 10^9 \approx 19{,}5 \cdot 10^{12}$ conti al secondo sui numeri `float32`
+(quelli da quattro byte), quasi ventimila miliardi: l'ordine di grandezza che
+serve alle moltiplicazioni fra matrici di cui una rete neurale è fatta.
 
 Quei conti hanno un nome che ricorrerà per tutto il capitolo. Sono
 operazioni in virgola mobile, cioè conti sui numeri con la virgola, che
@@ -317,7 +317,7 @@ volta solo i thread che seguono quel ramo e mascherando gli altri. Nel caso
 peggiore (32 percorsi distinti) un warp divergente costa fino a 32 volte un
 warp coerente.
 
-Il meccanismo, qui, è cambiato, e molte spiegazioni in giro descrivono ancora
+Il meccanismo, qui, è cambiato, e molti testi descrivono ancora
 la macchina di prima. Fino a
 Pascal (2016) il warp aveva un *unico* program counter condiviso dai 32
 thread, più una maschera di attivazione che diceva quali fossero vivi in quel
@@ -336,7 +336,7 @@ come `__syncwarp()`.
 
 La regola pratica, invece, non cambia: tieni i rami condizionali allineati alla
 granularità del warp, così che i 32 thread restino il più possibile *coerenti*
-e nessuno resti a mascherare tempo.
+e nessuno sprechi tempo restando mascherato.
 
 Warp, SM, shared memory e tensor core sono nomi di NVIDIA. Sulle GPU AMD lo SM
 si chiama *compute unit* (CU), il warp *wavefront* (64 thread sulle schede da

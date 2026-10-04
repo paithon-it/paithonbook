@@ -87,10 +87,10 @@ ottimizzazioni di memoria come {doc}`FlashAttention </GPU/flash-attention>`, e
 gli {doc}`state space model </StateSpaceModel/overview>` (Mamba); a questi
 ultimi, e alle attenzioni lineari, sono dedicati i due capitoli che seguono.
 Sul fronte multimodale: spazi di rappresentazione condivisi tra testo, immagini
-e audio, con l'addestramento contrastivo su coppie immagine-didascalia alla
-CLIP come collante, che la {doc}`sezione su un solo spazio per immagini e
-parole </VisioneLinguaggio/allineare-due-spazi>` costruisce per esteso. A cui
-si aggiunge l'allineamento, di cui parla il {doc}`post-training
+e audio, con l'addestramento contrastivo su coppie immagine-didascalia sul
+modello di CLIP come collante, che la {doc}`sezione su un solo spazio per
+immagini e parole </VisioneLinguaggio/allineare-due-spazi>` costruisce per
+esteso. A cui si aggiunge l'allineamento, di cui parla il {doc}`post-training
 <post-training>`.
 `````
 
@@ -134,9 +134,9 @@ di sessanta piani, se la risposta che esce dal tetto la si rimette al
 pianterreno quante volte si vuole (è quello che fa un modello che scrive una
 parola alla volta) e se i conti si fanno senza mai arrotondare. Con i conti
 arrotondati, come sono quelli veri, il palazzo che risponde al primo passaggio
-sa fare poco; ogni giro in più gli compra un po’ di potenza, e con abbastanza
-giri arriva a tutto quello che si risolve in un tempo ragionevole. A decidere è
-quanti giri si concedono, più della forma dell'edificio.
+sa fare poco; ogni giro in più gli fa guadagnare un po’ di potenza, e con
+abbastanza giri arriva a tutto quello che si risolve in un tempo ragionevole. A
+decidere è quanti giri si concedono, più della forma dell'edificio.
 
 La stanza sola non prese piede: farci sessanta giri costa le stesse ore di
 sessanta stanze, perché il lavoro è lo stesso, ma i mobili da scegliere sono
@@ -164,11 +164,11 @@ luglio 2018, presentato a ICLR l'anno successivo, che è la data della voce in
 bibliografia) sostituisce gli $n_{\text{strati}}$ strati distinti con un solo
 blocco applicato ricorrentemente in profondità, cioè con i pesi legati fra le
 iterazioni. La motivazione dichiarata è recuperare il *bias induttivo*
-ricorrente che il Transformer aveva buttato via insieme alla ricorrenza
+ricorrente che il Transformer aveva abbandonato insieme alla ricorrenza
 temporale, e che serve sui compiti a struttura gerarchica e sulla
 generalizzazione a lunghezze non viste in addestramento.
 
-Sopra ci mettono l’**Adaptive Computation Time** di Graves
+A questo aggiungono l’**Adaptive Computation Time** di Graves
 {cite}`graves2016adaptive`: a ogni iterazione,
 per ogni posizione, una piccola unità emette una probabilità di
 arresto; le posizioni che si fermano vengono copiate invariate mentre le altre
@@ -179,7 +179,7 @@ condizionato all'ingresso invece che fissato dall'architettura.
 C'è un punto che il titolo lascia intuire, e va detto con precisione, insieme a
 quanto sia solido. Gli autori dimostrano che
 legare i pesi e iterare rende il modello **Turing-completo**, ma la loro stessa
-formulazione lo dice sotto certe ipotesi, e l'ipotesi che porta il peso è
+formulazione lo dice sotto certe ipotesi, e l'ipotesi cruciale è
 la solita: un numero di passi non limitato a priori. Il ragionamento è che un
 Transformer standard esegue un numero di passi sequenziali fissato
 dall'architettura, mentre una ricorrenza in profondità lo fa dipendere dai dati.
@@ -193,7 +193,7 @@ numero illimitato di passi di decodifica. E quell'ultima ipotesi è
 esattamente la generazione autoregressiva, cioè la strada che percorrono oggi i
 modelli lasciati scrivere finché serve. Le due prove non si contraddicono,
 cambiano le ipotesi;
-ma la morale da portarsi via è che «quanti passi può fare» conta più di «come
+ma la morale da trarre è che «quanti passi può fare» conta più di «come
 sono legati i pesi», e che una frase secca sull'espressività di
 un'architettura, senza le sue ipotesi accanto, è quasi sempre una frase
 sbagliata.
@@ -210,7 +210,7 @@ $O(\log n)$ risolve ogni problema calcolabile da circuiti booleani di
 dimensione $T$ {cite}`li2024chain`, e con un numero polinomiale di passi di
 decodifica, sotto una lieve generalizzazione della pre-normalizzazione,
 riconosce esattamente i problemi risolvibili in tempo polinomiale
-{cite}`merrill2024expressive`. Il calcolo al momento della risposta compra
+{cite}`merrill2024expressive`. Il calcolo al momento della risposta acquista
 espressività, e la paga a tanti token quanti passi.
 
 L'idea del calcolo condizionato è rimasta a lungo ai margini, ed è tornata da
@@ -258,7 +258,7 @@ Quel costo cresce con i dati, e i dati sono il secondo limite. Le grandi
 raccolte di testo prese dal web (i *corpora*) potrebbero esaurirsi come fonte
 di materiale di qualità: secondo una stima del 2022, rivista nel 2024, se le
 tendenze restano quelle i modelli saranno addestrati su raccolte grandi quanto
-tutto il testo umano pubblico fra il 2026 e il 2032, e le vie d'uscita indicate
+tutto il testo umano pubblico, fra il 2026 e il 2032, e le vie d'uscita indicate
 sono i dati sintetici e un uso più efficiente dei dati
 {cite}`villalobos2022run`. E i corpora portano con sé le distorsioni
 sistematiche di ciò che è stato scritto online, i bias, che i modelli
@@ -285,8 +285,8 @@ cui si tratta un'affermazione che non si sa ancora come verificare.
 
 Ogni pezzo del Transformer viene da prima: l'attenzione con le sue query, key e
 value, la codifica posizionale, la rete feed-forward, gli embedding, la discesa
-del gradiente che sistema i parametri un passo alla volta. Su scala quei pezzi
-hanno chiesto il resto, dalla KV cache alla mixture of experts, dal
+del gradiente che sistema i parametri un passo alla volta. Su larga scala quei
+pezzi hanno chiesto il resto, dalla KV cache alla mixture of experts, dal
 post-training al retrieval, e i salti sono venuti più dal modo in cui si
 combinano, e da quanto calcolo e quanti dati si sono potuti spendere, che da
 pezzi nuovi. Chi conosce i pezzi riconosce le novità per quello che sono:

@@ -216,21 +216,21 @@ da indovinare.
 
 ## Analisi discriminante: lineare o quadratica
 
-Ronald Fisher affronta il problema nel 1936, su dei fiori {cite}`fisher1936use`.
-Il botanico Edgar Anderson aveva misurato lunghezza e larghezza di petali e
-sepali di centocinquanta iris, cinquanta per ciascuna di tre specie; la domanda
-era se quelle quattro misure bastassero a distinguerle. Nel suo stesso articolo
-Fisher mette un'avvertenza che vale per chiunque riusi quei dati: la terza
-specie, *Iris virginica*, «differisce dagli altri due campioni per non essere
-stata raccolta nella stessa colonia naturale», il che «potrebbe alterare
-parecchio sia le medie sia le loro variabilità» (le altre due, secondo Anderson,
-vengono dalla penisola di Gaspé, in Québec): una parte di quello che distingue
-*virginica* dalle altre due può venire dal posto, e non dalla specie. Fisher
-cercava la combinazione delle quattro misure che separasse al meglio le specie,
-e il metodo che ne uscì porta il suo nome. È lo stesso `iris` che il
-{doc}`capitolo sull'interpretabilità </Interpretabilita/overview>` farà
-classificare a un albero, ed è probabilmente il dataset più riusato della storia
-della statistica.[^eugenics]
+Ronald Fisher affronta il problema nel 1936, su dei fiori
+{cite}`fisher1936use`. Il botanico Edgar Anderson aveva misurato lunghezza e
+larghezza di petali e sepali di centocinquanta iris, cinquanta per ciascuna di
+tre specie; la domanda era se quelle quattro misure bastassero a distinguerle.
+Nel suo stesso articolo Fisher mette un'avvertenza che vale per chiunque riusi
+quei dati: la terza specie, *Iris virginica*, «differisce dagli altri due
+campioni per non essere stata raccolta nella stessa colonia naturale», il che
+«potrebbe alterare parecchio sia le medie sia le loro variabilità». Poiché le
+altre due, secondo Anderson, vengono dalla penisola di Gaspé in Québec, una
+parte di quello che distingue *virginica* può venire dal posto e non dalla
+specie. Fisher cercava la combinazione delle quattro misure che separasse al
+meglio le specie, e il metodo che ne uscì porta il suo nome. È lo stesso `iris`
+che il {doc}`capitolo sull'interpretabilità </Interpretabilita/overview>` farà
+classificare a un albero, ed è probabilmente il dataset più riusato della
+storia della statistica.[^eugenics]
 
 [^eugenics]: L'articolo esce sugli *Annals of Eugenics*, che è il nome della
     rivista fino al 1954, e Fisher ne fu redattore dal 1934. È un fatto
@@ -339,16 +339,17 @@ $\boldsymbol{\Sigma}_k^{-1/2}$: è la formalizzazione di «misurare la distanza
 nella forma giusta».
 
 I parametri si stimano classe per classe: $\hat\pi_k = m_k/m$,
-$\hat{\boldsymbol\mu}_k = \frac{1}{m_k}\sum_{y_i = k}\mathbf{x}_i$, e per la QDA
-$\hat{\boldsymbol\Sigma}_k = \frac{1}{m_k - 1}\sum_{y_i = k}(\mathbf{x}_i -
-\hat{\boldsymbol\mu}_k)(\mathbf{x}_i - \hat{\boldsymbol\mu}_k)^\top$, per la LDA
-la covarianza comune $\hat{\boldsymbol\Sigma} = \frac{1}{m - K}\sum_k \sum_{y_i
-= k}(\mathbf{x}_i - \hat{\boldsymbol\mu}_k)(\mathbf{x}_i -
-\hat{\boldsymbol\mu}_k)^\top$ {cite}`hastie2009elements`, dove $m_k$ è il numero
-di esempi della classe $k$ e $K$ il numero delle classi. Le inverse esistono
-solo se le classi hanno abbastanza esempi in posizione generale: con colonne
-ridondanti, combinazione lineare di altre, $\hat{\boldsymbol\Sigma}_k$ è
-singolare con qualunque numero di esempi, e serve una regolarizzazione.
+$\hat{\boldsymbol\mu}_k = \frac{1}{m_k}\sum_{y_i = k}\mathbf{x}_i$. Per la QDA
+la covarianza è $\hat{\boldsymbol\Sigma}_k = \frac{1}{m_k - 1}\sum_{y_i =
+k}(\mathbf{x}_i - \hat{\boldsymbol\mu}_k)(\mathbf{x}_i -
+\hat{\boldsymbol\mu}_k)^\top$; per la LDA, la covarianza comune è
+$\hat{\boldsymbol\Sigma} = \frac{1}{m - K}\sum_k \sum_{y_i = k}(\mathbf{x}_i -
+\hat{\boldsymbol\mu}_k)(\mathbf{x}_i - \hat{\boldsymbol\mu}_k)^\top$
+{cite}`hastie2009elements`, dove $m_k$ è il numero di esempi della classe $k$ e
+$K$ il numero delle classi. Le inverse esistono solo se le classi hanno
+abbastanza esempi in posizione generale: con colonne ridondanti, combinazioni
+lineari di altre, $\hat{\boldsymbol\Sigma}_k$ è singolare con qualunque numero
+di esempi, e serve una regolarizzazione.
 
 Il confine fra due classi è $\delta_k(\mathbf{x}) = \delta_\ell(\mathbf{x})$, e
 la sua forma dipende da una sola ipotesi.
@@ -880,15 +881,14 @@ massimo teorico: 0.866
 ```
 
 La terza colonna è la logistica senza regolarizzazione, che è quella del
-confronto originale, e su di lei il fenomeno si vede intero: a $m = 80$ il naive
-Bayes sta a $0{,}811$ e lei a $0{,}722$, quasi nove punti sotto; a $m = 200$
-sono ancora quasi cinque; da $m = 600$ in poi si avvicinano fino quasi a
-toccarsi. Con
-quaranta caratteristiche e ottanta esempi la logistica ha due esempi per
-parametro, e con così poco non impara; il naive Bayes ne stima anche di più
-(centoventi: una media per classe e per colonna, e una varianza per colonna),
-ma li stima
-uno alla volta, ciascuno con tutti i dati della sua classe, e se la cava.
+confronto originale, e su di lei il fenomeno si vede per intero: a $m = 80$ il
+naive Bayes sta a $0{,}811$ e lei a $0{,}722$, quasi nove punti sotto; a $m =
+200$ sono ancora quasi cinque; da $m = 600$ in poi si avvicinano fino quasi a
+toccarsi. Con quaranta caratteristiche e ottanta esempi la logistica ha due
+esempi per parametro, e con così poco non impara; il naive Bayes ne stima anche
+di più (centoventi: una media per classe e per colonna, e una varianza per
+colonna), ma li stima uno alla volta, ciascuno con tutti i dati della sua
+classe, e se la cava.
 
 La seconda colonna è la logistica come la si usa oggi, cioè col
 `penalty="l2"` che scikit-learn applica per default, ed è il motivo per cui
@@ -1017,8 +1017,8 @@ Quando conviene prenderli in considerazione, in concreto:
   addestra in fretta, e dà un numero contro cui misurare tutto il resto. Se il
   modello elaborato non la batte, o il confine vero è quasi lineare e la LDA era
   già la risposta, o al modello elaborato mancano dati, caratteristiche o messa
-  a punto: in tutti e due i casi la complessità in più non si è guadagnata il
-  suo costo;
+  a punto. In tutti e due i casi la complessità in più non ha ripagato il
+  proprio costo;
 - con pochi esempi e molte colonne, che è la situazione tipica dei dati
   clinici e sperimentali: è la riga $m = 80$ della tabella;
 - quando serve una densità, cioè quando bisogna accorgersi degli esempi che non

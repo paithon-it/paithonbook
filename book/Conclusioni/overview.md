@@ -50,8 +50,8 @@ tutto il resto: tenere separati i dati su cui si impara da quelli su cui si
 misura, tenere d'occhio l'overfitting (imparare a memoria gli esempi visti, e
 restare poi senza risposta davanti a uno nuovo), misurare con onestà. La
 separazione vale identica per un modello con dieci parametri (le manopole che
-l'addestramento regola) e per uno con mille miliardi; il modo in cui
-l'overfitting si presenta no, e nei modelli molto grandi la curva a U
+l'addestramento regola) e per uno con mille miliardi. Il modo in cui
+l'overfitting si presenta, invece, cambia: nei modelli molto grandi la curva a U
 dell'errore lascia il posto alla {ref}`doppia discesa <sec-doppia-discesa>`.
 Perché un modello capace di imparare a memoria qualunque cosa vada bene lo
 stesso su esempi nuovi è la domanda su cui si chiude la [teoria
@@ -146,7 +146,7 @@ nipoti: l'ordine in cui le si legge segue le domande, non il calendario.
 
 `````{tab} Superiore
 La cronologia va disaccoppiata dall'ordine dell'esposizione, perché il gruppo è
-tutt'altro che coetaneo. Alcuni pezzi sono vecchissimi: la rete di Hopfield è
+tutt'altro che coetaneo. Alcuni pezzi risalgono a decenni fa: la rete di Hopfield è
 del 1982 {cite}`hopfield1982neural` e l'algoritmo di apprendimento della
 macchina di Boltzmann del 1985 {cite}`ackley1985learning`; l'impalcatura del
 reinforcement learning Bellman comincia a pubblicarla nel 1952 e la raccoglie
@@ -180,10 +180,9 @@ modelli di oggi. Eppure, sotto, tornano sempre le stesse tre idee.
 
 ## Tre fili, un solo tessuto
 
-Se dovessimo comprimere l'intero libro in tre parole, sarebbero **dati**,
-**rappresentazioni** e **ottimizzazione**. Sono i fili che attraversano quasi
-ogni capitolo, dal più elementare al più avanzato
-({numref}`fig-fili-conduttori`).
+Se dovessimo comprimere l'intero libro in tre parole, sarebbero dati,
+rappresentazioni e ottimizzazione. Sono i fili che attraversano quasi ogni
+capitolo, dal più elementare al più avanzato ({numref}`fig-fili-conduttori`).
 
 ```{figure} ../figures/fili-conduttori.svg
 :name: fig-fili-conduttori
@@ -199,11 +198,11 @@ su questo asse: stanno attorno a tutto.
 I dati vengono prima di tutto: quasi tutto quello che un modello sa del mondo
 gli arriva dagli esempi su cui è addestrato, e il resto da ciò che il
 progettista ha scritto nella sua forma (la simmetria di una convoluzione,
-l'equazione di un PINN, le regole di un gioco). L'introduzione li ha
-paragonati all'ossigeno, e adesso che il percorso è finito quel paragone si può
-stringere. L'ossigeno è l'avanzo di una vita che non era la nostra, e noi siamo
-diventati quello che siamo imparando a respirarlo; i dati sono l'avanzo del
-nostro passaggio nel mondo digitale, e ogni famiglia di modelli del libro è
+l'equazione di un PINN, le regole di un gioco). L'introduzione li ha paragonati
+all'ossigeno, e adesso che il percorso è finito quel paragone si può stringere.
+L'ossigeno è l'avanzo di una vita che non era la nostra, e noi siamo diventati
+quello che siamo imparando a respirarlo. Allo stesso modo i dati sono l'avanzo
+del nostro passaggio nel mondo digitale, e ogni famiglia di modelli del libro è
 costruita per respirarne una forma: le reti convoluzionali le immagini, i
 Transformer il testo, le reti su grafo le relazioni fra entità. Cambia il
 polmone, l'aria è sempre quella.
@@ -231,7 +230,7 @@ gerarchia che nessuno le ha imposto. Questa capacità di costruirsi le proprie
 Le lenti mettono anche in ordine. Attraverso di esse, due foto di gatti
 finiscono vicine anche se una è in giardino e l'altra sul divano, e un camion
 finisce lontano da tutte e due. Le stesse lenti servono poi per un lavoro che
-non era il loro, distinguere le razze dei cani, senza ricominciare da capo.
+non era il loro: distinguere le razze dei cani, senza ricominciare da capo.
 
 L'esperto però non è uscito di scena, ha cambiato mestiere: non scrive più la
 lista dei dettagli, costruisce l'apparecchio in cui le lenti andranno montate,
@@ -300,8 +299,8 @@ Il modello si ferma quando nessun piccolo giro migliora più le cose, e quel
 punto non è per forza il suono più bello che il mixer sappia fare: con le
 manopole messe in tutt'altro modo potrebbe uscire qualcosa di meglio, e per
 arrivarci bisognerebbe prima peggiorare. Con milioni di manopole, però, il
-guaio vero è un altro: le hai regolate ascoltando una canzone, e quello che ti
-interessa è come suoneranno le prossime. Tanto che spesso ci si ferma prima,
+guaio vero è un altro: le hai regolate ascoltando una canzone, ma quello che ti
+interessa è come suoneranno le prossime. Per questo spesso ci si ferma prima,
 appena una canzone di prova, tenuta da parte, comincia a suonare peggio.
 
 E non tutti imparano al mixer. Ci sono modelli che lavorano in coppia, uno che
@@ -357,13 +356,13 @@ libro, e le eccezioni sono istruttive. Le GAN non ci
 stanno: l'ottimizzazione simultanea di un gioco minimax non equivale a
 minimizzare una singola funzione, ed è una delle cause della loro instabilità,
 accanto ai gradienti che si spengono quando il discriminatore diventa troppo
-accurato. Il reinforcement
-learning non ci sta: la distribuzione
+accurato. Sfugge anche il reinforcement
+learning: la distribuzione
 dei dati dipende dalla politica che si sta cercando e l'obiettivo è
 massimizzare un ritorno atteso; perfino nella variante offline, dove un
 campione fisso di traiettorie esiste, l'obiettivo resta un ritorno e non una
-media su coppie. I
-modelli a energia non ci stanno: la
+media su coppie. Ne restano fuori i
+modelli a energia: la
 verosimiglianza che vorrebbero massimizzare contiene una funzione di partizione
 che non si sa calcolare, e si ripiega su surrogati come lo score matching. E
 nemmeno sul versante classico la copertura è totale: $k$-means almeno un
@@ -488,15 +487,15 @@ Chi ci prova da qualche anno ha letto dei pezzi, mai un modello grande intero.
 
 Se ci si può fidare. Un agente lavora da solo per venti passi di fila, e ogni
 passo gli riesce 95 volte su 100. Quante volte gli riescono tutti e venti? Il
-conto sta in una calcolatrice: si moltiplica, perché ogni passo aggiunge una
-condizione da soddisfare, e 0,95 per venti volte fa 0,3585, appena 36 su 100.
-Quel conto però suppone che un solo inciampo rovini tutto e che i venti passi
-non si influenzino fra loro, e per un agente vero non vale nessuna delle due.
-Se l'agente si accorge dello sbaglio e torna indietro, va meglio. Se i passi si
-influenzano, può finire ovunque. Su cento prove ogni passo inciampa cinque
-volte, cento inciampi in tutto: se cadono sempre in prove diverse ne rovinano
-cento, una per una, e non ne finisce nessuna; se cadono tutti nelle stesse
-cinque, perché i passi sbagliano insieme per la stessa ragione, le altre
+conto si fa con la calcolatrice moltiplicando le probabilità, perché ogni passo
+aggiunge una condizione da soddisfare: 0,95 per venti volte fa 0,3585, appena
+36 su 100. Quel conto però suppone che un solo inciampo rovini tutto e che i
+venti passi non si influenzino fra loro, e per un agente vero non vale nessuna
+delle due. Se l'agente si accorge dello sbaglio e torna indietro, va meglio. Se
+i passi si influenzano, può finire ovunque. Su cento prove ogni passo inciampa
+cinque volte, cento inciampi in tutto: se cadono sempre in prove diverse ne
+rovinano cento, una per una, e non ne finisce nessuna; se cadono tutti nelle
+stesse cinque, perché i passi sbagliano insieme per la stessa ragione, le altre
 novantacinque vanno lisce. Il 36 su 100 è quindi il caso di riferimento, non il
 peggiore; quello che non cambia mai è che ogni passo in più è una condizione in
 più, e per questo i compiti lunghi restano difficili.
@@ -632,8 +631,8 @@ Messa così non ha risposta, e non per prudenza: manca il *dove*. È come
 chiedere se un pesce si muove meglio di un uomo. In acqua vince lui senza
 sforzo; su un prato perde senza appello. Stessi due, risposta rovesciata.
 
-Il posto dove queste macchine nuotano ha un nome preciso, ed è il **mondo
-digitale**. Lì tutto è già nella forma che serve a loro. Ogni cosa è già un
+Il posto dove queste macchine nuotano ha un nome preciso, ed è il mondo
+digitale. Lì tutto è già nella forma che serve a loro. Ogni cosa è già un
 numero, e non c'è da andare a misurarla. Ogni singola prova costa pochissimo e
 si può ripetere un miliardo di volte (è la somma di quel miliardo, semmai, a
 pesare sulla bolletta). In molti casi il giudizio non bisogna chiederlo a
@@ -767,7 +766,7 @@ di rispondere o insegnandogli a dire quanto è sicuro, ma toglierle del tutto
 nessuno sa ancora come.
 
 E siccome impara da testi scritti da noi, assorbe anche i nostri pregiudizi: se
-i dati riflettono discriminazioni, il modello le ripete, e a volte le
+i dati riflettono discriminazioni, il modello le ripete e a volte le
 rafforza, perché puntare sempre sulla risposta più frequente fa sparire le
 eccezioni. I pregiudizi non si riparano tutti allo stesso modo. Se di qualcuno
 nei dati ci sono quattro fotografie invece di quattromila, altre fotografie
@@ -786,7 +785,7 @@ Un modello linguistico è pre-addestrato a massimizzare la verosimiglianza del
 testo, non la verità: la fluidità di una frase non ne garantisce la
 correttezza, e la sicurezza con cui una risposta è formulata non è un
 indicatore affidabile della sua correttezza. Le allucinazioni sicure di sé
-hanno almeno due radici: l'obiettivo di pre-addestramento, e una valutazione
+hanno almeno due radici: l'obiettivo di pre-addestramento e una valutazione
 che nella maggior parte dei benchmark dà zero punti a un «non lo so» e premia
 così chi tira a indovinare {cite}`kalai2025hallucinate`. Si mitigano, con il
 recupero di fonti esterne e la calibrazione, ma eliminarle resta un problema
@@ -849,7 +848,7 @@ cambia anch'esso, e va controllato su una misura con una data.
 Questo libro è una mappa, non il territorio. Per proseguire: leggi i paper
 originali, cioè gli articoli scientifici in cui ciascuna di queste idee è stata
 proposta per la prima volta. Quelli degli ultimi quindici anni stanno quasi
-tutti su **arXiv**, l'archivio pubblico e gratuito dove i ricercatori
+tutti su arXiv, l'archivio pubblico e gratuito dove i ricercatori
 depositano i propri lavori. I più vecchi no: Weizenbaum, Rosenblatt, Hopfield
 sono su riviste, e in biblioteca. E quello che sta su arXiv non è tutto uguale:
 alcuni sono la versione definitiva di un articolo già passato da una revisione
@@ -905,7 +904,7 @@ integralmente e gratuitamente online. Sono tutti in inglese, come quasi tutta
 la letteratura di questo campo: è una delle ragioni per cui questo libro esiste
 in italiano.
 
-Poi mettiti alla prova. **Kaggle** è il sito dove chiunque può misurarsi su un
+Poi mettiti alla prova. Kaggle è il sito dove chiunque può misurarsi su un
 problema di dati vero, con una classifica e il codice degli altri partecipanti
 sotto gli occhi. Partecipa a una competizione: è il modo più rapido per vedere
 la differenza fra un modello che gira sul tuo computer e un modello che regge

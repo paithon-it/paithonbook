@@ -171,23 +171,23 @@ incrociano.
 `````{tab} Superiore
 
 Un’**analisi a dipendenze** di una frase di $n$ parole è un albero diretto ed
-etichettato: ogni parola ha esattamente una testa (un solo arco entrante), una
-parola (la radice, tipicamente il verbo principale) dipende da un nodo
-fittizio *root*, e ogni arco porta una relazione grammaticale. Nello
-schema di Universal Dependencies {cite}`nivre2016universal`, già incontrato
-per il POS tagging, le relazioni principali sono `nsubj` (soggetto), `obj`
-(oggetto diretto), `det` (determinante), `amod` (aggettivo modificatore),
-`case` (preposizione), `obl` (complemento obliquo), `nmod` (modificatore
-nominale). Le sigle sono quelle della seconda versione dello schema
-{cite}`demarneffe2021universal`, ed è lì che nasce la distinzione su cui gira
-l'esempio del binocolo: prima l'oggetto diretto si chiamava `dobj`, e `obl` non
-esisteva perché `nmod` copriva tutti e due i mestieri.
+etichettato: ogni parola ha esattamente una testa (un solo arco entrante); la
+radice, tipicamente il verbo principale, dipende da un nodo fittizio *root*; e
+ogni arco porta una relazione grammaticale. Nello schema di Universal
+Dependencies {cite}`nivre2016universal`, già incontrato per il POS tagging, le
+relazioni principali sono `nsubj` (soggetto), `obj` (oggetto diretto), `det`
+(determinante), `amod` (aggettivo modificatore), `case` (preposizione), `obl`
+(complemento obliquo), `nmod` (modificatore nominale). Le sigle sono quelle
+della seconda versione dello schema {cite}`demarneffe2021universal`, ed è lì
+che nasce la distinzione su cui gira l'esempio del binocolo: prima l'oggetto
+diretto si chiamava `dobj`, e `obl` non esisteva perché `nmod` copriva tutti e
+due i mestieri.
 
 Perché due formalismi? Le dipendenze pagano meglio nelle lingue a ordine
 flessibile. L'italiano ammette «Il binocolo l'ho visto io» o «Sul muro
 salta, il gatto nero»: una grammatica a costituenti deve prevedere regole per
 ogni permutazione, mentre l'albero a dipendenze resta *lo stesso*; a cambiare
-è solo l'ordine in cui le parole compaiono sulla riga, cioè il disegno, non la
+è solo l'ordine lineare in cui le parole compaiono, non la
 struttura. È uno dei motivi per cui il progetto UD ha scelto le dipendenze come
 base comune per annotare con gli stessi criteri più di centocinquanta lingue,
 dall'italiano al finlandese al giapponese: il suo obiettivo dichiarato è una
@@ -206,7 +206,7 @@ raro in inglese, assai più comune nelle lingue a ordine libero.
 del binocolo, con una malizia: ciascuno mostra una lettura diversa. A sinistra,
 nelle scatole, «con il binocolo» sta dentro la scatola di «un uomo», ed è
 la lettura in cui il binocolo è dell'uomo. A destra, nelle frecce, «binocolo»
-lavora per «visto» e non per «uomo», ed è la lettura opposta, quella in cui il
+dipende da «visto» e non da «uomo», ed è la lettura opposta, quella in cui il
 binocolo è di chi guarda.
 
 Per scambiarle basta uno spostamento per parte: a sinistra tirare fuori la
@@ -217,22 +217,22 @@ incontrano. Con le scatole si dice che il sintagma preposizionale passa dal
 sintagma nominale a quello verbale, cioè che «con il binocolo» smette di stare
 dentro «un uomo» e va a stare dentro «ho visto». Con le frecce si dice che la
 relazione cambia sigla, da `obl` a `nmod`: `obl` sta per «complemento del
-verbo» e `nmod` per «modificatore del nome», e sono esattamente le due
-mansioni che il binocolo può avere nell'organigramma, dipendere dal vedere o
-dipendere dall'uomo.
+verbo» e `nmod` per «modificatore del nome», che sono esattamente le due
+relazioni di dipendenza che il binocolo può avere, dal verbo principale o
+dal nome.
 
 ```{figure} ../figures/alberi-sintassi.svg
 :name: fig-alberi-sintassi
 :alt: "La frase Ho visto un uomo con il binocolo analizzata due volte. A sinistra un albero a costituenti in teal, in cui il sintagma preposizionale con il binocolo è contenuto nel sintagma nominale un uomo: la lettura in cui il binocolo è dell'uomo. A destra un grafo a dipendenze in terracotta con archi etichettati aux, obj, det, case, obl sopra le parole, in cui l'arco obl collega visto a binocolo: la lettura in cui il binocolo è di chi guarda."
 :width: 100%
 
-La stessa frase ambigua nei due modi di disegnarla: a sinistra i costituenti
-di una lettura, a destra le dipendenze dell'altra. La differenza tra le due
+La stessa frase ambigua nei due modi di disegnarla: a sinistra i costituenti di
+una lettura, a destra le dipendenze dell'altra. La differenza tra le due
 letture è un solo aggancio: al nome oppure al verbo. Le sigle del disegno di
 sinistra sono le scatole (SN nominale, SV verbale, SP preposizionale, F la
-frase intera) e le categorie delle singole parole (DET l'articolo, N il nome,
-V il verbo, AUX l'ausiliare, P la preposizione); a destra ogni freccia va dal
-capo all'impiegato e porta la sigla della mansione (aux l'ausiliare, obj
+frase intera) e le categorie delle singole parole (DET l'articolo, N il nome, V
+il verbo, AUX l'ausiliare, P la preposizione); a destra ogni freccia va dalla
+testa al dipendente e porta la sigla della relazione (aux l'ausiliare, obj
 l'oggetto, det l'articolo, case la preposizione, obl il complemento del verbo),
 e *root* è la casella da cui il disegno parte.
 ```
@@ -268,8 +268,8 @@ parco), all’*uomo con il binocolo* (l'uomo col binocolo che stava nel parco),
 oppure al *binocolo* (il binocolo del parco, quello lì in dotazione). Tre.
 Attenzione: agganciarlo al solo «uomo» *senza* il binocolo ricade nella stessa
 scatola e non in una quarta possibilità: dal momento che il binocolo è già
-dentro l'uomo, non c'è modo di infilare il parco fra i due senza tagliare il
-cartone.
+dentro l'uomo, non c'è modo di infilare il parco fra i due senza rompere il
+costituente.
 
 Caso B: il binocolo è mio, cioè «con il binocolo» è già agganciato al
 vedere. Dove può andare «nel parco»? Al *vedere*, oppure al *binocolo*. Non
@@ -306,7 +306,7 @@ fattore che sale (due e mezzo, quasi tre, tre, poco più di tre) e si avvicina a
 quattro. Continuando: 429 con sei complementi, poi 1.430, 4.862, e con nove si
 arriva a 16.796. Nove complementi in una frase sono tanti ma non impossibili, e
 le analisi grammaticalmente lecite sono già sedicimila. Il fenomeno ha un
-articolo di riferimento dal titolo tutto un programma, perché il titolo stesso
+articolo di riferimento dal titolo emblematico, perché il titolo stesso
 è ambiguo: *Coping with syntactic ambiguity or how to put the
 block in the box on the table* {cite}`church1982coping`. Come mettere il blocco
 nella scatola sul tavolo: ma il tavolo sostiene la scatola, o è lì che va messo
@@ -319,7 +319,7 @@ parser può permettersi di elencarli uno per uno. Servono allora due cose. La
 prima è condividere i pezzi comuni a molte analisi, ed è la programmazione
 dinamica, già incontrata con la griglia della distanza di edit e con
 l'algoritmo di Viterbi: risolvere una volta sola ogni pezzo che servirà più
-volte, e tenerselo da parte. La seconda è scegliere fra le analisi, e nella
+volte, e conservarne il risultato. La seconda è scegliere fra le analisi, e nella
 forma più semplice si fa contando. In un insieme di frasi già analizzate a mano
 si guarda quante volte è stata usata ciascuna regola di montaggio, rispetto
 alle altre regole che costruiscono lo stesso tipo di blocco, e quella frequenza
@@ -458,7 +458,7 @@ La prima, lo *shift-reduce*, costruisce l'albero con una sequenza di mosse
 scelte da un classificatore: è lineare nella lunghezza della frase, ma una mossa
 sbagliata non si corregge. Una configurazione è una terna (pila $\sigma$,
 buffer $\beta$, archi $\mathcal{A}$) e le mosse della variante *arc-standard*
-sono tre; `shift`
+sono tre: `shift`
 (sposta la prossima parola sulla pila), `left-arc` e `right-arc` (creano un
 arco etichettato tra le due parole in cima e ne rimuovono la dipendente). La
 configurazione finale ha il buffer vuoto e sulla pila la sola radice, e una
@@ -588,7 +588,7 @@ parlato, ieri con le probabilità sulle regole, oggi con le reti neurali.
 
 ## La sintassi al tempo dei modelli giganti
 
-Domanda inevitabile: i grandi modelli linguistici (in sigla LLM, *large
+I grandi modelli linguistici (in sigla LLM, *large
 language model*) fanno parsing? Non come un parser. Un modello addestrato a
 indovinare la parola successiva non costruisce alberi mentre legge, e il suo
 addestramento non glielo chiede; se glielo si chiede, un albero lo scrive come
@@ -625,7 +625,7 @@ per esteso nella {doc}`sezione sull'interpretabilità
 Hewitt e Manning {cite}`hewitt2019structural` cercano una trasformazione
 lineare delle attivazioni sotto cui la distanza fra due parole, al quadrato,
 approssima la loro distanza nell'albero a dipendenze, cioè quante frecce
-bisogna percorrere per andare dall'una all'altra nell'organigramma della frase:
+bisogna percorrere per andare dall'una all'altra nell'albero della frase:
 in «il gatto nero salta sul muro», «nero» dista una freccia da «gatto» e due da
 «salta». Dalle distanze ricostruite si risale a un albero, e con lo strato
 migliore di BERT-large quell'albero ha in comune con quello annotato l'82,5%
@@ -647,8 +647,8 @@ di qualche migliaio di frasi è alla portata di un gruppo di annotatori.
 La struttura, poi, si valuta con una misura più semplice di quella del dialogo:
 si prende una frase di cui qualcuno ha già disegnato l'albero giusto, si
 guarda l'albero prodotto dalla macchina, e si conta la quota di parole
-agganciate al capo corretto, l'UAS; se si chiede anche la mansione giusta, la
-quota con capo e mansione corretti, il LAS. La misura presuppone che l'albero
+agganciate alla testa corretta, l'UAS; se si chiede anche la relazione giusta, la
+quota con testa e relazione corrette, il LAS. La misura presuppone che l'albero
 giusto sia uno solo, e qui di solito lo è, con un margine: su qualche freccia
 nemmeno gli annotatori sono d'accordo fra loro. Nel {doc}`dialogo
 <dialogo-chatbot>` invece le risposte accettabili sono molte, e valutare
@@ -718,7 +718,7 @@ diventa un problema a sé.
 - Il numero di alberi possibili esplode con i numeri di Catalan: 2, 5,
   14, 42, 132… Nessun parser può enumerarli.
 - CKY è programmazione dinamica sugli intervalli, $O(n^3\,|R|)$ con $|R|$
-  regole, parente di Viterbi; con una PCFG restituisce l'albero più
+  regole, analogo a Viterbi; con una PCFG restituisce l'albero più
   probabile, e l'indipendenza dalle parole è il suo limite. Il parsing a
   transizioni costruisce l'albero a dipendenze in tempo lineare con mosse
   shift-reduce scelte da un classificatore neurale, ma solo proiettivo senza

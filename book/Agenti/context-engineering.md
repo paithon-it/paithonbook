@@ -60,21 +60,20 @@ numero non si va.
 
 Riempirli non è gratis, e il prezzo si conta in token.
 
-Si paga in tre valute. In memoria: per non ricalcolare a ogni passo ciò che ha
-già letto, il modello conserva le chiavi e i valori dell'attenzione di tutto il
-contesto, il *taccuino* della {doc}`sezione sull'attenzione in pratica
-</Transformers/attenzione-in-pratica>`, che cresce linearmente con la lunghezza
-del contesto: per il modello da sette miliardi di quella sezione, nella
-variante con tutte le teste (MHA), 512 KiB per token, cioè già 4 GiB a ottomila
-token contro i 13 GiB dei pesi, e a una finestra piena di 128.000 token
-parecchie volte il modello. In secondi di attesa, perché il contesto va
-elaborato tutto prima che compaia il primo token della risposta. E in denaro,
-perché i fornitori fanno pagare ogni token che entra e ogni token che esce:
-quel listino si chiama *costo per token*, ha uno sconto sulla parte già vista
-quando si usa la cache dei prefissi, ed è una delle cose che LLMOps tiene
-d'occhio. Un contesto gonfio è una bolletta più salata e una risposta più lenta,
-e riempire la finestra fino all'orlo «per sicurezza» è quasi sempre un cattivo
-affare.
+Si paga in tre valute. In memoria, perché per non ricalcolare a ogni passo ciò
+che ha già letto il modello conserva le chiavi e i valori dell'attenzione di
+tutto il contesto. È il *taccuino* della {doc}`sezione sull'attenzione in
+pratica </Transformers/attenzione-in-pratica>`, e cresce linearmente con i
+token: per il modello da sette miliardi di quella sezione, nella variante con
+tutte le teste (MHA), costa 512 KiB a token. A ottomila token sono già 4 GiB
+contro i 13 GiB dei pesi, e a 128.000 token lo spazio occupa parecchie volte il
+modello stesso. In secondi di attesa, perché il contesto va elaborato tutto
+prima che compaia il primo token della risposta. E in denaro, perché i
+fornitori fanno pagare ogni token che entra e ogni token che esce: quel listino
+si chiama *costo per token*, ha uno sconto sulla parte già vista quando si usa
+la cache dei prefissi, ed è una delle cose che LLMOps tiene d'occhio. Un
+contesto gonfio è una bolletta più salata e una risposta più lenta, e riempire
+la finestra fino all'orlo «per sicurezza» è quasi sempre un cattivo affare.
 
 La {numref}`fig-context-window` mostra come la finestra si riempie in una
 giornata di lavoro vera, e due delle sue voci vanno chiamate per nome. La
@@ -94,15 +93,14 @@ e l'ultimo (lo spazio per la risposta) è quello che si dimentica di contare
 finché il modello non la tronca a metà.
 ```
 
-Messa così, la finestra smette di sembrare un limite tecnico e diventa quello
-che è davvero: un **budget**. I centoventottomila token del disegno (grosso
-modo un romanzo) sembrano tantissimi finché non li si vede ripartiti fra cinque
-voci che competono: ogni token che va a una lo toglie alle altre. E come ogni
-budget si può spendere bene o male: una descrizione di strumento scritta larga,
-una cronologia che nessuno accorcia mai, dieci documenti recuperati dove ne
-bastavano tre. Nessuna di queste è un errore in sé, ma insieme mangiano lo
-spazio della risposta, che è l'ultimo segmento e l'unico che nessuno pensa a
-contare.
+Messa così, la finestra rivela la sua vera natura: un **budget**. I
+centoventottomila token del disegno (grosso modo un romanzo) sembrano
+tantissimi finché non li si vede ripartiti fra cinque voci che competono: ogni
+token che va a una lo toglie alle altre. E come ogni budget si può spendere
+bene o male: una descrizione di strumento scritta larga, una cronologia che
+nessuno accorcia mai, dieci documenti recuperati dove ne bastavano tre. Nessuna
+di queste è un errore in sé, ma insieme mangiano lo spazio della risposta, che
+è l'ultimo segmento e l'unico che nessuno pensa a contare.
 
 C'è di peggio, e va contro l'intuizione: anche quando lo spazio ci sarebbe,
 riempirlo può danneggiare la risposta, perché i modelli usano bene

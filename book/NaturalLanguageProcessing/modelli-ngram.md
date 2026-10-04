@@ -347,7 +347,7 @@ modelli n-gram.
 C'è però una trappola sottile nel ripiegare sulla parola singola, e la si
 racconta con un esempio diventato canonico. In un corpus americano la parola
 *Francisco* è frequente (si parla spesso di San Francisco) ma compare
-praticamente solo dopo *San*. Se il bigramma non sa che pesci pigliare e tu
+praticamente solo dopo *San*. Se la riga del bigramma è bianca e tu
 ripieghi sulla frequenza pura, finirai per scommettere *Francisco* in posti
 dove non può stare: *«I can't see without my reading ___»* completato con
 *Francisco* invece che con *glasses*. L'italiano ha gli stessi fantasmi:
@@ -512,12 +512,12 @@ Con le frasi incorniciate fra `<s>` e `</s>`, anche `</s>` è una scommessa e va
 contato fra gli $N$; `<s>` invece no, perché non lo si predice mai: è il
 contesto da cui parte la prima scommessa. Su «il gatto nero salta sul muro» gli
 $N$ sono quindi sette, non sei, ed è la convenzione di Jurafsky e Martin
-{cite}`jurafsky2026speech` oltre che quella del programma del bigramma. Contare
-anche `<s>` sbaglierebbe nel verso che meno ci si aspetta. Incatenando le
-frasi, dopo `</s>` viene `<s>` con probabilità quasi 1, quindi si aggiungerebbe
-un fattore che lascia il prodotto dov'è e un token che porta $N$ a otto. La
-radice si fa di grado più alto e la perplessità cala, cioè migliora, e sulla
-frase di prima si passerebbe da $8^{1/7} \approx 1{,}35$ a
+{cite}`jurafsky2026speech` oltre che quella del programma del bigramma.
+Includere nel conto anche `<s>` falserebbe la misura nel verso che meno ci si
+aspetta. Incatenando le frasi, dopo `</s>` viene `<s>` con probabilità quasi 1,
+quindi si aggiungerebbe un fattore che lascia il prodotto dov'è e un token che
+porta $N$ a otto. La radice si fa di grado più alto e la perplessità cala, cioè
+migliora, e sulla frase di prima si passerebbe da $8^{1/7} \approx 1{,}35$ a
 $8^{1/8} \approx 1{,}30$ a parità di scommesse.
 
 `````

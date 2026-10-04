@@ -37,7 +37,7 @@ stessa struttura matematica di un modello di materiale magnetico, quello di
 Ising con legami di segno qualunque, dove ogni atomo si comporta come una
 freccina che punta in su o in giù e sente l'influenza delle altre.
 
-Quella freccina è la quarta parola presa in prestito: i fisici la chiamano
+Quella freccina introduce un'altra parola in prestito dalla fisica: lo
 **spin**, ed è la parola che si incontra in tutti i lavori di fisica su queste
 reti. Qui non serve sapere che cos'è uno spin davvero: basta l'immagine
 della freccina con due sole posizioni, che è la stessa cosa di un neurone
@@ -64,12 +64,12 @@ parte la pallina è l'indizio rovinato che diamo alla rete, e un
 
 La {numref}`fig-energia-paesaggio` contiene, in un solo disegno, tutta l'idea:
 i ricordi sono valli, e a fare il lavoro di richiamo al posto nostro è la
-regola con cui la rete si aggiorna, che l'energia può soltanto farla scendere.
+regola con cui la rete si aggiorna, che non fa mai salire l'energia.
 
-Due immagini, qui, rischiano di restare scollegate. La pallina non è un
-oggetto in più che si
-muove sopra il paesaggio: la pallina *è* la rete, cioè l'elenco di quali
-neuroni sono accesi in quel momento, disegnato come un puntino su una carta.
+A questo punto la rete e la pallina rischiano di sembrare due oggetti distinti.
+La pallina non è un oggetto in più che si muove sopra il paesaggio: la pallina
+*è* la rete, cioè l'elenco di quali neuroni sono accesi in quel momento,
+disegnato come un puntino su una carta.
 
 `````{tab} Elementare
 
@@ -214,40 +214,40 @@ $$
 perché $(\xi_j^\mu)^2 = 1$ per ogni $j$. Il primo termine tira il neurone
 esattamente dove il pattern lo vuole; il secondo è la somma delle
 sovrapposizioni con tutti gli altri ricordi, e il bit resta al suo posto finché
-quel disturbo, moltiplicato per $\xi_i^\mu$, non scende sotto $-(N-1)/N$. Da qui
-vengono, in un colpo solo, tre cose: che i pattern quasi ortogonali
+quel disturbo, moltiplicato per $\xi_i^\mu$, non scende sotto $-(N-1)/N$. Da
+qui vengono, in un colpo solo, tre cose: che i pattern quasi ortogonali
 (interferenza piccola) siano stabili; che aggiungerne troppi faccia crescere il
-disturbo finché vince; e che a pesare non sia solo il loro numero, ma anche
-quanto si somigliano, come si vedrà con la T, la L e la X. Per pattern casuali
-il conto si chiude. L'interferenza è una somma di $(M-1)(N-1)$ termini $\pm 1/N$
-indipendenti, con media nulla e varianza $\approx M/N$, quindi per il limite
-centrale un bit è instabile al primo passo con probabilità
-$\approx \Phi\big(-\sqrt{N/M}\big)$, dove $\Phi$ è la ripartizione della normale
+disturbo finché non prevale; e che a pesare non sia solo il loro numero, ma
+anche quanto si somigliano, come si vedrà con la T, la L e la X. Per pattern
+casuali il conto si chiude. L'interferenza è una somma di $(M-1)(N-1)$ termini
+$\pm 1/N$ indipendenti, con media nulla e varianza $\approx M/N$, quindi per il
+limite centrale un bit è instabile al primo passo con probabilità $\approx
+\Phi\big(-\sqrt{N/M}\big)$, dove $\Phi$ è la ripartizione della normale
 standard: a $M/N = 0{,}138$ vale $0{,}0036$. Se invece si pretende che tutti i
-bit di tutti i pattern restino fermi con probabilità che tende a uno, serve
-$M < N/(4 \ln N)$ {cite}`mceliece1987capacity`: $1{,}9$ ricordi a $N = 25$,
-$271$ a $N = 10\,000$, dove $0{,}138\,N$ ne darebbe $1380$. La differenza fra le
-due capienze è la tolleranza su una piccola frazione di bit. La capienza è
-dunque limitata: l'analisi di meccanica statistica di Daniel Amit, Hanoch
-Gutfreund e Haim Sompolinsky {cite}`amit1985storing`, con i metodi dei vetri di
-spin, mostra che la memoria associativa esiste solo per $M < \alpha_c N$ con
+bit di tutti i pattern restino fermi con probabilità che tende a uno, serve $M
+< N/(4 \ln N)$ {cite}`mceliece1987capacity`: $1{,}9$ ricordi a $N = 25$, $271$
+a $N = 10\,000$, dove $0{,}138\,N$ ne darebbe $1380$. La differenza fra le due
+capienze è la tolleranza su una piccola frazione di bit. La capienza è dunque
+limitata: l'analisi di meccanica statistica di Daniel Amit, Hanoch Gutfreund e
+Haim Sompolinsky {cite}`amit1985storing`, con i metodi dei vetri di spin,
+mostra che la memoria associativa esiste solo per $M < \alpha_c N$ con
 $\alpha_c = 0{,}138$, e che oltre quella soglia il recupero non degrada
-dolcemente: crolla tutto insieme (la transizione è del primo ordine). Il
-$0{,}14$ che si trova citato dappertutto non arriva da dopo: è l'arrotondamento,
-e sta nello stesso articolo del 1985, che scrive $0{,}138$ sotto la formula e
-nei due grafici, e circa $0{,}14$ nel sommario e nella conclusione. Il valore
-$0{,}138$ è quello della soluzione a simmetria di replica: rompendo la
-simmetria a un passo, gli stati di richiamo sopravvivono fino a
-$\alpha \approx 0{,}144$ {cite}`crisanti1986saturation`. E sotto soglia il
-richiamo non è perfetto: vicino ad $\alpha_c$ il ricordo richiamato ha ancora
-una frazione di bit sbagliati dell'ordine dell'uno o due per cento, ed è per
-questo che i teoremi parlano di ricordi «quasi» perfetti.
+dolcemente: crolla tutto insieme (la transizione è del primo ordine). Il valore
+$0{,}14$ che si trova citato dappertutto non è frutto di scoperte successive: è
+un arrotondamento, e sta nello stesso articolo del 1985, che scrive $0{,}138$
+sotto la formula e nei due grafici, e circa $0{,}14$ nel sommario e nella
+conclusione. Il valore $0{,}138$ è quello della soluzione a simmetria di
+replica: rompendo la simmetria a un passo, gli stati di richiamo sopravvivono
+fino a $\alpha \approx 0{,}144$ {cite}`crisanti1986saturation`. E sotto soglia
+il richiamo non è perfetto: vicino ad $\alpha_c$ il ricordo richiamato ha
+ancora una frazione di bit sbagliati dell'ordine dell'uno o due per cento, ed è
+per questo che i teoremi parlano di ricordi «quasi» perfetti.
 
 Le ipotesi contano, perché sono ciò che rende quel numero un teorema e non
 un'osservazione: pattern casuali e non correlati, rete completamente
 connessa, limite termodinamico $N \to \infty$ a carico $M/N$ fisso,
 temperatura nulla, simmetria di replica, e una tolleranza per una piccola
-frazione di bit errati nel richiamo. Fuori di lì il numero va
+frazione di bit errati nel richiamo. Al di fuori di queste assunzioni il numero va
 maneggiato con cura, e la rete di venticinque neuroni mostra quanto: a $N = 25$
 non c'è nessun limite termodinamico e la transizione è del tutto sfumata.
 Con pattern casuali (diecimila prove per punto, gli $M$ pattern ridisegnati a
@@ -442,7 +442,7 @@ Quella stampa mostra il prima e il dopo, e nasconde la parte interessante: i
 passi in mezzo. In {numref}`fig-hopfield-ricorda` ci sono tutti, e la figura
 mette per la prima volta accanto le due immagini che finora sono andate
 separate. A sinistra c'è la griglia di venticinque caselle, dove a ogni
-*aggiornamento* (una casella guarda i suoi vicini e decide se cambiare) una
+*aggiornamento* (una casella guarda lo stato delle altre e decide se cambiare) una
 sola casella cambia colore. A destra c'è la pallina, cioè l'energia. Sono la
 stessa cosa vista da due parti: ogni casella che cambia colore è uno scalino
 che la pallina scende. E si vede la proprietà che rende la rete una memoria e
@@ -604,8 +604,8 @@ Che le lettere capovolte compaiano è inevitabile, e capire perché aiuta:
 scambiando acceso e spento dappertutto, le caselle che andavano d'accordo
 continuano ad andarci, quindi ogni ricordo si porta dietro un gemello
 capovolto, profondo esattamente uguale. Quello che non compare mai è il
-gemello della lettera *da cui si è partiti*: in trentamila prove non capita
-una volta sola, ed è troppo lontano perché capiti. Lo stato di partenza
+gemello della lettera *da cui si è partiti*: in trentamila prove non capita neanche
+una volta, ed è troppo lontano perché succeda. Lo stato di partenza
 differisce dalla lettera in sei caselle su venticinque, e quindi dalla sua
 immagine capovolta in diciannove. Il gemello è profondo uguale, ma sta
 dall'altra parte, e una discesa che si muove una casella per volta non ci
@@ -615,13 +615,13 @@ E c'è un punto in cui questa rete è più fortunata di quanto la teoria le
 concederebbe. Le tre lettere sono state scelte in modo da somigliarsi il meno
 possibile, non pescate a caso, e il saldo lo mostra: vale 3 fra T e L e 1 nelle
 altre due coppie, in media 1,7, mentre fra due disegni presi a caso ci si
-aspetta 4,0. Meno della metà, dunque.
+aspetta 4,0.
 
 E questo conta, perché è proprio la somiglianza fra i ricordi a far fondere i
 fianchi delle valli: la capienza di cui si diceva è calcolata su ricordi presi
-a caso e su reti grandi, e qui i ricordi a caso non sono e la rete grande non
-è. Quel 93% la rete lo deve alla forma di questo paesaggio più che al codice,
-e la forma l'abbiamo scelta noi scegliendo le lettere.
+a caso e su reti grandi, e in questo caso i ricordi non sono casuali e la rete
+non è grande. Quel 93% la rete lo deve alla forma di questo paesaggio più che
+al codice, e la forma l'abbiamo scelta noi scegliendo le lettere.
 
 `````{tab} Elementare
 ```{admonition} Da ricordare

@@ -12,19 +12,18 @@
 :alt: Una capsula spaziale che segue una traiettoria a puntini verso una falce di Luna.
 ```
 
-C'è un'idea che l'ingegneria usa da oltre mezzo secolo per descrivere
-qualunque sistema che evolve nel tempo: un termostato, la traiettoria di un
-razzo, un circuito elettrico. Si chiama modello a spazio degli stati
-(*state space model*, in sigla **SSM**, che è l'abbreviazione che useremo da
-qui in avanti): un pugno di equazioni che riassumono tutto il passato di un
-segnale (una grandezza che cambia nel tempo: il livello dell'acqua in una
-vasca, un suono, una sequenza di parole) in uno **stato** interno, e da quello
-prevedono il futuro. È la matematica del filtro di Kalman, che la NASA adottò
-nei primi anni Sessanta per studiare la navigazione delle capsule Apollo. Che
-cosa c'entra con l'intelligenza artificiale? Porta allo stesso traguardo del
-{doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`, un
-lavoro che cresce quanto il testo e non quanto il suo quadrato, per un'altra
-strada.
+C'è un'idea che l'ingegneria usa da oltre mezzo secolo per descrivere qualunque
+sistema che evolve nel tempo: un termostato, la traiettoria di un razzo, un
+circuito elettrico. Si chiama modello a spazio degli stati (*state space
+model*, in sigla **SSM**): un pugno di equazioni che riassumono tutto il
+passato di un segnale (una grandezza che cambia nel tempo: il livello
+dell'acqua in una vasca, un suono, una sequenza di parole) in uno **stato**
+interno, e da quello prevedono il futuro. È la matematica del filtro di Kalman,
+che la NASA adottò nei primi anni Sessanta per studiare la navigazione delle
+capsule Apollo. Nell'intelligenza artificiale, questo modello porta allo stesso
+traguardo del {doc}`capitolo sull'attenzione lineare
+</AttenzioneLineare/overview>`: un lavoro che cresce quanto il testo e non
+quanto il suo quadrato, per un'altra strada.
 
 La seconda strada si apre nell'autunno del 2021, quando Albert Gu, Karan Goel e
 Christopher Ré trovano il modo di far girare quelle equazioni vecchie di
@@ -115,27 +114,27 @@ $$
 \mathbf{h}'(t) = \mathbf{A}\, \mathbf{h}(t) + \mathbf{B}\, u(t), \qquad y(t) = \mathbf{C}\, \mathbf{h}(t).
 $$
 
-La matrice $\mathbf{A}$ governa la dinamica interna (come lo stato evolve da solo), $\mathbf{B}$
-come l'ingresso vi entra, $\mathbf{C}$ come se ne legge l'uscita. Per usarlo su una
-sequenza discreta lo si discretizza con un passo $\Delta$, ottenendo una
-ricorrenza $\mathbf{h}_t = \bar{\mathbf{A}}\, \mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, dove $x_t$ è l'ingresso
-campionato al passo $t$ e $\bar{\mathbf{A}}, \bar{\mathbf{B}}$ sono le versioni discrete di $\mathbf{A}$
-e $\mathbf{B}$. E qui sta la ricchezza:
-finché i parametri sono costanti nel tempo, questa ricorrenza ha una doppia
-natura; si può calcolare passo per passo come una RNN (inferenza a costo
-costante *per token*) oppure, a stato iniziale nullo, tutta in una volta come
-una convoluzione (addestramento parallelo). È la stessa doppia natura
-parallelo/ricorrente che muove il
+La matrice $\mathbf{A}$ governa la dinamica interna (come lo stato evolve da
+solo), $\mathbf{B}$ come l'ingresso vi entra, $\mathbf{C}$ come se ne legge
+l'uscita. Per usarlo su una sequenza discreta lo si discretizza con un passo
+$\Delta$, ottenendo una ricorrenza $\mathbf{h}_t = \bar{\mathbf{A}}\,
+\mathbf{h}_{t-1} + \bar{\mathbf{B}}\, x_t$, dove $x_t$ è l'ingresso campionato
+al passo $t$ e $\bar{\mathbf{A}}, \bar{\mathbf{B}}$ sono le versioni discrete
+di $\mathbf{A}$ e $\mathbf{B}$. E qui sta la ricchezza: finché i parametri sono
+costanti nel tempo, questa ricorrenza ha una doppia natura; si può calcolare
+passo per passo come una RNN (inferenza a costo costante *per token*) oppure, a
+stato iniziale nullo, tutta in una volta come una convoluzione (addestramento
+parallelo). È la stessa doppia natura parallelo/ricorrente che muove il
 {doc}`capitolo sull'attenzione lineare </AttenzioneLineare/overview>`,
 raggiunta però dalla teoria dei segnali. Quanto al passo $\Delta$, fissa un
 baratto fra memoria e ingresso. Con $\mathbf{A}$ stabile (autovalori a parte
 reale negativa) e la discretizzazione *zero-order hold*, che tiene l'ingresso
-costante dentro il passo (un'ipotesi tanto più grossolana quanto più il passo
-è lungo), $\bar{\mathbf{A}} = \exp(\Delta\mathbf{A})$ tende all'identità per
-$\Delta \to 0$, e lo stato dura mentre l'ingresso, scalato da
-$\bar{\mathbf{B}} \approx \Delta\mathbf{B}$, conta poco; per $\Delta$ grande
-tende a zero, e il passato si dimentica in fretta mentre pesa l'ingresso
-corrente. Tolta l'invarianza nel tempo, con $\bar{\mathbf{A}}_t$ e
+costante dentro il passo (un'ipotesi tanto più grossolana quanto più il passo è
+lungo), $\bar{\mathbf{A}} = \exp(\Delta\mathbf{A})$ tende all'identità per
+$\Delta \to 0$: lo stato si conserva e l'ingresso, scalato da $\bar{\mathbf{B}}
+\approx \Delta\mathbf{B}$, conta poco. Per $\Delta$ grande, al contrario,
+$\bar{\mathbf{A}}$ tende a zero: il passato si dimentica in fretta e domina
+l'ingresso corrente. Tolta l'invarianza nel tempo, con $\bar{\mathbf{A}}_t$ e
 $\bar{\mathbf{B}}_t$ diversi a ogni passo (come quando $\Delta$ dipende
 dall'ingresso), non c'è più un filtro unico da far scorrere e la forma
 convoluzionale cade; il calcolo in blocco si ritrova con lo *scan* parallelo,
@@ -160,8 +159,8 @@ la famiglia di ricorrenze lineari che il capitolo precedente mette in fila
 nella {doc}`sezione sulla scrittura in memoria
 </AttenzioneLineare/scrivere-nella-memoria>`: «ricorrente» perché ogni passo
 riparte dal risultato del passo precedente, «lineare» perché il nuovo stato è
-una funzione lineare del vecchio (è un altro mestiere della stessa parola: qui
-non dice quanto costa il conto, dice come è fatto), «a stato di dimensione
+una funzione lineare del vecchio (qui la parola indica com'è fatta l'operazione,
+non quanto costa calcolarla), «a stato di dimensione
 fissa» perché lo stato non si allarga mai. L'attenzione lineare ci arriva dal
 meccanismo di attenzione, gli *state space model* dai sistemi dinamici.
 
@@ -202,7 +201,7 @@ filtro unico che si fa scorrere sull'intera sequenza, vale solo se il sistema
 rigidità che rompe Mamba, il modello con cui Albert Gu e Tri Dao chiudono il
 2023 {cite}`gu2023mamba`. Mamba rende il sistema *selettivo*, cioè capace di
 decidere in base al contenuto che cosa ricordare e che cosa dimenticare, e in
-cambio perde il filtro unico. Il modo «tutto insieme» non se ne va con lui, ma
+cambio perde il filtro unico. Il modo «tutto insieme» non scompare, ma
 va ricostruito su un'altra strada.
 
 ## Dai sistemi dinamici a Mamba
@@ -236,7 +235,7 @@ lineari.
 
 ```{admonition} Da ricordare
 :class: important
-- Un modello a spazio degli stati (in sigla SSM) riassume tutto quello
+- Un modello a spazio degli stati (in sigla SSM) condensa tutto quello
   che ha letto in un riassunto di dimensione sempre uguale, e a ogni parola
   lo aggiorna. Sono le stesse equazioni con cui l'ingegneria descrive un
   termostato o la traiettoria di un razzo; S4 {cite}`gu2022s4` trova il modo
